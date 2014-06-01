@@ -1,81 +1,83 @@
-#include "qfstacktrace.h"
+#include <qf/core/stacktrace.h>
+
+#include <qf/core/string.h>
 
 #include <QStringList>
 
 #include <sstream>
 
-#if defined(Q_CC_MSVC)
-	#include "msvc\SimpleSymbolEngine.h"
-#elif defined Q_CC_GNU && !defined Q_CC_MINGW
+#include <stdlib.h>
+
+#if defined Q_CC_GNU && !defined Q_CC_MINGW
 	#include <execinfo.h>
 #endif
 
-#include <stdlib.h>
+using namespace qf::core;
 
-#if defined Q_CC_GNU && !defined Q_CC_MINGW && !defined QF_DISABLE_STACKTRACE
+#if defined Q_CC_GNU && !defined Q_CC_MINGW
+
 static QString demangle_gcc(const QString &_s)
 {
 	//qDebug() << __PRETTY_FUNCTION__ << _s;
-	QString s = _s;
-	QString ret;
+	String s = _s;
+	String ret;
 	int first_digit_pos;
 	for(first_digit_pos=0; first_digit_pos<_s.length(); first_digit_pos++) {
 		QChar c = _s[first_digit_pos];
 		if(c >= '0' && c <= '9') break;
 	}
 	if(first_digit_pos < _s.length()) {
-		s = s.mid(first_digit_pos);
+		s = s.slice(first_digit_pos);
 		int ix = 0;
 		while(s[ix] >= '0' && s[ix] <= '9') ix++;
-		QString s1 = s.mid(0, ix);
-		s = s.mid(ix);
+		String s1 = s.slice(0, ix);
+		s = s.slice(ix);
 		ix = s1.toInt();
-		ret += s.mid(0, ix);
-		s = s.mid(ix);
+		ret += s.slice(0, ix);
+		s = s.slice(ix);
 		ix = 0;
 		while(s[ix] >= '0' && s[ix] <= '9') ix++;
-		s1 = s.mid(0, ix);
-		s = s.mid(ix);
+		s1 = s.slice(0, ix);
+		s = s.slice(ix);
 		ix = s1.toInt();
-		QString s2 = s.mid(0, ix);
+		String s2 = s.slice(0, ix);
 		if(!s2.isEmpty()) ret += "::" + s2;
-		ret += "(" + s.mid(ix) + ")";
+		ret += "(" + s.slice(ix) + ")";
 	}
 	else ret = s;
 	//qDebug() << "\t ret:" << ret;
 	return ret;
 }
+
 #endif
 
-QString QFStackTrace::stackTrace()
+QString StackTrace::stackTrace()
 {
 	QString ret;
-#if defined Q_CC_GNU && !defined Q_CC_MINGW && !defined QF_DISABLE_STACKTRACE
+#if defined Q_CC_GNU && !defined Q_CC_MINGW
 	ret = trace2str();
 	{
-		QString s = ret;
-		QStringList sl = s.split('\n'), sl_ret;
+		String s = ret;
+		QStringList sl = s.splitAndTrim('\n'), sl_ret;
 		int i = 0;
 		foreach(s, sl) {
 			int ix = s.indexOf('(');
-			QString s1, s2, s3;
+			String s1, s2, s3;
 			if(ix > 0) {
-				s1 = s.mid(0, ix);
-				s = s.mid(ix+1);
+				s1 = s.slice(0, ix);
+				s = s.slice(ix+1);
 				ix = s.indexOf('[');
 				if(ix > 0) {
-					s2 = s.mid(0, ix-2);
-					s3 = s.mid(ix + 1);
-					s3 = s3.mid(0, s3.length() - 1);
+					s2 = s.slice(0, ix-2);
+					s3 = s.slice(ix + 1, -1);
 				}
-				else
-					s2 = s.mid(0, s.length() - 1);
+				else s2 = s.slice(0, -1);
 			}
 			else {
 				ix = s.indexOf('[');
 				if(ix > 0) {
-					s1 = s.mid(0, ix-1);
-					s3 = s.mid(ix + 1, s.length() - 1);
+					s1 = s.slice(0, ix-1);
+					s3 = s.slice(ix + 1, -1);
 				}
 				else s1 = s;
 			}
@@ -107,7 +109,7 @@ QString QFStackTrace::trace2str()
 	return oss.str();
 }
 #elif defined Q_CC_GNU && !defined Q_CC_MINGW && !defined QF_DISABLE_STACKTRACE
-QString QFStackTrace::trace2str()
+QString StackTrace::trace2str()
 {
 	static const int MAX_CNT = 100;
 	void *array[MAX_CNT];
@@ -125,7 +127,7 @@ QString QFStackTrace::trace2str()
 	free(strings);
 	return oss.str().c_str();
 }
-#elif !defined QF_DISABLE_STACKTRACE
+#else
 ///http://www.gnu.org/software/hello/manual/gnulib/execinfo_002eh.html
 /**
 8.13 execinfo.h

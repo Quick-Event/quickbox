@@ -2,7 +2,7 @@
 #define	QFCOREGLOBAL_H
 
 #include <qglobal.h>
-
+/*
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 	#if defined Q_CC_GNU && defined Q_OS_WIN32
 		#ifndef Q_CC_MINGW
@@ -13,7 +13,7 @@
 		#endif
 	#endif
 #endif
-
+*/
 /// Declaration of macros required for exporting symbols
 /// into shared libraries
 #if defined(QFCORE_BUILD_DLL)
