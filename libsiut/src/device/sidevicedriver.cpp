@@ -18,11 +18,11 @@
 
 #include <simessage.h>
 
+#include <qf/core/log.h>
+
 #include <QSocketNotifier>
 #include <QTimer>
 #include <QSettings>
-
-#include <qf/core/logcust.h>
 
 //=================================================
 //             SIDeviceDriver
@@ -271,7 +271,7 @@ void SIDeviceDriver::rxDataTimeout()
 
 void SIDeviceDriver::emitDriverInfo ( int level, const QString& msg )
 {
-	qf::core::Log(level) << msg;
+	//qfLog(level) << msg;
 	emit driverInfo(level, msg);
 }
 

@@ -9,7 +9,7 @@
 
 #include <QStringList>
 
-#include <qf/core/logcust.h>
+#include <qf/core/log.h>
 
 namespace
 {

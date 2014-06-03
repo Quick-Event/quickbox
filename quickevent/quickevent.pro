@@ -6,6 +6,17 @@ TEMPLATE = app
 
 TARGET = $$OUT_PWD/../bin/quickevent
 
-INCLUDEPATH += $$PWD/../libqf/libqfcore/include
+LIBS +=      \
+	-lqfcore  \
+	-lqfqmlwidgets  \
+
+win32: LIBS +=  \
+	-L../bin  \
+
+DOLAR=$
+
+unix: LIBS +=  \
+	-L../lib  \
+	-Wl,-rpath,\'$${DOLAR}$${DOLAR}ORIGIN/../lib\'  \
 
 include($$PWD/src/src.pri)

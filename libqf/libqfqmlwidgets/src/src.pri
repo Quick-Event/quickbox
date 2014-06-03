@@ -1,4 +1,5 @@
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD/../../libqfcore/include
+#message(INCLUDEPATH: $$INCLUDEPATH)
 
 HEADERS += \
 	$$PWD/frame.h \

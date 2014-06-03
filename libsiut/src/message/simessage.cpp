@@ -7,9 +7,9 @@
 
 #include "simessage.h"
 
-#include <QStringList>
+#include <qf/core/log.h>
 
-#include <qf/core/logcust.h>
+#include <QStringList>
 
 //=================================================
 //             SIMessageBase

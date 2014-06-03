@@ -2,7 +2,7 @@ import mywidgets 1.0
 
 Frame {
     id: root
-    layoutType: Frame.LayoutHorizontal
+    layoutType: Frame.LayoutVertical
     Label {
         id: label
         text: "zeru hovna"

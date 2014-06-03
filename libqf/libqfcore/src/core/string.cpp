@@ -1,4 +1,4 @@
-#include <qf/core/string.h>
+#include "string.h"
 
 #include <QStringList>
 

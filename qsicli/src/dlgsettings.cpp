@@ -10,12 +10,12 @@
 
 #include "theapp.h"
 
+#include <qf/core/log.h>
+
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QDir>
 #include <QFileDialog>
-
-#include <qf/core/logcust.h>
 
 //=================================================
 //             DlgSettings

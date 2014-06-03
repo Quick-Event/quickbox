@@ -1,9 +1,8 @@
 #include "theapp.h"
 #include "mainwindow.h"
 
-//#include <exception>
-
-#include <qf/core/logcust.h>
+#include <qf/core/log.h>
+#include <qf/core/logdevice.h>
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -45,14 +44,13 @@ int main(int argc, char* argv[])
 	//std::set_unexpected(myunexpected);
 	//std::set_terminate(myterminate);
 
-	qf::core::Log::setDefaultLogTreshold(qf::core::Log::LOG_INF);
-	qf::core::Log::setDomainTresholds(argc, argv);
+	QScopedPointer<qf::core::LogDevice> log_device(qf::core::FileLogDevice::install(argc, argv));
+	log_device->setLogTreshold(qf::core::Log::LOG_INFO);
 
 	qfError() << "QFLog(ERROR) test OK.";
 	qfWarning() << "QFLog(WARNING) test OK.";
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";
-	qfTrash() << "QFLog(TRASH) test OK.";
 
 	qInstallMessageHandler(myMessageOutput);
 	TheApp app(argc, argv);

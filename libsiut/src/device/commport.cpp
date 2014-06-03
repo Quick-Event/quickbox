@@ -7,8 +7,6 @@
 
 #include "commport.h"
 
-#include <qf/core/logcust.h>
-
 //=================================================
 //             CommPort
 //=================================================
@@ -23,6 +21,6 @@ CommPort::~CommPort()
 
 void CommPort::emitDriverInfo ( int level, const QString& msg )
 {
-	qfLog(level) << msg;
+	//qfLog(level) << msg;
 	emit driverInfo(level, msg);
 }

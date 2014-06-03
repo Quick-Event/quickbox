@@ -1,14 +1,13 @@
+INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
+INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
+#message(INCLUDEPATH: $$INCLUDEPATH)
 
 SOURCES += \
 	$$PWD/main.cpp\
-	$$PWD/mainwindow.cpp \
-	$$PWD/frame.cpp \
-	$$PWD/label.cpp
+	$$PWD/mainwindow.cpp
 
 HEADERS  += \
-	$$PWD/mainwindow.h \
-	$$PWD/frame.h \
-	$$PWD/label.h
+	$$PWD/mainwindow.h
 
 FORMS += \
 	$$PWD/mainwindow.ui

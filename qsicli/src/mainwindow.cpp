@@ -7,12 +7,13 @@
 #include <sidevicedriver.h>
 #include <simessage.h>
 
+#include <qf/core/log.h>
+
 #include <QSettings>
 #include <QMessageBox>
 #include <QSqlDatabase>
 #include <QSqlError>
 
-#include <qf/core/logcust.h>
 //#include "sicliscriptdriver.h"
 
 MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags)
@@ -90,9 +91,9 @@ void MainWindow::onSqlConnect(bool checked)
 		db.setUserName(user);
 		db.setPassword(password);
 		db.setDatabaseName(database);
-		appendLog(qf::core::Log::LOG_INF, tr("Opening database connection: %1@%2:%3/%4 [%5]").arg(user).arg(host).arg(port).arg(database).arg(db.driverName()));
+		appendLog(qf::core::Log::LOG_INFO, tr("Opening database connection: %1@%2:%3/%4 [%5]").arg(user).arg(host).arg(port).arg(database).arg(db.driverName()));
 		if(db.open()) {
-			appendLog(qf::core::Log::LOG_INF, tr("OK"));
+			appendLog(qf::core::Log::LOG_INFO, tr("OK"));
 			//theApp()->scriptDriver()->callExtensionFunction("onSQLConnect");
 		}
 		else {
@@ -101,9 +102,9 @@ void MainWindow::onSqlConnect(bool checked)
 		}
 	}
 	else {
-		appendLog(qf::core::Log::LOG_INF, tr("Closing database connection"));
+		appendLog(qf::core::Log::LOG_INFO, tr("Closing database connection"));
 		theApp()->sqlConnection().close();
-		appendLog(qf::core::Log::LOG_INF, theApp()->sqlConnection().isOpen()? "ERROR": "OK");
+		appendLog(qf::core::Log::LOG_INFO, theApp()->sqlConnection().isOpen()? "ERROR": "OK");
 		if(theApp()->sqlConnection().isOpen()) {
 			QSqlError err = theApp()->sqlConnection().lastError();
 			appendLog(qf::core::Log::LOG_ERR, err.text());
@@ -121,7 +122,7 @@ void MainWindow::appendLog(int level, const QString& msg)
 		switch((qf::core::Log::Level)level) {
 			case qf::core::Log::LOG_ERR: color_name = "red"; break;
 			case qf::core::Log::LOG_WARN: color_name = "blue"; break;
-			case qf::core::Log::LOG_INF: color_name = "black"; break;
+			case qf::core::Log::LOG_INFO: color_name = "black"; break;
 			case qf::core::Log::LOG_DEB: color_name = "darkgray"; break;
 			default: color_name = "darkgray"; break;
 		}
@@ -140,11 +141,11 @@ void MainWindow::appendLogPre(int level, const QString& msg)
 void MainWindow::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
-	//appendLog(qf::core::Log::LOG_INF, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
+	//appendLog(qf::core::Log::LOG_INFO, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MsgCardReadOut) {
 		SIMessageCardReadOut msg(msg_data);
 		appendLogPre(qf::core::Log::LOG_DEB, msg.dump());
-		appendLog(qf::core::Log::LOG_INF, trUtf8("card: %1").arg(msg.cardNumber()));
+		appendLog(qf::core::Log::LOG_INFO, trUtf8("card: %1").arg(msg.cardNumber()));
 		/*
 		SICliScriptDriver *drv = theApp()->scriptDriver();
 		try {
@@ -159,7 +160,7 @@ void MainWindow::processSIMessage(const SIMessageData& msg_data)
 			}
 			else if(ret_type == "info") {
 				//QString info = sv.property("info").toString();
-				appendLog(qf::core::Log::LOG_INF, sv.property("message").toString());
+				appendLog(qf::core::Log::LOG_INFO, sv.property("message").toString());
 			}
 		}
 		catch(std::exception &e) {

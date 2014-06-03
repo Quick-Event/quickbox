@@ -1,12 +1,11 @@
-#include <qf/core/exception.h>
-#include <qf/core/stacktrace.h>
+#include "exception.h"
+#include "stacktrace.h"
 
 #include <QStringList>
+#include <QDebug>
 
 #include <stdarg.h>
 #include <stdio.h>
-
-#include <qf/core/logcust.h>
 
 using namespace qf::core;
 
@@ -63,7 +62,7 @@ void Exception::init(const QString& _type, const QString& _msg, const QString& _
 	m_where = _where;
 	m_msg = _msg;
 	m_what = m_msg.toUtf8();
-	m_stackTrace = StackTrace::stackTrace();
+	m_stackTrace = StackTrace::stackTrace().toString();
 	/*
 	/// remove first 4 levels of stack (theese are exception initialization functions)
 	QStringList sl = s.split("\n");
@@ -80,17 +79,12 @@ Exception& Exception::recentExceptionRef()
 	return e;
 }
 */
-void Exception::log(int level)
-{
-	if(isLogStackTrace())
-		qfLog(level) << message() << "\n" << where() << "\n----- stack trace -----\n" << stackTrace();
-	else
-		qfLog(level) << message() << "\n" << where();
-}
-
 void Exception::log()
 {
-	log(Log::LOG_WARN);
+	if(isLogStackTrace())
+		qWarning() << message() << "\n" << where() << "\n----- stack trace -----\n" << stackTrace();
+	else
+		qWarning() << message() << "\n" << where();
 }
 
 QString Exception::toString() const
@@ -132,7 +126,3 @@ void QFInternalErrorException::log()
 }
 #endif
 //============================================================
-void SqlException::log()
-{
-	Exception::log(Log::LOG_INF);
-}

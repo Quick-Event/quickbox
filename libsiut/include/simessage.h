@@ -12,8 +12,6 @@
 
 #include <siutglobal.h>
 
-#include <qf/core/log.h>
-
 #include <QVariantMap>
 #include <QCoreApplication>
 

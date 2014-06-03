@@ -1,7 +1,8 @@
 message("including $$PWD")
 
 TEMPLATE = lib
-TARGET = qfqmlwidgets
+
+unix:TARGET = $$OUT_PWD/../../lib/qfqmlwidgets
 
 QT += widgets qml
 

@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+
 #include <QDebug>
 
 Frame::Frame(QWidget *parent) :

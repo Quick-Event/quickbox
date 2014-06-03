@@ -1,46 +1,25 @@
 #include "mainwindow.h"
-#include "frame.h"
-#include "label.h"
+
+#include <qf/qmlwidgets/frame.h>
+#include <qf/qmlwidgets/label.h>
+
+#include <qf/core/log.h>
+#include <qf/core/logdevice.h>
+
 #include <QApplication>
 #include <QPushButton>
 #include <QLayout>
 #include <QtQml>
 
-/*
-void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-	char type_c = '\0';
-	switch(type) {
-	case QtDebugMsg:
-		type_c = 'D';
-		break;
-	case QtWarningMsg:
-		type_c = 'W';
-		break;
-	case QtCriticalMsg:
-		type_c = 'E';
-		break;
-	case QtFatalMsg: {
-		if(msg.contains(QLatin1Literal("ASSERT: \"!d->isWidget\""))) {
-			break;
-		}
-		if(msg.contains(QLatin1Literal("ASSERT"))) {
-			break;
-		}
-		type_c = '!';
-		break;
-	}
-	}
-	if(type_c) {
-		QByteArray localMsg = msg.toLocal8Bit();
-		fprintf(stderr, "[%c] (%s:%u %s): %s\n", type_c, context.file, context.line, context.function, localMsg.constData());
-		fflush(stderr);
-	}
-}
-*/
 int main(int argc, char *argv[])
 {
-	//qInstallMessageHandler(myMessageOutput);
+	QScopedPointer<qf::core::LogDevice> log_device(qf::core::FileLogDevice::install(argc, argv));
+	log_device->setPrettyDomain(true);
+
+	qfError() << "QFLog(ERROR) test OK.";
+	qfWarning() << "QFLog(WARNING) test OK.";
+	qfInfo() << "QFLog(INFO) test OK.";
+	qfDebug() << "QFLog(DEBUG) test OK.";
 
 	qmlRegisterType<Label>("mywidgets", 1, 0, "Label");
 	qmlRegisterType<QPushButton>("mywidgets", 1, 0, "Button");

@@ -9,11 +9,11 @@
 
 #include "commport_unix.h"
 
+#include <qf/core/log.h>
+
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-
-#include <qf/core/logcust.h>
 
 //=================================================
 //             CommPort_unix
@@ -268,7 +268,7 @@ int CommPort_unix::open(const QString& device, int baud_rate, int data_bits, con
 		ret = 0;
 	} while(false);
 	if(ret == 0) {
-		emitDriverInfo(qf::core::Log::LOG_INF, tr("Open device '%1' OK.").arg(device));
+		emitDriverInfo(qf::core::Log::LOG_INFO, tr("Open device '%1' OK.").arg(device));
 	}
 	return ret;
 }
@@ -283,7 +283,7 @@ int CommPort_unix::close()
 		qfInfo() << "close TTY:" << ret;
 	}
 	f_ttyFd = -1;
-	emitDriverInfo(qf::core::Log::LOG_INF, tr("Comm device closed."));
+	emitDriverInfo(qf::core::Log::LOG_INFO, tr("Comm device closed."));
 	return ret;
 }
 

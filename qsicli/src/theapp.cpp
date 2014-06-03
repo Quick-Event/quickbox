@@ -67,7 +67,7 @@ QSqlDatabase TheApp::sqlConnection()
 	if(!db.isValid()) {
 		QSettings settings;
 		QString driver = settings.value("sql/connection/driver", "QMYSQL").toString();
-		emitLogRequest(qf::core::Log::LOG_INF, tr("Creatng DB connection usin griver '%1'").arg(driver));
+		emitLogRequest(qf::core::Log::LOG_INFO, tr("Creatng DB connection usin griver '%1'").arg(driver));
 		db = QSqlDatabase::addDatabase(driver);
 	}
 	return db;
@@ -82,7 +82,7 @@ QTextStream& TheApp::cardLog()
 			QF_SAFE_DELETE(f_cardLogFile);
 			f_cardLogFile = new QFile(fn);
 			if(f_cardLogFile->open(QFile::Append)) {
-				emitLogRequest(qf::core::Log::LOG_INF, tr("Openned card log file '%1' for append.").arg(fn));
+				emitLogRequest(qf::core::Log::LOG_INFO, tr("Openned card log file '%1' for append.").arg(fn));
 				f_cardLog = new QTextStream(f_cardLogFile);
 			}
 			else {
@@ -92,7 +92,7 @@ QTextStream& TheApp::cardLog()
 		if(!f_cardLog) {
 			/// log to stdout
 			f_cardLog = new QTextStream(stdout);
-			emitLogRequest(qf::core::Log::LOG_INF, tr("Card log file redirected to stdout."));
+			emitLogRequest(qf::core::Log::LOG_INFO, tr("Card log file redirected to stdout."));
 		}
 	}
 	return *f_cardLog;
@@ -100,7 +100,7 @@ QTextStream& TheApp::cardLog()
 
 void TheApp::closeCardLog()
 {
-	emitLogRequest(qf::core::Log::LOG_INF, tr("Closing card log."));
+	emitLogRequest(qf::core::Log::LOG_INFO, tr("Closing card log."));
 	QF_SAFE_DELETE(f_cardLog);
 }
 /*
@@ -136,12 +136,12 @@ qf::core::Log::Level TheApp::logLevelFromSettings()
 {
 	QSettings settings;
 	QString level_str = settings.value("app/logging/level").toString().toLower();
-	if(level_str == "trash") return qf::core::Log::LOG_TRASH;
+	//if(level_str == "trash") return qf::core::Log::LOG_TRASH;
 	if(level_str == "debug") return qf::core::Log::LOG_DEB;
-	if(level_str == "info") return qf::core::Log::LOG_INF;
+	if(level_str == "info") return qf::core::Log::LOG_INFO;
 	if(level_str == "warning") return qf::core::Log::LOG_WARN;
 	if(level_str == "error") return qf::core::Log::LOG_ERR;
-	return qf::core::Log::LOG_INF;
+	return qf::core::Log::LOG_INFO;
 }
 
 QString TheApp::versionString()

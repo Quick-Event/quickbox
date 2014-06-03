@@ -1,0 +1,1 @@
+/home/fvacek/rim/github/quickevent/libqf/libqfqmlwidgets/src/frame.h
