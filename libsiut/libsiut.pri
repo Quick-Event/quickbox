@@ -11,11 +11,4 @@ INCLUDEPATH += \
 	$$PWD/include \
 	$$PWD/../libqf/libqfcore/include \
 
-HEADERS += \
-	$$PWD/include/commport.h    \
-	$$PWD/include/simessagedata.h   \
-	$$PWD/include/simessage.h   \
-	$$PWD/include/sidevicedriver.h      \
-
-
 include($$PWD/src/src.pri)

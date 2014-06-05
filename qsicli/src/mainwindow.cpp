@@ -4,15 +4,13 @@
 
 #include "theapp.h"
 
-#include <sidevicedriver.h>
-#include <simessage.h>
+#include <siut/sidevicedriver.h>
+#include <siut/simessage.h>
 
 #include <qf/core/log.h>
 
 #include <QSettings>
 #include <QMessageBox>
-#include <QSqlDatabase>
-#include <QSqlError>
 
 //#include "sicliscriptdriver.h"
 
@@ -24,19 +22,19 @@ MainWindow::MainWindow(QWidget * parent, Qt::WindowFlags flags)
 	setWindowTitle("QSIClient");
 	//qDebug() << "setup ui OK";
 	connect(theApp(), SIGNAL(logRequest(int,QString)), this, SLOT(appendLog(int,QString)));
-	connect(theApp(), SIGNAL(logRequestPre(int,QString)), this, SLOT(appendLogPre(int,QString)));
+	//connect(theApp(), SIGNAL(logRequestPre(int,QString)), this, SLOT(appendLogPre(int,QString)));
 
-	connect(ui->actCommOpen, SIGNAL(toggled(bool)), this, SLOT(onCommOpen(bool)));
-	connect(ui->actSqlConnect, SIGNAL(toggled(bool)), this, SLOT(onSqlConnect(bool)));
-	connect(ui->actConfig, SIGNAL(triggered(bool)), this, SLOT(actConfigTriggered()));
-	connect(ui->actHelpAbout, SIGNAL(triggered(bool)), this, SLOT(onHelpAbout()));
-	connect(ui->actHelpAboutQt, SIGNAL(triggered(bool)), this, SLOT(onHelpAboutQt()));
+	connect(ui->actCommOpen, &QAction::toggled, this, &MainWindow::onCommOpen);
+	connect(ui->actSqlConnect, &QAction::toggled, theApp(), &TheApp::connectSql);
+	connect(ui->actConfig, &QAction::triggered, this, &MainWindow::actConfigTriggered);
+	connect(ui->actHelpAbout, &QAction::triggered, this, &MainWindow::onHelpAbout);
+	connect(ui->actHelpAboutQt, &QAction::triggered, this, &MainWindow::onHelpAboutQt);
 	{
-		SIDeviceDriver *drv = theApp()->siDriver();
-		connect(drv, SIGNAL(driverInfo(int,QString)), this, SLOT(processDriverInfo(int,QString)), Qt::QueuedConnection);
-		connect(drv, SIGNAL(messageReady(SIMessageData)), this, SLOT(processSIMessage(SIMessageData)), Qt::QueuedConnection);
-		connect(drv, SIGNAL(rawDataReceived(QByteArray)), this, SLOT(processDriverRawData(QByteArray)), Qt::QueuedConnection);
-		connect(this, SIGNAL(sendSICommand(int,QByteArray)), drv, SLOT(sendCommand(int,QByteArray)), Qt::QueuedConnection);
+		siut::DeviceDriver *drv = theApp()->siDriver();
+		connect(drv, &siut::DeviceDriver::driverInfo, this, &MainWindow::processDriverInfo, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::messageReady, this, &MainWindow::processSIMessage, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::rawDataReceived, this, &MainWindow::processDriverRawData, Qt::QueuedConnection);
+		connect(this, &MainWindow::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
 	}
 	{
 		QSettings settings;
@@ -72,7 +70,7 @@ void MainWindow::onCommOpen(bool checked)
 	}
 	else theApp()->siDriver()->closeCommPort();
 }
-
+/*
 void MainWindow::onSqlConnect(bool checked)
 {
 	qfLogFuncFrame() << "checked:" << checked;
@@ -111,7 +109,7 @@ void MainWindow::onSqlConnect(bool checked)
 		}
 	}
 }
-
+*/
 void MainWindow::appendLog(int level, const QString& msg)
 {
 	qf::core::Log::Level treshold = theApp()->logLevelFromSettings();

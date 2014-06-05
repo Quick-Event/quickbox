@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 
-	QQmlEngine *engine = new QQmlEngine;
-	QQmlComponent component(engine, QUrl::fromLocalFile("main.qml"));
+	QQmlEngine engine;
+	QQmlComponent component(&engine, QUrl::fromLocalFile("main.qml"));
 	if(!component.isReady()) {
-		qDebug() << component.errorString();
+		qfError() << component.errorString();
 	}
 	else {
 		QWidget *root = qobject_cast<QWidget*>(component.create());

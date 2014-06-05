@@ -1,8 +1,8 @@
 #include "theapp.h"
 //#include "sicliscriptdriver.h"
 
-#include <sidevicedriver.h>
-#include <simessage.h>
+#include <siut/sidevicedriver.h>
+#include <siut/simessage.h>
 
 #include <qf/core/exception.h>
 #include <qf/core/utils.h>
@@ -12,25 +12,23 @@
 #include <QMetaType>
 #include <QSettings>
 #include <QSqlDatabase>
-//#include <QScriptEngine>
+#include <QScriptEngineDebugger>
 #include <QFile>
 #include <QIcon>
-
-#define SCRIPT_DEBUGGER
-#ifdef SCRIPT_DEBUGGER
-//#include <QScriptEngineDebugger>
-#endif
+#include <QSqlError>
 
 //========================================================================
 //                      TheApp
 //========================================================================
 TheApp::TheApp(int & argc, char ** argv)
-: QApplication(argc, argv)
+	: QApplication(argc, argv)
 {
+	qfLogFuncFrame();
+	qfDebug() << "setting app version:" << versionString();
 	setApplicationVersion(versionString());
 	setWindowIcon(QIcon("://images/qsicli.png"));
 	f_siDriver = NULL;
-	f_scriptDriver = NULL;
+	//f_scriptDriver = NULL;
 	f_cardLog = NULL;
 	f_cardLogFile = NULL;
 
@@ -52,10 +50,10 @@ TheApp* TheApp::instance(bool throw_exc)
 	return a;
 }
 
-SIDeviceDriver* TheApp::siDriver()
+siut::DeviceDriver* TheApp::siDriver()
 {
 	if(!f_siDriver) {
-		f_siDriver = new SIDeviceDriver(this);
+		f_siDriver = new siut::DeviceDriver(this);
 		//connect(f_siDriver, SIGNAL(messageReady(const SIMessageBase&)), this, SLOT(onMessageReady(const SIMessageBase&)));
 	}
 	return f_siDriver;
@@ -109,11 +107,13 @@ void TheApp::appendCardLogLine(const QString &line)
 	cardLog() << line << endl;
 }
 */
+/*
 bool TheApp::isScriptDebuggerEnabled()
 {
 	foreach(QString arg, arguments()) if(arg == "--script-debugger") return true;
 	return false;
 }
+*/
 /*
 SICliScriptDriver* TheApp::scriptDriver()
 {
@@ -142,6 +142,53 @@ qf::core::Log::Level TheApp::logLevelFromSettings()
 	if(level_str == "warning") return qf::core::Log::LOG_WARN;
 	if(level_str == "error") return qf::core::Log::LOG_ERR;
 	return qf::core::Log::LOG_INFO;
+}
+
+void TheApp::connectSql(bool open)
+{
+	qfLogFuncFrame() << "open:" << open;
+	if(sqlConnection().isOpen() == open) {
+		return;
+	}
+	if(open) {
+		QSettings settings;
+		settings.beginGroup("sql");
+		settings.beginGroup("connection");
+		QString host = settings.value("host", "localhost").toString();
+		int port = settings.value("port", 0).toInt();
+		QString user = settings.value("user").toString();
+		QString password = settings.value("password").toString();
+		QString database = settings.value("database").toString();
+		QSqlDatabase db = sqlConnection();
+		db.setHostName(host);
+		db.setPort(port);
+		db.setUserName(user);
+		db.setPassword(password);
+		db.setDatabaseName(database);
+		emitLogRequest(qf::core::Log::LOG_INFO, tr("Opening database connection: %1@%2:%3/%4 [%5]").arg(user).arg(host).arg(port).arg(database).arg(db.driverName()));
+		if(db.open()) {
+			emitLogRequest(qf::core::Log::LOG_INFO, tr("OK"));
+			//theApp()->scriptDriver()->callExtensionFunction("onSQLConnect");
+			emit sqlConnected(true);
+		}
+		else {
+			QSqlError err = db.lastError();
+			emitLogRequest(qf::core::Log::LOG_ERR, tr("ERROR - %1").arg(err.text()));
+		}
+	}
+	else {
+		emitLogRequest(qf::core::Log::LOG_INFO, tr("Closing database connection"));
+		sqlConnection().close();
+		emitLogRequest(qf::core::Log::LOG_INFO, sqlConnection().isOpen()? "ERROR": "OK");
+		if(sqlConnection().isOpen()) {
+			QSqlError err = sqlConnection().lastError();
+			emitLogRequest(qf::core::Log::LOG_ERR, err.text());
+		}
+		else {
+			emit sqlConnected(false);
+		}
+	}
+
 }
 
 QString TheApp::versionString()

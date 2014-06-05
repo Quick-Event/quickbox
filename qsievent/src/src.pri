@@ -4,10 +4,10 @@ INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 
 SOURCES += \
 	$$PWD/main.cpp\
-	$$PWD/mainwindow.cpp
+	$$PWD/mainwindow.cpp \
 
 HEADERS  += \
-	$$PWD/mainwindow.h
+	$$PWD/mainwindow.h \
 
 FORMS += \
 	$$PWD/mainwindow.ui

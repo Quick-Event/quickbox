@@ -10,7 +10,7 @@
 
 #include "simessagedata.h"
 
-#include <siutglobal.h>
+#include <siut/siutglobal.h>
 
 #include <QVariantMap>
 #include <QCoreApplication>

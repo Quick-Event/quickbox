@@ -1,1 +1,1 @@
-/home/fvacek/rim/github/quickevent/libqf/libqfcore/src/core/exception.h
+#include "../../../src/core/exception.h"

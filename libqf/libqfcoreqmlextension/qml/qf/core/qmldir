@@ -1,0 +1,3 @@
+module qf.core
+singleton Log 1.0 Log.qml
+plugin qfcoreqmlextension

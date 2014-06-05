@@ -4,7 +4,7 @@ message($$MY_SUBPROJECT)
 
 TEMPLATE = app
 
-QT += gui sql widgets
+QT += gui sql widgets serialport scripttools qml
 
 CONFIG +=                   \
 	warn_on                   \
@@ -39,3 +39,7 @@ message(LIBS: $$LIBS)
 RC_FILE = $${MY_SUBPROJECT}.rc
 
 include ($$PWD/src/src.pri)
+
+OTHER_FILES += \
+    divers/qsicli/extensions/qml/init.qml \
+    divers/qsicli/extensions/qml/sievent/CardReadOut.qml

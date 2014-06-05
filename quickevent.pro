@@ -5,6 +5,6 @@ SUBDIRS += \
 	libqf \
 	libsiut \
     qsicli \
-    quickevent \
+	qsievent \
 
 

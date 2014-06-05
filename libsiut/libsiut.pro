@@ -6,7 +6,7 @@ TEMPLATE = lib
 unix:TARGET = $$OUT_PWD/../lib/$$MY_SUBPROJECT
 message(Target: $$TARGET)
 
-QT += sql network script
+QT += sql network serialport
 
 QT	-= gui
 

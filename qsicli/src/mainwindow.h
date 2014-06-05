@@ -19,7 +19,7 @@ protected slots:
 	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
 	void onCommOpen(bool checked);
-	void onSqlConnect(bool checked);
+	//void onSqlConnect(bool checked);
 	void actConfigTriggered();
 	void onHelpAbout();
 	void onHelpAboutQt();

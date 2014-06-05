@@ -8,7 +8,7 @@
 #ifndef SIMESSAGEDATA_H
 #define SIMESSAGEDATA_H
 
-#include <siutglobal.h>
+#include <siut/siutglobal.h>
 
 #include <QVariantMap>
 #include <QSharedData>

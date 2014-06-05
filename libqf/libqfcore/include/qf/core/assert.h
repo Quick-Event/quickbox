@@ -1,1 +1,1 @@
-/home/fvacek/rim/github/quickevent/libqf/libqfcore/src/core/assert.h
+#include "../../../src/core/assert.h"

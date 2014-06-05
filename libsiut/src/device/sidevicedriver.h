@@ -8,19 +8,23 @@
 #ifndef SIDEVICEDRIVER_H
 #define SIDEVICEDRIVER_H
 
-#include <commport.h>
-#include <simessagedata.h>
+#include "commport.h"
 
-#include <siutglobal.h>
+#include <siut/simessagedata.h>
 
-#include <QThread>
+#include <siut/siutglobal.h>
+
 
 class QTimer;
 
+namespace siut {
+
 //! TODO: write class documentation.
-class SIUT_DECL_EXPORT SIDeviceDriver : public QThread
+class SIUT_DECL_EXPORT DeviceDriver : public QObject
 {
-	Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef QObject Super;
 public:
 	enum ProcessRxDataStatus {StatusIdle, StatusMessageIncomplete, StatusMessageOk, StatusMessageError};
 protected:
@@ -31,17 +35,15 @@ protected:
 	ProcessRxDataStatus f_status;
 	int f_packetToFinishCount;
 	SIMessageData f_messageData;
-	bool f_terminate;
 protected:
-	virtual void run();
 	void packetReceived(const QByteArray &msg_data);
 	void processRxData();
 	void emitDriverInfo(int level, const QString &msg);
 public:
-	int openCommPort(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
-	int closeCommPort();
+	bool openCommPort(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
+	void closeCommPort();
 protected slots:
-	void commDataReceived(const QByteArray &data);
+	void commDataReceived();
 	void rxDataTimeout();
 public slots:
 	void sendCommand(int cmd, const QByteArray& data);
@@ -50,9 +52,11 @@ signals:
 	void messageReady(const SIMessageData &msg);
 	void rawDataReceived(const QByteArray &data);
 public:
-	SIDeviceDriver(QObject *parent = NULL);
-	virtual ~SIDeviceDriver();
+	DeviceDriver(QObject *parent = NULL);
+	virtual ~DeviceDriver();
 };
+
+}
 
 #endif // SIDEVICEDRIVER_H
 

@@ -22,7 +22,7 @@ class QFCORE_DECL_EXPORT LogDevice
 		void setDomainTresholds(int argc, char *argv[]);
 		int logTreshold();
 		virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
-		virtual bool checkLogPermisions(const QString &_domain, int _level);
+		virtual bool checkLogPermisions(const QString &_domain, Log::Level _level);
 
 		void setPrettyDomain(bool b);
 		bool isPrettyDomain() const;

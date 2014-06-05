@@ -6,9 +6,11 @@
 
 #include <QApplication>
 
-class SIDeviceDriver;
+namespace siut {
+class DeviceDriver;
+}
 class QSqlDatabase;
-class SICliScriptDriver;
+//class SICliScriptDriver;
 //class QTextStream;
 class QFile;
 
@@ -16,16 +18,16 @@ class TheApp : public QApplication
 {
 Q_OBJECT
 protected:
-	SIDeviceDriver *f_siDriver;
-	SICliScriptDriver *f_scriptDriver;
+	siut::DeviceDriver *f_siDriver;
+	//SICliScriptDriver *f_scriptDriver;
 	QTextStream *f_cardLog;
 	QFile *f_cardLogFile;
 protected:
-	bool isScriptDebuggerEnabled();
+	//bool isScriptDebuggerEnabled();
 public:
 	static TheApp* instance(bool throw_exc = true);
-	SIDeviceDriver *siDriver();
-	SICliScriptDriver *scriptDriver();
+	siut::DeviceDriver *siDriver();
+	//SICliScriptDriver *scriptDriver();
 	QSqlDatabase sqlConnection();
 
 	QTextStream& cardLog();
@@ -36,10 +38,13 @@ public:
 
 	qf::core::Log::Level logLevelFromSettings();
 	void emitLogRequest(int level, const QString &msg) {emit logRequest(level, msg);}
-	void emitLogRequestPre(int level, const QString &msg) {emit logRequestPre(level, msg);}
+	//void emitLogRequestPre(int level, const QString &msg) {emit logRequestPre(level, msg);}
+	Q_SLOT void connectSql(bool open);
 signals:
 	void logRequest(int level, const QString &msg);
-	void logRequestPre(int level, const QString &msg);
+	//void logRequestPre(int level, const QString &msg);
+	void sqlConnected(bool connected);
+	void cardReadOut(int card_id);
 public:
 	TheApp(int & argc, char ** argv);
     virtual ~TheApp();

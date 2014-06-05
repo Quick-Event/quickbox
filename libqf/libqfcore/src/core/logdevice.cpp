@@ -137,14 +137,14 @@ int LogDevice::logTreshold()
 	return m_logTreshold;
 }
 
-bool LogDevice::checkLogPermisions(const QString &_domain, int _level)
+bool LogDevice::checkLogPermisions(const QString &_domain, Log::Level _level)
 {
 	bool ret = false;
 	do {
 		if(_level < 0) break;
-		if(_level == QtFatalMsg) {ret = true; break;}
-		if(_level == QtDebugMsg) {
-#ifndef QT_DEBUG
+		if(_level == Log::LOG_FATAL) {ret = true; break;}
+		if(_level == Log::LOG_DEB) {
+#ifdef QF_NO_DEBUG_LOG
 			break;
 #endif
 		}
@@ -258,7 +258,7 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	std::fprintf(m_file, "<%s>", Log::levelName(level));
 	QString domain = prettyDomain(domainFromContext(context));
 	if(!domain.isEmpty()) {
-		std::fprintf(m_file, "[%s] ", qPrintable(domain));
+		std::fprintf(m_file, "[%s:%d] ", qPrintable(domain), context.line);
 	}
 	std::fprintf(m_file, "%s", qPrintable(msg));
 #ifdef Q_OS_UNIX
@@ -276,6 +276,5 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 #endif
 	std::fflush(m_file);
 
-	if(level == Log::LOG_FATAL)
-		std::terminate();
+	//if(level == Log::LOG_FATAL) std::terminate(); Qt will do it itself
 }

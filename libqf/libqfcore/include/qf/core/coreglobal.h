@@ -1,1 +1,1 @@
-/home/fvacek/rim/github/quickevent/libqf/libqfcore/src/core/coreglobal.h
+#include "../../../src/core/coreglobal.h"

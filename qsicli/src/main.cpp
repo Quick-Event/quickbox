@@ -4,63 +4,40 @@
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
 
-void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
-{
-	QByteArray localMsg = msg.toLocal8Bit();
-	switch (type) {
-	case QtDebugMsg:
-		fprintf(stderr, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
-		break;
-	case QtWarningMsg:
-		fprintf(stderr, "Warning: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
-		break;
-	case QtCriticalMsg:
-		fprintf(stderr, "Critical: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
-		break;
-	case QtFatalMsg:
-		fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
-		break;
-	}
-}
-#if 0
-extern "C" void abort(void);
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QQmlContext>
+#include <QThread>
 
-void abort(void) throw()
-{
-	qfError() << "myabort called";
-	// Do whatever it takes, DebugStr or whatever...
-	//return;
-}
-
-void myterminate() {
-	qfError() << "myterminate handler called";
-}
-void myunexpected() {
-	qfError() << "myunexpected handler called";
-}
-#endif
 int main(int argc, char* argv[])
 {
-	//std::set_unexpected(myunexpected);
-	//std::set_terminate(myterminate);
-
 	QScopedPointer<qf::core::LogDevice> log_device(qf::core::FileLogDevice::install(argc, argv));
-	log_device->setLogTreshold(qf::core::Log::LOG_INFO);
+	log_device->setPrettyDomain(true);
 
-	qfError() << "QFLog(ERROR) test OK.";
+	qfError() << QThread::currentThread() << "QFLog(ERROR) test OK.";
 	qfWarning() << "QFLog(WARNING) test OK.";
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";
 
-	qInstallMessageHandler(myMessageOutput);
 	TheApp app(argc, argv);
 	QCoreApplication::setOrganizationName("OrienteeringTools");
 	QCoreApplication::setOrganizationDomain("sourceforge.net");
-	QCoreApplication::setApplicationName("QSICli");
+	QCoreApplication::setApplicationName("QSiCli");
 
-	//qf::core::Log::setDefaultLogTreshold(app.logLevelFromSettings());
+	QQmlEngine engine;
+	engine.addImportPath(QCoreApplication::applicationDirPath() + "/../qml");
+	engine.rootContext()->setContextProperty("TheApp", &app);
+	QUrl extensions_url = QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/divers/qsicli/extensions/qml/init.qml");
+	qfDebug() << "creating extensions on path:" << extensions_url.toString();
+	QQmlComponent component(&engine, extensions_url);
+	if(!component.isReady()) {
+		qfError() << component.errorString();
+	}
+	else {
+		QObject *extensions_root = qobject_cast<QWidget*>(component.create());
+		qfDebug() << "extensions created" << extensions_root;
+	}
 
-	//Q_INIT_RESOURCE(qsicli);
 	MainWindow w;
 	//qDebug() << "showing main window";
 	w.show();

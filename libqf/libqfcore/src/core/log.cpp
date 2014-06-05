@@ -42,8 +42,3 @@ QString Log::stackTrace()
 	return StackTrace::stackTrace().toString();
 }
 
-const QLoggingCategory& Log::categoryInfo()
-{
-	static QLoggingCategory cat(categoryInfoName);
-	return cat;
-}

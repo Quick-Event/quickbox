@@ -7,64 +7,36 @@
 
 #include "sidevicedriver.h"
 #include "crc529.h"
-#if defined Q_OS_WIN
-#  include "commport_win.h"
-//#  include <winbase.h>
-#elif defined Q_OS_UNIX
-#  include "commport_unix.h"
-#else
-#error "unsupported OS"
-#endif
 
-#include <simessage.h>
+#include <siut/simessage.h>
 
 #include <qf/core/log.h>
 
-#include <QSocketNotifier>
 #include <QTimer>
 #include <QSettings>
 
+using namespace siut;
+
 //=================================================
-//             SIDeviceDriver
+//             DeviceDriver
 //=================================================
-SIDeviceDriver::SIDeviceDriver(QObject *parent)
-	: QThread(parent)
+DeviceDriver::DeviceDriver(QObject *parent)
+	: Super(parent)
 {
-	f_commPort = NULL;
-#if defined Q_OS_WIN
-	f_commPort = new CommPort_win(this);
-#elif defined Q_OS_UNIX
-	f_commPort = new CommPort_unix(this);
-#endif
-	f_terminate = false;
+	f_commPort = new CommPort(this);
 	f_status = StatusIdle;
 	//f_socketNotifier = NULL;
 	f_rxTimer = new QTimer(this);
 	f_rxTimer->setSingleShot(true);
 	connect(f_rxTimer, SIGNAL(timeout()), this, SLOT(rxDataTimeout()));
-	connect(this, SIGNAL(rawDataReceived(QByteArray)), this, SLOT(commDataReceived(QByteArray)), Qt::QueuedConnection);
+	connect(f_commPort, SIGNAL(readyRead()), this, SLOT(commDataReceived()));
 	connect(f_commPort, SIGNAL(driverInfo(int,QString)), this, SIGNAL(driverInfo(int,QString)), Qt::QueuedConnection);
 }
 
-SIDeviceDriver::~SIDeviceDriver()
+DeviceDriver::~DeviceDriver()
 {
-}
-
-void SIDeviceDriver::run()
-{
-	qfLogFuncFrame();
-	qfInfo() << "starting COM reader thread";
-	while(!f_terminate) {
-		if(!f_commPort->isOpen()) {
-			//qfInfo() << "closed in read thread";
-			break;
-		}
-		//qfInfo() << "read in thread";
-		QByteArray ba = f_commPort->read();
-		if(!ba.isEmpty()) emit rawDataReceived(ba);
-	}
-	qfInfo() << "exiting COM reader thread";
-	emitDriverInfo(qf::core::Log::LOG_DEB, "COM reader thread exited.");
+	if(f_commPort->isOpen())
+		f_commPort->close();
 }
 
 namespace {
@@ -81,8 +53,9 @@ namespace {
 	}
 }
 
-void SIDeviceDriver::commDataReceived(const QByteArray& ba)
+void DeviceDriver::commDataReceived()
 {
+	QByteArray ba = f_commPort->readAll();
 	if(ba.size() > 0) {
 		f_rxData.append(ba);
 		processRxData();
@@ -102,7 +75,7 @@ void SIDeviceDriver::commDataReceived(const QByteArray& ba)
 	}
 }
 
-void SIDeviceDriver::packetReceived(const QByteArray &msg_data)
+void DeviceDriver::packetReceived(const QByteArray &msg_data)
 {
 	qfLogFuncFrame();
 	f_messageData.addRawDataBlock(msg_data);
@@ -129,7 +102,7 @@ namespace
 	static const char DLE = 0x10;
 }
 
-void SIDeviceDriver::processRxData()
+void DeviceDriver::processRxData()
 {
 	qfLogFuncFrame();
 	//ProcessRxDataStatus ret = MessageComplete;
@@ -260,7 +233,7 @@ void SIDeviceDriver::processRxData()
 	}
 }
 
-void SIDeviceDriver::rxDataTimeout()
+void DeviceDriver::rxDataTimeout()
 {
 	emitDriverInfo(qf::core::Log::LOG_ERR, tr("RX data timeout"));
 	f_rxData.clear();
@@ -269,41 +242,44 @@ void SIDeviceDriver::rxDataTimeout()
 	//f_rxTimer->stop();
 }
 
-void SIDeviceDriver::emitDriverInfo ( int level, const QString& msg )
+void DeviceDriver::emitDriverInfo ( int level, const QString& msg )
 {
 	//qfLog(level) << msg;
 	emit driverInfo(level, msg);
 }
 
-int SIDeviceDriver::openCommPort(const QString& device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits)
+bool DeviceDriver::openCommPort(const QString& device, int baudrate, int data_bits, const QString& parity_str, bool two_stop_bits)
 {
-	int ret = f_commPort->open(device, baudrate, data_bits, parity, two_stop_bits);
-	if(ret == 0) {
-		f_terminate = false;
-		start(); /// start read thread
+	f_commPort->setPortName(device);
+	f_commPort->setBaudRate(baudrate);
+	f_commPort->setDataBitsAsInt(data_bits);
+	f_commPort->setParityAsString(parity_str);
+	f_commPort->setStopBits(two_stop_bits? QSerialPort::TwoStop: QSerialPort::OneStop);
+	//f_commPort->setFlowControl(p.flowControl);
+	emitDriverInfo(qf::core::Log::LOG_DEB, trUtf8("Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5")
+				   .arg(f_commPort->portName())
+				   .arg(f_commPort->baudRate())
+				   .arg(f_commPort->dataBits())
+				   .arg(f_commPort->parity())
+				   .arg(f_commPort->stopBits())
+				   );
+	bool ret = f_commPort->open(QIODevice::ReadWrite);
+	if(ret) {
+		emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("Connected OK"));
+	}
+	else {
+		emitDriverInfo(qf::core::Log::LOG_ERR, trUtf8("Connect ERROR: %1").arg(f_commPort->errorString()));
 	}
 	return ret;
 }
 
-int SIDeviceDriver::closeCommPort()
+void DeviceDriver::closeCommPort()
 {
-	f_terminate = true;
-	/*
-	if(isRunning()) {
-		#ifdef Q_OS_WIN
-		HANDLE h = GetCurrentThread();
-		bool cancel_io_ok = CancelSynchronousIo(h);
-		qfInfo() << "canceling thread IO:" << cancel_io_ok << h;
-		#endif // Q_OS_WIN
-	}
-	*/
-	/// it is necessarry to firs terminate thread and than close COM on windows
-	if(isRunning()) terminate(); /// terminate reader thread, blocking read is not interrupted by close() fd, one safer solution is to use pthread_kill
-	int ret = f_commPort->close(); /// this should also terminate reader thread
-	return ret;
+	if(f_commPort->isOpen())
+		f_commPort->close();
 }
 
-void SIDeviceDriver::sendCommand(int cmd, const QByteArray& data)
+void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 {
 	qfLogFuncFrame();
 	if(cmd < 0x80) {
