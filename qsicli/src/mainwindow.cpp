@@ -68,7 +68,9 @@ void MainWindow::onCommOpen(bool checked)
 		theApp()->siDriver()->openCommPort(device, baud_rate, data_bits, parity, stop_bits > 1);
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
 	}
-	else theApp()->siDriver()->closeCommPort();
+    else {
+        theApp()->siDriver()->closeCommPort();
+    }
 }
 /*
 void MainWindow::onSqlConnect(bool checked)

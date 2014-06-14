@@ -14,6 +14,7 @@
 
 #include <QTimer>
 #include <QSettings>
+#include <QSerialPortInfo>
 
 using namespace siut;
 
@@ -248,8 +249,21 @@ void DeviceDriver::emitDriverInfo ( int level, const QString& msg )
 	emit driverInfo(level, msg);
 }
 
-bool DeviceDriver::openCommPort(const QString& device, int baudrate, int data_bits, const QString& parity_str, bool two_stop_bits)
+bool DeviceDriver::openCommPort(const QString& _device, int baudrate, int data_bits, const QString& parity_str, bool two_stop_bits)
 {
+    qfLogFuncFrame();
+    QString device = _device;
+    {
+        qfDebug() << "Port enumeration";
+        QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+        QStringList sl;
+        for(auto port : port_list) {
+            if(device.isEmpty()) device = port.systemLocation();
+            sl << QString("%1 %2").arg(port.portName()).arg(port.systemLocation());
+            qfDebug() << "\t" << port.portName();
+        }
+        emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
+    }
 	f_commPort->setPortName(device);
 	f_commPort->setBaudRate(baudrate);
 	f_commPort->setDataBitsAsInt(data_bits);
@@ -265,18 +279,20 @@ bool DeviceDriver::openCommPort(const QString& device, int baudrate, int data_bi
 				   );
 	bool ret = f_commPort->open(QIODevice::ReadWrite);
 	if(ret) {
-		emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("Connected OK"));
+		emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("%1 connected OK").arg(device));
 	}
 	else {
-		emitDriverInfo(qf::core::Log::LOG_ERR, trUtf8("Connect ERROR: %1").arg(f_commPort->errorString()));
+		emitDriverInfo(qf::core::Log::LOG_ERR, trUtf8("%1 connect ERROR: %2").arg(device).arg(f_commPort->errorString()));
 	}
 	return ret;
 }
 
 void DeviceDriver::closeCommPort()
 {
-	if(f_commPort->isOpen())
+    if(f_commPort->isOpen()) {
 		f_commPort->close();
+        emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("%1 closed").arg(f_commPort->portName()));
+    }
 }
 
 void DeviceDriver::sendCommand(int cmd, const QByteArray& data)

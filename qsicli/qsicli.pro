@@ -4,7 +4,7 @@ message($$MY_SUBPROJECT)
 
 TEMPLATE = app
 
-QT += gui sql widgets serialport scripttools qml
+QT += gui sql widgets serialport qml
 
 CONFIG +=                   \
 	warn_on                   \

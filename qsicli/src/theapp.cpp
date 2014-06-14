@@ -12,7 +12,7 @@
 #include <QMetaType>
 #include <QSettings>
 #include <QSqlDatabase>
-#include <QScriptEngineDebugger>
+//#include <QScriptEngineDebugger>
 #include <QFile>
 #include <QIcon>
 #include <QSqlError>

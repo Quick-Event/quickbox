@@ -11,6 +11,7 @@ QT += sql network serialport
 QT	-= gui
 
 CONFIG += qt dll
+CONFIG += c++11
 
 include(libsiut.pri)
 
