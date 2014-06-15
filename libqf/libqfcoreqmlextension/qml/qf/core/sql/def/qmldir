@@ -1,0 +1,10 @@
+module qf.core.sql.def
+
+Schema 1.0 Schema.qml
+Table 1.0 Table.qml
+Field 1.0 Field.qml
+Index 1.0 Index.qml
+String 1.0 String.qml
+Int 1.0 Int.qml
+Real 1.0 Real.qml
+Boolean 1.0 Boolean.qml

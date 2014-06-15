@@ -25,7 +25,11 @@ int main(int argc, char* argv[])
 	QCoreApplication::setApplicationName("QSiCli");
 
 	QQmlEngine engine;
-	engine.addImportPath(QCoreApplication::applicationDirPath() + "/../qml");
+	#ifdef Q_OS_UNIX
+	engine.addImportPath(QCoreApplication::applicationDirPath() + "/../lib/qml");
+	#else
+	engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
+	#endif
 	engine.rootContext()->setContextProperty("TheApp", &app);
 	QUrl extensions_url = QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/divers/qsicli/extensions/qml/init.qml");
 	qfDebug() << "creating extensions on path:" << extensions_url.toString();

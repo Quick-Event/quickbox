@@ -6,6 +6,8 @@
 
 #include <QDebug>
 
+using namespace qf::qmlwidgets;
+
 Frame::Frame(QWidget *parent) :
 	Super(parent)
 {

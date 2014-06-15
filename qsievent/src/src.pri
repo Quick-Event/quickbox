@@ -1,5 +1,5 @@
 INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
-INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
+#INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 #message(INCLUDEPATH: $$INCLUDEPATH)
 
 SOURCES += \

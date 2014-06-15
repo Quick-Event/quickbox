@@ -3,6 +3,9 @@
 
 #include <QLabel>
 
+namespace qf {
+namespace qmlwidgets {
+
 class Label : public QLabel
 {
 	Q_OBJECT
@@ -19,5 +22,8 @@ signals:
 public slots:
 
 };
+
+}
+}
 
 #endif // LABEL_H

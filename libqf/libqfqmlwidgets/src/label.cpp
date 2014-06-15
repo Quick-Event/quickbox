@@ -1,5 +1,7 @@
 #include "label.h"
 
+using namespace qf::qmlwidgets;
+
 Label::Label(QWidget *parent) :
 	Super(parent)
 {

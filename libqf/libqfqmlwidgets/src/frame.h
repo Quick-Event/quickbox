@@ -6,10 +6,13 @@
 
 class QBoxLayout;
 
+namespace qf {
+namespace qmlwidgets {
+
 class Frame : public QFrame
 {
 	Q_OBJECT
-	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets FINAL)
+	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_ENUMS(LayoutType)
@@ -30,7 +33,7 @@ private:
 	QQmlListProperty<QWidget> widgets();
 
 	static void addWidgetFunction(QQmlListProperty<QWidget> *listProperty, QWidget *value);
-	static QWidget * widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);
+	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);
 	static void removeAllWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
 	static int countWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
 
@@ -39,7 +42,9 @@ private:
 	void removeAll();
 	int count() const;
 private:
-	//QBoxLayout *m_layout;
 };
+
+}
+}
 
 #endif // FRAME_H

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
-#include <qf/qmlwidgets/frame.h>
-#include <qf/qmlwidgets/label.h>
+//#include <qf/qmlwidgets/frame.h>
+//#include <qf/qmlwidgets/label.h>
 
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
@@ -21,18 +21,17 @@ int main(int argc, char *argv[])
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";
 
-	qmlRegisterType<Label>("mywidgets", 1, 0, "Label");
-	qmlRegisterType<QPushButton>("mywidgets", 1, 0, "Button");
-	qmlRegisterType<Frame>("mywidgets", 1, 0, "Frame");
-	qmlRegisterType<QWidget>("mywidgets", 1, 0, "Widget");
-	qmlRegisterType<QVBoxLayout>("mywidgets", 1, 0, "VBoxLayout");
-
 	qDebug() << "creating application instance";
 	//qFatal("ASSERT");
 
 	QApplication a(argc, argv);
 
 	QQmlEngine engine;
+#ifdef Q_OS_UNIX
+	engine.addImportPath(QCoreApplication::applicationDirPath() + "/../lib/qml");
+#else
+	engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
+#endif
 	QQmlComponent component(&engine, QUrl::fromLocalFile("main.qml"));
 	if(!component.isReady()) {
 		qfError() << component.errorString();

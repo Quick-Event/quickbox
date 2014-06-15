@@ -1,4 +1,5 @@
-import mywidgets 1.0
+//import qf.core 1.0
+import qf.qmlwidgets 1.0
 
 Frame {
     id: root

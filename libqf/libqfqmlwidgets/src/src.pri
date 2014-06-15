@@ -6,5 +6,6 @@ HEADERS += \
 	$$PWD/label.h \
 
 SOURCES += \
+	$$PWD/plugin.cpp \
 	$$PWD/frame.cpp \
 	$$PWD/label.cpp \

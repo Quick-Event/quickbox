@@ -4,12 +4,9 @@ TEMPLATE = lib
 CONFIG += plugin
 QT += qml
 
-unix:DESTDIR = $$OUT_PWD/../../qml/qf/core
+unix:DESTDIR = $$OUT_PWD/../../lib/qml/qf/core
+win:DESTDIR = $$OUT_PWD/../../bin/qml/qf/core
 TARGET  = qfcoreqmlextension
-
-SOURCES += plugin.cpp
-
-INCLUDEPATH += $$PWD/../libqfcore/include
 
 LIBS +=      \
 	-lqfcore  \
@@ -17,14 +14,20 @@ LIBS +=      \
 unix: LIBS +=  \
 	-L$$OUT_PWD/../../lib  \
 
-pluginfiles.files += \
-	$$PWD/qml/qf/core/qmldir \
+unix {
+	qmlfiles.commands = ln -sf $$PWD/qml/qf/core/* $$DESTDIR
+}
+win {
+	qmlfiles.commands = cp -rf $$PWD/qml/qf/core/* $$DESTDIR
+}
 
-#qmldir.target = $$DESTDIR/qmldir
-qmldir.commands = mkdir -p $$DESTDIR && cp -rf $$PWD/qml/qf/core/* $$DESTDIR
+QMAKE_EXTRA_TARGETS += qmlfiles
+POST_TARGETDEPS += qmlfiles
 
-QMAKE_EXTRA_TARGETS += qmldir
-POST_TARGETDEPS += qmldir
+#-------------------- obsolete ------------------------
+
+#pluginfiles.files += \
+#	$$PWD/qml/qf/core/qmldir \
 
 #qml.files = plugins.qml
 #qml.path += $$[QT_INSTALL_EXAMPLES]/qml/qmlextensionplugins
@@ -34,5 +37,6 @@ POST_TARGETDEPS += qmldir
 #INSTALLS += target qml pluginfiles
 
 OTHER_FILES += \
-    qml/qf/core/Log.qml \
-    qml/qf/core/qmldir
+    qml/* \
+
+include (src/src.pri)
