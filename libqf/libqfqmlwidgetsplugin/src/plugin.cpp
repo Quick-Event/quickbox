@@ -1,5 +1,5 @@
-#include "frame.h"
-#include "label.h"
+#include <qf/qmlwidgets/frame.h>
+#include <qf/qmlwidgets/label.h>
 
 #include <qf/core/log.h>
 

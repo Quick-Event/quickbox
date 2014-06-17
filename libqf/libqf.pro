@@ -3,6 +3,7 @@ CONFIG += ordered
 
 SUBDIRS += \
 	libqfcore \
+	libqfqmlwidgets \
 	libqfcoreqmlplugin \
 	libqfqmlwidgetsplugin \
 

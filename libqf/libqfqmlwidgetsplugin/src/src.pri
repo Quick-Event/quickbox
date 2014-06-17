@@ -1,11 +1,7 @@
-INCLUDEPATH += $$PWD/../../libqfcore/include
-#message(INCLUDEPATH: $$INCLUDEPATH)
+message(including $$PWD)
 
-HEADERS += \
-	$$PWD/frame.h \
-	$$PWD/label.h \
+INCLUDEPATH += $$PWD/../../libqfcore/include
+INCLUDEPATH += $$PWD/../../libqfqmlwidgets/include
 
 SOURCES += \
 	$$PWD/plugin.cpp \
-	$$PWD/frame.cpp \
-	$$PWD/label.cpp \

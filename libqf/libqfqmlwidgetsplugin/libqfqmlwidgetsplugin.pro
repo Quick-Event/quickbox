@@ -10,6 +10,15 @@ unix:DESTDIR = $$OUT_PWD/../../lib/$$PLUGIN_MODULE_PATH
 win:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
 TARGET  = qfqmlwidgets
 
+LIBS +=      \
+	-lqfcore  \
+
+win32: LIBS +=  \
+	-L../../bin  \
+
+unix: LIBS +=  \
+	-L../../lib  \
+
 unix {
 	qmlfiles.commands = ln -sf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
 }

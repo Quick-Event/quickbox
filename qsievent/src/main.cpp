@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 #else
 	engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
 #endif
-	QQmlComponent component(&engine, QUrl::fromLocalFile("main.qml"));
+	QQmlComponent component(&engine, QUrl::fromLocalFile("divers/qsievent/main.qml"));
 	if(!component.isReady()) {
 		qfError() << component.errorString();
 	}

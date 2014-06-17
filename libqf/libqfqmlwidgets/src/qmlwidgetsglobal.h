@@ -1,0 +1,14 @@
+#ifndef QFQMLWIDGETSGLOBAL_H
+#define	QFQMLWIDGETSGLOBAL_H
+
+#include <qglobal.h>
+
+#if defined(QFQMLWIDGETS_BUILD_DLL)
+//#warning "EXPORT"
+#  define QFQMLWIDGETS_DECL_EXPORT Q_DECL_EXPORT
+#else
+//#warning "IMPORT"
+#  define QFQMLWIDGETS_DECL_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // QFQMLWIDGETSGLOBAL_H

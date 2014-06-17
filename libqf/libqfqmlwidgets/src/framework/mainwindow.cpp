@@ -1,14 +1,12 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
+
+using namespace qf::qmlwidgets::framework;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
-	Super(parent, flags),
-	ui(new Ui::MainWindow)
+	QMainWindow(parent, flags)
 {
-	ui->setupUi(this);
 }
 
 MainWindow::~MainWindow()
 {
-	delete ui;
 }

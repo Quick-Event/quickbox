@@ -8,6 +8,7 @@ TARGET = $$OUT_PWD/../bin/qsievent
 
 LIBS +=      \
 	-lqfcore  \
+	-lqfqmlwidgets  \
 
 win32: LIBS +=  \
 	-L../bin  \

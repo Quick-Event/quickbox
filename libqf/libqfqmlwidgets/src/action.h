@@ -1,29 +1,29 @@
-#ifndef LABEL_H
-#define LABEL_H
+#ifndef ACTION_H
+#define ACTION_H
 
-#include <QLabel>
+#include "qmlwidgetsglobal.h"
+
+#include <QAction>
 
 namespace qf {
 namespace qmlwidgets {
 
-class Label : public QLabel
+class QFQMLWIDGETS_DECL_EXPORT Action : public QAction
 {
 	Q_OBJECT
 	Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
 private:
-	typedef QLabel Super;
+	typedef QAction Super;
 public:
-	explicit Label(QWidget *parent = 0);
+	explicit Action(QObject *parent = 0);
 
 	void setText(const QString &new_text);
 	QString text() const {return Super::text();}
 signals:
 	void textChanged(const QString &new_text);
-public slots:
-
 };
 
 }
 }
 
-#endif // LABEL_H
+#endif // ACTION_H

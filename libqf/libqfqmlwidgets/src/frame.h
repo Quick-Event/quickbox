@@ -1,6 +1,8 @@
 #ifndef FRAME_H
 #define FRAME_H
 
+#include "qmlwidgetsglobal.h"
+
 #include <QFrame>
 #include <QQmlListProperty>
 
@@ -9,7 +11,7 @@ class QBoxLayout;
 namespace qf {
 namespace qmlwidgets {
 
-class Frame : public QFrame
+class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 {
 	Q_OBJECT
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
