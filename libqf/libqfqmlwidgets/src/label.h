@@ -1,5 +1,5 @@
-#ifndef LABEL_H
-#define LABEL_H
+#ifndef QF_QMLWIDGETS_LABEL_H
+#define QF_QMLWIDGETS_LABEL_H
 
 #include "qmlwidgetsglobal.h"
 

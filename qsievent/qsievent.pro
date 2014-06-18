@@ -1,5 +1,6 @@
 message(including $$PWD)
 QT += core gui qml widgets
+
 CONFIG += C++11
 
 TEMPLATE = app

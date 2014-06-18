@@ -8,7 +8,7 @@ PLUGIN_MODULE_PATH = qml/qf/qmlwidgets
 
 unix:DESTDIR = $$OUT_PWD/../../lib/$$PLUGIN_MODULE_PATH
 win:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
-TARGET  = qfqmlwidgets
+TARGET  = qfqmlwidgetsplugin
 
 LIBS +=      \
 	-lqfcore  \

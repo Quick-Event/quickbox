@@ -1,5 +1,5 @@
-#ifndef FRAME_H
-#define FRAME_H
+#ifndef QF_QMLWIDGETS_FRAME_H
+#define QF_QMLWIDGETS_FRAME_H
 
 #include "qmlwidgetsglobal.h"
 

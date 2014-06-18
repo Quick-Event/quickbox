@@ -6,10 +6,9 @@ TEMPLATE = app
 
 QT += gui sql widgets serialport qml
 
-CONFIG +=                   \
-	warn_on                   \
-	qt                   \
-	thread               \
+CONFIG += warn_on qt thread
+
+CONFIG += c++11
 
 # exception backrace support
 unix:QMAKE_LFLAGS_APP += -rdynamic
