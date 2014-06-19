@@ -1,5 +1,6 @@
 HEADERS += \
 	$$PWD/coreglobal.h \
+	$$PWD/assert.h \
 	$$PWD/exception.h \
 	$$PWD/stacktrace.h \
 	$$PWD/log.h \

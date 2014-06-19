@@ -1,2 +1,2 @@
 module qf.qmlwidgets
-plugin qfqmlwidgets
+plugin qfqmlwidgetsplugin

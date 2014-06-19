@@ -1,14 +1,9 @@
 #include "mainwindow.h"
-
-//#include <qf/qmlwidgets/frame.h>
-//#include <qf/qmlwidgets/label.h>
+#include "application.h"
 
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
 
-#include <QApplication>
-#include <QPushButton>
-#include <QLayout>
 #include <QtQml>
 
 int main(int argc, char *argv[])
@@ -24,26 +19,13 @@ int main(int argc, char *argv[])
 	qDebug() << "creating application instance";
 	//qFatal("ASSERT");
 
-	QApplication a(argc, argv);
+	Application app(argc, argv);
 
-	QQmlEngine engine;
-#ifdef Q_OS_UNIX
-	engine.addImportPath(QCoreApplication::applicationDirPath() + "/../lib/qml");
-#else
-	engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
-#endif
-	QQmlComponent component(&engine, QUrl::fromLocalFile("divers/qsievent/main.qml"));
-	if(!component.isReady()) {
-		qfError() << component.errorString();
-	}
-	else {
-		QWidget *root = qobject_cast<QWidget*>(component.create());
-		if(root)
-			root->show();
+	MainWindow main_window;
+	main_window.loadPlugins();
+	main_window.show();
 
-		//MainWindow w;
-		//w.show();
+	int ret = app.exec();
 
-		return a.exec();
-	}
+	return ret;
 }

@@ -5,12 +5,13 @@ INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 SOURCES += \
 	$$PWD/main.cpp\
 	$$PWD/mainwindow.cpp \
+    $$PWD/application.cpp
 
 HEADERS  += \
 	$$PWD/mainwindow.h \
+    $$PWD/application.h
 
-FORMS += \
-	$$PWD/mainwindow.ui
+FORMS +=
 
 OTHER_FILES += \
 	$$PWD/main.qml

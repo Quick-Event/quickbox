@@ -5,23 +5,20 @@ import qf.qmlwidgets 1.0
 
 QtObject {
 	id: root
-	property string oid
-	property var framework
 	property list<Action> actions
 
-	function _Part_install(_framework)
+	//protected properties
+	property  var frameWork
+
+	function _Part_install(frame_work)
 	{
-		Log.debug("Part oid:", oid, "installed");
-		framework = _framework
+		frameWork = frame_work
+		//Log.debug("Part oid:", oid, "installed");
 	}
 
-	function install(_framework)
+	function install(frame_work)
 	{
-		_Part_install(_framework);
+		_Part_install(frame_work);
 	}
 
-	function activatedChanged(on_off)
-	{
-		Log.debug("Part oid:", oid, "activatedChanged to:", on_off);
-	}
 }

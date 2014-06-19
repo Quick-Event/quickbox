@@ -1,5 +1,5 @@
-#ifndef ACTION_H
-#define ACTION_H
+#ifndef QF_QMLWIDGETS_ACTION_H
+#define QF_QMLWIDGETS_ACTION_H
 
 #include "qmlwidgetsglobal.h"
 
