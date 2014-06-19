@@ -1,11 +1,11 @@
 #include "mainwindow.h"
 #include "application.h"
+#include "../menubar.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
-#include <qf/core/string.h>
+//#include <qf/core/string.h>
 
-#include <QMenuBar>
 #include <QDirIterator>
 #include <QQmlComponent>
 
@@ -14,7 +14,7 @@ using namespace qf::qmlwidgets::framework;
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	QMainWindow(parent, flags)
 {
-	QMenuBar *main_menu = new QMenuBar(this);
+	MenuBar *main_menu = new MenuBar(this);
 	setMenuBar(main_menu);
 }
 
@@ -148,18 +148,18 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 	}
 }
 
-qf::qmlwidgets::Menu *MainWindow::menuOnPath(const QString &path)
+qf::qmlwidgets::MenuBar *MainWindow::menuBar()
 {
-	QWidget *parent_w = menuBar();
-	QStringList path_list = qf::core::String(path).splitAndTrim('/');
-	for(auto id : path_list) {
-		QAction *act = nullptr;
-		for(auto a : parent_w->actions()) {
-			QAction *a = nullptr;
-
-		}
-	}
+	return qobject_cast<MenuBar*>(Super::menuBar());
 }
+
+Application *MainWindow::application(bool must_exist)
+{
+	Application *ret = qobject_cast<Application*>(QApplication::instance());
+	if(!ret && must_exist) {
+		qfFatal("qf::qmlwidgets::framework::Application instance MUST exist.");
+	}
+	return ret;
 
 Application *MainWindow::application(bool must_exist)
 {

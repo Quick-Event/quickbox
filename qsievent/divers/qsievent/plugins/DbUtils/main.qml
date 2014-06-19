@@ -9,14 +9,14 @@ Plugin {
 		id: actCreateEvent
 		text: qsTr('Create new event')
 		onTriggered: {
-			qf.core.Info(caption, "triggered");
+			Log.info(text, "triggered");
 		}
 	}
 
 	function install(frame_work)
 	{
 		_Plugin_install(frame_work);
-		frameWork.menuOnPath('event').addAction(actCreateEvent);
+		frameWork.menuBar.ensureMenuOnPath('file').addAction(actCreateEvent);
 		//framework.addMenu('tools', actCreateEvent);
 	}
 }

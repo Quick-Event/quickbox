@@ -2,6 +2,7 @@
 #include <qf/qmlwidgets/label.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menu.h>
+#include <qf/qmlwidgets/menubar.h>
 
 #include <qf/core/log.h>
 
@@ -30,6 +31,7 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
 		qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
+		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
     }
 };
 

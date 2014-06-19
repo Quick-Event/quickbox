@@ -1,4 +1,5 @@
 import qf.core 1.0
+import qf.qmlwidgets 1.0
 import qf.qmlwidgets.framework 1.0
 
 Plugin {
@@ -8,8 +9,9 @@ Plugin {
 	function install(frame_work)
 	{
 		_Plugin_install(frame_work);
-		frameWork.menuOnPath('event').title = qsTr('Event');
-		frameWork.menuOnPath('help').title = qsTr('Help');
+		console.debug(frameWork.menuBar);
+		frameWork.menuBar.ensureMenuOnPath('file').title = qsTr('File');
+		frameWork.menuBar.ensureMenuOnPath('help').title = qsTr('Help');
 
 		/*
 		try {

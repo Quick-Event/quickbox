@@ -8,7 +8,8 @@
 
 namespace qf {
 namespace qmlwidgets {
-class Menu;
+//class Menu;
+class MenuBar;
 namespace framework {
 
 class Application;
@@ -16,6 +17,11 @@ class Application;
 class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow
 {
 	Q_OBJECT
+	Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
+private:
+	typedef QMainWindow Super;
+public:
+	typedef QMap<QString, QObject*> PluginMap;
 public:
 	typedef QMap<QString, QObject*> PluginMap;
 public:
@@ -30,7 +36,7 @@ protected:
 	virtual void installPlugins(const PluginMap &plugins_to_install);
 public slots:
 	/// framework API
-	Menu* menuOnPath(const QString &path);
+	MenuBar* menuBar();
 private:
 	PluginMap m_installedPlugins;
 	QStringList m_featureSlots;
