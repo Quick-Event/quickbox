@@ -23,8 +23,6 @@ private:
 public:
 	typedef QMap<QString, QObject*> PluginMap;
 public:
-	typedef QMap<QString, QObject*> PluginMap;
-public:
 	explicit MainWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow() Q_DECL_OVERRIDE;
 public:

@@ -13,14 +13,19 @@ MenuBar::MenuBar(QWidget *parent) :
 {
 }
 
-Menu* MenuBar::ensureMenuOnPath(const QString &path)
+QObject* MenuBar::itemForPath(const QString &path, bool create_if_not_exists)
 {
 	qfLogFuncFrame() << path;
 	QWidget *parent_w = this;
+	QAction *act = nullptr;
 	QStringList path_list = qf::core::String(path).splitAndTrim('/');
 	for(auto id : path_list) {
 		qfDebug() << id << parent_w;
-		QAction *act = nullptr;
+		if(!parent_w) {
+			/// recent action was not a menu one
+			qfWarning() << "Attempt to traverse thorough not menu action before:" << id << "in:" << path_list.join("/");
+			break;
+		}
 		for(auto a : parent_w->actions()) {
 			if(a->objectName() == id) {
 				qfDebug() << "\t found action" << a;
@@ -29,6 +34,9 @@ Menu* MenuBar::ensureMenuOnPath(const QString &path)
 			}
 		}
 		if(!act) {
+			if(!create_if_not_exists) {
+				break;
+			}
 			Menu *m = new Menu();
 			act = m->menuAction();
 			act->setObjectName(id);
@@ -38,8 +46,15 @@ Menu* MenuBar::ensureMenuOnPath(const QString &path)
 		}
 		parent_w = act->menu();
 	}
-	Menu *ret = qobject_cast<Menu*>(parent_w);
-	Q_ASSERT(ret != nullptr);
+	QObject *ret = nullptr;
+	if(act) {
+		ret = qobject_cast<Menu*>(act->menu());
+		if(!ret)
+			ret = act;
+	}
+	if(create_if_not_exists) {
+		Q_ASSERT(act != nullptr);
+	}
 	return ret;
 }
 

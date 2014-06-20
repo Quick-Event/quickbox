@@ -160,12 +160,4 @@ Application *MainWindow::application(bool must_exist)
 		qfFatal("qf::qmlwidgets::framework::Application instance MUST exist.");
 	}
 	return ret;
-
-Application *MainWindow::application(bool must_exist)
-{
-	Application *ret = qobject_cast<Application*>(QApplication::instance());
-	if(!ret && must_exist) {
-		qfFatal("qf::qmlwidgets::framework::Application instance MUST exist.");
-	}
-	return ret;
 }

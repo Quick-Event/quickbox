@@ -19,7 +19,7 @@ public:
 signals:
 
 public slots:
-	qf::qmlwidgets::Menu* ensureMenuOnPath(const QString &path);
+	QObject* itemForPath(const QString &path, bool create_if_not_exists = true);
 };
 
 }}

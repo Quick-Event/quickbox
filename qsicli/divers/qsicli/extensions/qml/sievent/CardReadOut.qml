@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQml 2.0
 import qf.core 1.0
 
 QtObject {
@@ -8,7 +8,7 @@ QtObject {
         Log.debug('SIEvent qsicli extension SQL server connected: ', connected);
 	}
 
-	function onCardReadOut(card_id) 
+	function onCardReadOut(card_id)
 	{
         Log.debug('SIEvent qsicli extension onCardReadOut(): card ID:', card_id);
 	}

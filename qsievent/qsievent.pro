@@ -21,3 +21,11 @@ unix: LIBS +=  \
 	-Wl,-rpath,\'$${DOLAR}$${DOLAR}ORIGIN/../lib\'  \
 
 include($$PWD/src/src.pri)
+
+OTHER_FILES += \
+    divers/qsievent/plugins/Core/*.qml \
+    divers/qsievent/plugins/DbUtils/*.qml \
+
+QML_IMPORT_PATH += \
+    $$OUT_PWD/../lib/qml \
+    $$PWD/divers/qsievent/plugins \

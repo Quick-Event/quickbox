@@ -1,6 +1,6 @@
-import qf.core 1.0
+import "private"
 
-QtObject {
+FieldType {
 	property int length: -1
-	property char charset: "utf8"
+	property string charset: "utf8"
 }

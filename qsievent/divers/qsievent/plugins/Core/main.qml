@@ -10,8 +10,8 @@ Plugin {
 	{
 		_Plugin_install(frame_work);
 		console.debug(frameWork.menuBar);
-		frameWork.menuBar.ensureMenuOnPath('file').title = qsTr('File');
-		frameWork.menuBar.ensureMenuOnPath('help').title = qsTr('Help');
+		frameWork.menuBar.itemForPath('file').title = qsTr('File');
+		frameWork.menuBar.itemForPath('help').title = qsTr('Help');
 
 		/*
 		try {

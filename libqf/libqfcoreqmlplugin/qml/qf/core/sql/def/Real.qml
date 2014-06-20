@@ -1,4 +1,4 @@
-import qf.core 1.0
+import "private"
 
-QtObject {
+FieldType {
 }

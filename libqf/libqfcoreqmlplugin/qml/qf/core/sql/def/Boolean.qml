@@ -1,6 +1,6 @@
-import qf.core 1.0
+import "private"
 
-QtObject {
+FieldType {
 	property int length: -1
 	property bool unsigned: false
 }

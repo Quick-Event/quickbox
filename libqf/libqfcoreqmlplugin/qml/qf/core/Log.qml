@@ -1,5 +1,5 @@
 pragma Singleton
-import QtQuick 2.2
+import QtQml 2.0
 import qf.core 1.0
 
 QtObject {

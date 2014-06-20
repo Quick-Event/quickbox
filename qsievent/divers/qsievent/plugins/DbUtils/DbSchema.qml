@@ -1,5 +1,6 @@
-import qf.core
-import qf.core.sql.def
+import QtQml 2.0
+import qf.core 1.0
+import qf.core.sql.def 1.0
 
 Schema {
 	name: 'untitled'
@@ -61,7 +62,7 @@ Schema {
 					comment: 'JSON of format {codes: [...], times: [...], count: n}'
 				}
   			]
-			indicies: [
+			indexes: [
 				Index {
 					fields: ['id']
 					primary: true
@@ -69,4 +70,8 @@ Schema {
 			]
 		}
 	]
+	Component.onCompleted: {
+		Log.info("DbSchema created");
+	}
+
 }

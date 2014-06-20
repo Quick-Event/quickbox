@@ -1,4 +1,4 @@
-import QtQuick 2.2
+import QtQml 2.0
 import "./sievent" as SiEvent
 import qf.core 1.0
 
