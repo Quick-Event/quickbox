@@ -59,13 +59,17 @@ Schema {
 						charset: 'latin1'
 					}
 					notNull: true
-					comment: 'JSON of format {codes: [...], times: [...], count: n}'
+					comment: 'JSON of format [[code, time], ...]}'
 				}
   			]
 			indexes: [
 				Index {
 					fields: ['id']
 					primary: true
+				},
+				Index {
+					fields: ['idsi']
+					unique: false
 				}
 			]
 		}

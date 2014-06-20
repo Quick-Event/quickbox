@@ -35,6 +35,7 @@ protected:
 public slots:
 	/// framework API
 	MenuBar* menuBar();
+	QObject* plugin(const QString &feature_id);
 private:
 	PluginMap m_installedPlugins;
 	QStringList m_featureSlots;

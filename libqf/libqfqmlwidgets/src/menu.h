@@ -17,6 +17,7 @@ public:
 	explicit Menu(QWidget *parent = 0);
 public slots:
 	void addAction(QObject *action);
+	void addSeparator();
 };
 
 }}

@@ -19,3 +19,8 @@ void Menu::addAction(QObject *action)
 		Super::addAction(a);
 	}
 }
+
+void Menu::addSeparator()
+{
+	Super::addSeparator();
+}

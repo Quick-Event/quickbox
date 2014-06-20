@@ -8,12 +8,15 @@
 
 using namespace qf::qmlwidgets;
 
+static const int DefaultLayoutMargin = 1;
+
 Frame::Frame(QWidget *parent) :
 	Super(parent)
 {
-	Super::setLayout(new QVBoxLayout(this));
-	//qDebug() << "adding label" << this;
-	//m_layout->addWidget(new QLabel("ahoj", this));
+	QVBoxLayout *ly = new QVBoxLayout(this);
+	ly->setMargin(DefaultLayoutMargin);
+	Super::setLayout(ly);
+	setFrameShape(QFrame::Box);
 }
 
 Frame::LayoutType Frame::layoutType() const
@@ -24,11 +27,11 @@ Frame::LayoutType Frame::layoutType() const
 	return LayoutHorizontal;
 }
 
-void Frame::setLayoutType(Frame::LayoutType ly)
+void Frame::setLayoutType(Frame::LayoutType ly_type)
 {
-	if(ly != layoutType()) {
+	if(ly_type != layoutType()) {
 		QBoxLayout *new_ly;
-		if(ly == LayoutHorizontal) new_ly = new QHBoxLayout();
+		if(ly_type == LayoutHorizontal) new_ly = new QHBoxLayout();
 		else new_ly = new QVBoxLayout();
 		QLayout *old_ly = Super::layout();
 		while(old_ly->count()) {
@@ -37,8 +40,9 @@ void Frame::setLayoutType(Frame::LayoutType ly)
 		}
 		//old_ly->setParent(nullptr);
 		delete old_ly;
+		new_ly->setMargin(DefaultLayoutMargin);
 		setLayout(new_ly);
-		emit layoutTypeChanged(ly);
+		emit layoutTypeChanged(ly_type);
 	}
 }
 

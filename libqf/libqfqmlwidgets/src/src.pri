@@ -6,13 +6,17 @@ HEADERS += \
 	$$PWD/label.h \
     $$PWD/action.h \
     $$PWD/menu.h \
-    $$PWD/menubar.h
+    $$PWD/menubar.h \
+    $$PWD/dialog.h \
+    $$PWD/lineedit.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
 	$$PWD/label.cpp \
     $$PWD/action.cpp \
     $$PWD/menu.cpp \
-    $$PWD/menubar.cpp
+    $$PWD/menubar.cpp \
+    $$PWD/dialog.cpp \
+    $$PWD/lineedit.cpp
 
 include ($$PWD/framework/framework.pri)

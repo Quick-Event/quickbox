@@ -153,6 +153,15 @@ qf::qmlwidgets::MenuBar *MainWindow::menuBar()
 	return qobject_cast<MenuBar*>(Super::menuBar());
 }
 
+QObject *MainWindow::plugin(const QString &feature_id)
+{
+	QObject *ret = m_installedPlugins.value(feature_id);
+	if(!ret) {
+		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
+	}
+	return ret;
+}
+
 Application *MainWindow::application(bool must_exist)
 {
 	Application *ret = qobject_cast<Application*>(QApplication::instance());

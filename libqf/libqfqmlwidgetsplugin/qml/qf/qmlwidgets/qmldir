@@ -1,2 +1,6 @@
 module qf.qmlwidgets
+
+# not needed for now, maybe in future
+#singleton QmlWidgets 1.0 QmlWidgets.qml
+
 plugin qfqmlwidgetsplugin

@@ -45,6 +45,7 @@ void Application::setQmlEngine(QQmlEngine *eng)
 	m_qmlEngine = eng;
 	setupQmlImportPaths();
 	connect(m_qmlEngine, &QQmlEngine::warnings, this, &Application::onQmlError);
+	connect(m_qmlEngine, &QQmlEngine::quit, this, &Application::quit);
 }
 
 const QList<QQmlError> &Application::qmlErrorList()

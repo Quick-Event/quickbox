@@ -28,12 +28,11 @@ public:
 	LayoutType layoutType() const;
 	void setLayoutType(LayoutType ly);
 	Q_SIGNAL void layoutTypeChanged(LayoutType ly);
+	QQmlListProperty<QWidget> widgets();
 signals:
 
 public slots:
 private:
-	QQmlListProperty<QWidget> widgets();
-
 	static void addWidgetFunction(QQmlListProperty<QWidget> *listProperty, QWidget *value);
 	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);
 	static void removeAllWidgetsFunction(QQmlListProperty<QWidget> *listProperty);
