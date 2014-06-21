@@ -9,6 +9,8 @@ Plugin {
 	function install(frame_work)
 	{
 		_Plugin_install(frame_work);
+		Application.setOrganizationDomain("datamines.cz");
+		Application.setOrganizationName("DataMines");
 		console.debug(frameWork.menuBar);
 		frameWork.menuBar.itemForPath('file').title = qsTr('&File');
 		frameWork.menuBar.itemForPath('help').title = qsTr('Help');

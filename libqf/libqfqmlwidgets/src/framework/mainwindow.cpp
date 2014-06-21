@@ -102,7 +102,7 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 		    QStringList depends_on = plugin->property("dependsOnFeatureIds").toStringList();
 			if(feature_id != CoreFeatureId) {
 				// each not Core feature implicitly depends on Core
-				depends_on << "Core";
+				depends_on << CoreFeatureId;
 			}
 			bool dependency_satisfied = true;
 			for(auto required_feature_id : depends_on) {

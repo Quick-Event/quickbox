@@ -5,6 +5,7 @@ import qf.qmlwidgets.framework 1.0
 
 Dialog {
 	id: root
+	property var settings: Settings {}
 	Frame {
 		layoutType: Frame.LayoutHorizontal
 		Frame {
@@ -16,6 +17,8 @@ Dialog {
 			}
 		}
 		Frame {
+			Layout.rowSpan: 2
+
 			LineEdit {
 				text: "12345"
 			}

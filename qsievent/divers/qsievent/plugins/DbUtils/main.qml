@@ -7,11 +7,13 @@ Plugin {
 	id: root
 	property var dbSchema: DbSchema {}
 	featureId: 'DbUtils'
+    //dependsOnFeatureIds: "Core"
 
 	actions: [
 		Action {
 			id: actConnectDb
 			text: qsTr('&Connect to databse')
+			shortcut: "Ctrl+T"
 			onTriggered: {
 				Log.info(text, "triggered");
 				//var dlg = QmlWidgets.createWidget("Dialog", root.frameWork);

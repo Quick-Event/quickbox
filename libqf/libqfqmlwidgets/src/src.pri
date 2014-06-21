@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/menu.h \
     $$PWD/menubar.h \
     $$PWD/dialog.h \
-    $$PWD/lineedit.h
+    $$PWD/lineedit.h \
+    $$PWD/layoutpropertiesattached.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
     $$PWD/menu.cpp \
     $$PWD/menubar.cpp \
     $$PWD/dialog.cpp \
-    $$PWD/lineedit.cpp
+    $$PWD/lineedit.cpp \
+    $$PWD/layoutpropertiesattached.cpp
 
 include ($$PWD/framework/framework.pri)

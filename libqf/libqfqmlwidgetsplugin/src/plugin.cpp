@@ -8,6 +8,8 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialog.h>
 
+#include <qf/qmlwidgets/layoutpropertiesattached.h>
+
 #include <qf/core/log.h>
 
 #include <QPushButton>
@@ -36,6 +38,9 @@ public:
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");
 		qmlRegisterType<qf::qmlwidgets::Frame>(uri, 1, 0, "Frame");
+
+		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
+		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
 		qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");

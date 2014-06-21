@@ -27,6 +27,13 @@ public:
 	const QList<QQmlError>& qmlErrorList();
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
+public slots:
+	void setOrganizationName(const QString &s);
+    void setOrganizationDomain(const QString &s);
+    void setApplicationName(const QString &s);
+	QString applicationDirPath();
+	QString applicationName();
+	QStringList arguments();
 protected:
 	virtual QQmlEngine* createQmlEngine();
 

@@ -4,6 +4,7 @@
 #include <qf/core/assert.h>
 
 #include <QQmlEngine>
+#include <QQmlContext>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -43,6 +44,7 @@ void Application::setQmlEngine(QQmlEngine *eng)
 {
 	releaseQmlEngine();
 	m_qmlEngine = eng;
+	m_qmlEngine->rootContext()->setContextProperty("Application", this);
 	setupQmlImportPaths();
 	connect(m_qmlEngine, &QQmlEngine::warnings, this, &Application::onQmlError);
 	connect(m_qmlEngine, &QQmlEngine::quit, this, &Application::quit);
@@ -56,6 +58,36 @@ const QList<QQmlError> &Application::qmlErrorList()
 void Application::clearQmlErrorList()
 {
 	m_qmlErrorList.clear();
+}
+
+void Application::setOrganizationName(const QString &s)
+{
+	QCoreApplication::setOrganizationName(s);
+}
+
+void Application::setOrganizationDomain(const QString &s)
+{
+	QCoreApplication::setOrganizationDomain(s);
+}
+
+void Application::setApplicationName(const QString &s)
+{
+	QCoreApplication::setApplicationName(s);
+}
+
+QString Application::applicationDirPath()
+{
+	return QCoreApplication::applicationDirPath();
+}
+
+QString Application::applicationName()
+{
+	return QCoreApplication::applicationName();
+}
+
+QStringList Application::arguments()
+{
+	return QCoreApplication::arguments();
 }
 
 QQmlEngine *Application::createQmlEngine()

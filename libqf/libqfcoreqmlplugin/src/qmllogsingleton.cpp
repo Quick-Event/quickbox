@@ -5,6 +5,8 @@
 
 #include <qf/core/log.h>
 
+using namespace qf::core;
+
 QmlLogSingleton::QmlLogSingleton(QObject *parent) :
     QObject(parent)
 {
