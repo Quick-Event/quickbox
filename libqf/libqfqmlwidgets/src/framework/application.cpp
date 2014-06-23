@@ -60,19 +60,14 @@ void Application::clearQmlErrorList()
 	m_qmlErrorList.clear();
 }
 
-void Application::setOrganizationName(const QString &s)
+void Application::setApplicationNames(const QString &organization_domain, const QString &organization_name, const QString &application_name)
 {
-	QCoreApplication::setOrganizationName(s);
-}
-
-void Application::setOrganizationDomain(const QString &s)
-{
-	QCoreApplication::setOrganizationDomain(s);
-}
-
-void Application::setApplicationName(const QString &s)
-{
-	QCoreApplication::setApplicationName(s);
+	QCoreApplication::setOrganizationDomain(organization_domain);
+	QCoreApplication::setOrganizationName(organization_name);
+	if(!application_name.isEmpty()) {
+		QCoreApplication::setApplicationName(application_name);
+	}
+	//emit settingsInitialized();
 }
 
 QString Application::applicationDirPath()

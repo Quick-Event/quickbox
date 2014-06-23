@@ -1,0 +1,8 @@
+#include "isettingspersistence.h"
+
+using namespace qf::qmlwidgets::framework;
+
+ISettingsPersistence::ISettingsPersistence(QObject *controlled_object) :
+	m_controlledObject(c)
+{
+}

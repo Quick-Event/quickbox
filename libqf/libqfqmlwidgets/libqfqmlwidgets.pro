@@ -5,7 +5,9 @@ unix:TARGET = $$OUT_PWD/../../lib/qfqmlwidgets
 
 QT += widgets qml
 
-CONFIG += C++11
+CONFIG += c++11
+
+#QMAKE_CXXFLAGS += -std=c++1y
 
 DEFINES += QFQMLWIDGETS_BUILD_DLL
 

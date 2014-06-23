@@ -9,6 +9,7 @@
 #include <qf/qmlwidgets/dialog.h>
 
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
+#include <qf/qmlwidgets/framework/settingspersistenceattached.h>
 
 #include <qf/core/log.h>
 
@@ -41,6 +42,9 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
 		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
+
+		qmlRegisterType<qf::qmlwidgets::framework::SettingsPersistenceAttached>();
+		qmlRegisterType<qf::qmlwidgets::framework::SettingsPersistence>(uri, 1, 0, "SettingsPersistence");
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
 		qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");

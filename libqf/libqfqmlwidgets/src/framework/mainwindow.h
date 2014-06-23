@@ -2,6 +2,7 @@
 #define QF_QMLWIDGETS_FRAMEWORK_MAINWINDOW_H
 
 #include "../qmlwidgetsglobal.h"
+#include "ipersistentsettings.h"
 
 #include <QMainWindow>
 #include <QMap>
@@ -14,7 +15,7 @@ namespace framework {
 
 class Application;
 
-class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow
+class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersistentSettings
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
@@ -32,6 +33,12 @@ private:
 protected:
 	virtual PluginMap findPlugins();
 	virtual void installPlugins(const PluginMap &plugins_to_install);
+public:
+	Q_SLOT void setPersistentSettingsKey(const QString &k) {IPersistentSettings::setPersistentSettingsKey(k);}
+private:
+	Q_SLOT void loadPersistentSettings();
+	Q_SLOT void savePersistentSettings();
+	//void setupSettingsPersistence();
 public slots:
 	/// framework API
 	MenuBar* menuBar();

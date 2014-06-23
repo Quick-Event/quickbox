@@ -5,6 +5,7 @@ import qf.qmlwidgets.framework 1.0
 
 Dialog {
 	id: root
+	SettingsPersistence.key: "DlgConnectDb";
 	property var settings: Settings {}
 	Frame {
 		layoutType: Frame.LayoutHorizontal

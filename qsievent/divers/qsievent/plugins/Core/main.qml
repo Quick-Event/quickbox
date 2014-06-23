@@ -4,13 +4,14 @@ import qf.qmlwidgets.framework 1.0
 
 Plugin {
 	featureId: 'Core'
+
 	property var visualSlots: ['runners', 'start', 'finish']
 
 	function install(frame_work)
 	{
 		_Plugin_install(frame_work);
-		Application.setOrganizationDomain("datamines.cz");
-		Application.setOrganizationName("DataMines");
+		Application.setApplicationNames("datamines.cz", "DataMines");
+		frameWork.setPersistentSettingsKey("MainWindow");
 		console.debug(frameWork.menuBar);
 		frameWork.menuBar.itemForPath('file').title = qsTr('&File');
 		frameWork.menuBar.itemForPath('help').title = qsTr('Help');

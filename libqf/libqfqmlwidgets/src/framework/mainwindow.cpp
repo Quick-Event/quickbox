@@ -8,11 +8,12 @@
 
 #include <QDirIterator>
 #include <QQmlComponent>
+#include <QSettings>
 
 using namespace qf::qmlwidgets::framework;
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
-	QMainWindow(parent, flags)
+	QMainWindow(parent, flags), IPersistentSettings(this)
 {
 	MenuBar *main_menu = new MenuBar(this);
 	setMenuBar(main_menu);
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 
 MainWindow::~MainWindow()
 {
+	savePersistentSettings();
 }
 
 void MainWindow::loadPlugins()
@@ -147,6 +149,46 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 		}
 	}
 }
+
+void MainWindow::loadPersistentSettings()
+{
+	QString path = settingsPersistencePath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		QSettings settings;
+		settings.beginGroup(path);
+		QRect geometry = settings.value("geometry").toRect();
+		if(geometry.isValid()) {
+			this->setGeometry(geometry);
+		}
+	}
+}
+
+void MainWindow::savePersistentSettings()
+{
+	QString path = settingsPersistencePath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		QRect geometry = this->geometry();
+		QSettings settings;
+		settings.beginGroup(path);
+		settings.setValue("geometry", geometry);
+	}
+}
+
+/*
+void MainWindow::setupSettingsPersistence()
+{
+	QString path = persistentSettingsPath();
+	if(path.isEmpty()) {
+		disconnect(this, SIGNAL(destroyed()), this, SLOT(savePersistentSettings()));
+	}
+	else {
+		QObject::connect(this, SIGNAL(destroyed(QObject*)), this, SLOT(savePersistentSettings()), Qt::UniqueConnection);
+		QMetaObject::invokeMethod(this, "loadPersistentSettings", Qt::QueuedConnection);
+	}
+}
+*/
 
 qf::qmlwidgets::MenuBar *MainWindow::menuBar()
 {
