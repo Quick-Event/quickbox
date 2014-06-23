@@ -5,7 +5,7 @@ import qf.qmlwidgets.framework 1.0
 
 Dialog {
 	id: root
-	SettingsPersistence.key: "DlgConnectDb";
+	persistentSettingsId: "DlgConnectDb"
 	property var settings: Settings {}
 	Frame {
 		layoutType: Frame.LayoutHorizontal
@@ -29,7 +29,7 @@ Dialog {
 		}
 	}
 	Splitter {
-		SettingsPersistence.key: "Splitter";
+		persistentSettingsId: "Splitter";
 		//orientation: Qt.Vertical
 		Label {
 			text: "ahoj Splitter"
@@ -37,5 +37,8 @@ Dialog {
 		Label {
 			text: "bejby Splitter"
 		}
+	}
+	Component.onCompleted: {
+		root.loadPersistentSettings(true);
 	}
 }

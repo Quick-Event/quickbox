@@ -9,7 +9,7 @@
 
 namespace qf {
 namespace qmlwidgets {
-//class Menu;
+
 class MenuBar;
 namespace framework {
 
@@ -19,6 +19,7 @@ class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersiste
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 private:
 	typedef QMainWindow Super;
 public:
@@ -33,16 +34,14 @@ private:
 protected:
 	virtual PluginMap findPlugins();
 	virtual void installPlugins(const PluginMap &plugins_to_install);
-public:
-	Q_SLOT void setPersistentSettingsKey(const QString &k) {IPersistentSettings::setPersistentSettingsKey(k);}
 private:
-	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 	//void setupSettingsPersistence();
 public slots:
 	/// framework API
 	MenuBar* menuBar();
 	QObject* plugin(const QString &feature_id);
+	Q_SLOT void loadPersistentSettings();
 private:
 	PluginMap m_installedPlugins;
 	QStringList m_featureSlots;

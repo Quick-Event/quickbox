@@ -11,7 +11,8 @@ Plugin {
 	{
 		_Plugin_install(frame_work);
 		Application.setApplicationNames("datamines.cz", "DataMines");
-		frameWork.setPersistentSettingsKey("MainWindow");
+		frameWork.persistentSettingsId = "MainWindow";
+		frameWork.loadPersistentSettings();
 		console.debug(frameWork.menuBar);
 		frameWork.menuBar.itemForPath('file').title = qsTr('&File');
 		frameWork.menuBar.itemForPath('help').title = qsTr('Help');

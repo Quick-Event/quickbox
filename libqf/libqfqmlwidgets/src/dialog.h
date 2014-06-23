@@ -17,15 +17,17 @@ class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersi
 	Q_OBJECT
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_CLASSINFO("DefaultProperty", "widgets")
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 public:
 	explicit Dialog(QWidget *parent = 0);
 	~Dialog() Q_DECL_OVERRIDE;
 
-	int exec() Q_DECL_OVERRIDE;
+	Q_SLOT void loadPersistentSettings(bool recursively = false);
+
+	//int exec() Q_DECL_OVERRIDE;
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:
-	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 protected:
 	Frame *m_centralFrame;

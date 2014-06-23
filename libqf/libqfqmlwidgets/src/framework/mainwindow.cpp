@@ -152,7 +152,7 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 
 void MainWindow::loadPersistentSettings()
 {
-	QString path = settingsPersistencePath();
+	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QSettings settings;
@@ -166,7 +166,7 @@ void MainWindow::loadPersistentSettings()
 
 void MainWindow::savePersistentSettings()
 {
-	QString path = settingsPersistencePath();
+	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QRect geometry = this->geometry();

@@ -11,9 +11,14 @@ Splitter::Splitter(QWidget *parent) :
 {
 }
 
+Splitter::~Splitter()
+{
+	savePersistentSettings();
+}
+
 void Splitter::loadPersistentSettings()
 {
-	QString path = settingsPersistencePath();
+	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QSettings settings;
@@ -27,7 +32,7 @@ void Splitter::loadPersistentSettings()
 
 void Splitter::savePersistentSettings()
 {
-	QString path = settingsPersistencePath();
+	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QSettings settings;

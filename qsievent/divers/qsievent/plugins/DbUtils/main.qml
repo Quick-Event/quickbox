@@ -19,6 +19,7 @@ Plugin {
 				//var dlg = QmlWidgets.createWidget("Dialog", root.frameWork);
 				var dlg = Qt.createQmlObject("DlgConnectDb {}", root.frameWork);
                 dlg.exec();
+                dlg.destroy();
 			}
 		},
 		Action {

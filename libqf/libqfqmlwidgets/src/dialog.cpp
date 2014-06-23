@@ -23,8 +23,9 @@ Dialog::Dialog(QWidget *parent) :
 
 Dialog::~Dialog()
 {
+	savePersistentSettings();
 }
-
+/*
 int Dialog::exec()
 {
 	loadPersistentSettings();
@@ -32,29 +33,35 @@ int Dialog::exec()
 	savePersistentSettings();
 	return ret;
 }
-
+*/
 QQmlListProperty<QWidget> Dialog::widgets()
 {
 	return m_centralFrame->widgets();
 }
 
-void Dialog::loadPersistentSettings()
+void Dialog::loadPersistentSettings(bool recursively)
 {
-	QString path = settingsPersistencePath();
-	qfLogFuncFrame() << path;
-	if(!path.isEmpty()) {
-		QSettings settings;
-		settings.beginGroup(path);
-		QRect geometry = settings.value("geometry").toRect();
-		if(geometry.isValid()) {
-			this->setGeometry(geometry);
+	qfLogFuncFrame() << recursively;
+	if(recursively) {
+		loadPersistentSettingsRecursively();
+	}
+	else {
+		QString path = persistentSettingsPath();
+		qfDebug() << "\t" << path;
+		if(!path.isEmpty()) {
+			QSettings settings;
+			settings.beginGroup(path);
+			QRect geometry = settings.value("geometry").toRect();
+			if(geometry.isValid()) {
+				this->setGeometry(geometry);
+			}
 		}
 	}
 }
 
 void Dialog::savePersistentSettings()
 {
-	QString path = settingsPersistencePath();
+	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QRect geometry = this->geometry();
