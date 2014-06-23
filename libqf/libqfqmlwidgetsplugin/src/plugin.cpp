@@ -3,6 +3,7 @@
 #include <qf/qmlwidgets/frame.h>
 #include <qf/qmlwidgets/label.h>
 #include <qf/qmlwidgets/lineedit.h>
+#include <qf/qmlwidgets/splitter.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menu.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -37,20 +38,21 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::Label>(uri, 1, 0, "Label");
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");
+		qmlRegisterType<qf::qmlwidgets::Splitter>(uri, 1, 0, "Splitter");
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");
 		qmlRegisterType<qf::qmlwidgets::Frame>(uri, 1, 0, "Frame");
-
-		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
-		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
-
-		qmlRegisterType<qf::qmlwidgets::framework::SettingsPersistenceAttached>();
-		qmlRegisterType<qf::qmlwidgets::framework::SettingsPersistence>(uri, 1, 0, "SettingsPersistence");
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
 		qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
 
 		qmlRegisterType<qf::qmlwidgets::Dialog>(uri, 1, 0, "Dialog");
+
+		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
+		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
+
+		qmlRegisterType<qf::qmlwidgets::framework::SettingsPersistenceAttached>();
+		qmlRegisterType<qf::qmlwidgets::framework::SettingsPersistence>(uri, 1, 0, "SettingsPersistence");
 	}
 };
 

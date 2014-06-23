@@ -24,7 +24,10 @@ public:
 	Q_SIGNAL void keyChanged(const QString &new_key);
 	QString settingsPersistencePath();
 private:
+	QString generateSettingsPersistencePath();
+private:
 	QString m_key;
+	QString m_path;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT SettingsPersistence : public QObject

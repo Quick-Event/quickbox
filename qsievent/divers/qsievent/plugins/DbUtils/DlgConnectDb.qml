@@ -28,4 +28,14 @@ Dialog {
 			}
 		}
 	}
+	Splitter {
+		SettingsPersistence.key: "Splitter";
+		//orientation: Qt.Vertical
+		Label {
+			text: "ahoj Splitter"
+		}
+		Label {
+			text: "bejby Splitter"
+		}
+	}
 }
