@@ -30,17 +30,27 @@ Frame::LayoutType Frame::layoutType() const
 void Frame::setLayoutType(Frame::LayoutType ly_type)
 {
 	if(ly_type != layoutType()) {
-		QBoxLayout *new_ly;
-		if(ly_type == LayoutHorizontal) new_ly = new QHBoxLayout();
-		else new_ly = new QVBoxLayout();
+		QList<QLayoutItem*> layout_items;
 		QLayout *old_ly = Super::layout();
+		QLayout *new_ly = nullptr;
 		while(old_ly->count()) {
 			QLayoutItem *lyt = old_ly->takeAt(0);
-			new_ly->addItem(lyt);
+			layout_items << lyt;
 		}
-		//old_ly->setParent(nullptr);
+		if(ly_type == LayoutGrig) {
+
+		}
+		else {
+			QBoxLayout *new_box_ly;
+			if(ly_type == LayoutHorizontal) new_box_ly = new QHBoxLayout();
+			else new_box_ly = new QVBoxLayout();
+			new_box_ly->setMargin(DefaultLayoutMargin);
+			for(auto lyt : layout_items) {
+				new_box_ly->addItem(lyt);
+			}
+			new_ly = new_box_ly;
+		}
 		delete old_ly;
-		new_ly->setMargin(DefaultLayoutMargin);
 		setLayout(new_ly);
 		emit layoutTypeChanged(ly_type);
 	}

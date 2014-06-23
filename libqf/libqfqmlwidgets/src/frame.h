@@ -21,7 +21,7 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 private:
 	typedef QFrame Super;
 public:
-	enum LayoutType {LayoutHorizontal, LayoutVertical};
+	enum LayoutType {LayoutHorizontal, LayoutVertical, LayoutGrig};
 public:
 	explicit Frame(QWidget *parent = 0);
 public:

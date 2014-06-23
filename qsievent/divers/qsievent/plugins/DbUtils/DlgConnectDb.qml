@@ -8,7 +8,8 @@ Dialog {
 	persistentSettingsId: "DlgConnectDb"
 	property var settings: Settings {}
 	Frame {
-		layoutType: Frame.LayoutHorizontal
+		id: frm
+		layoutType: bt.horizontal? Frame.LayoutHorizontal:  Frame.LayoutVertical
 		Frame {
 			Label {
 				text: "ahoj"
@@ -26,6 +27,14 @@ Dialog {
 			LineEdit {
 				text: "6789"
 			}
+		}
+	}
+	Button {
+		id: bt
+		text: "change layout"
+		property bool horizontal: true
+		onClicked: {
+			horizontal = !horizontal;
 		}
 	}
 	Splitter {
