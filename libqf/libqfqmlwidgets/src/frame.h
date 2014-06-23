@@ -11,6 +11,8 @@ class QBoxLayout;
 namespace qf {
 namespace qmlwidgets {
 
+class GridLayoutProperties;
+
 class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 {
 	Q_OBJECT
@@ -18,10 +20,11 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_ENUMS(LayoutType)
+	Q_PROPERTY(qf::qmlwidgets::GridLayoutProperties* gridLayoutProperties READ gridLayoutProperties WRITE setGridLayoutProperties)
 private:
 	typedef QFrame Super;
 public:
-	enum LayoutType {LayoutHorizontal, LayoutVertical, LayoutGrig};
+	enum LayoutType {LayoutInvalid, LayoutHorizontal, LayoutVertical, LayoutGrid};
 public:
 	explicit Frame(QWidget *parent = 0);
 public:
@@ -42,7 +45,19 @@ private:
 	QWidget* at(int index) const;
 	void removeAll();
 	int count() const;
+
+	GridLayoutProperties* gridLayoutProperties() {return m_gridLayoutProperties;}
+	void setGridLayoutProperties(GridLayoutProperties *props);
+	//Q_SIGNAL void gridLayoutPropertiesChanged();
+	//Q_SLOT void initLayout();
+	void addToLayout(QWidget *widget);
+	QLayout* createLayout(LayoutType layout_type);
 private:
+	LayoutType m_layoutType;
+	GridLayoutProperties *m_gridLayoutProperties;
+	QList<QWidget*> m_childWidgets;
+	int m_currentLayoutRow;
+	int m_currentLayoutColumn;
 };
 
 }

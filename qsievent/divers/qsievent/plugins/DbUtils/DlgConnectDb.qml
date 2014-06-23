@@ -8,7 +8,31 @@ Dialog {
 	persistentSettingsId: "DlgConnectDb"
 	property var settings: Settings {}
 	Frame {
+		layoutType: Frame.LayoutGrid
+		gridLayoutProperties: GridLayoutProperties {
+			columns: 3
+		}
+		Label {
+			Layout.columnSpan: 2
+			text: "ahoj"
+		}
+		Label {
+			text: "bejby"
+		}
+
+		LineEdit {
+			text: "12345"
+		}
+		LineEdit {
+			text: "6789"
+		}
+		LineEdit {
+			text: "rty"
+		}
+	}
+	Frame {
 		id: frm
+		objectName: "my frame"
 		layoutType: bt.horizontal? Frame.LayoutHorizontal:  Frame.LayoutVertical
 		Frame {
 			Label {
@@ -32,7 +56,7 @@ Dialog {
 	Button {
 		id: bt
 		text: "change layout"
-		property bool horizontal: true
+		property bool horizontal: false
 		onClicked: {
 			horizontal = !horizontal;
 		}

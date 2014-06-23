@@ -18,6 +18,14 @@ void LayoutPropertiesAttached::setRowSpan(int n)
 	}
 }
 
+void LayoutPropertiesAttached::setColumnSpan(int n)
+{
+	if(n > 0 && n != m_columnSpan) {
+		m_columnSpan = n;
+		emit columnSpanChanged();
+	}
+}
+
 
 LayoutPropertiesAttached *LayoutProperties::qmlAttachedProperties(QObject *object)
 {

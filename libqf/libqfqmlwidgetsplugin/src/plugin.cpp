@@ -10,7 +10,7 @@
 #include <qf/qmlwidgets/dialog.h>
 
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
-#include <qf/qmlwidgets/gridlayoutpropertiesattached.h>
+#include <qf/qmlwidgets/gridlayoutproperties.h>
 
 #include <qf/core/log.h>
 
@@ -51,8 +51,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
 		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
 
-		qmlRegisterType<qf::qmlwidgets::GridLayoutPropertiesAttached>();
-		qmlRegisterType<qf::qmlwidgets::GridLayoutProperties>(uri, 1, 0, "GridLayout");
+		qmlRegisterType<qf::qmlwidgets::GridLayoutProperties>(uri, 1, 0, "GridLayoutProperties");
 	}
 };
 
