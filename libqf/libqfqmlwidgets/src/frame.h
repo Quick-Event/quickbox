@@ -24,7 +24,7 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 private:
 	typedef QFrame Super;
 public:
-	enum LayoutType {LayoutInvalid, LayoutHorizontal, LayoutVertical, LayoutGrid};
+	enum LayoutType {LayoutInvalid, LayoutHorizontal, LayoutVertical, LayoutGrid, LayoutForm};
 public:
 	explicit Frame(QWidget *parent = 0);
 public:
@@ -51,7 +51,7 @@ private:
 	//Q_SIGNAL void gridLayoutPropertiesChanged();
 	//Q_SLOT void initLayout();
 	void addToLayout(QWidget *widget);
-	QLayout* createLayout(LayoutType layout_type);
+	void createLayout(LayoutType layout_type);
 private:
 	LayoutType m_layoutType;
 	GridLayoutProperties *m_gridLayoutProperties;

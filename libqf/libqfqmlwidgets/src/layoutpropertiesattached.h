@@ -14,6 +14,7 @@ class QFQMLWIDGETS_DECL_EXPORT LayoutPropertiesAttached : public QObject
 	Q_OBJECT
 	Q_PROPERTY(int rowSpan READ rowSpan WRITE setRowSpan NOTIFY rowSpanChanged)
 	Q_PROPERTY(int columnSpan READ rowSpan WRITE setColumnSpan NOTIFY columnSpanChanged)
+	Q_PROPERTY(QString buddyText READ buddyText WRITE setBuddyText)
 public:
 	explicit LayoutPropertiesAttached(QObject *parent = 0);
 public:
@@ -23,9 +24,13 @@ public:
 	int columnSpan() {return m_columnSpan;}
 	void setColumnSpan(int n);
 	Q_SIGNAL void columnSpanChanged();
+
+	QString buddyText() {return m_formLayoutBuddyText;}
+	void setBuddyText(const QString &s);
 private:
 	int m_rowSpan;
 	int m_columnSpan;
+	QString m_formLayoutBuddyText;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT LayoutProperties : public QObject

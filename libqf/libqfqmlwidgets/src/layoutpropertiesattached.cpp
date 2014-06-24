@@ -26,6 +26,11 @@ void LayoutPropertiesAttached::setColumnSpan(int n)
 	}
 }
 
+void LayoutPropertiesAttached::setBuddyText(const QString &s)
+{
+	m_formLayoutBuddyText = s;
+}
+
 
 LayoutPropertiesAttached *LayoutProperties::qmlAttachedProperties(QObject *object)
 {

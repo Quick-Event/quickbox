@@ -3,10 +3,12 @@
 #include "layoutpropertiesattached.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QFormLayout>
 #include <QLabel>
 
 #include <QDebug>
@@ -123,10 +125,10 @@ void Frame::addToLayout(QWidget *widget)
 {
 	qfLogFuncFrame();
 	if(!layout()) {
-		QLayout *new_ly = createLayout(layoutType());
-		qfDebug() << "\tnew layout:" << new_ly << this;
-		setLayout(new_ly);
+		createLayout(layoutType());
+		qfDebug() << "\tnew layout:" << layout() << this;
 	}
+	qfDebug() << "\tadding:" << widget << "to layout:" << layout() << this;
 	{
 		QGridLayout *ly = qobject_cast<QGridLayout*>(layout());
 		if(ly) {
@@ -168,31 +170,56 @@ void Frame::addToLayout(QWidget *widget)
 		}
 	}
 	{
+		QFormLayout *ly = qobject_cast<QFormLayout*>(layout());
+		if(ly) {
+			QString buddy_text;
+			int column_span = 1;
+			LayoutPropertiesAttached *lpa = qobject_cast<LayoutPropertiesAttached*>(qmlAttachedPropertiesObject<LayoutProperties>(widget, false));
+			if(lpa) {
+				column_span = lpa->columnSpan();
+				buddy_text = lpa->buddyText();
+			}
+			if(column_span > 1) {
+				ly->addRow(widget);
+			}
+			else if(!buddy_text.isEmpty()) {
+				ly->addRow(buddy_text, widget);
+			}
+			else {
+				ly->addWidget(widget);
+			}
+			return;
+		}
+	}
+	{
 		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
 		if(ly) {
-			qfDebug() << "\tadding:" << widget << "to layout:" << ly << this;
 			ly->addWidget(widget);
 			return;
 		}
 	}
 }
 
-QLayout *Frame::createLayout(LayoutType layout_type)
+void Frame::createLayout(LayoutType layout_type)
 {
-	QLayout *ret;
+	QF_ASSERT(layout() == nullptr, "Form has layout already", return);
+	m_currentLayoutColumn = m_currentLayoutRow = 0;
+	QLayout *new_ly;
 	switch(layout_type) {
 	case LayoutGrid:
-		m_currentLayoutColumn = m_currentLayoutRow = 0;
-		ret = new QGridLayout();
+		new_ly = new QGridLayout();
+		break;
+	case LayoutForm:
+		new_ly = new QFormLayout();
 		break;
 	case LayoutVertical:
-		ret = new QVBoxLayout();
+		new_ly = new QVBoxLayout();
 		break;
 	default:
-		ret = new QHBoxLayout();
+		new_ly = new QHBoxLayout();
 		break;
 	}
-	ret->setMargin(DefaultLayoutMargin);
+	new_ly->setMargin(DefaultLayoutMargin);
 	setFrameShape(QFrame::Box);
-	return ret;
+	setLayout(new_ly);
 }
