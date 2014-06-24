@@ -39,6 +39,7 @@ private:
 	//void setupSettingsPersistence();
 public slots:
 	/// framework API
+	void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
 	MenuBar* menuBar();
 	QObject* plugin(const QString &feature_id);
 	Q_SLOT void loadPersistentSettings();

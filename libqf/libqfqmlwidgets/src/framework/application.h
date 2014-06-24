@@ -28,7 +28,6 @@ public:
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
 public slots:
-    void setApplicationNames(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
 	QString applicationDirPath();
 	QString applicationName();
 	QStringList arguments();

@@ -22,10 +22,15 @@ Plugin {
 		}
 	]
 
+	function settings()
+	{
+		return Qt.createQmlObject("import qf.core 1.0; Settings {}", root);
+	}
+
 	function install()
 	{
-		_Plugin_install();
-		Application.setApplicationNames("datamines.cz", "DataMines");
+		//_Plugin_install();
+		FrameWork.setPersistentSettingDomains("datamines.cz", "DataMines");
 		FrameWork.persistentSettingsId = "MainWindow";
 		FrameWork.loadPersistentSettings();
 		console.debug(FrameWork.menuBar);

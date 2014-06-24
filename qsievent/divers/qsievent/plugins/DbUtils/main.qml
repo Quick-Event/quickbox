@@ -40,7 +40,7 @@ Plugin {
 
 	function install()
 	{
-		_Plugin_install();
+		//_Plugin_install();
 		FrameWork.menuBar.itemForPath('file').addAction(actConnectDb);
 		FrameWork.menuBar.itemForPath('file').addSeparator();
 		FrameWork.menuBar.itemForPath('file').addAction(actCreateEvent);

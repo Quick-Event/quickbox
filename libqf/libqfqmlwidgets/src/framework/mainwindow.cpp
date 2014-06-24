@@ -178,6 +178,16 @@ void MainWindow::savePersistentSettings()
 	}
 }
 
+void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)
+{
+	QCoreApplication::setOrganizationDomain(organization_domain);
+	QCoreApplication::setOrganizationName(organization_name);
+	if(!application_name.isEmpty()) {
+		QCoreApplication::setApplicationName(application_name);
+	}
+	//QSettings::setDefaultFormat(QSettings::IniFormat);
+}
+
 /*
 void MainWindow::setupSettingsPersistence()
 {

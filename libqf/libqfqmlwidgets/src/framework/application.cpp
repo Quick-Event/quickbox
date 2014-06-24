@@ -60,16 +60,6 @@ void Application::clearQmlErrorList()
 	m_qmlErrorList.clear();
 }
 
-void Application::setApplicationNames(const QString &organization_domain, const QString &organization_name, const QString &application_name)
-{
-	QCoreApplication::setOrganizationDomain(organization_domain);
-	QCoreApplication::setOrganizationName(organization_name);
-	if(!application_name.isEmpty()) {
-		QCoreApplication::setApplicationName(application_name);
-	}
-	//emit settingsInitialized();
-}
-
 QString Application::applicationDirPath()
 {
 	return QCoreApplication::applicationDirPath();
