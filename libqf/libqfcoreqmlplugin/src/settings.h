@@ -13,6 +13,7 @@ private:
 	typedef QSettings Super;
 public:
 	explicit Settings(QObject *parent = 0);
+	~Settings() Q_DECL_OVERRIDE;
 public slots:
 	void beginGroup(const QString & prefix) {Super::beginGroup(prefix);}
 	int beginReadArray(const QString & prefix) {return Super::beginReadArray(prefix);}

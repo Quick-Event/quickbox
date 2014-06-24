@@ -13,11 +13,10 @@ Plugin {
 		Action {
 			id: actConnectDb
 			text: qsTr('&Connect to databse')
-			//shortcut: "Ctrl+T"
+			shortcut: "Ctrl+E"
 			onTriggered: {
 				Log.info(text, "triggered");
-				//var dlg = QmlWidgets.createWidget("Dialog", root.frameWork);
-				var dlg = Qt.createQmlObject("DlgConnectDb {}", root.frameWork);
+				var dlg = Qt.createQmlObject("DlgConnectDb {}", FrameWork);
                 dlg.exec();
                 dlg.destroy();
 			}
@@ -39,14 +38,14 @@ Plugin {
 		}
 	]
 
-	function install(frame_work)
+	function install()
 	{
-		_Plugin_install(frame_work);
-		frameWork.menuBar.itemForPath('file').addAction(actConnectDb);
-		frameWork.menuBar.itemForPath('file').addSeparator();
-		frameWork.menuBar.itemForPath('file').addAction(actCreateEvent);
-		frameWork.menuBar.itemForPath('file').addSeparator();
-		frameWork.menuBar.itemForPath('file').addAction(actQuit);
+		_Plugin_install();
+		FrameWork.menuBar.itemForPath('file').addAction(actConnectDb);
+		FrameWork.menuBar.itemForPath('file').addSeparator();
+		FrameWork.menuBar.itemForPath('file').addAction(actCreateEvent);
+		FrameWork.menuBar.itemForPath('file').addSeparator();
+		FrameWork.menuBar.itemForPath('file').addAction(actQuit);
 		//framework.addMenu('tools', actCreateEvent);
 		/*
 		var c = Qt.createComponent("DbSchema.qml");

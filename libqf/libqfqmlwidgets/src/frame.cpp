@@ -90,6 +90,8 @@ void Frame::add(QWidget *widget)
 {
 	if(widget) {
 		qDebug() << "adding widget" << widget << widget->parent();
+		/// widget cannot be simply reparented
+		/// NULL parent should be set first
 		widget->setParent(0);
 		widget->setParent(this);
 		m_childWidgets << widget;
@@ -220,6 +222,6 @@ void Frame::createLayout(LayoutType layout_type)
 		break;
 	}
 	new_ly->setMargin(DefaultLayoutMargin);
-	setFrameShape(QFrame::Box);
+	//setFrameShape(QFrame::Box);
 	setLayout(new_ly);
 }

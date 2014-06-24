@@ -8,15 +8,15 @@ Part {
 	property string visualSlot
 	property bool disabled: false
 
-	function _Plugin_install(frame_work)
+	function _Plugin_install()
 	{
-		_Part_install(frame_work);
+		_Part_install();
 		Log.debug("Plugin feature:", featureId, "installed");
 	}
 
-	function install(frame_work)
+	function install()
 	{
-		_Plugin_install(frame_work);
+		_Plugin_install();
 	}
 
 	function activatedChanged(on_off)

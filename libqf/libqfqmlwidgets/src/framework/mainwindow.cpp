@@ -6,6 +6,8 @@
 #include <qf/core/assert.h>
 //#include <qf/core/string.h>
 
+#include <QQmlEngine>
+#include <QQmlContext>
 #include <QDirIterator>
 #include <QQmlComponent>
 #include <QSettings>
@@ -27,6 +29,11 @@ MainWindow::~MainWindow()
 void MainWindow::loadPlugins()
 {
 	qfLogFuncFrame();
+	QQmlEngine *qe = application()->qmlEngine();
+	QF_ASSERT(qe != nullptr, "Qml engine is NULL", return);
+
+	qe->rootContext()->setContextProperty("FrameWork", this);
+
 	installPlugins(findPlugins());
 }
 
@@ -117,12 +124,7 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 				qfInfo() << "Installing feature:" << feature_id;
 				Application *app = application();
 				app->clearQmlErrorList();
-				QVariant ret_val;
-				QVariant frame_work = QVariant::fromValue(this);
-				QMetaObject::invokeMethod(plugin, "install",
-				        Q_RETURN_ARG(QVariant, ret_val),
-				        Q_ARG(QVariant, frame_work));
-				//qfDebug() << "install returned:" << ret_val.typeName() << ret_val.toString() << "is valid:" << ret_val.isValid();
+				QMetaObject::invokeMethod(plugin, "install");
 				if(app->qmlErrorList().count()) {
 					qfError() << "Feature:" << feature_id << "install ERROR.";
 				}
