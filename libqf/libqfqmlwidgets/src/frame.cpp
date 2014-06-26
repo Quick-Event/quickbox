@@ -181,13 +181,16 @@ void Frame::addToLayout(QWidget *widget)
 				column_span = lpa->columnSpan();
 				buddy_text = lpa->buddyText();
 			}
-			if(column_span > 1) {
-				ly->addRow(widget);
-			}
-			else if(!buddy_text.isEmpty()) {
+			if(!buddy_text.isEmpty()) {
+				qfDebug() << "\t add with buddy:" << buddy_text;
 				ly->addRow(buddy_text, widget);
 			}
+			else if(column_span > 1) {
+				qfDebug() << "\t add with col span:" << column_span;
+				ly->addRow(widget);
+			}
 			else {
+				qfDebug() << "\t add single widget";
 				ly->addWidget(widget);
 			}
 			return;

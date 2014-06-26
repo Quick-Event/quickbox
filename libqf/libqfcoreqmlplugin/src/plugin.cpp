@@ -1,5 +1,6 @@
 #include "qmllogsingleton.h"
-#include "settings.h"
+//#include "settings.h"
+#include <qf/core/settings.h>
 
 #include <qf/core/log.h>
 

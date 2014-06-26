@@ -1,6 +1,5 @@
 #include "settings.h"
-
-#include <qf/core/log.h>
+#include "log.h"
 
 using namespace qf::core;
 

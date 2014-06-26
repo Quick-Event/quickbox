@@ -4,13 +4,16 @@
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
-//#include <qf/core/string.h>
+#include <qf/core/settings.h>
+#include <qf/core/utils/crypt.h>
 
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QDirIterator>
 #include <QQmlComponent>
 #include <QSettings>
+
+//qf::core::utils::Crypt()
 
 using namespace qf::qmlwidgets::framework;
 

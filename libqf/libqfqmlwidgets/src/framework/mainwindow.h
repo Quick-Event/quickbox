@@ -8,9 +8,13 @@
 #include <QMap>
 
 namespace qf {
+namespace core {
+class Settings;
+}
 namespace qmlwidgets {
 
 class MenuBar;
+
 namespace framework {
 
 class Application;

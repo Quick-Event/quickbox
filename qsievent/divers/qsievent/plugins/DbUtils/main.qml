@@ -8,6 +8,9 @@ Plugin {
 	property var dbSchema: DbSchema {}
 	featureId: 'DbUtils'
     //dependsOnFeatureIds: "Core"
+    property var dlgConnectDb: Component {
+    	DlgConnectDb {}
+    }
 
 	actions: [
 		Action {
@@ -16,7 +19,7 @@ Plugin {
 			shortcut: "Ctrl+E"
 			onTriggered: {
 				Log.info(text, "triggered");
-				var dlg = Qt.createQmlObject("DlgConnectDb {}", FrameWork);
+				var dlg = dlgConnectDb.createObject(FrameWork);
                 dlg.exec();
                 dlg.destroy();
 			}
