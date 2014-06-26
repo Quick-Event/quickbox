@@ -9,6 +9,10 @@ Plugin {
 
 	property var visualSlots: ['runners', 'start', 'finish']
 
+	property var _dlgLayoutTest: Component {
+    	DlgLayoutTest {}
+    }
+
 	actions: [
 		Action {
 			id: actLayoutTest
@@ -16,20 +20,31 @@ Plugin {
 			shortcut: "Ctrl+T"
 			onTriggered: {
 				Log.info(text, "triggered");
-				var dlg = Qt.createQmlObject("DlgLayoutTest {}", FrameWork);
+				var dlg = _dlgLayoutTest.createObject(FrameWork);
                 dlg.exec();
                 dlg.destroy();
 			}
 		}
 	]
 
-    property Component settingsComponent: Component {
-        Settings {}
-    }
+	property QfObject internals: QfObject
+	{
+    	Component {
+    		id: settingsComponent
+        	Settings {}
+    	}
+	}
 
 	function settings()
 	{
         return settingsComponent.createObject(null);
+	}
+
+	property Crypt crypt: Crypt
+	{
+		Component.onCompleted: {
+			initGenerator(16808, 11, 2147483647);
+		}
 	}
 
 	function install()

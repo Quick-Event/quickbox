@@ -7,33 +7,22 @@
 using namespace qf::core::utils;
 
 //===================================================================
-//                                         Generator
-//===================================================================
-/// http://www.math.utah.edu/~pa/Random/Random.html
-static unsigned defaultGenerator(unsigned val)
-{
-	return Crypt::genericGenerator(val, 16811, 7, 2147483647);
-}
-
-/*
-namespace {
-auto defaultGenerator = [](unsigned val) { return Crypt::genericGenerator(val, 16811, 7, 2147483647); }
-}
-*/
-//===================================================================
 //                                         Crypt
 //===================================================================
+/// http://www.math.utah.edu/~pa/Random/Random.html
 Crypt::Crypt(Crypt::Generator gen)
 {
-	f_generator = gen;
-	if(f_generator == NULL) f_generator = defaultGenerator;
+	m_generator = gen;
+	if(m_generator == NULL)
+		m_generator = Crypt::createGenerator(16811, 7, 2147483647);
 }
 
-unsigned Crypt::genericGenerator(unsigned val, quint32 a, quint32 c, quint32 max_rnd)
+Crypt::Generator Crypt::createGenerator(unsigned a, unsigned b, unsigned max_rand)
 {
-	quint32 n;
-	n = (a*val + c) % max_rnd;
-	return (unsigned)n;
+	auto ret = [=](unsigned val) {
+		return (a * val + b) % max_rand;
+	};
+	return ret;
 }
 
 static QByteArray code_byte(quint8 b)
@@ -68,13 +57,13 @@ QByteArray Crypt::encrypt(const QString &s, int min_length) const
 
     /// a tou se to zaxoruje
 	for(int i=0; i<src.count(); i++) {
-		val = f_generator(val);
+		val = m_generator(val);
 		b = ((quint8)src[i]);
 		b = b ^ (quint8)val;
 		dest += code_byte(b);
 	}
 	while(dest.size() < min_length) {
-		val = f_generator(val);
+		val = m_generator(val);
 		b = 0 ^ (quint8)val;
 		dest += code_byte(b);
 	}
@@ -110,7 +99,7 @@ QByteArray Crypt::decodeArray(const QByteArray &ba) const
 	int i = 0;
 	unsigned val = take_byte(ba, i);
 	while(i<ba.count()) {
-		val = f_generator(val);
+		val = m_generator(val);
 		quint8 b = take_byte(ba, i);
 		b = b ^ (quint8)val;
 		ret.append(b);

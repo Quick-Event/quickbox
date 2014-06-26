@@ -7,7 +7,6 @@ HEADERS += \
 	$$PWD/utils.h \
 	$$PWD/string.h \
     $$PWD/logdevice.h \
-    $$PWD/settings.h \
 
 SOURCES += \
 	$$PWD/exception.cpp \
@@ -15,6 +14,5 @@ SOURCES += \
 	$$PWD/log.cpp \
 	$$PWD/string.cpp \
     $$PWD/logdevice.cpp \
-    $$PWD/settings.cpp \
 
 include ($$PWD/utils/utils.pri)

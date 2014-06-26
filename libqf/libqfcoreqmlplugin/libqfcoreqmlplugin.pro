@@ -2,6 +2,7 @@ message(including $$PWD)
 
 TEMPLATE = lib
 CONFIG += plugin
+CONFIG += c++11
 QT += qml
 
 PLUGIN_MODULE_PATH = qml/qf/core
@@ -42,3 +43,4 @@ OTHER_FILES += \
     qml/* \
 
 include (src/src.pri)
+

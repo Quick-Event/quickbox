@@ -4,7 +4,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
-#include <qf/core/settings.h>
+//#include <qf/core/settings.h>
 #include <qf/core/utils/crypt.h>
 
 #include <QQmlEngine>

@@ -20,6 +20,7 @@ Dialog {
 			text: ""
 		}
 		LineEdit {
+			id: edPassword
 			Layout.buddyText: qsTr("&Password")
 			echoMode: LineEdit.Password
 			text: ""
@@ -35,20 +36,24 @@ Dialog {
 
 	function loadSettings()
 	{
-		var settings = FrameWork.plugin("Core").settings();
+		var core_feature = FrameWork.plugin("Core");
+		var settings = core_feature.settings();
 		//Log.info("got settings:", settings);
 		settings.beginGroup("sql/connection");
-		edHost.text = settings.value("host", "localhost")
-		edUser.text = settings.value("user", "")
+		edHost.text = settings.value("host", "localhost");
+		edUser.text = settings.value("user", "");
+		edPassword.text = core_feature.crypt.decrypt(settings.value("user", ""));
 		settings.destroy();
 	}
 
 	function saveSettings()
 	{
-		var settings = FrameWork.plugin("Core").settings();
+		var core_feature = FrameWork.plugin("Core");
+		var settings = core_feature.settings();
 		settings.beginGroup("sql/connection");
 		settings.setValue("host", edHost.text);
 		settings.setValue("user", edUser.text);
+		settings.setValue("password", core_feature.crypt.encrypt(edPassword.text));
 		settings.destroy();
 	}
 

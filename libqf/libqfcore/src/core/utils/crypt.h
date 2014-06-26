@@ -14,11 +14,14 @@ namespace utils {
 class QFCORE_DECL_EXPORT Crypt
 {
 public:
-	typedef unsigned (*Generator)(unsigned);
+	typedef std::function< unsigned (unsigned) > Generator;
 public:
 	Crypt(Generator gen = NULL);
 public:
-	static unsigned genericGenerator(unsigned val, quint32 a, quint32 c, quint32 max_rnd);
+	static Generator createGenerator(unsigned a, unsigned b, unsigned max_rand);
+
+	/// any of function, functor or lambda can be set as a random number generator
+	void setGenerator(Generator gen) {m_generator = gen;}
 
 	/// pouziva muj vlastni, pomerne prustrelny kryptovaci mechanismus
 	/// @return libovolny string zakrypti do stringu obsahujiciho znaky 0-9, A-Z, a-z
@@ -30,7 +33,7 @@ public:
 private:
 	QByteArray decodeArray(const QByteArray &ba) const;
 private:
-	Generator f_generator;
+	Generator m_generator;
 };
 
 }}}

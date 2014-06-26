@@ -1,7 +1,8 @@
 #include "settings.h"
-#include "log.h"
 
-using namespace qf::core;
+#include <qf/core/log.h>
+
+using namespace qf::core::qml;
 
 Settings::Settings(QObject *parent) :
 	Super(parent)

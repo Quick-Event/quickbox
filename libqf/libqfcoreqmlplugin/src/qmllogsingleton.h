@@ -8,6 +8,7 @@ class QJSEngine;
 
 namespace qf {
 namespace core {
+namespace qml {
 
 class QmlLogSingleton : public QObject
 {
@@ -25,7 +26,6 @@ public:
 	Q_INVOKABLE void fatal(const QString &msg);
 };
 
-}
-}
+}}}
 
 #endif // QMLLOGSINGLETON_H

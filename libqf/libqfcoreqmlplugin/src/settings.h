@@ -5,6 +5,7 @@
 
 namespace qf {
 namespace core {
+namespace qml {
 
 class Settings : public QSettings
 {
@@ -29,6 +30,6 @@ public slots:
 	void sync() {Super::sync();}
 };
 
-}}
+}}}
 
 #endif // SETTINGS_H

@@ -1,6 +1,6 @@
 #include "qmllogsingleton.h"
-//#include "settings.h"
-#include <qf/core/settings.h>
+#include "crypt.h"
+#include "settings.h"
 
 #include <qf/core/log.h>
 
@@ -16,9 +16,10 @@ public:
     {
 		qfLogFuncFrame() << uri;
 		Q_ASSERT(uri == QLatin1String("qf.core"));
-		qmlRegisterSingletonType<qf::core::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::QmlLogSingleton::singletontype_provider);
+		qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
 
-		qmlRegisterType<qf::core::Settings>(uri, 1, 0, "Settings");
+		qmlRegisterType<qf::core::qml::Settings>(uri, 1, 0, "Settings");
+		qmlRegisterType<qf::core::qml::Crypt>("qf.core", 1, 0, "Crypt");
     }
 };
 
