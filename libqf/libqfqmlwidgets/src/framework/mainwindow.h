@@ -41,12 +41,18 @@ protected:
 private:
 	Q_SLOT void savePersistentSettings();
 	//void setupSettingsPersistence();
-public slots:
+public:
 	/// framework API
-	void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
-	MenuBar* menuBar();
-	QObject* plugin(const QString &feature_id);
+	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
+	Q_INVOKABLE MenuBar* menuBar();
+	Q_INVOKABLE QObject* plugin(const QString &feature_id);
+
 	Q_SLOT void loadPersistentSettings();
+	/// emitted by plugin loader when all plugins are installed
+	Q_SIGNAL void postInstall();
+
+	Q_INVOKABLE QObject* obj_testing();
+
 private:
 	PluginMap m_installedPlugins;
 	QStringList m_featureSlots;

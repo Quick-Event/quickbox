@@ -8,17 +8,21 @@ Plugin {
 	featureId: 'SqlConnection'
 	dependsOnFeatureIds: ["DbUtils"]
 
-	signal installed();
-
 	actions: []
 
 	property QfObject internals: QfObject
 	{
 	}
 
+	function install()
+	{
+		FrameWork.postInstall.connect(postInstall);
+	}
+
 	function postInstall()
 	{
-		Log.info("postInstall queued connection on SqlConnection")
+		var dbf = FrameWork.plugin('DbUtils');
+		dbf.connectToSqlServer(false);
 	}
 
 }

@@ -113,4 +113,16 @@ void Dialog::savePersistentSettings()
 	}
 }
 
+void Dialog::classBegin()
+{
+	qfLogFuncFrame();
+}
+
+void Dialog::componentComplete()
+{
+	qfLogFuncFrame();
+	loadPersistentSettings(true);
+}
+
+
 

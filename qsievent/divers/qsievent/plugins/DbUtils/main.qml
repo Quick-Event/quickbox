@@ -7,26 +7,32 @@ Plugin {
 	id: root
 	property var dbSchema: DbSchema {}
 	featureId: 'DbUtils'
-    //dependsOnFeatureIds: "Core"
-    property var dlgConnectDb: Component {
-    	DlgConnectDb {}
-    }
+	//dependsOnFeatureIds: "Core"
+	property var dlgConnectDb: Component {
+		DlgConnectDb {}
+	}
 
 	actions: [
 		Action {
 			id: actConnectDb
 			text: qsTr('&Connect to databse')
-			shortcut: "Ctrl+E"
+			//shortcut: "Ctrl+E"
 			onTriggered: {
 				Log.info(text, "triggered");
-				var dlg = dlgConnectDb.createObject(FrameWork);
-                dlg.exec();
-                dlg.destroy();
+				connectToSqlServer(false);
 			}
 		},
 		Action {
 			id: actCreateEvent
 			text: qsTr('Create new event')
+			onTriggered: {
+				Log.info(text, "triggered");
+			}
+		},
+		Action {
+			id: actOpenEvent
+			text: qsTr('&Open event')
+			shortcut: "Ctrl+O"
 			onTriggered: {
 				Log.info(text, "triggered");
 			}
@@ -52,13 +58,22 @@ Plugin {
 		//framework.addMenu('tools', actCreateEvent);
 		/*
 		var c = Qt.createComponent("DbSchema.qml");
-        if (c.status == Component.Ready) {
-            root.dbSchema = c.createObject(root);
-        }
-        else {
-        	Log.error("Error creating DbSchema:", c.errorString());
-        }
-        Log.info(dbSchema);
-        */
+		if (c.status == Component.Ready) {
+			root.dbSchema = c.createObject(root);
+		}
+		else {
+			Log.error("Error creating DbSchema:", c.errorString());
+		}
+		Log.info(dbSchema);
+		*/
+	}
+
+	function connectToSqlServer(silent)
+	{
+		if(!silent) {
+			var dlg = dlgConnectDb.createObject(FrameWork);
+			dlg.exec();
+			dlg.destroy();
+		}
 	}
 }

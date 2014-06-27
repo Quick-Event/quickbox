@@ -33,8 +33,9 @@ Dialog {
 	buttonBox: ButtonBox {}
 
 	Component.onCompleted: {
-		root.loadPersistentSettings(true);
+		//root.loadPersistentSettings(true);
 		loadSettings();
+		//gc();
 	}
 
 	function loadSettings()
@@ -77,6 +78,9 @@ Dialog {
             }
             if(!doneCancelled) {
             	saveSettings();
+            	var obj = FrameWork.obj_testing();
+            	var p = obj.parent();
+            	Log.info("+++++++ got object", obj, "parent:", obj.parent, 'kk:', edEvent.parent);
             }
 		}
 	}

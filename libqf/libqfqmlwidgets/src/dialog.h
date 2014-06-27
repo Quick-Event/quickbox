@@ -6,6 +6,7 @@
 
 #include <QDialog>
 #include <QQmlListProperty>
+#include <QQmlParserStatus>
 
 namespace qf {
 namespace qmlwidgets {
@@ -13,9 +14,10 @@ namespace qmlwidgets {
 class Frame;
 class DialogButtonBox;
 
-class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings
+class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings, public QQmlParserStatus
 {
 	Q_OBJECT
+	Q_INTERFACES(QQmlParserStatus)
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
@@ -46,6 +48,8 @@ protected:
 	QQmlListProperty<QWidget> widgets();
 private:
 	Q_SLOT void savePersistentSettings();
+	void classBegin() Q_DECL_OVERRIDE;
+	void componentComplete() Q_DECL_OVERRIDE;
 protected:
 	Frame *m_centralFrame;
 	DialogButtonBox *m_dialogButtonBox;

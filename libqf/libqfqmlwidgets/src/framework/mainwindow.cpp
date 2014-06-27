@@ -134,7 +134,6 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 				else {
 					qfInfo() << "Feature:" << feature_id << "install SUCCESS.";
 					m_installedPlugins[feature_id] = plugin;
-					QMetaObject::invokeMethod(plugin, "postInstall", Qt::QueuedConnection);
 				}
 				it.remove();
 			}
@@ -154,6 +153,7 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 			qfError() << "\t!!!" << feature_id << "depends on:" << CoreFeatureId << depends_on.join(", ");
 		}
 	}
+	QMetaObject::invokeMethod(this, "postInstall", Qt::QueuedConnection);
 }
 
 void MainWindow::loadPersistentSettings()
@@ -168,6 +168,30 @@ void MainWindow::loadPersistentSettings()
 			this->setGeometry(geometry);
 		}
 	}
+}
+
+class TestObject : public QObject
+{
+	Q_OBJECT
+public:
+	TestObject(QObject *parent = 0) : QObject(parent)
+	{
+		static int cnt = 0;
+		setObjectName(QString("OBJ%1").arg(++cnt));
+		//QQmlEngine::setObjectOwnership(this, QQmlEngine::JavaScriptOwnership);
+		qfInfo() << "CREATE" << this << "ownersip:" << QQmlEngine::objectOwnership(this);
+	}
+	~TestObject()
+	{
+		qfInfo() << "DESTROY" << this << "ownersip:" << QQmlEngine::objectOwnership(this);
+	}
+	Q_INVOKABLE QObject* parent() {return QObject::parent();}
+};
+
+QObject *MainWindow::obj_testing()
+{
+	QObject *ret = new TestObject();
+	return ret;
 }
 
 void MainWindow::savePersistentSettings()
@@ -228,3 +252,5 @@ Application *MainWindow::application(bool must_exist)
 	}
 	return ret;
 }
+
+#include "mainwindow.moc"

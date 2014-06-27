@@ -6,14 +6,14 @@ import qf.qmlwidgets.framework 1.0
 Plugin {
 	id: root
 	featureId: 'EmptyTemplate'
-    dependsOnFeatureIds: ["Core"]
+	dependsOnFeatureIds: ["Core"]
 
 	property QfObject internals: QfObject
 	{
 		Component {
 			id: dlgLayoutTest
-    		DlgLayoutTest {}
-    	}
+			DlgLayoutTest {}
+		}
 	}
 
 	actions: [
@@ -24,8 +24,16 @@ Plugin {
 			onTriggered: {
 				Log.info(text, "triggered");
 				var dlg = dlgLayoutTest.createObject(FrameWork);
-                dlg.exec();
-                dlg.destroy();
+				dlg.exec();
+				dlg.destroy();
+			}
+		},
+		Action {
+			id: actGC
+			text: qsTr('Collect grbage')
+			onTriggered: {
+				Log.info(text, "triggered");
+				gc();
 			}
 		}
 	]
@@ -33,5 +41,6 @@ Plugin {
 	function install()
 	{
 		FrameWork.menuBar.itemForPath('help').addAction(actLayoutTest);
+		FrameWork.menuBar.itemForPath('help').addAction(actGC);
 	}
 }
