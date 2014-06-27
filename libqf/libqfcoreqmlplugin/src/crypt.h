@@ -1,5 +1,5 @@
-#ifndef CRYPT_H
-#define CRYPT_H
+#ifndef QF_CORE_QML_CRYPT_H
+#define QF_CORE_QML_CRYPT_H
 
 #include <qf/core/utils/crypt.h>
 
@@ -24,4 +24,4 @@ private:
 
 }}}
 
-#endif // CRYPT_H
+#endif

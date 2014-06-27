@@ -1,5 +1,5 @@
-#ifndef QMLLOGSINGLETON_H
-#define QMLLOGSINGLETON_H
+#ifndef QF_CORE_QML_QMLLOGSINGLETON_H
+#define QF_CORE_QML_QMLLOGSINGLETON_H
 
 #include <QObject>
 
@@ -15,7 +15,7 @@ class QmlLogSingleton : public QObject
 	Q_OBJECT
 public:
 	QmlLogSingleton(QObject* parent = 0);
-	~QmlLogSingleton() {}
+	//~QmlLogSingleton() {}
 
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
@@ -28,4 +28,4 @@ public:
 
 }}}
 
-#endif // QMLLOGSINGLETON_H
+#endif

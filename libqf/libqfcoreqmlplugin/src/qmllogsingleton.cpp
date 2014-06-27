@@ -1,9 +1,9 @@
 #include "qmllogsingleton.h"
 
+#include <qf/core/log.h>
+
 #include <QQmlEngine>
 #include <QJSEngine>
-
-#include <qf/core/log.h>
 
 using namespace qf::core::qml;
 
@@ -14,10 +14,10 @@ QmlLogSingleton::QmlLogSingleton(QObject *parent) :
 
 QObject *QmlLogSingleton::singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
-	Q_UNUSED(engine)
+	//Q_UNUSED(engine)
 	Q_UNUSED(scriptEngine)
 
-	QmlLogSingleton *s = new QmlLogSingleton();
+	QmlLogSingleton *s = new QmlLogSingleton(engine);
 	return s;
 }
 

@@ -1,5 +1,5 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef QF_CORE_QML_SETTINGS_H
+#define QF_CORE_QML_SETTINGS_H
 
 #include <QSettings>
 
@@ -32,4 +32,4 @@ public slots:
 
 }}}
 
-#endif // SETTINGS_H
+#endif
