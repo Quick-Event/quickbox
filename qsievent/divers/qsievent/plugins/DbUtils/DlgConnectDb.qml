@@ -6,7 +6,7 @@ import qf.qmlwidgets.framework 1.0
 Dialog {
 	id: root
 	persistentSettingsId: "DlgConnectDb"
-	//property Settings settings: Settings {}
+	property Plugin coreFeature: FrameWork.plugin("Core")
 	Frame {
 		layoutType: Frame.LayoutForm
 		LineEdit {
@@ -17,13 +17,16 @@ Dialog {
 		LineEdit {
 			id: edUser
 			Layout.buddyText: qsTr("&User")
-			text: ""
 		}
 		LineEdit {
 			id: edPassword
 			Layout.buddyText: qsTr("&Password")
 			echoMode: LineEdit.Password
-			text: ""
+		}
+		LineEdit {
+			id: edEvent
+			Layout.buddyText: qsTr("&Event")
+			placeholderText: qsTr("Event can be specified later on")
 		}
 	}
 
@@ -36,24 +39,24 @@ Dialog {
 
 	function loadSettings()
 	{
-		var core_feature = FrameWork.plugin("Core");
-		var settings = core_feature.settings();
+		var settings = coreFeature.settings();
 		//Log.info("got settings:", settings);
 		settings.beginGroup("sql/connection");
 		edHost.text = settings.value("host", "localhost");
 		edUser.text = settings.value("user", "");
-		edPassword.text = core_feature.crypt.decrypt(settings.value("user", ""));
+		edPassword.text = coreFeature.crypt.decrypt(settings.value("user", ""));
+		edEvent.text = settings.value("event", "");
 		settings.destroy();
 	}
 
 	function saveSettings()
 	{
-		var core_feature = FrameWork.plugin("Core");
-		var settings = core_feature.settings();
+		var settings = coreFeature.settings();
 		settings.beginGroup("sql/connection");
 		settings.setValue("host", edHost.text);
 		settings.setValue("user", edUser.text);
-		settings.setValue("password", core_feature.crypt.encrypt(edPassword.text));
+		settings.setValue("password", coreFeature.crypt.encrypt(edPassword.text));
+		settings.setValue("event", edEvent.text);
 		settings.destroy();
 	}
 

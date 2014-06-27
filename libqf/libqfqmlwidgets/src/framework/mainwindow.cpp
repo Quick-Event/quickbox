@@ -134,6 +134,7 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 				else {
 					qfInfo() << "Feature:" << feature_id << "install SUCCESS.";
 					m_installedPlugins[feature_id] = plugin;
+					QMetaObject::invokeMethod(plugin, "postInstall", Qt::QueuedConnection);
 				}
 				it.remove();
 			}

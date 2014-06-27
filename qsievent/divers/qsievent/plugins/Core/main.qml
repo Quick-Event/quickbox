@@ -9,24 +9,6 @@ Plugin {
 
 	property var visualSlots: ['runners', 'start', 'finish']
 
-	property var _dlgLayoutTest: Component {
-    	DlgLayoutTest {}
-    }
-
-	actions: [
-		Action {
-			id: actLayoutTest
-			text: qsTr('&Layout test')
-			shortcut: "Ctrl+T"
-			onTriggered: {
-				Log.info(text, "triggered");
-				var dlg = _dlgLayoutTest.createObject(FrameWork);
-                dlg.exec();
-                dlg.destroy();
-			}
-		}
-	]
-
 	property QfObject internals: QfObject
 	{
     	Component {
@@ -56,7 +38,6 @@ Plugin {
 		console.debug(FrameWork.menuBar);
 		FrameWork.menuBar.itemForPath('file').title = qsTr('&File');
 		FrameWork.menuBar.itemForPath('help').title = qsTr('Help');
-		FrameWork.menuBar.itemForPath('help').addAction(actLayoutTest);
 
 		/*
 		try {
