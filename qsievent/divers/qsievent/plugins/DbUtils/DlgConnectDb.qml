@@ -45,7 +45,7 @@ Dialog {
 		settings.beginGroup("sql/connection");
 		edHost.text = settings.value("host", "localhost");
 		edUser.text = settings.value("user", "");
-		edPassword.text = coreFeature.crypt.decrypt(settings.value("user", ""));
+		edPassword.text = coreFeature.crypt.decrypt(settings.value("password", ""));
 		edEvent.text = settings.value("event", "");
 		settings.destroy();
 	}
@@ -78,9 +78,11 @@ Dialog {
             }
             if(!doneCancelled) {
             	saveSettings();
+            	/*
             	var obj = FrameWork.obj_testing();
             	var p = obj.parent();
             	Log.info("+++++++ got object", obj, "parent:", obj.parent, 'kk:', edEvent.parent);
+            	*/
             }
 		}
 	}

@@ -31,10 +31,15 @@ Plugin {
 
 	function install()
 	{
-		//_Plugin_install();
+    	Log.debug("debug log test");
+    	Log.info("info log test");
+    	Log.warning("warn log test");
+    	Log.error("error log test");
+//_Plugin_install();
 		FrameWork.setPersistentSettingDomains("datamines.cz", "DataMines");
 		FrameWork.persistentSettingsId = "MainWindow";
 		FrameWork.loadPersistentSettings();
+
 		console.debug(FrameWork.menuBar);
 		FrameWork.menuBar.itemForPath('file').title = qsTr('&File');
 		FrameWork.menuBar.itemForPath('help').title = qsTr('Help');

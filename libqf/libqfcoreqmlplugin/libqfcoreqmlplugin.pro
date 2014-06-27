@@ -3,7 +3,7 @@ message(including $$PWD)
 TEMPLATE = lib
 CONFIG += plugin
 CONFIG += c++11
-QT += qml
+QT += qml sql
 
 PLUGIN_MODULE_PATH = qml/qf/core
 

@@ -70,10 +70,24 @@ Plugin {
 
 	function connectToSqlServer(silent)
 	{
+		var cancelled = false;
 		if(!silent) {
 			var dlg = dlgConnectDb.createObject(FrameWork);
-			dlg.exec();
+			cancelled = !dlg.exec();
 			dlg.destroy();
+		}
+		if(!cancelled) {
+			var core_feature = FrameWork.plugin("Core");
+			var db = Sql.database();
+			var settings = core_feature.settings();
+			settings.beginGroup("sql/connection");
+			db.hostName = settings.value('host');
+			db.userName = settings.value('user');
+			db.password = core_feature.crypt.decrypt(settings.value("password", ""));
+			db.databaseName = 'quickevent';
+			db.open();
+			db.destroy();
+			settings.destroy();
 		}
 	}
 }

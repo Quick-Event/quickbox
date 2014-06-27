@@ -6,12 +6,14 @@ HEADERS += \
     $$PWD/qmllogsingleton.h \
     $$PWD/settings.h \
     $$PWD/crypt.h \
-    $$PWD/qmlsqlsingleton.h
+    $$PWD/qmlsqlsingleton.h \
+    $$PWD/sqldatabase.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
     $$PWD/qmllogsingleton.cpp \
     $$PWD/settings.cpp \
     $$PWD/crypt.cpp \
-    $$PWD/qmlsqlsingleton.cpp
+    $$PWD/qmlsqlsingleton.cpp \
+    $$PWD/sqldatabase.cpp
 

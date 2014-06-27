@@ -1,4 +1,5 @@
 #include "qmlsqlsingleton.h"
+#include "sqldatabase.h"
 
 #include <qf/core/log.h>
 
@@ -19,4 +20,15 @@ QObject *qf::core::qml::QmlSqlSingleton::singletontype_provider(QQmlEngine *engi
 
 	QmlSqlSingleton *s = new QmlSqlSingleton(engine);
 	return s;
+}
+
+void QmlSqlSingleton::addDatabase(const QString &type, const QString &connection_name)
+{
+	QSqlDatabase::addDatabase(type, connection_name);
+}
+
+SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
+{
+	SqlDatabase *ret = new SqlDatabase(connection_name);
+	return ret;
 }

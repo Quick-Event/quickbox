@@ -21,8 +21,8 @@ Plugin {
 
 	function postInstall()
 	{
+		Sql.addDatabase('QPSQL');
 		var dbf = FrameWork.plugin('DbUtils');
 		dbf.connectToSqlServer(false);
 	}
-
 }
