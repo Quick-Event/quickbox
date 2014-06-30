@@ -8,18 +8,15 @@
 namespace qf {
 namespace qmlwidgets {
 
-class Menu;
+class Action;
 
 class QFQMLWIDGETS_DECL_EXPORT MenuBar : public QMenuBar
 {
 	Q_OBJECT
 public:
 	explicit MenuBar(QWidget *parent = 0);
-
-signals:
-
-public slots:
-	QObject* itemForPath(const QString &path, bool create_if_not_exists = true);
+public:
+	Q_INVOKABLE qf::qmlwidgets::Action* actionForPath(const QString &path, bool create_if_not_exists = true);
 };
 
 }}

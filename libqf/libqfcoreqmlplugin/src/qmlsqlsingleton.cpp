@@ -27,7 +27,7 @@ void QmlSqlSingleton::addDatabase(const QString &type, const QString &connection
 	QSqlDatabase::addDatabase(type, connection_name);
 }
 
-SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
+SqlDatabase *QmlSqlSingleton::createDatabase(const QString &connection_name)
 {
 	SqlDatabase *ret = new SqlDatabase(connection_name);
 	return ret;

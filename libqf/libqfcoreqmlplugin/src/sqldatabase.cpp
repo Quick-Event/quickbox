@@ -12,6 +12,14 @@ SqlDatabase::SqlDatabase(const QString &connection_name, QObject *parent) :
 	m_sqlDatabase = QSqlDatabase::database(connection_name, false);
 }
 
+void SqlDatabase::setConnectionName(const QString &n)
+{
+	if(n != connectionName()) {
+		m_sqlDatabase = QSqlDatabase::database(n, false);
+		emit connectionNameChanged();
+	}
+}
+
 void SqlDatabase::setHostName(const QString &n)
 {
 	if(n != hostName()) {

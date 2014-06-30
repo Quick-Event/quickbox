@@ -70,7 +70,7 @@ MainWindow::PluginMap MainWindow::findPlugins()
 							delete root;
 						}
 						else {
-							qfInfo() << "Importing featureId:" << feature_id;
+							qfInfo() << "Importing featureId:" << feature_id << "from plugin:" << fi.baseName();
 							if(ret.contains(feature_id)) {
 								qfError() << "Feature id:" << feature_id << "already loaded";
 							}
@@ -115,6 +115,7 @@ void MainWindow::installPlugins(const MainWindow::PluginMap &plugins_to_install)
 			if(feature_id != CoreFeatureId) {
 				// each not Core feature implicitly depends on Core
 				depends_on << CoreFeatureId;
+				//continue;
 			}
 			bool dependency_satisfied = true;
 			for(auto required_feature_id : depends_on) {

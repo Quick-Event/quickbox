@@ -1,10 +1,13 @@
 #include "menubar.h"
-#include "menu.h"
+//#include "menu.h"
+#include "action.h"
 
 #include <qf/core/log.h>
 #include <qf/core/string.h>
+#include <qf/core/assert.h>
 
 #include <QStringList>
+#include <QMenu>
 
 using namespace qf::qmlwidgets;
 
@@ -13,48 +16,49 @@ MenuBar::MenuBar(QWidget *parent) :
 {
 }
 
-QObject* MenuBar::itemForPath(const QString &path, bool create_if_not_exists)
+Action* MenuBar::actionForPath(const QString &path, bool create_if_not_exists)
 {
 	qfLogFuncFrame() << path;
 	QWidget *parent_w = this;
-	QAction *act = nullptr;
+	Action *ret = nullptr;
 	QStringList path_list = qf::core::String(path).splitAndTrim('/');
 	for(auto id : path_list) {
-		qfDebug() << id << parent_w;
+		qfDebug() << id << "of path:" << path;
 		if(!parent_w) {
 			/// recent action was not a menu one
-			qfWarning() << "Attempt to traverse thorough not menu action before:" << id << "in:" << path_list.join("/");
+			qfWarning() << "Attempt to traverse through not menu action before:" << id << "in:" << path_list.join("/");
 			break;
 		}
+		ret = nullptr;
 		for(auto a : parent_w->actions()) {
-			if(a->objectName() == id) {
+			qfDebug() << a;
+			Action *act = qobject_cast<Action*>(a);
+			//if(!ret) continue;
+			QF_ASSERT(act!=nullptr, "bad action", return ret);
+			if(act->oid() == id) {
 				qfDebug() << "\t found action" << a;
-				act = a;
+				ret = act;
 				break;
 			}
 		}
-		if(!act) {
+		if(!ret) {
 			if(!create_if_not_exists) {
 				break;
 			}
-			Menu *m = new Menu();
-			act = m->menuAction();
-			act->setObjectName(id);
-			act->setText("Untitled");
-			qfDebug() << "\t created menu" << act;
-			parent_w->addAction(act);
+			QMenu *m = new QMenu(parent_w);
+			ret = new Action(parent_w);
+			ret->setMenu(m);
+			ret->setOid(id);
+			ret->setText("Untitled");
+			qfDebug() << "\t created menu" << ret;
+			parent_w->addAction(ret);
 		}
-		parent_w = act->menu();
-	}
-	QObject *ret = nullptr;
-	if(act) {
-		ret = qobject_cast<Menu*>(act->menu());
-		if(!ret)
-			ret = act;
+		parent_w = ret->menu();
 	}
 	if(create_if_not_exists) {
-		Q_ASSERT(act != nullptr);
+		QF_CHECK(ret != nullptr, "internal error, returned action is NULL");
 	}
+	qfDebug() << "\t RETURN:" << ret;
 	return ret;
 }
 

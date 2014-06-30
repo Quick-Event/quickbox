@@ -1,6 +1,8 @@
 #ifndef QF_QMLWIDGETS_MENU_H
 #define QF_QMLWIDGETS_MENU_H
 
+not used for now
+
 #include "qmlwidgetsglobal.h"
 
 #include <QMenu>
@@ -15,9 +17,7 @@ private:
 	typedef QMenu Super;
 public:
 	explicit Menu(QWidget *parent = 0);
-public slots:
-	void addAction(QObject *action);
-	void addSeparator();
+public:
 };
 
 }}

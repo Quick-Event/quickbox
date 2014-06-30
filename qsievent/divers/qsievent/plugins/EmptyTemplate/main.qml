@@ -30,7 +30,7 @@ Plugin {
 		},
 		Action {
 			id: actGC
-			text: qsTr('Collect grbage')
+			text: qsTr('Collect garbage')
 			onTriggered: {
 				Log.info(text, "triggered");
 				gc();
@@ -40,7 +40,7 @@ Plugin {
 
 	function install()
 	{
-		FrameWork.menuBar.itemForPath('help').addAction(actLayoutTest);
-		FrameWork.menuBar.itemForPath('help').addAction(actGC);
+		FrameWork.menuBar.actionForPath('help').addAction(actLayoutTest);
+		FrameWork.menuBar.actionForPath('help').addAction(actGC);
 	}
 }

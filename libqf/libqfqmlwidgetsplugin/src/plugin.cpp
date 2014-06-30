@@ -5,7 +5,7 @@
 #include <qf/qmlwidgets/lineedit.h>
 #include <qf/qmlwidgets/splitter.h>
 #include <qf/qmlwidgets/action.h>
-#include <qf/qmlwidgets/menu.h>
+//#include <qf/qmlwidgets/menu.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialog.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
@@ -44,7 +44,8 @@ public:
 		qmlRegisterType<qf::qmlwidgets::Frame>(uri, 1, 0, "Frame");
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
-		qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
+		// Menu is not needed fo now
+		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
 
 		qmlRegisterType<qf::qmlwidgets::Dialog>(uri, 1, 0, "Dialog");

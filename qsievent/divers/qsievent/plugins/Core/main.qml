@@ -7,7 +7,19 @@ Plugin {
 	id: root
 	featureId: 'Core'
 
-	property var visualSlots: ['runners', 'start', 'finish']
+	//property var visualSlots: ['runners', 'start', 'finish']
+
+	actions: [
+		Action {
+			id: actQuit
+			oid: 'quit'
+			text: qsTr('&Quit')
+			onTriggered: {
+				Log.info(text, "triggered");
+				Qt.quit();
+			}
+		}
+	]
 
 	property QfObject internals: QfObject
 	{
@@ -17,7 +29,7 @@ Plugin {
     	}
 	}
 
-	function settings()
+	function createSettings()
 	{
         return settingsComponent.createObject(null);
 	}
@@ -41,8 +53,10 @@ Plugin {
 		FrameWork.loadPersistentSettings();
 
 		console.debug(FrameWork.menuBar);
-		FrameWork.menuBar.itemForPath('file').title = qsTr('&File');
-		FrameWork.menuBar.itemForPath('help').title = qsTr('Help');
+		FrameWork.menuBar.actionForPath('file').text = qsTr('&File');
+		//FrameWork.menuBar.actionForPath('file').addSeparator();
+		FrameWork.menuBar.actionForPath('file').addAction(actQuit);
+		FrameWork.menuBar.actionForPath('help').text = qsTr('Help');
 
 		/*
 		try {

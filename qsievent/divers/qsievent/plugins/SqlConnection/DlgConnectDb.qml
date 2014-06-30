@@ -40,7 +40,7 @@ Dialog {
 
 	function loadSettings()
 	{
-		var settings = coreFeature.settings();
+		var settings = coreFeature.createSettings();
 		//Log.info("got settings:", settings);
 		settings.beginGroup("sql/connection");
 		edHost.text = settings.value("host", "localhost");
@@ -52,7 +52,7 @@ Dialog {
 
 	function saveSettings()
 	{
-		var settings = coreFeature.settings();
+		var settings = coreFeature.createSettings();
 		settings.beginGroup("sql/connection");
 		settings.setValue("host", edHost.text);
 		settings.setValue("user", edUser.text);

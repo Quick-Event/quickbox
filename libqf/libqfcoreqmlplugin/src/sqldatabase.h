@@ -11,6 +11,7 @@ namespace qml {
 class SqlDatabase : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName NOTIFY connectionNameChanged)
 	Q_PROPERTY(QString hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
 	Q_PROPERTY(QString databaseName READ databaseName WRITE setDatabaseName NOTIFY databaseNameChanged)
@@ -18,6 +19,10 @@ class SqlDatabase : public QObject
 public:
 	explicit SqlDatabase(const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection), QObject *parent = 0);
 public:
+	Q_SLOT QString connectionName() {return m_sqlDatabase.connectionName();}
+	Q_SLOT void setConnectionName(const QString &n);
+	Q_SIGNAL void connectionNameChanged();
+
 	Q_SLOT QString hostName() {return m_sqlDatabase.hostName();}
 	Q_SLOT void setHostName(const QString &n);
 	Q_SIGNAL void hostNameChanged();
