@@ -1,8 +1,10 @@
 #include "qmllogsingleton.h"
-#include "qmlsqlsingleton.h"
 #include "crypt.h"
 #include "settings.h"
-#include "sqldatabase.h"
+#include "sql/qmlsqlsingleton.h"
+#include "sql/sqldatabase.h"
+#include "sql/sqlquery.h"
+#include "sql/sqlrecord.h"
 
 #include <qf/core/log.h>
 
@@ -26,6 +28,8 @@ public:
 		qmlRegisterType<qf::core::qml::Crypt>(uri, 1, 0, "Crypt");
 
 		qmlRegisterType<qf::core::qml::SqlDatabase>(uri, 1, 0, "SqlDatabase");
+		qmlRegisterType<qf::core::qml::SqlQuery>(uri, 1, 0, "SqlQuery");
+		qmlRegisterType<qf::core::qml::SqlRecord>(uri, 1, 0, "SqlRecord");
     }
 };
 

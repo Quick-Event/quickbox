@@ -1,4 +1,5 @@
 #include "sqldatabase.h"
+#include "sqlquery.h"
 
 #include <qf/core/log.h>
 
@@ -9,9 +10,15 @@ using namespace qf::core::qml;
 SqlDatabase::SqlDatabase(const QString &connection_name, QObject *parent) :
 	QObject(parent)
 {
+	qfLogFuncFrame() << this << connectionName();
 	m_sqlDatabase = QSqlDatabase::database(connection_name, false);
 }
 
+SqlDatabase::~SqlDatabase()
+{
+	qfLogFuncFrame() << this << connectionName();
+}
+/*
 void SqlDatabase::setConnectionName(const QString &n)
 {
 	if(n != connectionName()) {
@@ -19,7 +26,7 @@ void SqlDatabase::setConnectionName(const QString &n)
 		emit connectionNameChanged();
 	}
 }
-
+*/
 void SqlDatabase::setHostName(const QString &n)
 {
 	if(n != hostName()) {
@@ -64,7 +71,30 @@ bool SqlDatabase::open()
 		qfWarning() << "Open database error:" << m_sqlDatabase.lastError().databaseText() << m_sqlDatabase.lastError().driverText();
 	}
 	else {
+		emit isOpenChanged();
 		qfInfo() << "OK";
 	}
+	return ret;
+}
+
+void SqlDatabase::close()
+{
+	if(isOpen()) {
+		m_sqlDatabase.close();
+		emit isOpenChanged();
+	}
+}
+
+SqlQuery *SqlDatabase::createQuery()
+{
+	SqlQuery *ret = new SqlQuery();
+	ret->setDatabase(m_sqlDatabase);
+	return ret;
+}
+
+SqlQuery *SqlDatabase::exec(const QString &query_str)
+{
+	SqlQuery *ret = createQuery();
+	ret->exec(query_str);
 	return ret;
 }

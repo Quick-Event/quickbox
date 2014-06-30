@@ -1,8 +1,10 @@
 #ifndef QF_CORE_QML_QMLSQLSINGLETON_H
 #define QF_CORE_QML_QMLSQLSINGLETON_H
 
+#include "sqldatabase.h"
+
 #include <QObject>
-#include <QSqlDatabase>
+#include <QMap>
 
 class QQmlEngine;
 class QJSEngine;
@@ -12,6 +14,7 @@ namespace core {
 namespace qml {
 
 class SqlDatabase;
+class SqlQuery;
 
 class QmlSqlSingleton : public QObject
 {
@@ -22,7 +25,9 @@ public:
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:
 	Q_INVOKABLE void addDatabase(const QString &type, const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
-	Q_INVOKABLE qf::core::qml::SqlDatabase* createDatabase(const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
+	Q_INVOKABLE qf::core::qml::SqlDatabase* database(const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
+private:
+	QMap<QString, SqlDatabase*> m_sqlDatabases;
 };
 
 }}}

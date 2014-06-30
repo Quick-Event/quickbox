@@ -24,11 +24,28 @@ QObject *qf::core::qml::QmlSqlSingleton::singletontype_provider(QQmlEngine *engi
 
 void QmlSqlSingleton::addDatabase(const QString &type, const QString &connection_name)
 {
-	QSqlDatabase::addDatabase(type, connection_name);
+	QSqlDatabase db = QSqlDatabase::addDatabase(type, connection_name);
+	if(!db.isValid()) {
+		qfError() << "Cannot add database type:" << type << "name:" << connection_name;
+	}
 }
 
+SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
+{
+	qfLogFuncFrame() << connection_name;
+	SqlDatabase *ret = m_sqlDatabases.value(connection_name);
+	if(!ret) {
+		ret = new SqlDatabase(connection_name, this);
+		m_sqlDatabases[connection_name] = ret;
+	}
+	qfDebug() << "\t return:" << ret << ret->connectionName();
+	return ret;
+}
+
+/*
 SqlDatabase *QmlSqlSingleton::createDatabase(const QString &connection_name)
 {
 	SqlDatabase *ret = new SqlDatabase(connection_name);
 	return ret;
 }
+*/

@@ -5,8 +5,7 @@ import qf.qmlwidgets.framework 1.0
 
 Plugin {
 	id: root
-	property var dbSchema: DbSchema {}
-	featureId: 'SqlConnection'
+	featureId: 'Sql'
 	//dependsOnFeatureIds: "Core"
 
 	actions: [
@@ -18,22 +17,6 @@ Plugin {
 				Log.info(text, "triggered");
 				connectToSqlServer(false);
 			}
-		},
-		Action {
-			id: actCreateEvent
-			text: qsTr('Create &new event')
-			onTriggered: {
-				Log.info(text, "triggered");
-				internal.createNewEvent();
-			}
-		},
-		Action {
-			id: actOpenEvent
-			text: qsTr('&Open event')
-			shortcut: "Ctrl+O"
-			onTriggered: {
-				Log.info(text, "triggered");
-			}
 		}
 	]
 
@@ -43,23 +26,14 @@ Plugin {
 			id: dlgConnectDb
 			DlgConnectDb {}
 		}
-
-		function createNewEvent()
-		{
-			var event_name = InputDialogSingleton.getText(null, qsTr('Query'), qsTr('Enter new event name'), qsTr('new_event'));
-			if(event_name) {
-				Log.info('will create:', event_name);
-			}
-		}
 	}
 
 	function install()
 	{
+		Sql.addDatabase('QPSQL');
 		//_Plugin_install();
 		var quit = FrameWork.menuBar.actionForPath('file/quit', false);
 		quit.prependAction(actConnectDb);
-		quit.prependSeparator();
-		quit.prependAction(actCreateEvent);
 		quit.prependSeparator();
 
 		FrameWork.postInstall.connect(postInstall);
@@ -67,7 +41,6 @@ Plugin {
 
 	function postInstall()
 	{
-		Sql.addDatabase('QPSQL');
 		connectToSqlServer(false);
 	}
 
@@ -81,7 +54,7 @@ Plugin {
 		}
 		if(!cancelled) {
 			var core_feature = FrameWork.plugin("Core");
-			var db = Sql.createDatabase();
+			var db = Sql.database();
 			var settings = core_feature.createSettings();
 			settings.beginGroup("sql/connection");
 			db.hostName = settings.value('host');
@@ -89,7 +62,6 @@ Plugin {
 			db.password = core_feature.crypt.decrypt(settings.value("password", ""));
 			db.databaseName = 'quickevent';
 			db.open();
-			db.destroy();
 			settings.destroy();
 		}
 	}
