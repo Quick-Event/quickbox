@@ -72,7 +72,7 @@ Dialog {
 		*/
 		//settings = null;
 		if(result === Dialog.ResultAccept) {
-            if(edUser.text.length == 0) {
+            if(!edUser.text) {
                 Log.info("user is empty");
                 doneCancelled = true;
             }

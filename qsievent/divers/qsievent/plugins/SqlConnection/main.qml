@@ -21,9 +21,10 @@ Plugin {
 		},
 		Action {
 			id: actCreateEvent
-			text: qsTr('Create new event')
+			text: qsTr('Create &new event')
 			onTriggered: {
 				Log.info(text, "triggered");
+				internal.createNewEvent();
 			}
 		},
 		Action {
@@ -36,11 +37,19 @@ Plugin {
 		}
 	]
 
-	property QfObject internals: QfObject
+	property QfObject internal: QfObject
 	{
 		Component {
 			id: dlgConnectDb
 			DlgConnectDb {}
+		}
+
+		function createNewEvent()
+		{
+			var event_name = InputDialogSingleton.getText(null, qsTr('Query'), qsTr('Enter new event name'), qsTr('new_event'));
+			if(event_name) {
+				Log.info('will create:', event_name);
+			}
 		}
 	}
 

@@ -7,7 +7,8 @@
 #include <qf/qmlwidgets/action.h>
 //#include <qf/qmlwidgets/menu.h>
 #include <qf/qmlwidgets/menubar.h>
-#include <qf/qmlwidgets/dialog.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/inputdialog.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
@@ -48,13 +49,15 @@ public:
 		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
 
-		qmlRegisterType<qf::qmlwidgets::Dialog>(uri, 1, 0, "Dialog");
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 
 		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
 		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
 
 		qmlRegisterType<qf::qmlwidgets::GridLayoutProperties>(uri, 1, 0, "GridLayoutProperties");
+
+		qmlRegisterType<qf::qmlwidgets::dialogs::Dialog>(uri, 1, 0, "Dialog");
+		qmlRegisterType<qf::qmlwidgets::dialogs::InputDialog>(uri, 1, 0, "InputDialog");
 	}
 };
 

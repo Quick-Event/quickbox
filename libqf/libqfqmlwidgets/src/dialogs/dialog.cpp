@@ -1,6 +1,6 @@
 #include "dialog.h"
-#include "frame.h"
-#include "dialogbuttonbox.h"
+#include "../frame.h"
+#include "../dialogbuttonbox.h"
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
@@ -8,7 +8,7 @@
 #include <QVBoxLayout>
 #include <QSettings>
 
-using namespace qf::qmlwidgets;
+using namespace qf::qmlwidgets::dialogs;
 
 Dialog::Dialog(QWidget *parent) :
 	QDialog(parent), framework::IPersistentSettings(this)

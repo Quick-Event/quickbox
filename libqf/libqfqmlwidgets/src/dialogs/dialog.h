@@ -1,8 +1,8 @@
-#ifndef QF_QMLWIDGETS_DIALOG_H
-#define QF_QMLWIDGETS_DIALOG_H
+#ifndef QF_QMLWIDGETS_DIALOGS_DIALOG_H
+#define QF_QMLWIDGETS_DIALOGS_DIALOG_H
 
-#include "qmlwidgetsglobal.h"
-#include "framework/ipersistentsettings.h"
+#include "../qmlwidgetsglobal.h"
+#include "../framework/ipersistentsettings.h"
 
 #include <QDialog>
 #include <QQmlListProperty>
@@ -13,6 +13,8 @@ namespace qmlwidgets {
 
 class Frame;
 class DialogButtonBox;
+
+namespace dialogs {
 
 class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings, public QQmlParserStatus
 {
@@ -56,6 +58,6 @@ protected:
 	bool m_doneCancelled;
 };
 
-}}
+}}}
 
-#endif // QF_QMLWIDGETS_DIALOG_H
+#endif // QF_QMLWIDGETS_DIALOGS_DIALOG_H

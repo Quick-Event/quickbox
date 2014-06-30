@@ -1,6 +1,5 @@
 module qf.qmlwidgets
 
-# not needed for now, maybe in future
-#singleton QmlWidgets 1.0 QmlWidgets.qml
+singleton InputDialogSingleton 1.0 InputDialogSingleton.qml
 
 plugin qfqmlwidgetsplugin
