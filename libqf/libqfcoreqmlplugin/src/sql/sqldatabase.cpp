@@ -4,6 +4,7 @@
 #include <qf/core/log.h>
 
 #include <QSqlError>
+#include <QSqlDriver>
 
 using namespace qf::core::qml;
 
@@ -83,6 +84,42 @@ void SqlDatabase::close()
 		m_sqlDatabase.close();
 		emit isOpenChanged();
 	}
+}
+
+bool SqlDatabase::transaction()
+{
+	bool ret = true;
+	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = m_sqlDatabase.transaction();
+		if(!ret) {
+			qfWarning() << "Cannot open transaction";
+		}
+	}
+	return ret;
+}
+
+bool SqlDatabase::commit()
+{
+	bool ret = true;
+	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = m_sqlDatabase.commit();
+		if(!ret) {
+			qfWarning() << "Cannot commit transaction";
+		}
+	}
+	return ret;
+}
+
+bool SqlDatabase::rollback()
+{
+	bool ret = true;
+	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = m_sqlDatabase.rollback();
+		if(!ret) {
+			qfWarning() << "Cannot rollback transaction";
+		}
+	}
+	return ret;
 }
 
 SqlQuery *SqlDatabase::createQuery()

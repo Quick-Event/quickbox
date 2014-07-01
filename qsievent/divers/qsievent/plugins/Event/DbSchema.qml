@@ -18,7 +18,7 @@ Schema {
 						length: 3
 						unsigned: true
 					}
-					notNull: true
+					//notNull: true
 					defaultValue: 0
 				},
 				Field{
@@ -26,14 +26,12 @@ Schema {
 					type: Int {
 						unsigned: true
 					}
-					notNull: true
 				},
 				Field{
 					name: 'checkTime'
 					type: Int {
 						unsigned: true
 					}
-					notNull: true
 					comment: 'seconds in range 0 - 12 hours'
 				},
 				Field{
@@ -41,7 +39,6 @@ Schema {
 					type: Int {
 						unsigned: true
 					}
-					notNull: true
 					comment: 'seconds in range 0 - 12 hours'
 				},
 				Field{
@@ -49,7 +46,6 @@ Schema {
 					type: Int {
 						unsigned: true
 					}
-					notNull: true
 					comment: 'seconds in range 0 - 12 hours'
 				},
 				Field{
@@ -58,7 +54,6 @@ Schema {
 						length: 65536
 						charset: 'latin1'
 					}
-					notNull: true
 					comment: 'JSON of format [[code, time], ...]}'
 				}
   			]

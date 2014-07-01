@@ -4,6 +4,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
+#include <qf/core/utils.h>
 
 #include <QQmlEngine>
 #include <QQmlContext>
@@ -141,7 +142,7 @@ void PluginLoader::loadNextPlugin()
 				QObject::connect(m_currentlyLoadedComponent, &QQmlComponent::statusChanged, this, &PluginLoader::continueLoading);
 			}
 			else {
-				QMetaObject::invokeMethod(this, "continueLoading", Qt::QueuedConnection);
+				continueLoading();
 			}
 			break;
 		}
@@ -196,5 +197,6 @@ void PluginLoader::continueLoading()
 		qfError() << "Status:" << m_currentlyLoadedComponent->status() << "error:" << m_currentlyLoadedComponent->errorString();
 	}
 	manifest->deleteLater();
-	loadNextPlugin();
+	QF_SAFE_DELETE(m_currentlyLoadedComponent);
+	QMetaObject::invokeMethod(this, "loadNextPlugin", Qt::QueuedConnection);
 }

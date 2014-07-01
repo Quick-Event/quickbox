@@ -44,3 +44,5 @@ OTHER_FILES += \
 
 include (src/src.pri)
 
+RESOURCES += $${TARGET}.qrc \
+    qfcoreqmlplugin.qrc

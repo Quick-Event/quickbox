@@ -37,3 +37,4 @@ OTHER_FILES += \
 
 QML_IMPORT_PATH += \
     $$OUT_PWD/../lib/qml \
+

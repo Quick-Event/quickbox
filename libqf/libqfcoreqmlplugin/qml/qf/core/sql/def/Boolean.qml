@@ -1,6 +1,10 @@
 import "private"
 
-FieldType {
-	property int length: -1
-	property bool unsigned: false
+FieldType
+{
+	function createSqlScript(options)
+	{
+		var def = 'boolean';
+		return def;
+	}
 }

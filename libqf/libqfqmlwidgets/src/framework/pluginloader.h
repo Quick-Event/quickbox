@@ -30,7 +30,7 @@ private:
 
 	PluginMap findPlugins();
 	void loadPlugins(const PluginMap &manifests_to_load);
-	void loadNextPlugin();
+	Q_SLOT void loadNextPlugin();
 	Q_SLOT void continueLoading();
 private:
 	PluginMap m_loadedPlugins;

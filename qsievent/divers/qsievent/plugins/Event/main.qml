@@ -18,6 +18,7 @@ Plugin {
 		Action {
 			id: actCreateEvent
 			text: qsTr('Create &new event')
+			shortcut: "Ctrl+N"
 			enabled: internals.sqlDb.database.isOpen
 			onTriggered: {
 				Log.info(text, "triggered");

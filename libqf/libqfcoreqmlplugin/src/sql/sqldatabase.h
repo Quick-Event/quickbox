@@ -48,6 +48,9 @@ public:
 
 	Q_INVOKABLE bool open();
 	Q_INVOKABLE void close();
+	Q_INVOKABLE bool transaction();
+	Q_INVOKABLE bool commit();
+	Q_INVOKABLE bool rollback();
 	Q_INVOKABLE qf::core::qml::SqlQuery* createQuery();
 	Q_INVOKABLE qf::core::qml::SqlQuery* exec(const QString &query_str);
 private:

@@ -6,8 +6,22 @@ QtObject {
 	property string name
 	property FieldType type
 	property int length: -1
-	property string charset: "utf8"
 	property var defaultValue
 	property bool notNull: false
 	property string comment
+
+	function createSqlScript(options)
+	{
+		var def = '\t' + name + ' ' + type.createSqlScript(options);
+		if(notNull)
+			def += ' NOT NULL';
+		if(defaultValue) {
+			def += ' DEFAULT ';
+			if(typeof defaultValue === 'number')
+				def += "'" + defaultValue + "'";
+			else
+				def += defaultValue;
+		}
+		return def;
+	}
 }
