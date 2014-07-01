@@ -5,8 +5,6 @@ import qf.qmlwidgets.framework 1.0
 
 Plugin {
 	id: root
-	featureId: 'EmptyTemplate'
-	dependsOnFeatureIds: ["Core"]
 
 	property QfObject internals: QfObject
 	{
@@ -38,7 +36,7 @@ Plugin {
 		}
 	]
 
-	function install()
+	Component.onCompleted:
 	{
 		FrameWork.menuBar.actionForPath('help').addAction(actLayoutTest);
 		FrameWork.menuBar.actionForPath('help').addAction(actGC);

@@ -5,17 +5,9 @@ import qf.qmlwidgets.framework 1.0
 
 Plugin {
 	id: root
-	featureId: 'Event'
-	dependsOnFeatureIds: ["Sql"]
 
 	property QfObject internals: QfObject {
-		property bool installFinished: false
-		function isSqlConnected()
-		{
-			if(!installFinished)
-				return false;
-			return Sql.database().isOpen;
-		}
+		property Plugin sqlDb: FrameWork.plugin('SqlDb')
 
 		Event {
 			id: event
@@ -26,7 +18,7 @@ Plugin {
 		Action {
 			id: actCreateEvent
 			text: qsTr('Create &new event')
-			enabled: internals.isSqlConnected()
+			enabled: internals.sqlDb.database.isOpen
 			onTriggered: {
 				Log.info(text, "triggered");
 				event.createEvent();
@@ -36,7 +28,7 @@ Plugin {
 			id: actOpenEvent
 			text: qsTr('&Open event')
 			shortcut: "Ctrl+O"
-			enabled: internals.isSqlConnected()
+			enabled: internals.sqlDb.database.isOpen
 			onTriggered: {
 				Log.info(text, "triggered");
 				event.openEvent();
@@ -44,13 +36,12 @@ Plugin {
 		}
 	]
 
-	function install()
+	Component.onCompleted:
 	{
 		var quit = FrameWork.menuBar.actionForPath('file/quit', false);
 		quit.prependAction(actCreateEvent);
 		//quit.prependSeparator();
 		quit.prependAction(actOpenEvent);
 		quit.prependSeparator();
-		internals.installFinished = true;
 	}
 }

@@ -5,8 +5,12 @@ import qf.qmlwidgets.framework 1.0
 
 Plugin {
 	id: root
-	featureId: 'Sql'
+	//featureId: 'SqlDb'
 	//dependsOnFeatureIds: "Core"
+	property SqlDatabase database: {
+		Sql.addDatabase('QPSQL');
+		Sql.database();
+	}
 
 	actions: [
 		Action {
@@ -20,7 +24,7 @@ Plugin {
 		}
 	]
 
-	property QfObject internal: QfObject
+	property QfObject internals: QfObject
 	{
 		Component {
 			id: dlgConnectDb
@@ -28,9 +32,8 @@ Plugin {
 		}
 	}
 
-	function install()
+	Component.onCompleted:
 	{
-		Sql.addDatabase('QPSQL');
 		//_Plugin_install();
 		var quit = FrameWork.menuBar.actionForPath('file/quit', false);
 		quit.prependAction(actConnectDb);
