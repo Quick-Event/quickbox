@@ -13,7 +13,6 @@ public:
 	QmlWidgetsSingleton(QObject* parent = 0);
 public:
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
-public slots:
 };
 
 #endif // QMLWIDGETSSINGLETON_H

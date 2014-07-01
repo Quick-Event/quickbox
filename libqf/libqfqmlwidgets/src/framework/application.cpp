@@ -32,11 +32,21 @@ Application::~Application()
 	releaseQmlEngine();
 }
 
+Application *Application::instance(bool must_exist)
+{
+	Application *ret = qobject_cast<Application*>(Super::instance());
+	if(!ret && must_exist) {
+		qfFatal("qf::qmlwidgets::framework::Application instance MUST exist.");
+	}
+	return ret;
+}
+
 QQmlEngine *Application::qmlEngine()
 {
 	if(!m_qmlEngine) {
 		setQmlEngine(createQmlEngine());
 	}
+	Q_ASSERT(m_qmlEngine != nullptr);
 	return m_qmlEngine;
 }
 

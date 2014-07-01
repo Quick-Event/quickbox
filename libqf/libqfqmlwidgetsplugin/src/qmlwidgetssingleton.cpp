@@ -1,5 +1,7 @@
 #include "qmlwidgetssingleton.h"
 
+#include <QQmlEngine>
+
 QmlWidgetsSingleton::QmlWidgetsSingleton(QObject *parent)
 	: QObject(parent)
 {
@@ -7,10 +9,9 @@ QmlWidgetsSingleton::QmlWidgetsSingleton(QObject *parent)
 
 QObject *QmlWidgetsSingleton::singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
-	Q_UNUSED(engine)
 	Q_UNUSED(scriptEngine)
-
-	QmlWidgetsSingleton *s = new QmlWidgetsSingleton();
+	QmlWidgetsSingleton *s = new QmlWidgetsSingleton(engine);
 	return s;
 }
+
 

@@ -39,7 +39,7 @@ Plugin {
 		quit.prependAction(actConnectDb);
 		quit.prependSeparator();
 
-		FrameWork.postInstall.connect(postInstall);
+		FrameWork.pluginsLoaded.connect(postInstall);
 	}
 
 	function postInstall()

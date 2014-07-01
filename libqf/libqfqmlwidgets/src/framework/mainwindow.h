@@ -18,6 +18,7 @@ class MenuBar;
 namespace framework {
 
 class Application;
+class PluginLoader;
 
 class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersistentSettings
 {
@@ -32,34 +33,25 @@ public:
 	explicit MainWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow() Q_DECL_OVERRIDE;
 public:
-	virtual void loadPlugins();
-private:
-	Application* application(bool must_exist = true);
-protected:
-	virtual PluginMap findPlugins();
-	virtual void installPlugins(const PluginMap &plugins_to_install);
-private:
-	Q_SLOT void savePersistentSettings();
-	//void setupSettingsPersistence();
-public:
+	void loadPlugins();
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
 	Q_INVOKABLE MenuBar* menuBar();
 	Q_INVOKABLE QObject* plugin(const QString &feature_id);
 
 	Q_SLOT void loadPersistentSettings();
-	/// emitted by plugin loader when all plugins are installed
-	Q_SIGNAL void postInstall();
+	/// emitted by plugin loader when all plugins are loaded
+	Q_SIGNAL void pluginsLoaded();
 
 	Q_INVOKABLE QObject* obj_testing();
 
 private:
-	PluginMap m_installedPlugins;
-	QStringList m_featureSlots;
+	Q_SLOT void savePersistentSettings();
+	//void setupSettingsPersistence();
+private:
+	PluginLoader *m_pluginLoader;
 };
 
-}
-}
-}
+}}}
 
 #endif // QF_QMLWIDGETS_FRAMEWORK_MAINWINDOW_H

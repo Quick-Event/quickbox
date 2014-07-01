@@ -16,9 +16,15 @@ Plugin {
 
 	actions: [
 		Action {
+			id: actLAboutQt
+			text: qsTr('About &Qt')
+			onTriggered: {
+				MessageBoxSingleton.aboutQt();
+			}
+		},
+		Action {
 			id: actLayoutTest
 			text: qsTr('&Layout test')
-			shortcut: "Ctrl+T"
 			onTriggered: {
 				Log.info(text, "triggered");
 				var dlg = dlgLayoutTest.createObject(FrameWork);
@@ -38,6 +44,8 @@ Plugin {
 
 	Component.onCompleted:
 	{
+		FrameWork.menuBar.actionForPath('help').addAction(actLAboutQt);
+		FrameWork.menuBar.actionForPath('help').addSeparator();
 		FrameWork.menuBar.actionForPath('help').addAction(actLayoutTest);
 		FrameWork.menuBar.actionForPath('help').addAction(actGC);
 	}

@@ -4,7 +4,7 @@ CONFIG += ordered
 SUBDIRS += \
 	libqf \
 	libsiut \
-    qsicli \
+    #qsicli \
 	qsievent \
 
 

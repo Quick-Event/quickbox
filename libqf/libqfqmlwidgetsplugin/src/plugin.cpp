@@ -1,4 +1,6 @@
 #include "qmlwidgetssingleton.h"
+#include "inputdialogsingleton.h"
+#include "messageboxsingleton.h"
 
 #include <qf/qmlwidgets/frame.h>
 #include <qf/qmlwidgets/label.h>
@@ -9,6 +11,7 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/inputdialog.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
@@ -30,8 +33,9 @@ public:
 		qfLogFuncFrame() << uri;
 		Q_ASSERT(uri == QLatin1String("qf.qmlwidgets"));
 
-		// not needed for now, maybe in future
-		//qmlRegisterSingletonType<QmlWidgetsSingleton>(uri, 1, 0, "QmlWidgets_Singleton", &QmlWidgetsSingleton::singletontype_provider);
+		qmlRegisterSingletonType<QmlWidgetsSingleton>(uri, 1, 0, "QmlWidgetsSingleton", &QmlWidgetsSingleton::singletontype_provider);
+		qmlRegisterSingletonType<MessageBoxSingleton>(uri, 1, 0, "MessageBoxSingleton", &MessageBoxSingleton::singletontype_provider);
+		qmlRegisterSingletonType<InputDialogSingleton>(uri, 1, 0, "InputDialogSingleton", &InputDialogSingleton::singletontype_provider);
 
 		// QWidget have to be registered to make QQmlListProperty<QWidget> work !!!
 		// in other case strange error: Invalid property assignment: "widgets" is a read-only property
@@ -58,6 +62,7 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::dialogs::Dialog>(uri, 1, 0, "Dialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::InputDialog>(uri, 1, 0, "InputDialog");
+		qmlRegisterType<qf::qmlwidgets::dialogs::MessageBox>(uri, 1, 0, "MessageBox");
 	}
 };
 

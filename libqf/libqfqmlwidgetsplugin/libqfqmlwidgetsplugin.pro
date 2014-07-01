@@ -2,6 +2,7 @@ message(including $$PWD)
 
 TEMPLATE = lib
 CONFIG += plugin
+CONFIG += c++11
 QT += qml widgets
 
 PLUGIN_MODULE_PATH = qml/qf/qmlwidgets
@@ -30,3 +31,9 @@ QMAKE_EXTRA_TARGETS += qmlfiles
 POST_TARGETDEPS += qmlfiles
 
 include (src/src.pri)
+
+OTHER_FILES += \
+    $$PLUGIN_MODULE_PATH/*.qml \
+
+QML_IMPORT_PATH += \
+    $$OUT_PWD/../lib/qml \

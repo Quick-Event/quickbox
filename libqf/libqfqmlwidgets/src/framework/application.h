@@ -21,6 +21,7 @@ public:
 	explicit Application(int & argc, char ** argv);
 	~Application() Q_DECL_OVERRIDE;
 public:
+	static Application* instance(bool must_exist = true);
 	virtual QQmlEngine* qmlEngine();
 	/// Application doesn't take ownership of @a eng
 	void setQmlEngine(QQmlEngine *eng);

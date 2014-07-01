@@ -20,15 +20,15 @@ Plugin {
 
 	property QfObject internals: QfObject
 	{
-    	Component {
-    		id: settingsComponent
-        	Settings {}
-    	}
+		Component {
+			id: settingsComponent
+			Settings {}
+		}
 	}
 
 	function createSettings()
 	{
-        return settingsComponent.createObject(null);
+		return settingsComponent.createObject(null);
 	}
 
 	property Crypt crypt: Crypt
@@ -40,15 +40,15 @@ Plugin {
 
 	Component.onCompleted:
 	{
-    	Log.debug("debug log test, use console.debug() for qml file and line information");
-    	Log.info("info log test, use console.info() for qml file and line information");
-    	Log.warning("warn log test, use console.warn() for qml file and line information");
-    	Log.error("error log test, use console.error() for qml file and line information");
-    	console.debug("Core log test");
-    	console.info("Core log test");
-    	console.warn("Core log test");
-    	console.error("Core log test");
-//_Plugin_install();
+		Log.debug("debug log test, use console.debug() for qml file and line information");
+		Log.info("info log test, use console.info() for qml file and line information");
+		Log.warning("warn log test, use console.warn() for qml file and line information");
+		Log.error("error log test, use console.error() for qml file and line information");
+		console.debug("Core log test");
+		console.info("Core log test");
+		console.warn("Core log test");
+		console.error("Core log test");
+
 		FrameWork.setPersistentSettingDomains("datamines.cz", "DataMines");
 		FrameWork.persistentSettingsId = "MainWindow";
 		FrameWork.loadPersistentSettings();
@@ -58,14 +58,5 @@ Plugin {
 		//FrameWork.menuBar.actionForPath('file').addSeparator();
 		FrameWork.menuBar.actionForPath('file').addAction(actQuit);
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
-
-		/*
-		try {
-			_Plugin_install(frame_work);
-		}
-		catch(err) {
-			Log.error("install error", err);
-		}
-		*/
 	}
 }

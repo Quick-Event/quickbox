@@ -24,7 +24,9 @@ include($$PWD/src/src.pri)
 
 OTHER_FILES += \
     divers/qsievent/plugins/Core/*.qml \
-    divers/qsievent/plugins/DbUtils/*.qml \
+    divers/qsievent/plugins/SqlDb/*.qml \
+    divers/qsievent/plugins/Event/*.qml \
+    divers/qsievent/plugins/Help/*.qml \
 
 QML_IMPORT_PATH += \
     $$OUT_PWD/../lib/qml \
