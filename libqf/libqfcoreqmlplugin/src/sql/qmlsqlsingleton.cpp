@@ -10,7 +10,12 @@ using namespace qf::core::qml;
 qf::core::qml::QmlSqlSingleton::QmlSqlSingleton(QObject *parent) :
 	QObject(parent)
 {
+	qfLogFuncFrame() << this;
+}
 
+QmlSqlSingleton::~QmlSqlSingleton()
+{
+	qfLogFuncFrame() << this;
 }
 
 QObject *qf::core::qml::QmlSqlSingleton::singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -42,10 +47,3 @@ SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
 	return ret;
 }
 
-/*
-SqlDatabase *QmlSqlSingleton::createDatabase(const QString &connection_name)
-{
-	SqlDatabase *ret = new SqlDatabase(connection_name);
-	return ret;
-}
-*/

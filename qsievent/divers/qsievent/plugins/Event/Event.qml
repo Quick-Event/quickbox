@@ -19,9 +19,9 @@ QfObject {
 		var event_name = InputDialogSingleton.getText(null, qsTr('Query'), qsTr('Enter new event name'), qsTr('new_event'));
 		if(event_name) {
 			Log.info('will create:', event_name);
-			var create_script = dbSchema.createSqlScript({schemaName: event_name});
-			//Log.info(create_script.join(';\n') + ';');
 			var db = Sql.database();
+			var create_script = dbSchema.createSqlScript({schemaName: event_name, driverName: db.driverName});
+			//Log.info(create_script.join(';\n') + ';');
 			db.transaction();
 			var q = db.createQuery();
 			var ok = false;
@@ -46,13 +46,21 @@ QfObject {
 
 	function openEvent()
 	{
-		var q = Sql.database().exec("SELECT * FROM pg_user");
+		var db = Sql.database();
+		var q = db.createQuery(qb);
+		var qb = q.builder();
+		qb.select('nspname').from('pg_catalog.pg_namespace  AS n')
+			.where("nspname NOT LIKE 'pg\\_%'")
+			.where("nspname NOT IN ('public', 'information_schema')")
+			.orderBy('nspname');
+		q.exec(qb);
 		var rec = q.record();
 		var fld_names = rec.fieldNames().join(',');
 		Log.info(fld_names);
 		while(q.next()) {
 			Log.info(q.values().join(','));
 		}
+		q.destroy();
 	}
 
 }

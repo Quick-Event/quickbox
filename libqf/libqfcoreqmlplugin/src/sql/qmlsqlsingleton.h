@@ -21,6 +21,7 @@ class QmlSqlSingleton : public QObject
 	Q_OBJECT
 public:
 	QmlSqlSingleton(QObject *parent = 0);
+	~QmlSqlSingleton() Q_DECL_OVERRIDE;
 
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:

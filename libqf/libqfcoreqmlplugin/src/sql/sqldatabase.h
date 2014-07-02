@@ -9,11 +9,12 @@ namespace core {
 namespace qml {
 
 class SqlQuery;
+class SqlQueryBuilder;
 
 class SqlDatabase : public QObject
 {
 	Q_OBJECT
-	//Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName NOTIFY connectionNameChanged)
+	Q_PROPERTY(QString driverName READ driverName)
 	Q_PROPERTY(QString hostName READ hostName WRITE setHostName NOTIFY hostNameChanged)
 	Q_PROPERTY(QString userName READ userName WRITE setUserName NOTIFY userNameChanged)
 	Q_PROPERTY(QString databaseName READ databaseName WRITE setDatabaseName NOTIFY databaseNameChanged)
@@ -46,13 +47,16 @@ public:
 	bool isOpen() {return m_sqlDatabase.isOpen();}
 	Q_SIGNAL void isOpenChanged();
 
+	QString driverName();
+
 	Q_INVOKABLE bool open();
 	Q_INVOKABLE void close();
 	Q_INVOKABLE bool transaction();
 	Q_INVOKABLE bool commit();
 	Q_INVOKABLE bool rollback();
 	Q_INVOKABLE qf::core::qml::SqlQuery* createQuery();
-	Q_INVOKABLE qf::core::qml::SqlQuery* exec(const QString &query_str);
+	//Q_INVOKABLE qf::core::qml::SqlQuery* exec(const QString &query_str);
+	//Q_INVOKABLE qf::core::qml::SqlQuery* exec(qf::core::qml::SqlQueryBuilder *qb);
 private:
 	QSqlDatabase m_sqlDatabase;
 };

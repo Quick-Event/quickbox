@@ -1,5 +1,6 @@
 #include "sqlquery.h"
 #include "sqlrecord.h"
+#include "sqlquerybuilder.h"
 
 #include <qf/core/log.h>
 
@@ -8,8 +9,14 @@
 using namespace qf::core::qml;
 
 SqlQuery::SqlQuery(QObject *parent) :
-	QObject(parent), m_record(nullptr)
+	QObject(parent), m_record(nullptr), m_queryBuilder(nullptr)
 {
+	qfLogFuncFrame() << this;
+}
+
+SqlQuery::~SqlQuery()
+{
+	qfLogFuncFrame() << this;
 }
 
 void SqlQuery::setDatabase(const QSqlDatabase &db)
@@ -30,6 +37,11 @@ bool SqlQuery::exec(const QString &query_str)
 		qfError() << "SQL ERROR:" << err;
 	}
 	return ret;
+}
+
+bool SqlQuery::exec(SqlQueryBuilder *qb)
+{
+	return exec(qb->toString());
 }
 
 QString SqlQuery::lastError()
@@ -72,11 +84,20 @@ QVariantList SqlQuery::values()
 	return ret;
 }
 
-qf::core::qml::SqlRecord *SqlQuery::record()
+SqlRecord *SqlQuery::record()
 {
 	if(!m_record)
 		m_record = new SqlRecord(this);
 	m_record->setRecord(m_query.record());
 	return m_record;
+}
+
+SqlQueryBuilder *SqlQuery::builder()
+{
+	if(!m_queryBuilder) {
+		m_queryBuilder = new SqlQueryBuilder(this);
+
+	}
+	return m_queryBuilder;
 }
 

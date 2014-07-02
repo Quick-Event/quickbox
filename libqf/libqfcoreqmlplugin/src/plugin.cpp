@@ -5,6 +5,7 @@
 #include "sql/sqldatabase.h"
 #include "sql/sqlquery.h"
 #include "sql/sqlrecord.h"
+#include "sql/sqlquerybuilder.h"
 
 #include <qf/core/log.h>
 
@@ -30,6 +31,8 @@ public:
 		qmlRegisterType<qf::core::qml::SqlDatabase>(uri, 1, 0, "SqlDatabase");
 		qmlRegisterType<qf::core::qml::SqlQuery>(uri, 1, 0, "SqlQuery");
 		qmlRegisterType<qf::core::qml::SqlRecord>(uri, 1, 0, "SqlRecord");
+
+		qmlRegisterType<qf::core::qml::SqlQueryBuilder>(uri, 1, 0, "SqlQueryBuilder");
     }
 };
 

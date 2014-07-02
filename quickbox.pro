@@ -3,7 +3,7 @@ CONFIG += ordered
 
 SUBDIRS += \
 	libqf \
-	libsiut \
+	#libsiut \
     #qsicli \
 	qsievent \
 

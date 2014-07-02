@@ -16,3 +16,4 @@ SOURCES += \
     $$PWD/logdevice.cpp \
 
 include ($$PWD/utils/utils.pri)
+include ($$PWD/sql/sql.pri)

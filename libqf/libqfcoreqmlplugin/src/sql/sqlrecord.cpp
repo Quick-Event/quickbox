@@ -7,6 +7,12 @@ using namespace qf::core::qml;
 SqlRecord::SqlRecord(QObject *parent) :
 	QObject(parent)
 {
+	qfLogFuncFrame() << this;
+}
+
+SqlRecord::~SqlRecord()
+{
+	qfLogFuncFrame() << this;
 }
 
 void SqlRecord::setRecord(const QSqlRecord &rec)

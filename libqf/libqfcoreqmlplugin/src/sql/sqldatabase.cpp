@@ -1,5 +1,6 @@
 #include "sqldatabase.h"
 #include "sqlquery.h"
+#include "sqlquerybuilder.h"
 
 #include <qf/core/log.h>
 
@@ -18,6 +19,9 @@ SqlDatabase::SqlDatabase(const QString &connection_name, QObject *parent) :
 SqlDatabase::~SqlDatabase()
 {
 	qfLogFuncFrame() << this << connectionName();
+	if(parent()) {
+		//qfWarning() << "SqlDatabase has parent:" << parent();
+	}
 }
 /*
 void SqlDatabase::setConnectionName(const QString &n)
@@ -58,6 +62,11 @@ void SqlDatabase::setPort(int n)
 		m_sqlDatabase.setPort(n);
 		emit portChanged();
 	}
+}
+
+QString SqlDatabase::driverName()
+{
+	return m_sqlDatabase.driverName();
 }
 
 bool SqlDatabase::open()
@@ -128,10 +137,16 @@ SqlQuery *SqlDatabase::createQuery()
 	ret->setDatabase(m_sqlDatabase);
 	return ret;
 }
-
+/*
 SqlQuery *SqlDatabase::exec(const QString &query_str)
 {
 	SqlQuery *ret = createQuery();
 	ret->exec(query_str);
 	return ret;
 }
+
+SqlQuery *SqlDatabase::exec(SqlQueryBuilder *qb)
+{
+	return exec(qb->toString());
+}
+*/

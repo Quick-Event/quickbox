@@ -3,8 +3,6 @@
 
 #include "../coreglobal.h"
 
-//#include <QString>
-
 #include <limits>
 
 namespace qf {
