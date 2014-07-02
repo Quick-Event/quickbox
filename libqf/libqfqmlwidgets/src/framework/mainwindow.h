@@ -14,6 +14,7 @@ class Settings;
 namespace qmlwidgets {
 
 class MenuBar;
+class StatusBar;
 
 namespace framework {
 
@@ -24,6 +25,7 @@ class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersiste
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
+	Q_PROPERTY(qf::qmlwidgets::StatusBar* statusBar READ statusBar)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 private:
 	typedef QMainWindow Super;
@@ -36,20 +38,25 @@ public:
 	void loadPlugins();
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
-	Q_INVOKABLE MenuBar* menuBar();
+	MenuBar* menuBar();
+	StatusBar* statusBar();
+	Q_INVOKABLE void setStatusBar(qf::qmlwidgets::StatusBar *sbar);
 	Q_INVOKABLE QObject* plugin(const QString &feature_id);
 
 	Q_SLOT void loadPersistentSettings();
 	/// emitted by plugin loader when all plugins are loaded
 	Q_SIGNAL void pluginsLoaded();
 
-	Q_INVOKABLE QObject* obj_testing();
+	Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
+
+	//Q_INVOKABLE QObject* obj_testing();
 
 private:
 	Q_SLOT void savePersistentSettings();
 	//void setupSettingsPersistence();
 private:
 	PluginLoader *m_pluginLoader;
+	qf::qmlwidgets::StatusBar* m_statusBar;
 };
 
 }}}

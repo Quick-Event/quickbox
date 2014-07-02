@@ -1,5 +1,5 @@
-#ifndef SPLITTER_H
-#define SPLITTER_H
+#ifndef QF_QMLWIDGETS_SPLITTER_H
+#define QF_QMLWIDGETS_SPLITTER_H
 
 #include "qmlwidgetsglobal.h"
 #include "framework/ipersistentsettings.h"
@@ -35,4 +35,4 @@ private:
 
 }}
 
-#endif // SPLITTER_H
+#endif

@@ -24,6 +24,9 @@ Plugin {
 			id: settingsComponent
 			Settings {}
 		}
+		AppStatusBar {
+			id: appStatusBar
+		}
 	}
 
 	function createSettings()
@@ -58,5 +61,7 @@ Plugin {
 		//FrameWork.menuBar.actionForPath('file').addSeparator();
 		FrameWork.menuBar.actionForPath('file').addAction(actQuit);
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
+
+		FrameWork.setStatusBar(appStatusBar);
 	}
 }

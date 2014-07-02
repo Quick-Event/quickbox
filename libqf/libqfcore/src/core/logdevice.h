@@ -5,54 +5,92 @@
 #include "log.h"
 
 #include <QMap>
+#include <QObject>
 
 namespace qf {
 namespace core {
 
-class QFCORE_DECL_EXPORT LogDevice
+class QFCORE_DECL_EXPORT LogDevice : public QObject
 {
-	protected:
-		LogDevice(int argc, char *argv[]);
-	public:
-		virtual ~LogDevice();
-	public:
-		static QString domainFromContext(const QMessageLogContext &context);
-		static void install(LogDevice *dev);
-		int setLogTreshold(Log::Level level);
-		void setDomainTresholds(int argc, char *argv[]);
-		int logTreshold();
-		virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
-		virtual bool checkLogPermisions(const QString &_domain, Log::Level _level);
+	Q_OBJECT
+protected:
+	LogDevice(QObject *parent = 0);
+public:
+	virtual ~LogDevice();
+public:
+	static QString domainFromContext(const QMessageLogContext &context);
+	static void install(LogDevice *dev);
+	int setLogTreshold(Log::Level level);
+	void setDomainTresholds(int argc, char *argv[]);
+	int logTreshold();
+	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
+	virtual bool checkLogPermisions(const QString &_domain, Log::Level _level);
 
-		void setPrettyDomain(bool b);
-		bool isPrettyDomain() const;
-	protected:
-		virtual QString prettyDomain(const QString &domain);
-	protected:
-		static int environmentLogTreshold;
-		static int commandLineLogTreshold;
+	void setPrettyDomain(bool b);
+	bool isPrettyDomain() const;
+protected:
+	virtual QString prettyDomain(const QString &domain);
+protected:
+	static int environmentLogTreshold;
+	static int commandLineLogTreshold;
 
-		QMap<QString, int> m_domainTresholds;
-		Log::Level m_logTreshold;
-		int m_count;
-		bool m_isPrettyDomain;
+	QMap<QString, int> m_domainTresholds;
+	Log::Level m_logTreshold;
+	int m_count;
+	bool m_isPrettyDomain;
 };
 
 class QFCORE_DECL_EXPORT FileLogDevice : public LogDevice
 {
-	private:
+	Q_OBJECT
+private:
 	typedef LogDevice Super;
-	protected:
-		FileLogDevice(int argc, char *argv[]);
-		~FileLogDevice() Q_DECL_OVERRIDE;
-	public:
-		static FileLogDevice* install(int argc, char *argv[]);
+protected:
+	FileLogDevice(QObject *parent = 0);
+	~FileLogDevice() Q_DECL_OVERRIDE;
+public:
+	static FileLogDevice* install();
 
-		void setFile(const QString &path_to_file);
+	void setFile(const QString &path_to_file);
 
-		void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
-	protected:
-		FILE *m_file;
+	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
+protected:
+	FILE *m_file;
+};
+
+class QFCORE_DECL_EXPORT LogEntryMap : public QVariantMap
+{
+public:
+	//enum Key {KeyLevel, KeyDomain, KeyMessage, KeyFile, KeyLine, KeyFunction};
+public:
+	LogEntryMap() : QVariantMap() {}
+	LogEntryMap(int level, const QString &domain, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());
+	LogEntryMap(const QVariantMap &m) : QVariantMap(m) {}
+public:
+	qf::core::Log::Level level() const;
+	QString levelStr() const;
+	QString domain() const;
+	QString message() const;
+	QString file() const;
+	int line() const;
+	QString function() const;
+	virtual QString toString() const;
+};
+
+class QFCORE_DECL_EXPORT SignalLogDevice : public LogDevice
+{
+	Q_OBJECT
+private:
+	typedef LogDevice Super;
+protected:
+	SignalLogDevice(QObject *parent = 0);
+	~SignalLogDevice() Q_DECL_OVERRIDE;
+public:
+	static SignalLogDevice* install();
+
+	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
+
+	Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
 };
 
 }

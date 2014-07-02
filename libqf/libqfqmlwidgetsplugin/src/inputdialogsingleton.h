@@ -15,6 +15,7 @@ public:
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:
 	Q_INVOKABLE QString getText(QWidget *parent, const QString &title, const QString &label, const QString &text = QString());
+	Q_INVOKABLE QString getItem(QWidget *parent, const QString &title, const QString &label, const QStringList &items, int current = 0, bool editable = true);
 };
 
 #endif // INPUTDIALOGSINGLETON_H

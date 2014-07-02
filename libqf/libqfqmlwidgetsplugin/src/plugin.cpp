@@ -6,6 +6,7 @@
 #include <qf/qmlwidgets/label.h>
 #include <qf/qmlwidgets/lineedit.h>
 #include <qf/qmlwidgets/splitter.h>
+#include <qf/qmlwidgets/statusbar.h>
 #include <qf/qmlwidgets/action.h>
 //#include <qf/qmlwidgets/menu.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -38,7 +39,8 @@ public:
 		qmlRegisterSingletonType<InputDialogSingleton>(uri, 1, 0, "InputDialogSingleton", &InputDialogSingleton::singletontype_provider);
 
 		// QWidget have to be registered to make QQmlListProperty<QWidget> work !!!
-		// in other case strange error: Invalid property assignment: "widgets" is a read-only property
+		// in other case strange error:
+		// [Invalid property assignment: "widgets" is a read-only property]
 		// is issued
 		qmlRegisterType<QWidget>(uri, 1, 0, "Widget");
 
@@ -52,6 +54,7 @@ public:
 		// Menu is not needed fo now
 		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
+		qmlRegisterType<qf::qmlwidgets::StatusBar>(uri, 1, 0, "StatusBar");
 
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 

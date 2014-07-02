@@ -2,6 +2,7 @@
 #include "application.h"
 #include "pluginloader.h"
 #include "../menubar.h"
+#include "../statusbar.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -22,9 +23,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 
 	QQmlEngine *qe = Application::instance()->qmlEngine();
 	qe->rootContext()->setContextProperty("FrameWork", this);
-
-	MenuBar *main_menu = new MenuBar(this);
-	setMenuBar(main_menu);
 }
 
 MainWindow::~MainWindow()
@@ -47,13 +45,82 @@ void MainWindow::loadPersistentSettings()
 	if(!path.isEmpty()) {
 		QSettings settings;
 		settings.beginGroup(path);
-		QRect geometry = settings.value("geometry").toRect();
-		if(geometry.isValid()) {
-			this->setGeometry(geometry);
-		}
+		restoreGeometry(settings.value("geometry").toByteArray());
+		restoreState(settings.value("state").toByteArray());
 	}
 }
 
+void MainWindow::savePersistentSettings()
+{
+	QString path = persistentSettingsPath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		QSettings settings;
+		settings.beginGroup(path);
+		settings.setValue("state", saveState());
+		settings.setValue("geometry", saveGeometry());
+	}
+}
+
+void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)
+{
+	QCoreApplication::setOrganizationDomain(organization_domain);
+	QCoreApplication::setOrganizationName(organization_name);
+	if(!application_name.isEmpty()) {
+		QCoreApplication::setApplicationName(application_name);
+	}
+	//QSettings::setDefaultFormat(QSettings::IniFormat);
+}
+
+qf::qmlwidgets::MenuBar *MainWindow::menuBar()
+{
+	QMenuBar *mb = Super::menuBar();
+	MenuBar *menu_bar = qobject_cast<MenuBar*>(mb);
+	if(!menu_bar) {
+		QF_SAFE_DELETE(mb);
+		menu_bar = new MenuBar(this);
+		Super::setMenuBar(menu_bar);
+	}
+	return menu_bar;
+}
+
+qf::qmlwidgets::StatusBar *MainWindow::statusBar()
+{
+	QStatusBar *sb = Super::statusBar();
+	StatusBar *status_bar = qobject_cast<StatusBar*>(sb);
+	if(!status_bar) {
+		QF_SAFE_DELETE(sb);
+		status_bar = new StatusBar(this);
+		Super::setStatusBar(status_bar);
+	}
+	return status_bar;
+}
+
+void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
+{
+	//QStatusBar *sb = Super::statusBar();
+	qfLogFuncFrame() << sbar << "previous:" << Super::statusBar();
+	//QF_SAFE_DELETE(sb);
+	sbar->setParent(0);
+	sbar->setParent(this);
+	sbar->setVisible(true);
+	Super::setStatusBar(sbar); /// deletes old status bar
+	sbar->showMessage("ahoj babi");
+	qfDebug() << Super::statusBar();
+}
+
+QObject *MainWindow::plugin(const QString &feature_id)
+{
+	QObject *ret = nullptr;
+	if(m_pluginLoader) {
+		ret = m_pluginLoader->loadedPlugins().value(feature_id);
+	}
+	if(!ret) {
+		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
+	}
+	return ret;
+}
+#if 0
 class TestObject : public QObject
 {
 	Q_OBJECT
@@ -78,57 +145,5 @@ QObject *MainWindow::obj_testing()
 	return ret;
 }
 
-void MainWindow::savePersistentSettings()
-{
-	QString path = persistentSettingsPath();
-	qfLogFuncFrame() << path;
-	if(!path.isEmpty()) {
-		QRect geometry = this->geometry();
-		QSettings settings;
-		settings.beginGroup(path);
-		settings.setValue("geometry", geometry);
-	}
-}
-
-void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)
-{
-	QCoreApplication::setOrganizationDomain(organization_domain);
-	QCoreApplication::setOrganizationName(organization_name);
-	if(!application_name.isEmpty()) {
-		QCoreApplication::setApplicationName(application_name);
-	}
-	//QSettings::setDefaultFormat(QSettings::IniFormat);
-}
-
-/*
-void MainWindow::setupSettingsPersistence()
-{
-	QString path = persistentSettingsPath();
-	if(path.isEmpty()) {
-		disconnect(this, SIGNAL(destroyed()), this, SLOT(savePersistentSettings()));
-	}
-	else {
-		QObject::connect(this, SIGNAL(destroyed(QObject*)), this, SLOT(savePersistentSettings()), Qt::UniqueConnection);
-		QMetaObject::invokeMethod(this, "loadPersistentSettings", Qt::QueuedConnection);
-	}
-}
-*/
-
-qf::qmlwidgets::MenuBar *MainWindow::menuBar()
-{
-	return qobject_cast<MenuBar*>(Super::menuBar());
-}
-
-QObject *MainWindow::plugin(const QString &feature_id)
-{
-	QObject *ret = nullptr;
-	if(m_pluginLoader) {
-		ret = m_pluginLoader->loadedPlugins().value(feature_id);
-	}
-	if(!ret) {
-		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
-	}
-	return ret;
-}
-
-#include "mainwindow.moc"
+//#include "mainwindow.moc"
+#endif

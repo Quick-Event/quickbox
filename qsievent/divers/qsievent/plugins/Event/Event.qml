@@ -54,11 +54,13 @@ QfObject {
 			.where("nspname NOT IN ('public', 'information_schema')")
 			.orderBy('nspname');
 		q.exec(qb);
-		var rec = q.record();
-		var fld_names = rec.fieldNames().join(',');
-		Log.info(fld_names);
+		var events = [];
 		while(q.next()) {
-			Log.info(q.values().join(','));
+			events.push(q.value('nspname'));
+		}
+		var event_name = InputDialogSingleton.getItem(null, qsTr('Query'), qsTr('Open event'), events, 0, false);
+		if(event_name) {
+			q.exec("SET SCHEMA '" + event_name + "'");
 		}
 		q.destroy();
 	}

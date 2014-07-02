@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/layoutpropertiesattached.h \
     $$PWD/splitter.h \
     $$PWD/gridlayoutproperties.h \
-    $$PWD/dialogbuttonbox.h
+    $$PWD/dialogbuttonbox.h \
+    $$PWD/statusbar.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -23,7 +24,8 @@ SOURCES += \
     $$PWD/layoutpropertiesattached.cpp \
     $$PWD/splitter.cpp \
     $$PWD/gridlayoutproperties.cpp \
-    $$PWD/dialogbuttonbox.cpp
+    $$PWD/dialogbuttonbox.cpp \
+    $$PWD/statusbar.cpp
 
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)
