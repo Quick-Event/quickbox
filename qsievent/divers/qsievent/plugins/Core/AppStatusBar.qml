@@ -6,11 +6,18 @@ StatusBar
 {
 	id: root
 	sizeGripEnabled: true
-	property Label eventName: Label {
-		text: "kkt"
+	property var eventFrame: Frame {
+		Label {
+			id: eventName
+			text: "kkt"
+		}
+	}
+	property var etapFrame: Label {
+			text: "ETAP"
 	}
 	Component.onCompleted:
 	{
-		root.addPermanentWidget(eventName);
+		root.addPermanentWidget(eventFrame);
+		root.addPermanentWidget(etapFrame);
 	}
 }

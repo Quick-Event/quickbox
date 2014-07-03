@@ -34,7 +34,7 @@ void QmlSqlSingleton::addDatabase(const QString &type, const QString &connection
 		qfError() << "Cannot add database type:" << type << "name:" << connection_name;
 	}
 }
-
+/*
 SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
 {
 	qfLogFuncFrame() << connection_name;
@@ -46,4 +46,4 @@ SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
 	qfDebug() << "\t return:" << ret << ret->connectionName();
 	return ret;
 }
-
+*/

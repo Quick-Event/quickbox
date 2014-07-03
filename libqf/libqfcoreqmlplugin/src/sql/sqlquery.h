@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlQuery>
 #include <QVariant>
+#include <QPointer>
 
 class QSqlDadabase;
 
@@ -36,7 +37,7 @@ public:
 private:
 	QSqlQuery m_query;
 	SqlRecord *m_record;
-	SqlQueryBuilder *m_queryBuilder;
+	QPointer<SqlQueryBuilder> m_queryBuilder;
 };
 
 }}}

@@ -12,6 +12,9 @@ QfObject {
 		DbSchema {
 			id: dbSchema
 		}
+		SqlDatabase {
+			id: db
+		}
 	}
 
 	function createEvent()
@@ -19,11 +22,10 @@ QfObject {
 		var event_name = InputDialogSingleton.getText(null, qsTr('Query'), qsTr('Enter new event name'), qsTr('new_event'));
 		if(event_name) {
 			Log.info('will create:', event_name);
-			var db = Sql.database();
 			var create_script = dbSchema.createSqlScript({schemaName: event_name, driverName: db.driverName});
 			//Log.info(create_script.join(';\n') + ';');
 			db.transaction();
-			var q = db.createQuery();
+			var q = db.query();
 			var ok = false;
 			for(var i=0; i<create_script.length; i++) {
 				var cmd = create_script[i] + ';';
@@ -36,7 +38,6 @@ QfObject {
 					break;
 				}
 			}
-			q.destroy();
 			if(ok)
 				db.commit();
 			else
@@ -46,8 +47,9 @@ QfObject {
 
 	function openEvent()
 	{
-		var db = Sql.database();
-		var q = db.createQuery(qb);
+		console.debug(db);
+		//var db = Sql.database();
+		var q = db.query();
 		var qb = q.builder();
 		qb.select('nspname').from('pg_catalog.pg_namespace  AS n')
 			.where("nspname NOT LIKE 'pg\\_%'")
@@ -62,7 +64,6 @@ QfObject {
 		if(event_name) {
 			q.exec("SET SCHEMA '" + event_name + "'");
 		}
-		q.destroy();
 	}
 
 }

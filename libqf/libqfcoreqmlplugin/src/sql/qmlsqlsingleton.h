@@ -26,9 +26,9 @@ public:
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:
 	Q_INVOKABLE void addDatabase(const QString &type, const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
-	Q_INVOKABLE qf::core::qml::SqlDatabase* database(const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
+	//Q_INVOKABLE qf::core::qml::SqlDatabase* database(const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
 private:
-	QMap<QString, SqlDatabase*> m_sqlDatabases;
+	//QMap<QString, SqlDatabase*> m_sqlDatabases;
 };
 
 }}}

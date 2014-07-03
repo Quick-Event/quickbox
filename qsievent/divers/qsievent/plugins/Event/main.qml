@@ -7,7 +7,10 @@ Plugin {
 	id: root
 
 	property QfObject internals: QfObject {
-		property Plugin sqlDb: FrameWork.plugin('SqlDb')
+		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
+		SqlDatabase {
+			id: db
+		}
 
 		Event {
 			id: event
@@ -19,7 +22,7 @@ Plugin {
 			id: actCreateEvent
 			text: qsTr('Create &new event')
 			shortcut: "Ctrl+N"
-			enabled: internals.sqlDb.database.isOpen
+			enabled: internals.pluginSqlDb.sqlServerConnected
 			onTriggered: {
 				Log.info(text, "triggered");
 				event.createEvent();
@@ -29,7 +32,7 @@ Plugin {
 			id: actOpenEvent
 			text: qsTr('&Open event')
 			shortcut: "Ctrl+O"
-			enabled: internals.sqlDb.database.isOpen
+			enabled: internals.pluginSqlDb.sqlServerConnected
 			onTriggered: {
 				Log.info(text, "triggered");
 				event.openEvent();

@@ -31,6 +31,8 @@ Plugin {
 
 	function createSettings()
 	{
+		// it is better to create and destroy new Settings object for each particular use
+		// because it handles situation when one doesn't endGroup properly (groups can be nested)
 		return settingsComponent.createObject(null);
 	}
 

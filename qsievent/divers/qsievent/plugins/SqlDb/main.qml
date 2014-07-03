@@ -7,10 +7,8 @@ Plugin {
 	id: root
 	//featureId: 'SqlDb'
 	//dependsOnFeatureIds: "Core"
-	property SqlDatabase database: {
-		Sql.addDatabase('QPSQL');
-		Sql.database();
-	}
+
+	property bool sqlServerConnected: false
 
 	actions: [
 		Action {
@@ -26,6 +24,15 @@ Plugin {
 
 	property QfObject internals: QfObject
 	{
+		SqlDatabase {
+			id: db
+			Component.onCompleted: {
+				//console.warn('COMPL');
+				Sql.addDatabase('QPSQL');
+				// set connection name to reload new created driver
+				db.connectionName = db.defaultConnectionName
+			}
+		}
 		Component {
 			id: dlgConnectDb
 			DlgConnectDb {}
@@ -57,14 +64,15 @@ Plugin {
 		}
 		if(!cancelled) {
 			var core_feature = FrameWork.plugin("Core");
-			var db = Sql.database();
+			//var db = Sql.database();
 			var settings = core_feature.createSettings();
 			settings.beginGroup("sql/connection");
+			console.debug(db, db.driverName);
 			db.hostName = settings.value('host');
 			db.userName = settings.value('user');
 			db.password = core_feature.crypt.decrypt(settings.value("password", ""));
 			db.databaseName = 'quickevent';
-			db.open();
+			root.sqlServerConnected = db.open();
 			settings.destroy();
 		}
 	}

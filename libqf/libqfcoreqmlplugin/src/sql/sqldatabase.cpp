@@ -9,11 +9,12 @@
 
 using namespace qf::core::qml;
 
-SqlDatabase::SqlDatabase(const QString &connection_name, QObject *parent) :
-	QObject(parent)
+SqlDatabase::SqlDatabase(QObject *parent) :
+	QObject(parent), m_sqlQuery(nullptr)
 {
-	qfLogFuncFrame() << this << connectionName();
-	m_sqlDatabase = QSqlDatabase::database(connection_name, false);
+	qfLogFuncFrame() << this;
+	m_sqlDatabase = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
+	qfDebug() << "created db connection name:" << connectionName();
 }
 
 SqlDatabase::~SqlDatabase()
@@ -23,15 +24,22 @@ SqlDatabase::~SqlDatabase()
 		//qfWarning() << "SqlDatabase has parent:" << parent();
 	}
 }
-/*
+
 void SqlDatabase::setConnectionName(const QString &n)
 {
+	qfLogFuncFrame() << this << connectionName() << "->" << n;
 	if(n != connectionName()) {
 		m_sqlDatabase = QSqlDatabase::database(n, false);
 		emit connectionNameChanged();
 	}
 }
-*/
+
+QString SqlDatabase::defaultConnectionName() const
+{
+	static QString s = QLatin1String(QSqlDatabase::defaultConnection);
+	return s;
+}
+
 void SqlDatabase::setHostName(const QString &n)
 {
 	if(n != hostName()) {
@@ -45,6 +53,14 @@ void SqlDatabase::setUserName(const QString &n)
 	if(n != userName()) {
 		m_sqlDatabase.setUserName(n);
 		emit userNameChanged();
+	}
+}
+
+void SqlDatabase::setPassword(QString n)
+{
+	if(n != password()) {
+		m_sqlDatabase.setPassword(n);
+		emit databaseNameChanged();
 	}
 }
 
@@ -68,7 +84,14 @@ QString SqlDatabase::driverName()
 {
 	return m_sqlDatabase.driverName();
 }
-
+/*
+void SqlDatabase::reloadConnection()
+{
+	qfLogFuncFrame() << connectionName() << driverName();
+	m_sqlDatabase = QSqlDatabase::database(connectionName(), false);
+	qfDebug() << connectionName() << driverName();
+}
+*/
 bool SqlDatabase::open()
 {
 	qfInfo() << "Opening database:"
@@ -129,6 +152,14 @@ bool SqlDatabase::rollback()
 		}
 	}
 	return ret;
+}
+
+SqlQuery *SqlDatabase::query()
+{
+	if(m_sqlQuery == nullptr) {
+		m_sqlQuery = createQuery();
+	}
+	return m_sqlQuery;
 }
 
 SqlQuery *SqlDatabase::createQuery()
