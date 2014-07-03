@@ -12,15 +12,15 @@ using namespace qf::core;
 
 namespace {
 
-int environment_treshold()
+Log::Level environment_treshold()
 {
 	const QByteArray ba = qgetenv("QF_LOG_TRESHOLD");
-	if(ba.isEmpty()) return -1;
+	if(ba.isEmpty()) return Log::LOG_INVALID;
 	QString s = QString::fromLatin1(ba.data());
 	bool ok;
 	int ret =  s.toInt(&ok);
-	if(!ok) return -1;
-	return ret;
+	if(!ok) return Log::LOG_INVALID;
+	return (Log::Level)ret;
 }
 
 QList< LogDevice* >& logDevices();
@@ -63,8 +63,8 @@ QList< LogDevice* >& logDevices()
 //=========================================================
 // LogDevice
 //=========================================================
-int LogDevice::environmentLogTreshold = environment_treshold();
-int LogDevice::commandLineLogTreshold = -1;
+Log::Level LogDevice::environmentLogTreshold = environment_treshold();
+Log::Level LogDevice::commandLineLogTreshold = Log::LOG_INVALID;
 
 LogDevice::LogDevice(QObject *parent)
 	: QObject(parent), m_logTreshold(Log::LOG_INFO), m_count(0), m_isPrettyDomain(false)
@@ -87,9 +87,9 @@ void LogDevice::install(LogDevice *dev)
 	logDevices() << dev;
 }
 
-int LogDevice::setLogTreshold(Log::Level level)
+Log::Level LogDevice::setLogTreshold(Log::Level level)
 {
-	int old = m_logTreshold;
+	Log::Level old = m_logTreshold;
 	m_logTreshold = level;
 	return old;
 }
@@ -130,7 +130,7 @@ void LogDevice::setDomainTresholds(int argc, char *argv[])
 	}
 }
 
-int LogDevice::logTreshold()
+Log::Level LogDevice::logTreshold()
 {
 	if(commandLineLogTreshold >= 0) return commandLineLogTreshold;
 	if(environmentLogTreshold >= 0) return environmentLogTreshold;
@@ -364,5 +364,5 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 {
 	QString domain = prettyDomain(domainFromContext(context));
 	LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
-	emit logEntry(level, m);
+	emit logEntry(m);
 }

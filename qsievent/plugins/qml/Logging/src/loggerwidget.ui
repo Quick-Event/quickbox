@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LoggerWidget</class>
+ <widget class="QWidget" name="LoggerWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>2</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item>
+       <widget class="QToolButton" name="toolButton">
+        <property name="toolTip">
+         <string>Clear log</string>
+        </property>
+        <property name="text">
+         <string>Clear</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../Logging.qrc">
+          <normaloff>:/qsievent/Logging/images/clear.png</normaloff>:/qsievent/Logging/images/clear.png</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="lstLogLevel">
+        <property name="toolTip">
+         <string>Log level</string>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>Debug</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../Logging.qrc">
+           <normaloff>:/qsievent/Logging/images/light-blind.png</normaloff>:/qsievent/Logging/images/light-blind.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Info</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../Logging.qrc">
+           <normaloff>:/qsievent/Logging/images/light-yellow.png</normaloff>:/qsievent/Logging/images/light-yellow.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Warning</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../Logging.qrc">
+           <normaloff>:/qsievent/Logging/images/light-cyan.png</normaloff>:/qsievent/Logging/images/light-cyan.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Error</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../Logging.qrc">
+           <normaloff>:/qsievent/Logging/images/light-red.png</normaloff>:/qsievent/Logging/images/light-red.png</iconset>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edDomainFilter">
+        <property name="toolTip">
+         <string>Log filter</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPlainTextEdit" name="txtLog">
+     <property name="lineWrapMode">
+      <enum>QPlainTextEdit::NoWrap</enum>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../Logging.qrc"/>
+ </resources>
+ <connections/>
+</ui>

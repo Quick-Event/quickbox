@@ -21,7 +21,7 @@ namespace core {
 class Log
 {
 public:
-	enum Level {LOG_DEB, LOG_INFO, LOG_WARN, LOG_ERR, LOG_FATAL};
+	enum Level {LOG_INVALID = -1, LOG_DEB, LOG_INFO, LOG_WARN, LOG_ERR, LOG_FATAL};
 public:
 	static const char* categoryDebugName;
 	static const char* categoryInfoName;

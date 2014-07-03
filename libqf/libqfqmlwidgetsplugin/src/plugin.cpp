@@ -18,6 +18,8 @@
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
 #include <qf/qmlwidgets/gridlayoutproperties.h>
 
+#include <qf/qmlwidgets/framework/dockwidget.h>
+
 #include <qf/core/log.h>
 
 #include <QPushButton>
@@ -57,6 +59,7 @@ public:
 		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
 		qmlRegisterType<qf::qmlwidgets::StatusBar>(uri, 1, 0, "StatusBar");
+		qmlRegisterType<qf::qmlwidgets::framework::DockWidget>(uri, 1, 0, "DockWidget");
 
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 

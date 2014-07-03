@@ -20,9 +20,9 @@ public:
 public:
 	static QString domainFromContext(const QMessageLogContext &context);
 	static void install(LogDevice *dev);
-	int setLogTreshold(Log::Level level);
+	Log::Level setLogTreshold(Log::Level level);
 	void setDomainTresholds(int argc, char *argv[]);
-	int logTreshold();
+	Log::Level logTreshold();
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 	virtual bool checkLogPermisions(const QString &_domain, Log::Level _level);
 
@@ -31,8 +31,8 @@ public:
 protected:
 	virtual QString prettyDomain(const QString &domain);
 protected:
-	static int environmentLogTreshold;
-	static int commandLineLogTreshold;
+	static Log::Level environmentLogTreshold;
+	static Log::Level commandLineLogTreshold;
 
 	QMap<QString, int> m_domainTresholds;
 	Log::Level m_logTreshold;
@@ -90,7 +90,7 @@ public:
 
 	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
+	Q_SIGNAL void logEntry(const QVariantMap &log_entry_map);
 };
 
 }

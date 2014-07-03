@@ -55,7 +55,7 @@ PluginLoader::PluginMap PluginLoader::findPlugins()
 			it.next();
 			QFileInfo fi = it.fileInfo();
 			if(QFile::exists(fi.absoluteFilePath() + "/qmldir")) {
-				qfDebug() << "Trying to load plugin on path:" << fi.absoluteFilePath();
+				qfDebug() << "Trying to load plugin manifest on path:" << (fi.absoluteFilePath() + "/Manifest.qml");
 				QQmlComponent c(qe, QUrl::fromLocalFile(fi.absoluteFilePath() + "/Manifest.qml"));
 				if(!c.isReady()) {
 					qfError() << c.errorString();

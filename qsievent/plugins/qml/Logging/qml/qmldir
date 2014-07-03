@@ -1,0 +1,3 @@
+module Logging
+
+plugin loggingplugin

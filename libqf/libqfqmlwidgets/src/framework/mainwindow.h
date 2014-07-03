@@ -20,6 +20,7 @@ namespace framework {
 
 class Application;
 class PluginLoader;
+class DockWidget;
 
 class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersistentSettings
 {
@@ -38,16 +39,22 @@ public:
 	void loadPlugins();
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
+
 	MenuBar* menuBar();
+
 	StatusBar* statusBar();
 	Q_INVOKABLE void setStatusBar(qf::qmlwidgets::StatusBar *sbar);
+
+	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, qf::qmlwidgets::framework::DockWidget *dockwidget);
+
 	Q_INVOKABLE QObject* plugin(const QString &feature_id);
 
 	Q_SLOT void loadPersistentSettings();
+
 	/// emitted by plugin loader when all plugins are loaded
 	Q_SIGNAL void pluginsLoaded();
 
-	Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
+	//Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
 
 	//Q_INVOKABLE QObject* obj_testing();
 

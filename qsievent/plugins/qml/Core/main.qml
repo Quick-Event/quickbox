@@ -48,11 +48,11 @@ Plugin {
 		Log.debug("debug log test, use console.debug() for qml file and line information");
 		Log.info("info log test, use console.info() for qml file and line information");
 		Log.warning("warn log test, use console.warn() for qml file and line information");
-		Log.error("error log test, use console.error() for qml file and line information");
+		//Log.error("error log test, use console.error() for qml file and line information");
 		console.debug("Core log test");
 		console.info("Core log test");
 		console.warn("Core log test");
-		console.error("Core log test");
+		//console.error("Core log test");
 
 		FrameWork.setPersistentSettingDomains("datamines.cz", "DataMines");
 		FrameWork.persistentSettingsId = "MainWindow";
@@ -62,6 +62,7 @@ Plugin {
 		FrameWork.menuBar.actionForPath('file').text = qsTr('&File');
 		//FrameWork.menuBar.actionForPath('file').addSeparator();
 		FrameWork.menuBar.actionForPath('file').addAction(actQuit);
+		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
 
 		FrameWork.setStatusBar(appStatusBar);

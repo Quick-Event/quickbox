@@ -33,7 +33,7 @@ public:
 public:
 	explicit Dialog(QWidget *parent = 0);
 	~Dialog() Q_DECL_OVERRIDE;
-
+public:
 	Q_SLOT void loadPersistentSettings(bool recursively = false);
 
 	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}

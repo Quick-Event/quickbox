@@ -12,9 +12,6 @@ int main(int argc, char *argv[])
 	file_log_device->setDomainTresholds(argc, argv);
 	file_log_device->setPrettyDomain(true);
 
-	QScopedPointer<qf::core::LogDevice> signal_log_device(qf::core::SignalLogDevice::install());
-	signal_log_device->setLogTreshold(qf::core::Log::LOG_DEB);
-
 	qfError() << "QFLog(ERROR) test OK.";
 	qfWarning() << "QFLog(WARNING) test OK.";
 	qfInfo() << "QFLog(INFO) test OK.";
@@ -27,9 +24,11 @@ int main(int argc, char *argv[])
 
 	MainWindow main_window;
 	//QObject::connect(signal_log_device.data(), &qf::core::SignalLogDevice::logEntry, &main_window, &MainWindow::logEntry, Qt::QueuedConnection);
+	/*
 	QObject::connect(signal_log_device.data(), SIGNAL(logEntry(int, QVariantMap)),
 					 &main_window, SIGNAL(logEntry(int, QVariantMap)),
 					 Qt::QueuedConnection);
+	*/
 	main_window.loadPlugins();
 	main_window.show();
 

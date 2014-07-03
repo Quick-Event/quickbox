@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "application.h"
 #include "pluginloader.h"
+#include "dockwidget.h"
 #include "../menubar.h"
 #include "../statusbar.h"
 
@@ -107,6 +108,11 @@ void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 	Super::setStatusBar(sbar); /// deletes old status bar
 	sbar->showMessage("ahoj babi");
 	qfDebug() << Super::statusBar();
+}
+
+void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
+{
+	Super::addDockWidget(area, dockwidget);
 }
 
 QObject *MainWindow::plugin(const QString &feature_id)
