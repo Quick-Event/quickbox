@@ -9,9 +9,10 @@ StatusBar
 	property string eventName: '---'
 	property int etapNo: 0
 
+	styleSheet: "background-color: rgb(118, 118, 118);"
 	sizeGripEnabled: true
 	property var eventFrame: Frame {
-		frameShape: QFrame.Box
+		frameShape: QFrame.Panel
 		frameShadow: QFrame.Sunken
 		Label {
 			id: eventName
@@ -19,7 +20,7 @@ StatusBar
 		}
 	}
 	property var etapFrame: Frame {
-		frameShape: QFrame.Box
+		frameShape: QFrame.Panel
 		frameShadow: QFrame.Sunken
 		visible: (root.etapNo > 0)
 		Label {
