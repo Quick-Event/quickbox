@@ -21,6 +21,7 @@
 #include <qf/core/log.h>
 
 #include <QPushButton>
+#include <QFrame>
 #include <QQmlExtensionPlugin>
 #include <qqml.h>
 
@@ -42,7 +43,8 @@ public:
 		// in other case strange error:
 		// [Invalid property assignment: "widgets" is a read-only property]
 		// is issued
-		qmlRegisterType<QWidget>(uri, 1, 0, "Widget");
+		qmlRegisterType<QWidget>(uri, 1, 0, "QWidget");
+		qmlRegisterType<QFrame>(uri, 1, 0, "QFrame");
 
 		qmlRegisterType<qf::qmlwidgets::Label>(uri, 1, 0, "Label");
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");

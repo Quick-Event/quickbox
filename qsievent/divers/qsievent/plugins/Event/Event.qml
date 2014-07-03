@@ -7,6 +7,8 @@ import "qrc:/qf/core/js/stringext.js" as StringExt
 QfObject {
 	id: root
 
+	property string currentEventName
+
 	property QfObject internals: QfObject
 	{
 		DbSchema {
@@ -45,25 +47,40 @@ QfObject {
 		}
 	}
 
-	function openEvent()
+	function openEvent(event_name)
 	{
 		console.debug(db);
-		//var db = Sql.database();
 		var q = db.query();
-		var qb = q.builder();
-		qb.select('nspname').from('pg_catalog.pg_namespace  AS n')
-			.where("nspname NOT LIKE 'pg\\_%'")
-			.where("nspname NOT IN ('public', 'information_schema')")
-			.orderBy('nspname');
-		q.exec(qb);
-		var events = [];
-		while(q.next()) {
-			events.push(q.value('nspname'));
+		if(!event_name) {
+			var qb = q.builder();
+			qb.select('nspname').from('pg_catalog.pg_namespace  AS n')
+				.where("nspname NOT LIKE 'pg\\_%'")
+				.where("nspname NOT IN ('public', 'information_schema')")
+				.orderBy('nspname');
+			q.exec(qb);
+			var events = [];
+			while(q.next()) {
+				events.push(q.value('nspname'));
+			}
+			event_name = InputDialogSingleton.getItem(null, qsTr('Query'), qsTr('Open event'), events, 0, false);
 		}
-		var event_name = InputDialogSingleton.getItem(null, qsTr('Query'), qsTr('Open event'), events, 0, false);
 		if(event_name) {
-			q.exec("SET SCHEMA '" + event_name + "'");
+			if(q.exec("SET SCHEMA '" + event_name + "'")) {
+				root.currentEventName = event_name;
+			}
 		}
 	}
 
+	function whenServerConnected()
+	{
+		console.debug("whenServerConnected");
+		if(FrameWork.plugin("SqlDb").sqlServerConnected) {
+			var core_feature = FrameWork.plugin("Core");
+			var settings = core_feature.createSettings();
+			settings.beginGroup("sql/connection");
+			var event_name = settings.value('event');
+			settings.destroy();
+			openEvent(event_name);
+		}
+	}
 }

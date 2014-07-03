@@ -18,17 +18,6 @@ Plugin {
 		}
 	]
 
-	property QfObject internals: QfObject
-	{
-		Component {
-			id: settingsComponent
-			Settings {}
-		}
-		AppStatusBar {
-			id: appStatusBar
-		}
-	}
-
 	function createSettings()
 	{
 		// it is better to create and destroy new Settings object for each particular use
@@ -40,6 +29,17 @@ Plugin {
 	{
 		Component.onCompleted: {
 			initGenerator(16808, 11, 2147483647);
+		}
+	}
+
+	property QfObject internals: QfObject
+	{
+		Component {
+			id: settingsComponent
+			Settings {}
+		}
+		AppStatusBar {
+			id: appStatusBar
 		}
 	}
 

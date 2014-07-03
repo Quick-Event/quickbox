@@ -6,6 +6,8 @@ import qf.qmlwidgets.framework 1.0
 Plugin {
 	id: root
 
+	//property alias currentEventName: event.currentEventName
+
 	property QfObject internals: QfObject {
 		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
 		SqlDatabase {
@@ -47,5 +49,9 @@ Plugin {
 		//quit.prependSeparator();
 		quit.prependAction(actOpenEvent);
 		quit.prependSeparator();
+
+		FrameWork.plugin('SqlDb').sqlServerConnectedChanged.connect(event.whenServerConnected);
+		FrameWork.statusBar.eventName = Qt.binding(function() {return event.currentEventName;});
+
 	}
 }
