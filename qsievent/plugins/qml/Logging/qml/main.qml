@@ -31,7 +31,26 @@ Plugin {
 
 	Component.onCompleted:
 	{
+		FrameWork.aboutToClose.connect(saveSettings);
+
 		FrameWork.menuBar.actionForPath('view').addAction(actShowLogView);
+
+		var core_feature = FrameWork.plugin("Core");
+		var settings = core_feature.createSettings();
+		settings.beginGroup("ui/docks/Logger");
+		var dock_visible = settings.value('visible');
+		settings.destroy();
+		if(dock_visible)
+			showLogDockWidget();
+	}
+
+	function saveSettings()
+	{
+		var core_feature = FrameWork.plugin("Core");
+		var settings = core_feature.createSettings();
+		settings.beginGroup("ui/docks/Logger");
+		settings.setValue('visible', internals.logDockWidget.visible);
+		settings.destroy();
 	}
 
 	function showLogDockWidget()

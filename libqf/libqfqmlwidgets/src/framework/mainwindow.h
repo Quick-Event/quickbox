@@ -53,11 +53,13 @@ public:
 
 	/// emitted by plugin loader when all plugins are loaded
 	Q_SIGNAL void pluginsLoaded();
+	Q_SIGNAL void aboutToClose();
 
 	//Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
 
 	//Q_INVOKABLE QObject* obj_testing();
-
+protected:
+	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
 private:
 	Q_SLOT void savePersistentSettings();
 	//void setupSettingsPersistence();

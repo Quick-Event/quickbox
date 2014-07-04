@@ -51,7 +51,7 @@
        <number>1</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButton">
+       <widget class="QToolButton" name="btClearLog">
         <property name="toolTip">
          <string>Clear log</string>
         </property>
@@ -111,6 +111,13 @@
            <normaloff>:/qsievent/Logging/images/light-red.png</normaloff>:/qsievent/Logging/images/light-red.png</iconset>
          </property>
         </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Log only text containnig</string>
+        </property>
        </widget>
       </item>
       <item>

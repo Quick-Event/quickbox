@@ -14,6 +14,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QSettings>
+#include <QCloseEvent>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -49,6 +50,12 @@ void MainWindow::loadPersistentSettings()
 		restoreGeometry(settings.value("geometry").toByteArray());
 		restoreState(settings.value("state").toByteArray());
 	}
+}
+
+void MainWindow::closeEvent(QCloseEvent *ev)
+{
+	emit aboutToClose();
+	ev->accept();
 }
 
 void MainWindow::savePersistentSettings()

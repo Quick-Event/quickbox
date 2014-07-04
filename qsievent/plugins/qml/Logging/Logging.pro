@@ -27,7 +27,7 @@ QMAKE_EXTRA_TARGETS += qmlfiles
 POST_TARGETDEPS += qmlfiles
 
 OTHER_FILES += \
-    qml/* \
+    $$PWD/qml/* \
 
 include (src/src.pri)
 

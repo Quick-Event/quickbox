@@ -23,11 +23,11 @@ unix: LIBS +=  \
 include($$PWD/src.pri)
 
 OTHER_FILES += \
-    ../divers/qsievent/plugins/Core/*.qml \
-    ../divers/qsievent/plugins/SqlDb/*.qml \
-    ../divers/qsievent/plugins/Event/*.qml \
-    ../divers/qsievent/plugins/Help/*.qml \
+    ../plugins/qml/Core/*.qml \
+    ../plugins/qml/SqlDb/*.qml \
+    ../plugins/qml/Event/*.qml \
+    ../plugins/qml/Help/*.qml \
 
 QML_IMPORT_PATH += \
     $$OUT_PWD/../lib/qml \
-    $$PWD/../divers/qsievent/plugins \
+    $$OUT_PWD/../../bin/divers/qsievent/plugins \
