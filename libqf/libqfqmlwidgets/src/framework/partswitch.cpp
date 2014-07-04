@@ -42,7 +42,7 @@ qf::qmlwidgets::framework::PartSwitch::~PartSwitch()
 void PartSwitch::addPartWidget(PartWidget *widget)
 {
 	PartSwitchToolButton *bt = new PartSwitchToolButton();
-	connect(bt, &PartSwitchToolButton::clicked, this, &PartSwitch::setCurrentPartIndex);
+	connect(bt, SIGNAL(clicked(int)), this, SLOT(setCurrentPartIndex(int)));
 	bt->setText(widget->title());
 	QIcon ico(":/qf/qmlwidgets/images/under-construction.png");
 	bt->setIcon(ico);
@@ -53,14 +53,18 @@ void PartSwitch::addPartWidget(PartWidget *widget)
 void PartSwitch::setCurrentPartIndex(int ix)
 {
 	qfLogFuncFrame() << m_currentPartIndex << "->" << ix;
+	if(m_currentPartIndex == ix)
+		return;
 	PartSwitchToolButton *bt1 = buttonAt(m_currentPartIndex);
 	PartSwitchToolButton *bt2 = buttonAt(ix);
 	bool ok1 = m_centralWidget->setPartActive(m_currentPartIndex, false);
 	bool ok2 = false;
 	if(ok1) {
+		int old_ix = m_currentPartIndex;
+		m_currentPartIndex = ix;
 		ok2 = m_centralWidget->setPartActive(ix, true);
-		if(ok2) {
-			m_currentPartIndex = ix;
+		if(!ok2) {
+			m_currentPartIndex = old_ix;
 		}
 	}
 	if(bt1 && ok2)

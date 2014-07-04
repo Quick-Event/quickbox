@@ -38,6 +38,7 @@ void MainWindow::loadPlugins()
 	QF_SAFE_DELETE(m_pluginLoader);
 	m_pluginLoader = new PluginLoader(this);
 	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
+	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
 	m_pluginLoader->loadPlugins();
 }
 
@@ -69,6 +70,11 @@ void MainWindow::savePersistentSettings()
 		settings.setValue("state", saveState());
 		settings.setValue("geometry", saveGeometry());
 	}
+}
+
+void MainWindow::whenPluginsLoaded()
+{
+	centralWidget()->setPartActive(0, true);
 }
 
 void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)
