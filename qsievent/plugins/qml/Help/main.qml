@@ -14,7 +14,7 @@ Plugin {
 		}
 	}
 
-	actions: [
+	property list<Action> actions: [
 		Action {
 			id: actLAboutQt
 			text: qsTr('About &Qt')

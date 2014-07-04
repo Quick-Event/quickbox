@@ -10,7 +10,7 @@ Plugin {
 
 	property bool sqlServerConnected: false
 
-	actions: [
+	property list<Action> actions: [
 		Action {
 			id: actConnectDb
 			text: qsTr('&Connect to database')

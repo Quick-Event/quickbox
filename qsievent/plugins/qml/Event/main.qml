@@ -19,7 +19,7 @@ Plugin {
 		}
 	}
 
-	actions: [
+	property list<Action> actions: [
 		Action {
 			id: actCreateEvent
 			text: qsTr('Create &new event')

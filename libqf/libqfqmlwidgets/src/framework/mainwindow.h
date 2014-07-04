@@ -3,6 +3,7 @@
 
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
+//#include "centralwidget.h"
 
 #include <QMainWindow>
 #include <QMap>
@@ -11,6 +12,8 @@ namespace qf {
 namespace core {
 class Settings;
 }
+}
+namespace qf {
 namespace qmlwidgets {
 
 class MenuBar;
@@ -21,6 +24,8 @@ namespace framework {
 class Application;
 class PluginLoader;
 class DockWidget;
+class PartWidget;
+class CentralWidget;
 
 class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersistentSettings
 {
@@ -36,6 +41,9 @@ public:
 	explicit MainWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow() Q_DECL_OVERRIDE;
 public:
+	CentralWidget* centralWidget();
+	void setCentralWidget(CentralWidget *widget);
+public:
 	void loadPlugins();
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
@@ -46,6 +54,7 @@ public:
 	Q_INVOKABLE void setStatusBar(qf::qmlwidgets::StatusBar *sbar);
 
 	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, qf::qmlwidgets::framework::DockWidget *dockwidget);
+	Q_INVOKABLE void addPartWidget(qf::qmlwidgets::framework::PartWidget *widget);
 
 	Q_INVOKABLE QObject* plugin(const QString &feature_id);
 
@@ -66,6 +75,7 @@ private:
 private:
 	PluginLoader *m_pluginLoader;
 	qf::qmlwidgets::StatusBar* m_statusBar;
+	//CentralWidget *m_centralWidget;
 };
 
 }}}

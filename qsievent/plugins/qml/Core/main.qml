@@ -6,7 +6,7 @@ import qf.qmlwidgets.framework 1.0
 Plugin {
 	id: root
 
-	actions: [
+	property list<Action> actions: [
 		Action {
 			id: actQuit
 			oid: 'quit'

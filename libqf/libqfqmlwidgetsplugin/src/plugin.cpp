@@ -19,6 +19,7 @@
 #include <qf/qmlwidgets/gridlayoutproperties.h>
 
 #include <qf/qmlwidgets/framework/dockwidget.h>
+#include <qf/qmlwidgets/framework/partwidget.h>
 
 #include <qf/core/log.h>
 
@@ -60,6 +61,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
 		qmlRegisterType<qf::qmlwidgets::StatusBar>(uri, 1, 0, "StatusBar");
 		qmlRegisterType<qf::qmlwidgets::framework::DockWidget>(uri, 1, 0, "DockWidget");
+		qmlRegisterType<qf::qmlwidgets::framework::PartWidget>(uri, 1, 0, "PartWidget");
 
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 

@@ -1,7 +1,8 @@
 message("including $$PWD")
 
 TEMPLATE = lib
-unix:TARGET = $$OUT_PWD/../../lib/qfqmlwidgets
+TARGET_NAME=qfqmlwidgets
+unix:TARGET = $$OUT_PWD/../../lib/$${TARGET_NAME}
 
 QT += widgets qml
 
@@ -21,3 +22,6 @@ unix: LIBS +=  \
 	-L../../lib  \
 
 include($$PWD/src/src.pri)
+
+RESOURCES += \
+    $${TARGET_NAME}.qrc \

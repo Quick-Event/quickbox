@@ -2,6 +2,7 @@
 #include "application.h"
 #include "pluginloader.h"
 #include "dockwidget.h"
+#include "stackedcentralwidget.h"
 #include "../menubar.h"
 #include "../statusbar.h"
 
@@ -110,16 +111,44 @@ void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 	qfLogFuncFrame() << sbar << "previous:" << Super::statusBar();
 	//QF_SAFE_DELETE(sb);
 	sbar->setParent(0);
-	sbar->setParent(this);
-	sbar->setVisible(true);
+	//sbar->setParent(this);
+	//sbar->setVisible(true);
 	Super::setStatusBar(sbar); /// deletes old status bar
-	sbar->showMessage("ahoj babi");
+	//sbar->showMessage("ahoj babi");
 	qfDebug() << Super::statusBar();
+}
+
+CentralWidget *MainWindow::centralWidget()
+{
+	QWidget *cw = Super::centralWidget();
+	CentralWidget *central_widget = qobject_cast<CentralWidget*>(cw);
+	if(!central_widget) {
+		QF_SAFE_DELETE(cw);
+		central_widget = new StackedCentralWidget(this);
+		Super::setCentralWidget(central_widget);
+	}
+	return central_widget;
+}
+
+void MainWindow::setCentralWidget(CentralWidget *widget)
+{
+	qfLogFuncFrame() << widget;
+	//QF_SAFE_DELETE(sb);
+	widget->setParent(0);
+	//sbar->setParent(this);
+	//sbar->setVisible(true);
+	Super::setCentralWidget(widget);
 }
 
 void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
 {
+	dockwidget->setParent(0);
 	Super::addDockWidget(area, dockwidget);
+}
+
+void MainWindow::addPartWidget(PartWidget *widget)
+{
+	centralWidget()->addPartWidget(widget);
 }
 
 QObject *MainWindow::plugin(const QString &feature_id)
