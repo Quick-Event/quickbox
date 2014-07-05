@@ -23,7 +23,6 @@ public:
 	void addPartWidget(PartWidget *widget) Q_DECL_OVERRIDE;
 
 	bool setPartActive(int part_index, bool set_active)  Q_DECL_OVERRIDE;
-private:
 	PartWidget* partWidget(int part_index);
 private:
 	QStackedWidget *m_centralWidget;

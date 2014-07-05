@@ -1,6 +1,8 @@
 #include "pluginloader.h"
 #include "application.h"
 #include "mainwindow.h"
+#include "plugin.h"
+#include "pluginmanifest.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -9,14 +11,17 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
+#include <QQmlProperty>
 #include <QDirIterator>
 
 using namespace qf::qmlwidgets::framework;
+/*
+const char * PluginLoader::prop_plugin_path = "__pluginPath";
 
 static const char * prop_feature_id = "featureId";
-static const char * prop_plugin_loader = "pluginLoader";
-static const char * prop_plugin_path = "__pluginPath";
+static const char * prop_plugin_main_qml_file = "pluginMainQml";
 static const char * prop_depends_on_feature_ids = "dependsOnFeatureIds";
+*/
 static const QLatin1String CoreFeatureId("Core");
 
 PluginLoader::PluginLoader(MainWindow *parent) :
@@ -30,7 +35,7 @@ void PluginLoader::loadPlugins()
 	loadPlugins(findPlugins());
 }
 
-void PluginLoader::loadPlugins(const PluginLoader::PluginMap &manifests_to_load)
+void PluginLoader::loadPlugins(const PluginLoader::ManifestMap &manifests_to_load)
 {
 	m_manifestsToLoad = manifests_to_load;
 	loadNextPlugin();
@@ -43,9 +48,9 @@ MainWindow *PluginLoader::mainWindow()
 	return ret;
 }
 
-PluginLoader::PluginMap PluginLoader::findPlugins()
+PluginLoader::ManifestMap PluginLoader::findPlugins()
 {
-	PluginMap ret;
+	ManifestMap ret;
 	QQmlEngine *qe = Application::instance()->qmlEngine();
 
 	for(auto path : Application::instance()->qmlPluginImportPaths()) {
@@ -67,28 +72,29 @@ PluginLoader::PluginMap PluginLoader::findPlugins()
 						qfError() << c.errorString();
 					}
 					else {
-						QString feature_id = root->property(prop_feature_id).toString();
+						PluginManifest *manifest = qobject_cast<PluginManifest*>(root);
+						if(!manifest) {
+							qfError() << "Loaded component is not a kind of PluginManifest:" << root << c.url().toString();
+							continue;
+						}
+						QString feature_id = manifest->featureId();
 						if(feature_id.isEmpty()) {
 							feature_id = fi.baseName();
 							//qfInfo() << "FeatureId is empty, setting from plugin name to:" << feature_id;
-							root->setProperty(prop_feature_id, feature_id);
+							/// not sure if QML properties can be set this way, I rathe think that QQmlProperty should be used here
+							manifest->setFeatureId(feature_id);
 						}
-						QString plugin_loader = root->property(prop_plugin_loader).toString();
-						if(plugin_loader.isEmpty()) {
-							plugin_loader = "main.qml";
-							//qfInfo() << "PluginLoader is empty, setting from plugin name to:" << plugin_loader;
-							root->setProperty(prop_plugin_loader, plugin_loader);
-						}
-						QStringList depends_on_feature_ids = root->property(prop_depends_on_feature_ids).toStringList();
+						//QString plugin_loader = "main.qml";
+						QStringList depends_on_feature_ids = manifest->dependsOnFeatureIds();
 						if(feature_id != CoreFeatureId) {
 							/// each not Core feature implicitly depends on Core
 							depends_on_feature_ids << CoreFeatureId;
-							root->setProperty(prop_depends_on_feature_ids, depends_on_feature_ids);
+							manifest->setDependsOnFeatureIds(depends_on_feature_ids);
 						}
 
 						QString plugin_path = fi.absoluteFilePath();
-						root->setProperty(prop_plugin_path, plugin_path);
-						qfInfo() << "Found Manifest.qml for featureId:" << feature_id << "from plugin:" << fi.baseName() << "loader:" << plugin_loader;
+						manifest->setPluginHomeDirectory(plugin_path);
+						qfInfo() << "Found Manifest.qml for featureId:" << feature_id << "from plugin:" << fi.baseName();
 						if(ret.contains(feature_id)) {
 							qfError() << "Feature id:" << feature_id << "already loaded";
 							delete root;
@@ -101,7 +107,7 @@ PluginLoader::PluginMap PluginLoader::findPlugins()
 							}
 							else {
 								root->setParent(this);
-								ret[feature_id] = root;
+								ret[feature_id] = manifest;
 							}
 						}
 					}
@@ -118,12 +124,12 @@ void PluginLoader::loadNextPlugin()
 	QF_ASSERT(qe != nullptr, "Qml engine is NULL", return);
 
 	m_currentlyLoadedFeatureId = QString();
-	QMapIterator<QString, QObject*> it(m_manifestsToLoad);
+	QMapIterator<QString, PluginManifest*> it(m_manifestsToLoad);
 	while (it.hasNext()) {
 	    it.next();
-		QObject *manifest = it.value();
+		PluginManifest *manifest = it.value();
 		QString feature_id = it.key();
-	    QStringList depends_on = manifest->property(prop_depends_on_feature_ids).toStringList();
+	    QStringList depends_on = manifest->dependsOnFeatureIds();
 		bool dependency_satisfied = true;
 		for(auto required_feature_id : depends_on) {
 			if(!m_loadedPlugins.contains(required_feature_id)) {
@@ -132,9 +138,7 @@ void PluginLoader::loadNextPlugin()
 			}
 		}
 		if(dependency_satisfied) {
-			QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->property(prop_plugin_path).toString()
-														 + "/"
-														 + manifest->property(prop_plugin_loader).toString());
+			QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->pluginHomeDirectory() + "/main.qml");
 			qfInfo() << "Installing feature:" << feature_id << "from:" << plugin_loader_url.toString();
 			m_currentlyLoadedFeatureId = feature_id;
 			m_currentlyLoadedComponent = new QQmlComponent(qe, plugin_loader_url, QQmlComponent::PreferSynchronous);
@@ -149,13 +153,13 @@ void PluginLoader::loadNextPlugin()
 	}
 	if(!m_manifestsToLoad.isEmpty() && m_currentlyLoadedFeatureId.isEmpty()) {
 		qfError() << "Features not installed due to unsatisfied dependeces:";
-		QMapIterator<QString, QObject*> it(m_manifestsToLoad);
+		QMapIterator<QString, PluginManifest*> it(m_manifestsToLoad);
 		while (it.hasNext()) {
 		    it.next();
-			QObject *plugin = it.value();
+			PluginManifest *manifest = it.value();
 			QString feature_id = it.key();
-		    QStringList depends_on = plugin->property("dependsOnFeatureIds").toStringList();
-			qfError() << "\t!!!" << feature_id << "depends on:" << CoreFeatureId << depends_on.join(", ");
+		    QStringList depends_on = manifest->dependsOnFeatureIds();
+			qfError() << "\t!!!" << feature_id << "depends on:" << depends_on.join(", ");
 		}
 	}
 	if(m_currentlyLoadedFeatureId.isEmpty()) {
@@ -166,7 +170,7 @@ void PluginLoader::loadNextPlugin()
 void PluginLoader::continueLoading()
 {
 	qfLogFuncFrame() << "feature id:" << m_currentlyLoadedFeatureId << "component:" << m_currentlyLoadedComponent;
-	QObject *manifest = m_manifestsToLoad.take(m_currentlyLoadedFeatureId);
+	PluginManifest *manifest = m_manifestsToLoad.take(m_currentlyLoadedFeatureId);
 	QF_ASSERT(manifest != nullptr, "internal error", return);
 	QF_ASSERT(m_currentlyLoadedComponent != nullptr, "internal error", return);
 
@@ -174,14 +178,23 @@ void PluginLoader::continueLoading()
 		Application *app = Application::instance();
 		app->clearQmlErrorList();
 
-		QObject *plugin = m_currentlyLoadedComponent->create();
+		Plugin *plugin = nullptr;
+		QObject *root = m_currentlyLoadedComponent->beginCreate(app->qmlEngine()->rootContext());
+		if(root) {
+			plugin = qobject_cast<Plugin*>(root);
+			if(plugin) {
+				plugin->setManifest(manifest);
+			}
+			else {
+				qfError() << "Loaded component is not a kind of Plugin:" << root << m_currentlyLoadedComponent->url().toString();
+			}
+			m_currentlyLoadedComponent->completeCreate();
+		}
 		if(!plugin) {
 			qfError() << "Error creating plugin:" << m_currentlyLoadedComponent->url().toString();
 			qfError() << m_currentlyLoadedComponent->errorString();
 		}
 		else {
-			QVariant v = QVariant::fromValue(manifest);
-			plugin->setProperty("manifest", v);
 			plugin->setParent(mainWindow());
 			m_loadedPlugins[m_currentlyLoadedFeatureId] = plugin;
 		}

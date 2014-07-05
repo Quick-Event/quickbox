@@ -25,7 +25,7 @@ StackedCentralWidget::StackedCentralWidget(MainWindow *parent) :
 
 	m_partSwitch = new PartSwitch(this);
 	connect(this, SIGNAL(partActivated(int)), m_partSwitch, SLOT(setCurrentPartIndex(int)));
-	m_frameWork->addToolBar(Qt::LeftToolBarArea, m_partSwitch);
+	MainWindow::frameWork()->addToolBar(Qt::LeftToolBarArea, m_partSwitch);
 }
 
 StackedCentralWidget::~StackedCentralWidget()

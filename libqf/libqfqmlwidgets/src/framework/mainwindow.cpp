@@ -2,6 +2,7 @@
 #include "application.h"
 #include "pluginloader.h"
 #include "dockwidget.h"
+#include "partwidget.h"
 #include "stackedcentralwidget.h"
 #include "../menubar.h"
 #include "../statusbar.h"
@@ -19,9 +20,14 @@
 
 using namespace qf::qmlwidgets::framework;
 
+MainWindow* MainWindow::self = nullptr;
+
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	QMainWindow(parent, flags), IPersistentSettings(this)
 {
+	Q_ASSERT(self == nullptr);
+	self = this;
+
 	m_pluginLoader = nullptr;
 
 	QQmlEngine *qe = Application::instance()->qmlEngine();
@@ -52,6 +58,12 @@ void MainWindow::loadPersistentSettings()
 		restoreGeometry(settings.value("geometry").toByteArray());
 		restoreState(settings.value("state").toByteArray());
 	}
+}
+
+MainWindow *MainWindow::frameWork()
+{
+	Q_ASSERT(self != nullptr);
+	return self;
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
@@ -139,10 +151,7 @@ CentralWidget *MainWindow::centralWidget()
 void MainWindow::setCentralWidget(CentralWidget *widget)
 {
 	qfLogFuncFrame() << widget;
-	//QF_SAFE_DELETE(sb);
 	widget->setParent(0);
-	//sbar->setParent(this);
-	//sbar->setVisible(true);
 	Super::setCentralWidget(widget);
 }
 
@@ -152,19 +161,30 @@ void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
 	Super::addDockWidget(area, dockwidget);
 }
 
-void MainWindow::addPartWidget(PartWidget *widget)
+void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 {
+	if(!feature_id.isEmpty()) {
+		if(widget->featureId().isEmpty()) {
+			qfDebug() << "setting" << widget << "featureId to:" << feature_id;
+			widget->setFeatureId(feature_id);
+		}
+		else if(widget->featureId() != feature_id)
+			qfWarning() << "different featureIds set:" << feature_id << "vs." << widget->featureId() << ", the second one will be used.";
+	}
+	if(widget->featureId().isEmpty())
+		qfWarning() << widget << "adding part widget without featureId set can harm some default functionality.";
 	centralWidget()->addPartWidget(widget);
 }
 
-QObject *MainWindow::plugin(const QString &feature_id)
+Plugin *MainWindow::plugin(const QString &feature_id)
 {
-	QObject *ret = nullptr;
+	Plugin *ret = nullptr;
 	if(m_pluginLoader) {
 		ret = m_pluginLoader->loadedPlugins().value(feature_id);
 	}
 	if(!ret) {
 		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
+		qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
 	}
 	return ret;
 }

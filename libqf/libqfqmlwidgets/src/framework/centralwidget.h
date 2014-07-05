@@ -26,8 +26,6 @@ public:
 	Q_SIGNAL void partActivated(int part_index);
 public:
 	virtual void addPartWidget(PartWidget *widget) = 0;
-protected:
-	MainWindow *m_frameWork;
 };
 
 }}}

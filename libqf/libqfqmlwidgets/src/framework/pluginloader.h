@@ -12,12 +12,14 @@ namespace qmlwidgets {
 namespace framework {
 
 class MainWindow;
+class PluginManifest;
 
 class PluginLoader : public QObject
 {
 	Q_OBJECT
 public:
-	typedef QMap<QString, QObject*> PluginMap;
+	typedef QMap<QString, qf::qmlwidgets::framework::Plugin*> PluginMap;
+	typedef QMap<QString, qf::qmlwidgets::framework::PluginManifest*> ManifestMap;
 public:
 	explicit PluginLoader(MainWindow *parent = 0);
 
@@ -28,13 +30,13 @@ public:
 private:
 	MainWindow *mainWindow();
 
-	PluginMap findPlugins();
-	void loadPlugins(const PluginMap &manifests_to_load);
+	ManifestMap findPlugins();
+	void loadPlugins(const ManifestMap &manifests_to_load);
 	Q_SLOT void loadNextPlugin();
 	Q_SLOT void continueLoading();
 private:
 	PluginMap m_loadedPlugins;
-	PluginMap m_manifestsToLoad;
+	ManifestMap m_manifestsToLoad;
 	QString m_currentlyLoadedFeatureId;
 	QQmlComponent *m_currentlyLoadedComponent;
 };

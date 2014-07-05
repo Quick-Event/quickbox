@@ -3,7 +3,6 @@
 
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
-//#include "centralwidget.h"
 
 #include <QMainWindow>
 #include <QMap>
@@ -26,6 +25,7 @@ class PluginLoader;
 class DockWidget;
 class PartWidget;
 class CentralWidget;
+class Plugin;
 
 class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersistentSettings
 {
@@ -54,9 +54,9 @@ public:
 	Q_INVOKABLE void setStatusBar(qf::qmlwidgets::StatusBar *sbar);
 
 	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, qf::qmlwidgets::framework::DockWidget *dockwidget);
-	Q_INVOKABLE void addPartWidget(qf::qmlwidgets::framework::PartWidget *widget);
+	Q_INVOKABLE void addPartWidget(qf::qmlwidgets::framework::PartWidget *widget, const QString &feature_id = QString());
 
-	Q_INVOKABLE QObject* plugin(const QString &feature_id);
+	Q_INVOKABLE qf::qmlwidgets::framework::Plugin* plugin(const QString &feature_id);
 
 	Q_SLOT void loadPersistentSettings();
 
@@ -64,7 +64,7 @@ public:
 	Q_SIGNAL void pluginsLoaded();
 	Q_SIGNAL void aboutToClose();
 
-	//Q_SIGNAL void logEntry(int level, const QVariantMap &log_entry_map);
+	static MainWindow* frameWork();
 
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
@@ -76,7 +76,7 @@ private:
 private:
 	PluginLoader *m_pluginLoader;
 	qf::qmlwidgets::StatusBar* m_statusBar;
-	//CentralWidget *m_centralWidget;
+	static MainWindow *self;
 };
 
 }}}

@@ -33,10 +33,18 @@ void PartWidget::setTitle(QString arg)
 	}
 }
 
+void PartWidget::setIconSource(QString arg)
+{
+	if (m_iconSource != arg) {
+		m_iconSource = arg;
+		emit iconSourceChanged(arg);
+	}
+}
+
 void PartWidget::setFeatureId(QString id)
 {
-	if (m_title != id) {
-		m_title = id;
+	if (m_featureId != id) {
+		m_featureId = id;
 		emit featureIdChanged(id);
 	}
 }

@@ -1,6 +1,10 @@
 #include "partswitch.h"
 #include "partwidget.h"
 #include "stackedcentralwidget.h"
+#include "mainwindow.h"
+#include "plugin.h"
+#include "pluginmanifest.h"
+#include "pluginloader.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -20,6 +24,7 @@ PartSwitchToolButton::PartSwitchToolButton(QWidget *parent)
 	setAutoRaise(true);
 	setCheckable(true);
 	setAutoExclusive(false);
+	//setIconSize(QSize(64, 64));
 
 	connect(this, &Super::clicked, [this]() {
 		qfInfo() << "clicked" << this->m_partIndex;
@@ -44,10 +49,44 @@ void PartSwitch::addPartWidget(PartWidget *widget)
 	PartSwitchToolButton *bt = new PartSwitchToolButton();
 	connect(bt, SIGNAL(clicked(int)), this, SLOT(setCurrentPartIndex(int)));
 	bt->setText(widget->title());
-	QIcon ico(":/qf/qmlwidgets/images/under-construction.png");
-	bt->setIcon(ico);
 	bt->setPartIndex(buttonCount());
 	addWidget(bt);
+	QMetaObject::invokeMethod(this, "updateButtonIcon", Qt::QueuedConnection, Q_ARG(int, buttonCount() - 1));
+}
+
+void PartSwitch::updateButtonIcon(int part_index)
+{
+	PartSwitchToolButton *bt = buttonAt(part_index);
+	PartWidget *pw = m_centralWidget->partWidget(part_index);
+	if(bt && pw) {
+		QIcon ico;
+		QString feature_id = pw->featureId();
+		if(feature_id.isEmpty()) {
+			qfWarning() << "featureId property of part widget is empty, default icon will be set.";
+		}
+		else {
+			Plugin *plugin = plugin = MainWindow::frameWork()->plugin(feature_id);
+			if(!plugin) {
+				qfWarning() << "Cannot found plugin for part featureId:" << feature_id << ", default icon will be set.";
+			}
+			else {
+				QString icon_path = pw->iconSource();
+				if(icon_path.isEmpty())
+					icon_path = "images/feature.png";
+				if(!icon_path.startsWith(":/")) {
+					icon_path = plugin->manifest()->pluginHomeDirectory() + "/" + icon_path;
+				}
+				QPixmap pm(icon_path);
+				if(pm.isNull())
+					qfWarning() << "Cannot load icon on path:" << icon_path;
+				else
+					ico = QIcon(pm);
+			}
+		}
+		if(ico.isNull())
+			ico = QIcon(":/qf/qmlwidgets/images/under-construction.png");
+		bt->setIcon(ico);
+	}
 }
 
 void PartSwitch::setCurrentPartIndex(int ix)
@@ -91,5 +130,6 @@ PartSwitchToolButton *PartSwitch::buttonAt(int part_index)
 	}
 	return ret;
 }
+
 
 

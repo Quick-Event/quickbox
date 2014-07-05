@@ -47,6 +47,7 @@ private:
 	Q_SLOT void setCurrentPartIndex(int ix);
 	int buttonCount();
 	PartSwitchToolButton* buttonAt(int part_index);
+	Q_SLOT void updateButtonIcon(int part_index);
 private:
 	QPointer<StackedCentralWidget> m_centralWidget;
 	int m_currentPartIndex;

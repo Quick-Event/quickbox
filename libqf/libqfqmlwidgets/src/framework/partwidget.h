@@ -20,6 +20,7 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 private:
 	typedef QWidget Super;
@@ -30,6 +31,10 @@ public:
 	QString title() const { return m_title; }
 	void setTitle(QString arg);
 	Q_SIGNAL void titleChanged(const QString &s);
+
+	QString iconSource() const { return m_iconSource; }
+	void setIconSource(QString arg);
+	Q_SIGNAL void iconSourceChanged(const QString &s);
 
 	QString featureId() const { return m_featureId; }
 	void setFeatureId(QString id);
@@ -45,6 +50,7 @@ private:
 private:
 	Frame *m_centralFrame;
 	QString m_title;
+	QString m_iconSource;
 	QString m_featureId;
 };
 
