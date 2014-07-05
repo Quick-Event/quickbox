@@ -51,6 +51,43 @@ void Action::prependAction(Action *action)
 	w->insertAction(this, action);
 }
 
+void Action::appendAction(Action *new_act)
+{
+	QWidget *parent_w = parentMenu();
+	QF_ASSERT(parent_w!=nullptr, "bad parent", return);
+	new_act->setParent(parent_w);
+	Action *next_act = nullptr;
+	for(auto a : parent_w->actions()) {
+		Action *aa = qobject_cast<Action*>(a);
+		if(!aa)
+			continue;
+		if(aa == this) {
+			next_act = aa;
+		}
+		else if(next_act) {
+			next_act = aa;
+			break;
+		}
+	}
+	//qfDebug() << "\t created menu" << new_act;
+	if(next_act)
+		parent_w->insertAction(next_act, new_act);
+	else
+		parent_w->addAction(new_act);
+}
+
+Action* Action::appendMenu(const QString &id, const QString &text)
+{
+	QWidget *parent_w = parentMenu();
+	QMenu *m = new QMenu(parent_w);
+	Action *new_act = new Action(parent_w);
+	new_act->setMenu(m);
+	new_act->setOid(id);
+	new_act->setText(text);
+	appendAction(new_act);
+	return new_act;
+}
+
 void Action::addSeparator()
 {
 	QMenu *w = menu();

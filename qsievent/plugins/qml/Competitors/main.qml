@@ -12,22 +12,21 @@ Plugin {
 		}
 	}
 
-	/*
 	property list<Action> actions: [
 		Action {
-			id: actLAboutQt
-			text: qsTr('About &Qt')
+			id: actLoadFromOris
+			text: qsTr('Load from Oris')
 			onTriggered: {
-				MessageBoxSingleton.aboutQt();
+				Log.debug(text);
 			}
 		}
 	]
-		*/
 
 	Component.onCompleted:
 	{
-		//FrameWork.menuBar.actionForPath('help').addAction(actLAboutQt);
-		//FrameWork.menuBar.actionForPath('help').addSeparator();
+		var act_file = FrameWork.menuBar.actionForPath('file');
+		var act_competitors = act_file.appendMenu('competitors', qsTr('Competitors'));
+		FrameWork.menuBar.actionForPath('competitors/import').addAction(actLoadFromOris);
 		//console.warn('featureId:', root.featureId);
 		FrameWork.addPartWidget(thisPart, manifest.featureId);
 	}

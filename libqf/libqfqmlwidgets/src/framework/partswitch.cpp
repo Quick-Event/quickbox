@@ -16,18 +16,18 @@ using namespace qf::qmlwidgets::framework;
 PartSwitchToolButton::PartSwitchToolButton(QWidget *parent)
 	: Super(parent)
 {
-	//setAutoFillBackground(false); /// musi bejt off
+	setAutoFillBackground(false); /// musi bejt off
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
-	//setText(part->caption());
-	//setIcon(part->icon());
 	setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 	setAutoRaise(true);
 	setCheckable(true);
 	setAutoExclusive(false);
 	//setIconSize(QSize(64, 64));
+	//setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
 	connect(this, &Super::clicked, [this]() {
 		qfInfo() << "clicked" << this->m_partIndex;
+		//this->setIconSize(this->size());
 		emit clicked(this->m_partIndex);
 	});
 }
@@ -85,6 +85,7 @@ void PartSwitch::updateButtonIcon(int part_index)
 		}
 		if(ico.isNull())
 			ico = QIcon(":/qf/qmlwidgets/images/under-construction.png");
+		//bt->setIconSize(bt->size());
 		bt->setIcon(ico);
 	}
 }
