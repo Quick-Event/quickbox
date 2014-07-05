@@ -5,7 +5,7 @@ CONFIG += plugin
 CONFIG += c++11
 QT += qml widgets
 
-PLUGIN_MODULE_NAME = Logging
+PLUGIN_MODULE_NAME = Core
 
 DESTDIR = $$OUT_PWD/../../../../bin/divers/qsievent/plugins/$$PLUGIN_MODULE_NAME
 TARGET  = $${PLUGIN_MODULE_NAME}plugin
