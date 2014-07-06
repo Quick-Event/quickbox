@@ -1,6 +1,6 @@
 #include "crypt.h"
 
-#include "../log.h"
+#include "../core/log.h"
 
 #include <QTime>
 

@@ -8,7 +8,7 @@
 #ifndef QF_CORE_UTILS_TREETABLE_H
 #define QF_CORE_UTILS_TREETABLE_H
 
-#include "../coreglobal.h"
+#include "../core/coreglobal.h"
 #include "svalue.h"
 
 #include <QVariantMap>

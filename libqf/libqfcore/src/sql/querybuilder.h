@@ -1,7 +1,7 @@
 #ifndef QF_CORE_SQL_QUERYBUILDER_H
 #define QF_CORE_SQL_QUERYBUILDER_H
 
-#include "../coreglobal.h"
+#include "../core/coreglobal.h"
 
 #include <QMap>
 #include <QString>

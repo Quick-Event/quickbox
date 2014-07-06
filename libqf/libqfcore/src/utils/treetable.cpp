@@ -7,9 +7,9 @@
 
 #include "treetable.h"
 
-#include "../log.h"
-#include "../utils.h"
-#include "../string.h"
+#include "../core/log.h"
+#include "../core/utils.h"
+#include "../core/string.h"
 
 using namespace qf::core::utils;
 

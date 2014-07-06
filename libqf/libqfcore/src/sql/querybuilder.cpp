@@ -1,7 +1,7 @@
 #include "querybuilder.h"
 
-#include "../log.h"
-#include "../string.h"
+#include "../core/log.h"
+#include "../core/string.h"
 
 #include <QStringBuilder>
 

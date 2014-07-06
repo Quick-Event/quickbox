@@ -1,7 +1,7 @@
 #ifndef QF_CORE_UTILS_SVALUE_H
 #define QF_CORE_UTILS_SVALUE_H
 
-#include "../coreglobal.h"
+#include "../core/coreglobal.h"
 
 #include <QSharedData>
 #include <QVariant>
