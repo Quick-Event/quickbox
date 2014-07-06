@@ -17,6 +17,8 @@ LIBS +=      \
 unix: LIBS +=  \
 	-L$$OUT_PWD/../../lib  \
 
+include ($$PWD/../../crosscompile-support.pri)
+
 unix {
 	qmlfiles.commands = ln -sf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
 }

@@ -21,6 +21,8 @@ win32: LIBS +=  \
 unix: LIBS +=  \
 	-L../../lib  \
 
+include ($$PWD/../../crosscompile-support.pri)
+
 include($$PWD/src/src.pri)
 
 RESOURCES += \

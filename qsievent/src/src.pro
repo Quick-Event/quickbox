@@ -14,6 +14,8 @@ LIBS +=      \
 win32: LIBS +=  \
 	-L../../bin  \
 
+include ($$PWD/../../crosscompile-support.pri)
+
 DOLAR=$
 
 unix: LIBS +=  \
