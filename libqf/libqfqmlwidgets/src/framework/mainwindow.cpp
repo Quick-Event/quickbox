@@ -60,6 +60,12 @@ void MainWindow::loadPersistentSettings()
 	}
 }
 
+void MainWindow::showProgress(const QString &msg, int completed, int total)
+{
+	qfLogFuncFrame() << msg << completed << total;
+	emit progress(msg, completed, total);
+}
+
 MainWindow *MainWindow::frameWork()
 {
 	Q_ASSERT(self != nullptr);

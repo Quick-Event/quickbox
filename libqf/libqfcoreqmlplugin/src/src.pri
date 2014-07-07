@@ -14,3 +14,4 @@ SOURCES += \
     $$PWD/crypt.cpp \
 
 include ($$PWD/sql/sql.pri)
+include ($$PWD/network/network.pri)

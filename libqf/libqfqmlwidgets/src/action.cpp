@@ -80,6 +80,7 @@ Action* Action::appendMenu(const QString &id, const QString &text)
 {
 	QWidget *parent_w = parentMenu();
 	QMenu *m = new QMenu(parent_w);
+	//m->setTitle(text);
 	Action *new_act = new Action(parent_w);
 	new_act->setMenu(m);
 	new_act->setOid(id);

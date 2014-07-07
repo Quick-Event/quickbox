@@ -8,7 +8,7 @@
 #include <qf/qmlwidgets/splitter.h>
 #include <qf/qmlwidgets/statusbar.h>
 #include <qf/qmlwidgets/action.h>
-//#include <qf/qmlwidgets/menu.h>
+#include <qf/qmlwidgets/progressbar.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/inputdialog.h>
@@ -54,6 +54,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::Label>(uri, 1, 0, "Label");
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");
 		qmlRegisterType<qf::qmlwidgets::Splitter>(uri, 1, 0, "Splitter");
+		qmlRegisterType<qf::qmlwidgets::ProgressBar>(uri, 1, 0, "ProgressBar");
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");
 		qmlRegisterType<qf::qmlwidgets::Frame>(uri, 1, 0, "Frame");
 

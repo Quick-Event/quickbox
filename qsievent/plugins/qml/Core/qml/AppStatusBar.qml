@@ -28,23 +28,36 @@ StatusBar
 			text: (root.etapNo>0)? ('E'+root.etapNo): ''
 		}
 	}
-	/*
-	property var pluginEvent: null
-	function whenCurrentEventNameChanged()
+	property var progressFrame: Frame
 	{
-		eventName.text = pluginEvent.currentEventName;
+		//visible: false
+		layoutType: Fame.LayoutHorizontal
+		Label {
+			id: progressBarLabel
+		}
+		ProgressBar
+		{
+			id: progressBar
+			autoFillBackground: true
+			minimum: 0
+			textVisible: true
+		}
+		function showProgress(msg, completed, total)
+		{
+			//console.warn(msg, completed, total);
+			visible = (completed < total);
+			progressBar.value = completed;
+			progressBar.maximum = total;
+			progressBarLabel.text = msg;
+		}
 	}
-	function lazyInit()
-	{
-		pluginEvent = FrameWork.plugin('Event');
-		pluginEvent.currentEventNameChanged.connect(whenCurrentEventNameChanged);
-	}
-	*/
 	Component.onCompleted:
 	{
 		root.addPermanentWidget(eventFrame);
 		root.addPermanentWidget(etapFrame);
 
-		//FrameWork.pluginsLoaded.connect(lazyInit);
+		root.addWidget(progressFrame);
+
+		FrameWork.progress.connect(progressFrame.showProgress);
 	}
 }

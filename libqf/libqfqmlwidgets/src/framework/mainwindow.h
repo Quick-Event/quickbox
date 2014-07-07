@@ -60,6 +60,9 @@ public:
 
 	Q_SLOT void loadPersistentSettings();
 
+	Q_SLOT void showProgress(const QString &msg, int completed, int total);
+	Q_SIGNAL void progress(const QString &msg, int completed, int total);
+
 	/// emitted by plugin loader when all plugins are loaded
 	Q_SIGNAL void pluginsLoaded();
 	Q_SIGNAL void aboutToClose();

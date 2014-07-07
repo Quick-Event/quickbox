@@ -1,11 +1,15 @@
 #include "qmllogsingleton.h"
 #include "crypt.h"
 #include "settings.h"
+
 #include "sql/qmlsqlsingleton.h"
 #include "sql/sqldatabase.h"
 #include "sql/sqlquery.h"
 #include "sql/sqlrecord.h"
 #include "sql/sqlquerybuilder.h"
+
+#include "network/networkaccessmanager.h"
+#include "network/networkreply.h"
 
 #include <qf/core/log.h>
 
@@ -31,8 +35,10 @@ public:
 		qmlRegisterType<qf::core::qml::SqlDatabase>(uri, 1, 0, "SqlDatabase");
 		qmlRegisterType<qf::core::qml::SqlQuery>(uri, 1, 0, "SqlQuery");
 		qmlRegisterType<qf::core::qml::SqlRecord>(uri, 1, 0, "SqlRecord");
-
 		qmlRegisterType<qf::core::qml::SqlQueryBuilder>(uri, 1, 0, "SqlQueryBuilder");
+
+		qmlRegisterType<qf::core::qml::NetworkAccessManager>(uri, 1, 0, "NetworkAccessManager");
+		qmlRegisterType<qf::core::qml::NetworkReply>(uri, 1, 0, "NetworkReply");
     }
 };
 
