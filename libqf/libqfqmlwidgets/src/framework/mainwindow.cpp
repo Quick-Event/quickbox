@@ -17,6 +17,9 @@
 #include <QQmlContext>
 #include <QSettings>
 #include <QCloseEvent>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -64,6 +67,68 @@ void MainWindow::showProgress(const QString &msg, int completed, int total)
 {
 	qfLogFuncFrame() << msg << completed << total;
 	emit progress(msg, completed, total);
+}
+
+QNetworkAccessManager *manager = new QNetworkAccessManager();
+QMap<int, QNetworkReply*> servedReplies;
+QMap<int, QByteArray> servedRepliesData;
+
+int MainWindow::getResource(const QUrl &url, bool show_progress)
+{
+	static int request_count = 0;
+	QNetworkRequest rq;
+	rq.setUrl(url);
+	//rq.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
+
+	QNetworkReply *reply = manager->get(rq);
+	if(show_progress) {
+		showProgress(QString("%1/%2 %3").arg(0).arg(100).arg(reply->url().toString()), 0, 100);
+	}
+	int curr_request_id = ++request_count;
+	servedReplies[curr_request_id] = reply;
+	connect(reply, &QNetworkReply::readyRead, [curr_request_id]() {
+		qfLogFuncFrame() << curr_request_id;
+		QNetworkReply *rpl = servedReplies.value(curr_request_id);
+		if(rpl) {
+			QByteArray ba = rpl->readAll();
+			qDebug() << rpl << ba;
+			servedRepliesData[curr_request_id].append(ba);
+		}
+	});
+	connect(reply, &QNetworkReply::downloadProgress, [show_progress, curr_request_id, this](qint64 _received, qint64 _total) {
+		QNetworkReply *rpl = servedReplies.value(curr_request_id);
+		if(rpl) {
+			int completed = _received;
+			int total = _total;
+			if(total < 0) {
+				total = 3 * _received;
+				if(show_progress) {
+					this->showProgress(QString("%1/%2 %3").arg(_received).arg(_total).arg(rpl->url().toString()), completed, total);
+				}
+			}
+		}
+	});
+	connect(reply, &QNetworkReply::finished, [curr_request_id, this]() {
+		QNetworkReply *rpl = servedReplies.value(curr_request_id);
+		if(rpl) {
+			if(rpl->error() == QNetworkReply::NoError) {
+				QByteArray ba = servedRepliesData.value(curr_request_id);
+				QString text = QString::fromUtf8(ba);
+				emit getResourceContentFinished(curr_request_id, true, text);
+			}
+			else {
+				emit getResourceContentFinished(curr_request_id, false, rpl->errorString());
+			}
+			rpl->deleteLater();
+		}
+	});
+	/*
+	connect(reply, &QNetworkReply::error, [](QNetworkReply::NetworkError code) {
+		qfError() << "netwoork error";
+	});
+	*/
+	//connect(reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
+	return curr_request_id;
 }
 
 MainWindow *MainWindow::frameWork()

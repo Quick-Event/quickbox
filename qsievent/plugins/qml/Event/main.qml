@@ -16,9 +16,11 @@ Plugin {
 		Event {
 			id: event
 		}
+		/*
 		NetworkAccessManager {
 			id: networkAccessManager
 		}
+		*/
 	}
 
 	property list<Action> actions: [
@@ -48,22 +50,21 @@ Plugin {
 			enabled: internals.pluginSqlDb.sqlServerConnected
 			onTriggered: {
 				var d = new Date;
-				//var reply = networkAccessManager.get('http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10));
-				var reply = networkAccessManager.get('http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=2526');
-				reply.downloadProgress.connect(FrameWork.showProgress);
-				reply.finished.connect(function(get_ok) {
-					Log.info("http get finished:", get_ok, reply.url);
+				//var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10);
+				var url = 'www.google.com';
+				var rq_id = FrameWork.getResource(url, true);
+				FrameWork.getResourceContentFinished.connect(function(request_id, get_ok, resource_text) {
+					Log.info("http get finished:", request_id, get_ok);
 					if(get_ok) {
-						var json_str = reply.textData;
+						var json_str = resource_text;
 						var json = JSON.parse(json_str)
 						Log.info("json:", json);
 						json_str = JSON.stringify(json, null, 2)
 						Log.info("text:", json_str);
 					}
 					else {
-						console.error("http get error:", reply.errorString, 'on:', reply.url)
+						console.error("http get error:", resource_text, 'on:', url)
 					}
-					reply.destroy();
 				});
 			}
 		}
