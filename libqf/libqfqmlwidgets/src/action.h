@@ -34,6 +34,7 @@ public:
 	Q_INVOKABLE void prependAction(qf::qmlwidgets::Action *action);
 	Q_INVOKABLE void appendAction(qf::qmlwidgets::Action *new_act);
 	Q_INVOKABLE qf::qmlwidgets::Action *appendMenu(const QString &id, const QString &text);
+	Q_INVOKABLE qf::qmlwidgets::Action *prependMenu(const QString &id, const QString &text);
 	Q_INVOKABLE void addSeparator();
 	Q_INVOKABLE void prependSeparator();
 private:

@@ -31,7 +31,7 @@ StatusBar
 	property var progressFrame: Frame
 	{
 		//visible: false
-		layoutType: Fame.LayoutHorizontal
+		layoutType: Frame.LayoutHorizontal
 		Label {
 			id: progressBarLabel
 		}

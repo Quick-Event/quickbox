@@ -16,12 +16,14 @@ NetworkAccessManager::NetworkAccessManager(QObject *parent) :
 
 NetworkAccessManager::~NetworkAccessManager()
 {
+	qfLogFuncFrame() << this;
 }
 
 NetworkReply *NetworkAccessManager::get(const QUrl &url)
 {
 	NetworkReply *ret = new NetworkReply();
 	QNetworkRequest rq(url);
+	//rq.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
 	QNetworkReply *repl = Super::get(rq);
 	ret->setReply(repl);
 	return ret;

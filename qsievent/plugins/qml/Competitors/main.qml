@@ -26,7 +26,10 @@ Plugin {
 					Log.info("http get finished:", get_ok, reply.url);
 					if(get_ok) {
 						var json_str = reply.textData;
-						//Log.info("data:", json_str);
+						var json = JSON.parse(json_str)
+						Log.info("json:", json);
+						json_str = JSON.stringify(json, null, 2)
+						Log.info("text:", json_str);
 					}
 					else {
 						console.error("http get error:", reply.errorString, 'on:', reply.url)
