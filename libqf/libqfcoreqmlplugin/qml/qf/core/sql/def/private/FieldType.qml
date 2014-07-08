@@ -1,5 +1,9 @@
 import QtQml 2.0
 
-QtObject {
-
+QtObject
+{
+	function createSqlType(options)
+	{
+		return '';
+	}
 }

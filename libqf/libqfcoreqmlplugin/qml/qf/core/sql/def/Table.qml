@@ -12,11 +12,18 @@ QtObject {
 	function createSqlScript(options)
 	{
 		var ret = [];
+		var sql_types = [];
 		ret.push('-- create table: ' + options.schemaName + '.' + root.name);
 		var table_def = 'CREATE TABLE ' + options.schemaName + '.' + root.name + ' (\n';
 		var field_defs = [];
+		options.tableName = name;
 		for(var i=0; i<fields.length; i++) {
-			field_defs.push(fields[i].createSqlScript(options));
+			var field = fields[i];
+			//Log.info("field:", field);
+			field_defs.push(field.createSqlScript(options));
+			var sql_type = field.createTypesSqlScript(options);
+			if(sql_type)
+				sql_types.push(sql_type);
 		}
 		for(var i=0; i<indexes.length; i++) {
 			var constr = indexes[i].createSqlConstraintScript(options);
@@ -25,12 +32,16 @@ QtObject {
 		}
 		table_def += field_defs.join(',\n');
 		table_def += '\n)';
+
+		ret.push.apply(ret, sql_types);
+
 		ret.push(table_def);
+
 		for(var i=0; i<indexes.length; i++) {
 			var index = indexes[i];
 			var index_def = index.createSqlIndexScript(options);
 			if(index_def)
-				ret.push('CREATE INDEX ' + index.indexName(i) + ' ON ' + options.schemaName + '.' + root.name + ' ' + index_def);
+				ret.push('CREATE INDEX ' + index.indexName(i, name) + ' ON ' + options.schemaName + '.' + root.name + ' ' + index_def);
 		}
 		for(var i=0; i<fields.length; i++) {
 			var fld = fields[i];

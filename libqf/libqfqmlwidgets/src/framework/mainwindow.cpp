@@ -68,7 +68,7 @@ void MainWindow::showProgress(const QString &msg, int completed, int total)
 	qfLogFuncFrame() << msg << completed << total;
 	emit progress(msg, completed, total);
 }
-
+#ifdef GET_RESOURCE_IN_FRAME_WORK
 QNetworkAccessManager *manager = new QNetworkAccessManager();
 QMap<int, QNetworkReply*> servedReplies;
 QMap<int, QByteArray> servedRepliesData;
@@ -130,7 +130,7 @@ int MainWindow::getResource(const QUrl &url, bool show_progress)
 	//connect(reply, SIGNAL(sslErrors(QList<QSslError>)), this, SLOT(slotSslErrors(QList<QSslError>)));
 	return curr_request_id;
 }
-
+#endif
 MainWindow *MainWindow::frameWork()
 {
 	Q_ASSERT(self != nullptr);

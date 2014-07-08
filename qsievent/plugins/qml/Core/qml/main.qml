@@ -24,6 +24,23 @@ Plugin {
 		return settingsComponent.createObject(null);
 	}
 
+	function downloadContent(url, callback)
+	{
+		var reply = networkAccessManager.get(url);
+		reply.downloadProgress.connect(FrameWork.showProgress);
+		reply.finished.connect(function(get_ok) {
+			Log.info("http get finished:", get_ok, reply.url);
+			if(get_ok) {
+				callback(true, reply.textData);
+			}
+			else {
+				console.error("http get error:", reply.errorString, 'on:', reply.url);
+				callback(false, reply.errorString);
+			}
+			reply.destroy();
+		});
+	}
+
 	property Crypt crypt: Crypt
 	{
 		Component.onCompleted: {
@@ -39,6 +56,9 @@ Plugin {
 		}
 		AppStatusBar {
 			id: appStatusBar
+		}
+		NetworkAccessManager {
+			id: networkAccessManager
 		}
 	}
 

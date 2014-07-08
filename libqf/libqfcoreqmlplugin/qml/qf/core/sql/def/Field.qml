@@ -17,11 +17,18 @@ QtObject {
 			def += ' NOT NULL';
 		if(defaultValue) {
 			def += ' DEFAULT ';
-			if(typeof defaultValue === 'number')
+			if(typeof defaultValue !== 'number')
 				def += "'" + defaultValue + "'";
 			else
 				def += defaultValue;
 		}
 		return def;
+	}
+
+	function createTypesSqlScript(options)
+	{
+		//Log.info("type:", type, typeof type.createSqlType, "ahoj:", type.ahoj, type.ahoj())
+		var ret = type.createSqlType(options);
+		return ret;
 	}
 }

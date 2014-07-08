@@ -10,6 +10,8 @@ FieldType
 	function createSqlScript(options)
 	{
 		var def = 'character varying';
+		if(length > 0)
+			def += '(' + length + ')';
 		var coll = collation;
 		if(!coll)
 			coll = options.defaultCollation;

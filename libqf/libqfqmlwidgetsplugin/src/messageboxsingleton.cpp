@@ -23,3 +23,11 @@ void MessageBoxSingleton::aboutQt(QWidget *parent, const QString &title)
 	}
 	QMessageBox::aboutQt(parent, title);
 }
+
+int MessageBoxSingleton::critical(QWidget *parent, const QString &text)
+{
+	if(parent == nullptr) {
+		parent = QApplication::activeWindow();
+	}
+	return QMessageBox::critical(parent, trUtf8("Error"), text);
+}

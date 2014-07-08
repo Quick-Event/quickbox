@@ -66,10 +66,10 @@ public:
 	/// emitted by plugin loader when all plugins are loaded
 	Q_SIGNAL void pluginsLoaded();
 	Q_SIGNAL void aboutToClose();
-
+#ifdef GET_RESOURCE_IN_FRAME_WORK
 	Q_INVOKABLE int getResource(const QUrl &url, bool show_progress = true);
 	Q_SIGNAL void getResourceContentFinished(int request_id, bool ok, const QString &content);
-
+#endif
 	static MainWindow* frameWork();
 
 	//Q_INVOKABLE QObject* obj_testing();

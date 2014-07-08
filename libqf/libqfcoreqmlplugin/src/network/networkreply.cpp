@@ -17,16 +17,16 @@ NetworkReply::~NetworkReply()
 	if(m_reply) {
 		m_reply->abort();
 		m_reply->close();
-		//QNetworkAccessManager *m = m_reply->manager();
-		//m_reply->setParent(m);
-		//m_reply->setRequest(QNetworkRequest());
+		/*
 		qfDebug() << "raw header pairs:";
 		for(auto p : m_reply->rawHeaderPairs()) {
 			qfDebug() << p.first << p.second;
 		}
 		qfDebug() << "raw header pairs list end";
+		*/
 		/// !!! THIS IS A MEMORY LEAK !!!
 		/// don't know why, but deleting m_reply causes segmentation fault in the QNetworkHeadersPrivate destructor
+		/// watch https://bugreports.qt-project.org/browse/QTBUG-40125
 		//m_reply->deleteLater();
 	}
 }

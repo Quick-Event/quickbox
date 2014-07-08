@@ -10,18 +10,18 @@ QtObject
     property bool unique: false
 	property string comment
 
-	function indexName(cnt)
+	function indexName(cnt, table_name)
 	{
 		var ret = name;
 		if(!ret) {
 			if(primary) {
-				ret = 'ix_pkey';
+				ret = table_name + '_pkey';
 			}
 			else if(unique) {
-				ret = 'ix_unque' + cnt;
+				ret = table_name + '_unique' + cnt;
 			}
 			else {
-				ret = 'ix_' + cnt;
+				ret = table_name + '_ix' + cnt;
 			}
 		}
 		return ret;
@@ -33,11 +33,11 @@ QtObject
 		var constr_cnt = 0;
 		if(fields) {
 			if(primary) {
-				ret += '\tCONSTRAINT ' + indexName() + ' PRIMARY KEY (' + fields.join(', ') + ')';
+				ret += '\tCONSTRAINT ' + indexName(constr_cnt, options.tableName) + ' PRIMARY KEY (' + fields.join(', ') + ')';
 			}
 			else if(unique) {
 				constr_cnt++;
-				ret += '\tCONSTRAINT ' + indexName(constr_cnt) + ' UNIQUE (' + fields.join(', ') + ')';
+				ret += '\tCONSTRAINT ' + indexName(constr_cnt, options.tableName) + ' UNIQUE (' + fields.join(', ') + ')';
 			}
 		}
 		return ret;

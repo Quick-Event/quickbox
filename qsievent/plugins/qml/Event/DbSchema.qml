@@ -5,6 +5,77 @@ import qf.core.sql.def 1.0
 Schema {
 	name: 'untitled'
 	tables: [
+		Table { name: 'config'
+			fields: [
+				Field { name: 'ckey'; type: String {} },
+				Field { name: 'cvalue'; type: String {} }
+			]
+			indexes: [
+				Index {fields: ['ckey']; primary: true }
+			]
+		},
+		Table { name: 'runners'
+			fields: [
+				Field { name: 'id'; type: Serial {} },
+				Field { name: 'startNumber'; type: Int {} },
+				Field { name: 'class'; type: String { length: 10 } },
+				Field { name: 'course'; type: String { length: 10 } },
+				Field { name: 'name'; type: String {} },
+				Field { name: 'surname'; type: String {} },
+				Field { name: 'registration'; type: String { length: 10 } },
+				Field { name: 'licence'; type: String { length: 1 } },
+				Field { name: 'club'; type: String { } },
+				Field { name: 'country'; type: String { } },
+				Field { name: 'offRace'; type: Boolean { } },
+				Field { name: 'siId'; type: Int { } },
+				Field { name: 'relayId'; type: Int { } },
+				Field { name: 'leg'; type: Int { } },
+				Field { name: 'comment'; type: String { } },
+				Field { name: 'ranking'; type: Int { } }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true },
+				Index {fields: ['class'] }
+			]
+		},
+		Table { name: 'laps'
+			fields: [
+				Field { name: 'id'; type: Serial {} },
+				Field { name: 'runnerId'; type: Int {} },
+				Field { name: 'siId'; type: Int {} },
+				Field { name: 'etap'; type: Int {} },
+				Field { name: 'startTime'; type: Int {}
+					comment: 'in seconds'
+				},
+				Field { name: 'lapTime'; type: Int {}
+					comment: 'in seconds'
+				},
+				Field { name: 'lapTimeMS'; type: Int {}
+					comment: 'in miliseconds'
+				},
+				Field { name: 'status';
+					type: Enum { name: 'enum_lap_status';
+						keys: ['NOT_RUN', 'OK', 'DISK']
+					}
+					defaultValue: 'NOT_RUN'; notNull: true
+				}
+			]
+			indexes: [
+				Index { fields: ['id']; primary: true },
+				Index { fields: ['runnerId'] },
+				Index { fields: ['etap, runnerId']; unique: true },
+				Index { fields: ['status', 'lapTime', 'lapTimeMS'] }
+			]
+		},
+		Table { name: 'etaps'
+			fields: [
+				Field { name: 'id'; type: Int {} },
+				Field { name: 'startTime'; type: Time {} }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true }
+			]
+		},
 		Table { name: 'cards'
 			fields: [
 				Field {

@@ -9,3 +9,7 @@ Serial 1.0 Serial.qml
 Int 1.0 Int.qml
 Real 1.0 Real.qml
 Boolean 1.0 Boolean.qml
+Time 1.0 Time.qml
+Date 1.0 Date.qml
+DateTime 1.0 DateTime.qml
+Enum 1.0 Enum.qml

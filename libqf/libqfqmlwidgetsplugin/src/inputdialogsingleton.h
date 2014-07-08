@@ -16,6 +16,7 @@ public:
 public:
 	Q_INVOKABLE QString getText(QWidget *parent, const QString &title, const QString &label, const QString &text = QString());
 	Q_INVOKABLE QString getItem(QWidget *parent, const QString &title, const QString &label, const QStringList &items, int current = 0, bool editable = true);
+	Q_INVOKABLE int getItemIndex(QWidget *parent, const QString &title, const QString &label, const QStringList &items, int current = 0);
 };
 
 #endif // INPUTDIALOGSINGLETON_H
