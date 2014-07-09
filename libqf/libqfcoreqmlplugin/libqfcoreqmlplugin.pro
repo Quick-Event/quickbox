@@ -42,8 +42,8 @@ POST_TARGETDEPS += qmlfiles
 #INSTALLS += target qml pluginfiles
 
 OTHER_FILES += \
-    qml/qf/core/sql/def/* \
-    qml/qf/core/sql/def/private/* \
+    #qml/qf/core/sql/def/* \
+    #qml/qf/core/sql/def/private/* \
 
 include (src/src.pri)
 

@@ -606,8 +606,10 @@ Table::Field Table::field(int fld_ix, bool throw_exc) const
 {
 	bool ret = isValidField(fld_ix);
 	if(ret) return fields()[fld_ix];
-	if(throw_exc)
+	if(throw_exc) {
 		qfError() << QString("field: %1 is not a valid field index. FieldCount: %2").arg(fld_ix).arg(fields().count());
+		qfFatal("Givin up.");
+	}
 	return Field();
 }
 

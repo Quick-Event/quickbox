@@ -123,6 +123,8 @@ public:
 		Field();
 		Field(const QString &name, QVariant::Type t);
 
+		bool isNull() const {return d == sharedNull().d;}
+
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 	};
@@ -217,8 +219,8 @@ public:
 	{
 		return fieldRef(fields().fieldIndex(field_name, true));
 	}
-	Field field(int fld_ix, bool throw_exc = true) const;
-	Field field(const QString& field_name, bool throw_exc = true) const
+	Field field(int fld_ix, bool throw_exc = false) const;
+	Field field(const QString& field_name, bool throw_exc = false) const
 	{
 		return field(fields().fieldIndex(field_name, throw_exc), throw_exc);
 	}

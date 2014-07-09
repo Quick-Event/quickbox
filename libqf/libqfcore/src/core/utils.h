@@ -9,7 +9,7 @@
 #define QF_SARG(s) "'" + QString(s) + "'"
 #define QF_IARG(i) "" + QString::number(i) + ""
 
-#define QF_QUOTEME(x) #x
+#define QF_QUOTEME(x) QStringLiteral(#x)
 
 #define QF_OPTION_FIELD_RW(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest)));} \

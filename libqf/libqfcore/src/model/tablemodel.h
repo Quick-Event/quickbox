@@ -2,6 +2,7 @@
 #define QF_CORE_MODEL_TABLEMODEL_H
 
 #include "../core/coreglobal.h"
+#include "../utils/table.h"
 
 #include <QAbstractTableModel>
 
@@ -12,15 +13,110 @@ namespace model {
 class QFCORE_DECL_EXPORT TableModel : public QAbstractTableModel
 {
 	Q_OBJECT
+	Q_PROPERTY(bool nullReportedAsString READ isNullReportedAsString WRITE setNullReportedAsString NOTIFY nullReportedAsStringChanged)
 private:
 	typedef QAbstractTableModel Super;
 public:
+	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
+				FieldTypeRole, FieldIsNullableRole,
+				RawValueRole, ValueIsNullRole, FirstUnusedRole };
+public:
 	explicit TableModel(QObject *parent = 0);
+public:
+	class QFCORE_DECL_EXPORT ColumnDefinition
+	{
+	public:
+		private:
+		class SharedDummyHelper {};
+			class Data : public QSharedData
+			{
+				public:
+					QString fieldName; //!< ID to pair ColumnDefinitions with fields
+					int fieldIndex;
+					QString caption;
+					QString toolTip;
+					//int initialSize; //!< initial width of column
+					bool readOnly;
+					Qt::Alignment alignment;
+					//QPointer<QFDlgDataTable> chooser;
+					QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
+					QVariantMap properties;
 
-signals:
+					Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false) {}
+			};
+		private:
+			QSharedDataPointer<Data> d;
+			ColumnDefinition(SharedDummyHelper) {
+				d = new Data();
+			}
+		public:
+			static const ColumnDefinition& sharedNull();
+			bool isNull() const {return d == sharedNull().d;}
+		public:
+			ColumnDefinition() {
+				*this = sharedNull();
+			}
+			ColumnDefinition(const QString &fldname) {
+				d = new Data(fldname);
+			}
 
-public slots:
+			QString fieldName() const {return d->fieldName;}
+			ColumnDefinition& setFieldName(const QString &s) {d->fieldName = s; return *this;}
+			int fieldIndex() const {return d->fieldIndex;}
+			ColumnDefinition& setFieldIndex(int i) {d->fieldIndex = i; return *this;}
+			QString caption() const {return d->caption;}
+			ColumnDefinition& setCaption(const QString &s) {d->caption = s; return *this;}
+			QString toolTip() const {return d->toolTip;}
+			ColumnDefinition& setToolTip(const QString &s) {d->toolTip = s; return *this;}
+			//int initialSize() const {return d->initialSize;}
+			//ColumnDefinition& setInitialSize(int i) {d->initialSize = i; return *this;}
+			bool isReadOnly() const {return d->readOnly;}
+			ColumnDefinition& setReadOnly(bool b = true) {d->readOnly = b; return *this;}
+			Qt::Alignment alignment() const {return d->alignment;}
+			ColumnDefinition& setAlignment(const Qt::Alignment &al) {d->alignment = al; return *this;}
+			QString format() const {return d->format;}
+			/// for double see QString::number(...)
+			/// for QTime see QTime::toString(...)
+			/// for QDate see QDate::toString(...)
+			ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
+			ColumnDefinition& setCastType(QVariant::Type t) {d->properties["castType"] = (int)t; return *this;}
+			QVariant::Type castType() const {return (QVariant::Type)d->properties.value("castType", QVariant::Invalid).toInt();}
+
+			const QVariantMap& properties() const {return d->properties;}
+	};
+	typedef QList<ColumnDefinition> ColumnList;
+
+public:
+	void clearColumns();
+	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString()) {
+		return insertColumn(m_columns.count(), field_name, caption);
+	}
+	ColumnDefinition& insertColumn(int before_ix, const QString &field_name, const QString &_caption = QString());
+	ColumnDefinition removeColumn(int ix);
+public:
+	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
+	bool isNullReportedAsString() const { return m_nullReportedAsString; }
+	void setNullReportedAsString(bool arg)
+	{
+		if (m_nullReportedAsString != arg) {
+			m_nullReportedAsString = arg;
+			emit nullReportedAsStringChanged(arg);
+		}
+	}
+	Q_SIGNAL void nullReportedAsStringChanged(bool arg);
+
+protected:
+	void fillColumnIndexes();
+	qf::core::utils::Table::Field tableField(int column_index) const;
+protected:
+	qf::core::utils::Table m_table;
+	ColumnList m_columns;
+	bool m_nullReportedAsString;
 };
 
 }}}
