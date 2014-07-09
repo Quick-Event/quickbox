@@ -1,6 +1,5 @@
-
 //
-// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2010
+// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2014
 //
 // Copyright: See COPYING file that comes with this distribution
 //
@@ -18,6 +17,8 @@ namespace qf {
 namespace core {
 namespace utils {
 
+/// helper table used for repor generator mainly
+/// should be replaced by Table in future
 class QFCORE_DECL_EXPORT TreeTableColumn : public SValue
 {
 public:

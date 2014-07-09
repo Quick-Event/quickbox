@@ -28,6 +28,11 @@ SIMessageCardReadOut::Punch::Punch(SIMessageCardReadOut::Punch::SharedDummyHelpe
 	d = new Data();
 }
 
+SIMessageCardReadOut::Punch::Punch()
+{
+	*this = sharedNull();
+}
+
 const SIMessageCardReadOut::Punch & SIMessageCardReadOut::Punch::sharedNull()
 {
 	static SIMessageCardReadOut::Punch n = SIMessageCardReadOut::Punch(SharedDummyHelper());

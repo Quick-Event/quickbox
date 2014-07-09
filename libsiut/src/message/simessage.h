@@ -71,7 +71,7 @@ public:
 		/// 4 week counter relative
 		int weekCnt() const;
 
-		Punch() : d() {}
+		Punch();
 		Punch(const QByteArray &ba, int offset, int record_type);// : d(ba, offset, record_type) {}
 	};
 	typedef QList<Punch>PunchList;

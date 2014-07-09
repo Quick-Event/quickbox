@@ -38,17 +38,20 @@ bool Utils::fieldNameEndsWith(const QString &field_name1, const QString &field_n
 	int l2 = field_name2.length();
 	if(l2 > l1)
 		return false;
-	for(int i=0; i<l1 && i<l2; i++) {
-		QChar c1= field_name1[l1-i-1].toLower();
-		QChar c2= field_name2[l2-i-1].toLower();
-		if(c1 != c2)
-			return false;
+	if(field_name1.endsWith(field_name2, Qt::CaseInsensitive)) {
+		if(l1 == l2)
+			return true; /// same length, must be same
+		if(field_name1[l1 - l2 - 1] == '.')
+			return true; /// dot '.' is on position l1 - l2 - 1
 	}
-	if(l1 == l2)
-		return true; /// jsou stejne dlouhy, musi bejt stejny
-	/// prvni je delsi, ale jeste muze mit tecku (napr. zakazky.nazev a nazev)
-	if(field_name1[l1 - l2 - 1] == '.')
-		return true;
+	return false;
+}
+
+bool Utils::fieldNameCmp(const QString &fld_name1, const QString &fld_name2)
+{
+	if(fld_name1.isEmpty() || fld_name2.isEmpty()) return false;
+	if(fieldNameEndsWith(fld_name1, fld_name2)) return true;
+	if(fieldNameEndsWith(fld_name2, fld_name1)) return true;
 	return false;
 }
 

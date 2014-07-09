@@ -3,8 +3,10 @@
 #include "sqlquerybuilder.h"
 
 #include <qf/core/log.h>
+#include <qf/core/utils.h>
 
 #include <QSqlError>
+#include <QSqlField>
 
 using namespace qf::core::qml;
 
@@ -67,9 +69,21 @@ QVariant SqlQuery::value(int ix)
 
 QVariant SqlQuery::value(const QString &field_name)
 {
-	QVariant ret = m_query.value(field_name);
-	if(!ret.isValid()) {
+	QSqlRecord rec = m_query.record();
+	int ix = -1;
+	for(int i=0; i<rec.count(); i++) {
+		QString fn = rec.field(i).name();
+		if(Utils::fieldNameEndsWith(fn, field_name)) {
+			ix = i;
+			break;
+		}
+	}
+	QVariant ret;
+	if(ix < 0) {
 		qfError() << "Field:" << field_name << "not found in query record, valid field names:" << record()->fieldNames();
+	}
+	else {
+		ret = m_query.value(ix);
 	}
 	return ret;
 }

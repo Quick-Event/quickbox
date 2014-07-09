@@ -1,5 +1,1395 @@
 #include "table.h"
+#include "csvreader.h"
+#include "svalue.h"
+#include "treetable.h"
+
+#include "../core/log.h"
+#include "../core/assert.h"
+#include "../core/utils.h"
+#include "../core/string.h"
+
+namespace qfc = qf::core;
+using namespace qf::core::utils;
+
+#include <QTextCodec>
+#include <QStringBuilder>
+#include <QCollator>
+#include <QDate>
+#include <QDomElement>
+
+#include <limits>
+
+//====================================================
+//                      Table::LessThan
+//====================================================
+Table::LessThan::LessThan(const Table &t)
+	: table(t), sortedFields(t.tableProperties().sortDefinition())
+{
+	sortCollator = table.sortCollator();
+	//qfLogFuncFrame() << "sortedFields.count():" << sortedFields.count();
+	for(int i=0; i<sortedFields.count(); i++) {
+		if(!table.fields().isValidFieldIndex(sortedFields[i].fieldIndex))
+			qfWarning() << "Invalid sort definition. field index:" << sortedFields[i].fieldIndex;
+	}
+}
+
+bool Table::LessThan::lessThan(int r1, int r2) const
+{
+	//qfLogFuncFrame() << "r1:" << r1 << "r2:" << r2;
+	bool ret = false;
+	for(int i=0; i<sortedFields.count(); i++) {
+		const Table::SortDef &sd = sortedFields[i];
+		QVariant l = table.rows()[r1].value(sd.fieldIndex);
+		QVariant r = table.rows()[r2].value(sd.fieldIndex);
+		int res = cmp(l, r, sd);
+		//qfDebug() << "\t res:" << res;
+		if(res == 0) continue;
+		if(sd.ascending) {ret = (res < 0); break;}
+		ret = (res > 0); break;
+	}
+	//qfDebug() << "\t return:" << ret;
+	return ret;
+}
+
+bool Table::LessThan::lessThan_helper(int _row, const QVariant &v, bool switch_params) const
+{
+	//qfLogFuncFrame() << "row:" << _row << "v:" << v.toString() << "switch_params:" << switch_params;
+	bool ret = false;
+	QVariantList vlst = v.toList();
+	int cnt = 1;
+	if(!vlst.isEmpty()) cnt = vlst.count();
+	for(int i=0; i<cnt && i<sortedFields.count(); i++) {
+		const Table::SortDef &sd = sortedFields[i];
+		QF_CHECK(sd.ascending, "Ascending sort is needed for seek.");
+		QVariant l = table.rows()[_row].value(sd.fieldIndex);
+		QVariant r;
+		if(vlst.isEmpty()) r = v;
+		else r = vlst[i];
+		int res;
+		//qfDebug() << "\t l:" << l.toString() << "r:" << r.toString();
+		if(switch_params) res = cmp(r, l, sd);
+		else res = cmp(l, r, sd);
+		if(res < 0) {ret = true; break;}
+		if(res > 0) {ret = false; break;}
+	}
+	//qfDebug() << "\treturn:" << ret;
+	return ret;
+}
+
+int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::SortDef &sd) const
+{
+	//qfInfo() << QF_FUNC_NAME << "l:" << l.toString() << "r:" << r.toString();
+	static QTextCodec *tc_ascii7 = NULL;
+	/// NULL je nejmensi ze vsech
+	if(!l.isValid() && r.isValid()) return -1;
+	if(l.isValid() && !r.isValid()) return 1;
+	if(!l.isValid() && !r.isValid()) return 0;
+	int ret = 1;
+	if(l.type() == QVariant::String) {
+		if(sd.ascii7bit) {
+			if(tc_ascii7 == NULL) {
+				//qfInfo() << "creating ascii7bit codec";
+				tc_ascii7 = QTextCodec::codecForName("ASCII7");
+				if(!tc_ascii7)
+					qfFatal("Can't load ASCII7 codec.");
+			}
+			QByteArray la = tc_ascii7->fromUnicode(l.toString());
+			QByteArray ra = tc_ascii7->fromUnicode(r.toString());
+			if(!sd.caseSensitive) {
+				la = la.toLower();
+				ra = ra.toLower();
+			}
+			if(la < ra) ret = -1;
+			else if(la == ra) ret = 0;
+		}
+		else {
+			/// case sensitivity is property of table sort collator now
+			/// and cannot be specified for particular columns
+			ret = sortCollator.compare(l.toString(), r.toString());
+			//qfWarning() << l.toString() << "vs" << r.toString() << ":" << ret;
+		}
+	}
+	else {
+		if(l == r) ret = 0;
+		else switch (l.type()) {
+			case QVariant::Invalid:
+				ret = -1;
+				break;
+			case QVariant::Bool:
+			case QVariant::Int:
+				if(l.toInt() < r.toInt()) ret = -1;
+				break;
+			case QVariant::UInt:
+				if(l.toUInt() < r.toUInt()) ret = -1;
+				break;
+			case QVariant::LongLong:
+				if(l.toLongLong() < r.toLongLong()) ret = -1;
+				break;
+			case QVariant::ULongLong:
+				if(l.toULongLong() < r.toULongLong()) ret = -1;
+				break;
+			case QVariant::Double:
+				if(l.toDouble() < r.toDouble()) ret = -1;
+				//qfInfo() << "l:" << l.toDouble() << "lestThan" << "r:" << r.toDouble() << ret;
+				break;
+			case QVariant::Char:
+				if(l.toChar() < r.toChar()) ret = -1;
+				break;
+			case QVariant::Date:
+				if(l.toDate() < r.toDate()) ret = -1;
+				break;
+			case QVariant::Time:
+				if(l.toTime() < r.toTime()) ret = -1;
+				break;
+			case QVariant::DateTime:
+				if(l.toDateTime() < r.toDateTime()) ret = -1;
+				break;
+			case QVariant::ByteArray:
+				if(l.toByteArray() < r.toByteArray()) ret = -1;
+				break;
+			default:
+				qfWarning() << "unsupported variant comparison, variant type:" << l.type();
+				break;
+		}
+	}
+	//qfDebug() << "\tret:" << ret;
+	return ret;
+}
+
+//=========================================
+//           Table::Field
+//=========================================
+const Table::Field &Table::Field::sharedNull()
+{
+	static Field n = Field(SharedDummyHelper());
+	return n;
+}
+
+Table::Field::Field(Table::Field::SharedDummyHelper)
+{
+	d = new Data();
+}
+
+Table::Field::Field()
+{
+	*this = sharedNull();
+}
+
+Table::Field::Field(const QString &name, QVariant::Type t)
+{
+	d = new Data(name, t);
+}
+
+/*
+Table::Field::Field(const QString & _name, const QString & _def)
+{
+	d = new Data(QVariant::Invalid, _name);
+	QString fs = _def;
+	String::StringMap map = fs.splitMap();
+	QMapIterator<QString, QString> i(map);
+	while (i.hasNext()) {
+		i.next();
+		QString s = i.key().toLower();
+		if(s == "type") {
+			QString s1 = i.value().toLower();
+			if(!s1.isEmpty()) {
+				if(s1 == "string") type = QVariant::String;
+				else if(s1 == "date") type = QVariant::Date;
+				else if(s1 == "datetime") type = QVariant::DateTime;
+				else if(s1 == "time") type = QVariant::Time;
+				else type = QVariant::nameToType(qPrintable(s1));
+				//qfInfo() << "s1:" << s1 << qPrintable(s1) << "type:" << type;
+				//qfInfo() << "name:" << name << "type:" << QVariant::typeToName(type);
+			}
+		}
+		else if(s.startsWith("len")) length = i.value().toInt();
+		else if(s.startsWith("prec")) prec = i.value().toInt();
+	}
+}
+*/
+//=========================================
+//           Table::FieldList
+//=========================================
+int Table::FieldList::fieldIndex(const QString &field_name, bool throw_exc) const
+{
+	int col = -1, i = 0;
+	QString s = field_name;
+	foreach(Field fld, *this) {
+		if(Utils::fieldNameEndsWith(fld.name(), s)) {
+			col = i;
+			break;
+		}
+		i++;
+	}
+	if(col < 0) {
+		QString s1;
+		foreach(Field fld, *this) s1 += ", " + fld.name();
+		s1 = s1.mid(2);
+		if(throw_exc) {
+			qfInfo() << Log::stackTrace();
+			qfFatal("Field '%s' not found in query\nAvailable fields are: %s", qPrintable(field_name), qPrintable(s1));
+		}
+		return -1;
+	}
+	return col;
+}
+
+bool Table::FieldList::isValidFieldIndex(int fld_ix) const
+{
+	bool ret = (fld_ix >= 0 && fld_ix < count());
+	return ret;
+}
+
+//=========================================
+//       Table::TableProperties
+//=========================================
+Table::TableProperties::TableProperties(SharedDummyHelper)
+{
+	d = new Data();
+}
+
+Table::TableProperties::TableProperties()
+{
+	*this = sharedNull();
+}
+
+const Table::TableProperties& Table::TableProperties::sharedNull()
+{
+	static TableProperties n = TableProperties(SharedDummyHelper());
+	return n;
+}
+
+//=========================================
+//         Table::Row
+//=========================================
+TableRow::Data::Data()
+{
+}
+
+TableRow::Data::Data(const Table::TableProperties &props)
+	: tableProperties(props)
+{
+	flags.insert = false;
+	//flags.forcedInsert = false;
+	Table::FieldList flst = tableProperties.fields();
+	values.resize(flst.count());
+	for(int i=0; i<flst.count(); i++) values[i] = QVariant();/// NULL je QVariant(), to kvuli QDate. (flst[i].type());
+}
+
+TableRow::Data::~Data()
+{
+}
+
+TableRow::TableRow()
+{
+	*this = sharedNull();
+}
+
+TableRow::TableRow(SharedDummyHelper)
+{
+	d = new Data();
+}
+
+TableRow::TableRow(const Table::TableProperties &props)
+{
+	d = new Data(props);
+}
+
+const TableRow& TableRow::sharedNull()
+{
+	static TableRow n = TableRow(SharedDummyHelper());
+	return n;
+}
+
+bool TableRow::isDirty(int field_no) const
+{
+	QF_ASSERT(field_no < 0 || field_no >= d->values.size(), QString("field index %1 is out of range (%2)").arg(field_no).arg(d->values.size()), return false);
+	/// field je dirty, pokud ma nastaven dirty flag nebo value != orig value
+	bool ret = false;
+	if(field_no < d->dirtyFlags.count()) {
+		ret = d->dirtyFlags.at(field_no);
+	}
+	return ret;
+}
+
+void TableRow::setDirty(int field_no, bool val)
+{
+	qfLogFuncFrame() << "field_no:" << field_no << "val:" << val;
+	QF_ASSERT(field_no < 0 || field_no >= d->values.size(), QString("field index %1 is out of range (%2)").arg(field_no).arg(d->values.size()), return);
+	if(d->dirtyFlags.count() < d->values.count()) {
+		d->dirtyFlags.clear();
+		d->dirtyFlags.resize(d->values.size());
+	}
+	d->dirtyFlags[field_no] = val;
+}
+
+bool TableRow::isDirty() const
+{
+	for(int i=0; i<d->dirtyFlags.count(); i++) {
+		if(d->dirtyFlags[i]) return true;
+	}
+	return false;
+}
+
+QVariant TableRow::origValue(int col) const
+{
+	QVariant ret;
+	if(col < 0 || col >= d->origValues.size()) {
+		qfError() << QString("Column %1 is out of origValues range %2").arg(col).arg(d->origValues.size());
+	}
+	else {
+		ret = d->origValues.value(col);
+	}
+	return ret;
+}
+
+QVariant TableRow::origValue(const QString & field_name) const
+{
+	int col = fields().fieldIndex(field_name, false);
+	QVariant ret;
+	if(col < 0)
+		qfError() << QString("Field name '%1' not found.").arg(field_name);
+	else
+		ret = origValue(col);
+	return ret;
+}
+
+QVariant TableRow::value(int col) const
+{
+	if(col < 0 || col >= d->values.size()) {
+		qfError() << QString("Column %1 is out of range %2").arg(col).arg(d->values.size());
+		return QVariant();
+	}
+	QVariant v = d->values.value(col);
+	//qfInfo().noSpace() << "col: " << col << " value: '" << v.toString() << "' type: " << QVariant::typeToName(v.type()) << " is null: " << v.isNull() << " is valid: " << v.isValid();
+	return v;
+}
+
+QVariant TableRow::value(const QString &field_name) const
+{
+	int col = fields().fieldIndex(field_name, false);
+	QVariant ret;
+	if(col < 0)
+		qfError() << QString("Field name '%1' not found.").arg(field_name);
+	else
+		ret = value(col);
+	return ret;
+}
+/*
+#if defined QT_DEBUG
+static QString v2str(const QVariant &ret)
+{
+	if(!ret.isValid()) return "INVALID";
+	if(ret.type() == QVariant::ByteArray) return QString(ret.toByteArray().toBase64());
+	if(ret.type() == QVariant::String) return '\'' + ret.toString() + '\'';
+	return ret.toString();
+}
+#endif
+*/
+void TableRow::setInitialValue(int col, const QVariant & ret)
+{
+	if(col < 0 || col >= d->values.size()) {
+		qfError() << QString("Column %1 is out of range %2").arg(col).arg(d->values.size());
+		return;
+	}
+	QVariant new_val = ret;
+	if(ret.isValid())
+		new_val = Utils::retypeVariant(ret, fields()[col].type());
+	d->values[col] = new_val;
+}
+
+void TableRow::setValue(int col, const QVariant &v)
+{
+	//qfInfo() << col << v.toString();
+	if(d->values.count() > d->origValues.count()) {
+		saveValues();
+	}
+	QF_ASSERT(col < 0 || col >= d->values.size(),
+		QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
+		return);
+
+	QVariant new_val = v;
+	if(v.isValid())
+		new_val = Utils::retypeVariant(v, fields()[col].type());
+	QVariant orig_val = origValue(col);
+	#if defined QT_DEBUG
+	/*
+	if(false && fields()[col].fieldName() == "data") {
+		//qfInfo() << "\t\told value:" << v2str(old_val) << "old type:" << old_val.typeName() << " isValid:" << old_val.isValid();
+		qfInfo() << "\t\tnew value:" << v2str(new_val) << "old type:" << new_val.typeName() << " isValid:" << new_val.isValid();
+	}
+	*/
+	#endif
+	if(new_val != orig_val) {
+		d->values[col] = new_val;
+		setDirty(col, true);
+	}
+	else {
+		/// pokud hodnota byla nastavena (napr. po opakovanem prenastaveni) nakonec na originalni, neni nutne ji ukladat
+		d->values[col] = orig_val;
+		setDirty(col, false);
+	}
+}
+
+void TableRow::setValue(const QString &field_name, const QVariant &v)
+{
+	//qfInfo() << QF_FUNC_NAME << "field_name" << field_name << "val:" << v.toString();
+	int col = fields().fieldIndex(field_name, true);
+	setValue(col, v);
+}
+
+void TableRow::saveValues()
+{
+	//qfInfo() << "save values" << Log::stackTrace();
+	//if(isDirty()) return;
+	//qfLogFuncFrame() << "fieldcnt:" << fields().size();
+	//origValues.clear();
+	d->origValues.resize(d->values.size());
+	d->dirtyFlags.resize(d->values.size());
+	for(int i=0; i<d->values.size(); i++) {
+		d->origValues[i] = d->values[i];
+		d->dirtyFlags[i] = false;
+	}
+}
+
+void TableRow::restoreValues()
+{
+	for(int i=0; i<d->values.count(); i++) {
+		d->values[i] = origValue(i);
+		//d->origValues[i].dirty = false;
+	}
+	clearOrigValues();
+}
+
+void TableRow::clearOrigValues()
+{
+	d->origValues.clear();
+	d->dirtyFlags.clear();
+}
+void TableRow::clearEditFlags()
+{
+	clearOrigValues();
+	setInsert(false);
+	//setForcedInsert(false);
+}
+
+void TableRow::prepareForCopy()
+{
+	/// nastav orig values na invalid hodnoty, ale nemaz je, kdyby neexistovaly, setValue() by je vytvorila s aktualnimi values()
+	//if(d->origValues.count() < d->values.count()) {
+		d->origValues.clear();
+		d->origValues.resize(d->values.size());
+	//}
+	setInsert(true);
+	//qfInfo() << "is insert;" << isInsert();
+	for(int i=0; i<d->values.size(); i++) {
+		setDirty(i, true);
+	}
+}
+/*
+void TableRow::fillDefaultAndAutogeneratedValues()
+{
+	QFStorageDriver *drv = tableProperties().storageDriver();
+	if(drv) return drv->fillDefaultAndAutogeneratedValues(*this);
+}
+*/
+QVariantMap TableRow::valuesMap() const
+{
+	QVariantMap ret;
+	for(int i=0; i<fields().count(); i++) {
+		ret[fields()[i].name()] = value(i);
+	}
+	return ret;
+}
+
+QString TableRow::toString(const QString &sep) const
+{
+	QStringList sl;
+	for(int i=0; i<fields().count(); i++) {
+		QString s = "[%1:%3]: %2";
+		s = s.arg(fields()[i].name());
+		QVariant v = value(i);
+		if(v.type() == QVariant::String) v = "'" + v.toString() + "'";
+		sl << s.arg(v.toString()).arg(QVariant::typeToName(v.type()));
+	}
+	return sl.join(sep);
+}
+
+//=========================================
+//                          Table
+//=========================================
+Table::Data::Data()
+{
+	sortCollator.setIgnorePunctuation(true);
+}
+
+Table::Table(Table::SharedDummyHelper )
+{
+	d = new Data();
+}
+
+const Table & Table::sharedNull()
+{
+	static Table n = Table(SharedDummyHelper());
+	return n;
+}
 
 Table::Table()
 {
+	*this = sharedNull();
 }
+
+Table::Table(const QStringList &col_names)
+{
+	d = new Data();
+	for(int i=0; i<col_names.count(); i++) {
+		Field fld(col_names[i], QVariant::String);
+		fieldsRef().append(fld);
+	}
+}
+
+Table::Table(const Table::FieldList &col_defs)
+{
+	d = new Data();
+	for(int i=0; i<col_defs.count(); i++) {
+		Field fld(col_defs[i]);
+		//fld.setLength(cd.length);
+		//fld.setPrecision(cd.prec);
+		fieldsRef().append(fld);
+	}
+}
+
+Table::~Table()
+{
+}
+
+void Table::cleanupData(CleanupDataOption fields_options)
+{
+	qfLogFuncFrame();
+	switch(fields_options) {
+		case ClearFieldsRows:
+			qfDebug() << "\tcleaning fields";
+			fieldsRef().clear();
+		default:
+			qfDebug() << "\tcleaning rows";
+			d->rows.clear();
+			createRowIndex();
+	}
+}
+
+int Table::rowCount() const
+{
+	return rowIndex().size();
+}
+
+int Table::columnCount() const
+{
+	return fields().count();
+}
+
+bool Table::isValidRow(int row) const //throw(QFException)
+{
+	bool ret = (row >= 0 && row < rowCount());
+	return ret;
+}
+
+Table::Field& Table::fieldRef(int fld_ix)
+{
+	if(!isValidField(fld_ix)) {
+		qfError() << QString("col %1 is not valid column number (count: %2)").arg(fld_ix).arg(fields().count());
+		qfFatal("Giving up.");
+	}
+	return fieldsRef()[fld_ix];
+}
+
+Table::Field Table::field(int fld_ix, bool throw_exc) const
+{
+	bool ret = isValidField(fld_ix);
+	if(ret) return fields()[fld_ix];
+	if(throw_exc)
+		qfError() << QString("field: %1 is not a valid field index. FieldCount: %2").arg(fld_ix).arg(fields().count());
+	return Field();
+}
+
+TableRow& Table::insertRow(int before_row)
+{
+	qfLogFuncFrame();// << Log::stackTrace();
+	TableRow &row = insertRow(before_row, isolatedRow());
+	return row;
+}
+
+TableRow& Table::insertRow(int before_row, const TableRow &_row)
+{
+	qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
+	if(columnCount() <= 0) {
+		qfFatal("Table has no columns, row can not be inserted.");
+	}
+
+	if(!(tableProperties() == _row.tableProperties()))
+		qfFatal("Inserted row comes from different table.");
+
+	int r = (isValidRow(before_row))? before_row: rowCount();
+	TableRow empty_row(_row);
+	empty_row.setInsert();
+	rowsRef().append(empty_row);
+	rowIndexRef().insert(r, rowsRef().count()-1);
+	TableRow &row = rowRef(r);
+	//if(fill_default_and_auto_values) row.fillDefaultAndAutogeneratedValues();
+	return row;
+}
+
+
+TableRow Table::isolatedRow()
+{
+	qfLogFuncFrame();// << Log::stackTrace();
+	TableRow empty_row(tableProperties());
+	return empty_row;
+}
+
+bool Table::removeRow(int ri)
+{
+	//qfLogFuncFrame();
+	if(!isValidRow(ri)) {
+		qfWarning() << "Attempt to remove invalid row:" << ri;
+		return false;
+	}
+	int ix = rowNumberToRowIndex(ri);
+	rowsRef().removeAt(ix);
+	rowIndexRef().remove(ri);
+    /// posun zbyvajici indexy
+	RowIndexList &rlst = rowIndexRef();
+	for(int i=0; i<rlst.count(); i++)
+		if(rlst[i]>ix)
+			rlst[i]--;
+	return true;
+}
+
+void Table::revertRow(int ri)
+{
+	if(isValidRow(ri)) {
+		TableRow &r = rowRef(ri);
+		revertRow(r);
+	}
+}
+
+void Table::revertRow(TableRow &r)
+{
+	r.restoreValues();
+}
+
+void Table::createRowIndex()
+{
+	d->rowIndex.clear();
+	d->rowIndex.resize(d->rows.count());
+	for(int i=0; i<d->rows.count(); i++)
+		d->rowIndex[i] = i;
+}
+
+int Table::rowNumberToRowIndex(int rowno) const
+{
+	int ix = rowIndex()[rowno];
+	QF_ASSERT(ix >= 0 && ix < rows().count(), QString("Row index corrupted, wanted row: %1, rows count: %2").arg(ix).arg(d->rows.count()), return -1);
+	return ix;
+}
+
+TableRow& Table::rowRef(int ri)
+{
+	//qfLogFuncFrame();
+	if(!isValidRow(ri)) {
+		qfError() << QString("row: %1 is out of range of rows (%2)").arg(ri).arg(rowCount());
+		qfFatal("Giving up.");
+	}
+	return d->rows[rowNumberToRowIndex(ri)];
+}
+
+TableRow Table::row(int ri, bool throw_exc) const
+{
+	if(!isValidRow(ri)) {
+		if(throw_exc)
+			qfError() << QString("row: %1 is out of range of rows (%2)").arg(ri).arg(d->rows.size());
+		return TableRow();
+	}
+	return d->rows[rowNumberToRowIndex(ri)];
+}
+
+TableRow Table::lastRow(bool throw_exc) const
+{
+	return row(rowCount() - 1, throw_exc);
+}
+/*
+static QString quote_XML(const QString &s, const Table::TextExportOptions &opts)
+{
+	Q_UNUSED(opts);
+	QString ret = s;
+	ret.replace('<', "&lt;");
+	ret.replace('>', "&gt;");
+	return ret;
+}
+*/
+QString Table::quoteCSV(const QString &s, const Table::TextExportOptions &opts)
+{
+	QString ret = s;
+	bool quote = false;
+	if(opts.fieldQuotingPolicy() == Table::TextExportOptions::IfNecessary) {
+		if(ret.indexOf('"') >= 0) {ret = ret.replace('"', "\"\""); quote = true;}
+		if(!quote && ret.indexOf('\n') >= 0) quote = true;
+		if(!quote && ret.indexOf(opts.fieldSeparator()) >= 0) quote = true;
+		if(!quote && ret.indexOf('#') >= 0) quote = true; /// extended CVS, # je komentar
+	}
+	else if(opts.fieldQuotingPolicy() == Table::TextExportOptions::Always) {
+		quote = true;
+	}
+	if(quote) ret = "\"" + ret + "\"";
+	return ret;
+}
+
+void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExportOptions opts) const
+{
+	QList<int> ixs;
+	//emit progressValue(0, tr("Exportuji CSV"));
+	if(col_names == "*") {
+		for(int i=0; i<fields().count(); i++) ixs.append(i);
+	}
+	else {
+		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		foreach(QString s, sl) {
+			s = s.trimmed();
+			int ix = fields().fieldIndex(s, false);
+			if(ix >= 0)
+				ixs.append(ix);
+			else {
+				qfError() << "Field not found:" << s;
+				return;
+			}
+		}
+	}
+	if(opts.isExportColumnNames()) {
+		/// export field names
+		QVariantMap column_captions;
+		if(opts.isUseColumnCaptions()) column_captions = opts.columnCaptions();
+		QStringList caption_field_names = column_captions.keys();
+		for(int i=0; i<ixs.count(); i++) {
+			if(i > 0) ts << opts.fieldSeparator();
+			Field fld = field(ixs[i]);
+			QString fld_name = fld.name();
+			QString cap = fld_name;
+			if(!opts.isFullColumnNames())
+				Utils::parseFieldName(fld_name, &cap);
+			else {
+				foreach(QString key, caption_field_names) {
+					if(Utils::fieldNameCmp(key, fld_name)) {
+						cap = column_captions.value(key).toString();
+						break;
+					}
+				}
+			}
+			ts << cap;
+		}
+		ts << '\n';
+	}
+	// export data
+	// export data
+	//int n = 0, cnt = rowCount(), steps = 100, progress_step = cnt / steps + 1;
+	int n1 = opts.fromLine();
+	int n2 = opts.toLine();
+	if(n2 < 0) n2 = INT_MAX;
+	for(int i=n1; i<rowCount() && i<=n2; i++) {
+		TableRow r = row(i);
+		//if(cnt) if(n++ % progress_step) emit progressValue(1.*n/cnt, tr("Probiha export"));
+		for(int i=0; i<ixs.count(); i++) {
+			if(i > 0) ts << opts.fieldSeparator();
+			ts << quoteCSV(r.value(ixs[i]).toString(), opts);
+		}
+		ts << '\n';
+	}
+	//emit progressValue(-1);
+}
+
+const QString Table::CVSTableEndTag = "#CVS_TABLE_END";
+
+void Table::importCSV(QTextStream &ts, TextImportOptions opts)
+{
+	qfLogFuncFrame();
+	QString s;
+	QStringList sl;
+	//emit progressValue(0, tr("Importuji CSV"));
+	qfDebug() << "\t opts fieldSeparator:" << opts.fieldSeparator();
+	qfDebug() << "\t opts ignoreFirstLinesCount:" << opts.ignoreFirstLinesCount();
+	qfDebug() << "\t opts isImportColumnNames:" << opts.isImportColumnNames();
+	CSVReader reader(&ts, String(opts.fieldSeparator()).value(0).toLatin1(), String(opts.fieldQuotes()).value(0).toLatin1());
+	if(!opts.isImportAppend()) clear();
+	for(int i=0; i<opts.ignoreFirstLinesCount(); i++)
+		reader.readCSVLine();
+	if(opts.isImportColumnNames()) {
+		sl = reader.readCSVLineSplitted();
+		foreach(s, sl) {
+			//qfDebug() << "\tfield:" << s;
+			Field fld(s, QVariant::String);
+			fieldsRef().append(fld);
+		}
+	}
+	//int n = 0, cnt = 100, steps = 100, progress_step = cnt / steps;
+	bool trim_values = opts.isTrimValues();
+	while(!ts.atEnd()) {
+		//if(((n++)%steps) % progress_step) emit progressValue(1.*n / cnt, tr("Probiha import"));
+		sl = reader.readCSVLineSplitted();
+		if(!sl.isEmpty()) {
+			if(sl[0] == CVSTableEndTag) break;
+			s = sl[0];
+			if(s[0] == '#') continue; /// CVS comment (my CVS extension)
+			if(fields().isEmpty()) {
+				/// pokud nejsou vytvoreny fieldy, treba protoze se neimpoortovaly nazvy sloupcu, udelej je z tohoto radku
+				int colno = 0;
+				foreach(s, sl) {
+					Field fld(QString("col%1").arg(++colno), QVariant::String);
+					fieldsRef().append(fld);
+				}
+			}
+			TableRow r(tableProperties());
+			for(int i=0; i<fields().count() && i<sl.count(); i++) {
+				QString s = sl[i];
+				if(trim_values) s = s.trimmed();
+				r.setValue(i, s);
+			}
+			r.clearOrigValues();
+			d->rows.append(r);
+		}
+	}
+	//reload();
+}
+#ifdef TXT_EXPORT_IMPORT
+static QList<int> parse_field_structure(Table &table, const QString & file_structure_definition, QVariantMap & parsed_props)
+{
+	qfLogFuncFrame();
+	QList<int> col_mapping;
+	if(!file_structure_definition.isEmpty()) {
+		table.fieldsRef().clear();
+		qfc::String fs = file_structure_definition;
+		QStringList lines = fs.splitAndTrim('\n');
+		QString content;
+		foreach(fs, lines) {
+			int ix = fs.indexOf('#');
+			if(ix >= 0)
+				fs = fs.slice(0, ix).trimmed();
+			if(fs.isEmpty()) continue;
+			content += fs;
+		};
+		QStringList sl = content.splitVector();
+		//Table::ColumnDefList cd_list;
+		foreach(fs, sl) {
+			QString key;
+			String val;
+			int ix = fs.indexOf(':');
+			if(ix >= 0) {
+				key = fs.slice(0, ix).trim();
+				val = fs.slice(ix+1).trim();
+				if(val[0] == '\'') val = val.slice(1, -1);
+			}
+			else key = fs.trim();
+			//qfInfo() << "key:" << key << "val:" << val;
+			if(val[0] == '{') parsed_props[key] = val.splitMapRecursively();
+			//else if(val[0] == '[') values[key] = split_array(val);
+			else parsed_props[key] = val;
+
+			if(key == "columns") {
+				QStringList sl2 = val.splitVector();
+				int mapped_col_no = 0;
+				foreach(fs, sl2) {
+					ix = fs.indexOf(':');
+					if(ix >= 0) {key = fs.slice(0, ix).trim(); val = fs.slice(ix+1).trim();}
+					else {key = fs.trim(); val = QString();}
+					if(key == "skip-columns") {
+						mapped_col_no += val.toInt();
+						continue;
+					}
+					{
+						Table::ColumnDef cd(key, val);
+						Field fld(cd.name, cd.type);
+						fld.setLength(cd.length);
+						fld.setPrecision(cd.prec);
+						table.fieldsRef().append(fld);
+						qfDebug() << "\t adding field:" << fld.toString();
+						qfDebug() << "\t mapped to column:" << mapped_col_no;
+					}
+					col_mapping << mapped_col_no++;
+				}
+			}
+		}
+	}
+	return col_mapping;
+}
+
+static QChar field_delimiter_helper(const QString &_delimiter)
+{
+	QChar field_delimiter;
+	if(_delimiter == "\\n") field_delimiter = '\n';
+	else if(_delimiter == "\\t") field_delimiter = '\t';
+	else if(_delimiter.count() > 0) field_delimiter = _delimiter[0];
+	return field_delimiter;
+}
+
+
+void Table::importTXT(QTextStream &ts, const QString &file_structure_definition)
+{
+	qfLogFuncFrame();
+	QVariantMap parsed_props;
+	QList<int> col_mapping = parse_field_structure(*this, file_structure_definition, parsed_props);
+	//QList<int> delimiter_positions;
+	//qfDebug() << "\t parsed_props:" << QFJson::variantToString(parsed_props);
+
+	QString codec_name = parsed_props.value("text-codec", "utf8").toString();
+	QTextCodec *codec = QTextCodec::codecForName(codec_name.toLatin1());
+	if(!codec) QF_EXCEPTION(QString("Cannot find text codec for name '%1'.").arg(codec_name));
+	ts.setCodec(codec);
+
+	QChar field_delimiter = field_delimiter_helper(parsed_props.value("field-delimiter", ";").toString());
+	QChar field_quote = String(parsed_props.value("field-quote", QString()).toString()).value(0);
+	qfDebug() << "\t field_delimiter:" << field_delimiter;
+	qfDebug() << "\t field_quote:" << field_quote;
+	bool preserve_empty_lines = parsed_props.value("preserve-empty-lines", 0).toBool();
+	QStringList lines;
+	if(field_delimiter == '\n') {
+		QString s = ts.readAll();
+		lines << s.trimmed();
+	}
+	else {
+		while(!ts.atEnd()) {
+			String line;
+			int qcnt = 0;
+			do {
+				QString s = ts.readLine();
+				qfDebug().noSpace() << "\t read line: ###" << s << "###";
+				qcnt += s.count(field_quote);
+				line += s;
+				if(qcnt % 2) line += "\n";
+			} while((qcnt % 2) && !ts.atEnd());
+			qfDebug().noSpace() << "\t whole line: ###" << line << "###";
+			if(line.isEmpty() && !preserve_empty_lines) continue;
+			//qfInfo().noSpace() << "\t encoded line: ###" << s << "###";
+			lines << line;
+		}
+		//qfInfo().noSpace() << "\t <EOF>";
+	}
+	int skip_lines = parsed_props.value("skip-lines", 0).toInt();
+	QVariantMap original_column_definition = parsed_props.value("columns").toMap();
+	for(int line_no=skip_lines; line_no<lines.count(); line_no++) {
+		String line = lines[line_no];
+		qfDebug().noSpace() << "\t parsing line: ###" << line << "###" << line_no << "/" << lines.count();
+		QStringList field_list = line.splitAndTrim(field_delimiter, field_quote, String::TrimParts, QString::KeepEmptyParts);
+		Row r = singleRow();
+		for(int col_no=0; col_no<fields().count(); col_no++) {
+			int imported_col_no = col_mapping[col_no];
+			if(imported_col_no >= field_list.count()) {
+				qfWarning() << QString("invalid field mapping %1->%2 for field '%3'").arg(col_no).arg(imported_col_no).arg(fields()[col_no].fieldName());
+				qfInfo() << "line:" << line_no << "fields count:" << field_list.count();
+				for(int i=0; i<field_list.count(); i++) qfInfo().noSpace() << i << ": '" << field_list[i] << "'";
+				continue;
+			}
+			String fs = field_list[imported_col_no];
+			{
+				QString fld_name = field(col_no).fieldName();
+				QVariantMap def_map = original_column_definition.value(fld_name).toMap();
+				int start_index = def_map.value("start-index", 0).toInt();
+				int end_index = def_map.value("end-index", INT_MAX).toInt();
+				//qfInfo().noSpace() << "\tsource string: '" << fs << "'";
+				//qfInfo() << "\t start index: " << start_index;
+				//qfInfo() << "\t end index: " << end_index;
+				fs = fs.slice(start_index, end_index).trim();
+				//qfInfo().noSpace() << "\t [" << fld_name << "] = '" << fs << "'";
+			}
+			QVariant v;
+			//if(!fs.isEmpty()) v = fs; /// prazdne hodnoty jsou NULL pro klaestables (je to moznast, lae zatim to asi nevyuzivam)
+			/// pokud by se ukazala potreba NULL hodnoty v klaes tabulce, pridam nullable flag do definice sloupce
+			v = fs;
+			r.setValue(col_no, v);
+		}
+		//qfInfo() << "\t appending row:" << r.toString(", ");
+		//r.post();
+		r.clearOrigValues();
+		appendRow(r);
+		//rowsRef().append(r);
+		//qfDebug() << "\t rowsRef().count():" << rowsRef().count();
+	}
+	//Table::reload();
+	//qfInfo() << "\n" << dump();
+	qfDebug() << "\t row count:" << rowCount();
+}
+#endif
+QString Table::toString() const
+{
+	char sep = '\t';
+	QString s;
+	QTextStream ts(&s);
+	//ts.setPadChar('%');
+	ts << "       ";
+	for(int i=0; i<fields().count(); i++) {
+		if(i > 0) ts << sep;
+		ts << field(i).name();
+	}
+	ts << '\n';
+	// export data
+	int no = 0;
+	QString s1 = "%1.";
+	for(int i=0; i<rowCount(); i++) {
+		TableRow r = row(i);
+		ts << s1.arg(++no, 5) << sep;
+		for(int i=0; i<fields().count(); i++) {
+			if(i > 0)
+				ts << sep;
+			ts << r.value(i).toString();
+		}
+		ts << '\n';
+	}
+	return s;
+}
+
+QCollator Table::sortCollator() const
+{
+    return d->sortCollator;
+}
+
+void Table::setSortCollator(const QCollator &coll)
+{
+    d->sortCollator = coll;
+}
+
+void Table::sort(const QString &_colnames)
+{
+	SortDefList sd;
+	String colnames = _colnames;
+	QStringList sl = colnames.splitAndTrim(',');
+	foreach(String s, sl) {
+		int ix = s.pos(' ');
+		bool asc = true;
+		bool cs = true;
+		bool ascii7bit = true;
+		QString colname = s;
+		if(ix >= 0) {
+			colname = s.slice(0, ix).trimmed();
+			s = s.slice(ix+1).trimmed().toUpper();
+			asc = s.indexOf("DESC") >= 0;
+			cs = !(s.indexOf("ICS") >= 0);
+		}
+		ix = fields().fieldIndex(s);
+		sd.append(SortDef(ix, asc, cs, ascii7bit));
+	}
+	sort(sd);
+}
+
+void Table::sort(const SortDef &sorted_field)
+{
+	SortDefList sdl;
+	if(sorted_field.isValid()) sdl << sorted_field;
+	sort(sdl);
+}
+
+void Table::sort(const Table::SortDefList &sorted_fields)
+{
+	//qfLogFuncFrame() << QLocale().name();
+	sort(sorted_fields, 0, rowCount());
+}
+
+void Table::sort(const SortDefList & sorted_fields, int start_row_index, int row_count)
+{
+	tablePropertiesRef().setSortDefinition(sorted_fields);
+	qfLogFuncFrame() << "locale:" << QLocale().name();
+	if(sorted_fields.isEmpty()) {
+		//filter();
+		createRowIndex();
+	}
+	else {
+		for(int i=0; i<tableProperties().sortDefinition().count(); i++) {
+			//qfDebug() << "\t field index:" << tableProperties().sortDefinition()[i].fieldIndex;
+			//qfDebug() << "\t ascending:" << tableProperties().sortDefinition()[i].ascending;
+		}
+		RowIndexList::iterator begin = rowIndexRef().begin() + start_row_index;
+		RowIndexList::iterator  end = begin + row_count;
+		sort(begin, end);
+		//stable_sort(rowIndexRef().begin(), rowIndexRef().end(), TableLessThan(*this));
+	}
+}
+/*
+void Table::resort()
+{
+	sort(tableProperties().sortDefinition());
+}
+*/
+int Table::seek(const QVariant &v) const
+{
+	const Table::SortDefList &sdl = tableProperties().sortDefinition();
+	QF_ASSERT(sdl.count() > 0, "Empty sort definition.", return -1);
+	const Table::SortDef &sd = sdl[0];
+	int seek_ix = sd.fieldIndex;
+	QF_ASSERT(fields().isValidFieldIndex(seek_ix), QString("Invalid sort field index: %1").arg(seek_ix), return -1);
+	QF_ASSERT(sd.ascending, "Ascending sort is needed for seek.", return -1);
+	RowIndexList::const_iterator res = binaryFind(rowIndex().begin(), rowIndex().end(), v);
+	if(res == rowIndex().end())
+		return -1;
+	return res - rowIndex().begin();
+}
+
+int Table::find(int field_ix, const QVariant &val) const
+{
+	int ret = -1;
+	RowList row_lst = rows();
+	for(int ix=0; ix < row_lst.count(); ix++) {
+		const TableRow &r = row_lst.value(ix);
+		if(r.value(field_ix) == val) {
+			ret = ix;
+		}
+	}
+	return ret;
+}
+
+int Table::find(const QString &field_name, const QVariant &val) const
+{
+	int field_ix = fields().fieldIndex(field_name, true);
+	return find(field_ix, val);
+}
+
+QVariant Table::sumValue(int field_ix) const
+{
+	QVariant::Type type = field(field_ix).type();
+	QVariant ret;
+	switch(type) {
+		case QVariant::Int:
+		case QVariant::UInt:
+		{
+			int d = 0;
+			for(auto r : rows())
+				d += r.value(field_ix).toInt();
+			ret = d;
+			break;
+		}
+		case QVariant::Double:
+		default:
+		{
+			double d = 0;
+			for(auto r : rows())
+				d += r.value(field_ix).toDouble();
+			ret = d;
+			break;
+		}
+	}
+	return ret;
+}
+
+static void setDomElementText(QDomDocument &owner_doc, QDomElement &el, const QString &str)
+{
+	QDomNode nd = el.firstChild();
+	QDomText el_txt = nd.toText();
+	if(el_txt.isNull()) {
+		el_txt = owner_doc.createTextNode(str);
+		el.insertBefore(el_txt, nd);
+	}
+	else {
+		el_txt.setData(str);
+	}
+}
+
+QDomElement Table::toHtmlElement(QDomDocument &owner_doc, const QString & col_names, TextExportOptions opts) const
+{
+	QList<int> ixs;
+	//emit progressValue(0, tr("Exportuji XML"));
+	if(col_names.isEmpty() || col_names == "*") {
+		for(int i=0; i<fields().count(); i++) ixs.append(i);
+	}
+	else {
+		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		foreach(QString s, sl) {
+			int ix = fields().fieldIndex(s, false);
+			if(ix >= 0) ixs.append(ix);
+			else
+				qfError() << "Field not found:" << s;
+		}
+	}
+	QDomElement el_table = owner_doc.createElement("table");
+	el_table.setAttribute("border", 1);
+	if(opts.isExportColumnNames()) {
+		/// export columns
+		QVariantMap column_captions;
+		if(opts.isUseColumnCaptions()) column_captions = opts.columnCaptions();
+		QStringList caption_field_names = column_captions.keys();
+		QDomElement el_row = owner_doc.createElement("tr");
+		for(int i=0; i<ixs.count(); i++) {
+			QDomElement el_th = owner_doc.createElement("th");
+			Field fld = field(ixs[i]);
+			QString fld_name = fld.name();
+			QString cap;
+			Utils::parseFieldName(fld_name, &cap);
+			foreach(QString key, caption_field_names) {
+				if(Utils::fieldNameCmp(key, fld_name)) {
+					cap = column_captions.value(key).toString();
+					break;
+				}
+			}
+			setDomElementText(owner_doc, el_th, cap);
+			el_row.appendChild(el_th);
+		}
+		el_table.appendChild(el_row);
+	}
+	/// export data
+	//int n = 0, cnt = rowCount(), steps = 100, progress_step = cnt / steps + 1;
+	for(int i=0; i<rowCount(); i++) {
+		TableRow r = row(i);
+		QDomElement el_row = owner_doc.createElement("tr");
+		for(int i=0; i<ixs.count(); i++) {
+			QDomElement el_td = owner_doc.createElement("td");
+			setDomElementText(owner_doc, el_td, r.value(ixs[i]).toString());
+			el_row.appendChild(el_td);
+		}
+		el_table.appendChild(el_row);
+	}
+	return el_table;
+}
+
+QVariantMap Table::toJson(const QString &col_names) const
+{
+	QList<int> ixs;
+	if(col_names.isEmpty() || col_names == "*") {
+		for(int i=0; i<fields().count(); i++) ixs.append(i);
+	}
+	else {
+		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		foreach(QString s, sl) {
+			int ix = fields().fieldIndex(s, false);
+			if(ix >= 0)
+				ixs.append(ix);
+			else
+				qfError() << "Field not found:" << s;
+		}
+	}
+	QVariantMap obj_m;
+	QVariantList flds_lst;
+	for(int i=0; i<ixs.count(); i++) {
+		QVariantMap fld_m;
+		Field f = field(ixs[i]);
+		fld_m["name"] = f.name();
+		fld_m["type"] = QVariant::typeToName(f.type());
+		flds_lst << fld_m;
+	}
+	obj_m["fields"] = flds_lst;
+	/// export data
+	QVariantList rows_lst;
+	for(int i=0; i<rowCount(); i++) {
+		TableRow r = row(i);
+		QVariantList row_lst;
+		for(int i=0; i<ixs.count(); i++) {
+			row_lst << r.value(ixs[i]);
+		}
+		rows_lst << row_lst;
+	}
+	obj_m["rows"] = rows_lst;
+	return obj_m;
+}
+
+SValue Table::toTreeTable(const QString &col_names, const QString &table_name) const
+{
+	TreeTable ret(table_name);
+	QList<int> ixs;
+	if(col_names.isEmpty() || col_names == "*") {
+		for(int i=0; i<fields().count(); i++) ixs.append(i);
+	}
+	else {
+		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		foreach(QString s, sl) {
+			int ix = fields().fieldIndex(s, false);
+			if(ix >= 0)
+				ixs.append(ix);
+			else
+				qfError() << "Field not found:" << s;
+		}
+	}
+	for(int i=0; i<ixs.count(); i++) {
+		Field f = field(ixs[i]);
+		ret.appendColumn(f.name(), f.type());
+	}
+
+	/// export data
+	{
+		SValue srows;
+		int ix = 0;
+		for(auto r : rows()) {
+			QVariantList row_lst;
+			for(int i=0; i<ixs.count(); i++) {
+				row_lst << r.value(ixs[i]);
+			}
+			srows[ix++] = row_lst;
+		}
+		ret[TreeTable::KEY_ROWS] = srows.value();
+	}
+	return ret;
+}
+
+bool Table::fromTreeTable(const SValue& tree_table, bool throw_exc)
+{
+	Q_UNUSED(throw_exc);
+	qfLogFuncFrame();
+	bool ret = true;
+	TreeTable tt(tree_table);
+	{
+		TreeTableColumns cols = tt.columns();
+		for(int i=0; i<cols.count(); i++) {
+			TreeTableColumn col = cols.column(i);
+			//qfDebug() << "\tfield:" << s;
+			Field fld(col.name(), col.type());
+			//fld.setCanUpdate(true);
+			fieldsRef().append(fld);
+		}
+	}
+	for(int i=0; i<tt.rowCount(); i++) {
+		TreeTableRow tt_row = tt.row(i);
+		TableRow row(tableProperties());
+		for(int j=0; j<columnCount(); j++) {
+			row.setValue(j, tt_row.value(j));
+		}
+		row.clearOrigValues();
+		d->rows.append(row);
+	}
+	createRowIndex();
+	return ret;
+}
+
+QVariantList Table::dataToVariantList() const
+{
+	QVariantList ret;
+	for(auto r : rows()) {
+		QVariantList lst;
+		for(auto v : r.values())
+			lst << v;
+		QVariant v = lst; /// pozor. 4.5 maji appent pro QList
+		///ret.append(lst); tohle nefunguje
+		ret.append(v);
+	}
+	return ret;
+}
+
+void Table::dataFromVariantList(const QVariantList &_lst)
+{
+	clearData();
+	foreach(QVariant _v, _lst) {
+		QVariantList lst = _v.toList();
+		TableRow r(tableProperties());
+		int i = 0;
+		foreach(QVariant v, lst) {
+			if(i < columnCount()) r.setValue(i++, v);
+		}
+		r.clearOrigValues();
+		d->rows.append(r);
+	}
+	createRowIndex();
+}
+void Table::sort(RowIndexList::iterator begin, RowIndexList::iterator end)
+{
+	qSort(begin, end, LessThan(*this));
+}
+
+Table::RowIndexList::const_iterator Table::binaryFind(Table::RowIndexList::const_iterator begin, Table::RowIndexList::const_iterator end, const QVariant & val) const
+{
+	return qBinaryFind(begin, end, val, LessThan(*this));
+}
+
+
+
+
+

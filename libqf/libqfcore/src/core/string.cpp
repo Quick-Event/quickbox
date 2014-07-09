@@ -34,6 +34,14 @@ int String::pos(QChar what_char, QChar quote) const
 	return -1;
 }
 
+QChar String::value(int ix) const
+{
+	if(ix < 0) ix += length();
+	if(ix < 0 || ix >= length())
+		return QChar();
+	return QString::at(ix);
+}
+
 QStringList String::splitAndTrim(QChar sep, QChar quote, bool trim_parts, QString::SplitBehavior keep_empty_parts) const
 {
 	QStringList ret;

@@ -7,7 +7,7 @@
 #define qfInfo() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::LOG_INFO))
 #define qfWarning qWarning
 #define qfError qCritical
-#define qfFatal qFatal
+#define qfFatal qCritical() << qf::core::Log::stackTrace(); qFatal
 #define qfLog(level) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(level))
 
 #define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "<< FN EXIT" << Q_FUNC_INFO; \

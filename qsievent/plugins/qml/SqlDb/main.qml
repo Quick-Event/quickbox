@@ -27,7 +27,7 @@ Plugin {
 			id: db
 			Component.onCompleted: {
 				//console.warn('COMPL');
-				Sql.addDatabase('QPSQL');
+				Sql.addDatabase('QFPSQL');
 				// set connection name to reload new created driver
 				db.connectionName = db.defaultConnectionName
 			}
