@@ -210,7 +210,7 @@ Table::Field::Field(const QString & _name, const QString & _def)
 //=========================================
 //           Table::FieldList
 //=========================================
-int Table::FieldList::fieldIndex(const QString &field_name, bool throw_exc) const
+int Table::FieldList::fieldIndex(const QString &field_name) const
 {
 	int col = -1, i = 0;
 	QString s = field_name;
@@ -221,9 +221,11 @@ int Table::FieldList::fieldIndex(const QString &field_name, bool throw_exc) cons
 		}
 		i++;
 	}
+	/*
 	if(col < 0) {
 		QString s1;
-		foreach(Field fld, *this) s1 += ", " + fld.name();
+		foreach(Field fld, *this)
+			s1 += ", " + fld.name();
 		s1 = s1.mid(2);
 		if(throw_exc) {
 			qfInfo() << Log::stackTrace();
@@ -231,6 +233,7 @@ int Table::FieldList::fieldIndex(const QString &field_name, bool throw_exc) cons
 		}
 		return -1;
 	}
+	*/
 	return col;
 }
 
@@ -345,34 +348,32 @@ QVariant TableRow::origValue(int col) const
 
 QVariant TableRow::origValue(const QString & field_name) const
 {
-	int col = fields().fieldIndex(field_name, false);
+	int ix = fields().fieldIndex(field_name);
 	QVariant ret;
-	if(col < 0)
-		qfError() << QString("Field name '%1' not found.").arg(field_name);
-	else
-		ret = origValue(col);
+	QF_ASSERT(ix >= 0, QString("Field name '%1' not found.").arg(field_name), return ret);
+	ret = origValue(ix);
 	return ret;
 }
 
 QVariant TableRow::value(int col) const
 {
-	if(col < 0 || col >= d->values.size()) {
-		qfError() << QString("Column %1 is out of range %2").arg(col).arg(d->values.size());
-		return QVariant();
-	}
-	QVariant v = d->values.value(col);
+	QVariant ret;
+	QF_ASSERT(col >= 0 && col < d->values.size(),
+			  QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
+			  return ret);
+	ret = d->values.value(col);
 	//qfInfo().noSpace() << "col: " << col << " value: '" << v.toString() << "' type: " << QVariant::typeToName(v.type()) << " is null: " << v.isNull() << " is valid: " << v.isValid();
-	return v;
+	return ret;
 }
 
 QVariant TableRow::value(const QString &field_name) const
 {
-	int col = fields().fieldIndex(field_name, false);
 	QVariant ret;
-	if(col < 0)
-		qfError() << QString("Field name '%1' not found.").arg(field_name);
-	else
-		ret = value(col);
+	int ix = fields().fieldIndex(field_name);
+	QF_ASSERT(ix >= 0,
+			  QString("Field name '%1' not found.").arg(field_name),
+			  return ret);
+	ret = value(ix);
 	return ret;
 }
 /*
@@ -386,16 +387,9 @@ static QString v2str(const QVariant &ret)
 }
 #endif
 */
-void TableRow::setInitialValue(int col, const QVariant & ret)
+void TableRow::setInitialValue(int col, const QVariant & val)
 {
-	if(col < 0 || col >= d->values.size()) {
-		qfError() << QString("Column %1 is out of range %2").arg(col).arg(d->values.size());
-		return;
-	}
-	QVariant new_val = ret;
-	if(ret.isValid())
-		new_val = Utils::retypeVariant(ret, fields()[col].type());
-	d->values[col] = new_val;
+	d->values[col] = val;
 }
 
 void TableRow::setValue(int col, const QVariant &v)
@@ -434,7 +428,7 @@ void TableRow::setValue(int col, const QVariant &v)
 void TableRow::setValue(const QString &field_name, const QVariant &v)
 {
 	//qfInfo() << QF_FUNC_NAME << "field_name" << field_name << "val:" << v.toString();
-	int col = fields().fieldIndex(field_name, true);
+	int col = fields().fieldIndex(field_name);
 	setValue(col, v);
 }
 
@@ -587,7 +581,7 @@ int Table::columnCount() const
 	return fields().count();
 }
 
-bool Table::isValidRow(int row) const //throw(QFException)
+bool Table::isValidRowIndex(int row) const //throw(QFException)
 {
 	bool ret = (row >= 0 && row < rowCount());
 	return ret;
@@ -595,22 +589,28 @@ bool Table::isValidRow(int row) const //throw(QFException)
 
 Table::Field& Table::fieldRef(int fld_ix)
 {
-	if(!isValidField(fld_ix)) {
+	if(!isValidFieldIndex(fld_ix)) {
 		qfError() << QString("col %1 is not valid column number (count: %2)").arg(fld_ix).arg(fields().count());
 		qfFatal("Giving up.");
 	}
 	return fieldsRef()[fld_ix];
 }
 
-Table::Field Table::field(int fld_ix, bool throw_exc) const
+Table::Field &Table::fieldRef(const QString &field_name)
 {
-	bool ret = isValidField(fld_ix);
-	if(ret) return fields()[fld_ix];
-	if(throw_exc) {
-		qfError() << QString("field: %1 is not a valid field index. FieldCount: %2").arg(fld_ix).arg(fields().count());
-		qfFatal("Givin up.");
-	}
-	return Field();
+	int ix = fields().fieldIndex(field_name);
+	QF_ASSERT_EX(ix >= 0, QString("Invalid field name '%1'").arg(field_name));
+	return fieldRef(ix);
+}
+
+Table::Field Table::field(int fld_ix) const
+{
+	Table::Field ret;
+	QF_ASSERT(isValidFieldIndex(fld_ix),
+			  QString("Invalid field index: %1").arg(fld_ix),
+			  return ret);
+	ret = fields()[fld_ix];
+	return ret;
 }
 
 TableRow& Table::insertRow(int before_row)
@@ -630,7 +630,7 @@ TableRow& Table::insertRow(int before_row, const TableRow &_row)
 	if(!(tableProperties() == _row.tableProperties()))
 		qfFatal("Inserted row comes from different table.");
 
-	int r = (isValidRow(before_row))? before_row: rowCount();
+	int r = (isValidRowIndex(before_row))? before_row: rowCount();
 	TableRow empty_row(_row);
 	empty_row.setInsert();
 	rowsRef().append(empty_row);
@@ -651,7 +651,7 @@ TableRow Table::isolatedRow()
 bool Table::removeRow(int ri)
 {
 	//qfLogFuncFrame();
-	if(!isValidRow(ri)) {
+	if(!isValidRowIndex(ri)) {
 		qfWarning() << "Attempt to remove invalid row:" << ri;
 		return false;
 	}
@@ -668,7 +668,7 @@ bool Table::removeRow(int ri)
 
 void Table::revertRow(int ri)
 {
-	if(isValidRow(ri)) {
+	if(isValidRowIndex(ri)) {
 		TableRow &r = rowRef(ri);
 		revertRow(r);
 	}
@@ -689,34 +689,40 @@ void Table::createRowIndex()
 
 int Table::rowNumberToRowIndex(int rowno) const
 {
-	int ix = rowIndex()[rowno];
-	QF_ASSERT(ix >= 0 && ix < rows().count(), QString("Row index corrupted, wanted row: %1, rows count: %2").arg(ix).arg(d->rows.count()), return -1);
+	int ix = rowIndex().value(rowno, -1);
+	QF_ASSERT(ix >= 0 && ix < rows().count(),
+			  QString("Row index corrupted, wanted row: %1, rows count: %2").arg(ix).arg(d->rows.count()),
+			  return -1);
 	return ix;
 }
 
 TableRow& Table::rowRef(int ri)
 {
 	//qfLogFuncFrame();
-	if(!isValidRow(ri)) {
-		qfError() << QString("row: %1 is out of range of rows (%2)").arg(ri).arg(rowCount());
-		qfFatal("Giving up.");
-	}
-	return d->rows[rowNumberToRowIndex(ri)];
+	QF_ASSERT_EX(isValidRowIndex(ri),
+			  QString("row: %1 is out of range of rows (%2)").arg(ri).arg(rowCount()));
+	ri = rowNumberToRowIndex(ri);
+	return d->rows[ri];
 }
 
-TableRow Table::row(int ri, bool throw_exc) const
+TableRow Table::row(int ri) const
 {
-	if(!isValidRow(ri)) {
-		if(throw_exc)
-			qfError() << QString("row: %1 is out of range of rows (%2)").arg(ri).arg(d->rows.size());
-		return TableRow();
-	}
-	return d->rows[rowNumberToRowIndex(ri)];
+	TableRow ret;
+	QF_ASSERT(isValidRowIndex(ri),
+			  QString("row: %1 is out of range of rows (%2)").arg(ri).arg(d->rows.size()),
+			  return ret);
+	ret = rows().value(rowNumberToRowIndex(ri));
+	return ret;
 }
 
-TableRow Table::lastRow(bool throw_exc) const
+TableRow Table::lastRow() const
 {
-	return row(rowCount() - 1, throw_exc);
+	TableRow ret;
+	QF_ASSERT(rowCount() > 0,
+			  "Table is empty",
+			  return ret);
+	ret = row(rowCount() - 1);
+	return ret;
 }
 /*
 static QString quote_XML(const QString &s, const Table::TextExportOptions &opts)
@@ -756,7 +762,7 @@ void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExpor
 		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
 		foreach(QString s, sl) {
 			s = s.trimmed();
-			int ix = fields().fieldIndex(s, false);
+			int ix = fields().fieldIndex(s);
 			if(ix >= 0)
 				ixs.append(ix);
 			else {
@@ -1119,11 +1125,17 @@ void Table::resort()
 int Table::seek(const QVariant &v) const
 {
 	const Table::SortDefList &sdl = tableProperties().sortDefinition();
-	QF_ASSERT(sdl.count() > 0, "Empty sort definition.", return -1);
+	QF_ASSERT(sdl.count() > 0,
+			  "Empty sort definition.",
+			  return -1);
 	const Table::SortDef &sd = sdl[0];
 	int seek_ix = sd.fieldIndex;
-	QF_ASSERT(fields().isValidFieldIndex(seek_ix), QString("Invalid sort field index: %1").arg(seek_ix), return -1);
-	QF_ASSERT(sd.ascending, "Ascending sort is needed for seek.", return -1);
+	QF_ASSERT(fields().isValidFieldIndex(seek_ix),
+			  QString("Invalid sort field index: %1").arg(seek_ix),
+			  return -1);
+	QF_ASSERT(sd.ascending,
+			  "Ascending sort is needed for seek.",
+			  return -1);
 	RowIndexList::const_iterator res = binaryFind(rowIndex().begin(), rowIndex().end(), v);
 	if(res == rowIndex().end())
 		return -1;
@@ -1145,7 +1157,10 @@ int Table::find(int field_ix, const QVariant &val) const
 
 int Table::find(const QString &field_name, const QVariant &val) const
 {
-	int field_ix = fields().fieldIndex(field_name, true);
+	int field_ix = fields().fieldIndex(field_name);
+	QF_ASSERT(field_ix >= 0,
+			  QString("Invalid field name: '%1'").arg(field_name),
+			  return -1);
 	return find(field_ix, val);
 }
 
@@ -1199,8 +1214,9 @@ QDomElement Table::toHtmlElement(QDomDocument &owner_doc, const QString & col_na
 	else {
 		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
 		foreach(QString s, sl) {
-			int ix = fields().fieldIndex(s, false);
-			if(ix >= 0) ixs.append(ix);
+			int ix = fields().fieldIndex(s);
+			if(ix >= 0)
+				ixs.append(ix);
 			else
 				qfError() << "Field not found:" << s;
 		}
@@ -1254,7 +1270,7 @@ QVariantMap Table::toJson(const QString &col_names) const
 	else {
 		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
 		foreach(QString s, sl) {
-			int ix = fields().fieldIndex(s, false);
+			int ix = fields().fieldIndex(s);
 			if(ix >= 0)
 				ixs.append(ix);
 			else
@@ -1295,7 +1311,7 @@ SValue Table::toTreeTable(const QString &col_names, const QString &table_name) c
 	else {
 		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
 		foreach(QString s, sl) {
-			int ix = fields().fieldIndex(s, false);
+			int ix = fields().fieldIndex(s);
 			if(ix >= 0)
 				ixs.append(ix);
 			else
@@ -1323,9 +1339,8 @@ SValue Table::toTreeTable(const QString &col_names, const QString &table_name) c
 	return ret;
 }
 
-bool Table::fromTreeTable(const SValue& tree_table, bool throw_exc)
+bool Table::fromTreeTable(const SValue& tree_table)
 {
-	Q_UNUSED(throw_exc);
 	qfLogFuncFrame();
 	bool ret = true;
 	TreeTable tt(tree_table);

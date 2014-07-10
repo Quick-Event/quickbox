@@ -11,6 +11,7 @@
 // able to use 'break' and 'continue' as 'actions'.
 
 #define QF_ASSERT(cond, message, action) if (cond) {} else { QF_ASSERT_STRING(#cond, message); action; } do {} while (0)
+#define QF_ASSERT_EX(cond, message) if (cond) {} else { QF_ASSERT_STRING(#cond, message); qfFatal("Giving up!"); } do {} while (0)
 #define QF_CHECK(cond, message) if (cond) {} else { QF_ASSERT_STRING(#cond, message); } do {} while (0)
 
 #endif

@@ -1,0 +1,28 @@
+#ifndef QF_CORE_QML_SQLQUERYTABLEMODEL_H
+#define QF_CORE_QML_SQLQUERYTABLEMODEL_H
+
+#include <qf/core/model/sqlquerytablemodel.h>
+
+namespace qf {
+namespace core {
+namespace qml {
+
+class SqlQueryBuilder;
+
+class SqlQueryTableModel : public qf::core::model::SqlQueryTableModel
+{
+	Q_OBJECT
+	Q_PROPERTY(qf::core::qml::SqlQueryBuilder* sqlQueryBuilder READ qmlSqlQueryBuilder)
+private:
+	typedef qf::core::model::SqlQueryTableModel Super;
+public:
+	explicit SqlQueryTableModel(QObject *parent = 0);
+private:
+	SqlQueryBuilder* qmlSqlQueryBuilder();
+private:
+	qf::core::qml::SqlQueryBuilder* m_sqlQueryBuilder;
+};
+
+}}}
+
+#endif // QF_CORE_QML_SQLQUERYTABLEMODEL_H

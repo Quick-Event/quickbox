@@ -1,7 +1,6 @@
 #ifndef QF_QMLWIDGETS_STATUSBAR_H
 #define QF_QMLWIDGETS_STATUSBAR_H
 
-
 #include "qmlwidgetsglobal.h"
 
 #include <QStatusBar>

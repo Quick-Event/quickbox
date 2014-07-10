@@ -1,7 +1,7 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
-import "qrc:/qf/core/js/stringext.js" as StringExt
+import "qrc:/qf/core/qml/js/stringext.js" as StringExt
 
 QfObject {
 	id: root

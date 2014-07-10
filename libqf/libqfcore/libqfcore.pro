@@ -1,9 +1,11 @@
 message("including include/core")
 
 TEMPLATE = lib
-unix:TARGET = $$OUT_PWD/../../lib/qfcore
+TARGET=qfcore
+unix:DESTDIR = $$OUT_PWD/../../lib
+win:DESTDIR = $$OUT_PWD/../../bin
 
-QT += xml
+QT += xml sql
 CONFIG += C++11
 
 DEFINES += QFCORE_BUILD_DLL
@@ -11,3 +13,6 @@ DEFINES += QFCORE_BUILD_DLL
 include($$PWD/src/src.pri)
 
 include ($$PWD/../../crosscompile-support.pri)
+
+RESOURCES += \
+    $${TARGET}.qrc \

@@ -18,7 +18,7 @@ private:
 	typedef QAbstractTableModel Super;
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
-				FieldTypeRole, FieldIsNullableRole,
+				FieldTypeRole, //FieldIsNullableRole,
 				RawValueRole, ValueIsNullRole, FirstUnusedRole };
 public:
 	explicit TableModel(QObject *parent = 0);
@@ -97,8 +97,10 @@ public:
 public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	bool setData(const QModelIndex &index, const QVariant & value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg)
@@ -110,13 +112,26 @@ public:
 	}
 	Q_SIGNAL void nullReportedAsStringChanged(bool arg);
 
+	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
+	Q_INVOKABLE bool setValue(int row, const QString& col_name, const QVariant &val);
+	Q_INVOKABLE virtual QVariant value(int row_ix, int column_ix) const;
+	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
+	Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
+	Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
+
 protected:
 	void fillColumnIndexes();
+	QVariant::Type columnType(int column_index) const;
+	int columnIndex(const QString &column_name) const;
+	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
 protected:
 	qf::core::utils::Table m_table;
 	ColumnList m_columns;
 	bool m_nullReportedAsString;
+	static QString m_defaultTimeFormat;
+	static QString m_defaultDateFormat;
+	static QString m_defaultDateTimeFormat;
 };
 
 }}}

@@ -7,12 +7,14 @@ HEADERS += \
     $$PWD/sqldatabase.h \
     $$PWD/sqlquery.h \
     $$PWD/sqlrecord.h \
-    $$PWD/sqlquerybuilder.h
+    $$PWD/sqlquerybuilder.h \
+    $$PWD/sqlquerytablemodel.h
 
 SOURCES += \
     $$PWD/qmlsqlsingleton.cpp \
     $$PWD/sqldatabase.cpp \
     $$PWD/sqlquery.cpp \
     $$PWD/sqlrecord.cpp \
-    $$PWD/sqlquerybuilder.cpp
+    $$PWD/sqlquerybuilder.cpp \
+    $$PWD/sqlquerytablemodel.cpp
 

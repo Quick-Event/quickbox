@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qf/core">
+    <qresource prefix="/qf/core/qml">
         <file>js/stringext.js</file>
     </qresource>
 </RCC>

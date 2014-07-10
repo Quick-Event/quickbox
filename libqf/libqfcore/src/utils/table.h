@@ -26,6 +26,7 @@ class QFCORE_DECL_EXPORT Table
 {
 	//Q_DECLARE_TR_FUNCTIONS(qf::core::utils::Table);
 public:
+	typedef TableRow Row;
 	enum CleanupDataOption {ClearFieldsRows = 1, ClearRows};
 	class QFCORE_DECL_EXPORT TextImportOptions : public QVariantMap
 	{
@@ -112,6 +113,7 @@ public:
 		public:
 			QVariant::Type type;
 			QString name;
+			unsigned canUpdate:1, isPriKey:1;
 			Data() : type(QVariant::Invalid) {}
 			Data(const QString &name, QVariant::Type t) : type(t), name(name) {}
 		};
@@ -127,6 +129,7 @@ public:
 
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
+		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
 	{
@@ -136,7 +139,7 @@ public:
 			@param field_name fieldname in form [tablename.]fieldname
 			@return field index or value lower than zero
 			 */
-		int fieldIndex(const QString &field_name, bool throw_exc = false) const;
+		int fieldIndex(const QString &field_name) const;
 		bool isValidFieldIndex(int fld_ix) const;
 	};
 public:
@@ -215,21 +218,16 @@ public:
 	FieldList& fieldsRef() {return tablePropertiesRef().fieldsRef();}
 public:
 	Field& fieldRef(int fld_ix);
-	Field& fieldRef(const QString& field_name)
+	Field& fieldRef(const QString& field_name);
+	Field field(int fld_ix) const;
+	Field field(const QString& field_name) const
 	{
-		return fieldRef(fields().fieldIndex(field_name, true));
-	}
-	Field field(int fld_ix, bool throw_exc = false) const;
-	Field field(const QString& field_name, bool throw_exc = false) const
-	{
-		return field(fields().fieldIndex(field_name, throw_exc), throw_exc);
+		return field(fields().fieldIndex(field_name));
 	}
 
 	TableRow& rowRef(int rowno);
-	//! \sa rowRef(int)
-	TableRow row(int i, bool throw_exc = false) const;
-	/// vraci posledni radek, pokud neni a je throw_exc vrha exception, jinak vraci null row.
-	TableRow lastRow(bool throw_exc = false) const;
+	TableRow row(int i) const;
+	TableRow lastRow() const;
 	//static TableRow nullRow() {return TableRow::sharedNull();}
 public:
 	//! Clear all except column definitions.
@@ -238,8 +236,8 @@ public:
 	void clear() {cleanupData(ClearFieldsRows);}
 
 	bool isEmpty() const {return rowCount() <= 0;}
-	bool isValidRow(int row) const;
-	bool isValidField(int fld_ix) const {
+	bool isValidRowIndex(int row) const;
+	bool isValidFieldIndex(int fld_ix) const {
 		return fields().isValidFieldIndex(fld_ix);
 	}
 public:
@@ -300,7 +298,7 @@ public:
 	QVariantMap toJson(const QString &col_names = QString()) const;
 	SValue toTreeTable(const QString &col_names = QString(), const QString &table_name = QString()) const;
 	/// v pripade neuspechu vraci false
-	bool fromTreeTable(const SValue &tree_table, bool throw_exc = true);
+	bool fromTreeTable(const SValue &tree_table);
 	/// ulozi data v tabulce jako QVariantList QVariantListu (kazdy radek je jeden QVariantList)
 	QVariantList dataToVariantList() const;
 	void dataFromVariantList(const QVariantList &_lst);
@@ -352,8 +350,6 @@ public:
 	void clearOrigValues();
 	//! Uvede radek do ModeInsert a nastavi vsem fieldum dirty flag
 	void prepareForCopy();
-protected:
-	void setInitialValue(int col, const QVariant &v);
 public:
 	QVariant origValue(int col) const;
 	QVariant origValue(const QString &field_name) const;
@@ -363,6 +359,9 @@ public:
 	//! Dirty flag nastavi, jen kdyz je value jina, nez ta, co uz tam byla.
 	void setValue(int col, const QVariant &v);
 	void setValue(const QString &field_name, const QVariant &v);
+	//! Set value without retyping and checks, useful only when table data are loaded from QSL query or something like that.
+	/// Very fast and very dangerous function
+	void setInitialValue(int col, const QVariant &val);
 	bool isDirty() const;
 	bool isDirty(int field_no) const;
 	void setDirty(int field_no, bool val = true);

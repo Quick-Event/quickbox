@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/gridlayoutproperties.h \
     $$PWD/dialogbuttonbox.h \
     $$PWD/statusbar.h \
-    $$PWD/progressbar.h
+    $$PWD/progressbar.h \
+    $$PWD/tableview.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -27,7 +28,8 @@ SOURCES += \
     $$PWD/gridlayoutproperties.cpp \
     $$PWD/dialogbuttonbox.cpp \
     $$PWD/statusbar.cpp \
-    $$PWD/progressbar.cpp
+    $$PWD/progressbar.cpp \
+    $$PWD/tableview.cpp
 
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)

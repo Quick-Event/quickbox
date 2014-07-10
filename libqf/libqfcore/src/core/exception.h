@@ -22,20 +22,10 @@ namespace core {
 //! if Exception::exceptionAbortsApplication is true, abort application instead of throw. For debug purposes to get the stacktrace.
 #define QF_EXCEPTION(msg) \
 	QF_THROW(qf::core::Exception, msg, false)
-	//throw Exception(msg, QString("%1:%2\n%3\n").arg(__FILE__).arg(__LINE__).arg(QF_FUNC_NAME));
 #define QF_SQL_EXCEPTION(msg) \
 	QF_THROW(qf::core::SqlException, msg, false)
-	//throw SqlException(msg, QString("%1:%2\n%3\n").arg(__FILE__).arg(__LINE__).arg(QF_FUNC_NAME));
-/// je to spis assert
 #define QF_INTERNAL_ERROR(msg, abort)  \
-	do { \
-		if(abort) { \
-			qFatal("INTERNAL_ERROR_EXCEPTION %s", qPrintable(msg)); \
-		} \
-		else { \
-			throw qf::core::InternalErrorException(msg, QString("%1:%2 %3").arg(__FILE__).arg(__LINE__).arg(QF_FUNC_NAME)); \
-		} \
-	} while(0)
+	QF_THROW(qf::core::SqlException, msg, abort)
 
 //---------------------------------------------------------------------
 class QFCORE_DECL_EXPORT Exception : public std::exception
