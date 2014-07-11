@@ -1,6 +1,7 @@
 #include "tablemodel.h"
 #include "../core/log.h"
 #include "../core/assert.h"
+#include "../core/utils.h"
 
 #include <QTime>
 #include <QColor>
@@ -286,6 +287,17 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	return ret;
 }
 
+void TableModel::sort(int column, Qt::SortOrder order)
+{
+	int table_field_index = tableFieldIndex(column);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field index for column index: %1").arg(column),
+			  return);
+	qfu::Table::SortDef sd(table_field_index, order == Qt::AscendingOrder, !qfu::Table::SortDef::CaseSensitive);
+	m_table.sort(sd);
+	emit layoutChanged();
+}
+
 bool TableModel::setValue(int row, int column, const QVariant &val)
 {
 	bool ret = false;
@@ -337,6 +349,17 @@ QVariant TableModel::value(int row_ix, const QString &col_name) const
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return ret);
 	return value(row_ix, col_ix);
+}
+
+void TableModel::createColumnsFromTableFields()
+{
+	m_columns.clear();
+	for(auto fld : m_table.fields()) {
+		QString caption;
+		qfc::Utils::parseFieldName(fld.name(), &caption);
+		addColumn(fld.name(), caption);
+	}
+	fillColumnIndexes();
 }
 
 void TableModel::fillColumnIndexes()

@@ -102,6 +102,8 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 	bool setData(const QModelIndex &index, const QVariant & value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
+	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
+
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg)
 	{
@@ -120,6 +122,7 @@ public:
 	//Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
 
 protected:
+	void createColumnsFromTableFields();
 	void fillColumnIndexes();
 	QVariant::Type columnType(int column_index) const;
 	int columnIndex(const QString &column_name) const;

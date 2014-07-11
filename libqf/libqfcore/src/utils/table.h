@@ -73,9 +73,7 @@ public:
 		static const bool CaseSensitive = true;
 		static const bool Ascii7Bit = true;
 		int fieldIndex; //!< index of field to sort.
-		bool ascending;
-		bool caseSensitive;
-		bool ascii7bit; //!< convert values to ASCII 7 bit for before sorting.
+		int ascending:1, caseSensitive:1, ascii7bit:1; //!< convert values to ASCII 7 bit for before sorting.
 
 		bool isValid() const {return fieldIndex >= -1;}
 		SortDef(int ix = -2, bool asc = Ascending, bool cs = CaseSensitive, bool _ascii7bit = !Ascii7Bit)
@@ -268,8 +266,8 @@ public:
 	void sort(const QString &colnames);
 	//! For convinience.
 	void sort(const SortDef &sorted_field);
-	virtual void sort(const SortDefList &sorted_fields);
-	//! pokud chci zavolta sort jen pro urcitou objast radku
+	void sort(const SortDefList &sorted_fields);
+	//! sort certain rows range only
 	virtual void sort(const SortDefList &sorted_fields, int start_row_index, int row_count);
 	void resort();
 	void setSortDefinition(const SortDefList & sorted_fields) {tablePropertiesRef().setSortDefinition(sorted_fields);}

@@ -39,8 +39,10 @@ Plugin {
 		settings.beginGroup("ui/docks/Logger");
 		var dock_visible = settings.value('visible');
 		settings.destroy();
-		if(dock_visible)
+		console.debug("logger dock visible:", dock_visible, typeof dock_visible);
+		if(dock_visible) {
 			showLogDockWidget();
+		}
 	}
 
 	function saveSettings()
@@ -48,12 +50,14 @@ Plugin {
 		var core_feature = FrameWork.plugin("Core");
 		var settings = core_feature.createSettings();
 		settings.beginGroup("ui/docks/Logger");
-		settings.setValue('visible', internals.logDockWidget.visible);
+		settings.setValue('visible', (internals.logDockWidget)? internals.logDockWidget.visible: false);
 		settings.destroy();
 	}
 
 	function showLogDockWidget()
 	{
+		console.debug("showLogDockWidget():", internals.logDockWidget);
+		console.trace();
 		if(!internals.logDockWidget) {
 			internals.logDockWidget = logDockWidgetComponent.createObject(null);
 			FrameWork.addDockWidget(Qt.BottomDockWidgetArea, internals.logDockWidget);

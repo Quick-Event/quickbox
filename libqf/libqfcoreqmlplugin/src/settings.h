@@ -24,8 +24,8 @@ public slots:
 	void setArrayIndex(int i) {Super::setArrayIndex(i);}
 	QString group() const {return Super::group();}
 
-	void setValue(const QString & key, const QVariant & value) {Super::setValue(key, value);}
-	QVariant value(const QString & key, const QVariant & default_value = QVariant()) const {return Super::value(key, default_value);}
+	void setValue(const QString & key, const QVariant & value);
+	QVariant value(const QString & key, const QVariant & default_value = QVariant()) const;
 
 	void sync() {Super::sync();}
 };

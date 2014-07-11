@@ -15,7 +15,7 @@ PartWidget
 				id: model
 				Component.onCompleted:
 				{
-					queryBuilder.select2('runners', '*').from('runners').orderBy('surname');
+					queryBuilder.select2('runners', '*').from('runners').orderBy('id');
 				}
 			}
 		}

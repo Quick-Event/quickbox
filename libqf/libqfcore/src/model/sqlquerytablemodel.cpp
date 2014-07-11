@@ -26,7 +26,11 @@ void SqlQueryTableModel::reload()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
+	beginResetModel();
 	reloadTable(qs);
+	if(m_columns.isEmpty())
+		createColumnsFromTableFields();
+	endResetModel();
 }
 
 QString SqlQueryTableModel::buildQuery()
@@ -58,7 +62,6 @@ void SqlQueryTableModel::reloadTable(const QString &query_str)
 	QF_ASSERT(ok,
 			  QString("SQL Error: %1").arg(q.lastError().text()),
 			  return);
-	beginResetModel();
 	qfu::Table::FieldList table_fields;
 	QSqlRecord rec = q.record();
 	int fld_cnt = rec.count();
@@ -74,5 +77,4 @@ void SqlQueryTableModel::reloadTable(const QString &query_str)
 			row.setInitialValue(i, q.value(i));
 		}
 	}
-	endResetModel();
 }
