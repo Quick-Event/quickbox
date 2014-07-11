@@ -113,11 +113,11 @@ public:
 	Q_SIGNAL void nullReportedAsStringChanged(bool arg);
 
 	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
-	Q_INVOKABLE bool setValue(int row, const QString& col_name, const QVariant &val);
+	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
 	Q_INVOKABLE virtual QVariant value(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
-	Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
-	Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
+	//Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
+	//Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
 
 protected:
 	void fillColumnIndexes();

@@ -309,6 +309,15 @@ bool TableModel::setValue(int row, int column, const QVariant &val)
 	return ret;
 }
 
+bool TableModel::setValue(int row_ix, const QString &col_name, const QVariant &val)
+{
+	int col_ix = columnIndex(col_name);
+	QF_ASSERT(col_ix >= 0,
+			  tr("Cannot find column index for name: '%1'").arg(col_name),
+			  return false);
+	return setValue(row_ix, col_ix, val);
+}
+
 QVariant TableModel::value(int row_ix, int column_ix) const
 {
 	QVariant ret;

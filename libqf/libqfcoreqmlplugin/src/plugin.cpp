@@ -13,6 +13,8 @@
 #include "network/networkreply.h"
 
 
+#include <qf/core/model/sqlquerytablemodel.h>
+
 #include <qf/core/log.h>
 
 #include <QQmlExtensionPlugin>
@@ -39,6 +41,7 @@ public:
 		qmlRegisterType<qf::core::qml::SqlRecord>(uri, 1, 0, "SqlRecord");
 		qmlRegisterType<qf::core::qml::SqlQueryBuilder>(uri, 1, 0, "SqlQueryBuilder");
 		qmlRegisterType<qf::core::qml::SqlQueryTableModel>(uri, 1, 0, "SqlQueryTableModel");
+		qmlRegisterType<qf::core::model::SqlQueryTableModel>(uri, 1, 0, "SqlQueryTableModelBase");
 
 		qmlRegisterType<qf::core::qml::NetworkAccessManager>(uri, 1, 0, "NetworkAccessManager");
 		qmlRegisterType<qf::core::qml::NetworkReply>(uri, 1, 0, "NetworkReply");

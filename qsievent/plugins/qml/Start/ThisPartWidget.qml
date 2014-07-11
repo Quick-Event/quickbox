@@ -8,19 +8,29 @@ PartWidget
 
 	title: "Start"
 
-	Label {
-		text: title
+	Frame {
+		TableView {
+			id: table
+			model: SqlQueryTableModel {
+				id: model
+				Component.onCompleted:
+				{
+					queryBuilder.select2('runners', '*').from('runners').orderBy('surname');
+				}
+			}
+		}
 	}
 
 	Component.onCompleted:
 	{
-		//FrameWork.menuBar.actionForPath('help').addAction(actLAboutQt);
-		//FrameWork.menuBar.actionForPath('help').addSeparator();
 	}
 
 	function canActivate(active_on)
 	{
 		Log.info(title, "canActivate:", active_on);
+		if(active_on) {
+			model.reload();
+		}
 		return true;
 	}
 

@@ -91,6 +91,8 @@ public:
 	Q_INVOKABLE QString toString() const {
 		return m_builder.toString();
 	}
+public:
+	const qf::core::sql::QueryBuilder& coreBuilder() {return m_builder;}
 private:
 	qf::core::sql::QueryBuilder m_builder;
 };
