@@ -5,6 +5,7 @@
 #include <qf/core/logdevice.h>
 
 #include <QtQml>
+#include <QLocale>
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +20,8 @@ int main(int argc, char *argv[])
 
 	qDebug() << "creating application instance";
 	//qFatal("ASSERT");
+
+	QLocale::setDefault(QLocale(QLocale::Czech));
 
 	Application app(argc, argv);
 

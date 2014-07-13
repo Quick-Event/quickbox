@@ -217,11 +217,11 @@ void Frame::createLayout(LayoutType layout_type)
 	case LayoutForm:
 		new_ly = new QFormLayout();
 		break;
-	case LayoutVertical:
-		new_ly = new QVBoxLayout();
+	case LayoutHorizontal:
+		new_ly = new QHBoxLayout();
 		break;
 	default:
-		new_ly = new QHBoxLayout();
+		new_ly = new QVBoxLayout();
 		break;
 	}
 	new_ly->setMargin(DefaultLayoutMargin);

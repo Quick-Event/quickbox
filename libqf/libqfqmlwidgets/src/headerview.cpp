@@ -42,6 +42,8 @@ void HeaderView::setSearchString(const QString &str)
 	else {
 		m_searchStringLabel->setText(str);
 		m_searchStringLabel->move(sectionViewportPosition(sortIndicatorSection()), 0);
+		m_searchStringLabel->resize(m_searchStringLabel->sizeHint());
 		m_searchStringLabel->show();
+		//qfInfo() << m_searchStringLabel->sizeHint().width() << "x" << m_searchStringLabel->sizeHint().height();
 	}
 }

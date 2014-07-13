@@ -71,16 +71,19 @@ void TableView::seek(const QString &prefix_str)
 	int col = seekColumn();
 	if(col >= 0) {
 		QCollator sort_collator = tableModel()->table().sortCollator();
-		/// QTBUG-37689 QCollator allways sorts case sensitive
-		sort_collator.setCaseSensitivity(Qt::CaseInsensitive);
-		//qfInfo() << "collator CS:" << (sortCollator.caseSensitivity() == Qt::CaseSensitive);
+		//sort_collator.setCaseSensitivity(Qt::CaseInsensitive);
+		qfWarning() << "collator CS:" << (sort_collator.caseSensitivity() == Qt::CaseSensitive) << sort_collator.locale().name();
 		for(int i=0; i<model()->rowCount(); i++) {
 			QModelIndex ix = model()->index(i, col, QModelIndex());
 			QString data_str = model()->data(ix, Qt::DisplayRole).toString();//.mid(0, prefix_str.length()).toLower();
-			QStringRef ps(&prefix_str);
-			QStringRef ds(&data_str, 0, prefix_str.length());
+			/// QTBUG-37689 QCollator allways sorts case sensitive
+			/// TODO: switch comments when the bug fix is integrated
+			//QStringRef ps(&prefix_str);
+			//QStringRef ds(&data_str, 0, prefix_str.length());
+			QString ps = prefix_str.toLower();
+			QString ds = data_str.mid(0, ps.length()).toLower();
 			int cmp = sort_collator.compare(ps, ds);
-			//qfInfo() << ba1 << "cmp" << ba2 << "from:" << model()->data(ix, Qt::DisplayRole).toString() << "->" << cmp << ba2.at(ba2.length()-1).isPunct();
+			qfInfo() << ps << "cmp" << ds << "->" << cmp;
 			if(cmp == 0) {
 				/// nemuzu tu mit cmp == 0
 				/// protoze collator.cmpare("s", "š") == -1, ikdyz ignorePunctuation == true, asi chyba
