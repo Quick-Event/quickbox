@@ -17,8 +17,8 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 {
 	Q_OBJECT
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
-	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_CLASSINFO("DefaultProperty", "widgets")
+	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_ENUMS(LayoutType)
 	Q_PROPERTY(qf::qmlwidgets::GridLayoutProperties* gridLayoutProperties READ gridLayoutProperties WRITE setGridLayoutProperties)
 private:
@@ -32,9 +32,6 @@ public:
 	void setLayoutType(LayoutType ly);
 	Q_SIGNAL void layoutTypeChanged(LayoutType ly);
 	QQmlListProperty<QWidget> widgets();
-signals:
-
-public slots:
 private:
 	static void addWidgetFunction(QQmlListProperty<QWidget> *listProperty, QWidget *value);
 	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);

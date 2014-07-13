@@ -30,6 +30,7 @@ void SqlQueryTableModel::reload()
 	reloadTable(qs);
 	if(m_columns.isEmpty())
 		createColumnsFromTableFields();
+	fillColumnIndexes();
 	endResetModel();
 }
 
@@ -59,8 +60,8 @@ void SqlQueryTableModel::reloadTable(const QString &query_str)
 	QSqlDatabase db = QSqlDatabase::database(connectionName());
 	QSqlQuery q(db);
 	bool ok = q.exec(query_str);
-	QF_ASSERT(ok,
-			  QString("SQL Error: %1").arg(q.lastError().text()),
+	QF_ASSERT(ok == true,
+			  QString("SQL Error: %1\n%2").arg(q.lastError().text()).arg(query_str),
 			  return);
 	qfu::Table::FieldList table_fields;
 	QSqlRecord rec = q.record();

@@ -18,10 +18,10 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial {} },
 				Field { name: 'startNumber'; type: Int {} },
-				Field { name: 'class'; type: String { length: 10 } },
-				Field { name: 'course'; type: String { length: 10 } },
-				Field { name: 'name'; type: String {} },
-				Field { name: 'surname'; type: String {} },
+				Field { name: 'classId'; type: String { length: 10 } },
+				Field { name: 'courseId'; type: String { length: 10 } },
+				Field { name: 'firstName'; type: String {} },
+				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
 				Field { name: 'licence'; type: String { length: 1 } },
 				Field { name: 'club'; type: String { } },
@@ -30,12 +30,14 @@ Schema {
 				Field { name: 'siId'; type: Int { } },
 				Field { name: 'relayId'; type: Int { } },
 				Field { name: 'leg'; type: Int { } },
-				Field { name: 'comment'; type: String { } },
-				Field { name: 'ranking'; type: Int { } }
+				Field { name: 'note'; type: String { } },
+				Field { name: 'ranking'; type: Int { } },
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true },
-				Index {fields: ['class'] }
+				Index {fields: ['classId'] },
+				Index {fields: ['importId'] }
 			]
 		},
 		Table { name: 'laps'
@@ -71,6 +73,15 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startTime'; type: Time {} }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true }
+			]
+		},
+		Table { name: 'classes'
+			fields: [
+				Field { name: 'id'; type: String { length: 10 } },
+				Field { name: 'courseId'; type: String { length: 10 } }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true }

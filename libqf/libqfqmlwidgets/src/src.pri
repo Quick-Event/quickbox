@@ -14,7 +14,8 @@ HEADERS += \
     $$PWD/dialogbuttonbox.h \
     $$PWD/statusbar.h \
     $$PWD/progressbar.h \
-    $$PWD/tableview.h
+    $$PWD/tableview.h \
+    $$PWD/headerview.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -29,7 +30,8 @@ SOURCES += \
     $$PWD/dialogbuttonbox.cpp \
     $$PWD/statusbar.cpp \
     $$PWD/progressbar.cpp \
-    $$PWD/tableview.cpp
+    $$PWD/tableview.cpp \
+    $$PWD/headerview.cpp
 
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)

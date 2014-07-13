@@ -51,7 +51,7 @@ Plugin {
 
 	Component.onCompleted:
 	{
-		var quit = FrameWork.menuBar.actionForPath('file/quit', false);
+		var quit = FrameWork.menuBar.actionForPath('file/quit');
 		quit.prependAction(actCreateEvent);
 		//quit.prependSeparator();
 		quit.prependAction(actOpenEvent);

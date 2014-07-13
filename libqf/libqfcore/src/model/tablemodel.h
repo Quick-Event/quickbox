@@ -64,7 +64,7 @@ public:
 			ColumnDefinition& setFieldName(const QString &s) {d->fieldName = s; return *this;}
 			int fieldIndex() const {return d->fieldIndex;}
 			ColumnDefinition& setFieldIndex(int i) {d->fieldIndex = i; return *this;}
-			QString caption() const {return d->caption;}
+			QString caption() const {return d->caption.isEmpty()? fieldName(): d->caption;}
 			ColumnDefinition& setCaption(const QString &s) {d->caption = s; return *this;}
 			QString toolTip() const {return d->toolTip;}
 			ColumnDefinition& setToolTip(const QString &s) {d->toolTip = s; return *this;}
@@ -93,8 +93,11 @@ public:
 		return insertColumn(m_columns.count(), field_name, caption);
 	}
 	ColumnDefinition& insertColumn(int before_ix, const QString &field_name, const QString &_caption = QString());
+	ColumnDefinition& insertColumn(int before_ix, const ColumnDefinition &cd);
 	ColumnDefinition removeColumn(int ix);
 public:
+	const qf::core::utils::Table& table() {return m_table;}
+
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -120,7 +123,6 @@ public:
 	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
 	//Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
 	//Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
-
 protected:
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();

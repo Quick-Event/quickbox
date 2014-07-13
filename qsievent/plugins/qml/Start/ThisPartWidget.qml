@@ -9,13 +9,33 @@ PartWidget
 	title: "Start"
 
 	Frame {
+		layoutType: Frame.LayoutVertical
+		Label {
+			text: "sprc my mrdka"
+		}
 		TableView {
 			id: table
 			model: SqlQueryTableModel {
 				id: model
+				ModelColumn {
+					fieldName: 'id'
+				}
+				ModelColumn {
+					fieldName: 'classId'
+					caption: qsTr('class')
+				}
+				ModelColumn {
+					fieldName: 'name'
+					caption: qsTr('Name')
+				}
+				ModelColumn {
+					fieldName: 'importId'
+				}
 				Component.onCompleted:
 				{
-					queryBuilder.select2('runners', '*').from('runners').orderBy('id');
+					queryBuilder.select2('runners', '*')
+						.select("firstName || ' ' || lastName AS name")
+						.from('runners').orderBy('id');
 				}
 			}
 		}

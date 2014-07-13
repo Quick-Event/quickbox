@@ -7,7 +7,9 @@
 #include "sql/sqlquery.h"
 #include "sql/sqlrecord.h"
 #include "sql/sqlquerybuilder.h"
-#include "sql/sqlquerytablemodel.h"
+
+#include "model/sqlquerytablemodel.h"
+#include "model/tablemodelcolumn.h"
 
 #include "network/networkaccessmanager.h"
 #include "network/networkreply.h"
@@ -41,7 +43,8 @@ public:
 		qmlRegisterType<qf::core::qml::SqlRecord>(uri, 1, 0, "SqlRecord");
 		qmlRegisterType<qf::core::qml::SqlQueryBuilder>(uri, 1, 0, "SqlQueryBuilder");
 		qmlRegisterType<qf::core::qml::SqlQueryTableModel>(uri, 1, 0, "SqlQueryTableModel");
-		qmlRegisterType<qf::core::model::SqlQueryTableModel>(uri, 1, 0, "SqlQueryTableModelBase");
+		qmlRegisterType<qf::core::model::TableModel>(uri, 1, 0, "TableModel");
+		qmlRegisterType<qf::core::qml::TableModelColumn>(uri, 1, 0, "ModelColumn");
 
 		qmlRegisterType<qf::core::qml::NetworkAccessManager>(uri, 1, 0, "NetworkAccessManager");
 		qmlRegisterType<qf::core::qml::NetworkReply>(uri, 1, 0, "NetworkReply");

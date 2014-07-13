@@ -359,7 +359,6 @@ void TableModel::createColumnsFromTableFields()
 		qfc::Utils::parseFieldName(fld.name(), &caption);
 		addColumn(fld.name(), caption);
 	}
-	fillColumnIndexes();
 }
 
 void TableModel::fillColumnIndexes()
@@ -449,12 +448,17 @@ void TableModel::clearColumns()
 
 TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const QString &field_name, const QString &caption)
 {
-	qfLogFuncFrame() << field_name << "before_ix:" << before_ix;
+	ColumnDefinition cd = ColumnDefinition(field_name);
+	cd.setCaption(caption);
+	return insertColumn(before_ix, cd);
+}
+
+TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const TableModel::ColumnDefinition &cd)
+{
 	if(before_ix < 0 || before_ix > m_columns.count())
 		before_ix = m_columns.count();
-	m_columns.insert(before_ix, ColumnDefinition(field_name));
+	m_columns.insert(before_ix, cd);
 	ColumnDefinition &c = m_columns[before_ix];
-	c.setCaption(caption);
 	return c;
 }
 

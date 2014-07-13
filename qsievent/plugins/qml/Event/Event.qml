@@ -104,19 +104,42 @@ QfObject {
 
 	function importEventOris(event_id)
 	{
+		//var steps = 3;
+		//FrameWork.showProgress(qsTr("Importing event"), 1, steps);
+
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=' + event_id;
 		FrameWork.plugin("Core").downloadContent(url, function(get_ok, json_str)
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
 				var data = JSON.parse(json_str).Data;
-				Log.info("pocet etap:", data.Stages);
+				var etap_count = data.Stages;
+				Log.info("pocet etap:", etap_count);
 				var event_name = createEvent();
 				if(!event_name)
 					return;
-				for(var class_obj in data.Classes) {
-					Log.info("class:", data.Classes[class_obj].Name);
+				openEvent(event_name);
+
+				var q = db.query();
+
+				q.prepare('INSERT INTO etaps (id) VALUES (:id)');
+				for(var i=0; i<etap_count; i++) {
+					q.bindValue(':id', i+1);
+					if(!q.exec())
+						break;
 				}
+
+				// import classes
+				q.prepare('INSERT INTO classes (id) VALUES (:id)');
+				for(var class_obj in data.Classes) {
+					var class_name = data.Classes[class_obj].Name;
+					Log.info("adding class:", class_name);
+					q.bindValue(':id', class_name);
+					if(!q.exec())
+						break;
+				}
+
+				importEventOrisRunners(event_id)
 			}
 			else {
 				MessageBoxSingleton.critical("http get error: " + json_str + ' on: ' + url)
@@ -124,6 +147,50 @@ QfObject {
 
 		});
 	}
+
+	function importEventOrisRunners(event_id)
+	{
+		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=' + event_id;
+		FrameWork.plugin("Core").downloadContent(url, function(get_ok, json_str)
+		{
+			//Log.info("http get finished:", get_ok, url);
+			if(get_ok) {
+				var data = JSON.parse(json_str).Data;
+				// import runners
+				//FrameWork.showProgress(qsTr("Importing runners"), 2, steps);
+				var q = db.query();
+				q.prepare('INSERT INTO runners (classId, siId, firstName, lastName, registration, licence, note, importId) VALUES (:classId, :siId, :firstName, :lastName, :registration, :licence, :note, :importId)');
+				for(var runner_obj_key in data) {
+					var runner_obj = data[runner_obj_key];
+					Log.info(JSON.stringify(runner_obj, null, 2));
+					Log.info(runner_obj.ClassDesc, ' ', runner_obj.LastName, ' ', runner_obj.FirstName);
+					var siid = parseInt(runner_obj.SI);
+					var note = runner_obj.Note;
+					if(isNaN(siid)) {
+						note += ' SI:' + runner_obj.SI;
+						siid = 0;
+					}
+					if(runner_obj.RequestedStart) {
+						note += ' req. start: ' + runner_obj.RequestedStart;
+					}
+					q.bindValue(':classId', runner_obj.ClassDesc);
+					q.bindValue(':siId', siid);
+					q.bindValue(':firstName', runner_obj.FirstName);
+					q.bindValue(':lastName', runner_obj.LastName);
+					q.bindValue(':registration', runner_obj.RegNo);
+					q.bindValue(':licence', runner_obj.Licence);
+					q.bindValue(':note', note);
+					q.bindValue(':importId', runner_obj.ID);
+					if(!q.exec())
+						break;
+				}
+			}
+			else {
+				MessageBoxSingleton.critical("http get error: " + json_str + ' on: ' + url)
+			}
+		});
+	}
+
 
 	function whenServerConnected()
 	{

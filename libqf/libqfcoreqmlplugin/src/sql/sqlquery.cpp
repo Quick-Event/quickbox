@@ -115,3 +115,19 @@ SqlQueryBuilder *SqlQuery::builder()
 	return m_queryBuilder;
 }
 
+bool SqlQuery::prepare(const QString &query_str)
+{
+	bool ret = m_query.prepare(query_str);
+	if(!ret) {
+		QString err = lastError();
+		qfError() << "SQL ERROR:" << err;
+	}
+	return ret;
+}
+
+void SqlQuery::bindValue(const QString &placeholder, const QVariant &val, int param_type)
+{
+	qfLogFuncFrame() << placeholder << "->" << val.toString() << "type:" << param_type;
+	m_query.bindValue(placeholder, val, (QSql::ParamType)param_type);
+}
+
