@@ -17,7 +17,9 @@ class QFQMLWIDGETS_DECL_EXPORT Action : public QAction
 private:
 	typedef QAction Super;
 public:
-	explicit Action(QObject *parent = 0);
+	explicit Action(const QIcon &icon, const QString &text, QObject *parent = 0);
+	explicit Action(QObject *parent = 0) : Action(QIcon(), QString(), parent) {}
+	explicit Action(const QString &text, QObject *parent = 0) : Action(QIcon(), text, parent) {}
 
 	QString oid() {return objectName();}
 	void setOid(const QString &id) {setObjectName(id);}
@@ -29,6 +31,7 @@ public:
 	QString shortcut() const;
 	void setShortcut(const QString &new_text);
 	Q_SIGNAL void shortcutChanged(const QString &new_text);
+	using Super::setShortcut;
 
 	Q_INVOKABLE void addAction(qf::qmlwidgets::Action *action);
 	Q_INVOKABLE void prependAction(qf::qmlwidgets::Action *action);

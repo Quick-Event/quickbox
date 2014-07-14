@@ -6,9 +6,11 @@
 
 using namespace qf::qmlwidgets;
 
-Action::Action(QObject *parent) :
-	QAction(parent)
+Action::Action(const QIcon &icon, const QString &text, QObject *parent)
+	: QAction(parent)
 {
+	setIcon(icon);
+	setText(text);
 }
 
 void Action::setText(const QString &new_text)
