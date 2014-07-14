@@ -2,6 +2,7 @@
 #include "headerview.h"
 
 #include <qf/core/string.h>
+#include <qf/core/collator.h>
 #include <qf/core/log.h>
 
 #include <QKeyEvent>
@@ -70,23 +71,23 @@ void TableView::seek(const QString &prefix_str)
 		return;
 	int col = seekColumn();
 	if(col >= 0) {
-		QCollator sort_collator = tableModel()->table().sortCollator();
-		//sort_collator.setCaseSensitivity(Qt::CaseInsensitive);
-		qfWarning() << "collator CS:" << (sort_collator.caseSensitivity() == Qt::CaseSensitive) << sort_collator.locale().name();
+		qf::core::Collator sort_collator = tableModel()->table().sortCollator();
+		sort_collator.setCaseSensitivity(Qt::CaseInsensitive);
+		sort_collator.setIgnorePunctuation(true);
+		//qfWarning() << sort_collator.compare(QString::fromUtf8("s"), QString::fromUtf8("š")) << QString::fromUtf8("š").toUpper();
+		//qfWarning() << "collator CS:" << (sort_collator.caseSensitivity() == Qt::CaseSensitive);
 		for(int i=0; i<model()->rowCount(); i++) {
 			QModelIndex ix = model()->index(i, col, QModelIndex());
 			QString data_str = model()->data(ix, Qt::DisplayRole).toString();//.mid(0, prefix_str.length()).toLower();
 			/// QTBUG-37689 QCollator allways sorts case sensitive
-			/// TODO: switch comments when the bug fix is integrated
-			//QStringRef ps(&prefix_str);
-			//QStringRef ds(&data_str, 0, prefix_str.length());
-			QString ps = prefix_str.toLower();
-			QString ds = data_str.mid(0, ps.length()).toLower();
+			/// workarounded by own implementation of qf::core::Collator
+			QStringRef ps(&prefix_str);
+			QStringRef ds(&data_str, 0, prefix_str.length());
+			//QString ps = prefix_str.toLower();
+			//QString ds = data_str.mid(0, ps.length()).toLower();
 			int cmp = sort_collator.compare(ps, ds);
-			qfInfo() << ps << "cmp" << ds << "->" << cmp;
-			if(cmp == 0) {
-				/// nemuzu tu mit cmp == 0
-				/// protoze collator.cmpare("s", "š") == -1, ikdyz ignorePunctuation == true, asi chyba
+			//qfInfo() << ps << "cmp" << ds << "->" << cmp;
+			if(cmp <= 0) {
 				setCurrentIndex(ix);
 				break;
 			}

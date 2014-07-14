@@ -3,17 +3,18 @@
 
 #include "../core/coreglobal.h"
 #include "../core/utils.h"
+#include "../core/collator.h"
 #include "svalue.h"
 
 #include <QString>
 #include <QVariantMap>
 #include <QRegExp>
-#include <QCollator>
 #include <QVector>
 #include <QBitArray>
 
 class QDomElement;
 class QDomDocument;
+class QTextStream;
 
 namespace qf {
 namespace core {
@@ -97,7 +98,7 @@ public:
 	protected:
 		const Table &table;
 		Table::SortDefList sortedFields;
-		QCollator sortCollator;
+		qf::core::Collator sortCollator;
 	};
 protected:
 	typedef QVector<int> RowIndexList;
@@ -182,7 +183,7 @@ private:
 		RowIndexList rowIndex; ///< rows are accessed through this index (sorting, filtering, ...)
 		//int currentRow; ///< index of current row in \a index
 		SortDefList sortedFields;
-		QCollator sortCollator;
+		Collator sortCollator;
 	public:
 		Data();
 		~Data() { }
@@ -257,8 +258,8 @@ protected:
 	virtual void sort(RowIndexList::iterator begin, RowIndexList::iterator end);
 	virtual RowIndexList::const_iterator binaryFind(RowIndexList::const_iterator begin, RowIndexList::const_iterator end, const QVariant &val) const;
 public:
-	void setSortCollator(const QCollator &coll);
-	QCollator sortCollator() const;
+	void setSortCollator(const qf::core::Collator &coll);
+	qf::core::Collator sortCollator() const;
 	/// sort / search / seek
 	//! @param colnames Coma separaded list of fields with optional ASC or DES  and CS or ICS flag.
 	//!		CS is CaseSensitive, default is CS.

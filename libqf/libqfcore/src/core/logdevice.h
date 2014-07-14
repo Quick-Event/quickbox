@@ -1,5 +1,5 @@
-#ifndef LOGDEVICE_H
-#define LOGDEVICE_H
+#ifndef QF_CORE_LOGDEVICE_H
+#define QF_CORE_LOGDEVICE_H
 
 #include "coreglobal.h"
 #include "log.h"
@@ -96,4 +96,4 @@ public:
 }
 }
 
-#endif // LOGDEVICE_H
+#endif // QF_CORE_LOGDEVICE_H

@@ -35,7 +35,7 @@ PartWidget
 					Component.onCompleted:
 					{
 						queryBuilder.select2('runners', '*')
-							.select("firstName || ' ' || lastName AS name")
+							.select("lastName || ' ' || firstName AS name")
 							.from('runners').orderBy('id');
 					}
 				}

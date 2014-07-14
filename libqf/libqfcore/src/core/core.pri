@@ -7,6 +7,7 @@ HEADERS += \
 	$$PWD/utils.h \
 	$$PWD/string.h \
     $$PWD/logdevice.h \
+    $$PWD/collator.h
 
 SOURCES += \
 	$$PWD/exception.cpp \
@@ -14,5 +15,6 @@ SOURCES += \
 	$$PWD/log.cpp \
 	$$PWD/string.cpp \
     $$PWD/logdevice.cpp \
-    $$PWD/utils.cpp
+    $$PWD/utils.cpp \
+    $$PWD/collator.cpp
 

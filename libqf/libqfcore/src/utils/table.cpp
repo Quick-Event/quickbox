@@ -13,7 +13,6 @@ using namespace qf::core::utils;
 
 #include <QTextCodec>
 #include <QStringBuilder>
-#include <QCollator>
 #include <QDate>
 #include <QDomElement>
 
@@ -1051,12 +1050,12 @@ QString Table::toString() const
 	return s;
 }
 
-QCollator Table::sortCollator() const
+qf::core::Collator Table::sortCollator() const
 {
     return d->sortCollator;
 }
 
-void Table::setSortCollator(const QCollator &coll)
+void Table::setSortCollator(const Collator &coll)
 {
     d->sortCollator = coll;
 }
