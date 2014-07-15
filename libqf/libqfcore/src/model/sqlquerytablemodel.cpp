@@ -28,7 +28,7 @@ void SqlQueryTableModel::reload()
 	qs = replaceQueryParameters(qs);
 	beginResetModel();
 	reloadTable(qs);
-	if(m_columns.isEmpty())
+	if(m_columns.isEmpty() || m_autoColumns)
 		createColumnsFromTableFields();
 	fillColumnIndexes();
 	endResetModel();

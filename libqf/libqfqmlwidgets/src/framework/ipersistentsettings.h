@@ -16,9 +16,9 @@ class IPersistentSettings
 public:
 	IPersistentSettings(QObject *controlled_object);
 public:
-	QString persistentSettingsId() {return m_persistentSettingsId;}
+	virtual QString persistentSettingsId();
 	void setPersistentSettingsId(const QString &id);
-	QString persistentSettingsPath();
+	virtual QString persistentSettingsPath();
 	void loadPersistentSettingsRecursively();
 	void savePersistentSettingsRecursively();
 private:

@@ -20,6 +20,8 @@ HeaderView::HeaderView(Qt::Orientation orientation, QWidget *parent) :
 
 		setSectionsClickable(true);
 		setSectionsMovable(true);
+		//setSortIndicatorShown(false);
+		setSortIndicator(-1, Qt::AscendingOrder);
 	}
 	else if(orientation == Qt::Vertical) {
 		//verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);

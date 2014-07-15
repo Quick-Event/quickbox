@@ -110,6 +110,6 @@ Dialog {
 		}
 	}
 	Component.onCompleted: {
-		root.loadPersistentSettings(true);
+		//root.loadPersistentSettings(true);
 	}
 }

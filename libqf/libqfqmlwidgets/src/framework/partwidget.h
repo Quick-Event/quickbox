@@ -22,6 +22,7 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 private:
 	typedef QWidget Super;
 public:
@@ -40,7 +41,7 @@ public:
 	void setFeatureId(QString id);
 	Q_SIGNAL void featureIdChanged(const QString &s);
 
-	//Q_SLOT virtual bool canActivate(bool active_on);
+	Q_SLOT void loadPersistentSettings();
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:

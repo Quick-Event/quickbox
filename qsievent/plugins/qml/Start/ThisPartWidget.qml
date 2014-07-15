@@ -16,6 +16,8 @@ PartWidget
 			layoutType: Frame.LayoutHorizontal
 			TableView {
 				id: table
+				persistentSettingsId: "tblStart";
+
 				model: SqlQueryTableModel {
 					id: model
 					ModelColumn {
@@ -42,6 +44,7 @@ PartWidget
 			}
 			TableView {
 				id: classes
+				persistentSettingsId: "tblClasses";
 				model: SqlQueryTableModel {
 					id: mClasses
 					Component.onCompleted:
@@ -56,16 +59,26 @@ PartWidget
 
 	Component.onCompleted:
 	{
+		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reload);
+		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reload);
 	}
 
 	function canActivate(active_on)
 	{
-		Log.info(title, "canActivate:", active_on);
+		console.debug(title, "canActivate:", active_on);
 		if(active_on) {
-			model.reload();
-			mClasses.reload();
+			reload();
 		}
 		return true;
+	}
+
+	function reload()
+	{
+		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
+		if(!sql_connected)
+			return;
+		model.reload();
+		mClasses.reload();
 	}
 
 }

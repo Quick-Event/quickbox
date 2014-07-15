@@ -6,6 +6,9 @@
 #include <QMessageBox>
 
 namespace qf {
+namespace core {
+class Exception;
+}
 namespace qmlwidgets {
 namespace dialogs {
 
@@ -14,11 +17,8 @@ class QFQMLWIDGETS_DECL_EXPORT MessageBox : public QMessageBox
 	Q_OBJECT
 public:
 	explicit MessageBox(QWidget *parent = 0);
-
-signals:
-
-public slots:
-
+public:
+	static void showException(QWidget *parent, const qf::core::Exception &exc);
 };
 
 }}}

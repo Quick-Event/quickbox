@@ -6,23 +6,59 @@ PartWidget
 {
 	id: root
 
-	title: "Competitors"
-	//iconSource: "images/competitors.png"
+	title: "Start"
 
-	Label {
-		text: title
+	Frame {
+		TableView {
+			id: table
+			persistentSettingsId: "tblCompetitors";
+
+			model: SqlQueryTableModel {
+				id: model
+				ModelColumn {
+					fieldName: 'id'
+				}
+				ModelColumn {
+					fieldName: 'classId'
+					caption: qsTr('class')
+				}
+				ModelColumn {
+					fieldName: 'name'
+					caption: qsTr('Name')
+				}
+				ModelColumn {
+					fieldName: 'importId'
+				}
+				Component.onCompleted:
+				{
+					queryBuilder.select2('runners', '*')
+						.select("lastName || ' ' || firstName AS name")
+						.from('runners').orderBy('id');
+				}
+			}
+		}
 	}
 
 	Component.onCompleted:
 	{
-		//FrameWork.menuBar.actionForPath('help').addAction(actLAboutQt);
-		//FrameWork.menuBar.actionForPath('help').addSeparator();
+		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reload);
+		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reload);
 	}
-/*
+
 	function canActivate(active_on)
 	{
-		Log.info(title, "canActivate:", active_on);
+		console.debug(title, "canActivate:", active_on);
+		if(active_on) {
+			reload();
+		}
 		return true;
 	}
-	*/
+
+	function reload()
+	{
+		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
+		if(!sql_connected)
+			return;
+		model.reload();
+	}
 }

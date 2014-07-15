@@ -58,7 +58,6 @@ int Collator::compare(const QStringRef &s1, const QStringRef &s2) const
 int Collator::sortIndex(QChar c) const
 {
 	QChar co = c;
-	QChar cl = c.toLower();
 	if(caseSensitivity() == Qt::CaseInsensitive) {
 		co = co.toLower();
 	}
@@ -68,8 +67,7 @@ int Collator::sortIndex(QChar c) const
 	if(ret < 0) {
 		return co.unicode() % 256;
 	}
-	bool is_lower = (co == cl);
-	if(is_lower)
+	if(co.isLower())
 		ret += sortCache().size();
 	ret += 256;
 	return ret;

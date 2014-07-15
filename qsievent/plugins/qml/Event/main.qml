@@ -5,7 +5,7 @@ import qf.qmlwidgets 1.0
 Plugin {
 	id: root
 
-	//property alias currentEventName: event.currentEventName
+	property alias currentEventName: event.currentEventName
 
 	property QfObject internals: QfObject {
 		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")

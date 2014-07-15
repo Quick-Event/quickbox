@@ -45,9 +45,13 @@ void PartWidget::setFeatureId(QString id)
 {
 	if (m_featureId != id) {
 		m_featureId = id;
+		//setProperty("persistentSettingsId", id);
+		setPersistentSettingsId(id);
+		setObjectName(id);
 		emit featureIdChanged(id);
 	}
 }
+
 /*
 bool PartWidget::canActivate(bool active_on)
 {
@@ -59,6 +63,23 @@ bool PartWidget::canActivate(bool active_on)
 QQmlListProperty<QWidget> PartWidget::widgets()
 {
 	return m_centralFrame->widgets();
+}
+
+void PartWidget::loadPersistentSettings()
+{
+	qfLogFuncFrame();
+	QString path = persistentSettingsPath();
+	qfDebug() << "\t" << this << path;
+	/*
+	if(!path.isEmpty()) {
+		QSettings settings;
+		settings.beginGroup(path);
+		QRect geometry = settings.value("geometry").toRect();
+		if(geometry.isValid()) {
+			this->setGeometry(geometry);
+		}
+	}
+	*/
 }
 
 void PartWidget::savePersistentSettings()

@@ -244,6 +244,8 @@ void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 	}
 	if(widget->featureId().isEmpty())
 		qfWarning() << widget << "adding part widget without featureId set can harm some default functionality.";
+	//qfWarning() << widget << widget->featureId() << "alias" << widget->persistentSettingsId() << "path:" << widget->persistentSettingsPath();
+	widget->loadPersistentSettingsRecursively();
 	centralWidget()->addPartWidget(widget);
 }
 
