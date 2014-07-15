@@ -179,6 +179,13 @@ Table::Field::Field(const QString &name, QVariant::Type t)
 	d = new Data(name, t);
 }
 
+QString Table::Field::shortName() const
+{
+	QString ret = name();
+	qf::core::Utils::parseFieldName(ret, &ret);
+	return ret;
+}
+
 /*
 Table::Field::Field(const QString & _name, const QString & _def)
 {
@@ -317,7 +324,9 @@ bool TableRow::isDirty(int field_no) const
 void TableRow::setDirty(int field_no, bool val)
 {
 	qfLogFuncFrame() << "field_no:" << field_no << "val:" << val;
-	QF_ASSERT(field_no < 0 || field_no >= d->values.size(), QString("field index %1 is out of range (%2)").arg(field_no).arg(d->values.size()), return);
+	QF_ASSERT(field_no >= 0 && field_no < d->values.size(),
+			  QString("field index %1 is out of range (%2)").arg(field_no).arg(d->values.size()),
+			  return);
 	if(d->dirtyFlags.count() < d->values.count()) {
 		d->dirtyFlags.clear();
 		d->dirtyFlags.resize(d->values.size());
@@ -397,7 +406,7 @@ void TableRow::setValue(int col, const QVariant &v)
 	if(d->values.count() > d->origValues.count()) {
 		saveValues();
 	}
-	QF_ASSERT(col < 0 || col >= d->values.size(),
+	QF_ASSERT(col >= 0 && col < d->values.size(),
 		QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
 		return);
 

@@ -126,6 +126,8 @@ public:
 
 		bool isNull() const {return d == sharedNull().d;}
 
+		QString shortName() const;
+
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)

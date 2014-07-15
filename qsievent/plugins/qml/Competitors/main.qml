@@ -30,6 +30,7 @@ Plugin {
 						Log.info("json:", json);
 						json_str = JSON.stringify(json, null, 2)
 						Log.info("text:", json_str);
+						MessageBoxSingleton.critical(null, qsTr('Import of competitors from Oris is not implemented yet'));
 					}
 					else {
 						console.error("http get error:", reply.errorString, 'on:', reply.url)

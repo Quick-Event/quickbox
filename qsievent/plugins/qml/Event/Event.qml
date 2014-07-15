@@ -122,6 +122,18 @@ QfObject {
 
 				var q = db.query();
 
+				q.prepare('INSERT INTO event (etapCount, name, description, date, place, mainReferee, director, importId) VALUES (:etapCount, :name, :description, :date, :place, :mainReferee, :director, :importId)');
+				q.bindValue(':etapCount', data.Stages);
+				q.bindValue(':name', data.Name);
+				q.bindValue(':description', '');
+				q.bindValue(':date', data.Date);
+				q.bindValue(':place', data.Place);
+				q.bindValue(':mainReferee', data.MainReferee.FirstName + ' ' + data.MainReferee.LastName);
+				q.bindValue(':director', data.Director.FirstName + ' ' + data.Director.LastName);
+				q.bindValue(':importId', event_id);
+				q.exec();
+
+
 				q.prepare('INSERT INTO etaps (id) VALUES (:id)');
 				for(var i=0; i<etap_count; i++) {
 					q.bindValue(':id', i+1);

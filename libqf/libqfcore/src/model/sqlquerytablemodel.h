@@ -39,7 +39,8 @@ protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
 	void reloadTable(const QString &query_str);
-	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields);
+	QSet<QString> tableIds(const utils::Table::FieldList &table_fields);
+	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 	QStringList primaryIndex(const QString &table_name);
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;

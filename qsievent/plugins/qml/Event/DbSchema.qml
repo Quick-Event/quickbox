@@ -14,6 +14,22 @@ Schema {
 				Index {fields: ['ckey']; primary: true }
 			]
 		},
+		Table { name: 'event'
+			fields: [
+				Field { name: 'id'; type: Serial {} },
+				Field { name: 'etapCount'; type: Int { } },
+				Field { name: 'name'; type: String {} },
+				Field { name: 'description'; type: String {} },
+				Field { name: 'date'; type: Date {} },
+				Field { name: 'place'; type: String {} },
+				Field { name: 'mainReferee'; type: String {} },
+				Field { name: 'director'; type: String {} },
+				Field { name: 'importId'; type: String {} }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true }
+			]
+		},
 		Table { name: 'runners'
 			fields: [
 				Field { name: 'id'; type: Serial {} },
@@ -32,7 +48,7 @@ Schema {
 				Field { name: 'leg'; type: Int { } },
 				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
-				Field { name: 'importId'; type: Int {} }
+				Field { name: 'importId'; type: String {} }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true },
