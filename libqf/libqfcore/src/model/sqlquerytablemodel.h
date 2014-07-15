@@ -19,7 +19,9 @@ private:
 public:
 	SqlQueryTableModel(QObject *parent = 0);
 public:
-	Q_INVOKABLE void reload();
+	void reload() Q_DECL_OVERRIDE;
+	bool postRow(int row_no) Q_DECL_OVERRIDE;
+	void revertRow(int row_no) Q_DECL_OVERRIDE;
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
 
@@ -37,11 +39,14 @@ protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
 	void reloadTable(const QString &query_str);
+	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields);
+	QStringList primaryIndex(const QString &table_name);
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;
 	QVariantMap m_queryParameters;
 	QString m_connectionName;
+	QMap<QString, QStringList> m_primaryIndexCache;
 };
 
 }}}

@@ -114,7 +114,7 @@ public:
 			QString name;
 			unsigned canUpdate:1, isPriKey:1;
 			Data() : type(QVariant::Invalid) {}
-			Data(const QString &name, QVariant::Type t) : type(t), name(name) {}
+			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(true), isPriKey(false) {}
 		};
 		QSharedDataPointer<Data> d;
 
@@ -129,6 +129,7 @@ public:
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
+		QF_SHARED_CLASS_FIELD_RW(bool, is, set, PriKey)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
 	{
@@ -360,7 +361,7 @@ public:
 	void setValue(const QString &field_name, const QVariant &v);
 	//! Set value without retyping and checks, useful only when table data are loaded from QSL query or something like that.
 	/// Very fast and very dangerous function
-	void setInitialValue(int col, const QVariant &val);
+	void setBareBoneValue(int col, const QVariant &val);
 	bool isDirty() const;
 	bool isDirty(int field_no) const;
 	void setDirty(int field_no, bool val = true);

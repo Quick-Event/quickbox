@@ -107,6 +107,10 @@ public:
 
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 
+	Q_SLOT virtual void reload() {}
+	Q_SLOT virtual bool postRow(int row_no) {Q_UNUSED(row_no); return true;}
+	Q_SLOT virtual void revertRow(int row_no) {Q_UNUSED(row_no);}
+
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg);
 	Q_SIGNAL void nullReportedAsStringChanged(bool arg);

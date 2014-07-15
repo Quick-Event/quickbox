@@ -386,7 +386,7 @@ static QString v2str(const QVariant &ret)
 }
 #endif
 */
-void TableRow::setInitialValue(int col, const QVariant & val)
+void TableRow::setBareBoneValue(int col, const QVariant & val)
 {
 	d->values[col] = val;
 }
