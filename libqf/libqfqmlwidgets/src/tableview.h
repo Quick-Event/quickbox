@@ -34,17 +34,14 @@ public:
 	Q_SIGNAL void modelChanged();
 
 	Q_SLOT virtual void refreshActions();
+	QList<Action*> toolBarActions() const {return m_toolBarActions;}
+
+	Q_SLOT virtual void reload();
 
 	//! @param row_no if @a row_no < 0 than post current row.
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
-
-	/**
-	* calls update viewport with rect clipping row \a row.
-	* @param row if lower than 0 current row is updated.
-	*/
-	Q_SLOT void updateRow(int row = -1);
 
 private:
 	Q_SIGNAL void searchStringChanged(const QString &str);
@@ -60,13 +57,22 @@ protected:
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
+	/**
+	* calls update viewport with rect clipping row \a row.
+	* @param row if lower than 0 current row is updated.
+	*/
+	Q_SLOT void updateRow(int row = -1);
+
 	virtual void createActions();
 	QList<Action*> contextMenuActionsForGroups(int action_groups = AllActions);
+	Action* action(const QString &act_oid);
+	void enableAllActions(bool on);
 protected:
 	QString m_seekString;
 	QMap<QString, Action*> m_actions;
 	QMap<ActionGroup, Action*> m_separatorsForGroup;
 	QMap<int, QStringList> m_actionGroups;
+	QList<Action*> m_toolBarActions;
 };
 
 }}

@@ -186,6 +186,22 @@ QString Table::Field::shortName() const
 	return ret;
 }
 
+QString Table::Field::tableId() const
+{
+	QString ret = name();
+	QString ds;
+	qf::core::Utils::parseFieldName(ret, nullptr, &ret, &ds);
+	if(!ds.isEmpty())
+		ret = ds + '.' + ret;
+	return ret;
+}
+
+QString Table::Field::toString() const
+{
+	QString ret = "name: '%1', type: %2, canUpdate: %3, isPriKey: %4";
+	return ret.arg(name()).arg(QVariant::typeToName(type())).arg(canUpdate()).arg(isPriKey());
+}
+
 /*
 Table::Field::Field(const QString & _name, const QString & _def)
 {
@@ -273,6 +289,7 @@ const Table::TableProperties& Table::TableProperties::sharedNull()
 //=========================================
 TableRow::Data::Data()
 {
+	flags.insert = false;
 }
 
 TableRow::Data::Data(const Table::TableProperties &props)
@@ -312,8 +329,9 @@ const TableRow& TableRow::sharedNull()
 
 bool TableRow::isDirty(int field_no) const
 {
-	QF_ASSERT(field_no < 0 || field_no >= d->values.size(), QString("field index %1 is out of range (%2)").arg(field_no).arg(d->values.size()), return false);
-	/// field je dirty, pokud ma nastaven dirty flag nebo value != orig value
+	QF_ASSERT(field_no >= 0 && field_no < d->values.size(),
+			  QString("field index %1 is out of range (%2)").arg(field_no).arg(d->values.size()),
+			  return false);
 	bool ret = false;
 	if(field_no < d->dirtyFlags.count()) {
 		ret = d->dirtyFlags.at(field_no);
@@ -337,7 +355,8 @@ void TableRow::setDirty(int field_no, bool val)
 bool TableRow::isDirty() const
 {
 	for(int i=0; i<d->dirtyFlags.count(); i++) {
-		if(d->dirtyFlags[i]) return true;
+		if(d->dirtyFlags[i])
+			return true;
 	}
 	return false;
 }
@@ -345,12 +364,10 @@ bool TableRow::isDirty() const
 QVariant TableRow::origValue(int col) const
 {
 	QVariant ret;
-	if(col < 0 || col >= d->origValues.size()) {
-		qfError() << QString("Column %1 is out of origValues range %2").arg(col).arg(d->origValues.size());
-	}
-	else {
-		ret = d->origValues.value(col);
-	}
+	QF_ASSERT(col >= 0 && col < d->origValues.size(),
+			  QString("Column %1 is out of origValues range %2").arg(col).arg(d->origValues.size()),
+			  return ret);
+	ret = d->origValues.value(col);
 	return ret;
 }
 
@@ -402,7 +419,7 @@ void TableRow::setBareBoneValue(int col, const QVariant & val)
 
 void TableRow::setValue(int col, const QVariant &v)
 {
-	//qfInfo() << col << v.toString();
+	qfLogFuncFrame() << "col:" << col << "val:" << v.toString();
 	if(d->values.count() > d->origValues.count()) {
 		saveValues();
 	}
@@ -435,14 +452,14 @@ void TableRow::setValue(int col, const QVariant &v)
 
 void TableRow::setValue(const QString &field_name, const QVariant &v)
 {
-	//qfInfo() << QF_FUNC_NAME << "field_name" << field_name << "val:" << v.toString();
+	qfLogFuncFrame() << "field_name" << field_name << "val:" << v.toString();
 	int col = fields().fieldIndex(field_name);
 	setValue(col, v);
 }
 
 void TableRow::saveValues()
 {
-	//qfInfo() << "save values" << Log::stackTrace();
+	qfInfo() << "save values:" << d->values.size();
 	//if(isDirty()) return;
 	//qfLogFuncFrame() << "fieldcnt:" << fields().size();
 	//origValues.clear();
@@ -454,11 +471,10 @@ void TableRow::saveValues()
 	}
 }
 
-void TableRow::restoreValues()
+void TableRow::restoreOrigValues()
 {
 	for(int i=0; i<d->values.count(); i++) {
 		d->values[i] = origValue(i);
-		//d->origValues[i].dirty = false;
 	}
 	clearOrigValues();
 }
@@ -640,7 +656,7 @@ TableRow& Table::insertRow(int before_row, const TableRow &_row)
 
 	int r = (isValidRowIndex(before_row))? before_row: rowCount();
 	TableRow empty_row(_row);
-	empty_row.setInsert();
+	empty_row.setInsert(true);
 	rowsRef().append(empty_row);
 	rowIndexRef().insert(r, rowsRef().count()-1);
 	TableRow &row = rowRef(r);
@@ -684,7 +700,7 @@ void Table::revertRow(int ri)
 
 void Table::revertRow(TableRow &r)
 {
-	r.restoreValues();
+	r.restoreOrigValues();
 }
 
 void Table::createRowIndex()

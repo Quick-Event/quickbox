@@ -16,7 +16,8 @@ HEADERS += \
     $$PWD/progressbar.h \
     $$PWD/tableview.h \
     $$PWD/headerview.h \
-    $$PWD/tableitemdelegate.h
+    $$PWD/tableitemdelegate.h \
+    $$PWD/tableviewtoolbar.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -33,7 +34,8 @@ SOURCES += \
     $$PWD/progressbar.cpp \
     $$PWD/tableview.cpp \
     $$PWD/headerview.cpp \
-    $$PWD/tableitemdelegate.cpp
+    $$PWD/tableitemdelegate.cpp \
+    $$PWD/tableviewtoolbar.cpp
 
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)

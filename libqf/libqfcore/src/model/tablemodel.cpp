@@ -298,6 +298,20 @@ void TableModel::sort(int column, Qt::SortOrder order)
 	emit layoutChanged();
 }
 
+bool TableModel::postRow(int row_no, bool throw_exc)
+{
+	qfLogFuncFrame() << row_no << throw_exc;
+	qfu::TableRow &row = m_table.rowRef(row_no);
+	row.clearEditFlags();
+	return true;
+}
+
+void TableModel::revertRow(int row_no)
+{
+	qfu::TableRow &row = m_table.rowRef(row_no);
+	row.restoreOrigValues();
+}
+
 void TableModel::setNullReportedAsString(bool arg)
 {
 	if (m_nullReportedAsString != arg) {
@@ -357,6 +371,11 @@ QVariant TableModel::value(int row_ix, const QString &col_name) const
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return ret);
 	return value(row_ix, col_ix);
+}
+
+qf::core::utils::TableRow TableModel::tableRow(int row_no)
+{
+	return m_table.row(row_no);
 }
 
 void TableModel::createColumnsFromTableFields()

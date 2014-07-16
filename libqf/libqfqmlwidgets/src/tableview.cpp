@@ -75,18 +75,123 @@ void TableView::setTableModel(core::model::TableModel *m)
 
 void TableView::refreshActions()
 {
+	qfLogFuncFrame() << "model:" << model();
+	enableAllActions(false);
+	qfc::model::TableModel *m = tableModel();
+	if(!m)
+		return;
+	//action("calculate")->setEnabled(true);
+	action("copy")->setEnabled(true);
+	//action("copySpecial")->setEnabled(true);
+	//action("select")->setEnabled(true);
+	action("reload")->setEnabled(true);
+	action("resizeColumnsToContents")->setEnabled(true);
+	//action("showCurrentCellText")->setEnabled(true);
+	//action("saveCurrentCellBlob")->setEnabled(true);
+	//action("loadCurrentCellBlob")->setEnabled(true);
+	//action("insertRowsStatement")->setEnabled(true);
+	//action("import")->setEnabled(true);
+	//action("importCSV")->setEnabled(true);
+	//action("export")->setEnabled(true);
+	//action("exportReport")->setEnabled(true);
+	//action("exportCSV")->setEnabled(true);
+	//action("exportXML")->setEnabled(true);
+	//action("exportXLS")->setEnabled(true);
+	//action("exportHTML")->setEnabled(true);
+
+	//action("insertRow")->setVisible(isInsertRowActionVisible());
+	//action("removeSelectedRows")->setVisible(isRemoveRowActionVisibleInExternalMode());
+	//action("postRow")->setVisible(true);
+	//action("revertRow")->setVisible(true);
+
+	//action("viewRowExternal")->setVisible(true);
+	//action("editRowExternal")->setVisible(true);
+
+	bool is_insert_rows_allowed = true;//m->isInsertRowsAllowed() && !isReadOnly();
+	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
+	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
+	bool is_copy_rows_allowed = true;//m->rowCount()>0 && is_insert_rows_allowed;
+	//qfInfo() << "\tinsert allowed:" << is_insert_rows_allowed;
+	//qfTrash() << "\tdelete allowed:" << is_delete_rows_allowed;
+	//qfTrash() << "\tedit allowed:" << is_edit_rows_allowed;
+	//action("insertRow")->setVisible(is_insert_rows_allowed && isInsertRowActionVisible());
+	action("copyRow")->setEnabled(is_copy_rows_allowed);
+	//action("copyRow")->setVisible(isCopyRowActionVisible());
+	action("removeSelectedRows")->setEnabled(is_delete_rows_allowed);// && action("removeSelectedRows")->isVisible());
+	//action("postRow")->setVisible((is_edit_rows_allowed || is_insert_rows_allowed) && action("postRow")->isVisible());
+	//action("revertRow")->setVisible(action("postRow")->isVisible() && action("revertRow")->isVisible());
+	//action("editRowExternal")->setVisible(is_edit_rows_allowed && action("editRowExternal")->isVisible());
+
+	qfu::TableRow r = m->tableRow(currentIndex().row());
+	//qfTrash() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
+	if(r.isDirty()) {
+		action("postRow")->setEnabled(true);
+		action("revertRow")->setEnabled(true);
+	}
+	else {
+		//action("insertRow")->setEnabled(isInsertRowActionVisible());
+		action("copyRow")->setEnabled(is_copy_rows_allowed && currentIndex().isValid());
+		action("reload")->setEnabled(true);
+		action("sortAsc")->setEnabled(true);
+		action("sortDesc")->setEnabled(true);
+		//action("filter")->setEnabled(true);
+		//action("addColumnFilter")->setEnabled(true);
+		//action("removeColumnFilter")->setEnabled(true);
+		//action("deleteColumnFilters")->setEnabled(true);
+		action("setValueInSelection")->setEnabled(true);
+		action("setNullInSelection")->setEnabled(true);
+		action("generateSequenceInSelection")->setEnabled(true);
+		action("paste")->setEnabled(is_edit_rows_allowed && is_insert_rows_allowed);
+	}
+	action("revertRow")->setEnabled(action("postRow")->isEnabled());
+}
+
+void TableView::reload()
+{
 	qfLogFuncFrame();
+	if(horizontalHeader()) {
+		savePersistentSettings();
+		horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
+	}
+	qf::core::model::TableModel *table_model = tableModel();
+	if(table_model) {
+		QModelIndex ix = currentIndex();
+		table_model->reload();
+		//qfTrash() << "\t emitting reloaded()";
+		//emit reloaded();
+		//qfTrash() << "\ttable:" << table();
+		setCurrentIndex(ix);
+		//updateDataArea();
+	}
+	refreshActions();
+}
+
+void TableView::enableAllActions(bool on)
+{
+	for(auto a : m_actions) {
+		a->setEnabled(on);
+		//if(on) a->setVisible(true);
+	}
 }
 
 bool TableView::postRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
-	return true;
+	bool ret = false;
+	qfc::model::TableModel *m = tableModel();
+	if(m) {
+		ret = m->postRow(row_no, true);
+	}
+	return ret;
 }
 
 void TableView::revertRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
+	qfc::model::TableModel *m = tableModel();
+	if(m) {
+		m->revertRow(row_no);
+	}
 }
 
 void TableView::updateRow(int row)
@@ -486,7 +591,6 @@ void TableView::createActions()
 	Action *a;
 	{
 		a = new Action(tr("Resize columns to contents"), this);
-		//a->setIcon(QIcon(":/libqf/images/reload.png"));
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resizeColumnsToContents");
@@ -502,7 +606,7 @@ void TableView::createActions()
 		a->setOid("reload");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(reload()));
+		connect(a, SIGNAL(triggered()), this, SLOT(reload()));
 	}
 	{
 		a = new Action(tr("Copy"), this);
@@ -560,7 +664,7 @@ void TableView::createActions()
 		a->setOid("postRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(postRow()));
+		connect(a, SIGNAL(triggered()), this, SLOT(postRow()));
 	}
 	{
 		a = new Action(tr("Revert row edits"), this);
@@ -570,7 +674,7 @@ void TableView::createActions()
 		a->setOid("revertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(revertRow()));
+		connect(a, SIGNAL(triggered()), this, SLOT(revertRow()));
 	}
 	{
 		a = new Action(tr("Copy row"), this);
@@ -789,28 +893,24 @@ void TableView::createActions()
 			m->addAction(a);
 		}
 	}
-	/*
-	f_toolBarActions << action("insertRow");
-	f_toolBarActions << action("copyRow");
-	f_toolBarActions << action("removeSelectedRows");
-	f_toolBarActions << action("postRow");
-	f_toolBarActions << action("revertRow");
-	//f_toolBarActions << action("insertRowExternal");
-	f_toolBarActions << action("viewRowExternal");
-	f_toolBarActions << action("editRowExternal");
-	a = new Action(this); a->setSeparator(true);
-	f_toolBarActions << a;
-	f_toolBarActions << action("reload");
-	a = new Action(this); a->setSeparator(true);
-	f_toolBarActions << a;
-	f_toolBarActions << action("sortAsc");
-	f_toolBarActions << action("sortDesc");
-	a = new Action(this); a->setSeparator(true);
-	f_toolBarActions << a;
-	f_toolBarActions << action("filter");
 
-	f_contextMenuActions = standardContextMenuActions();
-	*/
+	m_toolBarActions << action("insertRow");
+	m_toolBarActions << action("copyRow");
+	m_toolBarActions << action("removeSelectedRows");
+	m_toolBarActions << action("postRow");
+	m_toolBarActions << action("revertRow");
+	//m_toolBarActions << action("viewRowExternal");
+	//m_toolBarActions << action("editRowExternal");
+	a = new Action(this); a->setSeparator(true);
+	m_toolBarActions << a;
+	m_toolBarActions << action("reload");
+	a = new Action(this); a->setSeparator(true);
+	m_toolBarActions << a;
+	m_toolBarActions << action("sortAsc");
+	m_toolBarActions << action("sortDesc");
+
+	//f_contextMenuActions = standardContextMenuActions();
+
 	{
 		for(Action *a : m_actions) {
 			if(!a->shortcut().isEmpty()) {
@@ -852,6 +952,13 @@ QList<Action *> TableView::contextMenuActionsForGroups(int action_groups)
 			}
 		}
 	}
+	return ret;
+}
+
+Action *TableView::action(const QString &act_oid)
+{
+	Action *ret = m_actions.value(act_oid);
+	QF_ASSERT_EX(ret != nullptr, QString("Invalid action id: '%1'").arg(act_oid));
 	return ret;
 }
 

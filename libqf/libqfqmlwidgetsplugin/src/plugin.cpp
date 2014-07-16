@@ -15,6 +15,7 @@
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 #include <qf/qmlwidgets/tableview.h>
+#include <qf/qmlwidgets/tableviewtoolbar.h>
 
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
 #include <qf/qmlwidgets/gridlayoutproperties.h>
@@ -59,9 +60,10 @@ public:
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");
 		qmlRegisterType<qf::qmlwidgets::Frame>(uri, 1, 0, "Frame");
 		qmlRegisterType<qf::qmlwidgets::TableView>(uri, 1, 0, "TableView");
+		qmlRegisterType<qf::qmlwidgets::TableViewToolBar>(uri, 1, 0, "TableViewToolBar");
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
-		// Menu is not needed fo now
+		// Menu is not needed for now
 		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
 		qmlRegisterType<qf::qmlwidgets::StatusBar>(uri, 1, 0, "StatusBar");

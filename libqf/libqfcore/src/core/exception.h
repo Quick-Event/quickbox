@@ -22,11 +22,12 @@ namespace core {
 //! if Exception::exceptionAbortsApplication is true, abort application instead of throw. For debug purposes to get the stacktrace.
 #define QF_EXCEPTION(msg) \
 	QF_THROW(qf::core::Exception, msg, false)
+/*
 #define QF_SQL_EXCEPTION(msg) \
 	QF_THROW(qf::core::SqlException, msg, false)
 #define QF_INTERNAL_ERROR(msg, abort)  \
 	QF_THROW(qf::core::SqlException, msg, abort)
-
+*/
 //---------------------------------------------------------------------
 class QFCORE_DECL_EXPORT Exception : public std::exception
 {

@@ -85,6 +85,21 @@ Schema {
 				Index { fields: ['status', 'lapTime', 'lapTimeMS'] }
 			]
 		},
+		Table { name: 'registrations'
+			fields: [
+				Field { name: 'id'; type: Serial {} },
+				Field { name: 'firstName'; type: String {} },
+				Field { name: 'lastName'; type: String {} },
+				Field { name: 'registration'; type: String { length: 10 } },
+				Field { name: 'clubId'; type: String { } },
+				Field { name: 'country'; type: String { } },
+				Field { name: 'siId'; type: Int { } }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true },
+				Index {fields: ['registration'] }
+			]
+		},
 		Table { name: 'etaps'
 			fields: [
 				Field { name: 'id'; type: Int {} },

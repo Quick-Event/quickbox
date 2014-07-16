@@ -20,7 +20,7 @@ public:
 	SqlQueryTableModel(QObject *parent = 0);
 public:
 	void reload() Q_DECL_OVERRIDE;
-	bool postRow(int row_no) Q_DECL_OVERRIDE;
+	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);

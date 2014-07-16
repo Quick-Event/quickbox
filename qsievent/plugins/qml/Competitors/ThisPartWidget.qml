@@ -9,6 +9,10 @@ PartWidget
 	title: "Start"
 
 	Frame {
+		TableViewToolBar {
+			id: tableViewToolBar
+			//tableView: table
+		}
 		TableView {
 			id: table
 			persistentSettingsId: "tblCompetitors";
@@ -31,7 +35,7 @@ PartWidget
 				}
 				Component.onCompleted:
 				{
-					queryBuilder.select2('runners', '*')
+					queryBuilder.select2('runners', 'id, classId, importId')
 						.select("lastName || ' ' || firstName AS name")
 						.from('runners').orderBy('id');
 				}
@@ -49,6 +53,7 @@ PartWidget
 	{
 		console.debug(title, "canActivate:", active_on);
 		if(active_on) {
+			tableViewToolBar.tableView = table;
 			reload();
 		}
 		return true;

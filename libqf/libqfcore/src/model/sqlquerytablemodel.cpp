@@ -1,5 +1,6 @@
 #include "sqlquerytablemodel.h"
 #include "../core/assert.h"
+#include "../core/exception.h"
 
 #include <QRegExp>
 #include <QSqlQuery>
@@ -36,12 +37,12 @@ void SqlQueryTableModel::reload()
 	endResetModel();
 }
 
-bool SqlQueryTableModel::postRow(int row_no)
+bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame() << row_no;
-	bool ret = false;
 
 	qfu::TableRow row = m_table.row(row_no);
+	bool ret = true;
 	if(row.isDirty()) {
 		if(row.isInsert()) {
 			qfDebug() << "\tINSERT";
@@ -173,77 +174,83 @@ bool SqlQueryTableModel::postRow(int row_no)
 			for(QString tableid : tableIds(m_table.fields())) {
 				qfDebug() << "\ttableid:" << tableid;
 				//table = conn.fullTableNameToQtDriverTableName(table);
-				{
-					QSqlRecord edit_rec;
-					int i = -1;
-					bool has_blob_field = false;
-					for(qfu::Table::Field fld : row.fields()) {
-						i++;
-						if(fld.name() != tableid)
-							continue;
-						if(!row.isDirty(i))
-							continue;
-						if(!fld.canUpdate()) {
-							qfWarning() << "field" << fld.name() << "is dirty, but it has not canUpdate flag";
-							continue;
-						}
-						QVariant v = row.value(i);
-						//qfDebug() << "\ttableid:" << tableid << "fullTableName:" << fld.fullTableName();
-						//qfDebug().noSpace() << "\tdirty field '" << fld.name() << "' type(): " << fld.type();
-						//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
-						QSqlField sqlfld(fld.shortName(), fld.type());
-						sqlfld.setValue(v);
-						if(sqlfld.type() == QVariant::ByteArray)
-							has_blob_field = true;
-						qfDebug() << "\tfield is null: " << sqlfld.isNull();
-						edit_rec.append(sqlfld);
+				QSqlRecord edit_rec;
+				int i = -1;
+				bool has_blob_field = false;
+				for(qfu::Table::Field fld : row.fields()) {
+					i++;
+					qfDebug() << "\t\tfield:" << fld.toString();
+					if(fld.tableId() != tableid)
+						continue;
+					if(!row.isDirty(i))
+						continue;
+					if(!fld.canUpdate()) {
+						qfWarning() << "field" << fld.name() << "is dirty, but it has not canUpdate flag";
+						continue;
 					}
-					if(!edit_rec.isEmpty()) {
-						qfDebug() << "updating table edits:" << tableid;
-						QString s;
-						s += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, tableid, edit_rec, has_blob_field);
-						s += " ";
-						QSqlRecord where_rec;
-						for(QString fld_name : primaryIndex(tableid)) {
-							QString full_fld_name = tableid + '.' + fld_name;
-							int fld_ix = m_table.fields().fieldIndex(full_fld_name);
-							QF_ASSERT(fld_ix >= 0,
-									  QString("Cannot find field '%1'").arg(full_fld_name),
-									  continue);
-							qfu::Table::Field fld = m_table.fields().at(fld_ix);
-							QSqlField sqlfld(fld.shortName(), fld.type());
-							sqlfld.setValue(row.origValue(fld_ix));
-							//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
-							where_rec.append(sqlfld);
-						}
-						QF_ASSERT(!where_rec.isEmpty(),
-								  QString("pri keys values not generated for table '%1'").arg(tableid),
+					QVariant v = row.value(i);
+					//qfDebug() << "\ttableid:" << tableid << "fullTableName:" << fld.fullTableName();
+					qfDebug() << "\tdirty field" << fld.name() << "type:" << fld.type() << "orig val:" << row.origValue(i).toString() << "new val:" << v.toString();
+					//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
+					QSqlField sqlfld(fld.shortName(), fld.type());
+					sqlfld.setValue(v);
+					if(sqlfld.type() == QVariant::ByteArray)
+						has_blob_field = true;
+					qfDebug() << "\tfield is null: " << sqlfld.isNull();
+					edit_rec.append(sqlfld);
+				}
+				if(!edit_rec.isEmpty()) {
+					qfDebug() << "updating table edits:" << tableid;
+					QString s;
+					s += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, tableid, edit_rec, has_blob_field);
+					s += " ";
+					QSqlRecord where_rec;
+					for(QString fld_name : primaryIndex(tableid)) {
+						QString full_fld_name = tableid + '.' + fld_name;
+						int fld_ix = m_table.fields().fieldIndex(full_fld_name);
+						QF_ASSERT(fld_ix >= 0,
+								  QString("Cannot find field '%1'").arg(full_fld_name),
 								  continue);
+						qfu::Table::Field fld = m_table.fields().at(fld_ix);
+						QSqlField sqlfld(fld.shortName(), fld.type());
+						sqlfld.setValue(row.origValue(fld_ix));
+						//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
+						where_rec.append(sqlfld);
+					}
+					QF_ASSERT(!where_rec.isEmpty(),
+							  QString("pri keys values not generated for table '%1'").arg(tableid),
+							  continue);
 
-						s += sqldrv->sqlStatement(QSqlDriver::WhereStatement, tableid, where_rec, false);
-						qfDebug() << "\t" << s;
-						QSqlQuery q(sqldb);
-						if(has_blob_field) {
-							q.prepare(s);
-							for(int i=0; i<edit_rec.count(); i++)
-								q.addBindValue(edit_rec.field(i).value());
-							q.exec();
-						}
-						else {
-							q.exec(s);
-						}
-						qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
-						int num_rows_affected = q.numRowsAffected();
-						/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
-					    /// numRowsAffected() returns 0.
-						if(num_rows_affected > 1) {
-							qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(s);
-							ret = false;
-							break;
-						}
+					s += sqldrv->sqlStatement(QSqlDriver::WhereStatement, tableid, where_rec, false);
+					qfDebug() << "save edit query:" << s;
+					QSqlQuery q(sqldb);
+					bool ok;
+					if(has_blob_field) {
+						q.prepare(s);
+						for(int i=0; i<edit_rec.count(); i++)
+							q.addBindValue(edit_rec.field(i).value());
+						ok = q.exec();
+					}
+					else {
+						ok = q.exec(s);
+					}
+					if(!ok && throw_exc) {
+						QF_EXCEPTION(q.lastError().text());
+					}
+					qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
+					int num_rows_affected = q.numRowsAffected();
+					/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
+				    /// numRowsAffected() returns 0.
+					if(num_rows_affected > 1) {
+						qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(s);
+						ret = false;
+						break;
 					}
 				}
 			}
+		}
+		if(ret) {
+			ret = Super::postRow(row_no, throw_exc);
 		}
 	}
 	return ret;
@@ -295,6 +302,7 @@ void SqlQueryTableModel::reloadTable(const QString &query_str)
 	m_table = qfu::Table(table_fields);
 	while(q.next()) {
 		qfu::TableRow &row = m_table.appendRow();
+		row.setInsert(false);
 		for(int i=0; i<fld_cnt; i++) {
 			row.setBareBoneValue(i, q.value(i));
 		}
@@ -334,7 +342,6 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 		qf::core::Utils::parseFieldName(fld.name(), &fs);
 		field_ids << fs;
 	}
-	QString table_id_from_query;
 	if(table_ids.isEmpty()) {
 		/// SQL driver doesn't support table names in returned QSqlRecord
 		/// try to guess it from select
@@ -345,8 +352,12 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 			if(ix1 > 0) {
 				ix1 += from.size();
 				int ix2 = query_str.indexOf(' ', ix1);
-				if(ix2 > 0) {
-					table_id_from_query = query_str.mid(ix1, ix2 - ix1);
+				if(ix2 > ix1) {
+					QString table_id_from_query = query_str.mid(ix1, ix2 - ix1);
+					for(int i=0; i<fld_cnt; i++) {
+						qfu::Table::Field &fld = table_fields[i];
+						fld.setName(table_id_from_query + '.' + fld.name());
+					}
 					table_ids << table_id_from_query;
 				}
 			}
@@ -368,20 +379,11 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 	}
 	for(int i=0; i<fld_cnt; i++) {
 		qfu::Table::Field &fld = table_fields[i];
-		QString fs, ts, ds;
-		qf::core::Utils::parseFieldName(fld.name(), &fs, &ts, &ds);
-		if(ts.isEmpty())
-			ts = table_id_from_query;
-		QString table_id = compose_table_id(ts, ds);
+		QString table_id = fld.tableId();
 		if(!table_id.isEmpty()) {
-			QString full_field_name = table_id + '.' + fs;
-			if(full_field_name != fld.name()) {
-				qfDebug() << "qualifying field name:" << fld.name() << "->" << full_field_name;
-				fld.setName(full_field_name);
-			}
 			fld.setCanUpdate(updateable_table_ids.contains(table_id));
 			QStringList prikey_fields = primaryIndex(table_id);
-			fld.setPriKey(prikey_fields.contains(fs));
+			fld.setPriKey(prikey_fields.contains(fld.shortName()));
 		}
 	}
 }

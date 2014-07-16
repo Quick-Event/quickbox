@@ -40,9 +40,9 @@ public:
 					Qt::Alignment alignment;
 					//QPointer<QFDlgDataTable> chooser;
 					QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
-					QVariantMap properties;
+					QVariant::Type castType;
 
-					Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false) {}
+					Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
 			};
 		private:
 			QSharedDataPointer<Data> d;
@@ -80,10 +80,8 @@ public:
 			/// for QDate see QDate::toString(...)
 			ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
-			ColumnDefinition& setCastType(QVariant::Type t) {d->properties["castType"] = (int)t; return *this;}
-			QVariant::Type castType() const {return (QVariant::Type)d->properties.value("castType", QVariant::Invalid).toInt();}
-
-			const QVariantMap& properties() const {return d->properties;}
+			ColumnDefinition& setCastType(QVariant::Type t) {d->castType = t; return *this;}
+			QVariant::Type castType() const {return d->castType;}
 	};
 	typedef QList<ColumnDefinition> ColumnList;
 
@@ -108,8 +106,8 @@ public:
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 
 	Q_SLOT virtual void reload() {}
-	Q_SLOT virtual bool postRow(int row_no) {Q_UNUSED(row_no); return true;}
-	Q_SLOT virtual void revertRow(int row_no) {Q_UNUSED(row_no);}
+	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
+	Q_SLOT virtual void revertRow(int row_no);
 
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg);
@@ -121,6 +119,8 @@ public:
 	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
 	Q_INVOKABLE virtual QVariant value(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
+
+	qf::core::utils::TableRow tableRow(int row_no);
 	//Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
 	//Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
 protected:

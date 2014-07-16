@@ -114,7 +114,7 @@ public:
 			QString name;
 			unsigned canUpdate:1, isPriKey:1;
 			Data() : type(QVariant::Invalid) {}
-			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(true), isPriKey(false) {}
+			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(false), isPriKey(false) {}
 		};
 		QSharedDataPointer<Data> d;
 
@@ -127,6 +127,9 @@ public:
 		bool isNull() const {return d == sharedNull().d;}
 
 		QString shortName() const;
+		/// [schema.]table
+		QString tableId() const;
+		QString toString() const;
 
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
@@ -347,7 +350,7 @@ public:
 	//QBitArray& nullFlagsRef() {return d->nullFlags;}
 public:
 	void saveValues();
-	void restoreValues();
+	void restoreOrigValues();
 	void clearEditFlags();
 	void clearOrigValues();
 	//! Uvede radek do ModeInsert a nastavi vsem fieldum dirty flag
@@ -375,7 +378,7 @@ public:
 	//! returns number of values in the row, Shoul be the same as \a fieldCount() .
 	int count() const {return d->values.count();}
 	bool isInsert() const {return d->flags.insert;}
-	void setInsert(bool b = true) {d->flags.insert = b;}
+	void setInsert(bool b) {d->flags.insert = b;}
 	//bool isForcedInsert() const {return d->flags.forcedInsert;}
 	/// forcedInsert se pouziva v pripadech, kdy se data zaznamu nachazi ve vice linkovanych tabulkach a behem loadData() se zjisti, ze zaznam v nekterych tabulkach chybi
 	/// viz. napr. PPKlientKartaDataFormDocument::loadData()
