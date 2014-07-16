@@ -1,5 +1,6 @@
 #include "frame.h"
-#include "gridlayoutproperties.h"
+#include "gridlayouttypeproperties.h"
+#include "boxlayouttypeproperties.h"
 #include "layoutpropertiesattached.h"
 
 #include <qf/core/log.h>
@@ -18,7 +19,7 @@ using namespace qf::qmlwidgets;
 static const int DefaultLayoutMargin = 1;
 
 Frame::Frame(QWidget *parent) :
-	Super(parent), m_layoutType(LayoutInvalid), m_gridLayoutProperties(nullptr)
+	Super(parent), m_layoutType(LayoutInvalid), m_layoutTypeProperties(nullptr)
 {
 }
 
@@ -118,9 +119,9 @@ int Frame::count() const
 	return m_childWidgets.count();
 }
 
-void Frame::setGridLayoutProperties(GridLayoutProperties *props)
+void Frame::setLayoutTypeProperties(LayoutTypeProperties *props)
 {
-	m_gridLayoutProperties = props;
+	m_layoutTypeProperties = props;
 }
 
 void Frame::addToLayout(QWidget *widget)
@@ -134,15 +135,15 @@ void Frame::addToLayout(QWidget *widget)
 	{
 		QGridLayout *ly = qobject_cast<QGridLayout*>(layout());
 		if(ly) {
-			GridLayoutProperties *props = gridLayoutProperties();
-			GridLayoutProperties::Flow flow = GridLayoutProperties::LeftToRight;
+			GridLayoutTypeProperties *props = qobject_cast<GridLayoutTypeProperties*>(layoutTypeProperties());
+			GridLayoutTypeProperties::Flow flow = GridLayoutTypeProperties::LeftToRight;
 			int cnt = -1;
 			if(!props) {
 				qfWarning() << this << "missing gridLayoutProperties property for GridLayout type";
 			}
 			else {
 				flow = props->flow();
-				cnt = (flow == GridLayoutProperties::LeftToRight)? props->columns(): props->rows();
+				cnt = (flow == GridLayoutTypeProperties::LeftToRight)? props->columns(): props->rows();
 			}
 			if(cnt <= 0)
 				cnt = 2;
@@ -152,7 +153,7 @@ void Frame::addToLayout(QWidget *widget)
 				row_span = lpa->rowSpan();
 				column_span = lpa->columnSpan();
 			}
-			if(flow == GridLayoutProperties::LeftToRight) {
+			if(flow == GridLayoutTypeProperties::LeftToRight) {
 				ly->addWidget(widget, m_currentLayoutRow, m_currentLayoutColumn, 1, column_span);
 				m_currentLayoutColumn += column_span;
 				if(m_currentLayoutColumn >= cnt) {
@@ -210,6 +211,7 @@ void Frame::createLayout(LayoutType layout_type)
 	QF_ASSERT(layout() == nullptr, "Form has layout already", return);
 	m_currentLayoutColumn = m_currentLayoutRow = 0;
 	QLayout *new_ly;
+	QBoxLayout *new_box_ly = nullptr;
 	switch(layout_type) {
 	case LayoutGrid:
 		new_ly = new QGridLayout();
@@ -218,13 +220,18 @@ void Frame::createLayout(LayoutType layout_type)
 		new_ly = new QFormLayout();
 		break;
 	case LayoutHorizontal:
-		new_ly = new QHBoxLayout();
+		new_ly = new_box_ly = new QHBoxLayout();
 		break;
 	default:
-		new_ly = new QVBoxLayout();
+		new_ly = new_box_ly = new QVBoxLayout();
 		break;
 	}
 	new_ly->setMargin(DefaultLayoutMargin);
 	//setFrameShape(QFrame::Box);
+	if(new_box_ly) {
+		BoxLayoutTypeProperties *props = qobject_cast<BoxLayoutTypeProperties*>(layoutTypeProperties());
+		if(props && props->spacing() >= 0)
+			new_box_ly->setSpacing(props->spacing());
+	}
 	setLayout(new_ly);
 }

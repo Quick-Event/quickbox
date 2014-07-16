@@ -31,7 +31,7 @@ Dialog {
 	}
 	Frame {
 		layoutType: Frame.LayoutGrid
-		gridLayoutProperties: GridLayoutProperties {
+		layoutTypeProperties: GridLayoutTypeProperties {
 			columns: 3
 		}
 		Label {

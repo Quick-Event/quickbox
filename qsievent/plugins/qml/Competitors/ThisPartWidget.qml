@@ -9,9 +9,10 @@ PartWidget
 	title: "Start"
 
 	Frame {
+		layoutTypeProperties: BoxLayoutTypeProperties { spacing: 0 }
 		TableViewToolBar {
 			id: tableViewToolBar
-			//tableView: table
+			tableView: table
 		}
 		TableView {
 			id: table
@@ -53,7 +54,7 @@ PartWidget
 	{
 		console.debug(title, "canActivate:", active_on);
 		if(active_on) {
-			tableViewToolBar.tableView = table;
+			//tableViewToolBar.tableView = table;
 			reload();
 		}
 		return true;

@@ -10,7 +10,9 @@ HEADERS += \
     $$PWD/lineedit.h \
     $$PWD/layoutpropertiesattached.h \
     $$PWD/splitter.h \
-    $$PWD/gridlayoutproperties.h \
+    $$PWD/layouttypeproperties.h \
+    $$PWD/gridlayouttypeproperties.h \
+    $$PWD/boxlayouttypeproperties.h \
     $$PWD/dialogbuttonbox.h \
     $$PWD/statusbar.h \
     $$PWD/progressbar.h \
@@ -28,7 +30,9 @@ SOURCES += \
     $$PWD/lineedit.cpp \
     $$PWD/layoutpropertiesattached.cpp \
     $$PWD/splitter.cpp \
-    $$PWD/gridlayoutproperties.cpp \
+    $$PWD/layouttypeproperties.cpp \
+    $$PWD/gridlayouttypeproperties.cpp \
+    $$PWD/boxlayouttypeproperties.cpp \
     $$PWD/dialogbuttonbox.cpp \
     $$PWD/statusbar.cpp \
     $$PWD/progressbar.cpp \
