@@ -1,6 +1,6 @@
 #include "frame.h"
-#include "gridlayouttypeproperties.h"
-#include "boxlayouttypeproperties.h"
+//#include "LayoutTypeProperties.h"
+#include "layouttypeproperties.h"
 #include "layoutpropertiesattached.h"
 
 #include <qf/core/log.h>
@@ -135,15 +135,15 @@ void Frame::addToLayout(QWidget *widget)
 	{
 		QGridLayout *ly = qobject_cast<QGridLayout*>(layout());
 		if(ly) {
-			GridLayoutTypeProperties *props = qobject_cast<GridLayoutTypeProperties*>(layoutTypeProperties());
-			GridLayoutTypeProperties::Flow flow = GridLayoutTypeProperties::LeftToRight;
+			LayoutTypeProperties *props = layoutTypeProperties();
+			LayoutTypeProperties::Flow flow = LayoutTypeProperties::LeftToRight;
 			int cnt = -1;
 			if(!props) {
 				qfWarning() << this << "missing gridLayoutProperties property for GridLayout type";
 			}
 			else {
 				flow = props->flow();
-				cnt = (flow == GridLayoutTypeProperties::LeftToRight)? props->columns(): props->rows();
+				cnt = (flow == LayoutTypeProperties::LeftToRight)? props->columns(): props->rows();
 			}
 			if(cnt <= 0)
 				cnt = 2;
@@ -153,7 +153,7 @@ void Frame::addToLayout(QWidget *widget)
 				row_span = lpa->rowSpan();
 				column_span = lpa->columnSpan();
 			}
-			if(flow == GridLayoutTypeProperties::LeftToRight) {
+			if(flow == LayoutTypeProperties::LeftToRight) {
 				ly->addWidget(widget, m_currentLayoutRow, m_currentLayoutColumn, 1, column_span);
 				m_currentLayoutColumn += column_span;
 				if(m_currentLayoutColumn >= cnt) {
@@ -229,7 +229,7 @@ void Frame::createLayout(LayoutType layout_type)
 	new_ly->setMargin(DefaultLayoutMargin);
 	//setFrameShape(QFrame::Box);
 	if(new_box_ly) {
-		BoxLayoutTypeProperties *props = qobject_cast<BoxLayoutTypeProperties*>(layoutTypeProperties());
+		LayoutTypeProperties *props = layoutTypeProperties();
 		if(props && props->spacing() >= 0)
 			new_box_ly->setSpacing(props->spacing());
 	}

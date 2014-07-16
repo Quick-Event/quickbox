@@ -19,8 +19,8 @@
 
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
 #include <qf/qmlwidgets/layouttypeproperties.h>
-#include <qf/qmlwidgets/gridlayouttypeproperties.h>
-#include <qf/qmlwidgets/boxlayouttypeproperties.h>
+//#include <qf/qmlwidgets/gridlayouttypeproperties.h>
+//#include <qf/qmlwidgets/boxlayouttypeproperties.h>
 
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/framework/pluginmanifest.h>
@@ -80,9 +80,9 @@ public:
 		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
 		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
 
-		qmlRegisterType<qf::qmlwidgets::LayoutTypeProperties>(uri, 1, 0, "LayoutTypeProperties");
-		qmlRegisterType<qf::qmlwidgets::GridLayoutTypeProperties>(uri, 1, 0, "GridLayoutTypeProperties");
-		qmlRegisterType<qf::qmlwidgets::BoxLayoutTypeProperties>(uri, 1, 0, "BoxLayoutTypeProperties");
+		qmlRegisterType<qf::qmlwidgets::LayoutTypeProperties>(uri, 1, 0, "LayoutProperties");
+//		qmlRegisterType<qf::qmlwidgets::GridLayoutTypeProperties>(uri, 1, 0, "GridLayoutTypeProperties");
+//		qmlRegisterType<qf::qmlwidgets::BoxLayoutTypeProperties>(uri, 1, 0, "BoxLayoutTypeProperties");
 
 		qmlRegisterType<qf::qmlwidgets::dialogs::Dialog>(uri, 1, 0, "Dialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::InputDialog>(uri, 1, 0, "InputDialog");

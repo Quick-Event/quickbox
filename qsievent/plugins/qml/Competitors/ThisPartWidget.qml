@@ -9,7 +9,7 @@ PartWidget
 	title: "Start"
 
 	Frame {
-		layoutTypeProperties: BoxLayoutTypeProperties { spacing: 0 }
+		layoutProperties: LayoutProperties { spacing: 0 }
 		TableViewToolBar {
 			id: tableViewToolBar
 			tableView: table

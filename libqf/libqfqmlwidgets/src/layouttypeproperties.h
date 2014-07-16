@@ -16,10 +16,33 @@ namespace qmlwidgets {
 class QFQMLWIDGETS_DECL_EXPORT LayoutTypeProperties : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY(int spacing READ spacing WRITE setSpacing NOTIFY spacingChanged)
+	Q_PROPERTY(int columns READ columns WRITE setColumns NOTIFY columnsChanged)
+	Q_PROPERTY(int rows READ rows WRITE setRows NOTIFY rowsChanged)
 private:
 	typedef QObject Super;
 public:
+	enum Flow {LeftToRight, TopToBottom};
+public:
 	explicit LayoutTypeProperties(QObject *parent = 0);
+public:
+	int rows() {return m_rows;}
+	void setRows(int n);
+	Q_SIGNAL void rowsChanged(int n);
+
+	int columns() {return m_columns;}
+	void setColumns(int n);
+	Q_SIGNAL void columnsChanged(int n);
+
+	int spacing() {return m_spacing;}
+	void setSpacing(int n);
+	Q_SIGNAL void spacingChanged(int n);
+
+	Flow flow();
+private:
+	int m_columns;
+	int m_rows;
+	int m_spacing;
 };
 
 }}

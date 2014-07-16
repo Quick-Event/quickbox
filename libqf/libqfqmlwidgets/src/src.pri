@@ -11,8 +11,8 @@ HEADERS += \
     $$PWD/layoutpropertiesattached.h \
     $$PWD/splitter.h \
     $$PWD/layouttypeproperties.h \
-    $$PWD/gridlayouttypeproperties.h \
-    $$PWD/boxlayouttypeproperties.h \
+#    $$PWD/gridlayouttypeproperties.h \
+#    $$PWD/boxlayouttypeproperties.h \
     $$PWD/dialogbuttonbox.h \
     $$PWD/statusbar.h \
     $$PWD/progressbar.h \
@@ -31,8 +31,8 @@ SOURCES += \
     $$PWD/layoutpropertiesattached.cpp \
     $$PWD/splitter.cpp \
     $$PWD/layouttypeproperties.cpp \
-    $$PWD/gridlayouttypeproperties.cpp \
-    $$PWD/boxlayouttypeproperties.cpp \
+    #$$PWD/gridlayouttypeproperties.cpp \
+#    $$PWD/boxlayouttypeproperties.cpp \
     $$PWD/dialogbuttonbox.cpp \
     $$PWD/statusbar.cpp \
     $$PWD/progressbar.cpp \

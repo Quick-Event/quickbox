@@ -20,7 +20,7 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_ENUMS(LayoutType)
-	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties* layoutTypeProperties READ layoutTypeProperties WRITE setLayoutTypeProperties)
+	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties* layoutProperties READ layoutTypeProperties WRITE setLayoutTypeProperties)
 private:
 	typedef QFrame Super;
 public:
