@@ -42,7 +42,6 @@ Schema {
 				Field { name: 'licence'; type: String { length: 1 } },
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },
-				Field { name: 'offRace'; type: Boolean { } },
 				Field { name: 'siId'; type: Int { } },
 				Field { name: 'relayId'; type: Int { } },
 				Field { name: 'leg'; type: Int { } },
@@ -71,11 +70,23 @@ Schema {
 				Field { name: 'lapTimeMS'; type: Int {}
 					comment: 'in miliseconds'
 				},
+				Field { name: 'offRace'; type: Boolean { }
+					defaultValue: 0;
+					notNull: true
+				},
+				Field { name: 'disqualified'; type: Boolean { }
+					defaultValue: 0;
+					notNull: true
+				},
+				Field { name: 'cardError'; type: Boolean { }
+					defaultValue: 0;
+					notNull: true
+				},
 				Field { name: 'status';
 					type: Enum { name: 'enum_lap_status';
-						keys: ['NOT_RUN', 'OK', 'DISK']
+						keys: ['OFF', 'START', 'FINISH']
 					}
-					defaultValue: 'NOT_RUN'; notNull: true
+					defaultValue: 'OFF'; notNull: true
 				}
 			]
 			indexes: [
