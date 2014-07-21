@@ -6,7 +6,7 @@ PartWidget
 {
 	id: root
 
-	title: "Start"
+	title: "Coompetitors"
 
 	Frame {
 		layoutProperties: LayoutProperties { spacing: 0 }
