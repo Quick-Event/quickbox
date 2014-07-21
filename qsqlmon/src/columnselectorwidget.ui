@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ColumnSelectorWidget</class>
+ <widget class="QWidget" name="ColumnSelectorWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>357</width>
+    <height>361</height>
+   </rect>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout_2">
+   <item>
+    <widget class="QListWidget" name="lstFields">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::MultiSelection</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="btAll">
+        <property name="text">
+         <string>&amp;All</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btInvert">
+        <property name="text">
+         <string>&amp;Invert</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkIncludeTableNames">
+        <property name="text">
+         <string>in&amp;clude
+table names</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkIncludeSelect">
+        <property name="text">
+         <string>inc&amp;lude
+SELECT ...</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>column separator</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edColumnSeparator">
+        <property name="text">
+         <string>, </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btPasteSelectedColumns">
+        <property name="toolTip">
+         <string>Paste column names</string>
+        </property>
+        <property name="text">
+         <string>&amp;Paste</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../mnt/sda8/fanda2/qt/libqf/libqfgui/libqfgui.qrc">
+          <normaloff>:/libqfgui/images/import.png</normaloff>:/libqfgui/images/import.png</iconset>
+        </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
+        <property name="default">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="1" margin="3"/>
+ <resources>
+  <include location="../../../../mnt/sda8/fanda2/qt/libqf/libqfgui/libqfgui.qrc"/>
+ </resources>
+ <connections/>
+</ui>

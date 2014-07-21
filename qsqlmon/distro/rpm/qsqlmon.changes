@@ -1,0 +1,13 @@
+-------------------------------------------------------------------
+Tue Mar  6 07:08:25 UTC 2012 - mhrusecky@suse.cz
+
+- Imported into buildservice using source services, previous
+  changelog as follows:
+
+  * Sun Mar 4 2012 Michal Hrusecky <mhrusecky@suse.cz>
+    - Various cleanups
+  * Sat May 8 2010 Radu Fiser <radu.fiser@gmail.com>
+    - File modified after discussions with Frantisek Vacek
+  * Wed Apr 14 2010 Radu Fiser <radu.fiser@gmail.com>
+    - Created the file
+

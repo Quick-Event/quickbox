@@ -1,0 +1,7 @@
+pre {
+	border-style: dashed;
+	border-color: silver;
+	border-width: 2px;
+	background-color: aliceblue;
+	padding: 2mm;
+}

@@ -1,0 +1,28 @@
+
+With the help of qsqlmon.spec you can build rpm packages for any distribution of Fedora,
+openSUSE, centOS and Red Hat for any architecture 32bit or 64bit. 
+
+**********BUILDING THE RPM FOR FEDORA*************
+
+1.In a directory in your home directory—say, $HOME/qsqlmon—create five subdirectories:
+
+    * BUILD. BUILD is used as scratch space to actually compile the software.
+    * RPMS. RPMS contains the binary RPM that rpmbuild builds.
+    * SOURCES. SOURCES is for source code.
+    * SPECS. SPECS contains your spec file or files—one spec file per RPM you want to build.
+    * SRPMS. SRPMS contains the source RPM built during the process.
+
+2.Edit the qsqlmon.spec file. 
+Change first line:
+%define projdir  /home/radu/Documents/university/osp/qsqlmon/qsqlmon
+to point to where the sources of qsqlmon are
+
+3.To build it the rpm, use 'rpmbuild' utility 
+$rpmbuild -v -bb --clean SPECS/qsqlmon.spec
+
+4. You will find the rpm in your user directory in 'rpmbuild' directory
+For example: /home/radu/rpmbuild/RPMS
+
+
+
+

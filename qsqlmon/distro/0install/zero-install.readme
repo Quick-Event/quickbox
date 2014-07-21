@@ -1,0 +1,9 @@
+Zero-Install (http://0install.net/) users can use this link
+http://download.welloffice.cz/qsqlmon/qsqlmon.xml
+
+To install ZeroInstall visit http://0install.net/install-linux.html
+Debian users: sudo apt-get install zeroinstall-injector
+
+To launch qsqlmon use:
+0launch http://download.welloffice.cz/qsqlmon/qsqlmon.xml
+

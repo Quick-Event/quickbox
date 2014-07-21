@@ -1,0 +1,67 @@
+request type is HTTP PUT with json content
+
+CLIENT REQUEST
+
+there are only 3 types of requests:
+ 
+=========================================================
+{open:{host:TEXT, port:TEXT, user:TEXT, password:TEXT, database:TEXT}}
+
+all enries are not mandatory, they can be filled directly in server side script
+ 
+=========================================================
+{query:SQL_TEXT}
+ 
+=========================================================
+{close:0}
+close value can be any
+ 
+SERVER RESPONSE
+
+Server returns a plain JSON text. 
+If query is not a SELECT resultset is missing.
+The field type atributte is the same like the QVariant::typeToName() function returns.
+ 
+{resultset:{
+	fields:[{name:TEXT, type:TEXT}, {name:TEXT, type:TEXT}, ...],
+	rows:[
+		[value11, value12, ..., value1n],
+		...
+		[valuem1, valuem2, ..., valuemn]
+ 
+	]
+	}
+numRowsAffected:INT,
+lastInsertId:INT
+}
+ 
+in case of error server returns
+ 
+{exception:{errmsg:TEXT}}
+ 
+EXAMPLE
+ 
+query:
+ 
+{query:"SELECT id FROM patients WHERE
+(patients.patientHospitalId='55568')"}
+ 
+response:
+ 
+{resultset:{
+	fields: [
+		{"name":"injectis.kontakty.id","type":"uint"},
+		{"name":"injectis.kontakty.jmeno","type":"QString"},
+		{"name":"injectis.kontakty.prijmeni","type":"QString"},
+		{"name":"injectis.kontakty.titul","type":"QString"},
+		{"name":"injectis.patients.id","type":"int"},
+		{"name":"injectis.patients.prijatDne","type":"QDate"},
+		{"name":"injectis.patients.patientHospitalId","type":"QString"},
+		{"name":"injectis.patients.kontaktId","type":"int"}
+	],
+	rows:[
+		[12,"Honza","","",16,"@Date()","55568",11],
+		[13,"Ferda","","",16,"@Date()","55568",11],
+		[14,"Jenda","","",16,"@Date()","55568",11]
+	]
+}

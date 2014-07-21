@@ -1,0 +1,16 @@
+This file contains description and solutions that someone 
+may encounter while building the qsqlmon
+
+1)if you have an error regarging qsqlcachedresult_p.h
+most probably this is because in  /usr/include/qt4/QtSql(it can be different on different distos)
+you don't have the  'private' folder that contains
+qsqlcachedresult_p.h
+
+ Solution:
+a) you can build qt-sdk from sources that will install and the 'private'
+folder
+b) Download qt-sqk from ftp.qt.nokia.com. Install it.
+Then copy <qt_sdk_install_folder>/qt/include/QSql/private to /usr/include/qt4/QtSql
+
+2) On new linux distribution 'mysqlclient' variable has a different name: 'mysqlpp'. If you'll encounter some problem regarding that system cannot
+find mysqlclient change it to 'mysqlpp' in the file 'qfmysql.pri'

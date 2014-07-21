@@ -1,0 +1,197 @@
+<html>
+<head>
+	<style type="text/css">
+	pre {
+		border-style: dashed;
+		border-color: silver;
+		border-width: 2px;
+		background-color: aliceblue;
+		padding: 2mm;
+	}
+	</style>
+</head>
+<body>
+<h2>Some SQL commands</h2>
+<a href="#grant">GRANT</a>
+<p>
+	<a name="grant">GRANT</a>
+	<pre>
+GRANT priv_type [(column_list)] [, priv_type [(column_list)]] ...
+ON [object_type] {tbl_name | * | *.* | db_name.*}
+TO user [IDENTIFIED BY [PASSWORD] 'password']
+	[, user [IDENTIFIED BY [PASSWORD] 'password']] ...
+[REQUIRE
+	NONE |
+	[{SSL| X509}]
+	[CIPHER 'cipher' [AND]]
+	[ISSUER 'issuer' [AND]]
+	[SUBJECT 'subject']]
+[WITH with_option [with_option] ...]
+
+object_type =
+TABLE
+| FUNCTION
+| PROCEDURE
+
+with_option =
+GRANT OPTION
+| MAX_QUERIES_PER_HOUR count
+| MAX_UPDATES_PER_HOUR count
+| MAX_CONNECTIONS_PER_HOUR count
+| MAX_USER_CONNECTIONS count
+	</pre>
+	<table border="1" cellspacing="0">
+	<tr>
+	<td><span class="bold"><strong>Privilege</strong></span></td>
+	<td><span class="bold"><strong>Meaning</strong></span></td>
+	</tr>
+	<tr>
+	<td><code class="literal">ALL [PRIVILEGES]</code></td>
+	<td>Sets all simple privileges except <code class="literal">GRANT OPTION</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">ALTER</code></td>
+	<td>Enables use of <code class="literal">ALTER TABLE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">ALTER ROUTINE</code></td>
+	<td>Enables stored routines to be altered or dropped</td>
+	</tr>
+	<tr>
+	<td><code class="literal">CREATE</code></td>
+	<td>Enables use of <code class="literal">CREATE TABLE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">CREATE ROUTINE</code></td>
+	<td>Enables creation of stored routines</td>
+	</tr>
+	<tr>
+	<td><code class="literal">CREATE TEMPORARY TABLES</code></td>
+	<td>Enables use of <code class="literal">CREATE TEMPORARY TABLE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">CREATE USER</code></td>
+	<td>Enables use of <code class="literal">CREATE USER</code>, <code class="literal">DROP
+			USER</code>, <code class="literal">RENAME USER</code>, and
+			<code class="literal">REVOKE ALL PRIVILEGES</code>.</td>
+	</tr>
+	<tr>
+	<td><code class="literal">CREATE VIEW</code></td>
+	<td>Enables use of <code class="literal">CREATE VIEW</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">DELETE</code></td>
+	<td>Enables use of <code class="literal">DELETE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">DROP</code></td>
+	<td>Enables use of <code class="literal">DROP TABLE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">EXECUTE</code></td>
+	<td>Enables the user to run stored routines</td>
+	</tr>
+	<tr>
+	<td><code class="literal">FILE</code></td>
+	<td>Enables use of <code class="literal">SELECT ... INTO OUTFILE</code> and
+			<code class="literal">LOAD DATA INFILE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">INDEX</code></td>
+	<td>Enables use of <code class="literal">CREATE INDEX</code> and <code class="literal">DROP
+			INDEX</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">INSERT</code></td>
+	<td>Enables use of <code class="literal">INSERT</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">LOCK TABLES</code></td>
+	<td>Enables use of <code class="literal">LOCK TABLES</code> on tables for which you
+			have the <code class="literal">SELECT</code> privilege</td>
+	</tr>
+	<tr>
+	<td><code class="literal">PROCESS</code></td>
+	<td>Enables the user to see all processes with <code class="literal">SHOW
+			PROCESSLIST</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">REFERENCES</code></td>
+	<td>Not implemented</td>
+	</tr>
+	<tr>
+	<td><code class="literal">RELOAD</code></td>
+	<td>Enables use of <code class="literal">FLUSH</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">REPLICATION CLIENT</code></td>
+	<td>Enables the user to ask where slave or master servers are</td>
+	</tr>
+	<tr>
+	<td><code class="literal">REPLICATION SLAVE</code></td>
+	<td>Needed for replication slaves (to read binary log events from the
+			master)</td>
+	</tr>
+	<tr>
+	<td><code class="literal">SELECT</code></td>
+	<td>Enables use of <code class="literal">SELECT</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">SHOW DATABASES</code></td>
+	<td>
+	<code class="literal">SHOW DATABASES</code> shows all databases</td>
+	</tr>
+	<tr>
+	<td><code class="literal">SHOW VIEW</code></td>
+	<td>Enables use of <code class="literal">SHOW CREATE VIEW</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">SHUTDOWN</code></td>
+	<td>Enables use of <span><strong class="command">mysqladmin shutdown</strong></span>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">SUPER</code></td>
+	<td>Enables use of <code class="literal">CHANGE MASTER</code>,
+			<code class="literal">KILL</code>, <code class="literal">PURGE MASTER
+			LOGS</code>, and <code class="literal">SET GLOBAL</code>
+			statements, the <span><strong class="command">mysqladmin debug</strong></span>
+			command; allows you to connect (once) even if
+			<code class="literal">max_connections</code> is reached</td>
+	</tr>
+	<tr>
+	<td><code class="literal">UPDATE</code></td>
+	<td>Enables use of <code class="literal">UPDATE</code>
+	</td>
+	</tr>
+	<tr>
+	<td><code class="literal">USAGE</code></td>
+	<td>Synonym for 'no privileges'</td>
+	</tr>
+	<tr>
+	<td><code class="literal">GRANT OPTION</code></td>
+	<td>Enables privileges to be granted</td>
+	</tr>
+	</table>
+
+	<h3>Examples:</h3>
+	<pre>GRANT ALL ON *.* TO 'someuser'@'somehost' IDENTIFIED BY 'goodpassword';</pre>
+	If you do not want to send the password in clear text and you know the hashed value that PASSWORD().
+	<pre>GRANT ALL ON *.* TO 'someuser'@'somehost' IDENTIFIED BY PASSWORD '*6C8989366EAF75BB670AD8EA7A7FC1176A95CEF4';	</pre>
+</p>
+</body>
+</html>

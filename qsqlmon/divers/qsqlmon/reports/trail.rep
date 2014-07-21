@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='utf-8'?>
+<report w="210" headeronbreak="1" h="297">
+ <stylesheet>
+  <colors>
+   <color definition="#000" name="black"/>
+   <color definition="#CDCDCD" name="gray20"/>
+   <color definition="#DCDCDC" name="gray10"/>
+   <color definition="#FFFFFF" name="white"/>
+   <color definition="#444444" name="header"/>
+   <color definition="RGB(255,244,148)" name="honey"/>
+   <color definition="RGB(255,223,83)" name="peach"/>
+   <color definition="#EEEEEE" name="waterprint"/>
+   <color definition="lightcoral" name="errorfill"/>
+  </colors>
+  <pens>
+   <pen size="1" name="black1"/>
+   <pen size="2" name="black2" basedon="black1"/>
+   <pen name="blue1" basedon="black1" color="blue"/>
+   <pen name="white1" basedon="black1" color="white"/>
+   <pen size="2" name="blue2" basedon="blue1"/>
+   <pen size="0.5" style="1,4" cap="round" name="blackdot05" basedon="black1"/>
+   <pen style="dot" cap="round" name="blackdot1" basedon="black1"/>
+   <pen style="dash" cap="flat" name="blackdash1" basedon="black1"/>
+   <pen name="bluedash1" basedon="blackdash1" color="blue"/>
+   <pen size="0.5" name="blackdash05" basedon="blackdash1"/>
+   <pen size="0.5" name="header" basedon="black1" color="header"/>
+   <pen size="0.5" name="graphaxis" basedon="black1"/>
+   <pen name="graphaxes" basedon="graphaxis"/>
+   <pen style="dash" name="graphgrid" basedon="graphaxis"/>
+  </pens>
+  <brushes>
+   <brush name="error" color="errorfill"/>
+   <brush name="white" color="white"/>
+   <brush name="gray20" color="gray20"/>
+   <brush name="peach" color="#FFF4BD"/>
+   <brush name="waterprint" color="waterprint"/>
+   <brush name="shadow" color="gray10"/>
+   <brush name="tblshadow" basedon="shadow"/>
+  </brushes>
+  <fonts>
+   <!--		<font name="sans" family="Nimbus Sans L" size="9"/>-->
+   <font size="9" family="Arial" name="sans"/>
+   <font weight="bold" name="sansB" basedon="sans"/>
+   <font size="+2" name="sansL" basedon="sans"/>
+   <font weight="bold" name="sansLB" basedon="sansL"/>
+   <font size="+2" name="sansXL" basedon="sansL"/>
+   <font size="+8" name="sansXXL" basedon="sansXL"/>
+   <font size="-1" name="sansS" basedon="sans"/>
+   <font style="italic" name="sansSI" basedon="sansS"/>
+   <font weight="bold" name="sansSB" basedon="sansS"/>
+   <font size="9" family="bitstream vera sans mono" name="monospace"/>
+   <font family="serif" name="serif" basedon="sans"/>
+   <font name="tbltext" basedon="sans"/>
+   <font weight="bold" name="tbltextB" basedon="tbltext"/>
+   <font name="tblhead" basedon="tbltextB"/>
+   <font size="+9" name="tblbig" basedon="sansL"/>
+   <font weight="bold" name="tblbigB" basedon="tblbig"/>
+   <font size="-1" name="header" basedon="sans"/>
+   <font name="note" basedon="sansS"/>
+   <font size="40" weight="bold" name="H1" basedon="sans"/>
+   <font weight="bold" name="H2" basedon="sansXL"/>
+   <font weight="bold" name="H3" basedon="sansL"/>
+  </fonts>
+  <styles>
+   <style name="default" font="sans"/>
+   <style pen="header" name="header" font="header"/>
+   <style pen="color: black" name="H1" font="H1"/>
+   <style name="H2" font="H2"/>
+   <style pen="color: black" name="H3" font="H3"/>
+   <style name="reportheading" basedon="H1"/>
+   <style name="graphheading" basedon="H2"/>
+   <style name="tbltext" font="tbltext"/>
+   <style name="tbltextB" font="tbltextB"/>
+   <style pen="color: maroon" name="tblhead" font="tblhead"/>
+   <style name="tblheading" basedon="tblhead"/>
+   <style pen="color: maroon" name="tbllabel" font="tbltext; size:-1"/>
+   <style pen="color: maroon" name="tblcolname" font="tbltext"/>
+   <style pen="color: maroon" name="label" font="tbltext"/>
+   <style pen="color:darkslategray" name="note" font="note"/>
+  </styles>
+ </stylesheet>
+ <templates>
+  <!--      <include src="defaulttemplates.inc.xml"/>-->
+ </templates>
+ <body y1="20" x1="10" y2="275" x2="200">
+  <band w="%" datatablename="data">
+   <detail w="%" layout="vertical">
+    <space h="170"/>
+    <row w="%" keepall="1" layout="vertical">
+     <para w="%" style="font:{size:20}" halign="center">za\s\s\s\s\s\s. místo v kategorii A-open</para>
+     <space h="5"/>
+     <para w="%" style="font:{size:20}" halign="center">ČP TRAIL-O Luže 2012</para>
+     <space h="17"/>
+     <space h="30"/>
+     <row keepall="1" layout="horizontal">
+      <space w="%"/>
+      <para w="60" tbrd="blackdot05" style="font:{size:12}" halign="center">Ředitel závodu</para>
+      <space w="20"/>
+     </row>
+    </row>
+   </detail>
+  </band>
+ </body>
+ <keyvals>
+  <keyval key="_withframes">0</keyval>
+  <keyval key="_withkeepframes">0</keyval>
+  <keyval key="title">Zakázky s termínem ukončení výroby bez termínu montáže</keyval>
+ </keyvals>
+</report>

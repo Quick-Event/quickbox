@@ -1,0 +1,32 @@
+*********** How to build deb packages **********
+
+	Firstly this describes the easiest way how to build an deb package
+and if i'm not mistaking it just works for ubuntu distributions
+
+	In the same directory as this file you'll find
+folder /qsqlmon
+It has the folowing structure:
+
+└── DEBIAN
+    ├── control
+    └── postinst
+└── usr
+    ├── bin
+    ├── lib
+    └── share
+	In 'control' file is basically a descriptor for the package.
+Here you declare its name, dependecies and so on.
+'postinst' file is a not a mandatory one and  as its name suggests
+you declare here scripts to be executed after installation of you package
+
+	Under DEBIAN folder you create a so called 'fake root', which contains folders and files exactly how you want them to be installed on the 
+file system.
+
+	To create the deb package use:
+	dpkg -b <project_folder> pakage_name.deb
+
+for example:
+	dpkg -b qsqlmon/ qsqlmon-1.3.0.ubuntu-10.0.4.i386.deb
+
+
+

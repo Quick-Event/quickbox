@@ -5,6 +5,7 @@ SUBDIRS += \
 	libqf \
 	plugins \
 	libsiut \
+    qsqlmon \
     #qsicli \
 	qsievent \
 

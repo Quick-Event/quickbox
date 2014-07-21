@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet type='text/xsl' href='interface.xsl'?>
+<interface uri="http://download.welloffice.cz/qsqlmon/qsqlmon.xml" xmlns="http://zero-install.sourceforge.net/2004/injector/interface">
+  <name>qsqlmon</name>
+  <summary>Qt SQL monitor</summary>
+  <description>
+Qt4 Gui tool for SQL server administration and tables management. Currently
+supported servers are PostgreSQL, MySQL, Sqlite and FireBird.</description>
+  <homepage>http://sourceforge.net/projects/qsqlmon/</homepage>
+  <category>Utility</category>
+  <icon href="http://download.welloffice.cz/qsqlmon/qsqlmon48x48.png" type="image/png"/>
+  <implementation arch="Linux-x86_64" id="sha1new=880ad15c512c78d5bee29d184312927687591b70" license="GPL" main="bin/qsqlmon" released="2011-06-26" stability="stable" version="1.3.4">
+    <archive href="http://download.welloffice.cz/qsqlmon/qsqlmon-1.3.4-linux-x86_64.tar.gz" size="3671408" type="application/x-compressed-tar"/>
+  </implementation>
+  <implementation arch="Linux-i686" id="sha1new=ad20b42e6d9d8025b10d2770db7a8e3e909a0895" license="GPL" main="bin/qsqlmon" released="2011-06-26" stability="stable" version="1.3.4">
+    <archive href="http://download.welloffice.cz/qsqlmon/qsqlmon-1.3.4-linux-x86_32.tar.gz" size="10005058" type="application/x-compressed-tar"/>
+  </implementation>
+</interface>
+<!-- Base64 Signature
+iQEcBAABAgAGBQJOBy4RAAoJEFa1Jn1ZYK1H7jMH+gJ6G4VZrxAlH5DT5PBsa50oc+aMbkgiCQBB
+WHO4QuOoy7yo9Pre+i8WdpfuSnHeiVFXjwkOC4HI4IUV2oy4ctD1LnBQ4LCDlnSFSXtAbzP0Ox7e
+rKxMZ8RShUQXgwpJ+elMFbCIJ2kH/OfFONNBQ+kWTQESTd1yABOpDvpqjLCbwRVKFQTqM4pbGYbb
+foSgNcA1/qZCUkBaUNfGEXNpbmu7nenK2gZlrkcyVt0t+css05+9CVr1L3Ctr4OZWXShRFQTI5K+
+ReGSOF5Njxg2Q7NUKG0NHxXnrELG/3W3HSXpGB8p5M9BzA2vbD2gohtE9F2ioKECo5wBpDW0v16S
+/oA=
+
+-->
