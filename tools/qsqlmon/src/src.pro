@@ -5,7 +5,7 @@ CONFIG += C++11
 
 TEMPLATE = app
 
-DESTDIR = $$OUT_PWD/../../bin
+DESTDIR = $$OUT_PWD/../../../bin
 TARGET = qsqlmon
 
 LIBS +=      \
@@ -13,18 +13,18 @@ LIBS +=      \
 	-lqfqmlwidgets  \
 
 win32: LIBS +=  \
-	-L../../bin  \
+	-L../../../bin  \
 
-include ($$PWD/../../crosscompile-support.pri)
+include ($$PWD/../../../crosscompile-support.pri)
 
 DOLAR=$
 
 unix: LIBS +=  \
-	-L../../lib  \
+	-L../../../lib  \
 	-Wl,-rpath,\'$${DOLAR}$${DOLAR}ORIGIN/../lib\'  \
 
-INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
-INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
+INCLUDEPATH += $$PWD/../../../libqf/libqfcore/include
+INCLUDEPATH += $$PWD/../../../libqf/libqfqmlwidgets/include
 
 include($$PWD/src.pri)
 

@@ -4,9 +4,9 @@
 
 #include "sqltextedit.h"
 
-#include <qf.h>
-#include <qfstring.h>
-#include <qfsqlsyntaxhighlighter.h>
+//#include <qf.h>
+//#include <qfstring.h>
+#include "qfsqlsyntaxhighlighter.h"
 
 #include <QKeyEvent>
 #include <QTextCursor>
@@ -14,7 +14,7 @@
 #include <QScrollBar>
 #include <QStringListModel>
 
-#include <qflogcust.h>
+#include <qf/core/log.h>
 
 //=============================================================
 //                                             SqlTextEditCompleter
@@ -30,14 +30,14 @@ QString SqlTextEditCompleter::pathFromIndex(const QModelIndex &index) const
 		ix = ix.parent();
 	}
 	QString ret = sl.join(".");
-	qfTrash() << QF_FUNC_NAME << ret;
+	qfDebug() << Q_FUNC_INFO << ret;
 	return ret;
 }
 
 QStringList SqlTextEditCompleter::splitPath(const QString &path) const
 {
 	QStringList ret = path.split('.');
-	qfTrash() << QF_FUNC_NAME << ret.join(".");
+	qfDebug() << Q_FUNC_INFO << ret.join(".");
 	return ret;
 }
 
@@ -83,22 +83,22 @@ void SqlTextEdit::slotTextChanged()
 	static QFString orig_word;
 	QTextCursor c = textCursor();
 	/*
-	qfTrash() << "\t text cursor pos:" << c.position() << "is NULL:" << c.isNull();
+	qfDebug() << "\t text cursor pos:" << c.position() << "is NULL:" << c.isNull();
 	{
 		QTextDocument *doc = document();
-		qfTrash() << "\t doc:" << doc << "block count:" << doc->blockCount() << "line count:" << doc->lineCount();
+		qfDebug() << "\t doc:" << doc << "block count:" << doc->blockCount() << "line count:" << doc->lineCount();
 	}
 	*/
 	int curs_pos = c.position();
 	//c.movePosition(QTextCursor::Left);
 	c.movePosition(QTextCursor::StartOfWord);
-	qfTrash() << "\t start word pos:" << c.position();
+	qfDebug() << "\t start word pos:" << c.position();
 	c.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-	qfTrash() << "\t end word pos:" << c.position();
+	qfDebug() << "\t end word pos:" << c.position();
 	if(c.position() == curs_pos) {
 		/// men klicova slova na uppercase jen pri psani, ne pri editaci
 		QFString word = c.selectedText();
-		qfTrash().noSpace() << "\t '" << word << "'";
+		qfDebug().noSpace() << "\t '" << word << "'";
 		if(!word.isEmpty()) {
 			QFString upword = word.toUpper();
 			if(QFSqlSyntaxHighlighter::keyWords().contains(upword)) {
@@ -110,13 +110,13 @@ void SqlTextEdit::slotTextChanged()
 			}
 			else {
 				if(!!orig_word && upword.startsWith(orig_word.toUpper())) {
-					//qfTrash().noSpace() << "\torig: '" << orig_word << "'";
+					//qfDebug().noSpace() << "\torig: '" << orig_word << "'";
 					word = orig_word + word.slice(orig_word.len());
-					//qfTrash().noSpace() << "\tnew: '" << word << "'";
-					//qfTrash() << "\tDELETE";
+					//qfDebug().noSpace() << "\tnew: '" << word << "'";
+					//qfDebug() << "\tDELETE";
 					orig_word = QString();
 					c.removeSelectedText();
-					//qfTrash() << "\tINSERT";
+					//qfDebug() << "\tINSERT";
 					c.insertText(word);
 				}
 			}
@@ -161,7 +161,7 @@ void SqlTextEdit::setCompleter(QCompleter *c)
 	while(true) {
 		tc.select(QTextCursor::WordUnderCursor);
 		QString s = tc.selectedText();
-		qfTrash() << "\tselection start: " << tc.selectionStart() << "end:" << tc.selectionEnd();
+		qfDebug() << "\tselection start: " << tc.selectionStart() << "end:" << tc.selectionEnd();
 		if(tc.selectionEnd() < pos) {
 			/// kdyz selekce slova konci pred mistem, kde byl kurzor, znamena to, ze slovo koncilo tyeckou a kurzor byl tesne za ni.
 			/// tak tecku pridame.
@@ -170,17 +170,17 @@ void SqlTextEdit::setCompleter(QCompleter *c)
 		}
 		tc.setPosition(tc.selectionStart());
 		tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-		qfTrash().noSpace() << "\tselected: '" << s << "'";
-		qfTrash().noSpace() << "\tdot: '" << tc.selectedText() << "'";
+		qfDebug().noSpace() << "\tselected: '" << s << "'";
+		qfDebug().noSpace() << "\tdot: '" << tc.selectedText() << "'";
 		if(tc.selectedText() != ".") {
 			if(!s.isEmpty()) sl.prepend(s);
 			break;
 		}
-		qfTrash().noSpace() << "\tprepending: '" << s << "'";
+		qfDebug().noSpace() << "\tprepending: '" << s << "'";
 		sl.prepend(s);
 	}
 	QString ret = sl.join(".").replace("..", ".");
-	qfTrash() << "\tret:" << ret;
+	qfDebug() << "\tret:" << ret;
 	return ret;
 }
 
@@ -219,22 +219,22 @@ void SqlTextEdit::setCompleter(QCompleter *c)
 	static QString eow("~!@#$%^&*()_+{}|:\"<>?,/;'[]\\-="); /// end of word
 	bool has_modifier = (e->modifiers() != Qt::NoModifier) && !ctrl_or_shift;
 	QString completion_prefix = textUnderCursor();
-	qfTrash() << "completition prefix:" << completion_prefix;
+	qfDebug() << "completition prefix:" << completion_prefix;
 	if (!is_shortcut && (has_modifier || e->text().isEmpty()|| completion_prefix.length() < 3 || eow.contains(e->text().right(1)))) {
 		f_completer->popup()->hide();
 		return;
 	}
 
-	qfTrash() << "completer completition prefix:" << f_completer->completionPrefix();
+	qfDebug() << "completer completition prefix:" << f_completer->completionPrefix();
 	if (completion_prefix != f_completer->completionPrefix()) {
 		f_completer->setCompletionPrefix(completion_prefix);
 		f_completer->popup()->setCurrentIndex(f_completer->completionModel()->index(0, 0));
 	}
-	qfTrash() << "completer new completition prefix:" << f_completer->completionPrefix();
+	qfDebug() << "completer new completition prefix:" << f_completer->completionPrefix();
 	QRect cr = cursorRect();
 	cr.setWidth(f_completer->popup()->sizeHintForColumn(0) + f_completer->popup()->verticalScrollBar()->sizeHint().width());
-	qfTrash() << "popup it up!" << f_completer->model()->rowCount();
-	qfTrash() << "popup it up!" << f_completer->completionModel()->rowCount();
+	qfDebug() << "popup it up!" << f_completer->model()->rowCount();
+	qfDebug() << "popup it up!" << f_completer->completionModel()->rowCount();
 	f_completer->complete(cr); /// pop it up!
 }
 

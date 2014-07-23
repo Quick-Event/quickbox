@@ -73,15 +73,13 @@ QVariant ServerTreeModel::headerData(int section, Qt::Orientation o, int role) c
 	return ret;
 }
 
-void ServerTreeModel::load(const QVariantMap& el)
+void ServerTreeModel::load(const QVariantMap& params)
 {
 	init();
-	servers = el;
-	QDomNodeList lst = servers.elementsByTagName("connection");
-	for(int i=0; i<lst.count(); i++) {
-		QDomElement el = lst.item(i).toElement();
-		//Connection *c = 
-		new Connection(el, rootObj);
+	m_connections = params.value("connections").toList();
+	for(int i=0; i<m_connections.count(); i++) {
+		QVariantMap m = m_connections.value(i).toMap();
+		new Connection(m, rootObj);
 	}
 }
 //=============================================

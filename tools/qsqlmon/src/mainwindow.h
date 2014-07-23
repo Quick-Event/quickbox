@@ -1,8 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <qf/core/assert.h>
+
 #include <QMap>
 #include <QMainWindow>
+#include <QSqlDatabase>
 
 //#include <qfmainwindow.h>
 //#include <qfsqlconnection.h>
@@ -98,26 +101,28 @@ class MainWindow : public QMainWindow
 		void setQueryViewModel(QFSqlQueryTableModel *m);
     //QList<QWidget*> statusBarWidgets;
 	private:
-		QAction* action(const QString& action_name, bool throw_exc = true) {
+		QAction* action(const QString& action_name) {
 			QAction *a = actionMap.value(action_name);
-			if(!a && throw_exc) QF_EXCEPTION(tr("Action '%1' not found !").arg(action_name));
+			QF_ASSERT(a!=nullptr,
+					  QString("Action '%1' not found !").arg(action_name),
+					  return a);
 			return a;
 		}
 		QString f_activeSetNames;
 		/// database z niz se provadi dotazy
-		QFSqlConnection m_activeConnection;
+		QSqlDatabase m_activeConnection;
 		/// \return previously active connection
-		QFSqlConnection setActiveConnection1(QFSqlConnection c);
-		QFSqlConnection setActiveConnection2(Database *d);
+		QSqlDatabase setActiveConnection1(const QSqlDatabase &c);
+		QSqlDatabase setActiveConnection2(Database *d);
 	
 		bool execQuery(const QString& query_str);
 	public:
 	/**
 	 *  throw exception if activeConnection is not valid.
 	 */
-		QFSqlConnection activeConnection(bool throw_exc = true)
+		QSqlDatabase activeConnection()
 		{
-			if(!m_activeConnection.isValid() && throw_exc) QF_EXCEPTION("Connection is not valid !");
+			QF_CHECK(m_activeConnection.isValid(), "Connection is not valid !");
 			return m_activeConnection;
 		}
 		bool execCommand(const QString& query_str);

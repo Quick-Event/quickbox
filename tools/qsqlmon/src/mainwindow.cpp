@@ -147,7 +147,7 @@ void MainWindow::setQueryViewModel(QFSqlQueryTableModel *m)
 	if(m) m->setParent(ui.queryView);
 }
 
-QFSqlConnection MainWindow::setActiveConnection2(Database *dd)
+QSqlDatabase MainWindow::setActiveConnection2(Database *dd)
 {
 	QFSqlConnection c;
 	if(dd) c = dd->connection();

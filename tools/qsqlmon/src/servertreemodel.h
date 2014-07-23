@@ -23,32 +23,17 @@ class ServerTreeModel : public QFObjectItemModel
 {
 	Q_OBJECT
 protected:
-	QVariantMap servers;
+	QVariantList m_connections;
 public:
-	/**
-	    Sets model contens to XML file.
-		@return false if error occures
-	*/
-	//bool setContent(QFile &f) throw(exception);
-
-	// tyhle musim implementovat pro ReadOnly
-	/*
-	QModelIndex index(int row, int column, const QModelIndex &parent) const;
-	QModelIndex parent ( const QModelIndex & index ) const;
-	int rowCount( const QModelIndex & parent = QModelIndex() ) const;
-	bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
-	*/
 	int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 	QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 	QVariant headerData ( int section, Qt::Orientation o, int role = Qt::DisplayRole ) const;
 
 public:
-	void load(const QVariantMap& el);
+	void load(const QVariantMap& params);
 public:
 	ServerTreeModel(QObject *parent = NULL) : QFObjectItemModel(parent) { }
-	~ServerTreeModel() {
-		//qDebug("~ServerTreeModel() - indexedNodes.count(): %i", indexedNodes.count());
-	}
+	~ServerTreeModel() Q_DECL_OVERRIDE {}
 };
 //=============================================
 

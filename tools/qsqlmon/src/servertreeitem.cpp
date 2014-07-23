@@ -2,23 +2,14 @@
 #include "servertreeitem.h"
 #include "mainwindow.h"
 
-//#include <qf.h>
-#include <qfpixmapcache.h>
-#include <qfexception.h>
-#include <qfdlgexception.h>
-#include <qfstring.h>
-#include <qfsqlquery.h>
-#include <qfsqlcatalog.h>
-#include <qfcrypt.h>
+#include <qf/core/utils/crypt.h>
+#include <qf/core/log.h>
 
 #include <QIcon>
 #include <QVariant>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlDriver>
-
-//#define QF_NO_TRASH_OUTPUT
-#include <qflogcust.h>
 
 //=============================================================
 //                     ServerTreeItem
@@ -35,7 +26,7 @@ ServerTreeItem::~ServerTreeItem()
 	//qfTrash() <<  QF_FUNC_NAME << this << objectName();
 }
 
-MainWindow * ServerTreeItem::mainWindow() throw( QFException )
+MainWindow * ServerTreeItem::mainWindow()
 {
 	MainWindow *ret = qfFindParent<MainWindow*>(model());
 	return ret;
