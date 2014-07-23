@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>CentralWidget</class>
- <widget class="QWidget" name="CentralWidget" >
-  <property name="geometry" >
+ <widget class="QWidget" name="CentralWidget">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,56 +10,53 @@
     <height>332</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" >
-   <property name="spacing" >
+  <layout class="QVBoxLayout">
+   <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin" >
+   <property name="leftMargin">
     <number>0</number>
    </property>
-   <property name="topMargin" >
+   <property name="topMargin">
     <number>0</number>
    </property>
-   <property name="rightMargin" >
+   <property name="rightMargin">
     <number>0</number>
    </property>
-   <property name="bottomMargin" >
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="frmTable" >
-     <property name="frameShape" >
+    <widget class="QFrame" name="frmTable">
+     <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
-     <property name="frameShadow" >
+     <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="spacing" >
+     <layout class="QVBoxLayout">
+      <property name="spacing">
        <number>6</number>
       </property>
-      <property name="leftMargin" >
+      <property name="leftMargin">
        <number>1</number>
       </property>
-      <property name="topMargin" >
+      <property name="topMargin">
        <number>1</number>
       </property>
-      <property name="rightMargin" >
+      <property name="rightMargin">
        <number>1</number>
       </property>
-      <property name="bottomMargin" >
+      <property name="bottomMargin">
        <number>1</number>
       </property>
       <item>
-       <widget class="TableViewWidget" name="queryView" >
-        <property name="whatsThis" >
+       <widget class="TableViewWidget" name="queryView" native="true">
+        <property name="whatsThis">
          <string>Widget for the QFSqlQueryModel.</string>
-        </property>
-        <property name="toolBarVisible" >
-         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -67,11 +65,11 @@
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="3" margin="3" />
+ <layoutdefault spacing="3" margin="3"/>
  <customwidgets>
   <customwidget>
    <class>TableViewWidget</class>
-   <extends>QFTableViewWidget</extends>
+   <extends>QWidget</extends>
    <header>tableviewwidget.h</header>
   </customwidget>
  </customwidgets>

@@ -8,7 +8,8 @@
 #ifndef THEAPP_H
 #define THEAPP_H
 
-#include <qf/core/logdevice.h>
+#include <qf/core/assert.h>
+#include <qf/core/utils/crypt.h>
 
 //#include <qfappreportsearchdirsinterface.h>
 
@@ -47,12 +48,28 @@ class  TheApp : public QApplication //, public QFAppReportSearchDirsInterface
 
 		static TheApp* instance();
 		//virtual QFSearchDirs *reportProcessorSearchDirs();
+		qf::core::utils::Crypt crypt();
 	public:
 		TheApp(int & argc, char ** argv);
 		virtual ~TheApp();
 };
 
 inline TheApp* theApp() {return TheApp::instance();}
+
+template <class T>
+T qfFindParent(const QObject *_o)
+{
+	T t = NULL;
+	QObject *o = const_cast<QObject*>(_o);
+	while(o) {
+		o = o->parent();
+		if(!o) break;
+		t = qobject_cast<T>(o);
+		if(t) break;
+	}
+	QF_ASSERT_EX(t!=nullptr, QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
+	return t;
+}
 
 #endif // THEAPP_H
 

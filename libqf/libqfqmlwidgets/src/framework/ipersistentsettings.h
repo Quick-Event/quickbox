@@ -1,6 +1,8 @@
 #ifndef QF_QMLWIDGETS_FRAMEWORK_IPERSISTENTSETTINGS_H
 #define QF_QMLWIDGETS_FRAMEWORK_IPERSISTENTSETTINGS_H
 
+#include "../qmlwidgetsglobal.h"
+
 #include <QString>
 
 class QObject;
@@ -9,9 +11,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace framework {
 
-class SettingsPersistenceAttached;
-
-class IPersistentSettings
+class QFQMLWIDGETS_DECL_EXPORT IPersistentSettings
 {
 public:
 	IPersistentSettings(QObject *controlled_object);

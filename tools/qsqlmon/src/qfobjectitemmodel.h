@@ -56,7 +56,7 @@ class QFObjectItemModel : public QAbstractItemModel
 		// emits signal rowsInserted()
 		//void emitRowsInserted(const QModelIndex & parent, int start, int end);
 	protected:
-		QFObjectItemModelRoot *rootObj;
+		QFObjectItemModelRoot *m_rootObj;
 	
 		//! If this function returns false, object is simply ignored by model. Thats mean it is not dislayed in treeview.
 		virtual bool isObjectAccepted(QObject *o) const {Q_UNUSED(o); return true;}
@@ -97,7 +97,7 @@ class QFObjectItemModel : public QAbstractItemModel
 		/// deleteChildren(QModelIndex()) vymaze vsechny deti.
 		void deleteChildren(const QModelIndex &parent_ix = QModelIndex());
 
-		void dump() {rootObj->dumpObjectTree();}
+		void dump() {m_rootObj->dumpObjectTree();}
 	public:
 	/*
 	void setRootObject(QObject *new_root);

@@ -9,16 +9,17 @@
 #define COLUMNSELECTORWIDGET_H
 
 
-#include <qfdialogwidget.h>
+#include <qf/qmlwidgets/framework/partwidget.h>
 
 class QFSqlConnection;
 namespace Ui {class ColumnSelectorWidget;};
 
 //! TODO: write class documentation.
-class  ColumnSelectorWidget : public QFDialogWidget
+class  ColumnSelectorWidget : public qf::qmlwidgets::framework::PartWidget
 {
-	Q_OBJECT;
+	Q_OBJECT
 private:
+	typedef qf::qmlwidgets::framework::PartWidget Super;
 	Ui::ColumnSelectorWidget *ui;
 protected:
 	QString f_tableName;

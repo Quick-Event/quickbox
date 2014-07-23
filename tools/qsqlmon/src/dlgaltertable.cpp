@@ -1,32 +1,22 @@
-//
-// C++ Implementation: dlgaltertable
-//
-// Description:
-//
-//
-// Author: Fanda Vacek <fanda.vacek@volny.cz>, (C) 2005
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#include <QDialog>
-#include <QErrorMessage>
-
-#include <qfmessage.h>
-#include <qfsqlquery.h>
-#include <qfsqlcatalog.h>
-#include <qfdlgexception.h>
-#include <qfdlgtextview.h>
-
 #include "mainwindow.h"
 #include "dlgaltertable.h"
 #include "dlgcolumndef.h"
 #include "dlgindexdef.h"
 
-#include <qflogcust.h>
+#include <qf/core/log.h>
+#include <qf/core/utils.h>
+
+#include <QDialog>
+#include <QErrorMessage>
+
+//#include <qfmessage.h>
+//#include <qfsqlquery.h>
+//#include <qfdlgtextview.h>
+
+namespace qfc = qf::core;
 
 DlgAlterTable::DlgAlterTable(QWidget * parent, const QString& db, const QString& table)
-	: QDialog(parent), tablename(table), dbname(db)
+	: QDialog(parent), m_tableName(table), m_schemaName(db)
 {
 	setupUi(this);
 	txtComment->setEnabled(false);
@@ -47,17 +37,14 @@ DlgAlterTable::~DlgAlterTable()
 
 void DlgAlterTable::refresh()
 {
-	connection().catalog().database(dbname).forgetTable(tablename);
-	//lstFields->addItems(connection.catalog().database(dbname).table(tablename).unorderedFields());
-	QFSqlTableInfo ti = connection().catalog() .table(dbname + "." + tablename);
-	qfTrash() << "DlgAlterTable::refresh() ti is valid:" << ti.isValid();
+	m_fields = QFSqlFieldInfo::loadFields(qfc::Utils::composeFieldName(m_tableName, m_schemaName));
 	lstFields->clear();
 	lstFields->addItems(ti.unorderedFields());
 	lstIndexes->clear();
 	foreach(QFSqlConnectionBase::IndexInfo ii, ti.indexes()) lstIndexes->addItem(ii.name);
 	if(connection().driverName().endsWith("MYSQL")) {
 		QFSqlQuery q(connection());
-		q.exec(QString("SHOW TABLE status FROM %1 LIKE '%2'").arg(dbname).arg(tablename));
+		q.exec(QString("SHOW TABLE status FROM %1 LIKE '%2'").arg(m_schemaName).arg(m_tableName));
 		if(q.next()) {
 			oldComment = q.value("comment").toString();
 			txtComment->setPlainText(oldComment);
@@ -69,7 +56,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 {
 	if(lstFields->currentRow() < 0) append = true;
 
-	DlgColumnDef dlg(this, QFSql::composeFullName(tablename, dbname));
+	DlgColumnDef dlg(this, QFSql::composeFullName(m_tableName, m_schemaName));
 	while(true) {
 		if(dlg.exec() == QDialog::Accepted) {
 			QStringList sql_commands;
@@ -79,11 +66,11 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 				}
 				QString fld_name = dlg.edName->text();
 				QString s, qs = "ALTER TABLE %1 ADD COLUMN %2 %3";
-				qs = qs.arg(tablename).arg(fld_name).arg(dlg.lstType->currentText());
+				qs = qs.arg(m_tableName).arg(fld_name).arg(dlg.lstType->currentText());
 				qs += dlg.toString();
 				sql_commands << qs;
 				//if(!execCommand(qs)) continue;
-				sql_commands << ("VACUUM " + tablename);
+				sql_commands << ("VACUUM " + m_tableName);
 				//refresh();
 			}
 			else if(connection().driverName().endsWith("PSQL")) {
@@ -92,7 +79,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 				}
 				QString fld_name = dlg.edName->text();
 				QString s, qs = "ALTER TABLE %1.%2 ADD COLUMN \"%3\" %4";
-				qs = qs.arg(dbname).arg(tablename).arg(fld_name).arg(dlg.lstType->currentText());
+				qs = qs.arg(m_schemaName).arg(m_tableName).arg(fld_name).arg(dlg.lstType->currentText());
 				qs += dlg.toString();
 				sql_commands << qs;
 				//if(!execCommand(qs)) continue;
@@ -110,7 +97,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 				}
 				QString fld_name = dlg.edName->text();
 				QString s, qs = "ALTER TABLE %1 ADD COLUMN %2 ";
-				qs = qs.arg(tablename).arg(fld_name);
+				qs = qs.arg(m_tableName).arg(fld_name);
 				qs += dlg.toString();
 				qs += insert_where;
 				sql_commands << qs;
@@ -145,7 +132,7 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 	qfTrash() << QF_FUNC_NAME;
 	if(lstFields->currentRow() < 0) return;
 
-	QString full_table_name = QFSql::composeFullName(tablename, dbname);
+	QString full_table_name = qf::core::utils::composeFullName(m_tableName, m_schemaName);
 	//qfTrash() << "\ts:" << s;
 	DlgColumnDef dlg(this, full_table_name);
 	QString fld_name = lstFields->currentItem()->text();
@@ -160,7 +147,7 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 				//qfInfo() << fi.fieldName() << dlg.edName->text();
 				if(fi.fieldName() != dlg.edName->text()) {
 					QString qs = "ALTER TABLE %1 RENAME COLUMN %2 %3";
-					qs = qs.arg(tablename).arg(fi.fieldName()).arg(dlg.edName->text());
+					qs = qs.arg(m_tableName).arg(fi.fieldName()).arg(dlg.edName->text());
 					sql_commands << qs;
 					//if(!execCommand(qs)) continue;
 					//refresh();
@@ -169,7 +156,7 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 			else if(connection().driverName().endsWith("PSQL")) {
 				if(fi.fieldName() != dlg.edName->text()) {
 					QString s = "ALTER TABLE %1 RENAME COLUMN \"%2\" TO \"%3\"";
-					s = s.arg(tablename).arg(fi.fieldName()).arg(dlg.edName->text());
+					s = s.arg(m_tableName).arg(fi.fieldName()).arg(dlg.edName->text());
 					sql_commands << s;
 					//if(!execCommand(s)) continue;
 					//refresh();
@@ -193,7 +180,7 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 					actions << s;
 				}
 				if(!actions.isEmpty()) {
-					QString s = "ALTER TABLE " + tablename + " " + actions.join(", ");
+					QString s = "ALTER TABLE " + m_tableName + " " + actions.join(", ");
 					sql_commands << s;
 					//if(!execCommand(s)) continue;
 					//refresh();
@@ -201,7 +188,7 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 			}
 			else if(connection().driverName().endsWith("MYSQL")) {
 				QString s = "ALTER TABLE %1 CHANGE COLUMN %2";
-				s = s.arg(tablename).arg(fi.fieldName());
+				s = s.arg(m_tableName).arg(fi.fieldName());
 				s += " " + dlg.edName->text();
 				s += " " + dlg.toString();
 				sql_commands << s;
@@ -235,7 +222,7 @@ void DlgAlterTable::on_btFieldDelete_clicked()
 	QString fld_name = lstFields->currentItem()->text();
 	if(QFMessage::askYesNo(this, tr("Realy drop column '%1'").arg(fld_name))) {
 		QString s = "ALTER TABLE %1 DROP COLUMN %2";
-		s = s.arg(tablename).arg(fld_name);
+		s = s.arg(m_tableName).arg(fld_name);
 		execCommand(s);
 		refresh();
 	}
@@ -247,7 +234,7 @@ MainWindow* DlgAlterTable::mainWindow()
 	return w;
 }
 
-QFSqlConnection DlgAlterTable::connection()
+QSqlDatabase DlgAlterTable::connection()
 {
 	//qfTrash() << QF_FUNC_NAME;
 	return mainWindow()->activeConnection();
@@ -260,7 +247,7 @@ bool DlgAlterTable::execCommand(const QString &qs)
 
 void DlgAlterTable::on_btIndexAdd_clicked()
 {
-	DlgIndexDef dlg(this, dbname + "." + tablename);
+	DlgIndexDef dlg(this, m_schemaName + "." + m_tableName);
 	if(dlg.exec()) 	{
 		execCommand(dlg.createIndexCommand());
 		refresh();
@@ -270,11 +257,11 @@ void DlgAlterTable::on_btIndexAdd_clicked()
 void DlgAlterTable::on_btIndexEdit_clicked()
 {
 	if(lstIndexes->currentRow() < 0) return;
-	DlgIndexDef dlg(this, dbname + "." + tablename, lstIndexes->currentItem()->text());
+	DlgIndexDef dlg(this, m_schemaName + "." + m_tableName, lstIndexes->currentItem()->text());
 	if(dlg.exec()) 	{
 		QString indexname = lstIndexes->currentItem()->text();
 		if(connection().driverName().endsWith("SQLITE")) { execCommand("DROP INDEX " + indexname); }
-		else { execCommand("DROP INDEX " + indexname + " ON " + dbname + "." + tablename); }
+		else { execCommand("DROP INDEX " + indexname + " ON " + m_schemaName + "." + m_tableName); }
 		execCommand(dlg.createIndexCommand());
 		refresh();
 	}
@@ -287,7 +274,7 @@ void DlgAlterTable::on_btIndexDelete_clicked()
 	QString indexname = lstIndexes->currentItem()->text();
 	if(QFMessage::askYesNo(this, tr("Do you realy want to drop index %1?").arg(indexname), true)) {
 		if(connection().driverName().endsWith("SQLITE")) { execCommand("DROP INDEX " + indexname); }
-		else { execCommand("DROP INDEX " + indexname + " ON " + dbname + "." + tablename); }
+		else { execCommand("DROP INDEX " + indexname + " ON " + m_schemaName + "." + m_tableName); }
 		refresh();
 	}
 }
@@ -299,7 +286,7 @@ void DlgAlterTable::on_btOk_clicked()
 			QString new_comment = txtComment->toPlainText();
 			if(new_comment != oldComment) {
 				QFSqlQuery q(connection());
-				q.exec(QString("ALTER TABLE %1.%2 COMMENT='%3'").arg(dbname).arg(tablename).arg(new_comment));
+				q.exec(QString("ALTER TABLE %1.%2 COMMENT='%3'").arg(m_schemaName).arg(m_tableName).arg(new_comment));
 			}
 		}
 		accept();

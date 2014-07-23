@@ -10,25 +10,16 @@
 #include "dlgindexdef.h"
 #include "columnselectorwidget.h"
 
-#include <driver/qfhttpmysql/qfhttpmysql.h>
+#include "driver/qfhttpmysql/qfhttpmysql.h"
 
-#include <qflog.h>
-#include <qfexception.h>
-#include <qfsqlquery.h>
-#include <qfstring.h>
-#include <qfmessage.h>
-#include <qfxmlconfigdocument.h>
-#include <qfsqlquerytablemodel.h>
-#include <qfsqlfield.h>
-#include <qfsqlrecord.h>
-#include <qfdlgexception.h>
-#include <qfdlgxmlconfig.h>
-#include <qfdlgtextview.h>
-#include <qfdlghtmlview.h>
-#include <qftableview.h>
-#include <qfstatusbar.h>
-#include <qffileutils.h>
-#include <qfdlgopenurl.h>
+#include <qf/core/log.h>
+#include <qf/core/model/sqlquerytablemodel.h>
+
+//#include <qfdlgtextview.h>
+//#include <qfdlghtmlview.h>
+//#include <qftableview.h>
+//#include <qfstatusbar.h>
+//#include <qfdlgopenurl.h>
 #include <qfsqlsyntaxhighlighter.h>
 
 #include <QStandardItemModel>
@@ -50,22 +41,13 @@
 
 #include <limits>
 
-//#define QF_NO_TRASH_OUTPUT
-#include <qflogcust.h>
-
-MainWindow::~MainWindow()
-{
-	qfTrash() << QF_FUNC_NAME;
-}
-
 MainWindow::MainWindow()
+	: QMainWindow(), qf::qmlwidgets::framework::IPersistentSettings(this)
 {
 	//setAttribute(Qt::WA_DeleteOnClose);
 	f_sqlDelimiter = ';';
 	f_activeSetNames = "<no change>";
-	qfApp()->config();
 
-	setXmlConfigPersistentId("MainWindow", true);
 	//loadPersistentData();
 
 	QWidget *g = new QWidget(this);
@@ -77,11 +59,20 @@ MainWindow::MainWindow()
 	createActions();
 	createMenus();
 	createToolBars();
-    //qfTrash("%s: %i",__FILE__, __LINE__);
+    //qfDebug("%s: %i",__FILE__, __LINE__);
 	createStatusBar();
 	createDockWindows();
 
+	setPersistentSettingsId("MainWindow");
+	loadPersistentSettings();
+
 	init(); // must bee after all create*() functions
+}
+
+MainWindow::~MainWindow()
+{
+	qfLogFuncFrame();
+	savePersistentSettings();
 }
 
 void MainWindow::init()
@@ -94,12 +85,9 @@ void MainWindow::init()
 	ui.splitter01->setSizes(szs);
 	*/
 	ServerTreeModel *model = new ServerTreeModel(this);
-	qfTrash() << "MODEL" << qobject_cast<QFObjectItemModel*>(model) << model;
+	//qfDebug() << "MODEL" << qobject_cast<QFObjectItemModel*>(model) << model;
 	//model->dumpObjectInfo();
-//QObject *root = new ServerTreeItem();
-	//root->setObjectName("root");
-	//model->setRootObject(loadConnections());
-	model->load(theApp()->config()->dataDocument().mkcd("/servers"));
+	model->loadSettings();
 
 	Ui::ServerTreeWidget &ui_srv = serverDock->ui;
 	ui_srv.treeServers->setModel(model);
@@ -150,7 +138,7 @@ void MainWindow::setQueryViewModel(QFSqlQueryTableModel *m)
 QSqlDatabase MainWindow::setActiveConnection2(Database *dd)
 {
 	QFSqlConnection c;
-	if(dd) c = dd->connection();
+	if(dd) c = dd->sqlConnection();
 	//qfInfo() << c.signature();
 	QFSqlConnection ret = setActiveConnection1(c);
 	#if 0
@@ -207,19 +195,19 @@ QFSqlConnection MainWindow::setActiveConnection1(QFSqlConnection c)
 	}
 	QObject *old_model = queryViewModel(!Qf::ThrowExc);
 	QFSqlQueryTableModel *m = new QFSqlQueryTableModel();
-	qfTrash() << "\t setting new model created:" << m;
+	qfDebug() << "\t setting new model created:" << m;
 	QFSqlQueryTable *t = new QFSqlQueryTable(c);
-	//qfTrash() << "\ttable sort case innsensitive:" << t->isSortCaseInsensitive();
+	//qfDebug() << "\ttable sort case innsensitive:" << t->isSortCaseInsensitive();
 	m->setTable(t);
-	//qfTrash() << "\tmodel table sort case innsensitive:" << queryModel->table()->isSortCaseInsensitive();
+	//qfDebug() << "\tmodel table sort case innsensitive:" << queryModel->table()->isSortCaseInsensitive();
 	setQueryViewModel(m);
-	qfTrash() << "\t model set";
-	qfTrash() << "\t deletenig old model:" << old_model;
+	qfDebug() << "\t model set";
+	qfDebug() << "\t deletenig old model:" << old_model;
 	SAFE_DELETE(old_model);
-	qfTrash() << "\t deleted";
+	qfDebug() << "\t deleted";
 
 	QFSqlConnection ret = m_activeConnection;
-	//qfTrash() << "m_activeConnection = c";
+	//qfDebug() << "m_activeConnection = c";
 	m_activeConnection = c;
 	//qfInfo() << "activeConnection:" << m_activeConnection.signature();
 	//queryModel->setConnection(c);
@@ -298,7 +286,7 @@ bool MainWindow::event(QEvent *event)
 {
 
 	bool ret = QMainWindow::event(event);
-	//if(event->type() == QEvent::Polish) qfTrash() << "polished event";
+	//if(event->type() == QEvent::Polish) qfDebug() << "polished event";
 	return ret;
 }
 
@@ -306,13 +294,13 @@ void MainWindow::showEvent(QShowEvent * event)
 {
     QMainWindow::showEvent(event);
 	//ui.treeServers->resizeColumnToContents(0);
-	//qfTrash() << "show event";
+	//qfDebug() << "show event";
 }
 void MainWindow::focusInEvent(QFocusEvent * event)
 {
     QMainWindow::focusInEvent(event);
 	ui.treeServers->resizeColumnToContents(0);
-	qfTrash() << "focus in event";
+	qfDebug() << "focus in event";
 }
 */
 
@@ -400,7 +388,7 @@ void MainWindow::createActions()
 	connect(a, SIGNAL(triggered(bool)), this, SLOT(wordWrapSqlEditor(bool)));
 	actionMap["wordWrapSqlEditor"] = a;
 
-    //qfTrash("%s: %i",__FILE__, __LINE__);
+    //qfDebug("%s: %i",__FILE__, __LINE__);
 	a = new QAction(tr("&About"), this);
 	a->setStatusTip(tr("Show the application's About box"));
 	connect(a, SIGNAL(triggered()), this, SLOT(about()));
@@ -554,7 +542,7 @@ void MainWindow::appendInfo(const QString &s)
 
 bool MainWindow::execQuery(const QString& query_str)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	bool ret = false;
 	if(!activeConnection(false).isOpen()) {
 		QFMessage::information(this, tr("No active connection !"));
@@ -587,7 +575,7 @@ bool MainWindow::execQuery(const QString& query_str)
 
 bool MainWindow::execCommand(const QString& query_str)
 {
-	qfTrash() << QF_FUNC_NAME << "\n\t" << query_str;
+	qfDebug() << QF_FUNC_NAME << "\n\t" << query_str;
 	if(!activeConnection(false).isOpen()) {
 		QFMessage::information(this, tr("No active connection !"));
 		return true;
@@ -632,7 +620,7 @@ void MainWindow::executeSql()
 	/// napravo mezery ukoncene \n
 	int i;
 	for(i=pos; i>0; i--) {
-		//qfTrash() << "c: " << s[i] << " n: " << s[i].unicode();
+		//qfDebug() << "c: " << s[i] << " n: " << s[i].unicode();
 		if(!s[i].isSpace()) break;
 	}
 	if(s[i]==f_sqlDelimiter) {
@@ -650,7 +638,7 @@ void MainWindow::executeSql()
 	for(int i=pos; i<s.size(); i++) {
 		if(s[i]=='\'') cursor_in_quotes = !cursor_in_quotes;
 	}
-	//qfTrash() << QF_FUNC_NAME << "cursor in quotes:" << cursor_in_quotes;
+	//qfDebug() << QF_FUNC_NAME << "cursor in quotes:" << cursor_in_quotes;
 
 	int p1, p2;
 	bool in_quotes = cursor_in_quotes;
@@ -666,7 +654,7 @@ void MainWindow::executeSql()
 	}
 
 	s = s.slice(p1, p2).trim();
-	qfTrash() << QString("Executing SQL: [%1]").arg(s);
+	qfDebug() << QString("Executing SQL: [%1]").arg(s);
 	execQuery(s);
 }
 
@@ -727,7 +715,7 @@ void MainWindow::setDbSearchPath(const QString &path)
 			else {
 				QFSqlQuery q(activeConnection());
 				QString s = "USE " + path;
-				qfTrash() << QString("Executing SQL: [%1]").arg(s);
+				qfDebug() << QString("Executing SQL: [%1]").arg(s);
 				q.exec(s);
 			}
 			setStatusText(path, 2);
@@ -790,7 +778,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 			// pokud ma deti, je pripojen, tak at se odpoji
 			if(c->isOpen()) {
 				/// vymaz vsechny deti
-				qfTrash() << QF_FUNC_NAME << c;
+				qfDebug() << QF_FUNC_NAME << c;
 				ui_srv.treeServers->setExpanded(index, false);
 				c->close();
 				setActiveConnection1(QFSqlConnection());
@@ -842,7 +830,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 			Database *d = t->database();
 			Q_ASSERT(d != NULL);
 			setActiveConnection2(d);
-			//qfTrash() << "Table double clicked" << activeConnection().info();
+			//qfDebug() << "Table double clicked" << activeConnection().info();
 			Q_ASSERT(activeConnection().isOpen());
 			QFString s;
 			/*
@@ -920,8 +908,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 						//par->dumpObjectTree();
 						//o->dumpObjectInfo();
 						Q_ASSERT(o == connection);
-						QFDomElement el = connection->params.parentNode().toElement();
-						el.removeChild(connection->params);//.toElement();
+						QFDomElement el = connection->m_params.parentNode().toElement();
+						el.removeChild(connection->m_params);//.toElement();
 						o->deleteLater();
 						theApp()->config()->setDataDirty(true);
 					}
@@ -1227,11 +1215,11 @@ void MainWindow::addServer(Connection *connection_to_copy)
 	ServerTreeModel *model = qobject_cast<ServerTreeModel*>(ui_srv.treeServers->model());
 	DlgEditConnection dlg(this);
 	Connection *c;
-	if(connection_to_copy) c = new Connection(connection_to_copy->params.cloneNode(true).toElement());
+	if(connection_to_copy) c = new Connection(connection_to_copy->m_params.cloneNode(true).toElement());
 	else c = new Connection(theApp()->config()->dataDocument().createElement("connection"));
 	dlg.setContent(*c);
 	if(dlg.exec() == QDialog::Accepted) {
-		theApp()->config()->dataDocument().cd("/servers").appendChild(c->params);
+		theApp()->config()->dataDocument().cd("/servers").appendChild(c->m_params);
 		theApp()->config()->setDataDirty(true);
 		model->append(c, QModelIndex());
 	}
@@ -1333,20 +1321,20 @@ void MainWindow::closeEvent(QCloseEvent *e)
 /*
 void MainWindow::showEvent(QShowEvent * e)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 }
 
 void MainWindow::focusInEvent(QFocusEvent *e)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 }
 */
 void MainWindow::changeEvent(QEvent * e)
 {
 	if(!e) return;
 	if(e->type() == QEvent::ActivationChange) {
-		qfTrash() << QF_FUNC_NAME << "new state:" << windowState();
-		qfTrash() << "\t is active window:" << isActiveWindow();
+		qfDebug() << QF_FUNC_NAME << "new state:" << windowState();
+		qfDebug() << "\t is active window:" << isActiveWindow();
 		//raise();
 	}
 }
@@ -1384,3 +1372,26 @@ void MainWindow::setSqlDelimiter()
 	if(ok && !s.isEmpty()) f_sqlDelimiter = s[0];
 }
 
+void MainWindow::loadPersistentSettings()
+{
+	QString path = persistentSettingsPath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		QSettings settings;
+		settings.beginGroup(path);
+		restoreGeometry(settings.value("geometry").toByteArray());
+		restoreState(settings.value("state").toByteArray());
+	}
+}
+
+void MainWindow::savePersistentSettings()
+{
+	QString path = persistentSettingsPath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		QSettings settings;
+		settings.beginGroup(path);
+		settings.setValue("state", saveState());
+		settings.setValue("geometry", saveGeometry());
+	}
+}

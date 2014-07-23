@@ -27,6 +27,9 @@ HEADERS +=      \
 	theapp.h    \
 	tableviewwidget.h   \
 	columnselectorwidget.h  \
+	qfsqlsyntaxhighlighter.h \
+	qfobjectitemmodel.h \
+	qfsqlfieldinfo.h \
 
 SOURCES +=      \
 	main.cpp      \
@@ -44,6 +47,9 @@ SOURCES +=      \
 	theapp.cpp    \
 	tableviewwidget.cpp   \
 	columnselectorwidget.cpp  \
+	qfsqlsyntaxhighlighter.cpp \
+	qfobjectitemmodel.cpp \
+	qfsqlfieldinfo.cpp \
 
 FORMS +=      \
 	centralwidget.ui      \

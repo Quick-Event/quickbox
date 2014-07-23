@@ -12,11 +12,10 @@
 #ifndef DLGALTERTABLE_H
 #define DLGALTERTABLE_H
 
-#include <QDialog>
-
-#include <qfsqlconnection.h>
-
 #include "ui_dlgaltertable.h"
+#include "qfsqlfieldinfo.h"
+
+#include <QDialog>
 
 class MainWindow;
 
@@ -28,8 +27,9 @@ class DlgAlterTable : public QDialog, Ui::DlgAlterTable
 	Q_OBJECT
 			friend class DlgIndexDef;
 	protected:
-		QString tablename, dbname;
+		QString m_tableName, m_schemaName;
 		QString oldComment;
+		QList<QFSqlFieldInfo> m_fields;
 
 		void refresh();
 	private slots:
@@ -45,7 +45,7 @@ class DlgAlterTable : public QDialog, Ui::DlgAlterTable
 		void on_btOk_clicked();
 	protected:
 		MainWindow* mainWindow();
-		QFSqlConnection connection();
+		QSqlDatabase connection();
 		bool execCommand(const QString &qs);
 	public:
 		DlgAlterTable(QWidget * parent, const QString& db, const QString& tbl);

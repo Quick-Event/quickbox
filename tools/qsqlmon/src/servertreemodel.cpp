@@ -3,25 +3,33 @@
 	filename: 	ServerTreeModel.cpp
 	author:		Fanda Vacek (fanda.vacek@volny.cz)
 *********************************************************************/
+#include "servertreemodel.h"
+#include "servertreeitem.h"
+
+#include <qf/core/log.h>
 
 #include <QIcon>
 #include <QApplication>
 #include <QStyle>
 #include <QFile>
 #include <QModelIndex>
-#include <QDomNodeList>
-
-//#include <qfstring.h>
-
-//#include "qfdom.h"
-#include "servertreemodel.h"
-#include "servertreeitem.h"
-
-//using namespace QFLib;
+#include <QSettings>
+#include <QJsonDocument>
+#include <QJsonParseError>
 
 //=============================================
 //                ServerTreeModel
 //=============================================
+
+ServerTreeModel::ServerTreeModel(QObject *parent)
+	: Super(parent)
+{
+	m_maxConnectionId = 0;
+}
+
+ServerTreeModel::~ServerTreeModel()
+{
+}
 
 //---------------------------------------------
 int ServerTreeModel::columnCount(const QModelIndex & parent) const
@@ -73,14 +81,47 @@ QVariant ServerTreeModel::headerData(int section, Qt::Orientation o, int role) c
 	return ret;
 }
 
-void ServerTreeModel::load(const QVariantMap& params)
+void ServerTreeModel::loadSettings()
 {
 	init();
-	m_connections = params.value("connections").toList();
-	for(int i=0; i<m_connections.count(); i++) {
-		QVariantMap m = m_connections.value(i).toMap();
-		new Connection(m, rootObj);
+	QSettings settings;
+	QJsonParseError err;
+	QJsonDocument jsd = QJsonDocument::fromJson(settings.value("connections").toString().toUtf8(), &err);
+	if(err.error != QJsonParseError::NoError) {
+		qfError() << "Cannot load connections definition from settings:" << err.errorString();
+	}
+	QVariantList connections_lst = jsd.toVariant().toList();
+	QSet<int> ids;
+	for(auto val : connections_lst) {
+		QVariantMap m = val.toMap();
+		int id = m.value("id").toInt();
+		if(id > 0) {
+			if(!ids.contains(id)) {
+				ids << id;
+				new Connection(m, m_rootObj);
+				m_maxConnectionId = qMax(m_maxConnectionId, id);
+			}
+		}
 	}
 }
+
+void ServerTreeModel::saveSettings()
+{
+	QVariantList connections_lst;
+	for(auto c : m_rootObj->findChildren<Connection*>(QString(), Qt::FindDirectChildrenOnly)) {
+		QVariantMap m = c->params();
+		connections_lst << m;
+	}
+	QSettings settings;
+	QJsonDocument jsd = QJsonDocument::fromVariant(connections_lst);
+	QString s = QString::fromUtf8(jsd.toJson());
+	settings.setValue("connections", s);
+}
+
+int ServerTreeModel::nextConnectionId()
+{
+	return ++m_maxConnectionId;
+}
+
 //=============================================
 

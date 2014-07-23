@@ -19,6 +19,7 @@ public:
 	explicit MessageBox(QWidget *parent = 0);
 public:
 	static void showException(QWidget *parent, const qf::core::Exception &exc);
+	static void showError(QWidget *parent, const QString &message);
 };
 
 }}}

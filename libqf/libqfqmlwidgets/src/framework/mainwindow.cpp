@@ -63,6 +63,18 @@ void MainWindow::loadPersistentSettings()
 	}
 }
 
+void MainWindow::savePersistentSettings()
+{
+	QString path = persistentSettingsPath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		QSettings settings;
+		settings.beginGroup(path);
+		settings.setValue("state", saveState());
+		settings.setValue("geometry", saveGeometry());
+	}
+}
+
 void MainWindow::showProgress(const QString &msg, int completed, int total)
 {
 	qfLogFuncFrame() << msg << completed << total;
@@ -141,18 +153,6 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 {
 	emit aboutToClose();
 	ev->accept();
-}
-
-void MainWindow::savePersistentSettings()
-{
-	QString path = persistentSettingsPath();
-	qfLogFuncFrame() << path;
-	if(!path.isEmpty()) {
-		QSettings settings;
-		settings.beginGroup(path);
-		settings.setValue("state", saveState());
-		settings.setValue("geometry", saveGeometry());
-	}
 }
 
 void MainWindow::whenPluginsLoaded()

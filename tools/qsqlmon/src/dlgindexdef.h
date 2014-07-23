@@ -8,16 +8,13 @@
 #ifndef DLGINDEXDEF_H
 #define DLGINDEXDEF_H
 
-//#include <qfglobal.h>
-#include <qfsqlconnection.h>
-
+#include <qf/core/log.h>
 
 #include <QDialog>
 
-//#define QF_NO_TRASH_OUTPUT
-#include <qflogcust.h>
-
 namespace Ui {class DlgIndexDef;};
+
+class QSqlDatabase;
 
 //! TODO: write class documentation.
 class  DlgIndexDef : public QDialog
@@ -29,7 +26,7 @@ class  DlgIndexDef : public QDialog
 		QString dbName, tableName, indexName;
 
 		//MainWindow* mainWindow();
-		QFSqlConnection connection();
+		QSqlDatabase connection();
 
 		void loadIndexDefinition();
 	public:

@@ -34,6 +34,7 @@ class QFCORE_DECL_EXPORT Utils
 public:
 	static const QString &nullValueString();
 	static void parseFieldName(const QString& full_field_name, QString *pfield_name = NULL, QString *ptable_name = NULL, QString *pdb_name = NULL);
+	static QString composeFieldName(const QString &field_name, const QString &table_name = QString(), const QString &db_name = QString());
 	/// @returns: True if @a field_name1 ends with @a field_name2. Comparision is case insensitive
 	static bool fieldNameEndsWith(const QString &field_name1, const QString &field_name2);
 	static bool fieldNameCmp(const QString &fld_name1, const QString &fld_name2);

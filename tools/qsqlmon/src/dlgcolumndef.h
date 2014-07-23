@@ -12,23 +12,20 @@
 #ifndef DLGCOLUMNDEF_H
 #define DLGCOLUMNDEF_H
 
-#include <QDialog>
+#include "qfsqlfieldinfo.h"
 
-#include <qfsqlconnection.h>
+#include <QDialog>
 
 #include "ui_dlgcolumndef.h"
 
-/**
-@author Fanda Vacek
-*/
 class DlgColumnDef : public QDialog, public Ui::DlgColumnDef
 {
-	Q_OBJECT;
+	Q_OBJECT
 protected:
 	QString dbName, tableName;
 	static QMap< QString, QMap<QString, QStringList> > f_collationsCache;
 protected:
-	QFSqlConnection connection();
+	QSqlDatabase connection();
 	void loadCollationsForCurrentCharset();
 public:
 	void clearFields();

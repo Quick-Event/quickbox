@@ -37,7 +37,7 @@ DlgIndexDef::~DlgIndexDef()
 	delete ui;
 }
 
-QFSqlConnection DlgIndexDef::connection()
+QSqlDatabase DlgIndexDef::connection()
 {
 	//qfTrash() << QF_FUNC_NAME;
 	MainWindow *w = qfFindParent<MainWindow*>(this);

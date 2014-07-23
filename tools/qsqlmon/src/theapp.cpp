@@ -66,6 +66,11 @@ TheApp* TheApp::instance()
 	return a;
 }
 
+qf::core::utils::Crypt TheApp::crypt()
+{
+	return qf::core::utils::Crypt;
+}
+
 QFXmlConfig* TheApp::config(bool throw_exc)
 {
 	Q_UNUSED(throw_exc);

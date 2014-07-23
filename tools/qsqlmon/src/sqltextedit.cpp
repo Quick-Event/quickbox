@@ -4,9 +4,10 @@
 
 #include "sqltextedit.h"
 
-//#include <qf.h>
 //#include <qfstring.h>
 #include "qfsqlsyntaxhighlighter.h"
+
+#include <qf/core/utils.h>
 
 #include <QKeyEvent>
 #include <QTextCursor>
@@ -74,13 +75,13 @@ void SqlTextEdit::setCompletionModel(QAbstractItemModel *m)
 	f_completionModel = m;
 	f_completer->setModel(f_completionModel);
 	//if(m) m->setParent(this);
-	SAFE_DELETE(old_m);
+	QF_SAFE_DELETE(old_m);
 }
 
 void SqlTextEdit::slotTextChanged()
 {
 	qfLogFuncFrame();
-	static QFString orig_word;
+	static QString orig_word;
 	QTextCursor c = textCursor();
 	/*
 	qfDebug() << "\t text cursor pos:" << c.position() << "is NULL:" << c.isNull();
@@ -97,10 +98,10 @@ void SqlTextEdit::slotTextChanged()
 	qfDebug() << "\t end word pos:" << c.position();
 	if(c.position() == curs_pos) {
 		/// men klicova slova na uppercase jen pri psani, ne pri editaci
-		QFString word = c.selectedText();
-		qfDebug().noSpace() << "\t '" << word << "'";
+		QString word = c.selectedText();
+		qfDebug().nospace() << "\t '" << word << "'";
 		if(!word.isEmpty()) {
-			QFString upword = word.toUpper();
+			QString upword = word.toUpper();
 			if(QFSqlSyntaxHighlighter::keyWords().contains(upword)) {
 				if(word != upword) {
 					c.removeSelectedText();
@@ -109,9 +110,9 @@ void SqlTextEdit::slotTextChanged()
 				}
 			}
 			else {
-				if(!!orig_word && upword.startsWith(orig_word.toUpper())) {
+				if(!orig_word.isEmpty() && upword.startsWith(orig_word.toUpper())) {
 					//qfDebug().noSpace() << "\torig: '" << orig_word << "'";
-					word = orig_word + word.slice(orig_word.len());
+					word = orig_word + word.mid(orig_word.length());
 					//qfDebug().noSpace() << "\tnew: '" << word << "'";
 					//qfDebug() << "\tDELETE";
 					orig_word = QString();
@@ -126,7 +127,8 @@ void SqlTextEdit::slotTextChanged()
 
 void SqlTextEdit::setCompleter(QCompleter *c)
 {
-	if (f_completer) QObject::disconnect(f_completer, 0, this, 0);
+	if (f_completer)
+		QObject::disconnect(f_completer, 0, this, 0);
 
 	f_completer = c;
 
@@ -170,13 +172,13 @@ void SqlTextEdit::setCompleter(QCompleter *c)
 		}
 		tc.setPosition(tc.selectionStart());
 		tc.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
-		qfDebug().noSpace() << "\tselected: '" << s << "'";
-		qfDebug().noSpace() << "\tdot: '" << tc.selectedText() << "'";
+		qfDebug().nospace() << "\tselected: '" << s << "'";
+		qfDebug().nospace() << "\tdot: '" << tc.selectedText() << "'";
 		if(tc.selectedText() != ".") {
 			if(!s.isEmpty()) sl.prepend(s);
 			break;
 		}
-		qfDebug().noSpace() << "\tprepending: '" << s << "'";
+		qfDebug().nospace() << "\tprepending: '" << s << "'";
 		sl.prepend(s);
 	}
 	QString ret = sl.join(".").replace("..", ".");

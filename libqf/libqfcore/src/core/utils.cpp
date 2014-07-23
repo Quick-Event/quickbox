@@ -37,6 +37,21 @@ void qf::core::Utils::parseFieldName(const QString &full_field_name, QString *pf
 	if(pdb_name) *pdb_name = db_name;
 }
 
+QString Utils::composeFieldName(const QString &field_name, const QString &table_name, const QString &db_name)
+{
+	QString ret;
+	if(!field_name.isEmpty()) {
+		ret = field_name;
+		if(!table_name.isEmpty()) {
+			ret = table_name + '.' + ret;
+			if(!db_name.isEmpty()) {
+				ret = db_name + '.' + ret;
+			}
+		}
+	}
+	return ret;
+}
+
 bool Utils::fieldNameEndsWith(const QString &field_name1, const QString &field_name2)
 {
 	/// psql (podle SQL92) predelava vsechny nazvy sloupcu, pokud nejsou v "" do lowercase, ale mixedcase se lip cte, tak at se to sparuje.

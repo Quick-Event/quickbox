@@ -1,16 +1,17 @@
 #include "dlgeditconnection.h"
 #include "theapp.h"
 
-#include <qfstring.h>
-#include <qfapplication.h>
-#include <qfxmlconfigdocument.h>
+#include <qf/core/log.h>
+
+//#include <qfstring.h>
+//#include <qfapplication.h>
+//#include <qfxmlconfigdocument.h>
 
 #include <QFileDialog>
 #include <QVariant>
 #include <QTextCodec>
 
 //#define QF_NO_TRASH_OUTPUT
-#include <qflogcust.h>
 	
 QStringList DlgEditConnection::mysqlCodecs;
 
@@ -40,46 +41,48 @@ DlgEditConnection::DlgEditConnection(QWidget *parent) :
 	btFindDatabaseFile->setVisible(false);
 }
 
-void DlgEditConnection::setContent(Connection& connection) throw(QFException)
+void DlgEditConnection::setContent(Connection& connection)
 {
 	//XmlConfigElement el = connection.params;
 	currConnection = &connection;
-	edCaption->setText(currConnection->param("description"));
-	edHost->setText(currConnection->param("host"));
-	edPort->setText(currConnection->param("port"));
-	edUser->setText(currConnection->param("user"));
-	edPassword->setText(currConnection->param("password"));
-	edDatabase->setText(currConnection->param("database"));
-	QString s = currConnection->param("driver");
+	edCaption->setText(currConnection->param("description").toString());
+	edHost->setText(currConnection->param("host").toString());
+	edPort->setValue(currConnection->param("port").toInt());
+	edUser->setText(currConnection->param("user").toString());
+	edPassword->setText(currConnection->param("password").toString());
+	edDatabase->setText(currConnection->param("database").toString());
+	QString s = currConnection->param("driver").toString();
 	cbxDriver->setCurrentIndex(drivers.indexOf(s));
 	//stackOptions->setVisible(false);
 	if(s.endsWith("MYSQL")) {
 		//stackOptions->setVisible(true);
 		//stackOptions->setCurrentIndex(OptionIndexMySql);
-		s = currConnection->param("mysqlSetNames");
+		s = currConnection->param("mysqlSetNames").toString();
 		//qfInfo() << s;
 		lstMySqlSetNames->setCurrentIndex(mysqlCodecs.indexOf(s));
 	}
 	else if(s.endsWith("SQLITE")) {
 		//stackOptions->setVisible(true);
 		//stackOptions->setCurrentIndex(OptionIndexMySql);
-		s = currConnection->param("sqlite_pragma_short_column_names");
+		s = currConnection->param("sqlite_pragma_short_column_names").toString();
 		sqlite_chkPragma_short_column_names->setChecked(s == "1");
-		s = currConnection->param("sqlite_pragma_full_column_names");
+		s = currConnection->param("sqlite_pragma_full_column_names").toString();
 		sqlite_chkPragma_full_column_names->setChecked(s == "1");
 	}
-	s = currConnection->param("textcodec");
+	s = currConnection->param("textcodec").toString();
 	lstCodec->setCurrentIndex(codecs.indexOf(s));
 }
 
 void DlgEditConnection::on_btOk_clicked()
 {
-	if(!currConnection)
-		throw QFException(QObject::tr("DlgEditConnection::on_btOk_clicked() - currConnection is NULL"));
+	if(!currConnection) {
+		qfError() << "DlgEditConnection::on_btOk_clicked() - currConnection is NULL";
+		reject();
+	}
 	currConnection->setParam("description", edCaption->text());
 	currConnection->setParam("driver", cbxDriver->currentText());
 	currConnection->setParam("host", edHost->text());
-	currConnection->setParam("port", edPort->text());
+	currConnection->setParam("port", edPort->value());
 	currConnection->setParam("user", edUser->text());
 	currConnection->setParam("password", edPassword->text());
 	currConnection->setParam("database", edDatabase->text());
@@ -87,14 +90,14 @@ void DlgEditConnection::on_btOk_clicked()
 	currConnection->setParam("mysqlSetNames", lstMySqlSetNames->currentText());
 	currConnection->setParam("sqlite_pragma_short_column_names", ((sqlite_chkPragma_short_column_names->isChecked())? "1": "0"));
 	currConnection->setParam("sqlite_pragma_full_column_names", ((sqlite_chkPragma_full_column_names->isChecked())? "1": "0"));
-	theApp()->config()->setDataDirty(true);
 	accept();
 }
 
 void DlgEditConnection::on_cbxDriver_currentIndexChanged(const QString &s)
 {
 	//qfTrash() << QF_FUNC_NAME << s << QFSqlConnectionBase::defaultPort(s);
-	if(edPort->text().toInt() == 0) edPort->setText(QString::number(QFSqlConnectionBase::defaultPort(s)));
+	//if(edPort->value() == 0)
+	//	edPort->setValue(QString::number(QFSqlConnectionBase::defaultPort(s)));
 	btFindDatabaseFile->setVisible(s.endsWith("SQLITE") || s.endsWith("IBASE"));
 	stackOptions->hide();
 	if(s.endsWith("SQLITE")) {

@@ -7,9 +7,7 @@
 	author:		Fanda Vacek (fanda.vacek@volny.cz)
 *********************************************************************/
 
-//#include <qfexception.h>
 #include <qfobjectitemmodel.h>
-//#include <qfxmlconfigdocument.h>
 
 #include <QWidget>
 
@@ -22,18 +20,23 @@
 class ServerTreeModel : public QFObjectItemModel
 {
 	Q_OBJECT
+private:
+	typedef QFObjectItemModel Super;
 protected:
-	QVariantList m_connections;
+	//QVariantList m_connections;
+	int m_maxConnectionId;
 public:
 	int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 	QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
 	QVariant headerData ( int section, Qt::Orientation o, int role = Qt::DisplayRole ) const;
 
 public:
-	void load(const QVariantMap& params);
+	void loadSettings();
+	void saveSettings();
+	int nextConnectionId();
 public:
-	ServerTreeModel(QObject *parent = NULL) : QFObjectItemModel(parent) { }
-	~ServerTreeModel() Q_DECL_OVERRIDE {}
+	ServerTreeModel(QObject *parent = NULL);
+	~ServerTreeModel() Q_DECL_OVERRIDE;
 };
 //=============================================
 

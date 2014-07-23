@@ -10,21 +10,24 @@
 //
 //
 #include "mainwindow.h"
+#include "theapp.h"
 
 #include "dlgcolumndef.h"
 
-#include <qfmsgshowagain.h>
-#include <qfsqlquery.h>
+#include <qf/core/log.h>
+#include <qf/core/utils.h>
 
-//#define QF_NO_TRASH_OUTPUT
-#include <qflogcust.h>
+//#include <qfmsgshowagain.h>
+//#include <qfsqlquery.h>
+
+namespace qfc = qf::core;
 
 QMap< QString, QMap<QString, QStringList> > DlgColumnDef::f_collationsCache;
 
 DlgColumnDef::DlgColumnDef(QWidget * parent, const QString& table)
 	:QDialog(parent)
 {
-	QFSql::parseFullName(table, &tableName, &dbName);
+	qfc::Utils::parseFieldName(table, &tableName, &dbName);
 	setupUi(this);
 	QStringList types;
 	if(connection().driverName().endsWith("SQLITE")) {
@@ -99,7 +102,7 @@ DlgColumnDef::~DlgColumnDef()
 {
 }
 
-QFSqlConnection DlgColumnDef::connection()
+QSqlDatabase DlgColumnDef::connection()
 {
 	//qfTrash() << QF_FUNC_NAME;
 	MainWindow *w = qfFindParent<MainWindow*>(this);

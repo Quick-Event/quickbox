@@ -4,12 +4,16 @@
 
 #include <qf/core/utils/crypt.h>
 #include <qf/core/log.h>
+#include <qf/core/utils.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <QIcon>
 #include <QVariant>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlDriver>
+#include <QSqlQuery>
+#include <QMessageBox>
 
 //=============================================================
 //                     ServerTreeItem
@@ -17,13 +21,13 @@
 ServerTreeItem::ServerTreeItem(QObject *parent, const QString& name)
 	: QObject(parent)
 {
-	//qfTrash() <<  QF_FUNC_NAME << this << name;
+	//qfDebug() <<  QF_FUNC_NAME << this << name;
 	setObjectName(name);
 }
 
 ServerTreeItem::~ServerTreeItem()
 {
-	//qfTrash() <<  QF_FUNC_NAME << this << objectName();
+	//qfDebug() <<  QF_FUNC_NAME << this << objectName();
 }
 
 MainWindow * ServerTreeItem::mainWindow()
@@ -34,12 +38,12 @@ MainWindow * ServerTreeItem::mainWindow()
 
 QFObjectItemModel* ServerTreeItem::model()
 {
-	//qfTrash() << QF_FUNC_NAME;
+	//qfDebug() << QF_FUNC_NAME;
 	QObject *o = this;
 	while(o) {
 		QFObjectItemModelRoot *r = qobject_cast<QFObjectItemModelRoot*>(o);
 		if(r) {
-			//qfTrash() << "\tmodel:" << r->model();
+			//qfDebug() << "\tmodel:" << r->model();
 			//r->model()->dumpObjectInfo();
 			return r->model();
 		}
@@ -63,8 +67,8 @@ Database* ServerTreeItem::database()
 
 void ServerTreeItem::driverDestroyed(QObject *o)
 {
-	qfTrash() << QF_FUNC_NAME << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-	qfTrash() << "\tdestroyed driver:" << o;
+	qfDebug() << QF_FUNC_NAME << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+	qfDebug() << "\tdestroyed driver:" << o;
 }
 
 //===================================================
@@ -75,56 +79,58 @@ Connection::~Connection()
 	//qDebug() <<  "destructor:" << this;
 }
 
-Connection::Connection(const QVariantMap &_params, QObject *parent, const QString& name)
-		: ServerTreeItem(parent, name), params(_params)
+Connection::Connection(const QVariantMap &_params, QObject *parent)
+	: ServerTreeItem(parent, QString()), m_params(_params)
 {
-	setObjectName(param("description"));
+	setObjectName(param("description").toString());
 	//qfInfo() << params.toString();
 }
 
 bool Connection::isOpen()
 {
-    return children().count() > 0;
+	return children().count() > 0;
 }
 
 void Connection::close()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	QModelIndex ix = model()->object2index(this);
 	model()->deleteChildren(ix);
 	/*
 	QModelIndex ix = model()->object2index(this);
 	while(model()->rowCount(ix)) {
 		QObject *o = model()->take(model()->index(0, 0, ix));
-		qfTrash() << o->objectName();
+		qfDebug() << o->objectName();
 		delete o;
 	}
 	*/
-    //foreach(QObject *o, children()) delete o;
+	//foreach(QObject *o, children()) delete o;
 }
 
-Database* Connection::open() throw(QFException)
+Database* Connection::open()
 {
 	Database *d = NULL;
 	QList<QObject*> olst;
-	try {
-		close();
-		QFObjectItemModel *m = model();
-		QModelIndex ix = m->object2index(this);
-		d = new Database(this, param("database"));
-		olst << d;
-		d->open();
-		QStringList sl = d->connection().databases();
+
+	close();
+	QFObjectItemModel *m = model();
+	QModelIndex ix = m->object2index(this);
+	d = new Database(this, param("database").toString());
+	olst << d;
+	bool ok = d->open();
+
+	if(ok) {
+		QStringList sl = d->databases();
 		foreach(QString s, sl) {
-			if(s == param("database")) continue;
+			if(s == param("database").toString())
+				continue;
 			olst << new Database(this, s);
 		}
 		m->append(olst, ix);
 	}
-	catch(QFException &e) {
-		QFDlgException dlg; dlg.exec(e);
-		qDeleteAll(olst);
-		d = NULL;
+	else {
+		qf::qmlwidgets::dialogs::MessageBox::showError(mainWindow(), d->sqlConnection().lastError().text());
+		QF_SAFE_DELETE(d);
 	}
 	return d;
 }
@@ -145,40 +151,71 @@ QVariant Connection::icon(int col)
 
 QVariant Connection::text(int col)
 {
-    QVariant ret;
-    switch(col) {
-		case 0: ret = param("description"); break;
-		case 1: ret = param("user") + "@" + param("host"); break;
-		case 2: ret = param("database"); break;
-		case 3: ret = param("driver"); break;
-    }
+	QVariant ret;
+	switch(col) {
+	case 0: ret = param("description"); break;
+	case 1: ret = param("user").toString() + "@" + param("host").toString(); break;
+	case 2: ret = param("database"); break;
+	case 3: ret = param("driver"); break;
+	}
 	return ret;
 }
 
-QString Connection::param(const QString& name)
+QString Connection::connectionNameId() const
 {
-	//qfInfo() << QFLog::stackTrace();
-	QString default_value = "";
-	if(name == "description") default_value = "New_Connection";
-	else if(name == "host") default_value = "localhost";
-	//qfInfo() << "default_value:" << default_value;
-	QFString s = params.cd(name, !Qf::ThrowExc).value(default_value).toString();
-	if(name == "password") {
-		s = QFCrypt().decrypt(s.toLatin1());
-		//qfInfo() << "password:" << s;
-	}
-	return s;
+	QString ret = "connection_%1";
+	return ret.arg(param("id").toInt());
 }
 
-void Connection::setParam(const QString& name, const QString& value)
+QVariant Connection::param(const QString& name) const
 {
-	Q_ASSERT(params.isElement());
-	QFString s = value;
+	//qfInfo() << QFLog::stackTrace();
+	QVariant default_value = "";
+	if(name == "description")
+		default_value = "New_Connection";
+	else if(name == "host")
+		default_value = "localhost";
+	//qfInfo() << "default_value:" << default_value;
+	QVariant ret = m_params.value(name, default_value);
 	if(name == "password") {
-		//qfTrash() << "password:" << s;
-		s = QString::fromLatin1(QFCrypt().crypt(s));
+		ret = theApp()->crypt().decrypt(ret.toString().toLatin1());
+		//qfInfo() << "password:" << s;
 	}
-	params.setValue(name, s);
+	return ret;
+}
+
+void Connection::setParam(const QString& name, const QVariant &value)
+{
+	QVariant val = value;
+	if(name == "password") {
+		//qfDebug() << "password:" << s;
+		val = theApp()->crypt().encrypt(value.toString(), 32);
+	}
+	m_params[name] = val;
+}
+/*
+QStringList Connection::allParamNames()
+{
+	static const QStringList all_keys;
+	if(all_keys.isEmpty())
+		all_keys << "id"
+				 << "description"
+				 << "host"
+				 << "port"
+				 << "user"
+				 << "password"
+				 << "database"
+				 << "driver"
+				 << "textcodec"
+				 << "mysqlSetNames"
+				 << "sqlite_pragma_short_column_names"
+				 << "sqlite_pragma_full_column_names";
+	return all_keys;
+}
+*/
+QVariantMap Connection::params() const
+{
+	return m_params;
 }
 //===================================================
 
@@ -189,13 +226,14 @@ void Connection::setParam(const QString& name, const QString& value)
 Database::Database(QObject *parent, const QString& name)
 	: ServerTreeItem(parent, name)
 {
-	QObject *o = Qf::findParentOfType(this, "MainWindow");
-	if(o) connect(this, SIGNAL(connectionInfo(const QString&)), o, SLOT(appendInfo(const QString&)));
+	QObject *o = qfFindParent<MainWindow*>(this);
+	if(o)
+		connect(this, SIGNAL(connectionInfo(const QString&)), o, SLOT(appendInfo(const QString&)));
 }
 
 Database::~Database()
 {
-	//qfTrash() << QF_FUNC_NAME << "############";
+	//qfDebug() << QF_FUNC_NAME << "############";
 	//close();
 	//qDebug() <<  "destructor:" << this;
 }
@@ -224,98 +262,192 @@ QVariant Database::text(int col)
 	return ret;
 }
 
-QString Database::getConnectionId()
+QString Database::connectionSignature()
 {
 	QString s;
 	Connection *c = qobject_cast<Connection*>(parent());
 	if(c) {
-		s = objectName() + "[" + c->param("driver") + "]" + c->param("user") + "@" + c->param("host") + ":" + c->param("port");
+		s = objectName() + "[" + c->param("driver").toString() + "]"
+				+ c->param("user").toString() + "@" + c->param("host").toString()
+				+ ":" + c->param("port").toString();
 	}
 	return s;
 }
 
-void Database::open() throw(QFException)
+QStringList Database::databases()
 {
-	qfTrash() << QF_FUNC_NAME;
-	Connection *c = qobject_cast<Connection*>(parent());
-	if(!c) return;
-	/*
-	sqlConnection = QFSqlConnection(QSqlDatabase::database(getConnectionId()));
-	if(!sqlConnection.isValid()) {
-		sqlConnection = QFSqlConnection(QSqlDatabase::addDatabase(c->param("driver"), getConnectionId()));
-	}
-	if(!sqlConnection.isValid()) {
-		QString s = tr("Error creating SQL connection %1").arg(getConnectionId())
-			+ QFEOLN + QFEOLN
-			+ sqlConnection.lastError().text();
-		throw QFException(s);
-	}
-	*/
-	sqlConnection.close();
-	sqlConnection = QFSqlConnection(c->param("driver"));
-	//QObject::connect(sqlConnection.driver(), SIGNAL(destroyed(QObject*)), this->parent(), SLOT(driverDestroyed(QObject*)));
-	sqlConnection.setHostName(c->param("host"));
-	sqlConnection.setPort(c->param("port").toInt());
-	sqlConnection.setUserName(c->param("user"));
-	sqlConnection.setPassword(c->param("password"));
-	//qDebug() << sqlConnection.password();
-	sqlConnection.setDatabaseName(objectName());
-	qfTrash() << "\t" << sqlConnection.info();
-	QFSqlConnection::ConnectionOptions opts;
-	//opts["QF_CODEC_NAME"] = theApp()->config()->value("/i18n/dbtextcodec", "UTF-8").toString();
-	QString codec_name = c->param("textcodec");
-	if(!codec_name.isEmpty()) opts["QF_CODEC_NAME"] = codec_name;
-	QString set_names = c->param("mysqlSetNames");
-	if(!set_names.isEmpty() && !set_names.startsWith("<")) opts["QF_MYSQL_SET_NAMES"] = set_names; /// konfigurak dava <no change> pro nic
-	sqlConnection.setJournal(theApp()->sqlJournal());
-	sqlConnection.open(opts);
-	/*
-	if(c->param("driver").endsWith("MYSQL")) {
-		QString set_names = c->param("mysqlSetNames");
-		if(!set_names.isEmpty() && set_names[0] != '<') {
-			QFSqlQuery q(sqlConnection);
-			q.exec("SET NAMES "SARG(set_names));
+	qfLogFuncFrame();
+	QStringList sl;
+	QSqlDriver *driver = sqlConnection().driver();
+	QF_ASSERT(driver != nullptr,
+			  "driver is NULL",
+			  return QStringList());
+	QSqlQuery q(driver->createResult());
+	q.setForwardOnly(true);
+
+	if(sqlConnection().driverName().endsWith("PSQL")) {
+		q.exec(QLatin1String("SELECT datname FROM pg_database "));
+		while(q.next()) {
+			QString s = q.value(0).toString();
+			//qfDebug() << "\tfound:" << s;
+			if(s.startsWith("template"))
+				continue;
+			sl.append(s);
 		}
 	}
-	else
-		*/
-	if(c->param("driver").endsWith("SQLITE")) {
+	else {
+		sl.append(sqlConnection().databaseName());
+	}
+	qfDebug() << "\tloaded from server:" << sl.join(", ");
+	return sl;
+}
+
+namespace {
+int defaultPort(const QString &driver_name)
+{
+	if(driver_name.endsWith("PSQL")) return 5432;
+	else if(driver_name.endsWith("MYSQL")) return 3306;
+	else if(driver_name.endsWith("IBASE")) return 3050;
+	return 0;
+}
+}
+
+QStringList Database::schemas() const
+{
+	qfLogFuncFrame();
+	QStringList ret;
+	QString driver_name = m_sqlConnection.driverName();
+	if(driver_name.endsWith("PSQL")) {
+		QSqlQuery q(m_sqlConnection);
+		q.setForwardOnly(true);
+		q.exec("SELECT n.nspname "
+			   " FROM pg_catalog.pg_namespace  AS n"
+			   " WHERE   (n.nspname NOT LIKE 'pg\\_temp\\_%' OR"
+			   " n.nspname = (pg_catalog.current_schemas(true))[1])"
+			   " ORDER BY 1");
+		//QSqlRecord r = q.record();
+		while(q.next()) {
+			QString s = q.value(0).toString();
+			//qfLogFuncFrame() << "loading schema" << s;
+			ret.append(s);
+		}
+	}
+	else if(driver_name.endsWith("SQLITE")) {
+		QSqlQuery q(m_sqlConnection);
+		q.setForwardOnly(true);
+		q.exec(QLatin1String("PRAGMA database_list"));
+		//QSqlRecord r = q.record();
+		while(q.next()) {
+			QString s = q.value("name").toString();
+			ret.append(s);
+		}
+	}
+	else if(driver_name.endsWith("MYSQL")) {
+		QSqlQuery q(m_sqlConnection);
+		q.setForwardOnly(true);
+		q.exec(QLatin1String("SHOW DATABASES;"));
+		//QSqlRecord r = q.record();
+		while(q.next()) {
+			QString s = q.value(0).toString();
+			ret.append(s);
+		}
+	}
+	else if(driver_name.endsWith("IBASE")) {
+		ret << "main";
+	}
+	qfDebug() << "\tloaded from server:" << ret.join(", ");
+	return ret;
+}
+
+bool Database::open()
+{
+	qfLogFuncFrame();
+	Connection *c = qobject_cast<Connection*>(parent());
+	QF_ASSERT(c!=nullptr,
+			  "Parent is not a kind of Connection",
+			  return false);
+	m_sqlConnection.close();
+	QString connection_id = c->connectionNameId();
+	m_sqlConnection = QSqlDatabase::database(connection_id, false);
+	QString driver_type = c->param("driver").toString();
+	if(!m_sqlConnection.isValid())
+		m_sqlConnection = QSqlDatabase::addDatabase(driver_type, connection_id);
+	QF_ASSERT(m_sqlConnection.isValid(),
+			  QString("Cannot add database for '%1' named '%2'").arg(c->param("driver").toString()).arg(connection_id),
+			  return false);
+	//QObject::connect(sqlConnection.driver(), SIGNAL(destroyed(QObject*)), this->parent(), SLOT(driverDestroyed(QObject*)));
+	m_sqlConnection.setHostName(c->param("host").toString());
+	m_sqlConnection.setPort(c->param("port").toInt());
+	m_sqlConnection.setUserName(c->param("user").toString());
+	m_sqlConnection.setPassword(c->param("password").toString());
+	//qDebug() << sqlConnection.password();
+	m_sqlConnection.setDatabaseName(objectName());
+	//qfDebug() << "\t" << m_sqlConnection.info();
+	QStringList opts;
+	//opts["QF_CODEC_NAME"] = theApp()->config()->value("/i18n/dbtextcodec", "UTF-8").toString();
+	QString codec_name = c->param("textcodec").toString();
+	if(!codec_name.isEmpty())
+		opts << "QF_CODEC_NAME=" + codec_name;
+	QString set_names = c->param("mysqlSetNames").toString();
+	if(!set_names.isEmpty() && !set_names.startsWith("<"))
+		opts << "QF_MYSQL_SET_NAMES=" << set_names; /// konfigurak dava <no change> pro nic
+	//m_sqlConnection.setJournal(theApp()->sqlJournal());
+	//m_sqlConnection.open(opts);
+	close();
+	if(m_sqlConnection.port() == 0)
+		m_sqlConnection.setPort(defaultPort(m_sqlConnection.driverName()));
+	if(!opts.isEmpty()) {
+		m_sqlConnection.setConnectOptions(opts.join(";"));
+	}
+	//qfInfo() << "password:" << password();
+	if(!m_sqlConnection.open()) {
+		m_sqlConnection.setConnectOptions();
+		qf::qmlwidgets::dialogs::MessageBox::showError(mainWindow(),
+													   tr("Error opening database %1").arg(connectionSignature())
+													   + "\n\n"
+													   + m_sqlConnection.lastError().text());
+		return false;
+	}
+	if(driver_type.endsWith("SQLITE")) {
 		{
-			QString s = c->param("sqlite_pragma_full_column_names");
-			if(s != "1") s = "0";
-			QFSqlQuery q(sqlConnection);
-			//qfTrash() << "\texecuting:" << "PRAGMA full_column_names = 1";
+			QString s = c->param("sqlite_pragma_full_column_names").toString();
+			if(s != "1")
+				s = "0";
+			QSqlQuery q(m_sqlConnection);
+			//qfDebug() << "\texecuting:" << "PRAGMA full_column_names = 1";
 			q.exec("PRAGMA full_column_names = " + s);
 		}
 		{
-			QString s = c->param("sqlite_pragma_short_column_names");
+			QString s = c->param("sqlite_pragma_short_column_names").toString();
 			if(s != "1") s = "0";
-			QFSqlQuery q(sqlConnection);
+			QSqlQuery q(m_sqlConnection);
 			q.exec("PRAGMA short_column_names = " + s);
 		}
 	}
-	qfTrash() << "\tdriver:" << sqlConnection.driver();
-	qfTrash() << "\tcodec:" << opts["QF_CODEC_NAME"];
-	qfTrash() << "\tis open:" << sqlConnection.isOpen();
-	QString s = sqlConnection.driver()->property("connectionInfo").toString();
-	qfTrash() << "\tinfo:" << s;
+	qfDebug() << "\tdriver:" << m_sqlConnection.driver();
+	//qfDebug() << "\tcodec:" << opts["QF_CODEC_NAME"];
+	qfDebug() << "\tis open:" << m_sqlConnection.isOpen();
+	QString s = m_sqlConnection.driver()->property("connectionInfo").toString();
+	qfDebug() << "\tinfo:" << s;
 	emit connectionInfo(s);
 
 	QFObjectItemModel *m = model();
 	QModelIndex ix = m->object2index(this);
 	QList<QObject*> olst;
-	if(sqlConnection.driverName().endsWith("IBASE")) {
+	if(m_sqlConnection.driverName().endsWith("IBASE")) {
 		/// tables
 		QStringList sl;
-		sl = sqlConnection.tables("cokoli", QSql::Tables);
+		sl = m_sqlConnection.tables(QSql::Tables);
 		qSort(sl);
-		foreach(QString s, sl) olst << new Table(this, s, QFSql::TableRelation);
-		sl = sqlConnection.tables("cokoli", QSql::Views);
+		foreach(QString s, sl)
+			olst << new Table(this, s, QSql::Tables);
+		sl = m_sqlConnection.tables(QSql::Views);
 		qSort(sl);
-		foreach(QString s, sl) olst << new Table(this, s, QFSql::ViewRelation);
+		foreach(QString s, sl)
+			olst << new Table(this, s, QSql::Views);
 	}
 	else {
-		foreach(QString s, sqlConnection.schemas()) {
+		foreach(QString s, schemas()) {
 			Schema *sch = new Schema(NULL, s);
 			olst << sch;
 			connect(sch, SIGNAL(progressValue(double, const QString&)), mainWindow(), SLOT(setProgressValue(double, const QString&)));
@@ -323,43 +455,19 @@ void Database::open() throw(QFException)
 	}
 	m->append(olst, ix);
 	
-	//QFObjectItemModel *m = model();
-	//int n = sl.count();
-	//if(n > 0)
-	//	m->emitRowsInserted(m->object2index(this), 0, n-1);
+	return true;
 }
 
 void Database::close()
 {
-	qfTrash() << this << "Database::close(): " << sqlConnection.info();
-	sqlConnection.close();
-	sqlConnection = QSqlDatabase(); // zrus referenci na databasi
+	qfLogFuncFrame() << this << "Database::close(): " << connectionSignature();
+	m_sqlConnection.close();
+	m_sqlConnection = QSqlDatabase(); // zrus referenci na databasi
 
 	// vymaz deti
 	QModelIndex ix = model()->object2index(this);
 	model()->deleteChildren(ix);
-	//QSqlDatabase::removeDatabase(getConnectionId());
-	// delete tables
-	/*
-	QObjectList chld_lst = children();
-	while(!chld_lst.isEmpty())
-        delete chld_lst.takeFirst();
-	*/
-	//QFObjectItemModel *m = model();
-	/*
-	int n = children().count();
-	if(n > 0) {
-		//m->emitRowsAboutToBeRemoved(m->object2index(this), 0, n-1);
-		// objekt se v destruktoru sam vyjme ze seznamu
-		foreach(QObject *o, children()) {
-			delete o; // nevim, jestli se to nebude sekat, nemelo by
-			//o->deleteLater(); // tohle je tutovka
-		}
-	}
-	*/
 }
-
-//===================================================
 
 //=============================================================
 //                     Schema
@@ -383,19 +491,20 @@ QVariant Schema::text(int col)
 	return ret;
 }
 
-QString Schema::createScript(int flags) throw(QFException)
+QString Schema::createScript(int flags)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 
 	QString ret;
-	if(!isOpen()) open();
+	if(!isOpen())
+		open();
 	
 	// find parent database
 	Database *d = database();
 	if(!d) return "cann't find database";
-	QFSqlConnection c = d->connection();
+	QSqlDatabase c = d->sqlConnection();
 	if(c.driverName().endsWith("SQLITE")) {
-		QFSqlQuery q(c);
+		QSqlQuery q(c);
 		q.exec("SELECT sql FROM main.sqlite_master WHERE NAME NOT LIKE 'sqlite_%'");
 		QStringList sl;
 		while(q.next()) {
@@ -404,6 +513,8 @@ QString Schema::createScript(int flags) throw(QFException)
 		ret = sl.join("\n");
 	}
 	else {
+		Q_UNUSED(flags);
+#if 0
 		QFSqlCatalog &cat = c.catalog();
 		if(c.driverName().endsWith("MYSQL")) {
 			cat.setCurrentSchema(objectName());
@@ -424,14 +535,14 @@ QString Schema::createScript(int flags) throw(QFException)
 		foreach(QString s, sl_views) {
 			new Table(this, s, QFSql::ViewRelation);
 		}
-		qfTrash() << "\t tables count:" << sl.count();
+		qfDebug() << "\t tables count:" << sl.count();
 		double cnt = sl.count();
 		int no = 1;
 		foreach(QString s, sl_tables) {
 			QFSqlTableInfo ti = di.table(s);
 			QString tbl_name = ti.fullName();
 			emit progressValue(no++/cnt, ti.tableName());
-			qfTrash() << "\t table name:" << tbl_name;
+			qfDebug() << "\t table name:" << tbl_name;
 			if(flags & CreateTableSql) {
 				ret += c.createTableSqlCommand(tbl_name);
 				ret += "\n\n";
@@ -445,29 +556,47 @@ QString Schema::createScript(int flags) throw(QFException)
 			QFSqlTableInfo ti = di.table(s);
 			QString tbl_name = ti.fullName();
 			emit progressValue(no++/cnt, ti.tableName());
-			qfTrash() << "\t table name:" << tbl_name;
+			qfDebug() << "\t table name:" << tbl_name;
 			if(flags & CreateTableSql) {
 				ret += c.createTableSqlCommand(tbl_name);
 				ret += "\n\n";
 			}
 		}
+#endif
 	}
 	emit progressValue(-1);
 	return ret;
 }
 
-void Schema::open() throw(QFException)
+void Schema::open()
 {
 	qfLogFuncFrame();
-	if(isOpen()) return;
+	if(isOpen())
+		return;
 	/// find parent database
 	Database *d = database();
 	if(!d) return;
-	QFSqlConnection c = d->connection();
+	/*
+	QSqlDatabase c = d->sqlConnection();
 	QFSqlCatalog &cat = c.catalog();
 	if(c.driverName().endsWith("MYSQL")) {
 		cat.setCurrentSchema(objectName());
 	}
+	*/
+	QList<QObject*> olst;
+	/// tables
+	QStringList sl = d->sqlConnection().tables(QSql::Tables);
+	qSort(sl);
+	foreach(QString s, sl)
+		olst << new Table(nullptr, s, QSql::Tables);
+	sl = d->sqlConnection().tables(QSql::Views);
+	qSort(sl);
+	foreach(QString s, sl)
+		olst << new Table(nullptr, s, QSql::Views);
+	QFObjectItemModel *m = model();
+	QModelIndex ix = m->object2index(this);
+	m->append(olst, ix);
+#if 0
 	QFSqlDbInfo di = cat.database(objectName());
 	QStringList sl_tables = di.tables(QFSql::AllRelations & ~QFSql::ViewRelation);
 	QStringList sl_views = di.tables(QFSql::ViewRelation);
@@ -476,17 +605,17 @@ void Schema::open() throw(QFException)
 	QModelIndex ix = m->object2index(this);
 	QList<QObject*> olst;
 	foreach(QString s, sl_tables) {
-		qfTrash() << "\t adding table" << s;
-		olst << new Table(NULL, s, QFSql::TableRelation);
+		qfDebug() << "\t adding table" << s;
+		olst << new Table(NULL, s, QSql::Tables);
 	}
 	qSort(sl_views);
 	foreach(QString s, sl_views) {
-		qfTrash() << "\t adding view" << s;
-		olst << new Table(NULL, s, QFSql::ViewRelation);
+		qfDebug() << "\t adding view" << s;
+		olst << new Table(NULL, s, QSql::Views);
 	}
 	m->append(olst, ix);
 	/*
-	if(c.driverType() == QFSqlConnection::PSQL) {
+	if(c.driverType() == QSqlDatabase::PSQL) {
 		QString s = "SELECT n.nspname,	c.relname,"
 							"	CASE c.relkind WHEN 'r' THEN 'table' WHEN 'v' THEN 'view' WHEN 'i' THEN 'index' WHEN 'S' THEN 'sequence' WHEN 's' THEN 'special' END AS type,"
 							"	u.usename,"
@@ -497,32 +626,28 @@ void Schema::open() throw(QFException)
 							" WHERE c.relkind IN ('r','v')"
 							"  AND n.nspname = '%1'"
 							" ORDER BY 1,2;";
-		QFSqlQuery q(c);
+		QSqlQuery q(c);
 		q.exec(s.arg(objectName()));
-		foreach(QFSqlQuery::Row row, q.rows()) {
+		foreach(QSqlQuery::Row row, q.rows()) {
 			QString kind = row.value(2).toString();
 			if(kind == "view") new Table(this, row.value(1).toString(), Table::KindView);
 			if(kind == "table") new Table(this, row.value(1).toString(), Table::KindTable);
 		}
 	}
 	*/
-
+#endif
 	isopen = true;
 }
 
 void Schema::close()
 {
-	//qfTrash() << QF_FUNC_NAME;
+	//qfDebug() << QF_FUNC_NAME;
 	QModelIndex ix = model()->object2index(this);
 	model()->deleteChildren(ix);
 	isopen = false;
 	Database *d = database();
 	if(!d) return;
-	QFSqlConnection c = d->connection();
-	QFSqlCatalog &cat = c.catalog();
-	cat.forgetDatabase(objectName());
 }
-//===================================================
 
 //===================================================
 //                 Table
@@ -535,9 +660,10 @@ Table::~Table()
 QVariant Table::icon(int col)
 {
 	if(col == 0) {
-		if(kind == QFSql::TableRelation) return qVariantFromValue(QFPixmapCache::icon("icon.table", ":/images/table.png"));
-		else if(kind == QFSql::ViewRelation) return qVariantFromValue(QFPixmapCache::icon("icon.view", ":/images/view.png"));
-		else if(kind == QFSql::SystemTableRelation) return qVariantFromValue(QFPixmapCache::icon("icon.systemTable", ":/images/systemtable.png"));
+		if(kind == QSql::Tables)
+			return qVariantFromValue(QIcon(":/images/table.png"));
+		else if(kind == QSql::Views)
+			return qVariantFromValue(QIcon(":/images/view.png"));
 	}
 	return QVariant();
 }

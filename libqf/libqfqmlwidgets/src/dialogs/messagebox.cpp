@@ -14,3 +14,8 @@ void MessageBox::showException(QWidget *parent, const qf::core::Exception &exc)
 	QString msg = exc.message();
 	QMessageBox::critical(parent, tr("Exception"), msg);
 }
+
+void MessageBox::showError(QWidget *parent, const QString &message)
+{
+	QMessageBox::critical(parent, tr("Error"), message);
+}
