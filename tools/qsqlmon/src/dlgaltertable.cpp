@@ -8,6 +8,7 @@
 
 #include <QDialog>
 #include <QErrorMessage>
+#include <QSqlQuery>
 
 //#include <qfmessage.h>
 //#include <qfsqlquery.h>
@@ -37,13 +38,15 @@ DlgAlterTable::~DlgAlterTable()
 
 void DlgAlterTable::refresh()
 {
-	m_fields = QFSqlFieldInfo::loadFields(qfc::Utils::composeFieldName(m_tableName, m_schemaName));
+	m_fields = QFSqlFieldInfo::loadFields(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName));
 	lstFields->clear();
-	lstFields->addItems(ti.unorderedFields());
+	for(auto fi : m_fields)
+		lstFields->addItem(fi.shortName());
 	lstIndexes->clear();
-	foreach(QFSqlConnectionBase::IndexInfo ii, ti.indexes()) lstIndexes->addItem(ii.name);
+	for(auto ii : QFSqlIndexInfo::loadIndexes(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName)))
+		lstIndexes->addItem(ii.name);
 	if(connection().driverName().endsWith("MYSQL")) {
-		QFSqlQuery q(connection());
+		QSqlQuery q(connection());
 		q.exec(QString("SHOW TABLE status FROM %1 LIKE '%2'").arg(m_schemaName).arg(m_tableName));
 		if(q.next()) {
 			oldComment = q.value("comment").toString();
@@ -56,7 +59,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 {
 	if(lstFields->currentRow() < 0) append = true;
 
-	DlgColumnDef dlg(this, QFSql::composeFullName(m_tableName, m_schemaName));
+	DlgColumnDef dlg(this, qfc::Utils::composeFieldName(m_tableName, m_schemaName);
 	while(true) {
 		if(dlg.exec() == QDialog::Accepted) {
 			QStringList sql_commands;

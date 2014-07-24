@@ -1,19 +1,12 @@
-
-//
-// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2005
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-#include <qfsqlquery.h>
-#include <qfmessage.h>
-
 #include "mainwindow.h"
-//#include "dlgaltertable.h"
 
 #include "ui_dlgindexdef.h"
 #include "dlgindexdef.h"
+#include "qfsqlcatalog.h"
 
-#include <qflogcust.h>
+#include <qf/core/log.h>
+#include <qf/core/utils.h>
+#include <qf/core/string.h>
 
 DlgIndexDef::DlgIndexDef(QWidget * parent, const QString &table_name, const QString &index_name)
 	: QDialog(parent), indexName(index_name)
@@ -23,7 +16,7 @@ DlgIndexDef::DlgIndexDef(QWidget * parent, const QString &table_name, const QStr
 	ui->btAdd->setDefaultAction(ui->actionAddFieldToIndex);
 	ui->btRemove->setDefaultAction(ui->actionRemoveFieldFromIndex);
 
-	QFSql::parseFullName(table_name, &tableName, &dbName);
+	qf::core::Utils::parseFieldName(table_name, &tableName, &dbName);
 
 	ui->edIndexName->setText(indexName);
 	//DlgAlterTable *dat = qfFindInheritedParent<DlgAlterTable*>(this);
@@ -51,7 +44,7 @@ void DlgIndexDef::on_actionAddFieldToIndex_triggered()
 	if(ui->edIndexName->text().isEmpty()) {
 		it = ui->lstTable->currentItem();
 		if(it) {
-			QFString s = it->text();
+			String s = it->text();
 			ui->edIndexName->setText("x" + s.slice(0, 1).toUpper() + s.slice(1));
 		}
 	}

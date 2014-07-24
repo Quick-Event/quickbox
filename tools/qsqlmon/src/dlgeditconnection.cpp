@@ -2,10 +2,7 @@
 #include "theapp.h"
 
 #include <qf/core/log.h>
-
-//#include <qfstring.h>
-//#include <qfapplication.h>
-//#include <qfxmlconfigdocument.h>
+#include <qf/qmlwidgets/dialogs/filedialog.h>
 
 #include <QFileDialog>
 #include <QVariant>
@@ -112,6 +109,7 @@ void DlgEditConnection::on_cbxDriver_currentIndexChanged(const QString &s)
 
 void DlgEditConnection::on_btFindDatabaseFile_clicked()
 {
-	QString s = qfApp()->getOpenFileName (this, tr("Open database file"));
-	if(!s.isEmpty()) edDatabase->setText(s);
+	QString s = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Open database file"));
+	if(!s.isEmpty())
+		edDatabase->setText(s);
 }

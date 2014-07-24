@@ -104,7 +104,7 @@ DlgColumnDef::~DlgColumnDef()
 
 QSqlDatabase DlgColumnDef::connection()
 {
-	//qfTrash() << QF_FUNC_NAME;
+	//qfLogFuncFrame();
 	MainWindow *w = qfFindParent<MainWindow*>(this);
 	return w->activeConnection();
 }
@@ -131,7 +131,7 @@ void DlgColumnDef::enableControls(bool v)
 
 void DlgColumnDef::clearFields()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfLogFuncFrame();
 	edName->setText(QString());
 	lstType->setCurrentIndex(0);
 	edLength->setText(QString());
@@ -153,7 +153,7 @@ void DlgColumnDef::clearFields()
 
 void DlgColumnDef::loadColumnDefinition(const QFSqlFieldInfo &fi)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfLogFuncFrame();
 	qfTrash() << fi.toString();
 	clearFields();
 	enableControls(true);
@@ -318,7 +318,7 @@ void DlgColumnDef::loadCollationsForCurrentCharset()
 			if(!f_collationsCache.contains(drv_key)) {
 				if(drv_key == "MYSQL") {
 					f_collationsCache[drv_key]; /// zabran opakovanemu reloadu
-					QFSqlQuery q(connection());
+					QSqlQuery q(connection());
 					q.exec("SELECT * FROM information_schema.collations", !Qf::ThrowExc);
 					while(q.next()) {
 						f_collationsCache[drv_key][q.value("character_set_name").toString().toLower()] << q.value("collation_name").toString().toLower();

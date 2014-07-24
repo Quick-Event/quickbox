@@ -12,7 +12,7 @@
 #ifndef DLGCOLUMNDEF_H
 #define DLGCOLUMNDEF_H
 
-#include "qfsqlfieldinfo.h"
+#include "qfsqlcatalog.h"
 
 #include <QDialog>
 

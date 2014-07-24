@@ -1,6 +1,7 @@
 #ifndef QF_CORE_UTILS_CSVREADER_H
 #define QF_CORE_UTILS_CSVREADER_H
 
+#include "../core/coreglobal.h"
 #include "../core/utils.h"
 
 class QTextStream;

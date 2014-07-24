@@ -13,7 +13,7 @@
 #define DLGALTERTABLE_H
 
 #include "ui_dlgaltertable.h"
-#include "qfsqlfieldinfo.h"
+#include "qfsqlcatalog.h"
 
 #include <QDialog>
 
@@ -29,7 +29,7 @@ class DlgAlterTable : public QDialog, Ui::DlgAlterTable
 	protected:
 		QString m_tableName, m_schemaName;
 		QString oldComment;
-		QList<QFSqlFieldInfo> m_fields;
+		//QList<QFSqlFieldInfo> m_fields;
 
 		void refresh();
 	private slots:

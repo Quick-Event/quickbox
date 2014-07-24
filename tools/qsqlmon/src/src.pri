@@ -29,7 +29,7 @@ HEADERS +=      \
 	columnselectorwidget.h  \
 	qfsqlsyntaxhighlighter.h \
 	qfobjectitemmodel.h \
-	qfsqlfieldinfo.h \
+	qfsqlcatalog.h \
 
 SOURCES +=      \
 	main.cpp      \
@@ -49,7 +49,7 @@ SOURCES +=      \
 	columnselectorwidget.cpp  \
 	qfsqlsyntaxhighlighter.cpp \
 	qfobjectitemmodel.cpp \
-	qfsqlfieldinfo.cpp \
+	qfsqlcatalog.cpp \
 
 FORMS +=      \
 	centralwidget.ui      \
