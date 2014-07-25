@@ -6,12 +6,12 @@
 //
 #include "servertreeview.h"
 
+#include <qf/core/log.h>
+
 #include <QKeyEvent>
 
-#include <qflogcust.h>
-
 ServerTreeView::ServerTreeView(QWidget *parent)
-	: QFTreeView(parent)
+	: QTreeView(parent)
 {
 }
 
@@ -21,7 +21,7 @@ ServerTreeView::~ServerTreeView()
 		
 void ServerTreeView::keyPressEvent(QKeyEvent *e)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfLogFuncFrame();
 	bool modified = (e->modifiers() != Qt::NoModifier && e->modifiers() != Qt::KeypadModifier);
 	bool key_enter = (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter);
 	//bool alpha_num = (e->key() >= 0x20 && e->key() < 0x80);

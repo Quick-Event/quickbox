@@ -20,6 +20,7 @@ public:
 public:
 	static void showException(QWidget *parent, const qf::core::Exception &exc);
 	static void showError(QWidget *parent, const QString &message);
+	static void showInfo(QWidget *parent, const QString &message);
 };
 
 }}}

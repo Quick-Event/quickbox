@@ -24,7 +24,7 @@ public:
 	//virtual ~DbInfo();
 public:
 	typedef QMap<QString, QString> ConnectionOptions;
-	struct IndexInfo {
+	struct QFCORE_DECL_EXPORT IndexInfo {
 		QString name;
 		bool unique;
 		bool primary;

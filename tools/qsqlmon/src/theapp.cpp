@@ -8,7 +8,9 @@
 #include "theapp.h"
 #include "driver/qfhttpmysql/qfhttpmysql.h"
 
-#include <qflogcust.h>
+#include <qf/core/log.h>
+
+#include <QSqlDriverCreatorBase>
 
 //======================================================
 //                   SqlJournal
@@ -40,37 +42,40 @@ class QFHttpMySqlDriverCreator : public QSqlDriverCreatorBase
 SqlJournal TheApp::f_sqlJournal;
 
 TheApp::TheApp(int & argc, char ** argv)
-	: QFApplication(argc, argv)
+	: QApplication(argc, argv)
 {
-	f_reportProcessorSearchDirs = NULL;
+	QCoreApplication::setOrganizationDomain("quickbox.org");
+	QCoreApplication::setOrganizationName("QuickBox");
+	//f_reportProcessorSearchDirs = NULL;
 	setApplicationName("qsqlmon");
 
 	QSqlDatabase::registerSqlDriver("QFHTTPMYSQL", new QFHttpMySqlDriverCreator());
-
+	/*
 	QFXmlConfigSplittedFileLoader *ldr = new QFXmlConfigSplittedFileLoader(this);
 	f_config = new QFXmlConfig(this);
 	f_config->setConfigLoader(ldr);
 	f_config->load();
+	*/
 }
 
 TheApp::~TheApp()
 {
-	qfTrash() << QF_FUNC_NAME << "config()->dataDocument().isEmpty():" << config()->dataDocument().isEmpty();
-	if(!config()->dataDocument().isEmpty()) config()->save();
+	//qfDebug() << QF_FUNC_NAME << "config()->dataDocument().isEmpty():" << config()->dataDocument().isEmpty();
+	//if(!config()->dataDocument().isEmpty()) config()->save();
 }
 
 TheApp* TheApp::instance()
 {
-	TheApp *a = qobject_cast<TheApp*>(QFApplication::instance());
-	QF_ASSERT(a, "aplikace dosud neni inicializovana");
+	TheApp *a = qobject_cast<TheApp*>(QApplication::instance());
+	QF_ASSERT_EX(a!=nullptr, "Application is not initialized yet");
 	return a;
 }
 
 qf::core::utils::Crypt TheApp::crypt()
 {
-	return qf::core::utils::Crypt;
+	return qf::core::utils::Crypt();
 }
-
+/*
 QFXmlConfig* TheApp::config(bool throw_exc)
 {
 	Q_UNUSED(throw_exc);
@@ -92,7 +97,7 @@ void TheApp::redirectLog()
 	}
 	if(!redirected) QFLog::redirectDefaultLogFile();
 }
-
+*/
 QString TheApp::versionString() const
 {
 	static QString s = "1.3.6";
@@ -103,7 +108,7 @@ SqlJournal * TheApp::sqlJournal()
 {
 	return &f_sqlJournal;
 }
-
+/*
 QFSearchDirs* TheApp::reportProcessorSearchDirs()
 {
 	if(!f_reportProcessorSearchDirs) {
@@ -111,3 +116,4 @@ QFSearchDirs* TheApp::reportProcessorSearchDirs()
 	}
 	return f_reportProcessorSearchDirs;
 }
+*/

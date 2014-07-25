@@ -1,32 +1,11 @@
 #ifndef QFSQLCATALOG_H
 #define QFSQLCATALOG_H
 
+#include <qf/core/sql/dbinfo.h>
+
 #include <QSqlField>
 
 class QSqlDatabase;
-
-class SqlUtils
-{
-public:
-	SqlUtils(const QSqlDatabase &connection)
-	{
-		m_connection = connection;
-	}
-
-public:
-	void setCurrentSchema(const QString &schema_name);
-
-	//! retrieves CREATE TABLE ... Sql script for \a tblname.
-	QString createTableSqlCommand(const QString &tblname);
-
-	//! retrieves INSERT INTO ... Sql script for \a tblname.
-	QString dumpTableSqlCommand(const QString &tblname);
-
-	//! take CREATE TABLE ... and parse fields definitions from it.
-	static QStringList fieldDefsFromCreateTableCommand(const QString &cmd);
-private:
-	QSqlDatabase m_connection;
-};
 
 template <class T>
 class QFSqlInfoList : public QMap<QString, T>
@@ -57,7 +36,7 @@ private:
 	{
 		QString fulltablename;
 		QString seqname;
-		quint8 nullable:1, isunsigned:1, autoincrement:1;
+		quint8 nullable:1, isunsigned:1, autoincrement:1, prikey:1;
 		QString characterSet;
 		QString collation;
 		QString comment;
@@ -91,6 +70,8 @@ public:
 	void setUnsigned(bool b) {data.isunsigned = b;}
 	bool isAutoIncrement() const {return data.autoincrement;}
 	void setAutoIncrement(bool b) {data.autoincrement = b;}
+	bool isPriKey() const {return data.prikey;}
+	void setPriKey(bool b = true) {data.prikey = b;}
 	QVariant seqNextVal();
 	QString toString(const QString &indent = QString()) const;
 public:
@@ -113,17 +94,14 @@ public:
 	void load(const QSqlDatabase &connection, const QString table_id) Q_DECL_OVERRIDE;
 };
 
+typedef qf::core::sql::DbInfo::IndexInfo QFSqlIndexInfo;
 
-struct QFSqlIndexInfo
+class QFSqlIndexInfoList : public QFSqlInfoList<QFSqlIndexInfo>
 {
-	QString name;
-	bool unique;
-	bool primary;
-	QStringList fields;
-
-	QFSqlIndexInfo() : unique(false), primary(false) {}
-
-	static QList<QFSqlIndexInfo> loadIndexes(const QSqlDatabase &connection, const QString table_id);
+private:
+	typedef QFSqlInfoList<QFSqlIndexInfo> Super;
+public:
+	void load(const QSqlDatabase &connection, const QString table_id) Q_DECL_OVERRIDE;
 };
 
 #endif // QFSQLCATALOG_H

@@ -20,10 +20,7 @@ class SqlJournal //: public qf::core::LogDevice
 	protected:
 		QStringList m_log;
 	public:
-		virtual void log(const QString &msg)
-		{
-			m_log << msg;
-		}
+		virtual void log(const QString &msg);
 
 		QStringList content() {return m_log;}
 		void setContent(const QStringList &sl) {m_log = sl;}

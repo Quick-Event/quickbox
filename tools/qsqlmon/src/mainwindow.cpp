@@ -12,15 +12,12 @@
 
 #include "driver/qfhttpmysql/qfhttpmysql.h"
 
+#include "qfsqlsyntaxhighlighter.h"
+
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 #include <qf/core/model/sqlquerytablemodel.h>
 
-//#include <qfdlgtextview.h>
-//#include <qfdlghtmlview.h>
-//#include <qftableview.h>
-//#include <qfstatusbar.h>
-//#include <qfdlgopenurl.h>
-#include <qfsqlsyntaxhighlighter.h>
 
 #include <QStandardItemModel>
 #include <QTextCursor>
@@ -122,23 +119,25 @@ QFSqlQueryTable* MainWindow::modelTable()
 	return t;
 }
 */
-QFSqlQueryTableModel* MainWindow::queryViewModel(bool throw_exc) const throw(QFException)
+QFSqlQueryTableModel* MainWindow::queryViewModel(bool throw_exc) const
 {
 	QFSqlQueryTableModel *m = qobject_cast<QFSqlQueryTableModel*>(ui.queryView->model(!Qf::ThrowExc));
-	if(throw_exc && !m) QF_EXCEPTION(tr("Model is NULL or not a kind of QFSqlQueryTableModel."));
+	QF_ASSERT_EX(m!=nullptr, tr("Model is NULL or not a kind of QFSqlQueryTableModel."));
 	return m;
 }
 
 void MainWindow::setQueryViewModel(QFSqlQueryTableModel *m)
 {
 	ui.queryView->setModel(m);
-	if(m) m->setParent(ui.queryView);
+	if(m)
+		m->setParent(ui.queryView);
 }
 
 QSqlDatabase MainWindow::setActiveConnection2(Database *dd)
 {
 	QFSqlConnection c;
-	if(dd) c = dd->sqlConnection();
+	if(dd)
+		c = dd->sqlConnection();
 	//qfInfo() << c.signature();
 	QFSqlConnection ret = setActiveConnection1(c);
 	#if 0

@@ -17,12 +17,12 @@
 class  ServerTreeView : public QTreeView
 {
 	Q_OBJECT
-	public:
-		ServerTreeView(QWidget *parent = NULL);
-		virtual ~ServerTreeView();
-		
-		virtual void keyPressEvent(QKeyEvent *event);
+public:
+	ServerTreeView(QWidget *parent = NULL);
+	virtual ~ServerTreeView();
+
+	virtual void keyPressEvent(QKeyEvent *event);
 };
-   
+
 #endif // SERVERTREEVIEW_H
 

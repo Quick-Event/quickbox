@@ -15,10 +15,11 @@
 #include "dlgcolumndef.h"
 
 #include <qf/core/log.h>
+#include <qf/core/string.h>
 #include <qf/core/utils.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
-//#include <qfmsgshowagain.h>
-//#include <qfsqlquery.h>
+#include <QSqlQuery>
 
 namespace qfc = qf::core;
 
@@ -143,8 +144,8 @@ void DlgColumnDef::clearFields()
 	chkUnsigned->setChecked(false);
 	lstRefTable->clear();
 	if(!dbName.isEmpty()) {
-		QFSqlDbInfo di = connection().catalog().database(dbName);
-		lstRefTable->addItems(di.tables());
+		qf::core::sql::DbInfo dbi(connection());
+		lstRefTable->addItems(dbi.tables(dbName, QSql::AllTables));
 	}
 	lstRefTable->setCurrentIndex(-1);
 	lstCharacterSet->setCurrentIndex(0);
@@ -154,23 +155,24 @@ void DlgColumnDef::clearFields()
 void DlgColumnDef::loadColumnDefinition(const QFSqlFieldInfo &fi)
 {
 	qfLogFuncFrame();
-	qfTrash() << fi.toString();
+	qfDebug() << fi.toString();
 	clearFields();
 	enableControls(true);
 	edName->setFocus();
 	edName->setText("new_field");
 	edName->selectAll();
 	btOk->setEnabled(true);
-	if(!fi.isValid()) return;
+	if(!fi.isValid())
+		return;
 	enableControls(false);
-	edName->setText(fi.fieldName());
+	edName->setText(fi.shortName());
 	edName->selectAll();
 	lstCharacterSet->setEnabled(false);
 	lstCharacterSet->setCurrentIndex(-1);
 	lstCollation->setEnabled(false);
 	lstCollation->setCurrentIndex(-1);
 	QString s = fi.nativeType();
-	qfTrash() << "\tnative type:" << s << "length:" << fi.length();
+	qfDebug() << "\tnative type:" << s << "length:" << fi.length();
 	if(connection().driverName().endsWith("MYSQL")) {
 		if(s == "tinyint" && fi.length() == 1) s = "boolean";
 	}
@@ -185,11 +187,11 @@ void DlgColumnDef::loadColumnDefinition(const QFSqlFieldInfo &fi)
 	chkPrimaryKey->setChecked(fi.isPriKey());
 	txtComment->setPlainText(fi.comment());
 	if(connection().driverName().endsWith("SQLITE")) {
-		QFMsgShowAgain::show(this,"SQLite ver 3.2.2 can only rename already created fields");
+		qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "SQLite ver 3.2.2 can only rename already created fields");
 		edName->setEnabled(true);
 	}
 	else if(connection().driverName().endsWith("PSQL")) {
-		QFMsgShowAgain::show(this,"Altering columns is not fully supported yet.");
+		qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Altering columns is not fully supported yet.");
 		edName->setEnabled(true);
 		lstType->setEnabled(true);
 		edDefaultValue->setEnabled(true);
@@ -236,8 +238,9 @@ void DlgColumnDef::on_lstRefTable_currentIndexChanged(const QString & text)
 {
 	lstRefColumn->clear();
 	if(!text.isEmpty()) {
-		QFSqlTableInfo ti = connection().catalog().table(QFSql::composeFullName(text, dbName), !Qf::ThrowExc);
-		lstRefColumn->addItems(ti.unorderedFields());
+		QFSqlFieldInfoList fldlst;
+		fldlst.load(connection(), qfc::Utils::composeFieldName(text, dbName));
+		lstRefColumn->addItems(fldlst.unorderedKeys());
 	}
 	lstRefColumn->setCurrentIndex(-1);
 }
@@ -248,7 +251,7 @@ QString DlgColumnDef::toString()
 	QString type = lstType->currentText();
 	ret = type;
 	if(type == "enum" || type == "set") {
-		QFString s = txtEnum->toPlainText();
+		qf::core::String s = txtEnum->toPlainText();
 		QStringList sl = s.splitAndTrim('\n');
 		s = sl.join("','");
 		ret += "('" + s + "')";

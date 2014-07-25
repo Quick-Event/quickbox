@@ -104,7 +104,7 @@
       <para style="font:{size:12}" halign="center" w="60">Špičák\n20. 7. 2014</para>
       <space w="%"/>
       <frame fill="">
-       <image src="./kachna-podpis.png" w="50" aspectratio="keep" backgroundItem="true"/>
+       <image src="./stamp.png" w="50" aspectratio="keep" backgroundItem="true"/>
        <frame>
         <space h="25"/>
         <para style="font:{size:12}" halign="center" tbrd="blackdot05" w="60" valign="bottom">Petr Martinec\nředitel závodu</para>

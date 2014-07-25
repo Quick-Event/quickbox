@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "theapp.h"
 
 #include "ui_dlgindexdef.h"
 #include "dlgindexdef.h"
@@ -7,6 +8,8 @@
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
 #include <qf/core/string.h>
+
+namespace qfc = qf::core;
 
 DlgIndexDef::DlgIndexDef(QWidget * parent, const QString &table_name, const QString &index_name)
 	: QDialog(parent), indexName(index_name)
@@ -20,8 +23,10 @@ DlgIndexDef::DlgIndexDef(QWidget * parent, const QString &table_name, const QStr
 
 	ui->edIndexName->setText(indexName);
 	//DlgAlterTable *dat = qfFindInheritedParent<DlgAlterTable*>(this);
-	QFSqlTableInfo ti = connection().catalog().table(dbName + "." + tableName);
-	ui->lstTable->addItems(ti.unorderedFields());
+	//qf::core::sql::DbInfo dbi(connection());
+	QFSqlFieldInfoList filst;
+	filst.load(connection(), table_name);
+	ui->lstTable->addItems(filst.unorderedKeys());
 	loadIndexDefinition();
 }
 
@@ -44,7 +49,7 @@ void DlgIndexDef::on_actionAddFieldToIndex_triggered()
 	if(ui->edIndexName->text().isEmpty()) {
 		it = ui->lstTable->currentItem();
 		if(it) {
-			String s = it->text();
+			qfc::String s = it->text();
 			ui->edIndexName->setText("x" + s.slice(0, 1).toUpper() + s.slice(1));
 		}
 	}
@@ -58,14 +63,15 @@ void DlgIndexDef::on_actionRemoveFieldFromIndex_triggered()
 {
 	//qfTrash() << QF_FUNC_NAME;
 	QListWidgetItem *it = ui->lstIndex->currentItem();
-	SAFE_DELETE(it);
+	QF_SAFE_DELETE(it);
 }
 
 void DlgIndexDef::loadIndexDefinition()
 {
 	QString s = "%1.%2";
-	QFSqlConnectionBase::IndexList il = connection().indexes(s.arg(dbName).arg(tableName));
-	foreach(QFSqlConnectionBase::IndexInfo ii, il) {
+	qfc::sql::DbInfo dbi(connection());
+	qfc::sql::DbInfo::IndexList il = dbi.indexes(s.arg(dbName).arg(tableName));
+	for(qfc::sql::DbInfo::IndexInfo ii : il) {
 		if(ii.name == indexName) {
 			ui->chkUnique->setChecked(ii.unique);
 			foreach(s, ii.fields) ui->lstIndex->addItem(s);

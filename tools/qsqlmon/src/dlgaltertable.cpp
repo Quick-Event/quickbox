@@ -5,14 +5,11 @@
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <QDialog>
 #include <QErrorMessage>
 #include <QSqlQuery>
-
-//#include <qfmessage.h>
-//#include <qfsqlquery.h>
-//#include <qfdlgtextview.h>
 
 namespace qfc = qf::core;
 
@@ -38,13 +35,16 @@ DlgAlterTable::~DlgAlterTable()
 
 void DlgAlterTable::refresh()
 {
-	m_fields = QFSqlFieldInfo::loadFields(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName));
+	QFSqlFieldInfoList fldlst;
+	fldlst.load(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName));
 	lstFields->clear();
-	for(auto fi : m_fields)
-		lstFields->addItem(fi.shortName());
+	lstFields->addItems(fldlst.unorderedKeys());
 	lstIndexes->clear();
-	for(auto ii : QFSqlIndexInfo::loadIndexes(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName)))
-		lstIndexes->addItem(ii.name);
+
+	QFSqlIndexInfoList ixlst;
+	ixlst.load(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName));
+	lstIndexes->addItems(ixlst.unorderedKeys());
+
 	if(connection().driverName().endsWith("MYSQL")) {
 		QSqlQuery q(connection());
 		q.exec(QString("SHOW TABLE status FROM %1 LIKE '%2'").arg(m_schemaName).arg(m_tableName));
@@ -59,13 +59,13 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 {
 	if(lstFields->currentRow() < 0) append = true;
 
-	DlgColumnDef dlg(this, qfc::Utils::composeFieldName(m_tableName, m_schemaName);
+	DlgColumnDef dlg(this, qfc::Utils::composeFieldName(m_tableName, m_schemaName));
 	while(true) {
 		if(dlg.exec() == QDialog::Accepted) {
 			QStringList sql_commands;
 			if(connection().driverName().endsWith("SQLITE")) {
 				if(!append) {
-					QFMessage::information(this, "Not supported in SQLite version <= 3.2.2");
+					qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Not supported in SQLite version <= 3.2.2");
 				}
 				QString fld_name = dlg.edName->text();
 				QString s, qs = "ALTER TABLE %1 ADD COLUMN %2 %3";

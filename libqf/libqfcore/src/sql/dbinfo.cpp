@@ -137,14 +137,15 @@ QStringList DbInfo::tables(const QString& dbname, QSql::TableType type) const
 	if(driverName().endsWith("PSQL")) {
 		QSqlQuery q(*this);
 		QString s = "SELECT table_name FROM information_schema.tables"
-					" WHERE table_schema='%1' AND table_type='%2'";
+					" WHERE table_schema='%1' AND table_type IN (%2)"
+					" ORDER BY table_type, table_name";
 		s = s.arg(dbname);
-		if(type == QSql::Tables)
-			s = s.arg("BASE TABLE");
-		else if(type == QSql::Views)
-			s = s.arg("VIEW");
-		else
-			s = s.arg("DRIVER UNSUPPORTED TYPE ERROR");
+		QStringList table_types;
+		if(type & QSql::Tables)
+			table_types << "'BASE TABLE'";
+		if(type & QSql::Views)
+			table_types << "'VIEW'";
+		s = s.arg(table_types.join(','));
 		q.exec(s);
 		while(q.next()) {
 			ret << q.value(0).toString();
@@ -172,13 +173,13 @@ QStringList DbInfo::tables(const QString& dbname, QSql::TableType type) const
 	else if(driverName().endsWith("SQLITE")) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
-		QString where;
-		if(type == QSql::Tables)
-			where = "type == 'table'";
-		else if(type == QSql::Views)
-			where = "type == 'view'";
-		else
-			where = "type == 'system'";
+		QStringList table_types;
+		if(type & QSql::Tables)
+			table_types << "'table'";
+		if(type & QSql::Views)
+			table_types << "'view'";
+		if(type == QSql::SystemTables)
+			table_types << "'system'";
 		QString from;
 		if(dbname.isEmpty() || dbname == "main")
 			from = "(SELECT * FROM sqlite_master UNION ALL SELECT * FROM sqlite_temp_master)";
@@ -187,8 +188,8 @@ QStringList DbInfo::tables(const QString& dbname, QSql::TableType type) const
 		QString s;
 		QVariant old_short_column_names = sqlite_set_pragma(q, "short_column_names", 0);
 		QVariant old_full_column_names = sqlite_set_pragma(q, "full_column_names", 0);
-		s = "SELECT name FROM %1 WHERE %2 ORDER BY name";
-		s = s.arg(from).arg(where);
+		s = "SELECT name FROM %1 WHERE type IN (%2) ORDER BY type, name";
+		s = s.arg(from).arg(table_types.join(','));
 		qfDebug() << "\t" << s;
 		if(!q.exec(s)) {
 			qfError() << QString("Error getting table list for database '%1'\nquery: %2;").arg(dbname).arg(s);
@@ -220,17 +221,17 @@ QStringList DbInfo::tables(const QString& dbname, QSql::TableType type) const
 		}
 		else {
 			QString s = "SELECT table_name FROM INFORMATION_SCHEMA.TABLES"
-						" WHERE table_schema='%1' ";
-			s = s.arg(dbname);
-			QString type_cond;
-			if(type == QSql::Tables)
-				type_cond = "AND table_type = 'BASE TABLE'";
-			else if(type == QSql::SystemTables)
-				type_cond = "AND table_type = 'SYSTEM VIEW'";
-			else if(type == QSql::Views)
-				type_cond = "AND table_type = 'VIEW'";
-			qfDebug() << "\t" << s + type_cond;
-			q.exec(s + type_cond);
+						" WHERE table_schema='%1' AND table_type IN (%2)";
+			QStringList table_types;
+			if(type & QSql::Tables)
+				table_types << "'BASE TABLE'";
+			if(type & QSql::Views)
+				table_types << "'VIEW'";
+			if(type == QSql::SystemTables)
+				table_types << "'SYSTEM VIEW'";
+			s = s.arg(dbname).arg(table_types.join(','));
+			qfDebug() << "\t" << s;
+			q.exec(s);
 		}
 		qfDebug() << "\tfound:";
 		while(q.next()) {
@@ -268,8 +269,7 @@ QStringList DbInfo::fields(const QString& tbl_name) const
 	}
 	else for(int i=0; i<r.count(); i++) {
 		QString s = r.field(i).name().trimmed();
-		int ix = s.lastIndexOf('.');
-		if(ix >= 0) s = s.mid(ix + 1); /// jen to za posledni teckou
+		s = s.section('.', -1);
 		qfDebug().nospace() << "\tadding: '" << s << "'";
 		ret.append(s);
 	}

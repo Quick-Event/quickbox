@@ -73,7 +73,7 @@ Plugin {
 		console.warn("Core log test");
 		//console.error("Core log test");
 
-		FrameWork.setPersistentSettingDomains("datamines.cz", "DataMines");
+		FrameWork.setPersistentSettingDomains("quickbox.org", "QuickBox");
 		FrameWork.persistentSettingsId = "MainWindow";
 		FrameWork.loadPersistentSettings();
 
