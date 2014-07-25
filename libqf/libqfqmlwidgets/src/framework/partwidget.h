@@ -20,6 +20,7 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+	/// url or path to part icon
 	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)

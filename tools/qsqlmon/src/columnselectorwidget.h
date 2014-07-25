@@ -11,13 +11,14 @@
 
 #include <qf/qmlwidgets/framework/partwidget.h>
 
-class QFSqlConnection;
+class QSqlDatabase;
 namespace Ui {class ColumnSelectorWidget;};
 
 //! TODO: write class documentation.
 class  ColumnSelectorWidget : public qf::qmlwidgets::framework::PartWidget
 {
 	Q_OBJECT
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 private:
 	typedef qf::qmlwidgets::framework::PartWidget Super;
 	Ui::ColumnSelectorWidget *ui;
@@ -31,7 +32,7 @@ protected slots:
 signals:
 	void columnNamesCopiedToClipboard(const QString &column_names);
 public:
-	ColumnSelectorWidget(QString table_name, QFSqlConnection &conn, QWidget *parent = NULL);
+	ColumnSelectorWidget(QString table_name, const QSqlDatabase &conn, QWidget *parent = NULL);
 	virtual ~ColumnSelectorWidget();
 };
 

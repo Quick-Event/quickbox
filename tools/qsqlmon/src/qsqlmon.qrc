@@ -5,9 +5,9 @@
 	<file>doc/syntax/sqlitesyntax.html</file>
     <!--
     <file alias="syntax.css">doc/syntax/syntax.css</file>
-    -->
 	<file>ChangeLog</file>
 	<file>qsqlmon.conf.xml</file>
+    -->
 
 	<file>images/sun.png</file>
 	<file>images/database_on.png</file>

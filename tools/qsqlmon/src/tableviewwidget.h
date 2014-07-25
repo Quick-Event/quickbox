@@ -1,26 +1,29 @@
-
-//
-// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-
 #ifndef TABLEVIEWWIDGET_H
 #define TABLEVIEWWIDGET_H
 
-//#include <qfglobal.h>
-
 #include <QWidget>
 
-
-//! TODO: write class documentation.
-class  TableViewWidget : public QWidget
+namespace Ui {
+class TableViewWidget;
+}
+namespace qf {
+namespace qmlwidgets {
+class TableView;
+}
+}
+class TableViewWidget : public QWidget
 {
 	Q_OBJECT
-	public:
-		TableViewWidget(QWidget *parent = NULL);
-		//virtual ~TableViewWidget();
-};
-   
-#endif // TABLEVIEWWIDGET_H
 
+public:
+	explicit TableViewWidget(QWidget *parent = 0);
+	~TableViewWidget();
+public:
+	qf::qmlwidgets::TableView* tableView();
+	Q_SLOT void updateStatus();
+	Q_SLOT void setInfo(const QString &info);
+private:
+	Ui::TableViewWidget *ui;
+};
+
+#endif // TABLEVIEWWIDGET_H

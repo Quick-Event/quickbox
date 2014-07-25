@@ -1,24 +1,14 @@
-
-//
-// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-
 #include "tableviewwidget.h"
-
-//#include <qfaction.h>
-//#include <qfsqltableview.h>
-//#include <qfcsvimportdialogwidget.h>
-//#include <qfbuttondialog.h>
-//#include <qfdlgexception.h>
+#include "ui_tableviewwidget.h"
 
 #include <qf/core/log.h>
 #include <qf/qmlwidgets/tableview.h>
 
 //#include <QtUiTools>
-#include <QHBoxLayout>
-#include <QCheckBox>
+//#include <QHBoxLayout>
+//#include <QCheckBox>
+
+namespace qfq = qf::qmlwidgets;
 
 //======================================================
 //                        TableView
@@ -29,7 +19,8 @@ class  TableView : public qf::qmlwidgets::TableView
 		//virtual void importCSV();
 		//virtual QString exportReportDialogXmlPersistentId();
 	public:
-		TableView(QWidget *parent = NULL) : QFSqlTableView(parent) {
+		TableView(QWidget *parent = NULL) : qfq::TableView(parent)
+		{
 			//setSaveSettingsPersistentId("qsqlmon");
 		}
 };
@@ -37,26 +28,43 @@ class  TableView : public qf::qmlwidgets::TableView
 //======================================================
 //                        TableViewWidget
 //======================================================
-class TableViewFactory1 : public QFTableViewWidget::TableViewFactory
+TableViewWidget::TableViewWidget(QWidget *parent) :
+	QWidget(parent),
+	ui(new Ui::TableViewWidget)
 {
-	public:
-		virtual QFTableView* createView() const {
-			//qfInfo() << "tttttttttttttttttttttttttttt";
-			return new TableView();
-		}
-};
+	ui->setupUi(this);
 
-//======================================================
-//                        TableViewWidget
-//======================================================
-TableViewWidget::TableViewWidget(QWidget *parent)
-	: QFTableViewWidget(parent, TableViewFactory1())
-{
-	//qfInfo() << "aaaaaaaaaaaaaaaaaa";
-	setToolBarVisible(true);
-	tableView()->setContextMenuActions(tableView()->contextMenuActionsForGroups(QFTableView::AllActions));
-	tableView()->setCopyRowActionVisible(true);
+	ui->toolBar->setTableView(ui->tableView);
+
+	//ui->tableView->setContextMenuActions(tableView()->contextMenuActionsForGroups(qfq::TableView::AllActions));
+	//ui->tableView->setCopyRowActionVisible(true);
 }
+
+TableViewWidget::~TableViewWidget()
+{
+	delete ui;
+}
+
+qf::qmlwidgets::TableView *TableViewWidget::tableView()
+{
+	return ui->tableView;
+}
+
+void TableViewWidget::updateStatus()
+{
+	qf::core::model::TableModel *m = tableView()->tableModel();
+	if(m) {
+		ui->lblRowCnt->setText(QString("%1 rows").arg(m->rowCount()));
+	}
+	tableView()->refreshActions();
+}
+
+void TableViewWidget::setInfo(const QString &info)
+{
+	ui->edInfo->setText(info);
+}
+
+
 
 
 

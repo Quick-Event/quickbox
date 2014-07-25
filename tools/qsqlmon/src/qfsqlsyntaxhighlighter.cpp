@@ -7,10 +7,9 @@
 
 #include "qfsqlsyntaxhighlighter.h"
 
-#include <QTextEdit>
+#include <qf/core/log.h>
 
-//#define QF_NO_TRASH_OUTPUT
-#include <qflogcust.h>
+#include <QTextEdit>
 
 QFSqlSyntaxHighlighter::QFSqlSyntaxHighlighter(QTextEdit *parent)
 	: QSyntaxHighlighter(parent)

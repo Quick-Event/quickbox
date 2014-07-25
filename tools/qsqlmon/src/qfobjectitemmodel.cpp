@@ -6,14 +6,13 @@
 
 #include "qfobjectitemmodel.h"
 
-#include <qf.h>
-#include <qfassert.h>
+#include <qf/core/assert.h>
+#include <qf/core/log.h>
+#include <qf/core/utils.h>
 
 #include <QIcon>
 #include <QApplication>
 #include <QStyle>
-
-#include <qflogcust.h>
 		
 //=============================================
 //                QFObjectItemModelRoot
@@ -26,7 +25,7 @@ QFObjectItemModelRoot::QFObjectItemModelRoot(QFObjectItemModel *_model)
 QFObjectItemModel* QFObjectItemModelRoot::model()
 {
 	QFObjectItemModel *ret = qobject_cast<QFObjectItemModel*>(parent());
-	QF_ASSERT(ret, "internal error");
+	QF_ASSERT_EX(ret!=nullptr, "internal error");
 	return ret;
 }
 
@@ -42,13 +41,13 @@ QFObjectItemModel::QFObjectItemModel(QObject *parent)
 }
 QFObjectItemModel::~QFObjectItemModel() 
 {
-	qfTrash() << QF_FUNC_NAME << "root object:" << m_rootObj;
-	SAFE_DELETE(m_rootObj);
+	qfLogFuncFrame() << "root object:" << m_rootObj;
+	QF_SAFE_DELETE(m_rootObj);
 }
 
 void QFObjectItemModel::init()
 {
-	SAFE_DELETE(m_rootObj);
+	QF_SAFE_DELETE(m_rootObj);
 	m_rootObj = new QFObjectItemModelRoot(this);
 	m_rootObj->setObjectName("ObjectItemModelRoot");
 }
@@ -69,8 +68,8 @@ void ObjectItemModel::setRootObject(QObject *new_root)
 QObject* QFObjectItemModel::index2object(const QModelIndex& ix) const
 {
 	void *p = ix.internalPointer();
-	//qfTrash() << QF_FUNC_NAME << "object:" << ret;
-	//if(ret) ret->dumpObjectInfo(); else qfTrash() << "NULL";
+	//qfDebug() << QF_FUNC_NAME << "object:" << ret;
+	//if(ret) ret->dumpObjectInfo(); else qfDebug() << "NULL";
 	QObject *ret = objectMap.value(p, NULL);
 	Q_ASSERT_X(ret != m_rootObj, "QFObjectItemModel::index2object()", "indexMap contains rootObj.");
     return ret;    
@@ -82,7 +81,7 @@ QModelIndex QFObjectItemModel::object2index(int row, int column, QObject *o) con
     if(!o) return ret;
     if(o == m_rootObj) return ret;
 
-	//qfTrash() << QF_FUNC_NAME;
+	//qfDebug() << QF_FUNC_NAME;
 	//o->dumpObjectInfo();
 	// insert object to object map
 	void *v = static_cast<void*>(o);
@@ -94,7 +93,7 @@ QModelIndex QFObjectItemModel::object2index(int row, int column, QObject *o) con
 
 QModelIndex QFObjectItemModel::object2index(QObject *o) const
 {
-	//qfTrash() << QF_FUNC_NAME;
+	//qfDebug() << QF_FUNC_NAME;
 	QModelIndex ret;
     if(!o) return ret;
     if(o == m_rootObj) return ret;
@@ -102,12 +101,12 @@ QModelIndex QFObjectItemModel::object2index(QObject *o) const
 	//o = objectMap.value(o, NULL);
 	//if(!o) return ret;
 	// find node in its parent node children list
-	//qfTrash() << QF_FUNC_NAME << "object:" << o;
+	//qfDebug() << QF_FUNC_NAME << "object:" << o;
 	//o->dumpObjectInfo();
-	//qfTrash() << "\tEND of object dump";
+	//qfDebug() << "\tEND of object dump";
 	QObject *p = o->parent();
-	//qfTrash() << "\tEND of parent";
-	QF_ASSERT(p, "index object should have parent object.");
+	//qfDebug() << "\tEND of parent";
+	QF_ASSERT_EX(p!=nullptr, "index object should have parent object.");
 
 	int row = -1;
 	int r1 = 0;
@@ -127,14 +126,14 @@ QModelIndex QFObjectItemModel::object2index(QObject *o) const
 	}
 	
 	Q_ASSERT_X(row >= 0, "QFObjectItemModel::node2index()", "index object is not a child of its own parent.");
-	//qfTrash() << QF_FUNC_NAME << "*************OUT";
+	//qfDebug() << QF_FUNC_NAME << "*************OUT";
 	return object2index(row, 0, o);
 }
 
 //---------------------------------------------
 QModelIndex QFObjectItemModel::index(int row, int column, const QModelIndex &parent) const
 {
-	//qfTrash() << QF_FUNC_NAME;
+	//qfDebug() << QF_FUNC_NAME;
     QModelIndex ret;
     if (row >= 0 && column >= 0) {
 	    QObject *p = index2object(parent);
@@ -155,26 +154,26 @@ QModelIndex QFObjectItemModel::index(int row, int column, const QModelIndex &par
     }
     //qDebug() << "\tRETURN: " << "row: "<<ret.row()<<" col: "<<ret.column()<<" data: "<<o;
 	//qDebug() << __PRETTY_FUNCTION__ << " ... out object:" << ret.internalPointer();
-	//qfTrash() << QF_FUNC_NAME << "*************OUT";
+	//qfDebug() << QF_FUNC_NAME << "*************OUT";
 	return ret;
 }
 
 //---------------------------------------------
 QModelIndex QFObjectItemModel::parent(const QModelIndex &child) const
 {
-	//qfTrash() << QF_FUNC_NAME << " ... in child object:" << child.internalPointer();
+	//qfDebug() << QF_FUNC_NAME << " ... in child object:" << child.internalPointer();
     QModelIndex ret;
     do {
 	    QObject *o = NULL;
         o = index2object(child);
-		//qfTrash() << "\tparent of " << o;
+		//qfDebug() << "\tparent of " << o;
 		if(!o) break;
-		//qfTrash() << "\t\tname" << o->objectName();
+		//qfDebug() << "\t\tname" << o->objectName();
 		if(o == m_rootObj) break;
 		//o->dumpObjectInfo();
 		QObject *p = o->parent();
-		//qfTrash() << "\tis " << p;
-		//if(p) qfTrash() << "\t\tname" << p->objectName();
+		//qfDebug() << "\tis " << p;
+		//if(p) qfDebug() << "\t\tname" << p->objectName();
 		ret = object2index(p);
     } while(false);
     return ret;
@@ -238,24 +237,26 @@ QVariant QFObjectItemModel::headerData(int section, Qt::Orientation o, int role)
 	return ret;
 }
 		
-void QFObjectItemModel::append(QObject *o, QModelIndex parent_ix) throw(QFException)
+void QFObjectItemModel::append(QObject *o, QModelIndex parent_ix)
 {
 	qfLogFuncFrame();
 	QObject *par_o = index2object(parent_ix);
-	if(!par_o) par_o = m_rootObj;
-	if(!par_o) QF_EXCEPTION("Root object is NULL.");
+	if(!par_o)
+		par_o = m_rootObj;
+	QF_ASSERT_EX(par_o!=nullptr, "Root object is NULL.");
 	o->setParent(NULL); /// pokud by totiz o jiz byl potomkem par_o, blbnul by mi rowCount() a treeView by ukazovalo nesmysly (od Qt 4.6)
 	beginInsertRows(parent_ix, rowCount(parent_ix), rowCount(parent_ix));
 	o->setParent(par_o);
 	endInsertRows();
 }
 
-void QFObjectItemModel::append(QList<QObject*> olst, QModelIndex parent_ix) throw(QFException)
+void QFObjectItemModel::append(QList<QObject*> olst, QModelIndex parent_ix)
 {
 	qfLogFuncFrame();
 	QObject *par_o = index2object(parent_ix);
-	if(!par_o) par_o = m_rootObj;
-	if(!par_o) QF_EXCEPTION("Root object is NULL.");
+	if(!par_o)
+		par_o = m_rootObj;
+	QF_ASSERT_EX(par_o!=nullptr, "Root object is NULL.");
 	if(olst.count()) {
 		foreach(QObject *o, olst) o->setParent(NULL);
 		beginInsertRows(parent_ix, rowCount(parent_ix), rowCount(parent_ix) + olst.count()-1);
@@ -264,32 +265,34 @@ void QFObjectItemModel::append(QList<QObject*> olst, QModelIndex parent_ix) thro
 	}
 }
 
-void QFObjectItemModel::append(QObject *o, QObject *parent_o) throw(QFException)
+void QFObjectItemModel::append(QObject *o, QObject *parent_o)
 {
 	qfLogFuncFrame();
-	if(!parent_o) parent_o = m_rootObj;
-	if(!parent_o) QF_EXCEPTION("Root object is NULL.");
+	if(!parent_o)
+		parent_o = m_rootObj;
+	QF_ASSERT_EX(parent_o!=nullptr, "Root object is NULL.");
 	QModelIndex parent_ix = object2index(parent_o);
-	qfTrash() << "\t parent index row:" << parent_ix.row() << "col:" << parent_ix.column() << "internal pointer:" << parent_ix.internalPointer();
-	qfTrash() << "\t beginInsertRows() rowCount(parent_ix):" << rowCount(parent_ix);
+	qfDebug() << "\t parent index row:" << parent_ix.row() << "col:" << parent_ix.column() << "internal pointer:" << parent_ix.internalPointer();
+	qfDebug() << "\t beginInsertRows() rowCount(parent_ix):" << rowCount(parent_ix);
 	o->setParent(NULL); /// pokud by totiz o jiz byl potomkem par_o, blbnul by mi rowCount() a treeView by ukazovalo nesmysly (od Qt 4.6)
 	beginInsertRows(parent_ix, rowCount(parent_ix), rowCount(parent_ix));
-	qfTrash() << "\t appending object:" << o << o->metaObject()->className() << o->objectName() << " o->parent():" << parent_o << parent_o->metaObject()->className();
+	qfDebug() << "\t appending object:" << o << o->metaObject()->className() << o->objectName() << " o->parent():" << parent_o << parent_o->metaObject()->className();
 	o->setParent(parent_o);
 	endInsertRows();
 }
 
-void QFObjectItemModel::append(QList<QObject*> olst, QObject *parent_o) throw(QFException)
+void QFObjectItemModel::append(QList<QObject*> olst, QObject *parent_o)
 {
 	qfLogFuncFrame();
-	if(!parent_o) parent_o = m_rootObj;
-	if(!parent_o) QF_EXCEPTION("Root object is NULL.");
+	if(!parent_o)
+		parent_o = m_rootObj;
+	QF_ASSERT_EX(parent_o!=nullptr, "Root object is NULL.");
 	QModelIndex parent_ix = object2index(parent_o);
 	if(olst.count()) {
 		foreach(QObject *o, olst) o->setParent(NULL);
 		beginInsertRows(parent_ix, rowCount(parent_ix), rowCount(parent_ix) + olst.count()-1);
 		foreach(QObject *o, olst) {
-			qfTrash() << "\t appending object:" << o << o->metaObject()->className() << o->objectName() << " o->parent():" << parent_o << parent_o->metaObject()->className();
+			qfDebug() << "\t appending object:" << o << o->metaObject()->className() << o->objectName() << " o->parent():" << parent_o << parent_o->metaObject()->className();
 			o->setParent(parent_o);
 		}
 		endInsertRows();
@@ -302,7 +305,7 @@ QObject* QFObjectItemModel::take(const QModelIndex &ix)
 	QObject *o = index2object(ix);
 	if(o) {
 		beginRemoveRows(parent(ix), ix.row(), ix.row());
-		qfTrash() << "\t o:" << o << o->metaObject()->className() << o->objectName() << " o->parent():" << o->parent();
+		qfDebug() << "\t o:" << o << o->metaObject()->className() << o->objectName() << " o->parent():" << o->parent();
 		//o->dumpObjectInfo();
 		o->setParent(NULL);
 		objectMap.take(o);
@@ -318,21 +321,21 @@ void QFObjectItemModel::deleteChildren(const QModelIndex &parent_ix)
 	//qfInfo() << QFLog::stackTrace();
 	QObject *o = index2object(parent_ix);
 	if(!o) o = m_rootObj;
-	//if(!o) o->dumpObjectInfo(); else qfTrash() << "NULL";
+	//if(!o) o->dumpObjectInfo(); else qfDebug() << "NULL";
 	if(o) {
 		int n2 = rowCount(parent_ix)-1;
-		qfTrash() << "\tbeginRemoveRows():" << o->metaObject()->className() << o->objectName() << "from" << 0 << "to" << n2;
+		qfDebug() << "\tbeginRemoveRows():" << o->metaObject()->className() << o->objectName() << "from" << 0 << "to" << n2;
 		if(n2 >= 0) {
 			beginRemoveRows(parent_ix, 0, n2);
 			foreach(o, o->children()) {
-				qfTrash() << "\twant delete object:" << o << o->objectName();
+				qfDebug() << "\twant delete object:" << o << o->objectName();
 				if(!isObjectAccepted(o)) continue;
-				qfTrash() << "\tdeleting object:" << o << o->metaObject()->className() << o->objectName();
+				qfDebug() << "\tdeleting object:" << o << o->metaObject()->className() << o->objectName();
 				objectMap.take(o);
 				o->setParent(NULL);
-				SAFE_DELETE(o);
+				QF_SAFE_DELETE(o);
 			}
-			qfTrash() << "\tendRemoveRows():";
+			qfDebug() << "\tendRemoveRows():";
 			endRemoveRows();
 		}
 	}

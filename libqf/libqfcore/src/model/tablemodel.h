@@ -105,7 +105,7 @@ public:
 
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 
-	Q_SLOT virtual void reload() {}
+	Q_SLOT virtual bool reload() {return true;}
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
 

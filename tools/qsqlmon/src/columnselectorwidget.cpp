@@ -8,26 +8,27 @@
 #include "ui_columnselectorwidget.h"
 #include "columnselectorwidget.h"
 
-#include <qfsqlconnection.h>
+#include <qf/core/log.h>
+#include <qf/core/sql/dbinfo.h>
 
 #include <QTimer>
 #include <QListWidget>
 #include <QStringBuilder>
 
-#include <qflogcust.h>
 #include <qclipboard.h>
 
 //=================================================
 //             ColumnSelectorWidget
 //=================================================
-ColumnSelectorWidget::ColumnSelectorWidget(QString table_name, QFSqlConnection &conn, QWidget *parent)
-	: QFDialogWidget(parent), f_tableName(table_name)
+ColumnSelectorWidget::ColumnSelectorWidget(QString table_name, const QSqlDatabase &conn, QWidget *parent)
+	: qf::qmlwidgets::framework::PartWidget(parent), f_tableName(table_name)
 {
 	ui = new Ui::ColumnSelectorWidget;
-	ui->setupUi(centralWidget());
-	Qf::connectSlotsByName(centralWidget(), this);
+	ui->setupUi(this);
+	//Qf::connectSlotsByName(centralWidget(), this);
 	{
-		QStringList fields = conn.fields(f_tableName);
+		qf::core::sql::DbInfo dbi(conn);
+		QStringList fields = dbi.fields(f_tableName);
 		QListWidget *w = ui->lstFields;
 		foreach(QString fld, fields) {
 			QListWidgetItem *it = new QListWidgetItem(fld);
@@ -36,7 +37,7 @@ ColumnSelectorWidget::ColumnSelectorWidget(QString table_name, QFSqlConnection &
 			w->addItem(it);
 		}
 	}
-	setXmlConfigPersistentId("ColumnSelectorWidget", false);
+	setPersistentSettingsId("ColumnSelectorWidget");
 	QTimer::singleShot(0, this, SLOT(lazyInit()));
 }
 
@@ -47,7 +48,7 @@ ColumnSelectorWidget::~ColumnSelectorWidget()
 
 void ColumnSelectorWidget::lazyInit()
 {
-	QFXmlConfigPersistenter::loadPersistentDataRecursively(this);
+	//QFXmlConfigPersistenter::loadPersistentDataRecursively(this);
 }
 
 void ColumnSelectorWidget::on_btAll_clicked()

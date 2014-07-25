@@ -29,6 +29,14 @@ class Database;
 class QFSqlQueryTableModel;
 class QSpinBox;
 
+namespace qf {
+namespace core {
+namespace model {
+class SqlQueryTableModel;
+}
+}
+}
+
 class MainWindow : public QMainWindow, public qf::qmlwidgets::framework::IPersistentSettings
 {
 	Q_OBJECT
@@ -102,8 +110,8 @@ private:
 
 	QList<QPointer<QDialog> > tearOffDialogs;
 
-	QFSqlQueryTableModel* queryViewModel(bool throw_exc = true);
-	void setQueryViewModel(QFSqlQueryTableModel *m);
+	qf::core::model::SqlQueryTableModel* queryViewModel();
+	void setQueryViewModel(qf::core::model::SqlQueryTableModel *m);
 	//QList<QWidget*> statusBarWidgets;
 private:
 	QAction* action(const QString& action_name) {

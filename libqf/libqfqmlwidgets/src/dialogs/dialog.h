@@ -10,20 +10,12 @@
 
 namespace qf {
 namespace qmlwidgets {
-
-class Frame;
-class DialogButtonBox;
-
 namespace dialogs {
 
-class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings, public QQmlParserStatus
+class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings
 {
 	Q_OBJECT
-	Q_INTERFACES(QQmlParserStatus)
-	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
-	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
-	Q_PROPERTY(qf::qmlwidgets::DialogButtonBox* buttonBox READ buttonBox WRITE setButtonBox NOTIFY buttonBoxChanged)
 	Q_PROPERTY(bool doneCancelled READ isDoneCancelled WRITE setDoneCancelled NOTIFY doneCancelledChanged)
 	Q_ENUMS(DoneResult)
 private:
@@ -34,11 +26,7 @@ public:
 	explicit Dialog(QWidget *parent = 0);
 	~Dialog() Q_DECL_OVERRIDE;
 public:
-	Q_SLOT void loadPersistentSettings(bool recursively = false);
-
-	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}
-	void setButtonBox(DialogButtonBox *dbb);
-	Q_SIGNAL void buttonBoxChanged();
+	Q_SLOT void loadPersistentSettings();
 
 	bool isDoneCancelled() {return m_doneCancelled;}
 	void setDoneCancelled(bool b);
@@ -46,15 +34,9 @@ public:
 	Q_SIGNAL void aboutToBeDone(int result);
 
 	void done(int result) Q_DECL_OVERRIDE;
-protected:
-	QQmlListProperty<QWidget> widgets();
 private:
 	Q_SLOT void savePersistentSettings();
-	void classBegin() Q_DECL_OVERRIDE;
-	void componentComplete() Q_DECL_OVERRIDE;
 protected:
-	Frame *m_centralFrame;
-	DialogButtonBox *m_dialogButtonBox;
 	bool m_doneCancelled;
 };
 

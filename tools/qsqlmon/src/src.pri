@@ -30,6 +30,7 @@ HEADERS +=      \
 	qfsqlsyntaxhighlighter.h \
 	qfobjectitemmodel.h \
 	qfsqlcatalog.h \
+	qfstatusbar.h \
 
 SOURCES +=      \
 	main.cpp      \
@@ -50,6 +51,7 @@ SOURCES +=      \
 	qfsqlsyntaxhighlighter.cpp \
 	qfobjectitemmodel.cpp \
 	qfsqlcatalog.cpp \
+	qfstatusbar.cpp \
 
 FORMS +=      \
 	centralwidget.ui      \
@@ -60,5 +62,6 @@ FORMS +=      \
 	dlgcolumndef.ui      \
 	dlgindexdef.ui      \
 	columnselectorwidget.ui  \
+    $$PWD/tableviewwidget.ui
 
 

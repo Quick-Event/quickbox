@@ -59,6 +59,14 @@ QVariant QFSqlFieldInfo::seqNextVal() throw(QFSqlException)
 	return ret;
 }
 #endif
+void QFSqlFieldInfo::setName(const QString &n)
+{
+	QString f, t, d;
+	qf::core::Utils::parseFieldName(n, &f, &t, &d);
+	setShortName(f);
+	setFullTableName(qf::core::Utils::composeFieldName(t, d));
+}
+
 QString QFSqlFieldInfo::toString(const QString& indent) const
 {
 	QString s;
@@ -100,6 +108,8 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 	//q.exec(s);
 	//QSqlRecord r = q.record();
 	QString full_table_name = table_id;
+	QString table_name, schema_name;
+	qf::core::Utils::parseFieldName(table_id, &table_name, &schema_name);
 
 	QStringList primary_keys;
 	{
@@ -111,23 +121,24 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 		}
 	}
 
+	QString driver_name = connection.driverName();
 	QSqlRecord r = connection.record(full_table_name);
 	for(int i=0; i<r.count(); i++) {
 		QString short_field_name;
-		qf::core::Utils::parseFieldName(r.field(i).fieldName(), &short_field_name);
+		qf::core::Utils::parseFieldName(r.field(i).name(), &short_field_name);
 		QFSqlFieldInfo &fi = addEntry(short_field_name);
 		fi = r.field(i);
 		fi.setReadOnly(false);
-		fi.setFullName(full_table_name + "." + short_field_name);
+		fi.setName(full_table_name + "." + short_field_name);
 		//qfTrash() << "\t\tfound driver reported name:" << f.driverReportedName() << "isValid():" << f.isValid() << "type:" << f.type();
 		//qfTrash() << "\t\tfield:" << f.toString();
-		if(connection.driver_name.endsWith("PSQL")) {
+		if(driver_name.endsWith("PSQL")) {
 			// fill seqname
 			QSqlQuery q1(connection);
 			q1.setForwardOnly(true);
 			QString s = full_table_name;
 			//if(s[0] == '.') s = s.slice(1);
-			q1.exec(QString("SELECT pg_get_serial_sequence('%1', '%2');").arg(s).arg(fi.fieldName()));
+			q1.exec(QString("SELECT pg_get_serial_sequence('%1', '%2');").arg(s).arg(fi.shortName()));
 			//qfError() << QF_FUNC_NAME << QString("Error getting the sequence information for: '%1.%2'").arg(fullName()).arg(f.fieldName());
 			while(q1.next()) {
 				fi.setSeqName(q1.value(0).toString());
@@ -136,21 +147,21 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 				break;
 			}
 			// fill prikey flag
-			if(primary_keys.contains(fi.fieldName()))
+			if(primary_keys.contains(fi.shortName()))
 				fi.setPriKey(true);
 			//d->unorderedFieldNames.append(f.name());
 		}
-		else if(connection.driver_name.endsWith("MYSQL")) {
+		else if(driver_name.endsWith("MYSQL")) {
 			// fill prikey flag
-			if(primary_keys.contains(fi.fieldName()))
+			if(primary_keys.contains(fi.shortName()))
 				fi.setPriKey(true);
 		}
 	}
-	if(connection.driver_name.endsWith("PSQL")) {
+	if(driver_name.endsWith("PSQL")) {
 		QString s = "SELECT * FROM information_schema.columns"
 					" WHERE table_name = '%1' AND table_schema = '%2'"
 					" ORDER BY ordinal_position";
-		s = s.arg(tableName(), dbName());
+		s = s.arg(table_name, schema_name);
 		q.exec(s);
 		while(q.next()) {
 			QFSqlFieldInfo &fi = this->operator[](q.value("column_name").toString());
@@ -158,25 +169,25 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 			//f.setSchema(d->schema);
 			// fill seqname
 			fi.setReadOnly(false);
-			fi.setFullName(fullName() + "." + q.value("column_name").toString());
+			fi.setName(full_table_name + "." + q.value("column_name").toString());
 			fi.setDefaultValue(q.value("column_default"));
 			fi.setNullable(q.value("is_nullable").toString().toUpper() == "YES");
 			fi.setNativeType(q.value("data_type").toString());
 			//qfTrash() << "\n" << catalog()->toString();
 		}
 	}
-	if(connection.driver_name.endsWith("MYSQL")) {
+	if(driver_name.endsWith("MYSQL")) {
 		int ver = QFCATALOG_MYSQL_VERSION_MAJOR;
-		QString s;
+		qf::core::String s;
 		if(ver <= 4) {
-			s = "SHOW FULL columns FROM %2.%1";
+			s = QString("SHOW FULL columns FROM %2.%1");
 		}
 		else {
-			s = "SELECT * FROM information_schema.columns"
+			s = QString("SELECT * FROM information_schema.columns"
 				" WHERE table_name = '%1' AND table_schema = '%2'"
-				" ORDER BY ordinal_position";
+				" ORDER BY ordinal_position");
 		}
-		s = s.arg(tableName(), dbName());
+		s = s.arg(table_name, schema_name);
 		q.exec(s);
 		while(q.next()) {
 			if(ver <= 4) {
@@ -184,10 +195,11 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 				fi.setReadOnly(false);
 				//fi.setFullName(fullName() + "." + q.value("field").toString());
 				fi.setNullable(q.value("null").toString().toUpper() == "YES");
-				QFString s_type = q.value("type").toString().toLower();
+				qf::core::String s_type = q.value("type").toString().toLower();
 				s = s_type;
 				int ix = s.indexOf("(");
-				if(ix > 0) s = s.slice(0, ix);
+				if(ix > 0)
+					s = s.mid(0, ix);
 				fi.setNativeType(s);
 				if(s == "enum" || s == "set") {
 					int ix2 = s_type.indexOf(")");
@@ -244,7 +256,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 			}
 		}
 	}
-	else if(connection.driver_name.endsWith("SQLITE")) {
+	else if(driver_name.endsWith("SQLITE")) {
 #if 0
 		qf::core::String fs = connection.createTableSqlCommand(fullName());
 		QStringList sl = SqlUtils::fieldDefsFromCreateTableCommand(fs);

@@ -24,3 +24,12 @@ void MessageBox::showInfo(QWidget *parent, const QString &message)
 {
 	QMessageBox::information(parent, tr("Information"), message);
 }
+
+bool MessageBox::askYesNo(QWidget *parent, const QString &msg, bool default_ret)
+{
+	int i_def = (default_ret)? 0: 1;
+	int i = QMessageBox::question(parent, tr("Question"), msg,
+								  tr("&Yes"), tr("&No"), QString(),
+								  i_def, 1);
+	return i == 0;
+}

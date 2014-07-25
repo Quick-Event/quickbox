@@ -322,7 +322,7 @@ void DlgColumnDef::loadCollationsForCurrentCharset()
 				if(drv_key == "MYSQL") {
 					f_collationsCache[drv_key]; /// zabran opakovanemu reloadu
 					QSqlQuery q(connection());
-					q.exec("SELECT * FROM information_schema.collations", !Qf::ThrowExc);
+					q.exec("SELECT * FROM information_schema.collations");
 					while(q.next()) {
 						f_collationsCache[drv_key][q.value("character_set_name").toString().toLower()] << q.value("collation_name").toString().toLower();
 					}

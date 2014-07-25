@@ -4,6 +4,10 @@
 #include "tablemodel.h"
 #include "../sql/querybuilder.h"
 
+#include <QMap>
+#include <QString>
+#include <QSqlQuery>
+
 namespace qf {
 namespace core {
 namespace model {
@@ -19,7 +23,8 @@ private:
 public:
 	SqlQueryTableModel(QObject *parent = 0);
 public:
-	void reload() Q_DECL_OVERRIDE;
+	bool reload(const QString &query_str);
+	bool reload() Q_DECL_OVERRIDE;
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
 public:
@@ -35,10 +40,12 @@ public:
 	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }
 	Q_SIGNAL void queryChanged(QString arg);
 
+	const QSqlQuery& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
+
 protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
-	void reloadTable(const QString &query_str);
+	bool reloadTable(const QString &query_str);
 	QSet<QString> tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 	QStringList primaryIndex(const QString &table_name);
@@ -48,6 +55,7 @@ protected:
 	QVariantMap m_queryParameters;
 	QString m_connectionName;
 	QMap<QString, QStringList> m_primaryIndexCache;
+	QSqlQuery m_recentlyExecutedQuery;
 };
 
 }}}

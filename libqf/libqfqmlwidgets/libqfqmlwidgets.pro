@@ -4,7 +4,7 @@ TEMPLATE = lib
 TARGET_NAME=qfqmlwidgets
 unix:TARGET = $$OUT_PWD/../../lib/$${TARGET_NAME}
 
-QT += widgets qml
+QT += widgets qml sql
 
 CONFIG += c++11
 
