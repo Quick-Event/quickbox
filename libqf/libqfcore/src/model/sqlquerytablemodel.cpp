@@ -25,16 +25,24 @@ void SqlQueryTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 	m_queryBuilder = qb;
 }
 
-void SqlQueryTableModel::reload()
+bool SqlQueryTableModel::reload()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
+	return reload(qs);
+}
+
+bool SqlQueryTableModel::reload(const QString &query_str)
+{
 	beginResetModel();
-	reloadTable(qs);
-	if(m_columns.isEmpty() || m_autoColumns)
-		createColumnsFromTableFields();
-	fillColumnIndexes();
+	bool ok = reloadTable(query_str);
+	if(ok) {
+		if(m_columns.isEmpty() || m_autoColumns)
+			createColumnsFromTableFields();
+		fillColumnIndexes();
+	}
 	endResetModel();
+	return ok;
 }
 
 bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
@@ -282,31 +290,34 @@ QString SqlQueryTableModel::replaceQueryParameters(const QString query_str)
 	return ret;
 }
 
-void SqlQueryTableModel::reloadTable(const QString &query_str)
+bool SqlQueryTableModel::reloadTable(const QString &query_str)
 {
 	QSqlDatabase db = QSqlDatabase::database(connectionName());
-	QSqlQuery q(db);
-	bool ok = q.exec(query_str);
+	m_recentlyExecutedQuery = QSqlQuery(db);
+	bool ok = m_recentlyExecutedQuery.exec(query_str);
 	QF_ASSERT(ok == true,
-			  QString("SQL Error: %1\n%2").arg(q.lastError().text()).arg(query_str),
-			  return);
-	qfu::Table::FieldList table_fields;
-	QSqlRecord rec = q.record();
-	int fld_cnt = rec.count();
-	for(int i=0; i<fld_cnt; i++) {
-		QSqlField rec_fld = rec.field(i);
-		qfu::Table::Field fld(rec_fld.name(), rec_fld.type());
-		table_fields << fld;
-	}
-	setSqlFlags(table_fields, query_str);
-	m_table = qfu::Table(table_fields);
-	while(q.next()) {
-		qfu::TableRow &row = m_table.appendRow();
-		row.setInsert(false);
+			  QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str),
+			  return false);
+	if(m_recentlyExecutedQuery.isSelect()) {
+		qfu::Table::FieldList table_fields;
+		QSqlRecord rec = m_recentlyExecutedQuery.record();
+		int fld_cnt = rec.count();
 		for(int i=0; i<fld_cnt; i++) {
-			row.setBareBoneValue(i, q.value(i));
+			QSqlField rec_fld = rec.field(i);
+			qfu::Table::Field fld(rec_fld.name(), rec_fld.type());
+			table_fields << fld;
+		}
+		setSqlFlags(table_fields, query_str);
+		m_table = qfu::Table(table_fields);
+		while(m_recentlyExecutedQuery.next()) {
+			qfu::TableRow &row = m_table.appendRow();
+			row.setInsert(false);
+			for(int i=0; i<fld_cnt; i++) {
+				row.setBareBoneValue(i, m_recentlyExecutedQuery.value(i));
+			}
 		}
 	}
+	return true;
 }
 
 static QString compose_table_id(const QString &table_name, const QString &schema_name)
