@@ -363,6 +363,8 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 			if(ix1 > 0) {
 				ix1 += from.size();
 				int ix2 = query_str.indexOf(' ', ix1);
+				if(ix2 < 0)
+					ix2 = query_str.length();
 				if(ix2 > ix1) {
 					QString table_id_from_query = query_str.mid(ix1, ix2 - ix1);
 					for(int i=0; i<fld_cnt; i++) {

@@ -106,5 +106,15 @@ private:
 public:
 	void load(const QSqlDatabase &connection, const QString table_id) Q_DECL_OVERRIDE;
 };
+/*
+typedef QVariant QFSqlTableInfo;
 
+class QFSqlTableInfoList : public QFSqlInfoList<QFSqlTableInfo>
+{
+private:
+	typedef QFSqlInfoList<QFSqlTableInfo> Super;
+public:
+	void load(const QSqlDatabase &connection, const QString schema_id, QSql::TableType type = QSql::Tables) Q_DECL_OVERRIDE;
+};
+*/
 #endif // QFSQLCATALOG_H

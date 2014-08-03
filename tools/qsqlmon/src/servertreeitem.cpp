@@ -5,6 +5,8 @@
 #include <qf/core/utils/crypt.h>
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include <qf/core/sql/dbinfo.h>
+
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <QIcon>
@@ -131,7 +133,7 @@ Database* Connection::open()
 		m->append(olst, ix);
 	}
 	else {
-		qf::qmlwidgets::dialogs::MessageBox::showError(mainWindow(), d->sqlConnection().lastError().text());
+		//qf::qmlwidgets::dialogs::MessageBox::showError(mainWindow(), d->sqlConnection().lastError().text());
 		QF_SAFE_DELETE(d);
 	}
 	return d;
@@ -314,9 +316,12 @@ QStringList Database::databases()
 namespace {
 int defaultPort(const QString &driver_name)
 {
-	if(driver_name.endsWith("PSQL")) return 5432;
-	else if(driver_name.endsWith("MYSQL")) return 3306;
-	else if(driver_name.endsWith("IBASE")) return 3050;
+	if(driver_name.endsWith("PSQL"))
+		return 5432;
+	else if(driver_name.endsWith("MYSQL"))
+		return 3306;
+	else if(driver_name.endsWith("IBASE"))
+		return 3050;
 	return 0;
 }
 }
@@ -375,12 +380,15 @@ bool Database::open()
 	QF_ASSERT(c!=nullptr,
 			  "Parent is not a kind of Connection",
 			  return false);
-	m_sqlConnection.close();
+	close();
 	QString connection_id = c->connectionNameId();
 	m_sqlConnection = QSqlDatabase::database(connection_id, false);
 	QString driver_type = c->params().param("driver").toString();
 	if(!m_sqlConnection.isValid())
 		m_sqlConnection = QSqlDatabase::addDatabase(driver_type, connection_id);
+	else if(m_sqlConnection.driverName() != driver_type) {
+		m_sqlConnection = QSqlDatabase::addDatabase(driver_type, connection_id);
+	}
 	QF_ASSERT(m_sqlConnection.isValid(),
 			  QString("Cannot add database for '%1' named '%2'").arg(c->params().param("driver").toString()).arg(connection_id),
 			  return false);
@@ -394,15 +402,16 @@ bool Database::open()
 	//qfDebug() << "\t" << m_sqlConnection.info();
 	QStringList opts;
 	//opts["QF_CODEC_NAME"] = theApp()->config()->value("/i18n/dbtextcodec", "UTF-8").toString();
-	QString codec_name = c->params().param("textcodec").toString();
-	if(!codec_name.isEmpty())
-		opts << "QF_CODEC_NAME=" + codec_name;
-	QString set_names = c->params().param("mysqlSetNames").toString();
-	if(!set_names.isEmpty() && !set_names.startsWith("<"))
-		opts << "QF_MYSQL_SET_NAMES=" << set_names; /// konfigurak dava <no change> pro nic
+	if(driver_type.endsWith("MYSQL")) {
+		QString codec_name = c->params().param("textcodec").toString();
+		if(!codec_name.isEmpty())
+			opts << "QF_CODEC_NAME=" + codec_name;
+		QString set_names = c->params().param("mysqlSetNames").toString();
+		if(!set_names.isEmpty() && !set_names.startsWith("<"))
+			opts << "QF_MYSQL_SET_NAMES=" << set_names; /// konfigurak dava <no change> pro nic
+	}
 	//m_sqlConnection.setJournal(theApp()->sqlJournal());
 	//m_sqlConnection.open(opts);
-	close();
 	if(m_sqlConnection.port() == 0)
 		m_sqlConnection.setPort(defaultPort(m_sqlConnection.driverName()));
 	if(!opts.isEmpty()) {
@@ -592,13 +601,15 @@ void Schema::open()
 		cat.setCurrentSchema(objectName());
 	}
 	*/
+	QString schema_name = objectName();
 	QList<QObject*> olst;
 	/// tables
-	QStringList sl = d->sqlConnection().tables(QSql::Tables);
+	qf::core::sql::DbInfo dbi(d->sqlConnection());
+	QStringList sl = dbi.tables(schema_name, QSql::Tables);
 	qSort(sl);
 	foreach(QString s, sl)
 		olst << new Table(nullptr, s, QSql::Tables);
-	sl = d->sqlConnection().tables(QSql::Views);
+	sl = dbi.tables(schema_name, QSql::Views);
 	qSort(sl);
 	foreach(QString s, sl)
 		olst << new Table(nullptr, s, QSql::Views);

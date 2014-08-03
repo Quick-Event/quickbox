@@ -305,3 +305,4 @@ void QFSqlIndexInfoList::load(const QSqlDatabase &connection, const QString tabl
 		addEntry(ii.name) = ii;
 	}
 }
+

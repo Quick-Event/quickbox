@@ -122,15 +122,18 @@ void TableView::refreshActions()
 	//action("revertRow")->setVisible(action("postRow")->isVisible() && action("revertRow")->isVisible());
 	//action("editRowExternal")->setVisible(is_edit_rows_allowed && action("editRowExternal")->isVisible());
 
-	qfu::TableRow r = m->tableRow(currentIndex().row());
+	QModelIndex curr_ix = currentIndex();
+	qfu::TableRow curr_row;
+	if(curr_ix.isValid())
+		curr_row = m->tableRow(curr_ix.row());
 	//qfTrash() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
-	if(r.isDirty()) {
+	if(curr_row.isDirty()) {
 		action("postRow")->setEnabled(true);
 		action("revertRow")->setEnabled(true);
 	}
 	else {
 		//action("insertRow")->setEnabled(isInsertRowActionVisible());
-		action("copyRow")->setEnabled(is_copy_rows_allowed && currentIndex().isValid());
+		action("copyRow")->setEnabled(is_copy_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
 		action("sortAsc")->setEnabled(true);
 		action("sortDesc")->setEnabled(true);

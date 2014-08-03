@@ -566,7 +566,8 @@ bool MainWindow::execQuery(const QString& query_str)
 	appendInfo(qs);
 	qf::core::model::SqlQueryTableModel *m = queryViewModel();
 	m->clearColumns();
-	bool ok = m->reload(qs);
+	m->setQuery(qs);
+	bool ok = m->reload();
 	QSqlQuery q = m->recentlyExecutedQuery();
 	if(ok) {
 		if(q.isSelect()) {
