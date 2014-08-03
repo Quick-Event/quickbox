@@ -133,11 +133,7 @@ public:
 	/**
 	 *  throw exception if activeConnection is not valid.
 	 */
-	QSqlDatabase activeConnection()
-	{
-		QF_CHECK(m_activeConnection.isValid(), "Connection is not valid !");
-		return m_activeConnection;
-	}
+	QSqlDatabase activeConnection();
 	bool execCommand(const QString& query_str);
 public:
 	MainWindow();

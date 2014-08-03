@@ -15,7 +15,6 @@ QStringList DlgEditConnection::mysqlCodecs;
 DlgEditConnection::DlgEditConnection(QWidget *parent) :
 	QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint)
 {
-	currConnection = NULL;
 	setupUi(this);
 	drivers = QSqlDatabase::drivers();
 	//drivers << "QMYSQL" << "QFMYSQL" << "QPSQL" << "QFPSQL" << "QSQLITE" << "QFSQLITE" << "QIBASE" << "QFIBASE";
@@ -38,55 +37,62 @@ DlgEditConnection::DlgEditConnection(QWidget *parent) :
 	btFindDatabaseFile->setVisible(false);
 }
 
-void DlgEditConnection::setContent(Connection& connection)
+void DlgEditConnection::setParams(const Connection::Params &params)
 {
 	//XmlConfigElement el = connection.params;
-	currConnection = &connection;
-	edCaption->setText(currConnection->param("description").toString());
-	edHost->setText(currConnection->param("host").toString());
-	edPort->setValue(currConnection->param("port").toInt());
-	edUser->setText(currConnection->param("user").toString());
-	edPassword->setText(currConnection->param("password").toString());
-	edDatabase->setText(currConnection->param("database").toString());
-	QString s = currConnection->param("driver").toString();
+	m_connectionParams = params;
+	edCaption->setText(m_connectionParams.param("description").toString());
+	edHost->setText(m_connectionParams.param("host").toString());
+	edPort->setValue(m_connectionParams.param("port").toInt());
+	edUser->setText(m_connectionParams.param("user").toString());
+	edPassword->setText(m_connectionParams.param("password").toString());
+	edDatabase->setText(m_connectionParams.param("database").toString());
+	QString s = m_connectionParams.param("driver").toString();
 	cbxDriver->setCurrentIndex(drivers.indexOf(s));
 	//stackOptions->setVisible(false);
 	if(s.endsWith("MYSQL")) {
 		//stackOptions->setVisible(true);
 		//stackOptions->setCurrentIndex(OptionIndexMySql);
-		s = currConnection->param("mysqlSetNames").toString();
+		s = m_connectionParams.param("mysqlSetNames").toString();
 		//qfInfo() << s;
 		lstMySqlSetNames->setCurrentIndex(mysqlCodecs.indexOf(s));
 	}
 	else if(s.endsWith("SQLITE")) {
 		//stackOptions->setVisible(true);
 		//stackOptions->setCurrentIndex(OptionIndexMySql);
-		s = currConnection->param("sqlite_pragma_short_column_names").toString();
+		s = m_connectionParams.param("sqlite_pragma_short_column_names").toString();
 		sqlite_chkPragma_short_column_names->setChecked(s == "1");
-		s = currConnection->param("sqlite_pragma_full_column_names").toString();
+		s = m_connectionParams.param("sqlite_pragma_full_column_names").toString();
 		sqlite_chkPragma_full_column_names->setChecked(s == "1");
 	}
-	s = currConnection->param("textcodec").toString();
+	s = m_connectionParams.param("textcodec").toString();
 	lstCodec->setCurrentIndex(codecs.indexOf(s));
+}
+
+const Connection::Params &DlgEditConnection::params()
+{
+	return m_connectionParams;
 }
 
 void DlgEditConnection::on_btOk_clicked()
 {
+	/*
 	if(!currConnection) {
 		qfError() << "DlgEditConnection::on_btOk_clicked() - currConnection is NULL";
 		reject();
 	}
-	currConnection->setParam("description", edCaption->text());
-	currConnection->setParam("driver", cbxDriver->currentText());
-	currConnection->setParam("host", edHost->text());
-	currConnection->setParam("port", edPort->value());
-	currConnection->setParam("user", edUser->text());
-	currConnection->setParam("password", edPassword->text());
-	currConnection->setParam("database", edDatabase->text());
-	currConnection->setParam("textcodec", lstCodec->currentText());
-	currConnection->setParam("mysqlSetNames", lstMySqlSetNames->currentText());
-	currConnection->setParam("sqlite_pragma_short_column_names", ((sqlite_chkPragma_short_column_names->isChecked())? "1": "0"));
-	currConnection->setParam("sqlite_pragma_full_column_names", ((sqlite_chkPragma_full_column_names->isChecked())? "1": "0"));
+	*/
+	m_connectionParams.setParam("description", edCaption->text());
+	m_connectionParams.setParam("driver", cbxDriver->currentText());
+	m_connectionParams.setParam("host", edHost->text());
+	m_connectionParams.setParam("port", edPort->value());
+	m_connectionParams.setParam("user", edUser->text());
+	m_connectionParams.setParam("password", edPassword->text());
+	m_connectionParams.setParam("database", edDatabase->text());
+	m_connectionParams.setParam("textcodec", lstCodec->currentText());
+	m_connectionParams.setParam("mysqlSetNames", lstMySqlSetNames->currentText());
+	m_connectionParams.setParam("sqlite_pragma_short_column_names", ((sqlite_chkPragma_short_column_names->isChecked())? "1": "0"));
+	m_connectionParams.setParam("sqlite_pragma_full_column_names", ((sqlite_chkPragma_full_column_names->isChecked())? "1": "0"));
 	accept();
 }
 

@@ -135,7 +135,7 @@ QFSqlQueryTable* MainWindow::modelTable()
 qf::core::model::SqlQueryTableModel* MainWindow::queryViewModel()
 {
 	qf::core::model::SqlQueryTableModel *m = qobject_cast<qf::core::model::SqlQueryTableModel*>(ui.queryView->tableView()->tableModel());
-	QF_ASSERT_EX(m!=nullptr, tr("Model is NULL or not a kind of qf::core::model::SqlQueryTableModel."));
+	//QF_CHECK(m!=nullptr, "Model is NULL or not a kind of qf::core::model::SqlQueryTableModel.");
 	return m;
 }
 
@@ -526,7 +526,7 @@ void MainWindow::configure()
 	conf.copyData(theApp()->config());
 	//conf.detachData();
 	dlg.setConfig(&conf);
-	if(dlg.exec()) {
+	if(dlg.exec() == QDialog::Accepted) {
 		theApp()->config()->copyData(&conf);
 		theApp()->config()->save();
 		//setStatusText("codec: " + conf.value("/i18n/dbtextcodec", QVariant()).toString(), 1);
@@ -584,6 +584,12 @@ bool MainWindow::execQuery(const QString& query_str)
 		appendInfo(msg);
 	}
 	return ok;
+}
+
+QSqlDatabase MainWindow::activeConnection()
+{
+	//QF_CHECK(m_activeConnection.isValid(), "Connection is not valid !!!");
+	return m_activeConnection;
 }
 
 bool MainWindow::execCommand(const QString& query_str)
@@ -903,8 +909,10 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				QAction *a = menu.exec(ui_srv.treeServers->viewport()->mapToGlobal(point));
 				if(a == a2) {
 					DlgEditConnection dlg(this);
-					dlg.setContent(*connection);
-					dlg.exec();
+					dlg.setParams(connection->params());
+					if(dlg.exec() == QDialog::Accepted) {
+						connection->setParams(dlg.params());
+					}
 				}
 				else if(a == a4) {
 					addServer(connection);
@@ -1164,7 +1172,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					QFDialog dlg(this);
 					dlg.setDialogWidget(w);
 					connect(w, SIGNAL(columnNamesCopiedToClipboard(QString)), sqlDock->sqlTextEdit(), SLOT(paste()));
-					dlg.exec();
+					if(dlg.exec() == QDialog::Accepted) {}
 					*/
 				}
 				else if(a == actAlterTable) {
@@ -1230,21 +1238,20 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 //-------------------------------------------------------------------------
 void MainWindow::addServer(Connection *connection_to_copy)
 {
-	qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
-	/*
+	//qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
+
 	Ui::ServerTreeWidget &ui_srv = serverDock->ui;
 	ServerTreeModel *model = qobject_cast<ServerTreeModel*>(ui_srv.treeServers->model());
 	DlgEditConnection dlg(this);
-	Connection *c;
-	if(connection_to_copy) c = new Connection(connection_to_copy->m_params.cloneNode(true).toElement());
-	else c = new Connection(theApp()->config()->dataDocument().createElement("connection"));
-	dlg.setContent(*c);
+	if(connection_to_copy)
+		dlg.setParams(connection_to_copy->params());
 	if(dlg.exec() == QDialog::Accepted) {
-		theApp()->config()->dataDocument().cd("/servers").appendChild(c->m_params);
-		theApp()->config()->setDataDirty(true);
+		Connection *c = new Connection(dlg.params());
+		//theApp()->config()->dataDocument().cd("/servers").appendChild(c->m_params);
+		//theApp()->config()->setDataDirty(true);
 		model->append(c, QModelIndex());
 	}
-	*/
+
 }
 
 void MainWindow::changeLog()

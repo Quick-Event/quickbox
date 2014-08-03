@@ -24,11 +24,11 @@
 ServerTreeModel::ServerTreeModel(QObject *parent)
 	: Super(parent)
 {
-	m_maxConnectionId = 0;
 }
 
 ServerTreeModel::~ServerTreeModel()
 {
+	saveSettings();
 }
 
 //---------------------------------------------
@@ -83,44 +83,48 @@ QVariant ServerTreeModel::headerData(int section, Qt::Orientation o, int role) c
 
 void ServerTreeModel::loadSettings()
 {
+	qfLogFuncFrame();
 	init();
 	QSettings settings;
 	QJsonParseError err;
-	QJsonDocument jsd = QJsonDocument::fromJson(settings.value("connections").toString().toUtf8(), &err);
-	if(err.error != QJsonParseError::NoError) {
-		qfError() << "Cannot load connections definition from settings:" << err.errorString();
+	QByteArray ba = settings.value("connections").toString().toUtf8();
+	QVariantList connections_lst;
+	if(!ba.isEmpty()) {
+		QJsonDocument jsd = QJsonDocument::fromJson(ba, &err);
+		if(err.error != QJsonParseError::NoError) {
+			qfError() << "Cannot load connections definition from settings:" << err.errorString();
+		}
+		else {
+			connections_lst = jsd.toVariant().toList();
+		}
 	}
-	QVariantList connections_lst = jsd.toVariant().toList();
 	QSet<int> ids;
 	for(auto val : connections_lst) {
 		QVariantMap m = val.toMap();
-		int id = m.value("id").toInt();
-		if(id > 0) {
-			if(!ids.contains(id)) {
-				ids << id;
-				new Connection(m, m_rootObj);
-				m_maxConnectionId = qMax(m_maxConnectionId, id);
-			}
-		}
+		new Connection(m, m_rootObj);
 	}
 }
 
 void ServerTreeModel::saveSettings()
 {
+	qfLogFuncFrame();
 	QVariantList connections_lst;
-	for(auto c : m_rootObj->findChildren<Connection*>(QString(), Qt::FindDirectChildrenOnly)) {
+	for(auto c : m_rootObj->findChildren<Connection*>(QString())) {
+		qfDebug() << c;
 		QVariantMap m = c->params();
+		/*
+		QMapIterator<QString, QVariant> it(m);
+		while(it.hasNext()) {
+			it.next();
+			qfDebug() << "\t" << it.key() << "->" << it.value().toString();
+		}
+		*/
 		connections_lst << m;
 	}
 	QSettings settings;
 	QJsonDocument jsd = QJsonDocument::fromVariant(connections_lst);
-	QString s = QString::fromUtf8(jsd.toJson());
+	QString s = QString::fromUtf8(jsd.toJson(QJsonDocument::Compact));
 	settings.setValue("connections", s);
-}
-
-int ServerTreeModel::nextConnectionId()
-{
-	return ++m_maxConnectionId;
 }
 
 //=============================================

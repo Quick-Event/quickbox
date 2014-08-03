@@ -50,15 +50,22 @@ class Database;
 class Connection : public ServerTreeItem
 {
 	Q_OBJECT
-protected:
-	//static Connection *activeConnection;
-	QVariantMap m_params;
+public:
+	class Params : public QVariantMap
+	{
+	public:
+		Params(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
+		QVariant param(const QString& name) const;
+		void setParam(const QString& name, const QVariant& value);
+	};
+public:
+	Connection(const Params& _params, QObject *parent = NULL);
+	virtual ~Connection();
 public:
 	QString connectionNameId() const;
-	QVariant param(const QString& name) const;
-	void setParam(const QString& name, const QVariant& value);
 	//static QStringList allParamNames();
-	QVariantMap params() const;
+	Params params() const;
+	void setParams(const Params &prms);
 public:
 	bool isOpen();
 	void close();
@@ -66,9 +73,9 @@ public:
 
 	virtual QVariant icon(int col);
 	virtual QVariant text(int col);
-public:
-	Connection(const QVariantMap& _params, QObject *parent = NULL);
-	virtual ~Connection();
+protected:
+	int m_connectionId;
+	Params m_params;
 };
 
 //=============================================================

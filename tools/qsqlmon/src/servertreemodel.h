@@ -22,9 +22,9 @@ class ServerTreeModel : public QFObjectItemModel
 	Q_OBJECT
 private:
 	typedef QFObjectItemModel Super;
-protected:
-	//QVariantList m_connections;
-	int m_maxConnectionId;
+public:
+	ServerTreeModel(QObject *parent = NULL);
+	~ServerTreeModel() Q_DECL_OVERRIDE;
 public:
 	int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
 	QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
@@ -33,10 +33,6 @@ public:
 public:
 	void loadSettings();
 	void saveSettings();
-	int nextConnectionId();
-public:
-	ServerTreeModel(QObject *parent = NULL);
-	~ServerTreeModel() Q_DECL_OVERRIDE;
 };
 //=============================================
 

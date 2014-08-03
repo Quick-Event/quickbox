@@ -8,21 +8,23 @@
 class DlgEditConnection : public QDialog, private Ui::DlgEditConnection
 {
 	Q_OBJECT
-	public:
-		enum OptionIndex {OptionIndexMySql = 0, OptionIndexSqlite};
+public:
+	enum OptionIndex {OptionIndexMySql = 0, OptionIndexSqlite};
+public:
+	DlgEditConnection(QWidget *parent = 0);
 private slots:
 	void on_btOk_clicked();
 	void on_btCancel_clicked() {reject();}
 	void on_cbxDriver_currentIndexChanged(const QString &s);
 	void on_btFindDatabaseFile_clicked();
-	protected:
+protected:
 	QStringList drivers;
 	QStringList codecs;
 	static QStringList mysqlCodecs;
-	Connection *currConnection;
+	Connection::Params m_connectionParams;
 public:
-    DlgEditConnection(QWidget *parent = 0);
-	void setContent(Connection& connection);
+	void setParams(const Connection::Params &params);
+	const Connection::Params& params();
 };
 
 #endif // DLGEDITCONNECTION_H

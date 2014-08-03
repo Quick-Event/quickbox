@@ -79,10 +79,12 @@ Connection::~Connection()
 	//qDebug() <<  "destructor:" << this;
 }
 
-Connection::Connection(const QVariantMap &_params, QObject *parent)
-	: ServerTreeItem(parent, QString()), m_params(_params)
+Connection::Connection(const Params &_params, QObject *parent)
+	: ServerTreeItem(parent, QString())
 {
-	setObjectName(param("description").toString());
+	static int max_id = 0;
+	m_connectionId = ++max_id;
+	setParams(_params);
 	//qfInfo() << params.toString();
 }
 
@@ -115,14 +117,14 @@ Database* Connection::open()
 	close();
 	QFObjectItemModel *m = model();
 	QModelIndex ix = m->object2index(this);
-	d = new Database(this, param("database").toString());
+	d = new Database(this, m_params.param("database").toString());
 	olst << d;
 	bool ok = d->open();
 
 	if(ok) {
 		QStringList sl = d->databases();
 		foreach(QString s, sl) {
-			if(s == param("database").toString())
+			if(s == m_params.param("database").toString())
 				continue;
 			olst << new Database(this, s);
 		}
@@ -153,10 +155,10 @@ QVariant Connection::text(int col)
 {
 	QVariant ret;
 	switch(col) {
-	case 0: ret = param("description"); break;
-	case 1: ret = param("user").toString() + "@" + param("host").toString(); break;
-	case 2: ret = param("database"); break;
-	case 3: ret = param("driver"); break;
+	case 0: ret = m_params.param("description"); break;
+	case 1: ret = m_params.param("user").toString() + "@" + m_params.param("host").toString(); break;
+	case 2: ret = m_params.param("database"); break;
+	case 3: ret = m_params.param("driver"); break;
 	}
 	return ret;
 }
@@ -164,10 +166,10 @@ QVariant Connection::text(int col)
 QString Connection::connectionNameId() const
 {
 	QString ret = "connection_%1";
-	return ret.arg(param("id").toInt());
+	return ret.arg(m_connectionId);
 }
 
-QVariant Connection::param(const QString& name) const
+QVariant Connection::Params::param(const QString& name) const
 {
 	//qfInfo() << QFLog::stackTrace();
 	QVariant default_value = "";
@@ -176,7 +178,7 @@ QVariant Connection::param(const QString& name) const
 	else if(name == "host")
 		default_value = "localhost";
 	//qfInfo() << "default_value:" << default_value;
-	QVariant ret = m_params.value(name, default_value);
+	QVariant ret = value(name, default_value);
 	if(name == "password") {
 		ret = theApp()->crypt().decrypt(ret.toString().toLatin1());
 		//qfInfo() << "password:" << s;
@@ -184,14 +186,14 @@ QVariant Connection::param(const QString& name) const
 	return ret;
 }
 
-void Connection::setParam(const QString& name, const QVariant &value)
+void Connection::Params::setParam(const QString& name, const QVariant &value)
 {
 	QVariant val = value;
 	if(name == "password") {
 		//qfDebug() << "password:" << s;
 		val = theApp()->crypt().encrypt(value.toString(), 32);
 	}
-	m_params[name] = val;
+	(*this)[name] = val;
 }
 /*
 QStringList Connection::allParamNames()
@@ -213,9 +215,16 @@ QStringList Connection::allParamNames()
 	return all_keys;
 }
 */
-QVariantMap Connection::params() const
+Connection::Params Connection::params() const
 {
 	return m_params;
+}
+
+void Connection::setParams(const Connection::Params &prms)
+{
+	close();
+	m_params = prms;
+	setObjectName(m_params.param("description").toString());
 }
 //===================================================
 
@@ -267,9 +276,9 @@ QString Database::connectionSignature()
 	QString s;
 	Connection *c = qobject_cast<Connection*>(parent());
 	if(c) {
-		s = objectName() + "[" + c->param("driver").toString() + "]"
-				+ c->param("user").toString() + "@" + c->param("host").toString()
-				+ ":" + c->param("port").toString();
+		s = objectName() + "[" + c->params().param("driver").toString() + "]"
+				+ c->params().param("user").toString() + "@" + c->params().param("host").toString()
+				+ ":" + c->params().param("port").toString();
 	}
 	return s;
 }
@@ -369,26 +378,26 @@ bool Database::open()
 	m_sqlConnection.close();
 	QString connection_id = c->connectionNameId();
 	m_sqlConnection = QSqlDatabase::database(connection_id, false);
-	QString driver_type = c->param("driver").toString();
+	QString driver_type = c->params().param("driver").toString();
 	if(!m_sqlConnection.isValid())
 		m_sqlConnection = QSqlDatabase::addDatabase(driver_type, connection_id);
 	QF_ASSERT(m_sqlConnection.isValid(),
-			  QString("Cannot add database for '%1' named '%2'").arg(c->param("driver").toString()).arg(connection_id),
+			  QString("Cannot add database for '%1' named '%2'").arg(c->params().param("driver").toString()).arg(connection_id),
 			  return false);
 	//QObject::connect(sqlConnection.driver(), SIGNAL(destroyed(QObject*)), this->parent(), SLOT(driverDestroyed(QObject*)));
-	m_sqlConnection.setHostName(c->param("host").toString());
-	m_sqlConnection.setPort(c->param("port").toInt());
-	m_sqlConnection.setUserName(c->param("user").toString());
-	m_sqlConnection.setPassword(c->param("password").toString());
+	m_sqlConnection.setHostName(c->params().param("host").toString());
+	m_sqlConnection.setPort(c->params().param("port").toInt());
+	m_sqlConnection.setUserName(c->params().param("user").toString());
+	m_sqlConnection.setPassword(c->params().param("password").toString());
 	//qDebug() << sqlConnection.password();
 	m_sqlConnection.setDatabaseName(objectName());
 	//qfDebug() << "\t" << m_sqlConnection.info();
 	QStringList opts;
 	//opts["QF_CODEC_NAME"] = theApp()->config()->value("/i18n/dbtextcodec", "UTF-8").toString();
-	QString codec_name = c->param("textcodec").toString();
+	QString codec_name = c->params().param("textcodec").toString();
 	if(!codec_name.isEmpty())
 		opts << "QF_CODEC_NAME=" + codec_name;
-	QString set_names = c->param("mysqlSetNames").toString();
+	QString set_names = c->params().param("mysqlSetNames").toString();
 	if(!set_names.isEmpty() && !set_names.startsWith("<"))
 		opts << "QF_MYSQL_SET_NAMES=" << set_names; /// konfigurak dava <no change> pro nic
 	//m_sqlConnection.setJournal(theApp()->sqlJournal());
@@ -410,7 +419,7 @@ bool Database::open()
 	}
 	if(driver_type.endsWith("SQLITE")) {
 		{
-			QString s = c->param("sqlite_pragma_full_column_names").toString();
+			QString s = c->params().param("sqlite_pragma_full_column_names").toString();
 			if(s != "1")
 				s = "0";
 			QSqlQuery q(m_sqlConnection);
@@ -418,7 +427,7 @@ bool Database::open()
 			q.exec("PRAGMA full_column_names = " + s);
 		}
 		{
-			QString s = c->param("sqlite_pragma_short_column_names").toString();
+			QString s = c->params().param("sqlite_pragma_short_column_names").toString();
 			if(s != "1") s = "0";
 			QSqlQuery q(m_sqlConnection);
 			q.exec("PRAGMA short_column_names = " + s);
