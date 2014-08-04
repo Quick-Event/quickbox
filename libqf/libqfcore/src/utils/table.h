@@ -112,7 +112,7 @@ public:
 		public:
 			QVariant::Type type;
 			QString name;
-			unsigned canUpdate:1, isPriKey:1;
+			unsigned canUpdate:1, isPriKey:1, isSerial:1;
 			Data() : type(QVariant::Invalid) {}
 			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(false), isPriKey(false) {}
 		};
@@ -135,6 +135,7 @@ public:
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
 		QF_SHARED_CLASS_FIELD_RW(bool, is, set, PriKey)
+		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Serial)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
 	{

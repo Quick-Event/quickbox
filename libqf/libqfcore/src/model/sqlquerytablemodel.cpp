@@ -25,6 +25,11 @@ void SqlQueryTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 	m_queryBuilder = qb;
 }
 
+void SqlQueryTableModel::addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key)
+{
+	m_foreignKeyDependencies[master_table_key] = slave_table_key;
+}
+
 bool SqlQueryTableModel::reload()
 {
 	QString qs = buildQuery();
@@ -55,62 +60,50 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 		if(row.isInsert()) {
 			qfDebug() << "\tINSERT";
 #if 0
-			QFStringSet referenced_foreign_tables = referencedForeignTables(row);
-			int tbl_cnt = 0;
-			QStringList table_ids = tableIdsSortedAccordingToForeignKeys(row);
-			foreach(QString tableid, table_ids) {
-				qfDebug() << "\ttable:" << tableid;
-				QString table_name = tableid.section('.', -1).trimmed().toLower();
-				qfDebug() << "\t\t table_name:" << table_name;
-				if(tbl_cnt++ > 0) {
-					/// 1. tabulku ukladej vzdy, ostatni pouze pokud jsou definovany podminky pro ulozeni jejich foreign klicu
-					if(!referenced_foreign_tables.contains(table_name)) {
-						if(!row.isForcedInsert()) {
-							qfDebug() << "\tSKIPPING" << table_name;
-							continue;
-						}
-					}
-				}
-				QFSqlTableInfo ti = conn.catalog().table(tableid);
+			//QSet<QString> referenced_foreign_tables = referencedForeignTables();
+			//int tbl_cnt = 0;
+			QSqlDatabase sqldb = QSqlDatabase::database(connectionName());
+			QSqlDriver *sqldrv = sqldb.driver();
+			QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
+			for(QString table_id : table_ids) {
+				qfDebug() << "\ttable:" << table_id;
+				//QFSqlTableInfo ti = conn.catalog().table(table_id);
 				//qfDebug() << "\t\t table info:" << ti.toString();
-				QFString table = ti.fullName();
-				table = conn.fullTableNameToQtDriverTableName(table);
-				QSqlDriver *drv = conn.driver();
+				//QFString table = ti.fullName();
+				//table = conn.fullTableNameToQtDriverTableName(table);
 				{
 					QSqlRecord rec;
 					int i = -1;
-					int autoinc_ix = -1;
+					int serial_ix = -1;
 					//QSqlIndex pri_ix = ti.primaryIndex();
-					bool has_blob_field = false;
-					foreach(QFSqlField f, row.fields()) {
+					//bool has_blob_field = false;
+					for(const qf::core::utils::Table::Field &fld : row.fields()) {
 						i++;
-						if(f.fullTableName() != tableid) continue;
+						if(fld.fullTableName() != table_id)
+							continue;
 						//qfError() << ti.field(f.fieldName()).toString();
-						bool add_field = row.isDirty(i);
-						if(row.isForcedInsert()) {
-							if(ti.field(f.fieldName()).isAutoIncrement()) {
-								/// ve forcedInsert neni treba ukladat autoinkrement, protoze pro ulozeni radku je nutne, aby mel nektery field dirty
-								autoinc_ix = i;
+						bool is_field_dirty = row.isDirty(i);
+						{
+							if(fld.isSerial()) {
+								/// always include serial fields, an empty lina cannot be inserted in other case
+								is_field_dirty = true;
+								serial_ix = i;
 							}
-						}
-						else {
-							if(ti.field(f.fieldName()).isAutoIncrement()) {
-								/// autoinc field vzdy pridej do insertu, mohlo by se stat, ze by nesel ulozit prazdnej radek, protoze by nebyl zadny field dirty
-								add_field = true;
-								autoinc_ix = i;
-							}
-							if(ti.field(f.fieldName()).isPriKey()) {
+							if(fld.isPriKey()) {
 								/// prikey field vzdy pridej do insertu, bez nej by to neslo (pokud je autoincrement, uplatni se i predchozi podminka)
-								add_field = true;
+								is_field_dirty = true;
 							}
 						}
-						if(!add_field) continue;
-						qfDebug() << "\tdirty field:" << f.name();
-						qfDebug() << "\tnullable:" << f.isNullable();
-						if(f.type() == QVariant::ByteArray) {
+						if(!is_field_dirty)
+							continue;
+						qfDebug() << "\tdirty field:" << fld.name();
+						//qfDebug() << "\tnullable:" << fld.isNullable();
+						/*
+						if(fld.type() == QVariant::ByteArray) {
 							qfDebug() << "\t\tBLOB size:" << row.value(i).toByteArray().size();
 							has_blob_field = true;
 						}
+						*/
 						QVariant v = row.value(i);
 						if(!v.isNull()) {
 							/// null hodnotu nema smysl insertovat, pokud to neni nutne kvuli necemu jinemu
@@ -118,19 +111,22 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 							/// pokud je insert, join radek neexistuje, takze hodnoty jsou null a mysql v takovem pripade v resultsetu nastavi
 							/// i not-null field na nullable
 							//qfInfo() << "\t" << f.fieldName() << "value type:" << QVariant::typeToName(v.type());
-							f.setValue(v);
+							QSqlField new_fld;
+							new_fld.setValue(v);
 							//qfInfo() << "\t\t" << "val type:" << QVariant::typeToName(f.value().type());
-							f.setName(f.fieldName());
-							rec.append(f);
+							new_fld.setName(fld.shortName());
+							rec.append(new_fld);
 						}
 					}
 					if(!rec.isEmpty()) {
 						qfDebug() << "updating table inserts" << table;
-						QString s;
-						s = drv->sqlStatement(QSqlDriver::InsertStatement, table, rec, has_blob_field);
-						QFSqlQuery q = QFSqlQuery(conn);
-						if(has_blob_field) {
-							q.prepare(s);
+						QString s = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
+						QSqlQuery q(sqldb);
+						bool ok = q.prepare(s);
+						if(!ok) {
+							qfError() << "Cannot prepare query:" << s;
+						}
+						else {
 							for(int i=0; i<rec.count(); i++) {
 								QVariant::Type type = rec.field(i).value().type();
 								//qfInfo() << "\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type);
@@ -138,20 +134,23 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 								q.addBindValue(rec.field(i).value());
 							}
 							qfDebug() << "\texecuting prepared query:" << s;
-							q.exec();
-						}
-						else {
-							qfDebug() << "\texecuting:" << s;
-							q.exec(s);
-						}
-						qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
-						int num_rows_affected = q.numRowsAffected();
-						//setNumRowsAffected(q.numRowsAffected());
-						if(num_rows_affected != 1) QF_INTERNAL_ERROR(tr("numRowsAffected() = %1, should be 1\n%2").arg(num_rows_affected).arg(s));
-						if(autoinc_ix >= 0) {
-							QVariant v = Qf::retypeVariant(q.lastInsertId(), row.fields()[autoinc_ix].type());
-							row.setValue(autoinc_ix, v);
-							row.setDirty(autoinc_ix, false);
+							ok = q.exec();
+							if(!ok) {
+								qfError() << "Error executing query:" << s
+										  << "\n" << q.lastError().text();
+							}
+							else {
+								qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
+								int num_rows_affected = q.numRowsAffected();
+								//setNumRowsAffected(q.numRowsAffected());
+								if(num_rows_affected != 1)
+									QF_INTERNAL_ERROR(tr("numRowsAffected() = %1, should be 1\n%2").arg(num_rows_affected).arg(s));
+								if(serial_ix >= 0) {
+									QVariant v = q.lastInsertId();
+									row.setValue(serial_ix, v);
+									row.setDirty(serial_ix, false);
+								}
+							}
 						}
 					}
 				}
@@ -417,6 +416,75 @@ QStringList SqlQueryTableModel::primaryIndex(const QString &table_name)
 	}
 	else {
 		ret = m_primaryIndexCache.value(pk_key);
+	}
+	return ret;
+}
+
+QSet<QString> SqlQueryTableModel::referencedForeignTables()
+{
+	qfLogFuncFrame();
+	QSet<QString> ret;
+	{
+		QStringList sl = m_foreignKeyDependencies.values();
+		for(QString s : sl) {
+			QString tbl_name;
+			qf::core::Utils::parseFieldName(s, nullptr, &tbl_name);
+			tbl_name = tbl_name.trimmed().toLower();
+			if(!tbl_name.isEmpty()) {
+				//qfDebug() << "\t referenced_foreign_tables <<" << tbl_name;
+				ret << tbl_name;
+			}
+		}
+	}
+	//qfDebug() << "\t returning:" << QStringList(referenced_foreign_tables.toList()).join(", ");
+	return ret;
+}
+
+QStringList SqlQueryTableModel::tableIdsSortedAccordingToForeignKeys()
+{
+	qfLogFuncFrame();
+	QStringList ret;
+	QStringList table_ids(tableIds(m_table.fields()).toList());
+
+	while(!table_ids.isEmpty()) {
+		int table_ix;
+		for(table_ix=0; table_ix<table_ids.count(); table_ix++) {
+			QString table_id = table_ids[table_ix];
+			bool dependency_satisfied = true;
+			/// check if this table_id depends on some different table
+			QMapIterator<QString, QString> it(m_foreignKeyDependencies);
+			while(it.hasNext()) {
+				it.next();
+				QString master_key = it.key();
+				QString slave_key = it.value();
+				QString field, table, schema;
+				qf::core::Utils::parseFieldName(slave_key, &field, &table, &schema);
+				slave_key = qf::core::Utils::composeFieldName(table, schema);
+				if(qf::core::Utils::fieldNameCmp(table_id, slave_key)) {
+					dependency_satisfied = false;
+					/// table_id is a slave, so check if master table is in return list already
+					qf::core::Utils::parseFieldName(master_key, &field, &table, &schema);
+					master_key = qf::core::Utils::composeFieldName(table, schema);
+					for(auto included_table_id : ret) {
+						if(qf::core::Utils::fieldNameCmp(included_table_id, master_key)) {
+							ret << table_ids.takeFirst();
+							dependency_satisfied = true;
+							break;
+						}
+					}
+				}
+				if(dependency_satisfied)
+					break;
+			}
+		}
+		if(table_ix < table_ids.count()) {
+			ret << table_ids.takeAt(table_ix);
+		}
+		else {
+			qfError() << "Cannot statisfy table dependencies";
+			ret.clear();
+			break;
+		}
 	}
 	return ret;
 }

@@ -42,6 +42,8 @@ public:
 
 	const QSqlQuery& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
 
+	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
+
 protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
@@ -49,6 +51,9 @@ protected:
 	QSet<QString> tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 	QStringList primaryIndex(const QString &table_name);
+
+	QSet<QString> referencedForeignTables();
+	QStringList tableIdsSortedAccordingToForeignKeys();
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;
@@ -56,6 +61,8 @@ protected:
 	QString m_connectionName;
 	QMap<QString, QStringList> m_primaryIndexCache;
 	QSqlQuery m_recentlyExecutedQuery;
+	/// INSERT needs to know dependency of tables in joined queries to insert particular tables in proper order
+	QMap<QString, QString> m_foreignKeyDependencies;
 };
 
 }}}

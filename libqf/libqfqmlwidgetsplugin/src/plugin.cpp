@@ -10,7 +10,7 @@
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/progressbar.h>
 #include <qf/qmlwidgets/menubar.h>
-#include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/qmldialog.h>
 #include <qf/qmlwidgets/dialogs/inputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
@@ -84,7 +84,7 @@ public:
 //		qmlRegisterType<qf::qmlwidgets::GridLayoutTypeProperties>(uri, 1, 0, "GridLayoutTypeProperties");
 //		qmlRegisterType<qf::qmlwidgets::BoxLayoutTypeProperties>(uri, 1, 0, "BoxLayoutTypeProperties");
 
-		qmlRegisterType<qf::qmlwidgets::dialogs::Dialog>(uri, 1, 0, "Dialog");
+		qmlRegisterType<qf::qmlwidgets::dialogs::QmlDialog>(uri, 1, 0, "Dialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::InputDialog>(uri, 1, 0, "InputDialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::MessageBox>(uri, 1, 0, "MessageBox");
 	}
