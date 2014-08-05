@@ -37,13 +37,13 @@ DlgAlterTable::~DlgAlterTable()
 
 void DlgAlterTable::refresh()
 {
-	QFSqlFieldInfoList fldlst;
+	qf::core::sql::FieldInfoList fldlst;
 	fldlst.load(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName));
 	lstFields->clear();
 	lstFields->addItems(fldlst.unorderedKeys());
 	lstIndexes->clear();
 
-	QFSqlIndexInfoList ixlst;
+	qf::core::sql::IndexInfoList ixlst;
 	ixlst.load(connection(), qfc::Utils::composeFieldName(m_tableName, m_schemaName));
 	lstIndexes->addItems(ixlst.unorderedKeys());
 
@@ -143,9 +143,9 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 	DlgColumnDef dlg(this, full_table_name);
 	QString fld_name = lstFields->currentItem()->text();
 	//qfDebug() << "\t####################################";
-	QFSqlFieldInfoList fldlst;
+	qf::core::sql::FieldInfoList fldlst;
 	fldlst.load(connection(), full_table_name);
-	QFSqlFieldInfo fi = fldlst.value(fld_name);
+	qf::core::sql::FieldInfo fi = fldlst.value(fld_name);
 	//qfDebug() << "\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4";
 	dlg.loadColumnDefinition(fi);
 	while(true) {

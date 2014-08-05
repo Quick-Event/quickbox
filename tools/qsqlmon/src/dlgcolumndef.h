@@ -12,11 +12,21 @@
 #ifndef DLGCOLUMNDEF_H
 #define DLGCOLUMNDEF_H
 
-#include "qfsqlcatalog.h"
+#include "ui_dlgcolumndef.h"
+
+//#include <qf/core/sql/catalog.h>
 
 #include <QDialog>
 
-#include "ui_dlgcolumndef.h"
+namespace qf {
+namespace core {
+namespace sql {
+class FieldInfo;
+}
+}
+}
+
+class QSqlDatabase;
 
 class DlgColumnDef : public QDialog, public Ui::DlgColumnDef
 {
@@ -29,7 +39,7 @@ protected:
 	void loadCollationsForCurrentCharset();
 public:
 	void clearFields();
-	void loadColumnDefinition(const QFSqlFieldInfo &fi);
+	void loadColumnDefinition(const qf::core::sql::FieldInfo &fi);
 
 	void enableControls(bool v);
 

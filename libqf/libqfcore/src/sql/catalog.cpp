@@ -1,20 +1,22 @@
-#include "qfsqlcatalog.h"
+#include "catalog.h"
 
-#include <qf/core/log.h>
-#include <qf/core/utils.h>
-#include <qf/core/string.h>
-#include <qf/core/assert.h>
+#include "../core/log.h"
+#include "../core/utils.h"
+#include "../core/string.h"
+#include "../core/assert.h"
 
 #include <QSqlQuery>
 #include <QSqlDriver>
 
 #define QFCATALOG_MYSQL_VERSION_MAJOR 5
 
+using namespace qf::core::sql;
+
 //=========================================
-//                          QFSqlFieldInfo
+//                          FieldInfo
 //=========================================
 #if 0
-QVariant QFSqlFieldInfo::seqNextVal() throw(QFSqlException)
+QVariant FieldInfo::seqNextVal() throw(Exception)
 {
 	QVariant ret;
 	if(!isValid()) return ret;
@@ -59,7 +61,7 @@ QVariant QFSqlFieldInfo::seqNextVal() throw(QFSqlException)
 	return ret;
 }
 #endif
-void QFSqlFieldInfo::setName(const QString &n)
+void FieldInfo::setName(const QString &n)
 {
 	QString f, t, d;
 	qf::core::Utils::parseFieldName(n, &f, &t, &d);
@@ -67,7 +69,7 @@ void QFSqlFieldInfo::setName(const QString &n)
 	setFullTableName(qf::core::Utils::composeFieldName(t, d));
 }
 
-QString QFSqlFieldInfo::toString(const QString& indent) const
+QString FieldInfo::toString(const QString& indent) const
 {
 	QString s;
 	QTextStream ts(&s, QIODevice::WriteOnly);
@@ -93,7 +95,7 @@ QString QFSqlFieldInfo::toString(const QString& indent) const
 	return s;
 }
 
-void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
+void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 {
 	qfLogFuncFrame();// << "reload:" << reload;
 	QF_ASSERT(connection.isValid(),
@@ -126,7 +128,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 	for(int i=0; i<r.count(); i++) {
 		QString short_field_name;
 		qf::core::Utils::parseFieldName(r.field(i).name(), &short_field_name);
-		QFSqlFieldInfo &fi = addEntry(short_field_name);
+		FieldInfo &fi = addEntry(short_field_name);
 		fi = r.field(i);
 		fi.setReadOnly(false);
 		fi.setName(full_table_name + "." + short_field_name);
@@ -164,7 +166,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 		s = s.arg(table_name, schema_name);
 		q.exec(s);
 		while(q.next()) {
-			QFSqlFieldInfo &fi = this->operator[](q.value("column_name").toString());
+			FieldInfo &fi = this->operator[](q.value("column_name").toString());
 			//f.setTableName(d->tablename);
 			//f.setSchema(d->schema);
 			// fill seqname
@@ -191,7 +193,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 		q.exec(s);
 		while(q.next()) {
 			if(ver <= 4) {
-				QFSqlFieldInfo &fi = this->operator[](q.value("field").toString());
+				FieldInfo &fi = this->operator[](q.value("field").toString());
 				fi.setReadOnly(false);
 				//fi.setFullName(fullName() + "." + q.value("field").toString());
 				fi.setNullable(q.value("null").toString().toUpper() == "YES");
@@ -223,7 +225,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 				fi.setDefaultValue(def_val);
 			}
 			else {
-				QFSqlFieldInfo &fi = this->operator[](q.value("column_name").toString());
+				FieldInfo &fi = this->operator[](q.value("column_name").toString());
 				fi.setReadOnly(false);
 				//fi.setFullName(fullName() + "." + q.value("column_name").toString());
 				fi.setNullable(q.value("is_nullable").toString().toUpper() == "YES");
@@ -265,7 +267,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 			int ix = fs.indexOf("default", 0, Qt::CaseInsensitive);
 			if(ix > 0) {
 				QString nm = fs.section(' ', 0, 0);
-				QFSqlFieldInfo &f = fieldByName(ret, nm);
+				FieldInfo &f = fieldByName(ret, nm);
 				if(!f.isValid()) {
 					qfError() << QF_FUNC_NAME << trUtf8("Found info for nonexisting field '%1'").arg(fs);
 				}
@@ -283,7 +285,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 			ix = fs.indexOf("autoincrement", 0, Qt::CaseInsensitive);
 			if(ix > 0) {
 				QString nm = fs.section(' ', 0, 0);
-				QFSqlFieldInfo *f = fieldRef(nm, Qf::ThrowExc);
+				FieldInfo *f = fieldRef(nm, Qf::ThrowExc);
 				if(!f) {
 					qfError() << QF_FUNC_NAME << trUtf8("Found info for nonexisting field '%1'").arg(fs);
 				}
@@ -297,7 +299,7 @@ void QFSqlFieldInfoList::load(const QSqlDatabase &connection, const QString tabl
 	}
 }
 
-void QFSqlIndexInfoList::load(const QSqlDatabase &connection, const QString table_id)
+void IndexInfoList::load(const QSqlDatabase &connection, const QString table_id)
 {
 	Super::load(connection, table_id);
 	qf::core::sql::DbInfo::IndexList lst = qf::core::sql::DbInfo(connection).indexes(table_id);

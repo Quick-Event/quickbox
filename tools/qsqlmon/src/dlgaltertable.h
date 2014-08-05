@@ -13,7 +13,8 @@
 #define DLGALTERTABLE_H
 
 #include "ui_dlgaltertable.h"
-#include "qfsqlcatalog.h"
+
+#include <qf/core/sql/catalog.h>
 
 #include <QDialog>
 

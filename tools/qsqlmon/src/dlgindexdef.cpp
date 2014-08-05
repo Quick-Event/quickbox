@@ -3,11 +3,11 @@
 
 #include "ui_dlgindexdef.h"
 #include "dlgindexdef.h"
-#include "qfsqlcatalog.h"
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
 #include <qf/core/string.h>
+#include <qf/core/sql/catalog.h>
 
 namespace qfc = qf::core;
 
@@ -24,7 +24,7 @@ DlgIndexDef::DlgIndexDef(QWidget * parent, const QString &table_name, const QStr
 	ui->edIndexName->setText(indexName);
 	//DlgAlterTable *dat = qfFindInheritedParent<DlgAlterTable*>(this);
 	//qf::core::sql::DbInfo dbi(connection());
-	QFSqlFieldInfoList filst;
+	qf::core::sql::FieldInfoList filst;
 	filst.load(connection(), table_name);
 	ui->lstTable->addItems(filst.unorderedKeys());
 	loadIndexDefinition();

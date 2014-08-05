@@ -21,6 +21,7 @@ NetworkReply::~NetworkReply()
 		/// don't know why, but deleting m_reply causes segmentation fault in the QNetworkHeadersPrivate destructor
 		/// watch https://bugreports.qt-project.org/browse/QTBUG-40125
 		/// it's a clang 3.4 bug.
+		qfWarning() << "mem leak caused by QTBUG-40125 is still here";
 		m_reply->deleteLater();
 	}
 }

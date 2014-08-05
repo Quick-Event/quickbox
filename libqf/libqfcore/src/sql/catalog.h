@@ -1,14 +1,20 @@
-#ifndef QFSQLCATALOG_H
-#define QFSQLCATALOG_H
+#ifndef QF_CORE_SQL_CATALOG_H
+#define QF_CORE_SQL_CATALOG_H
 
-#include <qf/core/sql/dbinfo.h>
+#include "dbinfo.h"
+
+#include "../core/coreglobal.h"
 
 #include <QSqlField>
 
 class QSqlDatabase;
 
+namespace qf {
+namespace core {
+namespace sql {
+
 template <class T>
-class QFSqlInfoList : public QMap<QString, T>
+class InfoList : public QMap<QString, T>
 {
 public:
 	QStringList unorderedKeys() const {return m_unorderedKeys;}
@@ -29,7 +35,7 @@ protected:
 	QString m_parentObjectId;
 };
 
-class QFSqlFieldInfo : public QSqlField
+class QFCORE_DECL_EXPORT FieldInfo : public QSqlField
 {
 private:
 	struct Data
@@ -78,43 +84,45 @@ public:
 	QVariant seqNextVal();
 	QString toString(const QString &indent = QString()) const;
 public:
-	QFSqlFieldInfo(const QSqlField& fld = QSqlField(), const QString& full_tbl_name = QString())
+	FieldInfo(const QSqlField& fld = QSqlField(), const QString& full_tbl_name = QString())
 		: QSqlField(fld), data(full_tbl_name)
 	{
 	}
-	QFSqlFieldInfo& operator=(const QSqlField &other)
+	FieldInfo& operator=(const QSqlField &other)
 	{
 		(*static_cast<QSqlField*>(this)) = other;
 		return *this;
 	}
 };
 
-class QFSqlFieldInfoList : public QFSqlInfoList<QFSqlFieldInfo>
+class QFCORE_DECL_EXPORT FieldInfoList : public InfoList<FieldInfo>
 {
 private:
-	typedef QFSqlInfoList<QFSqlFieldInfo> Super;
+	typedef InfoList<FieldInfo> Super;
 public:
 	void load(const QSqlDatabase &connection, const QString table_id) Q_DECL_OVERRIDE;
 };
 
-typedef qf::core::sql::DbInfo::IndexInfo QFSqlIndexInfo;
+typedef qf::core::sql::DbInfo::IndexInfo IndexInfo;
 
-class QFSqlIndexInfoList : public QFSqlInfoList<QFSqlIndexInfo>
+class QFCORE_DECL_EXPORT IndexInfoList : public InfoList<IndexInfo>
 {
 private:
-	typedef QFSqlInfoList<QFSqlIndexInfo> Super;
+	typedef InfoList<IndexInfo> Super;
 public:
 	void load(const QSqlDatabase &connection, const QString table_id) Q_DECL_OVERRIDE;
 };
 /*
-typedef QVariant QFSqlTableInfo;
+typedef QVariant TableInfo;
 
-class QFSqlTableInfoList : public QFSqlInfoList<QFSqlTableInfo>
+class TableInfoList : public InfoList<TableInfo>
 {
 private:
-	typedef QFSqlInfoList<QFSqlTableInfo> Super;
+	typedef InfoList<TableInfo> Super;
 public:
 	void load(const QSqlDatabase &connection, const QString schema_id, QSql::TableType type = QSql::Tables) Q_DECL_OVERRIDE;
 };
 */
-#endif // QFSQLCATALOG_H
+}}}
+
+#endif // QF_CORE_SQL_CATALOG_H

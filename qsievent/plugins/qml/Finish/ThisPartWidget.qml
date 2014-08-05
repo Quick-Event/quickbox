@@ -6,17 +6,17 @@ PartWidget
 {
 	id: root
 
-	title: "Start"
+	title: "Finish"
 
 	Frame {
 		Label {
 			id: lbl
-			text: "Finish"
+			text: "tATRY"
 		}
 		Button {
 			text: "format C:"
 			onClicked: {
-				lbl.text = "all your data are lost"
+				lbl.text = "kkt"
 			}
 		}
 		Frame {
@@ -49,6 +49,18 @@ PartWidget
 					}
 				}
 			}
+			TableView {
+				id: classes
+				persistentSettingsId: "tblClasses";
+				model: SqlQueryTableModel {
+					id: mClasses
+					Component.onCompleted:
+					{
+						queryBuilder.select2('classes', '*')
+							.from('classes').orderBy('id');
+					}
+				}
+			}
 		}
 	}
 
@@ -73,6 +85,7 @@ PartWidget
 		if(!sql_connected)
 			return;
 		model.reload();
+		mClasses.reload();
 	}
 
 }

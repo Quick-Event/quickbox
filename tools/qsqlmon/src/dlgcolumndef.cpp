@@ -17,11 +17,14 @@
 #include <qf/core/log.h>
 #include <qf/core/string.h>
 #include <qf/core/utils.h>
+#include <qf/core/sql/dbinfo.h>
+#include <qf/core/sql/catalog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <QSqlQuery>
 
 namespace qfc = qf::core;
+//namespace qfsql = qf::core::sql;
 
 QMap< QString, QMap<QString, QStringList> > DlgColumnDef::f_collationsCache;
 
@@ -152,7 +155,7 @@ void DlgColumnDef::clearFields()
 	lstCharacterSet->setCurrentIndex(0);
 }
 
-void DlgColumnDef::loadColumnDefinition(const QFSqlFieldInfo &fi)
+void DlgColumnDef::loadColumnDefinition(const qf::core::sql::FieldInfo &fi)
 {
 	qfLogFuncFrame();
 	qfDebug() << fi.toString();
@@ -238,7 +241,7 @@ void DlgColumnDef::on_lstRefTable_currentIndexChanged(const QString & text)
 {
 	lstRefColumn->clear();
 	if(!text.isEmpty()) {
-		QFSqlFieldInfoList fldlst;
+		qf::core::sql::FieldInfoList fldlst;
 		fldlst.load(connection(), qfc::Utils::composeFieldName(text, dbName));
 		lstRefColumn->addItems(fldlst.unorderedKeys());
 	}

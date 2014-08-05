@@ -91,12 +91,11 @@ public:
 	QString dumpTableSqlCommand(const QString &tblname);
 
 	QStringList serverVersion() const;
+	QString fullTableNameToQtDriverTableName(const QString &full_table_name) const;
+
 private:
 	//! take CREATE TABLE ... and parse fields definitions from it.
 	static QStringList fieldDefsFromCreateTableCommand(const QString &cmd);
-
-	//! Qt driver nekdy neumi pracovat s nazvem tabulky schema.table, tak z toho udelej jen table, to uz umi.
-	QString fullTableNameToQtDriverTableName(const QString &full_table_name) const;
 
 	//! convert n to form .dbname.tblname.fldname
 	QString normalizeFieldName(const QString &n) const;
