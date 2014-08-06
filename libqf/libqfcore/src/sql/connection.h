@@ -16,6 +16,8 @@ namespace sql {
 
 class QFCORE_DECL_EXPORT Connection : public QSqlDatabase
 {
+private:
+	typedef QSqlDatabase Super;
 public:
 	Connection();
 	explicit Connection(const QSqlDatabase& qdb);
@@ -33,9 +35,11 @@ public:
 		IndexInfo() : unique(false), primary(false) {}
 	};
 	typedef QList<IndexInfo> IndexList;
+private:
+	bool open(const QString& user, const QString& password);
 public:
-	//! pomocna funkce pro debugging
-	//static QString cash2string(const QString &indent = QString());
+	bool open();
+    void close();
 
 	//! @return list of fields in table or view
 	QStringList fields(const QString& tbl_name) const;
@@ -52,7 +56,9 @@ public:
 	/// @return list of available schemas in current connection
 	QStringList schemas() const;
 
-	QSqlIndex primaryIndex(const QString& tblname);
+	QSqlIndex primaryIndex(const QString& table_id);
+	QStringList primaryIndexFieldNames(const QString &table_id);
+	QString serialFieldName(const QString &table_id);
 
 	QSqlRecord record(const QString & tablename) const;
 

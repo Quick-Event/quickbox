@@ -2,7 +2,6 @@
 #include "../core/assert.h"
 #include "../core/exception.h"
 #include "../sql/connection.h"
-#include "../sql/catalog.h"
 
 #include <QRegExp>
 #include <QSqlQuery>
@@ -201,7 +200,7 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 					s += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, tableid, edit_rec, has_blob_field);
 					s += " ";
 					QSqlRecord where_rec;
-					for(QString fld_name : primaryIndex(tableid)) {
+					for(QString fld_name : sql_conn.primaryIndexFieldNames(tableid)) {
 						QString full_fld_name = tableid + '.' + fld_name;
 						int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 						QF_ASSERT(fld_ix >= 0,
@@ -376,8 +375,8 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 	QMap<QString, QString> serial_field_names;
 	QSet<QString> updateable_table_ids;
 	for(QString table_id : table_ids) {
-		serial_field_names[table_id] = serialFieldName(table_id);
-		QStringList prikey_fields = primaryIndex(table_id);
+		serial_field_names[table_id] = sqlConnection().serialFieldName(table_id);
+		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
 		for(auto pk_f : prikey_fields) {
 			if(!field_ids.contains(pk_f)) {
@@ -394,58 +393,11 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 		QString table_id = fld.tableId();
 		if(!table_id.isEmpty()) {
 			fld.setCanUpdate(updateable_table_ids.contains(table_id));
-			QStringList prikey_fields = primaryIndex(table_id);
+			QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 			fld.setPriKey(prikey_fields.contains(fld.shortName()));
 			fld.setSerial(!serial_field_names.value(fld.shortName()).isEmpty());
 		}
 	}
-}
-
-QStringList SqlQueryTableModel::primaryIndex(const QString &table_id)
-{
-	static QMap<QString, QStringList> s_primaryIndexCache;
-	QString pk_key = connectionName() + '.' + table_id;
-	QStringList ret;
-	if(!s_primaryIndexCache.contains(pk_key)) {
-		qf::core::sql::Connection sql_conn = sqlConnection();
-		QSqlIndex sql_ix = sql_conn.primaryIndex(table_id);
-		for(int i=0; i<sql_ix.count(); i++) {
-			QString fld_name = sql_ix.fieldName(i);
-			qf::core::Utils::parseFieldName(fld_name, &fld_name);
-			ret << fld_name;
-		}
-		s_primaryIndexCache[pk_key] = ret;
-	}
-	else {
-		ret = s_primaryIndexCache.value(pk_key);
-	}
-	return ret;
-}
-
-QString SqlQueryTableModel::serialFieldName(const QString &table_id)
-{
-	static QMap<QString, QString> s_serialFieldNamesCache;
-	QString pk_key = connectionName() + '.' + table_id;
-	QString ret;
-	if(!s_serialFieldNamesCache.contains(pk_key)) {
-		qf::core::sql::Connection sql_conn = sqlConnection();
-		qf::core::sql::FieldInfoList fldlst;
-		fldlst.load(sql_conn, table_id);
-		QMapIterator<QString, qf::core::sql::FieldInfo> it(fldlst);
-		while(it.hasNext()) {
-			it.next();
-			qf::core::sql::FieldInfo fi = it.value();
-			if(fi.isAutoIncrement()) {
-				ret = it.key();
-				break;
-			}
-		}
-		s_serialFieldNamesCache[pk_key] = ret;
-	}
-	else {
-		ret = s_serialFieldNamesCache.value(pk_key);
-	}
-	return ret;
 }
 
 QSet<QString> SqlQueryTableModel::referencedForeignTables()

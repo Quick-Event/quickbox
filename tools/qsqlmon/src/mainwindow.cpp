@@ -30,7 +30,6 @@
 #include <QScrollBar>
 #include <QUrl>
 #include <QToolBar>
-#include <QSqlDatabase>
 #include <QTimer>
 #include <QSqlError>
 #include <QSqlIndex>
@@ -106,7 +105,7 @@ void MainWindow::init()
 	ui_srv.treeServers->resizeColumnToContents(0);
 
 	//ui.tblSql->verticalHeader()->setFixedHeight(12);
-	//setActiveConnection(QSqlDatabase());
+	//setActiveConnection(qf::core::sql::Connection());
 	setActiveConnection2(NULL);
 
 	connect(ui.queryView, SIGNAL(statusTextAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
@@ -146,13 +145,13 @@ void MainWindow::setQueryViewModel(qf::core::model::SqlQueryTableModel *m)
 		m->setParent(ui.queryView);
 }
 
-QSqlDatabase MainWindow::setActiveConnection2(Database *dd)
+qf::core::sql::Connection MainWindow::setActiveConnection2(Database *dd)
 {
-	QSqlDatabase c;
+	qf::core::sql::Connection c;
 	if(dd)
 		c = dd->sqlConnection();
 	//qfInfo() << c.signature();
-	QSqlDatabase ret = setActiveConnection1(c);
+	qf::core::sql::Connection ret = setActiveConnection1(c);
 	#if 0
 	if(dd && c.isValid()) {
 		Connection *cc = qfFindParent<Connection*>(dd, !Qf::ThrowExc);
@@ -172,7 +171,7 @@ QSqlDatabase MainWindow::setActiveConnection2(Database *dd)
 	return ret;
 }
 
-QSqlDatabase MainWindow::setActiveConnection1(const QSqlDatabase &c)
+qf::core::sql::Connection MainWindow::setActiveConnection1(const qf::core::sql::Connection &c)
 {
 	qfLogFuncFrame();// << c.signature();
 	//qfInfo() << "set activeConnection:" << c.signature();
@@ -216,7 +215,7 @@ QSqlDatabase MainWindow::setActiveConnection1(const QSqlDatabase &c)
 	QF_SAFE_DELETE(old_model);
 	qfDebug() << "\t deleted";
 
-	QSqlDatabase ret = m_activeConnection;
+	qf::core::sql::Connection ret = m_activeConnection;
 	//qfDebug() << "m_activeConnection = c";
 	m_activeConnection = c;
 	//qfInfo() << "activeConnection:" << m_activeConnection.signature();
@@ -587,7 +586,7 @@ bool MainWindow::execQuery(const QString& query_str)
 	return ok;
 }
 
-QSqlDatabase MainWindow::activeConnection()
+qf::core::sql::Connection MainWindow::activeConnection()
 {
 	//QF_CHECK(m_activeConnection.isValid(), "Connection is not valid !!!");
 	return m_activeConnection;
@@ -801,7 +800,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 				qfDebug() << QF_FUNC_NAME << c;
 				ui_srv.treeServers->setExpanded(index, false);
 				c->close();
-				setActiveConnection1(QSqlDatabase());
+				setActiveConnection1(qf::core::sql::Connection());
 			}
 			else {
 				/// pripoj se, zjisti, jaky tam jsou database a otevri tu z connection
@@ -815,7 +814,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 		else if(Database *d = qobject_cast<Database*>(o)) {
 			if(d->isOpen()) {
 				d->close();
-				setActiveConnection1(QSqlDatabase());
+				setActiveConnection1(qf::core::sql::Connection());
 				//ui.treeServers->close(index);
 				ui_srv.treeServers->setExpanded(index, false);
 			}
@@ -1166,7 +1165,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					dlg.exec(s, "dump_" + table->objectName()+".sql", "dlgTextView");
 				}
 				else if(a == actColumnSelector) {
-					QSqlDatabase conn = activeConnection();
+					qf::core::sql::Connection conn = activeConnection();
 					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
 					/*
 					ColumnSelectorWidget *w = new ColumnSelectorWidget(table->objectName(), conn);
@@ -1285,7 +1284,7 @@ void MainWindow::availableDrivers()
 		ts << "QT build key:" << QLibraryInfo::buildKey() << endl << endl;
 		#endif
 		ts << "Available drivers:" << endl;
-		QStringList sl = QSqlDatabase::drivers();
+		QStringList sl = qf::core::sql::Connection::drivers();
 		foreach(QString s, sl) {
 			ts << "\t'" << s << "'" << endl;
 		}

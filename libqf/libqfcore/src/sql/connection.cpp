@@ -1,7 +1,10 @@
 #include "connection.h"
 
+#include "catalog.h"
+
 #include "../core/log.h"
 #include "../core/utils.h"
+#include "../core/assert.h"
 
 #include <QMap>
 #include <QVariant>
@@ -18,19 +21,57 @@
 using namespace qf::core::sql;
 
 //=========================================
-//              DbInfo
+//              Connection
 //=========================================
+namespace {
+
+QMap<QString, QStringList> s_primaryIndexCache;
+QMap<QString, QString> s_serialFieldNamesCache;
+
+void s_clearCache(const QString &connection_name)
+{
+	QString prefix = connection_name + '.';
+	{
+		QMutableMapIterator<QString, QStringList> it(s_primaryIndexCache);
+		while(it.hasNext()) {
+			it.next();
+			if(it.key().startsWith(prefix, Qt::CaseInsensitive))
+				it.remove();
+		}
+	}
+	{
+		QMutableMapIterator<QString, QString> it(s_serialFieldNamesCache);
+		while(it.hasNext()) {
+			it.next();
+			if(it.key().startsWith(prefix, Qt::CaseInsensitive))
+				it.remove();
+		}
+	}
+}
+
+}
+
 Connection::Connection()
 	: QSqlDatabase()
 {
-	//d = new Data();
-	//initCurrentSchema();
 }
 
 Connection::Connection(const QSqlDatabase& qdb)
 	: QSqlDatabase(qdb)
 {
 }
+
+bool Connection::open()
+{
+	s_clearCache(connectionName());
+	return Super::open();
+}
+
+void Connection::close()
+{
+	Super::close();
+}
+
 #if 0
 void DbInfo::close()
 {
@@ -686,17 +727,17 @@ QString Connection::dumpTableSqlCommand(const QString &tblname)
 	return "unsupported for " + driverName();
 }
 
-QSqlIndex Connection::primaryIndex(const QString& _tblname)
+QSqlIndex Connection::primaryIndex(const QString& table_id)
 {
-	qfLogFuncFrame() << "table name:" << _tblname;
-	QString tblname = _tblname;
+	qfLogFuncFrame() << "table name:" << table_id;
+	QString tblname = table_id;
 	QSqlIndex ret;
 	if(driverName().endsWith("SQLITE")) {
 #ifndef SQLITE_PARSE_CREATE_SQL_SCRIPT
 		// TODO: use PRAGMA table_info(table_name)  instead of parsing CREATE command
 		// s timhle je problem, protoze pragma neprijma table_name ve tvaru schema.table
 		QString tblname, dbname;
-		tblname = normalizeTableName(_tblname);
+		tblname = normalizeTableName(table_id);
 		qf::core::Utils::parseFieldName(tblname, &tblname, &dbname);
 		QString s = "PRAGMA table_info(table_name)";
 		s = s.arg(tblname, dbname);
@@ -732,6 +773,55 @@ QSqlIndex Connection::primaryIndex(const QString& _tblname)
 	}
 	for(int i=0; i<ret.count(); i++) {
 		qfDebug() << "\t" << ret.field(i).name();
+	}
+	return ret;
+}
+
+QStringList Connection::primaryIndexFieldNames(const QString &table_id)
+{
+	QF_ASSERT(isValid(),
+			  QString("Connection '%1' is not valid!").arg(connectionName()),
+			  return QStringList());
+	QString pk_key = connectionName() + '.' + table_id;
+	QStringList ret;
+	if(!s_primaryIndexCache.contains(pk_key)) {
+		QSqlIndex sql_ix = primaryIndex(table_id);
+		for(int i=0; i<sql_ix.count(); i++) {
+			QString fld_name = sql_ix.fieldName(i);
+			qf::core::Utils::parseFieldName(fld_name, &fld_name);
+			ret << fld_name;
+		}
+		s_primaryIndexCache[pk_key] = ret;
+	}
+	else {
+		ret = s_primaryIndexCache.value(pk_key);
+	}
+	return ret;
+}
+
+QString Connection::serialFieldName(const QString &table_id)
+{
+	QF_ASSERT(isValid(),
+			  QString("Connection '%1' is not valid!").arg(connectionName()),
+			  return QString());
+	QString pk_key = connectionName() + '.' + table_id;
+	QString ret;
+	if(!s_serialFieldNamesCache.contains(pk_key)) {
+		qf::core::sql::FieldInfoList fldlst;
+		fldlst.load(*this, table_id);
+		QMapIterator<QString, qf::core::sql::FieldInfo> it(fldlst);
+		while(it.hasNext()) {
+			it.next();
+			qf::core::sql::FieldInfo fi = it.value();
+			if(fi.isAutoIncrement()) {
+				ret = it.key();
+				break;
+			}
+		}
+		s_serialFieldNamesCache[pk_key] = ret;
+	}
+	else {
+		ret = s_serialFieldNamesCache.value(pk_key);
 	}
 	return ret;
 }

@@ -7,13 +7,15 @@
 #include <QSqlError>
 #include <QSqlDriver>
 
+namespace qfs = qf::core::sql;
+
 using namespace qf::core::qml;
 
 SqlConnection::SqlConnection(QObject *parent) :
 	QObject(parent), m_sqlQuery(nullptr)
 {
 	qfLogFuncFrame() << this;
-	m_sqlDatabase = QSqlDatabase::database(QSqlDatabase::defaultConnection, false);
+	m_sqlConnection = qfs::Connection(QSqlDatabase::database(QSqlDatabase::defaultConnection, false));
 	qfDebug() << "created db connection name:" << connectionName();
 }
 
@@ -29,7 +31,7 @@ void SqlConnection::setConnectionName(const QString &n)
 {
 	qfLogFuncFrame() << this << connectionName() << "->" << n;
 	if(n != connectionName()) {
-		m_sqlDatabase = QSqlDatabase::database(n, false);
+		m_sqlConnection = qfs::Connection(QSqlDatabase::database(n, false));
 		emit connectionNameChanged();
 	}
 }
@@ -43,7 +45,7 @@ QString SqlConnection::defaultConnectionName() const
 void SqlConnection::setHostName(const QString &n)
 {
 	if(n != hostName()) {
-		m_sqlDatabase.setHostName(n);
+		m_sqlConnection.setHostName(n);
 		emit hostNameChanged();
 	}
 }
@@ -51,7 +53,7 @@ void SqlConnection::setHostName(const QString &n)
 void SqlConnection::setUserName(const QString &n)
 {
 	if(n != userName()) {
-		m_sqlDatabase.setUserName(n);
+		m_sqlConnection.setUserName(n);
 		emit userNameChanged();
 	}
 }
@@ -59,7 +61,7 @@ void SqlConnection::setUserName(const QString &n)
 void SqlConnection::setPassword(QString n)
 {
 	if(n != password()) {
-		m_sqlDatabase.setPassword(n);
+		m_sqlConnection.setPassword(n);
 		emit databaseNameChanged();
 	}
 }
@@ -67,7 +69,7 @@ void SqlConnection::setPassword(QString n)
 void SqlConnection::setDatabaseName(const QString &n)
 {
 	if(n != databaseName()) {
-		m_sqlDatabase.setDatabaseName(n);
+		m_sqlConnection.setDatabaseName(n);
 		emit databaseNameChanged();
 	}
 }
@@ -75,14 +77,14 @@ void SqlConnection::setDatabaseName(const QString &n)
 void SqlConnection::setPort(int n)
 {
 	if(n != port()) {
-		m_sqlDatabase.setPort(n);
+		m_sqlConnection.setPort(n);
 		emit portChanged();
 	}
 }
 
 QString SqlConnection::driverName()
 {
-	return m_sqlDatabase.driverName();
+	return m_sqlConnection.driverName();
 }
 /*
 void SqlDatabase::reloadConnection()
@@ -95,13 +97,13 @@ void SqlDatabase::reloadConnection()
 bool SqlConnection::open()
 {
 	qfInfo() << "Opening database:"
-			 << "host:" << m_sqlDatabase.hostName()
-			 << "user:" << m_sqlDatabase.userName()
-			 << "port:" << m_sqlDatabase.port()
-			 << "database:" << m_sqlDatabase.databaseName() ;
-	bool ret = m_sqlDatabase.open();
+			 << "host:" << m_sqlConnection.hostName()
+			 << "user:" << m_sqlConnection.userName()
+			 << "port:" << m_sqlConnection.port()
+			 << "database:" << m_sqlConnection.databaseName() ;
+	bool ret = m_sqlConnection.open();
 	if(!ret) {
-		qfWarning() << "Open database error:" << m_sqlDatabase.lastError().databaseText() << m_sqlDatabase.lastError().driverText();
+		qfWarning() << "Open database error:" << m_sqlConnection.lastError().databaseText() << m_sqlConnection.lastError().driverText();
 	}
 	else {
 		emit isOpenChanged();
@@ -113,7 +115,7 @@ bool SqlConnection::open()
 void SqlConnection::close()
 {
 	if(isOpen()) {
-		m_sqlDatabase.close();
+		m_sqlConnection.close();
 		emit isOpenChanged();
 	}
 }
@@ -121,8 +123,8 @@ void SqlConnection::close()
 bool SqlConnection::transaction()
 {
 	bool ret = true;
-	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
-		ret = m_sqlDatabase.transaction();
+	if(m_sqlConnection.driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = m_sqlConnection.transaction();
 		if(!ret) {
 			qfWarning() << "Cannot open transaction";
 		}
@@ -133,8 +135,8 @@ bool SqlConnection::transaction()
 bool SqlConnection::commit()
 {
 	bool ret = true;
-	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
-		ret = m_sqlDatabase.commit();
+	if(m_sqlConnection.driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = m_sqlConnection.commit();
 		if(!ret) {
 			qfWarning() << "Cannot commit transaction";
 		}
@@ -145,8 +147,8 @@ bool SqlConnection::commit()
 bool SqlConnection::rollback()
 {
 	bool ret = true;
-	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
-		ret = m_sqlDatabase.rollback();
+	if(m_sqlConnection.driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = m_sqlConnection.rollback();
 		if(!ret) {
 			qfWarning() << "Cannot rollback transaction";
 		}
@@ -165,7 +167,7 @@ SqlQuery *SqlConnection::query()
 SqlQuery *SqlConnection::createQuery()
 {
 	SqlQuery *ret = new SqlQuery();
-	ret->setDatabase(m_sqlDatabase);
+	ret->setDatabase(m_sqlConnection);
 	return ret;
 }
 /*

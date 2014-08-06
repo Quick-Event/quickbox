@@ -54,8 +54,6 @@ protected:
 	bool reloadTable(const QString &query_str);
 	QSet<QString> tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
-	QStringList primaryIndex(const QString &table_id);
-	QString serialFieldName(const QString &table_id);
 
 	QSet<QString> referencedForeignTables();
 	QStringList tableIdsSortedAccordingToForeignKeys();

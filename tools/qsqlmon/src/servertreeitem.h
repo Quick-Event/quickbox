@@ -1,11 +1,9 @@
 #ifndef SERVERTREEITEM_H
 #define SERVERTREEITEM_H
 
-//#include <qfxmlconfigdocument.h>
 #include "qfobjectitemmodel.h"
-//#include <qfstring.h>
-//#include <QDom>
-#include <QSqlDatabase>
+
+#include <qf/core/sql/connection.h>
 
 #include <QWidget>
 #include <QVariant>
@@ -85,7 +83,7 @@ class Database : public ServerTreeItem
 {
 	Q_OBJECT
 protected:
-	QSqlDatabase m_sqlConnection;
+	qf::core::sql::Connection m_sqlConnection;
 
 	QStringList schemas() const;
 public:
@@ -96,7 +94,7 @@ signals:
 public:
 	QString connectionSignature();
 	QStringList databases();
-	const QSqlDatabase& sqlConnection() {return m_sqlConnection;}
+	const qf::core::sql::Connection& sqlConnection() {return m_sqlConnection;}
 	bool isOpen() {return m_sqlConnection.isOpen();}
 	bool open();
 	void close();

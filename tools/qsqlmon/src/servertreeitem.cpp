@@ -17,6 +17,8 @@
 #include <QSqlQuery>
 #include <QMessageBox>
 
+namespace qfs = qf::core::sql;
+
 //=============================================================
 //                     ServerTreeItem
 //=============================================================
@@ -382,12 +384,12 @@ bool Database::open()
 			  return false);
 	close();
 	QString connection_id = c->connectionNameId();
-	m_sqlConnection = QSqlDatabase::database(connection_id, false);
+	m_sqlConnection = qfs::Connection(QSqlDatabase::database(connection_id, false));
 	QString driver_type = c->params().param("driver").toString();
 	if(!m_sqlConnection.isValid())
-		m_sqlConnection = QSqlDatabase::addDatabase(driver_type, connection_id);
+		m_sqlConnection = qfs::Connection(QSqlDatabase::addDatabase(driver_type, connection_id));
 	else if(m_sqlConnection.driverName() != driver_type) {
-		m_sqlConnection = QSqlDatabase::addDatabase(driver_type, connection_id);
+		m_sqlConnection = qfs::Connection(QSqlDatabase::addDatabase(driver_type, connection_id));
 	}
 	QF_ASSERT(m_sqlConnection.isValid(),
 			  QString("Cannot add database for '%1' named '%2'").arg(c->params().param("driver").toString()).arg(connection_id),
@@ -455,11 +457,11 @@ bool Database::open()
 	if(m_sqlConnection.driverName().endsWith("IBASE")) {
 		/// tables
 		QStringList sl;
-		sl = m_sqlConnection.tables(QSql::Tables);
+		sl = m_sqlConnection.QSqlDatabase::tables(QSql::Tables);
 		qSort(sl);
 		foreach(QString s, sl)
 			olst << new Table(this, s, QSql::Tables);
-		sl = m_sqlConnection.tables(QSql::Views);
+		sl = m_sqlConnection.QSqlDatabase::tables(QSql::Views);
 		qSort(sl);
 		foreach(QString s, sl)
 			olst << new Table(this, s, QSql::Views);
@@ -480,7 +482,7 @@ void Database::close()
 {
 	qfLogFuncFrame() << this << "Database::close(): " << connectionSignature();
 	m_sqlConnection.close();
-	m_sqlConnection = QSqlDatabase(); // zrus referenci na databasi
+	m_sqlConnection = qfs::Connection(); // zrus referenci na databasi
 
 	// vymaz deti
 	QModelIndex ix = model()->object2index(this);

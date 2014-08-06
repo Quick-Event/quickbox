@@ -4,15 +4,11 @@
 #include "ui_centralwidget.h"
 
 #include <qf/core/assert.h>
+#include <qf/core/sql/connection.h>
 #include <qf/qmlwidgets/framework/ipersistentsettings.h>
 
 #include <QMap>
 #include <QMainWindow>
-#include <QSqlDatabase>
-
-//#include <qfmainwindow.h>
-//#include <qfsqlconnection.h>
-//#include <qfsqlquerymodel.h>
 
 class ServerTreeModel;
 class QAction;
@@ -123,17 +119,17 @@ private:
 	}
 	QString f_activeSetNames;
 	/// database z niz se provadi dotazy
-	QSqlDatabase m_activeConnection;
+	qf::core::sql::Connection m_activeConnection;
 	/// \return previously active connection
-	QSqlDatabase setActiveConnection1(const QSqlDatabase &c);
-	QSqlDatabase setActiveConnection2(Database *d);
+	qf::core::sql::Connection setActiveConnection1(const qf::core::sql::Connection &c);
+	qf::core::sql::Connection setActiveConnection2(Database *d);
 	
 	bool execQuery(const QString& query_str);
 public:
 	/**
 	 *  throw exception if activeConnection is not valid.
 	 */
-	QSqlDatabase activeConnection();
+	qf::core::sql::Connection activeConnection();
 	bool execCommand(const QString& query_str);
 public:
 	MainWindow();
