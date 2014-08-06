@@ -13,7 +13,7 @@ QfObject {
 		DbSchema {
 			id: dbSchema
 		}
-		SqlDatabase {
+		SqlConnection {
 			id: db
 		}
 	}

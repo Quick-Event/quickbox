@@ -9,7 +9,7 @@ Plugin {
 
 	property QfObject internals: QfObject {
 		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
-		SqlDatabase {
+		SqlConnection {
 			id: db
 		}
 

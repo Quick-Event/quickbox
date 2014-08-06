@@ -1,7 +1,7 @@
 #ifndef QF_CORE_QML_QMLSQLSINGLETON_H
 #define QF_CORE_QML_QMLSQLSINGLETON_H
 
-#include "sqldatabase.h"
+#include "sqlconnection.h"
 
 #include <QObject>
 #include <QMap>
@@ -13,7 +13,7 @@ namespace qf {
 namespace core {
 namespace qml {
 
-class SqlDatabase;
+class SqlConnection;
 class SqlQuery;
 
 class QmlSqlSingleton : public QObject

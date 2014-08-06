@@ -1,14 +1,4 @@
-//
-// C++ Implementation: dlgcolumndef
-//
-// Description:
-//
-//
-// Author: Fanda Vacek <fanda.vacek@volny.cz>, (C) 2005
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
+
 #include "mainwindow.h"
 #include "theapp.h"
 
@@ -17,7 +7,7 @@
 #include <qf/core/log.h>
 #include <qf/core/string.h>
 #include <qf/core/utils.h>
-#include <qf/core/sql/dbinfo.h>
+#include <qf/core/sql/connection.h>
 #include <qf/core/sql/catalog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
@@ -147,7 +137,7 @@ void DlgColumnDef::clearFields()
 	chkUnsigned->setChecked(false);
 	lstRefTable->clear();
 	if(!dbName.isEmpty()) {
-		qf::core::sql::DbInfo dbi(connection());
+		qf::core::sql::Connection dbi(connection());
 		lstRefTable->addItems(dbi.tables(dbName, QSql::AllTables));
 	}
 	lstRefTable->setCurrentIndex(-1);

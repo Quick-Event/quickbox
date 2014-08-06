@@ -23,7 +23,7 @@ Plugin {
 
 	property QfObject internals: QfObject
 	{
-		SqlDatabase {
+		SqlConnection {
 			id: db
 			Component.onCompleted: {
 				//console.warn('COMPL');

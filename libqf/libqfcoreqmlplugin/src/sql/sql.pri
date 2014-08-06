@@ -4,14 +4,14 @@ INCLUDEPATH += $$PWD/../../libqfcore/include
 
 HEADERS += \
     $$PWD/qmlsqlsingleton.h \
-    $$PWD/sqldatabase.h \
+    $$PWD/sqlconnection.h \
     $$PWD/sqlquery.h \
     $$PWD/sqlrecord.h \
     $$PWD/sqlquerybuilder.h \
 
 SOURCES += \
     $$PWD/qmlsqlsingleton.cpp \
-    $$PWD/sqldatabase.cpp \
+    $$PWD/sqlconnection.cpp \
     $$PWD/sqlquery.cpp \
     $$PWD/sqlrecord.cpp \
     $$PWD/sqlquerybuilder.cpp \

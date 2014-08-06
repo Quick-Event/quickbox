@@ -5,7 +5,7 @@
 #include <qf/core/utils/crypt.h>
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
-#include <qf/core/sql/dbinfo.h>
+#include <qf/core/sql/connection.h>
 
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
@@ -604,7 +604,7 @@ void Schema::open()
 	QString schema_name = objectName();
 	QList<QObject*> olst;
 	/// tables
-	qf::core::sql::DbInfo dbi(d->sqlConnection());
+	qf::core::sql::Connection dbi(d->sqlConnection());
 	QStringList sl = dbi.tables(schema_name, QSql::Tables);
 	qSort(sl);
 	foreach(QString s, sl)

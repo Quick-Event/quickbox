@@ -1,5 +1,5 @@
-#ifndef QF_CORE_SQL_DBINFO_H
-#define QF_CORE_SQL_DBINFO_H
+#ifndef QF_CORE_SQL_CONNECTION_H
+#define QF_CORE_SQL_CONNECTION_H
 
 #include "../core/coreglobal.h"
 
@@ -14,11 +14,11 @@ namespace qf {
 namespace core {
 namespace sql {
 
-class QFCORE_DECL_EXPORT DbInfo : public QSqlDatabase
+class QFCORE_DECL_EXPORT Connection : public QSqlDatabase
 {
 public:
-	DbInfo();
-	explicit DbInfo(const QSqlDatabase& qdb);
+	Connection();
+	explicit Connection(const QSqlDatabase& qdb);
 	//explicit DbInfo(const QString &driver_name);
 	//explicit DbInfo(QSqlDriver *drv);
 	//virtual ~DbInfo();
@@ -107,4 +107,4 @@ private:
 
 }}}
 
-#endif // QF_CORE_SQL_DBINFO_H
+#endif // QF_CORE_SQL_CONNECTION_H

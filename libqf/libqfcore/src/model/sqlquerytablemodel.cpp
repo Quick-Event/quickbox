@@ -1,7 +1,7 @@
 #include "sqlquerytablemodel.h"
 #include "../core/assert.h"
 #include "../core/exception.h"
-#include "../sql/dbinfo.h"
+#include "../sql/connection.h"
 #include "../sql/catalog.h"
 
 #include <QRegExp>
@@ -64,9 +64,9 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 
 			//QSet<QString> referenced_foreign_tables = referencedForeignTables();
 			//int tbl_cnt = 0;
-			QSqlDatabase sqldb = QSqlDatabase::database(connectionName());
-			qf::core::sql::DbInfo dbinfo(sqldb);
-			QSqlDriver *sqldrv = sqldb.driver();
+			qf::core::sql::Connection sql_conn = sqlConnection();
+			qf::core::sql::Connection dbinfo(sql_conn);
+			QSqlDriver *sqldrv = sql_conn.driver();
 			QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 			for(QString table_id : table_ids) {
 				qfDebug() << "\ttable:" << table_id;
@@ -117,7 +117,7 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 					qfDebug() << "updating table inserts" << table_id;
 					QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
 					QString s = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
-					QSqlQuery q(sqldb);
+					QSqlQuery q(sql_conn);
 					bool ok = q.prepare(s);
 					if(!ok) {
 						qfError() << "Cannot prepare query:" << s;
@@ -165,8 +165,8 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 		}
 		else {
 			qfDebug() << "\tEDIT";
-			QSqlDatabase sqldb = QSqlDatabase::database(connectionName());
-			QSqlDriver *sqldrv = sqldb.driver();
+			qf::core::sql::Connection sql_conn = sqlConnection();
+			QSqlDriver *sqldrv = sql_conn.driver();
 			for(QString tableid : tableIds(m_table.fields())) {
 				qfDebug() << "\ttableid:" << tableid;
 				//table = conn.fullTableNameToQtDriverTableName(table);
@@ -219,7 +219,7 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 
 					s += sqldrv->sqlStatement(QSqlDriver::WhereStatement, tableid, where_rec, false);
 					qfDebug() << "save edit query:" << s;
-					QSqlQuery q(sqldb);
+					QSqlQuery q(sql_conn);
 					bool ok;
 					if(has_blob_field) {
 						q.prepare(s);
@@ -278,10 +278,19 @@ QString SqlQueryTableModel::replaceQueryParameters(const QString query_str)
 	return ret;
 }
 
-bool SqlQueryTableModel::reloadTable(const QString &query_str)
+qf::core::sql::Connection SqlQueryTableModel::sqlConnection()
 {
 	QSqlDatabase db = QSqlDatabase::database(connectionName());
-	m_recentlyExecutedQuery = QSqlQuery(db);
+	qf::core::sql::Connection ret = qf::core::sql::Connection(db);
+	QF_CHECK(ret.isValid(),
+			 QString("Invalid sql connection for name '%1'").arg(connectionName()));
+	return ret;
+}
+
+bool SqlQueryTableModel::reloadTable(const QString &query_str)
+{
+	qf::core::sql::Connection sql_conn = sqlConnection();
+	m_recentlyExecutedQuery = QSqlQuery(sql_conn);
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
 	QF_ASSERT(ok == true,
 			  QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str),
@@ -398,8 +407,8 @@ QStringList SqlQueryTableModel::primaryIndex(const QString &table_id)
 	QString pk_key = connectionName() + '.' + table_id;
 	QStringList ret;
 	if(!s_primaryIndexCache.contains(pk_key)) {
-		QSqlDatabase db = QSqlDatabase::database(connectionName());
-		QSqlIndex sql_ix = db.primaryIndex(table_id);
+		qf::core::sql::Connection sql_conn = sqlConnection();
+		QSqlIndex sql_ix = sql_conn.primaryIndex(table_id);
 		for(int i=0; i<sql_ix.count(); i++) {
 			QString fld_name = sql_ix.fieldName(i);
 			qf::core::Utils::parseFieldName(fld_name, &fld_name);
@@ -419,9 +428,9 @@ QString SqlQueryTableModel::serialFieldName(const QString &table_id)
 	QString pk_key = connectionName() + '.' + table_id;
 	QString ret;
 	if(!s_serialFieldNamesCache.contains(pk_key)) {
-		QSqlDatabase db = QSqlDatabase::database(connectionName());
+		qf::core::sql::Connection sql_conn = sqlConnection();
 		qf::core::sql::FieldInfoList fldlst;
-		fldlst.load(db, table_id);
+		fldlst.load(sql_conn, table_id);
 		QMapIterator<QString, qf::core::sql::FieldInfo> it(fldlst);
 		while(it.hasNext()) {
 			it.next();

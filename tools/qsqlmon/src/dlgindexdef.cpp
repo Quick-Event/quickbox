@@ -69,9 +69,9 @@ void DlgIndexDef::on_actionRemoveFieldFromIndex_triggered()
 void DlgIndexDef::loadIndexDefinition()
 {
 	QString s = "%1.%2";
-	qfc::sql::DbInfo dbi(connection());
-	qfc::sql::DbInfo::IndexList il = dbi.indexes(s.arg(dbName).arg(tableName));
-	for(qfc::sql::DbInfo::IndexInfo ii : il) {
+	qfc::sql::Connection dbi(connection());
+	qfc::sql::Connection::IndexList il = dbi.indexes(s.arg(dbName).arg(tableName));
+	for(qfc::sql::Connection::IndexInfo ii : il) {
 		if(ii.name == indexName) {
 			ui->chkUnique->setChecked(ii.unique);
 			foreach(s, ii.fields) ui->lstIndex->addItem(s);

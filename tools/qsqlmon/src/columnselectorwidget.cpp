@@ -9,7 +9,7 @@
 #include "columnselectorwidget.h"
 
 #include <qf/core/log.h>
-#include <qf/core/sql/dbinfo.h>
+#include <qf/core/sql/connection.h>
 
 #include <QTimer>
 #include <QListWidget>
@@ -27,7 +27,7 @@ ColumnSelectorWidget::ColumnSelectorWidget(QString table_name, const QSqlDatabas
 	ui->setupUi(this);
 	//Qf::connectSlotsByName(centralWidget(), this);
 	{
-		qf::core::sql::DbInfo dbi(conn);
+		qf::core::sql::Connection dbi(conn);
 		QStringList fields = dbi.fields(f_tableName);
 		QListWidget *w = ui->lstFields;
 		foreach(QString fld, fields) {

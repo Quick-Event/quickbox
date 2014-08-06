@@ -1,4 +1,4 @@
-#include "dbinfo.h"
+#include "connection.h"
 
 #include "../core/log.h"
 #include "../core/utils.h"
@@ -20,14 +20,14 @@ using namespace qf::core::sql;
 //=========================================
 //              DbInfo
 //=========================================
-DbInfo::DbInfo()
+Connection::Connection()
 	: QSqlDatabase()
 {
 	//d = new Data();
 	//initCurrentSchema();
 }
 
-DbInfo::DbInfo(const QSqlDatabase& qdb)
+Connection::Connection(const QSqlDatabase& qdb)
 	: QSqlDatabase(qdb)
 {
 }
@@ -65,7 +65,7 @@ void DbInfo::open(const DbInfo::ConnectionOptions &options) throw(QFSqlException
 	}
 }
 #endif
-int DbInfo::defaultPort(const QString &driver_name)
+int Connection::defaultPort(const QString &driver_name)
 {
 	if(driver_name.endsWith("PSQL")) return 5432;
 	else if(driver_name.endsWith("MYSQL")) return 3306;
@@ -73,7 +73,7 @@ int DbInfo::defaultPort(const QString &driver_name)
 	return 0;
 }
 
-QString DbInfo::signature() const
+QString Connection::signature() const
 {
 	QString s;
 	s += this->databaseName();
@@ -85,7 +85,7 @@ QString DbInfo::signature() const
 	return s;
 }
 
-QString DbInfo::info(int verbosity) const
+QString Connection::info(int verbosity) const
 {
 	QString s;
 	if(verbosity == 0) s = signature();
@@ -130,7 +130,7 @@ static QVariant sqlite_set_pragma(QSqlQuery &q, const QString &pragma_key, const
 	return old_val;
 }
 
-QStringList DbInfo::tables(const QString& dbname, QSql::TableType type) const
+QStringList Connection::tables(const QString& dbname, QSql::TableType type) const
 {
 	qfLogFuncFrame() << "dbname:" << dbname << "type" << type;
 	QStringList ret;
@@ -243,7 +243,7 @@ QStringList DbInfo::tables(const QString& dbname, QSql::TableType type) const
 	return ret;
 }
 
-QSqlRecord DbInfo::record(const QString & tablename) const
+QSqlRecord Connection::record(const QString & tablename) const
 {
 	qfLogFuncFrame() << "tblname:" << tablename;
 	QString s = fullTableNameToQtDriverTableName(tablename);
@@ -255,7 +255,7 @@ QSqlRecord DbInfo::record(const QString & tablename) const
 	return QSqlDatabase::record(s);
 }
 
-QStringList DbInfo::fields(const QString& tbl_name) const
+QStringList Connection::fields(const QString& tbl_name) const
 {
 	qfLogFuncFrame() << "tblname:" << tbl_name;
 	QString tblname = normalizeDbName(tbl_name);
@@ -276,7 +276,7 @@ QStringList DbInfo::fields(const QString& tbl_name) const
 	return ret;
 }
 
-DbInfo::IndexList DbInfo::indexes(const QString& tbl_name) const
+Connection::IndexList Connection::indexes(const QString& tbl_name) const
 {
 	qfLogFuncFrame() << "tblname:" << tbl_name;
 	QString tblname = tbl_name;
@@ -368,7 +368,7 @@ DbInfo::IndexList DbInfo::indexes(const QString& tbl_name) const
 	return ret;
 }
 
-QStringList DbInfo::databases() const
+QStringList Connection::databases() const
 {
 	qfLogFuncFrame();
 	QStringList sl;
@@ -391,7 +391,7 @@ QStringList DbInfo::databases() const
 	return sl;
 }
 
-QStringList DbInfo::schemas() const
+QStringList Connection::schemas() const
 {
 	qfLogFuncFrame();
 	QStringList ret;
@@ -437,7 +437,7 @@ QStringList DbInfo::schemas() const
 	return ret;
 }
 
-bool DbInfo::isOpen() const
+bool Connection::isOpen() const
 {
 	if(!isValid()) return false;
 	if(!QSqlDatabase::isOpen()) return false;
@@ -569,7 +569,7 @@ static QString err_msg(QProcess::ProcessError err_no)
 	}
 }
 
-QString DbInfo::createTableSqlCommand(const QString &tblname)
+QString Connection::createTableSqlCommand(const QString &tblname)
 {
 	qfLogFuncFrame();
 	if(driverName().endsWith("SQLITE")) {
@@ -650,7 +650,7 @@ QString DbInfo::createTableSqlCommand(const QString &tblname)
 	return QString();
 }
 
-QString DbInfo::dumpTableSqlCommand(const QString &tblname)
+QString Connection::dumpTableSqlCommand(const QString &tblname)
 {
 	if(driverName().endsWith("MYSQL")) {
 		QSqlQuery q(*this);
@@ -686,7 +686,7 @@ QString DbInfo::dumpTableSqlCommand(const QString &tblname)
 	return "unsupported for " + driverName();
 }
 
-QSqlIndex DbInfo::primaryIndex(const QString& _tblname)
+QSqlIndex Connection::primaryIndex(const QString& _tblname)
 {
 	qfLogFuncFrame() << "table name:" << _tblname;
 	QString tblname = _tblname;
@@ -736,7 +736,7 @@ QSqlIndex DbInfo::primaryIndex(const QString& _tblname)
 	return ret;
 }
 
-QString DbInfo::normalizeFieldName(const QString &n) const
+QString Connection::normalizeFieldName(const QString &n) const
 {
 	QString db, tbl, fld;
 	qf::core::Utils::parseFieldName(n, &fld, &tbl, &db);
@@ -747,7 +747,7 @@ QString DbInfo::normalizeFieldName(const QString &n) const
 	return fld;
 }
 
-QString DbInfo::normalizeTableName(const QString &n) const
+QString Connection::normalizeTableName(const QString &n) const
 {
 	QString db, tbl;
 	qf::core::Utils::parseFieldName(n, &tbl, &db);
@@ -755,7 +755,7 @@ QString DbInfo::normalizeTableName(const QString &n) const
 	return qf::core::Utils::composeFieldName(tbl, db);
 }
 
-QString DbInfo::normalizeDbName(const QString &n) const
+QString Connection::normalizeDbName(const QString &n) const
 {
 	/*
 	QString db = n;
@@ -789,7 +789,7 @@ QString DbInfo::currentSchema() const
 	return ret;
 }
 */
-void DbInfo::setCurrentSchema(const QString &schema_name)
+void Connection::setCurrentSchema(const QString &schema_name)
 {
 	if(driverName().endsWith("MYSQL")) {
 		QSqlQuery q(*this);
@@ -805,7 +805,7 @@ void DbInfo::setCurrentSchema(const QString &schema_name)
 	}
 }
 
-QStringList DbInfo::serverVersion() const
+QStringList Connection::serverVersion() const
 {
 	QSqlQuery q = exec("SHOW variables LIKE 'version'");
 	QStringList sl;
@@ -815,7 +815,7 @@ QStringList DbInfo::serverVersion() const
 	return sl;
 }
 
-QString DbInfo::fullTableNameToQtDriverTableName(const QString &full_table_name) const
+QString Connection::fullTableNameToQtDriverTableName(const QString &full_table_name) const
 {
 	QString ret = full_table_name;
 	if(driverName().endsWith("IBASE")) {

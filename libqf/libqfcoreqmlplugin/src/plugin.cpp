@@ -3,7 +3,7 @@
 #include "settings.h"
 
 #include "sql/qmlsqlsingleton.h"
-#include "sql/sqldatabase.h"
+#include "sql/sqlconnection.h"
 #include "sql/sqlquery.h"
 #include "sql/sqlrecord.h"
 #include "sql/sqlquerybuilder.h"
@@ -38,7 +38,7 @@ public:
 		qmlRegisterType<qf::core::qml::Settings>(uri, 1, 0, "Settings");
 		qmlRegisterType<qf::core::qml::Crypt>(uri, 1, 0, "Crypt");
 
-		qmlRegisterType<qf::core::qml::SqlDatabase>(uri, 1, 0, "SqlDatabase");
+		qmlRegisterType<qf::core::qml::SqlConnection>(uri, 1, 0, "SqlConnection");
 		qmlRegisterType<qf::core::qml::SqlQuery>(uri, 1, 0, "SqlQuery");
 		qmlRegisterType<qf::core::qml::SqlRecord>(uri, 1, 0, "SqlRecord");
 		qmlRegisterType<qf::core::qml::SqlQueryBuilder>(uri, 1, 0, "SqlQueryBuilder");

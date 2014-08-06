@@ -69,6 +69,11 @@ void FieldInfo::setName(const QString &n)
 	setFullTableName(qf::core::Utils::composeFieldName(t, d));
 }
 
+void FieldInfo::setShortName(const QString &n)
+{
+	 Super::setName(n);
+}
+
 QString FieldInfo::toString(const QString& indent) const
 {
 	QString s;
@@ -302,7 +307,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 void IndexInfoList::load(const QSqlDatabase &connection, const QString table_id)
 {
 	Super::load(connection, table_id);
-	qf::core::sql::DbInfo::IndexList lst = qf::core::sql::DbInfo(connection).indexes(table_id);
+	qf::core::sql::Connection::IndexList lst = qf::core::sql::Connection(connection).indexes(table_id);
 	for(const auto& ii :lst) {
 		addEntry(ii.name) = ii;
 	}

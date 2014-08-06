@@ -1,5 +1,5 @@
 #include "qmlsqlsingleton.h"
-#include "sqldatabase.h"
+#include "sqlconnection.h"
 
 #include <qf/core/log.h>
 

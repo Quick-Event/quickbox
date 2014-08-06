@@ -1,5 +1,5 @@
-#ifndef QF_CORE_QML_SQLDATABASE_H
-#define QF_CORE_QML_SQLDATABASE_H
+#ifndef QF_CORE_QML_SQLCONNECTION_H
+#define QF_CORE_QML_SQLCONNECTION_H
 
 #include <QObject>
 #include <QSqlDatabase>
@@ -12,7 +12,7 @@ namespace qml {
 class SqlQuery;
 class SqlQueryBuilder;
 
-class SqlDatabase : public QObject
+class SqlConnection : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(QString driverName READ driverName)
@@ -25,8 +25,8 @@ class SqlDatabase : public QObject
 	Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
 	Q_PROPERTY(bool isOpen READ isOpen NOTIFY isOpenChanged)
 public:
-	explicit SqlDatabase(QObject *parent = 0);
-	~SqlDatabase() Q_DECL_OVERRIDE;
+	explicit SqlConnection(QObject *parent = 0);
+	~SqlConnection() Q_DECL_OVERRIDE;
 public:
 	QString connectionName() {return m_sqlDatabase.connectionName();}
 	void setConnectionName(const QString &n);
@@ -80,4 +80,4 @@ private:
 
 }}}
 
-#endif // QF_CORE_QML_SQLDATABASE_H
+#endif // QF_CORE_QML_SQLCONNECTION_H

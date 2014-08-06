@@ -1,4 +1,4 @@
-#include "sqldatabase.h"
+#include "sqlconnection.h"
 #include "sqlquery.h"
 #include "sqlquerybuilder.h"
 
@@ -9,7 +9,7 @@
 
 using namespace qf::core::qml;
 
-SqlDatabase::SqlDatabase(QObject *parent) :
+SqlConnection::SqlConnection(QObject *parent) :
 	QObject(parent), m_sqlQuery(nullptr)
 {
 	qfLogFuncFrame() << this;
@@ -17,7 +17,7 @@ SqlDatabase::SqlDatabase(QObject *parent) :
 	qfDebug() << "created db connection name:" << connectionName();
 }
 
-SqlDatabase::~SqlDatabase()
+SqlConnection::~SqlConnection()
 {
 	qfLogFuncFrame() << this << connectionName();
 	if(parent()) {
@@ -25,7 +25,7 @@ SqlDatabase::~SqlDatabase()
 	}
 }
 
-void SqlDatabase::setConnectionName(const QString &n)
+void SqlConnection::setConnectionName(const QString &n)
 {
 	qfLogFuncFrame() << this << connectionName() << "->" << n;
 	if(n != connectionName()) {
@@ -34,13 +34,13 @@ void SqlDatabase::setConnectionName(const QString &n)
 	}
 }
 
-QString SqlDatabase::defaultConnectionName() const
+QString SqlConnection::defaultConnectionName() const
 {
 	static QString s = QLatin1String(QSqlDatabase::defaultConnection);
 	return s;
 }
 
-void SqlDatabase::setHostName(const QString &n)
+void SqlConnection::setHostName(const QString &n)
 {
 	if(n != hostName()) {
 		m_sqlDatabase.setHostName(n);
@@ -48,7 +48,7 @@ void SqlDatabase::setHostName(const QString &n)
 	}
 }
 
-void SqlDatabase::setUserName(const QString &n)
+void SqlConnection::setUserName(const QString &n)
 {
 	if(n != userName()) {
 		m_sqlDatabase.setUserName(n);
@@ -56,7 +56,7 @@ void SqlDatabase::setUserName(const QString &n)
 	}
 }
 
-void SqlDatabase::setPassword(QString n)
+void SqlConnection::setPassword(QString n)
 {
 	if(n != password()) {
 		m_sqlDatabase.setPassword(n);
@@ -64,7 +64,7 @@ void SqlDatabase::setPassword(QString n)
 	}
 }
 
-void SqlDatabase::setDatabaseName(const QString &n)
+void SqlConnection::setDatabaseName(const QString &n)
 {
 	if(n != databaseName()) {
 		m_sqlDatabase.setDatabaseName(n);
@@ -72,7 +72,7 @@ void SqlDatabase::setDatabaseName(const QString &n)
 	}
 }
 
-void SqlDatabase::setPort(int n)
+void SqlConnection::setPort(int n)
 {
 	if(n != port()) {
 		m_sqlDatabase.setPort(n);
@@ -80,7 +80,7 @@ void SqlDatabase::setPort(int n)
 	}
 }
 
-QString SqlDatabase::driverName()
+QString SqlConnection::driverName()
 {
 	return m_sqlDatabase.driverName();
 }
@@ -92,7 +92,7 @@ void SqlDatabase::reloadConnection()
 	qfDebug() << connectionName() << driverName();
 }
 */
-bool SqlDatabase::open()
+bool SqlConnection::open()
 {
 	qfInfo() << "Opening database:"
 			 << "host:" << m_sqlDatabase.hostName()
@@ -110,7 +110,7 @@ bool SqlDatabase::open()
 	return ret;
 }
 
-void SqlDatabase::close()
+void SqlConnection::close()
 {
 	if(isOpen()) {
 		m_sqlDatabase.close();
@@ -118,7 +118,7 @@ void SqlDatabase::close()
 	}
 }
 
-bool SqlDatabase::transaction()
+bool SqlConnection::transaction()
 {
 	bool ret = true;
 	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
@@ -130,7 +130,7 @@ bool SqlDatabase::transaction()
 	return ret;
 }
 
-bool SqlDatabase::commit()
+bool SqlConnection::commit()
 {
 	bool ret = true;
 	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
@@ -142,7 +142,7 @@ bool SqlDatabase::commit()
 	return ret;
 }
 
-bool SqlDatabase::rollback()
+bool SqlConnection::rollback()
 {
 	bool ret = true;
 	if(m_sqlDatabase.driver()->hasFeature(QSqlDriver::Transactions)) {
@@ -154,7 +154,7 @@ bool SqlDatabase::rollback()
 	return ret;
 }
 
-SqlQuery *SqlDatabase::query()
+SqlQuery *SqlConnection::query()
 {
 	if(m_sqlQuery == nullptr) {
 		m_sqlQuery = createQuery();
@@ -162,7 +162,7 @@ SqlQuery *SqlDatabase::query()
 	return m_sqlQuery;
 }
 
-SqlQuery *SqlDatabase::createQuery()
+SqlQuery *SqlConnection::createQuery()
 {
 	SqlQuery *ret = new SqlQuery();
 	ret->setDatabase(m_sqlDatabase);

@@ -178,7 +178,7 @@ QSqlDatabase MainWindow::setActiveConnection1(const QSqlDatabase &c)
 	//qfInfo() << "set activeConnection:" << c.signature();
 	//fprintf(stderr, "set activeConnection MYSQL %p\n", c.driver()->handle().constData());
 	if(c.isValid()) {
-		setStatusText(qf::core::sql::DbInfo(c).info());
+		setStatusText(qf::core::sql::Connection(c).info());
 		foreach(QString s, c.connectOptions().split(';')) {
 			QString opt = "QF_CODEC_NAME";
 			QStringList sl = s.split('=');
@@ -203,7 +203,7 @@ QSqlDatabase MainWindow::setActiveConnection1(const QSqlDatabase &c)
 		setStatusText("", 1);
 	}
 	if(activeConnection().isValid()) {
-		if(qf::core::sql::DbInfo(activeConnection()).signature() == qf::core::sql::DbInfo(c).signature())
+		if(qf::core::sql::Connection(activeConnection()).signature() == qf::core::sql::Connection(c).signature())
 			return c;
 	}
 	QObject *old_model = queryViewModel();
@@ -1150,14 +1150,14 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 				else if(a == actCreateScript) {
-					qf::core::sql::DbInfo dbi(activeConnection());
+					qf::core::sql::Connection dbi(activeConnection());
 					QString s = dbi.createTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
 					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
 					new QFSqlSyntaxHighlighter(dlg.editor());
 					dlg.exec(s, "create_" + table->objectName()+".sql", "dlgTextView");
 				}
 				else if(a == actDumpScript) {
-					qf::core::sql::DbInfo dbi(activeConnection());
+					qf::core::sql::Connection dbi(activeConnection());
 					QString s = dbi.createTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
 					s += "\n\n";
 					s += dbi.dumpTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
