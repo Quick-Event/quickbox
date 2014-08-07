@@ -298,6 +298,11 @@ void TableModel::sort(int column, Qt::SortOrder order)
 	emit layoutChanged();
 }
 
+bool TableModel::reload()
+{
+	return true;
+}
+
 bool TableModel::postRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame() << row_no << throw_exc;
@@ -496,6 +501,19 @@ TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 {
     qfError() << Q_FUNC_INFO << ix << "NIY";
     TableModel::ColumnDefinition ret;
-    return ret;
+	return ret;
+}
+
+int TableModel::insertRowBefore(int before_row)
+{
+	qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
+	if(before_row < 0 || before_row > rowCount())
+		before_row = rowCount();
+	m_table.rowCount();
+	beginInsertRows(QModelIndex(), before_row, before_row);
+	m_table.insertRow(before_row);
+	endInsertRows();
+	qfDebug() << "\t row cnt:" << rowCount();
+	return before_row;
 }
 

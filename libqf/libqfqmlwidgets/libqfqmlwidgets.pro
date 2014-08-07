@@ -8,6 +8,7 @@ win32:DESTDIR = $$OUT_PWD/../../bin
 QT += widgets qml sql
 
 CONFIG += c++11
+CONFIG += hide_symbols
 
 #QMAKE_CXXFLAGS += -std=c++1y
 

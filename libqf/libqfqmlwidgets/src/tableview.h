@@ -19,6 +19,7 @@ class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::
 	Q_OBJECT
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(qf::core::model::TableModel* model READ tableModel WRITE setTableModel NOTIFY modelChanged)
+	Q_PROPERTY(bool editRowsInline READ isEditRowsInline WRITE setEditRowsInline NOTIFY editRowsInlineChanged)
 private:
 	typedef QTableView Super;
 public:
@@ -38,11 +39,28 @@ public:
 
 	Q_SLOT virtual void reload();
 
+	Q_SLOT void insertRow();
 	//! @param row_no if @a row_no < 0 than post current row.
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
+	/**
+	* calls update viewport with rect clipping row \a row.
+	* @param row if lower than 0 current row is updated.
+	*/
+	Q_SLOT void updateRow(int row = -1);
 
+	bool isEditRowsInline() const { return m_editRowsInline; }
+	void setEditRowsInline(bool arg)
+	{
+		if (m_editRowsInline != arg) {
+			m_editRowsInline = arg;
+			emit editRowsInlineChanged(arg);
+		}
+	}
+	Q_SIGNAL void editRowsInlineChanged(bool arg);
+
+	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, qf::core::model::TableModel::RowEditMode mode);
 private:
 	Q_SIGNAL void searchStringChanged(const QString &str);
 	qf::core::utils::Table::SortDef seekSortDefinition() const;
@@ -57,11 +75,7 @@ protected:
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
-	/**
-	* calls update viewport with rect clipping row \a row.
-	* @param row if lower than 0 current row is updated.
-	*/
-	Q_SLOT void updateRow(int row = -1);
+	virtual void insertRowInline();
 
 	virtual void createActions();
 	QList<Action*> contextMenuActionsForGroups(int action_groups = AllActions);
@@ -73,6 +87,7 @@ protected:
 	QMap<ActionGroup, Action*> m_separatorsForGroup;
 	QMap<int, QStringList> m_actionGroups;
 	QList<Action*> m_toolBarActions;
+	bool m_editRowsInline;
 };
 
 }}

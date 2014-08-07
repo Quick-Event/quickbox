@@ -1,8 +1,11 @@
 message(including $$PWD)
 
 TEMPLATE = lib
+
 CONFIG += plugin
 CONFIG += c++11
+CONFIG += hide_symbols
+
 QT += qml sql network
 
 PLUGIN_MODULE_PATH = qml/qf/core

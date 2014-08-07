@@ -12,6 +12,7 @@ QT	-= gui
 
 CONFIG += qt dll
 CONFIG += c++11
+CONFIG += hide_symbols
 
 LIBS += -L$$DESTDIR -lqfcore
 

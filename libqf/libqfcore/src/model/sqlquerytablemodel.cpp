@@ -35,6 +35,7 @@ bool SqlQueryTableModel::reload()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
+	Super::reload();
 	return reload(qs);
 }
 
@@ -313,6 +314,7 @@ bool SqlQueryTableModel::reloadTable(const QString &query_str)
 			}
 		}
 	}
+	emit reloaded();
 	return true;
 }
 

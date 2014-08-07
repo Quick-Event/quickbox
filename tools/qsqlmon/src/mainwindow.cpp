@@ -108,7 +108,7 @@ void MainWindow::init()
 	//setActiveConnection(qf::core::sql::Connection());
 	setActiveConnection2(NULL);
 
-	connect(ui.queryView, SIGNAL(statusTextAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
+	connect(ui.queryView, SIGNAL(statusBarAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
 
 	setPersistentSettingsId("MainWindow");
 
@@ -122,15 +122,7 @@ void MainWindow::lazyInit()
 	loadPersistentSettingsRecursively();
 	serverDock->ui.treeServers->resizeColumnToContents(0);
 }
-/*
-QFSqlQueryTable* MainWindow::modelTable()
-{
-	if(!queryModel) QF_EXCEPTION("model is NULL");
-	QFSqlQueryTable *t = queryModel->table();
-	if(!t) QF_EXCEPTION("table is NULL");
-	return t;
-}
-*/
+
 qf::core::model::SqlQueryTableModel* MainWindow::queryViewModel()
 {
 	qf::core::model::SqlQueryTableModel *m = qobject_cast<qf::core::model::SqlQueryTableModel*>(ui.queryView->tableView()->tableModel());
@@ -141,8 +133,11 @@ qf::core::model::SqlQueryTableModel* MainWindow::queryViewModel()
 void MainWindow::setQueryViewModel(qf::core::model::SqlQueryTableModel *m)
 {
 	ui.queryView->tableView()->setModel(m);
-	if(m)
+	if(m) {
 		m->setParent(ui.queryView);
+		connect(m, SIGNAL(reloaded()), ui.queryView, SLOT(updateStatus()));
+		//ui.queryView->updateStatus();
+	}
 }
 
 qf::core::sql::Connection MainWindow::setActiveConnection2(Database *dd)
@@ -482,6 +477,7 @@ void MainWindow::createToolBars()
 	*/
 	QToolBar *t;
 	t = addToolBar(tr("Sql"));
+	t->setObjectName("mainToolBar");
 	t->addAction(action("executeSql"));
 	t->addAction(action("executeSelectedLines"));
 	t->addAction(action("executeSqlScript"));

@@ -7,6 +7,7 @@
 //#include <QtUiTools>
 //#include <QHBoxLayout>
 //#include <QCheckBox>
+//#include <QApplication>
 
 namespace qfq = qf::qmlwidgets;
 
@@ -33,6 +34,11 @@ TableViewWidget::TableViewWidget(QWidget *parent) :
 	ui(new Ui::TableViewWidget)
 {
 	ui->setupUi(this);
+
+	ui->btMenu->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
+	connect(ui->btMenu, &QToolButton::clicked, [this](bool) {
+		emit statusBarAction(this->ui->edInfo->text());
+	});
 
 	ui->toolBar->setTableView(ui->tableView);
 

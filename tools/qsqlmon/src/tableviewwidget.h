@@ -22,6 +22,10 @@ public:
 	qf::qmlwidgets::TableView* tableView();
 	Q_SLOT void updateStatus();
 	Q_SLOT void setInfo(const QString &info);
+
+	Q_SIGNAL void statusBarAction(const QString &status_text);
+private:
+
 private:
 	Ui::TableViewWidget *ui;
 };

@@ -9,6 +9,7 @@
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 #include <qf/core/exception.h>
+#include <qf/core/model/tablemodel.h>
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -23,6 +24,7 @@ using namespace qf::qmlwidgets;
 TableView::TableView(QWidget *parent) :
 	Super(parent), framework::IPersistentSettings(this)
 {
+	m_editRowsInline = true;
 	setItemDelegate(new TableItemDelegate(this));
 	{
 		HeaderView *h = new HeaderView(Qt::Horizontal, this);
@@ -132,7 +134,7 @@ void TableView::refreshActions()
 		action("revertRow")->setEnabled(true);
 	}
 	else {
-		//action("insertRow")->setEnabled(isInsertRowActionVisible());
+		action("insertRow")->setEnabled(is_insert_rows_allowed);
 		action("copyRow")->setEnabled(is_copy_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
 		action("sortAsc")->setEnabled(true);
@@ -175,6 +177,21 @@ void TableView::enableAllActions(bool on)
 		a->setEnabled(on);
 		//if(on) a->setVisible(true);
 	}
+}
+
+void TableView::insertRow()
+{
+	qfLogFuncFrame();
+	if(isEditRowsInline()) {
+		qfDebug() << "\t insert row in mode RowEditorInline";
+		insertRowInline();
+	}
+	else {
+		qfDebug() << "\t emit insertRowInExternalEditor()";
+		emit editRowInExternalEditor(QVariant(), qf::core::model::TableModel::ModeInsert);
+		//emit insertRowInExternalEditor();
+	}
+	refreshActions();
 }
 
 bool TableView::postRow(int row_no)
@@ -648,7 +665,7 @@ void TableView::createActions()
 		a->setOid("insertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(insertRow()));
+		connect(a, SIGNAL(triggered()), this, SLOT(insertRow()));
 	}
 	{
 		a = new Action(QIcon(":/qf/qmlwidgets/images/delete.png"), tr("Delete selected rows"), this);
@@ -999,4 +1016,18 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 	//emitSelected(previous, current);
 	/// na selected() muze prijit table o fokus
 	setFocus();
+}
+
+void TableView::insertRowInline()
+{
+	qfLogFuncFrame();
+	QModelIndex ix = currentIndex();
+	int ri = model()->rowCount();
+	if(ix.isValid())
+		ri = ix.row() + 1;
+	tableModel()->insertRowBefore(ri);
+	if(ix.isValid())
+		setCurrentIndex(ix.sibling(ri, ix.column()));
+	else
+		setCurrentIndex(model()->index(ri, 0, QModelIndex()));
 }
