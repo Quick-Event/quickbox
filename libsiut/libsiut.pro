@@ -1,17 +1,19 @@
 #CONFIG += qmake_debug
-MY_SUBPROJECT = siut
 
 TEMPLATE = lib
-#win32:TARGET = lib$$MY_SUBPROJECT
-unix:TARGET = $$OUT_PWD/../lib/$$MY_SUBPROJECT
+TARGET = siut
+unix:DESTDIR = $$OUT_PWD/../lib
+win32:DESTDIR = $$OUT_PWD/../bin
+
 message(Target: $$TARGET)
 
 QT += sql network serialport
-
 QT	-= gui
 
 CONFIG += qt dll
 CONFIG += c++11
+
+LIBS += -L$$DESTDIR -lqfcore
 
 include(libsiut.pri)
 

@@ -10,19 +10,18 @@ PLUGIN_MODULE_NAME = Logging
 DESTDIR = $$OUT_PWD/../../../../bin/divers/qsievent/plugins/$$PLUGIN_MODULE_NAME
 TARGET  = $${PLUGIN_MODULE_NAME}plugin
 
-LIBS +=      \
-	-lqfcore  \
+LIBS += -lqfcore
+unix: LIBS += -L$$OUT_PWD/../../../../lib
+win32: LIBS += -L$$OUT_PWD/../../../../bin
 
-unix: LIBS +=  \
-	-L$$OUT_PWD/../../../../lib  \
 
 include ($$PWD/../../../../crosscompile-support.pri)
 
 unix {
 	qmlfiles.commands = ln -sf $$PWD/qml/* $$DESTDIR
 }
-win {
-	qmlfiles.commands = cp -rf $$PWD/qml/* $$DESTDIR
+win32 {
+        qmlfiles.commands = xcopy $$shell_path($$PWD/qml) $$shell_path($$DESTDIR) /e/y
 }
 
 QMAKE_EXTRA_TARGETS += qmlfiles

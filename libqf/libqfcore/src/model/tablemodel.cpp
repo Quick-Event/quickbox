@@ -489,6 +489,13 @@ TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const Tabl
 		before_ix = m_columns.count();
 	m_columns.insert(before_ix, cd);
 	ColumnDefinition &c = m_columns[before_ix];
-	return c;
+    return c;
+}
+
+TableModel::ColumnDefinition TableModel::removeColumn(int ix)
+{
+    qfError() << Q_FUNC_INFO << ix << "NIY";
+    TableModel::ColumnDefinition ret;
+    return ret;
 }
 

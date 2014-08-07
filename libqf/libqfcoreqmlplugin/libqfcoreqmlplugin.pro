@@ -8,22 +8,22 @@ QT += qml sql network
 PLUGIN_MODULE_PATH = qml/qf/core
 
 unix:DESTDIR = $$OUT_PWD/../../lib/$$PLUGIN_MODULE_PATH
-win:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
+win32:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
 TARGET  = qfcoreqmlplugin
 
 LIBS +=      \
 	-lqfcore  \
 
-unix: LIBS +=  \
-	-L$$OUT_PWD/../../lib  \
+unix: LIBS += -L$$OUT_PWD/../../lib
+win32: LIBS += -L$$OUT_PWD/../../bin
 
 include ($$PWD/../../crosscompile-support.pri)
 
 unix {
 	qmlfiles.commands = ln -sf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
 }
-win {
-	qmlfiles.commands = cp -rf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
+win32 {
+        qmlfiles.commands = xcopy $$shell_path($$PWD/$$PLUGIN_MODULE_PATH) $$shell_path($$DESTDIR) /e/y
 }
 
 QMAKE_EXTRA_TARGETS += qmlfiles

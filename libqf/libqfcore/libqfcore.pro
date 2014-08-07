@@ -3,7 +3,7 @@ message("including include/core")
 TEMPLATE = lib
 TARGET=qfcore
 unix:DESTDIR = $$OUT_PWD/../../lib
-win:DESTDIR = $$OUT_PWD/../../bin
+win32:DESTDIR = $$OUT_PWD/../../bin
 
 QT += xml sql
 CONFIG += C++11

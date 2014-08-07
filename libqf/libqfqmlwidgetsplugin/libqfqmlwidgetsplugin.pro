@@ -8,11 +8,13 @@ QT += qml widgets sql
 PLUGIN_MODULE_PATH = qml/qf/qmlwidgets
 
 unix:DESTDIR = $$OUT_PWD/../../lib/$$PLUGIN_MODULE_PATH
-win:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
+win32:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
 TARGET  = qfqmlwidgetsplugin
 
 LIBS +=      \
-	-lqfcore  \
+        -lqfcore  \
+        -lqfqmlwidgets  \
+
 
 win32: LIBS +=  \
 	-L../../bin  \
@@ -25,8 +27,8 @@ include ($$PWD/../../crosscompile-support.pri)
 unix {
 	qmlfiles.commands = ln -sf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
 }
-win {
-	qmlfiles.commands = cp -rf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
+win32 {
+        qmlfiles.commands = xcopy $$shell_path($$PWD/$$PLUGIN_MODULE_PATH) $$shell_path($$DESTDIR) /e/y
 }
 
 QMAKE_EXTRA_TARGETS += qmlfiles

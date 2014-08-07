@@ -5,8 +5,7 @@ MYSQL_OPT = opt
 
 DEFINES += QF_PATCH
 unix:MYSQL_DIR = /usr/include/mysql # fanda QF_PATCH
-win32:MYSQL_DIR = c:/app/mysql # fanda QF_PATCH
-#win32:MYSQL_DIR = f:/fanda/app/mysql5.1 # fanda QF_PATCH
+win32:MYSQL_DIR = c:/app/mysql5.6 # fanda QF_PATCH
 
 HEADERS		= \
 	$$PWD/qsql_mysql.h \
@@ -15,16 +14,16 @@ SOURCES		= \
 	$$PWD/qsql_mysql.cpp \
 	$$PWD/main.cpp \
 
-unix:INCLUDEPATH += /usr/include/mysql  # vystup mysql_config --include
+unix:INCLUDEPATH += /usr/include/mysql  # output of: mysql_config --include
 win32:INCLUDEPATH += $$MYSQL_DIR/include
 
 qf-embedded-mysql {
 	unix {
-		LIBS     *= -rdynamic -L/usr/lib/mysql -lmysqld -lwrap -lrt # vystup mysql_config --libmysqld-libs
+                LIBS     *= -rdynamic -L/usr/lib/mysql -lmysqld -lwrap -lrt # output of: mysql_config --libmysqld-libs
 		LIBS += -lcrypt
 	}
 	win32 {
-		LIBS += -lmysqld -L$$MYSQL_DIR/lib/opt
+                LIBS += -lmysqld -L$$MYSQL_DIR/lib
 	}
 }
 else {

@@ -65,7 +65,7 @@ void PartSwitch::updateButtonIcon(int part_index)
 			qfWarning() << "featureId property of part widget is empty, default icon will be set.";
 		}
 		else {
-			Plugin *plugin = plugin = MainWindow::frameWork()->plugin(feature_id);
+            Plugin *plugin = MainWindow::frameWork()->plugin(feature_id);
 			if(!plugin) {
 				qfWarning() << "Cannot found plugin for part featureId:" << feature_id << ", default icon will be set.";
 			}

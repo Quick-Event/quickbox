@@ -1,8 +1,9 @@
 message("including $$PWD")
 
 TEMPLATE = lib
-TARGET_NAME=qfqmlwidgets
-unix:TARGET = $$OUT_PWD/../../lib/$${TARGET_NAME}
+TARGET=qfqmlwidgets
+unix:DESTDIR = $$OUT_PWD/../../lib
+win32:DESTDIR = $$OUT_PWD/../../bin
 
 QT += widgets qml sql
 
@@ -26,4 +27,4 @@ include ($$PWD/../../crosscompile-support.pri)
 include($$PWD/src/src.pri)
 
 RESOURCES += \
-    $${TARGET_NAME}.qrc \
+    $${TARGET}.qrc \

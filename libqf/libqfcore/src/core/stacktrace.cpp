@@ -157,5 +157,5 @@ This header file is missing on all non-glibc platforms:
 	MacOS X 10.3, FreeBSD 6.0, NetBSD 3.0, OpenBSD 3.8, AIX 5.1, HP-UX 11, IRIX 6.5, OSF/1 5.1, Solaris 10,
 	Cygwin, mingw, Interix 3.5, BeOS.
 */
-QString QFStackTrace::trace2str() {return "NOT SUPPORTED";}
+QStringList StackTrace::trace2str() {return QStringList();}
 #endif

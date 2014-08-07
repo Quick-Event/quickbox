@@ -323,7 +323,7 @@ class QFCORE_DECL_EXPORT TableRow
 	//friend class QFSqlQueryModel;
 private:
 	class SharedDummyHelper {};
-	class Data : public QSharedData
+    class QFCORE_DECL_EXPORT Data : public QSharedData
 	{
 		friend class TableRow;
 	public:

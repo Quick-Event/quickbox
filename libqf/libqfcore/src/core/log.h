@@ -1,6 +1,8 @@
 #ifndef QF_CORE_LOG_H
 #define QF_CORE_LOG_H
 
+#include "coreglobal.h"
+
 #include <QDebug>
 
 #define qfDebug qDebug
@@ -18,7 +20,7 @@ class QLoggingCategory;
 namespace qf {
 namespace core {
 
-class Log
+class QFCORE_DECL_EXPORT Log
 {
 public:
 	enum Level {LOG_INVALID = -1, LOG_DEB, LOG_INFO, LOG_WARN, LOG_ERR, LOG_FATAL};
