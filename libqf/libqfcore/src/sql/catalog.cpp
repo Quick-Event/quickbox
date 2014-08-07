@@ -1,5 +1,7 @@
 #include "catalog.h"
 
+#include "query.h"
+
 #include "../core/log.h"
 #include "../core/utils.h"
 #include "../core/string.h"
@@ -108,7 +110,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 			  return);
 	Super::load(connection, table_id);
 
-	QSqlQuery q(connection);
+	qf::core::sql::Query q(connection);
 	q.setForwardOnly(true);
 	//QString s = "SELECT * FROM %1 WHERE 1=2";
 	//s = s.arg(fullName());
