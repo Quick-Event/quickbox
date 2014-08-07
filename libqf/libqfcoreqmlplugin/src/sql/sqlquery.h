@@ -1,6 +1,8 @@
 #ifndef QF_CORE_QML_SQLQUERY_H
 #define QF_CORE_QML_SQLQUERY_H
 
+#include <qf/core/sql/query.h>
+
 #include <QObject>
 #include <QSqlQuery>
 #include <QVariant>
@@ -41,7 +43,7 @@ public:
 	Q_INVOKABLE bool prepare(const QString &query_str);
 	Q_INVOKABLE void bindValue(const QString &placeholder, const QVariant &val, int param_type = ParamType::In);
 private:
-	QSqlQuery m_query;
+	qf::core::sql::Query m_query;
 	SqlRecord *m_record;
 	QPointer<SqlQueryBuilder> m_queryBuilder;
 };

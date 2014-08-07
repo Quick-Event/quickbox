@@ -23,7 +23,7 @@ SqlQuery::~SqlQuery()
 
 void SqlQuery::setDatabase(const QSqlDatabase &db)
 {
-	m_query = QSqlQuery(db);
+	m_query = qf::core::sql::Query(db);
 }
 
 bool SqlQuery::exec(const QString &query_str)

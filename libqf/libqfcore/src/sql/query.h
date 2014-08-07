@@ -16,7 +16,7 @@ class QFCORE_DECL_EXPORT Query : public QSqlQuery
 private:
 	typedef QSqlQuery Super;
 public:
-	explicit Query(const QSqlDatabase &db);
+	explicit Query(const QSqlDatabase &db = QSqlDatabase());
 public:
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;
