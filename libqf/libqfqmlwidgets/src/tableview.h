@@ -41,6 +41,7 @@ public:
 
 	Q_SLOT void insertRow();
 	//! @param row_no if @a row_no < 0 than post current row.
+	Q_SLOT void removeSelectedRows();
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
@@ -49,6 +50,8 @@ public:
 	* @param row if lower than 0 current row is updated.
 	*/
 	Q_SLOT void updateRow(int row = -1);
+	Q_SLOT void updateDataArea();
+	Q_SLOT void updateAll();
 
 	bool isEditRowsInline() const { return m_editRowsInline; }
 	void setEditRowsInline(bool arg)
@@ -58,6 +61,10 @@ public:
 			emit editRowsInlineChanged(arg);
 		}
 	}
+
+	QList<int> selectedRowsIndexes() const;
+	QList<int> selectedColumnsIndexes() const;
+
 	Q_SIGNAL void editRowsInlineChanged(bool arg);
 
 	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, qf::core::model::TableModel::RowEditMode mode);
@@ -77,7 +84,8 @@ protected:
 
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
-	virtual void insertRowAfterCurrent();
+	virtual void insertRowInline();
+	virtual void removeSelectedRowsInline();
 
 	virtual void createActions();
 

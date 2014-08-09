@@ -186,7 +186,7 @@ void TableView::insertRow()
 	qfLogFuncFrame();
 	if(isEditRowsInline()) {
 		qfDebug() << "\t insert row in mode RowEditorInline";
-		insertRowAfterCurrent();
+		insertRowInline();
 	}
 	else {
 		qfDebug() << "\t emit insertRowInExternalEditor()";
@@ -194,6 +194,22 @@ void TableView::insertRow()
 		//emit insertRowInExternalEditor();
 	}
 	refreshActions();
+}
+
+void TableView::removeSelectedRows()
+{
+	qfLogFuncFrame();
+	if(isEditRowsInline()) {
+		removeSelectedRowsInline();
+	}
+	else {
+		QList<int> sel_rows = selectedRowsIndexes();
+		if(sel_rows.count() == 1) {
+			QVariant id = tableModel()->value(sel_rows.value(0), "id");
+			if(id.isValid())
+				emit editRowInExternalEditor(id, qf::core::model::TableModel::ModeDelete);
+		}
+	}
 }
 
 bool TableView::postRow(int row_no)
@@ -240,9 +256,47 @@ void TableView::updateRow(int row)
 	// update header
 	QHeaderView *vh = verticalHeader();
 	if(vh) {
-		r = QRect(0, vh->sectionViewportPosition(row), vh->viewport()->width(), vh->sectionSize(row));
-		verticalHeader()->viewport()->update(r);
+		//r = QRect(0, vh->sectionViewportPosition(row), vh->viewport()->width(), vh->sectionSize(row));
+		verticalHeader()->viewport()->update();
 	}
+}
+
+void TableView::updateDataArea()
+{
+	viewport()->update();
+}
+
+void TableView::updateAll()
+{
+	updateDataArea();
+	verticalHeader()->viewport()->update();
+	horizontalHeader()->viewport()->update();
+}
+
+QList<int> TableView::selectedRowsIndexes() const
+{
+	QModelIndexList lst = selectedIndexes();
+	QSet<int> set;
+	for(const QModelIndex &ix : lst) {
+		if(ix.row() >= 0)
+			set << ix.row();
+	}
+	QList<int> ret = set.toList();
+	qSort(ret);
+	return ret;
+}
+
+QList<int> TableView::selectedColumnsIndexes() const
+{
+	QModelIndexList lst = selectedIndexes();
+	QSet<int> set;
+	for(const QModelIndex &ix : lst) {
+		if(ix.column() >= 0)
+			set << ix.column();
+	}
+	QList<int> ret = set.toList();
+	qSort(ret);
+	return ret;
 }
 
 qf::core::utils::Table::SortDef TableView::seekSortDefinition() const
@@ -693,7 +747,7 @@ void TableView::createActions()
 		a->setOid("removeSelectedRows");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(removeSelectedRows()));
+		connect(a, SIGNAL(triggered()), this, SLOT(removeSelectedRows()));
 	}
 	{
 		a = new Action(tr("Post row edits"), this);
@@ -1037,7 +1091,7 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 	setFocus();
 }
 
-void TableView::insertRowAfterCurrent()
+void TableView::insertRowInline()
 {
 	qfLogFuncFrame();
 	QModelIndex ix = currentIndex();
@@ -1049,4 +1103,50 @@ void TableView::insertRowAfterCurrent()
 		setCurrentIndex(ix.sibling(ri, ix.column()));
 	else
 		setCurrentIndex(model()->index(ri, 0, QModelIndex()));
+}
+
+void TableView::removeSelectedRowsInline()
+{
+	qfLogFuncFrame();
+	typedef QList<int> RowList;
+	RowList rows_to_delete = selectedRowsIndexes();
+	if(rows_to_delete.isEmpty())
+		return;
+	clearSelection();
+	QList<RowList> continuous_sections;
+	/// create continuous sections
+	RowList continuous_section;
+	for(int i=1; i<rows_to_delete.count(); i++) {
+		int row_ix = rows_to_delete[i];
+		if(continuous_section.isEmpty()) {
+			continuous_section << row_ix;
+		}
+		else {
+			int last_ix = continuous_section.last();
+			if(row_ix - last_ix > 1) {
+				continuous_sections << continuous_section;
+				continuous_section.clear();
+			}
+			else {
+				continuous_section << row_ix;
+			}
+		}
+	}
+	if(continuous_section.isEmpty()) {
+		continuous_sections << continuous_section;
+	}
+	if(rows_to_delete.count() == 1) {
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to remove row?"), true)) return;
+	}
+	else {
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to remove all selected rows?"), true)) return;
+	}
+	QModelIndex ix = currentIndex();
+	//ignoreCurrentChanged = true; /// na false ho nastavi currentChanged()
+	for(const RowList &rl : continuous_sections) {
+		model()->removeRows(rl[0], rl.count());
+	}
+	setCurrentIndex(ix);
+	updateAll();
+	refreshActions();
 }
