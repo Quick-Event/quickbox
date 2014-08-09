@@ -73,12 +73,20 @@ private:
 protected:
 	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
+	void contextMenuEvent(QContextMenuEvent *e) Q_DECL_OVERRIDE;
+
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
 	virtual void insertRowAfterCurrent();
 
 	virtual void createActions();
+
+	//static const int StandardContextMenuActionsGroups = AllActions & ~(SetValueActions | BlobActions | PasteActions);
+	QList<Action*> standardContextMenuActions() { return contextMenuActionsForGroups(AllActions & ~(SetValueActions | BlobActions | PasteActions));}
+	QList<Action*> contextMenuActions() { return m_contextMenuActions; }
+	void setContextMenuActions(QList<Action*> lst) { m_contextMenuActions = lst; }
 	QList<Action*> contextMenuActionsForGroups(int action_groups = AllActions);
+
 	Action* action(const QString &act_oid);
 	void enableAllActions(bool on);
 protected:
@@ -87,6 +95,7 @@ protected:
 	QMap<ActionGroup, Action*> m_separatorsForGroup;
 	QMap<int, QStringList> m_actionGroups;
 	QList<Action*> m_toolBarActions;
+	QList<Action*> m_contextMenuActions;
 	bool m_editRowsInline;
 };
 

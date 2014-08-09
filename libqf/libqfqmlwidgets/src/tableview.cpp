@@ -53,6 +53,8 @@ TableView::TableView(QWidget *parent) :
 			};
 		}
 	}
+	m_contextMenuActions = standardContextMenuActions();
+	setContextMenuPolicy(Qt::DefaultContextMenu);
 }
 
 TableView::~TableView()
@@ -612,6 +614,15 @@ void TableView::mousePressEvent(QMouseEvent * e)
 		/// ja to ale potrebuju, aby se nova hodnota ulozila pri currentChanged(), tak si to takhle delam sam
 		setCurrentIndex(ix);
 	}
+}
+
+void TableView::contextMenuEvent(QContextMenuEvent *e)
+{
+	qfLogFuncFrame();
+	QList<QAction*> lst;
+	for(auto a : contextMenuActions())
+		lst << a;
+	QMenu::exec(lst, viewport()->mapToGlobal(e->pos()));
 }
 
 void TableView::createActions()
