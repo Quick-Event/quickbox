@@ -136,6 +136,9 @@ protected:
 	int columnIndex(const QString &column_name) const;
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
+
+	bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+
 protected:
 	qf::core::utils::Table m_table;
 	ColumnList m_columns;

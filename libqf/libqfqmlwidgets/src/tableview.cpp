@@ -184,7 +184,7 @@ void TableView::insertRow()
 	qfLogFuncFrame();
 	if(isEditRowsInline()) {
 		qfDebug() << "\t insert row in mode RowEditorInline";
-		insertRowInline();
+		insertRowAfterCurrent();
 	}
 	else {
 		qfDebug() << "\t emit insertRowInExternalEditor()";
@@ -197,10 +197,16 @@ void TableView::insertRow()
 bool TableView::postRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
+	if(row_no < 0)
+		row_no = currentIndex().row();
+	if(row_no < 0)
+		return false;
 	bool ret = false;
 	qfc::model::TableModel *m = tableModel();
 	if(m) {
 		ret = m->postRow(row_no, true);
+		if(ret)
+			updateRow(row_no);
 	}
 	return ret;
 }
@@ -217,8 +223,10 @@ void TableView::revertRow(int row_no)
 void TableView::updateRow(int row)
 {
 	QModelIndex ix = currentIndex();
-	if(row < 0) row = ix.row();
-	if(row < 0) return;
+	if(row < 0)
+		row = ix.row();
+	if(row < 0)
+		return;
 	if(ix.row() != row)
 		ix = ix.sibling(row, ix.column());
 	QRect r = visualRect(ix);
@@ -230,7 +238,7 @@ void TableView::updateRow(int row)
 	// update header
 	QHeaderView *vh = verticalHeader();
 	if(vh) {
-		r = QRect(0, vh->sectionViewportPosition(ix.row()), vh->viewport()->width(), vh->sectionSize(ix.row()));
+		r = QRect(0, vh->sectionViewportPosition(row), vh->viewport()->width(), vh->sectionSize(row));
 		verticalHeader()->viewport()->update(r);
 	}
 }
@@ -1018,7 +1026,7 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 	setFocus();
 }
 
-void TableView::insertRowInline()
+void TableView::insertRowAfterCurrent()
 {
 	qfLogFuncFrame();
 	QModelIndex ix = currentIndex();

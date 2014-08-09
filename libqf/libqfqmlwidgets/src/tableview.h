@@ -75,7 +75,7 @@ protected:
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
-	virtual void insertRowInline();
+	virtual void insertRowAfterCurrent();
 
 	virtual void createActions();
 	QList<Action*> contextMenuActionsForGroups(int action_groups = AllActions);

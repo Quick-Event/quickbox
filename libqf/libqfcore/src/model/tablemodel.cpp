@@ -163,7 +163,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	}
 	else if (role == ValueIsNullRole) {
 		ret = data(index, RawValueRole);
-		return ret.isNull();
+		return ret.isNull() && ret.isValid();
 	}
 	else if (role == Qt::TextAlignmentRole) {
 		const ColumnDefinition cd = m_columns.value(index.column());
@@ -504,15 +504,24 @@ TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 	return ret;
 }
 
+bool TableModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+	qfLogFuncFrame() << "row:" << row << "count:" << count;
+	if(count < 0)
+		return false;
+	beginInsertRows(parent, row, row + count - 1);
+	for(int i=0; i<count; i++)
+		m_table.insertRow(row);
+	endInsertRows();
+	return true;
+}
+
 int TableModel::insertRowBefore(int before_row)
 {
 	qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
 	if(before_row < 0 || before_row > rowCount())
 		before_row = rowCount();
-	m_table.rowCount();
-	beginInsertRows(QModelIndex(), before_row, before_row);
-	m_table.insertRow(before_row);
-	endInsertRows();
+	insertRows(before_row, 1, QModelIndex());
 	qfDebug() << "\t row cnt:" << rowCount();
 	return before_row;
 }

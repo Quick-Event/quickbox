@@ -458,6 +458,8 @@ QStringList SqlQueryTableModel::tableIdsSortedAccordingToForeignKeys()
 				if(dependency_satisfied)
 					break;
 			}
+			if(dependency_satisfied)
+				break;
 		}
 		if(table_ix < table_ids.count()) {
 			ret << table_ids.takeAt(table_ix);
@@ -468,5 +470,6 @@ QStringList SqlQueryTableModel::tableIdsSortedAccordingToForeignKeys()
 			break;
 		}
 	}
+
 	return ret;
 }
