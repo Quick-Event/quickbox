@@ -125,21 +125,21 @@ QString FileUtils::createUserTempDir(const QString &user_name)
 QString FileUtils::joinPath(const QString &path1, const QString &path2)
 {
 	qfLogFuncFrame() << path1 << path2;
-	QString fs = path1;
-	if(fs.isEmpty()) {
-		fs = path2;
+	qf::core::String ret = path1;
+	if(ret.isEmpty()) {
+		ret = path2;
 	}
 	else {
-		if(!path2.isEmpty() && path2[0] != '/' && fs[-1] != '/')
-			fs += "/"; /// resim tim chybu/vlastnost cleanPath()
-		fs += path2;
+		if(!path2.isEmpty() && path2[0] != '/' && ret.value(-1) != '/')
+			ret += "/"; /// resim tim chybu/vlastnost cleanPath()
+		ret += path2;
 	}
 	/// z relativni cesty to udela absolutni
-	qfDebug() << "\t before cleanPath:" << fs;
+	qfDebug() << "\t before cleanPath:" << ret;
 	/// QDir::cleanPath(fs); nedokaze odstranit v jenom pruchodu neco jako a/b/../../c, vyrobi a/../c
-	fs = FileUtils::cleanPath(fs);
-	qfDebug() << "\t return:" << fs;
-	return fs;
+	ret = FileUtils::cleanPath(ret);
+	qfDebug() << "\t return:" << ret;
+	return ret;
 }
 
 QString FileUtils::joinPath(const QStringList & paths)
