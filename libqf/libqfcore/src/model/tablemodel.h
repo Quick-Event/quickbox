@@ -95,9 +95,7 @@ public:
 	ColumnDefinition& insertColumn(int before_ix, const ColumnDefinition &cd);
 	ColumnDefinition removeColumn(int ix);
 
-	/// @returns: index of inserted line or -1
-	virtual int insertRowBefore(int before_row);
-	int appendRow() {return insertRow(-1);}
+	int appendRow() {return insertRows(rowCount(), 1);}
 public:
 	const qf::core::utils::Table& table() {return m_table;}
 
@@ -113,6 +111,9 @@ public:
 	Q_SLOT virtual bool reload();
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
+
+	bool insertRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
 
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg);
@@ -136,9 +137,9 @@ protected:
 	int columnIndex(const QString &column_name) const;
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
-
-	bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
-
+	/// @returns: index of inserted line or -1
+	virtual bool insertOneRow(int before_row);
+	virtual bool removeOneRow(int row_ix, bool throw_exc = false);
 protected:
 	qf::core::utils::Table m_table;
 	ColumnList m_columns;

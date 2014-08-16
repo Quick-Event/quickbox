@@ -251,12 +251,10 @@ public:
 	TableRow isolatedRow();
 	virtual int rowCount() const;
 	virtual int columnCount() const;
-	virtual TableRow& insertRow(int before_row);
-	/// vlozi  _row, do tabulky, pokud je to radek z jine tabulky (neziskany metodou singleRow()), tak exception
-	/// vetsinou se pouziva pro vlozeni radku ziskaneho funkci singleRow()
+	TableRow& insertRow(int before_row);
 	virtual TableRow& insertRow(int before_row, const TableRow &_row);
-	virtual TableRow& appendRow() {return insertRow(rowCount());}
-	virtual TableRow& appendRow(const TableRow &_row) {return insertRow(rowCount(), _row);}
+	TableRow& appendRow() {return insertRow(rowCount());}
+	TableRow& appendRow(const TableRow &_row) {return insertRow(rowCount(), _row);}
 	virtual bool removeRow(int ri);
 	// other related
 	void revertRow(int ri);

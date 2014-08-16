@@ -504,25 +504,52 @@ TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 	return ret;
 }
 
-bool TableModel::insertRows(int row, int count, const QModelIndex &parent)
-{
-	qfLogFuncFrame() << "row:" << row << "count:" << count;
-	if(count < 0)
-		return false;
-	beginInsertRows(parent, row, row + count - 1);
-	for(int i=0; i<count; i++)
-		m_table.insertRow(row);
-	endInsertRows();
-	return true;
-}
-
-int TableModel::insertRowBefore(int before_row)
+bool TableModel::insertOneRow(int before_row)
 {
 	qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
 	if(before_row < 0 || before_row > rowCount())
 		before_row = rowCount();
-	insertRows(before_row, 1, QModelIndex());
+	m_table.insertRow(before_row);
 	qfDebug() << "\t row cnt:" << rowCount();
-	return before_row;
+	return true;
+}
+
+bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
+{
+	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
+	if(count < 0)
+		return false;
+	beginInsertRows(parent, row_ix, row_ix + count - 1);
+	bool ok = true;
+	for(int i=0; i<count; i++) {
+		ok = insertOneRow(row_ix + i);
+		if(!ok)
+			break;
+	}
+	endInsertRows();
+	return ok;
+}
+
+bool TableModel::removeOneRow(int row_ix, bool throw_exc)
+{
+	Q_UNUSED(throw_exc);
+	bool ok = m_table.removeRow(row_ix);
+	return ok;
+}
+
+bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
+{
+	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
+	if(count < 0)
+		return false;
+	bool ok = true;
+	beginRemoveRows(parent, row_ix, row_ix + count - 1);
+	for(int i=0; i<count; i++) {
+		ok = removeOneRow(row_ix);
+		if(!ok)
+			break;
+	}
+	endRemoveRows();
+	return ok;
 }
 

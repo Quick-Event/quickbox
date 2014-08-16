@@ -2,9 +2,9 @@
 #include "../core/assert.h"
 #include "../core/exception.h"
 #include "../sql/connection.h"
+//#include "../sql/query.h"
 
 #include <QRegExp>
-#include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlIndex>
@@ -70,10 +70,6 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 			QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 			for(QString table_id : table_ids) {
 				qfDebug() << "\ttable:" << table_id;
-				//QFSqlTableInfo ti = conn.catalog().table(table_id);
-				//qfDebug() << "\t\t table info:" << ti.toString();
-				//QFString table = ti.fullName();
-				//table = conn.fullTableNameToQtDriverTableName(table);
 				QSqlRecord rec;
 				int i = -1;
 				int serial_ix = -1;
@@ -117,7 +113,7 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 					qfDebug() << "updating table inserts" << table_id;
 					QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
 					QString s = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
-					QSqlQuery q(sql_conn);
+					qfs::Query q(sql_conn);
 					bool ok = q.prepare(s);
 					if(!ok) {
 						qfError() << "Cannot prepare query:" << s;
@@ -167,16 +163,16 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 			qfDebug() << "\tEDIT";
 			qf::core::sql::Connection sql_conn = sqlConnection();
 			QSqlDriver *sqldrv = sql_conn.driver();
-			for(QString tableid : tableIds(m_table.fields())) {
-				qfDebug() << "\ttableid:" << tableid;
+			for(QString table_id : tableIds(m_table.fields())) {
+				qfDebug() << "\ttableid:" << table_id;
 				//table = conn.fullTableNameToQtDriverTableName(table);
 				QSqlRecord edit_rec;
 				int i = -1;
-				bool has_blob_field = false;
+				bool has_blob_field = true;
 				for(qfu::Table::Field fld : row.fields()) {
 					i++;
 					qfDebug() << "\t\tfield:" << fld.toString();
-					if(fld.tableId() != tableid)
+					if(fld.tableId() != table_id)
 						continue;
 					if(!row.isDirty(i))
 						continue;
@@ -190,19 +186,19 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 					//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
 					QSqlField sqlfld(fld.shortName(), fld.type());
 					sqlfld.setValue(v);
-					if(sqlfld.type() == QVariant::ByteArray)
-						has_blob_field = true;
+					//if(sqlfld.type() == QVariant::ByteArray)
+					//	has_blob_field = true;
 					qfDebug() << "\tfield is null: " << sqlfld.isNull();
 					edit_rec.append(sqlfld);
 				}
 				if(!edit_rec.isEmpty()) {
-					qfDebug() << "updating table edits:" << tableid;
-					QString s;
-					s += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, tableid, edit_rec, has_blob_field);
-					s += " ";
+					qfDebug() << "updating table edits:" << table_id;
+					QString query_str;
+					query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, has_blob_field);
+					query_str += " ";
 					QSqlRecord where_rec;
-					for(QString fld_name : sql_conn.primaryIndexFieldNames(tableid)) {
-						QString full_fld_name = tableid + '.' + fld_name;
+					for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+						QString full_fld_name = table_id + '.' + fld_name;
 						int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 						QF_ASSERT(fld_ix >= 0,
 								  QString("Cannot find field '%1'").arg(full_fld_name),
@@ -214,21 +210,21 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 						where_rec.append(sqlfld);
 					}
 					QF_ASSERT(!where_rec.isEmpty(),
-							  QString("pri keys values not generated for table '%1'").arg(tableid),
+							  QString("pri keys values not generated for table '%1'").arg(table_id),
 							  continue);
 
-					s += sqldrv->sqlStatement(QSqlDriver::WhereStatement, tableid, where_rec, false);
-					qfDebug() << "save edit query:" << s;
-					QSqlQuery q(sql_conn);
+					query_str += sqldrv->sqlStatement(QSqlDriver::WhereStatement, table_id, where_rec, false);
+					qfDebug() << "save edit query:" << query_str;
+					qfs::Query q(sql_conn);
 					bool ok;
 					if(has_blob_field) {
-						q.prepare(s);
+						q.prepare(query_str);
 						for(int i=0; i<edit_rec.count(); i++)
 							q.addBindValue(edit_rec.field(i).value());
 						ok = q.exec();
 					}
 					else {
-						ok = q.exec(s);
+						ok = q.exec(query_str);
 					}
 					if(!ok && throw_exc) {
 						QF_EXCEPTION(q.lastError().text());
@@ -238,7 +234,7 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 					/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
 					/// numRowsAffected() returns 0.
 					if(num_rows_affected > 1) {
-						qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(s);
+						qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(query_str);
 						ret = false;
 						break;
 					}
@@ -248,6 +244,99 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 		if(ret) {
 			ret = Super::postRow(row_no, throw_exc);
 		}
+	}
+	return ret;
+}
+
+bool SqlQueryTableModel::removeOneRow(int row_no, bool throw_exc)
+{
+	qfLogFuncFrame();
+	bool ret = false;
+	qfu::TableRow row = m_table.row(row_no);
+	if(!row.isInsert()) {
+		qf::core::sql::Connection sql_conn = sqlConnection();
+		qf::core::sql::Connection dbinfo(sql_conn);
+		QSqlDriver *sqldrv = sql_conn.driver();
+
+		if(row.isDirty())
+			row.restoreOrigValues();
+		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
+		QSet<QString> referenced_foreign_tables = referencedForeignTables();
+		int table_id_cnt = 0;
+		for(const QString &table_id : table_ids) {
+			/// Allways delete in first table
+			if(table_id_cnt++ > 0) {
+				/// delete in rest of the tables only if they are implicitly referenced, see: addForeignKeyDependency(...)
+				if(!referenced_foreign_tables.contains(table_id)) {
+					qfDebug() << "\tskipping table" << table_id;
+					continue;
+				}
+			}
+
+			QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
+			QSqlRecord rec;
+			qfDebug() << "deleting in table" << table;
+			QString query_str;
+			query_str += sqldrv->sqlStatement(QSqlDriver::DeleteStatement, table, rec, false);
+			query_str += " ";
+			QSqlRecord where_rec;
+			for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+				QString full_fld_name = table_id + '.' + fld_name;
+				int fld_ix = m_table.fields().fieldIndex(full_fld_name);
+				QF_ASSERT(fld_ix >= 0,
+						  QString("Cannot find field '%1'").arg(full_fld_name),
+						  continue);
+				qfu::Table::Field fld = m_table.fields().at(fld_ix);
+				QVariant id = row.value(fld_ix);
+				QSqlField sqlfld(fld.shortName(), fld.type());
+				sqlfld.setValue(id);
+				bool invalid_id = false;
+				if(id.isNull())
+					invalid_id = true;
+				else if(id.type() == QVariant::Int && id.toInt() == 0)
+					invalid_id= true;
+				if(!invalid_id) {
+					sqlfld.setValue(id);
+					qfDebug() << "\tpri index" << fld_name << ":" << sqlfld.value().toString();
+					rec.append(sqlfld);
+				}
+				else {
+					qfWarning() << "DELETE Invalid row ID:" << id.toString() << "type:" << id.typeName();
+					break;
+				}
+				//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
+				where_rec.append(sqlfld);
+			}
+			QF_ASSERT(!where_rec.isEmpty(),
+					  QString("pri keys values not generated for table '%1'").arg(table_id),
+					  continue);
+
+			query_str += sqldrv->sqlStatement(QSqlDriver::WhereStatement, table_id, where_rec, false);
+			qfDebug() << "drop row query:" << query_str;
+			qfs::Query q(sql_conn);
+			ret = q.exec(query_str);
+			if(!ret) {
+				if(throw_exc) {
+					QF_EXCEPTION(q.lastError().text());
+				}
+				else {
+					qfError() << q.lastError().text();
+					break;
+				}
+			}
+			qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
+			int num_rows_affected = q.numRowsAffected();
+			/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
+			/// numRowsAffected() returns 0.
+			if(num_rows_affected != 1) {
+				qfError() << QString("numRowsAffected() = %1, sholuld be 1\n%2").arg(num_rows_affected).arg(query_str);
+				ret = false;
+				break;
+			}
+		}
+	}
+	if(ret) {
+		ret = Super::removeOneRow(row_no, throw_exc);
 	}
 	return ret;
 }
@@ -290,7 +379,7 @@ qf::core::sql::Connection SqlQueryTableModel::sqlConnection()
 bool SqlQueryTableModel::reloadTable(const QString &query_str)
 {
 	qf::core::sql::Connection sql_conn = sqlConnection();
-	m_recentlyExecutedQuery = QSqlQuery(sql_conn);
+	m_recentlyExecutedQuery = qfs::Query(sql_conn);
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
 	QF_ASSERT(ok == true,
 			  QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str),
@@ -473,3 +562,4 @@ QStringList SqlQueryTableModel::tableIdsSortedAccordingToForeignKeys()
 
 	return ret;
 }
+

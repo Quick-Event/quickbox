@@ -3,10 +3,10 @@
 
 #include "tablemodel.h"
 #include "../sql/querybuilder.h"
+#include "../sql/query.h"
 
 #include <QMap>
 #include <QString>
-#include <QSqlQuery>
 
 namespace qf {
 namespace core {
@@ -43,7 +43,7 @@ public:
 	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }
 	Q_SIGNAL void queryChanged(QString arg);
 
-	const QSqlQuery& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
+	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
 
 	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
 
@@ -57,12 +57,14 @@ protected:
 
 	QSet<QString> referencedForeignTables();
 	QStringList tableIdsSortedAccordingToForeignKeys();
+
+	bool removeOneRow(int row_no, bool throw_exc = false) Q_DECL_OVERRIDE;
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;
 	QVariantMap m_queryParameters;
 	QString m_connectionName;
-	QSqlQuery m_recentlyExecutedQuery;
+	qf::core::sql::Query m_recentlyExecutedQuery;
 	/// INSERT needs to know dependency of tables in joined queries to insert particular tables in proper order
 	QMap<QString, QString> m_foreignKeyDependencies;
 };

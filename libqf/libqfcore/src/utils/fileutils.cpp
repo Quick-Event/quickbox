@@ -131,12 +131,11 @@ QString FileUtils::joinPath(const QString &path1, const QString &path2)
 	}
 	else {
 		if(!path2.isEmpty() && path2[0] != '/' && ret.value(-1) != '/')
-			ret += "/"; /// resim tim chybu/vlastnost cleanPath()
+			ret += "/";
 		ret += path2;
 	}
-	/// z relativni cesty to udela absolutni
 	qfDebug() << "\t before cleanPath:" << ret;
-	/// QDir::cleanPath(fs); nedokaze odstranit v jenom pruchodu neco jako a/b/../../c, vyrobi a/../c
+	/// QDir::cleanPath(ret); cannot clean whole path in one iteration, a/b/../../c is changed to a/../c
 	ret = FileUtils::cleanPath(ret);
 	qfDebug() << "\t return:" << ret;
 	return ret;

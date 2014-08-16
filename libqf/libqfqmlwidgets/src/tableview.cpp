@@ -1098,7 +1098,7 @@ void TableView::insertRowInline()
 	int ri = model()->rowCount();
 	if(ix.isValid())
 		ri = ix.row() + 1;
-	tableModel()->insertRowBefore(ri);
+	tableModel()->insertRow(ri);
 	if(ix.isValid())
 		setCurrentIndex(ix.sibling(ri, ix.column()));
 	else
@@ -1116,23 +1116,23 @@ void TableView::removeSelectedRowsInline()
 	QList<RowList> continuous_sections;
 	/// create continuous sections
 	RowList continuous_section;
-	for(int i=1; i<rows_to_delete.count(); i++) {
+	int sections_length = 0;
+	for(int i=0; i<rows_to_delete.count(); i++) {
 		int row_ix = rows_to_delete[i];
 		if(continuous_section.isEmpty()) {
-			continuous_section << row_ix;
+			continuous_section << (row_ix - sections_length);
 		}
 		else {
 			int last_ix = continuous_section.last();
 			if(row_ix - last_ix > 1) {
 				continuous_sections << continuous_section;
+				sections_length += continuous_section.size();
 				continuous_section.clear();
 			}
-			else {
-				continuous_section << row_ix;
-			}
+			continuous_section << (row_ix - sections_length);
 		}
 	}
-	if(continuous_section.isEmpty()) {
+	if(!continuous_section.isEmpty()) {
 		continuous_sections << continuous_section;
 	}
 	if(rows_to_delete.count() == 1) {
