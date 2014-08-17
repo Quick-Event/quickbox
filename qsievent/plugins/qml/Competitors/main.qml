@@ -14,7 +14,7 @@ Plugin {
 			id: networkAccessManager
 		}
 	}
-
+	/*
 	property list<Action> actions: [
 		Action {
 			id: actLoadFromOris
@@ -40,13 +40,13 @@ Plugin {
 			}
 		}
 	]
-
+	*/
 	Component.onCompleted:
 	{
 		var act_file = FrameWork.menuBar.actionForPath('file');
 		var act_competitors = act_file.appendMenu('competitors', qsTr('&Competitors'));
-		FrameWork.menuBar.actionForPath('competitors/import').text = '&Import';
-		FrameWork.menuBar.actionForPath('competitors/import').addAction(actLoadFromOris);
+		//FrameWork.menuBar.actionForPath('competitors/import').text = '&Import';
+		//FrameWork.menuBar.actionForPath('competitors/import').addAction(actLoadFromOris);
 		//console.warn('featureId:', root.featureId);
 		FrameWork.addPartWidget(thisPart, manifest.featureId);
 	}
