@@ -70,7 +70,11 @@ QString IPersistentSettings::generatePersistentSettingsPath()
 				// property exists but is empty
 				// don't know why, but I'm not able to read "persistentSettingsId" property of PartWidget here even if it is set
 				// use objectName() fallback here
-				parent_id = obj->objectName();
+				IPersistentSettings *ps = dynamic_cast<IPersistentSettings*>(obj);
+				qfWarning() << "reading property 'persistentSettingsId' error" << obj << "casted to IPersistentSettings" << ps;
+				parent_id = ps->persistentSettingsId();
+				if(ps)
+					qfWarning() << "\tcorrect value should be:" << parent_id;
 			}
 			qfDebug() << "\t" << obj << "->" << vid.toString() << "type:" << vid.typeName() << "object name:" << obj->objectName() << "id:" << parent_id;
 			//qfDebug() << "\tnebo ->" << v2.toString() << "type:" << v2.typeName();

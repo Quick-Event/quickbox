@@ -47,7 +47,7 @@ void PartWidget::setFeatureId(QString id)
 		m_featureId = id;
 		//setProperty("persistentSettingsId", id);
 		setPersistentSettingsId(id);
-		setObjectName(id);
+		//setObjectName(id);
 		emit featureIdChanged(id);
 	}
 }
