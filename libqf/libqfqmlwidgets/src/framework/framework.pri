@@ -9,7 +9,8 @@ HEADERS += \
     $$PWD/stackedcentralwidget.h \
     $$PWD/partswitch.h \
     $$PWD/plugin.h \
-    $$PWD/pluginmanifest.h
+    $$PWD/pluginmanifest.h \
+    $$PWD/dialogwidget.h
 
 SOURCES += \
     $$PWD/mainwindow.cpp \
@@ -22,4 +23,5 @@ SOURCES += \
     $$PWD/stackedcentralwidget.cpp \
     $$PWD/partswitch.cpp \
     $$PWD/plugin.cpp \
-    $$PWD/pluginmanifest.cpp
+    $$PWD/pluginmanifest.cpp \
+    $$PWD/dialogwidget.cpp

@@ -12,7 +12,6 @@ namespace qf {
 namespace qmlwidgets {
 
 class Frame;
-class DialogButtonBox;
 
 namespace dialogs {
 
@@ -22,16 +21,11 @@ class QFQMLWIDGETS_DECL_EXPORT QmlDialog : public Dialog, public QQmlParserStatu
 	Q_INTERFACES(QQmlParserStatus)
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_CLASSINFO("DefaultProperty", "widgets")
-	Q_PROPERTY(qf::qmlwidgets::DialogButtonBox* buttonBox READ buttonBox WRITE setButtonBox NOTIFY buttonBoxChanged)
 private:
 	typedef Dialog Super;
 public:
 	explicit QmlDialog(QWidget *parent = 0);
 	~QmlDialog() Q_DECL_OVERRIDE;
-public:
-	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}
-	void setButtonBox(DialogButtonBox *dbb);
-	Q_SIGNAL void buttonBoxChanged();
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:
@@ -39,7 +33,6 @@ private:
 	void componentComplete() Q_DECL_OVERRIDE;
 protected:
 	Frame *m_centralFrame;
-	DialogButtonBox *m_dialogButtonBox;
 };
 
 }}}

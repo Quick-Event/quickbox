@@ -45,6 +45,9 @@ public:
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
+
+	Q_SLOT void exportReport();
+
 	/**
 	* calls update viewport with rect clipping row \a row.
 	* @param row if lower than 0 current row is updated.

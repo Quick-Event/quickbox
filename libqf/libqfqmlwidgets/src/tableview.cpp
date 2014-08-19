@@ -3,6 +3,9 @@
 #include "action.h"
 #include "tableitemdelegate.h"
 #include "dialogs/messagebox.h"
+#include "dialogs/dialog.h"
+
+#include "internal/printtableviewwidget.h"
 
 #include <qf/core/string.h>
 #include <qf/core/collator.h>
@@ -96,8 +99,8 @@ void TableView::refreshActions()
 	//action("insertRowsStatement")->setEnabled(true);
 	//action("import")->setEnabled(true);
 	//action("importCSV")->setEnabled(true);
-	//action("export")->setEnabled(true);
-	//action("exportReport")->setEnabled(true);
+	action("export")->setEnabled(true);
+	action("exportReport")->setEnabled(true);
 	//action("exportCSV")->setEnabled(true);
 	//action("exportXML")->setEnabled(true);
 	//action("exportXLS")->setEnabled(true);
@@ -236,6 +239,18 @@ void TableView::revertRow(int row_no)
 	if(m) {
 		m->revertRow(row_no);
 	}
+}
+
+void TableView::exportReport()
+{
+	qfLogFuncFrame();
+	internal::PrintTableViewWidget *w = new internal::PrintTableViewWidget();
+	dialogs::Dialog dlg(this);
+	dlg.setCentralWidget(w);
+	dlg.setPersistentSettingsId("exportReport");
+	dlg.loadPersistentSettingsRecursively();
+	//connect(&dlg, SIGNAL(printRequest(QVariant)), this, SLOT(exportReport_helper(QVariant)));
+	dlg.exec();
 }
 
 void TableView::updateRow(int row)
@@ -935,7 +950,7 @@ void TableView::createActions()
 		a->setMenu(m);
 		{
 			a = new Action(tr("Report"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(exportReport()));
+			connect(a, SIGNAL(triggered()), this, SLOT(exportReport()));
 			a->setOid("exportReport");
 			m_actions[a->oid()] = a;
 			m->addAction(a);

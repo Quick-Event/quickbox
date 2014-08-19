@@ -19,7 +19,8 @@ HEADERS += \
     $$PWD/tableview.h \
     $$PWD/headerview.h \
     $$PWD/tableitemdelegate.h \
-    $$PWD/tableviewtoolbar.h
+    $$PWD/tableviewtoolbar.h \
+    $$PWD/saveoptionswidget.h \
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -39,7 +40,12 @@ SOURCES += \
     $$PWD/tableview.cpp \
     $$PWD/headerview.cpp \
     $$PWD/tableitemdelegate.cpp \
-    $$PWD/tableviewtoolbar.cpp
+    $$PWD/tableviewtoolbar.cpp \
+    $$PWD/saveoptionswidget.cpp \
 
+FORMS += \
+    $$PWD/saveoptionswidget.ui \
+
+include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)
