@@ -9,3 +9,8 @@ DialogButtonBox::DialogButtonBox(QWidget * parent) :
 {
 	setStandardButtons(Ok | Cancel);
 }
+
+DialogButtonBox::DialogButtonBox(QDialogButtonBox::StandardButtons buttons, QWidget *parent)
+	: QDialogButtonBox(buttons, parent)
+{
+}

@@ -7,13 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>65</height>
+    <height>30</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -27,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="frmSettings">
+    <widget class="QFrame" name="frmSettings">
      <property name="minimumSize">
       <size>
        <width>0</width>

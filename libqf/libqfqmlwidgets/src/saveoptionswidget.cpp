@@ -1,7 +1,7 @@
 #include "saveoptionswidget.h"
 #include "ui_saveoptionswidget.h"
 
-#include "framework/ipersistentsettings.h"
+#include "framework/ipersistentoptions.h"
 
 #include <qf/core/assert.h>
 #include <qf/core/log.h>
@@ -17,8 +17,10 @@ using namespace qf::qmlwidgets;
 //             SaveOptionsWidget
 //=================================================
 namespace {
-const char *OPTIONS_GETTER_SIGNATURE = "persistentOptions()";
-const char *OPTIONS_SETTER_SIGNATURE = "setPersistentOptions(QVariant)";
+//const char *OPTIONS_GETTER_SIGNATURE = "persistentOptions()";
+//const char *OPTIONS_SETTER_SIGNATURE = "setPersistentOptions(QVariant)";
+//const char *OPTIONS_GETTER = "persistentOptions";
+//const char *OPTIONS_SETTER = "setPersistentOptions";
 const char *OPTIONS_PERSISTENT_SETTING_KEY = "persistentOptions";
 }
 SaveOptionsWidget::SaveOptionsWidget(QWidget *parent)
@@ -73,53 +75,62 @@ void SaveOptionsWidget::load_helper(const QVariantMap& m)
 
 }
 
-void SaveOptionsWidget::load()
+void SaveOptionsWidget::load(bool select_first_option)
 {
 	qfLogFuncFrame();
 	QComboBox *cbx = ui->lstSettings;
 	QString orig_text = cbx->currentText();
 	//qfWarning() << "orig_text:" << orig_text << "index:" << cbx->currentIndex();
 	cbx->clear();
-	QF_ASSERT(optionsProvider(),
-			  "options provider not set",
-			  return);
-	framework::IPersistentSettings *persistent_settings_provider = dynamic_cast<framework::IPersistentSettings*>(optionsProvider());
-	QF_ASSERT(persistent_settings_provider,
-			  QString("options provider %1 must implement framework::IPersistentSettings interface").arg(optionsProvider()->metaObject()->className()),
-			  return);
-	QString persistent_settings_path = persistent_settings_provider->persistentSettingsPath();
-	QF_ASSERT(!persistent_settings_path.isEmpty(),
-			  QString("Persistent settings path of options provider %1 is empty").arg(optionsProvider()->metaObject()->className()),
-			  return);
-	persistent_settings_path = qf::core::utils::FileUtils::joinPath(persistent_settings_path, OPTIONS_PERSISTENT_SETTING_KEY);
-	QByteArray json = loadPersistentSettings(persistent_settings_path).toUtf8();
-	QJsonDocument json_doc;
-	json_doc.fromJson(json);
-	QVariantMap m = json_doc.toVariant().toMap();
-	load_helper(m);
-	if(!orig_text.isEmpty()) {
-		int ix = cbx->findText(orig_text);
-		//qfInfo() << "index of:" << orig_text << "is:" << ix;
-		if(ix < 0)
-			ix = 0;
-		//if(ix == cbx->currentIndex()) onSettingsActivated(ix);
-		cbx->setCurrentIndex(ix);
-		onSettingsActivated(ix);
-	}
-	else {
-		cbx->setCurrentIndex(-1);
+	QString persistent_settings_path = persistentOptionsPath();
+	if(!persistent_settings_path.isEmpty()) {
+		QByteArray json = loadPersistentOptionsMap(persistent_settings_path).toUtf8();
+		QJsonDocument json_doc = QJsonDocument::fromJson(json);
+		QVariantMap m = json_doc.toVariant().toMap();
+		load_helper(m);
+		int current_index = -1;
+		if(select_first_option) {
+			if(cbx->count() > 0)
+				current_index = 0;
+		}
+		else {
+			if(!orig_text.isEmpty()) {
+				current_index = cbx->findText(orig_text);
+			}
+		}
+		cbx->setCurrentIndex(current_index);
+		if(current_index >= 0) {
+			onSettingsActivated(current_index);
+		}
 	}
 }
 
-QString SaveOptionsWidget::loadPersistentSettings(const QString &path)
+QString SaveOptionsWidget::persistentOptionsPath()
 {
+	QString ret;
+	QF_ASSERT(optionsProvider(),
+			  "options provider not set",
+			  return ret);
+	QString persistent_options_path = optionsProvider()->persistentOptionsPath();
+	QF_ASSERT(!persistent_options_path.isEmpty(),
+			  QString("Persistent options path of options provider %1 is empty").arg(optionsProvider()->controlledObject()->metaObject()->className()),
+			  return ret);
+	ret = qf::core::utils::FileUtils::joinPath(persistent_options_path, OPTIONS_PERSISTENT_SETTING_KEY);
+	return ret;
+}
+
+QString SaveOptionsWidget::loadPersistentOptionsMap(const QString &path)
+{
+	qfLogFuncFrame() << path;
 	QSettings settings;
 	QString ret = settings.value(path).toString();
 	return ret;
 }
 
-void SaveOptionsWidget::savePersistentSettings(const QString &path, const QVariant &settings_json)
+void SaveOptionsWidget::savePersistentOptionsMap(const QString &path, const QVariant &settings_json)
 {
+	qfLogFuncFrame() << path;
+	//qfInfo() << settings_json;
 	QSettings settings;
 	settings.setValue(path, settings_json);
 }
@@ -127,24 +138,24 @@ void SaveOptionsWidget::savePersistentSettings(const QString &path, const QVaria
 QVariant SaveOptionsWidget::pullPersistentOptions()
 {
 	QVariant ret;
-	QObject *op = optionsProvider();
+	framework::IPersistentOptions *op = optionsProvider();
 	if(op) {
-		bool ok = QMetaObject::invokeMethod(op, OPTIONS_GETTER_SIGNATURE, Qt::DirectConnection,
-		                          Q_RETURN_ARG(QVariant, ret));
-		if(!ok)
-			qfWarning() << "Error invoking" << OPTIONS_GETTER_SIGNATURE;
+		ret = op->persistentOptions();
+	}
+	else {
+		qfWarning() << this << QF_FUNC_NAME << "Options provider is NULL";
 	}
 	return ret;
 }
 
 void SaveOptionsWidget::pushPersistentOptions(const QVariant &opts)
 {
-	QObject *op = optionsProvider();
+	framework::IPersistentOptions *op = optionsProvider();
 	if(op) {
-		bool ok = QMetaObject::invokeMethod(op, OPTIONS_SETTER_SIGNATURE, Qt::DirectConnection,
-											Q_ARG(QVariant, opts));
-		if(!ok)
-			qfWarning() << "Error invoking" << OPTIONS_SETTER_SIGNATURE;
+		op->setPersistentOptions(opts);
+	}
+	else {
+		qfWarning() << this << QF_FUNC_NAME << "Options provider is NULL";
 	}
 }
 
@@ -177,35 +188,27 @@ QVariantMap SaveOptionsWidget::comboToSettings()
 
 void SaveOptionsWidget::save_helper(const QVariantMap& all_settings)
 {
-	QF_ASSERT(optionsProvider(),
-			  "options provider not set",
-			  return);
-	framework::IPersistentSettings *persistent_settings_provider = dynamic_cast<framework::IPersistentSettings*>(optionsProvider());
-	QF_ASSERT(persistent_settings_provider,
-			  QString("options provider %1 must implement framework::IPersistentSettings interface").arg(optionsProvider()->metaObject()->className()),
-			  return);
-	QString persistent_settings_path = persistent_settings_provider->persistentSettingsPath();
-	QF_ASSERT(!persistent_settings_path.isEmpty(),
-			  QString("Persistent settings path of options provider %1 is empty").arg(optionsProvider()->metaObject()->className()),
-			  return);
-	persistent_settings_path = qf::core::utils::FileUtils::joinPath(persistent_settings_path, OPTIONS_PERSISTENT_SETTING_KEY);
-
-	QJsonDocument json_doc;
-	json_doc.fromVariant(all_settings);
-	QString json_str = QString::fromUtf8(json_doc.toJson());
-	savePersistentSettings(persistent_settings_path, json_str);
+	QString persistent_settings_path = persistentOptionsPath();
+	if(!persistent_settings_path.isEmpty()) {
+		QJsonDocument json_doc = QJsonDocument::fromVariant(all_settings);
+		QString json_str = QString::fromUtf8(json_doc.toJson());
+		savePersistentOptionsMap(persistent_settings_path, json_str);
+	}
 }
 
 void SaveOptionsWidget::on_btSaveSettings_clicked()
 {
+	qfLogFuncFrame();
 	save();
 }
 
 void SaveOptionsWidget::on_btDeleteSetting_clicked()
 {
+	qfLogFuncFrame();
 	QComboBox *cbx = ui->lstSettings;
 	int ix = cbx->currentIndex();
-	if(ix < 0) return;
+	if(ix < 0)
+		return;
 	cbx->removeItem(ix);
 	QVariantMap all_settings = comboToSettings();
 	save_helper(all_settings);
@@ -238,21 +241,12 @@ void SaveOptionsWidget::onSettingsActivated(int ix)
 	}
 }
 
-void SaveOptionsWidget::setOptionsProvider(QObject *options_provider)
+void SaveOptionsWidget::setOptionsProvider(framework::IPersistentOptions *options_provider)
 {
 	m_optionsProvider = options_provider;
-	if(m_optionsProvider) {
-		int ix;
-		ix = m_optionsProvider->metaObject()->indexOfMethod(OPTIONS_GETTER_SIGNATURE);
-		QF_CHECK(ix >= 0,
-				 QString("Options providers shall have a getter: %1").arg(OPTIONS_GETTER_SIGNATURE));
-		ix = m_optionsProvider->metaObject()->indexOfMethod(OPTIONS_SETTER_SIGNATURE);
-		QF_CHECK(ix >= 0,
-				 QString("Options providers shall have a setter: %1").arg(OPTIONS_SETTER_SIGNATURE));
-	}
 }
 
-QObject *SaveOptionsWidget::optionsProvider()
+framework::IPersistentOptions *SaveOptionsWidget::optionsProvider()
 {
 	return m_optionsProvider;
 }

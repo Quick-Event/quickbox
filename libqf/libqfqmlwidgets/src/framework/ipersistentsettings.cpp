@@ -31,6 +31,11 @@ QString IPersistentSettings::persistentSettingsPath()
 	return m_path;
 }
 
+void IPersistentSettings::setPersistentSettingsPath(const QString &path)
+{
+	m_path = path;
+}
+
 static void callMethodRecursively(QObject *obj, const char *method_name)
 {
 	if(!obj)
@@ -58,37 +63,32 @@ void IPersistentSettings::savePersistentSettingsRecursively()
 QString IPersistentSettings::generatePersistentSettingsPath()
 {
 	qfLogFuncFrame() << persistentSettingsId() << m_controlledObject->property("persistentSettingsId").toString();
-	QString ret = persistentSettingsId();
-	if(!ret.isEmpty()) {
+	QString generated_path = persistentSettingsId();
+	QString ret;
+	if(!generated_path.isEmpty()) {
 		for(QObject *obj=m_controlledObject->parent(); obj!=nullptr; obj=obj->parent()) {
+			IPersistentSettings *ps = dynamic_cast<IPersistentSettings*>(obj);
+			if(ps) {
+				ret = ps->persistentSettingsPath() + '/' + generated_path;
+				//qfWarning() << "reading property 'persistentSettingsId' error" << obj << "casted to IPersistentSettings" << ps;
+				//qfWarning() << "\tcorrect value should be:" << parent_id;
+				break;
+			}
+			else {
+				QVariant vid = obj->property("persistentSettingsId");
+				QString id = vid.toString();
+				if(!id.isEmpty()) {
+					ret = id + '/' + generated_path;
+				}
+			}
 			// reading property using QQmlProperty is crashing my app Qt 5.3.1 commit a83826dad0f62d7a96f5a6093240e4c8f7f2e06e
 			//QQmlProperty p(obj, "persistentSettingsId");
 			//QVariant v2 = p.read();
-			QVariant vid = obj->property("persistentSettingsId");
-			QString parent_id = vid.toString();
-			if(vid.isValid() && parent_id.isEmpty()) {
-				// property exists but is empty
-				// don't know why, but I'm not able to read "persistentSettingsId" property of PartWidget here even if it is set
-				// use objectName() fallback here
-				IPersistentSettings *ps = dynamic_cast<IPersistentSettings*>(obj);
-				qfWarning() << "reading property 'persistentSettingsId' error" << obj << "casted to IPersistentSettings" << ps;
-				parent_id = ps->persistentSettingsId();
-				if(ps)
-					qfWarning() << "\tcorrect value should be:" << parent_id;
-			}
-			qfDebug() << "\t" << obj << "->" << vid.toString() << "type:" << vid.typeName() << "object name:" << obj->objectName() << "id:" << parent_id;
-			//qfDebug() << "\tnebo ->" << v2.toString() << "type:" << v2.typeName();
-			//IPersistentSettings *ip = dynamic_cast<IPersistentSettings*>(obj);
-			//if(ip)
-			//	qfDebug() << "\t\t" << ip << "->" << ip->persistentSettingsId();
-			if(!parent_id.isEmpty()) {
-				ret = parent_id + '/' + ret;
-			}
 		}
-	}
-	if(!ret.isEmpty()) {
-		static const QLatin1Literal PersistentSettings("persistentSettings");
-		ret = PersistentSettings + '/' + ret;
+		if(ret.isEmpty()) {
+			static const QLatin1Literal PersistentSettings("persistentSettings");
+			ret = PersistentSettings + '/' + generated_path;
+		}
 	}
 	return ret;
 }

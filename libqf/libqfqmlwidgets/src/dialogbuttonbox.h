@@ -13,6 +13,7 @@ class QFQMLWIDGETS_DECL_EXPORT DialogButtonBox : public QDialogButtonBox
 	Q_OBJECT
 public:
 	explicit DialogButtonBox(QWidget * parent = 0);
+	explicit DialogButtonBox(StandardButtons buttons, QWidget *parent = 0);
 };
 
 }}

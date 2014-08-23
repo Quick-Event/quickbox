@@ -4,6 +4,7 @@
 #include "tableitemdelegate.h"
 #include "dialogs/messagebox.h"
 #include "dialogs/dialog.h"
+#include "dialogbuttonbox.h"
 
 #include "internal/printtableviewwidget.h"
 
@@ -16,7 +17,7 @@
 
 #include <QKeyEvent>
 #include <QMenu>
-#include <QAbstractButton>
+#include <QPushButton>
 #include <QSettings>
 #include <QJsonDocument>
 
@@ -244,8 +245,15 @@ void TableView::revertRow(int row_no)
 void TableView::exportReport()
 {
 	qfLogFuncFrame();
-	internal::PrintTableViewWidget *w = new internal::PrintTableViewWidget();
+	internal::PrintTableViewWidget *w = new internal::PrintTableViewWidget(this);
+	if(!persistentSettingsPath().isEmpty()) {
+		w->setPersistentOptionsPath(persistentSettingsPath() + "/exportReport");
+		w->loadPersistentOptions();
+	}
 	dialogs::Dialog dlg(this);
+	DialogButtonBox *bb = new DialogButtonBox(QDialogButtonBox::Cancel, this);
+	QAbstractButton *bt_apply = bb->addButton(QDialogButtonBox::Apply);
+	dlg.setButtonBox(bb);
 	dlg.setCentralWidget(w);
 	dlg.setPersistentSettingsId("exportReport");
 	dlg.loadPersistentSettingsRecursively();

@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/partswitch.h \
     $$PWD/plugin.h \
     $$PWD/pluginmanifest.h \
-    $$PWD/dialogwidget.h
+    $$PWD/dialogwidget.h \
+    $$PWD/ipersistentoptions.h
 
 SOURCES += \
     $$PWD/mainwindow.cpp \
@@ -24,4 +25,5 @@ SOURCES += \
     $$PWD/partswitch.cpp \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanifest.cpp \
-    $$PWD/dialogwidget.cpp
+    $$PWD/dialogwidget.cpp \
+    $$PWD/ipersistentoptions.cpp

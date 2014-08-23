@@ -19,6 +19,7 @@ public:
 	virtual QString persistentSettingsId();
 	void setPersistentSettingsId(const QString &id);
 	virtual QString persistentSettingsPath();
+	void setPersistentSettingsPath(const QString &path);
 	void loadPersistentSettingsRecursively();
 	void savePersistentSettingsRecursively();
 private:
