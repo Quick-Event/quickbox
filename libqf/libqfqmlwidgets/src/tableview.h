@@ -78,6 +78,8 @@ private:
 	void seek(const QString &prefix_str);
 	void cancelSeek();
 
+	void exportReport_helper(const QVariant& _options);
+
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 protected:

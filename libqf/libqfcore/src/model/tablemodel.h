@@ -3,11 +3,17 @@
 
 #include "../core/coreglobal.h"
 #include "../utils/table.h"
+#include "../core/utils.h"
 
 #include <QAbstractTableModel>
 
 namespace qf {
 namespace core {
+
+namespace utils {
+class TreeTable;
+}
+
 namespace model {
 
 class QFCORE_DECL_EXPORT TableModel : public QAbstractTableModel
@@ -130,6 +136,15 @@ public:
 	qf::core::utils::TableRow tableRow(int row_no);
 	//Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
 	//Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
+
+	class QFCORE_DECL_EXPORT TreeTableExportOptions : public QVariantMap
+	{
+		QF_OPTION_FIELD2_RW(bool, is, set, ExportRawValues, true)
+	public:
+		TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
+	};
+	qf::core::utils::TreeTable toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
+
 protected:
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();

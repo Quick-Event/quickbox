@@ -5,7 +5,7 @@
 
 #include <QSharedData>
 #include <QVariant>
-//#include <QMetaType>
+#include <QJsonDocument>
 
 namespace qf {
 namespace core {
@@ -118,9 +118,9 @@ public:
 
 	static SValue fromJson(const QVariant &json) {SValue ret; ret.setJson(json); return ret;}
 
-	/// pokud je indent -1 vyrobi oneliner
-	QByteArray toJson(int indent = -1) const;
+	QByteArray toJson(QJsonDocument::JsonFormat format = QJsonDocument::Indented) const;
 	QByteArray serialize() const;
+	QString toString(QJsonDocument::JsonFormat format = QJsonDocument::Indented) const;
 };
 
 }}}

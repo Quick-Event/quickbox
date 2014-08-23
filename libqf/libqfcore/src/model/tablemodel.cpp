@@ -2,6 +2,7 @@
 #include "../core/log.h"
 #include "../core/assert.h"
 #include "../core/utils.h"
+#include "../utils/treetable.h"
 
 #include <QTime>
 #include <QColor>
@@ -553,3 +554,52 @@ bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
 	return ok;
 }
 
+qfu::TreeTable TableModel::toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts) const
+{
+	qfu::TreeTable ret(table_name);
+	for(int i=0; i<exported_columns.count(); i++) {
+		QVariantMap col = exported_columns[i].toMap();
+		QString cap = col.value("caption").toString();
+		int ix = col.value("index").toInt();
+		qfu::TreeTableColumn tt_col;
+		if(col.value("origin") == "table") {
+			QVariant::Type t = m_table.field(ix).type();
+			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
+		}
+		else {
+			QVariant::Type t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
+			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
+		}
+		tt_col.setWidth(col.value("width").toString());
+	}
+
+	/// export data
+	{
+		bool raw_values = opts.isExportRawValues();
+		qfu::SValue srows;
+		for(int i=0; i<rowCount(); i++) {
+			QVariantList srow_lst;
+			qfu::Table::Row tbl_row = m_table.row(i);
+			//if(cnt) if(n++ % progress_step) emit progressValue(1.*n/cnt, tr("Probiha export"));
+			for(int j=0; j<exported_columns.count(); j++) {
+				QVariantMap col = exported_columns[j].toMap();
+				QVariant val;
+				int ix = col.value("index").toInt();
+				if(col.value("origin") == "table") {
+					val = tbl_row.value(ix);
+				}
+				else {
+					if(raw_values) val = value(i, ix);
+					else {
+						QModelIndex mix = index(i, ix);
+						val = data(mix);
+					}
+				}
+				srow_lst << val;
+			}
+			srows[i] = srow_lst;
+		}
+		ret[qfu::TreeTable::KEY_ROWS] = srows.value();
+	}
+	return ret;
+}

@@ -30,6 +30,12 @@ void PrintTableViewWidget::loadPersistentOptions()
 	ui->saveSettingsWidget->load(true);
 }
 
+void PrintTableViewWidget::applyOptions()
+{
+	QVariant opts = persistentOptions();
+	emit printRequest(opts);
+}
+
 QVariant PrintTableViewWidget::persistentOptions()
 {
 	QVariantMap ret;

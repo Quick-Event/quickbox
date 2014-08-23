@@ -33,6 +33,9 @@ public:
 	void setPersistentOptions(const QVariant &opts) Q_DECL_OVERRIDE;
 
 	Q_SLOT void loadPersistentOptions();
+	Q_SLOT void applyOptions();
+
+	Q_SIGNAL void printRequest(const QVariant &options);
 private:
 	QVariant exportOptions() const;
 	void setExportOptions(const QVariant& opts) const;

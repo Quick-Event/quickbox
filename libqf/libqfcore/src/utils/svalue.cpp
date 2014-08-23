@@ -314,15 +314,20 @@ SValue& SValue::operator+=(const QVariantMap &m)
 	return *this;
 }
 
-QByteArray SValue::toJson(int indent) const
+QByteArray SValue::toJson(QJsonDocument::JsonFormat format) const
 {
 	QJsonDocument doc = QJsonDocument::fromVariant(toVariant());
-	QByteArray ba = doc.toJson((indent>=0)? QJsonDocument::Indented: QJsonDocument::Compact);
+	QByteArray ba = doc.toJson(format);
 	return ba;
 }
 
 QByteArray SValue::serialize() const
 {
-	QByteArray ret = toJson(-1);
+	QByteArray ret = toJson(QJsonDocument::Compact);
 	return ret;
+}
+
+QString SValue::toString(QJsonDocument::JsonFormat format) const
+{
+	return QString::fromUtf8(toJson(format));
 }

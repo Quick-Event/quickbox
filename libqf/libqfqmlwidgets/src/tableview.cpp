@@ -14,6 +14,7 @@
 #include <qf/core/assert.h>
 #include <qf/core/exception.h>
 #include <qf/core/model/tablemodel.h>
+#include <qf/core/utils/treetable.h>
 
 #include <QKeyEvent>
 #include <QMenu>
@@ -253,12 +254,77 @@ void TableView::exportReport()
 	dialogs::Dialog dlg(this);
 	DialogButtonBox *bb = new DialogButtonBox(QDialogButtonBox::Cancel, this);
 	QAbstractButton *bt_apply = bb->addButton(QDialogButtonBox::Apply);
+	connect(bt_apply, &QAbstractButton::clicked, w, &internal::PrintTableViewWidget::applyOptions, Qt::QueuedConnection);
 	dlg.setButtonBox(bb);
 	dlg.setCentralWidget(w);
 	dlg.setPersistentSettingsId("exportReport");
 	dlg.loadPersistentSettingsRecursively();
-	//connect(&dlg, SIGNAL(printRequest(QVariant)), this, SLOT(exportReport_helper(QVariant)));
+	connect(w, &internal::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
 	dlg.exec();
+}
+
+void TableView::exportReport_helper(const QVariant& _options)
+{
+	//qfInfo() << "exportReport_helper";
+	try {
+		QVariantMap options = _options.toMap();
+		qfu::Table::TextExportOptions opts(options.value("options").toMap());
+		QVariantList exported_columns = options.value("columns").toList();
+		qfu::TreeTable ttable;
+		//qfTrash() << "empty:" << ttable.toString();
+		qfu::TreeTableRow tt_row = ttable.appendRow();
+		//qfTrash() << "with row:" << ttable.toString();
+		//tt_row.setValue(0, "ahoj");
+		//qfTrash() << "with ahoj:" << ttable.toString();
+
+		{
+			qfu::TreeTable xt;// = QFXmlTable(xdoc, "report");
+			xt.setName("report");
+			bool report_banner = false;
+			QString report_title = opts.value("report").toMap().value("title").toString();
+			if(!report_title.isEmpty()) { report_banner = true; }
+			QString report_note = opts.value("report").toMap().value("note").toString();
+			if(!report_note.trimmed().isEmpty()) { report_banner = true; }
+			if(report_banner) {
+				xt.setValue("title", report_title);
+				xt.setValue("note", report_note);
+				tt_row.appendTable(xt);
+				//qfTrash() << "with report:" << ttable.toString();
+			}
+		}
+
+		{
+			//QVariantList exported_columns = w->exportedColumns();
+			qf::core::model::TableModel *m = tableModel();
+			//int elide_at = model()->elideDisplayedTextAt();
+			//model()->setElideDisplayedTextAt(0);
+			qfu::TreeTable xt = m->toTreeTable(exported_columns, "data");
+			//model()->setElideDisplayedTextAt(elide_at);
+			tt_row.appendTable(xt);
+		}
+
+		qfInfo() << ttable.toString();
+#if 0
+		QFReportViewWidget *rw = new QFReportViewWidget(NULL);
+		{
+			QFAppReportSearchDirsInterface *appi = dynamic_cast<QFAppReportSearchDirsInterface*>(QCoreApplication::instance());
+			if(appi) {
+				QFReportProcessor *proc = rw->reportProcessor();
+				proc->setSearchDirs(appi->reportProcessorSearchDirs());
+			}
+		}
+		rw->setData(ttable);
+		QString report_fn = opts.value("report").toMap().value("fileName").toString();
+		rw->setReport(report_fn);
+		QFDialog rdlg(this);
+		rdlg.setXmlConfigPersistentId("DlgReportView", true);
+		rdlg.setDialogWidget(rw);
+		rdlg.exec();
+#endif
+	}
+	catch(qf::core::Exception &e) {
+		dialogs::MessageBox::showException(this, e);
+	}
 }
 
 void TableView::updateRow(int row)
