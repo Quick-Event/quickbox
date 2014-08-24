@@ -71,3 +71,18 @@ QStringList String::splitAndTrim(QChar sep, QChar quote, bool trim_parts, QStrin
 	}
 	return ret;
 }
+
+bool String::toBool() const
+{
+	if(isEmpty())
+		return false;
+	if(!compare(QLatin1String("N"), Qt::CaseInsensitive))
+		return false;
+	if(!compare(QLatin1String("F"), Qt::CaseInsensitive))
+		return false;
+	if(!compare(QLatin1String("0"), Qt::CaseInsensitive))
+		return false;
+	if(!compare(QLatin1String("false"), Qt::CaseInsensitive))
+		return false;
+	return true;
+}

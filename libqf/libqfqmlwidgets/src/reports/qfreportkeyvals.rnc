@@ -1,0 +1,14 @@
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+keyvals = element keyvals { keyval* }
+keyval =
+  element keyval {
+    attribute key { text },
+    serialized_data
+  }
+
+## CDATA contain serialized value
+## see QString QFXmlConfigPersistenter::variantToString(const QVariant &v).
+## format examples: @Date(2006-05-02), @Int(12), @Image(Base64 encoded data), @Picture(Base64 encoded data)
+## Image is for QImage, Picture is for QPicture (vektory)
+serialized_data = text

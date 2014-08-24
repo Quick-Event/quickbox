@@ -1,0 +1,46 @@
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+include "qfreportstyle.rnc"
+include "qfreportpagedef.rnc"
+
+start = fps
+
+fps = element fps {
+	style,
+	pagedef,
+	page*
+}
+
+page = element page {
+	(pos | line | box | \text)*
+}
+
+pos = element pos {
+	pos_attrs
+}
+pos_attrs = 
+	attribute x {xsd:double},
+	attribute y {xsd:double}
+
+line = element pos {
+	pos_attrs
+}
+
+box = element box {
+	box_attrs
+}
+box_attrs = 
+	attribute w {xsd:double},
+	attribute h {xsd:double},
+	## nazev pen definice, ktera se ma pouzit 
+	attribute brd { text }?,       
+	attribute tbrd { text }?,
+	attribute bbrd { text }?,
+	attribute rbrd { text }?,
+	attribute lbrd { text }?
+
+\text = element text {
+	attribute font {text}?,
+	text
+}
+	

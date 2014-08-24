@@ -46,6 +46,8 @@ SOURCES += \
 FORMS += \
     $$PWD/saveoptionswidget.ui \
 
-include ($$PWD/internal/internal.pri)
+#include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)
+include ($$PWD/reports/reports.pri)
+include ($$PWD/graphics/graphics.pri)

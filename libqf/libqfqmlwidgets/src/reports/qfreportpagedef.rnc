@@ -1,0 +1,9 @@
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+pagedef = element pagedef { pagedef_attlist, empty }
+pagedef_attlist &=
+  attribute w { text }?,
+  attribute h { text }?,
+  [ a:defaultValue = "portrait" ]
+  attribute orientation { "portrait" | "landscape" }?
+  

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>qf::qmlwidgets::internal::TableViewChooseColumnsWidget</class>
- <widget class="QWidget" name="qf::qmlwidgets::internal::TableViewChooseColumnsWidget">
+ <class>qf::qmlwidgets::reports::TableViewChooseColumnsWidget</class>
+ <widget class="QWidget" name="qf::qmlwidgets::reports::TableViewChooseColumnsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

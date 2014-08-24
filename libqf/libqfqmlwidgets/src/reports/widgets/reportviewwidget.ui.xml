@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qfpartrc SYSTEM "qfpartui.dtd">
+<qfpartui id="qfreportviewwidget" version="1">
+	<menubar>
+		<menu id="file"><caption>&amp;Soubor</caption>
+			<action id="file.print"/>
+			<action id="file.printPreview"/>
+			<menu id="export"> <caption>&amp;Export</caption>
+				<action id="file.export.pdf"/>
+				<action id="file.export.pdf.open"/>
+				<action id="file.export.html"/>
+				<action id="file.export.email"/>
+			</menu>
+			<merge/>
+		</menu>
+		<menu id="report"><caption>&amp;Report</caption>
+			<action id="report.edit"/>
+		</menu>
+		<menu id="data"><caption>&amp;Data</caption>
+			<action id="data.showHtml"/>
+		</menu>
+		<menu id="view"><caption>&amp;Zobrazení</caption>
+			<action id="view.zoomIn"/>
+			<action id="view.zoomOut"/>
+			<action id="view.zoomToFitWidth"/>
+			<action id="view.zoomToFitHeight"/>
+			<separator/>
+			<action id="view.firstPage"/>
+			<action id="view.prevPage"/>
+			<action id="view.nextPage"/>
+			<action id="view.lastPage"/>
+		</menu>
+		<merge/>
+	</menubar>
+
+	<toolbar id="main"><caption>main</caption>
+		<action id="file.print"/>
+		<action id="file.export.pdf"/>
+		<action id="file.export.pdf.open"/>
+		<action id="file.export.html"/>
+		<action id="file.export.email"/>
+		<action id="report.edit"/>
+		<separator/>
+		<action id="view.zoomIn"/>
+		<action id="view.zoomOut"/>
+		<action id="view.zoomToFitWidth"/>
+		<action id="view.zoomToFitHeight"/>
+		<separator/>
+		<action id="view.firstPage"/>
+		<action id="view.prevPage"/>
+		<action id="view.nextPage"/>
+		<action id="view.lastPage"/>
+	</toolbar>
+
+<!--	<toolbar id="navigator"><caption>navigator</caption>
+	</toolbar>-->
+
+	<action id="file.print">
+		<caption>&amp;Tisk</caption>
+		<tooltip>Tisk</tooltip>
+		<icon id="print" src="printer.png"/>
+	</action>
+	<action id="file.printPreview">
+		<caption>&amp;Náhled tisku</caption>
+		<tooltip>Náhled tisku</tooltip>
+<!--		<icon id="print" src="printer.png"/>-->
+	</action>
+	<action id="file.export.pdf">
+		<caption>&amp;PDF</caption>
+		<tooltip>Exportovat formulář ve formátu Adobe Acrobat PDF</tooltip>
+		<icon id="export.pdf" src="acrobat.png"/>
+	</action>
+	<action id="file.export.pdf.open">
+		<caption>&amp;PDF a otevřít</caption>
+		<tooltip>Exportovat formulář ve formátu Adobe Acrobat PDF a otevřít uložený soubor</tooltip>
+		<icon id="export.pdf.open" src="acrobat-open.png"/>
+	</action>
+	<action id="file.export.html">
+		<caption>&amp;HTML</caption>
+		<tooltip>Exportovat formulář ve formátu HTML</tooltip>
+		<icon id="export.html" src="network.png"/>
+	</action>
+	<action id="file.export.email">
+		<caption>&amp;poslat report e-mailem</caption>
+		<tooltip>Poslat report e-mailem</tooltip>
+		<icon id="email"/>
+	</action>
+	<action id="report.edit">
+		<caption>&amp;Editovat formulář</caption>
+		<tooltip>Editovat návrh formuláře</tooltip>
+		<icon id="edit"/>
+	</action>
+
+	<action id="data.showHtml">
+		<caption>&amp;Zobrazit jako HTML</caption>
+	</action>
+
+	<action id="view.zoomIn">
+		<caption>&amp;Zvětšit</caption>
+		<icon id="zoomIn" src="zoom_in.png"/>
+	</action>
+	<action id="view.zoomOut">
+		<caption>&amp;Zmenšit</caption>
+		<icon id="zoomOut" src="zoom_out.png"/>
+	</action>
+	<action id="view.zoomToFitWidth">
+		<caption>Zvětšit na šířku stránky</caption>
+		<icon id="zoomToFitWidth" src="zoom_fitwidth.png"/>
+	</action>
+	<action id="view.zoomToFitHeight">
+		<caption>Zvětšit na výšku stránky</caption>
+		<icon id="zoomToFitHeight" src="zoom_fitheight.png"/>
+	</action>
+	<action id="view.firstPage">
+		<caption>&amp;První strana</caption>
+		<icon id="firstPage" src="frew.png"/>
+	</action>
+	<action id="view.prevPage">
+		<caption>&amp;Předchozí strana</caption>
+		<icon id="prevPage" src="rew.png"/>
+	</action>
+	<action id="view.nextPage">
+		<caption>&amp;Další strana</caption>
+		<icon id="nextPage" src="fwd.png"/>
+	</action>
+	<action id="view.lastPage">
+		<caption>&amp;Poslední strana</caption>
+		<icon id="lastPage" src="ffwd.png"/>
+	</action>
+
+</qfpartui>

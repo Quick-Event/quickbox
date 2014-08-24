@@ -1,0 +1,510 @@
+# jak zarovnat neco do gridu a nemuset kvuli tomu delat tabulku?
+#	pomoci copyAttributesFromId, priklad je v pruvodnim listu zakazky
+
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+include "qfreportkeyvals.rnc"
+include "qfreportstyle.rnc"
+
+## kazdy atribut muze byt ve tvaru script:funcname(parametry_oddelene_carkou_nepovinne_uzavrene_apostrofy)
+## pak se pri kazdem cteni tohoto atributu zavola funkce funcname s parametry, jako QStringList.
+## pokud je nektery parametr v apostrofech, nejsou apostrofy odstraneny.
+## QRegExp("script:([A-Za-z]\S*)\((.*)\)");
+start = report
+report =
+  element report {
+    report_attlist,
+    script*,
+    stylesheet*,
+    templates?,
+
+    frame_content,
+    body?,
+    report_keyvals?
+  }
+report_attlist =
+  attribute w { text }?,
+  attribute h { text }?,
+  [ a:defaultValue = "portrait" ] attribute orientation { "portrait" | "landscape" }?,
+  attribute headeronbreak { xsd:boolean }?
+
+## text jsou procenta napr 20% nebo jen % nebo nic nebo rozmer v mm
+## % znamena rozdel zbytek na stejne casti
+## n% znamena dej frame n% ze zbytku
+## ve vertikalnim layoutu nejde kombinovat % a nezadany rozmery (atribut chybi)
+## v takovem pripade se chybici atributy prevedou na "%"
+## jedinou vyjjimkou je pripad, kdy ma % pouze posledni dite (ne treba "20%", ale pouze "%")
+## v takovem pripade dostane child frame cely nepopsany zbytek rodice.
+frame_size = text
+halignment =
+  [ a:defaultValue = "left" ]
+  attribute halign { "left" | "center" | "right" | "justify" } # justify ma smysl jen u para
+valignment =
+  [ a:defaultValue = "top" ]
+  attribute valign { "top" | "center" | "bottom" }
+common_attrs =
+	## general use attribute
+	attribute tag { text }?,
+	[ a:defaultValue = "1" ] attribute visible { text }?,
+	## format id:level
+	## level je nepovinny udaj a jeho defaultni hodnota je 0
+	## najde element s id a zkopiruje z neho atributy do urovne level
+	## originalni atributy elementu nejsou pri kopirovani prepsany
+	attribute copyAttributesFromId { text }?
+box_attrs =
+  attribute fill { text }?,
+
+  ## nazev pen definice, ktera se ma pouzit nebo jeji CSS popis
+  attribute brd { text }?,
+  attribute tbrd { text }?,
+  attribute bbrd { text }?,
+  attribute rbrd { text }?,
+  attribute lbrd { text }?
+
+frame_attrs =
+	abs_frame_attrs,
+	rel_frame_attrs,
+	## pokud ma nejake dite parentGrid layout, bere si horizontalni velikosti deti podle prvniho vytisteneho ditete s parentGrid layoutem
+	[ a:defaultValue = "0" ] attribute grid { xsd:boolean }?,
+	## element nelze vybrat mysi (je zamcen pro vyber)
+	[ a:defaultValue = "0" ] attribute unselectable { xsd:boolean }?,
+	## zatim podporuje jenom image, pokud je true, a tiskne se fyzicky na tiskarnu, ne do PDF, obrazek se vytiskne jako prazdna plocha
+	## pozor, tisk v linuxu do PDF nebo PS souboru neni tisk na tiskarnu
+	[ a:defaultValue = "0" ] attribute suppressPrintOut { xsd:boolean }?,
+	## pokud je true, vraci rendered rect w,h=(0,0), takze dalsi deti se rendruji pres nej
+	## zatim podporuje pouze image
+	[ a:defaultValue = "false" ] attribute backgroundItem { xsd:boolean }?,
+	## implicitni textovy styl pro deti typu para
+	attribute paraStyle { text }?
+
+rel_frame_attrs =
+	## zatim se pouziva jen k debug ucelum
+	attribute id { text }?,
+	attribute w { frame_size }?,
+	attribute h { text }?,
+	## pocet a sirky sloupcu, napr. "%,20%,50"
+	[ a:defaultValue = "%" ] attribute columns { text }?,
+	## mezera mezi sloupci v mm
+	[ a:defaultValue = "3" ] attribute columnsgap { xsd:boolean }?,
+	halignment?,
+	valignment?,
+	attribute inset { xsd:double }?,
+	attribute hinset { xsd:double }?,
+	attribute vinset { xsd:double }?,
+	attribute cols { frame_size+ }?,
+	attribute keepwithprev { xsd:boolean }?,
+
+	## ramecky deti, jsou roztazeny tak, aby vyplnily parent frames
+	## jinymi slovy, pokud v radku tbulky natece kazde policko jinak vysoke, budou vsechny roztazeny na vysku parent frame.
+	## k roztahovani dochazi ve smeru x i y
+	## natahuji se jen ramecky, poloha vyrendrovaneho obsahu zustava nezmenena
+	## dela se to tak, ze se nejprve vyrendruje stranka a pak se prochazi vyrndrovane ramecky a pokud je treba,
+	## zvetsuji se tak, aby vyplnily cely parent frame.  Objekty typu QFReportItemMetaPaintText jsou ignorovany
+	attribute expandChildrenFrames { xsd:boolean }?,
+
+	## urcuje, zda budou child elementy zkladany pod sebe nebo vedle sebe
+	## parentGrid layout je horizontalni s tim, ze vsechny deti s timto layoutem v ramci parentu, ktery ma atribut grid="true" gridu maji stejne sirky, sirka se bere podle prvniho ditete s grid layoutem, ktere se vytiskne
+	## grid layout se chova tak, ze itemu, ktery ho ma nastavi atribut grid a vsem detem layout parentGrid
+	[ a:defaultValue = "vertical" ]
+	attribute layout { "vertical" | "horizontal" | "grid" | "parentGrid" }?,
+
+	## keepall:   pokud se frame nevejde na stranku, je cely vcetne obsahu presunut na dalsi (napr. detail).
+	## detail a row ma keepall defaultne true.
+	[ a:defaultValue = "false" ] attribute keepall { xsd:boolean }?,
+	# HTML nesnasi preurcene sirky, takze tohle oznacuje tag, kde se sirka nespecifikuje
+	# [ a:defaultValue = "0" ] attribute htmlrest { xsd:boolean }?,
+	box_attrs
+
+abs_frame_attrs =
+  attribute y1 { xsd:double }?,
+  attribute x1 { xsd:double }?,
+
+  ## pokud je specifikovana pouze dvojice x2,y2 udela se frame odkud natekl po tyto souradnice
+  attribute y2 { xsd:double }?,
+  attribute x2 { xsd:double }?
+
+frame_content = frame_child_element*, report_keyvals?
+frame_child_element =
+  table
+  | band
+  | frame
+  | row
+  | cell
+  | space
+  | para
+  | image
+  | graph
+  | break
+  | script
+
+## templates obsahuje defaultni atributy vytvarenych elementu
+## funguje to jako CSS, vytvareny element se sde pokusi najit sebe s celou cestou
+templates = element templates { frame_content }
+# header = element header { header_attlist, frame_content }
+# header_attlist =
+#	common_attrs,
+#	frame_attrs
+
+# footer = element footer { footer_attlist, frame_content }
+# footer_attlist =
+# common_attrs,
+# frame_attrs
+
+## body je jen alias pro detail, aby byl report prehlednejsi
+body = element body { frame_attlist, frame_content }
+frame = element frame { frame_attlist, frame_content }
+frame_attlist = common_attrs,frame_attrs
+image =
+  element image {
+    common_attrs,
+    frame_attlist,
+
+    ## src je
+	## key do QPicture mapy (pak je uvozen key:/), predane report compileru nebo nazev souboru
+	## nebo se hleda v search paths, pokud zacina ./ nebo ../ hleda se relativne k ceste k aktualnimu reportu
+    attribute src { text }?,
+    ## pic is a QPicture format
+    attribute dataformat { "svg" | "pic" | "QPicture" | "png" | "jpg" }?,
+    attribute dataencoding { "base64" | "hex" }?,
+    [ a:defaultValue = "none" ] attribute datacompression { "none" | "qCompress" }?,
+
+    ## pokud ma picture definovany atributy w a h, je obrazek transformovan do techto rozmeru
+    ## keepaspectratio urcuje, zda bude zachovan pomer stran puvodniho obrazku
+    [ a:defaultValue = "ignore" ]
+    attribute aspectratio { "ignore" | "keep" | "keepexpanding" }?,
+	data?
+  }
+table =
+  element table {
+    common_attrs,
+    table_attlist,
+    band_data_source?,
+
+	## tyto elementy se vytiskonou pred detailem
+	frame_child_element*,
+
+    ## jakej ramecek a pozadi bude mit header tabulky
+    element headerframe { common_attrs, frame_attrs }?,
+
+    ## jakej ramecek a pozadi bude mit detail tabulky
+    element detailframe { common_attrs, frame_attrs }?,
+
+    ## jakej ramecek a pozadi bude mit footer tabulky
+    element footerframe { common_attrs, frame_attrs }?,
+    element cols { common_attrs, col+ },
+
+	## tyto elementy se vytiskonou za detailem
+	frame_child_element*
+  }
+table_attlist &=
+  band_attlist,
+  attribute decoration { "grid" | "singleline" | "horizontallines" }?,
+
+  ## urcuje, zda ma byt header a footer vyplneny barvou tblshadow
+  [ a:defaultValue = "true" ] attribute shadow { xsd:boolean }?,
+
+  ## nazvy sloupcu se vezmou z datatable, pokud je nastaven tento atribut, nemusi mit table zadne deti, budou stejne ignorovany
+  [ a:defaultValue = "false" ] attribute createfromdata { xsd:boolean }?
+col =
+  element col {
+    common_attrs, col_attlist, colheader?, coldetail?, colfooter?
+  }
+col_attlist &=
+  common_attrs,
+  frame_attrs,
+  #attribute w { frame_size }?, tohle tu bylo puvodne misto frame attrs, nevim, proc tak malo
+  [ a:defaultValue = "0" ] attribute htmlrest { xsd:boolean }?
+colheader =
+  element colheader { common_attrs, frame_attrs, frame_child_element* }
+coldetail =
+  element coldetail { common_attrs, frame_attrs, frame_child_element* }
+colfooter =
+  element colfooter { common_attrs, frame_attrs, frame_child_element* }
+band = element band { common_attrs, band_attlist, band_child_elements }
+band_attlist &=
+  ## nazev tabulky, ze ktere se bude cerpat, deprecated
+  attribute datatablename { text }?,
+
+  rel_frame_attrs,
+  [ a:defaultValue = "0" ] attribute headeronbreak { xsd:boolean }?,
+  # [ a:defaultValue = "0" ] attribute nestedheaderonbreak { xsd:boolean }?,
+
+  ## keepfirst: kolik prvnich radku detailu musi zustat pohromade
+  attribute keepfirst { xsd:int }?,
+
+  ## keeplast:  kolik poslednich radku detailu musi zustat pohromade
+  attribute keeplast { xsd:int }?
+band_child_elements = band_data_source? & detail? & frame_child_element*
+
+band_data_source = element datasrc {
+  ## atribut, ktery se pouziva misto stareho atributu datatablename
+  ## pokud podelement data neexistuje, ma stejny vyznam, jako drivejsi atribut datatablename
+  attribute name { text }?,
+  data?
+}
+
+detail = element detail { common_attrs, detail_attlist, detail_content }
+detail_attlist &= rel_frame_attrs
+detail_content = frame_content
+space = element space { common_attrs, space_attlist, empty }
+space_attlist &= frame_attrs
+
+## row je jen pro zvyseni citelnosti, je to frame, ktery ma defaultne layout="horizontal"
+row = element row { common_attrs, frame_attrs, frame_content }
+
+## cell je jen pro zvyseni citelnosti, je to frame, ktery ma defaultne keepall="true"
+cell = element cell { common_attrs, frame_attrs, frame_content }
+
+## pri tisku kopiruje layout sizes deti prvniho ditete
+grid = element grid { common_attrs, frame_attrs, frame_content }
+
+## pokud para obsahuje pouze element, data majici atribut format="check", vyrendruje se piktogram pro check
+## ve velikosti pismene X aktualniho fontu
+para = element para { common_attrs, para_attrs, para_elements }
+para_attrs =
+
+  ## pokud chci, aby preteceni textu zpusobilo zalomeni stranky, je treba nezadat v elementu para atribut h.
+  ## see qfreportstyle.rnc
+  attribute font { text }?,
+  attribute style { text }?,
+
+  ## barva vyplne pisma
+  attribute color { text }?,
+
+  ## pokud se tiskne prazdny string, ignoruj ho, to znamena, ze se ani nepricte vyska prazdneho radku v layoutu
+  [ a:defaultValue = "true" ] attribute omitEmptyString { xsd:boolean }?,
+
+  ## zalamovani radku
+  [ a:defaultValue = "true" ] attribute wrap { xsd:boolean }?,
+
+  ## edit grants
+  attribute editGrants { text }?,
+
+  ## pokud je vyplneno a uzivatel edituje text, emituje se signal sqlValueEdited(sqlId, new_text)
+  attribute sqlId { text }?,
+
+  rel_frame_attrs
+
+para_elements = expr
+# span = element span {
+#	span_attrs,
+#	span_elements
+# }
+# span_attrs =
+# span_elements =
+#	(text | span | data)*
+data = element data { common_attrs, data_attrs, \default, data_code_children}
+data_attrs =
+
+  ## jmeno sloupce pokud neni, hleda se v keyvalech
+  attribute src { text },
+
+  ## system domain
+  ##   src muze byt {date, time, page, pageCount}
+  ## report domain
+  ##   src muze byt keyval reportu
+  ## row domain
+  ##   src muze byt nazev sloupce, vyslede je pak obsah sloupce v aktualnim radku aktualni tabulky
+  ##   src muze byt ROW_NO(), coz je cislo aktualniho radku (pocitano od 1)
+  ## table domain
+  ##   src muze byt keyval aktualni tabulky
+  ##    CAPTION(column_name)
+  ##    SUM(column_name)
+  ##    AVG(column_name)
+  ##    CNT() - pocet radku tabulky
+  ## script domain
+  ##   src je jmeno funkce, ktera musi byt definovana nekde drive v reportu elementem <script>
+  ## scriptcode domain
+  ##   src je ignorovano
+  ##   pouze v tomto pripade muze element data obsahovat deti <param> nebo <code> CDATA, coz je javascriptovy kod
+  ##   obsah elementu <script> se vykona vzdy, kdyz je zjistovana hodnota elementu <data>
+  ##   placeholder parametru v kodu skriptu ma format ${jmeno_parametru}, nahrazuje se textove
+  ## sql domain
+  ##  v tomto pripade obsahuje podelement <code> CDATA s SQL dotazem
+  ##   placeholder parametru v kodu query ma format ${jmeno_parametru}, nahrazuje se textove
+  [ a:defaultValue = "row" ]
+  attribute domain {
+    "report" | "row" | "table" | "system" | "script" | "scriptcode" | "sql"
+  }?,
+
+  ## pokud je true staci, aby src bylo pouze koncem jmena sloupce (QFSql::endsWith())
+  [ a:defaultValue = "true" ] attribute sqlmatch { xsd:boolean }?,
+
+  ## pokud jsou data QVariantMap, vezme se z nich hodnota key (jednotlive klice jsou oddeleny teckou, napr. cenik.cena.DPH)
+  attribute key { text },
+
+  ## pretypovani, napr. double, znamena pretypuj na double
+  attribute cast { int | double },
+
+  ## QDate: string, ktery se vlozi do QDate::toString()
+  ## bool: B(true_str,false_str[,null_str]) *_str muze byt v uvozovkach, napr.: B(ANO,NE,"Jako, ze nevim")
+  ## double: N(3,2) oddeluj tisice, 2 des. mista
+  ## jakykoliv typ: check - vyrendruj data jako zaskrtnuti (element data musi byt jediny element v elementu para)
+  ## enumz/enumGroup[/'captionFormat'] - caption format can contains placeholder ${caption}, caption format quotes are optional (usefull if caption format contains an '/' character)
+  attribute format { text },
+  attribute prefix { text },
+  attribute suffix { text },
+
+  ## convert displayed value to currency
+  ## auto - take currency symbol from dataTranslator()->currentLocales()->currency()
+  ## EUR, CZK, ...
+  attribute currency { text },
+  ## show currency symbol after currency amount
+  [ a:defaultValue = "true" ] attribute currencySymbolVisible { xsd:boolean },
+
+  ## data translator localization domain
+  attribute lcDomain { text },
+
+  # OBSOLETE pokud je hodnota "null" netiskni nic
+  #[ a:defaultValue = "true" ] attribute hidenull { xsd:boolean }?,
+
+  ## text, ktery se bude tisknout pro NULL hodnoty
+  attribute nullText { text }?,
+
+  ## pokud je hodnota 0 netiskni nic
+  [ a:defaultValue = "false" ] attribute hidezero { xsd:boolean }?,
+
+  ## pokud data nebyla nalezena, vrati se tato hodnota, $INFO znamena, vytiskni informace o tom, jaka hodnota nebyla nalezena
+  [ a:defaultValue = "$INFO" ] attribute defaultValue { text }?
+
+\default = element \default {text}
+
+script = element script {
+    ## CDATA sekce definice funkce
+    xsd:string
+}
+code = element code {
+    ## CDATA sekce definice SQL dotazu
+    xsd:string
+}
+data_code_children = code?, param*
+param = element param {
+  ## jmeno parametru, pod kterym jej lze odkazovat, pokud je to potreba
+  attribute name {text}?,
+  expr
+}
+expr = data* & text*
+
+## break se uplatni jen ve vertikalnim layoutu, v horizontalnim je ignorovan
+#break = element break { common_attrs }
+break = element break { break_attlist }
+break_attlist &=
+  [ a:defaultValue = "page" ] attribute type { "page" | "column" }?
+
+## minimalne se pouzivaji tyto standartni jmena
+##  [_withframes] xsd:boolean default false
+##  [_withkeepframes] xsd:boolean default false
+##  [_fixedhtmlwidth] xsd:boolean default true
+report_keyvals = keyvals
+graph =
+  element graph {
+    common_attrs,
+    frame_attlist,
+    attribute datatablename { text }?,
+    attribute type { "xy" | "histogram" | "pie" },
+	## vyska pie grafu
+	attribute h3d {xsd:double}?,
+    element title {
+      common_attrs,
+      attribute textstyle { text }?,
+      text
+    }?,
+    element legend {
+      attribute id { text },
+
+      ## souradnice legendy, pokud nejsou uvedeny, je legenda umistena automaticky, x a y mohou byt zaporne, pak se pocitaji zprava resp. od spodu
+      attribute x { xsd:double }?,
+      attribute y { xsd:double }?,
+      attribute w { xsd:double }?,
+      attribute h { xsd:double }?,
+      element labels {
+        element label {
+
+          ## v legende jsou data ze serie, podporovany placeholder v textu elementu label je ${AXIS_LABEL}
+          attribute serie { text }?,
+
+          ## v legende jsou data z hodnot 2 serii, podporovany placeholder v textu elementu label jsou ${CAPTION}, ${VALUE}
+          attribute captionForEachInSerie { text }?,
+          attribute valuesFromSerie { text }?,
+
+          ## urcuje, jak se ma naformatovat hodnota ${VALUE} z cisla na string, napr. N(3,2)
+          attribute valueFormat { text }?,
+          text
+        }
+      }
+    }?,
+    element series {
+      common_attrs,
+
+      ## jak jdou serie po sobe, odpovidaji radkum resp. sloupcum tabulky
+      element serie {
+        common_attrs,
+        attribute colname { text },
+
+        ## pokud neni color uvedeno, vybere se nejaka automaticky
+
+        ## ma smysl jen pro serie x a valuesFrom="takeOrder"
+        ## seradi sloupce sestupne podle hodnoty colname (sloupcovy graf je od nejvyssiho k nejnizsimu)
+        attribute sortColName { text }?,
+        attribute color { text }?,
+        element join {
+          [ a:defaultValue = "none" ]
+          attribute style { "none" | "spline" | "line" }?,
+          attribute pen { text }?
+        }?,
+        element point {
+          [ a:defaultValue = "none" ]
+          attribute type { "none" | "circle" | "dot" | "cross" | "x" }?,
+
+          ## pokud neni color uvedeno, pouzije se barva serie
+          attribute color { text }?
+        }?,
+        element axis { common_attrs, axis_content }?
+      }+
+    }
+  }
+axis_content =
+  [ a:defaultValue = "y" ] attribute direction { "x" | "y" },
+
+  ## ma smysl jen pro serie x
+  ## pokud je valuesFrom takeValue, znamena to, ze se vynasi hodnoty ve sloupci
+  ## pokud je valuesFrom takeOrder, znamena to, ze se vynasi poradi hodnoty ve sloupci, napr. osa X u histogramu
+  [ a:defaultValue = "takeValue" ] attribute valuesFrom { "takeValue" | "takeOrder" }?,
+
+  ## osa se nezobrazuje
+  attribute hidden { xsd:boolean }?,
+
+  ## posunuti osy vuci grafu (kdyz je napr. vic os Y)
+  [ a:defaultValue = "0" ] attribute offset { xsd:double }?,
+  element label {
+    common_attrs,
+    # toimplement [ a:defaultValue = "center" ] attribute position {"center" | "end"}?,
+
+    # toimplement [ a:defaultValue = 0 ] attribute angle {xsd:double}?,
+
+    ## posunuti nadpisu vuci ose
+    # toimplement [ a:defaultValue = 0 ] attribute offset {xsd:double}?,
+    ## odchylka uhlu textu od smeru rovnobezneho s osou
+    attribute textStyle { text }?,
+    text
+  }?,
+
+  ## pokud chybi element gridLines, grid lines se nekresli
+  element gridLines {
+    attribute lineStyle { text }?
+  }?,
+
+  ## pokud chybi element ticks, zadne dilky se nekresli
+  element ticks {
+    common_attrs,
+
+    ## pokud serie pouziva meritko jine serie, zapise se zde jmeno sloupce teto serie
+    attribute sameAs { text }?,
+
+    ## urcuje, jak se maji naformatovat hodnoty u carek os, napr. N(3,2)
+    attribute labelFormat { text }?,
+    element range {
+      attribute min { xsd:double }?,
+      attribute max { xsd:double }?
+    }?
+  }?

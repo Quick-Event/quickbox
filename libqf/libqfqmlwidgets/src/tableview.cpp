@@ -6,7 +6,7 @@
 #include "dialogs/dialog.h"
 #include "dialogbuttonbox.h"
 
-#include "internal/printtableviewwidget.h"
+#include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
 
 #include <qf/core/string.h>
 #include <qf/core/collator.h>
@@ -246,7 +246,7 @@ void TableView::revertRow(int row_no)
 void TableView::exportReport()
 {
 	qfLogFuncFrame();
-	internal::PrintTableViewWidget *w = new internal::PrintTableViewWidget(this);
+	reports::PrintTableViewWidget *w = new reports::PrintTableViewWidget(this);
 	if(!persistentSettingsPath().isEmpty()) {
 		w->setPersistentOptionsPath(persistentSettingsPath() + "/exportReport");
 		w->loadPersistentOptions();
@@ -254,12 +254,12 @@ void TableView::exportReport()
 	dialogs::Dialog dlg(this);
 	DialogButtonBox *bb = new DialogButtonBox(QDialogButtonBox::Cancel, this);
 	QAbstractButton *bt_apply = bb->addButton(QDialogButtonBox::Apply);
-	connect(bt_apply, &QAbstractButton::clicked, w, &internal::PrintTableViewWidget::applyOptions, Qt::QueuedConnection);
+	connect(bt_apply, &QAbstractButton::clicked, w, &reports::PrintTableViewWidget::applyOptions, Qt::QueuedConnection);
 	dlg.setButtonBox(bb);
 	dlg.setCentralWidget(w);
 	dlg.setPersistentSettingsId("exportReport");
 	dlg.loadPersistentSettingsRecursively();
-	connect(w, &internal::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
+	connect(w, &reports::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
 	dlg.exec();
 }
 

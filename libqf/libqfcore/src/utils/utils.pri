@@ -5,6 +5,8 @@ HEADERS += \
     $$PWD/table.h \
     $$PWD/csvreader.h \
 	$$PWD/fileutils.h \
+	$$PWD/treeitembase.h \
+	$$PWD/searchdirs.h \
 
 SOURCES += \
     $$PWD/crypt.cpp \
@@ -13,4 +15,6 @@ SOURCES += \
     $$PWD/table.cpp \
     $$PWD/csvreader.cpp \
 	$$PWD/fileutils.cpp \
+	$$PWD/treeitembase.cpp \
+	$$PWD/searchdirs.cpp \
 

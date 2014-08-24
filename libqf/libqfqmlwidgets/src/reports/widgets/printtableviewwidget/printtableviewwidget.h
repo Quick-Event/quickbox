@@ -1,15 +1,15 @@
 #ifndef QF_QMLWIDGETS_INTERNAL_PRINTTABLEVIEWWIDGET_H
 #define QF_QMLWIDGETS_INTERNAL_PRINTTABLEVIEWWIDGET_H
 
-#include "../framework/dialogwidget.h"
-#include "../framework/ipersistentoptions.h"
+#include "../../../framework/dialogwidget.h"
+#include "../../../framework/ipersistentoptions.h"
 
 #include <QVariant>
 
 namespace qf {
 namespace qmlwidgets {
 class TableView;
-namespace internal {
+namespace reports {
 
 namespace Ui {
 class PrintTableViewWidget;

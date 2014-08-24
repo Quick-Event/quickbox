@@ -6,6 +6,7 @@ unix:DESTDIR = $$OUT_PWD/../../lib
 win32:DESTDIR = $$OUT_PWD/../../bin
 
 QT += widgets qml sql
+QT += xml printsupport svg # needed by reports
 
 CONFIG += c++11
 CONFIG += hide_symbols

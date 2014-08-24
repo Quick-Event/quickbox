@@ -35,6 +35,8 @@ public:
 	/// Empty string produce empty string list
 	/// @param trim_parts trim strings and remove quotes in  list after parsing
 	QStringList splitAndTrim(QChar sep = '\t', QChar quote = 0, bool trim_parts = TrimParts, SplitBehavior keep_empty_parts = QString::SkipEmptyParts) const;
+
+	bool toBool() const;
 };
 
 }

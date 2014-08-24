@@ -1,0 +1,99 @@
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+stylesheet =
+  element stylesheet {
+    element colors { color+ }?,
+    # prvni je default
+    element pens { pen+ }?,
+    # prvni je default
+    element brushes { brush+ }?,
+    # prvni je default
+    element fonts { font+ }?,
+    # prvni je default
+    element styles { style+ }?
+  }
+color =
+  element color {
+    attribute name { text },
+    ## muze byt bud RGB(1,2,3), ARGB(127,1,2,3) nebo #AABBCC nebo "teal"
+    attribute definition { text }
+    
+  }
+
+## cela definice penu se da v reportu zadat jemenem nebo retezcem jako v CSS
+## napr <frame pen = "basedon: blue1; color: #AABBCC">
+pen =
+  element pen {
+    (attribute name { text },
+     attribute basedon { text }?,
+     # previously defined pen name
+     
+     ## pokud je atribut text, je to seznam delek oddeleny carkami
+     [ a:defaultValue = "solid" ]
+     attribute style {
+       "solid" | "dash" | "dot" | "dashdot" | "dashdotdot" | text
+     }?,
+     [ a:defaultValue = "square" ]
+     attribute cap { "square" | "flat" | "round" }?,
+     [ a:defaultValue = "bevel" ]
+     attribute join { "bevel" | "miter" | "round" }?,
+     [ a:defaultValue = "1" ] attribute size { xsd:double }?,
+     # v bodech 1/72 palce
+     attribute color { text }?)
+    # prohledava se v poradi colors[name], QColor(name), definice RGB(1,2,3), default color
+    
+  }
+
+## napr <frame brush = "color: #AABBCC">
+brush =
+  element brush {
+    (attribute name { text },
+     attribute basedon { text }?,
+     # previously defined brush name
+     [ a:defaultValue = "solid" ]
+     attribute style {
+       "solid"
+       | "vertical"
+       | "horizontal"
+       | "diagonal"
+       | "revdiagonal"
+       | "cross"
+       | "diagonalcross"
+     }?,
+     attribute color { text }?)
+    # prohledava se v poradi colors[name], QColor(name), definice RGB(1,2,3), default color
+    
+  }
+
+## napr <span font = "basedon: sans; style: italic" brush="color: #EEDDFF">
+font =
+  element font {
+    (attribute name { text },
+     attribute basedon { text }?,
+     # previously defined font name
+     attribute family { text }?,
+     # pokud font uvedeny v family neexistuje, pouzij default font pro tento typ, nefunguje v X11
+     # attribute familyhint {"sansserif" | "serif" | "monospace"}?,
+     
+     ## in points, absolute value or relative (+2 means base font size + 2 points)
+     attribute size { text }?,
+     attribute style { "normal" | "italic" | "oblique" }?,
+     [ a:defaultValue = "normal" ]
+     attribute weight {
+       "light" | "normal" | "demibold" | "bold" | "black"
+     }?)
+    # [ a:defaultValue = "false" ] attribute italic {xsd:boolean}?
+    
+  }
+
+## napr <span style = "pen: tlusta-cervena; brush: {color: #EEDDCC; style:diagonal}; font: sans10">
+## napr <span style = header>
+style =
+  element style {
+    attribute name { text },
+    attribute basedon { text }?,
+    # previously defined style name
+    attribute pen { text }?,
+    attribute brush { text }?,
+    attribute font { text }?
+  }

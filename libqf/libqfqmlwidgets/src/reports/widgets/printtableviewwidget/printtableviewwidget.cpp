@@ -4,7 +4,7 @@
 
 namespace qfc = qf::core;
 
-using namespace qf::qmlwidgets::internal;
+using namespace qf::qmlwidgets::reports;
 
 PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *parent) :
 	Super(parent),

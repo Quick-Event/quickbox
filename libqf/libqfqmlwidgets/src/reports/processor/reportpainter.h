@@ -1,0 +1,239 @@
+
+//
+// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+
+#ifndef QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
+#define QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
+
+#include "reportprocessor.h"
+#include "reportitem.h"
+//#include "../../qmlwidgetsglobal.h"
+
+#include <qf/core/exception.h>
+#include <qf/core/utils/treeitembase.h>
+
+#include <QObject>
+#include <QPrinter>
+
+namespace qf {
+namespace qmlwidgets {
+namespace reports {
+
+class ReportPainter;
+
+//! Base trida objektu, ktere vzniknou prekladem reportu.
+class ReportItemMetaPaint : public qf::core::utils::TreeItemBase
+{
+private:
+	typedef qf::core::utils::TreeItemBase Super;
+public:
+	enum PaintMode {PaintBorder=1, PaintFill=2, PaintAll=3};
+	//! string v reportu, ktery se vymeni za celkovy pocet stranek v reportu.
+	static const QString pageCountReportSubstitution;
+	static const QRegExp checkReportSubstitutionRegExp;
+	static const QString checkReportSubstitution;
+	//static const QString checkOffReportSubstitution;
+	typedef qf::qmlwidgets::graphics::Rect Rect;
+	typedef qf::qmlwidgets::graphics::Size Size;
+	typedef qf::qmlwidgets::graphics::Point Point;
+	class LayoutSetting : public QMap<int, QVariant>
+	{
+	public:
+		enum {HInset, VInset, Layout, Alignment
+		,SuppressPrintOut///<  frame a jeho deti se objevi pouze v nahledu
+		,FillVLayoutRatio
+		};
+	};
+public:
+	ReportProcessorItem::Rect renderedRect; ///< rozmery v mm
+	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
+	//QFTreeItemPath f_reportItemPath;
+	//ReportProcessor *f_reportProcessor;
+	ReportProcessorContext f_procesorContext;
+
+	ReportProcessorItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
+	LayoutSetting f_layoutSettings;
+public:
+	//ReportProcessor* reportProcessor();
+	const ReportProcessorContext& context() {return f_procesorContext;}
+	ReportProcessorItem* reportItem();
+	//const LayoutSetting& layoutSettings() {return f_layoutSettings;}
+	void setInset(qreal horizontal, qreal vertical);
+	qreal insetHorizontal() {return f_layoutSettings.value(LayoutSetting::HInset).toDouble();}
+	qreal insetVertical() {return f_layoutSettings.value(LayoutSetting::VInset).toDouble();}
+	qf::qmlwidgets::graphics::Layout layout() const {return (qf::qmlwidgets::graphics::Layout)f_layoutSettings.value(LayoutSetting::Layout, qf::qmlwidgets::graphics::LayoutVertical).toInt();}
+	void setLayout(qf::qmlwidgets::graphics::Layout ly) {if(layout() != ly) f_layoutSettings[LayoutSetting::Layout] = ly;}
+	Qt::Alignment alignment() const {return (Qt::Alignment)f_layoutSettings.value(LayoutSetting::Alignment, (int)(Qt::AlignLeft | Qt::AlignTop)).toInt();}
+	void setAlignment(Qt::Alignment al) {if(alignment() != al) f_layoutSettings[LayoutSetting::Alignment] = (int)al;}
+	bool isSuppressPrintOut() {return f_layoutSettings.value(LayoutSetting::SuppressPrintOut).toBool();}
+	void setSuppressPrintOut(bool b) {if(isSuppressPrintOut() != b) f_layoutSettings[LayoutSetting::SuppressPrintOut] = b;}
+	double fillVLayoutRatio() {return f_layoutSettings.value(LayoutSetting::FillVLayoutRatio, -1).toDouble();}
+	void setFillVLayoutRatio(double d) {if(fillVLayoutRatio() != d) f_layoutSettings[LayoutSetting::FillVLayoutRatio] = d;}
+
+	static qf::qmlwidgets::graphics::Layout orthogonalLayout(qf::qmlwidgets::graphics::Layout l) {
+		if(l == qf::qmlwidgets::graphics::LayoutHorizontal) return qf::qmlwidgets::graphics::LayoutVertical;
+		if(l == qf::qmlwidgets::graphics::LayoutVertical) return qf::qmlwidgets::graphics::LayoutHorizontal;
+		return qf::qmlwidgets::graphics::LayoutInvalid;
+	}
+	qf::qmlwidgets::graphics::Layout orthogonalLayout() const {return orthogonalLayout(layout());}
+protected:
+public:
+	void setRenderedRectRect(const QRectF &new_size) {renderedRect = new_size;}
+
+	virtual ReportItemMetaPaint* parent() const {return dynamic_cast<ReportItemMetaPaint*>(qf::core::utils::TreeItemBase::parent());}
+	virtual ReportItemMetaPaint* child(int ix) const;
+	virtual ReportItemMetaPaint* firstChild() const {
+		if(childrenCount()) return child(0);
+		return NULL;
+	}
+	virtual ReportItemMetaPaint* lastChild() const {
+		if(childrenCount()) return child(childrenCount()-1);
+		return NULL;
+	}
+
+	virtual void paint(ReportPainter *painter, unsigned mode);
+	void shift(const ReportProcessorItem::Point offset)
+	{
+		renderedRect.translate(offset);
+		shiftChildren(offset);
+	}
+	void shiftChildren(const ReportProcessorItem::Point offset);
+
+	void alignChildren();
+
+	/// popis funkce popsan u atributu expandChildrenFrames v Report.rnc
+	void expandChildrenFramesRecursively();
+	/// rekurzivne projde vsechny deti natahovaci ve smeru vertikalnim a nastavi jim rozmer podle sve velikosti
+	bool expandChildVerticalSpringFrames();
+	bool hasSpringChildrenFramesInVerticalLayout();
+
+	virtual bool isPointInside(const QPointF &p) {
+		return (renderedRect.left() <= p.x() && renderedRect.right() >= p.x()
+		&& renderedRect.top() <= p.y() && renderedRect.bottom() >= p.y());
+	}
+
+	virtual bool isExpandable() const {return true;}
+
+	virtual QString dump(int indent = 0);
+public:
+	ReportItemMetaPaint();
+	//! parametr \a processor v konstruktoru slouzi jenom kvuli scriptovanym atributum elementu, pouzije se jen v konstruktoru, ukazatel na nej se nikde neuklada.
+	ReportItemMetaPaint(ReportItemMetaPaint *parent, ReportProcessorItem *report_item);
+	virtual ~ReportItemMetaPaint();
+};
+
+//! TODO documentation
+class ReportItemMetaPaintReport : public ReportItemMetaPaint
+{
+protected:
+	//ReportProcessor *f_reportProcessor;
+public:
+	QPrinter::Orientation orientation;
+	QSize pageSize;
+	//virtual ReportProcessor* reportProcessor() {return f_reportProcessor;}
+public:
+	ReportItemMetaPaintReport(ReportProcessorItem *report_item);
+};
+
+//! TODO documentation
+class ReportItemMetaPaintFrame : public ReportItemMetaPaint
+{
+public:
+	enum LinePos {LBrd = 1, RBrd, TBrd, BBrd};
+public:
+	QVariant alternativeFillDef; ///< napr. {grid:{w:5,h:5,pen:|dblue05|}}, format je JSON jenom misto " je | , protoze uvozovka ani apostrof nemuze byt hodnota XML atributu
+	QBrush fill;
+	QPen lbrd, rbrd, tbrd, bbrd;
+protected:
+	virtual void fillItem(QPainter *painter, bool selected = false);
+	virtual void frameItem(QPainter *painter, bool selected = false);
+	void drawLine(QPainter *painter, LinePos where, const QPen &pen);
+public:
+	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
+public:
+	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportProcessorItem *report_item);
+	virtual ~ReportItemMetaPaintFrame() {}
+};
+//! TODO documentation
+class ReportItemMetaPaintText : public ReportItemMetaPaint
+{
+public:
+	QString text;
+	QFont font;
+	QPen pen; ///< barva vyplne pismen
+	//bool renderCheck;
+	//QBrush brush;
+	QString sqlId;
+	QTextOption textOption;
+	QString editGrants;
+public:
+	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
+	virtual bool isPointInside(const QPointF &p) {Q_UNUSED(p); return false;}
+
+	//void setAlignment(const Qt::Alignment &al) { alignmentFlags = al;}
+
+	virtual QString dump(int indent = 0);
+public:
+	ReportItemMetaPaintText(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
+	: ReportItemMetaPaint(parent, report_item) {}
+	virtual ~ReportItemMetaPaintText() {}
+};
+
+//! TODO documentation
+class ReportItemMetaPaintCheck : public ReportItemMetaPaintText
+{
+public:
+	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
+	virtual bool isExpandable() const {return false;}
+public:
+	ReportItemMetaPaintCheck(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
+	: ReportItemMetaPaintText(parent, report_item) {}
+	//virtual ~ReportItemMetaPaintCheck() {}
+};
+
+//! TODO documentation
+class ReportItemMetaPaintImage : public ReportItemMetaPaint
+{
+public:
+	ReportProcessorItem::Image image;
+	Qt::AspectRatioMode aspectRatioMode;
+	//bool resize;
+public:
+	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
+	virtual bool isPointInside(const QPointF &p) {Q_UNUSED(p); return false;}
+
+	virtual QString dump(int indent = 0);
+public:
+	ReportItemMetaPaintImage(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
+	: ReportItemMetaPaint(parent, report_item), aspectRatioMode(Qt::IgnoreAspectRatio)/*, resize(true)*/ {}
+	//virtual ReportItemMetaPaintImage() {}
+};
+
+//! TODO: write class documentation.
+class  ReportPainter : public QPainter
+{
+public:
+	ReportPainter(QPaintDevice *device);
+	virtual ~ReportPainter();
+public:
+	ReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
+	void setSelectedItem(ReportItemMetaPaint *it) {f_selectedItem = it;}
+	virtual void drawMetaPaint(ReportItemMetaPaint *item);
+	//virtual void paintPage();
+	bool isMarkEditableSqlText() const {return m_markEditableSqlText;}
+	void setMarkEditableSqlText(bool b) {m_markEditableSqlText = b;}
+public:
+	/// field umoznujici zobrazit pocet stranek reportu, jinak to asi nejde, behem kompilace nevim, kolik jich nakonec bude.
+	int pageCount;
+protected:
+	ReportItemMetaPaint *f_selectedItem;
+	bool m_markEditableSqlText;
+};
+
+}}}
+
+#endif // QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
+

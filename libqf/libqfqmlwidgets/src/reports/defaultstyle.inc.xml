@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="windows-1250"?>
+<doc>
+   <colors>
+		<color name="black" definition="#000"/>
+		<color name="gray20" definition="#CDCDCD"/>
+		<color name="white" definition="#FFFFFF"/>
+		<color name="honey" definition="RGB(255,244,148)"/>
+		<color name="peach" definition="RGB(255,223,83)"/>
+   </colors>
+   <pens>
+		<pen name="black1"/>
+		<pen name="blue3" basedon="black1" size="3"/>
+		<pen name="blue1" basedon="black1" color="blue"/>
+		<pen name="bluedash1" basedon="blue1" style="dash"/>
+   </pens>
+   <brushes>
+		<brush name="white" color="white"/>
+		<brush name="gray20" color="gray20"/>
+   </brushes>
+   <fonts>
+      <font name="sans" familyhint="sansserif" size="9"/>
+      <font name="sansB" basedon="sans" weight="bold"/>
+      <font name="sansL" basedon="sans" size="14"/>
+      <font name="sansLB" basedon="sansL" weight="bold"/>
+      <font name="sansXL" basedon="sans" size="20"/>
+      <font name="sansXXL" basedon="sans" size="28"/>
+      <font name="sansS" basedon="sans" size="7"/>
+      <font name="sansSI" basedon="sansS" style="italic"/>
+      <font name="sansSB" basedon="sansS" weight="bold"/>
+      <font name="monospace" family="typewriter" size="9"/>
+      <font name="serif" familyhint="serif" size="9"/>
+      <font name="tbltext" basedon="sans"/>
+      <font name="tbltextB" basedon="tbltext" weight="bold"/>
+      <font name="tblhead" basedon="tbltext" weight="bold"/>
+      <font name="tblbig" basedon="sansf" size="18"/>
+      <font name="tblbigB" basedon="tblbig" weight="bold"/>
+      <font name="header" basedon="sans" size="8"/>
+      <font name="note" basedon="sansS"/>
+      <font name="repHeading" basedon="sansXL" weight="bold"/>
+   </fonts>
+   <styles>
+		<style name="default"/>
+		<style name="header" font="header" brush="color: blue"/>
+   </styles>
+</doc>

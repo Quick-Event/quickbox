@@ -9,3 +9,6 @@ SOURCES += \
 FORMS += \
     $$PWD/printtableviewwidget.ui \
 	$$PWD/tableviewchoosecolumnswidget.ui \
+
+RESOURCES += \
+    $$PWD/printtableviewwidget.qrc \

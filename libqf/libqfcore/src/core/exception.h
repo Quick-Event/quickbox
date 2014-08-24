@@ -31,6 +31,8 @@ namespace core {
 //---------------------------------------------------------------------
 class QFCORE_DECL_EXPORT Exception : public std::exception
 {
+    public:
+	    static const bool Throw = true;
 	protected:
 		QString m_type;
 		QString m_msg;

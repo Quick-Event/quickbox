@@ -1,0 +1,36 @@
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+include "qfreportkeyvals.rnc"
+
+start = databand
+
+databand = element databand {
+	element cols {col+}?,
+	element rows {row+}?,
+	element keyvals {keyval*}?
+}
+
+col = element col {
+	attribute name {text},
+	attribute caption {text},
+	[ a:defaultValue = "text" ] attribute datatype {
+		"text" |
+		"int" |
+		"double" |
+		"date" |
+		"time" |
+		"image" |
+		"picture"
+	}?
+}
+
+row = element row {
+	row_data,  
+	keyvals?
+}
+ 
+## CDATA obsahujici informaci o typu a hodnote dat ve vsech cols pro tento radek
+## jsou to data  ve formatu CSV
+##narozdil od serialized_data neobsahuji informaci o typu, ta je v cols
+## napr 2006-05-02 nebo 12
+row_data = text

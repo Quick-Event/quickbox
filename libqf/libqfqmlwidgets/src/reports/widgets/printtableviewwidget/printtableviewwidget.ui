@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>qf::qmlwidgets::internal::PrintTableViewWidget</class>
- <widget class="QWidget" name="qf::qmlwidgets::internal::PrintTableViewWidget">
+ <class>qf::qmlwidgets::reports::PrintTableViewWidget</class>
+ <widget class="QWidget" name="qf::qmlwidgets::reports::PrintTableViewWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
