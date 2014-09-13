@@ -1,6 +1,6 @@
 #include "printtableviewwidget.h"
 #include "ui_printtableviewwidget.h"
-#include "../tableview.h"
+#include "../../../tableview.h"
 
 namespace qfc = qf::core;
 

@@ -1,15 +1,15 @@
-HEADERS +=                               \
-	$$PWD/reportviewwidget.h              \
-	$$PWD/itemvalueeditorwidget.h  \
+#HEADERS +=                               \
+#	$$PWD/reportviewwidget.h              \
+#	$$PWD/itemvalueeditorwidget.h  \
 
-SOURCES +=                               \
-	$$PWD/reportviewwidget.cpp              \
-	$$PWD/itemvalueeditorwidget.cpp  \
+#SOURCES +=                               \
+#	$$PWD/reportviewwidget.cpp              \
+#	$$PWD/itemvalueeditorwidget.cpp  \
 
-FORMS +=      \
-	$$PWD/itemvalueeditorwidget.ui   \
+#FORMS +=      \
+#	$$PWD/itemvalueeditorwidget.ui   \
 
-RESOURCES +=                         \
-	$$PWD/reportviewwidget.qrc
+#RESOURCES +=                         \
+#	$$PWD/reportviewwidget.qrc
 
 include($$PWD/printtableviewwidget/printtableviewwidget.pri)
