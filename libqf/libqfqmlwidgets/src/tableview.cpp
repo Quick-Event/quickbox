@@ -6,7 +6,7 @@
 #include "dialogs/dialog.h"
 #include "dialogbuttonbox.h"
 
-#include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
+//#include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
 
 #include <qf/core/string.h>
 #include <qf/core/collator.h>
@@ -246,6 +246,7 @@ void TableView::revertRow(int row_no)
 void TableView::exportReport()
 {
 	qfLogFuncFrame();
+#if 0
 	reports::PrintTableViewWidget *w = new reports::PrintTableViewWidget(this);
 	if(!persistentSettingsPath().isEmpty()) {
 		w->setPersistentOptionsPath(persistentSettingsPath() + "/exportReport");
@@ -261,10 +262,12 @@ void TableView::exportReport()
 	dlg.loadPersistentSettingsRecursively();
 	connect(w, &reports::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
 	dlg.exec();
+#endif
 }
 
 void TableView::exportReport_helper(const QVariant& _options)
 {
+#if 0
 	//qfInfo() << "exportReport_helper";
 	try {
 		QVariantMap options = _options.toMap();
@@ -325,6 +328,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 	catch(qf::core::Exception &e) {
 		dialogs::MessageBox::showException(this, e);
 	}
+#endif
 }
 
 void TableView::updateRow(int row)

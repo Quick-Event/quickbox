@@ -11,8 +11,9 @@
 
 int main(int argc, char* argv[])
 {
-	QScopedPointer<qf::core::LogDevice> log_device(qf::core::FileLogDevice::install(argc, argv));
-	log_device->setPrettyDomain(true);
+	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
+	file_log_device->setDomainTresholds(argc, argv);
+	file_log_device->setPrettyDomain(true);
 
 	qfError() << QThread::currentThread() << "QFLog(ERROR) test OK.";
 	qfWarning() << "QFLog(WARNING) test OK.";
