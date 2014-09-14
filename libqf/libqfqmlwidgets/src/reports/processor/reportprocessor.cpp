@@ -1,6 +1,7 @@
 #include "reportitem.h"
 #include "reportprocessor.h"
 #include "reportpainter.h"
+#include "../../framework/application.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
@@ -368,6 +369,20 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 		el1 = fixLayoutHtml(el1);
 	}
 	return el;
+}
+
+QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
+{
+	QQmlEngine *ret = nullptr;
+	qf::qmlwidgets::framework::Application *app = qobject_cast<qf::qmlwidgets::framework::Application*>(QCoreApplication::instance());
+	if(throw_exc)
+		QF_ASSERT_EX(app != nullptr, "Application is not a type of qf::qmlwidgets::framework::Application");
+	if(app) {
+		ret = app->qmlEngine();
+		if(throw_exc)
+			QF_ASSERT_EX(ret != nullptr, "Application has not QML engine created.");
+	}
+	return ret;
 }
 
 void ReportProcessor::dump()

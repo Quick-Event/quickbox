@@ -8,6 +8,7 @@
 #include "reportpainter.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QJsonDocument>
 
@@ -348,7 +349,7 @@ ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportProcessorItem *report
 }
 
 //=================================================
-//                              ReportItemMetaPaintFrame
+//           ReportItemMetaPaintFrame
 //=================================================
 ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent, ReportProcessorItem *report_item)
 : ReportItemMetaPaint(_parent, report_item), lbrd(Qt::NoPen), rbrd(Qt::NoPen), tbrd(Qt::NoPen), bbrd(Qt::NoPen)
@@ -369,16 +370,16 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 		lbrd = rbrd = tbrd = bbrd = context().styleCache().pen(s);
 	}
 	s = report_item->elementAttribute("lbrd");
-	if(!s.isEmpty()) {
+	if(!s.isEmpty())
 		lbrd = context().styleCache().pen(s);
 	s = report_item->elementAttribute("rbrd");
-	if(!s.isEmpty()) {
+	if(!s.isEmpty())
 		rbrd = context().styleCache().pen(s);
 	s = report_item->elementAttribute("tbrd");
-	if(!s.isEmpty()) {
+	if(!s.isEmpty())
 		tbrd = context().styleCache().pen(s);
 	s = report_item->elementAttribute("bbrd");
-	if(!s.isEmpty()) {
+	if(!s.isEmpty())
 		bbrd = context().styleCache().pen(s);
 	//qfDebug() << "\tRETURN";
 }

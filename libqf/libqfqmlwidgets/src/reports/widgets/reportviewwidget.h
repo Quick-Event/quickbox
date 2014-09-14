@@ -31,6 +31,7 @@ class QPrinter;
 
 namespace qf {
 namespace qmlwidgets {
+class Action;
 namespace reports {
 
 //! TODO: write class documentation.
@@ -45,11 +46,10 @@ protected:
 	PainterWidget *f_painterWidget;
 	ScrollArea *f_scrollArea;
 
-	QFAction::ActionList f_actionList;
-	QFUiBuilder *f_uiBuilder;
+	//QFAction::ActionList f_actionList;
+	//QFUiBuilder *f_uiBuilder;
 
-	//QFReportItemMetaPaint *fDocument;
-	QFTreeTable fData;
+	qf::core::utils::TreeTable fData;
 	int fCurrentPageNo;
 	qreal f_scale;
 
@@ -66,7 +66,7 @@ protected:
 
 	QFStatusBar *f_statusBar;
 private:
-	void selectElement_helper(QFReportItemMetaPaint *it, const QFDomElement &el);
+	//void selectElement_helper(QFReportItemMetaPaint *it, const QFDomElement &el);
 	void selectItem(const QPointF &p);
 	bool selectItem_helper(QFReportItemMetaPaint *it, const QPointF &p);
 protected:
@@ -83,15 +83,13 @@ protected:
 
 	virtual void attachPrintout() {}
 
-	void print() throw(QFException);
-	void exportPdf(const QString &file_name) throw(QFException);
-	QString exportHtml() throw(QFException);
+	void print();
+	void exportPdf(const QString &file_name);
+	QString exportHtml();
 
 	QFDataTranslator* dataTranslator() const;
 signals:
-	//! pokud je report vytisknut nepo exportovan do PDF
-	//void reportPrinted();
-	void elementSelected(const QFDomElement &el);
+	//void elementSelected(const QFDomElement &el);
 	void sqlValueEdited(const QString &sql_id, const QVariant &val);
 protected slots:
 	void edCurrentPageEdited();
@@ -102,15 +100,13 @@ protected slots:
 public:
 	enum PageScrollPosition {ScrollToPageTop, ScrollToPageEnd};
 public slots:
-	void print(QPrinter *printer) throw(QFException); /// slot ktery potrebuje print preview
+	void print(QPrinter *printer); /// slot ktery potrebuje print preview
 	/// prerendruje report
 	void render();
 	//! Zacne prekladat report a jak pribyvaji stranky, zobrazuji se ve view, nemuzu pro to pouzit specialni thread,
 	//! protoze QFont musi byt pouzivan v GUI threadu, tak prekladam stranku po strance pomoci QTimer::singleShot()
 	void processReport();
-	void selectElement(const QFDomElement &el);
-
-	//void printOnDefaultPrinter() throw(QFException);
+	//void selectElement(const QFDomElement &el);
 
 	virtual void file_print();
 	virtual void file_printPreview();
@@ -139,21 +135,10 @@ public:
 
 	virtual void setVisible(bool visible);
 
-	///=================== INTERFACE ================
-	virtual QFPart::ToolBarList createToolBars();
-	//virtual bool hasMenubar() {return true;}
-	virtual void updateMenuOrBar(QWidget *menu_or_menubar) {f_uiBuilder->updateMenuOrBar(menu_or_menubar);}
-	///===============================================
-
-	QFReportItemMetaPaintReport* document(bool throw_exc = Qf::ThrowExc) throw(QFException);
-	// widget does not take the ownership of the document \a doc .
-	//void setDocument(QFReportItemMetaPaint* doc);
-	const QFDomDocument& data() const;
-	void setData(const QFDomDocument &_data);
-	void setData(const QFSValue &_data) {fData = _data;}
+	QFReportItemMetaPaintReport* document(bool throw_exc = true);
+	void setData(const qf::core::utils::TreeTable &data) {fData = data;}
 	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
 	void setReport(const QString &file_name);
-	void setReport(const QFDomDocument &doc);
 
 	/// stranky se pocitaji od 0
 	int currentPageNo() const {return fCurrentPageNo;}
@@ -167,38 +152,33 @@ public:
 	qreal scale() const {return f_scale;}
 	void setScale(qreal _scale);
 
-	QFAction* action(const QString &name, bool throw_exc = Qf::ThrowExc) throw(QFException)
-	{
-		return QFUiBuilder::findAction(f_actionList, name, throw_exc);
-	}
+	qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
 
 	QFReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
-	//const QList<QFToolBar*>& toolBars() {return fToolBarList;}
 	virtual void prePrint() {}
-	void print(QPrinter &printer, const QVariantMap &options = QVariantMap()) throw(QFException);
+	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
 public:
-	QFReportViewWidget(QWidget *parent = NULL);
-	virtual ~QFReportViewWidget();
+	ReportViewWidget(QWidget *parent = NULL);
+	~ReportViewWidget() Q_DECL_OVERRIDE;
 };
 
-class QFReportViewWidget::PainterWidget : public QWidget
+class ReportViewWidget::PainterWidget : public QWidget
 {
 	Q_OBJECT
 protected:
 	virtual void mousePressEvent(QMouseEvent *e);
 	virtual void wheelEvent(QWheelEvent *event);
 	virtual void paintEvent(QPaintEvent *event);
-	QFReportViewWidget* reportViewWidget();
+	ReportViewWidget* reportViewWidget();
 	/// screen dots per mm
 signals:
-	//void zoomOnWheel(int delta, const QPoint &pos);
-	void sqlValueEdited(const QString &sql_id, const QVariant &val);
+	//void sqlValueEdited(const QString &sql_id, const QVariant &val);
 public:
 	PainterWidget(QWidget *parent);
 	virtual ~PainterWidget() {}
 };
 
-class QFReportViewWidget::ScrollArea : public QScrollArea
+class ReportViewWidget::ScrollArea : public QScrollArea
 {
 	Q_OBJECT
 protected:

@@ -278,7 +278,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 		//qfTrash() << "with ahoj:" << ttable.toString();
 
 		{
-			qfu::TreeTable xt;// = QFXmlTable(xdoc, "report");
+			qfu::TreeTable xt;
 			xt.setName("report");
 			bool report_banner = false;
 			QString report_title = opts.value("report").toMap().value("title").toString();

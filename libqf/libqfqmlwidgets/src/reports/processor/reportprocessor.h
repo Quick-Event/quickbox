@@ -14,7 +14,7 @@
 #include "reportprocessorcontext.h"
 
 #include <qf/core/utils/treetable.h>
-#include <qf/core/utils/searchdirs.h>
+//#include <qf/core/utils/searchdirs.h>
 #include <qf/core/assert.h>
 
 #include <QObject>
@@ -23,8 +23,8 @@
 #include <QPainter>
 #include <QPointer>
 
-class QFDataTranslator;
 class QPrinter;
+class QQmlEngine;
 
 namespace qf {
 namespace qmlwidgets {
@@ -50,7 +50,6 @@ protected:
 	//void readStyleSheet(const QDomElement &el_stylesheet);
 public:
 	const ReportProcessorContext& context() const {return f_Context;}
-	QFDataTranslator* dataTranslator() const;
 public:
 	/// vymaze vsechna data vznikla predchozimi kompilacemi
 	void reset();
@@ -130,6 +129,8 @@ public slots:
 	//! prelozi dalsi stranku reportu (takhle delam multithreading, protoze QFont musi bezet v GUI threadu)
 	void processSinglePage() {process(SinglePage);}
 protected:
+	QQmlEngine* qmlEngine(bool throw_exc = true);
+private:
 	ReportProcessorContext f_Context;
 
 	ImageMap fImageMap;
