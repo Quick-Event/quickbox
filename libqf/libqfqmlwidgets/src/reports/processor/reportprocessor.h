@@ -43,7 +43,7 @@ public:
 	enum ProcessorMode {SinglePage = 1, FirstPage, AllPages};
 	typedef QMap<QString, ReportProcessorItem::Image> ImageMap;
 public:
-	ReportProcessor(QPaintDevice *paint_device, qf::core::utils::SearchDirs *search_dirs, QObject *parent = NULL);
+	ReportProcessor(QPaintDevice *paint_device, QObject *parent = NULL);
 	~ReportProcessor() Q_DECL_OVERRIDE;
 protected:
 	void makeContext();
@@ -53,11 +53,10 @@ public:
 public:
 	/// vymaze vsechna data vznikla predchozimi kompilacemi
 	void reset();
-	//virtual void paintReport(const QString &rep_file_name, const QString &dat_file_name, Options options = Options());
-	void setReport(const ReportDocument &doc);
+	//--void setReport(const ReportDocument &doc);
 	void setReport(const QString &rep_file_name);
-	ReportDocument report() {return fReport;}
-	ReportDocument& reportRef() {return fReport;}
+	//--ReportDocument report() {return fReport;}
+	//--ReportDocument& reportRef() {return fReport;}
 	void setData(const qf::core::utils::TreeTable &_data);
 	const qf::core::utils::TreeTable& data() const {return f_data;}
 
@@ -96,9 +95,9 @@ public:
 		/// oddelovac je kvuli windows "::"
 		static void setSearchDirs(const QString &s) {f_searchDirs.setDirs(s);}
 		*/
-	qf::core::utils::SearchDirs* searchDirs(bool throw_exc = true);
+	//--qf::core::utils::SearchDirs* searchDirs(bool throw_exc = true);
 	/// does not take ownership os \a sd
-	void setSearchDirs(qf::core::utils::SearchDirs *sd) {f_searchDirs = sd;}
+	//--void setSearchDirs(qf::core::utils::SearchDirs *sd) {f_searchDirs = sd;}
 protected:
 	virtual ReportProcessorItem::PrintResult processPage(ReportItemMetaPaint *out);
 	/// return NULL if such a page does not exist.
@@ -110,7 +109,7 @@ public:
 	int pageCount();
 
 	ReportItemMetaPaintReport* processorOutput() {return f_processorOutput;}
-	ReportProcessorItem *processedItemsRoot();
+	ReportItemReport* documentInstanceRoot();
 public:
 	/// vlozi do el_body report ve formatu HTML
 	virtual void processHtml(QDomElement &el_body);
@@ -135,16 +134,18 @@ private:
 
 	ImageMap fImageMap;
 
-	ReportDocument fReport;
+	QQmlEngine *m_qmlEngine;
+	ReportDocument *m_reportDocumentComponent;
 	qf::core::utils::TreeTable f_data;
 	QPaintDevice *fPaintDevice;
 	//! pri prekladu xml reporu vznika strom odpovidajicich ReportProcessorItem objektu a toto je jejich root.
-	ReportProcessorItem *f_processedItemsRoot;
+	ReportItemReport *m_documentInstanceRoot;
+	//ReportProcessorItem *f_processedItemsRoot;
 	//! pri ReportProcessorItem objekty generuji pomoci metody \a printMetaPaint() objekty ReportItemMetaPaint a toto je jejich root.
 	ReportItemMetaPaintReport *f_processorOutput;
 
 	int fProcessedPageNo;
-	qf::core::utils::SearchDirs *f_searchDirs;
+	//--qf::core::utils::SearchDirs *f_searchDirs;
 	ReportProcessorItem::PrintResult singlePageProcessResult;
 
 	//! v design view je detail zobrazen, i kdyz nejsou data, aby bylo neco videt.

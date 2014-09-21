@@ -243,7 +243,7 @@ void ReportItemMetaPaint::alignChildren()
 {
 	qfLogFuncFrame();
 	Rect dirty_rect = renderedRect.adjusted(insetHorizontal(), insetVertical(), -insetHorizontal(), -insetVertical());
-	qfDebug() << "\t TAG:" << reportItem()->element.tagName();
+	//qfDebug() << "\t TAG:" << reportItem()->element.tagName();
 	qfDebug() << "\t dirty_rect:" << dirty_rect.toString();
 	qfDebug() << "\t alignment:" << alignment();
 	qfDebug() << "\t layout:" << layout();

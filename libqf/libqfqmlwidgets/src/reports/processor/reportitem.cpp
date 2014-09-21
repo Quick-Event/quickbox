@@ -27,25 +27,25 @@ namespace qfc = qf::core;
 using namespace qf::qmlwidgets::reports;
 
 //==========================================================
-//                                    ReportProcessorItem
+//           ReportProcessorItem
 //==========================================================
 const double ReportProcessorItem::Epsilon = 1e-10;
 const QString ReportProcessorItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE = "$INFO";
 
-ReportProcessorItem::ReportProcessorItem(ReportProcessor *proc, ReportProcessorItem *_parent, const QDomElement &el)
-	: Super(_parent), processor(proc), element(el)//, recentPrintResult(PrintNotPrintedYet)
+ReportProcessorItem::ReportProcessorItem(ReportProcessorItem *_parent)
+	: Super(_parent) //--, processor(proc), element(el)
 {
-	QF_ASSERT_EX(processor != nullptr, "Processor can not be NULL.");
+	//QF_ASSERT_EX(processor != nullptr, "Processor can not be NULL.");
 	recentlyPrintNotFit = false;
-	keepAll = qfc::String(element.attribute("keepall")).toBool();
+	//--keepAll = qfc::String(element.attribute("keepall")).toBool();
 	//if(keepAll) { qfInfo() << "KEEP ALL is true" << element.attribute("keepall"); }
 }
 
 ReportProcessorItem::~ReportProcessorItem()
 {
-	qfDebug() << QF_FUNC_NAME << "##################" << element.tagName();
+	//qfDebug() << QF_FUNC_NAME << "##################" << element.tagName();
 }
-
+/*--
 bool ReportProcessorItem::childrenSynced()
 {
 	qfDebug() << QF_FUNC_NAME<< element.tagName() << "children count:" << children().count();
@@ -82,20 +82,6 @@ bool ReportProcessorItem::childrenSynced()
 void ReportProcessorItem::deleteChildren()
 {
 	clearChildren();
-}
-
-QDomText &ReportProcessorItem::setElementText(QDomElement &el, const QString &str)
-{
-	QDomNode nd = el.firstChild();
-	QDomText eltxt = nd.toText();
-	if(eltxt.isNull()) {
-		eltxt = el.ownerDocument().createTextNode(str);
-		insertBefore(eltxt, nd);
-	}
-	else {
-		eltxt.setData(str);
-	}
-	return eltxt;
 }
 
 void ReportProcessorItem::syncChildren()
@@ -143,7 +129,7 @@ QString ReportProcessorItem::elementAttribute(const QString & attr_name, const Q
 	}
 	return ret;
 }
-
+--*/
 bool ReportProcessorItem::isVisible()
 {
 	bool is_visible = processor->isDesignMode() || QFString(elementAttribute("visible", "1")).toBool();
@@ -217,7 +203,7 @@ QVariant ReportProcessorItem::concatenateNodeChildrenValues(const QDomNode & nd)
 	}
 	return ret;
 }
-
+/*--
 QString ReportProcessorItem::nodeText(const QDomNode &nd)
 {
 	QVariant node_value = nodeValue(nd);
@@ -501,7 +487,7 @@ QVariant ReportProcessorItem::nodeValue(const QDomNode &nd)
 	}
 	return ret;
 }
-
+--*/
 QVariant ReportProcessorItem::value(const QString &data_src, const QString & domain, const QVariantList &params, const QVariant &default_value, bool sql_match)
 {
 	//qfInfo() << "data_src:" << data_src << "domain:" << domain;
@@ -665,7 +651,7 @@ QString ReportProcessorItem::toString(int indent, int indent_offset)
 //==========================================================
 //                                    ReportItemBreak
 //==========================================================
-ReportItemBreak::ReportItemBreak(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &_el)
+ReportItemBreak::ReportItemBreak(ReportProcessorItem *parent)
 	: ReportProcessorItem(proc, parent, _el)
 {
 	/// attribut type (page | column) zatim nedela nic
@@ -690,7 +676,7 @@ ReportProcessorItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaP
 //==========================================================
 //                                    ReportItemFrame
 //==========================================================
-ReportItemFrame::ReportItemFrame(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el)
+ReportItemFrame::ReportItemFrame(ReportProcessorItem *parent)
 	: ReportProcessorItem(proc, parent, el)
 {
 	indexToPrint = 0;
@@ -1427,10 +1413,10 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 //==========================================================
 //                                    ReportItemReport
 //==========================================================
-ReportItemReport::ReportItemReport(ReportProcessor *proc, const QDomElement &_el)
-	: ReportItemBand(proc, NULL, _el)
+ReportItemReport::ReportItemReport(QObject *parent)
+	: ReportItemBand(parent, NULL, _el)
 {
-	QF_ASSERT(proc, "processor is NULL");
+	QF_ASSERT(parent, "processor is NULL");
 	//Rect r = designedRect;
 	//QDomElement el = element.cloneNode(false).toElement();
 	//qfDebug() << "\toriginal:" << element.tagName() << "is null:" << element.isNull() << "has children:" << element.hasChildNodes() << "parent node is null:" << element.parentNode().isNull();
@@ -1443,7 +1429,7 @@ ReportItemReport::ReportItemReport(ReportProcessor *proc, const QDomElement &_el
 	designedRect.flags = (Rect::LeftFixed | Rect::TopFixed | Rect::RightFixed | Rect::BottomFixed);
 	//element.setAttribute("brd", "color: teal");
 	//element.setAttribute("fill", "color: white");
-	f_dataTable = proc->data();
+	f_dataTable = parent->data();
 	//qfInfo() << f_dataTable.toString();
 	dataTableLoaded = true;
 }

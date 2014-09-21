@@ -7,8 +7,10 @@
 #ifndef QF_QMLWIDGETS_REPORTS_REPORTITEM_H
 #define QF_QMLWIDGETS_REPORTS_REPORTITEM_H
 
+#include "../../qmlwidgetsglobal.h"
 #include "../../graphics/graphics.h"
 
+#include <qf/core/utils.h>
 #include <qf/core/utils/treetable.h>
 #include <qf/core/utils/treeitembase.h>
 
@@ -17,8 +19,9 @@
 #include <QRectF>
 #include <QTextLayout>
 #include <QPicture>
-#include <QDomElement>
-#include <QDomNode>
+
+class QDomElement;
+class QDomText;
 
 namespace qf {
 namespace qmlwidgets {
@@ -33,12 +36,17 @@ class ReportItemDetail;
 class ReportItemMetaPaintFrame;
 
 //! Base class of report elements.
-class  ReportProcessorItem : public qf::core::utils::TreeItemBase
+class QFQMLWIDGETS_DECL_EXPORT ReportProcessorItem : public QObject
 {
-	friend class ReportProcessorScriptDriver;
+	Q_OBJECT
+	Q_PROPERTY(bool keepAll READ keepAll WRITE setKeepAll NOTIFY keepAllChanged)
 private:
-	typedef qf::core::utils::TreeItemBase Super;
+	typedef QObject Super;
 public:
+	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
+	QF_PROPERTY_BOOL_IMPL(k, K, eepAll)
+public:
+	typedef QDomElement HTMLElement;
 	static const double Epsilon;
 	static const QString INFO_IF_NOT_FOUND_DEFAULT_VALUE;
 	//typedef qf::qmlwidgets::graphics::Layout Layout;
@@ -239,33 +247,29 @@ protected:
 	virtual ReportItemDetail* currentDetail();
 
 	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportProcessorItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
-	// vrati text slozeny z nodeTextu vsech deti
-	//QString nodeChildrenText(const QDomNode &nd) {return nodeChildrenValue().toString();}
 	/// poukud ma node jen jedno dite vrati to jeho hodnotu vcetne typu, pokud je deti vic, udela to z nich jeden string
-	QVariant concatenateNodeChildrenValues(const QDomNode &nd) ;
-	QString nodeText(const QDomNode &nd) ;
-	QVariant nodeValue(const QDomNode &nd) ;
+	//--QVariant concatenateNodeChildrenValues(const QDomNode &nd) ;
+	//--QString nodeText(const QDomNode &nd) ;
+	//--QVariant nodeValue(const QDomNode &nd) ;
 
 	//! Pokud byl predchozi result PrintNotFit a soucasny opet PrintNotFit, znamena to, ze se item uz nikdy nevejde,
 	//! zavedenim tohoto fieldu zabranim nekonecnemu odstrankovavani.
 	PrintResult checkPrintResult(PrintResult res);
-
+	/*--
 	void updateChildren() {
 		if(!childrenSynced()) { syncChildren(); }
 	}
 	virtual bool childrenSynced();
 	virtual void syncChildren();
+	--*/
 	void deleteChildren();
 
-	static QDomText& setElementText(QDomElement &el, const QString &str);
+	static QDomText setElementText(HTMLElement &el, const QString &str);
 public:
 	ReportProcessor *processor;
-	//Rect dirtyRect;
-	QDomElement element;
+	//--QDomElement element;
 	Rect designedRect;
 
-	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
-	bool keepAll;
 	bool recentlyPrintNotFit;
 	//PrintResult recentPrintResult;
 public:
@@ -279,7 +283,7 @@ public:
 	//! Print item in form, that understandable by ReportPainter.
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) = 0;
 	//! Print item in HTML element form.
-	virtual PrintResult printHtml(QDomElement &out) {Q_UNUSED(out); return PrintOk;}
+	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PrintOk;}
 	/// vrati definovanou velikost pro item a layout
 	virtual ChildSize childSize(qf::qmlwidgets::graphics::Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize();}
 
@@ -296,19 +300,22 @@ public:
 	virtual QString toString(int indent = 2, int indent_offset = 0);
 
 	ReportItemMetaPaint* createMetaPaintItem(ReportItemMetaPaint *parent);
-
+	/*--
 	virtual ReportProcessorItem* cd(const qf::core::utils::TreeItemPath &path) const {
 		return dynamic_cast<ReportProcessorItem*>(Super::cd(path));
 	}
+	--*/
 public:
-	ReportProcessorItem(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportProcessorItem(ReportProcessorItem *parent);
 	virtual ~ReportProcessorItem();
 };
 
 //! TODO: write class documentation.
-class ReportItemBreak : public ReportProcessorItem
+class QFQMLWIDGETS_DECL_EXPORT ReportItemBreak : public ReportProcessorItem
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportProcessorItem Super;
 protected:
 	bool breaking;
 public:
@@ -317,13 +324,15 @@ public:
 	virtual ChildSize childSize(qf::qmlwidgets::graphics::Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize(0, Rect::UnitInvalid);}
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 public:
-	ReportItemBreak(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportItemBreak(ReportProcessorItem *parent);
 };
 
 //! TODO: write class documentation.
-class ReportItemFrame : public ReportProcessorItem
+class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportProcessorItem
 {
-protected:
+	Q_OBJECT
+private:
+	typedef ReportProcessorItem Super;
 public:
 	bool isRubber(qf::qmlwidgets::graphics::Layout ly) {
 		ChildSize sz = childSize(ly);
@@ -370,38 +379,23 @@ protected:
 	}
 
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-	virtual PrintResult printHtml(QDomElement &out);
+	virtual PrintResult printHtml(HTMLElement &out);
 
 	QList<double> f_gridLayoutSizes;
 public:
 	const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
 	void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
 public:
-	ReportItemFrame(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportItemFrame(ReportProcessorItem *parent);
 	virtual ~ReportItemFrame() {}
 };
-/*
-//! TODO: write class documentation.
-class ReportItemGrid : public ReportItemFrame
-{
-	//Q_OBJECT;
-	protected:
-		QList<double> f_layoutSizes;
-	public:
-		const QList<double>& layoutSizes() {return f_layoutSizes;}
-		void setLayoutSizes(const QList<double> &szs) {f_layoutSizes = szs;}
-	public:
-		ReportItemGrid(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el)
-			: ReportItemFrame(proc, parent, el) {}
-		virtual ~ReportItemGrid() {}
 
-	//virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-};
-*/
 //! TODO: write class documentation.
-class ReportItemBand : public ReportItemFrame
+class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemFrame Super;
 protected:
 	qf::core::utils::TreeTable f_dataTable;
 	// pokud obsah f_dataTable nepochazi z dat, ale nahraje se dynamicky pomoci elementu <data domain="sql">, ulozi se sem dokument, ktery data z tabulky drzi
@@ -416,15 +410,17 @@ public:
 	virtual qf::core::utils::TreeTable dataTable();
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
 public:
-	ReportItemBand(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportItemBand(ReportProcessorItem *parent);
 	virtual ~ReportItemBand() {}
 };
 
 //! TODO: write class documentation.
-class ReportItemDetail : public ReportItemFrame
+class QFQMLWIDGETS_DECL_EXPORT ReportItemDetail : public ReportItemFrame
 {
-	//Q_OBJECT;
+	Q_OBJECT
 	friend class ReportItemBand;
+private:
+	typedef ReportItemFrame Super;
 protected:
 	//qf::core::utils::TreeTableRow f_dataRow;
 	int f_currentRowNo;
@@ -433,7 +429,7 @@ protected:
 public:
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-	virtual PrintResult printHtml(QDomElement &out);
+	virtual PrintResult printHtml(HTMLElement &out);
 
 	qf::core::utils::TreeTable dataTable();
 	qf::core::utils::TreeTableRow dataRow();
@@ -441,14 +437,16 @@ public:
 	int currentRowNo() const {return f_currentRowNo;}
 	void resetCurrentRowNo() {f_currentRowNo = 0;}
 public:
-	ReportItemDetail(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportItemDetail(ReportProcessorItem *parent);
 	virtual ~ReportItemDetail() {}
 };
 
 //! TODO: write class documentation.
-class ReportItemReport : public ReportItemBand
+class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemBand Super;
 protected:
 	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
 	//virtual PrintResult checkPrintResult(PrintResult res) {return res;}
@@ -457,29 +455,33 @@ public:
 
 	virtual qf::core::utils::TreeTable dataTable();
 public:
-	ReportItemReport(ReportProcessor *proc, const QDomElement &el);
+	ReportItemReport(QObject *parent);
 	virtual ~ReportItemReport() {}
 };
 
 //! TODO: write class documentation.
-class ReportItemBody : public ReportItemDetail
+class QFQMLWIDGETS_DECL_EXPORT ReportItemBody : public ReportItemDetail
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemDetail Super;
 protected:
 	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
 	//virtual PrintResult checkPrintResult(PrintResult res) {return res;}
 public:
-	ReportItemBody(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el)
-		: ReportItemDetail(proc, parent, el) {}
+	ReportItemBody(ReportProcessorItem *parent)
+		: Super(parent) {}
 	virtual ~ReportItemBody() {}
 
 	//virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 };
-
+/*--
 //! TODO: write class documentation.
 class ReportItemTable : public ReportItemBand
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemBand Super;
 protected:
 	QDomDocument fakeBandDocument;
 	QDomElement fakeBand;
@@ -489,14 +491,16 @@ protected:
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 public:
-	ReportItemTable(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportItemTable(ReportProcessorItem *parent);
 	virtual ~ReportItemTable() {}
 };
-
+--*/
 //! TODO: write class documentation.
-class ReportItemPara : public ReportItemFrame
+class QFQMLWIDGETS_DECL_EXPORT ReportItemPara : public ReportItemFrame
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemFrame Super;
 protected:
 	/// tiskne se printed text od indexToPrint, pouziva se pouze v pripade, ze text pretece na dalsi stranku
 	QString printedText;
@@ -508,41 +512,45 @@ protected:
 public:
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-	virtual PrintResult printHtml(QDomElement &out);
+	virtual PrintResult printHtml(HTMLElement &out);
 public:
-	ReportItemPara(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el);
+	ReportItemPara(ReportProcessorItem *parent);
 	virtual ~ReportItemPara() {}
 };
 
 //! TODO: write class documentation.
-class ReportItemImage : public ReportItemFrame
+class QFQMLWIDGETS_DECL_EXPORT ReportItemImage : public ReportItemFrame
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemFrame Super;
 protected:
 	QString src;
 	bool childrenSyncedFlag;
-	QDomElement fakeLoadErrorPara;
-	QDomDocument fakeLoadErrorParaDocument;
+	//--QDomElement fakeLoadErrorPara;
+	//--QDomDocument fakeLoadErrorParaDocument;
 protected:
 	virtual bool childrenSynced();
 	virtual void syncChildren();
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect);
 public:
-	ReportItemImage(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el)
-		: ReportItemFrame(proc, parent, el), childrenSyncedFlag(false) {}
+	ReportItemImage(ReportProcessorItem *parent)
+		: Super(parent), childrenSyncedFlag(false) {}
 };
 
 //! TODO: write class documentation.
-class ReportItemGraph : public ReportItemImage
+class QFQMLWIDGETS_DECL_EXPORT ReportItemGraph : public ReportItemImage
 {
-	//Q_OBJECT;
+	Q_OBJECT
+private:
+	typedef ReportItemImage Super;
 protected:
 	virtual void syncChildren();
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect);
 public:
-	ReportItemGraph(ReportProcessor *proc, ReportProcessorItem *parent, const QDomElement &el)
-		: ReportItemImage(proc, parent, el) {}
+	ReportItemGraph(ReportProcessorItem *parent)
+		: Super(parent) {}
 };
 
 }}}

@@ -15,16 +15,32 @@
 
 #include <qf/core/log.h>
 
+#include <QDomElement>
+
 namespace qfu = qf::core::utils;
 
 using namespace qf::qmlwidgets::reports;
 
+QDomText ReportProcessorItem::setElementText(HTMLElement &el, const QString &str)
+{
+	QDomNode nd = el.firstChild();
+	QDomText eltxt = nd.toText();
+	if(eltxt.isNull()) {
+		eltxt = el.ownerDocument().createTextNode(str);
+		el.insertBefore(eltxt, nd);
+	}
+	else {
+		eltxt.setData(str);
+	}
+	return eltxt;
+}
+
 //===================================================================
 //                           ReportItemFrame
 //===================================================================
-ReportProcessorItem::PrintResult ReportItemFrame::printHtml(QDomElement & out)
+ReportProcessorItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 {
-	qfLogFuncFrame() << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame();
 	PrintResult res = PrintOk;
 	if(out.isNull())
 		return res;
@@ -32,7 +48,7 @@ ReportProcessorItem::PrintResult ReportItemFrame::printHtml(QDomElement & out)
 	qfDebug() << "\tparent html element:" << out.tagName();
 	//qfDebug() << "\tlayout:" << (isGridLayout()? "grid": (layout() == qf::qmlwidgets::graphics::LayoutHorizontal)? "horizontal": (layout() == qf::qmlwidgets::graphics::LayoutVertical)? "vertical" : "nevim");
 	//qfDebug() << "\tmetaPaintLayoutLength:" << metaPaintLayoutLength << "metaPaintOrthogonalLayoutLength:" << metaPaintOrthogonalLayoutLength;
-	updateChildren();
+	//--updateChildren();
 	if(children().count() > 0) {
 		if(children().count() == 1) {
 			/// jedno dite vyres tak, ze se vubec nevytiskne rodicovsky frame
@@ -58,6 +74,7 @@ ReportProcessorItem::PrintResult ReportItemFrame::printHtml(QDomElement & out)
 			}
 			out.appendChild(el_div);
 		}
+		/*--
 		QDomElement el = out.lastChild().toElement();
 		if(!el.isNull()) {
 			ReportItemTable *tbl_it = dynamic_cast<ReportItemTable*>(this);
@@ -71,6 +88,7 @@ ReportProcessorItem::PrintResult ReportItemFrame::printHtml(QDomElement & out)
 				}
 			}
 		}
+		--*/
 	}
 	return res;
 }
@@ -78,9 +96,9 @@ ReportProcessorItem::PrintResult ReportItemFrame::printHtml(QDomElement & out)
 //===================================================================
 //                           ReportItemDetail
 //===================================================================
-ReportProcessorItem::PrintResult ReportItemDetail::printHtml(QDomElement & out)
+ReportProcessorItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 {
-	qfLogFuncFrame() << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame();// << "id:" << element.attribute("id");
 	//qfDebug().color(QFLog::Yellow) << "\treturn:" << res.toString();
 	//qfInfo() << "design mode:" << design_mode;
 	bool design_mode = processor->isDesignMode();
@@ -106,7 +124,7 @@ ReportProcessorItem::PrintResult ReportItemDetail::printHtml(QDomElement & out)
 		res.value = PrintOk;
 		return res;
 	}
-	res = ReportItemFrame::printHtml(out);
+	res = Super::printHtml(out);
 	if(res.value == PrintOk) {
 		if(b) {
 			/// vezmi dalsi radek dat
@@ -130,9 +148,9 @@ ReportProcessorItem::PrintResult ReportItemDetail::printHtml(QDomElement & out)
 //===================================================================
 //                           ReportItemPara
 //===================================================================
-ReportProcessorItem::PrintResult ReportItemPara::printHtml(QDomElement & out)
+ReportProcessorItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 {
-	qfLogFuncFrame() << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id");
 	PrintResult res = PrintOk;
 	if(out.isNull()) return res;
 

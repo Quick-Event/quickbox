@@ -1,78 +1,78 @@
 
 //
-// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2007
+// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2007 - 2014
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "qfgraph.h"
+#include "graph.h"
 
-//#include <QPaintDevice>
+#include <qf/core/log.h>
 
-#include <qflogcust.h>
+using namespace qf::qmlwidgets::graphics;
 
 //======================================================
-//                                        QFGraph::Serie
+//          Graph::Serie
 //======================================================
-const QFGraph::Serie & QFGraph::Serie::sharedNull()
+const Graph::Serie & Graph::Serie::sharedNull()
 {
 	static Serie n = Serie(SharedDummyHelper());
 	return n;
 }
 
-QFGraph::Serie::Serie(QFGraph::Serie::SharedDummyHelper )
+Graph::Serie::Serie(Graph::Serie::SharedDummyHelper )
 {
 	d = new Data();
 }
 
-QFGraph::Serie::Serie()
+Graph::Serie::Serie()
 {
 	*this = sharedNull();
 }
 
 //======================================================
-//                                        QFGraph::Axis
+//          Graph::Axis
 //======================================================
-const QFGraph::Axis & QFGraph::Axis::sharedNull()
+const Graph::Axis & Graph::Axis::sharedNull()
 {
 	static Axis n = Axis(SharedDummyHelper());
 	return n;
 }
 
-QFGraph::Axis::Axis(SharedDummyHelper )
+Graph::Axis::Axis(SharedDummyHelper )
 {
 	d = new Data();
 }
 
-QFGraph::Axis::Axis()
+Graph::Axis::Axis()
 {
 	*this = sharedNull();
 }
 
 //======================================================
-//                                        QFGraph::Legend
+//            Graph::Legend
 //======================================================
-const QFGraph::Legend & QFGraph::Legend::sharedNull()
+const Graph::Legend & Graph::Legend::sharedNull()
 {
 	static Legend n = Legend(SharedDummyHelper());
 	return n;
 }
 
-QFGraph::Legend::Legend(QFGraph::Legend::SharedDummyHelper )
+Graph::Legend::Legend(Graph::Legend::SharedDummyHelper )
 {
 	d = new Data();
 }
 
-QFGraph::Legend::Legend()
+Graph::Legend::Legend()
 {
 	*this = sharedNull();
 }
 
 //======================================================
-//                                        QFGraph::Axis
+//              Graph::Axis
 //======================================================
 
-qreal QFGraph::Axis::value2pos(qreal value, const Rect &grid_rect)
+qreal Graph::Axis::value2pos(qreal value, const Rect &grid_rect)
 {
 	//qfInfo() << "value:" << value;
 	qreal ret = 0;
@@ -93,7 +93,7 @@ qreal QFGraph::Axis::value2pos(qreal value, const Rect &grid_rect)
 	return ret;
 }
 
-qreal QFGraph::Axis::tickSize(const Rect &grid_rect)
+qreal Graph::Axis::tickSize(const Rect &grid_rect)
 {
 	qreal ret = 0;
 	ret = tick() / (max() - min());
@@ -106,7 +106,7 @@ qreal QFGraph::Axis::tickSize(const Rect &grid_rect)
 	return ret;
 }
 
-QString QFGraph::Axis::formatTickLabel(const QVariant & label_value)
+QString Graph::Axis::formatTickLabel(const QVariant & label_value)
 {
 	QString ret;
 	QString fmt = labelFormat();
@@ -129,65 +129,26 @@ QString QFGraph::Axis::formatTickLabel(const QVariant & label_value)
 }
 
 //======================================================
-//                                        QFGraph
+//                Graph
 //======================================================
-QStringList QFGraph::colorNamesPull;
+QStringList Graph::colorNamesPull;
 
-QFGraph::QFGraph()
+Graph::Graph()
 {
 	d = &_d;
 }
 
-QFGraph::QFGraph(const QDomElement el_def, const QFTreeTable &_data)
+Graph::Graph(const QVariantMap &def, const QFTreeTable &_data)
 {
 	d = &_d;
 	setDefinition(el_def);
 	setData(_data);
 }
 
-QFGraph::~QFGraph()
+Graph::~Graph()
 {
 }
-/*
-QRectF QFGraph::gridRect()
-{
-	static const double axes_space_prc = 15;
-	QRectF r = rect();
-	double d = qMin(r.width(), r.height());
-	d = d * axes_space_prc / 100;
 
-	double title_d = 0;
-	QString t = title();
-	if(!t.isEmpty()) {
-		TextStyle st = styleCache().style(definition().cd("title", !Qf::ThrowExc).attribute("textstyle"));
-		QFontMetricsF fm(st.font);
-		QRectF r1 = fm.boundingRect(r, 0, t);
-		title_d = qMin(r1.height(), r.height()/3);
-	}
-	return r.adjusted(d, title_d, 0, -d);
-}
-*/
-/*
-QFGraph::TextStyle QFGraph::textStyleFromString(const QString &str)
-{
-	Q_UNUSED(str);
-	QFont f;
-	f.setPointSizeF(9./72.*25.4);
-	f.setFamily("Nimbus Sans L");
-	TextStyle st;
-	st.font = f;
-	//st.brush = QBrush();
-	st.pen = QPen(QColor(Qt::black));
-	return st;
-}
-*/
-/*
-QFGraph::Axis & QFGraph::axisRef(const QString & colname) throw(QFException)
-{
-	if(!axesMap().contains(colname)) QF_EXCEPTION("Axis for serie " + colname + " not found.");
-	return axesMapRef()[colname];
-}
-*/
 struct SerieSort_helper
 {
 	int index;
@@ -198,7 +159,7 @@ struct SerieSort_helper
 	SerieSort_helper(int ix, double val) : index(ix), value(val) {}
 };
 
-void QFGraph::createSeries()
+void Graph::createSeries()
 {
 	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
 	int serie_no = 0;
@@ -252,7 +213,7 @@ void QFGraph::createSeries()
 	}
 }
 
-void QFGraph::createAxes()
+void Graph::createAxes()
 {
 	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
 	for(QFDomElement el_serie=el_series.firstChildElement("serie"); !!el_serie; el_serie = el_serie.nextSiblingElement("serie")) {
@@ -332,17 +293,17 @@ void QFGraph::createAxes()
 	}
 }
 
-QFGraph::Axis QFGraph::axisForSerie(const QString & colname)
+Graph::Axis Graph::axisForSerie(const QString & colname)
 {
 	return axesMap().value(colname);
 }
 
-QString QFGraph::title() const
+QString Graph::title() const
 {
 	return definition().cd("title", !Qf::ThrowExc).text();
 }
 
-void QFGraph::draw(QPainter *painter, const QSizeF &size)
+void Graph::draw(QPainter *painter, const QSizeF &size)
 {
 	qfLogFuncFrame() << "painter:" << painter << "size:" << size.width() << "x" << size.height();
 	d->painter = painter;
@@ -367,7 +328,7 @@ void QFGraph::draw(QPainter *painter, const QSizeF &size)
 	drawLegends(false);
 }
 
-void QFGraph::drawTitle()
+void Graph::drawTitle()
 {
 	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	if(!title().isEmpty()) {
@@ -390,7 +351,7 @@ void QFGraph::drawTitle()
 	}
 }
 
-QFGraph::Rect QFGraph::drawLegends(bool do_not_draw)
+Graph::Rect Graph::drawLegends(bool do_not_draw)
 {
 	Rect bounding_rect;
 	Rect br = gridRect();
@@ -417,7 +378,7 @@ QFGraph::Rect QFGraph::drawLegends(bool do_not_draw)
 	return bounding_rect;
 }
 
-void QFGraph::drawBox()
+void Graph::drawBox()
 {
 	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	painter()->setPen(Qt::black);
@@ -433,7 +394,7 @@ void QFGraph::drawBox()
 	//painter()->drawLine(gr.topRight(), gr.bottomLeft());
 }
 
-void QFGraph::drawGrid()
+void Graph::drawGrid()
 {
 	qfLogFuncFrame();
 	painter()->setPen(styleCache().pen("graphgrid"));
@@ -465,7 +426,7 @@ void QFGraph::drawGrid()
 	}
 }
 
-void QFGraph::drawAxes()
+void Graph::drawAxes()
 {
 	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	//Rect gr = mm2device(gridRect());
@@ -506,7 +467,7 @@ void QFGraph::drawAxes()
 	d->gridRect = gr;
 }
 
-void QFGraph::drawAxis(const QString &colname, const QFGraph::Rect &_bounding_rect, bool do_not_draw)
+void Graph::drawAxis(const QString &colname, const Graph::Rect &_bounding_rect, bool do_not_draw)
 {
 	if(colname.isEmpty()) return;
 
@@ -724,7 +685,7 @@ void QFGraph::drawAxis(const QString &colname, const QFGraph::Rect &_bounding_re
 				pt = mm2device(pt);
 				pt1 = Point(pos, bounding_rect.bottom() + 1);
 				pt1 = mm2device(pt1);
-				//r = Rect(pos, br.top() - QFGraphics::x2device(3), pos, br.top() - QFGraphics::x2device(1));
+				//r = Rect(pos, br.top() - Graphics::x2device(3), pos, br.top() - Graphics::x2device(1));
 				if(!do_not_draw) painter()->drawLine(pt, pt1);
 			}
 		}
@@ -738,7 +699,7 @@ void QFGraph::drawAxis(const QString &colname, const QFGraph::Rect &_bounding_re
 	axesMapRef()[colname] = axis;
 }
 /*
-QString QFGraph::createLegend(const QFDomElement & el_legend)
+QString Graph::createLegend(const QFDomElement & el_legend)
 {
 	Legend legend;
 	QString legend_id = el_legend.attribute("id");
@@ -785,7 +746,7 @@ QString QFGraph::createLegend(const QFDomElement & el_legend)
 	return legend_id;
 }
 */
-QString QFGraph::drawLegend(const QFDomElement& el_legend, const QFGraph::Rect & _bounding_rect, bool do_not_draw)
+QString Graph::drawLegend(const QFDomElement& el_legend, const Graph::Rect & _bounding_rect, bool do_not_draw)
 {
 	QStringList labels;
 	QList<QColor> colors;
@@ -896,7 +857,7 @@ QString QFGraph::drawLegend(const QFDomElement& el_legend, const QFGraph::Rect &
 	return legend_id;
 }
 
-QColor QFGraph::colorForIndex(int ix)
+QColor Graph::colorForIndex(int ix)
 {
 	QColor ret;
 	if(colorNamesPull.isEmpty()) {
@@ -933,7 +894,7 @@ QColor QFGraph::colorForIndex(int ix)
 	return ret;
 }
 
-QFGraph* QFGraph::createGraph(const QDomElement el_def, const QFTreeTable &data)
+Graph* Graph::createGraph(const QDomElement el_def, const QFTreeTable &data)
 {
 	QString type = el_def.attribute("type");
 	if(type == "histogram") return new QFHistogramGraph(el_def, data);
@@ -943,9 +904,9 @@ QFGraph* QFGraph::createGraph(const QDomElement el_def, const QFTreeTable &data)
 }
 
 //======================================================
-//                                        QFHistogramGraph
+//                    HistogramGraph
 //======================================================
-void QFHistogramGraph::drawSeries()
+void HistogramGraph::drawSeries()
 {
 	qfLogFuncFrame() << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	//return;
@@ -998,9 +959,9 @@ void QFHistogramGraph::drawSeries()
 }
 
 //======================================================
-//                                        QFPieGraph
+//                PieGraph
 //======================================================
-void QFPieGraph::drawSeries()
+void PieGraph::drawSeries()
 {
 	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	//return;

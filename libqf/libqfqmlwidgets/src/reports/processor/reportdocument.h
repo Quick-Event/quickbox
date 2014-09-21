@@ -12,9 +12,10 @@ namespace reports {
 
 class ReportDocument : public QQmlComponent
 {
+private:
+	typedef QQmlComponent Super;
 public:
-	explicit ReportDocument();
-	explicit ReportDocument(const QString &root_name);
+	explicit ReportDocument(QQmlEngine *engine, const QString &file_name, QObject *parent = 0);
 public:
 	QString fileName() const {return m_fileName;}
 	void setFileName(const QString &fname) {m_fileName = fname;}

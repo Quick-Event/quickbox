@@ -500,4 +500,10 @@ void StyleCache::readStyleSheet(const QDomElement &_el_stylesheet)
 	}
 }
 
+void StyleCache::readStyleSheet(QObject *stylesheet)
+{
+	qfLogFuncFrame() << stylesheet;
+	qfError() << "NIY";
+}
+
 

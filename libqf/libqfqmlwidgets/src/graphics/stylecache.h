@@ -97,6 +97,7 @@ class QFQMLWIDGETS_DECL_EXPORT StyleCache
 		Style style(const QString &_s) const;
 
 		void readStyleSheet(const QDomElement &el_stylesheet);
+		void readStyleSheet(QObject *stylesheet);
 		/// predefinovanim neceho a zmazani cache zpusobi, ze nove NECO se projevi ve vsech odvozenych definicich
 		void clearCache() {d->cached = StyleSheetCache();}
 

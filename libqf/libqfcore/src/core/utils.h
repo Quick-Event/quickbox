@@ -11,6 +11,27 @@
 
 #define QF_QUOTEME(x) QStringLiteral(#x)
 
+#define QF_PROPERTY_IMPL(ptype, lower_letter, upper_letter, name_rest) \
+	private: ptype m_##lower_letter##name_rest; \
+	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
+	public: Q_INVOKABLE ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
+	public: Q_SLOT void set##upper_letter##name_rest(const ptype &val) { \
+	    if(m_##lower_letter##name_rest != val) { \
+			m_##lower_letter##name_rest = val; \
+			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
+		} \
+	}
+#define QF_PROPERTY_BOOL_IMPL(lower_letter, upper_letter, name_rest) \
+	private: bool m_##lower_letter##name_rest; \
+	public: Q_SIGNAL void lower_letter##name_rest##Changed(const bool &new_val); \
+	public: Q_INVOKABLE bool is##upper_letter##name_rest() const {return m_##lower_letter##name_rest;} \
+	public: Q_SLOT void set##upper_letter##name_rest(bool val) { \
+	    if(m_##lower_letter##name_rest != val) { \
+			m_##lower_letter##name_rest = val; \
+			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
+		} \
+	}
+
 #define QF_OPTION_FIELD_RW(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest)));} \
 	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}

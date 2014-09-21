@@ -158,10 +158,10 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 		typedef QMap<QString, Serie> SeriesMap;
 		typedef QMap<QString, Axis> AxesMap;
 		typedef QMap<QString, Legend> LegendMap;
-		struct Data// : public QSharedData
+		struct Data
 		{
 			qf::core::utils::TreeTable data;
-			QDomElement definition;
+			QVariantMap definition;
 			QPainter *painter;
 			Rect boundingRect;/// obdelnik celeho grafu vcetne os [mm]
 			Rect gridRect; /// obdelnik grafu bez os (pouce to, kam se vykresluji data) [mm]
@@ -169,11 +169,9 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 			SeriesMap seriesMap;
 			AxesMap axesMap;
 			LegendMap legendMap;
-			//int currentlyPolledColorIndex;
 
 			Data() {
 				painter = NULL;
-				//currentlyPolledColorIndex = -1;
 			}
 		};
 		Data _d;
@@ -223,8 +221,8 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 		static QStringList colorNamesPull;
 		static QColor colorForIndex(int ix);
 	public:
-		void setDefinition(const QDomElement el_def) {d->definition = el_def;}
-		const QDomElement& definition() const {return d->definition;}
+		void setDefinition(const QVariantMap &def) {d->definition = def;}
+		const QVariantMap& definition() const {return d->definition;}
 		void setData(const qf::core::utils::TreeTable _data) {d->data = _data;}
 		const qf::core::utils::TreeTable& data() const {return d->data;}
 
@@ -237,27 +235,33 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 		static Graph* createGraph(const QDomElement el_def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
 	public:
 		Graph();
-		Graph(const QDomElement el_def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
+		Graph(const QVariantMap def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
 		virtual ~Graph();
 };
 
 class QFQMLWIDGETS_DECL_EXPORT HistogramGraph : public Graph
 {
+private:
+	typedef Graph Super;
 	protected:
 		virtual void drawSeries();
 	public:
 		HistogramGraph() : Graph() {}
-		HistogramGraph(const QDomElement el_def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable()) : Graph(el_def, data) {}
+		HistogramGraph(const QVariantMap &def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable())
+		 : Super(def, data) {}
 };
 
 class QFQMLWIDGETS_DECL_EXPORT PieGraph : public Graph
 {
-	protected:
-		virtual void drawBox() {}
-		virtual void drawSeries();
+private:
+	typedef Graph Super;
+protected:
+	virtual void drawBox() {}
+	virtual void drawSeries();
 	public:
 		PieGraph() : Graph() {}
-		PieGraph(const QDomElement el_def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable()) : Graph(el_def, data) {}
+		PieGraph(const QVariantMap &def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable())
+		 : Super(def, data) {}
 };
 
 }}}

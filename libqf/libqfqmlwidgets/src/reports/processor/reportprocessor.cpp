@@ -9,6 +9,7 @@
 
 #include <QSet>
 #include <QJsonDocument>
+#include <QQmlEngine>
 
 namespace qfu = qf::core::utils;
 
@@ -17,11 +18,12 @@ using namespace qf::qmlwidgets::reports;
 //===================================================
 //                                ReportProcessor
 //===================================================
-ReportProcessor::ReportProcessor(QPaintDevice *paint_device, qfu::SearchDirs *search_dirs, QObject *parent)
-	: QObject(parent), f_Context(qf::qmlwidgets::graphics::StyleCache()), f_processedItemsRoot(NULL), f_processorOutput(NULL)
+ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
+	: QObject(parent), f_Context(qf::qmlwidgets::graphics::StyleCache()), m_documentInstanceRoot(NULL), f_processorOutput(NULL)
 {
 	//qfInfo() << "new ReportProcessor" << this;
-	f_searchDirs = search_dirs;
+	m_qmlEngine = nullptr;
+	//--f_searchDirs = search_dirs;
 	fPaintDevice = paint_device;
 	fProcessedPageNo = 0;
 	setDesignMode(false);
@@ -29,43 +31,44 @@ ReportProcessor::ReportProcessor(QPaintDevice *paint_device, qfu::SearchDirs *se
 
 ReportProcessor::~ReportProcessor()
 {
-	QF_SAFE_DELETE(f_processedItemsRoot);
+	QF_SAFE_DELETE(m_documentInstanceRoot);
 	//qfInfo() << "delete ReportProcessor" << this;
 }
-
+/*--
 qfu::SearchDirs* ReportProcessor::searchDirs(bool throw_exc)
 {
 	if(!f_searchDirs && throw_exc) QF_EXCEPTION(trUtf8("ReportProcessor search dirs is NULL."));
 	return f_searchDirs;
 }
-
+--*/
 void ReportProcessor::reset()
 {
 	qfLogFuncFrame();
 	makeContext();
-	QF_SAFE_DELETE(f_processedItemsRoot);
+	QF_SAFE_DELETE(m_documentInstanceRoot);
 	QF_SAFE_DELETE(f_processorOutput);
 }
 
-
+/*--
 void ReportProcessor::setReport(const ReportDocument &doc)
 {
 	qfLogFuncFrame();
 	fReport = doc;
 	reset();
 }
-
+--*/
 void ReportProcessor::setReport(const QString &rep_file_name)
 {
-	//QString s = resolveFileName(rep_file_name);
-	//QFile f(s);
-	//fReport.setContent(f);
-	//fReport.resolveIncludes(searchDirs());
-	ReportDocument doc;
-	doc.setContentAndResolveIncludes(rep_file_name, searchDirs(), true);
-	//if(doc.isEmpty()) QF_EXCEPTION(tr("Invalid temlate file '%1'").arg(rep_file_name));
-	//qfInfo() << doc.toString(2, false);
-	setReport(doc);
+	QF_SAFE_DELETE(m_reportDocumentComponent);
+	m_reportDocumentComponent = new ReportDocument(qmlEngine(true), rep_file_name, this);
+	if(m_reportDocumentComponent->isError()) {
+		qfError() << "Erorr loading report component:" << m_reportDocumentComponent->errorString();
+		return;
+	}
+	if(!m_reportDocumentComponent->isReady()) {
+		qfError() << "QML component" << rep_file_name << "cannot be loaded asynchronously";
+		return;
+	}
 }
 
 void ReportProcessor::setData(const qfu::TreeTable &_data)
@@ -79,27 +82,18 @@ void ReportProcessor::makeContext()
 {
 	qfLogFuncFrame();
 	contextRef().clear(); /// nemuzu tady dat contexRef() = ReportProcessorContext(), protoze ten ma globalni cache, to je tim, ze qf::qmlwidgets::graphics::StyleCache je explicitne sdilena, a ja potrebuju, pro kazdou instanci report processoru vlastni
-	QDomElement el = fReport.documentElement();
-	//qfWarning() << "make context";
-	qfDebug() << "\tfound <report>:" << !el.isNull();
-	for(el=el.firstChildElement("stylesheet"); !el.isNull(); el=el.nextSiblingElement("stylesheet")) {
-		//qfDebug() << "\tfound <stylesheet>";
-		contextRef().styleCacheRef().readStyleSheet(el);
-	}
-	//qfDebug() << context().styleCache().toString();
+	qfError() << "NIY";
+	QObject *stylesheet_obj = nullptr;
+	// TODO: find stylesheet
+	contextRef().styleCacheRef().readStyleSheet(stylesheet_obj);
 }
 
-ReportProcessorItem *ReportProcessor::processedItemsRoot()
+ReportItemReport* ReportProcessor::documentInstanceRoot()
 {
-	if(!f_processedItemsRoot) {
-		if(report().documentElement().isNull()) {
-			fReport.setContent(QByteArray("<report/>"));
-		}
-		f_processedItemsRoot = createProcessibleItem(report().firstChildElement(), NULL);
-		if(!f_processedItemsRoot)
-			QF_EXCEPTION(tr("Process report template error."));
+	if(!m_documentInstanceRoot) {
+		m_documentInstanceRoot = m_reportDocumentComponent->create(qmlEngine()->rootContext());
 	}
-	return f_processedItemsRoot;
+	return m_documentInstanceRoot;
 }
 
 void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
@@ -373,6 +367,7 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 
 QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 {
+#if defined USE_APP_ENGINE
 	QQmlEngine *ret = nullptr;
 	qf::qmlwidgets::framework::Application *app = qobject_cast<qf::qmlwidgets::framework::Application*>(QCoreApplication::instance());
 	if(throw_exc)
@@ -383,6 +378,12 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 			QF_ASSERT_EX(ret != nullptr, "Application has not QML engine created.");
 	}
 	return ret;
+#else
+	if(!m_qmlEngine) {
+		m_qmlEngine = new QQmlEngine(this);
+	}
+	return m_qmlEngine;
+#endif
 }
 
 void ReportProcessor::dump()
