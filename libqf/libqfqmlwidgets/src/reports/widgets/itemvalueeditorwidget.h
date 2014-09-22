@@ -29,7 +29,7 @@ public:
 	void setValue(const QVariant &val);
 public:
 	ItemValueEditorWidget(QWidget *parent = NULL);
-	virtual ~ItemValueEditorWidget();
+	~ItemValueEditorWidget() Q_DECL_OVERRIDE;
 };
 
 }}}

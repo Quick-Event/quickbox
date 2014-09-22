@@ -122,12 +122,14 @@ public:
 	ReportItemMetaPaint();
 	//! parametr \a processor v konstruktoru slouzi jenom kvuli scriptovanym atributum elementu, pouzije se jen v konstruktoru, ukazatel na nej se nikde neuklada.
 	ReportItemMetaPaint(ReportItemMetaPaint *parent, ReportProcessorItem *report_item);
-	virtual ~ReportItemMetaPaint();
+	~ReportItemMetaPaint() Q_DECL_OVERRIDE;
 };
 
 //! TODO documentation
 class ReportItemMetaPaintReport : public ReportItemMetaPaint
 {
+private:
+	typedef ReportItemMetaPaint Super;
 protected:
 	//ReportProcessor *f_reportProcessor;
 public:
@@ -141,6 +143,8 @@ public:
 //! TODO documentation
 class ReportItemMetaPaintFrame : public ReportItemMetaPaint
 {
+private:
+	typedef ReportItemMetaPaint Super;
 public:
 	enum LinePos {LBrd = 1, RBrd, TBrd, BBrd};
 public:
@@ -155,11 +159,13 @@ public:
 	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
 public:
 	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportProcessorItem *report_item);
-	virtual ~ReportItemMetaPaintFrame() {}
+	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
 };
 //! TODO documentation
 class ReportItemMetaPaintText : public ReportItemMetaPaint
 {
+private:
+	typedef ReportItemMetaPaint Super;
 public:
 	QString text;
 	QFont font;
@@ -179,24 +185,27 @@ public:
 public:
 	ReportItemMetaPaintText(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
 	: ReportItemMetaPaint(parent, report_item) {}
-	virtual ~ReportItemMetaPaintText() {}
+	~ReportItemMetaPaintText() Q_DECL_OVERRIDE {}
 };
 
 //! TODO documentation
 class ReportItemMetaPaintCheck : public ReportItemMetaPaintText
 {
+private:
+	typedef ReportItemMetaPaintText Super;
 public:
 	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
 	virtual bool isExpandable() const {return false;}
 public:
 	ReportItemMetaPaintCheck(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
 	: ReportItemMetaPaintText(parent, report_item) {}
-	//virtual ~ReportItemMetaPaintCheck() {}
 };
 
 //! TODO documentation
 class ReportItemMetaPaintImage : public ReportItemMetaPaint
 {
+private:
+	typedef ReportItemMetaPaintImage Super;
 public:
 	ReportProcessorItem::Image image;
 	Qt::AspectRatioMode aspectRatioMode;
@@ -209,15 +218,15 @@ public:
 public:
 	ReportItemMetaPaintImage(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
 	: ReportItemMetaPaint(parent, report_item), aspectRatioMode(Qt::IgnoreAspectRatio)/*, resize(true)*/ {}
-	//virtual ReportItemMetaPaintImage() {}
 };
 
 //! TODO: write class documentation.
 class  ReportPainter : public QPainter
 {
+private:
+	typedef QPainter Super;
 public:
 	ReportPainter(QPaintDevice *device);
-	virtual ~ReportPainter();
 public:
 	ReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
 	void setSelectedItem(ReportItemMetaPaint *it) {f_selectedItem = it;}

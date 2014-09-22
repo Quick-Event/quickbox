@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ItemValueEditorWidget</class>
- <widget class="QWidget" name="ItemValueEditorWidget">
+ <class>qf::qmlwidgets::reports::ItemValueEditorWidget</class>
+ <widget class="QWidget" name="qf::qmlwidgets::reports::ItemValueEditorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

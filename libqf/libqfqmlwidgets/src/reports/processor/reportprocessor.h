@@ -74,27 +74,21 @@ public:
 	//! Vrati QFontMetricsF pro \a font a \a paintDevice() .
 	//! Pokud je paintDevice NULL, vrati fontMetrics pro screen.
 	QFontMetricsF fontMetrics(const QFont &font);
-	/*
-		QColor color(const QString &name_or_def);
-		QPen pen(const QString &name_or_def);
-		QBrush brush(const QString &name_or_def);
-		QFont font(const QString &name_or_def);
-		Style style(const QString &name_or_def);
-		*/
+	/*--
 	static bool isProcessible(const QDomElement &el);
 	//! vytvori item pro element a nastavi nektere deefaultni hodnoty atributu, postara se taky o atribut copyAttributesFrom.
 	//! Pro vytvoreni kontkretniho itemu pak vola funkci createItem()
 	ReportProcessorItem* createProcessibleItem(const QDomElement &el, ReportProcessorItem *parent);
 	virtual ReportProcessorItem* createItem(ReportProcessorItem *parent, const QDomElement &el);
-
+	--*/
 	//! cislo stranky, ktera se zrovna zpracovava, pocitaji se od 0.
 	int processedPageNo() const {return fProcessedPageNo;}
-	/*
+	/*--
 		static void appendSearchDir(const QString &path) {f_searchDirs.appendDir(path);}
 		static void setSearchDirs(const QStringList &sl) {f_searchDirs.setDirs(sl);}
 		/// oddelovac je kvuli windows "::"
 		static void setSearchDirs(const QString &s) {f_searchDirs.setDirs(s);}
-		*/
+	--*/
 	//--qf::core::utils::SearchDirs* searchDirs(bool throw_exc = true);
 	/// does not take ownership os \a sd
 	//--void setSearchDirs(qf::core::utils::SearchDirs *sd) {f_searchDirs = sd;}

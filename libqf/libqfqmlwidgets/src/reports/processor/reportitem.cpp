@@ -24,6 +24,7 @@
 #include <QStringBuilder>
 
 namespace qfc = qf::core;
+namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::reports;
 
 //==========================================================
@@ -35,6 +36,8 @@ const QString ReportProcessorItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE = "$INFO";
 ReportProcessorItem::ReportProcessorItem(ReportProcessorItem *_parent)
 	: Super(_parent) //--, processor(proc), element(el)
 {
+	m_keepAll = false;
+	m_visible = true;
 	//QF_ASSERT_EX(processor != nullptr, "Processor can not be NULL.");
 	recentlyPrintNotFit = false;
 	//--keepAll = qfc::String(element.attribute("keepall")).toBool();
@@ -107,7 +110,7 @@ void ReportProcessorItem::syncChildren()
 
 QString ReportProcessorItem::elementAttribute(const QString & attr_name, const QString &default_val)
 {
-	QFString ret = element.attribute(attr_name, default_val);
+	QString ret = element.attribute(attr_name, default_val);
 	static QRegExp rx("script:([A-Za-z]\\S*)\\((.*)\\)");
 	if(rx.exactMatch(ret)) {
 		QF_ASSERT(processor, "Processor is NULL.");
@@ -132,8 +135,8 @@ QString ReportProcessorItem::elementAttribute(const QString & attr_name, const Q
 --*/
 bool ReportProcessorItem::isVisible()
 {
-	bool is_visible = processor->isDesignMode() || QFString(elementAttribute("visible", "1")).toBool();
-	return is_visible;
+	bool ret = processor->isDesignMode() || m_visible;
+	return ret;
 }
 
 ReportItemBand* ReportProcessorItem::parentBand()
@@ -156,15 +159,15 @@ ReportItemDetail* ReportProcessorItem::currentDetail()
 	return NULL;
 }
 
-QFTreeTable ReportProcessorItem::findDataTable(const QString &name)
+qfu::TreeTable ReportProcessorItem::findDataTable(const QString &name)
 {
 	qfLogFuncFrame();
-	QFTreeTable ret;
+	qfu::TreeTable ret;
 	ReportItemDetail *d = currentDetail();
 	qfDebug() << "\tparent:" << parent() << "parent detail:" << d;
 	if(d) {
 		qfDebug() << "\tdata row is null:" << d->dataRow().isNull();
-		if(d->dataRow().isNull() && !processor->isDesignMode()) qfWarning().noSpace() << "'" << name << "' parent detail datarow is NULL";
+		if(d->dataRow().isNull() && !processor->isDesignMode()) qfWarning().nospace() << "'" << name << "' parent detail datarow is NULL";
 		ret = d->dataRow().table(name);
 		/// pokud ji nenajde a name neni specifikovano, vezmi 1. tabulku
 		if(ret.isNull() && name.isEmpty()) ret = d->dataRow().table(0);
@@ -180,14 +183,14 @@ ReportProcessorItem::PrintResult ReportProcessorItem::checkPrintResult(ReportPro
 	//if(res.value == PrintNotFit) {
 	//qfWarning().noSpace() << "PrintNotFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "' recentlyPrintNotFit: " << recentlyPrintNotFit << " keepall: " << keepAll;
 	//}
-	if(keepAll && recentlyPrintNotFit && res.value == PrintNotFit) {
+	if(isKeepAll() && recentlyPrintNotFit && res.value == PrintNotFit) {
 		//qfWarning().noSpace() << "PrintNeverFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "'";
 		ret.flags |= FlagPrintNeverFit;
 	}
 	recentlyPrintNotFit = (ret.value == PrintNotFit);
 	return ret;
 }
-
+/*--
 QVariant ReportProcessorItem::concatenateNodeChildrenValues(const QDomNode & nd)
 {
 	QVariant ret;
@@ -203,7 +206,7 @@ QVariant ReportProcessorItem::concatenateNodeChildrenValues(const QDomNode & nd)
 	}
 	return ret;
 }
-/*--
+
 QString ReportProcessorItem::nodeText(const QDomNode &nd)
 {
 	QVariant node_value = nodeValue(nd);
@@ -268,7 +271,7 @@ QString ReportProcessorItem::nodeText(const QDomNode &nd)
 			}
 			else if(node_value.type() == QVariant::Bool) {
 				//qfInfo() << "Date format:" << format;
-				ret = QFString::fromBool(node_value, format);
+				ret = QString::fromBool(node_value, format);
 			}
 			else if(node_value.type() == QVariant::Date) {
 				//qfInfo() << "Date format:" << format;
@@ -285,11 +288,11 @@ QString ReportProcessorItem::nodeText(const QDomNode &nd)
 				else ret = node_value.toTime().toString(format);
 			}
 			else if(node_value.type() == QVariant::Double) {
-				if(!format.isNull()) ret = QFString::number(node_value.toDouble(), format);
+				if(!format.isNull()) ret = QString::number(node_value.toDouble(), format);
 				else ret = node_value.toString();
 			}
 			else if(node_value.type() == QVariant::Int) {
-				if(!format.isNull()) ret = QFString::number(node_value.toInt(), format);
+				if(!format.isNull()) ret = QString::number(node_value.toInt(), format);
 				else ret = node_value.toString();
 			}
 			else if(node_value.type() == QVariant::String) {
@@ -302,7 +305,7 @@ QString ReportProcessorItem::nodeText(const QDomNode &nd)
 							QString group_name = format.section('/', 1, 1);
 							QString caption = format.section('/', 2);
 							if(caption.isEmpty()) caption = "${caption}";
-							else if(caption[0] == '\'') caption = QFString(caption).slice(1, -1);
+							else if(caption[0] == '\'') caption = QString(caption).slice(1, -1);
 							QStringList sl = str.split(',');
 							QStringList sl_ret;
 							foreach(QString enum_id, sl) {
@@ -326,7 +329,7 @@ QString ReportProcessorItem::nodeText(const QDomNode &nd)
 							QString group_name = format.section('/', 1, 1);
 							QString caption = format.section('/', 2);
 							if(caption.isEmpty()) caption = "${caption}";
-							else if(caption[0] == '\'') caption = QFString(caption).slice(1, -1);
+							else if(caption[0] == '\'') caption = QString(caption).slice(1, -1);
 							QFDbEnum enm = qfDbApp()->dbEnum(group_name, str);
 							if(enm.isValid()) ret = enm.fillInPlaceholders(caption);
 							else ret = QString("NO_ENUM(%1.%2)").arg(group_name).arg(str);
@@ -338,7 +341,7 @@ QString ReportProcessorItem::nodeText(const QDomNode &nd)
 				ret = node_value.toString();
 			}
 			if(!currency_symbol.isEmpty()) {
-				bool show_currency_symbol = QFString(el.attribute("currencySymbolVisible", "true")).toBool();
+				bool show_currency_symbol = QString(el.attribute("currencySymbolVisible", "true")).toBool();
 				//qfInfo() << currency_symbol << el.attribute("currencySymbolVisible") << show_currency_symbol;
 				if(show_currency_symbol) ret = ret % ' ' % currency_symbol;
 			}
@@ -429,7 +432,7 @@ QVariant ReportProcessorItem::nodeValue(const QDomNode &nd)
 				{
 					if(!data_property_key.isEmpty() && data_value.type() == QVariant::String) {
 						/// pokud je key a data_value je string zacinajici na { a koncici na }, udelej z nej QVariantMap
-						QFString fs = data_value.toString().trimmed();
+						QString fs = data_value.toString().trimmed();
 						if(fs.value(0) == '{' && fs.value(-1) == '}') {
 							data_value = QFJson::stringToVariant(fs);
 						}
@@ -518,6 +521,7 @@ QVariant ReportProcessorItem::value(const QString &data_src, const QString & dom
 			data_value = ReportItemMetaPaint::pageCountReportSubstitution; /// takovyhle blby zkratky mam proto, aby to zabralo zhruba stejne mista jako cislo, za ktery se to vymeni
 		}
 	}
+	/*--
 	else if(domain == S_DOMAIN_SCRIPT) {
 		try {
 			data_value = QFScriptDriver::scriptValueToVariant(processor->scriptDriver()->call(this, data_src, params));
@@ -558,7 +562,7 @@ QVariant ReportProcessorItem::value(const QString &data_src, const QString & dom
 		}
 	}
 	else if(domain == S_DOMAIN_REPORT) {
-		QFString path = QFFileUtils::path(data_src);
+		QString path = QFFileUtils::path(data_src);
 		QString key = QFFileUtils::file(data_src);
 		//qfDebug().noSpace() << "\t\tpath: '" << path << "'" << "\t\tname: '" << data << "'";
 		QDomElement el = element.cd(path + "keyvals", !Qf::ThrowExc);
@@ -588,12 +592,6 @@ QVariant ReportProcessorItem::value(const QString &data_src, const QString & dom
 				if(info_if_not_found) data_value = '{' + data_src + '}';//qfWarning().noSpace() << "'" << data_src << "' table is null";
 			}
 			else {
-				/*
-				if(data_src.startsWith("prumernaCena")) {
-					qfWarning() << "t.value(" << data_src << ")";
-					qfInfo() << t.toString();
-				}
-				*/
 				data_value = t.value(data_src, (info_if_not_found)? "$" + data_src: default_value, sql_match);
 			}
 		}
@@ -622,6 +620,7 @@ QVariant ReportProcessorItem::value(const QString &data_src, const QString & dom
 			if(info_if_not_found) data_value = "$" + data_src + " no detail";
 		}
 	}
+	--*/
 	//qfDebug() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type());
 	//qfInfo() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type());
 	return data_value;
@@ -639,7 +638,7 @@ QString ReportProcessorItem::toString(int indent, int indent_offset)
 	QString ret;
 	QString indent_str;
 	indent_str.fill(' ', indent_offset);
-	ret += indent_str + element.tagName();
+	ret += indent_str + metaObject()->className();
 	for(int i=0; i<children().count(); i++) {
 		ret += '\n';
 		ReportProcessorItem *it = childAt(i);
@@ -652,10 +651,10 @@ QString ReportProcessorItem::toString(int indent, int indent_offset)
 //                                    ReportItemBreak
 //==========================================================
 ReportItemBreak::ReportItemBreak(ReportProcessorItem *parent)
-	: ReportProcessorItem(proc, parent, _el)
+	: Super(parent)
 {
 	/// attribut type (page | column) zatim nedela nic
-	QF_ASSERT(proc, "processor is NULL");
+	//QF_ASSERT_EX(proc, "processor is NULL", return);
 	designedRect.verticalUnit = Rect::UnitInvalid;
 	//qfInfo() << element.attribute("id");
 	breaking = false;
@@ -663,7 +662,7 @@ ReportItemBreak::ReportItemBreak(ReportProcessorItem *parent)
 
 ReportProcessorItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect )
 {
-	qfDebug() << QF_FUNC_NAME << element.tagName();
+	qfLogFuncFrame();
 	Q_UNUSED(bounding_rect);
 	Q_UNUSED(out);
 	PrintResult res = PrintOk;
@@ -677,41 +676,40 @@ ReportProcessorItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaP
 //                                    ReportItemFrame
 //==========================================================
 ReportItemFrame::ReportItemFrame(ReportProcessorItem *parent)
-	: ReportProcessorItem(proc, parent, el)
+	: Super(parent)
 {
+	m_x1 = -1;
+	m_y1 = -1;
+	m_x2 = -1;
+	m_y2 = -1;
 	indexToPrint = 0;
-	qfDebug() << QF_FUNC_NAME << "*******************" << el.tagName() << el.attribute("id");
-	QFString s;
+	//qfDebug() << QF_FUNC_NAME << "*******************" << el.tagName() << el.attribute("id");
 	Point p;
-	s = element.attribute("x1");
-	if(!!s) {
+	if(x1() >= 0) {
 		designedRect.flags |= Rect::LeftFixed;
-		p.rx() = s.toDouble();
+		p.rx() = x1();
 	}
-	s = element.attribute("y1");
-	if(!!s) {
+	if(y1() >= 0) {
 		designedRect.flags |= Rect::TopFixed;
-		p.ry() = s.toDouble();
+		p.ry() = y1();
 	}
 	designedRect.setTopLeft(p);
-	s = element.attribute("x2");
-	if(!!s) {
+	if(x2() >= 0) {
 		designedRect.flags |= Rect::RightFixed;
-		p.rx() = s.toDouble();
+		p.rx() = x2();
 	}
-	s = element.attribute("y2");
-	if(!!s) {
+	if(y2() >= 0) {
 		designedRect.flags |= Rect::BottomFixed;
-		p.ry() = s.toDouble();
+		p.ry() = y2();
 	}
 	designedRect.setBottomRight(p);
 	//qfDebug() << "\t" << __LINE__ << "designedRect:" << designedRect.toString();
 	//static const QString S_PERCENT = "%";
-	s = element.attribute("w").trimmed();
+	qfc::String s;
+	s = width().trimmed();
 	{
-		if(s[-1] == '%') {
+		if(s.value(-1) == '%') {
 			s = s.slice(0, -1);
-		//if(!s) s = 100;
 			designedRect.horizontalUnit = Rect::UnitPercent;
 		}
 		qreal d = s.toDouble();
@@ -721,13 +719,14 @@ ReportItemFrame::ReportItemFrame(ReportProcessorItem *parent)
 				designedRect.setWidth(d);
 				designedRect.moveRight(r);
 			}
-			else designedRect.setWidth(d);
+			else
+				designedRect.setWidth(d);
 		}
 	}
 
-	s = element.attribute("h").trimmed();
+	s = height().trimmed();
 	{
-		if(s[-1] == '%') {
+		if(s.value(-1) == '%') {
 			s = s.slice(0, -1);
 			designedRect.verticalUnit = Rect::UnitPercent;
 		}
@@ -738,7 +737,8 @@ ReportItemFrame::ReportItemFrame(ReportProcessorItem *parent)
 				designedRect.setWidth(d);
 				designedRect.moveBottom(b);
 			}
-			else designedRect.setHeight(d);
+			else
+				designedRect.setHeight(d);
 		}
 	}
 
@@ -751,11 +751,11 @@ ReportItemFrame::ReportItemFrame(ReportProcessorItem *parent)
 		designedRect.flags |= Rect::ExpandChildrenFrames;
 	}
 
-	f_layout = QFGraphics::LayoutVertical;
+	f_layout = qf::qmlwidgets::graphics::LayoutVertical;
 	s = element.attribute("layout");
-	if(s == "horizontal") f_layout = QFGraphics::LayoutHorizontal;
+	if(s == "horizontal") f_layout = qf::qmlwidgets::graphics::LayoutHorizontal;
 	else if(s == "grid") {
-		f_layout = QFGraphics::LayoutVertical;
+		f_layout = qf::qmlwidgets::graphics::LayoutVertical;
 		/// detem dej layout LayoutParentGrid
 		/// nedavej, je s tim vic skody nez uzitku, nekdy chci, aby radek nemel parentGrid layout, musim mu pak dat napr. horizontal, jenze kdo si to ma pamatovat
 		/*
@@ -766,9 +766,12 @@ ReportItemFrame::ReportItemFrame(ReportProcessorItem *parent)
 		*/
 		f_parentGrid = true;
 	}
-	else if(s == "parentGrid") f_layout = QFGraphics::LayoutParentGrid;
-	if(layout() == QFGraphics::LayoutHorizontal) designedRect.flags |= Rect::LayoutHorizontalFlag;
-	else designedRect.flags |= Rect::LayoutVerticalFlag;
+	else if(s == "parentGrid")
+		f_layout = qf::qmlwidgets::graphics::LayoutParentGrid;
+	if(layout() == qf::qmlwidgets::graphics::LayoutHorizontal)
+		designedRect.flags |= Rect::LayoutHorizontalFlag;
+	else
+		designedRect.flags |= Rect::LayoutVerticalFlag;
 
 	hinset = vinset = 0;
 	s = element.attribute("inset");
@@ -1179,7 +1182,7 @@ ReportProcessorItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaP
 	double columns_gap = 0;
 	//int current_column_index;
 	if(column_sizes.isEmpty()) {
-		QFString s = elementAttribute("columns", "%");
+		QString s = elementAttribute("columns", "%");
 		QStringList sl = s.splitAndTrim(',');
 		columns_gap = elementAttribute("columnsgap", "3").toDouble();
 		double ly_size = frame_content_br.width() - (columns_gap * (sl.count() - 1));
@@ -1528,7 +1531,7 @@ ReportProcessorItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportIt
 	int initial_index_to_print = indexToPrint;
 
 	/// tiskne se prazdny text
-	bool omit_empty_text = QFString(elementAttribute("omitEmptyString", "1")).toBool();
+	bool omit_empty_text = QString(elementAttribute("omitEmptyString", "1")).toBool();
 	QString sql_id = elementAttribute("sqlId");
 	if(text.isEmpty() && omit_empty_text) {
 	}
@@ -1538,7 +1541,7 @@ ReportProcessorItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportIt
 		bool text_item_should_be_created = true;
 		QFGraphicsStyleCache::Style style = processor->context().styleCache().style(paraStyleDefinition());
 		{
-			QFString s;
+			QString s;
 			s = elementAttribute("font");
 			if(!!s) style.font = processor->context().styleCache().font(s);
 			s = elementAttribute("pen");
@@ -1552,9 +1555,9 @@ ReportProcessorItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportIt
 		QTextOption text_option;
 		Qt::Alignment alignment_flags;
 		{
-			if(QFString(elementAttribute("wrap", "1")).toBool()) text_option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+			if(QString(elementAttribute("wrap", "1")).toBool()) text_option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 			//alignment_flags |= Qt::TextWordWrap;
-			QFString s;
+			QString s;
 			s = elementAttribute("halign", "left");
 			if(s == "center") alignment_flags |= Qt::AlignHCenter;
 			else if(s == "right") alignment_flags |= Qt::AlignRight;
@@ -1858,7 +1861,7 @@ ReportProcessorItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPa
 		res.value = PrintOk;
 		return res;
 	}
-	if(QFString(element.attribute("headeronbreak")).toBool()) {
+	if(QString(element.attribute("headeronbreak")).toBool()) {
 		/// vsechno krome detailu se bude tisknout znovu
 		for(int i=0; i<children().count(); i++) {
 			ReportProcessorItem *it = childAt(i);
@@ -2297,13 +2300,13 @@ ReportProcessorItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaP
 		ReportItemMetaPaintImage *img = dynamic_cast<ReportItemMetaPaintImage*>(mpi->lastChild());
 		if(img) {
 			/// pokud se obrazek vytiskl a je to background, nastav tento flag jeho rodicovskemu frame
-			if(QFString(elementAttribute("backgroundItem")).toBool()) {
+			if(QString(elementAttribute("backgroundItem")).toBool()) {
 				mpi->renderedRect.flags |= Rect::BackgroundItem;
 				//img->renderedRect.setWidth(0);
 				//img->renderedRect.setHeight(0);
 				//qfWarning() << mpi << "setting backgroundItem" << (mpi->renderedRect.flags & Rect::BackgroundItem);
 			}
-			//qfInfo() << elementAttribute("backgroundItem") << "fs:" << QFString(elementAttribute("backgroundItem")).toBool() << "rendered rect:" << img->renderedRect.toString() << "image size:" << im.size().width() << "x" << im.size().height();
+			//qfInfo() << elementAttribute("backgroundItem") << "fs:" << QString(elementAttribute("backgroundItem")).toBool() << "rendered rect:" << img->renderedRect.toString() << "image size:" << im.size().width() << "x" << im.size().height();
 		}
 	}
 	return ret;

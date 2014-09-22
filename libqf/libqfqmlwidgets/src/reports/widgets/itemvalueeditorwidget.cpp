@@ -16,12 +16,12 @@ using namespace qf::qmlwidgets::reports;
 //             ItemValueEditorWidget
 //=================================================
 ItemValueEditorWidget::ItemValueEditorWidget(QWidget *parent)
-	: QFDialogWidget(parent)
+	: Super(parent)
 {
 	ui = new Ui::ItemValueEditorWidget;
-	ui->setupUi(centralWidget());
+	ui->setupUi(this);
 
-	setXmlConfigPersistentId("ReportViewWidget/ItemValueEditorWidget", true);
+	//--setXmlConfigPersistentId("ReportViewWidget/ItemValueEditorWidget", true);
 }
 
 ItemValueEditorWidget::~ItemValueEditorWidget()

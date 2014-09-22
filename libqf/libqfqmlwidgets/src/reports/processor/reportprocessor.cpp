@@ -10,6 +10,7 @@
 #include <QSet>
 #include <QJsonDocument>
 #include <QQmlEngine>
+#include <QDomElement>
 
 namespace qfu = qf::core::utils;
 
@@ -91,7 +92,13 @@ void ReportProcessor::makeContext()
 ReportItemReport* ReportProcessor::documentInstanceRoot()
 {
 	if(!m_documentInstanceRoot) {
-		m_documentInstanceRoot = m_reportDocumentComponent->create(qmlEngine()->rootContext());
+		QObject *o = qobject_cast<ReportItemReport*>(m_reportDocumentComponent->create(qmlEngine()->rootContext()));
+		m_documentInstanceRoot = qobject_cast<ReportItemReport*>(o);
+		if(!m_documentInstanceRoot) {
+			qfError() << "Error creating root object from component:" << m_reportDocumentComponent;
+			qfError() << "Created object:" << o;
+			QF_SAFE_DELETE(o);
+		}
 	}
 	return m_documentInstanceRoot;
 }
@@ -101,9 +108,9 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 	qfLogFuncFrame() << "mode:" << mode;
 	if(mode == FirstPage || mode == AllPages) {
 		fProcessedPageNo = 0;
-		SAFE_DELETE(f_processorOutput);
-		if(processedItemsRoot()) {
-			f_processorOutput = new ReportItemMetaPaintReport(processedItemsRoot());
+		QF_SAFE_DELETE(f_processorOutput);
+		if(documentInstanceRoot()) {
+			f_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
 			singlePageProcessResult = ReportProcessorItem::PrintResult(ReportProcessorItem::PrintNotFit);
 		}
 	}
@@ -144,118 +151,11 @@ ReportProcessorItem::PrintResult ReportProcessor::processPage(ReportItemMetaPain
 {
 	qfLogFuncFrame();
 	ReportProcessorItem::PrintResult res;
-	if(processedItemsRoot()) {
-		res = processedItemsRoot()->printMetaPaint(out, ReportProcessorItem::Rect());
+	if(documentInstanceRoot()) {
+		res = documentInstanceRoot()->printMetaPaint(out, ReportProcessorItem::Rect());
 		qfDebug() << "\tres:" << res.toString();
 	}
 	return res;
-}
-
-bool ReportProcessor::isProcessible(const QDomElement &el)
-{
-	static QSet<QString> set;
-	if(set.isEmpty()) {
-		set << "report" << "body" << "frame" << "row" << "cell"
-				<< "para" << "table" << "band" << "detail"
-				<< "image" << "graph"
-				<< "space" << "break";
-				//<< "script";
-	}
-	bool ret = set.contains(el.tagName());
-	//if(!ret) { qfError() << "Element '" + el.tagName() + "' is not processible."; }
-	return ret;
-}
-
-ReportProcessorItem* ReportProcessor::createProcessibleItem(const QDomElement &_el, ReportProcessorItem *parent)
-{
-	//qfLogFuncFrame() << "parent:" << ((parent)?parent->element.tagName(): "NULL") << "to create:" << _el.tagName();
-	ReportProcessorItem *it = NULL;
-	QDomElement el(_el);
-	if(!isProcessible(el)) {
-	//QF_ASSERT(isProcessible(_el), "Element '" + _el.tagName() + "' is not processible.");
-		qfWarning() << tr("Element '%1' is not processible and it will be ignored.").arg(el.tagName());
-	}
-	else {
-		{
-			QString s = el.attribute("copyAttributesFromId");
-			if(!s.isEmpty()) {
-				QStringList sl = s.split(':');
-				int level = 0;
-				if(sl.count() > 1) {
-					s = sl[0];
-					level = sl[1].toInt();
-				}
-				report().copyAttributesFromId(el, s, level, true/*only_new*/);
-			}
-		}
-		if(el.tagName() == "report") {
-			if(el.attribute("headeronbreak").isEmpty()) el.setAttribute("headeronbreak", "1");
-		}
-		else if(el.tagName() == "row") {
-			if(el.attribute("layout").isEmpty()) el.setAttribute("layout", "horizontal");
-			if(el.attribute("keepall").isEmpty()) el.setAttribute("keepall", "1");
-		}
-		else if(el.tagName() == "cell") {
-			//if(el.attribute("keepall").isEmpty()) el.setAttribute("keepall", "1");
-		}
-		else if(el.tagName() == "detail") {
-			if(el.attribute("layout").isEmpty()) el.setAttribute("layout", "horizontal"); /// pro detail je defaultni layout horizontal.
-			/// detail nemuze mit keepall, protoze pokud je detail vnorena tabulka a nevejde se na stranku, neni vytistena
-			//if(el.attribute("keepall").isEmpty()) el.setAttribute("keepall", "1");
-		}
-		it = createItem(parent, el);
-		//QF_ASSERT(it != NULL, el.tagName() + " element can not be created");
-	}
-
-	//qfDebug() << "\tcreated:" << it;
-	//qfDebug() << "\tcreated child name:" << it->element.tagName();
-	return it;
-}
-
-ReportProcessorItem * ReportProcessor::createItem(ReportProcessorItem * parent, const QDomElement & el) throw( QFException )
-{
-	ReportProcessorItem *it = NULL;
-	if(el.tagName() == "report") {
-		it = new ReportItemReport(this, el);
-	}
-	else if(el.tagName() == "body") {
-		it = new ReportItemBody(this, parent, el);
-	}
-	else if(el.tagName() == "break") {
-		it = new ReportItemBreak(this, parent, el);
-	}
-	else if(el.tagName() == "frame") {
-		it = new ReportItemFrame(this, parent, el);
-	}
-	else if(el.tagName() == "image") {
-		it = new ReportItemImage(this, parent, el);
-	}
-	else if(el.tagName() == "graph") {
-		it = new ReportItemGraph(this, parent, el);
-	}
-	else if(el.tagName() == "space") {
-		it = new ReportItemFrame(this, parent, el);
-	}
-	else if(el.tagName() == "row") {
-		it = new ReportItemFrame(this, parent, el);
-	}
-	else if(el.tagName() == "cell") {
-		it = new ReportItemFrame(this, parent, el);
-	}
-	else if(el.tagName() == "para") {
-		it = new ReportItemPara(this, parent, el);
-	}
-	else if(el.tagName() == "band") {
-		it = new ReportItemBand(this, parent, el);
-	}
-	else if(el.tagName() == "detail") {
-		it = new ReportItemDetail(this, parent, el);
-	}
-	else if(el.tagName() == "table") {
-		it = new ReportItemTable(this, parent, el);
-	}
-	QF_ASSERT(it != NULL, el.tagName() + " element can not be created");
-	return it;
 }
 
 QFontMetricsF ReportProcessor::fontMetrics(const QFont &font)
@@ -278,10 +178,10 @@ QString ReportProcessor::resolveFN(const QString &f_name)
 }
 */
 
-void ReportProcessor::processHtml(QDomElement & el_body) throw( QFException )
+void ReportProcessor::processHtml(QDomElement & el_body)
 {
-	processedItemsRoot()->resetIndexToPrintRecursively(ReportProcessorItem::IncludingParaTexts);
-	processedItemsRoot()->printHtml(el_body);
+	documentInstanceRoot()->resetIndexToPrintRecursively(ReportProcessorItem::IncludingParaTexts);
+	documentInstanceRoot()->printHtml(el_body);
 	fixTableTags(el_body);
 	removeRedundantDivs(el_body);
 	/// tak a z divu s horizontalnim layoutem udelej tabulky
@@ -315,7 +215,7 @@ QDomElement ReportProcessor::removeRedundantDivs(QDomElement & _el)
 {
 	qfLogFuncFrame() << _el.tagName() << "children cnt:" << _el.childNodes().count();
 	QDomElement el(_el);
-	qfDebug() << "\t path:" << el.path();
+	//qfDebug() << "\t path:" << el.path();
 	/// pokud ma div prave jedno dite, je na prd
 	while(el.tagName() == "div" && el.childNodes().count() == 1) {
 		QDomNode parent_nd = el.parentNode();
@@ -379,6 +279,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	}
 	return ret;
 #else
+	Q_UNUSED(throw_exc);
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
 	}
@@ -442,18 +343,6 @@ int ReportProcessor::pageCount()
 	int ret = 0;
 	if(processorOutput()) {
 		ret = processorOutput()->childrenCount();
-	}
-	return ret;
-}
-
-QFDataTranslator* ReportProcessor::dataTranslator() const
-{
-	QFDataTranslator *ret = NULL;
-	{
-		QFAppDataTranslatorInterface *appi = dynamic_cast<QFAppDataTranslatorInterface *>(QCoreApplication::instance());
-		if(appi) {
-			ret = appi->dataTranslator();
-		}
 	}
 	return ret;
 }

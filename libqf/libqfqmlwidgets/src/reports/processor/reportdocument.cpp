@@ -10,7 +10,7 @@
 //#include <QDir>
 
 namespace qfc = qf::core;
-namespace qfu = qf::core::utils;
+//namespace qfu = qf::core::utils;
 
 using namespace qf::qmlwidgets::reports;
 

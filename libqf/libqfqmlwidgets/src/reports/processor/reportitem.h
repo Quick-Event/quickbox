@@ -40,11 +40,25 @@ class QFQMLWIDGETS_DECL_EXPORT ReportProcessorItem : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(bool keepAll READ keepAll WRITE setKeepAll NOTIFY keepAllChanged)
+	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 private:
 	typedef QObject Super;
 public:
 	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
 	QF_PROPERTY_BOOL_IMPL(k, K, eepAll)
+	Q_INVOKABLE bool isVisible();
+	Q_SLOT void setVisible(bool b) {
+		if(m_visible != b) {
+			m_visible = b;
+			emit visibleChanged(m_visible);
+		}
+	}
+	Q_SIGNAL void visibleChanged(bool new_val);
+private:
+	bool m_visible;
+public:
+	ReportProcessorItem(ReportProcessorItem *parent);
+	~ReportProcessorItem() Q_DECL_OVERRIDE;
 public:
 	typedef QDomElement HTMLElement;
 	static const double Epsilon;
@@ -276,7 +290,6 @@ public:
 	//! Vraci atribut elementu itemu.
 	//! Pokud hodnota \a attr_name je ve tvaru 'script:funcname', zavola se scriptDriver processoru, jinak se vrati atribut.
 	QString elementAttribute(const QString &attr_name, const QString &default_val = QString());
-	bool isVisible();
 
 	virtual ReportProcessorItem* parent() const {return static_cast<ReportProcessorItem*>(this->Super::parent());}
 	virtual ReportProcessorItem* childAt(int ix) const {return static_cast<ReportProcessorItem*>(this->children()[ix]);}
@@ -305,9 +318,6 @@ public:
 		return dynamic_cast<ReportProcessorItem*>(Super::cd(path));
 	}
 	--*/
-public:
-	ReportProcessorItem(ReportProcessorItem *parent);
-	virtual ~ReportProcessorItem();
 };
 
 //! TODO: write class documentation.
@@ -333,6 +343,23 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportProcessorItem
 	Q_OBJECT
 private:
 	typedef ReportProcessorItem Super;
+public:
+	Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
+	Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
+	Q_PROPERTY(qreal y1 READ y1 WRITE setY1 NOTIFY y1Changed)
+	Q_PROPERTY(qreal y2 READ y2 WRITE setY2 NOTIFY y2Changed)
+	Q_PROPERTY(QString width READ width WRITE setWidth NOTIFY widthChanged)
+	Q_PROPERTY(QString height READ height WRITE setHeight NOTIFY heightChanged)
+public:
+	QF_PROPERTY_IMPL(qreal, x, X, 1)
+	QF_PROPERTY_IMPL(qreal, y, Y, 1)
+	QF_PROPERTY_IMPL(qreal, x, X, 2)
+	QF_PROPERTY_IMPL(qreal, y, Y, 2)
+	QF_PROPERTY_IMPL(QString, w, W, idth)
+	QF_PROPERTY_IMPL(QString, h, H, eight)
+public:
+	ReportItemFrame(ReportProcessorItem *parent);
+	~ReportItemFrame() Q_DECL_OVERRIDE {}
 public:
 	bool isRubber(qf::qmlwidgets::graphics::Layout ly) {
 		ChildSize sz = childSize(ly);
@@ -377,17 +404,14 @@ protected:
 		if(!frm) return qf::qmlwidgets::graphics::LayoutInvalid;
 		return frm->layout();
 	}
-
+public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
 
-	QList<double> f_gridLayoutSizes;
-public:
 	const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
 	void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
-public:
-	ReportItemFrame(ReportProcessorItem *parent);
-	virtual ~ReportItemFrame() {}
+private:
+	QList<double> f_gridLayoutSizes;
 };
 
 //! TODO: write class documentation.

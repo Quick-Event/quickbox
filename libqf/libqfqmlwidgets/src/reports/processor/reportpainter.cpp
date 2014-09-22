@@ -323,7 +323,7 @@ QString ReportItemMetaPaint::dump(int indent)
 	QString indent_str;
 	indent_str.fill(' ', indent);
 	const char *type_name = typeid(*this).name();
-	QString ret = QString("%1[%2] 0x%3 '%4'").arg(indent_str).arg(type_name).arg((qulonglong)this, 0, 16).arg(reportItem()->element.tagName());
+	QString ret = QString("%1[%2] 0x%3").arg(indent_str).arg(type_name).arg((qulonglong)this, 0, 16);
 	//QString ret = QString("%1[%2] 0x%3").arg(indent_str).arg(type_name).arg((qulonglong)this, 0, 16);
 	ReportItemMetaPaintFrame *frm = dynamic_cast<ReportItemMetaPaintFrame*>(this);
 	if(frm) ret += " : " + frm->renderedRect.toString();
@@ -387,7 +387,7 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
-	QF_ASSERT(painter, "painter is NULL");
+	QF_ASSERT(painter, "painter is NULL", return);
 	//qfDebug() << "\trenderedRect:" << renderedRect.toString();
 	bool selected = (painter->selectedItem() && painter->selectedItem() == this);
 	if(mode & PaintFill) fillItem(painter, selected);
@@ -437,7 +437,7 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 void ReportItemMetaPaintFrame::frameItem(QPainter *painter, bool selected)
 {
 	//Rect r = renderedRect;
-	QFString s;
+	QString s;
 	if(selected) {
 		s = "color: magenta; style: solid; size:2";
 		painter->setPen(context().styleCache().pen(s));
@@ -505,8 +505,9 @@ void ReportItemMetaPaintPage::paint(ReportPainter *painter)
 void ReportItemMetaPaintText::paint(ReportPainter *painter, unsigned mode)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
-	QF_ASSERT(painter, "painter is NULL");
-	if(mode != PaintFill) return;
+	QF_ASSERT(painter, "painter is NULL", return);
+	if(mode != PaintFill)
+		return;
 
 	//bool is_yellow = false;
 	ReportPainter *rep_painter = dynamic_cast<ReportPainter*>(painter);
@@ -571,10 +572,10 @@ QString ReportItemMetaPaintText::dump(int indent)
 {
 	QString indent_str;
 	indent_str.fill(' ', indent);
-	QString ret = QString("%1[%2] 0x%3 '%4'").arg(indent_str).arg(typeid(*this).name()).arg((qulonglong)this, 0, 16).arg(reportItem()->element.tagName());
+	QString ret = QString("%1[%2] 0x%3").arg(indent_str).arg(typeid(*this).name()).arg((qulonglong)this, 0, 16);
 	//QString ret = QString("%1[%2] 0x%3").arg(indent_str).arg(typeid(*this).name()).arg((qulonglong)this, 0, 16);
 	ret += QString(" '%1'\n").arg(text);
-	foreach(Super *_it, children()) {
+	foreach(auto _it, children()) {
 		ReportItemMetaPaint *it = static_cast<ReportItemMetaPaint*>(_it);
 		ret += it->dump(indent + 2);
 	}
@@ -703,7 +704,7 @@ QString ReportItemMetaPaintImage::dump(int indent)
 {
 	QString indent_str;
 	indent_str.fill(' ', indent);
-	QString ret = QString("%1[%2] 0x%3 '%4'").arg(indent_str).arg(typeid(*this).name()).arg((qulonglong)this, 0, 16).arg(reportItem()->element.tagName());
+	QString ret = QString("%1[%2] 0x%3").arg(indent_str).arg(typeid(*this).name()).arg((qulonglong)this, 0, 16);
 	//QString ret = QString("%1[%2] 0x%3").arg(indent_str).arg(typeid(*this).name()).arg((qulonglong)this, 0, 16);
 	ret += QString(" '%1'\n").arg("image");
 	return ret;
@@ -719,10 +720,6 @@ ReportPainter::ReportPainter(QPaintDevice *device)
 	pageCount = 0;
 	f_selectedItem = NULL;
 	setMarkEditableSqlText(false);
-}
-
-ReportPainter::~ReportPainter()
-{
 }
 
 void ReportPainter::drawMetaPaint(ReportItemMetaPaint *item)
