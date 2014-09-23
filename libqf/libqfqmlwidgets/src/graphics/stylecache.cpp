@@ -1,13 +1,10 @@
 
 #include "stylecache.h"
 
-#include <qfstring.h>
-#include <qfdom.h>
-
-#include <QDomNamedNodeMap>
-
+#include <qf/core/string.h>
 #include <qf/core/log.h>
 
+namespace qfc = qf::core;
 using namespace qf::qmlwidgets::graphics;
 
 const QString StyleCache::basedOnString = "basedon";
@@ -27,15 +24,15 @@ StyleCache::~StyleCache()
 StyleCache::StringMap StyleCache::splitStyleDefinition(const QString &_def)
 {
 	StringMap ret;
-	QFString def = _def.trimmed();
-	QStringList sl = def.splitBracketed(';', '{', '}', '\'', QFString::TrimParts, QString::SkipEmptyParts);
-	foreach(QFString s, sl) {
+	qfc::String def = _def.trimmed();
+	QStringList sl = def.splitBracketed(';', '{', '}', '\'', qfc::String::TrimParts, QString::SkipEmptyParts);
+	foreach(qfc::String s, sl) {
 		int ix = s.indexOf(':');
 		if(ix > 0) {
-			QFString val = s.slice(ix+1).trim();
+			qfc::String val = s.slice(ix+1).trimmed();
 			if(val[0] == '{' && val[-1] == '}') {
 				val = val.slice(1, -1);
-				val = val.trim();
+				val = val.trimmed();
 			}
 			ret[s.slice(0, ix)] = val;
 		}
@@ -49,14 +46,15 @@ StyleCache::StringMap StyleCache::splitStyleDefinition(const QString &_def)
 
 QColor StyleCache::color(const QString &_s) const
 {
-	QFString s1 = _s.trimmed();
-	if(!s1) s1 = defaultString;
+	qfc::String s1 = _s.trimmed();
+	if(s1.isEmpty())
+		s1 = defaultString;
 	if(cachedColors().contains(s1)) {
 		return cachedColors().value(s1);
 	}
 
 	QColor c;// = colors().value(s);
-	QFString def_s = definedColors().value(s1, s1);
+	qfc::String def_s = definedColors().value(s1, s1);
 	if(def_s == defaultString) {
 		/// neexistuje defaultni definice, takze default bude defaultni cerna
 		c = Qt::black;
@@ -68,15 +66,15 @@ QColor StyleCache::color(const QString &_s) const
 			foreach(QString s, sl) {
 				rgb <<= 8;
 				rgb += s.toInt() & 0xFF;
-				//qfTrash() << "%%%%%%%%%%:" << s << (s.toInt() & 0xFF) << "#" << QString::number(rgb, 16);
+				//qfDebug() << "%%%%%%%%%%:" << s << (s.toInt() & 0xFF) << "#" << QString::number(rgb, 16);
 			}
 			c = QColor(rgb);
-			//qfTrash() << "COLOR RGB:" << _s << c.name();
+			//qfDebug() << "COLOR RGB:" << _s << c.name();
 		}
 		else if(def_s.startsWith("ARGB(", Qt::CaseInsensitive)) {
 			QStringList sl = def_s.slice(5, -1).split(',');
 			c = QColor(sl.value(1).toInt(), sl.value(2).toInt(), sl.value(3).toInt(), sl.value(0).toInt());
-			//qfTrash() << "COLOR RGB:" << _s << c.name();
+			//qfDebug() << "COLOR RGB:" << _s << c.name();
 		}
 		else c = QColor(def_s);
 	}
@@ -88,30 +86,32 @@ QPen StyleCache::pen(const QString &_s) const
 {
 	static QVector<qreal> dash_pattern;
 	if(dash_pattern.isEmpty()) dash_pattern << 8 << 5;
-	QFString s1 = _s.trimmed();
-	qfTrash() << QF_FUNC_NAME << "def:" << s1;
-	if(!s1) s1 = defaultString;
+	qfc::String s1 = _s.trimmed();
+	//qfDebug() << QF_FUNC_NAME << "def:" << s1;
+	if(s1.isEmpty())
+		s1 = defaultString;
 	if(cachedPens().contains(s1)) {
-		//qfTrash() << "\tCACHED";
+		//qfDebug() << "\tCACHED";
 		return cachedPens().value(s1);
 	}
 	/// neni v cache, najdi definici
-	QFString def_s = definedPens().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
+	qfc::String def_s = definedPens().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
 	QPen p;
 	if(def_s == defaultString) {
 		/// neexistuje defaultni definice, takze default bude defaultni pero
 	}
 	else {
 		StringMap map = splitStyleDefinition(def_s);
-		QFString based_on = map.take(basedOnString);
-		if(!!based_on && based_on != s1) p = pen(based_on);
+		qfc::String based_on = map.take(basedOnString);
+		if(!based_on.isEmpty() && based_on != s1)
+			p = pen(based_on);
 		bool width_set = false;
 		QMapIterator<QString, QString> i(map);
 		while (i.hasNext()) {
 			i.next();
 			QString key = i.key().trimmed();
-			QFString val = i.value().trimmed();
-			if(!!val) {
+			qfc::String val = i.value().trimmed();
+			if(!val.isEmpty()) {
 				if(key == "style") {
 					if(val == "solid") p.setStyle(Qt::SolidLine);
 					else if(val == "dash") p.setDashPattern(dash_pattern);///p.setStyle(Qt::DashLine); prekreslovani Qt::DashLine trva dlouho pri zvetseni
@@ -152,39 +152,41 @@ QPen StyleCache::pen(const QString &_s) const
 		}
 		if(!width_set && p.widthF() == 0) p.setWidthF(1);
 	}
-	qfTrash() << "\treturn width:" << p.widthF() << "color:" << p.color().name() << "style:" << p.style();
+	qfDebug() << "\treturn width:" << p.widthF() << "color:" << p.color().name() << "style:" << p.style();
 	const_cast<StyleCache*>(this)->cachedPensRef()[s1] = p;
 	return p;
 }
 
 QBrush StyleCache::brush(const QString &_s) const
 {
-	QFString s1 = _s.trimmed();
-	qfTrash() << QF_FUNC_NAME << "def:" << s1;
-	if(!s1) s1 = defaultString;
+	qfc::String s1 = _s.trimmed();
+	qfDebug() << QF_FUNC_NAME << "def:" << s1;
+	if(s1.isEmpty())
+		s1 = defaultString;
 	if(cachedBrushes().contains(s1)) {
-		//qfTrash() << "\tCACHED";
+		//qfDebug() << "\tCACHED";
 		return cachedBrushes().value(s1);
 	}
 
 	/// neni v cache, najdi definici
-	QFString def_s = definedBrushes().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
+	qfc::String def_s = definedBrushes().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
 	QBrush b;
 	if(def_s == defaultString) {
 		/// neexistuje defaultni definice, takze default bude defaultni brush
 	}
 	else {
 		StringMap map = splitStyleDefinition(def_s);
-		QFString based_on = map.take(basedOnString);
-		if(!!based_on && based_on != s1) b = brush(based_on);
+		qfc::String based_on = map.take(basedOnString);
+		if(!based_on.isEmpty() && based_on != s1)
+			b = brush(based_on);
 		if(!map.isEmpty()) {
 			b.setStyle(Qt::SolidPattern);
 			QMapIterator<QString, QString> i(map);
 			while (i.hasNext()) {
 				i.next();
 				QString key = i.key().trimmed();
-				QFString val = i.value().trimmed();
-				if(!!val) {
+				qfc::String val = i.value().trimmed();
+				if(!val.isEmpty()) {
 					if(key == "style") {
 						if(val == "solid") b.setStyle(Qt::SolidPattern);
 						else if(val == "vertical") b.setStyle(Qt::VerPattern);
@@ -206,35 +208,36 @@ QBrush StyleCache::brush(const QString &_s) const
 			}
 		}
 	}
-	qfTrash() << "\treturn brush color:" << b.color().name();
+	qfDebug() << "\treturn brush color:" << b.color().name();
 	const_cast<StyleCache*>(this)->cachedBrushesRef()[s1] = b;
 	return b;
 }
 
 QFont StyleCache::font(const QString &_s) const
 {
-// 	qfTrash() << QF_FUNC_NAME << _s;
-	QFString s1 = _s.trimmed();
-	if(!s1) s1 = defaultString;
+// 	qfDebug() << QF_FUNC_NAME << _s;
+	qfc::String s1 = _s.trimmed();
+	if(s1.isEmpty())
+		s1 = defaultString;
 
 	if(cachedFonts().contains(s1)) {
 		QFont f = cachedFonts().value(s1);
-		//qfTrash() << "\tCACHED" << s << ":" << f.toString();
+		//qfDebug() << "\tCACHED" << s << ":" << f.toString();
 		return f;
 	}
 
-	qfTrash().color(QFLog::Yellow).noSpace() << QF_FUNC_NAME << " '" << s1 << "'";
+	//qfDebug().color(QFLog::Yellow).noSpace() << QF_FUNC_NAME << " '" << s1 << "'";
 	/// neni v cache, najdi definici
-	QFString def_s = definedFonts().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
+	qfc::String def_s = definedFonts().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
 	QFont f;
 	if(def_s == defaultString) {
 		/// neexistuje defaultni definice, takze default bude defaultni font
 	}
 	else {
 		StringMap map = splitStyleDefinition(def_s);
-		QFString based_on = map.take(basedOnString);
-		if(!!based_on && based_on != s1) {
-			qfTrash() << "\t based_on:" << based_on;
+		qfc::String based_on = map.take(basedOnString);
+		if(!based_on.isEmpty() && based_on != s1) {
+			qfDebug() << "\t based_on:" << based_on;
 			f = font(based_on);
 		}
 		else {
@@ -245,11 +248,11 @@ QFont StyleCache::font(const QString &_s) const
 		while (i.hasNext()) {
 			i.next();
 			QString key = i.key().trimmed();
-			QFString val = i.value().trimmed();
-			qfTrash() << "\t key:" << key << "val:" << val;
-			if(!!val) {
+			qfc::String val = i.value().trimmed();
+			qfDebug() << "\t key:" << key << "val:" << val;
+			if(!val.isEmpty()) {
 				if(key == "family") {
-					qfTrash() << "\tset family:" << val;
+					qfDebug() << "\tset family:" << val;
 					f.setFamily(val);
 				}
 				else if(key == "familyhint") { /// nefunguje v X11
@@ -288,7 +291,7 @@ QFont StyleCache::font(const QString &_s) const
 					}
 					if(sz > 0) {
 						f.setPointSizeF(sz);
-						qfTrash() << "\tset size:" << sz;
+						qfDebug() << "\tset size:" << sz;
 					}
 				}
 				else qfWarning() << "invalid font definition attribute:" << key;
@@ -302,9 +305,10 @@ QFont StyleCache::font(const QString &_s) const
 
 StyleCache::Style StyleCache::style(const QString &_s) const
 {
-	//if(_s == "reportheading") qfTrash().noSpace().color(QFLog::Green) << QF_FUNC_NAME << " '" << _s << "'";
-	QFString s1 = _s.trimmed();
-	if(!s1) s1 = defaultString;
+	//if(_s == "reportheading") qfDebug().noSpace().color(QFLog::Green) << QF_FUNC_NAME << " '" << _s << "'";
+	qfc::String s1 = _s.trimmed();
+	if(s1.isEmpty())
+		s1 = defaultString;
 	Style sty;
 	if(cachedStyles().contains(s1)) {
 		sty = cachedStyles().value(s1);
@@ -317,13 +321,13 @@ StyleCache::Style StyleCache::style(const QString &_s) const
 		while (i.hasNext()) {
 			i.next();
 			QString key = i.key().trimmed();
-			QFString val = i.value().trimmed();
-			qfTrash() << "\t [" << key << "] =" << val;
+			qfc::String val = i.value().trimmed();
+			qfDebug() << "\t [" << key << "] =" << val;
 		}
 	}
 */
 	/// neni v cache, najdi definici
-	QFString def_s = definedStyles().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
+	qfc::String def_s = definedStyles().value(s1, s1); /// bud je to nazev definovaneho pera nebo vlastni definice
 	//qfInfo() << "NOT CACHED:" << def_s;
 	if(def_s == defaultString) {
 		/// neexistuje defaultni definice, takze default bude defaultni styl
@@ -333,16 +337,16 @@ StyleCache::Style StyleCache::style(const QString &_s) const
 	}
 	else {
 		StringMap map = splitStyleDefinition(def_s);
-		QFString based_on = map.take(basedOnString);
-		if(!!based_on && based_on != s1) {
+		qfc::String based_on = map.take(basedOnString);
+		if(!based_on.isEmpty() && based_on != s1) {
 			sty = style(based_on);
-			qfTrash() << "\tbase style:" << based_on << sty.toString();
+			qfDebug() << "\tbase style:" << based_on << sty.toString();
 			QMapIterator<QString, QString> i(map);
 			while (i.hasNext()) {
 				i.next();
 				QString key = i.key().trimmed();
-				QFString val = i.value().trimmed();
-				if(!!val) {
+				qfc::String val = i.value().trimmed();
+				if(!val.isEmpty()) {
 					if(key == "pen") { sty.pen = pen(val); }
 					else if(key == "brush") { sty.brush = brush(val); }
 					else if(key == "font") { sty.font = font(val); }
@@ -408,7 +412,7 @@ QString StyleCache::toString() const
 	}
 	return ret;
 }
-
+/*--
 static QString attrs2def(const QDomElement &el)
 {
 	QString def;
@@ -426,15 +430,15 @@ void StyleCache::readStyleSheet(const QDomElement &_el_stylesheet)
 {
 	qfLogFuncFrame();
 	QFDomElement el_stylesheet = _el_stylesheet;
-	QFString s;
+	qfc::String s;
 	/// Colors
 	QFDomElement el, el1;
 	for(el1=el_stylesheet.firstChildElement("colors"); !!el1; el1=el1.nextSiblingElement("colors")) {
 		for(el=el1.firstChildElement("color"); !!el; el=el.nextSiblingElement("color")) {
 			QString key = el.attribute("name");
 			if(key.isEmpty()) { qfWarning() << "empty color name"; continue; }
-			qfTrash() << "\tcolor key:" << key;
-			QFString val = el.attribute("definition");
+			qfDebug() << "\tcolor key:" << key;
+			qfc::String val = el.attribute("definition");
 			//QColor c = color(val);
 			if(val.isEmpty()) {
 				//qfWarning() << "invalid color definition name:" << key << "definition:" << val;
@@ -451,7 +455,7 @@ void StyleCache::readStyleSheet(const QDomElement &_el_stylesheet)
 		for(el=el1.firstChildElement("pen"); !!el; el=el.nextSiblingElement("pen")) {
 			QString key = el.attribute("name");
 			if(key.isEmpty()) { qfWarning() << "empty pen name"; continue; }
-			qfTrash() << "\tpen key:" << key;
+			qfDebug() << "\tpen key:" << key;
 			QString def = attrs2def(el);
 			//QPen p = pen(def);
 			if(definedPensRef().isEmpty() && key != "default") definedPensRef()["default"] = def;
@@ -486,7 +490,7 @@ void StyleCache::readStyleSheet(const QDomElement &_el_stylesheet)
 
 	/// Styles
 	for(el1=el_stylesheet.firstChildElement("styles"); !!el1; el1=el1.nextSiblingElement("styles")) {
-		//qfTrash().color(QFLog::Yellow) << "\tSTYLES";
+		//qfDebug().color(QFLog::Yellow) << "\tSTYLES";
 		for(el=el1.firstChildElement("style"); !!el; el=el.nextSiblingElement("style")) {
 			QString key = el.attribute("name");
 			if(key.isEmpty()) { qfWarning() << "empty style name"; continue; }
@@ -499,7 +503,7 @@ void StyleCache::readStyleSheet(const QDomElement &_el_stylesheet)
 		}
 	}
 }
-
+--*/
 void StyleCache::readStyleSheet(QObject *stylesheet)
 {
 	qfLogFuncFrame() << stylesheet;

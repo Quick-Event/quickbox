@@ -30,7 +30,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace reports {
 
-class ReportProcessorItem;
+class ReportItem;
 class ReportItemBand;
 class ReportItemMetaPaint;
 class ReportItemMetaPaintReport;
@@ -41,7 +41,7 @@ class  QFQMLWIDGETS_DECL_EXPORT ReportProcessor : public QObject
 	Q_OBJECT
 public:
 	enum ProcessorMode {SinglePage = 1, FirstPage, AllPages};
-	typedef QMap<QString, ReportProcessorItem::Image> ImageMap;
+	typedef QMap<QString, ReportItem::Image> ImageMap;
 public:
 	ReportProcessor(QPaintDevice *paint_device, QObject *parent = NULL);
 	~ReportProcessor() Q_DECL_OVERRIDE;
@@ -60,7 +60,7 @@ public:
 	void setData(const qf::core::utils::TreeTable &_data);
 	const qf::core::utils::TreeTable& data() const {return f_data;}
 
-	void addImage(const QString key, const ReportProcessorItem::Image &img) {fImageMap[key] = img;}
+	void addImage(const QString key, const ReportItem::Image &img) {fImageMap[key] = img;}
 	const ImageMap& images() const {return fImageMap;}
 
 	bool isDesignMode() const {return m_designMode;}
@@ -78,8 +78,8 @@ public:
 	static bool isProcessible(const QDomElement &el);
 	//! vytvori item pro element a nastavi nektere deefaultni hodnoty atributu, postara se taky o atribut copyAttributesFrom.
 	//! Pro vytvoreni kontkretniho itemu pak vola funkci createItem()
-	ReportProcessorItem* createProcessibleItem(const QDomElement &el, ReportProcessorItem *parent);
-	virtual ReportProcessorItem* createItem(ReportProcessorItem *parent, const QDomElement &el);
+	ReportItem* createProcessibleItem(const QDomElement &el, ReportItem *parent);
+	virtual ReportItem* createItem(ReportItem *parent, const QDomElement &el);
 	--*/
 	//! cislo stranky, ktera se zrovna zpracovava, pocitaji se od 0.
 	int processedPageNo() const {return fProcessedPageNo;}
@@ -93,7 +93,7 @@ public:
 	/// does not take ownership os \a sd
 	//--void setSearchDirs(qf::core::utils::SearchDirs *sd) {f_searchDirs = sd;}
 protected:
-	virtual ReportProcessorItem::PrintResult processPage(ReportItemMetaPaint *out);
+	virtual ReportItem::PrintResult processPage(ReportItemMetaPaint *out);
 	/// return NULL if such a page does not exist.
 	ReportItemMetaPaintFrame *getPage(int page_no);
 public:
@@ -132,15 +132,15 @@ private:
 	ReportDocument *m_reportDocumentComponent;
 	qf::core::utils::TreeTable f_data;
 	QPaintDevice *fPaintDevice;
-	//! pri prekladu xml reporu vznika strom odpovidajicich ReportProcessorItem objektu a toto je jejich root.
+	//! pri prekladu xml reporu vznika strom odpovidajicich ReportItem objektu a toto je jejich root.
 	ReportItemReport *m_documentInstanceRoot;
-	//ReportProcessorItem *f_processedItemsRoot;
-	//! pri ReportProcessorItem objekty generuji pomoci metody \a printMetaPaint() objekty ReportItemMetaPaint a toto je jejich root.
+	//ReportItem *f_processedItemsRoot;
+	//! pri ReportItem objekty generuji pomoci metody \a printMetaPaint() objekty ReportItemMetaPaint a toto je jejich root.
 	ReportItemMetaPaintReport *f_processorOutput;
 
 	int fProcessedPageNo;
 	//--qf::core::utils::SearchDirs *f_searchDirs;
-	ReportProcessorItem::PrintResult singlePageProcessResult;
+	ReportItem::PrintResult singlePageProcessResult;
 
 	//! v design view je detail zobrazen, i kdyz nejsou data, aby bylo neco videt.
 	bool m_designMode;

@@ -31,7 +31,7 @@ ReportItemMetaPaint::ReportItemMetaPaint()
 	//f_layoutSettings = NULL;
 }
 
-ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportProcessorItem *report_item)
+ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportItem *report_item)
 	: Super(_parent)
 {
 	if(!report_item) QF_EXCEPTION("report_item is NULL.");
@@ -43,7 +43,7 @@ ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportPro
 	//f_layoutSettings = NULL;
 	if(report_item && report_item->processor) f_procesorContext = report_item->processor->context();
 	{
-		double fill_vertical_layout_ratio = report_item->childSize(qf::qmlwidgets::graphics::LayoutVertical).fillLayoutRatio();
+		double fill_vertical_layout_ratio = report_item->childSize(ReportItem::LayoutVertical).fillLayoutRatio();
 		setFillVLayoutRatio(fill_vertical_layout_ratio);
 	}
 }
@@ -63,7 +63,7 @@ ReportItemMetaPaint* ReportItemMetaPaint::child(int ix) const
 	return ret;
 }
 
-ReportProcessorItem* ReportItemMetaPaint::reportItem()
+ReportItem* ReportItemMetaPaint::reportItem()
 {
 	return f_reportItem;
 }
@@ -86,7 +86,7 @@ void ReportItemMetaPaint::setInset(qreal hinset, qreal vinset)
 	}
 }
 
-void ReportItemMetaPaint::shiftChildren(const ReportProcessorItem::Point offset)
+void ReportItemMetaPaint::shiftChildren(const ReportItem::Point offset)
 {
 	foreach(Super *_it, children()) {
 		ReportItemMetaPaint *it = static_cast<ReportItemMetaPaint*>(_it);
@@ -97,7 +97,7 @@ void ReportItemMetaPaint::shiftChildren(const ReportProcessorItem::Point offset)
 
 void ReportItemMetaPaint::expandChildrenFramesRecursively()
 {
-	if(renderedRect.flags & ReportProcessorItem::Rect::LayoutHorizontalFlag) {
+	if(renderedRect.flags & ReportItem::Rect::LayoutHorizontalFlag) {
 		/// ve smeru layoutu natahni jen posledni dite az po inset
 		ReportItemMetaPaint *it = lastChild();
 		if(it && it->isExpandable()) {
@@ -115,7 +115,7 @@ void ReportItemMetaPaint::expandChildrenFramesRecursively()
 		/// ve smeru ortogonalnim k layoutu natahni vsechny deti
 		ReportItemMetaPaint *it = static_cast<ReportItemMetaPaint*>(_it);
 		if(it->isExpandable()) {
-			if(renderedRect.flags & ReportProcessorItem::Rect::LayoutHorizontalFlag) {
+			if(renderedRect.flags & ReportItem::Rect::LayoutHorizontalFlag) {
 				it->renderedRect.setTop(renderedRect.top() + insetVertical());
 				it->renderedRect.setBottom(renderedRect.bottom() - insetVertical());
 			}
@@ -195,7 +195,7 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 				ReportItemMetaPaint *it = child(i);
 				if(children_ly_offset > 0) {
 					/// nejdriv posun deti, nafouknuti itemu
-					ReportProcessorItem::Point p;
+					ReportItem::Point p;
 					p.setY(children_ly_offset);
 					it->shift(p);
 				}
@@ -338,7 +338,7 @@ QString ReportItemMetaPaint::dump(int indent)
 //=================================================
 //                              ReportItemMetaPaintReport
 //=================================================
-ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportProcessorItem *report_item)
+ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportItem *report_item)
 	: ReportItemMetaPaint(NULL, report_item)
 {
 	//f_reportProcessor = report_item->processor;
@@ -351,7 +351,7 @@ ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportProcessorItem *report
 //=================================================
 //           ReportItemMetaPaintFrame
 //=================================================
-ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent, ReportProcessorItem *report_item)
+ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent, ReportItem *report_item)
 : ReportItemMetaPaint(_parent, report_item), lbrd(Qt::NoPen), rbrd(Qt::NoPen), tbrd(Qt::NoPen), bbrd(Qt::NoPen)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
@@ -583,13 +583,14 @@ QString ReportItemMetaPaintText::dump(int indent)
 }
 
 //=================================================
-//                              ReportItemMetaPaintCheck
+//           ReportItemMetaPaintCheck
 //=================================================
 void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
-	QF_ASSERT(painter, "painter is NULL");
-	if(mode != PaintFill) return;
+	QF_ASSERT(painter, "painter is NULL", return);
+	if(mode != PaintFill)
+		return;
 
 	QFontMetricsF font_metrics = QFontMetricsF(painter->font(), painter->device());
 
@@ -606,7 +607,7 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 		s_box = (check_on)? "color: black; style: solid; size:1": "color: gray; style: solid; size:1";
 		painter->setPen(context().styleCache().pen(s_box));
 		painter->setBrush(QBrush());
-		ReportProcessorItem::Rect r = renderedRect;
+		ReportItem::Rect r = renderedRect;
 		r.translate(0, -font_metrics.leading());
 		qreal w = renderedRect.width();
 		Qt::Alignment alignment_flags = textOption.alignment();
@@ -649,7 +650,7 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 void ReportItemMetaPaintImage::paint(ReportPainter *painter, unsigned mode)
 {
 	//qfDebug().color(QFLog::Green) << QF_FUNC_NAME << reportElement.tagName() << "mode:" << mode;
-	QF_ASSERT(painter, "painter is NULL");
+	QF_ASSERT(painter, "painter is NULL", return);
 	QPrinter *printer = dynamic_cast<QPrinter*>(painter->device());
 	//if(printer) { qfInfo() << "printer output format:" << printer->outputFormat() << "is native printer:" << (printer->outputFormat() == QPrinter::NativeFormat); }
 	if(printer && printer->outputFormat() == QPrinter::NativeFormat) {

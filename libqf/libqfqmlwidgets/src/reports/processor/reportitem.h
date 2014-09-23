@@ -19,6 +19,7 @@
 #include <QRectF>
 #include <QTextLayout>
 #include <QPicture>
+#include <QQmlParserStatus>
 
 class QDomElement;
 class QDomText;
@@ -36,13 +37,22 @@ class ReportItemDetail;
 class ReportItemMetaPaintFrame;
 
 //! Base class of report elements.
-class QFQMLWIDGETS_DECL_EXPORT ReportProcessorItem : public QObject
+class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserStatus
 {
 	Q_OBJECT
-	Q_PROPERTY(bool keepAll READ keepAll WRITE setKeepAll NOTIFY keepAllChanged)
-	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 private:
 	typedef QObject Super;
+public:
+	Q_PROPERTY(bool keepAll READ keepAll WRITE setKeepAll NOTIFY keepAllChanged)
+	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
+public:
+	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
+				 LayoutHorizontal = graphics::LayoutHorizontal,
+				 LayoutVertical = graphics::LayoutVertical,
+				 LayoutStack = graphics::LayoutStack
+				};
+	//typedef graphics::Layout Layout;
+	Q_ENUMS(Layout)
 public:
 	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
 	QF_PROPERTY_BOOL_IMPL(k, K, eepAll)
@@ -57,13 +67,13 @@ public:
 private:
 	bool m_visible;
 public:
-	ReportProcessorItem(ReportProcessorItem *parent);
-	~ReportProcessorItem() Q_DECL_OVERRIDE;
+	ReportItem(ReportItem *parent);
+	~ReportItem() Q_DECL_OVERRIDE;
 public:
 	typedef QDomElement HTMLElement;
 	static const double Epsilon;
 	static const QString INFO_IF_NOT_FOUND_DEFAULT_VALUE;
-	//typedef qf::qmlwidgets::graphics::Layout Layout;
+	//typedef Layout Layout;
 	enum PrintResultValue {
 		PrintNotPrintedYet = 0,
 		PrintOk = 1, ///< tisk se zdaril
@@ -87,24 +97,25 @@ public:
 					.arg(QString((flags & FlagPrintAgain)? "PrintAgain ": " ")) + ((flags & FlagPrintNeverFit)? "PrintNeverFit ": " ");}
 	};
 public:
-	typedef qf::qmlwidgets::graphics::Point Point;
-	class Size : public qf::qmlwidgets::graphics::Size
+	typedef graphics::Point Point;
+	class Size : public graphics::Size
 	{
 	public:
-		Size() : qf::qmlwidgets::graphics::Size(0, 0) {}
-		Size(qreal x, qreal y) : qf::qmlwidgets::graphics::Size(x, y) {}
-		Size(const qf::qmlwidgets::graphics::Size &s) : qf::qmlwidgets::graphics::Size(s) {}
-		Size(const QSizeF &s) : qf::qmlwidgets::graphics::Size(s) {}
+		Size() : graphics::Size(0, 0) {}
+		Size(qreal x, qreal y) : graphics::Size(x, y) {}
+		Size(const graphics::Size &s) : graphics::Size(s) {}
+		Size(const QSizeF &s) : graphics::Size(s) {}
 
-		qreal sizeInLayout(qf::qmlwidgets::graphics::Layout ly)
+		qreal sizeInLayout(Layout ly)
 		{
-			if(ly == qf::qmlwidgets::graphics::LayoutHorizontal) return width();
+			if(ly == LayoutHorizontal)
+				return width();
 			return height();
 		}
 
-		Size& addSizeInLayout(const Size &sz, qf::qmlwidgets::graphics::Layout ly)
+		Size& addSizeInLayout(const Size &sz, Layout ly)
 		{
-			if(ly == qf::qmlwidgets::graphics::LayoutHorizontal) {
+			if(ly == LayoutHorizontal) {
 				setWidth(width() + sz.width());
 				setHeight(qMax(height(), sz.height()));
 			}
@@ -115,53 +126,57 @@ public:
 			return *this;
 		}
 	};
-	class Rect : public qf::qmlwidgets::graphics::Rect
+	class Rect : public graphics::Rect
 	{
 	public:
 		enum Flag {
-			LeftFixed = 1,
-			TopFixed = 2,
-			BottomFixed = 4,
-			RightFixed = 8,
-			FillLayout = 16, /// tento item se natahne ve smeru layoutu tak, aby vyplnil cely bounding_rect
-			ExpandChildrenFrames = 32, /// viz. atribut expandChildrenFrames v Report.rnc
-			LayoutHorizontalFlag = 64, /// rect ma layout ve smeru x
-			LayoutVerticalFlag = 128, /// rect ma layout ve smeru y, pokud je kombinace LayoutX a LayoutY nesmyslna predpoklada se LayoutX == 0 LayoutY == 1
-			BackgroundItem = 256
+			//LeftFixed = 1,
+			//TopFixed = 2,
+			//BottomFixed = 4,
+			//RightFixed = 8,
+			FillLayout = 1, /// tento item se natahne ve smeru layoutu tak, aby vyplnil cely bounding_rect
+			ExpandChildrenFrames = 2, /// viz. atribut expandChildrenFrames v Report.rnc
+			LayoutHorizontalFlag = 4, /// rect ma layout ve smeru x
+			LayoutVerticalFlag = 8, /// rect ma layout ve smeru y, pokud je kombinace LayoutX a LayoutY nesmyslna predpoklada se LayoutX == 0 LayoutY == 1
+			BackgroundItem = 16
 		};
 		enum Unit {UnitInvalid = 0, UnitMM, UnitPercent};
 	public:
 		unsigned flags;
 		Unit horizontalUnit, verticalUnit;
 	public:
+		/*--
 		bool isAnchored()  const
 		{
 			return flags & (LeftFixed | TopFixed | BottomFixed | RightFixed);
 		}
-		bool isRubber(qf::qmlwidgets::graphics::Layout ly)  const
+		--*/
+		bool isRubber(Layout ly)  const
 		{
-			if(ly == qf::qmlwidgets::graphics::LayoutHorizontal) return (width() == 0 && horizontalUnit == UnitMM);
+			if(ly == LayoutHorizontal)
+				return (width() == 0 && horizontalUnit == UnitMM);
 			return (height() == 0 && verticalUnit == UnitMM);
 		}
-		Unit unit(qf::qmlwidgets::graphics::Layout ly)  const
+		Unit unit(Layout ly)  const
 		{
-			if(ly == qf::qmlwidgets::graphics::LayoutHorizontal) return horizontalUnit;
+			if(ly == LayoutHorizontal)
+				return horizontalUnit;
 			return verticalUnit;
 		}
 
-		qreal sizeInLayout(qf::qmlwidgets::graphics::Layout ly) const
+		qreal sizeInLayout(Layout ly) const
 		{
 			return Size(size()).sizeInLayout(ly);
 		}
-		Rect& setSizeInLayout(qreal sz, qf::qmlwidgets::graphics::Layout ly)
+		Rect& setSizeInLayout(qreal sz, Layout ly)
 		{
-			if(ly == qf::qmlwidgets::graphics::LayoutHorizontal) setWidth(sz);
+			if(ly == LayoutHorizontal) setWidth(sz);
 			else setHeight(sz);
 			return *this;
 		}
-		Rect& cutSizeInLayout(const Rect &rect, qf::qmlwidgets::graphics::Layout ly)
+		Rect& cutSizeInLayout(const Rect &rect, Layout ly)
 		{
-			if(ly == qf::qmlwidgets::graphics::LayoutHorizontal) {
+			if(ly == LayoutHorizontal) {
 				if(rect.right() > right()) setLeft(right());
 				else setLeft(rect.right());
 			}
@@ -183,19 +198,22 @@ public:
 		static QString unitToString(Unit u) {
 			QString ret;
 			switch(u) {
-			case UnitMM: ret = "mm"; break;
-			case UnitPercent: ret = "%"; break;
-			default: ret = "invalid";
+			case UnitMM:
+				ret = "mm"; break;
+			case UnitPercent:
+				ret = "%"; break;
+			default:
+				ret = "invalid";
 			}
 			return ret;
 		}
 
 		static QString flagsToString(unsigned flags) {
 			QString ret;
-			if(flags & LeftFixed) ret += 'L';
-			if(flags & TopFixed) ret += 'T';
-			if(flags & RightFixed) ret += 'R';
-			if(flags & BottomFixed) ret += 'B';
+			//if(flags & LeftFixed) ret += 'L';
+			//if(flags & TopFixed) ret += 'T';
+			//if(flags & RightFixed) ret += 'R';
+			//if(flags & BottomFixed) ret += 'B';
 			if(flags & FillLayout) ret += 'F';
 			if(flags & ExpandChildrenFrames) ret += 'E';
 			if(flags & LayoutHorizontalFlag) ret += 'X';
@@ -209,12 +227,12 @@ public:
 			horizontalUnit = verticalUnit = UnitMM;
 		}
 	public:
-		Rect() : qf::qmlwidgets::graphics::Rect() {init();}
+		Rect() : graphics::Rect() {init();}
 		//Rect(qreal x, qreal y) : QRectF(x, y) {init();}
-		Rect(const QPointF &topLeft, const QSizeF &size) : qf::qmlwidgets::graphics::Rect(topLeft, size) {init();}
-		Rect(qreal x, qreal y, qreal width, qreal height) : qf::qmlwidgets::graphics::Rect(x, y, width, height) {init();}
-		Rect(const QRectF &r) : qf::qmlwidgets::graphics::Rect(r) {init();}
-		Rect(const qf::qmlwidgets::graphics::Rect &r) : qf::qmlwidgets::graphics::Rect(r) {init();}
+		Rect(const QPointF &topLeft, const QSizeF &size) : graphics::Rect(topLeft, size) {init();}
+		Rect(qreal x, qreal y, qreal width, qreal height) : graphics::Rect(x, y, width, height) {init();}
+		Rect(const QRectF &r) : graphics::Rect(r) {init();}
+		Rect(const graphics::Rect &r) : graphics::Rect(r) {init();}
 	};
 public:
 	struct ChildSize {
@@ -260,7 +278,7 @@ protected:
 	//! vrati detail, ktery item obsahuje nebo item, pokud je item typu detail nebo NULL.
 	virtual ReportItemDetail* currentDetail();
 
-	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportProcessorItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
+	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
 	/// poukud ma node jen jedno dite vrati to jeho hodnotu vcetne typu, pokud je deti vic, udela to z nich jeden string
 	//--QVariant concatenateNodeChildrenValues(const QDomNode &nd) ;
 	//--QString nodeText(const QDomNode &nd) ;
@@ -275,30 +293,21 @@ protected:
 	}
 	virtual bool childrenSynced();
 	virtual void syncChildren();
-	--*/
 	void deleteChildren();
-
-	static QDomText setElementText(HTMLElement &el, const QString &str);
-public:
-	ReportProcessor *processor;
-	//--QDomElement element;
-	Rect designedRect;
-
-	bool recentlyPrintNotFit;
-	//PrintResult recentPrintResult;
+	--*/
 public:
 	//! Vraci atribut elementu itemu.
 	//! Pokud hodnota \a attr_name je ve tvaru 'script:funcname', zavola se scriptDriver processoru, jinak se vrati atribut.
 	QString elementAttribute(const QString &attr_name, const QString &default_val = QString());
 
-	virtual ReportProcessorItem* parent() const {return static_cast<ReportProcessorItem*>(this->Super::parent());}
-	virtual ReportProcessorItem* childAt(int ix) const {return static_cast<ReportProcessorItem*>(this->children()[ix]);}
+	virtual ReportItem* parent() const {return static_cast<ReportItem*>(this->Super::parent());}
+	virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
 	//! Print item in form, that understandable by ReportPainter.
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) = 0;
 	//! Print item in HTML element form.
 	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PrintOk;}
 	/// vrati definovanou velikost pro item a layout
-	virtual ChildSize childSize(qf::qmlwidgets::graphics::Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize();}
+	virtual ChildSize childSize(Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize();}
 
 	ReportItemFrame* parentFrame() const
 	{
@@ -314,54 +323,98 @@ public:
 
 	ReportItemMetaPaint* createMetaPaintItem(ReportItemMetaPaint *parent);
 	/*--
-	virtual ReportProcessorItem* cd(const qf::core::utils::TreeItemPath &path) const {
-		return dynamic_cast<ReportProcessorItem*>(Super::cd(path));
+	virtual ReportItem* cd(const qf::core::utils::TreeItemPath &path) const {
+		return dynamic_cast<ReportItem*>(Super::cd(path));
 	}
 	--*/
+protected:
+	virtual void componentComplete() {}
+public:
+	ReportProcessor *processor;
+	//--QDomElement element;
+	Rect designedRect;
+
+	bool recentlyPrintNotFit;
+	//PrintResult recentPrintResult;
 };
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemBreak : public ReportProcessorItem
+class QFQMLWIDGETS_DECL_EXPORT ReportItemBreak : public ReportItem
 {
 	Q_OBJECT
 private:
-	typedef ReportProcessorItem Super;
+	typedef ReportItem Super;
 protected:
 	bool breaking;
 public:
 	virtual bool isBreak() {return true;}
 
-	virtual ChildSize childSize(qf::qmlwidgets::graphics::Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize(0, Rect::UnitInvalid);}
+	virtual ChildSize childSize(Layout parent_layout) {
+		Q_UNUSED(parent_layout);
+		return ChildSize(0, Rect::UnitInvalid);
+	}
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 public:
-	ReportItemBreak(ReportProcessorItem *parent);
+	ReportItemBreak(ReportItem *parent);
 };
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportProcessorItem
+class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportItem
 {
 	Q_OBJECT
 private:
-	typedef ReportProcessorItem Super;
+	typedef ReportItem Super;
 public:
-	Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
-	Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
-	Q_PROPERTY(qreal y1 READ y1 WRITE setY1 NOTIFY y1Changed)
-	Q_PROPERTY(qreal y2 READ y2 WRITE setY2 NOTIFY y2Changed)
+	Q_ENUMS(Alignment)
+	//Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
+	//Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
+	//Q_PROPERTY(qreal y1 READ y1 WRITE setY1 NOTIFY y1Changed)
+	//Q_PROPERTY(qreal y2 READ y2 WRITE setY2 NOTIFY y2Changed)
+	Q_PROPERTY(qreal hinset READ hinset WRITE setHinset NOTIFY hinsetChanged)
+	Q_PROPERTY(qreal vinset READ vinset WRITE setVinset NOTIFY vinsetChanged)
 	Q_PROPERTY(QString width READ width WRITE setWidth NOTIFY widthChanged)
 	Q_PROPERTY(QString height READ height WRITE setHeight NOTIFY heightChanged)
+	Q_CLASSINFO("property.layout.doc",
+				"LayoutHorizontal - place children in the row\n"
+				"LayoutVertical - place children in the column\n"
+				"LayoutStack - place all children on stack"
+				)
+	Q_PROPERTY(Layout layout READ layout WRITE setLayout NOTIFY layoutChanged)
+	Q_CLASSINFO("property.expandChildrenFrames.doc",
+				"ramecky deti, jsou roztazeny tak, aby vyplnily parent frame, "
+				"jinymi slovy, pokud v radku tabulky natece kazde policko jinak vysoke, budou vsechny roztazeny na vysku parent frame.\n"
+				"Natahuji se jen ramecky, poloha vyrendrovaneho obsahu zustava nezmenena, "
+				"dela se to tak, ze se nejprve vyrendruje stranka a pak se prochazi vyrendrovane ramecky a pokud je treba, "
+				"zvetsuji se tak, aby vyplnily cely parent frame.  Objekty typu QFReportItemMetaPaintText jsou ignorovany"
+				)
+	Q_PROPERTY(bool expandChildrenFrames READ isExpandChildrenFrames WRITE setExpandChildrenFrames NOTIFY expandChildrenFramesChanged)
+	Q_PROPERTY(Alignment halign READ horizontalAlignment WRITE setHorizontalAlignment NOTIFY horizontalAlignmentChanged)
+	Q_PROPERTY(Alignment valign READ verticalAlignment WRITE setVerticalAlignment NOTIFY verticalAlignmentChanged)
 public:
-	QF_PROPERTY_IMPL(qreal, x, X, 1)
-	QF_PROPERTY_IMPL(qreal, y, Y, 1)
-	QF_PROPERTY_IMPL(qreal, x, X, 2)
-	QF_PROPERTY_IMPL(qreal, y, Y, 2)
+	enum Alignment {
+		AlignLeft = Qt::AlignLeft,
+		AlignRight = Qt::AlignRight,
+		AlignCenter = Qt::AlignHCenter,
+		AlignTop = Qt::AlignTop,
+		AlignBottom = Qt::AlignBottom
+	};
+	//QF_PROPERTY_IMPL(qreal, x, X, 1)
+	//QF_PROPERTY_IMPL(qreal, y, Y, 1)
+	//QF_PROPERTY_IMPL(qreal, x, X, 2)
+	//QF_PROPERTY_IMPL(qreal, y, Y, 2)
+	QF_PROPERTY_IMPL(qreal, h, H, inset)
+	QF_PROPERTY_IMPL(qreal, v, V, inset)
 	QF_PROPERTY_IMPL(QString, w, W, idth)
 	QF_PROPERTY_IMPL(QString, h, H, eight)
+	QF_PROPERTY_IMPL(Layout, l, L, ayout)
+	QF_PROPERTY_BOOL_IMPL(e, E, xpandChildrenFrames)
+	QF_PROPERTY_IMPL(Alignment, h, H, orizontalAlignment)
+	QF_PROPERTY_IMPL(Alignment, v, V, erticalAlignment)
 public:
-	ReportItemFrame(ReportProcessorItem *parent);
+	ReportItemFrame(ReportItem *parent);
 	~ReportItemFrame() Q_DECL_OVERRIDE {}
 public:
-	bool isRubber(qf::qmlwidgets::graphics::Layout ly) {
+	bool isRubber(Layout ly) {
 		ChildSize sz = childSize(ly);
 		return (sz.size == 0 && sz.unit == Rect::UnitMM);
 	}
@@ -371,39 +424,30 @@ public:
 	//! children, kterym se ma zacit pri tisku
 	int indexToPrint;
 
-	qf::qmlwidgets::graphics::Layout f_layout;
-	static qf::qmlwidgets::graphics::Layout orthogonalLayout(qf::qmlwidgets::graphics::Layout l) {
-		if(l == qf::qmlwidgets::graphics::LayoutHorizontal) return qf::qmlwidgets::graphics::LayoutVertical;
-		if(l == qf::qmlwidgets::graphics::LayoutVertical) return qf::qmlwidgets::graphics::LayoutHorizontal;
-		return qf::qmlwidgets::graphics::LayoutInvalid;
+	static Layout orthogonalLayout(Layout l) {
+		if(l == LayoutHorizontal)
+			return LayoutVertical;
+		if(l == LayoutVertical)
+			return LayoutHorizontal;
+		return LayoutInvalid;
 	}
-	qf::qmlwidgets::graphics::Layout layout() const {return (f_layout == qf::qmlwidgets::graphics::LayoutParentGrid)? qf::qmlwidgets::graphics::LayoutHorizontal: f_layout;}
-	qf::qmlwidgets::graphics::Layout orthogonalLayout() const {return orthogonalLayout(layout());}
-	bool isParentGridLayout() const {return (f_layout == qf::qmlwidgets::graphics::LayoutParentGrid);}
-	bool isParentGrid() const {return f_parentGrid;}
-
-	qreal hinset, vinset;
-	Qt::Alignment alignment;
-	bool f_parentGrid;
-	// parent frame ve funkci printMetaPaint nastavi vsem detem tuto velikost na rozmer,
-	// ktery mu pripadne v zavislosti na definici rozmeru ostatnich deti.
-	// Hodnota 0 znamena, ze kam natece, tam natece
-	//qreal metaPaintLayoutLength;
-	// rozmer v druhem smeru, nez je layout.
-	//qreal metaPaintOrthogonalLayoutLength;
+	Layout orthogonalLayout() const {return orthogonalLayout(layout());}
 protected:
-	virtual ChildSize childSize(qf::qmlwidgets::graphics::Layout parent_layout);
+	ChildSize childSize(Layout parent_layout) Q_DECL_OVERRIDE;
 	virtual ReportItemFrame* toFrame() {return this;}
 
-	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect);
+	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
-	qf::qmlwidgets::graphics::Layout parentLayout() const
+	Layout parentLayout() const
 	{
 		ReportItemFrame *frm = parentFrame();
-		if(!frm) return qf::qmlwidgets::graphics::LayoutInvalid;
+		if(!frm)
+			return LayoutInvalid;
 		return frm->layout();
 	}
+
+	void componentComplete() Q_DECL_OVERRIDE;
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
@@ -434,7 +478,7 @@ public:
 	virtual qf::core::utils::TreeTable dataTable();
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
 public:
-	ReportItemBand(ReportProcessorItem *parent);
+	ReportItemBand(ReportItem *parent);
 	virtual ~ReportItemBand() {}
 };
 
@@ -461,7 +505,7 @@ public:
 	int currentRowNo() const {return f_currentRowNo;}
 	void resetCurrentRowNo() {f_currentRowNo = 0;}
 public:
-	ReportItemDetail(ReportProcessorItem *parent);
+	ReportItemDetail(ReportItem *parent);
 	virtual ~ReportItemDetail() {}
 };
 
@@ -493,7 +537,7 @@ protected:
 	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
 	//virtual PrintResult checkPrintResult(PrintResult res) {return res;}
 public:
-	ReportItemBody(ReportProcessorItem *parent)
+	ReportItemBody(ReportItem *parent)
 		: Super(parent) {}
 	virtual ~ReportItemBody() {}
 
@@ -515,7 +559,7 @@ protected:
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 public:
-	ReportItemTable(ReportProcessorItem *parent);
+	ReportItemTable(ReportItem *parent);
 	virtual ~ReportItemTable() {}
 };
 --*/
@@ -530,7 +574,7 @@ protected:
 	QString printedText;
 	QTextLayout textLayout;
 protected:
-	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect);
+	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 	QString paraStyleDefinition();
 	QString paraText();
 public:
@@ -538,7 +582,7 @@ public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
 public:
-	ReportItemPara(ReportProcessorItem *parent);
+	ReportItemPara(ReportItem *parent);
 	virtual ~ReportItemPara() {}
 };
 
@@ -557,9 +601,9 @@ protected:
 	virtual bool childrenSynced();
 	virtual void syncChildren();
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect);
+	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 public:
-	ReportItemImage(ReportProcessorItem *parent)
+	ReportItemImage(ReportItem *parent)
 		: Super(parent), childrenSyncedFlag(false) {}
 };
 
@@ -571,9 +615,9 @@ private:
 	typedef ReportItemImage Super;
 protected:
 	virtual void syncChildren();
-	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportProcessorItem::Rect &bounding_rect);
+	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 public:
-	ReportItemGraph(ReportProcessorItem *parent)
+	ReportItemGraph(ReportItem *parent)
 		: Super(parent) {}
 };
 

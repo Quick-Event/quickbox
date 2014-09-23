@@ -20,7 +20,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace graphics {
 	
-enum Layout {LayoutInvalid = 0, LayoutHorizontal = 1, LayoutVertical, /*LayoutGrid,*/ LayoutParentGrid};
+enum Layout {LayoutInvalid = 0, LayoutHorizontal = 1, LayoutVertical, LayoutStack};
 class Point : public QPointF
 {
 	public:
@@ -80,6 +80,8 @@ Rect mm2device(const Rect &r, QPaintDevice *dev);
 Point mm2device(const Point &p, QPaintDevice *dev);
 Point device2mm(const Point &p, QPaintDevice *dev);
 Rect device2mm(const Rect &p, QPaintDevice *dev);
+
+double parseRational(const QString &rational_or_proc_repr);
 
 //double stringToProc(const QString &s);
 QList<double> makeLayoutSizes(const QStringList &section_sizes, double layout_size);

@@ -27,28 +27,28 @@ Rect Rect::united(const Rect & _r2) const
 
 qreal x2device(qreal x, QPaintDevice *dev)
 {
-	QF_ASSERT(dev, "dev is NULL");
+	QF_ASSERT_EX(dev, "dev is NULL");
 	double dpmm = dev->logicalDpiX() / 25.4;
 	return x * dpmm;
 }
 
 qreal y2device(qreal y, QPaintDevice *dev)
 {
-	QF_ASSERT(dev, "dev is NULL");
+	QF_ASSERT_EX(dev, "dev is NULL");
 	double dpmm = dev->logicalDpiY() / 25.4;
 	return y * dpmm;
 }
 
 qreal device2x(qreal x, QPaintDevice *dev)
 {
-	QF_ASSERT(dev, "dev is NULL");
+	QF_ASSERT_EX(dev, "dev is NULL");
 	double dpmm = dev->logicalDpiX() / 25.4;
 	return x / dpmm;
 }
 
 qreal device2y(qreal y, QPaintDevice *dev)
 {
-	QF_ASSERT(dev, "dev is NULL");
+	QF_ASSERT_EX(dev, "dev is NULL");
 	double dpmm = dev->logicalDpiY() / 25.4;
 	return y / dpmm;
 }
@@ -56,24 +56,24 @@ qreal device2y(qreal y, QPaintDevice *dev)
 Rect mm2device(const Rect &r, QPaintDevice *dev)
 {
 	Rect ret;
-	ret.setLeft(x2device(r.left(), dev));
-	ret.setTop(y2device(r.top(), dev));
-	ret.setWidth(x2device(r.width(), dev));
-	ret.setHeight(y2device(r.height(), dev));
+	ret.setLeft(qf::qmlwidgets::graphics::x2device(r.left(), dev));
+	ret.setTop(qf::qmlwidgets::graphics::y2device(r.top(), dev));
+	ret.setWidth(qf::qmlwidgets::graphics::x2device(r.width(), dev));
+	ret.setHeight(qf::qmlwidgets::graphics::y2device(r.height(), dev));
 	return ret;
 }
 
 Point mm2device(const Point &p, QPaintDevice *dev)
 {
 	Point ret;
-	ret.setX(x2device(p.x(), dev));
-	ret.setY(y2device(p.y(), dev));
+	ret.setX(qf::qmlwidgets::graphics::x2device(p.x(), dev));
+	ret.setY(qf::qmlwidgets::graphics::y2device(p.y(), dev));
 	return ret;
 }
 
 Point device2mm(const Point &p, QPaintDevice *dev)
 {
-	QF_ASSERT(dev, "dev is NULL");
+	QF_ASSERT_EX(dev, "dev is NULL");
 	double x_dpmm = dev->logicalDpiX() / 25.4;
 	double y_dpmm = dev->logicalDpiY() / 25.4;
 	Point ret;
@@ -84,7 +84,7 @@ Point device2mm(const Point &p, QPaintDevice *dev)
 
 Rect device2mm(const Rect &r, QPaintDevice *dev)
 {
-	QF_ASSERT(dev, "dev is NULL");
+	QF_ASSERT_EX(dev, "dev is NULL");
 	double x_dpmm = dev->logicalDpiX() / 25.4;
 	double y_dpmm = dev->logicalDpiY() / 25.4;
 	Rect ret;
@@ -98,7 +98,8 @@ Rect device2mm(const Rect &r, QPaintDevice *dev)
 QList< double > makeLayoutSizes(const QStringList& section_sizes, double layout_size)
 {
 	QVariantList vlst;
-	foreach(QString s, section_sizes) vlst << s;
+	foreach(QString s, section_sizes)
+		vlst << s;
 	return makeLayoutSizes(vlst, layout_size);
 }
 
@@ -108,7 +109,7 @@ static bool is_absolute_size(const QVariant &v)
 	bool ret = false;
 	//if(v.isValid() && v.type() != QVariant::String)
 	v.toString().toDouble(&ret);
-	//qfTrash() << "\t return:" << ret;
+	//qfDebug() << "\t return:" << ret;
 	return ret;
 }
 
@@ -116,21 +117,23 @@ QList< double > makeLayoutSizes(const QVariantList& section_sizes, double layout
 {
 	qfLogFuncFrame();
 	QList<double> ret;
-	if(section_sizes.isEmpty()) return ret;
+	if(section_sizes.isEmpty())
+		return ret;
 
-	for(int i=0; i<section_sizes.count(); i++) ret << 0;
+	for(int i=0; i<section_sizes.count(); i++)
+		ret << 0;
 
 	//QVariantList section_sizes = section_sizes;
 	double proc_sum = 0;
 	int proc_0_cnt = 0;
 	QSet<int> relative_ixs;
-	qfTrash() << "\t sizes in layout:";
+	qfDebug() << "\t sizes in layout:";
 	for(int i=0; i<section_sizes.count(); i++) {
 		const QVariant &v = section_sizes[i];
-		qfTrash() << "\t\t" << v.toString() << v.typeName() << "invalid:" << !v.isValid();
+		qfDebug() << "\t\t" << v.toString() << v.typeName() << "invalid:" << !v.isValid();
 		if(!is_absolute_size(v)) {
 			QString s = v.toString();
-			double d = Qf::parseRational(s);
+			double d = parseRational(s);
 			if(d == 0) proc_0_cnt++;
 			else if(d > 0) proc_sum += d;
 			relative_ixs << i;
@@ -147,7 +150,7 @@ QList< double > makeLayoutSizes(const QVariantList& section_sizes, double layout
 			abs_sum += ret[i];
 		}
 	}
-	qfTrash() << "\t" << "abs_sum:" << abs_sum << "proc_sum:" << proc_sum << "proc_0_cnt:" << proc_0_cnt << "ly_size:" << layout_size;
+	qfDebug() << "\t" << "abs_sum:" << abs_sum << "proc_sum:" << proc_sum << "proc_0_cnt:" << proc_0_cnt << "ly_size:" << layout_size;
 	if(layout_size < abs_sum) {
 		qfWarning() << "WUCDesignerItemFrame::updateLayout(): Children cann't fit parent. ly_size:" << layout_size << "abs_sum:" << abs_sum;
 		layout_size = abs_sum;
@@ -172,3 +175,25 @@ QList< double > makeLayoutSizes(const QVariantList& section_sizes, double layout
 	return ret;
 }
 
+
+
+double parseRational(const QString &rational_or_proc_repr)
+{
+	double d = 0;
+	int ix;
+	if((ix = rational_or_proc_repr.indexOf('/')) > 0) {
+		double d1 = rational_or_proc_repr.mid(0, ix).trimmed().toDouble();
+		double d2 = rational_or_proc_repr.mid(ix + 1).trimmed().toDouble();
+		if(d1 > 0 && d2 > 0) {
+			d = d1 / d2;
+		}
+	}
+	else if((ix = rational_or_proc_repr.indexOf('%')) > 0) {
+		d = rational_or_proc_repr.mid(0, ix).trimmed().toDouble();
+		d = d / 100;
+	}
+	else {
+		d = rational_or_proc_repr.toDouble();
+	}
+	return d;
+}

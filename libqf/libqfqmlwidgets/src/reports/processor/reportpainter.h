@@ -48,18 +48,18 @@ public:
 		};
 	};
 public:
-	ReportProcessorItem::Rect renderedRect; ///< rozmery v mm
+	ReportItem::Rect renderedRect; ///< rozmery v mm
 	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
 	//QFTreeItemPath f_reportItemPath;
 	//ReportProcessor *f_reportProcessor;
 	ReportProcessorContext f_procesorContext;
 
-	ReportProcessorItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
+	ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
 	LayoutSetting f_layoutSettings;
 public:
 	//ReportProcessor* reportProcessor();
 	const ReportProcessorContext& context() {return f_procesorContext;}
-	ReportProcessorItem* reportItem();
+	ReportItem* reportItem();
 	//const LayoutSetting& layoutSettings() {return f_layoutSettings;}
 	void setInset(qreal horizontal, qreal vertical);
 	qreal insetHorizontal() {return f_layoutSettings.value(LayoutSetting::HInset).toDouble();}
@@ -95,12 +95,12 @@ public:
 	}
 
 	virtual void paint(ReportPainter *painter, unsigned mode);
-	void shift(const ReportProcessorItem::Point offset)
+	void shift(const ReportItem::Point offset)
 	{
 		renderedRect.translate(offset);
 		shiftChildren(offset);
 	}
-	void shiftChildren(const ReportProcessorItem::Point offset);
+	void shiftChildren(const ReportItem::Point offset);
 
 	void alignChildren();
 
@@ -121,7 +121,7 @@ public:
 public:
 	ReportItemMetaPaint();
 	//! parametr \a processor v konstruktoru slouzi jenom kvuli scriptovanym atributum elementu, pouzije se jen v konstruktoru, ukazatel na nej se nikde neuklada.
-	ReportItemMetaPaint(ReportItemMetaPaint *parent, ReportProcessorItem *report_item);
+	ReportItemMetaPaint(ReportItemMetaPaint *parent, ReportItem *report_item);
 	~ReportItemMetaPaint() Q_DECL_OVERRIDE;
 };
 
@@ -137,7 +137,7 @@ public:
 	QSize pageSize;
 	//virtual ReportProcessor* reportProcessor() {return f_reportProcessor;}
 public:
-	ReportItemMetaPaintReport(ReportProcessorItem *report_item);
+	ReportItemMetaPaintReport(ReportItem *report_item);
 };
 
 //! TODO documentation
@@ -158,7 +158,7 @@ protected:
 public:
 	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
 public:
-	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportProcessorItem *report_item);
+	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportItem *report_item);
 	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
 };
 //! TODO documentation
@@ -183,7 +183,7 @@ public:
 
 	virtual QString dump(int indent = 0);
 public:
-	ReportItemMetaPaintText(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
+	ReportItemMetaPaintText(ReportItemMetaPaint *parent, ReportItem *report_item)
 	: ReportItemMetaPaint(parent, report_item) {}
 	~ReportItemMetaPaintText() Q_DECL_OVERRIDE {}
 };
@@ -197,7 +197,7 @@ public:
 	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
 	virtual bool isExpandable() const {return false;}
 public:
-	ReportItemMetaPaintCheck(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
+	ReportItemMetaPaintCheck(ReportItemMetaPaint *parent, ReportItem *report_item)
 	: ReportItemMetaPaintText(parent, report_item) {}
 };
 
@@ -207,7 +207,7 @@ class ReportItemMetaPaintImage : public ReportItemMetaPaint
 private:
 	typedef ReportItemMetaPaintImage Super;
 public:
-	ReportProcessorItem::Image image;
+	ReportItem::Image image;
 	Qt::AspectRatioMode aspectRatioMode;
 	//bool resize;
 public:
@@ -216,7 +216,7 @@ public:
 
 	virtual QString dump(int indent = 0);
 public:
-	ReportItemMetaPaintImage(ReportItemMetaPaint *parent, ReportProcessorItem *report_item)
+	ReportItemMetaPaintImage(ReportItemMetaPaint *parent, ReportItem *report_item)
 	: ReportItemMetaPaint(parent, report_item), aspectRatioMode(Qt::IgnoreAspectRatio)/*, resize(true)*/ {}
 };
 

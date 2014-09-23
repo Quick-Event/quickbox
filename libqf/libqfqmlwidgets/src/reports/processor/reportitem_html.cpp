@@ -21,7 +21,8 @@ namespace qfu = qf::core::utils;
 
 using namespace qf::qmlwidgets::reports;
 
-QDomText ReportProcessorItem::setElementText(HTMLElement &el, const QString &str)
+namespace {
+QDomText setElementText(QDomElement &el, const QString &str)
 {
 	QDomNode nd = el.firstChild();
 	QDomText eltxt = nd.toText();
@@ -34,11 +35,11 @@ QDomText ReportProcessorItem::setElementText(HTMLElement &el, const QString &str
 	}
 	return eltxt;
 }
-
+}
 //===================================================================
 //                           ReportItemFrame
 //===================================================================
-ReportProcessorItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
+ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();
 	PrintResult res = PrintOk;
@@ -52,16 +53,16 @@ ReportProcessorItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 	if(children().count() > 0) {
 		if(children().count() == 1) {
 			/// jedno dite vyres tak, ze se vubec nevytiskne rodicovsky frame
-			ReportProcessorItem *it = childAt(0);
+			ReportItem *it = childAt(0);
 			res = it->printHtml(out);
 		}
 		else {
 			QDomElement el_div = out.ownerDocument().createElement("div");;
-			if(layout() == qf::qmlwidgets::graphics::LayoutHorizontal) {
+			if(layout() == LayoutHorizontal) {
 				el_div.setAttribute("layout", "horizontal");
 			}
 			for(int i=0; i<children().count(); i++) {
-				ReportProcessorItem *it = childAt(i);
+				ReportItem *it = childAt(i);
 				PrintResult ch_res;
 				//int cnt = 0;
 				do {
@@ -96,7 +97,7 @@ ReportProcessorItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 //===================================================================
 //                           ReportItemDetail
 //===================================================================
-ReportProcessorItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
+ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();// << "id:" << element.attribute("id");
 	//qfDebug().color(QFLog::Yellow) << "\treturn:" << res.toString();
@@ -133,7 +134,7 @@ ReportProcessorItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 			f_currentRowNo++;
 			//qfInfo() << "vezmi dalsi radek dat element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
 			if(f_currentRowNo < data_table.rowCount()) {
-				resetIndexToPrintRecursively(ReportProcessorItem::IncludingParaTexts);
+				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				res.flags |= FlagPrintAgain;
 			}
 			//else qfInfo() << "\t IS NULL";
@@ -148,7 +149,7 @@ ReportProcessorItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 //===================================================================
 //                           ReportItemPara
 //===================================================================
-ReportProcessorItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
+ReportItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id");
 	PrintResult res = PrintOk;

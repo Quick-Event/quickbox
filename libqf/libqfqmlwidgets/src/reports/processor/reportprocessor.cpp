@@ -111,13 +111,13 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 		QF_SAFE_DELETE(f_processorOutput);
 		if(documentInstanceRoot()) {
 			f_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
-			singlePageProcessResult = ReportProcessorItem::PrintResult(ReportProcessorItem::PrintNotFit);
+			singlePageProcessResult = ReportItem::PrintResult(ReportItem::PrintNotFit);
 		}
 	}
 	ReportItemMetaPaint mpit;
 	//context().dump();
-	while(singlePageProcessResult.value == ReportProcessorItem::PrintNotFit
-		&& !(singlePageProcessResult.flags & ReportProcessorItem::FlagPrintNeverFit)) {
+	while(singlePageProcessResult.value == ReportItem::PrintNotFit
+		  && !(singlePageProcessResult.flags & ReportItem::FlagPrintNeverFit)) {
 		singlePageProcessResult = processPage(&mpit);
 		qfDebug() << "singlePageProcessResult:" << singlePageProcessResult.toString();
 		//qfDebug().color(QFLog::Yellow) << context().styleCache().toString();
@@ -127,14 +127,14 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 			it->setParent(f_processorOutput);
 			if(mode == FirstPage || mode == SinglePage) {
 				emit pageProcessed();
-				if(singlePageProcessResult.value == ReportProcessorItem::PrintNotFit) {
+				if(singlePageProcessResult.value == ReportItem::PrintNotFit) {
 					fProcessedPageNo++;
 				}
 				//qfInfo() << "pageProcessed:" << fProcessedPageNo;
 				break;
 			}
 			else {
-				if(singlePageProcessResult.value == ReportProcessorItem::PrintNotFit) {
+				if(singlePageProcessResult.value == ReportItem::PrintNotFit) {
 					fProcessedPageNo++;
 				}
 				else {
@@ -147,12 +147,12 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 	}
 }
 
-ReportProcessorItem::PrintResult ReportProcessor::processPage(ReportItemMetaPaint *out)
+ReportItem::PrintResult ReportProcessor::processPage(ReportItemMetaPaint *out)
 {
 	qfLogFuncFrame();
-	ReportProcessorItem::PrintResult res;
+	ReportItem::PrintResult res;
 	if(documentInstanceRoot()) {
-		res = documentInstanceRoot()->printMetaPaint(out, ReportProcessorItem::Rect());
+		res = documentInstanceRoot()->printMetaPaint(out, ReportItem::Rect());
 		qfDebug() << "\tres:" << res.toString();
 	}
 	return res;
@@ -180,7 +180,7 @@ QString ReportProcessor::resolveFN(const QString &f_name)
 
 void ReportProcessor::processHtml(QDomElement & el_body)
 {
-	documentInstanceRoot()->resetIndexToPrintRecursively(ReportProcessorItem::IncludingParaTexts);
+	documentInstanceRoot()->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 	documentInstanceRoot()->printHtml(el_body);
 	fixTableTags(el_body);
 	removeRedundantDivs(el_body);
@@ -298,8 +298,8 @@ void ReportProcessor::print(QPrinter &printer, const QVariantMap &options)
 
 	ReportPainter painter(&printer);
 
-	typedef ReportProcessorItem::Rect Rect;
-	//typedef ReportProcessorItem::Size Size;
+	typedef ReportItem::Rect Rect;
+	//typedef ReportItem::Size Size;
 
 	int pg_no = options.value("fromPage", 1).toInt() - 1;
 	int to_page = options.value("toPage", pageCount()).toInt();

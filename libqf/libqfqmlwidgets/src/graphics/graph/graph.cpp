@@ -8,7 +8,11 @@
 #include "graph.h"
 
 #include <qf/core/log.h>
+#include <qf/core/string.h>
+#include <qf/core/utils/treetable.h>
 
+namespace qfc = qf::core;
+namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::graphics;
 
 //======================================================
@@ -115,16 +119,17 @@ QString Graph::Axis::formatTickLabel(const QVariant & label_value)
 			ret = label_value.toString();
 		}
 		else if(label_value.type() == QVariant::Double) {
-			ret = QFString::number(label_value.toDouble(), fmt);
+			ret = qfc::String::number(label_value.toDouble(), fmt);
 		}
 		else if(label_value.type() == QVariant::Int) {
-			ret = QFString::number(label_value.toInt(), fmt);
+			ret = qfc::String::number(label_value.toInt(), fmt);
 		}
 		else {
-			ret = QFString::number(label_value.toDouble(), fmt);
+			ret = qfc::String::number(label_value.toDouble(), fmt);
 		}
 	}
-	else ret = label_value.toString();
+	else
+		ret = label_value.toString();
 	return ret;
 }
 
@@ -138,10 +143,10 @@ Graph::Graph()
 	d = &_d;
 }
 
-Graph::Graph(const QVariantMap &def, const QFTreeTable &_data)
+Graph::Graph(const QVariantMap &def, const qfu::TreeTable &_data)
 {
 	d = &_d;
-	setDefinition(el_def);
+	setDefinition(def);
 	setData(_data);
 }
 
@@ -161,16 +166,19 @@ struct SerieSort_helper
 
 void Graph::createSeries()
 {
-	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
 	int serie_no = 0;
-	for(QFDomElement el_serie=el_series.firstChildElement("serie"); !!el_serie; el_serie = el_serie.nextSiblingElement("serie")) {
-		QString colname = el_serie.attribute("colname");
+	QVariantList v_series = definition().value("series").toList();
+	for(auto v : v_series) {
+		QVariantMap m_serie = v.toMap();
+		QString colname = m_serie.value("colname").toString();
 		Serie serie;
 		{
-			QString s = el_serie.cd("point", !Qf::ThrowExc).attribute("color");
+			QString s = m_serie.value("point").toMap().value("color").toString();
 			QColor color;
-			if(s.isEmpty()) color = colorForIndex(serie_no);
-			else color = styleCache().color(s);
+			if(s.isEmpty())
+				color = colorForIndex(serie_no);
+			else
+				color = styleCache().color(s);
 			//qfInfo() << colname << color.name();
 			serie.setColor(color);
 		}
@@ -179,25 +187,25 @@ void Graph::createSeries()
 			serie.setColumnCaption(s);
 		}
 		{
-			QFTreeTable t = data();
+			qfu::TreeTable t = data();
 			int ix = t.columns().indexOf(colname);
 			QVariantList vlst;
 			for(int i=0; i<t.rowCount(); i++) {
-				QFTreeTableRow r = t.row(i);
+				qfu::TreeTableRow r = t.row(i);
 				QVariant v = r.value(ix);
 				vlst << v;
 			}
 			serie.setValues(vlst);
 		}
-		QString sort_colname = el_serie.attribute("sortColName");
+		QString sort_colname = m_serie.value("sortColName").toString();
 		if(!sort_colname.isEmpty()) {
 			QList<int> sorted_indexes;
 			//qfInfo() << "sortcolname:" << sort_colname;
 			QList<SerieSort_helper> sorted;
-			QFTreeTable t = data();
+			qfu::TreeTable t = data();
 			int sort_col_ix = t.columns().indexOf(sort_colname);
 			for(int i=0; i<t.rowCount(); i++) {
-				QFTreeTableRow r = t.row(i);
+				qfu::TreeTableRow r = t.row(i);
 				sorted << SerieSort_helper(i, r.value(sort_col_ix).toDouble());
 			}
 			qSort(sorted);
@@ -215,36 +223,37 @@ void Graph::createSeries()
 
 void Graph::createAxes()
 {
-	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
-	for(QFDomElement el_serie=el_series.firstChildElement("serie"); !!el_serie; el_serie = el_serie.nextSiblingElement("serie")) {
-		QString colname = el_serie.attribute("colname");
-		QFDomElement el_axis = el_serie.cd("axis");
+	QVariantList v_series = definition().value("series").toList();
+	for(auto v : v_series) {
+		QVariantMap m_serie = v.toMap();
+		QString colname = m_serie.value("colname").toString();
+		QVariantMap m_axis = m_serie.value("axis").toMap();
 
 		Serie serie = seriesMap().value(colname);
 
 		Axis axis;
-		axis.setDirection(el_axis.attribute("direction", "y") == "y"? Axis::DirectionY: Axis::DirectionX);
-		axis.setValuesFrom((el_axis.attribute("valuesFrom", "takeValue") == "takeValue")? Axis::TakeValues: Axis::TakeOrder);
-		axis.setHidden(el_axis.attribute("hidden", "0").toBool());
-		QFDomElement el_label = el_axis.cd("label", !Qf::ThrowExc);
-		if(!!el_label) {
-			QString s = el_label.text();
+		axis.setDirection(m_axis.value("direction", "y") == "y"? Axis::DirectionY: Axis::DirectionX);
+		axis.setValuesFrom((m_axis.value("valuesFrom", "takeValue") == "takeValue")? Axis::TakeValues: Axis::TakeOrder);
+		axis.setHidden(m_axis.value("hidden", false).toBool());
+		QVariantMap m_label = m_axis.value("label").toMap();
+		if(!m_label.isEmpty()) {
+			QString s = m_label.value("text").toString();
 			s.replace("${COLUMN_CAPTION}", serie.columnCaption());
 			axis.setLabel(s);
-			axis.setLabelStyle(el_label.attribute("textStyle", "default"));
+			axis.setLabelStyle(m_label.value("textStyle", "default").toString());
 		}
-		QFDomElement el_gridlines = el_axis.cd("gridLines", !Qf::ThrowExc);
-		if(!!el_gridlines) {
+		QVariantMap m_gridlines = m_axis.value("gridLines").toMap();
+		if(!m_gridlines.isEmpty()) {
 			axis.setGridLines(true);
 		}
 
 		if(axis.valuesFrom() == Axis::TakeValues) {
 			QVariantList values = serie.values();
-			QFDomElement el_axis_ticks = el_axis.cd("ticks", !Qf::ThrowExc);
-			if(!!el_axis_ticks) {
-				axis.setLabelFormat(el_axis_ticks.attribute("labelFormat"));
+			QVariantMap m_axis_ticks = m_axis.value("ticks").toMap();
+			if(!m_axis_ticks.isEmpty()) {
+				axis.setLabelFormat(m_axis_ticks.value("labelFormat").toString());
 
-				QString same_as_colname = el_axis_ticks.attribute("sameAs");
+				QString same_as_colname = m_axis_ticks.value("sameAs").toString();
 				if(same_as_colname.isEmpty()) {
 					/// najdi min - max
 					foreach(QVariant v, values) {
@@ -252,27 +261,27 @@ void Graph::createAxes()
 						axis.setMin(qMin(axis.min(), d));
 						axis.setMax(qMax(axis.max(), d));
 					}
-					QFDomElement el_range = el_axis_ticks.cd("range", !Qf::ThrowExc);
-					if(!!el_range) {
-						if(el_range.hasAttribute("min")) axis.setMin(el_range.attribute("min").toDouble());
-						if(el_range.hasAttribute("max")) axis.setMax(el_range.attribute("max").toDouble());
-					}
+					QVariantMap m_range = m_axis_ticks.value("range").toMap();
+					if(m_range.value("min").isValid())
+						axis.setMin(m_range.value("min").toDouble());
+					if(m_range.value("max").isValid())
+						axis.setMax(m_range.value("max").toDouble());
 					//qfInfo() << "axis:" << axis.toString();
 					double range = axis.max() - axis.min();
 					if(range > 0) {
-						double dilek = range / 10;
-						double exponent = floor(log10(dilek));
-						dilek = dilek * pow(10, -exponent);
-						int idilek;
-						/// najdi nejblizsi 1, 2, 5 nebo 10
-						if(dilek < 1.5) idilek = 1;
-						else if(dilek < 3.5) idilek = 2;
-						else if(dilek < 7.5) idilek = 5;
-						else idilek = 10;
-						dilek = idilek * pow(10, exponent);
-						axis.setMin(dilek * floor(axis.min() / dilek));
-						axis.setMax(dilek * ceil(axis.max() / dilek));
-						axis.setTick(dilek);
+						double tick_range = range / 10;
+						double exponent = floor(log10(tick_range));
+						tick_range = tick_range * pow(10, -exponent);
+						int int_tick_range;
+						/// find closest 1, 2, 5 or 10
+						if(tick_range < 1.5) int_tick_range = 1;
+						else if(tick_range < 3.5) int_tick_range = 2;
+						else if(tick_range < 7.5) int_tick_range = 5;
+						else int_tick_range = 10;
+						tick_range = int_tick_range * pow(10, exponent);
+						axis.setMin(tick_range * floor(axis.min() / tick_range));
+						axis.setMax(tick_range * ceil(axis.max() / tick_range));
+						axis.setTick(tick_range);
 					}
 				}
 				else {
@@ -300,7 +309,7 @@ Graph::Axis Graph::axisForSerie(const QString & colname)
 
 QString Graph::title() const
 {
-	return definition().cd("title", !Qf::ThrowExc).text();
+	return definition().value("title").toMap().value("text").toString();
 }
 
 void Graph::draw(QPainter *painter, const QSizeF &size)
@@ -330,10 +339,10 @@ void Graph::draw(QPainter *painter, const QSizeF &size)
 
 void Graph::drawTitle()
 {
-	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
+	qfLogFuncFrame() << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	if(!title().isEmpty()) {
 		QString t = title();
-		TextStyle st = styleCache().style(definition().cd("title", !Qf::ThrowExc).attribute("textstyle"));
+		TextStyle st = styleCache().style(definition().value("title").toMap().value("textStyle").toString());
 		painter()->setFont(st.font);
 		painter()->setPen(st.pen);
 		painter()->setBrush(st.brush);
@@ -351,7 +360,7 @@ void Graph::drawTitle()
 	}
 }
 
-Graph::Rect Graph::drawLegends(bool do_not_draw)
+Rect Graph::drawLegends(bool do_not_draw)
 {
 	Rect bounding_rect;
 	Rect br = gridRect();
@@ -361,11 +370,13 @@ Graph::Rect Graph::drawLegends(bool do_not_draw)
 	br.setLeft(br.right());
 	br.setRight(boundingRect().right());
 	//qfInfo() << "br:" << br.toString();
-	for(QFDomElement el_legend=definition().firstChildElement("legend"); !!el_legend; el_legend = el_legend.nextSiblingElement("legend")) {
-		QString id = drawLegend(el_legend, br, do_not_draw);
+	for(auto v : definition().value("legends").toList()) {
+		QVariantMap m_legend = v.toMap();
+		QString id = drawLegend(m_legend, br, do_not_draw);
 		Legend legend = legendMap().value(id);
 		if(!legend.isNull()) {
-			if(bounding_rect.isNull()) bounding_rect = legend.boundingRect();
+			if(bounding_rect.isNull())
+				bounding_rect = legend.boundingRect();
 			else {
 				Rect r = legend.boundingRect();
 				r.moveTo(bounding_rect.bottomLeft());
@@ -380,7 +391,7 @@ Graph::Rect Graph::drawLegends(bool do_not_draw)
 
 void Graph::drawBox()
 {
-	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
+	qfLogFuncFrame() << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	painter()->setPen(Qt::black);
 	painter()->setBrush(QBrush());
 	//painter()->drawRect(mm2device(rect()));
@@ -388,7 +399,7 @@ void Graph::drawBox()
 	//painter()->fillRect(gr, QBrush(QColor("khaki")));
 	//painter()->setPen(QColor("maroon"));
 	painter()->drawRect(gr);
-	qfTrash() << "\t RETURN" << QF_FUNC_NAME;
+	qfDebug() << "\t RETURN" << QF_FUNC_NAME;
 	return;
 	//painter()->drawLine(gr.topLeft(), gr.bottomRight());
 	//painter()->drawLine(gr.topRight(), gr.bottomLeft());
@@ -419,7 +430,7 @@ void Graph::drawGrid()
 					p2 = p1;
 					p2.rx() = gr.topRight().x();
 				}
-				qfTrash() << "\t line" << p1.toString() << "->" << p2.toString();
+				qfDebug() << "\t line" << p1.toString() << "->" << p2.toString();
 				painter()->drawLine(mm2device(p1), mm2device(p2));
 			}
 		}
@@ -428,46 +439,52 @@ void Graph::drawGrid()
 
 void Graph::drawAxes()
 {
-	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
+	qfLogFuncFrame() << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	//Rect gr = mm2device(gridRect());
-	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
+	QVariantList v_series = definition().value("series").toList();
 	/// vytiskni nanecisto osy Y, aby se nastavil gridrect ve smeru X
 	Rect gr = gridRect();
-	for(QFDomElement el_serie=el_series.firstChildElement("serie"); !!el_serie; el_serie = el_serie.nextSiblingElement("serie")) {
-		QFDomElement el_axis = el_serie.cd("axis");
-		QString colname = el_serie.attribute("colname", "invalid colname");
-		if(el_axis.attribute("direction", "y") == "y") {
+	for(auto v : v_series) {
+		QVariantMap m_serie = v.toMap();
+		QVariantMap m_axis = m_serie.value("axis").toMap();
+		QString colname = m_serie.value("colname", "invalid colname").toString();
+		if(m_axis.value("direction", "y").toString() == "y") {
 			drawAxis(colname, gr, true);
 			Axis axis = axisForSerie(colname);
-			if(!axis.isHidden()) gr.setTopLeft(axis.boundingRect().topRight());
+			if(!axis.isHidden())
+				gr.setTopLeft(axis.boundingRect().topRight());
 		}
 	}
 	/// vytiskni osy X, aby se nastavil gridrect ve smeru Y
-	for(QFDomElement el_serie=el_series.firstChildElement("serie"); !!el_serie; el_serie = el_serie.nextSiblingElement("serie")) {
-		QFDomElement el_axis = el_serie.cd("axis");
-		QString colname = el_serie.attribute("colname", "invalid colname");
-		if(el_axis.attribute("direction", "y") == "x") {
+	for(auto v : v_series) {
+		QVariantMap m_serie = v.toMap();
+		QVariantMap m_axis = m_serie.value("axis").toMap();
+		QString colname = m_serie.value("colname", "invalid colname").toString();
+		if(m_axis.value("direction", "y") == "x") {
 			drawAxis(colname, gr, false);
 			Axis axis = axisForSerie(colname);
-			if(!axis.isHidden()) gr.setBottomLeft(axis.boundingRect().topLeft());
+			if(!axis.isHidden())
+				gr.setBottomLeft(axis.boundingRect().topLeft());
 		}
 	}
 	//gr.setHeight(gridRect().height());
 	gr.setTopLeft(gridRect().topLeft());
 	/// vytiskni nacisto osy Y
-	for(QFDomElement el_serie=el_series.firstChildElement("serie"); !!el_serie; el_serie = el_serie.nextSiblingElement("serie")) {
-		QFDomElement el_axis = el_serie.cd("axis");
-		QString colname = el_serie.attribute("colname", "invalid colname");
-		if(el_axis.attribute("direction", "y") == "y") {
+	for(auto v : v_series) {
+		QVariantMap m_serie = v.toMap();
+		QVariantMap m_axis = m_serie.value("axis").toMap();
+		QString colname = m_serie.value("colname", "invalid colname").toString();
+		if(m_axis.value("direction", "y") == "y") {
 			drawAxis(colname, gr, false);
 			Axis axis = axisForSerie(colname);
-			if(!axis.isHidden()) gr.setTopLeft(axis.boundingRect().topRight());
+			if(!axis.isHidden())
+				gr.setTopLeft(axis.boundingRect().topRight());
 		}
 	}
 	d->gridRect = gr;
 }
 
-void Graph::drawAxis(const QString &colname, const Graph::Rect &_bounding_rect, bool do_not_draw)
+void Graph::drawAxis(const QString &colname, const Rect &_bounding_rect, bool do_not_draw)
 {
 	if(colname.isEmpty()) return;
 
@@ -511,7 +528,7 @@ void Graph::drawAxis(const QString &colname, const Graph::Rect &_bounding_rect, 
 			///- bnd_rect.adjust(0, 0, br2.height(), 0);
 		}
 		painter()->setPen(QPen());
-		//QFDomElement el_ticks = el_axis.cd("ticks", !Qf::ThrowExc);
+		//QVariantMap m_ticks = m_axis.cd("ticks").toMap();
 		if(axis.tick() > 0) {
 			/// zjisti sirku textu hodnot
 			Rect gr = mm2device(bounding_rect);
@@ -570,7 +587,7 @@ void Graph::drawAxis(const QString &colname, const Graph::Rect &_bounding_rect, 
 	else if(axis.direction() == Axis::DirectionX) {
 		//axis.boundingRect = gridRect();
 		//bnd_rect.adjust(0, bnd_rect.height(), 0, 0);
-		//QFDomElement el_label = el_axis.cd("label", !Qf::ThrowExc);
+		//QVariantMap m_label = m_axis.cd("label").toMap();
 		if(!axis.label().isEmpty()) {
 			QString t = axis.label();
 			TextStyle st = styleCache().style(axis.labelStyle());
@@ -587,7 +604,7 @@ void Graph::drawAxis(const QString &colname, const Graph::Rect &_bounding_rect, 
 			///- axis.boundingRect.adjust(0, -br2.height(), 0, 0);
 		}
 		painter()->setPen(QPen());
-		//QFDomElement el_ticks = el_axis.cd("ticks", !Qf::ThrowExc);
+		//QVariantMap m_ticks = m_axis.cd("ticks").toMap();
 		if(axis.tick() > 0) {
 			/// zjisti vysku textu hodnot
 			QStringList labels;
@@ -702,17 +719,17 @@ void Graph::drawAxis(const QString &colname, const Graph::Rect &_bounding_rect, 
 QString Graph::createLegend(const QFDomElement & el_legend)
 {
 	Legend legend;
-	QString legend_id = el_legend.attribute("id");
-	QFDomElement el_labels = el_legend.cd("labels", !Qf::ThrowExc);
+	QString legend_id = el_legend.value("id");
+	QVariantMap m_labels = el_legend.cd("labels").toMap();
 	QStringList labels;
 	QList<QColor> colors;
 	//int label_no = 0;
-	for(QFDomElement el_label=el_labels.firstChildElement("label"); !!el_label; el_label = el_label.nextSiblingElement("label")) {
-		QString serie_name = el_label.attribute("serie");
+	for(QVariantMap m_label=el_labels.firstChildElement("label"); !!el_label; el_label = el_label.nextSiblingElement("label")) {
+		QString serie_name = el_label.value("serie");
 		QString text = el_label.text();
 		if(serie_name.isEmpty()) {
-			QString caption_serie_name = el_label.attribute("captionForEachInSerie");
-			QString value_serie_name = el_label.attribute("valuesFromSerie");
+			QString caption_serie_name = el_label.value("captionForEachInSerie");
+			QString value_serie_name = el_label.value("valuesFromSerie");
 			if(!caption_serie_name.isEmpty()) {
 				Serie caption_serie = seriesMap().value(caption_serie_name);
 				Serie value_serie = seriesMap().value(value_serie_name);
@@ -746,23 +763,24 @@ QString Graph::createLegend(const QFDomElement & el_legend)
 	return legend_id;
 }
 */
-QString Graph::drawLegend(const QFDomElement& el_legend, const Graph::Rect & _bounding_rect, bool do_not_draw)
+QString Graph::drawLegend(const QVariantMap& m_legend, const Rect & _bounding_rect, bool do_not_draw)
 {
 	QStringList labels;
 	QList<QColor> colors;
 	Serie caption_serie;
 	//bool legend_from_series = false;
-	QString legend_id = el_legend.attribute("id");
+	QString legend_id = m_legend.value("id").toString();
 	Legend legend;
 	{
-		QFDomElement el_labels = el_legend.cd("labels", !Qf::ThrowExc);
-		for(QFDomElement el_label=el_labels.firstChildElement("label"); !!el_label; el_label = el_label.nextSiblingElement("label")) {
-			QString serie_name = el_label.attribute("serie");
-			QString text = el_label.text();
+		QVariantList v_labels = m_legend.value("labels").toList();
+		for(auto v : v_labels) {
+			QVariantMap m_label = v.toMap();
+			QString serie_name = m_label.value("serie").toString();
+			QString text = m_label.value("text").toString();
 			if(serie_name.isEmpty()) {
-				QString caption_serie_name = el_label.attribute("captionForEachInSerie");
-				QString value_serie_name = el_label.attribute("valuesFromSerie");
-				QString value_format = el_label.attribute("valueFormat");
+				QString caption_serie_name = m_label.value("captionForEachInSerie").toString();
+				QString value_serie_name = m_label.value("valuesFromSerie").toString();
+				QString value_format = m_label.value("valueFormat").toString();
 				if(!caption_serie_name.isEmpty()) {
 					caption_serie = seriesMap().value(caption_serie_name);
 					Serie value_serie = seriesMap().value(value_serie_name);
@@ -774,8 +792,10 @@ QString Graph::drawLegend(const QFDomElement& el_legend, const Graph::Rect & _bo
 						if(!value_serie.isNull()) {
 							QVariant v = value_serie.values().value(i);
 							QString val_str = v.toString();
-							if(v.type() == QVariant::Double) val_str = QFString::number(v.toDouble(), value_format);
-							else if(v.type() == QVariant::Int) val_str = QFString::number(v.toInt(), value_format);
+							if(v.type() == QVariant::Double)
+								val_str = qfc::String::number(v.toDouble(), value_format);
+							else if(v.type() == QVariant::Int)
+								val_str = qfc::String::number(v.toInt(), value_format);
 							s.replace("${VALUE}", val_str);
 						}
 						labels << s;
@@ -894,11 +914,13 @@ QColor Graph::colorForIndex(int ix)
 	return ret;
 }
 
-Graph* Graph::createGraph(const QDomElement el_def, const QFTreeTable &data)
+Graph* Graph::createGraph(const QVariantMap &m_def, const qfu::TreeTable &data)
 {
-	QString type = el_def.attribute("type");
-	if(type == "histogram") return new QFHistogramGraph(el_def, data);
-	if(type == "pie") return new QFPieGraph(el_def, data);
+	QString type = m_def.value("type").toString();
+	if(type == "histogram")
+		return new HistogramGraph(m_def, data);
+	if(type == "pie")
+		return new PieGraph(m_def, data);
 	qfWarning() << "Unsupported graph type:" << type;
 	return NULL;
 }
@@ -913,15 +935,17 @@ void HistogramGraph::drawSeries()
 	QPainter *p = painter();
 	p->setPen(styleCache().pen("graphaxis"));
 
-	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
-	for(QFDomElement el_serie_x=el_series.firstChildElement("serie"); !!el_serie_x; el_serie_x = el_serie_x.nextSiblingElement("serie")) {
+	QVariantList v_series = definition().value("series").toList();
+	for(auto v : v_series) {
 		/// najdi osu X
-		QString colname_x = el_serie_x.attribute("colname");
+		QVariantMap m_serie_x = v.toMap();
+		QString colname_x = m_serie_x.value("colname").toString();
 		Axis axis_x = axisForSerie(colname_x);
 		Serie serie_x = seriesMap().value(colname_x);
 		if(axis_x.direction() == Axis::DirectionX) {
-			for(QFDomElement el_serie_y=el_series.firstChildElement("serie"); !!el_serie_y; el_serie_y = el_serie_y.nextSiblingElement("serie")) {
-				QString colname_y = el_serie_y.attribute("colname");
+			for(auto v : v_series) {
+				QVariantMap m_serie_y = v.toMap();
+				QString colname_y = m_serie_y.value("colname").toString();
 				//qfInfo() << "colname_y:" << colname_y;
 				Axis axis_y = axisForSerie(colname_y);
 				Serie serie_y = seriesMap().value(colname_y);
@@ -930,8 +954,8 @@ void HistogramGraph::drawSeries()
 					QColor color = serie_y.color();
 					//qfInfo() << colname_y << "color:" << color.name();
 					for(int i=0; i<serie_y.values().count() && i<serie_y.values().count(); i++) {
-						//qfTrash() << axis_y.colname << "value:" << i << axis_y.values[i];
-						//qfTrash() << "grid rect:" << gridRect().toString();
+						//qfDebug() << axis_y.colname << "value:" << i << axis_y.values[i];
+						//qfDebug() << "grid rect:" << gridRect().toString();
 						int ix = i;
 						if(serie_x.isSorted()) ix = serie_x.sortedValuesIndexes()[i];
 						QVariant v_y = serie_y.values()[ix];
@@ -941,7 +965,7 @@ void HistogramGraph::drawSeries()
 						double x2 = axis_x.value2pos(i + 0.25, gridRect());
 						double y2 = axis_y.value2pos(axis_y.min(), gridRect());
 						Rect r(x1, y1, x2-x1, y2-y1);
-						qfTrash() << "\t rect:" << r.toString();
+						qfDebug() << "\t rect:" << r.toString();
 						r = mm2device(r);
 						//p->fillRect(r, QBrush(color));
 						p->setBrush(QBrush(color));
@@ -963,17 +987,19 @@ void HistogramGraph::drawSeries()
 //======================================================
 void PieGraph::drawSeries()
 {
-	qfTrash() << QF_FUNC_NAME << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
+	qfLogFuncFrame() << "boundingRect width:" << boundingRect().width() << "boundingRect height:" << boundingRect().height();
 	//return;
-	double h3d = definition().attribute("h3d").toDouble();
-	QFDomElement el_series = definition().cd("series", !Qf::ThrowExc);
-	for(QFDomElement el_serie_x=el_series.firstChildElement("serie"); !!el_serie_x; el_serie_x = el_serie_x.nextSiblingElement("serie")) {
-		QString colname_x = el_serie_x.attribute("colname");
+	double h3d = definition().value("h3d").toDouble();
+	QVariantList v_series = definition().value("series").toList();
+	for(auto v : v_series) {
+		QVariantMap m_serie_x = v.toMap();
+		QString colname_x = m_serie_x.value("colname").toString();
 		Axis axis_x = axisForSerie(colname_x);
 		if(axis_x.direction() == Axis::DirectionX) {
 			Serie serie_x = seriesMap().value(colname_x);
-			for(QFDomElement el_serie_y=el_series.firstChildElement("serie"); !!el_serie_y; el_serie_y = el_serie_y.nextSiblingElement("serie")) {
-				QString colname_y = el_serie_y.attribute("colname");
+			for(auto v : v_series) {
+				QVariantMap m_serie_y = v.toMap();
+				QString colname_y = m_serie_y.value("colname").toString();
 				Axis axis_y = axisForSerie(colname_y);
 				if(axis_y.direction() == Axis::DirectionY) {
 					Serie serie_y = seriesMap().value(colname_y);

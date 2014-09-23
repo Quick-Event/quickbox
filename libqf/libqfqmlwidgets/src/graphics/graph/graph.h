@@ -207,7 +207,7 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 
 		virtual void drawAxis(const QString &colname, const Rect &_bounding_rect, bool do_not_draw = false);
 		/// vraci legend id
-		virtual QString drawLegend(const QDomElement &el_legend, const Rect &_bounding_rect = Rect(), bool do_not_draw = false);
+		virtual QString drawLegend(const QVariantMap &m_legend, const Rect &_bounding_rect = Rect(), bool do_not_draw = false);
 		// vraci legend id
 		//virtual QString createLegend(const QDomElement &el_legend);
 
@@ -232,10 +232,10 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 
 		virtual void draw(QPainter *painter, const QSizeF &size);
 	public:
-		static Graph* createGraph(const QDomElement el_def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
+		static Graph* createGraph(const QVariantMap &m_def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
 	public:
 		Graph();
-		Graph(const QVariantMap def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
+		Graph(const QVariantMap &def, const qf::core::utils::TreeTable &data = qf::core::utils::TreeTable());
 		virtual ~Graph();
 };
 
