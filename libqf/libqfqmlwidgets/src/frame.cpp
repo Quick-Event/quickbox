@@ -52,7 +52,7 @@ void Frame::setLayoutType(Frame::LayoutType ly_type)
 
 QQmlListProperty<QWidget> Frame::widgets()
 {
-	return QQmlListProperty<QWidget>(this,0,
+	return QQmlListProperty<QWidget>(this, 0,
                                     Frame::addWidgetFunction,
                                     Frame::countWidgetsFunction,
                                     Frame::widgetAtFunction,

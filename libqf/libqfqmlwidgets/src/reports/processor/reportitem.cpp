@@ -635,15 +635,11 @@ ReportItemMetaPaint * ReportItem::createMetaPaintItem(ReportItemMetaPaint * pare
 
 QString ReportItem::toString(int indent, int indent_offset)
 {
+	Q_UNUSED(indent);
 	QString ret;
 	QString indent_str;
 	indent_str.fill(' ', indent_offset);
 	ret += indent_str + metaObject()->className();
-	for(int i=0; i<children().count(); i++) {
-		ret += '\n';
-		ReportItem *it = childAt(i);
-		ret += it->toString(indent, indent_offset += indent);
-	}
 	return ret;
 }
 
@@ -773,6 +769,65 @@ void ReportItemFrame::componentComplete()
 	qfDebug() << "\tdesignedRect:" << designedRect.toString();
 }
 
+QString ReportItemFrame::toString(int indent, int indent_offset)
+{
+	QString ret = Super::toString(indent, indent_offset);
+	for(int i=0; i<itemCount(); i++) {
+		ret += '\n';
+		ReportItem *it = itemAt(i);
+		ret += it->toString(indent, indent_offset += indent);
+	}
+	return ret;
+}
+
+QQmlListProperty<ReportItem> ReportItemFrame::items()
+{
+	return QQmlListProperty<ReportItem>(this, 0,
+                                    ReportItemFrame::addItemFunction,
+                                    ReportItemFrame::countItemsFunction,
+                                    ReportItemFrame::itemAtFunction,
+                                    ReportItemFrame::removeAllItemsFunction
+										);
+}
+
+void ReportItemFrame::addItemFunction(QQmlListProperty<ReportItem> *list_property, ReportItem *item)
+{
+	if (item) {
+		ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
+		//item->setParent(0);
+		that->m_items << item;
+    }
+}
+
+ReportItem *ReportItemFrame::itemAtFunction(QQmlListProperty<ReportItem> *list_property, int index)
+{
+	ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
+	return that->m_items.value(index);
+}
+
+void ReportItemFrame::removeAllItemsFunction(QQmlListProperty<ReportItem> *list_property)
+{
+	ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
+	qDeleteAll(that->m_items);
+	that->m_items.clear();
+}
+
+int ReportItemFrame::countItemsFunction(QQmlListProperty<ReportItem> *list_property)
+{
+	ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
+	return that->itemCount();
+}
+
+int ReportItemFrame::itemCount() const
+{
+	return m_items.count();
+}
+
+ReportItem *ReportItemFrame::itemAt(int index)
+{
+	return m_items[index];
+}
+
 ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 {
 	if(parent_layout == LayoutHorizontal)
@@ -782,7 +837,7 @@ ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 
 ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "childrencount:" << children().count() << "indexToPrint:" << indexToPrint;
+	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << children().count() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	PrintResult res = PrintOk;
 	//dirtySize = Size();
@@ -796,12 +851,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		QList<ChildSize> sizes;
 		/// pri tisku horizontalniho layoutu se tiskne vzdy od zacatku
 		indexToPrint = 0;
-
+		/*--
 		ReportItemFrame *parent_grid = NULL;
 		if(isParentGridLayout()) {
 			ReportItem *it = this->parent();
 			while(it) {
-				ReportItemFrame *frm_it = dynamic_cast<ReportItemFrame*>(it);
+				ReportItemFrame *frm_it = qobject_cast<ReportItemFrame*>(it);
 				if(frm_it && frm_it->isParentGrid()) {
 					parent_grid = frm_it;
 					break;
@@ -816,7 +871,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			/// dalsi deti gridu si zkopiruji rozmery z prvniho ditete, ktere je jiz vytisknute
 			QList<double> szs = parent_grid->gridLayoutSizes();
 			for(int i=indexToPrint; i<childrenCount(); i++) {
-				ReportItem *it = childAt(i);
+				ReportItem *it = itemAt(i);
 				ChildSize sz;
 				if(i < szs.count()) {
 					it->designedRect.horizontalUnit = Rect::UnitMM;
@@ -827,11 +882,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				}
 			}
 		}
+		--*/
 		{
 			/// prvni dite gridu se tiskne jako vse ostatni
 			/// nastav detem mm rozmer ve smeru layoutu
-			for(int i=indexToPrint; i<childrenCount(); i++) {
-				ReportItem *it = childAt(i);
+			for(int i=indexToPrint; i<itemCount(); i++) {
+				ReportItem *it = itemAt(i);
 				sizes << it->childSize(layout());
 			}
 		}
@@ -840,7 +896,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// je to bud absolutni hodnota nebo % z bbr
 		QList<ChildSize> orthogonal_sizes;
 		for(int i=indexToPrint; i<children().count(); i++) {
-			ReportItem *it = childAt(i);
+			ReportItem *it = itemAt(i);
 			Layout ol = orthogonalLayout();
 			ChildSize sz = it->childSize(ol);
 			if(sz.unit == Rect::UnitPercent) {
@@ -865,7 +921,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			/// vytiskni rubber a fixed
 			//if(parent_grid) qfWarning() << (is_first_grid_child? "first child": is_next_grid_child? "next child": "nevim");
 			for(int i=0; i<children().count(); i++) {
-				ReportItem *it = childAt(i);
+				ReportItem *it = itemAt(i);
 				ChildSize sz = sizes.value(i);
 				//qfInfo() << "child:" << i << "size:" << sz.size << "unit:" << Rect::unitToString(sz.unit);
 				if(sz.unit == Rect::UnitMM) {
@@ -895,7 +951,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					else {
 						if(ch_res.value == PrintOk) {
 							/// jediny, kdo se nemusi vytisknout je band
-							if(!dynamic_cast<ReportItemBand*>(it)) { qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it->element.toString(); }
+							if(!qobject_cast<ReportItemBand*>(it)) {
+								qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
+							}
 						}
 						else {
 							//qfInfo() << "\t NOT OK";
@@ -916,7 +974,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					qreal sum_percent = 0;
 					int cnt_0_percent = 0;
 					for(int i=0; i<children().count(); i++) {
-						ReportItem *it = childAt(i);
+						ReportItem *it = itemAt(i);
 						ChildSize sz = it->childSize(layout());
 						if(sz.unit == Rect::UnitPercent) {
 							if(sz.size == 0) cnt_0_percent++;
@@ -931,7 +989,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						qreal percent_0 = 0;
 						if(cnt_0_percent > 0) percent_0 = (100 - sum_percent) / cnt_0_percent;
 						for(int i=0; i<children().count(); i++) {
-							ReportItem *it = childAt(i);
+							ReportItem *it = itemAt(i);
 							ChildSize sz = it->childSize(layout());
 							if(sz.unit == Rect::UnitPercent) {
 								qreal d;
@@ -958,7 +1016,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 								else {
 									if(ch_res.value == PrintOk) {
 										/// jediny, kdo se nemusi vytisknout je band
-										if(!dynamic_cast<ReportItemBand*>(it)) { qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it->element.toString(); }
+										if(!qobject_cast<ReportItemBand*>(it)) {
+											qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
+										}
 									}
 									else { res = ch_res; break; }
 								}
@@ -971,9 +1031,10 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						int children_count = out->children().count();
 						//qfInfo() << "children cnt:" << children_count;
 						//QF_ASSERT(poradi_tisku.count() == out->children().count(), "nevytiskly se vsechny deti v horizontalnim layoutu");
-						QVector<Super*> old_children(poradi_tisku.count());
+						QVector<qf::core::utils::TreeItemBase*> old_children(poradi_tisku.count());
 						/// zkopiruj ukazatele na deti
-						for(int i=0; i<children_count; i++) old_children[i] = out->children()[i];
+						for(int i=0; i<children_count; i++)
+							old_children[i] = out->children()[i];
 						/// dej je do spravnyho poradi
 						/// v mape nemusi byt rada klicu souvisla (kdyz se nejake dite nevytiskne)
 						QMapIterator<int, int> iter(poradi_tisku);
@@ -997,14 +1058,16 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							/// tady je to potreba posunout vcetne deti :(
 							double shift_x = bbr.left() + offset_x - it->renderedRect.left();
 							//if(parent_grid) qfInfo() << i << "offset_x:" << offset_x << "bbr left:" << bbr.left() << "chbbr left:" << ch_bbr.left();
-							if(!Qf::isNearlyZero(shift_x, 1e-4)) it->shift(Point(shift_x, 0));
+							if(qFloatDistance(shift_x, 0) > 200)
+								it->shift(Point(shift_x, 0));
 							offset_x += it->renderedRect.width();
 						}
 					}
 					else {
-						qfWarning() << element.tagName() << "nesedi poradi pocty tisku" << poradi_tisku.count() << out->children().count();
+						qfWarning() << this << "nesedi poradi pocty tisku" << poradi_tisku.count() << out->children().count();
 					}
 				}
+				/*--
 				if(is_first_grid_child) {
 					QList<double> szs;
 					for(int i=0; i<out->children().count(); i++) {
@@ -1014,6 +1077,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					}
 					parent_grid->setGridLayoutSizes(szs);
 				}
+				--*/
 			}
 			if(res.value != PrintOk) {
 				/// detail by mel mit, pokud se ma zalamovat, vzdy vertikalni layout, jinak tato funkce zpusobi, ze se po zalomeni vsechny dcerine bandy budou tisknout cele znova
@@ -1032,7 +1096,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		//if(it->isBreak() && i > indexToPrint && layout == LayoutVertical) break;
 		int index_to_print_0 = indexToPrint;
 		for(; indexToPrint<children().count(); indexToPrint++) {
-			ReportItem *it = childAt(indexToPrint);
+			ReportItem *it = itemAt(indexToPrint);
 			Rect ch_bbr = bbr;
 			//bool item_is_rubber_in_layout = false;
 			qfDebug() << "\tch_bbr v1:" << ch_bbr.toString();
@@ -1052,8 +1116,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					//else item_is_rubber_in_layout = true;
 				}
 				else {
-					ReportItemFrame *frit = dynamic_cast<ReportItemFrame*>(it);
-					if(frit) qfWarning() << "tohle by se asi nemelo stat" << it->element.tagName();
+					ReportItemFrame *frit = qobject_cast<ReportItemFrame*>(it);
+					if(frit)
+						qfWarning() << "tohle by se asi nemelo stat" << it;
 				}
 				d = qMin(ch_bbr.sizeInLayout(layout()), d);
 				ch_bbr.setSizeInLayout(d, layout());
@@ -1113,24 +1178,24 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		}
 	}
 	//res = checkPrintResult(res);
-	qfDebug().color(QFLog::Green) << "\t<<< CHILDREN return:" << res.toString();
+	qfDebug() << "\t<<< CHILDREN return:" << res.toString();
 	return res;
 }
 
 ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfDebug().color(QFLog::Cyan) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame() << this;
 	//qfInfo() << element.tagName() << "id:" << element.attribute("id") << "designedRect:" << designedRect.toString();
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	qfDebug() << "\tdesignedRect:" << designedRect.toString();// << "isLeftTopFloating:" << isLeftTopFloating() << "isRightBottomFloating:" << isRightBottomFloating();
-	//if(parentFrame()) qfDebug() << "\tparent layout:" << ((parentFrame()->layout() == LayoutHorizontal)? "horizontal": "vertical");
 	qfDebug() << "\tlayout:" << ((layout() == LayoutHorizontal)? "horizontal": "vertical") << ", is rubber:" << isRubber(layout());
-	//qfDebug() << "\tmetaPaintLayoutLength:" << metaPaintLayoutLength << "metaPaintOrthogonalLayoutLength:" << metaPaintOrthogonalLayoutLength;
 	PrintResult res = PrintOk;
-	updateChildren();
-	if(!isVisible()) { return res; }
+	//--updateChildren();
+	if(!isVisible())
+		return res;
 	Rect frame_content_br = bounding_rect;
 	qfDebug() << "\tbbr 0:" << frame_content_br.toString();
+	/*--
 	if(designedRect.isAnchored()) {
 		/// pokud je designedRect anchored neni treba ho nekam cpat
 		/// pokud frame neni floating, vyprdni se na bounding_rect
@@ -1138,7 +1203,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		if(frame_content_br.isRubber(LayoutHorizontal)) frame_content_br.setRight(bounding_rect.right());
 		if(frame_content_br.isRubber(LayoutVertical)) frame_content_br.setBottom(bounding_rect.bottom());
 	}
-	else {
+	else
+	--*/
+	{
 		if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() - Epsilon > bounding_rect.width()) {
 			qfDebug() << "\t<<<< FRAME NOT FIT WIDTH";
 			return checkPrintResult(PrintNotFit);
@@ -1151,24 +1218,24 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 			return checkPrintResult(PrintNotFit);
 		}
 	}
-	frame_content_br.adjust(hinset, vinset, -hinset, -vinset);
+	frame_content_br.adjust(hinset(), vinset(), -hinset(), -vinset());
 
 	QList<double> column_sizes;
 	double columns_gap = 0;
 	//int current_column_index;
 	if(column_sizes.isEmpty()) {
-		QString s = elementAttribute("columns", "%");
+		qf::core::String s = elementAttribute("columns", "%");
 		QStringList sl = s.splitAndTrim(',');
 		columns_gap = elementAttribute("columnsgap", "3").toDouble();
 		double ly_size = frame_content_br.width() - (columns_gap * (sl.count() - 1));
-		column_sizes = QFGraphics::makeLayoutSizes(sl, ly_size);
+		column_sizes = qf::qmlwidgets::graphics::makeLayoutSizes(sl, ly_size);
 		//current_column_index = 0;
 	}
 	ReportItemMetaPaintFrame *mp = dynamic_cast<ReportItemMetaPaintFrame*>(createMetaPaintItem(NULL));
-	QF_ASSERT(mp, "Meta paint item for element " + element.tagName() + " not created.");
-	mp->setInset(hinset, vinset);
-	mp->setLayout(layout());
-	mp->setAlignment(alignment);
+	QF_ASSERT_EX(mp != nullptr, "Meta paint item for item " + QString(this->metaObject()->className()) + " not created.");
+	mp->setInset(hinset(), vinset());
+	mp->setLayout((qf::qmlwidgets::graphics::Layout)layout());
+	mp->setAlignment(horizontalAlignment(), verticalAlignment());
 	mp->setParent(out);
 	Rect column_br_helper = frame_content_br;
 	for(int current_column_index=0; current_column_index<column_sizes.count(); current_column_index++) {
@@ -1183,10 +1250,10 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 			//qfInfo().color(QFLog::Yellow) << element.tagName() << "keep all:" << keepAll << "column" << current_column_index << "of" << column_sizes.count();
 			//qfInfo().color(QFLog::Yellow) << "column_br:" << column_br.toString() << "frame_content_br:" << frame_content_br.toString();
 			/// pokud je result neverfit, nech ho tam, at aspon vidime, co se nikdy nevejde
-			if(keepAll && !(res.flags & FlagPrintNeverFit)) {
+			if(isKeepAll() && !(res.flags & FlagPrintNeverFit)) {
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				//qfInfo() << "keepAll && !(res.flags & FlagPrintNeverFit)";
-				SAFE_DELETE(mp);
+				QF_SAFE_DELETE(mp);
 				//qfInfo().color(QFLog::Green) << "return" << current_column_index << "of" << column_sizes.count();
 				return checkPrintResult(res);
 			}
@@ -1244,14 +1311,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	}
 	//qfWarning() << this << "\tdirty_rect 1:" << dirty_rect.toString();
 	/// pokud je v nekterem smeru definovany, je jedno, kolik se toho potisklo a nastav ten rozmer
-	if(designedRect.horizontalUnit == Rect::UnitPercent) dirty_rect.setWidth(frame_content_br.width()); /// horizontalni rozmer musi ctit procenta
-	else if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() > 0) dirty_rect.setWidth(designedRect.width() - 2*hinset);
-	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() > 0) dirty_rect.setHeight(designedRect.height() - 2*vinset);
-	/*
-	qfDebug() << "\tdirty_rect 2:" << dirty_rect.toString();
-	if(designedRect.verticalUnit == Rect::UnitPercent) dirty_rect.setHeight(frame_content_br.height());
-	else if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() > 0) dirty_rect.setHeight(designedRect.height() - 2*vinset);
-	*/
+	if(designedRect.horizontalUnit == Rect::UnitPercent)
+		dirty_rect.setWidth(frame_content_br.width()); /// horizontalni rozmer musi ctit procenta
+	else if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() > 0)
+		dirty_rect.setWidth(designedRect.width() - 2*hinset());
+	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() > 0)
+		dirty_rect.setHeight(designedRect.height() - 2*vinset());
 	//qfWarning() << "\tdirty_rect 3:" << dirty_rect.toString();
 	/// pri rendrovani se muze stat, ze dirtyRect nezacina na bbr, to ale alignment zase spravi
 	dirty_rect.moveTopLeft(frame_content_br.topLeft());
@@ -1259,13 +1324,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	//qfDebug() << "\tlayout:" << ((layout == LayoutHorizontal)? "horizontal": "vertical");
 	//qfDebug() << "\tortho layout:" << ((orthogonalLayout() == LayoutHorizontal)? "horizontal": "vertical");
 	//qfDebug() << "\trenderedRect:" << r.toString();
-	//qfDebug() << "\trenderedRect:" << r.toString();
 
 	/// alignment
-	qfDebug() << "\tALIGN:" << QString::number((int)alignment, 16);
+	//qfDebug() << "\tALIGN:" << QString::number((int)alignment, 16);
 	//alignChildren(mp, dirty_rect);
 	//if(0)
-	dirty_rect.adjust(-hinset, -vinset, hinset, vinset);
+	dirty_rect.adjust(-hinset(), -vinset(), hinset(), vinset());
 	mp->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
 	//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();
@@ -1293,7 +1357,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	//dirtyRect = r;//.adjusted(-hinset, -vinset, hinset, vinset);;
 	qfDebug() << "\trenderedRect:" << mp->renderedRect.toString();
 	res = checkPrintResult(res);
-	qfDebug().color(QFLog::Cyan) << "\t<<<< FRAME return:" << res.toString() << element.tagName() << "id:" << element.attribute("id");
+	//qfDebug().color(QFLog::Cyan) << "\t<<<< FRAME return:" << res.toString() << element.tagName() << "id:" << element.attribute("id");
 	return res;
 }
 /*
@@ -1307,7 +1371,7 @@ void ReportItemFrame::alignChildren(ReportItemMetaPaintFrame *mp,  const ReportI
 				Rect r1;
 				/// vypocitej velikost potisknuteho bloku
 				for(int i=0; i<mp->childrenCount(); i++) {
-					ReportItemMetaPaint *it = mp->childAt(i);
+					ReportItemMetaPaint *it = mp->itemAt(i);
 					r1 = r1.united(it->renderedRect);
 				}
 				qreal al = 0, d;
@@ -1331,7 +1395,7 @@ void ReportItemFrame::alignChildren(ReportItemMetaPaintFrame *mp,  const ReportI
 
 			/// v orthogonalnim smeru kazdy item
 			for(int i=0; i<mp->childrenCount(); i++) {
-				ReportItemMetaPaint *it = mp->childAt(i);
+				ReportItemMetaPaint *it = mp->itemAt(i);
 				const Rect &r1 = it->renderedRect;
 				qfDebug() << "\t\titem renderedRect:" << r1.toString();
 				qreal al = 0, d;
@@ -1376,8 +1440,8 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 {
 	//qfInfo() << "resetIndexToPrintRecursively()";
 	indexToPrint = 0;
-	for(int i=0; i<childrenCount(); i++) {
-		ReportItem *it = childAt(i);
+	for(int i=0; i<itemCount(); i++) {
+		ReportItem *it = itemAt(i);
 		it->resetIndexToPrintRecursively(including_para_texts);
 	}
 	/*
@@ -1389,24 +1453,24 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 }
 
 //==========================================================
-//                                    ReportItemReport
+//                   ReportItemReport
 //==========================================================
 ReportItemReport::ReportItemReport(QObject *parent)
-	: ReportItemBand(parent, NULL, _el)
+	: Super(parent)
 {
-	QF_ASSERT(parent, "processor is NULL");
+	//QF_ASSERT(parent, "processor is NULL");
 	//Rect r = designedRect;
 	//QDomElement el = element.cloneNode(false).toElement();
 	//qfDebug() << "\toriginal:" << element.tagName() << "is null:" << element.isNull() << "has children:" << element.hasChildNodes() << "parent node is null:" << element.parentNode().isNull();
 	//qfDebug() << "\tclone:" << el.tagName() << "is null:" << el.isNull() << "has children:" << el.hasChildNodes() << "parent node is null:" << el.parentNode().isNull();
+	/*--
 	if(element.attribute("orientation") == "landscape") {
 		Size sz = designedRect.size();
 		sz.transpose();
 		designedRect.setSize(sz);
 	}
 	designedRect.flags = (Rect::LeftFixed | Rect::TopFixed | Rect::RightFixed | Rect::BottomFixed);
-	//element.setAttribute("brd", "color: teal");
-	//element.setAttribute("fill", "color: white");
+	--*/
 	f_dataTable = parent->data();
 	//qfInfo() << f_dataTable.toString();
 	dataTableLoaded = true;
@@ -1414,7 +1478,7 @@ ReportItemReport::ReportItemReport(QObject *parent)
 
 ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
 {
-	qfDebug() << QF_FUNC_NAME << "\x1B[1;31;40m***ROOT***ROOT***ROOT***ROOT***\x1B[0;37;40m" << element.tagName();
+	qfLogFuncFrame() << "\x1B[1;31;40m***ROOT***ROOT***ROOT***ROOT***\x1B[0;37;40m" << this;
 	Q_UNUSED(bounding_rect);
 	PrintResult res = PrintOk;
 	//updateChildren();
@@ -1544,7 +1608,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 		text_option.setAlignment(alignment_flags);
 		Rect br;
 		/// velikost boundingRect je v mm, tak to prepocitej na body vystupniho zarizeni
-		br = QFGraphics::mm2device(bounding_rect, processor->paintDevice());
+		br = qmlwidgets::graphics::mm2device(bounding_rect, processor->paintDevice());
 
 		bool render_check_mark = false;
 		QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
@@ -1665,7 +1729,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 		br.setHeight(br.height() * 25.4 / y_dpi);
 		*/
 		/// velikost boundingRect je v bodech vystupniho zarizeni, tak to prepocitej na mm
-		br = QFGraphics::device2mm(br, processor->paintDevice());
+		br = qmlwidgets::graphics::device2mm(br, processor->paintDevice());
 		//if(splitted) qfInfo() << "\tbr [mm]:" << br.toString();
 		//qfWarning().noSpace() << "'" << text << "' font metrics: " << br.toString();
 		/// posun to na zacatek, alignment ramecku to zase vrati
@@ -1787,7 +1851,7 @@ ReportItemDetail* ReportItemBand::detail()
 {
 	ReportItemDetail *ret = NULL;
 	for(int i=0; i<children().count(); i++) {
-		ReportItem *it = childAt(i);
+		ReportItem *it = itemAt(i);
 		ret = it->toDetail();
 		if(ret) break;
 	}
@@ -1839,7 +1903,7 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 	if(QString(element.attribute("headeronbreak")).toBool()) {
 		/// vsechno krome detailu se bude tisknout znovu
 		for(int i=0; i<children().count(); i++) {
-			ReportItem *it = childAt(i);
+			ReportItem *it = itemAt(i);
 			if(it->toDetail() == NULL) it->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 		}
 		indexToPrint = 0;
@@ -2157,13 +2221,13 @@ ReportItem::PrintResult ReportItemIf::printMetaPaintChildren(ReportItemMetaPaint
 		for(int i=indexToPrint; i<children().count(); i++) {
 			ReportItem *it = childAt(i);
 			if(bool_res) {
-				if(dynamic_cast<ReportItemIfTrue*>(it)) {
+				if(qobject_cast<ReportItemIfTrue*>(it)) {
 					it_res = it;
 					break;
 				}
 			}
 			else {
-				if(dynamic_cast<ReportItemIfFalse*>(it)) {
+				if(qobject_cast<ReportItemIfFalse*>(it)) {
 					it_res = it;
 					break;
 				}
@@ -2216,7 +2280,7 @@ void ReportItemImage::syncChildren()
 				fakeLoadErrorPara.appendChild(fakeLoadErrorPara.ownerDocument().createTextNode(orig_src));
 				processor->createProcessibleItem(fakeLoadErrorPara, this);
 				//qfInfo() << "children cnt:" << this->children().count();
-				//qfInfo() << "this:" << this << "childrencount" << children().count() << "\n" << toString();
+				//qfInfo() << "this:" << this << "itemCount" << children().count() << "\n" << toString();
 			}
 		}
 	}
@@ -2272,7 +2336,7 @@ ReportItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaPaint* out
 	ReportItem::PrintResult ret = ReportItemFrame::printMetaPaint(out, bounding_rect);
 	ReportItemMetaPaint *mpi = out->lastChild();
 	if(mpi) {
-		ReportItemMetaPaintImage *img = dynamic_cast<ReportItemMetaPaintImage*>(mpi->lastChild());
+		ReportItemMetaPaintImage *img = qobject_cast<ReportItemMetaPaintImage*>(mpi->lastChild());
 		if(img) {
 			/// pokud se obrazek vytiskl a je to background, nastav tento flag jeho rodicovskemu frame
 			if(QString(elementAttribute("backgroundItem")).toBool()) {
@@ -2296,7 +2360,7 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 //QFLog::setDomainTresholds(QStringList() << "Reportitem");
 	if(!fakeLoadErrorPara.isNull()) {
 		/// src nebyl nalezen, child je para, kde je uvedeno, jak se jmenoval nenalezeny obrazek
-		//qfInfo() << "this:" << this << "childrencount" << children().count() << "\n" << toString();
+		//qfInfo() << "this:" << this << "itemCount" << children().count() << "\n" << toString();
 		ReportItemFrame::printMetaPaintChildren(out, bounding_rect);
 		//QString orig_src = element.attribute("src");
 		//ReportItemMetaPaintText *txt = new ReportItemMetaPaintText(out, this);
@@ -2475,7 +2539,7 @@ ReportItemImage::PrintResult ReportItemGraph::printMetaPaintChildren(ReportItemM
 		/// vypada to, jako ze tisk textu se do boundingrect nepocita
 
 		/// jako zaklad vem rect, ktery je predepsan v reportu, do nej by se mel graf vejit
-		QRect r = QFGraphics::mm2device(br, &pict).toRect();
+		QRect r = qmlwidgets::graphics::mm2device(br, &pict).toRect();
 		/// bounding rect obrazku grafu je vzdy od [0,0]
 		r.moveTo(0, 0);
 		//qfInfo() << "graph bounding_rect:" << Rect(r).toString();

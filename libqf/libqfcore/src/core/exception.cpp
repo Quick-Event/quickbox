@@ -12,8 +12,8 @@ using namespace qf::core;
 //============================================================
 //                      Exception
 //============================================================
+bool Exception::terminateOnException = false;
 /*
-bool Exception::f_exceptionAbortsApplication = false;
 bool Exception::f_assertThrowsException = false;
 bool Exception::f_logStackTrace = false;
 

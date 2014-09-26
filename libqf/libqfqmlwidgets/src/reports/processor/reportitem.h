@@ -20,6 +20,7 @@
 #include <QTextLayout>
 #include <QPicture>
 #include <QQmlParserStatus>
+#include <QQmlListProperty>
 
 class QDomElement;
 class QDomText;
@@ -40,10 +41,11 @@ class ReportItemMetaPaintFrame;
 class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserStatus
 {
 	Q_OBJECT
+	Q_INTERFACES(QQmlParserStatus)
 private:
 	typedef QObject Super;
 public:
-	Q_PROPERTY(bool keepAll READ keepAll WRITE setKeepAll NOTIFY keepAllChanged)
+	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll NOTIFY keepAllChanged)
 	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
@@ -300,8 +302,8 @@ public:
 	//! Pokud hodnota \a attr_name je ve tvaru 'script:funcname', zavola se scriptDriver processoru, jinak se vrati atribut.
 	QString elementAttribute(const QString &attr_name, const QString &default_val = QString());
 
-	virtual ReportItem* parent() const {return static_cast<ReportItem*>(this->Super::parent());}
-	virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
+	ReportItem* parent() const {return static_cast<ReportItem*>(this->Super::parent());}
+	//--virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
 	//! Print item in form, that understandable by ReportPainter.
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) = 0;
 	//! Print item in HTML element form.
@@ -365,6 +367,8 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportItem
 private:
 	typedef ReportItem Super;
 public:
+	Q_PROPERTY(QQmlListProperty<ReportItem> items READ items)
+	Q_CLASSINFO("DefaultProperty", "items")
 	Q_ENUMS(Alignment)
 	//Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
 	//Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
@@ -452,10 +456,23 @@ public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
 
-	const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
-	void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
+	//--const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
+	//--void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
+
+	QString toString(int indent = 2, int indent_offset = 0) Q_DECL_OVERRIDE;
+
+	QQmlListProperty<ReportItem> items();
 private:
-	QList<double> f_gridLayoutSizes;
+	static void addItemFunction(QQmlListProperty<ReportItem> *list_property, ReportItem *item);
+	static ReportItem* itemAtFunction(QQmlListProperty<ReportItem> *list_property, int index);
+	static void removeAllItemsFunction(QQmlListProperty<ReportItem> *list_property);
+	static int countItemsFunction(QQmlListProperty<ReportItem> *list_property);
+protected:
+	int itemCount() const;
+	ReportItem* itemAt(int index);
+private:
+	QList<ReportItem*> m_items;
+	//--QList<double> f_gridLayoutSizes;
 };
 
 //! TODO: write class documentation.

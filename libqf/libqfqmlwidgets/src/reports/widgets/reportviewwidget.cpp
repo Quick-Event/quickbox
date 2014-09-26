@@ -9,9 +9,11 @@
 
 #include "../processor/reportpainter.h"
 #include "../../action.h"
+#include "../../dialogs/dialog.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
+#include <qf/core/string.h>
 
 #include <QScrollBar>
 #include <QMenu>
@@ -160,7 +162,7 @@ void ReportViewWidget::ScrollArea::verticalScrollBarValueChanged(int value)
 }
 
 //====================================================
-//                                 ReportViewWidget::PainterWidget
+//        ReportViewWidget::PainterWidget
 //====================================================
 ReportViewWidget::PainterWidget::PainterWidget(QWidget *parent)
 	: QWidget(parent)
@@ -172,14 +174,14 @@ ReportViewWidget::PainterWidget::PainterWidget(QWidget *parent)
 
 ReportViewWidget* ReportViewWidget::PainterWidget::reportViewWidget()
 {
-	return qfFindParent<ReportViewWidget*>(this);
+	return qf::core::qfFindParent<ReportViewWidget*>(this);
 }
 
 void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 {
 	//qfTrash() << QF_FUNC_NAME;
 	QWidget::paintEvent(ev);
-	QFReportPainter painter(this);
+	ReportPainter painter(this);
 	painter.setMarkEditableSqlText(true);
 
 	/// nakresli ramecek a stranku
@@ -201,9 +203,9 @@ void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 	//painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, "<qt>Qt <b>kjutyn</b> <br>indian</qt>");
 	*/
 	reportViewWidget()->setupPainter(&painter);
-	QFReportItemMetaPaintFrame *frm = reportViewWidget()->currentPage();
+	ReportItemMetaPaintFrame *frm = reportViewWidget()->currentPage();
 	if(!frm) return;
-	QFGraphics::Rect r = QFGraphics::mm2device(frm->renderedRect, painter.device());
+	graphics::Rect r = graphics::mm2device(frm->renderedRect, painter.device());
 	painter.fillRect(r, QColor("white"));
 	painter.setPen(QColor("teal"));
 	painter.setBrush(QBrush());
@@ -222,34 +224,42 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 		QWidget::mousePressEvent(e); /// ignoruj posouvani reportu mysi
 	}
 	else {
-		QFReportItemMetaPaint::Point p = QPointF(e->pos());
+		ReportItemMetaPaint::Point p = QPointF(e->pos());
 		p = reportViewWidget()->painterInverseMatrix.map(p);
-		p = QFGraphics::device2mm(p, this);
-		qfTrash() << QF_FUNC_NAME << QFReportProcessorItem::Point(p).toString();
+		p = graphics::device2mm(p, this);
+		qfDebug() << Q_FUNC_INFO << ReportItem::Point(p).toString();
 		reportViewWidget()->selectItem(p);
-		QFReportItemMetaPaint *selected_item = reportViewWidget()->selectedItem();
+		ReportItemMetaPaint *selected_item = reportViewWidget()->selectedItem();
 		if(selected_item) {
 			if(e->button() == Qt::RightButton) {
 				//qfInfo() << "\t item type:" << typeid(*selected_item).name();
-				QFReportItemMetaPaintText *it = dynamic_cast<QFReportItemMetaPaintText*>(selected_item->firstChild());
+				ReportItemMetaPaintText *it = dynamic_cast<ReportItemMetaPaintText*>(selected_item->firstChild());
 				if(it) {
 					QMenu menu(this);
 					menu.setTitle(tr("Item menu"));
 					QAction *act_edit = menu.addAction(tr("Editovat text"));
+					/*--
 					{
-						QStringList edit_grants = QFString(it->editGrants).splitAndTrim(',');
+						QStringList edit_grants = qf::core::String(it->editGrants).splitAndTrim(',');
 						bool edit_enabled = edit_grants.isEmpty();
 						QFApplication *app = qobject_cast<QFApplication*>(QCoreApplication::instance());
 						qfTrash() << "app:" << app << "edit grants:" << edit_grants.join(",") << "edits enabled:" << edit_enabled;
-						if(app) foreach(QString grant, edit_grants) if(app->currentUserHasGrant(grant)) {edit_enabled = true; break;}
+						if(app) foreach(QString grant, edit_grants)  {
+							if(app->currentUserHasGrant(grant)) {
+								edit_enabled = true;
+								break;
+							}
+						}
 						act_edit->setEnabled(edit_enabled);
 					}
+					--*/
+					act_edit->setEnabled(true);
 					QAction *a = menu.exec(mapToGlobal(e->pos()));
 					if(a == act_edit) {
 						ItemValueEditorWidget *w = new ItemValueEditorWidget();
 						w->setValue(it->text);
-						QFButtonDialog dlg(this);
-						dlg.setDialogWidget(w);
+						dialogs::Dialog dlg(this);
+						dlg.setCentralWidget(w);
 						if(dlg.exec()) {
 							QVariant val = w->value();
 							it->text = val.toString();
@@ -293,14 +303,14 @@ void ReportViewWidget::PainterWidget::wheelEvent(QWheelEvent *event)
 //                                 ReportViewWidget
 //====================================================
 ReportViewWidget::ReportViewWidget(QWidget *parent)
-	: QFDialogWidget(parent), f_scrollArea(NULL), edCurrentPage(NULL), f_statusBar(NULL)
+	: Super(parent), f_scrollArea(NULL), edCurrentPage(NULL), f_statusBar(NULL)
 {
 	f_reportProcessor = NULL;
 	whenRenderingSetCurrentPageTo = -1;
-
+	/*--
 	f_uiBuilder = new QFUiBuilder(this, ":/libqfgui/qfreportviewwidget.ui.xml");
 	f_actionList += f_uiBuilder->actions();
-
+	--*/
 	action("file.export.email")->setVisible(false);
 	//action("report.edit")->setVisible(false);
 
@@ -330,21 +340,21 @@ ReportViewWidget::~ReportViewWidget()
 {
 }
 
-QFReportProcessor * ReportViewWidget::reportProcessor()
+ReportProcessor * ReportViewWidget::reportProcessor()
 {
 	if(f_reportProcessor == NULL) {
-		setReportProcessor(new QFReportProcessor(f_painterWidget, NULL, this));
+		setReportProcessor(new ReportProcessor(f_painterWidget, NULL, this));
 	}
 	return f_reportProcessor;
 }
 
-void ReportViewWidget::setReportProcessor(QFReportProcessor * proc)
+void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 {
 	f_reportProcessor = proc;
 	connect(f_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(pageProcessed()));
 }
 
-QFStatusBar* ReportViewWidget::statusBar()
+StatusBar *ReportViewWidget::statusBar()
 {
 	if(!f_statusBar) {
 		f_statusBar = new QFStatusBar(NULL);
@@ -419,7 +429,7 @@ void ReportViewWidget::view_zoomIn(const QPoint &center_pos)
 	const QRect visible_rect(-f_scrollArea->widget()->pos(), f_scrollArea->viewport()->size());
 	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
-	qfTrash() << "visible rect:" << QFGraphics::Rect(visible_rect).toString();
+	qfTrash() << "visible rect:" << core::graphics::Rect(visible_rect).toString();
 	QScrollBar *hsb = f_scrollArea->horizontalScrollBar();
 	QScrollBar *vsb = f_scrollArea->verticalScrollBar();
 
@@ -450,7 +460,7 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 	const QRect visible_rect(-f_scrollArea->widget()->pos(), f_scrollArea->viewport()->size());
 	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
-	qfTrash() << "visible rect:" << QFGraphics::Rect(visible_rect).toString();
+	qfTrash() << "visible rect:" << core::graphics::Rect(visible_rect).toString();
 	QScrollBar *hsb = f_scrollArea->horizontalScrollBar();
 	QScrollBar *vsb = f_scrollArea->verticalScrollBar();
 
@@ -483,9 +493,9 @@ void ReportViewWidget::zoomOnWheel(int delta, const QPoint &center_pos)
 void ReportViewWidget::view_zoomToFitWidth()
 {
 	qfTrash() << QF_FUNC_NAME;
-	QFReportItemMetaPaintFrame *frm = currentPage();
+	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
-	QFReportItemMetaPaintFrame::Rect r = frm->renderedRect;
+	ReportItemMetaPaintFrame::Rect r = frm->renderedRect;
 	double report_px = (r.width() + 2*PageBorder) * logicalDpiX() / 25.4;
 	double widget_px = f_scrollArea->width();
 	//QScrollBar *sb = f_scrollArea->verticalScrollBar();
@@ -496,9 +506,9 @@ void ReportViewWidget::view_zoomToFitWidth()
 
 void ReportViewWidget::view_zoomToFitHeight()
 {
-	QFReportItemMetaPaintFrame *frm = currentPage();
+	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
-	QFReportItemMetaPaintFrame::Rect r = frm->renderedRect;
+	ReportItemMetaPaintFrame::Rect r = frm->renderedRect;
 	double report_px = (r.height() + 2*PageBorder) * f_painterWidget->logicalDpiY() / 25.4;
 	double widget_px = f_scrollArea->height();
 	double sc = widget_px / report_px * 0.98;
@@ -508,7 +518,7 @@ void ReportViewWidget::view_zoomToFitHeight()
 void ReportViewWidget::setScale(qreal _scale)
 {
 	qfTrash() << QF_FUNC_NAME << currentPageNo();
-	QFReportItemMetaPaintFrame *frm = currentPage();
+	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 
 	f_scale = _scale;
@@ -520,10 +530,10 @@ void ReportViewWidget::setScale(qreal _scale)
 void ReportViewWidget::setupPainterWidgetSize()
 {
 	qfTrash() << QF_FUNC_NAME;
-	QFReportItemMetaPaintFrame *frm = currentPage();
+	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
-	QFGraphics::Rect r1 = frm->renderedRect.adjusted(-PageBorder, -PageBorder, PageBorder, PageBorder);
-	QFGraphics::Rect r2 = QFGraphics::mm2device(r1, f_painterWidget);
+	core::graphics::Rect r1 = frm->renderedRect.adjusted(-PageBorder, -PageBorder, PageBorder, PageBorder);
+	core::graphics::Rect r2 = core::graphics::mm2device(r1, f_painterWidget);
 	//qfTrash() << "\tframe rect:" << r.toString();
 	QSizeF s = r2.size();
 	s *= scale();
@@ -531,11 +541,11 @@ void ReportViewWidget::setupPainterWidgetSize()
 	f_painterWidget->resize(s.toSize());
 }
 
-void ReportViewWidget::setupPainter(QFReportPainter *p)
+void ReportViewWidget::setupPainter(ReportPainter *p)
 {
-	QF_ASSERT(p, "painter is NULL");
+	QF_ASSERT(p != nullptr, "painter is NULL", return);
 	//qfInfo() << QF_FUNC_NAME;
-	//qfInfo() << "\t painterScale:" << QFReportProcessorItem::Size(painterScale).toString();
+	//qfInfo() << "\t painterScale:" << ReportProcessorItem::Size(painterScale).toString();
 	//p->currentPage = currentPageNo();
 	p->pageCount = pageCount();
 	//QFDomElement el;
@@ -546,11 +556,11 @@ void ReportViewWidget::setupPainter(QFReportPainter *p)
 	//p->scale(painterScale.width(), painterScale.height());
 	//qfInfo() << "\t painter world matrix m11:" << p->worldMatrix().m11() << "m12:" << p->worldMatrix().m12();
 	//qfInfo() << "\t painter world matrix m21:" << p->worldMatrix().m21() << "m22:" << p->worldMatrix().m22();
-	p->translate(QFGraphics::mm2device(QFGraphics::Point(PageBorder, PageBorder), p->device()));
+	p->translate(core::graphics::mm2device(core::graphics::Point(PageBorder, PageBorder), p->device()));
 	painterInverseMatrix = p->matrix().inverted();
 }
 /*
-void ReportViewWidget::setDocument(QFReportItemMetaPaint* doc)
+void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
 {
 	qfTrash() << QF_FUNC_NAME;
 	fDocument = doc;
@@ -602,9 +612,9 @@ void ReportViewWidget::pageProcessed()
 	QTimer::singleShot(10, reportProcessor(), SLOT(processSinglePage())); /// 10 je kompromis mezi rychlosti prekladu a sviznosti GUI
 }
 
-QFReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc) throw(QFException)
+ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc) throw(QFException)
 {
-	QFReportItemMetaPaintReport *doc = reportProcessor()->processorOutput();
+	ReportItemMetaPaintReport *doc = reportProcessor()->processorOutput();
 	if(!doc && throw_exc) QF_EXCEPTION("document is NULL");
 	return doc;
 }
@@ -632,26 +642,26 @@ void ReportViewWidget::setCurrentPageNo(int pg_no)
 	refreshWidget();
 }
 
-QFReportItemMetaPaintFrame* ReportViewWidget::getPage(int n)
+ReportItemMetaPaintFrame* ReportViewWidget::getPage(int n)
 {
 	//qfTrash() << QF_FUNC_NAME << currentPageNo();
 	if(!document(!Qf::ThrowExc)) return NULL;
 	if(n < 0 || n >= document()->childrenCount()) return NULL;
-	QFReportItemMetaPaint *it = document()->child(n);
-	QFReportItemMetaPaintFrame *frm = dynamic_cast<QFReportItemMetaPaintFrame*>(it);
+	ReportItemMetaPaint *it = document()->child(n);
+	ReportItemMetaPaintFrame *frm = dynamic_cast<ReportItemMetaPaintFrame*>(it);
 	//qfTrash() << "\treturn:" << frm;
 	return frm;
 }
 
-QFReportItemMetaPaintFrame* ReportViewWidget::currentPage()
+ReportItemMetaPaintFrame* ReportViewWidget::currentPage()
 {
-	QFReportItemMetaPaintFrame *frm = getPage(currentPageNo());
+	ReportItemMetaPaintFrame *frm = getPage(currentPageNo());
 	//qfTrash() << QF_FUNC_NAME << currentPageNo();
 	if(!frm) return NULL;
 	return frm;
 }
 
-void ReportViewWidget::selectElement_helper(QFReportItemMetaPaint *it, const QFDomElement &el)
+void ReportViewWidget::selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el)
 {
 	QDomElement el1 = it->reportItem()->element;
 	if(el1 == el) {
@@ -662,7 +672,7 @@ void ReportViewWidget::selectElement_helper(QFReportItemMetaPaint *it, const QFD
 	}
 	else {
 		foreach(QFTreeItemBase *_it, it->children()) {
-			QFReportItemMetaPaint *it1 = static_cast<QFReportItemMetaPaint*>(_it);
+			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(_it);
 			selectElement_helper(it1, el);
 		}
 	}
@@ -681,7 +691,7 @@ void ReportViewWidget::selectElement(const QFDomElement &el)
 	}
 	#endif
 	f_selectedItem = NULL;
-	QFReportItemMetaPaintFrame *frm = currentPage();
+	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 	selectElement_helper(frm, el);
 	f_painterWidget->update();
@@ -707,7 +717,7 @@ static QString is_fake_element(const QFDomElement &_el)
 	return fake_path;
 }
 
-bool ReportViewWidget::selectItem_helper(QFReportItemMetaPaint *it, const QPointF &p)
+bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF &p)
 {
 	bool ret = false;
 	if(it->isPointInside(p)) {
@@ -716,7 +726,7 @@ bool ReportViewWidget::selectItem_helper(QFReportItemMetaPaint *it, const QPoint
 		//qfInfo() << it->dump();
 		bool in_child = false;
 		foreach(QFTreeItemBase *_it, it->children()) {
-			QFReportItemMetaPaint *it1 = static_cast<QFReportItemMetaPaint*>(_it);
+			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(_it);
 			if(selectItem_helper(it1, p)) {in_child = true; break;}
 		}
 		if(!in_child) {
@@ -726,7 +736,7 @@ bool ReportViewWidget::selectItem_helper(QFReportItemMetaPaint *it, const QPoint
 				//qfInfo() << "selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
 				/// muze se stat, ze item nema element, pak hledej u rodicu
 				while(it) {
-					QFReportProcessorItem *r_it = it->reportItem();
+					ReportProcessorItem *r_it = it->reportItem();
 					if(r_it) {
 						f_painterWidget->update();
 						/// pokus se najit nejaky rozumny element pro tento report item
@@ -739,9 +749,9 @@ bool ReportViewWidget::selectItem_helper(QFReportItemMetaPaint *it, const QPoint
 							if(!fake_path.isEmpty()) {
 								/// pokud je to fake element, bylo by fajn, kdyby se emitoval element, ze ktereho byl fake element vytvoren
 								/// najdi element table
-								QFReportItemTable *t_it = NULL;
+								ReportItemTable *t_it = NULL;
 								while(r_it) {
-									t_it = dynamic_cast<QFReportItemTable*>(r_it);
+									t_it = dynamic_cast<ReportItemTable*>(r_it);
 									if(t_it) break;
 									r_it = r_it->parent();
 								}
@@ -791,8 +801,8 @@ bool ReportViewWidget::selectItem_helper(QFReportItemMetaPaint *it, const QPoint
 void ReportViewWidget::selectItem(const QPointF &p)
 {
 	qfLogFuncFrame();
-	QFReportItemMetaPaintFrame *frm = currentPage();
-	QFReportItemMetaPaint *old_selected_item = f_selectedItem;
+	ReportItemMetaPaintFrame *frm = currentPage();
+	ReportItemMetaPaint *old_selected_item = f_selectedItem;
 	//QFDomElement old_el = fSelectedElement;
 	f_selectedItem = NULL;
 	if(frm) selectItem_helper(frm, p);
@@ -816,7 +826,7 @@ void ReportViewWidget::processReport()
 {
 	qfLogFuncFrame();
 	if(!reportProcessor()->processorOutput()) {
-		reportProcessor()->process(QFReportProcessor::FirstPage);
+		reportProcessor()->process(ReportProcessor::FirstPage);
 	}
 	setCurrentPageNo(0);
 	setScale(1);
@@ -830,7 +840,7 @@ void ReportViewWidget::render()
 	reportProcessor()->reset();
 	if(!reportProcessor()->processorOutput()) {
 		//qfInfo() << "process report";
-		reportProcessor()->process(QFReportProcessor::FirstPage);
+		reportProcessor()->process(ReportProcessor::FirstPage);
 	}
 	//qfInfo() << "setCurrentPageNo:" << cur_page_no;
 	//setCurrentPageNo(cur_page_no);
@@ -911,15 +921,15 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options) thro
 	QFCursorOverrider cov(Qt::WaitCursor);
 	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	QFReportPainter painter(&printer);
+	ReportPainter painter(&printer);
 
-	typedef QFReportProcessorItem::Rect Rect;
-	//typedef QFReportProcessorItem::Size Size;
+	typedef ReportProcessorItem::Rect Rect;
+	//typedef ReportProcessorItem::Size Size;
 
 	int pg_no = options.value("fromPage", 1).toInt() - 1;
 	int to_page = options.value("toPage", pageCount()).toInt();
 	qfTrash() << "pg_no:" << pg_no << "to_page:" << to_page;
-	QFReportItemMetaPaintFrame *frm = getPage(pg_no);
+	ReportItemMetaPaintFrame *frm = getPage(pg_no);
 	if(frm) {
 		Rect r = frm->renderedRect;
 		bool landscape = r.width() > r.height();

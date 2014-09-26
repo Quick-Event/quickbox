@@ -2,6 +2,8 @@
 #define QF_CORE_UTILS_H
 
 #include "coreglobal.h"
+#include "assert.h"
+
 #include <QVariant>
 
 #define QF_SAFE_DELETE(x) if(x != nullptr) {delete x; x = nullptr;}
@@ -61,6 +63,23 @@ public:
 	static bool fieldNameCmp(const QString &fld_name1, const QString &fld_name2);
 	static QVariant retypeVariant(const QVariant &_val, QVariant::Type type);
 };
+
+template <class T>
+T qfFindParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
+{
+	T t = NULL;
+	QObject *o = const_cast<QObject*>(_o);
+	while(o) {
+		o = o->parent();
+		if(!o) break;
+		t = qobject_cast<T>(o);
+		if(t) break;
+	}
+	if(!t && throw_exc) {
+		QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
+	}
+	return t;
+}
 
 }}
 

@@ -17,13 +17,7 @@
 #include <QFrame>
 #include <QMatrix>
 
-class QFAction;
-class QFReportItemMetaPaint;
-class QFReportItemMetaPaintReport;
-class QFReportItemMetaPaintFrame;
-class QFReportPainter;
-class QFReportProcessor;
-class QFStatusBar;
+//class QFAction;
 class QLineEdit;
 class QSpinBox;
 class QFDataTranslator;
@@ -32,7 +26,14 @@ class QPrinter;
 namespace qf {
 namespace qmlwidgets {
 class Action;
+class StatusBar;
 namespace reports {
+
+class ReportItemMetaPaint;
+class ReportItemMetaPaintReport;
+class ReportItemMetaPaintFrame;
+class ReportPainter;
+class ReportProcessor;
 
 //! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT  ReportViewWidget : public qf::qmlwidgets::framework::DialogWidget
@@ -57,24 +58,24 @@ protected:
 
 	QLineEdit *edCurrentPage;
 
-	QFReportItemMetaPaint *f_selectedItem;
+	ReportItemMetaPaint *f_selectedItem;
 	QMatrix painterInverseMatrix;
 
-	QFReportProcessor *f_reportProcessor;
+	ReportProcessor *f_reportProcessor;
 
 	static const int PageBorder = 5;
 
-	QFStatusBar *f_statusBar;
+	qf::qmlwidgets::StatusBar *f_statusBar;
 private:
-	//void selectElement_helper(QFReportItemMetaPaint *it, const QFDomElement &el);
+	//void selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el);
 	void selectItem(const QPointF &p);
-	bool selectItem_helper(QFReportItemMetaPaint *it, const QPointF &p);
+	bool selectItem_helper(ReportItemMetaPaint *it, const QPointF &p);
 protected:
-	QFStatusBar *statusBar();
+	qf::qmlwidgets::StatusBar* statusBar();
 	QSpinBox *zoomStatusSpinBox;
 
 	/// nastavi painteru scale a offset
-	void setupPainter(QFReportPainter *p);
+	void setupPainter(ReportPainter *p);
 	//! nastavi velikost widgetu podle rozmeru aktualni stranky a aktualniho zvetseni.
 	void setupPainterWidgetSize();
 
@@ -128,14 +129,14 @@ public slots:
 	void view_zoomToFitHeight();
 	void zoomOnWheel(int delta, const QPoint &pos);
 public:
-	virtual QFReportProcessor* reportProcessor();
+	virtual ReportProcessor* reportProcessor();
 	//! does not take ownership of \a proc
 	//! connect necessarry signals and slots
-	void setReportProcessor(QFReportProcessor *proc);
+	void setReportProcessor(ReportProcessor *proc);
 
 	virtual void setVisible(bool visible);
 
-	QFReportItemMetaPaintReport* document(bool throw_exc = true);
+	ReportItemMetaPaintReport* document(bool throw_exc = true);
 	void setData(const qf::core::utils::TreeTable &data) {fData = data;}
 	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
 	void setReport(const QString &file_name);
@@ -145,16 +146,16 @@ public:
 	/// stranky se pocitaji od 0
 	void setCurrentPageNo(int pg_no);
 	int pageCount();
-	QFReportItemMetaPaintFrame *currentPage();
+	ReportItemMetaPaintFrame *currentPage();
 	/// return NULL if such a page does not exist.
-	QFReportItemMetaPaintFrame *getPage(int page_no);
+	ReportItemMetaPaintFrame *getPage(int page_no);
 
 	qreal scale() const {return f_scale;}
 	void setScale(qreal _scale);
 
 	qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
 
-	QFReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
+	ReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
 	virtual void prePrint() {}
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
 public:
@@ -172,7 +173,7 @@ protected:
 	ReportViewWidget* reportViewWidget();
 	/// screen dots per mm
 signals:
-	//void sqlValueEdited(const QString &sql_id, const QVariant &val);
+	void sqlValueEdited(const QString &sql_id, const QVariant &val);
 public:
 	PainterWidget(QWidget *parent);
 	virtual ~PainterWidget() {}

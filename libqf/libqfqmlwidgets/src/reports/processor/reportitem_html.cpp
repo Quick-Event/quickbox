@@ -53,7 +53,7 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 	if(children().count() > 0) {
 		if(children().count() == 1) {
 			/// jedno dite vyres tak, ze se vubec nevytiskne rodicovsky frame
-			ReportItem *it = childAt(0);
+			ReportItem *it = itemAt(0);
 			res = it->printHtml(out);
 		}
 		else {
@@ -62,7 +62,7 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 				el_div.setAttribute("layout", "horizontal");
 			}
 			for(int i=0; i<children().count(); i++) {
-				ReportItem *it = childAt(i);
+				ReportItem *it = itemAt(i);
 				PrintResult ch_res;
 				//int cnt = 0;
 				do {

@@ -2,6 +2,8 @@
 #include "tablemodelcolumn.h"
 #include "../sql/sqlquerybuilder.h"
 
+#include <qf/core/assert.h>
+
 using namespace qf::core::qml;
 
 SqlQueryTableModel::SqlQueryTableModel(QObject *parent)
@@ -60,11 +62,12 @@ TableModelColumn *SqlQueryTableModel::columnAtFunction(QQmlListProperty<TableMod
 void SqlQueryTableModel::removeAllColumnsFunction(QQmlListProperty<TableModelColumn> *list_property)
 {
 	SqlQueryTableModel *that = static_cast<SqlQueryTableModel*>(list_property->object);
-	that->m_columns.clear();
 	while (that->columnCount()) {
-		that->removeColumn(0);
+		ColumnDefinition cd = that->removeColumn(0);
+		QF_ASSERT(cd.isNull(), "Error removing column", break);
 	}
 	qDeleteAll(that->m_columns);
+	that->m_columns.clear();
 }
 
 int SqlQueryTableModel::countColumnsFunction(QQmlListProperty<TableModelColumn> *list_property)
