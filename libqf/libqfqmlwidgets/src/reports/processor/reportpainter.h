@@ -67,15 +67,10 @@ public:
 	qf::qmlwidgets::graphics::Layout layout() const {return (qf::qmlwidgets::graphics::Layout)f_layoutSettings.value(LayoutSetting::Layout, qf::qmlwidgets::graphics::LayoutVertical).toInt();}
 	void setLayout(qf::qmlwidgets::graphics::Layout ly) {if(layout() != ly) f_layoutSettings[LayoutSetting::Layout] = ly;}
 	Qt::Alignment alignment() const {return (Qt::Alignment)f_layoutSettings.value(LayoutSetting::Alignment, (int)(Qt::AlignLeft | Qt::AlignTop)).toInt();}
-	void setAlignment(ReportItemFrame::Alignment hal, ReportItemFrame::Alignment val) {
+	void setAlignment(ReportItemFrame::HAlignment hal, ReportItemFrame::VAlignment val) {
 		int al = hal | val;
-		al &= ~ReportItemFrame::AlignCenter;
-		if(hal | ReportItemFrame::AlignCenter)
-			al |= Qt::AlignHCenter;
-		if(val | ReportItemFrame::AlignCenter)
-			al |= Qt::AlignVCenter;
 		if(alignment() != al)
-			f_layoutSettings[LayoutSetting::Alignment] = (int)al;
+			f_layoutSettings[LayoutSetting::Alignment] = al;
 	}
 	bool isSuppressPrintOut() {return f_layoutSettings.value(LayoutSetting::SuppressPrintOut).toBool();}
 	void setSuppressPrintOut(bool b) {if(isSuppressPrintOut() != b) f_layoutSettings[LayoutSetting::SuppressPrintOut] = b;}

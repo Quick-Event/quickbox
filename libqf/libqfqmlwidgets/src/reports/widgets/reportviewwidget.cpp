@@ -10,6 +10,9 @@
 #include "../processor/reportpainter.h"
 #include "../../action.h"
 #include "../../dialogs/dialog.h"
+#include "../../dialogs/filedialog.h"
+#include "../../statusbar.h"
+#include "../../framework/cursoroverrider.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
@@ -26,9 +29,13 @@
 #include <QDesktopServices>
 #include <QProcess>
 #include <QUrl>
+#include <QLineEdit>
+#include <QDomDocument>
+#include <QDir>
 
 #include <typeinfo>
 
+namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::reports;
 
 //====================================================
@@ -132,11 +139,11 @@ void ReportViewWidget::ScrollArea::mouseMoveEvent(QMouseEvent* ev)
 		//QRect wr = widget()->geometry();
 		if(hsb) {
 			hsb->setValue(f_dragViewportStartPos.x() - (pos.x() - f_dragMouseStartPos.x()));
-			//qfTrash() << "\t horizontal scrollbar value2:" << hsb->value() << "of" << hsb->maximum();
+			//qfDebug() << "\t horizontal scrollbar value2:" << hsb->value() << "of" << hsb->maximum();
 		}
 		if(vsb) {
 			vsb->setValue(f_dragViewportStartPos.y() - (pos.y() - f_dragMouseStartPos.y()));
-			//qfTrash() << "\t vertical scrollbar value2:" << vsb->value() << "of" << vsb->maximum();
+			//qfDebug() << "\t vertical scrollbar value2:" << vsb->value() << "of" << vsb->maximum();
 		}
 		ev->accept();
 		return;
@@ -179,7 +186,7 @@ ReportViewWidget* ReportViewWidget::PainterWidget::reportViewWidget()
 
 void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 {
-	//qfTrash() << QF_FUNC_NAME;
+	//qfDebug() << QF_FUNC_NAME;
 	QWidget::paintEvent(ev);
 	ReportPainter painter(this);
 	painter.setMarkEditableSqlText(true);
@@ -243,7 +250,7 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 						QStringList edit_grants = qf::core::String(it->editGrants).splitAndTrim(',');
 						bool edit_enabled = edit_grants.isEmpty();
 						QFApplication *app = qobject_cast<QFApplication*>(QCoreApplication::instance());
-						qfTrash() << "app:" << app << "edit grants:" << edit_grants.join(",") << "edits enabled:" << edit_enabled;
+						qfDebug() << "app:" << app << "edit grants:" << edit_grants.join(",") << "edits enabled:" << edit_enabled;
 						if(app) foreach(QString grant, edit_grants)  {
 							if(app->currentUserHasGrant(grant)) {
 								edit_enabled = true;
@@ -311,7 +318,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	f_uiBuilder = new QFUiBuilder(this, ":/libqfgui/qfreportviewwidget.ui.xml");
 	f_actionList += f_uiBuilder->actions();
 	--*/
-	action("file.export.email")->setVisible(false);
+	//--action("file.export.email")->setVisible(false);
 	//action("report.edit")->setVisible(false);
 
 	fCurrentPageNo = -1;
@@ -324,7 +331,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	connect(f_painterWidget, SIGNAL(sqlValueEdited(QString,QVariant)), this, SIGNAL(sqlValueEdited(QString,QVariant)), Qt::QueuedConnection);
 	connect(f_scrollArea, SIGNAL(zoomOnWheel(int,QPoint)), this, SLOT(zoomOnWheel(int,QPoint)), Qt::QueuedConnection);
 	f_scrollArea->setWidget(f_painterWidget);
-	QBoxLayout *ly = new QVBoxLayout(centralWidget());
+	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setSpacing(0);
 	ly->setMargin(0);
 	ly->addWidget(f_scrollArea);
@@ -333,7 +340,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	connect(f_scrollArea, SIGNAL(showNextPage()), this, SLOT(scrollToNextPage()));
 	connect(f_scrollArea, SIGNAL(showPreviousPage()), this, SLOT(scrollToPrevPage()));
 
-	QFUiBuilder::connectActions(f_actionList, this);
+	//--QFUiBuilder::connectActions(f_actionList, this);
 }
 
 ReportViewWidget::~ReportViewWidget()
@@ -343,7 +350,7 @@ ReportViewWidget::~ReportViewWidget()
 ReportProcessor * ReportViewWidget::reportProcessor()
 {
 	if(f_reportProcessor == NULL) {
-		setReportProcessor(new ReportProcessor(f_painterWidget, NULL, this));
+		setReportProcessor(new ReportProcessor(f_painterWidget, this));
 	}
 	return f_reportProcessor;
 }
@@ -354,10 +361,10 @@ void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 	connect(f_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(pageProcessed()));
 }
 
-StatusBar *ReportViewWidget::statusBar()
+qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
 {
 	if(!f_statusBar) {
-		f_statusBar = new QFStatusBar(NULL);
+		f_statusBar = new qmlwidgets::StatusBar(NULL);
 		zoomStatusSpinBox = new QSpinBox();
 		zoomStatusSpinBox->setSingleStep(10);
 		zoomStatusSpinBox->setMinimum(10);
@@ -370,10 +377,10 @@ StatusBar *ReportViewWidget::statusBar()
 	}
 	return f_statusBar;
 }
-
+/*--
 QFPart::ToolBarList ReportViewWidget::createToolBars()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	QFPart::ToolBarList tool_bars;
 	//if(!f_toolBars.isEmpty()) return f_toolBars;
 
@@ -382,19 +389,19 @@ QFPart::ToolBarList ReportViewWidget::createToolBars()
 	/// je to dost divoky, najdu toolbar jmenem "main" a v nem widget majici akci s id == "view.nextPage"
 	/// a pred ni prdnu lineEdit, pukud pridam do toolbaru widget, musim na konec pridat i Stretch :(
 	foreach(QFToolBar *tb, tool_bars) {
-		//qfTrash() << "\ttoolbar object name:" << tb->objectName();
+		//qfDebug() << "\ttoolbar object name:" << tb->objectName();
 		if(tb->objectName() == "main") {
 			QLayout *ly = tb->layout();
 			//QF_ASSERT(ly, "bad layout cast");
 			for(int i = 0; i < ly->count(); ++i) {
 				QWidget *w = ly->itemAt(i)->widget();
-				//qfTrash() << "\twidget:" << w;
+				//qfDebug() << "\twidget:" << w;
 				if(w) {
 					QList<QAction*> alst = w->actions();
 					if(!alst.isEmpty()) {
 						QFAction *a = qobject_cast<QFAction*>(alst[0]);
 						if(a) {
-							//qfTrash() << "\taction id:" << a->id();
+							//qfDebug() << "\taction id:" << a->id();
 							if(a->id() == "view.nextPage") {
 								edCurrentPage = new QLineEdit(NULL);
 								edCurrentPage->setAlignment(Qt::AlignRight);
@@ -406,10 +413,6 @@ QFPart::ToolBarList ReportViewWidget::createToolBars()
 								tb->addWidget(space);
 								//QSpacerItem *spacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
 								//ly->addItem(spacer);
-/*
-								ly->insertWidget(i, edCurrentPage);
-								ly->addStretch();
-								*/
 								break;
 							}
 						}
@@ -422,14 +425,14 @@ QFPart::ToolBarList ReportViewWidget::createToolBars()
 
 	return tool_bars;
 }
-
+--*/
 void ReportViewWidget::view_zoomIn(const QPoint &center_pos)
 {
 	qfLogFuncFrame() << "center_pos:" << center_pos.x() << center_pos.y();
 	const QRect visible_rect(-f_scrollArea->widget()->pos(), f_scrollArea->viewport()->size());
 	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
-	qfTrash() << "visible rect:" << core::graphics::Rect(visible_rect).toString();
+	qfDebug() << "visible rect:" << qmlwidgets::graphics::Rect(visible_rect).toString();
 	QScrollBar *hsb = f_scrollArea->horizontalScrollBar();
 	QScrollBar *vsb = f_scrollArea->verticalScrollBar();
 
@@ -445,11 +448,11 @@ void ReportViewWidget::view_zoomIn(const QPoint &center_pos)
 		QPointF new_abs_center_pos = old_abs_center_pos * (new_scale / old_scale);
 		if(hsb) {
 			hsb->setValue(new_abs_center_pos.x() - center_pos.x());
-			qfTrash() << "\t horizontal scrollbar value2:" << hsb->value() << "of" << hsb->maximum();
+			qfDebug() << "\t horizontal scrollbar value2:" << hsb->value() << "of" << hsb->maximum();
 		}
 		if(vsb) {
 			vsb->setValue(new_abs_center_pos.y() - center_pos.y());
-			qfTrash() << "\t vertical scrollbar value2:" << vsb->value() << "of" << vsb->maximum();
+			qfDebug() << "\t vertical scrollbar value2:" << vsb->value() << "of" << vsb->maximum();
 		}
 	}
 }
@@ -460,7 +463,7 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 	const QRect visible_rect(-f_scrollArea->widget()->pos(), f_scrollArea->viewport()->size());
 	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
-	qfTrash() << "visible rect:" << core::graphics::Rect(visible_rect).toString();
+	qfDebug() << "visible rect:" << qmlwidgets::graphics::Rect(visible_rect).toString();
 	QScrollBar *hsb = f_scrollArea->horizontalScrollBar();
 	QScrollBar *vsb = f_scrollArea->verticalScrollBar();
 
@@ -475,11 +478,11 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 		QPointF new_abs_center_pos = old_abs_center_pos * (new_scale / old_scale);
 		if(hsb) {
 			hsb->setValue(new_abs_center_pos.x() - center_pos.x());
-			qfTrash() << "\t horizontal scrollbar value2:" << hsb->value() << "of" << hsb->maximum();
+			qfDebug() << "\t horizontal scrollbar value2:" << hsb->value() << "of" << hsb->maximum();
 		}
 		if(vsb) {
 			vsb->setValue(new_abs_center_pos.y() - center_pos.y());
-			qfTrash() << "\t vertical scrollbar value2:" << vsb->value() << "of" << vsb->maximum();
+			qfDebug() << "\t vertical scrollbar value2:" << vsb->value() << "of" << vsb->maximum();
 		}
 	}
 }
@@ -492,7 +495,7 @@ void ReportViewWidget::zoomOnWheel(int delta, const QPoint &center_pos)
 
 void ReportViewWidget::view_zoomToFitWidth()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 	ReportItemMetaPaintFrame::Rect r = frm->renderedRect;
@@ -517,7 +520,7 @@ void ReportViewWidget::view_zoomToFitHeight()
 
 void ReportViewWidget::setScale(qreal _scale)
 {
-	qfTrash() << QF_FUNC_NAME << currentPageNo();
+	qfDebug() << QF_FUNC_NAME << currentPageNo();
 	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 
@@ -529,12 +532,12 @@ void ReportViewWidget::setScale(qreal _scale)
 
 void ReportViewWidget::setupPainterWidgetSize()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
-	core::graphics::Rect r1 = frm->renderedRect.adjusted(-PageBorder, -PageBorder, PageBorder, PageBorder);
-	core::graphics::Rect r2 = core::graphics::mm2device(r1, f_painterWidget);
-	//qfTrash() << "\tframe rect:" << r.toString();
+	qmlwidgets::graphics::Rect r1 = frm->renderedRect.adjusted(-PageBorder, -PageBorder, PageBorder, PageBorder);
+	qmlwidgets::graphics::Rect r2 = qmlwidgets::graphics::mm2device(r1, f_painterWidget);
+	//qfDebug() << "\tframe rect:" << r.toString();
 	QSizeF s = r2.size();
 	s *= scale();
 	//painterScale = QSizeF(s.width() / r1.width(), s.height() / r1.height());
@@ -545,7 +548,7 @@ void ReportViewWidget::setupPainter(ReportPainter *p)
 {
 	QF_ASSERT(p != nullptr, "painter is NULL", return);
 	//qfInfo() << QF_FUNC_NAME;
-	//qfInfo() << "\t painterScale:" << ReportProcessorItem::Size(painterScale).toString();
+	//qfInfo() << "\t painterScale:" << ReportItem::Size(painterScale).toString();
 	//p->currentPage = currentPageNo();
 	p->pageCount = pageCount();
 	//QFDomElement el;
@@ -556,13 +559,13 @@ void ReportViewWidget::setupPainter(ReportPainter *p)
 	//p->scale(painterScale.width(), painterScale.height());
 	//qfInfo() << "\t painter world matrix m11:" << p->worldMatrix().m11() << "m12:" << p->worldMatrix().m12();
 	//qfInfo() << "\t painter world matrix m21:" << p->worldMatrix().m21() << "m22:" << p->worldMatrix().m22();
-	p->translate(core::graphics::mm2device(core::graphics::Point(PageBorder, PageBorder), p->device()));
+	p->translate(qmlwidgets::graphics::mm2device(qmlwidgets::graphics::Point(PageBorder, PageBorder), p->device()));
 	painterInverseMatrix = p->matrix().inverted();
 }
 /*
 void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	fDocument = doc;
 	if(!doc) return;
 	//doc->dump();
@@ -571,32 +574,15 @@ void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
 void ReportViewWidget::setReport(const QString &file_name)
 {
 	qfLogFuncFrame() << "file_name:" << file_name;
-	//qfTrash() << "\tdata:" << fData.toString();
+	//qfDebug() << "\tdata:" << fData.toString();
 	reportProcessor()->setReport(file_name);
 	reportProcessor()->setData(fData);
 	//out.dump();
 }
 
-void ReportViewWidget::setReport(const QFDomDocument & doc)
-{
-	reportProcessor()->setReport(doc);
-	reportProcessor()->setData(fData);
-}
-
-void ReportViewWidget::setData(const QFDomDocument &_data)
-{
-	qfLogFuncFrame();
-	QDomElement el = _data.firstChildElement();
-	QFXmlTable xt(el);
-	qfTrash() << xt.toString();
-	QFTreeTable tt = xt.toTreeTable();
-	//qfInfo() << tt.toString(2);
-	setData(tt);
-}
-
 void ReportViewWidget::pageProcessed()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	if(whenRenderingSetCurrentPageTo >= 0) {
 		if(pageCount() - 1 == whenRenderingSetCurrentPageTo) {
 			setCurrentPageNo(whenRenderingSetCurrentPageTo);
@@ -612,7 +598,7 @@ void ReportViewWidget::pageProcessed()
 	QTimer::singleShot(10, reportProcessor(), SLOT(processSinglePage())); /// 10 je kompromis mezi rychlosti prekladu a sviznosti GUI
 }
 
-ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc) throw(QFException)
+ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
 {
 	ReportItemMetaPaintReport *doc = reportProcessor()->processorOutput();
 	if(!doc && throw_exc) QF_EXCEPTION("document is NULL");
@@ -623,19 +609,20 @@ int ReportViewWidget::pageCount()
 {
 	//qfLogFuncFrame();
 	int ret = 0;
-	if(document(!Qf::ThrowExc)) {
+	if(document(!qf::core::Exception::Throw)) {
 		ret = document()->childrenCount();
 	}
 	else {
-		//qfTrash() << "\tdocument is null";
+		//qfDebug() << "\tdocument is null";
 	}
-	//qfTrash() << "\treturn:" << ret;
+	//qfDebug() << "\treturn:" << ret;
 	return ret;
 }
 
 void ReportViewWidget::setCurrentPageNo(int pg_no)
 {
-	if(pg_no >= pageCount() || pg_no < 0) pg_no = 0;
+	if(pg_no >= pageCount() || pg_no < 0)
+		pg_no = 0;
 	fCurrentPageNo = pg_no;
 	setupPainterWidgetSize();
 	f_painterWidget->update();
@@ -644,30 +631,33 @@ void ReportViewWidget::setCurrentPageNo(int pg_no)
 
 ReportItemMetaPaintFrame* ReportViewWidget::getPage(int n)
 {
-	//qfTrash() << QF_FUNC_NAME << currentPageNo();
-	if(!document(!Qf::ThrowExc)) return NULL;
-	if(n < 0 || n >= document()->childrenCount()) return NULL;
+	//qfDebug() << QF_FUNC_NAME << currentPageNo();
+	if(!document(!qf::core::Exception::Throw))
+		return NULL;
+	if(n < 0 || n >= document()->childrenCount())
+		return NULL;
 	ReportItemMetaPaint *it = document()->child(n);
 	ReportItemMetaPaintFrame *frm = dynamic_cast<ReportItemMetaPaintFrame*>(it);
-	//qfTrash() << "\treturn:" << frm;
+	//qfDebug() << "\treturn:" << frm;
 	return frm;
 }
 
 ReportItemMetaPaintFrame* ReportViewWidget::currentPage()
 {
 	ReportItemMetaPaintFrame *frm = getPage(currentPageNo());
-	//qfTrash() << QF_FUNC_NAME << currentPageNo();
-	if(!frm) return NULL;
+	//qfDebug() << QF_FUNC_NAME << currentPageNo();
+	if(!frm)
+		return NULL;
 	return frm;
 }
-
+/*--
 void ReportViewWidget::selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el)
 {
 	QDomElement el1 = it->reportItem()->element;
 	if(el1 == el) {
 		//qfInfo() << "BINGO";
 		f_selectedItem = it;
-		qfTrash() << "\t EMIT:" << el1.tagName();
+		qfDebug() << "\t EMIT:" << el1.tagName();
 		emit elementSelected(el1);
 	}
 	else {
@@ -686,7 +676,7 @@ void ReportViewWidget::selectElement(const QFDomElement &el)
 	#if 0
 	kdyz se tohle odkomentuje, tak to pada
 	if(f_selectedItem && f_selectedItem->reportItem()->element == el) {
-		qfTrash() << "\t allready selected";
+		qfDebug() << "\t allready selected";
 		return;
 	}
 	#endif
@@ -705,7 +695,7 @@ static QString is_fake_element(const QFDomElement &_el)
 	while(!!el) {
 		//qfError() << el.toString();
 		fake_path = el.attribute("__fakePath");
-		qfTrash() << "\t fake path of" << el.tagName() << "=" << fake_path;
+		qfDebug() << "\t fake path of" << el.tagName() << "=" << fake_path;
 		if(!fake_path.isEmpty()) break;
 		else if(el.hasAttribute("__fake")) {
 			fake_path = "-";
@@ -713,21 +703,24 @@ static QString is_fake_element(const QFDomElement &_el)
 		}
 		el = el.parentNode().toElement();
 	}
-	qfTrash() << "\t return:" << fake_path;
+	qfDebug() << "\t return:" << fake_path;
 	return fake_path;
 }
-
+--*/
 bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF &p)
 {
 	bool ret = false;
 	if(it->isPointInside(p)) {
 		ret = true;
-		qfLogFuncFrame() << "point inside:" << it->reportItem()->element.tagName() << it->renderedRect.toString();
+		qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
 		//qfInfo() << it->dump();
 		bool in_child = false;
-		foreach(QFTreeItemBase *_it, it->children()) {
+		foreach(qfu::TreeItemBase *_it, it->children()) {
 			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(_it);
-			if(selectItem_helper(it1, p)) {in_child = true; break;}
+			if(selectItem_helper(it1, p)) {
+				in_child = true;
+				break;
+			}
 		}
 		if(!in_child) {
 			//bool selectable_element_found = false;
@@ -736,9 +729,10 @@ bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF 
 				//qfInfo() << "selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
 				/// muze se stat, ze item nema element, pak hledej u rodicu
 				while(it) {
-					ReportProcessorItem *r_it = it->reportItem();
+					ReportItem *r_it = it->reportItem();
 					if(r_it) {
 						f_painterWidget->update();
+#ifdef QML_SELECT_ITEM_IMPLEMENTED
 						/// pokus se najit nejaky rozumny element pro tento report item
 						QFDomElement el = r_it->element;
 						if(!!el) {
@@ -763,26 +757,27 @@ bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF 
 									else {
 										//qfInfo() << "cd" << fake_path;
 										el = t_it->element;
-										faked_el = el.cd(fake_path, !Qf::ThrowExc);
+										faked_el = el.cd(fake_path, !qf::core::Exception::Throw);
 										/*
 										if(!faked_el.isNull()) {
 											qfInfo() << "\tOK";
 											//selectable_element_found = true;
-											//qfTrash() << "element:" << fSelectedElement.toString();
+											//qfDebug() << "element:" << fSelectedElement.toString();
 										}
 										*/
 									}
-									qfTrash() << "\t EMIT:" << faked_el.tagName();
+									qfDebug() << "\t EMIT:" << faked_el.tagName();
 									emit elementSelected(faked_el);
 								}
 							}
 							else {
 								//selectable_element_found = true;
-								//qfTrash() << "element:" << fSelectedElement.toString();
-								qfTrash() << "\t EMIT:" << el.tagName();
+								//qfDebug() << "element:" << fSelectedElement.toString();
+								qfDebug() << "\t EMIT:" << el.tagName();
 								emit elementSelected(el);
 							}
 						}
+#endif
 					}
 					else {
 						//qfWarning() << "item for path:" << it->path().toString() << "NOT FOUND.";
@@ -814,12 +809,13 @@ void ReportViewWidget::selectItem(const QPointF &p)
 
 void ReportViewWidget::setVisible(bool visible)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	//setCurrentPageNo(0);
-	QFDialogWidget::setVisible(visible);
+	Super::setVisible(visible);
 	//setCurrentPageNo(0);
 	//QTimer::singleShot(0, this, SLOT(processReport()));
-	if(visible) processReport();
+	if(visible)
+		processReport();
 }
 
 void ReportViewWidget::processReport()
@@ -849,7 +845,8 @@ void ReportViewWidget::render()
 void ReportViewWidget::refreshWidget()
 {
 	statusBar();
-	if(edCurrentPage) edCurrentPage->setText(QString::number(currentPageNo()+1) + "/" + QString::number(pageCount()));
+	if(edCurrentPage)
+		edCurrentPage->setText(QString::number(currentPageNo()+1) + "/" + QString::number(pageCount()));
 	refreshActions();
 	zoomStatusSpinBox->setValue((int)(scale() * 100));
 	//statusBar()->setText("zoom: " + QString::number((int)(scale() * 100)) + "%");
@@ -857,17 +854,19 @@ void ReportViewWidget::refreshWidget()
 
 void ReportViewWidget::refreshActions()
 {
+	/*--
 	int pgno = currentPageNo();
 	int pgcnt = pageCount();
 	action("view.firstPage")->setEnabled(pgno > 0 && pgcnt > 0);
 	action("view.prevPage")->setEnabled(pgno > 0 && pgcnt > 0);
 	action("view.nextPage")->setEnabled(pgno < pgcnt - 1);
 	action("view.lastPage")->setEnabled(pgno < pgcnt - 1);
+	--*/
 }
 
 void ReportViewWidget::view_nextPage(PageScrollPosition scroll_pos)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	if(currentPageNo() < pageCount() - 1) {
 		setCurrentPageNo(currentPageNo() + 1);
 		if(scroll_pos == ScrollToPageTop) f_scrollArea->verticalScrollBar()->setValue(f_scrollArea->verticalScrollBar()->minimum());
@@ -877,7 +876,7 @@ void ReportViewWidget::view_nextPage(PageScrollPosition scroll_pos)
 
 void ReportViewWidget::view_prevPage(PageScrollPosition scroll_pos)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	if(currentPageNo() > 0) {
 		setCurrentPageNo(currentPageNo() - 1);
 		if(scroll_pos == ScrollToPageTop) f_scrollArea->verticalScrollBar()->setValue(f_scrollArea->verticalScrollBar()->minimum());
@@ -887,21 +886,21 @@ void ReportViewWidget::view_prevPage(PageScrollPosition scroll_pos)
 
 void ReportViewWidget::view_firstPage()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	int pgno = 0;
 	if(pgno < pageCount()) setCurrentPageNo(pgno);
 }
 
 void ReportViewWidget::view_lastPage()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	int pgno = pageCount() - 1;
 	if(pgno >= 0) setCurrentPageNo(pgno);
 }
 
 void ReportViewWidget::edCurrentPageEdited()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	QStringList sl = edCurrentPage->text().split("/");
 	if(sl.count() > 0) {
 		int pg = sl[0].toInt() - 1;
@@ -909,26 +908,27 @@ void ReportViewWidget::edCurrentPageEdited()
 	}
 }
 
-void ReportViewWidget::print(QPrinter *printer) throw(QFException)
+void ReportViewWidget::print(QPrinter *printer)
 {
-	if(printer) print(*printer);
+	if(printer)
+		print(*printer);
 }
 
-void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options) throw(QFException)
+void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 {
 	qfLogFuncFrame();
 
-	QFCursorOverrider cov(Qt::WaitCursor);
+	framework::CursorOverrider cov(Qt::WaitCursor);
 	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	ReportPainter painter(&printer);
 
-	typedef ReportProcessorItem::Rect Rect;
-	//typedef ReportProcessorItem::Size Size;
+	typedef ReportItem::Rect Rect;
+	//typedef ReportItem::Size Size;
 
 	int pg_no = options.value("fromPage", 1).toInt() - 1;
 	int to_page = options.value("toPage", pageCount()).toInt();
-	qfTrash() << "pg_no:" << pg_no << "to_page:" << to_page;
+	qfDebug() << "pg_no:" << pg_no << "to_page:" << to_page;
 	ReportItemMetaPaintFrame *frm = getPage(pg_no);
 	if(frm) {
 		Rect r = frm->renderedRect;
@@ -955,7 +955,7 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options) thro
 	//emit reportPrinted();
 }
 
-void ReportViewWidget::print() throw(QFException)
+void ReportViewWidget::print()
 {
 	qfLogFuncFrame();
 
@@ -969,12 +969,12 @@ void ReportViewWidget::print() throw(QFException)
 	QPrintDialog dlg(&printer, this);
 	if(dlg.exec() != QDialog::Accepted) return;
 
-	qfTrash() << "options:" << dlg.options();
+	qfDebug() << "options:" << dlg.options();
 	QVariantMap opts;
 	if(dlg.testOption(QAbstractPrintDialog::PrintPageRange)) { /// tohle je nastaveny vzdycky :(
 		int from_page = dlg.fromPage();
 		int to_page = dlg.toPage();
-		qfTrash() << "fromPage:" << dlg.fromPage() << "toPage:" << dlg.toPage();
+		qfDebug() << "fromPage:" << dlg.fromPage() << "toPage:" << dlg.toPage();
 		if(from_page > 0) opts["fromPage"] = dlg.fromPage();
 		if(to_page > 0) opts["toPage"] = dlg.toPage();
 	}
@@ -982,12 +982,14 @@ void ReportViewWidget::print() throw(QFException)
 	print(printer, opts);
 }
 
-void ReportViewWidget::exportPdf(const QString &file_name) throw(QFException)
+void ReportViewWidget::exportPdf(const QString &file_name)
 {
-	qfTrash() << QF_FUNC_NAME;
-	QFString fn = file_name;
-	if(!fn) QF_EXCEPTION(tr("empty file name"));
-	if(!fn.toLower().endsWith(".pdf")) fn += ".pdf";
+	qfLogFuncFrame();
+	QString fn = file_name;
+	if(fn.isEmpty())
+		QF_EXCEPTION(tr("empty file name"));
+	if(!fn.toLower().endsWith(".pdf"))
+		fn += ".pdf";
 
 	QPrinter printer;
 	printer.setOutputFormat(QPrinter::PdfFormat);
@@ -1002,28 +1004,55 @@ void ReportViewWidget::exportPdf(const QString &file_name) throw(QFException)
 	print(printer);
 }
 
-QString ReportViewWidget::exportHtml() throw( QFException )
+namespace {
+QString addHtmlEnvelope(const QString &html_body_content)
+{
+	QString eoln = QStringLiteral("\n");
+	QString ret;
+	ret += "<html>" + eoln;
+	ret += "<head>" + eoln;
+	ret += "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>" + eoln;
+	ret += "<title>Data</title>" + eoln;
+	ret += "<style type=\"text/css\">"
+			"th {background-color:khaki; font-weight:bold;}"
+			"table {border-collapse: collapse;}"
+			"</style>" + eoln;
+	ret += "</head>" + eoln;
+	ret += "<body>" + eoln;
+	ret += html_body_content;
+	ret += "</body>" + eoln;
+	ret += "</html>" + eoln;
+	return ret;
+}
+
+}
+QString ReportViewWidget::exportHtml()
 {
 	qfLogFuncFrame();
-	QFDomDocument doc = QFHtmlUtils::bodyToHtmlDocument(QString());
-	QFDomElement el_body = doc.cd("/body");
-	QFCursorOverrider cov(Qt::WaitCursor);
+	QDomDocument doc;
+	doc.setContent(addHtmlEnvelope(QString()));
+	QDomElement el_body = doc.documentElement().firstChildElement("body");
+	framework::CursorOverrider cov(Qt::WaitCursor);
 	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 	reportProcessor()->processHtml(el_body);
 	//QApplication::restoreOverrideCursor();
-	return doc.toString(2, false);
+	return doc.toString(2);
 }
 
 void ReportViewWidget::file_export_pdf(bool open)
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	attachPrintout();
 	//reportProcessor()->dump();
-	QFString fn;
-	if(open) fn = qfApp()->tempDir() + "/report.pdf";
-	else fn = qfApp()->getSaveFileName (this, tr("Save as PDF"), QString(), "*.pdf");
-	if(!fn) return;
-	if(!fn.endsWith(".pdf", Qt::CaseInsensitive)) fn += ".pdf";
+	QString fn;
+	if(open)
+		fn = QDir::tempPath() + "/report.pdf";
+	else
+		fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as PDF"), QString(), "*.pdf");
+	if(fn.isEmpty())
+		return;
+	if(!fn.endsWith(".pdf", Qt::CaseInsensitive))
+		fn += ".pdf";
 	exportPdf(fn);
 	if(open) {
 		QDesktopServices::openUrl(QUrl::fromLocalFile(fn));
@@ -1033,34 +1062,39 @@ void ReportViewWidget::file_export_pdf(bool open)
 void ReportViewWidget::file_export_html()
 {
 	qfLogFuncFrame();
-	QFString fn = "report.html";
+	QString fn = "report.html";
 	QString s = exportHtml();
+	qfError() << Q_FUNC_INFO << "NIY";
+	/*--
 	QFHtmlViewUtils hut(!QFHtmlViewUtils::UseWebKit);
 	hut.showOrSaveHtml(s, fn, "showOrSaveHtml");
+	--*/
 }
 
 void ReportViewWidget::file_export_email()
 {
 	/// uloz pdf do tmp file report.pdf
 	attachPrintout();
-	QString fn = qfApp()->tempDir() + "/report.pdf";
+	QString fn = QDir::tempPath() + "/report.pdf";
 	exportPdf(fn);
 }
 
 void ReportViewWidget::data_showHtml()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	QString s = reportProcessor()->data().toHtml();
-	s = QFHtmlUtils::addHtmlEnvelope(s);
+	s = addHtmlEnvelope(s);
 	QString file_name = "data.html";
-
+	qfError() << Q_FUNC_INFO << "showing" << file_name << "not implemented yet.";
+	/*--
 	QFHtmlViewUtils hu(!QFHtmlViewUtils::UseWebKit);
 	hu.showOrSaveHtml(s, file_name);
+	--*/
 }
 
 void ReportViewWidget::file_print()
 {
-	qfTrash() << QF_FUNC_NAME;
+	qfDebug() << QF_FUNC_NAME;
 	attachPrintout();
 	print();
 }
@@ -1074,29 +1108,18 @@ void ReportViewWidget::file_printPreview()
 	preview.exec();
 }
 
-QFDataTranslator* ReportViewWidget::dataTranslator() const
-{
-	QFDataTranslator *ret = NULL;
-	{
-		QFAppDataTranslatorInterface *appi = dynamic_cast<QFAppDataTranslatorInterface *>(QCoreApplication::instance());
-		if(appi) {
-			ret = appi->dataTranslator();
-		}
-	}
-	return ret;
-}
-
 void ReportViewWidget::report_edit()
 {
 	qfLogFuncFrame();
-
-	QString program = QFFileUtils::appDir() + "/repedit";
+	// will not be possible in GUI with qmlreports
+#if 0
+	QString program = qfu::FileUtils::appDir() + "/repedit";
 	#if defined Q_OS_WIN
 	program += ".exe";
 	#endif
 	QStringList arguments;
 	{
-		QFSqlSearchDirs *sql_sd = dynamic_cast<QFSqlSearchDirs*>(reportProcessor()->searchDirs(!Qf::ThrowExc));
+		QFSqlSearchDirs *sql_sd = dynamic_cast<QFSqlSearchDirs*>(reportProcessor()->searchDirs(!qf::core::Exception::Throw));
 		if(sql_sd) {
 			QFAppDbConnectionInterface *appi = dynamic_cast<QFAppDbConnectionInterface*>(QCoreApplication::instance());
 			if(appi) {
@@ -1117,7 +1140,7 @@ void ReportViewWidget::report_edit()
 		}
 	}
 	{
-		QFSearchDirs *sd = dynamic_cast<QFSearchDirs*>(reportProcessor()->searchDirs(!Qf::ThrowExc));
+		QFSearchDirs *sd = dynamic_cast<QFSearchDirs*>(reportProcessor()->searchDirs(!qf::core::Exception::Throw));
 		if(sd) {
 			arguments << "--report-search-dirs=" + sd->dirs().join("::");
 			if(sd->dirs().count()) arguments << "--saved-files-root-dir=" + sd->dirs().first();
@@ -1135,6 +1158,7 @@ void ReportViewWidget::report_edit()
 #endif
 	QProcess *proc = new QProcess(qfApp());
 	proc->start(program, arguments);
+#endif
 }
 
 

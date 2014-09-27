@@ -72,6 +72,15 @@ void ReportProcessor::setReport(const QString &rep_file_name)
 	}
 }
 
+QUrl ReportProcessor::reportUrl() const
+{
+	QUrl ret;
+	if(m_reportDocumentComponent) {
+		ret = m_reportDocumentComponent->url();
+	}
+	return ret;
+}
+
 void ReportProcessor::setData(const qfu::TreeTable &_data)
 {
 	//qfInfo() << "ReportProcessor _data:" << _data.toString().mid(0, 100);
@@ -98,6 +107,9 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			qfError() << "Error creating root object from component:" << m_reportDocumentComponent;
 			qfError() << "Created object:" << o;
 			QF_SAFE_DELETE(o);
+		}
+		else {
+			m_documentInstanceRoot->setReportProcessor(this);
 		}
 	}
 	return m_documentInstanceRoot;

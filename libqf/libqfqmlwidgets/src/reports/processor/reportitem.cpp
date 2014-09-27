@@ -15,13 +15,12 @@
 #include <qf/core/string.h>
 #include <qf/core/utils/fileutils.h>
 
-//#include <qfxmlkeyvals.h>
-
 #include <QDate>
 #include <QCryptographicHash>
 #include <QSvgRenderer>
 #include <QBuffer>
 #include <QStringBuilder>
+#include <QUrl>
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -51,14 +50,14 @@ ReportItem::~ReportItem()
 /*--
 bool ReportItem::childrenSynced()
 {
-	qfDebug() << QF_FUNC_NAME<< element.tagName() << "children count:" << children().count();
+	qfDebug() << QF_FUNC_NAME<< element.tagName() << "children count:" << itemCount();
 	bool synced = true;
 	int i = 0;
 	for(QDomElement el = element.firstChildElement(); !!el; el = el.nextSiblingElement()) {
 		qfDebug() << "\t checking:" << el.tagName() << "i:" << i;
 		if(!ReportProcessor::isProcessible(el)) continue; /// nezname elementy ignoruj
 		qfDebug() << "\t processible";
-		if(i >= children().count()) {
+		if(i >= itemCount()) {
 		 	/// vic znamych elementu nez deti => neco pribylo
 			synced = false;
 			qfDebug() << "\t more elements";
@@ -74,7 +73,7 @@ bool ReportItem::childrenSynced()
 		synced = false;
 		break;
 	}
-	if(i != children().count()) {
+	if(i != itemCount()) {
 		qfDebug() << "\t divny";
 		synced = false;
 	}
@@ -99,12 +98,12 @@ void ReportItem::syncChildren()
 					code = nd.toCDATASection().data();
 				}
 			}
-			if(!code.isEmpty()) processor->scriptDriver()->evaluate(code);
+			if(!code.isEmpty()) processor()->scriptDriver()->evaluate(code);
 			continue;
 		}
 		if(!ReportProcessor::isProcessible(el)) continue;
 		/// vytvor chybejici item
-		processor->createProcessibleItem(el, this);
+		processor()->createProcessibleItem(el, this);
 	}
 }
 
@@ -119,10 +118,10 @@ QString ReportItem::elementAttribute(const QString & attr_name, const QString &d
 		QStringList sl = ret.splitAndTrim(',', '\'');
 		QVariantList vl;
 		foreach(QString s, sl) vl << s;
-		ReportProcessorScriptDriver *sd = processor->scriptDriver();
+		ReportProcessorScriptDriver *sd = processor()->scriptDriver();
 		if(sd) {
 			sd->setCurrentCallContextItem(this);
-			QScriptValue sv = processor->scriptDriver()->call(this, fn, vl);
+			QScriptValue sv = processor()->scriptDriver()->call(this, fn, vl);
 			ret = sv.toString();
 			//qfInfo() << fn << sl.join(",") << "ret:" << ret;
 		}
@@ -135,7 +134,7 @@ QString ReportItem::elementAttribute(const QString & attr_name, const QString &d
 --*/
 bool ReportItem::isVisible()
 {
-	bool ret = processor->isDesignMode() || m_visible;
+	bool ret = processor()->isDesignMode() || m_visible;
 	return ret;
 }
 
@@ -167,7 +166,7 @@ qfu::TreeTable ReportItem::findDataTable(const QString &name)
 	qfDebug() << "\tparent:" << parent() << "parent detail:" << d;
 	if(d) {
 		qfDebug() << "\tdata row is null:" << d->dataRow().isNull();
-		if(d->dataRow().isNull() && !processor->isDesignMode()) qfWarning().nospace() << "'" << name << "' parent detail datarow is NULL";
+		if(d->dataRow().isNull() && !processor()->isDesignMode()) qfWarning().nospace() << "'" << name << "' parent detail datarow is NULL";
 		ret = d->dataRow().table(name);
 		/// pokud ji nenajde a name neni specifikovano, vezmi 1. tabulku
 		if(ret.isNull() && name.isEmpty()) ret = d->dataRow().table(0);
@@ -190,6 +189,23 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	recentlyPrintNotFit = (ret.value == PrintNotFit);
 	return ret;
 }
+
+ReportProcessor *ReportItem::processor()
+{
+	ReportProcessor *ret = nullptr;
+	QObject *it = this;
+	while(it) {
+		ReportItemReport *rir = qobject_cast<ReportItemReport*>(it);
+		if(rir) {
+			ret = rir->reportProcessor();
+			break;
+		}
+		it = it->QObject::parent();
+	}
+	QF_ASSERT_EX(ret != nullptr, "ReportItem without ReportProcessor");
+	return ret;
+}
+
 /*--
 QVariant ReportItem::concatenateNodeChildrenValues(const QDomNode & nd)
 {
@@ -210,9 +226,9 @@ QVariant ReportItem::concatenateNodeChildrenValues(const QDomNode & nd)
 QString ReportItem::nodeText(const QDomNode &nd)
 {
 	QVariant node_value = nodeValue(nd);
-	if(node_value.canConvert<QFTreeTable>()) {
+	if(node_value.canConvert<qfu::TreeTable>()) {
 		/// jedna se o XML tabulku, ktera je vysledkem SQL dotazu, vezmi z ni pouze 1. hodnotu na 1. radku
-		QFTreeTable t = node_value.value<QFTreeTable>();
+		qfu::TreeTable t = node_value.value<qfu::TreeTable>();
 		node_value = t.row(0).value(0);
 	}
 	QString ret;
@@ -240,7 +256,7 @@ QString ReportItem::nodeText(const QDomNode &nd)
 			{
 				QString currency = el.attribute("currency");
 				if(!currency.isEmpty()) {
-					QFCurrencyRates cr = processor->currencyRates();
+					QFCurrencyRates cr = processor()->currencyRates();
 					double d = node_value.toDouble();
 					node_value = cr.convertSACToCurrency(d, currency);
 					currency_symbol = cr.currencySymbol(currency);
@@ -249,7 +265,7 @@ QString ReportItem::nodeText(const QDomNode &nd)
 			{
 				QString lc_domain = el.attribute("lcDomain");
 				if(!lc_domain.isEmpty()) {
-					QFDataTranslator *dtr = processor->dataTranslator();
+					QFDataTranslator *dtr = processor()->dataTranslator();
 					if(dtr) {
 						node_value = dtr->translate(node_value.toString(), lc_domain);
 					}
@@ -388,7 +404,7 @@ QVariant ReportItem::nodeValue(const QDomNode &nd)
 			qfDebug().noSpace() << "\t\tdata: '" << data_src << "'";
 			QString domain = el.attribute(S_ATTR_DOMAIN, "row");
 			QString data_property_key = el.attribute(S_KEY);
-			if(processor->isDesignMode()) {
+			if(processor()->isDesignMode()) {
 				QString s = data_src;
 				if(!data_property_key.isEmpty()) { s = s%"."%data_property_key; }
 				if(domain == "row") ret = QString('['%s%']');
@@ -491,6 +507,7 @@ QVariant ReportItem::nodeValue(const QDomNode &nd)
 	return ret;
 }
 --*/
+
 QVariant ReportItem::value(const QString &data_src, const QString & domain, const QVariantList &params, const QVariant &default_value, bool sql_match)
 {
 	//qfInfo() << "data_src:" << data_src << "domain:" << domain;
@@ -515,7 +532,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 			data_value = QTime::currentTime();
 		}
 		else if(data_src == "page") {
-			data_value = QString::number(processor->processedPageNo() + 1);
+			data_value = QString::number(processor()->processedPageNo() + 1);
 		}
 		else if(data_src == "pageCount") {
 			data_value = ReportItemMetaPaint::pageCountReportSubstitution; /// takovyhle blby zkratky mam proto, aby to zabralo zhruba stejne mista jako cislo, za ktery se to vymeni
@@ -524,7 +541,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	/*--
 	else if(domain == S_DOMAIN_SCRIPT) {
 		try {
-			data_value = QFScriptDriver::scriptValueToVariant(processor->scriptDriver()->call(this, data_src, params));
+			data_value = QFScriptDriver::scriptValueToVariant(processor()->scriptDriver()->call(this, data_src, params));
 		}
 		catch(QFException &e) {
 			qfError() << "Report table data load error:" << e.msg();
@@ -532,7 +549,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	}
 	else if(domain == S_DOMAIN_SCRIPT_CODE) {
 		try {
-			ReportProcessorScriptDriver *sd = processor->scriptDriver();
+			ReportProcessorScriptDriver *sd = processor()->scriptDriver();
 			if(sd) {
 				sd->setCurrentCallContextItem(this);
 				data_value = QFScriptDriver::scriptValueToVariant(sd->evaluate(data_src));
@@ -544,7 +561,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	}
 	else if(domain == S_DOMAIN_SQL) {
 		//qfInfo() << "element:" << element.toString();
-		if(!processor->isDesignMode()) {
+		if(!processor()->isDesignMode()) {
 			QString qs = data_src;
 			//qfInfo() << "qs:" << qs;
 			if(!qs.isEmpty()) try {
@@ -586,7 +603,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 					band = it;
 				}
 			}
-			QFTreeTable t = band->dataTable();
+			qfu::TreeTable t = band->dataTable();
 			if(t.isNull()) {
 				//qfInfo() << data_src << "table is NULL";
 				if(info_if_not_found) data_value = '{' + data_src + '}';//qfWarning().noSpace() << "'" << data_src << "' table is null";
@@ -599,7 +616,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	else if(domain == S_DOMAIN_ROW) {
 		ReportItemDetail *det = currentDetail();
 		if(det) {
-			QFTreeTableRow r = det->dataRow();
+			qfu::TreeTableRow r = det->dataRow();
 			qfDebug() << "\t\tdata row is null:" << r.isNull();
 			//if(data_src == "groupHeader") qfInfo() << data_src << "data_row:" << r.rowData().toString(2);
 			if(r.isNull()) {
@@ -837,7 +854,7 @@ ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 
 ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << children().count() << "indexToPrint:" << indexToPrint;
+	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemCount() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	PrintResult res = PrintOk;
 	//dirtySize = Size();
@@ -895,7 +912,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// zbyva vypocitat jeste ortogonalni rozmer
 		/// je to bud absolutni hodnota nebo % z bbr
 		QList<ChildSize> orthogonal_sizes;
-		for(int i=indexToPrint; i<children().count(); i++) {
+		for(int i=indexToPrint; i<itemCount(); i++) {
 			ReportItem *it = itemAt(i);
 			Layout ol = orthogonalLayout();
 			ChildSize sz = it->childSize(ol);
@@ -920,7 +937,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			bool has_percent = false;
 			/// vytiskni rubber a fixed
 			//if(parent_grid) qfWarning() << (is_first_grid_child? "first child": is_next_grid_child? "next child": "nevim");
-			for(int i=0; i<children().count(); i++) {
+			for(int i=0; i<itemCount(); i++) {
 				ReportItem *it = itemAt(i);
 				ChildSize sz = sizes.value(i);
 				//qfInfo() << "child:" << i << "size:" << sz.size << "unit:" << Rect::unitToString(sz.unit);
@@ -973,7 +990,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					/// rozpocitej procenta
 					qreal sum_percent = 0;
 					int cnt_0_percent = 0;
-					for(int i=0; i<children().count(); i++) {
+					for(int i=0; i<itemCount(); i++) {
 						ReportItem *it = itemAt(i);
 						ChildSize sz = it->childSize(layout());
 						if(sz.unit == Rect::UnitPercent) {
@@ -988,7 +1005,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						/// vytiskni procenta
 						qreal percent_0 = 0;
 						if(cnt_0_percent > 0) percent_0 = (100 - sum_percent) / cnt_0_percent;
-						for(int i=0; i<children().count(); i++) {
+						for(int i=0; i<itemCount(); i++) {
 							ReportItem *it = itemAt(i);
 							ChildSize sz = it->childSize(layout());
 							if(sz.unit == Rect::UnitPercent) {
@@ -1095,7 +1112,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// prvni break na strance znamena, ze jsem tu uz po zalomeni, takze se tiskne to za break.
 		//if(it->isBreak() && i > indexToPrint && layout == LayoutVertical) break;
 		int index_to_print_0 = indexToPrint;
-		for(; indexToPrint<children().count(); indexToPrint++) {
+		for(; indexToPrint<itemCount(); indexToPrint++) {
 			ReportItem *it = itemAt(indexToPrint);
 			Rect ch_bbr = bbr;
 			//bool item_is_rubber_in_layout = false;
@@ -1154,7 +1171,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						const Rect &r = mpi->renderedRect;
 						//qfInfo() << mpi << mpi->reportItem()->element.tagName() << (r.flags & Rect::BackgroundItem) << "\tr:" << r.toString() << "ch_res:" << ch_res.toString();
 						//if((r.flags & Rect::BackgroundItem)) qfWarning() << "BackgroundItem";
-						if(!(r.flags & Rect::BackgroundItem)) bbr.cutSizeInLayout(r, layout());
+						//--if(!(r.flags & Rect::BackgroundItem))
+						bbr.cutSizeInLayout(r, layout());
 						if(ch_res.flags & FlagPrintAgain) {
 							indexToPrint--; /// vytiskni ho znovu
 						}
@@ -1224,9 +1242,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	double columns_gap = 0;
 	//int current_column_index;
 	if(column_sizes.isEmpty()) {
-		qf::core::String s = elementAttribute("columns", "%");
+		qf::core::String s = columns();
 		QStringList sl = s.splitAndTrim(',');
-		columns_gap = elementAttribute("columnsgap", "3").toDouble();
+		columns_gap = columnsGap();
 		double ly_size = frame_content_br.width() - (columns_gap * (sl.count() - 1));
 		column_sizes = qf::qmlwidgets::graphics::makeLayoutSizes(sl, ly_size);
 		//current_column_index = 0;
@@ -1455,8 +1473,8 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 //==========================================================
 //                   ReportItemReport
 //==========================================================
-ReportItemReport::ReportItemReport(QObject *parent)
-	: Super(parent)
+ReportItemReport::ReportItemReport(ReportItem *parent)
+	: Super(parent), m_reportProcessor(nullptr)
 {
 	//QF_ASSERT(parent, "processor is NULL");
 	//Rect r = designedRect;
@@ -1471,9 +1489,8 @@ ReportItemReport::ReportItemReport(QObject *parent)
 	}
 	designedRect.flags = (Rect::LeftFixed | Rect::TopFixed | Rect::RightFixed | Rect::BottomFixed);
 	--*/
-	f_dataTable = parent->data();
-	//qfInfo() << f_dataTable.toString();
-	dataTableLoaded = true;
+	//--f_dataTable = parent->data();
+	//--dataTableLoaded = true;
 }
 
 ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
@@ -1482,7 +1499,7 @@ ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *ou
 	Q_UNUSED(bounding_rect);
 	PrintResult res = PrintOk;
 	//updateChildren();
-	//ReportItemMetaPaintPage *pg = new ReportItemMetaPaintPage(out, element, processor->context());
+	//ReportItemMetaPaintPage *pg = new ReportItemMetaPaintPage(out, element, processor()->context());
 	//pg->renderedRect = designedRect;
 	//indexToPrint = 0; /// vzdy vytiskni header a footer. (footer je absolutni header, umisteny pred detailem)
 	res = ReportItemBand::printMetaPaint(out, designedRect);
@@ -1491,12 +1508,12 @@ ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *ou
 	//res = checkPrintResult(res);
 	return res;
 }
-
-QFTreeTable ReportItemReport::dataTable()
+/*--
+qfu::TreeTable ReportItemReport::dataTable()
 {
 	return f_dataTable;
 }
-
+--*/
 //==========================================================
 //                                    ReportItemBody
 //==========================================================
@@ -1541,8 +1558,8 @@ ReportItem::PrintResult ReportItemCell::printMetaPaint(ReportItemMetaPaint *out,
 //==========================================================
 //                                    ReportItemPara
 //==========================================================
-ReportItemPara::ReportItemPara(ReportProcessor * proc, ReportItem * parent, const QDomElement & el)
-	: ReportItemFrame(proc, parent, el)
+ReportItemPara::ReportItemPara(ReportItem * parent)
+	: ReportItemFrame(parent)
 {
 	qfLogFuncFrame();
 	//qfInfo() << el.text();
@@ -1550,7 +1567,8 @@ ReportItemPara::ReportItemPara(ReportProcessor * proc, ReportItem * parent, cons
 
 void ReportItemPara::resetIndexToPrintRecursively(bool including_para_texts)
 {
-	if(including_para_texts) indexToPrint = 0;
+	if(including_para_texts)
+		indexToPrint = 0;
 }
 
 ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
@@ -1561,7 +1579,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out,
 
 ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfDebug().color(QFLog::Yellow) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame() << this;
 	PrintResult res = PrintOk;
 	if(indexToPrint == 0) {
 		printedText = paraText();
@@ -1569,46 +1587,42 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 	QString text = printedText.mid(indexToPrint);
 	int initial_index_to_print = indexToPrint;
 
+	QString sql_id = sqlId();
 	/// tiskne se prazdny text
-	bool omit_empty_text = QString(elementAttribute("omitEmptyString", "1")).toBool();
-	QString sql_id = elementAttribute("sqlId");
+	bool omit_empty_text = isOmitEmptyText();
 	if(text.isEmpty() && omit_empty_text) {
 	}
 	else {
 		QString text_to_layout = text;
 		//qfWarning() << "length: " << text.length() << " text: [" << text << "]\n" << text.toUtf8().toHex();
 		bool text_item_should_be_created = true;
-		QFGraphicsStyleCache::Style style = processor->context().styleCache().style(paraStyleDefinition());
+		graphics::StyleCache::Style style = processor()->context().styleCache().style(paraStyleDefinition());
+		/*--
 		{
 			QString s;
 			s = elementAttribute("font");
-			if(!!s) style.font = processor->context().styleCache().font(s);
+			if(!!s) style.font = processor()->context().styleCache().font(s);
 			s = elementAttribute("pen");
-			if(!!s) style.pen = processor->context().styleCache().pen(s);
-			//QBrush brush = processor->context().brushFromString(element.attribute("brush"));
+			if(!!s) style.pen = processor()->context().styleCache().pen(s);
+			//QBrush brush = processor()->context().brushFromString(element.attribute("brush"));
 			qfDebug() << "\tfont:" << style.font.toString();
 			//qfDebug() << "\tpen color:" << pen.color().name();
 			//qfDebug() << "\tbrush color:" << brush.color().name();
 		}
-		QFontMetricsF font_metrics = processor->fontMetrics(style.font);
+		--*/
+		QFontMetricsF font_metrics = processor()->fontMetrics(style.font);
 		QTextOption text_option;
-		Qt::Alignment alignment_flags;
 		{
-			if(QString(elementAttribute("wrap", "1")).toBool()) text_option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+			if(isTextWrap())
+				text_option.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 			//alignment_flags |= Qt::TextWordWrap;
-			QString s;
-			s = elementAttribute("halign", "left");
-			if(s == "center") alignment_flags |= Qt::AlignHCenter;
-			else if(s == "right") alignment_flags |= Qt::AlignRight;
-			else if(s == "justify") alignment_flags |= Qt::AlignJustify; /// ma smysl jen pro para
-				s = element.attribute("valign", "top");
-			if(s == "center") alignment_flags |= Qt::AlignVCenter;
-			else if(s == "bottom") alignment_flags |= Qt::AlignBottom;
+			int al = textHAlign() | textVAlign();
+			Qt::Alignment alignment_flags = (Qt::Alignment)al;
+			text_option.setAlignment(alignment_flags);
 		}
-		text_option.setAlignment(alignment_flags);
 		Rect br;
 		/// velikost boundingRect je v mm, tak to prepocitej na body vystupniho zarizeni
-		br = qmlwidgets::graphics::mm2device(bounding_rect, processor->paintDevice());
+		br = qmlwidgets::graphics::mm2device(bounding_rect, processor()->paintDevice());
 
 		bool render_check_mark = false;
 		QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
@@ -1628,7 +1642,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			//text.replace(ReportItemMetaPaint::checkOffReportSubstitution, "X");
 			//qfInfo().noSpace().color(QFLog::Green) << "index to print: " << indexToPrint << " text: '" << text << "'";
 			//qfInfo() << "bounding rect:" << bounding_rect.toString();
-			//qfWarning() << "device physical DPI:" << processor->paintDevice()->physicalDpiX() << processor->paintDevice()->physicalDpiY();
+			//qfWarning() << "device physical DPI:" << processor()->paintDevice()->physicalDpiX() << processor()->paintDevice()->physicalDpiY();
 			//qfWarning().noSpace() << "'" << text << "' font metrics: " << br.toString();
 
 			//QString text = element.text().simplified().replace("\\n", "\n");
@@ -1723,43 +1737,34 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			}
 		}
 		/*
-		int x_dpi = processor->paintDevice()->logicalDpiX();
-		int y_dpi = processor->paintDevice()->logicalDpiY();
+		int x_dpi = processor()->paintDevice()->logicalDpiX();
+		int y_dpi = processor()->paintDevice()->logicalDpiY();
 		br.setWidth(br.width() * 25.4 / x_dpi);
 		br.setHeight(br.height() * 25.4 / y_dpi);
 		*/
 		/// velikost boundingRect je v bodech vystupniho zarizeni, tak to prepocitej na mm
-		br = qmlwidgets::graphics::device2mm(br, processor->paintDevice());
-		//if(splitted) qfInfo() << "\tbr [mm]:" << br.toString();
-		//qfWarning().noSpace() << "'" << text << "' font metrics: " << br.toString();
+		br = qmlwidgets::graphics::device2mm(br, processor()->paintDevice());
 		/// posun to na zacatek, alignment ramecku to zase vrati
 		br.moveTopLeft(bounding_rect.topLeft());
-		// odecti mezeru mezi radky za poslednim radkem
-		//br.setHeight(br.height() - processor->fontMetrics(style.font).leading());
 		//qfInfo().noSpace() << "text: '" << text << "'";
-		//if(render_check_mark) qfInfo() << "\tbr:" << br.toString() << "text_item_should_be_created:" << text_item_should_be_created;
 		if(text_item_should_be_created ) {
 			ReportItemMetaPaintText *mt;
 			if(render_check_mark ) mt = new ReportItemMetaPaintCheck(out, this);
 			else {
 				mt = new ReportItemMetaPaintText(out, this);
 				mt->sqlId = sql_id;
-				mt->editGrants = elementAttribute("editGrants");
+				//--mt->editGrants = elementAttribute("editGrants");
 			}
 			//qfInfo() << "creating item:" << mt;
 			mt->pen = style.pen;
-			//mt->brush = brush;
 			mt->font = style.font;
 			mt->text = text.mid(0, indexToPrint - initial_index_to_print);
 			//qfWarning() << "text:" << text;
 			mt->textOption = text_option;
-			//mt->renderCheck = render_check;
-			//if(flags & (Qt::AlignHCenter | Qt::AlignRight)) br.setLeft(bounding_rect.left());
-			//if(flags & (Qt::AlignVCenter | Qt::AlignBottom)) br.setWidth(bounding_rect.height());
 			mt->renderedRect = br;
 			mt->renderedRect.flags = designedRect.flags;
 		}
-		//qfDebug().color(QFLog::Green, QFLog::Red) << "\tleading:" << processor->fontMetrics(style.font).leading() << "\theight:" << processor->fontMetrics(style.font).height();
+		//qfDebug().color(QFLog::Green, QFLog::Red) << "\tleading:" << processor()->fontMetrics(style.font).leading() << "\theight:" << processor()->fontMetrics(style.font).height();
 		qfDebug() << "\tchild rendered rect:" << br.toString();
 	}
 	qfDebug() << "\t<<< CHILDREN paraText return:" << res.toString();
@@ -1769,11 +1774,11 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 
 QString ReportItemPara::paraStyleDefinition()
 {
-	QString ret = elementAttribute("style");
+	QString ret = style();
 	if(ret.isEmpty()) {
 		ReportItem *it = this->parent();
 		while(it) {
-			ret = it->elementAttribute("paraStyle");
+			ret = it->property("paraStyle").toString();
 			if(ret.isEmpty()) {
 				it = it->parent();
 			}
@@ -1785,36 +1790,12 @@ QString ReportItemPara::paraStyleDefinition()
 
 QString ReportItemPara::paraText()
 {
-	qfDebug().color(QFLog::Cyan) << QF_FUNC_NAME;
-	QString ret;
-	QString to_localize;
-	QStringList data_texts;
-	int data_cnt = 10; /// placeholder musi mi 2 mista, jinak mi pozere bezprostredne nasledujici cislo, napr. <data src="blblba"/>123 vyrobi to localize %10123, to bude fungovat, %1123 nahradi %11
-	for(QFDomNode nd = element.firstChild(); !!nd; nd = nd.nextSibling()) {
-		if(nd.isText()) {
-			to_localize += nodeText(nd);
-		}
-		else {
-			to_localize += '%'  + QString::number(data_cnt++);
-			data_texts << nodeText(nd);
-		}
-	}
-	//if(to_localize.endsWith("23")) qfInfo().noSpace() << "\t\ttext: '" << to_localize << "'";
-	{
-		QByteArray ba = to_localize.toUtf8();
-		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-		ret = QCoreApplication::translate("report", ba.constData(), 0, QCoreApplication::UnicodeUTF8);
-		#else
-		ret = QCoreApplication::translate("report", ba.constData(), 0);
-		#endif
-		//ret = QCoreApplication::trUtf8(ba.constData(), "report");
-		//qfInfo() << to_localize << "->" << ret;
-		for(int i=0; i<data_texts.count(); i++) ret = ret.arg(data_texts.value(i));
-	}
-//qfDebug().color(QFLog::Cyan) << "\treturn:" << ret;
+	qfLogFuncFrame();
+	QString ret = text();
 	{
 		static QString new_line;
-		if(new_line.isEmpty()) new_line += QChar::LineSeparator;
+		if(new_line.isEmpty())
+			new_line += QChar::LineSeparator;
 		ret.replace("\\n", new_line);
 		ret.replace("\n", new_line);
 
@@ -1823,7 +1804,6 @@ QString ReportItemPara::paraText()
 		/// non breaking space
 		ret.replace("\\S", QString(QChar::Nbsp));
 	}
-	//qfInfo().noSpace() << "'" << ret << "'";
 	return ret;
 }
 
@@ -1831,8 +1811,8 @@ QString ReportItemPara::paraText()
 //==========================================================
 //                                    ReportItemBand
 //==========================================================
-ReportItemBand::ReportItemBand(ReportProcessor *proc, ReportItem *parent, const QDomElement &_el)
-	: ReportItemFrame(proc, parent, _el), dataTableLoaded(false)
+ReportItemBand::ReportItemBand(ReportItem *parent)
+	: ReportItemFrame(parent), dataTableLoaded(false)
 {
 }
 
@@ -1850,7 +1830,7 @@ void ReportItemBand::resetIndexToPrintRecursively(bool including_para_texts)
 ReportItemDetail* ReportItemBand::detail()
 {
 	ReportItemDetail *ret = NULL;
-	for(int i=0; i<children().count(); i++) {
+	for(int i=0; i<itemCount(); i++) {
 		ReportItem *it = itemAt(i);
 		ret = it->toDetail();
 		if(ret) break;
@@ -1858,32 +1838,16 @@ ReportItemDetail* ReportItemBand::detail()
 	return ret;
 }
 
-QFTreeTable ReportItemBand::dataTable()
+qfu::TreeTable ReportItemBand::dataTable()
 {
 	//qfLogFuncFrame() << "dataTableLoaded:" << dataTableLoaded;
 	if(!dataTableLoaded) {
-		QDomElement el_data_src = element.firstChildElement("datasrc");
-		QDomElement el_data = el_data_src.firstChildElement("data");
-		QString data_src_name = el_data_src.attribute("name");
-		//QString data_domain = el_data_src.attribute("domain", "table");
-		if(data_src_name.isEmpty()) {
-			/// drive nebyly podporovany domeny pro data, zkus starsi zpusob
-			/// v kazdem pripade, pokud neni definovano datasrc, je datadomain vzdy "table"
-			data_src_name = element.attribute("datatablename");
-			//data_domain = "table";
+		f_dataTable = data();
+		if(f_dataTable.isNull()) {
+			QString data_src = dataSource();
+			f_dataTable = findDataTable(data_src);
 		}
-		//qfInfo() << "\t data_src_name:" << data_src_name;
-		if(el_data.isNull()) {
-			//qfInfo() << "loading datatablename:" << data_src_name;
-			f_dataTable = findDataTable(data_src_name);
-		}
-		else {
-			//qfInfo() << "\t loading data to f_dataTable";
-			QVariant v = nodeValue(el_data);
-			QFTreeTable t =v.value<QFTreeTable>();
-			//qfInfo() << "\t" << f_dataTableOwnerDocument.toString();
-			f_dataTable = t;
-		}
+		//qfu::TreeTable t =v.value<qfu::TreeTable>();
 		dataTableLoaded = true;
 	}
 	return f_dataTable;
@@ -1891,43 +1855,43 @@ QFTreeTable ReportItemBand::dataTable()
 
 ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
 {
-	//qfInfo() << __LINE__;
-	qfDebug().color(QFLog::White) << QF_FUNC_NAME;
+	qfLogFuncFrame() << this;
 	//qfInfo() << "src:" << element.attribute("datatablename") << "table is null:" << dataTable().isNull();
 	//qfInfo() << dataTable().toString();
-	if(dataTable().isNull() && !processor->isDesignMode()) { /// pokud neni table (treba bez radku), band se vubec netiskne
+	if(dataTable().isNull() && !processor()->isDesignMode()) { /// pokud neni table (treba bez radku), band se vubec netiskne
 		PrintResult res;
 		res.value = PrintOk;
 		return res;
 	}
-	if(QString(element.attribute("headeronbreak")).toBool()) {
-		/// vsechno krome detailu se bude tisknout znovu
-		for(int i=0; i<children().count(); i++) {
+	if(isHeaderOnBreak()) {
+		/// print everything except of detail again
+		for(int i=0; i<itemCount(); i++) {
 			ReportItem *it = itemAt(i);
-			if(it->toDetail() == NULL) it->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+			if(it->toDetail() == NULL)
+				it->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 		}
 		indexToPrint = 0;
 	}
 	PrintResult res = ReportItemFrame::printMetaPaint(out, bounding_rect);
 	//res = checkPrintResult(res);
-	qfDebug().color(QFLog::Green) << "\tRETURN:" << res.toString();
+	qfDebug() << "\tRETURN:" << res.toString();
 	return res;
 }
 
 //==========================================================
 //                                    ReportItemDetail
 //==========================================================
-ReportItemDetail::ReportItemDetail(ReportProcessor *proc, ReportItem *parent, const QDomElement &_el)
-	: ReportItemFrame(proc, parent, _el)
+ReportItemDetail::ReportItemDetail(ReportItem *parent)
+	: ReportItemFrame(parent)
 {
 	//qfInfo() << QF_FUNC_NAME << "element id:" << element.attribute("id");
 	f_currentRowNo = -1;
 }
 
-QFTreeTable ReportItemDetail::dataTable()
+qfu::TreeTable ReportItemDetail::dataTable()
 {
 	ReportItemBand *b = parentBand();
-	QFTreeTable data_table;
+	qfu::TreeTable data_table;
 	if(b) {
 		//qfDebug() << "band:" << b << "\ttable is null:" << b->dataTable().isNull();
 		data_table = b->dataTable();
@@ -1935,7 +1899,7 @@ QFTreeTable ReportItemDetail::dataTable()
 	return data_table;
 }
 
-QFTreeTableRow ReportItemDetail::dataRow()
+qfu::TreeTableRow ReportItemDetail::dataRow()
 {
 	return dataTable().row(currentRowNo());
 }
@@ -1947,12 +1911,12 @@ void ReportItemDetail::resetIndexToPrintRecursively(bool including_para_texts)
 
 ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
 {
-	qfDebug().color(QFLog::Blue) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame() << this;
 	//qfInfo() << QF_FUNC_NAME;
-	bool design_mode = processor->isDesignMode(); /// true znamena, zobraz prvni radek, i kdyz tam nejsou data.
+	bool design_mode = processor()->isDesignMode(); /// true znamena, zobraz prvni radek, i kdyz tam nejsou data.
 	//qfInfo() << "design mode:" << design_mode;
 	ReportItemBand *b = parentBand();
-	QFTreeTable data_table;
+	qfu::TreeTable data_table;
 	if(b) {
 		data_table = b->dataTable();
 		//qfInfo()<< element.attribute("id") << "band:" << b << "\ttable is null:" << b->dataTable().isNull() << "f_currentRowNo:" << f_currentRowNo << "of" << data_table.rowCount();
@@ -1991,15 +1955,15 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 		//qfWarning() << "detail print !OK, element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
 	}
 	//res = checkPrintResult(res);
-	qfDebug().color(QFLog::Blue) << "\treturn:" << res.toString();
+	qfDebug() << "\treturn:" << res.toString();
 	return res;
 }
-
+#ifdef REPORT_ITEM_TABLE
 //==========================================================
 //                                    ReportItemTable
 //==========================================================
-ReportItemTable::ReportItemTable(ReportProcessor *proc, ReportItem *_parent, const QDomElement &_el)
-	: ReportItemBand(proc, _parent, _el)
+ReportItemTable::ReportItemTable(ReportItem *parent)
+	: ReportItemBand(parent)
 {
 	//qfDebug() << QF_FUNC_NAME << "parent:" << parent();
 	//QF_ASSERT(!!_el, "element is null.");
@@ -2007,12 +1971,12 @@ ReportItemTable::ReportItemTable(ReportProcessor *proc, ReportItem *_parent, con
 
 void ReportItemTable::syncChildren()
 {
-	qfDebug() << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame() << this;
 	deleteChildren();
 	for(QDomElement el = fakeBand.firstChildElement(); !!el; el = el.nextSiblingElement()) {
 		if(!ReportProcessor::isProcessible(el)) continue;
 		/// vytvor chybejici item
-		processor->createProcessibleItem(el, this);
+		processor()->createProcessibleItem(el, this);
 	}
 	qfDebug() << QF_FUNC_NAME << "<<<<<<<<<<<<<<<< OUT";
 }
@@ -2072,11 +2036,11 @@ void ReportItemTable::createFakeBand()
 	bool has_footer = false;
 	if(from_data) {
 		qfDebug() << "\tcreating from data";
-		QFTreeTable t = dataTable();
+		qfu::TreeTable t = dataTable();
 		//foreach(const QFXmlTableColumnDef cd, t.columns()) if(!t.columnFooter(cd.name).isEmpty()) {has_footer = true; break;}
-		QFTreeTableColumns cols = t.columns();
+		qfu::TreeTableColumns cols = t.columns();
 		for(int i=0; i<cols.count(); i++) {
-			QFTreeTableColumn cd = cols.column(i);
+			qfu::TreeTableColumn cd = cols.column(i);
 			QString col_w = cd.width();
 			if(col_w.isEmpty()) col_w = "%";
 			{
@@ -2203,6 +2167,7 @@ ReportItem::PrintResult ReportItemTable::printMetaPaint(ReportItemMetaPaint *out
 	createFakeBand();
 	return ReportItemBand::printMetaPaint(out, bounding_rect);
 }
+#endif
 /*
 //===============================================================
 //                                               ReportItemIf
@@ -2218,7 +2183,7 @@ ReportItem::PrintResult ReportItemIf::printMetaPaintChildren(ReportItemMetaPaint
 	if(!!el) {
 		bool bool_res = nodeValue(el).toBool();
 		ReportItem *it_res = NULL;
-		for(int i=indexToPrint; i<children().count(); i++) {
+		for(int i=indexToPrint; i<itemCount(); i++) {
 			ReportItem *it = childAt(i);
 			if(bool_res) {
 				if(qobject_cast<ReportItemIfTrue*>(it)) {
@@ -2241,8 +2206,9 @@ ReportItem::PrintResult ReportItemIf::printMetaPaintChildren(ReportItemMetaPaint
 }
 */
 //===============================================================
-//                                               ReportItemImage
+//                ReportItemImage
 //===============================================================
+/*--
 bool ReportItemImage::childrenSynced()
 {
 	return childrenSyncedFlag;
@@ -2250,13 +2216,13 @@ bool ReportItemImage::childrenSynced()
 
 void ReportItemImage::syncChildren()
 {
-	qfDebug() << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	//qfDebug() << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
 	QString orig_src = element.attribute("src");
 	QString processor_img_key;
 	src = orig_src;
 	ReportItem::Image im;
 	if(orig_src.startsWith("key:/")) {
-		/// obrazek je ocekavan v processor->images(), takze neni treba delat nic
+		/// obrazek je ocekavan v processor()->images(), takze neni treba delat nic
 		src = QString();
 	}
 	else if(orig_src.isEmpty()) {
@@ -2265,12 +2231,12 @@ void ReportItemImage::syncChildren()
 	}
 	if(!src.isEmpty()) {
 		if(src.startsWith("./") || src.startsWith("../")) {
-			src = QFFileUtils::joinPath(QFFileUtils::path(processor->report().fileName()), src);
+			src = QFFileUtils::joinPath(QFFileUtils::path(processor()->report().fileName()), src);
 			//qfInfo() << "relative path joined to:" << src;
 		}
-		src = processor->searchDirs()->findFile(src);
+		src = processor()->searchDirs()->findFile(src);
 		if(src.isEmpty()) {
-			qfWarning().noSpace() << "file '" << orig_src << "' not found. Report file name: " << processor->report().fileName();
+			qfWarning().noSpace() << "file '" << orig_src << "' not found. Report file name: " << processor()->report().fileName();
 			/// pridej fake para element, aby se jmeno chybejiciho souboru zobrazilo v reportu
 			if(fakeLoadErrorPara.isNull()) {
 				//qfInfo() << "creating fakeLoadErrorPara:" << orig_src;
@@ -2278,9 +2244,9 @@ void ReportItemImage::syncChildren()
 				fakeLoadErrorParaDocument.appendChild(fakeLoadErrorPara);
 				fakeLoadErrorPara.setAttribute("__fake", 1);
 				fakeLoadErrorPara.appendChild(fakeLoadErrorPara.ownerDocument().createTextNode(orig_src));
-				processor->createProcessibleItem(fakeLoadErrorPara, this);
-				//qfInfo() << "children cnt:" << this->children().count();
-				//qfInfo() << "this:" << this << "itemCount" << children().count() << "\n" << toString();
+				processor()->createProcessibleItem(fakeLoadErrorPara, this);
+				//qfInfo() << "children cnt:" << this->itemCount();
+				//qfInfo() << "this:" << this << "itemCount" << itemCount() << "\n" << toString();
 			}
 		}
 	}
@@ -2290,7 +2256,7 @@ void ReportItemImage::syncChildren()
 	if(!src.isEmpty()) {
 		if(src.endsWith(".svg", Qt::CaseInsensitive)) {
 			QSvgRenderer ren;
-			if(!ren.load(processor->searchDirs()->loadFile(src))) qfWarning() << "SVG data read error src:" << src;
+			if(!ren.load(processor()->searchDirs()->loadFile(src))) qfWarning() << "SVG data read error src:" << src;
 			else {
 				//qfInfo() << "default size::" << ren.defaultSize().width() << ren.defaultSize().height();
 				QPicture pic;
@@ -2302,7 +2268,7 @@ void ReportItemImage::syncChildren()
 			}
 		}
 		else {
-			QByteArray ba = processor->searchDirs()->loadFile(src);
+			QByteArray ba = processor()->searchDirs()->loadFile(src);
 			if(!im.image.loadFromData(ba)) {
 				qfWarning() << "ERROR load image:" << src;
 			}
@@ -2318,22 +2284,114 @@ void ReportItemImage::syncChildren()
 			fakeLoadErrorParaDocument.appendChild(fakeLoadErrorPara);
 			fakeLoadErrorPara.setAttribute("__fake", 1);
 			fakeLoadErrorPara.appendChild(fakeLoadErrorPara.ownerDocument().createTextNode("QImage('" + src + "') constructor error."));
-			processor->createProcessibleItem(fakeLoadErrorPara, this);
+			processor()->createProcessibleItem(fakeLoadErrorPara, this);
 		}
 		src = QString();
 	}
 	else {
-		processor->addImage(processor_img_key, ReportItem::Image(im));
+		processor()->addImage(processor_img_key, ReportItem::Image(im));
 		src = processor_img_key;
 	}
 	qfDebug() << "src:" << src;
 	//ReportItem::syncChildren();
 	childrenSyncedFlag = true;
 }
+--*/
+ReportItemImage::ReportItemImage(ReportItem *parent)
+	: Super(parent)
+{
+	connect(this, &ReportItemImage::dataSourceChanged, this, &ReportItemImage::updateResolvedDataSource);
+}
+
+void ReportItemImage::updateResolvedDataSource(const QString &data_source)
+{
+	QString processor_img_key;
+	m_resolvedDataSource = data_source;
+	ReportItem::Image im;
+	if(data_source.startsWith("key:/")) {
+		/// obrazek je ocekavan v processor()->images(), takze neni treba delat nic
+	}
+	else if(data_source.isEmpty()) {
+		/// obrazek bude v datech
+		m_resolvedDataSource = QString();
+	}
+	if(!m_resolvedDataSource.isEmpty()) {
+		if(m_resolvedDataSource.startsWith("./") || m_resolvedDataSource.startsWith("../")) {
+			m_resolvedDataSource = qfu::FileUtils::joinPath(qfu::FileUtils::path(processor()->reportUrl().toLocalFile()), m_resolvedDataSource);
+			//qfInfo() << "relative path joined to:" << m_resolvedDataSource;
+		}
+		/*--
+		m_resolvedDataSource = processor()->searchDirs()->findFile(m_resolvedDataSource);
+		if(m_resolvedDataSource.isEmpty()) {
+			qfWarning().noSpace() << "file '" << data_source << "' not found. Report file name: " << processor()->report().fileName();
+			/// pridej fake para element, aby se jmeno chybejiciho souboru zobrazilo v reportu
+			if(fakeLoadErrorPara.isNull()) {
+				//qfInfo() << "creating fakeLoadErrorPara:" << data_source;
+				fakeLoadErrorPara = fakeLoadErrorParaDocument.createElement("para");
+				fakeLoadErrorParaDocument.appendChild(fakeLoadErrorPara);
+				fakeLoadErrorPara.setAttribute("__fake", 1);
+				fakeLoadErrorPara.appendChild(fakeLoadErrorPara.ownerDocument().createTextNode(data_source));
+				processor()->createProcessibleItem(fakeLoadErrorPara, this);
+				//qfInfo() << "children cnt:" << this->itemCount();
+				//qfInfo() << "this:" << this << "itemCount" << itemCount() << "\n" << toString();
+			}
+		}
+		--*/
+	}
+
+	qfDebug() << "data_source:" << data_source;
+	qfDebug() << "m_resolvedDataSource:" << m_resolvedDataSource;
+	if(!m_resolvedDataSource.isEmpty()) {
+		if(m_resolvedDataSource.endsWith(".svg", Qt::CaseInsensitive)) {
+			QSvgRenderer ren;
+			if(!ren.load(m_resolvedDataSource)) {
+				qfWarning() << "SVG data read error m_resolvedDataSource:" << m_resolvedDataSource;
+			}
+			else {
+				//qfInfo() << "default size::" << ren.defaultSize().width() << ren.defaultSize().height();
+				QPicture pic;
+				QPainter painter(&pic);
+				ren.render(&painter);
+				painter.end();
+				im.picture = pic;
+				//qfInfo() << "bounding rect:" << Rect(pic.boundingRect()).toString();
+			}
+		}
+		else {
+			if(!im.image.load(m_resolvedDataSource)) {
+				qfWarning() << "ERROR load image:" << m_resolvedDataSource;
+			}
+		}
+		if(!im.isNull())
+			processor_img_key = data_source;
+	}
+	if(im.isNull() && !data_source.isEmpty()) {
+		/// pridej fake para element, aby se jmeno chybejiciho souboru zobrazilo v reportu
+		qfWarning().nospace() << "QImage('" << m_resolvedDataSource << "') constructor error.";
+		/*--
+		if(fakeLoadErrorPara.isNull()) {
+			fakeLoadErrorPara = fakeLoadErrorParaDocument.createElement("para");
+			fakeLoadErrorParaDocument.appendChild(fakeLoadErrorPara);
+			fakeLoadErrorPara.setAttribute("__fake", 1);
+			fakeLoadErrorPara.appendChild(fakeLoadErrorPara.ownerDocument().createTextNode("QImage('" + m_resolvedDataSource + "') constructor error."));
+			processor()->createProcessibleItem(fakeLoadErrorPara, this);
+		}
+		--*/
+		m_resolvedDataSource = QString();
+	}
+	else {
+		processor()->addImage(processor_img_key, ReportItem::Image(im));
+		m_resolvedDataSource = processor_img_key;
+	}
+	qfDebug() << "m_resolvedDataSource:" << m_resolvedDataSource;
+	//ReportItem::syncChildren();
+	//--childrenSyncedFlag = true;
+}
 
 ReportItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaPaint* out, const ReportItem::Rect& bounding_rect)
 {
 	ReportItem::PrintResult ret = ReportItemFrame::printMetaPaint(out, bounding_rect);
+	/*--
 	ReportItemMetaPaint *mpi = out->lastChild();
 	if(mpi) {
 		ReportItemMetaPaintImage *img = qobject_cast<ReportItemMetaPaintImage*>(mpi->lastChild());
@@ -2348,55 +2406,58 @@ ReportItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaPaint* out
 			//qfInfo() << elementAttribute("backgroundItem") << "fs:" << QString(elementAttribute("backgroundItem")).toBool() << "rendered rect:" << img->renderedRect.toString() << "image size:" << im.size().width() << "x" << im.size().height();
 		}
 	}
+	--*/
 	return ret;
 }
 
 ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfDebug().color(QFLog::Magenta) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
-	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
+	//qfDebug().color(QFLog::Magenta) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	//qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	PrintResult res = PrintOk;
 	Rect br = bounding_rect;
-//QFLog::setDomainTresholds(QStringList() << "Reportitem");
+	/*--
 	if(!fakeLoadErrorPara.isNull()) {
 		/// src nebyl nalezen, child je para, kde je uvedeno, jak se jmenoval nenalezeny obrazek
-		//qfInfo() << "this:" << this << "itemCount" << children().count() << "\n" << toString();
+		//qfInfo() << "this:" << this << "itemCount" << itemCount() << "\n" << toString();
 		ReportItemFrame::printMetaPaintChildren(out, bounding_rect);
-		//QString orig_src = element.attribute("src");
-		//ReportItemMetaPaintText *txt = new ReportItemMetaPaintText(out, this);
 	}
-	else {
-		ReportItem::Image im = processor->images().value(src);
+	else
+	--*/
+	{
+		QString src = dataSource();
+		ReportItem::Image im = processor()->images().value(src);
 		if(src.isEmpty()) {
 			/// muze byt jeste v datech, zkus ho nahrat pro aktualni radek
-			QDomElement el = element.firstChildElement("data");
-			QVariant data_v = nodeValue(el);
+			QString data_s = data();
 			//QString data_s = nodeText(el);
 			//qfError() << data_s;
-			QByteArray data;
-			QString format = element.attribute("dataformat");
+			QByteArray img_data;
 			{
-				QString encoding = element.attribute("dataencoding");
-				if(encoding == "base64") {
-					data = QByteArray::fromBase64(data_v.toString().toLatin1());
+				DataEncoding encoding = dataEncoding();
+				if(encoding == EncodingBase64) {
+					img_data = QByteArray::fromBase64(data_s.toLatin1());
 				}
-				else if(encoding == "hex") {
-					data = QByteArray::fromHex(data_v.toString().toLatin1());
+				else if(encoding == EncodingHex) {
+					img_data = QByteArray::fromHex(data_s.toLatin1());
 				}
 				else {
-					data = data_v.toByteArray();
+					qfError() << "Need dataEncoding property filled to decode data.";
 				}
 			}
 			{
-				QString s = element.attribute("datacompression");
-				if(s == "qCompress") {
-					data = qUncompress(data);
+				DataCompression compression = dataCompression();
+				if(compression == CompressionQCompress) {
+					img_data = qUncompress(img_data);
 				}
 			}
-			if(!data.isEmpty()) {
-				if(format == "svg") {
+			if(!img_data.isEmpty()) {
+				DataFormat format = dataFormat();
+				if(format == FormatSvg) {
 					QSvgRenderer ren;
-					if(!ren.load(data)) qfWarning() << "SVG data read error, format:" << format;
+					if(!ren.load(img_data)) {
+						qfWarning() << "SVG data read error, format:" << format;
+					}
 					else {
 						QPicture pic;
 						QPainter painter(&pic);
@@ -2405,8 +2466,8 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 						im.picture = pic;
 					}
 				}
-				else if(format == "QPicture" || format == "pic") {
-					QBuffer buff(&data);
+				else if(format == FormatQPicture) {
+					QBuffer buff(&img_data);
 					QPicture pic;
 					buff.open(QIODevice::ReadOnly);
 					pic.load(&buff);
@@ -2414,31 +2475,23 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 					im.picture = pic;
 				}
 				else {
-					if(!im.image.loadFromData(data, format.toLatin1().constData())) qfWarning() << "Image data read error, format:" << format;
+					const char *fmt = nullptr;
+					if(format == FormatJpg)
+						fmt = "jpg";
+					else if(format == FormatPng)
+						fmt = "png";
+					if(!im.image.loadFromData(img_data, fmt))
+						qfWarning() << "Image data read error, format:" << format;
 				}
 			}
 		}
-		if(im.isNull()) qfWarning() << "Printing an empty image";
+		if(im.isNull())
+			qfWarning() << "Printing an empty image";
 		ReportItemMetaPaintImage *img = new ReportItemMetaPaintImage(out, this);
-		if(element.attribute("suppressPrintOut").toBool()) {
-			//qfInfo() << "\t suppressPrintOut";
-			img->setSuppressPrintOut(true);
-		}
+		img->setSuppressPrintOut(isSuppressPrintout());
 		//qfInfo() << "\t src:" << src;
-		//qfInfo() << "\t processor->images().contains(" << src << "):" << processor->images().contains(src);
-		QString aspect = element.attribute("aspectratio", "ignored");
-		if(aspect == "keep") {
-			img->aspectRatioMode = Qt::KeepAspectRatio;
-		}
-		else if(aspect == "keepexpanding") {
-			/// keepexpanding je blbost, protoze by toslo k prekroceni velikosti bounding rect
-			//img->aspectRatioMode = Qt::KeepAspectRatioByExpanding;
-			qfWarning() << "KeepExpanding aspect ratio for image is a nonsense, setting keep instead.";
-			img->aspectRatioMode = Qt::KeepAspectRatio;
-		}
-		else {
-			img->aspectRatioMode = Qt::IgnoreAspectRatio;
-		}
+		//qfInfo() << "\t processor()->images().contains(" << src << "):" << processor()->images().contains(src);
+		img->aspectRatioMode = (Qt::AspectRatioMode)aspectRatio();
 		/// vymysli rozmer br, do kteryho to potom reportpainter nacpe, at je to veliky jak chce
 		if(designedRect.width() == 0 && designedRect.horizontalUnit == Rect::UnitMM && designedRect.height() == 0 && designedRect.verticalUnit == Rect::UnitMM) {
 			/// ani jeden smer neni zadan, vezmi ozmery z obrazku
@@ -2462,13 +2515,6 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 			Size sz = im.size();
 			//qfInfo() << "br0:" << bounding_rect.toString();
 			//qfInfo() << "image size:" << sz.toString();
-			#if 0
-			{
-				double d = br.height() * sz.width() / sz.height();
-				br.setWidth(d);
-				qfInfo() << "br1:" << br.toString();
-			}
-			#else
 			{
 				br = bounding_rect;
 				Size br_sz = br.size();
@@ -2477,7 +2523,6 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 				br.setSize(sz);
 				//qfInfo() << "br2:" << br.toString();
 			}
-			#endif
 		}
 		else if(designedRect.height() == 0 && designedRect.verticalUnit == Rect::UnitMM) {
 			/// rubber ve smeru y
@@ -2500,14 +2545,14 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 		img->renderedRect = br;
 		img->renderedRect.flags = designedRect.flags;
 	}
-//QFLog::setDomainTresholds(QStringList());
 
 	return res;
 }
 
 //===============================================================
-//                                               ReportItemGraph
+//                ReportItemGraph
 //===============================================================
+#if 0
 void ReportItemGraph::syncChildren()
 {
 	qfDebug() << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
@@ -2517,18 +2562,20 @@ void ReportItemGraph::syncChildren()
 	childrenSyncedFlag = true;
 	ReportItem::syncChildren();
 }
-
+#endif
 ReportItemImage::PrintResult ReportItemGraph::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfDebug().color(QFLog::Magenta) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
+	qfLogFuncFrame() << this;
 	PrintResult res = PrintOk;
 	Rect br = bounding_rect;
 
-	/// vykresli graf a pridej ho do processor->images()
+	/// vykresli graf a pridej ho do processor()->images()
 	QPicture pict;
-	QFGraph *graph = QFGraph::createGraph(element, findDataTable(element.attribute("datatablename")));
+	QVariantMap definition;
+	qfError() << "Graphs are not fully implemented yet.";
+	graphics::Graph *graph = graphics::Graph::createGraph(definition, findDataTable(dataSource()));
 	if(graph) {
-		graph->setStyleCache(processor->context().styleCache());
+		graph->setStyleCache(processor()->context().styleCache());
 		QPainter painter;
 		painter.begin(&pict);
 		graph->draw(&painter, br.size());
@@ -2553,7 +2600,7 @@ ReportItemImage::PrintResult ReportItemGraph::printMetaPaintChildren(ReportItemM
 		r = r.united(pict.boundingRect());
 		pict.setBoundingRect(r);
 		//qfInfo() << "pict united rect:" << Rect(pict.boundingRect()).toString();
-		processor->addImage(src, ReportItem::Image(pict));
+		processor()->addImage(m_resolvedDataSource, ReportItem::Image(pict));
 		delete graph;
 	}
 	//qfInfo() << "physicalDpiX:" << pict.physicalDpiX();

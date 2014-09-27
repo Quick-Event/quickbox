@@ -11,7 +11,8 @@ HEADERS += \
     $$PWD/plugin.h \
     $$PWD/pluginmanifest.h \
     $$PWD/dialogwidget.h \
-    $$PWD/ipersistentoptions.h
+    $$PWD/ipersistentoptions.h \
+    $$PWD/cursoroverrider.h
 
 SOURCES += \
     $$PWD/mainwindow.cpp \
@@ -26,4 +27,5 @@ SOURCES += \
     $$PWD/plugin.cpp \
     $$PWD/pluginmanifest.cpp \
     $$PWD/dialogwidget.cpp \
-    $$PWD/ipersistentoptions.cpp
+    $$PWD/ipersistentoptions.cpp \
+    $$PWD/cursoroverrider.cpp

@@ -20,7 +20,6 @@
 //class QFAction;
 class QLineEdit;
 class QSpinBox;
-class QFDataTranslator;
 class QPrinter;
 
 namespace qf {
@@ -87,8 +86,6 @@ protected:
 	void print();
 	void exportPdf(const QString &file_name);
 	QString exportHtml();
-
-	QFDataTranslator* dataTranslator() const;
 signals:
 	//void elementSelected(const QFDomElement &el);
 	void sqlValueEdited(const QString &sql_id, const QVariant &val);
@@ -153,7 +150,7 @@ public:
 	qreal scale() const {return f_scale;}
 	void setScale(qreal _scale);
 
-	qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
+	//--qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
 
 	ReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
 	virtual void prePrint() {}

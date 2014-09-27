@@ -55,6 +55,7 @@ public:
 	void reset();
 	//--void setReport(const ReportDocument &doc);
 	void setReport(const QString &rep_file_name);
+	QUrl reportUrl() const;
 	//--ReportDocument report() {return fReport;}
 	//--ReportDocument& reportRef() {return fReport;}
 	void setData(const qf::core::utils::TreeTable &_data);

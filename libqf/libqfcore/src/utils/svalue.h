@@ -105,6 +105,8 @@ public:
 	SValue& operator=(const QVariant &v) {setValue(v); return *this;}
 	///SValue& operator=(const SValue &sv); tento operator je implicitni, neni treba ho psat
 	SValue& operator+=(const QVariantMap &m);
+	bool operator==(const SValue &other) const {return d == other.d;}
+	bool operator!=(const SValue &other) const {return d != other.d;}
 public:
 	/// convert SValue to nested variants maps
 	QVariant toVariant() const;

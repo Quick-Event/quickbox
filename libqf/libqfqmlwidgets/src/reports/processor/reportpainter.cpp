@@ -34,14 +34,17 @@ ReportItemMetaPaint::ReportItemMetaPaint()
 ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportItem *report_item)
 	: Super(_parent)
 {
-	if(!report_item) QF_EXCEPTION("report_item is NULL.");
-	if(!report_item->processor) QF_EXCEPTION("report_item->processor is NULL.");
+	if(!report_item)
+		QF_EXCEPTION("report_item is NULL.");
+	if(!report_item->processor())
+		QF_EXCEPTION("report_item->processor is NULL.");
 	f_reportItem = report_item;
 	//f_reportProcessor = report_item->processor;
 	//context = report_item->processor->context();
 	//f_reportItemPath = report_item->path();
 	//f_layoutSettings = NULL;
-	if(report_item && report_item->processor) f_procesorContext = report_item->processor->context();
+	if(report_item && report_item->processor())
+		f_procesorContext = report_item->processor()->context();
 	{
 		double fill_vertical_layout_ratio = report_item->childSize(ReportItem::LayoutVertical).fillLayoutRatio();
 		setFillVLayoutRatio(fill_vertical_layout_ratio);
@@ -342,10 +345,12 @@ ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportItem *report_item)
 	: ReportItemMetaPaint(NULL, report_item)
 {
 	//f_reportProcessor = report_item->processor;
-	QString s = report_item->elementAttribute("orientation", "portrait");
+	/*--
+	QString s = report_item->property("orientation", "portrait");
 	if(s == "landscape") orientation = QPrinter::Landscape;
 	else orientation = QPrinter::Portrait;
-	pageSize = QSize(report_item->elementAttribute("w").toInt(), report_item->elementAttribute("h").toInt());
+	pageSize = QSize(report_item->property("w").toInt(), report_item->property("h").toInt());
+	--*/
 }
 
 //=================================================
@@ -355,7 +360,7 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 : ReportItemMetaPaint(_parent, report_item), lbrd(Qt::NoPen), rbrd(Qt::NoPen), tbrd(Qt::NoPen), bbrd(Qt::NoPen)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
-	QString s = report_item->elementAttribute("fill");
+	QString s = report_item->property("fill").toString();
 	if(!s.isEmpty()) {
 		if(s.startsWith("{grid:")) {
 			s.replace('|', '"');
@@ -365,20 +370,20 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 		else
 			fill = context().styleCache().brush(s);
 	}
-	s = report_item->elementAttribute("brd");
+	s = report_item->property("brd").toString();
 	if(!s.isEmpty()) {
 		lbrd = rbrd = tbrd = bbrd = context().styleCache().pen(s);
 	}
-	s = report_item->elementAttribute("lbrd");
+	s = report_item->property("lbrd").toString();
 	if(!s.isEmpty())
 		lbrd = context().styleCache().pen(s);
-	s = report_item->elementAttribute("rbrd");
+	s = report_item->property("rbrd").toString();
 	if(!s.isEmpty())
 		rbrd = context().styleCache().pen(s);
-	s = report_item->elementAttribute("tbrd");
+	s = report_item->property("tbrd").toString();
 	if(!s.isEmpty())
 		tbrd = context().styleCache().pen(s);
-	s = report_item->elementAttribute("bbrd");
+	s = report_item->property("bbrd").toString();
 	if(!s.isEmpty())
 		bbrd = context().styleCache().pen(s);
 	//qfDebug() << "\tRETURN";

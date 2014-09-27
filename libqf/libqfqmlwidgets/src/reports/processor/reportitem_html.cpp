@@ -102,7 +102,7 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 	qfLogFuncFrame();// << "id:" << element.attribute("id");
 	//qfDebug().color(QFLog::Yellow) << "\treturn:" << res.toString();
 	//qfInfo() << "design mode:" << design_mode;
-	bool design_mode = processor->isDesignMode();
+	bool design_mode = processor()->isDesignMode();
 	ReportItemBand *b = parentBand();
 	qfu::TreeTable data_table;
 	if(b) {

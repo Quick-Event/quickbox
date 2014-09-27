@@ -139,8 +139,8 @@ public:
 			FillLayout = 1, /// tento item se natahne ve smeru layoutu tak, aby vyplnil cely bounding_rect
 			ExpandChildrenFrames = 2, /// viz. atribut expandChildrenFrames v Report.rnc
 			LayoutHorizontalFlag = 4, /// rect ma layout ve smeru x
-			LayoutVerticalFlag = 8, /// rect ma layout ve smeru y, pokud je kombinace LayoutX a LayoutY nesmyslna predpoklada se LayoutX == 0 LayoutY == 1
-			BackgroundItem = 16
+			LayoutVerticalFlag = 8 /// rect ma layout ve smeru y, pokud je kombinace LayoutX a LayoutY nesmyslna predpoklada se LayoutX == 0 LayoutY == 1
+			//--BackgroundItem = 16
 		};
 		enum Unit {UnitInvalid = 0, UnitMM, UnitPercent};
 	public:
@@ -217,10 +217,10 @@ public:
 			//if(flags & RightFixed) ret += 'R';
 			//if(flags & BottomFixed) ret += 'B';
 			if(flags & FillLayout) ret += 'F';
-			if(flags & ExpandChildrenFrames) ret += 'E';
-			if(flags & LayoutHorizontalFlag) ret += 'X';
-			if(flags & LayoutVerticalFlag) ret += 'Y';
-			if(flags & BackgroundItem) ret += '^';
+			if(flags & ExpandChildrenFrames) ret += 'X';
+			if(flags & LayoutHorizontalFlag) ret += 'H';
+			if(flags & LayoutVerticalFlag) ret += 'V';
+			//--if(flags & BackgroundItem) ret += '^';
 			return ret;
 		}
 	private:
@@ -298,11 +298,14 @@ protected:
 	void deleteChildren();
 	--*/
 public:
+	ReportProcessor* processor();
 	//! Vraci atribut elementu itemu.
 	//! Pokud hodnota \a attr_name je ve tvaru 'script:funcname', zavola se scriptDriver processoru, jinak se vrati atribut.
-	QString elementAttribute(const QString &attr_name, const QString &default_val = QString());
+	//--QString elementAttribute(const QString &attr_name, const QString &default_val = QString());
 
-	ReportItem* parent() const {return static_cast<ReportItem*>(this->Super::parent());}
+	ReportItem* parent() const {
+		return static_cast<ReportItem*>(this->Super::parent());
+	}
 	//--virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
 	//! Print item in form, that understandable by ReportPainter.
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) = 0;
@@ -313,7 +316,8 @@ public:
 
 	ReportItemFrame* parentFrame() const
 	{
-		if(parent()) return parent()->toFrame();
+		if(parent())
+			return parent()->toFrame();
 		return NULL;
 	}
 	static const bool IncludingParaTexts = true;
@@ -332,7 +336,6 @@ public:
 protected:
 	virtual void componentComplete() {}
 public:
-	ReportProcessor *processor;
 	//--QDomElement element;
 	Rect designedRect;
 
@@ -369,7 +372,8 @@ private:
 public:
 	Q_PROPERTY(QQmlListProperty<ReportItem> items READ items)
 	Q_CLASSINFO("DefaultProperty", "items")
-	Q_ENUMS(Alignment)
+	Q_ENUMS(HAlignment)
+	Q_ENUMS(VAlignment)
 	//Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
 	//Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
 	//Q_PROPERTY(qreal y1 READ y1 WRITE setY1 NOTIFY y1Changed)
@@ -392,16 +396,18 @@ public:
 				"zvetsuji se tak, aby vyplnily cely parent frame.  Objekty typu QFReportItemMetaPaintText jsou ignorovany"
 				)
 	Q_PROPERTY(bool expandChildrenFrames READ isExpandChildrenFrames WRITE setExpandChildrenFrames NOTIFY expandChildrenFramesChanged)
-	Q_PROPERTY(Alignment halign READ horizontalAlignment WRITE setHorizontalAlignment NOTIFY horizontalAlignmentChanged)
-	Q_PROPERTY(Alignment valign READ verticalAlignment WRITE setVerticalAlignment NOTIFY verticalAlignmentChanged)
+	Q_PROPERTY(HAlignment halign READ horizontalAlignment WRITE setHorizontalAlignment NOTIFY horizontalAlignmentChanged)
+	Q_PROPERTY(VAlignment valign READ verticalAlignment WRITE setVerticalAlignment NOTIFY verticalAlignmentChanged)
+	Q_PROPERTY(QString columns READ columns WRITE setColumns NOTIFY columnsChanged)
+	Q_PROPERTY(double columnsGap READ columnsGap WRITE setColumnsGap NOTIFY columnsGapChanged)
 public:
-	enum Alignment {
-		AlignLeft = Qt::AlignLeft,
-		AlignRight = Qt::AlignRight,
-		AlignCenter = Qt::AlignHCenter,
-		AlignTop = Qt::AlignTop,
-		AlignBottom = Qt::AlignBottom
-	};
+	enum HAlignment { AlignLeft = Qt::AlignLeft,
+					  AlignRight = Qt::AlignRight,
+					  AlignHCenter = Qt::AlignHCenter,
+					  AlignJustify = Qt::AlignJustify };
+	enum VAlignment { AlignTop = Qt::AlignTop,
+					  AlignBottom = Qt::AlignBottom,
+					  AlignVCenter = Qt::AlignVCenter };
 	//QF_PROPERTY_IMPL(qreal, x, X, 1)
 	//QF_PROPERTY_IMPL(qreal, y, Y, 1)
 	//QF_PROPERTY_IMPL(qreal, x, X, 2)
@@ -412,8 +418,10 @@ public:
 	QF_PROPERTY_IMPL(QString, h, H, eight)
 	QF_PROPERTY_IMPL(Layout, l, L, ayout)
 	QF_PROPERTY_BOOL_IMPL(e, E, xpandChildrenFrames)
-	QF_PROPERTY_IMPL(Alignment, h, H, orizontalAlignment)
-	QF_PROPERTY_IMPL(Alignment, v, V, erticalAlignment)
+	QF_PROPERTY_IMPL2(HAlignment, h, H, orizontalAlignment, AlignLeft)
+	QF_PROPERTY_IMPL2(VAlignment, v, V, erticalAlignment, AlignTop)
+	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
+	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
 public:
 	ReportItemFrame(ReportItem *parent);
 	~ReportItemFrame() Q_DECL_OVERRIDE {}
@@ -476,30 +484,6 @@ private:
 };
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
-{
-	Q_OBJECT
-private:
-	typedef ReportItemFrame Super;
-protected:
-	qf::core::utils::TreeTable f_dataTable;
-	// pokud obsah f_dataTable nepochazi z dat, ale nahraje se dynamicky pomoci elementu <data domain="sql">, ulozi se sem dokument, ktery data z tabulky drzi
-	//QFXmlTableDocument f_dataTableOwnerDocument;
-	bool dataTableLoaded;
-public:
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-
-	virtual  ReportItemBand* toBand()  {return this;}
-	ReportItemDetail* detail();
-
-	virtual qf::core::utils::TreeTable dataTable();
-	virtual void resetIndexToPrintRecursively(bool including_para_texts);
-public:
-	ReportItemBand(ReportItem *parent);
-	virtual ~ReportItemBand() {}
-};
-
-//! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT ReportItemDetail : public ReportItemFrame
 {
 	Q_OBJECT
@@ -527,21 +511,65 @@ public:
 };
 
 //! TODO: write class documentation.
+class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
+{
+	Q_OBJECT
+	Q_PROPERTY(QString dataSource READ dataSource WRITE setDataSource NOTIFY dataSourceChanged)
+	//TODO: introduce dataModel property as ReportBandModel : public QObject ancestor implementing TreeTable interface
+	//      Then data property can be removed
+	Q_PROPERTY(qf::core::utils::TreeTable data READ data WRITE setData NOTIFY dataChanged)
+	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
+	/*
+	Q_PROPERTY(ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
+	Q_PROPERTY(ReportItemDetail* detail READ detail WRITE setDetail NOTIFY detailChanged)
+	Q_PROPERTY(ReportItemFrame* footer READ footer WRITE setFooter NOTIFY footerChanged)
+	*/
+private:
+	typedef ReportItemFrame Super;
+public:
+	ReportItemBand(ReportItem *parent);
+	virtual ~ReportItemBand() {}
+public:
+	QF_PROPERTY_IMPL(QString, d, D, ataSource)
+	QF_PROPERTY_IMPL(qf::core::utils::TreeTable, d, D, ata)
+	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
+	/*
+	QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
+	QF_PROPERTY_OBJECT_IMPL(ReportItemDetail*, d, D, etail)
+	QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, f, F, ooter)
+	*/
+public:
+	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
+
+	virtual  ReportItemBand* toBand()  {return this;}
+	ReportItemDetail* detail();
+
+	virtual qf::core::utils::TreeTable dataTable();
+	virtual void resetIndexToPrintRecursively(bool including_para_texts);
+protected:
+	qf::core::utils::TreeTable f_dataTable;
+	bool dataTableLoaded;
+};
+
+//! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
 {
 	Q_OBJECT
 private:
 	typedef ReportItemBand Super;
+public:
+	ReportItemReport(ReportItem *parent);
+	virtual ~ReportItemReport() {}
 protected:
 	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
 	//virtual PrintResult checkPrintResult(PrintResult res) {return res;}
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 
-	virtual qf::core::utils::TreeTable dataTable();
-public:
-	ReportItemReport(QObject *parent);
-	virtual ~ReportItemReport() {}
+	ReportProcessor* reportProcessor() {return m_reportProcessor;}
+	void setReportProcessor(ReportProcessor *p) {m_reportProcessor = p;}
+private:
+	ReportProcessor *m_reportProcessor;
 };
 
 //! TODO: write class documentation.
@@ -584,8 +612,27 @@ public:
 class QFQMLWIDGETS_DECL_EXPORT ReportItemPara : public ReportItemFrame
 {
 	Q_OBJECT
+
+	Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+	Q_PROPERTY(QString style READ style WRITE setStyle NOTIFY styleChanged)
+	Q_PROPERTY(bool omitEmptyText READ isOmitEmptyText WRITE setOmitEmptyText NOTIFY omitEmptyTextChanged)
+	Q_PROPERTY(QString sqlId READ sqlId WRITE setSqlId NOTIFY sqlIdChanged)
+	Q_PROPERTY(HAlignment textHAlign READ textHAlign WRITE setTextHAlign NOTIFY textHAlignChanged)
+	Q_PROPERTY(VAlignment textVAlign READ textVAlign WRITE setTextVAlign NOTIFY textVAlignChanged)
+	Q_PROPERTY(bool textWrap READ isTextWrap WRITE setTextWrap NOTIFY textWrapChanged)
 private:
 	typedef ReportItemFrame Super;
+
+	QF_PROPERTY_IMPL(QString, t, T, ext)
+	QF_PROPERTY_IMPL(QString, s, S, tyle)
+	QF_PROPERTY_BOOL_IMPL2(o, O, mitEmptyText, true)
+	QF_PROPERTY_IMPL(QString, s, S, qlId)
+	QF_PROPERTY_IMPL2(HAlignment, t, T, extHAlign, AlignLeft)
+	QF_PROPERTY_IMPL2(VAlignment, t, T, extVAlign, AlignTop)
+	QF_PROPERTY_BOOL_IMPL2(t, T, extWrap, true)
+public:
+	ReportItemPara(ReportItem *parent);
+	virtual ~ReportItemPara() {}
 protected:
 	/// tiskne se printed text od indexToPrint, pouziva se pouze v pripade, ze text pretece na dalsi stranku
 	QString printedText;
@@ -598,30 +645,70 @@ public:
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
-public:
-	ReportItemPara(ReportItem *parent);
-	virtual ~ReportItemPara() {}
 };
 
 //! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT ReportItemImage : public ReportItemFrame
 {
 	Q_OBJECT
+
+	Q_ENUMS(DataFormat)
+	Q_ENUMS(DataEncoding)
+	Q_ENUMS(DataCompression)
+	Q_ENUMS(AspectRatio)
+
+	Q_PROPERTY(QString dataSource READ dataSource WRITE setDataSource NOTIFY dataSourceChanged)
+	Q_PROPERTY(QString data READ data WRITE setData NOTIFY dataChanged)
+	Q_PROPERTY(DataFormat dataFormat READ dataFormat WRITE setDataFormat NOTIFY dataFormatChanged)
+	Q_PROPERTY(DataEncoding dataEncoding READ dataEncoding WRITE setDataEncoding NOTIFY dataEncodingChanged)
+	Q_PROPERTY(DataCompression dataCompression READ dataCompression WRITE setDataCompression NOTIFY dataCompressionChanged)
+	Q_PROPERTY(AspectRatio aspectRatio READ aspectRatio WRITE setAspectRatio NOTIFY aspectRatioChanged)
+	Q_PROPERTY(bool suppressPrintout READ isSuppressPrintout WRITE setSuppressPrintout NOTIFY suppressPrintoutChanged)
 private:
 	typedef ReportItemFrame Super;
+public:
+	ReportItemImage(ReportItem *parent);
+public:
+	enum DataFormat {
+		FormatAuto,
+		FormatSvg,
+		FormatQPicture,
+		FormatPng,
+		FormatJpg
+	};
+	enum DataEncoding {
+		EncodingRaw,
+		EncodingBase64,
+		EncodingHex
+	};
+	enum DataCompression {
+		CompressionNone,
+		CompressionQCompress
+	};
+	enum AspectRatio {
+		AspectRatioIgnore = Qt::IgnoreAspectRatio,
+		AspectRatioKeep = Qt::KeepAspectRatio,
+		AspectRatioKeepExpanding = Qt::KeepAspectRatioByExpanding
+	};
+	QF_PROPERTY_IMPL(QString, d, D, ataSource)
+	QF_PROPERTY_IMPL(QString, d, D, ata)
+	QF_PROPERTY_IMPL2(DataFormat, d, D, ataFormat, FormatAuto)
+	QF_PROPERTY_IMPL2(DataEncoding, d, D, ataEncoding, EncodingRaw)
+	QF_PROPERTY_IMPL2(DataCompression, d, D, ataCompression, CompressionNone)
+	QF_PROPERTY_IMPL2(AspectRatio, a, A, spectRatio, AspectRatioIgnore)
+	QF_PROPERTY_BOOL_IMPL(s, S, uppressPrintout)
+	private:
+		void updateResolvedDataSource(const QString &data_source);
 protected:
-	QString src;
-	bool childrenSyncedFlag;
-	//--QDomElement fakeLoadErrorPara;
-	//--QDomDocument fakeLoadErrorParaDocument;
-protected:
-	virtual bool childrenSynced();
-	virtual void syncChildren();
+	//--virtual bool childrenSynced();
+	//--virtual void syncChildren();
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
-public:
-	ReportItemImage(ReportItem *parent)
-		: Super(parent), childrenSyncedFlag(false) {}
+protected:
+	QString m_resolvedDataSource;
+	//--bool childrenSyncedFlag;
+	//--QDomElement fakeLoadErrorPara;
+	//--QDomDocument fakeLoadErrorParaDocument;
 };
 
 //! TODO: write class documentation.
@@ -631,7 +718,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemGraph : public ReportItemImage
 private:
 	typedef ReportItemImage Super;
 protected:
-	virtual void syncChildren();
+	//--virtual void syncChildren();
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 public:
 	ReportItemGraph(ReportItem *parent)
