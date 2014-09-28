@@ -1,16 +1,26 @@
 #ifndef TABLEVIEWWIDGET_H
 #define TABLEVIEWWIDGET_H
 
+#include <qf/qmlwidgets/tableview.h>
+
 #include <QWidget>
 
 namespace Ui {
 class TableViewWidget;
 }
-namespace qf {
-namespace qmlwidgets {
-class TableView;
-}
-}
+
+class  TableView : public qf::qmlwidgets::TableView
+{
+	Q_OBJECT
+private:
+	typedef qf::qmlwidgets::TableView Super;
+public:
+	TableView(QWidget *parent = nullptr);
+protected:
+	//virtual void importCSV();
+	//virtual QString exportReportDialogXmlPersistentId();
+};
+
 class TableViewWidget : public QWidget
 {
 	Q_OBJECT

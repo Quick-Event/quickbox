@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>449</width>
+    <height>272</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <widget class="qf::qmlwidgets::TableViewToolBar" name="toolBar" native="true"/>
    </item>
    <item>
-    <widget class="qf::qmlwidgets::TableView" name="tableView"/>
+    <widget class="TableView" name="tableView"/>
    </item>
    <item>
     <widget class="QFrame" name="frameStatus">
@@ -529,7 +529,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../../../../qt/libqf/libqfgui/libqfgui.qrc">
+         <iconset>
           <normaloff>:/libqfgui/images/down.png</normaloff>:/libqfgui/images/down.png</iconset>
         </property>
         <property name="autoRaise">
@@ -566,9 +566,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>qf::qmlwidgets::TableView</class>
+   <class>TableView</class>
    <extends>QTableView</extends>
-   <header location="global">qf/qmlwidgets/tableview.h</header>
+   <header location="global">tableviewwidget.h</header>
   </customwidget>
   <customwidget>
    <class>qf::qmlwidgets::TableViewToolBar</class>
@@ -577,8 +577,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../../qt/libqf/libqfgui/libqfgui.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

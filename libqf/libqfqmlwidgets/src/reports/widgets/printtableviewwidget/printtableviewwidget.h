@@ -39,6 +39,8 @@ public:
 private:
 	QVariant exportOptions() const;
 	void setExportOptions(const QVariant& opts) const;
+
+	Q_SLOT void onLstQrcReportsActivated(int ix);
 private:
 	Ui::PrintTableViewWidget *ui;
 };

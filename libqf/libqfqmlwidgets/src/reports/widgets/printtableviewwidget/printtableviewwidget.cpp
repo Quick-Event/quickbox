@@ -12,6 +12,15 @@ PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *paren
 	ui(new Ui::PrintTableViewWidget)
 {
 	ui->setupUi(this);
+
+	{
+		QComboBox *cbx = ui->lstQrcReports;
+		cbx->addItem(trUtf8("portrait"), ":/qf/qmlwidgets/reports/widgets/printtableviewwidget/reports/portrait.rep");
+		cbx->addItem(trUtf8("landscape"), ":/qf/qmlwidgets/reports/widgets/printtableviewwidget/reports/landscape.rep");
+		cbx->setCurrentIndex(-1);
+		connect(cbx, SIGNAL(activated(int)), this, SLOT(onLstQrcReportsActivated(int)));
+	}
+
 	qfc::model::TableModel *model = table_view->tableModel();
 	ui->columnsChooser->setVisible(model);
 	ui->columnsChooser->loadColumns(model);
@@ -23,6 +32,13 @@ PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *paren
 PrintTableViewWidget::~PrintTableViewWidget()
 {
 	delete ui;
+}
+
+void PrintTableViewWidget::onLstQrcReportsActivated(int ix)
+{
+    qfLogFuncFrame();
+	QString fn = ui->lstQrcReports->itemData(ix).toString();
+	ui->edReportFileName->setText(fn);
 }
 
 void PrintTableViewWidget::loadPersistentOptions()

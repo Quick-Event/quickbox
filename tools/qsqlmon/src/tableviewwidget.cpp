@@ -2,7 +2,6 @@
 #include "ui_tableviewwidget.h"
 
 #include <qf/core/log.h>
-#include <qf/qmlwidgets/tableview.h>
 
 //#include <QtUiTools>
 //#include <QHBoxLayout>
@@ -14,25 +13,20 @@ namespace qfq = qf::qmlwidgets;
 //======================================================
 //                        TableView
 //======================================================
-class  TableView : public qf::qmlwidgets::TableView
+TableView::TableView(QWidget *parent)
+	: Super(parent)
 {
-	protected:
-		//virtual void importCSV();
-		//virtual QString exportReportDialogXmlPersistentId();
-	public:
-		TableView(QWidget *parent = NULL) : qfq::TableView(parent)
-		{
-			//setSaveSettingsPersistentId("qsqlmon");
-		}
-};
-
+	qfLogFuncFrame();
+	setPersistentSettingsId("tableView");
+}
 //======================================================
 //                        TableViewWidget
 //======================================================
 TableViewWidget::TableViewWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::TableViewWidget)
+	QWidget(parent)
 {
+	qfLogFuncFrame();
+	ui = new Ui::TableViewWidget;
 	ui->setupUi(this);
 
 	ui->btMenu->setIcon(QApplication::style()->standardIcon(QStyle::SP_ArrowDown));
@@ -69,8 +63,3 @@ void TableViewWidget::setInfo(const QString &info)
 {
 	ui->edInfo->setText(info);
 }
-
-
-
-
-

@@ -85,8 +85,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		ret = value(index.row(), index.column());
 	}
 	else if(role == Qt::DisplayRole) {
-		//qfDebug() << QF_FUNC_NAME;
-		//qfDebug() << "\trow:" << ix.row() << "col:" << ix.column() << "role:" << role;
 		ColumnDefinition cd = m_columns.value(index.column());
 		if(cd.isNull()) {
 			return QString("!%1").arg(index.column());
@@ -366,6 +364,8 @@ QVariant TableModel::value(int row_ix, int column_ix) const
 			  tr("Cannot find table field for column index: %1").arg(column_ix),
 			  return ret);
 	ret = m_table.row(row_ix).value(table_field_index);
+	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
+	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
 	return ret;
 }
 
@@ -589,7 +589,10 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& exported_columns, con
 					val = tbl_row.value(ix);
 				}
 				else {
-					if(raw_values) val = value(i, ix);
+					if(raw_values) {
+						val = value(i, ix);
+						//qfWarning() << val.typeName() << "val:" << val.toString();
+					}
 					else {
 						QModelIndex mix = index(i, ix);
 						val = data(mix);

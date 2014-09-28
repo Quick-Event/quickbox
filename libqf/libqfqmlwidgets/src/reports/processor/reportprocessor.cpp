@@ -20,7 +20,7 @@ using namespace qf::qmlwidgets::reports;
 //                                ReportProcessor
 //===================================================
 ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
-	: QObject(parent), f_Context(qf::qmlwidgets::graphics::StyleCache()), m_documentInstanceRoot(NULL), f_processorOutput(NULL)
+	: QObject(parent), f_Context(qf::qmlwidgets::graphics::StyleCache())
 {
 	//qfInfo() << "new ReportProcessor" << this;
 	m_qmlEngine = nullptr;

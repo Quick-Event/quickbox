@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/qf/qmlwidgets/reports">
+        <file>widgets/printtableviewwidget/reports/landscape.rep</file>
+        <file>widgets/printtableviewwidget/reports/portrait.rep</file>
+    </qresource>
+</RCC>
