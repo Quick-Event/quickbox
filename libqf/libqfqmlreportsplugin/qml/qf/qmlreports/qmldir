@@ -1,0 +1,5 @@
+module qf.qmlreports
+
+#singleton InputDialogSingleton 1.0 InputDialogSingleton.qml
+
+plugin qfqmlreportsplugin

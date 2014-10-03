@@ -6,5 +6,6 @@ SUBDIRS += \
 	libqfqmlwidgets \
 	libqfcoreqmlplugin \
 	libqfqmlwidgetsplugin \
+	libqfqmlreportsplugin \
 
 
