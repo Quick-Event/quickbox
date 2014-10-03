@@ -9,6 +9,7 @@
 
 #include "../../qmlwidgetsglobal.h"
 #include "../../graphics/graphics.h"
+#include "style/sheet.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/utils/treetable.h>
@@ -557,14 +558,14 @@ protected:
 class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
 {
 	Q_OBJECT
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Sheet* styleSheet READ styleSheet WRITE setStyleSheet NOTIFY styleSheetChanged)
 private:
 	typedef ReportItemBand Super;
 public:
 	ReportItemReport(ReportItem *parent = nullptr);
 	virtual ~ReportItemReport() {}
-protected:
-	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
-	//virtual PrintResult checkPrintResult(PrintResult res) {return res;}
+public:
+	QF_PROPERTY_OBJECT_IMPL(style::Sheet*, s, S, tyleSheet)
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 

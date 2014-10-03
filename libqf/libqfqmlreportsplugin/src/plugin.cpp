@@ -1,7 +1,7 @@
 #include "qmlreportssingleton.h"
 
 #include <qf/qmlwidgets/reports/processor/reportitem.h>
-// #include <qf/qmlwidgets/dialogs/inputdialog.h>
+#include <qf/qmlwidgets/reports/processor/style/sheet.h>
 
 // #include <qf/qmlwidgets/framework/plugin.h>
 // #include <qf/qmlwidgets/framework/pluginmanifest.h>
@@ -28,6 +28,7 @@ public:
 		qmlRegisterSingletonType<QmlReportsSingleton>(uri, 1, 0, "QmlReportsSingleton", &QmlReportsSingleton::singletontype_provider);
 
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemReport>(uri, 1, 0, "Report");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Sheet>(uri, 1, 0, "Style__Sheet");
 	}
 };
 

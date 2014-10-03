@@ -1,14 +1,16 @@
 import qf.qmlreports 1.0
-import qf.reports.Style 1.0
+import qf.qmlreports.Style 1.0
 
 Report {
 	id: root
 	styleSheet: Sheet {
-		basedOn: MyStyle {}
-		colors: [
-			Color {name: "red"; definition: "#FF0000"}
-		]
+		name: "ahoj"
 	}
+	// 	basedOn: MyStyle {}
+	// 	colors: [
+	// 		Color {name: "red"; definition: "#FF0000"}
+	// 	]
+	// }
 	width: 210
 	height: 297
 	vinset: 10

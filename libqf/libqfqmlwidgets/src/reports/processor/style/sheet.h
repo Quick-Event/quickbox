@@ -3,7 +3,10 @@
 
 #include "../../../qmlwidgetsglobal.h"
 
+#include <qf/core/utils.h>
+
 #include <QObject>
+#include <QString>
 
 namespace qf {
 namespace qmlwidgets {
@@ -13,9 +16,11 @@ namespace style {
 class QFQMLWIDGETS_DECL_EXPORT Sheet : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
 public:
 	explicit Sheet(QObject *parent = nullptr);
-
+public:
+	QF_PROPERTY_IMPL(QString, n, N, ame)
 };
 
 }}}}
