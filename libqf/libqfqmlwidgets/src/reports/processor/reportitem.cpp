@@ -650,6 +650,16 @@ ReportItemMetaPaint * ReportItem::createMetaPaintItem(ReportItemMetaPaint * pare
 	return ret;
 }
 
+void ReportItem::classBegin()
+{
+	qfLogFuncFrame();
+}
+
+void ReportItem::componentComplete()
+{
+	qfLogFuncFrame();
+}
+
 QString ReportItem::toString(int indent, int indent_offset)
 {
 	Q_UNUSED(indent);
@@ -731,47 +741,59 @@ void ReportItemFrame::componentComplete()
 	--*/
 	//qfDebug() << "\t" << __LINE__ << "designedRect:" << designedRect.toString();
 	//static const QString S_PERCENT = "%";
-	qfc::String s;
-	s = width().trimmed();
 	{
-		if(s.value(-1) == '%') {
-			s = s.slice(0, -1);
-			designedRect.horizontalUnit = Rect::UnitPercent;
+		QVariant v = width();
+		qreal d = 0;
+		if(v.type() == QVariant::String) {
+			qfc::String s;
+			s = v.toString().trimmed();
+			{
+				if(s.value(-1) == '%') {
+					s = s.slice(0, -1);
+					designedRect.horizontalUnit = Rect::UnitPercent;
+				}
+				d = s.toDouble();
+				/*--
+				if(d > 0) {
+					if(designedRect.flags & Rect::RightFixed) {
+						qreal r = designedRect.right();
+						designedRect.setWidth(d);
+						designedRect.moveRight(r);
+					}
+					else
+						designedRect.setWidth(d);
+				}
+				--*/
+			}
 		}
-		qreal d = s.toDouble();
 		designedRect.setWidth(d);
-		/*--
-		if(d > 0) {
-			if(designedRect.flags & Rect::RightFixed) {
-				qreal r = designedRect.right();
-				designedRect.setWidth(d);
-				designedRect.moveRight(r);
-			}
-			else
-				designedRect.setWidth(d);
-		}
-		--*/
 	}
-
-	s = height().trimmed();
 	{
-		if(s.value(-1) == '%') {
-			s = s.slice(0, -1);
-			designedRect.verticalUnit = Rect::UnitPercent;
-		}
-		qreal d = s.toDouble();
-		designedRect.setHeight(d);
-		/*--
-		if(d > 0) {
-			if(designedRect.flags & Rect::BottomFixed) {
-				qreal b = designedRect.bottom();
-				designedRect.setWidth(d);
-				designedRect.moveBottom(b);
+		QVariant v = height();
+		qreal d = 0;
+		if(v.type() == QVariant::String) {
+			qfc::String s;
+			s = v.toString().trimmed();
+			{
+				if(s.value(-1) == '%') {
+					s = s.slice(0, -1);
+					designedRect.horizontalUnit = Rect::UnitPercent;
+				}
+				d = s.toDouble();
+				/*--
+				if(d > 0) {
+					if(designedRect.flags & Rect::BottomFixed) {
+						qreal b = designedRect.bottom();
+						designedRect.setWidth(d);
+						designedRect.moveBottom(b);
+					}
+					else
+						designedRect.setHeight(d);
+				}
+				--*/
 			}
-			else
-				designedRect.setHeight(d);
 		}
-		--*/
+		designedRect.setHeight(d);
 	}
 
 	if(isExpandChildrenFrames()) {

@@ -10,6 +10,5 @@ FORMS +=      \
 	$$PWD/itemvalueeditorwidget.ui   \
 
 RESOURCES +=                         \
-	$$PWD/reportviewwidget.qrc
 
 include($$PWD/printtableviewwidget/printtableviewwidget.pri)

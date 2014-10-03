@@ -15,12 +15,9 @@ class ReportDocument : public QQmlComponent
 private:
 	typedef QQmlComponent Super;
 public:
-	explicit ReportDocument(QQmlEngine *engine, const QString &file_name, QObject *parent = 0);
+	explicit ReportDocument(QQmlEngine *engine, QObject *parent = 0);
 public:
-	QString fileName() const {return m_fileName;}
-	void setFileName(const QString &fname) {m_fileName = fname;}
-protected:
-	QString m_fileName;
+	void setFileName(const QString &fname);
 };
 
 }}}

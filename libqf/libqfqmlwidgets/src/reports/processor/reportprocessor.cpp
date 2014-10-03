@@ -61,13 +61,15 @@ void ReportProcessor::setReport(const ReportDocument &doc)
 void ReportProcessor::setReport(const QString &rep_file_name)
 {
 	QF_SAFE_DELETE(m_reportDocumentComponent);
-	m_reportDocumentComponent = new ReportDocument(qmlEngine(true), rep_file_name, this);
+	QString fn = rep_file_name;
+	m_reportDocumentComponent = new ReportDocument(qmlEngine(true), this);
+	m_reportDocumentComponent->setFileName(rep_file_name);
 	if(m_reportDocumentComponent->isError()) {
 		qfError() << "Erorr loading report component:" << m_reportDocumentComponent->errorString();
 		return;
 	}
 	if(!m_reportDocumentComponent->isReady()) {
-		qfError() << "QML component" << rep_file_name << "cannot be loaded asynchronously";
+		qfError() << "QML component" << m_reportDocumentComponent->url().toString() << "cannot be loaded asynchronously";
 		return;
 	}
 }
@@ -294,6 +296,13 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	Q_UNUSED(throw_exc);
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
+		QString path;
+#ifdef Q_OS_UNIX
+		path = QCoreApplication::applicationDirPath() + "/../lib/qml";
+#else
+		path = QCoreApplication::applicationDirPath() + "/qml";
+#endif
+		m_qmlEngine->addImportPath(path);
 	}
 	return m_qmlEngine;
 #endif

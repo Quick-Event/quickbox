@@ -334,7 +334,8 @@ public:
 	}
 	--*/
 protected:
-	virtual void componentComplete() {}
+	void classBegin() Q_DECL_OVERRIDE;
+    void componentComplete() Q_DECL_OVERRIDE;
 public:
 	//--QDomElement element;
 	Rect designedRect;
@@ -360,7 +361,7 @@ public:
 	}
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 public:
-	ReportItemBreak(ReportItem *parent);
+	ReportItemBreak(ReportItem *parent = nullptr);
 };
 
 //! TODO: write class documentation.
@@ -380,8 +381,9 @@ public:
 	//Q_PROPERTY(qreal y2 READ y2 WRITE setY2 NOTIFY y2Changed)
 	Q_PROPERTY(qreal hinset READ hinset WRITE setHinset NOTIFY hinsetChanged)
 	Q_PROPERTY(qreal vinset READ vinset WRITE setVinset NOTIFY vinsetChanged)
-	Q_PROPERTY(QString width READ width WRITE setWidth NOTIFY widthChanged)
-	Q_PROPERTY(QString height READ height WRITE setHeight NOTIFY heightChanged)
+	//Q_PROPERTY(qreal inset READ inset WRITE setInset NOTIFY insetChanged)
+	Q_PROPERTY(QVariant width READ width WRITE setWidth NOTIFY widthChanged)
+	Q_PROPERTY(QVariant height READ height WRITE setHeight NOTIFY heightChanged)
 	Q_CLASSINFO("property.layout.doc",
 				"LayoutHorizontal - place children in the row\n"
 				"LayoutVertical - place children in the column\n"
@@ -414,8 +416,8 @@ public:
 	//QF_PROPERTY_IMPL(qreal, y, Y, 2)
 	QF_PROPERTY_IMPL(qreal, h, H, inset)
 	QF_PROPERTY_IMPL(qreal, v, V, inset)
-	QF_PROPERTY_IMPL(QString, w, W, idth)
-	QF_PROPERTY_IMPL(QString, h, H, eight)
+	QF_PROPERTY_IMPL(QVariant, w, W, idth)
+	QF_PROPERTY_IMPL(QVariant, h, H, eight)
 	QF_PROPERTY_IMPL(Layout, l, L, ayout)
 	QF_PROPERTY_BOOL_IMPL(e, E, xpandChildrenFrames)
 	QF_PROPERTY_IMPL2(HAlignment, h, H, orizontalAlignment, AlignLeft)
@@ -423,7 +425,7 @@ public:
 	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
 public:
-	ReportItemFrame(ReportItem *parent);
+	ReportItemFrame(ReportItem *parent = nullptr);
 	~ReportItemFrame() Q_DECL_OVERRIDE {}
 public:
 	bool isRubber(Layout ly) {
@@ -506,7 +508,7 @@ public:
 	int currentRowNo() const {return f_currentRowNo;}
 	void resetCurrentRowNo() {f_currentRowNo = 0;}
 public:
-	ReportItemDetail(ReportItem *parent);
+	ReportItemDetail(ReportItem *parent = nullptr);
 	virtual ~ReportItemDetail() {}
 };
 
@@ -527,7 +529,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 private:
 	typedef ReportItemFrame Super;
 public:
-	ReportItemBand(ReportItem *parent);
+	ReportItemBand(ReportItem *parent = nullptr);
 	virtual ~ReportItemBand() {}
 public:
 	QF_PROPERTY_IMPL(QString, d, D, ataSource)
@@ -558,7 +560,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
 private:
 	typedef ReportItemBand Super;
 public:
-	ReportItemReport(ReportItem *parent);
+	ReportItemReport(ReportItem *parent = nullptr);
 	virtual ~ReportItemReport() {}
 protected:
 	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
@@ -582,7 +584,7 @@ protected:
 	/// body a report ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
 	//virtual PrintResult checkPrintResult(PrintResult res) {return res;}
 public:
-	ReportItemBody(ReportItem *parent)
+	ReportItemBody(ReportItem *parent = nullptr)
 		: Super(parent) {}
 	virtual ~ReportItemBody() {}
 
@@ -631,7 +633,7 @@ private:
 	QF_PROPERTY_IMPL2(VAlignment, t, T, extVAlign, AlignTop)
 	QF_PROPERTY_BOOL_IMPL2(t, T, extWrap, true)
 public:
-	ReportItemPara(ReportItem *parent);
+	ReportItemPara(ReportItem *parent = nullptr);
 	virtual ~ReportItemPara() {}
 protected:
 	/// tiskne se printed text od indexToPrint, pouziva se pouze v pripade, ze text pretece na dalsi stranku
@@ -667,7 +669,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemImage : public ReportItemFrame
 private:
 	typedef ReportItemFrame Super;
 public:
-	ReportItemImage(ReportItem *parent);
+	ReportItemImage(ReportItem *parent = nullptr);
 public:
 	enum DataFormat {
 		FormatAuto,
@@ -721,7 +723,7 @@ protected:
 	//--virtual void syncChildren();
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 public:
-	ReportItemGraph(ReportItem *parent)
+	ReportItemGraph(ReportItem *parent = nullptr)
 		: Super(parent) {}
 };
 

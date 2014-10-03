@@ -15,8 +15,10 @@ PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *paren
 
 	{
 		QComboBox *cbx = ui->lstQrcReports;
-		cbx->addItem(trUtf8("portrait"), ":/qf/qmlwidgets/reports/widgets/printtableviewwidget/reports/portrait.rep");
-		cbx->addItem(trUtf8("landscape"), ":/qf/qmlwidgets/reports/widgets/printtableviewwidget/reports/landscape.rep");
+		cbx->addItem(trUtf8("portrait"), "/home/fanda/proj/quickbox/libqf/libqfqmlwidgets/src/reports/widgets/printtableviewwidget/reports/portrait.qml");
+#warning debug path set for portarait.qml
+		//cbx->addItem(trUtf8("portrait"), ":/qf/qmlwidgets/reports/portrait.qml");
+		cbx->addItem(trUtf8("landscape"), ":/qf/qmlwidgets/reports/landscape.qml");
 		cbx->setCurrentIndex(-1);
 		connect(cbx, SIGNAL(activated(int)), this, SLOT(onLstQrcReportsActivated(int)));
 	}

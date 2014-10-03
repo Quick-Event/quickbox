@@ -4,8 +4,8 @@ Report {
 	id: root
 	width: 210
 	height: 297
-	hinset: 5
 	vinset: 10
+	hinset: 5
 }
 
 // <?xml version='1.0' encoding='utf-8'?>

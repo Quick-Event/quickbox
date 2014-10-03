@@ -7,14 +7,25 @@
 
 //#include <QPair>
 //#include <QFile>
-//#include <QDir>
+#include <QUrl>
 
 namespace qfc = qf::core;
 //namespace qfu = qf::core::utils;
 
 using namespace qf::qmlwidgets::reports;
 
-ReportDocument::ReportDocument(QQmlEngine *engine, const QString &file_name, QObject *parent) :
-	Super(engine, file_name, parent)
+ReportDocument::ReportDocument(QQmlEngine *engine, QObject *parent) :
+	Super(engine, parent)
 {
+}
+
+void ReportDocument::setFileName(const QString &fname)
+{
+	qfLogFuncFrame() << fname;
+	QString fn = fname;
+	if(fn.startsWith(QLatin1String(":/")))
+		fn = "qrc" + fn;
+	QUrl url(fn);
+	qDebug() << "loading url:" << url.toString();
+	loadUrl(url);
 }
