@@ -13,4 +13,4 @@ SOURCES +=                            \
 	$$PWD/reportprocessorcontext.cpp  \
     $$PWD/reportdocument.cpp
 
-
+include ($$PWD/style/style.pri)

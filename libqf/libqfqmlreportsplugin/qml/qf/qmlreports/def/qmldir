@@ -1,4 +1,4 @@
-module qf.reports.def
+module qf.qmlreports.def
 
 Report 1.0 Report.qml
 Frame 1.0 Frame.qml
