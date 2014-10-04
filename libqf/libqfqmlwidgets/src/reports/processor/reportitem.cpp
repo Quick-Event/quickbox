@@ -701,6 +701,7 @@ ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out
 ReportItemFrame::ReportItemFrame(ReportItem *parent)
 	: Super(parent)
 {
+	qfLogFuncFrame();
 	//m_x1 = -1;
 	//m_y1 = -1;
 	//m_x2 = -1;
@@ -713,6 +714,11 @@ ReportItemFrame::ReportItemFrame(ReportItem *parent)
 
 	indexToPrint = 0;
 	//qfDebug() << QF_FUNC_NAME << "*******************" << el.tagName() << el.attribute("id");
+}
+
+ReportItemFrame::~ReportItemFrame()
+{
+	qfLogFuncFrame();
 }
 
 void ReportItemFrame::componentComplete()
@@ -850,7 +856,7 @@ void ReportItemFrame::addItemFunction(QQmlListProperty<ReportItem> *list_propert
 {
 	if (item) {
 		ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
-		//item->setParent(0);
+		item->setParent(that);
 		that->m_items << item;
     }
 }
@@ -1515,6 +1521,7 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 ReportItemReport::ReportItemReport(ReportItem *parent)
 	: Super(parent), m_reportProcessor(nullptr)
 {
+	qfLogFuncFrame();
 	//QF_ASSERT(parent, "processor is NULL");
 	//Rect r = designedRect;
 	//QDomElement el = element.cloneNode(false).toElement();
@@ -1530,6 +1537,11 @@ ReportItemReport::ReportItemReport(ReportItem *parent)
 	--*/
 	//--f_dataTable = parent->data();
 	//--dataTableLoaded = true;
+}
+
+ReportItemReport::~ReportItemReport()
+{
+	qfLogFuncFrame();
 }
 
 ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
@@ -1853,6 +1865,12 @@ QString ReportItemPara::paraText()
 ReportItemBand::ReportItemBand(ReportItem *parent)
 	: ReportItemFrame(parent), dataTableLoaded(false)
 {
+	qfLogFuncFrame();
+}
+
+ReportItemBand::~ReportItemBand()
+{
+	qfLogFuncFrame();
 }
 
 void ReportItemBand::resetIndexToPrintRecursively(bool including_para_texts)

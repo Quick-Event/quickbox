@@ -372,7 +372,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportItem
 private:
 	typedef ReportItem Super;
 public:
-	Q_PROPERTY(QQmlListProperty<ReportItem> items READ items)
+	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	Q_CLASSINFO("DefaultProperty", "items")
 	Q_ENUMS(HAlignment)
 	Q_ENUMS(VAlignment)
@@ -427,7 +427,7 @@ public:
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
 public:
 	ReportItemFrame(ReportItem *parent = nullptr);
-	~ReportItemFrame() Q_DECL_OVERRIDE {}
+	~ReportItemFrame() Q_DECL_OVERRIDE;
 public:
 	bool isRubber(Layout ly) {
 		ChildSize sz = childSize(ly);
@@ -531,7 +531,7 @@ private:
 	typedef ReportItemFrame Super;
 public:
 	ReportItemBand(ReportItem *parent = nullptr);
-	virtual ~ReportItemBand() {}
+	~ReportItemBand() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_IMPL(QString, d, D, ataSource)
 	QF_PROPERTY_IMPL(qf::core::utils::TreeTable, d, D, ata)
@@ -563,7 +563,7 @@ private:
 	typedef ReportItemBand Super;
 public:
 	ReportItemReport(ReportItem *parent = nullptr);
-	virtual ~ReportItemReport() {}
+	~ReportItemReport() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_OBJECT_IMPL(style::Sheet*, s, S, tyleSheet)
 public:

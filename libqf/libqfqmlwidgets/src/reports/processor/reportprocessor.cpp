@@ -22,7 +22,7 @@ using namespace qf::qmlwidgets::reports;
 ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
 	: QObject(parent), m_Context(qf::qmlwidgets::graphics::StyleCache())
 {
-	//qfInfo() << "new ReportProcessor" << this;
+	qfLogFuncFrame();
 	m_qmlEngine = nullptr;
 	//--f_searchDirs = search_dirs;
 	m_paintDevice = paint_device;
@@ -32,6 +32,7 @@ ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
 
 ReportProcessor::~ReportProcessor()
 {
+	qfLogFuncFrame() << this << "m_documentInstanceRoot:" << m_documentInstanceRoot;
 	QF_SAFE_DELETE(m_documentInstanceRoot);
 	//qfInfo() << "delete ReportProcessor" << this;
 }

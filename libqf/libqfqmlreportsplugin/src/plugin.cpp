@@ -2,6 +2,7 @@
 
 #include <qf/qmlwidgets/reports/processor/reportitem.h>
 #include <qf/qmlwidgets/reports/processor/style/sheet.h>
+#include <qf/qmlwidgets/reports/processor/style/color.h>
 
 // #include <qf/qmlwidgets/framework/plugin.h>
 // #include <qf/qmlwidgets/framework/pluginmanifest.h>
@@ -29,6 +30,7 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemReport>(uri, 1, 0, "Report");
 		qmlRegisterType<qf::qmlwidgets::reports::style::Sheet>(uri, 1, 0, "Style__Sheet");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Color>(uri, 1, 0, "Style__Color");
 	}
 };
 
