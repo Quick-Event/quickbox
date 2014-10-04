@@ -744,6 +744,7 @@ void ReportItemFrame::componentComplete()
 	{
 		QVariant v = width();
 		qreal d = 0;
+		bool ok;
 		if(v.type() == QVariant::String) {
 			qfc::String s;
 			s = v.toString().trimmed();
@@ -752,7 +753,10 @@ void ReportItemFrame::componentComplete()
 					s = s.slice(0, -1);
 					designedRect.horizontalUnit = Rect::UnitPercent;
 				}
-				d = s.toDouble();
+				d = s.toDouble(&ok);
+				if(!ok)
+					qfWarning() << "Cannot convert" << s << "to real number." << this;
+				designedRect.setWidth(d);
 				/*--
 				if(d > 0) {
 					if(designedRect.flags & Rect::RightFixed) {
@@ -766,11 +770,17 @@ void ReportItemFrame::componentComplete()
 				--*/
 			}
 		}
+		else {
+			d = v.toReal(&ok);
+			if(!ok)
+				qfWarning() << "Cannot convert" << v.toString() << "to real number." << this;
+		}
 		designedRect.setWidth(d);
 	}
 	{
 		QVariant v = height();
 		qreal d = 0;
+		bool ok;
 		if(v.type() == QVariant::String) {
 			qfc::String s;
 			s = v.toString().trimmed();
@@ -779,7 +789,9 @@ void ReportItemFrame::componentComplete()
 					s = s.slice(0, -1);
 					designedRect.horizontalUnit = Rect::UnitPercent;
 				}
-				d = s.toDouble();
+				d = s.toDouble(&ok);
+				if(!ok)
+					qfWarning() << "Cannot convert" << s << "to real number." << this;
 				/*--
 				if(d > 0) {
 					if(designedRect.flags & Rect::BottomFixed) {
@@ -792,6 +804,11 @@ void ReportItemFrame::componentComplete()
 				}
 				--*/
 			}
+		}
+		else {
+			d = v.toReal(&ok);
+			if(!ok)
+				qfWarning() << "Cannot convert" << v.toString() << "to real number." << this;
 		}
 		designedRect.setHeight(d);
 	}
@@ -1524,7 +1541,7 @@ ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *ou
 	//ReportItemMetaPaintPage *pg = new ReportItemMetaPaintPage(out, element, processor()->context());
 	//pg->renderedRect = designedRect;
 	//indexToPrint = 0; /// vzdy vytiskni header a footer. (footer je absolutni header, umisteny pred detailem)
-	res = ReportItemBand::printMetaPaint(out, designedRect);
+	res = Super::printMetaPaint(out, designedRect);
 	//res = printMetaPaintChildren(pg, pg->renderedRect);
 	qfDebug() << "\t\x1B[1;31;40m<<< ***ROOT***ROOT***ROOT***ROOT***\x1B[0;37;40m";
 	//res = checkPrintResult(res);
@@ -1878,13 +1895,14 @@ qfu::TreeTable ReportItemBand::dataTable()
 ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
 {
 	qfLogFuncFrame() << this;
-	//qfInfo() << "src:" << element.attribute("datatablename") << "table is null:" << dataTable().isNull();
 	//qfInfo() << dataTable().toString();
+	/*--
 	if(dataTable().isNull() && !processor()->isDesignMode()) { /// pokud neni table (treba bez radku), band se vubec netiskne
 		PrintResult res;
 		res.value = PrintOk;
 		return res;
 	}
+	--*/
 	if(isHeaderOnBreak()) {
 		/// print everything except of detail again
 		for(int i=0; i<itemCount(); i++) {
@@ -1895,7 +1913,6 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 		indexToPrint = 0;
 	}
 	PrintResult res = ReportItemFrame::printMetaPaint(out, bounding_rect);
-	//res = checkPrintResult(res);
 	qfDebug() << "\tRETURN:" << res.toString();
 	return res;
 }

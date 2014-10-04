@@ -20,13 +20,13 @@ using namespace qf::qmlwidgets::reports;
 //                                ReportProcessor
 //===================================================
 ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
-	: QObject(parent), f_Context(qf::qmlwidgets::graphics::StyleCache())
+	: QObject(parent), m_Context(qf::qmlwidgets::graphics::StyleCache())
 {
 	//qfInfo() << "new ReportProcessor" << this;
 	m_qmlEngine = nullptr;
 	//--f_searchDirs = search_dirs;
-	fPaintDevice = paint_device;
-	fProcessedPageNo = 0;
+	m_paintDevice = paint_device;
+	m_processedPageNo = 0;
 	setDesignMode(false);
 }
 
@@ -47,7 +47,7 @@ void ReportProcessor::reset()
 	qfLogFuncFrame();
 	makeContext();
 	QF_SAFE_DELETE(m_documentInstanceRoot);
-	QF_SAFE_DELETE(f_processorOutput);
+	QF_SAFE_DELETE(m_processorOutput);
 }
 
 /*--
@@ -121,35 +121,35 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 {
 	qfLogFuncFrame() << "mode:" << mode;
 	if(mode == FirstPage || mode == AllPages) {
-		fProcessedPageNo = 0;
-		QF_SAFE_DELETE(f_processorOutput);
+		m_processedPageNo = 0;
+		QF_SAFE_DELETE(m_processorOutput);
 		if(documentInstanceRoot()) {
-			f_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
-			singlePageProcessResult = ReportItem::PrintResult(ReportItem::PrintNotFit);
+			m_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
+			m_singlePageProcessResult = ReportItem::PrintResult(ReportItem::PrintNotFit);
 		}
 	}
 	ReportItemMetaPaint mpit;
 	//context().dump();
-	while(singlePageProcessResult.value == ReportItem::PrintNotFit
-		  && !(singlePageProcessResult.flags & ReportItem::FlagPrintNeverFit)) {
-		singlePageProcessResult = processPage(&mpit);
-		qfDebug() << "singlePageProcessResult:" << singlePageProcessResult.toString();
+	while(m_singlePageProcessResult.value == ReportItem::PrintNotFit
+		  && !(m_singlePageProcessResult.flags & ReportItem::FlagPrintNeverFit)) {
+		m_singlePageProcessResult = processPage(&mpit);
+		qfDebug() << "singlePageProcessResult:" << m_singlePageProcessResult.toString();
 		//qfDebug().color(QFLog::Yellow) << context().styleCache().toString();
 		//mpit.dump();
 		ReportItemMetaPaint *it = mpit.firstChild();
 		if(it) {
-			it->setParent(f_processorOutput);
+			it->setParent(m_processorOutput);
 			if(mode == FirstPage || mode == SinglePage) {
 				emit pageProcessed();
-				if(singlePageProcessResult.value == ReportItem::PrintNotFit) {
-					fProcessedPageNo++;
+				if(m_singlePageProcessResult.value == ReportItem::PrintNotFit) {
+					m_processedPageNo++;
 				}
 				//qfInfo() << "pageProcessed:" << fProcessedPageNo;
 				break;
 			}
 			else {
-				if(singlePageProcessResult.value == ReportItem::PrintNotFit) {
-					fProcessedPageNo++;
+				if(m_singlePageProcessResult.value == ReportItem::PrintNotFit) {
+					m_processedPageNo++;
 				}
 				else {
 					break;
@@ -310,7 +310,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 
 void ReportProcessor::dump()
 {
-	if(f_processorOutput) f_processorOutput->dump();
+	if(m_processorOutput) m_processorOutput->dump();
 }
 
 void ReportProcessor::print(QPrinter &printer, const QVariantMap &options)

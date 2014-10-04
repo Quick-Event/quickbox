@@ -520,9 +520,10 @@ void ReportViewWidget::view_zoomToFitHeight()
 
 void ReportViewWidget::setScale(qreal _scale)
 {
-	qfDebug() << QF_FUNC_NAME << currentPageNo();
+	qfLogFuncFrame() << currentPageNo();
 	ReportItemMetaPaintFrame *frm = currentPage();
-	if(!frm) return;
+	if(!frm)
+		return;
 
 	f_scale = _scale;
 	setupPainterWidgetSize();
@@ -532,9 +533,10 @@ void ReportViewWidget::setScale(qreal _scale)
 
 void ReportViewWidget::setupPainterWidgetSize()
 {
-	qfDebug() << QF_FUNC_NAME;
+	qfLogFuncFrame();
 	ReportItemMetaPaintFrame *frm = currentPage();
-	if(!frm) return;
+	if(!frm)
+		return;
 	qmlwidgets::graphics::Rect r1 = frm->renderedRect.adjusted(-PageBorder, -PageBorder, PageBorder, PageBorder);
 	qmlwidgets::graphics::Rect r2 = qmlwidgets::graphics::mm2device(r1, f_painterWidget);
 	//qfDebug() << "\tframe rect:" << r.toString();
@@ -809,7 +811,7 @@ void ReportViewWidget::selectItem(const QPointF &p)
 
 void ReportViewWidget::setVisible(bool visible)
 {
-	qfDebug() << QF_FUNC_NAME;
+	qfLogFuncFrame() << "visible:" << visible;
 	//setCurrentPageNo(0);
 	Super::setVisible(visible);
 	//setCurrentPageNo(0);
@@ -826,7 +828,6 @@ void ReportViewWidget::processReport()
 	}
 	setCurrentPageNo(0);
 	setScale(1);
-	//fDocument = reportProcessor()->processorOutput();
 }
 
 void ReportViewWidget::render()

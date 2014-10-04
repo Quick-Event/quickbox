@@ -16,11 +16,12 @@ namespace style {
 class QFQMLWIDGETS_DECL_EXPORT Sheet : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+	/// set name of prototype or prototype itself here
+	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 public:
 	explicit Sheet(QObject *parent = nullptr);
 public:
-	QF_PROPERTY_IMPL(QString, n, N, ame)
+	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
 };
 
 }}}}

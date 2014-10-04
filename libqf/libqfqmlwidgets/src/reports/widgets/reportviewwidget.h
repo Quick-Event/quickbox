@@ -131,7 +131,7 @@ public:
 	//! connect necessarry signals and slots
 	void setReportProcessor(ReportProcessor *proc);
 
-	virtual void setVisible(bool visible);
+	void setVisible(bool visible) Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
 	void setData(const qf::core::utils::TreeTable &data) {fData = data;}

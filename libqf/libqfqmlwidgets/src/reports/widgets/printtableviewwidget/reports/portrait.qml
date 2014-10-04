@@ -4,13 +4,11 @@ import qf.qmlreports.Style 1.0
 Report {
 	id: root
 	styleSheet: Sheet {
-		name: "ahoj"
-	}
-	// 	basedOn: MyStyle {}
+		basedOn: MyStyle {}
 	// 	colors: [
 	// 		Color {name: "red"; definition: "#FF0000"}
 	// 	]
-	// }
+	}
 	width: 210
 	height: 297
 	vinset: 10
