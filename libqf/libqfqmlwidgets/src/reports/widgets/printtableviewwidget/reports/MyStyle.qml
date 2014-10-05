@@ -6,7 +6,13 @@ Sheet {
 	objectName: "MyStyleSheet"
 	//basedOn: "by_name"
 	colors: [
+		Color {name: "none"; definition: "#00000000"},
 		Color {name: "green"; definition: "#FF00"},
 		Color {name: "khaki"; definition: "khaki"}
+	]
+	pens: [
+		Pen {name: "black1"; color: "black"; width: 1}
+		Pen {name: "black1dash"; basedOn: "black1"; style: Pen.DashLine}
+		Pen {name: "blue1dash"; basedOn: "black1dash"; color: "blue"}
 	]
 }

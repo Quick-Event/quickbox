@@ -1,5 +1,5 @@
-#ifndef QF_QMLWIDGETS_GRAPHICS_STYLECACHE_H
-#define QF_QMLWIDGETS_GRAPHICS_STYLECACHE_H
+#ifndef QF_QMLWIDGETS_REPORTS_STYLECACHE_H
+#define QF_QMLWIDGETS_REPORTS_STYLECACHE_H
 
 #include "../qmlwidgetsglobal.h"
 
@@ -9,14 +9,12 @@
 #include <QFont>
 #include <QSharedData>
 
-class QDomElement;
-
 namespace qf {
 namespace qmlwidgets {
 namespace graphics {
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT StyleCache
+class StyleCache
 {
 	protected:
 		static const QString basedOnString;
@@ -96,8 +94,8 @@ class QFQMLWIDGETS_DECL_EXPORT StyleCache
 		QFont font(const QString &_s) const;
 		Style style(const QString &_s) const;
 
-		void readStyleSheet(const QDomElement &el_stylesheet);
-		void readStyleSheet(QObject *stylesheet);
+		//void readStyleSheet(const QDomElement &el_stylesheet);
+		//void readStyleSheet(style::Sheet *stylesheet);
 		/// predefinovanim neceho a zmazani cache zpusobi, ze nove NECO se projevi ve vsech odvozenych definicich
 		void clearCache() {d->cached = StyleSheetCache();}
 
@@ -109,5 +107,5 @@ class QFQMLWIDGETS_DECL_EXPORT StyleCache
 
 }}}
 
-#endif // QF_QMLWIDGETS_GRAPHICS_STYLECACHE_H
+#endif 
 

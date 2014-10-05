@@ -165,7 +165,7 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 			QPainter *painter;
 			Rect boundingRect;/// obdelnik celeho grafu vcetne os [mm]
 			Rect gridRect; /// obdelnik grafu bez os (pouce to, kam se vykresluji data) [mm]
-			StyleCache styleCache;
+			qf::qmlwidgets::graphics::StyleCache styleCache;
 			SeriesMap seriesMap;
 			AxesMap axesMap;
 			LegendMap legendMap;
@@ -226,9 +226,9 @@ class QFQMLWIDGETS_DECL_EXPORT Graph
 		void setData(const qf::core::utils::TreeTable _data) {d->data = _data;}
 		const qf::core::utils::TreeTable& data() const {return d->data;}
 
-		void setStyleCache(const StyleCache &cache) {d->styleCache = cache;}
-		StyleCache& styleCacheRef() {return d->styleCache;}
-		const StyleCache& styleCache() const {return d->styleCache;}
+		void setStyleCache(const qf::qmlwidgets::graphics::StyleCache &cache) {d->styleCache = cache;}
+		qf::qmlwidgets::graphics::StyleCache& styleCacheRef() {return d->styleCache;}
+		const qf::qmlwidgets::graphics::StyleCache& styleCache() const {return d->styleCache;}
 
 		virtual void draw(QPainter *painter, const QSizeF &size);
 	public:

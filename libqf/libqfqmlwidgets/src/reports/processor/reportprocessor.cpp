@@ -20,7 +20,7 @@ using namespace qf::qmlwidgets::reports;
 //                                ReportProcessor
 //===================================================
 ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
-	: QObject(parent), m_Context(qf::qmlwidgets::graphics::StyleCache())
+	: QObject(parent)//, m_Context(qf::qmlwidgets::graphics::StyleCache())
 {
 	qfLogFuncFrame();
 	m_qmlEngine = nullptr;
@@ -94,11 +94,9 @@ void ReportProcessor::setData(const qfu::TreeTable &_data)
 void ReportProcessor::makeContext()
 {
 	qfLogFuncFrame();
-	contextRef().clear(); /// nemuzu tady dat contexRef() = ReportProcessorContext(), protoze ten ma globalni cache, to je tim, ze qf::qmlwidgets::graphics::StyleCache je explicitne sdilena, a ja potrebuju, pro kazdou instanci report processoru vlastni
-	qfError() << "NIY";
-	QObject *stylesheet_obj = nullptr;
-	// TODO: find stylesheet
-	contextRef().styleCacheRef().readStyleSheet(stylesheet_obj);
+	contextRef() = ReportProcessorContext();//.clear(); /// nemuzu tady dat contexRef() = ReportProcessorContext(), protoze ten ma globalni cache, to je tim, ze qf::qmlwidgets::graphics::StyleCache je explicitne sdilena, a ja potrebuju, pro kazdou instanci report processoru vlastni
+	style::Sheet *stylesheet_obj = nullptr;
+	//contextRef().styleCacheRef().readStyleSheet(stylesheet_obj);
 }
 
 ReportItemReport* ReportProcessor::documentInstanceRoot()

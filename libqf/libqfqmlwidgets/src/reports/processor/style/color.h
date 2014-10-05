@@ -15,14 +15,16 @@ namespace style {
 class QFQMLWIDGETS_DECL_EXPORT Color : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
-	Q_PROPERTY(QVariant definition READ definition WRITE setDefinition NOTIFY definitionChanged)
+	Q_PROPERTY(QString name READ name WRITE setName)
+	Q_PROPERTY(QVariant definition READ definition WRITE setDefinition)
 public:
 	explicit Color(QObject *parent = nullptr);
 	~Color() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_IMPL(QString, n, N, ame)
 	QF_PROPERTY_IMPL(QVariant, d, D, efinition)
+private:
+	static QString nextSequentialName();
 };
 
 }}}}

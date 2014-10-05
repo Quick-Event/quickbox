@@ -31,15 +31,15 @@ ReportProcessorContext::ReportProcessorContext()
 {
 	*this = sharedNull();
 }
-
+/*--
 ReportProcessorContext::ReportProcessorContext(const qfg::StyleCache &style_cache)
 {
 	d = new Data();
 	d->styleCache = style_cache;
 }
-
+--*/
 void ReportProcessorContext::clear()
 {
-	d->options.clear();
+	//d->options.clear();
 	d->styleCache.clearCache();
 }

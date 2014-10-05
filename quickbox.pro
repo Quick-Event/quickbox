@@ -6,7 +6,7 @@ SUBDIRS += \
 	plugins \
 	libsiut \
     tools \
-    qsicli \
+#    qsicli \
 	qsievent \
 
 

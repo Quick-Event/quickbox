@@ -25,7 +25,7 @@ private:
 	struct Data : public QSharedData
 	{
 		qf::qmlwidgets::graphics::StyleCache styleCache;
-		QVariantMap options;
+		//QVariantMap options;
 		//KeyVals keyVals;
 	};
 	QSharedDataPointer<Data> d;
@@ -41,7 +41,7 @@ public:
 	ReportProcessorContext();
 	/// protoze je qf::qmlwidgets::graphics::StyleCache explicitne sdilena, potrebuju konstruktor s jinou cachi, nez ma null() context, protoze jinak se styleCache chova jako staticka promenna
 	/// vsechny contexty pouzivaji stejnou cache a to tu, kterou zalozi null context
-	ReportProcessorContext(const qf::qmlwidgets::graphics::StyleCache &style_cache);
+	//ReportProcessorContext(const StyleCache &style_cache);
 };
 
 }}}

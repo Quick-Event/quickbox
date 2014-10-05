@@ -1,13 +1,12 @@
 message(including module graphics)
 
-include($$PWD/graph/graph.pri)
-
 HEADERS +=     \
-	$$PWD/stylecache.h   \
 	$$PWD/graphics.h  \
+	$$PWD/stylecache.h   \
 
 SOURCES +=     \
-	$$PWD/stylecache.cpp   \
 	$$PWD/graphics.cpp  \
+	$$PWD/stylecache.cpp   \
 
+include($$PWD/graph/graph.pri)
 

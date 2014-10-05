@@ -9,11 +9,24 @@ Report {
 	 	colors: [
 	 		Color {name: "peach"; definition: "lightgoldenrodyellow"}
 	 	]
+		pens: [
+			Pen {name: "red1dot"; basedOn: "black1"; color: "red"; style: Pen.DotLine}
+		]
 	}
 	width: 210
 	height: 297
 	vinset: 10
 	hinset: 5
+
+	Frame {
+		width: "%"
+		height: "%"
+		border: Pen {
+			basedOn: "red1dot"
+			color: "green"
+		}
+		fill: "peach"
+	}
 }
 
 // <?xml version='1.0' encoding='utf-8'?>

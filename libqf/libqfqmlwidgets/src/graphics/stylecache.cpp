@@ -1,8 +1,8 @@
-
 #include "stylecache.h"
 
 #include <qf/core/string.h>
 #include <qf/core/log.h>
+
 
 namespace qfc = qf::core;
 using namespace qf::qmlwidgets::graphics;
@@ -503,11 +503,12 @@ void StyleCache::readStyleSheet(const QDomElement &_el_stylesheet)
 		}
 	}
 }
---*/
-void StyleCache::readStyleSheet(QObject *stylesheet)
+
+void StyleCache::readStyleSheet(style::Sheet *stylesheet)
 {
 	qfLogFuncFrame() << stylesheet;
 	qfError() << "NIY";
 }
+--*/
 
 
