@@ -395,10 +395,12 @@ void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
 	QF_ASSERT(painter, "painter is NULL", return);
 	//qfDebug() << "\trenderedRect:" << renderedRect.toString();
 	bool selected = (painter->selectedItem() && painter->selectedItem() == this);
-	if(mode & PaintFill) fillItem(painter, selected);
+	if(mode & PaintFill)
+		fillItem(painter, selected);
 	ReportItemMetaPaint::paint(painter, mode);
 	//if(selected) qfDebug() << "\tBINGO";
-	if(mode & PaintBorder) frameItem(painter, selected);
+	if(mode & PaintBorder)
+		frameItem(painter, selected);
 }
 
 void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
@@ -416,7 +418,8 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 	else {
 		QVariantMap alterm = alternativeFillDef.toMap();
 		if(alterm.isEmpty()) {
-			if(fill.style() != Qt::NoBrush) painter->fillRect(r, fill);
+			if(fill.style() != Qt::NoBrush)
+				painter->fillRect(r, fill);
 		}
 		else {
 			if(alterm.contains("grid")) {

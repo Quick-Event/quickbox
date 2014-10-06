@@ -30,11 +30,15 @@ public:
 public:
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
 public:
+	Pen* penForName(const QString &name);
+	void setPenForName(const QString &name, Pen *p);
+private:
 	QQmlListProperty<Color> colors();
 	QQmlListProperty<Pen> pens();
 private:
 	QList<Color*> m_colors;
 	QList<Pen*> m_pens;
+	QMap<QString, Pen*> m_definedPens;
 };
 
 }}}}
