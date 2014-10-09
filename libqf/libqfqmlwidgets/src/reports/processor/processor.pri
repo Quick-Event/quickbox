@@ -2,7 +2,7 @@ HEADERS +=                            \
 	$$PWD/reportpainter.h       \
 	$$PWD/reportprocessor.h    \
 	$$PWD/reportitem.h   \
-	$$PWD/reportprocessorcontext.h  \
+#	$$PWD/reportprocessorcontext.h  \
     $$PWD/reportdocument.h \
 
 SOURCES +=                            \
@@ -10,7 +10,7 @@ SOURCES +=                            \
 	$$PWD/reportprocessor.cpp    \
 	$$PWD/reportitem.cpp   \
 	$$PWD/reportitem_html.cpp   \
-	$$PWD/reportprocessorcontext.cpp  \
+#	$$PWD/reportprocessorcontext.cpp  \
     $$PWD/reportdocument.cpp \
 
 include ($$PWD/style/style.pri)

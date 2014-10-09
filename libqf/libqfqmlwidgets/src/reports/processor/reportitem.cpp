@@ -8,7 +8,7 @@
 #include "reportpainter.h"
 #include "reportprocessor.h"
 #include "reportitem.h"
-#include "../../graphics/graph/graph.h"
+//#include "../../graphics/graph/graph.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>

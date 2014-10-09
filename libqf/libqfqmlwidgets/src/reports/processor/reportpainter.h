@@ -52,13 +52,13 @@ public:
 	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
 	//QFTreeItemPath f_reportItemPath;
 	//ReportProcessor *f_reportProcessor;
-	ReportProcessorContext f_procesorContext;
+    //ReportProcessorContext f_procesorContext;
 
 	ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
 	LayoutSetting f_layoutSettings;
 public:
 	//ReportProcessor* reportProcessor();
-	const ReportProcessorContext& context() {return f_procesorContext;}
+    //const ReportProcessorContext& context() {return f_procesorContext;}
 	ReportItem* reportItem();
 	//const LayoutSetting& layoutSettings() {return f_layoutSettings;}
 	void setInset(qreal horizontal, qreal vertical);

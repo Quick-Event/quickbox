@@ -403,8 +403,8 @@ public:
 	Q_PROPERTY(VAlignment valign READ verticalAlignment WRITE setVerticalAlignment NOTIFY verticalAlignmentChanged)
 	Q_PROPERTY(QString columns READ columns WRITE setColumns NOTIFY columnsChanged)
 	Q_PROPERTY(double columnsGap READ columnsGap WRITE setColumnsGap NOTIFY columnsGapChanged)
-	Q_PROPERTY(QVariant border READ border WRITE setBorder NOTIFY borderChanged)
-	Q_PROPERTY(QVariant fill READ fill WRITE setFill NOTIFY fillChanged)
+    Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* border READ border WRITE setBorder NOTIFY borderChanged)
+    Q_PROPERTY(qf::qmlwidgets::reports::style::Color* fill READ fill WRITE setFill NOTIFY fillChanged)
 public:
 	enum HAlignment { AlignLeft = Qt::AlignLeft,
 					  AlignRight = Qt::AlignRight,
@@ -427,8 +427,8 @@ public:
 	QF_PROPERTY_IMPL2(VAlignment, v, V, erticalAlignment, AlignTop)
 	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
-	QF_PROPERTY_IMPL(QVariant, b, B, order)
-	QF_PROPERTY_IMPL(QVariant, f, F, ill)
+    QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, order)
+    QF_PROPERTY_OBJECT_IMPL(style::Color*, f, F, ill)
 public:
 	ReportItemFrame(ReportItem *parent = nullptr);
 	~ReportItemFrame() Q_DECL_OVERRIDE;

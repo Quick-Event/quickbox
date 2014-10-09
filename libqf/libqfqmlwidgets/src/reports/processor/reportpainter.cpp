@@ -6,6 +6,8 @@
 //
 
 #include "reportpainter.h"
+#include "style/pen.h"
+#include "style/color.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -43,8 +45,8 @@ ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportIte
 	//context = report_item->processor->context();
 	//f_reportItemPath = report_item->path();
 	//f_layoutSettings = NULL;
-	if(report_item && report_item->processor())
-		f_procesorContext = report_item->processor()->context();
+    //if(report_item && report_item->processor())
+    //	f_procesorContext = report_item->processor()->context();
 	{
 		double fill_vertical_layout_ratio = report_item->childSize(ReportItem::LayoutVertical).fillLayoutRatio();
 		setFillVLayoutRatio(fill_vertical_layout_ratio);
@@ -360,6 +362,21 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 : ReportItemMetaPaint(_parent, report_item), lbrd(Qt::NoPen), rbrd(Qt::NoPen), tbrd(Qt::NoPen), bbrd(Qt::NoPen)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
+    QF_ASSERT_EX(report_item != nullptr, "ReportItem is NULL");
+    ReportItemFrame *frame_item = qobject_cast<ReportItemFrame*>(report_item);
+    if(frame_item) {
+        {
+            style::Color *c = frame_item->fill();
+            if(c)
+                fill = c->color();
+        }
+        {
+            style::Pen *p = frame_item->border();
+            if(p)
+                lbrd = rbrd = tbrd = bbrd = p->pen();
+        }
+    }
+    /*--
 	QString s = report_item->property("fill").toString();
 	if(!s.isEmpty()) {
 		if(s.startsWith("{grid:")) {
@@ -369,10 +386,6 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 		}
 		else
 			fill = context().styleCache().brush(s);
-	}
-	s = report_item->property("brd").toString();
-	if(!s.isEmpty()) {
-		lbrd = rbrd = tbrd = bbrd = context().styleCache().pen(s);
 	}
 	s = report_item->property("lbrd").toString();
 	if(!s.isEmpty())
@@ -386,7 +399,8 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 	s = report_item->property("bbrd").toString();
 	if(!s.isEmpty())
 		bbrd = context().styleCache().pen(s);
-	//qfDebug() << "\tRETURN";
+    --*/
+    //qfDebug() << "\tRETURN";
 }
 
 void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
@@ -421,6 +435,7 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 			if(fill.style() != Qt::NoBrush)
 				painter->fillRect(r, fill);
 		}
+        /*--
 		else {
 			if(alterm.contains("grid")) {
 				alterm = alterm.value("grid").toMap();
@@ -436,6 +451,7 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 				}
 			}
 		}
+        --*/
 		//QFString s = element.attribute("fill");
 		//if(!!s) painter->fillRect(r, context().brushFromString(s));
 	}
@@ -444,7 +460,8 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 
 void ReportItemMetaPaintFrame::frameItem(QPainter *painter, bool selected)
 {
-	//Rect r = renderedRect;
+    Q_UNUSED(selected);
+    /*--
 	QString s;
 	if(selected) {
 		s = "color: magenta; style: solid; size:2";
@@ -453,18 +470,16 @@ void ReportItemMetaPaintFrame::frameItem(QPainter *painter, bool selected)
 		painter->drawRect(qf::qmlwidgets::graphics::mm2device(renderedRect, painter->device()));
 	}
 	else {
-		/*
-		s = element.attribute("brd");
-		qfDebug() << QF_FUNC_NAME << s;
-		if(!!s) {
-			tbrd = lbrd = bbrd = rbrd = element.attribute("brd");
-		}
-		*/
 		drawLine(painter, LBrd, lbrd);
 		drawLine(painter, TBrd, tbrd);
 		drawLine(painter, RBrd, rbrd);
 		drawLine(painter, BBrd, bbrd);
 	}
+    --*/
+    drawLine(painter, LBrd, lbrd);
+    drawLine(painter, TBrd, tbrd);
+    drawLine(painter, RBrd, rbrd);
+    drawLine(painter, BBrd, bbrd);
 }
 
 void ReportItemMetaPaintFrame::drawLine(QPainter *painter, LinePos where, const QPen &_pen)
@@ -611,9 +626,9 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 
 		//qfInfo() << check_on;
 		/// BOX
-		QString s_box;
-		s_box = (check_on)? "color: black; style: solid; size:1": "color: gray; style: solid; size:1";
-		painter->setPen(context().styleCache().pen(s_box));
+        //QString s_box;
+        //s_box = (check_on)? "color: black; style: solid; size:1": "color: gray; style: solid; size:1";
+        painter->setPen(QPen(Qt::SolidLine));
 		painter->setBrush(QBrush());
 		ReportItem::Rect r = renderedRect;
 		r.translate(0, -font_metrics.leading());
@@ -638,8 +653,12 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 			painter->drawLine(p2, p1);
 #else
 			/// CHECK cross
-			static QString s_check = "color: maroon; style: solid; size:2";
-			painter->setPen(context().styleCache().pen(s_check));
+            //--static QString s_check = "color: maroon; style: solid; size:2";
+            QPen p(Qt::SolidLine);
+            QColor c;
+            c.setNamedColor("maroon");
+            p.setColor(c);
+            painter->setPen(p);
 			r = qf::qmlwidgets::graphics::mm2device(r, painter->device());
 			//QPointF p1(r.left(), r.top() + r.height() / 2);
 			//QPointF p2(r.left() + r.width() / 2, r.bottom());

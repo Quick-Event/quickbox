@@ -19,7 +19,8 @@ class QFQMLWIDGETS_DECL_EXPORT Color : public QObject, public IStyled
 {
 	Q_OBJECT
 	Q_PROPERTY(QString name READ name WRITE setName)
-	Q_PROPERTY(QVariant definition READ definition WRITE setDefinition NOTIFY definitionChanged)
+    Q_CLASSINFO("DefaultProperty", "definition")
+    Q_PROPERTY(QVariant definition READ definition WRITE setDefinition NOTIFY definitionChanged)
 public:
 	explicit Color(QObject *parent = nullptr);
 	~Color() Q_DECL_OVERRIDE;

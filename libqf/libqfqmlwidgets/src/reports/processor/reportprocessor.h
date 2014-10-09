@@ -11,7 +11,7 @@
 #include "../../qmlwidgetsglobal.h"
 #include "reportitem.h"
 #include "reportdocument.h"
-#include "reportprocessorcontext.h"
+//#include "reportprocessorcontext.h"
 
 #include <qf/core/utils/treetable.h>
 //#include <qf/core/utils/searchdirs.h>
@@ -49,7 +49,7 @@ protected:
 	void makeContext();
 	//void readStyleSheet(const QDomElement &el_stylesheet);
 public:
-	const ReportProcessorContext& context() const {return m_Context;}
+    //const ReportProcessorContext& context() const {return m_Context;}
 public:
 	/// vymaze vsechna data vznikla predchozimi kompilacemi
 	void reset();
@@ -111,7 +111,7 @@ public:
 
 	void dump();
 protected:
-	ReportProcessorContext& contextRef() {return m_Context;}
+    //ReportProcessorContext& contextRef() {return m_Context;}
 
 	void fixTableTags(QDomElement &el);
 	QDomElement removeRedundantDivs(QDomElement &el);
@@ -125,7 +125,7 @@ public slots:
 protected:
 	QQmlEngine* qmlEngine(bool throw_exc = true);
 private:
-	ReportProcessorContext m_Context;
+    //ReportProcessorContext m_Context;
 
 	ImageMap m_imageMap;
 
