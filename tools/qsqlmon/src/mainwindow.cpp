@@ -157,8 +157,8 @@ qf::core::sql::Connection MainWindow::setActiveConnection2(Database *dd)
 				f_activeSetNames = set_names;
 				if(set_names.isEmpty() || set_names == "<no change>") set_names = "utf8";
 				QFSqlQuery q(c);
-				q.exec("SET NAMES "SARG(set_names));
-				qfInfo() << "SET NAMES "SARG(set_names);
+                q.exec("SET NAMES " SARG(set_names));
+                qfInfo() << "SET NAMES " SARG(set_names);
 			}
 		}
 	}

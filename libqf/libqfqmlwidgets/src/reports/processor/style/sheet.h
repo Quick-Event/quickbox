@@ -3,6 +3,7 @@
 
 #include "color.h"
 #include "pen.h"
+#include "istyled.h"
 
 #include "../../../qmlwidgetsglobal.h"
 
@@ -30,15 +31,16 @@ public:
 public:
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
 public:
-	Pen* penForName(const QString &name);
-	void setPenForName(const QString &name, Pen *p);
+    QObject* styleObjectForName(IStyled::StyleGroup style_object_group, const QString &name, bool should_exist);
+    void setStyleObjectForName(IStyled::StyleGroup style_object_group, const QString &name, QObject *o);
 private:
 	QQmlListProperty<Color> colors();
 	QQmlListProperty<Pen> pens();
 private:
 	QList<Color*> m_colors;
 	QList<Pen*> m_pens;
-	QMap<QString, Pen*> m_definedPens;
+    typedef QMap<QString, QObject*> ObjectMap;
+    QMap<IStyled::StyleGroup, ObjectMap> m_definedStyles;
 };
 
 }}}}

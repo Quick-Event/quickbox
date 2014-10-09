@@ -7,9 +7,24 @@
 
 using namespace qf::qmlwidgets::reports::style;
 
-IStyled::IStyled(QObject *style_object)
-	: m_styleObject(style_object)
+IStyled::IStyled(QObject *style_object, StyleGroup style_group)
+    : m_styleObject(style_object), m_styleGroup(style_group)
 {
+    m_dirty = true;
+}
+
+QString IStyled::name()
+{
+    QF_ASSERT(m_styleObject != nullptr, "Drived object is NULL", return QString());
+    return m_styleObject->objectName();
+}
+
+void IStyled::setName(const QString &s)
+{
+    QF_ASSERT(m_styleObject != nullptr, "Drived object is NULL", return);
+    rootStyleSheet()->setStyleObjectForName(m_styleGroup, m_styleObject->objectName(), nullptr);
+    m_styleObject->setObjectName(s);
+    rootStyleSheet()->setStyleObjectForName(m_styleGroup, m_styleObject->objectName(), m_styleObject);
 }
 
 qf::qmlwidgets::reports::ReportItemReport *IStyled::reportItem()
@@ -38,11 +53,34 @@ qf::qmlwidgets::reports::ReportProcessor *IStyled::reportProcessor()
 	return ret;
 }
 
-Sheet *IStyled::reportStyleSheet()
+Sheet *IStyled::rootStyleSheet()
 {
 	Sheet *ret = nullptr;
 	ReportItemReport *rir = reportItem();
 	if(rir)
 		ret = rir->styleSheet();
-	return ret;
+    return ret;
+}
+
+QObject *IStyled::styleobjectFromVariant(const QVariant &v, StyleGroup style_group, bool should_exist)
+{
+    QObject *ret = nullptr;
+    if(v.isValid()) {
+        ret = v.value<QObject*>();
+        if(!ret) {
+            if(v.type() == QVariant::String) {
+                StyleGroup sg = style_group;
+                if(sg == SGOwn)
+                    sg = m_styleGroup;
+                ret = rootStyleSheet()->styleObjectForName(sg, v.toString(), should_exist);
+            }
+        }
+    }
+    return ret;
+}
+
+QString IStyled::nextSequentialName()
+{
+    static int n = 0;
+    return QString("%1_%2").arg(m_styleGroup).arg(++n);
 }

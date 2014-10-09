@@ -45,18 +45,16 @@ public:
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
 	QF_PROPERTY_IMPL2(PenStyle, s, S, tyle, SolidLine)
 	QF_PROPERTY_IMPL(qreal, w, W, idth)
-
-	QString name() {return objectName();}
-	void setName(const QString &s) {setObjectName(s);}
 public:
 	QPen pen();
+public:
+    //void setName(const QString &s) Q_DECL_OVERRIDE;
 private:
-	static QString nextSequentialName();
-	Q_SLOT void setDirty() {m_dirty = true;}
-	Pen* penForName(const QString &name);
+    //static QString nextSequentialName();
+    //Q_SLOT void setDirty() {m_dirty = true;}
+    //Pen* penForName(const QString &name);
 private:
 	QPen m_pen;
-	bool m_dirty;
 };
 
 }}}}

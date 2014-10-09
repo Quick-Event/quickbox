@@ -94,8 +94,8 @@ void ReportProcessor::setData(const qfu::TreeTable &_data)
 void ReportProcessor::makeContext()
 {
 	qfLogFuncFrame();
-	contextRef() = ReportProcessorContext();//.clear(); /// nemuzu tady dat contexRef() = ReportProcessorContext(), protoze ten ma globalni cache, to je tim, ze qf::qmlwidgets::graphics::StyleCache je explicitne sdilena, a ja potrebuju, pro kazdou instanci report processoru vlastni
-	style::Sheet *stylesheet_obj = nullptr;
+    //contextRef() = ReportProcessorContext();//.clear(); /// nemuzu tady dat contexRef() = ReportProcessorContext(), protoze ten ma globalni cache, to je tim, ze qf::qmlwidgets::graphics::StyleCache je explicitne sdilena, a ja potrebuju, pro kazdou instanci report processoru vlastni
+    //style::Sheet *stylesheet_obj = nullptr;
 	//contextRef().styleCacheRef().readStyleSheet(stylesheet_obj);
 }
 

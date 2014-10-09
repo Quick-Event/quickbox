@@ -10,56 +10,48 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Pen::Pen(QObject *parent) :
-	QObject(parent), IStyled(this)
+    QObject(parent), IStyled(this, IStyled::SGPen)
 {
 	setName(nextSequentialName());
-	m_dirty = true;
 }
 
 Pen::~Pen()
 {
-
+    setName(QString());
 }
 
 QPen Pen::pen()
 {
-	if(m_dirty) {
-		m_dirty = false;
-		{
+    if(isDirty()) {
+        setDirty(false);
+        {
 			QVariant v = basedOn();
 			if(v.isValid()) {
-				QObject *o = v.value<QObject*>();
+                QObject *o = styleobjectFromVariant(v);
 				Pen *based_on = qobject_cast<Pen*>(o);
-				if(!based_on) {
-					if(v.type() == QVariant::String) {
-						based_on = penForName(v.toString());
-					}
-				}
-				if(!based_on) {
-					qfWarning() << "Invalid pen basedOn definition" << v.toString() << "in:" << this;
-				}
-				else {
-					m_pen = based_on->pen();
-				}
+                if(based_on) {
+                    m_pen = based_on->pen();
+                }
 			}
 		}
 		{
 			QVariant v = color();
 			if(v.isValid()) {
 				QColor c;
-				if(v.type() == QVariant::String) {
+                QObject *o = styleobjectFromVariant(v, IStyled::SGColor, false);
+                Color *pco = qobject_cast<Color*>(o);
+                if(pco) {
+                    c = pco->color();
+                }
+                else if(v.type() == QVariant::String) {
 					c.setNamedColor(v.toString());
-				}
-				else {
-					QObject *o = v.value<QObject*>();
-					Color *pco = qobject_cast<Color*>(o);
-					if(pco) {
-						c = pco->color();
-					}
 				}
 				if(c.isValid()) {
 					m_pen.setColor(c);
 				}
+                else {
+                    qfWarning() << "Cannot find color definition for:" << v.toString();
+                }
 			}
 		}
 		{
@@ -75,18 +67,5 @@ QPen Pen::pen()
 			}
 		}
 	}
-	return m_pen;
-}
-
-QString Pen::nextSequentialName()
-{
-	static int n = 0;
-	return QString("pen_%1").arg(++n);
-}
-
-Pen *Pen::penForName(const QString &name)
-{
-	Sheet *ss = reportStyleSheet();
-	QF_ASSERT(ss != nullptr, "cannot find style::Sheet in parents", return nullptr);
-	return ss->penForName(name);
+    return m_pen;
 }

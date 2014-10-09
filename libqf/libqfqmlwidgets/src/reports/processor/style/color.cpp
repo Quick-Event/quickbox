@@ -5,23 +5,23 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Color::Color(QObject *parent) :
-	QObject(parent)
+    QObject(parent), IStyled(this, IStyled::SGColor)
 {
 	qfLogFuncFrame() << this << "parent:" << parent;
 	setName(nextSequentialName());
-	m_dirty = true;
 	connect(this, SIGNAL(definitionChanged(QVariant)), this, SLOT(setDirty()));
 }
 
 Color::~Color()
 {
 	qfLogFuncFrame() << this << "parent:" << parent();
+    setName(QString());
 }
 
 QColor Color::color()
 {
-	if(m_dirty) {
-		m_dirty = false;
+    if(isDirty()) {
+        setDirty(false);
 		QVariant v = definition();
 		if(v.type() == QVariant::String) {
 			m_color.setNamedColor(v.toString());
@@ -31,10 +31,4 @@ QColor Color::color()
 		}
 	}
 	return m_color;
-}
-
-QString Color::nextSequentialName()
-{
-	static int n = 0;
-	return QString("color_%1").arg(++n);
 }

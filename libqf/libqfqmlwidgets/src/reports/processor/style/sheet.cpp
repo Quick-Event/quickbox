@@ -11,22 +11,25 @@ Sheet::Sheet(QObject *parent)
 Sheet::~Sheet()
 {
 	qfLogFuncFrame();
-	//qDeleteAll(m_colors); it seems that QQmlListProperty itself handles color children parentship
+    //qDeleteAll(m_colors); it seems that QQmlListProperty itself handles color children parentship
 }
 
-Pen *Sheet::penForName(const QString &name)
+QObject *Sheet::styleObjectForName(IStyled::StyleGroup style_object_group, const QString &name, bool should_exist)
 {
-	Pen *ret = m_definedPens.value(name);
-	QF_ASSERT(ret != nullptr, "Cannot find pen for name: " + name, return ret);
-	return ret;
+    ObjectMap om = m_definedStyles.value(style_object_group);
+    QObject *ret = om.value(name);
+    if(ret == nullptr && should_exist)
+        qfError() << "Cannot find style object for " << style_object_group + "::" + name;
+    return ret;
 }
 
-void Sheet::setPenForName(const QString &name, Pen *p)
+void Sheet::setStyleObjectForName(IStyled::StyleGroup style_object_group, const QString &name, QObject *o)
 {
-	if(p)
-		m_definedPens[name] = p;
+    ObjectMap &om = m_definedStyles[style_object_group];
+    if(o)
+        om[name] = o;
 	else
-		m_definedPens.remove(name);
+        om.remove(name);
 }
 
 QQmlListProperty<Color> Sheet::colors()

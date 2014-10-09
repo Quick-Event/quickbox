@@ -1,6 +1,8 @@
 #ifndef QF_QMLWIDGETS_REPORTS_STYLE_COLOR_H
 #define QF_QMLWIDGETS_REPORTS_STYLE_COLOR_H
 
+#include "istyled.h"
+
 #include "../../../qmlwidgetsglobal.h"
 
 #include <qf/core/utils.h>
@@ -13,7 +15,7 @@ namespace qmlwidgets {
 namespace reports {
 namespace style {
 
-class QFQMLWIDGETS_DECL_EXPORT Color : public QObject
+class QFQMLWIDGETS_DECL_EXPORT Color : public QObject, public IStyled
 {
 	Q_OBJECT
 	Q_PROPERTY(QString name READ name WRITE setName)
@@ -29,10 +31,8 @@ public:
 
 	QColor color();
 private:
-	static QString nextSequentialName();
-	Q_SLOT void setDirty() {m_dirty = true;}
+    //Q_SLOT void setDirty();
 private:
-	bool m_dirty;
 	QColor m_color;
 };
 
