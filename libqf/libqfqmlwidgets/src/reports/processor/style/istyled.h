@@ -1,5 +1,5 @@
-#ifndef QF_QMLWIDGETS_REPORTS_STYLE_STYLEDBASE_H
-#define QF_QMLWIDGETS_REPORTS_STYLE_STYLEDBASE_H
+#ifndef QF_QMLWIDGETS_REPORTS_STYLE_ISTYLED_H
+#define QF_QMLWIDGETS_REPORTS_STYLE_ISTYLED_H
 
 class QObject;
 class QString;
@@ -19,7 +19,7 @@ class Sheet;
 class IStyled
 {
 public:
-    enum StyleGroup {SGOwn, SGColor, SGPen, SGBrush, SGText};
+    enum StyleGroup {SGOwn, SGColor, SGPen, SGBrush, SGFont, SGText};
 public:
     IStyled(QObject *style_object, StyleGroup style_group);
 public:

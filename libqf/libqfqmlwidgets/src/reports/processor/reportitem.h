@@ -9,6 +9,9 @@
 
 #include "../../qmlwidgetsglobal.h"
 #include "../../graphics/graphics.h"
+#include "style/pen.h"
+#include "style/brush.h"
+#include "style/text.h"
 #include "style/sheet.h"
 
 #include <qf/core/utils.h>
@@ -43,11 +46,14 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserSta
 {
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
+	Q_ENUMS(Layout)
+	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll NOTIFY keepAllChanged)
+	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 private:
 	typedef QObject Super;
 public:
-	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll NOTIFY keepAllChanged)
-	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
+	ReportItem(ReportItem *parent);
+	~ReportItem() Q_DECL_OVERRIDE;
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
 				 LayoutHorizontal = graphics::LayoutHorizontal,
@@ -55,8 +61,7 @@ public:
 				 LayoutStack = graphics::LayoutStack
 				};
 	//typedef graphics::Layout Layout;
-	Q_ENUMS(Layout)
-public:
+
 	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
 	QF_PROPERTY_BOOL_IMPL(k, K, eepAll)
 	Q_INVOKABLE bool isVisible();
@@ -67,11 +72,6 @@ public:
 		}
 	}
 	Q_SIGNAL void visibleChanged(bool new_val);
-private:
-	bool m_visible;
-public:
-	ReportItem(ReportItem *parent);
-	~ReportItem() Q_DECL_OVERRIDE;
 public:
 	typedef QDomElement HTMLElement;
 	static const double Epsilon;
@@ -328,13 +328,15 @@ public:
 
 	virtual QString toString(int indent = 2, int indent_offset = 0);
 
-	ReportItemMetaPaint* createMetaPaintItem(ReportItemMetaPaint *parent);
 	/*--
 	virtual ReportItem* cd(const qf::core::utils::TreeItemPath &path) const {
 		return dynamic_cast<ReportItem*>(Super::cd(path));
 	}
 	--*/
 protected:
+	virtual style::Text* effectiveTextStyle();
+	virtual void setupMetaPaintItem(ReportItemMetaPaint *mpit);
+
 	void classBegin() Q_DECL_OVERRIDE;
     void componentComplete() Q_DECL_OVERRIDE;
 public:
@@ -343,6 +345,8 @@ public:
 
 	bool recentlyPrintNotFit;
 	//PrintResult recentPrintResult;
+private:
+	bool m_visible;
 };
 
 //! TODO: write class documentation.
@@ -372,8 +376,8 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemFrame : public ReportItem
 private:
 	typedef ReportItem Super;
 public:
-	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	Q_CLASSINFO("DefaultProperty", "items")
+	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	Q_ENUMS(HAlignment)
 	Q_ENUMS(VAlignment)
 	//Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
@@ -404,7 +408,11 @@ public:
 	Q_PROPERTY(QString columns READ columns WRITE setColumns NOTIFY columnsChanged)
 	Q_PROPERTY(double columnsGap READ columnsGap WRITE setColumnsGap NOTIFY columnsGapChanged)
     Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* border READ border WRITE setBorder NOTIFY borderChanged)
-    Q_PROPERTY(qf::qmlwidgets::reports::style::Color* fill READ fill WRITE setFill NOTIFY fillChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Color* fill READ fill WRITE setFill NOTIFY fillChanged)
+	Q_CLASSINFO("property.textStyle.doc",
+				"Set text style for this frame and all the children recursively"
+				)
+    Q_PROPERTY(qf::qmlwidgets::reports::style::Text* textStyle READ textStyle WRITE setTextStyle NOTIFY textStyleChanged)
 public:
 	enum HAlignment { AlignLeft = Qt::AlignLeft,
 					  AlignRight = Qt::AlignRight,
@@ -428,7 +436,8 @@ public:
 	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
     QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, order)
-    QF_PROPERTY_OBJECT_IMPL(style::Color*, f, F, ill)
+	QF_PROPERTY_OBJECT_IMPL(style::Color*, f, F, ill)
+    QF_PROPERTY_OBJECT_IMPL(style::Text*, t, T, extStyle)
 public:
 	ReportItemFrame(ReportItem *parent = nullptr);
 	~ReportItemFrame() Q_DECL_OVERRIDE;
@@ -454,6 +463,8 @@ public:
 protected:
 	ChildSize childSize(Layout parent_layout) Q_DECL_OVERRIDE;
 	virtual ReportItemFrame* toFrame() {return this;}
+
+	void setupMetaPaintItem(ReportItemMetaPaint *mpi) Q_DECL_OVERRIDE;
 
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
@@ -718,6 +729,7 @@ protected:
 	//--QDomDocument fakeLoadErrorParaDocument;
 };
 
+#ifdef REPORT_ITEM_GRAPH
 //! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT ReportItemGraph : public ReportItemImage
 {
@@ -731,7 +743,7 @@ public:
 	ReportItemGraph(ReportItem *parent = nullptr)
 		: Super(parent) {}
 };
-
+#endif
 }}}
 
 #endif // QF_QMLWIDGETS_REPORTS_REPORTITEM_H

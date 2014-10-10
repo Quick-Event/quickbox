@@ -8,6 +8,7 @@
 #include "itemvalueeditorwidget.h"
 
 #include "../processor/reportpainter.h"
+#include "../processor/reportprocessor.h"
 #include "../../action.h"
 #include "../../dialogs/dialog.h"
 #include "../../dialogs/filedialog.h"

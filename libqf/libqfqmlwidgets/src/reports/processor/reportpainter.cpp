@@ -146,6 +146,20 @@ bool ReportItemMetaPaint::hasSpringChildrenFramesInVerticalLayout()
 	return has_expandable_children;
 }
 
+style::CompiledTextStyle ReportItemMetaPaint::effectiveTextStyle()
+{
+	style::CompiledTextStyle ret;
+	ReportItemMetaPaint *it = this;
+	while(it) {
+		ret = it->textStyle();
+		if(!ret.isNull())
+			break;
+		it = it->parent();
+	}
+	QF_ASSERT(!ret.isNull(), "Cannot find TextStyle definition in parents", return ret);
+	return ret;
+}
+
 bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 {
 	qfLogFuncFrame() << "rendered rect:" << renderedRect.toString();

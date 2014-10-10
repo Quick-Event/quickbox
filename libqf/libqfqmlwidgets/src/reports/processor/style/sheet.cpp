@@ -2,6 +2,9 @@
 
 using namespace qf::qmlwidgets::reports::style;
 
+//==========================================================
+//           Sheet
+//==========================================================
 Sheet::Sheet(QObject *parent)
 	: QObject(parent)
 {
@@ -19,7 +22,7 @@ QObject *Sheet::styleObjectForName(IStyled::StyleGroup style_object_group, const
     ObjectMap om = m_definedStyles.value(style_object_group);
     QObject *ret = om.value(name);
     if(ret == nullptr && should_exist)
-        qfError() << "Cannot find style object for " << style_object_group + "::" + name;
+        qfError() << "Cannot find style object for style group:" << style_object_group << "name:" + name;
     return ret;
 }
 

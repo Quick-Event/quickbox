@@ -8,6 +8,7 @@
 #include "reportpainter.h"
 #include "reportprocessor.h"
 #include "reportitem.h"
+#include "style/compiledtextstyle.h"
 //#include "../../graphics/graph/graph.h"
 
 #include <qf/core/log.h>
@@ -643,11 +644,9 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	return data_value;
 }
 
-ReportItemMetaPaint * ReportItem::createMetaPaintItem(ReportItemMetaPaint * parent)
+void ReportItem::setupMetaPaintItem(ReportItemMetaPaint *mpit)
 {
-	ReportItemMetaPaint *ret = NULL;
-	ret = new ReportItemMetaPaintFrame(parent, this);
-	return ret;
+	Q_UNUSED(mpit);
 }
 
 void ReportItem::classBegin()
@@ -670,8 +669,25 @@ QString ReportItem::toString(int indent, int indent_offset)
 	return ret;
 }
 
+style::Text *ReportItem::effectiveTextStyle()
+{
+	style::Text *ret = nullptr;
+	ReportItem *it = this;
+	while(it) {
+		ReportItemFrame *frit = qobject_cast<ReportItemFrame*>(it);
+		if(frit) {
+			ret = frit->textStyle();
+			if(ret)
+				break;
+		}
+		it = it->parent();
+	}
+	QF_ASSERT(ret != nullptr, "Cannot find TextStyle definition in parents", return ret);
+	return ret;
+}
+
 //==========================================================
-//                                    ReportItemBreak
+//                    ReportItemBreak
 //==========================================================
 ReportItemBreak::ReportItemBreak(ReportItem *parent)
 	: Super(parent)
@@ -888,6 +904,16 @@ int ReportItemFrame::itemCount() const
 ReportItem *ReportItemFrame::itemAt(int index)
 {
 	return m_items[index];
+}
+
+void ReportItemFrame::setupMetaPaintItem(ReportItemMetaPaint *mpit)
+{
+	Super::setupMetaPaintItem(mpit);
+	style::Text *pts = effectiveTextStyle();
+	if(pts) {
+		style::CompiledTextStyle ts = pts->textStyle();
+		mpit->setTextStyle(ts);
+	}
 }
 
 ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
@@ -1294,12 +1320,11 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		column_sizes = qf::qmlwidgets::graphics::makeLayoutSizes(sl, ly_size);
 		//current_column_index = 0;
 	}
-	ReportItemMetaPaintFrame *mp = dynamic_cast<ReportItemMetaPaintFrame*>(createMetaPaintItem(NULL));
+	ReportItemMetaPaintFrame *mp = new ReportItemMetaPaintFrame(out, this);
 	QF_ASSERT_EX(mp != nullptr, "Meta paint item for item " + QString(this->metaObject()->className()) + " not created.");
 	mp->setInset(hinset(), vinset());
 	mp->setLayout((qf::qmlwidgets::graphics::Layout)layout());
 	mp->setAlignment(horizontalAlignment(), verticalAlignment());
-	mp->setParent(out);
 	Rect column_br_helper = frame_content_br;
 	for(int current_column_index=0; current_column_index<column_sizes.count(); current_column_index++) {
 		Rect column_br = column_br_helper;
@@ -1647,7 +1672,11 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 		QString text_to_layout = text;
 		//qfWarning() << "length: " << text.length() << " text: [" << text << "]\n" << text.toUtf8().toHex();
 		bool text_item_should_be_created = true;
-		graphics::StyleCache::Style style = processor()->context().styleCache().style(paraStyleDefinition());
+		style::CompiledTextStyle style;
+		style::Text *p_text_style = effectiveTextStyle();
+		if(p_text_style) {
+			style = p_text_style->textStyle();
+		}
 		/*--
 		{
 			QString s;
@@ -1661,7 +1690,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			//qfDebug() << "\tbrush color:" << brush.color().name();
 		}
 		--*/
-		QFontMetricsF font_metrics = processor()->fontMetrics(style.font);
+		QFontMetricsF font_metrics = processor()->fontMetrics(style.font());
 		QTextOption text_option;
 		{
 			if(isTextWrap())
@@ -1705,7 +1734,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 				qreal leading = font_metrics.leading();
 				qreal height = 0;
 				qreal width = 0;
-				textLayout.setFont(style.font);
+				textLayout.setFont(style.font());
 				//Qt::Alignment alignment = (~Qt::Alignment()) & flags;
 				//QTextOption opt(alignment);
 				//opt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
@@ -1800,15 +1829,16 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 		//qfInfo().noSpace() << "text: '" << text << "'";
 		if(text_item_should_be_created ) {
 			ReportItemMetaPaintText *mt;
-			if(render_check_mark ) mt = new ReportItemMetaPaintCheck(out, this);
+			if(render_check_mark )
+				mt = new ReportItemMetaPaintCheck(out, this);
 			else {
 				mt = new ReportItemMetaPaintText(out, this);
 				mt->sqlId = sql_id;
 				//--mt->editGrants = elementAttribute("editGrants");
 			}
 			//qfInfo() << "creating item:" << mt;
-			mt->pen = style.pen;
-			mt->font = style.font;
+			mt->pen = style.pen();
+			mt->font = style.font();
 			mt->text = text.mid(0, indexToPrint - initial_index_to_print);
 			//qfWarning() << "text:" << text;
 			mt->textOption = text_option;
@@ -1857,7 +1887,6 @@ QString ReportItemPara::paraText()
 	}
 	return ret;
 }
-
 
 //==========================================================
 //                                    ReportItemBand
@@ -2620,6 +2649,8 @@ void ReportItemGraph::syncChildren()
 	ReportItem::syncChildren();
 }
 #endif
+
+#ifdef REPORT_ITEM_GRAPH
 ReportItemImage::PrintResult ReportItemGraph::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame() << this;
@@ -2666,12 +2697,4 @@ ReportItemImage::PrintResult ReportItemGraph::printMetaPaintChildren(ReportItemM
 	res = ReportItemImage::printMetaPaintChildren(out, br);
 	return res;
 }
-
-
-
-
-
-
-
-
-
+#endif

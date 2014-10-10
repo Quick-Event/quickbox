@@ -8,14 +8,16 @@
 #ifndef QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
 #define QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
 
-#include "reportprocessor.h"
 #include "reportitem.h"
+#include "../../graphics/graphics.h"
+
 //#include "../../qmlwidgetsglobal.h"
 
 #include <qf/core/exception.h>
 #include <qf/core/utils/treeitembase.h>
 
 #include <QObject>
+#include <QPainter>
 #include <QPrinter>
 
 namespace qf {
@@ -29,6 +31,11 @@ class ReportItemMetaPaint : public qf::core::utils::TreeItemBase
 {
 private:
 	typedef qf::core::utils::TreeItemBase Super;
+public:
+	ReportItemMetaPaint();
+	//! parametr \a processor v konstruktoru slouzi jenom kvuli scriptovanym atributum elementu, pouzije se jen v konstruktoru, ukazatel na nej se nikde neuklada.
+	ReportItemMetaPaint(ReportItemMetaPaint *parent, ReportItem *report_item);
+	~ReportItemMetaPaint() Q_DECL_OVERRIDE;
 public:
 	enum PaintMode {PaintBorder=1, PaintFill=2, PaintAll=3};
 	//! string v reportu, ktery se vymeni za celkovy pocet stranek v reportu.
@@ -47,15 +54,6 @@ public:
 		,FillVLayoutRatio
 		};
 	};
-public:
-	ReportItem::Rect renderedRect; ///< rozmery v mm
-	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
-	//QFTreeItemPath f_reportItemPath;
-	//ReportProcessor *f_reportProcessor;
-    //ReportProcessorContext f_procesorContext;
-
-	ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
-	LayoutSetting f_layoutSettings;
 public:
 	//ReportProcessor* reportProcessor();
     //const ReportProcessorContext& context() {return f_procesorContext;}
@@ -83,7 +81,6 @@ public:
 		return qf::qmlwidgets::graphics::LayoutInvalid;
 	}
 	qf::qmlwidgets::graphics::Layout orthogonalLayout() const {return orthogonalLayout(layout());}
-protected:
 public:
 	void setRenderedRectRect(const QRectF &new_size) {renderedRect = new_size;}
 
@@ -119,14 +116,23 @@ public:
 		&& renderedRect.top() <= p.y() && renderedRect.bottom() >= p.y());
 	}
 
+	virtual style::CompiledTextStyle effectiveTextStyle();
+	style::CompiledTextStyle textStyle() {return m_textStyle;}
+	void setTextStyle(const style::CompiledTextStyle &ts) {m_textStyle = ts;}
+
 	virtual bool isExpandable() const {return true;}
 
 	virtual QString dump(int indent = 0);
 public:
-	ReportItemMetaPaint();
-	//! parametr \a processor v konstruktoru slouzi jenom kvuli scriptovanym atributum elementu, pouzije se jen v konstruktoru, ukazatel na nej se nikde neuklada.
-	ReportItemMetaPaint(ReportItemMetaPaint *parent, ReportItem *report_item);
-	~ReportItemMetaPaint() Q_DECL_OVERRIDE;
+	ReportItem::Rect renderedRect; ///< rozmery v mm
+	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
+	//QFTreeItemPath f_reportItemPath;
+	//ReportProcessor *f_reportProcessor;
+    //ReportProcessorContext f_procesorContext;
+
+	ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
+	LayoutSetting f_layoutSettings;
+	style::CompiledTextStyle m_textStyle;
 };
 
 //! TODO documentation
@@ -134,14 +140,11 @@ class ReportItemMetaPaintReport : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaint Super;
-protected:
-	//ReportProcessor *f_reportProcessor;
+public:
+	ReportItemMetaPaintReport(ReportItem *report_item);
 public:
 	QPrinter::Orientation orientation;
 	QSize pageSize;
-	//virtual ReportProcessor* reportProcessor() {return f_reportProcessor;}
-public:
-	ReportItemMetaPaintReport(ReportItem *report_item);
 };
 
 //! TODO documentation

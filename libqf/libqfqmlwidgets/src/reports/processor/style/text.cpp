@@ -9,18 +9,18 @@
 
 using namespace qf::qmlwidgets::reports::style;
 
-Pen::Pen(QObject *parent) :
-    QObject(parent), IStyled(this, IStyled::SGPen)
+Text::Text(QObject *parent) :
+    QObject(parent), IStyled(this, IStyled::SGText)
 {
 	setName(nextSequentialName());
 }
 
-Pen::~Pen()
+Text::~Text()
 {
     setName(QString());
 }
 
-QPen Pen::pen()
+CompiledTextStyle Text::textStyle()
 {
     if(isDirty()) {
         setDirty(false);
@@ -28,29 +28,30 @@ QPen Pen::pen()
 			QVariant v = basedOn();
 			if(v.isValid()) {
                 QObject *o = styleobjectFromVariant(v);
-				Pen *based_on = qobject_cast<Pen*>(o);
+				Text *based_on = qobject_cast<Text*>(o);
                 if(based_on) {
-                    m_pen = based_on->pen();
+                    m_textStyle = based_on->textStyle();
                 }
 			}
 		}
 		{
-			Color* pco = color();
-			if(pco) {
-				QColor c = pco->color();
-				m_pen.setColor(c);
+			Pen* p = pen();
+			if(p) {
+				m_textStyle.setPen(p->pen());
 			}
 		}
 		{
-			QVariant v = width();
-			if(v.isValid()) {
-				m_pen.setWidth(v.toReal());
+			Brush* p = brush();
+			if(p) {
+				m_textStyle.setBrush(p->brush());
 			}
 		}
 		{
-			PenStyle ps = style();
-			m_pen.setStyle((Qt::PenStyle)ps);
+			Font* p = font();
+			if(p) {
+				m_textStyle.setFont(p->font());
+			}
 		}
 	}
-    return m_pen;
+    return m_textStyle;
 }

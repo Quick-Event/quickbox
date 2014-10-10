@@ -11,6 +11,9 @@
 
 #include <QObject>
 #include <QString>
+#include <QBrush>
+#include <QFont>
+#include <QPen>
 #include <QQmlListProperty>
 
 namespace qf {
