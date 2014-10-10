@@ -10,7 +10,11 @@ Report {
 	 		Color {name: "peach"; definition: "lightgoldenrodyellow"}
 	 	]
 		pens: [
-			Pen {name: "red1dot"; basedOn: "black1"; color: "red"; style: Pen.DotLine}
+			Pen {name: "red1dot"
+                basedOn: "black1"
+                color: Color {definition:"red"}
+                style: Pen.DotLine
+            }
 		]
 	}
 	width: 210
@@ -23,9 +27,9 @@ Report {
 		height: "%"
 		border: Pen {
 			basedOn: "red1dot"
-			color: "green"
+			color: Color {definition:"green"}
 		}
-		fill: "peach"
+        fill: Color {definition:"peach"}
 	}
 }
 

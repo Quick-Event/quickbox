@@ -17,6 +17,7 @@ Pen::Pen(QObject *parent) :
 
 Pen::~Pen()
 {
+	qfInfo() << this << parent();
     setName(QString());
 }
 

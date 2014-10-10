@@ -52,7 +52,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserSta
 private:
 	typedef QObject Super;
 public:
-	ReportItem(ReportItem *parent);
+	ReportItem(ReportItem *parent = nullptr);
 	~ReportItem() Q_DECL_OVERRIDE;
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
@@ -309,7 +309,7 @@ public:
 	}
 	//--virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
 	//! Print item in form, that understandable by ReportPainter.
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) = 0;
+	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PrintOk;}
 	//! Print item in HTML element form.
 	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PrintOk;}
 	/// vrati definovanou velikost pro item a layout

@@ -21,10 +21,13 @@ QString IStyled::name()
 
 void IStyled::setName(const QString &s)
 {
-    QF_ASSERT(m_styleObject != nullptr, "Drived object is NULL", return);
-    rootStyleSheet()->setStyleObjectForName(m_styleGroup, m_styleObject->objectName(), nullptr);
-    m_styleObject->setObjectName(s);
-    rootStyleSheet()->setStyleObjectForName(m_styleGroup, m_styleObject->objectName(), m_styleObject);
+    QF_ASSERT(m_styleObject != nullptr, "Driven object is NULL", return);
+	Sheet *root_ss = rootStyleSheet();
+	if(root_ss) {
+		rootStyleSheet()->setStyleObjectForName(m_styleGroup, m_styleObject->objectName(), nullptr);
+	    m_styleObject->setObjectName(s);
+	    rootStyleSheet()->setStyleObjectForName(m_styleGroup, m_styleObject->objectName(), m_styleObject);
+	}
 }
 
 qf::qmlwidgets::reports::ReportItemReport *IStyled::reportItem()
@@ -38,6 +41,8 @@ qf::qmlwidgets::reports::ReportItemReport *IStyled::reportItem()
 		}
 		it = it->QObject::parent();
 	}
+	//if(ret == nullptr)
+	//	qfError() << "FCK";
 	QF_ASSERT(ret != nullptr, "Cannot find Report Root Item", return ret);
 	return ret;
 }

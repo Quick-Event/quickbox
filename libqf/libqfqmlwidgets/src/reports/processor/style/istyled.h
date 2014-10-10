@@ -1,6 +1,8 @@
 #ifndef QF_QMLWIDGETS_REPORTS_STYLE_ISTYLED_H
 #define QF_QMLWIDGETS_REPORTS_STYLE_ISTYLED_H
 
+#include "../../../qmlwidgetsglobal.h"
+
 class QObject;
 class QString;
 class QVariant;
@@ -16,7 +18,7 @@ namespace style {
 
 class Sheet;
 
-class IStyled
+class QFQMLWIDGETS_DECL_EXPORT IStyled
 {
 public:
     enum StyleGroup {SGOwn, SGColor, SGPen, SGBrush, SGFont, SGText};
