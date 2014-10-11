@@ -810,7 +810,7 @@ void ReportItemFrame::componentComplete()
 			{
 				if(s.value(-1) == '%') {
 					s = s.slice(0, -1).trimmed();
-					designedRect.horizontalUnit = Rect::UnitPercent;
+					designedRect.verticalUnit = Rect::UnitPercent;
 				}
 				if(!s.isEmpty()) {
 					d = s.toDouble(&ok);
@@ -1181,7 +1181,6 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// vertikalni layout
 		/// tiskni
 		/// procenta tiskni jako rubber a v pripade print OK je roztahni v metapaintu
-		//qreal length_mm = bbr.sizeInLayout(layout);
 		/// break funguje tak, ze pri 1., 3., 5. atd. tisku vraci PrintNotFit a pri sudych PrintOk
 		/// prvni break na strance znamena, ze jsem tu uz po zalomeni, takze se tiskne to za break.
 		//if(it->isBreak() && i > indexToPrint && layout == LayoutVertical) break;
@@ -1189,30 +1188,28 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		for(; indexToPrint<itemCount(); indexToPrint++) {
 			ReportItem *it = itemAt(indexToPrint);
 			Rect ch_bbr = bbr;
-			//bool item_is_rubber_in_layout = false;
 			qfDebug() << "\tch_bbr v1:" << ch_bbr.toString();
 
 			{
 				/// vymysli rozmer ve smeru layoutu
 				qreal d = ch_bbr.sizeInLayout(layout());
-				//qfInfo() << "indexToPrint:" << indexToPrint << "index_to_print_0:" << index_to_print_0 << "sizes.count():" << sizes.count();
 				ChildSize sz = it->childSize(layout());
+				//qfInfo() << it << "chbrd:" << ch_bbr.toString() << "d:" << d;// << "size in ly:" << sz.fillLayoutRatio();
 				if(sz.fillLayoutRatio() >= 0) {
-					//item_is_rubber_in_layout = true;
-					//fill_vertical_layout_ratio = sz.size / 100.;
-					//sz.size = 0;
 				}
 				else if(sz.unit == Rect::UnitMM) {
-					if(sz.size > 0) d = sz.size;
-					//else item_is_rubber_in_layout = true;
+					if(sz.size > 0)
+						d = sz.size;
 				}
 				else {
 					ReportItemFrame *frit = qobject_cast<ReportItemFrame*>(it);
 					if(frit)
-						qfWarning() << "tohle by se asi nemelo stat" << it;
+						qfWarning() << "This should never happen" << it;
 				}
+				//qfInfo() << "\t ch_bbr.sizeInLayout(layout():" << ch_bbr.sizeInLayout(layout()) << "d:" << d;
 				d = qMin(ch_bbr.sizeInLayout(layout()), d);
 				ch_bbr.setSizeInLayout(d, layout());
+				//qfInfo() << "\t ch_bbr:" << ch_bbr.toString();
 			}
 			{
 				/// orthogonal size
@@ -1260,13 +1257,14 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				if(layout() == LayoutHorizontal) {
 					/// v horizontalnim, zadne pretikani neni
 					/// vytiskni to znovu s doteklymi texty
-					qfError() << "AHA??? this should never happen, I'm already in the vertical layout'";
+					qfError() << "Oops??? this should never happen, I'm already in the vertical layout'";
 					resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
 				}
 				res = ch_res;
 				break;
 			}
-			if(it->isBreak() && indexToPrint > index_to_print_0 && layout() == LayoutVertical) break;
+			if(it->isBreak() && indexToPrint > index_to_print_0 && layout() == LayoutVertical)
+				break;
 		}
 	}
 	//res = checkPrintResult(res);
@@ -1277,12 +1275,10 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame() << this;
-	//qfInfo() << element.tagName() << "id:" << element.attribute("id") << "designedRect:" << designedRect.toString();
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	qfDebug() << "\tdesignedRect:" << designedRect.toString();// << "isLeftTopFloating:" << isLeftTopFloating() << "isRightBottomFloating:" << isRightBottomFloating();
 	qfDebug() << "\tlayout:" << ((layout() == LayoutHorizontal)? "horizontal": "vertical") << ", is rubber:" << isRubber(layout());
 	PrintResult res = PrintOk;
-	//--updateChildren();
 	if(!isVisible())
 		return res;
 	Rect frame_content_br = bounding_rect;
@@ -1349,37 +1345,6 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 				return checkPrintResult(res);
 			}
 		}
-#if 0
-		/*if(!isRubber(layout))*/ {
-			/// pokud ma nektere dite flag filllayout, roztahni ho tak aby s ostatnimi detmi vyplnili layout
-			/// zatim nevim proc, ale funguje to dobre jedine kdyz maji vsechny deti % nebo absolutni rozmer, kdyz je nejaky dite ve smeru layoutu rubber, tak to pocita spatne
-			int filllayout_child_ix = -1;
-			qreal sum_mm = 0;
-			for(int i=0; i<mp->childrenCount(); i++) {
-				ReportItemMetaPaint *it = mp->child(i);
-				if(it->renderedRect.flags & Rect::FillLayout) filllayout_child_ix = i;
-				qreal ly_sz = it->renderedRect.sizeInLayout(layout);
-				sum_mm += ly_sz;
-				//qfInfo() << i << ly_sz;
-			}
-			if(filllayout_child_ix >= 0) {
-				//qfWarning() << "sum_mm:" << sum_mm;
-				qreal offset = column_br.sizeInLayout(layout) - sum_mm;
-				if(offset > 0) {
-					ReportItemMetaPaint *it = mp->child(filllayout_child_ix);
-					it->renderedRect.setSizeInLayout(it->renderedRect.sizeInLayout(layout) + offset, layout);
-					it->alignChildren();
-					Point p;
-					if(layout == LayoutHorizontal) p.setX(offset);
-					else if(layout == LayoutVertical) p.setY(offset);
-					for(int i=filllayout_child_ix + 1; i<mp->childrenCount(); i++) {
-						it = mp->child(i);
-						it->shift(p);
-					}
-				}
-			}
-		}
-#endif
 		column_br_helper = column_br;
 		column_br_helper.moveLeft(column_br.right() + columns_gap);
 	}
@@ -1391,12 +1356,10 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		/// musim to proste secist
 		for(int i=0; i<mp->childrenCount(); i++) {
 			ReportItemMetaPaint *it = mp->child(i);
-			//qfInfo() << "child" << i << "rendered rect:" << it->renderedRect.toString() << "is null:" << it->renderedRect.isNull();
-			//qfInfo() << "\t 1 rubber dirty_rect:" << dirty_rect.toString();
-			if(dirty_rect.isNull()) dirty_rect = it->renderedRect;
-			else dirty_rect = dirty_rect.united(it->renderedRect);
-			//dirty_rect.flags |= it->renderedRect.flags;
-			//qfInfo() << "\t 2 rubber dirty_rect:" << dirty_rect.toString();
+			if(dirty_rect.isNull())
+				dirty_rect = it->renderedRect;
+			else
+				dirty_rect = dirty_rect.united(it->renderedRect);
 		}
 		qfDebug() << "\trubber dirty_rect:" << dirty_rect.toString();
 	}
@@ -1404,9 +1367,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	/// pokud je v nekterem smeru definovany, je jedno, kolik se toho potisklo a nastav ten rozmer
 	if(designedRect.horizontalUnit == Rect::UnitPercent)
 		dirty_rect.setWidth(frame_content_br.width()); /// horizontalni rozmer musi ctit procenta
-	else if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() > 0)
+	else if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() > Epsilon)
 		dirty_rect.setWidth(designedRect.width() - 2*hinset());
-	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() > 0)
+	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() > Epsilon)
 		dirty_rect.setHeight(designedRect.height() - 2*vinset());
 	//qfWarning() << "\tdirty_rect 3:" << dirty_rect.toString();
 	/// pri rendrovani se muze stat, ze dirtyRect nezacina na bbr, to ale alignment zase spravi
@@ -1423,13 +1386,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	dirty_rect.adjust(-hinset(), -vinset(), hinset(), vinset());
 	mp->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
-	//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();
+	qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
 	if(res.value == PrintOk || (res.value == PrintNotFit && (res.flags & FlagPrintBreak))) {
 		//bool children_aligned = false;
 		/// pokud se vytiskl layout, jehoz vyska nebyla zadana jako % a ma dite s %, roztahni dite a pripadne i jeho deti
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
 		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
-			//qfInfo() << "\t expanding";
+			//qfInfo() << "\t expanding children" << this;
 			if(mp->expandChildVerticalSpringFrames()) {
 				/// pokud doslo k expanzi, je treba deti znovu zarovnat
 				//qfInfo() << "\t aligning expansion";

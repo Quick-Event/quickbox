@@ -173,11 +173,8 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 			break;
 		}
 	}
-	if(!has_expandable_children) return has_expandable_children;
-
-	//static int reccnt = 0;
-	//reccnt++;
-	//if(reccnt == 3) return has_expandable_children;
+	if(!has_expandable_children)
+		return has_expandable_children;
 
 	double layout_size = renderedRect.height();
 	double layout_inset = insetVertical();
@@ -222,7 +219,8 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 				if(spring_children_ixs.contains(i)) {
 					double curr_ly_size = it->renderedRect.height();
 					double new_ly_size = it->fillVLayoutRatio();
-					if(new_ly_size == 0) new_ly_size = percent_0;
+					if(new_ly_size == 0)
+						new_ly_size = percent_0;
 					new_ly_size = new_ly_size * rest_mm;
 					//qfInfo() << reccnt << "expanding:" << it->reportItem()->element.tagName() << " id:" << it->reportItem()->element.attribute("id") << "#" << i << "rest mm:" << rest_mm << "new ly_size:" << new_ly_size;
 					double ly_size_offset = new_ly_size - curr_ly_size;
@@ -230,6 +228,7 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 						//qfWarning() << "new_ly_size:" << new_ly_size << "is smaller than old one:" << curr_ly_size << "ignoring";
 					}
 					else {
+						qfInfo() << it->renderedRect.height() << "->" << new_ly_size;
 						it->renderedRect.setHeight(new_ly_size);
 						it->alignChildren(); /// kdyz neco expanduju, tak to musim taky zarovnat
 						it->expandChildVerticalSpringFrames();
@@ -463,30 +462,8 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 		painter->fillRect(r, QColor("#FFEEEE"));
 	}
 	else {
-		QVariantMap alterm = alternativeFillDef.toMap();
-		if(alterm.isEmpty()) {
-			if(fill.style() != Qt::NoBrush)
-				painter->fillRect(r, fill);
-		}
-        /*--
-		else {
-			if(alterm.contains("grid")) {
-				alterm = alterm.value("grid").toMap();
-				double w = qf::qmlwidgets::graphics::x2device(alterm.value("w").toDouble(), painter->device());
-				double h = qf::qmlwidgets::graphics::y2device(alterm.value("h").toDouble(), painter->device());
-				QPen p = context().styleCache().pen(alterm.value("pen").toString());
-				painter->setPen(p);
-				for(double x=r.left(); x<r.right(); x+=w) {
-					painter->drawLine(x, r.top(), x, r.bottom());
-				}
-				for(double y=r.top(); y<r.bottom(); y+=h) {
-					painter->drawLine(r.left(), y, r.right(), y);
-				}
-			}
-		}
-        --*/
-		//QFString s = element.attribute("fill");
-		//if(!!s) painter->fillRect(r, context().brushFromString(s));
+		if(fill.style() != Qt::NoBrush)
+			painter->fillRect(r, fill);
 	}
 	//painter->fillRect(r, QColor("orange"));
 }

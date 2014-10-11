@@ -155,7 +155,6 @@ private:
 public:
 	enum LinePos {LBrd = 1, RBrd, TBrd, BBrd};
 public:
-	QVariant alternativeFillDef; ///< napr. {grid:{w:5,h:5,pen:|dblue05|}}, format je JSON jenom misto " je | , protoze uvozovka ani apostrof nemuze byt hodnota XML atributu
 	QBrush fill;
 	QPen lbrd, rbrd, tbrd, bbrd;
 protected:

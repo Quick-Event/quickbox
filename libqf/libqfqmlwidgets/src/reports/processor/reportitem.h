@@ -387,6 +387,14 @@ public:
 	Q_PROPERTY(qreal hinset READ hinset WRITE setHinset NOTIFY hinsetChanged)
 	Q_PROPERTY(qreal vinset READ vinset WRITE setVinset NOTIFY vinsetChanged)
 	//Q_PROPERTY(qreal inset READ inset WRITE setInset NOTIFY insetChanged)
+	Q_CLASSINFO("property.width.doc",
+				"text jsou procenta napr 20% nebo jen % nebo nic nebo rozmer v mm\n"
+				"% znamena rozdel zbytek na stejne casti\n"
+				"n% znamena dej frame n% ze zbytku\n"
+				"ve vertikalnim layoutu nejde kombinovat % a nezadany rozmery (atribut chybi)\n"
+				"v takovem pripade se chybici atributy prevedou na '%'\n"
+				"jedinou vyjjimkou je pripad, kdy ma % pouze posledni dite (ne treba '20%'', ale pouze '%'')\n"
+				"v takovem pripade dostane child frame cely nepopsany zbytek rodice.")
 	Q_PROPERTY(QVariant width READ width WRITE setWidth NOTIFY widthChanged)
 	Q_PROPERTY(QVariant height READ height WRITE setHeight NOTIFY heightChanged)
 	Q_CLASSINFO("property.layout.doc",
@@ -429,7 +437,7 @@ public:
 	QF_PROPERTY_IMPL(qreal, v, V, inset)
 	QF_PROPERTY_IMPL(QVariant, w, W, idth)
 	QF_PROPERTY_IMPL(QVariant, h, H, eight)
-	QF_PROPERTY_IMPL(Layout, l, L, ayout)
+	QF_PROPERTY_IMPL2(Layout, l, L, ayout, LayoutVertical)
 	QF_PROPERTY_BOOL_IMPL(e, E, xpandChildrenFrames)
 	QF_PROPERTY_IMPL2(HAlignment, h, H, orizontalAlignment, AlignLeft)
 	QF_PROPERTY_IMPL2(VAlignment, v, V, erticalAlignment, AlignTop)
