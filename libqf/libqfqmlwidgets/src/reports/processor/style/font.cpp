@@ -3,7 +3,7 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Font::Font(QObject *parent) :
-	QObject(parent), IStyled(this, IStyled::SGFont)
+	StyleObject(parent, StyleObject::SGFont)
 {
 }
 

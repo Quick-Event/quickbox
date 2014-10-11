@@ -14,10 +14,32 @@ Sheet::Sheet(QObject *parent)
 Sheet::~Sheet()
 {
 	qfLogFuncFrame();
-    //qDeleteAll(m_colors); it seems that QQmlListProperty itself handles color children parentship
+	//qDeleteAll(m_colors); it seems that QQmlListProperty itself handles color children parentship
 }
 
-QObject *Sheet::styleObjectForName(IStyled::StyleGroup style_object_group, const QString &name, bool should_exist)
+void Sheet::createStyleCache()
+{
+	m_definedStyles.clear();
+	createStyleCache_helper(this);
+}
+
+void Sheet::createStyleCache_helper(QObject *parent)
+{
+	if(!parent)
+		return;
+	for(auto child : parent->children()) {
+		StyleObject *so = dynamic_cast<StyleObject*>(child);
+		if(so) {
+			QString name = so->name();
+			if(!name.isEmpty()) {
+				setStyleObjectForName(so->styleGroup(), name, so);
+			}
+		}
+		createStyleCache_helper(child);
+	}
+}
+
+QObject *Sheet::styleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, bool should_exist)
 {
     ObjectMap om = m_definedStyles.value(style_object_group);
     QObject *ret = om.value(name);
@@ -26,8 +48,9 @@ QObject *Sheet::styleObjectForName(IStyled::StyleGroup style_object_group, const
     return ret;
 }
 
-void Sheet::setStyleObjectForName(IStyled::StyleGroup style_object_group, const QString &name, QObject *o)
+void Sheet::setStyleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, QObject *o)
 {
+	//qfInfo() << Q_FUNC_INFO << name << style_object_group << o;
     ObjectMap &om = m_definedStyles[style_object_group];
     if(o)
         om[name] = o;
@@ -45,3 +68,19 @@ QQmlListProperty<Pen> Sheet::pens()
 {
 	return QQmlListProperty<Pen>(this, m_pens);
 }
+
+QQmlListProperty<Brush> Sheet::brushes()
+{
+	return QQmlListProperty<Brush>(this, m_brushes);
+}
+
+QQmlListProperty<Font> Sheet::fonts()
+{
+	return QQmlListProperty<Font>(this, m_fonts);
+}
+
+QQmlListProperty<Text> Sheet::textStyles()
+{
+	return QQmlListProperty<Text>(this, m_textStyles);
+}
+

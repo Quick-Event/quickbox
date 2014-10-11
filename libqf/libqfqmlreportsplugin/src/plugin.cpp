@@ -33,12 +33,12 @@ public:
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemReport>(uri, 1, 0, "Report");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemFrame>(uri, 1, 0, "Frame");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemPara>(uri, 1, 0, "Para");
-		qmlRegisterType<qf::qmlwidgets::reports::style::Sheet>(uri, 1, 0, "Style__Sheet");
-		qmlRegisterType<qf::qmlwidgets::reports::style::Color>(uri, 1, 0, "Style__Color");
-		qmlRegisterType<qf::qmlwidgets::reports::style::Pen>(uri, 1, 0, "Style__Pen");
-		qmlRegisterType<qf::qmlwidgets::reports::style::Brush>(uri, 1, 0, "Style__Brush");
-		qmlRegisterType<qf::qmlwidgets::reports::style::Font>(uri, 1, 0, "Style__Font");
-		qmlRegisterType<qf::qmlwidgets::reports::style::Text>(uri, 1, 0, "Style__Text");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Sheet>(uri, 1, 0, "StyleSheet");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Color>(uri, 1, 0, "Color");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Pen>(uri, 1, 0, "Pen");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Brush>(uri, 1, 0, "Brush");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Font>(uri, 1, 0, "Font");
+		qmlRegisterType<qf::qmlwidgets::reports::style::Text>(uri, 1, 0, "TextStyle");
 	}
 };
 

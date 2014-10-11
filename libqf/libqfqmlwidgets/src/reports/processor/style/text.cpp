@@ -10,9 +10,8 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Text::Text(QObject *parent) :
-    QObject(parent), IStyled(this, IStyled::SGText)
+    StyleObject(parent, StyleObject::SGText)
 {
-	setName(nextSequentialName());
 }
 
 Text::~Text()
@@ -38,12 +37,6 @@ CompiledTextStyle Text::textStyle()
 			Pen* p = pen();
 			if(p) {
 				m_textStyle.setPen(p->pen());
-			}
-		}
-		{
-			Brush* p = brush();
-			if(p) {
-				m_textStyle.setBrush(p->brush());
 			}
 		}
 		{

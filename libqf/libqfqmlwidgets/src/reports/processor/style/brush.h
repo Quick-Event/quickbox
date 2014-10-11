@@ -1,7 +1,7 @@
 #ifndef QF_QMLWIDGETS_REPORTS_STYLE_BRUSH_H
 #define QF_QMLWIDGETS_REPORTS_STYLE_BRUSH_H
 
-#include "istyled.h"
+#include "styleobject.h"
 #include "color.h"
 
 #include "../../../qmlwidgetsglobal.h"
@@ -16,11 +16,10 @@ namespace qmlwidgets {
 namespace reports {
 namespace style {
 
-class QFQMLWIDGETS_DECL_EXPORT Brush : public QObject, public IStyled
+class QFQMLWIDGETS_DECL_EXPORT Brush : public StyleObject
 {
 	Q_OBJECT
 	Q_ENUMS(BrushStyle)
-	Q_PROPERTY(QString name READ name WRITE setName)
 	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 	Q_CLASSINFO("DefaultProperty", "basedOn")
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Color* color READ color WRITE setColor NOTIFY colorChanged)

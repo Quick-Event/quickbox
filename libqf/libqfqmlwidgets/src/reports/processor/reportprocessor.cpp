@@ -36,6 +36,7 @@ ReportProcessor::~ReportProcessor()
 	QF_SAFE_DELETE(m_documentInstanceRoot);
 	//qfInfo() << "delete ReportProcessor" << this;
 }
+
 /*--
 qfu::SearchDirs* ReportProcessor::searchDirs(bool throw_exc)
 {
@@ -46,7 +47,6 @@ qfu::SearchDirs* ReportProcessor::searchDirs(bool throw_exc)
 void ReportProcessor::reset()
 {
 	qfLogFuncFrame();
-	makeContext();
 	QF_SAFE_DELETE(m_documentInstanceRoot);
 	QF_SAFE_DELETE(m_processorOutput);
 }
@@ -91,14 +91,6 @@ void ReportProcessor::setData(const qfu::TreeTable &_data)
 	//qfInfo() << "ReportProcessor data:" << fData.toString().mid(0, 100);
 }
 
-void ReportProcessor::makeContext()
-{
-	qfLogFuncFrame();
-    //contextRef() = ReportProcessorContext();//.clear(); /// nemuzu tady dat contexRef() = ReportProcessorContext(), protoze ten ma globalni cache, to je tim, ze qf::qmlwidgets::graphics::StyleCache je explicitne sdilena, a ja potrebuju, pro kazdou instanci report processoru vlastni
-    //style::Sheet *stylesheet_obj = nullptr;
-	//contextRef().styleCacheRef().readStyleSheet(stylesheet_obj);
-}
-
 ReportItemReport* ReportProcessor::documentInstanceRoot()
 {
 	if(!m_documentInstanceRoot) {
@@ -111,6 +103,9 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 		}
 		else {
 			m_documentInstanceRoot->setReportProcessor(this);
+			style::Sheet *ss = m_documentInstanceRoot->styleSheet();
+			if(ss)
+				ss->createStyleCache();
 		}
 	}
 	return m_documentInstanceRoot;

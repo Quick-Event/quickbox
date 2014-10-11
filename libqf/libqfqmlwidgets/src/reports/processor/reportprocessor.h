@@ -45,11 +45,6 @@ public:
 public:
 	ReportProcessor(QPaintDevice *paint_device, QObject *parent = NULL);
 	~ReportProcessor() Q_DECL_OVERRIDE;
-protected:
-	void makeContext();
-	//void readStyleSheet(const QDomElement &el_stylesheet);
-public:
-    //const ReportProcessorContext& context() const {return m_Context;}
 public:
 	/// vymaze vsechna data vznikla predchozimi kompilacemi
 	void reset();

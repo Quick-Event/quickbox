@@ -1,22 +1,22 @@
 import qf.qmlreports 1.0
-import qf.qmlreports.Style 1.0
 
 Report {
 	id: root
-	styleSheet: Sheet {
+	styleSheet: StyleSheet {
 		objectName: "portraitStyleSheet"
 		basedOn: MyStyle {}
 	 	colors: [
-	 		Color {name: "peach"; definition: "lightgoldenrodyellow"}
+	 		Color {name: "peach"; def: "lightgoldenrodyellow"}
 	 	]
 		pens: [
 			Pen {name: "red1dot"
                 basedOn: "black1"
-                color: Color {definition:"red"}
+                color: Color {def:"red"}
                 style: Pen.DotLine
             }
 		]
 	}
+    textStyle: TextStyle {basedOn: "default"}
 	width: 210
 	height: 297
 	vinset: 10
@@ -27,9 +27,13 @@ Report {
 		height: "%"
 		border: Pen {
 			basedOn: "red1dot"
-			color: Color {definition:"green"}
+            color: Color {def: Qt.green}
 		}
-        fill: Color {definition:"peach"}
+        fill: Brush {color: Color {def:Qt.blue}}
+        Para {
+            text: "ahoj BABI"
+            fill: Brush { basedOn: "khaki" }
+        }
 	}
 }
 
@@ -37,15 +41,15 @@ Report {
 // <report w="210" headeronbreak="1" h="297" orientation="portrait" vinset="5" hinset="5">
 //  <stylesheet>
 // 	<colors>
-// 		<color name="black" definition="#000"/>
-// 		<color name="gray20" definition="#CDCDCD"/>
-// 		<color name="gray10" definition="#DCDCDC"/>
-// 		<color name="white" definition="#FFFFFF"/>
-// 		<color name="header" definition="#444444"/>
-// 		<color name="honey" definition="RGB(255,244,148)"/>
-// 		<color name="peach" definition="RGB(255,223,83)"/>
-// 		<color name="waterprint" definition="#EEEEEE"/>
-// 		<color name="errorfill" definition="lightcoral"/>
+// 		<color name="black" def="#000"/>
+// 		<color name="gray20" def="#CDCDCD"/>
+// 		<color name="gray10" def="#DCDCDC"/>
+// 		<color name="white" def="#FFFFFF"/>
+// 		<color name="header" def="#444444"/>
+// 		<color name="honey" def="RGB(255,244,148)"/>
+// 		<color name="peach" def="RGB(255,223,83)"/>
+// 		<color name="waterprint" def="#EEEEEE"/>
+// 		<color name="errorfill" def="lightcoral"/>
 // 	</colors>
 // 	<pens>
 // 		<pen name="black1" size="1"/>

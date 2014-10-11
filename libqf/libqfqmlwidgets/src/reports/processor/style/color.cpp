@@ -5,10 +5,9 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Color::Color(QObject *parent) :
-    QObject(parent), IStyled(this, IStyled::SGColor)
+    StyleObject(parent, StyleObject::SGColor)
 {
 	qfLogFuncFrame() << this << "parent:" << parent;
-	setName(nextSequentialName());
 	connect(this, SIGNAL(definitionChanged(QVariant)), this, SLOT(setDirty()));
 }
 

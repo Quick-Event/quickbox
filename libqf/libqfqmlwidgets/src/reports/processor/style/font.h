@@ -1,7 +1,7 @@
 #ifndef QF_QMLWIDGETS_REPORTS_STYLE_FONT_H
 #define QF_QMLWIDGETS_REPORTS_STYLE_FONT_H
 
-#include "istyled.h"
+#include "styleobject.h"
 
 #include "../../../qmlwidgetsglobal.h"
 
@@ -15,13 +15,12 @@ namespace qmlwidgets {
 namespace reports {
 namespace style {
 
-class QFQMLWIDGETS_DECL_EXPORT Font : public QObject, public IStyled
+class QFQMLWIDGETS_DECL_EXPORT Font : public StyleObject
 {
 	Q_OBJECT
 	Q_ENUMS(FontStyle)
 	Q_ENUMS(FontStyleHint)
 	Q_ENUMS(FontWeight)
-	Q_PROPERTY(QString name READ name WRITE setName)
 	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 	Q_CLASSINFO("DefaultProperty", "basedOn")
 	Q_PROPERTY(FontStyle style READ style WRITE setStyle NOTIFY styleChanged)

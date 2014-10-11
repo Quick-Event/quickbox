@@ -1,8 +1,0 @@
-module qf.qmlreports.Style
-
-Sheet 1.0 Sheet.qml
-Color 1.0 Color.qml
-Pen 1.0 Pen.qml
-Brush 1.0 Brush.qml
-Font 1.0 Font.qml
-Text 1.0 Text.qml

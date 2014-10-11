@@ -380,9 +380,9 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
     ReportItemFrame *frame_item = qobject_cast<ReportItemFrame*>(report_item);
     if(frame_item) {
         {
-            style::Color *c = frame_item->fill();
-            if(c)
-                fill = c->color();
+            style::Brush *b = frame_item->fill();
+            if(b)
+                fill = b->brush();
         }
         {
             style::Pen *p = frame_item->border();

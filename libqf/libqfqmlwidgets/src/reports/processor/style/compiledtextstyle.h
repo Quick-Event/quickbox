@@ -20,7 +20,6 @@ private:
 	struct Data : public QSharedData
 	{
 		QFont font;
-		QBrush brush;
 		QPen pen;
 	};
 	QSharedDataPointer<Data> d;
@@ -34,7 +33,6 @@ public:
 	bool isNull() const {return d == sharedNull().d;}
 
 	QF_SHARED_CLASS_FIELD_RW(QFont, f, setF, ont)
-	QF_SHARED_CLASS_FIELD_RW(QBrush, b, setB, rush)
 	QF_SHARED_CLASS_FIELD_RW(QPen, p, setP, en)
 };
 

@@ -10,14 +10,12 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Pen::Pen(QObject *parent) :
-    QObject(parent), IStyled(this, IStyled::SGPen)
+    StyleObject(parent, StyleObject::SGPen)
 {
-	setName(nextSequentialName());
 }
 
 Pen::~Pen()
 {
-	qfInfo() << this << parent();
     setName(QString());
 }
 

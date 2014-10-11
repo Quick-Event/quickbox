@@ -408,7 +408,7 @@ public:
 	Q_PROPERTY(QString columns READ columns WRITE setColumns NOTIFY columnsChanged)
 	Q_PROPERTY(double columnsGap READ columnsGap WRITE setColumnsGap NOTIFY columnsGapChanged)
     Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* border READ border WRITE setBorder NOTIFY borderChanged)
-	Q_PROPERTY(qf::qmlwidgets::reports::style::Color* fill READ fill WRITE setFill NOTIFY fillChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Brush* fill READ fill WRITE setFill NOTIFY fillChanged)
 	Q_CLASSINFO("property.textStyle.doc",
 				"Set text style for this frame and all the children recursively"
 				)
@@ -436,7 +436,7 @@ public:
 	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
     QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, order)
-	QF_PROPERTY_OBJECT_IMPL(style::Color*, f, F, ill)
+	QF_PROPERTY_OBJECT_IMPL(style::Brush*, f, F, ill)
     QF_PROPERTY_OBJECT_IMPL(style::Text*, t, T, extStyle)
 public:
 	ReportItemFrame(ReportItem *parent = nullptr);
@@ -632,7 +632,6 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemPara : public ReportItemFrame
 	Q_OBJECT
 
 	Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
-	Q_PROPERTY(QString style READ style WRITE setStyle NOTIFY styleChanged)
 	Q_PROPERTY(bool omitEmptyText READ isOmitEmptyText WRITE setOmitEmptyText NOTIFY omitEmptyTextChanged)
 	Q_PROPERTY(QString sqlId READ sqlId WRITE setSqlId NOTIFY sqlIdChanged)
 	Q_PROPERTY(HAlignment textHAlign READ textHAlign WRITE setTextHAlign NOTIFY textHAlignChanged)
@@ -642,7 +641,6 @@ private:
 	typedef ReportItemFrame Super;
 
 	QF_PROPERTY_IMPL(QString, t, T, ext)
-	QF_PROPERTY_IMPL(QString, s, S, tyle)
 	QF_PROPERTY_BOOL_IMPL2(o, O, mitEmptyText, true)
 	QF_PROPERTY_IMPL(QString, s, S, qlId)
 	QF_PROPERTY_IMPL2(HAlignment, t, T, extHAlign, AlignLeft)
@@ -657,7 +655,6 @@ protected:
 	QTextLayout textLayout;
 protected:
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
-	QString paraStyleDefinition();
 	QString paraText();
 public:
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);

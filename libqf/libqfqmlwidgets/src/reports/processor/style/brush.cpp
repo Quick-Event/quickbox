@@ -3,7 +3,7 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Brush::Brush(QObject *parent) :
-	QObject(parent), IStyled(this, IStyled::SGBrush)
+	StyleObject(parent, StyleObject::SGBrush)
 {
 }
 

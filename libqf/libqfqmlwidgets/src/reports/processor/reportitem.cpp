@@ -772,13 +772,14 @@ void ReportItemFrame::componentComplete()
 			s = v.toString().trimmed();
 			{
 				if(s.value(-1) == '%') {
-					s = s.slice(0, -1);
+					s = s.slice(0, -1).trimmed();
 					designedRect.horizontalUnit = Rect::UnitPercent;
 				}
-				d = s.toDouble(&ok);
-				if(!ok)
-					qfWarning() << "Cannot convert" << s << "to real number." << this;
-				designedRect.setWidth(d);
+				if(!s.isEmpty()) {
+					d = s.toDouble(&ok);
+					if(!ok)
+						qfWarning() << "Cannot convert" << s << "to real number." << this;
+				}
 				/*--
 				if(d > 0) {
 					if(designedRect.flags & Rect::RightFixed) {
@@ -792,7 +793,7 @@ void ReportItemFrame::componentComplete()
 				--*/
 			}
 		}
-		else {
+		else if(v.isValid()) {
 			d = v.toReal(&ok);
 			if(!ok)
 				qfWarning() << "Cannot convert" << v.toString() << "to real number." << this;
@@ -808,12 +809,14 @@ void ReportItemFrame::componentComplete()
 			s = v.toString().trimmed();
 			{
 				if(s.value(-1) == '%') {
-					s = s.slice(0, -1);
+					s = s.slice(0, -1).trimmed();
 					designedRect.horizontalUnit = Rect::UnitPercent;
 				}
-				d = s.toDouble(&ok);
-				if(!ok)
-					qfWarning() << "Cannot convert" << s << "to real number." << this;
+				if(!s.isEmpty()) {
+					d = s.toDouble(&ok);
+					if(!ok)
+						qfWarning() << "Cannot convert" << s << "to real number." << this;
+				}
 				/*--
 				if(d > 0) {
 					if(designedRect.flags & Rect::BottomFixed) {
@@ -827,7 +830,7 @@ void ReportItemFrame::componentComplete()
 				--*/
 			}
 		}
-		else {
+		else if(v.isValid()) {
 			d = v.toReal(&ok);
 			if(!ok)
 				qfWarning() << "Cannot convert" << v.toString() << "to real number." << this;
@@ -1851,22 +1854,6 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 	qfDebug() << "\t<<< CHILDREN paraText return:" << res.toString();
 	//res = checkPrintResult(res);
 	return res;
-}
-
-QString ReportItemPara::paraStyleDefinition()
-{
-	QString ret = style();
-	if(ret.isEmpty()) {
-		ReportItem *it = this->parent();
-		while(it) {
-			ret = it->property("paraStyle").toString();
-			if(ret.isEmpty()) {
-				it = it->parent();
-			}
-			else break;
-		}
-	}
-	return ret;
 }
 
 QString ReportItemPara::paraText()
