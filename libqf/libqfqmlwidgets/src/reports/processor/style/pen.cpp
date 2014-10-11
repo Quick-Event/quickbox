@@ -21,13 +21,16 @@ Pen::~Pen()
 
 QPen Pen::pen()
 {
+	qfLogFuncFrame() << this << "is dirty:" << isDirty();
     if(isDirty()) {
         setDirty(false);
         {
 			QVariant v = basedOn();
+			qfDebug() << "\t based on:" << v.toString();
 			if(v.isValid()) {
                 QObject *o = styleobjectFromVariant(v);
 				Pen *based_on = qobject_cast<Pen*>(o);
+				qfDebug() << "\t\t based on object:" << based_on;
                 if(based_on) {
                     m_pen = based_on->pen();
                 }
@@ -35,21 +38,33 @@ QPen Pen::pen()
 		}
 		{
 			Color* pco = color();
+			qfDebug() << "\t color:" << pco;
 			if(pco) {
 				QColor c = pco->color();
+				qfDebug() << "\t\t name:" << c.name();
 				m_pen.setColor(c);
 			}
 		}
 		{
-			QVariant v = width();
-			if(v.isValid()) {
-				m_pen.setWidth(v.toReal());
+			qreal d = width();
+			//qfDebug() << "\t new width:" << d << "dist:" << qFloatDistance(d, 0);
+			if(d > 0.000001) {
+				//qfDebug() << "\t\t setting new width:" << d;
+				m_pen.setWidth(d);
 			}
 		}
 		{
 			PenStyle ps = style();
-			m_pen.setStyle((Qt::PenStyle)ps);
+			if(ps != NoPen)
+				m_pen.setStyle((Qt::PenStyle)ps);
+		}
+		if(m_pen.style() == Qt::NoPen) {
+			// is style is undefined, set it to solid line
+			// solid line cannot be default pen definition value,
+			// because it can overide any basedOn pen definition then
+			m_pen.setStyle(Qt::SolidLine);
 		}
 	}
+	qfDebug() << "return width:" << m_pen.widthF() << "style:" << m_pen.style() << "color:" << m_pen.color().name();
     return m_pen;
 }

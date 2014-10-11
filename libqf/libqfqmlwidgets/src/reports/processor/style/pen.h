@@ -42,7 +42,7 @@ public:
 	//QF_PROPERTY_IMPL(QString, n, N, ame)
 	QF_PROPERTY_OBJECT_IMPL(Color*, c, C, olor)
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
-	QF_PROPERTY_IMPL2(PenStyle, s, S, tyle, SolidLine)
+	QF_PROPERTY_IMPL2(PenStyle, s, S, tyle, NoPen)
 	QF_PROPERTY_IMPL(qreal, w, W, idth)
 public:
 	QPen pen();

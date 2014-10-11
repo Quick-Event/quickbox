@@ -643,12 +643,12 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	//qfInfo() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type());
 	return data_value;
 }
-
+/*
 void ReportItem::setupMetaPaintItem(ReportItemMetaPaint *mpit)
 {
 	Q_UNUSED(mpit);
 }
-
+*/
 void ReportItem::classBegin()
 {
 	qfLogFuncFrame();
@@ -908,7 +908,7 @@ ReportItem *ReportItemFrame::itemAt(int index)
 {
 	return m_items[index];
 }
-
+/*
 void ReportItemFrame::setupMetaPaintItem(ReportItemMetaPaint *mpit)
 {
 	Super::setupMetaPaintItem(mpit);
@@ -918,7 +918,7 @@ void ReportItemFrame::setupMetaPaintItem(ReportItemMetaPaint *mpit)
 		mpit->setTextStyle(ts);
 	}
 }
-
+*/
 ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 {
 	if(parent_layout == LayoutHorizontal)

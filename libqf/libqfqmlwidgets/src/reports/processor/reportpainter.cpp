@@ -6,6 +6,7 @@
 //
 
 #include "reportpainter.h"
+#include "reportprocessor.h"
 #include "style/pen.h"
 #include "style/color.h"
 
@@ -377,6 +378,11 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
     QF_ASSERT_EX(report_item != nullptr, "ReportItem is NULL");
+	fill = Qt::NoBrush;
+	bool design_mode = false;
+	ReportProcessor *proc = report_item->processor();
+	if(proc)
+		design_mode = proc->isDesignMode();
     ReportItemFrame *frame_item = qobject_cast<ReportItemFrame*>(report_item);
     if(frame_item) {
         {
@@ -386,9 +392,22 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
         }
         {
             style::Pen *p = frame_item->border();
+			//qfInfo() << report_item << p;
             if(p)
                 lbrd = rbrd = tbrd = bbrd = p->pen();
+			else if(design_mode) {
+				QPen pn(Qt::DotLine);
+				pn.setColor(Qt::blue);
+				lbrd = rbrd = tbrd = bbrd = pn;
+			}
         }
+		{
+			style::Text *pts = frame_item->textStyle();
+			if(pts) {
+				style::CompiledTextStyle ts = pts->textStyle();
+				setTextStyle(ts);
+			}
+		}
     }
     /*--
 	QString s = report_item->property("fill").toString();
@@ -425,7 +444,7 @@ void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
 	bool selected = (painter->selectedItem() && painter->selectedItem() == this);
 	if(mode & PaintFill)
 		fillItem(painter, selected);
-	ReportItemMetaPaint::paint(painter, mode);
+	Super::paint(painter, mode);
 	//if(selected) qfDebug() << "\tBINGO";
 	if(mode & PaintBorder)
 		frameItem(painter, selected);
@@ -475,11 +494,11 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 void ReportItemMetaPaintFrame::frameItem(QPainter *painter, bool selected)
 {
     Q_UNUSED(selected);
-    /*--
-	QString s;
 	if(selected) {
-		s = "color: magenta; style: solid; size:2";
-		painter->setPen(context().styleCache().pen(s));
+		QPen p(Qt::SolidLine);
+		p.setColor(Qt::magenta);
+		p.setWidth(2);
+		painter->setPen(p);
 		painter->setBrush(QBrush());
 		painter->drawRect(qf::qmlwidgets::graphics::mm2device(renderedRect, painter->device()));
 	}
@@ -489,23 +508,21 @@ void ReportItemMetaPaintFrame::frameItem(QPainter *painter, bool selected)
 		drawLine(painter, RBrd, rbrd);
 		drawLine(painter, BBrd, bbrd);
 	}
-    --*/
-    drawLine(painter, LBrd, lbrd);
-    drawLine(painter, TBrd, tbrd);
-    drawLine(painter, RBrd, rbrd);
-    drawLine(painter, BBrd, bbrd);
 }
 
 void ReportItemMetaPaintFrame::drawLine(QPainter *painter, LinePos where, const QPen &_pen)
 {
-	if(_pen.widthF() == 0) return;
+	if(_pen.style() == Qt::NoPen || _pen.widthF() == 0)
+		return;
 	QPen pen = _pen;
 	/// preved tiskarske body na body vystupniho zarizeni
 	qreal w = pen.widthF() * 25.4 / 72;
 	/// ted je w v milimetrech
 	bool horizontal = (where == TBrd || where == BBrd);
-	if(horizontal) pen.setWidthF(qf::qmlwidgets::graphics::y2device(w, painter->device()));
-	else pen.setWidthF(qf::qmlwidgets::graphics::x2device(w, painter->device()));
+	if(horizontal)
+		pen.setWidthF(qf::qmlwidgets::graphics::y2device(w, painter->device()));
+	else
+		pen.setWidthF(qf::qmlwidgets::graphics::x2device(w, painter->device()));
 	Point p1, p2;
 	Rect r = qf::qmlwidgets::graphics::mm2device(renderedRect, painter->device());
 	if(where == TBrd) { p1 = r.topLeft(); p2 = r.topRight(); }
@@ -513,6 +530,7 @@ void ReportItemMetaPaintFrame::drawLine(QPainter *painter, LinePos where, const 
 	else if(where == BBrd) { p1 = r.bottomLeft(); p2 = r.bottomRight(); }
 	else if(where == RBrd) { p1 = r.topRight(); p2 = r.bottomRight(); }
 	if(!(p1 == p2)) {
+		//qfInfo() << f_reportItem << "draw line from:" << p1.toString() << "to:" << p2.toString() << "pen width:" << pen.widthF() << "style:" << pen.style() << "color:" << pen.color().name();
 		painter->setPen(pen);
 		painter->drawLine(p1, p2);
 	}

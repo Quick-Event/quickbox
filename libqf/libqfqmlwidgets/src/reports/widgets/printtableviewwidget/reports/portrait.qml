@@ -2,11 +2,11 @@ import qf.qmlreports 1.0
 
 Report {
 	id: root
+    objectName: "root"
 	styleSheet: StyleSheet {
 		objectName: "portraitStyleSheet"
-		basedOn: MyStyle {}
+        basedOn: MyStyle { id: myStyle }
 	 	colors: [
-	 		Color {name: "peach"; def: "lightgoldenrodyellow"}
 	 	]
 		pens: [
 			Pen {name: "red1dot"
@@ -16,23 +16,24 @@ Report {
             }
 		]
 	}
-    textStyle: TextStyle {basedOn: "default"}
+    textStyle: myStyle.textStyleDefault
 	width: 210
 	height: 297
 	vinset: 10
 	hinset: 5
 
 	Frame {
+        objectName: "frame"
 		width: "%"
-		height: "%"
+		//height: "%"
 		border: Pen {
 			basedOn: "red1dot"
             color: Color {def: Qt.green}
 		}
-        fill: Brush {color: Color {def:Qt.blue}}
+        //fill: Brush {name: "br1"; color: Color {def:Qt.blue}}
         Para {
             text: "ahoj BABI"
-            fill: Brush { basedOn: "khaki" }
+            fill: Brush { color: Color {def: "pink"}}
         }
 	}
 }

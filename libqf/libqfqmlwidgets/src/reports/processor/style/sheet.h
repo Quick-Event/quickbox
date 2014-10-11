@@ -40,7 +40,7 @@ public:
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
 public:
 	void createStyleCache();
-    QObject* styleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, bool should_exist);
+    QObject* styleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, bool should_exist = true);
     void setStyleObjectForName(StyleObject::StyleGroup style_object_group, const QString &name, QObject *o);
 private:
 	QQmlListProperty<Color> colors();

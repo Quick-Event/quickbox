@@ -3,17 +3,19 @@ import qf.core 1.0
 import qf.qmlreports 1.0
 
 StyleSheet {
+    property alias textStyleDefault: tsDefault
 	objectName: "MyStyleSheet"
 	//basedOn: "by_name"
 	colors: [
 		Color {name: "none"; def: "#00000000"},
-		Color {name: "green"; def: "#FF00"},
+		Color {name: "pink"; def: "#fd8184"},
+        Color {name: "peach"; def: "lightgoldenrodyellow"},
         Color {id: colorKhaki; name: "khaki"; def: "khaki"}
 	]
 	pens: [
         Pen {
             name: "black1"
-            color: Color {def:"black"}
+            color: Color {def:Qt.black}
             width: 1
         },
 		Pen {name: "black1dash"; basedOn: "black1"; style: Pen.DashLine},
@@ -38,6 +40,7 @@ StyleSheet {
     ]
     textStyles: [
         TextStyle {
+            id: tsDefault
             name: "default"
             font: fontDefault
         }

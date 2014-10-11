@@ -334,8 +334,8 @@ public:
 	}
 	--*/
 protected:
-	virtual style::Text* effectiveTextStyle();
-	virtual void setupMetaPaintItem(ReportItemMetaPaint *mpit);
+	style::Text* effectiveTextStyle();
+	//virtual void setupMetaPaintItem(ReportItemMetaPaint *mpit);
 
 	void classBegin() Q_DECL_OVERRIDE;
     void componentComplete() Q_DECL_OVERRIDE;
@@ -464,7 +464,7 @@ protected:
 	ChildSize childSize(Layout parent_layout) Q_DECL_OVERRIDE;
 	virtual ReportItemFrame* toFrame() {return this;}
 
-	void setupMetaPaintItem(ReportItemMetaPaint *mpi) Q_DECL_OVERRIDE;
+	//void setupMetaPaintItem(ReportItemMetaPaint *mpi) Q_DECL_OVERRIDE;
 
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.

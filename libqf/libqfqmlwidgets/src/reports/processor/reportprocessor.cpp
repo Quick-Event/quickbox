@@ -27,7 +27,7 @@ ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
 	//--f_searchDirs = search_dirs;
 	m_paintDevice = paint_device;
 	m_processedPageNo = 0;
-	setDesignMode(false);
+	m_designMode = true;
 }
 
 ReportProcessor::~ReportProcessor()
@@ -103,6 +103,16 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 		}
 		else {
 			m_documentInstanceRoot->setReportProcessor(this);
+			style::Text *st = m_documentInstanceRoot->textStyle();
+			if(!st) {
+				qfWarning() << "Report document has not the textStyle property set to valid TextStyle object, "
+							   "Para.text will not have implicit TextStyle definition.";
+			/*
+				st = new style::Text(m_documentInstanceRoot);
+				st->setProperty("basedOn", "default");
+				m_documentInstanceRoot->setTextStyle(st);
+			*/
+			}
 			style::Sheet *ss = m_documentInstanceRoot->styleSheet();
 			if(ss)
 				ss->createStyleCache();

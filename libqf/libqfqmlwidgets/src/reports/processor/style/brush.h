@@ -40,7 +40,7 @@ public:
 	};
 	QF_PROPERTY_OBJECT_IMPL(Color*, c, C, olor)
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
-	QF_PROPERTY_IMPL2(BrushStyle, s, S, tyle, SolidPattern)
+	QF_PROPERTY_IMPL2(BrushStyle, s, S, tyle, NoBrush)
 public:
 	QBrush brush();
 private:
