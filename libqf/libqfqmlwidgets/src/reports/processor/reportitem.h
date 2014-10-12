@@ -582,6 +582,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Sheet* styleSheet READ styleSheet WRITE setStyleSheet NOTIFY styleSheetChanged)
+	Q_PROPERTY(int debugLevel READ debugLevel WRITE setDebugLevel)
 private:
 	typedef ReportItemBand Super;
 public:
@@ -589,6 +590,7 @@ public:
 	~ReportItemReport() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_OBJECT_IMPL(style::Sheet*, s, S, tyleSheet)
+	QF_PROPERTY_IMPL2(int, d, D, ebugLevel, 0)
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 

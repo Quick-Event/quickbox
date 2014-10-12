@@ -41,6 +41,7 @@ private:
 	void setExportOptions(const QVariant& opts) const;
 
 	Q_SLOT void onLstQrcReportsActivated(int ix);
+	Q_SLOT void chooseReporFileName();
 private:
 	Ui::PrintTableViewWidget *ui;
 };

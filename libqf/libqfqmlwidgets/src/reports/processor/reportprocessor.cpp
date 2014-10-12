@@ -27,7 +27,7 @@ ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
 	//--f_searchDirs = search_dirs;
 	m_paintDevice = paint_device;
 	m_processedPageNo = 0;
-	m_designMode = true;
+	m_designMode = false;
 }
 
 ReportProcessor::~ReportProcessor()
@@ -116,6 +116,7 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			style::Sheet *ss = m_documentInstanceRoot->styleSheet();
 			if(ss)
 				ss->createStyleCache();
+			setDesignMode(m_documentInstanceRoot->debugLevel() > 0);
 		}
 	}
 	return m_documentInstanceRoot;

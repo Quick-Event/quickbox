@@ -2,7 +2,12 @@
 #include "ui_printtableviewwidget.h"
 #include "../../../tableview.h"
 
+#include <qf/core/utils/fileutils.h>
+
+#include <QFileDialog>
+
 namespace qfc = qf::core;
+namespace qfu = qf::core::utils;
 
 using namespace qf::qmlwidgets::reports;
 
@@ -12,11 +17,9 @@ PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *paren
 	ui(new Ui::PrintTableViewWidget)
 {
 	ui->setupUi(this);
-
+	connect(ui->btChooseReportFileName, &QPushButton::clicked, this, &PrintTableViewWidget::chooseReporFileName);
 	{
 		QComboBox *cbx = ui->lstQrcReports;
-		//#warning debug path set for portarait.qml
-		//cbx->addItem(trUtf8("portrait"), "/home/fanda/proj/quickbox/libqf/libqfqmlwidgets/src/reports/widgets/printtableviewwidget/reports/portrait.qml");
 		cbx->addItem(trUtf8("portrait"), ":/qf/qmlwidgets/reports/portrait.qml");
 		cbx->addItem(trUtf8("landscape"), ":/qf/qmlwidgets/reports/landscape.qml");
 		cbx->setCurrentIndex(-1);
@@ -41,6 +44,19 @@ void PrintTableViewWidget::onLstQrcReportsActivated(int ix)
     qfLogFuncFrame();
 	QString fn = ui->lstQrcReports->itemData(ix).toString();
 	ui->edReportFileName->setText(fn);
+}
+
+void PrintTableViewWidget::chooseReporFileName()
+{
+	static 	QString recently_used_report_dir;
+	if(recently_used_report_dir.isEmpty()) {
+		recently_used_report_dir = qfu::FileUtils::homeDir();
+	}
+	QString fn = QFileDialog::getOpenFileName(this, trUtf8("Open report file"), recently_used_report_dir, trUtf8("QML reports (*.qml)"));
+	if(!fn.isEmpty()) {
+		recently_used_report_dir = qfu::FileUtils::dir(fn);
+		ui->edReportFileName->setText(fn);
+	}
 }
 
 void PrintTableViewWidget::loadPersistentOptions()
