@@ -161,7 +161,7 @@ style::CompiledTextStyle ReportItemMetaPaint::effectiveTextStyle()
 	return ret;
 }
 
-bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
+void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 {
 	qfLogFuncFrame() << "rendered rect:" << renderedRect.toString();
 	bool has_expandable_children = false;
@@ -174,7 +174,7 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 		}
 	}
 	if(!has_expandable_children)
-		return has_expandable_children;
+		return;
 
 	double layout_size = renderedRect.height();
 	double layout_inset = insetVertical();
@@ -185,7 +185,6 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 		int cnt_0_percent = 0;
 		qreal sum_mm = 0;
 		QList<int> spring_children_ixs;
-		//bool has_expandable_children = false;
 		for(int i=0; i<childrenCount(); i++) {
 			ReportItemMetaPaint *it = child(i);
 			double d = it->fillVLayoutRatio();
@@ -200,14 +199,17 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 		}
 		if(spring_children_ixs.count()) {
 			qreal rest_percent = 1 - sum_percent;
-			if(rest_percent < 0) rest_percent = 0;
+			if(rest_percent < 0)
+				rest_percent = 0;
 			qreal percent_0 = 0;
-			if(cnt_0_percent > 0) percent_0 = rest_percent / cnt_0_percent;
+			if(cnt_0_percent > 0)
+				percent_0 = rest_percent / cnt_0_percent;
 
 			double rest_mm = layout_size - sum_mm;
 			//reklamacewqfInfo() << "layout_size:" << layout_size << "sum_mm:" << sum_mm;
-			if(rest_mm < 0) rest_mm = 0;
-			double children_ly_offset = insetVertical();
+			if(rest_mm < 0)
+				rest_mm = 0;
+			double children_ly_offset = 0; //insetVertical();
 			for(int i=0; i<childrenCount(); i++) {
 				ReportItemMetaPaint *it = child(i);
 				if(children_ly_offset > 0) {
@@ -228,7 +230,7 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 						//qfWarning() << "new_ly_size:" << new_ly_size << "is smaller than old one:" << curr_ly_size << "ignoring";
 					}
 					else {
-						qfInfo() << it->renderedRect.height() << "->" << new_ly_size;
+						//qfInfo() << it->renderedRect.height() << "->" << new_ly_size;
 						it->renderedRect.setHeight(new_ly_size);
 						it->alignChildren(); /// kdyz neco expanduju, tak to musim taky zarovnat
 						it->expandChildVerticalSpringFrames();
@@ -238,24 +240,7 @@ bool ReportItemMetaPaint::expandChildVerticalSpringFrames()
 			}
 		}
 	}
-	/*
-	else if(layout() == qf::qmlwidgets::graphics::LayoutHorizontal) {
-		for(int i=0; i<childrenCount(); i++) {
-			ReportItemMetaPaint *it = child(i);
-			double d = it->fillVLayoutRatio();
-			if(d >= 0) {
-				if(d == 0) d = 1;
-				double new_ly_size = layout_size * d;
-				//qfInfo() << layout_size << d << new_ly_size;
-				it->renderedRect.setHeight(new_ly_size);
-				//qfInfo() << renderedRect.toString();
-			}
-		}
-	}
-	*/
 	qfDebug() << "\t expanded rendered rect:" << renderedRect.toString();
-	//reccnt--;
-	return has_expandable_children;
 }
 
 void ReportItemMetaPaint::alignChildren()

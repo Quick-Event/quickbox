@@ -108,7 +108,7 @@ public:
 	/// popis funkce popsan u atributu expandChildrenFrames v Report.rnc
 	void expandChildrenFramesRecursively();
 	/// rekurzivne projde vsechny deti natahovaci ve smeru vertikalnim a nastavi jim rozmer podle sve velikosti
-	bool expandChildVerticalSpringFrames();
+	void expandChildVerticalSpringFrames();
 	bool hasSpringChildrenFramesInVerticalLayout();
 
 	virtual bool isPointInside(const QPointF &p) {

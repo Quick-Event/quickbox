@@ -34,15 +34,23 @@ StyleSheet {
     fonts: [
         Font {
             id: fontDefault
-            pointSize: 19
+            pointSize: 9
+        },
+        Font {
+            id: fontBig
+            pointSize: fontDefault.pointSize * 2
         }
-
     ]
     textStyles: [
         TextStyle {
             id: tsDefault
             name: "default"
             font: fontDefault
+        },
+        TextStyle {
+            id: tsBig
+            name: "big"
+            font: fontBig;
         }
     ]
 }

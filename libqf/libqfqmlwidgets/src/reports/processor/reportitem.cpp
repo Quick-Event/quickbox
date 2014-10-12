@@ -1392,13 +1392,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		/// pokud se vytiskl layout, jehoz vyska nebyla zadana jako % a ma dite s %, roztahni dite a pripadne i jeho deti
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
 		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
-			//qfInfo() << "\t expanding children" << this;
-			if(mp->expandChildVerticalSpringFrames()) {
-				/// pokud doslo k expanzi, je treba deti znovu zarovnat
-				//qfInfo() << "\t aligning expansion";
-				//mp->alignChildren();
-				//children_aligned = true;
-			}
+			mp->expandChildVerticalSpringFrames();
 		}
 		//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();
 		mp->alignChildren();
