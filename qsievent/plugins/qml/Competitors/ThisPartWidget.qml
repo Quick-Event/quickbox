@@ -38,7 +38,7 @@ PartWidget
 				{
 					queryBuilder.select2('runners', 'id, classId, importId')
 						.select("lastName || ' ' || firstName AS name")
-						.from('runners').orderBy('id');
+						.from('runners').orderBy('id').limit(5);
 				}
 			}
 		}
