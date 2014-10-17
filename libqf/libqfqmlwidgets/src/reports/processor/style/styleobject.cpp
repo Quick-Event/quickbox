@@ -1,5 +1,5 @@
 #include "styleobject.h"
-#include "../reportitem.h"
+#include "../reportitemreport.h"
 
 #include <qf/core/log.h>
 

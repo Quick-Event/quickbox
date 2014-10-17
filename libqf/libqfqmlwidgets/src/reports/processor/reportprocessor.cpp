@@ -1,5 +1,5 @@
 #include "reportprocessor.h"
-#include "reportitem.h"
+#include "reportitemreport.h"
 #include "reportpainter.h"
 #include "../../framework/application.h"
 

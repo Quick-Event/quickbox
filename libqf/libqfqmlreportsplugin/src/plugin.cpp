@@ -1,6 +1,8 @@
 #include "qmlreportssingleton.h"
 
-#include <qf/qmlwidgets/reports/processor/reportitem.h>
+#include <qf/qmlwidgets/reports/processor/reportitempara.h>
+#include <qf/qmlwidgets/reports/processor/reportitemframe.h>
+#include <qf/qmlwidgets/reports/processor/reportitemreport.h>
 #include <qf/qmlwidgets/reports/processor/style/sheet.h>
 #include <qf/qmlwidgets/reports/processor/style/color.h>
 #include <qf/qmlwidgets/reports/processor/style/pen.h>

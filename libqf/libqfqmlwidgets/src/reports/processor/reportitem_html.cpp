@@ -9,7 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "reportitem.h"
+#include "reportitemrepeater.h"
+#include "reportitempara.h"
 #include "reportprocessor.h"
 #include "reportpainter.h"
 

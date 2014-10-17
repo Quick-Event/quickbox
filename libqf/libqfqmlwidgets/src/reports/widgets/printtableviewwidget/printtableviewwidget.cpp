@@ -49,10 +49,13 @@ void PrintTableViewWidget::onLstQrcReportsActivated(int ix)
 void PrintTableViewWidget::chooseReporFileName()
 {
 	static 	QString recently_used_report_dir;
-	if(recently_used_report_dir.isEmpty()) {
-		recently_used_report_dir = qfu::FileUtils::homeDir();
+	QString report_dir = qfu::FileUtils::dir(ui->edReportFileName->text()).trimmed();
+	if(report_dir.isEmpty()) {
+		report_dir = recently_used_report_dir;
+		if(report_dir.isEmpty())
+			report_dir = qfu::FileUtils::homeDir();
 	}
-	QString fn = QFileDialog::getOpenFileName(this, trUtf8("Open report file"), recently_used_report_dir, trUtf8("QML reports (*.qml)"));
+	QString fn = QFileDialog::getOpenFileName(this, trUtf8("Open report file"), report_dir, trUtf8("QML reports (*.qml)"));
 	if(!fn.isEmpty()) {
 		recently_used_report_dir = qfu::FileUtils::dir(fn);
 		ui->edReportFileName->setText(fn);

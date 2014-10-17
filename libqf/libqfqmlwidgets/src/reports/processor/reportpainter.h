@@ -8,7 +8,7 @@
 #ifndef QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
 #define QF_QMLWIDGETS_REPORTS_REPORTPAINTER_H
 
-#include "reportitem.h"
+#include "reportitemframe.h"
 #include "../../graphics/graphics.h"
 
 //#include "../../qmlwidgetsglobal.h"
