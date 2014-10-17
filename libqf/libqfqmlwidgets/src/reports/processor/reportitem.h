@@ -37,8 +37,7 @@ class ReportProcessor;
 class ReportItemMetaPaint;
 
 class ReportItemFrame;
-class ReportItemBand;
-class ReportItemDetail;
+class ReportItemRepeater;
 class ReportItemMetaPaintFrame;
 
 //! Base class of report elements.
@@ -271,15 +270,13 @@ public:
 	};
 public:
 	virtual ReportItemFrame* toFrame() {return NULL;}
-	virtual  ReportItemBand* toBand()  {return NULL;}
-	virtual  ReportItemDetail* toDetail()  {return NULL;}
-	//! vrati band, ktery item obsahuje nebo NULL
-	virtual ReportItemBand* parentBand();
+	//--virtual  ReportItemBand* toBand()  {return NULL;}
+	//--virtual  ReportItemDetail* toDetail()  {return NULL;}
+	//--virtual ReportItemBand* parentBand();
 protected:
-	qf::core::utils::TreeTable findDataTable(const QString &name);
+	//--qf::core::utils::TreeTable findDataTable(const QString &name);
 protected:
-	//! vrati detail, ktery item obsahuje nebo item, pokud je item typu detail nebo NULL.
-	virtual ReportItemDetail* currentDetail();
+	ReportItemRepeater* currentRepeater();
 
 	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
 	/// poukud ma node jen jedno dite vrati to jeho hodnotu vcetne typu, pokud je deti vic, udela to z nich jeden string

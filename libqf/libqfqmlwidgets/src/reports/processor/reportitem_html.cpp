@@ -10,6 +10,7 @@
 //
 //
 #include "reportitemrepeater.h"
+#include "repeatermodel.h"
 #include "reportitempara.h"
 #include "reportprocessor.h"
 #include "reportpainter.h"
@@ -96,54 +97,38 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 }
 
 //===================================================================
-//                           ReportItemDetail
+//                           ReportItemRepeater
 //===================================================================
-ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
+ReportItem::PrintResult ReportItemRepeater::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();// << "id:" << element.attribute("id");
 	//qfDebug().color(QFLog::Yellow) << "\treturn:" << res.toString();
 	//qfInfo() << "design mode:" << design_mode;
-	bool design_mode = processor()->isDesignMode();
-	ReportItemBand *b = parentBand();
-	qfu::TreeTable data_table;
-	if(b) {
-		//qfDebug() << "band:" << b << "\ttable is null:" << b->dataTable().isNull();
-		data_table = b->dataTable();
-		if(!data_table.isNull()) {
-			//design_view = false;
-			if(f_currentRowNo < 0) {
-				/// kdyz neni f_dataRow, vezmi prvni radek dat
-				f_currentRowNo = 0;
-				//f_dataRow = b->dataTable().firstRow();
-				//qfDebug() << "\tfirst row is null:" << f_dataRow.isNull();
-				//qfInfo() << "vezmi prvni radek dat element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
-			}
+	RepeaterModel *data_model = dataModel();
+	if(data_model) {
+		if(currentIndex() < 0) {
+			setCurrentIndex(0);
 		}
 	}
-	PrintResult res;
-	if(!design_mode && (data_table.isNull() || dataRow().isNull())) {
-		/// prazdnej detail vubec netiskni
+	PrintResult res = PrintOk;
+	if(isVisible()) {
 		res.value = PrintOk;
 		return res;
 	}
-	res = Super::printHtml(out);
-	if(res.value == PrintOk) {
-		if(b) {
-			/// vezmi dalsi radek dat
-			//qfInfo() << "vezmi dalsi radek dat" << element.attribute("id");
-			//f_dataRow = b->dataTable().nextRow(f_dataRow);
-			f_currentRowNo++;
-			//qfInfo() << "vezmi dalsi radek dat element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
-			if(f_currentRowNo < data_table.rowCount()) {
-				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res.flags |= FlagPrintAgain;
+	else {
+		res = Super::printHtml(out);
+		if(res.value == PrintOk) {
+			if(data_model) {
+				/// vezmi dalsi radek dat
+				setCurrentIndex(currentIndex() + 1);
+				//qfInfo() << "vezmi dalsi radek dat element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
+				if(currentIndex() < data_model->rowCount()) {
+					resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+					res.flags |= FlagPrintAgain;
+				}
 			}
-			//else qfInfo() << "\t IS NULL";
 		}
 	}
-	//res = checkPrintResult(res);
-	//qfInfo() << "\t again:" << (res .flags & FlagPrintAgain);
-	qfDebug() << "\treturn:" << res.toString();
 	return res;
 }
 

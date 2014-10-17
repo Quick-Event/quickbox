@@ -8,7 +8,8 @@ HEADERS +=                            \
     $$PWD/reportitemreport.h \
     $$PWD/reportitemrepeater.h \
     $$PWD/reportitempara.h \
-    $$PWD/reportitemimage.h
+    $$PWD/reportitemimage.h \
+    $$PWD/repeatermodel.h
 
 SOURCES +=                            \
 	$$PWD/reportpainter.cpp       \
@@ -21,6 +22,7 @@ SOURCES +=                            \
     $$PWD/reportitemreport.cpp \
     $$PWD/reportitemrepeater.cpp \
     $$PWD/reportitempara.cpp \
-    $$PWD/reportitemimage.cpp
+    $$PWD/reportitemimage.cpp \
+    $$PWD/repeatermodel.cpp
 
 include ($$PWD/style/style.pri)

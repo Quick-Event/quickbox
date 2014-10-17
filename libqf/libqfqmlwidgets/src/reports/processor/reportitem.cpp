@@ -22,6 +22,7 @@
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
+
 using namespace qf::qmlwidgets::reports;
 
 //==========================================================
@@ -135,7 +136,7 @@ bool ReportItem::isVisible()
 	bool ret = processor()->isDesignMode() || m_visible;
 	return ret;
 }
-
+/*--
 ReportItemBand* ReportItem::parentBand()
 {
 	ReportItem *it = this->parent();
@@ -145,17 +146,19 @@ ReportItemBand* ReportItem::parentBand()
 	}
 	return NULL;
 }
-
-ReportItemDetail* ReportItem::currentDetail()
+--*/
+ReportItemRepeater* ReportItem::currentRepeater()
 {
 	ReportItem *it = const_cast<ReportItem *>(this);
 	while(it) {
-		if(it->toDetail()) return it->toDetail();
+		ReportItemRepeater *rit = qobject_cast<ReportItemRepeater*>(it);
+		if(rit)
+			return rit;
 		it = it->parent();
 	}
 	return NULL;
 }
-
+/*--
 qfu::TreeTable ReportItem::findDataTable(const QString &name)
 {
 	qfLogFuncFrame();
@@ -173,7 +176,7 @@ qfu::TreeTable ReportItem::findDataTable(const QString &name)
 	}
 	return ret;
 }
-
+--*/
 ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res)
 {
 	PrintResult ret = res;
@@ -505,7 +508,7 @@ QVariant ReportItem::nodeValue(const QDomNode &nd)
 	return ret;
 }
 --*/
-
+#if 0
 QVariant ReportItem::value(const QString &data_src, const QString & domain, const QVariantList &params, const QVariant &default_value, bool sql_match)
 {
 	//qfInfo() << "data_src:" << data_src << "domain:" << domain;
@@ -640,6 +643,7 @@ QVariant ReportItem::value(const QString &data_src, const QString & domain, cons
 	//qfInfo() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type());
 	return data_value;
 }
+#endif
 /*
 void ReportItem::setupMetaPaintItem(ReportItemMetaPaint *mpit)
 {

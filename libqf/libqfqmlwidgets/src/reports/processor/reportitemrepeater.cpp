@@ -1,11 +1,35 @@
 #include "reportitemrepeater.h"
 
 #include "reportprocessor.h"
+#include "repeatermodel.h"
+
+#include <qf/core/log.h>
+#include <qf/core/assert.h>
+#include <qf/core/string.h>
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
+
 using namespace qf::qmlwidgets::reports;
 
+ReportItemRepeater::ReportItemRepeater(ReportItem *parent)
+	: Super(parent)
+{
+	qfLogFuncFrame();
+}
+
+ReportItemRepeater::~ReportItemRepeater()
+{
+	qfLogFuncFrame();
+	QF_SAFE_DELETE(m_dataModel);
+}
+
+void ReportItemRepeater::createDataModel(const QVariant &data_source)
+{
+	QF_SAFE_DELETE(m_dataModel);
+}
+
+#if 0
 //==========================================================
 //                                    ReportItemBand
 //==========================================================
@@ -162,3 +186,5 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 	qfDebug() << "\treturn:" << res.toString();
 	return res;
 }
+
+#endif

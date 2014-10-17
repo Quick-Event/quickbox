@@ -343,7 +343,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					else {
 						if(ch_res.value == PrintOk) {
 							/// jediny, kdo se nemusi vytisknout je band
-							if(!qobject_cast<ReportItemBand*>(it)) {
+							if(it->isVisible()) {
 								qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
 							}
 						}
@@ -408,11 +408,14 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 								else {
 									if(ch_res.value == PrintOk) {
 										/// jediny, kdo se nemusi vytisknout je band
-										if(!qobject_cast<ReportItemBand*>(it)) {
+										if(it->isVisible()) {
 											qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
 										}
 									}
-									else { res = ch_res; break; }
+									else {
+										res = ch_res;
+										break;
+									}
 								}
 							}
 						}

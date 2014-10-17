@@ -16,13 +16,13 @@ namespace qmlwidgets {
 namespace reports {
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
+class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemRepeater
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Sheet* styleSheet READ styleSheet WRITE setStyleSheet NOTIFY styleSheetChanged)
 	Q_PROPERTY(int debugLevel READ debugLevel WRITE setDebugLevel)
 private:
-	typedef ReportItemBand Super;
+	typedef ReportItemRepeater Super;
 public:
 	ReportItemReport(ReportItem *parent = nullptr);
 	~ReportItemReport() Q_DECL_OVERRIDE;
@@ -30,14 +30,18 @@ public:
 	QF_PROPERTY_OBJECT_IMPL(style::Sheet*, s, S, tyleSheet)
 	QF_PROPERTY_IMPL2(int, d, D, ebugLevel, 0)
 public:
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
+	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE
+	{
+		Super::resetIndexToPrintRecursively(including_para_texts);
+	}
+	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
 
 	ReportProcessor* reportProcessor() {return m_reportProcessor;}
 	void setReportProcessor(ReportProcessor *p) {m_reportProcessor = p;}
 private:
 	ReportProcessor *m_reportProcessor;
 };
-
+#if 0
 //! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT ReportItemBody : public ReportItemDetail
 {
@@ -54,7 +58,7 @@ public:
 
 	//virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 };
-
+#endif
 }}}
 
 #endif // QF_QMLWIDGETS_REPORTS_REPORTITEMREPORT_H

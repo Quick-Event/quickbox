@@ -14,6 +14,42 @@ namespace qf {
 namespace qmlwidgets {
 namespace reports {
 
+class RepeaterModel;
+
+class QFQMLWIDGETS_DECL_EXPORT ReportItemRepeater : public ReportItemFrame
+{
+	Q_OBJECT
+	Q_PROPERTY(qf::qmlwidgets::reports::ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
+	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
+	Q_PROPERTY(QVariant model READ model WRITE setModel NOTIFY modelChanged)
+	Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+private:
+	typedef ReportItemFrame Super;
+public:
+	ReportItemRepeater(ReportItem *parent = nullptr);
+	~ReportItemRepeater() Q_DECL_OVERRIDE;
+public:
+	QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
+	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
+	QF_PROPERTY_IMPL(QVariant, m, M, odel)
+	QF_PROPERTY_IMPL(int, c, C, urrentIndex)
+protected:
+	RepeaterModel* dataModel();
+	void createDataModel(const QVariant &data_source);
+public:
+	Q_INVOKABLE QVariant data(const QString &field_name, int row_no = -1);
+public:
+	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
+	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
+	virtual PrintResult printHtml(HTMLElement &out);
+
+	//--qf::core::utils::TreeTable dataTable();
+	//--qf::core::utils::TreeTableRow dataRow();
+protected:
+	RepeaterModel *m_dataModel = nullptr;
+};
+
+#if 0
 //! TODO: write class documentation.
 class QFQMLWIDGETS_DECL_EXPORT ReportItemDetail : public ReportItemFrame
 {
@@ -81,6 +117,7 @@ protected:
 	qf::core::utils::TreeTable f_dataTable;
 	bool dataTableLoaded;
 };
+#endif
 
 }}}
 
