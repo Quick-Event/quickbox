@@ -3,6 +3,7 @@
 
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
+#include "../frame.h"
 
 #include <QWidget>
 
@@ -10,11 +11,11 @@ namespace qf {
 namespace qmlwidgets {
 namespace framework {
 
-class QFQMLWIDGETS_DECL_EXPORT DialogWidget : public QWidget, public IPersistentSettings
+class QFQMLWIDGETS_DECL_EXPORT DialogWidget : public Frame, public IPersistentSettings
 {
 	Q_OBJECT
 private:
-	typedef QWidget Super;
+	typedef Frame Super;
 public:
 	explicit DialogWidget(QWidget *parent = 0);
 	~DialogWidget() Q_DECL_OVERRIDE;

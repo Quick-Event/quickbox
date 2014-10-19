@@ -10,44 +10,24 @@ Plugin {
 		ThisPartWidget{
 			id: thisPart
 		}
-		NetworkAccessManager {
-			id: networkAccessManager
-		}
 	}
-	/*
+
 	property list<Action> actions: [
 		Action {
-			id: actLoadFromOris
-			text: qsTr('Load from Oris')
+			id: actPrintAll
+			text: qsTr('All')
 			onTriggered: {
-				var reply = networkAccessManager.get('http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=2526');
-				reply.downloadProgress.connect(FrameWork.showProgress);
-				reply.finished.connect(function(get_ok) {
-					Log.info("http get finished:", get_ok, reply.url);
-					if(get_ok) {
-						var json_str = reply.textData;
-						var json = JSON.parse(json_str)
-						Log.info("json:", json);
-						json_str = JSON.stringify(json, null, 2)
-						Log.info("text:", json_str);
-						MessageBoxSingleton.critical(null, qsTr('Import of competitors from Oris is not implemented yet'));
-					}
-					else {
-						console.error("http get error:", reply.errorString, 'on:', reply.url)
-					}
-					reply.destroy();
-				});
+				thisPart.printAll()
 			}
 		}
 	]
-	*/
+
 	Component.onCompleted:
 	{
 		var act_file = FrameWork.menuBar.actionForPath('file');
 		var act_competitors = act_file.appendMenu('competitors', qsTr('&Competitors'));
-		//FrameWork.menuBar.actionForPath('competitors/import').text = '&Import';
-		//FrameWork.menuBar.actionForPath('competitors/import').addAction(actLoadFromOris);
-		//console.warn('featureId:', root.featureId);
+		var act_print = act_competitors.addMenu('print', qsTr('&Print'));
+		act_print.addAction(actPrintAll);
 		FrameWork.addPartWidget(thisPart, manifest.featureId);
 	}
 

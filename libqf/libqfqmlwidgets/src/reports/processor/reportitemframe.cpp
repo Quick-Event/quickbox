@@ -200,6 +200,16 @@ int ReportItemFrame::countItemsFunction(QQmlListProperty<ReportItem> *list_prope
 	return that->itemCount();
 }
 
+int ReportItemFrame::itemsToPrintCount()
+{
+	return itemCount();
+}
+
+ReportItem *ReportItemFrame::itemToPrintAt(int ix)
+{
+	return itemAt(ix);
+}
+
 int ReportItemFrame::itemCount() const
 {
 	return m_items.count();
@@ -229,11 +239,11 @@ ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 
 ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemCount() << "indexToPrint:" << indexToPrint;
+	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	PrintResult res = PrintOk;
 	//dirtySize = Size();
-	Rect bbr = bounding_rect;
+	Rect paint_area_rect = bounding_rect;
 	//Size children_dirty_size;
 	//Size children_bounding_size = bbr.size();
 
@@ -278,8 +288,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		{
 			/// prvni dite gridu se tiskne jako vse ostatni
 			/// nastav detem mm rozmer ve smeru layoutu
-			for(int i=indexToPrint; i<itemCount(); i++) {
-				ReportItem *it = itemAt(i);
+			for(int i=indexToPrint; i<itemsToPrintCount(); i++) {
+				ReportItem *it = itemToPrintAt(i);
 				sizes << it->childSize(layout());
 			}
 		}
@@ -287,12 +297,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// zbyva vypocitat jeste ortogonalni rozmer
 		/// je to bud absolutni hodnota nebo % z bbr
 		QList<ChildSize> orthogonal_sizes;
-		for(int i=indexToPrint; i<itemCount(); i++) {
-			ReportItem *it = itemAt(i);
+		for(int i=indexToPrint; i<itemsToPrintCount(); i++) {
+			ReportItem *it = itemToPrintAt(i);
 			Layout ol = orthogonalLayout();
 			ChildSize sz = it->childSize(ol);
 			if(sz.unit == Rect::UnitPercent) {
-				sz.size = bbr.sizeInLayout(ol); /// udelej z nej rubber, roztahne se dodatecne
+				sz.size = paint_area_rect.sizeInLayout(ol); /// udelej z nej rubber, roztahne se dodatecne
 				//if(sz.size == 0) sz.size = bbr.sizeInLayout(ol);
 				//else sz.size = sz.size / 100 * bbr.sizeInLayout(ol);
 			}
@@ -312,15 +322,15 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			bool has_percent = false;
 			/// vytiskni rubber a fixed
 			//if(parent_grid) qfWarning() << (is_first_grid_child? "first child": is_next_grid_child? "next child": "nevim");
-			for(int i=0; i<itemCount(); i++) {
-				ReportItem *it = itemAt(i);
+			for(int i=0; i<itemsToPrintCount(); i++) {
+				ReportItem *it = itemToPrintAt(i);
 				ChildSize sz = sizes.value(i);
 				//qfInfo() << "child:" << i << "size:" << sz.size << "unit:" << Rect::unitToString(sz.unit);
 				if(sz.unit == Rect::UnitMM) {
-					Rect ch_bbr = bbr;
-					ch_bbr.setLeft(bbr.left() + sum_mm);
+					Rect ch_bbr = paint_area_rect;
+					ch_bbr.setLeft(paint_area_rect.left() + sum_mm);
 					if(sz.size > 0) ch_bbr.setWidth(sz.size);
-					else ch_bbr.setWidth(bbr.width() - sum_mm);
+					else ch_bbr.setWidth(paint_area_rect.width() - sum_mm);
 					if(orthogonal_sizes[i].size > 0) {
 						ch_bbr.setSizeInLayout(orthogonal_sizes[i].size, orthogonalLayout());
 					}
@@ -358,15 +368,15 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					has_percent = true;
 				}
 			}
-			qreal rest_mm = bounding_rect.width() - sum_mm;
+			qreal rest_mm = paint_area_rect.width() - sum_mm;
 
 			if(res.value == PrintOk) {
 				if(has_percent) {
 					/// rozpocitej procenta
 					qreal sum_percent = 0;
 					int cnt_0_percent = 0;
-					for(int i=0; i<itemCount(); i++) {
-						ReportItem *it = itemAt(i);
+					for(int i=0; i<itemsToPrintCount(); i++) {
+						ReportItem *it = itemToPrintAt(i);
 						ChildSize sz = it->childSize(layout());
 						if(sz.unit == Rect::UnitPercent) {
 							if(sz.size == 0) cnt_0_percent++;
@@ -380,15 +390,15 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						/// vytiskni procenta
 						qreal percent_0 = 0;
 						if(cnt_0_percent > 0) percent_0 = (100 - sum_percent) / cnt_0_percent;
-						for(int i=0; i<itemCount(); i++) {
-							ReportItem *it = itemAt(i);
+						for(int i=0; i<itemsToPrintCount(); i++) {
+							ReportItem *it = itemToPrintAt(i);
 							ChildSize sz = it->childSize(layout());
 							if(sz.unit == Rect::UnitPercent) {
 								qreal d;
 								if(sz.size == 0) d = rest_mm * percent_0 / 100;
 								else d = rest_mm * sz.size / 100;
 								//qfInfo() << d;
-								Rect ch_bbr = bbr;
+								Rect ch_bbr = paint_area_rect;
 								ch_bbr.setWidth(d);
 								if(orthogonal_sizes[i].size > 0) {
 									ch_bbr.setSizeInLayout(orthogonal_sizes[i].size, orthogonalLayout());
@@ -451,7 +461,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							//qfInfo() << "\t poradi tisku <<" << i << "offset:" << offset_x;
 							ReportItemMetaPaint *it = out->child(i);
 							/// tady je to potreba posunout vcetne deti :(
-							double shift_x = bbr.left() + offset_x - it->renderedRect.left();
+							double shift_x = paint_area_rect.left() + offset_x - it->renderedRect.left();
 							//if(parent_grid) qfInfo() << i << "offset_x:" << offset_x << "bbr left:" << bbr.left() << "chbbr left:" << ch_bbr.left();
 							if(qFloatDistance(shift_x, 0) > 200)
 								it->shift(Point(shift_x, 0));
@@ -482,21 +492,20 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		}
 	}
 	else {
-		/// vertikalni layout
-		/// tiskni
-		/// procenta tiskni jako rubber a v pripade print OK je roztahni v metapaintu
+		/// vertical layout
+		/// print % like a rubber dimension and if print result is PrintOk resize rendered rect of printed metapaint item
 		/// break funguje tak, ze pri 1., 3., 5. atd. tisku vraci PrintNotFit a pri sudych PrintOk
 		/// prvni break na strance znamena, ze jsem tu uz po zalomeni, takze se tiskne to za break.
 		//if(it->isBreak() && i > indexToPrint && layout == LayoutVertical) break;
 		int index_to_print_0 = indexToPrint;
-		for(; indexToPrint<itemCount(); indexToPrint++) {
-			ReportItem *it = itemAt(indexToPrint);
-			Rect ch_bbr = bbr;
-			qfDebug() << "\tch_bbr v1:" << ch_bbr.toString();
+		for(; indexToPrint<itemsToPrintCount(); indexToPrint++) {
+			ReportItem *it = itemToPrintAt(indexToPrint);
+			Rect children_paint_area_rect = paint_area_rect;
+			qfDebug() << "\tch_bbr v1:" << children_paint_area_rect.toString();
 
 			{
-				/// vymysli rozmer ve smeru layoutu
-				qreal d = ch_bbr.sizeInLayout(layout());
+				/// find child paint area size in layout direction
+				qreal d = children_paint_area_rect.sizeInLayout(layout());
 				ChildSize sz = it->childSize(layout());
 				//qfInfo() << it << "chbrd:" << ch_bbr.toString() << "d:" << d;// << "size in ly:" << sz.fillLayoutRatio();
 				if(sz.fillLayoutRatio() >= 0) {
@@ -511,8 +520,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						qfWarning() << "This should never happen" << it;
 				}
 				//qfInfo() << "\t ch_bbr.sizeInLayout(layout():" << ch_bbr.sizeInLayout(layout()) << "d:" << d;
-				d = qMin(ch_bbr.sizeInLayout(layout()), d);
-				ch_bbr.setSizeInLayout(d, layout());
+				d = qMin(children_paint_area_rect.sizeInLayout(layout()), d);
+				children_paint_area_rect.setSizeInLayout(d, layout());
 				//qfInfo() << "\t ch_bbr:" << ch_bbr.toString();
 			}
 			{
@@ -520,19 +529,21 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				Layout ol = orthogonalLayout();
 				ChildSize o_sz = it->childSize(ol);
 				if(o_sz.unit == Rect::UnitPercent) {
-					if(o_sz.size == 0) o_sz.size = bbr.sizeInLayout(ol);
-					else o_sz.size = o_sz.size / 100 * bbr.sizeInLayout(ol);
+					if(o_sz.size == 0)
+						o_sz.size = paint_area_rect.sizeInLayout(ol);
+					else
+						o_sz.size = o_sz.size / 100 * paint_area_rect.sizeInLayout(ol);
 				}
 				//it->metaPaintOrthogonalLayoutLength = sz.size;
 				qfDebug() << "\tsetting orthogonal length:" << o_sz.size;
 				//if(it->isBreak() && i > indexToPrint && layout == LayoutVertical) break; /// v horizontalnim layoutu break ignoruj
 				if(o_sz.size > 0) {
-					ch_bbr.setSizeInLayout(o_sz.size, orthogonalLayout());
+					children_paint_area_rect.setSizeInLayout(o_sz.size, orthogonalLayout());
 				}
 			}
-			qfDebug() << "\tch_bbr v2:" << ch_bbr.toString();
+			qfDebug() << "\tch_bbr v2:" << children_paint_area_rect.toString();
 			int prev_children_cnt = out->childrenCount();
-			PrintResult ch_res = it->printMetaPaint(out, ch_bbr);
+			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
 			if(ch_res.value == PrintOk) {
 				//qfDebug() << "\t" << __LINE__ << "children_dirty_size:" << children_dirty_size.toString();
 				//dirtyRect = dirtyRect.unite(it->dirtyRect);
@@ -547,7 +558,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						//qfInfo() << mpi << mpi->reportItem()->element.tagName() << (r.flags & Rect::BackgroundItem) << "\tr:" << r.toString() << "ch_res:" << ch_res.toString();
 						//if((r.flags & Rect::BackgroundItem)) qfWarning() << "BackgroundItem";
 						//--if(!(r.flags & Rect::BackgroundItem))
-						bbr.cutSizeInLayout(r, layout());
+						/// cut rendered area
+						paint_area_rect.cutSizeInLayout(r, layout());
 						if(ch_res.flags & FlagPrintAgain) {
 							indexToPrint--; /// vytiskni ho znovu
 						}
@@ -567,7 +579,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				res = ch_res;
 				break;
 			}
-			if(it->isBreak() && indexToPrint > index_to_print_0 && layout() == LayoutVertical)
+			if(it->isBreak() && indexToPrint > index_to_print_0)
 				break;
 		}
 	}
@@ -587,28 +599,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		return res;
 	Rect frame_content_br = bounding_rect;
 	qfDebug() << "\tbbr 0:" << frame_content_br.toString();
-	/*--
-	if(designedRect.isAnchored()) {
-		/// pokud je designedRect anchored neni treba ho nekam cpat
-		/// pokud frame neni floating, vyprdni se na bounding_rect
-		frame_content_br = designedRect;
-		if(frame_content_br.isRubber(LayoutHorizontal)) frame_content_br.setRight(bounding_rect.right());
-		if(frame_content_br.isRubber(LayoutVertical)) frame_content_br.setBottom(bounding_rect.bottom());
+	if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() - Epsilon > bounding_rect.width()) {
+		qfDebug() << "\t<<<< FRAME NOT FIT WIDTH";
+		return checkPrintResult(PrintNotFit);
 	}
-	else
-	--*/
-	{
-		if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() - Epsilon > bounding_rect.width()) {
-			qfDebug() << "\t<<<< FRAME NOT FIT WIDTH";
-			return checkPrintResult(PrintNotFit);
-		}
-		if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() - Epsilon > bounding_rect.height()) {
-			qfDebug() << "\t<<<< FRAME NOT FIT HEIGHT";
-			//qfInfo() << "\tbounding_rect:" << bounding_rect.toString() << "height:" << bounding_rect.height();
-			//qfInfo() << "\tdesignedRect:" << designedRect.toString() << "height:" << designedRect.height();
-			//qfInfo() << "\tbounding_rect.height() < designedRect.height() (" << bounding_rect.height() << "<" << designedRect.height() << "):" << (bounding_rect.height() > designedRect.height());
-			return checkPrintResult(PrintNotFit);
-		}
+	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() - Epsilon > bounding_rect.height()) {
+		qfDebug() << "\t<<<< FRAME NOT FIT HEIGHT";
+		return checkPrintResult(PrintNotFit);
 	}
 	frame_content_br.adjust(hinset(), vinset(), -hinset(), -vinset());
 
@@ -792,8 +789,8 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 {
 	//qfInfo() << "resetIndexToPrintRecursively()";
 	indexToPrint = 0;
-	for(int i=0; i<itemCount(); i++) {
-		ReportItem *it = itemAt(i);
+	for(int i=0; i<itemsToPrintCount(); i++) {
+		ReportItem *it = itemToPrintAt(i);
 		it->resetIndexToPrintRecursively(including_para_texts);
 	}
 	/*

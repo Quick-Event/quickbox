@@ -179,12 +179,16 @@ public:
 		Rect& cutSizeInLayout(const Rect &rect, Layout ly)
 		{
 			if(ly == LayoutHorizontal) {
-				if(rect.right() > right()) setLeft(right());
-				else setLeft(rect.right());
+				if(rect.right() > right())
+					setLeft(right());
+				else
+					setLeft(rect.right());
 			}
 			else {
-				if(rect.bottom() > bottom()) setTop(bottom());
-				else setTop(rect.bottom());
+				if(rect.bottom() > bottom())
+					setTop(bottom());
+				else
+					setTop(rect.bottom());
 			}
 			return *this;
 		}
@@ -241,7 +245,9 @@ public:
 		qreal size;
 		Rect::Unit unit;
 
-		double fillLayoutRatio() const {return (unit == Rect::UnitPercent)? size / 100.: -1;}
+		double fillLayoutRatio() const {
+			return (unit == Rect::UnitPercent)? size / 100.: -1;
+		}
 		ChildSize(qreal s = 0, Rect::Unit u = Rect::UnitMM) : size(s), unit(u) {}
 	};
 public:

@@ -78,6 +78,22 @@ void Action::appendAction(Action *new_act)
 		parent_w->addAction(new_act);
 }
 
+Action *Action::addMenu(const QString &id, const QString &text)
+{
+	Action *ret = nullptr;
+	QWidget *parent_w = this->menu();
+	if(parent_w) {
+		QMenu *m = new QMenu(parent_w);
+		//m->setTitle(text);
+		ret = new Action(parent_w);
+		ret->setMenu(m);
+		ret->setOid(id);
+		ret->setText(text);
+		addAction(ret);
+	}
+	return ret;
+}
+
 Action* Action::appendMenu(const QString &id, const QString &text)
 {
 	QWidget *parent_w = parentMenu();

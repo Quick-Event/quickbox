@@ -89,7 +89,7 @@ public:
 };
 
 template <class T>
-T qfFindParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
+T findParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
 {
 	T t = NULL;
 	QObject *o = const_cast<QObject*>(_o);

@@ -7,11 +7,6 @@
 #include <qf/qmlwidgets/reports/processor/style/color.h>
 #include <qf/qmlwidgets/reports/processor/style/pen.h>
 
-// #include <qf/qmlwidgets/framework/plugin.h>
-// #include <qf/qmlwidgets/framework/pluginmanifest.h>
-// #include <qf/qmlwidgets/framework/dockwidget.h>
-// #include <qf/qmlwidgets/framework/partwidget.h>
-
 #include <qf/core/log.h>
 
 // #include <QPushButton>

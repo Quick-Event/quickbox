@@ -31,13 +31,19 @@ public:
 public:
 	QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
 	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
-	QF_PROPERTY_IMPL(QVariant, m, M, odel)
 	QF_PROPERTY_IMPL(int, c, C, urrentIndex)
+public:
+	QVariant model() const { return m_model; }
+	void setModel(QVariant m);
+	Q_SIGNAL void modelChanged(QVariant new_model);
 protected:
 	RepeaterModel* dataModel();
-	void createDataModel(const QVariant &data_source);
+	ReportItemRepeater *parentRepeater();
+
+	int itemsToPrintCount() Q_DECL_OVERRIDE;
+	ReportItem* itemToPrintAt(int ix) Q_DECL_OVERRIDE;
 public:
-	Q_INVOKABLE QVariant data(const QString &field_name, int row_no = -1);
+	Q_INVOKABLE QVariant data(const QString &field_name, int row_no = -1, int role = Qt::DisplayRole);
 public:
 	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
@@ -47,6 +53,8 @@ public:
 	//--qf::core::utils::TreeTableRow dataRow();
 protected:
 	RepeaterModel *m_dataModel = nullptr;
+private:
+	QVariant m_model;
 };
 
 #if 0

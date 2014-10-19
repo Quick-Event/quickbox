@@ -24,9 +24,85 @@ ReportItemRepeater::~ReportItemRepeater()
 	QF_SAFE_DELETE(m_dataModel);
 }
 
-void ReportItemRepeater::createDataModel(const QVariant &data_source)
+void ReportItemRepeater::setModel(QVariant m)
 {
+	if (m_model == m)
+		return;
+	m_model = m;
 	QF_SAFE_DELETE(m_dataModel);
+	emit modelChanged(m);
+
+}
+
+RepeaterModel *ReportItemRepeater::dataModel()
+{
+	if(!m_dataModel) {
+		QVariant data = model();
+		if(data.userType() == QVariant::String) {
+			ReportItemRepeater *pr = parentRepeater();
+			if(pr) {
+				RepeaterModel *dm = pr->dataModel();
+				if(dm) {
+					data = dm->table(data.toString(), pr->currentIndex());
+				}
+			}
+		}
+		m_dataModel = RepeaterModel::createFromData(data, this);
+	}
+	return m_dataModel;
+}
+
+ReportItemRepeater *ReportItemRepeater::parentRepeater()
+{
+	ReportItemRepeater *ret = qf::core::findParent<ReportItemRepeater*>(this, false);
+	return ret;
+}
+
+int ReportItemRepeater::itemsToPrintCount()
+{
+	int ret = Super::itemsToPrintCount();
+	if(header())
+		ret++;
+	return ret;
+}
+
+ReportItem *ReportItemRepeater::itemToPrintAt(int ix)
+{
+	if(header()) {
+		if(ix == 0)
+			return header();
+		else
+			return Super::itemToPrintAt(ix - 1);
+	}
+	return Super::itemToPrintAt(ix);
+}
+
+QVariant ReportItemRepeater::data(const QString &field_name, int row_no, int role)
+{
+	QVariant ret;
+	RepeaterModel *m = dataModel();
+	if(m) {
+		ret = m->data(field_name, row_no, (RepeaterModel::DataRole)role);
+	}
+	else {
+		qfWarning() << "Repeater has not valid data model.";
+	}
+	return ret;
+}
+
+ReportItem::PrintResult ReportItemRepeater::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
+{
+	qfLogFuncFrame() << this;
+	if(isHeaderOnBreak()) {
+		/// print everything except of detail again
+		for(int i=0; i<itemsToPrintCount(); i++) {
+			ReportItem *it = itemToPrintAt(i);
+			//if(it->toDetail() == NULL)
+			//	it->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+		}
+		indexToPrint = 0;
+	}
+	return Super::printMetaPaint(out, bounding_rect);
 }
 
 #if 0

@@ -8,6 +8,20 @@ PartWidget
 
 	title: "Coompetitors"
 
+	property QfObject internals: QfObject
+	{
+		Component {
+			id: cDialog
+			Dialog {
+				persistentSettingsId: "DlgPrint"
+			}
+		}
+		Component {
+			id: cReportViewWidget
+			ReportViewWidget {}
+		}
+	}
+
 	Frame {
 		layoutProperties: LayoutProperties { spacing: 0 }
 		TableViewToolBar {
@@ -66,5 +80,16 @@ PartWidget
 		if(!sql_connected)
 			return;
 		model.reload();
+	}
+
+	function printAll()
+	{
+		Log.info("competitors print all triggered");
+		var w = cReportViewWidget.createObject(null);
+		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
+		var dlg = cDialog.createObject(FrameWork);
+		dlg.setDialogWidget(w);
+		dlg.exec();
+		dlg.destroy();
 	}
 }

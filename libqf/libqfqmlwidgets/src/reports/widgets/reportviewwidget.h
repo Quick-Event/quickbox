@@ -136,7 +136,7 @@ public:
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
 	void setData(const qf::core::utils::TreeTable &data) {fData = data;}
 	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
-	void setReport(const QString &file_name);
+	Q_SLOT void setReport(const QString &file_name);
 
 	/// stranky se pocitaji od 0
 	int currentPageNo() const {return fCurrentPageNo;}

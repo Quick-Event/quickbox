@@ -98,12 +98,6 @@ public:
 		ChildSize sz = childSize(ly);
 		return (sz.size == 0 && sz.unit == Rect::UnitMM);
 	}
-	// list obsahujici rozmery deti ve frame
-	//QList<qreal> childrenSizesInLayout;
-	//QList<qreal> childrenSizesInOrthogonalLayout;
-	//! children, kterym se ma zacit pri tisku
-	int indexToPrint;
-
 	static Layout orthogonalLayout(Layout l) {
 		if(l == LayoutHorizontal)
 			return LayoutVertical;
@@ -138,16 +132,21 @@ public:
 	//--void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
 
 	QString toString(int indent = 2, int indent_offset = 0) Q_DECL_OVERRIDE;
-
-	QQmlListProperty<ReportItem> items();
 private:
 	static void addItemFunction(QQmlListProperty<ReportItem> *list_property, ReportItem *item);
 	static ReportItem* itemAtFunction(QQmlListProperty<ReportItem> *list_property, int index);
 	static void removeAllItemsFunction(QQmlListProperty<ReportItem> *list_property);
 	static int countItemsFunction(QQmlListProperty<ReportItem> *list_property);
 protected:
+	virtual int itemsToPrintCount();
+	virtual ReportItem* itemToPrintAt(int ix);
+private:
+	QQmlListProperty<ReportItem> items();
 	int itemCount() const;
 	ReportItem* itemAt(int index);
+protected:
+	//! children, kterym se ma zacit pri tisku
+	int indexToPrint;
 private:
 	QList<ReportItem*> m_items;
 	//--QList<double> f_gridLayoutSizes;

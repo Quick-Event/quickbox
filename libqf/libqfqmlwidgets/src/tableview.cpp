@@ -272,11 +272,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 		qfu::Table::TextExportOptions opts(options.value("options").toMap());
 		QVariantList exported_columns = options.value("columns").toList();
 		qfu::TreeTable ttable;
-		//qfTrash() << "empty:" << ttable.toString();
 		qfu::TreeTableRow tt_row = ttable.appendRow();
-		//qfTrash() << "with row:" << ttable.toString();
-		//tt_row.setValue(0, "ahoj");
-		//qfTrash() << "with ahoj:" << ttable.toString();
 
 		{
 			qfu::TreeTable xt;
@@ -292,7 +288,6 @@ void TableView::exportReport_helper(const QVariant& _options)
 				xt.setValue("title", report_title);
 				xt.setValue("note", report_note);
 				tt_row.appendTable(xt);
-				//qfTrash() << "with report:" << ttable.toString();
 			}
 		}
 

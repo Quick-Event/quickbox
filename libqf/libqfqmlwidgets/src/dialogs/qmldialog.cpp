@@ -22,6 +22,20 @@ QmlDialog::~QmlDialog()
 {
 }
 
+qf::qmlwidgets::framework::DialogWidget *QmlDialog::dialogWidget() const
+{
+	return qobject_cast<framework::DialogWidget*>(m_centralFrame);
+}
+
+void QmlDialog::setDialogWidget(qf::qmlwidgets::framework::DialogWidget *w)
+{
+	if(m_centralFrame != w) {
+		m_centralFrame = w;
+		setCentralWidget(m_centralFrame);
+		emit dialogWidgetChanged(w);
+	}
+}
+
 QQmlListProperty<QWidget> QmlDialog::widgets()
 {
 	return m_centralFrame->widgets();

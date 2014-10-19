@@ -4,6 +4,7 @@
 #include "../qmlwidgetsglobal.h"
 #include "dialog.h"
 #include "../framework/ipersistentsettings.h"
+#include "../framework/dialogwidget.h"
 
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
@@ -19,13 +20,18 @@ class QFQMLWIDGETS_DECL_EXPORT QmlDialog : public Dialog, public QQmlParserStatu
 {
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
-	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_CLASSINFO("DefaultProperty", "widgets")
+	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
+	Q_PROPERTY(qf::qmlwidgets::framework::DialogWidget* dialogWidget READ dialogWidget WRITE setDialogWidget NOTIFY dialogWidgetChanged)
 private:
 	typedef Dialog Super;
 public:
 	explicit QmlDialog(QWidget *parent = 0);
 	~QmlDialog() Q_DECL_OVERRIDE;
+
+	qf::qmlwidgets::framework::DialogWidget* dialogWidget() const;
+	Q_SLOT void setDialogWidget(qf::qmlwidgets::framework::DialogWidget* w);
+	Q_SIGNAL void dialogWidgetChanged(framework::DialogWidget* w);
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:

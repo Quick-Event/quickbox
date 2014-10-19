@@ -14,6 +14,7 @@
 #include <qf/qmlwidgets/dialogs/inputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
+#include <qf/qmlwidgets/framework/dialogwidget.h>
 #include <qf/qmlwidgets/tableview.h>
 #include <qf/qmlwidgets/tableviewtoolbar.h>
 
@@ -26,6 +27,8 @@
 #include <qf/qmlwidgets/framework/pluginmanifest.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/framework/partwidget.h>
+
+#include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 
 #include <qf/core/log.h>
 
@@ -74,6 +77,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::framework::PluginManifest>(uri, 1, 0, "PluginManifest");
 		qmlRegisterType<qf::qmlwidgets::framework::DockWidget>(uri, 1, 0, "DockWidget");
 		qmlRegisterType<qf::qmlwidgets::framework::PartWidget>(uri, 1, 0, "PartWidget");
+		qmlRegisterType<qf::qmlwidgets::framework::DialogWidget>(uri, 1, 0, "DialogWidget");
 
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 
@@ -87,6 +91,9 @@ public:
 		qmlRegisterType<qf::qmlwidgets::dialogs::QmlDialog>(uri, 1, 0, "Dialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::InputDialog>(uri, 1, 0, "InputDialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::MessageBox>(uri, 1, 0, "MessageBox");
+
+		qmlRegisterType<qf::qmlwidgets::reports::ReportViewWidget>(uri, 1, 0, "ReportViewWidget");
+
 	}
 };
 
