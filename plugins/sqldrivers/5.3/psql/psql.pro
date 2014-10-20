@@ -27,4 +27,4 @@ win32 {
 INCLUDEPATH += \
         $$PSQL_HEADERS \
 
-include(../qsqldriverbase.pri)
+include(../../qsqldriverbase.pri)

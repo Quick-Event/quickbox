@@ -32,4 +32,4 @@ OTHER_FILES += \
 include (src/src.pri)
 
 RESOURCES += \
-    $${PLUGIN_MODULE_NAME}.qrc \
+#    $${PLUGIN_MODULE_NAME}.qrc \
