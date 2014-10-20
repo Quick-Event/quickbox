@@ -61,6 +61,8 @@ public:
 
 	QString driverName();
 
+    Q_INVOKABLE QString errorString();
+
 	/// reload m_sqlDatabase according to its connectionName
 	/// call it when driver for its connectionName is changed
 	//Q_SLOT void reloadConnection();

@@ -84,7 +84,12 @@ void SqlConnection::setPort(int n)
 
 QString SqlConnection::driverName()
 {
-	return m_sqlConnection.driverName();
+    return m_sqlConnection.driverName();
+}
+
+QString SqlConnection::errorString()
+{
+    return m_sqlConnection.lastError().text();
 }
 /*
 void SqlDatabase::reloadConnection()

@@ -55,24 +55,31 @@ Plugin {
 
 	function connectToSqlServer(silent)
 	{
-		var cancelled = false;
+        var cancelled = false;
+        var connect_ok = false;
 		if(!silent) {
-			var dlg = dlgConnectDb.createObject(FrameWork);
-			cancelled = !dlg.exec();
-			dlg.destroy();
+            var dlg = dlgConnectDb.createObject(FrameWork);
+            while(!connect_ok) {
+                cancelled = !dlg.exec();
+                if(cancelled)
+                    break;
+                var core_feature = FrameWork.plugin("Core");
+                //var db = Sql.database();
+                var settings = core_feature.createSettings();
+                settings.beginGroup("sql/connection");
+                console.debug(db, db.driverName);
+                db.hostName = settings.value('host');
+                db.userName = settings.value('user');
+                db.password = core_feature.crypt.decrypt(settings.value("password", ""));
+                db.databaseName = 'quickevent';
+                connect_ok = db.open();
+                settings.destroy();
+                if(!connect_ok) {
+                    MessageBoxSingleton.critical(FrameWork, qsTr("Connect Database Error: %1").arg(db.errorString()));
+                }
+            }
+            dlg.destroy();
 		}
-		if(!cancelled) {
-			var core_feature = FrameWork.plugin("Core");
-			//var db = Sql.database();
-			var settings = core_feature.createSettings();
-			settings.beginGroup("sql/connection");
-			console.debug(db, db.driverName);
-			db.hostName = settings.value('host');
-			db.userName = settings.value('user');
-			db.password = core_feature.crypt.decrypt(settings.value("password", ""));
-			db.databaseName = 'quickevent';
-			root.sqlServerConnected = db.open();
-			settings.destroy();
-		}
+        root.sqlServerConnected = connect_ok;
 	}
 }

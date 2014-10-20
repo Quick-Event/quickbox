@@ -6,3 +6,5 @@ SUBDIRS += \
 	plugins \
 
 
+OTHER_FILES += \
+    $$PWD/plugins/qml/SqlDb/* \

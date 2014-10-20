@@ -72,6 +72,7 @@ Dialog {
 		//settings = null;
 		if(result === Dialog.ResultAccept) {
             if(!edUser.text) {
+                MessageBoxSingleton.critical(root, qsTr("user is empty"));
                 Log.info("user is empty");
                 doneCancelled = true;
             }
