@@ -61,7 +61,7 @@ public:
 
 	QString driverName();
 
-    Q_INVOKABLE QString errorString();
+	Q_INVOKABLE QString errorString();
 
 	/// reload m_sqlDatabase according to its connectionName
 	/// call it when driver for its connectionName is changed
@@ -71,15 +71,12 @@ public:
 	Q_INVOKABLE bool transaction();
 	Q_INVOKABLE bool commit();
 	Q_INVOKABLE bool rollback();
-	Q_INVOKABLE qf::core::qml::SqlQuery* query();
+	Q_INVOKABLE qf::core::qml::SqlQuery* createQuery();
 	//Q_INVOKABLE qf::core::qml::SqlQuery* exec(const QString &query_str);
 	//Q_INVOKABLE qf::core::qml::SqlQuery* exec(qf::core::qml::SqlQueryBuilder *qb);
 private:
-	qf::core::qml::SqlQuery* createQuery();
-private:
 	qf::core::sql::Connection m_sqlConnection;
 	QString m_defaultConnectionName;
-	QPointer<SqlQuery> m_sqlQuery;
 };
 
 }}}

@@ -66,8 +66,8 @@ PartWidget
 
 	Component.onCompleted:
 	{
-		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reload);
-		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reload);
+		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reloadIfActive);
+		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reloadIfActive);
 	}
 
 	function canActivate(active_on)
@@ -79,10 +79,17 @@ PartWidget
 		return true;
 	}
 
+	function reloadIfActive()
+	{
+		if(root.active)
+			reload();
+	}
+
 	function reload()
 	{
 		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
-		if(!sql_connected)
+		var event_name = FrameWork.plugin("Event").currentEventName;
+		if(!sql_connected || !event_name)
 			return;
 		model.reload();
 		mClasses.reload();

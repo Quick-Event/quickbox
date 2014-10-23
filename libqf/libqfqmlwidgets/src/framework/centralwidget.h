@@ -22,8 +22,8 @@ public:
 public:
 	Q_SLOT virtual bool setPartActive(int part_index, bool set_active) = 0;
 
-	Q_SIGNAL void partActivated(const QString &feature_id, bool is_active);
-	Q_SIGNAL void partActivated(int part_index);
+    Q_SIGNAL void partActivated(const QString &feature_id, bool is_active);
+    Q_SIGNAL void partActivated(int part_index, bool is_active);
 public:
 	virtual void addPartWidget(PartWidget *widget) = 0;
 };

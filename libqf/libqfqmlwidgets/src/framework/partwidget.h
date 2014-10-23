@@ -4,6 +4,8 @@
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
 
+#include <qf/core/utils.h>
+
 #include <QWidget>
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
@@ -24,6 +26,7 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
+    Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
 private:
 	typedef QWidget Super;
 public:
@@ -38,11 +41,14 @@ public:
 	void setIconSource(QString arg);
 	Q_SIGNAL void iconSourceChanged(const QString &s);
 
-	QString featureId() const { return m_featureId; }
-	void setFeatureId(QString id);
-	Q_SIGNAL void featureIdChanged(const QString &s);
+    QString featureId() const { return m_featureId; }
+    void setFeatureId(QString id);
+    Q_SIGNAL void featureIdChanged(const QString &s);
 
-	Q_SLOT void loadPersistentSettings();
+    QF_PROPERTY_BOOL_IMPL(a, A, ctive)
+
+public:
+    Q_SLOT void loadPersistentSettings();
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:
@@ -53,7 +59,7 @@ private:
 	Frame *m_centralFrame;
 	QString m_title;
 	QString m_iconSource;
-	QString m_featureId;
+    QString m_featureId;
 };
 
 }}}

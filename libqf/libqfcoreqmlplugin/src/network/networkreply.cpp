@@ -18,13 +18,12 @@ NetworkReply::~NetworkReply()
 		m_reply->abort();
 		m_reply->close();
 #if defined __clang__ && __clang_major__ <= 3 &&  __clang_minor__ <= 4
-        #warning "mem leak caused by QTBUG-40125 is still here"
+		#warning "mem leak caused by QTBUG-40125 is still here"
 		/// !!! THIS IS A MEMORY LEAK !!!
 		/// don't know why, but deleting m_reply causes segmentation fault in the QNetworkHeadersPrivate destructor
 		/// watch https://bugreports.qt-project.org/browse/QTBUG-40125
 		/// it's a clang 3.4 bug.
 		qfWarning() << "mem leak caused by QTBUG-40125 is still here";
-
 #else
 		m_reply->deleteLater();
 #endif

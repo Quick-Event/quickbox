@@ -6,13 +6,14 @@
 
 #include <QSqlError>
 #include <QSqlDriver>
+#include <QQmlEngine>
 
 namespace qfs = qf::core::sql;
 
 using namespace qf::core::qml;
 
 SqlConnection::SqlConnection(QObject *parent) :
-	QObject(parent), m_sqlQuery(nullptr)
+    QObject(parent)
 {
 	qfLogFuncFrame() << this;
 	m_sqlConnection = qfs::Connection(QSqlDatabase::database(QSqlDatabase::defaultConnection, false));
@@ -159,14 +160,6 @@ bool SqlConnection::rollback()
 		}
 	}
 	return ret;
-}
-
-SqlQuery *SqlConnection::query()
-{
-	if(m_sqlQuery == nullptr) {
-		m_sqlQuery = createQuery();
-	}
-	return m_sqlQuery;
 }
 
 SqlQuery *SqlConnection::createQuery()

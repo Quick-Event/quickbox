@@ -24,7 +24,7 @@ StackedCentralWidget::StackedCentralWidget(MainWindow *parent) :
 	setLayout(ly);
 
 	m_partSwitch = new PartSwitch(this);
-	connect(this, SIGNAL(partActivated(int)), m_partSwitch, SLOT(setCurrentPartIndex(int)));
+    connect(this, SIGNAL(partActivated(int, bool)), m_partSwitch, SLOT(setCurrentPartIndex(int, bool)));
 	MainWindow::frameWork()->addToolBar(Qt::LeftToolBarArea, m_partSwitch);
 }
 
@@ -41,6 +41,7 @@ void StackedCentralWidget::addPartWidget(PartWidget *widget)
 
 bool StackedCentralWidget::setPartActive(int part_index, bool set_active)
 {
+    qfLogFuncFrame() << "part index:" << part_index << "set active:" << set_active;
 	bool ret = true;
 	PartWidget *pw = partWidget(part_index);
 	if(pw) {
@@ -53,10 +54,11 @@ bool StackedCentralWidget::setPartActive(int part_index, bool set_active)
 		}
 		ret = ret_val.toBool();
 		if(ret) {
-			m_centralWidget->setCurrentIndex(part_index);
+            pw->setActive(set_active);
+            if(set_active)
+                m_centralWidget->setCurrentIndex(part_index);
 			emit partActivated(pw->featureId(), set_active);
-			if(set_active)
-				emit partActivated(part_index);
+            emit partActivated(part_index, set_active);
 		}
 	}
 	return ret;

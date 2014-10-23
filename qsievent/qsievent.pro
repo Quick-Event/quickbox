@@ -7,4 +7,4 @@ SUBDIRS += \
 
 
 OTHER_FILES += \
-    $$PWD/plugins/qml/SqlDb/* \
+	$$PWD/plugins/qml/Event/Event.qml \

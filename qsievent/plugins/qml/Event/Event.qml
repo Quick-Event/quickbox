@@ -25,14 +25,15 @@ QfObject {
 			Log.info('will create:', event_name);
 			var create_script = dbSchema.createSqlScript({schemaName: event_name, driverName: db.driverName});
 			//Log.info(create_script.join(';\n') + ';');
-			db.transaction();
-			var q = db.query();
+            var q = db.createQuery();
+            Log.info("QUERY:", q ,typeof q, q===null)
+            db.transaction();
 			var ok = false;
 			for(var i=0; i<create_script.length; i++) {
 				var cmd = create_script[i] + ';';
 				if(cmd.startsWith('--'))
 					continue;
-				ok = q.exec(cmd);
+                ok = q.exec(cmd);
 				if(!ok) {
 					Log.info(cmd);
 					console.error(q.lastError());
@@ -52,7 +53,7 @@ QfObject {
 	function openEvent(event_name)
 	{
 		console.debug(db);
-		var q = db.query();
+        var q = db.createQuery();
 		if(!event_name) {
 			var qb = q.builder();
 			qb.select('nspname').from('pg_catalog.pg_namespace  AS n')
@@ -66,6 +67,7 @@ QfObject {
 			}
 			event_name = InputDialogSingleton.getItem(null, qsTr('Query'), qsTr('Open event'), events, 0, false);
 		}
+		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
 		if(event_name) {
 			if(q.exec("SET SCHEMA '" + event_name + "'")) {
 				root.currentEventName = event_name;
@@ -96,7 +98,7 @@ QfObject {
 				}
 			}
 			else {
-				MessageBoxSingleton.critical("http get error: " + json_str + ' on: ' + url)
+                MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
 			}
 
 		});
@@ -112,7 +114,7 @@ QfObject {
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
-				var data = JSON.parse(json_str).Data;
+                var data = JSON.parse(json_str).Data;
 				var etap_count = data.Stages;
 				Log.info("pocet etap:", etap_count);
 				var event_name = createEvent();
@@ -120,7 +122,7 @@ QfObject {
 					return;
 				openEvent(event_name);
 
-				var q = db.query();
+                var q = db.createQuery();
 
 				q.prepare('INSERT INTO event (etapCount, name, description, date, place, mainReferee, director, importId) VALUES (:etapCount, :name, :description, :date, :place, :mainReferee, :director, :importId)');
 				q.bindValue(':etapCount', data.Stages);
@@ -170,7 +172,7 @@ QfObject {
 				var data = JSON.parse(json_str).Data;
 				// import runners
 				//FrameWork.showProgress(qsTr("Importing runners"), 2, steps);
-				var q = db.query();
+                var q = db.createQuery();
 				q.prepare('INSERT INTO runners (classId, siId, firstName, lastName, registration, licence, note, importId) VALUES (:classId, :siId, :firstName, :lastName, :registration, :licence, :note, :importId)');
 				for(var runner_obj_key in data) {
 					var runner_obj = data[runner_obj_key];
