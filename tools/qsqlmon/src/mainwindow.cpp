@@ -1014,6 +1014,10 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				else if(a == actDropSchema) {
 					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy drop schema '%1'").arg(sch->objectName()), true)) {
 						QString qs = "DROP SCHEMA " + sch->objectName();
+						qf::core::sql::Connection c = activeConnection();
+						if(c.driverName().endsWith("PSQL", Qt::CaseInsensitive)) {
+							qs += " CASCADE";
+						}
 						execCommand(qs);
 						QModelIndex parix = mi.parent();
 						QObject *o = model->take(mi);

@@ -135,6 +135,7 @@ public:
 
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
 	void setData(const qf::core::utils::TreeTable &data) {fData = data;}
+	Q_INVOKABLE void setData(const QVariant &data);
 	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
 	Q_SLOT void setReport(const QString &file_name);
 

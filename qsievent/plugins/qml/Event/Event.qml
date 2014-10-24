@@ -195,12 +195,14 @@ QfObject {
 					q.bindValue(':licence', runner_obj.Licence);
 					q.bindValue(':note', note);
 					q.bindValue(':importId', runner_obj.ID);
-					if(!q.exec())
+					if(!q.exec()) {
+						MessageBoxSingleton.critical(FrameWork, "SQL error: " + q.lastError())
 						break;
+					}
 				}
 			}
 			else {
-				MessageBoxSingleton.critical("http get error: " + json_str + ' on: ' + url)
+				MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
 			}
 		});
 	}

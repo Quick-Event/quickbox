@@ -127,7 +127,13 @@ bool SqlQuery::prepare(const QString &query_str)
 
 void SqlQuery::bindValue(const QString &placeholder, const QVariant &val, int param_type)
 {
-	qfLogFuncFrame() << placeholder << "->" << val.toString() << "type:" << param_type;
-	m_query.bindValue(placeholder, val, (QSql::ParamType)param_type);
+	qfLogFuncFrame() << placeholder << "->" << val.toString() << "is null:" << val.isNull() << "is valid:" << val.isValid() << "value type:" << val.typeName() << "param type:" << param_type;
+	QVariant v = val;
+	if(v.userType() == qMetaTypeId<void*>()) {
+		// QML sets JavaScript null as QVariant(void*)
+		v = QVariant();
+		//qfDebug() << "\t changed to" << v.toString() << "is null:" << v.isNull() << "is valid:" << v.isValid() << "value type:" << v.typeName();
+	}
+	m_query.bindValue(placeholder, v, (QSql::ParamType)param_type);
 }
 

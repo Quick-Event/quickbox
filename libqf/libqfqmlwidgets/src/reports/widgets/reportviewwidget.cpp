@@ -608,6 +608,13 @@ ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
 	return doc;
 }
 
+void ReportViewWidget::setData(const QVariant &data)
+{
+	qfu::TreeTable tt;
+	tt.setVariant(data);
+	setData(tt);
+}
+
 int ReportViewWidget::pageCount()
 {
 	//qfLogFuncFrame();

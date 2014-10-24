@@ -1,6 +1,7 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
 
 PartWidget
 {
@@ -92,8 +93,11 @@ PartWidget
 	function printAll()
 	{
 		Log.info("competitors print all triggered");
+		var tt = new TreeTable.Table();
+		tt.setContent(model.toTreeTableVariant());
 		var w = cReportViewWidget.createObject(null);
 		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
+		w.setData(tt.content());
 		var dlg = cDialog.createObject(FrameWork);
 		dlg.setDialogWidget(w);
 		dlg.exec();
