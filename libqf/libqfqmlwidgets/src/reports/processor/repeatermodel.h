@@ -31,9 +31,9 @@ public:
 	virtual int rowCount() = 0;
 	virtual int columnCount() = 0;
 	virtual QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) = 0;
-	virtual QVariant data(const QString &col_name, int row_no, DataRole role = Qt::DisplayRole) = 0;
-	virtual QVariant data(int col_no, int row_no, DataRole role = Qt::DisplayRole) = 0;
-	virtual QVariant table(const QString &table_name, int row_no);
+	virtual QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) = 0;
+	virtual QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) = 0;
+	virtual QVariant table(int row_no, const QString &table_name);
 public:
 	static RepeaterModel* createFromData(const QVariant &data, QObject *parent = nullptr);
 };
@@ -51,9 +51,9 @@ public:
 	int rowCount() Q_DECL_OVERRIDE;
 	int columnCount() Q_DECL_OVERRIDE;
 	QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
-	QVariant data(int col_no, int row_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
-	QVariant data(const QString &col_name, int row_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
-	QVariant table(const QString &table_name, int row_no) Q_DECL_OVERRIDE;
+	QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
+	QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
+	QVariant table(int row_no, const QString &table_name) Q_DECL_OVERRIDE;
 };
 
 }}}

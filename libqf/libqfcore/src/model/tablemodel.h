@@ -144,7 +144,7 @@ public:
 		TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};
 	qf::core::utils::TreeTable toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
-	Q_INVOKABLE QVariant toTreeTableVariant(const QVariantList& exported_columns = QVariantList(), const QString& table_name = QString()) const;
+	Q_INVOKABLE QVariant toTreeTableData(const QVariantList& exported_columns = QVariantList(), const QString& table_name = QString()) const;
 
 protected:
 	void createColumnsFromTableFields();

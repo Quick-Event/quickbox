@@ -43,7 +43,7 @@ RepeaterModel *ReportItemRepeater::dataModel()
 			if(pr) {
 				RepeaterModel *dm = pr->dataModel();
 				if(dm) {
-					data = dm->table(data.toString(), pr->currentIndex());
+					data = dm->table(pr->currentIndex(), data.toString());
 				}
 			}
 		}
@@ -82,7 +82,7 @@ QVariant ReportItemRepeater::data(const QString &field_name, int row_no, int rol
 	QVariant ret;
 	RepeaterModel *m = dataModel();
 	if(m) {
-		ret = m->data(field_name, row_no, (RepeaterModel::DataRole)role);
+		ret = m->data(row_no, field_name, (RepeaterModel::DataRole)role);
 	}
 	else {
 		qfWarning() << "Repeater has not valid data model.";

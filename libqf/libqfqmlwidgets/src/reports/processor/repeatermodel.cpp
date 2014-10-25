@@ -17,7 +17,7 @@ RepeaterModel::RepeaterModel(QObject *parent) :
 {
 }
 
-QVariant RepeaterModel::table(const QString &table_name, int row_no)
+QVariant RepeaterModel::table(int row_no, const QString &table_name)
 {
 	Q_UNUSED(table_name);
 	Q_UNUSED(row_no);
@@ -68,7 +68,7 @@ QVariant RepeaterModelTreeTable::headerData(int col_no, RepeaterModel::DataRole 
 	return ret;
 }
 
-QVariant RepeaterModelTreeTable::data(int col_no, int row_no, RepeaterModel::DataRole role)
+QVariant RepeaterModelTreeTable::data(int row_no, int col_no, RepeaterModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);
@@ -80,7 +80,7 @@ QVariant RepeaterModelTreeTable::data(int col_no, int row_no, RepeaterModel::Dat
 	return ret;
 }
 
-QVariant RepeaterModelTreeTable::data(const QString &col_name, int row_no, RepeaterModel::DataRole role)
+QVariant RepeaterModelTreeTable::data(int row_no, const QString &col_name, RepeaterModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);
@@ -92,7 +92,7 @@ QVariant RepeaterModelTreeTable::data(const QString &col_name, int row_no, Repea
 	return ret;
 }
 
-QVariant RepeaterModelTreeTable::table(const QString &table_name, int row_no)
+QVariant RepeaterModelTreeTable::table(int row_no, const QString &table_name)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);

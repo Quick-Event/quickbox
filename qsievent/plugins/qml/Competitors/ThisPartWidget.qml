@@ -94,10 +94,15 @@ PartWidget
 	{
 		Log.info("competitors print all triggered");
 		var tt = new TreeTable.Table();
-		tt.setContent(model.toTreeTableVariant());
+		tt.setData(model.toTreeTableData());
+		console.warn("tt1", tt.toString());
+		tt.addColumn("test_col");
+		for(var i=0; i<tt.rowCount(); i++) 
+			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
 		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
-		w.setData(tt.content());
+		console.warn(tt.toString());
+		w.setData(tt.data());
 		var dlg = cDialog.createObject(FrameWork);
 		dlg.setDialogWidget(w);
 		dlg.exec();

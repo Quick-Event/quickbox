@@ -607,7 +607,7 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& exported_columns, con
 	return ret;
 }
 
-QVariant TableModel::toTreeTableVariant(const QVariantList &exported_columns, const QString &table_name) const
+QVariant TableModel::toTreeTableData(const QVariantList &exported_columns, const QString &table_name) const
 {
 	qfu::TreeTable tt = toTreeTable(exported_columns, table_name);
 	QVariant ret = tt.toVariant();
