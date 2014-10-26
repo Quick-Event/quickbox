@@ -3,7 +3,7 @@ import qf.qmlreports 1.0
 Report {
 	id: root
 	objectName: "root"
-	debugLevel: 1
+	//debugLevel: 1
 	styleSheet: StyleSheet {
 		objectName: "portraitStyleSheet"
 		basedOn: MyStyle { id: myStyle }
@@ -37,15 +37,19 @@ Report {
 		Frame {
 			width: "%"
 			layout: Frame.LayoutHorizontal
+			fill: Brush {color: Color { def: "lightgray" }}
 			Para {
+				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: "ix"
 			}
 			Para {
+				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: "class"
 			}
 			Para {
+				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: "name"
 			}
