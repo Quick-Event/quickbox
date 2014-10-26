@@ -7,9 +7,9 @@ PartWidget
 {
 	id: root
 
-	title: "Coompetitors"
+	title: "Competitors"
 
-	property QfObject internals: QfObject
+	attachedObject: QfObject
 	{
 		Component {
 			id: cDialog
@@ -53,7 +53,7 @@ PartWidget
 				{
 					queryBuilder.select2('runners', 'id, classId, importId')
 						.select("lastName || ' ' || firstName AS name")
-						.from('runners').orderBy('id').limit(5);
+						.from('runners').orderBy('id').limit(100);
 				}
 			}
 		}
@@ -80,7 +80,7 @@ PartWidget
 		if(root.active)
 			reload();
 	}
-	
+
 	function reload()
 	{
 		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
@@ -97,11 +97,11 @@ PartWidget
 		tt.setData(model.toTreeTableData());
 		//console.warn("tt1", tt.toString());
 		tt.addColumn("test_col");
-		for(var i=0; i<tt.rowCount(); i++) 
+		for(var i=0; i<tt.rowCount(); i++)
 			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
 		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
-		//console.warn(tt.toString());
+		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
 		var dlg = cDialog.createObject(FrameWork);
 		dlg.setDialogWidget(w);

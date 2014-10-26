@@ -90,9 +90,11 @@ void PartSwitch::updateButtonIcon(int part_index)
 	}
 }
 
-void PartSwitch::setCurrentPartIndex(int ix)
+void PartSwitch::setCurrentPartIndex(int ix, bool is_active)
 {
 	qfLogFuncFrame() << m_currentPartIndex << "->" << ix;
+	if(!is_active)
+		return;
 	if(m_currentPartIndex == ix)
 		return;
 	PartSwitchToolButton *bt1 = buttonAt(m_currentPartIndex);

@@ -40,6 +40,7 @@ ReportItemFrame::~ReportItemFrame()
 
 void ReportItemFrame::componentComplete()
 {
+	qfLogFuncFrame();
 	// update designed rect
 	/*--
 	Point p;
@@ -677,7 +678,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	dirty_rect.adjust(-hinset(), -vinset(), hinset(), vinset());
 	mp->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
-	qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
+	//qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
 	if(res.value == PrintOk || (res.value == PrintNotFit && (res.flags & FlagPrintBreak))) {
 		//bool children_aligned = false;
 		/// pokud se vytiskl layout, jehoz vyska nebyla zadana jako % a ma dite s %, roztahni dite a pripadne i jeho deti

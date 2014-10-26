@@ -4,6 +4,8 @@
 
 #include <qf/core/assert.h>
 
+#include <QQmlEngine>
+
 using namespace qf::core::qml;
 
 SqlQueryTableModel::SqlQueryTableModel(QObject *parent)
@@ -28,6 +30,7 @@ SqlQueryBuilder *SqlQueryTableModel::qmlSqlQueryBuilder()
 {
 	if(!m_qmlQueryBuilder) {
 		m_qmlQueryBuilder = new SqlQueryBuilder(this);
+		QQmlEngine::setObjectOwnership(m_qmlQueryBuilder, QQmlEngine::CppOwnership);
 	}
 	return m_qmlQueryBuilder;
 }

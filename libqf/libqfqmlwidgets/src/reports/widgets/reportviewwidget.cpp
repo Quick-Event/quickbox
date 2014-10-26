@@ -313,6 +313,7 @@ void ReportViewWidget::PainterWidget::wheelEvent(QWheelEvent *event)
 ReportViewWidget::ReportViewWidget(QWidget *parent)
 	: Super(parent), f_scrollArea(NULL), edCurrentPage(NULL), f_statusBar(NULL)
 {
+	qfLogFuncFrame() << this << "parent:" << parent;
 	f_reportProcessor = NULL;
 	whenRenderingSetCurrentPageTo = -1;
 	/*--
@@ -346,6 +347,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 
 ReportViewWidget::~ReportViewWidget()
 {
+	qfLogFuncFrame() << this;
 }
 
 ReportProcessor * ReportViewWidget::reportProcessor()
@@ -579,7 +581,6 @@ void ReportViewWidget::setReport(const QString &file_name)
 	qfLogFuncFrame() << "file_name:" << file_name;
 	//qfDebug() << "\tdata:" << fData.toString();
 	reportProcessor()->setReport(file_name);
-	reportProcessor()->setData(fData);
 	//out.dump();
 }
 
@@ -604,8 +605,15 @@ void ReportViewWidget::pageProcessed()
 ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
 {
 	ReportItemMetaPaintReport *doc = reportProcessor()->processorOutput();
-	if(!doc && throw_exc) QF_EXCEPTION("document is NULL");
+	if(!doc && throw_exc)
+		QF_EXCEPTION("document is NULL");
 	return doc;
+}
+
+void ReportViewWidget::setData(const qf::core::utils::TreeTable &data)
+{
+	qfLogFuncFrame();
+	reportProcessor()->setData(data);
 }
 
 void ReportViewWidget::setData(const QVariant &data)

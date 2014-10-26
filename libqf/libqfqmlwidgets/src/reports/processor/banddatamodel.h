@@ -34,6 +34,7 @@ public:
 	virtual QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant table(int row_no, const QString &table_name);
+	virtual QString dump() const {return QString();}
 public:
 	static BandDataModel* createFromData(const QVariant &data, QObject *parent = nullptr);
 };
@@ -54,6 +55,7 @@ public:
 	QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant table(int row_no, const QString &table_name) Q_DECL_OVERRIDE;
+	QString dump() const Q_DECL_OVERRIDE;
 };
 
 }}}

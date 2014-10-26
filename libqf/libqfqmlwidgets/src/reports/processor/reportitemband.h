@@ -37,7 +37,6 @@ public:
 	Q_SIGNAL void dataChanged(QVariant new_data);
 public:
 	BandDataModel* model();
-	Q_INVOKABLE QVariant data(const QString &field_name, int row_no = -1, int role = Qt::DisplayRole);
 public:
 	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;

@@ -2,44 +2,72 @@ import qf.qmlreports 1.0
 
 Report {
 	id: root
-    objectName: "root"
-    debugLevel: 1
+	objectName: "root"
+	debugLevel: 1
 	styleSheet: StyleSheet {
 		objectName: "portraitStyleSheet"
-        basedOn: MyStyle { id: myStyle }
-	 	colors: [
-	 	]
+		basedOn: MyStyle { id: myStyle }
+		colors: [
+		]
 		pens: [
 			Pen {name: "red1dot"
-                basedOn: "black1"
-                color: Color {def:"red"}
-                style: Pen.DotLine
-            }
+				basedOn: "black1"
+				color: Color {def:"red"}
+				style: Pen.DotLine
+			}
 		]
 	}
-    textStyle: myStyle.textStyleDefault
+	textStyle: myStyle.textStyleDefault
 	width: 210
 	height: 297
 	vinset: 10
 	hinset: 5
-    //layout: Frame.LayoutVertical
-    Frame {
-        objectName: "frame00"
+	//layout: Frame.LayoutVertical
+	Frame {
+		objectName: "frame00"
 		width: "%"
-//		height: "%"
-        Para {
-            text: "Title"
-            textStyle: TextStyle {basedOn: "big"}
-        }
+		Para {
+			text: "Title"
+			textStyle: TextStyle {basedOn: "big"}
+		}
 	}
-    Band {
-        model: 10
-        width: "%"
-        Detail {
-            width: "%"
-            layout: Frame.LayoutHorizontal
-        }
-    }
+	Band {
+		width: "%"
+		height: "%"
+		Frame {
+			width: "%"
+			layout: Frame.LayoutHorizontal
+			Para {
+				width: "%"
+				text: "ix"
+			}
+			Para {
+				width: "%"
+				text: "class"
+			}
+			Para {
+				width: "%"
+				text: "name"
+			}
+		}
+		Detail {
+			id: detail
+			width: "%"
+			layout: Frame.LayoutHorizontal
+			Para {
+				width: "%"
+				text: detail.currentIndex
+			}
+			Para {
+				width: "%"
+				text: detail.data(detail.currentIndex, "classId")
+			}
+			Para {
+				width: "%"
+				text: detail.data(detail.currentIndex, "name")
+			}
+		}
+	}
 }
 
 

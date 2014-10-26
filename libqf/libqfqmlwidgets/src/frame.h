@@ -3,6 +3,8 @@
 
 #include "qmlwidgetsglobal.h"
 
+#include <qf/core/utils.h>
+
 #include <QFrame>
 #include <QQmlListProperty>
 
@@ -21,12 +23,17 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_ENUMS(LayoutType)
 	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties* layoutProperties READ layoutTypeProperties WRITE setLayoutTypeProperties)
+	/// attachedObject is a workaround for https://github.com/fvacek/quickbox/issues/2
+	Q_PROPERTY(QObject* attachedObject READ attachedObject WRITE setAttachedObject NOTIFY attachedObjectChanged)
 private:
 	typedef QFrame Super;
 public:
 	enum LayoutType {LayoutInvalid, LayoutHorizontal, LayoutVertical, LayoutGrid, LayoutForm};
+
+	QF_PROPERTY_OBJECT_IMPL(QObject*, a, A, ttachedObject)
 public:
 	explicit Frame(QWidget *parent = 0);
+	~Frame() Q_DECL_OVERRIDE;
 public:
 	LayoutType layoutType() const;
 	void setLayoutType(LayoutType ly);

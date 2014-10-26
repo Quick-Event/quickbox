@@ -54,7 +54,7 @@ public:
 	//--ReportDocument report() {return fReport;}
 	//--ReportDocument& reportRef() {return fReport;}
 	void setData(const qf::core::utils::TreeTable &_data);
-	const qf::core::utils::TreeTable& data() const {return f_data;}
+	const qf::core::utils::TreeTable& data() const {return m_data;}
 
 	void addImage(const QString key, const ReportItem::Image &img) {m_imageMap[key] = img;}
 	const ImageMap& images() const {return m_imageMap;}
@@ -126,7 +126,7 @@ private:
 
 	QQmlEngine *m_qmlEngine = nullptr;
 	ReportDocument *m_reportDocumentComponent = nullptr;
-	qf::core::utils::TreeTable f_data;
+	qf::core::utils::TreeTable m_data;
 	QPaintDevice *m_paintDevice = nullptr;
 	//! Tree of instantiated QML report objects.
 	ReportItemReport *m_documentInstanceRoot = nullptr;

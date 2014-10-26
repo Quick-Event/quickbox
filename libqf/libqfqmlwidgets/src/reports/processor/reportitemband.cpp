@@ -39,7 +39,7 @@ BandDataModel *ReportItemBand::model()
 {
 	if(!m_model) {
 		QVariant dta = data();
-		if(dta.userType() == QVariant::String) {
+		if(!dta.isValid() || dta.userType() == QVariant::String) {
 			ReportItemBand *pr = parentBand();
 			if(pr) {
 				BandDataModel *dm = pr->model();
@@ -48,23 +48,17 @@ BandDataModel *ReportItemBand::model()
 					dta = dm->table(det->currentIndex(), dta.toString());
 				}
 			}
+			else {
+				/// take data from report processor
+				ReportProcessor *proc = processor();
+				if(proc) {
+					dta = QVariant::fromValue(proc->data());
+				}
+			}
 		}
 		m_model = BandDataModel::createFromData(dta, this);
 	}
 	return m_model;
-}
-
-QVariant ReportItemBand::data(const QString &field_name, int row_no, int role)
-{
-	QVariant ret;
-	BandDataModel *m = model();
-	if(m) {
-		ret = m->data(row_no, field_name, (BandDataModel::DataRole)role);
-	}
-	else {
-		qfWarning() << "Repeater has not valid data model.";
-	}
-	return ret;
 }
 
 ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)

@@ -101,8 +101,14 @@ QVariant TreeTableBandDataModel::table(int row_no, const QString &table_name)
 			qfu::TreeTable tt = ttr.table(i);
 			if(table_name.isEmpty() || tt.name() == table_name) {
 				ret = QVariant::fromValue(tt);
+				break;
 			}
 		}
 	}
 	return ret;
+}
+
+QString TreeTableBandDataModel::dump() const
+{
+	return treeTable().toString();
 }

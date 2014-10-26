@@ -11,21 +11,6 @@ ReportItemReport::ReportItemReport(ReportItem *parent)
 	: Super(parent), m_reportProcessor(nullptr)
 {
 	qfLogFuncFrame();
-	//QF_ASSERT(parent, "processor is NULL");
-	//Rect r = designedRect;
-	//QDomElement el = element.cloneNode(false).toElement();
-	//qfDebug() << "\toriginal:" << element.tagName() << "is null:" << element.isNull() << "has children:" << element.hasChildNodes() << "parent node is null:" << element.parentNode().isNull();
-	//qfDebug() << "\tclone:" << el.tagName() << "is null:" << el.isNull() << "has children:" << el.hasChildNodes() << "parent node is null:" << el.parentNode().isNull();
-	/*--
-	if(element.attribute("orientation") == "landscape") {
-		Size sz = designedRect.size();
-		sz.transpose();
-		designedRect.setSize(sz);
-	}
-	designedRect.flags = (Rect::LeftFixed | Rect::TopFixed | Rect::RightFixed | Rect::BottomFixed);
-	--*/
-	//--f_dataTable = parent->data();
-	//--dataTableLoaded = true;
 }
 
 ReportItemReport::~ReportItemReport()
@@ -48,10 +33,4 @@ ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *ou
 	//res = checkPrintResult(res);
 	return res;
 }
-/*--
-qfu::TreeTable ReportItemReport::dataTable()
-{
-	return f_dataTable;
-}
---*/
 

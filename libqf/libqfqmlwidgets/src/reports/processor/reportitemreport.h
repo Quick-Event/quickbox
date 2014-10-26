@@ -16,13 +16,13 @@ namespace qmlwidgets {
 namespace reports {
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
+class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemFrame
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Sheet* styleSheet READ styleSheet WRITE setStyleSheet NOTIFY styleSheetChanged)
 	Q_PROPERTY(int debugLevel READ debugLevel WRITE setDebugLevel)
 private:
-	typedef ReportItemBand Super;
+	typedef ReportItemFrame Super;
 public:
 	ReportItemReport(ReportItem *parent = nullptr);
 	~ReportItemReport() Q_DECL_OVERRIDE;

@@ -23,6 +23,8 @@ PartWidget::PartWidget(QWidget *parent) :
 
 PartWidget::~PartWidget()
 {
+	qfLogFuncFrame() << this << "title:" << title();
+	QF_SAFE_DELETE(m_attachedObject);
 }
 
 void PartWidget::setTitle(QString arg)

@@ -87,8 +87,8 @@ QUrl ReportProcessor::reportUrl() const
 void ReportProcessor::setData(const qfu::TreeTable &_data)
 {
 	//qfInfo() << "ReportProcessor _data:" << _data.toString().mid(0, 100);
-	f_data = _data;
-	//qfInfo() << "ReportProcessor data:" << fData.toString().mid(0, 100);
+	m_data = _data;
+	//qfInfo() << "SET reportProcessor data:" << m_data.toString();
 }
 
 ReportItemReport* ReportProcessor::documentInstanceRoot()

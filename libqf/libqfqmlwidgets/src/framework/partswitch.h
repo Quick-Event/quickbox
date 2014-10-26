@@ -44,7 +44,7 @@ public:
 
 	Q_SIGNAL void partActivated(int ix, bool is_active);
 private:
-	Q_SLOT void setCurrentPartIndex(int ix);
+	Q_SLOT void setCurrentPartIndex(int ix, bool is_active = true);
 	int buttonCount();
 	PartSwitchToolButton* buttonAt(int part_index);
 	Q_SLOT void updateButtonIcon(int part_index);

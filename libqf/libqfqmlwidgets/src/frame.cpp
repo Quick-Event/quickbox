@@ -23,6 +23,11 @@ Frame::Frame(QWidget *parent) :
 {
 }
 
+Frame::~Frame()
+{
+	QF_SAFE_DELETE(m_attachedObject);
+}
+
 Frame::LayoutType Frame::layoutType() const
 {
 	return m_layoutType;

@@ -26,7 +26,9 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
-    Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
+	Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
+	/// attachedObject is a workaround for https://github.com/fvacek/quickbox/issues/2
+	Q_PROPERTY(QObject* attachedObject READ attachedObject WRITE setAttachedObject NOTIFY attachedObjectChanged)
 private:
 	typedef QWidget Super;
 public:
@@ -41,14 +43,15 @@ public:
 	void setIconSource(QString arg);
 	Q_SIGNAL void iconSourceChanged(const QString &s);
 
-    QString featureId() const { return m_featureId; }
-    void setFeatureId(QString id);
-    Q_SIGNAL void featureIdChanged(const QString &s);
+	QString featureId() const { return m_featureId; }
+	void setFeatureId(QString id);
+	Q_SIGNAL void featureIdChanged(const QString &s);
 
-    QF_PROPERTY_BOOL_IMPL(a, A, ctive)
+	QF_PROPERTY_BOOL_IMPL(a, A, ctive)
+	QF_PROPERTY_OBJECT_IMPL(QObject*, a, A, ttachedObject)
 
-public:
-    Q_SLOT void loadPersistentSettings();
+	public:
+		Q_SLOT void loadPersistentSettings();
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:
@@ -59,7 +62,7 @@ private:
 	Frame *m_centralFrame;
 	QString m_title;
 	QString m_iconSource;
-    QString m_featureId;
+	QString m_featureId;
 };
 
 }}}

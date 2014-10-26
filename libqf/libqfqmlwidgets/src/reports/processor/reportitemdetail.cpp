@@ -26,6 +26,33 @@ ReportItemDetail::~ReportItemDetail()
 	qfLogFuncFrame();
 }
 
+QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
+{
+	qfLogFuncFrame() << "row_no:" << row_no << "field_name:" << field_name;
+	QVariant ret;
+	if(row_no >= 0) {
+		ReportItemBand *band = parentBand();
+		if(band) {
+			BandDataModel *m = band->model();
+			if(m) {
+				if(row_no < 0)
+					row_no = currentIndex();
+				ret = m->data(row_no, field_name, (BandDataModel::DataRole)role);
+			}
+			else {
+				qfWarning() << "Parent Band has not valid data model.";
+			}
+		}
+		else {
+			qfWarning() << "Detail without parent Band.";
+		}
+	}
+	else {
+		ret = QStringLiteral("N/A");
+	}
+	return ret;
+}
+
 ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();
@@ -54,8 +81,11 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 	if(res.value == PrintOk) {
 		if(model) {
 			/// take next data row
-			setCurrentIndex(currentIndex() + 1);
-			if(currentIndex() < model->rowCount()) {
+			int ix = currentIndex() + 1;
+			qfDebug() << currentIndex() << "/" << model->rowCount();
+			//qfDebug() << model->dump();
+			if(ix < model->rowCount()) {
+				setCurrentIndex(ix);
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				res.flags |= FlagPrintAgain;
 			}

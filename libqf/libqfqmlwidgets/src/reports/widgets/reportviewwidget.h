@@ -17,15 +17,16 @@
 #include <QFrame>
 #include <QMatrix>
 
-//class QFAction;
 class QLineEdit;
 class QSpinBox;
 class QPrinter;
 
 namespace qf {
 namespace qmlwidgets {
+
 class Action;
 class StatusBar;
+
 namespace reports {
 
 class ReportItemMetaPaint;
@@ -40,16 +41,19 @@ class QFQMLWIDGETS_DECL_EXPORT  ReportViewWidget : public qf::qmlwidgets::framew
 	Q_OBJECT
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
+public:
+	ReportViewWidget(QWidget *parent = NULL);
+	~ReportViewWidget() Q_DECL_OVERRIDE;
 protected:
 	class ScrollArea;
 	class PainterWidget;
+
 	PainterWidget *f_painterWidget;
 	ScrollArea *f_scrollArea;
 
 	//QFAction::ActionList f_actionList;
 	//QFUiBuilder *f_uiBuilder;
 
-	qf::core::utils::TreeTable fData;
 	int fCurrentPageNo;
 	qreal f_scale;
 
@@ -134,7 +138,7 @@ public:
 	void setVisible(bool visible) Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
-	void setData(const qf::core::utils::TreeTable &data) {fData = data;}
+	void setData(const qf::core::utils::TreeTable &data);
 	Q_INVOKABLE void setData(const QVariant &data);
 	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
 	Q_SLOT void setReport(const QString &file_name);
@@ -156,9 +160,6 @@ public:
 	ReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
 	virtual void prePrint() {}
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
-public:
-	ReportViewWidget(QWidget *parent = NULL);
-	~ReportViewWidget() Q_DECL_OVERRIDE;
 };
 
 class ReportViewWidget::PainterWidget : public QWidget
