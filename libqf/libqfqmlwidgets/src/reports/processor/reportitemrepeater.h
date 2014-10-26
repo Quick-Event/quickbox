@@ -14,7 +14,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace reports {
 
-class RepeaterModel;
+class BandDataModel;
 
 class QFQMLWIDGETS_DECL_EXPORT ReportItemRepeater : public ReportItemFrame
 {
@@ -37,7 +37,7 @@ public:
 	void setModel(QVariant m);
 	Q_SIGNAL void modelChanged(QVariant new_model);
 protected:
-	RepeaterModel* dataModel();
+	BandDataModel* dataModel();
 	ReportItemRepeater *parentRepeater();
 
 	int itemsToPrintCount() Q_DECL_OVERRIDE;
@@ -52,7 +52,7 @@ public:
 	//--qf::core::utils::TreeTable dataTable();
 	//--qf::core::utils::TreeTableRow dataRow();
 protected:
-	RepeaterModel *m_dataModel = nullptr;
+	BandDataModel *m_dataModel = nullptr;
 private:
 	QVariant m_model;
 };

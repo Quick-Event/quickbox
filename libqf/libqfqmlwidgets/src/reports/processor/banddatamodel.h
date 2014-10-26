@@ -4,8 +4,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef QF_QMLWIDGETS_REPORTS_REPEATERMODEL_H
-#define QF_QMLWIDGETS_REPORTS_REPEATERMODEL_H
+#ifndef QF_QMLWIDGETS_REPORTS_BANDDTAMODEL_H
+#define QF_QMLWIDGETS_REPORTS_BANDDTAMODEL_H
 
 #include "../../qmlwidgetsglobal.h"
 
@@ -18,7 +18,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace reports {
 
-class QFQMLWIDGETS_DECL_EXPORT RepeaterModel : public QObject
+class QFQMLWIDGETS_DECL_EXPORT BandDataModel : public QObject
 {
 	Q_OBJECT
 private:
@@ -26,7 +26,7 @@ private:
 public:
 	typedef Qt::ItemDataRole DataRole;
 public:
-	explicit RepeaterModel(QObject *parent = 0);
+	explicit BandDataModel(QObject *parent = 0);
 public:
 	virtual int rowCount() = 0;
 	virtual int columnCount() = 0;
@@ -35,16 +35,16 @@ public:
 	virtual QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant table(int row_no, const QString &table_name);
 public:
-	static RepeaterModel* createFromData(const QVariant &data, QObject *parent = nullptr);
+	static BandDataModel* createFromData(const QVariant &data, QObject *parent = nullptr);
 };
 
-class RepeaterModelTreeTable : public RepeaterModel
+class TreeTableBandDataModel : public BandDataModel
 {
 	Q_OBJECT
 private:
-	typedef RepeaterModel Super;
+	typedef BandDataModel Super;
 public:
-	explicit RepeaterModelTreeTable(QObject *parent = 0);
+	explicit TreeTableBandDataModel(QObject *parent = 0);
 public:
 	QF_PROPERTY_IMPL(qf::core::utils::TreeTable, t, T, reeTable)
 public:
@@ -58,4 +58,4 @@ public:
 
 }}}
 
-#endif // QF_QMLWIDGETS_REPORTS_REPEATERMODEL_H
+#endif // QF_QMLWIDGETS_REPORTS_BANDDTAMODEL_H

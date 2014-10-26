@@ -104,7 +104,7 @@ ReportItem::PrintResult ReportItemRepeater::printHtml(HTMLElement & out)
 	qfLogFuncFrame();// << "id:" << element.attribute("id");
 	//qfDebug().color(QFLog::Yellow) << "\treturn:" << res.toString();
 	//qfInfo() << "design mode:" << design_mode;
-	RepeaterModel *data_model = dataModel();
+	BandDataModel *data_model = dataModel();
 	if(data_model) {
 		if(currentIndex() < 0) {
 			setCurrentIndex(0);

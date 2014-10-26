@@ -34,20 +34,20 @@ void ReportItemRepeater::setModel(QVariant m)
 
 }
 
-RepeaterModel *ReportItemRepeater::dataModel()
+BandDataModel *ReportItemRepeater::dataModel()
 {
 	if(!m_dataModel) {
 		QVariant data = model();
 		if(data.userType() == QVariant::String) {
 			ReportItemRepeater *pr = parentRepeater();
 			if(pr) {
-				RepeaterModel *dm = pr->dataModel();
+				BandDataModel *dm = pr->dataModel();
 				if(dm) {
 					data = dm->table(pr->currentIndex(), data.toString());
 				}
 			}
 		}
-		m_dataModel = RepeaterModel::createFromData(data, this);
+		m_dataModel = BandDataModel::createFromData(data, this);
 	}
 	return m_dataModel;
 }
@@ -80,9 +80,9 @@ ReportItem *ReportItemRepeater::itemToPrintAt(int ix)
 QVariant ReportItemRepeater::data(const QString &field_name, int row_no, int role)
 {
 	QVariant ret;
-	RepeaterModel *m = dataModel();
+	BandDataModel *m = dataModel();
 	if(m) {
-		ret = m->data(row_no, field_name, (RepeaterModel::DataRole)role);
+		ret = m->data(row_no, field_name, (BandDataModel::DataRole)role);
 	}
 	else {
 		qfWarning() << "Repeater has not valid data model.";
@@ -93,6 +93,7 @@ QVariant ReportItemRepeater::data(const QString &field_name, int row_no, int rol
 ReportItem::PrintResult ReportItemRepeater::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame() << this;
+	/*
 	if(isHeaderOnBreak()) {
 		/// print everything except of detail again
 		for(int i=0; i<itemsToPrintCount(); i++) {
@@ -102,6 +103,7 @@ ReportItem::PrintResult ReportItemRepeater::printMetaPaint(ReportItemMetaPaint *
 		}
 		indexToPrint = 0;
 	}
+	*/
 	return Super::printMetaPaint(out, bounding_rect);
 }
 

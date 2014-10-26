@@ -1,4 +1,4 @@
-#include "repeatermodel.h"
+#include "banddatamodel.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -10,25 +10,25 @@ namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::reports;
 
 //=======================================================
-//                   RepeaterModel
+//                   BandDataModel
 //=======================================================
-RepeaterModel::RepeaterModel(QObject *parent) :
+BandDataModel::BandDataModel(QObject *parent) :
 	Super(parent)
 {
 }
 
-QVariant RepeaterModel::table(int row_no, const QString &table_name)
+QVariant BandDataModel::table(int row_no, const QString &table_name)
 {
 	Q_UNUSED(table_name);
 	Q_UNUSED(row_no);
 	return QVariant();
 }
 
-RepeaterModel* RepeaterModel::createFromData(const QVariant &data, QObject *parent)
+BandDataModel* BandDataModel::createFromData(const QVariant &data, QObject *parent)
 {
-	RepeaterModel *ret = nullptr;
+	BandDataModel *ret = nullptr;
 	if(data.userType() == qMetaTypeId<qfu::TreeTable>()) {
-		RepeaterModelTreeTable *m = new RepeaterModelTreeTable(parent);
+		TreeTableBandDataModel *m = new TreeTableBandDataModel(parent);
 		qfu::TreeTable tt = data.value<qfu::TreeTable>();
 		m->setTreeTable(tt);
 		ret = m;
@@ -37,25 +37,25 @@ RepeaterModel* RepeaterModel::createFromData(const QVariant &data, QObject *pare
 }
 
 //=======================================================
-//                   RepeaterModelTreeTable
+//                   TreeTableBandDataModel
 //=======================================================
-RepeaterModelTreeTable::RepeaterModelTreeTable(QObject *parent)
+TreeTableBandDataModel::TreeTableBandDataModel(QObject *parent)
 	: Super(parent)
 {
 
 }
 
-int RepeaterModelTreeTable::rowCount()
+int TreeTableBandDataModel::rowCount()
 {
 	return treeTable().rowCount();
 }
 
-int RepeaterModelTreeTable::columnCount()
+int TreeTableBandDataModel::columnCount()
 {
 	return treeTable().columnCount();
 }
 
-QVariant RepeaterModelTreeTable::headerData(int col_no, RepeaterModel::DataRole role)
+QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableColumns cols = treeTable().columns();
@@ -68,7 +68,7 @@ QVariant RepeaterModelTreeTable::headerData(int col_no, RepeaterModel::DataRole 
 	return ret;
 }
 
-QVariant RepeaterModelTreeTable::data(int row_no, int col_no, RepeaterModel::DataRole role)
+QVariant TreeTableBandDataModel::data(int row_no, int col_no, BandDataModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);
@@ -80,7 +80,7 @@ QVariant RepeaterModelTreeTable::data(int row_no, int col_no, RepeaterModel::Dat
 	return ret;
 }
 
-QVariant RepeaterModelTreeTable::data(int row_no, const QString &col_name, RepeaterModel::DataRole role)
+QVariant TreeTableBandDataModel::data(int row_no, const QString &col_name, BandDataModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);
@@ -92,7 +92,7 @@ QVariant RepeaterModelTreeTable::data(int row_no, const QString &col_name, Repea
 	return ret;
 }
 
-QVariant RepeaterModelTreeTable::table(int row_no, const QString &table_name)
+QVariant TreeTableBandDataModel::table(int row_no, const QString &table_name)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);

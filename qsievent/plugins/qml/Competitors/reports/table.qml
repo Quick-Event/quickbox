@@ -32,6 +32,14 @@ Report {
             textStyle: TextStyle {basedOn: "big"}
         }
 	}
+    Band {
+        model: 10
+        width: "%"
+        Detail {
+            width: "%"
+            layout: Frame.LayoutHorizontal
+        }
+    }
 }
 
 
