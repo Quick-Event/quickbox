@@ -37,7 +37,7 @@ class ReportProcessor;
 class ReportItemMetaPaint;
 
 class ReportItemFrame;
-class ReportItemRepeater;
+class ReportItemBand;
 class ReportItemMetaPaintFrame;
 
 //! Base class of report elements.
@@ -282,7 +282,7 @@ public:
 protected:
 	//--qf::core::utils::TreeTable findDataTable(const QString &name);
 protected:
-	ReportItemRepeater* currentRepeater();
+	ReportItemBand *parentBand();
 
 	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
 	/// poukud ma node jen jedno dite vrati to jeho hodnotu vcetne typu, pokud je deti vic, udela to z nich jeden string

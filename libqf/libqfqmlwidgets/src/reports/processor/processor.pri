@@ -6,10 +6,11 @@ HEADERS +=                            \
     $$PWD/reportdocument.h \
     $$PWD/reportitemframe.h \
     $$PWD/reportitemreport.h \
-    $$PWD/reportitemrepeater.h \
     $$PWD/reportitempara.h \
     $$PWD/reportitemimage.h \
-    $$PWD/banddatamodel.h
+    $$PWD/banddatamodel.h \
+    $$PWD/reportitemband.h \
+    $$PWD/reportitemdetail.h
 
 SOURCES +=                            \
 	$$PWD/reportpainter.cpp       \
@@ -20,9 +21,10 @@ SOURCES +=                            \
     $$PWD/reportdocument.cpp \
     $$PWD/reportitemframe.cpp \
     $$PWD/reportitemreport.cpp \
-    $$PWD/reportitemrepeater.cpp \
     $$PWD/reportitempara.cpp \
     $$PWD/reportitemimage.cpp \
-    $$PWD/banddatamodel.cpp
+    $$PWD/banddatamodel.cpp \
+    $$PWD/reportitemband.cpp \
+    $$PWD/reportitemdetail.cpp
 
 include ($$PWD/style/style.pri)

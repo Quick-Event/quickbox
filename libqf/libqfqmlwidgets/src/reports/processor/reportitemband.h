@@ -4,8 +4,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef QF_QMLWIDGETS_REPORTS_REPORTITEMREPEATER_H
-#define QF_QMLWIDGETS_REPORTS_REPORTITEMREPEATER_H
+#ifndef QF_QMLWIDGETS_REPORTS_REPORTITEMBAND_H
+#define QF_QMLWIDGETS_REPORTS_REPORTITEMBAND_H
 
 #include "reportitemframe.h"
 #include "../../qmlwidgetsglobal.h"
@@ -15,46 +15,41 @@ namespace qmlwidgets {
 namespace reports {
 
 class BandDataModel;
+class ReportItemDetail;
 
-class QFQMLWIDGETS_DECL_EXPORT ReportItemRepeater : public ReportItemFrame
+class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 {
 	Q_OBJECT
-	Q_PROPERTY(qf::qmlwidgets::reports::ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
+	//Q_PROPERTY(qf::qmlwidgets::reports::ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
 	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
-	Q_PROPERTY(QVariant model READ model WRITE setModel NOTIFY modelChanged)
-	Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
+	Q_PROPERTY(QVariant data READ data WRITE setData NOTIFY dataChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
-	ReportItemRepeater(ReportItem *parent = nullptr);
-	~ReportItemRepeater() Q_DECL_OVERRIDE;
+	ReportItemBand(ReportItem *parent = nullptr);
+	~ReportItemBand() Q_DECL_OVERRIDE;
 public:
-	QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
+	//QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
 	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
-	QF_PROPERTY_IMPL(int, c, C, urrentIndex)
 public:
-	QVariant model() const { return m_model; }
-	void setModel(QVariant m);
-	Q_SIGNAL void modelChanged(QVariant new_model);
-protected:
-	BandDataModel* dataModel();
-	ReportItemRepeater *parentRepeater();
-
-	int itemsToPrintCount() Q_DECL_OVERRIDE;
-	ReportItem* itemToPrintAt(int ix) Q_DECL_OVERRIDE;
+	QVariant data() const { return m_data; }
+	void setData(QVariant d);
+	Q_SIGNAL void dataChanged(QVariant new_data);
 public:
+	BandDataModel* model();
 	Q_INVOKABLE QVariant data(const QString &field_name, int row_no = -1, int role = Qt::DisplayRole);
 public:
 	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
-	virtual PrintResult printHtml(HTMLElement &out);
 
 	//--qf::core::utils::TreeTable dataTable();
 	//--qf::core::utils::TreeTableRow dataRow();
 protected:
-	BandDataModel *m_dataModel = nullptr;
+	ReportItemDetail* detail();
+protected:
+	BandDataModel *m_model = nullptr;
 private:
-	QVariant m_model;
+	QVariant m_data;
 };
 
 #if 0
@@ -129,4 +124,4 @@ protected:
 
 }}}
 
-#endif // QF_QMLWIDGETS_REPORTS_REPORTITEMREPEATER_H
+#endif // QF_QMLWIDGETS_REPORTS_REPORTITEMBAND_H

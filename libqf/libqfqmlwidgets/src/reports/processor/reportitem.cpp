@@ -6,7 +6,7 @@
 
 #include "reportpainter.h"
 #include "reportprocessor.h"
-#include "reportitemrepeater.h"
+#include "reportitemband.h"
 #include "reportitemreport.h"
 #include "style/compiledtextstyle.h"
 //#include "../../graphics/graph/graph.h"
@@ -147,16 +147,10 @@ ReportItemBand* ReportItem::parentBand()
 	return NULL;
 }
 --*/
-ReportItemRepeater* ReportItem::currentRepeater()
+ReportItemBand* ReportItem::parentBand()
 {
-	ReportItem *it = const_cast<ReportItem *>(this);
-	while(it) {
-		ReportItemRepeater *rit = qobject_cast<ReportItemRepeater*>(it);
-		if(rit)
-			return rit;
-		it = it->parent();
-	}
-	return NULL;
+	ReportItemBand *ret = qf::core::findParent<ReportItemBand*>(this, false);
+	return ret;
 }
 /*--
 qfu::TreeTable ReportItem::findDataTable(const QString &name)

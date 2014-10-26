@@ -9,8 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "reportitemrepeater.h"
-#include "repeatermodel.h"
+#include "reportitemband.h"
+#include "reportitemdetail.h"
+#include "banddatamodel.h"
 #include "reportitempara.h"
 #include "reportprocessor.h"
 #include "reportpainter.h"
@@ -97,35 +98,39 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 }
 
 //===================================================================
-//                           ReportItemRepeater
+//                           ReportItemDetail
 //===================================================================
-ReportItem::PrintResult ReportItemRepeater::printHtml(HTMLElement & out)
+ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 {
-	qfLogFuncFrame();// << "id:" << element.attribute("id");
-	//qfDebug().color(QFLog::Yellow) << "\treturn:" << res.toString();
-	//qfInfo() << "design mode:" << design_mode;
-	BandDataModel *data_model = dataModel();
-	if(data_model) {
-		if(currentIndex() < 0) {
-			setCurrentIndex(0);
+	qfLogFuncFrame();
+	ReportItemBand *band = qobject_cast<ReportItemBand*>(parent());
+	BandDataModel *model = nullptr;
+	if(band) {
+		model = band->model();
+		if(model) {
+			if(currentIndex() < 0) {
+				/// kdyz neni f_dataRow, vezmi prvni radek dat
+				setCurrentIndex(0);
+			}
 		}
 	}
-	PrintResult res = PrintOk;
-	if(isVisible()) {
+	PrintResult res;
+	/*--
+	bool design_mode = processor->isDesignMode();
+	if(!design_mode && (data_table.isNull() || dataRow().isNull())) {
+		/// prazdnej detail vubec netiskni
 		res.value = PrintOk;
 		return res;
 	}
-	else {
-		res = Super::printHtml(out);
-		if(res.value == PrintOk) {
-			if(data_model) {
-				/// vezmi dalsi radek dat
-				setCurrentIndex(currentIndex() + 1);
-				//qfInfo() << "vezmi dalsi radek dat element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
-				if(currentIndex() < data_model->rowCount()) {
-					resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-					res.flags |= FlagPrintAgain;
-				}
+	--*/
+	res = Super::printHtml(out);
+	if(res.value == PrintOk) {
+		if(model) {
+			/// take next data row
+			setCurrentIndex(currentIndex() + 1);
+			if(currentIndex() < model->rowCount()) {
+				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+				res.flags |= FlagPrintAgain;
 			}
 		}
 	}

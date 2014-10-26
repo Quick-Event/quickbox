@@ -7,7 +7,7 @@
 #ifndef QF_QMLWIDGETS_REPORTS_REPORTITEMREPORT_H
 #define QF_QMLWIDGETS_REPORTS_REPORTITEMREPORT_H
 
-#include "reportitemrepeater.h"
+#include "reportitemband.h"
 
 #include "../../qmlwidgetsglobal.h"
 
@@ -16,13 +16,13 @@ namespace qmlwidgets {
 namespace reports {
 
 //! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemRepeater
+class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemBand
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Sheet* styleSheet READ styleSheet WRITE setStyleSheet NOTIFY styleSheetChanged)
 	Q_PROPERTY(int debugLevel READ debugLevel WRITE setDebugLevel)
 private:
-	typedef ReportItemRepeater Super;
+	typedef ReportItemBand Super;
 public:
 	ReportItemReport(ReportItem *parent = nullptr);
 	~ReportItemReport() Q_DECL_OVERRIDE;

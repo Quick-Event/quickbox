@@ -1,6 +1,6 @@
 #include "reportitemframe.h"
 
-#include "reportitemrepeater.h"
+#include "reportitemband.h"
 #include "reportpainter.h"
 #include "reportprocessor.h"
 
@@ -198,16 +198,6 @@ int ReportItemFrame::countItemsFunction(QQmlListProperty<ReportItem> *list_prope
 {
 	ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
 	return that->itemCount();
-}
-
-int ReportItemFrame::itemsToPrintCount()
-{
-	return itemCount();
-}
-
-ReportItem *ReportItemFrame::itemToPrintAt(int ix)
-{
-	return itemAt(ix);
 }
 
 int ReportItemFrame::itemCount() const

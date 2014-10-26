@@ -113,8 +113,6 @@ protected:
 	//void setupMetaPaintItem(ReportItemMetaPaint *mpi) Q_DECL_OVERRIDE;
 
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
-	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
-	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
 	Layout parentLayout() const
 	{
 		ReportItemFrame *frm = parentFrame();
@@ -128,6 +126,8 @@ public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
 
+	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
+	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
 	//--const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
 	//--void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
 
@@ -138,8 +138,8 @@ private:
 	static void removeAllItemsFunction(QQmlListProperty<ReportItem> *list_property);
 	static int countItemsFunction(QQmlListProperty<ReportItem> *list_property);
 protected:
-	virtual int itemsToPrintCount();
-	virtual ReportItem* itemToPrintAt(int ix);
+	virtual int itemsToPrintCount() {return itemCount();}
+	virtual ReportItem* itemToPrintAt(int ix) {return itemAt(ix);}
 private:
 	QQmlListProperty<ReportItem> items();
 	int itemCount() const;
