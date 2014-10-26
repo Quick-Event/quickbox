@@ -554,9 +554,17 @@ bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
 	return ok;
 }
 
-qfu::TreeTable TableModel::toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts) const
+qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, const QString& table_name, const TreeTableExportOptions &opts) const
 {
 	qfu::TreeTable ret(table_name);
+	QVariantList exported_columns = _exported_columns;
+	if(exported_columns.isEmpty()) {
+		for(int ix=0; ix<columnCount(); ix++) {
+			QVariantMap col;
+			col[QStringLiteral("index")] = ix;
+			exported_columns << col;
+		}
+	}
 	for(int i=0; i<exported_columns.count(); i++) {
 		QVariantMap col = exported_columns[i].toMap();
 		QString cap = col.value("caption").toString();
@@ -610,6 +618,7 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& exported_columns, con
 QVariant TableModel::toTreeTableData(const QVariantList &exported_columns, const QString &table_name) const
 {
 	qfu::TreeTable tt = toTreeTable(exported_columns, table_name);
+	//qfInfo() << tt.toString();
 	QVariant ret = tt.toVariant();
 	return ret;
 }
