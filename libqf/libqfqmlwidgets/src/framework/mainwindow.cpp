@@ -28,6 +28,7 @@ MainWindow* MainWindow::self = nullptr;
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	QMainWindow(parent, flags), IPersistentSettings(this)
 {
+	qfLogFuncFrame();
 	Q_ASSERT(self == nullptr);
 	self = this;
 
@@ -39,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 
 MainWindow::~MainWindow()
 {
+	qfLogFuncFrame();
 	savePersistentSettings();
 }
 

@@ -6,22 +6,21 @@ import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
 PartWidget
 {
 	id: root
-
+	objectName: "pwCompetitors"
 	title: "Competitors"
 
-	attachedObject: QfObject
-	{
+	attachedObjects: [
 		Component {
 			id: cDialog
 			Dialog {
 				persistentSettingsId: "DlgPrint"
 			}
-		}
+		},
 		Component {
 			id: cReportViewWidget
 			ReportViewWidget {}
 		}
-	}
+	]
 
 	Frame {
 		layoutProperties: LayoutProperties { spacing: 0 }

@@ -27,8 +27,8 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
-	/// attachedObject is a workaround for https://github.com/fvacek/quickbox/issues/2
-	Q_PROPERTY(QObject* attachedObject READ attachedObject WRITE setAttachedObject NOTIFY attachedObjectChanged)
+	/// attachedObjects is a workaround for https://github.com/fvacek/quickbox/issues/2
+	Q_PROPERTY(QQmlListProperty<QObject> attachedObjects READ attachedObjects)
 private:
 	typedef QWidget Super;
 public:
@@ -48,10 +48,10 @@ public:
 	Q_SIGNAL void featureIdChanged(const QString &s);
 
 	QF_PROPERTY_BOOL_IMPL(a, A, ctive)
-	QF_PROPERTY_OBJECT_IMPL(QObject*, a, A, ttachedObject)
 
-	public:
-		Q_SLOT void loadPersistentSettings();
+	QQmlListProperty<QObject> attachedObjects();
+
+	Q_SLOT void loadPersistentSettings();
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:
@@ -63,6 +63,7 @@ private:
 	QString m_title;
 	QString m_iconSource;
 	QString m_featureId;
+	QList<QObject*> m_attachedObjects;
 };
 
 }}}

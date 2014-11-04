@@ -166,10 +166,10 @@ QString ReportItemFrame::toString(int indent, int indent_offset)
 QQmlListProperty<ReportItem> ReportItemFrame::items()
 {
 	return QQmlListProperty<ReportItem>(this, 0,
-                                    ReportItemFrame::addItemFunction,
-                                    ReportItemFrame::countItemsFunction,
-                                    ReportItemFrame::itemAtFunction,
-                                    ReportItemFrame::removeAllItemsFunction
+										ReportItemFrame::addItemFunction,
+										ReportItemFrame::countItemsFunction,
+										ReportItemFrame::itemAtFunction,
+										ReportItemFrame::removeAllItemsFunction
 										);
 }
 

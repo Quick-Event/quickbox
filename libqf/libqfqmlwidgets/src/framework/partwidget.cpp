@@ -24,7 +24,8 @@ PartWidget::PartWidget(QWidget *parent) :
 PartWidget::~PartWidget()
 {
 	qfLogFuncFrame() << this << "title:" << title();
-	QF_SAFE_DELETE(m_attachedObject);
+	qDeleteAll(m_attachedObjects);
+	m_attachedObjects.clear();
 }
 
 void PartWidget::setTitle(QString arg)
@@ -52,6 +53,11 @@ void PartWidget::setFeatureId(QString id)
 		//setObjectName(id);
 		emit featureIdChanged(id);
 	}
+}
+
+QQmlListProperty<QObject> PartWidget::attachedObjects()
+{
+	return QQmlListProperty<QObject>(this, m_attachedObjects);
 }
 
 /*

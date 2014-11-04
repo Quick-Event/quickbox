@@ -5,7 +5,7 @@ import qf.qmlwidgets 1.0
 PartWidget
 {
 	id: root
-
+	objectName: "pwFinish"
 	title: "Finish"
 
 	Frame {
@@ -23,6 +23,7 @@ PartWidget
 			layoutType: Frame.LayoutHorizontal
 			TableView {
 				id: table
+				objectName: "twFinish01"
 				persistentSettingsId: "tblStart";
 
 				model: SqlQueryTableModel {
@@ -51,6 +52,7 @@ PartWidget
 			}
 			TableView {
 				id: classes
+				objectName: "twFinish02"	
 				persistentSettingsId: "tblClasses";
 				model: SqlQueryTableModel {
 					id: mClasses
@@ -87,6 +89,7 @@ PartWidget
 
 	function reload()
 	{
+		Log.warning("Reloading Finish tables") 
 		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
 		var event_name = FrameWork.plugin("Event").currentEventName;
 		if(!sql_connected || !event_name)

@@ -25,7 +25,8 @@ Frame::Frame(QWidget *parent) :
 
 Frame::~Frame()
 {
-	QF_SAFE_DELETE(m_attachedObject);
+	qDeleteAll(m_attachedObjects);
+	m_attachedObjects.clear();
 }
 
 Frame::LayoutType Frame::layoutType() const
@@ -239,4 +240,9 @@ void Frame::createLayout(LayoutType layout_type)
 			new_box_ly->setSpacing(props->spacing());
 	}
 	setLayout(new_ly);
+}
+
+QQmlListProperty<QObject> Frame::attachedObjects()
+{
+	return QQmlListProperty<QObject>(this, m_attachedObjects);
 }

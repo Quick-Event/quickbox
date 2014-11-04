@@ -14,7 +14,7 @@ Plugin {
 			//checkable: true
 			onTriggered: {
 				Log.info(text, "triggered");
-				showLogDockWidget();
+				showLogDockWidget(true);
 			}
 		}
 	]
@@ -23,7 +23,7 @@ Plugin {
 	{
 		property LogDockWidget logDockWidget: null
 		Component {
-			id: logDockWidgetComponent
+			id: cLogDockWidget
 			LogDockWidget {}
 		}
 	}
@@ -40,9 +40,7 @@ Plugin {
 		var dock_visible = settings.value('visible');
 		settings.destroy();
 		//console.debug("logger dock visible:", dock_visible, typeof dock_visible);
-		if(dock_visible) {
-			showLogDockWidget();
-		}
+		showLogDockWidget(dock_visible);
 	}
 
 	function saveSettings()
@@ -54,14 +52,22 @@ Plugin {
 		settings.destroy();
 	}
 
-	function showLogDockWidget()
+	function showLogDockWidget(set_visible)
 	{
 		//console.debug("showLogDockWidget():", internals.logDockWidget);
 		//console.trace();
-		if(!internals.logDockWidget) {
-			internals.logDockWidget = logDockWidgetComponent.createObject(null);
-			FrameWork.addDockWidget(Qt.BottomDockWidgetArea, internals.logDockWidget);
+		if(set_visible) {
+			if(!internals.logDockWidget) {
+				var w = cLogDockWidget.createObject(null);
+				w.objectName = "logDockWidget";
+				FrameWork.addDockWidget(Qt.BottomDockWidgetArea, w);
+				internals.logDockWidget = w;
+			}
+			internals.logDockWidget.show();
 		}
-		internals.logDockWidget.show();
+		else {
+			if(internals.logDockWidget)
+				internals.logDockWidget.hide();
+		}
 	}
 }

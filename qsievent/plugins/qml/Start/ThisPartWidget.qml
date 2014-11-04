@@ -23,6 +23,7 @@ PartWidget
 			layoutType: Frame.LayoutHorizontal
 			TableView {
 				id: table
+				objectName: "tvStart1"
 				persistentSettingsId: "tblStart";
 
 				model: SqlQueryTableModel {
@@ -51,6 +52,7 @@ PartWidget
 			}
 			TableView {
 				id: classes
+				objectName: "tvStart2"
 				persistentSettingsId: "tblClasses";
 				model: SqlQueryTableModel {
 					id: mClasses

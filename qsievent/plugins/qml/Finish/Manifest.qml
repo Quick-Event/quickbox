@@ -3,5 +3,6 @@ import qf.qmlwidgets 1.0
 
 PluginManifest {
 	id: root
+	//disabled: true
 	dependsOnFeatureIds: ['Start']
 }

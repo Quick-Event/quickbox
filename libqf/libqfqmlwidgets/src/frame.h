@@ -23,14 +23,12 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 	Q_PROPERTY(LayoutType layoutType READ layoutType WRITE setLayoutType NOTIFY layoutTypeChanged)
 	Q_ENUMS(LayoutType)
 	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties* layoutProperties READ layoutTypeProperties WRITE setLayoutTypeProperties)
-	/// attachedObject is a workaround for https://github.com/fvacek/quickbox/issues/2
-	Q_PROPERTY(QObject* attachedObject READ attachedObject WRITE setAttachedObject NOTIFY attachedObjectChanged)
+	/// attachedObjects is a workaround for https://github.com/fvacek/quickbox/issues/2
+	Q_PROPERTY(QQmlListProperty<QObject> attachedObjects READ attachedObjects)
 private:
 	typedef QFrame Super;
 public:
 	enum LayoutType {LayoutInvalid, LayoutHorizontal, LayoutVertical, LayoutGrid, LayoutForm};
-
-	QF_PROPERTY_OBJECT_IMPL(QObject*, a, A, ttachedObject)
 public:
 	explicit Frame(QWidget *parent = 0);
 	~Frame() Q_DECL_OVERRIDE;
@@ -52,16 +50,18 @@ private:
 
 	LayoutTypeProperties* layoutTypeProperties() {return m_layoutTypeProperties;}
 	void setLayoutTypeProperties(LayoutTypeProperties *props);
-	//Q_SIGNAL void gridLayoutPropertiesChanged();
-	//Q_SLOT void initLayout();
+
 	void addToLayout(QWidget *widget);
 	void createLayout(LayoutType layout_type);
+
+	QQmlListProperty<QObject> attachedObjects();
 private:
 	LayoutType m_layoutType;
 	LayoutTypeProperties *m_layoutTypeProperties;
 	QList<QWidget*> m_childWidgets;
 	int m_currentLayoutRow;
 	int m_currentLayoutColumn;
+	QList<QObject*> m_attachedObjects;
 };
 
 }

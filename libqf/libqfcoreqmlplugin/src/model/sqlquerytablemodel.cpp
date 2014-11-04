@@ -11,10 +11,12 @@ using namespace qf::core::qml;
 SqlQueryTableModel::SqlQueryTableModel(QObject *parent)
 	: Super(parent), m_qmlQueryBuilder(nullptr)
 {
+	qfLogFuncFrame() << this;
 }
 
 SqlQueryTableModel::~SqlQueryTableModel()
 {
+	qfLogFuncFrame() << this;
 	qDeleteAll(m_columns);
 }
 
@@ -38,22 +40,24 @@ SqlQueryBuilder *SqlQueryTableModel::qmlSqlQueryBuilder()
 QQmlListProperty<TableModelColumn> SqlQueryTableModel::columns()
 {
 	return QQmlListProperty<TableModelColumn>(this,0,
-                                    SqlQueryTableModel::addColumnFunction,
-                                    SqlQueryTableModel::countColumnsFunction,
-                                    SqlQueryTableModel::columnAtFunction,
-                                    SqlQueryTableModel::removeAllColumnsFunction
-                                    );
+											  SqlQueryTableModel::addColumnFunction,
+											  SqlQueryTableModel::countColumnsFunction,
+											  SqlQueryTableModel::columnAtFunction,
+											  SqlQueryTableModel::removeAllColumnsFunction
+											  );
 }
 
 void SqlQueryTableModel::addColumnFunction(QQmlListProperty<TableModelColumn> *list_property, TableModelColumn *column)
 {
 	if (column) {
 		SqlQueryTableModel *that = static_cast<SqlQueryTableModel*>(list_property->object);
-		//qDebug() << "adding column" << column << column->parent();
-		column->setParent(0);
+		if(!column->parent()) {
+			qfWarning() << "Every object that is not garbage collected by qml engine should have parent, reparenting column to model.";
+			column->setParent(that);
+		}
 		that->m_columns << column;
-        that->insertColumn(that->m_columns.count(), column->columnDefinition());
-    }
+		that->insertColumn(that->m_columns.count(), column->columnDefinition());
+	}
 }
 
 TableModelColumn *SqlQueryTableModel::columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, int index)
@@ -64,6 +68,7 @@ TableModelColumn *SqlQueryTableModel::columnAtFunction(QQmlListProperty<TableMod
 
 void SqlQueryTableModel::removeAllColumnsFunction(QQmlListProperty<TableModelColumn> *list_property)
 {
+	qfLogFuncFrame();
 	SqlQueryTableModel *that = static_cast<SqlQueryTableModel*>(list_property->object);
 	while (that->columnCount()) {
 		ColumnDefinition cd = that->removeColumn(0);

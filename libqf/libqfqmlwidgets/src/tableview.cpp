@@ -30,6 +30,7 @@ using namespace qf::qmlwidgets;
 TableView::TableView(QWidget *parent) :
 	Super(parent), framework::IPersistentSettings(this)
 {
+	qfLogFuncFrame() << this;
 	m_editRowsInline = true;
 	setItemDelegate(new TableItemDelegate(this));
 	{
@@ -65,6 +66,7 @@ TableView::TableView(QWidget *parent) :
 
 TableView::~TableView()
 {
+	qfLogFuncFrame() << this;
 	savePersistentSettings();
 }
 
