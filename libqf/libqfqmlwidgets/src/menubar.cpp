@@ -12,7 +12,7 @@
 using namespace qf::qmlwidgets;
 
 MenuBar::MenuBar(QWidget *parent) :
-	QMenuBar(parent)
+	Super(parent)
 {
 }
 

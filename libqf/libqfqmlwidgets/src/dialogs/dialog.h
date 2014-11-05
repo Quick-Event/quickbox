@@ -12,6 +12,8 @@ namespace qf {
 namespace qmlwidgets {
 
 class DialogButtonBox;
+class MenuBar;
+class ToolBar;
 
 namespace dialogs {
 
@@ -32,6 +34,9 @@ public:
 public:
 	void setCentralWidget(QWidget *central_widget);
 
+	Q_INVOKABLE MenuBar* menuBar();
+	Q_INVOKABLE ToolBar* addToolBar();
+
 	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}
 	void setButtonBox(DialogButtonBox *dbb);
 	Q_SIGNAL void buttonBoxChanged();
@@ -50,8 +55,10 @@ private:
 	void updateLayout();
 protected:
 	bool m_doneCancelled;
-	QWidget *m_centralWidget;
-	DialogButtonBox *m_dialogButtonBox;
+	QList<ToolBar*> m_toolBars;
+	MenuBar *m_menuBar = nullptr;
+	QWidget *m_centralWidget = nullptr;
+	DialogButtonBox *m_dialogButtonBox = nullptr;
 };
 
 }}}

@@ -82,7 +82,7 @@ void MainWindow::showProgress(const QString &msg, int completed, int total)
 	qfLogFuncFrame() << msg << completed << total;
 	emit progress(msg, completed, total);
 }
-#ifdef GET_RESOURCE_IN_FRAME_WORK
+#ifdef GET_RESOURCE_IN_FRAMEWORK
 QNetworkAccessManager *manager = new QNetworkAccessManager();
 QMap<int, QNetworkReply*> servedReplies;
 QMap<int, QByteArray> servedRepliesData;

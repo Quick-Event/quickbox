@@ -29,9 +29,10 @@ qf::qmlwidgets::framework::DialogWidget *QmlDialog::dialogWidget() const
 
 void QmlDialog::setDialogWidget(qf::qmlwidgets::framework::DialogWidget *w)
 {
-	if(m_centralFrame != w) {
+	QWidget *old_w = m_centralWidget;
+	setCentralWidget(w);
+	if(old_w != w) {
 		m_centralFrame = w;
-		setCentralWidget(m_centralFrame);
 		emit dialogWidgetChanged(w);
 	}
 }

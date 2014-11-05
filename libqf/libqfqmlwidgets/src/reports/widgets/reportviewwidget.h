@@ -48,27 +48,27 @@ protected:
 	class ScrollArea;
 	class PainterWidget;
 
-	PainterWidget *f_painterWidget;
-	ScrollArea *f_scrollArea;
+	PainterWidget *m_painterWidget;
+	ScrollArea *m_scrollArea;
 
 	//QFAction::ActionList f_actionList;
 	//QFUiBuilder *f_uiBuilder;
 
-	int fCurrentPageNo;
-	qreal f_scale;
+	int m_currentPageNo;
+	qreal m_scale;
 
-	int whenRenderingSetCurrentPageTo;
+	int m_whenRenderingSetCurrentPageTo;
 
 	QLineEdit *edCurrentPage;
 
-	ReportItemMetaPaint *f_selectedItem;
-	QMatrix painterInverseMatrix;
+	ReportItemMetaPaint *m_selectedItem;
+	QMatrix m_painterInverseMatrix;
 
-	ReportProcessor *f_reportProcessor;
+	ReportProcessor *m_reportProcessor;
 
 	static const int PageBorder = 5;
 
-	qf::qmlwidgets::StatusBar *f_statusBar;
+	qf::qmlwidgets::StatusBar *m_statusBar;
 private:
 	//void selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el);
 	void selectItem(const QPointF &p);
@@ -144,7 +144,7 @@ public:
 	Q_SLOT void setReport(const QString &file_name);
 
 	/// stranky se pocitaji od 0
-	int currentPageNo() const {return fCurrentPageNo;}
+	int currentPageNo() const {return m_currentPageNo;}
 	/// stranky se pocitaji od 0
 	void setCurrentPageNo(int pg_no);
 	int pageCount();
@@ -152,14 +152,17 @@ public:
 	/// return NULL if such a page does not exist.
 	ReportItemMetaPaintFrame *getPage(int page_no);
 
-	qreal scale() const {return f_scale;}
+	qreal scale() const {return m_scale;}
 	void setScale(qreal _scale);
 
-	//--qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
+	void updateDialogUi(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
+	ActionMap actions() Q_DECL_OVERRIDE;
 
-	ReportItemMetaPaint* selectedItem() const {return f_selectedItem;}
+	ReportItemMetaPaint* selectedItem() const {return m_selectedItem;}
 	virtual void prePrint() {}
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
+private:
+	ActionMap m_actions;
 };
 
 class ReportViewWidget::PainterWidget : public QWidget

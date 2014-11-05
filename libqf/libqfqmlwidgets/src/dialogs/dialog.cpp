@@ -1,5 +1,8 @@
 #include "dialog.h"
 #include "../frame.h"
+#include "../framework/dialogwidget.h"
+#include "../menubar.h"
+#include "../toolbar.h"
 #include "../dialogbuttonbox.h"
 
 #include <qf/core/log.h>
@@ -14,8 +17,6 @@ Dialog::Dialog(QWidget *parent) :
 	QDialog(parent), framework::IPersistentSettings(this)
 {
 	qfLogFuncFrame();
-	m_dialogButtonBox = nullptr;
-	m_centralWidget = nullptr;
 }
 
 Dialog::~Dialog()
@@ -27,13 +28,31 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 {
 	if(central_widget != m_centralWidget) {
 		QF_SAFE_DELETE(m_centralWidget);
+		qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(central_widget);
 		m_centralWidget = central_widget;
 		if(m_centralWidget) {
 			m_centralWidget->setParent(nullptr);
 			m_centralWidget->setParent(this);
 		}
+		if(dialog_widget)
+			dialog_widget->updateDialogUi(this);
 		updateLayout();
 	}
+}
+
+qf::qmlwidgets::MenuBar* Dialog::menuBar()
+{
+	if(!m_menuBar) {
+		m_menuBar = new MenuBar(this);
+	}
+	return m_menuBar;
+}
+
+qf::qmlwidgets::ToolBar *Dialog::addToolBar()
+{
+	qf::qmlwidgets::ToolBar *ret = new qf::qmlwidgets::ToolBar(this);
+	m_toolBars << ret;
+	return ret;
 }
 
 void Dialog::loadPersistentSettings()
@@ -94,8 +113,30 @@ void Dialog::updateLayout()
 			ly->removeItem(ly->itemAt(0));
 		}
 	}
-	if(m_centralWidget)
+
+	if(m_menuBar)
+		ly->addWidget(m_menuBar);
+
+	if(m_toolBars.count() == 1) {
+		ToolBar *tb = m_toolBars[0];
+		tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+		ly->addWidget(tb);
+	}
+	else if(!m_toolBars.isEmpty()) {
+		QHBoxLayout *ly1 = new QHBoxLayout(nullptr);
+		for(auto tb : m_toolBars) {
+			tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+			ly1->addWidget(tb);
+		}
+		ly1->addStretch();
+		ly->addLayout(ly1);
+	}
+
+	if(m_centralWidget) {
 		ly->addWidget(m_centralWidget);
+		if(!m_centralWidget->windowTitle().isEmpty())
+			setWindowTitle(m_centralWidget->windowTitle());
+	}
 	if(m_dialogButtonBox)
 		ly->addWidget(m_dialogButtonBox);
 }

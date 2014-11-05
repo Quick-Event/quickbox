@@ -21,6 +21,7 @@ HEADERS += \
     $$PWD/tableitemdelegate.h \
     $$PWD/tableviewtoolbar.h \
     $$PWD/saveoptionswidget.h \
+    $$PWD/toolbar.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
     $$PWD/tableitemdelegate.cpp \
     $$PWD/tableviewtoolbar.cpp \
     $$PWD/saveoptionswidget.cpp \
+    $$PWD/toolbar.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \

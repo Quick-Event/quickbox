@@ -10,6 +10,7 @@
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/progressbar.h>
 #include <qf/qmlwidgets/menubar.h>
+#include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/dialogs/qmldialog.h>
 #include <qf/qmlwidgets/dialogs/inputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -71,6 +72,7 @@ public:
 		// Menu is not needed for now
 		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");
+		qmlRegisterType<qf::qmlwidgets::ToolBar>(uri, 1, 0, "ToolBar");
 		qmlRegisterType<qf::qmlwidgets::StatusBar>(uri, 1, 0, "StatusBar");
 
 		qmlRegisterType<qf::qmlwidgets::framework::Plugin>(uri, 1, 0, "Plugin");

@@ -13,6 +13,8 @@ class Action;
 class QFQMLWIDGETS_DECL_EXPORT MenuBar : public QMenuBar
 {
 	Q_OBJECT
+private:
+	typedef QMenuBar Super;
 public:
 	explicit MenuBar(QWidget *parent = 0);
 public:

@@ -13,6 +13,8 @@
 #include "../../dialogs/dialog.h"
 #include "../../dialogs/filedialog.h"
 #include "../../statusbar.h"
+#include "../../menubar.h"
+#include "../../toolbar.h"
 #include "../../framework/cursoroverrider.h"
 
 #include <qf/core/utils/fileutils.h>
@@ -233,7 +235,7 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 	}
 	else {
 		ReportItemMetaPaint::Point p = QPointF(e->pos());
-		p = reportViewWidget()->painterInverseMatrix.map(p);
+		p = reportViewWidget()->m_painterInverseMatrix.map(p);
 		p = graphics::device2mm(p, this);
 		qfDebug() << Q_FUNC_INFO << ReportItem::Point(p).toString();
 		reportViewWidget()->selectItem(p);
@@ -311,11 +313,11 @@ void ReportViewWidget::PainterWidget::wheelEvent(QWheelEvent *event)
 //                                 ReportViewWidget
 //====================================================
 ReportViewWidget::ReportViewWidget(QWidget *parent)
-	: Super(parent), f_scrollArea(NULL), edCurrentPage(NULL), f_statusBar(NULL)
+	: Super(parent), m_scrollArea(NULL), edCurrentPage(NULL), m_statusBar(NULL)
 {
 	qfLogFuncFrame() << this << "parent:" << parent;
-	f_reportProcessor = NULL;
-	whenRenderingSetCurrentPageTo = -1;
+	m_reportProcessor = NULL;
+	m_whenRenderingSetCurrentPageTo = -1;
 	/*--
 	f_uiBuilder = new QFUiBuilder(this, ":/libqfgui/qfreportviewwidget.ui.xml");
 	f_actionList += f_uiBuilder->actions();
@@ -323,24 +325,24 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	//--action("file.export.email")->setVisible(false);
 	//action("report.edit")->setVisible(false);
 
-	fCurrentPageNo = -1;
-	f_selectedItem = NULL;
+	m_currentPageNo = -1;
+	m_selectedItem = NULL;
 
-	f_scrollArea = new ScrollArea(NULL);
+	m_scrollArea = new ScrollArea(NULL);
 	/// zajimavy, odkomentuju tenhle radek a nemuzu nastavit pozadi zadnyho widgetu na scrollArea.
 	//f_scrollArea->setBackgroundRole(QPalette::Dark);
-	f_painterWidget = new PainterWidget(f_scrollArea);
-	connect(f_painterWidget, SIGNAL(sqlValueEdited(QString,QVariant)), this, SIGNAL(sqlValueEdited(QString,QVariant)), Qt::QueuedConnection);
-	connect(f_scrollArea, SIGNAL(zoomOnWheel(int,QPoint)), this, SLOT(zoomOnWheel(int,QPoint)), Qt::QueuedConnection);
-	f_scrollArea->setWidget(f_painterWidget);
+	m_painterWidget = new PainterWidget(m_scrollArea);
+	connect(m_painterWidget, SIGNAL(sqlValueEdited(QString,QVariant)), this, SIGNAL(sqlValueEdited(QString,QVariant)), Qt::QueuedConnection);
+	connect(m_scrollArea, SIGNAL(zoomOnWheel(int,QPoint)), this, SLOT(zoomOnWheel(int,QPoint)), Qt::QueuedConnection);
+	m_scrollArea->setWidget(m_painterWidget);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setSpacing(0);
 	ly->setMargin(0);
-	ly->addWidget(f_scrollArea);
+	ly->addWidget(m_scrollArea);
 	ly->addWidget(statusBar());
 
-	connect(f_scrollArea, SIGNAL(showNextPage()), this, SLOT(scrollToNextPage()));
-	connect(f_scrollArea, SIGNAL(showPreviousPage()), this, SLOT(scrollToPrevPage()));
+	connect(m_scrollArea, SIGNAL(showNextPage()), this, SLOT(scrollToNextPage()));
+	connect(m_scrollArea, SIGNAL(showPreviousPage()), this, SLOT(scrollToPrevPage()));
 
 	//--QFUiBuilder::connectActions(f_actionList, this);
 }
@@ -352,22 +354,22 @@ ReportViewWidget::~ReportViewWidget()
 
 ReportProcessor * ReportViewWidget::reportProcessor()
 {
-	if(f_reportProcessor == NULL) {
-		setReportProcessor(new ReportProcessor(f_painterWidget, this));
+	if(m_reportProcessor == NULL) {
+		setReportProcessor(new ReportProcessor(m_painterWidget, this));
 	}
-	return f_reportProcessor;
+	return m_reportProcessor;
 }
 
 void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 {
-	f_reportProcessor = proc;
-	connect(f_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(pageProcessed()));
+	m_reportProcessor = proc;
+	connect(m_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(pageProcessed()));
 }
 
 qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
 {
-	if(!f_statusBar) {
-		f_statusBar = new qmlwidgets::StatusBar(NULL);
+	if(!m_statusBar) {
+		m_statusBar = new qmlwidgets::StatusBar(NULL);
 		zoomStatusSpinBox = new QSpinBox();
 		zoomStatusSpinBox->setSingleStep(10);
 		zoomStatusSpinBox->setMinimum(10);
@@ -375,10 +377,10 @@ qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
 		zoomStatusSpinBox->setPrefix("zoom: ");
 		zoomStatusSpinBox->setSuffix("%");
 		zoomStatusSpinBox->setAlignment(Qt::AlignRight);
-		f_statusBar->addWidget(zoomStatusSpinBox);
+		m_statusBar->addWidget(zoomStatusSpinBox);
 		connect(zoomStatusSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setScaleProc(int)));
 	}
-	return f_statusBar;
+	return m_statusBar;
 }
 /*--
 QFPart::ToolBarList ReportViewWidget::createToolBars()
@@ -432,12 +434,12 @@ QFPart::ToolBarList ReportViewWidget::createToolBars()
 void ReportViewWidget::view_zoomIn(const QPoint &center_pos)
 {
 	qfLogFuncFrame() << "center_pos:" << center_pos.x() << center_pos.y();
-	const QRect visible_rect(-f_scrollArea->widget()->pos(), f_scrollArea->viewport()->size());
+	const QRect visible_rect(-m_scrollArea->widget()->pos(), m_scrollArea->viewport()->size());
 	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
 	qfDebug() << "visible rect:" << qmlwidgets::graphics::Rect(visible_rect).toString();
-	QScrollBar *hsb = f_scrollArea->horizontalScrollBar();
-	QScrollBar *vsb = f_scrollArea->verticalScrollBar();
+	QScrollBar *hsb = m_scrollArea->horizontalScrollBar();
+	QScrollBar *vsb = m_scrollArea->verticalScrollBar();
 
 	qreal old_scale = scale(), new_scale;
 	//QPointF old_report_pos = QPointF(abs_center_pos) / old_scale;
@@ -463,12 +465,12 @@ void ReportViewWidget::view_zoomIn(const QPoint &center_pos)
 void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 {
 	qfLogFuncFrame() << "center_pos:" << center_pos.x() << center_pos.y();
-	const QRect visible_rect(-f_scrollArea->widget()->pos(), f_scrollArea->viewport()->size());
+	const QRect visible_rect(-m_scrollArea->widget()->pos(), m_scrollArea->viewport()->size());
 	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
 	qfDebug() << "visible rect:" << qmlwidgets::graphics::Rect(visible_rect).toString();
-	QScrollBar *hsb = f_scrollArea->horizontalScrollBar();
-	QScrollBar *vsb = f_scrollArea->verticalScrollBar();
+	QScrollBar *hsb = m_scrollArea->horizontalScrollBar();
+	QScrollBar *vsb = m_scrollArea->verticalScrollBar();
 
 	qreal old_scale = scale(), new_scale;
 	//QPointF old_report_pos = QPointF(abs_center_pos) / old_scale;
@@ -503,7 +505,7 @@ void ReportViewWidget::view_zoomToFitWidth()
 	if(!frm) return;
 	ReportItemMetaPaintFrame::Rect r = frm->renderedRect;
 	double report_px = (r.width() + 2*PageBorder) * logicalDpiX() / 25.4;
-	double widget_px = f_scrollArea->width();
+	double widget_px = m_scrollArea->width();
 	//QScrollBar *sb = f_scrollArea->verticalScrollBar();
 	//if(sb) widget_px -= sb->width();
 	double sc = widget_px / report_px * 0.98;
@@ -515,8 +517,8 @@ void ReportViewWidget::view_zoomToFitHeight()
 	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 	ReportItemMetaPaintFrame::Rect r = frm->renderedRect;
-	double report_px = (r.height() + 2*PageBorder) * f_painterWidget->logicalDpiY() / 25.4;
-	double widget_px = f_scrollArea->height();
+	double report_px = (r.height() + 2*PageBorder) * m_painterWidget->logicalDpiY() / 25.4;
+	double widget_px = m_scrollArea->height();
 	double sc = widget_px / report_px * 0.98;
 	setScale(sc);
 }
@@ -528,10 +530,61 @@ void ReportViewWidget::setScale(qreal _scale)
 	if(!frm)
 		return;
 
-	f_scale = _scale;
+	m_scale = _scale;
 	setupPainterWidgetSize();
-	f_painterWidget->update();
+	m_painterWidget->update();
 	refreshWidget();
+}
+
+void ReportViewWidget::updateDialogUi(qf::qmlwidgets::dialogs::Dialog *dlg)
+{
+	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
+	act_view->setText(tr("View"));
+	act_view->addAction(action("view.zoomIn"));
+	act_view->addAction(action("view.zoomOut"));
+	act_view->addAction(action("view.zoomFitWidth"));
+	act_view->addAction(action("view.zoomFitHeight"));
+
+	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
+	tool_bar->addAction(action("view.zoomIn"));
+	tool_bar->addAction(action("view.zoomOut"));
+	tool_bar->addAction(action("view.zoomFitWidth"));
+	tool_bar->addAction(action("view.zoomFitHeight"));
+}
+
+qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::actions()
+{
+	if(m_actions.isEmpty()) {
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico(":/qf/qmlwidgets/images/zoom_in");
+			a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
+			m_actions[QStringLiteral("view.zoomIn")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomIn()));
+		}
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico(":/qf/qmlwidgets/images/zoom_out");
+			a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
+			m_actions[QStringLiteral("view.zoomOut")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomOut()));
+		}
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
+			a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
+			m_actions[QStringLiteral("view.zoomFitWidth")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitWidth()));
+		}
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
+			a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
+			m_actions[QStringLiteral("view.zoomFitHeight")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
+		}
+	}
+	return m_actions;
 }
 
 void ReportViewWidget::setupPainterWidgetSize()
@@ -541,12 +594,12 @@ void ReportViewWidget::setupPainterWidgetSize()
 	if(!frm)
 		return;
 	qmlwidgets::graphics::Rect r1 = frm->renderedRect.adjusted(-PageBorder, -PageBorder, PageBorder, PageBorder);
-	qmlwidgets::graphics::Rect r2 = qmlwidgets::graphics::mm2device(r1, f_painterWidget);
+	qmlwidgets::graphics::Rect r2 = qmlwidgets::graphics::mm2device(r1, m_painterWidget);
 	//qfDebug() << "\tframe rect:" << r.toString();
 	QSizeF s = r2.size();
 	s *= scale();
 	//painterScale = QSizeF(s.width() / r1.width(), s.height() / r1.height());
-	f_painterWidget->resize(s.toSize());
+	m_painterWidget->resize(s.toSize());
 }
 
 void ReportViewWidget::setupPainter(ReportPainter *p)
@@ -558,14 +611,14 @@ void ReportViewWidget::setupPainter(ReportPainter *p)
 	p->pageCount = pageCount();
 	//QFDomElement el;
 	//if(f_selectedItem) el = f_selectedItem->reportElement;
-	p->setSelectedItem(f_selectedItem);
+	p->setSelectedItem(m_selectedItem);
 	//if(f_selectedItem) qfInfo() << "painter selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
 	p->scale(scale(), scale());
 	//p->scale(painterScale.width(), painterScale.height());
 	//qfInfo() << "\t painter world matrix m11:" << p->worldMatrix().m11() << "m12:" << p->worldMatrix().m12();
 	//qfInfo() << "\t painter world matrix m21:" << p->worldMatrix().m21() << "m22:" << p->worldMatrix().m22();
 	p->translate(qmlwidgets::graphics::mm2device(qmlwidgets::graphics::Point(PageBorder, PageBorder), p->device()));
-	painterInverseMatrix = p->matrix().inverted();
+	m_painterInverseMatrix = p->matrix().inverted();
 }
 /*
 void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
@@ -587,10 +640,10 @@ void ReportViewWidget::setReport(const QString &file_name)
 void ReportViewWidget::pageProcessed()
 {
 	qfDebug() << QF_FUNC_NAME;
-	if(whenRenderingSetCurrentPageTo >= 0) {
-		if(pageCount() - 1 == whenRenderingSetCurrentPageTo) {
-			setCurrentPageNo(whenRenderingSetCurrentPageTo);
-			whenRenderingSetCurrentPageTo = -1;
+	if(m_whenRenderingSetCurrentPageTo >= 0) {
+		if(pageCount() - 1 == m_whenRenderingSetCurrentPageTo) {
+			setCurrentPageNo(m_whenRenderingSetCurrentPageTo);
+			m_whenRenderingSetCurrentPageTo = -1;
 		}
 	}
 	else {
@@ -641,9 +694,9 @@ void ReportViewWidget::setCurrentPageNo(int pg_no)
 {
 	if(pg_no >= pageCount() || pg_no < 0)
 		pg_no = 0;
-	fCurrentPageNo = pg_no;
+	m_currentPageNo = pg_no;
 	setupPainterWidgetSize();
-	f_painterWidget->update();
+	m_painterWidget->update();
 	refreshWidget();
 }
 
@@ -742,14 +795,14 @@ bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF 
 		}
 		if(!in_child) {
 			//bool selectable_element_found = false;
-			if(f_selectedItem != it) {
-				f_selectedItem = it;
+			if(m_selectedItem != it) {
+				m_selectedItem = it;
 				//qfInfo() << "selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
 				/// muze se stat, ze item nema element, pak hledej u rodicu
 				while(it) {
 					ReportItem *r_it = it->reportItem();
 					if(r_it) {
-						f_painterWidget->update();
+						m_painterWidget->update();
 #ifdef QML_SELECT_ITEM_IMPLEMENTED
 						/// pokus se najit nejaky rozumny element pro tento report item
 						QFDomElement el = r_it->element;
@@ -815,13 +868,13 @@ void ReportViewWidget::selectItem(const QPointF &p)
 {
 	qfLogFuncFrame();
 	ReportItemMetaPaintFrame *frm = currentPage();
-	ReportItemMetaPaint *old_selected_item = f_selectedItem;
+	ReportItemMetaPaint *old_selected_item = m_selectedItem;
 	//QFDomElement old_el = fSelectedElement;
-	f_selectedItem = NULL;
+	m_selectedItem = NULL;
 	if(frm) selectItem_helper(frm, p);
-	if(!f_selectedItem && old_selected_item) {
+	if(!m_selectedItem && old_selected_item) {
 		/// odznac puvodni selekci
-		f_painterWidget->update();
+		m_painterWidget->update();
 	}
 }
 
@@ -849,7 +902,7 @@ void ReportViewWidget::processReport()
 void ReportViewWidget::render()
 {
 	qfLogFuncFrame();
-	whenRenderingSetCurrentPageTo = currentPageNo();
+	m_whenRenderingSetCurrentPageTo = currentPageNo();
 	reportProcessor()->reset();
 	if(!reportProcessor()->processorOutput()) {
 		//qfInfo() << "process report";
@@ -886,8 +939,8 @@ void ReportViewWidget::view_nextPage(PageScrollPosition scroll_pos)
 	qfDebug() << QF_FUNC_NAME;
 	if(currentPageNo() < pageCount() - 1) {
 		setCurrentPageNo(currentPageNo() + 1);
-		if(scroll_pos == ScrollToPageTop) f_scrollArea->verticalScrollBar()->setValue(f_scrollArea->verticalScrollBar()->minimum());
-		else if(scroll_pos == ScrollToPageEnd) f_scrollArea->verticalScrollBar()->setValue(f_scrollArea->verticalScrollBar()->maximum());
+		if(scroll_pos == ScrollToPageTop) m_scrollArea->verticalScrollBar()->setValue(m_scrollArea->verticalScrollBar()->minimum());
+		else if(scroll_pos == ScrollToPageEnd) m_scrollArea->verticalScrollBar()->setValue(m_scrollArea->verticalScrollBar()->maximum());
 	}
 }
 
@@ -896,8 +949,8 @@ void ReportViewWidget::view_prevPage(PageScrollPosition scroll_pos)
 	qfDebug() << QF_FUNC_NAME;
 	if(currentPageNo() > 0) {
 		setCurrentPageNo(currentPageNo() - 1);
-		if(scroll_pos == ScrollToPageTop) f_scrollArea->verticalScrollBar()->setValue(f_scrollArea->verticalScrollBar()->minimum());
-		else if(scroll_pos == ScrollToPageEnd) f_scrollArea->verticalScrollBar()->setValue(f_scrollArea->verticalScrollBar()->maximum());
+		if(scroll_pos == ScrollToPageTop) m_scrollArea->verticalScrollBar()->setValue(m_scrollArea->verticalScrollBar()->minimum());
+		else if(scroll_pos == ScrollToPageEnd) m_scrollArea->verticalScrollBar()->setValue(m_scrollArea->verticalScrollBar()->maximum());
 	}
 }
 

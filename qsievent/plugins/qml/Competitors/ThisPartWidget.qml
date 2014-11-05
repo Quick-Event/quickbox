@@ -99,6 +99,7 @@ PartWidget
 		for(var i=0; i<tt.rowCount(); i++)
 			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
+		w.windowTitle = qsTr("Competitors");
 		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
 		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
