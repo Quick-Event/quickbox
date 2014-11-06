@@ -26,7 +26,7 @@ public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
 				FieldTypeRole, //FieldIsNullableRole,
 				RawValueRole, ValueIsNullRole, FirstUnusedRole };
-	enum RowEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
+	enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
 public:
 	explicit TableModel(QObject *parent = 0);
 public:

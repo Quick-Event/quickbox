@@ -5,6 +5,8 @@
 #include "ipersistentsettings.h"
 #include "../frame.h"
 
+#include <qf/core/utils.h>
+
 #include <QWidget>
 
 namespace qf {
@@ -21,15 +23,25 @@ namespace framework {
 class QFQMLWIDGETS_DECL_EXPORT DialogWidget : public Frame, public IPersistentSettings
 {
 	Q_OBJECT
+
+	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
+	/// url or path to the icon
+	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
 private:
 	typedef Frame Super;
+public:
+	typedef QMap<QString, qf::qmlwidgets::Action*> ActionMap;
 public:
 	explicit DialogWidget(QWidget *parent = 0);
 	~DialogWidget() Q_DECL_OVERRIDE;
 
-	typedef QMap<QString, qf::qmlwidgets::Action*> ActionMap;
+	QF_PROPERTY_IMPL(QString, t, T, itle)
+	QF_PROPERTY_IMPL(QString, i, I, conSource)
 public:
-	virtual void updateDialogUi(qf::qmlwidgets::dialogs::Dialog *dlg);
+	/// define this slot to allow QML code call C++ settleDownInDialog() implementation,
+	/// when settleDownInDialog() is implemented in QML and hides C++ implementations
+	Q_SLOT void settleDownInDialogNative(qf::qmlwidgets::dialogs::Dialog *dlg);
+	Q_SLOT virtual void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg);
 	virtual ActionMap actions();
 	virtual qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
 };

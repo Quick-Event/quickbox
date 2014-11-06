@@ -1,4 +1,5 @@
 #include "dialog.h"
+#include "internal/captionframe.h"
 #include "../frame.h"
 #include "../framework/dialogwidget.h"
 #include "../menubar.h"
@@ -6,7 +7,6 @@
 #include "../dialogbuttonbox.h"
 
 #include <qf/core/log.h>
-#include <qf/core/utils.h>
 
 #include <QVBoxLayout>
 #include <QSettings>
@@ -34,10 +34,18 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 			m_centralWidget->setParent(nullptr);
 			m_centralWidget->setParent(this);
 		}
-		if(dialog_widget)
-			dialog_widget->updateDialogUi(this);
+		if(dialog_widget) {
+			settleDownDialogWidget(dialog_widget);
+			updateCaptionFrame(dialog_widget);
+		}
 		updateLayout();
 	}
+}
+
+void Dialog::settleDownDialogWidget(qf::qmlwidgets::framework::DialogWidget *dialog_widget)
+{
+	QMetaObject::invokeMethod(dialog_widget, "settleDownInDialog", Qt::DirectConnection,
+						Q_ARG(qf::qmlwidgets::dialogs::Dialog*, this));
 }
 
 qf::qmlwidgets::MenuBar* Dialog::menuBar()
@@ -117,6 +125,9 @@ void Dialog::updateLayout()
 	if(m_menuBar)
 		ly->addWidget(m_menuBar);
 
+	if(m_captionFrame)
+		ly->addWidget(m_captionFrame);
+
 	if(m_toolBars.count() == 1) {
 		ToolBar *tb = m_toolBars[0];
 		tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
@@ -141,6 +152,26 @@ void Dialog::updateLayout()
 		ly->addWidget(m_dialogButtonBox);
 }
 
+void Dialog::updateCaptionFrame(qf::qmlwidgets::framework::DialogWidget *dialog_widget)
+{
+	QString title, icon_src;
+	if(dialog_widget) {
+		title = dialog_widget->title();
+		icon_src = dialog_widget->iconSource();
+	}
+	if(title.isEmpty() && icon_src.isEmpty()) {
+		if(m_captionFrame)
+			m_captionFrame->hide();
+	}
+	else {
+		if(!m_captionFrame)
+			m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
+		m_captionFrame->setText(title);
+		QIcon ico(icon_src);
+		m_captionFrame->setIcon(ico);
+	}
+}
+
 void Dialog::setButtonBox(DialogButtonBox *dbb)
 {
 	qfLogFuncFrame() << dbb;
@@ -160,7 +191,4 @@ void Dialog::setButtonBox(DialogButtonBox *dbb)
 		emit buttonBoxChanged();
 	}
 }
-
-
-
 

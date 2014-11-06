@@ -16,7 +16,12 @@ DialogWidget::~DialogWidget()
 {
 }
 
-void DialogWidget::updateDialogUi(qf::qmlwidgets::dialogs::Dialog *dlg)
+void DialogWidget::settleDownInDialogNative(qf::qmlwidgets::dialogs::Dialog *dlg)
+{
+	settleDownInDialog(dlg);
+}
+
+void DialogWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 {
 	Q_UNUSED(dlg);
 }

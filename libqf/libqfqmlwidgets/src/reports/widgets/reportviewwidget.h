@@ -155,7 +155,7 @@ public:
 	qreal scale() const {return m_scale;}
 	void setScale(qreal _scale);
 
-	void updateDialogUi(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
+	void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
 	ActionMap actions() Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaint* selectedItem() const {return m_selectedItem;}

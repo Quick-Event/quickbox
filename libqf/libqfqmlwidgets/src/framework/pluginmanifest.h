@@ -15,6 +15,7 @@ class QFQMLWIDGETS_DECL_EXPORT PluginManifest : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId FINAL)
 	Q_PROPERTY(QStringList dependsOnFeatureIds READ dependsOnFeatureIds WRITE setDependsOnFeatureIds FINAL)
+	Q_PROPERTY(QString homeDirectory READ pluginHomeDirectory)
 public:
 	explicit PluginManifest(QObject *parent = 0);
 	~PluginManifest() Q_DECL_OVERRIDE;

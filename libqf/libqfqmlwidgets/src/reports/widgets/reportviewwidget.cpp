@@ -536,8 +536,9 @@ void ReportViewWidget::setScale(qreal _scale)
 	refreshWidget();
 }
 
-void ReportViewWidget::updateDialogUi(qf::qmlwidgets::dialogs::Dialog *dlg)
+void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 {
+	qfLogFuncFrame();
 	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
 	act_view->setText(tr("View"));
 	act_view->addAction(action("view.zoomIn"));

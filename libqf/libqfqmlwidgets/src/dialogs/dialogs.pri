@@ -6,6 +6,7 @@ HEADERS += \
     $$PWD/getiteminputdialog.h \
     $$PWD/filedialog.h \
 	$$PWD/previewdialog.h \
+    $$PWD/internal/captionframe.h
 
 SOURCES += \
     $$PWD/dialog.cpp \
@@ -15,6 +16,7 @@ SOURCES += \
     $$PWD/getiteminputdialog.cpp \
     $$PWD/filedialog.cpp \
 	$$PWD/previewdialog.cpp \
+    $$PWD/internal/captionframe.cpp
 
 FORMS += \
 	$$PWD/previewdialog.ui \

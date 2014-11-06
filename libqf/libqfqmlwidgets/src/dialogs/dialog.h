@@ -8,6 +8,9 @@
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
 
+class QLabel;
+class QToolButton;
+
 namespace qf {
 namespace qmlwidgets {
 
@@ -15,7 +18,15 @@ class DialogButtonBox;
 class MenuBar;
 class ToolBar;
 
+namespace framework {
+class DialogWidget;
+}
+
 namespace dialogs {
+
+namespace internal {
+class CaptionFrame;
+}
 
 class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings
 {
@@ -52,11 +63,15 @@ public:
 private:
 	Q_SLOT void savePersistentSettings();
 
+	void settleDownDialogWidget(qf::qmlwidgets::framework::DialogWidget *dialog_widget);
+
 	void updateLayout();
+	void updateCaptionFrame(qf::qmlwidgets::framework::DialogWidget *dialog_widget);
 protected:
 	bool m_doneCancelled;
-	QList<ToolBar*> m_toolBars;
+	internal::CaptionFrame *m_captionFrame = nullptr;
 	MenuBar *m_menuBar = nullptr;
+	QList<ToolBar*> m_toolBars;
 	QWidget *m_centralWidget = nullptr;
 	DialogButtonBox *m_dialogButtonBox = nullptr;
 };

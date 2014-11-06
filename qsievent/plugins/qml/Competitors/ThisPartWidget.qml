@@ -6,6 +6,7 @@ import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
 PartWidget
 {
 	id: root
+	property var plugin
 	objectName: "pwCompetitors"
 	title: "Competitors"
 
@@ -19,6 +20,12 @@ PartWidget
 		Component {
 			id: cReportViewWidget
 			ReportViewWidget {}
+		},
+		Component {
+			id: cCompetitorWidget
+			CompetitorWidget {
+				plugin: root.plugin
+			}
 		}
 	]
 
@@ -31,6 +38,7 @@ PartWidget
 		TableView {
 			id: table
 			persistentSettingsId: "tblCompetitors";
+			rowEditorMode: TableView.EditRowsMixed
 
 			model: SqlQueryTableModel {
 				id: model
@@ -62,6 +70,7 @@ PartWidget
 	{
 		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reloadIfActive);
 		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reloadIfActive);
+		table.editRowInExternalEditor.connect(editCompetitor)
 	}
 
 	function canActivate(active_on)
@@ -103,6 +112,18 @@ PartWidget
 		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
 		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
+		var dlg = cDialog.createObject(FrameWork);
+		dlg.setDialogWidget(w);
+		dlg.exec();
+		dlg.destroy();
+	}
+
+	function editCompetitor(id, record_mode)
+	{
+		Log.info("editCompetitor");
+		var w = cCompetitorWidget.createObject(null);
+		w.windowTitle = qsTr("Edit Competitor");
+		w.title("Fanda Vacek")
 		var dlg = cDialog.createObject(FrameWork);
 		dlg.setDialogWidget(w);
 		dlg.exec();

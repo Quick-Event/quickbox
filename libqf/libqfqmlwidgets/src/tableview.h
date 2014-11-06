@@ -5,7 +5,9 @@
 #include "framework/ipersistentsettings.h"
 
 #include <qf/core/model/sqlquerytablemodel.h>
+#include <qf/core/utils.h>
 #include <qf/core/utils/table.h>
+#include <qf/core/model/tablemodel.h>
 
 #include <QTableView>
 
@@ -17,9 +19,14 @@ class Action;
 class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::IPersistentSettings
 {
 	Q_OBJECT
+
+	Q_ENUMS(RowEditorMode)
+	Q_ENUMS(RowEditorMode)
+
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(qf::core::model::TableModel* model READ tableModel WRITE setTableModel NOTIFY modelChanged)
-	Q_PROPERTY(bool editRowsInline READ isEditRowsInline WRITE setEditRowsInline NOTIFY editRowsInlineChanged)
+	Q_PROPERTY(RowEditorMode rowEditorMode READ rowEditorMode WRITE setRowEditorMode NOTIFY rowEditorModeChanged)
+	Q_PROPERTY(QString idColumnName READ idColumnName WRITE setIdColumnName)
 private:
 	typedef QTableView Super;
 public:
@@ -29,6 +36,18 @@ public:
 public:
 	explicit TableView(QWidget *parent = 0);
 	~TableView() Q_DECL_OVERRIDE;
+public:
+	enum RowEditorMode { EditRowsInline,
+					EditRowsExternal,
+					EditRowsMixed };
+	enum RecordEditMode { ModeView = qf::core::model::TableModel::ModeView,
+					   ModeEdit = qf::core::model::TableModel::ModeEdit,
+					   ModeInsert = qf::core::model::TableModel::ModeInsert,
+					   ModeCopy = qf::core::model::TableModel::ModeCopy,
+					   ModeDelete = qf::core::model::TableModel::ModeDelete };
+
+	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
+	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 public:
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);
@@ -56,21 +75,14 @@ public:
 	Q_SLOT void updateDataArea();
 	Q_SLOT void updateAll();
 
-	bool isEditRowsInline() const { return m_editRowsInline; }
-	void setEditRowsInline(bool arg)
-	{
-		if (m_editRowsInline != arg) {
-			m_editRowsInline = arg;
-			emit editRowsInlineChanged(arg);
-		}
-	}
+	//! If \a row_no < 0 row_no = current row.
+	qf::core::utils::TableRow tableRow(int row_no = -1) const;
+	qf::core::utils::TableRow selectedRow() const {return tableRow();}
 
 	QList<int> selectedRowsIndexes() const;
 	QList<int> selectedColumnsIndexes() const;
 
-	Q_SIGNAL void editRowsInlineChanged(bool arg);
-
-	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, qf::core::model::TableModel::RowEditMode mode);
+	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, RecordEditMode mode);
 private:
 	Q_SIGNAL void searchStringChanged(const QString &str);
 	qf::core::utils::Table::SortDef seekSortDefinition() const;
@@ -87,6 +99,7 @@ protected:
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent *e) Q_DECL_OVERRIDE;
 
+	bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
 	virtual void insertRowInline();
@@ -109,7 +122,6 @@ protected:
 	QMap<int, QStringList> m_actionGroups;
 	QList<Action*> m_toolBarActions;
 	QList<Action*> m_contextMenuActions;
-	bool m_editRowsInline;
 };
 
 }}

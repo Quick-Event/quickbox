@@ -31,7 +31,6 @@ TableView::TableView(QWidget *parent) :
 	Super(parent), framework::IPersistentSettings(this)
 {
 	qfLogFuncFrame() << this;
-	m_editRowsInline = true;
 	setItemDelegate(new TableItemDelegate(this));
 	{
 		HeaderView *h = new HeaderView(Qt::Horizontal, this);
@@ -124,8 +123,8 @@ void TableView::refreshActions()
 	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
 	bool is_copy_rows_allowed = true;//m->rowCount()>0 && is_insert_rows_allowed;
 	//qfInfo() << "\tinsert allowed:" << is_insert_rows_allowed;
-	//qfTrash() << "\tdelete allowed:" << is_delete_rows_allowed;
-	//qfTrash() << "\tedit allowed:" << is_edit_rows_allowed;
+	//qfDebug() << "\tdelete allowed:" << is_delete_rows_allowed;
+	//qfDebug() << "\tedit allowed:" << is_edit_rows_allowed;
 	//action("insertRow")->setVisible(is_insert_rows_allowed && isInsertRowActionVisible());
 	action("copyRow")->setEnabled(is_copy_rows_allowed);
 	//action("copyRow")->setVisible(isCopyRowActionVisible());
@@ -138,7 +137,7 @@ void TableView::refreshActions()
 	qfu::TableRow curr_row;
 	if(curr_ix.isValid())
 		curr_row = m->tableRow(curr_ix.row());
-	//qfTrash() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
+	//qfDebug() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
 	if(curr_row.isDirty()) {
 		action("postRow")->setEnabled(true);
 		action("revertRow")->setEnabled(true);
@@ -172,9 +171,9 @@ void TableView::reload()
 	if(table_model) {
 		QModelIndex ix = currentIndex();
 		table_model->reload();
-		//qfTrash() << "\t emitting reloaded()";
+		//qfDebug() << "\t emitting reloaded()";
 		//emit reloaded();
-		//qfTrash() << "\ttable:" << table();
+		//qfDebug() << "\ttable:" << table();
 		setCurrentIndex(ix);
 		//updateDataArea();
 	}
@@ -192,13 +191,13 @@ void TableView::enableAllActions(bool on)
 void TableView::insertRow()
 {
 	qfLogFuncFrame();
-	if(isEditRowsInline()) {
+	if(rowEditorMode() == EditRowsInline) {
 		qfDebug() << "\t insert row in mode RowEditorInline";
 		insertRowInline();
 	}
 	else {
 		qfDebug() << "\t emit insertRowInExternalEditor()";
-		emit editRowInExternalEditor(QVariant(), qf::core::model::TableModel::ModeInsert);
+		emit editRowInExternalEditor(QVariant(), ModeInsert);
 		//emit insertRowInExternalEditor();
 	}
 	refreshActions();
@@ -207,7 +206,7 @@ void TableView::insertRow()
 void TableView::removeSelectedRows()
 {
 	qfLogFuncFrame();
-	if(isEditRowsInline()) {
+	if(rowEditorMode() == EditRowsInline) {
 		removeSelectedRowsInline();
 	}
 	else {
@@ -215,7 +214,7 @@ void TableView::removeSelectedRows()
 		if(sel_rows.count() == 1) {
 			QVariant id = tableModel()->value(sel_rows.value(0), "id");
 			if(id.isValid())
-				emit editRowInExternalEditor(id, qf::core::model::TableModel::ModeDelete);
+				emit editRowInExternalEditor(id, ModeDelete);
 		}
 	}
 }
@@ -355,6 +354,19 @@ void TableView::updateAll()
 	updateDataArea();
 	verticalHeader()->viewport()->update();
 	horizontalHeader()->viewport()->update();
+}
+
+qf::core::utils::TableRow TableView::tableRow(int row_no) const
+{
+	qf::core::utils::TableRow ret;
+	int ri = row_no;
+	if(row_no < 0)
+		ri = currentIndex().row();
+	auto m = tableModel();
+	if(m != nullptr) {
+		ret = m->table().row(ri);
+	}
+	return ret;
 }
 
 QList<int> TableView::selectedRowsIndexes() const
@@ -738,10 +750,10 @@ void TableView::mousePressEvent(QMouseEvent * e)
 	QPoint pos = e->pos();
 	QModelIndex ix = indexAt(pos);
 	/*
-	qfTrash() << "\trow:" << ix.row() << "col:" << ix.column();
+	qfDebug() << "\trow:" << ix.row() << "col:" << ix.column();
 	QFItemDelegate *it = qobject_cast<QFItemDelegate*>(itemDelegate());
 	if(it) {
-		//qfTrash() << "\teditor" << w;
+		//qfDebug() << "\teditor" << w;
 		// pokud existuje editor, je pole rozeditovany a melo by se zkontrolovat
 		if(!it->canCloseEditor()) return;
 	}
@@ -1233,4 +1245,77 @@ void TableView::removeSelectedRowsInline()
 	setCurrentIndex(ix);
 	updateAll();
 	refreshActions();
+}
+
+bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* event)
+{
+	qfLogFuncFrame() << "trigger:" << trigger << "event type:" << ((event)? event->type(): 0) << "editTriggers:" << editTriggers();
+	bool ret = false;
+	//ignoreFocusOutEventWhenOpenExternalEditor = true;
+
+	do {
+		if(event && (event->type() == QEvent::MouseButtonPress || event->type() == QEvent::MouseButtonRelease)) {
+			/// pokud je mousePressEvent, pak v pripade, ze chci preklopit check u bool hodnoty, musim pustit dal
+		}
+		else if(trigger && !(trigger & editTriggers())) {
+			/// ignoruji triggery, ktere neprijmam
+			qfDebug() << "\t trigger ignored";
+			ret = false;
+			break;
+		}
+
+		if(trigger == QTableView::DoubleClicked || trigger == QTableView::EditKeyPressed) {
+			qfDebug() << "\t emitting activated";
+			emit activated(currentIndex());
+			//activated_emited = true;
+			event->accept();
+			ret = true;
+			//return ret;
+		}
+		bool read_only = false;
+		/*
+		if(!read_only) {
+			qfc::model::TableModel *m = tableModel();
+			read_only = (!m || m->isReadOnly());
+		}
+		*/
+		try {
+			if(rowEditorMode() == EditRowsInline) {
+				if(!read_only) {
+					qfDebug() << "\t RowEditorInline";
+					ret = QTableView::edit(index, trigger, event);
+					qfDebug() << "\t QTableView::edit() returned:" << ret;
+					if(ret)
+						refreshActions(); /// bez toho mi nechodi refreshActions pro bool hodnoty, ktere se nedelaji prez ItemDelegate, ale pres Qt::CheckStateRole
+				}
+			}
+			else  if(rowEditorMode() == EditRowsExternal || rowEditorMode() == EditRowsMixed) {
+				if(rowEditorMode() == EditRowsMixed) {
+					ret = QTableView::edit(index, trigger, event);
+					qfDebug() << "\t RowEditorMixed QTableView::edit() returned:" << ret;
+				}
+				if(!ret) {
+					if(trigger == QTableView::DoubleClicked || trigger == QTableView::EditKeyPressed) {
+						if(read_only) {
+						}
+						else {
+							QVariant id = selectedRow().value(idColumnName());
+							if(id.isValid()) {
+								emit editRowInExternalEditor(QVariant(), ModeInsert);
+							}
+						}
+						ret = false;
+						event->accept();
+					}
+				}
+			}
+		}
+		catch(qf::core::Exception &e) {
+			dialogs::MessageBox::showException(this, e);
+		}
+	} while(false);
+
+	//ignoreFocusOutEventWhenOpenExternalEditor = false;
+	qfDebug() << "\t return:" << ret;
+	return ret;
 }

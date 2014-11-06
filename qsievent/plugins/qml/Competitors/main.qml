@@ -9,6 +9,7 @@ Plugin {
 	{
 		ThisPartWidget{
 			id: thisPart
+			plugin: root
 		}
 	}
 
