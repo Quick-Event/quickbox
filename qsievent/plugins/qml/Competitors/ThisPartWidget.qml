@@ -6,7 +6,7 @@ import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
 PartWidget
 {
 	id: root
-	property var plugin
+	property string pluginId
 	objectName: "pwCompetitors"
 	title: "Competitors"
 
@@ -24,7 +24,7 @@ PartWidget
 		Component {
 			id: cCompetitorWidget
 			CompetitorWidget {
-				plugin: root.plugin
+				pluginId: root.pluginId
 			}
 		}
 	]
@@ -123,7 +123,7 @@ PartWidget
 		Log.info("editCompetitor");
 		var w = cCompetitorWidget.createObject(null);
 		w.windowTitle = qsTr("Edit Competitor");
-		w.title("Fanda Vacek")
+		w.title = "Fanda Vacek"
 		var dlg = cDialog.createObject(FrameWork);
 		dlg.setDialogWidget(w);
 		dlg.exec();

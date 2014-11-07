@@ -2,21 +2,28 @@
 #include "pluginmanifest.h"
 
 #include <qf/core/utils.h>
+#include <qf/core/log.h>
 
 using namespace qf::qmlwidgets::framework;
 
 Plugin::Plugin(QObject *parent) :
 	QObject(parent), m_manifest(nullptr)
 {
+	qfLogFuncFrame();
 }
 
 Plugin::~Plugin()
 {
+	qfLogFuncFrame() << this;
 }
 
-void Plugin::setManifest(PluginManifest *m)
+void Plugin::setManifest(PluginManifest *mf)
 {
-	QF_SAFE_DELETE(m_manifest);
-	m->setParent(this);
-	m_manifest = m;
+	if(mf != m_manifest) {
+		mf->setParent(this);
+		m_manifest = mf;
+		if(mf)
+			setObjectName(mf->featureId());
+		emit manifestChanged(mf);
+	}
 }

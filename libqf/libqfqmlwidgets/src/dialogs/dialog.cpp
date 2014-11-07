@@ -109,29 +109,22 @@ void Dialog::savePersistentSettings()
 
 void Dialog::updateLayout()
 {
-	QBoxLayout *ly = qobject_cast<QBoxLayout*>(this->layout());
-	if(!ly) {
-		QLayout *ly2 = layout();
-		QF_SAFE_DELETE(ly2);
-		ly = new QVBoxLayout(this);
-		setLayout(ly);
-	}
-	else {
-		while(ly->itemAt(0)) {
-			ly->removeItem(ly->itemAt(0));
-		}
-	}
+	QLayout *ly_orig = layout();
+	QF_SAFE_DELETE(ly_orig);
+	QBoxLayout *ly_root = new QVBoxLayout();
+	ly_root->setMargin(0);
+	setLayout(ly_root);
 
 	if(m_menuBar)
-		ly->addWidget(m_menuBar);
+		ly_root->addWidget(m_menuBar);
 
 	if(m_captionFrame)
-		ly->addWidget(m_captionFrame);
+		ly_root->addWidget(m_captionFrame);
 
 	if(m_toolBars.count() == 1) {
 		ToolBar *tb = m_toolBars[0];
 		tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		ly->addWidget(tb);
+		ly_root->addWidget(tb);
 	}
 	else if(!m_toolBars.isEmpty()) {
 		QHBoxLayout *ly1 = new QHBoxLayout(nullptr);
@@ -140,8 +133,12 @@ void Dialog::updateLayout()
 			ly1->addWidget(tb);
 		}
 		ly1->addStretch();
-		ly->addLayout(ly1);
+		ly_root->addLayout(ly1);
 	}
+
+	QBoxLayout *ly = new QVBoxLayout();
+	ly->setMargin(4);
+	ly_root->addLayout(ly);
 
 	if(m_centralWidget) {
 		ly->addWidget(m_centralWidget);
@@ -150,6 +147,7 @@ void Dialog::updateLayout()
 	}
 	if(m_dialogButtonBox)
 		ly->addWidget(m_dialogButtonBox);
+
 }
 
 void Dialog::updateCaptionFrame(qf::qmlwidgets::framework::DialogWidget *dialog_widget)

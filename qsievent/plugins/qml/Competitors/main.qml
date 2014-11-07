@@ -9,7 +9,7 @@ Plugin {
 	{
 		ThisPartWidget{
 			id: thisPart
-			plugin: root
+			pluginId: root.manifest.featureId
 		}
 	}
 
@@ -29,7 +29,7 @@ Plugin {
 		var act_competitors = act_file.appendMenu('competitors', qsTr('&Competitors'));
 		var act_print = act_competitors.addMenu('print', qsTr('&Print'));
 		act_print.addAction(actPrintAll);
-		FrameWork.addPartWidget(thisPart, manifest.featureId);
+		FrameWork.addPartWidget(thisPart, root.manifest.featureId);
 	}
 
 }

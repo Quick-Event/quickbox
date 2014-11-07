@@ -5,15 +5,21 @@ using namespace qf::qmlwidgets::framework;
 PluginManifest::PluginManifest(QObject *parent) :
 	QObject(parent)
 {
+	qfLogFuncFrame();
 }
 
 PluginManifest::~PluginManifest()
 {
+	qfLogFuncFrame() << this;
 }
 
 void PluginManifest::setFeatureId(QString id)
 {
-	m_featureId = id;
+	if(id != m_featureId) {
+		m_featureId = id;
+		setObjectName(id);
+		emit featureIdChanged(id);
+	}
 }
 
 void PluginManifest::setDependsOnFeatureIds(QStringList ids)

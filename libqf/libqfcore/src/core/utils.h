@@ -18,7 +18,7 @@
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: Q_SLOT void set##upper_letter##name_rest(const ptype &val) { \
-	    if(m_##lower_letter##name_rest != val) { \
+		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 		} \
@@ -28,7 +28,7 @@
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: Q_SLOT void set##upper_letter##name_rest(const ptype &val) { \
-	    if(m_##lower_letter##name_rest != val) { \
+		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 		} \
@@ -38,22 +38,22 @@
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(ptype new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: Q_SLOT void set##upper_letter##name_rest(ptype val) { \
-	    if(m_##lower_letter##name_rest != val) { \
-	        m_##lower_letter##name_rest = val; \
+		if(m_##lower_letter##name_rest != val) { \
+			m_##lower_letter##name_rest = val; \
 			if(m_##lower_letter##name_rest != nullptr) \
-                m_##lower_letter##name_rest->setParent(this); \
+				m_##lower_letter##name_rest->setParent(this); \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
-		} \
+		}\
 	}
 #define QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, default_value) \
 	private: bool m_##lower_letter##name_rest = default_value; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const bool &new_val); \
 	public: bool is##upper_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: Q_SLOT void set##upper_letter##name_rest(bool val) { \
-	    if(m_##lower_letter##name_rest != val) { \
+		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
-		} \
+		}\
 	}
 #define QF_PROPERTY_BOOL_IMPL(lower_letter, upper_letter, name_rest) \
 	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
@@ -95,9 +95,11 @@ T findParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
 	QObject *o = const_cast<QObject*>(_o);
 	while(o) {
 		o = o->parent();
-		if(!o) break;
+		if(!o)
+			break;
 		t = qobject_cast<T>(o);
-		if(t) break;
+		if(t)
+			break;
 	}
 	if(!t && throw_exc) {
 		QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));

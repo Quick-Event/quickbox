@@ -74,7 +74,7 @@ void PartSwitch::updateButtonIcon(int part_index)
 				if(icon_path.isEmpty())
 					icon_path = "images/feature.png";
 				if(!icon_path.startsWith(":/")) {
-					icon_path = plugin->manifest()->pluginHomeDirectory() + "/" + icon_path;
+					icon_path = plugin->manifest()->homeDirectory() + "/" + icon_path;
 				}
 				QPixmap pm(icon_path);
 				if(pm.isNull())

@@ -6,11 +6,18 @@ import qf.qmlwidgets 1.0
 DialogWidget
 {
 	id: root
-	property var plugin
+	property string pluginId
 	objectName: "dwCompetitors"
 	title: "Competitor"
-	iconSource: plugin.manifest.homeDirectory + "/images/feature.id"
-
+	
+	iconSource: {
+		var plugin = FrameWork.plugin(root.pluginId)
+		//console.debug("@plugin:", plugin)
+		// console.debug("#manifest:", plugin.manifest)
+		// console.debug("$homeDirectory:", plugin.manifest.homeDirectory)
+		return plugin.manifest.homeDirectory + "/images/feature.png"
+	}
+	
 	attachedObjects: [
 	]
 
@@ -18,5 +25,10 @@ DialogWidget
 		Label {
 			text: "Ahoj"
 		}
+	}
+
+	Component.onCompleted: {
+		console.debug("-----------------------onCompleted---------------")
+		console.debug("@iconSource:", root.iconSource)
 	}
 }

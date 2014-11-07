@@ -27,6 +27,7 @@ CaptionFrame::CaptionFrame(QWidget *parent)
 	ly->addWidget(captionLabel);
 	ly->addStretch();
 	closeButton = new QToolButton();
+	closeButton->setVisible(false);
 	QStyle *sty = style();
 	closeButton->setIcon(sty->standardIcon(QStyle::SP_DialogDiscardButton));
 	connect(closeButton, SIGNAL(clicked()), this, SIGNAL(closeButtonClicked()));
