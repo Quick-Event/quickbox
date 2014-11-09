@@ -37,6 +37,8 @@ void StackedCentralWidget::addPartWidget(PartWidget *widget)
 	widget->setParent(0);
 	m_centralWidget->addWidget(widget);
 	m_partSwitch->addPartWidget(widget);
+	//widget->updateCaptionFrame();
+	QMetaObject::invokeMethod(widget, "updateCaptionFrame", Qt::QueuedConnection);
 }
 
 bool StackedCentralWidget::setPartActive(int part_index, bool set_active)

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<inc>
-   <row w="%" valign="top">
-		<para style="header" w="%" halign="left">
-			<data domain="system" src="date"/>\s<data domain="system" src="time"/>
-		</para>
-		<para style="header" w="%" halign="right">strana <data domain="system" src="page"/>/<data domain="system" src="pageCount"/></para>
-   </row>
-</inc>

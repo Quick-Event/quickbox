@@ -59,32 +59,7 @@ void PartSwitch::updateButtonIcon(int part_index)
 	PartSwitchToolButton *bt = buttonAt(part_index);
 	PartWidget *pw = m_centralWidget->partWidget(part_index);
 	if(bt && pw) {
-		QIcon ico;
-		QString feature_id = pw->featureId();
-		if(feature_id.isEmpty()) {
-			qfWarning() << "featureId property of part widget is empty, default icon will be set.";
-		}
-		else {
-            Plugin *plugin = MainWindow::frameWork()->plugin(feature_id);
-			if(!plugin) {
-				qfWarning() << "Cannot found plugin for part featureId:" << feature_id << ", default icon will be set.";
-			}
-			else {
-				QString icon_path = pw->iconSource();
-				if(icon_path.isEmpty())
-					icon_path = "images/feature.png";
-				if(!icon_path.startsWith(":/")) {
-					icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
-				}
-				QPixmap pm(icon_path);
-				if(pm.isNull())
-					qfWarning() << "Cannot load icon on path:" << icon_path;
-				else
-					ico = QIcon(pm);
-			}
-		}
-		if(ico.isNull())
-			ico = QIcon(":/qf/qmlwidgets/images/under-construction.png");
+		QIcon ico = pw->createIcon();
 		//bt->setIconSize(bt->size());
 		bt->setIcon(ico);
 	}

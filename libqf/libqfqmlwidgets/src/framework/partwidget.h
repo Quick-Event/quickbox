@@ -13,6 +13,11 @@
 namespace qf {
 namespace qmlwidgets {
 class Frame;
+namespace dialogs {
+namespace internal {
+class CaptionFrame;
+}
+}
 namespace framework {
 
 class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSettings, public QQmlParserStatus
@@ -52,6 +57,9 @@ public:
 	QQmlListProperty<QObject> attachedObjects();
 
 	Q_SLOT void loadPersistentSettings();
+
+	QIcon createIcon();
+	Q_SLOT void updateCaptionFrame();
 protected:
 	QQmlListProperty<QWidget> widgets();
 private:
@@ -59,6 +67,7 @@ private:
 	void classBegin() Q_DECL_OVERRIDE;
 	void componentComplete() Q_DECL_OVERRIDE;
 private:
+	qf::qmlwidgets::dialogs::internal::CaptionFrame *m_captionFrame;
 	Frame *m_centralFrame;
 	QString m_title;
 	QString m_iconSource;
