@@ -263,6 +263,23 @@ Plugin *MainWindow::plugin(const QString &feature_id)
 	}
 	return ret;
 }
+
+Plugin *MainWindow::pluginForObject(QObject *qml_object)
+{
+	Plugin *ret = nullptr;
+	for(QObject *o = qml_object; o!=nullptr; o=o->parent()) {
+		PartWidget *pw = qobject_cast<PartWidget*>(o);
+		if(pw) {
+			QString id = pw->featureId();
+			ret = plugin(id);
+			break;
+		}
+	}
+	if(!ret)
+		qfWarning() << "Cannot find plugin of:" << qml_object;
+	return ret;
+}
+
 #if 0
 class TestObject : public QObject
 {

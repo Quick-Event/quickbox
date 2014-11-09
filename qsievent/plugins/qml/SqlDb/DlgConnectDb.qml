@@ -39,23 +39,23 @@ Dialog {
 
 	function loadSettings()
 	{
-		var settings = coreFeature.createSettings();
+		var settings = coreFeature.api.createSettings();
 		//Log.info("got settings:", settings);
 		settings.beginGroup("sql/connection");
 		edHost.text = settings.value("host", "localhost");
 		edUser.text = settings.value("user", "");
-		edPassword.text = coreFeature.crypt.decrypt(settings.value("password", ""));
+		edPassword.text = coreFeature.api.crypt.decrypt(settings.value("password", ""));
 		edEvent.text = settings.value("event", "");
 		settings.destroy();
 	}
 
 	function saveSettings()
 	{
-		var settings = coreFeature.createSettings();
+		var settings = coreFeature.api.createSettings();
 		settings.beginGroup("sql/connection");
 		settings.setValue("host", edHost.text);
 		settings.setValue("user", edUser.text);
-		settings.setValue("password", coreFeature.crypt.encrypt(edPassword.text));
+		settings.setValue("password", coreFeature.api.crypt.encrypt(edPassword.text));
 		settings.setValue("event", edEvent.text);
 		settings.destroy();
 	}

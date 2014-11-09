@@ -5,7 +5,10 @@ import qf.qmlwidgets 1.0
 Plugin {
 	id: root
 
-	property alias currentEventName: event.currentEventName
+	property QtObject api: QtObject
+	{
+		property alias currentEventName: event.currentEventName
+	}
 
 	property QfObject internals: QfObject {
 		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
@@ -23,7 +26,7 @@ Plugin {
 			id: actCreateEvent
 			text: qsTr('Create &new event')
 			shortcut: "Ctrl+N"
-			enabled: internals.pluginSqlDb.sqlServerConnected
+			enabled: internals.pluginSqlDb.api.sqlServerConnected
 			onTriggered: {
 				Log.info(text, "triggered");
 				event.createEvent();
@@ -33,7 +36,7 @@ Plugin {
 			id: actOpenEvent
 			text: qsTr('&Open event')
 			shortcut: "Ctrl+O"
-			enabled: internals.pluginSqlDb.sqlServerConnected
+			enabled: internals.pluginSqlDb.api.sqlServerConnected
 			onTriggered: {
 				Log.info(text, "triggered");
 				event.openEvent();
@@ -42,7 +45,7 @@ Plugin {
 		Action {
 			id: actImportEventOris
 			text: qsTr('From &Oris')
-			enabled: internals.pluginSqlDb.sqlServerConnected
+			enabled: internals.pluginSqlDb.api.sqlServerConnected
 			onTriggered: {
 				event.importOris()
 			}
@@ -60,8 +63,8 @@ Plugin {
 
 		FrameWork.menuBar.actionForPath('file/importEvent').addAction(actImportEventOris);
 
-		FrameWork.plugin('SqlDb').sqlServerConnectedChanged.connect(event.whenServerConnected);
-		FrameWork.statusBar.eventName = Qt.binding(function() {return event.currentEventName;});
+		FrameWork.plugin('SqlDb').api.sqlServerConnectedChanged.connect(event.whenServerConnected);
+		FrameWork.statusBar.eventName = Qt.binding(function() {return root.api.currentEventName;});
 
 	}
 }

@@ -664,17 +664,18 @@ ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
 	return doc;
 }
 
-void ReportViewWidget::setData(const qf::core::utils::TreeTable &data)
+void ReportViewWidget::setData(const QString &key, const qf::core::utils::TreeTable &data)
 {
 	qfLogFuncFrame();
-	reportProcessor()->setData(data);
+	QVariant v = QVariant::fromValue(data);
+	reportProcessor()->setData(key, v);
 }
 
-void ReportViewWidget::setData(const QVariant &data)
+void ReportViewWidget::setData(const QString &key, const QVariant &data)
 {
 	qfu::TreeTable tt;
 	tt.setVariant(data);
-	setData(tt);
+	setData(key, tt);
 }
 
 int ReportViewWidget::pageCount()
@@ -1153,7 +1154,9 @@ void ReportViewWidget::file_export_email()
 void ReportViewWidget::data_showHtml()
 {
 	qfDebug() << QF_FUNC_NAME;
-	QString s = reportProcessor()->data().toHtml();
+	QVariant v = reportProcessor()->data(QString());
+	qfu::TreeTable tt = v.value<qfu::TreeTable>();
+	QString s = tt.toHtml();
 	s = addHtmlEnvelope(s);
 	QString file_name = "data.html";
 	qfError() << Q_FUNC_INFO << "showing" << file_name << "not implemented yet.";

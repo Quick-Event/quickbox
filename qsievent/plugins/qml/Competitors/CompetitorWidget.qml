@@ -6,18 +6,14 @@ import qf.qmlwidgets 1.0
 DialogWidget
 {
 	id: root
-	property string pluginId
 	objectName: "dwCompetitors"
 	title: "Competitor"
-	
+
 	iconSource: {
-		var plugin = FrameWork.plugin(root.pluginId)
-		//console.debug("@plugin:", plugin)
-		// console.debug("#manifest:", plugin.manifest)
-		// console.debug("$homeDirectory:", plugin.manifest.homeDirectory)
+		var plugin = FrameWork.plugin("Competitors")
 		return plugin.manifest.homeDirectory + "/images/feature.png"
 	}
-	
+
 	attachedObjects: [
 	]
 

@@ -7,7 +7,10 @@ Plugin {
 	//featureId: 'SqlDb'
 	//dependsOnFeatureIds: "Core"
 
-	property bool sqlServerConnected: false
+	property QtObject api: QtObject
+	{
+		property bool sqlServerConnected: false
+	}
 
 	property list<Action> actions: [
 		Action {
@@ -65,12 +68,12 @@ Plugin {
                     break;
                 var core_feature = FrameWork.plugin("Core");
                 //var db = Sql.database();
-                var settings = core_feature.createSettings();
+                var settings = core_feature.api.createSettings();
                 settings.beginGroup("sql/connection");
                 console.debug(db, db.driverName);
                 db.hostName = settings.value('host');
                 db.userName = settings.value('user');
-                db.password = core_feature.crypt.decrypt(settings.value("password", ""));
+                db.password = core_feature.api.crypt.decrypt(settings.value("password", ""));
                 db.databaseName = 'quickevent';
                 connect_ok = db.open();
                 settings.destroy();
@@ -80,6 +83,6 @@ Plugin {
             }
             dlg.destroy();
 		}
-        root.sqlServerConnected = connect_ok;
+        root.api.sqlServerConnected = connect_ok;
 	}
 }

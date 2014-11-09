@@ -138,8 +138,12 @@ public:
 	void setVisible(bool visible) Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
-	void setData(const qf::core::utils::TreeTable &data);
-	Q_INVOKABLE void setData(const QVariant &data);
+	void setData(const QString &key, const qf::core::utils::TreeTable &data);
+	Q_INVOKABLE void setData(const QString &key, const QVariant &data);
+	Q_INVOKABLE void setData(const QVariant &data) {
+		setData(QString(), data);
+	}
+
 	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
 	Q_SLOT void setReport(const QString &file_name);
 

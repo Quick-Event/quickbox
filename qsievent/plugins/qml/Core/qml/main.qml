@@ -5,6 +5,40 @@ import qf.qmlwidgets 1.0
 Plugin {
 	id: root
 
+	property QtObject api: QtObject
+	{
+		property Crypt crypt: Crypt
+		{
+			Component.onCompleted: {
+				initGenerator(16808, 11, 2147483647);
+			}
+		}
+
+		function createSettings()
+		{
+			// it is better to create and destroy new Settings object for each particular use
+			// because it handles situation when one doesn't endGroup properly (groups can be nested)
+			return settingsComponent.createObject(null);
+		}
+
+		function downloadContent(url, callback)
+		{
+			var reply = networkAccessManager.get(url);
+			reply.downloadProgress.connect(FrameWork.showProgress);
+			reply.finished.connect(function(get_ok) {
+				Log.info("http get finished:", get_ok, reply.url);
+				if(get_ok) {
+					callback(true, reply.textData);
+				}
+				else {
+					console.error("http get error:", reply.errorString, 'on:', reply.url);
+					callback(false, reply.errorString);
+				}
+				reply.destroy();
+			});
+		}
+	}
+
 	property list<Action> actions: [
 		Action {
 			id: actQuit
@@ -16,37 +50,6 @@ Plugin {
 			}
 		}
 	]
-
-	function createSettings()
-	{
-		// it is better to create and destroy new Settings object for each particular use
-		// because it handles situation when one doesn't endGroup properly (groups can be nested)
-		return settingsComponent.createObject(null);
-	}
-
-	function downloadContent(url, callback)
-	{
-		var reply = networkAccessManager.get(url);
-		reply.downloadProgress.connect(FrameWork.showProgress);
-		reply.finished.connect(function(get_ok) {
-			Log.info("http get finished:", get_ok, reply.url);
-			if(get_ok) {
-				callback(true, reply.textData);
-			}
-			else {
-				console.error("http get error:", reply.errorString, 'on:', reply.url);
-				callback(false, reply.errorString);
-			}
-			reply.destroy();
-		});
-	}
-
-	property Crypt crypt: Crypt
-	{
-		Component.onCompleted: {
-			initGenerator(16808, 11, 2147483647);
-		}
-	}
 
 	property QfObject internals: QfObject
 	{

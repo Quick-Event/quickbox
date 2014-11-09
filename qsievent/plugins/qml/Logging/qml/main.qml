@@ -10,8 +10,6 @@ Plugin {
 			id: actShowLogView
 			text: qsTr('Show application log')
 			shortcut: "Ctrl+L"
-			//enabled: internals.pluginSqlDb.sqlServerConnected
-			//checkable: true
 			onTriggered: {
 				Log.info(text, "triggered");
 				showLogDockWidget(true);
@@ -35,7 +33,7 @@ Plugin {
 		FrameWork.menuBar.actionForPath('view').addAction(actShowLogView);
 
 		var core_feature = FrameWork.plugin("Core");
-		var settings = core_feature.createSettings();
+		var settings = core_feature.api.createSettings();
 		settings.beginGroup("persistentSettings/ui/docks/Logger");
 		var dock_visible = settings.value('visible');
 		settings.destroy();
@@ -46,7 +44,7 @@ Plugin {
 	function saveSettings()
 	{
 		var core_feature = FrameWork.plugin("Core");
-		var settings = core_feature.createSettings();
+		var settings = core_feature.api.createSettings();
 		settings.beginGroup("persistentSettings/ui/docks/Logger");
 		settings.setValue('visible', (internals.logDockWidget)? internals.logDockWidget.visible: false);
 		settings.destroy();

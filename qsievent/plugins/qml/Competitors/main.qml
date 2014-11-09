@@ -9,7 +9,6 @@ Plugin {
 	{
 		ThisPartWidget{
 			id: thisPart
-			pluginId: root.manifest.featureId
 		}
 	}
 

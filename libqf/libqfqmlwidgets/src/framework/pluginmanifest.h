@@ -17,12 +17,12 @@ class QFQMLWIDGETS_DECL_EXPORT PluginManifest : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 	Q_PROPERTY(QStringList dependsOnFeatureIds READ dependsOnFeatureIds WRITE setDependsOnFeatureIds FINAL)
-	Q_PROPERTY(QString homeDirectory READ homeDirectory WRITE setHomeDirectory NOTIFY homeDirectoryChanged FINAL)
+	Q_PROPERTY(QString homeDir READ homeDir WRITE setHomeDir NOTIFY homeDirChanged FINAL)
 public:
 	explicit PluginManifest(QObject *parent = 0);
 	~PluginManifest() Q_DECL_OVERRIDE;
 public:
-	QF_PROPERTY_IMPL(QString, h, H, omeDirectory)
+	QF_PROPERTY_IMPL(QString, h, H, omeDir)
 
 	QString featureId() const { return m_featureId; }
 	void setFeatureId(QString id);

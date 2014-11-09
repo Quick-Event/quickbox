@@ -272,25 +272,8 @@ void TableView::exportReport_helper(const QVariant& _options)
 		QVariantMap options = _options.toMap();
 		qfu::Table::TextExportOptions opts(options.value("options").toMap());
 		QVariantList exported_columns = options.value("columns").toList();
-		qfu::TreeTable ttable;
-		qfu::TreeTableRow tt_row = ttable.appendRow();
 
-		{
-			qfu::TreeTable xt;
-			xt.setName("report");
-			bool report_banner = false;
-			QString report_title = opts.value("report").toMap().value("title").toString();
-			if(!report_title.isEmpty())
-				report_banner = true;
-			QString report_note = opts.value("report").toMap().value("note").toString();
-			if(!report_note.trimmed().isEmpty())
-				report_banner = true;
-			if(report_banner) {
-				xt.setValue("title", report_title);
-				xt.setValue("note", report_note);
-				tt_row.appendTable(xt);
-			}
-		}
+		qfu::TreeTable ttable;
 
 		{
 			//QVariantList exported_columns = w->exportedColumns();
@@ -299,15 +282,28 @@ void TableView::exportReport_helper(const QVariant& _options)
 			//model()->setElideDisplayedTextAt(0);
 			qfc::model::TableModel::TreeTableExportOptions opts;
 			//opts.setExportRawValues(true);
-			qfu::TreeTable xt = m->toTreeTable(exported_columns, "data", opts);
+			ttable = m->toTreeTable(exported_columns, "data", opts);
 			//model()->setElideDisplayedTextAt(elide_at);
-			tt_row.appendTable(xt);
+		}
+
+		{
+			bool report_banner = false;
+			QString report_title = opts.value("report").toMap().value("title").toString();
+			if(!report_title.isEmpty())
+				report_banner = true;
+			QString report_note = opts.value("report").toMap().value("note").toString();
+			if(!report_note.trimmed().isEmpty())
+				report_banner = true;
+			if(report_banner) {
+				ttable.setValue("title", report_title);
+				ttable.setValue("note", report_note);
+			}
 		}
 
 		qfInfo() << ttable.toString();
 
 		reports::ReportViewWidget *rw = new reports::ReportViewWidget(NULL);
-		rw->setData(ttable);
+		rw->setData(QString(), ttable);
 		QString report_fn = opts.value("report").toMap().value("fileName").toString();
 		rw->setReport(report_fn);
 		dialogs::Dialog dlg(this);

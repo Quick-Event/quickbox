@@ -211,9 +211,9 @@ QfObject {
 	function whenServerConnected()
 	{
 		console.debug("whenServerConnected");
-		if(FrameWork.plugin("SqlDb").sqlServerConnected) {
+		if(FrameWork.plugin("SqlDb").api.sqlServerConnected) {
 			var core_feature = FrameWork.plugin("Core");
-			var settings = core_feature.createSettings();
+			var settings = core_feature.api.createSettings();
 			settings.beginGroup("sql/connection");
 			var event_name = settings.value('event');
 			settings.destroy();

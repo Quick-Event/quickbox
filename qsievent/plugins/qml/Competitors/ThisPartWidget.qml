@@ -6,7 +6,6 @@ import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
 PartWidget
 {
 	id: root
-	property string pluginId
 	objectName: "pwCompetitors"
 	title: "Competitors"
 
@@ -24,7 +23,6 @@ PartWidget
 		Component {
 			id: cCompetitorWidget
 			CompetitorWidget {
-				pluginId: root.pluginId
 			}
 		}
 	]
@@ -68,8 +66,8 @@ PartWidget
 
 	Component.onCompleted:
 	{
-		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reloadIfActive);
-		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reloadIfActive);
+		FrameWork.plugin("SqlDb").api.onSqlServerConnectedChanged.connect(reloadIfActive);
+		FrameWork.plugin("Event").api.onCurrentEventNameChanged.connect(reloadIfActive);
 		table.editRowInExternalEditor.connect(editCompetitor)
 	}
 
@@ -91,11 +89,17 @@ PartWidget
 
 	function reload()
 	{
-		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
-		var event_name = FrameWork.plugin("Event").currentEventName;
+		var sql_connected = FrameWork.plugin("SqlDb").api.sqlServerConnected;
+		var event_name = FrameWork.plugin("Event").api.currentEventName;
 		if(!sql_connected || !event_name)
 			return;
 		model.reload();
+	}
+
+	function pluginHomeDir()
+	{
+		var plugin = FrameWork.pluginForObject(root);
+		return plugin.homeDir();
 	}
 
 	function printAll()
@@ -109,7 +113,7 @@ PartWidget
 			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Competitors");
-		w.setReport("/home/fanda/proj/quickbox/qsievent/plugins/qml/Competitors/reports/table.qml");
+		w.setReport(pluginHomeDir() + "/reports/table.qml");
 		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
 		var dlg = cDialog.createObject(FrameWork);

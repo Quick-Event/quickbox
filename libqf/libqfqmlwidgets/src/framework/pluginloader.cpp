@@ -93,7 +93,7 @@ PluginLoader::ManifestMap PluginLoader::findPlugins()
 						}
 
 						QString plugin_path = fi.absoluteFilePath();
-						manifest->setHomeDirectory(plugin_path);
+						manifest->setHomeDir(plugin_path);
 						qfInfo() << "Found Manifest.qml for featureId:" << feature_id << "from plugin:" << fi.baseName();
 						if(ret.contains(feature_id)) {
 							qfError() << "Feature id:" << feature_id << "already loaded";
@@ -138,7 +138,7 @@ void PluginLoader::loadNextPlugin()
 			}
 		}
 		if(dependency_satisfied) {
-			QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->homeDirectory() + "/main.qml");
+			QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->homeDir() + "/main.qml");
 			qfInfo() << "Installing feature:" << feature_id << "from:" << plugin_loader_url.toString();
 			m_currentlyLoadedFeatureId = feature_id;
 			m_currentlyLoadedComponent = new QQmlComponent(qe, plugin_loader_url, QQmlComponent::PreferSynchronous);

@@ -40,19 +40,20 @@ BandDataModel *ReportItemBand::model()
 	if(!m_model) {
 		QVariant dta = data();
 		if(!dta.isValid() || dta.userType() == QVariant::String) {
+			QString data_key = dta.toString();
 			ReportItemBand *pr = parentBand();
 			if(pr) {
 				BandDataModel *dm = pr->model();
 				ReportItemDetail *det = pr->detail();
 				if(dm && det) {
-					dta = dm->table(det->currentIndex(), dta.toString());
+					dta = dm->table(det->currentIndex(), data_key);
 				}
 			}
 			else {
 				/// take data from report processor
 				ReportProcessor *proc = processor();
 				if(proc) {
-					dta = QVariant::fromValue(proc->data());
+					dta = QVariant::fromValue(proc->data(data_key));
 				}
 			}
 		}

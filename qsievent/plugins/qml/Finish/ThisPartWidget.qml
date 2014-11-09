@@ -52,7 +52,7 @@ PartWidget
 			}
 			TableView {
 				id: classes
-				objectName: "twFinish02"	
+				objectName: "twFinish02"
 				persistentSettingsId: "tblClasses";
 				model: SqlQueryTableModel {
 					id: mClasses
@@ -68,8 +68,8 @@ PartWidget
 
 	Component.onCompleted:
 	{
-		FrameWork.plugin("SqlDb").onSqlServerConnectedChanged.connect(reloadIfActive);
-		FrameWork.plugin("Event").onCurrentEventNameChanged.connect(reloadIfActive);
+		FrameWork.plugin("SqlDb").api.onSqlServerConnectedChanged.connect(reloadIfActive);
+		FrameWork.plugin("Event").api.onCurrentEventNameChanged.connect(reloadIfActive);
 	}
 
 	function canActivate(active_on)
@@ -89,9 +89,9 @@ PartWidget
 
 	function reload()
 	{
-		Log.warning("Reloading Finish tables") 
-		var sql_connected = FrameWork.plugin("SqlDb").sqlServerConnected;
-		var event_name = FrameWork.plugin("Event").currentEventName;
+		Log.warning("Reloading Finish tables")
+		var sql_connected = FrameWork.plugin("SqlDb").api.sqlServerConnected;
+		var event_name = FrameWork.plugin("Event").api.currentEventName;
 		if(!sql_connected || !event_name)
 			return;
 		model.reload();
