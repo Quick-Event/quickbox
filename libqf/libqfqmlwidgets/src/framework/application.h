@@ -38,6 +38,8 @@ protected:
 	virtual QQmlEngine* createQmlEngine();
 
 	Q_SLOT void onQmlError(const QList<QQmlError> &qmlerror_list);
+
+	virtual void initStyleSheet();
 private:
 	void releaseQmlEngine();
 	void setupQmlImportPaths();

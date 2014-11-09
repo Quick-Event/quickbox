@@ -216,6 +216,7 @@ CentralWidget *MainWindow::centralWidget()
 	if(!central_widget) {
 		QF_SAFE_DELETE(cw);
 		central_widget = new StackedCentralWidget(this);
+		//central_widget->setStyleSheet("background:rgb(67, 67, 67)");
 		Super::setCentralWidget(central_widget);
 	}
 	return central_widget;

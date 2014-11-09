@@ -20,7 +20,7 @@ PartWidget::PartWidget(QWidget *parent) :
 	m_centralFrame = new Frame(this);
 	m_centralFrame->setLayoutType(Frame::LayoutVertical);
 	QBoxLayout *ly = new QVBoxLayout(this);
-	//ly->setMargin(1);
+	ly->setMargin(0);
 	ly->addWidget(m_captionFrame);
 	qfDebug() << "\t adding:" << m_centralFrame << "to layout:" << ly;
 	ly->addWidget(m_centralFrame);

@@ -2,10 +2,13 @@
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
+#include <qf/core/utils/fileutils.h>
 
 #include <QQmlEngine>
 #include <QQmlContext>
+#include <QFile>
 
+namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::framework;
 
 Application::Application(int &argc, char **argv) :
@@ -25,6 +28,7 @@ Application::Application(int &argc, char **argv) :
 		path = QCoreApplication::applicationDirPath() + "/divers/" + QCoreApplication::applicationName() + "/plugins";
 		m_qmlPluginImportPaths << path;
 	}
+	initStyleSheet();
 }
 
 Application::~Application()
@@ -111,6 +115,22 @@ void Application::onQmlError(const QList<QQmlError> &qmlerror_list)
 		qfError() << "QML ERROR:" << err.toString();
 	}
 	m_qmlErrorList << qmlerror_list;
+}
+
+void Application::initStyleSheet()
+{
+	QString app_name = Application::applicationName();
+	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/divers/" + app_name + "/style/default.css");
+	qfInfo() << "Opening style sheet:" << css_file_name;
+	QFile f(css_file_name);
+	if(f.open(QFile::ReadOnly)) {
+		QByteArray ba = f.readAll();
+		QString ss = QString::fromUtf8(ba);
+		setStyleSheet(ss);
+	}
+	else {
+		qfWarning() << "Cannot open style sheet:" << css_file_name;
+	}
 }
 
 void Application::releaseQmlEngine()

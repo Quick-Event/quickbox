@@ -15,7 +15,7 @@ class CaptionFrame : public QFrame
 {
 	Q_OBJECT
 public:
-	enum FrameStyle {StyleDefault=0, StyleLight, StyleDark};
+	//enum FrameStyle {StyleDefault=0, StyleLight, StyleDark};
 public:
 	CaptionFrame(QWidget *parent = NULL);
 protected:
@@ -29,7 +29,7 @@ public:
 	QString text() const;
 	void setIcon(const QIcon &ico);
 	void setCloseButtonVisible(bool b = true);
-	void setFrameStyle(FrameStyle st);
+	//void setFrameStyle(FrameStyle st);
 };
 
 }}}}
