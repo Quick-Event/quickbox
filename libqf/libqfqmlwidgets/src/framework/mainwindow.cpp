@@ -267,9 +267,11 @@ Plugin *MainWindow::plugin(const QString &feature_id)
 
 Plugin *MainWindow::pluginForObject(QObject *qml_object)
 {
+	qfLogFuncFrame();
 	Plugin *ret = nullptr;
 	for(QObject *o = qml_object; o!=nullptr; o=o->parent()) {
 		PartWidget *pw = qobject_cast<PartWidget*>(o);
+		qfDebug() << o << "->" << pw;
 		if(pw) {
 			QString id = pw->featureId();
 			ret = plugin(id);

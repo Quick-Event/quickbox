@@ -17,7 +17,7 @@ Schema {
 		Table { name: 'event'
 			fields: [
 				Field { name: 'id'; type: Serial {} },
-				Field { name: 'etapCount'; type: Int { } },
+				Field { name: 'stageCount'; type: Int { } },
 				Field { name: 'name'; type: String {} },
 				Field { name: 'description'; type: String {} },
 				Field { name: 'date'; type: Date {} },
@@ -60,7 +60,7 @@ Schema {
 				Field { name: 'id'; type: Serial {} },
 				Field { name: 'runnerId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'etap'; type: Int {} },
+				Field { name: 'stage'; type: Int {} },
 				Field { name: 'startTime'; type: Int {}
 					comment: 'in seconds'
 				},
@@ -92,7 +92,7 @@ Schema {
 			indexes: [
 				Index { fields: ['id']; primary: true },
 				Index { fields: ['runnerId'] },
-				Index { fields: ['etap, runnerId']; unique: true },
+				Index { fields: ['stage, runnerId']; unique: true },
 				Index { fields: ['status', 'lapTime', 'lapTimeMS'] }
 			]
 		},
@@ -111,7 +111,7 @@ Schema {
 				Index {fields: ['registration'] }
 			]
 		},
-		Table { name: 'etaps'
+		Table { name: 'stages'
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startTime'; type: Time {} }

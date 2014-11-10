@@ -78,8 +78,9 @@ QfObject {
 	function importOris()
 	{
 		var d = new Date;
+		d.setMonth(d.getMonth() - 2);
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10);
-		FrameWork.plugin("Core").downloadContent(url, function(get_ok, json_str)
+		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
@@ -110,13 +111,13 @@ QfObject {
 		//FrameWork.showProgress(qsTr("Importing event"), 1, steps);
 
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=' + event_id;
-		FrameWork.plugin("Core").downloadContent(url, function(get_ok, json_str)
+		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
                 var data = JSON.parse(json_str).Data;
-				var etap_count = data.Stages;
-				Log.info("pocet etap:", etap_count);
+				var stage_count = data.Stages;
+				Log.info("pocet stage:", stage_count);
 				var event_name = createEvent();
 				if(!event_name)
 					return;
@@ -124,8 +125,8 @@ QfObject {
 
                 var q = db.createQuery();
 
-				q.prepare('INSERT INTO event (etapCount, name, description, date, place, mainReferee, director, importId) VALUES (:etapCount, :name, :description, :date, :place, :mainReferee, :director, :importId)');
-				q.bindValue(':etapCount', data.Stages);
+				q.prepare('INSERT INTO event (stageCount, name, description, date, place, mainReferee, director, importId) VALUES (:stageCount, :name, :description, :date, :place, :mainReferee, :director, :importId)');
+				q.bindValue(':stageCount', data.Stages);
 				q.bindValue(':name', data.Name);
 				q.bindValue(':description', '');
 				q.bindValue(':date', data.Date);
@@ -136,8 +137,8 @@ QfObject {
 				q.exec();
 
 
-				q.prepare('INSERT INTO etaps (id) VALUES (:id)');
-				for(var i=0; i<etap_count; i++) {
+				q.prepare('INSERT INTO stages (id) VALUES (:id)');
+				for(var i=0; i<stage_count; i++) {
 					q.bindValue(':id', i+1);
 					if(!q.exec())
 						break;
@@ -165,7 +166,7 @@ QfObject {
 	function importEventOrisRunners(event_id)
 	{
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=' + event_id;
-		FrameWork.plugin("Core").downloadContent(url, function(get_ok, json_str)
+		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {

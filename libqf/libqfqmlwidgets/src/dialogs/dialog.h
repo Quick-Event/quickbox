@@ -63,10 +63,10 @@ public:
 private:
 	Q_SLOT void savePersistentSettings();
 
-	void settleDownDialogWidget(qf::qmlwidgets::framework::DialogWidget *dialog_widget);
+	Q_SLOT void settleDownDialogWidget();
 
+	void updateCaptionFrame();
 	void updateLayout();
-	void updateCaptionFrame(qf::qmlwidgets::framework::DialogWidget *dialog_widget);
 protected:
 	bool m_doneCancelled;
 	internal::CaptionFrame *m_captionFrame = nullptr;

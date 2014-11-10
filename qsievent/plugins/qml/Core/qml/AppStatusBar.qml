@@ -7,7 +7,7 @@ StatusBar
 	id: root
 
 	property string eventName: '---'
-	property int etapNo: 0
+	property int stageNo: 0
 
 	styleSheet: "background-color: rgb(118, 118, 118);"
 	sizeGripEnabled: true
@@ -19,13 +19,13 @@ StatusBar
 			text: root.eventName
 		}
 	}
-	property var etapFrame: Frame {
+	property var stageFrame: Frame {
 		frameShape: QFrame.Panel
 		frameShadow: QFrame.Sunken
-		visible: (root.etapNo > 0)
+		visible: (root.stageNo > 0)
 		Label {
-			id: etap
-			text: (root.etapNo>0)? ('E'+root.etapNo): ''
+			id: stage
+			text: (root.stageNo>0)? ('E'+root.stageNo): ''
 		}
 	}
 	property var progressFrame: Frame
@@ -54,7 +54,7 @@ StatusBar
 	Component.onCompleted:
 	{
 		root.addPermanentWidget(eventFrame);
-		root.addPermanentWidget(etapFrame);
+		root.addPermanentWidget(stageFrame);
 
 		root.addWidget(progressFrame);
 

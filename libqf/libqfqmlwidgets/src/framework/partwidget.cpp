@@ -64,6 +64,8 @@ void PartWidget::setFeatureId(QString id)
 void PartWidget::updateCaptionFrame()
 {
 	m_captionFrame->setText(m_title);
+	//m_captionFrame->setIconSource(this->iconSource());
+	//QString feature_id = featureId();
 	QIcon ico = createIcon();
 	m_captionFrame->setIcon(ico);
 }

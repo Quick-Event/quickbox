@@ -128,7 +128,7 @@ PartWidget
 		var w = cCompetitorWidget.createObject(null);
 		w.windowTitle = qsTr("Edit Competitor");
 		w.title = "Fanda Vacek"
-		var dlg = cDialog.createObject(FrameWork);
+		var dlg = cDialog.createObject(root);
 		dlg.setDialogWidget(w);
 		dlg.exec();
 		dlg.destroy();

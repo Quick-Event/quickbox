@@ -9,10 +9,7 @@ DialogWidget
 	objectName: "dwCompetitors"
 	title: "Competitor"
 
-	iconSource: {
-		var plugin = FrameWork.plugin("Competitors")
-		return plugin.manifest.homeDirectory + "/images/feature.png"
-	}
+	iconSource: "images/feature.png"
 
 	attachedObjects: [
 	]

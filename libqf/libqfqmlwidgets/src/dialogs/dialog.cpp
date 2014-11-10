@@ -35,17 +35,19 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 			m_centralWidget->setParent(this);
 		}
 		if(dialog_widget) {
-			settleDownDialogWidget(dialog_widget);
-			updateCaptionFrame(dialog_widget);
+			QMetaObject::invokeMethod(this, "settleDownDialogWidget", Qt::QueuedConnection);
 		}
-		updateLayout();
 	}
 }
 
-void Dialog::settleDownDialogWidget(qf::qmlwidgets::framework::DialogWidget *dialog_widget)
+void Dialog::settleDownDialogWidget()
 {
-	QMetaObject::invokeMethod(dialog_widget, "settleDownInDialog", Qt::DirectConnection,
-						Q_ARG(qf::qmlwidgets::dialogs::Dialog*, this));
+	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
+	if(dialog_widget) {
+		dialog_widget->settleDownInDialog(this);
+		updateCaptionFrame();
+		updateLayout();
+	}
 }
 
 qf::qmlwidgets::MenuBar* Dialog::menuBar()
@@ -150,23 +152,19 @@ void Dialog::updateLayout()
 
 }
 
-void Dialog::updateCaptionFrame(qf::qmlwidgets::framework::DialogWidget *dialog_widget)
+void Dialog::updateCaptionFrame()
 {
-	QString title, icon_src;
+	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
 	if(dialog_widget) {
-		title = dialog_widget->title();
-		icon_src = dialog_widget->iconSource();
-	}
-	if(title.isEmpty() && icon_src.isEmpty()) {
-		if(m_captionFrame)
-			m_captionFrame->hide();
-	}
-	else {
 		if(!m_captionFrame)
 			m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
-		m_captionFrame->setText(title);
-		QIcon ico(icon_src);
-		m_captionFrame->setIcon(ico);
+		m_captionFrame->setText(dialog_widget->title());
+		m_captionFrame->setIconSource(dialog_widget->iconSource());
+		m_captionFrame->setIcon(m_captionFrame->createIcon());
+		m_captionFrame->update();
+	}
+	else {
+		QF_SAFE_DELETE(m_captionFrame);
 	}
 }
 
