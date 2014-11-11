@@ -6,7 +6,7 @@ CONFIG += C++11
 TEMPLATE = app
 
 DESTDIR = $$OUT_PWD/../../bin/
-TARGET = qsievent
+TARGET = quickevent
 
 LIBS +=      \
 	-lqfcore  \
@@ -33,4 +33,4 @@ OTHER_FILES += \
 
 QML_IMPORT_PATH += \
     $$OUT_PWD/../lib/qml \
-    $$OUT_PWD/../../bin/divers/qsievent/plugins \
+    $$OUT_PWD/../../bin/divers/quickevent/plugins \

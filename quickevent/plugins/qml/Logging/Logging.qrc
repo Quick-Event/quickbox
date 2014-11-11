@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qsievent/Logging">
+    <qresource prefix="/quickevent/Logging">
         <file>images/clear.png</file>
         <file>images/light-blind.png</file>
         <file>images/light-cyan.png</file>

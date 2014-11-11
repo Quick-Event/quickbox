@@ -5,14 +5,15 @@ CONFIG += plugin
 CONFIG += c++11
 QT += qml widgets
 
-PLUGIN_MODULE_NAME = Core
+PLUGIN_MODULE_NAME = Logging
 
-DESTDIR = $$OUT_PWD/../../../../bin/divers/qsievent/plugins/$$PLUGIN_MODULE_NAME
+DESTDIR = $$OUT_PWD/../../../../bin/divers/quickevent/plugins/$$PLUGIN_MODULE_NAME
 TARGET  = $${PLUGIN_MODULE_NAME}plugin
 
 LIBS += -lqfcore
 unix: LIBS += -L$$OUT_PWD/../../../../lib
 win32: LIBS += -L$$OUT_PWD/../../../../bin
+
 
 include ($$PWD/../../../../crosscompile-support.pri)
 
@@ -32,4 +33,4 @@ OTHER_FILES += \
 include (src/src.pri)
 
 RESOURCES += \
-#    $${PLUGIN_MODULE_NAME}.qrc \
+    $${PLUGIN_MODULE_NAME}.qrc \

@@ -60,7 +60,7 @@
         </property>
         <property name="icon">
          <iconset resource="../Logging.qrc">
-          <normaloff>:/qsievent/Logging/images/clear.png</normaloff>:/qsievent/Logging/images/clear.png</iconset>
+          <normaloff>:/quickevent/Logging/images/clear.png</normaloff>:/quickevent/Logging/images/clear.png</iconset>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -81,7 +81,7 @@
          </property>
          <property name="icon">
           <iconset resource="../Logging.qrc">
-           <normaloff>:/qsievent/Logging/images/light-blind.png</normaloff>:/qsievent/Logging/images/light-blind.png</iconset>
+           <normaloff>:/quickevent/Logging/images/light-blind.png</normaloff>:/quickevent/Logging/images/light-blind.png</iconset>
          </property>
         </item>
         <item>
@@ -90,7 +90,7 @@
          </property>
          <property name="icon">
           <iconset resource="../Logging.qrc">
-           <normaloff>:/qsievent/Logging/images/light-yellow.png</normaloff>:/qsievent/Logging/images/light-yellow.png</iconset>
+           <normaloff>:/quickevent/Logging/images/light-yellow.png</normaloff>:/quickevent/Logging/images/light-yellow.png</iconset>
          </property>
         </item>
         <item>
@@ -99,7 +99,7 @@
          </property>
          <property name="icon">
           <iconset resource="../Logging.qrc">
-           <normaloff>:/qsievent/Logging/images/light-cyan.png</normaloff>:/qsievent/Logging/images/light-cyan.png</iconset>
+           <normaloff>:/quickevent/Logging/images/light-cyan.png</normaloff>:/quickevent/Logging/images/light-cyan.png</iconset>
          </property>
         </item>
         <item>
@@ -108,7 +108,7 @@
          </property>
          <property name="icon">
           <iconset resource="../Logging.qrc">
-           <normaloff>:/qsievent/Logging/images/light-red.png</normaloff>:/qsievent/Logging/images/light-red.png</iconset>
+           <normaloff>:/quickevent/Logging/images/light-red.png</normaloff>:/quickevent/Logging/images/light-red.png</iconset>
          </property>
         </item>
        </widget>

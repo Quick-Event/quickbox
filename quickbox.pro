@@ -15,6 +15,6 @@ SUBDIRS += \
 	libsiut \
     tools \
 #    qsicli \
-	qsievent \
+	quickevent \
 
 
