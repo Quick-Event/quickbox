@@ -1,0 +1,3 @@
+module QuickEvent
+
+QuickEventPartWidget 1.0 QuickEventPartWidget.qml

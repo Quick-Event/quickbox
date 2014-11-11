@@ -1,8 +1,9 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import shared.QuickEvent 1.0
 
-PartWidget
+QuickEventPartWidget
 {
 	id: root
 	objectName: "pwFinish"
@@ -66,34 +67,9 @@ PartWidget
 		}
 	}
 
-	Component.onCompleted:
-	{
-		FrameWork.plugin("SqlDb").api.onSqlServerConnectedChanged.connect(reloadIfActive);
-		FrameWork.plugin("Event").api.onCurrentEventNameChanged.connect(reloadIfActive);
-	}
-
-	function canActivate(active_on)
-	{
-		console.debug(title, "canActivate:", active_on);
-		if(active_on) {
-			reload();
-		}
-		return true;
-	}
-
-	function reloadIfActive()
-	{
-		if(root.active)
-			reload();
-	}
-
 	function reload()
 	{
 		Log.warning("Reloading Finish tables")
-		var sql_connected = FrameWork.plugin("SqlDb").api.sqlServerConnected;
-		var event_name = FrameWork.plugin("Event").api.currentEventName;
-		if(!sql_connected || !event_name)
-			return;
 		model.reload();
 		mClasses.reload();
 	}

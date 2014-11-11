@@ -2,8 +2,9 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
 import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
+import shared.QuickEvent 1.0
 
-PartWidget
+QuickEventPartWidget
 {
 	id: root
 	objectName: "pwCompetitors"
@@ -66,40 +67,12 @@ PartWidget
 
 	Component.onCompleted:
 	{
-		FrameWork.plugin("SqlDb").api.onSqlServerConnectedChanged.connect(reloadIfActive);
-		FrameWork.plugin("Event").api.onCurrentEventNameChanged.connect(reloadIfActive);
 		table.editRowInExternalEditor.connect(editCompetitor)
-	}
-
-	function canActivate(active_on)
-	{
-		console.debug(title, "canActivate:", active_on);
-		if(active_on) {
-			//tableViewToolBar.tableView = table;
-			reload();
-		}
-		return true;
-	}
-
-	function reloadIfActive()
-	{
-		if(root.active)
-			reload();
 	}
 
 	function reload()
 	{
-		var sql_connected = FrameWork.plugin("SqlDb").api.sqlServerConnected;
-		var event_name = FrameWork.plugin("Event").api.currentEventName;
-		if(!sql_connected || !event_name)
-			return;
 		model.reload();
-	}
-
-	function pluginHomeDir()
-	{
-		var plugin = FrameWork.pluginForObject(root);
-		return plugin.homeDir();
 	}
 
 	function printAll()
