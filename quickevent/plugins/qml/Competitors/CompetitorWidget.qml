@@ -15,8 +15,68 @@ DialogWidget
 	]
 
 	Frame {
+		layoutType: Frame.LayoutGrid
+		layoutProperties: LayoutProperties {
+			columns: 4
+		}
+
 		Label {
-			text: "Ahoj"
+			text: qsTr("Class")
+		}
+		LineEdit {
+			text: "H21E"
+		}
+		Label {
+			text: qsTr("SI")
+		}
+		LineEdit {
+			text: "8436"
+		}
+
+		Label {
+			text: qsTr("First name")
+		}
+		LineEdit {
+			Layout.columnSpan: 3
+			text: "Fanda"
+		}
+		Label {
+			text: qsTr("Last name")
+		}
+		LineEdit {
+			Layout.columnSpan: 3
+			text: "Vacek"
+		}
+
+		Label {
+			text: qsTr("Registration")
+		}
+		LineEdit {
+			text: "CHT7001"
+		}
+		Label {
+			text: qsTr("Licence")
+		}
+		LineEdit {
+			text: "C"
+		}
+
+		Label {
+			text: qsTr("Club")
+		}
+		LineEdit {
+			text: "SKOB Chrast"
+		}
+		Label {
+			text: qsTr("Country")
+		}
+		LineEdit {
+			text: "Czech republic"
+		}
+
+		Label {
+			Layout.verticalSizePolicy: LayoutProperties.Expanding
+			text: "REST"
 		}
 	}
 

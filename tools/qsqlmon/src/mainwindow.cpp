@@ -1097,8 +1097,11 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 								" data_type AS type,"
 								" is_nullable AS null,"
 								" column_default AS default"
-								" FROM information_schema.columns WHERE table_name = '%1' ORDER BY ordinal_position";
-						execQuery(s.arg(table->objectName()));
+								" FROM information_schema.columns"
+								" WHERE table_name = '%1'"
+								"  AND table_schema = '%2'"
+								" ORDER BY ordinal_position";
+						execQuery(s.arg(table->objectName()).arg(table->schema()));
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
 						QString s = "SHOW FULL COLUMNS FROM %1";

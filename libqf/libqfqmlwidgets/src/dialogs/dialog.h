@@ -64,7 +64,7 @@ private:
 	Q_SLOT void savePersistentSettings();
 
 	Q_SLOT void settleDownDialogWidget();
-
+protected:
 	void updateCaptionFrame();
 	void updateLayout();
 protected:

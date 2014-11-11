@@ -16,6 +16,7 @@ QmlDialog::QmlDialog(QWidget *parent) :
 	//connect(this, &QmlDialog::finished, this, &QmlDialog::savePersistentSettings);
 	m_centralFrame = new Frame(nullptr);
 	setCentralWidget(m_centralFrame);
+	updateLayout();
 }
 
 QmlDialog::~QmlDialog()
