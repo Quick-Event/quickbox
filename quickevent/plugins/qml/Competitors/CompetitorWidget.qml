@@ -27,6 +27,7 @@ DialogWidget
 			text: "H21E"
 		}
 		Label {
+			horizontalAlignment: Qt.AlignRight
 			text: qsTr("SI")
 		}
 		LineEdit {

@@ -16,7 +16,9 @@ QMenu::item, QMenuBar::item {
  }
 
  QMenu::item:selected, QMenuBar::item:selected {
-     background: darkgray;
+	color: black;
+	background: #FDE364;
+    /* background: darkgray;*/
  }
 
  QMenu::item:pressed, QMenuBar::item:pressed {
@@ -41,8 +43,12 @@ qf--qmlwidgets--framework--PartSwitch QToolButton {
 }
 
 qf--qmlwidgets--framework--PartSwitch QToolButton:hover {
+	color: black;
+	background: #FDE364;
+/* 	
 	background: gray;
-/* 	color: black; */
+	color: black;
+ */
 }
 
 qf--qmlwidgets--framework--PartSwitch QToolButton:checked {
@@ -51,7 +57,8 @@ qf--qmlwidgets--framework--PartSwitch QToolButton:checked {
 }
 
 qf--qmlwidgets--dialogs--internal--CaptionFrame {
-	background: #FFA842;
+	background: #FDE364;
+	/*background: #FFA842;*/
 } 
 qf--qmlwidgets--dialogs--internal--CaptionFrame QLabel {
 	font: 18pt;

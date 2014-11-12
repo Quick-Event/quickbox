@@ -361,7 +361,7 @@ QString SqlQueryTableModel::replaceQueryParameters(const QString query_str)
 	QMapIterator<QString, QVariant> it(m_queryParameters);
 	while(it.hasNext()) {
 		it.next();
-		QString key = "${" + it.key() + "}";
+		QString key = "{{" + it.key() + "}}";
 		ret.replace(key, it.value().toString());
 	}
 	return ret;

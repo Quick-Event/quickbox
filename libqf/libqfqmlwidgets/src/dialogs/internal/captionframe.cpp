@@ -102,6 +102,6 @@ QIcon CaptionFrame::createIcon()
 
 void CaptionFrame::update()
 {
-	setVisible(!(captionLabel->text().isEmpty() && captionIconLabel->pixmap() == NULL));
+	setVisible(!(captionLabel->text().isEmpty() && m_icon.isNull()));
 }
 
