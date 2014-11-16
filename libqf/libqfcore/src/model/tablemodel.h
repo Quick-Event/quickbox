@@ -20,75 +20,75 @@ class QFCORE_DECL_EXPORT TableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 	Q_PROPERTY(bool nullReportedAsString READ isNullReportedAsString WRITE setNullReportedAsString NOTIFY nullReportedAsStringChanged)
+public:
+	explicit TableModel(QObject *parent = 0);
 private:
 	typedef QAbstractTableModel Super;
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
-				FieldTypeRole, //FieldIsNullableRole,
-				RawValueRole, ValueIsNullRole, FirstUnusedRole };
-	enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
-public:
-	explicit TableModel(QObject *parent = 0);
+					   FieldTypeRole, //FieldIsNullableRole,
+					   RawValueRole, ValueIsNullRole, FirstUnusedRole };
+	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
 	{
 	public:
-		private:
+	private:
 		class SharedDummyHelper {};
-			class Data : public QSharedData
-			{
-				public:
-					QString fieldName; //!< ID to pair ColumnDefinitions with fields
-					int fieldIndex;
-					QString caption;
-					QString toolTip;
-					//int initialSize; //!< initial width of column
-					bool readOnly;
-					Qt::Alignment alignment;
-					//QPointer<QFDlgDataTable> chooser;
-					QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
-					QVariant::Type castType;
-
-					Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
-			};
-		private:
-			QSharedDataPointer<Data> d;
-			ColumnDefinition(SharedDummyHelper) {
-				d = new Data();
-			}
+		class Data : public QSharedData
+		{
 		public:
-			static const ColumnDefinition& sharedNull();
-			bool isNull() const {return d == sharedNull().d;}
-		public:
-			ColumnDefinition() {
-				*this = sharedNull();
-			}
-			ColumnDefinition(const QString &fldname) {
-				d = new Data(fldname);
-			}
+			QString fieldName; //!< ID to pair ColumnDefinitions with fields
+			int fieldIndex;
+			QString caption;
+			QString toolTip;
+			//int initialSize; //!< initial width of column
+			bool readOnly;
+			Qt::Alignment alignment;
+			//QPointer<QFDlgDataTable> chooser;
+			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
+			QVariant::Type castType;
 
-			QString fieldName() const {return d->fieldName;}
-			ColumnDefinition& setFieldName(const QString &s) {d->fieldName = s; return *this;}
-			int fieldIndex() const {return d->fieldIndex;}
-			ColumnDefinition& setFieldIndex(int i) {d->fieldIndex = i; return *this;}
-			QString caption() const {return d->caption.isEmpty()? fieldName(): d->caption;}
-			ColumnDefinition& setCaption(const QString &s) {d->caption = s; return *this;}
-			QString toolTip() const {return d->toolTip;}
-			ColumnDefinition& setToolTip(const QString &s) {d->toolTip = s; return *this;}
-			//int initialSize() const {return d->initialSize;}
-			//ColumnDefinition& setInitialSize(int i) {d->initialSize = i; return *this;}
-			bool isReadOnly() const {return d->readOnly;}
-			ColumnDefinition& setReadOnly(bool b = true) {d->readOnly = b; return *this;}
-			Qt::Alignment alignment() const {return d->alignment;}
-			ColumnDefinition& setAlignment(const Qt::Alignment &al) {d->alignment = al; return *this;}
-			QString format() const {return d->format;}
-			/// for double see QString::number(...)
-			/// for QTime see QTime::toString(...)
-			/// for QDate see QDate::toString(...)
-			ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
+			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
+		};
+	private:
+		QSharedDataPointer<Data> d;
+		ColumnDefinition(SharedDummyHelper) {
+			d = new Data();
+		}
+	public:
+		static const ColumnDefinition& sharedNull();
+		bool isNull() const {return d == sharedNull().d;}
+	public:
+		ColumnDefinition() {
+			*this = sharedNull();
+		}
+		ColumnDefinition(const QString &fldname) {
+			d = new Data(fldname);
+		}
 
-			ColumnDefinition& setCastType(QVariant::Type t) {d->castType = t; return *this;}
-			QVariant::Type castType() const {return d->castType;}
+		QString fieldName() const {return d->fieldName;}
+		ColumnDefinition& setFieldName(const QString &s) {d->fieldName = s; return *this;}
+		int fieldIndex() const {return d->fieldIndex;}
+		ColumnDefinition& setFieldIndex(int i) {d->fieldIndex = i; return *this;}
+		QString caption() const {return d->caption.isEmpty()? fieldName(): d->caption;}
+		ColumnDefinition& setCaption(const QString &s) {d->caption = s; return *this;}
+		QString toolTip() const {return d->toolTip;}
+		ColumnDefinition& setToolTip(const QString &s) {d->toolTip = s; return *this;}
+		//int initialSize() const {return d->initialSize;}
+		//ColumnDefinition& setInitialSize(int i) {d->initialSize = i; return *this;}
+		bool isReadOnly() const {return d->readOnly;}
+		ColumnDefinition& setReadOnly(bool b = true) {d->readOnly = b; return *this;}
+		Qt::Alignment alignment() const {return d->alignment;}
+		ColumnDefinition& setAlignment(const Qt::Alignment &al) {d->alignment = al; return *this;}
+		QString format() const {return d->format;}
+		/// for double see QString::number(...)
+		/// for QTime see QTime::toString(...)
+		/// for QDate see QDate::toString(...)
+		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
+
+		ColumnDefinition& setCastType(QVariant::Type t) {d->castType = t; return *this;}
+		QVariant::Type castType() const {return d->castType;}
 	};
 	typedef QList<ColumnDefinition> ColumnList;
 
@@ -100,8 +100,6 @@ public:
 	ColumnDefinition& insertColumn(int before_ix, const QString &field_name, const QString &_caption = QString());
 	ColumnDefinition& insertColumn(int before_ix, const ColumnDefinition &cd);
 	ColumnDefinition removeColumn(int ix);
-
-	int appendRow() {return insertRows(rowCount(), 1);}
 public:
 	const qf::core::utils::Table& table() {return m_table;}
 
@@ -117,6 +115,9 @@ public:
 	Q_SLOT virtual bool reload();
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
+	int appendRow() {return insertRows(rowCount(), 1);}
+	bool dropRow(int row_ix) {return removeRows(row_ix, 1);}
+	bool prepareForCopyRow(int row_no);
 
 	bool insertRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
 	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
@@ -132,25 +133,27 @@ public:
 	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
 	Q_INVOKABLE virtual QVariant value(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
+	Q_INVOKABLE virtual QVariant origValue(int row_ix, int column_ix) const;
+	Q_INVOKABLE QVariant origValue(int row_ix, const QString& col_name) const;
+	Q_INVOKABLE bool isDirty(int row_ix, int column_ix) const;
+	Q_INVOKABLE bool isDirty(int row_ix, const QString& col_name) const;
 
 	qf::core::utils::TableRow tableRow(int row_no);
-	//Q_INVOKABLE QVariant origValue(int row, const QString& col_name) const;
-	//Q_INVOKABLE bool isDirty(int row, const QString& col_name) const;
 
 	class QFCORE_DECL_EXPORT TreeTableExportOptions : public QVariantMap
 	{
 		QF_OPTION_FIELD2_RW(bool, is, set, ExportRawValues, true)
-	public:
-		TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
+		public:
+			TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};
 	qf::core::utils::TreeTable toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
 	Q_INVOKABLE QVariant toTreeTableData(const QVariantList& exported_columns = QVariantList(), const QString& table_name = QString()) const;
 
+	int columnIndex(const QString &column_name) const;
 protected:
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
 	QVariant::Type columnType(int column_index) const;
-	int columnIndex(const QString &column_name) const;
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
 	/// @returns: index of inserted line or -1

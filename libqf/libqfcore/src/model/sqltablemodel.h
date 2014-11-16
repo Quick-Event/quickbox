@@ -1,7 +1,8 @@
-#ifndef QF_CORE_MODEL_SQLQUERYTABLEMODEL_H
-#define QF_CORE_MODEL_SQLQUERYTABLEMODEL_H
+#ifndef QF_CORE_MODEL_SQLTABLEMODEL_H
+#define QF_CORE_MODEL_SQLTABLEMODEL_H
 
 #include "tablemodel.h"
+#include "../core/utils.h"
 #include "../sql/querybuilder.h"
 #include "../sql/query.h"
 
@@ -15,16 +16,19 @@ class Connection;
 }
 namespace model {
 
-class QFCORE_DECL_EXPORT SqlQueryTableModel : public TableModel
+class QFCORE_DECL_EXPORT SqlTableModel : public TableModel
 {
 	Q_OBJECT
 	Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
-	Q_PROPERTY(QVariantMap queryParameters READ queryParameters WRITE setQueryParameters)
+	//Q_PROPERTY(QVariant queryParameters READ queryParameters WRITE setQueryParameters NOTIFY queryParametersChanged)
 	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName)
 private:
 	typedef TableModel Super;
 public:
-	SqlQueryTableModel(QObject *parent = 0);
+	SqlTableModel(QObject *parent = 0);
+	~SqlTableModel() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
 public:
 	bool reload(const QString &query_str);
 	bool reload() Q_DECL_OVERRIDE;
@@ -32,9 +36,6 @@ public:
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
-
-	QVariantMap queryParameters() const { return m_queryParameters; }
-	void setQueryParameters(QVariantMap arg) { m_queryParameters = arg; }
 
 	QString connectionName() const { return m_connectionName; }
 	void setConnectionName(QString arg) { m_connectionName = arg; }
@@ -62,7 +63,6 @@ protected:
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;
-	QVariantMap m_queryParameters;
 	QString m_connectionName;
 	qf::core::sql::Query m_recentlyExecutedQuery;
 	/// INSERT needs to know dependency of tables in joined queries to insert particular tables in proper order
@@ -71,4 +71,4 @@ protected:
 
 }}}
 
-#endif // QF_CORE_MODEL_SQLQUERYTABLEMODEL_H
+#endif // QF_CORE_MODEL_SQLTABLEMODEL_H

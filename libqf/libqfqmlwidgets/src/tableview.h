@@ -4,10 +4,10 @@
 #include "qmlwidgetsglobal.h"
 #include "framework/ipersistentsettings.h"
 
-#include <qf/core/model/sqlquerytablemodel.h>
+//#include <qf/core/model/sqltablemodel.h>
 #include <qf/core/utils.h>
 #include <qf/core/utils/table.h>
-#include <qf/core/model/tablemodel.h>
+#include <qf/core/model/datadocument.h>
 
 #include <QTableView>
 
@@ -40,11 +40,11 @@ public:
 	enum RowEditorMode { EditRowsInline,
 					EditRowsExternal,
 					EditRowsMixed };
-	enum RecordEditMode { ModeView = qf::core::model::TableModel::ModeView,
-					   ModeEdit = qf::core::model::TableModel::ModeEdit,
-					   ModeInsert = qf::core::model::TableModel::ModeInsert,
-					   ModeCopy = qf::core::model::TableModel::ModeCopy,
-					   ModeDelete = qf::core::model::TableModel::ModeDelete };
+	enum RecordEditMode { ModeView = qf::core::model::DataDocument::ModeView,
+					   ModeEdit = qf::core::model::DataDocument::ModeEdit,
+					   ModeInsert = qf::core::model::DataDocument::ModeInsert,
+					   ModeCopy = qf::core::model::DataDocument::ModeCopy,
+					   ModeDelete = qf::core::model::DataDocument::ModeDelete };
 
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))

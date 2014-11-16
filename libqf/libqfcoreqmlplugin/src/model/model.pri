@@ -3,10 +3,10 @@ message(including $$PWD)
 INCLUDEPATH += $$PWD/../../libqfcore/include
 
 HEADERS += \
-    $$PWD/sqlquerytablemodel.h \
-    $$PWD/tablemodelcolumn.h
+    $$PWD/tablemodelcolumn.h \
+    $$PWD/sqltablemodel.h
 
 SOURCES += \
-    $$PWD/sqlquerytablemodel.cpp \
-    $$PWD/tablemodelcolumn.cpp
+    $$PWD/tablemodelcolumn.cpp \
+    $$PWD/sqltablemodel.cpp
 

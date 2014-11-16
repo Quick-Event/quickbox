@@ -316,6 +316,13 @@ void TableModel::revertRow(int row_no)
 	row.restoreOrigValues();
 }
 
+bool TableModel::prepareForCopyRow(int row_no)
+{
+	qfu::TableRow &row = m_table.rowRef(row_no);
+	row.prepareForCopy();
+	return true;
+}
+
 void TableModel::setNullReportedAsString(bool arg)
 {
 	if (m_nullReportedAsString != arg) {
@@ -377,6 +384,52 @@ QVariant TableModel::value(int row_ix, const QString &col_name) const
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return ret);
 	return value(row_ix, col_ix);
+}
+
+QVariant TableModel::origValue(int row_ix, int column_ix) const
+{
+	QVariant ret;
+	int table_field_index = tableFieldIndex(column_ix);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field for column index: %1").arg(column_ix),
+			  return ret);
+	ret = m_table.row(row_ix).origValue(table_field_index);
+	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
+	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
+	return ret;
+}
+
+QVariant TableModel::origValue(int row_ix, const QString &col_name) const
+{
+	QVariant ret;
+	int col_ix = columnIndex(col_name);
+	QF_ASSERT(col_ix >= 0,
+			  tr("Cannot find column index for name: '%1'").arg(col_name),
+			  return ret);
+	return origValue(row_ix, col_ix);
+}
+
+bool TableModel::isDirty(int row_ix, int column_ix) const
+{
+	bool ret = false;
+	int table_field_index = tableFieldIndex(column_ix);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field for column index: %1").arg(column_ix),
+			  return ret);
+	ret = m_table.row(row_ix).isDirty(table_field_index);
+	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
+	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
+	return ret;
+}
+
+bool TableModel::isDirty(int row_ix, const QString &col_name) const
+{
+	bool ret = false;
+	int col_ix = columnIndex(col_name);
+	QF_ASSERT(col_ix >= 0,
+			  tr("Cannot find column index for name: '%1'").arg(col_name),
+			  return ret);
+	return isDirty(row_ix, col_ix);
 }
 
 qf::core::utils::TableRow TableModel::tableRow(int row_no)

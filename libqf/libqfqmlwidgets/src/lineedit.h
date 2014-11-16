@@ -2,13 +2,14 @@
 #define QF_QMLWIDGETS_LINEEDIT_H
 
 #include "qmlwidgetsglobal.h"
+#include "idatawidget.h"
 
 #include <QLineEdit>
 
 namespace qf {
 namespace qmlwidgets {
 
-class QFQMLWIDGETS_DECL_EXPORT LineEdit : public QLineEdit
+class QFQMLWIDGETS_DECL_EXPORT LineEdit : public QLineEdit, public IDataWidget
 {
 	Q_OBJECT
 public:

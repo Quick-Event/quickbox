@@ -41,7 +41,8 @@
 		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			if(m_##lower_letter##name_rest != nullptr) \
-				m_##lower_letter##name_rest->setParent(this); \
+				if(m_##lower_letter##name_rest->parent() == nullptr) \
+					m_##lower_letter##name_rest->setParent(this); \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 		}\
 	}

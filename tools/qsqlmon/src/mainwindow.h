@@ -22,13 +22,12 @@ class SqlDock;
 class QFXmlConfigDocument;
 class Connection;
 class Database;
-class QFSqlQueryTableModel;
 class QSpinBox;
 
 namespace qf {
 namespace core {
 namespace model {
-class SqlQueryTableModel;
+class SqlTableModel;
 }
 }
 }
@@ -106,8 +105,8 @@ private:
 
 	QList<QPointer<QDialog> > tearOffDialogs;
 
-	qf::core::model::SqlQueryTableModel* queryViewModel();
-	void setQueryViewModel(qf::core::model::SqlQueryTableModel *m);
+	qf::core::model::SqlTableModel* queryViewModel();
+	void setQueryViewModel(qf::core::model::SqlTableModel *m);
 	//QList<QWidget*> statusBarWidgets;
 private:
 	QAction* action(const QString& action_name) {

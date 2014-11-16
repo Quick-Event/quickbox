@@ -1,9 +1,9 @@
-#ifndef QF_CORE_QML_SQLQUERYTABLEMODEL_H
-#define QF_CORE_QML_SQLQUERYTABLEMODEL_H
+#ifndef QF_CORE_QML_SQLTABLEMODEL_H
+#define QF_CORE_QML_SQLTABLEMODEL_H
 
 #include "tablemodelcolumn.h"
 
-#include <qf/core/model/sqlquerytablemodel.h>
+#include <qf/core/model/sqltablemodel.h>
 
 #include <QQmlListProperty>
 
@@ -14,17 +14,17 @@ namespace qml {
 class SqlQueryBuilder;
 class TableModelColumn;
 
-class SqlQueryTableModel : public qf::core::model::SqlQueryTableModel
+class SqlTableModel : public qf::core::model::SqlTableModel
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::core::qml::SqlQueryBuilder* queryBuilder READ qmlSqlQueryBuilder)
 	Q_PROPERTY(QQmlListProperty<qf::core::qml::TableModelColumn> columns READ columns)
 	Q_CLASSINFO("DefaultProperty", "columns")
 private:
-	typedef qf::core::model::SqlQueryTableModel Super;
+	typedef qf::core::model::SqlTableModel Super;
 public:
-	explicit SqlQueryTableModel(QObject *parent = 0);
-	~SqlQueryTableModel() Q_DECL_OVERRIDE;
+	explicit SqlTableModel(QObject *parent = 0);
+	~SqlTableModel() Q_DECL_OVERRIDE;
 protected:
 	QString buildQuery() Q_DECL_OVERRIDE;
 private:
@@ -43,4 +43,4 @@ private:
 
 }}}
 
-#endif // QF_CORE_QML_SQLQUERYTABLEMODEL_H
+#endif // QF_CORE_QML_SQLTABLEMODEL_H

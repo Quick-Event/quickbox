@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 // import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
 
-DialogWidget
+DataDialogWidget
 {
 	id: root
 	objectName: "dwCompetitors"
@@ -11,6 +11,22 @@ DialogWidget
 
 	iconSource: "images/feature.png"
 
+	dataControler: DataController {
+		widget: root
+		document: DataDocument {
+			id: dataDocument
+			Component.onCompleted:
+			{
+				queryBuilder.select2('runners', '*')
+					.select("lastName || ' ' || firstName AS name")
+					.from('runners').where('runners.id={{ID}}');
+			}
+			onLoaded() {
+				root.title = dataDocument.value("name");
+			}
+		}
+	}
+	
 	attachedObjects: [
 	]
 
@@ -85,4 +101,5 @@ DialogWidget
 		console.debug("-----------------------onCompleted---------------")
 		console.debug("@iconSource:", root.iconSource)
 	}
+
 }

@@ -39,7 +39,7 @@ QuickEventPartWidget
 			persistentSettingsId: "tblCompetitors";
 			rowEditorMode: TableView.EditRowsMixed
 
-			model: SqlQueryTableModel {
+			model: SqlTableModel {
 				id: model
 				ModelColumn {
 					fieldName: 'id'
@@ -100,7 +100,7 @@ QuickEventPartWidget
 		Log.info("editCompetitor");
 		var w = cCompetitorWidget.createObject(null);
 		w.windowTitle = qsTr("Edit Competitor");
-		w.title = "Fanda Vacek"
+		w.load(id);
 		var dlg = cDialog.createObject(root);
 		dlg.setDialogWidget(w);
 		dlg.exec();

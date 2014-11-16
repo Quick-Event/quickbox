@@ -16,6 +16,7 @@
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
 #include <qf/qmlwidgets/framework/dialogwidget.h>
+#include <qf/qmlwidgets/framework/datadialogwidget.h>
 #include <qf/qmlwidgets/tableview.h>
 #include <qf/qmlwidgets/tableviewtoolbar.h>
 
@@ -80,6 +81,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::framework::DockWidget>(uri, 1, 0, "DockWidget");
 		qmlRegisterType<qf::qmlwidgets::framework::PartWidget>(uri, 1, 0, "PartWidget");
 		qmlRegisterType<qf::qmlwidgets::framework::DialogWidget>(uri, 1, 0, "DialogWidget");
+		qmlRegisterType<qf::qmlwidgets::framework::DataDialogWidget>(uri, 1, 0, "DataDialogWidget");
 
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 

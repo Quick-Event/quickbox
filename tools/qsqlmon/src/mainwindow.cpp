@@ -19,7 +19,7 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 #include <qf/core/utils/fileutils.h>
-#include <qf/core/model/sqlquerytablemodel.h>
+#include <qf/core/model/sqltablemodel.h>
 #include <qf/qmlwidgets/tableview.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
@@ -123,14 +123,14 @@ void MainWindow::lazyInit()
 	serverDock->ui.treeServers->resizeColumnToContents(0);
 }
 
-qf::core::model::SqlQueryTableModel* MainWindow::queryViewModel()
+qf::core::model::SqlTableModel* MainWindow::queryViewModel()
 {
-	qf::core::model::SqlQueryTableModel *m = qobject_cast<qf::core::model::SqlQueryTableModel*>(ui.queryView->tableView()->tableModel());
-	//QF_CHECK(m!=nullptr, "Model is NULL or not a kind of qf::core::model::SqlQueryTableModel.");
+	qf::core::model::SqlTableModel *m = qobject_cast<qf::core::model::SqlTableModel*>(ui.queryView->tableView()->tableModel());
+	//QF_CHECK(m!=nullptr, "Model is NULL or not a kind of qf::core::model::SqlTableModel.");
 	return m;
 }
 
-void MainWindow::setQueryViewModel(qf::core::model::SqlQueryTableModel *m)
+void MainWindow::setQueryViewModel(qf::core::model::SqlTableModel *m)
 {
 	ui.queryView->tableView()->setModel(m);
 	if(m) {
@@ -201,7 +201,7 @@ qf::core::sql::Connection MainWindow::setActiveConnection1(const qf::core::sql::
 			return c;
 	}
 	QObject *old_model = queryViewModel();
-	qf::core::model::SqlQueryTableModel *m = new qf::core::model::SqlQueryTableModel(this);
+	qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(this);
 	m->setConnectionName(c.connectionName());
 	qfDebug() << "\t setting new model created:" << m;
 	setQueryViewModel(m);
@@ -559,7 +559,7 @@ bool MainWindow::execQuery(const QString& query_str)
 
 	QString qs = query_str.trimmed();
 	appendInfo(qs);
-	qf::core::model::SqlQueryTableModel *m = queryViewModel();
+	qf::core::model::SqlTableModel *m = queryViewModel();
 	m->clearColumns();
 	m->setQuery(qs);
 	bool ok = m->reload();
@@ -1341,7 +1341,7 @@ void MainWindow::tearOffTable()
 		//ui.queryView->setContextMenuPolicy();
 		connect(ui.queryView, SIGNAL(statusTextAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
 		ly->addWidget(ui.queryView);
-		qf::core::model::SqlQueryTableModel *m = new qf::core::model::SqlQueryTableModel(ui.queryView);
+		qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(ui.queryView);
 		m->setConnectionName(activeConnection().connectionName());
 		setQueryViewModel(m);
 	}

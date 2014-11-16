@@ -27,7 +27,7 @@ QuickEventPartWidget
 				objectName: "tvStart1"
 				persistentSettingsId: "tblStart";
 
-				model: SqlQueryTableModel {
+				model: SqlTableModel {
 					id: model
 					ModelColumn {
 						fieldName: 'id'
@@ -55,7 +55,7 @@ QuickEventPartWidget
 				id: classes
 				objectName: "tvStart2"
 				persistentSettingsId: "tblClasses";
-				model: SqlQueryTableModel {
+				model: SqlTableModel {
 					id: mClasses
 					Component.onCompleted:
 					{

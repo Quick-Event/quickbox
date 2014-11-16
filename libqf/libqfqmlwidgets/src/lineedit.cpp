@@ -3,6 +3,6 @@
 using namespace qf::qmlwidgets;
 
 LineEdit::LineEdit(QWidget *parent) :
-	QLineEdit(parent)
+	QLineEdit(parent), IDataWidget(this)
 {
 }

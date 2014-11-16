@@ -1,4 +1,4 @@
-#include "sqlquerytablemodel.h"
+#include "sqltablemodel.h"
 #include "../core/assert.h"
 #include "../core/exception.h"
 #include "../sql/connection.h"
@@ -15,23 +15,28 @@ namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
 using namespace qf::core::model;
 
-SqlQueryTableModel::SqlQueryTableModel(QObject *parent)
+SqlTableModel::SqlTableModel(QObject *parent)
 	: Super(parent)
 {
 	m_connectionName = QSqlDatabase::defaultConnection;
 }
 
-void SqlQueryTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
+SqlTableModel::~SqlTableModel()
+{
+
+}
+
+void SqlTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 {
 	m_queryBuilder = qb;
 }
 
-void SqlQueryTableModel::addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key)
+void SqlTableModel::addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key)
 {
 	m_foreignKeyDependencies[master_table_key] = slave_table_key;
 }
 
-bool SqlQueryTableModel::reload()
+bool SqlTableModel::reload()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
@@ -39,7 +44,7 @@ bool SqlQueryTableModel::reload()
 	return reload(qs);
 }
 
-bool SqlQueryTableModel::reload(const QString &query_str)
+bool SqlTableModel::reload(const QString &query_str)
 {
 	beginResetModel();
 	bool ok = reloadTable(query_str);
@@ -52,7 +57,7 @@ bool SqlQueryTableModel::reload(const QString &query_str)
 	return ok;
 }
 
-bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
+bool SqlTableModel::postRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame() << row_no;
 
@@ -248,7 +253,7 @@ bool SqlQueryTableModel::postRow(int row_no, bool throw_exc)
 	return ret;
 }
 
-bool SqlQueryTableModel::removeOneRow(int row_no, bool throw_exc)
+bool SqlTableModel::removeOneRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame();
 	bool ret = false;
@@ -341,12 +346,12 @@ bool SqlQueryTableModel::removeOneRow(int row_no, bool throw_exc)
 	return ret;
 }
 
-void SqlQueryTableModel::revertRow(int row_no)
+void SqlTableModel::revertRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
 }
 
-QString SqlQueryTableModel::buildQuery()
+QString SqlTableModel::buildQuery()
 {
 	QString ret = m_query;
 	if(ret.isEmpty()) {
@@ -355,19 +360,26 @@ QString SqlQueryTableModel::buildQuery()
 	return ret;
 }
 
-QString SqlQueryTableModel::replaceQueryParameters(const QString query_str)
+QString SqlTableModel::replaceQueryParameters(const QString query_str)
 {
 	QString ret = query_str;
-	QMapIterator<QString, QVariant> it(m_queryParameters);
-	while(it.hasNext()) {
-		it.next();
-		QString key = "{{" + it.key() + "}}";
-		ret.replace(key, it.value().toString());
+	QVariant par_v = queryParameters();
+	if(par_v.type() == QVariant::Map) {
+		QVariantMap par_map = par_v.toMap();
+		QMapIterator<QString, QVariant> it(par_map);
+		while(it.hasNext()) {
+			it.next();
+			QString key = "{{" + it.key() + "}}";
+			ret.replace(key, it.value().toString(), Qt::CaseInsensitive);
+		}
+	}
+	else {
+		ret.replace("{{id}}", par_v.toString(), Qt::CaseInsensitive);
 	}
 	return ret;
 }
 
-qf::core::sql::Connection SqlQueryTableModel::sqlConnection()
+qf::core::sql::Connection SqlTableModel::sqlConnection()
 {
 	QSqlDatabase db = QSqlDatabase::database(connectionName());
 	qf::core::sql::Connection ret = qf::core::sql::Connection(db);
@@ -376,7 +388,7 @@ qf::core::sql::Connection SqlQueryTableModel::sqlConnection()
 	return ret;
 }
 
-bool SqlQueryTableModel::reloadTable(const QString &query_str)
+bool SqlTableModel::reloadTable(const QString &query_str)
 {
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	m_recentlyExecutedQuery = qfs::Query(sql_conn);
@@ -415,7 +427,7 @@ static QString compose_table_id(const QString &table_name, const QString &schema
 	return ret;
 }
 
-QSet<QString> SqlQueryTableModel::tableIds(const qf::core::utils::Table::FieldList &table_fields)
+QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &table_fields)
 {
 	QSet<QString> ret;
 	int fld_cnt = table_fields.count();
@@ -430,7 +442,7 @@ QSet<QString> SqlQueryTableModel::tableIds(const qf::core::utils::Table::FieldLi
 	return ret;
 }
 
-void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
+void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
 {
 	QSet<QString> table_ids = tableIds(table_fields);
 	QSet<QString> field_ids;
@@ -491,7 +503,7 @@ void SqlQueryTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fi
 	}
 }
 
-QSet<QString> SqlQueryTableModel::referencedForeignTables()
+QSet<QString> SqlTableModel::referencedForeignTables()
 {
 	qfLogFuncFrame();
 	QSet<QString> ret;
@@ -511,7 +523,7 @@ QSet<QString> SqlQueryTableModel::referencedForeignTables()
 	return ret;
 }
 
-QStringList SqlQueryTableModel::tableIdsSortedAccordingToForeignKeys()
+QStringList SqlTableModel::tableIdsSortedAccordingToForeignKeys()
 {
 	qfLogFuncFrame();
 	QStringList ret;
