@@ -1297,7 +1297,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 						else {
 							QVariant id = selectedRow().value(idColumnName());
 							if(id.isValid()) {
-								emit editRowInExternalEditor(QVariant(), ModeInsert);
+								emit editRowInExternalEditor(id, ModeEdit);
 							}
 						}
 						ret = false;

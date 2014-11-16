@@ -20,6 +20,8 @@
 #include <qf/qmlwidgets/tableview.h>
 #include <qf/qmlwidgets/tableviewtoolbar.h>
 
+#include <qf/qmlwidgets/datacontroller.h>
+
 #include <qf/qmlwidgets/layoutpropertiesattached.h>
 #include <qf/qmlwidgets/layouttypeproperties.h>
 //#include <qf/qmlwidgets/gridlayouttypeproperties.h>
@@ -98,6 +100,8 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::reports::ReportViewWidget>(uri, 1, 0, "ReportViewWidget");
 
+
+		qmlRegisterType<qf::qmlwidgets::DataController>(uri, 1, 0, "DataController");
 	}
 };
 

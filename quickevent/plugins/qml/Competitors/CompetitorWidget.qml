@@ -11,9 +11,9 @@ DataDialogWidget
 
 	iconSource: "images/feature.png"
 
-	dataControler: DataController {
+	dataController: DataController {
 		widget: root
-		document: DataDocument {
+		document: SqlDataDocument {
 			id: dataDocument
 			Component.onCompleted:
 			{
@@ -21,12 +21,12 @@ DataDialogWidget
 					.select("lastName || ' ' || firstName AS name")
 					.from('runners').where('runners.id={{ID}}');
 			}
-			onLoaded() {
+			onLoaded: {
 				root.title = dataDocument.value("name");
 			}
 		}
 	}
-	
+
 	attachedObjects: [
 	]
 
@@ -40,14 +40,14 @@ DataDialogWidget
 			text: qsTr("Class")
 		}
 		LineEdit {
-			text: "H21E"
+			dataId: "runners.classId"
 		}
 		Label {
 			horizontalAlignment: Qt.AlignRight
 			text: qsTr("SI")
 		}
 		LineEdit {
-			text: "8436"
+			dataId: "runners.siId"
 		}
 
 		Label {
@@ -55,40 +55,41 @@ DataDialogWidget
 		}
 		LineEdit {
 			Layout.columnSpan: 3
-			text: "Fanda"
+			dataId: "runners.firstName"
+			
 		}
 		Label {
 			text: qsTr("Last name")
 		}
 		LineEdit {
 			Layout.columnSpan: 3
-			text: "Vacek"
+			dataId: "runners.lastName"
 		}
 
 		Label {
 			text: qsTr("Registration")
 		}
 		LineEdit {
-			text: "CHT7001"
+			dataId: "runners.registration"
 		}
 		Label {
 			text: qsTr("Licence")
 		}
 		LineEdit {
-			text: "C"
+			dataId: "runners.licence"
 		}
 
 		Label {
 			text: qsTr("Club")
 		}
 		LineEdit {
-			text: "SKOB Chrast"
+			dataId: "runners.club"
 		}
 		Label {
 			text: qsTr("Country")
 		}
 		LineEdit {
-			text: "Czech republic"
+			dataId: "runners.country"
 		}
 
 		Label {

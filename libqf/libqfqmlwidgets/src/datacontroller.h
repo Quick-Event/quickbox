@@ -2,7 +2,6 @@
 #define QF_QMLWIDGETS_DATACONTROLLER_H
 
 #include "qmlwidgetsglobal.h"
-#include "idatawidget.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/model/datadocument.h>
@@ -11,6 +10,8 @@
 
 namespace qf {
 namespace qmlwidgets {
+
+class IDataWidget;
 
 class QFQMLWIDGETS_DECL_EXPORT DataController : public QObject
 {
@@ -22,13 +23,7 @@ public:
 	~DataController() Q_DECL_OVERRIDE;
 
 	qf::core::model::DataDocument* document() const { return m_document;}
-	void setDocument(qf::core::model::DataDocument *doc)
-	{
-		if(m_document != doc) {
-			m_document = doc;
-			emit documentChanged(doc);
-		}
-	}
+	void setDocument(qf::core::model::DataDocument *doc);
 	Q_SIGNAL void documentChanged(qf::core::model::DataDocument *doc);
 
 	QWidget* widget() const { return m_dataWidgetsParent;}
@@ -44,9 +39,15 @@ public:
 protected:
 	QList<IDataWidget*> dataWidgets();
 	IDataWidget* dataWidget(const QString &data_id);
+	Q_SLOT void clearDataWidgetsCache();
+
+	Q_SLOT void documentLoaded();
+	Q_SLOT void documentValueChanged(const QString &data_id, const QVariant &old_val, const QVariant &new_val);
+	Q_SLOT void documentAboutToSave();
 protected:
 	qf::core::model::DataDocument *m_document = nullptr;
 	QWidget *m_dataWidgetsParent = nullptr;
+	QList<IDataWidget*> m_dataWidgets;
 };
 
 }}

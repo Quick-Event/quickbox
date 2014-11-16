@@ -95,15 +95,16 @@ QuickEventPartWidget
 		dlg.destroy();
 	}
 
-	function editCompetitor(id, record_mode)
+	function editCompetitor(id, mode)
 	{
-		Log.info("editCompetitor");
+		Log.info("editCompetitor id:", id, "mode:", mode);
 		var w = cCompetitorWidget.createObject(null);
 		w.windowTitle = qsTr("Edit Competitor");
-		w.load(id);
 		var dlg = cDialog.createObject(root);
 		dlg.setDialogWidget(w);
+		w.load(id);
 		dlg.exec();
 		dlg.destroy();
 	}
+
 }

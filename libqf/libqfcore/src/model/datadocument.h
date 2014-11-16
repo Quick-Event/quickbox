@@ -45,7 +45,7 @@ public:
 	Q_SIGNAL void saved(const QVariant &id, RecordEditMode mode);
 	Q_SIGNAL void aboutToDrop(const QVariant &id);
 	Q_SIGNAL void dropped(const QVariant &id);
-	Q_SIGNAL void valueChanged(const QString &sql_id, const QVariant &old_val, const QVariant &new_val);
+	Q_SIGNAL void valueChanged(const QString &data_id, const QVariant &old_val, const QVariant &new_val);
 
 	void load(const QVariant &id, RecordEditMode mode = ModeEdit);
 	void loadForInsert() {load(QVariant(), ModeInsert);}
