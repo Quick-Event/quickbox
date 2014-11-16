@@ -25,6 +25,10 @@ public:
 	void setDataController(qf::qmlwidgets::DataController *dc);
 
 	Q_SLOT void load(const QVariant &id = QVariant(), qf::core::model::DataDocument::RecordEditMode mode = qf::core::model::DataDocument::ModeEdit);
+
+	bool dialogDoneRequest(int result) Q_DECL_OVERRIDE;
+protected:
+	virtual bool saveData();
 protected:
 	qf::qmlwidgets::DataController *m_dataController = nullptr;
 };

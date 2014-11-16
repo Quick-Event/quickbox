@@ -51,7 +51,7 @@ void QmlDialog::classBegin()
 void QmlDialog::componentComplete()
 {
 	qfLogFuncFrame();
-	loadPersistentSettingsRecursively();
+	//loadPersistentSettingsRecursively();
 }
 
 

@@ -65,10 +65,33 @@ qf::qmlwidgets::ToolBar *Dialog::addToolBar()
 	return ret;
 }
 
+int Dialog::exec()
+{
+	loadPersistentSettingsRecursively();
+	return Super::exec();
+}
+
+void Dialog::done(int result)
+{
+	qfLogFuncFrame() << result;
+	bool ok = true;
+	QMetaObject::invokeMethod(this, "doneRequest", Qt::DirectConnection,
+							  Q_RETURN_ARG(bool, ok),
+							  Q_ARG(int, result));
+	if(ok) {
+		Super::done(result);
+	}
+}
+
 void Dialog::loadPersistentSettings()
 {
+	qfLogFuncFrame();
+	QString id = persistentSettingsId();
+	if(id.isEmpty() && dialogWidget() && !dialogWidget()->persistentSettingsId().isEmpty()) {
+		setPersistentSettingsId(dialogWidget()->persistentSettingsId() + "Dlg");
+	}
 	QString path = persistentSettingsPath();
-	qfDebug() << "\t" << path;
+	qfDebug() << "\t persistentSettingsPath:" << path;
 	if(!path.isEmpty()) {
 		QSettings settings;
 		settings.beginGroup(path);
@@ -79,22 +102,16 @@ void Dialog::loadPersistentSettings()
 	}
 }
 
-void Dialog::setDoneCancelled(bool b)
+bool Dialog::doneRequest(int result)
 {
-	if(b != m_doneCancelled) {
-		m_doneCancelled = b;
-		emit doneCancelledChanged(m_doneCancelled);
+	bool ret = true;
+	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
+	if(dw) {
+		QMetaObject::invokeMethod(dw, "dialogDoneRequest", Qt::DirectConnection,
+								  Q_RETURN_ARG(bool, ret),
+								  Q_ARG(int, result));
 	}
-}
-
-void Dialog::done(int result)
-{
-	qfLogFuncFrame() << result;
-	setDoneCancelled(false);
-	emit aboutToBeDone(result);
-	if(!isDoneCancelled()) {
-		Super::done(result);
-	}
+	return ret;
 }
 
 void Dialog::savePersistentSettings()
@@ -150,6 +167,12 @@ void Dialog::updateLayout()
 	if(m_dialogButtonBox)
 		ly->addWidget(m_dialogButtonBox);
 
+}
+
+qf::qmlwidgets::framework::DialogWidget *Dialog::dialogWidget()
+{
+	qf::qmlwidgets::framework::DialogWidget *ret = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
+	return ret;
 }
 
 void Dialog::updateCaptionFrame()

@@ -6,6 +6,7 @@ import qf.qmlwidgets 1.0
 DataDialogWidget
 {
 	id: root
+	persistentSettingsId: "CompetitorDetail"
 	objectName: "dwCompetitors"
 	title: "Competitor"
 
@@ -103,4 +104,10 @@ DataDialogWidget
 		console.debug("@iconSource:", root.iconSource)
 	}
 
+	function dialogDoneRequest(result)
+	{
+		Log.info("dialogDoneRequest result:", result);
+		// call C++ impl, QML cannot call superclass implementation
+		return dialogDoneRequestNative(result);
+	}
 }

@@ -14,7 +14,8 @@ QuickEventPartWidget
 		Component {
 			id: cDialog
 			Dialog {
-				persistentSettingsId: "DlgPrint"
+				//persistentSettingsId: "DlgPrint"
+				buttonBox: ButtonBox {}
 			}
 		},
 		Component {

@@ -1,5 +1,9 @@
 #include "datadialogwidget.h"
+#include "../dialogs/dialog.h"
 
+#include <qf/core/model/datadocument.h>
+
+namespace qfm = qf::core::model;
 using namespace qf::qmlwidgets::framework;
 
 DataDialogWidget::DataDialogWidget(QWidget *parent)
@@ -30,5 +34,27 @@ void DataDialogWidget::load(const QVariant &id, qf::core::model::DataDocument::R
 			m_dataController->document()->load(id, mode);
 		}
 	}
+}
+
+bool DataDialogWidget::dialogDoneRequest(int result)
+{
+	bool ret = true;
+	if(result == qf::qmlwidgets::dialogs::Dialog::ResultAccept) {
+		ret = saveData();
+	}
+	return ret;
+}
+
+bool DataDialogWidget::saveData()
+{
+	bool ret = true;
+	DataController *dc = dataController();
+	if(dc) {
+		qfm::DataDocument *doc = dc->document();
+		if(doc) {
+			doc->save();
+		}
+	}
+	return ret;
 }
 

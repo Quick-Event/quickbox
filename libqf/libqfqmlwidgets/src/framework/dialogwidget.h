@@ -27,6 +27,7 @@ class QFQMLWIDGETS_DECL_EXPORT DialogWidget : public Frame, public IPersistentSe
 	Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
 	/// url or path to the icon
 	Q_PROPERTY(QString iconSource READ iconSource WRITE setIconSource NOTIFY iconSourceChanged)
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 private:
 	typedef Frame Super;
 public:
@@ -37,6 +38,11 @@ public:
 
 	QF_PROPERTY_IMPL(QString, t, T, itle)
 	QF_PROPERTY_IMPL(QString, i, I, conSource)
+
+	/// called when dialog wants to get close
+	/// if returned value is false, close action is cancelled
+	Q_SLOT virtual bool dialogDoneRequest(int result);
+	Q_SLOT bool dialogDoneRequestNative(int result) {return dialogDoneRequest(result);}
 public:
 	/// define this slot to allow QML code call C++ settleDownInDialog() implementation,
 	/// when settleDownInDialog() is implemented in QML and hides C++ implementations

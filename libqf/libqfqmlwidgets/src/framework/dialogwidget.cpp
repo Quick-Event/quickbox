@@ -16,6 +16,12 @@ DialogWidget::~DialogWidget()
 {
 }
 
+bool DialogWidget::dialogDoneRequest(int result)
+{
+	Q_UNUSED(result);
+	return true;
+}
+
 void DialogWidget::settleDownInDialogNative(qf::qmlwidgets::dialogs::Dialog *dlg)
 {
 	settleDownInDialog(dlg);

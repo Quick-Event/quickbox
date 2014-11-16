@@ -60,30 +60,19 @@ Dialog {
 		settings.destroy();
 	}
 
-	onAboutToBeDone: {
-		/*
-		I'm getting segfault on Settings destruction, if I don't set it to null before Dialog destruction.
-		Don't know why, I guess that culprit is parenting non visual Settings to Widget.
-		Same is with QtObject
-
-		I've found different way in the end FrameWork.plugin("Core").settings();
-		Leaving this here to not forget a nasty Qt/mine bug
-		*/
-		//settings = null;
+	function doneRequest(result)
+	{
+		var ret = true;
 		if(result === Dialog.ResultAccept) {
             if(!edUser.text) {
                 MessageBoxSingleton.critical(root, qsTr("user is empty"));
                 Log.info("user is empty");
-                doneCancelled = true;
+                ret = false;
             }
-            if(!doneCancelled) {
+            if(ret) {
             	saveSettings();
-            	/*
-            	var obj = FrameWork.obj_testing();
-            	var p = obj.parent();
-            	Log.info("+++++++ got object", obj, "parent:", obj.parent, 'kk:', edEvent.parent);
-            	*/
             }
 		}
+		return ret;
 	}
 }

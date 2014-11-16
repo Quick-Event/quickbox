@@ -33,7 +33,6 @@ class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersi
 	Q_OBJECT
 	Q_ENUMS(DoneResult)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
-	Q_PROPERTY(bool doneCancelled READ isDoneCancelled WRITE setDoneCancelled NOTIFY doneCancelledChanged)
 	Q_PROPERTY(qf::qmlwidgets::DialogButtonBox* buttonBox READ buttonBox WRITE setButtonBox NOTIFY buttonBoxChanged)
 private:
 	typedef QDialog Super;
@@ -54,11 +53,12 @@ public:
 
 	Q_SLOT void loadPersistentSettings();
 
-	bool isDoneCancelled() {return m_doneCancelled;}
-	void setDoneCancelled(bool b);
-	Q_SIGNAL void doneCancelledChanged(bool new_val);
-	Q_SIGNAL void aboutToBeDone(int result);
+	/// called when dialog wants to get close
+	/// if returned value is false, close action is cancelled
+	Q_SLOT virtual bool doneRequest(int result);
+	Q_SLOT bool doneRequestNative(int result) {return doneRequest(result);}
 
+	int exec() Q_DECL_OVERRIDE;
 	void done(int result) Q_DECL_OVERRIDE;
 private:
 	Q_SLOT void savePersistentSettings();
@@ -67,6 +67,8 @@ private:
 protected:
 	void updateCaptionFrame();
 	void updateLayout();
+
+	qf::qmlwidgets::framework::DialogWidget* dialogWidget();
 protected:
 	bool m_doneCancelled;
 	internal::CaptionFrame *m_captionFrame = nullptr;
