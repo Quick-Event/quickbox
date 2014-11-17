@@ -83,6 +83,7 @@ public:
 	QList<int> selectedColumnsIndexes() const;
 
 	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, RecordEditMode mode);
+	Q_SLOT virtual void rowExternallySaved(const QVariant &id, int mode);
 private:
 	Q_SIGNAL void searchStringChanged(const QString &str);
 	qf::core::utils::Table::SortDef seekSortDefinition() const;

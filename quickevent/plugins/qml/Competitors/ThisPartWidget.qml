@@ -44,6 +44,7 @@ QuickEventPartWidget
 				id: model
 				ModelColumn {
 					fieldName: 'id'
+					readOnly: true
 				}
 				ModelColumn {
 					fieldName: 'classId'

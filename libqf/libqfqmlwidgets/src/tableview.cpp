@@ -25,6 +25,7 @@
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
+namespace qfm = qf::core::model;
 using namespace qf::qmlwidgets;
 
 TableView::TableView(QWidget *parent) :
@@ -389,6 +390,94 @@ QList<int> TableView::selectedColumnsIndexes() const
 	QList<int> ret = set.toList();
 	qSort(ret);
 	return ret;
+}
+
+void TableView::rowExternallySaved(const QVariant &id, int mode)
+{
+	qfLogFuncFrame() << "id:" << id.toString() << "mode:" << mode;
+	qfm::TableModel *tmd = tableModel();
+	if(tmd) {
+		/// find row with id
+		/// start with currentRow, because id value is most probabbly here
+		//int id_fldix = model()->fieldIndex(idColumnName(), !Qf::ThrowExc);
+		//int id_col_ix = model()->columnIndex(idColumnName(), !Qf::ThrowExc);
+		//qfDebug() << "\t model:" << m << "id column nme:" << idColumnName() << "id field index:" << id_fldix;
+		int ri = currentIndex().row();
+		if(ri >= 0) {
+			QVariant v = tmd->value(ri, idColumnName());
+			//qfDebug() << "\t found id:" << v.toString();
+			if(v != id)
+				ri = -1;
+		}
+		if(ri < 0) for(ri=0; ri<tmd->rowCount(); ri++) {
+			QVariant v = tmd->value(ri, idColumnName());
+			//qfDebug() << "\t row" << ri << "id:" << v.toString();
+			if(v == id) {
+				break;
+			}
+		}
+		if(ri < 0 || ri >= tmd->rowCount()) {
+			qfWarning() << "Cannot find table row for id:" << id.toString() << "mode:" << mode;
+		}
+		else {
+			if(mode == ModeEdit || mode == ModeView) {
+				int reloaded_row_cnt = tmd->reloadRow(ri);
+				if(reloaded_row_cnt != 1) {
+					qfWarning() << "Edited row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
+				}
+			}
+			else if(mode == ModeDelete) {
+				int reloaded_row_cnt = tmd->reloadRow(ri);
+				if(reloaded_row_cnt > 0) {
+					qfWarning() << "Deleted row id:" << id.toString() << "still exists.";
+				}
+				else {
+					tmd->qfm::TableModel::removeRow(ri);
+					if(ri >= tmd->rowCount())
+						ri = tmd->rowCount() - 1;
+					QModelIndex ix = currentIndex();
+					if(ri >= 0) {
+						ix = tmd->index(ri, (ix.column() >= 0)? ix.column(): 0);
+						//qfInfo() << "ix row:" << ix.row() << "col:" << ix.column();
+						setCurrentIndex(ix);
+					}
+				}
+			}
+			else {
+				/// ModeInsert or ModeCopy
+				//qfDebug() << "\tcurrent row:" << ri;
+				int ri = tmd->rowCount();
+				//qfDebug() << "\tri:" << ri;
+				//qfDebug() << "\tmodel->rowCount():" << ri;
+				QModelIndex curr_ix = currentIndex();
+				if(curr_ix.isValid())
+					ri = curr_ix.row() + 1;
+				else
+					ri = tmd->rowCount() + 1;
+				if(ri > tmd->rowCount())
+					ri = tmd->rowCount();
+				qfDebug() << "\tri:" << ri;
+				tmd->insertRow(ri);
+				tmd->setValue(ri, idColumnName(), id);
+				//qfu::TableRow &row_ref = tmd->table().rowRef(ri);
+				//row_ref.setValue(idColumnName(), id);
+				//row_ref.setInsert(false);
+				int reloaded_row_cnt = tmd->reloadRow(ri);
+				if(reloaded_row_cnt != 1) {
+					qfWarning() << "Incerted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
+					return;
+				}
+				updateRow(ri);
+				if(curr_ix.isValid())
+					setCurrentIndex(curr_ix.sibling(ri, curr_ix.column()));
+				else
+					setCurrentIndex(model()->index(ri, 0, QModelIndex()));
+			}
+		}
+	}
+	else {
+		qfError() << "Feature not defined for this model type:" << model();
+	}
 }
 
 qf::core::utils::Table::SortDef TableView::seekSortDefinition() const

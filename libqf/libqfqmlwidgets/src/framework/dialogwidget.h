@@ -41,8 +41,10 @@ public:
 
 	/// called when dialog wants to get close
 	/// if returned value is false, close action is cancelled
+	/// all params and ret val have to be a QVariant type to be possibly overriden in QML
 	Q_SLOT virtual bool dialogDoneRequest(int result);
-	Q_SLOT bool dialogDoneRequestNative(int result) {return dialogDoneRequest(result);}
+	/// dialogDoneRequestNative is used to call C++ dialogDoneRequest implementation from QML overloads
+	Q_SLOT QVariant dialogDoneRequest_qml(const QVariant &result);
 public:
 	/// define this slot to allow QML code call C++ settleDownInDialog() implementation,
 	/// when settleDownInDialog() is implemented in QML and hides C++ implementations

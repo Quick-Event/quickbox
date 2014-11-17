@@ -25,6 +25,7 @@ class QFQMLWIDGETS_DECL_EXPORT Frame : public QFrame
 	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties* layoutProperties READ layoutTypeProperties WRITE setLayoutTypeProperties)
 	/// attachedObjects is a workaround for https://github.com/fvacek/quickbox/issues/2
 	Q_PROPERTY(QQmlListProperty<QObject> attachedObjects READ attachedObjects)
+	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 private:
 	typedef QFrame Super;
 public:
@@ -37,6 +38,9 @@ public:
 	void setLayoutType(LayoutType ly);
 	Q_SIGNAL void layoutTypeChanged(LayoutType ly);
 	QQmlListProperty<QWidget> widgets();
+
+	void setVisible(bool b) Q_DECL_OVERRIDE;
+	Q_SIGNAL void visibleChanged(bool visible);
 private:
 	static void addWidgetFunction(QQmlListProperty<QWidget> *listProperty, QWidget *value);
 	static QWidget* widgetAtFunction(QQmlListProperty<QWidget> *listProperty, int index);

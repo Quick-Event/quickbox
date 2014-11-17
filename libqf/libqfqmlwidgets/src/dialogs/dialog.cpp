@@ -74,11 +74,11 @@ int Dialog::exec()
 void Dialog::done(int result)
 {
 	qfLogFuncFrame() << result;
-	bool ok = true;
-	QMetaObject::invokeMethod(this, "doneRequest", Qt::DirectConnection,
-							  Q_RETURN_ARG(bool, ok),
-							  Q_ARG(int, result));
-	if(ok) {
+	QVariant ok = true;
+	QMetaObject::invokeMethod(this, "doneRequest_qml", Qt::DirectConnection,
+							  Q_RETURN_ARG(QVariant, ok),
+							  Q_ARG(QVariant, result));
+	if(ok.toBool()) {
 		Super::done(result);
 	}
 }
@@ -104,14 +104,20 @@ void Dialog::loadPersistentSettings()
 
 bool Dialog::doneRequest(int result)
 {
-	bool ret = true;
+	qfLogFuncFrame() << "result:" << result;
+	QVariant ret = true;
 	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
 	if(dw) {
-		QMetaObject::invokeMethod(dw, "dialogDoneRequest", Qt::DirectConnection,
-								  Q_RETURN_ARG(bool, ret),
-								  Q_ARG(int, result));
+		QMetaObject::invokeMethod(dw, "dialogDoneRequest_qml", Qt::DirectConnection,
+								  Q_RETURN_ARG(QVariant, ret),
+								  Q_ARG(QVariant, result));
 	}
-	return ret;
+	return ret.toBool();
+}
+
+QVariant Dialog::doneRequest_qml(const QVariant &result)
+{
+	return doneRequest(result.toBool());
 }
 
 void Dialog::savePersistentSettings()

@@ -316,6 +316,13 @@ void TableModel::revertRow(int row_no)
 	row.restoreOrigValues();
 }
 
+int TableModel::reloadRow(int row_no)
+{
+	qfu::TableRow &row = m_table.rowRef(row_no);
+	row.clearEditFlags();
+	return 1;
+}
+
 bool TableModel::prepareForCopyRow(int row_no)
 {
 	qfu::TableRow &row = m_table.rowRef(row_no);
@@ -548,24 +555,24 @@ TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const Tabl
 		before_ix = m_columns.count();
 	m_columns.insert(before_ix, cd);
 	ColumnDefinition &c = m_columns[before_ix];
-    return c;
+	return c;
 }
 
 TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 {
-    qfError() << Q_FUNC_INFO << ix << "NIY";
-    TableModel::ColumnDefinition ret;
+	qfError() << Q_FUNC_INFO << ix << "NIY";
+	TableModel::ColumnDefinition ret;
 	return ret;
 }
 
-bool TableModel::insertOneRow(int before_row)
+int TableModel::insertTableRow(int before_row)
 {
 	qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
 	if(before_row < 0 || before_row > rowCount())
 		before_row = rowCount();
 	m_table.insertRow(before_row);
 	qfDebug() << "\t row cnt:" << rowCount();
-	return true;
+	return before_row;
 }
 
 bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
@@ -576,7 +583,7 @@ bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
 	beginInsertRows(parent, row_ix, row_ix + count - 1);
 	bool ok = true;
 	for(int i=0; i<count; i++) {
-		ok = insertOneRow(row_ix + i);
+		ok = insertTableRow(row_ix + i);
 		if(!ok)
 			break;
 	}
@@ -584,7 +591,7 @@ bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
 	return ok;
 }
 
-bool TableModel::removeOneRow(int row_ix, bool throw_exc)
+bool TableModel::removeTableRow(int row_ix, bool throw_exc)
 {
 	Q_UNUSED(throw_exc);
 	bool ok = m_table.removeRow(row_ix);
@@ -599,7 +606,7 @@ bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
 	bool ok = true;
 	beginRemoveRows(parent, row_ix, row_ix + count - 1);
 	for(int i=0; i<count; i++) {
-		ok = removeOneRow(row_ix);
+		ok = removeTableRow(row_ix);
 		if(!ok)
 			break;
 	}

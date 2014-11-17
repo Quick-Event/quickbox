@@ -41,6 +41,7 @@ DataDialogWidget
 			text: qsTr("Class")
 		}
 		LineEdit {
+			id: edClass
 			dataId: "runners.classId"
 		}
 		Label {
@@ -104,10 +105,23 @@ DataDialogWidget
 		console.debug("@iconSource:", root.iconSource)
 	}
 
-	function dialogDoneRequest(result)
+	// c++ override
+	function dialogDoneRequest_qml(result)
 	{
 		Log.info("dialogDoneRequest result:", result);
 		// call C++ impl, QML cannot call superclass implementation
-		return dialogDoneRequestNative(result);
+		return dialogDoneRequest(result);
+	}
+
+	function ahoj(result)
+	{
+		Log.info("ahoj:", result);
+		return true;
+	}
+
+	onVisibleChanged: {
+		Log.info("onVisibleChanged visible:", visible);
+		if(visible)
+			edClass.setFocus();
 	}
 }

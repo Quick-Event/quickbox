@@ -31,6 +31,11 @@ void SqlTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 	m_queryBuilder = qb;
 }
 
+const qf::core::sql::QueryBuilder &SqlTableModel::queryBuilder() const
+{
+	return m_queryBuilder;
+}
+
 void SqlTableModel::addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key)
 {
 	m_foreignKeyDependencies[master_table_key] = slave_table_key;
@@ -253,7 +258,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 	return ret;
 }
 
-bool SqlTableModel::removeOneRow(int row_no, bool throw_exc)
+bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame();
 	bool ret = false;
@@ -341,7 +346,7 @@ bool SqlTableModel::removeOneRow(int row_no, bool throw_exc)
 		}
 	}
 	if(ret) {
-		ret = Super::removeOneRow(row_no, throw_exc);
+		ret = Super::removeTableRow(row_no, throw_exc);
 	}
 	return ret;
 }
@@ -349,6 +354,64 @@ bool SqlTableModel::removeOneRow(int row_no, bool throw_exc)
 void SqlTableModel::revertRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
+}
+
+int SqlTableModel::reloadRow(int row_no)
+{
+	qfLogFuncFrame() << "row:" << row_no << "row count:" << rowCount();
+	qf::core::sql::QueryBuilder qb = m_queryBuilder;
+	if(qb.isEmpty()) {
+		qfWarning() << "Empty queryBuilder";
+		return false;
+	}
+	qfu::TableRow &row_ref = m_table.rowRef(row_no);
+	qf::core::sql::Connection sql_conn = sqlConnection();
+	QSqlDriver *sqldrv = sql_conn.driver();
+	for(QString table_id : tableIds(m_table.fields())) {
+		qfDebug() << "\ttableid:" << table_id;
+		for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+			QString full_fld_name = table_id + '.' + fld_name;
+			int fld_ix = m_table.fields().fieldIndex(full_fld_name);
+			QF_ASSERT(fld_ix >= 0,
+					  QString("Cannot find field '%1'").arg(full_fld_name),
+					  continue);
+			/*
+				QVariant val = row.origValue(fld_ix);
+				QString formated_val = val.toString();
+				if(val.type() == QVariant::String) {
+					formated_val.replace('\'', "''");
+					formated_val = '\'' + formated_val + '\'';
+				}
+				*/
+			qfu::Table::Field fld = m_table.fields().at(fld_ix);
+			QSqlField sqlfld(fld.shortName(), fld.type());
+			// cannot use origValue() here, since reloadRow() must work for even edited primary keys
+			sqlfld.setValue(row_ref.value(fld_ix));
+			QString formated_val = sqldrv->formatValue(sqlfld);
+			qb.where(full_fld_name + "=" + formated_val);
+		}
+	}
+	qfs::Query q = qfs::Query(sql_conn);
+	QString query_str = qb.toString();
+	query_str = replaceQueryParameters(query_str);
+	qfDebug() << "\t reload row query:" << query_str;
+	bool ok = q.exec(query_str);
+	QF_ASSERT(ok == true,
+			  QString("SQL Error: %1\n%2").arg(q.lastError().text()).arg(query_str),
+			  return false);
+	int row_cnt = 0;
+	while(q.next()) {
+		if(row_cnt++) {
+			qfWarning() << "More than 1 row returned by query.\n" + query_str;
+			continue;
+		}
+		for(int i=0; i<row_ref.fields().count(); i++) {
+			row_ref.setBareBoneValue(i, q.value(i));
+			qfDebug() << "\t\t" << i << "->" << row_ref.value(i).toString();
+		}
+	}
+	Super::reloadRow(row_no);
+	return row_cnt;
 }
 
 QString SqlTableModel::buildQuery()

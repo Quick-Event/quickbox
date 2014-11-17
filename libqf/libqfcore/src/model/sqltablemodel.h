@@ -34,8 +34,10 @@ public:
 	bool reload() Q_DECL_OVERRIDE;
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
+	int reloadRow(int row_no) Q_DECL_OVERRIDE;
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
+	const qf::core::sql::QueryBuilder& queryBuilder() const;
 
 	QString connectionName() const { return m_connectionName; }
 	void setConnectionName(QString arg) { m_connectionName = arg; }
@@ -59,7 +61,7 @@ protected:
 	QSet<QString> referencedForeignTables();
 	QStringList tableIdsSortedAccordingToForeignKeys();
 
-	bool removeOneRow(int row_no, bool throw_exc = false) Q_DECL_OVERRIDE;
+	bool removeTableRow(int row_no, bool throw_exc = false) Q_DECL_OVERRIDE;
 protected:
 	qf::core::sql::QueryBuilder m_queryBuilder;
 	QString m_query;

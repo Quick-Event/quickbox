@@ -5,6 +5,7 @@ using namespace qf::qmlwidgets;
 LineEdit::LineEdit(QWidget *parent) :
 	QLineEdit(parent), IDataWidget(this)
 {
+	connect(this, &QLineEdit::textEdited, this, &LineEdit::onTextEdited);
 }
 
 QVariant LineEdit::dataValue()

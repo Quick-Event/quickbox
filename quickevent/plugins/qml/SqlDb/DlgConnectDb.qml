@@ -60,7 +60,7 @@ Dialog {
 		settings.destroy();
 	}
 
-	function doneRequest(result)
+	function doneRequest_qml(result)
 	{
 		var ret = true;
 		if(result === Dialog.ResultAccept) {

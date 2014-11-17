@@ -56,41 +56,49 @@ void Frame::setLayoutType(Frame::LayoutType ly_type)
 	}
 }
 
+void Frame::setVisible(bool b)
+{
+	if(b != isVisible()) {
+		Super::setVisible(b);
+		emit visibleChanged(b);
+	}
+}
+
 QQmlListProperty<QWidget> Frame::widgets()
 {
 	return QQmlListProperty<QWidget>(this, 0,
-                                    Frame::addWidgetFunction,
-                                    Frame::countWidgetsFunction,
-                                    Frame::widgetAtFunction,
-                                    Frame::removeAllWidgetsFunction
-                                    );
+									 Frame::addWidgetFunction,
+									 Frame::countWidgetsFunction,
+									 Frame::widgetAtFunction,
+									 Frame::removeAllWidgetsFunction
+									 );
 }
 
 void Frame::addWidgetFunction(QQmlListProperty<QWidget> *list_property, QWidget *value)
 {
-    if (value) {
-        Frame *that = static_cast<Frame*>(list_property->object);
-        that->add(value);
-    }    
+	if (value) {
+		Frame *that = static_cast<Frame*>(list_property->object);
+		that->add(value);
+	}
 }    
 
 QWidget * Frame::widgetAtFunction(QQmlListProperty<QWidget> *list_property, int index)
 {
-    Frame *that = static_cast<Frame*>(list_property->object);
-    return that->at(index);
+	Frame *that = static_cast<Frame*>(list_property->object);
+	return that->at(index);
 }
 
 
 void Frame::removeAllWidgetsFunction(QQmlListProperty<QWidget> *list_property)
 {
-    Frame *that = static_cast<Frame*>(list_property->object);
-    that->removeAll();
+	Frame *that = static_cast<Frame*>(list_property->object);
+	that->removeAll();
 }
 
 int Frame::countWidgetsFunction(QQmlListProperty<QWidget> *list_property)
 {
-    Frame *that = static_cast<Frame*>(list_property->object);
-    return that->count();
+	Frame *that = static_cast<Frame*>(list_property->object);
+	return that->count();
 }
 
 void Frame::add(QWidget *widget)

@@ -18,8 +18,14 @@ DialogWidget::~DialogWidget()
 
 bool DialogWidget::dialogDoneRequest(int result)
 {
+	qfLogFuncFrame();
 	Q_UNUSED(result);
 	return true;
+}
+
+QVariant DialogWidget::dialogDoneRequest_qml(const QVariant &result)
+{
+	return dialogDoneRequest(result.toBool());
 }
 
 void DialogWidget::settleDownInDialogNative(qf::qmlwidgets::dialogs::Dialog *dlg)

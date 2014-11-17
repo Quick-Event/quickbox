@@ -56,7 +56,7 @@ public:
 	/// called when dialog wants to get close
 	/// if returned value is false, close action is cancelled
 	Q_SLOT virtual bool doneRequest(int result);
-	Q_SLOT bool doneRequestNative(int result) {return doneRequest(result);}
+	Q_SLOT QVariant doneRequest_qml(const QVariant &result);
 
 	int exec() Q_DECL_OVERRIDE;
 	void done(int result) Q_DECL_OVERRIDE;

@@ -38,10 +38,13 @@ void DataDialogWidget::load(const QVariant &id, qf::core::model::DataDocument::R
 
 bool DataDialogWidget::dialogDoneRequest(int result)
 {
+	qfLogFuncFrame();
 	bool ret = true;
 	if(result == qf::qmlwidgets::dialogs::Dialog::ResultAccept) {
 		ret = saveData();
 	}
+	if(ret)
+		ret = Super::dialogDoneRequest(result);
 	return ret;
 }
 

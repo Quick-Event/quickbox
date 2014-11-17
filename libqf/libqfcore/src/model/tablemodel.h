@@ -115,6 +115,7 @@ public:
 	Q_SLOT virtual bool reload();
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
+	Q_SLOT virtual int reloadRow(int row_no);
 	int appendRow() {return insertRows(rowCount(), 1);}
 	bool dropRow(int row_ix) {return removeRows(row_ix, 1);}
 	bool prepareForCopyRow(int row_no);
@@ -157,8 +158,8 @@ protected:
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
 	/// @returns: index of inserted line or -1
-	virtual bool insertOneRow(int before_row);
-	virtual bool removeOneRow(int row_ix, bool throw_exc = false);
+	virtual int insertTableRow(int before_row);
+	virtual bool removeTableRow(int row_ix, bool throw_exc = false);
 protected:
 	qf::core::utils::Table m_table;
 	ColumnList m_columns;
