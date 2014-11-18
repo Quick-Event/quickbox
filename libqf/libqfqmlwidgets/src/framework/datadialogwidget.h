@@ -27,6 +27,8 @@ public:
 	Q_SLOT void load(const QVariant &id = QVariant(), qf::core::model::DataDocument::RecordEditMode mode = qf::core::model::DataDocument::ModeEdit);
 
 	bool dialogDoneRequest(int result) Q_DECL_OVERRIDE;
+
+	Q_SIGNAL void dataSaved(const QVariant &id, int mode);
 protected:
 	virtual bool saveData();
 protected:

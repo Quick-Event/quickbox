@@ -55,6 +55,7 @@ bool DataDialogWidget::saveData()
 	if(dc) {
 		qfm::DataDocument *doc = dc->document();
 		if(doc) {
+			connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection));
 			doc->save();
 		}
 	}

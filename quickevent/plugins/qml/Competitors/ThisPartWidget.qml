@@ -55,11 +55,12 @@ QuickEventPartWidget
 					caption: qsTr('Name')
 				}
 				ModelColumn {
-					fieldName: 'importId'
+					fieldName: 'siId'
+					caption: qsTr('SI')
 				}
 				Component.onCompleted:
 				{
-					queryBuilder.select2('runners', 'id, classId, importId')
+					queryBuilder.select2('runners', '*')
 						.select("lastName || ' ' || firstName AS name")
 						.from('runners').orderBy('id').limit(100);
 				}
@@ -105,6 +106,7 @@ QuickEventPartWidget
 		var dlg = cDialog.createObject(root);
 		dlg.setDialogWidget(w);
 		w.load(id);
+		w.dataSaved.connect(table.rowExternallySaved);
 		dlg.exec();
 		dlg.destroy();
 	}

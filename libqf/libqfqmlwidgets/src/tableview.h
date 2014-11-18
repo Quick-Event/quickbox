@@ -82,7 +82,7 @@ public:
 	QList<int> selectedRowsIndexes() const;
 	QList<int> selectedColumnsIndexes() const;
 
-	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, RecordEditMode mode);
+	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, int mode);
 	Q_SLOT virtual void rowExternallySaved(const QVariant &id, int mode);
 private:
 	Q_SIGNAL void searchStringChanged(const QString &str);

@@ -13,6 +13,7 @@ namespace model {
 class QFCORE_DECL_EXPORT DataDocument : public QObject
 {
 	Q_OBJECT
+	Q_ENUMS(RecordEditMode)
 	Q_PROPERTY(qf::core::model::TableModel* model READ model WRITE setModel NOTIFY modelChanged)
 	//Q_PROPERTY(QVariant dataId READ dataId WRITE setDataId NOTIFY dataIdChanged)
 	Q_PROPERTY(QString idFieldName READ idFieldName WRITE setIdFieldName NOTIFY idFieldNameChanged)
@@ -41,8 +42,8 @@ public:
 	Q_SIGNAL void modelChanged(TableModel *new_m);
 
 	Q_SIGNAL void loaded();
-	Q_SIGNAL void aboutToSave(const QVariant &id, RecordEditMode mode);
-	Q_SIGNAL void saved(const QVariant &id, RecordEditMode mode);
+	Q_SIGNAL void aboutToSave(const QVariant &id, int mode);
+	Q_SIGNAL void saved(const QVariant &id, int mode);
 	Q_SIGNAL void aboutToDrop(const QVariant &id);
 	Q_SIGNAL void dropped(const QVariant &id);
 	Q_SIGNAL void valueChanged(const QString &data_id, const QVariant &old_val, const QVariant &new_val);

@@ -113,12 +113,6 @@ DataDialogWidget
 		return dialogDoneRequest(result);
 	}
 
-	function ahoj(result)
-	{
-		Log.info("ahoj:", result);
-		return true;
-	}
-
 	onVisibleChanged: {
 		Log.info("onVisibleChanged visible:", visible);
 		if(visible)
