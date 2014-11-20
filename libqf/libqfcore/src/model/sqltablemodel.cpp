@@ -75,7 +75,6 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			//QSet<QString> referenced_foreign_tables = referencedForeignTables();
 			//int tbl_cnt = 0;
 			qf::core::sql::Connection sql_conn = sqlConnection();
-			qf::core::sql::Connection dbinfo(sql_conn);
 			QSqlDriver *sqldrv = sql_conn.driver();
 			QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 			for(QString table_id : table_ids) {
@@ -93,9 +92,10 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					//qfError() << ti.field(f.fieldName()).toString();
 					bool is_field_dirty = row.isDirty(i);
 					if(fld.isSerial()) {
-						/// always include serial fields, an empty lina cannot be inserted in other case
+						/// always include serial fields, an empty line cannot be inserted in other case
 						is_field_dirty = true;
 						serial_ix = i;
+						qfDebug() << "\t serial ix:" << serial_ix;
 					}
 					if(fld.isPriKey()) {
 						/// prikey field vzdy pridej do insertu, bez nej by to neslo (pokud je autoincrement, uplatni se i predchozi podminka)
@@ -106,13 +106,15 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 						continue;
 					qfDebug() << "\tdirty field:" << fld.name();
 					QVariant v = row.value(i);
-					if(!v.isNull()) {
+					if(!v.isNull() || fld.isSerial()) {
 						/// null hodnotu nema smysl insertovat, pokud to neni nutne kvuli necemu jinemu
 						/// naopak se pri insertu dokumentu z vice join tabulek muze stat, ze se vlozi to not-null fieldu null hodnota
 						/// pokud je insert, join radek neexistuje, takze hodnoty jsou null a mysql v takovem pripade v resultsetu nastavi
 						/// i not-null field na nullable
 						//qfInfo() << "\t" << f.fieldName() << "value type:" << QVariant::typeToName(v.type());
 						QSqlField new_fld;
+						if(v.isNull() && fld.isSerial() && !fld.isNullable())
+							v = 0;
 						new_fld.setValue(v);
 						//qfInfo() << "\t\t" << "val type:" << QVariant::typeToName(f.value().type());
 						new_fld.setName(fld.shortName());
@@ -121,6 +123,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				}
 				if(!rec.isEmpty()) {
 					qfDebug() << "updating table inserts" << table_id;
+					qf::core::sql::Connection dbinfo(sql_conn);
 					QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
 					QString s = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
 					qfs::Query q(sql_conn);
@@ -423,6 +426,16 @@ QString SqlTableModel::buildQuery()
 	return ret;
 }
 
+static QString paramValueToString(const QVariant &v)
+{
+	QString ret;
+	if(v.isValid())
+		ret = v.toString();
+	else
+		ret = QStringLiteral("NULL");
+	return ret;
+}
+
 QString SqlTableModel::replaceQueryParameters(const QString query_str)
 {
 	QString ret = query_str;
@@ -433,11 +446,13 @@ QString SqlTableModel::replaceQueryParameters(const QString query_str)
 		while(it.hasNext()) {
 			it.next();
 			QString key = "{{" + it.key() + "}}";
-			ret.replace(key, it.value().toString(), Qt::CaseInsensitive);
+			QString val_str = paramValueToString(it.value());
+			ret.replace(key, val_str, Qt::CaseInsensitive);
 		}
 	}
 	else {
-		ret.replace("{{id}}", par_v.toString(), Qt::CaseInsensitive);
+		QString val_str = paramValueToString(par_v);
+		ret.replace("{{id}}", val_str, Qt::CaseInsensitive);
 	}
 	return ret;
 }
@@ -507,6 +522,7 @@ QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &t
 
 void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
 {
+	qfLogFuncFrame();
 	QSet<QString> table_ids = tableIds(table_fields);
 	QSet<QString> field_ids;
 	int fld_cnt = table_fields.count();
@@ -541,7 +557,9 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 	QMap<QString, QString> serial_field_names;
 	QSet<QString> updateable_table_ids;
 	for(QString table_id : table_ids) {
-		serial_field_names[table_id] = sqlConnection().serialFieldName(table_id);
+		QString serial_field_name = sqlConnection().serialFieldName(table_id);
+		qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
+		serial_field_names[table_id] = serial_field_name;
 		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
 		for(auto pk_f : prikey_fields) {
@@ -561,7 +579,9 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 			fld.setCanUpdate(updateable_table_ids.contains(table_id));
 			QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 			fld.setPriKey(prikey_fields.contains(fld.shortName()));
-			fld.setSerial(!serial_field_names.value(fld.shortName()).isEmpty());
+			//qfDebug() << "table_id;" << table_id << "fldname:" << fld.shortName() << "serial_field_names.value(table_id):" << serial_field_names.value(table_id);
+			fld.setSerial(serial_field_names.value(table_id) == fld.shortName());
+			qfDebug() << fld.name() << "is serial:" << fld.isSerial();
 		}
 	}
 }

@@ -24,7 +24,7 @@ public:
 	qf::qmlwidgets::DataController *dataController();
 	void setDataController(qf::qmlwidgets::DataController *dc);
 
-	Q_SLOT void load(const QVariant &id = QVariant(), qf::core::model::DataDocument::RecordEditMode mode = qf::core::model::DataDocument::ModeEdit);
+	Q_SLOT void load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit);
 
 	bool dialogDoneRequest(int result) Q_DECL_OVERRIDE;
 

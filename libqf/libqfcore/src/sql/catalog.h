@@ -50,7 +50,7 @@ private:
 		QString comment;
 		QVariantMap nativeValues;
 		Data(const QString& full_tbl_name)
-			: fulltablename(full_tbl_name), nullable(true), isunsigned(false), autoincrement(false) {}
+			: fulltablename(full_tbl_name), nullable(true), isunsigned(false), autoincrement(false), prikey(false) {}
 	};
 	Data data;
 public:

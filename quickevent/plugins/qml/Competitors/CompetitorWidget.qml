@@ -23,7 +23,9 @@ DataDialogWidget
 					.from('runners').where('runners.id={{ID}}');
 			}
 			onLoaded: {
-				root.title = dataDocument.value("name");
+				var name = dataDocument.value("name");
+				if(name)
+					root.title = name;
 			}
 		}
 	}

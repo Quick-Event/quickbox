@@ -380,6 +380,7 @@ QVariant TableModel::value(int row_ix, int column_ix) const
 	ret = m_table.row(row_ix).value(table_field_index);
 	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
 	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
+	//qfInfo() << row_ix << column_ix << "->" << ret.toString() << ret.typeName();
 	return ret;
 }
 

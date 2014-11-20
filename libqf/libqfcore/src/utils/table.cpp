@@ -459,7 +459,7 @@ void TableRow::setValue(const QString &field_name, const QVariant &v)
 
 void TableRow::saveValues()
 {
-	qfInfo() << "save values:" << d->values.size();
+	//qfInfo() << "save values:" << d->values.size();
 	//if(isDirty()) return;
 	//qfLogFuncFrame() << "fieldcnt:" << fields().size();
 	//origValues.clear();

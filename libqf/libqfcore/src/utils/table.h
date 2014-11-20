@@ -112,9 +112,9 @@ public:
 		public:
 			QVariant::Type type;
 			QString name;
-			unsigned canUpdate:1, isPriKey:1, isSerial:1;
+			unsigned canUpdate:1, isPriKey:1, isSerial:1, isNullable:1;
 			Data() : type(QVariant::Invalid) {}
-			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(false), isPriKey(false) {}
+			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(false), isPriKey(false), isNullable(false) {}
 		};
 		QSharedDataPointer<Data> d;
 
@@ -136,6 +136,7 @@ public:
 		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
 		QF_SHARED_CLASS_FIELD_RW(bool, is, set, PriKey)
 		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Serial)
+		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Nullable)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
 	{

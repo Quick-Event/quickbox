@@ -104,7 +104,8 @@ QString FieldInfo::toString(const QString& indent) const
 
 void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 {
-	qfLogFuncFrame();// << "reload:" << reload;
+	qfLogFuncFrame() << "table_id:" << table_id;
+	qfInfo() << "loading field info for table:" << table_id;
 	QF_ASSERT(connection.isValid(),
 			  "invalid connection",
 			  return);
@@ -136,6 +137,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 		QString short_field_name;
 		qf::core::Utils::parseFieldName(r.field(i).name(), &short_field_name);
 		FieldInfo &fi = addEntry(short_field_name);
+		//qfDebug() << "##### FieldInfo:" << fi.toString();
 		fi = r.field(i);
 		fi.setReadOnly(false);
 		fi.setName(full_table_name + "." + short_field_name);
@@ -146,25 +148,26 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 			QSqlQuery q1(connection);
 			q1.setForwardOnly(true);
 			QString s = full_table_name;
-			//if(s[0] == '.') s = s.slice(1);
-			q1.exec(QString("SELECT pg_get_serial_sequence('%1', '%2');").arg(s).arg(fi.shortName()));
-			//qfError() << QF_FUNC_NAME << QString("Error getting the sequence information for: '%1.%2'").arg(fullName()).arg(f.fieldName());
-			while(q1.next()) {
-				fi.setSeqName(q1.value(0).toString());
-				fi.setAutoIncrement(true);
-				//qfTrash() << "\t\tseq name:" << f.seqName();
-				break;
+			QString qs = QString("SELECT pg_get_serial_sequence('%1', '%2');").arg(s).arg(fi.shortName());
+			//qfDebug() << qs;
+			if(q1.exec(qs)) if(q1.next()) {
+				QString seq_name = q1.value(0).toString();
+				if(!seq_name.isEmpty()) {
+					fi.setSeqName(seq_name);
+					fi.setAutoIncrement(true);
+					qfDebug() << "\t\t name:" << fi.name() << "seq name:" << fi.seqName();
+				}
 			}
 			// fill prikey flag
 			if(primary_keys.contains(fi.shortName()))
 				fi.setPriKey(true);
-			//d->unorderedFieldNames.append(f.name());
 		}
 		else if(driver_name.endsWith("MYSQL")) {
 			// fill prikey flag
 			if(primary_keys.contains(fi.shortName()))
 				fi.setPriKey(true);
 		}
+		//qfDebug() << "NEW FieldInfo:" << fi.toString();
 	}
 	if(driver_name.endsWith("PSQL")) {
 		QString s = "SELECT * FROM information_schema.columns"
@@ -185,7 +188,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 			//qfTrash() << "\n" << catalog()->toString();
 		}
 	}
-	if(driver_name.endsWith("MYSQL")) {
+	else if(driver_name.endsWith("MYSQL")) {
 		int ver = QFCATALOG_MYSQL_VERSION_MAJOR;
 		qf::core::String s;
 		if(ver <= 4) {

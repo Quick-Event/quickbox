@@ -105,7 +105,7 @@ QuickEventPartWidget
 		w.windowTitle = qsTr("Edit Competitor");
 		var dlg = cDialog.createObject(root);
 		dlg.setDialogWidget(w);
-		w.load(id);
+		w.load(id, mode);
 		w.dataSaved.connect(table.rowExternallySaved);
 		dlg.exec();
 		dlg.destroy();

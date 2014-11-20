@@ -771,9 +771,9 @@ QSqlIndex Connection::primaryIndex(const QString& table_id)
 		tblname = fullTableNameToQtDriverTableName(tblname);
 		ret = QSqlDatabase::primaryIndex(tblname);
 	}
-	for(int i=0; i<ret.count(); i++) {
-		qfDebug() << "\t" << ret.field(i).name();
-	}
+	//for(int i=0; i<ret.count(); i++) {
+	//	qfDebug() << "\t" << ret.field(i).name();
+	//}
 	return ret;
 }
 
@@ -801,6 +801,7 @@ QStringList Connection::primaryIndexFieldNames(const QString &table_id)
 
 QString Connection::serialFieldName(const QString &table_id)
 {
+	qfLogFuncFrame() << "table_id:" << table_id;
 	QF_ASSERT(isValid(),
 			  QString("Connection '%1' is not valid!").arg(connectionName()),
 			  return QString());
@@ -813,7 +814,9 @@ QString Connection::serialFieldName(const QString &table_id)
 		while(it.hasNext()) {
 			it.next();
 			qf::core::sql::FieldInfo fi = it.value();
+			qfDebug() << "checking:" << it.key() << "name:" << fi.name();
 			if(fi.isAutoIncrement()) {
+				qfDebug() << "\t found auto increment field:" << fi.name();
 				ret = it.key();
 				break;
 			}
