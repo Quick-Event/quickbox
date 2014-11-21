@@ -9,6 +9,9 @@
 #include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
 #include "reports/widgets/reportviewwidget.h"
 
+#include "internal/dlgtableviewcopyspecial.h"
+#include "internal/tableviewcopytodialogwidget.h"
+
 #include <qf/core/string.h>
 #include <qf/core/collator.h>
 #include <qf/core/log.h>
@@ -22,6 +25,8 @@
 #include <QPushButton>
 #include <QSettings>
 #include <QJsonDocument>
+#include <QApplication>
+#include <QClipboard>
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -94,7 +99,7 @@ void TableView::refreshActions()
 		return;
 	//action("calculate")->setEnabled(true);
 	action("copy")->setEnabled(true);
-	//action("copySpecial")->setEnabled(true);
+	action("copySpecial")->setEnabled(true);
 	//action("select")->setEnabled(true);
 	action("reload")->setEnabled(true);
 	action("resizeColumnsToContents")->setEnabled(true);
@@ -207,16 +212,21 @@ void TableView::insertRow()
 void TableView::removeSelectedRows()
 {
 	qfLogFuncFrame();
-	if(rowEditorMode() == EditRowsInline) {
-		removeSelectedRowsInline();
-	}
-	else {
-		QList<int> sel_rows = selectedRowsIndexes();
-		if(sel_rows.count() == 1) {
-			QVariant id = tableModel()->value(sel_rows.value(0), "id");
-			if(id.isValid())
-				emit editRowInExternalEditor(id, ModeDelete);
+	try {
+		if(rowEditorMode() == EditRowsInline) {
+			removeSelectedRowsInline();
 		}
+		else {
+			QList<int> sel_rows = selectedRowsIndexes();
+			if(sel_rows.count() == 1) {
+				QVariant id = tableModel()->value(sel_rows.value(0), "id");
+				if(id.isValid())
+					emit editRowInExternalEditor(id, ModeDelete);
+			}
+		}
+	}
+	catch(qf::core::Exception &e) {
+		dialogs::MessageBox::showException(this, e);
 	}
 }
 
@@ -228,11 +238,16 @@ bool TableView::postRow(int row_no)
 	if(row_no < 0)
 		return false;
 	bool ret = false;
-	qfc::model::TableModel *m = tableModel();
-	if(m) {
-		ret = m->postRow(row_no, true);
-		if(ret)
-			updateRow(row_no);
+	try {
+		qfc::model::TableModel *m = tableModel();
+		if(m) {
+			ret = m->postRow(row_no, true);
+			if(ret)
+				updateRow(row_no);
+		}
+	}
+	catch(qf::core::Exception &e) {
+		dialogs::MessageBox::showException(this, e);
 	}
 	return ret;
 }
@@ -243,6 +258,112 @@ void TableView::revertRow(int row_no)
 	qfc::model::TableModel *m = tableModel();
 	if(m) {
 		m->revertRow(row_no);
+	}
+}
+
+void TableView::copy()
+{
+	qfLogFuncFrame();
+	copySpecial_helper("\t", "\n", QString(), true);
+}
+
+void TableView::copySpecial()
+{
+	internal::DlgTableViewCopySpecial dlg(this);
+	if(dlg.exec()) {
+		copySpecial_helper(dlg.fieldsSeparator(), dlg.rowsSeparator(), dlg.fieldsQuotes(), dlg.replaceEscapes());
+	}
+}
+
+void TableView::paste()
+{
+	//if(!f_contextMenuActions.contains(action("paste"))) return;
+	//if(!action("paste")->isEnabled() || !action("paste")->isVisible()) return;
+	QModelIndex origin_ix = currentIndex();
+	if(origin_ix.isValid()) {
+		dialogs::Dialog dlg(this);
+		internal::TableViewCopyToDialogWidget *w = new internal::TableViewCopyToDialogWidget();
+		dlg.setCentralWidget(w);
+		int col_cnt = 0;
+		{
+			QClipboard *clipboard = QApplication::clipboard();
+			QString text = clipboard->text().trimmed();
+			if(!text.isEmpty()) {
+				QList<QStringList> table;
+				QStringList lines = text.split('\n');
+				foreach(QString line, lines) {
+					//qfInfo() << line;
+					QStringList cells = line.split('\t');
+					col_cnt = qMax(col_cnt, cells.count());
+					table.insert(table.count(), cells);
+				}
+				QStringList col_names;
+				for(int i=0; i<col_cnt; i++)
+					col_names << QString("col%1").arg(i+1);
+
+				qfu::Table t(col_names);
+				for(int row=0; row<table.count(); row++) {
+					QStringList row_sl = table[row];
+					if(row_sl.count() != col_cnt) {
+						/// invalidni radek, napr. excel nechava na konci jeden prazdnej radek
+						qfDebug() << "invalid row:" << row_sl.join("|");
+						qfDebug() << "cell count is:" << row_sl.count() << "should be:" << col_cnt;
+						continue;
+					}
+					qfu::TableRow &r = t.appendRow();
+					for(int col=0; col<col_cnt; col++) {
+						r.setValue(col, row_sl[col]);
+					}
+					r.clearEditFlags();
+				}
+				TableView *tv = w->tableView();
+				qfm::TableModel *tm = new qfm::TableModel(tv);
+				tm->setTable(t);
+				tv->setTableModel(tm);
+				tv->setContextMenuActions(tv->contextMenuActionsForGroups(AllActions));
+				//qfInfo() << "isEditRowsAllowed:" << m->isEditRowsAllowed();
+				tm->reload();
+			}
+		}
+		if(dlg.exec()) {
+			TableView *tv = w->tableView();
+			qfm::TableModel *m = tv->tableModel();
+			qfm::TableModel *my_m = tableModel();
+			int my_row = origin_ix.row();
+			bool insert_rows = w->isInsert();
+			if(insert_rows) my_row++;
+			for(int row=0; row<m->rowCount(); row++) {
+				if(insert_rows) {
+					my_m->insertRow(my_row);
+				}
+				else {
+					if(my_row >= my_m->rowCount()) break;
+				}
+				int my_col = origin_ix.column();
+				for(int col=0; col<m->columnCount(); col++) {
+					if(tv->isColumnHidden(col)) continue; /// preskakej skryty sloupce v tabulce dialogu
+						while(isColumnHidden(my_col)) my_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
+							QModelIndex ix = m->index(row, col); /// odsud se to bere
+							QModelIndex my_ix = origin_ix.sibling(my_row, my_col); ///sem se to vklada
+							//qfInfo() << "ix:" << ix.row() << '\t' << ix.column();
+						//qfInfo() << "my ix:" << my_ix.row() << '\t' << my_ix.column();
+					if(!my_ix.isValid()) { break; }
+					if(my_ix.flags().testFlag(Qt::ItemIsEditable)) {
+						QVariant v = m->data(ix, Qt::DisplayRole);
+						//qfInfo() << my_ix.row() << '-' << my_ix.column() << "<=" << v.toString();
+						my_m->setData(my_ix, v);
+					}
+					my_col++;
+				}
+				my_m->postRow(my_row, true);
+				my_row++;
+			}
+			//tv->updateAll();
+			QModelIndex bottom_right = model()->index(my_row - 1, origin_ix.column() + col_cnt - 1);
+			QItemSelection sel(origin_ix, bottom_right);
+			QItemSelectionModel *sm = selectionModel();
+			sm->select(sel, QItemSelectionModel::Select);
+		}
 	}
 }
 
@@ -684,18 +805,18 @@ void TableView::keyPressEvent(QKeyEvent *e)
 			|| (e->key() == Qt::Key_Enter && e->modifiers() == Qt::KeypadModifier);
 	if(e->modifiers() == Qt::ControlModifier) {
 		if(e->key() == Qt::Key_C) {
-			//copy();
-			//e->accept();
-			//return;
+			copy();
+			e->accept();
+			return;
 		}
 		else if(e->key() == Qt::Key_V) {
-			//paste();
-			//e->accept();
-			//return;
+			paste();
+			e->accept();
+			return;
 		}
 		else if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return) {
 			qfDebug() << "\tCTRL+ENTER";
-			////postRow();
+			postRow();
 			e->accept();
 			return;
 		}
@@ -892,7 +1013,7 @@ void TableView::createActions()
 		a->setOid("copy");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(copy()));
+		connect(a, SIGNAL(triggered()), this, SLOT(copy()));
 	}
 	{
 		a = new Action(tr("Copy special"), this);
@@ -902,7 +1023,7 @@ void TableView::createActions()
 		a->setOid("copySpecial");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(copySpecial()));
+		connect(a, SIGNAL(triggered()), this, SLOT(copySpecial()));
 	}
 	{
 		a = new Action(tr("Paste"), this);
@@ -912,7 +1033,7 @@ void TableView::createActions()
 		a->setOid("paste");
 		m_actionGroups[PasteActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(paste()), Qt::QueuedConnection); /// hazelo mi to vyjjimky v evendloopu
+		connect(a, SIGNAL(triggered()), this, SLOT(paste()), Qt::QueuedConnection); /// hazelo mi to vyjjimky v evendloopu
 	}
 	{
 		a = new Action(QIcon(":/qf/qmlwidgets/images/new.png"), tr("Insert row"), this);
@@ -962,7 +1083,7 @@ void TableView::createActions()
 		a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(copyRow()));
+		connect(a, SIGNAL(triggered()), this, SLOT(copyRow()));
 	}
 	{
 		a = new Action(tr("Zobrazit ve formulari"), this);
@@ -1195,6 +1316,46 @@ void TableView::createActions()
 			}
 		}
 		//qfDebug() << "\t default actions inserted";
+	}
+}
+
+void TableView::copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes)
+{
+	qfLogFuncFrame();
+	qfm::TableModel *m = tableModel();
+	if(!m) return;
+	//int old_elide = m->elideDisplayedTextAt();
+	//m->setElideDisplayedTextAt(0);
+	QStringList rows;
+	QItemSelection sel = selectionModel()->selection();
+	foreach(QItemSelectionRange sel1, sel) {
+		//QItemSelectionRange sel1 = sel.value(0);
+		if(sel1.isValid()) {
+			//qfInfo() << "sel count:" << sel.count() << "sel range left:" << sel1.left() << "right:" << sel1.right() << "top:" << sel1.top() << "bottom:" << sel1.bottom();
+			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
+				QStringList cells;
+				for(int col=sel1.left(); col<=sel1.right(); col++) {
+					QModelIndex ix = model()->index(row, col);
+					QString s;
+					s = m->data(ix, Qt::DisplayRole).toString();
+					if(replace_escapes) {
+						s.replace('\r', "\\r");
+						s.replace('\n', "\\n");
+						s.replace('\t', "\\t");
+					}
+					//qfInfo() << ix.row() << '\t' << ix.column() << '\t' << s;
+					cells << (field_quotes + s + field_quotes);
+				}
+				rows << cells.join(fields_separator);
+			}
+		}
+	}
+	//m->setElideDisplayedTextAt(old_elide);
+	QString text = rows.join(rows_separator);
+	if(!text.isEmpty()) {
+		qfDebug() << "\tSetting clipboard:" << text;
+		QClipboard *clipboard = QApplication::clipboard();
+		clipboard->setText(text);
 	}
 }
 

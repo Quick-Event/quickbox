@@ -45,7 +45,6 @@ bool SqlTableModel::reload()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
-	Super::reload();
 	return reload(qs);
 }
 
@@ -53,11 +52,7 @@ bool SqlTableModel::reload(const QString &query_str)
 {
 	beginResetModel();
 	bool ok = reloadTable(query_str);
-	if(ok) {
-		if(m_columns.isEmpty() || m_autoColumns)
-			createColumnsFromTableFields();
-		fillColumnIndexes();
-	}
+	checkColumns();
 	endResetModel();
 	return ok;
 }
@@ -152,8 +147,11 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			}
 			ok = q.exec();
 			if(!ok) {
-				qfError() << "Error executing query:" << qs
-						  << "\n" << q.lastError().text();
+				QString errs = tr("Error executing query: %1\n %2").arg(qs).arg(q.lastError().text());
+				if(throw_exc)
+					QF_EXCEPTION(errs);
+				else
+					qfError() << errs;
 			}
 			else {
 				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();

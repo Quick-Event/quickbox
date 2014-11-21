@@ -102,6 +102,7 @@ public:
 	ColumnDefinition removeColumn(int ix);
 public:
 	const qf::core::utils::Table& table() {return m_table;}
+	void setTable(const qf::core::utils::Table &t);
 
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
@@ -152,6 +153,7 @@ public:
 
 	int columnIndex(const QString &column_name) const;
 protected:
+	virtual void checkColumns();
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
 	QVariant::Type columnType(int column_index) const;

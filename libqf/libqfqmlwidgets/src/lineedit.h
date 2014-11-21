@@ -15,7 +15,7 @@ class QFQMLWIDGETS_DECL_EXPORT LineEdit : public QLineEdit, public IDataWidget
 	Q_PROPERTY(QVariant dataValue READ dataValue WRITE setDataValue NOTIFY dataValueChanged)
 	Q_PROPERTY(QString dataId READ dataId WRITE setDataId)
 public:
-	explicit LineEdit(QWidget *parent = 0);
+	explicit LineEdit(QWidget *parent = nullptr);
 protected:
 	QVariant dataValue() Q_DECL_OVERRIDE;
 	void setDataValue(const QVariant &val) Q_DECL_OVERRIDE;

@@ -34,6 +34,7 @@ public:
 	Q_INVOKABLE bool isValid() {return m_query.isValid();}
 	Q_INVOKABLE bool next() {return m_query.next();}
 	Q_INVOKABLE QString lastError();
+	Q_INVOKABLE QVariant lastInsertId();
 	Q_INVOKABLE QVariant value(int ix);
 	Q_INVOKABLE QVariant value(const QString &field_name);
 	Q_INVOKABLE QVariantList values();

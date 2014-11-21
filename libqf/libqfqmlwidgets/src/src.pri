@@ -23,7 +23,8 @@ HEADERS += \
     $$PWD/saveoptionswidget.h \
     $$PWD/toolbar.h \
     $$PWD/datacontroller.h \
-    $$PWD/idatawidget.h
+    $$PWD/idatawidget.h \
+    $$PWD/combobox.h \
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -47,12 +48,13 @@ SOURCES += \
     $$PWD/saveoptionswidget.cpp \
     $$PWD/toolbar.cpp \
     $$PWD/datacontroller.cpp \
-    $$PWD/idatawidget.cpp
+    $$PWD/idatawidget.cpp \
+    $$PWD/combobox.cpp \
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \
 
-#include ($$PWD/internal/internal.pri)
+include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)
 include ($$PWD/dialogs/dialogs.pri)
 include ($$PWD/reports/reports.pri)

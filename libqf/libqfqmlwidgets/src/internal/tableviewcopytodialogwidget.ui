@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>qf::qmlwidgets::internal::TableViewCopyToDialogWidget</class>
+ <widget class="QWidget" name="qf::qmlwidgets::internal::TableViewCopyToDialogWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>411</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="qf::qmlwidgets::TableView" name="tableView" native="true">
+     <property name="statusLineVisible" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="toolBarVisible" stdset="0">
+      <bool>true</bool>
+     </property>
+     <zorder>chkInsertRows</zorder>
+     <zorder>chkInsertRows</zorder>
+     <zorder>chkInsertRows</zorder>
+     <zorder>chkInsertRows</zorder>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkInsertRows">
+     <property name="text">
+      <string>Insert rows</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qf::qmlwidgets::TableView</class>
+   <extends>QWidget</extends>
+   <header>src/tableview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

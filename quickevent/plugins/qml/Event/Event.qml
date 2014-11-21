@@ -70,6 +70,10 @@ QfObject {
 		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
 		if(event_name) {
 			if(q.exec("SET SCHEMA '" + event_name + "'")) {
+				var settings = FrameWork.plugin('Core').api.createSettings();
+				settings.beginGroup("sql/connection");
+				settings.setValue("event", event_name);
+				settings.destroy();
 				root.currentEventName = event_name;
 			}
 		}
@@ -126,7 +130,7 @@ QfObject {
                 var q = db.createQuery();
 
 				q.prepare('INSERT INTO event (stageCount, name, description, date, place, mainReferee, director, importId) VALUES (:stageCount, :name, :description, :date, :place, :mainReferee, :director, :importId)');
-				q.bindValue(':stageCount', data.Stages);
+				q.bindValue(':stageCount', stage_count);
 				q.bindValue(':name', data.Name);
 				q.bindValue(':description', '');
 				q.bindValue(':date', data.Date);
@@ -145,7 +149,7 @@ QfObject {
 				}
 
 				// import classes
-				q.prepare('INSERT INTO classes (id) VALUES (:id, :name)');
+				q.prepare('INSERT INTO classes (id, name) VALUES (:id, :name)');
 				for(var class_obj in data.Classes) {
 					var class_name = data.Classes[class_obj].Name;
 					Log.info("adding class:", class_name);
@@ -155,7 +159,7 @@ QfObject {
 						break;
 				}
 
-				importEventOrisRunners(event_id)
+				importEventOrisRunners(event_id, stage_count)
 			}
 			else {
 				MessageBoxSingleton.critical("http get error: " + json_str + ' on: ' + url)
@@ -164,7 +168,7 @@ QfObject {
 		});
 	}
 
-	function importEventOrisRunners(event_id)
+	function importEventOrisRunners(event_id, stage_count)
 	{
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=' + event_id;
 		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
@@ -176,6 +180,8 @@ QfObject {
 				//FrameWork.showProgress(qsTr("Importing competitors"), 2, steps);
                 var q = db.createQuery();
 				q.prepare('INSERT INTO competitors (classId, siId, firstName, lastName, registration, licence, note, importId) VALUES (:classId, :siId, :firstName, :lastName, :registration, :licence, :note, :importId)');
+                var q2 = db.createQuery();
+				q2.prepare('INSERT INTO laps (stageId, competitorId, siId) VALUES (:stageId, :competitorId, :siId)');
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					Log.debug(JSON.stringify(competitor_obj, null, 2));
@@ -200,6 +206,16 @@ QfObject {
 					if(!q.exec()) {
 						MessageBoxSingleton.critical(FrameWork, "SQL error: " + q.lastError())
 						break;
+					}
+					var competitor_id = q.lastInsertedValue();
+					for(var i=0; i<stage_count; i++) {
+						q2.bindValue(':siId', siid);
+						q2.bindValue(':competitorId', competitor_id);
+						q2.bindValue(':stageId', i+1);
+						if(!q2.exec()) {
+							MessageBoxSingleton.critical(FrameWork, "SQL error: " + q2.lastError())
+							break;							
+						}
 					}
 				}
 			}

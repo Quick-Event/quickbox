@@ -297,8 +297,19 @@ void TableModel::sort(int column, Qt::SortOrder order)
 	emit layoutChanged();
 }
 
+void TableModel::checkColumns()
+{
+	if(m_columns.isEmpty() || m_autoColumns) {
+		createColumnsFromTableFields();
+		fillColumnIndexes();
+	}
+}
+
 bool TableModel::reload()
 {
+	beginResetModel();
+	checkColumns();
+	endResetModel();
 	return true;
 }
 
@@ -564,6 +575,13 @@ TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 	qfError() << Q_FUNC_INFO << ix << "NIY";
 	TableModel::ColumnDefinition ret;
 	return ret;
+}
+
+void TableModel::setTable(const qf::core::utils::Table &t)
+{
+	beginResetModel();
+	m_table = t;
+	endResetModel();
 }
 
 int TableModel::insertTableRow(int before_row)

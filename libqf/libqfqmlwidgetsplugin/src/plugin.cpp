@@ -5,6 +5,7 @@
 #include <qf/qmlwidgets/frame.h>
 #include <qf/qmlwidgets/label.h>
 #include <qf/qmlwidgets/lineedit.h>
+#include <qf/qmlwidgets/combobox.h>
 #include <qf/qmlwidgets/splitter.h>
 #include <qf/qmlwidgets/statusbar.h>
 #include <qf/qmlwidgets/action.h>
@@ -64,6 +65,7 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::Label>(uri, 1, 0, "Label");
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");
+		qmlRegisterType<qf::qmlwidgets::ComboBox>(uri, 1, 0, "ComboBox");
 		qmlRegisterType<qf::qmlwidgets::Splitter>(uri, 1, 0, "Splitter");
 		qmlRegisterType<qf::qmlwidgets::ProgressBar>(uri, 1, 0, "ProgressBar");
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");

@@ -60,7 +60,7 @@ Schema {
 				Field { name: 'id'; type: Serial {} },
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'stage'; type: Int {} },
+				Field { name: 'stageId'; type: Int {} },
 				Field { name: 'startTime'; type: Int {}
 					comment: 'in seconds'
 				},
@@ -71,22 +71,23 @@ Schema {
 					comment: 'in miliseconds'
 				},
 				Field { name: 'offRace'; type: Boolean { }
-					defaultValue: 0;
+					defaultValue: false;
 					notNull: true
 				},
 				Field { name: 'disqualified'; type: Boolean { }
-					defaultValue: 0;
+					defaultValue: false;
 					notNull: true
 				},
 				Field { name: 'cardError'; type: Boolean { }
-					defaultValue: 0;
+					defaultValue: false;
 					notNull: true
 				},
 				Field { name: 'status';
 					type: Enum { name: 'enum_lap_status';
 						keys: ['OFF', 'START', 'FINISH']
 					}
-					defaultValue: 'OFF'; notNull: true
+					defaultValue: 'OFF';
+					notNull: true
 				}
 			]
 			indexes: [

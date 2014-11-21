@@ -58,6 +58,11 @@ QString SqlQuery::lastError()
 	return ret;
 }
 
+QVariant SqlQuery::lastInsertId()
+{
+	return m_query.lastInsertId();
+}
+
 QVariant SqlQuery::value(int ix)
 {
 	QVariant ret = m_query.value(ix);

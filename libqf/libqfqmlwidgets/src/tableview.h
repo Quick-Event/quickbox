@@ -31,8 +31,8 @@ private:
 	typedef QTableView Super;
 public:
 	enum ActionGroup {ViewActions = 1, BlobActions = 2, SetValueActions = 4, RowActions = 8, CellActions = 16, SizeActions = 32,
-					   CalculateActions = 64, ExportActions = 128, ImportActions = 256, SortActions = 512, SelectActions = 1024,
-					   FilterActions = 2048, PasteActions = 4096, AllActions = 65535};
+					  CalculateActions = 64, ExportActions = 128, ImportActions = 256, SortActions = 512, SelectActions = 1024,
+					  FilterActions = 2048, PasteActions = 4096, AllActions = 65535};
 public:
 	explicit TableView(QWidget *parent = 0);
 	~TableView() Q_DECL_OVERRIDE;
@@ -64,6 +64,10 @@ public:
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
+
+	Q_SLOT virtual void copy();
+	Q_SLOT virtual void copySpecial();
+	Q_SLOT virtual void paste();
 
 	Q_SLOT void exportReport();
 
@@ -107,6 +111,8 @@ protected:
 	virtual void removeSelectedRowsInline();
 
 	virtual void createActions();
+
+	void copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes);
 
 	//static const int StandardContextMenuActionsGroups = AllActions & ~(SetValueActions | BlobActions | PasteActions);
 	QList<Action*> standardContextMenuActions() { return contextMenuActionsForGroups(AllActions & ~(SetValueActions | BlobActions | PasteActions));}

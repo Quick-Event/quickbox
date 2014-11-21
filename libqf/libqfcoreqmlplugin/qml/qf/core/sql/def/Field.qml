@@ -6,7 +6,7 @@ QtObject {
 	property string name
 	property FieldType type
 	property int length: -1
-	property var defaultValue
+	property var defaultValue: null
 	property bool notNull: false
 	property string comment
 
@@ -15,7 +15,7 @@ QtObject {
 		var def = '\t' + name + ' ' + type.createSqlScript(options);
 		if(notNull)
 			def += ' NOT NULL';
-		if(defaultValue) {
+		if(defaultValue !== null) {
 			def += ' DEFAULT ';
 			if(typeof defaultValue !== 'number')
 				def += "'" + defaultValue + "'";
