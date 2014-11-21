@@ -72,6 +72,9 @@ void DataDocument::save()
 		QVariant id = dataId();
 		emit aboutToSave(id, m);
 		if(saveData()) {
+			// reload data id, can be set from serie for mode INSERT
+			id = dataId();
+			qfDebug() << "emitting saved id:" << id.toString() << "mode:" << m;
 			emit saved(id, m);
 		}
 	}
@@ -179,12 +182,13 @@ bool DataDocument::saveData()
 	qfLogFuncFrame();
 	if(mode() != ModeView) {
 		//qfTrash() << "\ttable type:" << model()->table()->metaObject()->className();
+		QVariant old_id = dataId();
 		model()->postRow(currentModelRow(), qf::core::Exception::Throw);
 		if(mode() == ModeInsert) {
 			QVariant id = value(idFieldName());
-			//qfTrash() << "\tid column name:" << idColumnName() << "inserted ID:" << id.toString();
+			qfDebug() << "\t id field name:" << idFieldName() << "inserted ID:" << id.toString();
 			setDataId(id);
-			setValue(idFieldName(), id); /// to refresh also widgets with dataId() == "id"
+			emit valueChanged(idFieldName(), old_id, id);/// to refresh also widgets with dataId() == "id"
 		}
 	}
 	if(mode() == ModeInsert) {

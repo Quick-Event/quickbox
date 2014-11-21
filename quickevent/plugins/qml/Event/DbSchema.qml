@@ -30,7 +30,7 @@ Schema {
 				Index {fields: ['id']; primary: true }
 			]
 		},
-		Table { name: 'runners'
+		Table { name: 'competitors'
 			fields: [
 				Field { name: 'id'; type: Serial {} },
 				Field { name: 'startNumber'; type: Int {} },
@@ -58,7 +58,7 @@ Schema {
 		Table { name: 'laps'
 			fields: [
 				Field { name: 'id'; type: Serial {} },
-				Field { name: 'runnerId'; type: Int {} },
+				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stage'; type: Int {} },
 				Field { name: 'startTime'; type: Int {}
@@ -91,8 +91,8 @@ Schema {
 			]
 			indexes: [
 				Index { fields: ['id']; primary: true },
-				Index { fields: ['runnerId'] },
-				Index { fields: ['stage, runnerId']; unique: true },
+				Index { fields: ['competitorId'] },
+				Index { fields: ['stage, competitorId']; unique: true },
 				Index { fields: ['status', 'lapTime', 'lapTimeMS'] }
 			]
 		},
@@ -123,7 +123,8 @@ Schema {
 		Table { name: 'classes'
 			fields: [
 				Field { name: 'id'; type: String { length: 10 } },
-				Field { name: 'courseId'; type: String { length: 10 } }
+				Field { name: 'courseId'; type: String { length: 10 } },
+				Field { name: 'name'; type: String { length: 10 } }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true }

@@ -24,7 +24,7 @@ QfObject {
 		if(event_name) {
 			Log.info('will create:', event_name);
 			var create_script = dbSchema.createSqlScript({schemaName: event_name, driverName: db.driverName});
-			//Log.info(create_script.join(';\n') + ';');
+			Log.info(create_script.join(';\n') + ';');
             var q = db.createQuery();
             Log.info("QUERY:", q ,typeof q, q===null)
             db.transaction();
@@ -145,11 +145,12 @@ QfObject {
 				}
 
 				// import classes
-				q.prepare('INSERT INTO classes (id) VALUES (:id)');
+				q.prepare('INSERT INTO classes (id) VALUES (:id, :name)');
 				for(var class_obj in data.Classes) {
 					var class_name = data.Classes[class_obj].Name;
 					Log.info("adding class:", class_name);
 					q.bindValue(':id', class_name);
+					q.bindValue(':name', class_name);
 					if(!q.exec())
 						break;
 				}
@@ -171,31 +172,31 @@ QfObject {
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
 				var data = JSON.parse(json_str).Data;
-				// import runners
-				//FrameWork.showProgress(qsTr("Importing runners"), 2, steps);
+				// import competitors
+				//FrameWork.showProgress(qsTr("Importing competitors"), 2, steps);
                 var q = db.createQuery();
-				q.prepare('INSERT INTO runners (classId, siId, firstName, lastName, registration, licence, note, importId) VALUES (:classId, :siId, :firstName, :lastName, :registration, :licence, :note, :importId)');
-				for(var runner_obj_key in data) {
-					var runner_obj = data[runner_obj_key];
-					Log.info(JSON.stringify(runner_obj, null, 2));
-					Log.info(runner_obj.ClassDesc, ' ', runner_obj.LastName, ' ', runner_obj.FirstName);
-					var siid = parseInt(runner_obj.SI);
-					var note = runner_obj.Note;
+				q.prepare('INSERT INTO competitors (classId, siId, firstName, lastName, registration, licence, note, importId) VALUES (:classId, :siId, :firstName, :lastName, :registration, :licence, :note, :importId)');
+				for(var competitor_obj_key in data) {
+					var competitor_obj = data[competitor_obj_key];
+					Log.debug(JSON.stringify(competitor_obj, null, 2));
+					Log.info(competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName);
+					var siid = parseInt(competitor_obj.SI);
+					var note = competitor_obj.Note;
 					if(isNaN(siid)) {
-						note += ' SI:' + runner_obj.SI;
+						note += ' SI:' + competitor_obj.SI;
 						siid = 0;
 					}
-					if(runner_obj.RequestedStart) {
-						note += ' req. start: ' + runner_obj.RequestedStart;
+					if(competitor_obj.RequestedStart) {
+						note += ' req. start: ' + competitor_obj.RequestedStart;
 					}
-					q.bindValue(':classId', runner_obj.ClassDesc);
+					q.bindValue(':classId', competitor_obj.ClassDesc);
 					q.bindValue(':siId', siid);
-					q.bindValue(':firstName', runner_obj.FirstName);
-					q.bindValue(':lastName', runner_obj.LastName);
-					q.bindValue(':registration', runner_obj.RegNo);
-					q.bindValue(':licence', runner_obj.Licence);
+					q.bindValue(':firstName', competitor_obj.FirstName);
+					q.bindValue(':lastName', competitor_obj.LastName);
+					q.bindValue(':registration', competitor_obj.RegNo);
+					q.bindValue(':licence', competitor_obj.Licence);
 					q.bindValue(':note', note);
-					q.bindValue(':importId', runner_obj.ID);
+					q.bindValue(':importId', competitor_obj.ID);
 					if(!q.exec()) {
 						MessageBoxSingleton.critical(FrameWork, "SQL error: " + q.lastError())
 						break;

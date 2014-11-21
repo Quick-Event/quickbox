@@ -18,9 +18,9 @@ DataDialogWidget
 			id: dataDocument
 			Component.onCompleted:
 			{
-				queryBuilder.select2('runners', '*')
+				queryBuilder.select2('competitors', '*')
 					.select("lastName || ' ' || firstName AS name")
-					.from('runners').where('runners.id={{ID}}');
+					.from('competitors').where('competitors.id={{ID}}');
 			}
 			onLoaded: {
 				var name = dataDocument.value("name");
@@ -44,14 +44,14 @@ DataDialogWidget
 		}
 		LineEdit {
 			id: edClass
-			dataId: "runners.classId"
+			dataId: "competitors.classId"
 		}
 		Label {
 			horizontalAlignment: Qt.AlignRight
 			text: qsTr("SI")
 		}
 		LineEdit {
-			dataId: "runners.siId"
+			dataId: "competitors.siId"
 		}
 
 		Label {
@@ -59,7 +59,7 @@ DataDialogWidget
 		}
 		LineEdit {
 			Layout.columnSpan: 3
-			dataId: "runners.firstName"
+			dataId: "competitors.firstName"
 			
 		}
 		Label {
@@ -67,33 +67,33 @@ DataDialogWidget
 		}
 		LineEdit {
 			Layout.columnSpan: 3
-			dataId: "runners.lastName"
+			dataId: "competitors.lastName"
 		}
 
 		Label {
 			text: qsTr("Registration")
 		}
 		LineEdit {
-			dataId: "runners.registration"
+			dataId: "competitors.registration"
 		}
 		Label {
 			text: qsTr("Licence")
 		}
 		LineEdit {
-			dataId: "runners.licence"
+			dataId: "competitors.licence"
 		}
 
 		Label {
 			text: qsTr("Club")
 		}
 		LineEdit {
-			dataId: "runners.club"
+			dataId: "competitors.club"
 		}
 		Label {
 			text: qsTr("Country")
 		}
 		LineEdit {
-			dataId: "runners.country"
+			dataId: "competitors.country"
 		}
 
 		Label {

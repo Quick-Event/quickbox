@@ -416,62 +416,64 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 				break;
 			}
 		}
-		if(ri < 0 || ri >= tmd->rowCount()) {
-			qfWarning() << "Cannot find table row for id:" << id.toString() << "mode:" << mode;
+		if(mode == ModeInsert || mode == ModeCopy) {
+			/// ModeInsert or ModeCopy
+			qfDebug() << "\t ModeInsert or ModeCopy, current row:" << ri;
+			int ri = 0;
+			//qfDebug() << "\tri:" << ri;
+			//qfDebug() << "\tmodel->rowCount():" << ri;
+			QModelIndex curr_ix = currentIndex();
+			if(curr_ix.isValid())
+				ri = curr_ix.row() + 1;
+			else
+				ri = tmd->rowCount();
+			if(ri > tmd->rowCount())
+				ri = tmd->rowCount();
+			qfDebug() << "\tri:" << ri;
+			tmd->insertRow(ri);
+			tmd->setValue(ri, idColumnName(), id);
+			//qfu::TableRow &row_ref = tmd->table().rowRef(ri);
+			//row_ref.setValue(idColumnName(), id);
+			//row_ref.setInsert(false);
+			int reloaded_row_cnt = tmd->reloadRow(ri);
+			if(reloaded_row_cnt != 1) {
+				qfWarning() << "Incerted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
+				return;
+			}
+			updateRow(ri);
+			if(curr_ix.isValid())
+				setCurrentIndex(curr_ix.sibling(ri, curr_ix.column()));
+			else
+				setCurrentIndex(model()->index(ri, 0, QModelIndex()));
 		}
 		else {
-			if(mode == ModeEdit || mode == ModeView) {
-				int reloaded_row_cnt = tmd->reloadRow(ri);
-				if(reloaded_row_cnt != 1) {
-					qfWarning() << "Edited row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
-				}
-			}
-			else if(mode == ModeDelete) {
-				int reloaded_row_cnt = tmd->reloadRow(ri);
-				if(reloaded_row_cnt > 0) {
-					qfWarning() << "Deleted row id:" << id.toString() << "still exists.";
-				}
-				else {
-					tmd->qfm::TableModel::removeRow(ri);
-					if(ri >= tmd->rowCount())
-						ri = tmd->rowCount() - 1;
-					QModelIndex ix = currentIndex();
-					if(ri >= 0) {
-						ix = tmd->index(ri, (ix.column() >= 0)? ix.column(): 0);
-						//qfInfo() << "ix row:" << ix.row() << "col:" << ix.column();
-						setCurrentIndex(ix);
-					}
-				}
+			if(ri < 0 || ri >= tmd->rowCount()) {
+				qfWarning() << "Cannot find table row for id:" << id.toString() << "mode:" << mode;
 			}
 			else {
-				/// ModeInsert or ModeCopy
-				//qfDebug() << "\tcurrent row:" << ri;
-				int ri = tmd->rowCount();
-				//qfDebug() << "\tri:" << ri;
-				//qfDebug() << "\tmodel->rowCount():" << ri;
-				QModelIndex curr_ix = currentIndex();
-				if(curr_ix.isValid())
-					ri = curr_ix.row() + 1;
-				else
-					ri = tmd->rowCount() + 1;
-				if(ri > tmd->rowCount())
-					ri = tmd->rowCount();
-				qfDebug() << "\tri:" << ri;
-				tmd->insertRow(ri);
-				tmd->setValue(ri, idColumnName(), id);
-				//qfu::TableRow &row_ref = tmd->table().rowRef(ri);
-				//row_ref.setValue(idColumnName(), id);
-				//row_ref.setInsert(false);
-				int reloaded_row_cnt = tmd->reloadRow(ri);
-				if(reloaded_row_cnt != 1) {
-					qfWarning() << "Incerted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
-					return;
+				if(mode == ModeEdit || mode == ModeView) {
+					int reloaded_row_cnt = tmd->reloadRow(ri);
+					if(reloaded_row_cnt != 1) {
+						qfWarning() << "Edited row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
+					}
 				}
-				updateRow(ri);
-				if(curr_ix.isValid())
-					setCurrentIndex(curr_ix.sibling(ri, curr_ix.column()));
-				else
-					setCurrentIndex(model()->index(ri, 0, QModelIndex()));
+				else if(mode == ModeDelete) {
+					int reloaded_row_cnt = tmd->reloadRow(ri);
+					if(reloaded_row_cnt > 0) {
+						qfWarning() << "Deleted row id:" << id.toString() << "still exists.";
+					}
+					else {
+						tmd->qfm::TableModel::removeRow(ri);
+						if(ri >= tmd->rowCount())
+							ri = tmd->rowCount() - 1;
+						QModelIndex ix = currentIndex();
+						if(ri >= 0) {
+							ix = tmd->index(ri, (ix.column() >= 0)? ix.column(): 0);
+							//qfInfo() << "ix row:" << ix.row() << "col:" << ix.column();
+							setCurrentIndex(ix);
+						}
+					}
+				}
 			}
 		}
 	}

@@ -136,7 +136,7 @@ public:
 		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
 		QF_SHARED_CLASS_FIELD_RW(bool, is, set, PriKey)
 		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Serial)
-		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Nullable)
+		//QF_SHARED_CLASS_FIELD_RW(bool, is, set, Nullable)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
 	{

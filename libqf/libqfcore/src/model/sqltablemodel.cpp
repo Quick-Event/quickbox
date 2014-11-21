@@ -66,197 +66,206 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 {
 	qfLogFuncFrame() << row_no;
 
-	qfu::TableRow row = m_table.row(row_no);
+	QF_ASSERT(m_table.isValidRowIndex(row_no),
+			  QString("row: %1 is out of range of rows (%2)").arg(row_no).arg(m_table.rowCount()),
+			  return false);
+	qfu::TableRow &row_ref = m_table.rowRef(row_no);
 	bool ret = true;
-	if(row.isDirty()) {
-		if(row.isInsert()) {
-			qfDebug() << "\tINSERT";
+	if(row_ref.isInsert()) {
+		qfDebug() << "\tINSERT";
 
-			//QSet<QString> referenced_foreign_tables = referencedForeignTables();
-			//int tbl_cnt = 0;
-			qf::core::sql::Connection sql_conn = sqlConnection();
-			QSqlDriver *sqldrv = sql_conn.driver();
-			QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
-			for(QString table_id : table_ids) {
-				qfDebug() << "\ttable:" << table_id;
-				QSqlRecord rec;
-				int i = -1;
-				int serial_ix = -1;
-				int primary_ix = -1;
-				//QSqlIndex pri_ix = ti.primaryIndex();
-				//bool has_blob_field = false;
-				for(const qf::core::utils::Table::Field &fld : row.fields()) {
-					i++;
-					if(fld.tableId() != table_id)
-						continue;
-					//qfError() << ti.field(f.fieldName()).toString();
-					bool is_field_dirty = row.isDirty(i);
-					if(fld.isSerial()) {
-						/// always include serial fields, an empty line cannot be inserted in other case
-						is_field_dirty = true;
-						serial_ix = i;
-						qfDebug() << "\t serial ix:" << serial_ix;
-					}
-					if(fld.isPriKey()) {
-						/// prikey field vzdy pridej do insertu, bez nej by to neslo (pokud je autoincrement, uplatni se i predchozi podminka)
-						is_field_dirty = true;
-						primary_ix = i;
-					}
-					if(!is_field_dirty)
-						continue;
-					qfDebug() << "\tdirty field:" << fld.name();
-					QVariant v = row.value(i);
-					if(!v.isNull() || fld.isSerial()) {
-						/// null hodnotu nema smysl insertovat, pokud to neni nutne kvuli necemu jinemu
-						/// naopak se pri insertu dokumentu z vice join tabulek muze stat, ze se vlozi to not-null fieldu null hodnota
-						/// pokud je insert, join radek neexistuje, takze hodnoty jsou null a mysql v takovem pripade v resultsetu nastavi
-						/// i not-null field na nullable
-						//qfInfo() << "\t" << f.fieldName() << "value type:" << QVariant::typeToName(v.type());
-						QSqlField new_fld;
-						if(v.isNull() && fld.isSerial() && !fld.isNullable())
-							v = 0;
-						new_fld.setValue(v);
-						//qfInfo() << "\t\t" << "val type:" << QVariant::typeToName(f.value().type());
-						new_fld.setName(fld.shortName());
-						rec.append(new_fld);
-					}
+		//QSet<QString> referenced_foreign_tables = referencedForeignTables();
+		//int tbl_cnt = 0;
+		qf::core::sql::Connection sql_conn = sqlConnection();
+		QSqlDriver *sqldrv = sql_conn.driver();
+		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
+		for(QString table_id : table_ids) {
+			qfDebug() << "\ttable:" << table_id;
+			QSqlRecord rec;
+			int i = -1;
+			int serial_ix = -1;
+			int primary_ix = -1;
+			//QSqlIndex pri_ix = ti.primaryIndex();
+			//bool has_blob_field = false;
+			for(const qf::core::utils::Table::Field &fld : row_ref.fields()) {
+				i++;
+				if(fld.tableId() != table_id)
+					continue;
+				bool is_field_dirty = row_ref.isDirty(i);
+				if(fld.isSerial()) {
+					/// always include serial fields, an empty line cannot be inserted in other case
+					//is_field_dirty = true;
+					serial_ix = i;
+					qfDebug() << "\t serial ix:" << serial_ix;
 				}
-				if(!rec.isEmpty()) {
-					qfDebug() << "updating table inserts" << table_id;
-					qf::core::sql::Connection dbinfo(sql_conn);
-					QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
-					QString s = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
-					qfs::Query q(sql_conn);
-					bool ok = q.prepare(s);
-					if(!ok) {
-						qfError() << "Cannot prepare query:" << s;
-					}
-					else {
-						for(int i=0; i<rec.count(); i++) {
-							QVariant::Type type = rec.field(i).value().type();
-							//qfInfo() << "\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type);
-							qfDebug() << "\t\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type) << "value:" << rec.field(i).value().toString().mid(0, 100);
-							q.addBindValue(rec.field(i).value());
-						}
-						qfDebug() << "\texecuting prepared query:" << s;
-						ok = q.exec();
-						if(!ok) {
-							qfError() << "Error executing query:" << s
-									  << "\n" << q.lastError().text();
-						}
-						else {
-							qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
-							int num_rows_affected = q.numRowsAffected();
-							//setNumRowsAffected(q.numRowsAffected());
-							QF_ASSERT(num_rows_affected == 1,
-									  tr("numRowsAffected() = %1, should be 1\n%2").arg(num_rows_affected).arg(s),
-									  return false);
-							if(serial_ix >= 0) {
-								QVariant v = q.lastInsertId();
-								row.setValue(serial_ix, v);
-								row.setDirty(serial_ix, false);
-							}
-						}
-					}
+				if(fld.isPriKey()) {
+					/// always include prikey field, an empty line cannot be inserted in other case
+					//is_field_dirty = true;
+					primary_ix = i;
+				}
+				if(!is_field_dirty)
+					continue;
+				qfDebug() << "\tdirty field:" << fld.name();
+				QVariant v = row_ref.value(i);
+				if(is_field_dirty) {
+					/// null hodnotu nema smysl insertovat, pokud to neni nutne kvuli necemu jinemu
+					/// naopak se pri insertu dokumentu z vice join tabulek muze stat, ze se vlozi to not-null fieldu null hodnota
+					/// pokud je insert, join radek neexistuje, takze hodnoty jsou null a mysql v takovem pripade v resultsetu nastavi
+					/// i not-null field na nullable
+					QSqlField new_fld;
+					//if(v.isNull() && fld.isSerial())
+					//	v = 0;
+					new_fld.setValue(v);
+					//qfInfo() << "\t\t" << "val type:" << QVariant::typeToName(f.value().type());
+					new_fld.setName(fld.shortName());
+					rec.append(new_fld);
+				}
+			}
+
+			qfDebug() << "updating table inserts" << table_id;
+			QString qs;
+			qf::core::sql::Connection dbinfo(sql_conn);
+			QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
+			qfs::Query q(sql_conn);
+			if(rec.isEmpty()) {
+				if(serial_ix >= 0) {
+					qs = "INSERT INTO %1 (%2) VALUES (DEFAULT)";
+					qs = qs.arg(table, row_ref.fields().at(serial_ix).shortName());
+				}
+			}
+			else {
+				qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
+				//qs = fixSerialDefaultValue(qs, serial_ix, rec);
+			}
+			qfDebug() << "\texecuting prepared query:" << qs;
+			bool ok = q.prepare(qs);
+			if(!ok) {
+				qfError() << "Cannot prepare query:" << qs;
+			}
+			else {
+				for(int i=0; i<rec.count(); i++) {
+					QVariant::Type type = rec.field(i).value().type();
+					//qfInfo() << "\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type);
+					qfDebug() << "\t\t" << rec.field(i).name() << "bound type:" << QVariant::typeToName(type) << "value:" << rec.field(i).value().toString().mid(0, 100);
+					q.addBindValue(rec.field(i).value());
+				}
+			}
+			ok = q.exec();
+			if(!ok) {
+				qfError() << "Error executing query:" << qs
+						  << "\n" << q.lastError().text();
+			}
+			else {
+				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
+				int num_rows_affected = q.numRowsAffected();
+				//setNumRowsAffected(q.numRowsAffected());
+				QF_ASSERT(num_rows_affected == 1,
+						  tr("numRowsAffected() = %1, should be 1\n%2").arg(num_rows_affected).arg(qs),
+						  return false);
+				if(serial_ix >= 0) {
+					QVariant v = q.lastInsertId();
+					qfDebug() << "\tsetting serial index:" << serial_ix << "to generated value:" << v.toString();
+					row_ref.setValue(serial_ix, v);
+					row_ref.setDirty(serial_ix, false);
 				}
 				if(primary_ix >= 0) {
 					/// update foreign keys in the slave tables
-					qf::core::utils::Table::Field pri_ix_fld = row.fields().value(primary_ix);
+					qf::core::utils::Table::Field pri_ix_fld = row_ref.fields().value(primary_ix);
 					QString master_key = pri_ix_fld.name();
 					qfDebug() << "\t master_key:" << master_key;
 					QString slave_key = m_foreignKeyDependencies.value(master_key);
 					if(!slave_key.isEmpty()) {
-						qfDebug() << "\tsetting value of foreign key" << slave_key << "to value of master key:" << row.value(master_key).toString();
-						row.setValue(slave_key, row.value(master_key));
+						qfDebug() << "\tsetting value of foreign key" << slave_key << "to value of master key:" << row_ref.value(master_key).toString();
+						row_ref.setValue(slave_key, row_ref.value(master_key));
 					}
 				}
 			}
 		}
-		else {
-			qfDebug() << "\tEDIT";
-			qf::core::sql::Connection sql_conn = sqlConnection();
-			QSqlDriver *sqldrv = sql_conn.driver();
-			for(QString table_id : tableIds(m_table.fields())) {
-				qfDebug() << "\ttableid:" << table_id;
-				//table = conn.fullTableNameToQtDriverTableName(table);
-				QSqlRecord edit_rec;
-				int i = -1;
-				bool has_blob_field = true;
-				for(qfu::Table::Field fld : row.fields()) {
-					i++;
-					qfDebug() << "\t\tfield:" << fld.toString();
-					if(fld.tableId() != table_id)
-						continue;
-					if(!row.isDirty(i))
-						continue;
-					if(!fld.canUpdate()) {
-						qfWarning() << "field" << fld.name() << "is dirty, but it has not canUpdate flag";
-						continue;
-					}
-					QVariant v = row.value(i);
-					//qfDebug() << "\ttableid:" << tableid << "fullTableName:" << fld.fullTableName();
-					qfDebug() << "\tdirty field" << fld.name() << "type:" << fld.type() << "orig val:" << row.origValue(i).toString() << "new val:" << v.toString();
-					//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
-					QSqlField sqlfld(fld.shortName(), fld.type());
-					sqlfld.setValue(v);
-					//if(sqlfld.type() == QVariant::ByteArray)
-					//	has_blob_field = true;
-					qfDebug() << "\tfield is null: " << sqlfld.isNull();
-					edit_rec.append(sqlfld);
+	}
+	else {
+		qfDebug() << "\tEDIT";
+		qf::core::sql::Connection sql_conn = sqlConnection();
+		QSqlDriver *sqldrv = sql_conn.driver();
+		for(QString table_id : tableIds(m_table.fields())) {
+			qfDebug() << "\ttableid:" << table_id;
+			//table = conn.fullTableNameToQtDriverTableName(table);
+			QSqlRecord edit_rec;
+			int i = -1;
+			bool has_blob_field = true;
+			for(qfu::Table::Field fld : row_ref.fields()) {
+				i++;
+				qfDebug() << "\t\tfield:" << fld.toString();
+				if(fld.tableId() != table_id)
+					continue;
+				if(!row_ref.isDirty(i))
+					continue;
+				if(!fld.canUpdate()) {
+					qfWarning() << "field" << fld.name() << "is dirty, but it has not canUpdate flag";
+					continue;
 				}
-				if(!edit_rec.isEmpty()) {
-					qfDebug() << "updating table edits:" << table_id;
-					QString query_str;
-					query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, has_blob_field);
-					query_str += " ";
-					QSqlRecord where_rec;
-					for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
-						QString full_fld_name = table_id + '.' + fld_name;
-						int fld_ix = m_table.fields().fieldIndex(full_fld_name);
-						QF_ASSERT(fld_ix >= 0,
-								  QString("Cannot find field '%1'").arg(full_fld_name),
-								  continue);
-						qfu::Table::Field fld = m_table.fields().at(fld_ix);
-						QSqlField sqlfld(fld.shortName(), fld.type());
-						sqlfld.setValue(row.origValue(fld_ix));
-						//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
-						where_rec.append(sqlfld);
-					}
-					QF_ASSERT(!where_rec.isEmpty(),
-							  QString("pri keys values not generated for table '%1'").arg(table_id),
+				QVariant v = row_ref.value(i);
+				//qfDebug() << "\ttableid:" << tableid << "fullTableName:" << fld.fullTableName();
+				qfDebug() << "\tdirty field" << fld.name() << "type:" << fld.type() << "orig val:" << row_ref.origValue(i).toString() << "new val:" << v.toString();
+				//qfDebug().noSpace() << "\tdirty value: '" << v.toString() << "' isNull(): " << v.isNull() << " type(): " << v.type();
+				QSqlField sqlfld(fld.shortName(), fld.type());
+				sqlfld.setValue(v);
+				//if(sqlfld.type() == QVariant::ByteArray)
+				//	has_blob_field = true;
+				qfDebug() << "\tfield is null: " << sqlfld.isNull();
+				edit_rec.append(sqlfld);
+			}
+			if(!edit_rec.isEmpty()) {
+				qfDebug() << "updating table edits:" << table_id;
+				QString query_str;
+				query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, has_blob_field);
+				query_str += " ";
+				QSqlRecord where_rec;
+				for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+					QString full_fld_name = table_id + '.' + fld_name;
+					int fld_ix = m_table.fields().fieldIndex(full_fld_name);
+					QF_ASSERT(fld_ix >= 0,
+							  QString("Cannot find field '%1'").arg(full_fld_name),
 							  continue);
+					qfu::Table::Field fld = m_table.fields().at(fld_ix);
+					QSqlField sqlfld(fld.shortName(), fld.type());
+					sqlfld.setValue(row_ref.origValue(fld_ix));
+					//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
+					where_rec.append(sqlfld);
+				}
+				QF_ASSERT(!where_rec.isEmpty(),
+						  QString("pri keys values not generated for table '%1'").arg(table_id),
+						  continue);
 
-					query_str += sqldrv->sqlStatement(QSqlDriver::WhereStatement, table_id, where_rec, false);
-					qfDebug() << "save edit query:" << query_str;
-					qfs::Query q(sql_conn);
-					bool ok;
-					if(has_blob_field) {
-						q.prepare(query_str);
-						for(int i=0; i<edit_rec.count(); i++)
-							q.addBindValue(edit_rec.field(i).value());
-						ok = q.exec();
-					}
-					else {
-						ok = q.exec(query_str);
-					}
-					if(!ok && throw_exc) {
-						QF_EXCEPTION(q.lastError().text());
-					}
-					qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
-					int num_rows_affected = q.numRowsAffected();
-					/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
-					/// numRowsAffected() returns 0.
-					if(num_rows_affected > 1) {
-						qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(query_str);
-						ret = false;
-						break;
-					}
+				query_str += sqldrv->sqlStatement(QSqlDriver::WhereStatement, table_id, where_rec, false);
+				qfDebug() << "save edit query:" << query_str;
+				qfs::Query q(sql_conn);
+				bool ok;
+				if(has_blob_field) {
+					q.prepare(query_str);
+					for(int i=0; i<edit_rec.count(); i++)
+						q.addBindValue(edit_rec.field(i).value());
+					ok = q.exec();
+				}
+				else {
+					ok = q.exec(query_str);
+				}
+				if(!ok && throw_exc) {
+					QF_EXCEPTION(q.lastError().text());
+				}
+				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
+				int num_rows_affected = q.numRowsAffected();
+				/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
+				/// numRowsAffected() returns 0.
+				if(num_rows_affected > 1) {
+					qfError() << QString("numRowsAffected() = %1, sholuld be 1 or 0\n%2").arg(num_rows_affected).arg(query_str);
+					ret = false;
+					break;
 				}
 			}
 		}
-		if(ret) {
-			ret = Super::postRow(row_no, throw_exc);
-		}
+	}
+	if(ret) {
+		ret = Super::postRow(row_no, throw_exc);
 	}
 	return ret;
 }

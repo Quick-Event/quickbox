@@ -45,9 +45,9 @@ QuickEventPartWidget
 					}
 					Component.onCompleted:
 					{
-						queryBuilder.select2('runners', '*')
+						queryBuilder.select2('competitors', '*')
 							.select("lastName || ' ' || firstName AS name")
-							.from('runners').orderBy('id');
+							.from('competitors').orderBy('id');
 					}
 				}
 			}

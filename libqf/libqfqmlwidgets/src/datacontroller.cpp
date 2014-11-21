@@ -70,7 +70,8 @@ void DataController::documentValueChanged(const QString &data_id, const QVariant
 	Q_UNUSED(new_val);
 	IDataWidget *dw = dataWidget(data_id);
 	if(!dw) {
-		qfWarning() << "Cannot find data widget for data id:" << data_id;
+		// can happen, every data_id might not be connected to data widget
+		//qfWarning() << "Cannot find data widget for data id:" << data_id;
 	}
 	else {
 		dw->loadDataValue(this);

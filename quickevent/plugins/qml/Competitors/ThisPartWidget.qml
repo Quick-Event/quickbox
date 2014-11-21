@@ -60,9 +60,9 @@ QuickEventPartWidget
 				}
 				Component.onCompleted:
 				{
-					queryBuilder.select2('runners', '*')
-						.select("lastName || ' ' || firstName AS name")
-						.from('runners').orderBy('id').limit(100);
+					queryBuilder.select2('competitors', '*')
+						.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS name")
+						.from('competitors').orderBy('id');//.limit(100);
 				}
 			}
 		}
