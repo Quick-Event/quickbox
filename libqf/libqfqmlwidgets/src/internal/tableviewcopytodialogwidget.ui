@@ -22,10 +22,6 @@
      <property name="toolBarVisible" stdset="0">
       <bool>true</bool>
      </property>
-     <zorder>chkInsertRows</zorder>
-     <zorder>chkInsertRows</zorder>
-     <zorder>chkInsertRows</zorder>
-     <zorder>chkInsertRows</zorder>
     </widget>
    </item>
    <item>

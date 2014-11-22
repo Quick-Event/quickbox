@@ -12,6 +12,11 @@ Query::Query(const QSqlDatabase &db)
 {
 }
 
+Query::Query(const QString &connection_name)
+	: Super(QSqlDatabase::database(connection_name, false))
+{
+}
+
 int Query::fieldIndex(const QString &field_name) const
 {
 	QSqlRecord rc = record();

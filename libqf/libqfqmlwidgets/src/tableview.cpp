@@ -1083,7 +1083,7 @@ void TableView::createActions()
 		a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		connect(a, SIGNAL(triggered()), this, SLOT(copyRow()));
+		//connect(a, SIGNAL(triggered()), this, SLOT(copyRow()));
 	}
 	{
 		a = new Action(tr("Zobrazit ve formulari"), this);

@@ -301,8 +301,8 @@ void TableModel::checkColumns()
 {
 	if(m_columns.isEmpty() || m_autoColumns) {
 		createColumnsFromTableFields();
-		fillColumnIndexes();
 	}
+	fillColumnIndexes();
 }
 
 bool TableModel::reload()

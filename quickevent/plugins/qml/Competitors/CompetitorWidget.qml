@@ -42,9 +42,11 @@ DataDialogWidget
 		Label {
 			text: qsTr("Class")
 		}
-		LineEdit {
+		ForeignKeyComboBox {
 			id: edClass
 			dataId: "competitors.classId"
+			referencedTable: "classes"
+			referencedField: "id"
 		}
 		Label {
 			horizontalAlignment: Qt.AlignRight

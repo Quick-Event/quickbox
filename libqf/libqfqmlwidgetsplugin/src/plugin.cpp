@@ -66,6 +66,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::Label>(uri, 1, 0, "Label");
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");
 		qmlRegisterType<qf::qmlwidgets::ComboBox>(uri, 1, 0, "ComboBox");
+		qmlRegisterType<qf::qmlwidgets::ForeignKeyComboBox>(uri, 1, 0, "ForeignKeyComboBox");
 		qmlRegisterType<qf::qmlwidgets::Splitter>(uri, 1, 0, "Splitter");
 		qmlRegisterType<qf::qmlwidgets::ProgressBar>(uri, 1, 0, "ProgressBar");
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");

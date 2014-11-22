@@ -17,6 +17,7 @@ private:
 	typedef QSqlQuery Super;
 public:
 	explicit Query(const QSqlDatabase &db = QSqlDatabase());
+	explicit Query(const QString &connection_name);
 public:
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;

@@ -40,8 +40,9 @@ public:
 	QWidget* dataWidget() {return m_dataWidget;}
 protected:
 	qf::core::model::DataDocument* dataDocument();
-private:
+protected:
 	QPointer<DataController> m_dataController;
+private:
 	QWidget *m_dataWidget;
 	QString m_dataId;
 };

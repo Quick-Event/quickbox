@@ -12,7 +12,7 @@ QuickEventPartWidget
 	Frame {
 		Label {
 			id: lbl
-			text: "sprc my mrdka"
+			text: "hello"
 		}
 		Button {
 			text: "format C:"
