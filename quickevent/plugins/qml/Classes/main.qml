@@ -24,8 +24,8 @@ Plugin {
 
 	Component.onCompleted:
 	{
-		var act_file = FrameWork.menuBar.actionForPath('file');
-		var act_competitors = act_file.addMenuAfter('competitors', qsTr('&Competitors'));
+		var act_file = FrameWork.menuBar.actionForPath('view');
+		var act_competitors = act_file.addMenuBefore('classes', qsTr('Cla&sses'));
 		var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
 		act_print.addActionInto(actPrintAll);
 		FrameWork.addPartWidget(thisPart, root.manifest.featureId);

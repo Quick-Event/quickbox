@@ -34,7 +34,7 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial {} },
 				Field { name: 'startNumber'; type: Int {} },
-				Field { name: 'classId'; type: String { length: 10 } },
+				Field { name: 'classId'; type: Int {} },
 				Field { name: 'courseId'; type: String { length: 10 } },
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
@@ -43,8 +43,6 @@ Schema {
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } },
-				Field { name: 'relayId'; type: Int { } },
-				Field { name: 'leg'; type: Int { } },
 				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
 				Field { name: 'importId'; type: String {} }
@@ -61,13 +59,10 @@ Schema {
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stageId'; type: Int {} },
-				Field { name: 'startTime'; type: Int {}
-					comment: 'in seconds'
+				Field { name: 'startTimeMs'; type: Int {}
+					comment: 'in miliseconds'
 				},
-				Field { name: 'lapTime'; type: Int {}
-					comment: 'in seconds'
-				},
-				Field { name: 'lapTimeMS'; type: Int {}
+				Field { name: 'lapTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
 				Field { name: 'offRace'; type: Boolean { }
@@ -93,8 +88,8 @@ Schema {
 			indexes: [
 				Index { fields: ['id']; primary: true },
 				Index { fields: ['competitorId'] },
-				Index { fields: ['stage, competitorId']; unique: true },
-				Index { fields: ['status', 'lapTime', 'lapTimeMS'] }
+				Index { fields: ['stageId, competitorId']; unique: true },
+				Index { fields: ['status', 'lapTimeMs'] }
 			]
 		},
 		Table { name: 'registrations'
@@ -115,7 +110,8 @@ Schema {
 		Table { name: 'stages'
 			fields: [
 				Field { name: 'id'; type: Int {} },
-				Field { name: 'startTime'; type: Time {} }
+				Field { name: 'startTime'; type: Time {} },
+				Field { name: 'date'; type: Date {} }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true }
@@ -123,7 +119,7 @@ Schema {
 		},
 		Table { name: 'classes'
 			fields: [
-				Field { name: 'id'; type: String { length: 10 } },
+				Field { name: 'id'; type: Serial { } },
 				Field { name: 'courseId'; type: String { length: 10 } },
 				Field { name: 'name'; type: String { length: 10 } }
 			]

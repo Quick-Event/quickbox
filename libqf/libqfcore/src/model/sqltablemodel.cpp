@@ -382,17 +382,12 @@ int SqlTableModel::reloadRow(int row_no)
 		for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
 			QString full_fld_name = table_id + '.' + fld_name;
 			int fld_ix = m_table.fields().fieldIndex(full_fld_name);
-			QF_ASSERT(fld_ix >= 0,
-					  QString("Cannot find field '%1'").arg(full_fld_name),
-					  continue);
-			/*
-				QVariant val = row.origValue(fld_ix);
-				QString formated_val = val.toString();
-				if(val.type() == QVariant::String) {
-					formated_val.replace('\'', "''");
-					formated_val = '\'' + formated_val + '\'';
-				}
-				*/
+			if(fld_ix < 0) {
+				// result may not contain all the tables primary keys
+				// for example SELECT competitors.*, classes.name FROM competitors LEFT JOIN classes ON competitors.classId=classes.id
+				// doesn't contain classes.id and still can be reloaded
+				continue;
+			}
 			qfu::Table::Field fld = m_table.fields().at(fld_ix);
 			QSqlField sqlfld(fld.shortName(), fld.type());
 			// cannot use origValue() here, since reloadRow() must work for even edited primary keys

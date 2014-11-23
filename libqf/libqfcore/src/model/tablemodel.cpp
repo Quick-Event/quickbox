@@ -536,7 +536,7 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 	qfu::Table::Field ret;
 	int table_field_index = tableFieldIndex(column_index);
 	QF_ASSERT(table_field_index >= 0,
-			  tr("Invalid column index: %1").arg(column_index),
+			  tr("Cannot find field index for column index: %1 of %2 columns").arg(column_index).arg(columnCount()),
 			  return ret);
 	ret = m_table.field(table_field_index);
 	QF_CHECK(!ret.isNull(),

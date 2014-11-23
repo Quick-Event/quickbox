@@ -70,7 +70,7 @@ void ReportProcessor::setReport(const QString &rep_file_name)
 		return;
 	}
 	if(!m_reportDocumentComponent->isReady()) {
-		qfError() << "QML component" << m_reportDocumentComponent->url().toString() << "cannot be loaded asynchronously";
+		qfError() << tr("QML component") << m_reportDocumentComponent->url().toString() << "cannot be loaded asynchronously";
 		return;
 	}
 }
@@ -284,6 +284,19 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 	return el;
 }
 
+QStringList &ReportProcessor::qmlEngineImportPaths()
+{
+	static QStringList lst;
+	if(lst.isEmpty()) {
+#ifdef Q_OS_UNIX
+		lst << QCoreApplication::applicationDirPath() + "/../lib/qml";
+#else
+		lst << QCoreApplication::applicationDirPath() + "/qml";
+#endif
+	}
+	return lst;
+}
+
 QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 {
 #if defined USE_APP_ENGINE
@@ -301,13 +314,10 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	Q_UNUSED(throw_exc);
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
-		QString path;
-#ifdef Q_OS_UNIX
-		path = QCoreApplication::applicationDirPath() + "/../lib/qml";
-#else
-		path = QCoreApplication::applicationDirPath() + "/qml";
-#endif
-		m_qmlEngine->addImportPath(path);
+		for(auto path : qmlEngineImportPaths()) {
+			qfInfo() << "Adding ReportProcessor QML engine import path:" << path;
+			m_qmlEngine->addImportPath(path);
+		}
 	}
 	return m_qmlEngine;
 #endif

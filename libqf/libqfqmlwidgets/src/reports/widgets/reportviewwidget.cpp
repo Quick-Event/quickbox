@@ -328,6 +328,8 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	m_currentPageNo = -1;
 	m_selectedItem = NULL;
 
+	setPersistentSettingsId("reportViewWidget");
+
 	m_scrollArea = new ScrollArea(NULL);
 	/// zajimavy, odkomentuju tenhle radek a nemuzu nastavit pozadi zadnyho widgetu na scrollArea.
 	//f_scrollArea->setBackgroundRole(QPalette::Dark);
@@ -541,10 +543,10 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 	qfLogFuncFrame();
 	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
 	act_view->setText(tr("View"));
-	act_view->addAction(action("view.zoomIn"));
-	act_view->addAction(action("view.zoomOut"));
-	act_view->addAction(action("view.zoomFitWidth"));
-	act_view->addAction(action("view.zoomFitHeight"));
+	act_view->addActionInto(action("view.zoomIn"));
+	act_view->addActionInto(action("view.zoomOut"));
+	act_view->addActionInto(action("view.zoomFitWidth"));
+	act_view->addActionInto(action("view.zoomFitHeight"));
 
 	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
 	tool_bar->addAction(action("view.zoomIn"));

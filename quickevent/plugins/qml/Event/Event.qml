@@ -119,6 +119,7 @@ QfObject {
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
+				Log.info("Imported event:", json_str);
                 var data = JSON.parse(json_str).Data;
 				var stage_count = data.Stages;
 				Log.info("pocet stage:", stage_count);
@@ -151,9 +152,10 @@ QfObject {
 				// import classes
 				q.prepare('INSERT INTO classes (id, name) VALUES (:id, :name)');
 				for(var class_obj in data.Classes) {
+					var class_id = parseInt(data.Classes[class_obj].ID);
 					var class_name = data.Classes[class_obj].Name;
-					Log.info("adding class:", class_name);
-					q.bindValue(':id', class_name);
+					Log.info("adding class id:", class_id, "name:", class_name);
+					q.bindValue(':id', class_id);
 					q.bindValue(':name', class_name);
 					if(!q.exec())
 						break;
@@ -195,7 +197,7 @@ QfObject {
 					if(competitor_obj.RequestedStart) {
 						note += ' req. start: ' + competitor_obj.RequestedStart;
 					}
-					q.bindValue(':classId', competitor_obj.ClassDesc);
+					q.bindValue(':classId', parseInt(competitor_obj.ClassID));
 					q.bindValue(':siId', siid);
 					q.bindValue(':firstName', competitor_obj.FirstName);
 					q.bindValue(':lastName', competitor_obj.LastName);
@@ -207,7 +209,7 @@ QfObject {
 						MessageBoxSingleton.critical(FrameWork, "SQL error: " + q.lastError())
 						break;
 					}
-					var competitor_id = q.lastInsertedValue();
+					var competitor_id = q.lastInsertId();
 					for(var i=0; i<stage_count; i++) {
 						q2.bindValue(':siId', siid);
 						q2.bindValue(':competitorId', competitor_id);

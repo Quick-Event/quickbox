@@ -30,7 +30,7 @@ Plugin {
 	{
 		FrameWork.aboutToClose.connect(saveSettings);
 
-		FrameWork.menuBar.actionForPath('view').addAction(actShowLogView);
+		FrameWork.menuBar.actionForPath('view').addActionInto(actShowLogView);
 
 		var core_feature = FrameWork.plugin("Core");
 		var settings = core_feature.api.createSettings();

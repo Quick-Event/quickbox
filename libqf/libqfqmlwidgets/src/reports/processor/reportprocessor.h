@@ -106,8 +106,6 @@ public:
 
 	void dump();
 protected:
-    //ReportProcessorContext& contextRef() {return m_Context;}
-
 	void fixTableTags(QDomElement &el);
 	QDomElement removeRedundantDivs(QDomElement &el);
 	QDomElement fixLayoutHtml(QDomElement &el);
@@ -117,11 +115,12 @@ signals:
 public slots:
 	//! prelozi dalsi stranku reportu (takhle delam multithreading, protoze QFont musi bezet v GUI threadu)
 	void processSinglePage() {process(SinglePage);}
+public:
+	/// Every QnlEngine created by ReportProcessor will have this import paths
+	static QStringList& qmlEngineImportPaths();
 protected:
 	QQmlEngine* qmlEngine(bool throw_exc = true);
-private:
-    //ReportProcessorContext m_Context;
-
+private:	
 	ImageMap m_imageMap;
 
 	QQmlEngine *m_qmlEngine = nullptr;

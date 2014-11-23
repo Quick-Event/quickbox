@@ -43,9 +43,9 @@ Plugin {
 
 	Component.onCompleted:
 	{
-		FrameWork.menuBar.actionForPath('help').addAction(actLAboutQt);
-		FrameWork.menuBar.actionForPath('help').addSeparator();
-		FrameWork.menuBar.actionForPath('help').addAction(actLayoutTest);
-		FrameWork.menuBar.actionForPath('help').addAction(actGC);
+		FrameWork.menuBar.actionForPath('help').addActionInto(actLAboutQt);
+		FrameWork.menuBar.actionForPath('help').addSeparatorInto();
+		FrameWork.menuBar.actionForPath('help').addActionInto(actLayoutTest);
+		FrameWork.menuBar.actionForPath('help').addActionInto(actGC);
 	}
 }

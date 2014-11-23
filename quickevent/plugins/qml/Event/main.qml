@@ -55,13 +55,13 @@ Plugin {
 	Component.onCompleted:
 	{
 		var quit = FrameWork.menuBar.actionForPath('file/quit');
-		quit.prependAction(actCreateEvent);
-		//quit.prependSeparator();
-		quit.prependAction(actOpenEvent);
-		quit.prependMenu('importEvent', qsTr('&Import event'));
-		quit.prependSeparator();
+		quit.addActionBefore(actCreateEvent);
+		//quit.addSeparatorBefore();
+		quit.addActionBefore(actOpenEvent);
+		quit.addMenuBefore('importEvent', qsTr('&Import event'));
+		quit.addSeparatorBefore();
 
-		FrameWork.menuBar.actionForPath('file/importEvent').addAction(actImportEventOris);
+		FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
 
 		FrameWork.plugin('SqlDb').api.sqlServerConnectedChanged.connect(event.whenServerConnected);
 		FrameWork.statusBar.eventName = Qt.binding(function() {return root.api.currentEventName;});

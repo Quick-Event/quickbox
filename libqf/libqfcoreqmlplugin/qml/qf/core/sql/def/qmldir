@@ -1,4 +1,4 @@
-module qf.core.sql.def
+module def
 
 Schema 1.0 Schema.qml
 Table 1.0 Table.qml

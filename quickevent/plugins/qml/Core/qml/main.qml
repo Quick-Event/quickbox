@@ -82,8 +82,8 @@ Plugin {
 
 		console.debug(FrameWork.menuBar);
 		FrameWork.menuBar.actionForPath('file').text = qsTr('&File');
-		//FrameWork.menuBar.actionForPath('file').addSeparator();
-		FrameWork.menuBar.actionForPath('file').addAction(actQuit);
+		//FrameWork.menuBar.actionForPath('file').addSeparatorInto();
+		FrameWork.menuBar.actionForPath('file').addActionInto(actQuit);
 		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
 

@@ -45,8 +45,8 @@ Plugin {
 	{
 		//_Plugin_install();
 		var quit = FrameWork.menuBar.actionForPath('file/quit', false);
-		quit.prependAction(actConnectDb);
-		quit.prependSeparator();
+		quit.addActionBefore(actConnectDb);
+		quit.addSeparatorBefore();
 
 		FrameWork.pluginsLoaded.connect(postInstall);
 	}

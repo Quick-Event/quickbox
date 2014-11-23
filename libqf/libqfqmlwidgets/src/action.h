@@ -33,14 +33,14 @@ public:
 	Q_SIGNAL void shortcutChanged(const QString &new_text);
 	using Super::setShortcut;
 
-	Q_INVOKABLE void addAction(qf::qmlwidgets::Action *action);
-	Q_INVOKABLE void prependAction(qf::qmlwidgets::Action *action);
-	Q_INVOKABLE void appendAction(qf::qmlwidgets::Action *new_act);
-	Q_INVOKABLE qf::qmlwidgets::Action *addMenu(const QString &id, const QString &text);
-	Q_INVOKABLE qf::qmlwidgets::Action *appendMenu(const QString &id, const QString &text);
-	Q_INVOKABLE qf::qmlwidgets::Action *prependMenu(const QString &id, const QString &text);
-	Q_INVOKABLE void addSeparator();
-	Q_INVOKABLE void prependSeparator();
+	Q_INVOKABLE void addActionInto(qf::qmlwidgets::Action *action);
+	Q_INVOKABLE void addActionBefore(qf::qmlwidgets::Action *action);
+	Q_INVOKABLE void addActionAfter(qf::qmlwidgets::Action *new_act);
+	Q_INVOKABLE qf::qmlwidgets::Action *addMenuInto(const QString &id, const QString &text);
+	Q_INVOKABLE qf::qmlwidgets::Action *addMenuAfter(const QString &id, const QString &text);
+	Q_INVOKABLE qf::qmlwidgets::Action *addMenuBefore(const QString &id, const QString &text);
+	Q_INVOKABLE void addSeparatorInto();
+	Q_INVOKABLE void addSeparatorBefore();
 private:
 	QWidget* parentMenu();
 };

@@ -26,8 +26,8 @@ Plugin {
 
 	Component.onCompleted:
 	{
-		//FrameWork.menuBar.actionForPath('help').addAction(actLAboutQt);
-		//FrameWork.menuBar.actionForPath('help').addSeparator();
+		//FrameWork.menuBar.actionForPath('help').addActionInto(actLAboutQt);
+		//FrameWork.menuBar.actionForPath('help').addSeparatorInto();
 		FrameWork.addPartWidget(thisPart, manifest.featureId);
 	}
 }

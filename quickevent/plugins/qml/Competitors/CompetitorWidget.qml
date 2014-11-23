@@ -47,6 +47,7 @@ DataDialogWidget
 			dataId: "competitors.classId"
 			referencedTable: "classes"
 			referencedField: "id"
+			referencedCaptionField: "name"
 		}
 		Label {
 			horizontalAlignment: Qt.AlignRight

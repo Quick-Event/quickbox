@@ -7,8 +7,7 @@ import shared.QuickEvent 1.0
 QuickEventPartWidget
 {
 	id: root
-	objectName: "pwCompetitors"
-	title: "Competitors"
+	title: "Classes"
 
 	attachedObjects: [
 		Component {
@@ -23,8 +22,31 @@ QuickEventPartWidget
 			ReportViewWidget {}
 		},
 		Component {
-			id: cCompetitorWidget
-			CompetitorWidget {
+			id: cClassWidget
+			ClassWidget {
+			}
+		},
+		Component {
+			id: cSqlTableModel
+			SqlTableModel {
+				ModelColumn {
+					fieldName: 'id'
+					caption: qsTr('ID')
+					readOnly: true
+				}
+				ModelColumn {
+					fieldName: 'name'
+					caption: qsTr('Name')
+				}
+				ModelColumn {
+					fieldName: 'courseId'
+					caption: qsTr('Course ID')
+				}
+				Component.onCompleted:
+				{
+					queryBuilder.select2('classes', '*')
+						.from('classes').orderBy('id');
+				}
 			}
 		}
 	]
@@ -33,69 +55,45 @@ QuickEventPartWidget
 		layoutProperties: LayoutProperties { spacing: 0 }
 		TableViewToolBar {
 			id: tableViewToolBar
-			tableView: table
+			tableView: tableView
 		}
 		TableView {
-			id: table
-			persistentSettingsId: "tblCompetitors";
+			id: tableView
+			persistentSettingsId: "tblClasses";
 			rowEditorMode: TableView.EditRowsMixed
+			//idColumnName: "classId"
 
-			model: SqlTableModel {
-				id: model
-				ModelColumn {
-					fieldName: 'id'
-					readOnly: true
-				}
-				ModelColumn {
-					fieldName: 'classes.name'
-					caption: qsTr('class')
-				}
-				ModelColumn {
-					fieldName: 'competitorName'
-					caption: qsTr('Name')
-				}
-				ModelColumn {
-					fieldName: 'registration'
-					caption: qsTr('Reg')
-				}
-				ModelColumn {
-					fieldName: 'siId'
-					caption: qsTr('SI')
-				}
-				Component.onCompleted:
-				{
-					queryBuilder.select2('competitors', '*')
-						.select2('classes', 'name')
-						.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-						.from('competitors')
-						.join("competitors.classId", "classes.id")
-						.orderBy('id');//.limit(10);
-				}
-			}
+			model: cSqlTableModel.createObject(tableView);
 		}
 	}
 
 	Component.onCompleted:
 	{
-		table.editRowInExternalEditor.connect(editCompetitor)
+		tableView.editRowInExternalEditor.connect(editClass)
 	}
 
 	function reload()
 	{
-		model.reload();
+		tableView.model.reload();
 	}
 
 	function printAll()
 	{
-		Log.info("competitors print all triggered");
+		Log.info("Classes print all triggered");
+
+		var model = cSqlTableModel.createObject();
+		model.reload();
 		var tt = new TreeTable.Table();
 		tt.setData(model.toTreeTableData());
+		model.destroy();
+
 		//console.warn("tt1", tt.toString());
 		tt.addColumn("test_col");
 		for(var i=0; i<tt.rowCount(); i++)
 			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
-		w.windowTitle = qsTr("Competitors");
+		w.windowTitle = qsTr("Classes");
+		//console.warn("setting report:", pluginHomeDir() + "/reports/table.qml");
 		w.setReport(pluginHomeDir() + "/reports/table.qml");
 		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
@@ -105,15 +103,15 @@ QuickEventPartWidget
 		dlg.destroy();
 	}
 
-	function editCompetitor(id, mode)
+	function editClass(id, mode)
 	{
-		Log.info("editCompetitor id:", id, "mode:", mode);
-		var w = cCompetitorWidget.createObject(null);
-		w.windowTitle = qsTr("Edit Competitor");
+		Log.info("editClass id:", id, "mode:", mode);
+		var w = cClassWidget.createObject(null);
+		w.windowTitle = qsTr("Edit Class");
 		var dlg = cDialog.createObject(root);
 		dlg.setDialogWidget(w);
 		w.load(id, mode);
-		w.dataSaved.connect(table.rowExternallySaved);
+		w.dataSaved.connect(tableView.rowExternallySaved);
 		dlg.exec();
 		dlg.destroy();
 	}

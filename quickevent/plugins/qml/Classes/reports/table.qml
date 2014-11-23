@@ -6,17 +6,7 @@ Report {
 	objectName: "root"
 	//debugLevel: 1
 	styleSheet: StyleSheet {
-		objectName: "portraitStyleSheet"
 		basedOn: ReportStyleCommon { id: myStyle }
-		colors: [
-		]
-		pens: [
-			Pen {name: "red1dot"
-				basedOn: "black1"
-				color: Color {def:"red"}
-				style: Pen.DotLine
-			}
-		]
 	}
 	textStyle: myStyle.textStyleDefault
 	width: 210
@@ -47,17 +37,17 @@ Report {
 			Para {
 				border: Pen {basedOn: "black1"}
 				width: "%"
-				text: "class"
+				text: qsTr("id")
 			}
 			Para {
 				border: Pen {basedOn: "black1"}
 				width: "%"
-				text: "SI"
+				text: qsTr("name")
 			}
 			Para {
 				border: Pen {basedOn: "black1"}
 				width: "%"
-				text: "name"
+				text: qsTr("Course ID")
 			}
 		}
 		Detail {
@@ -70,15 +60,15 @@ Report {
 			}
 			Para {
 				width: "%"
-				text: detail.data(detail.currentIndex, "classes.name")
+				text: detail.data(detail.currentIndex, "id")
 			}
 			Para {
 				width: "%"
-				text: detail.data(detail.currentIndex, "siId")
+				text: detail.data(detail.currentIndex, "name")
 			}
 			Para {
 				width: "%"
-				text: detail.data(detail.currentIndex, "competitorName")
+				text: detail.data(detail.currentIndex, "courseId")
 			}
 		}
 	}
