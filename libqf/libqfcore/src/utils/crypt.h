@@ -4,6 +4,7 @@
 #include "../core/coreglobal.h"
 
 #include <limits>
+#include <functional>
 
 namespace qf {
 namespace core {
