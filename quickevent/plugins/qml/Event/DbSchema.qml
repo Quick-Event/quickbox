@@ -93,7 +93,7 @@ Schema {
 			indexes: [
 				Index { fields: ['id']; primary: true },
 				Index { fields: ['competitorId'] },
-				Index { fields: ['stage, competitorId']; unique: true },
+                Index { fields: ['stageId, competitorId']; unique: true },
 				Index { fields: ['status', 'lapTime', 'lapTimeMS'] }
 			]
 		},
