@@ -184,7 +184,7 @@ ReportViewWidget::PainterWidget::PainterWidget(QWidget *parent)
 
 ReportViewWidget* ReportViewWidget::PainterWidget::reportViewWidget()
 {
-	return qf::core::findParent<ReportViewWidget*>(this);
+	return qf::core::Utils::findParent<ReportViewWidget*>(this);
 }
 
 void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)

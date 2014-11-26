@@ -14,14 +14,8 @@ DataDialogWidget
 
 	dataController: DataController {
 		widget: root
-		document: SqlDataDocument {
+		document: CompetitorDocument {
 			id: dataDocument
-			Component.onCompleted:
-			{
-				queryBuilder.select2('competitors', '*')
-					.select("lastName || ' ' || firstName AS name")
-					.from('competitors').where('competitors.id={{ID}}');
-			}
 			onLoaded: {
 				var name = dataDocument.value("name");
 				if(name)

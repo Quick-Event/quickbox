@@ -152,6 +152,7 @@ public:
 	qf::core::utils::TreeTable toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
 	Q_INVOKABLE QVariant toTreeTableData(const QVariantList& exported_columns = QVariantList(), const QString& table_name = QString()) const;
 
+	ColumnDefinition columnDefinition(int ix) const;
 	int columnIndex(const QString &column_name) const;
 protected:
 	virtual void checkColumns();

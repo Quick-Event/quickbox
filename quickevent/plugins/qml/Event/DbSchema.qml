@@ -8,26 +8,22 @@ Schema {
 		Table { name: 'config'
 			fields: [
 				Field { name: 'ckey'; type: String {} },
-				Field { name: 'cvalue'; type: String {} }
+				Field { name: 'cname'; type: String {} },
+				Field { name: 'cvalue'; type: String {} },
+				Field { name: 'ctype'; type: String {} }
 			]
 			indexes: [
 				Index {fields: ['ckey']; primary: true }
 			]
-		},
-		Table { name: 'event'
-			fields: [
-				Field { name: 'id'; type: Serial {} },
-				Field { name: 'stageCount'; type: Int { } },
-				Field { name: 'name'; type: String {} },
-				Field { name: 'description'; type: String {} },
-				Field { name: 'date'; type: Date {} },
-				Field { name: 'place'; type: String {} },
-				Field { name: 'mainReferee'; type: String {} },
-				Field { name: 'director'; type: String {} },
-				Field { name: 'importId'; type: String {} }
-			]
-			indexes: [
-				Index {fields: ['id']; primary: true }
+			rows: [
+				['event.stageCount', qsTr('Stage count'), 0, 'int'],
+				['event.name', qsTr('Event name'), '', 'QString'],
+				['event.date', qsTr('Event date'), '', 'QDate'],
+				['event.description', qsTr('Event description'), '', 'QString'],
+				['event.place', qsTr('Event place'), '', 'QString'],
+				['event.mainReferee', qsTr('Main referee'), '', 'QString'],
+				['event.director', qsTr('Director'), '', 'QString'],
+				['event.importId', qsTr('Import ID'), '', 'int']
 			]
 		},
 		Table { name: 'competitors'

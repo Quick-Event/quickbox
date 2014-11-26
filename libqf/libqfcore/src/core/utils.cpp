@@ -149,3 +149,12 @@ QVariant Utils::retypeVariant(const QVariant &val, QVariant::Type type)
 	qfWarning() << "retypeVariant(): unknown data type" << QVariant::typeToName(type);
 	return QVariant();
 }
+
+bool Utils::invokeMethod_B_V(QObject *obj, const char *method_name)
+{
+	QVariant ret = false;
+	bool ok = QMetaObject::invokeMethod(obj, method_name, Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret));
+	if(!ok)
+		qfWarning() << obj << "Method" << method_name << "invocation failed!";
+	return ret.toBool();
+}

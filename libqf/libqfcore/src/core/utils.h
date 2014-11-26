@@ -87,26 +87,28 @@ public:
 	static bool fieldNameEndsWith(const QString &field_name1, const QString &field_name2);
 	static bool fieldNameCmp(const QString &fld_name1, const QString &fld_name2);
 	static QVariant retypeVariant(const QVariant &_val, QVariant::Type type);
-};
 
-template <class T>
-T findParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
-{
-	T t = NULL;
-	QObject *o = const_cast<QObject*>(_o);
-	while(o) {
-		o = o->parent();
-		if(!o)
-			break;
-		t = qobject_cast<T>(o);
-		if(t)
-			break;
+	static bool invokeMethod_B_V(QObject *obj, const char *method_name);
+
+	template <class T>
+	static T findParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
+	{
+		T t = NULL;
+		QObject *o = const_cast<QObject*>(_o);
+		while(o) {
+			o = o->parent();
+			if(!o)
+				break;
+			t = qobject_cast<T>(o);
+			if(t)
+				break;
+		}
+		if(!t && throw_exc) {
+			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
+		}
+		return t;
 	}
-	if(!t && throw_exc) {
-		QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
-	}
-	return t;
-}
+};
 
 }}
 

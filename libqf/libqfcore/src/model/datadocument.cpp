@@ -52,13 +52,13 @@ void DataDocument::load()
 	RecordEditMode m = mode();
 	QVariant id = dataId();
 	if(m == ModeCopy && !id.isNull()) {
-		if(loadData()) {
+		if(invokeLoadData()) {
 			copy();
 		}
 	}
 	else {
 		setMode(m);
-		if(loadData()) {
+		if(invokeLoadData()) {
 			emit loaded();
 		}
 	}
@@ -71,7 +71,7 @@ void DataDocument::save()
 		RecordEditMode m = mode();
 		QVariant id = dataId();
 		emit aboutToSave(id, m);
-		if(saveData()) {
+		if(invokeSaveData()) {
 			// reload data id, can be set from serie for mode INSERT
 			id = dataId();
 			qfDebug() << "emitting saved id:" << id.toString() << "mode:" << m;
@@ -85,7 +85,7 @@ void DataDocument::drop()
 	qfLogFuncFrame();
 	QVariant id = dataId();
 	emit aboutToDrop(id);
-	if(dropData()) {
+	if(invokeDropData()) {
 		emit dropped(id);
 	}
 }
@@ -94,7 +94,7 @@ void DataDocument::copy()
 {
 	qfLogFuncFrame();
 	if(mode() != ModeInsert) {
-		copyData();
+		invokeCopyData();
 		setMode(ModeInsert);
 		//setDataDirty_helper(isDataDirty());
 		emit loaded();
@@ -107,6 +107,15 @@ bool DataDocument::isEmpty()
 		return true;
 	int ri = currentModelRow();
 	bool ret = !(ri >= 0 && ri < model()->rowCount());
+	return ret;
+}
+
+QStringList DataDocument::fieldNames()
+{
+	QStringList ret;
+	TableModel *m = model();
+	for(int i=0; i<m->columnCount(); i++)
+		ret << m->columnDefinition(i).fieldName();
 	return ret;
 }
 

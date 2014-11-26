@@ -11,7 +11,7 @@
 using namespace qf::core::qml;
 
 SqlQuery::SqlQuery(QObject *parent) :
-	QObject(parent), m_record(nullptr), m_queryBuilder(nullptr)
+	QObject(parent), m_record(nullptr)//, m_queryBuilder(nullptr)
 {
 	qfLogFuncFrame() << this;
 }
@@ -63,6 +63,11 @@ QVariant SqlQuery::lastInsertId()
 	return m_query.lastInsertId();
 }
 
+int SqlQuery::numRowsAffected()
+{
+	return m_query.numRowsAffected();
+}
+
 QVariant SqlQuery::value(int ix)
 {
 	QVariant ret = m_query.value(ix);
@@ -111,13 +116,16 @@ SqlRecord *SqlQuery::record()
 	return m_record;
 }
 
-SqlQueryBuilder *SqlQuery::builder()
+SqlQueryBuilder *SqlQuery::createBuilder()
 {
+	/*
 	if(!m_queryBuilder) {
 		m_queryBuilder = new SqlQueryBuilder(this);
 
 	}
 	return m_queryBuilder;
+	*/
+	return new SqlQueryBuilder();
 }
 
 bool SqlQuery::prepare(const QString &query_str)

@@ -701,3 +701,8 @@ QVariant TableModel::toTreeTableData(const QVariantList &exported_columns, const
 	QVariant ret = tt.toVariant();
 	return ret;
 }
+
+TableModel::ColumnDefinition TableModel::columnDefinition(int ix) const
+{
+	return m_columns.value(ix);
+}

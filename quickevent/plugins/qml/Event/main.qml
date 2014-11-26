@@ -7,7 +7,17 @@ Plugin {
 
 	property QtObject api: QtObject
 	{
+		signal reloadActivePart()
 		property alias currentEventName: event.currentEventName
+		property Config config: Config {}
+		function createEvent(stage_count) 
+		{
+			return event.createEvent(stage_count);
+		}
+		function openEvent(event_name)
+		{
+			return event.openEvent(event_name);
+		}
 	}
 
 	property QfObject internals: QfObject {
@@ -41,14 +51,6 @@ Plugin {
 				Log.info(text, "triggered");
 				event.openEvent();
 			}
-		},
-		Action {
-			id: actImportEventOris
-			text: qsTr('From &Oris')
-			enabled: internals.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				event.importOris()
-			}
 		}
 	]
 
@@ -58,10 +60,7 @@ Plugin {
 		quit.addActionBefore(actCreateEvent);
 		//quit.addSeparatorBefore();
 		quit.addActionBefore(actOpenEvent);
-		quit.addMenuBefore('importEvent', qsTr('&Import event'));
 		quit.addSeparatorBefore();
-
-		FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
 
 		FrameWork.plugin('SqlDb').api.sqlServerConnectedChanged.connect(event.whenServerConnected);
 		FrameWork.statusBar.eventName = Qt.binding(function() {return root.api.currentEventName;});

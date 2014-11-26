@@ -20,6 +20,7 @@ public:
 public:
 	Q_INVOKABLE int count() {return m_record.count();}
 	Q_INVOKABLE QString fieldName(int ix) {return m_record.fieldName(ix);}
+	Q_INVOKABLE QString shortFieldName(int ix);
 	Q_INVOKABLE QStringList fieldNames();
 private:
 	QSqlRecord m_record;

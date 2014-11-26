@@ -88,6 +88,10 @@ public:
 		m_builder.as(alias_name);
 		return this;
 	}
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* clear() {
+		m_builder.clear();
+		return this;
+	}
 	Q_INVOKABLE QString toString() const {
 		return m_builder.toString();
 	}

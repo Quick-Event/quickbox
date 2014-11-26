@@ -23,20 +23,28 @@ QString QueryBuilder::buildQuery() const
 	qfLogFuncFrame();
 	QString s, qs;
 	s = buildSelect();
-	if(!s.isEmpty()) qs = "SELECT " + s;
+	if(!s.isEmpty())
+		qs = "SELECT " + s;
 	s = buildFrom();
-	if(!s.isEmpty()) qs += " FROM " + s;
+	if(!s.isEmpty())
+		qs += " FROM " + s;
 	s = buildWhere();
-	if(!s.isEmpty()) qs += " WHERE " + s;
+	if(!s.isEmpty())
+		qs += " WHERE " + s;
 	s = buildGroupBy();
-	if(!s.isEmpty()) qs += " GROUP BY " + s;
+	if(!s.isEmpty())
+		qs += " GROUP BY " + s;
 	s = buildHaving();
-	if(!s.isEmpty()) qs += " HAVING " + s;
+	if(!s.isEmpty())
+		qs += " HAVING " + s;
 	s = buildOrderBy();
-	if(!s.isEmpty()) qs += " ORDER BY " + s;
+	if(!s.isEmpty())
+		qs += " ORDER BY " + s;
 	s = buildRest();
-	if(!s.isEmpty()) qs += " " + s;
-	if(m_queryMap.contains(AsKey)) qs = "(" + qs + ") AS " + m_queryMap[AsKey];
+	if(!s.isEmpty())
+		qs += " " + s;
+	if(m_queryMap.contains(AsKey))
+		qs = "(" + qs + ") AS " + m_queryMap[AsKey];
 	qfDebug() << "\t" << qs;
 	return qs;
 }
@@ -261,6 +269,11 @@ QString QueryBuilder::take(QueryMapKey key)
 	//qfInfo() << __LINE__ << ret;
 	//foreach(QueryMapKey i, m_queryMap.keys()) qfInfo() << "\t" << i << ":" << m_queryMap[i];
 	return ret;
+}
+
+void QueryBuilder::clear()
+{
+	m_queryMap.clear();
 }
 /*
 static int keyword_pos(const QString &str, const QString &keyword)

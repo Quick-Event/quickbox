@@ -11,6 +11,7 @@ PartWidget
 	{
 		FrameWork.plugin("SqlDb").api.onSqlServerConnectedChanged.connect(reloadIfActive);
 		FrameWork.plugin("Event").api.onCurrentEventNameChanged.connect(reloadIfActive);
+		FrameWork.plugin("Event").api.reloadActivePart.connect(reloadIfActive);
 	}
 
 	function canActivate(active_on)

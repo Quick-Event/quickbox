@@ -35,18 +35,19 @@ public:
 	Q_INVOKABLE bool next() {return m_query.next();}
 	Q_INVOKABLE QString lastError();
 	Q_INVOKABLE QVariant lastInsertId();
+	Q_INVOKABLE int numRowsAffected();
 	Q_INVOKABLE QVariant value(int ix);
 	Q_INVOKABLE QVariant value(const QString &field_name);
 	Q_INVOKABLE QVariantList values();
 	Q_INVOKABLE qf::core::qml::SqlRecord* record();
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* builder();
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* createBuilder();
 
 	Q_INVOKABLE bool prepare(const QString &query_str);
 	Q_INVOKABLE void bindValue(const QString &placeholder, const QVariant &val, int param_type = ParamType::In);
 private:
 	qf::core::sql::Query m_query;
 	SqlRecord *m_record;
-	QPointer<SqlQueryBuilder> m_queryBuilder;
+	//QPointer<SqlQueryBuilder> m_queryBuilder;
 };
 
 }}}

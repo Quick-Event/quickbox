@@ -149,7 +149,7 @@ ReportItemBand* ReportItem::parentBand()
 --*/
 ReportItemBand* ReportItem::parentBand()
 {
-	ReportItemBand *ret = qf::core::findParent<ReportItemBand*>(this, false);
+	ReportItemBand *ret = qf::core::Utils::findParent<ReportItemBand*>(this, false);
 	return ret;
 }
 /*--

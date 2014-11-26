@@ -1,1 +1,3 @@
 module Competitors
+
+CompetitorDocument 1.0 CompetitorDocument.qml

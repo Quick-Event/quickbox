@@ -14,8 +14,9 @@ class QFCORE_DECL_EXPORT DataDocument : public QObject
 {
 	Q_OBJECT
 	Q_ENUMS(RecordEditMode)
+	Q_PROPERTY(qf::core::model::DataDocument::RecordEditMode mode READ mode WRITE setMode NOTIFY modeChanged)
 	Q_PROPERTY(qf::core::model::TableModel* model READ model WRITE setModel NOTIFY modelChanged)
-	//Q_PROPERTY(QVariant dataId READ dataId WRITE setDataId NOTIFY dataIdChanged)
+	Q_PROPERTY(QVariant dataId READ dataId WRITE setDataId NOTIFY dataIdChanged)
 	Q_PROPERTY(QString idFieldName READ idFieldName WRITE setIdFieldName NOTIFY idFieldNameChanged)
 public:
 	explicit DataDocument(QObject *parent = 0);
@@ -48,18 +49,17 @@ public:
 	Q_SIGNAL void dropped(const QVariant &id);
 	Q_SIGNAL void valueChanged(const QString &data_id, const QVariant &old_val, const QVariant &new_val);
 
-	void load(const QVariant &id, RecordEditMode mode = ModeEdit);
-	void loadForInsert() {load(QVariant(), ModeInsert);}
+	Q_SLOT void load(const QVariant &id, RecordEditMode mode = ModeEdit);
+	Q_SLOT void loadForInsert() {load(QVariant(), ModeInsert);}
 	//! this is a convinience function, @see load() .
-	virtual void load();
-	virtual void save();
-	virtual void drop();
-	virtual void copy();
-
-
+	Q_SLOT virtual void load();
+	Q_SLOT virtual void save();
+	Q_SLOT virtual void drop();
+	Q_SLOT virtual void copy();
 
 	//virtual QVariant::Type fieldType(const QString &data_id);
 	Q_INVOKABLE virtual bool isEmpty();
+	Q_INVOKABLE QStringList fieldNames();
 	Q_INVOKABLE virtual bool isValidFieldName(const QString &data_id);
 	Q_INVOKABLE virtual bool isDirty(const QString &data_id);
 	Q_INVOKABLE virtual QVariant value(const QString &data_id);
@@ -72,15 +72,28 @@ public:
 	Q_INVOKABLE virtual QVariant origValue(const QString &data_id);
 	//Q_INVOKABLE QVariant origValue(const QString &data_id, const QVariant &default_value);
 	Q_SLOT virtual void setValue(const QString &data_id, const QVariant &val);
+	//Q_SLOT void setValue_qml(const QVariant &data_id, const QVariant &val) {setValue(data_id.toString(), val);}
 protected:
 	///! load model persistent storage via model
-	virtual bool loadData();
+	Q_INVOKABLE virtual bool loadData();
+	Q_INVOKABLE QVariant loadData_qml() {return loadData();}
+	bool invokeLoadData() {return qf::core::Utils::invokeMethod_B_V(this, "loadData_qml");}
+
 	///! save dirty data to persistent storage via model
-	virtual bool saveData();
+	Q_INVOKABLE virtual bool saveData();
+	Q_INVOKABLE QVariant saveData_qml() {return saveData();}
+	bool invokeSaveData() {return qf::core::Utils::invokeMethod_B_V(this, "saveData_qml");}
+
 	///! drop data in persistent storage via model
-	virtual bool dropData();
+	Q_INVOKABLE virtual bool dropData();
+	Q_INVOKABLE QVariant dropData_qml() {return dropData();}
+	bool invokeDropData() {return qf::core::Utils::invokeMethod_B_V(this, "dropData_qml");}
+
 	//! prepare loaded data to create document copy on next save() call
-	virtual bool copyData();
+	Q_INVOKABLE virtual bool copyData();
+	Q_INVOKABLE QVariant copyData_qml() {return copyData();}
+	bool invokeCopyData() {return qf::core::Utils::invokeMethod_B_V(this, "copyData_qml");}
+
 
 	virtual TableModel* createModel(QObject *parent);
 protected:

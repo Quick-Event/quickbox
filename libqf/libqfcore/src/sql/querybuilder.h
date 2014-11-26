@@ -23,7 +23,7 @@ public:
 	//! Removes part of query with key \a key . Returns removed part.
 	QString take(QueryMapKey key);
 	bool isEmpty() const {return m_queryMap.isEmpty();}
-
+	void clear();
 	/**
 	* Example:
 			\code
