@@ -26,6 +26,26 @@ Schema {
 				['event.importId', qsTr('Import ID'), '', 'int']
 			]
 		},
+		Table { name: 'stages'
+			fields: [
+				Field { name: 'id'; type: Int {} },
+				Field { name: 'startTime'; type: Time {} },
+				Field { name: 'date'; type: Date {} }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true }
+			]
+		},
+		Table { name: 'classes'
+			fields: [
+				Field { name: 'id'; type: Serial { } },
+				Field { name: 'courseId'; type: String { length: 10 } },
+				Field { name: 'name'; type: String { length: 10 } }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true }
+			]
+		},
 		Table { name: 'competitors'
 			fields: [
 				Field { name: 'id'; type: Serial {} },
@@ -45,7 +65,7 @@ Schema {
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true },
-				Index {fields: ['classId'] },
+				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
 				Index {fields: ['importId'] }
 			]
 		},
@@ -83,9 +103,18 @@ Schema {
 			]
 			indexes: [
 				Index { fields: ['id']; primary: true },
-				Index { fields: ['competitorId'] },
-				Index { fields: ['stageId, competitorId']; unique: true },
-				Index { fields: ['status', 'lapTimeMs'] }
+				Index {
+					fields: ['competitorId'];
+					references: ForeignKeyReference {
+						table: 'competitors';
+						fields: ['id'];
+						onUpdate: 'RESTRICT';
+						onDelete: 'RESTRICT';
+					}
+				},
+				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
+				Index {fields: ['stageId, competitorId']; unique: true },
+				Index {fields: ['status', 'lapTimeMs'] }
 			]
 		},
 		Table { name: 'registrations'
@@ -101,26 +130,6 @@ Schema {
 			indexes: [
 				Index {fields: ['id']; primary: true },
 				Index {fields: ['registration'] }
-			]
-		},
-		Table { name: 'stages'
-			fields: [
-				Field { name: 'id'; type: Int {} },
-				Field { name: 'startTime'; type: Time {} },
-				Field { name: 'date'; type: Date {} }
-			]
-			indexes: [
-				Index {fields: ['id']; primary: true }
-			]
-		},
-		Table { name: 'classes'
-			fields: [
-				Field { name: 'id'; type: Serial { } },
-				Field { name: 'courseId'; type: String { length: 10 } },
-				Field { name: 'name'; type: String { length: 10 } }
-			]
-			indexes: [
-				Index {fields: ['id']; primary: true }
 			]
 		},
 		Table { name: 'cards'

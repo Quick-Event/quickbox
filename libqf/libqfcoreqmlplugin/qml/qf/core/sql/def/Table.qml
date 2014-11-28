@@ -30,7 +30,7 @@ QtObject {
 				sql_types.push(sql_type);
 		}
 		for(var i=0; i<indexes.length; i++) {
-			var constr = indexes[i].createSqlConstraintScript(options);
+			var constr = indexes[i].createSqlConstraintScript(i, options);
 			if(constr)
 				field_defs.push(constr);
 		}

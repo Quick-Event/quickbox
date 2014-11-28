@@ -625,7 +625,7 @@ bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
 	bool ok = true;
 	beginRemoveRows(parent, row_ix, row_ix + count - 1);
 	for(int i=0; i<count; i++) {
-		ok = removeTableRow(row_ix);
+		ok = removeTableRow(row_ix, qf::core::Exception::Throw);
 		if(!ok)
 			break;
 	}

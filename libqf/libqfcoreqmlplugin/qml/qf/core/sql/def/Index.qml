@@ -5,16 +5,20 @@ import qf.core.sql.def 1.0
 QtObject
 {
 	property string name
-    property var fields: []
-    property bool primary: false
-    property bool unique: false
+	property var fields: []
+	property bool primary: false
+	property bool unique: false
+	property ForeignKeyReference references: null
 	property string comment
 
 	function indexName(cnt, table_name)
 	{
 		var ret = name;
 		if(!ret) {
-			if(primary) {
+			if(references) {
+				ret = table_name + '_foreign' + cnt;
+			}
+			else if(primary) {
 				ret = table_name + '_pkey';
 			}
 			else if(unique) {
@@ -27,17 +31,27 @@ QtObject
 		return ret;
 	}
 
-	function createSqlConstraintScript(options)
+	function createSqlConstraintScript(constr_no, options)
 	{
 		var ret = '';
-		var constr_cnt = 0;
+		//var full_table_name = options.schemaName + '.' + options.tableName;
 		if(fields) {
-			if(primary) {
-				ret += '\tCONSTRAINT ' + indexName(constr_cnt, options.tableName) + ' PRIMARY KEY (' + fields.join(', ') + ')';
+			if(references) {
+				ret += '\tCONSTRAINT ' + indexName(constr_no, options.tableName)
+					+ ' FOREIGN KEY ('
+					+ fields.join(', ')
+					+ ') REFERENCES '
+					+ options.schemaName + '.' + references.table + ' ('
+					+ references.fields.join(', ')
+					+ ')'
+					+ ' ON UPDATE ' + references.onUpdate
+					+ ' ON DELETE ' + references.onDelete;
+			}
+			else if(primary) {
+				ret += '\tCONSTRAINT ' + indexName(constr_no, options.tableName) + ' PRIMARY KEY (' + fields.join(', ') + ')';
 			}
 			else if(unique) {
-				constr_cnt++;
-				ret += '\tCONSTRAINT ' + indexName(constr_cnt, options.tableName) + ' UNIQUE (' + fields.join(', ') + ')';
+				ret += '\tCONSTRAINT ' + indexName(constr_no, options.tableName) + ' UNIQUE (' + fields.join(', ') + ')';
 			}
 		}
 		return ret;

@@ -62,7 +62,7 @@ QtObject {
 		{
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
-				Log.info("Imported event:", json_str);
+				//Log.info("Imported event:", json_str);
 				var event_api = FrameWork.plugin("Event").api;
                 var data = JSON.parse(json_str).Data;
 				var stage_count = parseInt(data.Stages);
