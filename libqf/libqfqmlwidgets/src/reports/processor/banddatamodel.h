@@ -30,6 +30,7 @@ public:
 public:
 	virtual int rowCount() = 0;
 	virtual int columnCount() = 0;
+	virtual QVariant tableData(const QString &key, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) = 0;
@@ -51,6 +52,7 @@ public:
 public:
 	int rowCount() Q_DECL_OVERRIDE;
 	int columnCount() Q_DECL_OVERRIDE;
+	QVariant tableData(const QString &key, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;

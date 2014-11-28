@@ -185,7 +185,7 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	return ret;
 }
 
-ReportProcessor *ReportItem::processor()
+ReportProcessor *ReportItem::processor(bool throw_exc)
 {
 	ReportProcessor *ret = nullptr;
 	QObject *it = this;
@@ -197,7 +197,9 @@ ReportProcessor *ReportItem::processor()
 		}
 		it = it->QObject::parent();
 	}
-	QF_ASSERT_EX(ret != nullptr, "ReportItem without ReportProcessor");
+	if(ret == nullptr && throw_exc) {
+		QF_EXCEPTION("ReportItem without ReportProcessor");
+	}
 	return ret;
 }
 

@@ -21,9 +21,9 @@ private:
 	typedef ReportItem Super;
 public:
 	Q_CLASSINFO("DefaultProperty", "items")
-	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	Q_ENUMS(HAlignment)
 	Q_ENUMS(VAlignment)
+	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	//Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
 	//Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
 	//Q_PROPERTY(qreal y1 READ y1 WRITE setY1 NOTIFY y1Changed)
@@ -77,8 +77,8 @@ public:
 	//QF_PROPERTY_IMPL(qreal, y, Y, 1)
 	//QF_PROPERTY_IMPL(qreal, x, X, 2)
 	//QF_PROPERTY_IMPL(qreal, y, Y, 2)
-	QF_PROPERTY_IMPL(qreal, h, H, inset)
-	QF_PROPERTY_IMPL(qreal, v, V, inset)
+	QF_PROPERTY_IMPL2(qreal, h, H, inset, 0)
+	QF_PROPERTY_IMPL2(qreal, v, V, inset, 0)
 	QF_PROPERTY_IMPL(QVariant, w, W, idth)
 	QF_PROPERTY_IMPL(QVariant, h, H, eight)
 	QF_PROPERTY_IMPL2(Layout, l, L, ayout, LayoutVertical)
@@ -121,6 +121,8 @@ protected:
 		return frm->layout();
 	}
 
+	void updateDesignedRect();
+
 	void componentComplete() Q_DECL_OVERRIDE;
 public:
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
@@ -130,6 +132,8 @@ public:
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
 	//--const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
 	//--void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
+
+	void addItem(ReportItem *item);
 
 	QString toString(int indent = 2, int indent_offset = 0) Q_DECL_OVERRIDE;
 private:

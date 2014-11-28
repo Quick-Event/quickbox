@@ -24,61 +24,17 @@ Report {
 	vinset: 10
 	hinset: 5
 	//layout: Frame.LayoutVertical
-	Frame {
-		objectName: "frame00"
-		width: "%"
-		Para {
-			text: "Title"
-			textStyle: TextStyle {basedOn: "big"}
-		}
-	}
 	Band {
+		id: band
 		width: "%"
 		height: "%"
+		createFromData: true
 		Frame {
+			objectName: "frame00"
 			width: "%"
-			layout: Frame.LayoutHorizontal
-			fill: Brush {color: Color { def: "lightgray" }}
 			Para {
-				border: Pen {basedOn: "black1"}
-				width: "%"
-				text: "ix"
-			}
-			Para {
-				border: Pen {basedOn: "black1"}
-				width: "%"
-				text: "class"
-			}
-			Para {
-				border: Pen {basedOn: "black1"}
-				width: "%"
-				text: "SI"
-			}
-			Para {
-				border: Pen {basedOn: "black1"}
-				width: "%"
-				text: "name"
-			}
-		}
-		Detail {
-			id: detail
-			width: "%"
-			layout: Frame.LayoutHorizontal
-			Para {
-				width: "%"
-				text: detail.currentIndex
-			}
-			Para {
-				width: "%"
-				text: detail.data(detail.currentIndex, "classes.name")
-			}
-			Para {
-				width: "%"
-				text: detail.data(detail.currentIndex, "siId")
-			}
-			Para {
-				width: "%"
-				text: detail.data(detail.currentIndex, "competitorName")
+				text: "Title: " + band.data("title");
+				textStyle: TextStyle {basedOn: "big"}
 			}
 		}
 	}

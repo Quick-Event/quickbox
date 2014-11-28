@@ -302,7 +302,7 @@ protected:
 	void deleteChildren();
 	--*/
 public:
-	ReportProcessor* processor();
+	ReportProcessor* processor(bool throw_exc = qf::core::Exception::Throw);
 	//! Vraci atribut elementu itemu.
 	//! Pokud hodnota \a attr_name je ve tvaru 'script:funcname', zavola se scriptDriver processoru, jinak se vrati atribut.
 	//--QString elementAttribute(const QString &attr_name, const QString &default_val = QString());

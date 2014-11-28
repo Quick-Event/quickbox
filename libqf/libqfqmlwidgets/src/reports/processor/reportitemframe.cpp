@@ -23,7 +23,7 @@ ReportItemFrame::ReportItemFrame(ReportItem *parent)
 	//m_y1 = -1;
 	//m_x2 = -1;
 	//m_y2 = -1;
-	m_hinset = m_vinset = 0;
+	//m_hInset = m_vInset = 0;
 	m_layout = LayoutVertical;
 	m_expandChildrenFrames = false;
 	m_horizontalAlignment = AlignLeft;
@@ -39,6 +39,11 @@ ReportItemFrame::~ReportItemFrame()
 }
 
 void ReportItemFrame::componentComplete()
+{
+	updateDesignedRect();
+}
+
+void ReportItemFrame::updateDesignedRect()
 {
 	qfLogFuncFrame();
 	// update designed rect
@@ -173,13 +178,24 @@ QQmlListProperty<ReportItem> ReportItemFrame::items()
 										);
 }
 
+void ReportItemFrame::addItem(ReportItem *item)
+{
+	if (item) {
+		item->setParent(this);
+		this->m_items << item;
+		ReportItemFrame *frm = qobject_cast<ReportItemFrame*>(item);
+		if(frm)
+			frm->updateDesignedRect();
+	}
+}
+
 void ReportItemFrame::addItemFunction(QQmlListProperty<ReportItem> *list_property, ReportItem *item)
 {
 	if (item) {
 		ReportItemFrame *that = static_cast<ReportItemFrame*>(list_property->object);
 		item->setParent(that);
 		that->m_items << item;
-    }
+	}
 }
 
 ReportItem *ReportItemFrame::itemAtFunction(QQmlListProperty<ReportItem> *list_property, int index)

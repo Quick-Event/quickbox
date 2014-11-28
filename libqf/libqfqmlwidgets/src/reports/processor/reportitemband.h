@@ -22,7 +22,8 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	Q_OBJECT
 	//Q_PROPERTY(qf::qmlwidgets::reports::ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
 	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
-	Q_PROPERTY(QVariant data READ data WRITE setData NOTIFY dataChanged)
+	Q_PROPERTY(QVariant modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
+	Q_PROPERTY(bool createFromData READ isCreateFromData WRITE setCreateFromData NOTIFY createFromDataChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
@@ -31,12 +32,15 @@ public:
 public:
 	//QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
 	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
+	QF_PROPERTY_BOOL_IMPL(c, C, reateFromData)
 public:
-	QVariant data() const { return m_data; }
-	void setData(QVariant d);
-	Q_SIGNAL void dataChanged(QVariant new_data);
+	QVariant modelData() const { return m_data; }
+	void setModelData(QVariant d);
+	Q_SIGNAL void modelDataChanged(QVariant new_data);
 public:
 	BandDataModel* model();
+
+	Q_INVOKABLE QVariant data(const QString &field_name, int role = Qt::DisplayRole);
 public:
 	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
@@ -45,6 +49,7 @@ public:
 	//--qf::core::utils::TreeTableRow dataRow();
 protected:
 	ReportItemDetail* detail();
+	void createChildItemsFromData();
 protected:
 	BandDataModel *m_model = nullptr;
 private:

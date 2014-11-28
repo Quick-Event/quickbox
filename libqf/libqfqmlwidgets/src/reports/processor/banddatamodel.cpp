@@ -55,6 +55,15 @@ int TreeTableBandDataModel::columnCount()
 	return treeTable().columnCount();
 }
 
+QVariant TreeTableBandDataModel::tableData(const QString &key, BandDataModel::DataRole role)
+{
+	Q_UNUSED(role);
+	QVariant ret;
+	qfu::TreeTable ttr = treeTable();
+	ret = ttr.value(key);
+	return ret;
+}
+
 QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole role)
 {
 	QVariant ret;

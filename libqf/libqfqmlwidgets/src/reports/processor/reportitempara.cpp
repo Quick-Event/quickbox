@@ -237,7 +237,17 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 QString ReportItemPara::paraText()
 {
 	qfLogFuncFrame();
-	QString ret = text();
+	QString ret;
+	if(m_getTextJsFn.isCallable()) {
+		QJSValue jsv = m_getTextJsFn.call();
+		ret = jsv.toString();
+	}
+	else if(m_getTextCppFn) {
+		ret = m_getTextCppFn();
+	}
+	else {
+		ret = text();
+	}
 	{
 		static QString new_line;
 		if(new_line.isEmpty())
