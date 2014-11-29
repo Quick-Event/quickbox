@@ -65,6 +65,7 @@ Report {
 			id: detail
 			width: "%"
 			layout: Frame.LayoutHorizontal
+			expandChildrenFrames: true
 			function dataFn(field_name) {return function() {return rowData(field_name);}}
 			Para {
 				width: "%"
@@ -77,6 +78,14 @@ Report {
 			Para {
 				width: "%"
 				textFn: function() {return detail.rowData("siId");}
+			}
+			Para {
+				width: "%"
+				text: detail.data(detail.currentIndex, "competitorName")
+			}
+			Para {
+				width: "%"
+				text: detail.data(detail.currentIndex, "competitorName")
 			}
 			Para {
 				width: "%"

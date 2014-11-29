@@ -149,7 +149,7 @@ void ReportItemBand::createChildItemsFromData()
 		{
 			it_det->setWidth("%");
 			it_det->setLayout(ReportItemFrame::LayoutHorizontal);
-			it_det->expandChildrenFramesChanged(true);
+			it_det->setExpandChildrenFrames(true);
 		}
 		addItem(it_det);
 		for(int i=0; i<col_cnt; i++) {
