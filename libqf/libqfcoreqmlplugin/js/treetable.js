@@ -82,6 +82,7 @@ Table.prototype.value = function(row_ix, col_ix)
 {
 	var ret = undefined;
 	if(typeof(row_ix) == 'number') {
+		// table rows values
 		if(this._data.rows && this._data.rows instanceof Array) {
 			if(row_ix >= 0) {
 				var row = this._data.rows[row_ix];
@@ -108,6 +109,7 @@ Table.prototype.value = function(row_ix, col_ix)
 		}
 	}
 	else {
+		// table values
 		if(this._data.keyvals && this._data.keyvals instanceof Object)
 			ret = this._data.keyvals[row_ix];
 	}
@@ -117,7 +119,11 @@ Table.prototype.value = function(row_ix, col_ix)
 Table.prototype.setValue = function(row_ix, col_ix, val)
 {
 	var ret = false;
+	if(!this._data) {
+		throw "Table is not initialized";
+	}
 	if(typeof(row_ix) == 'number') {
+		// table rows values
 		if(row_ix >= 0) {
 			if(!this._data.rows || !(this._data.rows instanceof Array)) {
 				this._data.rows = [];
@@ -150,10 +156,13 @@ Table.prototype.setValue = function(row_ix, col_ix, val)
 		}
 	}
 	else {
+		// table values
+		// if row_ix is a string, then col_ix is value, it is wrapper for
+		// void TreeTable::setValue(const QString &key_name, const QVariant &val);
 		if(!this._data.keyvals || !(this._data.keyvals instanceof Object)) {
-			this._data.keyvals = new Qbject();
+			this._data.keyvals = new Object();
 		}
-		this._data.keyvals[row_ix] = val;
+		this._data.keyvals[row_ix] = col_ix;
 		ret = true;
 	}
 	return ret;

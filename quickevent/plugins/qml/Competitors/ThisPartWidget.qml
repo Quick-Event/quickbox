@@ -69,7 +69,7 @@ QuickEventPartWidget
 						.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 						.from('competitors')
 						.join("competitors.classId", "classes.id")
-						.orderBy('id');//.limit(10);
+						.orderBy('id').limit(10);
 				}
 			}
 		}
@@ -90,13 +90,14 @@ QuickEventPartWidget
 		Log.info("competitors print all triggered");
 		var tt = new TreeTable.Table();
 		tt.setData(model.toTreeTableData());
+		tt.setValue("title", "Competitors list")
 		//console.warn("tt1", tt.toString());
 		tt.addColumn("test_col");
 		for(var i=0; i<tt.rowCount(); i++)
 			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Competitors");
-		w.setReport(pluginHomeDir() + "/reports/table.qml");
+		w.setReport(pluginHomeDir() + "/reports/list.qml");
 		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
 		var dlg = cDialog.createObject(FrameWork);

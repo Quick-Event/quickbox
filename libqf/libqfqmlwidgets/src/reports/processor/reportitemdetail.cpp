@@ -53,6 +53,11 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 	return ret;
 }
 
+QVariant ReportItemDetail::rowData(const QString &field_name, int role)
+{
+	return data(currentIndex(), field_name, role);
+}
+
 ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();

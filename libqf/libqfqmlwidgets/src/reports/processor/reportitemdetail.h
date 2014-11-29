@@ -24,6 +24,7 @@ public:
 	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
 public:
 	Q_INVOKABLE QVariant data(int row_no, const QString &field_name, int role = Qt::DisplayRole);
+	Q_INVOKABLE QVariant rowData(const QString &field_name, int role = Qt::DisplayRole);
 };
 
 }}}

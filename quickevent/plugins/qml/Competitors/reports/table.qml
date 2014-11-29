@@ -33,7 +33,8 @@ Report {
 			objectName: "frame00"
 			width: "%"
 			Para {
-				text: "Title: " + band.data("title");
+				objectName: "PARA"
+				textFn: function() {return "Title: " + band.data("title");}
 				textStyle: TextStyle {basedOn: "big"}
 			}
 		}
