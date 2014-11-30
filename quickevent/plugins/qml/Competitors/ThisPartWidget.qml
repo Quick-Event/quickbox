@@ -97,7 +97,7 @@ QuickEventPartWidget
 			tt.setValue(i, "test_col", "test_data_" + 1);
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Competitors");
-		w.setReport(pluginHomeDir() + "/reports/table.qml");
+		w.setReport(pluginHomeDir() + "/reports/list.qml");
 		//console.warn("setting data:", tt.toString());
 		w.setData(tt.data());
 		var dlg = cDialog.createObject(FrameWork);

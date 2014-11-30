@@ -57,7 +57,7 @@ Report {
 			}
 			Para {
 				border: Pen {basedOn: "black1"}
-				width: "%"
+				width: "50%"
 				text: "name"
 			}
 		}
@@ -80,15 +80,7 @@ Report {
 				textFn: function() {return detail.rowData("siId");}
 			}
 			Para {
-				width: "%"
-				text: detail.data(detail.currentIndex, "competitorName")
-			}
-			Para {
-				width: "%"
-				text: detail.data(detail.currentIndex, "competitorName")
-			}
-			Para {
-				width: "%"
+				width: "50%"
 				text: detail.data(detail.currentIndex, "competitorName")
 			}
 		}

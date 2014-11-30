@@ -37,7 +37,7 @@ ReportItem::ReportItem(ReportItem *_parent)
 	m_keepAll = false;
 	m_visible = true;
 	//QF_ASSERT_EX(processor != nullptr, "Processor can not be NULL.");
-	recentlyPrintNotFit = false;
+	m_recentlyPrintNotFit = false;
 	//--keepAll = qfc::String(element.attribute("keepall")).toBool();
 	//if(keepAll) { qfInfo() << "KEEP ALL is true" << element.attribute("keepall"); }
 }
@@ -177,11 +177,11 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	//if(res.value == PrintNotFit) {
 	//qfWarning().noSpace() << "PrintNotFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "' recentlyPrintNotFit: " << recentlyPrintNotFit << " keepall: " << keepAll;
 	//}
-	if(isKeepAll() && recentlyPrintNotFit && res.value == PrintNotFit) {
+	if(isKeepAll() && m_recentlyPrintNotFit && res.value == PrintNotFit) {
 		//qfWarning().noSpace() << "PrintNeverFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "'";
 		ret.flags |= FlagPrintNeverFit;
 	}
-	recentlyPrintNotFit = (ret.value == PrintNotFit);
+	m_recentlyPrintNotFit = (ret.value == PrintNotFit);
 	return ret;
 }
 

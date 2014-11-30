@@ -20,7 +20,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace graphics {
 	
-enum Layout {LayoutInvalid = 0, LayoutHorizontal = 1, LayoutVertical, LayoutStack};
+enum Layout {LayoutInvalid = 0, LayoutHorizontal = 1, LayoutVertical, LayoutStacked};
 class Point : public QPointF
 {
 	public:

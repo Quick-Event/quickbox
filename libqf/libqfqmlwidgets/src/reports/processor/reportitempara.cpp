@@ -31,7 +31,7 @@ void ReportItemPara::resetIndexToPrintRecursively(bool including_para_texts)
 ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
 {
 	qfLogFuncFrame();
-	return ReportItemFrame::printMetaPaint(out, bounding_rect);
+	return Super::printMetaPaint(out, bounding_rect);
 }
 
 ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)

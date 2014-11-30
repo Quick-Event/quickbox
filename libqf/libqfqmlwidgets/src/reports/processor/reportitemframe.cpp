@@ -255,10 +255,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 	//Size children_bounding_size = bbr.size();
 
 	if(layout() == LayoutHorizontal) {
-		/// horizontalni layout musi mit procenta rozpocitany dopredu, protoze jinak by se mi nezalamovaly texty v tabulkach
-		/// v horizontalnim layoutu break ignoruj
-		QList<ChildSize> sizes;
-		/// pri tisku horizontalniho layoutu se tiskne vzdy od zacatku
+		/// Break is ignored in horizontal layout
+		QList<ChildSize> layout_sizes;
+		indexToPrint = 0; /// allways print from 0 index (all the children) in horizontal layout		/// horizontalni layout musi mit procenta rozpocitany dopredu, protoze jinak by se mi nezalamovaly texty v tabulkach
 		indexToPrint = 0;
 		/*--
 		ReportItemFrame *parent_grid = NULL;
@@ -297,7 +296,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			/// nastav detem mm rozmer ve smeru layoutu
 			for(int i=indexToPrint; i<itemsToPrintCount(); i++) {
 				ReportItem *it = itemToPrintAt(i);
-				sizes << it->childSize(layout());
+				layout_sizes << it->childSize(layout());
 			}
 		}
 
@@ -331,7 +330,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			//if(parent_grid) qfWarning() << (is_first_grid_child? "first child": is_next_grid_child? "next child": "nevim");
 			for(int i=0; i<itemsToPrintCount(); i++) {
 				ReportItem *it = itemToPrintAt(i);
-				ChildSize sz = sizes.value(i);
+				ChildSize sz = layout_sizes.value(i);
 				//qfInfo() << "child:" << i << "size:" << sz.size << "unit:" << Rect::unitToString(sz.unit);
 				if(sz.unit == Rect::UnitMM) {
 					Rect ch_bbr = paint_area_rect;

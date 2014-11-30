@@ -201,7 +201,7 @@ void ReportItemImage::updateResolvedDataSource(const QString &data_source)
 
 ReportItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaPaint* out, const ReportItem::Rect& bounding_rect)
 {
-	ReportItem::PrintResult ret = ReportItemFrame::printMetaPaint(out, bounding_rect);
+	ReportItem::PrintResult ret = Super::printMetaPaint(out, bounding_rect);
 	/*--
 	ReportItemMetaPaint *mpi = out->lastChild();
 	if(mpi) {

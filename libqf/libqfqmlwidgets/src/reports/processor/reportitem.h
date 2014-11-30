@@ -57,7 +57,7 @@ public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
 				 LayoutHorizontal = graphics::LayoutHorizontal,
 				 LayoutVertical = graphics::LayoutVertical,
-				 LayoutStack = graphics::LayoutStack
+				 LayoutStacked = graphics::LayoutStacked
 				};
 	//typedef graphics::Layout Layout;
 
@@ -84,7 +84,6 @@ public:
 	enum PrintResultFlags {
 		FlagNone = 0,
 		FlagPrintAgain = 1, ///< detail se sice vesel, ale protoze data obsahuji dalsi radky, tiskni ho dal, pouziva se s PrintOk.
-		//FlagPrintWidthNotFit = 2, ///< Text se nevesel na sirku, takze se neda nic delat, pouziva se s PrintNotFit
 		FlagPrintNeverFit = 4, ///< tisk se nepodaril a nikdy se nepodari, pouziva se s PrintNotFit
 		FlagPrintBreak = 8 ///< PrintNotFit je protoze je page nebo column break
 	};
@@ -276,9 +275,6 @@ public:
 	};
 public:
 	virtual ReportItemFrame* toFrame() {return NULL;}
-	//--virtual  ReportItemBand* toBand()  {return NULL;}
-	//--virtual  ReportItemDetail* toDetail()  {return NULL;}
-	//--virtual ReportItemBand* parentBand();
 protected:
 	//--qf::core::utils::TreeTable findDataTable(const QString &name);
 protected:
@@ -286,21 +282,10 @@ protected:
 
 	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
 	/// poukud ma node jen jedno dite vrati to jeho hodnotu vcetne typu, pokud je deti vic, udela to z nich jeden string
-	//--QVariant concatenateNodeChildrenValues(const QDomNode &nd) ;
-	//--QString nodeText(const QDomNode &nd) ;
-	//--QVariant nodeValue(const QDomNode &nd) ;
 
 	//! Pokud byl predchozi result PrintNotFit a soucasny opet PrintNotFit, znamena to, ze se item uz nikdy nevejde,
 	//! zavedenim tohoto fieldu zabranim nekonecnemu odstrankovavani.
 	PrintResult checkPrintResult(PrintResult res);
-	/*--
-	void updateChildren() {
-		if(!childrenSynced()) { syncChildren(); }
-	}
-	virtual bool childrenSynced();
-	virtual void syncChildren();
-	void deleteChildren();
-	--*/
 public:
 	ReportProcessor* processor(bool throw_exc = qf::core::Exception::Throw);
 	//! Vraci atribut elementu itemu.
@@ -310,7 +295,6 @@ public:
 	ReportItem* parent() const {
 		return static_cast<ReportItem*>(this->Super::parent());
 	}
-	//--virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
 	//! Print item in form, that understandable by ReportPainter.
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PrintOk;}
 	//! Print item in HTML element form.
@@ -331,23 +315,15 @@ public:
 
 	virtual QString toString(int indent = 2, int indent_offset = 0);
 
-	/*--
-	virtual ReportItem* cd(const qf::core::utils::TreeItemPath &path) const {
-		return dynamic_cast<ReportItem*>(Super::cd(path));
-	}
-	--*/
 protected:
 	style::Text* effectiveTextStyle();
-	//virtual void setupMetaPaintItem(ReportItemMetaPaint *mpit);
 
 	void classBegin() Q_DECL_OVERRIDE;
     void componentComplete() Q_DECL_OVERRIDE;
 public:
-	//--QDomElement element;
 	Rect designedRect;
-
-	bool recentlyPrintNotFit;
-	//PrintResult recentPrintResult;
+protected:
+	bool m_recentlyPrintNotFit;
 private:
 	bool m_visible;
 };
