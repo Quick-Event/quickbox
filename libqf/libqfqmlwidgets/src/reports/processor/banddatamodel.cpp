@@ -73,6 +73,9 @@ QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole 
 		if(role == Qt::DisplayRole) {
 			ret = col.header();
 		}
+		else if(role == Qt::SizeHintRole) {
+			ret = col.width();
+		}
 	}
 	return ret;
 }

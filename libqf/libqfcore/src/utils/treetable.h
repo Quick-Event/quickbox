@@ -129,7 +129,9 @@ public:
 	/// pokud je tabulka v reportu generovana z dat, je sloupec takto zarovnan
 	void setColumnAlignment(const QString &col_name, Qt::Alignment alignment);
 	void setColumnAlignment(int col_no, Qt::Alignment alignment);
-	QString columnHAlignment(const QString &col_name) const;
+	//QString columnHAlignment(const QString &col_name) const;
+
+	//QString columnWidth(int col_no) const;
 
 	//! pokud je \a caption == QString(), vezme se to za posledni teckou z \a name nebo cely \a name , kdyz tam neni tecka.
 	TreeTableColumn appendColumn(const QString &name, QVariant::Type type = QVariant::String, const QString &caption = QString());

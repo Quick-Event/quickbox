@@ -402,17 +402,26 @@ QString TreeTable::columnFooter(const QString &col_name) const
 	if(ix >= 0) ret = columns().column(ix).footer();
 	return ret;
 }
-
+/*
 QString TreeTable::columnHAlignment(const QString &col_name) const
 {
 	QString ret;
 	int ix = columns().indexOf(col_name);
-	if(ix < 0) return ret;
+	if(ix < 0)
+		return ret;
 	TreeTableColumn col = columns().column(ix);
 	ret = col.hAlignment();
 	return ret;
 }
-
+*/
+/*
+QString TreeTable::columnWidth(int col_no) const
+{
+	TreeTableColumn col = columns().column(col_no);
+	ret = col.width();
+	return ret;
+}
+*/
 void TreeTable::setColumnAlignment(const QString &col_name, Qt::Alignment alignment)
 {
 	qfLogFuncFrame();

@@ -140,7 +140,7 @@ void ReportItemBand::createChildItemsFromData()
 		for(int i=0; i<col_cnt; i++) {
 			ReportItemPara *it_para = new ReportItemPara(it_header_frm);
 			it_para->setBorder(pen_black1);
-			it_para->setWidth("%");
+			it_para->setWidth(mod->headerData(i, Qt::SizeHintRole));
 			it_para->setText(mod->headerData(i).toString());
 			it_para->setHinset(1);
 			it_header_frm->addItem(it_para);
@@ -155,7 +155,7 @@ void ReportItemBand::createChildItemsFromData()
 		for(int i=0; i<col_cnt; i++) {
 			ReportItemPara *it_para = new ReportItemPara(it_det);
 			it_para->setBorder(pen_black1);
-			it_para->setWidth("%");
+			it_para->setWidth(mod->headerData(i, Qt::SizeHintRole));
 			it_para->setHinset(1);
 			auto fn = [mod, it_det, i]()->QString {
 				QString ret = mod->data(it_det->currentIndex(), i).toString();
