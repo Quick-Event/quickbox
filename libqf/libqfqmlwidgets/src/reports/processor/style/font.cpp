@@ -15,28 +15,48 @@ Font::~Font()
 QFont Font::font()
 {
 	if(isDirty()) {
-        setDirty(false);
-        {
+		setDirty(false);
+		bool is_inherited = false;
+		{
 			QVariant v = basedOn();
 			if(v.isValid()) {
-                QObject *o = styleobjectFromVariant(v);
+				QObject *o = styleobjectFromVariant(v);
 				Font *based_on = qobject_cast<Font*>(o);
-                if(based_on) {
-                    m_font = based_on->font();
-                }
+				if(based_on) {
+					is_inherited = true;
+					m_font = based_on->font();
+				}
 			}
 		}
 		{
 			FontStyle bs = style();
-			m_font.setStyle((QFont::Style)bs);
+			if(bs == StyleInherited) {
+				if(!is_inherited)
+					m_font.setStyle((QFont::Style)StyleNormal);
+			}
+			else {
+				m_font.setStyle((QFont::Style)bs);
+			}
 		}
 		{
 			FontStyleHint bs = hint();
-			m_font.setStyleHint((QFont::StyleHint)bs);
+			if(bs == HintInherited) {
+				if(!is_inherited)
+					m_font.setStyleHint((QFont::StyleHint)HintAnyStyle);
+			}
+			else {
+				m_font.setStyleHint((QFont::StyleHint)bs);
+			}
 		}
 		{
 			FontWeight bs = weight();
-			m_font.setWeight((QFont::Weight)bs);
+			if(bs == WeightInherited) {
+				if(!is_inherited)
+					m_font.setWeight((QFont::Weight)WeightNormal);
+			}
+			else {
+				m_font.setWeight((QFont::Weight)bs);
+			}
 		}
 		{
 			qreal sz = pointSize();
@@ -44,5 +64,5 @@ QFont Font::font()
 				m_font.setPointSizeF(sz);
 		}
 	}
-    return m_font;
+	return m_font;
 }

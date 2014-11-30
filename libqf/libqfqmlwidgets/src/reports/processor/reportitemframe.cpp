@@ -40,10 +40,10 @@ ReportItemFrame::~ReportItemFrame()
 
 void ReportItemFrame::componentComplete()
 {
-	updateDesignedRect();
+	initDesignedRect();
 }
 
-void ReportItemFrame::updateDesignedRect()
+void ReportItemFrame::initDesignedRect()
 {
 	qfLogFuncFrame();
 	// update designed rect
@@ -70,6 +70,7 @@ void ReportItemFrame::updateDesignedRect()
 	--*/
 	//qfDebug() << "\t" << __LINE__ << "designedRect:" << designedRect.toString();
 	//static const QString S_PERCENT = "%";
+	designedRect = Rect();
 	{
 		QVariant v = width();
 		qreal d = 0;
@@ -185,7 +186,7 @@ void ReportItemFrame::addItem(ReportItem *item)
 		this->m_items << item;
 		ReportItemFrame *frm = qobject_cast<ReportItemFrame*>(item);
 		if(frm)
-			frm->updateDesignedRect();
+			frm->initDesignedRect();
 	}
 }
 
@@ -712,85 +713,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	//dirtyRect = r;//.adjusted(-hinset, -vinset, hinset, vinset);;
 	qfDebug() << "\trenderedRect:" << mp->renderedRect.toString();
 	res = checkPrintResult(res);
+	setRenderedWidth(mp->renderedRect.width());
+	setRenderedHeight(mp->renderedRect.height());
 	//qfDebug().color(QFLog::Cyan) << "\t<<<< FRAME return:" << res.toString() << element.tagName() << "id:" << element.attribute("id");
 	return res;
 }
-/*
-void ReportItemFrame::alignChildren(ReportItemMetaPaintFrame *mp,  const ReportItem::Rect & dirty_rect)
-{
-	if(!dirty_rect.isNull()) {
-		if(alignment & ~(Qt::AlignLeft | Qt::AlignTop)) {
-			Point offset;
-			/// ve smeru layoutu posun cely blok
-			{
-				Rect r1;
-				/// vypocitej velikost potisknuteho bloku
-				for(int i=0; i<mp->childrenCount(); i++) {
-					ReportItemMetaPaint *it = mp->itemAt(i);
-					r1 = r1.united(it->renderedRect);
-				}
-				qreal al = 0, d;
-				if(layout == LayoutHorizontal) {
-					if(alignment & Qt::AlignHCenter) al = 0.5;
-					else if(alignment & Qt::AlignRight) al = 1;
-					d = dirty_rect.width() - r1.width();
-					if(al > 0 && d > 0)  {
-						offset.rx() = d * al - (r1.left() - dirty_rect.left());
-					}
-				}
-				else if(layout == LayoutVertical) {
-					if(alignment & Qt::AlignVCenter) al = 0.5;
-					else if(alignment & Qt::AlignBottom) al = 1;
-					d = dirty_rect.height() - r1.height();
-					if(al > 0 && d > 0)  {
-						offset.ry() = d * al - (r1.top() - dirty_rect.top());
-					}
-				}
-			}
 
-			/// v orthogonalnim smeru kazdy item
-			for(int i=0; i<mp->childrenCount(); i++) {
-				ReportItemMetaPaint *it = mp->itemAt(i);
-				const Rect &r1 = it->renderedRect;
-				qfDebug() << "\t\titem renderedRect:" << r1.toString();
-				qreal al = 0, d;
-
-				if(orthogonalLayout() == LayoutHorizontal) {
-					offset.rx() = 0;
-					if(alignment & Qt::AlignHCenter) al = 0.5;
-					else if(alignment & Qt::AlignRight) al = 1;
-					d = dirty_rect.width() - r1.width();
-					if(al > 0 && d > 0)  {
-						qfDebug() << "\t\thorizontal alignment:" << al;
-						offset.rx() = d * al - (r1.left() - dirty_rect.left());
-					}
-				}
-				else if(orthogonalLayout() == LayoutVertical) {
-					offset.ry() = 0;
-					al = 0;
-					if(alignment & Qt::AlignVCenter) al = 0.5;
-					else if(alignment & Qt::AlignBottom) al = 1;
-					d = dirty_rect.height() - r1.height();
-					if(al > 0 && d > 0)  {
-						qfDebug() << "\t\tvertical alignment:" << al;
-						offset.ry() = d * al - (r1.top() - dirty_rect.top());
-					}
-				}
-				qfDebug() << "\t\talign offset:" << offset.toString();
-				if(!offset.isNull()) it->shift(offset);
-			}
-		}
-	}
-}
-*/
-/*
-ReportItemFrame::Layout ReportItemFrame::parentLayout() const
-{
-	ReportItemFrame *frm = parentFrame();
-	if(!frm) return LayoutInvalid;
-	return frm->layout;
-}
-*/
 void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 {
 	//qfInfo() << "resetIndexToPrintRecursively()";

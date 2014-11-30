@@ -39,24 +39,24 @@ Report {
 		Frame {
 			width: "%"
 			layout: Frame.LayoutHorizontal
-			fill: Brush {color: Color { def: "lightgray" }}
-			Para {
-				border: Pen {basedOn: "black1"}
-				width: "%"
-				text: "ix"
+			border: Pen {basedOn: "black2"}
+			HeaderCell {
+				id: colId
+				width: 10
+				text: "n"
 			}
-			Para {
-				border: Pen {basedOn: "black1"}
+			HeaderCell {
+				id: colClass
 				width: "%"
 				text: "class"
 			}
-			Para {
-				border: Pen {basedOn: "black1"}
+			HeaderCell {
+				id: colSI
 				width: "%"
 				text: "SI"
 			}
-			Para {
-				border: Pen {basedOn: "black1"}
+			HeaderCell {
+				id: colName
 				width: "50%"
 				text: "name"
 			}
@@ -67,20 +67,20 @@ Report {
 			layout: Frame.LayoutHorizontal
 			expandChildrenFrames: true
 			function dataFn(field_name) {return function() {return rowData(field_name);}}
-			Para {
-				width: "%"
-				text: detail.currentIndex
+			Cell {
+				width: colId.renderedWidth
+				text: detail.currentIndex + 1
 			}
-			Para {
-				width: "%"
+			Cell {
+				width: colClass.renderedWidth
 				textFn: detail.dataFn("classes.name");
 			}
-			Para {
-				width: "%"
+			Cell {
+				width: colSI.renderedWidth
 				textFn: function() {return detail.rowData("siId");}
 			}
-			Para {
-				width: "50%"
+			Cell {
+				width: colName.renderedWidth
 				text: detail.data(detail.currentIndex, "competitorName")
 			}
 		}

@@ -319,7 +319,7 @@ protected:
 	style::Text* effectiveTextStyle();
 
 	void classBegin() Q_DECL_OVERRIDE;
-    void componentComplete() Q_DECL_OVERRIDE;
+	void componentComplete() Q_DECL_OVERRIDE;
 public:
 	Rect designedRect;
 protected:

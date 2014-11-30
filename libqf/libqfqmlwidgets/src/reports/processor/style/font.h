@@ -34,7 +34,8 @@ public:
 	enum FontStyle {
 		StyleNormal = QFont::StyleNormal,
 		StyleItalic = QFont::StyleItalic,
-		StyleOblique = QFont::StyleOblique
+		StyleOblique = QFont::StyleOblique,
+		StyleInherited
 	};
 	enum FontStyleHint {
 		HintAnyStyle = QFont::AnyStyle,
@@ -49,19 +50,21 @@ public:
 		HintMonospace = QFont::Monospace,
 		HintFantasy = QFont::Fantasy,
 		HintCursive = QFont::Cursive,
-		HintSystem = QFont::System
+		HintSystem = QFont::System,
+		HintInherited
 	};
 	enum FontWeight {
 		WeightLight = QFont::Light,
 		WeightNormal = QFont::Normal,
 		WeightDemiBold = QFont::DemiBold,
 		WeightBold = QFont::Bold,
-		WeightBlack = QFont::Black
+		WeightBlack = QFont::Black,
+		WeightInherited
 	};
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
-	QF_PROPERTY_IMPL2(FontStyle, s, S, tyle, StyleNormal)
-	QF_PROPERTY_IMPL2(FontStyleHint, h, H, int, HintAnyStyle)
-	QF_PROPERTY_IMPL2(FontWeight, w, W, eight, WeightNormal)
+	QF_PROPERTY_IMPL2(FontStyle, s, S, tyle, StyleInherited)
+	QF_PROPERTY_IMPL2(FontStyleHint, h, H, int, HintInherited)
+	QF_PROPERTY_IMPL2(FontWeight, w, W, eight, WeightInherited)
 	QF_PROPERTY_IMPL2(qreal, p, P, ointSize, 0)
 public:
 	QFont font();
