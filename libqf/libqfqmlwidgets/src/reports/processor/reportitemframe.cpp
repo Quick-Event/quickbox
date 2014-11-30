@@ -38,6 +38,28 @@ ReportItemFrame::~ReportItemFrame()
 	qfLogFuncFrame();
 }
 
+style::Pen *ReportItemFrame::border() const
+{
+	style::Pen *ret = nullptr;
+	if(leftBorder() == rightBorder() && rightBorder() == topBorder() && topBorder() == bottomBorder()) {
+		ret = leftBorder();
+	}
+	return ret;
+}
+
+void ReportItemFrame::setBorder(style::Pen *b)
+{
+	if(b != border()) {
+		setLeftBorder(b);
+		setRightBorder(b);
+		setTopBorder(b);
+		setBottomBorder(b);
+		if(b && !b->parent())
+			b->setParent(this);
+		emit borderChanged(b);
+	}
+}
+
 void ReportItemFrame::componentComplete()
 {
 	initDesignedRect();
@@ -250,12 +272,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	PrintResult res = PrintOk;
-	//dirtySize = Size();
 	Rect paint_area_rect = bounding_rect;
-	//Size children_dirty_size;
-	//Size children_bounding_size = bbr.size();
-
-	if(layout() == LayoutHorizontal) {
+	if(layout() == LayoutStacked) {
+		/// allways print all the children) in the stacked layout
+		/// it is used mainly for page header & footers, they shoud be on each page
+		indexToPrint = 0;
+	}
+	else if(layout() == LayoutHorizontal) {
 		/// Break is ignored in horizontal layout
 		QList<ChildSize> layout_sizes;
 		indexToPrint = 0; /// allways print from 0 index (all the children) in horizontal layout
@@ -534,12 +557,14 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			}
 			else {
 				/// pokud je vertikalni layout, a dite se nevejde vrat PrintNotFit
+				/*
 				if(layout() == LayoutHorizontal) {
 					/// v horizontalnim, zadne pretikani neni
 					/// vytiskni to znovu s doteklymi texty
 					qfError() << "Oops??? this should never happen, I'm already in the vertical layout'";
 					resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
 				}
+				*/
 				res = ch_res;
 				break;
 			}
@@ -614,7 +639,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		column_br_helper.moveLeft(column_br.right() + columns_gap);
 	}
 
-	/// tak kolik jsem toho pokreslil?
+	/// set dirty_rect to painted area
 	Rect dirty_rect;//, rendered_rect = designedRect;
 	dirty_rect.flags = designedRect.flags;
 	{

@@ -62,6 +62,10 @@ public:
 	Q_PROPERTY(QString columns READ columns WRITE setColumns NOTIFY columnsChanged)
 	Q_PROPERTY(double columnsGap READ columnsGap WRITE setColumnsGap NOTIFY columnsGapChanged)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* border READ border WRITE setBorder NOTIFY borderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* topBorder READ topBorder WRITE setTopBorder NOTIFY topBorderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* bottomBorder READ bottomBorder WRITE setBottomBorder NOTIFY bottomBorderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* leftBorder READ leftBorder WRITE setLeftBorder NOTIFY leftBorderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* rightBorder READ rightBorder WRITE setRightBorder NOTIFY rightBorderChanged)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Brush* fill READ fill WRITE setFill NOTIFY fillChanged)
 	Q_CLASSINFO("property.textStyle.doc",
 				"Set text style for this frame and all the children recursively"
@@ -94,10 +98,16 @@ public:
 	QF_PROPERTY_IMPL2(VAlignment, v, V, erticalAlignment, AlignTop)
 	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
-	QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, order)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, t, T, opBorder)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, ottomBorder)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, l, L, eftBorder)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, r, R, ightBorder)
 	QF_PROPERTY_OBJECT_IMPL(style::Brush*, f, F, ill)
 	QF_PROPERTY_OBJECT_IMPL(style::Text*, t, T, extStyle)
 
+	style::Pen* border() const;
+	void setBorder(style::Pen *b);
+	Q_SIGNAL void borderChanged(style::Pen* b);
 
 private:
 	QVariant m_width;

@@ -39,7 +39,7 @@ Report {
 		Frame {
 			width: "%"
 			layout: Frame.LayoutHorizontal
-			border: Pen {basedOn: "black2"}
+			bottomBorder: Pen {basedOn: "black1"}
 			HeaderCell {
 				id: colId
 				width: 10
