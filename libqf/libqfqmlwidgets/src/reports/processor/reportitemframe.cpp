@@ -258,50 +258,17 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 	if(layout() == LayoutHorizontal) {
 		/// Break is ignored in horizontal layout
 		QList<ChildSize> layout_sizes;
-		indexToPrint = 0; /// allways print from 0 index (all the children) in horizontal layout		/// horizontalni layout musi mit procenta rozpocitany dopredu, protoze jinak by se mi nezalamovaly texty v tabulkach
-		indexToPrint = 0;
-		/*--
-		ReportItemFrame *parent_grid = NULL;
-		if(isParentGridLayout()) {
-			ReportItem *it = this->parent();
-			while(it) {
-				ReportItemFrame *frm_it = qobject_cast<ReportItemFrame*>(it);
-				if(frm_it && frm_it->isParentGrid()) {
-					parent_grid = frm_it;
-					break;
-				}
-				it = it->parent();
-			}
-		}
-		bool is_first_grid_child = (parent_grid && parent_grid->gridLayoutSizes().isEmpty());
-		bool is_next_grid_child = (parent_grid && !is_first_grid_child);
-
-		if(is_next_grid_child) {
-			/// dalsi deti gridu si zkopiruji rozmery z prvniho ditete, ktere je jiz vytisknute
-			QList<double> szs = parent_grid->gridLayoutSizes();
-			for(int i=indexToPrint; i<childrenCount(); i++) {
-				ReportItem *it = itemAt(i);
-				ChildSize sz;
-				if(i < szs.count()) {
-					it->designedRect.horizontalUnit = Rect::UnitMM;
-					it->designedRect.setWidth(szs[i]); /// nastav mu velikost z prvniho tisku
-				}
-				else {
-					qfWarning() << "this should never happen with grid layout, grid layout rows have different cell numbers, falling to original size values.";
-				}
-			}
-		}
-		--*/
+		indexToPrint = 0; /// allways print from 0 index (all the children) in horizontal layout
+		/// horizontalni layout musi mit procenta rozpocitany dopredu, protoze jinak by se mi nezalamovaly texty v tabulkach
 		{
-			/// prvni dite gridu se tiskne jako vse ostatni
-			/// nastav detem mm rozmer ve smeru layoutu
+			/// get layout sizes in the layout direction
 			for(int i=indexToPrint; i<itemsToPrintCount(); i++) {
 				ReportItem *it = itemToPrintAt(i);
 				layout_sizes << it->childSize(layout());
 			}
 		}
 
-		/// zbyva vypocitat jeste ortogonalni rozmer
+		/// get layout sizes in the orthogonal layout direction
 		/// je to bud absolutni hodnota nebo % z bbr
 		QList<ChildSize> orthogonal_sizes;
 		for(int i=indexToPrint; i<itemsToPrintCount(); i++) {
@@ -310,192 +277,182 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			ChildSize sz = it->childSize(ol);
 			if(sz.unit == Rect::UnitPercent) {
 				sz.size = paint_area_rect.sizeInLayout(ol); /// udelej z nej rubber, roztahne se dodatecne
-				//if(sz.size == 0) sz.size = bbr.sizeInLayout(ol);
-				//else sz.size = sz.size / 100 * bbr.sizeInLayout(ol);
 			}
 			orthogonal_sizes << sz;
-			//if(it->isBreak() && i > indexToPrint && layout() == LayoutVertical) break; /// v horizontalnim layoutu break ignoruj
 		}
 
-		// can_print_children_in_natural_order je true v pripade, ze procenta nejsou nebo 1. procenta jsou za poslednim rubber frame.
-		//bool can_print_children_in_natural_order = first_percent_ix < 0 || last_rubber_ix < 0 || last_rubber_ix < first_percent_ix;
+		/// Items should be printed in special order to make proper layout of all the kinds of size specifiers (xx, undefined, "xx%")
+		/// in horizontal layout, print fixed mm size width items first, the rubber (without width specified) ones as second, rest of space divide according to % value
+		/// when printed, rearange printed items to their original layout order
 
-		{
-			/// v horizontalnim layoutu vytiskni nejdriv fixed itemy, pak rubber, ze zbytku rozpocitej % a vytiskni je taky
-			/// vytiskly itemy pak rozsoupej do spravnyho poradi
-
-			QMap<int, int> poradi_tisku; /// layout_ix->print_ix
-			qreal sum_mm = 0;
-			bool has_percent = false;
-			/// vytiskni rubber a fixed
-			//if(parent_grid) qfWarning() << (is_first_grid_child? "first child": is_next_grid_child? "next child": "nevim");
-			for(int i=0; i<itemsToPrintCount(); i++) {
-				ReportItem *it = itemToPrintAt(i);
-				ChildSize sz = layout_sizes.value(i);
-				//qfInfo() << "child:" << i << "size:" << sz.size << "unit:" << Rect::unitToString(sz.unit);
-				if(sz.unit == Rect::UnitMM) {
-					Rect ch_bbr = paint_area_rect;
-					ch_bbr.setLeft(paint_area_rect.left() + sum_mm);
-					if(sz.size > 0) ch_bbr.setWidth(sz.size);
-					else ch_bbr.setWidth(paint_area_rect.width() - sum_mm);
-					if(orthogonal_sizes[i].size > 0) {
-						ch_bbr.setSizeInLayout(orthogonal_sizes[i].size, orthogonalLayout());
-					}
-					//qfInfo() << "\t tisknu fixed:" << it->designedRect.toString();
-					int prev_children_cnt = out->childrenCount();
-					PrintResult ch_res = it->printMetaPaint(out, ch_bbr);
-					if(out->children().count() > prev_children_cnt) {
-						//qfInfo() << "rubber fixed:" << i << "->" << prev_children_cnt;
-						poradi_tisku[i] = prev_children_cnt;
-						double width = out->lastChild()->renderedRect.width();
-						sum_mm += width;
-						//if(parent_grid) qfInfo() << "\t renderedRect:" << out->lastChild()->renderedRect.toString();
-						//}
-						//qfInfo() << "\t sum_mm:" << sum_mm;
-						if(ch_res.value != PrintOk) {
-							/// para se muze vytisknout a pritom bejt not fit, pokud pretece
-							res = ch_res;
-						}
-					}
-					else {
-						if(ch_res.value == PrintOk) {
-							/// jediny, kdo se nemusi vytisknout je band
-							if(it->isVisible()) {
-								qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
-							}
-						}
-						else {
-							//qfInfo() << "\t NOT OK";
-							res = ch_res;
-							break;
-						}
+		QMap<int, int> layout_ix_to_print_ix; /// layout_ix->print_ix
+		qreal sum_mm = 0;
+		bool has_percent = false;
+		/// print rubber and fixed
+		for(int i=0; i<itemsToPrintCount(); i++) {
+			ReportItem *it = itemToPrintAt(i);
+			ChildSize sz = layout_sizes.value(i);
+			//qfInfo() << "child:" << i << "size:" << sz.size << "unit:" << Rect::unitToString(sz.unit);
+			if(sz.unit == Rect::UnitMM) {
+				Rect ch_bbr = paint_area_rect;
+				ch_bbr.setLeft(paint_area_rect.left() + sum_mm);
+				if(sz.size > 0)
+					ch_bbr.setWidth(sz.size);
+				else
+					ch_bbr.setWidth(paint_area_rect.width() - sum_mm);
+				if(orthogonal_sizes[i].size > 0) {
+					ch_bbr.setSizeInLayout(orthogonal_sizes[i].size, orthogonalLayout());
+				}
+				//qfInfo() << "\t tisknu fixed:" << it->designedRect.toString();
+				int prev_children_cnt = out->childrenCount();
+				PrintResult ch_res = it->printMetaPaint(out, ch_bbr);
+				if(out->children().count() > prev_children_cnt) {
+					//qfInfo() << "rubber fixed:" << i << "->" << prev_children_cnt;
+					layout_ix_to_print_ix[i] = prev_children_cnt;
+					double width = out->lastChild()->renderedRect.width();
+					sum_mm += width;
+					//if(parent_grid) qfInfo() << "\t renderedRect:" << out->lastChild()->renderedRect.toString();
+					//}
+					//qfInfo() << "\t sum_mm:" << sum_mm;
+					if(ch_res.value != PrintOk) {
+						/// para can be printed as NotFit if it owerflows its parent frame
+						res = ch_res;
 					}
 				}
 				else {
-					has_percent = true;
+					if(ch_res.value == PrintOk) {
+						/// jediny, kdo se nemusi vytisknout je band
+						if(it->isVisible()) {
+							qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
+						}
+					}
+					else {
+						//qfInfo() << "\t NOT OK";
+						res = ch_res;
+						break;
+					}
 				}
 			}
-			qreal rest_mm = paint_area_rect.width() - sum_mm;
+			else {
+				has_percent = true;
+			}
+		}
+		qreal rest_mm = paint_area_rect.width() - sum_mm;
 
-			if(res.value == PrintOk) {
-				if(has_percent) {
-					/// rozpocitej procenta
-					qreal sum_percent = 0;
-					int cnt_0_percent = 0;
+		if(res.value == PrintOk) {
+			if(has_percent) {
+				/// divide rest of space to xx% items
+				qreal sum_percent = 0;
+				int cnt_0_percent = 0;
+				for(int i=0; i<itemsToPrintCount(); i++) {
+					ReportItem *it = itemToPrintAt(i);
+					ChildSize sz = it->childSize(layout());
+					if(sz.unit == Rect::UnitPercent) {
+						if(sz.size == 0)
+							cnt_0_percent++;
+						else
+							sum_percent += sz.size;
+					}
+				}
+				if(rest_mm <= 0) {
+					qfWarning() << "Percent exist but rest_mm is" << rest_mm << ". Ignoring rest of frames";
+				}
+				else {
+					/// print percent items
+					qreal percent_0 = 0;
+					if(cnt_0_percent > 0)
+						percent_0 = (100 - sum_percent) / cnt_0_percent;
 					for(int i=0; i<itemsToPrintCount(); i++) {
 						ReportItem *it = itemToPrintAt(i);
 						ChildSize sz = it->childSize(layout());
 						if(sz.unit == Rect::UnitPercent) {
-							if(sz.size == 0) cnt_0_percent++;
-							else sum_percent += sz.size;
-						}
-					}
-					if(rest_mm <= 0) {
-						qfWarning() << "Percent exist but rest_mm is" << rest_mm << ". Ignoring rest of frames";
-					}
-					else {
-						/// vytiskni procenta
-						qreal percent_0 = 0;
-						if(cnt_0_percent > 0) percent_0 = (100 - sum_percent) / cnt_0_percent;
-						for(int i=0; i<itemsToPrintCount(); i++) {
-							ReportItem *it = itemToPrintAt(i);
-							ChildSize sz = it->childSize(layout());
-							if(sz.unit == Rect::UnitPercent) {
-								qreal d;
-								if(sz.size == 0) d = rest_mm * percent_0 / 100;
-								else d = rest_mm * sz.size / 100;
-								//qfInfo() << d;
-								Rect ch_bbr = paint_area_rect;
-								ch_bbr.setWidth(d);
-								if(orthogonal_sizes[i].size > 0) {
-									ch_bbr.setSizeInLayout(orthogonal_sizes[i].size, orthogonalLayout());
+							qreal d;
+							if(sz.size == 0)
+								d = rest_mm * percent_0 / 100;
+							else
+								d = rest_mm * sz.size / 100;
+							//qfInfo() << d;
+							Rect ch_bbr = paint_area_rect;
+							ch_bbr.setWidth(d);
+							if(orthogonal_sizes[i].size > 0) {
+								ch_bbr.setSizeInLayout(orthogonal_sizes[i].size, orthogonalLayout());
+							}
+							//qfInfo() << it << "tisknu percent" << it->designedRect.toString();
+							//qfInfo() << "chbr" << ch_bbr.toString();
+							int prev_children_cnt = out->childrenCount();
+							PrintResult ch_res = it->printMetaPaint(out, ch_bbr);
+							if(out->children().count() > prev_children_cnt) {
+								//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
+								layout_ix_to_print_ix[i] = prev_children_cnt;
+								if(ch_res.value != PrintOk) {
+									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
+									res = ch_res;
 								}
-								//qfInfo() << it << "tisknu percent" << it->designedRect.toString();
-								//qfInfo() << "chbr" << ch_bbr.toString();
-								int prev_children_cnt = out->childrenCount();
-								PrintResult ch_res = it->printMetaPaint(out, ch_bbr);
-								if(out->children().count() > prev_children_cnt) {
-									//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
-									poradi_tisku[i] = prev_children_cnt;
-									if(ch_res.value != PrintOk) {
-										/// para se muze vytisknout a pritom bejt not fit, pokud pretece
-										res = ch_res;
+							}
+							else {
+								if(ch_res.value == PrintOk) {
+									/// jediny, kdo se nemusi vytisknout je band
+									if(it->isVisible()) {
+										qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
 									}
 								}
 								else {
-									if(ch_res.value == PrintOk) {
-										/// jediny, kdo se nemusi vytisknout je band
-										if(it->isVisible()) {
-											qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
-										}
-									}
-									else {
-										res = ch_res;
-										break;
-									}
+									res = ch_res;
+									break;
 								}
 							}
 						}
 					}
-					/// posprehazej vytisknuty deti
-					//qfInfo() << "\t poradi tisku cnt:<<" << poradi_tisku.count() << out->childrenCount();
-					if(poradi_tisku.count() == out->children().count()) {
-						int children_count = out->children().count();
-						//qfInfo() << "children cnt:" << children_count;
-						//QF_ASSERT(poradi_tisku.count() == out->children().count(), "nevytiskly se vsechny deti v horizontalnim layoutu");
-						QVector<qf::core::utils::TreeItemBase*> old_children(poradi_tisku.count());
-						/// zkopiruj ukazatele na deti
-						for(int i=0; i<children_count; i++)
-							old_children[i] = out->children()[i];
-						/// dej je do spravnyho poradi
-						/// v mape nemusi byt rada klicu souvisla (kdyz se nejake dite nevytiskne)
-						QMapIterator<int, int> iter(poradi_tisku);
-						int new_print_ix = 0;
-						while(iter.hasNext()) {
-							iter.next();
-							int old_print_ix = iter.value();
-							if(0 <= new_print_ix && new_print_ix < children_count) {
-								//qfInfo() << old_print_ix << "->" << new_print_ix;
-								if(new_print_ix != old_print_ix) out->childrenRef()[new_print_ix] = old_children[old_print_ix];
-								new_print_ix++;
-							}
-							else qfWarning() << QF_FUNC_NAME << "poradi:" << old_print_ix << "new_ix:" << new_print_ix << "out of range:" << children_count;
-						}
-
-						/// nastav detem spravne offsety
-						qreal offset_x = 0;
-						for(int i=0; i<poradi_tisku.count(); i++) {
-							//qfInfo() << "\t poradi tisku <<" << i << "offset:" << offset_x;
-							ReportItemMetaPaint *it = out->child(i);
-							/// tady je to potreba posunout vcetne deti :(
-							double shift_x = paint_area_rect.left() + offset_x - it->renderedRect.left();
-							//if(parent_grid) qfInfo() << i << "offset_x:" << offset_x << "bbr left:" << bbr.left() << "chbbr left:" << ch_bbr.left();
-							if(qFloatDistance(shift_x, 0) > 200)
-								it->shift(Point(shift_x, 0));
-							offset_x += it->renderedRect.width();
-						}
-					}
-					else {
-						qfWarning() << this << "nesedi poradi pocty tisku" << poradi_tisku.count() << out->children().count();
-					}
 				}
-				/*--
-				if(is_first_grid_child) {
-					QList<double> szs;
-					for(int i=0; i<out->children().count(); i++) {
+				/// arrange prited children to their original order
+				//qfInfo() << "\t poradi tisku cnt:<<" << poradi_tisku.count() << out->childrenCount();
+				if(layout_ix_to_print_ix.count() == out->children().count()) {
+					int children_count = out->children().count();
+					//qfInfo() << "children cnt:" << children_count;
+					//QF_ASSERT(poradi_tisku.count() == out->children().count(), "nevytiskly se vsechny deti v horizontalnim layoutu");
+					QVector<qf::core::utils::TreeItemBase*> old_children(layout_ix_to_print_ix.count());
+					/// get printed children pointers
+					for(int i=0; i<children_count; i++)
+						old_children[i] = out->children()[i];
+					/// arrange them to the original order
+					/// v mape nemusi byt rada klicu souvisla (kdyz se nejake dite nevytiskne)
+					QMapIterator<int, int> iter(layout_ix_to_print_ix);
+					int new_print_ix = 0;
+					while(iter.hasNext()) {
+						iter.next();
+						int old_print_ix = iter.value();
+						if(0 <= new_print_ix && new_print_ix < children_count) {
+							//qfInfo() << old_print_ix << "->" << new_print_ix;
+							if(new_print_ix != old_print_ix)
+								out->childrenRef()[new_print_ix] = old_children[old_print_ix];
+							new_print_ix++;
+						}
+						else
+							qfWarning() << QF_FUNC_NAME << "order:" << old_print_ix << "new_ix:" << new_print_ix << "out of range:" << children_count;
+					}
+
+					/// set children proper offsets
+					qreal offset_x = 0;
+					for(int i=0; i<layout_ix_to_print_ix.count(); i++) {
 						//qfInfo() << "\t poradi tisku <<" << i << "offset:" << offset_x;
 						ReportItemMetaPaint *it = out->child(i);
-						szs << it->renderedRect.width();
+						/// shift them including their own children recursively :(
+						double shift_x = paint_area_rect.left() + offset_x - it->renderedRect.left();
+						//if(parent_grid) qfInfo() << i << "offset_x:" << offset_x << "bbr left:" << bbr.left() << "chbbr left:" << ch_bbr.left();
+						if(qFloatDistance(shift_x, 0) > 200)
+							it->shift(Point(shift_x, 0));
+						offset_x += it->renderedRect.width();
 					}
-					parent_grid->setGridLayoutSizes(szs);
 				}
-				--*/
+				else {
+					qfWarning() << this << "nesedi poradi pocty tisku" << layout_ix_to_print_ix.count() << out->children().count();
+				}
 			}
-			if(res.value != PrintOk) {
-				/// detail by mel mit, pokud se ma zalamovat, vzdy vertikalni layout, jinak tato funkce zpusobi, ze se po zalomeni vsechny dcerine bandy budou tisknout cele znova
-				/// zakomentoval jsem to a zda se, ze to zatim nicemu nevadi
-				//resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
-			}
+		}
+		if(res.value != PrintOk) {
+			/// detail by mel mit, pokud se ma zalamovat, vzdy vertikalni layout, jinak tato funkce zpusobi, ze se po zalomeni vsechny dcerine bandy budou tisknout cele znova
+			/// zakomentoval jsem to a zda se, ze to zatim nicemu nevadi
+			//resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
 		}
 	}
 	else {
