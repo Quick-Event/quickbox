@@ -276,7 +276,33 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 	if(layout() == LayoutStacked) {
 		/// allways print all the children) in the stacked layout
 		/// it is used mainly for page header & footers, they shoud be on each page
-		indexToPrint = 0;
+		//Rect rendered_rect;
+		for(indexToPrint=0; indexToPrint<itemsToPrintCount(); indexToPrint++) {
+			ReportItem *it = itemToPrintAt(indexToPrint);
+			//qfDebug() << "\tch_bbr v2:" << children_paint_area_rect.toString();
+			//int prev_children_cnt = out->childrenCount();
+			PrintResult ch_res = it->printMetaPaint(out, paint_area_rect);
+			/*
+			if(out->children().count() > prev_children_cnt) {
+				ReportItemMetaPaint *mpi = out->lastChild();
+				if(mpi) {
+					if(rendered_rect.isNull())
+						rendered_rect = mpi->renderedRect;
+					else
+						rendered_rect = rendered_rect.united(mpi->renderedRect);
+				}
+			}
+			*/
+			if(ch_res.value != PrintOk) {
+				if(res.value == PrintOk) {
+					/// only one child can be printed again
+					/// others are ignored in ch_res flags
+					res = ch_res;
+				}
+			}
+			else
+				res = ch_res;
+		}
 	}
 	else if(layout() == LayoutHorizontal) {
 		/// Break is ignored in horizontal layout

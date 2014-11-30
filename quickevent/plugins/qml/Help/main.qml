@@ -47,7 +47,7 @@ Plugin {
 				var dlg = dlgLayoutTest.createObject(FrameWork);
 				var w = cReportViewWidget.createObject(null);
 				w.windowTitle = qsTr("Report test");
-				w.setReport(homeDir() + "/reports/test01.qml");
+				w.setReport(homeDir() + "/reports/test02.qml");
 				//console.warn("setting data:", tt.toString());
 				//w.setData(tt.data());
 				var dlg = cDialog.createObject(FrameWork);

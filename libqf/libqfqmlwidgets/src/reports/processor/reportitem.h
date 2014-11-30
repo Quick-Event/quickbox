@@ -78,14 +78,14 @@ public:
 	//typedef Layout Layout;
 	enum PrintResultValue {
 		PrintNotPrintedYet = 0,
-		PrintOk = 1, ///< tisk se zdaril
-		PrintNotFit ///< nevytiskl se item nebo vsechny jeho deti, zalomi se stranka/sloupec se a zkusi se to znovu
+		PrintOk = 1, ///< printed successfully
+		PrintNotFit ///< partialy printed, insert new page to document and continue
 	};
 	enum PrintResultFlags {
 		FlagNone = 0,
 		FlagPrintAgain = 1, ///< detail se sice vesel, ale protoze data obsahuji dalsi radky, tiskni ho dal, pouziva se s PrintOk.
 		FlagPrintNeverFit = 4, ///< tisk se nepodaril a nikdy se nepodari, pouziva se s PrintNotFit
-		FlagPrintBreak = 8 ///< PrintNotFit je protoze je page nebo column break
+		FlagPrintBreak = 8 ///< PrintNotFit is caused by page or column break
 	};
 	struct PrintResult
 	{
@@ -171,8 +171,10 @@ public:
 		}
 		Rect& setSizeInLayout(qreal sz, Layout ly)
 		{
-			if(ly == LayoutHorizontal) setWidth(sz);
-			else setHeight(sz);
+			if(ly == LayoutHorizontal)
+				setWidth(sz);
+			else
+				setHeight(sz);
 			return *this;
 		}
 		Rect& cutSizeInLayout(const Rect &rect, Layout ly)
