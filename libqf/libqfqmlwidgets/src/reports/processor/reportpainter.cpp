@@ -163,7 +163,7 @@ style::CompiledTextStyle ReportItemMetaPaint::effectiveTextStyle()
 
 void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 {
-	qfLogFuncFrame() << "rendered rect:" << renderedRect.toString();
+	qfLogFuncFrame() << this << "rendered rect:" << renderedRect.toString();
 	bool has_expandable_children = false;
 	for(int i=0; i<childrenCount(); i++) {
 		ReportItemMetaPaint *it = child(i);
@@ -192,23 +192,25 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 				sum_mm += it->renderedRect.height();
 			}
 			else {
-				if(d == 0) cnt_0_percent++;
-				else sum_percent += d;
+				if(d == 0)
+					cnt_0_percent++;
+				else
+					sum_percent += d;
 				spring_children_ixs << i;
 			}
 		}
+		qreal rest_percent = 1 - sum_percent;
+		if(rest_percent < 0)
+			rest_percent = 0;
+		qreal percent_0 = 0;
+		if(cnt_0_percent > 0)
+			percent_0 = rest_percent / cnt_0_percent;
 		if(spring_children_ixs.count()) {
-			qreal rest_percent = 1 - sum_percent;
-			if(rest_percent < 0)
-				rest_percent = 0;
-			qreal percent_0 = 0;
-			if(cnt_0_percent > 0)
-				percent_0 = rest_percent / cnt_0_percent;
 
 			double rest_mm = layout_size - sum_mm;
-			//reklamacewqfInfo() << "layout_size:" << layout_size << "sum_mm:" << sum_mm;
 			if(rest_mm < 0)
 				rest_mm = 0;
+
 			double children_ly_offset = 0; //insetVertical();
 			for(int i=0; i<childrenCount(); i++) {
 				ReportItemMetaPaint *it = child(i);
@@ -236,6 +238,20 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 						it->expandChildVerticalSpringFrames();
 						children_ly_offset += ly_size_offset;
 					}
+				}
+			}
+		}
+		else if(layout() == qf::qmlwidgets::graphics::LayoutStacked) {
+			for(int i=0; i<childrenCount(); i++) {
+				ReportItemMetaPaint *it = child(i);
+				double d = it->fillVLayoutRatio();
+				if(d >= 0) {
+					if(d == 0)
+						d = 1;
+					qreal new_ly_size = d * layout_size;
+					it->renderedRect.setHeight(new_ly_size);
+					it->alignChildren(); /// kdyz neco expanduju, tak to musim taky zarovnat
+					it->expandChildVerticalSpringFrames();
 				}
 			}
 		}

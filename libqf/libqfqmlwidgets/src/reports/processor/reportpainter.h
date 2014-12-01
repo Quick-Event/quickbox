@@ -49,9 +49,13 @@ public:
 	class LayoutSetting : public QMap<int, QVariant>
 	{
 	public:
-		enum {HInset, VInset, Layout, Alignment
-		,SuppressPrintOut///<  frame a jeho deti se objevi pouze v nahledu
-		,FillVLayoutRatio
+		enum {
+			HInset,
+			VInset,
+			Layout,
+			Alignment,
+			SuppressPrintOut, ///<  frame a jeho deti se objevi pouze v nahledu
+			FillVLayoutRatio
 		};
 	};
 public:

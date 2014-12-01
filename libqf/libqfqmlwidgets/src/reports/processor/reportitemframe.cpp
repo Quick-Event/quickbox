@@ -30,7 +30,6 @@ ReportItemFrame::ReportItemFrame(ReportItem *parent)
 	m_verticalAlignment = AlignTop;
 
 	indexToPrint = 0;
-	//qfDebug() << QF_FUNC_NAME << "*******************" << el.tagName() << el.attribute("id");
 }
 
 ReportItemFrame::~ReportItemFrame()
@@ -558,19 +557,11 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			int prev_children_cnt = out->childrenCount();
 			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
 			if(ch_res.value == PrintOk) {
-				//qfDebug() << "\t" << __LINE__ << "children_dirty_size:" << children_dirty_size.toString();
-				//dirtyRect = dirtyRect.unite(it->dirtyRect);
-				//qfDebug() << "\t" << __LINE__ << "children_dirty_size:" << children_dirty_size.toString();
 				/// muze se stat, ze se dite nevytiskne, napriklad band nema zadna data
-				//QF_ASSERT(out->children().count() > 0, "jak to, ze se dite nevytisklo?");
 				if(out->children().count() > prev_children_cnt) {
 					ReportItemMetaPaint *mpi = out->lastChild();
-					//if(fill_vertical_layout_ratio >= 0) mpi->setFillVLayoutRatio(fill_vertical_layout_ratio);
 					if(mpi) {
 						const Rect &r = mpi->renderedRect;
-						//qfInfo() << mpi << mpi->reportItem()->element.tagName() << (r.flags & Rect::BackgroundItem) << "\tr:" << r.toString() << "ch_res:" << ch_res.toString();
-						//if((r.flags & Rect::BackgroundItem)) qfWarning() << "BackgroundItem";
-						//--if(!(r.flags & Rect::BackgroundItem))
 						/// cut rendered area
 						paint_area_rect.cutSizeInLayout(r, layout());
 						if(ch_res.flags & FlagPrintAgain) {
@@ -578,19 +569,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						}
 					}
 				}
-				//bbr.cutSizeInLayout(it->dirtyRect, layout);
-				//qfDebug() << "\t" << __LINE__ << "children_dirty_size:" << children_dirty_size.toString();
 			}
 			else {
 				/// pokud je vertikalni layout, a dite se nevejde vrat PrintNotFit
-				/*
-				if(layout() == LayoutHorizontal) {
-					/// v horizontalnim, zadne pretikani neni
-					/// vytiskni to znovu s doteklymi texty
-					qfError() << "Oops??? this should never happen, I'm already in the vertical layout'";
-					resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
-				}
-				*/
 				res = ch_res;
 				break;
 			}
@@ -704,10 +685,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
 	//qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
 	if(res.value == PrintOk || (res.value == PrintNotFit && (res.flags & FlagPrintBreak))) {
-		//bool children_aligned = false;
-		/// pokud se vytiskl layout, jehoz vyska nebyla zadana jako % a ma dite s %, roztahni dite a pripadne i jeho deti
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
 		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
+			/// pokud se vytiskl frame, jehoz vertikalni rozmer nebyl zadan jako % a ma dite s %, roztahni dite a pripadne i jeho deti
 			mp->expandChildVerticalSpringFrames();
 		}
 		//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();

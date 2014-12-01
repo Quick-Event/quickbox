@@ -3,7 +3,7 @@ import shared.QuickEvent.reports 1.0
 
 Report {
 	id: root
-	objectName: "root"
+	objectName: "report"
 	debugLevel: 1
 	width: 210
 	height: 297
@@ -14,21 +14,23 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 	Frame {
+		objectName: "stack"
 		width: "%"
 		height: "%"
 		layout: Frame.LayoutStacked
 		Para {
+			objectName: "para_rubber"
 			width: "%"
-			height: "%"
+			textVAlign: Para.AlignVCenter
 			text: "FFFFFFFFFF 001"
 		}
-		/*
 		Para {
+			objectName: "para_expanding"
+			textVAlign: Para.AlignVCenter
 			width: "%"
 			height: "%"
 			text: "FFFFFFFFFF 002"
 		}
-		*/
 	}
 	/*
 	Frame {
