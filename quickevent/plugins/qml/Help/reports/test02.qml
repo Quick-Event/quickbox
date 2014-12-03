@@ -11,26 +11,44 @@ Report {
 	hinset: 5
 	styleSheet: ReportStyleCommon {  }
 
-	textStyle: styleSheet.textStyleBig
+	textStyle: styleSheet.textStyleDefault
+	// textStyle: styleSheet.textStyleBig
 	Frame {
 		objectName: "stack"
 		width: "%"
 		height: "%"
 		layout: Frame.LayoutStacked
+		Frame {
+			id: headerFooter
+			width: "%"
+			height: "%"
+			Para {
+				objectName: "para_rubber"
+				width: "%"
+				textVAlign: Para.AlignVCenter
+				fill: Brush { color: Color {def: "pink"}}
+				text: "HEADER"
+			}
+			Frame {
+				height: "%"
+			}
+			Para {
+				objectName: "para_rubber"
+				width: "%"
+				textVAlign: Para.AlignVCenter
+				fill: Brush { color: Color {def: "pink"}}
+				text: "FOOTER"
+			}
+		}
 		Para {
 			objectName: "para_expanding"
 			textVAlign: Para.AlignVCenter
 			width: "%"
-			height: "50%"
-			fill: Brush { color: Color {def: "khaki"}}
-			text: "Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. "
-		}
-		Para {
-			objectName: "para_rubber"
-			width: "%"
-			textVAlign: Para.AlignVCenter
-			fill: Brush { color: Color {def: "pink"}}
-			text: "FFFFFFFFFF 001"
+			height: "20%"
+			vinset: 20
+			//fill: Brush { color: Color {def: "khaki"}}
+			text: "Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. "
+				//+ "Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. Čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa? Další případ slavného belgického detektiva. Britský film, natočený podle románu Agathy Christie (2004). Hrají: D. Suchet, J. Cake, S. Milesová, E. Fox, L. Anthonyová a další. Režie Simon LangtonUž dlouho si Hercule Poirot přál strávit klidný víkend ve svém novém venkovském domku, tak půvabně zasazeném do anglické krajiny. A zdá se, že tentokrát se mu konečně jeho přání splní. A nejen to, bude mít dokonce příležitost těšit se z příjemné společnosti, která se schází v nedalekém sídle lady Angkatellové. Poirot si tu vybranou večeři vskutku vychutnává, netuší ovšem, když se vrací do své samoty, jak brzy jej sem jeho kroky zavedou znovu. Neboť hosté lady Lucy se druhý den - pochopitelně zcela neúmyslně -  rozdělí na dvě skupiny: na oběť a na podezřelé. A bez Poirotovy pomoci inspektor Grange těžko vypátrá, čí ruka držela pistoli, jejíž kulka zabila doktora Johna Christowa. "
 		}
 	}
 	/*

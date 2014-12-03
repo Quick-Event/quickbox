@@ -36,7 +36,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out,
 
 ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfLogFuncFrame() << this;
+	qfLogFuncFrame() << this << bounding_rect.toString();
 	PrintResult res = PrintOk;
 	if(indexToPrint == 0) {
 		printedText = paraText();

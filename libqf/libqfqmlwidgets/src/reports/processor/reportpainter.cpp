@@ -243,7 +243,6 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 		}
 	}
 	else if(layout() == qf::qmlwidgets::graphics::LayoutStacked) {
-		qfInfo() << "STACK";
 		for(int i=0; i<childrenCount(); i++) {
 			ReportItemMetaPaint *it = child(i);
 			double d = it->fillVLayoutRatio();

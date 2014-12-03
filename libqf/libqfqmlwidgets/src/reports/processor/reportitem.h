@@ -243,13 +243,30 @@ public:
 	};
 public:
 	struct ChildSize {
-		qreal size;
-		Rect::Unit unit;
 
-		double fillLayoutRatio() const {
+		ChildSize(qreal s = 0, Rect::Unit u = Rect::UnitMM) : size(s), unit(u) {}
+
+		double fillLayoutRatio() const
+		{
 			return (unit == Rect::UnitPercent)? size / 100.: -1;
 		}
-		ChildSize(qreal s = 0, Rect::Unit u = Rect::UnitMM) : size(s), unit(u) {}
+
+		double fromParentSize(double parent_size) const
+		{
+			double ret = parent_size;
+			if(unit == Rect::UnitMM) {
+				if(size > 0)
+					ret = size;
+			}
+			else if(unit == Rect::UnitPercent) {
+				if(size > 0)
+					ret = size / 100 * ret;
+			}
+			return ret;
+		}
+
+		qreal size;
+		Rect::Unit unit;
 	};
 public:
 	struct Image

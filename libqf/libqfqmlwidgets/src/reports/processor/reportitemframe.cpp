@@ -278,20 +278,10 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		//Rect rendered_rect;
 		for(indexToPrint=0; indexToPrint<itemsToPrintCount(); indexToPrint++) {
 			ReportItem *it = itemToPrintAt(indexToPrint);
-			//qfDebug() << "\tch_bbr v2:" << children_paint_area_rect.toString();
-			//int prev_children_cnt = out->childrenCount();
-			PrintResult ch_res = it->printMetaPaint(out, paint_area_rect);
-			/*
-			if(out->children().count() > prev_children_cnt) {
-				ReportItemMetaPaint *mpi = out->lastChild();
-				if(mpi) {
-					if(rendered_rect.isNull())
-						rendered_rect = mpi->renderedRect;
-					else
-						rendered_rect = rendered_rect.united(mpi->renderedRect);
-				}
-			}
-			*/
+			Rect children_paint_area_rect = paint_area_rect;
+			ChildSize sz = it->childSize(LayoutVertical);
+			children_paint_area_rect.setHeight(sz.fromParentSize(paint_area_rect.height()));
+			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
 			if(ch_res.value != PrintOk) {
 				if(res.value == PrintOk) {
 					/// only one child can be printed again
@@ -299,8 +289,11 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					res = ch_res;
 				}
 			}
-			else
-				res = ch_res;
+			else {
+				// print item again on new page
+				it->resetIndexToPrintRecursively(true);
+			}
+			qfInfo() << indexToPrint << "ch res:" << ch_res.toString() << "res:" << res.toString();
 		}
 	}
 	else if(layout() == LayoutHorizontal) {
