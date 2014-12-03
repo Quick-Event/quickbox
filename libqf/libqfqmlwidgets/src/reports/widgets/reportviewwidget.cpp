@@ -35,6 +35,7 @@
 #include <QLineEdit>
 #include <QDomDocument>
 #include <QDir>
+#include <QStyle>
 
 #include <typeinfo>
 
@@ -543,12 +544,20 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 	qfLogFuncFrame();
 	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
 	act_view->setText(tr("View"));
+	act_view->addActionInto(action("view.firstPage"));
+	act_view->addActionInto(action("view.prevPage"));
+	act_view->addActionInto(action("view.nextPage"));
+	act_view->addActionInto(action("view.lastPage"));
 	act_view->addActionInto(action("view.zoomIn"));
 	act_view->addActionInto(action("view.zoomOut"));
 	act_view->addActionInto(action("view.zoomFitWidth"));
 	act_view->addActionInto(action("view.zoomFitHeight"));
 
 	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
+	tool_bar->addAction(action("view.firstPage"));
+	tool_bar->addAction(action("view.prevPage"));
+	tool_bar->addAction(action("view.nextPage"));
+	tool_bar->addAction(action("view.lastPage"));
 	tool_bar->addAction(action("view.zoomIn"));
 	tool_bar->addAction(action("view.zoomOut"));
 	tool_bar->addAction(action("view.zoomFitWidth"));
@@ -558,6 +567,35 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::actions()
 {
 	if(m_actions.isEmpty()) {
+		QStyle *sty = style();
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipBackward);
+			a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
+			m_actions[QStringLiteral("view.firstPage")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_firstPage()));
+		}
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico = sty->standardIcon(QStyle::SP_ArrowLeft);
+			a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
+			m_actions[QStringLiteral("view.prevPage")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_prevPage()));
+		}
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico = sty->standardIcon(QStyle::SP_ArrowRight);
+			a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
+			m_actions[QStringLiteral("view.nextPage")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_nextPage()));
+		}
+		{
+			qf::qmlwidgets::Action *a;
+			QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
+			a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
+			m_actions[QStringLiteral("view.lastPage")] = a;
+			connect(a, SIGNAL(triggered()), this, SLOT(view_lastPage()));
+		}
 		{
 			qf::qmlwidgets::Action *a;
 			QIcon ico(":/qf/qmlwidgets/images/zoom_in");
@@ -928,14 +966,13 @@ void ReportViewWidget::refreshWidget()
 
 void ReportViewWidget::refreshActions()
 {
-	/*--
 	int pgno = currentPageNo();
 	int pgcnt = pageCount();
+	qfLogFuncFrame() << pgno << "of" << pgcnt;
 	action("view.firstPage")->setEnabled(pgno > 0 && pgcnt > 0);
 	action("view.prevPage")->setEnabled(pgno > 0 && pgcnt > 0);
 	action("view.nextPage")->setEnabled(pgno < pgcnt - 1);
 	action("view.lastPage")->setEnabled(pgno < pgcnt - 1);
-	--*/
 }
 
 void ReportViewWidget::view_nextPage(PageScrollPosition scroll_pos)

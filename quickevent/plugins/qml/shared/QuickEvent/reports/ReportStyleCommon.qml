@@ -4,6 +4,7 @@ import qf.qmlreports 1.0
 
 StyleSheet {
 	property alias textStyleDefault: tsDefault
+	property alias textStyleBig: tsBig
 	objectName: "MyStyleSheet"
 	//basedOn: "by_name"
 	colors: [

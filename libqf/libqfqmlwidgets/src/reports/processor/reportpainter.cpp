@@ -163,7 +163,7 @@ style::CompiledTextStyle ReportItemMetaPaint::effectiveTextStyle()
 
 void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 {
-	qfLogFuncFrame() << this << "rendered rect:" << renderedRect.toString();
+	qfLogFuncFrame() << this->reportItem() << "rendered rect:" << renderedRect.toString();
 	bool has_expandable_children = false;
 	for(int i=0; i<childrenCount(); i++) {
 		ReportItemMetaPaint *it = child(i);
@@ -241,18 +241,20 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 				}
 			}
 		}
-		else if(layout() == qf::qmlwidgets::graphics::LayoutStacked) {
-			for(int i=0; i<childrenCount(); i++) {
-				ReportItemMetaPaint *it = child(i);
-				double d = it->fillVLayoutRatio();
-				if(d >= 0) {
-					if(d == 0)
-						d = 1;
-					qreal new_ly_size = d * layout_size;
-					it->renderedRect.setHeight(new_ly_size);
-					it->alignChildren(); /// kdyz neco expanduju, tak to musim taky zarovnat
-					it->expandChildVerticalSpringFrames();
-				}
+	}
+	else if(layout() == qf::qmlwidgets::graphics::LayoutStacked) {
+		qfInfo() << "STACK";
+		for(int i=0; i<childrenCount(); i++) {
+			ReportItemMetaPaint *it = child(i);
+			double d = it->fillVLayoutRatio();
+			qfDebug() << it->reportItem() << "d:" << d;
+			if(d >= 0) {
+				if(d == 0)
+					d = 1;
+				qreal new_ly_size = d * layout_size;
+				it->renderedRect.setHeight(new_ly_size);
+				it->alignChildren(); /// kdyz neco expanduju, tak to musim taky zarovnat
+				it->expandChildVerticalSpringFrames();
 			}
 		}
 	}
