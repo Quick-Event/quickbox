@@ -707,7 +707,7 @@ ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out
 	}
 	if(!m_breaking) {
 		res = PrintNotFit;
-		res.flags = FlagPrintBreak;
+		//res.flags = FlagPrintBreak;
 	}
 	m_breaking = !m_breaking;
 	return res;

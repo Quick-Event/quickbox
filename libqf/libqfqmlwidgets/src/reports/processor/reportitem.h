@@ -85,7 +85,7 @@ public:
 		FlagNone = 0,
 		FlagPrintAgain = 1, ///< detail se sice vesel, ale protoze data obsahuji dalsi radky, tiskni ho dal, pouziva se s PrintOk.
 		FlagPrintNeverFit = 4, ///< tisk se nepodaril a nikdy se nepodari, pouziva se s PrintNotFit
-		FlagPrintBreak = 8 ///< PrintNotFit is caused by page or column break
+		//FlagPrintBreak = 8 ///< PrintNotFit is caused by page or column break
 	};
 	struct PrintResult
 	{
