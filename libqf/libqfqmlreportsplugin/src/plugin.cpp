@@ -18,11 +18,11 @@
 
 class QmlPlugin : public QQmlExtensionPlugin
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 public:
-    void registerTypes(const char *uri)
-    {
+	void registerTypes(const char *uri)
+	{
 		qfLogFuncFrame() << uri;
 		Q_ASSERT(uri == QLatin1String("qf.qmlreports"));
 
@@ -34,6 +34,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemBand>(uri, 1, 0, "Band");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemDetail>(uri, 1, 0, "Detail");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemPara>(uri, 1, 0, "Para");
+		qmlRegisterType<qf::qmlwidgets::reports::ReportItemBreak>(uri, 1, 0, "Break");
 		qmlRegisterType<qf::qmlwidgets::reports::style::Sheet>(uri, 1, 0, "StyleSheet");
 		qmlRegisterType<qf::qmlwidgets::reports::style::Color>(uri, 1, 0, "Color");
 		qmlRegisterType<qf::qmlwidgets::reports::style::Pen>(uri, 1, 0, "Pen");

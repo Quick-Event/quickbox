@@ -353,8 +353,8 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBreak : public ReportItem
 	Q_OBJECT
 private:
 	typedef ReportItem Super;
-protected:
-	bool breaking;
+public:
+	ReportItemBreak(ReportItem *parent = nullptr);
 public:
 	virtual bool isBreak() {return true;}
 
@@ -363,8 +363,8 @@ public:
 		return ChildSize(0, Rect::UnitInvalid);
 	}
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-public:
-	ReportItemBreak(ReportItem *parent = nullptr);
+private:
+	bool m_breaking;
 };
 
 

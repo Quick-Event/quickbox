@@ -828,8 +828,10 @@ bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF 
 		qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
 		//qfInfo() << it->dump();
 		bool in_child = false;
-		foreach(qfu::TreeItemBase *_it, it->children()) {
-			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(_it);
+		/// traverse items in reverse order to select top level items in stacked layout
+		auto chlst = it->children();
+		for(int i=chlst.count()-1; i>=0; i--) {
+			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(chlst[i]);
 			if(selectItem_helper(it1, p)) {
 				in_child = true;
 				break;
@@ -845,52 +847,6 @@ bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF 
 					ReportItem *r_it = it->reportItem();
 					if(r_it) {
 						m_painterWidget->update();
-#ifdef QML_SELECT_ITEM_IMPLEMENTED
-						/// pokus se najit nejaky rozumny element pro tento report item
-						QFDomElement el = r_it->element;
-						if(!!el) {
-							if(el.attribute("unselectable").toBool()) { ret = false; break; }
-							/// nalezeny element nesmi pochazet z fakeBand, pozna se to tak, ze element nebo nektery z jeho predku ma atribut "__fake"
-							QString fake_path = is_fake_element(el);
-							//qfInfo() << "fake path:" << fake_path;
-							if(!fake_path.isEmpty()) {
-								/// pokud je to fake element, bylo by fajn, kdyby se emitoval element, ze ktereho byl fake element vytvoren
-								/// najdi element table
-								ReportItemTable *t_it = NULL;
-								while(r_it) {
-									t_it = dynamic_cast<ReportItemTable*>(r_it);
-									if(t_it) break;
-									r_it = r_it->parent();
-								}
-								QDomElement faked_el;
-								if(t_it) {
-									if(fake_path == "-") {
-										faked_el = t_it->element;
-									}
-									else {
-										//qfInfo() << "cd" << fake_path;
-										el = t_it->element;
-										faked_el = el.cd(fake_path, !qf::core::Exception::Throw);
-										/*
-										if(!faked_el.isNull()) {
-											qfInfo() << "\tOK";
-											//selectable_element_found = true;
-											//qfDebug() << "element:" << fSelectedElement.toString();
-										}
-										*/
-									}
-									qfDebug() << "\t EMIT:" << faked_el.tagName();
-									emit elementSelected(faked_el);
-								}
-							}
-							else {
-								//selectable_element_found = true;
-								//qfDebug() << "element:" << fSelectedElement.toString();
-								qfDebug() << "\t EMIT:" << el.tagName();
-								emit elementSelected(el);
-							}
-						}
-#endif
 					}
 					else {
 						//qfWarning() << "item for path:" << it->path().toString() << "NOT FOUND.";
@@ -913,7 +869,8 @@ void ReportViewWidget::selectItem(const QPointF &p)
 	ReportItemMetaPaint *old_selected_item = m_selectedItem;
 	//QFDomElement old_el = fSelectedElement;
 	m_selectedItem = NULL;
-	if(frm) selectItem_helper(frm, p);
+	if(frm)
+		selectItem_helper(frm, p);
 	if(!m_selectedItem && old_selected_item) {
 		/// odznac puvodni selekci
 		m_painterWidget->update();

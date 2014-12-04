@@ -293,7 +293,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				// print item again on new page
 				it->resetIndexToPrintRecursively(true);
 			}
-			qfInfo() << indexToPrint << "ch res:" << ch_res.toString() << "res:" << res.toString();
+			//qfInfo() << indexToPrint << "ch res:" << ch_res.toString() << "res:" << res.toString();
 		}
 	}
 	else if(layout() == LayoutHorizontal) {
@@ -677,7 +677,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	mp->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
 	//qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
-	if(res.value == PrintOk || (res.value == PrintNotFit && (res.flags & FlagPrintBreak))) {
+	//if(res.value == PrintOk || (res.value == PrintNotFit && (res.flags & FlagPrintBreak)))
+	{
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
 		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
 			/// pokud se vytiskl frame, jehoz vertikalni rozmer nebyl zadan jako % a ma dite s %, roztahni dite a pripadne i jeho deti

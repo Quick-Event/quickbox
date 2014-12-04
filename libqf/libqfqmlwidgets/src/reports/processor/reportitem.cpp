@@ -693,7 +693,7 @@ ReportItemBreak::ReportItemBreak(ReportItem *parent)
 	//QF_ASSERT_EX(proc, "processor is NULL", return);
 	designedRect.verticalUnit = Rect::UnitInvalid;
 	//qfInfo() << element.attribute("id");
-	breaking = false;
+	m_breaking = false;
 }
 
 ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
@@ -702,9 +702,14 @@ ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out
 	Q_UNUSED(bounding_rect);
 	Q_UNUSED(out);
 	PrintResult res = PrintOk;
-	if(!isVisible()) { return res; }
-	if(!breaking) {res = PrintNotFit; res.flags = FlagPrintBreak;}
-	breaking = !breaking;
+	if(!isVisible()) {
+		return res;
+	}
+	if(!m_breaking) {
+		res = PrintNotFit;
+		res.flags = FlagPrintBreak;
+	}
+	m_breaking = !m_breaking;
 	return res;
 }
 
