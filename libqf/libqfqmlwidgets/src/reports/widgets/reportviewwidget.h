@@ -72,7 +72,7 @@ protected:
 private:
 	//void selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el);
 	void selectItem(const QPointF &p);
-	bool selectItem_helper(ReportItemMetaPaint *it, const QPointF &p);
+	ReportItemMetaPaint* selectItem_helper(ReportItemMetaPaint *it, const QPointF &p);
 protected:
 	qf::qmlwidgets::StatusBar* statusBar();
 	QSpinBox *zoomStatusSpinBox;

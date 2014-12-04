@@ -820,44 +820,32 @@ static QString is_fake_element(const QFDomElement &_el)
 	return fake_path;
 }
 --*/
-bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF &p)
+ReportItemMetaPaint* ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF &p)
 {
-	bool ret = false;
-	if(it->isPointInside(p)) {
-		ret = true;
+	ReportItemMetaPaint *ret = nullptr;
+	if(it && it->isPointInside(p)) {
 		qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
+		ret = it;
 		//qfInfo() << it->dump();
-		bool in_child = false;
 		/// traverse items in reverse order to select top level items in stacked layout
 		auto chlst = it->children();
 		for(int i=chlst.count()-1; i>=0; i--) {
 			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(chlst[i]);
-			if(selectItem_helper(it1, p)) {
-				in_child = true;
-				break;
-			}
-		}
-		if(!in_child) {
-			//bool selectable_element_found = false;
-			if(m_selectedItem != it) {
-				m_selectedItem = it;
-				//qfInfo() << "selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
-				/// muze se stat, ze item nema element, pak hledej u rodicu
-				while(it) {
-					ReportItem *r_it = it->reportItem();
-					if(r_it) {
-						m_painterWidget->update();
+			ReportItemMetaPaint *child_sel_it = selectItem_helper(it1, p);
+			if(child_sel_it) {
+				if(ret == it)
+					ret = child_sel_it;
+				else {
+					// if more children have item under cursor,
+					// then select one with smaller area
+					ReportItem::Rect r1 = ret->renderedRect;
+					ReportItem::Rect r2 = child_sel_it->renderedRect;
+					if(r1.area() > r2.area()) {
+						ret = child_sel_it;
 					}
-					else {
-						//qfWarning() << "item for path:" << it->path().toString() << "NOT FOUND.";
-					}
-					break;
-					//it = it->parent();
 				}
 			}
-			//return true;
 		}
-		//return true;
 	}
 	return ret;
 }
@@ -868,10 +856,8 @@ void ReportViewWidget::selectItem(const QPointF &p)
 	ReportItemMetaPaintFrame *frm = currentPage();
 	ReportItemMetaPaint *old_selected_item = m_selectedItem;
 	//QFDomElement old_el = fSelectedElement;
-	m_selectedItem = NULL;
-	if(frm)
-		selectItem_helper(frm, p);
-	if(!m_selectedItem && old_selected_item) {
+	m_selectedItem = m_selectedItem = selectItem_helper(frm, p);
+	if(m_selectedItem != old_selected_item) {
 		/// odznac puvodni selekci
 		m_painterWidget->update();
 	}
