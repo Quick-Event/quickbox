@@ -77,25 +77,33 @@ public:
 	static const QString INFO_IF_NOT_FOUND_DEFAULT_VALUE;
 	//typedef Layout Layout;
 	enum PrintResultValue {
-		PrintNotPrintedYet = 0,
-		PrintOk = 1, ///< printed successfully
-		PrintNotFit ///< partialy printed, insert new page to document and continue
+		PR_NotPrintedYet,
+		PR_PrintedOk, ///< whole frame printed successfully
+		PR_PrintAgainOnNextPage, ///< partialy printed, insert new page to document and repeat print
+		PR_PrintAgainDetail, ///< Used with ReportItemDetail, the detail is printed successfuly but there are more row to print again, this value can be removed if ReportItemDetail will handle it in printMetapaintChildren, currently it is delegated to the ReportItemFrame::printMetapainChildren
+		PR_ErrorNeverFit ///< When keepAll is set and frame can is rendered higher than page, stop to try print it on the next page
 	};
-	enum PrintResultFlags {
-		FlagNone = 0,
-		FlagPrintAgain = 1, ///< detail se sice vesel, ale protoze data obsahuji dalsi radky, tiskni ho dal, pouziva se s PrintOk.
-		FlagPrintNeverFit = 4, ///< tisk se nepodaril a nikdy se nepodari, pouziva se s PrintNotFit
-		//FlagPrintBreak = 8 ///< PrintNotFit is caused by page or column break
-	};
-	struct PrintResult
+	class PrintResult
 	{
-		quint16 value;
-		quint16 flags;
-		PrintResult() : value(0), flags(0) {}
-		PrintResult(PrintResultValue val, PrintResultFlags f = FlagNone) : value((quint16)val), flags((quint16)f) {}
-		QString toString() const {return QString("value: %1 flags: %2")
-					.arg(value==PrintOk? "OK": value==PrintNotFit? "NotFit": "NotPrintedYet")
-					.arg(QString((flags & FlagPrintAgain)? "PrintAgain ": " ")) + ((flags & FlagPrintNeverFit)? "PrintNeverFit ": " ");}
+		PrintResultValue value;
+	public:
+		PrintResult(PrintResultValue v = PR_NotPrintedYet) : value(v) {}
+
+		PrintResult& operator=(PrintResultValue v) {this->value = v; return *this;}
+		bool operator==(PrintResultValue v) const {return this->value == v;}
+
+		QString toString() const {
+			QString ret;
+			switch(value) {
+			case PR_NotPrintedYet: ret = QStringLiteral("PR_NotPrintedYet"); break;
+			case PR_PrintedOk: ret = QStringLiteral("PR_PrintedOk"); break;
+			case PR_PrintAgainOnNextPage: ret = QStringLiteral(""); break;
+			case PR_PrintAgainDetail: ret = QStringLiteral("PR_PrintAgainOnNextPage"); break;
+			case PR_ErrorNeverFit: ret = QStringLiteral("PR_ErrorNeverFit"); break;
+			default: ret = QStringLiteral("UNKNOWN"); break;
+			}
+			return ret;
+		}
 	};
 public:
 	typedef graphics::Point Point;
@@ -315,9 +323,9 @@ public:
 		return static_cast<ReportItem*>(this->Super::parent());
 	}
 	//! Print item in form, that understandable by ReportPainter.
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PrintOk;}
+	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PR_PrintedOk;}
 	//! Print item in HTML element form.
-	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PrintOk;}
+	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PR_PrintedOk;}
 	/// vrati definovanou velikost pro item a layout
 	virtual ChildSize childSize(Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize();}
 

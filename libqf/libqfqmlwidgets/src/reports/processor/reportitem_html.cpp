@@ -45,7 +45,7 @@ QDomText setElementText(QDomElement &el, const QString &str)
 ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	if(out.isNull())
 		return res;
 
@@ -73,7 +73,7 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 					ch_res = it->printHtml(el_div);
 					//if(cnt) qfInfo() << "\t again2:" << (ch_res .flags & FlagPrintAgain);
 					//cnt++;
-				} while(ch_res.flags & FlagPrintAgain);
+				} while(ch_res == PR_PrintAgainDetail);
 				res = ch_res;
 			}
 			out.appendChild(el_div);
@@ -124,13 +124,13 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 	}
 	--*/
 	res = Super::printHtml(out);
-	if(res.value == PrintOk) {
+	if(res == PR_PrintedOk) {
 		if(model) {
 			/// take next data row
 			setCurrentIndex(currentIndex() + 1);
 			if(currentIndex() < model->rowCount()) {
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res.flags |= FlagPrintAgain;
+				res = PR_PrintAgainDetail;
 			}
 		}
 	}
@@ -143,7 +143,7 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 ReportItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id");
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	if(out.isNull()) return res;
 
 	QDomElement el_div = out.ownerDocument().createElement("div");

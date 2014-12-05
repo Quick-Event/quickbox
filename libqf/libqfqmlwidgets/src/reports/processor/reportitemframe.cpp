@@ -270,7 +270,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	Rect paint_area_rect = bounding_rect;
 	if(layout() == LayoutStacked) {
 		/// allways print all the children) in the stacked layout
@@ -282,8 +282,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			ChildSize sz = it->childSize(LayoutVertical);
 			children_paint_area_rect.setHeight(sz.fromParentSize(paint_area_rect.height()));
 			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
-			if(ch_res.value != PrintOk) {
-				if(res.value == PrintOk) {
+			if(ch_res == PR_PrintAgainOnNextPage) {
+				if(res == PR_PrintedOk) {
 					/// only one child can be printed again
 					/// others are ignored in ch_res flags
 					res = ch_res;
@@ -355,13 +355,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					//if(parent_grid) qfInfo() << "\t renderedRect:" << out->lastChild()->renderedRect.toString();
 					//}
 					//qfInfo() << "\t sum_mm:" << sum_mm;
-					if(ch_res.value != PrintOk) {
+					if(ch_res == PR_PrintAgainOnNextPage) {
 						/// para can be printed as NotFit if it owerflows its parent frame
 						res = ch_res;
 					}
 				}
 				else {
-					if(ch_res.value == PrintOk) {
+					if(ch_res == PR_PrintedOk) {
 						/// jediny, kdo se nemusi vytisknout je band
 						if(it->isVisible()) {
 							qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
@@ -380,7 +380,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		}
 		qreal rest_mm = paint_area_rect.width() - sum_mm;
 
-		if(res.value == PrintOk) {
+		if(res == PR_PrintedOk) {
 			if(has_percent) {
 				/// divide rest of space to xx% items
 				qreal sum_percent = 0;
@@ -425,13 +425,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							if(out->children().count() > prev_children_cnt) {
 								//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
 								layout_ix_to_print_ix[i] = prev_children_cnt;
-								if(ch_res.value != PrintOk) {
+								if(ch_res == PR_PrintAgainOnNextPage) {
 									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
 									res = ch_res;
 								}
 							}
 							else {
-								if(ch_res.value == PrintOk) {
+								if(ch_res == PR_PrintedOk) {
 									/// jediny, kdo se nemusi vytisknout je band
 									if(it->isVisible()) {
 										qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
@@ -490,7 +490,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				}
 			}
 		}
-		if(res.value != PrintOk) {
+		if(res == PR_PrintAgainOnNextPage) {
 			/// detail by mel mit, pokud se ma zalamovat, vzdy vertikalni layout, jinak tato funkce zpusobi, ze se po zalomeni vsechny dcerine bandy budou tisknout cele znova
 			/// zakomentoval jsem to a zda se, ze to zatim nicemu nevadi
 			//resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
@@ -549,7 +549,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			qfDebug() << "\tch_bbr v2:" << children_paint_area_rect.toString();
 			int prev_children_cnt = out->childrenCount();
 			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
-			if(ch_res.value == PrintOk) {
+			if(ch_res == PR_PrintedOk || ch_res == PR_PrintAgainDetail) {
 				/// muze se stat, ze se dite nevytiskne, napriklad band nema zadna data
 				if(out->children().count() > prev_children_cnt) {
 					ReportItemMetaPaint *mpi = out->lastChild();
@@ -557,7 +557,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						const Rect &r = mpi->renderedRect;
 						/// cut rendered area
 						paint_area_rect.cutSizeInLayout(r, layout());
-						if(ch_res.flags & FlagPrintAgain) {
+						if(ch_res == PR_PrintAgainDetail) {
 							indexToPrint--; /// vytiskni ho znovu
 						}
 					}
@@ -583,18 +583,18 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	qfDebug() << "\tdesignedRect:" << designedRect.toString();// << "isLeftTopFloating:" << isLeftTopFloating() << "isRightBottomFloating:" << isRightBottomFloating();
 	qfDebug() << "\tlayout:" << ((layout() == LayoutHorizontal)? "horizontal": "vertical") << ", is rubber:" << isRubber(layout());
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	if(!isVisible())
 		return res;
 	Rect frame_content_br = bounding_rect;
 	qfDebug() << "\tbbr 0:" << frame_content_br.toString();
 	if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() - Epsilon > bounding_rect.width()) {
 		qfDebug() << "\t<<<< FRAME NOT FIT WIDTH";
-		return checkPrintResult(PrintNotFit);
+		return checkPrintResult(PR_PrintAgainOnNextPage);
 	}
 	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() - Epsilon > bounding_rect.height()) {
 		qfDebug() << "\t<<<< FRAME NOT FIT HEIGHT";
-		return checkPrintResult(PrintNotFit);
+		return checkPrintResult(PR_PrintAgainOnNextPage);
 	}
 	frame_content_br.adjust(hinset(), vinset(), -hinset(), -vinset());
 
@@ -623,11 +623,11 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		res = printMetaPaintChildren(mp, column_br);
 		//qfDebug() << "\tbbr_init:" << bbr_init.toString();
 
-		if(res.value == PrintNotFit) {
+		if(res == PR_PrintAgainOnNextPage) {
 			//qfInfo().color(QFLog::Yellow) << element.tagName() << "keep all:" << keepAll << "column" << current_column_index << "of" << column_sizes.count();
 			//qfInfo().color(QFLog::Yellow) << "column_br:" << column_br.toString() << "frame_content_br:" << frame_content_br.toString();
 			/// pokud je result neverfit, nech ho tam, at aspon vidime, co se nikdy nevejde
-			if(isKeepAll() && !(res.flags & FlagPrintNeverFit)) {
+			if(isKeepAll() && !(res == PR_ErrorNeverFit)) {
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				//qfInfo() << "keepAll && !(res.flags & FlagPrintNeverFit)";
 				QF_SAFE_DELETE(mp);

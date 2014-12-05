@@ -54,11 +54,7 @@ Report {
 				}
 			}
 			Frame {
-				width: "%"
 				height: "%"
-				Para {
-					text: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-				}
 			}
 			Frame {
 				id: footer

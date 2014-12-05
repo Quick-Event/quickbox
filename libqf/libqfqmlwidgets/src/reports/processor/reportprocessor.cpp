@@ -130,13 +130,12 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 		QF_SAFE_DELETE(m_processorOutput);
 		if(documentInstanceRoot()) {
 			m_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
-			m_singlePageProcessResult = ReportItem::PrintResult(ReportItem::PrintNotFit);
+			m_singlePageProcessResult = ReportItem::PR_PrintAgainOnNextPage;
 		}
 	}
 	ReportItemMetaPaint mpit;
 	//context().dump();
-	while(m_singlePageProcessResult.value == ReportItem::PrintNotFit
-		  && !(m_singlePageProcessResult.flags & ReportItem::FlagPrintNeverFit)) {
+	while(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
 		m_singlePageProcessResult = processPage(&mpit);
 		qfDebug() << "singlePageProcessResult:" << m_singlePageProcessResult.toString();
 		//qfDebug().color(QFLog::Yellow) << context().styleCache().toString();
@@ -146,14 +145,14 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 			it->setParent(m_processorOutput);
 			if(mode == FirstPage || mode == SinglePage) {
 				emit pageProcessed();
-				if(m_singlePageProcessResult.value == ReportItem::PrintNotFit) {
+				if(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
 					m_processedPageNo++;
 				}
 				//qfInfo() << "pageProcessed:" << fProcessedPageNo;
 				break;
 			}
 			else {
-				if(m_singlePageProcessResult.value == ReportItem::PrintNotFit) {
+				if(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
 					m_processedPageNo++;
 				}
 				else {

@@ -177,11 +177,11 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	//if(res.value == PrintNotFit) {
 	//qfWarning().noSpace() << "PrintNotFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "' recentlyPrintNotFit: " << recentlyPrintNotFit << " keepall: " << keepAll;
 	//}
-	if(isKeepAll() && m_recentlyPrintNotFit && res.value == PrintNotFit) {
+	if(isKeepAll() && m_recentlyPrintNotFit && res == PR_PrintAgainOnNextPage) {
 		//qfWarning().noSpace() << "PrintNeverFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "'";
-		ret.flags |= FlagPrintNeverFit;
+		ret = PR_ErrorNeverFit;
 	}
-	m_recentlyPrintNotFit = (ret.value == PrintNotFit);
+	m_recentlyPrintNotFit = (res == PR_PrintAgainOnNextPage);
 	return ret;
 }
 
@@ -701,12 +701,12 @@ ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out
 	qfLogFuncFrame();
 	Q_UNUSED(bounding_rect);
 	Q_UNUSED(out);
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	if(!isVisible()) {
 		return res;
 	}
 	if(!m_breaking) {
-		res = PrintNotFit;
+		res = PR_PrintAgainOnNextPage;
 		//res.flags = FlagPrintBreak;
 	}
 	m_breaking = !m_breaking;

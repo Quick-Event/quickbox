@@ -22,7 +22,7 @@ ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *ou
 {
 	qfLogFuncFrame() << "\x1B[1;31;40m***ROOT***ROOT***ROOT***ROOT***\x1B[0;37;40m" << this;
 	Q_UNUSED(bounding_rect);
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	//updateChildren();
 	//ReportItemMetaPaintPage *pg = new ReportItemMetaPaintPage(out, element, processor()->context());
 	//pg->renderedRect = designedRect;

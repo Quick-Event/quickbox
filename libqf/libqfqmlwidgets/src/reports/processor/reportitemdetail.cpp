@@ -83,7 +83,7 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 	}
 	--*/
 	res = Super::printMetaPaint(out, bounding_rect);
-	if(res.value == PrintOk) {
+	if(res == PR_PrintedOk) {
 		if(model) {
 			/// take next data row
 			int ix = currentIndex() + 1;
@@ -92,7 +92,7 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 			if(ix < model->rowCount()) {
 				setCurrentIndex(ix);
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res.flags |= FlagPrintAgain;
+				res = PR_PrintAgainDetail;
 			}
 		}
 	}

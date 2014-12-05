@@ -225,7 +225,7 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 {
 	//qfDebug().color(QFLog::Magenta) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
 	//qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
-	PrintResult res = PrintOk;
+	PrintResult res = PR_PrintedOk;
 	Rect br = bounding_rect;
 	/*--
 	if(!fakeLoadErrorPara.isNull()) {
