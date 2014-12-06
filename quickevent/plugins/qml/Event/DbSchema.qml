@@ -93,6 +93,10 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				},
+				Field { name: 'cardLent'; type: Boolean { }
+					defaultValue: false;
+					notNull: true
+				},
 				Field { name: 'status';
 					type: Enum { name: 'enum_lap_status';
 						keys: ['OFF', 'START', 'FINISH']
