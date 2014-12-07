@@ -28,6 +28,10 @@ public:
 		m_builder.select2(table_name, fields, flags);
 		return this;
 	}
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* select3(const QString &table_name, const QString &fields, const QString &flags = QString()) {
+		m_builder.select3(table_name, fields, flags);
+		return this;
+	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* from(const QString &table_name) {
 		m_builder.from(table_name);
 		return this;

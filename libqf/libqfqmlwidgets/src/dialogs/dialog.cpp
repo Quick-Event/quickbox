@@ -10,6 +10,7 @@
 
 #include <QVBoxLayout>
 #include <QSettings>
+#include <QShowEvent>
 
 using namespace qf::qmlwidgets::dialogs;
 
@@ -179,6 +180,22 @@ qf::qmlwidgets::framework::DialogWidget *Dialog::dialogWidget()
 {
 	qf::qmlwidgets::framework::DialogWidget *ret = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
 	return ret;
+}
+
+void Dialog::showEvent(QShowEvent *ev)
+{
+	Super::showEvent(ev);
+	if(!ev->spontaneous()) {
+		// There are two kinds of show events: show events caused by the window system (spontaneous), and internal show events.
+		// Spontaneous (QEvent::spontaneous()) show events are sent just after the window system shows the window;
+		// they are also sent when a top-level window is redisplayed after being iconified. Internal show events are delivered just before the widget becomes visible.
+		if(ev->type() == QEvent::Show) {
+			emit visibleChanged(true);
+		}
+		else if(ev->type() == QEvent::Hide) {
+			emit visibleChanged(false);
+		}
+	}
 }
 
 void Dialog::updateCaptionFrame()

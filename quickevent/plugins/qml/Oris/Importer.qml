@@ -11,9 +11,9 @@ QtObject {
 
 	property QfObject internals: QfObject
 	{
-		//SqlConnection {
-		//	id: db
-		//}
+		SqlConnection {
+			id: db
+		}
 		CompetitorDocument {
 			id: competitorDoc
 		}
@@ -95,7 +95,7 @@ QtObject {
 					classDoc.setValue("name", class_name);
 					classDoc.save();
 					//break;
-				}				
+				}
 
 				importEventOrisRunners(event_id, stage_count)
 			}
@@ -116,6 +116,7 @@ QtObject {
 				var data = JSON.parse(json_str).Data;
 				// import competitors
 				//FrameWork.showProgress(qsTr("Importing competitors"), 2, steps);
+				db.transaction();
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					Log.debug(JSON.stringify(competitor_obj, null, 2));
@@ -141,6 +142,7 @@ QtObject {
 					competitorDoc.save();
 					//break;
 				}
+				db.commit();
 				FrameWork.plugin("Event").api.reloadActivePart();
 			}
 			else {

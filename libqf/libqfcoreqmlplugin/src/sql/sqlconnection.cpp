@@ -13,11 +13,11 @@ namespace qfs = qf::core::sql;
 using namespace qf::core::qml;
 
 SqlConnection::SqlConnection(QObject *parent) :
-    QObject(parent)
+	QObject(parent)
 {
 	qfLogFuncFrame() << this;
-	m_sqlConnection = qfs::Connection(QSqlDatabase::database(QSqlDatabase::defaultConnection, false));
-	qfDebug() << "created db connection name:" << connectionName();
+	//nativeSqlConnection() = qfs::Connection(QSqlDatabase::database(QSqlDatabase::defaultConnection, false));
+	//qfDebug() << "created db connection name:" << connectionName();
 }
 
 SqlConnection::~SqlConnection()
@@ -28,16 +28,15 @@ SqlConnection::~SqlConnection()
 	}
 }
 
-void SqlConnection::setConnectionName(const QString &n)
+QSqlDatabase &SqlConnection::nativeSqlConnection()
 {
-	qfLogFuncFrame() << this << connectionName() << "->" << n;
-	if(n != connectionName()) {
-		m_sqlConnection = qfs::Connection(QSqlDatabase::database(n, false));
-		emit connectionNameChanged();
+	if(!m_sqlConnection.isValid()) {
+		m_sqlConnection = qfs::Connection(QSqlDatabase::database(connectionName(), false));
 	}
+	return m_sqlConnection;
 }
 
-QString SqlConnection::defaultConnectionName() const
+QString SqlConnection::defaultConnectionName()
 {
 	static QString s = QLatin1String(QSqlDatabase::defaultConnection);
 	return s;
@@ -46,7 +45,7 @@ QString SqlConnection::defaultConnectionName() const
 void SqlConnection::setHostName(const QString &n)
 {
 	if(n != hostName()) {
-		m_sqlConnection.setHostName(n);
+		nativeSqlConnection().setHostName(n);
 		emit hostNameChanged();
 	}
 }
@@ -54,7 +53,7 @@ void SqlConnection::setHostName(const QString &n)
 void SqlConnection::setUserName(const QString &n)
 {
 	if(n != userName()) {
-		m_sqlConnection.setUserName(n);
+		nativeSqlConnection().setUserName(n);
 		emit userNameChanged();
 	}
 }
@@ -62,7 +61,7 @@ void SqlConnection::setUserName(const QString &n)
 void SqlConnection::setPassword(QString n)
 {
 	if(n != password()) {
-		m_sqlConnection.setPassword(n);
+		nativeSqlConnection().setPassword(n);
 		emit databaseNameChanged();
 	}
 }
@@ -70,7 +69,7 @@ void SqlConnection::setPassword(QString n)
 void SqlConnection::setDatabaseName(const QString &n)
 {
 	if(n != databaseName()) {
-		m_sqlConnection.setDatabaseName(n);
+		nativeSqlConnection().setDatabaseName(n);
 		emit databaseNameChanged();
 	}
 }
@@ -78,19 +77,19 @@ void SqlConnection::setDatabaseName(const QString &n)
 void SqlConnection::setPort(int n)
 {
 	if(n != port()) {
-		m_sqlConnection.setPort(n);
+		nativeSqlConnection().setPort(n);
 		emit portChanged();
 	}
 }
 
 QString SqlConnection::driverName()
 {
-    return m_sqlConnection.driverName();
+	return nativeSqlConnection().driverName();
 }
 
 QString SqlConnection::errorString()
 {
-    return m_sqlConnection.lastError().text();
+	return nativeSqlConnection().lastError().text();
 }
 /*
 void SqlDatabase::reloadConnection()
@@ -103,13 +102,13 @@ void SqlDatabase::reloadConnection()
 bool SqlConnection::open()
 {
 	qfInfo() << "Opening database:"
-			 << "host:" << m_sqlConnection.hostName()
-			 << "user:" << m_sqlConnection.userName()
-			 << "port:" << m_sqlConnection.port()
-			 << "database:" << m_sqlConnection.databaseName() ;
-	bool ret = m_sqlConnection.open();
+			 << "host:" << nativeSqlConnection().hostName()
+			 << "user:" << nativeSqlConnection().userName()
+			 << "port:" << nativeSqlConnection().port()
+			 << "database:" << nativeSqlConnection().databaseName() ;
+	bool ret = nativeSqlConnection().open();
 	if(!ret) {
-		qfWarning() << "Open database error:" << m_sqlConnection.lastError().databaseText() << m_sqlConnection.lastError().driverText();
+		qfWarning() << "Open database error:" << nativeSqlConnection().lastError().databaseText() << nativeSqlConnection().lastError().driverText();
 	}
 	else {
 		emit isOpenChanged();
@@ -121,7 +120,7 @@ bool SqlConnection::open()
 void SqlConnection::close()
 {
 	if(isOpen()) {
-		m_sqlConnection.close();
+		nativeSqlConnection().close();
 		emit isOpenChanged();
 	}
 }
@@ -129,8 +128,8 @@ void SqlConnection::close()
 bool SqlConnection::transaction()
 {
 	bool ret = true;
-	if(m_sqlConnection.driver()->hasFeature(QSqlDriver::Transactions)) {
-		ret = m_sqlConnection.transaction();
+	if(nativeSqlConnection().driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = nativeSqlConnection().transaction();
 		if(!ret) {
 			qfWarning() << "Cannot open transaction";
 		}
@@ -141,8 +140,8 @@ bool SqlConnection::transaction()
 bool SqlConnection::commit()
 {
 	bool ret = true;
-	if(m_sqlConnection.driver()->hasFeature(QSqlDriver::Transactions)) {
-		ret = m_sqlConnection.commit();
+	if(nativeSqlConnection().driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = nativeSqlConnection().commit();
 		if(!ret) {
 			qfWarning() << "Cannot commit transaction";
 		}
@@ -153,8 +152,8 @@ bool SqlConnection::commit()
 bool SqlConnection::rollback()
 {
 	bool ret = true;
-	if(m_sqlConnection.driver()->hasFeature(QSqlDriver::Transactions)) {
-		ret = m_sqlConnection.rollback();
+	if(nativeSqlConnection().driver()->hasFeature(QSqlDriver::Transactions)) {
+		ret = nativeSqlConnection().rollback();
 		if(!ret) {
 			qfWarning() << "Cannot rollback transaction";
 		}
@@ -165,7 +164,7 @@ bool SqlConnection::rollback()
 SqlQuery *SqlConnection::createQuery()
 {
 	SqlQuery *ret = new SqlQuery();
-	ret->setDatabase(m_sqlConnection);
+	ret->setDatabase(nativeSqlConnection());
 	return ret;
 }
 /*

@@ -16,11 +16,45 @@ ComboBox::ComboBox(QWidget *parent)
 	: Super(parent), IDataWidget(this)
 {
 	connect(this, &ComboBox::currentTextChanged, this, &ComboBox::onCurrentTextChanged);
+	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentDataChanged_helper(int)));
+	connect(this, SIGNAL(activated(int)), this, SLOT(currentDataActivated_helper(int)));
 }
 
 ComboBox::~ComboBox()
 {
 
+}
+
+void ComboBox::setCurrentData(const QVariant &val)
+{
+	QVariant old_val = currentData();
+	if(old_val != val) {
+		for(int i=0; i<count(); i++) {
+			QVariant v = itemData(i);
+			if(v == val) {
+				setCurrentIndex(i);
+				emit currentDataChanged(val);
+				break;
+			}
+		}
+	}
+}
+
+void ComboBox::setItems(const QVariantList &items)
+{
+	blockSignals(true);
+	clear();
+	for(auto v : items) {
+		QVariantList vl = v.toList();
+		if(vl.isEmpty()) {
+			Super::addItem(v.toString());
+		}
+		else {
+			Super::addItem(vl.value(0).toString(), vl.value(1));
+		}
+	}
+	setCurrentIndex(-1);
+	blockSignals(false);
 }
 
 QVariant ComboBox::dataValue()
@@ -70,6 +104,16 @@ void ComboBox::onCurrentTextChanged(const QString &txt)
 		saveDataValue();
 		emit dataValueChanged(dataValue());
 	}
+}
+
+void ComboBox::currentDataChanged_helper(int ix)
+{
+	emit currentDataChanged(itemData(ix));
+}
+
+void ComboBox::currentDataActivated_helper(int ix)
+{
+	emit currentDataActivated(itemData(ix));
 }
 
 //===============================================================

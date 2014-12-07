@@ -60,6 +60,8 @@ public:
 
 	int exec() Q_DECL_OVERRIDE;
 	void done(int result) Q_DECL_OVERRIDE;
+
+	Q_SIGNAL void visibleChanged(bool visible);
 private:
 	Q_SLOT void savePersistentSettings();
 
@@ -69,6 +71,8 @@ protected:
 	void updateLayout();
 
 	qf::qmlwidgets::framework::DialogWidget* dialogWidget();
+
+	void showEvent(QShowEvent *ev) Q_DECL_OVERRIDE;
 protected:
 	bool m_doneCancelled;
 	internal::CaptionFrame *m_captionFrame = nullptr;

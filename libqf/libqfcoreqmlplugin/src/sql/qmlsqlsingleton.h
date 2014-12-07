@@ -25,13 +25,12 @@ public:
 
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:
-	Q_INVOKABLE void addDatabase(const QString &type, const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
+	Q_INVOKABLE bool addDatabase(const QString &type, const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
 	//Q_INVOKABLE qf::core::qml::SqlDatabase* database(const QString &connection_name = QLatin1String(QSqlDatabase::defaultConnection));
 	QVariant retypeVariant(const QVariant &val, QVariant::Type type);
 	Q_INVOKABLE QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 	Q_INVOKABLE QString typeNameForValue(const QVariant &val);
 private:
-	//QMap<QString, SqlDatabase*> m_sqlDatabases;
 };
 
 }}}

@@ -29,12 +29,14 @@ QObject *qf::core::qml::QmlSqlSingleton::singletontype_provider(QQmlEngine *engi
 	return s;
 }
 
-void QmlSqlSingleton::addDatabase(const QString &type, const QString &connection_name)
+bool QmlSqlSingleton::addDatabase(const QString &type, const QString &connection_name)
 {
 	QSqlDatabase db = QSqlDatabase::addDatabase(type, connection_name);
-	if(!db.isValid()) {
+	bool ret = db.isValid();
+	if(!ret) {
 		qfError() << "Cannot add database type:" << type << "name:" << connection_name;
 	}
+	return ret;
 }
 
 QVariant QmlSqlSingleton::retypeVariant(const QVariant &val, QVariant::Type type)

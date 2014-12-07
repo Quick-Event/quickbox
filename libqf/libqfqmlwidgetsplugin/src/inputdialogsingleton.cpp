@@ -1,6 +1,7 @@
 #include "inputdialogsingleton.h"
 
 #include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
+#include <qf/qmlwidgets/dialogs/filedialog.h>
 
 #include <qf/core/log.h>
 
@@ -18,6 +19,16 @@ QObject *InputDialogSingleton::singletontype_provider(QQmlEngine *engine, QJSEng
 	Q_UNUSED(scriptEngine)
 	InputDialogSingleton *s = new InputDialogSingleton(engine);
 	return s;
+}
+
+QVariant InputDialogSingleton::getInt(QWidget *parent, const QString &title, const QString &label, int value, int min, int max, int step)
+{
+	bool ok;
+	int n = QInputDialog::getInt(parent, title, label, value, min, max, step, &ok);
+	QVariant ret;
+	if(ok)
+		ret = n;
+	return ret;
 }
 
 QString InputDialogSingleton::getText(QWidget *parent, const QString &title, const QString &label, const QString &text)
@@ -64,4 +75,24 @@ int InputDialogSingleton::getItemIndex(QWidget *parent, const QString &title, co
 		ret = dlg.currentItemIndex();
 	}
 	return ret;
+}
+
+QString InputDialogSingleton::getOpenFileName(QWidget *parent, const QString &title, const QString &dir, const QString &filter)
+{
+	return qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(parent, title, dir, filter);
+}
+
+QStringList InputDialogSingleton::getOpenFileNames(QWidget *parent, const QString &title, const QString &dir, const QString &filter)
+{
+	return qf::qmlwidgets::dialogs::FileDialog::getOpenFileNames(parent, title, dir, filter);
+}
+
+QString InputDialogSingleton::getSaveFileName(QWidget *parent, const QString &title, const QString &dir, const QString &filter)
+{
+	return qf::qmlwidgets::dialogs::FileDialog::getSaveFileName(parent, title, dir, filter);
+}
+
+QString InputDialogSingleton::getExistingDirectory(QWidget *parent, const QString &title, const QString &dir)
+{
+	return qf::qmlwidgets::dialogs::FileDialog::getExistingDirectory(parent, title, dir);
 }

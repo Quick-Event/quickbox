@@ -734,13 +734,11 @@ QSqlIndex Connection::primaryIndex(const QString& table_id)
 	QSqlIndex ret;
 	if(driverName().endsWith("SQLITE")) {
 #ifndef SQLITE_PARSE_CREATE_SQL_SCRIPT
-		// TODO: use PRAGMA table_info(table_name)  instead of parsing CREATE command
-		// s timhle je problem, protoze pragma neprijma table_name ve tvaru schema.table
 		QString tblname, dbname;
 		tblname = normalizeTableName(table_id);
 		qf::core::Utils::parseFieldName(tblname, &tblname, &dbname);
-		QString s = "PRAGMA table_info(table_name)";
-		s = s.arg(tblname, dbname);
+		QString s = "PRAGMA %1.table_info(%2)";
+		s = s.arg(dbname).arg(tblname);
 		QSqlQuery q = exec(s);
 		while(q.next()) {
 			ret.append(QSqlField(q.value(0).toString()));

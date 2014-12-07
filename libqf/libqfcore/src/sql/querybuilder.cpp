@@ -91,7 +91,19 @@ QueryBuilder & QueryBuilder::select2(const QString & table_name, const QString &
 	String s = fields;
 	QStringList sl = s.splitAndTrim(',', '\'');
 	QStringList sl2;
-	foreach(s, sl) sl2 << table_name + "." + s;
+	foreach(s, sl)
+		sl2 << table_name + "." + s;
+	s = sl2.join(",");
+	return select(s, flags);
+}
+
+QueryBuilder &QueryBuilder::select3(const QString &table_name, const QString &fields, const QString &flags)
+{
+	String s = fields;
+	QStringList sl = s.splitAndTrim(',', '\'');
+	QStringList sl2;
+	foreach(s, sl)
+		sl2 << table_name + "." + s + " AS " + table_name + "__" + s;
 	s = sl2.join(",");
 	return select(s, flags);
 }

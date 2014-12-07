@@ -38,17 +38,14 @@ Schema {
 		},
 		Table { name: 'classes'
 			fields: [
-				Field { name: 'id'; type: Serial { } },
+				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'courseId'; type: String { length: 10 } },
 				Field { name: 'name'; type: String { length: 10 } }
-			]
-			indexes: [
-				Index {fields: ['id']; primary: true }
 			]
 		},
 		Table { name: 'competitors'
 			fields: [
-				Field { name: 'id'; type: Serial {} },
+				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'startNumber'; type: Int {} },
 				Field { name: 'classId'; type: Int {} },
 				Field { name: 'courseId'; type: String { length: 10 } },
@@ -64,14 +61,13 @@ Schema {
 				Field { name: 'importId'; type: String {} }
 			]
 			indexes: [
-				Index {fields: ['id']; primary: true },
 				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
 				Index {fields: ['importId'] }
 			]
 		},
 		Table { name: 'laps'
 			fields: [
-				Field { name: 'id'; type: Serial {} },
+				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stageId'; type: Int {} },
@@ -106,7 +102,6 @@ Schema {
 				}
 			]
 			indexes: [
-				Index { fields: ['id']; primary: true },
 				Index {
 					fields: ['competitorId'];
 					references: ForeignKeyReference {
@@ -123,7 +118,7 @@ Schema {
 		},
 		Table { name: 'registrations'
 			fields: [
-				Field { name: 'id'; type: Serial {} },
+				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
@@ -132,7 +127,6 @@ Schema {
 				Field { name: 'siId'; type: Int { } }
 			]
 			indexes: [
-				Index {fields: ['id']; primary: true },
 				Index {fields: ['registration'] }
 			]
 		},
@@ -140,7 +134,7 @@ Schema {
 			fields: [
 				Field {
 					name: 'id'
-					type: Serial {}
+					type: Serial { primaryKey: true }
 				},
 				Field { name: 'stationNumber'
 					type: Int {
@@ -182,10 +176,6 @@ Schema {
 				}
   			]
 			indexes: [
-				Index {
-					fields: ['id']
-					primary: true
-				},
 				Index {
 					fields: ['idsi']
 					unique: false

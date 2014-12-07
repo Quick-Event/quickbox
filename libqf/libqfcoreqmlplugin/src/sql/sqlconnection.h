@@ -2,6 +2,7 @@
 #define QF_CORE_QML_SQLCONNECTION_H
 
 #include <qf/core/sql/connection.h>
+#include <qf/core/utils.h>
 
 #include <QObject>
 #include <QSqlDatabase>
@@ -30,33 +31,29 @@ public:
 	explicit SqlConnection(QObject *parent = 0);
 	~SqlConnection() Q_DECL_OVERRIDE;
 public:
-	QString connectionName() {return m_sqlConnection.connectionName();}
-	void setConnectionName(const QString &n);
-	Q_SIGNAL void connectionNameChanged();
+	QF_PROPERTY_IMPL2(QString, c, C, onnectionName, defaultConnectionName())
 
-	QString defaultConnectionName() const;
-
-	QString hostName() {return m_sqlConnection.hostName();}
+	QString hostName() {return nativeSqlConnection().hostName();}
 	void setHostName(const QString &n);
 	Q_SIGNAL void hostNameChanged();
 
-	QString userName() {return m_sqlConnection.userName();}
+	QString userName() {return nativeSqlConnection().userName();}
 	void setUserName(const QString &n);
 	Q_SIGNAL void userNameChanged();
 
-	QString password() const {return m_sqlConnection.password();}
+	QString password() {return nativeSqlConnection().password();}
 	void setPassword(QString n);
 	Q_SIGNAL void passwordChanged();
 
-	QString databaseName() {return m_sqlConnection.databaseName();}
+	QString databaseName() {return nativeSqlConnection().databaseName();}
 	void setDatabaseName(const QString &n);
 	Q_SIGNAL void databaseNameChanged();
 
-	int port() {return m_sqlConnection.port();}
+	int port() {return nativeSqlConnection().port();}
 	void setPort(int n);
 	Q_SIGNAL void portChanged();
 
-	bool isOpen() {return m_sqlConnection.isOpen();}
+	bool isOpen() {return nativeSqlConnection().isOpen();}
 	Q_SIGNAL void isOpenChanged();
 
 	QString driverName();
@@ -74,9 +71,12 @@ public:
 	Q_INVOKABLE qf::core::qml::SqlQuery* createQuery();
 	//Q_INVOKABLE qf::core::qml::SqlQuery* exec(const QString &query_str);
 	//Q_INVOKABLE qf::core::qml::SqlQuery* exec(qf::core::qml::SqlQueryBuilder *qb);
+public:
+	static QString defaultConnectionName();
+private:
+	QSqlDatabase& nativeSqlConnection();
 private:
 	qf::core::sql::Connection m_sqlConnection;
-	QString m_defaultConnectionName;
 };
 
 }}}

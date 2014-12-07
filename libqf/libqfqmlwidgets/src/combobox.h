@@ -17,6 +17,7 @@ class QFQMLWIDGETS_DECL_EXPORT ComboBox : public QComboBox, public IDataWidget
 	Q_PROPERTY(QVariant dataValue READ dataValue WRITE setDataValue NOTIFY dataValueChanged)
 	Q_PROPERTY(QString dataId READ dataId WRITE setDataId)
 	Q_PROPERTY(bool valueRestrictedToItems READ isValueRestrictedToItems WRITE setValueRestrictedToItems NOTIFY valueRestrictedToItemsChanged)
+	Q_PROPERTY(QVariant currentData READ currentData WRITE setCurrentData NOTIFY currentDataChanged)
 private:
 	typedef QComboBox Super;
 public:
@@ -24,15 +25,25 @@ public:
 	~ComboBox() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_BOOL_IMPL2(v, V , alueRestrictedToItems, true)
+
+	QVariant currentData() const {return Super::currentData();}
+	void setCurrentData(const QVariant &val);
+	Q_SIGNAL void currentDataChanged(const QVariant &value);
+	Q_SIGNAL void currentDataActivated(const QVariant &value);
+public:
+	Q_INVOKABLE void setItems(const QVariantList &items);
 protected:
 	QVariant dataValue() Q_DECL_OVERRIDE;
-	void setDataValue(const QVariant &val) Q_DECL_OVERRIDE;
-	Q_SIGNAL void dataValueChanged(const QVariant &new_val);
+	void setDataValue(const QVariant &value) Q_DECL_OVERRIDE;
+	Q_SIGNAL void dataValueChanged(const QVariant &value);
 
 	virtual void removeItems();
 	virtual void loadItems() {}
 
 	Q_SLOT virtual void onCurrentTextChanged(const QString &txt);
+private:
+	Q_SLOT void currentDataChanged_helper(int ix);
+	Q_SLOT void currentDataActivated_helper(int ix);
 protected:
 	bool m_loadingState = false;
 };

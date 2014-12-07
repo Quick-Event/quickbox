@@ -1,4 +1,5 @@
 import "private"
+import "private/libsqldef.js" as SqlDef
 
 FieldType
 {
@@ -7,20 +8,32 @@ FieldType
 
 	function createSqlScript(options)
 	{
-		var def = options.schemaName + '.' + name;
+		if(__isEnumSupported(options))
+			var def = options.schemaName + '.' + name;
+		else
+			var def = 'character varying'
 		return def;
 	}
 
 	function createSqlType(options)
 	{
-		return 'CREATE TYPE ' + options.schemaName + '.' + name + ' AS ENUM (' + quoteArray(keys).join(",") + ')';
+		var ret = 'CREATE TYPE ' + options.schemaName + '.' + name + ' AS ENUM (' + __quoteArray(keys).join(",") + ')';
+		if(!__isEnumSupported(options))
+			ret = "-- " + ret;
+		return ret;
 	}
 
-	function quoteArray(a)
+	function __quoteArray(a)
 	{
 		var ret = [];
 		for(var i=0; i<a.length; i++)
 			ret.push("'" + a[i] + "'");
 		return ret;
+	}
+
+	function __isEnumSupported(options)
+	{
+		var opts = new SqlDef.Options(options);
+		return opts.isEnumTypeSupported();
 	}
 }

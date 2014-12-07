@@ -25,6 +25,7 @@ HEADERS += \
     $$PWD/datacontroller.h \
     $$PWD/idatawidget.h \
     $$PWD/combobox.h \
+    $$PWD/spinbox.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
     $$PWD/datacontroller.cpp \
     $$PWD/idatawidget.cpp \
     $$PWD/combobox.cpp \
+    $$PWD/spinbox.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \

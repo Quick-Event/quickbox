@@ -1,5 +1,7 @@
 #include "messageboxsingleton.h"
 
+#include <qf/core/log.h>
+
 #include <QQmlEngine>
 #include <QMessageBox>
 #include <QApplication>
@@ -29,5 +31,6 @@ int MessageBoxSingleton::critical(QWidget *parent, const QString &text)
 	if(parent == nullptr) {
 		parent = QApplication::activeWindow();
 	}
+	qfWarning() << text;
 	return QMessageBox::critical(parent, trUtf8("Error"), text);
 }

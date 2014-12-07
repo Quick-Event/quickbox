@@ -34,14 +34,16 @@ QtObject
 	function createSqlConstraintScript(constr_no, options)
 	{
 		var ret = '';
-		//var full_table_name = options.schemaName + '.' + options.tableName;
+		var full_table_name = options.tableName;
+		if(options.driverName.endsWith("PSQL"))
+			full_table_name = options.schemaName + '.' + options.tableName;
 		if(fields) {
 			if(references) {
 				ret += '\tCONSTRAINT ' + indexName(constr_no, options.tableName)
 					+ ' FOREIGN KEY ('
 					+ fields.join(', ')
 					+ ') REFERENCES '
-					+ options.schemaName + '.' + references.table + ' ('
+					+ full_table_name + ' ('
 					+ references.fields.join(', ')
 					+ ')'
 					+ ' ON UPDATE ' + references.onUpdate

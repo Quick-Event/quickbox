@@ -54,8 +54,10 @@ public:
 	* @param flags  Can be [ DISTINCT | ALL | DITINCT ON expr ]
 	*/
 	QueryBuilder& select(const QString &fields, const QString &flags = QString());
-	//! Jako select(const QString &fields, const QString &flags = QString()), ale pred kazdy field z fields prida table_name a tecku.
+	//! Same as select(), but it prepends table_name before each field.
 	QueryBuilder& select2(const QString &table_name, const QString &fields, const QString &flags = QString());
+	//! Same as select2(), but it appends AS table__field after each field.
+	QueryBuilder& select3(const QString &table_name, const QString &fields, const QString &flags = QString());
 	/**
 	* @param table_name For details see join() parameter \a t2_name .
 	*/

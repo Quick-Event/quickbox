@@ -1,6 +1,7 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.core.sql.def 1.0
+import "private/libsqldef.js" as SqlDef
 
 QtObject {
 	id: root
@@ -12,9 +13,12 @@ QtObject {
 
 	function createSqlScript(options)
 	{
+		var opts = new SqlDef.Options(options);
 		var ret = [];
 		var sql_types = [];
-		var full_table_name = options.schemaName + '.' + root.name;
+		var full_table_name = root.name;
+		if(options.driverName.endsWith("PSQL"))
+			full_table_name = options.schemaName + '.' + root.name;
 		ret.push('-- create table: ' + full_table_name);
 		var table_def = 'CREATE TABLE ' + full_table_name + ' (\n';
 		var field_defs = [];
@@ -47,14 +51,18 @@ QtObject {
 			if(index_def)
 				ret.push('CREATE INDEX ' + index.indexName(i, name) + ' ON ' + full_table_name + ' ' + index_def);
 		}
+		var comments_prefix = "";
+		if(!opts.isTableCommentsSupported()) {
+			comments_prefix = "-- comments not suported for driver: " + options.driverName + "\n-- ";
+		}
 		for(var i=0; i<fields.length; i++) {
 			var fld = fields[i];
 			if(fld.comment) {
-				ret.push('COMMENT ON COLUMN ' + full_table_name + '.' + fld.name + " IS '" + fld.comment + "'");
+				ret.push(comments_prefix + 'COMMENT ON COLUMN ' + full_table_name + '.' + fld.name + " IS '" + fld.comment + "'");
 			}
 		}
 		if(root.comment) {
-			ret.push('COMMENT ON TABLE ' + full_table_name + " IS '" + root.comment + "'");
+			ret.push(comments_prefix + 'COMMENT ON TABLE ' + full_table_name + " IS '" + root.comment + "'");
 		}
 		var ins = "INSERT INTO " + full_table_name + " (" + fieldNames.join(", ") + ") VALUES "
 		for(var i=0; i<root.rows.length; i++) {

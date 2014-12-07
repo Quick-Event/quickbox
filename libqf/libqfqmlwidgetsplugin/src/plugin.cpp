@@ -5,6 +5,7 @@
 #include <qf/qmlwidgets/frame.h>
 #include <qf/qmlwidgets/label.h>
 #include <qf/qmlwidgets/lineedit.h>
+#include <qf/qmlwidgets/spinbox.h>
 #include <qf/qmlwidgets/combobox.h>
 #include <qf/qmlwidgets/splitter.h>
 #include <qf/qmlwidgets/statusbar.h>
@@ -38,6 +39,7 @@
 #include <qf/core/log.h>
 
 #include <QPushButton>
+#include <QRadioButton>
 #include <QFrame>
 #include <QQmlExtensionPlugin>
 #include <qqml.h>
@@ -65,11 +67,13 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::Label>(uri, 1, 0, "Label");
 		qmlRegisterType<qf::qmlwidgets::LineEdit>(uri, 1, 0, "LineEdit");
+		qmlRegisterType<qf::qmlwidgets::SpinBox>(uri, 1, 0, "SpinBox");
 		qmlRegisterType<qf::qmlwidgets::ComboBox>(uri, 1, 0, "ComboBox");
 		qmlRegisterType<qf::qmlwidgets::ForeignKeyComboBox>(uri, 1, 0, "ForeignKeyComboBox");
 		qmlRegisterType<qf::qmlwidgets::Splitter>(uri, 1, 0, "Splitter");
 		qmlRegisterType<qf::qmlwidgets::ProgressBar>(uri, 1, 0, "ProgressBar");
 		qmlRegisterType<QPushButton>(uri, 1, 0, "Button");
+		qmlRegisterType<QRadioButton>(uri, 1, 0, "RadioButton");
 		qmlRegisterType<qf::qmlwidgets::Frame>(uri, 1, 0, "Frame");
 		qmlRegisterType<qf::qmlwidgets::TableView>(uri, 1, 0, "TableView");
 		qmlRegisterType<qf::qmlwidgets::TableViewToolBar>(uri, 1, 0, "TableViewToolBar");
