@@ -5,18 +5,6 @@ import qf.qmlwidgets 1.0
 Plugin {
 	id: root
 
-	property list<Action> actions: [
-		Action {
-			id: actShowLogView
-			text: qsTr('Show application log')
-			shortcut: "Ctrl+L"
-			onTriggered: {
-				Log.info(text, "triggered");
-				showLogDockWidget(true);
-			}
-		}
-	]
-
 	property QfObject internals: QfObject
 	{
 		property LogDockWidget logDockWidget: null
@@ -24,12 +12,34 @@ Plugin {
 			id: cLogDockWidget
 			LogDockWidget {}
 		}
+
+		property list<Action> actions: [
+			Action {
+				id: actShowLogView
+				text: qsTr('Show application log')
+				shortcut: "Ctrl+L"
+				onTriggered: {
+					Log.info(text, "triggered");
+					showLogDockWidget(true);
+				}
+			},
+			Action {
+				id: actConfigureLogging
+				text: qsTr('Logging')
+				//shortcut: "Ctrl+L"
+				onTriggered: {
+					Log.info(text, "triggered");
+					//showLogDockWidget(true);
+				}
+			}
+		]
 	}
 
 	Component.onCompleted:
 	{
 		FrameWork.aboutToClose.connect(saveSettings);
 
+		FrameWork.menuBar.actionForPath('tools/pluginSettings').addActionInto(actConfigureLogging);
 		FrameWork.menuBar.actionForPath('view').addActionInto(actShowLogView);
 
 		var core_feature = FrameWork.plugin("Core");

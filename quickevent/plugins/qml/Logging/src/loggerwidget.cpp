@@ -33,7 +33,7 @@ void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
 	QString msg = em.message();
 	QString filter_str = ui->edDomainFilter->text();
 	if(!filter_str.isEmpty() && !msg.contains(filter_str, Qt::CaseInsensitive))
-			return;
+		return;
 	qf::core::Log::Level level = em.level();
 	QString log_level_str = qf::core::Log::levelName(level);
 
