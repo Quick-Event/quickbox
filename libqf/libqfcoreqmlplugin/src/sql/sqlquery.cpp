@@ -4,6 +4,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include <qf/core/exception.h>
 
 #include <QSqlError>
 #include <QSqlField>
@@ -26,17 +27,36 @@ void SqlQuery::setDatabase(const QSqlDatabase &db)
 	m_query = qf::core::sql::Query(db);
 }
 
+bool SqlQuery::exec()
+{
+	qfLogFuncFrame();
+	bool throw_exc = false;
+	bool ret = m_query.exec();
+	if(!ret) {
+		QString err = lastError();
+		if(throw_exc) {
+			QF_EXCEPTION("SQL ERROR: " + err);
+		}
+		else {
+			qfError() << "SQL ERROR:" << err;
+		}
+	}
+	return ret;
+}
+
 bool SqlQuery::exec(const QString &query_str)
 {
 	qfLogFuncFrame() << query_str;
-	bool ret;
-	if(query_str.isEmpty())
-		ret = m_query.exec();
-	else
-		ret = m_query.exec(query_str);
-	QString err = lastError();
-	if(!err.isEmpty()) {
-		qfError() << "SQL ERROR:" << err;
+	bool throw_exc = false;
+	bool ret = m_query.exec(query_str);
+	if(!ret) {
+		QString err = lastError();
+		if(throw_exc) {
+			QF_EXCEPTION("SQL ERROR: " + err);
+		}
+		else {
+			qfError() << "SQL ERROR:" << err;
+		}
 	}
 	return ret;
 }

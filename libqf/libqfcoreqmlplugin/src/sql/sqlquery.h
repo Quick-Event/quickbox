@@ -29,7 +29,8 @@ public:
 
 	void setDatabase(const QSqlDatabase &db);
 public:
-	Q_INVOKABLE bool exec(const QString &query_str = QString());
+	Q_INVOKABLE bool exec();
+	Q_INVOKABLE bool exec(const QString &query_str);
 	Q_INVOKABLE bool exec(qf::core::qml::SqlQueryBuilder *qb);
 	Q_INVOKABLE bool isValid() {return m_query.isValid();}
 	Q_INVOKABLE bool next() {return m_query.next();}

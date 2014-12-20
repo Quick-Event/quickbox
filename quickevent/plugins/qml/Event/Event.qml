@@ -94,13 +94,18 @@ QtObject {
 					q.prepare('INSERT INTO ' + stage_table_name + ' (id) VALUES (:id)');
 					for(var i=0; i<stage_count; i++) {
 						q.bindValue(':id', i+1);
-						if(!q.exec())
+						if(!q.exec()) {
+							ok = false;
 							break;
+						}
 					}
+				}
+				if(ok) {
 					db.commit();
 				}
 				else {
 					db.rollback();
+					MessageBoxSingleton.critical(FrameWork, qsTr("Create Database Error: %1").arg(q.lastError()));
 					event_name = '';
 				}
 			}

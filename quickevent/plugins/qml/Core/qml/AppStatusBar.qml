@@ -32,15 +32,17 @@ StatusBar
 	{
 		visible: false
 		layoutType: Frame.LayoutHorizontal
-		Label {
-			id: progressBarLabel
-		}
 		ProgressBar
 		{
 			id: progressBar
 			autoFillBackground: true
 			minimum: 0
 			textVisible: true
+			minimumWidth: 200
+			maximumWidth: minimumWidth
+		}
+		Label {
+			id: progressBarLabel
 		}
 		function showProgress(msg, completed, total)
 		{

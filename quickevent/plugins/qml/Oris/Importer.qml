@@ -55,19 +55,6 @@ QtObject {
 	*/
 	function chooseAndImport()
 	{
-		db.transaction();
-		for(var class_obj in data.Classes) {
-			var class_id = parseInt(data.Classes[class_obj].ID);
-			var class_name = data.Classes[class_obj].Name;
-			Log.info("adding class id:", class_id, "name:", class_name);
-			classDoc.loadForInsert();
-			//classDoc.setValue("id", class_id);
-			classDoc.setValue("name", class_name);
-			classDoc.save();
-			//break;
-		}
-		db.commit();
-
 		var d = new Date;
 		d.setMonth(d.getMonth() - 2);
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10);
@@ -128,9 +115,15 @@ QtObject {
 				cfg.save();
 
 				db.transaction();
+				var items_processed = 0;
+				var items_count = 0;
+				for(var class_obj in data.Classes) {
+					items_count++;
+				}
 				for(var class_obj in data.Classes) {
 					var class_id = parseInt(data.Classes[class_obj].ID);
 					var class_name = data.Classes[class_obj].Name;
+					FrameWork.showProgress("Importing class: " + class_name, items_processed++, items_count);
 					Log.info("adding class id:", class_id, "name:", class_name);
 					classDoc.loadForInsert();
 					classDoc.setValue("id", class_id);

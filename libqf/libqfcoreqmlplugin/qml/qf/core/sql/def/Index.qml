@@ -43,7 +43,7 @@ QtObject
 					+ ' FOREIGN KEY ('
 					+ fields.join(', ')
 					+ ') REFERENCES '
-					+ full_table_name + ' ('
+					+ options.schemaName + '.' + references.table + ' ('
 					+ references.fields.join(', ')
 					+ ')'
 					+ ' ON UPDATE ' + references.onUpdate

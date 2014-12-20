@@ -3,7 +3,7 @@ import qf.core 1.0
 
 SqlDataDocument {
 	id: root
-	
+
 	property QfObject internal: QfObject {
 
 		SqlConnection {
