@@ -733,7 +733,8 @@ QSqlIndex Connection::primaryIndex(const QString& table_id)
 	QString tblname = table_id;
 	QSqlIndex ret;
 	if(driverName().endsWith("SQLITE")) {
-#ifndef SQLITE_PARSE_CREATE_SQL_SCRIPT
+		ret = QSqlDatabase::primaryIndex(tblname);
+#if 0
 		QString tblname, dbname;
 		tblname = normalizeTableName(table_id);
 		qf::core::Utils::parseFieldName(tblname, &tblname, &dbname);
@@ -743,7 +744,8 @@ QSqlIndex Connection::primaryIndex(const QString& table_id)
 		while(q.next()) {
 			ret.append(QSqlField(q.value(0).toString()));
 		}
-#else
+#endif
+#ifdef SQLITE_PARSE_CREATE_SQL_SCRIPT
 		/// parsing create table command
 		QString s = createTableSqlCommand(tblname);
 		QStringList sl =fieldDefsFromCreateTableCommand(s);
@@ -769,9 +771,9 @@ QSqlIndex Connection::primaryIndex(const QString& table_id)
 		tblname = fullTableNameToQtDriverTableName(tblname);
 		ret = QSqlDatabase::primaryIndex(tblname);
 	}
-	//for(int i=0; i<ret.count(); i++) {
-	//	qfDebug() << "\t" << ret.field(i).name();
-	//}
+	for(int i=0; i<ret.count(); i++) {
+		qfDebug() << "\t" << ret.field(i).name();
+	}
 	return ret;
 }
 

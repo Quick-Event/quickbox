@@ -57,7 +57,7 @@ DataDialogWidget
 		LineEdit {
 			Layout.columnSpan: 3
 			dataId: "competitors.firstName"
-			
+
 		}
 		Label {
 			text: qsTr("Last name")
@@ -92,10 +92,9 @@ DataDialogWidget
 		LineEdit {
 			dataId: "competitors.country"
 		}
-
-		Label {
-			Layout.verticalSizePolicy: LayoutProperties.Expanding
-			text: "REST"
+		Frame {
+			//Layout.verticalSizePolicy: LayoutProperties.Expanding
+			//text: "REST"
 		}
 	}
 

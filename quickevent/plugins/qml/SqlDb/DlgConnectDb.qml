@@ -38,6 +38,7 @@ Dialog {
 		Frame {
 			id: frmAllOptions
 			layoutType: Frame.LayoutHorizontal
+			Layout.verticalSizePolicy: LayoutProperties.Expanding
 
 			function raiseCurrentOptionFrame()
 			{

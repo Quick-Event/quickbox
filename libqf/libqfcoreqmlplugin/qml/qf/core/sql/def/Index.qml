@@ -36,14 +36,17 @@ QtObject
 		var ret = '';
 		var full_table_name = options.tableName;
 		if(options.driverName.endsWith("PSQL"))
-			full_table_name = options.schemaName + '.' + options.tableName;
+			full_table_name = options.schemaName + '.' + full_table_name;
 		if(fields) {
 			if(references) {
+				var full_referenced_table_name = references.table;
+				if(options.driverName.endsWith("PSQL"))
+					full_referenced_table_name = options.schemaName + '.' + full_referenced_table_name;
 				ret += '\tCONSTRAINT ' + indexName(constr_no, options.tableName)
 					+ ' FOREIGN KEY ('
 					+ fields.join(', ')
 					+ ') REFERENCES '
-					+ options.schemaName + '.' + references.table + ' ('
+					+ full_referenced_table_name + ' ('
 					+ references.fields.join(', ')
 					+ ')'
 					+ ' ON UPDATE ' + references.onUpdate

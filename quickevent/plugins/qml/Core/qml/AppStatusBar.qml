@@ -39,7 +39,7 @@ StatusBar
 			minimum: 0
 			textVisible: true
 			minimumWidth: 200
-			maximumWidth: minimumWidth
+			maximumWidth: 200
 		}
 		Label {
 			id: progressBarLabel
