@@ -882,20 +882,24 @@ QString DbInfo::currentSchema() const
 	return ret;
 }
 */
-void Connection::setCurrentSchema(const QString &schema_name)
+bool Connection::setCurrentSchema(const QString &schema_name)
 {
+	bool ret = true;
 	if(driverName().endsWith("MYSQL")) {
 		QSqlQuery q(*this);
 		if(!q.exec("USE " + schema_name)) {
+			ret = false;
 			qfError() << "Error setting curent schema to" << schema_name << "\n" << lastError().text();
 		}
 	}
 	else if(driverName().endsWith("PSQL")) {
 		QSqlQuery q(*this);
 		if(!q.exec("SET SCHEMA " QF_SARG(schema_name))) {
+			ret = false;
 			qfError() << "Error setting curent schema to" << schema_name << "\n" << lastError().text();
 		}
 	}
+	return ret;
 }
 
 QStringList Connection::serverVersion() const

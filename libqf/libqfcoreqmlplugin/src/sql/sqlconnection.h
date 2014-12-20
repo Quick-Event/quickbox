@@ -60,6 +60,8 @@ public:
 
 	Q_INVOKABLE QString errorString();
 
+	Q_INVOKABLE bool setCurrentSchema(const QString &schema_name);
+
 	/// reload m_sqlDatabase according to its connectionName
 	/// call it when driver for its connectionName is changed
 	//Q_SLOT void reloadConnection();
@@ -74,7 +76,7 @@ public:
 public:
 	static QString defaultConnectionName();
 private:
-	QSqlDatabase& nativeSqlConnection();
+	qf::core::sql::Connection& nativeSqlConnection();
 private:
 	qf::core::sql::Connection m_sqlConnection;
 };

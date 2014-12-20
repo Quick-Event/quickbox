@@ -141,7 +141,7 @@ QtObject {
 			}
 			//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
 			if(event_name) {
-				if(q.exec("SET SCHEMA '" + event_name + "'")) {
+				if(db.setCurrentSchema(event_name)) {
 					var settings = FrameWork.plugin('Core').api.createSettings();
 					settings.beginGroup("sql/" + connection_type);
 					settings.setValue("event", event_name);
@@ -180,9 +180,9 @@ QtObject {
 				if(db.open()) {
 					var q = db.createQuery();
 					q.exec("PRAGMA foreign_keys=ON");
-					q.exec("pragma short_column_names=0;");
-					ok = q.exec("pragma full_column_names=1;");
-					Log.info("setting depricated pragma full column names:", ok);
+					//q.exec("pragma short_column_names=0;");
+					//ok = q.exec("pragma full_column_names=1;");
+					//Log.info("setting depricated pragma full column names:", ok);
 				}
 				else {
 					MessageBoxSingleton.critical(FrameWork, qsTr("Open Database Error: %1").arg(db.errorString()));

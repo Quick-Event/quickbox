@@ -28,7 +28,7 @@ SqlConnection::~SqlConnection()
 	}
 }
 
-QSqlDatabase &SqlConnection::nativeSqlConnection()
+qf::core::sql::Connection &SqlConnection::nativeSqlConnection()
 {
 	if(!m_sqlConnection.isValid()) {
 		m_sqlConnection = qfs::Connection(QSqlDatabase::database(connectionName(), false));
@@ -90,6 +90,11 @@ QString SqlConnection::driverName()
 QString SqlConnection::errorString()
 {
 	return nativeSqlConnection().lastError().text();
+}
+
+bool SqlConnection::setCurrentSchema(const QString &schema_name)
+{
+	return nativeSqlConnection().setCurrentSchema(schema_name);
 }
 /*
 void SqlDatabase::reloadConnection()

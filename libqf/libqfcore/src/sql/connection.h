@@ -39,7 +39,7 @@ private:
 	bool open(const QString& user, const QString& password);
 public:
 	bool open();
-    void close();
+	void close();
 
 	//! @return list of fields in table or view
 	QStringList fields(const QString& tbl_name) const;
@@ -88,7 +88,7 @@ public:
 	static int defaultPort(const QString &driver_name);
 public:
 	//QString currentSchema() const;
-	void setCurrentSchema(const QString &schema_name);
+	bool setCurrentSchema(const QString &schema_name);
 
 	//! retrieves CREATE TABLE ... Sql script for \a tblname.
 	QString createTableSqlCommand(const QString &tblname);
