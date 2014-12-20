@@ -23,21 +23,13 @@ public:
 	~DataDocument() Q_DECL_OVERRIDE;
 public:
 	enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
-	/*
-	enum RecordEditMode {
-		ModeView = TableModel::ModeView,
-		ModeEdit = TableModel::ModeEdit,
-		ModeInsert = TableModel::ModeInsert,
-		ModeCopy = TableModel::ModeCopy,
-		ModeDelete = TableModel::ModeDelete
-	};
-	*/
 
 	QF_PROPERTY_IMPL2(QString, i, I, dFieldName, QStringLiteral("id"))
 	QF_PROPERTY_IMPL(QVariant, d, D, ataId)
 	QF_PROPERTY_IMPL2(RecordEditMode, m, M, ode, ModeView)
 	QF_PROPERTY_IMPL2(int, c, C, urrentModelRow, 0)
 public:
+	static QString recordEditModeToString(RecordEditMode m);
 	void setModel(TableModel *m);
 	virtual TableModel* model();
 	Q_SIGNAL void modelChanged(TableModel *new_m);

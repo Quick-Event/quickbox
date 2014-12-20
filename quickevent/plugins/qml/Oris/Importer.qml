@@ -21,9 +21,53 @@ QtObject {
 			id: classDoc
 		}
 	}
-
+	/*
+	function chooseAndImport2()
+	{
+		db.transaction();
+		var q = db.createQuery();
+		q.exec("DELETE FROM classes");
+		for(var i=0; i<10; i++) {
+			var class_id = i + 10 * 1;
+			var class_name = "K" + class_id;
+			Log.info("adding class id:", class_id, "name:", class_name);
+			var use_doc = true;
+			if(use_doc) {
+				classDoc.loadForInsert();
+				//classDoc.setValue("id", class_id);
+				classDoc.setValue("name", class_name);
+				classDoc.save();
+			}
+			else {
+				var qs = "INSERT INTO classes (\"id\", \"name\") VALUES (:class_id, :class_name)"
+				q.prepare(qs);
+				q.bindValue(':class_id', class_id);
+				q.bindValue(':class_name', class_name);
+				var ok = q.exec();
+				if(!ok) {
+					console.error(q.lastError());
+					break;
+				}
+			}
+		}
+		db.commit();
+	}
+	*/
 	function chooseAndImport()
 	{
+		db.transaction();
+		for(var class_obj in data.Classes) {
+			var class_id = parseInt(data.Classes[class_obj].ID);
+			var class_name = data.Classes[class_obj].Name;
+			Log.info("adding class id:", class_id, "name:", class_name);
+			classDoc.loadForInsert();
+			//classDoc.setValue("id", class_id);
+			classDoc.setValue("name", class_name);
+			classDoc.save();
+			//break;
+		}
+		db.commit();
+
 		var d = new Date;
 		d.setMonth(d.getMonth() - 2);
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10);
@@ -54,9 +98,6 @@ QtObject {
 
 	function importEvent(event_id)
 	{
-		//var steps = 3;
-		//FrameWork.showProgress(qsTr("Importing event"), 1, steps);
-
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=' + event_id;
 		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
 		{
@@ -86,6 +127,7 @@ QtObject {
 				cfg.setValue('event.importId', event_id);
 				cfg.save();
 
+				db.transaction();
 				for(var class_obj in data.Classes) {
 					var class_id = parseInt(data.Classes[class_obj].ID);
 					var class_name = data.Classes[class_obj].Name;
@@ -96,6 +138,7 @@ QtObject {
 					classDoc.save();
 					//break;
 				}
+				db.commit();
 
 				importEventOrisRunners(event_id, stage_count)
 			}
@@ -116,11 +159,16 @@ QtObject {
 				var data = JSON.parse(json_str).Data;
 				// import competitors
 				//FrameWork.showProgress(qsTr("Importing competitors"), 2, steps);
+				var competitors_processed = 0;
+				var competitors_count = 0;
+				for(var competitor_obj_key in data) {
+					competitors_count++;
+				}
 				db.transaction();
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					Log.debug(JSON.stringify(competitor_obj, null, 2));
-					Log.info(competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName);
+					Log.info(competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
 					var siid = parseInt(competitor_obj.SI);
 					var note = competitor_obj.Note;
 					if(isNaN(siid)) {
@@ -130,6 +178,7 @@ QtObject {
 					if(competitor_obj.RequestedStart) {
 						note += ' req. start: ' + competitor_obj.RequestedStart;
 					}
+					FrameWork.showProgress("Importing: " + competitor_obj.LastName + " " + competitor_obj.FirstName, competitors_processed, competitors_count);
 					competitorDoc.loadForInsert();
 					competitorDoc.setValue('classId', parseInt(competitor_obj.ClassID));
 					competitorDoc.setValue('siId', siid);
@@ -141,6 +190,7 @@ QtObject {
 					competitorDoc.setValue('importId', competitor_obj.ID);
 					competitorDoc.save();
 					//break;
+					competitors_processed++;
 				}
 				db.commit();
 				FrameWork.plugin("Event").api.reloadActivePart();

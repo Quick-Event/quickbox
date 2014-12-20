@@ -10,6 +10,7 @@ Dialog {
 
 	property string eventName: edEventName.text.replace(" ", "_").toLowerCase();
 	property alias stageCount: edStageCount.value;
+	property alias stageCountReadOnly: edStageCount.readOnly;
 
 	Frame {
 		layoutType: Frame.LayoutForm
@@ -22,7 +23,9 @@ Dialog {
 			id: edStageCount
 			Layout.buddyText: qsTr("&Stage count")
 			minimum: 1
-			value: 1
+			value: 5
+			//onValueChanged: console.warn("new stage count:", value, readOnly);
+			//onReadOnlyChanged: console.warn("new stage readOnly:", readOnly);
 		}
 	}
 

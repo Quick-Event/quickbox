@@ -101,6 +101,9 @@ Dialog {
 					Layout.buddyText: qsTr("&Event")
 					placeholderText: qsTr("Event name can be specified later on in File/Open")
 				}
+				Frame {
+					Layout.verticalSizePolicy: LayoutProperties.Expanding
+				}
 			}
 		}
 	}
@@ -118,7 +121,7 @@ Dialog {
 		var type = settings.value("connectionType", "singleFile");
 		//console.warn("setting connection type to:", type);
 		cbxConnectionType.currentData = type;
-		settings.beginGroup("server");
+		settings.beginGroup("sqlServer");
 		edServerHost.text = settings.value("host", "localhost");
 		edServerUser.text = settings.value("user", "");
 		edServerPassword.text = coreFeature.api.crypt.decrypt(settings.value("password", ""));

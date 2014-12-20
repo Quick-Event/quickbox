@@ -737,6 +737,16 @@ void MainWindow::setDbSearchPath(const QString &path)
 			return;
 		}
 	}
+	else if(activeConnection().driverName().endsWith("PSQL")) {
+		if(!path.isEmpty()) {
+			QSqlQuery q(activeConnection());
+			QString s = "SET SCHEMA '" + path + "'";
+			qfDebug() << QString("Executing SQL: [%1]").arg(s);
+			q.exec(s);
+			setStatusText(path, 2);
+			return;
+		}
+	}
 	setStatusText(QString(), 2);
 }
 
@@ -951,8 +961,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 			}
-			else if(Schema *sch = qobject_cast<Schema*>(o)) {
-				Q_UNUSED(sch);
+			else if(Schema *current_schema = qobject_cast<Schema*>(o)) {
+				Q_UNUSED(current_schema);
 				QMenu menu(this);
 				menu.setTitle(tr("Schema menu"));
 				QAction *actCreateTable = menu.addAction(tr("Create table"));
@@ -968,7 +978,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					if(!s.isEmpty()) {
 						s = s.trimmed();
 						if(!s.isEmpty()) {
-							QString s1 = sch->objectName() + "." + s;
+							QString s1 = current_schema->objectName() + "." + s;
 							QString qs = "UNSUPPORTED DRIVER " + activeConnection().driverName();
 							if(activeConnection().driverName().endsWith("SQLITE")) {
 								qs = "CREATE TABLE " + s1 + " (id integer PRIMARY KEY AUTOINCREMENT);";
@@ -990,7 +1000,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 				else if(a == actCreateDatabaseScript) {
-					QString s = sch->createScript(Schema::CreateTableSql | Schema::IncludeViews);
+					QString s = current_schema->createScript(Schema::CreateTableSql | Schema::IncludeViews);
 					qfInfo() << s;
 					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
 					/*
@@ -1001,7 +1011,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					*/
 				}
 				else if(a == actDumpDatabaseScript) {
-					QString s = sch->createScript(Schema::CreateTableSql | Schema::DumpTableSql | Schema::IncludeViews);
+					QString s = current_schema->createScript(Schema::CreateTableSql | Schema::DumpTableSql | Schema::IncludeViews);
 					qfInfo() << s;
 					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
 					/*
@@ -1012,8 +1022,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					*/
 				}
 				else if(a == actDropSchema) {
-					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy drop schema '%1'").arg(sch->objectName()), true)) {
-						QString qs = "DROP SCHEMA " + sch->objectName();
+					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy drop schema '%1'").arg(current_schema->objectName()), true)) {
+						QString qs = "DROP SCHEMA " + current_schema->objectName();
 						qf::core::sql::Connection c = activeConnection();
 						if(c.driverName().endsWith("PSQL", Qt::CaseInsensitive)) {
 							qs += " CASCADE";
@@ -1058,6 +1068,10 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				}
 			}
 			else if(Table *table = qobject_cast<Table*>(o)) {
+				Schema *current_schema = qobject_cast<Schema*>(table->parent());
+				QF_ASSERT(current_schema != nullptr, "Parent schema is NULL", return);
+				QString full_table_name = current_schema->objectName() + '.' + table->objectName();
+
 				QMenu menu(this);
 				menu.setTitle(tr("Table menu"));
 				QAction *actDescribeTable = menu.addAction(tr("Show columns"));
@@ -1105,7 +1119,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
 						QString s = "SHOW FULL COLUMNS FROM %1";
-						execQuery(s.arg(table->objectName()));
+						execQuery(s.arg(full_table_name));
 					}
 				}
 				else if(a == actShowIndexes) {
@@ -1121,8 +1135,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 						execQuery(s.arg(table->parent()->objectName()).arg(table->objectName()));
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
-						QString s = "SHOW INDEXES FROM  %1.%2";
-						execQuery(s.arg(table->parent()->objectName()).arg(table->objectName()));
+						QString s = "SHOW INDEXES FROM  %1";
+						execQuery(s.arg(full_table_name));
 					}
 				}
 				else if(a == actShowFKeys) {
@@ -1144,8 +1158,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 								" LEFT JOIN pg_attribute AS fromcols ON cc.conrelid=fromcols.attrelid"
 								" LEFT JOIN pg_attribute AS tocols ON cc.conrelid=tocols.attrelid"
 								" WHERE cc.contype = 'f' AND fromcols.attnum = ANY(cc.conkey) AND tocols.attnum = ANY(cc.confkey)"
-								"  AND cc.conrelid='%1.%2'::regclass";
-						execQuery(s.arg(table->parent()->objectName()).arg(table->objectName()));
+								"  AND cc.conrelid='%1'::regclass";
+						execQuery(s.arg(full_table_name));
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
 						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("Not implemented yet."));
@@ -1153,16 +1167,16 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				}
 				else if(a == actCreateScript) {
 					qf::core::sql::Connection dbi(activeConnection());
-					QString s = dbi.createTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
+					QString s = dbi.createTableSqlCommand(full_table_name);
 					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
 					new QFSqlSyntaxHighlighter(dlg.editor());
 					dlg.exec(s, "create_" + table->objectName()+".sql", "dlgTextView");
 				}
 				else if(a == actDumpScript) {
 					qf::core::sql::Connection dbi(activeConnection());
-					QString s = dbi.createTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
+					QString s = dbi.createTableSqlCommand(full_table_name);
 					s += "\n\n";
-					s += dbi.dumpTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
+					s += dbi.dumpTableSqlCommand(full_table_name);
 					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
 					new QFSqlSyntaxHighlighter(dlg.editor());
 					dlg.exec(s, "dump_" + table->objectName()+".sql", "dlgTextView");
@@ -1208,28 +1222,27 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 				else if(a == actTruncateTable) {
-					QString s = table->objectName();
 					if(table->kind == QSql::Tables) {
-						if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy truncate the table '%1'").arg(s), true)) {
-							s = "TRUNCATE TABLE " + s;
+						if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy truncate the table '%1'").arg(full_table_name), true)) {
+							QString s = "TRUNCATE TABLE " + full_table_name;
 							execCommand(s);
 						}
 					}
 				}
 				else if(a == actMysqlCheckTable) {
-					QString s = table->objectName();
+					QString s = full_table_name;
 					s = "CHECK TABLE " + s;
 					execQuery(s);
 					//QFDlgTextView dlg(this);
 					//dlg.exec(s, "check_" + table->objectName()+".txt", "dlgTextView");
 				}
 				else if(a == actMysqlOptimizeTable) {
-					QString s = table->objectName();
+					QString s = full_table_name;
 					s = "OPTIMIZE TABLE " + s;
 					execQuery(s);
 				}
 				else if(a == actMysqlRepairTable) {
-					QString s = table->objectName();
+					QString s = full_table_name;
 					s = "REPAIR TABLE " + s;
 					execQuery(s);
 				}

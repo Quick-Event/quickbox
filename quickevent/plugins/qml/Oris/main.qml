@@ -5,7 +5,7 @@ import qf.qmlwidgets 1.0
 Plugin {
 	id: root
 
-	property QfObject internal: QfObject 
+	property QfObject internal: QfObject
 	{
 		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
 		SqlConnection {

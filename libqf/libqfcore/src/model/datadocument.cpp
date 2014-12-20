@@ -17,6 +17,18 @@ DataDocument::~DataDocument()
 
 }
 
+QString DataDocument::recordEditModeToString(DataDocument::RecordEditMode m)
+{
+	switch(m) {
+	case ModeView: return QStringLiteral("ModeView");
+	case ModeEdit: return QStringLiteral("ModeEdit");
+	case ModeInsert: return QStringLiteral("ModeInsert");
+	case ModeCopy: return QStringLiteral("ModeCopy");
+	case ModeDelete: return QStringLiteral("ModeDelete");
+	}
+	return QStringLiteral("Invalid");
+}
+
 TableModel *DataDocument::createModel(QObject *parent)
 {
 	return new TableModel(parent);
@@ -40,7 +52,7 @@ TableModel *DataDocument::model()
 
 void DataDocument::load(const QVariant &id, DataDocument::RecordEditMode _mode)
 {
-	qfLogFuncFrame() << id.toString() << _mode << "isNull:" << id.isNull();
+	qfLogFuncFrame() << "id:" << id << "mode:" << recordEditModeToString(_mode) << "isNull:" << id.isNull();
 	setDataId(id);
 	setMode(_mode);
 	load();

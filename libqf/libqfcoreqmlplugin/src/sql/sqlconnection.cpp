@@ -127,6 +127,7 @@ void SqlConnection::close()
 
 bool SqlConnection::transaction()
 {
+	//qfInfo() << ">>>>>>>>>>>>>>>>>>>> BEGIN TRANSACTION";
 	bool ret = true;
 	if(nativeSqlConnection().driver()->hasFeature(QSqlDriver::Transactions)) {
 		ret = nativeSqlConnection().transaction();
@@ -139,6 +140,7 @@ bool SqlConnection::transaction()
 
 bool SqlConnection::commit()
 {
+	//qfInfo() << "<<<<<<<<<<<<<<<<<<<< COMIT TRANSACTION";
 	bool ret = true;
 	if(nativeSqlConnection().driver()->hasFeature(QSqlDriver::Transactions)) {
 		ret = nativeSqlConnection().commit();
@@ -151,6 +153,7 @@ bool SqlConnection::commit()
 
 bool SqlConnection::rollback()
 {
+	//qfWarning() << "<<<<<<<<<<<<<<<<<<<< ROLLBACK TRANSACTION";
 	bool ret = true;
 	if(nativeSqlConnection().driver()->hasFeature(QSqlDriver::Transactions)) {
 		ret = nativeSqlConnection().rollback();

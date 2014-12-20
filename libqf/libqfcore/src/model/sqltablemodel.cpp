@@ -79,6 +79,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			QSqlRecord rec;
 			int i = -1;
 			int serial_ix = -1;
+			bool serial_ix_explicitly_set = false;
 			int primary_ix = -1;
 			//QSqlIndex pri_ix = ti.primaryIndex();
 			//bool has_blob_field = false;
@@ -91,6 +92,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					/// always include serial fields, an empty line cannot be inserted in other case
 					//is_field_dirty = true;
 					serial_ix = i;
+					serial_ix_explicitly_set = is_field_dirty;
 					qfDebug() << "\t serial ix:" << serial_ix;
 				}
 				if(fld.isPriKey()) {
@@ -119,8 +121,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 
 			qfDebug() << "updating table inserts" << table_id;
 			QString qs;
-			qf::core::sql::Connection dbinfo(sql_conn);
-			QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
+			QString table = sql_conn.fullTableNameToQtDriverTableName(table_id);
 			qfs::Query q(sql_conn);
 			if(rec.isEmpty()) {
 				if(serial_ix >= 0) {
@@ -146,25 +147,23 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				}
 			}
 			ok = q.exec();
-			if(!ok) {
-				QString errs = tr("Error executing query: %1\n %2").arg(qs).arg(q.lastError().text());
-				if(throw_exc)
-					QF_EXCEPTION(errs);
-				else
-					qfError() << errs;
-			}
-			else {
+			if(ok) {
 				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
 				int num_rows_affected = q.numRowsAffected();
 				//setNumRowsAffected(q.numRowsAffected());
 				QF_ASSERT(num_rows_affected == 1,
 						  tr("numRowsAffected() = %1, should be 1\n%2").arg(num_rows_affected).arg(qs),
 						  return false);
-				if(serial_ix >= 0) {
+				if(serial_ix >= 0 && !serial_ix_explicitly_set) {
 					QVariant v = q.lastInsertId();
-					qfDebug() << "\tsetting serial index:" << serial_ix << "to generated value:" << v.toString();
-					row_ref.setValue(serial_ix, v);
-					row_ref.setDirty(serial_ix, false);
+					qfDebug() << "\tsetting serial index:" << serial_ix << "to generated value:" << v;
+					if(v.isValid()) {
+						row_ref.setValue(serial_ix, v);
+						row_ref.setDirty(serial_ix, false);
+					}
+					else {
+						qfWarning() << "Serial field will not be initialized properly. This can make current transaction aborted.";
+					}
 				}
 				if(primary_ix >= 0) {
 					/// update foreign keys in the slave tables
@@ -177,6 +176,13 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 						row_ref.setValue(slave_key, row_ref.value(master_key));
 					}
 				}
+			}
+			else {
+				QString errs = tr("Error executing query: %1\n %2").arg(qs).arg(q.lastError().text());
+				if(throw_exc)
+					QF_EXCEPTION(errs);
+				else
+					qfError() << errs;
 			}
 		}
 	}
@@ -470,6 +476,7 @@ qf::core::sql::Connection SqlTableModel::sqlConnection()
 
 bool SqlTableModel::reloadTable(const QString &query_str)
 {
+	qfLogFuncFrame() << query_str;
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	m_recentlyExecutedQuery = qfs::Query(sql_conn);
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
@@ -525,7 +532,7 @@ QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &t
 
 void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
 {
-	qfLogFuncFrame();
+	//qfLogFuncFrame();
 	QSet<QString> table_ids = tableIds(table_fields);
 	QSet<QString> field_ids;
 	int fld_cnt = table_fields.count();
@@ -561,7 +568,7 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 	QSet<QString> updateable_table_ids;
 	for(QString table_id : table_ids) {
 		QString serial_field_name = sqlConnection().serialFieldName(table_id);
-		qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
+		//qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
 		serial_field_names[table_id] = serial_field_name;
 		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
@@ -584,7 +591,7 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 			fld.setPriKey(prikey_fields.contains(fld.shortName()));
 			//qfDebug() << "table_id;" << table_id << "fldname:" << fld.shortName() << "serial_field_names.value(table_id):" << serial_field_names.value(table_id);
 			fld.setSerial(serial_field_names.value(table_id) == fld.shortName());
-			qfDebug() << fld.name() << "is serial:" << fld.isSerial();
+			//qfDebug() << fld.name() << "is serial:" << fld.isSerial();
 		}
 	}
 }

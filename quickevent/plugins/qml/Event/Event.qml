@@ -45,8 +45,10 @@ QtObject {
 		var event_name = ""
 		console.debug("createEvent()", "stage_count:", stage_count);
 		var dlg = cDlgCreateEvent.createObject(FrameWork);
-		if(stage_count > 0)
+		if(stage_count > 0) {
+			dlg.stageCountReadOnly = true;
 			dlg.stageCount = stage_count;
+		}
 		if(dlg.exec()) {
 			event_name = dlg.eventName;
 			stage_count = dlg.stageCount;
@@ -85,14 +87,17 @@ QtObject {
 					}
 				}
 				if(ok) {
-					db.commit();
 					console.debug('creating stages:', stage_count);
-					q.prepare('INSERT INTO ' + event_name + '.stages (id) VALUES (:id)');
+					var stage_table_name = 'stages';
+					if(connection_type == "sqlServer")
+						stage_table_name = event_name + '.' + stage_table_name;
+					q.prepare('INSERT INTO ' + stage_table_name + ' (id) VALUES (:id)');
 					for(var i=0; i<stage_count; i++) {
 						q.bindValue(':id', i+1);
 						if(!q.exec())
 							break;
 					}
+					db.commit();
 				}
 				else {
 					db.rollback();
@@ -107,6 +112,10 @@ QtObject {
 
 	function openEvent(event_name, connection_type)
 	{
+		var sqldb_api = FrameWork.plugin("SqlDb").api;
+		if(!connection_type)
+			connection_type = sqldb_api.connectionType;
+
 		console.debug("openEvent()", "event_name:", event_name, "connection_type:", connection_type);
 		var ok = false;
 		if(connection_type == "sqlServer") {

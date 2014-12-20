@@ -80,6 +80,7 @@ void MainWindow::savePersistentSettings()
 void MainWindow::showProgress(const QString &msg, int completed, int total)
 {
 	qfLogFuncFrame() << msg << completed << total;
+	QCoreApplication::processEvents();
 	emit progress(msg, completed, total);
 }
 #ifdef GET_RESOURCE_IN_FRAMEWORK
