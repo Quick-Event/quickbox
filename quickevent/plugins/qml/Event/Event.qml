@@ -179,7 +179,7 @@ QtObject {
 				Log.info("Opening database file", event_fn);
 				if(db.open()) {
 					var q = db.createQuery();
-					q.exec("PRAGMA foreign_keys=ON");
+					ok = q.exec("PRAGMA foreign_keys=ON");
 					//q.exec("pragma short_column_names=0;");
 					//ok = q.exec("pragma full_column_names=1;");
 					//Log.info("setting depricated pragma full column names:", ok);

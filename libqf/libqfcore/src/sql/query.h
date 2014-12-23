@@ -19,6 +19,7 @@ public:
 	explicit Query(const QSqlDatabase &db = QSqlDatabase());
 	explicit Query(const QString &connection_name);
 public:
+	QSqlRecord record() const;
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;
 	QVariant value(const QString& field_name) const;

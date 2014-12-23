@@ -82,6 +82,7 @@ QuickEventPartWidget
 
 	function reload()
 	{
+		Log.info("Reloading competitors model");
 		model.reload();
 	}
 

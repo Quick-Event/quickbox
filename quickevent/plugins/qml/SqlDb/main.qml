@@ -76,8 +76,9 @@ function connectToSqlServer()
 		console.debug("connection_type:", connection_type);
 		if(connection_type) {
 			var driver_name = "QSQLITE";
-			if(connection_type == "sqlServer")
-				driver_name = "QFPSQL";
+			if(connection_type == "sqlServer") {
+				driver_name = "QPSQL";
+			}
 			connect_ok = Sql.addDatabase(driver_name);
 			Log.info("Adding database driver:", driver_name, "OK:", connect_ok)
 			if(connect_ok) {
@@ -92,6 +93,7 @@ function connectToSqlServer()
 					connect_ok = db.open();
 				}
 				else if(connection_type == "singleFile") {
+					/*
 					var wd = settings.value('workingDir');
 					if(wd) {
 						var event_name = settings.value('event');
@@ -105,6 +107,7 @@ function connectToSqlServer()
 							connect_ok = true;
 						}
 					}
+					*/
 				}
 				settings.endGroup();
 			}

@@ -1,8 +1,10 @@
 #include "query.h"
+#include "querybuilder.h"
 
 #include "../core/log.h"
 
 #include <QSqlRecord>
+#include <QSqlField>
 #include <QVariant>
 
 using namespace qf::core::sql;
@@ -15,6 +17,20 @@ Query::Query(const QSqlDatabase &db)
 Query::Query(const QString &connection_name)
 	: Super(QSqlDatabase::database(connection_name, false))
 {
+}
+
+QSqlRecord Query::record() const
+{
+	QSqlRecord ret = Super::record();
+	for(int i=0; i<ret.count(); i++) {
+		QSqlField fld = ret.field(i);
+		QString n = QueryBuilder::unmangleLongFieldName(fld.name());
+		if(n != fld.name()) {
+			fld.setName(n);
+			ret.replace(i, fld);
+		}
+	}
+	return ret;
 }
 
 int Query::fieldIndex(const QString &field_name) const

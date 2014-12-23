@@ -403,7 +403,9 @@ int SqlTableModel::reloadRow(int row_no)
 		}
 	}
 	qfs::Query q = qfs::Query(sql_conn);
-	QString query_str = qb.toString();
+	qfs::QueryBuilder::BuildOptions opts;
+	opts.setConnectionName(connectionName());
+	QString query_str = qb.toString(opts);
 	query_str = replaceQueryParameters(query_str);
 	qfDebug() << "\t reload row query:" << query_str;
 	bool ok = q.exec(query_str);
@@ -429,7 +431,9 @@ QString SqlTableModel::buildQuery()
 {
 	QString ret = m_query;
 	if(ret.isEmpty()) {
-		ret = m_queryBuilder.toString();
+		qfs::QueryBuilder::BuildOptions opts;
+		opts.setConnectionName(connectionName());
+		ret = m_queryBuilder.toString(opts);
 	}
 	return ret;
 }
@@ -473,7 +477,27 @@ qf::core::sql::Connection SqlTableModel::sqlConnection()
 			 QString("Invalid sql connection for name '%1'").arg(connectionName()));
 	return ret;
 }
-
+/*
+static QString demangleFieldName(const QString &fldname)
+{
+	QString ret = fldname;
+	if(!qfs::Connection::isDriverReturnsTableNamesInResultSet()) {
+		static QString injected_sep = QStringLiteral("__");
+		static QString db_sep = QStringLiteral(".");
+		int ix = fldname.indexOf(injected_sep);
+		if(ix >= 0) {
+			int ix2 = fldname.indexOf(db_sep);
+			if(ix2 >= 0) {
+				qfWarning() << "Cannot demangle fieldname:" << fldname << "since it contains both type of separators";
+			}
+			else {
+				ret = ret.replace(injected_sep, db_sep);
+			}
+		}
+	}
+	return ret;
+}
+*/
 bool SqlTableModel::reloadTable(const QString &query_str)
 {
 	qfLogFuncFrame() << query_str;

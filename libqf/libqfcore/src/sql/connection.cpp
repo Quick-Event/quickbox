@@ -27,6 +27,7 @@ namespace {
 
 QMap<QString, QStringList> s_primaryIndexCache;
 QMap<QString, QString> s_serialFieldNamesCache;
+QMap<QString, QSqlRecord> s_tableRecordCache;
 
 void s_clearCache(const QString &connection_name)
 {
@@ -41,6 +42,14 @@ void s_clearCache(const QString &connection_name)
 	}
 	{
 		QMutableMapIterator<QString, QString> it(s_serialFieldNamesCache);
+		while(it.hasNext()) {
+			it.next();
+			if(it.key().startsWith(prefix, Qt::CaseInsensitive))
+				it.remove();
+		}
+	}
+	{
+		QMutableMapIterator<QString, QSqlRecord> it(s_tableRecordCache);
 		while(it.hasNext()) {
 			it.next();
 			if(it.key().startsWith(prefix, Qt::CaseInsensitive))
@@ -72,40 +81,6 @@ void Connection::close()
 	Super::close();
 }
 
-#if 0
-void DbInfo::close()
-{
-	if(isOpen()) {
-		qfLogFuncFrame() << signature();
-		QSqlDatabase::close();
-	}
-}
-
-void DbInfo::open(const DbInfo::ConnectionOptions &options) throw(QFSqlException)
-{
-	qfLogFuncFrame() << signature() << "driver:" << driver();
-	qfDebug() << "\tdriver name:" << driver()->metaObject()->className();
-	close();
-	if(port() == 0) setPort(defaultPort(driverName()));
-	if(!options.isEmpty()) {
-		QStringList opt_list;
-		foreach(QString key, options.keys()) {
-			QString val = options.value(key);
-			if(val.isNull()) val = key;
-			else val = key + "=" + val;
-			opt_list << val;
-		}
-		setConnectOptions(opt_list.join(";"));
-	}
-	//qfInfo() << "password:" << password();
-	if(!QSqlDatabase::open()) {
-		setConnectOptions();
-		throw QFSqlException(QString("Error opening database %1").arg(signature())
-							 + "\n" + "\n"
-							 + lastError().text());
-	}
-}
-#endif
 int Connection::defaultPort(const QString &driver_name)
 {
 	if(driver_name.endsWith("PSQL")) return 5432;
@@ -287,13 +262,23 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 QSqlRecord Connection::record(const QString & tablename) const
 {
 	qfLogFuncFrame() << "tblname:" << tablename;
-	QString s = fullTableNameToQtDriverTableName(tablename);
-	if(driverName().endsWith("SQLITE")) {
-		/// SQLITE neumi schema.tablename v prikazu PRAGMA table_info(...)
-		int ix = s.lastIndexOf('.');
-		if(ix >= 0) s = s.mid(ix + 1);
+	QString pk_key = connectionName() + '.' + tablename;
+	QSqlRecord ret;
+	if(!s_tableRecordCache.contains(pk_key)) {
+		QString s = fullTableNameToQtDriverTableName(tablename);
+		if(driverName().endsWith("SQLITE")) {
+			/// SQLITE neumi schema.tablename v prikazu PRAGMA table_info(...)
+			int ix = s.lastIndexOf('.');
+			if(ix >= 0)
+				s = s.mid(ix + 1);
+		}
+		ret = QSqlDatabase::record(s);
+		s_tableRecordCache[pk_key] = ret;
 	}
-	return QSqlDatabase::record(s);
+	else {
+		ret = s_tableRecordCache.value(pk_key);
+	}
+	return ret;
 }
 
 QStringList Connection::fields(const QString& tbl_name) const
@@ -480,16 +465,10 @@ QStringList Connection::schemas() const
 
 bool Connection::isOpen() const
 {
-	if(!isValid()) return false;
-	if(!QSqlDatabase::isOpen()) return false;
-	//QSqlDriver *drv = driver();
-	//if(!drv) return false;
-	//qfLogFuncFrame() << "driver:" << drv;
-	//if(!drv->handle().isValid()) return false;
-	//if(!QSqlDatabase::isOpen()) return false;
-	//if(!drv->isOpen()) return false;
-	//qfLogFuncFrame();
-	//qfDebug() << "\treturning:" << ret;
+	if(!isValid())
+		return false;
+	if(!QSqlDatabase::isOpen())
+		return false;
 	return true;
 }
 #if 0
@@ -923,5 +902,4 @@ QString Connection::fullTableNameToQtDriverTableName(const QString &full_table_n
 	}
 	return ret;
 }
-
 

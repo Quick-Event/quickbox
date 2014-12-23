@@ -28,40 +28,40 @@ public:
 		m_builder.select2(table_name, fields, flags);
 		return this;
 	}
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* select3(const QString &table_name, const QString &fields, const QString &flags = QString()) {
-		m_builder.select3(table_name, fields, flags);
-		return this;
-	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* from(const QString &table_name) {
 		m_builder.from(table_name);
 		return this;
 	}
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* from(const qf::core::qml::SqlQueryBuilder *table) {
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* from(qf::core::qml::SqlQueryBuilder *table) {
 		m_builder.from(table->m_builder);
-		return this;
-	}
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* join2(const QString &t1_key, const QString &t2_name, const QString &t2_key, const QString  &join_kind = "LEFT JOIN") {
-		m_builder.join2(t1_key, t2_name, t2_key, join_kind);
 		return this;
 	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* join(const QString &t1_key, const QString &t2_key, const QString  &join_kind = "LEFT JOIN") {
 		m_builder.join(t1_key, t2_key, join_kind);
 		return this;
 	}
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* join(const QString &join_expr) {
+		m_builder.join(join_expr);
+		return this;
+	}
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* joinQuery(const QString &t1_key, const QString &t2_select_query, const QString &t2_key_field, const QString  &join_kind = "LEFT JOIN") {
+		m_builder.joinQuery(t1_key, t2_select_query, t2_key_field, join_kind);
+		return this;
+	}
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* joinQuery(const QString &t1_key, qf::core::qml::SqlQueryBuilder *t2_select_query, const QString &t2_key_field, const QString  &join_kind = "LEFT JOIN") {
+		m_builder.joinQuery(t1_key, t2_select_query->m_builder, t2_key_field, join_kind);
+		return this;
+	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* joinRestricted(const QString &t1_key, const QString &t2_key, const QString &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN") {
 		m_builder.joinRestricted(t1_key, t2_key, where_restriction, join_kind);
 		return this;
 	}
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* joinRestrictedAliased(const QString &t1_key, const QString &t2_name, const QString &t2_key, const QString &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN") {
-		m_builder.joinRestrictedAliased(t1_key, t2_name, t2_key, where_restriction, join_kind);
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* joinQueryRestricted(const QString &t1_key, const QString &t2_select_query, const QString &t2_key_field, const QString  &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN") {
+		m_builder.joinQueryRestricted(t1_key, t2_select_query, t2_key_field, where_restriction, join_kind);
 		return this;
 	}
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* join(const QString &t1_key, const qf::core::qml::SqlQueryBuilder *t2, const QString &t2_key, const QString  &join_kind = "LEFT JOIN") {
-		m_builder.join(t1_key, t2->m_builder, t2_key, join_kind);
-		return this;
-	}
-	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* join(const QString &join) {
-		m_builder.join(join);
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* joinQueryRestricted(const QString &t1_key, qf::core::qml::SqlQueryBuilder *t2_select_query, const QString &t2_key_field, const QString  &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN") {
+		m_builder.joinQueryRestricted(t1_key, t2_select_query->m_builder, t2_key_field, where_restriction, join_kind);
 		return this;
 	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* where(const QString &cond, const QString &oper = "AND") {

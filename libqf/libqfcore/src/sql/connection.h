@@ -21,9 +21,6 @@ private:
 public:
 	Connection();
 	explicit Connection(const QSqlDatabase& qdb);
-	//explicit DbInfo(const QString &driver_name);
-	//explicit DbInfo(QSqlDriver *drv);
-	//virtual ~DbInfo();
 public:
 	typedef QMap<QString, QString> ConnectionOptions;
 	struct QFCORE_DECL_EXPORT IndexInfo {
@@ -60,31 +57,14 @@ public:
 	QStringList primaryIndexFieldNames(const QString &table_id);
 	QString serialFieldName(const QString &table_id);
 
-	QSqlRecord record(const QString & tablename) const;
+	QSqlRecord record(const QString & table_id) const;
 
-	/// @return kind of relname.
-	/// \sa RelationKindKind
-	//QFSql::RelationKind relationKind(const QString& relname);
-
-	/**
-		 * @return string unique per user,database_name,host,driver
-		 */
+	/// @return string unique per user,database_name,host,driver
 	QString signature() const;
-	//static QString signature2driverName(const QString &sig);
 	//! Returns human readable textual information about current connection.
 	QString info(int verbosity = 1) const;
 	bool isOpen() const;
-	/*
-		/// if successfull, lastError() returns information about connection.
-		void open(const ConnectionOptions &options = ConnectionOptions());
-		void open(const QString & user, const QString & password, const ConnectionOptions &options = ConnectionOptions())
-		{
-			setUserName(user);
-			setPassword(password);
-			open(options);
-		}
-		void close();
-		*/
+
 	static int defaultPort(const QString &driver_name);
 public:
 	//QString currentSchema() const;
@@ -109,6 +89,8 @@ private:
 	QString normalizeTableName(const QString &n) const;
 	//! if \a n is empty return name of default database/schema for active connection.
 	QString normalizeDbName(const QString &n) const;
+private:
+	//static bool s_driverReturnsTableNamesInSelectResult;
 };
 
 }}}

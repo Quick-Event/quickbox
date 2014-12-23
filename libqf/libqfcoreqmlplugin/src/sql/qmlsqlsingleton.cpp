@@ -22,7 +22,6 @@ QmlSqlSingleton::~QmlSqlSingleton()
 
 QObject *qf::core::qml::QmlSqlSingleton::singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
-	//Q_UNUSED(engine)
 	Q_UNUSED(scriptEngine)
 
 	QmlSqlSingleton *s = new QmlSqlSingleton(engine);
@@ -104,16 +103,3 @@ QString QmlSqlSingleton::typeNameForValue(const QVariant &val)
 	QString ret = val.typeName();
 	return ret;
 }
-/*
-SqlDatabase *QmlSqlSingleton::database(const QString &connection_name)
-{
-	qfLogFuncFrame() << connection_name;
-	SqlDatabase *ret = m_sqlDatabases.value(connection_name);
-	if(!ret) {
-		ret = new SqlDatabase(connection_name, this);
-		m_sqlDatabases[connection_name] = ret;
-	}
-	qfDebug() << "\t return:" << ret << ret->connectionName();
-	return ret;
-}
-*/
