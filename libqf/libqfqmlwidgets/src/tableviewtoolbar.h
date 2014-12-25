@@ -32,9 +32,9 @@ private:
 	Q_SLOT void emitFilterStringChanged(const QString &s);
 	Q_SLOT void onFilterDialogRequest();
 private:
-	qf::qmlwidgets::TableView* m_tableView;
+	qf::qmlwidgets::TableView* m_tableView = nullptr;
 	QList<Action*> m_pendingActions;
-	QComboBox *m_filterCombo;
+	QComboBox *m_filterCombo = nullptr;
 };
 
 }}
