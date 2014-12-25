@@ -19,9 +19,9 @@ public:
 	explicit HeaderView(Qt::Orientation orientation, QWidget *parent = 0);
 	~HeaderView() Q_DECL_OVERRIDE;
 public:
-	Q_SLOT void setSearchString(const QString &str);
+	Q_SLOT void setSeekString(const QString &str);
 protected:
-	QLabel *m_searchStringLabel;
+	QLabel *m_seekStringLabel;
 };
 
 }}

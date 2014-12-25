@@ -73,8 +73,23 @@ int Collator::sortIndex(QChar c) const
 	return ret;
 }
 
+QByteArray Collator::toAscii7(const QString &s, bool to_lower)
+{
+	QByteArray ret;
+	ret.reserve(s.length());
+	for(int i=0; i < s.length(); i++) {
+		QChar c = s[i];
+		bool is_upper = c.isUpper();
+		c = removePunctuation(c.toLower());
+		if(is_upper && !to_lower)
+			c = c.toUpper();
+		ret.append(c);
+	}
+	return ret;
+}
+
 static const char all_chars[] = "aáäbcčdďeéěëfghiíïjklĺľmnňoóöpqrřsštťuůúüvwxyýzž";
-static const char bt7_chars[] = "aaabccddeeeefghiiijklĺlmnnooopqrrssttuuuuvwxyyzz";
+static const char bt7_chars[] = "aaabccddeeeefghiiijklllmnnooopqrrssttuuuuvwxyyzz";
 
 QChar Collator::removePunctuation(QChar c)
 {

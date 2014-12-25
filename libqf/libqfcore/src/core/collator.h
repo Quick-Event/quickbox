@@ -37,10 +37,12 @@ public:
 	bool ignorePunctuation() const {return d->ignorePunctuation;}
 
 	int compare(const QString &s1, const QString &s2) const;
-    int compare(const QStringRef &s1, const QStringRef &s2) const;
+	int compare(const QStringRef &s1, const QStringRef &s2) const;
+
+	static QByteArray toAscii7(const QString &s, bool to_lower);
+	static QChar removePunctuation(QChar c);
 private:
 	int sortIndex(QChar c) const;
-	static QChar removePunctuation(QChar c);
 	static QHash<QChar, int> sortCache();
 };
 

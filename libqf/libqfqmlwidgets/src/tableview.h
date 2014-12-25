@@ -11,10 +11,13 @@
 
 #include <QTableView>
 
+class QAbstractProxyModel;
+
 namespace qf {
 namespace qmlwidgets {
 
 class Action;
+class TableViewProxyModel;
 
 class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::IPersistentSettings
 {
@@ -24,7 +27,7 @@ class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::
 	Q_ENUMS(RecordEditMode)
 
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
-	Q_PROPERTY(qf::core::model::TableModel* model READ tableModel WRITE setTableModel NOTIFY modelChanged)
+	Q_PROPERTY(qf::core::model::TableModel* model READ tableModel WRITE setTableModel NOTIFY tableModelChanged)
 	Q_PROPERTY(RowEditorMode rowEditorMode READ rowEditorMode WRITE setRowEditorMode NOTIFY rowEditorModeChanged)
 	Q_PROPERTY(QString idColumnName READ idColumnName WRITE setIdColumnName)
 private:
@@ -51,7 +54,7 @@ public:
 public:
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);
-	Q_SIGNAL void modelChanged();
+	Q_SIGNAL void tableModelChanged();
 
 	Q_SLOT virtual void refreshActions();
 	QList<Action*> toolBarActions() const {return m_toolBarActions;}
@@ -88,12 +91,18 @@ public:
 
 	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, int mode);
 	Q_SLOT virtual void rowExternallySaved(const QVariant &id, int mode);
+
+	Q_SIGNAL void filterDialogRequest();
+	Q_SLOT void filterByString(const QString &s);
 private:
-	Q_SIGNAL void searchStringChanged(const QString &str);
+	Q_SIGNAL void seekStringChanged(const QString &str);
 	qf::core::utils::Table::SortDef seekSortDefinition() const;
 	int seekColumn() const;
 	void seek(const QString &prefix_str);
 	void cancelSeek();
+
+	QModelIndex toTableModelIndex(const QModelIndex &table_view_index) const;
+	int toTableModelRowNo(int table_view_row_no) const;
 
 	void exportReport_helper(const QVariant& _options);
 
@@ -122,6 +131,8 @@ protected:
 
 	Action* action(const QString &act_oid);
 	void enableAllActions(bool on);
+
+	QAbstractProxyModel* lastProxyModel() const;
 protected:
 	QString m_seekString;
 	QMap<QString, Action*> m_actions;
@@ -129,6 +140,7 @@ protected:
 	QMap<int, QStringList> m_actionGroups;
 	QList<Action*> m_toolBarActions;
 	QList<Action*> m_contextMenuActions;
+	TableViewProxyModel *m_proxyModel;
 };
 
 }}

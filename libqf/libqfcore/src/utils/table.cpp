@@ -78,28 +78,22 @@ bool Table::LessThan::lessThan_helper(int _row, const QVariant &v, bool switch_p
 int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::SortDef &sd) const
 {
 	//qfInfo() << QF_FUNC_NAME << "l:" << l.toString() << "r:" << r.toString();
-	static QTextCodec *tc_ascii7 = NULL;
 	/// NULL je nejmensi ze vsech
-	if(!l.isValid() && r.isValid()) return -1;
-	if(l.isValid() && !r.isValid()) return 1;
-	if(!l.isValid() && !r.isValid()) return 0;
+	if(!l.isValid() && r.isValid())
+		return -1;
+	if(l.isValid() && !r.isValid())
+		return 1;
+	if(!l.isValid() && !r.isValid())
+		return 0;
 	int ret = 1;
 	if(l.type() == QVariant::String) {
 		if(sd.ascii7bit) {
-			if(tc_ascii7 == NULL) {
-				//qfInfo() << "creating ascii7bit codec";
-				tc_ascii7 = QTextCodec::codecForName("ASCII7");
-				if(!tc_ascii7)
-					qfFatal("Can't load ASCII7 codec.");
-			}
-			QByteArray la = tc_ascii7->fromUnicode(l.toString());
-			QByteArray ra = tc_ascii7->fromUnicode(r.toString());
-			if(!sd.caseSensitive) {
-				la = la.toLower();
-				ra = ra.toLower();
-			}
-			if(la < ra) ret = -1;
-			else if(la == ra) ret = 0;
+			QByteArray la = qf::core::Collator::toAscii7(l.toString(), !sd.caseSensitive);
+			QByteArray ra = qf::core::Collator::toAscii7(r.toString(), !sd.caseSensitive);
+			if(la < ra)
+				ret = -1;
+			else if(la == ra)
+				ret = 0;
 		}
 		else {
 			/// case sensitivity is property of table sort collator now
