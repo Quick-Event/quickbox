@@ -200,7 +200,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			bool has_blob_field = true;
 			for(qfu::Table::Field fld : row_ref.fields()) {
 				i++;
-				qfDebug() << "\t\tfield:" << fld.toString();
+				//qfDebug() << "\t\tfield:" << fld.toString();
 				if(fld.tableId() != table_id)
 					continue;
 				if(!row_ref.isDirty(i))
@@ -226,8 +226,10 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, has_blob_field);
 				query_str += " ";
 				QSqlRecord where_rec;
+				qfDebug() << "looking for primary index of table:" << table_id;
 				for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
 					QString full_fld_name = table_id + '.' + fld_name;
+					qfDebug() << "\t checking value of field:" << full_fld_name;
 					int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 					QF_ASSERT(fld_ix >= 0,
 							  QString("Cannot find field '%1'").arg(full_fld_name),
@@ -235,7 +237,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					qfu::Table::Field fld = m_table.fields().at(fld_ix);
 					QSqlField sqlfld(fld.shortName(), fld.type());
 					sqlfld.setValue(row_ref.origValue(fld_ix));
-					//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
+					qfDebug() << "\tpri index" << fld_ix << sqlfld.name() << ":" << sqlfld.value();
 					where_rec.append(sqlfld);
 				}
 				QF_ASSERT(!where_rec.isEmpty(),

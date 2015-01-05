@@ -10,18 +10,11 @@ QuickEventPartWidget
 	title: "Start"
 
 	Frame {
-		/*
-		Label {
-			id: lbl
-			text: "hello"
+		layoutProperties: LayoutProperties { spacing: 0 }
+		TableViewToolBar {
+			id: tableViewToolBar
+			tableView: table
 		}
-		Button {
-			text: "format C:"
-			onClicked: {
-				lbl.text = "kkt"
-			}
-		}
-		*/
 		TableView {
 			id: table
 			objectName: "tvStart1"
@@ -30,7 +23,9 @@ QuickEventPartWidget
 			model: SqlTableModel {
 				id: model
 				ModelColumn {
-					fieldName: 'id'
+					fieldName: 'competitors.id'
+					readOnly: true
+					caption: qsTr('ID')
 				}
 				ModelColumn {
 					fieldName: 'classes.name'
@@ -41,16 +36,24 @@ QuickEventPartWidget
 					caption: qsTr('Name')
 				}
 				ModelColumn {
-					fieldName: 'importId'
+					fieldName: 'stageId'
+					caption: qsTr('Stage')
+				}
+				ModelColumn {
+					fieldName: 'startTimeMS'
+					caption: qsTr('Start')
 				}
 				Component.onCompleted:
 				{
 					queryBuilder
 						.select2('competitors', '*')
 						.select2('classes', 'name')
+						.select2('laps', '*')
+						//.select2('laps', 'stageId, startTimeMS')
 						.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 						.from('competitors').orderBy('competitors.id')
-						.join("competitors.classId", "classes.id");
+						.join("competitors.classId", "classes.id")
+						.joinRestricted("competitors.id", "laps.competitorId", "stageId=1");//.where("competitors.id > 370");
 				}
 			}
 		}

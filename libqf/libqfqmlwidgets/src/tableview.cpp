@@ -271,7 +271,7 @@ bool TableView::postRow(int row_no)
 	try {
 		qfc::model::TableModel *m = tableModel();
 		if(m) {
-			ret = m->postRow(row_no, true);
+			ret = m->postRow(toTableModelRowNo(row_no), true);
 			if(ret)
 				updateRow(row_no);
 		}
@@ -287,7 +287,7 @@ void TableView::revertRow(int row_no)
 	qfLogFuncFrame() << row_no;
 	qfc::model::TableModel *m = tableModel();
 	if(m) {
-		m->revertRow(row_no);
+		m->revertRow(toTableModelRowNo(row_no));
 	}
 }
 

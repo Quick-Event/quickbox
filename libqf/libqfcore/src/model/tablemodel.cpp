@@ -268,7 +268,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 
 bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-	qfLogFuncFrame() << value.toString() << "role:" << role;
+	qfLogFuncFrame() << value << "role:" << role;
 	bool ret = false;
 	if(!index.isValid())
 		return ret;

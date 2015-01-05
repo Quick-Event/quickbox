@@ -61,8 +61,8 @@ bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &r
 	bool ret = false;
 	const QAbstractItemModel *source_model = sourceModel();
 	if(source_model) {
-		QVariant lv = source_model->data(left);
-		QVariant rv = source_model->data(right);
+		QVariant lv = source_model->data(left, Qt::EditRole); /// comparing display role is not working for NULL values
+		QVariant rv = source_model->data(right, Qt::EditRole);
 		if(lv.userType() == qMetaTypeId<QString>() && rv.userType() == qMetaTypeId<QString>()) {
 			const QByteArray lb = qf::core::Collator::toAscii7(lv.toString(), true);
 			const QByteArray rb = qf::core::Collator::toAscii7(rv.toString(), true);
@@ -84,25 +84,17 @@ bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &r
 				}
 			}
 		}
+		else if(lv.isNull() && !rv.isNull()) {
+			ret = true;
+		}
 		else {
 			ret = Super::lessThan(left, right);
 		}
+		//qfInfo() << lv << "vs" << rv << "->" << ret;
 	}
 	return ret;
 }
-/*
-QTextCodec *TableViewProxyModel::tcASCII7()
-{
-	static QTextCodec *tc_ascii7 = NULL;
-	if(!tc_ascii7) {
-		tc_ascii7 = QTextCodec::codecForName("ASCII7");
-		qfInfo() << "LOADED codec:" << tc_ascii7;
-		if(!tc_ascii7)
-			qfFatal("Can't load ASCII7 codec.");
-	}
-	return tc_ascii7;
-}
-*/
+
 bool TableViewProxyModel::dataMatchFilter(const QVariant &d) const
 {
 	QString s = d.toString();

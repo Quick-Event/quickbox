@@ -31,9 +31,10 @@ SqlDataDocument {
 				var stage_count = FrameWork.plugin('Event').api.config.getValue("event.stageCount", 1);
 				//Log.info("CompetitorDocument", saveData_qml, "stage_count:", stage_count);
 				var q = db.createQuery();
-				q.prepare('INSERT INTO laps (competitorId) VALUES (:competitorId)');
+				q.prepare('INSERT INTO laps (competitorId, stageId) VALUES (:competitorId, :stageId)');
 				for(var i=0; i<stage_count; i++) {
 					q.bindValue(':competitorId', competitor_id);
+					q.bindValue(':stageId', i + 1);
 					if(!q.exec())
 						break;
 				}

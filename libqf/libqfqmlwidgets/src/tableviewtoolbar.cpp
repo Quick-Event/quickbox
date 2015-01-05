@@ -41,6 +41,7 @@ TableViewToolBar::TableViewToolBar(QWidget *parent) :
 {
 	m_filterCombo = new FilterCombo();
 	m_filterCombo->setEditable(true);
+	m_filterCombo->lineEdit()->setClearButtonEnabled(true);
 	connect(m_filterCombo, &QComboBox::editTextChanged, this, &TableViewToolBar::emitFilterStringChanged);
 	connect(m_filterCombo, SIGNAL(activated(QString)), this, SLOT(emitFilterStringChanged(QString)));
 }

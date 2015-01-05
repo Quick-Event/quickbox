@@ -21,8 +21,6 @@ protected:
 	bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const Q_DECL_OVERRIDE;
 	bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 private:
-	//static QTextCodec* tcASCII7();
-
 	bool dataMatchFilter(const QVariant &d) const;
 private:
 	QByteArray m_rowFilterString;

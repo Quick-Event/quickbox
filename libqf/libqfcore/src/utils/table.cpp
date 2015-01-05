@@ -436,6 +436,7 @@ void TableRow::setValue(int col, const QVariant &v)
 	if(new_val != orig_val) {
 		d->values[col] = new_val;
 		setDirty(col, true);
+		//qfWarning() << col << "<-" << new_val;
 	}
 	else {
 		/// pokud hodnota byla nastavena (napr. po opakovanem prenastaveni) nakonec na originalni, neni nutne ji ukladat
@@ -460,6 +461,7 @@ void TableRow::saveValues()
 	d->origValues.resize(d->values.size());
 	d->dirtyFlags.resize(d->values.size());
 	for(int i=0; i<d->values.size(); i++) {
+		//qfInfo() << i << d->values[i] << "->" << d->origValues[i];
 		d->origValues[i] = d->values[i];
 		d->dirtyFlags[i] = false;
 	}
