@@ -23,6 +23,7 @@ Plugin {
 
 		function downloadContent(url, callback)
 		{
+			Log.info("http get request:", url);
 			var reply = networkAccessManager.get(url);
 			reply.downloadProgress.connect(FrameWork.showProgress);
 			reply.finished.connect(function(get_ok) {

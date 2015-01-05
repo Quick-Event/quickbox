@@ -95,6 +95,11 @@ QAbstractProxyModel* TableView::lastProxyModel() const
 	return ret;
 }
 
+void TableView::setModel(QAbstractItemModel *model)
+{
+	Super::setModel(model);
+}
+
 qf::core::model::TableModel *TableView::tableModel() const
 {
 	qf::core::model::TableModel *ret = qobject_cast<qf::core::model::TableModel *>(lastProxyModel()->sourceModel());
@@ -628,7 +633,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 		qfError() << "Feature not defined for this model type:" << model();
 	}
 }
-
+/*
 qf::core::utils::Table::SortDef TableView::seekSortDefinition() const
 {
 	qfLogFuncFrame();
@@ -638,7 +643,7 @@ qf::core::utils::Table::SortDef TableView::seekSortDefinition() const
 	}
 	return ret;
 }
-
+*/
 int TableView::seekColumn() const
 {
 	int ret = -1;
@@ -872,8 +877,8 @@ void TableView::keyPressEvent(QKeyEvent *e)
 		qfDebug() << "\t ENTER pressed";
 	}
 	else {
-		qfu::Table::SortDef sd = seekSortDefinition();
-		if(sd.isValid() && sd.ascending && seekColumn() >= 0 && (currentIndex().column() == seekColumn() || !currentIndex().isValid())) {
+		//qfu::Table::SortDef sd = seekSortDefinition();
+		if(seekColumn() >= 0 && (currentIndex().column() == seekColumn() || !currentIndex().isValid())) {
 			incremental_search = true;
 			if(!currentIndex().isValid())
 				setCurrentIndex(model()->index(0, seekColumn(), QModelIndex()));

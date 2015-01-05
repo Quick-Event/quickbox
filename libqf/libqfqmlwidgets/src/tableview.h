@@ -107,7 +107,7 @@ public:
 	Q_SLOT void filterByString(const QString &s);
 private:
 	Q_SIGNAL void seekStringChanged(const QString &str);
-	qf::core::utils::Table::SortDef seekSortDefinition() const;
+	//qf::core::utils::Table::SortDef seekSortDefinition() const;
 	int seekColumn() const;
 	void seek(const QString &prefix_str);
 	void cancelSeek();
@@ -145,6 +145,9 @@ protected:
 	void enableAllActions(bool on);
 
 	QAbstractProxyModel* lastProxyModel() const;
+private:
+	/// hide this function do disable filter proxymodel bypassing
+	void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
 protected:
 	QString m_seekString;
 	QMap<QString, Action*> m_actions;

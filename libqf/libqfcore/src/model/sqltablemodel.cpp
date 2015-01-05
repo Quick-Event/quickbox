@@ -556,16 +556,17 @@ QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &t
 
 void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
 {
-	//qfLogFuncFrame();
-	QSet<QString> table_ids = tableIds(table_fields);
-	QSet<QString> field_ids;
+	qfLogFuncFrame();
+	//QSet<QString> table_ids = tableIds(table_fields);
+	QMap< QString, QSet<QString> > field_ids;
 	int fld_cnt = table_fields.count();
 	for(const qfu::Table::Field &fld : table_fields) {
-		QString fs;
-		qf::core::Utils::parseFieldName(fld.name(), &fs);
-		field_ids << fs;
+		QString fn, tn;
+		qf::core::Utils::parseFieldName(fld.name(), &fn, &tn);
+		if(!tn.isEmpty())
+			field_ids[tn] << fn;
 	}
-	if(table_ids.isEmpty()) {
+	if(field_ids.isEmpty()) {
 		/// SQL driver doesn't support table names in returned QSqlRecord
 		/// try to guess it from select
 		int ix1 = query_str.indexOf(QLatin1String(" JOIN "), Qt::CaseInsensitive);
@@ -579,30 +580,30 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 					ix2 = query_str.length();
 				if(ix2 > ix1) {
 					QString table_id_from_query = query_str.mid(ix1, ix2 - ix1);
-					for(int i=0; i<fld_cnt; i++) {
-						qfu::Table::Field &fld = table_fields[i];
-						fld.setName(table_id_from_query + '.' + fld.name());
+					for(const qfu::Table::Field &fld : table_fields) {
+						field_ids[table_id_from_query] << fld.name();
 					}
-					table_ids << table_id_from_query;
 				}
 			}
 		}
 	}
 	QMap<QString, QString> serial_field_names;
 	QSet<QString> updateable_table_ids;
-	for(QString table_id : table_ids) {
+	for(QString table_id : field_ids.keys()) {
 		QString serial_field_name = sqlConnection().serialFieldName(table_id);
 		//qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
 		serial_field_names[table_id] = serial_field_name;
 		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
 		for(auto pk_f : prikey_fields) {
-			if(!field_ids.contains(pk_f)) {
+			qDebug() << "\t checking if query contains primary key:" << pk_f << "in table id:" << table_id;
+			if(!field_ids.value(table_id).contains(pk_f)) {
 				ok = false;
 				break;
 			}
 		}
 		if(ok) {
+			qDebug() << "\t setting update flag on table id:" << table_id;
 			updateable_table_ids << table_id;
 		}
 	}

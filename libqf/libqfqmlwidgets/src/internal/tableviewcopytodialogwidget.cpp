@@ -17,7 +17,7 @@ TableViewCopyToDialogWidget::TableViewCopyToDialogWidget(QWidget *parent)
 	qfm::TableModel *m = new qfm::TableModel(this);
 	//m->setElideDisplayedTextAt(0);
 	//qfTrash() << QF_FUNC_NAME << "model created:" << f_model;
-	tableView()->setModel(m);
+	tableView()->setTableModel(m);
 }
 
 TableViewCopyToDialogWidget::~TableViewCopyToDialogWidget()

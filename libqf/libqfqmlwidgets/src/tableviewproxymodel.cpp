@@ -55,6 +55,41 @@ bool TableViewProxyModel::filterAcceptsRow(int source_row, const QModelIndex &so
 	}
 	return false;
 }
+
+bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+	bool ret = false;
+	const QAbstractItemModel *source_model = sourceModel();
+	if(source_model) {
+		QVariant lv = source_model->data(left);
+		QVariant rv = source_model->data(right);
+		if(lv.userType() == qMetaTypeId<QString>() && rv.userType() == qMetaTypeId<QString>()) {
+			const QByteArray lb = qf::core::Collator::toAscii7(lv.toString(), true);
+			const QByteArray rb = qf::core::Collator::toAscii7(rv.toString(), true);
+			int lsz = lb.size();
+			int rsz = rb.size();
+			for(int i=0; ; i++) {
+				char lc = (i<lsz)? lb.at(i): 0;
+				char rc = (i<rsz)? rb.at(i): 0;
+				if(lc == rc) {
+					if(lc == 0) {
+						/// same
+						ret = false;
+						break;
+					}
+				}
+				else {
+					ret = lc < rc;
+					break;
+				}
+			}
+		}
+		else {
+			ret = Super::lessThan(left, right);
+		}
+	}
+	return ret;
+}
 /*
 QTextCodec *TableViewProxyModel::tcASCII7()
 {

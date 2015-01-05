@@ -132,7 +132,7 @@ qf::core::model::SqlTableModel* MainWindow::queryViewModel()
 
 void MainWindow::setQueryViewModel(qf::core::model::SqlTableModel *m)
 {
-	ui.queryView->tableView()->setModel(m);
+	ui.queryView->tableView()->setTableModel(m);
 	if(m) {
 		m->setParent(ui.queryView);
 		connect(m, SIGNAL(reloaded()), ui.queryView, SLOT(updateStatus()));

@@ -10,6 +10,7 @@ QuickEventPartWidget
 	title: "Start"
 
 	Frame {
+		/*
 		Label {
 			id: lbl
 			text: "hello"
@@ -20,48 +21,36 @@ QuickEventPartWidget
 				lbl.text = "kkt"
 			}
 		}
-		Frame {
-			layoutType: Frame.LayoutHorizontal
-			TableView {
-				id: table
-				objectName: "tvStart1"
-				persistentSettingsId: "tblStart";
+		*/
+		TableView {
+			id: table
+			objectName: "tvStart1"
+			persistentSettingsId: "tblStart";
 
-				model: SqlTableModel {
-					id: model
-					ModelColumn {
-						fieldName: 'id'
-					}
-					ModelColumn {
-						fieldName: 'classId'
-						caption: qsTr('class')
-					}
-					ModelColumn {
-						fieldName: 'name'
-						caption: qsTr('Name')
-					}
-					ModelColumn {
-						fieldName: 'importId'
-					}
-					Component.onCompleted:
-					{
-						queryBuilder.select2('competitors', '*')
-							.select("lastName || ' ' || firstName AS name")
-							.from('competitors').orderBy('id');
-					}
+			model: SqlTableModel {
+				id: model
+				ModelColumn {
+					fieldName: 'id'
 				}
-			}
-			TableView {
-				id: classes
-				objectName: "tvStart2"
-				persistentSettingsId: "tblClasses";
-				model: SqlTableModel {
-					id: mClasses
-					Component.onCompleted:
-					{
-						queryBuilder.select2('classes', '*')
-							.from('classes').orderBy('id');
-					}
+				ModelColumn {
+					fieldName: 'classes.name'
+					caption: qsTr('class')
+				}
+				ModelColumn {
+					fieldName: 'competitorName'
+					caption: qsTr('Name')
+				}
+				ModelColumn {
+					fieldName: 'importId'
+				}
+				Component.onCompleted:
+				{
+					queryBuilder
+						.select2('competitors', '*')
+						.select2('classes', 'name')
+						.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+						.from('competitors').orderBy('competitors.id')
+						.join("competitors.classId", "classes.id");
 				}
 			}
 		}
@@ -70,7 +59,6 @@ QuickEventPartWidget
 	function reload()
 	{
 		model.reload();
-		mClasses.reload();
 	}
 
 }

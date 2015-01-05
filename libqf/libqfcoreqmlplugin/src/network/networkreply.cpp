@@ -91,7 +91,10 @@ void qf::core::qml::NetworkReply::finished_helper()
 
 void qf::core::qml::NetworkReply::readyRead_helper()
 {
+	qfLogFuncFrame();
 	if(m_reply) {
+		int sz = m_data.length();
 		m_data += m_reply->readAll();
+		qfDebug() << "Chunk of" << (m_data.length() - sz) << "read.";
 	}
 }
