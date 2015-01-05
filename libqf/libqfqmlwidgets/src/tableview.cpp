@@ -198,10 +198,13 @@ void TableView::reload()
 	qf::core::model::TableModel *table_model = tableModel();
 	if(table_model) {
 		QModelIndex ix = currentIndex();
+		int r = ix.row();
+		int c = ix.column();
 		table_model->reload();
 		//qfDebug() << "\t emitting reloaded()";
 		//emit reloaded();
 		//qfDebug() << "\ttable:" << table();
+		ix = model()->index(r, c);
 		setCurrentIndex(ix);
 		//updateDataArea();
 	}
@@ -991,7 +994,8 @@ void TableView::keyPressEvent(QKeyEvent *e)
 	QTableView::keyPressEvent(e);
 	/// parent implementace muze zmenit accepted() flag eventu
 	qfDebug() << "\tcalled parent implementation QTableView::keyPressEvent(e), state:" << state() << "event accepted:" << e->isAccepted();
-	if(event_should_be_accepted) e->accept();
+	if(event_should_be_accepted)
+		e->accept();
 }
 
 void TableView::mousePressEvent(QMouseEvent * e)
@@ -1469,18 +1473,15 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 #endif
 	setFocus(); /// pokud nekdo neco resi s widgety jako reakci na signal currentChanging(), muze prijit o fokus a prestane chodit kurzorova navigace
 	Super::currentChanged(current, previous);
-	if(current.row() != previous.row() && previous.row() >= 0) {
-		qfDebug() << "\tsaving previous row:" << previous.row();
+	bool row_changed = (current.row() != previous.row() && previous.row() >= 0);
+	if(inlineEditStrategy() == OnCurrentRowChange && row_changed) {
+		int row_to_save = (row_changed)? previous.row(): current.row();
+		qfDebug() << "\tsaving row:" << row_to_save;
 		bool ok = false;
-		try {
-			ok = postRow(previous.row());
-		}
-		catch(qf::core::Exception &e) {
-			dialogs::MessageBox::showException(this, e);
-		}
+		ok = postRow(row_to_save);
 		if(!ok)
 			setCurrentIndex(previous);
-		qfDebug() << "\t" << __LINE__;
+		//qfDebug() << "\t" << __LINE__;
 		updateRow(previous.row());
 		updateRow(current.row());
 	}
@@ -1588,8 +1589,9 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 					qfDebug() << "\t RowEditorInline";
 					ret = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t QTableView::edit() returned:" << ret;
-					if(ret)
+					if(ret) {
 						refreshActions(); /// bez toho mi nechodi refreshActions pro bool hodnoty, ktere se nedelaji prez ItemDelegate, ale pres Qt::CheckStateRole
+					}
 				}
 			}
 			else  if(rowEditorMode() == EditRowsExternal || rowEditorMode() == EditRowsMixed) {
@@ -1621,6 +1623,15 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 	//ignoreFocusOutEventWhenOpenExternalEditor = false;
 	qfDebug() << "\t return:" << ret;
 	return ret;
+}
+
+void TableView::commitData(QWidget *editor)
+{
+	qfLogFuncFrame() << editor;
+	Super::commitData(editor);
+	if(inlineEditStrategy() == OnCurrentFieldChange) {
+		postRow(currentIndex().row());
+	}
 }
 
 void TableView::filterByString(const QString &s)

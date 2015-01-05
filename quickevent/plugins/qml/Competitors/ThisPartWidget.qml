@@ -39,6 +39,7 @@ QuickEventPartWidget
 			id: table
 			persistentSettingsId: "tblCompetitors";
 			rowEditorMode: TableView.EditRowsMixed
+			inlineEditStrategy: TableView.OnCurrentFieldChange
 
 			model: SqlTableModel {
 				id: model

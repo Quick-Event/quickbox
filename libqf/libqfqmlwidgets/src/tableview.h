@@ -23,12 +23,14 @@ class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::
 {
 	Q_OBJECT
 
+	Q_ENUMS(InlineEditStrategy)
 	Q_ENUMS(RowEditorMode)
 	Q_ENUMS(RecordEditMode)
 
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(qf::core::model::TableModel* model READ tableModel WRITE setTableModel NOTIFY tableModelChanged)
 	Q_PROPERTY(RowEditorMode rowEditorMode READ rowEditorMode WRITE setRowEditorMode NOTIFY rowEditorModeChanged)
+	Q_PROPERTY(InlineEditStrategy inlineEditStrategy READ inlineEditStrategy WRITE setInlineEditStrategy NOTIFY inlineEditStrategyChanged)
 	Q_PROPERTY(QString idColumnName READ idColumnName WRITE setIdColumnName)
 private:
 	typedef QTableView Super;
@@ -40,15 +42,24 @@ public:
 	explicit TableView(QWidget *parent = 0);
 	~TableView() Q_DECL_OVERRIDE;
 public:
-	enum RowEditorMode { EditRowsInline,
-					EditRowsExternal,
-					EditRowsMixed };
-	enum RecordEditMode { ModeView = qf::core::model::DataDocument::ModeView,
-					   ModeEdit = qf::core::model::DataDocument::ModeEdit,
-					   ModeInsert = qf::core::model::DataDocument::ModeInsert,
-					   ModeCopy = qf::core::model::DataDocument::ModeCopy,
-					   ModeDelete = qf::core::model::DataDocument::ModeDelete };
+	enum InlineEditStrategy {
+		OnCurrentRowChange,
+		OnCurrentFieldChange
+	};
+	enum RowEditorMode {
+		EditRowsInline,
+		EditRowsExternal,
+		EditRowsMixed
+	};
+	enum RecordEditMode {
+		ModeView = qf::core::model::DataDocument::ModeView,
+		ModeEdit = qf::core::model::DataDocument::ModeEdit,
+		ModeInsert = qf::core::model::DataDocument::ModeInsert,
+		ModeCopy = qf::core::model::DataDocument::ModeCopy,
+		ModeDelete = qf::core::model::DataDocument::ModeDelete
+	};
 
+	QF_PROPERTY_IMPL2(InlineEditStrategy, i, I, nlineEditStrategy, OnCurrentRowChange)
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 public:
@@ -114,6 +125,7 @@ protected:
 	void contextMenuEvent(QContextMenuEvent *e) Q_DECL_OVERRIDE;
 
 	bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event) Q_DECL_OVERRIDE;
+	void commitData(QWidget *editor) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
 
 	virtual void insertRowInline();
