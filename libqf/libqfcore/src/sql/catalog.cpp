@@ -89,6 +89,7 @@ QString FieldInfo::toString(const QString& indent) const
 	ts << indent << "default value: " << defaultValue().toString() << "\n";
 	ts << indent << "required: " << requiredStatus() << "\n";
 	ts << indent << "autovalue: " << isAutoValue() << "\n";
+	ts << indent << "generated: " << isGenerated() << "\n";
 	ts << indent << "nulable: " << isNullable() << "\n";
 	ts << indent << "read only: " << isReadOnly() << "\n";
 	ts << indent << "requiredStatus: " << requiredStatus() << "\n";
@@ -137,12 +138,11 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 		QString short_field_name;
 		qf::core::Utils::parseFieldName(r.field(i).name(), &short_field_name);
 		FieldInfo &fi = addEntry(short_field_name);
-		//qfDebug() << "##### FieldInfo:" << fi.toString();
 		fi = r.field(i);
 		fi.setReadOnly(false);
 		fi.setName(full_table_name + "." + short_field_name);
-		//qfTrash() << "\t\tfound driver reported name:" << f.driverReportedName() << "isValid():" << f.isValid() << "type:" << f.type();
-		//qfTrash() << "\t\tfield:" << f.toString();
+		fi.setAutoIncrement(fi.isAutoValue());
+		//qfInfo() << "##### FieldInfo:" << fi.toString();
 		if(driver_name.endsWith("PSQL")) {
 			// fill seqname
 			QSqlQuery q1(connection);

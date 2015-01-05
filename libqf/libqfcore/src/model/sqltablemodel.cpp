@@ -87,6 +87,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				i++;
 				if(fld.tableId() != table_id)
 					continue;
+				//qfInfo() << table_id << "field:" << fld.name();
 				bool is_field_dirty = row_ref.isDirty(i);
 				if(fld.isSerial()) {
 					/// always include serial fields, an empty line cannot be inserted in other case
@@ -99,6 +100,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					/// always include prikey field, an empty line cannot be inserted in other case
 					//is_field_dirty = true;
 					primary_ix = i;
+					qfDebug() << "\t primary ix:" << primary_ix;
 				}
 				if(!is_field_dirty)
 					continue;
