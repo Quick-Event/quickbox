@@ -15,7 +15,7 @@ Query::Query(const QSqlDatabase &db)
 }
 
 Query::Query(const QString &connection_name)
-	: Super(QSqlDatabase::database(connection_name, false))
+	: Super(QSqlDatabase::database(connection_name.isEmpty()? QLatin1String(QSqlDatabase::defaultConnection): connection_name, false))
 {
 }
 
