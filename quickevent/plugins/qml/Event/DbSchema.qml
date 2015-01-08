@@ -7,7 +7,7 @@ Schema {
 	tables: [
 		Table { name: 'enumz'
 			fields: [
-				Field { name: 'id'; type: Serial {} },
+				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'groupName'; type: String {} },
 				Field { name: 'groupId'; type: String {} },
 				Field { name: 'pos'; type: Int {} },
@@ -15,17 +15,12 @@ Schema {
 				Field { name: 'value'; type: String {} }
 			]
 			indexes: [
-				Index {fields: ['ckey']; primary: true }
+				Index {fields: ['groupName' ,'groupId']; unique: true }
 			]
 			rows: [
-				['event.stageCount', qsTr('Stage count'), 0, 'int'],
-				['event.name', qsTr('Event name'), '', 'QString'],
-				['event.date', qsTr('Event date'), '', 'QDate'],
-				['event.description', qsTr('Event description'), '', 'QString'],
-				['event.place', qsTr('Event place'), '', 'QString'],
-				['event.mainReferee', qsTr('Main referee'), '', 'QString'],
-				['event.director', qsTr('Director'), '', 'QString'],
-				['event.importId', qsTr('Import ID'), '', 'int']
+				[NaN,'laps.status', 'OFF', 1, null, null],
+				[NaN,'laps.status', 'START', 2, null, null],
+				[NaN,'laps.status', 'FINISH', 3, null, null]
 			]
 		},
 		Table { name: 'config'
@@ -39,7 +34,7 @@ Schema {
 				Index {fields: ['ckey']; primary: true }
 			]
 			rows: [
-				['event.stageCount', qsTr('Stage count'), 0, 'int'],
+				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],
 				['event.date', qsTr('Event date'), '', 'QDate'],
 				['event.description', qsTr('Event description'), '', 'QString'],
@@ -117,11 +112,10 @@ Schema {
 					notNull: true
 				},
 				Field { name: 'status';
-					type: Enum { name: 'enum_lap_status';
-						keys: ['OFF', 'START', 'FINISH']
-					}
+					type: String {}
 					defaultValue: 'OFF';
 					notNull: true
+					comment: "referencing enumz.laps.status"
 				}
 			]
 			indexes: [
