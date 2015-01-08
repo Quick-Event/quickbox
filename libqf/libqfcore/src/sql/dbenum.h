@@ -54,32 +54,6 @@ private:
 	static QMap<QString, int> s_fieldMapping;
 };
 
-class QFCORE_DECL_EXPORT DbEnumCache
-{
-public:
-	DbEnumCache(const QString connection_name = QString()) : m_connectionName(connection_name) {}
-	virtual ~DbEnumCache() {}
-public:
-	struct QFCORE_DECL_EXPORT EnumList : public QList<DbEnum>
-	{
-		int indexOf(const QString &group_id) const;
-		DbEnum valueForId(const QString &group_id) const;
-	};
-public:
-	EnumList dbEnumsForGroup(const QString &group_name);
-	DbEnum dbEnum(const QString &group_name, const QString &group_id);
-
-	bool isEmpty() const {return m_enumCache.isEmpty();}
-	virtual void reload(const QString &group_name);
-	//! delete all groups wen group_name is empty
-	void clear(const QString &group_name = QString());
-	/// ensure that group_name enums are loaded in the cache
-	void ensure(const QString & group_name);
-private:
-	QString m_connectionName;
-	QMap<QString, EnumList> m_enumCache;
-};
-
 }}}
 
 #endif // QF_CORE_SQL_DBENUM_H

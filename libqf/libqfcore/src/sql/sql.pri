@@ -4,6 +4,7 @@ HEADERS += \
 	$$PWD/catalog.h \
     $$PWD/query.h \
     $$PWD/dbenum.h \
+    $$PWD/dbenumcache.h \
 
 SOURCES += \
     $$PWD/querybuilder.cpp \
@@ -11,4 +12,5 @@ SOURCES += \
 	$$PWD/catalog.cpp \
     $$PWD/query.cpp \
     $$PWD/dbenum.cpp \
+    $$PWD/dbenumcache.cpp \
 
