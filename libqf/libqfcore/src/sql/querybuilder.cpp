@@ -302,6 +302,12 @@ QueryBuilder& QueryBuilder::as(const QString &alias_name)
 	return *this;
 }
 
+QueryBuilder &QueryBuilder::clearWhere()
+{
+	take(WhereKey);
+	return *this;
+}
+
 bool QueryBuilder::isMangleLongFieldNames(const QueryBuilder::BuildOptions &opts) const
 {
 	return !opts.isSqlDriverSupportsTableNamesInSelect();

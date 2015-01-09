@@ -8,7 +8,31 @@ QuickEventPartWidget
 	id: root
 
 	title: "Start"
+	Frame {
+		layoutType: Frame.LayoutHorizontal
+		Label {
+			text: qsTr("Class")
+		}
+		ForeignKeyComboBox {
+			id: classList
+			referencedTable: "classes"
+			referencedField: "id"
+			referencedCaptionField: "name"
 
+			function checkLoaded()
+			{
+				if(classList.count == 0) {
+					loadItems();
+					insertItem(0, qsTr("--- all ---"), 0);
+					currentDataChanged.connect(root.reload)
+				}
+			}
+		}
+		Label {
+			Layout.horizontalSizePolicy: LayoutProperties.Expanding
+			text: qsTr("<--->")
+		}
+	}
 	Frame {
 		layoutProperties: LayoutProperties { spacing: 0 }
 		TableViewToolBar {
@@ -61,6 +85,12 @@ QuickEventPartWidget
 
 	function reload()
 	{
+		classList.checkLoaded();
+		model.queryBuilder.clearWhere();
+		var class_id = classList.currentData;
+		if(class_id)
+			model.queryBuilder.where("competitors.classId=" + class_id);
+		Log.info("reloading class id:", class_id)
 		model.reload();
 	}
 

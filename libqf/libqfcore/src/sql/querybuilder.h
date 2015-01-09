@@ -104,6 +104,8 @@ public:
 	QueryBuilder& offset(int n);
 	QueryBuilder& as(const QString &alias_name);
 
+	QueryBuilder& clearWhere();
+
 	static QString mangleSeparator() {static QString ret = QStringLiteral("__"); return ret;}
 	static QString mangleLongFieldName(const QString &table, const QString &field) {return table + mangleSeparator() + field;}
 	static QString unmangleLongFieldName(const QString &field) {

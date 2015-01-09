@@ -96,6 +96,11 @@ public:
 		m_builder.clear();
 		return this;
 	}
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* clearWhere() {
+		m_builder.clearWhere();
+		return this;
+	}
+
 	Q_INVOKABLE QString toString() const {
 		return m_builder.toString();
 	}

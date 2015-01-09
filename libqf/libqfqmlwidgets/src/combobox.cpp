@@ -40,6 +40,11 @@ void ComboBox::setCurrentData(const QVariant &val)
 	}
 }
 
+void ComboBox::insertItem(int index, const QString &text, const QVariant &user_data)
+{
+	Super::insertItem(index, text, user_data);
+}
+
 void ComboBox::setItems(const QVariantList &items)
 {
 	blockSignals(true);
@@ -97,6 +102,11 @@ void ComboBox::removeItems()
 	Super::clear();
 }
 
+void ComboBox::loadItems(bool force)
+{
+	Q_UNUSED(force)
+}
+
 void ComboBox::onCurrentTextChanged(const QString &txt)
 {
 	if(!m_loadingState) {
@@ -135,25 +145,21 @@ void ForeignKeyComboBox::removeItems()
 	m_itemsLoaded = false;
 }
 
-void ForeignKeyComboBox::loadItems()
+void ForeignKeyComboBox::loadItems(bool force)
 {
 	static QString referencedTablePlaceHolder = QStringLiteral("{{referencedTable}}");
 	static QString referencedFieldPlaceHolder = QStringLiteral("{{referencedField}}");
 	static QString referencedCaptionFieldPlaceHolder = QStringLiteral("{{captionField}}");
+	if(force)
+		removeItems();
 	if(!m_itemsLoaded) do {
+		QString connection_name;
 		qfLogFuncFrame() << this << "data controler:" << m_dataController;
 		if(!m_dataController) {
-			qfWarning("Data controller is NULL.");
-			break;
+			connection_name = QLatin1String(QSqlDatabase::defaultConnection);
+			qfDebug() << "Data controller is NULL, using default connection name:" << connection_name;
 		}
 		m_loadingState = true;
-		/*
-			if(query_str.compare("<none>", Qt::CaseInsensitive) == 0) {
-				itemsLoaded = true;
-				break;
-			}
-			*/
-		removeItems();
 		{
 			QString tblname = referencedTable();
 			QString fldname = referencedField();
@@ -181,7 +187,7 @@ void ForeignKeyComboBox::loadItems()
 			}
 			query_str = query_str.trimmed();
 			if(!query_str.isEmpty()) {
-				qf::core::sql::Query q(m_dataController->dbConnectionName());
+				qf::core::sql::Query q(connection_name);
 				qfDebug() << "\t query_str:" << query_str;
 				QStringList caption_fields;
 				QString caption_format = itemCaptionFormat();

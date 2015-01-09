@@ -10,7 +10,7 @@ namespace qf {
 namespace qmlwidgets {
 
 /**
- * @brief The GridLayoutProperties class
+ * @brief The LayoutTypeProperties class
  *
  * If the Frame container has grid layout assigned, it is configured according to this properties
  */

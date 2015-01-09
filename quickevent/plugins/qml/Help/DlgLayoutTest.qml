@@ -5,7 +5,6 @@ import qf.qmlwidgets 1.0
 Dialog {
 	id: root
 	persistentSettingsId: "DlgLayoutTest"
-	//property var settings: Settings {}
 	Label {
 		text: "FormLayout"
 	}
@@ -108,6 +107,10 @@ Dialog {
 		Label {
 			text: "hi Splitter"
 		}
+	}
+	Label {
+		Layout.verticalSizePolicy: LayoutProperties.Expanding
+		text: "This label fills rest"
 	}
 	Component.onCompleted: {
 		//root.loadPersistentSettings(true);

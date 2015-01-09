@@ -31,14 +31,14 @@ public:
 	Q_SIGNAL void currentDataChanged(const QVariant &value);
 	Q_SIGNAL void currentDataActivated(const QVariant &value);
 public:
+	Q_INVOKABLE void insertItem(int index, const QString &text, const QVariant &user_data = QVariant());
 	Q_INVOKABLE void setItems(const QVariantList &items);
+	Q_INVOKABLE virtual void removeItems();
+	Q_INVOKABLE virtual void loadItems(bool force = false);
 protected:
 	QVariant dataValue() Q_DECL_OVERRIDE;
 	void setDataValue(const QVariant &value) Q_DECL_OVERRIDE;
 	Q_SIGNAL void dataValueChanged(const QVariant &value);
-
-	virtual void removeItems();
-	virtual void loadItems() {}
 
 	Q_SLOT virtual void onCurrentTextChanged(const QString &txt);
 private:
@@ -67,9 +67,9 @@ public:
 	QF_PROPERTY_IMPL(QString, r, R, eferencedCaptionField)
 	QF_PROPERTY_IMPL2(QString, i, I, temCaptionFormat, QStringLiteral("{{captionField}}"))
 	QF_PROPERTY_IMPL(QString, q, Q, ueryString)
-protected:
+public:
 	void removeItems() Q_DECL_OVERRIDE;
-	void loadItems() Q_DECL_OVERRIDE;
+	void loadItems(bool force = false) Q_DECL_OVERRIDE;
 private:
 	bool m_itemsLoaded = false;
 };
