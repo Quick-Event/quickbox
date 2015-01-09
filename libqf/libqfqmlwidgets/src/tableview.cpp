@@ -745,11 +745,12 @@ void TableView::loadPersistentSettings()
 				it.next();
 				QVariantMap section = it.value().toMap();
 				QString field_name = it.key();
+				qfDebug() << "resizing column:" << field_name;
 				int visual_ix = section.value("visualIndex").toInt();
 				visual_order[visual_ix] = field_name;
 				for(int logical_ix=0; logical_ix<horiz_header->count(); logical_ix++) {
 					QString col_name = mod->headerData(logical_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					qfDebug() << col_name << "cmp" << field_name << "=" << qf::core::Utils::fieldNameCmp(col_name, field_name);
+					//qfDebug() << col_name << "cmp" << field_name << "=" << qf::core::Utils::fieldNameCmp(col_name, field_name);
 					if(qf::core::Utils::fieldNameCmp(col_name, field_name)) {
 						int size = section.value("size").toInt();
 						horiz_header->resizeSection(logical_ix, size);
@@ -790,7 +791,11 @@ void TableView::loadPersistentSettings()
 				qfDebug() << "moving column:" << field_name << "to visual index:" << visual_ix;
 				for(int v_ix=0; v_ix<visual_ix; v_ix++) {
 					int log_ix = horiz_header->logicalIndex(v_ix);
-					QF_ASSERT(log_ix >= 0, "internal error", continue);
+					//QF_ASSERT(log_ix >= 0, "internal error", continue);
+					if(log_ix < 0) {
+						qfDebug() << "Cannot find logical index for visual index:" << v_ix << "column name:" << field_name << "might not exist in loaded columns.";
+						break;
+					}
 					QString col_name = mod->headerData(log_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
 					qfDebug() << "\tvisual index:" << v_ix << "-> logical index:" << log_ix << "col name:" << col_name;
 					if(qf::core::Utils::fieldNameCmp(col_name, field_name)) {

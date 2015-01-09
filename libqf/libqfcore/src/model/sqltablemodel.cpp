@@ -558,18 +558,23 @@ QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &t
 	return ret;
 }
 
-void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
+static QMap< QString, QSet<QString> > separateFields(const qf::core::utils::Table::FieldList &table_fields)
 {
-	qfLogFuncFrame();
-	//QSet<QString> table_ids = tableIds(table_fields);
 	QMap< QString, QSet<QString> > field_ids;
-	int fld_cnt = table_fields.count();
 	for(const qfu::Table::Field &fld : table_fields) {
 		QString fn, tn;
 		qf::core::Utils::parseFieldName(fld.name(), &fn, &tn);
 		if(!tn.isEmpty())
 			field_ids[tn] << fn;
 	}
+	return field_ids;
+}
+
+void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
+{
+	qfLogFuncFrame();
+	//QSet<QString> table_ids = tableIds(table_fields);
+	QMap< QString, QSet<QString> > field_ids = separateFields(table_fields);
 	if(field_ids.isEmpty()) {
 		/// SQL driver doesn't support table names in returned QSqlRecord
 		/// try to guess it from select
@@ -584,10 +589,12 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 					ix2 = query_str.length();
 				if(ix2 > ix1) {
 					QString table_id_from_query = query_str.mid(ix1, ix2 - ix1);
-					for(const qfu::Table::Field &fld : table_fields) {
-						field_ids[table_id_from_query] << fld.name();
+					qf::core::Utils::parseFieldName(table_id_from_query, &table_id_from_query);
+					for(qfu::Table::Field &fld : table_fields) {
+						fld.setName(table_id_from_query + '.' + fld.name());
 					}
 				}
+				field_ids = separateFields(table_fields);
 			}
 		}
 	}
@@ -599,9 +606,10 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 		serial_field_names[table_id] = serial_field_name;
 		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
+		QSet<QString> flds = field_ids.value(table_id);
 		for(auto pk_f : prikey_fields) {
 			qDebug() << "\t checking if query contains primary key:" << pk_f << "in table id:" << table_id;
-			if(!field_ids.value(table_id).contains(pk_f)) {
+			if(!flds.contains(pk_f)) {
 				ok = false;
 				break;
 			}
@@ -611,8 +619,7 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 			updateable_table_ids << table_id;
 		}
 	}
-	for(int i=0; i<fld_cnt; i++) {
-		qfu::Table::Field &fld = table_fields[i];
+	for(qfu::Table::Field &fld : table_fields) {
 		QString table_id = fld.tableId();
 		if(!table_id.isEmpty()) {
 			fld.setCanUpdate(updateable_table_ids.contains(table_id));
