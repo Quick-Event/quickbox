@@ -1,24 +1,21 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.core.sql.def 1.0
-import "private/libsqldef.js" as SqlDef
+import "private/libsqldef.js" as LibSqlDef
 
 QtObject {
 	id: root
 	property string name
 	property list<Field> fields
 	property list<Index> indexes
-	property var rows: [] // list of values list
 	property string comment
 
 	function createSqlScript(options)
 	{
-		var opts = new SqlDef.Options(options);
+		var opts = new LibSqlDef.Options(options);
 		var ret = [];
 		var sql_types = [];
-		var full_table_name = root.name;
-		if(options.driverName.endsWith("PSQL"))
-			full_table_name = options.schemaName + '.' + root.name;
+		var full_table_name = opts.fullTableName(name);
 		ret.push('-- create table: ' + full_table_name);
 		var table_def = 'CREATE TABLE ' + full_table_name + ' (\n';
 		var field_defs = [];
@@ -64,42 +61,6 @@ QtObject {
 		if(root.comment) {
 			ret.push(comments_prefix + 'COMMENT ON TABLE ' + full_table_name + " IS '" + root.comment + "'");
 		}
-		var ins = "INSERT INTO " + full_table_name + " (" + fieldNames.join(", ") + ") VALUES "
-		for(var i=0; i<root.rows.length; i++) {
-			var row = root.rows[i];
-			var vals = ""
-			for(var j=0; j<row.length; j++) {
-				if(j > 0)
-					vals += ', ';
-				vals += quoteSqlValue(row[j], options);
-			}
-			ret.push(ins + "(" + vals + ")");
-		}
-		return ret;
-	}
-
-	function isString(o)
-	{
-	    return typeof o == "string" || (typeof o == "object" && o.constructor === String);
-	}
-
-	function quoteSqlValue(val, options)
-	{
-		var ret;
-		if(typeof val === 'undefined')
-			ret = 'NULL';
-		else if(val === null)
-			ret = 'NULL';
-		else if(isString(val))
-			ret = "'" + val + "'";
-		else if(isNaN(val)) {
-			if(options.driverName.endsWith("PSQL"))
-				ret = 'DEFAULT';
-			else
-				ret = 'NULL'
-		}
-		else
-			ret = val + "";
 		return ret;
 	}
 }

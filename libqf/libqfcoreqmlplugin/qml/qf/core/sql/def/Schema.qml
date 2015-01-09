@@ -7,17 +7,31 @@ QtObject {
 	id: root
 	property string name
     property list<Table> tables
+	property list<Insert> inserts
 
 	function createSqlScript(options)
 	{
 		name = options.schemaName;
 		var driver_name = options.driverName;
 		var ret = [];
-		ret.push('-- script generated to create schema ' + name);
+
+		ret.push('------------------------------------');
+		ret.push('-- create schema ' + name);
+		ret.push('------------------------------------');
 		if(driver_name.endsWith("PSQL"))
 			ret.push('CREATE SCHEMA ' + name);
 		for(var i=0; i<tables.length; i++) {
+			ret.push('');
 			ret.push.apply(ret, tables[i].createSqlScript(options));
+		}
+
+		ret.push('');
+		ret.push('------------------------------------');
+		ret.push('-- insert initial data');
+		ret.push('------------------------------------');
+		for(var i=0; i<inserts.length; i++) {
+			ret.push('');
+			ret.push.apply(ret, inserts[i].createSqlScript(options));
 		}
 		return ret;//.join(';\n');
 	}

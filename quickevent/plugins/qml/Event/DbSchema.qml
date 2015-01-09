@@ -5,7 +5,7 @@ import qf.core.sql.def 1.0
 Schema {
 	name: 'untitled'
 	tables: [
-		Table { name: 'enumz'
+		Table { id: enumz; name: 'enumz'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'groupName'; type: String {} },
@@ -17,13 +17,8 @@ Schema {
 			indexes: [
 				Index {fields: ['groupName' ,'groupId']; unique: true }
 			]
-			rows: [
-				[NaN,'laps.status', 'OFF', 1, null, null],
-				[NaN,'laps.status', 'START', 2, null, null],
-				[NaN,'laps.status', 'FINISH', 3, null, null]
-			]
 		},
-		Table { name: 'config'
+		Table { id: config; name: 'config'
 			fields: [
 				Field { name: 'ckey'; type: String {} },
 				Field { name: 'cname'; type: String {} },
@@ -32,16 +27,6 @@ Schema {
 			]
 			indexes: [
 				Index {fields: ['ckey']; primary: true }
-			]
-			rows: [
-				['event.stageCount', qsTr('Stage count'), '0', 'int'],
-				['event.name', qsTr('Event name'), '', 'QString'],
-				['event.date', qsTr('Event date'), '', 'QDate'],
-				['event.description', qsTr('Event description'), '', 'QString'],
-				['event.place', qsTr('Event place'), '', 'QString'],
-				['event.mainReferee', qsTr('Main referee'), '', 'QString'],
-				['event.director', qsTr('Director'), '', 'QString'],
-				['event.importId', qsTr('Import ID'), '', 'int']
 			]
 		},
 		Table { name: 'stages'
@@ -197,6 +182,30 @@ Schema {
 					fields: ['idsi']
 					unique: false
 				}
+			]
+		}
+	]
+	inserts: [
+		Insert {
+			table: enumz
+			fields: ['groupName', 'groupId', 'pos']
+			rows: [
+				['laps.status', 'OFF', 1],
+				['laps.status', 'START', 2],
+				['laps.status', 'FINISH', 3]
+			]
+		},
+		Insert {
+			table: config
+			rows: [
+				['event.stageCount', qsTr('Stage count'), '0', 'int'],
+				['event.name', qsTr('Event name'), '', 'QString'],
+				['event.date', qsTr('Event date'), '', 'QDate'],
+				['event.description', qsTr('Event description'), '', 'QString'],
+				['event.place', qsTr('Event place'), '', 'QString'],
+				['event.mainReferee', qsTr('Main referee'), '', 'QString'],
+				['event.director', qsTr('Director'), '', 'QString'],
+				['event.importId', qsTr('Import ID'), '', 'int']
 			]
 		}
 	]

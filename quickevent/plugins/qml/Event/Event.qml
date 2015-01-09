@@ -76,9 +76,12 @@ QtObject {
 				db.transaction();
 				var ok = false;
 				for(var i=0; i<create_script.length; i++) {
-					var cmd = create_script[i] + ';';
+					var cmd = create_script[i];
+					if(!cmd)
+						continue;
 					if(cmd.startsWith('--'))
 						continue;
+					console.debug(cmd + ';');
 					ok = q.exec(cmd);
 					if(!ok) {
 						Log.info(cmd);

@@ -14,3 +14,4 @@ Time 1.0 Time.qml
 Date 1.0 Date.qml
 DateTime 1.0 DateTime.qml
 Enum 1.0 Enum.qml
+Insert 1.0 Insert.qml
