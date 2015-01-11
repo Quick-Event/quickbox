@@ -1,7 +1,10 @@
 #include "ogsupport/ogsqltablemodel.h"
+#include "ogsupport/ogtimems.h"
+#include "ogsupport/ogtimeedit.h"
 
 #include <qf/core/log.h>
 
+#include <QItemEditorFactory>
 #include <QQmlExtensionPlugin>
 #include <qqml.h>
 
@@ -14,6 +17,11 @@ public:
 	{
 		qfLogFuncFrame() << uri;
 		Q_ASSERT(uri == QLatin1String("Core"));
+
+		QItemEditorCreatorBase *creator = new QStandardItemEditorCreator<OGTimeEdit>();
+		QItemEditorFactory *fact = new QItemEditorFactory;
+		fact->registerEditor(qMetaTypeId<OGTimeMs>(), creator);
+		QItemEditorFactory::setDefaultFactory(fact);
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
 		qmlRegisterType<OGSqlTableModel>(uri, 1, 0, "OGSqlTableModel");

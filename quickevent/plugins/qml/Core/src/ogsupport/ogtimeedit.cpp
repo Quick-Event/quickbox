@@ -1,10 +1,12 @@
 #include "ogtimeedit.h"
 #include "ogtimems.h"
 
+#include <qf/core/log.h>
+
 OGTimeEdit::OGTimeEdit(QWidget *parent)
 	: Super(parent)
 {
-
+	qfLogFuncFrame();
 }
 
 OGTimeEdit::~OGTimeEdit()
@@ -12,19 +14,19 @@ OGTimeEdit::~OGTimeEdit()
 
 }
 
-int OGTimeEdit::obTimeMs() const
+OGTimeMs OGTimeEdit::ogTimeMs() const
 {
 	OGTimeMs t = OGTimeMs::fromString(text());
-	return t.msec();
+	return t;
 
 }
 
-void OGTimeEdit::setObTimeMs(int msec)
+void OGTimeEdit::setOGTimeMs(const OGTimeMs &t)
 {
-	if(obTimeMs() != msec) {
-		OGTimeMs t(msec);
+	qfLogFuncFrame();
+	if(ogTimeMs().msec() != t.msec()) {
 		setText(t.toString());
-		emit obTimeMsChanged(msec);
+		emit ogTimeMsChanged();
 	}
 }
 
