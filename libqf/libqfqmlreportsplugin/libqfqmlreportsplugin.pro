@@ -8,30 +8,32 @@ CONFIG += hide_symbols
 
 QT += qml #widgets sql
 
-PLUGIN_MODULE_PATH = qml/qf/qmlreports
+PLUGIN_MODULE_NAME = qmlreports
+PLUGIN_MODULE_PATH = qml/qf
 
-unix:DESTDIR = $$OUT_PWD/../../lib/$$PLUGIN_MODULE_PATH
-win32:DESTDIR = $$OUT_PWD/../../bin/$$PLUGIN_MODULE_PATH
-TARGET  = qfqmlreportsplugin
+unix:DESTDIR = $$OUT_PWD/../../lib
+win32:DESTDIR = $$OUT_PWD/../../bin
 
-LIBS +=      \
-        -lqfcore  \
-        -lqfqmlwidgets  \
+TARGET  = qf$${PLUGIN_MODULE_NAME}plugin
+
+LIBS += \
+		-lqfcore  \
+		-lqfqmlwidgets  \
 
 
-win32: LIBS +=  \
-	-L../../bin  \
-
-unix: LIBS +=  \
-	-L../../lib  \
+LIBS += -L$$DESTDIR
 
 include ($$PWD/../../crosscompile-support.pri)
 
 unix {
-	qmlfiles.commands = ln -sf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR
+	qmlfiles.commands = \
+		mkdir -p $$DESTDIR/$$PLUGIN_MODULE_PATH $$escape_expand(\n\t) \
+		ln -sf $$PWD/$$PLUGIN_MODULE_PATH/* $$DESTDIR/$$PLUGIN_MODULE_PATH
 }
 win32 {
-        qmlfiles.commands = xcopy $$shell_path($$PWD/$$PLUGIN_MODULE_PATH) $$shell_path($$DESTDIR) /e/y
+	qmlfiles.commands = \
+		mkdir -p $$DESTDIR/$$PLUGIN_MODULE_PATH $$escape_expand(\n\t) \
+		xcopy $$shell_path($$PWD/$$PLUGIN_MODULE_PATH/*) $$shell_path($$DESTDIR/$$PLUGIN_MODULE_PATH) /e/y
 }
 
 QMAKE_EXTRA_TARGETS += qmlfiles
@@ -40,8 +42,8 @@ POST_TARGETDEPS += qmlfiles
 include (src/src.pri)
 
 OTHER_FILES += \
-    $$PLUGIN_MODULE_PATH/*.qml \
+	$$PLUGIN_MODULE_PATH/*.qml \
 
 QML_IMPORT_PATH += \
-    $$OUT_PWD/../lib/qml \
+	$$OUT_PWD/../lib/qml \
 

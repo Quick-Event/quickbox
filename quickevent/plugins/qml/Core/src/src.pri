@@ -1,10 +1,11 @@
 message(including $$PWD)
 
-INCLUDEPATH += $$PWD/../../../../../libqf/libqfcore/include
-
 HEADERS += \
+	$$PWD/qecorepluginglobal.h \
 
 SOURCES += \
 	$$PWD/plugin.cpp \
 
 FORMS += \
+
+include($$PWD/ogsupport/ogsupport.pri)

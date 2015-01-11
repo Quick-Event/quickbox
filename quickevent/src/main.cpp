@@ -6,6 +6,7 @@
 
 #include <QtQml>
 #include <QLocale>
+//#include <qqml.h>
 
 int main(int argc, char *argv[])
 {
@@ -18,11 +19,9 @@ int main(int argc, char *argv[])
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";
 
+	//QLocale::setDefault(QLocale(QLocale::Czech));
+
 	qDebug() << "creating application instance";
-	//qFatal("ASSERT");
-
-	QLocale::setDefault(QLocale(QLocale::Czech));
-
 	Application app(argc, argv);
 
 	MainWindow main_window;

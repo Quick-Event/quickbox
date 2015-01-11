@@ -47,7 +47,7 @@ public:
 			Qt::Alignment alignment;
 			//QPointer<QFDlgDataTable> chooser;
 			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
-			QVariant::Type castType;
+			int castType;
 
 			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
 		};
@@ -87,8 +87,8 @@ public:
 		/// for QDate see QDate::toString(...)
 		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
-		ColumnDefinition& setCastType(QVariant::Type t) {d->castType = t; return *this;}
-		QVariant::Type castType() const {return d->castType;}
+		ColumnDefinition& setCastType(int t) {d->castType = t; return *this;}
+		int castType() const {return d->castType;}
 	};
 	typedef QList<ColumnDefinition> ColumnList;
 
@@ -158,7 +158,7 @@ protected:
 	virtual void checkColumns();
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
-	QVariant::Type columnType(int column_index) const;
+	int columnType(int column_index) const;
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
 	/// @returns: index of inserted line or -1

@@ -1,4 +1,5 @@
 message(including $$PWD)
+
 QT += core gui qml widgets
 
 CONFIG += C++11
@@ -8,12 +9,18 @@ TEMPLATE = app
 DESTDIR = $$OUT_PWD/../../bin/
 TARGET = quickevent
 
+INCLUDEPATH += \
+$$PWD/../../libqf/libqfcore/include \
+$$PWD/../../libqf/libqfqmlwidgets/include \
+
+message(INCLUDEPATH: $$INCLUDEPATH)
+
 LIBS +=      \
 	-lqfcore  \
 	-lqfqmlwidgets  \
 
-win32: LIBS +=  \
-	-L../../bin  \
+win32: LIBS += \
+	-L../../bin \
 
 DOLAR=$
 

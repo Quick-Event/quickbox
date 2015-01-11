@@ -105,6 +105,8 @@ public:
 
 	Q_SIGNAL void filterDialogRequest();
 	Q_SLOT void filterByString(const QString &s);
+
+	Q_SLOT void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate) {Super::setItemDelegateForColumn(column, delegate);}
 private:
 	Q_SIGNAL void seekStringChanged(const QString &str);
 	//qf::core::utils::Table::SortDef seekSortDefinition() const;

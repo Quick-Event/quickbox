@@ -1,6 +1,7 @@
 #ifndef QF_CORE_QML_SQLTABLEMODEL_H
 #define QF_CORE_QML_SQLTABLEMODEL_H
 
+#include "../qfcoreqmlpluginglobal.h"
 #include "tablemodelcolumn.h"
 
 #include <qf/core/model/sqltablemodel.h>
@@ -14,7 +15,7 @@ namespace qml {
 class SqlQueryBuilder;
 class TableModelColumn;
 
-class SqlTableModel : public qf::core::model::SqlTableModel
+class QF_CORE_QML_PLUGIN_DECL_EXPORT SqlTableModel : public qf::core::model::SqlTableModel
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::core::qml::SqlQueryBuilder* queryBuilder READ qmlSqlQueryBuilder)

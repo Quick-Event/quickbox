@@ -1,6 +1,3 @@
-INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
-INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
- message(INCLUDEPATH: $$INCLUDEPATH)
 
 SOURCES += \
 	$$PWD/main.cpp\
@@ -15,3 +12,4 @@ FORMS +=
 
 OTHER_FILES += \
 	$$PWD/main.qml
+

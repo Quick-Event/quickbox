@@ -57,7 +57,7 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 			qfu::Table::Field field = tableField(index.column());
 			if(!field.isNull()) {
 				can_edit = can_edit && field.canUpdate();
-				QVariant::Type type = columnType(index.column());
+				int type = columnType(index.column());
 				// BLOB fields cannot be edited in grid.
 				//can_edit = can_edit && (type != QVariant::ByteArray);
 				if(type == QVariant::Bool) {
@@ -99,7 +99,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 			return QVariant();
 		}
 		ret = data(index, RawValueRole);
-		QVariant::Type type = columnType(index.column());
+		int type = columnType(index.column());
 		if(type == QVariant::Invalid)
 			type = ret.type(); /// pokud jsou sloupce virtualni (sloupce se pocitaji, nemusi byt pro ne definovan typ)
 		if(type == QVariant::ByteArray) {
@@ -180,7 +180,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	else if(role == Qt::TextColorRole) {
-		QVariant::Type type = columnType(index.column());
+		int type = columnType(index.column());
 		if(type == QVariant::ByteArray)
 			return QColor(Qt::blue);
 		if(data(index, ValueIsNullRole).toBool()) {
@@ -192,7 +192,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		/// delegate does it
 	}
 	else if (role == Qt::CheckStateRole) {
-		QVariant::Type type = columnType(index.column());
+		int type = columnType(index.column());
 		if(type == QVariant::Bool) {
 			//qfInfo() << "BOOL";
 			return (data(index, Qt::EditRole).toBool()? Qt::Checked: Qt::Unchecked);
@@ -229,8 +229,8 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 			ret = cd.toolTip();
 		}
 		else if (role == FieldTypeRole) {
-			QVariant::Type type = columnType(section);
-			return QVariant((int)type);
+			int type = columnType(section);
+			return type;
 		}
 		/*
 		else if (role == FieldIsNullableRole) {
@@ -479,9 +479,9 @@ void TableModel::fillColumnIndexes()
 	}
 }
 
-QVariant::Type TableModel::columnType(int column_index) const
+int TableModel::columnType(int column_index) const
 {
-	QVariant::Type ret = QVariant::Invalid;
+	int ret = QVariant::Invalid;
 	ColumnDefinition cd = m_columns.value(column_index);
 	QF_ASSERT(!cd.isNull(),
 			  tr("Invalid column index: %1").arg(column_index),

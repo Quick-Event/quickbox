@@ -2,6 +2,7 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
 import shared.QuickEvent 1.0
+import Core 1.0
 
 QuickEventPartWidget
 {
@@ -35,6 +36,13 @@ QuickEventPartWidget
 	}
 	Frame {
 		layoutProperties: LayoutProperties { spacing: 0 }
+		attachedObjects: [
+		/*
+			OBItemDelegate {
+				id: obItemDelegate
+			}
+		*/
+		]
 		TableViewToolBar {
 			id: tableViewToolBar
 			tableView: table
@@ -44,7 +52,7 @@ QuickEventPartWidget
 			objectName: "tvStart1"
 			persistentSettingsId: "tblStart";
 
-			model: SqlTableModel {
+			model: OGSqlTableModel {
 				id: model
 				ModelColumn {
 					fieldName: 'competitors.id'
@@ -79,6 +87,10 @@ QuickEventPartWidget
 						.join("competitors.classId", "classes.id")
 						.joinRestricted("competitors.id", "laps.competitorId", "stageId=1");//.where("competitors.id > 370");
 				}
+			}
+			Component.onCompleted:
+			{
+				//setItemDelegateForColumn(4, obItemDelegate);
 			}
 		}
 	}
