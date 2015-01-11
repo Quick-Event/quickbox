@@ -32,7 +32,6 @@ public:
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
 	{
-	public:
 	private:
 		class SharedDummyHelper {};
 		class Data : public QSharedData
@@ -99,6 +98,7 @@ public:
 	}
 	ColumnDefinition& insertColumn(int before_ix, const QString &field_name, const QString &_caption = QString());
 	ColumnDefinition& insertColumn(int before_ix, const ColumnDefinition &cd);
+	void setColumn(int ix, const ColumnDefinition &cd);
 	ColumnDefinition removeColumn(int ix);
 public:
 	const qf::core::utils::Table& table() {return m_table;}

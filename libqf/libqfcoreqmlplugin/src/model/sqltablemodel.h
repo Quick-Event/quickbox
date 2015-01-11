@@ -31,6 +31,8 @@ protected:
 private:
 	SqlQueryBuilder* qmlSqlQueryBuilder();
 
+	void updateColumnDefinitionFromQml(int col_ix);
+
 	QQmlListProperty<TableModelColumn> columns();
 	static void addColumnFunction(QQmlListProperty<TableModelColumn> *list_property, TableModelColumn *column);
 	static TableModelColumn* columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, int index);
@@ -39,7 +41,7 @@ private:
 
 private:
 	qf::core::qml::SqlQueryBuilder* m_qmlQueryBuilder;
-	QList<TableModelColumn*> m_columns;
+	QList<TableModelColumn*> m_qmlColumns;
 };
 
 }}}

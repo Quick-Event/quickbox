@@ -74,6 +74,7 @@ QuickEventPartWidget
 				ModelColumn {
 					fieldName: 'startTimeMS'
 					caption: qsTr('Start')
+					castType: model.ogTimeMsTypeId()
 				}
 				Component.onCompleted:
 				{

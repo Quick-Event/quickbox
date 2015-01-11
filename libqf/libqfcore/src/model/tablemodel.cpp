@@ -570,6 +570,12 @@ TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const Tabl
 	return c;
 }
 
+void TableModel::setColumn(int ix, const TableModel::ColumnDefinition &cd)
+{
+	QF_ASSERT(ix >= 0 && ix < columnCount(), "invalid column index", return);
+	m_columns[ix] = cd;
+}
+
 TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 {
 	qfError() << Q_FUNC_INFO << ix << "NIY";
