@@ -40,4 +40,4 @@ OTHER_FILES += \
 
 QML_IMPORT_PATH += \
     $$OUT_PWD/../lib/qml \
-    $$OUT_PWD/../../bin/divers/quickevent/plugins \
+	$$OUT_PWD/../lib/qml/quickevent \

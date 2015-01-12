@@ -27,7 +27,12 @@ Application::Application(int &argc, char **argv)
 			QNetworkProxy::setApplicationProxy(proxy);
 		}
 	}
-	qf::qmlwidgets::reports::ReportProcessor::qmlEngineImportPaths().append(QCoreApplication::applicationDirPath() + "/divers/" + QCoreApplication::applicationName() + "/plugins");
+#ifdef Q_OS_UNIX
+	QString plugin_path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName();
+#else
+	QString plugin_path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName();
+#endif
+	qf::qmlwidgets::reports::ReportProcessor::qmlEngineImportPaths().append(plugin_path);
 }
 
 Application::~Application()

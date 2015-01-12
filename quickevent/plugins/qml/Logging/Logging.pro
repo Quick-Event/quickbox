@@ -7,21 +7,25 @@ QT += qml widgets
 
 PLUGIN_MODULE_NAME = Logging
 
-DESTDIR = $$OUT_PWD/../../../../bin/divers/quickevent/plugins/$$PLUGIN_MODULE_NAME
-TARGET  = $${PLUGIN_MODULE_NAME}plugin
+win32: LIB_DIR_NAME = bin
+else:  LIB_DIR_NAME = lib
+
+DESTDIR = $$OUT_PWD/../../../../$$LIB_DIR_NAME
+TARGET  = QE$${PLUGIN_MODULE_NAME}Plugin
 
 LIBS += -lqfcore
-unix: LIBS += -L$$OUT_PWD/../../../../lib
-win32: LIBS += -L$$OUT_PWD/../../../../bin
 
+LIBS += -L$$OUT_PWD/../../../../$$LIB_DIR_NAME
 
 include ($$PWD/../../../../crosscompile-support.pri)
 
 unix {
-	qmlfiles.commands = ln -sf $$PWD/qml/* $$DESTDIR
+	qmlfiles.commands = \
+		mkdir -p $$DESTDIR/qml/quickevent $$escape_expand(\n\t) \
+		ln -sfT $$PWD/qml $$DESTDIR/qml/quickevent/$$PLUGIN_MODULE_NAME
 }
 win32 {
-        qmlfiles.commands = xcopy $$shell_path($$PWD/qml) $$shell_path($$DESTDIR) /e/y
+	qmlfiles.commands = xcopy $$shell_path($$PWD/qml) $$shell_path($$DESTDIR) /e/y
 }
 
 QMAKE_EXTRA_TARGETS += qmlfiles

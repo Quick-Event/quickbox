@@ -25,7 +25,11 @@ Application::Application(int &argc, char **argv) :
 	}
 	{
 		QString path;
-		path = QCoreApplication::applicationDirPath() + "/divers/" + QCoreApplication::applicationName() + "/plugins";
+#ifdef Q_OS_UNIX
+		path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName();
+#else
+		path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName();
+#endif
 		m_qmlPluginImportPaths << path;
 	}
 	initStyleSheet();
@@ -120,7 +124,7 @@ void Application::onQmlError(const QList<QQmlError> &qmlerror_list)
 void Application::initStyleSheet()
 {
 	QString app_name = Application::applicationName();
-	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/divers/" + app_name + "/style/default.css");
+	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/" + app_name + "-data/style/default.css");
 	qfInfo() << "Opening style sheet:" << css_file_name;
 	QFile f(css_file_name);
 	if(f.open(QFile::ReadOnly)) {
