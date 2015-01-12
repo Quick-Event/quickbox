@@ -26,7 +26,7 @@ DOLAR=$
 
 unix: LIBS +=  \
 	-L../../lib  \
-	-Wl,-rpath,\'$${DOLAR}$${DOLAR}ORIGIN/../lib\'  \
+	-Wl,-rpath,\'\$\$ORIGIN/../lib\'  \
 
 include ($$PWD/../../crosscompile-support.pri)
 

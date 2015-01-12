@@ -11,7 +11,7 @@ StatusBar::StatusBar(QWidget *parent) :
 
 qf::qmlwidgets::StatusBar::~StatusBar()
 {
-
+	qfLogFuncFrame() << this;
 }
 
 void StatusBar::showMessage(const QString &message, int timeout)

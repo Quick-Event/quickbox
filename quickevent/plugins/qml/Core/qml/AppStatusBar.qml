@@ -11,48 +11,55 @@ StatusBar
 
 	styleSheet: "background-color: rgb(118, 118, 118);"
 	sizeGripEnabled: true
-	property var eventFrame: Frame {
-		frameShape: QFrame.Panel
-		frameShadow: QFrame.Sunken
-		Label {
-			id: eventName
-			text: root.eventName
-		}
-	}
-	property var stageFrame: Frame {
-		frameShape: QFrame.Panel
-		frameShadow: QFrame.Sunken
-		visible: (root.stageNo > 0)
-		Label {
-			id: stage
-			text: (root.stageNo>0)? ('E'+root.stageNo): ''
-		}
-	}
-	property var progressFrame: Frame
+
+	property QfObject internal: QfObject
 	{
-		visible: false
-		layoutType: Frame.LayoutHorizontal
-		ProgressBar
-		{
-			id: progressBar
-			autoFillBackground: true
-			minimum: 0
-			textVisible: true
-			minimumWidth: 200
-			maximumWidth: 200
+		Frame {
+			id: eventFrame
+			frameShape: QFrame.Panel
+			frameShadow: QFrame.Sunken
+			Label {
+				id: eventName
+				text: root.eventName
+			}
 		}
-		Label {
-			id: progressBarLabel
+		Frame {
+			id: stageFrame
+			frameShape: QFrame.Panel
+			frameShadow: QFrame.Sunken
+			visible: (root.stageNo > 0)
+			Label {
+				id: stage
+				text: (root.stageNo>0)? ('E'+root.stageNo): ''
+			}
 		}
-		function showProgress(msg, completed, total)
-		{
-			//console.warn(msg, completed, total);
-			visible = (completed < total);
-			progressBar.value = completed;
-			progressBar.maximum = total;
-			progressBarLabel.text = msg;
+		Frame {
+			id: progressFrame
+			visible: false
+			layoutType: Frame.LayoutHorizontal
+			ProgressBar
+			{
+				id: progressBar
+				autoFillBackground: true
+				minimum: 0
+				textVisible: true
+				minimumWidth: 200
+				maximumWidth: 200
+			}
+			Label {
+				id: progressBarLabel
+			}
+			function showProgress(msg, completed, total)
+			{
+				//console.warn(msg, completed, total);
+				visible = (completed < total);
+				progressBar.value = completed;
+				progressBar.maximum = total;
+				progressBarLabel.text = msg;
+			}
 		}
 	}
+
 	Component.onCompleted:
 	{
 		root.addPermanentWidget(eventFrame);
@@ -62,4 +69,5 @@ StatusBar
 
 		FrameWork.progress.connect(progressFrame.showProgress);
 	}
+
 }
