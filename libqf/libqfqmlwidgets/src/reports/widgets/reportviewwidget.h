@@ -167,6 +167,7 @@ public:
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
 private:
 	ActionMap m_actions;
+	QLineEdit *m_edCurrentPage = nullptr;
 };
 
 class ReportViewWidget::PainterWidget : public QWidget

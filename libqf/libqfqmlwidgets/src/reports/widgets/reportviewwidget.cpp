@@ -35,7 +35,8 @@
 #include <QLineEdit>
 #include <QDomDocument>
 #include <QDir>
-#include <QStyle>
+#include <QApplication>
+//#include <QStyle>
 
 #include <typeinfo>
 
@@ -556,6 +557,10 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
 	tool_bar->addAction(action("view.firstPage"));
 	tool_bar->addAction(action("view.prevPage"));
+	m_edCurrentPage = new QLineEdit;
+	m_edCurrentPage->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+	m_edCurrentPage->setAlignment(Qt::AlignRight);
+	tool_bar->addWidget(m_edCurrentPage);
 	tool_bar->addAction(action("view.nextPage"));
 	tool_bar->addAction(action("view.lastPage"));
 	tool_bar->addAction(action("view.zoomIn"));
@@ -567,31 +572,32 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::actions()
 {
 	if(m_actions.isEmpty()) {
-		QStyle *sty = style();
+		//QStyle *sty = style();
+		//QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
 		{
 			qf::qmlwidgets::Action *a;
-			QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipBackward);
+			QIcon ico(":/qf/qmlwidgets/images/frev");
 			a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
 			m_actions[QStringLiteral("view.firstPage")] = a;
 			connect(a, SIGNAL(triggered()), this, SLOT(view_firstPage()));
 		}
 		{
 			qf::qmlwidgets::Action *a;
-			QIcon ico = sty->standardIcon(QStyle::SP_ArrowLeft);
+			QIcon ico(":/qf/qmlwidgets/images/rev");
 			a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
 			m_actions[QStringLiteral("view.prevPage")] = a;
 			connect(a, SIGNAL(triggered()), this, SLOT(view_prevPage()));
 		}
 		{
 			qf::qmlwidgets::Action *a;
-			QIcon ico = sty->standardIcon(QStyle::SP_ArrowRight);
+			QIcon ico(":/qf/qmlwidgets/images/fwd");
 			a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
 			m_actions[QStringLiteral("view.nextPage")] = a;
 			connect(a, SIGNAL(triggered()), this, SLOT(view_nextPage()));
 		}
 		{
 			qf::qmlwidgets::Action *a;
-			QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
+			QIcon ico(":/qf/qmlwidgets/images/ffwd");
 			a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
 			m_actions[QStringLiteral("view.lastPage")] = a;
 			connect(a, SIGNAL(triggered()), this, SLOT(view_lastPage()));
@@ -680,7 +686,7 @@ void ReportViewWidget::setReport(const QString &file_name)
 
 void ReportViewWidget::pageProcessed()
 {
-	qfDebug() << QF_FUNC_NAME;
+	qfLogFuncFrame();
 	if(m_whenRenderingSetCurrentPageTo >= 0) {
 		if(pageCount() - 1 == m_whenRenderingSetCurrentPageTo) {
 			setCurrentPageNo(m_whenRenderingSetCurrentPageTo);
@@ -688,9 +694,9 @@ void ReportViewWidget::pageProcessed()
 		}
 	}
 	else {
-		if(pageCount() == 1) setCurrentPageNo(0);
+		if(pageCount() == 1)
+			setCurrentPageNo(0);
 	}
-	//QApplication::processEvents();
 	refreshWidget();
 	//setCurrentPageNo(0);
 	QTimer::singleShot(10, reportProcessor(), SLOT(processSinglePage())); /// 10 je kompromis mezi rychlosti prekladu a sviznosti GUI
@@ -900,11 +906,12 @@ void ReportViewWidget::render()
 void ReportViewWidget::refreshWidget()
 {
 	statusBar();
-	if(edCurrentPage)
-		edCurrentPage->setText(QString::number(currentPageNo()+1) + "/" + QString::number(pageCount()));
+	if(m_edCurrentPage)
+		m_edCurrentPage->setText(QString::number(currentPageNo()+1) + "/" + QString::number(pageCount()));
 	refreshActions();
 	zoomStatusSpinBox->setValue((int)(scale() * 100));
 	//statusBar()->setText("zoom: " + QString::number((int)(scale() * 100)) + "%");
+	QApplication::processEvents();
 }
 
 void ReportViewWidget::refreshActions()
