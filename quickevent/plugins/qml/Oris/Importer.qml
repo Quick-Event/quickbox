@@ -56,7 +56,7 @@ QtObject {
 	function chooseAndImport()
 	{
 		var d = new Date;
-		d.setMonth(d.getMonth() - 2);
+		d.setMonth(d.getMonth() - 3);
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10);
 		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
 		{

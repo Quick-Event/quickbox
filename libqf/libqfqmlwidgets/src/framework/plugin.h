@@ -25,6 +25,8 @@ public:
 	PluginManifest* manifest() const {return m_manifest;}
 	void setManifest(PluginManifest *mf);
 	Q_SIGNAL void manifestChanged(PluginManifest *mf);
+
+	Q_SIGNAL void installed();
 private:
 	PluginManifest *m_manifest = nullptr;
 };

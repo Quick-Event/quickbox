@@ -9,3 +9,4 @@ SOURCES += \
 FORMS += \
 
 include($$PWD/ogsupport/ogsupport.pri)
+include($$PWD/widgets/widgets.pri)

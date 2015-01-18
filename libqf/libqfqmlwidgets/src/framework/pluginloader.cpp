@@ -201,10 +201,11 @@ void PluginLoader::continueLoading()
 		}
 
 		if(app->qmlErrorList().count()) {
-			qfError() << "Feature:" << m_currentlyLoadedFeatureId << "install ERROR.";
+			qfError() << "Feature:" << m_currentlyLoadedFeatureId << "install ERROR";
 		}
 		else {
-			qfInfo() << "Feature:" << m_currentlyLoadedFeatureId << "install SUCCESS.";
+			qfInfo() << "Feature:" << m_currentlyLoadedFeatureId << "install SUCCESS";
+			emit plugin->installed();
 		}
 	}
 	else {

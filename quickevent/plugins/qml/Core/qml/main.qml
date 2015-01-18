@@ -1,10 +1,10 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import Core 1.0
 
 Plugin {
 	id: root
-
 	property QtObject api: QtObject
 	{
 		property Crypt crypt: Crypt
@@ -58,8 +58,10 @@ Plugin {
 			id: settingsComponent
 			Settings {}
 		}
-		AppStatusBar {
-			id: appStatusBar
+		Component {
+			id: cAppStatusBar
+			AppStatusBar {
+			}
 		}
 		NetworkAccessManager {
 			id: networkAccessManager
@@ -93,6 +95,12 @@ Plugin {
 		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
 
-		FrameWork.setStatusBar(appStatusBar);
+		var sb = cAppStatusBar.createObject();
+		FrameWork.setStatusBar(sb);
 	}
+
+	onInstalled: {
+		console.debug("Core plugin installed");
+	}
+
 }

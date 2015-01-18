@@ -205,6 +205,7 @@ void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 	sbar->setParent(0);
 	//sbar->setParent(this);
 	//sbar->setVisible(true);
+	connect(this, SIGNAL(progress(QString,int,int)), sbar, SLOT(showProgress(QString,int,int)));
 	Super::setStatusBar(sbar); /// deletes old status bar
 	//sbar->showMessage("ahoj babi");
 	qfDebug() << Super::statusBar();

@@ -19,6 +19,7 @@ public:
 	explicit StatusBar(QWidget *parent = 0);
 	~StatusBar() Q_DECL_OVERRIDE;
 public:
+	Q_SLOT virtual void showProgress(const QString &msg, int completed, int total);
 	Q_SLOT void showMessage(const QString &message, int timeout = 0);
 	Q_INVOKABLE void addPermanentWidget(QWidget *widget, int stretch = 0);
 	Q_INVOKABLE void addWidget(QWidget *widget, int stretch = 0);
