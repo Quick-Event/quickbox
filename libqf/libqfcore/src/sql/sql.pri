@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/query.h \
     $$PWD/dbenum.h \
     $$PWD/dbenumcache.h \
+    $$PWD/dbfsdriver.h
 
 SOURCES += \
     $$PWD/querybuilder.cpp \
@@ -13,4 +14,5 @@ SOURCES += \
     $$PWD/query.cpp \
     $$PWD/dbenum.cpp \
     $$PWD/dbenumcache.cpp \
+    $$PWD/dbfsdriver.cpp
 

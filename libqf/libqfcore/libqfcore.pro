@@ -2,8 +2,17 @@ message("including include/core")
 
 TEMPLATE = lib
 TARGET=qfcore
-unix:DESTDIR = $$OUT_PWD/../../lib
-win32:DESTDIR = $$OUT_PWD/../../bin
+
+QF_PROJECT_BUILD_ROOT = $(QF_PROJECT_BUILD_ROOT)
+#message ( QF_PROJECT_BUILD_ROOT: $$QF_PROJECT_BUILD_ROOT )
+isEmpty(QF_PROJECT_BUILD_ROOT) {
+	QF_PROJECT_BUILD_ROOT = $$OUT_PWD/../..
+}
+
+unix:DESTDIR = $$QF_PROJECT_BUILD_ROOT/lib
+win32:DESTDIR = $$QF_PROJECT_BUILD_ROOT/bin
+
+message ( DESTDIR: $$DESTDIR )
 
 QT += xml sql
 CONFIG += C++11
