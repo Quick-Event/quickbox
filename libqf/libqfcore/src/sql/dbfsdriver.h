@@ -1,6 +1,9 @@
 #ifndef QF_CORE_SQL_DBFSDRIVER_H
 #define QF_CORE_SQL_DBFSDRIVER_H
 
+#include "dbfsattrs.h"
+#include "connection.h"
+
 #include "../core/coreglobal.h"
 #include "../core/utils.h"
 
@@ -23,7 +26,15 @@ public:
 	QF_PROPERTY_IMPL(QString, c, C, onnectionName)
 	QF_PROPERTY_IMPL(QString, t, T, ableName)
 	QF_PROPERTY_IMPL(QString, s, S, napshotsTableName)
+
+	bool createSnapshot(const QString &comment);
+	DbFsAttrs attributes(const QString &path);
 private:
+	Connection connection();
+	bool initDbFs();
+private:
+	DbFsAttrs loadAttributesForPath(const QString &path);
+	QMap<QString, DbFsAttrs> m_attributeCache;
 };
 
 }}}

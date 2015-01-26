@@ -89,8 +89,6 @@ private:
 	QString normalizeTableName(const QString &n) const;
 	//! if \a n is empty return name of default database/schema for active connection.
 	QString normalizeDbName(const QString &n) const;
-private:
-	//static bool s_driverReturnsTableNamesInSelectResult;
 };
 
 }}}
