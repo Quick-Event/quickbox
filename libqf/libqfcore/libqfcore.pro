@@ -1,4 +1,4 @@
-message("including include/core")
+message("including $$PWD")
 
 TEMPLATE = lib
 TARGET=qfcore

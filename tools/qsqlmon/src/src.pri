@@ -1,65 +1,59 @@
-
-RESOURCES +=      \
-	qsqlmon.qrc
-
-RC_FILE = qsqlmon.rc
-
-#TRANSLATIONS    = qsqlmon_cz.ts
-
-win32:CONFIG(debug, debug|release):CONFIG += console
-console: message(CONSOLE)
-
 include(driver/driver.pri)
 
-HEADERS +=      \
-	qfclassfield.h      \
-	mainwindow.h      \
-	sqldock.h      \
-	servertreedock.h      \
-	servertreeitem.h      \
-	servertreemodel.h      \
-	sqltextedit.h      \
-	dlgeditconnection.h      \
-	dlgaltertable.h      \
-	dlgcolumndef.h      \
-	dlgindexdef.h      \
-	servertreeview.h     \
-	theapp.h    \
-	tableviewwidget.h   \
-	columnselectorwidget.h  \
-	qfsqlsyntaxhighlighter.h \
-	qfobjectitemmodel.h \
-	qfstatusbar.h \
+HEADERS += \
+	$$PWD/qfclassfield.h      \
+	$$PWD/mainwindow.h      \
+	$$PWD/sqldock.h      \
+	$$PWD/servertreedock.h      \
+	$$PWD/servertreeitem.h      \
+	$$PWD/servertreemodel.h      \
+	$$PWD/sqltextedit.h      \
+	$$PWD/dlgeditconnection.h      \
+	$$PWD/dlgaltertable.h      \
+	$$PWD/dlgcolumndef.h      \
+	$$PWD/dlgindexdef.h      \
+	$$PWD/servertreeview.h     \
+	$$PWD/theapp.h    \
+	$$PWD/tableviewwidget.h   \
+	$$PWD/columnselectorwidget.h  \
+	$$PWD/qfsqlsyntaxhighlighter.h \
+	$$PWD/qfobjectitemmodel.h \
+	$$PWD/qfstatusbar.h \
 
-SOURCES +=      \
-	main.cpp      \
-	mainwindow.cpp      \
-	sqldock.cpp      \
-	servertreedock.cpp      \
-	servertreeitem.cpp      \
-	servertreemodel.cpp      \
-	sqltextedit.cpp      \
-	dlgeditconnection.cpp      \
-	dlgaltertable.cpp      \
-	dlgcolumndef.cpp      \
-	dlgindexdef.cpp      \
-	servertreeview.cpp     \
-	theapp.cpp    \
-	tableviewwidget.cpp   \
-	columnselectorwidget.cpp  \
-	qfsqlsyntaxhighlighter.cpp \
-	qfobjectitemmodel.cpp \
-	qfstatusbar.cpp \
+SOURCES += \
+	$$PWD/main.cpp      \
+	$$PWD/mainwindow.cpp      \
+	$$PWD/sqldock.cpp      \
+	$$PWD/servertreedock.cpp      \
+	$$PWD/servertreeitem.cpp      \
+	$$PWD/servertreemodel.cpp      \
+	$$PWD/sqltextedit.cpp      \
+	$$PWD/dlgeditconnection.cpp      \
+	$$PWD/dlgaltertable.cpp      \
+	$$PWD/dlgcolumndef.cpp      \
+	$$PWD/dlgindexdef.cpp      \
+	$$PWD/servertreeview.cpp     \
+	$$PWD/theapp.cpp    \
+	$$PWD/tableviewwidget.cpp   \
+	$$PWD/columnselectorwidget.cpp  \
+	$$PWD/qfsqlsyntaxhighlighter.cpp \
+	$$PWD/qfobjectitemmodel.cpp \
+	$$PWD/qfstatusbar.cpp \
 
-FORMS +=      \
-	centralwidget.ui      \
-	servertreewidget.ui      \
-	sqlwidget.ui      \
-	dlgeditconnection.ui      \
-	dlgaltertable.ui      \
-	dlgcolumndef.ui      \
-	dlgindexdef.ui      \
-	columnselectorwidget.ui  \
-    $$PWD/tableviewwidget.ui
+FORMS += \
+	$$PWD/centralwidget.ui      \
+	$$PWD/servertreewidget.ui      \
+	$$PWD/sqlwidget.ui      \
+	$$PWD/dlgeditconnection.ui      \
+	$$PWD/dlgaltertable.ui      \
+	$$PWD/dlgcolumndef.ui      \
+	$$PWD/dlgindexdef.ui      \
+	$$PWD/columnselectorwidget.ui  \
+	$$PWD/tableviewwidget.ui \
+
+RESOURCES += \
+	$$PWD/qsqlmon.qrc
+
+RC_FILE = $$PWD/qsqlmon.rc
 
 

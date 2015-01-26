@@ -94,17 +94,25 @@ Log::Level LogDevice::setLogTreshold(Log::Level level)
 	return old;
 }
 
-void LogDevice::setDomainTresholds(int argc, char *argv[])
+QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 {
+	QStringList ret;
 	m_domainTresholds.clear();
 	QStringList tresholds;
-	for(int i=1; i<argc; i++) {
-		QString s = argv[i];
+	for(int i=0; i<argc; i++) {
+		QString s = QString::fromUtf8(argv[i]);
+		if(i == 0) {
+			ret << s;
+			continue;
+		}
 		if(s.startsWith("-d")) {
 			//printf("1 %s\n", qPrintable(s));
 			s = s.mid(2);
 			//printf("2 %s\n", qPrintable(s));
 			tresholds << s;
+		}
+		else {
+			ret << s;
 		}
 	}
 	for(QString dom_tres : tresholds) {
@@ -128,12 +136,15 @@ void LogDevice::setDomainTresholds(int argc, char *argv[])
 			m_domainTresholds[domain] = level;
 		}
 	}
+	return ret;
 }
 
 Log::Level LogDevice::logTreshold()
 {
-	if(commandLineLogTreshold >= 0) return commandLineLogTreshold;
-	if(environmentLogTreshold >= 0) return environmentLogTreshold;
+	if(commandLineLogTreshold >= 0)
+		return commandLineLogTreshold;
+	if(environmentLogTreshold >= 0)
+		return environmentLogTreshold;
 	return m_logTreshold;
 }
 

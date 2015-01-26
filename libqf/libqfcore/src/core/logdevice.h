@@ -21,7 +21,8 @@ public:
 	static QString domainFromContext(const QMessageLogContext &context);
 	static void install(LogDevice *dev);
 	Log::Level setLogTreshold(Log::Level level);
-	void setDomainTresholds(int argc, char *argv[]);
+	/// @return list of arguments wthout ones used for domain tresholds setting
+	QStringList setDomainTresholds(int argc, char *argv[]);
 	Log::Level logTreshold();
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 	virtual bool checkLogPermisions(const QString &_domain, Log::Level _level);

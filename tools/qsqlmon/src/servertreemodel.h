@@ -7,7 +7,7 @@
 	author:		Fanda Vacek (fanda.vacek@volny.cz)
 *********************************************************************/
 
-#include <qfobjectitemmodel.h>
+#include "qfobjectitemmodel.h"
 
 #include <QWidget>
 

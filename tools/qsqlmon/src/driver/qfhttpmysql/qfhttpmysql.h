@@ -9,7 +9,7 @@
 #define QFHTTPMYSQL_H
 
 //#include <qfexception.h>
-#include "qfclassfield.h"
+#include "../../qfclassfield.h"
 
 #include <QSqlDriver>
 #include <QSqlResult>
@@ -30,8 +30,8 @@ class QNetworkReply;
 class QFHttpMySqlDriverHttp : public QObject
 {
 	Q_OBJECT
-	QF_FIELD_RW(QString, h, setH, ost);
-	QF_FIELD_RW(int, p, setP, ort);
+	QF_FIELD_RW(QString, h, setH, ost)
+	QF_FIELD_RW(int, p, setP, ort)
 	protected:
 		QNetworkAccessManager *f_http;
 		//QEventLoop *f_eventLoop;
@@ -92,7 +92,7 @@ class QFHttpMySqlDriverResult : public QSqlResult
 
 class QFHttpMySqlDriver : public QSqlDriver
 {
-	Q_OBJECT;
+	Q_OBJECT
 	friend class QFHttpMySqlDriverResult;
 	protected:
 		struct OpenParams {
@@ -104,7 +104,7 @@ class QFHttpMySqlDriver : public QSqlDriver
 			//QString httpPath;
 			QString options;
 
-			OpenParams() : port(0) {};//, httpPort(80) {}
+			OpenParams() : port(0) {}//, httpPort(80) {}
 		};
 		OpenParams openParams;
 		QFHttpMySqlDriverHttp *f_http;

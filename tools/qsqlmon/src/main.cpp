@@ -11,7 +11,7 @@
 
 int main(int argc, char *argv[])
 {
-    int ret = 0;
+	int ret = 0;
 
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
 	file_log_device->setDomainTresholds(argc, argv);

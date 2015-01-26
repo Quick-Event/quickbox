@@ -6,7 +6,7 @@
 //
 
 #include "qfhttpmysql.h"
-#include "theapp.h"
+//#include "theapp.h"
 
 #include <QSqlQuery>
 #include <QSqlField>
@@ -19,6 +19,7 @@
 #include <QBuffer>
 #include <QUrl>
 #include <QJsonDocument>
+#include <QEventLoop>
 
 #include <qf/core/log.h>
 

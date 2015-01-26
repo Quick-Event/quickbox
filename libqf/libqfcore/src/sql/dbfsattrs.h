@@ -10,32 +10,43 @@ namespace qf {
 namespace core {
 namespace sql {
 
-class DbFsAttrs
+class QFCORE_DECL_EXPORT DbFsAttrs
 {
 public:
 	enum NodeType {Invalid, Dir, File};
 public:
 	DbFsAttrs();
-	DbFsAttrs(NodeType t, bool deleted);
+	DbFsAttrs(NodeType t);
 private:
 	class SharedDummyHelper {};
 	class Data : public QSharedData
 	{
 	public:
-		NodeType type;
-		bool isDeleted;
+		int id = 0;
+		int inode = 0;
+		int pinode = 0;
+		NodeType type = Invalid;
+		bool isDeleted = false;
+		QString name;
+		int size = 0;
 		//unsigned canUpdate:1, isPriKey:1, isSerial:1, isNullable:1;
-		Data(NodeType t = Invalid, bool deleted = false) : type(t), isDeleted(deleted) {}
+		explicit Data(NodeType t) : type(t) {}
 	};
 	QSharedDataPointer<Data> d;
 
 	DbFsAttrs(SharedDummyHelper);
 	static const DbFsAttrs& sharedNull();
-public:
-	bool isNull() const {return d == sharedNull().d;}
-
+	QF_SHARED_CLASS_FIELD_RW(int, i, setI, d)
+	QF_SHARED_CLASS_FIELD_RW(int, i, setI, node)
+	QF_SHARED_CLASS_FIELD_RW(int, p, setP, inode)
 	QF_SHARED_CLASS_FIELD_RW(NodeType, t, setT, ype)
 	QF_SHARED_CLASS_FIELD_RW(bool, is, set, Deleted)
+	QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
+	QF_SHARED_CLASS_FIELD_RW(int, s, setS, ize)
+public:
+	bool isNull() const {return d == sharedNull().d;}
+	QString typeString() const;
+	QString toString() const;
 };
 
 }}}
