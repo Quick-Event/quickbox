@@ -5,6 +5,7 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QDir>
+#include <QStringBuilder>
 
 using namespace qf::core::sql;
 
@@ -21,6 +22,7 @@ DbFsDriver::~DbFsDriver()
 
 DbFsAttrs DbFsDriver::attributes(const QString &path)
 {
+	qfLogFuncFrame() << path;
 	DbFsAttrs ret = m_attributeCache.value(path);
 	if(ret.isNull()) {
 		ret = loadAttributesForPath(path);
@@ -41,6 +43,7 @@ DbFsAttrs DbFsDriver::attributes(const QString &path)
 			m_attributeCache[path] = ret;
 		}
 	}
+	qfDebug() << ret.toString();
 	return ret;
 }
 
@@ -150,16 +153,8 @@ bool DbFsDriver::initDbFs()
 			}
 			if(q.next() && q.value(0).toInt() == 0) {
 				init_ok = createSnapshot("DBFS init");
-				if(init_ok) {
-					QStringList qlst;
-					qlst << "INSERT INTO " + tableName()
-							+ " (inode, pinode, snapshot, type, deleted) VALUES"
-							+ " (1, 0, 'd', false)";
-					//qlst << "UPDATE " + tableName() + " SET inode=id";
-					init_ok = execQueryList(conn, qlst);
-					if(!init_ok)
-						break;
-				}
+				if(!init_ok)
+					break;
 			}
 			else {
 				qfError() << "Cannot init filesystem snapshot table" << tableName() << "because it is not empty.";
@@ -181,63 +176,75 @@ bool DbFsDriver::initDbFs()
 	return init_ok;
 }
 
-DbFsAttrs DbFsDriver::loadAttributesForPath(const QString &path)
+DbFsAttrs DbFsDriver::loadAttributesForPath(const QString &path, int pinode)
 {
+	qfLogFuncFrame() << "path:" << path;
+	static DbFsAttrs root_attrs(DbFsAttrs::Dir);
+
 	QString paths = QDir::cleanPath(path);
-	QStringList plst = paths.split('/');
-}
-// http://www.postgresql.org/docs/9.3/static/queries-with.html
-int DbFsDriver::pathToId(int pinode, const QStringList& path, DbFsAttrs *p_dbfs_attrs)
-{
-	qfLogFuncFrame() << "pinode:" << pinode << "path:" << path.join(QChar('/'));
-	if(path.isEmpty()) {
-		if(p_dbfs_attrs)
-			*p_dbfs_attrs = DbFsAttrs();
-		return pinode;
+	QStringList pathlst = paths.split('/', QString::SkipEmptyParts);
+
+	DbFsAttrs ret;
+	if(pathlst.isEmpty()) {
+		ret = root_attrs;
 	}
-	QString cache_key = QString::number(pinode) % ':' % tableName() % '/' % path.join("/");
-	DbFsAttrs fi = f_pathToIdCache.value(cache_key);
-	if(fi.dbId() == 0) {
+	else {
+		static const QString COL_ID("id");
+		static const QString COL_INODE("inode");
+		static const QString COL_PINODE("pinode");
+		static const QString COL_TYPE("type");
+		static const QString COL_NAME("name");
+		static const QString COL_META("meta");
+		static const QString COL_DELETED("deleted");
 		QString qs;
-		QString top_tbl = "t"IARG(path.count());
-		QString cols = top_tbl%'.'%COL_INODE%" AS id, "
-			%top_tbl%'.'%COL_PINODE%" AS pid, "
-			%top_tbl%'.'%dbOptions().fileTypeColumnName()%" AS ftype";
-		if(dbOptions().isUseMetaColumn()) cols += ", "%top_tbl%'.'%COL_META%" AS meta";
-		else cols += ", '' AS meta";
-		if(pinode == 0) qs = "SELECT "%cols%" FROM (SELECT 0 AS id) AS t0"; /// fake root row with id == 0
-		else qs = "SELECT "%cols%" FROM "%tableName()%" AS t0";
-		for(int i=0; i<path.count(); i++) {
-			QString p = path.value(i);
+		QString top_tbl = "t" + QString::number(pathlst.count());
+		QString cols =
+				top_tbl%'.'%COL_ID%", "%
+				top_tbl%'.'%COL_INODE%", "%
+				top_tbl%'.'%COL_PINODE%", "%
+				top_tbl%'.'%COL_TYPE%", "%
+				top_tbl%'.'%COL_META;
+		if(pinode == 0)
+			qs = "SELECT "%cols%" FROM (SELECT 0 AS inode) AS t0"; /// fake root row with inode == 0
+		else
+			qs = "SELECT "%cols%" FROM "%tableName()%" AS t0";
+		for(int i=0; i<pathlst.count(); i++) {
+			QString p = pathlst.value(i);
 			QString t0 = 't' % QString::number(i);
 			QString t1 = 't' % QString::number(i+1);
-			if(p == ".") { }
-			else if(p == "..") {
-				qs += " JOIN "%tableName()%" AS "%t1%" ON "%t1%"."%COL_INODE%"="%t0%"."%COL_PINODE;
+			qs += " JOIN " % tableName() % " AS " % t1 % " ON " % t1 % "." % COL_PINODE % "=" % t0 % "." % COL_INODE % " AND " % t1 % "." % COL_NAME % "='" % p % '\'';
+		}
+		qs += " WHERE t0." % COL_INODE % "=" % QString::number(pinode);
+		Connection conn = connection();
+		Query q(conn);
+		qfDebug() << qs;
+		if(q.exec(qs)) {
+			if(q.next()) {
+				ret.setId(q.value(COL_ID).toInt());
+				ret.setInode(q.value(COL_INODE).toInt());
+				ret.setPinode(q.value(COL_PINODE).toInt());
+				ret.setDeleted(q.value(COL_DELETED).toBool());
+				ret.setName(q.value(COL_NAME).toString());
+				DbFsAttrs::NodeType node_type = DbFsAttrs::Invalid;
+				QString s = q.value(COL_TYPE).toString();
+				if(!s.isEmpty()) {
+					QChar c = s.at(0).toLower();
+					if(c == 'd')
+						node_type = DbFsAttrs::Dir;
+					else if(c == 'f')
+						node_type = DbFsAttrs::File;
+				}
+				ret.setType(node_type);
 			}
 			else {
-				qs += " JOIN "%tableName()%" AS "%t1%" ON "%t1%"."%COL_PINODE%"="%t0%"."%COL_INODE%" AND "%t1%"."%dbOptions().fileNameColumnName()%"="SARG(p);
+				//qfWarning() << "QFDbFs::pathToId() ERROR - table:" << tableName() << "parent id:" << pinode << "path:" << path.join("/") << "not found.";
 			}
 		}
-		qs += " WHERE t0."%COL_INODE%"="IARG(pinode);
-		QFSqlQuery q(sqlConnection());
-		qfTrash() << qs;
-		q.exec(qs);
-		if(q.next()) {
-			fi.setDbId(q.value("id").toInt());
-			fi.setParentDbId(q.value("pid").toInt());
-			fi.setType(q.value("ftype").toString());
-			fi.setMeta(QFJson::stringToVariant(q.value("meta").toString()));
-			QString abs_path = dbFsPathPrefix() % tableName() % dbOptions().tableSeparator() % path.join(dbOptions().pathSeparator());
-			fi.setAbsPath(abs_path);
-		}
 		else {
-			//qfWarning() << "QFDbFs::pathToId() ERROR - table:" << tableName() << "parent id:" << pinode << "path:" << path.join("/") << "not found.";
-			fi.setDbId(-1);
+			qfError() << "SQL ERROR:" << q.lastError().text();
 		}
-		f_pathToIdCache[cache_key] = fi;
 	}
-	if(p_dbfs_attrs)
-		*p_dbfs_attrs = fi;
-	return fi.dbId();
+	qfDebug() << ret.toString();
+	return ret;
 }
+

@@ -33,7 +33,7 @@ private:
 	Connection connection();
 	bool initDbFs();
 private:
-	DbFsAttrs loadAttributesForPath(const QString &path);
+	DbFsAttrs loadAttributesForPath(const QString &path, int pinode = 0);
 	QMap<QString, DbFsAttrs> m_attributeCache;
 };
 
