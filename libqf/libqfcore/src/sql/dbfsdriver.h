@@ -37,7 +37,7 @@ public:
 	QByteArray get(const QString &path, bool *pok = nullptr);
 private:
 	QString cleanPath(const QString &path);
-	QString attributesColumns(const QString &table_alias);
+	QString attributesColumns(const QString &table_alias = QString());
 	DbFsAttrs attributesFromQuery(const Query &q);
 	Connection connection();
 	bool initDbFs();

@@ -34,9 +34,10 @@ DbFsDriver::~DbFsDriver()
 DbFsAttrs DbFsDriver::attributes(const QString &path)
 {
 	qfLogFuncFrame() << path;
-	DbFsAttrs ret = m_attributeCache.value(path);
+	QString spath = cleanPath(path);
+	DbFsAttrs ret = m_attributeCache.value(spath);
 	if(ret.isNull()) {
-		if(path == QStringLiteral("/")) {
+		if(path.isEmpty()) {
 			/// create fake root node
 			ret.setType(DbFsAttrs::Dir);
 			ret.setId(0);
@@ -82,7 +83,7 @@ QList<DbFsAttrs> DbFsDriver::readDir(const QString &parent_path)
 		ret = readDir(parent_inode);
 		for(auto attrs : ret) {
 			QString path = clean_ppath;
-			if(!path.endsWith('/'))
+			if(!path.isEmpty())
 				path += '/';
 			path += attrs.name();
 			//qfDebug() << clean_ppath + "name:" << attrs.name() << "->" << path;
@@ -226,16 +227,19 @@ bool DbFsDriver::initDbFs()
 
 QString DbFsDriver::attributesColumns(const QString &table_alias)
 {
+	QString ta = table_alias;
+	if(!ta.isEmpty())
+		ta += '.';
 	QString ret =
-			table_alias%'.'%COL_ID%", "%
-			table_alias%'.'%COL_INODE%", "%
-			table_alias%'.'%COL_PINODE%", "%
-			table_alias%'.'%COL_SNAPSHOT%", "%
-			table_alias%'.'%COL_TYPE%", "%
-			table_alias%'.'%COL_DELETED%", "%
-			table_alias%'.'%COL_NAME%", "%
-			"length("%table_alias%'.'%COL_VALUE%") AS "%COL_SIZE%", "%
-			table_alias%'.'%COL_META;
+			ta%COL_ID%", "%
+			ta%COL_INODE%", "%
+			ta%COL_PINODE%", "%
+			ta%COL_SNAPSHOT%", "%
+			ta%COL_TYPE%", "%
+			ta%COL_DELETED%", "%
+			ta%COL_NAME%", "%
+			"length("%ta%COL_VALUE%") AS "%COL_SIZE%", "%
+			ta%COL_META;
 	return ret;
 }
 
@@ -266,29 +270,29 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &path, int pinode)
 	qfLogFuncFrame() << "path:" << path;
 	static DbFsAttrs root_attrs(DbFsAttrs::Dir);
 
-	QString paths = cleanPath(path);
-	QStringList pathlst = paths.split('/', QString::SkipEmptyParts);
+	QStringList pathlst = path.split('/', QString::SkipEmptyParts);
 
 	DbFsAttrs ret;
 	if(pathlst.isEmpty()) {
 		ret = root_attrs;
 	}
 	else {
-		QString qs;
-		QString top_tbl = "t" + QString::number(pathlst.count());
-		QString cols = attributesColumns(top_tbl);
-		QString single_select = "SELECT * FROM " % tableName() %
-				" WHERE " % COL_NAME % "='%1'"
-				"  AND " % COL_SNAPSHOT % "<=" % QString::number(snapshotNumber()) % " ORDER BY " % COL_SNAPSHOT % " DESC LIMIT 1";
-
-		qs = "SELECT " % cols % " FROM (SELECT " % QString::number(pinode) % " AS inode) AS t0"; /// fake root row with inode == pinode
+		//QString top_tbl = "t0";// + QString::number(pathlst.count());
+		QString cols = attributesColumns();
+		QString single_select =
+				"SELECT %3 FROM " + tableName() + " WHERE NOT deleted AND (inode,snapshot) = (\n" +
+				"  SELECT inode, MAX(snapshot) FROM " + tableName() + " WHERE name='%1' AND pinode=(%2) AND snapshot<=" + QString::number(snapshotNumber()) + " GROUP BY inode \n"
+				")\n";
+		QString qs = QString::number(pinode);
 		for(int i=0; i<pathlst.count(); i++) {
 			QString p = pathlst.value(i);
-			QString t0 = 't' % QString::number(i);
-			QString t1 = 't' % QString::number(i+1);
-			qs += " JOIN ( " % single_select.arg(p) % " ) AS " % t1 % " ON " % t1 % "." % COL_PINODE % "=" % t0 % "." % COL_INODE;
+			qs = single_select.arg(p).arg(qs);
+			if(i == pathlst.count() - 1)
+				qs = qs.arg(cols);
+			else
+				qs = qs.arg(QStringLiteral("inode"));
 		}
-		//qs += " WHERE t0." % COL_INODE % "=" % QString::number(pinode);
+		//qs = "SELECT " + cols + " FROM " + tableName() + " AS t0 WHERE (inode,snapshot) = (\n" + qs + ")";
 		Connection conn = connection();
 		Query q(conn);
 		qfDebug() << qs;
@@ -301,7 +305,9 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &path, int pinode)
 			}
 		}
 		else {
+			qfInfo() << qs;
 			qfError() << "SQL ERROR:" << q.lastError().text();
+			throw qf::core::Exception("bye");
 		}
 	}
 	qfDebug() << ret.toString();
@@ -320,7 +326,7 @@ QList<DbFsAttrs> DbFsDriver::readDir(int parent_inode)
 			+ "  AND snapshot<=" + QString::number(snapshotNumber())
 			+ " GROUP BY inode";
 	QString qs = "SELECT " + cols + " FROM ( " + inner_qs + " ) AS t1"
-	" JOIN dbfs AS t2 ON t1.inode=t2.inode AND t1.ms=t2.snapshot";
+															" JOIN dbfs AS t2 ON t1.inode=t2.inode AND t1.ms=t2.snapshot";
 	qfDebug() << qs;
 	bool ok = q.exec(qs);
 	if(ok) {
@@ -368,8 +374,8 @@ QByteArray DbFsDriver::get(const QString &path, bool *pok)
 QString DbFsDriver::cleanPath(const QString &path)
 {
 	QString ret = QDir::cleanPath(path);
-	//while(ret.startsWith('/'))
-	//	ret = ret.mid(1);
+	while(ret.startsWith('/'))
+		ret = ret.mid(1);
 	while(ret.endsWith('/'))
 		ret = ret.mid(0, ret.length() - 1);
 	//if(ret.isEmpty() && !path.isEmpty() && path[0] == '/')
