@@ -151,16 +151,16 @@ void TableView::refreshActions()
 	//action("viewRowExternal")->setVisible(true);
 	//action("editRowExternal")->setVisible(true);
 
-	bool is_insert_rows_allowed = true;//m->isInsertRowsAllowed() && !isReadOnly();
+	bool is_insert_rows_allowed = m_proxyModel->isIdle();
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
 	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
-	bool is_copy_rows_allowed = true;//m->rowCount()>0 && is_insert_rows_allowed;
+	bool is_copy_rows_allowed = m_proxyModel->rowCount()>0 && is_insert_rows_allowed;
 	//qfInfo() << "\tinsert allowed:" << is_insert_rows_allowed;
 	//qfDebug() << "\tdelete allowed:" << is_delete_rows_allowed;
 	//qfDebug() << "\tedit allowed:" << is_edit_rows_allowed;
 	//action("insertRow")->setVisible(is_insert_rows_allowed && isInsertRowActionVisible());
-	action("copyRow")->setEnabled(is_copy_rows_allowed);
-	//action("copyRow")->setVisible(isCopyRowActionVisible());
+	action("cloneRow")->setEnabled(is_copy_rows_allowed);
+	//action("cloneRow")->setVisible(iscloneRowActionVisible());
 	action("removeSelectedRows")->setEnabled(is_delete_rows_allowed);// && action("removeSelectedRows")->isVisible());
 	//action("postRow")->setVisible((is_edit_rows_allowed || is_insert_rows_allowed) && action("postRow")->isVisible());
 	//action("revertRow")->setVisible(action("postRow")->isVisible() && action("revertRow")->isVisible());
@@ -177,7 +177,7 @@ void TableView::refreshActions()
 	}
 	else {
 		action("insertRow")->setEnabled(is_insert_rows_allowed);
-		action("copyRow")->setEnabled(is_copy_rows_allowed && curr_ix.isValid());
+		action("cloneRow")->setEnabled(is_copy_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
 		action("sortAsc")->setEnabled(true);
 		action("sortDesc")->setEnabled(true);
@@ -239,6 +239,39 @@ void TableView::insertRow()
 	refreshActions();
 }
 
+void TableView::cloneRowInline()
+{
+	qfLogFuncFrame();
+	try {
+		qfu::TableRow r1 = tableRow();
+		if(r1.isNull())
+			return;
+		insertRowInline();
+		qfu::TableRow &r2 = tableRowRef();
+		for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
+			r2.setValue(i, r1.value(i));
+		}
+		r2.prepareForCopy();
+	}
+	catch(qfc::Exception &e) {
+		dialogs::MessageBox::showException(this, e);
+	}
+}
+
+void TableView::cloneRow()
+{
+	qfLogFuncFrame();
+	if(rowEditorMode() == EditRowsInline) {
+		qfDebug() << "\t copy row in mode EditRowsInline";
+		cloneRowInline();
+	}
+	else {
+		qfDebug() << "\t emit editRowInExternalEditor(ModeCopy)";
+		emit editRowInExternalEditor(QVariant(), ModeCopy);
+	}
+	refreshActions();
+}
+
 void TableView::removeSelectedRows()
 {
 	qfLogFuncFrame();
@@ -255,7 +288,7 @@ void TableView::removeSelectedRows()
 			}
 		}
 	}
-	catch(qf::core::Exception &e) {
+	catch(qfc::Exception &e) {
 		dialogs::MessageBox::showException(this, e);
 	}
 }
@@ -276,7 +309,7 @@ bool TableView::postRow(int row_no)
 				updateRow(row_no);
 		}
 	}
-	catch(qf::core::Exception &e) {
+	catch(qfc::Exception &e) {
 		dialogs::MessageBox::showException(this, e);
 	}
 	return ret;
@@ -464,7 +497,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 		dlg.loadPersistentSettingsRecursively();
 		dlg.exec();
 	}
-	catch(qf::core::Exception &e) {
+	catch(qfc::Exception &e) {
 		dialogs::MessageBox::showException(this, e);
 	}
 }
@@ -502,6 +535,17 @@ void TableView::updateAll()
 	updateDataArea();
 	verticalHeader()->viewport()->update();
 	horizontalHeader()->viewport()->update();
+}
+
+qf::core::utils::TableRow &TableView::tableRowRef(int row_no)
+{
+	int ri = row_no;
+	if(row_no < 0)
+		ri = currentIndex().row();
+	auto m = tableModel();
+	QF_ASSERT_EX(m != nullptr, "Table model is NULL");
+	ri = toTableModelRowNo(ri);
+	return m->tableRef().rowRef(ri);
 }
 
 qf::core::utils::TableRow TableView::tableRow(int row_no) const
@@ -1132,16 +1176,16 @@ void TableView::createActions()
 		connect(a, SIGNAL(triggered()), this, SLOT(revertRow()));
 	}
 	{
-		a = new Action(tr("Copy row"), this);
+		a = new Action(tr("Clone row"), this);
 		a->setIcon(QIcon(":/qf/qmlwidgets/images/clone.png"));
-		a->setOid("copyRow");
-		a->setVisible(false);
+		a->setOid("cloneRow");
+		//a->setVisible(false);
 		m_actionGroups[RowActions] << a->oid();
 		a->setShortcut(QKeySequence(tr("Ctrl+D", "insert row copy")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
-		//connect(a, SIGNAL(triggered()), this, SLOT(copyRow()));
+		connect(a, SIGNAL(triggered()), this, SLOT(cloneRow()));
 	}
 	{
 		a = new Action(tr("Zobrazit ve formulari"), this);
@@ -1361,7 +1405,7 @@ void TableView::createActions()
 	}
 
 	m_toolBarActions << action("insertRow");
-	m_toolBarActions << action("copyRow");
+	m_toolBarActions << action("cloneRow");
 	m_toolBarActions << action("removeSelectedRows");
 	m_toolBarActions << action("postRow");
 	m_toolBarActions << action("revertRow");
@@ -1508,7 +1552,8 @@ void TableView::insertRowInline()
 	int ri = model()->rowCount();
 	if(ix.isValid())
 		ri = ix.row() + 1;
-	tableModel()->insertRow(ri);
+	int tri = toTableModelRowNo(ri);
+	tableModel()->insertRow(tri);
 	if(ix.isValid())
 		setCurrentIndex(ix.sibling(ri, ix.column()));
 	else
@@ -1625,7 +1670,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 				}
 			}
 		}
-		catch(qf::core::Exception &e) {
+		catch(qfc::Exception &e) {
 			dialogs::MessageBox::showException(this, e);
 		}
 	} while(false);

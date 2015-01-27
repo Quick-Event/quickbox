@@ -31,6 +31,11 @@ void TableViewProxyModel::setRowFilterString(const QString &s)
 	invalidateFilter();
 }
 
+bool TableViewProxyModel::isIdle() const
+{
+	return m_rowFilterString.isEmpty() && sortColumn() < 0;
+}
+
 QVariant TableViewProxyModel::data(const QModelIndex &index, int role) const
 {
 	QVariant ret = Super::data(index, role);

@@ -102,6 +102,7 @@ public:
 	ColumnDefinition removeColumn(int ix);
 public:
 	const qf::core::utils::Table& table() {return m_table;}
+	qf::core::utils::Table& tableRef() {return m_table;}
 	void setTable(const qf::core::utils::Table &t);
 
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;

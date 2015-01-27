@@ -72,12 +72,15 @@ public:
 
 	Q_SLOT virtual void reload();
 
-	Q_SLOT void insertRow();
+	Q_SLOT virtual void insertRow();
 	//! @param row_no if @a row_no < 0 than post current row.
 	Q_SLOT void removeSelectedRows();
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
+
+	Q_SLOT virtual void cloneRowInline();
+	Q_SLOT virtual void cloneRow();
 
 	Q_SLOT virtual void copy();
 	Q_SLOT virtual void copySpecial();
@@ -94,6 +97,7 @@ public:
 	Q_SLOT void updateAll();
 
 	//! If \a row_no < 0 row_no = current row.
+	qf::core::utils::TableRow& tableRowRef(int row_no = -1);
 	qf::core::utils::TableRow tableRow(int row_no = -1) const;
 	qf::core::utils::TableRow selectedRow() const {return tableRow();}
 

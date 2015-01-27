@@ -489,15 +489,20 @@ void TableRow::clearEditFlags()
 
 void TableRow::prepareForCopy()
 {
-	/// nastav orig values na invalid hodnoty, ale nemaz je, kdyby neexistovaly, setValue() by je vytvorila s aktualnimi values()
-	//if(d->origValues.count() < d->values.count()) {
-		d->origValues.clear();
-		d->origValues.resize(d->values.size());
-	//}
+	/// setup copied row to be inserted on post call
+	d->origValues.clear();
+	d->origValues.resize(d->values.size());
 	setInsert(true);
 	//qfInfo() << "is insert;" << isInsert();
-	for(int i=0; i<d->values.size(); i++) {
-		setDirty(i, true);
+	for(int i=0; i<fields().count(); i++) {
+		Table::Field fld = fields().value(i);
+		if(fld.isSerial()) {
+			setValue(i, QVariant());
+			setDirty(i, false);
+		}
+		else {
+			setDirty(i, true);
+		}
 	}
 }
 /*
