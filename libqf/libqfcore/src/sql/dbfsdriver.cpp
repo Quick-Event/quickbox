@@ -1,6 +1,7 @@
 #include "dbfsdriver.h"
 #include "connection.h"
 #include "query.h"
+#include "../model/sqltablemodel.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -100,6 +101,15 @@ bool DbFsDriver::createSnapshot(const QString &comment)
 		qfError() << "Error init dbfs:" << q.lastError().text();
 	}
 	return ret;
+}
+
+qf::core::utils::Table DbFsDriver::listSnapshots()
+{
+	qf::core::model::SqlTableModel m;
+	m.setConnectionName(connectionName());
+	QString qs = "SELECT ssNo AS no, ts, comment FROM " + snapshotsTableName() + " ORDER BY ssNo";
+	m.reload(qs);
+	return m.table();
 }
 
 static bool execQueryList(Connection &conn, const QStringList &qlst)

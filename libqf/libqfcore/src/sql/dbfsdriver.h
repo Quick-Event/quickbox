@@ -6,6 +6,7 @@
 
 #include "../core/coreglobal.h"
 #include "../core/utils.h"
+#include "../utils/table.h"
 
 #include <QObject>
 
@@ -33,6 +34,7 @@ public:
 
 	bool createDbFs();
 	bool createSnapshot(const QString &comment);
+	qf::core::utils::Table listSnapshots();
 	DbFsAttrs attributes(const QString &path);
 	QList<DbFsAttrs> childAttributes(const QString &parent_path);
 	QByteArray get(const QString &path, bool *pok = nullptr);

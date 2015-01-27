@@ -27,10 +27,10 @@ LIBS +=      \
 	-lqfcore  \
 
 win32: LIBS +=  \
-	-L../../bin  \
+	-L$$QF_PROJECT_BUILD_ROOT/bin  \
 
 unix: LIBS +=  \
-	-L../../lib  \
+	-L$$QF_PROJECT_BUILD_ROOT/lib  \
 
 include ($$PWD/../../crosscompile-support.pri)
 
