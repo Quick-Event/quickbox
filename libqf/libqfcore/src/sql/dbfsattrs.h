@@ -25,6 +25,7 @@ private:
 		int id = 0;
 		int inode = 0;
 		int pinode = 0;
+		int snapshot = 0;
 		NodeType type = Invalid;
 		bool isDeleted = false;
 		QString name;
@@ -43,6 +44,7 @@ private:
 	QF_SHARED_CLASS_FIELD_RW(bool, is, set, Deleted)
 	QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 	QF_SHARED_CLASS_FIELD_RW(int, s, setS, ize)
+	QF_SHARED_CLASS_FIELD_RW(int, s, setS, napshot)
 public:
 	bool isNull() const {return d == sharedNull().d;}
 	QString typeString() const;

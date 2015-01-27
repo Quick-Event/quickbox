@@ -21,6 +21,10 @@ static const QString COL_DELETED("deleted");
 static const QString COL_VALUE("value");
 static const QString COL_SIZE("size");
 
+static const QString COL_SS_NO("no");
+static const QString COL_SS_TS("ts");
+static const QString COL_SS_COMMENT("comment");
+
 DbFsDriver::DbFsDriver(QObject *parent)
 	: QObject(parent)
 {
@@ -92,8 +96,8 @@ QString DbFsDriver::snapshotsTableName()
 
 bool DbFsDriver::createSnapshot(const QString &comment)
 {
-	QString qs = "INSERT INTO " + snapshotsTableName() + " (ssNo, comment)" +
-			" select COALESCE(MAX(ssNo), -1) + 1, '" + comment + "' FROM " + snapshotsTableName();
+	QString qs = "INSERT INTO " + snapshotsTableName() + " (" + COL_SS_NO + ", " + COL_SS_COMMENT + ")" +
+			" select COALESCE(MAX(" + COL_SS_NO + "), -1) + 1, '" + comment + "' FROM " + snapshotsTableName();
 	Connection conn = connection();
 	Query q(conn);
 	bool ret = q.exec(qs);
@@ -107,9 +111,25 @@ qf::core::utils::Table DbFsDriver::listSnapshots()
 {
 	qf::core::model::SqlTableModel m;
 	m.setConnectionName(connectionName());
-	QString qs = "SELECT ssNo AS no, ts, comment FROM " + snapshotsTableName() + " ORDER BY ssNo";
+	QString qs = "SELECT " + COL_SS_NO + ", " + COL_SS_TS + ", " + COL_SS_COMMENT + " FROM " + snapshotsTableName() + " ORDER BY " + COL_SS_NO;
 	m.reload(qs);
 	return m.table();
+}
+
+int DbFsDriver::latestSnapshotNumber()
+{
+	Connection conn = connection();
+	Query q(conn);
+	QString qs = "SELECT MAX(" + COL_SS_NO + ") FROM " + snapshotsTableName();
+	bool ok = q.exec(qs);
+	if(!ok) {
+		qfWarning() << qs;
+		qfError() << "SQL Error:" << q.lastError().text();
+	}
+	int ret = -1;
+	if(q.next())
+		ret = q.value(0).toInt();
+	return ret;
 }
 
 static bool execQueryList(Connection &conn, const QStringList &qlst)
@@ -183,12 +203,12 @@ bool DbFsDriver::createDbFs()
 			qlst << "CREATE TABLE " + snapshotsTableName() + " " +
 					"("
 					"id serial NOT NULL,"
-					"ts timestamp without time zone DEFAULT now(),"
-					"comment character varying,"
-					"ssNo integer,"
+					"" + COL_SS_TS + " timestamp without time zone DEFAULT now(),"
+					"" + COL_SS_COMMENT + " character varying,"
+					"" + COL_SS_NO + " integer,"
 					"CONSTRAINT " + snapshotsTableName() + "_pkey PRIMARY KEY (id)"
 					") WITH (OIDS=FALSE)";
-			qlst << "CREATE INDEX " + snapshotsTableName() + "_ssNo_idx ON " + snapshotsTableName() + " (ssNo)";
+			qlst << "CREATE INDEX " + snapshotsTableName() + "_" + COL_SS_NO + "_idx ON " + snapshotsTableName() + " (" + COL_SS_NO + ")";
 			init_ok = execQueryList(conn, qlst);
 			if(!init_ok) {
 				qfError() << "Error creating snapshots table" << snapshotsTableName();
@@ -232,6 +252,7 @@ DbFsAttrs DbFsDriver::attributesFromQuery(const Query &q)
 	ret.setId(q.value(COL_ID).toInt());
 	ret.setInode(q.value(COL_INODE).toInt());
 	ret.setPinode(q.value(COL_PINODE).toInt());
+	ret.setSnapshot(q.value(COL_SNAPSHOT).toInt());
 	ret.setDeleted(q.value(COL_DELETED).toBool());
 	ret.setName(q.value(COL_NAME).toString());
 	DbFsAttrs::NodeType node_type = DbFsAttrs::Invalid;

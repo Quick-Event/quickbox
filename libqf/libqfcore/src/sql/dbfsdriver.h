@@ -35,6 +35,7 @@ public:
 	bool createDbFs();
 	bool createSnapshot(const QString &comment);
 	qf::core::utils::Table listSnapshots();
+	int latestSnapshotNumber();
 	DbFsAttrs attributes(const QString &path);
 	QList<DbFsAttrs> childAttributes(const QString &parent_path);
 	QByteArray get(const QString &path, bool *pok = nullptr);

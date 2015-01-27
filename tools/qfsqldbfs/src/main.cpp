@@ -10,15 +10,13 @@
 #include <QSqlError>
 
 #include <fuse.h>
-//#include <stdio.h>
-//#include <string.h>
-//#include <errno.h>
-//#include <fcntl.h>
 #include <iostream>
+#include <limits>
 
 namespace qfs = qf::core::sql;
 
 static qfs::DbFsDriver *pDbFsDrv = nullptr;
+static int s_latestSnapshotNumber = std::numeric_limits<int32_t>::max();
 
 static qfs::DbFsDriver *dbfsdrv()
 {
@@ -33,17 +31,24 @@ static int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 
 	QString spath = QString::fromUtf8(path);
 	qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
+	bool read_only = dbfsdrv()->snapshotNumber() < s_latestSnapshotNumber;
 
 	memset(stbuf, 0, sizeof(struct stat));
 	if(attrs.isNull()) {
 		res = -ENOENT;
 	}
 	else if(attrs.type() == qfs::DbFsAttrs::Dir) {
-		stbuf->st_mode = S_IFDIR | 0755;
+		if(read_only)
+			stbuf->st_mode = S_IFDIR | 0555;
+		else
+			stbuf->st_mode = S_IFDIR | 0777;
 		stbuf->st_nlink = 2; /// all directories have at least 2 links, itself, and the link back to
 	}
 	else if(attrs.type() == qfs::DbFsAttrs::File) {
-		stbuf->st_mode = S_IFREG | 0444;
+		if(read_only)
+			stbuf->st_mode = S_IFREG | 0444;
+		else
+			stbuf->st_mode = S_IFREG | 0666;
 		stbuf->st_nlink = 1;
 		stbuf->st_size = attrs.size();
 	}
@@ -267,15 +272,15 @@ int main(int argc, char *argv[])
 	}
 	pDbFsDrv = new qfs::DbFsDriver();
 	pDbFsDrv->setConnectionName(db.connectionName());
-	if(!o_table_name.isEmpty())
+
+	if(!o_table_name.isEmpty()) {
 		dbfsdrv()->setTableName(o_table_name);
-	//qfInfo() << dbfsdrv()->attributes("/a/b/c").toString();
-	//qfInfo() << dbfsdrv()->attributes("/a/b/c").toString();
+	}
 	if(o_create_db) {
 		if(!dbfsdrv()->createDbFs()) {
 			qfError() << "Error creating dbfs table" << dbfsdrv()->tableName();
-			exit(1);
 		}
+		exit(1);
 	}
 	if(o_list_snapshots) {
 		qf::core::utils::Table t = dbfsdrv()->listSnapshots();
@@ -286,6 +291,10 @@ int main(int argc, char *argv[])
 	if(o_snapshot >= 0) {
 		dbfsdrv()->setSnapshotNumber(o_snapshot);
 	}
+
+	s_latestSnapshotNumber = dbfsdrv()->latestSnapshotNumber();
+
+	qfDebug() << "snapshotNumber:" << dbfsdrv()->snapshotNumber() << "latestSnapshotNumber:" << s_latestSnapshotNumber;
 
 	int fuse_argc = args.length();
 	if(dbfs_options_index > 0)
