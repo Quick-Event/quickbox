@@ -1,5 +1,7 @@
 #include "dbfsattrs.h"
 
+#include <QStringBuilder>
+
 using namespace qf::core::sql;
 
 const DbFsAttrs &DbFsAttrs::sharedNull()
@@ -23,13 +25,13 @@ DbFsAttrs::DbFsAttrs(DbFsAttrs::NodeType t)
 	d = new Data(t);
 }
 
-QString DbFsAttrs::typeString() const
+QChar DbFsAttrs::typeChar() const
 {
 	if(type() == Dir)
-		return QStringLiteral("d");
+		return 'd';
 	if(type() == File)
-		return QStringLiteral("f");
-	return QString();
+		return 'f';
+	return QChar();
 }
 
 QString DbFsAttrs::toString() const
@@ -42,7 +44,7 @@ QString DbFsAttrs::toString() const
 	ret += "id: " + QString::number(id()) + ", ";
 	ret += "inode: " + QString::number(inode()) + ", ";
 	ret += "pinode: " + QString::number(pinode()) + ", ";
-	ret += "type: " + typeString() + ", ";
+	ret += "type: " % typeChar() % ", ";
 	ret += "name: " + name() + ", ";
 	ret += "deleted: ";
 	ret += isDeleted()? "Y": "N";

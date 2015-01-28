@@ -17,8 +17,9 @@ static const QString COL_TYPE("type");
 static const QString COL_NAME("name");
 static const QString COL_META("meta");
 static const QString COL_SNAPSHOT("snapshot");
+static const QString COL_MTIME("mtime");
 static const QString COL_DELETED("deleted");
-static const QString COL_VALUE("value");
+static const QString COL_DATA("data");
 static const QString COL_SIZE("size");
 
 static const QString COL_SS_NO("no");
@@ -66,7 +67,7 @@ QList<DbFsAttrs> DbFsDriver::childAttributes(const QString &parent_path)
 		DbFsAttrs parent_attrs = attributes(clean_ppath);
 		if(!parent_attrs.isNull() && parent_attrs.type() == DbFsAttrs::Dir) {
 			int parent_inode = parent_attrs.inode();
-			ret = childAttributes(parent_inode);
+			ret = readAttributes(parent_inode);
 			for(auto attrs : ret) {
 				QString path = joinPath(clean_ppath, attrs.name());
 				//qfDebug() << clean_ppath + "name:" << attrs.name() << "->" << path;
@@ -94,6 +95,182 @@ QString DbFsDriver::snapshotsTableName()
 	return tableName() + "_snapshots";
 }
 
+bool DbFsDriver::rmnod(const QString &spath, bool o_recursive)
+{
+	bool ok = true;
+	auto chldattrs = childAttributes(spath);
+	if(chldattrs.isEmpty()) {
+		DbFsAttrs att = attributes(spath);
+		if(att.isNull()) {
+			qfWarning() << "RMNOD Path not exists:" << spath;
+			ok = false;
+		}
+		else {
+			if(att.snapshot() == latestSnapshotNumber()) {
+				Query q(connection());
+				QString qs = "DELETE FROM " + tableName() + " WHERE id=" + att.id();
+				ok = q.exec(qs);
+				if(!ok) {
+					qfInfo() << qs;
+					qfError() << "SQL Error:" << q.lastError().text();
+				}
+			}
+			else {
+				ok = !touch(att, false, true, QByteArray()).isNull();
+			}
+		}
+	}
+	else {
+		if(o_recursive) {
+			for(DbFsAttrs att : chldattrs) {
+				QString chpath = joinPath(spath, att.name());
+				ok = rmnod(chpath, o_recursive);
+				if(!ok)
+					break;
+			}
+		}
+		else {
+			qfWarning() << "RMNOD Cannot remove non empty path:" << spath;
+			ok = false;
+		}
+	}
+	return ok;
+}
+
+DbFsAttrs DbFsDriver::touch(const DbFsAttrs &attrs, bool create_node, bool delete_node, const QByteArray &data)
+{
+	DbFsAttrs ret;
+	int latest_sn = latestSnapshotNumber();
+	if(!create_node) {
+		if(attrs.snapshot() < latestSnapshotNumber()) {
+			/// node exists in previous snapshot
+			if(delete_node) {
+				if(!attrs.isDeleted()) {
+					/// create empty node to mark it deleted in current snapshot
+					ret = attrs;
+					ret.setSnapshot(latest_sn);
+					ret = sqlInsertNode(ret, QByteArray());
+				}
+				else {
+					qfWarning() << "Node is deleted already:" << attrs.toString();
+					return DbFsAttrs();
+				}
+			}
+			else {
+				/// create copy of node for latest snapshot
+				ret = attrs;
+				ret.setSnapshot(latest_sn);
+				ret = sqlInsertNode(ret, QByteArray());
+			}
+		}
+		else {
+			/// existing node is not versioned
+			if(attrs.isDeleted()) {
+				/// delete existing not versioned node
+				qfWarning() << "Use rmfile or rmdir to delete node!";
+				return DbFsAttrs();
+			}
+			else {
+				/// change mtime and possibly data
+				ret = attrs;
+				ret.setSnapshot(latest_sn);
+				ret = sqlUpdateNode(ret, data);
+			}
+		}
+	}
+	else {
+		/// create brand new node
+		ret = attrs;
+		ret.setSnapshot(latest_sn);
+		ret = sqlInsertNode(ret, data);
+	}
+	return ret;
+}
+
+DbFsAttrs DbFsDriver::sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &data)
+{
+	Connection conn = connection();
+	Query q(conn);
+	QString qs = "SELECT nextval('" + tableName() + "_id_seq')";
+	bool ok = q.exec(qs);
+	if(!ok) {
+		qfError() << "SQLINSERTNODE Error:" << q.lastError().text();
+		return DbFsAttrs();
+	}
+	int id = q.value(0).toInt();
+	if(id <= 0) {
+		qfError() << "SQLINSERTNODE internal error, sequence number is invalid!";
+		return DbFsAttrs();
+	}
+	DbFsAttrs ret = attrs;
+	ret.setId(id);
+	ret.setInode(id);
+	//ret.setSnapshot(latestSnapshotNumber());
+	qs = "INSERT INTO " + tableName() + " ("
+			+ COL_ID + ", "
+			+ COL_INODE + ", "
+			+ COL_PINODE + ", "
+			+ COL_SNAPSHOT + ", "
+			+ COL_MTIME + ", "
+			+ COL_TYPE + ", "
+			+ COL_DELETED + ", "
+			+ COL_NAME + ", "
+			+ COL_DATA
+			+ ") "
+			+ "VALUES ("
+			+ QString::number(ret.id()) + ", "
+			+ QString::number(ret.inode()) + ", "
+			+ QString::number(ret.pinode()) + ", "
+			+ QString::number(ret.snapshot()) + ", "
+			+ "now(), "
+			+ ret.typeChar() + ", "
+			+ (ret.isDeleted()? "true": "false") + ", "
+			+ ret.name() + ", "
+			+ ", :data"
+			+ ")";
+	ok = q.prepare(qs);
+	if(!ok) {
+		qfError() << "SQLINSERTNODE Error:" << q.lastError().text();
+		return DbFsAttrs();
+	}
+	q.bindValue(":data", data);
+	ok = q.exec();
+	if(!ok) {
+		qfError() << "SQLINSERTNODE Error:" << q.lastError().text();
+		return DbFsAttrs();
+	}
+	return ret;
+}
+
+DbFsAttrs DbFsDriver::sqlUpdateNode(const DbFsAttrs &attrs, const QByteArray &data)
+{
+	Connection conn = connection();
+	Query q(conn);
+	DbFsAttrs ret = attrs;
+	QString qs = "UPDATE " + tableName() + " SET "
+			+ COL_MTIME + "=now(), "
+			+ COL_DELETED + "=" + (ret.isDeleted()? "true": "false") + ", "
+			+ COL_DATA + "=:data"
+			+ " WHERE id=" + QString(ret.id());
+	bool ok = q.prepare(qs);
+	if(!ok) {
+		qfError() << "SQLUPDATENODE Error:" << q.lastError().text();
+		return DbFsAttrs();
+	}
+	q.bindValue(":data", data);
+	ok = q.exec();
+	if(!ok) {
+		qfError() << "SQLUPDATENODE Error:" << q.lastError().text();
+		return DbFsAttrs();
+	}
+	int n = q.numRowsAffected();
+	if(n == 0) {
+		qfError() << "SQLUPDATENODE Error 0 rows affected:" << qs;
+		return DbFsAttrs();
+	}
+	return ret;
+}
+
 bool DbFsDriver::createSnapshot(const QString &comment)
 {
 	QString qs = "INSERT INTO " + snapshotsTableName() + " (" + COL_SS_NO + ", " + COL_SS_COMMENT + ")" +
@@ -102,8 +279,9 @@ bool DbFsDriver::createSnapshot(const QString &comment)
 	Query q(conn);
 	bool ret = q.exec(qs);
 	if(!ret) {
-		qfError() << "Error init dbfs:" << q.lastError().text();
+		qfError() << "CREATESNAPSHOT Error:" << q.lastError().text();
 	}
+	m_latestSnapshotNumber = -1;
 	return ret;
 }
 
@@ -118,18 +296,9 @@ qf::core::utils::Table DbFsDriver::listSnapshots()
 
 int DbFsDriver::latestSnapshotNumber()
 {
-	Connection conn = connection();
-	Query q(conn);
-	QString qs = "SELECT MAX(" + COL_SS_NO + ") FROM " + snapshotsTableName();
-	bool ok = q.exec(qs);
-	if(!ok) {
-		qfWarning() << qs;
-		qfError() << "SQL Error:" << q.lastError().text();
-	}
-	int ret = -1;
-	if(q.next())
-		ret = q.value(0).toInt();
-	return ret;
+	if(m_latestSnapshotNumber < 0)
+		m_latestSnapshotNumber = readLatestSnapshotNumber();
+	return m_latestSnapshotNumber;
 }
 
 static bool execQueryList(Connection &conn, const QStringList &qlst)
@@ -177,11 +346,12 @@ bool DbFsDriver::createDbFs()
 					"inode integer NOT NULL DEFAULT 0,"
 					"pinode integer NOT NULL DEFAULT 0,"
 					"snapshot integer NOT NULL DEFAULT 0,"
+					"" + COL_MTIME + " timestamp without time zone DEFAULT now(),"
 					"type character(1) NOT NULL DEFAULT 'f'::bpchar,"
 					"deleted boolean NOT NULL DEFAULT false,"
 					"name character varying,"
 					"meta character varying,"
-					"value bytea,"
+					"" + COL_DATA + " bytea,"
 					"CONSTRAINT " + tableName() + "_pkey PRIMARY KEY (id),"
 					"CONSTRAINT " + tableName() + "_inode_key UNIQUE (inode, snapshot)"
 					") WITH (OIDS=FALSE)";
@@ -238,10 +408,11 @@ QString DbFsDriver::attributesColumns(const QString &table_alias)
 			ta%COL_INODE%", "%
 			ta%COL_PINODE%", "%
 			ta%COL_SNAPSHOT%", "%
+			ta%COL_MTIME%", "%
 			ta%COL_TYPE%", "%
 			ta%COL_DELETED%", "%
 			ta%COL_NAME%", "%
-			"length("%ta%COL_VALUE%") AS "%COL_SIZE%", "%
+			"length("%ta%COL_DATA%") AS "%COL_SIZE%", "%
 			ta%COL_META;
 	return ret;
 }
@@ -253,6 +424,7 @@ DbFsAttrs DbFsDriver::attributesFromQuery(const Query &q)
 	ret.setInode(q.value(COL_INODE).toInt());
 	ret.setPinode(q.value(COL_PINODE).toInt());
 	ret.setSnapshot(q.value(COL_SNAPSHOT).toInt());
+	ret.setMtime(q.value(COL_MTIME).toDateTime());
 	ret.setDeleted(q.value(COL_DELETED).toBool());
 	ret.setName(q.value(COL_NAME).toString());
 	DbFsAttrs::NodeType node_type = DbFsAttrs::Invalid;
@@ -272,7 +444,13 @@ DbFsAttrs DbFsDriver::attributesFromQuery(const Query &q)
 DbFsAttrs DbFsDriver::readAttrs(const QString &path, int pinode)
 {
 	qfLogFuncFrame() << "path:" << path;
-	static DbFsAttrs root_attrs(DbFsAttrs::Dir);
+	static DbFsAttrs root_attrs;
+	if(root_attrs.isNull()) {
+		root_attrs.setType(DbFsAttrs::Dir);
+		root_attrs.setId(0);
+		root_attrs.setInode(0);
+		root_attrs.setPinode(0);
+	}
 
 	QStringList pathlst = splitPath(path);
 
@@ -318,7 +496,7 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &path, int pinode)
 	return ret;
 }
 
-QList<DbFsAttrs> DbFsDriver::childAttributes(int parent_inode)
+QList<DbFsAttrs> DbFsDriver::readAttributes(int parent_inode)
 {
 	qfLogFuncFrame() << "parent_inode:" << parent_inode;
 	QList<DbFsAttrs> ret;
@@ -346,6 +524,22 @@ QList<DbFsAttrs> DbFsDriver::childAttributes(int parent_inode)
 	return ret;
 }
 
+int DbFsDriver::readLatestSnapshotNumber()
+{
+	Connection conn = connection();
+	Query q(conn);
+	QString qs = "SELECT MAX(" + COL_SS_NO + ") FROM " + snapshotsTableName();
+	bool ok = q.exec(qs);
+	if(!ok) {
+		qfWarning() << qs;
+		qfError() << "SQL Error:" << q.lastError().text();
+	}
+	int ret = -1;
+	if(q.next())
+		ret = q.value(0).toInt();
+	return ret;
+}
+
 QByteArray DbFsDriver::get(const QString &path, bool *pok)
 {
 	QByteArray ret;
@@ -356,7 +550,7 @@ QByteArray DbFsDriver::get(const QString &path, bool *pok)
 		if(attrs.isNull())
 			break;
 		int id = attrs.id();
-		QString qs = "SELECT " + COL_VALUE + " FROM " + tableName() + " WHERE id=" + QString::number(id);
+		QString qs = "SELECT " + COL_DATA + " FROM " + tableName() + " WHERE id=" + QString::number(id);
 		Connection conn = connection();
 		Query q(conn);
 		if(!q.exec(qs)) {
@@ -372,6 +566,171 @@ QByteArray DbFsDriver::get(const QString &path, bool *pok)
 	} while(false);
 	if(pok)
 		*pok = ok;
+	return ret;
+}
+
+bool DbFsDriver::put(const QString &path, const QByteArray &data)
+{
+	QString spath = cleanPath(path);
+	bool ok = false;
+	do {
+		DbFsAttrs att = attributes(spath);
+		if(att.isNull()) {
+			qfWarning() << "PUT to invalid path:" << spath;
+			break;
+		}
+		if(att.type() == DbFsAttrs::Dir) {
+			qfWarning() << "PUT to directory:" << spath;
+			break;
+		}
+		int snapshot_number = touch(att, !O_CREATE, !O_DELETE, data).snapshot();
+		if(snapshot_number < 0) {
+			qfWarning() << "ERROR detach node on path:" << spath;
+			break;
+		}
+		ok = true;
+	} while(false);
+	return ok;
+}
+
+bool DbFsDriver::mkfile(const QString &path)
+{
+	QString spath = cleanPath(path);
+	bool ok = false;
+	do {
+		DbFsAttrs att = attributes(spath);
+		if(!att.isNull()) {
+			qfWarning() << "MKFILE path exists:" << spath;
+			break;
+		}
+		QPair<QString, QString> pf = splitPathFile(spath);
+		DbFsAttrs patt = attributes(pf.first);
+		if(patt.isNull()) {
+			qfWarning() << "MKFILE parent path not exists:" << pf.first;
+			break;
+		}
+		if(patt.type() != DbFsAttrs::Dir) {
+			qfWarning() << "MKFILE parent path is not directory:" << pf.first;
+			break;
+		}
+		att.setName(pf.second);
+		att.setType(DbFsAttrs::File);
+		att.setPinode(patt.inode());
+		int snapshot_number = touch(att, QByteArray());
+		if(snapshot_number < 0) {
+			qfWarning() << "MKFILE ERROR create file on path:" << spath;
+			break;
+		}
+		cacheRemove(path);
+		ok = true;
+	} while(false);
+	return ok;
+}
+
+bool DbFsDriver::rmfile(const QString &path)
+{
+	QString spath = cleanPath(path);
+	bool ok = false;
+	do {
+		DbFsAttrs att = attributes(spath);
+		if(att.isNull()) {
+			qfWarning() << "RMNOD path not exists:" << spath;
+			break;
+		}
+		if(att.type() != DbFsAttrs::File) {
+			qfWarning() << "RMNOD path is not file:" << spath;
+			break;
+		}
+		ok = rmnod(att.inode(), !O_RECURSIVE);
+		if(!ok) {
+			qfWarning() << "ERROR removing file on path:" << spath;
+			break;
+		}
+		cacheRemove(spath);
+		ok = true;
+	} while(false);
+	return ok;
+}
+
+bool DbFsDriver::mkdir(const QString &path, bool o_recursive)
+{
+	bool ok = true;
+	QString spath = cleanPath(path);
+	QStringList pathlst = splitPath(spath);
+	QString pp;
+	int pinode = 0;
+	for(QString p : pathlst) {
+		if(!pp.isEmpty())
+			pp += '/';
+		pp += p;
+		DbFsAttrs att = attributes(pp);
+		if(att.isNull()) {
+			if(!o_recursive && pp.length() < spath.length()) {
+				qfWarning() << "MKDIR - cannot create directory" << path << ", parent directory does not exist";
+				ok = false;
+				break;
+			}
+			att.setPinode(pinode);
+			att.setName(p);
+			att.setType(DbFsAttrs::Dir);
+			int snapshot_number = touch(att, QByteArray());
+			if(snapshot_number < 0) {
+				qfWarning() << "ERROR create directory on path:" << pp;
+				ok = false;
+				break;
+			}
+			cacheRemove(pp);
+			att = attributes(pp);
+			if(att.isNull()) {
+				qfError() << "INTERNAL ERROR creating dir on path:" << pp;
+				ok = false;
+				break;
+			}
+			pinode = att.inode();
+		}
+		else {
+			pinode = att.inode();
+		}
+	}
+	return ok;
+}
+
+bool DbFsDriver::rmdir(const QString &path, bool o_recursive)
+{
+	QString spath = cleanPath(path);
+	bool ok = false;
+	do {
+		DbFsAttrs att = attributes(spath);
+		if(att.isNull()) {
+			qfWarning() << "RMDIR path not exists:" << spath;
+			break;
+		}
+		if(att.type() != DbFsAttrs::Dir) {
+			qfWarning() << "RMDIR path is not directory:" << spath;
+			break;
+		}
+		ok = rmnod(path, o_recursive);
+		if(!ok) {
+			qfWarning() << "ERROR removing directory:" << spath;
+			break;
+		}
+		cacheRemove(spath);
+		ok = true;
+	} while(false);
+	return ok;
+}
+
+QPair<QString, QString> DbFsDriver::splitPathFile(const QString &path)
+{
+	QPair<QString, QString> ret;
+	int ix = path.lastIndexOf('/');
+	if(ix < 0) {
+		ret.second = path;
+	}
+	else {
+		ret.first = path.mid(0, ix);
+		ret.second = path.mid(ix + 1);
+	}
 	return ret;
 }
 

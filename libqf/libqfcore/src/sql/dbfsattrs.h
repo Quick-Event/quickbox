@@ -5,6 +5,7 @@
 #include "../core/utils.h"
 
 #include <QSharedDataPointer>
+#include <QDateTime>
 
 namespace qf {
 namespace core {
@@ -23,9 +24,10 @@ private:
 	{
 	public:
 		int id = 0;
-		int inode = 0;
-		int pinode = 0;
-		int snapshot = 0;
+		int inode = -1;
+		int pinode = -1;
+		int snapshot = -1;
+		QDateTime mtime;
 		NodeType type = Invalid;
 		bool isDeleted = false;
 		QString name;
@@ -45,9 +47,10 @@ private:
 	QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 	QF_SHARED_CLASS_FIELD_RW(int, s, setS, ize)
 	QF_SHARED_CLASS_FIELD_RW(int, s, setS, napshot)
+	QF_SHARED_CLASS_FIELD_RW(QDateTime, m, setM, time)
 public:
 	bool isNull() const {return d == sharedNull().d;}
-	QString typeString() const;
+	QChar typeChar() const;
 	QString toString() const;
 };
 
