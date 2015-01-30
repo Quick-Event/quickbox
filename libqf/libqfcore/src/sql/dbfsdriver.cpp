@@ -96,6 +96,7 @@ Connection DbFsDriver::connection()
 {
 	QSqlDatabase db = QSqlDatabase::database(connectionName(), false);
 	QF_ASSERT_EX(db.isOpen(), tr("Connection '%1' is not open!").arg(connectionName()));
+	/*
 	if(!m_isNotifyRegistered) {
 		auto drv = db.driver();
 		bool ok = drv->subscribeToNotification(CHANNEL_INVALIDATE_DBFSDRIVER_CACHE);
@@ -107,6 +108,7 @@ Connection DbFsDriver::connection()
 		}
 		m_isNotifyRegistered = true;
 	}
+	*/
 	return Connection(db);
 }
 
@@ -203,7 +205,7 @@ void DbFsDriver::postAttributesChangedNotify(const QString &path)
 {
 	Query q(connection());
 	QString qs = "NOTIFY " + CHANNEL_INVALIDATE_DBFSDRIVER_CACHE + ", '" + path + "'";
-	if(q.exec(qs)) {
+	if(!q.exec(qs)) {
 		qfError() << "postAttributesChangedNotify Error:" << qs << q.lastError().text();
 	}
 }
@@ -232,6 +234,7 @@ DbFsAttrs DbFsDriver::sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &da
 		qfError() << "SQLINSERTNODE Error:" << qs << '\n' << q.lastError().text();
 		return DbFsAttrs();
 	}
+	q.next();
 	int id = q.value(0).toInt();
 	if(id <= 0) {
 		qfError() << "SQLINSERTNODE internal error, sequence number is invalid!";
@@ -258,10 +261,10 @@ DbFsAttrs DbFsDriver::sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &da
 			+ QString::number(ret.pinode()) + ", "
 			+ QString::number(ret.snapshot()) + ", "
 			+ "now(), "
-			+ ret.typeChar() + ", "
+			+ '\'' + ret.typeChar() + "', "
 			+ (ret.isDeleted()? "true": "false") + ", "
-			+ ret.name() + ", "
-			+ ", :data"
+			+ '\'' + ret.name() + "', "
+			+ ":data"
 			+ ")";
 	qfDebug() << qs;
 	ok = q.prepare(qs);
@@ -347,7 +350,7 @@ DbFsAttrs DbFsDriver::sqlUpdateNode(const DbFsAttrs &attrs, const QByteArray &da
 			+ COL_MTIME + "=now(), "
 			+ COL_DELETED + "=" + (ret.isDeleted()? "true": "false") + ", "
 			+ COL_DATA + "=:data"
-			+ " WHERE id=" + QString(ret.id());
+			+ " WHERE id=" + QString::number(ret.id());
 	bool ok = q.prepare(qs);
 	if(!ok) {
 		qfError() << "SQLUPDATENODE Error:" << qs << '\n' << q.lastError().text();
@@ -614,8 +617,8 @@ QList<DbFsAttrs> DbFsDriver::readAttributes(int parent_inode)
 			+ "  AND snapshot<=" + QString::number(snapshotNumber())
 			+ " GROUP BY inode";
 	QString qs = "SELECT " + cols + " FROM ( " + inner_qs + " ) AS t1" +
-			" JOIN dbfs AS t2 ON t1.inode=t2.inode AND t1.ms=t2.snapshot AND NOT t2.deleted";
-	qfInfo() << qs;
+			" JOIN " + tableName() + " AS t2 ON t1.inode=t2.inode AND t1.ms=t2.snapshot AND NOT t2.deleted";
+	qfDebug() << qs;
 	bool ok = q.exec(qs);
 	if(ok) {
 		while (q.next()) {

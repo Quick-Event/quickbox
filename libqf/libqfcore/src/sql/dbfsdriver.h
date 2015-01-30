@@ -79,7 +79,7 @@ private:
 	typedef QMap<QString, QStringList> DirectoryCache;
 	DirectoryCache m_directoryCache;
 	int m_latestSnapshotNumber = -1;
-	bool m_isNotifyRegistered = false;
+	//bool m_isNotifyRegistered = false;
 };
 
 }}}
