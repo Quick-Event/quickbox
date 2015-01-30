@@ -30,6 +30,7 @@ private:
 		QDateTime mtime;
 		NodeType type = Invalid;
 		bool isDeleted = false;
+		int copiedInSnapshot = -1;
 		QString name;
 		int size = 0;
 		//unsigned canUpdate:1, isPriKey:1, isSerial:1, isNullable:1;
@@ -44,6 +45,7 @@ private:
 	QF_SHARED_CLASS_FIELD_RW(int, p, setP, inode)
 	QF_SHARED_CLASS_FIELD_RW(NodeType, t, setT, ype)
 	QF_SHARED_CLASS_FIELD_RW(bool, is, set, Deleted)
+	QF_SHARED_CLASS_FIELD_RW(int, c, setC, opiedInSnapshot)
 	QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 	QF_SHARED_CLASS_FIELD_RW(int, s, setS, ize)
 	QF_SHARED_CLASS_FIELD_RW(int, s, setS, napshot)
@@ -51,6 +53,7 @@ private:
 public:
 	bool isNull() const {return d == sharedNull().d;}
 	QChar typeChar() const;
+	QString typeName() const;
 	QString toString() const;
 };
 

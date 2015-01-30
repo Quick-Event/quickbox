@@ -25,8 +25,7 @@ static qfs::DbFsDriver *dbfsdrv()
 
 static bool isSnapshotReadOnly()
 {
-	bool read_only = dbfsdrv()->snapshotNumber() < dbfsdrv()->latestSnapshotNumber();
-	return read_only;
+	return dbfsdrv()->isSnapshotReadOnly();
 }
 
 /// inspired by http://www.cs.nmsu.edu/~pfeiffer/fuse-tutorial/
@@ -198,13 +197,14 @@ static int qfsqldbfs_read(const char *path, char *buf, size_t size, off_t offset
 // documentation for the write() system call.
 static int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
+	Q_UNUSED(fi)
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
 
 	QByteArray &ba = s_openFiles[spath];
-	size_t len = size + offset;
+	int len = (int)size + offset;
 	if(ba.size() < len)
 		ba.resize(len);
 	char *data = ba.data();
@@ -238,6 +238,7 @@ static int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t
  */
 static int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 {
+	Q_UNUSED(fi)
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
@@ -262,16 +263,14 @@ static int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 // shouldn't that comment be "if" there is no.... ?
 static int qfsqldbfs_mknod(const char *path, mode_t mode, dev_t dev)
 {
+	Q_UNUSED(mode)
+	Q_UNUSED(dev)
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
 	QPair<QString, QString> pf = qfs::DbFsDriver::splitPathFile(spath);
-	bool ok = dbfsdrv()->mkdir(pf.first, qfs::DbFsDriver::O_RECURSIVE);
-	if(!ok) {
-		return -EFAULT; // pathname points outside your accessible address space.
-	}
-	ok = dbfsdrv()->mknod(spath);
+	bool ok = dbfsdrv()->mkfile(spath);
 	if(!ok) {
 		return -EEXIST; // pathname already exists.  This includes the case where pathname is a symbolic link, dangling or not.
 	}
@@ -281,11 +280,12 @@ static int qfsqldbfs_mknod(const char *path, mode_t mode, dev_t dev)
 /** Create a directory */
 static int qfsqldbfs_mkdir(const char *path, mode_t mode)
 {
+	Q_UNUSED(mode)
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
-	bool ok = dbfsdrv()->mkdir(spath, qfs::DbFsDriver::O_RECURSIVE);
+	bool ok = dbfsdrv()->mkdir(spath);
 	if(!ok) {
 		return -EFAULT; // pathname points outside your accessible address space.
 	}
@@ -313,7 +313,7 @@ static int qfsqldbfs_rmdir(const char *path)
 		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
-	bool ok = dbfsdrv()->rmdir(spath, qfs::DbFsDriver::O_RECURSIVE);
+	bool ok = dbfsdrv()->rmnod(spath);
 	if(!ok) {
 		return -EFAULT;
 	}

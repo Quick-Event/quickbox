@@ -34,6 +34,15 @@ QChar DbFsAttrs::typeChar() const
 	return QChar();
 }
 
+QString DbFsAttrs::typeName() const
+{
+	if(type() == Dir)
+		return QStringLiteral("DIR");
+	if(type() == File)
+		return QStringLiteral("FILE");
+	return QStringLiteral("INVALID");
+}
+
 QString DbFsAttrs::toString() const
 {
 	QString ret;
@@ -44,10 +53,11 @@ QString DbFsAttrs::toString() const
 	ret += "id: " + QString::number(id()) + ", ";
 	ret += "inode: " + QString::number(inode()) + ", ";
 	ret += "pinode: " + QString::number(pinode()) + ", ";
-	ret += "type: " % typeChar() % ", ";
+	ret += "type: " % typeName() % ", ";
 	ret += "name: " + name() + ", ";
 	ret += "deleted: ";
 	ret += isDeleted()? "Y": "N";
+	ret += ", copied in snapshot: " + QString::number(copiedInSnapshot());
 	return ret;
 }
 

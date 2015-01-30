@@ -6,7 +6,9 @@ HEADERS += \
     $$PWD/dbenum.h \
     $$PWD/dbenumcache.h \
     $$PWD/dbfsdriver.h \
-    $$PWD/dbfsattrs.h
+    $$PWD/dbfsattrs.h \
+    $$PWD/transaction.h \
+    $$PWD/tablelocker.h
 
 SOURCES += \
     $$PWD/querybuilder.cpp \
@@ -16,5 +18,7 @@ SOURCES += \
     $$PWD/dbenum.cpp \
     $$PWD/dbenumcache.cpp \
     $$PWD/dbfsdriver.cpp \
-    $$PWD/dbfsattrs.cpp
+    $$PWD/dbfsattrs.cpp \
+    $$PWD/transaction.cpp \
+    $$PWD/tablelocker.cpp
 
