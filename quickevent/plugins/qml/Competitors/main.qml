@@ -7,8 +7,11 @@ Plugin {
 
 	property QfObject internals: QfObject
 	{
-		ThisPartWidget{
-			id: thisPart
+		property ThisPartWidget thisPart
+		Component {
+			id: cThisPartWidget
+			ThisPartWidget {
+			}
 		}
 	}
 
@@ -17,7 +20,7 @@ Plugin {
 			id: actPrintAll
 			text: qsTr('All')
 			onTriggered: {
-				thisPart.printAll()
+				internals.thisPart.printAll()
 			}
 		}
 	]
@@ -28,7 +31,8 @@ Plugin {
 		var act_competitors = act_file.addMenuAfter('competitors', qsTr('&Competitors'));
 		var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
 		act_print.addActionInto(actPrintAll);
-		FrameWork.addPartWidget(thisPart, root.manifest.featureId);
+		internals.thisPart = cThisPartWidget.createObject(FrameWork);
+		FrameWork.addPartWidget(internals.thisPart, root.manifest.featureId);
 	}
 
 }

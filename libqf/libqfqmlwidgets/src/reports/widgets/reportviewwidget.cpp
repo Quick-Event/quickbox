@@ -862,7 +862,7 @@ void ReportViewWidget::selectItem(const QPointF &p)
 	ReportItemMetaPaintFrame *frm = currentPage();
 	ReportItemMetaPaint *old_selected_item = m_selectedItem;
 	//QFDomElement old_el = fSelectedElement;
-	m_selectedItem = m_selectedItem = selectItem_helper(frm, p);
+	m_selectedItem = selectItem_helper(frm, p);
 	if(m_selectedItem != old_selected_item) {
 		/// odznac puvodni selekci
 		m_painterWidget->update();
