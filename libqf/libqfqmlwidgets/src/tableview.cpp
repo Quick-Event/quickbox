@@ -40,6 +40,7 @@ TableView::TableView(QWidget *parent) :
 {
 	qfLogFuncFrame() << this;
 	m_proxyModel = new TableViewProxyModel(this);
+	m_proxyModel->setDynamicSortFilter(false);
 	Super::setModel(m_proxyModel);
 	setItemDelegate(new TableItemDelegate(this));
 	{
@@ -151,7 +152,7 @@ void TableView::refreshActions()
 	//action("viewRowExternal")->setVisible(true);
 	//action("editRowExternal")->setVisible(true);
 
-	bool is_insert_rows_allowed = m_proxyModel->isIdle();
+	bool is_insert_rows_allowed = !(m_proxyModel->dynamicSortFilter() && !m_proxyModel->isIdle());
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
 	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
 	bool is_copy_rows_allowed = m_proxyModel->rowCount()>0 && is_insert_rows_allowed;
@@ -949,8 +950,10 @@ void TableView::keyPressEvent(QKeyEvent *e)
 			}
 			else if(seekChar == '\n' || seekChar == '\r')
 				seekChar = QChar();
-			qfDebug().nospace() << "\tincremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16);
+			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16);
 			bool shift_only = (e->key() == Qt::Key_Shift);
+			//bool ctrl_only = (e->key() == Qt::Key_Control);
+			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << " shift only: " << shift_only;
 			//bool accept = false;
 			if(incremental_search) {
 				if(e->key() == Qt::Key_Backspace) {
@@ -964,7 +967,7 @@ void TableView::keyPressEvent(QKeyEvent *e)
 				else if(seekChar.isNull() && !shift_only) {
 					m_seekString = QString();
 				}
-				else {
+				else if(!seekChar.isNull()) {
 					m_seekString += seekChar;
 					qfDebug() << "new seek text:" << m_seekString;
 					incremental_search_key_accepted = true;
