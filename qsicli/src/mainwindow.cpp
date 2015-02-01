@@ -198,6 +198,7 @@ void MainWindow::processSIMessage(const SIMessageData& msg_data)
 
 void MainWindow::processDriverInfo ( int level, const QString& msg )
 {
+	qfLogFuncFrame() << level << msg;
 	appendLog(level, trUtf8("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
 }
 

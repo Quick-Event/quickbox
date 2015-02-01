@@ -30,10 +30,20 @@ const QLoggingCategory &Log::categoryForLevel(int level)
 
 const char *qf::core::Log::levelName(qf::core::Log::Level level)
 {
-	static const char *names[] = {"DEB", "INFO", "WARN", "ERR", "FATAL"};
-	static int cnt = sizeof(names) / sizeof(char*);
-	if(level >= 0 && level < cnt)
-		return names[level];
+	switch(level) {
+	case qf::core::Log::LOG_FATAL:
+		return "FATAL";
+	case qf::core::Log::LOG_ERR:
+		return "ERR";
+	case qf::core::Log::LOG_WARN:
+		return "WARN";
+	case qf::core::Log::LOG_INFO:
+		return "INFO";
+	case qf::core::Log::LOG_DEB:
+		return "DEB";
+	case qf::core::Log::LOG_INVALID:
+		return "INVALID";
+	}
 	return "???";
 }
 

@@ -23,7 +23,7 @@ namespace core {
 class QFCORE_DECL_EXPORT Log
 {
 public:
-	enum Level {LOG_INVALID = -1, LOG_DEB, LOG_INFO, LOG_WARN, LOG_ERR, LOG_FATAL};
+	enum Level { LOG_INVALID = -1, LOG_FATAL, LOG_ERR, LOG_WARN, LOG_INFO, LOG_DEB };
 public:
 	static const char* categoryDebugName;
 	static const char* categoryInfoName;

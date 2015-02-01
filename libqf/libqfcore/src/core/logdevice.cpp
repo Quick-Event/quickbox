@@ -166,12 +166,12 @@ bool LogDevice::checkLogPermisions(const QString &_domain, Log::Level _level)
 			if(_domain.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
 				//printf("found %s %d \n", qPrintable(_domain), it.value());
 				domain_level_found = true;
-				if(_level >= it.value()) ret = true;
+				if(_level <= it.value()) ret = true;
 				break;
 			}
 		}
 		if(!domain_level_found) {
-			if(_level >= logTreshold()) ret = true;
+			if(_level <= logTreshold()) ret = true;
 		}
 	} while(false);
 	//printf("%s %d \n", qPrintable(_domain), ret);

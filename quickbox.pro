@@ -14,7 +14,7 @@ SUBDIRS += \
 	plugins \
 	libsiut \
     tools \
-#    qsicli \
+    qsicli \
 	quickevent \
 
 
