@@ -19,6 +19,7 @@ Transaction::~Transaction()
 void Transaction::commit()
 {
 	bool ok = m_connection.commit();
+	qfInfo() << "COMMIT";
 	if(!ok) {
 		qfError() << "COMMIT transaction error -" << m_connection.lastError().text();
 	}
@@ -27,6 +28,7 @@ void Transaction::commit()
 void Transaction::rollback()
 {
 	bool ok = m_connection.rollback();
+	qfInfo() << "ROLLBACK";
 	if(!ok) {
 		qfError() << "ROLLBACK transaction error -" << m_connection.lastError().text();
 	}

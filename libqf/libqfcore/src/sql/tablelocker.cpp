@@ -22,6 +22,7 @@ void TableLocker::lock()
 {
 	Query q(m_connection);
 	QString qs = "LOCK TABLE " + m_tableName + " IN " + m_lockType + " MODE";
+	qfInfo() << qs;
 	bool ok = q.exec(qs);
 	if(!ok) {
 		qfError() << "LOCK table error -" << q.lastError().text();

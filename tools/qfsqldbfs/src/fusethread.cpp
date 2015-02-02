@@ -29,6 +29,6 @@ void FuseThread::run()
 	// FUSE has quit its event loop
 
 	// Takes us to exitHandler()
-	::raise(SIGQUIT);
+	//::raise(SIGQUIT);
 }
 

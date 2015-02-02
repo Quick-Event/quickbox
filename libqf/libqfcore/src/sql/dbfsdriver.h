@@ -71,7 +71,7 @@ private:
 	DbFsAttrs sqlUpdateNode(const DbFsAttrs &attrs, const QByteArray &data);
 
 	DbFsAttrs readAttrs(const QString &path, int pinode = 0);
-	QList<DbFsAttrs> readAttributes(int parent_inode);
+	QList<DbFsAttrs> readChildAttrs(int parent_inode);
 	int readLatestSnapshotNumber();
 private:
 	typedef QMap<QString, DbFsAttrs> AttributesCache;

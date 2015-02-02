@@ -24,12 +24,14 @@ static void exitHandler(int)
 {
 	if (s_fuseThread != nullptr)
 	{
-		//kdDebug()<<"exit";
+		qfInfo() << "SIG INT";
+		qfInfo() << "unmouting FUSE FS";
 		s_fuseThread->unmount();
-		//kdDebug()<<"Quitting kioFuseApp";
-		exit(0);
-		//QMetaObject::invokeMethod(kioFuseApp, "aboutToQuit");
-		//QMetaObject::invokeMethod(kioFuseApp, "quit");
+		qfInfo() << "Waiting for FUSE thread to join ...";
+		s_fuseThread->wait();
+		qfInfo() << "Call app exit";
+		QCoreApplication::instance()->quit();
+		//exit(0);
 	}
 }
 
@@ -67,10 +69,13 @@ static struct fuse_operations fuse_ops = {
 	.read = qfsqldbfs_read,
 	.write = qfsqldbfs_write,
 	.flush = qfsqldbfs_flush,
+	.release = qfsqldbfs_release,
 	.mknod = qfsqldbfs_mknod,
 	.mkdir = qfsqldbfs_mkdir,
 	.unlink = qfsqldbfs_unlink,
 	.rmdir = qfsqldbfs_rmdir,
+	.utime = qfsqldbfs_utime,
+	.truncate = qfsqldbfs_truncate,
 };
 
 int main(int argc, char *argv[])
@@ -246,6 +251,8 @@ int main(int argc, char *argv[])
 	TheApp *app = new TheApp(argc, argv);
 
 	s_fuseThread = new FuseThread(fuse_handle, fuse_channel, QString::fromUtf8(mount_point));
+	dbfs_drv->moveToThread(s_fuseThread);
+	dbfs_drv->setParent(s_fuseThread);
 	s_fuseThread->start();
 
 	set_signal_handlers();
@@ -261,7 +268,7 @@ int main(int argc, char *argv[])
 	// Use terminate() rather than quit() because the fuse_loop_mt() that is
 	// running in the thread may not yet have returned, so we have to force it.
 	// Also, calling quit() and then deleting the thread causes crashes.
-	s_fuseThread->terminate();
+	//s_fuseThread->terminate();
 	/*
 
 	int ret = fuse_main(fuse_argc, argv, &qfsqldbfs_oper, NULL);
@@ -271,8 +278,8 @@ int main(int argc, char *argv[])
 
 	qfsqldbfs_setdriver(nullptr);
 	QF_SAFE_DELETE(s_fuseThread);
-	QF_SAFE_DELETE(dbfs_drv);
 	QF_SAFE_DELETE(app);
 
+	qfInfo() << "bye";
 	return 0;
 }
