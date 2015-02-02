@@ -76,6 +76,7 @@ static struct fuse_operations fuse_ops = {
 	.rmdir = qfsqldbfs_rmdir,
 	.utime = qfsqldbfs_utime,
 	.truncate = qfsqldbfs_truncate,
+	.ftruncate = qfsqldbfs_ftruncate,
 };
 
 int main(int argc, char *argv[])

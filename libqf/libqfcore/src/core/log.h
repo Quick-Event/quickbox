@@ -12,8 +12,8 @@
 #define qfFatal if(qCritical() << qf::core::Log::stackTrace(), true) qFatal
 #define qfLog(level) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(level))
 
-#define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "<< FN EXIT" << Q_FUNC_INFO; \
-	qfDebug() << ">> FN ENTER" << Q_FUNC_INFO
+#define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "     EXIT FN" << Q_FUNC_INFO; \
+	qfDebug() << ">>>> ENTER FN" << Q_FUNC_INFO
 
 class QLoggingCategory;
 

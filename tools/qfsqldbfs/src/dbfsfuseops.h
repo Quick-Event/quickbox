@@ -25,5 +25,6 @@ int qfsqldbfs_unlink(const char *path);
 int qfsqldbfs_rmdir(const char *path);
 int qfsqldbfs_utime(const char *path, struct utimbuf *ubuf);
 int qfsqldbfs_truncate(const char *path, off_t newsize);
+int qfsqldbfs_ftruncate(const char *path, off_t offset, struct fuse_file_info *fi);
 
 #endif // DBFSFUSEOPS_H
