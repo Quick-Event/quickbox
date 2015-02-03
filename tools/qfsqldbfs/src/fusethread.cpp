@@ -26,9 +26,6 @@ void FuseThread::run()
 	//fuse_loop_mt(m_fuseHandle);
 	fuse_loop(m_fuseHandle);
 
-	// FUSE has quit its event loop
-
-	// Takes us to exitHandler()
-	//::raise(SIGQUIT);
+	qfInfo() << "FUSE has quit its event loop";
 }
 

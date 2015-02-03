@@ -27,11 +27,6 @@ static void exitHandler(int)
 		qfInfo() << "SIG INT";
 		qfInfo() << "unmouting FUSE FS";
 		s_fuseThread->unmount();
-		qfInfo() << "Waiting for FUSE thread to join ...";
-		s_fuseThread->wait();
-		qfInfo() << "Call app exit";
-		QCoreApplication::instance()->quit();
-		//exit(0);
 	}
 }
 
@@ -253,31 +248,18 @@ int main(int argc, char *argv[])
 
 	s_fuseThread = new FuseThread(fuse_handle, fuse_channel, QString::fromUtf8(mount_point));
 	dbfs_drv->moveToThread(s_fuseThread);
-	dbfs_drv->setParent(s_fuseThread);
+	QObject::connect(s_fuseThread, &QThread::finished, app, &TheApp::onFuseThreadFinished, Qt::QueuedConnection);
 	s_fuseThread->start();
 
 	set_signal_handlers();
 
-	// An event loop needs to run in the main thread so that
-	// we can connect to slots in the main thread using Qt::QueuedConnection
 	app->exec();
 
-	// kioFuseApp has quit its event loop.
-	// Execution will never reach here because exitHandler calls exit(0),
-	// but we try to wrap up things nicely nonetheless.
-
-	// Use terminate() rather than quit() because the fuse_loop_mt() that is
-	// running in the thread may not yet have returned, so we have to force it.
-	// Also, calling quit() and then deleting the thread causes crashes.
-	//s_fuseThread->terminate();
-	/*
-
-	int ret = fuse_main(fuse_argc, argv, &qfsqldbfs_oper, NULL);
-
+	qfInfo() << "Waiting for FUSE thread to join ...";
 	s_fuseThread->wait();
-	*/
 
 	qfsqldbfs_setdriver(nullptr);
+	QF_SAFE_DELETE(dbfs_drv);
 	QF_SAFE_DELETE(s_fuseThread);
 	QF_SAFE_DELETE(app);
 

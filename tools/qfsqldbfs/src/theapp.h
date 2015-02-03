@@ -9,6 +9,8 @@ class TheApp : public QCoreApplication
 public:
 	TheApp(int & argc, char **argv);
 	~TheApp() Q_DECL_OVERRIDE {}
+
+	Q_SLOT void onFuseThreadFinished();
 };
 
 #endif // THEAPP_H
