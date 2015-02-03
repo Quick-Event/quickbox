@@ -88,6 +88,7 @@ public:
 	static bool fieldNameCmp(const QString &fld_name1, const QString &fld_name2);
 	static QVariant retypeVariant(const QVariant &_val, QVariant::Type type);
 
+	/// invoke method of prototype bool method()
 	static bool invokeMethod_B_V(QObject *obj, const char *method_name);
 
 	template <class T>

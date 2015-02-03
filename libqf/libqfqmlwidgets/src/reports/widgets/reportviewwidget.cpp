@@ -569,69 +569,70 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 	tool_bar->addAction(action("view.zoomFitHeight"));
 }
 
-qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::actions()
+qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActions()
 {
-	if(m_actions.isEmpty()) {
-		//QStyle *sty = style();
-		//QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/frev");
-			a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
-			m_actions[QStringLiteral("view.firstPage")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_firstPage()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/rev");
-			a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
-			m_actions[QStringLiteral("view.prevPage")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_prevPage()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/fwd");
-			a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
-			m_actions[QStringLiteral("view.nextPage")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_nextPage()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/ffwd");
-			a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
-			m_actions[QStringLiteral("view.lastPage")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_lastPage()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_in");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
-			m_actions[QStringLiteral("view.zoomIn")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomIn()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_out");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
-			m_actions[QStringLiteral("view.zoomOut")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomOut()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
-			m_actions[QStringLiteral("view.zoomFitWidth")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitWidth()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
-			m_actions[QStringLiteral("view.zoomFitHeight")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
-		}
+	ActionMap ret;
+
+	//QStyle *sty = style();
+	//QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/frev");
+		a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
+		ret[QStringLiteral("view.firstPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_firstPage()));
 	}
-	return m_actions;
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/rev");
+		a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
+		ret[QStringLiteral("view.prevPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_prevPage()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/fwd");
+		a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
+		ret[QStringLiteral("view.nextPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_nextPage()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/ffwd");
+		a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
+		ret[QStringLiteral("view.lastPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_lastPage()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_in");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
+		ret[QStringLiteral("view.zoomIn")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomIn()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_out");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
+		ret[QStringLiteral("view.zoomOut")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomOut()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
+		ret[QStringLiteral("view.zoomFitWidth")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitWidth()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
+		ret[QStringLiteral("view.zoomFitHeight")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
+	}
+
+	return ret;
 }
 
 void ReportViewWidget::setupPainterWidgetSize()

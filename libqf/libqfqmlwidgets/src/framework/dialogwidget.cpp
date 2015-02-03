@@ -28,9 +28,12 @@ QVariant DialogWidget::dialogDoneRequest_qml(const QVariant &result)
 	return dialogDoneRequest(result.toBool());
 }
 
-void DialogWidget::settleDownInDialogNative(qf::qmlwidgets::dialogs::Dialog *dlg)
+void DialogWidget::settleDownInDialog_qml(const QVariant &dlg)
 {
-	settleDownInDialog(dlg);
+	QObject *o = dlg.value<QObject*>();
+	qf::qmlwidgets::dialogs::Dialog *pdlg = qobject_cast<qf::qmlwidgets::dialogs::Dialog *>(o);
+	QF_ASSERT(pdlg != nullptr, "Invalid dialog", return);
+	settleDownInDialog(pdlg);
 }
 
 void DialogWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
@@ -47,8 +50,17 @@ qf::qmlwidgets::Action* DialogWidget::action(const QString &name, bool throw_exc
 	return ret;
 }
 
+DialogWidget::ActionMap DialogWidget::createActions()
+{
+	return ActionMap();
+}
+
 DialogWidget::ActionMap DialogWidget::actions()
 {
 	qfLogFuncFrame();
-	return ActionMap();
+	if(m_actions.isEmpty()) {
+		m_actions = createActions();
+	}
+	return m_actions;
 }
+

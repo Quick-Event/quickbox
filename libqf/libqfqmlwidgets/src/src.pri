@@ -26,7 +26,8 @@ HEADERS += \
     $$PWD/idatawidget.h \
     $$PWD/combobox.h \
     $$PWD/spinbox.h \
-    $$PWD/tableviewproxymodel.h
+    $$PWD/tableviewproxymodel.h \
+    $$PWD/texteditwidget.h \
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -53,10 +54,12 @@ SOURCES += \
     $$PWD/idatawidget.cpp \
     $$PWD/combobox.cpp \
     $$PWD/spinbox.cpp \
-    $$PWD/tableviewproxymodel.cpp
+    $$PWD/tableviewproxymodel.cpp \
+    $$PWD/texteditwidget.cpp \
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \
+    $$PWD/texteditwidget.ui \
 
 include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)

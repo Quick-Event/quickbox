@@ -6,6 +6,7 @@
 #include "dialogs/messagebox.h"
 #include "dialogs/dialog.h"
 #include "dialogbuttonbox.h"
+#include "texteditwidget.h"
 
 #include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
 #include "reports/widgets/reportviewwidget.h"
@@ -29,6 +30,7 @@
 #include <QJsonDocument>
 #include <QApplication>
 #include <QClipboard>
+#include <QTextEdit>
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -131,7 +133,7 @@ void TableView::refreshActions()
 	//action("select")->setEnabled(true);
 	action("reload")->setEnabled(true);
 	action("resizeColumnsToContents")->setEnabled(true);
-	//action("showCurrentCellText")->setEnabled(true);
+	action("showCurrentCellText")->setEnabled(true);
 	//action("saveCurrentCellBlob")->setEnabled(true);
 	//action("loadCurrentCellBlob")->setEnabled(true);
 	//action("insertRowsStatement")->setEnabled(true);
@@ -428,6 +430,51 @@ void TableView::paste()
 			QItemSelectionModel *sm = selectionModel();
 			sm->select(sel, QItemSelectionModel::Select);
 		}
+	}
+}
+
+void TableView::editCellContentInEditor()
+{
+	QModelIndex ix = currentIndex();
+	if(ix.isValid()) {
+		//qfInfo() << "model()->data(currentIndex(), Qt::EditRole)";
+		QVariant cell_value = model()->data(ix, Qt::EditRole);
+		QString cell_text;
+		if(cell_value.type() == QVariant::ByteArray)
+			cell_text = QString::fromUtf8(cell_value.toByteArray());
+		else
+			cell_text = cell_value.toString();
+		TextEditWidget *w = new TextEditWidget(this);
+		w->setText(cell_text);
+		w->setSuggestedFileName("new_file.txt");
+		/*
+		if(!persistentSettingsPath().isEmpty()) {
+			w->setPersistentOptionsPath(persistentSettingsPath() + "/exportReport");
+			w->loadPersistentOptions();
+		}
+		*/
+		dialogs::Dialog dlg(this);
+		DialogButtonBox *bb = new DialogButtonBox(QDialogButtonBox::Cancel, this);
+		QAbstractButton *bt_save = bb->addButton(QDialogButtonBox::Save);
+		connect(bt_save, &QAbstractButton::clicked, &dlg, &QDialog::accept);
+		dlg.setButtonBox(bb);
+		dlg.setCentralWidget(w);
+		dlg.setPersistentSettingsId("cellEditor");
+		dlg.loadPersistentSettingsRecursively();
+		//connect(w, &reports::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
+		if(dlg.exec()) {
+			QVariant::Type cell_type = cell_value.type();
+			if(model()->flags(ix) & Qt::ItemIsEditable) {
+				cell_value = w->text();
+				if(cell_type == QVariant::ByteArray)
+					cell_value = QByteArray(cell_value.toString().toUtf8());
+				//qfInfo() << "text:" << v.toString();
+				model()->setData(ix, cell_value);
+			}
+		}
+	}
+	else {
+		qfWarning() << QF_FUNC_NAME << "invalid model index.";
 	}
 }
 
@@ -1244,7 +1291,7 @@ void TableView::createActions()
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+T", "Edit cell content")));
 		a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(showCurrentCellText()));
+		connect(a, SIGNAL(triggered()), this, SLOT(editCellContentInEditor()));
 		a->setOid("showCurrentCellText");
 		m_actionGroups[CellActions] << a->oid();
 		m_actions[a->oid()] = a;

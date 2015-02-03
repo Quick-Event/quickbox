@@ -86,6 +86,8 @@ public:
 	Q_SLOT virtual void copySpecial();
 	Q_SLOT virtual void paste();
 
+	Q_SLOT void editCellContentInEditor();
+
 	Q_SLOT void exportReport();
 
 	/**

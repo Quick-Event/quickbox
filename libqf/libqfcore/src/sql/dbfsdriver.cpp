@@ -50,14 +50,14 @@ DbFsDriver::~DbFsDriver()
 
 DbFsAttrs DbFsDriver::attributes(const QString &path)
 {
-	qfLogFuncFrame() << path;
+	//qfLogFuncFrame() << path;
 	QString spath = cleanPath(path);
 	if(!m_attributeCache.contains(spath)) {
 		DbFsAttrs a = readAttrs(spath);
 		m_attributeCache[spath] = a;
 	}
 	DbFsAttrs ret = m_attributeCache.value(spath);
-	qfDebug() << ret.toString();
+	//qfDebug() << ret.toString();
 	return ret;
 }
 
@@ -705,7 +705,7 @@ QByteArray DbFsDriver::get(const QString &path, bool *pok)
 
 bool DbFsDriver::put(const QString &path, const QByteArray &data)
 {
-	qfLogFuncFrame() << path;
+	qfLogFuncFrame() << path << ((data.size() < 100)? data : data.mid(100));
 	if(!checkWritePermissions())
 		return false;
 

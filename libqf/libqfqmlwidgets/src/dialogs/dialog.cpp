@@ -45,9 +45,15 @@ void Dialog::settleDownDialogWidget()
 {
 	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
 	if(dialog_widget) {
-		dialog_widget->settleDownInDialog(this);
-		updateCaptionFrame();
-		updateLayout();
+		QVariant dlg = QVariant::fromValue(this);
+		bool ok = QMetaObject::invokeMethod(dialog_widget, "settleDownInDialog_qml", Qt::DirectConnection, Q_ARG(QVariant, dlg));
+		if(!ok) {
+			qfWarning() << this << "Method settleDownInDialog_qml() invocation failed!";
+		}
+		else {
+			updateCaptionFrame();
+			updateLayout();
+		}
 	}
 }
 

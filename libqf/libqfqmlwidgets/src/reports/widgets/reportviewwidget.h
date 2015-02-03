@@ -160,13 +160,12 @@ public:
 	void setScale(qreal _scale);
 
 	void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
-	ActionMap actions() Q_DECL_OVERRIDE;
+	ActionMap createActions() Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaint* selectedItem() const {return m_selectedItem;}
 	virtual void prePrint() {}
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
 private:
-	ActionMap m_actions;
 	QLineEdit *m_edCurrentPage = nullptr;
 };
 

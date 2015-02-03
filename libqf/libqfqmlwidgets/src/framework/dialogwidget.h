@@ -31,8 +31,6 @@ class QFQMLWIDGETS_DECL_EXPORT DialogWidget : public Frame, public IPersistentSe
 private:
 	typedef Frame Super;
 public:
-	typedef QMap<QString, qf::qmlwidgets::Action*> ActionMap;
-public:
 	explicit DialogWidget(QWidget *parent = 0);
 	~DialogWidget() Q_DECL_OVERRIDE;
 
@@ -42,16 +40,22 @@ public:
 	/// called when dialog wants to get close
 	/// if returned value is false, close action is cancelled
 	/// all params and ret val have to be a QVariant type to be possibly overriden in QML
-	Q_SLOT virtual bool dialogDoneRequest(int result);
+	Q_INVOKABLE virtual bool dialogDoneRequest(int result);
 	/// dialogDoneRequestNative is used to call C++ dialogDoneRequest implementation from QML overloads
-	Q_SLOT QVariant dialogDoneRequest_qml(const QVariant &result);
+	Q_INVOKABLE QVariant dialogDoneRequest_qml(const QVariant &result);
 public:
 	/// define this slot to allow QML code call C++ settleDownInDialog() implementation,
 	/// when settleDownInDialog() is implemented in QML and hides C++ implementations
-	Q_SLOT void settleDownInDialogNative(qf::qmlwidgets::dialogs::Dialog *dlg);
-	Q_SLOT virtual void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg);
-	virtual ActionMap actions();
+	Q_INVOKABLE virtual void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg);
+	Q_INVOKABLE void settleDownInDialog_qml(const QVariant &dlg);
 	virtual qf::qmlwidgets::Action* action(const QString &name, bool throw_exc = true);
+protected:
+	typedef QMap<QString, qf::qmlwidgets::Action*> ActionMap;
+protected:
+	virtual ActionMap createActions();
+	virtual ActionMap actions();
+protected:
+	ActionMap m_actions;
 };
 
 }}}
