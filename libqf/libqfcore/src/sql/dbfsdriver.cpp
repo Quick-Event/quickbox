@@ -700,6 +700,7 @@ QByteArray DbFsDriver::get(const QString &path, bool *pok)
 	} while(false);
 	if(pok)
 		*pok = ok;
+	qfDebug() << "\t returned" << ret.length() << "bytes od data:" << ((ret.size() < 100)? ret : ret.mid(100));
 	return ret;
 }
 
@@ -709,9 +710,7 @@ bool DbFsDriver::put(const QString &path, const QByteArray &data)
 	if(!checkWritePermissions())
 		return false;
 
-	TableLocker locker(connection(), tableName(), O_LOCK_EXCLUSIVE);
 	QString spath = cleanPath(path);
-	cacheRemove(spath, O_POST_NOTIFY);
 
 	bool ok = false;
 	do {
@@ -724,15 +723,16 @@ bool DbFsDriver::put(const QString &path, const QByteArray &data)
 			qfWarning() << "PUT to directory:" << spath;
 			break;
 		}
+		cacheRemove(spath, O_POST_NOTIFY);
+		TableLocker locker(connection(), tableName(), O_LOCK_EXCLUSIVE);
 		att = touch(att, !O_CREATE, !O_DELETE, data);
 		if(att.isNull()) {
 			qfWarning() << "ERROR detach node on path:" << spath;
 			break;
 		}
+		locker.commit();
 		ok = true;
 	} while(false);
-	if(ok)
-		locker.commit();
 	return ok;
 }
 
@@ -789,11 +789,10 @@ bool DbFsDriver::mknod(const QString &path, DbFsAttrs::NodeType node_type, const
 			qfWarning() << "MKNOD ERROR create node type:" + att.typeName() + " on path:" << spath;
 			break;
 		}
+		locker.commit();
 		cacheRemove(pf.first, O_POST_NOTIFY);
 		ok = true;
 	} while(false);
-	if(ok)
-		locker.commit();
 	return ok;
 }
 
@@ -826,11 +825,10 @@ bool DbFsDriver::rmnod(const QString &path)
 			qfWarning() << "RMNOD ERROR rmove node type:" + att.typeName() + " on path:" << spath;
 			break;
 		}
+		locker.commit();
 		cacheRemove(pf.first, O_POST_NOTIFY);
 		ok = true;
 	} while(false);
-	if(ok)
-		locker.commit();
 	return ok;
 }
 

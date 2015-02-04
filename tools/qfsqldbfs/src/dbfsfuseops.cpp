@@ -1,4 +1,5 @@
 #include "dbfsfuseops.h"
+#include "openfile.h"
 
 #include <qf/core/sql/dbfsdriver.h>
 #include <qf/core/log.h>
@@ -6,14 +7,6 @@
 #include <unistd.h>
 
 namespace qfs = qf::core::sql;
-
-struct OpenFile
-{
-	qfs::DbFsAttrs attrs;
-	QByteArray data;
-	bool dataLoaded = false;
-	bool dataDirty = false;
-};
 
 static QMap<uint64_t, OpenFile> s_openFiles;
 static QMap<QString, QSet<uint64_t> > s_openFilesHandles;
@@ -90,7 +83,7 @@ void qfsqldbfs_setdriver(qf::core::sql::DbFsDriver *drv)
  */
 int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 {
-	qfLogFuncFrame() << path;
+	//qfLogFuncFrame() << path;
 	int res = 0;
 
 	QString spath = QString::fromUtf8(path);
@@ -123,7 +116,7 @@ int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 	else {
 		res = -ENOENT;
 	}
-	qfDebug() << "\t ret:" << res;
+	//qfDebug() << "\t ret:" << res;
 	return res;
 }
 
@@ -168,23 +161,19 @@ int qfsqldbfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
 	return 0;
 }
 
-static int loadData(const QString &spath, uint64_t handle)
+static int loadData(const QString &spath, OpenFile &of)
 {
 	qfLogFuncFrame() << spath;
-	if(!s_openFiles.contains(handle)) {
-		qfDebug() << "File is not open!";
-		return -EBADF;
+	bool ok;
+	QByteArray ba = dbfsdrv()->get(spath, &ok);
+	if(!ok) {
+		return -EFAULT;
 	}
-	OpenFile &of = s_openFiles[handle];
-	if(!of.dataLoaded) {
-		bool ok;
-		QByteArray ba = dbfsdrv()->get(spath, &ok);
-		if(!ok)
-			return -EFAULT;
-		of.data = ba;
-		of.dataLoaded = true;
+	else {
+		of.setData(ba);
+		of.setDataLoaded(true);
 	}
-	return of.data.size();
+	return ok;
 }
 
 /** File open operation
@@ -206,19 +195,20 @@ int qfsqldbfs_open(const char *path, struct fuse_file_info *fi)
 		QString spath = QString::fromUtf8(path);
 		qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
 		if(attrs.isNull()) {
-			qfDebug() << "Cannot get file attributes!";
+			qfWarning() << spath << "Cannot get file attributes!";
 			ret = -ENOENT;
 			break;
 		}
 		bool snapshot_read_only = isSnapshotReadOnly();
 		if(snapshot_read_only) {
 			if (mode != QIODevice::ReadOnly) {
-				qfDebug() << "Cannot open readonly file in mode:" << openModeToString(mode);
+				qfWarning() << "Cannot open readonly file" << spath << " in mode:" << openModeToString(mode);
 				ret = -EACCES;
 				break;
 			}
 		}
 		uint64_t handle = nextFileHandle();
+		/*
 		if(mode & QIODevice::Append) {
 			s_openFiles[handle];
 			int size = loadData(spath, handle);
@@ -227,8 +217,10 @@ int qfsqldbfs_open(const char *path, struct fuse_file_info *fi)
 				break;
 			}
 		}
+		*/
 		OpenFile &of = s_openFiles[handle];
-		of.attrs = attrs;
+		of.setAttrs(attrs);
+		of.setOpenMode(mode);
 		fi->fh = handle;
 		s_openFilesHandles[spath] << handle;
 		qfDebug() << "\t !!!!!!!!!!!!! open file handle:" << fi->fh << "path:" << path;
@@ -261,22 +253,27 @@ int qfsqldbfs_read(const char *path, char *buf, size_t size, off_t offset, struc
 	QString spath = QString::fromUtf8(path);
 	uint64_t handle = fi->fh;
 	if(!s_openFiles.contains(handle)) {
-		qfDebug() << "File is not open!";
+		qfWarning() << spath << "handle:" << handle << "File is not open!";
 		return -EBADF;
 	}
-	int dsize = loadData(spath, handle);
-	if(dsize < 0) {
-		return -EFAULT;
-	}
 	OpenFile &of = s_openFiles[handle];
-	const QByteArray &ba = of.data;
+	if(!of.isDataLoaded()) {
+		if(!loadData(spath, of)) {
+			qfWarning() << spath << "handle:" << handle << "Error load data";
+			return -EFAULT;
+		}
+	}
+	const QByteArray &ba = of.data();
+	qfDebug() << "reading" << size << "of data at offset" << offset << ", data size:" << ba.size();
 	const char *data = ba.constData();
 	size_t len = ba.size();
 	size_t uoffset = (size_t)offset;
 	if (uoffset < len) {
 		if (uoffset + size > len)
 			size = len - offset;
+		qfInfo() << "offset:" << uoffset << "size:" << size << "data:" << data;
 		memcpy(buf, data + uoffset, size);
+		qfInfo() << "####" << buf;
 	}
 	else {
 		size = 0;
@@ -303,14 +300,24 @@ int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset
 		return -EPERM;
 
 	uint64_t handle = fi->fh;
-	//QString spath = QString::fromUtf8(path);
+	QString spath = QString::fromUtf8(path);
 	if(!s_openFiles.contains(handle)) {
-		qfDebug() << "File is not open!";
+		qfWarning() << spath << "handle:" << handle << "File is not open!";
 		return -EBADF;
 	}
 	OpenFile &of = s_openFiles[handle];
-	of.dataDirty = true;
-	QByteArray &ba = of.data;
+	if(!(of.openMode() & QIODevice::WriteOnly)) {
+		qfWarning() << spath << "handle:" << handle << "File is not open!";
+		return -EPERM;
+	}
+	if(!of.isDataLoaded() && (of.openMode() & QIODevice::Append)) {
+		if(!loadData(spath, of)) {
+			qfWarning() << spath << "handle:" << handle << "Error load data for APPEND";
+			return -EFAULT;
+		}
+	}
+	of.setDataDirty(true);
+	QByteArray &ba = of.dataRef();
 	int len = (int)size + offset;
 	if(ba.size() < len)
 		ba.resize(len);
@@ -357,21 +364,26 @@ int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 		uint64_t handle = fi->fh;
 		QString spath = QString::fromUtf8(path);
 		if(!s_openFiles.contains(handle)) {
-			qfDebug() << "File is not open!";
+			qfWarning() << spath << "handle:" << handle << "File is not open!";
 			ret = -EBADF;
 			break;
 		}
 		OpenFile &of = s_openFiles[handle];
 
-		if(of.dataDirty) {
-			const QByteArray &ba = of.data;
+		if(!(of.openMode() & QIODevice::WriteOnly) && of.isDataDirty()) {
+			qfWarning() << spath << "handle:" << handle << "flush in open for read mode but with dirty data!!!";
+			break;
+		}
+		if(of.isDataDirty()) {
+			const QByteArray &ba = of.data();
 			bool ok = dbfsdrv()->put(spath, ba);
+			qfDebug() << "flushing data on path:" << path << "data:" << ((ba.size() < 100)? ba : ba.mid(100));
 			if(!ok) {
-				qfDebug() << "DBFS PUT error";
+				qfWarning() << spath << "handle:" << handle << "DBFS PUT error";
 				ret = -EFAULT;
 				break;
 			}
-			of.dataDirty = false;
+			of.setDataDirty(false);
 		}
 	} while(false);
 	qfDebug() << "\t ret:" << ret;
@@ -476,7 +488,6 @@ int qfsqldbfs_utime(const char *path, utimbuf *ubuf)
 int qfsqldbfs_release(const char *path, fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
-	Q_UNUSED(fi)
 	int ret = 0;
 	uint64_t handle = fi->fh;
 	QString spath = QString::fromUtf8(path);
@@ -502,6 +513,7 @@ int qfsqldbfs_truncate(const char *path, off_t newsize)
 {
 	qfLogFuncFrame() << path;
 	int ret = 0;
+
 	QString spath = QString::fromUtf8(path);
 	QSet<uint64_t> handles = s_openFilesHandles.value(spath);
 	for(uint64_t handle : handles) {
@@ -512,11 +524,12 @@ int qfsqldbfs_truncate(const char *path, off_t newsize)
 				break;
 			}
 			OpenFile &of = s_openFiles[handle];
-			of.dataDirty = true;
-			of.dataLoaded = true;
-			of.data.resize(newsize);
+			of.setDataDirty(true);
+			of.setDataLoaded(true);
+			of.dataRef().resize(newsize);
 		} while(false);
 	}
+
 	return ret;
 }
 
@@ -532,7 +545,7 @@ int qfsqldbfs_truncate(const char *path, off_t newsize)
  *
  * Introduced in version 2.5
  */
-int qfsqldbfs_ftruncate(const char *path, off_t offset, struct fuse_file_info *fi)
+int qfsqldbfs_ftruncate(const char *path, off_t newsize, struct fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
 	int ret = 0;
@@ -544,9 +557,9 @@ int qfsqldbfs_ftruncate(const char *path, off_t offset, struct fuse_file_info *f
 			break;
 		}
 		OpenFile &of = s_openFiles[handle];
-		of.dataDirty = true;
-		of.dataLoaded = true;
-		of.data.resize(offset);
+		of.setDataDirty(true);
+		of.setDataLoaded(true);
+		of.dataRef().resize(newsize);
 	} while(false);
 	return ret;
 }
