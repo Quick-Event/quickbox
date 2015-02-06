@@ -26,7 +26,7 @@ class QFCORE_DECL_EXPORT DbFsDriver : public QObject
 	Q_PROPERTY(QString tableName READ tableName WRITE setTableName NOTIFY tableNameChanged)
 	Q_PROPERTY(int snapshotNumber READ snapshotNumber WRITE setSnapshotNumber NOTIFY snapshotNumberChanged)
 public:
-	enum CreateOptions {CO_CREATE = 1, CO_TRIM = 2};
+	enum PutNodeOptions {PN_CREATE = 1, PN_TRUNCATE = 2, PN_OVERRIDE = 4, PN_DELETE = 8};
 public:
 	explicit DbFsDriver(QObject *parent = 0);
 	~DbFsDriver() Q_DECL_OVERRIDE;
@@ -36,14 +36,10 @@ public:
 	QF_PROPERTY_IMPL2(int, s, S, napshotNumber, std::numeric_limits<int32_t>::max())
 
 	bool createDbFs();
-	bool createSnapshot(const QString &comment);
-	qf::core::utils::Table listSnapshots();
-	int latestSnapshotNumber();
-	bool isSnapshotReadOnly();
-	DbFsAttrs attributes(const QString &path, const DbFsAttrs &debug_attrs = DbFsAttrs());
+	DbFsAttrs attributes(const QString &path);
 	QList<DbFsAttrs> childAttributes(const QString &parent_path);
 	QByteArray get(const QString &path, bool *pok = nullptr);
-	bool put(const QString &path, const QByteArray &data);
+	bool put(const QString &path, const QByteArray &data, bool create_if_not_exist = false);
 	bool truncate(const QString &path, int new_size);
 	bool mkfile(const QString &path, const QByteArray &data = QByteArray());
 	bool mkdir(const QString &path);
@@ -57,26 +53,22 @@ private:
 	static QString attributesColumns(const QString &table_alias = QString());
 	DbFsAttrs attributesFromQuery(const Query &q);
 	Connection connection();
-	QString snapshotsTableName();
-	//bool mknod(int pinode, const QString &name, DbFsAttrs::NodeType type);
 
 	bool checkWritePermissions();
 	bool mknod(const QString &path, DbFsAttrs::NodeType node_type, const QByteArray &data);
-	DbFsAttrs put_helper(const DbFsAttrs &attrs, const QByteArray &data, int options, int new_size);
-	/// @return attribudes of touched node
-	DbFsAttrs touch(const DbFsAttrs &attrs, bool create_node, bool delete_node, const QByteArray &data);
+	DbFsAttrs put_helper(const QString &spath, DbFsAttrs::NodeType node_type, const QByteArray &data, int options, int new_size);
 
 	void cacheRemove(const QString &path, bool post_notify);
 	void postAttributesChangedNotify(const QString &path);
 	Q_SLOT void onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant payload);
 
+	DbFsAttrs sqlSelectNode(int inode, QByteArray *pdata = nullptr);
 	DbFsAttrs sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &data);
-	DbFsAttrs sqlDeleteNode(const DbFsAttrs &attrs);
-	DbFsAttrs sqlUpdateNode(const DbFsAttrs &attrs, const QByteArray &data);
+	bool sqlDeleteNode(int inode);
+	bool sqlUpdateNode(int inode, const QByteArray &data);
 
-	DbFsAttrs readAttrs(const QString &spath, int pinode, const DbFsAttrs &debug_attrs);
+	DbFsAttrs readAttrs(const QString &spath, int pinode);
 	QList<DbFsAttrs> readChildAttrs(int parent_inode);
-	int readLatestSnapshotNumber();
 private:
 	typedef QMap<QString, DbFsAttrs> AttributesCache;
 	AttributesCache m_attributeCache;

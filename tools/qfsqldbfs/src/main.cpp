@@ -78,9 +78,7 @@ int main(int argc, char *argv[])
 	QString o_host;
 	int o_port = 0;
 	QString o_table_name;
-	int o_snapshot = -1;
 	bool o_create_db = false;
-	bool o_list_snapshots = false;
 	bool o_ask_passwd = false;
 
 	for(int i=dbfs_options_index+1; i<argc; i++) {
@@ -127,17 +125,8 @@ int main(int argc, char *argv[])
 				o_table_name = argv[i];
 			}
 		}
-		else if(arg == QStringLiteral("--snapshot")) {
-			if(i<argc-1) {
-				i++;
-				o_snapshot = QString(argv[i]).toInt();
-			}
-		}
 		else if(arg == QStringLiteral("--create")) {
 			o_create_db = true;
-		}
-		else if(arg == QStringLiteral("--list-snapshots")) {
-			o_list_snapshots = true;
 		}
 		else if(arg == QStringLiteral("-h") || arg == QStringLiteral("--help")) {
 			std::cout << argv[0] << "FUSE_options --dbfs DBFS_options" << std::endl;
@@ -152,11 +141,8 @@ int main(int argc, char *argv[])
 			std::cout << "\t--p" << std::endl;
 			std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
 			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
-			std::cout << "\t--snapshot <snapshot_number>\t" << "Mount snapshot snapshot_number (read only)" << std::endl;
 			std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
 			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
-			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
-			std::cout << "\t--list-snapshots\t" << "List DBFS snapshots" << std::endl;
 			exit(0);
 		}
 	}
@@ -191,17 +177,7 @@ int main(int argc, char *argv[])
 		}
 		exit(1);
 	}
-	if(o_list_snapshots) {
-		qf::core::utils::Table t = dbfs_drv->listSnapshots();
-		QString s = t.toString();
-		std::cout << qPrintable(s) << std::endl;
-		exit(0);
-	}
-	if(o_snapshot >= 0) {
-		dbfs_drv->setSnapshotNumber(o_snapshot);
-	}
 
-	qfDebug() << "snapshotNumber:" << dbfs_drv->snapshotNumber() << "latestSnapshotNumber:" << dbfs_drv->latestSnapshotNumber();
 	qfsqldbfs_setdriver(dbfs_drv);
 
 	int fuse_argc = dbfs_options_index;

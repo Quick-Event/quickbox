@@ -23,7 +23,6 @@ private:
 	class Data : public QSharedData
 	{
 	public:
-		int id = 0;
 		int inode = -1;
 		int pinode = -1;
 		QDateTime mtime;
@@ -36,7 +35,6 @@ private:
 
 	DbFsAttrs(SharedDummyHelper);
 	static const DbFsAttrs& sharedNull();
-	QF_SHARED_CLASS_FIELD_RW(int, i, setI, d)
 	QF_SHARED_CLASS_FIELD_RW(int, i, setI, node)
 	QF_SHARED_CLASS_FIELD_RW(int, p, setP, inode)
 	QF_SHARED_CLASS_FIELD_RW(NodeType, t, setT, ype)

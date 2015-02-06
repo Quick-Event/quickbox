@@ -57,11 +57,6 @@ static qfs::DbFsDriver *dbfsdrv()
 	return pDbFsDrv;
 }
 
-static bool isSnapshotReadOnly()
-{
-	return dbfsdrv()->isSnapshotReadOnly();
-}
-
 static uint64_t nextFileHandle()
 {
 	static uint64_t n = 0;
@@ -129,13 +124,13 @@ void qfsqldbfs_setdriver(qf::core::sql::DbFsDriver *drv)
  */
 int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 {
-	//qfLogFuncFrame() << path;
+	qfLogFuncFrame() << path;
 	MUTEX_LOCKER;
 	int res = 0;
 
 	QString spath = QString::fromUtf8(path);
 	qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
-	bool read_only = isSnapshotReadOnly();
+	bool read_only = false;
 
 	memset(stbuf, 0, sizeof(struct stat));
 	stbuf->st_mtime = attrs.mtime().toTime_t();
@@ -163,7 +158,7 @@ int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 	else {
 		res = -ENOENT;
 	}
-	//qfDebug() << "\t ret:" << res;
+	qfDebug() << "\t ret:" << res;
 	return res;
 }
 
@@ -233,14 +228,6 @@ static int qfsqldbfs_open_common(const char *path, mode_t mode, struct fuse_file
 	int ret = 0;
 	do {
 		QString spath = QString::fromUtf8(path);
-		bool snapshot_read_only = isSnapshotReadOnly();
-		if(snapshot_read_only) {
-			if (om != QIODevice::ReadOnly) {
-				qfWarning() << "Cannot open readonly file" << spath << " in mode:" << openModeToString(om);
-				ret = -EACCES;
-				break;
-			}
-		}
 		qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
 		if(attrs.isNull()) {
 			if(om && QIODevice_Create) {
@@ -371,9 +358,6 @@ int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
 	MUTEX_LOCKER;
-	//Q_UNUSED(fi)
-	if(isSnapshotReadOnly())
-		return -EPERM;
 
 	uint64_t handle = fi->fh;
 	QString spath = QString::fromUtf8(path);
@@ -448,11 +432,6 @@ int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 	MUTEX_LOCKER;
 	int ret = 0;
 	do {
-		if(isSnapshotReadOnly()) {
-			qfDebug() << "snapshot RO";
-			ret = -EPERM;
-			break;
-		}
 		uint64_t handle = fi->fh;
 		QString spath = QString::fromUtf8(path);
 		OpenFile of = openFile(handle);
@@ -493,8 +472,6 @@ int qfsqldbfs_mknod(const char *path, mode_t mode, dev_t dev)
 	qfLogFuncFrame() << path << "in mode:" << openModeToString(om);
 	Q_UNUSED(dev)
 	MUTEX_LOCKER;
-	if(isSnapshotReadOnly())
-		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
 	bool ok = dbfsdrv()->mkfile(spath);
@@ -511,8 +488,6 @@ int qfsqldbfs_mkdir(const char *path, mode_t mode)
 	qfLogFuncFrame() << path;
 	Q_UNUSED(mode)
 	MUTEX_LOCKER;
-	if(isSnapshotReadOnly())
-		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
 	bool ok = dbfsdrv()->mkdir(spath);
@@ -528,8 +503,6 @@ int qfsqldbfs_unlink(const char *path)
 {
 	qfLogFuncFrame() << path;
 	MUTEX_LOCKER;
-	if(isSnapshotReadOnly())
-		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
 	bool ok = dbfsdrv()->rmnod(spath);
@@ -545,8 +518,6 @@ int qfsqldbfs_rmdir(const char *path)
 {
 	qfLogFuncFrame() << path;
 	MUTEX_LOCKER;
-	if(isSnapshotReadOnly())
-		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
 	bool ok = dbfsdrv()->rmnod(spath);
@@ -602,6 +573,34 @@ int qfsqldbfs_release(const char *path, fuse_file_info *fi)
 	return ret;
 }
 
+static int truncate_open_handle(const QString &spath, uint64_t handle, int new_size)
+{
+	qfLogFuncFrame() << "file handle:" << handle;
+	int ret = 0;
+	do {
+		OpenFile of = openFile(handle);
+		if(of.isNull()) {
+			qfDebug() << "File is not open!";
+			ret = -EBADF;
+			break;
+		}
+		if(!of.isDataLoaded()) {
+			if(!loadData(spath, of)) {
+				qfWarning() << spath << "handle:" << handle << "Error load data";
+				ret = -EFAULT;
+				break;
+			}
+		}
+		int old_size = of.data().size();
+		if(new_size != old_size) {
+			of.setDataDirty(true);
+			of.dataRef().resize(new_size);
+		}
+		setOpenFile(handle, of);
+	} while(false);
+	return ret;
+}
+
 /** Change the size of a file */
 int qfsqldbfs_truncate(const char *path, off_t new_size)
 {
@@ -612,14 +611,14 @@ int qfsqldbfs_truncate(const char *path, off_t new_size)
 	QString spath = QString::fromUtf8(path);
 	OpenHandles handles = openFileHandles(spath);
 	for(uint64_t handle : handles) {
-		do {
-			OpenFile of = openFile(handle);
-			if(of.isNull()) {
-				/// There is not intention to implement truncate of not open files
-				qfDebug() << "File is not open!";
-				ret = -EBADF;
-				break;
-			}
+		OpenFile of = openFile(handle);
+		if(of.isNull()) {
+			if(!dbfsdrv()->truncate(spath, new_size))
+				ret = -EFAULT;
+		}
+		else {
+			ret = truncate_open_handle(spath, handle, new_size);
+		}
 			/*
 			 * I was facing a strange bug with truncate when issuing
 			 *
@@ -643,22 +642,7 @@ int qfsqldbfs_truncate(const char *path, off_t new_size)
 			 * 4. qfsqldbfs_read() for cat is called and it returned correct value, but it was from some strange reason ignored
 			 * 5. solution a. or b. caused that qfsqldbfs_read() was called twice and second call value was not ignored
 			 */
-			if(!of.isDataLoaded()) {
-				if(!loadData(spath, of)) {
-					qfWarning() << spath << "handle:" << handle << "Error load data";
-					ret = -EFAULT;
-					break;
-				}
-			}
-			int old_size = of.data().size();
-			if(new_size != old_size) {
-				of.setDataDirty(true);
-				of.dataRef().resize(new_size);
-			}
-			setOpenFile(handle, of);
-		} while(false);
 	}
-
 	return ret;
 }
 
@@ -678,30 +662,9 @@ int qfsqldbfs_ftruncate(const char *path, off_t new_size, struct fuse_file_info 
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
 	MUTEX_LOCKER;
-	int ret = 0;
 	QString spath = QString::fromUtf8(path);
 	uint64_t handle = fi->fh;
-	do {
-		OpenFile of = openFile(handle);
-		if(of.isNull()) {
-			qfDebug() << "File is not open!";
-			ret = -EBADF;
-			break;
-		}
-		if(!of.isDataLoaded()) {
-			if(!loadData(spath, of)) {
-				qfWarning() << spath << "handle:" << handle << "Error load data";
-				ret = -EFAULT;
-				break;
-			}
-		}
-		int old_size = of.data().size();
-		if(new_size != old_size) {
-			of.setDataDirty(true);
-			of.dataRef().resize(new_size);
-		}
-		setOpenFile(handle, of);
-	} while(false);
+	int ret = truncate_open_handle(spath, handle, new_size);
 	return ret;
 }
 

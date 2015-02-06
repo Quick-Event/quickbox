@@ -50,7 +50,6 @@ QString DbFsAttrs::toString() const
 		ret += "NULL - ";
 	else if(type() == Dir && inode() == 0 && pinode() == 0)
 		ret += "ROOT - ";
-	ret += "id: " + QString::number(id()) + ", ";
 	ret += "inode: " + QString::number(inode()) + ", ";
 	ret += "pinode: " + QString::number(pinode()) + ", ";
 	ret += "type: " % typeName() % ", ";
