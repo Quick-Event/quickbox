@@ -16,8 +16,11 @@
 //#include <limits>
 #include <signal.h>
 
+#define USE_QT_EVENT_LOOP
+
 namespace qfs = qf::core::sql;
 
+#ifdef USE_QT_EVENT_LOOP
 static FuseThread *s_fuseThread = nullptr;
 
 static void exitHandler(int)
@@ -56,28 +59,17 @@ static void set_signal_handlers()
 		exit(1);
 	}
 }
-
-static struct fuse_operations fuse_ops = {
-	.getattr = qfsqldbfs_getattr,
-	.readdir = qfsqldbfs_readdir,
-	.open = qfsqldbfs_open,
-	.read = qfsqldbfs_read,
-	.write = qfsqldbfs_write,
-	.flush = qfsqldbfs_flush,
-	.release = qfsqldbfs_release,
-	.mknod = qfsqldbfs_mknod,
-	.mkdir = qfsqldbfs_mkdir,
-	.unlink = qfsqldbfs_unlink,
-	.rmdir = qfsqldbfs_rmdir,
-	.utime = qfsqldbfs_utime,
-	.truncate = qfsqldbfs_truncate,
-	.ftruncate = qfsqldbfs_ftruncate,
-};
+#endif
 
 int main(int argc, char *argv[])
 {
+	int dbfs_options_index;
+	for(dbfs_options_index = 1; dbfs_options_index < argc; dbfs_options_index++)
+		if(argv[dbfs_options_index] == QLatin1String("--dbfs"))
+			break;
+
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
-	QStringList args = file_log_device->setDomainTresholds(argc, argv);
+	file_log_device->setDomainTresholds(argc - dbfs_options_index, argv + dbfs_options_index);
 	file_log_device->setPrettyDomain(true);
 
 	QString o_database;
@@ -91,84 +83,81 @@ int main(int argc, char *argv[])
 	bool o_list_snapshots = false;
 	bool o_ask_passwd = false;
 
-	int dbfs_options_index = args.indexOf(QStringLiteral("--dbfs"));
-	if(dbfs_options_index > 0) {
-		for(int i=dbfs_options_index+1; i<args.count(); i++) {
-			QString arg = args[i];
-			if(arg == QStringLiteral("--host")) {
-				if(i<args.count()-1) {
+	for(int i=dbfs_options_index+1; i<argc; i++) {
+		QString arg = argv[i];
+		if(arg == QStringLiteral("--host")) {
+			if(i<argc-1) {
+				i++;
+				o_host = argv[i];
+			}
+		}
+		else if(arg == QStringLiteral("--port")) {
+			if(i<argc-1) {
+				i++;
+				o_port = QString(argv[i]).toInt();
+			}
+		}
+		else if(arg == QStringLiteral("-u") || arg == QStringLiteral("--user")) {
+			if(i<argc-1) {
+				i++;
+				o_user = argv[i];
+			}
+		}
+		else if(arg == QStringLiteral("-p") || arg == QStringLiteral("--password")) {
+			if(i<argc-1) {
+				QString p = argv[i+1];
+				if(p.startsWith('-')) {
+					o_ask_passwd = true;
+				}
+				else {
+					o_password = p;
 					i++;
-					o_host = args[i];
 				}
 			}
-			else if(arg == QStringLiteral("--port")) {
-				if(i<args.count()-1) {
-					i++;
-					o_port = args[i].toInt();
-				}
+		}
+		else if(arg == QStringLiteral("--database")) {
+			if(i<argc-1) {
+				i++;
+				o_database = argv[i];
 			}
-			else if(arg == QStringLiteral("-u") || arg == QStringLiteral("--user")) {
-				if(i<args.count()-1) {
-					i++;
-					o_user = args[i];
-				}
+		}
+		else if(arg == QStringLiteral("--table-name")) {
+			if(i<argc-1) {
+				i++;
+				o_table_name = argv[i];
 			}
-			else if(arg == QStringLiteral("-p") || arg == QStringLiteral("--password")) {
-				if(i<args.count()-1) {
-					QString p = args[i+1];
-					if(p.startsWith('-')) {
-						o_ask_passwd = true;
-					}
-					else {
-						o_password = p;
-						i++;
-					}
-				}
+		}
+		else if(arg == QStringLiteral("--snapshot")) {
+			if(i<argc-1) {
+				i++;
+				o_snapshot = QString(argv[i]).toInt();
 			}
-			else if(arg == QStringLiteral("--database")) {
-				if(i<args.count()-1) {
-					i++;
-					o_database = args[i];
-				}
-			}
-			else if(arg == QStringLiteral("--table-name")) {
-				if(i<args.count()-1) {
-					i++;
-					o_table_name = args[i];
-				}
-			}
-			else if(arg == QStringLiteral("--snapshot")) {
-				if(i<args.count()-1) {
-					i++;
-					o_snapshot = args[i].toInt();
-				}
-			}
-			else if(arg == QStringLiteral("--create")) {
-				o_create_db = true;
-			}
-			else if(arg == QStringLiteral("--list-snapshots")) {
-				o_list_snapshots = true;
-			}
-			else if(arg == QStringLiteral("-h") || arg == QStringLiteral("--help")) {
-				std::cout << argv[0] << "FUSE_options --dbfs DBFS_options" << std::endl;
-				std::cout << "FUSE_options" << std::endl;
-				std::cout << "\tuse -h switch to print FUSE options" << std::endl;
-				std::cout << "DBFS_options" << std::endl;
-				std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
-				std::cout << "\t--host <host>\t" << "Database host" << std::endl;
-				std::cout << "\t--port <port>\t" << "Database port" << std::endl;
-				std::cout << "\t--u" << std::endl;
-				std::cout << "\t--user <user>\t" << "Database user" << std::endl;
-				std::cout << "\t--p" << std::endl;
-				std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
-				std::cout << "\t--database <database>\t" << "Database name" << std::endl;
-				std::cout << "\t--snapshot <snapshot_number>\t" << "Mount snapshot snapshot_number (read only)" << std::endl;
-				std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
-				std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
-				std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
-				std::cout << "\t--list-snapshots\t" << "List DBFS snapshots" << std::endl;
-				exit(0);
-			}
+		}
+		else if(arg == QStringLiteral("--create")) {
+			o_create_db = true;
+		}
+		else if(arg == QStringLiteral("--list-snapshots")) {
+			o_list_snapshots = true;
+		}
+		else if(arg == QStringLiteral("-h") || arg == QStringLiteral("--help")) {
+			std::cout << argv[0] << "FUSE_options --dbfs DBFS_options" << std::endl;
+			std::cout << "FUSE_options" << std::endl;
+			std::cout << "\tuse -h switch to print FUSE options" << std::endl;
+			std::cout << "DBFS_options" << std::endl;
+			std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
+			std::cout << "\t--host <host>\t" << "Database host" << std::endl;
+			std::cout << "\t--port <port>\t" << "Database port" << std::endl;
+			std::cout << "\t--u" << std::endl;
+			std::cout << "\t--user <user>\t" << "Database user" << std::endl;
+			std::cout << "\t--p" << std::endl;
+			std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
+			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
+			std::cout << "\t--snapshot <snapshot_number>\t" << "Mount snapshot snapshot_number (read only)" << std::endl;
+			std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
+			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
+			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
+			std::cout << "\t--list-snapshots\t" << "List DBFS snapshots" << std::endl;
+			exit(0);
 		}
 	}
 
@@ -215,9 +204,7 @@ int main(int argc, char *argv[])
 	qfDebug() << "snapshotNumber:" << dbfs_drv->snapshotNumber() << "latestSnapshotNumber:" << dbfs_drv->latestSnapshotNumber();
 	qfsqldbfs_setdriver(dbfs_drv);
 
-	int fuse_argc = args.length();
-	if(dbfs_options_index > 0)
-		fuse_argc = dbfs_options_index;
+	int fuse_argc = dbfs_options_index;
 
 	/// FUSE variables
 	struct fuse_args fuse_arguments = FUSE_ARGS_INIT(fuse_argc, argv);
@@ -237,15 +224,37 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
-	// Tell FUSE about the KioFuse implementations of FS operations
+	// Tell FUSE about implementations of FS operations
+	struct fuse_operations fuse_ops;
+	memset(&fuse_ops, 0, sizeof(fuse_ops));
+	fuse_ops.getattr = qfsqldbfs_getattr;
+	fuse_ops.readdir = qfsqldbfs_readdir;
+	fuse_ops.open = qfsqldbfs_open;
+	fuse_ops.read = qfsqldbfs_read;
+	fuse_ops.write = qfsqldbfs_write;
+	fuse_ops.fsync = qfsqldbfs_fsync;
+	fuse_ops.flush = qfsqldbfs_flush;
+	fuse_ops.release = qfsqldbfs_release;
+	fuse_ops.mknod = qfsqldbfs_mknod;
+	fuse_ops.mkdir = qfsqldbfs_mkdir;
+	fuse_ops.unlink = qfsqldbfs_unlink;
+	fuse_ops.rmdir = qfsqldbfs_rmdir;
+	fuse_ops.utime = qfsqldbfs_utime;
+	fuse_ops.truncate = qfsqldbfs_truncate;
+	fuse_ops.ftruncate = qfsqldbfs_ftruncate;
+	fuse_ops.chmod = qfsqldbfs_chmod;
+	fuse_ops.chown = qfsqldbfs_chown;
+	fuse_ops.create = qfsqldbfs_create;
+
 	fuse_handle = fuse_new(fuse_channel, &fuse_arguments, &fuse_ops, sizeof(fuse_ops), NULL);
 	if (fuse_handle == NULL){
 		qfError()<<"fuse_new() failed";
 		exit(1);
 	}
 
+#ifdef USE_QT_EVENT_LOOP
+	qfInfo() << "Using Qt event loop with FUSE in separated thread";
 	TheApp *app = new TheApp(argc, argv);
-
 	s_fuseThread = new FuseThread(fuse_handle, fuse_channel, QString::fromUtf8(mount_point));
 	dbfs_drv->moveToThread(s_fuseThread);
 	QObject::connect(s_fuseThread, &QThread::finished, app, &TheApp::onFuseThreadFinished, Qt::QueuedConnection);
@@ -257,11 +266,18 @@ int main(int argc, char *argv[])
 
 	qfInfo() << "Waiting for FUSE thread to join ...";
 	s_fuseThread->wait();
+#else
+	qfInfo() << "Using FUSE event loop";
+	fuse_loop(fuse_handle);
+	qfInfo() << "FUSE has quit its event loop";
+#endif
 
 	qfsqldbfs_setdriver(nullptr);
 	QF_SAFE_DELETE(dbfs_drv);
+#ifdef USE_QT_EVENT_LOOP
 	QF_SAFE_DELETE(s_fuseThread);
 	QF_SAFE_DELETE(app);
+#endif
 
 	qfInfo() << "bye";
 	return 0;

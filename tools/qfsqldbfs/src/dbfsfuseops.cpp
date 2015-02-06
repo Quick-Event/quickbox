@@ -4,6 +4,9 @@
 #include <qf/core/sql/dbfsdriver.h>
 #include <qf/core/log.h>
 
+#include <QMutex>
+#include <QMutexLocker>
+
 #include <unistd.h>
 
 namespace qfs = qf::core::sql;
@@ -11,6 +14,14 @@ namespace qfs = qf::core::sql;
 static QMap<uint64_t, OpenFile> s_openFiles;
 static QMap<QString, QSet<uint64_t> > s_openFilesHandles;
 static qfs::DbFsDriver *pDbFsDrv = nullptr;
+
+//#define USE_MUTEX_LOCKING
+#ifdef USE_MUTEX_LOCKING
+static QMutex s_apiMutex;
+#define MUTEX_LOCKER QMutexLocker locker(&s_apiMutex)
+#else
+#define MUTEX_LOCKER
+#endif
 
 static qfs::DbFsDriver *dbfsdrv()
 {
@@ -29,9 +40,11 @@ static uint64_t nextFileHandle()
 	return ++n;
 }
 
+static const int QIODevice_Create = 0x100;
+
 static QIODevice::OpenMode openModeFromPosix(int posix_flags)
 {
-	QIODevice::OpenMode ret;
+	int ret = 0;
 	if ((posix_flags & O_ACCMODE) == O_RDONLY){
 		ret |= QIODevice::ReadOnly;
 	}
@@ -47,7 +60,10 @@ static QIODevice::OpenMode openModeFromPosix(int posix_flags)
 	if (posix_flags & O_TRUNC){
 		ret |= QIODevice::Truncate;
 	}
-	return ret;
+	if (posix_flags & O_CREAT){
+		ret |= QIODevice_Create;
+	}
+	return (QIODevice::OpenMode)ret;
 }
 
 static QString openModeToString(QIODevice::OpenMode mode)
@@ -64,6 +80,8 @@ static QString openModeToString(QIODevice::OpenMode mode)
 		ret += "+APPEND";
 	if(mode & QIODevice::Truncate)
 		ret += "+TRUNCATE";
+	if(mode & QIODevice_Create)
+		ret += "+CREATE";
 	return ret;
 }
 
@@ -84,6 +102,7 @@ void qfsqldbfs_setdriver(qf::core::sql::DbFsDriver *drv)
 int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 {
 	//qfLogFuncFrame() << path;
+	MUTEX_LOCKER;
 	int res = 0;
 
 	QString spath = QString::fromUtf8(path);
@@ -144,8 +163,9 @@ int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 int qfsqldbfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
-	(void) offset;
-	(void) fi;
+	Q_UNUSED(offset)
+	//(void) fi;
+	MUTEX_LOCKER;
 
 	filler(buf, ".", NULL, 0);
 	filler(buf, "..", NULL, 0);
@@ -176,6 +196,65 @@ static int loadData(const QString &spath, OpenFile &of)
 	return ok;
 }
 
+static int qfsqldbfs_open_common(const char *path, mode_t mode, struct fuse_file_info *fi)
+{
+	Q_UNUSED(mode);
+	QIODevice::OpenMode om = openModeFromPosix(fi->flags);
+	qfLogFuncFrame() << path << "in mode:" << openModeToString(om);
+	MUTEX_LOCKER;
+	int ret = 0;
+	do {
+		QString spath = QString::fromUtf8(path);
+		bool snapshot_read_only = isSnapshotReadOnly();
+		if(snapshot_read_only) {
+			if (om != QIODevice::ReadOnly) {
+				qfWarning() << "Cannot open readonly file" << spath << " in mode:" << openModeToString(om);
+				ret = -EACCES;
+				break;
+			}
+		}
+		qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
+		if(attrs.isNull()) {
+			if(om && QIODevice_Create) {
+				bool ok = dbfsdrv()->mkfile(spath);
+				if(!ok) {
+					ret = -EEXIST;
+					break;
+				}
+			}
+			else {
+				qfWarning() << spath << "Cannot get file attributes!";
+				ret = -ENOENT;
+				break;
+			}
+		}
+		uint64_t handle = nextFileHandle();
+		OpenFile &of = s_openFiles[handle];
+		of.setAttrs(attrs);
+		of.setOpenMode(om);
+		fi->fh = handle;
+		s_openFilesHandles[spath] << handle;
+		qfDebug() << "\t !!!!!!!!!!!!! open file handle:" << fi->fh << "path:" << path;
+	} while(false);
+	qfDebug() << "\t ret:" << ret;
+	return ret;
+}
+
+/** Create and open a file
+ *
+ * If the file does not exist, first create it with the specified mode, and then open it.
+ * If this method is not implemented or under Linux kernel versions earlier than 2.6.15,
+ * the mknod() and open() methods will be called instead.
+ *
+ * Introduced in version 2.5
+ */
+int qfsqldbfs_create(const char *path, mode_t mode, struct fuse_file_info *fi)
+{
+	QIODevice::OpenMode om = openModeFromPosix(mode);
+	qfLogFuncFrame() << path << "in mode:" << openModeToString(om);
+	return qfsqldbfs_open_common(path, mode, fi);
+}
+
 /** File open operation
  *
  * No creation, or truncation flags (O_CREAT, O_EXCL, O_TRUNC)
@@ -190,43 +269,7 @@ int qfsqldbfs_open(const char *path, struct fuse_file_info *fi)
 {
 	QIODevice::OpenMode mode = openModeFromPosix(fi->flags);
 	qfLogFuncFrame() << path << "in mode:" << openModeToString(mode);
-	int ret = 0;
-	do {
-		QString spath = QString::fromUtf8(path);
-		qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
-		if(attrs.isNull()) {
-			qfWarning() << spath << "Cannot get file attributes!";
-			ret = -ENOENT;
-			break;
-		}
-		bool snapshot_read_only = isSnapshotReadOnly();
-		if(snapshot_read_only) {
-			if (mode != QIODevice::ReadOnly) {
-				qfWarning() << "Cannot open readonly file" << spath << " in mode:" << openModeToString(mode);
-				ret = -EACCES;
-				break;
-			}
-		}
-		uint64_t handle = nextFileHandle();
-		/*
-		if(mode & QIODevice::Append) {
-			s_openFiles[handle];
-			int size = loadData(spath, handle);
-			if(size < 0) {
-				ret = -EFAULT;
-				break;
-			}
-		}
-		*/
-		OpenFile &of = s_openFiles[handle];
-		of.setAttrs(attrs);
-		of.setOpenMode(mode);
-		fi->fh = handle;
-		s_openFilesHandles[spath] << handle;
-		qfDebug() << "\t !!!!!!!!!!!!! open file handle:" << fi->fh << "path:" << path;
-	} while(false);
-	qfDebug() << "\t ret:" << ret;
-	return ret;
+	return qfsqldbfs_open_common(path, 0, fi);
 }
 
 /** Read data from an open file
@@ -248,7 +291,8 @@ int qfsqldbfs_open(const char *path, struct fuse_file_info *fi)
 int qfsqldbfs_read(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
-	Q_UNUSED(fi);
+	//Q_UNUSED(fi);
+	MUTEX_LOCKER;
 
 	QString spath = QString::fromUtf8(path);
 	uint64_t handle = fi->fh;
@@ -273,7 +317,7 @@ int qfsqldbfs_read(const char *path, char *buf, size_t size, off_t offset, struc
 			size = len - offset;
 		qfInfo() << "offset:" << uoffset << "size:" << size << "data:" << data;
 		memcpy(buf, data + uoffset, size);
-		qfInfo() << "####" << buf;
+		qfInfo() << size << "####" << buf;
 	}
 	else {
 		size = 0;
@@ -295,7 +339,8 @@ int qfsqldbfs_read(const char *path, char *buf, size_t size, off_t offset, struc
 int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
-	Q_UNUSED(fi)
+	MUTEX_LOCKER;
+	//Q_UNUSED(fi)
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
@@ -327,6 +372,21 @@ int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset
 	return size;
 }
 
+/** Synchronize file contents
+ * If the datasync parameter is non-zero, then only the user data should be flushed, not the meta data.
+ *
+ * Changed in version 2.2
+ */
+int qfsqldbfs_fsync(const char *path, int isdatasync, struct fuse_file_info *fi)
+{
+	qfLogFuncFrame() << path << "file handle:" << fi->fh;
+	Q_UNUSED(isdatasync);
+	MUTEX_LOCKER;
+	int ret = qfsqldbfs_flush(path, fi);
+	qfDebug() << "\t ret:" << ret;
+	return ret;
+}
+
 /** Possibly flush cached data
  *
  * BIG NOTE: This is not equivalent to fsync().  It's not a
@@ -353,7 +413,7 @@ int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset
 int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
-	Q_UNUSED(fi)
+	MUTEX_LOCKER;
 	int ret = 0;
 	do {
 		if(isSnapshotReadOnly()) {
@@ -376,8 +436,8 @@ int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 		}
 		if(of.isDataDirty()) {
 			const QByteArray &ba = of.data();
-			bool ok = dbfsdrv()->put(spath, ba);
 			qfDebug() << "flushing data on path:" << path << "data:" << ((ba.size() < 100)? ba : ba.mid(100));
+			bool ok = dbfsdrv()->put(spath, ba);
 			if(!ok) {
 				qfWarning() << spath << "handle:" << handle << "DBFS PUT error";
 				ret = -EFAULT;
@@ -394,18 +454,18 @@ int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
  *
  * There is no create() operation, mknod() will be called for
  * creation of all non-directory, non-symlink nodes.
+ * If the filesystem defines a create() method, then for regular files that will be called instead.
  */
-// shouldn't that comment be "if" there is no.... ?
 int qfsqldbfs_mknod(const char *path, mode_t mode, dev_t dev)
 {
-	qfLogFuncFrame() << path;
-	Q_UNUSED(mode)
+	QIODevice::OpenMode om = openModeFromPosix(mode);
+	qfLogFuncFrame() << path << "in mode:" << openModeToString(om);
 	Q_UNUSED(dev)
+	MUTEX_LOCKER;
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
 	QString spath = QString::fromUtf8(path);
-	QPair<QString, QString> pf = qfs::DbFsDriver::splitPathFile(spath);
 	bool ok = dbfsdrv()->mkfile(spath);
 	if(!ok) {
 		return -EEXIST; // pathname already exists.  This includes the case where pathname is a symbolic link, dangling or not.
@@ -419,6 +479,7 @@ int qfsqldbfs_mkdir(const char *path, mode_t mode)
 {
 	qfLogFuncFrame() << path;
 	Q_UNUSED(mode)
+	MUTEX_LOCKER;
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
@@ -435,6 +496,7 @@ int qfsqldbfs_mkdir(const char *path, mode_t mode)
 int qfsqldbfs_unlink(const char *path)
 {
 	qfLogFuncFrame() << path;
+	MUTEX_LOCKER;
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
@@ -451,6 +513,7 @@ int qfsqldbfs_unlink(const char *path)
 int qfsqldbfs_rmdir(const char *path)
 {
 	qfLogFuncFrame() << path;
+	MUTEX_LOCKER;
 	if(isSnapshotReadOnly())
 		return -EPERM;
 
@@ -466,6 +529,7 @@ int qfsqldbfs_rmdir(const char *path)
 int qfsqldbfs_utime(const char *path, utimbuf *ubuf)
 {
 	qfLogFuncFrame() << path;
+	MUTEX_LOCKER;
 	/// dbfs handles mtime on its own
 	Q_UNUSED(ubuf)
 	return 0;
@@ -488,6 +552,7 @@ int qfsqldbfs_utime(const char *path, utimbuf *ubuf)
 int qfsqldbfs_release(const char *path, fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
+	MUTEX_LOCKER;
 	int ret = 0;
 	uint64_t handle = fi->fh;
 	QString spath = QString::fromUtf8(path);
@@ -509,9 +574,10 @@ int qfsqldbfs_release(const char *path, fuse_file_info *fi)
 }
 
 /** Change the size of a file */
-int qfsqldbfs_truncate(const char *path, off_t newsize)
+int qfsqldbfs_truncate(const char *path, off_t new_size)
 {
 	qfLogFuncFrame() << path;
+	MUTEX_LOCKER;
 	int ret = 0;
 
 	QString spath = QString::fromUtf8(path);
@@ -519,14 +585,47 @@ int qfsqldbfs_truncate(const char *path, off_t newsize)
 	for(uint64_t handle : handles) {
 		do {
 			if(!s_openFiles.contains(handle)) {
+				/// There is not intention to implement truncate of not open files
 				qfDebug() << "File is not open!";
 				ret = -EBADF;
 				break;
 			}
+			/*
+			 * I was facing a strange bug with truncate when issuing
+			 *
+			 * echo "foo" > /home/fanda/fuse-mounted-dir/bar.txt
+			 *
+			 * 1. truncate to 0 lenght
+			 * 2. write("foo") was executed
+			 *
+			 * cat /home/fanda/fuse-mounted-dir/bar.txt
+			 *
+			 * returned empty file when first time called
+			 * proper "foo" value was returned next times
+			 *
+			 * After 2 days of debugging I have found that:
+			 * 1. this is caused by caling dbfsdrv()->put("bar.txt", QByteArray()) when file was truncated
+			 * 2. this put is rewriten immediately by dbfsdrv()->put("bar.txt", QByteArray("foo")) when new content is set, so first call is superfluous but woundless
+			 * 3. There are more solutions:
+			 *     a. remove first put()
+			 *     b. call dbfsdrv()->put("bar.txt", QByteArray("any not null and not empty string")) in the truncate phase
+			 *        realy strange is that just passing not empty QByteArray to q.bindValue(":data", ba); in sqlUpdate() can solve the problem
+			 * 4. qfsqldbfs_read() for cat is called and it returned correct value, but it was from some strange reason ignored
+			 * 5. solution a. or b. caused that qfsqldbfs_read() was called twice and second call value was not ignored
+			 */
 			OpenFile &of = s_openFiles[handle];
-			of.setDataDirty(true);
-			of.setDataLoaded(true);
-			of.dataRef().resize(newsize);
+			if(!of.isDataLoaded()) {
+				if(!loadData(spath, of)) {
+					qfWarning() << spath << "handle:" << handle << "Error load data";
+					ret = -EFAULT;
+					break;
+				}
+			}
+			int old_size = of.data().size();
+			if(new_size != old_size) {
+				of.setDataDirty(true);
+				of.dataRef().resize(new_size);
+			}
 		} while(false);
 	}
 
@@ -545,10 +644,12 @@ int qfsqldbfs_truncate(const char *path, off_t newsize)
  *
  * Introduced in version 2.5
  */
-int qfsqldbfs_ftruncate(const char *path, off_t newsize, struct fuse_file_info *fi)
+int qfsqldbfs_ftruncate(const char *path, off_t new_size, struct fuse_file_info *fi)
 {
 	qfLogFuncFrame() << path << "file handle:" << fi->fh;
+	MUTEX_LOCKER;
 	int ret = 0;
+	QString spath = QString::fromUtf8(path);
 	uint64_t handle = fi->fh;
 	do {
 		if(!s_openFiles.contains(handle)) {
@@ -557,10 +658,68 @@ int qfsqldbfs_ftruncate(const char *path, off_t newsize, struct fuse_file_info *
 			break;
 		}
 		OpenFile &of = s_openFiles[handle];
-		of.setDataDirty(true);
-		of.setDataLoaded(true);
-		of.dataRef().resize(newsize);
+		if(!of.isDataLoaded()) {
+			if(!loadData(spath, of)) {
+				qfWarning() << spath << "handle:" << handle << "Error load data";
+				ret = -EFAULT;
+				break;
+			}
+		}
+		int old_size = of.data().size();
+		if(new_size != old_size) {
+			of.setDataDirty(true);
+			of.dataRef().resize(new_size);
+		}
 	} while(false);
 	return ret;
 }
 
+int qfsqldbfs_chmod(const char *path, mode_t mode)
+{
+	qfLogFuncFrame() << path << "mode:" << mode;
+	MUTEX_LOCKER;
+	int ret = 0;
+	return ret;
+}
+
+int qfsqldbfs_chown(const char *path, uid_t uid, gid_t gid)
+{
+	qfLogFuncFrame() << path << "uid:" << uid << "gid:" << gid;
+	MUTEX_LOCKER;
+	int ret = 0;
+	return ret;
+}
+
+/** Rename a file */
+// both path and newpath are fs-relative
+/*
+int qfsqldbfs_rename(const char *path, const char *new_path)
+{
+	qfLogFuncFrame() << path << "fnew_path:" << new_path;
+	MUTEX_LOCKER;
+
+	int ret = 0;
+	QString spath = QString::fromUtf8(path);
+	do {
+		if(!s_openFiles.contains(handle)) {
+			qfDebug() << "File is not open!";
+			ret = -EBADF;
+			break;
+		}
+		OpenFile &of = s_openFiles[handle];
+		if(!of.isDataLoaded()) {
+			if(!loadData(spath, of)) {
+				qfWarning() << spath << "handle:" << handle << "Error load data";
+				ret = -EFAULT;
+				break;
+			}
+		}
+		int old_size = of.data().size();
+		if(new_size != old_size) {
+			of.setDataDirty(true);
+			of.dataRef().resize(new_size);
+		}
+	} while(false);
+	return ret;
+}
+*/

@@ -38,7 +38,7 @@ public:
 	qf::core::utils::Table listSnapshots();
 	int latestSnapshotNumber();
 	bool isSnapshotReadOnly();
-	DbFsAttrs attributes(const QString &path);
+	DbFsAttrs attributes(const QString &path, const DbFsAttrs &debug_attrs = DbFsAttrs());
 	QList<DbFsAttrs> childAttributes(const QString &parent_path);
 	QByteArray get(const QString &path, bool *pok = nullptr);
 	bool put(const QString &path, const QByteArray &data);
@@ -70,7 +70,7 @@ private:
 	DbFsAttrs sqlDeleteNode(const DbFsAttrs &attrs);
 	DbFsAttrs sqlUpdateNode(const DbFsAttrs &attrs, const QByteArray &data);
 
-	DbFsAttrs readAttrs(const QString &path, int pinode = 0);
+	DbFsAttrs readAttrs(const QString &spath, int pinode, const DbFsAttrs &debug_attrs);
 	QList<DbFsAttrs> readChildAttrs(int parent_inode);
 	int readLatestSnapshotNumber();
 private:
