@@ -133,9 +133,9 @@ public:
 
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
-		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
-		QF_SHARED_CLASS_FIELD_RW(bool, is, set, PriKey)
-		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Serial)
+		QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(bool, c, setC, anUpdate)
+		QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(bool, is, set, PriKey)
+		QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(bool, is, set, Serial)
 		//QF_SHARED_CLASS_FIELD_RW(bool, is, set, Nullable)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
