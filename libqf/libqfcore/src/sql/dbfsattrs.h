@@ -26,14 +26,10 @@ private:
 		int id = 0;
 		int inode = -1;
 		int pinode = -1;
-		int snapshot = -1;
 		QDateTime mtime;
 		NodeType type = Invalid;
-		bool isDeleted = false;
-		int copiedInSnapshot = -1;
 		QString name;
 		int size = 0;
-		//unsigned canUpdate:1, isPriKey:1, isSerial:1, isNullable:1;
 		explicit Data(NodeType t) : type(t) {}
 	};
 	QSharedDataPointer<Data> d;
@@ -44,11 +40,8 @@ private:
 	QF_SHARED_CLASS_FIELD_RW(int, i, setI, node)
 	QF_SHARED_CLASS_FIELD_RW(int, p, setP, inode)
 	QF_SHARED_CLASS_FIELD_RW(NodeType, t, setT, ype)
-	QF_SHARED_CLASS_FIELD_RW(bool, is, set, Deleted)
-	QF_SHARED_CLASS_FIELD_RW(int, c, setC, opiedInSnapshot)
 	QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 	QF_SHARED_CLASS_FIELD_RW(int, s, setS, ize)
-	QF_SHARED_CLASS_FIELD_RW(int, s, setS, napshot)
 	QF_SHARED_CLASS_FIELD_RW(QDateTime, m, setM, time)
 public:
 	bool isNull() const {return d == sharedNull().d;}

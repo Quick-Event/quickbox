@@ -54,10 +54,7 @@ QString DbFsAttrs::toString() const
 	ret += "inode: " + QString::number(inode()) + ", ";
 	ret += "pinode: " + QString::number(pinode()) + ", ";
 	ret += "type: " % typeName() % ", ";
-	ret += "name: " + name() + ", ";
-	ret += "deleted: ";
-	ret += isDeleted()? "Y": "N";
-	ret += ", copied in snapshot: " + QString::number(copiedInSnapshot());
+	ret += "name: " + name();
 	return ret;
 }
 

@@ -26,6 +26,8 @@ class QFCORE_DECL_EXPORT DbFsDriver : public QObject
 	Q_PROPERTY(QString tableName READ tableName WRITE setTableName NOTIFY tableNameChanged)
 	Q_PROPERTY(int snapshotNumber READ snapshotNumber WRITE setSnapshotNumber NOTIFY snapshotNumberChanged)
 public:
+	enum CreateOptions {CO_CREATE = 1, CO_TRIM = 2};
+public:
 	explicit DbFsDriver(QObject *parent = 0);
 	~DbFsDriver() Q_DECL_OVERRIDE;
 
@@ -42,6 +44,7 @@ public:
 	QList<DbFsAttrs> childAttributes(const QString &parent_path);
 	QByteArray get(const QString &path, bool *pok = nullptr);
 	bool put(const QString &path, const QByteArray &data);
+	bool truncate(const QString &path, int new_size);
 	bool mkfile(const QString &path, const QByteArray &data = QByteArray());
 	bool mkdir(const QString &path);
 	bool rmnod(const QString &path);
@@ -59,6 +62,7 @@ private:
 
 	bool checkWritePermissions();
 	bool mknod(const QString &path, DbFsAttrs::NodeType node_type, const QByteArray &data);
+	DbFsAttrs put_helper(const DbFsAttrs &attrs, const QByteArray &data, int options, int new_size);
 	/// @return attribudes of touched node
 	DbFsAttrs touch(const DbFsAttrs &attrs, bool create_node, bool delete_node, const QByteArray &data);
 

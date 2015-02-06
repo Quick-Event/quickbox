@@ -19,10 +19,7 @@ static const QString COL_PINODE("pinode");
 static const QString COL_TYPE("type");
 static const QString COL_NAME("name");
 static const QString COL_META("meta");
-static const QString COL_SNAPSHOT("snapshot");
 static const QString COL_MTIME("mtime");
-static const QString COL_DELETED("deleted");
-static const QString COL_COPIED_IN_SNAPSHOT("copiedInSnapshot");
 static const QString COL_DATA("data");
 static const QString COL_SIZE("size");
 
@@ -123,6 +120,11 @@ bool DbFsDriver::checkWritePermissions()
 {
 	bool ok = !isSnapshotReadOnly();
 	return ok;
+}
+
+DbFsAttrs DbFsDriver::put_helper(const DbFsAttrs &attrs, const QByteArray &data, int options, int new_size)
+{
+
 }
 
 DbFsAttrs DbFsDriver::touch(const DbFsAttrs &attrs, bool create_node, bool delete_node, const QByteArray &data)
@@ -252,10 +254,8 @@ DbFsAttrs DbFsDriver::sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &da
 			+ COL_ID + ", "
 			+ COL_INODE + ", "
 			+ COL_PINODE + ", "
-			+ COL_SNAPSHOT + ", "
 			+ COL_MTIME + ", "
 			+ COL_TYPE + ", "
-			+ COL_DELETED + ", "
 			+ COL_NAME + ", "
 			+ COL_DATA
 			+ ") "
@@ -263,10 +263,8 @@ DbFsAttrs DbFsDriver::sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &da
 			+ QString::number(ret.id()) + ", "
 			+ QString::number(ret.inode()) + ", "
 			+ QString::number(ret.pinode()) + ", "
-			+ QString::number(ret.snapshot()) + ", "
 			+ "now(), "
 			+ '\'' + ret.typeChar() + "', "
-			+ (ret.isDeleted()? "true": "false") + ", "
 			+ '\'' + ret.name() + "', "
 			+ ":data"
 			+ ")";
