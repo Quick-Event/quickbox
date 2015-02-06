@@ -26,7 +26,7 @@ class QFCORE_DECL_EXPORT DbFsDriver : public QObject
 	Q_PROPERTY(QString tableName READ tableName WRITE setTableName NOTIFY tableNameChanged)
 	Q_PROPERTY(int snapshotNumber READ snapshotNumber WRITE setSnapshotNumber NOTIFY snapshotNumberChanged)
 public:
-	enum PutNodeOptions {PN_CREATE = 1, PN_TRUNCATE = 2, PN_OVERRIDE = 4, PN_DELETE = 8};
+	enum PutNodeOptions {PN_CREATE = 1, PN_TRUNCATE = 2, PN_OVERRIDE = 4, PN_DELETE = 8, PN_RENAME = 16};
 public:
 	explicit DbFsDriver(QObject *parent = 0);
 	~DbFsDriver() Q_DECL_OVERRIDE;
@@ -44,6 +44,7 @@ public:
 	bool mkfile(const QString &path, const QByteArray &data = QByteArray());
 	bool mkdir(const QString &path);
 	bool rmnod(const QString &path);
+	bool mv(const QString &old_path, const QString &new_path);
 
 	static QPair<QString, QString> splitPathFile(const QString &path);
 	static QStringList splitPath(const QString &path);
@@ -56,7 +57,7 @@ private:
 
 	bool checkWritePermissions();
 	bool mknod(const QString &path, DbFsAttrs::NodeType node_type, const QByteArray &data);
-	DbFsAttrs put_helper(const QString &spath, DbFsAttrs::NodeType node_type, const QByteArray &data, int options, int new_size);
+	DbFsAttrs put_helper(const QString &spath, const DbFsAttrs &new_attrs, const QByteArray &data, int options, int new_size);
 
 	void cacheRemove(const QString &path, bool post_notify);
 	void postAttributesChangedNotify(const QString &path);
@@ -66,6 +67,7 @@ private:
 	DbFsAttrs sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &data);
 	bool sqlDeleteNode(int inode);
 	bool sqlUpdateNode(int inode, const QByteArray &data);
+	bool sqlRenameNode(int inode, const QString &new_name);
 
 	DbFsAttrs readAttrs(const QString &spath, int pinode);
 	QList<DbFsAttrs> readChildAttrs(int parent_inode);

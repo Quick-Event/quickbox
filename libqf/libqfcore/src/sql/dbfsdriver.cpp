@@ -125,7 +125,7 @@ static QByteArray truncateArray(const QByteArray &ba, int new_size)
 	return ret;
 }
 
-DbFsAttrs DbFsDriver::put_helper(const QString &spath, DbFsAttrs::NodeType node_type, const QByteArray &data, int options, int new_size)
+DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attrs, const QByteArray &data, int options, int new_size)
 {
 	qfLogFuncFrame() << spath;
 	DbFsAttrs ret;
@@ -140,7 +140,7 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, DbFsAttrs::NodeType node_
 		DbFsAttrs att = attributes(spath);
 		if(att.isNull()) {
 			if(options & PN_CREATE) {
-				if(node_type == DbFsAttrs::Invalid) {
+				if(new_attrs.type() == DbFsAttrs::Invalid) {
 					qfWarning() << "cannot create invalid node type";
 					break;
 				}
@@ -159,7 +159,7 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, DbFsAttrs::NodeType node_
 					ba = truncateArray(ba, new_size);
 				}
 				att.setName(pf.second);
-				att.setType(node_type);
+				att.setType(new_attrs.type());
 				att.setPinode(patt.inode());
 				ret = sqlInsertNode(att, ba);
 				invalid_cache_path = pf.first;
@@ -181,6 +181,13 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, DbFsAttrs::NodeType node_
 				}
 				if(sqlDeleteNode(att.inode()))
 					ret = att;
+			}
+			else if(options & PN_RENAME) {
+				if(sqlRenameNode(att.inode(), att.name())) {
+					ret = att;
+					QPair<QString, QString> pf = splitPathFile(spath);
+					invalid_cache_path = pf.first;
+				}
 			}
 			else {
 				if(att.type() != DbFsAttrs::File) {
@@ -265,8 +272,9 @@ void DbFsDriver::cacheRemove(const QString &path, bool post_notify)
 			QString s = it.key();
 			if(s.startsWith(path)) {
 				if(s.length() == path.length() || s[path.length()] == '/')
-					//qfInfo() << "remove cached attr on path:" << s;
 					it = m_attributeCache.erase(it);
+				else
+					++it;
 			}
 			else {
 				break;
@@ -279,8 +287,9 @@ void DbFsDriver::cacheRemove(const QString &path, bool post_notify)
 			QString s = it.key();
 			if(s.startsWith(path)) {
 				if(s.length() == path.length() || s[path.length()] == '/')
-					//qfInfo() << "remove cached dir on path:" << s;
 					it = m_directoryCache.erase(it);
+				else
+					++it;
 			}
 			else {
 				break;
@@ -426,13 +435,43 @@ bool DbFsDriver::sqlUpdateNode(int inode, const QByteArray &data)
 	QString qs = "UPDATE " + tableName() + " SET "
 			+ COL_MTIME + "=now(), "
 			+ COL_DATA + "=:data"
-			+ " WHERE inode=:inode";
+			+ " WHERE " + COL_INODE + "=:inode";
 	bool ok = q.prepare(qs);
 	if(!ok) {
 		qfError() << "SQLUPDATENODE Error:" << qs << '\n' << q.lastError().text();
 		return false;
 	}
 	q.bindValue(":data", data);
+	q.bindValue(":inode", inode);
+	sqlDebug() << qs;
+	ok = q.exec();
+	if(!ok) {
+		qfError() << "SQLUPDATENODE Error:" << qs << '\n' << q.lastError().text();
+		return false;
+	}
+	int n = q.numRowsAffected();
+	if(n == 0) {
+		qfError() << "SQLUPDATENODE Error 0 rows affected:" << qs;
+		return false;
+	}
+	return true;
+}
+
+bool DbFsDriver::sqlRenameNode(int inode, const QString &new_name)
+{
+	qfLogFuncFrame() << inode << new_name;
+	Connection conn = connection();
+	Query q(conn);
+	QString qs = "UPDATE " + tableName() + " SET "
+			+ COL_MTIME + "=now(), "
+			+ COL_NAME + "=:name"
+			+ " WHERE " + COL_INODE + "=:inode";
+	bool ok = q.prepare(qs);
+	if(!ok) {
+		qfError() << "SQLUPDATENODE Error:" << qs << '\n' << q.lastError().text();
+		return false;
+	}
+	q.bindValue(":name", new_name);
 	q.bindValue(":inode", inode);
 	sqlDebug() << qs;
 	ok = q.exec();
@@ -670,38 +709,6 @@ bool DbFsDriver::put(const QString &path, const QByteArray &data, bool create_if
 	}
 	DbFsAttrs att = put_helper(spath, DbFsAttrs::File, data, opts, -1);
 	return !att.isNull();
-	/*
-	cacheRemove(spath, O_POST_NOTIFY);
-	TableLocker locker(connection(), tableName(), O_LOCK_EXCLUSIVE);
-
-	bool ok = false;
-	do {
-		DbFsAttrs att = attributes(spath, debug_attrs);
-		if(spath == "a1.txt") {
-			att = debug_attrs;
-		}
-		if(att.isNull()) {
-			qfWarning() << "PUT to invalid path:" << spath;
-			break;
-		}
-		if(att.type() == DbFsAttrs::Dir) {
-			qfWarning() << "PUT to directory:" << spath;
-			break;
-		}
-		QByteArray ba = data;
-		//if(ba.isEmpty())
-		//	ba = ".";
-		QF_ASSERT_EX(!ba.isNull(), "attempt to insert NULL data");
-		att = touch(att, !O_CREATE, !O_DELETE, ba);
-		if(att.isNull()) {
-			qfWarning() << "ERROR detach node on path:" << spath;
-			break;
-		}
-		locker.commit();
-		ok = true;
-	} while(false);
-	return ok;
-	*/
 }
 
 bool DbFsDriver::truncate(const QString &path, int new_size)
@@ -750,6 +757,27 @@ bool DbFsDriver::rmnod(const QString &path)
 	opts |= PN_DELETE;
 	opts |= PN_OVERRIDE;
 	DbFsAttrs att = put_helper(spath, DbFsAttrs::Invalid, QByteArray(), opts, -1);
+	return !att.isNull();
+}
+
+bool DbFsDriver::mv(const QString &old_path, const QString &new_path)
+{
+	qfLogFuncFrame() << old_path << "->" << new_path;
+
+	QString sopath = cleanPath(old_path);
+	QString snpath = cleanPath(new_path);
+	QPair<QString, QString> opf = splitPathFile(sopath);
+	QPair<QString, QString> npf = splitPathFile(snpath);
+	if(opf.first != npf.first) {
+		qfError() << old_path << "->" << new_path << "move across directories is not supported yet";
+		return false;
+	}
+	int opts = 0;
+	opts |= PN_OVERRIDE;
+	opts |= PN_RENAME;
+	DbFsAttrs att;
+	att.setName(npf.second);
+	att = put_helper(sopath, att, QByteArray(), opts, -1);
 	return !att.isNull();
 }
 

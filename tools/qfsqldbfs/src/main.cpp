@@ -221,6 +221,7 @@ int main(int argc, char *argv[])
 	fuse_ops.chmod = qfsqldbfs_chmod;
 	fuse_ops.chown = qfsqldbfs_chown;
 	fuse_ops.create = qfsqldbfs_create;
+	fuse_ops.rename = qfsqldbfs_rename;
 
 	fuse_handle = fuse_new(fuse_channel, &fuse_arguments, &fuse_ops, sizeof(fuse_ops), NULL);
 	if (fuse_handle == NULL){

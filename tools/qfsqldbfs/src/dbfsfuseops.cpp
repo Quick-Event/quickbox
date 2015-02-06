@@ -376,6 +376,7 @@ int qfsqldbfs_write(const char *path, const char *buf, size_t size, off_t offset
 			return -EFAULT;
 		}
 	}
+	of.setDataLoaded(true);
 	of.setDataDirty(true);
 	QByteArray &ba = of.dataRef();
 	int len = (int)size + offset;
@@ -686,34 +687,15 @@ int qfsqldbfs_chown(const char *path, uid_t uid, gid_t gid)
 
 /** Rename a file */
 // both path and newpath are fs-relative
-/*
+
 int qfsqldbfs_rename(const char *path, const char *new_path)
 {
 	qfLogFuncFrame() << path << "fnew_path:" << new_path;
 	MUTEX_LOCKER;
 
-	int ret = 0;
-	QString spath = QString::fromUtf8(path);
-	do {
-		if(!s_openFiles.contains(handle)) {
-			qfDebug() << "File is not open!";
-			ret = -EBADF;
-			break;
-		}
-		OpenFile &of = s_openFiles[handle];
-		if(!of.isDataLoaded()) {
-			if(!loadData(spath, of)) {
-				qfWarning() << spath << "handle:" << handle << "Error load data";
-				ret = -EFAULT;
-				break;
-			}
-		}
-		int old_size = of.data().size();
-		if(new_size != old_size) {
-			of.setDataDirty(true);
-			of.dataRef().resize(new_size);
-		}
-	} while(false);
+	QString sopath = QString::fromUtf8(path);
+	QString snpath = QString::fromUtf8(new_path);
+	int ret = dbfsdrv()->mv(sopath, snpath);
 	return ret;
 }
-*/
+

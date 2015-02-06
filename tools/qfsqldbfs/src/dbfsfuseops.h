@@ -33,5 +33,6 @@ int qfsqldbfs_ftruncate(const char *path, off_t new_size, struct fuse_file_info 
 int qfsqldbfs_rename(const char *path, const char *new_path);
 int qfsqldbfs_chmod(const char *path, mode_t mode);
 int qfsqldbfs_chown(const char *path, uid_t uid, gid_t gid);
+int qfsqldbfs_rename(const char *path, const char *new_path);
 
 #endif // DBFSFUSEOPS_H
