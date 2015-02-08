@@ -455,6 +455,7 @@ int qfsqldbfs_flush(const char *path, struct fuse_file_info *fi)
 				break;
 			}
 			of.setDataDirty(false);
+			setOpenFile(handle, of);
 		}
 	} while(false);
 	qfDebug() << "\t ret:" << ret;
@@ -695,7 +696,7 @@ int qfsqldbfs_rename(const char *path, const char *new_path)
 
 	QString sopath = QString::fromUtf8(path);
 	QString snpath = QString::fromUtf8(new_path);
-	int ret = dbfsdrv()->mv(sopath, snpath);
+	int ret = dbfsdrv()->rename(sopath, snpath)? 0: -EFAULT;
 	return ret;
 }
 

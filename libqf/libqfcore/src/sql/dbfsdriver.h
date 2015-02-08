@@ -44,7 +44,7 @@ public:
 	bool mkfile(const QString &path, const QByteArray &data = QByteArray());
 	bool mkdir(const QString &path);
 	bool rmnod(const QString &path);
-	bool mv(const QString &old_path, const QString &new_path);
+	bool rename(const QString &old_path, const QString &new_path);
 
 	static QPair<QString, QString> splitPathFile(const QString &path);
 	static QStringList splitPath(const QString &path);

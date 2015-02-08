@@ -183,9 +183,21 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 					ret = att;
 			}
 			else if(options & PN_RENAME) {
-				if(sqlRenameNode(att.inode(), att.name())) {
+				QPair<QString, QString> pf = splitPathFile(spath);
+				QString new_path = joinPath(pf.first, new_attrs.name());
+				DbFsAttrs check_new_exists_attrs = readAttrs(new_path, 0);
+				if(!check_new_exists_attrs.isNull()) {
+					/// old nd new name have to be a same type
+					if(att.type() != check_new_exists_attrs.type()) {
+						qfWarning() << spath << "and" << new_path << "are of different types";
+						break;
+					}
+					/// remove existing file/dir with new name
+					sqlDeleteNode(check_new_exists_attrs.inode());
+				}
+				if(sqlRenameNode(att.inode(), new_attrs.name())) {
+					att.setName(new_attrs.name());
 					ret = att;
-					QPair<QString, QString> pf = splitPathFile(spath);
 					invalid_cache_path = pf.first;
 				}
 			}
@@ -270,9 +282,12 @@ void DbFsDriver::cacheRemove(const QString &path, bool post_notify)
 		auto it = m_attributeCache.lowerBound(path);
 		while(it != m_attributeCache.end()) {
 			QString s = it.key();
+			qfInfo() << "checking:" << s;
 			if(s.startsWith(path)) {
-				if(s.length() == path.length() || s[path.length()] == '/')
+				if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/') {
+					qfWarning() << "removing" << s << "from file cache";
 					it = m_attributeCache.erase(it);
+				}
 				else
 					++it;
 			}
@@ -286,7 +301,7 @@ void DbFsDriver::cacheRemove(const QString &path, bool post_notify)
 		while(it != m_directoryCache.end()) {
 			QString s = it.key();
 			if(s.startsWith(path)) {
-				if(s.length() == path.length() || s[path.length()] == '/')
+				if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/')
 					it = m_directoryCache.erase(it);
 				else
 					++it;
@@ -528,7 +543,8 @@ bool DbFsDriver::createDbFs()
 					+ COL_NAME + " character varying, "
 					+ COL_META + " character varying, "
 					+ COL_DATA + " bytea, "
-					+ "CONSTRAINT " + tableName() + "_pkey PRIMARY KEY (" + COL_INODE + ")"
+					+ "CONSTRAINT " + tableName() + "_pkey PRIMARY KEY (" + COL_INODE + "), "
+					+ "CONSTRAINT " + tableName() + "_pinode_name_key UNIQUE (" + COL_PINODE + ", " + COL_NAME + ") "
 					+ ") WITH (OIDS=FALSE)";
 			qlst << "COMMENT ON COLUMN " + tableName() + ".pinode IS 'number of parent directory inode'";
 			qlst << "CREATE INDEX " + tableName() + "_pinode_idx ON " + tableName() + " (pinode)";
@@ -760,7 +776,7 @@ bool DbFsDriver::rmnod(const QString &path)
 	return !att.isNull();
 }
 
-bool DbFsDriver::mv(const QString &old_path, const QString &new_path)
+bool DbFsDriver::rename(const QString &old_path, const QString &new_path)
 {
 	qfLogFuncFrame() << old_path << "->" << new_path;
 
