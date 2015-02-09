@@ -239,6 +239,29 @@ int main(int argc, char *argv[])
 
 	set_signal_handlers();
 
+	{
+		/// setup SQL notify
+		QSqlDatabase notify_db = QSqlDatabase::addDatabase("QPSQL", "DBFS_Notify");
+		notify_db.setHostName(db.hostName());
+		notify_db.setPort(db.port());
+		notify_db.setUserName(db.userName());
+		notify_db.setPassword(db.password());
+		notify_db.setDatabaseName(db.databaseName());
+		bool ok = notify_db.open();
+		if(!ok) {
+			qfError() << "Error connect DBFS notify connection" << notify_db.lastError().text();
+		}
+		else {
+			QSqlDriver *drv = notify_db.driver();
+			//qRegisterMetaType<QSqlDriver::NotificationSource>("QSqlDriver::NotificationSource");
+			QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), dbfs_drv, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
+			QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), app, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
+			QObject::connect(drv, SIGNAL(notification(QString)), app, SLOT(onSqlNotify2(QString)));
+			drv->subscribeToNotification(qfs::DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE);
+			qfInfo() << drv << "subscribedToNotifications:" << drv->subscribedToNotifications().join(", ");
+		}
+	}
+
 	app->exec();
 
 	qfInfo() << "Waiting for FUSE thread to join ...";

@@ -8,10 +8,17 @@
 #include <QSqlError>
 #include <QDir>
 #include <QStringBuilder>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QMutex>
+#include <QMutexLocker>
 
 #define sqlDebug qfInfo
 
 using namespace qf::core::sql;
+
+static QMutex s_cacheRemoveMutex;
 
 //static const QString COL_ID("id");
 static const QString COL_INODE("inode");
@@ -26,9 +33,12 @@ static const QString COL_SIZE("size");
 static const QString O_LOCK_EXCLUSIVE = QStringLiteral("EXCLUSIVE");
 //static const bool O_CREATE = true;
 //static const bool O_DELETE = true;
+static QString CRM_SINGLE_STR = QStringLiteral("SINGLE");
+static QString CRM_RECURSIVE_STR = QStringLiteral("RECURSIVE");
+static QString CRM_NOOP_STR = QStringLiteral("NOOP");
 static const bool O_POST_NOTIFY = true;
 
-static const QString CHANNEL_INVALIDATE_DBFSDRIVER_CACHE = "invalidateDbFsDriverCache";
+const QString DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE = QStringLiteral("invalidateDbFsDriverCache");
 
 DbFsDriver::DbFsDriver(QObject *parent)
 	: QObject(parent)
@@ -45,11 +55,11 @@ DbFsAttrs DbFsDriver::attributes(const QString &path)
 {
 	//qfLogFuncFrame() << path;
 	QString spath = cleanPath(path);
-	if(!m_attributeCache.contains(spath)) {
+	if(!m_fileAttributesCache.contains(spath)) {
 		DbFsAttrs a = readAttrs(spath, 0);
-		m_attributeCache[spath] = a;
+		m_fileAttributesCache[spath] = a;
 	}
-	DbFsAttrs ret = m_attributeCache.value(spath);
+	DbFsAttrs ret = m_fileAttributesCache.value(spath);
 	//qfDebug() << ret.toString();
 	return ret;
 }
@@ -75,7 +85,7 @@ QList<DbFsAttrs> DbFsDriver::childAttributes(const QString &parent_path)
 			for(auto attrs : ret) {
 				QString path = joinPath(clean_ppath, attrs.name());
 				//qfDebug() << clean_ppath + "name:" << attrs.name() << "->" << path;
-				m_attributeCache[path] = attrs;
+				m_fileAttributesCache[path] = attrs;
 				dir_entry_list << attrs.name();
 			}
 		}
@@ -134,10 +144,15 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 
 	do {
 		TableLocker locker(connection(), tableName(), O_LOCK_EXCLUSIVE);
-		cacheRemove(spath, !O_POST_NOTIFY);
-		QString invalid_cache_path = spath;
+		//cacheRemove(spath, !O_POST_NOTIFY);
+		QString invalid_file_cache_path;
+		CacheRemoveMode invalid_file_cache_mode = CRM_Noop;
+		QString invalid_file_cache_path2;
+		CacheRemoveMode invalid_file_cache_mode2 = CRM_Noop;
+		QString invalid_dir_cache_path;
+		CacheRemoveMode invalid_dir_cache_mode = CRM_Noop;
 
-		DbFsAttrs att = attributes(spath);
+		DbFsAttrs att = readAttrs(spath, 0);
 		if(att.isNull()) {
 			if(options & PN_CREATE) {
 				if(new_attrs.type() == DbFsAttrs::Invalid) {
@@ -145,7 +160,7 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 					break;
 				}
 				QPair<QString, QString> pf = splitPathFile(spath);
-				DbFsAttrs patt = attributes(pf.first);
+				DbFsAttrs patt = readAttrs(pf.first, 0);
 				if(patt.isNull()) {
 					qfWarning() << "cannot create node:" << spath << " parent dir not exits";
 					break;
@@ -162,7 +177,11 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 				att.setType(new_attrs.type());
 				att.setPinode(patt.inode());
 				ret = sqlInsertNode(att, ba);
-				invalid_cache_path = pf.first;
+
+				invalid_file_cache_path = spath;
+				invalid_file_cache_mode = CRM_Single;
+				invalid_dir_cache_path = pf.first;
+				invalid_dir_cache_mode = CRM_Single;
 			}
 			else {
 				qfWarning() << "PUT to not existing path:" << spath;
@@ -175,12 +194,19 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 				break;
 			}
 			if(options & PN_DELETE) {
-				if(att.type() == DbFsAttrs::Dir && !childAttributes(spath).isEmpty()) {
+				if(att.type() == DbFsAttrs::Dir && !readChildAttrs(att.inode()).isEmpty()) {
 					qfWarning() << "cannot delete not empty path:" << spath;
 					break;
 				}
-				if(sqlDeleteNode(att.inode()))
+				if(sqlDeleteNode(att.inode())) {
 					ret = att;
+
+					invalid_file_cache_path = spath;
+					invalid_file_cache_mode = CRM_Single;
+					QPair<QString, QString> pf = splitPathFile(spath);
+					invalid_dir_cache_path = pf.first;
+					invalid_dir_cache_mode = CRM_Single;
+				}
 			}
 			else if(options & PN_RENAME) {
 				QPair<QString, QString> pf = splitPathFile(spath);
@@ -198,7 +224,13 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 				if(sqlRenameNode(att.inode(), new_attrs.name())) {
 					att.setName(new_attrs.name());
 					ret = att;
-					invalid_cache_path = pf.first;
+
+					invalid_file_cache_path = new_path;
+					invalid_file_cache_mode = CRM_Recursive;
+					invalid_file_cache_path2 = spath;
+					invalid_file_cache_mode2 = CRM_Recursive;
+					invalid_dir_cache_path = pf.first;
+					invalid_dir_cache_mode = CRM_Recursive;
 				}
 			}
 			else {
@@ -215,124 +247,129 @@ DbFsAttrs DbFsDriver::put_helper(const QString &spath, const DbFsAttrs &new_attr
 					}
 					ba = truncateArray(ba, new_size);
 				}
-				if(sqlUpdateNode(att.inode(), ba))
+				if(sqlUpdateNode(att.inode(), ba)) {
+					invalid_file_cache_path = spath;
+					invalid_file_cache_mode = CRM_Single;
 					ret = att;
+				}
 			}
 		}
 		locker.commit();
-		cacheRemove(invalid_cache_path, O_POST_NOTIFY);
+		cacheRemove(invalid_file_cache_path, invalid_file_cache_mode, invalid_dir_cache_path, invalid_dir_cache_mode, O_POST_NOTIFY);
+		if(invalid_file_cache_mode2 != CRM_Noop) {
+			cacheRemove(invalid_file_cache_path2, invalid_file_cache_mode2, QString(), CRM_Noop, O_POST_NOTIFY);
+		}
 	} while(false);
 
 	return ret;
 }
-/*
-DbFsAttrs DbFsDriver::touch(const DbFsAttrs &attrs, bool create_node, bool delete_node, const QByteArray &data)
+
+QString DbFsDriver::cacheRemoveModeToString(DbFsDriver::CacheRemoveMode opt)
 {
-	qfLogFuncFrame() << attrs.toString() << "create:" << create_node << "delete:" << delete_node;
-	DbFsAttrs ret;
-	int latest_sn = latestSnapshotNumber();
-	if(!create_node) {
-		if(attrs.snapshot() < latestSnapshotNumber()) {
-			/// node exists in previous snapshot
-			if(delete_node) {
-				if(!attrs.isDeleted()) {
-					/// create empty node to mark it deleted in current snapshot
-					ret = attrs;
-					ret.setDeleted(true);
-					ret.setSnapshot(latest_sn);
-					ret = sqlInsertNode(ret, QByteArray());
-				}
-				else {
-					qfWarning() << "Node is deleted already:" << attrs.toString();
-					return DbFsAttrs();
-				}
-			}
-			else {
-				/// create copy of node for latest snapshot
-				ret = attrs;
-				ret.setSnapshot(latest_sn);
-				ret = sqlInsertNode(ret, data);
-			}
-		}
-		else {
-			/// existing node modified in current version
-			if(delete_node) {
-				/// delete existing not versioned node
-				ret = sqlDeleteNode(attrs);
-			}
-			else {
-				/// change mtime and data
-				ret = attrs;
-				ret = sqlUpdateNode(ret, data);
-			}
-		}
+	switch(opt) {
+	case CRM_Single:
+		return CRM_SINGLE_STR;
+	case CRM_Recursive:
+		return CRM_RECURSIVE_STR;
+	default:
+		return CRM_NOOP_STR;
 	}
-	else {
-		/// create brand new node
-		ret = attrs;
-		ret.setSnapshot(latest_sn);
-		ret = sqlInsertNode(ret, data);
-	}
-	return ret;
+	return CRM_NOOP_STR;
 }
-*/
-void DbFsDriver::cacheRemove(const QString &path, bool post_notify)
+
+DbFsDriver::CacheRemoveMode DbFsDriver::cacheRemoveModeFromString(const QString &str)
 {
-	{
-		auto it = m_attributeCache.lowerBound(path);
-		while(it != m_attributeCache.end()) {
+	if(str == CRM_SINGLE_STR)
+		return CRM_Single;
+	if(str == CRM_RECURSIVE_STR)
+		return CRM_Recursive;
+	return CRM_Noop;
+}
+
+template <class T>
+void DbFsDriver::cacheRemove_helper(T &map, const QString &path, DbFsDriver::CacheRemoveMode mode)
+{
+	qfLogFuncFrame() << "path:" << path << DbFsDriver::cacheRemoveModeToString(mode);
+	if(mode != DbFsDriver::CRM_Noop) {
+		auto it = map.lowerBound(path);
+		while(it != map.end()) {
 			QString s = it.key();
 			qfInfo() << "checking:" << s;
 			if(s.startsWith(path)) {
-				if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/') {
-					qfWarning() << "removing" << s << "from file cache";
-					it = m_attributeCache.erase(it);
+				if(mode == DbFsDriver::CRM_Single) {
+					if(s == path) {
+						qfWarning() << "removing" << s << "from cache";
+						map.erase(it);
+						break;
+					}
 				}
-				else
-					++it;
+				else {
+					if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/') {
+						qfWarning() << "removing" << s << "from cache";
+						it = map.erase(it);
+					}
+					else {
+						++it;
+					}
+				}
 			}
 			else {
 				break;
 			}
 		}
-	}
-	{
-		auto it = m_directoryCache.lowerBound(path);
-		while(it != m_directoryCache.end()) {
-			QString s = it.key();
-			if(s.startsWith(path)) {
-				if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/')
-					it = m_directoryCache.erase(it);
-				else
-					++it;
-			}
-			else {
-				break;
-			}
-		}
-	}
-	if(post_notify) {
-		postAttributesChangedNotify(path);
 	}
 }
 
-void DbFsDriver::postAttributesChangedNotify(const QString &path)
+void DbFsDriver::cacheRemove(const QString &file_path, CacheRemoveMode file_mode, const QString &dir_path, CacheRemoveMode dir_mode, bool post_notify)
+{
+	qfLogFuncFrame() << "file:" << file_path << cacheRemoveModeToString(file_mode) << "dir:" << dir_path << cacheRemoveModeToString(dir_mode) << "post notify:" << post_notify;
+	{
+		QMutexLocker locker(&s_cacheRemoveMutex);
+		cacheRemove_helper(m_fileAttributesCache, file_path, file_mode);
+		cacheRemove_helper(m_directoryCache, dir_path, dir_mode);
+	}
+	if(post_notify) {
+		QString pay_load = QString("{")
+				+ "\"file\": {\"path\":\"%1\", \"mode\": \"%2\"}, "
+				+ "\"dir\": {\"path\":\"%3\", \"mode\": \"%4\"}"
+				+ "}";
+		pay_load = pay_load.arg(file_path).arg(cacheRemoveModeToString(file_mode))
+				.arg(dir_path).arg(cacheRemoveModeToString(dir_mode));
+		postAttributesChangedNotify(pay_load);
+	}
+}
+
+void DbFsDriver::postAttributesChangedNotify(const QString &pay_load)
 {
 	Query q(connection());
-	QString qs = "NOTIFY " + CHANNEL_INVALIDATE_DBFSDRIVER_CACHE + ", '" + path + "'";
+	QString qs = "NOTIFY " + CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE + ", '" + pay_load + "'";
 	sqlDebug() << qs;
 	if(!q.exec(qs)) {
 		qfError() << "postAttributesChangedNotify Error:" << qs << q.lastError().text();
 	}
 }
 
-void DbFsDriver::onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant payload)
+void DbFsDriver::onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant &payload)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << channel << payload;
+	qfInfo() << "GOT NOTIFY" << channel << payload;
 	if(source != QSqlDriver::SelfSource) {
-		if(channel == CHANNEL_INVALIDATE_DBFSDRIVER_CACHE) {
-			QString path = payload.toString();
-			cacheRemove(path, !O_POST_NOTIFY);
+		if(channel == CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE) {
+			QJsonParseError err;
+			QJsonDocument json = QJsonDocument::fromJson(payload.toString().toUtf8(), &err);
+			if(err.error == QJsonParseError::NoError) {
+				QJsonObject o = json.object().value("file").toObject();
+				QString file_path = o.value("path").toString();
+				CacheRemoveMode file_mode = DbFsDriver::cacheRemoveModeFromString(o.value("mode").toString());
+				o = json.object().value("dir").toObject();
+				QString dir_path = o.value("path").toString();
+				CacheRemoveMode dir_mode = DbFsDriver::cacheRemoveModeFromString(o.value("mode").toString());
+
+				cacheRemove(file_path, file_mode, dir_path, dir_mode, !O_POST_NOTIFY);
+			}
+			else {
+				qfError() << "invalid SQL notify - channel:" << channel << " payload:" << payload << "error:" << err.errorString();
+			}
 		}
 	}
 }
@@ -702,7 +739,7 @@ QByteArray DbFsDriver::get(const QString &path, bool *pok)
 		if(attrs2.mtime() > attrs.mtime()) {
 			/// cached attributes are older than loded ones, refresh cache record
 			qfDebug() << "Cached data invalid and updated from data query.";
-			m_attributeCache[spath] = attrs2;
+			m_fileAttributesCache[spath] = attrs2;
 		}
 		ret = q.value(COL_DATA).toByteArray();
 		ok = true;

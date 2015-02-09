@@ -2,6 +2,8 @@
 #define THEAPP_H
 
 #include <QCoreApplication>
+#include <QSqlDriver>
+#include <QVariant>
 
 class TheApp : public QCoreApplication
 {
@@ -11,6 +13,8 @@ public:
 	~TheApp() Q_DECL_OVERRIDE {}
 
 	Q_SLOT void onFuseThreadFinished();
+	Q_SLOT void onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant &payload);
+	Q_SLOT void onSqlNotify2(const QString &channel);
 };
 
 #endif // THEAPP_H

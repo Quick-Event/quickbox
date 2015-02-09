@@ -27,6 +27,9 @@ class QFCORE_DECL_EXPORT DbFsDriver : public QObject
 	Q_PROPERTY(int snapshotNumber READ snapshotNumber WRITE setSnapshotNumber NOTIFY snapshotNumberChanged)
 public:
 	enum PutNodeOptions {PN_CREATE = 1, PN_TRUNCATE = 2, PN_OVERRIDE = 4, PN_DELETE = 8, PN_RENAME = 16};
+	static const QString CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE;
+private:
+	enum CacheRemoveMode {CRM_Noop, CRM_Single, CRM_Recursive};
 public:
 	explicit DbFsDriver(QObject *parent = 0);
 	~DbFsDriver() Q_DECL_OVERRIDE;
@@ -59,9 +62,13 @@ private:
 	bool mknod(const QString &path, DbFsAttrs::NodeType node_type, const QByteArray &data);
 	DbFsAttrs put_helper(const QString &spath, const DbFsAttrs &new_attrs, const QByteArray &data, int options, int new_size);
 
-	void cacheRemove(const QString &path, bool post_notify);
-	void postAttributesChangedNotify(const QString &path);
-	Q_SLOT void onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant payload);
+	static QString cacheRemoveModeToString(CacheRemoveMode opt);
+	static CacheRemoveMode cacheRemoveModeFromString(const QString &str);
+	template <class T>
+	void cacheRemove_helper(T &map, const QString &path, DbFsDriver::CacheRemoveMode mode);
+	void cacheRemove(const QString &file_path, CacheRemoveMode file_mode, const QString &dir_path, CacheRemoveMode dir_mode, bool post_notify);
+	void postAttributesChangedNotify(const QString &pay_load);
+	Q_SLOT void onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant &payload);
 
 	DbFsAttrs sqlSelectNode(int inode, QByteArray *pdata = nullptr);
 	DbFsAttrs sqlInsertNode(const DbFsAttrs &attrs, const QByteArray &data);
@@ -72,8 +79,8 @@ private:
 	DbFsAttrs readAttrs(const QString &spath, int pinode);
 	QList<DbFsAttrs> readChildAttrs(int parent_inode);
 private:
-	typedef QMap<QString, DbFsAttrs> AttributesCache;
-	AttributesCache m_attributeCache;
+	typedef QMap<QString, DbFsAttrs> FileAttributesCache;
+	FileAttributesCache m_fileAttributesCache;
 	typedef QMap<QString, QStringList> DirectoryCache;
 	DirectoryCache m_directoryCache;
 	int m_latestSnapshotNumber = -1;
