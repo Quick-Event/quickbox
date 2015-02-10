@@ -254,9 +254,8 @@ int main(int argc, char *argv[])
 		else {
 			QSqlDriver *drv = notify_db.driver();
 			//qRegisterMetaType<QSqlDriver::NotificationSource>("QSqlDriver::NotificationSource");
-			QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), dbfs_drv, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
-			QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), app, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
-			QObject::connect(drv, SIGNAL(notification(QString)), app, SLOT(onSqlNotify2(QString)));
+			QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), dbfs_drv, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)), Qt::DirectConnection);
+			//QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), app, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
 			drv->subscribeToNotification(qfs::DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE);
 			qfInfo() << drv << "subscribedToNotifications:" << drv->subscribedToNotifications().join(", ");
 		}

@@ -13,8 +13,7 @@ public:
 	~TheApp() Q_DECL_OVERRIDE {}
 
 	Q_SLOT void onFuseThreadFinished();
-	Q_SLOT void onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant &payload);
-	Q_SLOT void onSqlNotify2(const QString &channel);
+	//Q_SLOT void onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant &payload);
 };
 
 #endif // THEAPP_H

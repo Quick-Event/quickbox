@@ -13,6 +13,7 @@
 #include <QJsonObject>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QCoreApplication>
 
 #define sqlDebug qfInfo
 
@@ -38,7 +39,7 @@ static QString CRM_RECURSIVE_STR = QStringLiteral("RECURSIVE");
 static QString CRM_NOOP_STR = QStringLiteral("NOOP");
 static const bool O_POST_NOTIFY = true;
 
-const QString DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE = QStringLiteral("invalidateDbFsDriverCache");
+const QString DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE = QStringLiteral("invalidate_dbfs_driver_cache");
 
 DbFsDriver::DbFsDriver(QObject *parent)
 	: QObject(parent)
@@ -68,7 +69,6 @@ QList<DbFsAttrs> DbFsDriver::childAttributes(const QString &parent_path)
 {
 	qfLogFuncFrame() << parent_path;
 	QString clean_ppath = cleanPath(parent_path);
-	qfDebug() << "\t cleaned parent path:" << clean_ppath;
 	QList<DbFsAttrs> ret;
 	if(m_directoryCache.contains(clean_ppath)) {
 		for(QString entry : m_directoryCache.value(clean_ppath)) {
@@ -331,10 +331,12 @@ void DbFsDriver::cacheRemove(const QString &file_path, CacheRemoveMode file_mode
 	if(post_notify) {
 		QString pay_load = QString("{")
 				+ "\"file\": {\"path\":\"%1\", \"mode\": \"%2\"}, "
-				+ "\"dir\": {\"path\":\"%3\", \"mode\": \"%4\"}"
+				+ "\"dir\": {\"path\":\"%3\", \"mode\": \"%4\"}, "
+				+ "\"pid\": \"%5\""
 				+ "}";
 		pay_load = pay_load.arg(file_path).arg(cacheRemoveModeToString(file_mode))
-				.arg(dir_path).arg(cacheRemoveModeToString(dir_mode));
+				.arg(dir_path).arg(cacheRemoveModeToString(dir_mode))
+				.arg(QCoreApplication::applicationPid());
 		postAttributesChangedNotify(pay_load);
 	}
 }
@@ -352,20 +354,28 @@ void DbFsDriver::postAttributesChangedNotify(const QString &pay_load)
 void DbFsDriver::onSqlNotify(const QString &channel, QSqlDriver::NotificationSource source, const QVariant &payload)
 {
 	qfLogFuncFrame() << channel << payload;
-	qfInfo() << "GOT NOTIFY" << channel << payload;
+	//qfWarning() << "GOT NOTIFY" << channel << payload;
 	if(source != QSqlDriver::SelfSource) {
 		if(channel == CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE) {
 			QJsonParseError err;
 			QJsonDocument json = QJsonDocument::fromJson(payload.toString().toUtf8(), &err);
 			if(err.error == QJsonParseError::NoError) {
-				QJsonObject o = json.object().value("file").toObject();
-				QString file_path = o.value("path").toString();
-				CacheRemoveMode file_mode = DbFsDriver::cacheRemoveModeFromString(o.value("mode").toString());
-				o = json.object().value("dir").toObject();
-				QString dir_path = o.value("path").toString();
-				CacheRemoveMode dir_mode = DbFsDriver::cacheRemoveModeFromString(o.value("mode").toString());
+				QString pid = json.object().value("pid").toString();
+				if(pid == QString::number(QCoreApplication::applicationPid())) {
+					// ignore own messages
+					qfDebug() << "self notification - ignored";
+				}
+				else {
+					QJsonObject o = json.object().value("file").toObject();
+					QString file_path = o.value("path").toString();
+					CacheRemoveMode file_mode = DbFsDriver::cacheRemoveModeFromString(o.value("mode").toString());
+					o = json.object().value("dir").toObject();
+					QString dir_path = o.value("path").toString();
+					CacheRemoveMode dir_mode = DbFsDriver::cacheRemoveModeFromString(o.value("mode").toString());
 
-				cacheRemove(file_path, file_mode, dir_path, dir_mode, !O_POST_NOTIFY);
+					cacheRemove(file_path, file_mode, dir_path, dir_mode, !O_POST_NOTIFY);
+				}
+
 			}
 			else {
 				qfError() << "invalid SQL notify - channel:" << channel << " payload:" << payload << "error:" << err.errorString();
@@ -651,10 +661,7 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &spath, int pinode)
 	}
 	else {
 		QString cols = attributesColumns();
-		QString single_select =
-				"SELECT %3 FROM " + tableName() + " WHERE inode = (\n" +
-				"  SELECT inode FROM " + tableName() + " WHERE name='%1' AND pinode=%2 \n" +
-				")\n";
+		QString single_select = "SELECT %3 FROM " + tableName() + " WHERE name='%1' AND pinode=(%2)";
 		QString qs = QString::number(pinode);
 		for(int i=0; i<pathlst.count(); i++) {
 			QString p = pathlst.value(i);

@@ -333,9 +333,9 @@ int qfsqldbfs_read(const char *path, char *buf, size_t size, off_t offset, struc
 	if (uoffset < len) {
 		if (uoffset + size > len)
 			size = len - offset;
-		qfInfo() << "offset:" << uoffset << "size:" << size << "data:" << data;
+		//qfInfo() << "offset:" << uoffset << "size:" << size << "data:" << data;
 		memcpy(buf, data + uoffset, size);
-		qfInfo() << size << "####" << buf;
+		//qfInfo() << size << "####" << buf;
 	}
 	else {
 		size = 0;
