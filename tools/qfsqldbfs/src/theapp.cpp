@@ -8,7 +8,7 @@ TheApp::TheApp(int &argc, char **argv)
 }
 
 void TheApp::onFuseThreadFinished()
-{
+{ ///zmena
 	qfInfo() << "calling core application quit";
 	quit();
 }
