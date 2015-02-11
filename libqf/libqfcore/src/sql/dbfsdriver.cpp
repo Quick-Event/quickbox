@@ -302,6 +302,9 @@ void DbFsDriver::cacheRemove_helper(T &map, const QString &path, DbFsDriver::Cac
 						map.erase(it);
 						break;
 					}
+					else {
+						++it;
+					}
 				}
 				else {
 					if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/') {
