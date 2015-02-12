@@ -62,6 +62,7 @@ public:
 	Q_SLOT void updateCaptionFrame();
 protected:
 	QQmlListProperty<QWidget> widgets();
+	Frame* centralFrame();
 private:
 	Q_SLOT void savePersistentSettings();
 	void classBegin() Q_DECL_OVERRIDE;

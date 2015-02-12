@@ -1,0 +1,6 @@
+<RCC>
+	<qresource prefix="/quickevent/CardReadout">
+		<file>images/comm.png</file>
+		<file>images/sql.png</file>
+    </qresource>
+</RCC>

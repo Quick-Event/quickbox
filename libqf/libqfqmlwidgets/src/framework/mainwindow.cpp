@@ -239,6 +239,7 @@ void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
 
 void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 {
+	QF_ASSERT(widget != nullptr, "Widget is NULL", return);
 	if(!feature_id.isEmpty()) {
 		if(widget->featureId().isEmpty()) {
 			qfDebug() << "setting" << widget << "featureId to:" << feature_id;

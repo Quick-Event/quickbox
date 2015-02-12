@@ -5,7 +5,7 @@ CONFIG += plugin
 CONFIG += c++11
 QT += qml widgets
 
-PLUGIN_MODULE_NAME = Logging
+PLUGIN_MODULE_NAME = CardReadout
 
 win32: LIB_DIR_NAME = bin
 else:  LIB_DIR_NAME = lib
@@ -14,8 +14,11 @@ DESTDIR = $$OUT_PWD/../../../../$$LIB_DIR_NAME
 TARGET  = QE$${PLUGIN_MODULE_NAME}Plugin
 
 INCLUDEPATH += $$PWD/../../../../libqf/libqfcore/include
+INCLUDEPATH += $$PWD/../../../../libqf/libqfqmlwidgets/include
 
-LIBS += -lqfcore
+message(INCLUDEPATH: $$INCLUDEPATH)
+
+LIBS += -lqfcore -lqfqmlwidgets
 
 LIBS += -L$$OUT_PWD/../../../../$$LIB_DIR_NAME
 

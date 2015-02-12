@@ -4,5 +4,6 @@ CONFIG += ordered
 SUBDIRS += \
 	Core \
 	Logging \
+	CardReadout \
 
 

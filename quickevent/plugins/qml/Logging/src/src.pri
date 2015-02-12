@@ -1,7 +1,5 @@
 message(including $$PWD)
 
-INCLUDEPATH += $$PWD/../../../../../libqf/libqfcore/include
-
 HEADERS += \
     $$PWD/loggerwidget.h
 

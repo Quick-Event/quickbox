@@ -119,6 +119,12 @@ QQmlListProperty<QWidget> PartWidget::widgets()
 	return m_centralFrame->widgets();
 }
 
+qf::qmlwidgets::Frame *PartWidget::centralFrame()
+{
+	QF_ASSERT_EX(m_centralFrame != nullptr, "Centralframe is NULL");
+	return m_centralFrame;
+}
+
 void PartWidget::loadPersistentSettings()
 {
 	qfLogFuncFrame();
