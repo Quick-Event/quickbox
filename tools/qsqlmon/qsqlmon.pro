@@ -7,12 +7,19 @@ TEMPLATE = app
 
 TARGET = qsqlmon
 
-QF_PROJECT_BUILD_ROOT = $$(QF_PROJECT_BUILD_ROOT)
-isEmpty(QF_PROJECT_BUILD_ROOT) {
-	QF_PROJECT_BUILD_ROOT = $$OUT_PWD/../..
-}
+#message (QF_PROJECT_TOP_SRCDIR: $$QF_PROJECT_TOP_SRCDIR)
+#message (QF_PROJECT_TOP_BUILDDIR: $$QF_PROJECT_TOP_BUILDDIR)
 
-DESTDIR = $$QF_PROJECT_BUILD_ROOT/bin
+isEmpty(QF_PROJECT_TOP_BUILDDIR) {
+	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
+}
+else {
+	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
+	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+}
+message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
+
+DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
 LIBS +=      \
@@ -20,10 +27,10 @@ LIBS +=      \
 	-lqfqmlwidgets  \
 
 win32: LIBS +=  \
-	-L$$QF_PROJECT_BUILD_ROOT/bin  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
 
 unix: LIBS +=  \
-	-L$$QF_PROJECT_BUILD_ROOT/lib  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
 
 include ($$PWD/../../crosscompile-support.pri)

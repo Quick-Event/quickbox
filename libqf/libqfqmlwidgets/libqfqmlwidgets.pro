@@ -3,13 +3,17 @@ message("including $$PWD")
 TEMPLATE = lib
 TARGET=qfqmlwidgets
 
-QF_PROJECT_BUILD_ROOT = $$(QF_PROJECT_BUILD_ROOT)
-isEmpty(QF_PROJECT_BUILD_ROOT) {
-	QF_PROJECT_BUILD_ROOT = $$OUT_PWD/../..
+isEmpty(QF_PROJECT_TOP_BUILDDIR) {
+	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
 }
+else {
+	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
+	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+}
+message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
 
-unix:DESTDIR = $$QF_PROJECT_BUILD_ROOT/lib
-win32:DESTDIR = $$QF_PROJECT_BUILD_ROOT/bin
+unix:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/lib
+win32:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 
 message ( DESTDIR: $$DESTDIR )
 
@@ -27,10 +31,10 @@ LIBS +=      \
 	-lqfcore  \
 
 win32: LIBS +=  \
-	-L$$QF_PROJECT_BUILD_ROOT/bin  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
 
 unix: LIBS +=  \
-	-L$$QF_PROJECT_BUILD_ROOT/lib  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 
 include ($$PWD/../../crosscompile-support.pri)
 
