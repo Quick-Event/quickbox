@@ -198,28 +198,29 @@ SIMessageCardReadOut::CardDataLayoutType SIMessageCardReadOut::cardDataLayoutTyp
 {
 	CardDataLayoutType ret = DataLayoutUnknown;
 	switch(cardType()) {
-		case CardType5:
-			ret = DataLayout5;
-			break;
-		case CardType6:
-			ret = DataLayout6;
-			break;
-		case CardType8:
-			ret = DataLayout8;
-			break;
-		case CardType9:
-		case CardTypeT:
-			ret = DataLayout9;
-			break;
-		case CardTypeSIAC:
-		case CardType10:
-		case CardType11:
-			ret = DataLayout10;
-			break;
-		default:
-			qfError() << "Can't assign cardDataLayout for card type:" << rawCardType() << cardTypeToString(cardType());
-			ret = DataLayoutUnknown;
-			break;
+	case CardType5:
+		ret = DataLayout5;
+		break;
+	case CardType6:
+		ret = DataLayout6;
+		break;
+	case CardType8:
+		ret = DataLayout8;
+		break;
+	case CardType9:
+	case CardTypeP:
+	case CardTypeT:
+		ret = DataLayout9;
+		break;
+	case CardTypeSIAC:
+	case CardType10:
+	case CardType11:
+		ret = DataLayout10;
+		break;
+	default:
+		qfError() << "Can't assign cardDataLayout for card type:" << rawCardType() << cardTypeToString(cardType());
+		ret = DataLayoutUnknown;
+		break;
 	}
 	return ret;
 }
