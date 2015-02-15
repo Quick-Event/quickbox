@@ -3,5 +3,5 @@ import qf.qmlwidgets 1.0
 
 PluginManifest {
 	id: root
-	//dependsOnFeatureIds: ['Core']
+	dependsOnFeatureIds: ['Logging']
 }
