@@ -79,6 +79,12 @@ void Application::clearQmlErrorList()
 	m_qmlErrorList.clear();
 }
 
+MainWindow *Application::frameWork()
+{
+	QF_ASSERT_EX(m_frameWork != nullptr, "FrameWork is not set.");
+	return m_frameWork;
+}
+
 QString Application::applicationDirPath()
 {
 	return QCoreApplication::applicationDirPath();

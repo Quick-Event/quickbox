@@ -17,6 +17,8 @@ class QFQMLWIDGETS_DECL_EXPORT Action : public QAction
 private:
 	typedef QAction Super;
 public:
+	typedef QMap<QString, Action*> ActionMap;
+public:
 	explicit Action(const QIcon &icon, const QString &text, QObject *parent = 0);
 	explicit Action(QObject *parent = 0) : Action(QIcon(), QString(), parent) {}
 	explicit Action(const QString &text, QObject *parent = 0) : Action(QIcon(), text, parent) {}

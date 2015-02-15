@@ -17,6 +17,7 @@ namespace qmlwidgets {
 
 class MenuBar;
 class StatusBar;
+class ToolBar;
 
 namespace framework {
 
@@ -49,6 +50,8 @@ public:
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
 
 	MenuBar* menuBar();
+
+	Q_INVOKABLE qf::qmlwidgets::ToolBar* toolBar(const QString &name, bool create_if_not_exists = false);
 
 	StatusBar* statusBar();
 	Q_INVOKABLE void setStatusBar(qf::qmlwidgets::StatusBar *sbar);
@@ -83,6 +86,7 @@ private:
 private:
 	PluginLoader *m_pluginLoader;
 	qf::qmlwidgets::StatusBar* m_statusBar;
+	QMap<QString, qf::qmlwidgets::ToolBar*> m_toolBars;
 	static MainWindow *self;
 };
 

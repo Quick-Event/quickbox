@@ -6,6 +6,7 @@
 #include "stackedcentralwidget.h"
 #include "../menubar.h"
 #include "../statusbar.h"
+#include "../toolbar.h"
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -36,7 +37,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 
 	m_pluginLoader = nullptr;
 
-	QQmlEngine *qe = Application::instance()->qmlEngine();
+	Application *app = Application::instance();
+	app->m_frameWork = this;
+	QQmlEngine *qe = app->qmlEngine();
 	qe->rootContext()->setContextProperty("FrameWork", this);
 }
 
@@ -192,6 +195,17 @@ qf::qmlwidgets::MenuBar *MainWindow::menuBar()
 		Super::setMenuBar(menu_bar);
 	}
 	return menu_bar;
+}
+
+qf::qmlwidgets::ToolBar *MainWindow::toolBar(const QString &name, bool create_if_not_exists)
+{
+	qf::qmlwidgets::ToolBar *ret = m_toolBars.value(name);
+	if(!ret && !create_if_not_exists)
+		return nullptr;
+	ret = new qf::qmlwidgets::ToolBar(this);
+	addToolBar(Qt::TopToolBarArea, ret);
+	m_toolBars[name] = ret;
+	return ret;
 }
 
 qf::qmlwidgets::StatusBar *MainWindow::statusBar()
