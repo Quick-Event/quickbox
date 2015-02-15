@@ -20,6 +20,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QJsonObject>
+#include <QJsonArray>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -49,8 +51,15 @@ void MainWindow::loadPlugins()
 	QF_SAFE_DELETE(m_pluginLoader);
 	m_pluginLoader = new PluginLoader(this);
 	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
-	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
-	m_pluginLoader->loadPlugins();
+	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::whenPluginsLoaded);
+	//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
+	Application *app = qobject_cast<Application*>(QCoreApplication::instance());
+	QJsonDocument profile = app->profile();
+	QJsonArray arr = profile.object().value(QStringLiteral("plugins")).toObject().value(QStringLiteral("features")).toArray();
+	QStringList feature_ids;
+	for(auto o : arr)
+		feature_ids << o.toString();
+	m_pluginLoader->loadPlugins(feature_ids);
 }
 
 void MainWindow::loadPersistentSettings()
@@ -199,15 +208,10 @@ qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 
 void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 {
-	//QStatusBar *sb = Super::statusBar();
 	qfLogFuncFrame() << sbar << "previous:" << Super::statusBar();
-	//QF_SAFE_DELETE(sb);
 	sbar->setParent(0);
-	//sbar->setParent(this);
-	//sbar->setVisible(true);
 	connect(this, SIGNAL(progress(QString,int,int)), sbar, SLOT(showProgress(QString,int,int)));
 	Super::setStatusBar(sbar); /// deletes old status bar
-	//sbar->showMessage("ahoj babi");
 	qfDebug() << Super::statusBar();
 }
 
@@ -250,7 +254,6 @@ void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 	}
 	if(widget->featureId().isEmpty())
 		qfWarning() << widget << "adding part widget without featureId set can harm some default functionality.";
-	//qfWarning() << widget << widget->featureId() << "alias" << widget->persistentSettingsId() << "path:" << widget->persistentSettingsPath();
 	widget->loadPersistentSettingsRecursively();
 	centralWidget()->addPartWidget(widget);
 }

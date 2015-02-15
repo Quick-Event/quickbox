@@ -4,6 +4,7 @@
 #include "../qmlwidgetsglobal.h"
 
 #include <QApplication>
+#include <QJsonDocument>
 
 class QQmlEngine;
 class QQmlError;
@@ -28,6 +29,7 @@ public:
 	const QList<QQmlError>& qmlErrorList();
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
+	QJsonDocument profile();
 public slots:
 	QString applicationDirPath();
 	QString applicationName();
@@ -48,6 +50,8 @@ protected:
 	QStringList m_qmlLibraryImportPaths;
 	QStringList m_qmlPluginImportPaths;
 	QList<QQmlError> m_qmlErrorList;
+	QJsonDocument m_profile;
+	bool m_profileLoaded = false;
 };
 
 }}}

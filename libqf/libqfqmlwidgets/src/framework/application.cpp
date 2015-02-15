@@ -7,6 +7,7 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QFile>
+#include <QJsonParseError>
 
 namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::framework;
@@ -119,6 +120,35 @@ void Application::onQmlError(const QList<QQmlError> &qmlerror_list)
 		qfError() << "QML ERROR:" << err.toString();
 	}
 	m_qmlErrorList << qmlerror_list;
+}
+
+QJsonDocument Application::profile()
+{
+	if(!m_profileLoaded) {
+		m_profileLoaded = true;
+		const QStringList args = arguments();
+		for(int i=0; i<args.count(); i++) {
+			QString arg = args[i];
+			if(arg == QLatin1String("--profile")) {
+				QString profile_path = args.value(++i);
+				if(!profile_path.isEmpty()) {
+					QFile f(profile_path);
+					if(!f.open(QIODevice::ReadOnly)) {
+						qfError() << "Cannot open profile file" << f.fileName() << "for reading.";
+					}
+					else {
+						QByteArray ba = f.readAll();
+						QJsonParseError err;
+						m_profile = QJsonDocument::fromJson(ba, &err);
+						if(err.error != QJsonParseError::NoError) {
+							qfError() << "Error loading profile file" << f.fileName() << err.errorString();
+						}
+					}
+				}
+			}
+		}
+	}
+	return m_profile;
 }
 
 void Application::initStyleSheet()
