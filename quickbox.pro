@@ -27,7 +27,7 @@ else {
 		plugins \
 		libsiut \
 		tools \
-		qsicli \
+#		qsicli \
 		quickevent \
 
 }

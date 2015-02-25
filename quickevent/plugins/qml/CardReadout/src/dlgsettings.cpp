@@ -30,16 +30,6 @@ DlgSettings::DlgSettings(QWidget *parent)
 	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-	foreach(QString s, QSqlDatabase::drivers())
-		ui->lstSqlDriver->addItem(s, s);
-	{
-		QDir d(QCoreApplication::applicationDirPath() + "/divers/qsicli/scripts/extensions");
-		foreach(QString s, d.entryList(QDir::Files)) {
-			//qfInfo() << s;
-			if(s.section('.', -1, -1) == "js") ui->lstExtensionsCurrentName->addItem(s, "extensions." + s.section('.', 0, -2));
-		}
-	}
-
 	load();
 }
 
@@ -65,17 +55,6 @@ static void load_combo_text(QComboBox *cbx, const QSettings &settings, const QSt
 	}
 }
 
-static void load_combo_data(QComboBox *cbx, const QSettings &settings, const QString &key, bool init_current_index = true)
-{
-	QVariant v = settings.value(key);
-	int ix = cbx->findData(v);
-	if(ix >= 0) cbx->setCurrentIndex(ix);
-	else {
-		if(init_current_index) { cbx->setCurrentIndex(0); }
-		else if(cbx->isEditable()) cbx->lineEdit()->setText(QString());
-	}
-}
-
 void DlgSettings::load()
 {
 	QSettings settings;
@@ -96,23 +75,9 @@ void DlgSettings::load()
 	settings.endGroup();
 	settings.endGroup();
 
-	settings.beginGroup("sql");
-	settings.beginGroup("connection");
-	load_combo_data(ui->lstSqlDriver, settings, "driver");
-	ui->edSqlHost->setText(settings.value("host").toString());
-	ui->edSqlPort->setValue(settings.value("port").toInt());
-	ui->edSqlUser->setText(settings.value("user").toString());
-	ui->edSqlPassword->setText(settings.value("password").toString());
-	ui->edSqlDatabase->setText(settings.value("database").toString());
-	settings.endGroup();
-	settings.endGroup();
-
 	settings.beginGroup("logging");
 	load_combo_text(ui->lstLogLevel, settings, "level");
 	ui->edCardLog->setText(settings.value("cardLog").toString());
-	settings.endGroup();
-	settings.beginGroup("extensions");
-	load_combo_data(ui->lstExtensionsCurrentName, settings, "currentName", false);
 	settings.endGroup();
 
 	settings.endGroup();
@@ -137,23 +102,9 @@ void DlgSettings::save()
 	settings.endGroup();
 	settings.endGroup();
 
-	settings.beginGroup("sql");
-	settings.beginGroup("connection");
-	settings.setValue("driver", ui->lstSqlDriver->itemData(ui->lstSqlDriver->currentIndex()));
-	settings.setValue("host", ui->edSqlHost->text());
-	settings.setValue("port", ui->edSqlPort->value());
-	settings.setValue("user", ui->edSqlUser->text());
-	settings.setValue("password", ui->edSqlPassword->text());
-	settings.setValue("database", ui->edSqlDatabase->text());
-	settings.endGroup();
-	settings.endGroup();
-
 	settings.beginGroup("logging");
 	settings.setValue("level", ui->lstLogLevel->currentText());
 	settings.setValue("cardLog", ui->edCardLog->text());
-	settings.endGroup();
-	settings.beginGroup("extensions");
-	settings.setValue("currentName", ui->lstExtensionsCurrentName->itemData(ui->lstExtensionsCurrentName->currentIndex()));
 	settings.endGroup();
 
 	settings.endGroup();

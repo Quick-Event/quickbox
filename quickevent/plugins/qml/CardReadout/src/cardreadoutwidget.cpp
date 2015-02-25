@@ -50,6 +50,13 @@ CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
 	qfw::ToolBar *main_tb = fw->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
 	*/
+	{
+		siut::DeviceDriver *drv = siDriver();
+		connect(drv, &siut::DeviceDriver::driverInfo, this, &CardReadoutWidget::processDriverInfo, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::messageReady, this, &CardReadoutWidget::processSIMessage, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::rawDataReceived, this, &CardReadoutWidget::processDriverRawData, Qt::QueuedConnection);
+		connect(this, &CardReadoutWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
+	}
 }
 
 CardReadoutWidget::~CardReadoutWidget()
