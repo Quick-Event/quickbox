@@ -3,7 +3,7 @@ message(including $$PWD)
 TEMPLATE = lib
 CONFIG += plugin
 CONFIG += c++11
-QT += qml widgets
+QT += qml widgets sql serialport
 
 PLUGIN_MODULE_NAME = CardReadout
 
@@ -15,10 +15,11 @@ TARGET  = QE$${PLUGIN_MODULE_NAME}Plugin
 
 INCLUDEPATH += $$PWD/../../../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../../../libqf/libqfqmlwidgets/include
+INCLUDEPATH += $$PWD/../../../../libsiut/include
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 
-LIBS += -lqfcore -lqfqmlwidgets
+LIBS += -lqfcore -lqfqmlwidgets -lsiut
 
 LIBS += -L$$OUT_PWD/../../../../$$LIB_DIR_NAME
 
