@@ -10,9 +10,13 @@
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
 
+class QHBoxLayout;
+
 namespace qf {
 namespace qmlwidgets {
 class Frame;
+class MenuBar;
+class ToolBar;
 namespace dialogs {
 namespace internal {
 class CaptionFrame;
@@ -60,6 +64,9 @@ public:
 
 	QIcon createIcon();
 	Q_SLOT void updateCaptionFrame();
+
+	Q_INVOKABLE MenuBar* menuBar();
+	Q_INVOKABLE ToolBar* addToolBar();
 protected:
 	QQmlListProperty<QWidget> widgets();
 	Frame* centralFrame();
@@ -68,6 +75,9 @@ private:
 	void classBegin() Q_DECL_OVERRIDE;
 	void componentComplete() Q_DECL_OVERRIDE;
 private:
+	MenuBar *m_menuBar = nullptr;
+	QList<ToolBar*> m_toolBars;
+	QHBoxLayout *m_toolBarsLayout = nullptr;
 	qf::qmlwidgets::dialogs::internal::CaptionFrame *m_captionFrame;
 	Frame *m_centralFrame;
 	QString m_title;

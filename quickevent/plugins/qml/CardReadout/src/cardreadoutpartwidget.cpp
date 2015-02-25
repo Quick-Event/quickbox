@@ -9,6 +9,7 @@ CardReadoutPartWidget::CardReadoutPartWidget(QWidget *parent)
 	setTitle(tr("Card readout"));
 	CardReadoutWidget *w = new CardReadoutWidget();
 	centralFrame()->addWidget(w);
+	w->settleDownInPartWidget(this);
 }
 
 CardReadoutPartWidget::~CardReadoutPartWidget()

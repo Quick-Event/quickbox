@@ -3,7 +3,7 @@
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
-#include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/framework/partwidget.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 
@@ -19,7 +19,7 @@ CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
 	ui->setupUi(this);
 
 	createActions();
-
+	/*
 	qff::Application *app = qff::Application::instance();
 	qff::MainWindow *fw = app->frameWork();
 
@@ -35,11 +35,22 @@ CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
 
 	qfw::ToolBar *main_tb = fw->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
+	*/
 }
 
 CardReadoutWidget::~CardReadoutWidget()
 {
 	delete ui;
+}
+
+void CardReadoutWidget::settleDownInPartWidget(qf::qmlwidgets::framework::PartWidget *part_widget)
+{
+	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
+	a->setText("&Station");
+	a->addActionInto(m_actCommOpen);
+
+	qfw::ToolBar *main_tb = part_widget->addToolBar();
+	main_tb->addAction(m_actCommOpen);
 }
 
 void CardReadoutWidget::createActions()

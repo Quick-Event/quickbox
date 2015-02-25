@@ -2,6 +2,8 @@
 #include "plugin.h"
 #include "mainwindow.h"
 #include "../frame.h"
+#include "../menubar.h"
+#include "../toolbar.h"
 #include "../dialogs/internal/captionframe.h"
 
 #include <qf/core/log.h>
@@ -21,6 +23,7 @@ PartWidget::PartWidget(QWidget *parent) :
 	m_centralFrame->setLayoutType(Frame::LayoutVertical);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setMargin(0);
+	ly->setSpacing(1);
 	ly->addWidget(m_captionFrame);
 	qfDebug() << "\t adding:" << m_centralFrame << "to layout:" << ly;
 	ly->addWidget(m_centralFrame);
@@ -68,6 +71,37 @@ void PartWidget::updateCaptionFrame()
 	//QString feature_id = featureId();
 	QIcon ico = createIcon();
 	m_captionFrame->setIcon(ico);
+}
+
+qf::qmlwidgets::MenuBar *PartWidget::menuBar()
+{
+	if(!m_menuBar) {
+		m_menuBar = new MenuBar(this);
+		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
+		QF_ASSERT_EX(ly != nullptr, "wrong layout");
+		ly->insertWidget(1, m_menuBar);
+	}
+	return m_menuBar;
+}
+
+qf::qmlwidgets::ToolBar *PartWidget::addToolBar()
+{
+	qf::qmlwidgets::ToolBar *ret = new qf::qmlwidgets::ToolBar(this);
+	if(m_toolBarsLayout == nullptr) {
+		QFrame *frm = new QFrame(this);
+		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
+		QF_ASSERT_EX(ly != nullptr, "wrong layout");
+		int ix = (m_menuBar)? 2: 1;
+		ly->insertWidget(ix, frm);
+
+		m_toolBarsLayout = new QHBoxLayout(frm);
+		m_toolBarsLayout->setMargin(0);
+		m_toolBarsLayout->setSpacing(1);
+		m_toolBarsLayout->addStretch();
+	}
+	m_toolBarsLayout->insertWidget(m_toolBars.count(), ret);
+	m_toolBars << ret;
+	return ret;
 }
 
 QIcon PartWidget::createIcon()

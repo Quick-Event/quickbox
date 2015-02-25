@@ -10,6 +10,9 @@ namespace Ui {
 namespace qf {
 namespace qmlwidgets {
 class Action;
+namespace framework {
+class PartWidget;
+}
 }
 }
 
@@ -21,6 +24,8 @@ private:
 public:
 	explicit CardReadoutWidget(QWidget *parent = 0);
 	~CardReadoutWidget() Q_DECL_OVERRIDE;
+
+	void settleDownInPartWidget(qf::qmlwidgets::framework::PartWidget *part_widget);
 private:
 	void createActions();
 	//qf::qmlwidgets::Action* action(const QString &oid);
