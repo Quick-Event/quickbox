@@ -19,9 +19,9 @@ OGSqlTableModel::~OGSqlTableModel()
 QVariant OGSqlTableModel::data(const QModelIndex &index, int role) const
 {
 	QVariant ret = Super::data(index, role);
-	int type = ret.userType();
-	if(type == qMetaTypeId<OGTimeMs>()) {
-		if(role == Qt::DisplayRole) {
+	if(role == Qt::DisplayRole) {
+		int type = ret.userType();
+		if(type == qMetaTypeId<OGTimeMs>()) {
 			OGTimeMs t = ret.value<OGTimeMs>();
 			ret = t.toString();
 		}

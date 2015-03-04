@@ -26,7 +26,7 @@ Schema {
 				Field { name: 'ctype'; type: String {} }
 			]
 			indexes: [
-				Index {fields: ['ckey']; primary: true }
+				Index { fields: ['ckey']; primary: true }
 			]
 		},
 		Table { name: 'stages'
@@ -39,11 +39,65 @@ Schema {
 				Index {fields: ['id']; primary: true }
 			]
 		},
+		Table { name: 'courses'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'name'; type: String { length: 10 } },
+				Field { name: 'length'; type: Int { } },
+				Field { name: 'climb'; type: Int { } },
+			]
+		},
+		Table { name: 'controls'
+			fields: [
+				Field { name: 'id'; type: Int { } },
+				Field { name: 'broken'; type: Boolean { } }
+			]
+			indexes: [
+				Index {fields: ['id']; primary: true }
+			]
+		},
+		Table { name: 'course2controls'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'courseId'; type: Int { } },
+				Field { name: 'codeId'; type: Int { } }
+			]
+			indexes: [
+				Index {fields: ['courseId']; references: ForeignKeyReference {table: 'courses'; fields: ['id']; } },
+				Index {fields: ['codeId']; references: ForeignKeyReference {table: 'controls'; fields: ['id']; } },
+				Index {
+					fields: ['courseId', 'codeId']
+					unique: true
+				}
+			]
+		},
 		Table { name: 'classes'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
-				Field { name: 'courseId'; type: String { length: 10 } },
 				Field { name: 'name'; type: String { length: 10 } }
+			]
+		},
+		Table { name: 'classdefs'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'classId'; type: Int { } },
+				Field { name: 'stageId'; type: Int { } },
+				Field { name: 'courseId'; type: Int { } },
+				Field { name: 'startTimeMin'; type: Int { } },
+				Field { name: 'startIntervalMin'; type: Int { } },
+				Field { name: 'vacantEvery'; type: Int { } 
+						comment: 'place vacant every n-th competitor in class drawing'
+				},
+				Field { name: 'vacantsAfter'; type: Int { } 
+						comment: 'place n vacants gap before next class in starting list'
+				},
+				Field { name: 'lastTimeMin'; type: Int { } },
+				Field { name: 'mapCount'; type: Int { } }
+			]
+			indexes: [
+				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
+				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
+				Index {fields: ['courseId']; references: ForeignKeyReference {table: 'courses'; fields: ['id']; } }
 			]
 		},
 		Table { name: 'competitors'
@@ -74,6 +128,7 @@ Schema {
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stageId'; type: Int {} },
+				Field { name: 'cardId'; type: Int {} },
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -124,7 +179,7 @@ Schema {
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
-				Field { name: 'clubId'; type: String { } },
+				//Field { name: 'clubId'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } }
 			]
@@ -146,7 +201,7 @@ Schema {
 					//notNull: true
 					defaultValue: 0
 				},
-				Field { name: 'idsi'
+				Field { name: 'siId'
 					type: Int {
 						unsigned: true
 					}
@@ -174,12 +229,12 @@ Schema {
 						length: 65536
 						charset: 'latin1'
 					}
-					comment: 'JSON of format [[code, time], ...]}'
+					comment: 'JSON of format [[code, time_sec], ...]}'
 				}
   			]
 			indexes: [
 				Index {
-					fields: ['idsi']
+					fields: ['siId']
 					unique: false
 				}
 			]

@@ -4,5 +4,5 @@ import qf.qmlwidgets 1.0
 PluginManifest {
 	id: root
 	//disabled: true
-	dependsOnFeatureIds: ['Competitors']
+	dependsOnFeatureIds: ['Competitors', 'Classes']
 }

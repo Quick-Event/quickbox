@@ -3,6 +3,8 @@
 
 #include <QStyledItemDelegate>
 
+class QItemEditorCreatorBase;
+
 class OGItemDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
@@ -11,6 +13,8 @@ private:
 public:
 	OGItemDelegate(QObject * parent = nullptr);
 	~OGItemDelegate() Q_DECL_OVERRIDE;
+private:
+	QItemEditorCreatorBase *m_creator;
 };
 
 #endif // OGITEMDELEGATE_H

@@ -1,5 +1,5 @@
 {
 	"plugins": {
-		"features": ["Finish", "CardReadout"]
+		"features": ["Finish", "Oris", "CardReadout"]
 	}
 }

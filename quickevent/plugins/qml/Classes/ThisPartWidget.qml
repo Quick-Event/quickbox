@@ -39,13 +39,17 @@ QuickEventPartWidget
 					caption: qsTr('Name')
 				}
 				ModelColumn {
-					fieldName: 'courseId'
-					caption: qsTr('Course ID')
+					fieldName: 'courses.name'
+					caption: qsTr('Course')
 				}
 				Component.onCompleted:
 				{
-					queryBuilder.select2('classes', '*')
-						.from('classes').orderBy('id');
+					queryBuilder
+						.select2('classes', '*')
+						.select2('courses', 'name')
+						.from('classes')
+						.join("classes.courseId", "courses.id")
+						.orderBy('classes.name');
 				}
 			}
 		}

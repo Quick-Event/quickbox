@@ -70,6 +70,8 @@ public:
 	Q_SLOT virtual void refreshActions();
 	QList<Action*> toolBarActions() const {return m_toolBarActions;}
 
+	Q_SLOT void resetColumnsSettings();
+
 	Q_SLOT virtual void reload();
 
 	Q_SLOT virtual void insertRow();

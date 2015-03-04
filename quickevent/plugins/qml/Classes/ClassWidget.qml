@@ -39,18 +39,30 @@ DataDialogWidget
 		}
 
 		Label {
-			text: qsTr("Class")
+			text: qsTr("Class Id")
 		}
 		LineEdit {
-			id: edClass
+			id: edClassId
 			dataId: "classes.id"
 		}
 		Label {
 			text: qsTr("Name")
 		}
 		LineEdit {
+			id: edClassName
 			dataId: "classes.name"
 		}
+		Label {
+			text: qsTr("Course")
+		}
+		ForeignKeyComboBox {
+			id: edCourse
+			dataId: "classes.courseId"
+			referencedTable: "courses"
+			referencedField: "id"
+			referencedCaptionField: "name"
+		}
+		Frame {}
 	}
 
 	Component.onCompleted: {
@@ -67,6 +79,6 @@ DataDialogWidget
 	onVisibleChanged: {
 		Log.info("onVisibleChanged visible:", visible);
 		if(visible)
-			edClass.setFocus();
+			edClassName.setFocus();
 	}
 }

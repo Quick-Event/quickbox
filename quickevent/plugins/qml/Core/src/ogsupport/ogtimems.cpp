@@ -20,11 +20,11 @@ QString OGTimeMs::toString(bool including_msec) const
 		ret += '0';
 	ret += QString::number(sec);
 	if(including_msec || msec > 0) {
+		ret += '.';
 		if(msec < 100)
 			ret += '0';
 		if(msec < 10)
 			ret += '0';
-		ret += '.';
 		ret += QString::number(msec);
 	}
 	return ret;

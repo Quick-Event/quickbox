@@ -133,6 +133,7 @@ void TableView::refreshActions()
 	//action("select")->setEnabled(true);
 	action("reload")->setEnabled(true);
 	action("resizeColumnsToContents")->setEnabled(true);
+	action("resetColumnsSettings")->setEnabled(true);
 	action("showCurrentCellText")->setEnabled(true);
 	//action("saveCurrentCellBlob")->setEnabled(true);
 	//action("loadCurrentCellBlob")->setEnabled(true);
@@ -194,6 +195,20 @@ void TableView::refreshActions()
 		action("paste")->setEnabled(is_edit_rows_allowed && is_insert_rows_allowed);
 	}
 	action("revertRow")->setEnabled(action("postRow")->isEnabled());
+}
+
+void TableView::resetColumnsSettings()
+{
+	QHeaderView *hh = horizontalHeader();
+	if(!hh)
+		return;
+	for (int i = 0; i < hh->count(); ++i) {
+		int vi = hh->visualIndex(i);
+		if(vi != i) {
+			hh->moveSection(vi, i);
+		}
+	}
+	resizeColumnsToContents();
 }
 
 void TableView::reload()
@@ -890,7 +905,7 @@ void TableView::loadPersistentSettings()
 					}
 					QString col_name = mod->headerData(log_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
 					qfDebug() << "\tvisual index:" << v_ix << "-> logical index:" << log_ix << "col name:" << col_name;
-					if(qf::core::Utils::fieldNameCmp(col_name, field_name)) {
+					if(col_name == field_name) {
 						qfDebug() << "\t\tmoving:" << v_ix << "->" << visual_ix;
 						if(v_ix != visual_ix)
 							horiz_header->moveSection(v_ix, visual_ix);
@@ -928,6 +943,7 @@ void TableView::savePersistentSettings()
 					section["size"] = horiz_header->sectionSize(i);
 					section["visualIndex"] = horiz_header->visualIndex(i);
 					sections[col_name] = section;
+					qfDebug() << col_name << "->" << horiz_header->visualIndex(i);
 				}
 			}
 			QVariantMap m;
@@ -1138,7 +1154,7 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 void TableView::createActions()
 {
 	Action *a;
-	{
+  {
 		a = new Action(tr("Resize columns to contents"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
@@ -1146,6 +1162,16 @@ void TableView::createActions()
 		m_actionGroups[SizeActions] << a->oid();
 		m_actions[a->oid()] = a;
 		connect(a, &Action::triggered, this, &TableView::resizeColumnsToContents);
+	}
+  {
+		a = new Action(tr("Reset columns settings"), this);
+    a->setToolTip(tr("Reset column widths and positions."));
+		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
+		//a->setShortcutContext(Qt::WidgetShortcut);
+		a->setOid("resetColumnsSettings");
+		m_actionGroups[SizeActions] << a->oid();
+		m_actions[a->oid()] = a;
+		connect(a, &Action::triggered, this, &TableView::resetColumnsSettings);
 	}
 	{
 		a = new Action(tr("Reload"), this);
@@ -1603,6 +1629,10 @@ void TableView::insertRowInline()
 	if(ix.isValid())
 		ri = ix.row() + 1;
 	int tri = toTableModelRowNo(ri);
+	if(tri < 0) {
+		/// this can happen when one inserts to empty table
+		tri = 0;
+	}
 	tableModel()->insertRow(tri);
 	if(ix.isValid())
 		setCurrentIndex(ix.sibling(ri, ix.column()));
