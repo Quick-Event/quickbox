@@ -26,7 +26,7 @@ PartSwitchToolButton::PartSwitchToolButton(QWidget *parent)
 	//setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
 
 	connect(this, &Super::clicked, [this]() {
-		qfInfo() << "clicked" << this->m_partIndex;
+		//qfInfo() << "clicked" << this->m_partIndex;
 		//this->setIconSize(this->size());
 		emit clicked(this->m_partIndex);
 	});
@@ -46,18 +46,35 @@ qf::qmlwidgets::framework::PartSwitch::~PartSwitch()
 
 void PartSwitch::addPartWidget(PartWidget *widget)
 {
+	qfLogFuncFrame() << widget;
+	auto alst = actions();
+	QAction *first_bottom_part_action = nullptr;
+	bool add_from_bottom = widget->isAddToPartSwitchFromBottom();
+	if(!add_from_bottom) {
+		for (int i = 0; i < alst.count(); ++i) {
+			PartSwitchToolButton *bt = qobject_cast<PartSwitchToolButton*>(widgetForAction(alst.at(i)));
+			if(bt) {
+				PartWidget *pw = m_centralWidget->partWidget(bt->partIndex());
+				if(pw->isAddToPartSwitchFromBottom()) {
+					first_bottom_part_action = alst.at(i);
+					break;
+				}
+			}
+		}
+	}
 	PartSwitchToolButton *bt = new PartSwitchToolButton();
 	connect(bt, SIGNAL(clicked(int)), this, SLOT(setCurrentPartIndex(int)));
 	bt->setText(widget->title());
 	bt->setPartIndex(buttonCount());
-	addWidget(bt);
-	QMetaObject::invokeMethod(this, "updateButtonIcon", Qt::QueuedConnection, Q_ARG(int, buttonCount() - 1));
+	qfDebug() << "first_bottom_part_action:" << first_bottom_part_action << "add_from_bottom:" << add_from_bottom;
+	insertWidget(first_bottom_part_action, bt);
+	updateButtonIcon(bt);
+	//QMetaObject::invokeMethod(this, "updateButtonIcon", Qt::QueuedConnection, Q_ARG(QObject*, bt));
 }
 
-void PartSwitch::updateButtonIcon(int part_index)
+void PartSwitch::updateButtonIcon(PartSwitchToolButton *bt)
 {
-	PartSwitchToolButton *bt = buttonAt(part_index);
-	PartWidget *pw = m_centralWidget->partWidget(part_index);
+	PartWidget *pw = m_centralWidget->partWidget(bt->partIndex());
 	if(bt && pw) {
 		QIcon ico = pw->createIcon();
 		//bt->setIconSize(bt->size());

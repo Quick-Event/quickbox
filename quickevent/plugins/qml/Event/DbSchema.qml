@@ -44,7 +44,7 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'name'; type: String { length: 10 } },
 				Field { name: 'length'; type: Int { } },
-				Field { name: 'climb'; type: Int { } },
+				Field { name: 'climb'; type: Int { } }
 			]
 		},
 		Table { name: 'controls'

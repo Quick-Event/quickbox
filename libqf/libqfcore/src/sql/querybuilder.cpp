@@ -121,6 +121,7 @@ QString QueryBuilder::JoinDefinition::buildString(const QueryBuilder::BuildOptio
 
 QStringList QueryBuilder::fieldsForTable(const QString &connection_name, const QString &table_name) const
 {
+	qfLogFuncFrame() << "connection name:" << connection_name;
 	QStringList ret;
 	QSqlDatabase db = QSqlDatabase::database(connection_name);
 	if(db.isValid()) {

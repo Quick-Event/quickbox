@@ -508,9 +508,10 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	m_recentlyExecutedQuery = qfs::Query(sql_conn);
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
-	QF_ASSERT(ok == true,
-			  QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str),
-			  return false);
+	if(!ok) {
+		QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str);
+	    return false;
+	}
 	if(m_recentlyExecutedQuery.isSelect()) {
 		qfu::Table::FieldList table_fields;
 		QSqlRecord rec = m_recentlyExecutedQuery.record();

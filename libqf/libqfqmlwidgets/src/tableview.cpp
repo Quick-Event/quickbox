@@ -245,14 +245,19 @@ void TableView::enableAllActions(bool on)
 void TableView::insertRow()
 {
 	qfLogFuncFrame();
-	if(rowEditorMode() == EditRowsInline) {
-		qfDebug() << "\t insert row in mode RowEditorInline";
-		insertRowInline();
+	try {
+		if(rowEditorMode() == EditRowsInline) {
+			qfDebug() << "\t insert row in mode RowEditorInline";
+			insertRowInline();
+		}
+		else {
+			qfDebug() << "\t emit insertRowInExternalEditor()";
+			emit editRowInExternalEditor(QVariant(), ModeInsert);
+			//emit insertRowInExternalEditor();
+		}
 	}
-	else {
-		qfDebug() << "\t emit insertRowInExternalEditor()";
-		emit editRowInExternalEditor(QVariant(), ModeInsert);
-		//emit insertRowInExternalEditor();
+	catch(qfc::Exception &e) {
+		dialogs::MessageBox::showException(this, e);
 	}
 	refreshActions();
 }

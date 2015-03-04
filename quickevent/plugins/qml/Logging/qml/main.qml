@@ -35,7 +35,7 @@ Plugin {
 		]
 	}
 
-	Component.onCompleted:
+	onInstalled:
 	{
 		FrameWork.aboutToClose.connect(saveSettings);
 

@@ -4,4 +4,5 @@ import qf.qmlwidgets 1.0
 PluginManifest {
 	id: root
 	dependsOnFeatureIds: ['Logging']
+	addFromBottom: true
 }

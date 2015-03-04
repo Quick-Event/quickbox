@@ -22,7 +22,7 @@ Plugin {
 		}
 	]
 
-	Component.onCompleted:
+	onInstalled:
 	{
 		var act_file = FrameWork.menuBar.actionForPath('tools');
 		var act_competitors = act_file.addMenuBefore('classes', qsTr('Cla&sses'));

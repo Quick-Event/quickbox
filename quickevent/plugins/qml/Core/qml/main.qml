@@ -68,7 +68,7 @@ Plugin {
 		}
 	}
 
-	Component.onCompleted:
+	onInstalled:
 	{
 		Log.debug("debug log test, use console.debug() for qml file and line information");
 		Log.info("info log test, use console.info() for qml file and line information");
@@ -78,6 +78,7 @@ Plugin {
 		console.info("Core log test");
 		console.warn("Core log test");
 		//console.error("Core log test");
+		console.debug("Core plugin installed");
 
 		FrameWork.setPersistentSettingDomains("quickbox.org", "QuickBox");
 		FrameWork.persistentSettingsId = "MainWindow";
@@ -97,10 +98,6 @@ Plugin {
 
 		var sb = cAppStatusBar.createObject();
 		FrameWork.setStatusBar(sb);
-	}
-
-	onInstalled: {
-		console.debug("Core plugin installed");
 	}
 
 }

@@ -17,11 +17,14 @@ class QFQMLWIDGETS_DECL_EXPORT PluginManifest : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QString featureId READ featureId WRITE setFeatureId NOTIFY featureIdChanged FINAL)
 	Q_PROPERTY(QStringList dependsOnFeatureIds READ dependsOnFeatureIds WRITE setDependsOnFeatureIds FINAL)
+	Q_CLASSINFO("property.addFromBottom.doc", "Part is added at bottom when added to part switch.")
+	Q_PROPERTY(bool addFromBottom READ isAddFromBottom WRITE setAddFromBottom FINAL)
 	Q_PROPERTY(QString homeDir READ homeDir FINAL)
 public:
 	explicit PluginManifest(QObject *parent = 0);
 	~PluginManifest() Q_DECL_OVERRIDE;
 public:
+	QF_PROPERTY_BOOL_IMPL(a, A, ddFromBottom)
 	QF_PROPERTY_IMPL(QString, h, H, omeDir)
 
 	QString featureId() const { return m_featureId; }

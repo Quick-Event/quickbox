@@ -104,6 +104,20 @@ qf::qmlwidgets::ToolBar *PartWidget::addToolBar()
 	return ret;
 }
 
+bool PartWidget::isAddToPartSwitchFromBottom()
+{
+	bool add_from_bottom = false;
+	auto framework = framework::MainWindow::frameWork();
+	if(framework) {
+		auto plugin = framework->plugin(featureId());
+		if(plugin) {
+			auto manifest = plugin->manifest();
+			add_from_bottom = manifest->isAddFromBottom();
+		}
+	}
+	return add_from_bottom;
+}
+
 QIcon PartWidget::createIcon()
 {
 	QIcon ico;

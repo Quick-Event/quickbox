@@ -69,7 +69,7 @@ QuickEventPartWidget
 
 	function reload()
 	{
-		Log.warning("Reloading Finish tables")
+		//Log.warning("Reloading Finish tables")
 		model.reload();
 		mClasses.reload();
 	}

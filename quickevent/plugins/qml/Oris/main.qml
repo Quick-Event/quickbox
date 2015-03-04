@@ -27,7 +27,7 @@ Plugin {
 		}
 	]
 
-	Component.onCompleted:
+	onInstalled:
 	{
 		var quit = FrameWork.menuBar.actionForPath('file/quit');
 		quit.addMenuBefore('importEvent', qsTr('&Import event'));

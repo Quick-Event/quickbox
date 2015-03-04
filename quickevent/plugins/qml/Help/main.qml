@@ -66,7 +66,7 @@ Plugin {
 		}
 	]
 
-	Component.onCompleted:
+	onInstalled:
 	{
 		var act_help = FrameWork.menuBar.actionForPath('help');
 		act_help.addActionInto(actLAboutQt);

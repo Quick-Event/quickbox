@@ -14,13 +14,8 @@ DataDialogWidget
 
 	dataController: DataController {
 		widget: root
-		document: SqlDataDocument {
+		document: ClassDocument {
 			id: dataDocument
-			Component.onCompleted:
-			{
-				queryBuilder.select2('classes', '*')
-					.from('classes').where("classes.id='{{ID}}'");
-			}
 			onLoaded: {
 				var name = dataDocument.value("name");
 				if(name)
@@ -72,6 +67,9 @@ DataDialogWidget
 	function dialogDoneRequest_qml(result)
 	{
 		Log.info("dialogDoneRequest result:", result);
+		if(result != 0 && dataDocument.mode == DataDocument.ModeDelete) {
+			console.warn("DELETE");
+		}
 		// call C++ impl, QML cannot call superclass implementation
 		return dialogDoneRequest(result);
 	}

@@ -24,7 +24,7 @@ Plugin {
 	]
 		*/
 
-	Component.onCompleted:
+	onInstalled:
 	{
 		//FrameWork.menuBar.actionForPath('help').addActionInto(actLAboutQt);
 		//FrameWork.menuBar.actionForPath('help').addSeparatorInto();

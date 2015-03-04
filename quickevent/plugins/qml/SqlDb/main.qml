@@ -42,7 +42,7 @@ Plugin {
 	]
 }
 
-Component.onCompleted:
+onInstalled:
 {
 	//_Plugin_install();
 	var quit = FrameWork.menuBar.actionForPath('file/quit', false);

@@ -67,6 +67,8 @@ public:
 
 	Q_INVOKABLE MenuBar* menuBar();
 	Q_INVOKABLE ToolBar* addToolBar();
+
+	bool isAddToPartSwitchFromBottom();
 protected:
 	QQmlListProperty<QWidget> widgets();
 	Frame* centralFrame();

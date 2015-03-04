@@ -5,7 +5,8 @@ SqlDataDocument {
 	id: dataDocument
 	Component.onCompleted:
 	{
-		queryBuilder.select2('classes', '*')
+		queryBuilder
+			.select2('classes', '*')
 			.from('classes').where('classes.id={{ID}}');
 	}
 }
