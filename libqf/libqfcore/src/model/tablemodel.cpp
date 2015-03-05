@@ -639,7 +639,7 @@ bool TableModel::removeRows(int row_ix, int count, bool throw_exc)
 	return ok;
 }
 
-bool TableModel::removeRowNotInherited(int row_ix, bool throw_exc)
+bool TableModel::removeRowNoOverload(int row_ix, bool throw_exc)
 {
 	qfLogFuncFrame() << "row:" << row_ix;
 	beginRemoveRows(QModelIndex(), row_ix, row_ix);
