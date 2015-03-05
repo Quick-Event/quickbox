@@ -52,6 +52,11 @@ QuickEventPartWidget
 						.orderBy('classes.name');
 				}
 			}
+		},
+		Component {
+			id: cClassDocument
+			ClassDocument {
+			}
 		}
 	]
 
@@ -69,11 +74,6 @@ QuickEventPartWidget
 
 			model: cSqlTableModel.createObject(tableView);
 		}
-	}
-
-	Component.onCompleted:
-	{
-		tableView.editRowInExternalEditor.connect(editClass)
 	}
 
 	function reload()
@@ -110,14 +110,31 @@ QuickEventPartWidget
 	function editClass(id, mode)
 	{
 		Log.info("editClass id:", id, "mode:", mode);
-		var w = cClassWidget.createObject(null);
-		w.windowTitle = qsTr("Edit Class");
-		var dlg = cDialog.createObject(root);
-		dlg.setDialogWidget(w);
-		w.load(id, mode);
-		w.dataSaved.connect(tableView.rowExternallySaved);
-		dlg.exec();
-		dlg.destroy();
+		if(mode == DataDocument.ModeDelete) {
+			var doc = cClassDocument.createObject(null);
+			doc.load(id, mode);
+			if(MessageBoxSingleton.askYesNo(this, qsTr("Really delete class %1").arg(doc.value("classes.name")))) {
+				if(doc.drop()) {
+					tableView.rowExternallySaved(id, mode);
+				}
+			}
+			doc.destroy();
+		}
+		else {
+			var w = cClassWidget.createObject(null);
+			w.windowTitle = qsTr("Edit Class");
+			var dlg = cDialog.createObject(root);
+			dlg.setDialogWidget(w);
+			w.load(id, mode);
+			w.dataSaved.connect(tableView.rowExternallySaved);
+			dlg.exec();
+			dlg.destroy();
+		}
+	}
+
+	Component.onCompleted:
+	{
+		tableView.editRowInExternalEditor.connect(editClass);
 	}
 
 }

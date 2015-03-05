@@ -76,7 +76,7 @@ void PartWidget::updateCaptionFrame()
 qf::qmlwidgets::MenuBar *PartWidget::menuBar()
 {
 	if(!m_menuBar) {
-		m_menuBar = new MenuBar(this);
+		m_menuBar = new MenuBar();
 		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
 		QF_ASSERT_EX(ly != nullptr, "wrong layout");
 		ly->insertWidget(1, m_menuBar);

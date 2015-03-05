@@ -509,8 +509,8 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 	m_recentlyExecutedQuery = qfs::Query(sql_conn);
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
 	if(!ok) {
-		QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str);
-	    return false;
+		qfError() << QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str);
+		return false;
 	}
 	if(m_recentlyExecutedQuery.isSelect()) {
 		qfu::Table::FieldList table_fields;

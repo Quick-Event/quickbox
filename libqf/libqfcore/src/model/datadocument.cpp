@@ -92,14 +92,16 @@ void DataDocument::save()
 	}
 }
 
-void DataDocument::drop()
+bool DataDocument::drop()
 {
 	qfLogFuncFrame();
 	QVariant id = dataId();
 	emit aboutToDrop(id);
 	if(invokeDropData()) {
-		emit dropped(id);
+		emit dropped(id);\
+		return true;
 	}
+	return false;
 }
 
 void DataDocument::copy()
@@ -221,10 +223,11 @@ bool DataDocument::saveData()
 bool DataDocument::dropData()
 {
 	qfLogFuncFrame();
+	bool ret = true;
 	if(mode() != ModeView) {
-		model()->dropRow(currentModelRow());
+		ret = model()->dropRow(currentModelRow(), !qf::core::Exception::Throw);
 	}
-	return true;
+	return ret;
 }
 
 bool DataDocument::copyData()

@@ -29,6 +29,12 @@ Plugin {
 		var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
 		act_print.addActionInto(actPrintAll);
 		FrameWork.addPartWidget(thisPart, root.manifest.featureId);
+		/*
+		// calling menuBar in PartWidget causes app crash
+		var a = thisPart.menuBar.actionForPath("print", true);
+		a.text = qsTr("&Print");
+		a.addActionInto(actPrintAll);
+		*/
 	}
 
 }

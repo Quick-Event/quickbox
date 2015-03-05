@@ -46,7 +46,7 @@ public:
 	//! this is a convinience function, @see load() .
 	Q_SLOT virtual void load();
 	Q_SLOT virtual void save();
-	Q_SLOT virtual void drop();
+	Q_SLOT virtual bool drop();
 	Q_SLOT virtual void copy();
 
 	//virtual QVariant::Type fieldType(const QString &data_id);

@@ -727,7 +727,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 						qfWarning() << "Deleted row id:" << id.toString() << "still exists.";
 					}
 					else {
-						tmd->qfm::TableModel::removeRow(ri);
+						tmd->qfm::TableModel::removeRowNotInherited(ri, !qf::core::Exception::Throw);
 						if(ri >= tmd->rowCount())
 							ri = tmd->rowCount() - 1;
 						QModelIndex ix = currentIndex();

@@ -8,7 +8,7 @@ DataDialogWidget
 	id: root
 	persistentSettingsId: "CompetitorDetail"
 	objectName: "dwCompetitors"
-	title: "Competitor"
+	title: "Class"
 
 	iconSource: "images/feature.png"
 

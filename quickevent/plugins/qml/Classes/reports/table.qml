@@ -29,22 +29,22 @@ Report {
 			width: "%"
 			layout: Frame.LayoutHorizontal
 			fill: Brush {color: Color { def: "lightgray" }}
-			Para {
+			HeaderCell {
 				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: "ix"
 			}
-			Para {
+			HeaderCell {
 				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: qsTr("id")
 			}
-			Para {
+			HeaderCell {
 				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: qsTr("name")
 			}
-			Para {
+			HeaderCell {
 				border: Pen {basedOn: "black1"}
 				width: "%"
 				text: qsTr("Course ID")
@@ -54,21 +54,21 @@ Report {
 			id: detail
 			width: "%"
 			layout: Frame.LayoutHorizontal
-			Para {
+			Cell {
 				width: "%"
 				text: detail.currentIndex
 			}
-			Para {
+			Cell {
 				width: "%"
 				text: detail.data(detail.currentIndex, "id")
 			}
-			Para {
+			Cell {
 				width: "%"
 				text: detail.data(detail.currentIndex, "name")
 			}
-			Para {
+			Cell {
 				width: "%"
-				text: detail.data(detail.currentIndex, "courseId")
+				text: detail.data(detail.currentIndex, "classes.courseId")
 			}
 		}
 	}

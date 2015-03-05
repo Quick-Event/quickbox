@@ -119,11 +119,17 @@ public:
 	Q_SLOT virtual void revertRow(int row_no);
 	Q_SLOT virtual int reloadRow(int row_no);
 	int appendRow() {return insertRows(rowCount(), 1);}
-	bool dropRow(int row_ix) {return removeRows(row_ix, 1);}
+	bool dropRow(int row_ix, bool throw_exc) {return removeRows(row_ix, 1, throw_exc);}
 	bool prepareForCopyRow(int row_no);
 
 	bool insertRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
-	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE
+	{
+		Q_UNUSED(parent)
+		return removeRows(row_ix, count, qf::core::Exception::Throw);
+	}
+	virtual bool removeRows(int row_ix, int count, bool throw_exc);
+	bool removeRowNotInherited(int row_ix, bool throw_exc);
 
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg);

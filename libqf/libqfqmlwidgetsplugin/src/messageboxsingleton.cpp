@@ -1,6 +1,7 @@
 #include "messageboxsingleton.h"
 
 #include <qf/core/log.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <QQmlEngine>
 #include <QMessageBox>
@@ -33,4 +34,12 @@ int MessageBoxSingleton::critical(QWidget *parent, const QString &text)
 	}
 	qfWarning() << text;
 	return QMessageBox::critical(parent, trUtf8("Error"), text);
+}
+
+int MessageBoxSingleton::askYesNo(QWidget *parent, const QString &text, bool default_ret)
+{
+	if(parent == nullptr) {
+		parent = QApplication::activeWindow();
+	}
+	return qf::qmlwidgets::dialogs::MessageBox::askYesNo(parent, text, default_ret);
 }

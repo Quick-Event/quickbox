@@ -201,7 +201,8 @@ QVariant TreeTableRow::value_helper(const QString &col_or_key_name, bool &found)
 			//qfInfo() << col_or_key_name << "->" << sv.toString(2);
 			found = sv.hasProperty(col_or_key_name, &ret);
 		}
-		else found = false;
+		else
+			found = false;
 	}
 	else ret = value_helper(ix, found);
 	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
@@ -215,8 +216,16 @@ QVariant TreeTableRow::value(const QString &col_or_key_name) const
 	QVariant ret = value_helper(col_or_key_name, found);
 	if(!found) {
 		SValue sv = f_row.property(TreeTable::KEY_KEYVALS);
+		QStringList cols;
+		{
+			auto cc = columns();
+			for(int i=0; i<cc.count(); i++) {
+				TreeTableColumn c = cc.column(i);
+				cols << c.name();
+			}
+		}
 		QStringList keys = sv.keys();
-		qfError() << QString("key '%1' not found in columns or keyvals\n\nkeys:\n%2").arg(col_or_key_name).arg(keys.join(","));
+		qfError() << QString("key '%1' not found in columns or keyvals\n\tcolumns: %2\n\tkeys: %3").arg(col_or_key_name).arg(cols.join(", ")).arg(keys.join(", "));
 	}
 	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
 	return ret;

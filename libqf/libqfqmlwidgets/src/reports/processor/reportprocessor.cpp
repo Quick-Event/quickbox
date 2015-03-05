@@ -11,6 +11,7 @@
 #include <QJsonDocument>
 #include <QQmlEngine>
 #include <QDomElement>
+#include <QQmlContext>
 
 namespace qfu = qf::core::utils;
 
@@ -26,8 +27,8 @@ ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
 	m_qmlEngine = nullptr;
 	//--f_searchDirs = search_dirs;
 	m_paintDevice = paint_device;
-	m_processedPageNo = 0;
 	m_designMode = false;
+	setProcessedPageNo(0);
 }
 
 ReportProcessor::~ReportProcessor()
@@ -126,7 +127,7 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 {
 	qfLogFuncFrame() << "mode:" << mode;
 	if(mode == FirstPage || mode == AllPages) {
-		m_processedPageNo = 0;
+		setProcessedPageNo(0);
 		QF_SAFE_DELETE(m_processorOutput);
 		if(documentInstanceRoot()) {
 			m_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
@@ -146,14 +147,14 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 			if(mode == FirstPage || mode == SinglePage) {
 				emit pageProcessed();
 				if(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
-					m_processedPageNo++;
+					setProcessedPageNo(processedPageNo() + 1);
 				}
 				//qfInfo() << "pageProcessed:" << fProcessedPageNo;
 				break;
 			}
 			else {
 				if(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
-					m_processedPageNo++;
+					setProcessedPageNo(processedPageNo() + 1);
 				}
 				else {
 					break;
@@ -313,6 +314,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	Q_UNUSED(throw_exc);
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
+		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
 		for(auto path : qmlEngineImportPaths()) {
 			qfInfo() << "Adding ReportProcessor QML engine import path:" << path;
 			m_qmlEngine->addImportPath(path);

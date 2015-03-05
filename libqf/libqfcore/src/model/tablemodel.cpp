@@ -623,18 +623,27 @@ bool TableModel::removeTableRow(int row_ix, bool throw_exc)
 	return ok;
 }
 
-bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
+bool TableModel::removeRows(int row_ix, int count, bool throw_exc)
 {
 	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
 	if(count < 0)
 		return false;
 	bool ok = true;
-	beginRemoveRows(parent, row_ix, row_ix + count - 1);
+	beginRemoveRows(QModelIndex(), row_ix, row_ix + count - 1);
 	for(int i=0; i<count; i++) {
-		ok = removeTableRow(row_ix, qf::core::Exception::Throw);
+		ok = removeTableRow(row_ix, throw_exc);
 		if(!ok)
 			break;
 	}
+	endRemoveRows();
+	return ok;
+}
+
+bool TableModel::removeRowNotInherited(int row_ix, bool throw_exc)
+{
+	qfLogFuncFrame() << "row:" << row_ix;
+	beginRemoveRows(QModelIndex(), row_ix, row_ix);
+	bool ok = TableModel::removeTableRow(row_ix, throw_exc);
 	endRemoveRows();
 	return ok;
 }
@@ -644,7 +653,7 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 	qfu::TreeTable ret(table_name);
 	QVariantList exported_columns = _exported_columns;
 	if(exported_columns.isEmpty()) {
-		for(int ix=0; ix<columnCount(); ix++) {
+		for(int ix=0; ix<m_table.columnCount(); ix++) {
 			QVariantMap col;
 			col[QStringLiteral("index")] = ix;
 			exported_columns << col;
@@ -655,13 +664,13 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 		QString cap = col.value("caption").toString();
 		int ix = col.value("index").toInt();
 		qfu::TreeTableColumn tt_col;
-		if(col.value("origin") == "table") {
-			QVariant::Type t = m_table.field(ix).type();
-			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
-		}
-		else {
+		if(col.value("origin") == QLatin1String("model")) {
 			QVariant::Type t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
 			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
+		}
+		else {
+			QVariant::Type t = m_table.field(ix).type();
+			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
 		}
 		tt_col.setWidth(col.value("width").toString());
 	}
@@ -678,10 +687,7 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 				QVariantMap col = exported_columns[j].toMap();
 				QVariant val;
 				int ix = col.value("index").toInt();
-				if(col.value("origin") == "table") {
-					val = tbl_row.value(ix);
-				}
-				else {
+				if(col.value("origin") == QLatin1String("model")) {
 					if(raw_values) {
 						val = value(i, ix);
 						//qfWarning() << val.typeName() << "val:" << val.toString();
@@ -690,6 +696,9 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 						QModelIndex mix = index(i, ix);
 						val = data(mix);
 					}
+				}
+				else {
+					val = tbl_row.value(ix);
 				}
 				srow_lst << val;
 			}
