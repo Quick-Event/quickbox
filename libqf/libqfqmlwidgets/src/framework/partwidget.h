@@ -38,7 +38,7 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 	Q_PROPERTY(bool active READ isActive WRITE setActive NOTIFY activeChanged)
 	/// attachedObjects is a workaround for https://github.com/fvacek/quickbox/issues/2
 	Q_PROPERTY(QQmlListProperty<QObject> attachedObjects READ attachedObjects)
-	//Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
+	Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
 private:
 	typedef QWidget Super;
 public:

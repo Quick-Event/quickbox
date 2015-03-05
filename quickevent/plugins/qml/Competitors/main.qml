@@ -27,12 +27,13 @@ Plugin {
 
 	onInstalled:
 	{
-		var act_file = FrameWork.menuBar.actionForPath('file');
-		var act_competitors = act_file.addMenuAfter('competitors', qsTr('&Competitors'));
-		var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
-		act_print.addActionInto(actPrintAll);
 		internals.thisPart = cThisPartWidget.createObject(FrameWork);
 		FrameWork.addPartWidget(internals.thisPart, root.manifest.featureId);
+
+		// calling menuBar before addPartWidget() causes app crash
+		var a = internals.thisPart.menuBar.actionForPath("print", true);
+		a.text = qsTr("&Print");
+		a.addActionInto(actPrintAll);		
 	}
 
 }
