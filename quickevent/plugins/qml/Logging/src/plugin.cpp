@@ -1,4 +1,4 @@
-#include "loggerwidget.h"
+#include "loggingplugin.h"
 
 #include <qf/core/log.h>
 
@@ -16,7 +16,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("Logging"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<LoggerWidget>(uri, 1, 0, "LoggerWidget");
+		qmlRegisterType<LoggingPlugin>(uri, 1, 0, "LoggingPlugin");
     }
 };
 

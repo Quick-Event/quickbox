@@ -1,10 +1,11 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import Logging 1.0
 
-Plugin {
+LoggingPlugin {
 	id: root
-
+/*
 	property QfObject internals: QfObject
 	{
 		property LogDockWidget logDockWidget: null
@@ -48,7 +49,7 @@ Plugin {
 		var dock_visible = settings.value('visible');
 		settings.destroy();
 		//console.debug("logger dock visible:", dock_visible, typeof dock_visible);
-		showLogDockWidget(dock_visible);
+		//showLogDockWidget(dock_visible);
 	}
 
 	function saveSettings()
@@ -78,4 +79,5 @@ Plugin {
 				internals.logDockWidget.hide();
 		}
 	}
+*/
 }

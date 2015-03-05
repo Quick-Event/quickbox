@@ -14,8 +14,9 @@ DESTDIR = $$OUT_PWD/../../../../$$LIB_DIR_NAME
 TARGET  = QE$${PLUGIN_MODULE_NAME}Plugin
 
 INCLUDEPATH += $$PWD/../../../../libqf/libqfcore/include
+INCLUDEPATH += $$PWD/../../../../libqf/libqfqmlwidgets/include
 
-LIBS += -lqfcore
+LIBS += -lqfcore -lqfqmlwidgets
 
 LIBS += -L$$OUT_PWD/../../../../$$LIB_DIR_NAME
 

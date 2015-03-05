@@ -11,6 +11,8 @@ private:
 public:
 	CardReadoutPartWidget(QWidget *parent = 0);
 	~CardReadoutPartWidget() Q_DECL_OVERRIDE;
+private:
+	Q_SLOT void lazyInit();
 };
 
 #endif // CARDREADOUTPARTWIDGET_H

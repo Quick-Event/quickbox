@@ -1,4 +1,4 @@
-#include "cardreadoutpartwidget.h"
+#include "cardreadoutplugin.h"
 
 #include <qf/core/log.h>
 
@@ -16,7 +16,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("CardReadout"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<CardReadoutPartWidget>(uri, 1, 0, "CardReadoutPartWidget");
+		qmlRegisterType<CardReadoutPlugin>(uri, 1, 0, "CardReadoutPlugin");
 	}
 };
 
