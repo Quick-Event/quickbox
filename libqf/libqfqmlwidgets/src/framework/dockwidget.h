@@ -13,7 +13,7 @@ namespace framework {
 class QFQMLWIDGETS_DECL_EXPORT DockWidget : public QDockWidget
 {
 	Q_OBJECT
-	Q_PROPERTY(QWidget* widget READ widget WRITE setWidget)
+	Q_PROPERTY(QWidget* widget READ widget WRITE setQmlWidget)
 	Q_CLASSINFO("DefaultProperty", "widget")
 private:
 	typedef QDockWidget Super;
@@ -21,7 +21,7 @@ public:
 	explicit DockWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~DockWidget() Q_DECL_OVERRIDE;
 private:
-	void setWidget(QWidget *w);
+	void setQmlWidget(QWidget *w);
 };
 
 }}}

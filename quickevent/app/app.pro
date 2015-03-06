@@ -2,6 +2,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-	lib \
-	app \
+	src \
+	plugins \
 

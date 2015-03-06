@@ -19,7 +19,7 @@ DockWidget::~DockWidget()
 	qfLogFuncFrame();
 }
 
-void DockWidget::setWidget(QWidget *w)
+void DockWidget::setQmlWidget(QWidget *w)
 {
 	w->setParent(0);
 	w->show();
