@@ -30,7 +30,7 @@ void LoggingPlugin::onInstalled()
 	a->setShortcut("ctrl+L");
 	//fwk->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(actConfigureLogging);
 	fwk->menuBar()->actionForPath("view")->addActionInto(a);
-	a->connect(a, &qfw::Action::triggered, [this](bool)
+	connect(a, &qfw::Action::triggered, [this](bool)
 	{
 		this->setLogDockVisible(true);
 	});

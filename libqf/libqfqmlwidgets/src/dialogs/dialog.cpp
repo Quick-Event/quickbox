@@ -240,3 +240,13 @@ void Dialog::setButtonBox(DialogButtonBox *dbb)
 	}
 }
 
+void Dialog::setButtons(QDialogButtonBox::StandardButtons buttons)
+{
+	DialogButtonBox *bbx = buttonBox();
+	if(!bbx) {
+		bbx = new DialogButtonBox();
+		setButtonBox(bbx);
+	}
+	bbx->setStandardButtons(buttons);
+}
+

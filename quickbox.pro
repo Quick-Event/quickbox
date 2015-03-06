@@ -24,11 +24,9 @@ else:qsqlmon {
 }
 else {
 	SUBDIRS += \
-		plugins \
 		libsiut \
 		tools \
 #		qsishow \
-#		qsicli \
 		quickevent \
 
 }

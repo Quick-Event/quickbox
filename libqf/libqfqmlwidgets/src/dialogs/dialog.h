@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
+#include <QDialogButtonBox>
 
 class QLabel;
 class QToolButton;
@@ -50,6 +51,8 @@ public:
 	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}
 	void setButtonBox(DialogButtonBox *dbb);
 	Q_SIGNAL void buttonBoxChanged();
+
+	void setButtons(QDialogButtonBox::StandardButtons buttons);
 
 	Q_SLOT void loadPersistentSettings();
 

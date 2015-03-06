@@ -3,6 +3,6 @@ import qf.qmlwidgets 1.0
 
 PluginManifest {
 	id: root
-	dependsOnFeatureIds: ['Logging']
+	dependsOnFeatureIds: ['Event']
 	addFromBottom: true
 }

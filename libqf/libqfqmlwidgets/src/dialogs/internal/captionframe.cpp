@@ -21,20 +21,20 @@ CaptionFrame::CaptionFrame(QWidget *parent)
 	ly->setMargin(0);
 	//ly->setContentsMargins(5, 1, 5, 1);
 	ly->setSpacing(6);
-	captionIconLabel = new QLabel();
+	m_captionIconLabel = new QLabel();
 		//captionLabel->setPixmap(icon.pixmap(32));
-	ly->addWidget(captionIconLabel);
+	ly->addWidget(m_captionIconLabel);
 
-	captionLabel = new QLabel();
-	ly->addWidget(captionLabel);
+	m_captionLabel = new QLabel();
+	ly->addWidget(m_captionLabel);
 	ly->addStretch();
-	closeButton = new QToolButton();
-	closeButton->setVisible(false);
+	m_closeButton = new QToolButton();
+	m_closeButton->setVisible(false);
 	QStyle *sty = style();
-	closeButton->setIcon(sty->standardIcon(QStyle::SP_DialogDiscardButton));
-	connect(closeButton, SIGNAL(clicked()), this, SIGNAL(closeButtonClicked()));
-	closeButton->setAutoRaise(true);
-	ly->addWidget(closeButton);
+	m_closeButton->setIcon(sty->standardIcon(QStyle::SP_DialogDiscardButton));
+	connect(m_closeButton, SIGNAL(clicked()), this, SIGNAL(closeButtonClicked()));
+	m_closeButton->setAutoRaise(true);
+	ly->addWidget(m_closeButton);
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 	//setFrameStyle(StyleDefault);
 }
@@ -52,27 +52,27 @@ void CaptionFrame::setFrameStyle(CaptionFrame::FrameStyle st)
 void CaptionFrame::setText(const QString & s)
 {
 	qfLogFuncFrame() << "text:" << s;
-	qfDebug() << "\t label:" << captionLabel;
-	captionLabel->setText(s);
+	qfDebug() << "\t label:" << m_captionLabel;
+	m_captionLabel->setText(s);
 	update();
 }
 
 QString CaptionFrame::text() const
 {
-	return captionLabel->text();
+	return m_captionLabel->text();
 }
 
 void CaptionFrame::setIcon(const QIcon & ico)
 {
 	m_icon = ico;
-	captionIconLabel->setPixmap(m_icon.pixmap(32));
+	m_captionIconLabel->setPixmap(m_icon.pixmap(32));
 	update();
 }
 
 void CaptionFrame::setCloseButtonVisible(bool b)
 {
 	//qfInfo() << "set close button visible:" << b;
-	closeButton->setVisible(b);
+	m_closeButton->setVisible(b);
 }
 
 QIcon CaptionFrame::createIcon()
@@ -102,6 +102,6 @@ QIcon CaptionFrame::createIcon()
 
 void CaptionFrame::update()
 {
-	setVisible(!(captionLabel->text().isEmpty() && m_icon.isNull()));
+	setVisible(!(m_captionLabel->text().isEmpty() && m_icon.isNull()));
 }
 

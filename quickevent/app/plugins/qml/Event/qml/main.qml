@@ -1,10 +1,11 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import Event 1.0
 
-Plugin {
+EventPlugin {
 	id: root
-
+	/*
 	property QtObject api: QtObject
 	{
 		signal reloadActivePart()
@@ -66,4 +67,5 @@ Plugin {
 		FrameWork.statusBar.eventName = Qt.binding(function() {return root.api.currentEventName;});
 
 	}
+	*/
 }

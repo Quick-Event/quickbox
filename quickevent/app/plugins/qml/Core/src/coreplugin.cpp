@@ -3,6 +3,5 @@
 CorePlugin::CorePlugin(QObject *parent)
 	: Super(parent)
 {
-
 }
 

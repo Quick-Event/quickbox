@@ -33,9 +33,9 @@ public:
 protected:
 	QString m_iconSource;
 	QIcon m_icon;
-	QLabel *captionIconLabel;
-	QLabel *captionLabel;
-	QToolButton *closeButton;
+	QLabel *m_captionIconLabel;
+	QLabel *m_captionLabel;
+	QToolButton *m_closeButton;
 };
 
 }}}}
