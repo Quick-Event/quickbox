@@ -1,7 +1,5 @@
 message(including $$PWD)
 
-INCLUDEPATH += $$PWD/../../libqfcore/include
-
 HEADERS += \
     $$PWD/qmlsqlsingleton.h \
     $$PWD/sqlconnection.h \

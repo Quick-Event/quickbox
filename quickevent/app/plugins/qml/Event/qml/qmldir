@@ -1,4 +1,4 @@
 module Event
 
-plugin EventPlugin ..
+plugin Eventplugin ..
 

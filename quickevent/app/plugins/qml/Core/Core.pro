@@ -1,8 +1,10 @@
 message(including plugin $$PWD)
 
-PLUGIN_MODULE_NAME = Core
+PLUGIN_NAME = Core
 
-include ( ../quickeventplugin.pri )
+include ( ../quickeventqmlplugin.pri )
+
+QT += widgets
 
 include (src/src.pri)
 

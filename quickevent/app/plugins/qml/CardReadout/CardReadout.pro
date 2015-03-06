@@ -1,10 +1,10 @@
 message(including plugin $$PWD)
 
-PLUGIN_MODULE_NAME = CardReadout
+PLUGIN_NAME = CardReadout
 
-include ( ../quickeventplugin.pri )
+include ( ../quickeventqmlplugin.pri )
 
-QT += serialport sql
+QT += widgets serialport sql
 
 INCLUDEPATH += $$PWD/../../../../../libsiut/include
 
@@ -13,5 +13,5 @@ LIBS += -lsiut
 include (src/src.pri)
 
 RESOURCES += \
-    $${PLUGIN_MODULE_NAME}.qrc \
+    $${PLUGIN_NAME}.qrc \
 

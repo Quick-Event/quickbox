@@ -1,17 +1,17 @@
 message(including plugin $$PWD)
 
-PLUGIN_MODULE_NAME = Event
+PLUGIN_NAME = Event
 
-include ( ../quickeventplugin.pri )
+include ( ../quickeventqmlplugin.pri )
 
-QT += serialport sql
+QT += widgets sql
 
-INCLUDEPATH += $$PWD/../../../../../libsiut/include
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libsiut/include
 
 LIBS += -lsiut
 
 include (src/src.pri)
 
 RESOURCES += \
-#    $${PLUGIN_MODULE_NAME}.qrc \
+#    $${PLUGIN_NAME}.qrc \
 

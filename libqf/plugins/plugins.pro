@@ -2,8 +2,8 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-	libqfcore \
-	libqfqmlwidgets \
-	plugins \
+	core \
+	qmlwidgets \
+	qmlreports \
 
 

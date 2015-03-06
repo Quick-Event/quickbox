@@ -2,4 +2,4 @@ module qf.core
 singleton Log 1.0 Log.qml
 QfObject 1.0 QfObject.qml
 Extension 1.0 Extension.qml
-plugin qfcoreqmlplugin ../../..
+plugin coreplugin ..
