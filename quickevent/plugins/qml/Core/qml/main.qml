@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 import Core 1.0
 
-Plugin {
+CorePlugin {
 	id: root
 	property QtObject api: QtObject
 	{
@@ -58,11 +58,13 @@ Plugin {
 			id: settingsComponent
 			Settings {}
 		}
+		/*
 		Component {
 			id: cAppStatusBar
 			AppStatusBar {
 			}
 		}
+		*/
 		NetworkAccessManager {
 			id: networkAccessManager
 		}
@@ -96,8 +98,8 @@ Plugin {
 		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
 
-		var sb = cAppStatusBar.createObject();
-		FrameWork.setStatusBar(sb);
+		//var sb = cAppStatusBar.createObject();
+		//FrameWork.setStatusBar(sb);
 	}
 
 }

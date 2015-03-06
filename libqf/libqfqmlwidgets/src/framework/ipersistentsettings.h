@@ -16,6 +16,7 @@ class QFQMLWIDGETS_DECL_EXPORT IPersistentSettings
 public:
 	IPersistentSettings(QObject *controlled_object);
 public:
+	static QString persistentSettingsPathPrefix();
 	virtual QString persistentSettingsId();
 	void setPersistentSettingsId(const QString &id);
 	virtual QString persistentSettingsPath();

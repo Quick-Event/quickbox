@@ -1,17 +1,17 @@
 #ifndef QF_CORE_QML_SETTINGS_H
 #define QF_CORE_QML_SETTINGS_H
 
-#include <QSettings>
+#include <qf/core/utils/settings.h>
 
 namespace qf {
 namespace core {
 namespace qml {
 
-class Settings : public QSettings
+class Settings : public qf::core::utils::Settings
 {
 	Q_OBJECT
 private:
-	typedef QSettings Super;
+	typedef qf::core::utils::Settings Super;
 public:
 	explicit Settings(QObject *parent = 0);
 	~Settings() Q_DECL_OVERRIDE;
@@ -23,9 +23,6 @@ public slots:
 	void endGroup() {Super::endGroup();}
 	void setArrayIndex(int i) {Super::setArrayIndex(i);}
 	QString group() const {return Super::group();}
-
-	void setValue(const QString & key, const QVariant & value);
-	QVariant value(const QString & key, const QVariant & default_value = QVariant()) const;
 
 	void sync() {Super::sync();}
 };

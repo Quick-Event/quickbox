@@ -15,6 +15,7 @@ TARGET  = QE$${PLUGIN_MODULE_NAME}Plugin
 
 INCLUDEPATH += $$PWD/../../../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../../../libqf/libqfqmlwidgets/include
+INCLUDEPATH += $$PWD/src
 
 LIBS += -lqfcore -lqfqmlwidgets
 

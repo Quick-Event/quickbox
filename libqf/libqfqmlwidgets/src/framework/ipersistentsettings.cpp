@@ -3,7 +3,7 @@
 #include <qf/core/assert.h>
 
 #include <QMetaMethod>
-//#include <QQmlProperty>
+#include <QString>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -60,6 +60,12 @@ void IPersistentSettings::savePersistentSettingsRecursively()
 	callMethodRecursively(m_controlledObject, "savePersistentSettings()");
 }
 
+QString IPersistentSettings::persistentSettingsPathPrefix()
+{
+	static QString s("persistentSettings");
+	return s;
+}
+
 QString IPersistentSettings::generatePersistentSettingsPath()
 {
 	qfLogFuncFrame() << persistentSettingsId() << m_controlledObject->property("persistentSettingsId").toString();
@@ -86,9 +92,9 @@ QString IPersistentSettings::generatePersistentSettingsPath()
 			//QVariant v2 = p.read();
 		}
 		if(ret.isEmpty()) {
-			static const QLatin1Literal PersistentSettings("persistentSettings");
-			ret = PersistentSettings + '/' + generated_path;
+			ret = persistentSettingsPathPrefix() + '/' + generated_path;
 		}
 	}
 	return ret;
 }
+

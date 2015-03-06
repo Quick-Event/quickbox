@@ -56,7 +56,7 @@ public:
 	StatusBar* statusBar();
 	Q_INVOKABLE void setStatusBar(qf::qmlwidgets::StatusBar *sbar);
 
-	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, qf::qmlwidgets::framework::DockWidget *dockwidget);
+	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget);
 	Q_INVOKABLE void addPartWidget(qf::qmlwidgets::framework::PartWidget *widget, const QString &feature_id = QString());
 
 	Q_INVOKABLE qf::qmlwidgets::framework::Plugin* plugin(const QString &feature_id);

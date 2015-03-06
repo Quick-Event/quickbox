@@ -249,7 +249,7 @@ void MainWindow::setCentralWidget(CentralWidget *widget)
 	Super::setCentralWidget(widget);
 }
 
-void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
+void MainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget)
 {
 	dockwidget->setParent(0);
 	Super::addDockWidget(area, dockwidget);

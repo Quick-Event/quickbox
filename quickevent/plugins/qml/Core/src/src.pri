@@ -2,9 +2,11 @@ message(including $$PWD)
 
 HEADERS += \
 	$$PWD/qecorepluginglobal.h \
+    $$PWD/coreplugin.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
+    $$PWD/coreplugin.cpp
 
 FORMS += \
 

@@ -1,15 +1,23 @@
 #include "loggingplugin.h"
 
+#include <qf/core/utils/settings.h>
+
+#include "loggerwidget.h"
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 
+#include <QDockWidget>
+
+namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
 LoggingPlugin::LoggingPlugin(QObject *parent)
-	: Super(parent)
+	: Super(parent), qf::qmlwidgets::framework::IPersistentSettings(this)
 {
+	setPersistentSettingsId("LoggingPlugin");
 	connect(this, &LoggingPlugin::installed, this, &LoggingPlugin::onInstalled, Qt::QueuedConnection);
 }
 
@@ -19,22 +27,50 @@ void LoggingPlugin::onInstalled()
 
 	connect(fwk, &qff::MainWindow::aboutToClose, this, &LoggingPlugin::saveSettings);
 
-	qfw::Action *actShowLogView = new qfw::Action("Show application log");
+	qfw::Action *a = new qfw::Action("Show application log");
+	a->setShortcut("ctrl+L");
 	//fwk->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(actConfigureLogging);
-	fwk->menuBar()->actionForPath("view")->addActionInto(actShowLogView);
-/*
-	var core_feature = FrameWork.plugin("Core");
-	var settings = core_feature.api.createSettings();
-	settings.beginGroup("persistentSettings/ui/docks/Logger");
-	var dock_visible = settings.value('visible');
-	settings.destroy();
-	//console.debug("logger dock visible:", dock_visible, typeof dock_visible);
-	//showLogDockWidget(dock_visible);
-	*/
+	fwk->menuBar()->actionForPath("view")->addActionInto(a);
+	a->connect(a, &qfw::Action::triggered, [this](bool)
+	{
+		this->setLogDockVisible(true);
+	});
+	loadSettings();
 }
 
 void LoggingPlugin::saveSettings()
 {
+	QString path = persistentSettingsPath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		qfu::Settings settings;
+		settings.beginGroup(path + "/ui/docks/Logger");
+		settings.setValue("visible", m_logDockWidget? m_logDockWidget->isVisible(): false);
+	}
+}
 
+void LoggingPlugin::loadSettings()
+{
+	QString path = persistentSettingsPath();
+	qfLogFuncFrame() << path;
+	if(!path.isEmpty()) {
+		qfu::Settings settings;
+		settings.beginGroup(path + "/ui/docks/Logger");
+		bool visible = settings.value("visible", false).toBool();
+		setLogDockVisible(visible);
+	}
+}
+
+void LoggingPlugin::setLogDockVisible(bool on)
+{
+	if(on && !m_logDockWidget) {
+		m_logDockWidget = new QDockWidget(nullptr);
+		m_logDockWidget->setObjectName("logDockWidget");
+		m_logDockWidget->setWidget(new LoggerWidget());
+		qff::MainWindow *fwk = qff::MainWindow::frameWork();
+		fwk->addDockWidget(Qt::BottomDockWidgetArea, m_logDockWidget);
+	}
+	if(m_logDockWidget)
+		m_logDockWidget->setVisible(on);
 }
 
