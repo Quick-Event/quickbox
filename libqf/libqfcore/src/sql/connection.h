@@ -64,6 +64,7 @@ public:
 	//! Returns human readable textual information about current connection.
 	QString info(int verbosity = 1) const;
 	bool isOpen() const;
+	QString errorString() const;
 
 	static int defaultPort(const QString &driver_name);
 public:

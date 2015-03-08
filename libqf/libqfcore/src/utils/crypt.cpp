@@ -47,15 +47,16 @@ QByteArray Crypt::encrypt(const QString &s, int min_length) const
 	QByteArray dest;
 	QByteArray src = s.toUtf8();
 
-   	/// nahodne se vybere hodnota, kterou se string zaxoruje a ta se ulozi na zacatek
+	/// nahodne se vybere hodnota, kterou se string zaxoruje a ta se ulozi na zacatek
 	unsigned val = (unsigned)qrand();
 	val += QTime::currentTime().msec();
 	val %= 256;
-	if(val == 0) val = 1;/// at to neblbne pro 0 sekund a generator ktrey ma c==0
+	if(val == 0)
+		val = 1;/// fix case vhen val == 0 and generator C == 0 also
 	quint8 b = (quint8)val;
 	dest += code_byte(b);
 
-    /// a tou se to zaxoruje
+	/// a tou se to zaxoruje
 	for(int i=0; i<src.count(); i++) {
 		val = m_generator(val);
 		b = ((quint8)src[i]);

@@ -11,8 +11,9 @@ public:
 	enum class ConnectionType : int {SqlServer = 0, SingleFile};
 	EventPlugin(QObject *parent = nullptr);
 private:
-	void onInstalled();
-	void connectToSqlServer();
+	Q_SLOT void onInstalled();
+	Q_SLOT void connectToSqlServer();
+	Q_SLOT bool openEvent(const QString &event_name = QString());
 };
 
 #endif // EVENTPLUGIN_H

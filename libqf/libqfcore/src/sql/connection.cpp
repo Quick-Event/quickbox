@@ -471,6 +471,11 @@ bool Connection::isOpen() const
 		return false;
 	return true;
 }
+
+QString Connection::errorString() const
+{
+	return lastError().text();
+}
 #if 0
 QFSql::RelationKind DbInfo::relationKind(const QString& _relname)
 {

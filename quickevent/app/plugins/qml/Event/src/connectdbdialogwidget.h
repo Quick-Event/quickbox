@@ -6,17 +6,17 @@
 #include <qf/qmlwidgets/framework/dialogwidget.h>
 
 namespace Ui {
-class ConnectdbDialogWidget;
+class ConnectDbDialogWidget;
 }
 
-class ConnectdbDialogWidget : public qf::qmlwidgets::framework::DialogWidget
+class ConnectDbDialogWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	explicit ConnectdbDialogWidget(QWidget *parent = 0);
-	~ConnectdbDialogWidget();
+	explicit ConnectDbDialogWidget(QWidget *parent = 0);
+	~ConnectDbDialogWidget();
 
 	EventPlugin::ConnectionType connectionType();
 	QString serverHost();
@@ -27,7 +27,7 @@ public:
 	void loadSettings();
 	void saveSettings();
 private:
-	Ui::ConnectdbDialogWidget *ui;
+	Ui::ConnectDbDialogWidget *ui;
 };
 
 #endif // CONNECTDBDIALOGWIDGET_H

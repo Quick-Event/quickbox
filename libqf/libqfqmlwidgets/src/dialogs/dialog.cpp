@@ -104,7 +104,9 @@ void Dialog::loadPersistentSettings()
 		settings.beginGroup(path);
 		QRect geometry = settings.value("geometry").toRect();
 		if(geometry.isValid()) {
-			this->setGeometry(geometry);
+			// dont restore position of dialogs, let them be placed relatively to its parent
+			this->resize(geometry.size());
+			//this->setGeometry(geometry);
 		}
 	}
 }

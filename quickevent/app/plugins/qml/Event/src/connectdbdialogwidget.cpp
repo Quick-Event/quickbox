@@ -1,102 +1,74 @@
 #include "connectdbdialogwidget.h"
 #include "ui_connectdbdialogwidget.h"
-
-#include <qf/core/utils/settings.h>
-#include <qf/core/utils/crypt.h>
+#include "connectionsettings.h"
 
 namespace {
-qf::core::utils::Crypt s_crypt(qf::core::utils::Crypt::createGenerator(16808, 11, 2147483647));
 }
 
-ConnectdbDialogWidget::ConnectdbDialogWidget(QWidget *parent) :
+ConnectDbDialogWidget::ConnectDbDialogWidget(QWidget *parent) :
 	Super(parent),
-	ui(new Ui::ConnectdbDialogWidget)
+	ui(new Ui::ConnectDbDialogWidget)
 {
-	setTitle("Connect to data ...");
+	setPersistentSettingsId("ConnectDbDialogWidget");
+	setTitle("Data storage setup");
 
 	ui->setupUi(this);
 }
 
-ConnectdbDialogWidget::~ConnectdbDialogWidget()
+ConnectDbDialogWidget::~ConnectDbDialogWidget()
 {
 	delete ui;
 }
 
-EventPlugin::ConnectionType ConnectdbDialogWidget::connectionType()
+EventPlugin::ConnectionType ConnectDbDialogWidget::connectionType()
 {
 	if(ui->tabWidget->currentIndex() == 0)
 		return EventPlugin::ConnectionType::SqlServer;
 	return EventPlugin::ConnectionType::SingleFile;
 }
 
-QString ConnectdbDialogWidget::serverHost()
+QString ConnectDbDialogWidget::serverHost()
 {
 	return ui->edServerHost->text();
 }
 
-int ConnectdbDialogWidget::serverPort()
+int ConnectDbDialogWidget::serverPort()
 {
 	return ui->edServerPort->value();
 }
 
-QString ConnectdbDialogWidget::serverUser()
+QString ConnectDbDialogWidget::serverUser()
 {
 	return ui->edServerUser->text();
 }
 
-QString ConnectdbDialogWidget::serverPassword()
+QString ConnectDbDialogWidget::serverPassword()
 {
 	return ui->edServerPassword->text();
 }
 
-void ConnectdbDialogWidget::loadSettings()
+void ConnectDbDialogWidget::loadSettings()
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup("event");
-	ui->edEventName->setText(settings.value("eventName").toString());
-
-	settings.beginGroup("dataStorage");
-	int i = settings.value("connectionType", 0).toInt();
-	ui->tabWidget->setCurrentIndex(i);
-
-	settings.beginGroup("sqlServer");
-	ui->edServerHost->setText(settings.value("host").toString());
-	ui->edServerPort->setValue(settings.value("port").toInt());
-	ui->edServerUser->setText(settings.value("user").toString());
-	QByteArray ba = settings.value("password").toString().toUtf8();
-	ui->edServerPassword->setText(s_crypt.decrypt(ba));
-	settings.endGroup();
-
-	settings.beginGroup("singleFile");
-	ui->edSingleWorkingDir->setText(settings.value("workingDir").toString());
-	settings.endGroup();
-
-	settings.endGroup();
-	settings.endGroup();
+	ConnectionSettings settings;
+	ui->edEventName->setText(settings.eventName());
+	ui->tabWidget->setCurrentIndex(static_cast<int>(settings.connectionType()));
+	ui->edServerHost->setText(settings.serverHost());
+	int port = settings.serverPort();
+	if(port > 0)
+		ui->edServerPort->setValue(port);
+	ui->edServerUser->setText(settings.serverUser());
+	ui->edServerPassword->setText(settings.serverPassword());
+	ui->edSingleWorkingDir->setText(settings.singleWorkingDir());
 }
 
-void ConnectdbDialogWidget::saveSettings()
+void ConnectDbDialogWidget::saveSettings()
 {
-	qf::core::utils::Settings settings;
-	settings.beginGroup("event");
-
-	settings.setValue("eventName", ui->edEventName->text());
-
-	settings.beginGroup("dataStorage");
-	settings.setValue("connectionType", ui->tabWidget->currentIndex());
-
-	settings.beginGroup("sqlServer");
-	settings.setValue("host", ui->edServerHost->text());
-	settings.setValue("port", ui->edServerPort->value());
-	settings.setValue("user", ui->edServerUser->text());
-	QByteArray ba = s_crypt.encrypt(ui->edServerPassword->text(), 32);
-	settings.setValue("password", QString::fromLatin1(ba));
-	settings.endGroup();
-
-	settings.beginGroup("singleFile");
-	settings.setValue("workingDir", ui->edSingleWorkingDir->text());
-	settings.endGroup();
-
-	settings.endGroup();
-	settings.endGroup();
+	ConnectionSettings settings;
+	settings.setEventName(ui->edEventName->text());
+	settings.setConnectionType(static_cast<EventPlugin::ConnectionType>(ui->tabWidget->currentIndex()));
+	settings.setServerHost(ui->edServerHost->text());
+	settings.setServerPort(ui->edServerPort->value());
+	settings.setServerUser(ui->edServerUser->text());
+	settings.setServerPassword(ui->edServerPassword->text());
+	settings.setSingleWorkingDir(ui->edSingleWorkingDir->text());
 }
