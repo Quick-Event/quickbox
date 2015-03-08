@@ -20,7 +20,7 @@ include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 
 unix {
 	qmlfiles.commands = \
-		ln -sf $$PLUGIN_TOP_SRCDIR/qml $$DESTDIR/$$PLUGIN_NAME
+		ln -sfT $$PLUGIN_TOP_SRCDIR/qml $$DESTDIR/$$PLUGIN_NAME
 }
 win32 {
 # TODO: implement Unix part also for Windows
