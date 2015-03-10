@@ -58,13 +58,6 @@ CorePlugin {
 			id: settingsComponent
 			Settings {}
 		}
-		/*
-		Component {
-			id: cAppStatusBar
-			AppStatusBar {
-			}
-		}
-		*/
 		NetworkAccessManager {
 			id: networkAccessManager
 		}
@@ -97,9 +90,6 @@ CorePlugin {
 
 		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');
 		FrameWork.menuBar.actionForPath('help').text = qsTr('&Help');
-
-		//var sb = cAppStatusBar.createObject();
-		//FrameWork.setStatusBar(sb);
 	}
 
 }

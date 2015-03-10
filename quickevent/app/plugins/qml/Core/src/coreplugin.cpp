@@ -8,7 +8,7 @@ namespace qff = qf::qmlwidgets::framework;
 CorePlugin::CorePlugin(QObject *parent)
 	: Super(parent)
 {
-	connect(this, &CorePlugin::installed, this, &CorePlugin::onInstalled, Qt::QueuedConnection);
+	connect(this, &CorePlugin::installed, this, &CorePlugin::onInstalled);//, Qt::QueuedConnection);
 }
 
 void CorePlugin::onInstalled()

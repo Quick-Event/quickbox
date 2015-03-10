@@ -41,7 +41,16 @@ static QString eventNameToFileName(const QString &event_name)
 EventPlugin::EventPlugin(QObject *parent)
 	: Super(parent)
 {
-	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled, Qt::QueuedConnection);
+	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
+}
+
+EventConfig *EventPlugin::eventConfig()
+{
+	if(m_eventConfig == nullptr) {
+		m_eventConfig = new EventConfig(this);
+	}
+	m_eventConfig->load();
+	return m_eventConfig;
 }
 
 void EventPlugin::onInstalled()

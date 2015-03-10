@@ -5,6 +5,8 @@ SUBDIRS += \
 	Core \
 	Logging \
 	Event \
+	Competitors \
+	Classes \
 	CardReadout \
 
 

@@ -11,6 +11,9 @@ namespace framework {
 }
 }
 }
+
+class EventConfig;
+
 class EventPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
@@ -24,6 +27,9 @@ public:
 
 	QF_PROPERTY_IMPL(QString, e, E, ventName)
 	QF_PROPERTY_IMPL2(int, c, C, urrentStage, 0)
+
+	Q_INVOKABLE EventConfig* eventConfig();
+
 private:
 	Q_SLOT void onInstalled();
 	Q_SLOT void connectToSqlServer();
@@ -33,6 +39,7 @@ private:
 	qf::qmlwidgets::Action *m_actConnectDb;
 	qf::qmlwidgets::Action *m_actCreateEvent;
 	qf::qmlwidgets::Action *m_actOpenEvent;
+	EventConfig *m_eventConfig = nullptr;
 };
 
 #endif // EVENTPLUGIN_H

@@ -7,7 +7,7 @@ Plugin {
 
 	property QfObject internal: QfObject
 	{
-		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
+		//property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
 		SqlConnection {
 			id: db
 		}
@@ -20,7 +20,7 @@ Plugin {
 		Action {
 			id: actImportEventOris
 			text: qsTr('From &Oris')
-			enabled: internal.pluginSqlDb.api.sqlServerConnected
+			//enabled: internal.pluginSqlDb.api.sqlServerConnected
 			onTriggered: {
 				orisImporter.chooseAndImport()
 			}

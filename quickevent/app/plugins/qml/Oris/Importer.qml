@@ -2,9 +2,9 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
 import "qrc:/qf/core/qml/js/stringext.js" as StringExt
-import Event 1.0
-import Classes 1.0
-import Competitors 1.0
+// import Event 1.0
+// import Classes 1.0
+// import Competitors 1.0
 
 QtObject {
 	id: root
@@ -14,12 +14,14 @@ QtObject {
 		SqlConnection {
 			id: db
 		}
+		/*
 		CompetitorDocument {
-			id: competitorDoc
+			id: competitor_doc
 		}
 		ClassDocument {
-			id: classDoc
+			id: class_doc
 		}
+		*/
 	}
 	/*
 	function chooseAndImport2()
@@ -33,10 +35,10 @@ QtObject {
 			Log.info("adding class id:", class_id, "name:", class_name);
 			var use_doc = true;
 			if(use_doc) {
-				classDoc.loadForInsert();
-				//classDoc.setValue("id", class_id);
-				classDoc.setValue("name", class_name);
-				classDoc.save();
+				class_doc.loadForInsert();
+				//class_doc.setValue("id", class_id);
+				class_doc.setValue("name", class_name);
+				class_doc.save();
 			}
 			else {
 				var qs = "INSERT INTO classes (\"id\", \"name\") VALUES (:class_id, :class_name)"
@@ -91,7 +93,7 @@ QtObject {
 			//Log.info("http get finished:", get_ok, url);
 			if(get_ok) {
 				//Log.info("Imported event:", json_str);
-				var event_api = FrameWork.plugin("Event").api;
+				var event_api = FrameWork.plugin("Event");
                 var data = JSON.parse(json_str).Data;
 				var stage_count = parseInt(data.Stages);
 				if(!stage_count)
@@ -103,7 +105,7 @@ QtObject {
 
 				event_api.openEvent(event_name);
 
-                var cfg = event_api.config;
+                var cfg = event_api.eventConfig();
 				cfg.setValue('event.stageCount', stage_count);
 				cfg.setValue('event.name', data.Name);
 				cfg.setValue('event.description', '');
@@ -120,18 +122,21 @@ QtObject {
 				for(var class_obj in data.Classes) {
 					items_count++;
 				}
+				var cp = FrameWork.plugin("Classes");
+				var class_doc = cp.createClassDocument();
 				for(var class_obj in data.Classes) {
 					var class_id = parseInt(data.Classes[class_obj].ID);
 					var class_name = data.Classes[class_obj].Name;
 					FrameWork.showProgress("Importing class: " + class_name, items_processed++, items_count);
 					Log.info("adding class id:", class_id, "name:", class_name);
-					classDoc.loadForInsert();
-					classDoc.setValue("id", class_id);
-					classDoc.setValue("name", class_name);
-					classDoc.save();
+					class_doc.loadForInsert();
+					class_doc.setValue("id", class_id);
+					class_doc.setValue("name", class_name);
+					class_doc.save();
 					//break;
 				}
 				db.commit();
+				class_doc.destroy();
 
 				importEventOrisRunners(event_id, stage_count)
 			}
@@ -158,6 +163,8 @@ QtObject {
 					competitors_count++;
 				}
 				db.transaction();
+				var cp = FrameWork.plugin("Competitors");
+				var competitor_doc = cp.createCompetitorDocument();
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					Log.debug(JSON.stringify(competitor_obj, null, 2));
@@ -172,21 +179,22 @@ QtObject {
 						note += ' req. start: ' + competitor_obj.RequestedStart;
 					}
 					FrameWork.showProgress("Importing: " + competitor_obj.LastName + " " + competitor_obj.FirstName, competitors_processed, competitors_count);
-					competitorDoc.loadForInsert();
-					competitorDoc.setValue('classId', parseInt(competitor_obj.ClassID));
-					competitorDoc.setValue('siId', siid);
-					competitorDoc.setValue('firstName', competitor_obj.FirstName);
-					competitorDoc.setValue('lastName', competitor_obj.LastName);
-					competitorDoc.setValue('registration', competitor_obj.RegNo);
-					competitorDoc.setValue('licence', competitor_obj.Licence);
-					competitorDoc.setValue('note', note);
-					competitorDoc.setValue('importId', competitor_obj.ID);
-					competitorDoc.save();
+					competitor_doc.loadForInsert();
+					competitor_doc.setValue('classId', parseInt(competitor_obj.ClassID));
+					competitor_doc.setValue('siId', siid);
+					competitor_doc.setValue('firstName', competitor_obj.FirstName);
+					competitor_doc.setValue('lastName', competitor_obj.LastName);
+					competitor_doc.setValue('registration', competitor_obj.RegNo);
+					competitor_doc.setValue('licence', competitor_obj.Licence);
+					competitor_doc.setValue('note', note);
+					competitor_doc.setValue('importId', competitor_obj.ID);
+					competitor_doc.save();
 					//break;
 					competitors_processed++;
 				}
 				db.commit();
-				FrameWork.plugin("Event").api.reloadActivePart();
+				competitor_doc.destroy();
+				//FrameWork.plugin("Event").api.reloadActivePart();
 			}
 			else {
 				MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
