@@ -18,6 +18,7 @@ public:
 	explicit ConnectDbDialogWidget(QWidget *parent = 0);
 	~ConnectDbDialogWidget();
 
+	QString eventName();
 	EventPlugin::ConnectionType connectionType();
 	QString serverHost();
 	int serverPort();
@@ -26,6 +27,8 @@ public:
 
 	void loadSettings();
 	void saveSettings();
+private:
+	Q_SLOT void on_btSingleWorkingDirectory_clicked();
 private:
 	Ui::ConnectDbDialogWidget *ui;
 };

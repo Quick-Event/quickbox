@@ -2,8 +2,7 @@
 #include "ui_connectdbdialogwidget.h"
 #include "connectionsettings.h"
 
-namespace {
-}
+#include <qf/qmlwidgets/dialogs/filedialog.h>
 
 ConnectDbDialogWidget::ConnectDbDialogWidget(QWidget *parent) :
 	Super(parent),
@@ -18,6 +17,11 @@ ConnectDbDialogWidget::ConnectDbDialogWidget(QWidget *parent) :
 ConnectDbDialogWidget::~ConnectDbDialogWidget()
 {
 	delete ui;
+}
+
+QString ConnectDbDialogWidget::eventName()
+{
+	return ui->edEventName->text();
 }
 
 EventPlugin::ConnectionType ConnectDbDialogWidget::connectionType()
@@ -71,4 +75,11 @@ void ConnectDbDialogWidget::saveSettings()
 	settings.setServerUser(ui->edServerUser->text());
 	settings.setServerPassword(ui->edServerPassword->text());
 	settings.setSingleWorkingDir(ui->edSingleWorkingDir->text());
+}
+
+void ConnectDbDialogWidget::on_btSingleWorkingDirectory_clicked()
+{
+	QString wd = qf::qmlwidgets::dialogs::FileDialog::getExistingDirectory(this, tr("Event files directory"), ui->edSingleWorkingDir->text());
+	if(!wd.isEmpty())
+		ui->edSingleWorkingDir->setText(wd);
 }

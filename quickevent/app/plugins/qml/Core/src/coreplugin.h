@@ -13,6 +13,8 @@ public:
 	CorePlugin(QObject *parent = nullptr);
 public:
 	QSettings settings();
+private:
+	Q_SLOT void onInstalled();
 };
 
 #endif // COREPLUGIN_H

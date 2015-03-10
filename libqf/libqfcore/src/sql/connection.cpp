@@ -81,6 +81,15 @@ void Connection::close()
 	Super::close();
 }
 
+Connection Connection::forName(const QString &connection_name)
+{
+	QString cn = connection_name;
+	if(cn.isEmpty())
+		cn = QSqlDatabase::defaultConnection;
+	Connection ret(QSqlDatabase::database(cn, false));
+	return ret;
+}
+
 int Connection::defaultPort(const QString &driver_name)
 {
 	if(driver_name.endsWith("PSQL")) return 5432;

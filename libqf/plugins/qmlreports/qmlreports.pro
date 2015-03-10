@@ -6,7 +6,10 @@ include ( ../qfqmlplugin.pri )
 
 QT += qml sql network
 
+INCLUDEPATH += src
 INCLUDEPATH += ../../libqfqmlwidgets/include
+#INCLUDEPATH += $$PWD/../../libqfcore/include
+#INCLUDEPATH += $$PWD/../../libqfqmlwidgets/include
 
 LIBS += -lqfqmlwidgets
 

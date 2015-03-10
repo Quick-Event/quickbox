@@ -19,6 +19,7 @@ message( TARGET: $$TARGET )
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 
 unix {
+	# T flag is important, qml symlink in SRC/qml dir is created on second install without it
 	qmlfiles.commands = \
 		ln -sfT $$PLUGIN_TOP_SRCDIR/qml $$DESTDIR/$$PLUGIN_NAME
 }
@@ -33,7 +34,7 @@ QMAKE_EXTRA_TARGETS += qmlfiles
 POST_TARGETDEPS += qmlfiles
 
 OTHER_FILES += \
-	$$PLUGIN_TOP_SRCDIR/qml/qf/$$PLUGIN_NAME \
+	$$PLUGIN_TOP_SRCDIR/qml \
 
 QML_IMPORT_PATH += \
 	$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME/qml \

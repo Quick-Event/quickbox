@@ -1,5 +1,3 @@
-message(including $$PWD)
-
 HEADERS += \
     $$PWD/qmllogsingleton.h \
     $$PWD/settings.h \

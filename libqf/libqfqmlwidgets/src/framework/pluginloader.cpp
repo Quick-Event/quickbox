@@ -160,7 +160,6 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 
 bool PluginLoader::loadPluginComponent(QQmlComponent *plugin_component, PluginManifest *manifest)
 {
-	bool ret = true;
 	Application *app = Application::instance();
 	app->clearQmlErrorList();
 
@@ -177,6 +176,7 @@ bool PluginLoader::loadPluginComponent(QQmlComponent *plugin_component, PluginMa
 		}
 		plugin_component->completeCreate();
 	}
+	bool ret = (plugin != nullptr);
 	if(!plugin) {
 		qfError() << "Error creating plugin:" << plugin_component->url().toString();
 		qfError() << plugin_component->errorString();
@@ -186,7 +186,7 @@ bool PluginLoader::loadPluginComponent(QQmlComponent *plugin_component, PluginMa
 		m_loadedPlugins[manifest->featureId()] = plugin;
 	}
 
-	if(app->qmlErrorList().count()) {
+	if(!ret) {
 		qfError() << "Feature:" << manifest->featureId() << "install ERROR";
 	}
 	else {

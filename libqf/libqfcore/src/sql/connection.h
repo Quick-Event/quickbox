@@ -38,6 +38,8 @@ public:
 	bool open();
 	void close();
 
+	static Connection forName(const QString &connection_name = QString());
+
 	//! @return list of fields in table or view
 	QStringList fields(const QString& tbl_name) const;
 

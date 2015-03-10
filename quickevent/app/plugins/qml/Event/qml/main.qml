@@ -1,10 +1,22 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import "qrc:/qf/core/qml/js/stringext.js" as StringExt
 import Event 1.0
 
 EventPlugin {
 	id: root
+
+	property QfObject internals: QfObject
+	{
+		DbSchema {
+			id: dbSchema
+		}
+	}
+	function createDbSqlScript(create_options)
+	{
+		return dbSchema.createSqlScript(create_options);
+	}
 	/*
 	property QtObject api: QtObject
 	{
@@ -21,16 +33,6 @@ EventPlugin {
 		}
 	}
 
-	property QfObject internals: QfObject {
-		property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
-		SqlConnection {
-			id: db
-		}
-
-		Event {
-			id: event
-		}
-	}
 
 	property list<Action> actions: [
 		Action {

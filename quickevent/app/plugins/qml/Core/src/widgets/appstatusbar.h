@@ -21,11 +21,11 @@ public:
 	~AppStatusBar() Q_DECL_OVERRIDE;
 
 	QString eventName() const {return m_eventName;}
-	void setEventName(const QString &event_name);
+	Q_SLOT void setEventName(const QString &event_name);
 	Q_SIGNAL void eventNameChanged();
 
 	int stageNo() const {return m_stageNo;}
-	void setStageNo(int stage_no);
+	Q_SLOT void setStageNo(int stage_no);
 	Q_SIGNAL void stageNoChanged();
 
 	void showProgress(const QString &msg, int completed, int total) Q_DECL_OVERRIDE;

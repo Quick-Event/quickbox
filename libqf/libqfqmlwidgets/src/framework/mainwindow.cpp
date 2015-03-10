@@ -9,6 +9,7 @@
 #include "../toolbar.h"
 
 #include <qf/core/log.h>
+#include <qf/core/exception.h>
 #include <qf/core/assert.h>
 #include <qf/core/utils.h>
 //#include <qf/core/settings.h>
@@ -272,7 +273,7 @@ void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 	centralWidget()->addPartWidget(widget);
 }
 
-Plugin *MainWindow::plugin(const QString &feature_id)
+Plugin *MainWindow::plugin(const QString &feature_id, bool throw_exc)
 {
 	Plugin *ret = nullptr;
 	if(m_pluginLoader) {
@@ -281,6 +282,8 @@ Plugin *MainWindow::plugin(const QString &feature_id)
 	if(!ret) {
 		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
 		qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
+		if(throw_exc)
+			QF_EXCEPTION(tr("Plugin for feature id: '%1' is not installed!").arg(feature_id));
 	}
 	return ret;
 }

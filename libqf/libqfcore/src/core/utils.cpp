@@ -84,6 +84,12 @@ QVariant Utils::retypeVariant(const QVariant &val, QVariant::Type type)
 		return val;
 	if(val.isNull())
 		return QVariant(type);
+	if(val.canConvert(type)) {
+		QVariant ret = val;
+		ret.convert(type);
+		return ret;
+	}
+	/*
 	switch(type) {
 	case QVariant::Bool:
 		return QVariant(val.toBool());
@@ -146,7 +152,8 @@ QVariant Utils::retypeVariant(const QVariant &val, QVariant::Type type)
 		return QVariant(str_val);
 	}
 	}
-	qfWarning() << "retypeVariant(): unknown data type" << QVariant::typeToName(type);
+	*/
+	qfWarning() << "Don't know, how to convert variant type" << val.typeName() << "to:" << QVariant::typeToName(type);
 	return QVariant();
 }
 
