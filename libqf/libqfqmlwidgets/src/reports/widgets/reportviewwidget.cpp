@@ -55,13 +55,9 @@ ReportViewWidget::ScrollArea::ScrollArea(QWidget * parent)
 void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 {
 	if(ev->orientation() == Qt::Vertical) {
-		if(ev->modifiers() == Qt::ShiftModifier) {
+		if(ev->modifiers() == Qt::ControlModifier) {
 			int delta = ev->delta();
-			if (ev->orientation() == Qt::Horizontal) {
-			}
-			else {
-				emit zoomOnWheel(delta, ev->pos());
-			}
+			emit zoomOnWheel(delta, ev->pos());
 			ev->accept();
 			return;
 		}
