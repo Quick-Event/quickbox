@@ -1,5 +1,6 @@
 #include "qmldialog.h"
 #include "../frame.h"
+#include "../dialogbuttonbox.h"
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
@@ -21,6 +22,15 @@ QmlDialog::QmlDialog(QWidget *parent) :
 
 QmlDialog::~QmlDialog()
 {
+}
+
+int QmlDialog::standardButtons()
+{
+	int ret = 0;
+	if(m_dialogButtonBox) {
+		ret = m_dialogButtonBox->standardButtons();
+	}
+	return ret;
 }
 
 qf::qmlwidgets::framework::DialogWidget *QmlDialog::dialogWidget() const

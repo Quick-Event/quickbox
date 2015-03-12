@@ -20,14 +20,20 @@ class QFQMLWIDGETS_DECL_EXPORT QmlDialog : public Dialog, public QQmlParserStatu
 {
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
+	Q_ENUMS(DoneResult)
+	Q_ENUMS(QDialogButtonBox::StandardButton)
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(QQmlListProperty<QWidget> widgets READ widgets)
 	Q_PROPERTY(qf::qmlwidgets::framework::DialogWidget* dialogWidget READ dialogWidget WRITE setDialogWidget NOTIFY dialogWidgetChanged)
+	Q_PROPERTY(int standardButtons READ standardButtons WRITE setStandardButtons)
 private:
 	typedef Dialog Super;
 public:
 	explicit QmlDialog(QWidget *parent = 0);
 	~QmlDialog() Q_DECL_OVERRIDE;
+
+	void setStandardButtons(int bts) {setButtons((QDialogButtonBox::StandardButtons)bts);}
+	int standardButtons();
 
 	qf::qmlwidgets::framework::DialogWidget* dialogWidget() const;
 	Q_SLOT void setDialogWidget(qf::qmlwidgets::framework::DialogWidget* w);

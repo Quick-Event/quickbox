@@ -82,7 +82,7 @@ void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 
 void ReportViewWidget::ScrollArea::keyPressEvent(QKeyEvent* ev)
 {
-	if(ev->modifiers() == Qt::ShiftModifier) {
+	if(ev->modifiers() == Qt::ControlModifier) {
 		static QCursor c;
 		if(c.bitmap() == NULL) {
 			QBitmap b1(":/libqfgui/images/zoomin_cursor_bitmap.png");
@@ -102,7 +102,7 @@ void ReportViewWidget::ScrollArea::keyReleaseEvent(QKeyEvent* ev)
 
 void ReportViewWidget::ScrollArea::mousePressEvent(QMouseEvent* ev)
 {
-	if (ev->button() == Qt::LeftButton && ev->modifiers() == Qt::ShiftModifier) {
+	if (ev->button() == Qt::LeftButton && ev->modifiers() == Qt::ControlModifier) {
 		f_dragMouseStartPos = ev->pos();
 		f_dragViewportStartPos = -widget()->pos();
 		setCursor(QCursor(Qt::ClosedHandCursor));
@@ -129,8 +129,8 @@ void ReportViewWidget::ScrollArea::mouseReleaseEvent(QMouseEvent* ev)
 
 void ReportViewWidget::ScrollArea::mouseMoveEvent(QMouseEvent* ev)
 {
-	//qfInfo() << "move buttons:" << ev->buttons() << ev->button() << "mod:" << QString::number(ev->modifiers(), 16) << (ev->button() == Qt::LeftButton) << (ev->modifiers() == Qt::ShiftModifier);
-	if(ev->buttons() == Qt::LeftButton && ev->modifiers() == Qt::ShiftModifier) {
+	//qfInfo() << "move buttons:" << ev->buttons() << ev->button() << "mod:" << QString::number(ev->modifiers(), 16) << (ev->button() == Qt::LeftButton) << (ev->modifiers() == Qt::ControlModifier);
+	if(ev->buttons() == Qt::LeftButton && ev->modifiers() == Qt::ControlModifier) {
 		QPoint pos = ev->pos();
 		//qfInfo() << "start pos:" << f_dragStartPos.x() << f_dragStartPos.y() << "pos:" << pos.x() << pos.y();
 		/// dej startpos na pos
@@ -228,7 +228,7 @@ void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 {
 	qfLogFuncFrame();
-	if(e->button() == Qt::LeftButton && e->modifiers() == Qt::ShiftModifier) {
+	if(e->button() == Qt::LeftButton && e->modifiers() == Qt::ControlModifier) {
 		QWidget::mousePressEvent(e); /// ignoruj posouvani reportu mysi
 	}
 	else {
@@ -291,7 +291,7 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 void ReportViewWidget::PainterWidget::wheelEvent(QWheelEvent *event)
 {
 	/*
-	if(event->modifiers() == Qt::ShiftModifier) {
+	if(event->modifiers() == Qt::ControlModifier) {
 		int delta = event->delta();
 		//int numSteps = numDegrees / 15;
 

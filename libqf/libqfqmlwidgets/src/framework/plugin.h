@@ -22,7 +22,7 @@ public:
 	explicit Plugin(QObject *parent = 0);
 	~Plugin() Q_DECL_OVERRIDE;
 
-	Q_INVOKABLE QString homeDir() const;
+	//Q_INVOKABLE QString homeDir() const;
 
 	PluginManifest* manifest() const {return m_manifest;}
 	void setManifest(PluginManifest *mf);

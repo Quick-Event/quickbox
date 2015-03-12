@@ -7,6 +7,7 @@
 #include "../menubar.h"
 #include "../statusbar.h"
 #include "../toolbar.h"
+#include "../dialogs/qmldialog.h"
 
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
@@ -304,6 +305,17 @@ Plugin *MainWindow::pluginForObject(QObject *qml_object)
 	}
 	if(!ret)
 		qfWarning() << "Cannot find plugin of:" << qml_object;
+	return ret;
+}
+
+qf::qmlwidgets::dialogs::QmlDialog *MainWindow::createQmlDialog(QWidget *parent)
+{
+	if(parent == nullptr)
+		parent = this;
+	qf::qmlwidgets::dialogs::QmlDialog *ret = new qf::qmlwidgets::dialogs::QmlDialog(parent);
+	//Application *app = Application::instance();
+	//QQmlEngine *qe = app->qmlEngine();
+	//qe->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
 	return ret;
 }
 

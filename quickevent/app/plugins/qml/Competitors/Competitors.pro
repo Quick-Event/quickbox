@@ -15,3 +15,8 @@ include (src/src.pri)
 RESOURCES += \
 #    $${PLUGIN_NAME}.qrc \
 
+OTHER_FILES += \
+	$$PWD/qml/reports/* \
+
+DISTFILES += \
+    qml/CompetitorsModel.qml

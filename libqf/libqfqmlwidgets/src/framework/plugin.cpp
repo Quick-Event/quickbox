@@ -19,7 +19,7 @@ Plugin::~Plugin()
 {
 	qfLogFuncFrame() << this;
 }
-
+/*
 QString Plugin::homeDir() const
 {
 	QString ret;
@@ -30,7 +30,7 @@ QString Plugin::homeDir() const
 		qfWarning() << "Cannot find manifest of plugin:" << this;
 	return ret;
 }
-
+*/
 void Plugin::setManifest(PluginManifest *mf)
 {
 	if(mf != m_manifest) {
