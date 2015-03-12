@@ -49,8 +49,10 @@ Event::EventConfig *EventPlugin::eventConfig(bool reload)
 		m_eventConfig = new Event::EventConfig(this);
 		reload = true;
 	}
-	if(reload)
+	if(reload) {
 		m_eventConfig->load();
+		emit eventNameChanged(m_eventConfig->eventName());
+	}
 	return m_eventConfig;
 }
 
@@ -317,7 +319,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	}
 	if(ok) {
 		eventConfig()->setEventName(event_name);
-		//FrameWork.plugin('Event').api.config.reload();
+		emit eventOpenChanged(true);
 	}
 	return ok;
 }
