@@ -99,13 +99,7 @@ QtObject {
 				if(!stage_count)
 					stage_count = 1;
 				Log.info("pocet etap:", stage_count);
-				var event_name = event_api.createEvent(stage_count);
-				if(!event_name)
-					return;
-
-				event_api.openEvent(event_name);
-
-                var cfg = event_api.eventConfig();
+                var cfg = event_api.eventConfig;
 				cfg.setValue('event.stageCount', stage_count);
 				cfg.setValue('event.name', data.Name);
 				cfg.setValue('event.description', '');
@@ -114,7 +108,13 @@ QtObject {
 				cfg.setValue('event.mainReferee', data.MainReferee.FirstName + ' ' + data.MainReferee.LastName);
 				cfg.setValue('event.director', data.Director.FirstName + ' ' + data.Director.LastName);
 				cfg.setValue('event.importId', event_id);
-				cfg.save();
+
+				if(!event_api.createEvent(cfg.values()))
+					return;
+				cfg.load();
+				var event_name = cfg.value('event.name');
+				if(!event_api.openEvent(event_name))
+					return;
 
 				db.transaction();
 				var items_processed = 0;
@@ -123,7 +123,7 @@ QtObject {
 					items_count++;
 				}
 				var cp = FrameWork.plugin("Classes");
-				var class_doc = cp.createClassDocument();
+				var class_doc = cp.createClassDocument(root);
 				for(var class_obj in data.Classes) {
 					var class_id = parseInt(data.Classes[class_obj].ID);
 					var class_name = data.Classes[class_obj].Name;
@@ -164,7 +164,7 @@ QtObject {
 				}
 				db.transaction();
 				var cp = FrameWork.plugin("Competitors");
-				var competitor_doc = cp.createCompetitorDocument();
+				var competitor_doc = cp.createCompetitorDocument(root);
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					Log.debug(JSON.stringify(competitor_obj, null, 2));

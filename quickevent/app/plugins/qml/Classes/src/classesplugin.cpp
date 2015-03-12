@@ -1,27 +1,13 @@
 #include "classesplugin.h"
 #include "thispartwidget.h"
+#include "classdocument.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
-//#include <qf/qmlwidgets/dialogs/dialog.h>
-//#include <qf/qmlwidgets/dialogs/messagebox.h>
-//#include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/action.h>
-//#include <qf/qmlwidgets/menubar.h>
-//#include <qf/qmlwidgets/statusbar.h>
-//#include <qf/qmlwidgets/toolbar.h>
 
-//#include <qf/core/log.h>
-//#include <qf/core/sql/query.h>
-//#include <qf/core/sql/querybuilder.h>
-//#include <qf/core/sql/connection.h>
-//#include <qf/core/sql/transaction.h>
+#include <qf/core/log.h>
 
-//#include <QInputDialog>
-//#include <QSqlDatabase>
-//#include <QSqlError>
-//#include <QComboBox>
-//#include <QLabel>
-//#include <QMetaObject>
+#include <QQmlEngine>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
@@ -41,5 +27,15 @@ void ClassesPlugin::onInstalled()
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
 	emit nativeInstalled();
+}
+
+QObject *ClassesPlugin::createClassDocument(QObject *parent)
+{
+	ClassDocument *ret = new ClassDocument(parent);
+	if(!parent) {
+		qfWarning() << "Parent is NULL, created class will have QQmlEngine::JavaScriptOwnership.";
+		qmlEngine()->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
+	}
+	return ret;
 }
 

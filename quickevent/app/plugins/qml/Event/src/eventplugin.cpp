@@ -2,7 +2,6 @@
 #include "connectdbdialogwidget.h"
 #include "connectionsettings.h"
 #include "eventdialogwidget.h"
-#include "eventconfig.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -44,12 +43,14 @@ EventPlugin::EventPlugin(QObject *parent)
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
 }
 
-EventConfig *EventPlugin::eventConfig()
+Event::EventConfig *EventPlugin::eventConfig(bool reload)
 {
 	if(m_eventConfig == nullptr) {
-		m_eventConfig = new EventConfig(this);
+		m_eventConfig = new Event::EventConfig(this);
+		reload = true;
 	}
-	m_eventConfig->load();
+	if(reload)
+		m_eventConfig->load();
 	return m_eventConfig;
 }
 
@@ -159,7 +160,7 @@ bool EventPlugin::createEvent(const QVariantMap &event_params)
 	if(!dlg.exec())
 		return false;
 	QVariantMap new_params = event_w->saveParams();
-	EventConfig event_config;
+	Event::EventConfig event_config;
 	ConnectionSettings connection_settings;
 	event_config.setValues(new_params);
 	int stage_count = event_params.value("event.stageCount").toInt();
@@ -315,7 +316,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
-		setEventName(event_name);
+		eventConfig()->setEventName(event_name);
 		//FrameWork.plugin('Event').api.config.reload();
 	}
 	return ok;

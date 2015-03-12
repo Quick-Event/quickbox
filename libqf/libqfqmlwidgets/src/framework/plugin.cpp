@@ -1,8 +1,11 @@
 #include "plugin.h"
 #include "pluginmanifest.h"
+#include "application.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/log.h>
+
+#include <QQmlEngine>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -37,4 +40,11 @@ void Plugin::setManifest(PluginManifest *mf)
 			setObjectName(mf->featureId());
 		emit manifestChanged(mf);
 	}
+}
+
+QQmlEngine *Plugin::qmlEngine()
+{
+	QQmlEngine *qe = Application::instance()->qmlEngine();
+	QF_ASSERT(qe != nullptr, "Qml engine is NULL", return nullptr);
+	return qe;
 }

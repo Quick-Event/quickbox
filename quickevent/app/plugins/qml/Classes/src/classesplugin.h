@@ -2,7 +2,6 @@
 #define CLASSESPLUGIN_H
 
 #include <qf/qmlwidgets/framework/plugin.h>
-//#include <qf/qmlwidgets/framework/partwidget.h>
 
 #include <qf/core/utils.h>
 
@@ -24,6 +23,8 @@ public:
 	ClassesPlugin(QObject *parent = nullptr);
 
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
+
+	Q_INVOKABLE QObject* createClassDocument(QObject *parent);
 
 	Q_SIGNAL void nativeInstalled();
 private:

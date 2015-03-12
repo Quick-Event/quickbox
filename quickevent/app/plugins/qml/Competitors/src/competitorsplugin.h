@@ -2,7 +2,6 @@
 #define COMPETITORSPLUGIN_H
 
 #include <qf/qmlwidgets/framework/plugin.h>
-//#include <qf/qmlwidgets/framework/partwidget.h>
 
 #include <qf/core/utils.h>
 
@@ -14,6 +13,7 @@ class PartWidget;
 }
 }
 }
+
 class CompetitorsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
@@ -24,6 +24,8 @@ public:
 	CompetitorsPlugin(QObject *parent = nullptr);
 
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
+
+	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 
 	Q_SIGNAL void nativeInstalled();
 private:

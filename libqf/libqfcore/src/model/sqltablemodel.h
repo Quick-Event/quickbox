@@ -21,7 +21,7 @@ class QFCORE_DECL_EXPORT SqlTableModel : public TableModel
 	Q_OBJECT
 	Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
 	//Q_PROPERTY(QVariant queryParameters READ queryParameters WRITE setQueryParameters NOTIFY queryParametersChanged)
-	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName)
+	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName NOTIFY connectionNameChanged)
 private:
 	typedef TableModel Super;
 public:
@@ -40,7 +40,14 @@ public:
 	const qf::core::sql::QueryBuilder& queryBuilder() const;
 
 	QString connectionName() const { return m_connectionName; }
-	void setConnectionName(QString arg) { m_connectionName = arg; }
+	void setConnectionName(QString arg)
+	{
+		if(m_connectionName != arg) {
+			m_connectionName = arg;
+			emit connectionNameChanged(arg);
+		}
+	}
+	Q_SIGNAL void connectionNameChanged(QString arg);
 
 	QString query() const { return m_query; }
 	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }

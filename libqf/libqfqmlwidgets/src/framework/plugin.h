@@ -8,6 +8,8 @@
 
 #include <QObject>
 
+class QQmlEngine;
+
 namespace qf {
 namespace qmlwidgets {
 namespace framework {
@@ -25,6 +27,8 @@ public:
 	PluginManifest* manifest() const {return m_manifest;}
 	void setManifest(PluginManifest *mf);
 	Q_SIGNAL void manifestChanged(PluginManifest *mf);
+
+	QQmlEngine* qmlEngine();
 
 	Q_SIGNAL void installed();
 private:

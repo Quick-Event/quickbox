@@ -29,6 +29,7 @@ Plugin {
 
 	onInstalled:
 	{
+		//console.warn("Oris installed");
 		var quit = FrameWork.menuBar.actionForPath('file/quit');
 		quit.addMenuBefore('importEvent', qsTr('&Import event'));
 		quit.addSeparatorBefore();

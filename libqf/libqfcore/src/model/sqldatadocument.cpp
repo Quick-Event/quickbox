@@ -18,6 +18,21 @@ SqlTableModel *SqlDataDocument::model()
 	return qobject_cast<SqlTableModel*>(Super::model());
 }
 
+qf::core::sql::QueryBuilder SqlDataDocument::queryBuilder()
+{
+	SqlTableModel *m = model();
+	if(m)
+		return m->queryBuilder();
+	return qf::core::sql::QueryBuilder();
+}
+
+void SqlDataDocument::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
+{
+	SqlTableModel *m = model();
+	QF_ASSERT(m != nullptr, "Document model is NULL", return);
+	m->setQueryBuilder(qb);
+}
+
 SqlTableModel *SqlDataDocument::createModel(QObject *parent)
 {
 	return new SqlTableModel(parent);

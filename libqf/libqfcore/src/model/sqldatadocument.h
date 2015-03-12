@@ -18,6 +18,9 @@ private:
 	typedef DataDocument Super;
 public:
 	virtual SqlTableModel* model();
+
+	qf::core::sql::QueryBuilder queryBuilder();
+	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
 protected:
 	SqlTableModel* createModel(QObject *parent) Q_DECL_OVERRIDE;
 

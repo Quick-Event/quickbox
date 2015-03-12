@@ -6,9 +6,11 @@ include ( ../quickeventqmlplugin.pri )
 
 QT += widgets sql
 
-INCLUDEPATH +=
+INCLUDEPATH += \
+    $$PWD/../Event/include
 
-LIBS +=
+LIBS += -L$$DESTDIR \
+    -lEventplugin
 
 include (src/src.pri)
 

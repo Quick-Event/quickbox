@@ -4,6 +4,7 @@
 #include "../core/coreglobal.h"
 
 #include <QSqlQuery>
+#include <QSqlError>
 
 class QSqlDatabase;
 

@@ -6,6 +6,12 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 
+using namespace Event;
+
+namespace {
+static const auto EVENT_NAME = QStringLiteral("event.name");
+}
+
 static QVariant retypeStringValue(const QString &str_val, const QString &type_name)
 {
 	QByteArray ba = type_name.toLatin1();
@@ -32,7 +38,7 @@ void EventConfig::setValues(const QVariantMap &vals)
 	}
 }
 
-QVariant EventConfig::value(const QString &key, const QVariant &default_value)
+QVariant EventConfig::value(const QString &key, const QVariant &default_value) const
 {
 	QF_ASSERT(knownKeys().contains(key), "Key " + key + " is not known key!", return QVariant());
 	return m_data.value(key, default_value);
@@ -61,7 +67,7 @@ void EventConfig::load()
 	}
 }
 
-void EventConfig::save()
+void EventConfig::save(const QString &key_to_save)
 {
 	using namespace qf::core::sql;
 	Connection conn = Connection::forName();
@@ -70,6 +76,8 @@ void EventConfig::save()
 	while(it.hasNext()) {
 		it.next();
 		QString key = it.key();
+		if(!key_to_save.isEmpty() && key != key_to_save)
+			continue;
 		QVariant val = m_data[key];
 		q.prepare("UPDATE config SET cvalue=:val WHERE ckey=:key");
 		q.bindValue(":key", key);
@@ -86,12 +94,28 @@ void EventConfig::save()
 	}
 }
 
+int EventConfig::stageCount() const
+{
+	return value(QStringLiteral("event.stageCount")).toInt();
+}
+
+QString EventConfig::eventName() const
+{
+	return value(EVENT_NAME).toString();
+}
+
+void EventConfig::setEventName(const QString &n)
+{
+	setValue(EVENT_NAME, n);
+	save(EVENT_NAME);
+}
+
 const QSet<QString> &EventConfig::knownKeys()
 {
 	static QSet<QString> s;
 	if(s.isEmpty()) {
 		s << "event.stageCount"
-		  << "event.name"
+		  << EVENT_NAME
 		  << "event.date"
 		  << "event.description"
 		  << "event.place"
