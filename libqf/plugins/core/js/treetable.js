@@ -49,13 +49,15 @@ Table.prototype.column = function(ix)
 	return ret;
 }
 
-Table.prototype.addColumn = function(col)
+Table.prototype.addColumn = function(col_name, col_type, col_width)
 {
 	if(this._data) {
 		if(!this._data.fields || !(this._data.fields instanceof Array)) {
 			this._data.fields = [];
 		}
-		this._data.fields.push(col)
+		if(!col_type)
+			col_type = "QString"; 
+		this._data.fields.push({name: col_name, type: col_type, width: col_width})
 	}
 }
 

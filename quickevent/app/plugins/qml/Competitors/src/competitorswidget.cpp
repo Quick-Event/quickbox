@@ -34,7 +34,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("competitors")
 			.join("competitors.classId", "classes.id")
-			.orderBy("competitors.id");//.limit(100);
+			.orderBy("competitors.id");//.limit(10);
 	m->setQueryBuilder(qb);
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;

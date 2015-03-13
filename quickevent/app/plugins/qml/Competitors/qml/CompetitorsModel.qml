@@ -31,6 +31,6 @@ SqlTableModel {
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from('competitors')
 			.join("competitors.classId", "classes.id")
-			.orderBy('competitors.id');//.limit(100);
+			.orderBy('competitors.id');//.limit(10);
 	}
 }

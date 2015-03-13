@@ -46,7 +46,7 @@ CompetitorsPlugin {
 		//console.warn("tt1", tt.toString());
 		tt.addColumn("test_col");
 		for(var i=0; i<tt.rowCount(); i++)
-			tt.setValue(i, "test_col", "test_data_" + 1);
+			tt.setValue(i, "test_col", "test_data_" + i);
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Competitors");
 		w.setReport(root.manifest.homeDir + "/reports/list.qml");
