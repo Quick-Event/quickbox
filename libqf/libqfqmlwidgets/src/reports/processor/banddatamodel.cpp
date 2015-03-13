@@ -4,6 +4,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+#include <qf/core/utils/timescope.h>
+
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
 
@@ -47,6 +49,7 @@ TreeTableBandDataModel::TreeTableBandDataModel(QObject *parent)
 
 int TreeTableBandDataModel::rowCount()
 {
+	QF_TIME_SCOPE("TreeTableBandDataModel::rowCount");
 	return treeTable().rowCount();
 }
 

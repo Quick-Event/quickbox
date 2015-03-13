@@ -8,6 +8,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+#include <qf/core/utils/timescope.h>
+
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets::reports;
@@ -67,6 +69,7 @@ void ReportItemFrame::componentComplete()
 void ReportItemFrame::initDesignedRect()
 {
 	qfLogFuncFrame();
+	QF_TIME_SCOPE("ReportItemFrame::initDesignedRect");
 	// update designed rect
 	/*--
 	Point p;
@@ -270,6 +273,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
+	QF_TIME_SCOPE("ReportItemFrame::printMetaPaintChildren");
 	PrintResult res = PR_PrintedOk;
 	Rect paint_area_rect = bounding_rect;
 	if(layout() == LayoutStacked) {
@@ -583,6 +587,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	qfDebug() << "\tdesignedRect:" << designedRect.toString();// << "isLeftTopFloating:" << isLeftTopFloating() << "isRightBottomFloating:" << isRightBottomFloating();
 	qfDebug() << "\tlayout:" << ((layout() == LayoutHorizontal)? "horizontal": "vertical") << ", is rubber:" << isRubber(layout());
+	QF_TIME_SCOPE("ReportItemFrame::printMetaPaint ***");
 	PrintResult res = PR_PrintedOk;
 	if(!isVisible())
 		return res;

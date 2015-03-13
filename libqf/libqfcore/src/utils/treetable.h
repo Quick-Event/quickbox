@@ -117,7 +117,7 @@ public:
 	void setName(const QString &n) {(*this)[KEY_META][KEY_NAME] = n;}
 	TreeTableColumns columns() const {return TreeTableColumns(property(KEY_COLUMNS));}
 	int columnCount() const {return columns().count();}
-	int rowCount() const {return rows().count();}
+	int rowCount() const;
 	TreeTableRow row(int ix) const {return TreeTableRow(columns(), rows().property(ix));}
 	TreeTableRow appendRow();
 	void removeRow(int ix);

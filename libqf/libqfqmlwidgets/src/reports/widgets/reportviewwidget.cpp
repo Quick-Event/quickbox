@@ -718,6 +718,7 @@ void ReportViewWidget::setData(const QString &key, const QVariant &data)
 {
 	qfu::TreeTable tt;
 	tt.setVariant(data);
+	tt.removeJSTypes();
 	setData(key, tt);
 }
 

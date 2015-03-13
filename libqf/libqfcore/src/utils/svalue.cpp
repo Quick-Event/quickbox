@@ -1,8 +1,10 @@
 #include "svalue.h"
 
 #include "../core/log.h"
+#include "../utils/timescope.h"
 
 #include <QJsonDocument>
+#include <QJSValue>
 
 using namespace qf::core::utils;
 
@@ -19,6 +21,7 @@ SValue::SValue()
 
 SValue::SValue(const QVariant &v)
 {
+	QF_TIME_SCOPE("SValue::SValue");
 	if(v.userType() == qMetaTypeId<SValue>()) {
 		*this = qvariant_cast<SValue>(v);
 	}
@@ -39,6 +42,10 @@ static QVariant value_to_variant(const QVariant &v)
 	if(v.userType() == qMetaTypeId<SValue>()) {
 		SValue sv = qvariant_cast<SValue>(v);
 		ret = value_to_variant(sv.value());
+	}
+	else if(v.userType() == qMetaTypeId<QJSValue>()) {
+		QJSValue sv = qvariant_cast<QJSValue>(v);
+		ret = sv.toVariant();
 	}
 	else if(v.type() == QVariant::List) {
 		/// ARRAY
@@ -129,7 +136,12 @@ QStringList SValue::keys() const
 QVariant SValue::property(const QString &name, const QVariant &default_value) const
 {
 	//qfLogFuncFrame() << name << QFJson::variantToString(d->value);
-	QVariant ret = d->value.toMap().value(name, default_value);
+	QF_TIME_SCOPE("SValue::property");
+	QVariant v = d->value;
+	if(v.userType() == qMetaTypeId<QJSValue>())
+		qfWarning() << "Converting QJSValue to QVariantMap can be very time consuming (depending on JS object size), use SValue::removeJSTypes() to get rid of this mesage.";
+	QVariantMap m = v.toMap();
+	QVariant ret = m.value(name, default_value);
 	//qfDebug() << "\t return:" << ret.toString();
 	return ret;
 }
@@ -302,6 +314,12 @@ void SValue::setVariant(const QVariant &json)
 		*this = qvariant_cast<SValue>(v);
 	}
 	else setValue(v);
+}
+
+void SValue::removeJSTypes()
+{
+	QVariant v = toVariant();
+	setVariant(v);
 }
 
 SValue& SValue::operator+=(const QVariantMap &m)

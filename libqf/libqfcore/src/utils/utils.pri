@@ -7,7 +7,8 @@ HEADERS += \
 	$$PWD/fileutils.h \
 	$$PWD/treeitembase.h \
 #	$$PWD/searchdirs.h \
-    $$PWD/settings.h
+    $$PWD/settings.h \
+    $$PWD/timescope.h
 
 SOURCES += \
     $$PWD/crypt.cpp \
@@ -18,5 +19,6 @@ SOURCES += \
 	$$PWD/fileutils.cpp \
 	$$PWD/treeitembase.cpp \
 #	$$PWD/searchdirs.cpp \
-    $$PWD/settings.cpp
+    $$PWD/settings.cpp \
+    $$PWD/timescope.cpp
 

@@ -55,5 +55,6 @@ void CompetitorsWidget::lazyInit()
 
 void CompetitorsWidget::onEventOpenChanged(bool open)
 {
-	m_competitorsModel->reload();
+	if(open)
+		m_competitorsModel->reload();
 }

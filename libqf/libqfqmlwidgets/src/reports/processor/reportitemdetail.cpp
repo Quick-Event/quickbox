@@ -7,6 +7,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+#include <qf/core/utils/timescope.h>
+
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
 
@@ -61,6 +63,7 @@ QVariant ReportItemDetail::rowData(const QString &field_name, int role)
 ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();
+	QF_TIME_SCOPE("ReportItemDetail::printMetaPaint");
 	ReportItemBand *band = qobject_cast<ReportItemBand*>(parent());
 	BandDataModel *model = nullptr;
 	if(band) {
@@ -90,8 +93,11 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 			qfDebug() << currentIndex() << "/" << model->rowCount();
 			//qfDebug() << model->dump();
 			if(ix < model->rowCount()) {
+				QF_TIME_SCOPE("ReportItemDetail::printMetaPaint 3");
 				setCurrentIndex(ix);
-				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+				{
+					resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+				}
 				res = PR_PrintAgainDetail;
 			}
 		}

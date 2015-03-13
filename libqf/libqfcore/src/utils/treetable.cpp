@@ -10,6 +10,7 @@
 #include "../core/log.h"
 #include "../core/utils.h"
 #include "../core/string.h"
+#include "../utils/timescope.h"
 
 using namespace qf::core::utils;
 
@@ -358,6 +359,14 @@ TreeTable::TreeTable()
 
 TreeTable::~TreeTable()
 {
+}
+
+int TreeTable::rowCount() const
+{
+	QF_TIME_SCOPE("RTreeTable::rowCount");
+	SValue rs = rows();
+	int ret = rs.count();
+	return ret;
 }
 
 TreeTableRow TreeTable::appendRow()
