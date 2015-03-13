@@ -5,6 +5,7 @@
 #include "../menubar.h"
 #include "../toolbar.h"
 #include "../dialogbuttonbox.h"
+#include "../internal/desktoputils.h"
 
 #include <qf/core/log.h>
 
@@ -104,9 +105,13 @@ void Dialog::loadPersistentSettings()
 		settings.beginGroup(path);
 		QRect geometry = settings.value("geometry").toRect();
 		if(geometry.isValid()) {
-			// dont restore position of dialogs, let them be placed relatively to its parent
-			this->resize(geometry.size());
-			//this->setGeometry(geometry);
+			if(isSavePersistentPosition()) {
+				geometry = qf::qmlwidgets::internal::DesktopUtils::moveRectToVisibleDesktopScreen(geometry);
+				this->setGeometry(geometry);
+			}
+			else {
+				this->resize(geometry.size());
+			}
 		}
 	}
 }
@@ -147,6 +152,7 @@ void Dialog::updateLayout()
 	QF_SAFE_DELETE(ly_orig);
 	QBoxLayout *ly_root = new QVBoxLayout();
 	ly_root->setMargin(0);
+	ly_root->setSpacing(0);
 	setLayout(ly_root);
 
 	if(m_menuBar)

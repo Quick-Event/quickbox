@@ -105,10 +105,12 @@ public:
 public:
 	/// vlozi do el_body report ve formatu HTML
 	virtual void processHtml(QDomElement &el_body);
+	static QString htmlAttributeName_item();
+	static QString htmlAttributeName_layout();
 
 	void dump();
 protected:
-	void fixTableTags(QDomElement &el);
+	//void fixTableTags(QDomElement &el);
 	QDomElement removeRedundantDivs(QDomElement &el);
 	QDomElement fixLayoutHtml(QDomElement &el);
 signals:

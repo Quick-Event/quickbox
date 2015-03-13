@@ -14,7 +14,7 @@ CompetitorsPlugin {
 			id: cReportViewWidget
 			ReportViewWidget {}
 		}
-		CompetitorsModel {
+		CompetitorsListModel {
 			id: competitorsModel
 		}
 	}

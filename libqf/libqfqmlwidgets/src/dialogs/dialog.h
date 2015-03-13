@@ -4,6 +4,8 @@
 #include "../qmlwidgetsglobal.h"
 #include "../framework/ipersistentsettings.h"
 
+#include <qf/core/utils.h>
+
 #include <QDialog>
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
@@ -34,6 +36,7 @@ class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersi
 	Q_OBJECT
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(qf::qmlwidgets::DialogButtonBox* buttonBox READ buttonBox WRITE setButtonBox NOTIFY buttonBoxChanged)
+	Q_PROPERTY(bool savePersistentPosition READ isSavePersistentPosition WRITE setSavePersistentPosition NOTIFY savePersistentPositionChanged)
 private:
 	typedef QDialog Super;
 public:
@@ -41,6 +44,8 @@ public:
 public:
 	explicit Dialog(QWidget *parent = 0);
 	~Dialog() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_BOOL_IMPL2(s, S, avePersistentPosition, true)
 public:
 	void setCentralWidget(QWidget *central_widget);
 

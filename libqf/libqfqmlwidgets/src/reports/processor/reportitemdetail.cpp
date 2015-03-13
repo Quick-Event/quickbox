@@ -70,7 +70,6 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 		model = band->model();
 		if(model) {
 			if(currentIndex() < 0) {
-				/// kdyz neni f_dataRow, vezmi prvni radek dat
 				setCurrentIndex(0);
 			}
 		}
@@ -95,10 +94,11 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 			if(ix < model->rowCount()) {
 				QF_TIME_SCOPE("ReportItemDetail::printMetaPaint 3");
 				setCurrentIndex(ix);
-				{
-					resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				}
+				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				res = PR_PrintAgainDetail;
+			}
+			else {
+				resetCurrentIndex();
 			}
 		}
 	}

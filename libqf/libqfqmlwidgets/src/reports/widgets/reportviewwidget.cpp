@@ -12,6 +12,7 @@
 #include "../../action.h"
 #include "../../dialogs/dialog.h"
 #include "../../dialogs/filedialog.h"
+#include "../../dialogs/messagebox.h"
 #include "../../statusbar.h"
 #include "../../menubar.h"
 #include "../../toolbar.h"
@@ -343,8 +344,6 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 
 	connect(m_scrollArea, SIGNAL(showNextPage()), this, SLOT(scrollToNextPage()));
 	connect(m_scrollArea, SIGNAL(showPreviousPage()), this, SLOT(scrollToPrevPage()));
-
-	//--QFUiBuilder::connectActions(f_actionList, this);
 }
 
 ReportViewWidget::~ReportViewWidget()
@@ -539,8 +538,16 @@ void ReportViewWidget::setScale(qreal _scale)
 void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 {
 	qfLogFuncFrame();
+	qf::qmlwidgets::Action *act_file = dlg->menuBar()->actionForPath("file");
+	act_file->setText(tr("&File"));
+	act_file->addActionInto(action("file.print"));
+	act_file->addActionInto(action("file.printPreview"));
+	act_file->addSeparatorInto();
+	act_file->addActionInto(action("file.export.pdf"));
+	act_file->addActionInto(action("file.export.html"));
+
 	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
-	act_view->setText(tr("View"));
+	act_view->setText(tr("&View"));
 	act_view->addActionInto(action("view.firstPage"));
 	act_view->addActionInto(action("view.prevPage"));
 	act_view->addActionInto(action("view.nextPage"));
@@ -551,6 +558,9 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 	act_view->addActionInto(action("view.zoomFitHeight"));
 
 	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
+	tool_bar->addAction(action("file.print"));
+	tool_bar->addAction(action("file.export.pdf"));
+	tool_bar->addSeparator();
 	tool_bar->addAction(action("view.firstPage"));
 	tool_bar->addAction(action("view.prevPage"));
 	m_edCurrentPage = new QLineEdit;
@@ -627,7 +637,38 @@ qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActio
 		ret[QStringLiteral("view.zoomFitHeight")] = a;
 		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
 	}
-
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/print.png");
+		a = new qf::qmlwidgets::Action(ico, tr("&Print"), this);
+		//a->setTooltip(tr("Tisk"));
+		ret[QStringLiteral("file.print")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_print()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/print-preview.png");
+		a = new qf::qmlwidgets::Action(ico, tr("Print pre&view"), this);
+		//a->setToolTip(tr("Náhled tisku"));
+		ret[QStringLiteral("file.printPreview")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_printPreview()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/acrobat.png");
+		a = new qf::qmlwidgets::Action(ico, tr("Export PD&F"), this);
+		a->setToolTip(tr("Export in the Adobe Acrobat PDF format"));
+		ret[QStringLiteral("file.export.pdf")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_export_pdf()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/network.png");
+		a = new qf::qmlwidgets::Action(ico, tr("Export &HTML"), this);
+		a->setToolTip(tr("Export data in HTML"));
+		ret[QStringLiteral("file.export.html")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_export_html()));
+	}
 	return ret;
 }
 
@@ -718,7 +759,7 @@ void ReportViewWidget::setData(const QString &key, const QVariant &data)
 {
 	qfu::TreeTable tt;
 	tt.setVariant(data);
-	tt.removeJSTypes();
+	//tt.removeJSTypes();
 	setData(key, tt);
 }
 
@@ -729,10 +770,6 @@ int ReportViewWidget::pageCount()
 	if(document(!qf::core::Exception::Throw)) {
 		ret = document()->childrenCount();
 	}
-	else {
-		//qfDebug() << "\tdocument is null";
-	}
-	//qfDebug() << "\treturn:" << ret;
 	return ret;
 }
 
@@ -1101,7 +1138,6 @@ QString ReportViewWidget::exportHtml()
 void ReportViewWidget::file_export_pdf(bool open)
 {
 	qfDebug() << QF_FUNC_NAME;
-	attachPrintout();
 	//reportProcessor()->dump();
 	QString fn;
 	if(open)
@@ -1122,41 +1158,23 @@ void ReportViewWidget::file_export_html()
 {
 	qfLogFuncFrame();
 	QString fn = "report.html";
-	QString s = exportHtml();
-	qfError() << Q_FUNC_INFO << "NIY";
-	/*--
-	QFHtmlViewUtils hut(!QFHtmlViewUtils::UseWebKit);
-	hut.showOrSaveHtml(s, fn, "showOrSaveHtml");
-	--*/
-}
-
-void ReportViewWidget::file_export_email()
-{
-	/// uloz pdf do tmp file report.pdf
-	attachPrintout();
-	QString fn = QDir::tempPath() + "/report.pdf";
-	exportPdf(fn);
-}
-
-void ReportViewWidget::data_showHtml()
-{
-	qfDebug() << QF_FUNC_NAME;
-	QVariant v = reportProcessor()->data(QString());
-	qfu::TreeTable tt = v.value<qfu::TreeTable>();
-	QString s = tt.toHtml();
-	s = addHtmlEnvelope(s);
-	QString file_name = "data.html";
-	qfError() << Q_FUNC_INFO << "showing" << file_name << "not implemented yet.";
-	/*--
-	QFHtmlViewUtils hu(!QFHtmlViewUtils::UseWebKit);
-	hu.showOrSaveHtml(s, file_name);
-	--*/
+	fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as HTML"), fn, "*.html");
+	if(!fn.isEmpty()) {
+		QString s = exportHtml();
+		QFile f(fn);
+		if(!f.open(QFile::WriteOnly)) {
+			dialogs::MessageBox::showError(this, tr("Cannot open '%1' for write.").arg(f.fileName()));
+			return;
+		}
+		QTextStream out(&f);
+		out.setCodec("UTF-8");
+		out << s;
+	}
 }
 
 void ReportViewWidget::file_print()
 {
 	qfDebug() << QF_FUNC_NAME;
-	attachPrintout();
 	print();
 }
 
@@ -1168,61 +1186,5 @@ void ReportViewWidget::file_printPreview()
 	connect(&preview, SIGNAL(paintRequested(QPrinter*)), this, SLOT(print(QPrinter*)));
 	preview.exec();
 }
-
-void ReportViewWidget::report_edit()
-{
-	qfLogFuncFrame();
-	// will not be possible in GUI with qmlreports
-#if 0
-	QString program = qfu::FileUtils::appDir() + "/repedit";
-	#if defined Q_OS_WIN
-	program += ".exe";
-	#endif
-	QStringList arguments;
-	{
-		QFSqlSearchDirs *sql_sd = dynamic_cast<QFSqlSearchDirs*>(reportProcessor()->searchDirs(!qf::core::Exception::Throw));
-		if(sql_sd) {
-			QFAppDbConnectionInterface *appi = dynamic_cast<QFAppDbConnectionInterface*>(QCoreApplication::instance());
-			if(appi) {
-				QFSqlConnection &c = appi->connection();
-				/// user:password@host:port
-				QString sql_connection = c.userName() % ':' % c.password() % '@' % c.hostName() % ':' % QString::number(c.port());
-				/*
-				QString sql_connection = "sql://" % c.userName() % ':' % c.password() % '@' % c.hostName() % ':' % QString::number(c.port())
-				% '/' % c.databaseName()
-				% '/' % sql_sd->tableName()
-				% '/' % sql_sd->ckeyColumnName()
-				% '/' % sql_sd->dataColumnName();
-				*/
-				arguments << "--sql-connection=" + sql_connection;
-				//arguments << "--dbfs-profile=" + sql_connection;
-				arguments << "--report-search-sql-dirs=" + sql_sd->sqlDirs().join("::");
-			}
-		}
-	}
-	{
-		QFSearchDirs *sd = dynamic_cast<QFSearchDirs*>(reportProcessor()->searchDirs(!qf::core::Exception::Throw));
-		if(sd) {
-			arguments << "--report-search-dirs=" + sd->dirs().join("::");
-			if(sd->dirs().count()) arguments << "--saved-files-root-dir=" + sd->dirs().first();
-		}
-	}
-	QFDataTranslator *dtr = dataTranslator();
-	if(dtr) {
-		QString lc_domain = dtr->currentLocalesName();
-		if(!lc_domain.isEmpty()) arguments << "--force-lc-domain=" + lc_domain;
-	}
-	arguments << reportProcessor()->report().fileName();
-	//arguments << "-dqfdom";
-#if defined QT_DEBUG /// aby se mi netisklo heslo do logu v release verzi
-	qfDebug() << "\t command line:" << program << arguments.join(" ");
-#endif
-	QProcess *proc = new QProcess(qfApp());
-	proc->start(program, arguments);
-#endif
-}
-
-
-
 
 

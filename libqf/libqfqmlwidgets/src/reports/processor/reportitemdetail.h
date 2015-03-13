@@ -22,6 +22,8 @@ public:
 public:
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
 	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
+protected:
+	void resetCurrentIndex();
 public:
 	Q_INVOKABLE QVariant data(int row_no, const QString &field_name, int role = Qt::DisplayRole);
 	Q_INVOKABLE QVariant rowData(const QString &field_name, int role = Qt::DisplayRole);

@@ -85,8 +85,6 @@ protected:
 	void refreshWidget();
 	void refreshActions();
 
-	virtual void attachPrintout() {}
-
 	void print();
 	void exportPdf(const QString &file_name);
 	QString exportHtml();
@@ -112,13 +110,8 @@ public slots:
 
 	virtual void file_print();
 	virtual void file_printPreview();
-	virtual void file_export_pdf(bool open = false);
-	virtual void file_export_pdf_open() {file_export_pdf(true);}
+	virtual void file_export_pdf(bool open = true);
 	virtual void file_export_html();
-	virtual void file_export_email();
-	virtual void report_edit();
-
-	void data_showHtml();
 
 	void view_nextPage(PageScrollPosition scroll_pos = ScrollToPageTop);
 	void view_prevPage(PageScrollPosition scroll_pos = ScrollToPageTop);

@@ -50,49 +50,50 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 		return res;
 
 	qfDebug() << "\tparent html element:" << out.tagName();
-	//qfDebug() << "\tlayout:" << (isGridLayout()? "grid": (layout() == qf::qmlwidgets::graphics::LayoutHorizontal)? "horizontal": (layout() == qf::qmlwidgets::graphics::LayoutVertical)? "vertical" : "nevim");
-	//qfDebug() << "\tmetaPaintLayoutLength:" << metaPaintLayoutLength << "metaPaintOrthogonalLayoutLength:" << metaPaintOrthogonalLayoutLength;
-	//--updateChildren();
-	if(children().count() > 0) {
-		if(children().count() == 1) {
+	if(itemsToPrintCount() > 0) {
+		if(itemsToPrintCount() == 1) {
 			/// jedno dite vyres tak, ze se vubec nevytiskne rodicovsky frame
-			ReportItem *it = itemAt(0);
+			ReportItem *it = itemToPrintAt(0);
 			res = it->printHtml(out);
 		}
 		else {
 			QDomElement el_div = out.ownerDocument().createElement("div");;
 			if(layout() == LayoutHorizontal) {
-				el_div.setAttribute("layout", "horizontal");
+				el_div.setAttribute(ReportProcessor::htmlAttributeName_layout(), QStringLiteral("horizontal"));
 			}
-			for(int i=0; i<children().count(); i++) {
-				ReportItem *it = itemAt(i);
+			for(int i=0; i<itemsToPrintCount(); i++) {
+				ReportItem *it = itemToPrintAt(i);
 				PrintResult ch_res;
-				//int cnt = 0;
 				do {
-					//if(cnt) qfInfo() << "\t opakovacka:" << cnt;
 					ch_res = it->printHtml(el_div);
-					//if(cnt) qfInfo() << "\t again2:" << (ch_res .flags & FlagPrintAgain);
-					//cnt++;
 				} while(ch_res == PR_PrintAgainDetail);
 				res = ch_res;
 			}
 			out.appendChild(el_div);
 		}
-		/*--
-		QDomElement el = out.lastChild().toElement();
-		if(!el.isNull()) {
-			ReportItemTable *tbl_it = dynamic_cast<ReportItemTable*>(this);
-			if(tbl_it) {
-				el.setAttribute("__table", "__fakeBandTable");
-			}
-			else {
-				static QStringList sl = QStringList() << "__fakeBandDetail" << "__fakeBandHeaderRow" << "__fakeBandFooterRow";
-				foreach(QString s, sl) {
-					if(element.attribute(s).toInt() > 0) el.setAttribute("__table", s);
+	}
+	return res;
+}
+
+//===================================================================
+//                           ReportItemBand
+//===================================================================
+
+ReportItem::PrintResult ReportItemBand::printHtml(ReportItem::HTMLElement &out)
+{
+	qfLogFuncFrame() << this;
+	PrintResult res = Super::printHtml(out);
+	if(res == PR_PrintedOk) {
+		QDomElement el_band = out.lastChild().toElement();
+		el_band.setAttribute(ReportProcessor::htmlAttributeName_item(), QStringLiteral("band"));
+		for(QDomElement el = el_band.firstChildElement(); !el.isNull(); el = el.nextSiblingElement()) {
+			if(el.tagName() == QStringLiteral("div")) {
+				if(el.attribute(ReportProcessor::htmlAttributeName_item()) != QStringLiteral("detail")) {
+					/// non detail rows in band should be exported to HTML as rows
+					el.setAttribute(ReportProcessor::htmlAttributeName_item(), QStringLiteral("header"));
 				}
 			}
 		}
-		--*/
 	}
 	return res;
 }
@@ -102,35 +103,34 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 //===================================================================
 ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "current index:" << currentIndex();
 	ReportItemBand *band = qobject_cast<ReportItemBand*>(parent());
 	BandDataModel *model = nullptr;
 	if(band) {
 		model = band->model();
 		if(model) {
 			if(currentIndex() < 0) {
-				/// kdyz neni f_dataRow, vezmi prvni radek dat
 				setCurrentIndex(0);
 			}
 		}
 	}
 	PrintResult res;
-	/*--
-	bool design_mode = processor->isDesignMode();
-	if(!design_mode && (data_table.isNull() || dataRow().isNull())) {
-		/// prazdnej detail vubec netiskni
-		res.value = PrintOk;
-		return res;
-	}
-	--*/
 	res = Super::printHtml(out);
 	if(res == PR_PrintedOk) {
+		{
+			QDomElement el = out.lastChild().toElement();
+			el.setAttribute(ReportProcessor::htmlAttributeName_item(), QStringLiteral("detail"));
+		}
 		if(model) {
 			/// take next data row
-			setCurrentIndex(currentIndex() + 1);
-			if(currentIndex() < model->rowCount()) {
+			int ix = currentIndex() + 1;
+			if(ix < model->rowCount()) {
+				setCurrentIndex(ix);
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				res = PR_PrintAgainDetail;
+			}
+			else {
+				resetCurrentIndex();
 			}
 		}
 	}

@@ -201,12 +201,12 @@ void ReportProcessor::processHtml(QDomElement & el_body)
 {
 	documentInstanceRoot()->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 	documentInstanceRoot()->printHtml(el_body);
-	fixTableTags(el_body);
+	//fixTableTags(el_body);
 	removeRedundantDivs(el_body);
 	/// tak a z divu s horizontalnim layoutem udelej tabulky
 	fixLayoutHtml(el_body);
 }
-
+/*
 void ReportProcessor::fixTableTags(QDomElement & _el)
 {
 	QDomElement el(_el);
@@ -229,7 +229,7 @@ void ReportProcessor::fixTableTags(QDomElement & _el)
 		if(is_table_header_row) el1.setTagName("th");
 	}
 }
-
+*/
 QDomElement ReportProcessor::removeRedundantDivs(QDomElement & _el)
 {
 	qfLogFuncFrame() << _el.tagName() << "children cnt:" << _el.childNodes().count();
@@ -254,22 +254,65 @@ QDomElement ReportProcessor::removeRedundantDivs(QDomElement & _el)
 	return el;
 }
 
+QString ReportProcessor::htmlAttributeName_item()
+{
+	return QStringLiteral("__qf_qml_report_item");
+}
+
+QString ReportProcessor::htmlAttributeName_layout()
+{
+	return QStringLiteral("__qf_qml_report_layout");
+}
+
 QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 {
 	qfLogFuncFrame() << _el.tagName() << "children cnt:" << _el.childNodes().count();
 	QDomElement el(_el);
-	if(el.tagName() == "div") {
-		QString attr = el.attribute("layout");
-		if(attr == "horizontal") {
-			QDomNode parent_nd = el.parentNode();
-			if(!parent_nd.isNull()) {
+	QDomNode parent_nd = el.parentNode();
+	if(!parent_nd.isNull()) {
+		if(el.tagName() == "div") {
+			if(el.attribute(htmlAttributeName_item()) == QStringLiteral("band")) {
+				// change divs to table for Band
+				QDomElement el_table = el.ownerDocument().createElement("table").toElement();
+				QDomNode old_el = parent_nd.replaceChild(el_table, el);
+				el_table.setAttribute("border", 1);
+				QDomElement el_caption = el.ownerDocument().createElement("caption").toElement();
+				el_table.appendChild(el_caption);
+
+				while(true) {
+					QDomElement el1 = old_el.firstChildElement();
+					if(el1.isNull())
+						break;
+					if(el1.attribute(htmlAttributeName_item()) == QStringLiteral("detail")) {
+						QDomElement el_tr = el.ownerDocument().createElement("tr").toElement();
+						el_table.appendChild(el_tr);
+						while(true) {
+							QDomElement el2 = el1.firstChildElement();
+							if(el2.isNull())
+								break;
+							QDomElement el_td = el.ownerDocument().createElement("td").toElement();
+							el_tr.appendChild(el_td);
+							el_td.appendChild(el2);
+						}
+						old_el.removeChild(el1);
+					}
+					else {
+						el_caption.appendChild(el1);
+					}
+				}
+				el = el_table;
+			}
+			else if(el.attribute(htmlAttributeName_item()) == QStringLiteral("header")
+					&& el.attribute(htmlAttributeName_layout()) == QStringLiteral("horizontal")) {
+				// change div with horizontal layout to one row table
 				QDomElement el_table = el.ownerDocument().createElement("table").toElement();
 				QDomNode old_el = parent_nd.replaceChild(el_table, el);
 				QDomNode el_tr = el.ownerDocument().createElement("tr");
 				el_table.appendChild(el_tr);
 				while(true) {
 					QDomElement el1 = old_el.firstChildElement();
-					if(el1.isNull()) break;
+					if(el1.isNull())
+						break;
 					QDomNode el_td = el.ownerDocument().createElement("td");
 					el_tr.appendChild(el_td);
 					el_td.appendChild(el1);

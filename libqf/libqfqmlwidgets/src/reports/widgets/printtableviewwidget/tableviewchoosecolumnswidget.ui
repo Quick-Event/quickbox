@@ -63,7 +63,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../../qfqmlwidgets.qrc">
+           <iconset resource="../../../../qfqmlwidgets.qrc">
             <normaloff>:/qf/qmlwidgets/images/minus.png</normaloff>:/qf/qmlwidgets/images/minus.png</iconset>
           </property>
          </widget>
@@ -138,7 +138,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../../qfqmlwidgets.qrc">
+           <iconset resource="../../../../qfqmlwidgets.qrc">
             <normaloff>:/qf/qmlwidgets/images/reload.png</normaloff>:/qf/qmlwidgets/images/reload.png</iconset>
           </property>
          </widget>
@@ -152,7 +152,7 @@
            <string>...</string>
           </property>
           <property name="icon">
-           <iconset resource="../../qfqmlwidgets.qrc">
+           <iconset resource="../../../../qfqmlwidgets.qrc">
             <normaloff>:/qf/qmlwidgets/images/plus.png</normaloff>:/qf/qmlwidgets/images/plus.png</iconset>
           </property>
          </widget>
@@ -213,7 +213,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../qfqmlwidgets.qrc"/>
+  <include location="../../../../qfqmlwidgets.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -553,7 +553,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 			}
 		}
 
-		qfInfo() << ttable.toString();
+		//qfInfo() << ttable.toString();
 
 		reports::ReportViewWidget *rw = new reports::ReportViewWidget(NULL);
 		rw->setData(QString(), ttable);

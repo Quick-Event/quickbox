@@ -42,11 +42,8 @@ public:
 
 	Q_INVOKABLE QVariant data(const QString &field_name, int role = Qt::DisplayRole);
 public:
-	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
-
-	//--qf::core::utils::TreeTable dataTable();
-	//--qf::core::utils::TreeTableRow dataRow();
+	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
 protected:
 	ReportItemDetail* detail();
 	void createChildItemsFromData();

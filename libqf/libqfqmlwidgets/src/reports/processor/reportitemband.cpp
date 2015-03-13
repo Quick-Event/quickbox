@@ -26,6 +26,11 @@ ReportItemBand::~ReportItemBand()
 	QF_SAFE_DELETE(m_model);
 }
 
+void ReportItemDetail::resetCurrentIndex()
+{
+	m_currentIndex = -1;
+}
+
 void ReportItemBand::setModelData(QVariant d)
 {
 	if (m_data == d)
@@ -83,14 +88,6 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 	if(isCreateFromData() && !detail()) {
 		createChildItemsFromData();
 	}
-	//qfInfo() << dataTable().toString();
-	/*--
-	if(dataTable().isNull() && !processor()->isDesignMode()) { /// pokud neni table (treba bez radku), band se vubec netiskne
-		PrintResult res;
-		res.value = PrintOk;
-		return res;
-	}
-	--*/
 	if(isHeaderOnBreak()) {
 		/// print everything except of detail again
 		ReportItemDetail *it_det = detail();

@@ -336,7 +336,8 @@ public:
 		return NULL;
 	}
 	static const bool IncludingParaTexts = true;
-	/// nekdy je potreba jen dotisknout texty a ramecky vytisknout znova, pak je \a including_para_texts == false
+	/// sometimes is necessarry to continue printing of overflowed text and print brorders for it again,
+	/// then \a including_para_texts == false
 	virtual void resetIndexToPrintRecursively(bool including_para_texts) {Q_UNUSED(including_para_texts);}
 	virtual bool isBreak() {return false;}
 

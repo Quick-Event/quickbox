@@ -108,6 +108,7 @@ void EventPlugin::connectToSqlServer()
 
 	qfd::Dialog dlg(fwk);
 	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	dlg.setSavePersistentPosition(false);
 	ConnectDbDialogWidget *conn_w = new ConnectDbDialogWidget();
 	dlg.setCentralWidget(conn_w);
 	while(!connect_ok) {

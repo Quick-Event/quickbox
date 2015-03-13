@@ -119,7 +119,7 @@ public:
 	void setVariant(const QVariant &json);
 
 	// data can contain QJSValues from QML scripts, convert them to pure c++ QVariants (QVariantMap, QVariantList)
-	void removeJSTypes();
+	//void removeJSTypes();
 
 	static SValue fromJson(const QVariant &json) {SValue ret; ret.setJson(json); return ret;}
 
