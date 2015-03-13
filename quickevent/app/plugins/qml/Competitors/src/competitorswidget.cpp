@@ -1,14 +1,17 @@
 #include "competitorswidget.h"
 #include "ui_competitorswidget.h"
+#include "competitorwidget.h"
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
+namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 
 CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
@@ -39,6 +42,8 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;
 
+	connect(ui->tblCompetitors, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)));
+
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
 
@@ -57,4 +62,16 @@ void CompetitorsWidget::onEventOpenChanged(bool open)
 {
 	if(open)
 		m_competitorsModel->reload();
+}
+
+void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
+{
+	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
+	CompetitorWidget *w = new CompetitorWidget();
+	w->setWindowTitle(tr("Edit Competitor"));
+	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
+	dlg.setCentralWidget(w);
+	w->load(id, mode);
+	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
+	dlg.exec();
 }

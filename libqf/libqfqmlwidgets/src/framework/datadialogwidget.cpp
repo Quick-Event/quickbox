@@ -19,6 +19,10 @@ DataDialogWidget::~DataDialogWidget()
 
 qf::qmlwidgets::DataController *DataDialogWidget::dataController()
 {
+	if(!m_dataController) {
+		m_dataController = new qf::qmlwidgets::DataController(this);
+		m_dataController->setWidget(this);
+	}
 	return m_dataController;
 }
 
@@ -29,9 +33,10 @@ void DataDialogWidget::setDataController(qf::qmlwidgets::DataController *dc)
 
 void DataDialogWidget::load(const QVariant &id, int mode)
 {
-	if(m_dataController) {
-		if(m_dataController->document()) {
-			m_dataController->document()->load(id, (qf::core::model::DataDocument::RecordEditMode)mode);
+	qf::qmlwidgets::DataController *dc = dataController();
+	if(dc) {
+		if(dc->document()) {
+			dc->document()->load(id, (qf::core::model::DataDocument::RecordEditMode)mode);
 		}
 	}
 }

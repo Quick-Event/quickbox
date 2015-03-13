@@ -84,28 +84,5 @@ void DataController::documentAboutToSave()
 		dw->finishDataValueEdits();
 	}
 }
-/*
-static IDataWidget *dataWidget_helper(QWidget *parent, const QString &data_id)
-{
-	IDataWidget *ret = nullptr;
-	if(parent) {
-		IDataWidget *dw = dynamic_cast<IDataWidget*>(parent);
-		if(dw && data_id.compare(dw->dataId(), Qt::CaseInsensitive) == 0) {
-			ret = dw;
-		}
-		else {
-			for(auto o : parent->children()) {
-				QWidget *w = qobject_cast<QWidget*>(o);
-				if(w) {
-					ret = dataWidget_helper(w, data_id);
-					if(ret)
-						break;
-				}
-			}
-		}
-	}
-	return ret;
-}
-*/
 
 

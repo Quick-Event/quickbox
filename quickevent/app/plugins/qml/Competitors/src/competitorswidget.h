@@ -24,6 +24,8 @@ public:
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void onEventOpenChanged(bool open);
+
+	Q_SLOT void editCompetitor(const QVariant &id, int mode);
 private:
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;
