@@ -10,6 +10,12 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	setPersistentSettingsId("CompetitorWidget");
 	ui->setupUi(this);
 
+	qf::qmlwidgets::ForeignKeyComboBox *cbx = ui->cbxClass;
+
+	cbx->setReferencedTable("classes");
+	cbx->setReferencedField("id");
+	cbx->setReferencedCaptionField("name");
+
 	dataController()->setDocument(new CompetitorDocument(this));
 }
 

@@ -58,6 +58,7 @@ public:
 	Q_SIGNAL void buttonBoxChanged();
 
 	void setButtons(QDialogButtonBox::StandardButtons buttons);
+	Q_INVOKABLE void setDefaultButton(int standard_button);
 
 	Q_SLOT void loadPersistentSettings();
 

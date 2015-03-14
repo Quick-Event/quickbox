@@ -60,7 +60,10 @@ bool DataDialogWidget::saveData()
 	if(dc) {
 		qfm::DataDocument *doc = dc->document();
 		if(doc) {
-			connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, (Qt::ConnectionType)(Qt::QueuedConnection | Qt::UniqueConnection));
+			//connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
+			//qfInfo() << "============" << (bool)c;
+			// previous didn't work, I thing that it has to, see QTBUG-45001
+			connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::UniqueConnection);
 			doc->save();
 		}
 	}

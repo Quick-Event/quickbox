@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>300</height>
+    <height>278</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,11 @@
     </spacer>
    </item>
    <item row="0" column="1">
-    <widget class="QComboBox" name="comboBox"/>
+    <widget class="qf::qmlwidgets::ForeignKeyComboBox" name="cbxClass">
+     <property name="dataId" stdset="0">
+      <string>competitors.classId</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -66,7 +70,7 @@
       <string>&amp;Class</string>
      </property>
      <property name="buddy">
-      <cstring>comboBox</cstring>
+      <cstring>cbxClass</cstring>
      </property>
     </widget>
    </item>
@@ -170,9 +174,14 @@
    <extends>QLineEdit</extends>
    <header location="global">qf/qmlwidgets/lineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::ForeignKeyComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qf/qmlwidgets/combobox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>comboBox</tabstop>
+  <tabstop>cbxClass</tabstop>
   <tabstop>lineEdit</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>

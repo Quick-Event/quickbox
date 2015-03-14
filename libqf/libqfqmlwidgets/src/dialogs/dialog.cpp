@@ -12,6 +12,7 @@
 #include <QVBoxLayout>
 #include <QSettings>
 #include <QShowEvent>
+#include <QPushButton>
 
 using namespace qf::qmlwidgets::dialogs;
 
@@ -263,5 +264,17 @@ void Dialog::setButtons(QDialogButtonBox::StandardButtons buttons)
 		setButtonBox(bbx);
 	}
 	bbx->setStandardButtons(buttons);
+}
+
+void Dialog::setDefaultButton(int standard_button)
+{
+	QPushButton *bt = nullptr;
+	DialogButtonBox *bbx = buttonBox();
+	if(bbx) {
+		bt = bbx->button((QDialogButtonBox::StandardButton)standard_button);
+		if(bt)
+			bt->setDefault(true);
+	}
+	QF_CHECK(bt != nullptr, QString("Cannot find standard button: %1").arg(standard_button));
 }
 

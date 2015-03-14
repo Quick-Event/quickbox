@@ -1617,6 +1617,8 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 		if(!ok)
 			setCurrentIndex(previous);
 		//qfDebug() << "\t" << __LINE__;
+	}
+	if(row_changed) {
 		updateRow(previous.row());
 		updateRow(current.row());
 	}
