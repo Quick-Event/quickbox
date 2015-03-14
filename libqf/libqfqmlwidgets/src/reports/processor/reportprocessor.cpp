@@ -20,6 +20,9 @@ using namespace qf::qmlwidgets::reports;
 //===================================================
 //                                ReportProcessor
 //===================================================
+QString ReportProcessor::HTML_ATTRIBUTE_ITEM = QStringLiteral("__qf_qml_report_item");
+QString ReportProcessor::HTML_ATTRIBUTE_LAYOUT = QStringLiteral("__qf_qml_report_layout");
+
 ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
 	: QObject(parent)//, m_Context(qf::qmlwidgets::graphics::StyleCache())
 {
@@ -254,16 +257,6 @@ QDomElement ReportProcessor::removeRedundantDivs(QDomElement & _el)
 	return el;
 }
 
-QString ReportProcessor::htmlAttributeName_item()
-{
-	return QStringLiteral("__qf_qml_report_item");
-}
-
-QString ReportProcessor::htmlAttributeName_layout()
-{
-	return QStringLiteral("__qf_qml_report_layout");
-}
-
 QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 {
 	qfLogFuncFrame() << _el.tagName() << "children cnt:" << _el.childNodes().count();
@@ -271,53 +264,36 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 	QDomNode parent_nd = el.parentNode();
 	if(!parent_nd.isNull()) {
 		if(el.tagName() == "div") {
-			if(el.attribute(htmlAttributeName_item()) == QStringLiteral("band")) {
+			if(el.attribute(HTML_ATTRIBUTE_ITEM) == QStringLiteral("band")) {
 				// change divs to table for Band
-				QDomElement el_table = el.ownerDocument().createElement("table").toElement();
+				QDomElement el_table = el.ownerDocument().createElement("table");
 				QDomNode old_el = parent_nd.replaceChild(el_table, el);
 				el_table.setAttribute("border", 1);
-				QDomElement el_caption = el.ownerDocument().createElement("caption").toElement();
+				QDomElement el_caption = el.ownerDocument().createElement("caption");
 				el_table.appendChild(el_caption);
 
 				while(true) {
 					QDomElement el1 = old_el.firstChildElement();
 					if(el1.isNull())
 						break;
-					if(el1.attribute(htmlAttributeName_item()) == QStringLiteral("detail")) {
-						QDomElement el_tr = el.ownerDocument().createElement("tr").toElement();
-						el_table.appendChild(el_tr);
-						while(true) {
-							QDomElement el2 = el1.firstChildElement();
-							if(el2.isNull())
-								break;
-							QDomElement el_td = el.ownerDocument().createElement("td").toElement();
-							el_tr.appendChild(el_td);
-							el_td.appendChild(el2);
-						}
-						old_el.removeChild(el1);
+					QDomElement el_tr = convertHorizontalDivToTableRow(el1);
+					if(el_tr.isNull()) {
+						el_caption.appendChild(el1);
 					}
 					else {
-						el_caption.appendChild(el1);
+						el_table.appendChild(el_tr);
+						old_el.removeChild(el1);
 					}
 				}
 				el = el_table;
 			}
-			else if(el.attribute(htmlAttributeName_item()) == QStringLiteral("header")
-					&& el.attribute(htmlAttributeName_layout()) == QStringLiteral("horizontal")) {
-				// change div with horizontal layout to one row table
-				QDomElement el_table = el.ownerDocument().createElement("table").toElement();
-				QDomNode old_el = parent_nd.replaceChild(el_table, el);
-				QDomNode el_tr = el.ownerDocument().createElement("tr");
-				el_table.appendChild(el_tr);
-				while(true) {
-					QDomElement el1 = old_el.firstChildElement();
-					if(el1.isNull())
-						break;
-					QDomNode el_td = el.ownerDocument().createElement("td");
-					el_tr.appendChild(el_td);
-					el_td.appendChild(el1);
+			else {
+				QDomElement el_tr = convertHorizontalDivToTableRow(el);
+				if(!el_tr.isNull()) {
+					QDomElement el_table = el.ownerDocument().createElement("table");
+					parent_nd.replaceChild(el_table, el);
+					el_table.appendChild(el_tr);
 				}
-				el = el_table;
 			}
 		}
 	}
@@ -325,6 +301,25 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 		el1 = fixLayoutHtml(el1);
 	}
 	return el;
+}
+
+QDomElement ReportProcessor::convertHorizontalDivToTableRow(QDomElement &el_div)
+{
+	QDomElement el_table_row;
+	if(el_div.tagName() == QLatin1String("div") && el_div.attribute(HTML_ATTRIBUTE_LAYOUT) == QStringLiteral("horizontal")) {
+		bool is_header = el_div.attribute(HTML_ATTRIBUTE_ITEM) == QStringLiteral("header");
+		el_table_row = el_div.ownerDocument().createElement("tr");
+		while(true) {
+			QDomElement el2 = el_div.firstChildElement();
+			if(el2.isNull())
+				break;
+			QString td_tag_name = (is_header)? QStringLiteral("th"): QStringLiteral("td");
+			QDomElement el_td = el_div.ownerDocument().createElement(td_tag_name);
+			el_table_row.appendChild(el_td);
+			el_td.appendChild(el2);
+		}
+	}
+	return el_table_row;
 }
 
 QStringList &ReportProcessor::qmlEngineImportPaths()

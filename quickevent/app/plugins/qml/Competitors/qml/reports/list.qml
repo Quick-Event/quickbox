@@ -66,7 +66,7 @@ Report {
 				}
 				Para {
 					text: {
-						"Page " + (reportProcessor.processedPageNo + 1) + "/15";
+						"Page " + (reportProcessor.processedPageNo + 1) + "/NIY";
 					}
 				}
 			}

@@ -105,14 +105,15 @@ public:
 public:
 	/// vlozi do el_body report ve formatu HTML
 	virtual void processHtml(QDomElement &el_body);
-	static QString htmlAttributeName_item();
-	static QString htmlAttributeName_layout();
+	static QString HTML_ATTRIBUTE_ITEM;
+	static QString HTML_ATTRIBUTE_LAYOUT;
 
 	void dump();
 protected:
 	//void fixTableTags(QDomElement &el);
 	QDomElement removeRedundantDivs(QDomElement &el);
 	QDomElement fixLayoutHtml(QDomElement &el);
+	QDomElement convertHorizontalDivToTableRow(QDomElement &el_div);
 signals:
 	//! emitovan vzdy, kdyz procesor dokonci dalsi stranku.
 	void pageProcessed();

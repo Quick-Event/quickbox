@@ -57,9 +57,9 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 			res = it->printHtml(out);
 		}
 		else {
-			QDomElement el_div = out.ownerDocument().createElement("div");;
+			QDomElement el_div = out.ownerDocument().createElement("div");
 			if(layout() == LayoutHorizontal) {
-				el_div.setAttribute(ReportProcessor::htmlAttributeName_layout(), QStringLiteral("horizontal"));
+				el_div.setAttribute(ReportProcessor::HTML_ATTRIBUTE_LAYOUT, QStringLiteral("horizontal"));
 			}
 			for(int i=0; i<itemsToPrintCount(); i++) {
 				ReportItem *it = itemToPrintAt(i);
@@ -85,12 +85,12 @@ ReportItem::PrintResult ReportItemBand::printHtml(ReportItem::HTMLElement &out)
 	PrintResult res = Super::printHtml(out);
 	if(res == PR_PrintedOk) {
 		QDomElement el_band = out.lastChild().toElement();
-		el_band.setAttribute(ReportProcessor::htmlAttributeName_item(), QStringLiteral("band"));
+		el_band.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("band"));
 		for(QDomElement el = el_band.firstChildElement(); !el.isNull(); el = el.nextSiblingElement()) {
 			if(el.tagName() == QStringLiteral("div")) {
-				if(el.attribute(ReportProcessor::htmlAttributeName_item()) != QStringLiteral("detail")) {
+				if(el.attribute(ReportProcessor::HTML_ATTRIBUTE_ITEM) != QStringLiteral("detail")) {
 					/// non detail rows in band should be exported to HTML as rows
-					el.setAttribute(ReportProcessor::htmlAttributeName_item(), QStringLiteral("header"));
+					el.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("header"));
 				}
 			}
 		}
@@ -119,7 +119,7 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 	if(res == PR_PrintedOk) {
 		{
 			QDomElement el = out.lastChild().toElement();
-			el.setAttribute(ReportProcessor::htmlAttributeName_item(), QStringLiteral("detail"));
+			el.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("detail"));
 		}
 		if(model) {
 			/// take next data row
