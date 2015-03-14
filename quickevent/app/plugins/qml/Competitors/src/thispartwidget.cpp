@@ -1,6 +1,8 @@
 #include "thispartwidget.h"
 #include "competitorswidget.h"
 
+#include <qf/core/log.h>
+
 #include <qf/qmlwidgets/frame.h>
 
 ThisPartWidget::ThisPartWidget(QWidget *parent)
@@ -10,7 +12,7 @@ ThisPartWidget::ThisPartWidget(QWidget *parent)
 
 	CompetitorsWidget *w = new CompetitorsWidget();
 	centralFrame()->addWidget(w);
-	//w->settleDownInPartWidget(this);
+	w->settleDownInPartWidget(this);
 
 	//QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }

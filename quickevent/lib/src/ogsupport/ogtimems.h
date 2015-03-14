@@ -1,11 +1,13 @@
 #ifndef QUICKEVENT_OGTIMEMS_H
 #define QUICKEVENT_OGTIMEMS_H
 
+#include "../quickeventglobal.h"
+
 #include <QMetaType>
 
 class QString;
 
-class OGTimeMs
+class QUICKEVENT_DECL_EXPORT OGTimeMs
 {
 public:
 	OGTimeMs(int msec = 0);

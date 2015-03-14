@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = quickevent
 
-QT += widgets sql
+QT += widgets sql qml
 
 CONFIG += qt dll
 CONFIG += c++11

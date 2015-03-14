@@ -144,6 +144,7 @@ void EventPlugin::connectToSqlServer()
 			connect_ok = true;
 		}
 	}
+	setDbOpen(connect_ok);
 	m_actCreateEvent->setEnabled(connect_ok);
 	m_actOpenEvent->setEnabled(connect_ok);
 	if(connect_ok) {
@@ -320,8 +321,16 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	}
 	if(ok) {
 		eventConfig()->setEventName(event_name);
-		emit eventOpenChanged(true);
+		emit reloadDataRequest();
 	}
 	return ok;
+}
+
+void EventPlugin::setDbOpen(bool ok)
+{
+	if(ok != m_dbOpen) {
+		m_dbOpen = ok;
+		emit dbOpenChanged(ok);
+	}
 }
 

@@ -21,6 +21,7 @@ class EventPlugin : public qf::qmlwidgets::framework::Plugin
 	Q_PROPERTY(int currentStage READ currentStage WRITE setCurrentStage NOTIFY currentStageChanged)
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
+	Q_PROPERTY(bool dbOpen READ isDbOpen NOTIFY dbOpenChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
@@ -37,7 +38,11 @@ public:
 	Q_SLOT bool createEvent(const QVariantMap &event_params = QVariantMap());
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 
-	Q_SIGNAL void eventOpenChanged(bool opened);
+	Q_SIGNAL void reloadDataRequest();
+
+	bool isDbOpen() const { return m_dbOpen; }
+	void setDbOpen(bool ok);
+	Q_SIGNAL void dbOpenChanged(bool is_open);
 
 private:
 	Q_SLOT void onInstalled();
@@ -47,6 +52,7 @@ private:
 	qf::qmlwidgets::Action *m_actCreateEvent;
 	qf::qmlwidgets::Action *m_actOpenEvent;
 	Event::EventConfig *m_eventConfig = nullptr;
+	bool m_dbOpen = false;
 };
 
 #endif // EVENTPLUGIN_H

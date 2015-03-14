@@ -1,13 +1,14 @@
 #ifndef QUICKEVENT_OGTIMEEDIT_H
 #define QUICKEVENT_OGTIMEEDIT_H
 
+#include "../quickeventglobal.h"
 #include "ogtimems.h"
 
 #include <qf/qmlwidgets/lineedit.h>
 
 #include <qf/core/utils.h>
 
-class OGTimeEdit : public qf::qmlwidgets::LineEdit
+class QUICKEVENT_DECL_EXPORT OGTimeEdit : public qf::qmlwidgets::LineEdit
 {
 	Q_OBJECT
 
