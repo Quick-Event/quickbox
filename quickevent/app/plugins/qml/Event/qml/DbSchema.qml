@@ -47,7 +47,7 @@ Schema {
 				Field { name: 'climb'; type: Int { } }
 			]
 		},
-		Table { name: 'controls'
+		Table { name: 'codes'
 			fields: [
 				Field { name: 'id'; type: Int { } },
 				Field { name: 'broken'; type: Boolean { } }
@@ -56,7 +56,7 @@ Schema {
 				Index {fields: ['id']; primary: true }
 			]
 		},
-		Table { name: 'course2controls'
+		Table { name: 'coursecodes'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'courseId'; type: Int { } },
@@ -64,7 +64,7 @@ Schema {
 			]
 			indexes: [
 				Index {fields: ['courseId']; references: ForeignKeyReference {table: 'courses'; fields: ['id']; } },
-				Index {fields: ['codeId']; references: ForeignKeyReference {table: 'controls'; fields: ['id']; } },
+				Index {fields: ['codeId']; references: ForeignKeyReference {table: 'codes'; fields: ['id']; } },
 				Index {
 					fields: ['courseId', 'codeId']
 					unique: true

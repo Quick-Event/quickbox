@@ -13,12 +13,13 @@ LoggerWidget::LoggerWidget(QWidget *parent) :
 	ui->setupUi(this);
 	m_logDevice =  qf::core::SignalLogDevice::install();
 	m_logDevice->setParent(this);
-	m_logDevice->setLogTreshold(qf::core::Log::LOG_WARN);
+	//m_logDevice->setLogTreshold(qf::core::Log::LOG_WARN);
 
 	connect(m_logDevice, &qf::core::SignalLogDevice::logEntry, this, &LoggerWidget::onLogEntry, Qt::QueuedConnection);
 	connect(ui->lstLogLevel, SIGNAL(activated(int)), this, SLOT(onLogLevelSet(int)));
 	connect(ui->btClearLog, &QToolButton::clicked, ui->txtLog, &QPlainTextEdit::clear);
 	//connect(ui->btClearLog, SIGNAL(clicked()), this, SLOT(clearLog()));
+	ui->lstLogLevel->setCurrentText("Info");
 }
 
 LoggerWidget::~LoggerWidget()
@@ -52,7 +53,8 @@ void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
 
 void LoggerWidget::onLogLevelSet(int ix)
 {
-	m_logDevice->setLogTreshold((qf::core::Log::Level)ix);
+	//qfInfo() << "new log level:" << qf::core::Log::levelName(qf::core::Log::Level(ix));
+	m_logDevice->setLogTreshold(qf::core::Log::Level(ix + 1));
 	//QString log_level_str = qf::core::Log::levelName(m_logDevice->logTreshold());
 	//qfError() << "LoggerWidget::onLogLevelSet to:" << log_level_str;
 	//qfWarning() << "LoggerWidget::onLogLevelSet to:" << log_level_str;

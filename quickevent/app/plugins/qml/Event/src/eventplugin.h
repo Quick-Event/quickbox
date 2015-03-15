@@ -1,6 +1,7 @@
 #ifndef EVENTPLUGIN_H
 #define EVENTPLUGIN_H
 
+#include "eventpluginglobal.h"
 #include "eventconfig.h"
 
 #include <qf/core/utils.h>
@@ -14,7 +15,7 @@ namespace framework {
 }
 }
 
-class EventPlugin : public qf::qmlwidgets::framework::Plugin
+class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(QObject* eventConfig READ eventConfig)
@@ -44,6 +45,8 @@ public:
 	void setDbOpen(bool ok);
 	Q_SIGNAL void dbOpenChanged(bool is_open);
 
+	static int dlTest;
+	Q_INVOKABLE int incDlTest() {return ++dlTest;}
 private:
 	Q_SLOT void onInstalled();
 	Q_SLOT void connectToSqlServer();

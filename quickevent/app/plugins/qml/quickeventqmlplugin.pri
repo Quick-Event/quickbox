@@ -10,6 +10,9 @@ QT += qml
 
 INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include
 INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include
+
+LIBS += \
+    -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
+
 LIBS += -lqfcore -lqfqmlwidgets
-LIBS += -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME
 

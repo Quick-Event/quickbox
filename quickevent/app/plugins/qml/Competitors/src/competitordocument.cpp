@@ -1,5 +1,7 @@
 #include "competitordocument.h"
 
+#include <EventPlugin/eventplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -21,16 +23,38 @@ bool CompetitorDocument::saveData()
 {
 	RecordEditMode old_mode = mode();
 	bool ret = Super::saveData();
+	{
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+		EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
+		QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
+
+		{
+			int ret;
+			QMetaObject::invokeMethod(plugin, "incDlTest", Q_RETURN_ARG(int, ret));
+			qfInfo() << "DL invoke:" << ret;
+		}
+		qfInfo() << "DL call:" << event_plugin->incDlTest();
+	}
 	//Log.info("CompetitorDocument", saveData_qml, "ret:", ret, "old_mode", old_mode, "vs", DataDocument.ModeInsert, old_mode == DataDocument.ModeInsert);
 	if(ret) {
 		if(old_mode == DataDocument::ModeInsert) {
 			// insert laps
 			int competitor_id = dataId().toInt();
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-			qf::qmlwidgets::framework::Plugin *event_plugin = fwk->plugin("Event");
-			//QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
+			qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+			EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
+			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 
-			int stage_count = event_plugin->property("stageCount").toInt();
+			{
+				int ret;
+				QMetaObject::invokeMethod(plugin, "incDlTest", Q_RETURN_ARG(int, ret));
+				qfInfo() << "DL invoke:" << ret;
+			}
+			qfInfo() << "DL call:" << event_plugin->incDlTest();
+
+			//int stage_count = event_plugin->property("stageCount").toInt();
+			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
 			q.prepare("INSERT INTO laps (competitorId, stageId) VALUES (:competitorId, :stageId)");
 			for(int i=0; i<stage_count; i++) {

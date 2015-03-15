@@ -30,7 +30,7 @@ LIBS +=      \
 
 unix: LIBS +=  \
 	-L../../../lib  \
-	-Wl,-rpath,\'\$\$ORIGIN/../lib\'  \
+	-Wl,-rpath,\'\$\$ORIGIN/../lib:\$\$ORIGIN/../lib/qml/quickevent\'  \
 
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 

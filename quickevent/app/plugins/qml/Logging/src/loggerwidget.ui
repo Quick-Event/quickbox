@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>478</width>
     <height>300</height>
    </rect>
   </property>
@@ -73,24 +73,15 @@
          <string>Log level</string>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <item>
          <property name="text">
-          <string>Debug</string>
+          <string>Error</string>
          </property>
          <property name="icon">
           <iconset resource="../Logging.qrc">
-           <normaloff>:/quickevent/Logging/images/light-blind.png</normaloff>:/quickevent/Logging/images/light-blind.png</iconset>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Info</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../Logging.qrc">
-           <normaloff>:/quickevent/Logging/images/light-yellow.png</normaloff>:/quickevent/Logging/images/light-yellow.png</iconset>
+           <normaloff>:/quickevent/Logging/images/light-red.png</normaloff>:/quickevent/Logging/images/light-red.png</iconset>
          </property>
         </item>
         <item>
@@ -104,11 +95,20 @@
         </item>
         <item>
          <property name="text">
-          <string>Error</string>
+          <string>Info</string>
          </property>
          <property name="icon">
           <iconset resource="../Logging.qrc">
-           <normaloff>:/quickevent/Logging/images/light-red.png</normaloff>:/quickevent/Logging/images/light-red.png</iconset>
+           <normaloff>:/quickevent/Logging/images/light-yellow.png</normaloff>:/quickevent/Logging/images/light-yellow.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Debug</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../Logging.qrc">
+           <normaloff>:/quickevent/Logging/images/light-blind.png</normaloff>:/quickevent/Logging/images/light-blind.png</iconset>
          </property>
         </item>
        </widget>
