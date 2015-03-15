@@ -152,7 +152,7 @@ void TextEditWidget::settleDownInDialog(dialogs::Dialog *dlg)
 	act_view->setText(tr("&View"));
 	act_view->addActionInto(action("wrapLines"));
 
-	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
+	qf::qmlwidgets::ToolBar *tool_bar = dlg->toolBar("main", true);
 	tool_bar->addAction(action("save"));
 	tool_bar->addAction(action("print"));
 	tool_bar->addAction(action("wrapLines"));

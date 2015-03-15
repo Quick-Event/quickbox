@@ -57,7 +57,7 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	a->setText("&Station");
 	a->addActionInto(m_actCommOpen);
 	*/
-	qfw::ToolBar *main_tb = part_widget->addToolBar();
+	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	//main_tb->addAction(m_actCommOpen);
 	{
 		QLabel *lbl = new QLabel(tr("Class "));

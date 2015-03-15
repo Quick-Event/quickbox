@@ -557,7 +557,7 @@ void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 	act_view->addActionInto(action("view.zoomFitWidth"));
 	act_view->addActionInto(action("view.zoomFitHeight"));
 
-	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
+	qf::qmlwidgets::ToolBar *tool_bar = dlg->toolBar("main", true);
 	tool_bar->addAction(action("file.print"));
 	tool_bar->addAction(action("file.export.pdf"));
 	tool_bar->addSeparator();

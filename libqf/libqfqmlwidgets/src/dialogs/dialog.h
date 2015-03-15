@@ -51,7 +51,7 @@ public:
 	void setCentralWidget(QWidget *central_widget);
 
 	Q_INVOKABLE MenuBar* menuBar();
-	Q_INVOKABLE ToolBar* addToolBar();
+	Q_INVOKABLE ToolBar* toolBar(const QString &name, bool create_if_not_exists = false);
 
 	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}
 	void setButtonBox(DialogButtonBox *dbb);
@@ -88,7 +88,7 @@ protected:
 	bool m_doneCancelled;
 	internal::CaptionFrame *m_captionFrame = nullptr;
 	MenuBar *m_menuBar = nullptr;
-	QList<ToolBar*> m_toolBars;
+	QMap<QString, ToolBar*> m_toolBars;
 	QWidget *m_centralWidget = nullptr;
 	DialogButtonBox *m_dialogButtonBox = nullptr;
 };

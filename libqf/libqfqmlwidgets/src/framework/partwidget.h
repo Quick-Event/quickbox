@@ -67,7 +67,7 @@ public:
 	Q_SLOT void updateCaptionFrame();
 
 	MenuBar* menuBar();
-	Q_INVOKABLE qf::qmlwidgets::ToolBar* addToolBar();
+	Q_INVOKABLE qf::qmlwidgets::ToolBar* toolBar(const QString &name, bool create_if_not_exists = false);
 
 	bool isAddToPartSwitchFromBottom();
 protected:
@@ -79,7 +79,7 @@ private:
 	void componentComplete() Q_DECL_OVERRIDE;
 private:
 	MenuBar *m_menuBar = nullptr;
-	QList<ToolBar*> m_toolBars;
+	QMap<QString, ToolBar*> m_toolBars;
 	QHBoxLayout *m_toolBarsLayout = nullptr;
 	qf::qmlwidgets::dialogs::internal::CaptionFrame *m_captionFrame;
 	Frame *m_centralFrame;

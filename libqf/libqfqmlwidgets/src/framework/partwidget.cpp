@@ -84,9 +84,15 @@ qf::qmlwidgets::MenuBar *PartWidget::menuBar()
 	return m_menuBar;
 }
 
-qf::qmlwidgets::ToolBar *PartWidget::addToolBar()
+qf::qmlwidgets::ToolBar *PartWidget::toolBar(const QString &name, bool create_if_not_exists)
 {
-	qf::qmlwidgets::ToolBar *ret = new qf::qmlwidgets::ToolBar(this);
+	qf::qmlwidgets::ToolBar *ret = m_toolBars.value(name);
+	if(ret) {
+		return ret;
+	}
+	if(!create_if_not_exists) {
+		return nullptr;
+	}
 	if(m_toolBarsLayout == nullptr) {
 		QFrame *frm = new QFrame(this);
 		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
@@ -99,8 +105,9 @@ qf::qmlwidgets::ToolBar *PartWidget::addToolBar()
 		m_toolBarsLayout->setSpacing(1);
 		m_toolBarsLayout->addStretch();
 	}
+	ret = new qf::qmlwidgets::ToolBar(this);
 	m_toolBarsLayout->insertWidget(m_toolBars.count(), ret);
-	m_toolBars << ret;
+	m_toolBars[name] = ret;
 	return ret;
 }
 

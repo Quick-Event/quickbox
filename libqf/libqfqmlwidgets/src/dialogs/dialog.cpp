@@ -75,10 +75,18 @@ qf::qmlwidgets::MenuBar* Dialog::menuBar()
 	return m_menuBar;
 }
 
-qf::qmlwidgets::ToolBar *Dialog::addToolBar()
+qf::qmlwidgets::ToolBar *Dialog::toolBar(const QString &name, bool create_if_not_exists)
 {
-	qf::qmlwidgets::ToolBar *ret = new qf::qmlwidgets::ToolBar(this);
-	m_toolBars << ret;
+	qf::qmlwidgets::ToolBar *ret = m_toolBars.value(name);
+	if(ret) {
+		return ret;
+	}
+	if(!create_if_not_exists) {
+		return nullptr;
+	}
+	ret = new qf::qmlwidgets::ToolBar(this);
+	m_toolBars[name] = ret;
+	updateLayout();
 	return ret;
 }
 
