@@ -1,13 +1,13 @@
 #ifndef THISPARTWIDGET_H
 #define THISPARTWIDGET_H
 
-#include <qf/qmlwidgets/framework/partwidget.h>
+#include <quickevent/partwidget.h>
 
-class ThisPartWidget : public qf::qmlwidgets::framework::PartWidget
+class ThisPartWidget : public quickevent::PartWidget
 {
 	Q_OBJECT
 private:
-	typedef qf::qmlwidgets::framework::PartWidget Super;
+	typedef quickevent::PartWidget Super;
 public:
 	ThisPartWidget(QWidget *parent = nullptr);
 };

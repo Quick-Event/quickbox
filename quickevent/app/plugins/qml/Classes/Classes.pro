@@ -8,9 +8,13 @@ QT += widgets sql
 
 CONFIG += c++11 hide_symbols
 
-INCLUDEPATH +=
+INCLUDEPATH += $$PWD/../../../../lib/include
+LIBS += -lquickevent
 
-LIBS +=
+INCLUDEPATH += $$PWD/../Event/include
+LIBS += \
+    -L$$DESTDIR \
+    -lEventplugin \
 
 include (src/src.pri)
 

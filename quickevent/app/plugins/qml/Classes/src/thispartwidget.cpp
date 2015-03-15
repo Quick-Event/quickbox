@@ -10,7 +10,7 @@ ThisPartWidget::ThisPartWidget(QWidget *parent)
 
 	ClassesWidget *w = new ClassesWidget();
 	centralFrame()->addWidget(w);
-	//w->settleDownInPartWidget(this);
+	w->settleDownInPartWidget(this);
 
 	//QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }

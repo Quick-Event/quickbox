@@ -58,6 +58,11 @@ Event::EventConfig *EventPlugin::eventConfig(bool reload)
 	return m_eventConfig;
 }
 
+int EventPlugin::currentStage()
+{
+	return m_cbxStage->currentIndex() + 1;
+}
+
 void EventPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -80,6 +85,7 @@ void EventPlugin::onInstalled()
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
 	connect(this, SIGNAL(currentStageChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
+	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
 
 	qfw::Action *a_quit = fwk->menuBar()->actionForPath("file/quit", false);
 	a_quit->addActionBefore(m_actConnectDb);
@@ -89,14 +95,29 @@ void EventPlugin::onInstalled()
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
-	QComboBox *cbx_stage = new QComboBox();
-	for (int i = 0; i < 5; ++i) {
-		cbx_stage->addItem("E" + QString::number(i + 1), i + 1);
-	}
 	tb->addWidget(new QLabel(tr("Stage ")));
-	tb->addWidget(cbx_stage);
+	m_cbxStage = new QComboBox();
+	connect(m_cbxStage, SIGNAL(activated(int)), this, SLOT(onCbxStageActivated(int)));
+	tb->addWidget(m_cbxStage);
+}
 
-	setCurrentStage(1);
+void EventPlugin::onCbxStageActivated(int ix)
+{
+	emit this->currentStageChanged(ix + 1);
+}
+
+void EventPlugin::onEventOpened()
+{
+	qfLogFuncFrame() << "stage count:" << stageCount();
+	m_cbxStage->blockSignals(true);
+	m_cbxStage->clear();
+	int stage_cnt = stageCount();
+	for (int i = 0; i < stage_cnt; ++i) {
+		m_cbxStage->addItem("E" + QString::number(i + 1), i + 1);
+	}
+	m_cbxStage->setCurrentIndex(0);
+	m_cbxStage->blockSignals(false);
+	emit this->currentStageChanged(currentStage());
 }
 
 void EventPlugin::connectToSqlServer()
@@ -323,6 +344,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	}
 	if(ok) {
 		eventConfig()->setEventName(event_name);
+		emit eventOpened(event_name);
 		emit reloadDataRequest();
 	}
 	return ok;

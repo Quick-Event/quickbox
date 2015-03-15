@@ -2,6 +2,8 @@
 #include "thispartwidget.h"
 #include "classdocument.h"
 
+#include <EventPlugin/eventplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/action.h>
 
