@@ -12,6 +12,7 @@ public:
 	CompetitorDocument(QObject *parent = nullptr);
 protected:
 	bool saveData() Q_DECL_OVERRIDE;
+	bool dropData() Q_DECL_OVERRIDE;
 };
 
 #endif // COMPETITORDOCUMENT_H

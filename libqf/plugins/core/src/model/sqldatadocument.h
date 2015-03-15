@@ -19,7 +19,7 @@ public:
 	SqlDataDocument(QObject *parent = nullptr);
 	~SqlDataDocument() Q_DECL_OVERRIDE;
 public:
-	void load() Q_DECL_OVERRIDE;
+	bool load() Q_DECL_OVERRIDE;
 private:
 	SqlQueryBuilder* qmlSqlQueryBuilder();
 private:

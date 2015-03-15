@@ -1,6 +1,7 @@
 <RCC>
 	<qresource prefix="/qf/qmlwidgets">
 		<file>images/under-construction.png</file>
+		<file>images/alert.png</file>
 		<file>images/wordwrap.png</file>
 		<file>images/clone.png</file>
 		<file>images/copy.png</file>

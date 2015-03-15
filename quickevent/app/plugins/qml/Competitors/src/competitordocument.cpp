@@ -17,25 +17,26 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 			.from("competitors")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
-}
-
-bool CompetitorDocument::saveData()
-{
-	RecordEditMode old_mode = mode();
-	bool ret = Super::saveData();
+	/*
 	{
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
 		EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
-		QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
-
 		{
 			int ret;
 			QMetaObject::invokeMethod(plugin, "incDlTest", Q_RETURN_ARG(int, ret));
 			qfInfo() << "DL invoke:" << ret;
 		}
 		qfInfo() << "DL call:" << event_plugin->incDlTest();
+		qfInfo() << "DL SC:" << event_plugin->stageCount();
 	}
+	*/
+}
+
+bool CompetitorDocument::saveData()
+{
+	RecordEditMode old_mode = mode();
+	bool ret = Super::saveData();
 	//Log.info("CompetitorDocument", saveData_qml, "ret:", ret, "old_mode", old_mode, "vs", DataDocument.ModeInsert, old_mode == DataDocument.ModeInsert);
 	if(ret) {
 		if(old_mode == DataDocument::ModeInsert) {
@@ -45,14 +46,15 @@ bool CompetitorDocument::saveData()
 			qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
 			EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
-
+			/*
 			{
 				int ret;
 				QMetaObject::invokeMethod(plugin, "incDlTest", Q_RETURN_ARG(int, ret));
 				qfInfo() << "DL invoke:" << ret;
 			}
 			qfInfo() << "DL call:" << event_plugin->incDlTest();
-
+			qfInfo() << "DL SC:" << event_plugin->stageCount();
+			*/
 			//int stage_count = event_plugin->property("stageCount").toInt();
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
@@ -69,5 +71,23 @@ bool CompetitorDocument::saveData()
 	}
 	return ret;
 
+}
+
+bool CompetitorDocument::dropData()
+{
+	bool ret = false;
+	auto id = dataId();
+	{
+		qf::core::sql::Query q(model()->connectionName());
+		q.prepare("DELETE FROM laps WHERE competitorId = :competitorId");
+		q.bindValue(":competitorId", id);
+		ret = q.exec();
+		if(!ret)
+			qfError() << q.lastError().text();
+	}
+	if(ret) {
+		ret = Super::dropData();
+	}
+	return ret;
 }
 

@@ -111,6 +111,9 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
+	if(mode == qf::core::model::DataDocument::ModeInsert) {
+		w->dataController()->document()->setValue("competitors.classId", ui->tblCompetitors->tableRow().value("classId"));
+	}
 	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
 	dlg.exec();
 }

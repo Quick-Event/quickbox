@@ -41,13 +41,13 @@ public:
 	Q_SIGNAL void dropped(const QVariant &id);
 	Q_SIGNAL void valueChanged(const QString &data_id, const QVariant &old_val, const QVariant &new_val);
 
-	Q_SLOT void load(const QVariant &id, RecordEditMode mode = ModeEdit);
-	Q_SLOT void loadForInsert() {load(QVariant(), ModeInsert);}
+	Q_SLOT bool load(const QVariant &id, RecordEditMode mode = ModeEdit);
+	Q_SLOT bool loadForInsert() {return load(QVariant(), ModeInsert);}
 	//! this is a convinience function, @see load() .
-	Q_SLOT virtual void load();
-	Q_SLOT virtual void save();
+	Q_SLOT virtual bool load();
+	Q_SLOT virtual bool save();
 	Q_SLOT virtual bool drop();
-	Q_SLOT virtual void copy();
+	Q_SLOT virtual bool copy();
 
 	//virtual QVariant::Type fieldType(const QString &data_id);
 	Q_INVOKABLE virtual bool isEmpty();

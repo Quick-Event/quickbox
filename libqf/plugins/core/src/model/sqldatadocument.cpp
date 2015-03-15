@@ -20,13 +20,13 @@ SqlDataDocument::~SqlDataDocument()
 
 }
 
-void SqlDataDocument::load()
+bool SqlDataDocument::load()
 {
 	qfm::SqlTableModel *m = model();
 	if(m && m_qmlQueryBuilder) {
 		m->setQueryBuilder(m_qmlQueryBuilder->coreBuilder());
 	}
-	Super::load();
+	return Super::load();
 }
 
 SqlQueryBuilder *SqlDataDocument::qmlSqlQueryBuilder()

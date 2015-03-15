@@ -50,69 +50,82 @@ TableModel *DataDocument::model()
 	return m_model;
 }
 
-void DataDocument::load(const QVariant &id, DataDocument::RecordEditMode _mode)
+bool DataDocument::load(const QVariant &id, DataDocument::RecordEditMode _mode)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << recordEditModeToString(_mode) << "isNull:" << id.isNull();
 	setDataId(id);
 	setMode(_mode);
-	load();
+	return load();
 }
 
-void DataDocument::load()
+bool DataDocument::load()
 {
 	qfLogFuncFrame();
+	bool ret = false;
 	RecordEditMode m = mode();
 	QVariant id = dataId();
 	if(m == ModeCopy && !id.isNull()) {
-		if(invokeLoadData()) {
-			copy();
+		ret = invokeLoadData();
+		if(ret) {
+			ret = copy();
 		}
 	}
 	else {
 		setMode(m);
-		if(invokeLoadData()) {
+		ret = invokeLoadData();
+		if(ret) {
 			emit loaded();
 		}
 	}
+	return ret;
 }
 
-void DataDocument::save()
+bool DataDocument::save()
 {
 	qfLogFuncFrame();
+	bool ret = false;
 	if(mode() != ModeView) {
 		RecordEditMode m = mode();
 		QVariant id = dataId();
 		emit aboutToSave(id, m);
-		if(invokeSaveData()) {
+		ret = invokeSaveData();
+		if(ret) {
 			// reload data id, can be set from serie for mode INSERT
 			id = dataId();
 			qfDebug() << "emitting saved id:" << id.toString() << "mode:" << m;
 			emit saved(id, m);
 		}
 	}
+	return ret;
 }
 
 bool DataDocument::drop()
 {
 	qfLogFuncFrame();
+	bool ret = false;
 	QVariant id = dataId();
 	emit aboutToDrop(id);
-	if(invokeDropData()) {
-		emit dropped(id);\
-		return true;
+	ret = invokeDropData();
+	if(ret) {
+		emit saved(id, ModeDelete);
+		emit dropped(id);
 	}
-	return false;
+	return ret;
 }
 
-void DataDocument::copy()
+bool DataDocument::copy()
 {
 	qfLogFuncFrame();
+	bool ret = false;
 	if(mode() != ModeInsert) {
-		invokeCopyData();
-		setMode(ModeInsert);
-		//setDataDirty_helper(isDataDirty());
-		emit loaded();
+		ret = invokeCopyData();
+		if(ret) {
+			setMode(ModeInsert);
+			//setDataDirty_helper(isDataDirty());
+			emit loaded();
+		}
 	}
+	return ret;
 }
 
 bool DataDocument::isEmpty()

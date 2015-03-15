@@ -2,6 +2,7 @@
 #include "internal/captionframe.h"
 #include "../frame.h"
 #include "../framework/dialogwidget.h"
+#include "../framework/datadialogwidget.h"
 #include "../menubar.h"
 #include "../toolbar.h"
 #include "../dialogbuttonbox.h"
@@ -96,6 +97,23 @@ void Dialog::done(int result)
 							  Q_ARG(QVariant, result));
 	if(ok.toBool()) {
 		Super::done(result);
+	}
+}
+
+void Dialog::setRecordEditMode(int mode)
+{
+	if(m_captionFrame)
+		m_captionFrame->setRecordEditMode(mode);
+	if(m_dialogButtonBox) {
+		auto bt_save = m_dialogButtonBox->button(QDialogButtonBox::Save);
+		if(bt_save) {
+			if(mode == qf::core::model::DataDocument::ModeDelete) {
+				bt_save->setText(tr("Delete"));
+			}
+			else {
+				bt_save->setText(tr("Save"));
+			}
+		}
 	}
 }
 
@@ -222,10 +240,19 @@ void Dialog::showEvent(QShowEvent *ev)
 
 void Dialog::updateCaptionFrame()
 {
+	qfLogFuncFrame() << m_centralWidget;
 	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
+	qf::qmlwidgets::framework::DataDialogWidget *data_dialog_widget = qobject_cast<qf::qmlwidgets::framework::DataDialogWidget *>(m_centralWidget);
 	if(dialog_widget) {
-		if(!m_captionFrame)
+		if(!m_captionFrame) {
 			m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
+			connect(dialog_widget, &qf::qmlwidgets::framework::DialogWidget::titleChanged, m_captionFrame, &qf::qmlwidgets::dialogs::internal::CaptionFrame::setText);
+			if(data_dialog_widget) {
+				connect(data_dialog_widget, &qf::qmlwidgets::framework::DataDialogWidget::recordEditModeChanged, this, &Dialog::setRecordEditMode);
+				setRecordEditMode(data_dialog_widget->recordEditMode());
+				//qfInfo() << "conected:" << ok;
+			}
+		}
 		m_captionFrame->setText(dialog_widget->title());
 		m_captionFrame->setIconSource(dialog_widget->iconSource());
 		m_captionFrame->setIcon(m_captionFrame->createIcon());

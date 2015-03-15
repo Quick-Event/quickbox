@@ -1,6 +1,7 @@
 message(including $$PWD)
 
 HEADERS += \
+	$$PWD/eventpluginglobal.h \
     $$PWD/eventplugin.h \
     $$PWD/connectdbdialogwidget.h \
     $$PWD/connectionsettings.h \

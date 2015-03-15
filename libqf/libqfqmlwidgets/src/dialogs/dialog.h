@@ -70,6 +70,8 @@ public:
 	int exec() Q_DECL_OVERRIDE;
 	void done(int result) Q_DECL_OVERRIDE;
 
+	Q_SLOT void setRecordEditMode(int mode);
+
 	Q_SIGNAL void visibleChanged(bool visible);
 private:
 	Q_SLOT void savePersistentSettings();

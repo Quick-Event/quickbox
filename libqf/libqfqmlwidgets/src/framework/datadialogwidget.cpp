@@ -35,8 +35,14 @@ void DataDialogWidget::load(const QVariant &id, int mode)
 {
 	qf::qmlwidgets::DataController *dc = dataController();
 	if(dc) {
-		if(dc->document()) {
-			dc->document()->load(id, (qf::core::model::DataDocument::RecordEditMode)mode);
+		auto doc = dc->document();
+		if(doc) {
+			//connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
+			//qfInfo() << "============" << (bool)c;
+			connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::UniqueConnection);
+			doc->load(id, qf::core::model::DataDocument::RecordEditMode(mode));
+			//qfInfo() << "emit ...";
+			emit recordEditModeChanged(mode);
 		}
 	}
 }
@@ -46,25 +52,51 @@ bool DataDialogWidget::dialogDoneRequest(int result)
 	qfLogFuncFrame();
 	bool ret = true;
 	if(result == qf::qmlwidgets::dialogs::Dialog::ResultAccept) {
-		ret = saveData();
+		auto mode = recordEditMode();
+		if(mode == qf::core::model::DataDocument::ModeDelete) {
+			ret = dropData();
+		}
+		else if(mode == qf::core::model::DataDocument::ModeEdit
+				|| mode == qf::core::model::DataDocument::ModeInsert
+				|| mode == qf::core::model::DataDocument::ModeCopy) {
+			ret = saveData();
+		}
 	}
 	if(ret)
 		ret = Super::dialogDoneRequest(result);
 	return ret;
 }
 
+int DataDialogWidget::recordEditMode()
+{
+	int ret = -1;
+	if(m_dataController && m_dataController->document()) {
+		ret = m_dataController->document()->mode();
+	}
+	return ret;
+}
+
 bool DataDialogWidget::saveData()
 {
-	bool ret = true;
+	bool ret = false;
 	DataController *dc = dataController();
 	if(dc) {
 		qfm::DataDocument *doc = dc->document();
 		if(doc) {
-			//connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
-			//qfInfo() << "============" << (bool)c;
-			// previous didn't work, I thing that it has to, see QTBUG-45001
-			connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::UniqueConnection);
-			doc->save();
+			ret = doc->save();
+		}
+	}
+	return ret;
+}
+
+bool DataDialogWidget::dropData()
+{
+	bool ret = false;
+	DataController *dc = dataController();
+	if(dc) {
+		qfm::DataDocument *doc = dc->document();
+		if(doc) {
+			ret = doc->drop();
 		}
 	}
 	return ret;
