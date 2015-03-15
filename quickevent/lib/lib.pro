@@ -4,8 +4,7 @@ TARGET = quickevent
 QT += widgets sql qml
 
 CONFIG += qt dll
-CONFIG += c++11
-CONFIG += hide_symbols
+CONFIG += c++11 hide_symbols
 
 DEFINES += QUICKEVENT_BUILD_DLL
 

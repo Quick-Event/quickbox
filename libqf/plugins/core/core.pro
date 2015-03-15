@@ -6,6 +6,8 @@ include ( ../qfqmlplugin.pri )
 
 QT += qml sql network
 
+CONFIG += c++11 hide_symbols
+
 INCLUDEPATH += src
 
 include (src/src.pri)

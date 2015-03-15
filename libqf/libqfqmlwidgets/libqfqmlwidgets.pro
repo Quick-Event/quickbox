@@ -3,8 +3,7 @@ message("including $$PWD")
 QT += widgets qml sql
 QT += xml printsupport svg # needed by reports
 
-CONFIG += c++11
-CONFIG += hide_symbols
+CONFIG += c++11 hide_symbols
 
 DEFINES += QFQMLWIDGETS_BUILD_DLL
 

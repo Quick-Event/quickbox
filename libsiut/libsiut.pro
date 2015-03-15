@@ -11,8 +11,7 @@ QT += sql network serialport
 QT	-= gui
 
 CONFIG += qt dll
-CONFIG += c++11
-CONFIG += hide_symbols
+CONFIG += c++11 hide_symbols
 
 LIBS += -L$$DESTDIR -lqfcore
 

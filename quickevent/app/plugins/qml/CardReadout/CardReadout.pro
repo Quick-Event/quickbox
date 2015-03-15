@@ -6,6 +6,8 @@ include ( ../quickeventqmlplugin.pri )
 
 QT += widgets serialport sql
 
+CONFIG += c++11 hide_symbols
+
 INCLUDEPATH += $$PWD/../../../../../libsiut/include
 
 LIBS += -lsiut
