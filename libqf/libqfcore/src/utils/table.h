@@ -32,23 +32,23 @@ public:
 	class QFCORE_DECL_EXPORT TextImportOptions : public QVariantMap
 	{
 	public:
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldSeparator, ",")
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldQuotes, "\"")
-		QF_OPTION_FIELD2_RW(bool, isI, setI, mportColumnNames, true)
-		QF_OPTION_FIELD2_RW(bool, isI, setI, mportAppend, false)
-		QF_OPTION_FIELD2_RW(int, i, setI, gnoreFirstLinesCount, 0)
-		QF_OPTION_FIELD2_RW(bool, isT, setT, rimValues, true)
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldSeparator, ",")
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldQuotes, "\"")
+		QF_VARIANTMAP_FIELD2(bool, isI, setI, mportColumnNames, true)
+		QF_VARIANTMAP_FIELD2(bool, isI, setI, mportAppend, false)
+		QF_VARIANTMAP_FIELD2(int, i, setI, gnoreFirstLinesCount, 0)
+		QF_VARIANTMAP_FIELD2(bool, isT, setT, rimValues, true)
 	};
 	class QFCORE_DECL_EXPORT TextExportOptions : public QVariantMap
 	{
 	public:
 		enum FieldQuoting {Never=1, IfNecessary, Always};
 	public:
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldSeparator, ",")
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldQuotes, "\"")
-		QF_OPTION_FIELD2_RW(bool, isE, setE, xportColumnNames, true)
-		QF_OPTION_FIELD2_RW(bool, isF, setF, ullColumnNames, true)
-		QF_OPTION_FIELD2_RW(bool, isU, setU, seColumnCaptions, true)
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldSeparator, ",")
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldQuotes, "\"")
+		QF_VARIANTMAP_FIELD2(bool, isE, setE, xportColumnNames, true)
+		QF_VARIANTMAP_FIELD2(bool, isF, setF, ullColumnNames, true)
+		QF_VARIANTMAP_FIELD2(bool, isU, setU, seColumnCaptions, true)
 
 		QVariantMap columnCaptions() const {return value("columnCaptions").toMap();}
 		TextExportOptions& setColumnCaptions(const QVariantMap &cc) {this->operator[]("columnCaptions") = cc; return *this;}
@@ -56,13 +56,13 @@ public:
 		FieldQuoting fieldQuotingPolicy() const {return (FieldQuoting)(value("fieldQuotingPolicy", IfNecessary).toInt());}
 		TextExportOptions& setFieldQuotingPolicy(FieldQuoting fq) {this->operator[]("fieldQuotingPolicy") = fq; return *this;}
 
-		//QF_OPTION_FIELD2_RW(FieldQuoting, f, setF, ieldQuotingPolicy, IfNecessary)
-		QF_OPTION_FIELD_RW(QString, c, setC, odecName)
-		QF_OPTION_FIELD2_RW(int, f, setF, romLine, 0)
-		QF_OPTION_FIELD2_RW(int, t, setT, oLine, -1)
-		QF_OPTION_FIELD_RW(QString, n, setN, ote)
+		//QF_VARIANTMAP_FIELD(FieldQuoting, f, setF, ieldQuotingPolicy, IfNecessary)
+		QF_VARIANTMAP_FIELD(QString, c, setC, odecName)
+		QF_VARIANTMAP_FIELD2(int, f, setF, romLine, 0)
+		QF_VARIANTMAP_FIELD2(int, t, setT, oLine, -1)
+		QF_VARIANTMAP_FIELD(QString, n, setN, ote)
 		/// pri exportu do XLS se vlozi tabulka slozena z radku XLS prologu
-		QF_OPTION_FIELD_RW(QVariantList, x, setX, lsProlog)
+		QF_VARIANTMAP_FIELD(QVariantList, x, setX, lsProlog)
 		public:
 			TextExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};

@@ -1,9 +1,13 @@
 #include "classeswidget.h"
 #include "ui_classeswidget.h"
 
+#include "classesplugin.h"
+#include "coursedef.h"
+
 #include <EventPlugin/eventplugin.h>
 
 #include <qf/core/string.h>
+#include <qf/core/utils.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -40,28 +44,6 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	a_import->addActionInto(a_ocad);
 }
 
-struct CourseDef
-{
-	QString course;
-	int length = 0;
-	int climb = 0;
-	QStringList classes;
-	QList<int> codes;
-
-	QString toString() const;
-};
-
-QString CourseDef::toString() const
-{
-	QString ret;
-	QStringList sl;
-	for(auto c : codes)
-		sl << QString::number(c);
-	ret += "course: " + course + " classes: " + classes.join(',') + " length: " + QString::number(length) + " climb: " + QString::number(climb);
-	ret += "\n\tcodes: " + sl.join(',');
-	return ret;
-}
-
 void ClassesWidget::import_ocad()
 {
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"));
@@ -69,7 +51,7 @@ void ClassesWidget::import_ocad()
 		return;
 	QFile f(fn);
 	if(f.open(QFile::ReadOnly)) {
-		QList<CourseDef> courses;
+		QVariantList courses;
 		QStringList lines;
 		while (true) {
 			QByteArray ba = f.readLine();
@@ -84,48 +66,43 @@ void ClassesWidget::import_ocad()
 			CourseDef cd;
 			QString course = line.section(';', 0, 0);
 			qfc::String classes = line.section(';', 1, 1);
-			cd.classes = classes.splitAndTrim(',');
+			cd.setClasses(classes.splitAndTrim(','));
 			if(course.isEmpty())
-				course = cd.classes.value(0);
-			cd.course = course;
+				course = cd.classes().value(0);
+			cd.setCourse(course);
 			{
 				QString s = line.section(';', 3, 3).trimmed();
 				s.replace('.', QString()).replace(',', QString());
-				cd.length = s.toInt();
+				cd.setLenght(s.toInt());
 			}
 			{
 				QString s = line.section(';', 4, 4).trimmed();
 				s.replace('.', QString()).replace(',', QString());
-				cd.climb = s.toInt();
+				cd.setClimb(s.toInt());
 			}
 			{
 				qfc::String s = line.section(';', 6);
+				QVariantList codes;
 				QStringList sl = s.splitAndTrim(';');
 				for (int i = 0; i < sl.count()-2; i+=2) {
-					cd.codes << sl[i+1].toInt();
+					codes << sl[i+1].toInt();
 				}
+				cd.setCodes(codes);
 			}
 			courses << cd;
 		}
 
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
-		if(event_plugin) {
-			QString msg = tr("Delete all classes and courses definitions for stage %1?").arg(event_plugin->currentStage());
+		ClassesPlugin *classes_plugin = qobject_cast<ClassesPlugin *>(fwk->plugin("Classes"));
+		if(event_plugin && classes_plugin) {
+			QString msg = tr("Delete all courses definitions for stage %1?").arg(event_plugin->currentStage());
 			if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
-				createClassesCourses(event_plugin->currentStage(), courses);
+				classes_plugin->createCourses(event_plugin->currentStage(), courses);
 				reload();
 			}
 		}
 
-	}
-}
-
-void ClassesWidget::createClassesCourses(int current_stage, const QList<CourseDef> &courses)
-{
-	qfInfo() << Q_FUNC_INFO;
-	for(auto cd : courses) {
-		qfInfo() << cd.toString();
 	}
 }
 

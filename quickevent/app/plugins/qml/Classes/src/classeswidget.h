@@ -8,8 +8,6 @@ namespace Ui {
 	class ClassesWidget;
 }
 
-struct CourseDef;
-
 class ClassesWidget : public QFrame
 {
 	Q_OBJECT
@@ -23,9 +21,6 @@ public:
 private:
 	Q_SLOT void import_ocad();
 	Q_SLOT void reload();
-
-	void createClassesCourses(int current_stage, const QList<CourseDef> &courses);
-
 private:
 	Ui::ClassesWidget *ui;
 };

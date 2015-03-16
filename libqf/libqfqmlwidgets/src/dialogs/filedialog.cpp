@@ -14,8 +14,8 @@ FileDialog::FileDialog(QWidget *parent, Qt::WindowFlags flags) :
 }
 
 QString FileDialog::getOpenFileName(QWidget *parent, const QString &caption,
-								const QString &_dir, const QString &filter,
-								QString *selectedFilter, QFileDialog::Options options)
+									const QString &_dir, const QString &filter,
+									QString *selectedFilter, QFileDialog::Options options)
 {
 	QString fn = _dir;
 	QString dir = qf::core::utils::FileUtils::path(fn);
@@ -31,8 +31,8 @@ QString FileDialog::getOpenFileName(QWidget *parent, const QString &caption,
 }
 
 QStringList FileDialog::getOpenFileNames(QWidget *parent, const QString &caption,
-				       const QString &_dir, const QString &filter,
-	   				QString *selectedFilter, QFileDialog::Options options)
+										 const QString &_dir, const QString &filter,
+										 QString *selectedFilter, QFileDialog::Options options)
 {
 	QString fn = _dir;
 	QString dir = qf::core::utils::FileUtils::path(fn);
@@ -48,8 +48,8 @@ QStringList FileDialog::getOpenFileNames(QWidget *parent, const QString &caption
 }
 
 QString FileDialog::getSaveFileName(QWidget * parent, const QString & caption,
-								const QString & _dir, const QString & filter,
-								QString * selectedFilter, QFileDialog::Options options)
+									const QString & _dir, const QString & filter,
+									QString * selectedFilter, QFileDialog::Options options)
 {
 	qfLogFuncFrame();
 	QString fn = _dir;

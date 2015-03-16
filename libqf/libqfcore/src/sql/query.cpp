@@ -19,6 +19,33 @@ Query::Query(const QString &connection_name)
 {
 }
 
+bool Query::prepare(const QString &query, bool throw_exc)
+{
+	bool ret = Super::prepare(query);
+	if(!ret && throw_exc) {
+		QF_EXCEPTION(lastError().text());
+	}
+	return ret;
+}
+
+bool Query::exec(const QString &query, bool throw_exc)
+{
+	bool ret = Super::exec(query);
+	if(!ret && throw_exc) {
+		QF_EXCEPTION(lastError().text());
+	}
+	return ret;
+}
+
+bool Query::exec(bool throw_exc)
+{
+	bool ret = Super::exec();
+	if(!ret && throw_exc) {
+		QF_EXCEPTION(lastError().text());
+	}
+	return ret;
+}
+
 QSqlRecord Query::record() const
 {
 	QSqlRecord ret = Super::record();

@@ -59,11 +59,11 @@
 #define QF_PROPERTY_BOOL_IMPL(lower_letter, upper_letter, name_rest) \
 	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
 
-#define QF_OPTION_FIELD_RW(ptype, getter_prefix, setter_prefix, name_rest) \
+#define QF_VARIANTMAP_FIELD(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest)));} \
 	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}
 /// for default values other than QVariant()
-#define QF_OPTION_FIELD2_RW(ptype, getter_prefix, setter_prefix, name_rest, default_value) \
+#define QF_VARIANTMAP_FIELD2(ptype, getter_prefix, setter_prefix, name_rest, default_value) \
 	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest), default_value));} \
 	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}
 

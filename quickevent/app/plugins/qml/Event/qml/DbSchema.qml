@@ -42,6 +42,7 @@ Schema {
 		Table { name: 'courses'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
+				//Field { name: 'stageId'; type: Int { } },
 				Field { name: 'name'; type: String { length: 10 } },
 				Field { name: 'length'; type: Int { } },
 				Field { name: 'climb'; type: Int { } }
@@ -49,11 +50,13 @@ Schema {
 		},
 		Table { name: 'codes'
 			fields: [
-				Field { name: 'id'; type: Int { } },
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				//Field { name: 'stageId'; type: Int { } },
+				Field { name: 'code'; type: Int { } },
 				Field { name: 'broken'; type: Boolean { } }
 			]
 			indexes: [
-				Index {fields: ['id']; primary: true }
+				//Index {fields: ['stageId', 'code']; unique: true }
 			]
 		},
 		Table { name: 'coursecodes'

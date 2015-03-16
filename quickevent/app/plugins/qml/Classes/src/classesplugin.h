@@ -25,6 +25,7 @@ public:
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 
 	Q_INVOKABLE QObject* createClassDocument(QObject *parent);
+	Q_INVOKABLE void createCourses(int current_stage, const QVariantList &courses);
 
 	Q_SIGNAL void nativeInstalled();
 private:

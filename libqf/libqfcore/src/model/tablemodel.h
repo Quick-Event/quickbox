@@ -153,7 +153,7 @@ public:
 
 	class QFCORE_DECL_EXPORT TreeTableExportOptions : public QVariantMap
 	{
-		QF_OPTION_FIELD2_RW(bool, is, set, ExportRawValues, true)
+		QF_VARIANTMAP_FIELD2(bool, is, set, ExportRawValues, true)
 		public:
 			TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};
