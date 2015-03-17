@@ -8,6 +8,17 @@ namespace Ui {
 	class ClassesWidget;
 }
 
+namespace qf {
+namespace core {
+namespace model {
+class SqlTableModel;
+}
+}
+namespace qmlwidgets {
+class ForeignKeyComboBox;
+}
+}
+
 class ClassesWidget : public QFrame
 {
 	Q_OBJECT
@@ -23,6 +34,7 @@ private:
 	Q_SLOT void reload();
 private:
 	Ui::ClassesWidget *ui;
+	qf::core::model::SqlTableModel *m_classesModel;
 };
 
 #endif // CLASSESWIDGET_H

@@ -109,10 +109,10 @@ QtObject {
 				cfg.setValue('event.director', data.Director.FirstName + ' ' + data.Director.LastName);
 				cfg.setValue('event.importId', event_id);
 
-				if(!event_api.createEvent(cfg.values()))
+				if(!event_api.createEvent("", cfg.values()))
 					return;
-				cfg.load();
-				var event_name = cfg.value('event.name');
+				//cfg.load();
+				var event_name = event_api.eventName;
 				if(!event_api.openEvent(event_name))
 					return;
 

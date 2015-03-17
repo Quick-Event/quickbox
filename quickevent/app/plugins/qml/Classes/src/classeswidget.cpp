@@ -9,6 +9,9 @@
 #include <qf/core/string.h>
 #include <qf/core/utils.h>
 
+#include <qf/core/model/sqltablemodel.h>
+#include <qf/core/sql/querybuilder.h>
+
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -18,12 +21,25 @@
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
+namespace qfm = qf::core::model;
+namespace qfs = qf::core::sql;
 
 ClassesWidget::ClassesWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ClassesWidget)
 {
 	ui->setupUi(this);
+	{
+		ui->tblClassesTB->setTableView(ui->tblClasses);
+		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
+		m->addColumn("id").setReadOnly(true);
+		m->addColumn("classes.name", tr("Class"));
+		//m->addColumn("competitorName", tr("Name"));
+		//m->addColumn("registration", tr("Reg"));
+		//m->addColumn("siId", tr("SI"));
+		ui->tblClasses->setTableModel(m);
+		m_classesModel = m;
+	}
 }
 
 ClassesWidget::~ClassesWidget()
@@ -108,5 +124,22 @@ void ClassesWidget::import_ocad()
 
 void ClassesWidget::reload()
 {
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("classes", "*")
+				//.select2("classes", "name")
+				//.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+				.from("classes")
+				//.join("competitors.classId", "classes.id")
+				.orderBy("classes.name");//.limit(10);
+		/*
+		int class_id = m_cbxClasses->currentData().toInt();
+		if(class_id > 0) {
+			qb.where("competitors.classId=" + QString::number(class_id));
+		}
+		*/
+		m_classesModel->setQueryBuilder(qb);
+		m_classesModel->reload();
+	}
 
 }

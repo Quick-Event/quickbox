@@ -264,14 +264,16 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 			transaction.commit();
 		} while(false);
 		if(ok) {
-			event_config.save();
 		}
 		else {
 			qfd::MessageBox::showError(fwk, tr("Create Database Error: %1").arg(q.lastError().text()));
 		}
 	}
-	if(ok)
+	if(ok) {
 		ok = openEvent(event_name);
+		if(ok)
+			event_config.save();
+	}
 	return ok;
 
 }
