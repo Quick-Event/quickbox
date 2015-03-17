@@ -69,9 +69,11 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 					courses_ids << q.value("courseId").toInt();
 				}
 			}
-			q.exec("DELETE FROM codes WHERE id IN ( SELECT codeId FROM coursecodes WHERE courseId IN (" + join_str(courses_ids) + ") )", qf::core::Exception::Throw);
-			q.exec("DELETE FROM coursecodes WHERE courseId IN (" + join_str(courses_ids) + ") )", qf::core::Exception::Throw);
-			q.exec("DELETE FROM courses WHERE id IN (" + join_str(courses_ids) + ") )", qf::core::Exception::Throw);
+			if(!courses_ids.isEmpty()) {
+				q.exec("DELETE FROM codes WHERE id IN ( SELECT codeId FROM coursecodes WHERE courseId IN (" + join_str(courses_ids) + ") )", qf::core::Exception::Throw);
+				q.exec("DELETE FROM coursecodes WHERE courseId IN (" + join_str(courses_ids) + ") )", qf::core::Exception::Throw);
+				q.exec("DELETE FROM courses WHERE id IN (" + join_str(courses_ids) + ") )", qf::core::Exception::Throw);
+			}
 			q.exec("DELETE FROM classdefs WHERE stageId=" QF_IARG(current_stage), qf::core::Exception::Throw);
 		}
 		QSet<int> codes;
@@ -140,7 +142,7 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 		transaction.commit();
 	}
 	catch (const qf::core::Exception &e) {
-		qfError() << e.what();
+		qfError() << e.toString();
 	}
 }
 

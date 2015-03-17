@@ -16,6 +16,9 @@ public:
 	explicit EventDialogWidget(QWidget *parent = 0);
 	~EventDialogWidget() Q_DECL_OVERRIDE;
 
+	void setEventId(const QString &event_id);
+	QString eventId() const;
+
 	void loadParams(const QVariantMap &params);
 	QVariantMap saveParams();
 private:

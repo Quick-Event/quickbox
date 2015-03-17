@@ -53,7 +53,7 @@ Event::EventConfig *EventPlugin::eventConfig(bool reload)
 	}
 	if(reload) {
 		m_eventConfig->load();
-		emit eventNameChanged(m_eventConfig->eventName());
+		//emit eventNameChanged(m_eventConfig->eventName());
 	}
 	return m_eventConfig;
 }
@@ -175,17 +175,25 @@ void EventPlugin::connectToSqlServer()
 	}
 }
 
-bool EventPlugin::createEvent(const QVariantMap &event_params)
+bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &event_params)
 {
+	qfLogFuncFrame();
+	closeEvent();
 	bool ok = false;
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	qfd::Dialog dlg(fwk);
 	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	EventDialogWidget *event_w = new EventDialogWidget();
+	event_w->setEventId(_event_name);
 	event_w->loadParams(event_params);
 	dlg.setCentralWidget(event_w);
 	if(!dlg.exec())
 		return false;
+
+	QString event_name = event_w->eventId();
+	if(event_name.isEmpty())
+		return false;
+
 	QVariantMap new_params = event_w->saveParams();
 	Event::EventConfig event_config;
 	ConnectionSettings connection_settings;
@@ -196,7 +204,6 @@ bool EventPlugin::createEvent(const QVariantMap &event_params)
 	qfInfo() << "createEvent, stage_count:" << stage_count;
 	QF_ASSERT(stage_count > 0, "Stage count have to be greater than 0", return false);
 
-	QString event_name = event_config.value("event.name").toString();
 	qfInfo() << "will create:" << event_name;
 	EventPlugin::ConnectionType connection_type = connection_settings.connectionType();
 	qfs::Connection conn = qfs::Connection::forName();
@@ -207,6 +214,9 @@ bool EventPlugin::createEvent(const QVariantMap &event_params)
 		conn.setDatabaseName(event_fn);
 		conn.open();
 	}
+	//else {
+	//	conn.setCurrentSchema(event_name);
+	//}
 	if(conn.isOpen()) {
 		QVariantMap create_options;
 		create_options["schemaName"] = event_name;
@@ -260,13 +270,22 @@ bool EventPlugin::createEvent(const QVariantMap &event_params)
 			qfd::MessageBox::showError(fwk, tr("Create Database Error: %1").arg(q.lastError().text()));
 		}
 	}
-
+	if(ok)
+		ok = openEvent(event_name);
 	return ok;
 
 }
 
+bool EventPlugin::closeEvent()
+{
+	qfLogFuncFrame();
+	setEventName(QString());
+	return true;
+}
+
 bool EventPlugin::openEvent(const QString &_event_name)
 {
+	closeEvent();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString event_name = _event_name;
 	ConnectionSettings connection_settings;
@@ -343,8 +362,9 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
-		eventConfig()->setEventName(event_name);
-		emit eventOpened(event_name);
+		eventConfig(true);
+		setEventName(event_name);
+		emit eventOpened(eventName());
 		emit reloadDataRequest();
 	}
 	return ok;

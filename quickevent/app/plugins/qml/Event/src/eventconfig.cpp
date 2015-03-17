@@ -98,7 +98,7 @@ int EventConfig::stageCount() const
 {
 	return value(QStringLiteral("event.stageCount")).toInt();
 }
-
+/*
 QString EventConfig::eventName() const
 {
 	return value(EVENT_NAME).toString();
@@ -109,7 +109,7 @@ void EventConfig::setEventName(const QString &n)
 	setValue(EVENT_NAME, n);
 	save(EVENT_NAME);
 }
-
+*/
 const QSet<QString> &EventConfig::knownKeys()
 {
 	static QSet<QString> s;

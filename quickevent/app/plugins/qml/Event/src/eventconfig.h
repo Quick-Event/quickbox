@@ -13,7 +13,7 @@ class EVENTPLUGIN_DECL_EXPORT EventConfig : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(int stageCount READ stageCount)
-	Q_PROPERTY(QString eventName READ eventName)
+	//Q_PROPERTY(QString eventName READ eventName)
 public:
 	explicit EventConfig(QObject *parent = 0);
 public slots:
@@ -25,8 +25,8 @@ public slots:
 	void save(const QString &key_to_save = QString());
 
 	int stageCount() const;
-	QString eventName() const;
-	void setEventName(const QString &n);
+	//QString eventName() const;
+	//void setEventName(const QString &n);
 private:
 	static const QSet<QString>& knownKeys();
 private:

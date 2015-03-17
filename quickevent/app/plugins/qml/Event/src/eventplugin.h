@@ -31,15 +31,16 @@ public:
 	enum class ConnectionType : int {SqlServer = 0, SingleFile};
 	EventPlugin(QObject *parent = nullptr);
 
+	QF_PROPERTY_IMPL(QString, e, E, ventName)
+
 	Event::EventConfig* eventConfig(bool reload = false);
 	int stageCount() {return eventConfig()->stageCount();}
-	QString eventName() {return eventConfig()->eventName();}
-	Q_SIGNAL void eventNameChanged(const QString &event_name);
 
 	int currentStage();
 	Q_SIGNAL void currentStageChanged(int current_stage);
 
-	Q_SLOT bool createEvent(const QVariantMap &event_params = QVariantMap());
+	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
+	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 
 	Q_SIGNAL void reloadDataRequest();

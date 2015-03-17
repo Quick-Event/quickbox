@@ -7,11 +7,25 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 {
 	setPersistentSettingsId("EventDialogWidget");
 	ui->setupUi(this);
+
+	QRegularExpression rx("[a-zA-Z0-9]+");
+	QValidator *validator = new QRegularExpressionValidator(rx, this);
+	ui->ed_eventNameId->setValidator(validator);
 }
 
 EventDialogWidget::~EventDialogWidget()
 {
 	delete ui;
+}
+
+void EventDialogWidget::setEventId(const QString &event_id)
+{
+	ui->ed_eventNameId->setText(event_id);
+}
+
+QString EventDialogWidget::eventId() const
+{
+	return ui->ed_eventNameId->text();
 }
 
 void EventDialogWidget::loadParams(const QVariantMap &params)

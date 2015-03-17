@@ -20,11 +20,11 @@ public:
 	explicit Query(const QSqlDatabase &db = QSqlDatabase());
 	explicit Query(const QString &connection_name);
 public:
-	using Super::prepare;
-	bool prepare(const QString& query, bool throw_exc);
-	using Super::exec;
-	bool exec(const QString &query, bool throw_exc);
-	bool exec(bool throw_exc);
+	//using Super::prepare;
+	bool prepare(const QString& query, bool throw_exc = false);
+	//using Super::exec;
+	bool exec(const QString &query, bool throw_exc = false);
+	bool exec(bool throw_exc = false);
 	QSqlRecord record() const;
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;

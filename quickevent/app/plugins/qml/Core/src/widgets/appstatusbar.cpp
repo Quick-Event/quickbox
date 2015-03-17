@@ -55,6 +55,9 @@ void AppStatusBar::showProgress(const QString &msg, int completed, int total)
 	m_lblMessage->setVisible(m_progress->isVisible());
 	m_progress->setValue(completed);
 	m_progress->setMaximum(total);
-	m_lblMessage->setText(msg);
+	QString message = msg;
+	if(message.isEmpty() && total > 0)
+		message = QString::number(100 * completed / total) + '%';
+	m_lblMessage->setText(message);
 }
 
