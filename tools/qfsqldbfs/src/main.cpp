@@ -86,13 +86,14 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	int dbfs_options_index;
-	for(dbfs_options_index = 1; dbfs_options_index < argc; dbfs_options_index++)
-		if(argv[dbfs_options_index] == QLatin1String("--dbfs"))
+	int dbfs_switch_index;
+	for(dbfs_switch_index = 1; dbfs_switch_index < argc; dbfs_switch_index++)
+		if(argv[dbfs_switch_index] == QLatin1String("--dbfs")) {
 			break;
+		}
 
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
-	file_log_device->setDomainTresholds(argc - dbfs_options_index, argv + dbfs_options_index);
+	file_log_device->setDomainTresholds(argc - dbfs_switch_index, argv + dbfs_switch_index);
 	file_log_device->setPrettyDomain(true);
 
 	QString o_database;
@@ -104,7 +105,7 @@ int main(int argc, char *argv[])
 	bool o_create_db = false;
 	bool o_ask_passwd = false;
 
-	for(int i=dbfs_options_index+1; i<argc; i++) {
+	for(int i=dbfs_switch_index + 1; i<argc; i++) {
 		QString arg = argv[i];
 		if(arg == QStringLiteral("--host")) {
 			if(i<argc-1) {
@@ -162,7 +163,7 @@ int main(int argc, char *argv[])
 
 	qfs::DbFsDriver *dbfs_drv = nullptr;
 	QSqlDatabase db_connection;
-	if(!o_host.isEmpty()) {
+	if(dbfs_switch_index < (argc - 1)) {
 		db_connection = QSqlDatabase::addDatabase("QPSQL");
 		db_connection.setHostName(o_host);
 		if(o_port > 0)
@@ -190,7 +191,7 @@ int main(int argc, char *argv[])
 		qfsqldbfs_setdriver(dbfs_drv);
 	}
 
-	int fuse_argc = dbfs_options_index;
+	int fuse_argc = dbfs_switch_index;
 
 	/// FUSE variables
 	struct fuse_args fuse_arguments = FUSE_ARGS_INIT(fuse_argc, argv);
