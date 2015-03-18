@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
 	}
 
 	if(o_help) {
-		std::cout << argv[0] << "FUSE_options --dbfs DBFS_options" << std::endl;
+		std::cout << argv[0] << " FUSE_options --dbfs DBFS_options" << std::endl;
 		std::cout << "FUSE_options" << std::endl;
 		std::cout << "\tuse -h switch to print FUSE options" << std::endl;
 		std::cout << "DBFS_options" << std::endl;
