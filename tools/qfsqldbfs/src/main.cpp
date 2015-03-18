@@ -63,6 +63,29 @@ static void set_signal_handlers()
 
 int main(int argc, char *argv[])
 {
+	if(argc <= 2) {
+		QString arg = "-h";
+		if(argc > 1)
+			arg = argv[1];
+		if(arg == QStringLiteral("-h") || arg == QStringLiteral("--help")) {
+			std::cout << argv[0] << " FUSE_options --dbfs DBFS_options" << std::endl;
+			std::cout << "FUSE_options" << std::endl;
+			std::cout << "\tuse -h --dbfs switch to print FUSE options" << std::endl;
+			std::cout << "DBFS_options" << std::endl;
+			std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
+			std::cout << "\t--host <host>\t" << "Database host" << std::endl;
+			std::cout << "\t--port <port>\t" << "Database port" << std::endl;
+			std::cout << "\t--u" << std::endl;
+			std::cout << "\t--user <user>\t" << "Database user" << std::endl;
+			std::cout << "\t--p" << std::endl;
+			std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
+			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
+			std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
+			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
+			exit(0);
+		}
+	}
+
 	int dbfs_options_index;
 	for(dbfs_options_index = 1; dbfs_options_index < argc; dbfs_options_index++)
 		if(argv[dbfs_options_index] == QLatin1String("--dbfs"))
@@ -80,7 +103,6 @@ int main(int argc, char *argv[])
 	QString o_table_name;
 	bool o_create_db = false;
 	bool o_ask_passwd = false;
-	bool o_help = ((dbfs_options_index + 1) >= argc);
 
 	for(int i=dbfs_options_index+1; i<argc; i++) {
 		QString arg = argv[i];
@@ -129,27 +151,6 @@ int main(int argc, char *argv[])
 		else if(arg == QStringLiteral("--create")) {
 			o_create_db = true;
 		}
-		else if(arg == QStringLiteral("-h") || arg == QStringLiteral("--help")) {
-			o_help = true;
-		}
-	}
-
-	if(o_help) {
-		std::cout << argv[0] << " FUSE_options --dbfs DBFS_options" << std::endl;
-		std::cout << "FUSE_options" << std::endl;
-		std::cout << "\tuse -h switch to print FUSE options" << std::endl;
-		std::cout << "DBFS_options" << std::endl;
-		std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
-		std::cout << "\t--host <host>\t" << "Database host" << std::endl;
-		std::cout << "\t--port <port>\t" << "Database port" << std::endl;
-		std::cout << "\t--u" << std::endl;
-		std::cout << "\t--user <user>\t" << "Database user" << std::endl;
-		std::cout << "\t--p" << std::endl;
-		std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
-		std::cout << "\t--database <database>\t" << "Database name" << std::endl;
-		std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
-		std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
-		exit(0);
 	}
 
 	if(o_ask_passwd) {
@@ -159,31 +160,35 @@ int main(int argc, char *argv[])
 		o_password = QString::fromUtf8(pwd);
 	}
 
-	QSqlDatabase db = QSqlDatabase::addDatabase("QPSQL");
-	db.setHostName(o_host);
-	if(o_port > 0)
-		db.setPort(o_port);
-	db.setDatabaseName(o_database);
-	db.setUserName(o_user);
-	bool ok = db.open();
-	if(!ok) {
-		qfError() << db.lastError().text();
-		exit(1);
-	}
-	qfs::DbFsDriver *dbfs_drv = new qfs::DbFsDriver();
-	dbfs_drv->setConnectionName(db.connectionName());
-
-	if(!o_table_name.isEmpty()) {
-		dbfs_drv->setTableName(o_table_name);
-	}
-	if(o_create_db) {
-		if(!dbfs_drv->createDbFs()) {
-			qfError() << "Error creating dbfs table" << dbfs_drv->tableName();
+	qfs::DbFsDriver *dbfs_drv = nullptr;
+	QSqlDatabase db_connection;
+	if(!o_host.isEmpty()) {
+		db_connection = QSqlDatabase::addDatabase("QPSQL");
+		db_connection.setHostName(o_host);
+		if(o_port > 0)
+			db_connection.setPort(o_port);
+		db_connection.setDatabaseName(o_database);
+		db_connection.setUserName(o_user);
+		bool ok = db_connection.open();
+		if(!ok) {
+			qfError() << db_connection.lastError().text();
+			exit(1);
 		}
-		exit(1);
-	}
+		dbfs_drv = new qfs::DbFsDriver();
+		dbfs_drv->setConnectionName(db_connection.connectionName());
 
-	qfsqldbfs_setdriver(dbfs_drv);
+		if(!o_table_name.isEmpty()) {
+			dbfs_drv->setTableName(o_table_name);
+		}
+		if(o_create_db) {
+			if(!dbfs_drv->createDbFs()) {
+				qfError() << "Error creating dbfs table" << dbfs_drv->tableName();
+			}
+			exit(1);
+		}
+
+		qfsqldbfs_setdriver(dbfs_drv);
+	}
 
 	int fuse_argc = dbfs_options_index;
 
@@ -234,54 +239,60 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
+	if(dbfs_drv) {
 #ifdef USE_QT_EVENT_LOOP
-	qfInfo() << "Using Qt event loop with FUSE in separated thread";
-	TheApp *app = new TheApp(argc, argv);
-	s_fuseThread = new FuseThread(fuse_handle, fuse_channel, QString::fromUtf8(mount_point));
-	dbfs_drv->moveToThread(s_fuseThread);
-	QObject::connect(s_fuseThread, &QThread::finished, app, &TheApp::onFuseThreadFinished, Qt::QueuedConnection);
-	s_fuseThread->start();
+		qfInfo() << "Using Qt event loop with FUSE in separated thread";
+		TheApp *app = new TheApp(argc, argv);
+		s_fuseThread = new FuseThread(fuse_handle, fuse_channel, QString::fromUtf8(mount_point));
+		dbfs_drv->moveToThread(s_fuseThread);
+		QObject::connect(s_fuseThread, &QThread::finished, app, &TheApp::onFuseThreadFinished, Qt::QueuedConnection);
+		s_fuseThread->start();
 
-	set_signal_handlers();
+		set_signal_handlers();
 
-	{
-		/// setup SQL notify
-		QSqlDatabase notify_db = QSqlDatabase::addDatabase("QPSQL", "DBFS_Notify");
-		notify_db.setHostName(db.hostName());
-		notify_db.setPort(db.port());
-		notify_db.setUserName(db.userName());
-		notify_db.setPassword(db.password());
-		notify_db.setDatabaseName(db.databaseName());
-		bool ok = notify_db.open();
-		if(!ok) {
-			qfError() << "Error connect DBFS notify connection" << notify_db.lastError().text();
+		{
+			/// setup SQL notify
+			QSqlDatabase notify_db = QSqlDatabase::addDatabase("QPSQL", "DBFS_Notify");
+			notify_db.setHostName(db_connection.hostName());
+			notify_db.setPort(db_connection.port());
+			notify_db.setUserName(db_connection.userName());
+			notify_db.setPassword(db_connection.password());
+			notify_db.setDatabaseName(db_connection.databaseName());
+			bool ok = notify_db.open();
+			if(!ok) {
+				qfError() << "Error connect DBFS notify connection" << notify_db.lastError().text();
+			}
+			else {
+				QSqlDriver *drv = notify_db.driver();
+				//qRegisterMetaType<QSqlDriver::NotificationSource>("QSqlDriver::NotificationSource");
+				QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), dbfs_drv, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)), Qt::DirectConnection);
+				//QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), app, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
+				drv->subscribeToNotification(qfs::DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE);
+				qfInfo() << drv << "subscribedToNotifications:" << drv->subscribedToNotifications().join(", ");
+			}
 		}
-		else {
-			QSqlDriver *drv = notify_db.driver();
-			//qRegisterMetaType<QSqlDriver::NotificationSource>("QSqlDriver::NotificationSource");
-			QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), dbfs_drv, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)), Qt::DirectConnection);
-			//QObject::connect(drv, SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), app, SLOT(onSqlNotify(QString,QSqlDriver::NotificationSource,QVariant)));
-			drv->subscribeToNotification(qfs::DbFsDriver::CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE);
-			qfInfo() << drv << "subscribedToNotifications:" << drv->subscribedToNotifications().join(", ");
-		}
-	}
 
-	app->exec();
+		app->exec();
 
-	qfInfo() << "Waiting for FUSE thread to join ...";
-	s_fuseThread->wait();
+		qfInfo() << "Waiting for FUSE thread to join ...";
+		s_fuseThread->wait();
 #else
-	qfInfo() << "Using FUSE event loop";
-	fuse_loop(fuse_handle);
-	qfInfo() << "FUSE has quit its event loop";
+		qfInfo() << "Using FUSE event loop";
+		fuse_loop(fuse_handle);
+		qfInfo() << "FUSE has quit its event loop";
 #endif
 
-	qfsqldbfs_setdriver(nullptr);
-	QF_SAFE_DELETE(dbfs_drv);
+		qfsqldbfs_setdriver(nullptr);
+		QF_SAFE_DELETE(dbfs_drv);
 #ifdef USE_QT_EVENT_LOOP
-	QF_SAFE_DELETE(s_fuseThread);
-	QF_SAFE_DELETE(app);
+		QF_SAFE_DELETE(s_fuseThread);
+		QF_SAFE_DELETE(app);
 #endif
+	}
+	else {
+		// used just to print FUSE help
+		fuse_loop(fuse_handle);
+	}
 
 	qfInfo() << "bye";
 	return 0;
