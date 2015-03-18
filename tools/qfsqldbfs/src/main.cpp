@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
 	QString o_table_name;
 	bool o_create_db = false;
 	bool o_ask_passwd = false;
+	bool o_help = ((dbfs_options_index + 1) >= argc);
 
 	for(int i=dbfs_options_index+1; i<argc; i++) {
 		QString arg = argv[i];
@@ -129,22 +130,26 @@ int main(int argc, char *argv[])
 			o_create_db = true;
 		}
 		else if(arg == QStringLiteral("-h") || arg == QStringLiteral("--help")) {
-			std::cout << argv[0] << "FUSE_options --dbfs DBFS_options" << std::endl;
-			std::cout << "FUSE_options" << std::endl;
-			std::cout << "\tuse -h switch to print FUSE options" << std::endl;
-			std::cout << "DBFS_options" << std::endl;
-			std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
-			std::cout << "\t--host <host>\t" << "Database host" << std::endl;
-			std::cout << "\t--port <port>\t" << "Database port" << std::endl;
-			std::cout << "\t--u" << std::endl;
-			std::cout << "\t--user <user>\t" << "Database user" << std::endl;
-			std::cout << "\t--p" << std::endl;
-			std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
-			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
-			std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
-			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
-			exit(0);
+			o_help = true;
 		}
+	}
+
+	if(o_help) {
+		std::cout << argv[0] << "FUSE_options --dbfs DBFS_options" << std::endl;
+		std::cout << "FUSE_options" << std::endl;
+		std::cout << "\tuse -h switch to print FUSE options" << std::endl;
+		std::cout << "DBFS_options" << std::endl;
+		std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
+		std::cout << "\t--host <host>\t" << "Database host" << std::endl;
+		std::cout << "\t--port <port>\t" << "Database port" << std::endl;
+		std::cout << "\t--u" << std::endl;
+		std::cout << "\t--user <user>\t" << "Database user" << std::endl;
+		std::cout << "\t--p" << std::endl;
+		std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
+		std::cout << "\t--database <database>\t" << "Database name" << std::endl;
+		std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
+		std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
+		exit(0);
 	}
 
 	if(o_ask_passwd) {
