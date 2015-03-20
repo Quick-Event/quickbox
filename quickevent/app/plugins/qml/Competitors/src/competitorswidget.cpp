@@ -74,32 +74,35 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 
 void CompetitorsWidget::lazyInit()
 {
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	connect(fwk->plugin("Event"), SIGNAL(reloadDataRequest()), this, SLOT(reload()));
 }
 
 void CompetitorsWidget::reload()
 {
-	if(m_cbxClasses->count() == 0) {
-		m_cbxClasses->loadItems();
-		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()));
-	}
 	{
-		qfs::QueryBuilder qb;
-		qb.select2("competitors", "*")
-				.select2("classes", "name")
-				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-				.from("competitors")
-				.join("competitors.classId", "classes.id")
-				.orderBy("competitors.id");//.limit(10);
-		int class_id = m_cbxClasses->currentData().toInt();
-		if(class_id > 0) {
-			qb.where("competitors.classId=" + QString::number(class_id));
-		}
-		m_competitorsModel->setQueryBuilder(qb);
-		m_competitorsModel->reload();
+		m_cbxClasses->blockSignals(true);
+		m_cbxClasses->loadItems(true);
+		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
+		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reloadTables()), Qt::UniqueConnection);
+		m_cbxClasses->blockSignals(false);
 	}
+	reloadTables();
+}
+
+void CompetitorsWidget::reloadTables()
+{
+	qfs::QueryBuilder qb;
+	qb.select2("competitors", "*")
+			.select2("classes", "name")
+			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.from("competitors")
+			.join("competitors.classId", "classes.id")
+			.orderBy("competitors.id");//.limit(10);
+	int class_id = m_cbxClasses->currentData().toInt();
+	if(class_id > 0) {
+		qb.where("competitors.classId=" + QString::number(class_id));
+	}
+	m_competitorsModel->setQueryBuilder(qb);
+	m_competitorsModel->reload();
 }
 
 void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)

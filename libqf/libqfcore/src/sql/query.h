@@ -24,6 +24,7 @@ public:
 	bool prepare(const QString& query, bool throw_exc = false);
 	//using Super::exec;
 	bool exec(const QString &query, bool throw_exc = false);
+	bool exec(const char *query, bool throw_exc = false) {return exec(QString::fromUtf8(query), throw_exc);}
 	bool exec(bool throw_exc = false);
 	QSqlRecord record() const;
 	int fieldIndex(const QString& field_name) const;

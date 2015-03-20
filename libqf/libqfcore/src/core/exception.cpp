@@ -56,9 +56,9 @@ bool isLogStackTrace()
 
 }
 
-void Exception::init(const QString& _type, const QString& _msg, const QString& _where)
+void Exception::init(const QString& _msg, const QString& _where)
 {
-	m_type = _type;
+	//m_type = _type;
 	m_where = _where;
 	m_msg = _msg;
 	m_what = m_msg.toUtf8();
@@ -69,8 +69,6 @@ void Exception::init(const QString& _type, const QString& _msg, const QString& _
 	for(int i=0; i<4 && sl.size()>1; i++) sl.removeAt(1); /// keep column captions
 	m_stackTrace = sl.join("\n");
 	*/
-	//if(!m_where.isEmpty()) recentExceptionRef() = *this;
-	//log();
 }
 /*
 Exception& Exception::recentExceptionRef()
@@ -89,8 +87,7 @@ void Exception::log()
 
 QString Exception::toString() const
 {
-	QString ret = type();
-	if(!ret.isEmpty()) ret += ": ";
+	QString ret = "qf::core::Exception: ";
 	ret += message();
 	return ret;
 }

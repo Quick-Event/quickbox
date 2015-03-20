@@ -11,11 +11,15 @@ PartWidget::PartWidget(QWidget *parent)
 	: Super(parent)
 {
 	connect(this, &PartWidget::activeChanged, this, &PartWidget::onActiveChanged);
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *event_plugin = fwk->plugin("Event", qf::core::Exception::Throw);
+	connect(event_plugin, SIGNAL(reloadDataRequest()), this, SLOT(onActiveChanged()));
+	//connect(event_plugin, SIGNAL(eventOpened()), this, SIGNAL(resetRequest()));
 }
 
-void PartWidget::onActiveChanged(bool is_active)
+void PartWidget::onActiveChanged()
 {
-	if(is_active) {
+	if(isActive()) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QF_ASSERT(fwk != nullptr, "Invalid FrameWork", return);
 		qf::qmlwidgets::framework::Plugin *event_plugin = fwk->plugin("Event", qf::core::Exception::Throw);

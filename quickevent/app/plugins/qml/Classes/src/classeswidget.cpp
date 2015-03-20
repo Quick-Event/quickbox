@@ -75,50 +75,74 @@ void ClassesWidget::import_ocad()
 				break;
 			lines << QString::fromUtf8(ba).trimmed();
 		}
-		for(QString line : lines) {
-			// [course];classname [,classname];0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
-			if(line.isEmpty())
-				continue;
-			CourseDef cd;
-			QString course = line.section(';', 0, 0);
-			qfc::String classes = line.section(';', 1, 1);
-			cd.setClasses(classes.splitAndTrim(','));
-			if(course.isEmpty())
-				course = cd.classes().value(0);
-			cd.setCourse(course);
-			{
-				QString s = line.section(';', 3, 3).trimmed();
-				s.replace('.', QString()).replace(',', QString());
-				cd.setLenght(s.toInt());
-			}
-			{
-				QString s = line.section(';', 4, 4).trimmed();
-				s.replace('.', QString()).replace(',', QString());
-				cd.setClimb(s.toInt());
-			}
-			{
-				qfc::String s = line.section(';', 6);
-				QVariantList codes;
-				QStringList sl = s.splitAndTrim(';');
-				for (int i = 0; i < sl.count()-2; i+=2) {
-					codes << sl[i+1].toInt();
+		try {
+			QSet<QString> parsed_classes;
+			QSet<QString> parsed_courses;
+			for(QString line : lines) {
+				// [course];classname [,classname];0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
+				if(line.isEmpty())
+					continue;
+				CourseDef cd;
+				QString course = line.section(';', 0, 0);
+				qfc::String classes_str = line.section(';', 1, 1);
+				QStringList classes = classes_str.splitAndTrim(',');
+				for(auto c : classes) {
+					if(parsed_classes.contains(c))
+						QF_EXCEPTION("Duplicate definition for class:" + c);
+					else
+						parsed_classes << c;
 				}
-				cd.setCodes(codes);
+				cd.setClasses(classes);
+				if(course.isEmpty())
+					course = cd.classes().value(0);
+				{
+					if(parsed_courses.contains(course))
+						QF_EXCEPTION("Duplicate definition for course:" + course);
+					else
+						parsed_courses << course;
+				}
+				cd.setCourse(course);
+				{
+					QString s = line.section(';', 3, 3).trimmed();
+					s.replace('.', QString()).replace(',', QString());
+					cd.setLenght(s.toInt());
+				}
+				{
+					QString s = line.section(';', 4, 4).trimmed();
+					s.replace('.', QString()).replace(',', QString());
+					cd.setClimb(s.toInt());
+				}
+				{
+					qfc::String s = line.section(';', 6);
+					QVariantList codes;
+					QStringList sl = s.splitAndTrim(';');
+					for (int i = 0; i < sl.count()-2; i+=2) {
+						codes << sl[i+1].toInt();
+					}
+					cd.setCodes(codes);
+				}
+				courses << cd;
 			}
-			courses << cd;
-		}
+			{
+				QJsonDocument doc = QJsonDocument::fromVariant(courses);
+				qfInfo() << doc.toJson();
+			}
 
-		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
-		ClassesPlugin *classes_plugin = qobject_cast<ClassesPlugin *>(fwk->plugin("Classes"));
-		if(event_plugin && classes_plugin) {
-			QString msg = tr("Delete all courses definitions for stage %1?").arg(event_plugin->currentStage());
-			if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
-				classes_plugin->createCourses(event_plugin->currentStage(), courses);
-				reload();
+			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+			EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
+			ClassesPlugin *classes_plugin = qobject_cast<ClassesPlugin *>(fwk->plugin("Classes"));
+			if(event_plugin && classes_plugin) {
+				QString msg = tr("Delete all courses definitions for stage %1?").arg(event_plugin->currentStage());
+				if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
+					classes_plugin->createCourses(event_plugin->currentStage(), courses);
+					reload();
+				}
 			}
 		}
-
+		catch (const qf::core::Exception &e) {
+			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+		}
 	}
 }
 

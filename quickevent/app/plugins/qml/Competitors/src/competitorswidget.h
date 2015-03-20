@@ -32,6 +32,7 @@ public:
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reload();
+	Q_SLOT void reloadTables();
 
 	Q_SLOT void editCompetitor(const QVariant &id, int mode);
 private:

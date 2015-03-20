@@ -16,10 +16,11 @@ public:
 	PartWidget(QWidget *parent = 0);
 
 	Q_SIGNAL void reloadRequest();
+	//Q_SIGNAL void resetRequest();
 protected:
 	//virtual void reload() {}
 
-	virtual void onActiveChanged(bool is_active);
+	Q_SLOT virtual void onActiveChanged();
 };
 
 }
