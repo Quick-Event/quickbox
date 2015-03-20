@@ -24,7 +24,6 @@ class QFCORE_DECL_EXPORT DbFsDriver : public QObject
 	Q_OBJECT
 	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName NOTIFY connectionNameChanged)
 	Q_PROPERTY(QString tableName READ tableName WRITE setTableName NOTIFY tableNameChanged)
-	Q_PROPERTY(int snapshotNumber READ snapshotNumber WRITE setSnapshotNumber NOTIFY snapshotNumberChanged)
 public:
 	enum PutNodeOptions {PN_CREATE = 1, PN_TRUNCATE = 2, PN_OVERRIDE = 4, PN_DELETE = 8, PN_RENAME = 16};
 	static const QString CHANNEL_INVALIDATE_DBFS_DRIVER_CACHE;
@@ -36,16 +35,19 @@ public:
 
 	QF_PROPERTY_IMPL(QString, c, C, onnectionName)
 	QF_PROPERTY_IMPL(QString, t, T, ableName)
-	QF_PROPERTY_IMPL2(int, s, S, napshotNumber, std::numeric_limits<int32_t>::max())
 
+	bool checkDbFs();
 	bool createDbFs();
 	DbFsAttrs attributes(const QString &path);
 	QList<DbFsAttrs> childAttributes(const QString &parent_path);
 	QByteArray get(const QString &path, bool *pok = nullptr);
 	bool put(const QString &path, const QByteArray &data, bool create_if_not_exist = false);
+	/// create all the necessarry directories and file
+	bool putmkdir(const QString &path, const QByteArray &data);
 	bool truncate(const QString &path, int new_size);
 	bool mkfile(const QString &path, const QByteArray &data = QByteArray());
 	bool mkdir(const QString &path);
+	bool mkdirs(const QString &path);
 	bool rmnod(const QString &path);
 	bool rename(const QString &old_path, const QString &new_path);
 

@@ -567,6 +567,15 @@ static bool execQueryList(Connection &conn, const QStringList &qlst)
 	return ret;
 }
 
+bool DbFsDriver::checkDbFs()
+{
+	qfLogFuncFrame();
+	Connection conn = connection();
+	Query q(conn);
+	bool ok = q.exec("SELECT COUNT(*) FROM " + tableName());
+	return ok;
+}
+
 bool DbFsDriver::createDbFs()
 {
 	qfLogFuncFrame();
@@ -774,6 +783,18 @@ bool DbFsDriver::put(const QString &path, const QByteArray &data, bool create_if
 	return !att.isNull();
 }
 
+bool DbFsDriver::putmkdir(const QString &path, const QByteArray &data)
+{
+	qfLogFuncFrame() << path << ((data.size() < 100)? data : data.mid(100));
+
+	QString spath = cleanPath(path);
+	auto pf = splitPathFile(spath);
+	if(mkdirs(pf.first)) {
+		return put(path, data);
+	}
+	return false;
+}
+
 bool DbFsDriver::truncate(const QString &path, int new_size)
 {
 	qfLogFuncFrame() << path;
@@ -799,6 +820,27 @@ bool DbFsDriver::mkdir(const QString &path)
 	qfLogFuncFrame() << path;
 	bool ok = mknod(path, DbFsAttrs::Dir, QByteArray());
 	return ok;
+}
+
+bool DbFsDriver::mkdirs(const QString &path)
+{
+	qfLogFuncFrame() << path;
+
+	QStringList dirs = splitPath(cleanPath(path));
+	QString new_path;
+	for (int i = 0; i < dirs.count(); ++i) {
+		new_path = (new_path.isEmpty())? dirs[i]: new_path + '/' + dirs[i];
+		DbFsAttrs attrs = attributes(new_path);
+		if(attrs.isNull()) {
+			if(!mkdir(new_path))
+				return false;
+		}
+		else if(attrs.type() == DbFsAttrs::File) {
+			qfError() << "Cannot override exiting file:" << new_path;
+			return false;
+		}
+	}
+	return true;
 }
 
 bool DbFsDriver::mknod(const QString &path, DbFsAttrs::NodeType node_type, const QByteArray &data)
