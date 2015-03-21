@@ -43,7 +43,7 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				//Field { name: 'stageId'; type: Int { } },
-				Field { name: 'name'; type: String { length: 10 } },
+				Field { name: 'name'; type: String { } },
 				Field { name: 'length'; type: Int { } },
 				Field { name: 'climb'; type: Int { } }
 			]
@@ -77,7 +77,10 @@ Schema {
 		Table { name: 'classes'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
-				Field { name: 'name'; type: String { length: 10 } }
+				Field { name: 'name'; type: String { } }
+			]
+			indexes: [
+				Index { fields: ['name']; unique: true }
 			]
 		},
 		Table { name: 'classdefs'

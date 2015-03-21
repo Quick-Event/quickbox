@@ -44,14 +44,12 @@ public:
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 
 	Q_SIGNAL void reloadDataRequest();
-	Q_SIGNAL void eventOpened(const QString &event_name);
 
 	bool isDbOpen() const { return m_dbOpen; }
 	void setDbOpen(bool ok);
 	Q_SIGNAL void dbOpenChanged(bool is_open);
 
-	static int dlTest;
-	Q_INVOKABLE int incDlTest() {return ++dlTest;}
+	Q_SIGNAL void eventOpened(const QString &event_name);
 private:
 	Q_SLOT void onInstalled();
 	Q_SLOT void onEventOpened();

@@ -31,8 +31,8 @@ public:
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private:
 	Q_SLOT void lazyInit();
+	Q_SLOT void reset();
 	Q_SLOT void reload();
-	Q_SLOT void reloadTables();
 
 	Q_SLOT void editCompetitor(const QVariant &id, int mode);
 private:

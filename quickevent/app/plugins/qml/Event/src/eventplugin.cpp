@@ -37,8 +37,6 @@ static QString eventNameToFileName(const QString &event_name)
 	return ret;
 }
 
-int EventPlugin::dlTest = 0;
-
 EventPlugin::EventPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -367,7 +365,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		eventConfig(true);
 		setEventName(event_name);
 		emit eventOpened(eventName());
-		emit reloadDataRequest();
+		//emit reloadDataRequest();
 	}
 	return ok;
 }

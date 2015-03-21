@@ -31,6 +31,7 @@ public:
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private:
 	Q_SLOT void import_ocad();
+	Q_SLOT void reset();
 	Q_SLOT void reload();
 private:
 	Ui::ClassesWidget *ui;

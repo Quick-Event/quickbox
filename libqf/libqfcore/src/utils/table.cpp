@@ -525,11 +525,11 @@ QString TableRow::toString(const QString &sep) const
 {
 	QStringList sl;
 	for(int i=0; i<fields().count(); i++) {
-		QString s = "[%1:%3]: %2";
+		QString s = "[%1:%2]: %3(%4)";
 		s = s.arg(fields()[i].name());
 		QVariant v = value(i);
-		if(v.type() == QVariant::String) v = "'" + v.toString() + "'";
-		sl << s.arg(v.toString()).arg(QVariant::typeToName(v.type()));
+		QVariant ov = origValue(i);
+		sl << s.arg(v.typeName()).arg(v.toString()).arg(ov.toString());
 	}
 	return sl.join(sep);
 }

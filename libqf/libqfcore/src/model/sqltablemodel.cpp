@@ -135,6 +135,8 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
 				//qs = fixSerialDefaultValue(qs, serial_ix, rec);
 			}
+			if(qs.isEmpty())
+				continue;
 			qfDebug() << "\texecuting prepared query:" << qs;
 			bool ok = q.prepare(qs);
 			if(!ok) {
@@ -237,7 +239,14 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					qfu::Table::Field fld = m_table.fields().at(fld_ix);
 					QSqlField sqlfld(fld.shortName(), fld.type());
 					sqlfld.setValue(row_ref.origValue(fld_ix));
-					qfDebug() << "\tpri index" << fld_ix << sqlfld.name() << ":" << sqlfld.value();
+					/*
+					if(row_ref.isDirty(fld_ix))
+						sqlfld.setValue(row_ref.origValue(fld_ix));
+					else
+						sqlfld.setValue(row_ref.value(fld_ix));
+					*/
+					//qfDebug() << row_ref.toString();
+					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.type() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
 					where_rec.append(sqlfld);
 				}
 				QF_ASSERT(!where_rec.isEmpty(),

@@ -8,6 +8,7 @@
 
 #include <qf/core/string.h>
 #include <qf/core/utils.h>
+#include <qf/core/collator.h>
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
@@ -34,9 +35,10 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
-		//m->addColumn("competitorName", tr("Name"));
-		//m->addColumn("registration", tr("Reg"));
-		//m->addColumn("siId", tr("SI"));
+		m->addColumn("classdefs.mapCount", tr("Maps"));
+		m->addColumn("courses.name", tr("Course"));
+		m->addColumn("courses.length", tr("Length"));
+		m->addColumn("courses.climb", tr("Climb"));
 		ui->tblClasses->setTableModel(m);
 		m_classesModel = m;
 	}
@@ -49,7 +51,8 @@ ClassesWidget::~ClassesWidget()
 
 void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(reloadRequest()), this, SLOT(reload()));
+	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
+	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
 	a_import->setText("&Import");
@@ -60,6 +63,44 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	a_import->addActionInto(a_ocad);
 }
 
+void ClassesWidget::reset()
+{
+	reload();
+}
+
+void ClassesWidget::reload()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("classes", "*")
+				.select2("classdefs", "id, mapCount")
+				.select2("courses", "name, length, climb")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStage()))
+				.join("classdefs.courseId", "courses.id")
+				.orderBy("classes.name");//.limit(10);
+		/*
+		int class_id = m_cbxClasses->currentData().toInt();
+		if(class_id > 0) {
+			qb.where("competitors.classId=" + QString::number(class_id));
+		}
+		*/
+		m_classesModel->setQueryBuilder(qb);
+		m_classesModel->reload();
+	}
+
+}
+
+static QString normalize_course_name(const QString &name)
+{
+	QString ret = qf::core::Collator::toAscii7(name, false);
+	ret.replace(' ', QString());
+	ret.replace(',', '+');
+	return ret;
+}
+
 void ClassesWidget::import_ocad()
 {
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"));
@@ -67,7 +108,6 @@ void ClassesWidget::import_ocad()
 		return;
 	QFile f(fn);
 	if(f.open(QFile::ReadOnly)) {
-		QVariantList courses;
 		QStringList lines;
 		while (true) {
 			QByteArray ba = f.readLine();
@@ -76,15 +116,24 @@ void ClassesWidget::import_ocad()
 			lines << QString::fromUtf8(ba).trimmed();
 		}
 		try {
-			QSet<QString> parsed_classes;
-			QSet<QString> parsed_courses;
+			//QSet<QString> parsed_classes;
+			//QSet<QString> parsed_courses;
+			QMap<QString, CourseDef> defined_courses;
 			for(QString line : lines) {
-				// [course];classname [,classname];0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
+				// [classname];coursename;0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
 				if(line.isEmpty())
 					continue;
-				CourseDef cd;
-				QString course = line.section(';', 0, 0);
-				qfc::String classes_str = line.section(';', 1, 1);
+				QString course_name = normalize_course_name(line.section(';', 1, 1));
+				qfc::String class_name = line.section(';', 0, 0);
+				if(class_name.isEmpty())
+					class_name = course_name;
+				if(defined_courses.contains(course_name)) {
+					CourseDef cd = defined_courses.value(course_name);
+					QStringList classes = cd.classes() << class_name;
+					defined_courses[course_name].setClasses(classes);
+					continue;
+				}
+				/*
 				QStringList classes = classes_str.splitAndTrim(',');
 				for(auto c : classes) {
 					if(parsed_classes.contains(c))
@@ -101,7 +150,10 @@ void ClassesWidget::import_ocad()
 					else
 						parsed_courses << course;
 				}
-				cd.setCourse(course);
+				*/
+				CourseDef &cd = defined_courses[course_name];
+				cd.setCourse(course_name);
+				cd.setClasses(QStringList() << class_name);
 				{
 					QString s = line.section(';', 3, 3).trimmed();
 					s.replace('.', QString()).replace(',', QString());
@@ -121,11 +173,13 @@ void ClassesWidget::import_ocad()
 					}
 					cd.setCodes(codes);
 				}
-				courses << cd;
 			}
+			QVariantList courses;
+			for(auto cd : defined_courses.values())
+				courses << cd;
 			{
 				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				qfInfo() << doc.toJson();
+				qfDebug() << doc.toJson();
 			}
 
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -146,24 +200,3 @@ void ClassesWidget::import_ocad()
 	}
 }
 
-void ClassesWidget::reload()
-{
-	{
-		qfs::QueryBuilder qb;
-		qb.select2("classes", "*")
-				//.select2("classes", "name")
-				//.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-				.from("classes")
-				//.join("competitors.classId", "classes.id")
-				.orderBy("classes.name");//.limit(10);
-		/*
-		int class_id = m_cbxClasses->currentData().toInt();
-		if(class_id > 0) {
-			qb.where("competitors.classId=" + QString::number(class_id));
-		}
-		*/
-		m_classesModel->setQueryBuilder(qb);
-		m_classesModel->reload();
-	}
-
-}

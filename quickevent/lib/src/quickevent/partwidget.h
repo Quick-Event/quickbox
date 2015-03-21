@@ -15,8 +15,8 @@ private:
 public:
 	PartWidget(QWidget *parent = 0);
 
-	Q_SIGNAL void reloadRequest();
-	//Q_SIGNAL void resetRequest();
+	Q_SIGNAL void resetPartRequest();
+	Q_SIGNAL void reloadPartRequest();
 protected:
 	//virtual void reload() {}
 

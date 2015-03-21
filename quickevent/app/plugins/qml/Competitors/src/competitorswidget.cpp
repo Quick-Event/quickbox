@@ -51,7 +51,8 @@ CompetitorsWidget::~CompetitorsWidget()
 
 void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
-	connect(part_widget, SIGNAL(reloadRequest()), this, SLOT(reload()));
+	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
+	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
 	/*
 	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
 	a->setText("&Station");
@@ -76,19 +77,19 @@ void CompetitorsWidget::lazyInit()
 {
 }
 
-void CompetitorsWidget::reload()
+void CompetitorsWidget::reset()
 {
 	{
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);
 		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reloadTables()), Qt::UniqueConnection);
+		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
 		m_cbxClasses->blockSignals(false);
 	}
-	reloadTables();
+	reload();
 }
 
-void CompetitorsWidget::reloadTables()
+void CompetitorsWidget::reload()
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "*")
