@@ -625,7 +625,8 @@ qf::core::utils::TableRow TableView::tableRow(int row_no) const
 	auto m = tableModel();
 	if(m != nullptr) {
 		ri = toTableModelRowNo(ri);
-		ret = m->table().row(ri);
+		if(m->table().isValidRowIndex(ri))
+			ret = m->table().row(ri);
 	}
 	return ret;
 }
@@ -1623,7 +1624,8 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 		updateRow(current.row());
 	}
 	refreshActions();
-	//emitSelected(previous, current);
+	if(current.row() != previous.row())
+		emit currentRowChanged(current.row());
 	/// na selected() muze prijit table o fokus
 	setFocus();
 }

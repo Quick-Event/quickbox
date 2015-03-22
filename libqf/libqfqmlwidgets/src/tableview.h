@@ -66,6 +66,7 @@ public:
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);
 	Q_SIGNAL void tableModelChanged();
+	Q_SIGNAL void currentRowChanged(int current_row);
 
 	Q_SLOT virtual void refreshActions();
 	QList<Action*> toolBarActions() const {return m_toolBarActions;}

@@ -35,6 +35,11 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
+		m->addColumn("classdefs.startTimeMin", tr("Start"));
+		m->addColumn("classdefs.startIntervalMin", tr("Interval"));
+		m->addColumn("classdefs.vacantEvery", tr("VE")).setToolTip(tr("Vacant every"));
+		m->addColumn("classdefs.vacantsAfter", tr("VA")).setToolTip(tr("Vacants after"));
+		m->addColumn("classdefs.lastTimeMin", tr("Last"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
 		m->addColumn("courses.name", tr("Course"));
 		m->addColumn("courses.length", tr("Length"));
@@ -42,6 +47,16 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		ui->tblClasses->setTableModel(m);
 		m_classesModel = m;
 	}
+	{
+		ui->tblCourseCodesTB->setTableView(ui->tblCourseCodes);
+		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
+		m->addColumn("coursecodes.position", tr("Pos")).setReadOnly(true);
+		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
+		m->addColumn("codes.broken", tr("Broken")).setReadOnly(true);
+		ui->tblCourseCodes->setTableModel(m);
+		m_courseCodesModel = m;
+	}
+	connect(ui->tblClasses, SIGNAL(currentRowChanged(int)), this, SLOT(reloadCourseCodes()));
 }
 
 ClassesWidget::~ClassesWidget()
@@ -75,7 +90,7 @@ void ClassesWidget::reload()
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")
-				.select2("classdefs", "id, mapCount")
+				.select2("classdefs", "*")
 				.select2("courses", "name, length, climb")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStage()))
@@ -90,7 +105,34 @@ void ClassesWidget::reload()
 		m_classesModel->setQueryBuilder(qb);
 		m_classesModel->reload();
 	}
+	reloadCourseCodes();
+}
 
+void ClassesWidget::reloadCourseCodes()
+{
+	int current_course_id = 0;
+	auto row = ui->tblClasses->selectedRow();
+	if(!row.isNull())
+		current_course_id = row.value("classdefs.courseId").toInt();
+	if(current_course_id == 0) {
+		ui->lblCourseCodes->setText("---");
+	}
+	else {
+		ui->lblCourseCodes->setText(row.value("courses.name").toString());
+	}
+	//qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	//EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("codes", "*")
+				.select2("coursecodes", "position")
+				.from("coursecodes")
+				.join("coursecodes.codeId", "codes.id")
+				.where("coursecodes.courseId=" QF_IARG(current_course_id))
+				.orderBy("codes.position");
+		m_courseCodesModel->setQueryBuilder(qb);
+		m_courseCodesModel->reload();
+	}
 }
 
 static QString normalize_course_name(const QString &name)

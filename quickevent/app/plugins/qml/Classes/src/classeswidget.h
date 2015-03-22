@@ -33,9 +33,11 @@ private:
 	Q_SLOT void import_ocad();
 	Q_SLOT void reset();
 	Q_SLOT void reload();
+	Q_SLOT void reloadCourseCodes();
 private:
 	Ui::ClassesWidget *ui;
 	qf::core::model::SqlTableModel *m_classesModel;
+	qf::core::model::SqlTableModel *m_courseCodesModel;
 };
 
 #endif // CLASSESWIDGET_H

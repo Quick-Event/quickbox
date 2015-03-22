@@ -137,16 +137,18 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 			}
 		}
 		{
-			QString qs = "INSERT INTO coursecodes (courseId, codeId) VALUES (:courseId, :codeId)";
+			QString qs = "INSERT INTO coursecodes (courseId, position, codeId) VALUES (:courseId, :position, :codeId)";
 			q.prepare(qs, qf::core::Exception::Throw);
 			QMapIterator<int, QList<int> > it(course_codes);
 			while(it.hasNext()) {
 				it.next();
+				int pos = 0;
 				for(auto code : it.value()) {
 					int code_id = code_to_id.value(code);
 					if(code_id > 0) {
 						qfDebug() << "courseId" << it.key() << "-> code:" << code << "codeId:" << code_id;
 						q.bindValue(":courseId", it.key());
+						q.bindValue(":position", ++pos);
 						q.bindValue(":codeId", code_id);
 						q.exec(qf::core::Exception::Throw);
 					}

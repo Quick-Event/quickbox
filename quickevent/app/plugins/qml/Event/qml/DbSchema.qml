@@ -51,7 +51,6 @@ Schema {
 		Table { name: 'codes'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
-				//Field { name: 'stageId'; type: Int { } },
 				Field { name: 'code'; type: Int { } },
 				Field { name: 'broken'; type: Boolean { } }
 			]
@@ -63,6 +62,7 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'courseId'; type: Int { } },
+				Field { name: 'position'; type: Int { } },
 				Field { name: 'codeId'; type: Int { } }
 			]
 			indexes: [

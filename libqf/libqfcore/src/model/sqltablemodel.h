@@ -62,7 +62,7 @@ protected:
 	virtual QString replaceQueryParameters(const QString query_str);
 	qf::core::sql::Connection sqlConnection();
 	bool reloadTable(const QString &query_str);
-	QSet<QString> tableIds(const utils::Table::FieldList &table_fields);
+	QStringList tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 
 	QSet<QString> referencedForeignTables();

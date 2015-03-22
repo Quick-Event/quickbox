@@ -553,16 +553,16 @@ static QString compose_table_id(const QString &table_name, const QString &schema
 	return ret;
 }
 
-QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &table_fields)
+QStringList SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &table_fields)
 {
-	QSet<QString> ret;
+	QStringList ret;
 	int fld_cnt = table_fields.count();
 	for(int i=0; i<fld_cnt; i++) {
 		const qfu::Table::Field &fld = table_fields[i];
 		QString fs, ts, ds;
 		qf::core::Utils::parseFieldName(fld.name(), &fs, &ts, &ds);
 		ts = compose_table_id(ts, ds);
-		if(!ts.isEmpty())
+		if(!ts.isEmpty() && !ret.contains(ts))
 			ret << ts;
 	}
 	return ret;
@@ -666,7 +666,7 @@ QStringList SqlTableModel::tableIdsSortedAccordingToForeignKeys()
 {
 	qfLogFuncFrame();
 	QStringList ret;
-	QStringList table_ids(tableIds(m_table.fields()).toList());
+	QStringList table_ids = tableIds(m_table.fields());
 
 	while(!table_ids.isEmpty()) {
 		int table_ix;
