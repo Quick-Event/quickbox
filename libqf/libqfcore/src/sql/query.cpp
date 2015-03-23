@@ -41,7 +41,7 @@ bool Query::exec(const QString &query, bool throw_exc)
 
 bool Query::exec(bool throw_exc)
 {
-	qfLogFuncFrame();
+	//qfLogFuncFrame();
 	bool ret = Super::exec();
 	if(!ret && throw_exc) {
 		QF_EXCEPTION(lastError().text());

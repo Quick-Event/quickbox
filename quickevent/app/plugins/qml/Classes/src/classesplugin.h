@@ -26,6 +26,7 @@ public:
 
 	Q_INVOKABLE QObject* createClassDocument(QObject *parent);
 	Q_INVOKABLE void createCourses(int current_stage, const QVariantList &courses);
+	Q_INVOKABLE void gcCourses();
 
 	Q_SIGNAL void nativeInstalled();
 private:

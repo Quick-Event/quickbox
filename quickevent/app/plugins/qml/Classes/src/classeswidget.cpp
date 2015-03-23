@@ -129,7 +129,7 @@ void ClassesWidget::reloadCourseCodes()
 				.from("coursecodes")
 				.join("coursecodes.codeId", "codes.id")
 				.where("coursecodes.courseId=" QF_IARG(current_course_id))
-				.orderBy("codes.position");
+				.orderBy("coursecodes.position");
 		m_courseCodesModel->setQueryBuilder(qb);
 		m_courseCodesModel->reload();
 	}
