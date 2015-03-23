@@ -19,10 +19,26 @@ Plugin {
 	property list<Action> actions: [
 		Action {
 			id: actImportEventOris
-			text: qsTr('From &Oris')
+			text: qsTr('&Event')
 			//enabled: internal.pluginSqlDb.api.sqlServerConnected
 			onTriggered: {
 				orisImporter.chooseAndImport()
+			}
+		},
+		Action {
+			id: actImportClubsOris
+			text: qsTr('&Clubs')
+			//enabled: internal.pluginSqlDb.api.sqlServerConnected
+			onTriggered: {
+				orisImporter.importClubs();
+			}
+		},
+		Action {
+			id: actImportRegistrationsOris
+			text: qsTr('&Registrations')
+			//enabled: internal.pluginSqlDb.api.sqlServerConnected
+			onTriggered: {
+				orisImporter.importRegistrations();
 			}
 		}
 	]
@@ -30,10 +46,14 @@ Plugin {
 	onInstalled:
 	{
 		//console.warn("Oris installed");
-		var quit = FrameWork.menuBar.actionForPath('file/quit');
-		quit.addMenuBefore('importEvent', qsTr('&Import event'));
-		quit.addSeparatorBefore();
-		FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
+		var act_import_oris = FrameWork.menuBar.actionForPath('file/import/oris');
+		act_import_oris.text = qsTr("&Oris");
+		act_import_oris.addActionInto(actImportEventOris)
+		act_import_oris.addActionInto(actImportClubsOris)
+		act_import_oris.addActionInto(actImportRegistrationsOris)
+		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
+		//quit.addSeparatorBefore();
+		//FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
 	}
 
 }

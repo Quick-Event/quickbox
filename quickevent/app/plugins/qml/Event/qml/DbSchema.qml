@@ -179,15 +179,28 @@ Schema {
 				Index {fields: ['status', 'lapTimeMs'] }
 			]
 		},
+		Table { name: 'clubs'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'name'; type: String {} },
+				Field { name: 'abbr'; type: String {} },
+				Field { name: 'importId'; type: Int { } }
+			]
+			indexes: [
+				Index {fields: ['abbr'] }
+			]
+		},
 		Table { name: 'registrations'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
-				//Field { name: 'clubId'; type: String { } },
+				Field { name: 'licence'; type: String { length: 1 } },
+				Field { name: 'clubAbbr'; type: String { } },
 				Field { name: 'country'; type: String { } },
-				Field { name: 'siId'; type: Int { } }
+				Field { name: 'siId'; type: Int { } },
+				Field { name: 'importId'; type: Int { } }
 			]
 			indexes: [
 				Index {fields: ['registration'] }

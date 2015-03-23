@@ -85,7 +85,7 @@ void EventPlugin::onInstalled()
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
 
-	qfw::Action *a_quit = fwk->menuBar()->actionForPath("file/quit", false);
+	qfw::Action *a_quit = fwk->menuBar()->actionForPath("file/import", false);
 	a_quit->addActionBefore(m_actConnectDb);
 	a_quit->addSeparatorBefore();
 	m_actConnectDb->addActionAfter(m_actCreateEvent);

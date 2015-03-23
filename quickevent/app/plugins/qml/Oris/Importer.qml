@@ -14,47 +14,21 @@ QtObject {
 		SqlConnection {
 			id: db
 		}
-		/*
-		CompetitorDocument {
-			id: competitor_doc
-		}
-		ClassDocument {
-			id: class_doc
-		}
-		*/
 	}
-	/*
-	function chooseAndImport2()
+
+	function whenServerConnected()
 	{
-		db.transaction();
-		var q = db.createQuery();
-		q.exec("DELETE FROM classes");
-		for(var i=0; i<10; i++) {
-			var class_id = i + 10 * 1;
-			var class_name = "K" + class_id;
-			Log.info("adding class id:", class_id, "name:", class_name);
-			var use_doc = true;
-			if(use_doc) {
-				class_doc.loadForInsert();
-				//class_doc.setValue("id", class_id);
-				class_doc.setValue("name", class_name);
-				class_doc.save();
-			}
-			else {
-				var qs = "INSERT INTO classes (\"id\", \"name\") VALUES (:class_id, :class_name)"
-				q.prepare(qs);
-				q.bindValue(':class_id', class_id);
-				q.bindValue(':class_name', class_name);
-				var ok = q.exec();
-				if(!ok) {
-					console.error(q.lastError());
-					break;
-				}
-			}
+		console.debug("whenServerConnected");
+		if(FrameWork.plugin("SqlDb").api.sqlServerConnected) {
+			var core_feature = FrameWork.plugin("Core");
+			var settings = core_feature.api.createSettings();
+			settings.beginGroup("sql/connection");
+			var event_name = settings.value('event');
+			settings.destroy();
+			openEvent(event_name);
 		}
-		db.commit();
 	}
-	*/
+
 	function chooseAndImport()
 	{
 		var d = new Date;
@@ -157,7 +131,7 @@ QtObject {
 				var data = JSON.parse(json_str).Data;
 				// import competitors
 				//FrameWork.showProgress(qsTr("Importing competitors"), 2, steps);
-				var competitors_processed = 0;
+				var items_processed = 0;
 				var competitors_count = 0;
 				for(var competitor_obj_key in data) {
 					competitors_count++;
@@ -178,7 +152,7 @@ QtObject {
 					if(competitor_obj.RequestedStart) {
 						note += ' req. start: ' + competitor_obj.RequestedStart;
 					}
-					FrameWork.showProgress("Importing: " + competitor_obj.LastName + " " + competitor_obj.FirstName, competitors_processed, competitors_count);
+					FrameWork.showProgress("Importing: " + competitor_obj.LastName + " " + competitor_obj.FirstName, items_processed, competitors_count);
 					competitor_doc.loadForInsert();
 					competitor_doc.setValue('classId', parseInt(competitor_obj.ClassID));
 					competitor_doc.setValue('siId', siid);
@@ -190,7 +164,7 @@ QtObject {
 					competitor_doc.setValue('importId', competitor_obj.ID);
 					competitor_doc.save();
 					//break;
-					competitors_processed++;
+					items_processed++;
 				}
 				db.commit();
 				competitor_doc.destroy();
@@ -203,17 +177,120 @@ QtObject {
 		});
 	}
 
-
-	function whenServerConnected()
+	function importClubs()
 	{
-		console.debug("whenServerConnected");
-		if(FrameWork.plugin("SqlDb").api.sqlServerConnected) {
-			var core_feature = FrameWork.plugin("Core");
-			var settings = core_feature.api.createSettings();
-			settings.beginGroup("sql/connection");
-			var event_name = settings.value('event');
-			settings.destroy();
-			openEvent(event_name);
-		}
+		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList';
+		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
+		{
+			//Log.info("http get finished:", get_ok, url);
+			if(get_ok) {
+				var data = JSON.parse(json_str).Data;
+				// import clubs
+				var items_processed = 0;
+				var items_count = 0;
+				for(var key in data) {
+					items_count++;
+				}
+				FrameWork.showProgress(qsTr("Importing clubs"), 1, items_count);
+				db.transaction();
+				var q = db.createQuery();
+				var ok = true;
+				ok = q.exec("DELETE FROM clubs WHERE importId IS NOT NULL");
+				if(ok) {
+					q.prepare('INSERT INTO clubs (name, abbr, importId) VALUES (:name, :abbr, :importId)');
+					for(var obj_key in data) {
+						var obj = data[obj_key];
+						//Log.debug(JSON.stringify(obj, null, 2));
+						Log.info(obj.Abbr, ' ', obj.Name);
+						FrameWork.showProgress(obj_key, items_processed, items_count);
+
+						q.bindValue(':abbr', obj.Abbr);
+						q.bindValue(':name', obj.Name);
+						q.bindValue(':importId', obj.ID);
+						if(!q.exec()) {
+							ok = false;
+							break;
+						}
+
+						items_processed++;
+					}
+				}
+				if(ok)
+					db.commit();
+				else
+					db.rollback();
+				q.destroy();
+				FrameWork.showProgress("", 0, 0);
+				//FrameWork.plugin("Event").reloadDataRequest();
+			}
+			else {
+				MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
+			}
+		});
 	}
+
+	function importRegistrations()
+	{
+		var year = new Date().getFullYear();
+		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=1&year=' + year;
+		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
+		{
+			//Log.info("http get finished:", get_ok, url);
+			if(get_ok) {
+				var data = JSON.parse(json_str).Data;
+				// import clubs
+				var items_processed = 0;
+				var items_count = 0;
+				for(var key in data) {
+					items_count++;
+				}
+				FrameWork.showProgress(qsTr("Importing registrations"), 1, items_count);
+				db.transaction();
+				var q = db.createQuery();
+				var ok = true;
+				ok = q.exec("DELETE FROM registrations WHERE importId IS NOT NULL");
+				if(ok) {
+					q.prepare('INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :importId)');
+					for(var obj_key in data) {
+						var obj = data[obj_key];
+						//Log.debug(JSON.stringify(obj, null, 2));
+						Log.info(obj.RegNo);
+						FrameWork.showProgress(obj_key, items_processed, items_count);
+
+						q.bindValue(':firstName', obj.FirstName);
+						q.bindValue(':lastName', obj.LastName);
+						var reg = obj.RegNo;
+						if(reg) {
+							q.bindValue(':registration', reg);
+							q.bindValue(':clubAbbr', reg.substring(0, 3));
+						}
+						q.bindValue(':licence', obj.Lic);
+						q.bindValue(':siId', obj.SI);
+						q.bindValue(':importId', obj.UserID);
+
+						q.bindValue(':abbr', obj.Abbr);
+						q.bindValue(':name', obj.Name);
+						q.bindValue(':importId', obj.ID);
+						if(!q.exec()) {
+							ok = false;
+							break;
+						}
+
+						items_processed++;
+					}
+				}
+				if(ok)
+					db.commit();
+				else
+					db.rollback();
+				q.destroy();
+				FrameWork.showProgress("", 0, 0);
+				//FrameWork.plugin("Event").reloadDataRequest();
+			}
+			else {
+				MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
+			}
+		});
+	}
+
 }

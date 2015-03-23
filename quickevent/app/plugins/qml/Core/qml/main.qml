@@ -80,9 +80,12 @@ CorePlugin {
 		FrameWork.loadPersistentSettings();
 
 		console.debug(FrameWork.menuBar);
-		FrameWork.menuBar.actionForPath('file').text = qsTr('&File');
-		//FrameWork.menuBar.actionForPath('file').addSeparatorInto();
-		FrameWork.menuBar.actionForPath('file').addActionInto(actQuit);
+		var act_file = FrameWork.menuBar.actionForPath('file');
+		act_file.text = qsTr('&File');
+		var act_file_import = act_file.addMenuInto("import", qsTr("&Import"));
+		act_file.addActionInto(act_file_import);
+		act_file.addSeparatorInto();
+		act_file.addActionInto(actQuit);
 
 		var tools = FrameWork.menuBar.actionForPath('tools');
 		tools.text = qsTr('&Tools');
