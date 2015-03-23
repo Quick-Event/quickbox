@@ -10,6 +10,7 @@ using namespace qf::qmlwidgets::framework;
 
 DockWidget::DockWidget(QWidget *parent, Qt::WindowFlags flags) :
 	Super(parent, flags)
+  , framework::IPersistentSettings(this)
 {
 	qfLogFuncFrame();
 }

@@ -27,13 +27,11 @@ void LoggingPlugin::onInstalled()
 	connect(fwk, &qff::MainWindow::aboutToClose, this, &LoggingPlugin::saveSettings);
 
 	qfw::Action *a = new qfw::Action("Show application log");
-	a->setShortcut("ctrl+L");
+	a->setShortcut("ctrl+shift+L");
+	a->setCheckable(true);
 	//fwk->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(actConfigureLogging);
 	fwk->menuBar()->actionForPath("view")->addActionInto(a);
-	connect(a, &qfw::Action::triggered, [this](bool)
-	{
-		this->setLogDockVisible(true);
-	});
+	connect(a, &qfw::Action::triggered, this, &LoggingPlugin::setLogDockVisible);
 	loadSettings();
 }
 

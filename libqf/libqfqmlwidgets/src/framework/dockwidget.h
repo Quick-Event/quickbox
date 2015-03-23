@@ -2,6 +2,7 @@
 #define QF_QMLWIDGETS_FRAMEWORK_DOCKWIDGET_H
 
 #include "../qmlwidgetsglobal.h"
+#include "../framework/ipersistentsettings.h"
 
 #include <QDockWidget>
 
@@ -10,11 +11,12 @@ namespace qmlwidgets {
 class Frame;
 namespace framework {
 
-class QFQMLWIDGETS_DECL_EXPORT DockWidget : public QDockWidget
+class QFQMLWIDGETS_DECL_EXPORT DockWidget : public QDockWidget, public framework::IPersistentSettings
 {
 	Q_OBJECT
 	Q_PROPERTY(QWidget* widget READ widget WRITE setQmlWidget)
 	Q_CLASSINFO("DefaultProperty", "widget")
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 private:
 	typedef QDockWidget Super;
 public:

@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/thispartwidget.h \
     $$PWD/competitorswidget.h \
     $$PWD/competitordocument.h \
-    $$PWD/competitorwidget.h
+    $$PWD/competitorwidget.h \
+    $$PWD/registrationswidget.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -13,8 +14,10 @@ SOURCES += \
     $$PWD/thispartwidget.cpp \
     $$PWD/competitorswidget.cpp \
     $$PWD/competitordocument.cpp \
-    $$PWD/competitorwidget.cpp
+    $$PWD/competitorwidget.cpp \
+    $$PWD/registrationswidget.cpp
 
 FORMS += \
     $$PWD/competitorswidget.ui \
-    $$PWD/competitorwidget.ui
+    $$PWD/competitorwidget.ui \
+    $$PWD/registrationswidget.ui
