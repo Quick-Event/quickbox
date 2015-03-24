@@ -790,7 +790,7 @@ bool DbFsDriver::putmkdir(const QString &path, const QByteArray &data)
 	QString spath = cleanPath(path);
 	auto pf = splitPathFile(spath);
 	if(mkdirs(pf.first)) {
-		return put(path, data);
+		return put(path, data, true);
 	}
 	return false;
 }
