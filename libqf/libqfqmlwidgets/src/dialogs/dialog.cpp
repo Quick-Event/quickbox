@@ -196,13 +196,14 @@ void Dialog::updateLayout()
 		ly_root->addWidget(m_captionFrame);
 
 	if(m_toolBars.count() == 1) {
-		ToolBar *tb = m_toolBars[0];
+		ToolBar *tb = m_toolBars.first();
 		tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		ly_root->addWidget(tb);
 	}
 	else if(!m_toolBars.isEmpty()) {
 		QHBoxLayout *ly1 = new QHBoxLayout(nullptr);
-		for(auto tb : m_toolBars) {
+		for(auto tb_name : m_toolBars.keys()) {
+			ToolBar *tb = m_toolBars.value(tb_name);
 			tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			ly1->addWidget(tb);
 		}

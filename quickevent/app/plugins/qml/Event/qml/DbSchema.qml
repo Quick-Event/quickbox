@@ -128,17 +128,17 @@ Schema {
 				Index {fields: ['importId'] }
 			]
 		},
-		Table { name: 'laps'
+		Table { name: 'runs'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stageId'; type: Int {} },
-				Field { name: 'cardId'; type: Int {} },
+				//Field { name: 'cardId'; type: Int {} },
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
-				Field { name: 'lapTimeMs'; type: Int {}
+				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
 				Field { name: 'offRace'; type: Boolean { }
@@ -161,7 +161,7 @@ Schema {
 					type: String {}
 					defaultValue: 'OFF';
 					notNull: true
-					comment: "referencing enumz.laps.status"
+					comment: "referencing enumz.runs.status"
 				}
 			]
 			indexes: [
@@ -176,7 +176,7 @@ Schema {
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
 				Index {fields: ['stageId, competitorId']; unique: true },
-				Index {fields: ['status', 'lapTimeMs'] }
+				Index {fields: ['status', 'timeMs'] }
 			]
 		},
 		Table { name: 'clubs'
@@ -249,6 +249,9 @@ Schema {
 						charset: 'latin1'
 					}
 					comment: 'JSON of format [[code, time_sec], ...]}'
+				},
+				Field { name: 'runId'
+					type: Int { }
 				}
   			]
 			indexes: [
@@ -264,9 +267,9 @@ Schema {
 			table: enumz
 			fields: ['groupName', 'groupId', 'pos']
 			rows: [
-				['laps.status', 'OFF', 1],
-				['laps.status', 'START', 2],
-				['laps.status', 'FINISH', 3]
+				['runs.status', 'OFF', 1],
+				['runs.status', 'START', 2],
+				['runs.status', 'FINISH', 3]
 			]
 		},
 		Insert {

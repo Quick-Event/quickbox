@@ -1,7 +1,7 @@
 #ifndef QUICKEVENT_PARTWIDGET_H
 #define QUICKEVENT_PARTWIDGET_H
 
-#include "../quickeventglobal.h"
+#include "quickeventglobal.h"
 
 #include <qf/qmlwidgets/framework/partwidget.h>
 

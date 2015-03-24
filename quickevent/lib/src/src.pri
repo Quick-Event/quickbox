@@ -1,6 +1,13 @@
-HEADERS  +=  \
+HEADERS  += \
 	$$PWD/quickeventglobal.h   \
+    $$PWD/partwidget.h
 
-include($$PWD/ogsupport/ogsupport.pri)
-include($$PWD/quickevent/quickevent.pri)
+SOURCES += \
+    $$PWD/partwidget.cpp
+
+FORMS += \
+
+OTHER_FILES += \
+
+include($$PWD/og/og.pri)
 

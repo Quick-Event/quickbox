@@ -864,7 +864,7 @@ void TableView::loadPersistentSettings()
 				for(int logical_ix=0; logical_ix<horiz_header->count(); logical_ix++) {
 					QString col_name = mod->headerData(logical_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
 					//qfDebug() << col_name << "cmp" << field_name << "=" << qf::core::Utils::fieldNameCmp(col_name, field_name);
-					if(qf::core::Utils::fieldNameCmp(col_name, field_name)) {
+					if(col_name == field_name) {
 						int size = section.value("size").toInt();
 						horiz_header->resizeSection(logical_ix, size);
 						break;
@@ -1517,8 +1517,9 @@ void TableView::createActions()
 void TableView::copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes)
 {
 	qfLogFuncFrame();
-	qfm::TableModel *m = tableModel();
-	if(!m) return;
+	auto *m = model();
+	if(!m)
+		return;
 	//int old_elide = m->elideDisplayedTextAt();
 	//m->setElideDisplayedTextAt(0);
 	QStringList rows;

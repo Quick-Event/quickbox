@@ -40,8 +40,9 @@ bool CompetitorDocument::saveData()
 	//Log.info("CompetitorDocument", saveData_qml, "ret:", ret, "old_mode", old_mode, "vs", DataDocument.ModeInsert, old_mode == DataDocument.ModeInsert);
 	if(ret) {
 		if(old_mode == DataDocument::ModeInsert) {
-			// insert laps
+			// insert runs
 			int competitor_id = dataId().toInt();
+			int si_id = value("competitors.siId").toInt();
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 			qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
 			EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
@@ -58,14 +59,26 @@ bool CompetitorDocument::saveData()
 			//int stage_count = event_plugin->property("stageCount").toInt();
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
-			q.prepare("INSERT INTO laps (competitorId, stageId) VALUES (:competitorId, :stageId)");
+			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
+				q.bindValue(":siId", si_id);
 				if(!q.exec()) {
 					qfError() << q.lastError().text();
 					break;
 				}
+			}
+		}
+		else if(old_mode == DataDocument::ModeEdit) {
+			int competitor_id = dataId().toInt();
+			int si_id = value("competitors.siId").toInt();
+			qf::core::sql::Query q(model()->connectionName());
+			q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId AND siId IS NULL", qf::core::Exception::Throw);
+			q.bindValue(":competitorId", competitor_id);
+			q.bindValue(":siId", si_id);
+			if(!q.exec()) {
+				qfError() << q.lastError().text();
 			}
 		}
 	}
@@ -79,7 +92,7 @@ bool CompetitorDocument::dropData()
 	auto id = dataId();
 	{
 		qf::core::sql::Query q(model()->connectionName());
-		q.prepare("DELETE FROM laps WHERE competitorId = :competitorId");
+		q.prepare("DELETE FROM runs WHERE competitorId = :competitorId");
 		q.bindValue(":competitorId", id);
 		ret = q.exec();
 		if(!ret)

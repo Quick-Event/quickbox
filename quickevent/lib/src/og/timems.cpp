@@ -1,16 +1,18 @@
-#include "ogtimems.h"
+#include "timems.h"
 
 #include <qf/core/log.h>
 
 #include <QString>
 
-OGTimeMs::OGTimeMs(int msec)
+using namespace quickevent::og;
+
+TimeMs::TimeMs(int msec)
 	: m_msec(msec)
 {
 
 }
 
-QString OGTimeMs::toString(bool including_msec) const
+QString TimeMs::toString(bool including_msec) const
 {
 	int msec = m_msec % 1000;
 	int sec = (m_msec / 1000) % 60;
@@ -43,7 +45,7 @@ static int str2int(const QString &str)
 	return ret;
 }
 
-OGTimeMs OGTimeMs::fromString(const QString &time_str)
+TimeMs TimeMs::fromString(const QString &time_str)
 {
 	int msec = 0;
 	int sec = 0;
@@ -64,6 +66,6 @@ OGTimeMs OGTimeMs::fromString(const QString &time_str)
 
 	msec = str2int(time_str.mid(ix1));
 
-	return OGTimeMs(msec + (sec + (min * 60)) * 1000);
+	return TimeMs(msec + (sec + (min * 60)) * 1000);
 }
 

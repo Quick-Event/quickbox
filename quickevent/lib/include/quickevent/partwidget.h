@@ -1,1 +1,1 @@
-#include "../../src/quickevent/partwidget.h"
+#include "../../src/partwidget.h"
