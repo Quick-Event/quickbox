@@ -31,22 +31,15 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 {
 	QVariant ret = Super::data(index, role);
 	if(role == Qt::DisplayRole) {
-		ColumnDefinition cd = m_columns.value(index.column());
-		if(cd.isNull()) {
-			return QString("!%1").arg(index.column());
-		}
-		QString format = cd.format();
-		if(!format.isEmpty()) {
-			int type = columnType(index.column());
-			if(type == QVariant::String) {
-				if(format.startsWith(ColumnDefinition::DBENUM_SCHEME)) {
-					QString group_name = format.mid(ColumnDefinition::DBENUM_SCHEME.length());
-					if(!group_name.isEmpty()) {
-						auto db_enum_cache = qf::core::sql::DbEnumCache::instance(connectionName());
-						auto dbe = db_enum_cache.dbEnum(group_name, ret.toString());
-						ret = dbe.caption();
-					}
-				}
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			ColumnDefinition::DbEnumCastProperties props(cd.castProperties());
+			QString group_name = props.groupName();
+			if(!group_name.isEmpty()) {
+				auto db_enum_cache = qf::core::sql::DbEnumCache::instance(connectionName());
+				auto dbe = db_enum_cache.dbEnum(group_name, ret.toString());
+				ret = QVariant::fromValue(dbe);
 			}
 		}
 	}

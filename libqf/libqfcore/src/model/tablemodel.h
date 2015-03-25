@@ -27,11 +27,19 @@ private:
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
 					   FieldTypeRole, //FieldIsNullableRole,
-					   RawValueRole, ValueIsNullRole, DisplayFormatRole, FirstUnusedRole };
+					   RawValueRole, ValueIsNullRole, ColumnDefinitionRole, FirstUnusedRole };
 	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
 	{
+	public:
+		class QFCORE_DECL_EXPORT DbEnumCastProperties : public QVariantMap
+		{
+			QF_VARIANTMAP_FIELD(QString, g, setG, roupName)
+			//QF_VARIANTMAP_FIELD2(QString, c, setC, aptionFormat, QStringLiteral("{{caption}}"))
+			public:
+				DbEnumCastProperties(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
+		};
 	private:
 		class SharedDummyHelper {};
 		class Data : public QSharedData
@@ -44,9 +52,9 @@ public:
 			//int initialSize; //!< initial width of column
 			bool readOnly;
 			Qt::Alignment alignment;
-			//QPointer<QFDlgDataTable> chooser;
 			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
 			int castType;
+			QVariantMap castProperties;
 
 			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
 		};
@@ -87,10 +95,9 @@ public:
 		/// for DbEnum: "dbenum:group_id"
 		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
-		static const QString DBENUM_SCHEME;
-
 		ColumnDefinition& setCastType(int t) {d->castType = t; return *this;}
 		int castType() const {return d->castType;}
+		QF_SHARED_CLASS_FIELD_RW(QVariantMap, c, setC, astProperties)
 	};
 	typedef QList<ColumnDefinition> ColumnList;
 
@@ -186,5 +193,7 @@ protected:
 };
 
 }}}
+
+Q_DECLARE_METATYPE(qf::core::model::TableModel::ColumnDefinition)
 
 #endif // QF_CORE_MODEL_TABLEMODEL_H

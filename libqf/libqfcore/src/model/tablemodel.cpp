@@ -16,8 +16,6 @@ using namespace qf::core::model;
 //=========================================
 //        TableModel::ColumnDefinition
 //=========================================
-const QString TableModel::ColumnDefinition::DBENUM_SCHEME = "dbenum:";
-
 const TableModel::ColumnDefinition & TableModel::ColumnDefinition::sharedNull()
 {
 	static ColumnDefinition n = ColumnDefinition(SharedDummyHelper());
@@ -85,12 +83,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		return ret;
 	if(role == RawValueRole) {
 		ret = value(index.row(), index.column());
-	}
-	else if(role == DisplayFormatRole) {
-		ColumnDefinition cd = m_columns.value(index.column());
-		if(!cd.isNull()) {
-			ret = cd.format();
-		}
 	}
 	else if(role == Qt::DisplayRole) {
 		ColumnDefinition cd = m_columns.value(index.column());
@@ -237,13 +229,10 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 			int type = columnType(section);
 			return type;
 		}
-		/*
-		else if (role == FieldIsNullableRole) {
-			qfu::Table::Field field = tableField(section);
-			/// drivery nastavuji requiredStatus() jako !nullable
-			return QVariant(field.isNullable());
+		else if(role == ColumnDefinitionRole) {
+			ColumnDefinition cd = m_columns.value(section);
+			ret = QVariant::fromValue(cd);
 		}
-		*/
 		else if(role == FieldNameRole) {
 			ret = m_columns.value(section).fieldName();
 		}

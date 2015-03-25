@@ -8,6 +8,7 @@
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/sql/dbenum.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -43,7 +44,11 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("runs.siId", tr("SI"));
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.status", tr("Status")).setFormat(qfm::SqlTableModel::ColumnDefinition::DBENUM_SCHEME + "runs.status");
+	qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
+	status_props.setGroupName("runs.status");
+	m->addColumn("runs.status", tr("Status"))
+			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
+			.setCastProperties(status_props);
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
 

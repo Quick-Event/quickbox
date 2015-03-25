@@ -14,18 +14,27 @@ SqlTableItemDelegate::SqlTableItemDelegate(TableView *parent)
 
 }
 
+QString SqlTableItemDelegate::displayText(const QVariant &value, const QLocale &locale) const
+{
+	if(value.userType() == qMetaTypeId<qf::core::sql::DbEnum>()) {
+		auto dbe = value.value<qf::core::sql::DbEnum>();
+		return dbe.caption();
+	}
+	return Super::displayText(value, locale);
+}
+
 QWidget *SqlTableItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-	const auto dbenum_scheme = qf::core::model::TableModel::ColumnDefinition::DBENUM_SCHEME;
-	QString format = index.data(qf::core::model::TableModel::DisplayFormatRole).toString();
-	if(format.startsWith(dbenum_scheme)) {
+	QVariant v = index.data();
+	if(v.userType() == qMetaTypeId<qf::core::sql::DbEnum>()) {
 		auto *editor = new QComboBox(parent);
 		auto m = qobject_cast<qf::core::model::SqlTableModel*>(view()->tableModel());
 		if(m) {
 			auto cache = qf::core::sql::DbEnumCache::instance(m->connectionName());
-			QString group_name = format.mid(dbenum_scheme.length());
-			for(auto dbe : cache.dbEnumsForGroup(group_name)) {
-				editor->addItem(dbe.caption(), dbe.groupId());
+			auto dbe = v.value<qf::core::sql::DbEnum>();
+			QString group_name = dbe.groupName();
+			for(auto e : cache.dbEnumsForGroup(group_name)) {
+				editor->addItem(e.caption(), e.groupId());
 			}
 		}
 		connect(editor, SIGNAL(activated(int)), this, SLOT(commitAndCloseEditor()));
@@ -38,12 +47,12 @@ QWidget *SqlTableItemDelegate::createEditor(QWidget *parent, const QStyleOptionV
 
 void SqlTableItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
-	QString format = index.data(qf::core::model::TableModel::DisplayFormatRole).toString();
-	if(format.startsWith(qf::core::model::TableModel::ColumnDefinition::DBENUM_SCHEME)) {
-		QString group_id = index.data(qf::core::model::TableModel::RawValueRole).toString();
+	QVariant v = index.data();
+	if(v.userType() == qMetaTypeId<qf::core::sql::DbEnum>()) {
+		auto dbe = v.value<qf::core::sql::DbEnum>();
 		auto cbx = qobject_cast<QComboBox*>(editor);
 		if(cbx) {
-			int ix = cbx->findData(group_id);
+			int ix = cbx->findData(dbe.groupId());
 			cbx->setCurrentIndex(ix);
 			cbx->showPopup();
 		}
@@ -55,8 +64,8 @@ void SqlTableItemDelegate::setEditorData(QWidget *editor, const QModelIndex &ind
 
 void SqlTableItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-	QString format = index.data(qf::core::model::TableModel::DisplayFormatRole).toString();
-	if(format.startsWith(qf::core::model::TableModel::ColumnDefinition::DBENUM_SCHEME)) {
+	QVariant v = index.data();
+	if(v.userType() == qMetaTypeId<qf::core::sql::DbEnum>()) {
 		auto cbx = qobject_cast<QComboBox*>(editor);
 		if(cbx) {
 			QString group_id = cbx->currentData().toString();
