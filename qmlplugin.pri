@@ -18,10 +18,9 @@ unix {
 		ln -sfT $$PLUGIN_TOP_SRCDIR/qml $$DESTDIR/$$PLUGIN_NAME
 }
 win32 {
-# TODO: implement Unix part also for Windows
-#	qmlfiles.commands = \
-#		mkdir -p $$DESTDIR/$$PLUGIN_MODULE_PATH $$escape_expand(\n\t) \
-#		xcopy $$shell_path($$PWD/$$PLUGIN_MODULE_PATH/*) $$shell_path($$DESTDIR/$$PLUGIN_MODULE_PATH) /e/y
+	qmlfiles.commands = \
+#		mkdir not needed for windows
+		xcopy $$shell_path($$PLUGIN_TOP_SRCDIR/qml) $$shell_path($$DESTDIR/$$PLUGIN_NAME) /E /Y /I
 }
 
 QMAKE_EXTRA_TARGETS += qmlfiles
