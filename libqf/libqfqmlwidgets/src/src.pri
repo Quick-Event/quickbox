@@ -28,6 +28,7 @@ HEADERS += \
     $$PWD/spinbox.h \
     $$PWD/tableviewproxymodel.h \
     $$PWD/texteditwidget.h \
+    $$PWD/sqltableitemdelegate.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -56,6 +57,7 @@ SOURCES += \
     $$PWD/spinbox.cpp \
     $$PWD/tableviewproxymodel.cpp \
     $$PWD/texteditwidget.cpp \
+    $$PWD/sqltableitemdelegate.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \

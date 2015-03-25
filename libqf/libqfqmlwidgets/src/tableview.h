@@ -89,6 +89,9 @@ public:
 	Q_SLOT virtual void copySpecial();
 	Q_SLOT virtual void paste();
 
+	Q_SLOT void setValueInSelection();
+	Q_SLOT void setNullInSelection() {setValueInSelection_helper(QVariant());}
+
 	Q_SLOT void editCellContentInEditor();
 
 	Q_SLOT void exportReport();
@@ -144,10 +147,11 @@ protected:
 
 	virtual void createActions();
 
+	void setValueInSelection_helper(const QVariant &new_val);
 	void copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes);
 
 	//static const int StandardContextMenuActionsGroups = AllActions & ~(SetValueActions | BlobActions | PasteActions);
-	QList<Action*> standardContextMenuActions() { return contextMenuActionsForGroups(AllActions & ~(SetValueActions | BlobActions | PasteActions));}
+	QList<Action*> standardContextMenuActions() { return contextMenuActionsForGroups(AllActions);}
 	QList<Action*> contextMenuActions() { return m_contextMenuActions; }
 	void setContextMenuActions(QList<Action*> lst) { m_contextMenuActions = lst; }
 	QList<Action*> contextMenuActionsForGroups(int action_groups = AllActions);

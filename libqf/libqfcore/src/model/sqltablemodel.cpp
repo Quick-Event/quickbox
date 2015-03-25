@@ -2,7 +2,8 @@
 #include "../core/assert.h"
 #include "../core/exception.h"
 #include "../sql/connection.h"
-//#include "../sql/query.h"
+#include "../sql/dbenum.h"
+#include "../sql/dbenumcache.h"
 
 #include <QRegExp>
 #include <QSqlError>
@@ -24,6 +25,25 @@ SqlTableModel::SqlTableModel(QObject *parent)
 SqlTableModel::~SqlTableModel()
 {
 
+}
+
+QVariant SqlTableModel::data(const QModelIndex &index, int role) const
+{
+	QVariant ret = Super::data(index, role);
+	if(role == Qt::DisplayRole) {
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			ColumnDefinition::DbEnumCastProperties props(cd.castProperties());
+			QString group_name = props.groupName();
+			if(!group_name.isEmpty()) {
+				auto db_enum_cache = qf::core::sql::DbEnumCache::instance(connectionName());
+				auto dbe = db_enum_cache.dbEnum(group_name, ret.toString());
+				ret = QVariant::fromValue(dbe);
+			}
+		}
+	}
+	return ret;
 }
 
 void SqlTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)

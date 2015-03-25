@@ -56,4 +56,3 @@ void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & o
 	}
 	Super::paint(painter, option, index);
 }
-

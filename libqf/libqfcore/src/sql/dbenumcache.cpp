@@ -59,9 +59,12 @@ void DbEnumCache::ensure(const QString & group_name)
 DbEnumCache& DbEnumCache::instance(const QString &connection_name)
 {
 	static QMap<QString, DbEnumCache> instances;
-	if(!instances.contains(connection_name))
-		instances[connection_name].setConnectionName(connection_name);
-	return instances[connection_name];
+	QString cn = connection_name;
+	if(cn.isEmpty())
+		cn = QSqlDatabase::defaultConnection;
+	if(!instances.contains(cn))
+		instances[cn].setConnectionName(cn);
+	return instances[cn];
 }
 
 DbEnumCache::EnumList DbEnumCache::dbEnumsForGroup(const QString & group_name)

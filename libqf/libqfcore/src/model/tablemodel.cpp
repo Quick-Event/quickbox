@@ -148,9 +148,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				ret = dt.toString(format);
 			}
 			/*
-			else if(type == QVariant::Int) {
-				ret = QFString::number(ret.toInt(), format);
-			}
 			else if(type == QVariant::Double) {
 				ret = QFString::number(ret.toDouble(), format);
 			}
@@ -232,13 +229,10 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 			int type = columnType(section);
 			return type;
 		}
-		/*
-		else if (role == FieldIsNullableRole) {
-			qfu::Table::Field field = tableField(section);
-			/// drivery nastavuji requiredStatus() jako !nullable
-			return QVariant(field.isNullable());
+		else if(role == ColumnDefinitionRole) {
+			ColumnDefinition cd = m_columns.value(section);
+			ret = QVariant::fromValue(cd);
 		}
-		*/
 		else if(role == FieldNameRole) {
 			ret = m_columns.value(section).fieldName();
 		}
