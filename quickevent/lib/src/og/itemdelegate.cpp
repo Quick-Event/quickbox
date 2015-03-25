@@ -5,16 +5,16 @@
 
 using namespace quickevent::og;
 
-ItemDelegate::ItemDelegate(QObject *parent)
+ItemDelegate::ItemDelegate(qf::qmlwidgets::TableView *parent)
 	: Super(parent)
 {
-	m_creator = new QStandardItemEditorCreator<TimeEdit>();
+	auto creator = new QStandardItemEditorCreator<TimeEdit>();
 	QItemEditorFactory *fact = itemEditorFactory();
 	if(!fact) {
 		fact = m_factory = new QItemEditorFactory();
 		setItemEditorFactory(m_factory);
 	}
-	fact->registerEditor(qMetaTypeId<TimeMs>(), m_creator);
+	fact->registerEditor(qMetaTypeId<TimeMs>(), creator);
 }
 
 ItemDelegate::~ItemDelegate()

@@ -16,6 +16,8 @@ using namespace qf::core::model;
 //=========================================
 //        TableModel::ColumnDefinition
 //=========================================
+const QString TableModel::ColumnDefinition::DBENUM_SCHEME = "dbenum:";
+
 const TableModel::ColumnDefinition & TableModel::ColumnDefinition::sharedNull()
 {
 	static ColumnDefinition n = ColumnDefinition(SharedDummyHelper());
@@ -84,6 +86,12 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	if(role == RawValueRole) {
 		ret = value(index.row(), index.column());
 	}
+	else if(role == DisplayFormatRole) {
+		ColumnDefinition cd = m_columns.value(index.column());
+		if(!cd.isNull()) {
+			ret = cd.format();
+		}
+	}
 	else if(role == Qt::DisplayRole) {
 		ColumnDefinition cd = m_columns.value(index.column());
 		if(cd.isNull()) {
@@ -148,9 +156,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				ret = dt.toString(format);
 			}
 			/*
-			else if(type == QVariant::Int) {
-				ret = QFString::number(ret.toInt(), format);
-			}
 			else if(type == QVariant::Double) {
 				ret = QFString::number(ret.toDouble(), format);
 			}

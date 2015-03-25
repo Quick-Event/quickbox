@@ -33,7 +33,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setPersistentSettingsId("tblRuns");
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnCurrentFieldChange);
-	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(this));
+	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
 	auto m = new quickevent::og::SqlTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
@@ -43,6 +43,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("runs.siId", tr("SI"));
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("runs.status", tr("Status")).setFormat(qfm::SqlTableModel::ColumnDefinition::DBENUM_SCHEME + "runs.status");
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
 

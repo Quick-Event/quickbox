@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QTextEdit>
+#include <QInputDialog>
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -428,11 +429,11 @@ void TableView::paste()
 				int my_col = origin_ix.column();
 				for(int col=0; col<m->columnCount(); col++) {
 					if(tv->isColumnHidden(col)) continue; /// preskakej skryty sloupce v tabulce dialogu
-						while(isColumnHidden(my_col)) my_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
-							QModelIndex ix = m->index(row, col); /// odsud se to bere
-							QModelIndex my_ix = origin_ix.sibling(my_row, my_col); ///sem se to vklada
-							//qfInfo() << "ix:" << ix.row() << '\t' << ix.column();
-						//qfInfo() << "my ix:" << my_ix.row() << '\t' << my_ix.column();
+					while(isColumnHidden(my_col)) my_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
+					QModelIndex ix = m->index(row, col); /// odsud se to bere
+					QModelIndex my_ix = origin_ix.sibling(my_row, my_col); ///sem se to vklada
+					//qfInfo() << "ix:" << ix.row() << '\t' << ix.column();
+					//qfInfo() << "my ix:" << my_ix.row() << '\t' << my_ix.column();
 					if(!my_ix.isValid()) { break; }
 					if(my_ix.flags().testFlag(Qt::ItemIsEditable)) {
 						QVariant v = m->data(ix, Qt::DisplayRole);
@@ -451,6 +452,39 @@ void TableView::paste()
 			sm->select(sel, QItemSelectionModel::Select);
 		}
 	}
+}
+
+void TableView::setValueInSelection_helper(const QVariant &new_val)
+{
+	QModelIndexList lst = selectedIndexes();
+	QMap<int, QModelIndexList> row_selections;
+	foreach(const QModelIndex &ix, lst) {
+		row_selections[ix.row()] << ix;
+	}
+	QList<int> selected_row_indexes = row_selections.keys();
+	foreach(int row_ix, selected_row_indexes) {
+		foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+			model()->setData(ix, new_val);
+		}
+		if(selected_row_indexes.count() > 1)
+			if(!postRow(row_ix))
+				break;
+	}
+}
+
+void TableView::setValueInSelection()
+{
+	QString new_val_str;
+	for(auto ix : selectedIndexes()) {
+		if(new_val_str.isEmpty()) {
+			new_val_str = model()->data(ix, Qt::DisplayRole).toString();
+		}
+	}
+	bool ok;
+	new_val_str = QInputDialog::getText(this, tr("Enter value"), tr("new value:"), QLineEdit::Normal, new_val_str, &ok);
+	if(!ok)
+		return;
+	setValueInSelection_helper(new_val_str);
 }
 
 void TableView::editCellContentInEditor()
@@ -1160,7 +1194,7 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 void TableView::createActions()
 {
 	Action *a;
-  {
+	{
 		a = new Action(tr("Resize columns to contents"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
@@ -1169,9 +1203,9 @@ void TableView::createActions()
 		m_actions[a->oid()] = a;
 		connect(a, &Action::triggered, this, &TableView::resizeColumnsToContents);
 	}
-  {
+	{
 		a = new Action(tr("Reset columns settings"), this);
-    a->setToolTip(tr("Reset column widths and positions."));
+		a->setToolTip(tr("Reset column widths and positions."));
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resetColumnsSettings");
@@ -1360,7 +1394,7 @@ void TableView::createActions()
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+L", "Set NULL in selection")));
 		a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(setNullInSelection()));
+		connect(a, SIGNAL(triggered()), this, SLOT(setNullInSelection()));
 		a->setOid("setNullInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1369,7 +1403,7 @@ void TableView::createActions()
 		a = new Action(tr("Set value in selection"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
 		a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(setValueInSelection()));
+		connect(a, SIGNAL(triggered()), this, SLOT(setValueInSelection()));
 		a->setOid("setValueInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
 		m_actions[a->oid()] = a;

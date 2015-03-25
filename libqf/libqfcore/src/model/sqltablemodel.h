@@ -30,6 +30,8 @@ public:
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
 public:
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
 	bool reload(const QString &query_str);
 	bool reload() Q_DECL_OVERRIDE;
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;

@@ -23,6 +23,14 @@ DbEnum::DbEnum(int id, const QString & group_name, const QString & group_id, con
 	setCaption(caption);
 }
 
+QString DbEnum::caption() const
+{
+	QString ret = m_values.value(FieldCaption).toString();
+	if(ret.isEmpty())
+		ret = groupId();
+	return ret;
+}
+
 DbEnum::DbEnum(const Query &q)
 {
 	qfLogFuncFrame();

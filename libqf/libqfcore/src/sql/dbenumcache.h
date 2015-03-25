@@ -11,7 +11,6 @@
 
 #include "dbenum.h"
 
-//#include <QVariant>
 #include <QMap>
 
 namespace qf {

@@ -27,7 +27,7 @@ private:
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
 					   FieldTypeRole, //FieldIsNullableRole,
-					   RawValueRole, ValueIsNullRole, FirstUnusedRole };
+					   RawValueRole, ValueIsNullRole, DisplayFormatRole, FirstUnusedRole };
 	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
@@ -84,7 +84,10 @@ public:
 		/// for double see QString::number(...)
 		/// for QTime see QTime::toString(...)
 		/// for QDate see QDate::toString(...)
+		/// for DbEnum: "dbenum:group_id"
 		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
+
+		static const QString DBENUM_SCHEME;
 
 		ColumnDefinition& setCastType(int t) {d->castType = t; return *this;}
 		int castType() const {return d->castType;}

@@ -37,7 +37,7 @@ public:
 	QString abbreviation() const {return m_values.value(FieldAbbreviation).toString();}
 	//QString localizedAbbreviation() const;
 	QVariant value() const {return m_values.value(FieldValue);}
-	QString caption() const {return m_values.value(FieldCaption).toString();}
+	QString caption() const;
 	//QString localizedCaption() const;
 	void setCaption(const QString &s) {setValue(FieldCaption, s);}
 	QString userText() const {return m_values.value(FieldUserText).toString();}
@@ -55,6 +55,8 @@ private:
 };
 
 }}}
+
+Q_DECLARE_METATYPE(qf::core::sql::DbEnum)
 
 #endif // QF_CORE_SQL_DBENUM_H
 
