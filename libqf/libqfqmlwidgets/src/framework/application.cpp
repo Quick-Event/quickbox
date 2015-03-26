@@ -22,7 +22,7 @@ Application::Application(int &argc, char **argv) :
 	#else
 		path = QCoreApplication::applicationDirPath() + "/qml";
 	#endif
-		m_qmlLibraryImportPaths.append(path);
+		m_qmlLibraryImportPaths << path;
 	}
 	{
 		QString path;
@@ -31,7 +31,7 @@ Application::Application(int &argc, char **argv) :
 #else
 		path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName();
 #endif
-		m_qmlPluginImportPaths.append(path);
+		m_qmlPluginImportPaths << path;
 	}
 	initStyleSheet();
 }

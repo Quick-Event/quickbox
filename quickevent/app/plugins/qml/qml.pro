@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
+	shared \
 	Core \
 	Logging \
 	Event \
@@ -9,5 +10,6 @@ SUBDIRS += \
 	Competitors \
 	Runs \
 	CardReadout \
+	Oris \
 
 
