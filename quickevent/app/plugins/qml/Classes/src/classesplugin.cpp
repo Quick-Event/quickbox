@@ -4,7 +4,7 @@
 
 #include "coursedef.h"
 
-#include <EventPlugin/eventplugin.h>
+//#include <EventPlugin/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>

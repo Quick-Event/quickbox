@@ -51,6 +51,11 @@ LIBS += \
 
 LIBS += -lqfcore -lqfqmlwidgets
 
+INCLUDEPATH += \
+    $$PWD/../../../lib/include \
+
+LIBS += -lquickevent
+
 }
 
 

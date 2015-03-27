@@ -71,6 +71,8 @@ public:
 		/// 4 week counter relative
 		int weekCnt() const;
 
+		QString toJsonArrayString() const;
+
 		Punch();
 		Punch(const QByteArray &ba, int offset, int record_type);// : d(ba, offset, record_type) {}
 	};

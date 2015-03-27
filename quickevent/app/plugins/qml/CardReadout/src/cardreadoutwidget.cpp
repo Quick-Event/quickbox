@@ -1,6 +1,16 @@
 #include "cardreadoutwidget.h"
 #include "ui_cardreadoutwidget.h"
 #include "dlgsettings.h"
+#include "cardreadoutpartwidget.h"
+
+#include <EventPlugin/eventplugin.h>
+
+#include <quickevent/og/timems.h>
+#include <quickevent/og/sqltablemodel.h>
+#include <quickevent/og/itemdelegate.h>
+
+#include <siut/sidevicedriver.h>
+#include <siut/simessage.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -9,15 +19,18 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 
-#include <siut/sidevicedriver.h>
-#include <siut/simessage.h>
-
 #include <qf/core/log.h>
+#include <qf/core/exception.h>
+#include <qf/core/sql/query.h>
+#include <qf/core/sql/dbenum.h>
+#include <qf/core/model/sqltablemodel.h>
 
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
 
+namespace qfm = qf::core::model;
+namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
@@ -57,6 +70,29 @@ CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
 		connect(drv, &siut::DeviceDriver::rawDataReceived, this, &CardReadoutWidget::processDriverRawData, Qt::QueuedConnection);
 		connect(this, &CardReadoutWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
 	}
+	{
+		ui->tblCardsTB->setTableView(ui->tblCards);
+
+		ui->tblCards->setPersistentSettingsId("tblCards");
+		ui->tblCards->setRowEditorMode(qfw::TableView::EditRowsMixed);
+		ui->tblCards->setInlineEditStrategy(qfw::TableView::OnCurrentFieldChange);
+		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
+		auto m = new quickevent::og::SqlTableModel(this);
+		m->addColumn("cards.id", "ID").setReadOnly(true);
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true);
+		m->addColumn("classes.name", tr("Class"));
+		m->addColumn("competitorName", tr("Name"));
+		m->addColumn("competitors.registration", tr("Reg"));
+		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
+		status_props.setGroupName("runs.status");
+		m->addColumn("runs.status", tr("Status"))
+				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
+				.setCastProperties(status_props);
+		ui->tblCards->setTableModel(m);
+		m_cardsModel = m;
+	}
 }
 
 CardReadoutWidget::~CardReadoutWidget()
@@ -74,6 +110,38 @@ void CardReadoutWidget::settleDownInPartWidget(qf::qmlwidgets::framework::PartWi
 
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
+}
+
+void CardReadoutWidget::settleDownInPartWidget(CardReadoutPartWidget *part_widget)
+{
+	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
+	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
+
+	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
+	a->setText("&Station");
+	a->addActionInto(m_actCommOpen);
+
+	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
+	main_tb->addAction(m_actCommOpen);
+}
+
+void CardReadoutWidget::reload()
+{
+	int current_stage = currentStage();
+	qfs::QueryBuilder qb;
+	qb.select2("cards", "id, siId")
+			.select2("runs", "startTimeMs, timeMs, status")
+			.select2("competitors", "registration")
+			.select2("classes", "name")
+			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.from("cards")
+			.join("cards.runId", "runs.id")
+			.join("runs.competitorId", "competitors.id")
+			.join("competitors.classId", "classes.id")
+			.where("cards.stageId=" QF_IARG(current_stage))
+			.orderBy("cards.id DESC");
+	m_cardsModel->setQueryBuilder(qb);
+	m_cardsModel->reload();
 }
 
 void CardReadoutWidget::createActions()
@@ -219,33 +287,8 @@ void CardReadoutWidget::processSIMessage(const SIMessageData& msg_data)
 	qfLogFuncFrame();
 	//appendLog(qf::core::Log::LOG_INFO, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MsgCardReadOut) {
-		SIMessageCardReadOut msg(msg_data);
-		appendLogPre(qf::core::Log::LOG_DEB, msg.dump());
-		appendLog(qf::core::Log::LOG_INFO, trUtf8("card: %1").arg(msg.cardNumber()));
-		/*
-		SICliScriptDriver *drv = theApp()->scriptDriver();
-		try {
-			QVariantList args;
-			args << msg.toVariant();
-			QScriptValue sv = drv->callExtensionFunction("onCardReadOut", args);
-			QString ret_type = sv.property("retType").toString();
-			if(ret_type == "error") {
-				QString err = sv.property("error").toString();
-				/// tady by to melo zacit vriskat
-				appendLog(qf::core::Log::LOG_ERR, sv.property("message").toString());
-			}
-			else if(ret_type == "info") {
-				//QString info = sv.property("info").toString();
-				appendLog(qf::core::Log::LOG_INFO, sv.property("message").toString());
-			}
-		}
-		catch(std::exception &e) {
-			appendLog(qf::core::Log::LOG_ERR, e.what());
-		}
-		catch(...) {
-			appendLog(qf::core::Log::LOG_ERR, tr("Unknown exception"));
-		}
-		*/
+		SIMessageCardReadOut card(msg_data);
+		processSICard(card);
 	}
 	else if(msg_data.type() == SIMessageData::MsgCardEvent) {
 		appendLogPre(qf::core::Log::LOG_DEB, msg_data.dump());
@@ -285,5 +328,79 @@ void CardReadoutWidget::processDriverRawData(const QByteArray& data)
 		QString msg = SIMessageData::dumpData(data);
 		appendLog(qf::core::Log::LOG_DEB, trUtf8("DriverRawData: %1").arg(msg));
 	}
+}
+
+void CardReadoutWidget::processSICard(const SIMessageCardReadOut &card)
+{
+	appendLogPre(qf::core::Log::LOG_DEB, card.dump());
+	appendLog(qf::core::Log::LOG_INFO, trUtf8("card: %1").arg(card.cardNumber()));
+	int run_id = findRunId(card);
+	int card_id = saveCardToSql(card, run_id);
+	if(card_id > 0)
+		updateTableView(card_id);
+}
+
+int CardReadoutWidget::currentStage()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
+	int ret = event_plugin->currentStage();
+	return ret;
+}
+
+int CardReadoutWidget::findRunId(const SIMessageCardReadOut &card)
+{
+	int si_id = card.cardNumber();
+	int stage_no = currentStage();
+	qf::core::sql::Query q;
+	q.exec("SELECT id FROM runs WHERE stageId=" QF_IARG(stage_no) " AND siId=" QF_IARG(si_id), qf::core::Exception::Throw);
+	int ret = 0;
+	if(q.next()) {
+		ret = q.value(0).toInt();
+	}
+	if(ret == 0)
+		appendLog(qf::core::Log::LOG_ERR, trUtf8("Cannot find run for SI: %1").arg(si_id));
+	return ret;
+}
+
+int CardReadoutWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_id)
+{
+	int ret = 0;
+	QStringList punches;
+	for(auto p : card.punchList()) {
+		punches << p.toJsonArrayString();
+	}
+	qf::core::sql::Query q;
+	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId) VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId)"), qf::core::Exception::Throw);
+	q.bindValue(QStringLiteral(":stationNumber"), card.stationCodeNumber());
+	q.bindValue(QStringLiteral(":siId"), card.cardNumber());
+	q.bindValue(QStringLiteral(":checkTime"), card.checkTime());
+	q.bindValue(QStringLiteral(":startTime"), card.startTime());
+	q.bindValue(QStringLiteral(":finishTime"), card.finishTime());
+	q.bindValue(QStringLiteral(":punches"), '[' + punches.join(", ") + ']');
+	q.bindValue(QStringLiteral(":runId"), run_id);
+	q.bindValue(QStringLiteral(":stageId"), currentStage());
+	if(q.exec()) {
+		ret = q.lastInsertId().toInt();
+	}
+	else {
+		appendLog(qf::core::Log::LOG_ERR, trUtf8("Cave card ERROR: %1").arg(q.lastErrorText()));
+	}
+	return ret;
+}
+
+void CardReadoutWidget::updateTableView(int card_id)
+{
+	if(card_id <= 0)
+		return;
+	m_cardsModel->insertRow(0);
+	m_cardsModel->setValue(0, QStringLiteral("cards.id"), card_id);
+	int reloaded_row_cnt = m_cardsModel->reloadRow(0);
+	if(reloaded_row_cnt != 1) {
+		qfWarning() << "Inserted/Copied row id:" << card_id << "reloaded in" << reloaded_row_cnt << "instances.";
+		return;
+	}
+	ui->tblCards->updateRow(0);
 }
 

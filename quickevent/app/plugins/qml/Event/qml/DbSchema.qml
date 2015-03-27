@@ -176,6 +176,7 @@ Schema {
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
 				Index {fields: ['stageId, competitorId']; unique: true },
+				Index {fields: ['stageId, siId']; unique: true },
 				Index {fields: ['status', 'timeMs'] }
 			]
 		},
@@ -211,6 +212,12 @@ Schema {
 				Field {
 					name: 'id'
 					type: Serial { primaryKey: true }
+				},
+				Field { name: 'runId'
+					type: Int { }
+				},
+				Field { name: 'stageId'
+					type: Int { }
 				},
 				Field { name: 'stationNumber'
 					type: Int {
@@ -248,17 +255,12 @@ Schema {
 						length: 65536
 						charset: 'latin1'
 					}
-					comment: 'JSON of format [[code, time_sec], ...]}'
-				},
-				Field { name: 'runId'
-					type: Int { }
+					comment: 'JSON of format [[code, time_msec, day_of_week, week_cnt], ...]}'
 				}
   			]
 			indexes: [
-				Index {
-					fields: ['siId']
-					unique: false
-				}
+				Index { fields: ['stageId', 'siId']; unique: false },
+				Index { fields: ['runId']; unique: false }
 			]
 		}
 	]

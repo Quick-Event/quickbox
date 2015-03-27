@@ -66,7 +66,7 @@ bool CompetitorDocument::saveData()
 				q.bindValue(":siId", si_id);
 				if(!q.exec()) {
 					qfError() << q.lastError().text();
-					break;
+					//break; can be succesfull in other stages
 				}
 			}
 		}

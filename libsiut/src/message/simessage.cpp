@@ -128,6 +128,13 @@ int SIMessageCardReadOut::Punch::weekCnt() const
 	return ret;
 }
 
+QString SIMessageCardReadOut::Punch::toJsonArrayString() const
+{
+	QString ret = QStringLiteral("[%1, %2, %3, %4]");
+	ret = ret.arg(code()).arg(time() * 1000 + timeMSec()).arg(dayOfWeek()).arg(weekCnt());
+	return ret;
+}
+
 static int to_AM(int secs)
 {
 	while(secs > 12*60*60) secs -= 12*60*60;
@@ -238,7 +245,7 @@ int SIMessageCardReadOut::rawCardType() const
 		{
 			QByteArray raw_data = data().blockData(0);
 			ret = (int)(((unsigned char)raw_data[6 * 4]) & 0x0F);
-			qfInfo() << "raw card type:" << ret;
+			//qfInfo() << "raw card type:" << ret;
 			break;
 		}
 		default:
@@ -264,7 +271,7 @@ SIMessageCardReadOut::CardType SIMessageCardReadOut::cardType() const
 		{
 			QByteArray raw_data = data().blockData(0);
 			int n = rawCardType();
-			qfInfo() << "raw card type:" << n;
+			//qfInfo() << "raw card type:" << n;
 			switch(n) {
 				case 1: ret = CardType9; break;
 				case 2: ret = CardType8; break;
@@ -360,7 +367,8 @@ int SIMessageCardReadOut::cardNumber() const
 		int base = 4;
 		ret = (((int)(unsigned char)raw_data[base]) << 8) + (unsigned char)raw_data[base + 1];
 		int cs = (unsigned char)raw_data[base + 2];
-		if(cs > 1) ret += 100000 * cs;
+		if(cs > 1)
+			ret += 100000 * cs;
 		//qfInfo() << SIMessageData::dumpData(raw_data);
 		//qfInfo() << "n:" << ret << "cs:" << cs;
 		//ret += (cs << 16);
@@ -377,6 +385,8 @@ int SIMessageCardReadOut::cardNumber() const
 		//qfInfo() << ba.toHex();
 		ret = (((int)(unsigned char)raw_data[base+1]) << 16) + (((int)(unsigned char)raw_data[base+2]) << 8) + (unsigned char)raw_data[base+3];
 	}
+	if(ret < 20000)
+		ret = ret % 10000;
 	return ret;
 }
 /*

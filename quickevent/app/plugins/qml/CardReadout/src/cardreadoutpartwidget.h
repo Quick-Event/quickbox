@@ -1,13 +1,13 @@
 #ifndef CARDREADOUTPARTWIDGET_H
 #define CARDREADOUTPARTWIDGET_H
 
-#include <qf/qmlwidgets/framework/partwidget.h>
+#include <quickevent/partwidget.h>
 
-class CardReadoutPartWidget : public qf::qmlwidgets::framework::PartWidget
+class CardReadoutPartWidget : public quickevent::PartWidget
 {
 	Q_OBJECT
 private:
-	typedef qf::qmlwidgets::framework::PartWidget Super;
+	typedef quickevent::PartWidget Super;
 public:
 	CardReadoutPartWidget(QWidget *parent = 0);
 	~CardReadoutPartWidget() Q_DECL_OVERRIDE;

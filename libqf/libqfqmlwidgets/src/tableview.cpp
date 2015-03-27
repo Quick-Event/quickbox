@@ -722,8 +722,10 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 			//qfDebug() << "\tri:" << ri;
 			//qfDebug() << "\tmodel->rowCount():" << ri;
 			QModelIndex curr_ix = currentIndex();
-			if(curr_ix.isValid())
+			if(curr_ix.isValid()) {
 				ri = curr_ix.row() + 1;
+				ri = toTableModelRowNo(ri);
+			}
 			else
 				ri = tmd->rowCount();
 			if(ri > tmd->rowCount())
@@ -736,7 +738,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 			//row_ref.setInsert(false);
 			int reloaded_row_cnt = tmd->reloadRow(ri);
 			if(reloaded_row_cnt != 1) {
-				qfWarning() << "Incerted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
+				qfWarning() << "Inserted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
 				return;
 			}
 			updateRow(ri);

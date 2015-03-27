@@ -17,6 +17,7 @@ class QFCORE_DECL_EXPORT Query : public QSqlQuery
 private:
 	typedef QSqlQuery Super;
 public:
+	/// If db is invalid, the application's default database will be used.
 	explicit Query(const QSqlDatabase &db = QSqlDatabase());
 	explicit Query(const QString &connection_name);
 public:
@@ -30,6 +31,7 @@ public:
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;
 	QVariant value(const QString& field_name) const;
+	QString lastErrorText() const;
 };
 
 }}}

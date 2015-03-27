@@ -98,3 +98,13 @@ QVariant Query::value(const QString &field_name) const
 		ret = value(ix);
 	return ret;
 }
+
+QString Query::lastErrorText() const
+{
+	QString ret;
+	QSqlError err = lastError();
+	if(err.isValid()) {
+		ret = err.text();
+	}
+	return ret;
+}

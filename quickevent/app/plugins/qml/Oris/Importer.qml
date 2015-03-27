@@ -254,8 +254,10 @@ QtObject {
 					for(var obj_key in data) {
 						var obj = data[obj_key];
 						//Log.debug(JSON.stringify(obj, null, 2));
-						//Log.info(obj.RegNo);
-						FrameWork.showProgress(obj_key, items_processed, items_count);
+						if(items_processed % 100 === 0) {
+							Log.info(items_count, obj.RegNo);
+							FrameWork.showProgress(obj.RegNo, items_processed, items_count);
+						}
 
 						q.bindValue(':firstName', obj.FirstName);
 						q.bindValue(':lastName', obj.LastName);
