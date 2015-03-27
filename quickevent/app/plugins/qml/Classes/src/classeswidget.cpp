@@ -165,37 +165,28 @@ void ClassesWidget::import_ocad()
 				// [classname];coursename;0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
 				if(line.isEmpty())
 					continue;
-				QString course_name = normalize_course_name(line.section(';', 1, 1));
-				qfc::String class_name = line.section(';', 0, 0);
-				if(class_name.isEmpty())
-					class_name = course_name;
+				QStringList class_names;
+				qfc::String course_name = normalize_course_name(line.section(';', 1, 1));
+				QString class_name = line.section(';', 0, 0);
+				if(class_name.isEmpty()) {
+					for(auto ch : {'-', ',', ':', '+'}) {
+						if(course_name.contains(ch)) {
+							class_names = course_name.splitAndTrim(ch);
+							break;
+						}
+					}
+				}
+				if(class_names.isEmpty())
+					class_names << course_name;
 				if(defined_courses.contains(course_name)) {
 					CourseDef cd = defined_courses.value(course_name);
-					QStringList classes = cd.classes() << class_name;
+					QStringList classes = cd.classes() << class_names;
 					defined_courses[course_name].setClasses(classes);
 					continue;
 				}
-				/*
-				QStringList classes = classes_str.splitAndTrim(',');
-				for(auto c : classes) {
-					if(parsed_classes.contains(c))
-						QF_EXCEPTION("Duplicate definition for class:" + c);
-					else
-						parsed_classes << c;
-				}
-				cd.setClasses(classes);
-				if(course.isEmpty())
-					course = cd.classes().value(0);
-				{
-					if(parsed_courses.contains(course))
-						QF_EXCEPTION("Duplicate definition for course:" + course);
-					else
-						parsed_courses << course;
-				}
-				*/
 				CourseDef &cd = defined_courses[course_name];
 				cd.setCourse(course_name);
-				cd.setClasses(QStringList() << class_name);
+				cd.setClasses(class_names);
 				{
 					QString s = line.section(';', 3, 3).trimmed();
 					s.replace('.', QString()).replace(',', QString());
