@@ -248,7 +248,7 @@ QtObject {
 				db.transaction();
 				var q = db.createQuery();
 				var ok = true;
-				ok = q.exec("DELETE FROM registrations WHERE importId IS NOT NULL");
+				ok = q.exec("DELETE FROM registrations");
 				if(ok) {
 					q.prepare('INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :importId)');
 					for(var obj_key in data) {

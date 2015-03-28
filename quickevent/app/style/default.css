@@ -57,8 +57,9 @@ qf--qmlwidgets--framework--PartSwitch QToolButton:checked {
 }
 
 qf--qmlwidgets--dialogs--internal--CaptionFrame {
-	background: #FDE364;
-	/*background: #FFA842;*/
+	/*background: #FDE364; yellow */
+	/*background: #FFA842; orange */
+	background: lightsteelblue;
 }
 qf--qmlwidgets--dialogs--internal--CaptionFrame[alert="true"] {
 	background: salmon;
@@ -66,6 +67,6 @@ qf--qmlwidgets--dialogs--internal--CaptionFrame[alert="true"] {
 }
 
 qf--qmlwidgets--dialogs--internal--CaptionFrame QLabel {
-	font: 18pt;
+	font: 14pt;
 	color:black;
 }

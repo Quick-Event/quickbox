@@ -91,11 +91,14 @@ Schema {
 				Field { name: 'courseId'; type: Int { } },
 				Field { name: 'startTimeMin'; type: Int { } },
 				Field { name: 'startIntervalMin'; type: Int { } },
+				Field { name: 'vacantsBefore'; type: Int { } 
+						comment: 'place n vacants gap before first competitor in class start list'
+				},
 				Field { name: 'vacantEvery'; type: Int { } 
-						comment: 'place vacant every n-th competitor in class drawing'
+						comment: 'place vacant every n-th competitor in class start list'
 				},
 				Field { name: 'vacantsAfter'; type: Int { } 
-						comment: 'place n vacants gap before next class in starting list'
+						comment: 'place n vacants gap after last competitor in class start list'
 				},
 				Field { name: 'lastTimeMin'; type: Int { } },
 				Field { name: 'mapCount'; type: Int { } }
@@ -178,6 +181,18 @@ Schema {
 				Index {fields: ['stageId, competitorId']; unique: true },
 				Index {fields: ['stageId, siId']; unique: true },
 				Index {fields: ['status', 'timeMs'] }
+			]
+		},
+		Table { name: 'runlaps'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'runId'; type: Int {} },
+				Field { name: 'ctrlNo'; type: Int {} },
+				Field { name: 'code'; type: Int {} },
+				Field { name: 'lapTimeMs'; type: Int { } }
+			]
+			indexes: [
+				Index {fields: ['runId', 'ctrlNo'] }
 			]
 		},
 		Table { name: 'clubs'

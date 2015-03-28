@@ -37,6 +37,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
 		m->addColumn("classdefs.startIntervalMin", tr("Interval"));
+		m->addColumn("classdefs.vacantsBefore", tr("VB")).setToolTip(tr("Vacants before"));
 		m->addColumn("classdefs.vacantEvery", tr("VE")).setToolTip(tr("Vacant every"));
 		m->addColumn("classdefs.vacantsAfter", tr("VA")).setToolTip(tr("Vacants after"));
 		m->addColumn("classdefs.lastTimeMin", tr("Last"));
