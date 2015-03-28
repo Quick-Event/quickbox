@@ -35,9 +35,10 @@ class SIUT_DECL_EXPORT SIMessageCardReadOut : public SIMessageBase
 {
 	Q_DECLARE_TR_FUNCTIONS(SIMessageCardReadOut);
 public:
-	enum CardDataLayoutType {DataLayoutUnknown, DataLayout5, DataLayout6, DataLayout8, DataLayout9, DataLayout10};
+	enum CardDataLayoutType {DataLayoutUnknown, DataLayout5, DataLayout6, DataLayout8, DataLayout9, DataLayoutP, DataLayout10};
 	enum CardType {CardTypeUnknown, CardType5, CardType6, CardType8, CardType9, CardTypeP, CardTypeT, CardTypeSIAC, CardType10, CardType11};
 protected:
+	enum PunchRecordType {PunchRecordDegraded, PunchRecordClasic, PunchRecordExtended};
 	//void setCardDataLayoutType(CardDataLayoutType t) {f_data.dataRef()["cardDataLayoutType"] = t;}
 	CardDataLayoutType cardDataLayoutType() const;
 	int rawCardType() const;
@@ -74,7 +75,7 @@ public:
 		QString toJsonArrayString() const;
 
 		Punch();
-		Punch(const QByteArray &ba, int offset, int record_type);// : d(ba, offset, record_type) {}
+		Punch(const QByteArray &ba, int offset, PunchRecordType record_type);
 	};
 	typedef QList<Punch>PunchList;
 public:
@@ -94,23 +95,6 @@ public:
 public:
 	SIMessageCardReadOut(const SIMessageData &data);
 };
-#if 0
-class SIUT_DECL_EXPORT SIMessageCard5ReadOut : public SIMessageCardReadOutBase
-{
-	//Q_DECLARE_TR_FUNCTIONS(SIMessageCardReadOut);
-public:
-	virtual int stationCodeNumber() const;
-	int countryCode() const;
-	int clubCode() const;
-	virtual int cardNumber() const;
-	int startNumber() const;
-	virtual int startTime() const;
-	virtual int checkTime() const;
-	virtual int finishTime() const;
-	virtual PunchList punchList() const;
-public:
-	SIMessageCardReadOut(const SIMessageData &data) : SIMessageCardReadOutBase(data) {}
-};
-#endif
+
 #endif // SIMESSAGE_H
 

@@ -39,28 +39,30 @@ const SIMessageCardReadOut::Punch & SIMessageCardReadOut::Punch::sharedNull()
 	return n;
 }
 
-SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, int record_type)
+SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, PunchRecordType record_type)
 {
 	d = new Data();
-	if(record_type == 2) {
+	if(record_type == PunchRecordClasic) {
 		//d->is24HoursTimeFormat = false;
 		//flags = 0;
 		if(ba.length() > offset + 2) {
 			d->code = (unsigned char)ba[offset];
 			d->time = (((int)(unsigned char)ba[offset + 1]) << 8) + (unsigned char)ba[offset + 2];
 		}
-		else qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 3 << "offset:" << offset;
+		else
+			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 3 << "offset:" << offset;
 	}
-	else if(record_type == 1) {
+	else if(record_type == PunchRecordDegraded) {
 		//d->is24HoursTimeFormat = false;
 		//flags = 0;
 		if(ba.length() > offset) {
 			d->code = (unsigned char)ba[offset];
 		}
-		else qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 0 << "offset:" << offset;
+		else
+			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 0 << "offset:" << offset;
 		d->time = 0xEEEE;
 	}
-	else if(record_type == 4) {
+	else if(record_type == PunchRecordExtended) {
 		//d->is24HoursTimeFormat = true;
 		if(ba.length() > offset + 3) {
 			d->flags = (unsigned char)ba[offset];
@@ -84,7 +86,8 @@ SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, int record_
 			//qfInfo() << ba.mid(offset, 4).toHex();
 			//qfInfo() << "code:" << d->code;
 		}
-		else qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 4 << "offset:" << offset;
+		else
+			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 4 << "offset:" << offset;
 	}
 	else {
 		qfError() << "Incorrect punch record type:" << record_type;
@@ -215,9 +218,11 @@ SIMessageCardReadOut::CardDataLayoutType SIMessageCardReadOut::cardDataLayoutTyp
 		ret = DataLayout8;
 		break;
 	case CardType9:
-	case CardTypeP:
 	case CardTypeT:
 		ret = DataLayout9;
+		break;
+	case CardTypeP:
+		ret = DataLayoutP;
 		break;
 	case CardTypeSIAC:
 	case CardType10:
@@ -385,8 +390,8 @@ int SIMessageCardReadOut::cardNumber() const
 		//qfInfo() << ba.toHex();
 		ret = (((int)(unsigned char)raw_data[base+1]) << 16) + (((int)(unsigned char)raw_data[base+2]) << 8) + (unsigned char)raw_data[base+3];
 	}
-	if(ret < 20000)
-		ret = ret % 10000;
+	if(ret < 200000)
+		ret = ret % 100000;
 	return ret;
 }
 /*
@@ -474,12 +479,12 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 		for(int i=0; i<30 && i<punch_cnt; i++) {
 			int offset = 3*i + i/5 + 1;
 			//qfInfo() << i << "->" << QString::number(offset, 16);
-			Punch p(raw_data, base + offset, 2);
+			Punch p(raw_data, base + offset, PunchRecordClasic);
 			ret << p;
 		}
 		for(int i=30; i<36 && i<punch_cnt; i++) {
 			int offset = 16*(i-30);
-			Punch p(raw_data, base + offset, 1);
+			Punch p(raw_data, base + offset, PunchRecordDegraded);
 			ret << p;
 		}
 	}
@@ -492,14 +497,15 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 		int curr_block_no = -1;
 		for(int i=0; i<punch_cnt; i++) {
 			int block_no = i / 32;
-			if(block_no < 2) block_no += 6;
+			if(block_no < 2)
+				block_no += 6;
 			if(curr_block_no != block_no) {
 				raw_data = data().blockData(block_no);
 				curr_block_no = block_no;
 			}
 			int offset = (i % 32) * 4;
 			//qfInfo() << raw_data.mid(offset, 16).toHex();
-			Punch p(raw_data, offset, 4);
+			Punch p(raw_data, offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
@@ -515,7 +521,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 			int offset = 4*i;
 			//if(i >= (32-14)) offset += dataOffsetInPacket(); /// dalsi packet
 			qfInfo() << i << "->" << QString::number(offset, 16);
-			Punch p(raw_data, base + offset, 4);
+			Punch p(raw_data, base + offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
@@ -542,7 +548,22 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 				//qfInfo() << i << "->" << "base page:" << (base / 4) << "offset page:" << (offset / 4);
 			}
 			//qfInfo() << i << "->" << QString::number(offset, 16);
-			Punch p(raw_data, base + offset, 4);
+			Punch p(raw_data, base + offset, PunchRecordExtended);
+			ret << p;
+		}
+	}
+	else if(card_data_layout_type == DataLayoutP) {
+		QByteArray raw_data = data().blockData(0);
+		int punch_cnt = (unsigned char)raw_data[5*4 + 2];
+		/// blocks 1
+		/// block 1 has 20 punches starting on page 1 offset 12
+		/// each punch has 4 bytes
+		int base = 12*4;
+		for(int i=0; i<punch_cnt && i<20; i++) {
+			int offset = 4 * i;
+			raw_data = data().blockData(1);
+			//qfInfo() << i << "->" << QString::number(offset, 16);
+			Punch p(raw_data, base + offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
@@ -557,7 +578,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 			raw_data = data().blockData(block_no);
 			int offset = (i % 32) * 4;
 			//qfInfo() << raw_data.mid(offset, 16).toHex();
-			Punch p(raw_data, offset, 4);
+			Punch p(raw_data, offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
