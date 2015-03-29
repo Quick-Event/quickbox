@@ -8,6 +8,8 @@ QT += widgets serialport sql
 
 CONFIG += c++11 hide_symbols
 
+DEFINES += CARDREADERPLUGIN_BUILD_DLL
+
 INCLUDEPATH += $$PWD/../../../../../libsiut/include
 LIBS += -lsiut
 

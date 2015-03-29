@@ -9,7 +9,7 @@ class CardReaderPartWidget : public quickevent::PartWidget
 private:
 	typedef quickevent::PartWidget Super;
 public:
-	CardReaderPartWidget(QWidget *parent = 0);
+	CardReaderPartWidget(const QString &feature_id, QWidget *parent = 0);
 	~CardReaderPartWidget() Q_DECL_OVERRIDE;
 private:
 	Q_SLOT void lazyInit();

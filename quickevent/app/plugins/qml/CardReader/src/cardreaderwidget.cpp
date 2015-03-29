@@ -2,6 +2,8 @@
 #include "ui_cardreaderwidget.h"
 #include "dlgsettings.h"
 #include "cardreaderpartwidget.h"
+#include "cardreaderplugin.h"
+#include "cardchecker.h"
 
 #include <EventPlugin/eventplugin.h>
 
@@ -28,6 +30,9 @@
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
+#include <QComboBox>
+#include <QLabel>
+#include <QMetaObject>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -102,16 +107,6 @@ CardReaderWidget::~CardReaderWidget()
 	delete ui;
 }
 
-void CardReaderWidget::settleDownInPartWidget(qf::qmlwidgets::framework::PartWidget *part_widget)
-{
-	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
-	a->setText("&Station");
-	a->addActionInto(m_actCommOpen);
-
-	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
-	main_tb->addAction(m_actCommOpen);
-}
-
 void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
@@ -123,6 +118,16 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
+	{
+		QLabel *lbl = new QLabel(" Check type ");
+		main_tb->addWidget(lbl);
+		CardReaderPlugin *card_reader_plugin = qobject_cast<CardReaderPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
+		m_cbxCardCheckers = new QComboBox();
+		for(auto checker : card_reader_plugin->cardCheckers()) {
+			m_cbxCardCheckers->addItem(checker->caption());
+		}
+		main_tb->addWidget(m_cbxCardCheckers);
+	}
 }
 
 void CardReaderWidget::reload()
@@ -337,7 +342,13 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	int run_id = findRunId(card);
 	int card_id = saveCardToSql(card, run_id);
 	if(run_id) {
-		updateRunLapsSql(card, run_id);
+		//updateRunLapsSql(card, run_id);
+		CardReader::CardChecker *chk = currentCardChecker();
+		QVariant ret_val;
+		QMetaObject::invokeMethod(chk, "checkCard", Qt::DirectConnection,
+		                          Q_RETURN_ARG(QVariant, ret_val),
+		                          Q_ARG(QVariant, card.toVariant()),
+		                          Q_ARG(QVariant, run_id));
 	}
 	if(card_id > 0)
 		updateTableView(card_id);
@@ -349,6 +360,18 @@ int CardReaderWidget::currentStage()
 	EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
 	int ret = event_plugin->currentStage();
+	return ret;
+}
+
+CardReader::CardChecker *CardReaderWidget::currentCardChecker()
+{
+	QF_ASSERT_EX(m_cbxCardCheckers != nullptr, "Card checkers list is not initialized!");
+	int ix = m_cbxCardCheckers->currentIndex();
+	QF_ASSERT_EX(ix >= 0, "Card checkers list - bad index!");
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	CardReaderPlugin *card_reader_plugin = qobject_cast<CardReaderPlugin*>(fwk->plugin("CardReader"));
+	CardReader::CardChecker *ret = card_reader_plugin->cardCheckers().value(ix);
+	QF_ASSERT_EX(ret != nullptr, "Card checker is NULL!");
 	return ret;
 }
 
@@ -453,6 +476,7 @@ int CardReaderWidget::updateRunLapsSql(const SIMessageCardReadOut &card, int run
 		}
 	}
 	*/
+	return 0;
 }
 
 void CardReaderWidget::updateTableView(int card_id)

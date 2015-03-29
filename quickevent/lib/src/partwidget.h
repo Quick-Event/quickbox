@@ -13,7 +13,8 @@ class QUICKEVENT_DECL_EXPORT PartWidget : public qf::qmlwidgets::framework::Part
 private:
 	typedef qf::qmlwidgets::framework::PartWidget Super;
 public:
-	PartWidget(QWidget *parent = 0);
+	explicit PartWidget(QWidget *parent = 0) : PartWidget(QString(), parent) {}
+	explicit PartWidget(const QString &feature_id, QWidget *parent = 0);
 
 	Q_SIGNAL void resetPartRequest();
 	Q_SIGNAL void reloadPartRequest();

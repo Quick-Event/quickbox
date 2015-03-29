@@ -31,8 +31,13 @@ class SIMessageCardReadOut;
 
 class QTextStream;
 class QFile;
+class QComboBox;
 
 class CardReaderPartWidget;
+
+namespace CardReader {
+class CardChecker;
+}
 
 class CardReaderWidget : public QFrame
 {
@@ -45,13 +50,12 @@ public:
 
 	static const char *SETTINGS_PREFIX;
 
-	void settleDownInPartWidget(qf::qmlwidgets::framework::PartWidget *part_widget);
-
 	Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
 	Q_SIGNAL void logRequest(int level, const QString &msg);
 	void emitLogRequest(int level, const QString &msg) {emit logRequest(level, msg);}
 
 	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
+
 	Q_SLOT void reset() {reload();}
 	Q_SLOT void reload();
 private slots:
@@ -59,7 +63,6 @@ private slots:
 	void appendLogPre(int level, const QString &msg);
 	void processDriverInfo(int level, const QString &msg);
 	void processSIMessage(const SIMessageData &msg);
-	void processSICard(const SIMessageCardReadOut &card);
 	void processDriverRawData(const QByteArray &data);
 	void onCommOpen(bool checked);
 private:
@@ -71,6 +74,9 @@ private:
 	siut::DeviceDriver *siDriver();
 
 	int currentStage();
+	CardReader::CardChecker* currentCardChecker();
+
+	void processSICard(const SIMessageCardReadOut &card);
 
 	int findRunId(const SIMessageCardReadOut &card);
 	int saveCardToSql(const SIMessageCardReadOut &card, int run_id);
@@ -84,6 +90,7 @@ private:
 	QFile *m_cardLogFile = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
+	QComboBox *m_cbxCardCheckers = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

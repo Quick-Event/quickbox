@@ -14,10 +14,12 @@
 
 using namespace qf::qmlwidgets::framework;
 
-PartWidget::PartWidget(QWidget *parent) :
-	Super(parent), IPersistentSettings(this)
+PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
+	: Super(parent)
+	, IPersistentSettings(this)
 {
 	qfLogFuncFrame();
+	setFeatureId(feature_id);
 	m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
 	m_centralFrame = new Frame(this);
 	m_centralFrame->setLayoutType(Frame::LayoutVertical);
@@ -209,3 +211,8 @@ void PartWidget::componentComplete()
 {
 }
 
+qf::qmlwidgets::framework::Plugin *qf::qmlwidgets::framework::PartWidget::plugin(bool throw_exc)
+{
+	qf::qmlwidgets::framework::Plugin *ret = qf::qmlwidgets::framework::MainWindow::frameWork()->plugin(featureId(), throw_exc);
+	return ret;
+}

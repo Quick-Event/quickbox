@@ -7,8 +7,8 @@
 
 using namespace quickevent;
 
-PartWidget::PartWidget(QWidget *parent)
-	: Super(parent)
+PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
+	: Super(feature_id, parent)
 {
 	connect(this, &PartWidget::activeChanged, this, &PartWidget::onActiveChanged);
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();

@@ -24,6 +24,8 @@ class CaptionFrame;
 }
 namespace framework {
 
+class Plugin;
+
 class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSettings, public QQmlParserStatus
 {
 	Q_OBJECT
@@ -42,8 +44,11 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 private:
 	typedef QWidget Super;
 public:
-	explicit PartWidget(QWidget *parent = 0);
+	explicit PartWidget(QWidget *parent = 0) : PartWidget(QString(), parent) {}
+	explicit PartWidget(const QString &feature_id, QWidget *parent = 0);
 	~PartWidget() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_BOOL_IMPL(a, A, ctive)
 public:
 	QString title() const { return m_title; }
 	void setTitle(QString arg);
@@ -57,9 +62,7 @@ public:
 	void setFeatureId(QString id);
 	Q_SIGNAL void featureIdChanged(const QString &s);
 
-	QF_PROPERTY_BOOL_IMPL(a, A, ctive)
-
-	QQmlListProperty<QObject> attachedObjects();
+	Q_INVOKABLE Plugin* plugin(bool throw_exc = false);
 
 	Q_SLOT void loadPersistentSettings();
 
@@ -72,6 +75,7 @@ public:
 	bool isAddToPartSwitchFromBottom();
 protected:
 	QQmlListProperty<QWidget> widgets();
+	QQmlListProperty<QObject> attachedObjects();
 	Frame* centralFrame();
 private:
 	Q_SLOT void savePersistentSettings();

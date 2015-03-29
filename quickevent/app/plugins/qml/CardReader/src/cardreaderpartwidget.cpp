@@ -5,8 +5,8 @@
 
 #include <QMetaObject>
 
-CardReaderPartWidget::CardReaderPartWidget(QWidget *parent)
-	: Super(parent)
+CardReaderPartWidget::CardReaderPartWidget(const QString &feature_id, QWidget *parent)
+	: Super(feature_id, parent)
 {
 	setTitle(tr("Card readout"));
 

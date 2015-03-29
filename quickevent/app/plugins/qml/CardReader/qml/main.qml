@@ -3,8 +3,15 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 import CardReader 1.0
 
+import "CardCheckers" as CardCheckers
+
 CardReaderPlugin {
 	id: root
+
+	cardCheckers: [
+		CardCheckers.Classic {},
+		CardCheckers.BeerRace {}
+	]
 /*
 	property QfObject internals: QfObject
 	{

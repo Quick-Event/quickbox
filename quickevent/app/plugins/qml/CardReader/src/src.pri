@@ -5,7 +5,7 @@ HEADERS += \
     $$PWD/cardreaderpartwidget.h \
     $$PWD/dlgsettings.h \
     $$PWD/cardreaderplugin.h \
-    $$PWD/cardcheck.h
+    $$PWD/cardchecker.h \
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -13,8 +13,10 @@ SOURCES += \
     $$PWD/cardreaderpartwidget.cpp \
     $$PWD/dlgsettings.cpp \
     $$PWD/cardreaderplugin.cpp \
-    $$PWD/cardcheck.cpp
+    $$PWD/cardchecker.cpp \
 
 FORMS += \
     $$PWD/cardreaderwidget.ui \
     $$PWD/dlgsettings.ui
+
+#include ( $$PWD/check/check.pri )
