@@ -1,7 +1,7 @@
-#include "cardreadoutwidget.h"
-#include "ui_cardreadoutwidget.h"
+#include "cardreaderwidget.h"
+#include "ui_cardreaderwidget.h"
 #include "dlgsettings.h"
-#include "cardreadoutpartwidget.h"
+#include "cardreaderpartwidget.h"
 
 #include <EventPlugin/eventplugin.h>
 
@@ -34,11 +34,11 @@ namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
-const char *CardReadoutWidget::SETTINGS_PREFIX = "plugins/CardReadout";
+const char *CardReaderWidget::SETTINGS_PREFIX = "plugins/CardReader";
 
-CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
+CardReaderWidget::CardReaderWidget(QWidget *parent) :
 	Super(parent),
-	ui(new Ui::CardReadoutWidget)
+	ui(new Ui::CardReaderWidget)
 {
 	ui->setupUi(this);
 
@@ -65,10 +65,10 @@ CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
 	*/
 	{
 		siut::DeviceDriver *drv = siDriver();
-		connect(drv, &siut::DeviceDriver::driverInfo, this, &CardReadoutWidget::processDriverInfo, Qt::QueuedConnection);
-		connect(drv, &siut::DeviceDriver::messageReady, this, &CardReadoutWidget::processSIMessage, Qt::QueuedConnection);
-		connect(drv, &siut::DeviceDriver::rawDataReceived, this, &CardReadoutWidget::processDriverRawData, Qt::QueuedConnection);
-		connect(this, &CardReadoutWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::driverInfo, this, &CardReaderWidget::processDriverInfo, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::messageReady, this, &CardReaderWidget::processSIMessage, Qt::QueuedConnection);
+		connect(drv, &siut::DeviceDriver::rawDataReceived, this, &CardReaderWidget::processDriverRawData, Qt::QueuedConnection);
+		connect(this, &CardReaderWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
 	}
 	{
 		ui->tblCardsTB->setTableView(ui->tblCards);
@@ -95,14 +95,14 @@ CardReadoutWidget::CardReadoutWidget(QWidget *parent) :
 	}
 }
 
-CardReadoutWidget::~CardReadoutWidget()
+CardReaderWidget::~CardReaderWidget()
 {
 	QF_SAFE_DELETE(m_cardLog);
 	QF_SAFE_DELETE(m_cardLogFile);
 	delete ui;
 }
 
-void CardReadoutWidget::settleDownInPartWidget(qf::qmlwidgets::framework::PartWidget *part_widget)
+void CardReaderWidget::settleDownInPartWidget(qf::qmlwidgets::framework::PartWidget *part_widget)
 {
 	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
 	a->setText("&Station");
@@ -112,7 +112,7 @@ void CardReadoutWidget::settleDownInPartWidget(qf::qmlwidgets::framework::PartWi
 	main_tb->addAction(m_actCommOpen);
 }
 
-void CardReadoutWidget::settleDownInPartWidget(CardReadoutPartWidget *part_widget)
+void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
@@ -125,7 +125,7 @@ void CardReadoutWidget::settleDownInPartWidget(CardReadoutPartWidget *part_widge
 	main_tb->addAction(m_actCommOpen);
 }
 
-void CardReadoutWidget::reload()
+void CardReaderWidget::reload()
 {
 	int current_stage = currentStage();
 	qfs::QueryBuilder qb;
@@ -144,11 +144,11 @@ void CardReadoutWidget::reload()
 	m_cardsModel->reload();
 }
 
-void CardReadoutWidget::createActions()
+void CardReaderWidget::createActions()
 {
 	//QStyle *sty = style();
 	{
-		QIcon ico(":/quickevent/CardReadout/images/comm");
+		QIcon ico(":/quickevent/CardReader/images/comm");
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
 		a->setCheckable(true);
 		connect(a, SIGNAL(triggered(bool)), this, SLOT(onCommOpen(bool)));
@@ -161,7 +161,7 @@ void CardReadoutWidget::createActions()
 	}
 	/*
 	{
-		QIcon ico(":/quickevent/CardReadout/images/sql");
+		QIcon ico(":/quickevent/CardReader/images/sql");
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Connect SQL"), this);
 		a->setCheckable(true);
 		connect(a, SIGNAL(triggered(bool)), this, SLOT(sqlConnect(bool)));
@@ -170,7 +170,7 @@ void CardReadoutWidget::createActions()
 	*/
 }
 
-void CardReadoutWidget::openSettings()
+void CardReaderWidget::openSettings()
 {
 	DlgSettings dlg(this);
 	if(dlg.exec()) {
@@ -178,7 +178,7 @@ void CardReadoutWidget::openSettings()
 	}
 }
 
-qf::core::Log::Level CardReadoutWidget::logLevelFromSettings()
+qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 {
 	QSettings settings;
 	QString key = QString(SETTINGS_PREFIX) + "/logging/level";
@@ -195,7 +195,7 @@ qf::core::Log::Level CardReadoutWidget::logLevelFromSettings()
 	return qf::core::Log::LOG_INFO;
 }
 
-QTextStream& CardReadoutWidget::cardLog()
+QTextStream& CardReaderWidget::cardLog()
 {
 	if(!m_cardLog) {
 		QSettings settings;
@@ -221,13 +221,13 @@ QTextStream& CardReadoutWidget::cardLog()
 	return *m_cardLog;
 }
 
-void CardReadoutWidget::closeCardLog()
+void CardReaderWidget::closeCardLog()
 {
 	emitLogRequest(qf::core::Log::LOG_INFO, tr("Closing card log."));
 	QF_SAFE_DELETE(m_cardLog);
 }
 
-siut::DeviceDriver *CardReadoutWidget::siDriver()
+siut::DeviceDriver *CardReaderWidget::siDriver()
 {
 	if(!f_siDriver) {
 		f_siDriver = new siut::DeviceDriver(this);
@@ -236,7 +236,7 @@ siut::DeviceDriver *CardReadoutWidget::siDriver()
 	return f_siDriver;
 }
 
-void CardReadoutWidget::onCommOpen(bool checked)
+void CardReaderWidget::onCommOpen(bool checked)
 {
 	qfLogFuncFrame() << "checked:" << checked;
 	if(checked) {
@@ -256,7 +256,7 @@ void CardReadoutWidget::onCommOpen(bool checked)
 	}
 }
 
-void CardReadoutWidget::appendLog(int level, const QString& msg)
+void CardReaderWidget::appendLog(int level, const QString& msg)
 {
 	qf::core::Log::Level treshold = logLevelFromSettings();
 	if(level <= (int)treshold) {
@@ -277,12 +277,12 @@ void CardReadoutWidget::appendLog(int level, const QString& msg)
 	}
 }
 
-void CardReadoutWidget::appendLogPre(int level, const QString& msg)
+void CardReaderWidget::appendLogPre(int level, const QString& msg)
 {
 	appendLog(level, "<pre>" + msg + "</pre>");
 }
 
-void CardReadoutWidget::processSIMessage(const SIMessageData& msg_data)
+void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
 	//appendLog(qf::core::Log::LOG_INFO, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
@@ -315,13 +315,13 @@ void CardReadoutWidget::processSIMessage(const SIMessageData& msg_data)
 	}
 }
 
-void CardReadoutWidget::processDriverInfo ( int level, const QString& msg )
+void CardReaderWidget::processDriverInfo ( int level, const QString& msg )
 {
 	qfLogFuncFrame() << level << msg;
 	appendLog(level, trUtf8("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
 }
 
-void CardReadoutWidget::processDriverRawData(const QByteArray& data)
+void CardReaderWidget::processDriverRawData(const QByteArray& data)
 {
 	QSettings settings;
 	if(settings.value("comm/debug/showRawComData").toBool()) {
@@ -330,17 +330,20 @@ void CardReadoutWidget::processDriverRawData(const QByteArray& data)
 	}
 }
 
-void CardReadoutWidget::processSICard(const SIMessageCardReadOut &card)
+void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 {
 	appendLogPre(qf::core::Log::LOG_DEB, card.dump());
 	appendLog(qf::core::Log::LOG_INFO, trUtf8("card: %1").arg(card.cardNumber()));
 	int run_id = findRunId(card);
 	int card_id = saveCardToSql(card, run_id);
+	if(run_id) {
+		updateRunLapsSql(card, run_id);
+	}
 	if(card_id > 0)
 		updateTableView(card_id);
 }
 
-int CardReadoutWidget::currentStage()
+int CardReaderWidget::currentStage()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
@@ -349,7 +352,7 @@ int CardReadoutWidget::currentStage()
 	return ret;
 }
 
-int CardReadoutWidget::findRunId(const SIMessageCardReadOut &card)
+int CardReaderWidget::findRunId(const SIMessageCardReadOut &card)
 {
 	int si_id = card.cardNumber();
 	int stage_no = currentStage();
@@ -364,7 +367,7 @@ int CardReadoutWidget::findRunId(const SIMessageCardReadOut &card)
 	return ret;
 }
 
-int CardReadoutWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_id)
+int CardReaderWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_id)
 {
 	int ret = 0;
 	QStringList punches;
@@ -390,7 +393,69 @@ int CardReadoutWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_i
 	return ret;
 }
 
-void CardReadoutWidget::updateTableView(int card_id)
+struct RunPunch
+{
+	int code = 0;
+	bool outOfOrder = false;
+	bool ok = false;
+	int timeMs = 0;
+	int lapTimeMs = 0;
+
+	//bool isOk() const {return lapTimeMs > 0;}
+};
+
+int CardReaderWidget::updateRunLapsSql(const SIMessageCardReadOut &card, int run_id)
+{
+	/*
+	QList<RunPunch> correct_punches = correctPunching(run_id);
+	auto card_punches = card.punchList();
+	int check_ix = 0;
+	int start_time = card.startTime();
+	if(!SIMessageCardReadOut::isTimeValid(start_time)) {
+		// take start time from start list
+		start_time = stage_start + run_start;
+	}
+	int prev_time = 0;
+	for(int j=0; j<correct_punches.count(); j++) { //scan course punches
+		RunPunch& pp = correct_punches[j];
+		for(int k=check_ix; k<correct_punches.count(); k++) { //scan card
+			const SIMessageCardReadOut::Punch& cp = card_punches[k];
+			if(pp.code == cp.code()) {  //nasel kod v karte
+				pp.ok = true;      //kod OK
+				check_ix = k + 1;
+				break;
+			}
+		}
+		if(!pp.ok) {
+			if(pp.outOfOrder) {
+				continue;
+			}
+		}
+		// pokud flags obsahuji 'NOCHECK' skoc na dalsi kod
+		var row = rs.row(j);
+		var flags = row.value("flags");
+		var nocheck = (flags.indexOf("NOCHECK") >= 0);
+		if(nocheck) continue;
+
+		var code = row.value("code");
+		for(var k=checkix; k<punches.length; k++) { //projed kartu
+			var punch = punches[k];
+			if(punch.code == code) {  //nasel kod v karte
+				checks[k] = '*';      //kod OK
+				checkix = k+1;
+				break;
+			}
+		}
+		if(k >= punches.length) {// karta je u konce nema cenu hledat dal
+			error = true;
+			//break; // neukoncuj prohledavani, aby slo najit chybejici kontroly
+			// siprint uz nepouziva kontrolu razeni z sicli, takze se prohledavani muze klido ukoncit
+		}
+	}
+	*/
+}
+
+void CardReaderWidget::updateTableView(int card_id)
 {
 	if(card_id <= 0)
 		return;

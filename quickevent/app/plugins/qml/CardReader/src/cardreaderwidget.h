@@ -1,12 +1,12 @@
-#ifndef CARDREADOUTWIDGET_H
-#define CARDREADOUTWIDGET_H
+#ifndef CARDREADERWIDGET_H
+#define CARDREADERWIDGET_H
 
 #include <qf/core/log.h>
 
 #include <QFrame>
 
 namespace Ui {
-	class CardReadoutWidget;
+	class CardReaderWidget;
 }
 
 namespace qf {
@@ -32,16 +32,16 @@ class SIMessageCardReadOut;
 class QTextStream;
 class QFile;
 
-class CardReadoutPartWidget;
+class CardReaderPartWidget;
 
-class CardReadoutWidget : public QFrame
+class CardReaderWidget : public QFrame
 {
 	Q_OBJECT
 private:
 	typedef QFrame Super;
 public:
-	explicit CardReadoutWidget(QWidget *parent = 0);
-	~CardReadoutWidget() Q_DECL_OVERRIDE;
+	explicit CardReaderWidget(QWidget *parent = 0);
+	~CardReaderWidget() Q_DECL_OVERRIDE;
 
 	static const char *SETTINGS_PREFIX;
 
@@ -51,7 +51,7 @@ public:
 	Q_SIGNAL void logRequest(int level, const QString &msg);
 	void emitLogRequest(int level, const QString &msg) {emit logRequest(level, msg);}
 
-	void settleDownInPartWidget(CardReadoutPartWidget *part_widget);
+	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
 	Q_SLOT void reset() {reload();}
 	Q_SLOT void reload();
 private slots:
@@ -74,9 +74,10 @@ private:
 
 	int findRunId(const SIMessageCardReadOut &card);
 	int saveCardToSql(const SIMessageCardReadOut &card, int run_id);
+	int updateRunLapsSql(const SIMessageCardReadOut &card, int run_id);
 	void updateTableView(int card_id);
 private:
-	Ui::CardReadoutWidget *ui;
+	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
 	QTextStream *m_cardLog = nullptr;
@@ -85,4 +86,4 @@ private:
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 };
 
-#endif // CARDREADOUTWIDGET_H
+#endif // CARDREADERWIDGET_H

@@ -1,4 +1,4 @@
-#include "cardreadoutplugin.h"
+#include "cardreaderplugin.h"
 
 #include <qf/core/log.h>
 
@@ -13,10 +13,10 @@ public:
 	void registerTypes(const char *uri)
 	{
 		qfLogFuncFrame() << uri;
-		Q_ASSERT(uri == QLatin1String("CardReadout"));
+		Q_ASSERT(uri == QLatin1String("CardReader"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<CardReadoutPlugin>(uri, 1, 0, "CardReadoutPlugin");
+		qmlRegisterType<CardReaderPlugin>(uri, 1, 0, "CardReaderPlugin");
 	}
 };
 

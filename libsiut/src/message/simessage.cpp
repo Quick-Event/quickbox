@@ -10,6 +10,7 @@
 #include <qf/core/log.h>
 
 #include <QStringList>
+#include <QVariantMap>
 
 //=================================================
 //             SIMessageBase
@@ -190,6 +191,22 @@ QString SIMessageCardReadOut::cardTypeToString(SIMessageCardReadOut::CardType ca
 	return ret;
 }
 
+bool SIMessageCardReadOut::isTimeValid(int time)
+{
+	return time >= 0 && time < 0xEEEE;
+}
+
+int SIMessageCardReadOut::modAM(int time_msec)
+{
+	constexpr int msec12hr = 12 * 60 * 60 * 1000;
+	int ret = time_msec;
+	while(ret < 0)
+		ret += msec12hr;
+	while(ret >= msec12hr)
+		ret -= msec12hr;
+	return ret;
+}
+
 QString SIMessageCardReadOut::cardDataLayoutTypeToString(SIMessageCardReadOut::CardDataLayoutType card_layout_type)
 {
 	QString ret;
@@ -317,12 +334,12 @@ QString SIMessageCardReadOut::dump() const
 	return sl.join("\n");
 }
 
-QVariant SIMessageCardReadOut::toVariant() const
+QVariantMap SIMessageCardReadOut::toVariant() const
 {
 	QVariantMap ret;// = SIMessageBase::toVariant().toMap();
 	ret["stationCodeNumber"] = stationCodeNumber();
 	ret["cardNumber"] = cardNumber();
-	ret["cardNumberFull"] = (cardNumber() < 100000)? 100000 + cardNumber(): cardNumber();
+	//ret["cardNumberFull"] = (cardNumber() < 100000)? 100000 + cardNumber(): cardNumber();
 	//ret["startNumber"] = startNumber();
 	//ret["countryCode"] = countryCode();
 	//ret["clubCode"] = clubCode();

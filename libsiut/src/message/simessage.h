@@ -89,9 +89,11 @@ public:
 	int finishTime() const;
 	PunchList punchList() const;
 	QString dump() const;
-	QVariant toVariant() const;
+	QVariantMap toVariant() const;
 	static QString cardDataLayoutTypeToString(CardDataLayoutType card_layout_type);
 	static QString cardTypeToString(CardType card_type);
+	static bool isTimeValid(int time);
+	static int modAM(int time_msec);
 public:
 	SIMessageCardReadOut(const SIMessageData &data);
 };

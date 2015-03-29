@@ -1,17 +1,17 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
-import CardReadout 1.0
+import CardReader 1.0
 
-CardReadoutPlugin {
+CardReaderPlugin {
 	id: root
 /*
 	property QfObject internals: QfObject
 	{
-		property CardReadoutPartWidget thisPartWidget
+		property CardReaderPartWidget thisPartWidget
 		Component {
-			id: cCardReadoutPartWidget
-			CardReadoutPartWidget {
+			id: cCardReaderPartWidget
+			CardReaderPartWidget {
 			}
 		}
 	}
@@ -22,7 +22,7 @@ CardReadoutPlugin {
 		//var act_competitors = act_file.addMenuAfter('competitors', qsTr('&Competitors'));
 		//var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
 		//act_print.addActionInto(actPrintAll);
-		var w = cCardReadoutPartWidget.createObject(FrameWork);
+		var w = cCardReaderPartWidget.createObject(FrameWork);
 		w.objectName = "cardReadoutPartWidget";
 
 		root.internals.thisPartWidget = w;

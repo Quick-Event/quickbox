@@ -53,7 +53,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		m->addColumn("coursecodes.position", tr("Pos")).setReadOnly(true);
 		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
-		m->addColumn("codes.broken", tr("Broken")).setReadOnly(true);
+		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order")).setReadOnly(true);
 		ui->tblCourseCodes->setTableModel(m);
 		m_courseCodesModel = m;
 	}

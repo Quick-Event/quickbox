@@ -130,7 +130,7 @@ void CaptionFrame::update()
 			m_captionIconLabel->setPixmap(pm);
 		}
 		else {
-			m_captionIconLabel->setPixmap(m_icon.pixmap(64));
+			m_captionIconLabel->setPixmap(m_icon.pixmap(32));
 		}
 		m_captionLabel->setText(" " + label_text);
 	}

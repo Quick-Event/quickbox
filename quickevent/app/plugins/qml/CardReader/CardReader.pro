@@ -1,6 +1,6 @@
 message(including plugin $$PWD)
 
-PLUGIN_NAME = CardReadout
+PLUGIN_NAME = CardReader
 
 include ( ../quickeventqmlplugin.pri )
 

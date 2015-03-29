@@ -9,7 +9,7 @@ SUBDIRS += \
 	Classes \
 	Competitors \
 	Runs \
-	CardReadout \
+	CardReader \
 	Oris \
 
 
