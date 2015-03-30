@@ -33,6 +33,7 @@
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 		} \
 	}
+
 #define QF_PROPERTY_OBJECT_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest = nullptr; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(ptype new_val); \
@@ -41,11 +42,15 @@
 		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			if(m_##lower_letter##name_rest != nullptr) \
-				if(m_##lower_letter##name_rest->parent() == nullptr) \
-					m_##lower_letter##name_rest->setParent(this); \
+				if(m_##lower_letter##name_rest->parent() == nullptr) { \
+					qfWarning() << "setting object without parent:" << m_##lower_letter##name_rest << "to property:" << QF_QUOTEME(lower_letter##name_rest) << "of:" << this; \
+					/*qfWarning() << "reparenting:" << m_##lower_letter##name_rest << "to:" << this; \
+					m_##lower_letter##name_rest->setParent(this); */\
+				} \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 		}\
 	}
+
 #define QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, default_value) \
 	private: bool m_##lower_letter##name_rest = default_value; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const bool &new_val); \
