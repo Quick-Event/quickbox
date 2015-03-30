@@ -31,7 +31,7 @@ public:
 	QString decrypt(const QByteArray &ba) const;
 private:
 	QByteArray decodeArray(const QByteArray &ba) const;
-private:
+protected:
 	Generator m_generator;
 };
 
