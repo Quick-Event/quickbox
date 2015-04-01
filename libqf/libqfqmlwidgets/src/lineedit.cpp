@@ -2,8 +2,9 @@
 
 using namespace qf::qmlwidgets;
 
-LineEdit::LineEdit(QWidget *parent) :
-	QLineEdit(parent), IDataWidget(this)
+LineEdit::LineEdit(QWidget *parent)
+	: Super(parent)
+	, IDataWidget(this)
 {
 	connect(this, &QLineEdit::textEdited, this, &LineEdit::onTextEdited);
 }

@@ -34,7 +34,7 @@ public:
 	EnumList dbEnumsForGroup(const QString &group_name);
 	DbEnum dbEnum(const QString &group_name, const QString &group_id);
 
-	bool isEmpty() const {return m_enumCache.isEmpty();}
+	bool isEmpty() const {return m_enumsForGroup.isEmpty();}
 	virtual void reload(const QString &group_name);
 	//! delete all groups wen group_name is empty
 	void clear(const QString &group_name = QString());
@@ -44,7 +44,7 @@ private:
 	void setConnectionName(const QString &connection_name) { m_connectionName = connection_name; }
 private:
 	QString m_connectionName;
-	QMap<QString, EnumList> m_enumCache;
+	QMap<QString, EnumList> m_enumsForGroup;
 };
 
 }}}

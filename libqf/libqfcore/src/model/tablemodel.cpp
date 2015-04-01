@@ -393,9 +393,10 @@ QVariant TableModel::value(int row_ix, const QString &col_name) const
 {
 	QVariant ret;
 	int col_ix = columnIndex(col_name);
-	QF_ASSERT(col_ix >= 0,
-			  tr("Cannot find column index for name: '%1'").arg(col_name),
-			  return ret);
+	if(col_ix < 0) {
+		qfError() << tr("Cannot find column index for name: '%1'").arg(col_name);
+		return ret;
+	}
 	return value(row_ix, col_ix);
 }
 
@@ -420,6 +421,18 @@ QVariant TableModel::origValue(int row_ix, const QString &col_name) const
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return ret);
 	return origValue(row_ix, col_ix);
+}
+
+QVariantMap TableModel::values(int row_ix) const
+{
+	QVariantMap ret;
+	for (int i=0; i<columnCount(); ++i) {
+		auto cd = columnDefinition(i);
+		QString key;
+		qf::core::Utils::parseFieldName(cd.fieldName(), &key);
+		ret[key] = value(row_ix, i);
+	}
+	return ret;
 }
 
 bool TableModel::isDirty(int row_ix, int column_ix) const

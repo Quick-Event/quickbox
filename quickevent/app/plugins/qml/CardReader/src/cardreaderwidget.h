@@ -37,6 +37,7 @@ class CardReaderPartWidget;
 
 namespace CardReader {
 class CardChecker;
+class CheckedCard;
 }
 
 class CardReaderWidget : public QFrame
@@ -73,14 +74,14 @@ private:
 	void closeCardLog();
 	siut::DeviceDriver *siDriver();
 
-	int currentStage();
+	int currentStageId();
 	CardReader::CardChecker* currentCardChecker();
 
 	void processSICard(const SIMessageCardReadOut &card);
 
 	int findRunId(const SIMessageCardReadOut &card);
 	int saveCardToSql(const SIMessageCardReadOut &card, int run_id);
-	int updateRunLapsSql(const SIMessageCardReadOut &card, int run_id);
+	void updateRunLapsSql(const CardReader::CheckedCard &card, int run_id);
 	void updateTableView(int card_id);
 private:
 	Ui::CardReaderWidget *ui;

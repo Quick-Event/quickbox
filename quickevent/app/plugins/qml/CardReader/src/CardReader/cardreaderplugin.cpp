@@ -1,9 +1,11 @@
 #include "cardreaderplugin.h"
-#include "cardreaderpartwidget.h"
+#include "../cardreaderpartwidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 namespace qff = qf::qmlwidgets::framework;
+
+using namespace CardReader;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)

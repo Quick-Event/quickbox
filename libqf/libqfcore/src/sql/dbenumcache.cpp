@@ -31,8 +31,10 @@ DbEnum DbEnumCache::EnumList::valueForId(const QString& group_id) const
 
 void DbEnumCache::clear(const QString & group_name)
 {
-	if(group_name.isEmpty()) m_enumCache.clear();
-	else m_enumCache.remove(group_name);
+	if(group_name.isEmpty())
+		m_enumsForGroup.clear();
+	else
+		m_enumsForGroup.remove(group_name);
 }
 
 void DbEnumCache::reload(const QString & group_name)
@@ -42,7 +44,7 @@ void DbEnumCache::reload(const QString & group_name)
 	if(q.exec("SELECT * FROM enumz WHERE groupName=" QF_SARG(group_name) " ORDER BY pos")) {
 		while(q.next()) {
 			DbEnum en(q);
-			m_enumCache[group_name] << en;
+			m_enumsForGroup[group_name] << en;
 		}
 	}
 	else {
@@ -52,7 +54,7 @@ void DbEnumCache::reload(const QString & group_name)
 
 void DbEnumCache::ensure(const QString & group_name)
 {
-	if(!m_enumCache.contains(group_name))
+	if(!m_enumsForGroup.contains(group_name))
 		reload(group_name);
 }
 
@@ -62,15 +64,17 @@ DbEnumCache& DbEnumCache::instance(const QString &connection_name)
 	QString cn = connection_name;
 	if(cn.isEmpty())
 		cn = QSqlDatabase::defaultConnection;
-	if(!instances.contains(cn))
+	if(!instances.contains(cn)) {
+		qfInfo() << "creating new DbEnumCache for connection name:" << connection_name;
 		instances[cn].setConnectionName(cn);
+	}
 	return instances[cn];
 }
 
 DbEnumCache::EnumList DbEnumCache::dbEnumsForGroup(const QString & group_name)
 {
 	ensure(group_name);
-	return m_enumCache.value(group_name);
+	return m_enumsForGroup.value(group_name);
 }
 
 DbEnum DbEnumCache::dbEnum(const QString & group_name, const QString & group_id)

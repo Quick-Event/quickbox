@@ -2,6 +2,8 @@
 #include "connectdbdialogwidget.h"
 #include "connectionsettings.h"
 #include "eventdialogwidget.h"
+#include "Event/stagedocument.h"
+#include "Event/stagewidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -30,6 +32,8 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 
+using namespace Event;
+
 static QString eventNameToFileName(const QString &event_name)
 {
 	ConnectionSettings connection_settings;
@@ -56,9 +60,23 @@ Event::EventConfig *EventPlugin::eventConfig(bool reload)
 	return m_eventConfig;
 }
 
-int EventPlugin::currentStage()
+int EventPlugin::currentStageId()
 {
 	return m_cbxStage->currentIndex() + 1;
+}
+
+QVariantMap EventPlugin::stageData(int stage_id)
+{
+	QVariantMap ret;
+	if(m_stageCache.contains(stage_id)) {
+		ret = m_stageCache.value(stage_id);
+	}
+	else {
+		Event::StageDocument doc;
+		doc.load(stage_id);
+		ret = doc.values();
+	}
+	return ret;
 }
 
 void EventPlugin::onInstalled()
@@ -81,7 +99,7 @@ void EventPlugin::onInstalled()
 
 	//QObject *core_plugin = fwk->plugin("Core", qf::core::Exception::Throw);
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
-	connect(this, SIGNAL(currentStageChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
+	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
 
@@ -97,11 +115,34 @@ void EventPlugin::onInstalled()
 	m_cbxStage = new QComboBox();
 	connect(m_cbxStage, SIGNAL(activated(int)), this, SLOT(onCbxStageActivated(int)));
 	tb->addWidget(m_cbxStage);
+
+
+	QIcon ico(":/qf/qmlwidgets/images/settings");
+	m_actEditStage = new qfw::Action(ico, "Stage settings");
+	//m_actOpenEvent->setEnabled(false);
+	connect(m_actEditStage, SIGNAL(triggered()), this, SLOT(editStage()));
+	tb->addAction(m_actEditStage);
 }
 
 void EventPlugin::onCbxStageActivated(int ix)
 {
-	emit this->currentStageChanged(ix + 1);
+	emit this->currentStageIdChanged(ix + 1);
+}
+
+void EventPlugin::editStage()
+{
+	qfLogFuncFrame();// << "id:" << id << "mode:" << mode;
+	int stage_id = currentStageId();
+	if(stage_id < 0)
+		return;
+	Event::StageWidget *w = new Event::StageWidget();
+	w->setWindowTitle(tr("Edit Stage"));
+	auto fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
+	dlg.setDefaultButton(QDialogButtonBox::Save);
+	dlg.setCentralWidget(w);
+	w->load(stage_id);
+	dlg.exec();
 }
 
 void EventPlugin::onEventOpened()
@@ -115,7 +156,7 @@ void EventPlugin::onEventOpened()
 	}
 	m_cbxStage->setCurrentIndex(0);
 	m_cbxStage->blockSignals(false);
-	emit this->currentStageChanged(currentStage());
+	emit this->currentStageIdChanged(currentStageId());
 }
 
 void EventPlugin::connectToSqlServer()

@@ -5,6 +5,7 @@
 
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QVariantMap>
 
 class QSqlDatabase;
 
@@ -31,6 +32,7 @@ public:
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;
 	QVariant value(const QString& field_name) const;
+	QVariantMap values() const;
 	QString lastErrorText() const;
 };
 

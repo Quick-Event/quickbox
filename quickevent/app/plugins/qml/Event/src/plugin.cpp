@@ -16,7 +16,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("Event"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<EventPlugin>(uri, 1, 0, "EventPlugin");
+		qmlRegisterType<Event::EventPlugin>(uri, 1, 0, "EventPlugin");
 	}
 };
 

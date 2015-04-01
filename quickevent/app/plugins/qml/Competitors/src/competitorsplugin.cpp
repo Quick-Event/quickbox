@@ -19,6 +19,8 @@ namespace qff = qf::qmlwidgets::framework;
 //namespace qfd = qf::qmlwidgets::dialogs;
 //namespace qfs = qf::core::sql;
 
+using namespace Competitors;
+
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super(parent)
 {

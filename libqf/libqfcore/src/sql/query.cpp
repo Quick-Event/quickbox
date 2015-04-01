@@ -34,7 +34,7 @@ bool Query::exec(const QString &query, bool throw_exc)
 	qfLogFuncFrame() << query;
 	bool ret = Super::exec(query);
 	if(!ret && throw_exc) {
-		QF_EXCEPTION(lastError().text());
+		QF_EXCEPTION(query + '\n' + lastError().text());
 	}
 	return ret;
 }
@@ -96,6 +96,18 @@ QVariant Query::value(const QString &field_name) const
 	}
 	else
 		ret = value(ix);
+	return ret;
+}
+
+QVariantMap Query::values() const
+{
+	QVariantMap ret;
+	auto rec = record();
+	for (int i=0; i<rec.count(); ++i) {
+		QString key;
+		qf::core::Utils::parseFieldName(rec.fieldName(i), &key);
+		ret[key] = value(i);
+	}
 	return ret;
 }
 

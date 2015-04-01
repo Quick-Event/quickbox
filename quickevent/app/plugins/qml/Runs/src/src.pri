@@ -1,6 +1,7 @@
 message(including $$PWD)
 
 HEADERS += \
+    $$PWD/runspluginglobal.h \
     $$PWD/runsplugin.h \
     $$PWD/thispartwidget.h \
     $$PWD/runswidget.h \

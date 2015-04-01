@@ -19,7 +19,7 @@ public:
 	~ConnectDbDialogWidget();
 
 	QString eventName();
-	EventPlugin::ConnectionType connectionType();
+	Event::EventPlugin::ConnectionType connectionType();
 	QString serverHost();
 	int serverPort();
 	QString serverUser();

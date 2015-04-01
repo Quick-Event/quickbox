@@ -150,14 +150,16 @@ public:
 	Q_SIGNAL void reloaded();
 
 	Q_INVOKABLE bool isEmpty() const {return rowCount() == 0;}
-	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
-	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
 	Q_INVOKABLE virtual QVariant value(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
 	Q_INVOKABLE virtual QVariant origValue(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant origValue(int row_ix, const QString& col_name) const;
+	Q_INVOKABLE virtual QVariantMap values(int row_ix) const;
 	Q_INVOKABLE bool isDirty(int row_ix, int column_ix) const;
 	Q_INVOKABLE bool isDirty(int row_ix, const QString& col_name) const;
+
+	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
+	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
 
 	qf::core::utils::TableRow tableRow(int row_no);
 

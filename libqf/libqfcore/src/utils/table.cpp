@@ -395,6 +395,18 @@ QVariant TableRow::value(const QString &field_name) const
 	ret = value(ix);
 	return ret;
 }
+
+QVariantMap TableRow::valueMap() const
+{
+	QVariantMap ret;
+	for (int i=0; i<fields().count(); ++i) {
+		const Table::Field &fld = fields()[i];
+		QString key;
+		qf::core::Utils::parseFieldName(fld.name(), &key);
+		ret[key] = value(i);
+	}
+	return ret;
+}
 /*
 #if defined QT_DEBUG
 static QString v2str(const QVariant &ret)

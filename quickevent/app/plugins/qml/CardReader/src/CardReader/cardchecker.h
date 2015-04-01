@@ -1,5 +1,5 @@
-#ifndef CARDCHECKER_H
-#define CARDCHECKER_H
+#ifndef CARDREADER_CARDCHECKER_H
+#define CARDREADER_CARDCHECKER_H
 
 #include <qf/core/utils.h>
 
@@ -19,9 +19,15 @@ public:
 
 	QF_PROPERTY_IMPL(QString, c, C, aption)
 
+	Q_INVOKABLE int toAMms(int time_msec);
+	Q_INVOKABLE int toAM(int time_sec);
+	Q_INVOKABLE int stageStartSec();
+	Q_INVOKABLE int startTimeSec(int run_id);
+	Q_INVOKABLE QVariantMap courseForRunId(int run_id);
+
 	//Q_INVOKABLE QVariant checkCard(const QVariant &card, const QVariant &run_id);
 };
 
 }
 
-#endif // CARDCHECKER_H
+#endif // CARDREADER_CARDCHECKER_H

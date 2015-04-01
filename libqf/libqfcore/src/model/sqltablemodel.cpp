@@ -37,7 +37,7 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 			ColumnDefinition::DbEnumCastProperties props(cd.castProperties());
 			QString group_name = props.groupName();
 			if(!group_name.isEmpty()) {
-				auto db_enum_cache = qf::core::sql::DbEnumCache::instance(connectionName());
+				qf::core::sql::DbEnumCache &db_enum_cache = qf::core::sql::DbEnumCache::instance(connectionName());
 				auto dbe = db_enum_cache.dbEnum(group_name, ret.toString());
 				ret = QVariant::fromValue(dbe);
 			}

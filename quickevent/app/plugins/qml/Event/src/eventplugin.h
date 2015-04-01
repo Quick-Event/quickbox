@@ -2,10 +2,13 @@
 #define EVENTPLUGIN_H
 
 #include "eventpluginglobal.h"
-#include "eventconfig.h"
+#include "Event/eventconfig.h"
+#include "Event/stagedata.h"
 
 #include <qf/core/utils.h>
 #include <qf/qmlwidgets/framework/plugin.h>
+
+#include <QVariantMap>
 
 namespace qf {
 namespace qmlwidgets {
@@ -17,11 +20,13 @@ namespace framework {
 
 class QComboBox;
 
+namespace Event {
+
 class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(QObject* eventConfig READ eventConfig)
-	Q_PROPERTY(int currentStage READ currentStage NOTIFY currentStageChanged)
+	Q_PROPERTY(int currentStageId READ currentStageId NOTIFY currentStageIdChanged)
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
 	Q_PROPERTY(bool dbOpen READ isDbOpen NOTIFY dbOpenChanged)
@@ -36,8 +41,10 @@ public:
 	Event::EventConfig* eventConfig(bool reload = false);
 	int stageCount() {return eventConfig()->stageCount();}
 
-	int currentStage();
-	Q_SIGNAL void currentStageChanged(int current_stage);
+	int currentStageId();
+	Q_SIGNAL void currentStageIdChanged(int current_stage);
+
+	QVariantMap stageData(int stage_id);
 
 	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
 	Q_SLOT bool closeEvent();
@@ -55,13 +62,18 @@ private:
 	Q_SLOT void onEventOpened();
 	Q_SLOT void connectToSqlServer();
 	Q_SLOT void onCbxStageActivated(int ix);
+	Q_SLOT void editStage();
 private:
 	qf::qmlwidgets::Action *m_actConnectDb;
 	qf::qmlwidgets::Action *m_actCreateEvent;
 	qf::qmlwidgets::Action *m_actOpenEvent;
+	qf::qmlwidgets::Action *m_actEditStage;
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;
 	QComboBox *m_cbxStage = nullptr;
+	QMap<int, QVariantMap> m_stageCache;
 };
+
+}
 
 #endif // EVENTPLUGIN_H

@@ -2,10 +2,12 @@
 #include "ui_cardreaderwidget.h"
 #include "dlgsettings.h"
 #include "cardreaderpartwidget.h"
-#include "cardreaderplugin.h"
-#include "cardchecker.h"
+#include "CardReader/cardreaderplugin.h"
+#include "CardReader/cardchecker.h"
+#include "CardReader/checkedcard.h"
+#include "CardReader/checkedpunch.h"
 
-#include <EventPlugin/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
@@ -121,7 +123,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	{
 		QLabel *lbl = new QLabel(" Check type ");
 		main_tb->addWidget(lbl);
-		CardReaderPlugin *card_reader_plugin = qobject_cast<CardReaderPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
+		auto *card_reader_plugin = qobject_cast<CardReader::CardReaderPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
 		m_cbxCardCheckers = new QComboBox();
 		for(auto checker : card_reader_plugin->cardCheckers()) {
 			m_cbxCardCheckers->addItem(checker->caption());
@@ -132,7 +134,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 
 void CardReaderWidget::reload()
 {
-	int current_stage = currentStage();
+	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
 			.select2("runs", "startTimeMs, timeMs, status")
@@ -349,17 +351,19 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		                          Q_RETURN_ARG(QVariant, ret_val),
 		                          Q_ARG(QVariant, card.toVariant()),
 		                          Q_ARG(QVariant, run_id));
+		CardReader::CheckedCard cc(ret_val.toMap());
+		updateRunLapsSql(cc, run_id);
 	}
 	if(card_id > 0)
 		updateTableView(card_id);
 }
 
-int CardReaderWidget::currentStage()
+int CardReaderWidget::currentStageId()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
+	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->currentStage();
+	int ret = event_plugin->currentStageId();
 	return ret;
 }
 
@@ -369,7 +373,7 @@ CardReader::CardChecker *CardReaderWidget::currentCardChecker()
 	int ix = m_cbxCardCheckers->currentIndex();
 	QF_ASSERT_EX(ix >= 0, "Card checkers list - bad index!");
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	CardReaderPlugin *card_reader_plugin = qobject_cast<CardReaderPlugin*>(fwk->plugin("CardReader"));
+	auto card_reader_plugin = qobject_cast<CardReader::CardReaderPlugin*>(fwk->plugin("CardReader"));
 	CardReader::CardChecker *ret = card_reader_plugin->cardCheckers().value(ix);
 	QF_ASSERT_EX(ret != nullptr, "Card checker is NULL!");
 	return ret;
@@ -378,7 +382,7 @@ CardReader::CardChecker *CardReaderWidget::currentCardChecker()
 int CardReaderWidget::findRunId(const SIMessageCardReadOut &card)
 {
 	int si_id = card.cardNumber();
-	int stage_no = currentStage();
+	int stage_no = currentStageId();
 	qf::core::sql::Query q;
 	q.exec("SELECT id FROM runs WHERE stageId=" QF_IARG(stage_no) " AND siId=" QF_IARG(si_id), qf::core::Exception::Throw);
 	int ret = 0;
@@ -406,77 +410,30 @@ int CardReaderWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_id
 	q.bindValue(QStringLiteral(":finishTime"), card.finishTime());
 	q.bindValue(QStringLiteral(":punches"), '[' + punches.join(", ") + ']');
 	q.bindValue(QStringLiteral(":runId"), run_id);
-	q.bindValue(QStringLiteral(":stageId"), currentStage());
+	q.bindValue(QStringLiteral(":stageId"), currentStageId());
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}
 	else {
-		appendLog(qf::core::Log::LOG_ERR, trUtf8("Cave card ERROR: %1").arg(q.lastErrorText()));
+		appendLog(qf::core::Log::LOG_ERR, trUtf8("Save card ERROR: %1").arg(q.lastErrorText()));
 	}
 	return ret;
 }
 
-struct RunPunch
+void CardReaderWidget::updateRunLapsSql(const CardReader::CheckedCard &card, int run_id)
 {
-	int code = 0;
-	bool outOfOrder = false;
-	bool ok = false;
-	int timeMs = 0;
-	int lapTimeMs = 0;
-
-	//bool isOk() const {return lapTimeMs > 0;}
-};
-
-int CardReaderWidget::updateRunLapsSql(const SIMessageCardReadOut &card, int run_id)
-{
-	/*
-	QList<RunPunch> correct_punches = correctPunching(run_id);
-	auto card_punches = card.punchList();
-	int check_ix = 0;
-	int start_time = card.startTime();
-	if(!SIMessageCardReadOut::isTimeValid(start_time)) {
-		// take start time from start list
-		start_time = stage_start + run_start;
-	}
-	int prev_time = 0;
-	for(int j=0; j<correct_punches.count(); j++) { //scan course punches
-		RunPunch& pp = correct_punches[j];
-		for(int k=check_ix; k<correct_punches.count(); k++) { //scan card
-			const SIMessageCardReadOut::Punch& cp = card_punches[k];
-			if(pp.code == cp.code()) {  //nasel kod v karte
-				pp.ok = true;      //kod OK
-				check_ix = k + 1;
-				break;
-			}
-		}
-		if(!pp.ok) {
-			if(pp.outOfOrder) {
-				continue;
-			}
-		}
-		// pokud flags obsahuji 'NOCHECK' skoc na dalsi kod
-		var row = rs.row(j);
-		var flags = row.value("flags");
-		var nocheck = (flags.indexOf("NOCHECK") >= 0);
-		if(nocheck) continue;
-
-		var code = row.value("code");
-		for(var k=checkix; k<punches.length; k++) { //projed kartu
-			var punch = punches[k];
-			if(punch.code == code) {  //nasel kod v karte
-				checks[k] = '*';      //kod OK
-				checkix = k+1;
-				break;
-			}
-		}
-		if(k >= punches.length) {// karta je u konce nema cenu hledat dal
-			error = true;
-			//break; // neukoncuj prohledavani, aby slo najit chybejici kontroly
-			// siprint uz nepouziva kontrolu razeni z sicli, takze se prohledavani muze klido ukoncit
+	qf::core::sql::Query q;
+	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+	for(auto v : card.punchList()) {
+		CardReader::CheckedPunch cp(v.toMap());
+		q.bindValue(QStringLiteral(":runId"), run_id);
+		q.bindValue(QStringLiteral(":position"), cp.position());
+		q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
+		q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
+		if(!q.exec()) {
+			appendLog(qf::core::Log::LOG_ERR, trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText()));
 		}
 	}
-	*/
-	return 0;
 }
 
 void CardReaderWidget::updateTableView(int card_id)

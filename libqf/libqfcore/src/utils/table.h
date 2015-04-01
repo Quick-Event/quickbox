@@ -361,12 +361,15 @@ public:
 	//bool hasNullFlag(int col) const;
 	QVariant value(int col) const;
 	QVariant value(const QString &field_name) const;
+	QVariantMap valueMap() const;
+
 	//! Dirty flag nastavi, jen kdyz je value jina, nez ta, co uz tam byla.
 	void setValue(int col, const QVariant &v);
 	void setValue(const QString &field_name, const QVariant &v);
 	//! Set value without retyping and checks, useful only when table data are loaded from QSL query or something like that.
 	/// Very fast and very dangerous function
 	void setBareBoneValue(int col, const QVariant &val);
+
 	bool isDirty() const;
 	bool isDirty(int field_no) const;
 	void setDirty(int field_no, bool val = true);

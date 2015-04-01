@@ -16,7 +16,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("Classes"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<ClassesPlugin>(uri, 1, 0, "ClassesPlugin");
+		qmlRegisterType<Classes::ClassesPlugin>(uri, 1, 0, "ClassesPlugin");
 	}
 };
 

@@ -13,7 +13,7 @@ private:
 public:
 	ConnectionSettings(QObject *parent = nullptr);
 public:
-	void setConnectionType(const EventPlugin::ConnectionType &t);
+	void setConnectionType(const Event::EventPlugin::ConnectionType &t);
 	void setEventName(const QString &s);
 	void setServerHost(const QString &s);
 	void setServerPort(int p);
@@ -21,7 +21,7 @@ public:
 	void setServerPassword(const QString &s);
 	void setSingleWorkingDir(const QString &s);
 public slots:
-	EventPlugin::ConnectionType connectionType();
+	Event::EventPlugin::ConnectionType connectionType();
 	QString eventName();
 	QString serverHost();
 	int serverPort();

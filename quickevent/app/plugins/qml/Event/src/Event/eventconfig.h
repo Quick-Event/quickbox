@@ -1,7 +1,7 @@
 #ifndef EVENTCONFIG_H
 #define EVENTCONFIG_H
 
-#include "eventpluginglobal.h"
+#include "../eventpluginglobal.h"
 
 #include <QObject>
 #include <QVariantMap>

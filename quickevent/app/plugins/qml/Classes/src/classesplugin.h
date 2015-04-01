@@ -13,6 +13,9 @@ class PartWidget;
 }
 }
 }
+
+namespace Classes {
+
 class ClassesPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
@@ -34,5 +37,7 @@ private:
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 };
+
+}
 
 #endif // CLASSESPLUGIN_H

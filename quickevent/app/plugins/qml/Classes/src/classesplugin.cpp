@@ -23,6 +23,8 @@ namespace qff = qf::qmlwidgets::framework;
 //namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 
+using namespace Classes;
+
 ClassesPlugin::ClassesPlugin(QObject *parent)
 	: Super(parent)
 {

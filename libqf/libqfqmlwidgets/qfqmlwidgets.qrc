@@ -23,6 +23,8 @@
 		<file>images/plus.png</file>
 		<file>images/minus.png</file>
 
+		<file>images/settings.svg</file>
+
 		<file>images/fwd.png</file>
 		<file>images/ffwd.png</file>
 		<file>images/rev.png</file>

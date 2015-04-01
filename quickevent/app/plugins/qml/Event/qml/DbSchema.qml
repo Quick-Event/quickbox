@@ -33,7 +33,7 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startTime'; type: Time {} },
-				Field { name: 'date'; type: Date {} }
+				Field { name: 'startDate'; type: Date {} }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true }
@@ -114,7 +114,7 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'startNumber'; type: Int {} },
 				Field { name: 'classId'; type: Int {} },
-				Field { name: 'courseId'; type: String { length: 10 } },
+				//Field { name: 'courseId'; type: String { length: 10 } },
 				Field { name: 'firstName'; type: String {} },
 				Field { name: 'lastName'; type: String {} },
 				Field { name: 'registration'; type: String { length: 10 } },
@@ -187,12 +187,15 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'runId'; type: Int {} },
-				Field { name: 'ctrlNo'; type: Int {} },
-				Field { name: 'code'; type: Int {} },
+				Field { name: 'position'; type: Int {} },
+				//Field { name: 'code'; type: Int {} },
+				Field { name: 'stpTimeMs'; type: Int { } },
 				Field { name: 'lapTimeMs'; type: Int { } }
 			]
 			indexes: [
-				Index {fields: ['runId', 'ctrlNo'] }
+				Index {fields: ['runId', 'position'] },
+				Index {fields: ['position', 'stpTimeMs'] },
+				Index {fields: ['position', 'lapTimeMs'] }
 			]
 		},
 		Table { name: 'clubs'

@@ -24,11 +24,11 @@ QString ConnectDbDialogWidget::eventName()
 	return ui->edEventName->text();
 }
 
-EventPlugin::ConnectionType ConnectDbDialogWidget::connectionType()
+Event::EventPlugin::ConnectionType ConnectDbDialogWidget::connectionType()
 {
 	if(ui->tabWidget->currentIndex() == 0)
-		return EventPlugin::ConnectionType::SqlServer;
-	return EventPlugin::ConnectionType::SingleFile;
+		return Event::EventPlugin::ConnectionType::SqlServer;
+	return Event::EventPlugin::ConnectionType::SingleFile;
 }
 
 QString ConnectDbDialogWidget::serverHost()
@@ -69,7 +69,7 @@ void ConnectDbDialogWidget::saveSettings()
 {
 	ConnectionSettings settings;
 	settings.setEventName(ui->edEventName->text());
-	settings.setConnectionType(static_cast<EventPlugin::ConnectionType>(ui->tabWidget->currentIndex()));
+	settings.setConnectionType(static_cast<Event::EventPlugin::ConnectionType>(ui->tabWidget->currentIndex()));
 	settings.setServerHost(ui->edServerHost->text());
 	settings.setServerPort(ui->edServerPort->value());
 	settings.setServerUser(ui->edServerUser->text());

@@ -23,6 +23,7 @@ void DataController::setDocument(qf::core::model::DataDocument *doc)
 		m_document = doc;
 		connect(doc, &qf::core::model::DataDocument::loaded, this, &DataController::documentLoaded);
 		connect(doc, &qf::core::model::DataDocument::valueChanged, this, &DataController::documentValueChanged);
+		connect(doc, &qf::core::model::DataDocument::aboutToSave, this, &DataController::documentAboutToSave);
 		emit documentChanged(doc);
 	}
 }

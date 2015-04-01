@@ -1,6 +1,8 @@
 #ifndef RUNSPLUGIN_H
 #define RUNSPLUGIN_H
 
+#include "runspluginglobal.h"
+
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
@@ -15,7 +17,9 @@ class DockWidget;
 }
 }
 
-class RunsPlugin : public qf::qmlwidgets::framework::Plugin
+namespace Runs {
+
+class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)
@@ -28,10 +32,16 @@ public:
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 
 	Q_SIGNAL void nativeInstalled();
+
+	Q_INVOKABLE int courseForRun(int run_id);
+
 private:
 	Q_SLOT void onInstalled();
+	int courseForRun_Classic(int run_id);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 };
+
+}
 
 #endif // RUNSPLUGIN_H

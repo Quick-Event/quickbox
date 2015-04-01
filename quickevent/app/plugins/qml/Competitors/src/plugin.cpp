@@ -16,7 +16,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("Competitors"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<CompetitorsPlugin>(uri, 1, 0, "CompetitorsPlugin");
+		qmlRegisterType<Competitors::CompetitorsPlugin>(uri, 1, 0, "CompetitorsPlugin");
 	}
 };
 

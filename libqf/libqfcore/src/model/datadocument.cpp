@@ -42,6 +42,12 @@ void DataDocument::setModel(TableModel *m)
 	}
 }
 
+const TableModel *DataDocument::model() const
+{
+	QF_ASSERT_EX(m_model != nullptr, "Model is NULL");
+	return m_model;
+}
+
 TableModel *DataDocument::model()
 {
 	if(!m_model) {
@@ -128,7 +134,7 @@ bool DataDocument::copy()
 	return ret;
 }
 
-bool DataDocument::isEmpty()
+bool DataDocument::isEmpty() const
 {
 	if(!m_model)
 		return true;
@@ -137,43 +143,51 @@ bool DataDocument::isEmpty()
 	return ret;
 }
 
-QStringList DataDocument::fieldNames()
+QStringList DataDocument::fieldNames() const
 {
 	QStringList ret;
-	TableModel *m = model();
+	const TableModel *m = model();
 	for(int i=0; i<m->columnCount(); i++)
 		ret << m->columnDefinition(i).fieldName();
 	return ret;
 }
 
-bool DataDocument::isValidFieldName(const QString &data_id)
+bool DataDocument::isValidFieldName(const QString &data_id) const
 {
-	TableModel *m = model();
+	const TableModel *m = model();
 	return m->columnIndex(data_id) >= 0;
 }
 
-bool DataDocument::isDirty(const QString &data_id)
+bool DataDocument::isDirty(const QString &data_id) const
 {
 	bool ret = false;
-	TableModel *m = model();
+	const TableModel *m = model();
 	int r = currentModelRow();
 	ret = m->isDirty(r, data_id);
 	return ret;
 }
 
-QVariant DataDocument::value(const QString &data_id)
+QVariantMap DataDocument::values() const
+{
+	const TableModel *m = model();
+	int r = currentModelRow();
+	QVariantMap ret = m->values(r);
+	return ret;
+}
+
+QVariant DataDocument::value(const QString &data_id) const
 {
 	QVariant ret;
-	TableModel *m = model();
+	const TableModel *m = model();
 	int r = currentModelRow();
 	ret = m->value(r, data_id);
 	return ret;
 }
 
-QVariant DataDocument::origValue(const QString &data_id)
+QVariant DataDocument::origValue(const QString &data_id) const
 {
 	QVariant ret;
-	TableModel *m = model();
+	const TableModel *m = model();
 	int r = currentModelRow();
 	ret = m->origValue(r, data_id);
 	return ret;
@@ -186,13 +200,18 @@ void DataDocument::setValue(const QString &data_id, const QVariant &val)
 		qfWarning() << "data_id:" << data_id << "val:" << val.toString() << "setValue() in empty document";
 		return;
 	}
+	if(data_id.isEmpty()) {
+		qfWarning() << "data_id is empty";
+		return;
+	}
 	QVariant old_val;
 	TableModel *m = model();
 	int r = currentModelRow();
 	old_val = m->value(r, data_id);
-	m->setValue(r, data_id, val);
-	if(old_val != val) {
-		emit valueChanged(data_id, old_val, val);
+	if(m->setValue(r, data_id, val)) {
+		if(old_val != val) {
+			emit valueChanged(data_id, old_val, val);
+		}
 	}
 }
 

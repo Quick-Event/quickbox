@@ -24,7 +24,7 @@ ConnectionSettings::ConnectionSettings(QObject *parent)
 
 }
 
-void ConnectionSettings::setConnectionType(const EventPlugin::ConnectionType &t)
+void ConnectionSettings::setConnectionType(const Event::EventPlugin::ConnectionType &t)
 {
 	int i = static_cast<int>(t);
 	setValue(EVENT + '/' + DATA_STORAGE + '/' + CONNECTION_TYPE, i);
@@ -61,10 +61,10 @@ void ConnectionSettings::setSingleWorkingDir(const QString &s)
 	setValue(EVENT + '/' + DATA_STORAGE + '/' + SINGLE_FILE + '/' + WORKING_DIR, s);
 }
 
-EventPlugin::ConnectionType ConnectionSettings::connectionType()
+Event::EventPlugin::ConnectionType ConnectionSettings::connectionType()
 {
 	int i = value(EVENT + '/' + DATA_STORAGE + '/' + CONNECTION_TYPE).toInt();
-	EventPlugin::ConnectionType t = static_cast<EventPlugin::ConnectionType>(i);
+	Event::EventPlugin::ConnectionType t = static_cast<Event::EventPlugin::ConnectionType>(i);
 	return t;
 }
 

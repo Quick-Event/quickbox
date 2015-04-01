@@ -16,7 +16,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("Runs"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<RunsPlugin>(uri, 1, 0, "RunsPlugin");
+		qmlRegisterType<Runs::RunsPlugin>(uri, 1, 0, "RunsPlugin");
 	}
 };
 

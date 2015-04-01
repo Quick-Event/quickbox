@@ -14,9 +14,11 @@ INCLUDEPATH += $$PWD/../../../../../libsiut/include
 LIBS += -lsiut
 
 INCLUDEPATH += $$PWD/../Event/include
+INCLUDEPATH += $$PWD/../Runs/include
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
+    -lRunsplugin \
 
 include (src/src.pri)
 

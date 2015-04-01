@@ -28,7 +28,9 @@ HEADERS += \
     $$PWD/spinbox.h \
     $$PWD/tableviewproxymodel.h \
     $$PWD/texteditwidget.h \
-    $$PWD/sqltableitemdelegate.h
+    $$PWD/sqltableitemdelegate.h \
+    $$PWD/timeedit.h \
+    $$PWD/dateedit.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -57,7 +59,9 @@ SOURCES += \
     $$PWD/spinbox.cpp \
     $$PWD/tableviewproxymodel.cpp \
     $$PWD/texteditwidget.cpp \
-    $$PWD/sqltableitemdelegate.cpp
+    $$PWD/sqltableitemdelegate.cpp \
+    $$PWD/timeedit.cpp \
+    $$PWD/dateedit.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \

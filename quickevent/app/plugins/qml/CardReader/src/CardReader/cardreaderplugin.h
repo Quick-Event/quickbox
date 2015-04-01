@@ -1,15 +1,15 @@
-#ifndef CARDREADERPLUGIN_H
-#define CARDREADERPLUGIN_H
+#ifndef CARDREADER_CARDREADERPLUGIN_H
+#define CARDREADER_CARDREADERPLUGIN_H
 
-#include "cardreaderpluginglobal.h"
+#include "../cardreaderpluginglobal.h"
 
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <QQmlListProperty>
 
 namespace CardReader {
-class  CardChecker;
-}
+
+class CardChecker;
 
 class CARDREADERPLUGIN_DECL_EXPORT CardReaderPlugin : public qf::qmlwidgets::framework::Plugin
 {
@@ -28,4 +28,6 @@ private:
 	QList<CardReader::CardChecker*> m_cardCheckers;
 };
 
-#endif // CARDREADERPLUGIN_H
+}
+
+#endif

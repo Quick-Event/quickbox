@@ -54,8 +54,6 @@ SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, PunchRecord
 			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 3 << "offset:" << offset;
 	}
 	else if(record_type == PunchRecordDegraded) {
-		//d->is24HoursTimeFormat = false;
-		//flags = 0;
 		if(ba.length() > offset) {
 			d->code = (unsigned char)ba[offset];
 		}
@@ -75,15 +73,18 @@ SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, PunchRecord
 			 *
 			 */
 			d->code = (unsigned char)ba[offset + 1];
-			if(d->flags & (1<<7)) d->code = 0;
-			else d->code += 256 * ((d->flags & (3 << 6)) >> 6);
+			if(d->flags & (1<<7))
+				d->code = 0;
+			else
+				d->code += 256 * ((d->flags & (3 << 6)) >> 6);
 			/** code
 			 * CN - control station code number, 0...255 or subsecond value1
 			 * subsecond value only for “start” and “finish” possible
 			 * new from sw5.49: bit7=1 in PTD-byte indicates a subsecond value in CN byte (use always code numbers <256 for start/finish)
 			 */
 			d->time = (((int)(unsigned char)ba[offset + 2]) << 8) + (unsigned char)ba[offset + 3];
-			if(d->flags & (1 << 0)) d->time += 12*60*60;
+			if(d->flags & (1 << 0))
+				d->time += 12*60*60;
 			//qfInfo() << ba.mid(offset, 4).toHex();
 			//qfInfo() << "code:" << d->code;
 		}
@@ -104,19 +105,12 @@ int SIMessageCardReadOut::Punch::code() const
 int SIMessageCardReadOut::Punch::time() const
 {
 	int ret = d->time;
-	//if(is24HoursTimeFormat() && d.flags & (1<<0)) ret += 12*60*60;
 	return ret;
 }
 
 int SIMessageCardReadOut::Punch::timeMSec() const
 {
 	int ret = d->timeMSec;
-	/*
-	if(d.flags & (1<<7)) {
-		ret = d.code; /// 1/256 sec
-		ret = 1000 * ret / 256;
-	}
-	*/
 	return ret;
 }
 
@@ -139,19 +133,12 @@ QString SIMessageCardReadOut::Punch::toJsonArrayString() const
 	return ret;
 }
 
-static int to_AM(int secs)
-{
-	while(secs > 12*60*60) secs -= 12*60*60;
-	while(secs < 0) secs += 12*60*60;
-	return secs;
-}
-
 static QString time_str(int _time)
 {
 	QString ret = "%1:%2.%3";
 	if(_time == 0xEEEE) ret = "----";
 	else {
-		int time = to_AM(_time);
+		int time = SIMessageCardReadOut::toAM(_time);
 		ret = ret.arg(time / (60*60)).arg(QString::number((time / 60) % 60), 2, '0').arg(QString::number(time % 60), 2, '0');
 	}
 	return ret;
@@ -162,7 +149,7 @@ static QString ob_time_str(int _time)
 	QString ret = "%1.%2";
 	if(_time == 0xEEEE) ret = "----";
 	else {
-		int time = to_AM(_time);
+		int time = SIMessageCardReadOut::toAM(_time);
 		ret = ret.arg(time / 60).arg(QString::number(time % 60), 2, '0');
 	}
 	return ret;
@@ -196,7 +183,12 @@ bool SIMessageCardReadOut::isTimeValid(int time)
 	return time >= 0 && time < 0xEEEE;
 }
 
-int SIMessageCardReadOut::modAM(int time_msec)
+int SIMessageCardReadOut::toAM(int time_sec)
+{
+	return toAMms(time_sec * 1000) / 1000;
+}
+
+int SIMessageCardReadOut::toAMms(int time_msec)
 {
 	constexpr int msec12hr = 12 * 60 * 60 * 1000;
 	int ret = time_msec;
@@ -323,7 +315,8 @@ QString SIMessageCardReadOut::dump() const
 	//sl << tr("countryCode: %1").arg(countryCode());
 	//sl << tr("clubCode: %1").arg(clubCode());
 	int start = startTime();
-	if(start == 0xEEEE) start = checkTime();
+	if(start == 0xEEEE)
+		start = checkTime();
 	sl << tr("check: %1").arg(time_str(checkTime()));
 	sl << tr("start: %1").arg(time_str(startTime()));
 	sl << tr("finish: %1 (%2)").arg(time_str(finishTime())).arg(ob_time_str(finishTime() - start));
@@ -346,11 +339,12 @@ QVariantMap SIMessageCardReadOut::toVariant() const
 	ret["checkTime"] = checkTime();
 	ret["startTime"] = startTime();
 	ret["finishTime"] = finishTime();
+	ret["finishTimeMs"] = 0; // TODO: some cards supports msecs, read it
 	QVariantList punch_list;
 	foreach(const Punch &p, punchList()) {
 		QVariantMap m;
 		m["code"] = p.code();
-		m["time"] = p.time();
+		m["timeMs"] = p.time() * 1000 + p.timeMSec();
 		punch_list << m;
 	}
 	ret["punchList"] = punch_list;

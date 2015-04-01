@@ -1,6 +1,6 @@
 #include "competitordocument.h"
 
-#include <EventPlugin/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -45,7 +45,7 @@ bool CompetitorDocument::saveData()
 			int si_id = value("competitors.siId").toInt();
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 			qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-			EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
+			auto event_plugin = qobject_cast<Event::EventPlugin *>(plugin);
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 			/*
 			{

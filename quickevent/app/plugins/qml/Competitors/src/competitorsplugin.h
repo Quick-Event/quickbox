@@ -15,6 +15,8 @@ class DockWidget;
 }
 }
 
+namespace Competitors {
+
 class CompetitorsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
@@ -37,5 +39,7 @@ private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::qmlwidgets::framework::DockWidget *m_registrationsDockWidget = nullptr;
 };
+
+}
 
 #endif // COMPETITORSPLUGIN_H

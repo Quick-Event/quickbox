@@ -1,5 +1,5 @@
-#include "cardreaderplugin.h"
-#include "cardchecker.h"
+#include "CardReader/cardreaderplugin.h"
+#include "CardReader/cardchecker.h"
 
 #include <qf/core/log.h>
 
@@ -17,7 +17,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("CardReader"));
 
 		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<CardReaderPlugin>(uri, 1, 0, "CardReaderPlugin");
+		qmlRegisterType<CardReader::CardReaderPlugin>(uri, 1, 0, "CardReaderPlugin");
 		qmlRegisterType<CardReader::CardChecker>(uri, 1, 0, "CardChecker");
 	}
 };

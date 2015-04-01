@@ -4,7 +4,7 @@
 #include "classesplugin.h"
 #include "coursedef.h"
 
-#include <EventPlugin/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/core/string.h>
 #include <qf/core/utils.h>
@@ -87,14 +87,14 @@ void ClassesWidget::reset()
 void ClassesWidget::reload()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
+	Event::EventPlugin *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")
 				.select2("classdefs", "*")
 				.select2("courses", "name, length, climb")
 				.from("classes")
-				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStage()))
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStageId()))
 				.join("classdefs.courseId", "courses.id")
 				.orderBy("classes.name");//.limit(10);
 		/*
@@ -217,12 +217,12 @@ void ClassesWidget::import_ocad()
 			}
 
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-			EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
-			ClassesPlugin *classes_plugin = qobject_cast<ClassesPlugin *>(fwk->plugin("Classes"));
+			auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+			auto *classes_plugin = qobject_cast<Classes::ClassesPlugin *>(fwk->plugin("Classes"));
 			if(event_plugin && classes_plugin) {
-				QString msg = tr("Delete all courses definitions for stage %1?").arg(event_plugin->currentStage());
+				QString msg = tr("Delete all courses definitions for stage %1?").arg(event_plugin->currentStageId());
 				if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
-					classes_plugin->createCourses(event_plugin->currentStage(), courses);
+					classes_plugin->createCourses(event_plugin->currentStageId(), courses);
 					reload();
 				}
 			}

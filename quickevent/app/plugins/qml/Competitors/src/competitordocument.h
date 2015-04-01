@@ -1,5 +1,5 @@
-#ifndef COMPETITORDOCUMENT_H
-#define COMPETITORDOCUMENT_H
+#ifndef COMPETITORS_COMPETITORDOCUMENT_H
+#define COMPETITORS_COMPETITORDOCUMENT_H
 
 #include <qf/core/model/sqldatadocument.h>
 
@@ -15,4 +15,4 @@ protected:
 	bool dropData() Q_DECL_OVERRIDE;
 };
 
-#endif // COMPETITORDOCUMENT_H
+#endif // COMPETITORS_COMPETITORDOCUMENT_H
