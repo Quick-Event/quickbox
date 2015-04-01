@@ -15,13 +15,12 @@ using namespace qf::qmlwidgets::dialogs;
 PreviewDialog::PreviewDialog(QWidget *parent) :
 	Super(parent)
 {
+	QWidget *w = new QWidget();
+	setCentralWidget(w);
 	ui = new Ui::PreviewDialog;
-	ui->setupUi(this);
-	//f_editor = new QFTextViewWidget();
-	//setDialogWidget(f_editor);
-	//QTimer::singleShot(0, f_editor, SLOT(setFocus()));
-	//connect(f_editor, SIGNAL(acceptRequest()), this, SLOT(accept()));
+	ui->setupUi(w);
 	editor()->setFocus();
+	setButtons(QDialogButtonBox::Cancel);
 }
 
 PreviewDialog::~PreviewDialog()
@@ -34,7 +33,6 @@ void PreviewDialog::setFile(const QString& file_name, const QString &codec_name)
 	qfLogFuncFrame() << file_name << codec_name;
 	QFile f(file_name);
 	if(f.open(QFile::ReadOnly)) {
-		//QByteArray ba = f.readAll();
 		QTextCodec *tc;
 		if(codec_name.isEmpty())
 			tc = QTextCodec::codecForName("utf-8");

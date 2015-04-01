@@ -48,6 +48,10 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 		if(dialog_widget) {
 			QMetaObject::invokeMethod(this, "settleDownDialogWidget", Qt::QueuedConnection);
 		}
+		else {
+			updateCaptionFrame();
+			updateLayout();
+		}
 	}
 }
 

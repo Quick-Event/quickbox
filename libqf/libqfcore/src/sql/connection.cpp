@@ -627,40 +627,7 @@ QString Connection::createTableSqlCommand(const QString &tblname)
 		}
 	}
 	else if(driverName().endsWith("PSQL")) {
-		QString db, tbl;
-		qf::core::Utils::parseFieldName(tblname, &tbl, &db);
-		QProcess proc;
-		QString prog_name = "pg_dump";
-		QStringList params;
-		params << "-h";
-		params << hostName();
-		params << "-p";
-		params << QString::number(port());
-		params << "-U";
-		params << userName();
-		params << "-t";
-		params << tbl;
-		params << databaseName();
-		QString s = prog_name + " " + params.join(" ");
-		proc.start(prog_name, params);
-		qfDebug() << "\tcalling:" << s;
-		if (!proc.waitForStarted(5000)) {
-			return "calling: " + s + "\n" + err_msg(proc.error());
-		}
-		//proc.write("Qt rocks!");
-		//proc.closeWriteChannel();
-		if (!proc.waitForFinished(10000)) {
-			return "finished error: " + err_msg(proc.error());
-		}
-		s = QString();
-		if(proc.exitCode() != 0) {
-			s = "EXIT CODE: %1\n";
-			s = s.arg(proc.exitCode());
-			s += QString(proc.readAllStandardError());
-			s += "\n";
-		}
-		QByteArray result = proc.readAll();
-		return s + QString(result);
+		return dumpSqlTable_psql(tblname, false);
 	}
 	if(driverName().endsWith("MYSQL")) {
 		QSqlQuery q(*this);
@@ -716,6 +683,9 @@ QString Connection::dumpTableSqlCommand(const QString &tblname)
 			return s;
 		}
 		return QString();
+	}
+	else if(driverName().endsWith("PSQL")) {
+		return dumpSqlTable_psql(tblname, true);
 	}
 	return "unsupported for " + driverName();
 }
@@ -852,18 +822,41 @@ QString Connection::normalizeDbName(const QString &n) const
 	return n;
 }
 
-/*
-QString DbInfo::currentSchema() const
+bool Connection::createSchema(const QString &schema_name)
+{
+	qfLogFuncFrame() << schema_name;
+	if(driverName().endsWith("MYSQL")) {
+		QSqlQuery q(*this);
+		if(!q.exec("CREATE DATABASE " + schema_name)) {
+			qfError() << "Error creating schema:" << schema_name << "\n" << lastError().text();
+			return false;
+		}
+	}
+	else if(driverName().endsWith("PSQL")) {
+		QSqlQuery q(*this);
+		if(!q.exec("CREATE SCHEMA " + schema_name)) {
+			qfError() << "Error creating schema:" << schema_name << "\n" << lastError().text();
+			return false;
+		}
+	}
+	return true;
+}
+
+QString Connection::currentSchema() const
 {
 	QString ret;
 	if(driverName().endsWith("MYSQL")) {
-		QSqlQuery q = exec("SELECT DATABASE()");
-		if(lastError().isValid()) {
-			QF_SQL_EXCEPTION("Error getting curent schema");
+		QSqlQuery q(*this);
+		if(q.exec("SELECT DATABASE()")) {
+			if(q.next())
+				ret = q.value(0).toString();
 		}
-		else {
-			q.next();
-			ret = q.value(0).toString();
+	}
+	else if(driverName().endsWith("PSQL")) {
+		QSqlQuery q(*this);
+		if(q.exec("SELECT current_schema()")) {
+			if(q.next())
+				ret = q.value(0).toString();
 		}
 	}
 	else if(driverName().endsWith("SQLITE")) {
@@ -872,11 +865,14 @@ QString DbInfo::currentSchema() const
 	else {
 		ret = "main";
 	}
+	if(ret.isEmpty())
+		qfError() << "Error getting curent schema";
 	return ret;
 }
-*/
+
 bool Connection::setCurrentSchema(const QString &schema_name)
 {
+	qfLogFuncFrame() << schema_name;
 	bool ret = true;
 	if(driverName().endsWith("MYSQL")) {
 		QSqlQuery q(*this);
@@ -892,6 +888,8 @@ bool Connection::setCurrentSchema(const QString &schema_name)
 			qfError() << "Error setting curent schema to" << schema_name << "\n" << lastError().text();
 		}
 	}
+	if(ret)
+		ret = (currentSchema() == schema_name);
 	return ret;
 }
 
@@ -915,5 +913,43 @@ QString Connection::fullTableNameToQtDriverTableName(const QString &full_table_n
 			ret = ret.mid(ix + 1);
 	}
 	return ret;
+}
+
+QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
+{
+	QString db, tbl;
+	qf::core::Utils::parseFieldName(tblname, &tbl, &db);
+	QProcess proc;
+	QString prog_name = "pg_dump";
+	QStringList params;
+	if(!dump_data)
+		params << "-s";
+	params << "-h";
+	params << hostName();
+	params << "-p";
+	params << QString::number(port());
+	params << "-U";
+	params << userName();
+	params << "-t";
+	params << tbl;
+	params << databaseName();
+	QString s = prog_name + " " + params.join(" ");
+	proc.start(prog_name, params);
+	qfDebug() << "\tcalling:" << s;
+	if (!proc.waitForStarted(5000)) {
+		return "calling: " + s + "\n" + err_msg(proc.error());
+	}
+	if (!proc.waitForFinished(10000)) {
+		return "finished error: " + err_msg(proc.error());
+	}
+	s = QString();
+	if(proc.exitCode() != 0) {
+		s = "EXIT CODE: %1\n";
+		s = s.arg(proc.exitCode());
+		s += QString(proc.readAllStandardError());
+		s += "\n";
+	}
+	QByteArray result = proc.readAll();
+	return s + QString(result);
 }
 

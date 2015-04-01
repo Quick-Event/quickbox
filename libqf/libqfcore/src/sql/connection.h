@@ -70,7 +70,8 @@ public:
 
 	static int defaultPort(const QString &driver_name);
 public:
-	//QString currentSchema() const;
+	bool createSchema(const QString &schema_name);
+	QString currentSchema() const;
 	bool setCurrentSchema(const QString &schema_name);
 
 	//! retrieves CREATE TABLE ... Sql script for \a tblname.
@@ -83,6 +84,7 @@ public:
 	QString fullTableNameToQtDriverTableName(const QString &full_table_name) const;
 
 private:
+	QString dumpSqlTable_psql(const QString &tblname, bool dump_data);
 	//! take CREATE TABLE ... and parse fields definitions from it.
 	static QStringList fieldDefsFromCreateTableCommand(const QString &cmd);
 
