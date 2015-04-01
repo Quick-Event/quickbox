@@ -8,58 +8,68 @@ CardChecker
 	id: root
 	caption: "Classic"
 	
-	function checkCard(card, run_id)
+	function checkCard(card_in, run_id)
 	{
-		Log.info("checking card:", JSON.stringify(card, null, 2));
+		Log.info("checking card:", JSON.stringify(card_in, null, 2));
 
 		var course = root.courseForRunId(run_id);
 		Log.info("course:", JSON.stringify(course, null, 2));
-		card.courseId = course.id;
+		
+		var card_out = {courseId: course.id, punchList: []};
+		var punches_in = card_in.punchList;
+		var punches_out = card_out.punchList;
+		for(var k=0; k<punches_in.length; k++) {
+			var punch_in = punches_in[k];
+			punches_out.push({code: punch_in[0]});
+		}
 
 		var course_codes = course.codes;
-		var punches = card.punchList;
 		var error = false;
 		var check_ix = 0;
 		for(var j=0; j<course_codes.length; j++) { //scan course codes
-			// pokud flags obsahuji 'NOCHECK' skoc na dalsi kod
 			var course_code_record = course_codes[j];
 
 			var code = course_code_record.code;
-			for(var k=check_ix; k<punches.length; k++) { //scan card
-				var punch = punches[k];
-				if(punch.code == code) {  
-					punch.position = course_code_record.position;
+			for(var k=check_ix; k<punches_out.length; k++) { //scan card
+				//var punch_in = punches_in[k];
+				var punch_out = punches_out[k];
+				if(punch_out.code == code) {  
+					punch_out.position = course_code_record.position;
 					check_ix = k + 1;
 					break;
 				}
 			}
-			if(k >= punches.length) {// course code not found in card punches
+			if(k >= punches_out.length) {// course code not found in card_in punches
 				var nocheck = course_code_record.outoforder;
 				if(!nocheck) 
 					error = true;
 			}
 		}
-		if(card.finishTime == 0xEEEE) 
+		if(card_in.finishTime == 0xEEEE) 
 			error = true;
-		card.isOk = !error
+		card_out.isOk = !error
 
 		//........... normalize times .....................
-		card.startTimeMs = 0;
-		if(card.startTime == 0xEEEE)        //take start record from start list
-			card.startTimeMs = root.stageStartSec() + root.startTimeSec(run_id);
+		card_out.startTimeMs = 0;
+		if(card_in.startTime == 0xEEEE)        //take start record from start list
+			card_out.startTimeMs = root.stageStartSec() + root.startTimeSec(run_id);
 		else 
-			card.startTimeMs = card.startTime;
-		card.startTimeMs = root.toAMms(card.startTimeMs * 1000);
+			card_out.startTimeMs = card_in.startTime;
+		card_out.startTimeMs = root.toAMms(card_out.startTimeMs * 1000);
 
-		card.lapTimeMs = 0;
-		if(card.finishTime != 0xEEEE) 
-			card.lapTimeMs = root.toAMms(1000 * (card.finishTime - card.startTime) + card.finishTimeMs);
+		card_out.finishTimeMs = -1;
+		card_out.lapTimeMs = 0;
+		if(card_in.finishTime != 0xEEEE) {
+			card_out.finishTimeMs = root.toAMms(1000 * card_in.finishTime + card_in.finishTimeMs - card_out.startTimeMs);
+			card_out.lapTimeMs = root.toAMms(card_out.finishTimeMs - card_out.startTimeMs);
+		}
 
 		var prev_position = 0;
 		var prev_position_stp = 0;
-		for(var k=0; k<punches.length; k++) { //compute lap times
-			var punch = punches[k];
-			punch.stpTimeMs = root.toAMms(punch.timeMs - card.startTimeMs);
+		for(var k=0; k<punches_in.length; k++) { //compute lap times
+			var punch_in = punches_in[k];
+			var punch_out = punches_out[k];
+			punch.stpTimeMs = root.toAMms(punch_in[1] - card_out.startTimeMs);
 			punch.lapTimeMs = 0;
 			if(punch.position > prev_position) {  
 				if(punch.position - 1 == prev_position) {  
@@ -69,7 +79,7 @@ CardChecker
 				prev_position_stp = punch.stpTimeMs;
 			}
 		}
-		Log.info("check result:", JSON.stringify(card, null, 2));
-		return card;
+		Log.info("check result:", JSON.stringify(card_in, null, 2));
+		return card_in;
 	}
 }

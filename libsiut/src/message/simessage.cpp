@@ -126,11 +126,18 @@ int SIMessageCardReadOut::Punch::weekCnt() const
 	return ret;
 }
 
+QVariantList SIMessageCardReadOut::Punch::toVariantList() const
+{
+	return QVariantList() << code() << (time() * 1000 + timeMSec()) << dayOfWeek() << weekCnt();
+}
+
 QString SIMessageCardReadOut::Punch::toJsonArrayString() const
 {
-	QString ret = QStringLiteral("[%1, %2, %3, %4]");
-	ret = ret.arg(code()).arg(time() * 1000 + timeMSec()).arg(dayOfWeek()).arg(weekCnt());
-	return ret;
+	QStringList sl;
+	for(auto v : toVariantList()) {
+		sl << v.toString();
+	}
+	return '[' + sl.join(", ") + ']';
 }
 
 static QString time_str(int _time)
@@ -342,10 +349,7 @@ QVariantMap SIMessageCardReadOut::toVariant() const
 	ret["finishTimeMs"] = 0; // TODO: some cards supports msecs, read it
 	QVariantList punch_list;
 	foreach(const Punch &p, punchList()) {
-		QVariantMap m;
-		m["code"] = p.code();
-		m["timeMs"] = p.time() * 1000 + p.timeMSec();
-		punch_list << m;
+		punch_list << p.toVariantList();
 	}
 	ret["punchList"] = punch_list;
 	return ret;

@@ -72,6 +72,7 @@ public:
 		/// 4 week counter relative
 		int weekCnt() const;
 
+		QVariantList toVariantList() const;
 		QString toJsonArrayString() const;
 
 		Punch();
