@@ -120,3 +120,32 @@ QString Query::lastErrorText() const
 	}
 	return ret;
 }
+
+bool Query::execCommands(const QStringList &commands, const QMap<QString, QString> &replacements)
+{
+	for(QString qs : commands) {
+		QMapIterator<QString, QString> it(replacements);
+		if(it.hasNext()) {
+			it.next();
+			QString key = "{{" + it.key() + "}}";
+			qs.replace(key, it.value());
+		}
+		if(!exec(qs, !qf::core::Exception::Throw)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void Query::execCommandsThrow(const QStringList &commands, const QMap<QString, QString> &replacements)
+{
+	for(QString qs : commands) {
+		QMapIterator<QString, QString> it(replacements);
+		if(it.hasNext()) {
+			it.next();
+			QString key = "{{" + it.key() + "}}";
+			qs.replace(key, it.value());
+		}
+		exec(qs, qf::core::Exception::Throw);
+	}
+}

@@ -8,6 +8,7 @@
 
 #define QF_SAFE_DELETE(x) if(x != nullptr) {delete x; x = nullptr;}
 
+#define QF_CARG(s) "" + QString(s) + ""
 #define QF_SARG(s) "'" + QString(s) + "'"
 #define QF_IARG(i) "" + QString::number(i) + ""
 

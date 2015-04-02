@@ -28,6 +28,8 @@ public:
 	bool exec(const QString &query, bool throw_exc = false);
 	bool exec(const char *query, bool throw_exc = false) {return exec(QString::fromUtf8(query), throw_exc);}
 	bool exec(bool throw_exc = false);
+	bool execCommands(const QStringList &commands, const QMap<QString, QString> &replacements = QMap<QString, QString>());
+	void execCommandsThrow(const QStringList &commands, const QMap<QString, QString> &replacements = QMap<QString, QString>());
 	QSqlRecord record() const;
 	int fieldIndex(const QString& field_name) const;
 	using Super::value;

@@ -843,7 +843,8 @@ bool Connection::createSchema(const QString &schema_name)
 
 QString Connection::currentSchema() const
 {
-	QString ret;
+	static auto na = QStringLiteral("N/A");
+	QString ret = na;
 	if(driverName().endsWith("MYSQL")) {
 		QSqlQuery q(*this);
 		if(q.exec("SELECT DATABASE()")) {
@@ -864,8 +865,10 @@ QString Connection::currentSchema() const
 	else {
 		ret = "main";
 	}
-	if(ret.isEmpty())
+	if(ret == na) {
 		qfError() << "Error getting curent schema";
+		ret = QString();
+	}
 	return ret;
 }
 

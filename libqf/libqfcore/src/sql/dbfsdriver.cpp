@@ -552,21 +552,6 @@ bool DbFsDriver::sqlRenameNode(int inode, const QString &new_name)
 	return true;
 }
 
-static bool execQueryList(Connection &conn, const QStringList &qlst)
-{
-	bool ret = true;
-	Query q(conn);
-	for(QString qs : qlst) {
-		sqlDebug() << qs;
-		ret = q.exec(qs);
-		if(!ret) {
-			qfError() << "SQL Error:" << qs << '\n' << q.lastError().text();
-			break;
-		}
-	}
-	return ret;
-}
-
 bool DbFsDriver::checkDbFs()
 {
 	qfLogFuncFrame();
@@ -607,7 +592,8 @@ bool DbFsDriver::createDbFs()
 					+ ") WITH (OIDS=FALSE)";
 			qlst << "COMMENT ON COLUMN " + tableName() + ".pinode IS 'number of parent directory inode'";
 			qlst << "CREATE INDEX " + tableName() + "_pinode_idx ON " + tableName() + " (pinode)";
-			init_ok = execQueryList(conn, qlst);
+			Query q(conn);
+			init_ok = q.execCommands(qlst);
 			if(!init_ok) {
 				qfError() << "Error creating DBFS table" << tableName();
 				break;
