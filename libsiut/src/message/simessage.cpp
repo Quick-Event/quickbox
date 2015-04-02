@@ -108,7 +108,7 @@ int SIMessageCardReadOut::Punch::time() const
 	return ret;
 }
 
-int SIMessageCardReadOut::Punch::timeMSec() const
+int SIMessageCardReadOut::Punch::msec() const
 {
 	int ret = d->timeMSec;
 	return ret;
@@ -128,7 +128,18 @@ int SIMessageCardReadOut::Punch::weekCnt() const
 
 QVariantList SIMessageCardReadOut::Punch::toVariantList() const
 {
-	return QVariantList() << code() << (time() * 1000 + timeMSec()) << dayOfWeek() << weekCnt();
+	return QVariantList() << code() << time() << msec();// << dayOfWeek() << weekCnt();
+}
+
+QVariantMap SIMessageCardReadOut::Punch::toVariantMap() const
+{
+	QVariantMap ret;
+	ret[QStringLiteral("code")] = code();
+	ret[QStringLiteral("time")] = time();
+	ret[QStringLiteral("msec")] = msec();
+	//ret[QStringLiteral("day")] = dayOfWeek();
+	//ret[QStringLiteral("week")] = weekCnt();
+	return ret;
 }
 
 QString SIMessageCardReadOut::Punch::toJsonArrayString() const
@@ -337,19 +348,19 @@ QString SIMessageCardReadOut::dump() const
 QVariantMap SIMessageCardReadOut::toVariant() const
 {
 	QVariantMap ret;// = SIMessageBase::toVariant().toMap();
-	ret["stationCodeNumber"] = stationCodeNumber();
-	ret["cardNumber"] = cardNumber();
+	ret[QStringLiteral("stationCodeNumber")] = stationCodeNumber();
+	ret[QStringLiteral("cardNumber")] = cardNumber();
 	//ret["cardNumberFull"] = (cardNumber() < 100000)? 100000 + cardNumber(): cardNumber();
 	//ret["startNumber"] = startNumber();
 	//ret["countryCode"] = countryCode();
 	//ret["clubCode"] = clubCode();
-	ret["checkTime"] = checkTime();
-	ret["startTime"] = startTime();
-	ret["finishTime"] = finishTime();
-	ret["finishTimeMs"] = 0; // TODO: some cards supports msecs, read it
+	ret[QStringLiteral("checkTime")] = checkTime();
+	ret[QStringLiteral("startTime")] = startTime();
+	ret[QStringLiteral("finishTime")] = finishTime();
+	ret[QStringLiteral("finishTimeMs")] = 0; // TODO: some cards supports msecs, read it
 	QVariantList punch_list;
 	foreach(const Punch &p, punchList()) {
-		punch_list << p.toVariantList();
+		punch_list << p.toVariantMap();
 	}
 	ret["punchList"] = punch_list;
 	return ret;

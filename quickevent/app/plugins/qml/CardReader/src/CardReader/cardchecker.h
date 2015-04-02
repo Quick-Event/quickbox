@@ -19,6 +19,8 @@ public:
 
 	QF_PROPERTY_IMPL(QString, c, C, aption)
 
+	/// if time2 < time1 add 12 hours to time2 and return it
+	Q_INVOKABLE int fixTimeWrap(int time1_msec, int time2_msec);
 	Q_INVOKABLE int toAMms(int time_msec);
 	Q_INVOKABLE int toAM(int time_sec);
 	Q_INVOKABLE int stageStartSec();

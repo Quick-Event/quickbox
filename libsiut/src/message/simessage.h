@@ -65,7 +65,7 @@ public:
 	public:
 		int code() const;
 		int time() const;
-		int timeMSec() const;
+		int msec() const;
 		//bool is24HoursTimeFormat() const {return d->is24HoursTimeFormat;}
 		/// 0-sunday
 		int dayOfWeek() const;
@@ -73,6 +73,7 @@ public:
 		int weekCnt() const;
 
 		QVariantList toVariantList() const;
+		QVariantMap toVariantMap() const;
 		QString toJsonArrayString() const;
 
 		Punch();

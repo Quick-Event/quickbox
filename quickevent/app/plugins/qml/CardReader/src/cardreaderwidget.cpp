@@ -423,16 +423,20 @@ int CardReaderWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_id
 void CardReaderWidget::updateRunLapsSql(const CardReader::CheckedCard &card, int run_id)
 {
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
-	for(auto v : card.punchList()) {
-		CardReader::CheckedPunch cp(v.toMap());
-		q.bindValue(QStringLiteral(":runId"), run_id);
-		q.bindValue(QStringLiteral(":position"), cp.position());
-		q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
-		q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
-		if(!q.exec()) {
-			appendLog(qf::core::Log::LOG_ERR, trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText()));
+	try {
+		q.exec("DELETE FROM runlaps WHERE run_id=" QF_IARG(run_id));
+		q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+		for(auto v : card.punchList()) {
+			CardReader::CheckedPunch cp(v.toMap());
+			q.bindValue(QStringLiteral(":runId"), run_id);
+			q.bindValue(QStringLiteral(":position"), cp.position());
+			q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
+			q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
+			q.exec(qf::core::Exception::Throw);
 		}
+	}
+	catch (const qf::core::Exception &e) {
+		appendLog(qf::core::Log::LOG_ERR, trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText()));
 	}
 }
 

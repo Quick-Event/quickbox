@@ -20,7 +20,7 @@ CardChecker
 		var punches_out = card_out.punchList;
 		for(var k=0; k<punches_in.length; k++) {
 			var punch_in = punches_in[k];
-			punches_out.push({code: punch_in[0]});
+			punches_out.push({code: punch_in.code});
 		}
 
 		var course_codes = course.codes;
@@ -55,13 +55,15 @@ CardChecker
 			card_out.startTimeMs = root.stageStartSec() + root.startTimeSec(run_id);
 		else 
 			card_out.startTimeMs = card_in.startTime;
+		
+		// set start time to be AM even if it is night race, SI cards have 12 hrs wrap-around
 		card_out.startTimeMs = root.toAMms(card_out.startTimeMs * 1000);
 
-		card_out.finishTimeMs = -1;
+		card_out.finishTimeMs = 0;
 		card_out.lapTimeMs = 0;
 		if(card_in.finishTime != 0xEEEE) {
-			card_out.finishTimeMs = root.toAMms(1000 * card_in.finishTime + card_in.finishTimeMs - card_out.startTimeMs);
-			card_out.lapTimeMs = root.toAMms(card_out.finishTimeMs - card_out.startTimeMs);
+			card_out.finishTimeMs = root.fixTimeWrap(card_out.startTimeMs, 1000 * card_in.finishTime + card_in.finishTimeMs);
+			//card_out.lapTimeMs = card_out.finishTimeMs - card_out.startTimeMs;
 		}
 
 		var prev_position = 0;
@@ -69,17 +71,17 @@ CardChecker
 		for(var k=0; k<punches_in.length; k++) { //compute lap times
 			var punch_in = punches_in[k];
 			var punch_out = punches_out[k];
-			punch.stpTimeMs = root.toAMms(punch_in[1] - card_out.startTimeMs);
-			punch.lapTimeMs = 0;
-			if(punch.position > prev_position) {  
-				if(punch.position - 1 == prev_position) {  
-					punch.lapTimeMs = root.toAMms(punch.stpTimeMs - prev_position_stp);
+			punch_out.stpTimeMs = root.toAMms(punch_in.time * 1000 + punch_in.msec - card_out.startTimeMs);
+			punch_out.lapTimeMs = 0;
+			if(punch_out.position > prev_position) {  // positions are starting with 1, like 1,2,3,4,5
+				if(punch_out.position - 1 == prev_position) {  
+					punch_out.lapTimeMs = punch_out.stpTimeMs - prev_position_stp;
 				}
-				prev_position = punch.position;
-				prev_position_stp = punch.stpTimeMs;
+				prev_position = punch_out.position;
+				prev_position_stp = punch_out.stpTimeMs;
 			}
 		}
-		Log.info("check result:", JSON.stringify(card_in, null, 2));
-		return card_in;
+		Log.info("check result:", JSON.stringify(card_out, null, 2));
+		return card_out;
 	}
 }
