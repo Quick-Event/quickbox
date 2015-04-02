@@ -14,7 +14,7 @@ class CheckedPunch : public QVariantMap
 	QF_VARIANTMAP_FIELD(int, s, setS, tpTimeMs)
 	QF_VARIANTMAP_FIELD(int, l, setL, apTimeMs)
 public:
-	CheckedPunch(const QVariantMap &data = QVariantMap());
+	CheckedPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 };
 
 } // namespace CardReader

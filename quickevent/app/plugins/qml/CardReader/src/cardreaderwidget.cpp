@@ -35,6 +35,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QMetaObject>
+#include <QJSValue>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -351,7 +352,10 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		                          Q_RETURN_ARG(QVariant, ret_val),
 		                          Q_ARG(QVariant, card.toVariant()),
 		                          Q_ARG(QVariant, run_id));
-		CardReader::CheckedCard cc(ret_val.toMap());
+		QJSValue jsv = ret_val.value<QJSValue>();
+		QVariant v = jsv.toVariant();
+		QVariantMap m = v.toMap();
+		CardReader::CheckedCard cc(m);
 		updateRunLapsSql(cc, run_id);
 	}
 	if(card_id > 0)
@@ -424,15 +428,30 @@ void CardReaderWidget::updateRunLapsSql(const CardReader::CheckedCard &card, int
 {
 	qf::core::sql::Query q;
 	try {
-		q.exec("DELETE FROM runlaps WHERE run_id=" QF_IARG(run_id));
-		q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
-		for(auto v : card.punchList()) {
-			CardReader::CheckedPunch cp(v.toMap());
-			q.bindValue(QStringLiteral(":runId"), run_id);
-			q.bindValue(QStringLiteral(":position"), cp.position());
-			q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
-			q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
-			q.exec(qf::core::Exception::Throw);
+		q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
+		q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+		auto punch_list = card.punchList();
+		if(punch_list.count()) {
+			{
+				CardReader::CheckedPunch last_punch(punch_list.last().toMap());
+				CardReader::CheckedPunch finish_punch;
+				finish_punch.setPosition(punch_list.count() + 1);
+				finish_punch.setCode(999);
+				finish_punch.setStpTimeMs(card.lapTimeMs());
+				if(last_punch.position() > 0) {
+					finish_punch.setLapTimeMs(finish_punch.stpTimeMs() - last_punch.stpTimeMs());
+				}
+				punch_list << finish_punch;
+			}
+			for(auto v : punch_list) {
+				CardReader::CheckedPunch cp(v.toMap());
+				q.bindValue(QStringLiteral(":runId"), run_id);
+				q.bindValue(QStringLiteral(":code"), cp.code());
+				q.bindValue(QStringLiteral(":position"), cp.position());
+				q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
+				q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
+				q.exec(qf::core::Exception::Throw);
+			}
 		}
 	}
 	catch (const qf::core::Exception &e) {

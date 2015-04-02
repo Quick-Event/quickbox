@@ -13,11 +13,12 @@ class CheckedCard : public QVariantMap
 	QF_VARIANTMAP_FIELD(int, c, setC, ourseId)
 	QF_VARIANTMAP_FIELD(int, s, setS, tartTimeMs)
 	QF_VARIANTMAP_FIELD(int, f, setF, inishTimeMs)
-	QF_VARIANTMAP_FIELD(int, l, setL, apTimeMs)
 	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
 	QF_VARIANTMAP_FIELD(QVariantList, p, setP, unchList)
 public:
 	CheckedCard(const QVariantMap &data = QVariantMap());
+
+	int lapTimeMs() const {return finishTimeMs() - startTimeMs();}
 };
 
 }

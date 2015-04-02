@@ -60,14 +60,14 @@ CardChecker
 		card_out.startTimeMs = root.toAMms(card_out.startTimeMs * 1000);
 
 		card_out.finishTimeMs = 0;
-		card_out.lapTimeMs = 0;
+		//card_out.lapTimeMs = 0;
 		if(card_in.finishTime != 0xEEEE) {
 			card_out.finishTimeMs = root.fixTimeWrap(card_out.startTimeMs, 1000 * card_in.finishTime + card_in.finishTimeMs);
 			//card_out.lapTimeMs = card_out.finishTimeMs - card_out.startTimeMs;
 		}
 
 		var prev_position = 0;
-		var prev_position_stp = 0;
+		var prev_position_stp = card_out.startTimeMs;
 		for(var k=0; k<punches_in.length; k++) { //compute lap times
 			var punch_in = punches_in[k];
 			var punch_out = punches_out[k];
