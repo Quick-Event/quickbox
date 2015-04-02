@@ -6,6 +6,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include <qf/core/sql/query.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/previewdialog.h>
 
@@ -80,7 +81,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 			}
 			else if(connection().driverName().endsWith("PSQL")) {
 				if(!append) {
-					qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Not supported in PSQL version <= 8.1.0");
+					qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Columns insertion is not supported in PSQL");
 				}
 				QString fld_name = dlg.edName->text();
 				QString s, qs = "ALTER TABLE %1.%2 ADD COLUMN \"%3\" %4";
@@ -142,11 +143,9 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 	//qfDebug() << "\ts:" << s;
 	DlgColumnDef dlg(this, full_table_name);
 	QString fld_name = lstFields->currentItem()->text();
-	//qfDebug() << "\t####################################";
 	qf::core::sql::FieldInfoList fldlst;
 	fldlst.load(connection(), full_table_name);
 	qf::core::sql::FieldInfo fi = fldlst.value(fld_name);
-	//qfDebug() << "\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4";
 	dlg.loadColumnDefinition(fi);
 	while(true) {
 		if(dlg.exec() == QDialog::Accepted) {
@@ -289,15 +288,17 @@ void DlgAlterTable::on_btIndexDelete_clicked()
 	}
 }
 
-void DlgAlterTable::on_btOk_clicked()
+void DlgAlterTable::accept()
 {
 	if(connection().driverName().endsWith("MYSQL")) {
 		QString new_comment = txtComment->toPlainText();
 		if(new_comment != oldComment) {
-			QSqlQuery q(connection());
+			qf::core::sql::Query q(connection());
 			bool ok = q.exec(QString("ALTER TABLE %1.%2 COMMENT='%3'").arg(m_schemaName).arg(m_tableName).arg(new_comment));
-			if(ok)
-				accept();
+			if(!ok)
+				qfError() << q.lastErrorText();
 		}
 	}
+	Super::accept();
 }
+

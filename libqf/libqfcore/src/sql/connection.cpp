@@ -314,12 +314,14 @@ QStringList Connection::fields(const QString& tbl_name) const
 Connection::IndexList Connection::indexes(const QString& tbl_name) const
 {
 	qfLogFuncFrame() << "tblname:" << tbl_name;
-	QString tblname = tbl_name;
-	//if(tblname[0] == '.') tblname = tblname.mid(1);
+	QString db, tbl;
+	qf::core::Utils::parseFieldName(tbl_name, &tbl, &db);
 	IndexList ret;
 	QString s;
 	if(driverName().endsWith("PSQL")) {
-		QString s = "SELECT indexname FROM pg_indexes WHERE tablename=" QF_SARG(tbl_name);
+		QString s = "SELECT indexname FROM pg_indexes WHERE tablename=" QF_SARG(tbl);
+		if(!db.isEmpty())
+			s += " AND schemaname=" QF_SARG(db);
 		QSqlQuery q1(driver()->createResult());
 		q1.setForwardOnly(true);
 		q1.exec(s);
@@ -331,21 +333,23 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 								" FROM pg_index LEFT JOIN pg_class AS indexes ON pg_index.indexrelid = indexes.oid"
 								" LEFT JOIN pg_attribute AS columns ON columns.attrelid = pg_index.indrelid"
 								" WHERE pg_index.indrelid='%1'::regclass AND columns.attnum = ANY (indkey)";
-			indexview = indexview.arg(tblname);
+			indexview = indexview.arg(tbl);
 			s  = "SELECT colname, isunique, isprimary FROM (%1) AS t WHERE indexname = '%2'";
+			s = s.arg(indexview).arg(indexname);
 			QSqlQuery q(*this);
 			q.setForwardOnly(true);
-			q.exec(s.arg(indexview).arg(indexname));
+			q.exec(s);
 			int i = 0;
 			while(q.next()) {
 				df.fields.append(q.value(0).toString());
-				if(i++ == 0) df.unique = q.value(1).toBool();
+				if(i++ == 0)
+					df.unique = q.value(1).toBool();
 			}
 			ret.append(df);
 		}
 	}
 	else if(driverName().endsWith("MYSQL")) {
-		QString s = "SHOW INDEX FROM " + tblname;
+		QString s = "SHOW INDEX FROM " + tbl_name;
 		qfDebug() << "\t" << s;
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
@@ -370,13 +374,8 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 	}
 	else if(driverName().endsWith("SQLITE")) {
 		/// SQLITE neumi schema.tablename v prikazu PRAGMA table_info(...)
-		QString tbl_name = tblname;
-		{
-			int ix = tbl_name.lastIndexOf('.');
-			if(ix >= 0) tbl_name = tbl_name.mid(ix + 1);
-		}
 		QString s = "SELECT * FROM sqlite_master WHERE type='index' AND sql>'' AND tbl_name='%1'";
-		s = s.arg(tbl_name);
+		s = s.arg(tbl);
 		qfDebug() << "\t" << s;
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
@@ -917,21 +916,26 @@ QString Connection::fullTableNameToQtDriverTableName(const QString &full_table_n
 
 QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
 {
+	qfLogFuncFrame() << tblname << dump_data;
 	QString db, tbl;
 	qf::core::Utils::parseFieldName(tblname, &tbl, &db);
+	if(!db.isEmpty())
+		tbl = db + '.' + tbl;
 	QProcess proc;
 	QString prog_name = "pg_dump";
 	QStringList params;
 	if(!dump_data)
 		params << "-s";
-	params << "-h";
-	params << hostName();
+	if(!hostName().isEmpty()) {
+		params << "-h";
+		params << hostName();
+	}
 	params << "-p";
 	params << QString::number(port());
 	params << "-U";
 	params << userName();
 	params << "-t";
-	params << tbl;
+	params << tblname;
 	params << databaseName();
 	QString s = prog_name + " " + params.join(" ");
 	proc.start(prog_name, params);
