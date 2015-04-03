@@ -46,35 +46,40 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("competitors", "*")
 				.select2("runs", "*")
+				.select2("classes", "name")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.from("runs")
 				.join("runs.competitorId", "competitors.id")
+				.join("competitors.classId", "classes.id")
 				.where("runs.id=" QF_IARG(run_id));
 		model.reload(qb.toString());
 		qfu::TreeTable tt = model.toTreeTable("competitor");
-		qfInfo() << tt.toString();
 		ret["competitor"] = tt.toVariant();
 	}
 	{
 		qfu::TreeTable tt;
-		tt.appendColumn("col1", QVariant::Int);
+		//tt.appendColumn("position", QVariant::Int);
+		//tt.appendColumn("code", QVariant::Int);
+		//tt.appendColumn("stpTime", QVariant::String);
+		//tt.appendColumn("lapTime", QVariant::String);
 		QMapIterator<QString, QVariant> it(cc);
 		while(it.hasNext()) {
 			it.next();
 			if(it.key() != QLatin1String("punches"))
 				tt.setValue(it.key(), it.value());
 		}
+		//int no = 0;
 		for(auto v : cc.punches()) {
 			CardReader::CheckedPunch punch(v.toMap());
-			auto ttr = tt.appendRow();
+			qfu::TreeTableRow ttr = tt.appendRow();
 			QMapIterator<QString, QVariant> it(punch);
-			int no = 0;
 			while(it.hasNext()) {
 				it.next();
-				ttr.setValue("col1", ++no);
 				ttr.setValue(it.key(), it.value());
 			}
+			//ttr.setValue("col1", ++no);
 		}
+		qfInfo() << tt.toString();
 		ret["card"] = tt.toVariant();
 	}
 	return ret;

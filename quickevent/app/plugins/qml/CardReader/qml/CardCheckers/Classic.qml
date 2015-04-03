@@ -68,7 +68,7 @@ CardChecker
 		}
 
 		var prev_position = 0;
-		var prev_position_stp = checked_card.startTimeMs;
+		var prev_position_stp = 0;
 		for(var k=0; k<read_punches.length; k++) { //compute lap times
 			var read_punch = read_punches[k];
 			var checked_punch = checked_punches[k];

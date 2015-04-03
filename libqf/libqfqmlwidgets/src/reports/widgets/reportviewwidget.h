@@ -51,9 +51,6 @@ protected:
 	PainterWidget *m_painterWidget;
 	ScrollArea *m_scrollArea;
 
-	//QFAction::ActionList f_actionList;
-	//QFUiBuilder *f_uiBuilder;
-
 	int m_currentPageNo;
 	qreal m_scale;
 
@@ -70,7 +67,6 @@ protected:
 
 	qf::qmlwidgets::StatusBar *m_statusBar;
 private:
-	//void selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el);
 	void selectItem(const QPointF &p);
 	ReportItemMetaPaint* selectItem_helper(ReportItemMetaPaint *it, const QPointF &p);
 protected:
@@ -89,7 +85,6 @@ protected:
 	void exportPdf(const QString &file_name);
 	QString exportHtml();
 signals:
-	//void elementSelected(const QFDomElement &el);
 	void sqlValueEdited(const QString &sql_id, const QVariant &val);
 protected slots:
 	void edCurrentPageEdited();
@@ -106,7 +101,6 @@ public slots:
 	//! Zacne prekladat report a jak pribyvaji stranky, zobrazuji se ve view, nemuzu pro to pouzit specialni thread,
 	//! protoze QFont musi byt pouzivan v GUI threadu, tak prekladam stranku po strance pomoci QTimer::singleShot()
 	void processReport();
-	//void selectElement(const QFDomElement &el);
 
 	virtual void file_print();
 	virtual void file_printPreview();

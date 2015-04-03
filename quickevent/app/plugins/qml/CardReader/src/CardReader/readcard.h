@@ -22,10 +22,10 @@ private:
 	QF_VARIANTMAP_FIELD(int, w, setW, eek)
 public:
 	ReadPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
+	ReadPunch(const QVariantList &var_list);
 
 	QVariantList toVariantList() const;
 	QString toJsonArrayString() const;
-	//static ReadPunch fromJsonArrayString(const QString &array_str);
 };
 
 class ReadCard : public QVariantMap

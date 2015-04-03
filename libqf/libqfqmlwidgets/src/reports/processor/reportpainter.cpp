@@ -447,11 +447,13 @@ void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
 	QF_ASSERT(painter, "painter is NULL", return);
 	//qfDebug() << "\trenderedRect:" << renderedRect.toString();
-	bool selected = (painter->selectedItem() && painter->selectedItem() == this);
+	auto selected_item = painter->selectedItem();
+	bool selected = (selected_item == this);
+	if(selected)
+		qfDebug() << selected_item;
 	if(mode & PaintFill)
 		fillItem(painter, selected);
 	Super::paint(painter, mode);
-	//if(selected) qfDebug() << "\tBINGO";
 	if(mode & PaintBorder)
 		frameItem(painter, selected);
 }
@@ -572,10 +574,23 @@ void ReportItemMetaPaintText::paint(ReportPainter *painter, unsigned mode)
 		//s = s.replace(currentPageReportSubstitution, QString::number(painter->currentPage + 1));
 		s = s.replace(pageCountReportSubstitution, QString::number(painter->pageCount));
 	}
-	Rect br = qf::qmlwidgets::graphics::mm2device(renderedRect, painter->device());
+	Rect br = renderedRect;
+	auto parent_item = parent();
+	if(parent_item) {
+		Rect pbr = parent_item->renderedRect;
+		if(textOption.alignment() & Qt::AlignRight) {
+			br.moveLeft(br.left() + pbr.width() - br.width());
+		}
+		else if(textOption.alignment() & Qt::AlignHCenter) {
+			br.moveLeft(br.left() + (pbr.width() - br.width()) / 2);
+		}
+	}
+	br = qf::qmlwidgets::graphics::mm2device(br, painter->device());
+	//pbr = qf::qmlwidgets::graphics::mm2device(pbr, painter->device());
 	br.adjust(0, 0, 1, 1); /// nekdy se stane, kvuji nepresnostem prepocitavani jednotek, ze se to vyrendruje pri tisku jinak, nez pri kompilaci, tohle trochu pomaha:)
 	//r.setHeight(500);
 	//qfWarning().noSpace() << "'" << s << "' flags: " << flags;
+	//painter->drawRect(pbr);
 #if 0
 	painter->drawText(br, flags, s);
 #else
@@ -597,7 +612,8 @@ void ReportItemMetaPaintText::paint(ReportPainter *painter, unsigned mode)
 			break;
 		}
 		line.setLineWidth(br.width());
-		if(height > 0) height += leading;
+		if(height > 0)
+			height += leading;
 		line.setPosition(QPointF(0., height));
 		height += line.height();
 		//width = qMax(width, line.naturalTextWidth());
@@ -640,20 +656,17 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 		/// V tabulkach by jako check OFF slo netisknout vubec nic,
 		/// ale na ostatnich mistech repotu je to zavadejici .
 
-		//qfInfo() << check_on;
 		/// BOX
-		//QString s_box;
-		//s_box = (check_on)? "color: black; style: solid; size:1": "color: gray; style: solid; size:1";
 		painter->setPen(QPen(Qt::SolidLine));
 		painter->setBrush(QBrush());
 		ReportItem::Rect r = renderedRect;
 		r.translate(0, -font_metrics.leading());
 		qreal w = renderedRect.width();
 		Qt::Alignment alignment_flags = textOption.alignment();
-		if(alignment_flags & Qt::AlignHCenter) r.translate((w - r.width())/2., 0);
-		else if(alignment_flags & Qt::AlignRight) r.translate(w - r.width(), 0);
-		//r.setWidth(2* r.width() / 3.);
-		//r.setHeight(2 * r.height() / 3.);
+		if(alignment_flags & Qt::AlignHCenter)
+			r.translate((w - r.width())/2., 0);
+		else if(alignment_flags & Qt::AlignRight)
+			r.translate(w - r.width(), 0);
 		painter->drawRect(qf::qmlwidgets::graphics::mm2device(r, painter->device()));
 
 		if(check_on) {
@@ -676,10 +689,7 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 			p.setColor(c);
 			painter->setPen(p);
 			r = qf::qmlwidgets::graphics::mm2device(r, painter->device());
-			//QPointF p1(r.left(), r.top() + r.height() / 2);
-			//QPointF p2(r.left() + r.width() / 2, r.bottom());
 			painter->drawLine(r.topLeft(), r.bottomRight());
-			//p1 = QPointF(r.right() + 0.2 * r.width(), r.top());
 			painter->drawLine(r.bottomLeft(), r.topRight());
 #endif
 		}

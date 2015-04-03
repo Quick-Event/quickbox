@@ -41,6 +41,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 	if(indexToPrint == 0) {
 		printedText = paraText();
 	}
+	qfInfo() << printedText;
 	QString text = printedText.mid(indexToPrint);
 	int initial_index_to_print = indexToPrint;
 
@@ -58,19 +59,6 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 		if(p_text_style) {
 			style = p_text_style->textStyle();
 		}
-		/*--
-		{
-			QString s;
-			s = elementAttribute("font");
-			if(!!s) style.font = processor()->context().styleCache().font(s);
-			s = elementAttribute("pen");
-			if(!!s) style.pen = processor()->context().styleCache().pen(s);
-			//QBrush brush = processor()->context().brushFromString(element.attribute("brush"));
-			qfDebug() << "\tfont:" << style.font.toString();
-			//qfDebug() << "\tpen color:" << pen.color().name();
-			//qfDebug() << "\tbrush color:" << brush.color().name();
-		}
-		--*/
 		QFontMetricsF font_metrics = processor()->fontMetrics(style.font());
 		QTextOption text_option;
 		{
@@ -79,17 +67,19 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			//alignment_flags |= Qt::TextWordWrap;
 			int al = textHAlign() | textVAlign();
 			Qt::Alignment alignment_flags = (Qt::Alignment)al;
+			//if(alignment_flags & Qt::AlignRight)
+			//	qfInfo() << "RIGHT";
 			text_option.setAlignment(alignment_flags);
 		}
-		Rect br;
+		Rect rendered_bounding_rect;
 		/// velikost boundingRect je v mm, tak to prepocitej na body vystupniho zarizeni
-		br = qmlwidgets::graphics::mm2device(bounding_rect, processor()->paintDevice());
+		rendered_bounding_rect = qmlwidgets::graphics::mm2device(bounding_rect, processor()->paintDevice());
 
 		bool render_check_mark = false;
 		QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
 		if(rx.exactMatch(text_to_layout)) {
 			//bool check_on = rx.capturedTexts().value(1) == "1";
-			br = font_metrics.boundingRect('X');
+			rendered_bounding_rect = font_metrics.boundingRect('X');
 			render_check_mark = true;
 			indexToPrint += text_to_layout.length();
 		}
@@ -116,33 +106,15 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 				qreal height = 0;
 				qreal width = 0;
 				textLayout.setFont(style.font());
-				//Qt::Alignment alignment = (~Qt::Alignment()) & flags;
-				//QTextOption opt(alignment);
-				//opt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
 				textLayout.setTextOption(text_option);
 				textLayout.setText(text_to_layout);
 				textLayout.beginLayout();
-				//bool rubber_frame = designedRect.isRubber(LayoutVertical);
-				//int old_pos = 0;
-				//QString tx1 = text;
-				//qfInfo() << "text to layout:" << text;
-				//int line_cnt = 0;
 				bool finished = false;
 				while (!finished) {
 					QTextLine line = textLayout.createLine();
 					finished = !line.isValid();
 					if(!finished) {
-						/*
-						if(!finished && line_cnt > 0) {
-							qfInfo().noSpace() << "LINE ##: " << line.textStart() << '[' << text.mid(line.textStart(), line.textLength()) << "] + " << line.textLength() << " of " << text.length();
-							qfInfo() << "finished:" << finished << "(line.textLength() == 0):" << (line.textLength() == 0) << "(line.textStart() + line.textLength() == text.length()):" << (line.textStart() + line.textLength() == text.length());
-						}
-						*/
-						//line_cnt++;
-						//old_pos = line.textStart();
-						//qfInfo() << "setting line width to:" << br.width();
-						line.setLineWidth(br.width()); /// setWidth() nastavi spravne line.height(), proto musi byt pred merenim popsane vysky.
-						//qfInfo() << "text rest:" << text_to_layout.mid(line.textStart());
+						line.setLineWidth(rendered_bounding_rect.width()); /// setWidth() nastavi spravne line.height(), proto musi byt pred merenim popsane vysky.
 
 						if((line.textLength() == 0) && (line.textStart() + line.textLength() == text_to_layout.length())) {
 							/// nevim kde je chyba, pri vicerakovych textech mi to pridava jeden prazdnej radek na konec, takhle se tomu snazim zabranit (Qt 4.6.3)
@@ -150,8 +122,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 						}
 						else {
 							qreal interline_space = (height > 0)? leading: 0;
-							if(height + interline_space + line.height() > br.height()) {
-								//qfInfo() << "NEEEEEEEE veslo se";
+							if(height + interline_space + line.height() > rendered_bounding_rect.height()) {
 								res = PR_PrintAgainOnNextPage;
 								if(height == 0) {
 									/// nevejde se ani jeden radek
@@ -160,53 +131,36 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 								}
 								else {
 									/// neco se preci jenom veslo
-									//splitted = true;
-									//qfInfo() << "\tbounding_rect rect:" << bounding_rect.toString();
-									//qfInfo() << "\tbr:" << br.toString();
-									//qfInfo() << "\theight:" << height;
 									int pos = line.textStart();
 									indexToPrint += pos;
-									//qfInfo() << "POS:" << pos << "index toprint:" << indexToPrint;
-									//qfInfo() << text.mid(0, pos).simplified();
-									//text_to_layout = text_to_layout.left(pos);
-									//res = PrintOk;
-									//res.flags = ReportItem::FlagPrintAgain;
 									break;
 								}
-								//line.setLineWidth(123456789); /// vytiskni to az do konce
 							}
 							height += interline_space;
-							//if(line_cnt > 1) qfInfo().noSpace() << "LINE ##: " << line.textStart() << '[' << text.mid(line.textStart(), line.textLength()) << "] + " << line.textLength() << " of " << text.length();
 							line.setPosition(QPointF(0., height));
 							height += line.height();
 							width = qMax(width, line.naturalTextWidth());
 						}
 					}
 					if(finished) {
-						//qfInfo() << "veslo se VSECHNO";
 						indexToPrint = printedText.length();
-						//break;
 					}
 				}
 				textLayout.endLayout();
-				br.setWidth(width);
-				br.setHeight(height);
-				// musim to takhle premerit, jina
-				//br = font_metrics.boundingRect(br, flags, text);
-				//br = font_metrics.boundingRect(br_debug, 0, text);
-				//qfInfo() << "\tbr2:" << br.toString();
+				/*
+				if(bounding_rect.isRubber(LayoutHorizontal)) {
+					qfInfo() << printedText << bounding_rect.width() << "-->" << width;
+					rendered_bounding_rect.setWidth(width);
+				}
+				*/
+				rendered_bounding_rect.setWidth(width);
+				rendered_bounding_rect.setHeight(height);
 			}
 		}
-		/*
-		int x_dpi = processor()->paintDevice()->logicalDpiX();
-		int y_dpi = processor()->paintDevice()->logicalDpiY();
-		br.setWidth(br.width() * 25.4 / x_dpi);
-		br.setHeight(br.height() * 25.4 / y_dpi);
-		*/
 		/// velikost boundingRect je v bodech vystupniho zarizeni, tak to prepocitej na mm
-		br = qmlwidgets::graphics::device2mm(br, processor()->paintDevice());
-		/// posun to na zacatek, alignment ramecku to zase vrati
-		br.moveTopLeft(bounding_rect.topLeft());
+		rendered_bounding_rect = qmlwidgets::graphics::device2mm(rendered_bounding_rect, processor()->paintDevice());
+		/// posun to na zacatek, alignment ramecku to zase vrati (zda se, ze to neni potreba, tak jsem to prozatim zakomentoval)
+		//br.moveTopLeft(bounding_rect.topLeft());
 		//qfInfo().noSpace() << "text: '" << text << "'";
 		if(text_item_should_be_created ) {
 			ReportItemMetaPaintText *mt;
@@ -223,24 +177,29 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			mt->text = text.mid(0, indexToPrint - initial_index_to_print);
 			//qfWarning() << "text:" << text;
 			mt->textOption = text_option;
-			mt->renderedRect = br;
+			mt->renderedRect = rendered_bounding_rect;
 			mt->renderedRect.flags = designedRect.flags;
 		}
 		//qfDebug().color(QFLog::Green, QFLog::Red) << "\tleading:" << processor()->fontMetrics(style.font).leading() << "\theight:" << processor()->fontMetrics(style.font).height();
-		qfDebug() << "\tchild rendered rect:" << br.toString();
+		qfDebug() << "\tchild rendered rect:" << rendered_bounding_rect.toString();
 	}
 	qfDebug() << "\t<<< CHILDREN paraText return:" << res.toString();
-	//res = checkPrintResult(res);
 	return res;
+}
+
+void ReportItemPara::setTextFn(const QJSValue &val)
+{
+	if(val.isCallable()) {
+		m_getTextJsFn = val;
+	}
+	else {
+		qfError() << "Setting not callable JavaScript value to textFn property might not work as expected.";
+	}
 }
 
 QString ReportItemPara::paraText()
 {
 	qfLogFuncFrame();
-	qfDebug() << "null" << m_getTextJsFn.isNull();
-	qfDebug() << "isCallable" << m_getTextJsFn.isCallable();
-	qfDebug() << "isError" << m_getTextJsFn.isError();
-	qfDebug() << "isObject" << m_getTextJsFn.isObject();
 	QString ret;
 	if(m_getTextJsFn.isCallable()) {
 		QJSValue jsv = m_getTextJsFn.call();

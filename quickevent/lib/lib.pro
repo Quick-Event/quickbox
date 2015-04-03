@@ -24,3 +24,4 @@ message(INCLUDEPATH: $$INCLUDEPATH)
 
 include ( src/src.pri )
 
+RESOURCES += lib.qrc

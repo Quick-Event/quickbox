@@ -1,5 +1,6 @@
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
+import "qrc:/quickevent/js/ogtime.js" as OGTime
 
 Report {
 	id: root
@@ -24,14 +25,20 @@ Report {
 			modelData: "competitor"
 			width: "%"
 			Detail {
-				id: detail
+				id: d1
 				width: "%"
 				layout: Frame.LayoutVertical
 				//expandChildrenFrames: true
 				Frame {
+					width: "%"
 					layout: Frame.LayoutHorizontal
 					Para {
-						text: detail.data(detail.currentIndex, "competitors.registration") + " " + detail.data(detail.currentIndex, "competitorName")
+						width: "%"
+						text: d1.data(d1.currentIndex, "classes.name") + " " + d1.data(d1.currentIndex, "competitorName")
+					}
+					Para {
+						textHAlign: Frame.AlignRight
+						text: d1.data(d1.currentIndex, "competitors.registration")
 					}
 				}
 			}
@@ -42,22 +49,28 @@ Report {
 		modelData: "card"
 		width: "%"
 		Detail {
-			id: detailCard
+			id: dc
 			width: "%"
 			layout: Frame.LayoutHorizontal
 			expandChildrenFrames: true
-			function dataFn(field_name) {return function() {return rowData(field_name);}}
 			Cell {
-				//width: colCode.renderedWidth
-				textFn: detailCard.dataFn("code");
+				width: 10
+				textHAlign: Frame.AlignRight
+				text: dc.data(dc.currentIndex, "position") + 7 + ".";
 			}
 			Cell {
-				//width: colCode.renderedWidth
-				text: detailCard.data(detailCard.currentIndex, "col1")
+				width: 15
+				text: dc.data(dc.currentIndex, "code");
 			}
 			Cell {
-				//width: colCode.renderedWidth
-				textFn: detailCard.dataFn("col1")
+				width: "%"
+				textHAlign: Frame.AlignRight
+				text: OGTime.msecToString(dc.data(dc.currentIndex, "stpTimeMs"));
+			}
+			Cell {
+				width: "%"
+				textHAlign: Frame.AlignRight
+				text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
 			}
 		}
 	}

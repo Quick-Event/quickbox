@@ -106,7 +106,9 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 		punches << p.toJsonArrayString();
 	}
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId) VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId)"), qf::core::Exception::Throw);
+	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId)"
+							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId)")
+			  , qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":stationNumber"), read_card.stationCodeNumber());
 	q.bindValue(QStringLiteral(":siId"), read_card.cardNumber());
 	q.bindValue(QStringLiteral(":checkTime"), read_card.checkTime());
@@ -114,7 +116,7 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	q.bindValue(QStringLiteral(":finishTime"), read_card.finishTime());
 	q.bindValue(QStringLiteral(":punches"), '[' + punches.join(", ") + ']');
 	q.bindValue(QStringLiteral(":runId"), read_card.runId());
-	//q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	q.bindValue(QStringLiteral(":stageId"), currentStageId());
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}

@@ -44,7 +44,7 @@ public:
 	virtual ~ReportItemPara() {}
 
 	QJSValue textFn() const {return m_getTextJsFn;}
-	void setTextFn(const QJSValue &val) {m_getTextJsFn = val;}
+	void setTextFn(const QJSValue &val);
 
 	typedef std::function< QString (void) > GetTextFunction;
 	void setGetTextCppFunction(const GetTextFunction &fn) {m_getTextCppFn = fn;}
