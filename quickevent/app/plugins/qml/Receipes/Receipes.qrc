@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/quickevent/Receipes">
+<!-- 		<file>images/comm.png</file> -->
+    </qresource>
+</RCC>

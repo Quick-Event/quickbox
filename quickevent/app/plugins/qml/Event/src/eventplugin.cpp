@@ -117,7 +117,7 @@ void EventPlugin::onInstalled()
 	tb->addWidget(m_cbxStage);
 
 
-	QIcon ico(":/qf/qmlwidgets/images/settings");
+	QIcon ico(":/qf/qmlwidgets/images/open-iconic/cog");
 	m_actEditStage = new qfw::Action(ico, "Stage settings");
 	//m_actOpenEvent->setEnabled(false);
 	connect(m_actEditStage, SIGNAL(triggered()), this, SLOT(editStage()));

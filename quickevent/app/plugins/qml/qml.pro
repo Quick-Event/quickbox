@@ -10,6 +10,7 @@ SUBDIRS += \
 	Competitors \
 	Runs \
 	CardReader \
+	Receipes \
 	Oris \
 
 

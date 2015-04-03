@@ -142,15 +142,13 @@ QIcon PartWidget::createIcon()
 		else {
 			QString icon_path = iconSource();
 			if(icon_path.isEmpty())
-				icon_path = "images/feature.png";
+				icon_path = "images/feature";
 			if(!icon_path.startsWith(":/")) {
 				icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
 			}
-			QPixmap pm(icon_path);
-			if(pm.isNull())
+			ico = QIcon(icon_path);
+			if(ico.isNull())
 				qfWarning() << "Cannot load icon on path:" << icon_path;
-			else
-				ico = QIcon(pm);
 		}
 	}
 	if(ico.isNull())
