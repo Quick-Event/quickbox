@@ -1,1 +1,1 @@
-#include "../../src/cardreaderplugin.h"
+#include "../../src/CardReader/cardreaderplugin.h"

@@ -236,6 +236,7 @@ Schema {
 				},
 				Field { name: 'stageId'
 					type: Int { }
+					comment: 'We cannot take stageId from runId linked table, because we need select cards for stage even without runId assigned'
 				},
 				Field { name: 'stationNumber'
 					type: Int {
@@ -273,7 +274,7 @@ Schema {
 						length: 65536
 						charset: 'latin1'
 					}
-					comment: 'JSON of format [[code, time_msec, day_of_week, week_cnt], ...]}'
+					comment: 'JSON of format [[code, time, msec, day_of_week, week_cnt], ...]}'
 				}
   			]
 			indexes: [

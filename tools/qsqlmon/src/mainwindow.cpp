@@ -559,26 +559,42 @@ bool MainWindow::execQuery(const QString& query_str)
 
 	QString qs = query_str.trimmed();
 	appendInfo(qs);
-	qf::core::model::SqlTableModel *m = queryViewModel();
-	m->clearColumns();
-	m->setQuery(qs);
-	bool ok = m->reload();
-	QSqlQuery q = m->recentlyExecutedQuery();
-	if(ok) {
-		if(q.isSelect()) {
-			/// if query was select
-			ui.queryView->tableView()->resizeColumnsToContents();
-			ui.queryView->setInfo(qs);
+	bool ok = true;
+	if(qs.startsWith(QLatin1String("SELECT"), Qt::CaseInsensitive)) {
+		qf::core::model::SqlTableModel *m = queryViewModel();
+		m->clearColumns();
+		m->setQuery(qs);
+		ok = m->reload();
+		QSqlQuery q = m->recentlyExecutedQuery();
+		if(ok) {
+			if(q.isSelect()) {
+				/// if query was select
+				ui.queryView->tableView()->resizeColumnsToContents();
+				ui.queryView->setInfo(qs);
+			}
+			else {
+				appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+			}
+		}
+		else {
+			QString msg = q.lastError().text();
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
+			appendInfo(msg);
+		}
+	}
+	else {
+		qf::core::sql::Query q(activeConnection());
+		ok = q.exec(qs);
+		if(!ok) {
+			QString msg = q.lastError().text();
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
+			appendInfo(msg);
 		}
 		else {
 			appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
 		}
 	}
-	else {
-		QString msg = q.lastError().text();
-		qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
-		appendInfo(msg);
-	}
+
 	return ok;
 }
 

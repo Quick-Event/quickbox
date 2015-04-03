@@ -7,6 +7,10 @@
 
 #include <QQmlListProperty>
 
+namespace CardReader {
+class CardReaderPlugin;
+}
+
 namespace Receipes {
 
 class CardChecker;
@@ -14,18 +18,18 @@ class CardChecker;
 class RECEIPESPLUGIN_DECL_EXPORT ReceipesPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
-	Q_PROPERTY(QQmlListProperty<Receipes::CardChecker> cardCheckers READ cardCheckersListProperty)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
 	ReceipesPlugin(QObject *parent = nullptr);
 
-	const QList<Receipes::CardChecker*>& cardCheckers() {return m_cardCheckers;}
+	Q_INVOKABLE void previewReceipe(int card_id);
+
+	Q_INVOKABLE QVariantMap receipeTablesData(int card_id);
 private:
 	void onInstalled();
-	QQmlListProperty<Receipes::CardChecker> cardCheckersListProperty();
+	CardReader::CardReaderPlugin* cardReaderPlugin();
 private:
-	QList<Receipes::CardChecker*> m_cardCheckers;
 };
 
 }

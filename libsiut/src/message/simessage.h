@@ -72,9 +72,7 @@ public:
 		/// 4 week counter relative
 		int weekCnt() const;
 
-		QVariantList toVariantList() const;
 		QVariantMap toVariantMap() const;
-		QString toJsonArrayString() const;
 
 		Punch();
 		Punch(const QByteArray &ba, int offset, PunchRecordType record_type);
@@ -89,7 +87,7 @@ public:
 	int startTime() const;
 	int checkTime() const;
 	int finishTime() const;
-	PunchList punchList() const;
+	PunchList punches() const;
 	QString dump() const;
 	QVariantMap toVariant() const;
 	static QString cardDataLayoutTypeToString(CardDataLayoutType card_layout_type);

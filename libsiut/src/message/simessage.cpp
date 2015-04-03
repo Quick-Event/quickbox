@@ -126,11 +126,6 @@ int SIMessageCardReadOut::Punch::weekCnt() const
 	return ret;
 }
 
-QVariantList SIMessageCardReadOut::Punch::toVariantList() const
-{
-	return QVariantList() << code() << time() << msec();// << dayOfWeek() << weekCnt();
-}
-
 QVariantMap SIMessageCardReadOut::Punch::toVariantMap() const
 {
 	QVariantMap ret;
@@ -140,15 +135,6 @@ QVariantMap SIMessageCardReadOut::Punch::toVariantMap() const
 	//ret[QStringLiteral("day")] = dayOfWeek();
 	//ret[QStringLiteral("week")] = weekCnt();
 	return ret;
-}
-
-QString SIMessageCardReadOut::Punch::toJsonArrayString() const
-{
-	QStringList sl;
-	for(auto v : toVariantList()) {
-		sl << v.toString();
-	}
-	return '[' + sl.join(", ") + ']';
 }
 
 static QString time_str(int _time)
@@ -339,7 +325,7 @@ QString SIMessageCardReadOut::dump() const
 	sl << tr("start: %1").arg(time_str(startTime()));
 	sl << tr("finish: %1 (%2)").arg(time_str(finishTime())).arg(ob_time_str(finishTime() - start));
 	int i = 0;
-	foreach(const Punch &p, punchList()) {
+	foreach(const Punch &p, punches()) {
 		sl << QString::number(++i) + ".\t" + QString::number(p.code()) + "\t" + ob_time_str(p.time()) + "\t" + ob_time_str(p.time() - start);
 	}
 	return sl.join("\n");
@@ -359,10 +345,10 @@ QVariantMap SIMessageCardReadOut::toVariant() const
 	ret[QStringLiteral("finishTime")] = finishTime();
 	ret[QStringLiteral("finishTimeMs")] = 0; // TODO: some cards supports msecs, read it
 	QVariantList punch_list;
-	foreach(const Punch &p, punchList()) {
+	foreach(const Punch &p, punches()) {
 		punch_list << p.toVariantMap();
 	}
-	ret["punchList"] = punch_list;
+	ret["punches"] = punch_list;
 	return ret;
 }
 
@@ -492,7 +478,7 @@ int SIMessageCardReadOut::finishTime() const
 	return ret;
 }
 
-SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
+SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 {
 	qfLogFuncFrame();
 	PunchList ret;

@@ -7,6 +7,8 @@ namespace Event {
 
 class StageData : public QVariantMap
 {
+private:
+	typedef QVariantMap Super;
 public:
 	StageData(const QVariantMap &data = QVariantMap());
 };

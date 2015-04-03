@@ -36,8 +36,13 @@ class QComboBox;
 class CardReaderPartWidget;
 
 namespace CardReader {
+class CardReaderPlugin;
 class CardChecker;
+class ReadCard;
 class CheckedCard;
+}
+namespace Receipes {
+class ReceipesPlugin;
 }
 
 class CardReaderWidget : public QFrame
@@ -74,15 +79,16 @@ private:
 	void closeCardLog();
 	siut::DeviceDriver *siDriver();
 
-	int currentStageId();
-	CardReader::CardChecker* currentCardChecker();
-
 	void processSICard(const SIMessageCardReadOut &card);
 
-	int findRunId(const SIMessageCardReadOut &card);
-	int saveCardToSql(const SIMessageCardReadOut &card, int run_id);
-	void updateRunLapsSql(const CardReader::CheckedCard &card, int run_id);
 	void updateTableView(int card_id);
+
+	CardReader::CardReaderPlugin* thisPlugin();
+	Receipes::ReceipesPlugin* receipesPlugin();
+	Q_SLOT void onCbxCardCheckersActivated(int ix);
+
+	void onCustomContextMenuRequest(const QPoint &pos);
+	void showSelectedCard();
 private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;

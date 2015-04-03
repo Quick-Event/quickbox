@@ -230,7 +230,7 @@ void DlgAlterTable::on_btFieldDelete_clicked()
 
 	QString fld_name = lstFields->currentItem()->text();
 	if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy drop column '%1'").arg(fld_name))) {
-		QString s = "ALTER TABLE %1 DROP COLUMN %2";
+		QString s = "ALTER TABLE %1 DROP COLUMN \"%2\"";
 		s = s.arg(m_tableName).arg(fld_name);
 		execCommand(s);
 		refresh();
@@ -254,6 +254,15 @@ bool DlgAlterTable::execCommand(const QString &qs)
 	return mainWindow()->execCommand(qs);
 }
 
+QString DlgAlterTable::dropIndexCommand(const QString &index_name)
+{
+	QString ret = "DROP INDEX " + index_name;
+	if(connection().driverName().endsWith("MYSQL")) {
+		ret += " ON " + m_schemaName + "." + m_tableName;
+	}
+	return ret;
+}
+
 void DlgAlterTable::on_btIndexAdd_clicked()
 {
 	DlgIndexDef dlg(this, m_schemaName + "." + m_tableName);
@@ -269,8 +278,7 @@ void DlgAlterTable::on_btIndexEdit_clicked()
 	DlgIndexDef dlg(this, m_schemaName + "." + m_tableName, lstIndexes->currentItem()->text());
 	if(dlg.exec()) 	{
 		QString indexname = lstIndexes->currentItem()->text();
-		if(connection().driverName().endsWith("SQLITE")) { execCommand("DROP INDEX " + indexname); }
-		else { execCommand("DROP INDEX " + indexname + " ON " + m_schemaName + "." + m_tableName); }
+		execCommand(dropIndexCommand(indexname));
 		execCommand(dlg.createIndexCommand());
 		refresh();
 	}
@@ -282,8 +290,7 @@ void DlgAlterTable::on_btIndexDelete_clicked()
 	if(lstIndexes->currentRow() < 0) return;
 	QString indexname = lstIndexes->currentItem()->text();
 	if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to drop index %1?").arg(indexname), true)) {
-		if(connection().driverName().endsWith("SQLITE")) { execCommand("DROP INDEX " + indexname); }
-		else { execCommand("DROP INDEX " + indexname + " ON " + m_schemaName + "." + m_tableName); }
+		execCommand(dropIndexCommand(indexname));
 		refresh();
 	}
 }

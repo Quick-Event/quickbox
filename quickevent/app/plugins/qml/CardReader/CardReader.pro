@@ -15,10 +15,12 @@ LIBS += -lsiut
 
 INCLUDEPATH += $$PWD/../Event/include
 INCLUDEPATH += $$PWD/../Runs/include
+INCLUDEPATH += $$PWD/../Receipes/include
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
     -lRunsplugin \
+    -lReceipesplugin \
 
 include (src/src.pri)
 

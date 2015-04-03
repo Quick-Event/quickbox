@@ -50,7 +50,7 @@ void DlgIndexDef::on_actionAddFieldToIndex_triggered()
 		it = ui->lstTable->currentItem();
 		if(it) {
 			qfc::String s = it->text();
-			ui->edIndexName->setText("x" + s.slice(0, 1).toUpper() + s.slice(1));
+			ui->edIndexName->setText(tableName + "_x" + s.slice(0, 1).toUpper() + s.slice(1));
 		}
 	}
 	it = ui->lstTable->currentItem();

@@ -1,13 +1,15 @@
 #ifndef CARDREADER_CHECKEDPUNCH_H
 #define CARDREADER_CHECKEDPUNCH_H
 
+#include "../cardreaderpluginglobal.h"
+
 #include <qf/core/utils.h>
 
 #include <QVariantMap>
 
 namespace CardReader {
 
-class CheckedPunch : public QVariantMap
+class CARDREADERPLUGIN_DECL_EXPORT CheckedPunch : public QVariantMap
 {
 	QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	QF_VARIANTMAP_FIELD(int, p, setP, osition)

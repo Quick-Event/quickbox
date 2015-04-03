@@ -50,6 +50,7 @@ protected:
 	MainWindow* mainWindow();
 	QSqlDatabase connection();
 	bool execCommand(const QString &qs);
+	QString dropIndexCommand(const QString &index_name);
 private:
 	QString m_tableName, m_schemaName;
 	QString oldComment;

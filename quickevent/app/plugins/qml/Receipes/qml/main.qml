@@ -8,20 +8,18 @@ import Receipes 1.0
 ReceipesPlugin {
 	id: root
 
+	property QfObject internals: QfObject
+	{
+		Component {
+			id: cReportViewWidget
+			ReportViewWidget {}
+		}
+	}
 	/*
 	cardCheckers: [
 		CardCheckers.Classic {},
 		CardCheckers.BeerRace {}
 	]
-	property QfObject internals: QfObject
-	{
-		property ReceipesPartWidget thisPartWidget
-		Component {
-			id: cReceipesPartWidget
-			ReceipesPartWidget {
-			}
-		}
-	}
 
 	onInstalled:
 	{
@@ -37,4 +35,19 @@ ReceipesPlugin {
 		FrameWork.addPartWidget(w, root.manifest.featureId);
 	}
 */
+	function previewReceipeClassic(card_id)
+	{
+		Log.info("previewReceipe triggered", card_id);
+		var w = cReportViewWidget.createObject(null);
+		w.persistentSettingsId = "cardPreview";
+		w.windowTitle = qsTr("Receipe");
+		w.setReport(root.manifest.homeDir + "/reports/receipeClassic.qml");
+		var dt = root.receipeTablesData(card_id);
+		w.setData("card", dt.card);
+		w.setData("competitor", dt.competitor);
+		var dlg = FrameWork.createQmlDialog();
+		dlg.setDialogWidget(w);
+		dlg.exec();
+		dlg.destroy();
+	}
 }

@@ -655,7 +655,7 @@ bool TableModel::removeRowNoOverload(int row_ix, bool throw_exc)
 	return ok;
 }
 
-qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, const QString& table_name, const TreeTableExportOptions &opts) const
+qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariantList& _exported_columns, const TreeTableExportOptions &opts) const
 {
 	qfu::TreeTable ret(table_name);
 	QVariantList exported_columns = _exported_columns;
@@ -716,9 +716,9 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 	return ret;
 }
 
-QVariant TableModel::toTreeTableData(const QVariantList &exported_columns, const QString &table_name) const
+QVariant TableModel::toTreeTableData(const QString &table_name, const QVariantList &exported_columns) const
 {
-	qfu::TreeTable tt = toTreeTable(exported_columns, table_name);
+	qfu::TreeTable tt = toTreeTable(table_name, exported_columns);
 	//qfInfo() << tt.toString();
 	QVariant ret = tt.toVariant();
 	return ret;

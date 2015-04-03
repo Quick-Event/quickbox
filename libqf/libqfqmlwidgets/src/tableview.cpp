@@ -569,7 +569,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 			//model()->setElideDisplayedTextAt(0);
 			qfc::model::TableModel::TreeTableExportOptions opts;
 			//opts.setExportRawValues(true);
-			ttable = m->toTreeTable(exported_columns, "data", opts);
+			ttable = m->toTreeTable("data", exported_columns, opts);
 			//model()->setElideDisplayedTextAt(elide_at);
 		}
 

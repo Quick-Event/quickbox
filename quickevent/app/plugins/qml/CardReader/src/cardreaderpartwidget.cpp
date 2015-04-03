@@ -8,7 +8,7 @@
 CardReaderPartWidget::CardReaderPartWidget(const QString &feature_id, QWidget *parent)
 	: Super(feature_id, parent)
 {
-	setTitle(tr("Card readout"));
+	setTitle(tr("Card reader"));
 
 	CardReaderWidget *w = new CardReaderWidget();
 	centralFrame()->addWidget(w);

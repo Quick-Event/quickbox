@@ -169,8 +169,8 @@ public:
 		public:
 			TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};
-	qf::core::utils::TreeTable toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
-	Q_INVOKABLE QVariant toTreeTableData(const QVariantList& exported_columns = QVariantList(), const QString& table_name = QString()) const;
+	qf::core::utils::TreeTable toTreeTable(const QString& table_name = QString(), const QVariantList& exported_columns = QVariantList(), const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
+	Q_INVOKABLE QVariant toTreeTableData(const QString& table_name = QString(), const QVariantList& exported_columns = QVariantList()) const;
 
 	ColumnDefinition columnDefinition(int ix) const;
 	int columnIndex(const QString &column_name) const;

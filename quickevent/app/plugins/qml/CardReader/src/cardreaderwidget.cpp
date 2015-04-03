@@ -4,10 +4,11 @@
 #include "cardreaderpartwidget.h"
 #include "CardReader/cardreaderplugin.h"
 #include "CardReader/cardchecker.h"
+#include "CardReader/readcard.h"
 #include "CardReader/checkedcard.h"
-#include "CardReader/checkedpunch.h"
 
 #include <Event/eventplugin.h>
+#include <Receipes/receipesplugin.h>
 
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
@@ -34,8 +35,6 @@
 #include <QTextStream>
 #include <QComboBox>
 #include <QLabel>
-#include <QMetaObject>
-#include <QJSValue>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -101,6 +100,20 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 		ui->tblCards->setTableModel(m);
 		m_cardsModel = m;
 	}
+	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &CardReaderWidget::onCustomContextMenuRequest);
+}
+
+void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
+{
+	qfLogFuncFrame();
+	QAction a_show_card(tr("Show card"), nullptr);
+	QList<QAction*> lst;
+	lst << &a_show_card;
+	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
+	if(a == &a_show_card) {
+		showSelectedCard();
+	}
 }
 
 CardReaderWidget::~CardReaderWidget()
@@ -130,12 +143,14 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 			m_cbxCardCheckers->addItem(checker->caption());
 		}
 		main_tb->addWidget(m_cbxCardCheckers);
+		connect(m_cbxCardCheckers, SIGNAL(activated(int)), this, SLOT(onCbxCardCheckersActivated(int)));
+		onCbxCardCheckersActivated(m_cbxCardCheckers->currentIndex());
 	}
 }
 
 void CardReaderWidget::reload()
 {
-	int current_stage = currentStageId();
+	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
 			.select2("runs", "startTimeMs, timeMs, status")
@@ -342,121 +357,18 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 {
 	appendLogPre(qf::core::Log::LOG_DEB, card.dump());
 	appendLog(qf::core::Log::LOG_INFO, trUtf8("card: %1").arg(card.cardNumber()));
-	int run_id = findRunId(card);
-	int card_id = saveCardToSql(card, run_id);
+	int run_id = thisPlugin()->findRunId(card.cardNumber());
+	if(run_id == 0)
+		appendLog(qf::core::Log::LOG_ERR, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
+	CardReader::ReadCard read_card(card);
+	read_card.setRunId(run_id);
+	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(run_id) {
-		//updateRunLapsSql(card, run_id);
-		CardReader::CardChecker *chk = currentCardChecker();
-		QVariant ret_val;
-		QMetaObject::invokeMethod(chk, "checkCard", Qt::DirectConnection,
-		                          Q_RETURN_ARG(QVariant, ret_val),
-		                          Q_ARG(QVariant, card.toVariant()),
-		                          Q_ARG(QVariant, run_id));
-		QJSValue jsv = ret_val.value<QJSValue>();
-		QVariant v = jsv.toVariant();
-		QVariantMap m = v.toMap();
-		CardReader::CheckedCard cc(m);
-		updateRunLapsSql(cc, run_id);
+		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
+		thisPlugin()->updateRunLapsSql(checked_card);
 	}
 	if(card_id > 0)
 		updateTableView(card_id);
-}
-
-int CardReaderWidget::currentStageId()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->currentStageId();
-	return ret;
-}
-
-CardReader::CardChecker *CardReaderWidget::currentCardChecker()
-{
-	QF_ASSERT_EX(m_cbxCardCheckers != nullptr, "Card checkers list is not initialized!");
-	int ix = m_cbxCardCheckers->currentIndex();
-	QF_ASSERT_EX(ix >= 0, "Card checkers list - bad index!");
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto card_reader_plugin = qobject_cast<CardReader::CardReaderPlugin*>(fwk->plugin("CardReader"));
-	CardReader::CardChecker *ret = card_reader_plugin->cardCheckers().value(ix);
-	QF_ASSERT_EX(ret != nullptr, "Card checker is NULL!");
-	return ret;
-}
-
-int CardReaderWidget::findRunId(const SIMessageCardReadOut &card)
-{
-	int si_id = card.cardNumber();
-	int stage_no = currentStageId();
-	qf::core::sql::Query q;
-	q.exec("SELECT id FROM runs WHERE stageId=" QF_IARG(stage_no) " AND siId=" QF_IARG(si_id), qf::core::Exception::Throw);
-	int ret = 0;
-	if(q.next()) {
-		ret = q.value(0).toInt();
-	}
-	if(ret == 0)
-		appendLog(qf::core::Log::LOG_ERR, trUtf8("Cannot find run for SI: %1").arg(si_id));
-	return ret;
-}
-
-int CardReaderWidget::saveCardToSql(const SIMessageCardReadOut &card, int run_id)
-{
-	int ret = 0;
-	QStringList punches;
-	for(auto p : card.punchList()) {
-		punches << p.toJsonArrayString();
-	}
-	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId) VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId)"), qf::core::Exception::Throw);
-	q.bindValue(QStringLiteral(":stationNumber"), card.stationCodeNumber());
-	q.bindValue(QStringLiteral(":siId"), card.cardNumber());
-	q.bindValue(QStringLiteral(":checkTime"), card.checkTime());
-	q.bindValue(QStringLiteral(":startTime"), card.startTime());
-	q.bindValue(QStringLiteral(":finishTime"), card.finishTime());
-	q.bindValue(QStringLiteral(":punches"), '[' + punches.join(", ") + ']');
-	q.bindValue(QStringLiteral(":runId"), run_id);
-	q.bindValue(QStringLiteral(":stageId"), currentStageId());
-	if(q.exec()) {
-		ret = q.lastInsertId().toInt();
-	}
-	else {
-		appendLog(qf::core::Log::LOG_ERR, trUtf8("Save card ERROR: %1").arg(q.lastErrorText()));
-	}
-	return ret;
-}
-
-void CardReaderWidget::updateRunLapsSql(const CardReader::CheckedCard &card, int run_id)
-{
-	qf::core::sql::Query q;
-	try {
-		q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
-		q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
-		auto punch_list = card.punchList();
-		if(punch_list.count()) {
-			{
-				CardReader::CheckedPunch last_punch(punch_list.last().toMap());
-				CardReader::CheckedPunch finish_punch;
-				finish_punch.setPosition(punch_list.count() + 1);
-				finish_punch.setCode(999);
-				finish_punch.setStpTimeMs(card.lapTimeMs());
-				if(last_punch.position() > 0) {
-					finish_punch.setLapTimeMs(finish_punch.stpTimeMs() - last_punch.stpTimeMs());
-				}
-				punch_list << finish_punch;
-			}
-			for(auto v : punch_list) {
-				CardReader::CheckedPunch cp(v.toMap());
-				q.bindValue(QStringLiteral(":runId"), run_id);
-				q.bindValue(QStringLiteral(":code"), cp.code());
-				q.bindValue(QStringLiteral(":position"), cp.position());
-				q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
-				q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
-				q.exec(qf::core::Exception::Throw);
-			}
-		}
-	}
-	catch (const qf::core::Exception &e) {
-		appendLog(qf::core::Log::LOG_ERR, trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText()));
-	}
 }
 
 void CardReaderWidget::updateTableView(int card_id)
@@ -471,5 +383,36 @@ void CardReaderWidget::updateTableView(int card_id)
 		return;
 	}
 	ui->tblCards->updateRow(0);
+}
+
+CardReader::CardReaderPlugin *CardReaderWidget::thisPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto cardreader_plugin = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
+	QF_ASSERT_EX(cardreader_plugin != nullptr, "Bad plugin");
+	return cardreader_plugin;
+}
+
+Receipes::ReceipesPlugin *CardReaderWidget::receipesPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto plugin = qobject_cast<Receipes::ReceipesPlugin *>(fwk->plugin("Receipes"));
+	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
+	return plugin;
+}
+
+void CardReaderWidget::onCbxCardCheckersActivated(int ix)
+{
+	thisPlugin()->setCurrentCardCheckerIndex(ix);
+}
+
+void CardReaderWidget::showSelectedCard()
+{
+	qfLogFuncFrame();
+	auto receipes_plugin = receipesPlugin();
+	if(!receipes_plugin)
+		return;
+	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
+	receipes_plugin->previewReceipe(card_id);
 }
 

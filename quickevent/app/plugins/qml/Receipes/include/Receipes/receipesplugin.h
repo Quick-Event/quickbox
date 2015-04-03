@@ -1,1 +1,1 @@
-#include "../../src/receipesplugin.h"
+#include "../../src/Receipes/receipesplugin.h"

@@ -237,6 +237,10 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 QString ReportItemPara::paraText()
 {
 	qfLogFuncFrame();
+	qfDebug() << "null" << m_getTextJsFn.isNull();
+	qfDebug() << "isCallable" << m_getTextJsFn.isCallable();
+	qfDebug() << "isError" << m_getTextJsFn.isError();
+	qfDebug() << "isObject" << m_getTextJsFn.isObject();
 	QString ret;
 	if(m_getTextJsFn.isCallable()) {
 		QJSValue jsv = m_getTextJsFn.call();

@@ -57,6 +57,7 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 
 QVariant ReportItemDetail::rowData(const QString &field_name, int role)
 {
+	qfLogFuncFrame() << currentIndex() << field_name;
 	return data(currentIndex(), field_name, role);
 }
 
