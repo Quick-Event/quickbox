@@ -24,6 +24,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
 	Q_PROPERTY(QVariant modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
 	Q_PROPERTY(bool createFromData READ isCreateFromData WRITE setCreateFromData NOTIFY createFromDataChanged)
+	Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
@@ -39,6 +40,8 @@ public:
 	Q_SIGNAL void modelDataChanged(QVariant new_data);
 public:
 	BandDataModel* model();
+	bool modelLoaded() const;
+	Q_SIGNAL void modelLoadedChanged(bool is_loaded);
 
 	Q_INVOKABLE QVariant data(const QString &field_name, int role = Qt::DisplayRole);
 public:

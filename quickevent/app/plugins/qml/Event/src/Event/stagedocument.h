@@ -1,11 +1,13 @@
 #ifndef EVENT_STAGEDOCUMENT_H
 #define EVENT_STAGEDOCUMENT_H
 
+#include "../eventpluginglobal.h"
+
 #include <qf/core/model/sqldatadocument.h>
 
 namespace Event {
 
-class StageDocument : public qf::core::model::SqlDataDocument
+class EVENTPLUGIN_DECL_EXPORT StageDocument : public qf::core::model::SqlDataDocument
 {
 	Q_OBJECT
 private:

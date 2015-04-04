@@ -38,6 +38,7 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 	setCheckTime(rec.value("checkTime").toInt());
 	setStartTime(rec.value("startTime").toInt());
 	setFinishTime(rec.value("finishTime").toInt());
+	setFinishTimeMs(0);
 	auto jsd = QJsonDocument::fromJson(rec.value("punches").toString().toUtf8());
 	QVariantList punchlst;
 	QVariantList lst = jsd.toVariant().toList();

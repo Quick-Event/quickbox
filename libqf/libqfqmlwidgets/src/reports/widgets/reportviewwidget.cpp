@@ -86,8 +86,8 @@ void ReportViewWidget::ScrollArea::keyPressEvent(QKeyEvent* ev)
 	if(ev->modifiers() == Qt::ControlModifier) {
 		static QCursor c;
 		if(c.bitmap() == NULL) {
-			QBitmap b1(":/libqfgui/images/zoomin_cursor_bitmap.png");
-			QBitmap b2(":/libqfgui/images/zoomin_cursor_mask.png");
+			QBitmap b1(":/qf/qmlwidgets/images/zoomin_cursor_bitmap.png");
+			QBitmap b2(":/qf/qmlwidgets/images/zoomin_cursor_mask.png");
 			c = QCursor(b1, b2, 18, 12);
 		}
 		setCursor(c);
@@ -493,8 +493,10 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 
 void ReportViewWidget::zoomOnWheel(int delta, const QPoint &center_pos)
 {
-	if(delta < 0) view_zoomIn(center_pos);
-	else if(delta > 0) view_zoomOut(center_pos);
+	if(delta > 0)
+		view_zoomIn(center_pos);
+	else if(delta < 0)
+		view_zoomOut(center_pos);
 }
 
 void ReportViewWidget::view_zoomToFitWidth()

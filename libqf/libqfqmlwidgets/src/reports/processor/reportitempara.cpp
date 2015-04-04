@@ -41,7 +41,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 	if(indexToPrint == 0) {
 		printedText = paraText();
 	}
-	qfInfo() << printedText;
+	//qfInfo() << printedText;
 	QString text = printedText.mid(indexToPrint);
 	int initial_index_to_print = indexToPrint;
 
@@ -67,8 +67,6 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			//alignment_flags |= Qt::TextWordWrap;
 			int al = textHAlign() | textVAlign();
 			Qt::Alignment alignment_flags = (Qt::Alignment)al;
-			//if(alignment_flags & Qt::AlignRight)
-			//	qfInfo() << "RIGHT";
 			text_option.setAlignment(alignment_flags);
 		}
 		Rect rendered_bounding_rect;
@@ -147,21 +145,13 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 					}
 				}
 				textLayout.endLayout();
-				/*
-				if(bounding_rect.isRubber(LayoutHorizontal)) {
-					qfInfo() << printedText << bounding_rect.width() << "-->" << width;
-					rendered_bounding_rect.setWidth(width);
-				}
-				*/
 				rendered_bounding_rect.setWidth(width);
 				rendered_bounding_rect.setHeight(height);
 			}
 		}
 		/// velikost boundingRect je v bodech vystupniho zarizeni, tak to prepocitej na mm
 		rendered_bounding_rect = qmlwidgets::graphics::device2mm(rendered_bounding_rect, processor()->paintDevice());
-		/// posun to na zacatek, alignment ramecku to zase vrati (zda se, ze to neni potreba, tak jsem to prozatim zakomentoval)
-		//br.moveTopLeft(bounding_rect.topLeft());
-		//qfInfo().noSpace() << "text: '" << text << "'";
+		/// rendered rect is left aligned, if text is reight aligned or centered, the ReportItemMetaPaintText::paint() does it
 		if(text_item_should_be_created ) {
 			ReportItemMetaPaintText *mt;
 			if(render_check_mark )

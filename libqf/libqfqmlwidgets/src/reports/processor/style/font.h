@@ -21,8 +21,9 @@ class QFQMLWIDGETS_DECL_EXPORT Font : public StyleObject
 	Q_ENUMS(FontStyle)
 	Q_ENUMS(FontStyleHint)
 	Q_ENUMS(FontWeight)
-	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
+	// there are some restrictions for assigning primitive types to default properties, see: pen.h
 	Q_CLASSINFO("DefaultProperty", "basedOn")
+	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 	Q_PROPERTY(FontStyle style READ style WRITE setStyle NOTIFY styleChanged)
 	Q_PROPERTY(FontStyleHint hint READ hint WRITE setHint NOTIFY hintChanged)
 	Q_PROPERTY(FontWeight weight READ weight WRITE setWeight NOTIFY weightChanged)

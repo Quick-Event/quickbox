@@ -19,8 +19,17 @@ class QFQMLWIDGETS_DECL_EXPORT Pen : public StyleObject
 {
 	Q_OBJECT
 	Q_ENUMS(PenStyle)
-	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
+	// From qt doc:
+	// A default property is the property to which a value is assigned
+	// if an object is declared within another object's definition without declaring it
+	// as a value for a particular property.
+	//
+	//deault property seems to work just for objects not for primitive types like string
+	// border: Pen { "black1" } WILL NOT work
+	// border: Pen { basedOn: "black1" } WILL work
+	// border: Pen { Pen { ... } } WILL work
 	Q_CLASSINFO("DefaultProperty", "basedOn")
+	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Color* color READ color WRITE setColor NOTIFY colorChanged)
 	Q_PROPERTY(PenStyle style READ style WRITE setStyle NOTIFY styleChanged)
 	Q_CLASSINFO("property.width.doc", "Pen width in points (1/72 inch).\n"

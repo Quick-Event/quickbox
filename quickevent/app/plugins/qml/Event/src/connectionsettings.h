@@ -1,7 +1,7 @@
 #ifndef CONNECTIONSETTINGS_H
 #define CONNECTIONSETTINGS_H
 
-#include "eventplugin.h"
+#include "Event/eventplugin.h"
 
 #include <qf/core/utils/settings.h>
 

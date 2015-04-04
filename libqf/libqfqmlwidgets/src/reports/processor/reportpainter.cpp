@@ -42,12 +42,6 @@ ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportIte
 	if(!report_item->processor())
 		QF_EXCEPTION("report_item->processor is NULL.");
 	f_reportItem = report_item;
-	//f_reportProcessor = report_item->processor;
-	//context = report_item->processor->context();
-	//f_reportItemPath = report_item->path();
-	//f_layoutSettings = NULL;
-	//if(report_item && report_item->processor())
-	//	f_procesorContext = report_item->processor()->context();
 	{
 		double fill_vertical_layout_ratio = report_item->childSize(ReportItem::LayoutVertical).fillLayoutRatio();
 		setFillVLayoutRatio(fill_vertical_layout_ratio);
@@ -578,19 +572,18 @@ void ReportItemMetaPaintText::paint(ReportPainter *painter, unsigned mode)
 	auto parent_item = parent();
 	if(parent_item) {
 		Rect pbr = parent_item->renderedRect;
+		qreal hinset = br.left() - pbr.left();
 		if(textOption.alignment() & Qt::AlignRight) {
-			br.moveLeft(br.left() + pbr.width() - br.width());
+			br.moveLeft(br.left() + pbr.width() - br.width() - hinset - hinset);
 		}
 		else if(textOption.alignment() & Qt::AlignHCenter) {
-			br.moveLeft(br.left() + (pbr.width() - br.width()) / 2);
+			br.moveLeft(br.left() + (pbr.width() - br.width()) / 2 - hinset);
 		}
 	}
 	br = qf::qmlwidgets::graphics::mm2device(br, painter->device());
-	//pbr = qf::qmlwidgets::graphics::mm2device(pbr, painter->device());
 	br.adjust(0, 0, 1, 1); /// nekdy se stane, kvuji nepresnostem prepocitavani jednotek, ze se to vyrendruje pri tisku jinak, nez pri kompilaci, tohle trochu pomaha:)
-	//r.setHeight(500);
 	//qfWarning().noSpace() << "'" << s << "' flags: " << flags;
-	//painter->drawRect(pbr);
+	//painter->drawRect(br);
 #if 0
 	painter->drawText(br, flags, s);
 #else

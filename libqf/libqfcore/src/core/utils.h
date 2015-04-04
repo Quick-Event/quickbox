@@ -98,6 +98,7 @@ public:
 	static bool fieldNameEndsWith(const QString &field_name1, const QString &field_name2);
 	static bool fieldNameCmp(const QString &fld_name1, const QString &fld_name2);
 	static QVariant retypeVariant(const QVariant &_val, QVariant::Type type);
+	static QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 
 	/// invoke method of prototype bool method()
 	static bool invokeMethod_B_V(QObject *obj, const char *method_name);

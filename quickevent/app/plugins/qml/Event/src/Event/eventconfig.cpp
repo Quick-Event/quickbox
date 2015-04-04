@@ -12,14 +12,6 @@ namespace {
 static const auto EVENT_NAME = QStringLiteral("event.name");
 }
 
-static QVariant retypeStringValue(const QString &str_val, const QString &type_name)
-{
-	QByteArray ba = type_name.toLatin1();
-	QVariant::Type type = QVariant::nameToType(ba.constData());
-	QVariant ret = qf::core::Utils::retypeVariant(str_val, type);
-	return ret;
-}
-
 EventConfig::EventConfig(QObject *parent)
 	: QObject(parent)
 {
@@ -62,7 +54,7 @@ void EventConfig::load()
 		if(knownKeys().contains(key)) {
 			QVariant val = q.value(1);
 			QString type = q.value(2).toString();
-			m_data[key] = retypeStringValue(val.toString(), type);
+			m_data[key] = qf::core::Utils::retypeStringValue(val.toString(), type);
 		}
 	}
 }

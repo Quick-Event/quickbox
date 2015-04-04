@@ -10,6 +10,9 @@
 namespace CardReader {
 class CardReaderPlugin;
 }
+namespace Event {
+class EventPlugin;
+}
 
 namespace Receipes {
 
@@ -29,6 +32,7 @@ public:
 private:
 	void onInstalled();
 	CardReader::CardReaderPlugin* cardReaderPlugin();
+	Event::EventPlugin* eventPlugin();
 private:
 };
 

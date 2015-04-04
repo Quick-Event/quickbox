@@ -20,8 +20,9 @@ class QFQMLWIDGETS_DECL_EXPORT Brush : public StyleObject
 {
 	Q_OBJECT
 	Q_ENUMS(BrushStyle)
-	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
+	// there are some restrictions for assigning primitive types to default properties, see: pen.h
 	Q_CLASSINFO("DefaultProperty", "basedOn")
+	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Color* color READ color WRITE setColor NOTIFY colorChanged)
 	Q_PROPERTY(BrushStyle style READ style WRITE setStyle)
 public:

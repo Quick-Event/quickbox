@@ -1,9 +1,9 @@
 #ifndef EVENTPLUGIN_H
 #define EVENTPLUGIN_H
 
-#include "eventpluginglobal.h"
-#include "Event/eventconfig.h"
-#include "Event/stagedata.h"
+#include "../eventpluginglobal.h"
+#include "eventconfig.h"
+#include "stage.h"
 
 #include <qf/core/utils.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -44,7 +44,8 @@ public:
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
-	QVariantMap stageData(int stage_id);
+	Stage stage(int stage_id);
+	Q_SLOT void clearStageCache();
 
 	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
 	Q_SLOT bool closeEvent();
@@ -71,7 +72,7 @@ private:
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;
 	QComboBox *m_cbxStage = nullptr;
-	QMap<int, QVariantMap> m_stageCache;
+	QMap<int, Stage> m_stageCache;
 };
 
 }

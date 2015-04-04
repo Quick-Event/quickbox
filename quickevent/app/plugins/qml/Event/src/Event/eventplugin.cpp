@@ -1,9 +1,9 @@
 #include "eventplugin.h"
-#include "connectdbdialogwidget.h"
-#include "connectionsettings.h"
-#include "eventdialogwidget.h"
-#include "Event/stagedocument.h"
-#include "Event/stagewidget.h"
+#include "../connectdbdialogwidget.h"
+#include "../connectionsettings.h"
+#include "../eventdialogwidget.h"
+#include "stagedocument.h"
+#include "stagewidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -65,18 +65,22 @@ int EventPlugin::currentStageId()
 	return m_cbxStage->currentIndex() + 1;
 }
 
-QVariantMap EventPlugin::stageData(int stage_id)
+Stage EventPlugin::stage(int stage_id)
 {
 	QVariantMap ret;
-	if(m_stageCache.contains(stage_id)) {
-		ret = m_stageCache.value(stage_id);
-	}
-	else {
+	if(!m_stageCache.contains(stage_id)) {
 		Event::StageDocument doc;
 		doc.load(stage_id);
-		ret = doc.values();
+		Stage s(&doc);
+		m_stageCache[stage_id] = s;
 	}
+	ret = m_stageCache.value(stage_id);
 	return ret;
+}
+
+void EventPlugin::clearStageCache()
+{
+	m_stageCache.clear();
 }
 
 void EventPlugin::onInstalled()
@@ -142,7 +146,9 @@ void EventPlugin::editStage()
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	dlg.setCentralWidget(w);
 	w->load(stage_id);
-	dlg.exec();
+	if(dlg.exec()) {
+		clearStageCache();
+	}
 }
 
 void EventPlugin::onEventOpened()

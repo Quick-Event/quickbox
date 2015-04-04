@@ -64,8 +64,14 @@ BandDataModel *ReportItemBand::model()
 			}
 		}
 		m_model = BandDataModel::createFromData(dta, this);
+		emit modelLoadedChanged(true);
 	}
 	return m_model;
+}
+
+bool ReportItemBand::modelLoaded() const
+{
+	return (m_model != nullptr);
 }
 
 QVariant ReportItemBand::data(const QString &field_name, int role)
@@ -95,6 +101,7 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 			it_det->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 		indexToPrint = 0;
 	}
+	model(); // load model before rendering
 	PrintResult res = Super::printMetaPaint(out, bounding_rect);
 	qfDebug() << "\tRETURN:" << res.toString();
 	return res;

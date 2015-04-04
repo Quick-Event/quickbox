@@ -1,7 +1,7 @@
 #ifndef CONNECTDBDIALOGWIDGET_H
 #define CONNECTDBDIALOGWIDGET_H
 
-#include "eventplugin.h"
+#include "Event/eventplugin.h"
 
 #include <qf/qmlwidgets/framework/dialogwidget.h>
 

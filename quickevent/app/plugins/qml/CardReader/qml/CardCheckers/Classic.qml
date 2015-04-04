@@ -14,7 +14,7 @@ CardChecker
 
 		var run_id = read_card.runId;
 		var course = root.courseForRunId(run_id);
-		Log.info("course:", JSON.stringify(course, null, 2));
+		//Log.info("course:", JSON.stringify(course, null, 2));
 		
 		var checked_card = {courseId: course.id, runId: run_id, punches: []};
 		var read_punches = read_card.punches;
@@ -34,7 +34,7 @@ CardChecker
 			for(var k=check_ix; k<checked_punches.length; k++) { //scan card
 				//var read_punch = read_punches[k];
 				var checked_punch = checked_punches[k];
-				if(checked_punch.code == code) {  
+				if(checked_punch.code === code) {
 					checked_punch.position = course_code_record.position;
 					check_ix = k + 1;
 					break;
@@ -46,25 +46,39 @@ CardChecker
 					error = true;
 			}
 		}
-		if(read_card.finishTime == 0xEEEE) 
+		if(read_card.finishTime === 0xEEEE)
 			error = true;
 		checked_card.isOk = !error
 
 		//........... normalize times .....................
-		checked_card.startTimeMs = 0;
-		if(read_card.startTime == 0xEEEE)        //take start record from start list
-			checked_card.startTimeMs = root.stageStartSec() + root.startTimeSec(run_id);
-		else 
-			checked_card.startTimeMs = read_card.startTime;
+		checked_card.checkTimeMs = 0;
+		if(read_card.checkTime !== 0xEEEE) {
+			checked_card.checkTimeMs = read_card.checkTime * 1000;
+		}
+		var start_time_sec = 0;
+		if(read_card.startTime === 0xEEEE) {        //take start record from start list
+			start_time_sec = root.startTimeSec(run_id);
+			if(start_time_sec === 0) {
+				// take start from check, for testing only
+				start_time_sec = (((read_card.checkTime / 60) >> 0) + 1) * 60;
+				console.warn("Taking start time from check for debugging purposes only, start time;", start_time_sec / 60, read_card.checkTime)
+			}
+			else {
+				start_time_sec = root.stageStartSec() + start_time_sec;
+			}
+		}
+		else {
+			start_time_sec = read_card.startTime;
+		}
 		
 		// set start time to be AM even if it is night race, SI cards have 12 hrs wrap-around
-		checked_card.startTimeMs = root.toAMms(checked_card.startTimeMs * 1000);
+		checked_card.startTimeMs = root.toAMms(start_time_sec * 1000);
 
 		checked_card.finishTimeMs = 0;
 		//checked_card.lapTimeMs = 0;
-		if(read_card.finishTime != 0xEEEE) {
+		if(read_card.finishTime !== 0xEEEE) {
+			//checked_card.finishTimeMs = 1000 * read_card.finishTime;
 			checked_card.finishTimeMs = root.fixTimeWrap(checked_card.startTimeMs, 1000 * read_card.finishTime + read_card.finishTimeMs);
-			//checked_card.lapTimeMs = checked_card.finishTimeMs - checked_card.startTimeMs;
 		}
 
 		var prev_position = 0;
@@ -82,6 +96,8 @@ CardChecker
 				prev_position_stp = checked_punch.stpTimeMs;
 			}
 		}
+		checked_card.finishStpTimeMs = checked_card.finishTimeMs - checked_card.startTimeMs;
+		checked_card.finishLapTimeMs = checked_card.finishStpTimeMs - prev_position_stp;
 		Log.info("check result:", JSON.stringify(checked_card, null, 2));
 		return checked_card;
 	}

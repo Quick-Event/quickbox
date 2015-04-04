@@ -157,6 +157,14 @@ QVariant Utils::retypeVariant(const QVariant &val, QVariant::Type type)
 	return QVariant();
 }
 
+QVariant Utils::retypeStringValue(const QString &str_val, const QString &type_name)
+{
+	QByteArray ba = type_name.toLatin1();
+	QVariant::Type type = QVariant::nameToType(ba.constData());
+	QVariant ret = qf::core::Utils::retypeVariant(str_val, type);
+	return ret;
+}
+
 bool Utils::invokeMethod_B_V(QObject *obj, const char *method_name)
 {
 	QVariant ret = false;

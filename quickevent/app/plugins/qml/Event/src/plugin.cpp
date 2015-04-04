@@ -1,4 +1,4 @@
-#include "eventplugin.h"
+#include "Event/eventplugin.h"
 
 #include <qf/core/log.h>
 

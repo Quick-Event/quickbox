@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/qf/core/qml">
-        <file>js/stringext.js</file>
+		<file>js/stringext.js</file>
+		<file>js/timeext.js</file>
         <file>js/treetable.js</file>
     </qresource>
 </RCC>

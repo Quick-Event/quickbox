@@ -39,5 +39,8 @@
 		<file>images/zoom_fitwidth.png</file>
 		<file>images/zoom_in.png</file>
 		<file>images/zoom_out.png</file>
+
+		<file>images/zoomin_cursor_bitmap.png</file>
+		<file>images/zoomin_cursor_mask.png</file>
 	</qresource>
 </RCC>

@@ -52,7 +52,10 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'code'; type: Int { } },
-				Field { name: 'outOfOrder'; type: Boolean { } }
+				Field { name: 'outOfOrder'; 
+					type: Boolean { } 
+					notNull: true
+				}
 			]
 			indexes: [
 				//Index {fields: ['stageId', 'code']; unique: true }
