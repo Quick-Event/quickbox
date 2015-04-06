@@ -465,16 +465,12 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 {
 	qfLogFuncFrame() << "center_pos:" << center_pos.x() << center_pos.y();
 	const QRect visible_rect(-m_scrollArea->widget()->pos(), m_scrollArea->viewport()->size());
-	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
 	qfDebug() << "visible rect:" << qmlwidgets::graphics::Rect(visible_rect).toString();
 	QScrollBar *hsb = m_scrollArea->horizontalScrollBar();
 	QScrollBar *vsb = m_scrollArea->verticalScrollBar();
 
 	qreal old_scale = scale(), new_scale;
-	//QPointF old_report_pos = QPointF(abs_center_pos) / old_scale;
-	//if(old_scale > 2) new_scale = old_scale - 1;
-	//else
 	new_scale = old_scale / 1.33;
 	setScale(new_scale);
 

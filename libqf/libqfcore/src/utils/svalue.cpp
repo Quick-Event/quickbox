@@ -260,7 +260,7 @@ void SValue::setProperty(const QString &name, const QVariant &val)
 	}
 	QVariant v = val;
 	if(val.userType() != qMetaTypeId<SValue>())
-		v = variant_to_value(v);
+		v = variant_to_value(val);
 	m[name] = v;
 	d->value = m;
 }

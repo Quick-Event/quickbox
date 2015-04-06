@@ -29,7 +29,7 @@ private:
 public:
 	CheckedCard(const QVariantMap &data = QVariantMap());
 
-	int lapTimeMs() const {return finishTimeMs() - startTimeMs();}
+	int timeMs() const {return finishTimeMs() - startTimeMs();}
 };
 
 }

@@ -51,9 +51,13 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
 	QVariantMap ret;
-	CardReader::CheckedCard cc = cardReaderPlugin()->checkCard(card_id);
-	int run_id = cc.runId();
-	int course_id = cc.courseId();
+	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(card_id);
+	int current_stage_id = eventPlugin()->currentStageId();
+	int run_id = checked_card.runId();
+	int course_id = checked_card.courseId();
+	int current_standings = 1;
+	int competitors_finished = 0;
+	int control_count = 0;
 	QMap<int, int> best_laps;
 	QMap<int, int> missing_codes;
 	{
@@ -70,6 +74,7 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		while (q.next()) {
 			missing_codes[q.value("position").toInt()] = q.value("code").toInt();
+			control_count++;
 		}
 	}
 	{
@@ -86,29 +91,52 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 		model.reload(qb.toString());
 		if(model.rowCount() == 1) {
 			int class_id = model.value(0, "competitors.classId").toInt();
-			qf::core::sql::QueryBuilder qb;
-			qb.select("runlaps", "position")
-					.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs")
-					.from("runlaps")
-					.joinRestricted("runlaps.runId", "runs.id", "runlaps.lapTimeMs > 0")
-					.join("runs.competitorId", "competitors.id")
-					.where("competitors.classId=" QF_IARG(class_id))
-					.groupBy("runlaps.position")
-					.orderBy("runlaps.position");
-			qf::core::sql::Query q;
-			q.exec(qb.toString());
-			while(q.next()) {
-				int pos = q.value("position").toInt();
-				if(pos == 0) {
-					qfWarning() << "position == 0 in best runlaps";
-					continue;
+			{
+				// find best laps for competitors class
+				qf::core::sql::QueryBuilder qb;
+				qb.select("runlaps", "position")
+						.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs")
+						.from("competitors")
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
+						.joinRestricted("runs.id", "runlaps.runId", "runlaps.lapTimeMs > 0")
+						.groupBy("runlaps.position")
+						.orderBy("runlaps.position");
+				qf::core::sql::Query q;
+				q.exec(qb.toString());
+				while(q.next()) {
+					int pos = q.value("position").toInt();
+					if(pos == 0) {
+						qfWarning() << "position == 0 in best runlaps";
+						continue;
+					}
+					int lap = q.value("minLapTimeMs").toInt();
+					if(lap == 0) {
+						qfWarning() << "minLapTimeMs == 0 in best runlaps";
+						continue;
+					}
+					best_laps[pos] = lap;
 				}
-				int lap = q.value("minLapTimeMs").toInt();
-				if(lap == 0) {
-					qfWarning() << "minLapTimeMs == 0 in best runlaps";
-					continue;
+			}
+			{
+				// find current standings
+				qf::core::sql::QueryBuilder qb;
+				qb.select2("runs", "timeMs")
+						.select("runs.disqualified OR runs.offRace OR runs.cardError AS dis")
+						.from("competitors")
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
+						.where("runs.status = 'FINISH'")
+						.orderBy("cardError, disqualified, offRace, runs.timeMs");
+				qf::core::sql::Query q;
+				q.exec(qb.toString(), qf::core::Exception::Throw);
+				while (q.next()) {
+					bool dis = q.value("dis").toBool();
+					int time = q.value("timeMs").toInt();
+					if(!dis) {
+						if(time < checked_card.timeMs())
+							current_standings++;
+					}
+					competitors_finished++;
 				}
-				best_laps[pos] = lap;
 			}
 		}
 		qfu::TreeTable tt = model.toTreeTable();
@@ -151,13 +179,13 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 		tt.appendColumn("stpTimeMs", QVariant::Int);
 		tt.appendColumn("lapTimeMs", QVariant::Int);
 		tt.appendColumn("lossMs", QVariant::Int);
- 		QMapIterator<QString, QVariant> it(cc);
+ 		QMapIterator<QString, QVariant> it(checked_card);
 		while(it.hasNext()) {
 			it.next();
 			if(it.key() != QLatin1String("punches"))
 				tt.setValue(it.key(), it.value());
 		}
-		for(auto v : cc.punches()) {
+		for(auto v : checked_card.punches()) {
 			CardReader::CheckedPunch punch(v.toMap());
 			qfu::TreeTableRow ttr = tt.appendRow();
 			int pos = punch.position();
@@ -174,10 +202,22 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 				ttr.setValue("lossMs", loss);
 			}
 		}
-		QVariantList mc;
-		for(auto i : missing_codes.keys())
-			mc.insert(mc.count(), QVariantList() << i << missing_codes.value(i));
-		tt.setValue("missingCodes", mc);
+		{
+			// runlaps table contains also finish time entry, it is under last position
+			// for exaple: if course is of 10 controls best_laps[10] contains best finish lap time for this class
+			int loss = 0;
+			int best_lap = best_laps.value(control_count);
+			if(best_lap > 0)
+				loss = checked_card.finishLapTimeMs() - best_lap;
+			tt.setValue("finishLossMs", loss);
+		}
+		{
+			QVariantList mc;
+			for(auto i : missing_codes.keys())
+				mc.insert(mc.count(), QVariantList() << i << missing_codes.value(i));
+			//mc.insert(mc.count(), QVariantList() << 1 << 101);
+			tt.setValue("missingCodes", mc);
+		}
 		{
 			Event::Stage stage = eventPlugin()->stage(eventPlugin()->currentStageId());
 			QTime start00 = stage.startTime();
@@ -185,6 +225,9 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 				start00 = start00.addSecs(-12 * 60 *60);
 			tt.setValue("stageStart", start00);
 		}
+		tt.setValue("currentStandings", current_standings);
+		tt.setValue("competitorsFinished", competitors_finished);
+
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
 	}

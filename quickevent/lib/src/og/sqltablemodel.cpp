@@ -28,6 +28,12 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 			ret = t.toString();
 		}
 	}
+	else if(role == Qt::TextAlignmentRole) {
+		QVariant v = Super::data(index, RawValueRole);
+		if(v.userType() == qMetaTypeId<TimeMs>()) {
+			ret = Qt::AlignRight;
+		}
+	}
 	return ret;
 }
 

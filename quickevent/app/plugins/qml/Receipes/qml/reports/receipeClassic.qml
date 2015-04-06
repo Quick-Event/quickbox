@@ -247,10 +247,43 @@ Report {
 					Cell {
 						width: "%"
 						textHAlign: Frame.AlignRight
-						text: "NIY";
+						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLossMs")): "---";
 					}
 				}
 				bottomBorder: Pen { basedOn: "black2" }
+			}
+			Para {
+				vinset: 1
+				hinset: 1
+				text: {
+					if(bandCard.modelLoaded) {
+						var missing_codes = bandCard.data("missingCodes");
+						//console.warn("missing_codes:", JSON.stringify(missing_codes, null, 2));
+						if(missing_codes) {
+							var mcs = [];
+							for(var i=0; i<missing_codes.length; i++) {
+								var mca = missing_codes[i];
+								mcs.push(mca[0] + "-" + mca[1]);
+							}
+							var ret = qsTr("missing: ") + mcs.join(", ");
+							return ret;
+						}
+					}
+					return "";
+				}
+			}
+			Para {
+				vinset: 1
+				hinset: 1
+				text: {
+					if(bandCard.modelLoaded) {
+						var current_standings = bandCard.data("currentStandings");
+						var competitors_count = bandCard.data("competitorsFinished");
+						var ret = qsTr("current standings: ") + current_standings + "/" + competitors_count;
+						return ret;
+					}
+					return "";
+				}
 			}
 		}
 	}

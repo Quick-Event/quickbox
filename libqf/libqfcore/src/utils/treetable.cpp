@@ -547,6 +547,10 @@ QVariant TreeTable::value(const QString &_key_name, const QVariant &default_val,
 			}
 		}
 	}
+	if(ret.userType() == qMetaTypeId<SValue>()) {
+		SValue sv = ret.value<SValue>();
+		ret = sv.toVariant();
+	}
 	qfDebug() << "\treturn:" << ret.toString();
 	return ret;
 }
