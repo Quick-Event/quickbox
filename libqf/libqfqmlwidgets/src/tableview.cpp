@@ -1673,7 +1673,7 @@ void TableView::insertRowInline()
 	QModelIndex ix = currentIndex();
 	int ri = model()->rowCount();
 	if(ix.isValid())
-		ri = ix.row() + 1;
+		ri = ix.row();
 	int tri = toTableModelRowNo(ri);
 	if(tri < 0) {
 		/// this can happen when one inserts to empty table
