@@ -3,7 +3,7 @@ CONFIG += ordered
 
 SUBDIRS += \
 	core \
-	#qmlwidgets \ qmlwidgets plugin excluded from build till QTBUG-39477 will be fixed
+	qmlwidgets \ # cannot be removed, Windows cannot load qml module (all includes this one)
 	qmlreports \
 
 
