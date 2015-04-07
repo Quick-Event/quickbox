@@ -8,7 +8,6 @@
 #include "CardReader/checkedcard.h"
 
 #include <Event/eventplugin.h>
-#include <Receipes/receipesplugin.h>
 
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
@@ -393,10 +392,10 @@ CardReader::CardReaderPlugin *CardReaderWidget::thisPlugin()
 	return cardreader_plugin;
 }
 
-Receipes::ReceipesPlugin *CardReaderWidget::receipesPlugin()
+qf::qmlwidgets::framework::Plugin *CardReaderWidget::receipesPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Receipes::ReceipesPlugin *>(fwk->plugin("Receipes"));
+	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipes"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
@@ -413,6 +412,6 @@ void CardReaderWidget::showSelectedCard()
 	if(!receipes_plugin)
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	receipes_plugin->previewReceipe(card_id);
+	QMetaObject::invokeMethod(receipes_plugin, "previewReceipe", Q_ARG(int, card_id));
 }
 

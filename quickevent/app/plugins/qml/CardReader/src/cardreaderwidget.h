@@ -19,6 +19,7 @@ namespace qmlwidgets {
 class Action;
 namespace framework {
 class PartWidget;
+class Plugin;
 }
 }
 }
@@ -40,9 +41,6 @@ class CardReaderPlugin;
 class CardChecker;
 class ReadCard;
 class CheckedCard;
-}
-namespace Receipes {
-class ReceipesPlugin;
 }
 
 class CardReaderWidget : public QFrame
@@ -84,7 +82,7 @@ private:
 	void updateTableView(int card_id);
 
 	CardReader::CardReaderPlugin* thisPlugin();
-	Receipes::ReceipesPlugin* receipesPlugin();
+	qf::qmlwidgets::framework::Plugin* receipesPlugin();
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 
 	void onCustomContextMenuRequest(const QPoint &pos);

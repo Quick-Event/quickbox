@@ -10,7 +10,7 @@ CardChecker
 	
 	function checkCard(read_card)
 	{
-		Log.info("checking card:", JSON.stringify(read_card, null, 2));
+		console.debug("checking card:", JSON.stringify(read_card, null, 2));
 
 		var run_id = read_card.runId;
 		var course = root.courseForRunId(run_id);
@@ -98,7 +98,7 @@ CardChecker
 		}
 		checked_card.finishStpTimeMs = checked_card.finishTimeMs - checked_card.startTimeMs;
 		checked_card.finishLapTimeMs = checked_card.finishStpTimeMs - prev_position_stp;
-		Log.info("check result:", JSON.stringify(checked_card, null, 2));
+		console.debug("check result:", JSON.stringify(checked_card, null, 2));
 		return checked_card;
 	}
 }

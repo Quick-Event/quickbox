@@ -5,7 +5,7 @@ import "qrc:/quickevent/js/ogtime.js" as OGTime
 
 Report {
 	id: root
-	objectName: "root"
+	property int courseLength: 0
 	//debugLevel: 1
 	styleSheet: StyleSheet {
 		basedOn: ReportStyleCommon {
@@ -83,7 +83,9 @@ Report {
 						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.name"): "";
 					}
 					Para {
-						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.date").toISOString().substring(0, 10): "";
+						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.date").toISOString().substring(0, 10)
+														  + " " + bandCompetitor.data("event.place")
+														  : "";
 					}
 				}
 				Frame {
@@ -112,10 +114,16 @@ Report {
 							text: "SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
 						}
 						Para {
-							text: (bandCompetitor.modelLoaded)? (bandCompetitor.data("length") / 1000) + "km": "";
+							text: {
+								if(bandCompetitor.modelLoaded) {
+									root.courseLength = bandCompetitor.data("courses.length");
+									return (root.courseLength / 1000) + "km";
+								}
+								return "";
+							}
 						}
 						Para {
-							text: (bandCompetitor.modelLoaded)? " " + bandCompetitor.data("climb") + "m": "";
+							text: (bandCompetitor.modelLoaded)? " " + bandCompetitor.data("courses.climb") + "m": "";
 						}
 					}
 				}
@@ -137,7 +145,6 @@ Report {
 					}
 					Para {
 						width: "%"
-						//textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("checkTimeMs")): "";
 					}
 					Para {
@@ -146,7 +153,6 @@ Report {
 					}
 					Para {
 						width: "%"
-						//textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("finishTimeMs")): "";
 					}
 				}
@@ -272,17 +278,34 @@ Report {
 					return "";
 				}
 			}
-			Para {
+			Frame {
+				width: "%"
 				vinset: 1
 				hinset: 1
-				text: {
-					if(bandCard.modelLoaded) {
-						var current_standings = bandCard.data("currentStandings");
-						var competitors_count = bandCard.data("competitorsFinished");
-						var ret = qsTr("current standings: ") + current_standings + "/" + competitors_count;
-						return ret;
+				layout: Frame.LayoutHorizontal
+				Para {
+					text: {
+						if(bandCard.modelLoaded) {
+							var current_standings = bandCard.data("currentStandings");
+							var competitors_count = bandCard.data("competitorsFinished");
+							var ret = qsTr("standings: ") + current_standings + "/" + competitors_count;
+							return ret;
+						}
+						return "";
 					}
-					return "";
+				}
+				Para {
+					width: "%"
+					textHAlign: Frame.AlignRight
+					text: {
+						if(bandCard.modelLoaded) {
+							var time = bandCard.data("finishStpTimeMs");
+							var length = root.courseLength;
+							if(length > 0)
+								return OGTime.msecToString(((time / length) >> 0) * 1000) + "min/km";
+						}
+						return "";
+					}
 				}
 			}
 		}
