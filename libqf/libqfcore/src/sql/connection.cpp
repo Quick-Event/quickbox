@@ -696,38 +696,6 @@ QSqlIndex Connection::primaryIndex(const QString& table_id)
 	QSqlIndex ret;
 	if(driverName().endsWith("SQLITE")) {
 		ret = QSqlDatabase::primaryIndex(tblname);
-#if 0
-		QString tblname, dbname;
-		tblname = normalizeTableName(table_id);
-		qf::core::Utils::parseFieldName(tblname, &tblname, &dbname);
-		QString s = "PRAGMA %1.table_info(%2)";
-		s = s.arg(dbname).arg(tblname);
-		QSqlQuery q = exec(s);
-		while(q.next()) {
-			ret.append(QSqlField(q.value(0).toString()));
-		}
-#endif
-#ifdef SQLITE_PARSE_CREATE_SQL_SCRIPT
-		/// parsing create table command
-		QString s = createTableSqlCommand(tblname);
-		QStringList sl =fieldDefsFromCreateTableCommand(s);
-		foreach(QString s1, sl) {
-			qfDebug() << "\tfield:" << s1;//PRIMARY KEY
-			if(s1.indexOf("primary key", 0, Qt::CaseInsensitive) > 0) {
-				QString fs = s1.section(' ', 0, 0, QString::SectionSkipEmpty);
-				if(!!fs) {
-					QVariant::Type type;
-					QString type_name = s1.section(' ', 1, 1, QString::SectionSkipEmpty).toLower();
-					if (type_name == QLatin1String("integer") || type_name == QLatin1String("int")) type = QVariant::Int;
-					else if(type_name == QLatin1String("double") || type_name == QLatin1String("float") || type_name.startsWith(QLatin1String("numeric"))) type = QVariant::Double;
-					else if (type_name == QLatin1String("blob")) type = QVariant::ByteArray;
-					else type = QVariant::String;
-
-					ret.append(QSqlField(fs.trimmed(), type));
-				}
-			}
-		}
-#endif
 	}
 	else {
 		tblname = fullTableNameToQtDriverTableName(tblname);
