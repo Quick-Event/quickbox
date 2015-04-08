@@ -32,7 +32,6 @@ public:
 public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
-	bool reload(const QString &query_str);
 	bool reload() Q_DECL_OVERRIDE;
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
@@ -62,6 +61,9 @@ public:
 protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
+
+	bool reload(const QString &query_str);
+
 	qf::core::sql::Connection sqlConnection();
 	bool reloadTable(const QString &query_str);
 	QStringList tableIds(const utils::Table::FieldList &table_fields);

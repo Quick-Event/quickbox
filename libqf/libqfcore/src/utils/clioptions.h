@@ -27,7 +27,7 @@ public:
 	CLIOptions(QObject *parent = NULL);
 	virtual ~CLIOptions();
 public:
-	class Option
+	class QFCORE_DECL_EXPORT Option
 	{
 	private:
 		struct Data : public QSharedData
