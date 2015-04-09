@@ -88,8 +88,9 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 				.join("runs.competitorId", "competitors.id")
 				.join("competitors.classId", "classes.id")
 				.where("runs.id=" QF_IARG(run_id));
-		model.reload(qb.toString());
-		if(model.rowCount() == 1) {
+        model.setQuery(qb.toString());
+        model.reload();
+        if(model.rowCount() == 1) {
 			int class_id = model.value(0, "competitors.classId").toInt();
 			{
 				// find best laps for competitors class
