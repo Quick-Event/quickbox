@@ -6,6 +6,7 @@
 #include "dialogs/messagebox.h"
 #include "dialogs/dialog.h"
 #include "dialogbuttonbox.h"
+#include "style.h"
 #include "texteditwidget.h"
 
 #include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
@@ -1195,6 +1196,8 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 
 void TableView::createActions()
 {
+	auto *style = Style::instance();
+	QString icon_path = style->iconPath();
 	Action *a;
 	{
 		a = new Action(tr("Resize columns to contents"), this);
@@ -1217,7 +1220,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Reload"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/reload.png"));
+		a->setIcon(style->icon("reload"));
 		a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("reload");
@@ -1227,7 +1230,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Copy"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/copy.png"));
+		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copy");
@@ -1237,7 +1240,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Copy special"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/copy.png"));
+		a->setIcon(style->icon("copy"));
 		//a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
 		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copySpecial");
@@ -1247,7 +1250,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Paste"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/paste.png"));
+		a->setIcon(style->icon("paste"));
 		a->setShortcut(QKeySequence(tr("Ctrl+V", "Paste rows")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("paste");
@@ -1256,7 +1259,7 @@ void TableView::createActions()
 		connect(a, SIGNAL(triggered()), this, SLOT(paste()), Qt::QueuedConnection); /// hazelo mi to vyjjimky v evendloopu
 	}
 	{
-		a = new Action(QIcon(":/qf/qmlwidgets/images/new.png"), tr("Insert row"), this);
+		a = new Action(style->icon("insert-row"), tr("Insert row"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Ins", "insert row SQL table")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("insertRow");
@@ -1265,7 +1268,7 @@ void TableView::createActions()
 		connect(a, SIGNAL(triggered()), this, SLOT(insertRow()));
 	}
 	{
-		a = new Action(QIcon(":/qf/qmlwidgets/images/delete.png"), tr("Delete selected rows"), this);
+		a = new Action(style->icon("delete-row"), tr("Delete selected rows"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Del", "delete row SQL table")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("removeSelectedRows");
@@ -1275,7 +1278,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Post row edits"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/sql_post.png"));
+		a->setIcon(style->icon("save"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Return", "post row SQL table")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("postRow");
@@ -1285,7 +1288,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Revert row edits"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/revert.png"));
+		a->setIcon(style->icon("revert"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Z", "revert edited row")));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("revertRow");
@@ -1295,7 +1298,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Clone row"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/clone.png"));
+		a->setIcon(style->icon("clone-row"));
 		a->setOid("cloneRow");
 		//a->setVisible(false);
 		m_actionGroups[RowActions] << a->oid();
@@ -1307,7 +1310,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Zobrazit ve formulari"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/view.png"));
+		a->setIcon(style->icon("view"));
 		a->setToolTip(tr("Zobrazit radek v formulari pro cteni"));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(emitViewRowInExternalEditor()));
@@ -1316,7 +1319,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Upravit ve formulari"), this);
-		a->setIcon(QIcon(":/qf/qmlwidgets/images/edit.png"));
+		a->setIcon(style->icon("edit"));
 		a->setToolTip(tr("Upravit radek ve formulari"));
 		a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(emitEditRowInExternalEditor()));
@@ -1324,7 +1327,7 @@ void TableView::createActions()
 		m_actions[a->oid()] = a;
 	}
 	{
-		a = new Action(QIcon(":/qf/qmlwidgets/images/sort-asc.png"), tr("Sort ascending"), this);
+		a = new Action(style->icon("sort-asc"), tr("Sort ascending"), this);
 		a->setOid("sortAsc");
 		a->setCheckable(true);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
@@ -1334,7 +1337,7 @@ void TableView::createActions()
 		m_actions[a->oid()] = a;
 	}
 	{
-		a = new Action(QIcon(":/qf/qmlwidgets/images/sort-desc.png"), tr("Sort descending"), this);
+		a = new Action(style->icon("sort-desc"), tr("Sort descending"), this);
 		a->setOid("sortDesc");
 		a->setCheckable(true);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
@@ -1344,7 +1347,7 @@ void TableView::createActions()
 		m_actions[a->oid()] = a;
 	}
 	{
-		a = new Action(QIcon(":/qf/qmlwidgets/images/find.png"), tr("Filter table"), this);
+		a = new Action(style->icon("find"), tr("Filter table"), this);
 		a->setOid("filter");
 		a->setCheckable(false);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));

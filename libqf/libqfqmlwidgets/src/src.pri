@@ -30,7 +30,8 @@ HEADERS += \
     $$PWD/texteditwidget.h \
     $$PWD/sqltableitemdelegate.h \
     $$PWD/timeedit.h \
-    $$PWD/dateedit.h
+    $$PWD/dateedit.h \
+    $$PWD/style.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -61,7 +62,8 @@ SOURCES += \
     $$PWD/texteditwidget.cpp \
     $$PWD/sqltableitemdelegate.cpp \
     $$PWD/timeedit.cpp \
-    $$PWD/dateedit.cpp
+    $$PWD/dateedit.cpp \
+    $$PWD/style.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \

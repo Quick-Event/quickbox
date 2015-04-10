@@ -1,6 +1,7 @@
 #include "tableviewtoolbar.h"
 #include "tableview.h"
 #include "action.h"
+#include "style.h"
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -72,7 +73,9 @@ void TableViewToolBar::addPendingActions()
 		lst << a;
 	addActions(lst);
 	QLabel *lbl = new QLabel(tr("Filter"));
-	lbl->setPixmap(QPixmap(":/qf/qmlwidgets/images/find.png"));
+	auto *style = Style::instance();
+	QPixmap px = style->pixmapFromSvg("find", style->defaultIconSize());
+	lbl->setPixmap(px);
 	addWidget(lbl);
 	addWidget(m_filterCombo);
 }
