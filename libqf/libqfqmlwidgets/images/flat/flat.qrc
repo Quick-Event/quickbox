@@ -1,5 +1,5 @@
 <RCC>
-	<qresource prefix="/qf/qmlwidgets/images/open-iconic">
+	<qresource prefix="/qf/qmlwidgets/images/flat">
 		<file>new.svg</file>
 		<file>save.svg</file>
 		<file>reload.svg</file>
@@ -13,5 +13,10 @@
 		<file>delete-row.svg</file>
 		<file>copy.svg</file>
 		<file>paste.svg</file>
+		<file>settings.svg</file>
+		<file>left.svg</file>
+		<file>right.svg</file>
+		<file>up.svg</file>
+		<file>down.svg</file>
 	</qresource>
 </RCC>

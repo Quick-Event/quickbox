@@ -74,7 +74,7 @@ void TableViewToolBar::addPendingActions()
 	addActions(lst);
 	QLabel *lbl = new QLabel(tr("Filter"));
 	auto *style = Style::instance();
-	QPixmap px = style->pixmapFromSvg("find", style->defaultIconSize());
+	QPixmap px = style->pixmapFromSvg("find");
 	lbl->setPixmap(px);
 	addWidget(lbl);
 	addWidget(m_filterCombo);

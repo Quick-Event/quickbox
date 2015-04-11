@@ -90,6 +90,29 @@ Connection Connection::forName(const QString &connection_name)
 	return ret;
 }
 
+int Connection::connectionId()
+{
+	QString driver_name = driverName();
+	if(driver_name.endsWith("PSQL")) {
+		QSqlQuery q(*this);
+		if(q.exec("SELECT pg_backend_pid()")) {
+			if(q.next()) {
+				return q.value(0).toInt();
+			}
+		}
+	}
+	else if(driver_name.endsWith("MYSQL")) {
+		QSqlQuery q(*this);
+		if(q.exec("SELECT CONNECTION_ID()")) {
+			if(q.next()) {
+				return q.value(0).toInt();
+			}
+		}
+	}
+	qfWarning() << "connection id not supported for driver:" << driverName();
+	return 0;
+}
+
 int Connection::defaultPort(const QString &driver_name)
 {
 	if(driver_name.endsWith("PSQL")) return 5432;

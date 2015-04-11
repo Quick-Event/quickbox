@@ -13,6 +13,7 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/statusbar.h>
 #include <qf/qmlwidgets/toolbar.h>
+#include <qf/qmlwidgets/style.h>
 
 #include <qf/core/log.h>
 #include <qf/core/sql/query.h>
@@ -121,7 +122,8 @@ void EventPlugin::onInstalled()
 	tb->addWidget(m_cbxStage);
 
 
-	QIcon ico(":/qf/qmlwidgets/images/settings");
+	auto *style = qf::qmlwidgets::Style::instance();
+	QIcon ico(style->icon("settings"));
 	m_actEditStage = new qfw::Action(ico, "Stage settings");
 	//m_actOpenEvent->setEnabled(false);
 	connect(m_actEditStage, SIGNAL(triggered()), this, SLOT(editStage()));

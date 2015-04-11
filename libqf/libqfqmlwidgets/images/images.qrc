@@ -1,0 +1,49 @@
+<RCC>
+	<qresource prefix="/qf/qmlwidgets/images">
+		<file>under-construction.png</file>
+		<file>alert.png</file>
+		<file>wordwrap.png</file>
+		<file>clone.png</file>
+		<file>copy.png</file>
+		<file>delete.png</file>
+		<file>edit.png</file>
+		<file>new.png</file>
+		<file>paste.png</file>
+		<file>reload.png</file>
+		<file>revert.png</file>
+		<file>sort-asc.png</file>
+		<file>sort-desc.png</file>
+		<file>find.png</file>
+		<file>print.png</file>
+		<file>print-preview.png</file>
+		<file>acrobat.png</file>
+		<file>network.png</file>
+		<file>save.png</file>
+		<file>view.png</file>
+		<file>plus.png</file>
+		<file>minus.png</file>
+		<file>insert-row.png</file>
+		<file>clone-row.png</file>
+		<file>delete-row.png</file>
+
+		<file>settings.svg</file>
+		<file>left.svg</file>
+		<file>right.svg</file>
+		<file>up.svg</file>
+		<file>down.svg</file>
+
+		<file>fwd.png</file>
+		<file>ffwd.png</file>
+		<file>rev.png</file>
+		<file>frev.png</file>
+
+		<file>zoom_fitall.png</file>
+		<file>zoom_fitheight.png</file>
+		<file>zoom_fitwidth.png</file>
+		<file>zoom_in.png</file>
+		<file>zoom_out.png</file>
+
+		<file>zoomin_cursor_bitmap.png</file>
+		<file>zoomin_cursor_mask.png</file>
+	</qresource>
+</RCC>

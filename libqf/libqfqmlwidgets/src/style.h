@@ -18,9 +18,9 @@ public:
 	explicit Style(QObject *parent = 0);
 
 	QF_PROPERTY_IMPL2(QString, i, I, conPath, QStringLiteral(":/qf/qmlwidgets/images/"))
-	QF_PROPERTY_IMPL2(QSize, d, D, efaultIconSize, QSize(22, 22))
+	QF_PROPERTY_IMPL(QSize, d, D, efaultIconSize)
 
-	QPixmap pixmapFromSvg(const QString &name, const QSize &pixmap_size);
+	QPixmap pixmapFromSvg(const QString &name, const QSize &pixmap_size = QSize());
 	QIcon icon(const QString &name);
 
 	static Style* instance();

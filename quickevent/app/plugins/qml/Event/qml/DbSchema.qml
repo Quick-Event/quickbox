@@ -168,6 +168,10 @@ Schema {
 					defaultValue: 'OFF';
 					notNull: true
 					comment: "referencing enumz.runs.status"
+				},
+				Field { name: 'startTimeAlignment';
+					type: Int {}
+					comment: "0 - beginning of start field, 100 - end of start field"
 				}
 			]
 			indexes: [
@@ -278,9 +282,14 @@ Schema {
 						charset: 'latin1'
 					}
 					comment: 'JSON of format [[code, time, msec, day_of_week, week_cnt], ...]}'
+				},
+				Field { name: 'printerConnectionId'
+					type: Int { }
+					comment: 'connection id of QuickEvent instance which has printed this strip'
 				}
   			]
 			indexes: [
+				Index { fields: ['printerConnectionId']; unique: false },
 				Index { fields: ['stageId', 'siId']; unique: false },
 				Index { fields: ['runId']; unique: false }
 			]
@@ -299,6 +308,7 @@ Schema {
 		Insert {
 			table: config
 			rows: [
+				['db.version', qsTr('Data version'), '10001', 'int'],
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],
 				['event.date', qsTr('Event date'), '', 'QDate'],
