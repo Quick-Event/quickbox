@@ -97,7 +97,7 @@ public:
 		return this;
 	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* clearWhere() {
-		m_builder.clearWhere();
+		m_builder.takeWhere();
 		return this;
 	}
 

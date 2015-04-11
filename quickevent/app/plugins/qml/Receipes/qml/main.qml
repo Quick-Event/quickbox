@@ -7,7 +7,7 @@ import Receipes 1.0
 
 ReceipesPlugin {
 	id: root
-
+/*
 	property QfObject internals: QfObject
 	{
 		Component {
@@ -15,7 +15,7 @@ ReceipesPlugin {
 			ReportViewWidget {}
 		}
 	}
-	/*
+	
 	cardCheckers: [
 		CardCheckers.Classic {},
 		CardCheckers.BeerRace {}
@@ -34,7 +34,7 @@ ReceipesPlugin {
 		//console.warn("card readout widget:", w)
 		FrameWork.addPartWidget(w, root.manifest.featureId);
 	}
-*/
+
 	function previewReceipeClassic(card_id)
 	{
 		Log.info("previewReceipe triggered", card_id);
@@ -50,4 +50,5 @@ ReceipesPlugin {
 		dlg.exec();
 		dlg.destroy();
 	}
+*/
 }

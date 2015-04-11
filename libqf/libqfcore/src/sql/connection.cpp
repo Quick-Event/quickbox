@@ -908,6 +908,13 @@ QString Connection::fullTableNameToQtDriverTableName(const QString &full_table_n
 	return ret;
 }
 
+QString Connection::escapeJsonForSql(const QString &json_string)
+{
+	QString ret = json_string;
+	ret.replace('\'', "\\'");
+	return ret;
+}
+
 QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
 {
 	qfLogFuncFrame() << tblname << dump_data;

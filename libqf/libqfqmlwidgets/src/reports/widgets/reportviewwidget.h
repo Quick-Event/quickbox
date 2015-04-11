@@ -97,7 +97,7 @@ public:
 public slots:
 	void print(QPrinter *printer); /// slot ktery potrebuje print preview
 	/// prerendruje report
-	void render();
+	//void render();
 	//! Zacne prekladat report a jak pribyvaji stranky, zobrazuji se ve view, nemuzu pro to pouzit specialni thread,
 	//! protoze QFont musi byt pouzivan v GUI threadu, tak prekladam stranku po strance pomoci QTimer::singleShot()
 	void processReport();
@@ -125,13 +125,12 @@ public:
 	void setVisible(bool visible) Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
-	void setData(const QString &key, const qf::core::utils::TreeTable &data);
-	Q_INVOKABLE void setData(const QString &key, const QVariant &data);
-	Q_INVOKABLE void setData(const QVariant &data) {
-		setData(QString(), data);
+	void setTableData(const QString &key, const qf::core::utils::TreeTable &table_data);
+	Q_INVOKABLE void setTableData(const QString &key, const QVariant &table_data);
+	Q_INVOKABLE void setTableData(const QVariant &data) {
+		setTableData(QString(), data);
 	}
 
-	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
 	Q_SLOT void setReport(const QString &file_name);
 
 	/// stranky se pocitaji od 0

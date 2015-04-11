@@ -24,10 +24,11 @@ class PartWidget;
 }
 
 class ReceipesPartWidget;
-
-namespace CardReader {
-//class CardChecker;
-//class CheckedCard;
+namespace Event {
+class EventPlugin;
+}
+namespace Receipes {
+class ReceipesPlugin;
 }
 
 class ReceipesWidget : public QFrame
@@ -46,11 +47,24 @@ public:
 	Q_SLOT void reset() {reload();}
 	Q_SLOT void reload();
 private:
+	Q_SLOT void on_btPrintNew_clicked();
+	void onCustomContextMenuRequest(const QPoint &pos);
+	void printSelectedCards();
+
+	Receipes::ReceipesPlugin* receipesPlugin();
+	Event::EventPlugin* eventPlugin();
+	void onCardRead();
+	void printNewCards();
+	void loadNewCards();
+	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
+
+	bool printReceipe(int card_id);
+
 	void createActions();
 	int currentStageId();
 private:
 	Ui::ReceipesWidget *ui;
-	qf::core::model::SqlTableModel *m_printJobsModel = nullptr;
+	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 };
 
 #endif // RECEIPESWIDGET_H

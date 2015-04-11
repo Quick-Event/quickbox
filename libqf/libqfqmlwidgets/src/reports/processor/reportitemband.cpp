@@ -59,7 +59,7 @@ BandDataModel *ReportItemBand::model()
 				/// take data from report processor
 				ReportProcessor *proc = processor(!qf::core::Exception::Throw);
 				if(proc) {
-					dta = QVariant::fromValue(proc->data(data_key));
+					dta = proc->data(data_key);
 				}
 			}
 		}

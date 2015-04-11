@@ -591,7 +591,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 		//qfInfo() << ttable.toString();
 
 		reports::ReportViewWidget *rw = new reports::ReportViewWidget(NULL);
-		rw->setData(QString(), ttable);
+		rw->setTableData(QString(), ttable);
 		QString report_fn = opts.value("report").toMap().value("fileName").toString();
 		rw->setReport(report_fn);
 		dialogs::Dialog dlg(this);

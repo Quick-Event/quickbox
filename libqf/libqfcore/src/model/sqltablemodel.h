@@ -36,6 +36,7 @@ public:
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
 	int reloadRow(int row_no) Q_DECL_OVERRIDE;
+	int reloadInserts(const QString &id_column_name) Q_DECL_OVERRIDE;
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
 	const qf::core::sql::QueryBuilder& queryBuilder() const;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>478</width>
-    <height>300</height>
+    <width>897</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,10 +30,41 @@
     <number>3</number>
    </property>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btPrintNew">
+       <property name="text">
+        <string>Print new</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="chkAutoPrint">
+       <property name="text">
+        <string>Auto print</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPrintJobsTB" native="true"/>
    </item>
    <item>
-    <widget class="qf::qmlwidgets::TableView" name="tblPrintJobs"/>
+    <widget class="qf::qmlwidgets::TableView" name="tblCards"/>
    </item>
   </layout>
  </widget>
@@ -46,7 +77,7 @@
   <customwidget>
    <class>qf::qmlwidgets::TableViewToolBar</class>
    <extends>QWidget</extends>
-   <header>qf/qmlwidgets/tableviewtoolbar.h</header>
+   <header location="global">qf/qmlwidgets/tableviewtoolbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

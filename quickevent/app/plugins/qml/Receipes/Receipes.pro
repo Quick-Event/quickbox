@@ -4,7 +4,7 @@ PLUGIN_NAME = Receipes
 
 include ( ../quickeventqmlplugin.pri )
 
-QT += widgets sql
+QT += widgets sql printsupport
 
 CONFIG += c++11 hide_symbols
 

@@ -746,19 +746,15 @@ ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
 	return doc;
 }
 
-void ReportViewWidget::setData(const QString &key, const qf::core::utils::TreeTable &data)
+void ReportViewWidget::setTableData(const QString &key, const qf::core::utils::TreeTable &table_data)
 {
 	qfLogFuncFrame();
-	QVariant v = QVariant::fromValue(data);
-	reportProcessor()->setData(key, v);
+	reportProcessor()->setTableData(key, table_data);
 }
 
-void ReportViewWidget::setData(const QString &key, const QVariant &data)
+void ReportViewWidget::setTableData(const QString &key, const QVariant &table_data)
 {
-	qfu::TreeTable tt;
-	tt.setVariant(data);
-	//tt.removeJSTypes();
-	setData(key, tt);
+	reportProcessor()->setTableData(key, table_data);
 }
 
 int ReportViewWidget::pageCount()
@@ -905,10 +901,7 @@ void ReportViewWidget::selectItem(const QPointF &p)
 void ReportViewWidget::setVisible(bool visible)
 {
 	qfLogFuncFrame() << "visible:" << visible;
-	//setCurrentPageNo(0);
 	Super::setVisible(visible);
-	//setCurrentPageNo(0);
-	//QTimer::singleShot(0, this, SLOT(processReport()));
 	if(visible)
 		processReport();
 }
@@ -922,7 +915,7 @@ void ReportViewWidget::processReport()
 	setCurrentPageNo(0);
 	setScale(1);
 }
-
+/*
 void ReportViewWidget::render()
 {
 	qfLogFuncFrame();
@@ -935,7 +928,7 @@ void ReportViewWidget::render()
 	//qfInfo() << "setCurrentPageNo:" << cur_page_no;
 	//setCurrentPageNo(cur_page_no);
 }
-
+*/
 void ReportViewWidget::refreshWidget()
 {
 	statusBar();
@@ -1027,7 +1020,8 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 	if(frm) {
 		Rect r = frm->renderedRect;
 		bool landscape = r.width() > r.height();
-		if(landscape) printer.setOrientation(QPrinter::Landscape);
+		if(landscape)
+			printer.setOrientation(QPrinter::Landscape);
 		//Rect printer_pg_rect = QRectF(printer.pageRect());
 		//qfWarning() << "\tprinter page rect:" << printer_pg_rect.toString();
 		//qfWarning() << "\tresolution:" << printer.resolution() << Size(printer_pg_rect.size()/printer.resolution()).toString(); /// resolution je v DPI
@@ -1039,8 +1033,10 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 			painter.drawMetaPaint(frm);
 			pg_no++;
 			frm = getPage(pg_no);
-			if(!frm) break;
-			if(pg_no >= to_page) break;
+			if(!frm)
+				break;
+			if(pg_no >= to_page)
+				break;
 			printer.newPage();
 		}
 	}
@@ -1061,7 +1057,8 @@ void ReportViewWidget::print()
 	printer.setOrientation(document()->orientation);
 
 	QPrintDialog dlg(&printer, this);
-	if(dlg.exec() != QDialog::Accepted) return;
+	if(dlg.exec() != QDialog::Accepted)
+		return;
 
 	qfDebug() << "options:" << dlg.options();
 	QVariantMap opts;

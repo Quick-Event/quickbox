@@ -50,7 +50,7 @@ CompetitorsPlugin {
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Competitors");
 		w.setReport(root.manifest.homeDir + "/reports/list.qml");
-		w.setData(tt.data());
+		w.setTableData(tt.data());
 		var dlg = FrameWork.createQmlDialog();
 		dlg.setDialogWidget(w);
 		dlg.exec();

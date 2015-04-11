@@ -10,8 +10,14 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
+#include <qf/qmlwidgets/reports/processor/reportprocessor.h>
+#include <qf/qmlwidgets/reports/processor/reportitem.h>
+#include <qf/qmlwidgets/reports/processor/reportpainter.h>
 
 #include <QSqlRecord>
+#include <QPrinterInfo>
 
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
@@ -237,7 +243,68 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 
 void ReceipesPlugin::previewReceipe(int card_id)
 {
-	QMetaObject::invokeMethod(this, "previewReceipeClassic", Qt::DirectConnection, Q_ARG(QVariant, card_id));
+	//QMetaObject::invokeMethod(this, "previewReceipeClassic", Qt::DirectConnection, Q_ARG(QVariant, card_id));
+	previewReceipe_classic(card_id);
 }
 
+bool ReceipesPlugin::printReceipe(int card_id, const QPrinterInfo &printer_info)
+{
+	try {
+		printReceipe_classic(card_id, printer_info);
+		return true;
+	}
+	catch(const qf::core::Exception &e) {
+		qfError() << e.toString();
+	}
+	return false;
+}
 
+void ReceipesPlugin::previewReceipe_classic(int card_id)
+{
+	qfLogFuncFrame() << "card id:" << card_id;
+	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
+	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
+	w->setPersistentSettingsId("cardPreview");
+	w->setWindowTitle(tr("Receipe"));
+	w->setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
+	QVariantMap dt = receipeTablesData(card_id);
+	for(auto key : dt.keys())
+		w->setTableData(key, dt.value(key));
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::Dialog dlg(fwk);
+	dlg.setCentralWidget(w);
+	dlg.exec();
+}
+
+void ReceipesPlugin::printReceipe_classic(int card_id, const QPrinterInfo &printer_info)
+{
+	qfLogFuncFrame() << "card id:" << card_id;
+	//qfInfo() << "printReceipe_classic, card id:" << card_id;
+	QPrinterInfo pi = printer_info;
+	if(pi.isNull()) {
+		for(auto s : QPrinterInfo::availablePrinterNames()) {
+			qfInfo() << "available printer:" << s;
+		}
+		pi = QPrinterInfo::defaultPrinter();
+	}
+	if(pi.isNull()) {
+		qfWarning() << "Default printer not set";
+		return;
+	}
+	//pi = QPrinterInfo::printerInfo("PDF");
+	qfInfo() << "printing on:" << pi.printerName();
+	QPrinter printer(pi);
+	qf::qmlwidgets::reports::ReportProcessor rp(&printer);
+	rp.setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
+	QVariantMap dt = receipeTablesData(card_id);
+	for(auto key : dt.keys()) {
+		rp.setTableData(key, dt.value(key));
+	}
+	rp.process();
+	qf::qmlwidgets::reports::ReportItemMetaPaintReport *doc = rp.processorOutput();
+	qf::qmlwidgets::reports::ReportItemMetaPaint *it = doc->child(0);
+	if(it) {
+		qf::qmlwidgets::reports::ReportPainter painter(&printer);
+		painter.drawMetaPaint(it);
+	}
+}

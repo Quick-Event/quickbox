@@ -27,7 +27,7 @@ namespace reports {
 class ReportPainter;
 
 //! Base trida objektu, ktere vzniknou prekladem reportu.
-class ReportItemMetaPaint : public qf::core::utils::TreeItemBase
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaint : public qf::core::utils::TreeItemBase
 {
 private:
 	typedef qf::core::utils::TreeItemBase Super;
@@ -140,7 +140,7 @@ public:
 };
 
 //! TODO documentation
-class ReportItemMetaPaintReport : public ReportItemMetaPaint
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintReport : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaint Super;
@@ -172,7 +172,7 @@ public:
 	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
 };
 //! TODO documentation
-class ReportItemMetaPaintText : public ReportItemMetaPaint
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintText : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaint Super;
@@ -199,7 +199,7 @@ public:
 };
 
 //! TODO documentation
-class ReportItemMetaPaintCheck : public ReportItemMetaPaintText
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintCheck : public ReportItemMetaPaintText
 {
 private:
 	typedef ReportItemMetaPaintText Super;
@@ -212,7 +212,7 @@ public:
 };
 
 //! TODO documentation
-class ReportItemMetaPaintImage : public ReportItemMetaPaint
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintImage : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaintImage Super;
@@ -231,7 +231,7 @@ public:
 };
 
 //! TODO: write class documentation.
-class  ReportPainter : public QPainter
+class QFQMLWIDGETS_DECL_EXPORT ReportPainter : public QPainter
 {
 private:
 	typedef QPainter Super;

@@ -9,6 +9,7 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <QVariantMap>
+#include <QSqlDriver>
 
 namespace qf {
 namespace qmlwidgets {
@@ -38,6 +39,8 @@ public:
 
 	QF_PROPERTY_IMPL(QString, e, E, ventName)
 
+	static const char *DBEVENT_NOTIFY_NAME;
+
 	Event::EventConfig* eventConfig(bool reload = false);
 	int stageCount() {return eventConfig()->stageCount();}
 
@@ -54,16 +57,21 @@ public:
 	Q_SIGNAL void reloadDataRequest();
 
 	bool isDbOpen() const { return m_dbOpen; }
-	void setDbOpen(bool ok);
 	Q_SIGNAL void dbOpenChanged(bool is_open);
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
+
+	void emitDbEventNotify(const QString &domain, const QVariant &payload);
+	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 private:
+	void setDbOpen(bool ok);
+
 	Q_SLOT void onInstalled();
 	Q_SLOT void onEventOpened();
 	Q_SLOT void connectToSqlServer();
 	Q_SLOT void onCbxStageActivated(int ix);
 	Q_SLOT void editStage();
+	Q_SLOT void onDbEvent(const QString & name, QSqlDriver::NotificationSource source, const QVariant & payload);
 private:
 	qf::qmlwidgets::Action *m_actConnectDb;
 	qf::qmlwidgets::Action *m_actCreateEvent;

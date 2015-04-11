@@ -59,7 +59,7 @@ public:
 		ModeDelete = qf::core::model::DataDocument::ModeDelete
 	};
 
-	QF_PROPERTY_IMPL2(InlineEditStrategy, i, I, nlineEditStrategy, OnCurrentRowChange)
+	QF_PROPERTY_IMPL2(InlineEditStrategy, i, I, nlineEditStrategy, OnCurrentFieldChange)
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 public:

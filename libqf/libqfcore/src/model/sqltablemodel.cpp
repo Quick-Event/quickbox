@@ -460,6 +460,54 @@ int SqlTableModel::reloadRow(int row_no)
 	return row_cnt;
 }
 
+int SqlTableModel::reloadInserts(const QString &id_column_name)
+{
+	qfLogFuncFrame();
+	int id_ix = columnIndex(id_column_name);
+	QF_ASSERT(id_ix >= 0, QString("ID column name '%1' not found").arg(id_column_name), return 0);
+	int max_id = 0;
+	for (int i = 0; i < rowCount(); ++i) {
+		int id = value(i, id_ix).toInt();
+		max_id = qMax(max_id, id);
+	}
+
+	qf::core::sql::QueryBuilder qb = m_queryBuilder;
+	if(qb.isEmpty()) {
+		qfWarning() << "Empty queryBuilder";
+		return false;
+	}
+
+	qb.takeOrderBy();
+	qb.orderBy(id_column_name);
+	qb.where(id_column_name + " > " + QF_IARG(max_id));
+	qfs::QueryBuilder::BuildOptions opts;
+	opts.setConnectionName(connectionName());
+	QString query_str = qb.toString(opts);
+	query_str = replaceQueryParameters(query_str);
+	qfDebug() << "\t reload row query:" << query_str;
+	qf::core::sql::Connection sql_conn = sqlConnection();
+	qfs::Query q = qfs::Query(sql_conn);
+	bool ok = q.exec(query_str);
+	QF_ASSERT(ok == true,
+			  QString("SQL Error: %1\n%2").arg(q.lastError().text()).arg(query_str),
+			  return 0);
+	int ret = 0;
+	while(q.next()) {
+		qfu::TableRow &row = m_table.insertRow(0);
+		row.setInsert(false);
+		int fld_cnt = m_table.fields().count();
+		for(int i=0; i<fld_cnt; i++) {
+			row.setBareBoneValue(i, q.value(i));
+		}
+		ret++;
+	}
+	if(ret > 0) {
+		beginInsertRows(QModelIndex(), 0, ret - 1);
+		endInsertRows();
+	}
+	return ret;
+}
+
 QString SqlTableModel::buildQuery()
 {
 	QString ret = m_query;
@@ -510,27 +558,7 @@ qf::core::sql::Connection SqlTableModel::sqlConnection()
 			 QString("Invalid sql connection for name '%1'").arg(connectionName()));
 	return ret;
 }
-/*
-static QString demangleFieldName(const QString &fldname)
-{
-	QString ret = fldname;
-	if(!qfs::Connection::isDriverReturnsTableNamesInResultSet()) {
-		static QString injected_sep = QStringLiteral("__");
-		static QString db_sep = QStringLiteral(".");
-		int ix = fldname.indexOf(injected_sep);
-		if(ix >= 0) {
-			int ix2 = fldname.indexOf(db_sep);
-			if(ix2 >= 0) {
-				qfWarning() << "Cannot demangle fieldname:" << fldname << "since it contains both type of separators";
-			}
-			else {
-				ret = ret.replace(injected_sep, db_sep);
-			}
-		}
-	}
-	return ret;
-}
-*/
+
 bool SqlTableModel::reloadTable(const QString &query_str)
 {
 	qfLogFuncFrame() << query_str;

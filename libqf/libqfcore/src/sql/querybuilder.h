@@ -104,7 +104,8 @@ public:
 	QueryBuilder& offset(int n);
 	QueryBuilder& as(const QString &alias_name);
 
-	QueryBuilder& clearWhere();
+	QVariant takeWhere();
+	QVariant takeOrderBy();
 
 	static QString mangleSeparator() {static QString ret = QStringLiteral("__"); return ret;}
 	static QString mangleLongFieldName(const QString &table, const QString &field) {return table + mangleSeparator() + field;}

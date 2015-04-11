@@ -303,10 +303,16 @@ QueryBuilder& QueryBuilder::as(const QString &alias_name)
 	return *this;
 }
 
-QueryBuilder &QueryBuilder::clearWhere()
+QVariant QueryBuilder::takeWhere()
 {
-	take(WhereKey);
-	return *this;
+	QVariant v = take(WhereKey);
+	return v;
+}
+
+QVariant QueryBuilder::takeOrderBy()
+{
+	QVariant v = take(OrderByKey);
+	return v;
 }
 
 bool QueryBuilder::isMangleLongFieldNames(const QueryBuilder::BuildOptions &opts) const

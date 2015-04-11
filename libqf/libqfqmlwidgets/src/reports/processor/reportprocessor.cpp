@@ -88,6 +88,19 @@ QUrl ReportProcessor::reportUrl() const
 	return ret;
 }
 
+void ReportProcessor::setTableData(const QString &key, const QVariant &table_data)
+{
+	qfu::TreeTable tt;
+	tt.setVariant(table_data);
+	setTableData(key, tt);
+}
+
+void ReportProcessor::setTableData(const QString &key, const qf::core::utils::TreeTable &table_data)
+{
+	QVariant v = QVariant::fromValue(table_data);
+	setData(key, v);
+}
+
 void ReportProcessor::setData(const QString &key, const QVariant &data)
 {
 	//qfInfo() << "ReportProcessor _data:" << _data.toString().mid(0, 100);

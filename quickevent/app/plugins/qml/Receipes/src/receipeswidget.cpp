@@ -18,6 +18,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
+#include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/model/sqltablemodel.h>
@@ -29,6 +30,7 @@
 #include <QLabel>
 #include <QMetaObject>
 #include <QJSValue>
+#include <QPrinterInfo>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -49,14 +51,14 @@ ReceipesWidget::ReceipesWidget(QWidget *parent) :
 	//qff::MainWindow *fw = app->frameWork();
 
 	{
-		ui->tblPrintJobsTB->setTableView(ui->tblPrintJobs);
+		ui->tblPrintJobsTB->setTableView(ui->tblCards);
 
-		ui->tblPrintJobs->setPersistentSettingsId("tblPrintJobs");
+		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
-		//ui->tblPrintJobs->setInlineEditStrategy(qfw::TableView::OnCurrentFieldChange);
-		ui->tblPrintJobs->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblPrintJobs));
+		ui->tblCards->setInlineEditStrategy(qfw::TableView::OnCurrentFieldChange);
+		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
 		auto m = new quickevent::og::SqlTableModel(this);
-		/*
+
 		m->addColumn("cards.id", "ID").setReadOnly(true);
 		m->addColumn("cards.siId", tr("SI")).setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
@@ -69,10 +71,14 @@ ReceipesWidget::ReceipesWidget(QWidget *parent) :
 		m->addColumn("runs.status", tr("Status"))
 				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
 				.setCastProperties(status_props);
-		*/
-		ui->tblPrintJobs->setTableModel(m);
-		m_printJobsModel = m;
+		m->addColumn("cards.printerConnectionId", tr("printer"));
+
+		ui->tblCards->setTableModel(m);
+		m_cardsModel = m;
 	}
+
+	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceipesWidget::onCustomContextMenuRequest);
 }
 
 ReceipesWidget::~ReceipesWidget()
@@ -84,31 +90,15 @@ void ReceipesWidget::settleDownInPartWidget(ReceipesPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
-	/*
-	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
-	a->setText("&Station");
-	a->addActionInto(m_actCommOpen);
 
-	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
-	main_tb->addAction(m_actCommOpen);
-	{
-		QLabel *lbl = new QLabel(" Check type ");
-		main_tb->addWidget(lbl);
-		auto *card_reader_plugin = qobject_cast<Receipes::ReceipesPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
-		m_cbxCardCheckers = new QComboBox();
-		for(auto checker : card_reader_plugin->cardCheckers()) {
-			m_cbxCardCheckers->addItem(checker->caption());
-		}
-		main_tb->addWidget(m_cbxCardCheckers);
-	}
-	*/
+	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 }
 
 void ReceipesWidget::reload()
 {
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId")
+	qb.select2("cards", "id, siId, printerConnectionId")
 			.select2("runs", "startTimeMs, timeMs, status")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
@@ -119,8 +109,37 @@ void ReceipesWidget::reload()
 			.join("competitors.classId", "classes.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
 			.orderBy("cards.id DESC");
-	m_printJobsModel->setQueryBuilder(qb);
-	m_printJobsModel->reload();
+	m_cardsModel->setQueryBuilder(qb);
+	m_cardsModel->reload();
+}
+
+Receipes::ReceipesPlugin *ReceipesWidget::receipesPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto plugin = qobject_cast<Receipes::ReceipesPlugin *>(fwk->plugin("Receipes"));
+	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
+	return plugin;
+}
+
+Event::EventPlugin *ReceipesWidget::eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
+	return plugin;
+}
+
+void ReceipesWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+{
+	Q_UNUSED(payload)
+	if(domain == QLatin1String("CardReader.cardRead")) {
+		onCardRead();
+	}
+}
+
+bool ReceipesWidget::printReceipe(int card_id)
+{
+	return receipesPlugin()->printReceipe(card_id, QPrinterInfo());
 }
 
 void ReceipesWidget::createActions()
@@ -139,9 +158,74 @@ void ReceipesWidget::createActions()
 
 int ReceipesWidget::currentStageId()
 {
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	auto event_plugin = eventPlugin();
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
 	int ret = event_plugin->currentStageId();
 	return ret;
+}
+
+void ReceipesWidget::onCardRead()
+{
+	if(ui->chkAutoPrint->isChecked()) {
+		printNewCards();
+	}
+	loadNewCards();
+}
+
+void ReceipesWidget::printNewCards()
+{
+	auto conn  = qf::core::sql::Connection::forName();
+	int connection_id = conn.connectionId();
+	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return);
+	int current_stage = currentStageId();
+	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)
+			" WHERE printerConnectionId IS NULL"
+			" AND cards.stageId=" QF_IARG(current_stage);
+	qf::core::sql::Query q(conn);
+	q.exec(qs, qf::core::Exception::Throw);
+	int num_rows = q.numRowsAffected();
+	if(num_rows > 0) {
+		qs = "SELECT id FROM cards WHERE printerConnectionId=" QF_IARG(connection_id)
+				" ORDER BY id DESC"
+				" LIMIT " QF_IARG(num_rows);
+		q.exec(qs, qf::core::Exception::Throw);
+		while(q.next()) {
+			int card_id = q.value(0).toInt();
+			if(!printReceipe(card_id)) {
+				break;
+			}
+		}
+	}
+}
+
+void ReceipesWidget::loadNewCards()
+{
+	m_cardsModel->reloadInserts(QStringLiteral("cards.id"));
+}
+
+void ReceipesWidget::on_btPrintNew_clicked()
+{
+	printNewCards();
+	loadNewCards();
+}
+
+void ReceipesWidget::onCustomContextMenuRequest(const QPoint &pos)
+{
+	qfLogFuncFrame();
+	QAction a_print_card(tr("Print selected cards"), nullptr);
+	QList<QAction*> lst;
+	lst << &a_print_card;
+	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
+	if(a == &a_print_card) {
+		printSelectedCards();
+	}
+}
+
+void ReceipesWidget::printSelectedCards()
+{
+	for(int i : ui->tblCards->selectedRowsIndexes()) {
+		int card_id = ui->tblCards->tableRow(i).value("cards.id").toInt();
+		QF_ASSERT(card_id > 0, "Bad card ID", return);
+		printReceipe(card_id);
+	}
 }

@@ -7,6 +7,8 @@
 
 #include <QQmlListProperty>
 
+class QPrinterInfo;
+
 namespace CardReader {
 class CardReaderPlugin;
 }
@@ -27,13 +29,16 @@ public:
 	ReceipesPlugin(QObject *parent = nullptr);
 
 	Q_INVOKABLE void previewReceipe(int card_id);
+	Q_INVOKABLE bool printReceipe(int card_id, const QPrinterInfo &printer_info);
 
 	Q_INVOKABLE QVariantMap receipeTablesData(int card_id);
 private:
 	void onInstalled();
 	CardReader::CardReaderPlugin* cardReaderPlugin();
 	Event::EventPlugin* eventPlugin();
-private:
+
+	void previewReceipe_classic(int card_id);
+	void printReceipe_classic(int card_id, const QPrinterInfo &printer_info);
 };
 
 }

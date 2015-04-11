@@ -85,6 +85,7 @@ public:
 	QStringList serverVersion() const;
 	QString fullTableNameToQtDriverTableName(const QString &full_table_name) const;
 
+	static QString escapeJsonForSql(const QString &json_string);
 private:
 	QString dumpSqlTable_psql(const QString &tblname, bool dump_data);
 	//! take CREATE TABLE ... and parse fields definitions from it.

@@ -128,6 +128,7 @@ public:
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
 	Q_SLOT virtual int reloadRow(int row_no);
+	Q_SLOT virtual int reloadInserts(const QString &id_column_name) { Q_UNUSED(id_column_name) return 0;}
 	int appendRow() {return insertRows(rowCount(), 1);}
 	bool dropRow(int row_ix, bool throw_exc) {return removeRows(row_ix, 1, throw_exc);}
 	bool prepareForCopyRow(int row_no);
