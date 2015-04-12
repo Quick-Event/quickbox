@@ -60,7 +60,10 @@ Report {
 						}
 						Para {
 							textHAlign: Frame.AlignRight
-							text: detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration")
+							text: {
+								var t = detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration");
+								return (t)? t: "NO_REG";
+							}
 						}
 					}
 					Frame {
@@ -102,7 +105,10 @@ Report {
 						}
 						Para {
 							textHAlign: Frame.AlignRight
-							text: detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration")
+							text: {
+								var t = detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration");
+								return (t)? t: "NO_REG";
+							}
 						}
 					}
 					Frame {
@@ -116,7 +122,8 @@ Report {
 						Para {
 							text: {
 								if(bandCompetitor.modelLoaded) {
-									root.courseLength = bandCompetitor.data("courses.length");
+									var l = bandCompetitor.data("courses.length");
+									root.courseLength = (l)? l : 0;
 									return (root.courseLength / 1000) + "km";
 								}
 								return "";
@@ -140,19 +147,23 @@ Report {
 					layout: Frame.LayoutHorizontal
 					Para {
 						id: paraCheck
-						width: 15
+						width: 12
 						text: "Check:"
 					}
 					Para {
-						width: "%"
+						id: paraCheckTime
+						width: 15
+						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("checkTimeMs")): "";
 					}
-					Para {
-						width: paraCheck.width
+					Cell {
+						width: "%"
+						textHAlign: Frame.AlignRight
 						text: "Finish:"
 					}
 					Para {
-						width: "%"
+						width: paraCheckTime.width
+						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("finishTimeMs")): "";
 					}
 				}
@@ -163,8 +174,14 @@ Report {
 						text: "Start:"
 					}
 					Para {
-						width: 15
+						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
+						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("startTimeMs")): "";
+					}
+					Cell {
+						text: "/"
+					}
+					Para {
 						text: {
 							if(bandCard.modelLoaded) {
 								var start = bandCard.data("startTimeMs");
@@ -174,11 +191,6 @@ Report {
 							}
 							return "---";
 						}
-					}
-					Para {
-						width: 20
-						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("startTimeMs")): "";
 					}
 				}
 				bottomBorder: Pen { basedOn: "black1" }
@@ -205,22 +217,26 @@ Report {
 						return "";
 					}
 				}
-				Cell {
+				Para {
 					id: cellCode
-					width: 9
+					width: 10
+					//textHAlign: Frame.AlignRight
 					text: dc.data(dc.currentIndex, "code");
 				}
-				Cell {
+				Para {
+					id: cellStp
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "stpTimeMs"));
 				}
-				Cell {
+				Para {
+					id: cellLap
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
-				Cell {
+				Para {
+					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "lossMs"));
@@ -234,24 +250,26 @@ Report {
 					layout: Frame.LayoutHorizontal
 					Cell {
 						width: cellPos.width
+						textHAlign: Frame.AlignRight
 						text: "FI:"
 					}
-					Cell {
+					Para {
 						width: cellCode.width
+						//textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? bandCard.data("isOk")? "OK": "DISK": "---";
 					}
-					Cell {
-						width: "%"
+					Para {
+						width: cellStp.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishStpTimeMs")): "---";
 					}
-					Cell {
-						width: "%"
+					Para {
+						width: cellLap.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLapTimeMs")): "---";
 					}
-					Cell {
-						width: "%"
+					Para {
+						width: cellLoss.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLossMs")): "---";
 					}

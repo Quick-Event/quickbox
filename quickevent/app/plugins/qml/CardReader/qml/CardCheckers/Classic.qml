@@ -13,7 +13,9 @@ CardChecker
 		console.debug("checking card:", JSON.stringify(read_card, null, 2));
 
 		var run_id = read_card.runId;
-		var course = root.courseForRunId(run_id);
+		var course = {};
+		if(run_id > 0)
+			course = root.courseForRunId(run_id);
 		//Log.info("course:", JSON.stringify(course, null, 2));
 		
 		var checked_card = {courseId: course.id, runId: run_id, punches: []};
@@ -27,25 +29,28 @@ CardChecker
 		var course_codes = course.codes;
 		var error = false;
 		var check_ix = 0;
-		for(var j=0; j<course_codes.length; j++) { //scan course codes
-			var course_code_record = course_codes[j];
+		if(course_codes) {
+			for(var j=0; j<course_codes.length; j++) { //scan course codes
+				var course_code_record = course_codes[j];
 
-			var code = course_code_record.code;
-			for(var k=check_ix; k<checked_punches.length; k++) { //scan card
-				//var read_punch = read_punches[k];
-				var checked_punch = checked_punches[k];
-				if(checked_punch.code === code) {
-					checked_punch.position = course_code_record.position;
-					check_ix = k + 1;
-					break;
+				var code = course_code_record.code;
+				for(var k=check_ix; k<checked_punches.length; k++) { //scan card
+					//var read_punch = read_punches[k];
+					var checked_punch = checked_punches[k];
+					if(checked_punch.code === code) {
+						checked_punch.position = course_code_record.position;
+						check_ix = k + 1;
+						break;
+					}
+				}
+				if(k >= checked_punches.length) {// course code not found in read_card punches
+					var nocheck = course_code_record.outoforder;
+					if(!nocheck)
+						error = true;
 				}
 			}
-			if(k >= checked_punches.length) {// course code not found in read_card punches
-				var nocheck = course_code_record.outoforder;
-				if(!nocheck) 
-					error = true;
-			}
 		}
+
 		if(read_card.finishTime === 0xEEEE)
 			error = true;
 		checked_card.isOk = !error
@@ -57,7 +62,8 @@ CardChecker
 		}
 		var start_time_sec = 0;
 		if(read_card.startTime === 0xEEEE) {        //take start record from start list
-			start_time_sec = root.startTimeSec(run_id);
+			if(run_id > 0)
+				start_time_sec = root.startTimeSec(run_id);
 			if(start_time_sec === 0) {
 				// take start from check, for testing only
 				start_time_sec = (((read_card.checkTime / 60) >> 0) + 1) * 60;
