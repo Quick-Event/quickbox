@@ -366,8 +366,10 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
 		thisPlugin()->updateRunLapsSql(checked_card);
 	}
-	if(card_id > 0)
+	if(card_id > 0) {
+		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id);
 		updateTableView(card_id);
+	}
 }
 
 void CardReaderWidget::updateTableView(int card_id)
@@ -398,6 +400,14 @@ qf::qmlwidgets::framework::Plugin *CardReaderWidget::receipesPlugin()
 	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipes"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
+}
+
+Event::EventPlugin *CardReaderWidget::eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto cardreader_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT_EX(cardreader_plugin != nullptr, "Bad plugin");
+	return cardreader_plugin;
 }
 
 void CardReaderWidget::onCbxCardCheckersActivated(int ix)

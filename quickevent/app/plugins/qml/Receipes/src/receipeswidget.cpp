@@ -4,6 +4,7 @@
 #include "Receipes/receipesplugin.h"
 
 #include <Event/eventplugin.h>
+#include <CardReader/cardreaderplugin.h>
 
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
@@ -47,8 +48,7 @@ ReceipesWidget::ReceipesWidget(QWidget *parent) :
 
 	createActions();
 
-	//qff::Application *app = qff::Application::instance();
-	//qff::MainWindow *fw = app->frameWork();
+	loadPrinters();
 
 	{
 		ui->tblPrintJobsTB->setTableView(ui->tblCards);
@@ -132,14 +132,9 @@ Event::EventPlugin *ReceipesWidget::eventPlugin()
 void ReceipesWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	Q_UNUSED(payload)
-	if(domain == QLatin1String("CardReader.cardRead")) {
+	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
 		onCardRead();
 	}
-}
-
-bool ReceipesWidget::printReceipe(int card_id)
-{
-	return receipesPlugin()->printReceipe(card_id, QPrinterInfo());
 }
 
 void ReceipesWidget::createActions()
@@ -154,6 +149,18 @@ void ReceipesWidget::createActions()
 		m_actCommOpen = a;
 	}
 	*/
+}
+
+void ReceipesWidget::loadPrinters()
+{
+	ui->cbxPrinters->addItems(QPrinterInfo::availablePrinterNames());
+	QString def = QPrinterInfo::defaultPrinterName();
+	ui->cbxPrinters->setCurrentText(def);
+}
+
+QPrinterInfo ReceipesWidget::currentPrinter()
+{
+	return QPrinterInfo::printerInfo(ui->cbxPrinters->currentText());
 }
 
 int ReceipesWidget::currentStageId()
@@ -229,3 +236,9 @@ void ReceipesWidget::printSelectedCards()
 		printReceipe(card_id);
 	}
 }
+
+bool ReceipesWidget::printReceipe(int card_id)
+{
+	return receipesPlugin()->printReceipe(card_id, currentPrinter());
+}
+

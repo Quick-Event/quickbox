@@ -43,6 +43,10 @@ class ReadCard;
 class CheckedCard;
 }
 
+namespace Event {
+class EventPlugin;
+}
+
 class CardReaderWidget : public QFrame
 {
 	Q_OBJECT
@@ -83,6 +87,7 @@ private:
 
 	CardReader::CardReaderPlugin* thisPlugin();
 	qf::qmlwidgets::framework::Plugin* receipesPlugin();
+	Event::EventPlugin* eventPlugin();
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 
 	void onCustomContextMenuRequest(const QPoint &pos);

@@ -61,7 +61,7 @@ public:
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
 
-	void emitDbEventNotify(const QString &domain, const QVariant &payload);
+	void emitDbEvent(const QString &domain, const QVariant &payload);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 private:
 	void setDbOpen(bool ok);

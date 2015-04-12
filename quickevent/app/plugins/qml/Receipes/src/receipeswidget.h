@@ -5,6 +5,8 @@
 
 #include <QFrame>
 
+class QPrinterInfo;
+
 namespace Ui {
 	class ReceipesWidget;
 }
@@ -61,6 +63,8 @@ private:
 	bool printReceipe(int card_id);
 
 	void createActions();
+	void loadPrinters();
+	QPrinterInfo currentPrinter();
 	int currentStageId();
 private:
 	Ui::ReceipesWidget *ui;

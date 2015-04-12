@@ -19,8 +19,8 @@ CaptionFrame::CaptionFrame(QWidget *parent)
 	setFrameShape(QFrame::StyledPanel);
 	setFrameShadow(QFrame::Raised);
 	QBoxLayout *ly = new QHBoxLayout(this);
-	ly->setMargin(0);
-	//ly->setContentsMargins(5, 1, 5, 1);
+	//ly->setMargin(0);
+	ly->setContentsMargins(5, 1, 5, 1);
 	ly->setSpacing(6);
 	m_captionIconLabel = new QLabel();
 		//captionLabel->setPixmap(icon.pixmap(32));

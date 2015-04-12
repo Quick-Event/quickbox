@@ -291,7 +291,6 @@ void ReceipesPlugin::printReceipe_classic(int card_id, const QPrinterInfo &print
 		qfWarning() << "Default printer not set";
 		return;
 	}
-	//pi = QPrinterInfo::printerInfo("PDF");
 	qfInfo() << "printing on:" << pi.printerName();
 	QPrinter printer(pi);
 	qf::qmlwidgets::reports::ReportProcessor rp(&printer);

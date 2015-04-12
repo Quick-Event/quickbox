@@ -157,7 +157,7 @@ void EventPlugin::editStage()
 	}
 }
 
-void EventPlugin::emitDbEventNotify(const QString &domain, const QVariant &payload)
+void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload)
 {
 	emit dbEventNotify(domain, payload);
 	QVariantMap m;
