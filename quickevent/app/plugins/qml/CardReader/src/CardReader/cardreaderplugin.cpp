@@ -20,6 +20,8 @@ namespace qff = qf::qmlwidgets::framework;
 
 using namespace CardReader;
 
+const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.cardRead";
+
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
 {

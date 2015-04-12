@@ -24,7 +24,7 @@ private:
 public:
 	CardReaderPlugin(QObject *parent = nullptr);
 
-	static constexpr char DBEVENTDOMAIN_CARDREADER_CARDREAD[] = "CardReader.cardRead";
+	static const char* DBEVENTDOMAIN_CARDREADER_CARDREAD;
 
 	QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, -1)
 
