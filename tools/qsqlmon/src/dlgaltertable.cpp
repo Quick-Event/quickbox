@@ -71,8 +71,8 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 					qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Not supported in SQLite version <= 3.2.2");
 				}
 				QString fld_name = dlg.edName->text();
-				QString s, qs = "ALTER TABLE %1 ADD COLUMN %2 %3";
-				qs = qs.arg(m_tableName).arg(fld_name).arg(dlg.lstType->currentText());
+				QString s, qs = "ALTER TABLE %1 ADD COLUMN %2";
+				qs = qs.arg(m_tableName).arg(fld_name);
 				qs += dlg.toString();
 				sql_commands << qs;
 				//if(!execCommand(qs)) continue;
@@ -84,8 +84,8 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 					qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Columns insertion is not supported in PSQL");
 				}
 				QString fld_name = dlg.edName->text();
-				QString s, qs = "ALTER TABLE %1.%2 ADD COLUMN \"%3\" %4";
-				qs = qs.arg(m_schemaName).arg(m_tableName).arg(fld_name).arg(dlg.lstType->currentText());
+				QString s, qs = "ALTER TABLE %1.%2 ADD COLUMN \"%3\"";
+				qs = qs.arg(m_schemaName).arg(m_tableName).arg(fld_name);
 				qs += dlg.toString();
 				sql_commands << qs;
 				//if(!execCommand(qs)) continue;
@@ -120,7 +120,9 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 				if(dlg.showCommand()) {
 					ok = qf::qmlwidgets::dialogs::PreviewDialog::exec(this, s, QString(), "dlgShowCommand");
 				}
-				if(ok) if(!execCommand(s)) continue;
+				if(ok)
+					if(!execCommand(s))
+						continue;
 				refresh();
 			}
 		}

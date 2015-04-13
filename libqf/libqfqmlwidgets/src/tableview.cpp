@@ -1197,7 +1197,6 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 void TableView::createActions()
 {
 	auto *style = Style::instance();
-	QString icon_path = style->iconPath();
 	Action *a;
 	{
 		a = new Action(tr("Resize columns to contents"), this);
@@ -1813,7 +1812,7 @@ void TableView::commitData(QWidget *editor)
 {
 	qfLogFuncFrame() << editor;
 	Super::commitData(editor);
-	if(inlineEditStrategy() == OnCurrentFieldChange) {
+	if(inlineEditStrategy() == OnEditedValueCommit) {
 		postRow(currentIndex().row());
 	}
 }

@@ -56,3 +56,9 @@ void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & o
 	}
 	Super::paint(painter, option, index);
 }
+
+QWidget *TableItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+	QWidget *ret = Super::createEditor(parent, option, index);
+	return ret;
+}
