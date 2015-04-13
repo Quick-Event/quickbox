@@ -8,7 +8,7 @@ HEADERS += \
     $$PWD/runstablemodel.h \
     $$PWD/drawing/drawingtoolwidget.h \
     $$PWD/drawing/classitem.h \
-    $$PWD/drawing/slotitem.h \
+    $$PWD/drawing/startslotitem.h \
     $$PWD/drawing/ganttitem.h
 
 SOURCES += \
@@ -19,7 +19,7 @@ SOURCES += \
     $$PWD/runstablemodel.cpp \
     $$PWD/drawing/drawingtoolwidget.cpp \
     $$PWD/drawing/classitem.cpp \
-    $$PWD/drawing/slotitem.cpp \
+    $$PWD/drawing/startslotitem.cpp \
     $$PWD/drawing/ganttitem.cpp
 
 FORMS += \

@@ -33,7 +33,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 
 	ui->tblRuns->setPersistentSettingsId("tblRuns");
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
-	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnCurrentFieldChange);
+	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
 	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
 	auto m = new quickevent::og::SqlTableModel(this);
 	m->addColumn("id").setReadOnly(true);

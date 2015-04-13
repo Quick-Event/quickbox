@@ -33,7 +33,8 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startTime'; type: Time {} },
-				Field { name: 'startDate'; type: Date {} }
+				Field { name: 'startDate'; type: Date {} },
+				Field { name: 'drawingConfig'; type: String {} }
 			]
 			indexes: [
 				Index {fields: ['id']; primary: true }
@@ -92,6 +93,14 @@ Schema {
 				Field { name: 'classId'; type: Int { } },
 				Field { name: 'stageId'; type: Int { } },
 				Field { name: 'courseId'; type: Int { } },
+				Field { name: 'startSlotIndex'; type: Int { }
+					defaultValue: -1;
+					notNull: true
+	 			},
+				Field { name: 'startSlotPosition'; type: Int { }
+					defaultValue: -1;
+					notNull: true
+				},
 				Field { name: 'startTimeMin'; type: Int { } },
 				Field { name: 'startIntervalMin'; type: Int { } },
 				Field { name: 'vacantsBefore'; type: Int { } 

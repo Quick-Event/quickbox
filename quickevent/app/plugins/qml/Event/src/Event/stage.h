@@ -21,6 +21,7 @@ private:
 	QF_VARIANTMAP_FIELD2(int, i, setI, d, 0)
 	QF_VARIANTMAP_FIELD(QTime, s, setS, tartTime)
 	QF_VARIANTMAP_FIELD(QDate, d, setD, ate)
+	QF_VARIANTMAP_FIELD(QVariantMap, d, setD, rawingConfig)
 public:
 	Stage(const QVariantMap &data = QVariantMap());
 	Stage(const StageDocument *doc);
