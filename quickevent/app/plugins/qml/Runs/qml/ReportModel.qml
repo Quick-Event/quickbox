@@ -26,11 +26,13 @@ SqlTableModel {
 	}
 	Component.onCompleted:
 	{
-		queryBuilder.select2('runs', '*')
+		queryBuilder.select2('competitors', '*')
 			.select2('classes', 'name')
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from('runs')
-			.join("runs.classId", "classes.id")
+			.join("runs.competitorId", "competitors.id")
+			.join("competitors.classId", "classes.id")
+			.where("runs.stageId={{stageId}}")
 			.orderBy('runs.id');//.limit(10);
 	}
 }

@@ -102,11 +102,6 @@ Report {
 						text: "class"
 					}
 					HeaderCell {
-						id: colTest
-						width: "%"
-						text: "test"
-					}
-					HeaderCell {
 						id: colSI
 						width: "%"
 						text: "SI"
@@ -126,10 +121,6 @@ Report {
 					Cell {
 						width: colId.renderedWidth
 						text: detail.currentIndex + 1
-					}
-					Cell {
-						width: colTest.renderedWidth
-						textFn: detail.dataFn("test_col");
 					}
 					Cell {
 						width: colClass.renderedWidth

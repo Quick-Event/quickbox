@@ -11,6 +11,7 @@
 #include <QSqlIndex>
 #include <QSqlField>
 #include <QSqlDriver>
+#include <QJSValue>
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
@@ -533,6 +534,10 @@ QString SqlTableModel::replaceQueryParameters(const QString query_str)
 {
 	QString ret = query_str;
 	QVariant par_v = queryParameters();
+	if(par_v.userType() == qMetaTypeId<QJSValue>()) {
+		auto jsv = par_v.value<QJSValue>();
+		par_v = jsv.toVariant();
+	}
 	if(par_v.type() == QVariant::Map) {
 		QVariantMap par_map = par_v.toMap();
 		QMapIterator<QString, QVariant> it(par_map);

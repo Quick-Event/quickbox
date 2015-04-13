@@ -39,18 +39,13 @@ RunsPlugin {
 	function printAll()
 	{
 		Log.info("runs print all triggered");
+		var stage_id = FrameWork.plugin("Event").currentStageId;
+		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
-		var tt = new TreeTable.Table();
-		tt.setData(reportModel.toTreeTableData());
-		tt.setValue("title", "Runs list")
-		//console.warn("tt1", tt.toString());
-		tt.addColumn("test_col");
-		for(var i=0; i<tt.rowCount(); i++)
-			tt.setValue(i, "test_col", "test_data_" + i);
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Runs");
 		w.setReport(root.manifest.homeDir + "/reports/list.qml");
-		w.setTableData(tt.data());
+		w.setTableData(reportModel.toTreeTableData());
 		var dlg = FrameWork.createQmlDialog();
 		dlg.setDialogWidget(w);
 		dlg.exec();

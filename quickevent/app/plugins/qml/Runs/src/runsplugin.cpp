@@ -1,5 +1,6 @@
 #include "runsplugin.h"
 #include "thispartwidget.h"
+#include "drawing/drawingtoolwidget.h"
 
 //#include <EventPlugin/eventplugin.h>
 
@@ -11,6 +12,7 @@
 #include <qf/core/log.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <QQmlEngine>
 
@@ -36,17 +38,28 @@ void RunsPlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	m_partWidget = new ThisPartWidget();
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
-	/*
-	{
-		qfw::Action *a = new qfw::Action("Show registrations");
-		a->setCheckable(true);
-		a->setShortcut("ctrl+shift+R");
-		//fwk->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(actConfigureLogging);
-		fwk->menuBar()->actionForPath("view")->addActionInto(a);
-		connect(a, &qfw::Action::triggered, this, &RunsPlugin::setRegistrationsDockVisible);
-	}
-	*/
+
 	emit nativeInstalled();
+
+	auto *a_drawing = m_partWidget->menuBar()->actionForPath("drawing");
+	a_drawing->setText("&Drawing");
+	{
+		qfw::Action *a = new qfw::Action("Classes layout");
+		a_drawing->addActionInto(a);
+		connect(a, &qfw::Action::triggered, [this]()
+		{
+			auto *w = new drawing::DrawingToolWidget;
+			qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
+			dlg.setCentralWidget(w);
+			dlg.exec();
+		});
+	}
+	{
+		qfw::Action *a = new qfw::Action("Draw current class");
+		//a->setShortcut("ctrl+shift+R");
+		a_drawing->addActionInto(a);
+		//connect(a, &qfw::Action::triggered, this, &RunsPlugin::setRegistrationsDockVisible);
+	}
 }
 
 int RunsPlugin::courseForRun(int run_id)
