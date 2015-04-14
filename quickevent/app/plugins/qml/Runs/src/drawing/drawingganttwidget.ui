@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>drawing::DrawingToolWidget</class>
- <widget class="QWidget" name="drawing::DrawingToolWidget">
+	<class>drawing::DrawingGanttWidget</class>
+ <widget class="QWidget" name="drawing::DrawingGanttWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

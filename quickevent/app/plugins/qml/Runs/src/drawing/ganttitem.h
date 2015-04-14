@@ -29,8 +29,12 @@ private:
 public:
 	GanttItem(QGraphicsItem * parent = 0);
 
+	QF_PROPERTY_IMPL(int, d, D, isplayUnit)
+
 	void load();
 	void save();
+
+	void updateGeometry();
 private:
 	StartSlotItem* addSlotItem() {return slotItem(slotItemCount());}
 	int slotItemCount() { return m_slotItems.count(); }

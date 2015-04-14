@@ -48,7 +48,7 @@ void RunsPlugin::onInstalled()
 		a_drawing->addActionInto(a);
 		connect(a, &qfw::Action::triggered, [this]()
 		{
-			auto *w = new drawing::DrawingToolWidget;
+			auto *w = new drawing::DrawingGanttWidget;
 			qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
 			dlg.setCentralWidget(w);
 			dlg.exec();

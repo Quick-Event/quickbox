@@ -28,6 +28,7 @@ private:
 	QF_VARIANTMAP_FIELD2(int, v, setV, acantsBefore, 0)
 	QF_VARIANTMAP_FIELD2(int, v, setV, acantEvery, 0)
 	QF_VARIANTMAP_FIELD2(int, v, setV, vacantsAfter, 0)
+	QF_VARIANTMAP_FIELD2(int, f, setF, irstCode, 0)
 public:
 	ClassData(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ClassData(const qf::core::sql::Query &q);
@@ -39,6 +40,8 @@ private:
 	typedef QGraphicsRectItem Super;
 public:
 	ClassItem(QGraphicsItem * parent = 0);
+
+	void updateGeometry();
 
 	const ClassData& data() const;
 	void setData(const ClassData &data);

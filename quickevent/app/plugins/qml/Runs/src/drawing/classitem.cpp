@@ -6,7 +6,7 @@ using namespace drawing;
 
 ClassData::ClassData(const qf::core::sql::Query &q)
 {
-	for(auto s : {"id", "courseId", "startSlotIndex", "startSlotPosition", "startTimeMin", "startIntervalMin", "vacantsBefore", "vacantsBefore", "vacantEvery", "vacantsAfter"}) {
+	for(auto s : {"id", "courseId", "startSlotIndex", "startSlotPosition", "startTimeMin", "startIntervalMin", "vacantsBefore", "vacantsBefore", "vacantEvery", "vacantsAfter", "firstCode"}) {
 		insert(s, q.value(s));
 	}
 }

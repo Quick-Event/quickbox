@@ -8,6 +8,7 @@
 
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
+#include <qf/core/sql/querybuilder.h>
 
 namespace qfs = qf::core::sql;
 
@@ -16,7 +17,7 @@ using namespace drawing;
 GanttItem::GanttItem(QGraphicsItem *parent)
 	: Super(parent)
 {
-
+	setDisplayUnit(QFontMetrics(QFont()).lineSpacing());
 }
 
 StartSlotItem *GanttItem::slotItem(int ix)
@@ -55,7 +56,16 @@ void GanttItem::load()
 		auto *class_it = slot_item->addClassItem();
 		class_it->setData(cd);
 	}
-	q.exec("SELECT * FROM classdefs WHERE startSlotIndex < 0 AND stageId=" QF_IARG(stage_id) " ORDER BY courseId");
+	qf::core::sql::QueryBuilder qb1;
+	qb1.select("codes.code").from("coursecodes").joinRestricted("coursecodes.codeId", "codes.id", "coursecodes.courseId=classdefs.courseId").orderBy("coursecodes.position").limit(1);
+	qf::core::sql::QueryBuilder qb;
+	qb.select2("classdefs", "*")
+			.select("(" + qb1.toString() + ") AS firstCode")
+			.from("classdefs")
+			.join("classdefs.courseId")
+			.where("startSlotIndex")
+			.where("stageId=" QF_IARG(stage_id))
+			.orderBy("courseId");
 	int curr_course_id = -1;
 	StartSlotItem *slot_item = nullptr;
 	while(q.next()) {

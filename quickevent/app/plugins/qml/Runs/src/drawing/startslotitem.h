@@ -29,6 +29,8 @@ public:
 	int classItemCount();
 	ClassItem *classItem(int ix);
 
+	void updateGeometry();
+
 	const StartSlotData& data() const;
 	void setData(const StartSlotData &data);
 private:

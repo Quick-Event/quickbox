@@ -6,10 +6,12 @@ HEADERS += \
     $$PWD/thispartwidget.h \
     $$PWD/runswidget.h \
     $$PWD/runstablemodel.h \
-    $$PWD/drawing/drawingtoolwidget.h \
+    $$PWD/drawing/drawingganttwidget.h \
     $$PWD/drawing/classitem.h \
     $$PWD/drawing/startslotitem.h \
-    $$PWD/drawing/ganttitem.h
+    $$PWD/drawing/ganttitem.h \
+    $$PWD/drawing/ganttscene.h \
+    $$PWD/drawing/ganttview.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -17,11 +19,13 @@ SOURCES += \
     $$PWD/thispartwidget.cpp \
     $$PWD/runswidget.cpp \
     $$PWD/runstablemodel.cpp \
-    $$PWD/drawing/drawingtoolwidget.cpp \
+    $$PWD/drawing/drawingganttwidget.cpp \
     $$PWD/drawing/classitem.cpp \
     $$PWD/drawing/startslotitem.cpp \
-    $$PWD/drawing/ganttitem.cpp
+    $$PWD/drawing/ganttitem.cpp \
+    $$PWD/drawing/ganttscene.cpp \
+    $$PWD/drawing/ganttview.cpp
 
 FORMS += \
     $$PWD/runswidget.ui \
-    $$PWD/drawing/drawingtoolwidget.ui
+    $$PWD/drawing/drawingganttwidget.ui
