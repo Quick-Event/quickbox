@@ -1,6 +1,7 @@
 <RCC>
 	<qresource prefix="/qf/qmlwidgets/images/flat">
 		<file>new.svg</file>
+		<file>open.svg</file>
 		<file>save.svg</file>
 		<file>reload.svg</file>
 		<file>revert.svg</file>
