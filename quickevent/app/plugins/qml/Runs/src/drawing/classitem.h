@@ -15,6 +15,7 @@ class Query;
 namespace drawing {
 
 class GanttScene;
+class StartSlotItem;
 
 class ClassData : public QVariantMap
 {
@@ -24,6 +25,7 @@ private:
 	QF_VARIANTMAP_FIELD2(int, i, setI, d, 0)
 	QF_VARIANTMAP_FIELD2(QString, c, setC, lassName, 0)
 	QF_VARIANTMAP_FIELD2(int, c, setC, lassId, 0)
+	QF_VARIANTMAP_FIELD2(QString, c, setC, ourseName, 0)
 	QF_VARIANTMAP_FIELD2(int, c, setC, ourseId, 0)
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartSlotIndex, -1)
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartSlotPosition, -1)
@@ -52,9 +54,14 @@ public:
 	void setData(const ClassData &data);
 
 protected:
-	GanttScene* ganttScene();
+	int du() const;
+	int duration() const;
+	StartSlotItem* startSlotItem();
 private:
 	ClassData m_data;
+	QGraphicsTextItem *m_classText;
+	QGraphicsTextItem *m_courseText;
+	QGraphicsTextItem *m_classdefsText;
 };
 
 }

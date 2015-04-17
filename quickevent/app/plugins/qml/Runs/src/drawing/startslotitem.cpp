@@ -40,19 +40,43 @@ void StartSlotItem::setData(const StartSlotData &data)
 	m_data = data;
 }
 
-GanttScene *StartSlotItem::ganttScene()
+int StartSlotItem::du() const
 {
-	auto *ret = qobject_cast<GanttScene*>(scene());
-	QF_ASSERT_EX(ret != nullptr, "Bad scene!");
-	return ret;
+	auto *gs = qobject_cast<const GanttScene*>(scene());
+	QF_ASSERT_EX(gs != nullptr, "Bad scene!");
+	return gs->displayUnit();
+}
+
+static constexpr int LABEL_WIDTH_MIN = 5;
+
+int StartSlotItem::posToMin(int pos) const
+{
+	return pxToMin(pos) - LABEL_WIDTH_MIN;
+}
+
+int StartSlotItem::minToPos(int min) const
+{
+	return minToPx(LABEL_WIDTH_MIN + min);
+}
+
+int StartSlotItem::pxToMin(int px) const
+{
+	static int _du = du();
+	return px / _du;
+}
+
+int StartSlotItem::minToPx(int min) const
+{
+	static int _du = du();
+	return min * _du;
 }
 
 void StartSlotItem::updateGeometry()
 {
 	QRectF r;
-	int du = ganttScene()->displayUnit();
+	int u = du();
 	m_slotNoText->setPlainText(QString::number(slotNumber()));
-	int pos_x = 5 * du;
+	int pos_x = minToPos(0);
 	double h = m_slotNoText->boundingRect().height();
 	for (int i = 0; i < classItemCount(); ++i) {
 		ClassItem *it = classItem(i);
@@ -65,5 +89,6 @@ void StartSlotItem::updateGeometry()
 	r.setWidth(pos_x);
 	setRect(r);
 }
+
 
 

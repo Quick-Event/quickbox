@@ -34,11 +34,15 @@ public:
 	ClassItem *classItem(int ix);
 
 	void updateGeometry();
+	int posToMin(int pos) const;
+	int minToPos(int min) const;
+	int pxToMin(int px) const;
+	int minToPx(int min) const;
 
 	const StartSlotData& data() const;
 	void setData(const StartSlotData &data);
 protected:
-	GanttScene* ganttScene();
+	int du() const;
 private:
 	StartSlotData m_data;
 	QList<ClassItem*> m_classItems;

@@ -48,14 +48,6 @@ void GanttItem::load()
 		ssi->setData(sd);
 	}
 	qfs::Query q(qfs::Connection::forName());
-	q.exec("SELECT * FROM classdefs WHERE startSlotIndex >= 0 AND stageId=" QF_IARG(stage_id) " ORDER BY startSlotIndex, startSlotPosition");
-	while(q.next()) {
-		ClassData cd(q);
-		int slot_ix = cd.startSlotIndex();
-		auto *slot_item = startSlotItem(slot_ix);
-		auto *class_it = slot_item->addClassItem();
-		class_it->setData(cd);
-	}
 	qf::core::sql::QueryBuilder qb1;
 	qb1.select("COUNT(*)")
 			.from("runs")
@@ -66,15 +58,17 @@ void GanttItem::load()
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("classdefs", "*")
 			.select2("classes", "name AS className")
+			.select2("courses", "name AS courseName")
 			.select2("codes", "code AS firstCode")
 			.select("(" + qb1.toString() + ") AS runsCount")
 			.from("classdefs")
 			.join("classdefs.classId", "classes.id")
+			.join("classdefs.courseId", "courses.id")
 			.joinRestricted("classdefs.courseId", "coursecodes.courseId", "coursecodes.position=1")
 			.join("coursecodes.codeId", "codes.id")
 			.where("startSlotIndex < 0")
 			.where("classdefs.stageId=" QF_IARG(stage_id))
-			.orderBy("codes.code, classdefs.courseId");
+			.orderBy("startSlotIndex DESC, startSlotPosition, firstCode, classdefs.courseId");
 	int curr_course_id = -1;
 	StartSlotItem *slot_item = nullptr;
 	QString qs = qb.toString();
@@ -82,8 +76,15 @@ void GanttItem::load()
 	q.exec(qs);
 	while(q.next()) {
 		ClassData cd(q);
-		if(cd.courseId() != curr_course_id) {
-			slot_item = addStartSlotItem();
+		int ix = cd.startSlotIndex();
+		if(ix >= 0) {
+			slot_item = startSlotItem(ix);
+		}
+		else {
+			if(cd.courseId() != curr_course_id) {
+				curr_course_id = cd.courseId();
+				slot_item = addStartSlotItem();
+			}
 		}
 		auto *class_it = slot_item->addClassItem();
 		class_it->setData(cd);

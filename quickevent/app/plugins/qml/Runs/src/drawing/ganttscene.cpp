@@ -8,7 +8,7 @@ using namespace drawing;
 GanttScene::GanttScene(QObject * parent)
 	: Super(parent)
 {
-	setDisplayUnit(QFontMetrics(QFont()).lineSpacing());
+	setDisplayUnit(QFontMetrics(QFont()).lineSpacing() / 2);
 
 }
 
