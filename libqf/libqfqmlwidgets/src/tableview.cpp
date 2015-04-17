@@ -1770,10 +1770,20 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 			if(rowEditorMode() == EditRowsInline) {
 				if(!read_only) {
 					qfDebug() << "\t RowEditorInline";
+					int orig_check_state = index.data(Qt::CheckStateRole).toInt();
 					ret = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t QTableView::edit() returned:" << ret;
 					if(ret) {
-						refreshActions(); /// bez toho mi nechodi refreshActions pro bool hodnoty, ktere se nedelaji prez ItemDelegate, ale pres Qt::CheckStateRole
+						int new_check_state = index.data(Qt::CheckStateRole).toInt();
+						if(orig_check_state != new_check_state) {
+							/// handle bool values changes
+							/// booleans are not using editor created by ItemDelegate, but set model data directly using Qt::CheckStateRole
+							qfDebug() << "check state changed:" << orig_check_state << "->" << new_check_state;
+							if(inlineEditStrategy() == OnEditedValueCommit) {
+								postRow(currentIndex().row());
+							}
+							refreshActions();
+						}
 					}
 				}
 			}

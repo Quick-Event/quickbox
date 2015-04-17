@@ -8,6 +8,7 @@
 namespace drawing {
 
 class ClassItem;
+class GanttScene;
 
 class StartSlotData : public QVariantMap
 {
@@ -25,6 +26,9 @@ private:
 public:
 	StartSlotItem(QGraphicsItem * parent = 0);
 
+	QF_FIELD_IMPL2(int, s, S, lotNumber, 0)
+
+public:
 	ClassItem* addClassItem();
 	int classItemCount();
 	ClassItem *classItem(int ix);
@@ -33,9 +37,12 @@ public:
 
 	const StartSlotData& data() const;
 	void setData(const StartSlotData &data);
+protected:
+	GanttScene* ganttScene();
 private:
 	StartSlotData m_data;
 	QList<ClassItem*> m_classItems;
+	QGraphicsTextItem *m_slotNoText;
 };
 
 }

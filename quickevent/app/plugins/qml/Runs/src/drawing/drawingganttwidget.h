@@ -9,6 +9,8 @@ namespace Ui {
 class DrawingGanttWidget;
 }
 
+class GanttScene;
+
 class DrawingGanttWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT
@@ -20,6 +22,7 @@ public:
 
 private:
 	Ui::DrawingGanttWidget *ui;
+	GanttScene *m_ganttScene;
 };
 
 }

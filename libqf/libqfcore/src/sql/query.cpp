@@ -23,8 +23,10 @@ bool Query::prepare(const QString &query, bool throw_exc)
 {
 	qfLogFuncFrame() << query;
 	bool ret = Super::prepare(query);
-	if(!ret && throw_exc) {
-		QF_EXCEPTION(lastError().text());
+	if(!ret) {
+		if(throw_exc)
+			QF_EXCEPTION(lastError().text());
+		qfWarning() << lastError().text();
 	}
 	return ret;
 }
@@ -33,8 +35,10 @@ bool Query::exec(const QString &query, bool throw_exc)
 {
 	qfLogFuncFrame() << query;
 	bool ret = Super::exec(query);
-	if(!ret && throw_exc) {
-		QF_EXCEPTION(query + '\n' + lastError().text());
+	if(!ret) {
+		if(throw_exc)
+			QF_EXCEPTION(query + '\n' + lastError().text());
+		qfWarning() << query << '\n' << lastError().text();
 	}
 	return ret;
 }
@@ -43,8 +47,10 @@ bool Query::exec(bool throw_exc)
 {
 	//qfLogFuncFrame();
 	bool ret = Super::exec();
-	if(!ret && throw_exc) {
-		QF_EXCEPTION(lastError().text());
+	if(!ret) {
+		if(throw_exc)
+			QF_EXCEPTION(lastError().text());
+		qfWarning() << lastError().text();
 	}
 	return ret;
 }

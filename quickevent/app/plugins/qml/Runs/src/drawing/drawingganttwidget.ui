@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-	<class>drawing::DrawingGanttWidget</class>
+ <class>drawing::DrawingGanttWidget</class>
  <widget class="QWidget" name="drawing::DrawingGanttWidget">
   <property name="geometry">
    <rect>
@@ -14,8 +14,23 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item>
-    <widget class="QGraphicsView" name="viewClassLayout"/>
+    <widget class="QGraphicsView" name="ganttView"/>
    </item>
   </layout>
  </widget>

@@ -1,6 +1,6 @@
 #include "runsplugin.h"
 #include "thispartwidget.h"
-#include "drawing/drawingtoolwidget.h"
+#include "drawing/drawingganttwidget.h"
 
 //#include <EventPlugin/eventplugin.h>
 

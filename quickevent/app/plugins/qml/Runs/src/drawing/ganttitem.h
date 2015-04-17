@@ -29,19 +29,17 @@ private:
 public:
 	GanttItem(QGraphicsItem * parent = 0);
 
-	QF_PROPERTY_IMPL(int, d, D, isplayUnit)
-
 	void load();
 	void save();
 
 	void updateGeometry();
 private:
-	StartSlotItem* addSlotItem() {return slotItem(slotItemCount());}
-	int slotItemCount() { return m_slotItems.count(); }
-	StartSlotItem *slotItem(int ix);
+	StartSlotItem* addStartSlotItem() {return startSlotItem(startSlotItemCount());}
+	int startSlotItemCount() { return m_startSlotItems.count(); }
+	StartSlotItem *startSlotItem(int ix);
 	Event::EventPlugin* eventPlugin();
 private:
-	QList<StartSlotItem*> m_slotItems;
+	QList<StartSlotItem*> m_startSlotItems;
 	DrawingConfig m_drawingConfig;
 };
 

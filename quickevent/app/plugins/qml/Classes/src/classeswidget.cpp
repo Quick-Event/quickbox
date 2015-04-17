@@ -42,7 +42,8 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("classdefs.vacantsAfter", tr("VA")).setToolTip(tr("Vacants after"));
 		m->addColumn("classdefs.lastTimeMin", tr("Last"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
-		m->addColumn("courses.name", tr("Course"));
+		m->addColumn("courses.id", tr("id")).setReadOnly(true);
+		m->addColumn("courses.name", tr("Course")).setReadOnly(true);
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
 		ui->tblClasses->setTableModel(m);
@@ -53,7 +54,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		m->addColumn("coursecodes.position", tr("Pos")).setReadOnly(true);
 		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
-		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order")).setReadOnly(true);
+		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order"));
 		ui->tblCourseCodes->setTableModel(m);
 		m_courseCodesModel = m;
 	}
@@ -92,7 +93,7 @@ void ClassesWidget::reload()
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")
 				.select2("classdefs", "*")
-				.select2("courses", "name, length, climb")
+				.select2("courses", "id, name, length, climb")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStageId()))
 				.join("classdefs.courseId", "courses.id")
@@ -121,8 +122,6 @@ void ClassesWidget::reloadCourseCodes()
 	else {
 		ui->lblCourseCodes->setText(row.value("courses.name").toString());
 	}
-	//qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	//EventPlugin *event_plugin = qobject_cast<EventPlugin *>(fwk->plugin("Event"));
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("codes", "*")

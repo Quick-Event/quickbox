@@ -17,15 +17,14 @@ using namespace drawing;
 GanttItem::GanttItem(QGraphicsItem *parent)
 	: Super(parent)
 {
-	setDisplayUnit(QFontMetrics(QFont()).lineSpacing());
 }
 
-StartSlotItem *GanttItem::slotItem(int ix)
+StartSlotItem *GanttItem::startSlotItem(int ix)
 {
-	while(ix >= slotItemCount()) {
-		m_slotItems << new StartSlotItem(this);
+	while(ix >= startSlotItemCount()) {
+		m_startSlotItems << new StartSlotItem(this);
 	}
-	return m_slotItems.value(ix);
+	return m_startSlotItems.value(ix);
 }
 
 Event::EventPlugin *GanttItem::eventPlugin()
@@ -38,13 +37,14 @@ Event::EventPlugin *GanttItem::eventPlugin()
 
 void GanttItem::load()
 {
+	qfLogFuncFrame();
 	int stage_id = eventPlugin()->currentStageId();
 	Event::Stage stage = eventPlugin()->stage(stage_id);
 	DrawingConfig dc(stage.drawingConfig());
 	QVariantList stsllst = dc.startSlots();
 	for(auto v : stsllst) {
 		StartSlotData sd(v.toMap());
-		StartSlotItem *ssi = addSlotItem();
+		StartSlotItem *ssi = addStartSlotItem();
 		ssi->setData(sd);
 	}
 	qfs::Query q(qfs::Connection::forName());
@@ -52,29 +52,54 @@ void GanttItem::load()
 	while(q.next()) {
 		ClassData cd(q);
 		int slot_ix = cd.startSlotIndex();
-		auto *slot_item = slotItem(slot_ix);
+		auto *slot_item = startSlotItem(slot_ix);
 		auto *class_it = slot_item->addClassItem();
 		class_it->setData(cd);
 	}
 	qf::core::sql::QueryBuilder qb1;
-	qb1.select("codes.code").from("coursecodes").joinRestricted("coursecodes.codeId", "codes.id", "coursecodes.courseId=classdefs.courseId").orderBy("coursecodes.position").limit(1);
+	qb1.select("COUNT(*)")
+			.from("runs")
+			.join("runs.competitorId", "competitors.id")
+			.where("competitors.classId=classdefs.classId")
+			.where("NOT runs.offRace")
+			.where("runs.stageId=" QF_IARG(stage_id));
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("classdefs", "*")
-			.select("(" + qb1.toString() + ") AS firstCode")
+			.select2("classes", "name AS className")
+			.select2("codes", "code AS firstCode")
+			.select("(" + qb1.toString() + ") AS runsCount")
 			.from("classdefs")
-			.join("classdefs.courseId")
-			.where("startSlotIndex")
-			.where("stageId=" QF_IARG(stage_id))
-			.orderBy("courseId");
+			.join("classdefs.classId", "classes.id")
+			.joinRestricted("classdefs.courseId", "coursecodes.courseId", "coursecodes.position=1")
+			.join("coursecodes.codeId", "codes.id")
+			.where("startSlotIndex < 0")
+			.where("classdefs.stageId=" QF_IARG(stage_id))
+			.orderBy("codes.code, classdefs.courseId");
 	int curr_course_id = -1;
 	StartSlotItem *slot_item = nullptr;
+	QString qs = qb.toString();
+	qfDebug() << qs;
+	q.exec(qs);
 	while(q.next()) {
 		ClassData cd(q);
 		if(cd.courseId() != curr_course_id) {
-			slot_item = addSlotItem();
+			slot_item = addStartSlotItem();
 		}
 		auto *class_it = slot_item->addClassItem();
 		class_it->setData(cd);
+	}
+	updateGeometry();
+}
+
+void GanttItem::updateGeometry()
+{
+	int pos_y = 0;
+	for (int i = 0; i < startSlotItemCount(); ++i) {
+		StartSlotItem *it = startSlotItem(i);
+		it->setSlotNumber(i + 1);
+		it->updateGeometry();
+		it->setPos(QPoint(0, pos_y));
+		pos_y += it->rect().height();
 	}
 }
 
