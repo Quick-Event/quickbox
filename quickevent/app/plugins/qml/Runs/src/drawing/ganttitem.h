@@ -1,6 +1,8 @@
 #ifndef DRAWING_GANTTITEM_H
 #define DRAWING_GANTTITEM_H
 
+#include "iganttitem.h"
+
 #include <qf/core/utils.h>
 
 #include <QGraphicsRectItem>
@@ -12,6 +14,7 @@ class EventPlugin;
 namespace drawing {
 
 class StartSlotItem;
+class GanttRuler;
 
 class DrawingConfig : public QVariantMap
 {
@@ -22,7 +25,7 @@ public:
 };
 
 
-class GanttItem : public QGraphicsRectItem
+class GanttItem : public QGraphicsRectItem, public IGanttItem
 {
 private:
 	typedef QGraphicsRectItem Super;
@@ -41,6 +44,7 @@ private:
 private:
 	QList<StartSlotItem*> m_startSlotItems;
 	DrawingConfig m_drawingConfig;
+	GanttRuler *m_ganttRuler;
 };
 
 }

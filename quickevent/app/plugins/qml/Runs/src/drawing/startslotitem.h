@@ -1,6 +1,8 @@
 #ifndef DRAWING_STARTSLOTITEM_H
 #define DRAWING_STARTSLOTITEM_H
 
+#include "iganttitem.h"
+
 #include <qf/core/utils.h>
 
 #include <QGraphicsRectItem>
@@ -19,7 +21,7 @@ public:
 	QF_VARIANTMAP_FIELD2(bool, is, set, Locked, false)
 };
 
-class StartSlotItem : public QGraphicsRectItem
+class StartSlotItem : public QGraphicsRectItem, public IGanttItem
 {
 private:
 	typedef QGraphicsRectItem Super;
@@ -34,19 +36,13 @@ public:
 	ClassItem *classItem(int ix);
 
 	void updateGeometry();
-	int posToMin(int pos) const;
-	int minToPos(int min) const;
-	int pxToMin(int px) const;
-	int minToPx(int min) const;
 
 	const StartSlotData& data() const;
 	void setData(const StartSlotData &data);
-protected:
-	int du() const;
 private:
 	StartSlotData m_data;
 	QList<ClassItem*> m_classItems;
-	QGraphicsTextItem *m_slotNoText;
+	QGraphicsTextItem *m_textSlotNo;
 };
 
 }

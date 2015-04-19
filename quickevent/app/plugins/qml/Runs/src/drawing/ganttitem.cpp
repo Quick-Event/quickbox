@@ -1,6 +1,8 @@
 #include "ganttitem.h"
 #include "startslotitem.h"
 #include "classitem.h"
+#include "ganttruler.h"
+#include "ganttscene.h"
 
 #include <Event/eventplugin.h>
 
@@ -15,8 +17,9 @@ namespace qfs = qf::core::sql;
 using namespace drawing;
 
 GanttItem::GanttItem(QGraphicsItem *parent)
-	: Super(parent)
+	: Super(parent), IGanttItem(this)
 {
+	m_ganttRuler = new GanttRuler(this);
 }
 
 StartSlotItem *GanttItem::startSlotItem(int ix)
@@ -95,12 +98,26 @@ void GanttItem::load()
 void GanttItem::updateGeometry()
 {
 	int pos_y = 0;
+	double w = 0;
 	for (int i = 0; i < startSlotItemCount(); ++i) {
 		StartSlotItem *it = startSlotItem(i);
 		it->setSlotNumber(i + 1);
 		it->updateGeometry();
 		it->setPos(QPoint(0, pos_y));
 		pos_y += it->rect().height();
+		w = qMax(w, it->rect().right());
 	}
+	auto r = rect();
+	r.setWidth(w);
+	r.setHeight(pos_y);
+	{
+		QRectF rr = r;
+		rr.setHeight(2 * ganttScene()->displayUnit());
+		rr.moveTop(-rr.height());
+		m_ganttRuler->setRect(rr);
+		r |= rr;
+	}
+	setRect(r);
 }
+
 

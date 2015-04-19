@@ -1,5 +1,5 @@
-#ifndef GANTTSCENE_H
-#define GANTTSCENE_H
+#ifndef DRAWING_GANTTSCENE_H
+#define DRAWING_GANTTSCENE_H
 
 #include <QGraphicsScene>
 
@@ -18,10 +18,14 @@ public:
 	int displayUnit() const {return m_displayUnit;}
 	void setDisplayUnit(int display_unit) {m_displayUnit = display_unit;}
 
+	int pxToMin(int px) const;
+	int minToPx(int min) const;
+	int duToMin(int n) const;
+
 private:
 	int m_displayUnit;
 };
 
 }
 
-#endif // GANTTSCENE_H
+#endif

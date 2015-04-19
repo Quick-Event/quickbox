@@ -1,6 +1,8 @@
 #ifndef DRAWING_CLASSITEM_H
 #define DRAWING_CLASSITEM_H
 
+#include "iganttitem.h"
+
 #include <qf/core/utils.h>
 
 #include <QGraphicsRectItem>
@@ -41,7 +43,7 @@ public:
 	ClassData(const qf::core::sql::Query &q);
 };
 
-class ClassItem : public QGraphicsRectItem
+class ClassItem : public QGraphicsRectItem, public IGanttItem
 {
 private:
 	typedef QGraphicsRectItem Super;
@@ -53,10 +55,12 @@ public:
 	const ClassData& data() const;
 	void setData(const ClassData &data);
 
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
+
 protected:
-	int du() const;
-	int duration() const;
-	StartSlotItem* startSlotItem();
+	int runsAndVacantCount() const;
+	int durationMin() const;
+	QColor color() const;
 private:
 	ClassData m_data;
 	QGraphicsTextItem *m_classText;

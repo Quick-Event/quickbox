@@ -112,7 +112,7 @@ Schema {
 				Field { name: 'vacantsAfter'; type: Int { } 
 						comment: 'place n vacants gap after last competitor in class start list'
 				},
-				Field { name: 'lastTimeMin'; type: Int { } },
+				//Field { name: 'lastTimeMin'; type: Int { } },
 				Field { name: 'mapCount'; type: Int { } }
 			]
 			indexes: [

@@ -38,6 +38,7 @@ void GanttView::mousePressEvent(QMouseEvent* ev)
 
 void GanttView::mouseReleaseEvent(QMouseEvent* ev)
 {
+	setCursor(QCursor(Qt::ArrowCursor));
 	Super::mouseReleaseEvent(ev);
 }
 

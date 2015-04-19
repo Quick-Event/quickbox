@@ -1,5 +1,5 @@
-#ifndef GANTTVIEW_H
-#define GANTTVIEW_H
+#ifndef DRAWING_GANTTVIEW_H
+#define DRAWING_GANTTVIEW_H
 
 #include <QGraphicsView>
 
@@ -25,4 +25,4 @@ private:
 
 }
 
-#endif // GANTTVIEW_H
+#endif

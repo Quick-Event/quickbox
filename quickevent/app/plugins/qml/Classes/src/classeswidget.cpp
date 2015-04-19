@@ -40,7 +40,8 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("classdefs.vacantsBefore", tr("VB")).setToolTip(tr("Vacants before"));
 		m->addColumn("classdefs.vacantEvery", tr("VE")).setToolTip(tr("Vacant every"));
 		m->addColumn("classdefs.vacantsAfter", tr("VA")).setToolTip(tr("Vacants after"));
-		m->addColumn("classdefs.lastTimeMin", tr("Last"));
+		//m->addColumn("classdefs.lastTimeMin", tr("Last"));
+		m->addColumn("runsCount", tr("Count")).setToolTip(tr("Runners count"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
 		m->addColumn("courses.id", tr("id")).setReadOnly(true);
 		m->addColumn("courses.name", tr("Course")).setReadOnly(true);
@@ -90,12 +91,21 @@ void ClassesWidget::reload()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	Event::EventPlugin *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 	{
+		int stage_id = event_plugin->currentStageId();
+		qf::core::sql::QueryBuilder qb1;
+		qb1.select("COUNT(*)")
+				.from("runs")
+				.join("runs.competitorId", "competitors.id")
+				.where("competitors.classId=classdefs.classId")
+				.where("NOT runs.offRace")
+				.where("runs.stageId=" QF_IARG(stage_id));
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")
 				.select2("classdefs", "*")
 				.select2("courses", "id, name, length, climb")
+				.select("(" + qb1.toString() + ") AS runsCount")
 				.from("classes")
-				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(event_plugin->currentStageId()))
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(stage_id))
 				.join("classdefs.courseId", "courses.id")
 				.orderBy("classes.name");//.limit(10);
 		/*

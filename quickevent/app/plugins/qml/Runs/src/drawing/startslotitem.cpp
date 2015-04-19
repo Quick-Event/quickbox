@@ -7,9 +7,10 @@
 using namespace drawing;
 
 StartSlotItem::StartSlotItem(QGraphicsItem *parent)
-	: Super(parent)
+	: Super(parent), IGanttItem(this)
 {
-	m_slotNoText = new QGraphicsTextItem(this);
+	m_textSlotNo = new QGraphicsTextItem(this);
+	//setFlag(QGraphicsItem::ItemIsSelectable);
 }
 
 ClassItem *StartSlotItem::addClassItem()
@@ -40,44 +41,16 @@ void StartSlotItem::setData(const StartSlotData &data)
 	m_data = data;
 }
 
-int StartSlotItem::du() const
-{
-	auto *gs = qobject_cast<const GanttScene*>(scene());
-	QF_ASSERT_EX(gs != nullptr, "Bad scene!");
-	return gs->displayUnit();
-}
-
-static constexpr int LABEL_WIDTH_MIN = 5;
-
-int StartSlotItem::posToMin(int pos) const
-{
-	return pxToMin(pos) - LABEL_WIDTH_MIN;
-}
-
-int StartSlotItem::minToPos(int min) const
-{
-	return minToPx(LABEL_WIDTH_MIN + min);
-}
-
-int StartSlotItem::pxToMin(int px) const
-{
-	static int _du = du();
-	return px / _du;
-}
-
-int StartSlotItem::minToPx(int min) const
-{
-	static int _du = du();
-	return min * _du;
-}
+static constexpr int LABEL_WIDTH_DU = 5;
 
 void StartSlotItem::updateGeometry()
 {
 	QRectF r;
-	int u = du();
-	m_slotNoText->setPlainText(QString::number(slotNumber()));
-	int pos_x = minToPos(0);
-	double h = m_slotNoText->boundingRect().height();
+	m_textSlotNo->setPlainText(QString::number(slotNumber()));
+	int label_width = minToPx(ganttScene()->duToMin(LABEL_WIDTH_DU));
+	m_textSlotNo->setPos(-label_width, 0);
+	int pos_x = 0;
+	double h = m_textSlotNo->boundingRect().height();
 	for (int i = 0; i < classItemCount(); ++i) {
 		ClassItem *it = classItem(i);
 		it->setPos(pos_x, 0);
@@ -86,9 +59,8 @@ void StartSlotItem::updateGeometry()
 		h = qMax(h, it->rect().height());
 	}
 	r.setHeight(h);
-	r.setWidth(pos_x);
+	r.setWidth(label_width + pos_x);
+	r.moveLeft(-label_width);
+	//qfInfo() << r.left() << r.top() << r.width() << r.height();
 	setRect(r);
 }
-
-
-
