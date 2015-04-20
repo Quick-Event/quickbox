@@ -13,11 +13,15 @@
 		<file>clone-row.svg</file>
 		<file>delete-row.svg</file>
 		<file>copy.svg</file>
+		<file>cut.svg</file>
 		<file>paste.svg</file>
 		<file>settings.svg</file>
 		<file>left.svg</file>
 		<file>right.svg</file>
 		<file>up.svg</file>
 		<file>down.svg</file>
+		<file>zoom_fitall.svg</file>
+		<file>zoom_fitwidth.svg</file>
+		<file>zoom_fitheight.svg</file>
 	</qresource>
 </RCC>
