@@ -46,23 +46,34 @@ void ClassItem::setData(const ClassData &data)
 	m_data = data;
 }
 
+QColor ClassItem::color() const
+{
+	auto dt = data();
+	int hue = dt.firstCode() % 100;
+	QColor c;
+	c.setHsvF(hue / 100., 1, 1);
+	return c;
+}
+
 void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	QColor c_runner = color();
 	QColor c_free = c_runner;
 	c_free.setAlpha(128);
-	QColor c_first;
-	c_first.setHsv((c_runner.hue() + 64) % 256, 255, 255, 128);
+	//QColor c_first;
+	//c_first.setHsv((c_runner.hue() + 64) % 256, 255, 255, 128);
 	auto r = rect();
 	QRectF r1 = r;
 	r1.setWidth(minToPx(1));
+	r1.setHeight(r.height() / 8);
 	painter->fillRect(r, c_free);
 	auto dt = data();
 	int interval = dt.startIntervalMin();
 	for (int i = 0; i < runsAndVacantCount(); ++i) {
 		r1.moveLeft(minToPx(i * interval));
-		QColor c = (i == 0)? c_first: c_runner;
-		painter->fillRect(r1, c);
+		//QColor c = (i == 0)? c_first: c_runner;
+		painter->fillRect(r1, c_runner);
+		painter->drawRect(r1);
 	}
 	Super::paint(painter, option, widget);
 }
@@ -80,15 +91,6 @@ int ClassItem::durationMin() const
 {
 	auto dt = data();
 	return runsAndVacantCount() * dt.startIntervalMin();
-}
-
-QColor ClassItem::color() const
-{
-	auto dt = data();
-	int hue = dt.firstCode() % 100;
-	QColor c;
-	c.setHsvF(hue / 100., 1, 1, 0.5);
-	return c;
 }
 
 void ClassItem::updateGeometry()

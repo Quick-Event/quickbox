@@ -13,6 +13,7 @@ DEFINES += RUNSPLUGIN_BUILD_DLL
 INCLUDEPATH += \
     $$PWD/src \
     $$PWD/../Event/include \
+
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
