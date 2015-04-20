@@ -57,6 +57,14 @@ public:
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
+	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+	void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+
+	void dragEnterEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	void dragMoveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 protected:
 	int runsAndVacantCount() const;
 	int durationMin() const;
@@ -66,6 +74,7 @@ private:
 	QGraphicsTextItem *m_classText;
 	QGraphicsTextItem *m_courseText;
 	QGraphicsTextItem *m_classdefsText;
+	QVariant m_dropInsertsBefore;
 };
 
 }

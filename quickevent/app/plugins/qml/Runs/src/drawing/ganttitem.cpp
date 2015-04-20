@@ -112,7 +112,7 @@ void GanttItem::updateGeometry()
 	r.setHeight(pos_y);
 	{
 		QRectF rr = r;
-		rr.setHeight(2 * ganttScene()->displayUnit());
+		rr.setHeight(3 * ganttScene()->displayUnit());
 		rr.moveTop(-rr.height());
 		m_ganttRuler->setRect(rr);
 		r |= rr;
