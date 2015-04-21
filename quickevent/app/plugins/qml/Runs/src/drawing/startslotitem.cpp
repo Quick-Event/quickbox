@@ -13,22 +13,28 @@ StartSlotItem::StartSlotItem(QGraphicsItem *parent)
 	//setFlag(QGraphicsItem::ItemIsSelectable);
 }
 
-ClassItem *StartSlotItem::addClassItem()
-{
-	return classItem(classItemCount());
-}
-
 int StartSlotItem::classItemCount()
 {
 	return m_classItems.count();
 }
 
-ClassItem *StartSlotItem::classItem(int ix)
+void StartSlotItem::insertClassItem(int ix, ClassItem *it)
 {
-	while(ix >= classItemCount()) {
-		m_classItems << new ClassItem(this);
-	}
-	return m_classItems.value(ix);
+	QF_ASSERT(it != nullptr, "Item == NULL", return);
+	m_classItems.insert(ix, it);
+}
+
+ClassItem *StartSlotItem::classItemAt(int ix)
+{
+	QF_ASSERT_EX(ix >= 0 && ix < classItemCount(), QString("Invalid item index %1, item count %2!").arg(ix).arg(classItemCount()));
+	return m_classItems[ix];
+}
+
+ClassItem *StartSlotItem::addClassItem()
+{
+	auto *it = new ClassItem(this);
+	insertClassItem(classItemCount(), it);
+	return it;
 }
 
 const StartSlotData& StartSlotItem::data() const
@@ -52,7 +58,7 @@ void StartSlotItem::updateGeometry()
 	int pos_x = 0;
 	double h = m_textSlotNo->boundingRect().height();
 	for (int i = 0; i < classItemCount(); ++i) {
-		ClassItem *it = classItem(i);
+		ClassItem *it = classItemAt(i);
 		it->setPos(pos_x, 0);
 		it->updateGeometry();
 		pos_x += it->rect().width();

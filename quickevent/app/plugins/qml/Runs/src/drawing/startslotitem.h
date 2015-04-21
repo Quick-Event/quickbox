@@ -33,7 +33,8 @@ public:
 public:
 	ClassItem* addClassItem();
 	int classItemCount();
-	ClassItem *classItem(int ix);
+	void insertClassItem(int ix, ClassItem *it);
+	ClassItem* classItemAt(int ix);
 
 	void updateGeometry();
 

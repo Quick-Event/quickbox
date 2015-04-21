@@ -188,7 +188,11 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		drag->setPixmap(pixmap);
 		drag->setHotSpot(QPoint(5 * ganttScene()->displayUnit(), 0));
 	}
-	drag->exec();
+	Qt::DropAction act = drag->exec();
+	qfDebug() << "drag exit:" << act;
+	if(act == Qt::MoveAction) {
+
+	}
 	setCursor(Qt::OpenHandCursor);
 }
 
@@ -228,6 +232,11 @@ void ClassItem::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 void ClassItem::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
 	m_dropInsertsBefore = QVariant();
+	QJsonDocument jsd = QJsonDocument::fromJson(event->mimeData()->text().toUtf8());
+	ClassData dt(jsd.toVariant().toMap());
+	Qt::DropAction act = (dt.isEmpty())? Qt::IgnoreAction: Qt::MoveAction;
+	event->setDropAction(act);
+	event->accept();
 	//if (event->mimeData()->hasColor())
 	//	color = qvariant_cast<QColor>(event->mimeData()->colorData());
 	update();

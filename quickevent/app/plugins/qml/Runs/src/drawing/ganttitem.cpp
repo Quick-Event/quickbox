@@ -22,12 +22,23 @@ GanttItem::GanttItem(QGraphicsItem *parent)
 	m_ganttRuler = new GanttRuler(this);
 }
 
-StartSlotItem *GanttItem::startSlotItem(int ix)
+StartSlotItem *GanttItem::startSlotItemAt(int ix)
 {
-	while(ix >= startSlotItemCount()) {
-		m_startSlotItems << new StartSlotItem(this);
-	}
-	return m_startSlotItems.value(ix);
+	QF_ASSERT_EX(ix >= 0 && ix < startSlotItemCount(), QString("Invalid item index %1, item count %2!").arg(ix).arg(startSlotItemCount()));
+	return m_startSlotItems[ix];
+}
+
+void GanttItem::insertStartSlotItem(int ix, StartSlotItem *it)
+{
+	QF_ASSERT(it != nullptr, "Item == NULL", return);
+	m_startSlotItems.insert(ix, it);
+}
+
+StartSlotItem *GanttItem::addStartSlotItem()
+{
+	auto *it = new StartSlotItem(this);
+	insertStartSlotItem(startSlotItemCount(), it);
+	return it;
 }
 
 Event::EventPlugin *GanttItem::eventPlugin()
@@ -71,17 +82,21 @@ void GanttItem::load()
 			.join("coursecodes.codeId", "codes.id")
 			.where("startSlotIndex < 0")
 			.where("classdefs.stageId=" QF_IARG(stage_id))
-			.orderBy("startSlotIndex DESC, startSlotPosition, firstCode, classdefs.courseId");
+			.orderBy("startSlotIndex, startSlotPosition, firstCode, classdefs.courseId");
 	int curr_course_id = -1;
+	int curr_slot_ix = -1;
 	StartSlotItem *slot_item = nullptr;
 	QString qs = qb.toString();
 	qfDebug() << qs;
 	q.exec(qs);
 	while(q.next()) {
 		ClassData cd(q);
-		int ix = cd.startSlotIndex();
-		if(ix >= 0) {
-			slot_item = startSlotItem(ix);
+		int slot_ix = cd.startSlotIndex();
+		if(slot_ix >= 0) {
+			if(slot_ix > curr_slot_ix) {
+				slot_item = addStartSlotItem();
+				curr_slot_ix = slot_ix;
+			}
 		}
 		else {
 			if(cd.courseId() != curr_course_id) {
@@ -100,7 +115,7 @@ void GanttItem::updateGeometry()
 	int pos_y = 0;
 	double w = 0;
 	for (int i = 0; i < startSlotItemCount(); ++i) {
-		StartSlotItem *it = startSlotItem(i);
+		StartSlotItem *it = startSlotItemAt(i);
 		it->setSlotNumber(i + 1);
 		it->updateGeometry();
 		it->setPos(QPoint(0, pos_y));
@@ -119,5 +134,7 @@ void GanttItem::updateGeometry()
 	}
 	setRect(r);
 }
+
+
 
 

@@ -37,9 +37,10 @@ public:
 
 	void updateGeometry();
 private:
-	StartSlotItem* addStartSlotItem() {return startSlotItem(startSlotItemCount());}
 	int startSlotItemCount() { return m_startSlotItems.count(); }
-	StartSlotItem *startSlotItem(int ix);
+	StartSlotItem* startSlotItemAt(int ix);
+	void insertStartSlotItem(int ix, StartSlotItem *it);
+	StartSlotItem* addStartSlotItem();
 	Event::EventPlugin* eventPlugin();
 private:
 	QList<StartSlotItem*> m_startSlotItems;
