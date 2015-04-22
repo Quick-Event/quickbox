@@ -22,6 +22,7 @@ PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
 	setFeatureId(feature_id);
 	m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
 	m_centralFrame = new Frame(this);
+	m_centralFrame->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	m_centralFrame->setLayoutType(Frame::LayoutVertical);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setMargin(0);

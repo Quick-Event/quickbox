@@ -44,6 +44,9 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 		if(m_centralWidget) {
 			m_centralWidget->setParent(nullptr);
 			m_centralWidget->setParent(this);
+			auto sp = m_centralWidget->sizePolicy();
+			sp.setVerticalPolicy(QSizePolicy::MinimumExpanding);
+			m_centralWidget->setSizePolicy(sp);
 		}
 		if(dialog_widget) {
 			QMetaObject::invokeMethod(this, "settleDownDialogWidget", Qt::QueuedConnection);
