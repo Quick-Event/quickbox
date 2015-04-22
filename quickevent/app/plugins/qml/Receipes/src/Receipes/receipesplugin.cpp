@@ -226,7 +226,7 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 			tt.setValue("missingCodes", mc);
 		}
 		{
-			Event::Stage stage = eventPlugin()->stage(eventPlugin()->currentStageId());
+			Event::StageData stage = eventPlugin()->stageData(eventPlugin()->currentStageId());
 			QTime start00 = stage.startTime();
 			if(start00.hour() >= 12)
 				start00 = start00.addSecs(-12 * 60 *60);

@@ -47,8 +47,8 @@ public:
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
-	Stage stage(int stage_id);
-	Q_SLOT void clearStageCache();
+	StageData stageData(int stage_id);
+	Q_SLOT void clearStageDataCache();
 
 	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
 	Q_SLOT bool closeEvent();
@@ -80,7 +80,7 @@ private:
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;
 	QComboBox *m_cbxStage = nullptr;
-	QMap<int, Stage> m_stageCache;
+	QMap<int, StageData> m_stageCache;
 };
 
 }

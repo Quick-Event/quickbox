@@ -70,20 +70,20 @@ int EventPlugin::currentStageId()
 	return m_cbxStage->currentIndex() + 1;
 }
 
-Stage EventPlugin::stage(int stage_id)
+StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;
 	if(!m_stageCache.contains(stage_id)) {
 		Event::StageDocument doc;
 		doc.load(stage_id);
-		Stage s(&doc);
+		StageData s(&doc);
 		m_stageCache[stage_id] = s;
 	}
 	ret = m_stageCache.value(stage_id);
 	return ret;
 }
 
-void EventPlugin::clearStageCache()
+void EventPlugin::clearStageDataCache()
 {
 	m_stageCache.clear();
 }
@@ -153,7 +153,7 @@ void EventPlugin::editStage()
 	dlg.setCentralWidget(w);
 	w->load(stage_id);
 	if(dlg.exec()) {
-		clearStageCache();
+		clearStageDataCache();
 	}
 }
 

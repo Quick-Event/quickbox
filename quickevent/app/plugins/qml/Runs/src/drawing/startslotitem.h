@@ -12,13 +12,14 @@ namespace drawing {
 
 class ClassItem;
 class GanttItem;
+class StartSlotHeader;
 
 class StartSlotData : public QVariantMap
 {
 public:
 	explicit StartSlotData(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 
-	QF_VARIANTMAP_FIELD2(int, s, setS, tart, 0)
+	QF_VARIANTMAP_FIELD2(int, s, setS, tartOffset, 0)
 	QF_VARIANTMAP_FIELD2(bool, is, set, Locked, false)
 };
 
@@ -54,7 +55,7 @@ public:
 private:
 	StartSlotData m_data;
 	QList<ClassItem*> m_classItems;
-	QGraphicsTextItem *m_textSlotNo;
+	StartSlotHeader *m_header;
 	bool m_dragIn = false;
 };
 

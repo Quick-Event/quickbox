@@ -6,12 +6,12 @@
 
 using namespace Event;
 
-Stage::Stage(const QVariantMap &data)
+StageData::StageData(const QVariantMap &data)
 	: Super(data)
 {
 }
 
-Event::Stage::Stage(const Event::StageDocument *doc)
+Event::StageData::StageData(const Event::StageDocument *doc)
 {
 	for(auto s : {"id", "startTime", "startDate"}) {
 		insert(s, doc->value(s));

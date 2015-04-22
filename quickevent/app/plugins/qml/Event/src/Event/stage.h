@@ -13,7 +13,7 @@ namespace Event {
 
 class EVENTPLUGIN_DECL_EXPORT StageDocument;
 
-class Stage : public QVariantMap
+class StageData : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
@@ -23,8 +23,8 @@ private:
 	QF_VARIANTMAP_FIELD(QDate, d, setD, ate)
 	QF_VARIANTMAP_FIELD(QVariantMap, d, setD, rawingConfig)
 public:
-	Stage(const QVariantMap &data = QVariantMap());
-	Stage(const StageDocument *doc);
+	StageData(const QVariantMap &data = QVariantMap());
+	StageData(const StageDocument *doc);
 };
 
 }

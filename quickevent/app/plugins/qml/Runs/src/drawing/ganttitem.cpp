@@ -12,6 +12,8 @@
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/querybuilder.h>
 
+#include <QJsonDocument>
+
 namespace qfs = qf::core::sql;
 
 using namespace drawing;
@@ -77,14 +79,10 @@ void GanttItem::load()
 {
 	qfLogFuncFrame();
 	int stage_id = eventPlugin()->currentStageId();
-	Event::Stage stage = eventPlugin()->stage(stage_id);
+	Event::StageData stage = eventPlugin()->stageData(stage_id);
 	DrawingConfig dc(stage.drawingConfig());
 	QVariantList stsllst = dc.startSlots();
-	for(auto v : stsllst) {
-		StartSlotData sd(v.toMap());
-		StartSlotItem *ssi = addStartSlotItem();
-		ssi->setData(sd);
-	}
+
 	qfs::Query q(qfs::Connection::forName());
 	qf::core::sql::QueryBuilder qb1;
 	qb1.select("COUNT(*)")
@@ -119,6 +117,8 @@ void GanttItem::load()
 			if(slot_ix > curr_slot_ix) {
 				slot_item = addStartSlotItem();
 				curr_slot_ix = slot_ix;
+				StartSlotData sd(stsllst.value(slot_ix).toMap());
+				slot_item->setData(sd);
 			}
 		}
 		else {
@@ -137,20 +137,43 @@ void GanttItem::save()
 {
 	qfLogFuncFrame();
 	int stage_id = eventPlugin()->currentStageId();
-	QString qs = "UPDATE classdefs SET startSlotIndex=:startSlotIndex, startSlotPosition=:startSlotPosition WHERE classdefs.id=:id AND stageId=:stageId";
-	qfs::Query q(qfs::Connection::forName());
-	q.prepare(qs, qf::core::Exception::Throw);
-	for (int i = 0; i < startSlotItemCount(); ++i) {
-		StartSlotItem *slot_it = startSlotItemAt(i);
-		for (int j = 0; j < slot_it->classItemCount(); ++j) {
-			ClassItem *class_it = slot_it->classItemAt(j);
-			auto dt = class_it->data();
-			qfDebug() << dt.id() << dt.className() << "slot:" << dt.startSlotIndex() << "pos:" << dt.startSlotPosition();
-			q.bindValue(":startSlotIndex", dt.startSlotIndex());
-			q.bindValue(":startSlotPosition", dt.startSlotPosition());
-			q.bindValue(":id", dt.id());
-			q.bindValue(":stageId", stage_id);
-			q.exec(qf::core::Exception::Throw);
+	{
+		Event::StageData stage = eventPlugin()->stageData(stage_id);
+		DrawingConfig dc(stage.drawingConfig());
+		QVariantList start_slots;
+		for (int i = 0; i < startSlotItemCount(); ++i) {
+			StartSlotItem *slot_it = startSlotItemAt(i);
+			StartSlotData sd = slot_it->data();
+			start_slots << sd;
+		}
+		dc.setStartSlots(start_slots);
+		QJsonDocument jsd = QJsonDocument::fromVariant(dc);
+		QString dc_str = QString::fromUtf8(jsd.toJson(QJsonDocument::Compact));
+
+		QString qs = "UPDATE stages SET drawingConfig=:drawingConfig WHERE id=:id";
+		qfs::Query q(qfs::Connection::forName());
+		q.prepare(qs, qf::core::Exception::Throw);
+		q.bindValue(":drawingConfig", dc_str);
+		q.bindValue(":id", stage_id);
+		q.exec(qf::core::Exception::Throw);
+		eventPlugin()->clearStageDataCache();
+	}
+	{
+		QString qs = "UPDATE classdefs SET startSlotIndex=:startSlotIndex, startSlotPosition=:startSlotPosition WHERE classdefs.id=:id AND stageId=:stageId";
+		qfs::Query q(qfs::Connection::forName());
+		q.prepare(qs, qf::core::Exception::Throw);
+		for (int i = 0; i < startSlotItemCount(); ++i) {
+			StartSlotItem *slot_it = startSlotItemAt(i);
+			for (int j = 0; j < slot_it->classItemCount(); ++j) {
+				ClassItem *class_it = slot_it->classItemAt(j);
+				auto dt = class_it->data();
+				qfDebug() << dt.id() << dt.className() << "slot:" << dt.startSlotIndex() << "pos:" << dt.startSlotPosition();
+				q.bindValue(":startSlotIndex", dt.startSlotIndex());
+				q.bindValue(":startSlotPosition", dt.startSlotPosition());
+				q.bindValue(":id", dt.id());
+				q.bindValue(":stageId", stage_id);
+				q.exec(qf::core::Exception::Throw);
+			}
 		}
 	}
 }
