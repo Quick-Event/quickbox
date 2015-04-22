@@ -52,6 +52,24 @@ ClassItem *StartSlotItem::takeClassItemAt(int ix)
 	return ret;
 }
 
+void StartSlotItem::setStartOffset(int start_offset)
+{
+	if(start_offset < 0)
+		start_offset = 0;
+	StartSlotData dt = data();
+	if(dt.startOffset() != start_offset) {
+		dt.setStartOffset(start_offset);
+		setData(dt);
+		updateGeometry();
+	}
+}
+
+int StartSlotItem::startOffset()
+{
+	StartSlotData dt = data();
+	return dt.startOffset();
+}
+
 void StartSlotItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	if(m_dragIn) {
@@ -92,6 +110,7 @@ void StartSlotItem::updateGeometry()
 		qfDebug() << i << it;
 		it->setPos(pos_x, 0);
 		it->updateGeometry();
+		it->setZValue(i);
 		pos_x += it->rect().width();
 		h = qMax(h, it->rect().height());
 	}

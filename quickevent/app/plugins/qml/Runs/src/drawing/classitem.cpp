@@ -44,8 +44,10 @@ ClassItem::ClassItem(QGraphicsItem *parent)
 	r.setHeight(6 * du_px + du_px/2);
 	setRect(r);
 
-	setCursor(Qt::OpenHandCursor);
+	setCursor(Qt::ArrowCursor);
 	setAcceptDrops(true);
+
+	setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
 }
 
 const ClassData &ClassItem::data() const
@@ -99,6 +101,18 @@ void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		//QColor c = (i == 0)? c_first: c_runner;
 		painter->fillRect(r1, c_runner);
 		painter->drawRect(r1);
+	}
+	if(m_classClash) {
+		painter->save();
+		qreal w = r.height() / 15;
+		QPen p;
+		p.setColor(Qt::red);
+		p.setWidthF(w);
+		painter->setPen(p);
+		w /= 2;
+		QRectF r2 = r.adjusted(w, w, -w, -w);
+		painter->drawRect(r2);
+		painter->restore();
 	}
 	if(m_dropInsertsBefore.isValid()) {
 		QColor c_insert = c_runner;
@@ -219,13 +233,13 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	if(act == Qt::MoveAction) {
 
 	}
-	setCursor(Qt::OpenHandCursor);
+	setCursor(Qt::ArrowCursor);
 }
 
 void ClassItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	Q_UNUSED(event)
-	setCursor(Qt::OpenHandCursor);
+	setCursor(Qt::ArrowCursor);
 }
 
 void ClassItem::dragEnterEvent(QGraphicsSceneDragDropEvent *event)

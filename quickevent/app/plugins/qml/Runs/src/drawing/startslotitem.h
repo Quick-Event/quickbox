@@ -21,6 +21,7 @@ public:
 
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartOffset, 0)
 	QF_VARIANTMAP_FIELD2(bool, is, set, Locked, false)
+	QF_VARIANTMAP_FIELD2(bool, is, set, IgnoreClassClashCheck, false)
 };
 
 class StartSlotItem : public QGraphicsRectItem, public IGanttItem
@@ -39,6 +40,9 @@ public:
 	void insertClassItem(int ix, ClassItem *it);
 	ClassItem* classItemAt(int ix, bool throw_ex = qf::core::Exception::Throw);
 	ClassItem* takeClassItemAt(int ix);
+
+	void setStartOffset(int start_offset);
+	int startOffset();
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 

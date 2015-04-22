@@ -37,10 +37,18 @@ StartSlotItem *GanttItem::startSlotItemAt(int ix, bool throw_ex)
 	return ret;
 }
 
+StartSlotItem *GanttItem::takeStartSlotItemAt(int ix)
+{
+	StartSlotItem *ret = m_startSlotItems.takeAt(ix);
+	ret->setParentItem(nullptr);
+	return ret;
+}
+
 void GanttItem::insertStartSlotItem(int ix, StartSlotItem *it)
 {
 	QF_ASSERT(it != nullptr, "Item == NULL", return);
 	m_startSlotItems.insert(ix, it);
+	it->setParentItem(this);
 }
 
 StartSlotItem *GanttItem::addStartSlotItem()
@@ -211,11 +219,28 @@ void GanttItem::updateGeometry()
 
 void GanttItem::moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_ix, int to_class_ix)
 {
+	if(from_slot_ix == to_slot_ix && (from_class_ix == to_class_ix || to_class_ix == from_class_ix + 1))
+		return;
+	if(from_slot_ix == to_slot_ix && from_class_ix < to_class_ix)
+		to_class_ix--;
 	auto *slot1 = startSlotItemAt(from_slot_ix);
 	auto *class_it = slot1->takeClassItemAt(from_class_ix);
 	auto *slot2 = startSlotItemAt(to_slot_ix);
 	slot2->insertClassItem(to_class_ix, class_it);
 	updateGeometry();
+}
+
+void GanttItem::moveStartSlotItem(int from_slot_ix, int to_slot_ix)
+{
+	if(from_slot_ix == to_slot_ix)
+		return;
+	auto *slot = takeStartSlotItemAt(from_slot_ix);
+	if(slot) {
+		if(from_slot_ix < to_slot_ix)
+			to_slot_ix--;
+		insertStartSlotItem(to_slot_ix, slot);
+		updateGeometry();
+	}
 }
 
 

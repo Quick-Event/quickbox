@@ -78,6 +78,7 @@ private:
 	QGraphicsTextItem *m_courseText;
 	QGraphicsTextItem *m_classdefsText;
 	QVariant m_dropInsertsBefore;
+	bool m_classClash = false;
 };
 
 }

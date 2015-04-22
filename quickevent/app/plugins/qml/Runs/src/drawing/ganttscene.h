@@ -18,6 +18,10 @@ public:
 	void load();
 	void save();
 
+	/**
+	 * @brief displayUnit
+	 * @return default font line spacing / 2
+	 */
 	int displayUnit() const {return m_displayUnit;}
 	void setDisplayUnit(int display_unit) {m_displayUnit = display_unit;}
 

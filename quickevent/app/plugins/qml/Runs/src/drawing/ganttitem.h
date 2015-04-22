@@ -40,16 +40,17 @@ public:
 	void updateGeometry();
 
 	void moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_ix, int to_class_ix);
+	void moveStartSlotItem(int from_slot_ix, int to_slot_ix);
 
 	int startSlotItemCount() const { return m_startSlotItems.count(); }
 	int startSlotItemIndex(const StartSlotItem *it) const;
 	StartSlotItem* startSlotItemAt(int ix, bool throw_ex = qf::core::Exception::Throw);
-private:
+	StartSlotItem* takeStartSlotItemAt(int ix);
+
 	void insertStartSlotItem(int ix, StartSlotItem *it);
 	StartSlotItem* addStartSlotItem();
+private:
 	Event::EventPlugin* eventPlugin();
-	//ClassItem* takeClassItem(int slot_ix, int class_ix);
-	//void insertClassItem(int slot_ix, int class_ix, ClassItem *it);
 private:
 	QList<StartSlotItem*> m_startSlotItems;
 	DrawingConfig m_drawingConfig;
