@@ -20,6 +20,9 @@ public:
 	explicit DrawingGanttWidget(QWidget *parent = 0);
 	~DrawingGanttWidget();
 
+	void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
+private slots:
+	void on_actSave_triggered();
 private:
 	Ui::DrawingGanttWidget *ui;
 	GanttScene *m_ganttScene;

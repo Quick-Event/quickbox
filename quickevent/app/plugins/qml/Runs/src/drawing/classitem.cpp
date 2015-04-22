@@ -1,6 +1,7 @@
 #include "classitem.h"
 #include "ganttscene.h"
 #include "startslotitem.h"
+#include "ganttitem.h"
 
 #include <qf/core/sql/query.h>
 
@@ -43,6 +44,7 @@ ClassItem::ClassItem(QGraphicsItem *parent)
 	r.setHeight(6 * du_px + du_px/2);
 	setRect(r);
 
+	setCursor(Qt::OpenHandCursor);
 	setAcceptDrops(true);
 }
 
@@ -65,6 +67,20 @@ QColor ClassItem::color() const
 	return c;
 }
 
+const StartSlotItem *ClassItem::startSlotItem() const
+{
+	const StartSlotItem *ret = dynamic_cast<const StartSlotItem*>(parentItem());
+	QF_ASSERT_EX(ret != nullptr, "Bad parent!");
+	return ret;
+}
+/*
+QPair<int, int> ClassItem::ganttIndex() const
+{
+	int class_ix = startSlotItem()->classItemIndex(this);
+	int slot_ix = ganttItem()->startSlotItemIndex(startSlotItem());
+	return QPair<int, int>(slot_ix, class_ix);
+}
+*/
 void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	QColor c_runner = color();
@@ -119,8 +135,8 @@ int ClassItem::durationMin() const
 
 void ClassItem::updateGeometry()
 {
-	auto dt = data();
-	qfLogFuncFrame() << dt.className() << "runners:" << dt.runsCount();
+	ClassData &dt = m_data;
+	//qfLogFuncFrame() << dt.className() << "runners:" << dt.runsCount();
 	QRectF r = rect();
 	int cnt = dt.runsCount();
 	int vacants = (dt.vacantEvery() > 0)? cnt / dt.vacantEvery(): 0;
@@ -144,6 +160,10 @@ void ClassItem::updateGeometry()
 		tool_tip.replace(' ', "&nbsp;");
 		setToolTip(tool_tip);
 	}
+	int slot_ix = ganttItem()->startSlotItemIndex(startSlotItem());
+	int class_ix = startSlotItem()->classItemIndex(this);
+	dt.setStartSlotIndex(slot_ix);
+	dt.setStartSlotPosition(class_ix);
 }
 
 void ClassItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -162,7 +182,13 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 	QMimeData *mime = new QMimeData;
 	drag->setMimeData(mime);
 	{
-		QJsonDocument jsd = QJsonDocument::fromVariant(data());
+		QVariantMap m;
+		auto &dt = data();
+		int slot_ix = dt.startSlotIndex();
+		int class_ix = dt.startSlotPosition();
+		m[QStringLiteral("slotIndex")] = slot_ix;
+		m[QStringLiteral("classIndex")] = class_ix;
+		QJsonDocument jsd = QJsonDocument::fromVariant(m);
 		QString mime_text = QString::fromUtf8(jsd.toJson());
 		qfDebug() << "mime:" << mime_text;
 		mime->setText(mime_text);
@@ -231,14 +257,24 @@ void ClassItem::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 
 void ClassItem::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
-	m_dropInsertsBefore = QVariant();
+	qfLogFuncFrame();
 	QJsonDocument jsd = QJsonDocument::fromJson(event->mimeData()->text().toUtf8());
-	ClassData dt(jsd.toVariant().toMap());
-	Qt::DropAction act = (dt.isEmpty())? Qt::IgnoreAction: Qt::MoveAction;
+	QVariantMap m = jsd.toVariant().toMap();
+	Qt::DropAction act = (m.isEmpty())? Qt::IgnoreAction: Qt::MoveAction;
 	event->setDropAction(act);
 	event->accept();
-	//if (event->mimeData()->hasColor())
-	//	color = qvariant_cast<QColor>(event->mimeData()->colorData());
+
+	int slot1_ix = m.value(QStringLiteral("slotIndex"), -1).toInt();
+	int class1_ix = m.value(QStringLiteral("classIndex"), -1).toInt();
+	auto dt = data();
+	int slot2_ix = dt.startSlotIndex();
+	int class2_ix = dt.startSlotPosition();
+	if(!m_dropInsertsBefore.toBool())
+		class2_ix++;
+	qfDebug() << "DROP class:" << slot1_ix << class1_ix;
+	ganttItem()->moveClassItem(slot1_ix, class1_ix, slot2_ix, class2_ix);
+
+	m_dropInsertsBefore = QVariant();
 	update();
 }
 

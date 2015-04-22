@@ -5,6 +5,8 @@
 
 namespace drawing {
 
+class GanttItem;
+
 class GanttScene : public QGraphicsScene
 {
 	Q_OBJECT
@@ -14,6 +16,7 @@ public:
 	GanttScene(QObject * parent = 0);
 
 	void load();
+	void save();
 
 	int displayUnit() const {return m_displayUnit;}
 	void setDisplayUnit(int display_unit) {m_displayUnit = display_unit;}
@@ -24,6 +27,7 @@ public:
 
 private:
 	int m_displayUnit;
+	GanttItem *m_ganttItem;
 };
 
 }

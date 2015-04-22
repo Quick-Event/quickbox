@@ -18,6 +18,7 @@ namespace drawing {
 
 class GanttScene;
 class StartSlotItem;
+class GanttItem;
 
 class ClassData : public QVariantMap
 {
@@ -69,6 +70,8 @@ protected:
 	int runsAndVacantCount() const;
 	int durationMin() const;
 	QColor color() const;
+	const StartSlotItem* startSlotItem() const;
+	//QPair<int, int> ganttIndex() const;
 private:
 	ClassData m_data;
 	QGraphicsTextItem *m_classText;

@@ -196,11 +196,11 @@ void Dialog::updateLayout()
 	ly_root->setSpacing(0);
 	setLayout(ly_root);
 
-	if(m_menuBar)
-		ly_root->addWidget(m_menuBar);
-
 	if(m_captionFrame)
 		ly_root->addWidget(m_captionFrame);
+
+	if(m_menuBar)
+		ly_root->addWidget(m_menuBar);
 
 	if(m_toolBars.count() == 1) {
 		ToolBar *tb = m_toolBars.first();

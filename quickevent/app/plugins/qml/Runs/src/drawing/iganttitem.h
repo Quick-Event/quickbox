@@ -6,6 +6,7 @@ class QGraphicsItem;
 namespace drawing {
 
 class GanttScene;
+class GanttItem;
 
 class IGanttItem
 {
@@ -18,6 +19,9 @@ public:
 
 	int pxToMin(int px) const;
 	int minToPx(int min) const;
+protected:
+	const GanttItem *ganttItem() const;
+	GanttItem *ganttItem();
 private:
 	QGraphicsItem *m_graphicsItem;
 };

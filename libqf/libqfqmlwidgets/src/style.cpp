@@ -15,7 +15,7 @@ static const char *PROPERTY_STYLE_INSTANCE = "qf::qmlwidget::Style::instance";
 Style::Style(QObject *parent)
 	: QObject(parent)
 {
-	setDefaultIconSize(QSize(22, 22));
+	setDefaultIconSize(QSize(18, 18));
 }
 
 QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)

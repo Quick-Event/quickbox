@@ -50,6 +50,7 @@ void RunsPlugin::onInstalled()
 		{
 			auto *w = new drawing::DrawingGanttWidget;
 			qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
+			//dlg.setButtons(QDialogButtonBox::Save);
 			dlg.setCentralWidget(w);
 			dlg.exec();
 		});

@@ -33,6 +33,11 @@
     <widget class="drawing::GanttView" name="ganttView"/>
    </item>
   </layout>
+  <action name="actSave">
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

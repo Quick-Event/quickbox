@@ -15,9 +15,15 @@ GanttScene::GanttScene(QObject * parent)
 void GanttScene::load()
 {
 	clear();
-	auto *it = new GanttItem();
-	addItem(it);
-	it->load();
+	m_ganttItem = new GanttItem();
+	addItem(m_ganttItem);
+	m_ganttItem->load();
+}
+
+void GanttScene::save()
+{
+	if(m_ganttItem)
+		m_ganttItem->save();
 }
 
 int GanttScene::duToMin(int n) const

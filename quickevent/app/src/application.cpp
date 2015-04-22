@@ -1,7 +1,9 @@
 #include "application.h"
 
-#include <qf/core/log.h>
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
+#include <qf/qmlwidgets/style.h>
+
+#include <qf/core/log.h>
 
 #include <QNetworkProxy>
 #include <QProcessEnvironment>
@@ -9,6 +11,9 @@
 Application::Application(int &argc, char **argv)
 	: Super(argc, argv)
 {
+	auto *style = qf::qmlwidgets::Style::instance();
+	style->setIconPath(":/qf/qmlwidgets/images/flat");
+
 	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 	QString http_proxy = env.value(QStringLiteral("http_proxy"));
 	if(!http_proxy.isEmpty()) {

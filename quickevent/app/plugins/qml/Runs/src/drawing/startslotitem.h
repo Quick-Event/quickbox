@@ -4,13 +4,14 @@
 #include "iganttitem.h"
 
 #include <qf/core/utils.h>
+#include <qf/core/exception.h>
 
 #include <QGraphicsRectItem>
 
 namespace drawing {
 
 class ClassItem;
-class GanttScene;
+class GanttItem;
 
 class StartSlotData : public QVariantMap
 {
@@ -32,18 +33,29 @@ public:
 
 public:
 	ClassItem* addClassItem();
-	int classItemCount();
+	int classItemCount() const;
+	int classItemIndex(const ClassItem *it) const;
 	void insertClassItem(int ix, ClassItem *it);
-	ClassItem* classItemAt(int ix);
+	ClassItem* classItemAt(int ix, bool throw_ex = qf::core::Exception::Throw);
+	ClassItem* takeClassItemAt(int ix);
+
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
 	void updateGeometry();
+	void setClassAreaWidth(int px);
 
 	const StartSlotData& data() const;
 	void setData(const StartSlotData &data);
+
+	void dragEnterEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	void dragMoveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 private:
 	StartSlotData m_data;
 	QList<ClassItem*> m_classItems;
 	QGraphicsTextItem *m_textSlotNo;
+	bool m_dragIn = false;
 };
 
 }
