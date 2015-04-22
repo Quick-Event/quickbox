@@ -34,7 +34,7 @@ void Action::setShortcut(const QString &new_text)
 	}
 }
 
-void Action::addActionInto(Action *action)
+void Action::addActionInto(QAction *action)
 {
 	QMenu *w = menu();
 	QF_ASSERT(w!=nullptr, "bad menu", return);
@@ -44,7 +44,7 @@ void Action::addActionInto(Action *action)
 	w->addAction(action);
 }
 
-void Action::addActionBefore(Action *action)
+void Action::addActionBefore(QAction *action)
 {
 	QWidget *w = parentMenu();
 	QF_ASSERT(w!=nullptr, "bad parent", return);
@@ -53,7 +53,7 @@ void Action::addActionBefore(Action *action)
 	w->insertAction(this, action);
 }
 
-void Action::addActionAfter(Action *new_act)
+void Action::addActionAfter(QAction *new_act)
 {
 	QWidget *parent_w = parentMenu();
 	QF_ASSERT(parent_w!=nullptr, "bad parent", return);
