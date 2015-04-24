@@ -1421,7 +1421,7 @@ void TableView::createActions()
 		a = new Action(tr("Generate sequence in selection"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
 		a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(generateSequenceInSelection()));
+		connect(a, SIGNAL(triggered()), this, SLOT(generateSequenceInSelection()));
 		a->setOid("generateSequenceInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1595,6 +1595,34 @@ void TableView::copySpecial_helper(const QString &fields_separator, const QStrin
 		qfDebug() << "\tSetting clipboard:" << text;
 		QClipboard *clipboard = QApplication::clipboard();
 		clipboard->setText(text);
+	}
+}
+
+void TableView::generateSequenceInSelection()
+{
+	QVariant new_val;
+	QModelIndexList lst = selectedIndexes();
+	/// serad indexy podle radku a pak podle sloupcu
+	typedef QMap<int, QList<int> > SortedIndexes; /// row->cols
+	SortedIndexes sorted_indexes;
+	foreach(const QModelIndex &ix, lst) {
+		sorted_indexes[ix.row()] << ix.column();
+		if(!new_val.isValid()) {
+			new_val = model()->data(ix, Qt::DisplayRole);
+		}
+	}
+	bool ok;
+	QString new_val_str = QInputDialog::getText(this, tr("Enter start value"), tr("start value:"), QLineEdit::Normal, new_val.toString(), &ok);
+	if(!ok) return;
+	int n = new_val_str.toInt();
+	foreach(int row_ix, sorted_indexes.keys()) {
+		QList<int> lst = sorted_indexes.value(row_ix);
+		qSort(lst);
+		foreach(int col_ix, lst) {
+			QModelIndex ix = model()->index(row_ix, col_ix);
+			model()->setData(ix, n++);
+		}
+		if(sorted_indexes.count() > 1) if(!postRow(row_ix)) break;
 	}
 }
 

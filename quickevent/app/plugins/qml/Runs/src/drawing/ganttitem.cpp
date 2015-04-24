@@ -114,7 +114,7 @@ void GanttItem::load()
 			.join("coursecodes.codeId", "codes.id")
 			.joinQuery("classdefs.classId", qb1, "classId")
 			.where("classdefs.stageId=" QF_IARG(stage_id))
-			.orderBy("startSlotIndex, startSlotPosition, firstCode, classdefs.courseId");
+			.orderBy("startSlotIndex, startTimeMin, firstCode, classdefs.courseId");
 	int curr_course_id = -1;
 	int curr_slot_ix = -1;
 	StartSlotItem *slot_item = nullptr;
@@ -170,7 +170,10 @@ void GanttItem::save()
 		eventPlugin()->clearStageDataCache();
 	}
 	{
-		QString qs = "UPDATE classdefs SET startSlotIndex=:startSlotIndex, startSlotPosition=:startSlotPosition WHERE classdefs.id=:id AND stageId=:stageId";
+		QString qs = "UPDATE classdefs SET"
+					 "  startSlotIndex=:startSlotIndex,"
+					 "  startTimeMin=:startTimeMin,"
+					 " WHERE classdefs.id=:id AND stageId=:stageId";
 		qfs::Query q(qfs::Connection::forName());
 		q.prepare(qs, qf::core::Exception::Throw);
 		for (int i = 0; i < startSlotItemCount(); ++i) {
@@ -178,9 +181,10 @@ void GanttItem::save()
 			for (int j = 0; j < slot_it->classItemCount(); ++j) {
 				ClassItem *class_it = slot_it->classItemAt(j);
 				auto dt = class_it->data();
-				qfDebug() << dt.id() << dt.className() << "slot:" << dt.startSlotIndex() << "pos:" << dt.startSlotPosition();
+				qfDebug() << dt.id() << dt.className() << "slot:" << dt.startSlotIndex() << "start time:" << dt.startTimeMin();
 				q.bindValue(":startSlotIndex", dt.startSlotIndex());
-				q.bindValue(":startSlotPosition", dt.startSlotPosition());
+				q.bindValue(":startTimeMin", dt.startTimeMin());
+				//q.bindValue(":isDrawnIn", dt.isDrawnIn());
 				q.bindValue(":id", dt.id());
 				q.bindValue(":stageId", stage_id);
 				q.exec(qf::core::Exception::Throw);

@@ -108,12 +108,14 @@ Schema {
 				Field { name: 'vacantsAfter'; type: Int { } 
 						comment: 'place n vacants gap after last competitor in class start list'
 				},
-				Field { name: 'drawEntered'; type: Boolean { } 
+				Field { name: 'mapCount'; type: Int { } }
+				/*
+				Field { name: 'isDrawnIn'; type: Boolean { } 
 					defaultValue: false
 					notNull: true
-					comment: 'Drawing for this class was processed'
+					comment: 'The draw of this class was processed'
 				},
-				Field { name: 'mapCount'; type: Int { } }
+				*/
 			]
 			indexes: [
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },

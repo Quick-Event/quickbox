@@ -15,7 +15,7 @@ DrawingGanttWidget::DrawingGanttWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::DrawingGanttWidget)
 {
-	setTitle(tr("Drawing tool"));
+	setTitle(tr("Draw tool"));
 	setPersistentSettingsId("DrawingToolWidget");
 	ui->setupUi(this);
 
@@ -37,8 +37,8 @@ void DrawingGanttWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg
 	tb->addAction(ui->actSave);
 
 	auto *menu = dlg->menuBar();
-	auto *a_file = menu->actionForPath("drawing");
-	a_file->setText(tr("&Drawing"));
+	auto *a_file = menu->actionForPath("draw");
+	a_file->setText(tr("&Draw"));
 	a_file->addActionInto(ui->actSave);
 }
 

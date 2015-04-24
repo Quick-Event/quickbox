@@ -154,6 +154,7 @@ protected:
 
 	void setValueInSelection_helper(const QVariant &new_val);
 	void copySpecial_helper(const QString &fields_separator, const QString &rows_separator, const QString &field_quotes, bool replace_escapes);
+	Q_SLOT void generateSequenceInSelection();
 
 	//static const int StandardContextMenuActionsGroups = AllActions & ~(SetValueActions | BlobActions | PasteActions);
 	QList<Action*> standardContextMenuActions() { return contextMenuActionsForGroups(AllActions);}

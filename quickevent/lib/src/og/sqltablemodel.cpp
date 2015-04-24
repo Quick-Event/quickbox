@@ -43,7 +43,10 @@ QVariant SqlTableModel::value(int row_ix, int column_ix) const
 	QVariant ret = Super::value(row_ix, column_ix);
 	int type = columnType(column_ix);
 	if(type == qMetaTypeId<TimeMs>()) {
-		TimeMs t(ret.toInt());
+		TimeMs t;
+		if(!ret.isNull()) {
+			t = TimeMs(ret.toInt());
+		}
 		ret = QVariant::fromValue(t);
 	}
 	return ret;

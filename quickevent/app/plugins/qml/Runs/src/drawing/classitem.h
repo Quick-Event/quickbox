@@ -6,6 +6,7 @@
 #include <qf/core/utils.h>
 
 #include <QGraphicsRectItem>
+#include <QApplication>
 
 namespace qf {
 namespace core {
@@ -22,6 +23,8 @@ class GanttItem;
 
 class ClassData : public QVariantMap
 {
+public:
+	static constexpr int INVALID_START_TIME_SEC = -999999;
 private:
 	typedef QVariantMap Super;
 
@@ -31,7 +34,7 @@ private:
 	QF_VARIANTMAP_FIELD2(QString, c, setC, ourseName, 0)
 	QF_VARIANTMAP_FIELD2(int, c, setC, ourseId, 0)
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartSlotIndex, -1)
-	QF_VARIANTMAP_FIELD2(int, s, setS, tartSlotPosition, -1)
+	QF_VARIANTMAP_FIELD2(int, c, setC, lassIndex, -1) ///< not SQL value, internal usage
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartTimeMin, 0)
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartIntervalMin, 0)
 	QF_VARIANTMAP_FIELD2(int, v, setV, acantsBefore, 0)
@@ -39,15 +42,22 @@ private:
 	QF_VARIANTMAP_FIELD2(int, v, setV, acantsAfter, 0)
 	QF_VARIANTMAP_FIELD2(int, f, setF, irstCode, 0)
 	QF_VARIANTMAP_FIELD2(int, r, setr, unsCount, 0)
-	QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, -999999)
-	QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, -999999)
+	//QF_VARIANTMAP_FIELD2(bool, isD, setD, rawnIn, false) ///< not SQL value, internal usage
+	QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
+	QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)
 public:
 	ClassData(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ClassData(const qf::core::sql::Query &q);
+
+	bool isDrawnIn() const
+	{
+		return !(minStartTimeSec() == INVALID_START_TIME_SEC && maxStartTimeSec() == INVALID_START_TIME_SEC);
+	}
 };
 
 class ClassItem : public QGraphicsRectItem, public IGanttItem
 {
+	Q_DECLARE_TR_FUNCTIONS(drawing::ClassItem)
 private:
 	typedef QGraphicsRectItem Super;
 public:
@@ -57,6 +67,9 @@ public:
 
 	const ClassData& data() const;
 	void setData(const ClassData &data);
+
+	//void setLocked(bool b);
+	bool isLocked() const;
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
@@ -73,11 +86,13 @@ protected:
 	int durationMin() const;
 	QColor color() const;
 	const StartSlotItem* startSlotItem() const;
+	StartSlotItem* startSlotItem();
 	//QPair<int, int> ganttIndex() const;
 private:
 	ClassData m_data;
 	QGraphicsTextItem *m_classText;
 	QGraphicsTextItem *m_courseText;
+	QGraphicsRectItem *m_classdefsLock;
 	QGraphicsTextItem *m_classdefsText;
 	QVariant m_dropInsertsBefore;
 	bool m_classClash = false;

@@ -6,14 +6,23 @@
 
 using namespace quickevent::og;
 
+TimeMs::TimeMs()
+	: m_msec(0), m_isValid(false)
+{
+
+}
+
 TimeMs::TimeMs(int msec)
-	: m_msec(msec)
+	: m_msec(msec), m_isValid(true)
 {
 
 }
 
 QString TimeMs::toString(bool including_msec) const
 {
+	if(!isValid())
+		return QString();
+
 	int msec = m_msec % 1000;
 	int sec = (m_msec / 1000) % 60;
 	int min = m_msec / (1000 * 60);
@@ -47,6 +56,9 @@ static int str2int(const QString &str)
 
 TimeMs TimeMs::fromString(const QString &time_str)
 {
+	if(time_str.isEmpty())
+		return TimeMs();
+
 	int msec = 0;
 	int sec = 0;
 	int min = 0;

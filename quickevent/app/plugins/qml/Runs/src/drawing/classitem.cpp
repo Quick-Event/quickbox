@@ -5,7 +5,6 @@
 
 #include <qf/core/sql/query.h>
 
-#include <QApplication>
 #include <QDrag>
 #include <QJsonDocument>
 #include <QMimeData>
@@ -22,7 +21,7 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 	for(auto s : {"id",
 		"className", "classId",
 		"courseName", "courseId",
-		"startSlotIndex", "startSlotPosition",
+		"startSlotIndex",
 		"startTimeMin", "startIntervalMin",
 		"vacantsBefore", "vacantsBefore", "vacantEvery", "vacantsAfter",
 		"firstCode",
@@ -42,6 +41,65 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 	}
 }
 
+class ClassdefsLockItem : public QGraphicsRectItem
+{
+	Q_DECLARE_TR_FUNCTIONS(drawing::ClassdefsLockItem)
+public:
+	ClassdefsLockItem(ClassItem *parent = 0) : QGraphicsRectItem(parent), m_classItem(parent)
+	{
+		int du_px = m_classItem->ganttScene()->displayUnit();
+		setRect(0, 0, 3 * du_px, 2 * du_px);
+		setToolTip(tr("Lock class start time"));
+	}
+	/*
+	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE
+	{
+		if(event->button() == Qt::LeftButton) {
+			m_classItem->setLocked(!m_classItem->isLocked());
+			update();
+			event->accept();
+		}
+	}
+	*/
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget *widget = 0) Q_DECL_OVERRIDE
+	{
+		Q_UNUSED(option)
+		Q_UNUSED(widget)
+		//QGraphicsRectItem::paint(painter, option, widget);
+		QRectF r = rect();
+		QRectF r1(0, 0, r.width() / 3, r.height() / 2);
+		QRectF r2(0, 0, r.width() * 2 / 3, r.height() / 2);
+		QColor c;
+		if(m_classItem->isLocked()) {
+			r1.moveLeft(r.width() / 3);
+			r2.moveLeft(r.width() / 6);
+			c = Qt::red;
+		}
+		else {
+			r1.moveLeft(r.width() / 2);
+			c = Qt::blue;
+		}
+		r1.moveTop(r.height() / 8);
+		r2.moveTop(r.height() / 2);
+
+		QPen p(Qt::SolidLine);
+		p.setWidthF(r.height() / 8);
+		p.setColor(c);
+		p.setCapStyle(Qt::FlatCap);
+		painter->setPen(p);
+		//painter->fillRect(r1, Qt::yellow);
+		painter->drawArc(r1, 0, 180 * 16);
+		painter->drawLine(r1.bottomLeft(), QPointF(r1.left(), r1.center().y()));
+		painter->drawLine(r1.bottomRight(), QPointF(r1.right(), r1.center().y()));
+
+		double d = p.widthF();
+		r2.adjust(d, 0, -d, 0);
+		painter->fillRect(r2, c);
+	}
+private:
+	ClassItem *m_classItem;
+};
+
 ClassItem::ClassItem(QGraphicsItem *parent)
 	: Super(parent), IGanttItem(this)
 {
@@ -49,8 +107,10 @@ ClassItem::ClassItem(QGraphicsItem *parent)
 	m_classText = new QGraphicsTextItem(this);
 	m_courseText = new QGraphicsTextItem(this);
 	m_courseText->setPos(0, 2 * du_px);
+	m_classdefsLock = new ClassdefsLockItem(this);
+	m_classdefsLock->setPos(0, 4 * du_px);
 	m_classdefsText = new QGraphicsTextItem(this);
-	m_classdefsText->setPos(0, 4 * du_px);
+	m_classdefsText->setPos(m_classdefsLock->rect().width(), 4 * du_px);
 	QRect r;
 	r.setHeight(6 * du_px + du_px/2);
 	setRect(r);
@@ -70,6 +130,19 @@ void ClassItem::setData(const ClassData &data)
 {
 	m_data = data;
 }
+/*
+void ClassItem::setLocked(bool b)
+{
+	auto dt = data();
+	dt.setDrawnIn(b);
+	setData(dt);
+	startSlotItem()->updateGeometry();
+}
+*/
+bool ClassItem::isLocked() const
+{
+	return data().isDrawnIn();
+}
 
 QColor ClassItem::color() const
 {
@@ -82,7 +155,12 @@ QColor ClassItem::color() const
 
 const StartSlotItem *ClassItem::startSlotItem() const
 {
-	const StartSlotItem *ret = dynamic_cast<const StartSlotItem*>(parentItem());
+	return const_cast<ClassItem*>(this)->startSlotItem();
+}
+
+StartSlotItem *ClassItem::startSlotItem()
+{
+	StartSlotItem *ret = dynamic_cast<StartSlotItem*>(parentItem());
 	QF_ASSERT_EX(ret != nullptr, "Bad parent!");
 	return ret;
 }
@@ -155,7 +233,13 @@ int ClassItem::runsAndVacantCount() const
 int ClassItem::durationMin() const
 {
 	auto dt = data();
-	return runsAndVacantCount() * dt.startIntervalMin();
+	if(isLocked()) {
+		// add vacants after to preserve this space for overdue entries
+		return dt.maxStartTimeSec() / 60 + dt.startIntervalMin() + dt.vacantsAfter() * dt.startIntervalMin() - dt.startTimeMin();
+	}
+	else {
+		return runsAndVacantCount() * dt.startIntervalMin();
+	}
 }
 
 void ClassItem::updateGeometry()
@@ -163,29 +247,42 @@ void ClassItem::updateGeometry()
 	ClassData &dt = m_data;
 	//qfLogFuncFrame() << dt.className() << "runners:" << dt.runsCount();
 	QRectF r = rect();
-	int cnt = dt.runsCount();
-	int vacants = (dt.vacantEvery() > 0)? cnt / dt.vacantEvery(): 0;
-	cnt = dt.vacantsBefore() + cnt + vacants + dt.vacantsAfter();
 	r.setWidth(minToPx(durationMin()));
 	setRect(r);
 	//setBrush(color());
-	m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
+	if(isLocked()) {
+		m_classText->setHtml(QString("<b>%1</b> %2").arg(dt.className()).arg(dt.runsCount()));
+	}
+	else {
+		m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
+	}
 	m_courseText->setHtml(QString("<b>%1</b> (%2)").arg(dt.firstCode()).arg(dt.courseId()));
 	dt.setStartTimeMin(pxToMin(pos().x()));
 	m_classdefsText->setPlainText(QString("%1 / %2 <%3, %4>")
 								  .arg(dt.startTimeMin())
 								  .arg(dt.startIntervalMin())
-								  .arg(dt.minStartTimeSec() <= -999999? QString(): QString::number(dt.minStartTimeSec() / 60))
-								  .arg(dt.maxStartTimeSec() <= -999999? QString(): QString::number(dt.maxStartTimeSec() / 60))
+								  .arg((dt.minStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.minStartTimeSec() / 60))
+								  .arg((dt.maxStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.maxStartTimeSec() / 60))
 								  );
 	{
 		QString tool_tip;
 		// HTML tooltip can cause word wrap
 		tool_tip = "<html><body>";
-		tool_tip += QString("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
-		tool_tip += QString("first code <b>%1</b>, course name: %2<br/>").arg(dt.firstCode()).arg(dt.courseName());
-		tool_tip += QString("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
-		tool_tip += QString("start: %1, duration: %2, end: %3").arg(dt.startTimeMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
+		if(isLocked()) {
+			tool_tip += tr("<b>LOCKED</b> because start times exist");
+			tool_tip += tr("class: <b>%1</b>, %2 runners<br/>").arg(dt.className()).arg(dt.runsCount());
+		}
+		else {
+			tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
+		}
+		tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
+		if(isLocked()) {
+			tool_tip += tr("start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
+		}
+		else {
+			tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
+		}
+		tool_tip += tr("start: %1, duration: %2, end: %3").arg(dt.startTimeMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
 		tool_tip += "</body></html>";
 		tool_tip.replace(' ', "&nbsp;");
 		setToolTip(tool_tip);
@@ -193,7 +290,7 @@ void ClassItem::updateGeometry()
 	int slot_ix = ganttItem()->startSlotItemIndex(startSlotItem());
 	int class_ix = startSlotItem()->classItemIndex(this);
 	dt.setStartSlotIndex(slot_ix);
-	dt.setStartSlotPosition(class_ix);
+	dt.setClassIndex(class_ix);
 }
 
 void ClassItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -215,7 +312,7 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		QVariantMap m;
 		auto &dt = data();
 		int slot_ix = dt.startSlotIndex();
-		int class_ix = dt.startSlotPosition();
+		int class_ix = dt.classIndex();
 		m[QStringLiteral("slotIndex")] = slot_ix;
 		m[QStringLiteral("classIndex")] = class_ix;
 		QJsonDocument jsd = QJsonDocument::fromVariant(m);
@@ -298,7 +395,7 @@ void ClassItem::dropEvent(QGraphicsSceneDragDropEvent *event)
 	int class1_ix = m.value(QStringLiteral("classIndex"), -1).toInt();
 	auto dt = data();
 	int slot2_ix = dt.startSlotIndex();
-	int class2_ix = dt.startSlotPosition();
+	int class2_ix = dt.classIndex();
 	if(!m_dropInsertsBefore.toBool())
 		class2_ix++;
 	qfDebug() << "DROP class:" << slot1_ix << class1_ix;

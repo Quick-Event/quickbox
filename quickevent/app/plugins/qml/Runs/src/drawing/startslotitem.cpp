@@ -108,9 +108,12 @@ void StartSlotItem::updateGeometry()
 	for (int i = 0; i < classItemCount(); ++i) {
 		ClassItem *it = classItemAt(i);
 		qfDebug() << i << it;
+		if(it->isLocked()) {
+			pos_x = minToPx(it->data().startTimeMin());
+		}
 		it->setPos(pos_x, 0);
 		it->updateGeometry();
-		it->setZValue(i);
+		it->setZValue(it->isLocked()? 1: 0);
 		pos_x += it->rect().width();
 		h = qMax(h, it->rect().height());
 	}

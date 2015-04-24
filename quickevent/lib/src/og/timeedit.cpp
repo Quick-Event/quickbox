@@ -26,7 +26,7 @@ TimeMs TimeEdit::timeMs() const
 void TimeEdit::setTimeMs(const TimeMs &t)
 {
 	qfLogFuncFrame();
-	if(timeMs().msec() != t.msec()) {
+	if(!(timeMs() == t)) {
 		setText(t.toString());
 		emit timeMsChanged();
 	}
