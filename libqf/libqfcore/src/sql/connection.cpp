@@ -712,7 +712,7 @@ QString Connection::dumpTableSqlCommand(const QString &tblname)
 	return "unsupported for " + driverName();
 }
 
-QSqlIndex Connection::primaryIndex(const QString& table_id)
+QSqlIndex Connection::primaryIndex(const QString& table_id) const
 {
 	qfLogFuncFrame() << "table name:" << table_id;
 	QString tblname = table_id;

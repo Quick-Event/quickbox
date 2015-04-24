@@ -112,6 +112,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 			  return);
 	Super::load(connection, table_id);
 
+	qf::core::sql::Connection conn(connection);
 	qf::core::sql::Query q(connection);
 	q.setForwardOnly(true);
 	//QString s = "SELECT * FROM %1 WHERE 1=2";
@@ -121,7 +122,8 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 	QString full_table_name = table_id;
 	QString table_name, schema_name;
 	qf::core::Utils::parseFieldName(table_id, &table_name, &schema_name);
-
+	if(schema_name.isEmpty())
+		schema_name = conn.currentSchema();
 	QStringList primary_keys;
 	{
 		QSqlIndex sql_ix = connection.primaryIndex(full_table_name);
@@ -142,7 +144,6 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 		fi.setReadOnly(false);
 		fi.setName(full_table_name + "." + short_field_name);
 		fi.setAutoIncrement(fi.isAutoValue());
-		//qfInfo() << "##### FieldInfo:" << fi.toString();
 		if(driver_name.endsWith("PSQL")) {
 			// fill seqname
 			QSqlQuery q1(connection);
@@ -167,7 +168,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 			if(primary_keys.contains(fi.shortName()))
 				fi.setPriKey(true);
 		}
-		//qfDebug() << "NEW FieldInfo:" << fi.toString();
+		//qfInfo() << "#1 FieldInfo:" << fi.toString();
 	}
 	if(driver_name.endsWith("PSQL")) {
 		QString s = "SELECT * FROM information_schema.columns"
@@ -185,6 +186,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 			fi.setDefaultValue(q.value("column_default"));
 			fi.setNullable(q.value("is_nullable").toString().toUpper() == "YES");
 			fi.setNativeType(q.value("data_type").toString());
+			//qfInfo() << "#2 FieldInfo:" << fi.toString();
 			//qfTrash() << "\n" << catalog()->toString();
 		}
 	}

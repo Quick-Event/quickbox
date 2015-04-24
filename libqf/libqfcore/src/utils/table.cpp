@@ -508,7 +508,7 @@ void TableRow::prepareForCopy()
 	//qfInfo() << "is insert;" << isInsert();
 	for(int i=0; i<fields().count(); i++) {
 		Table::Field fld = fields().value(i);
-		if(fld.isSerial()) {
+		if(fld.isPriKey()) {
 			setValue(i, QVariant());
 			setDirty(i, false);
 		}

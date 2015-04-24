@@ -18,6 +18,7 @@ class QFQMLWIDGETS_DECL_EXPORT MessageBox : public QMessageBox
 public:
 	explicit MessageBox(QWidget *parent = 0);
 public:
+	static void showException(QWidget *parent, const QString &what, const QString &where, const QString &stack_trace);
 	static void showException(QWidget *parent, const qf::core::Exception &exc);
 	static void showError(QWidget *parent, const QString &message);
 	static void showInfo(QWidget *parent, const QString &message);

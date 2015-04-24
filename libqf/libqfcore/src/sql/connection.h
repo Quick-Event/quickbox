@@ -57,7 +57,7 @@ public:
 	/// @return list of available schemas in current connection
 	QStringList schemas() const;
 
-	QSqlIndex primaryIndex(const QString& table_id);
+	QSqlIndex primaryIndex(const QString& table_id) const;
 	QStringList primaryIndexFieldNames(const QString &table_id);
 	QString serialFieldName(const QString &table_id);
 

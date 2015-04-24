@@ -76,6 +76,10 @@ TableView::TableView(QWidget *parent) :
 	}
 	m_contextMenuActions = standardContextMenuActions();
 	setContextMenuPolicy(Qt::DefaultContextMenu);
+
+	// queued connection is important since the message box showing the exception, can steal cell editor focus and emit next postRow request,
+	// which can cause second exception in the row
+	connect(this, &TableView::sqlException, this, &TableView::onSqlException, Qt::QueuedConnection);
 }
 
 TableView::~TableView()
@@ -259,7 +263,7 @@ void TableView::insertRow()
 		}
 	}
 	catch(qfc::Exception &e) {
-		dialogs::MessageBox::showException(this, e);
+		emit sqlException(e.message(), e.where(), e.stackTrace());
 	}
 	refreshActions();
 }
@@ -279,7 +283,7 @@ void TableView::cloneRowInline()
 		r2.prepareForCopy();
 	}
 	catch(qfc::Exception &e) {
-		dialogs::MessageBox::showException(this, e);
+		emit sqlException(e.message(), e.where(), e.stackTrace());
 	}
 }
 
@@ -314,7 +318,7 @@ void TableView::removeSelectedRows()
 		}
 	}
 	catch(qfc::Exception &e) {
-		dialogs::MessageBox::showException(this, e);
+		emit sqlException(e.message(), e.where(), e.stackTrace());
 	}
 }
 
@@ -335,7 +339,7 @@ bool TableView::postRow(int row_no)
 		}
 	}
 	catch(qfc::Exception &e) {
-		dialogs::MessageBox::showException(this, e);
+		emit sqlException(e.message(), e.where(), e.stackTrace());
 	}
 	return ret;
 }
@@ -997,6 +1001,13 @@ void TableView::savePersistentSettings()
 	}
 }
 
+void TableView::onSqlException(const QString &what, const QString &where, const QString &stack_trace)
+{
+	if(!isShowExceptionDialog())
+		return;
+	dialogs::MessageBox::showException(this, what, where, stack_trace);
+}
+
 void TableView::keyPressEvent(QKeyEvent *e)
 {
 	qfLogFuncFrame() << "key:" << e->key() << "modifiers:" << e->modifiers();
@@ -1097,14 +1108,14 @@ void TableView::keyPressEvent(QKeyEvent *e)
 	else {
 		cancelSeek();
 	}
-	bool event_should_be_accepted = false;
+	//bool event_should_be_accepted = false;
 	/// nejedna se o inkrementalni vyhledavani, zkusime editaci
 	if(state() == EditingState) {
 		qfDebug() << "\teditor exists";
 		//QModelIndex current = currentIndex();
 		//QModelIndex newCurrent;
 		/// cursor keys moves selection, check editor data before
-		/// some of switched keys shoul be filtered by editor
+		/// some of switched keys should be filtered by editor
 		qfDebug() << "\tHAVE EDITOR key:" << e->key();
 		switch (e->key()) {
 		case Qt::Key_Down:
@@ -1121,16 +1132,10 @@ void TableView::keyPressEvent(QKeyEvent *e)
 		case Qt::Key_Enter:
 			qfDebug() << "accepting event";
 			/// je to trochu jedno, protoze to vypada, ze accept flag, kterej prijde dialogu je ten, jak ho nastavi editor (widget dodany delegatem) ve sve funkci keyPressEvent(...)
-			//e->accept();
-			event_should_be_accepted = true;
-			/*****
-				QFItemDelegate *it = qobject_cast<QFItemDelegate*>(itemDelegate());
-				if(it) {
-					if(!it->canCloseEditor()) return;
-				}
-				*/
+			e->accept();
+			//event_should_be_accepted = true;
 			//qfDebug().color(QFLog::Yellow) << "set focus to table view";
-			setFocus(); /// jinak se mi zavre delegat a focus skoci na jinej widget
+			//setFocus(); /// jinak se mi zavre delegat a focus skoci na jinej widget
 			break;
 		}
 	}
@@ -1157,8 +1162,8 @@ void TableView::keyPressEvent(QKeyEvent *e)
 	QTableView::keyPressEvent(e);
 	/// parent implementace muze zmenit accepted() flag eventu
 	qfDebug() << "\tcalled parent implementation QTableView::keyPressEvent(e), state:" << state() << "event accepted:" << e->isAccepted();
-	if(event_should_be_accepted)
-		e->accept();
+	//if(event_should_be_accepted)
+	//	e->accept();
 }
 
 void TableView::mousePressEvent(QMouseEvent * e)
@@ -1636,20 +1641,11 @@ Action *TableView::action(const QString &act_oid)
 void TableView::currentChanged(const QModelIndex& current, const QModelIndex& previous)
 {
 	qfLogFuncFrame() << "row" << previous.row() << "->" << current.row();
-#if 0
-	//emit currentChanging(current, previous);
-	//qfDebug().color(QFLog::Yellow) << "set focus to table view";
-	if(ignoreCurrentChanged) {
-		/// ignoreCurrentChanged funguje jen jednou, tim zabranim zaseknuti funkce currentChanged() pri spatnem pouziti ignoreCurrentChanged.
-		ignoreCurrentChanged = false;
-		return;
-	}
-	if(isFocusOnCurrentChanged()) setFocus(); /// pokud nekdo neco resi s widgety jako reakci na signal currentChanging(), muze prijit o fokus a prestane chodit kurzorova navigace
-#endif
 	setFocus(); /// pokud nekdo neco resi s widgety jako reakci na signal currentChanging(), muze prijit o fokus a prestane chodit kurzorova navigace
 	Super::currentChanged(current, previous);
 	bool row_changed = (current.row() != previous.row() && previous.row() >= 0);
-	if(inlineEditStrategy() == OnCurrentRowChange && row_changed) {
+	if(row_changed) {
+		// save even if inlineEditStrategy() == OnEditedValueCommit, because row can be just inserted or clonned without edits
 		int row_to_save = (row_changed)? previous.row(): current.row();
 		qfDebug() << "\tsaving row:" << row_to_save;
 		bool ok = false;
@@ -1809,7 +1805,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 			}
 		}
 		catch(qfc::Exception &e) {
-			dialogs::MessageBox::showException(this, e);
+			emit sqlException(e.message(), e.where(), e.stackTrace());
 		}
 	} while(false);
 

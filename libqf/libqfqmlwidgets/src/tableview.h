@@ -32,6 +32,7 @@ class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::
 	Q_PROPERTY(RowEditorMode rowEditorMode READ rowEditorMode WRITE setRowEditorMode NOTIFY rowEditorModeChanged)
 	Q_PROPERTY(InlineEditStrategy inlineEditStrategy READ inlineEditStrategy WRITE setInlineEditStrategy NOTIFY inlineEditStrategyChanged)
 	Q_PROPERTY(QString idColumnName READ idColumnName WRITE setIdColumnName)
+	Q_PROPERTY(bool showExceptionDialog READ isShowExceptionDialog WRITE setShowExceptionDialog NOTIFY showExceptionDialogChanged)
 private:
 	typedef QTableView Super;
 public:
@@ -62,6 +63,7 @@ public:
 	QF_PROPERTY_IMPL2(InlineEditStrategy, i, I, nlineEditStrategy, OnEditedValueCommit)
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
+	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)
 public:
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);
@@ -134,6 +136,9 @@ private:
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 protected:
+	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
+	Q_SLOT virtual void onSqlException(const QString &what, const QString &where, const QString &stack_trace);
+
 	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent *e) Q_DECL_OVERRIDE;
