@@ -97,10 +97,6 @@ Schema {
 					defaultValue: -1;
 					notNull: true
 	 			},
-				Field { name: 'startSlotPosition'; type: Int { }
-					defaultValue: -1;
-					notNull: true
-				},
 				Field { name: 'startTimeMin'; type: Int { } },
 				Field { name: 'startIntervalMin'; type: Int { } },
 				Field { name: 'vacantsBefore'; type: Int { } 
@@ -112,7 +108,11 @@ Schema {
 				Field { name: 'vacantsAfter'; type: Int { } 
 						comment: 'place n vacants gap after last competitor in class start list'
 				},
-				//Field { name: 'lastTimeMin'; type: Int { } },
+				Field { name: 'drawEntered'; type: Boolean { } 
+					defaultValue: false
+					notNull: true
+					comment: 'Drawing for this class was processed'
+				},
 				Field { name: 'mapCount'; type: Int { } }
 			]
 			indexes: [
