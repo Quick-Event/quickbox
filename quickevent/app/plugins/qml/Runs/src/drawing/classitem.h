@@ -39,6 +39,8 @@ private:
 	QF_VARIANTMAP_FIELD2(int, v, setV, acantsAfter, 0)
 	QF_VARIANTMAP_FIELD2(int, f, setF, irstCode, 0)
 	QF_VARIANTMAP_FIELD2(int, r, setr, unsCount, 0)
+	QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, -999999)
+	QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, -999999)
 public:
 	ClassData(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ClassData(const qf::core::sql::Query &q);

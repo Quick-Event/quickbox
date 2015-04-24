@@ -93,23 +93,26 @@ void GanttItem::load()
 
 	qfs::Query q(qfs::Connection::forName());
 	qf::core::sql::QueryBuilder qb1;
-	qb1.select("COUNT(*)")
-			.from("runs")
-			.join("runs.competitorId", "competitors.id")
-			.where("competitors.classId=classdefs.classId")
-			.where("NOT runs.offRace")
-			.where("runs.stageId=" QF_IARG(stage_id));
+	qb1.select("competitors.classId")
+			.select("COUNT(*) AS runsCount")
+			.select("MIN(runs.startTimeMs) AS minStartTime")
+			.select("MAX(runs.startTimeMs) AS maxStartTime")
+			.from("competitors")
+			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id))
+			.groupBy("competitors.classId")
+			.as("classruns");
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("classdefs", "*")
 			.select2("classes", "name AS className")
 			.select2("courses", "name AS courseName")
 			.select2("codes", "code AS firstCode")
-			.select("(" + qb1.toString() + ") AS runsCount")
+			.select2("classruns", "runsCount, minStartTime, maxStartTime")
 			.from("classdefs")
 			.join("classdefs.classId", "classes.id")
 			.join("classdefs.courseId", "courses.id")
 			.joinRestricted("classdefs.courseId", "coursecodes.courseId", "coursecodes.position=1")
 			.join("coursecodes.codeId", "codes.id")
+			.joinQuery("classdefs.classId", qb1, "classId")
 			.where("classdefs.stageId=" QF_IARG(stage_id))
 			.orderBy("startSlotIndex, startSlotPosition, firstCode, classdefs.courseId");
 	int curr_course_id = -1;

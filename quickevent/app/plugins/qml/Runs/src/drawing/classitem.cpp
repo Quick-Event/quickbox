@@ -26,8 +26,19 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 		"startTimeMin", "startIntervalMin",
 		"vacantsBefore", "vacantsBefore", "vacantEvery", "vacantsAfter",
 		"firstCode",
-		"runsCount"}) {
+		"runsCount"})
+	{
 		insert(s, q.value(s));
+	}
+	{
+		QVariant v = q.value("minStartTime");
+		if(!v.isNull())
+			setMinStartTimeSec(v.toInt() / 1000);
+	}
+	{
+		QVariant v = q.value("maxStartTime");
+		if(!v.isNull())
+			setMaxStartTimeSec(v.toInt() / 1000);
 	}
 }
 
@@ -161,7 +172,12 @@ void ClassItem::updateGeometry()
 	m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
 	m_courseText->setHtml(QString("<b>%1</b> (%2)").arg(dt.firstCode()).arg(dt.courseId()));
 	dt.setStartTimeMin(pxToMin(pos().x()));
-	m_classdefsText->setPlainText(QString("%1 / %2").arg(dt.startTimeMin()).arg(dt.startIntervalMin()));
+	m_classdefsText->setPlainText(QString("%1 / %2 <%3, %4>")
+								  .arg(dt.startTimeMin())
+								  .arg(dt.startIntervalMin())
+								  .arg(dt.minStartTimeSec() <= -999999? QString(): QString::number(dt.minStartTimeSec() / 60))
+								  .arg(dt.maxStartTimeSec() <= -999999? QString(): QString::number(dt.maxStartTimeSec() / 60))
+								  );
 	{
 		QString tool_tip;
 		// HTML tooltip can cause word wrap
