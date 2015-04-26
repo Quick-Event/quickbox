@@ -70,6 +70,19 @@ int StartSlotItem::startOffset()
 	return dt.startOffset();
 }
 
+void StartSlotItem::setLocked(bool b)
+{
+	auto dt = data();
+	dt.setLocked(b);
+	setData(dt);
+	updateGeometry();
+}
+
+bool StartSlotItem::isLocked() const
+{
+	return data().isLocked();
+}
+
 void StartSlotItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	if(m_dragIn) {
@@ -108,12 +121,12 @@ void StartSlotItem::updateGeometry()
 	for (int i = 0; i < classItemCount(); ++i) {
 		ClassItem *it = classItemAt(i);
 		qfDebug() << i << it;
-		if(it->isLocked()) {
+		if(isLocked()) {
 			pos_x = minToPx(it->data().startTimeMin());
 		}
 		it->setPos(pos_x, 0);
 		it->updateGeometry();
-		it->setZValue(it->isLocked()? 1: 0);
+		//it->setZValue(it->isLocked()? 1: 0);
 		pos_x += it->rect().width();
 		h = qMax(h, it->rect().height());
 	}

@@ -41,65 +41,6 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 	}
 }
 
-class ClassdefsLockItem : public QGraphicsRectItem
-{
-	Q_DECLARE_TR_FUNCTIONS(drawing::ClassdefsLockItem)
-public:
-	ClassdefsLockItem(ClassItem *parent = 0) : QGraphicsRectItem(parent), m_classItem(parent)
-	{
-		int du_px = m_classItem->ganttScene()->displayUnit();
-		setRect(0, 0, 3 * du_px, 2 * du_px);
-		setToolTip(tr("Lock class start time"));
-	}
-	/*
-	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE
-	{
-		if(event->button() == Qt::LeftButton) {
-			m_classItem->setLocked(!m_classItem->isLocked());
-			update();
-			event->accept();
-		}
-	}
-	*/
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget *widget = 0) Q_DECL_OVERRIDE
-	{
-		Q_UNUSED(option)
-		Q_UNUSED(widget)
-		//QGraphicsRectItem::paint(painter, option, widget);
-		QRectF r = rect();
-		QRectF r1(0, 0, r.width() / 3, r.height() / 2);
-		QRectF r2(0, 0, r.width() * 2 / 3, r.height() / 2);
-		QColor c;
-		if(m_classItem->isLocked()) {
-			r1.moveLeft(r.width() / 3);
-			r2.moveLeft(r.width() / 6);
-			c = Qt::red;
-		}
-		else {
-			r1.moveLeft(r.width() / 2);
-			c = Qt::blue;
-		}
-		r1.moveTop(r.height() / 8);
-		r2.moveTop(r.height() / 2);
-
-		QPen p(Qt::SolidLine);
-		p.setWidthF(r.height() / 8);
-		p.setColor(c);
-		p.setCapStyle(Qt::FlatCap);
-		painter->setPen(p);
-		//painter->fillRect(r1, Qt::yellow);
-		painter->drawArc(r1, 0, 180 * 16);
-		painter->drawLine(r1.bottomLeft(), QPointF(r1.left(), r1.center().y()));
-		painter->drawLine(r1.bottomRight(), QPointF(r1.right(), r1.center().y()));
-
-		double d = p.widthF();
-		r2.adjust(d, 0, -d, 0);
-		painter->fillRect(r2, c);
-	}
-private:
-	ClassItem *m_classItem;
-};
-
 ClassItem::ClassItem(QGraphicsItem *parent)
 	: Super(parent), IGanttItem(this)
 {
@@ -107,10 +48,8 @@ ClassItem::ClassItem(QGraphicsItem *parent)
 	m_classText = new QGraphicsTextItem(this);
 	m_courseText = new QGraphicsTextItem(this);
 	m_courseText->setPos(0, 2 * du_px);
-	m_classdefsLock = new ClassdefsLockItem(this);
-	m_classdefsLock->setPos(0, 4 * du_px);
 	m_classdefsText = new QGraphicsTextItem(this);
-	m_classdefsText->setPos(m_classdefsLock->rect().width(), 4 * du_px);
+	m_classdefsText->setPos(0, 4 * du_px);
 	QRect r;
 	r.setHeight(6 * du_px + du_px/2);
 	setRect(r);
@@ -129,19 +68,6 @@ const ClassData &ClassItem::data() const
 void ClassItem::setData(const ClassData &data)
 {
 	m_data = data;
-}
-/*
-void ClassItem::setLocked(bool b)
-{
-	auto dt = data();
-	dt.setDrawnIn(b);
-	setData(dt);
-	startSlotItem()->updateGeometry();
-}
-*/
-bool ClassItem::isLocked() const
-{
-	return data().isDrawnIn();
 }
 
 QColor ClassItem::color() const
@@ -233,13 +159,7 @@ int ClassItem::runsAndVacantCount() const
 int ClassItem::durationMin() const
 {
 	auto dt = data();
-	if(isLocked()) {
-		// add vacants after to preserve this space for overdue entries
-		return dt.maxStartTimeSec() / 60 + dt.startIntervalMin() + dt.vacantsAfter() * dt.startIntervalMin() - dt.startTimeMin();
-	}
-	else {
-		return runsAndVacantCount() * dt.startIntervalMin();
-	}
+	return runsAndVacantCount() * dt.startIntervalMin();
 }
 
 void ClassItem::updateGeometry()
@@ -250,12 +170,7 @@ void ClassItem::updateGeometry()
 	r.setWidth(minToPx(durationMin()));
 	setRect(r);
 	//setBrush(color());
-	if(isLocked()) {
-		m_classText->setHtml(QString("<b>%1</b> %2").arg(dt.className()).arg(dt.runsCount()));
-	}
-	else {
-		m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
-	}
+	m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
 	m_courseText->setHtml(QString("<b>%1</b> (%2)").arg(dt.firstCode()).arg(dt.courseId()));
 	dt.setStartTimeMin(pxToMin(pos().x()));
 	m_classdefsText->setPlainText(QString("%1 / %2 <%3, %4>")
@@ -268,21 +183,11 @@ void ClassItem::updateGeometry()
 		QString tool_tip;
 		// HTML tooltip can cause word wrap
 		tool_tip = "<html><body>";
-		if(isLocked()) {
-			tool_tip += tr("<b>LOCKED</b> because start times exist");
-			tool_tip += tr("class: <b>%1</b>, %2 runners<br/>").arg(dt.className()).arg(dt.runsCount());
-		}
-		else {
-			tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
-		}
+		tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
 		tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
-		if(isLocked()) {
-			tool_tip += tr("start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
-		}
-		else {
-			tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
-		}
-		tool_tip += tr("start: %1, duration: %2, end: %3").arg(dt.startTimeMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
+		tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
+		tool_tip += tr("class start: %1, duration: %2, end: %3").arg(dt.startTimeMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
+		tool_tip += tr("competitors start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
 		tool_tip += "</body></html>";
 		tool_tip.replace(' ', "&nbsp;");
 		setToolTip(tool_tip);

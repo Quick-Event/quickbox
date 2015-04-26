@@ -68,9 +68,6 @@ public:
 	const ClassData& data() const;
 	void setData(const ClassData &data);
 
-	//void setLocked(bool b);
-	bool isLocked() const;
-
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
@@ -92,7 +89,6 @@ private:
 	ClassData m_data;
 	QGraphicsTextItem *m_classText;
 	QGraphicsTextItem *m_courseText;
-	QGraphicsRectItem *m_classdefsLock;
 	QGraphicsTextItem *m_classdefsText;
 	QVariant m_dropInsertsBefore;
 	bool m_classClash = false;

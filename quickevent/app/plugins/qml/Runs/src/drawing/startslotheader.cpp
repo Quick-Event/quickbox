@@ -16,6 +16,65 @@
 
 using namespace drawing;
 
+class LockItem : public QGraphicsRectItem
+{
+	Q_DECLARE_TR_FUNCTIONS(drawing::ClassdefsLockItem)
+public:
+	LockItem(StartSlotHeader *parent = 0) : QGraphicsRectItem(parent), m_startSlotItem(parent->startSlotItem())
+	{
+		int du_px = m_startSlotItem->ganttScene()->displayUnit();
+		setRect(0, 0, 3 * du_px, 2 * du_px);
+		setToolTip(tr("Lock class start time"));
+	}
+
+	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE
+	{
+		if(event->button() == Qt::LeftButton) {
+			m_startSlotItem->setLocked(!m_startSlotItem->isLocked());
+			update();
+			event->accept();
+		}
+	}
+
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem * option, QWidget *widget = 0) Q_DECL_OVERRIDE
+	{
+		Q_UNUSED(option)
+		Q_UNUSED(widget)
+		//QGraphicsRectItem::paint(painter, option, widget);
+		QRectF r = rect();
+		QRectF r1(0, 0, r.width() / 3, r.height() / 2);
+		QRectF r2(0, 0, r.width() * 2 / 3, r.height() / 2);
+		QColor c;
+		if(m_startSlotItem->isLocked()) {
+			r1.moveLeft(r.width() / 3);
+			r2.moveLeft(r.width() / 6);
+			c = Qt::red;
+		}
+		else {
+			r1.moveLeft(r.width() / 2);
+			c = Qt::blue;
+		}
+		r1.moveTop(r.height() / 8);
+		r2.moveTop(r.height() / 2);
+
+		QPen p(Qt::SolidLine);
+		p.setWidthF(r.height() / 8);
+		p.setColor(c);
+		p.setCapStyle(Qt::FlatCap);
+		painter->setPen(p);
+		//painter->fillRect(r1, Qt::yellow);
+		painter->drawArc(r1, 0, 180 * 16);
+		painter->drawLine(r1.bottomLeft(), QPointF(r1.left(), r1.center().y()));
+		painter->drawLine(r1.bottomRight(), QPointF(r1.right(), r1.center().y()));
+
+		double d = p.widthF();
+		r2.adjust(d, 0, -d, 0);
+		painter->fillRect(r2, c);
+	}
+private:
+	StartSlotItem *m_startSlotItem;
+};
+
 class StartOffsetTextItem : public QGraphicsTextItem
 {
 	Q_DECLARE_TR_FUNCTIONS(drawing::StartSlotHeader)
@@ -39,13 +98,15 @@ private:
 	StartSlotHeader *m_header;
 };
 
-StartSlotHeader::StartSlotHeader(QGraphicsItem *parent)
+StartSlotHeader::StartSlotHeader(StartSlotItem *parent)
 	: Super(parent), IGanttItem(this)
 {
 	int du_px = ganttScene()->displayUnit();
 	m_textSlotNo = new QGraphicsTextItem(this);
+	m_lockItem = new LockItem(this);
+	m_lockItem->setPos(0, 2 * du_px);
 	m_textStartOffset = new StartOffsetTextItem(this);
-	m_textStartOffset->setPos(0, 2 * du_px);
+	m_textStartOffset->setPos(m_lockItem->rect().width(), 2 * du_px);
 
 	setCursor(Qt::ArrowCursor);
 	setAcceptDrops(true);
@@ -57,7 +118,7 @@ int StartSlotHeader::minHeight()
 	return 5 * du_px;
 }
 
-static constexpr int LABEL_WIDTH_DU = 5;
+static constexpr int LABEL_WIDTH_DU = 6;
 
 void StartSlotHeader::updateGeometry()
 {
@@ -129,8 +190,8 @@ void StartSlotHeader::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		update();
 	}
 	else if(a == a_locked) {
-		dt.setLocked(a_locked->isChecked());
-		startSlotItem()->setData(dt);
+		startSlotItem()->setLocked(!startSlotItem()->isLocked());
+		update();
 	}
 }
 

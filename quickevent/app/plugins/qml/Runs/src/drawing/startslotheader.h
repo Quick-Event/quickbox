@@ -16,7 +16,7 @@ class StartSlotHeader : public QGraphicsRectItem, public IGanttItem
 private:
 	typedef QGraphicsRectItem Super;
 public:
-	StartSlotHeader(QGraphicsItem * parent = 0);
+	StartSlotHeader(StartSlotItem *parent = 0);
 
 	StartSlotItem* startSlotItem();
 	int minHeight();
@@ -36,6 +36,7 @@ protected:
 	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 private:
 	QGraphicsTextItem *m_textSlotNo;
+	QGraphicsRectItem *m_lockItem;
 	QGraphicsTextItem *m_textStartOffset;
 	bool m_dragIn = false;
 };

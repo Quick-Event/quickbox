@@ -44,6 +44,9 @@ public:
 	void setStartOffset(int start_offset);
 	int startOffset();
 
+	void setLocked(bool b);
+	bool isLocked() const;
+
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
 
 	void updateGeometry();
