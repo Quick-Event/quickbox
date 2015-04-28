@@ -110,6 +110,7 @@ const StartSlotData& StartSlotItem::data() const
 void StartSlotItem::setData(const StartSlotData &data)
 {
 	m_data = data;
+
 }
 
 void StartSlotItem::updateGeometry()
@@ -136,6 +137,12 @@ void StartSlotItem::updateGeometry()
 	//qfInfo() << r.left() << r.top() << r.width() << r.height();
 	setRect(r);
 	m_header->updateGeometry();
+
+	setAcceptDrops(!isLocked());
+	for (int i = 0; i < classItemCount(); ++i) {
+		ClassItem *it = classItemAt(i);
+		it->setAcceptDrops(!isLocked());
+	}
 }
 
 void StartSlotItem::setClassAreaWidth(int px)

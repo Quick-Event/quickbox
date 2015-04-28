@@ -172,7 +172,7 @@ void GanttItem::save()
 	{
 		QString qs = "UPDATE classdefs SET"
 					 "  startSlotIndex=:startSlotIndex,"
-					 "  startTimeMin=:startTimeMin,"
+					 "  startTimeMin=:startTimeMin"
 					 " WHERE classdefs.id=:id AND stageId=:stageId";
 		qfs::Query q(qfs::Connection::forName());
 		q.prepare(qs, qf::core::Exception::Throw);

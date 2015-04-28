@@ -41,11 +41,11 @@ void RunsPlugin::onInstalled()
 
 	emit nativeInstalled();
 
-	auto *a_drawing = m_partWidget->menuBar()->actionForPath("drawing");
-	a_drawing->setText("&Drawing");
+	auto *a_draw = m_partWidget->menuBar()->actionForPath("drawing");
+	a_draw->setText("&Draw");
 	{
 		qfw::Action *a = new qfw::Action("Classes layout");
-		a_drawing->addActionInto(a);
+		a_draw->addActionInto(a);
 		connect(a, &qfw::Action::triggered, [this]()
 		{
 			auto *w = new drawing::DrawingGanttWidget;
@@ -58,7 +58,7 @@ void RunsPlugin::onInstalled()
 	{
 		qfw::Action *a = new qfw::Action("Draw current class");
 		//a->setShortcut("ctrl+shift+R");
-		a_drawing->addActionInto(a);
+		a_draw->addActionInto(a);
 		//connect(a, &qfw::Action::triggered, this, &RunsPlugin::setRegistrationsDockVisible);
 	}
 }
