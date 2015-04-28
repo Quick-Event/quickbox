@@ -142,6 +142,7 @@ void GanttItem::load()
 		class_it->setData(cd);
 	}
 	updateGeometry();
+	checkClassClash();
 }
 
 void GanttItem::save()
@@ -224,6 +225,33 @@ void GanttItem::updateGeometry()
 	setRect(r);
 }
 
+void GanttItem::checkClassClash()
+{
+	for (int i = 0; i < startSlotItemCount(); ++i) {
+		StartSlotItem *slot_it = startSlotItemAt(i);
+		for (int j = 0; j < slot_it->classItemCount(); ++j) {
+			ClassItem *class_it = slot_it->classItemAt(j);
+			class_it->setClashingClasses(QList<ClassItem*>());
+		}
+	}
+	for (int i = 0; i < startSlotItemCount(); ++i) {
+		StartSlotItem *slot_it = startSlotItemAt(i);
+		if(slot_it->data().isIgnoreClassClashCheck())
+			continue;
+		for (int j = 0; j < slot_it->classItemCount(); ++j) {
+			ClassItem *class_it = slot_it->classItemAt(j);
+			QList<ClassItem*> clash_list = class_it->findClashes();
+			if(clash_list.count()) {
+				class_it->setClashingClasses(clash_list);
+				for(auto *cl : clash_list) {
+					cl->setClashingClasses(QList<ClassItem*>() << class_it);
+				}
+				return;
+			}
+		}
+	}
+}
+
 void GanttItem::moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_ix, int to_class_ix)
 {
 	if(from_slot_ix == to_slot_ix && (from_class_ix == to_class_ix || to_class_ix == from_class_ix + 1))
@@ -235,6 +263,7 @@ void GanttItem::moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_i
 	auto *slot2 = startSlotItemAt(to_slot_ix);
 	slot2->insertClassItem(to_class_ix, class_it);
 	updateGeometry();
+	checkClassClash();
 }
 
 void GanttItem::moveStartSlotItem(int from_slot_ix, int to_slot_ix)
@@ -247,6 +276,7 @@ void GanttItem::moveStartSlotItem(int from_slot_ix, int to_slot_ix)
 			to_slot_ix--;
 		insertStartSlotItem(to_slot_ix, slot);
 		updateGeometry();
+		checkClassClash();
 	}
 }
 

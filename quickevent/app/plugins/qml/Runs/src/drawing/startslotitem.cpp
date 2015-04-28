@@ -61,6 +61,7 @@ void StartSlotItem::setStartOffset(int start_offset)
 		dt.setStartOffset(start_offset);
 		setData(dt);
 		updateGeometry();
+		ganttItem()->checkClassClash();
 	}
 }
 
@@ -76,6 +77,7 @@ void StartSlotItem::setLocked(bool b)
 	dt.setLocked(b);
 	setData(dt);
 	updateGeometry();
+	ganttItem()->checkClassClash();
 }
 
 bool StartSlotItem::isLocked() const

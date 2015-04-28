@@ -236,7 +236,9 @@ void StartSlotHeader::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		paint(&painter, &opt, 0);
 		{
 			m_textSlotNo->paint(&painter, &opt, 0);
-			painter.translate(m_textStartOffset->pos());
+			painter.translate(m_lockItem->pos());
+			m_lockItem->paint(&painter, &opt, 0);
+			painter.translate(m_textStartOffset->pos().x(), 0);
 			m_textStartOffset->paint(&painter, &opt, 0);
 		}
 		painter.end();

@@ -38,6 +38,7 @@ public:
 	void save();
 
 	void updateGeometry();
+	void checkClassClash();
 
 	void moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_ix, int to_class_ix);
 	void moveStartSlotItem(int from_slot_ix, int to_slot_ix);

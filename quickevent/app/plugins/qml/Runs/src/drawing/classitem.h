@@ -61,9 +61,16 @@ class ClassItem : public QGraphicsRectItem, public IGanttItem
 private:
 	typedef QGraphicsRectItem Super;
 public:
+	enum class ClashType {None, CourseOverlap, RunnersOverlap};
+public:
 	ClassItem(QGraphicsItem * parent = 0);
 
 	void updateGeometry();
+	void updateToolTip();
+	QList<ClassItem*> findClashes();
+	ClashType clashWith(ClassItem *other);
+	QList<ClassItem *> clashingClasses() const;
+	void setClashingClasses(const QList<ClassItem *> &clashing_classes);
 
 	const ClassData& data() const;
 	void setData(const ClassData &data);
@@ -78,6 +85,7 @@ public:
 	void dragMoveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
+
 protected:
 	int runsAndVacantCount() const;
 	int durationMin() const;
@@ -91,7 +99,7 @@ private:
 	QGraphicsTextItem *m_courseText;
 	QGraphicsTextItem *m_classdefsText;
 	QVariant m_dropInsertsBefore;
-	bool m_classClash = false;
+	QList<ClassItem*> m_clashingClasses;
 };
 
 }

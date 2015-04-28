@@ -21,13 +21,18 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 	for(auto s : {"id",
 		"className", "classId",
 		"courseName", "courseId",
-		"startSlotIndex",
+		//"startSlotIndex",
 		"startTimeMin", "startIntervalMin",
 		"vacantsBefore", "vacantsBefore", "vacantEvery", "vacantsAfter",
 		"firstCode",
 		"runsCount"})
 	{
 		insert(s, q.value(s));
+	}
+	{
+		QVariant v = q.value("startSlotIndex");
+		if(!v.isNull())
+			setStartSlotIndex(v.toInt());
 	}
 	{
 		QVariant v = q.value("minStartTime");
@@ -90,6 +95,18 @@ StartSlotItem *ClassItem::startSlotItem()
 	QF_ASSERT_EX(ret != nullptr, "Bad parent!");
 	return ret;
 }
+QList<ClassItem *> ClassItem::clashingClasses() const
+{
+	return m_clashingClasses;
+}
+
+void ClassItem::setClashingClasses(const QList<ClassItem *> &clashing_classes)
+{
+	m_clashingClasses = clashing_classes;
+	updateToolTip();
+	update();
+}
+
 /*
 QPair<int, int> ClassItem::ganttIndex() const
 {
@@ -117,7 +134,7 @@ void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		painter->fillRect(r1, c_runner);
 		painter->drawRect(r1);
 	}
-	if(m_classClash) {
+	if(clashingClasses().count()) {
 		painter->save();
 		qreal w = r.height() / 15;
 		QPen p;
@@ -179,23 +196,88 @@ void ClassItem::updateGeometry()
 								  .arg((dt.minStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.minStartTimeSec() / 60))
 								  .arg((dt.maxStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.maxStartTimeSec() / 60))
 								  );
-	{
-		QString tool_tip;
-		// HTML tooltip can cause word wrap
-		tool_tip = "<html><body>";
-		tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
-		tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
-		tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
-		tool_tip += tr("class start: %1, duration: %2, end: %3").arg(dt.startTimeMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
-		tool_tip += tr("competitors start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
-		tool_tip += "</body></html>";
-		tool_tip.replace(' ', "&nbsp;");
-		setToolTip(tool_tip);
-	}
 	int slot_ix = ganttItem()->startSlotItemIndex(startSlotItem());
 	int class_ix = startSlotItem()->classItemIndex(this);
 	dt.setStartSlotIndex(slot_ix);
 	dt.setClassIndex(class_ix);
+	updateToolTip();
+}
+
+void ClassItem::updateToolTip()
+{
+	auto dt = data();
+	QString tool_tip;
+	// HTML tooltip can cause word wrap
+	tool_tip = "<html><body>";
+	tool_tip += tr("class: <b>%1</b>, %2 runners + %3 vacants<br/>").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount());
+	tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
+	tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
+	tool_tip += tr("class start: %1, interval: %2, duration: %3, end: %4<br/>").arg(dt.startTimeMin()).arg(dt.startIntervalMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
+	if(dt.minStartTimeSec() != ClassData::INVALID_START_TIME_SEC || dt.maxStartTimeSec() != ClassData::INVALID_START_TIME_SEC) {
+		tool_tip += tr("competitors start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
+	}
+	auto clst = clashingClasses();
+	if(clst.count()) {
+		QStringList sl;
+		for(auto *cl : clst) {
+			sl << cl->data().className();
+		}
+		tool_tip += tr("clash with: %1<br/>").arg(sl.join(", "));
+	}
+	tool_tip += "</body></html>";
+	tool_tip.replace(' ', "&nbsp;");
+	setToolTip(tool_tip);
+}
+
+QList<ClassItem *> ClassItem::findClashes()
+{
+	QList<ClassItem*> ret;
+	auto *git = ganttItem();
+	for (int i = 0; i < git->startSlotItemCount(); ++i) {
+		StartSlotItem *slot_it = git->startSlotItemAt(i);
+		if(slot_it->data().isIgnoreClassClashCheck())
+			continue;
+		for (int j = 0; j < slot_it->classItemCount(); ++j) {
+			ClassItem *class_it = slot_it->classItemAt(j);
+			if(class_it == this)
+				continue;
+			if(this->clashWith(class_it) != ClashType::None)
+				ret << class_it;
+		}
+	}
+	return ret;
+}
+
+ClassItem::ClashType ClassItem::clashWith(ClassItem *other)
+{
+	qfLogFuncFrame() << data().className() << "vs" << other->data().className();
+	auto dt = data();
+	auto odt = other->data();
+	int t1 = dt.startTimeMin();
+	int t2 = t1 + durationMin();
+	int ot1 = odt.startTimeMin();
+	int ot2 = ot1 + other->durationMin();
+	if(ot1 < t2 && ot2 > t1) {
+		// overlap
+		if(dt.courseId() == odt.courseId()) {
+			qfDebug() << "\t ret: CourseOverlap";
+			return ClashType::CourseOverlap;
+		}
+		if(dt.firstCode() == odt.firstCode()) {
+			if(dt.startIntervalMin() > 0 && odt.startIntervalMin() > 0) {
+				if(dt.startIntervalMin() != odt.startIntervalMin()) {
+					qfDebug() << "\t ret: 1RunnersOverlap";
+					return ClashType::RunnersOverlap;
+				}
+				if((dt.startTimeMin() % dt.startIntervalMin()) == (odt.startTimeMin() % odt.startIntervalMin())) {
+					qfDebug() << "\t ret: 2RunnersOverlap";
+					return ClashType::RunnersOverlap;
+				}
+			}
+		}
+	}
+	qfDebug() << "\t ret: NONE";
+	return ClashType::None;
 }
 
 void ClassItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
