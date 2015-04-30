@@ -556,8 +556,7 @@ bool DbFsDriver::checkDbFs()
 {
 	qfLogFuncFrame();
 	Connection conn = connection();
-	Query q(conn);
-	bool ok = q.exec("SELECT COUNT(*) FROM " + tableName());
+	bool ok = conn.tableExists(tableName());
 	return ok;
 }
 
@@ -568,8 +567,7 @@ bool DbFsDriver::createDbFs()
 	Connection conn = connection();
 	do {
 		Query q(conn);
-		init_ok = q.exec("SELECT COUNT(*) FROM " + tableName());
-		if(init_ok) {
+		if(conn.tableExists(tableName())) {
 			qfWarning() << "Cannot create DBFS, table" << tableName() << "exists already!";
 			return false;
 		}

@@ -93,7 +93,7 @@ Connection Connection::forName(const QString &connection_name)
 int Connection::connectionId()
 {
 	QString driver_name = driverName();
-	if(driver_name.endsWith("PSQL")) {
+	if(driver_name.endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		if(q.exec("SELECT pg_backend_pid()")) {
 			if(q.next()) {
@@ -101,7 +101,7 @@ int Connection::connectionId()
 			}
 		}
 	}
-	else if(driver_name.endsWith("MYSQL")) {
+	else if(driver_name.endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		if(q.exec("SELECT CONNECTION_ID()")) {
 			if(q.next()) {
@@ -115,8 +115,8 @@ int Connection::connectionId()
 
 int Connection::defaultPort(const QString &driver_name)
 {
-	if(driver_name.endsWith("PSQL")) return 5432;
-	else if(driver_name.endsWith("MYSQL")) return 3306;
+	if(driver_name.endsWith(QLatin1String("PSQL"))) return 5432;
+	else if(driver_name.endsWith(QLatin1String("MYSQL"))) return 3306;
 	else if(driver_name.endsWith("IBASE")) return 3050;
 	return 0;
 }
@@ -182,7 +182,7 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 {
 	qfLogFuncFrame() << "dbname:" << dbname << "type" << type;
 	QStringList ret;
-	if(driverName().endsWith("PSQL")) {
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		QString s = "SELECT table_name FROM information_schema.tables"
 					" WHERE table_schema='%1' AND table_type IN (%2)"
@@ -218,7 +218,7 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 			}
 		}
 	}
-	else if(driverName().endsWith("SQLITE")) {
+	else if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		QStringList table_types;
@@ -250,7 +250,7 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 		sqlite_set_pragma(q, "short_column_names", old_short_column_names);
 		sqlite_set_pragma(q, "full_column_names", old_full_column_names);
 	}
-	else if(driverName().endsWith("MYSQL")) {
+	else if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		QStringList sl = serverVersion();
 		int ver = 0;
@@ -291,6 +291,29 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 	return ret;
 }
 
+bool Connection::tableExists(const QString &_table_name)
+{
+	qfLogFuncFrame() << "table_name:" << _table_name;
+	bool ret = false;
+	QString table_name, schema_name;
+	qf::core::Utils::parseFieldName(_table_name, &table_name, &schema_name);
+	if(schema_name.isEmpty())
+		schema_name = currentSchema();
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
+		QSqlQuery q(*this);
+		if(!q.exec("SELECT 1 FROM information_schema.tables WHERE table_schema=" QF_SARG(schema_name) " AND table_name=" QF_SARG(table_name))) {
+			qfError() << q.lastError().text();
+		}
+		else {
+			ret = q.next();
+		}
+	}
+	else {
+		qfError() << Q_FUNC_INFO << "not supported for driver:" << driverName();
+	}
+	return ret;
+}
+
 QSqlRecord Connection::record(const QString & tablename) const
 {
 	qfLogFuncFrame() << "tblname:" << tablename;
@@ -298,7 +321,7 @@ QSqlRecord Connection::record(const QString & tablename) const
 	QSqlRecord ret;
 	if(!s_tableRecordCache.contains(pk_key)) {
 		QString s = fullTableNameToQtDriverTableName(tablename);
-		if(driverName().endsWith("SQLITE")) {
+		if(driverName().endsWith(QLatin1String("SQLITE"))) {
 			/// SQLITE neumi schema.tablename v prikazu PRAGMA table_info(...)
 			int ix = s.lastIndexOf('.');
 			if(ix >= 0)
@@ -341,7 +364,7 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 	qf::core::Utils::parseFieldName(tbl_name, &tbl, &db);
 	IndexList ret;
 	QString s;
-	if(driverName().endsWith("PSQL")) {
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QString s = "SELECT indexname FROM pg_indexes WHERE tablename=" QF_SARG(tbl);
 		if(!db.isEmpty())
 			s += " AND schemaname=" QF_SARG(db);
@@ -371,7 +394,7 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 			ret.append(df);
 		}
 	}
-	else if(driverName().endsWith("MYSQL")) {
+	else if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QString s = "SHOW INDEX FROM " + tbl_name;
 		qfDebug() << "\t" << s;
 		QSqlQuery q(*this);
@@ -395,7 +418,7 @@ Connection::IndexList Connection::indexes(const QString& tbl_name) const
 		}
 		if(!df.name.isEmpty()) ret.append(df);
 	}
-	else if(driverName().endsWith("SQLITE")) {
+	else if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		/// SQLITE neumi schema.tablename v prikazu PRAGMA table_info(...)
 		QString s = "SELECT * FROM sqlite_master WHERE type='index' AND sql>'' AND tbl_name='%1'";
 		s = s.arg(tbl);
@@ -432,7 +455,7 @@ QStringList Connection::databases() const
 	QSqlQuery q(*this);
 	q.setForwardOnly(true);
 
-	if(driverName().endsWith("PSQL")) {
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		q.exec(QLatin1String("SELECT datname FROM pg_database "));
 		while(q.next()) {
 			QString s = q.value(0).toString();
@@ -452,7 +475,7 @@ QStringList Connection::schemas() const
 {
 	qfLogFuncFrame();
 	QStringList ret;
-	if(driverName().endsWith("PSQL")) {
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		q.exec("SELECT n.nspname "
@@ -467,7 +490,7 @@ QStringList Connection::schemas() const
 			ret.append(s);
 		}
 	}
-	else if(driverName().endsWith("SQLITE")) {
+	else if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		q.exec(QLatin1String("PRAGMA database_list"));
@@ -477,7 +500,7 @@ QStringList Connection::schemas() const
 			ret.append(s);
 		}
 	}
-	else if(driverName().endsWith("MYSQL")) {
+	else if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		q.exec(QLatin1String("SHOW DATABASES;"));
@@ -513,7 +536,7 @@ QFSql::RelationKind DbInfo::relationKind(const QString& _relname)
 	QFSql::RelationKind ret = QFSql::UnknownRelation;
 	QString relname, dbname;
 	qf::core::Utils::parseFieldName(_relname, &relname, &dbname);
-	if(driverName().endsWith("PSQL")) {
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		QString s = "SELECT c.relname, c.relkind, n.nspname"
@@ -532,7 +555,7 @@ QFSql::RelationKind DbInfo::relationKind(const QString& _relname)
 			}
 		}
 	}
-	else if(driverName().endsWith("SQLITE")) {
+	else if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		QString from;
@@ -560,7 +583,7 @@ QFSql::RelationKind DbInfo::relationKind(const QString& _relname)
 		sqlite_set_pragma(q, "short_column_names", old_short_column_names);
 		sqlite_set_pragma(q, "full_column_names", old_full_column_names);
 	}
-	else if(driverName().endsWith("MYSQL")) {
+	else if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		/*
@@ -628,7 +651,7 @@ static QString err_msg(QProcess::ProcessError err_no)
 QString Connection::createTableSqlCommand(const QString &tblname)
 {
 	qfLogFuncFrame();
-	if(driverName().endsWith("SQLITE")) {
+	if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		QString db, tbl;
 		qf::core::Utils::parseFieldName(tblname, &tbl, &db);
 		//db = normalizeDbName(db);
@@ -648,10 +671,10 @@ QString Connection::createTableSqlCommand(const QString &tblname)
 			return q.value(0).toString() + ";";
 		}
 	}
-	else if(driverName().endsWith("PSQL")) {
+	else if(driverName().endsWith(QLatin1String("PSQL"))) {
 		return dumpSqlTable_psql(tblname, false);
 	}
-	if(driverName().endsWith("MYSQL")) {
+	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		QString s = "SHOW CREATE TABLE %1";
@@ -675,7 +698,7 @@ QString Connection::createTableSqlCommand(const QString &tblname)
 
 QString Connection::dumpTableSqlCommand(const QString &tblname)
 {
-	if(driverName().endsWith("MYSQL")) {
+	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		q.setForwardOnly(true);
 		QString s = "SELECT * FROM %1";
@@ -706,7 +729,7 @@ QString Connection::dumpTableSqlCommand(const QString &tblname)
 		}
 		return QString();
 	}
-	else if(driverName().endsWith("PSQL")) {
+	else if(driverName().endsWith(QLatin1String("PSQL"))) {
 		return dumpSqlTable_psql(tblname, true);
 	}
 	return "unsupported for " + driverName();
@@ -717,7 +740,7 @@ QSqlIndex Connection::primaryIndex(const QString& table_id) const
 	qfLogFuncFrame() << "table name:" << table_id;
 	QString tblname = table_id;
 	QSqlIndex ret;
-	if(driverName().endsWith("SQLITE")) {
+	if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		ret = QSqlDatabase::primaryIndex(tblname);
 	}
 	else {
@@ -815,14 +838,14 @@ QString Connection::normalizeDbName(const QString &n) const
 bool Connection::createSchema(const QString &schema_name)
 {
 	qfLogFuncFrame() << schema_name;
-	if(driverName().endsWith("MYSQL")) {
+	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		if(!q.exec("CREATE DATABASE " + schema_name)) {
 			qfError() << "Error creating schema:" << schema_name << "\n" << lastError().text();
 			return false;
 		}
 	}
-	else if(driverName().endsWith("PSQL")) {
+	else if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		if(!q.exec("CREATE SCHEMA " + schema_name)) {
 			qfError() << "Error creating schema:" << schema_name << "\n" << lastError().text();
@@ -836,21 +859,21 @@ QString Connection::currentSchema() const
 {
 	static auto na = QStringLiteral("N/A");
 	QString ret = na;
-	if(driverName().endsWith("MYSQL")) {
+	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		if(q.exec("SELECT DATABASE()")) {
 			if(q.next())
 				ret = q.value(0).toString();
 		}
 	}
-	else if(driverName().endsWith("PSQL")) {
+	else if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		if(q.exec("SELECT current_schema()")) {
 			if(q.next())
 				ret = q.value(0).toString();
 		}
 	}
-	else if(driverName().endsWith("SQLITE")) {
+	else if(driverName().endsWith(QLatin1String("SQLITE"))) {
 		ret = "main";
 	}
 	else {
@@ -867,14 +890,14 @@ bool Connection::setCurrentSchema(const QString &schema_name)
 {
 	qfLogFuncFrame() << schema_name;
 	bool ret = true;
-	if(driverName().endsWith("MYSQL")) {
+	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		if(!q.exec("USE " + schema_name)) {
 			ret = false;
 			qfError() << "Error setting curent schema to" << schema_name << "\n" << lastError().text();
 		}
 	}
-	else if(driverName().endsWith("PSQL")) {
+	else if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
 		if(!q.exec("SET SCHEMA " QF_SARG(schema_name))) {
 			ret = false;

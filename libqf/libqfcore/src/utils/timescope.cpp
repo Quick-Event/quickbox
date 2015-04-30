@@ -14,7 +14,7 @@ TimeScope::TimeScope(const QString &name)
 	m_id = ++TimeScope::s_id;
 	TimeScope::s_level++;
 	m_startTime.start();
-	qfInfo() << m_id << '[' << s_level << ']' << m_name << "<-----";
+	qfDebug() << m_id << '[' << s_level << ']' << m_name << "<-----";
 }
 
 TimeScope::~TimeScope()
