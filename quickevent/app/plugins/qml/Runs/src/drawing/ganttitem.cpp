@@ -65,24 +65,7 @@ Event::EventPlugin *GanttItem::eventPlugin()
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
-/*
-ClassItem *GanttItem::takeClassItem(int slot_ix, int class_ix)
-{
-	auto *si = startSlotItemAt(slot_ix, !qf::core::Exception::Throw);
-	if(si) {
-		return si->takeClassItemAt(class_ix);
-	}
-	return nullptr;
-}
 
-void GanttItem::insertClassItem(int slot_ix, int class_ix, ClassItem *it)
-{
-	auto *si = startSlotItemAt(slot_ix, !qf::core::Exception::Throw);
-	if(si) {
-		return si->insertClassItem(class_ix, it);
-	}
-}
-*/
 void GanttItem::load()
 {
 	qfLogFuncFrame();

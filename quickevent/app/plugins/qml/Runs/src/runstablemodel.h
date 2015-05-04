@@ -10,6 +10,8 @@ private:
 	typedef quickevent::og::SqlTableModel Super;
 public:
 	RunsTableModel(QObject *parent = nullptr);
+
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 };
 
 #endif // RUNSTABLEMODEL_H

@@ -6,3 +6,9 @@ RunsTableModel::RunsTableModel(QObject *parent)
 
 }
 
+QVariant RunsTableModel::data(const QModelIndex &index, int role) const
+{
+	QVariant ret = Super::data(index, role);
+	return ret;
+}
+

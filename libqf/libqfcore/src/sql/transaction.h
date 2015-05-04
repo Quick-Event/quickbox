@@ -16,6 +16,8 @@ public:
 
 	void commit();
 	void rollback();
+
+	const Connection& connection() const {return m_connection;}
 protected:
 	Connection m_connection;
 	bool m_finished = false;
