@@ -117,7 +117,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 			if(!sql_commands.isEmpty()) {
 				QString s = sql_commands.join(";\n");
 				bool ok = true;
-				if(dlg.showCommand()) {
+				if(dlg.isShowCommand()) {
 					ok = qf::qmlwidgets::dialogs::PreviewDialog::exec(this, s, QString(), "dlgShowCommand");
 				}
 				if(ok)
@@ -158,8 +158,6 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 					QString qs = "ALTER TABLE %1 RENAME COLUMN %2 %3";
 					qs = qs.arg(m_tableName).arg(fi.shortName()).arg(dlg.edName->text());
 					sql_commands << qs;
-					//if(!execCommand(qs)) continue;
-					//refresh();
 				}
 			}
 			else if(connection().driverName().endsWith("PSQL")) {
@@ -167,8 +165,6 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 					QString s = "ALTER TABLE %1 RENAME COLUMN \"%2\" TO \"%3\"";
 					s = s.arg(m_tableName).arg(fi.shortName()).arg(dlg.edName->text());
 					sql_commands << s;
-					//if(!execCommand(s)) continue;
-					//refresh();
 				}
 				QStringList actions;
 				if(fi.nativeType() != dlg.lstType->currentText()) {
@@ -191,8 +187,6 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 				if(!actions.isEmpty()) {
 					QString s = "ALTER TABLE " + m_tableName + " " + actions.join(", ");
 					sql_commands << s;
-					//if(!execCommand(s)) continue;
-					//refresh();
 				}
 			}
 			else if(connection().driverName().endsWith("MYSQL")) {
@@ -201,8 +195,6 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 				s += " " + dlg.edName->text();
 				s += " " + dlg.toString();
 				sql_commands << s;
-				//if(!execCommand(s)) continue;
-				//refresh();
 			}
 			else {
 				qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Not supported yet.");
@@ -211,7 +203,7 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 			if(!sql_commands.isEmpty()) {
 				QString s = sql_commands.join(";\n");
 				bool ok = true;
-				if(dlg.showCommand()) {
+				if(dlg.isShowCommand()) {
 					ok = qf::qmlwidgets::dialogs::PreviewDialog::exec(this, s, QString(), "dlgShowCommand");
 				}
 				if(ok)
@@ -220,7 +212,6 @@ void DlgAlterTable::on_btFieldEdit_clicked()
 				refresh();
 			}
 		}
-		//connection().catalog().forgetTable(full_table_name);
 		break;
 	}
 }

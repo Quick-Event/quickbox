@@ -43,7 +43,7 @@ public:
 
 	void enableControls(bool v);
 
-	bool showCommand();
+	bool isShowCommand();
 
 	QString toString();
 private slots:

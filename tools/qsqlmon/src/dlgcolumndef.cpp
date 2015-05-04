@@ -184,7 +184,7 @@ void DlgColumnDef::loadColumnDefinition(const qf::core::sql::FieldInfo &fi)
 		edName->setEnabled(true);
 	}
 	else if(connection().driverName().endsWith("PSQL")) {
-		qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Altering columns is not fully supported yet.");
+		//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Altering columns is not fully supported yet.");
 		edName->setEnabled(true);
 		lstType->setEnabled(true);
 		edDefaultValue->setEnabled(true);
@@ -299,7 +299,7 @@ QString DlgColumnDef::toString()
 }
 
 
-bool DlgColumnDef::showCommand()
+bool DlgColumnDef::isShowCommand()
 {
 	return chkShowCommand->isChecked();
 }

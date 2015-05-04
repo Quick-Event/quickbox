@@ -20,7 +20,7 @@ PreviewDialog::PreviewDialog(QWidget *parent) :
 	ui = new Ui::PreviewDialog;
 	ui->setupUi(w);
 	editor()->setFocus();
-	setButtons(QDialogButtonBox::Cancel);
+	setButtons(QDialogButtonBox::Cancel | QDialogButtonBox::Ok);
 }
 
 PreviewDialog::~PreviewDialog()
