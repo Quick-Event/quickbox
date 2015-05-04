@@ -15,7 +15,7 @@
 #include <QMutexLocker>
 #include <QCoreApplication>
 
-#define sqlDebug qfInfo
+#define sqlDebug qfDebug
 
 using namespace qf::core::sql;
 
