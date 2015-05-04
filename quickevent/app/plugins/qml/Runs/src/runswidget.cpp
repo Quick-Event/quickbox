@@ -1,6 +1,7 @@
 #include "runswidget.h"
 #include "ui_runswidget.h"
 #include "thispartwidget.h"
+#include "runstablemodel.h"
 
 #include <Event/eventplugin.h>
 
@@ -46,7 +47,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
 	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
-	auto m = new quickevent::og::SqlTableModel(this);
+	auto m = new RunsTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.siId", tr("SI"));
@@ -123,7 +124,7 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		main_tb->addWidget(m_cbxClasses);
 	}
 	{
-		auto *bt = new QPushButton(tr("&Draw settings"));
+		auto *bt = new QPushButton(tr("&Draw options"));
 		main_tb->addWidget(bt);
 		bt->setCheckable(true);
 		connect(bt, &QPushButton::toggled, ui->frmDrawing, &QFrame::setVisible);

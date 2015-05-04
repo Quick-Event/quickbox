@@ -3,6 +3,8 @@
 
 #include <quickevent/og/sqltablemodel.h>
 
+#include <qf/core/utils.h>
+
 class RunsTableModel : public quickevent::og::SqlTableModel
 {
 	Q_OBJECT
@@ -11,7 +13,13 @@ private:
 public:
 	RunsTableModel(QObject *parent = nullptr);
 
+	void highlightDrawForClass(int class_id);
+
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+private:
+	int m_highlightedClassId = 0;
+	int m_classStart;
+	int m_classInterval;
 };
 
 #endif // RUNSTABLEMODEL_H

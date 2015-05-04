@@ -23,6 +23,7 @@ class RunsWidget;
 }
 
 class ThisPartWidget;
+class RunsTableModel;
 
 class RunsWidget : public QFrame
 {
@@ -33,6 +34,8 @@ public:
 	explicit RunsWidget(QWidget *parent = 0);
 	~RunsWidget() Q_DECL_OVERRIDE;
 
+	static Event::EventPlugin* eventPlugin();
+
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private slots:
 	void on_btDraw_clicked();
@@ -40,13 +43,11 @@ private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();
 	Q_SLOT void reload();
-
-	Event::EventPlugin* eventPlugin();
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber};
 
 	Ui::RunsWidget *ui;
-	qf::core::model::SqlTableModel *m_runsModel;
+	RunsTableModel *m_runsModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 };
 

@@ -98,6 +98,8 @@ public:
 		ColumnDefinition& setCastType(int t) {d->castType = t; return *this;}
 		int castType() const {return d->castType;}
 		QF_SHARED_CLASS_FIELD_RW(QVariantMap, c, setC, astProperties)
+
+		bool matchesSqlId(const QString column_name) const;
 	};
 	typedef QList<ColumnDefinition> ColumnList;
 

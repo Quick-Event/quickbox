@@ -22,6 +22,11 @@ const TableModel::ColumnDefinition & TableModel::ColumnDefinition::sharedNull()
 	return n;
 }
 
+bool TableModel::ColumnDefinition::matchesSqlId(const QString column_name) const
+{
+	return qf::core::Utils::fieldNameEndsWith(fieldName(), column_name);
+}
+
 //=========================================
 //        TableModel
 //=========================================
