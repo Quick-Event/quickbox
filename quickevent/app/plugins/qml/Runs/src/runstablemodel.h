@@ -5,6 +5,8 @@
 
 #include <qf/core/utils.h>
 
+#include <QList>
+
 class RunsTableModel : public quickevent::og::SqlTableModel
 {
 	Q_OBJECT
@@ -13,7 +15,9 @@ private:
 public:
 	RunsTableModel(QObject *parent = nullptr);
 
-	void highlightDrawForClass(int class_id);
+	QF_PROPERTY_IMPL(QList<int>, s, S, tartTimeHighlightRowsOrder)
+
+	void setHighlightedClassId(int class_id);
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 private:

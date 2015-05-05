@@ -16,6 +16,7 @@ public:
 	~TableViewProxyModel() Q_DECL_OVERRIDE;
 public:
 	Q_SLOT void setRowFilterString(const QString &s);
+	QString rowFilterString() const;
 	bool isIdle() const;
 protected:
 	QVariant data(const QModelIndex &index, int role=Qt::DisplayRole) const Q_DECL_OVERRIDE;

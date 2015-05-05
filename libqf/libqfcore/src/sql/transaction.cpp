@@ -9,7 +9,8 @@ using namespace qf::core::sql;
 Transaction::Transaction(const Connection &conn)
 	: m_connection(conn)
 {
-	m_connection.transaction();
+	if(m_connection.isValid())
+		m_connection.transaction();
 }
 Transaction::~Transaction()
 {
@@ -18,6 +19,10 @@ Transaction::~Transaction()
 }
 void Transaction::commit()
 {
+	if(!m_connection.isValid()) {
+		m_finished = true;
+		return;
+	}
 	bool ok = m_connection.commit();
 	qfInfo() << "COMMIT";
 	if(!ok) {
@@ -27,6 +32,10 @@ void Transaction::commit()
 }
 void Transaction::rollback()
 {
+	if(!m_connection.isValid()) {
+		m_finished = true;
+		return;
+	}
 	bool ok = m_connection.rollback();
 	qfInfo() << "ROLLBACK";
 	if(!ok) {

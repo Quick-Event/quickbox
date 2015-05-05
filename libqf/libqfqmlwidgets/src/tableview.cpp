@@ -20,8 +20,10 @@
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 #include <qf/core/exception.h>
+#include <qf/core/model/sqltablemodel.h>
 #include <qf/core/model/tablemodel.h>
 #include <qf/core/utils/treetable.h>
+#include <qf/core/sql/transaction.h>
 
 #include <QSortFilterProxyModel>
 #include <QKeyEvent>
@@ -467,13 +469,26 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 		row_selections[ix.row()] << ix;
 	}
 	QList<int> selected_row_indexes = row_selections.keys();
-	foreach(int row_ix, selected_row_indexes) {
-		foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
-			model()->setData(ix, new_val);
+	if(selected_row_indexes.count()) {
+		qfc::sql::Connection conn;
+		{
+			qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
+			if(sql_m) {
+				conn = sql_m->sqlConnection();
+			}
 		}
-		if(selected_row_indexes.count() > 1)
-			if(!postRow(row_ix))
-				break;
+		qfc::sql::Transaction transaction(conn);
+		foreach(int row_ix, selected_row_indexes) {
+			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+				model()->setData(ix, new_val);
+			}
+			if(inlineEditStrategy() == OnCurrentRowChange && selected_row_indexes.count() > 1) {
+				// post edits in every row when more rows is selected
+				if(!postRow(row_ix))
+					return;
+			}
+		}
+		transaction.commit();
 	}
 }
 
@@ -1854,5 +1869,10 @@ void TableView::commitData(QWidget *editor)
 void TableView::filterByString(const QString &s)
 {
 	m_proxyModel->setRowFilterString(s);
+}
+
+QString TableView::filterString() const
+{
+	return m_proxyModel->rowFilterString();
 }
 

@@ -51,6 +51,7 @@ public:
 	}
 	Q_SIGNAL void connectionNameChanged(QString arg);
 
+	qf::core::sql::Connection sqlConnection();
 	QString query() const { return m_query; }
 	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }
 	Q_SIGNAL void queryChanged(QString arg);
@@ -65,7 +66,6 @@ protected:
 
 	bool reload(const QString &query_str);
 
-	qf::core::sql::Connection sqlConnection();
 	bool reloadTable(const QString &query_str);
 	QStringList tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);

@@ -31,6 +31,11 @@ void TableViewProxyModel::setRowFilterString(const QString &s)
 	invalidateFilter();
 }
 
+QString TableViewProxyModel::rowFilterString() const
+{
+	return m_rowFilterString;
+}
+
 bool TableViewProxyModel::isIdle() const
 {
 	return m_rowFilterString.isEmpty() && sortColumn() < 0;

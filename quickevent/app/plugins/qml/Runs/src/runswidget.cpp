@@ -64,7 +64,17 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
 
-	//connect(ui->tblRuns, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)), Qt::QueuedConnection);
+	connect(ui->tblRuns->horizontalHeader(), &QHeaderView::sortIndicatorChanged, [this](int logical_index, Qt::SortOrder order)
+	{
+		QList<int> start_times_row_order;
+		auto cd = m_runsModel->columnDefinition(logical_index);
+		if(cd.matchesSqlId(QStringLiteral("runs.startTimeMs")) && order == Qt::AscendingOrder && ui->tblRuns->filterString().isEmpty()) {
+			for (int i = 0; i < this->m_runsModel->rowCount(); ++i) {
+				start_times_row_order << this->ui->tblRuns->toTableModelRowNo(i);
+			}
+		}
+		this->m_runsModel->setStartTimeHighlightRowsOrder(start_times_row_order);
+	});
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
@@ -72,6 +82,10 @@ RunsWidget::RunsWidget(QWidget *parent) :
 RunsWidget::~RunsWidget()
 {
 	delete ui;
+}
+
+void RunsWidget::lazyInit()
+{
 }
 
 void RunsWidget::reload()
@@ -89,6 +103,7 @@ void RunsWidget::reload()
 	if(class_id > 0) {
 		qb.where("competitors.classId=" + QString::number(class_id));
 	}
+	m_runsModel->setHighlightedClassId(class_id);
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
 }
@@ -129,10 +144,6 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		bt->setCheckable(true);
 		connect(bt, &QPushButton::toggled, ui->frmDrawing, &QFrame::setVisible);
 	}
-}
-
-void RunsWidget::lazyInit()
-{
 }
 
 void RunsWidget::reset()

@@ -119,6 +119,10 @@ public:
 
 	Q_SIGNAL void filterDialogRequest();
 	Q_SLOT void filterByString(const QString &s);
+	QString filterString() const;
+
+	QModelIndex toTableModelIndex(const QModelIndex &table_view_index) const;
+	int toTableModelRowNo(int table_view_row_no) const;
 
 	Q_SLOT void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate) {Super::setItemDelegateForColumn(column, delegate);}
 private:
@@ -127,9 +131,6 @@ private:
 	int seekColumn() const;
 	void seek(const QString &prefix_str);
 	void cancelSeek();
-
-	QModelIndex toTableModelIndex(const QModelIndex &table_view_index) const;
-	int toTableModelRowNo(int table_view_row_no) const;
 
 	void exportReport_helper(const QVariant& _options);
 
