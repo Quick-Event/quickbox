@@ -2,6 +2,7 @@
 #include "ui_runswidget.h"
 #include "thispartwidget.h"
 #include "runstablemodel.h"
+#include "runstableitemdelegate.h"
 
 #include <Event/eventplugin.h>
 
@@ -46,7 +47,8 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setPersistentSettingsId("tblRuns");
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
-	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
+	m_runsTableItemDelegate = new RunsTableItemDelegate(ui->tblRuns);
+	ui->tblRuns->setItemDelegate(m_runsTableItemDelegate);
 	auto m = new RunsTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
@@ -66,14 +68,10 @@ RunsWidget::RunsWidget(QWidget *parent) :
 
 	connect(ui->tblRuns->horizontalHeader(), &QHeaderView::sortIndicatorChanged, [this](int logical_index, Qt::SortOrder order)
 	{
-		QList<int> start_times_row_order;
 		auto cd = m_runsModel->columnDefinition(logical_index);
-		if(cd.matchesSqlId(QStringLiteral("runs.startTimeMs")) && order == Qt::AscendingOrder && ui->tblRuns->filterString().isEmpty()) {
-			for (int i = 0; i < this->m_runsModel->rowCount(); ++i) {
-				start_times_row_order << this->ui->tblRuns->toTableModelRowNo(i);
-			}
-		}
-		this->m_runsModel->setStartTimeHighlightRowsOrder(start_times_row_order);
+		m_runsTableItemDelegate->setStartTimeHighlightVisible(cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))
+															  && order == Qt::AscendingOrder
+															  && ui->tblRuns->filterString().isEmpty());
 	});
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
@@ -103,7 +101,7 @@ void RunsWidget::reload()
 	if(class_id > 0) {
 		qb.where("competitors.classId=" + QString::number(class_id));
 	}
-	m_runsModel->setHighlightedClassId(class_id);
+	m_runsTableItemDelegate->setHighlightedClassId(class_id);
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
 }
@@ -243,3 +241,5 @@ void RunsWidget::on_btDraw_clicked()
 	}
 	reload();
 }
+
+

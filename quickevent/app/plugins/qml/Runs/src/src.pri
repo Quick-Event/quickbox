@@ -14,7 +14,8 @@ HEADERS += \
     $$PWD/drawing/ganttview.h \
     $$PWD/drawing/iganttitem.h \
     $$PWD/drawing/ganttruler.h \
-    $$PWD/drawing/startslotheader.h
+    $$PWD/drawing/startslotheader.h \
+    $$PWD/runstableitemdelegate.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -30,7 +31,8 @@ SOURCES += \
     $$PWD/drawing/ganttview.cpp \
     $$PWD/drawing/iganttitem.cpp \
     $$PWD/drawing/ganttruler.cpp \
-    $$PWD/drawing/startslotheader.cpp
+    $$PWD/drawing/startslotheader.cpp \
+    $$PWD/runstableitemdelegate.cpp
 
 FORMS += \
     $$PWD/runswidget.ui \

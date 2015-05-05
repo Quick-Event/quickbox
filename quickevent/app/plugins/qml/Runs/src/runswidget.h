@@ -24,6 +24,7 @@ class RunsWidget;
 
 class ThisPartWidget;
 class RunsTableModel;
+class RunsTableItemDelegate;
 
 class RunsWidget : public QFrame
 {
@@ -48,6 +49,7 @@ private:
 
 	Ui::RunsWidget *ui;
 	RunsTableModel *m_runsModel;
+	RunsTableItemDelegate *m_runsTableItemDelegate;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 };
 
