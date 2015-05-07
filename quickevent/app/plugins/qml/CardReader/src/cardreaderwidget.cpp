@@ -265,7 +265,7 @@ void CardReaderWidget::onCommOpen(bool checked)
 		QSettings settings;
 		settings.beginGroup("comm");
 		settings.beginGroup("connection");
-		QString device = settings.value("device", "/dev/ttyUSB0").toString();
+		QString device = settings.value("device", "").toString();
 		int baud_rate = settings.value("baudRate", 38400).toInt();
 		int data_bits = settings.value("dataBits", 8).toInt();
 		int stop_bits = settings.value("stopBits", 1).toInt();
