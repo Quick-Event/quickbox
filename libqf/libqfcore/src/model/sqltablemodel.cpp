@@ -258,6 +258,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 							  QString("Cannot find field '%1'").arg(full_fld_name),
 							  continue);
 					qfu::Table::Field fld = m_table.fields().at(fld_ix);
+					qfDebug() << "\t found field:" << fld.name() << "at index:" << fld_ix;
 					QSqlField sqlfld(fld.shortName(), fld.type());
 					sqlfld.setValue(row_ref.origValue(fld_ix));
 					/*
@@ -575,6 +576,7 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 		return false;
 	}
 	if(m_recentlyExecutedQuery.isSelect()) {
+		bool retype_null_values = sql_conn.driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
 		qfu::Table::FieldList table_fields;
 		QSqlRecord rec = m_recentlyExecutedQuery.record();
 		int fld_cnt = rec.count();
@@ -590,7 +592,15 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 			qfu::TableRow &row = m_table.appendRow();
 			row.setInsert(false);
 			for(int i=0; i<fld_cnt; i++) {
-				row.setBareBoneValue(i, m_recentlyExecutedQuery.value(i));
+				QVariant v = m_recentlyExecutedQuery.value(i);
+				//qfInfo() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
+				if(retype_null_values) {
+					// SQLite driver reports NULL values as QString()
+					if(v.isNull())
+						v = QVariant(table_fields.value(i).type());
+				}
+				//qfWarning() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
+				row.setBareBoneValue(i, v);
 			}
 		}
 	}
@@ -692,6 +702,7 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 			fld.setSerial(serial_field_names.value(table_id) == fld.shortName());
 			//qfDebug() << fld.name() << "is serial:" << fld.isSerial();
 		}
+		//qfInfo() << fld.toString();
 	}
 }
 
