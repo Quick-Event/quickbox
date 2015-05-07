@@ -60,5 +60,7 @@ win32 {
 		xcopy $$shell_path($$PWD/../style) $$shell_path($$DESTDIR/$$DATA_DIR_NAME/style) /E /Y /I
 }
 
+win32:CONFIG(debug, debug|release):CONFIG += console
+
 QMAKE_EXTRA_TARGETS += datafiles
 PRE_TARGETDEPS += datafiles

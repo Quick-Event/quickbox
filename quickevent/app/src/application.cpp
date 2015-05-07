@@ -8,6 +8,10 @@
 #include <QNetworkProxy>
 #include <QProcessEnvironment>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#endif
+
 Application::Application(int &argc, char **argv)
 	: Super(argc, argv)
 {
@@ -36,6 +40,10 @@ Application::Application(int &argc, char **argv)
 	QString plugin_path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName();
 #else
 	QString plugin_path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName();
+#ifdef Q_OS_WIN
+	qfInfo() << "Adding DLL search path:" << plugin_path;
+	SetDllDirectory(reinterpret_cast<LPCWSTR>(plugin_path.utf16()));
+#endif
 #endif
 	qf::qmlwidgets::reports::ReportProcessor::qmlEngineImportPaths().append(plugin_path);
 }
