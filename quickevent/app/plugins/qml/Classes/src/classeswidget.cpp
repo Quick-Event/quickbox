@@ -12,6 +12,7 @@
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/sql/connection.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -90,8 +91,8 @@ void ClassesWidget::reload()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	Event::EventPlugin *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	int stage_id = event_plugin->currentStageId();
 	{
-		int stage_id = event_plugin->currentStageId();
 		qf::core::sql::QueryBuilder qb1;
 		qb1.select("COUNT(*)")
 				.from("runs")
@@ -116,6 +117,17 @@ void ClassesWidget::reload()
 		*/
 		m_classesModel->setQueryBuilder(qb);
 		m_classesModel->reload();
+	}
+	{
+		qf::core::sql::Query q(m_classesModel->sqlConnection());
+		q.exec("SELECT COUNT(*) FROM classdefs WHERE stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+		bool ro = true;
+		if(q.next())
+			ro = (q.value(0).toInt() == 0);
+		if(ro) {
+			qfWarning() << tr("Courses are not imported, class table is read only.");
+		}
+		ui->tblClasses->setEnabled(!ro);
 	}
 	reloadCourseCodes();
 }
