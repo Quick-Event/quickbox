@@ -198,8 +198,8 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId, competitorId']; unique: true },
-				Index {fields: ['stageId, siId']; unique: true },
+				Index {fields: ['stageId, competitorId']; unique: true }, 
+				Index {fields: ['stageId, siId']; unique: false }, // cannot be unique since Oris import sometimes contains duplicate SI
 				Index {fields: ['status', 'timeMs'] }
 			]
 		},

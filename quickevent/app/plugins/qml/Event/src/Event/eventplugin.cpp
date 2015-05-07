@@ -52,6 +52,16 @@ EventPlugin::EventPlugin(QObject *parent)
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
 }
 
+void EventPlugin::initEventConfig()
+{
+	if(m_eventConfig == nullptr) {
+		m_eventConfig = new Event::EventConfig(this);
+	}
+	else {
+		qfWarning() << "Event config exists already!";
+	}
+}
+
 Event::EventConfig *EventPlugin::eventConfig(bool reload)
 {
 	if(m_eventConfig == nullptr) {
@@ -282,8 +292,10 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		return false;
 
 	QString event_name = event_w->eventId();
-	if(event_name.isEmpty())
+	if(event_name.isEmpty()) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Event ID cannot be empty."));
 		return false;
+	}
 
 	QVariantMap new_params = event_w->saveParams();
 	Event::EventConfig event_config;
@@ -418,13 +430,17 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			event_fn = eventNameToFileName(event_name);
 		}
 		else {
-			event_fn = qfd::FileDialog::getOpenFileName(fwk, tr("Select event"), connection_settings.singleWorkingDir(), tr("Quick Event files (*.qbe)"));
+			QString qbe_ext(".qbe");
+			event_fn = qfd::FileDialog::getOpenFileName(fwk, tr("Select event"), connection_settings.singleWorkingDir(), tr("Quick Event files (*%1)").arg(qbe_ext));
 			if(!event_fn.isEmpty()) {
 				event_fn.replace("\\", "/");
 				int ix = event_fn.lastIndexOf("/");
-				event_name = event_fn.mid(ix + 1, event_fn.length() - 4);
+				event_name = event_fn.mid(ix + 1);
+				if(event_name.endsWith(qbe_ext, Qt::CaseInsensitive))
+					event_name = event_name.mid(0, event_name.length() - qbe_ext.length());
 				QString working_dir = event_fn.mid(0, ix);
 				if(!event_name.isEmpty()) {
+					//qfError() << "set event name:" << event_name;
 					connection_settings.setEventName(event_name);
 					connection_settings.setSingleWorkingDir(working_dir);
 				}

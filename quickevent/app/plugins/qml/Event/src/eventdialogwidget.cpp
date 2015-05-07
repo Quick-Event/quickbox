@@ -8,7 +8,7 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	setPersistentSettingsId("EventDialogWidget");
 	ui->setupUi(this);
 
-	QRegularExpression rx("[a-zA-Z0-9_]+");
+	QRegularExpression rx("[a-z0-9_]+");
 	QValidator *validator = new QRegularExpressionValidator(rx, this);
 	ui->ed_eventNameId->setValidator(validator);
 }

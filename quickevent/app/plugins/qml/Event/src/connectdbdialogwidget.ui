@@ -50,7 +50,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>&amp;Event name</string>
+         <string>&amp;Event ID</string>
         </property>
         <property name="buddy">
          <cstring>edEventName</cstring>

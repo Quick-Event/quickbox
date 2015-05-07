@@ -41,6 +41,7 @@ public:
 
 	static const char *DBEVENT_NOTIFY_NAME;
 
+	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
 	int stageCount() {return eventConfig()->stageCount();}
 
