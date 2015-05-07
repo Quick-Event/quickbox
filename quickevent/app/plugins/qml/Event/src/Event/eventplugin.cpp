@@ -111,7 +111,7 @@ void EventPlugin::onInstalled()
 	m_actOpenEvent->setEnabled(false);
 	connect(m_actOpenEvent, SIGNAL(triggered()), this, SLOT(openEvent()));
 
-	m_actCreateEvent = new qfw::Action("&Create event");
+	m_actCreateEvent = new qfw::Action("Create eve&nt");
 	m_actCreateEvent->setShortcut("Ctrl+N");
 	m_actCreateEvent->setEnabled(false);
 	connect(m_actCreateEvent, SIGNAL(triggered()), this, SLOT(createEvent()));
