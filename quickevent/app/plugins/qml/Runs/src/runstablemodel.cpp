@@ -38,17 +38,7 @@ QMimeData *RunsTableModel::mimeData(const QModelIndexList &indexes) const
 {
 	qfLogFuncFrame();
 	QMimeData *mimeData = new QMimeData();
-	QByteArray encoded_data;
-
-	QDataStream stream(&encoded_data, QIODevice::WriteOnly);
-
-	foreach (const QModelIndex &index, indexes) {
-		if (index.isValid()) {
-			QString text = data(index, Qt::DisplayRole).toString();
-			stream << text;
-		}
-	}
-
+	QByteArray encoded_data = QString::number(indexes.value(0).row()).toUtf8();
 	mimeData->setData(MIME_TYPE, encoded_data);
 	return mimeData;
 }
@@ -87,7 +77,27 @@ bool RunsTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, 
 		// not drop on item
 		return false;
 	}
-	qfDebug() << "data:" << data->text() << parent.data();
+	int r1 = QString::fromUtf8(data->data(MIME_TYPE)).toInt();
+	int r2 = parent.row();
+	qfDebug() << "switch:" << r1 << "and" << r2;
+	switchStartTimes(r1, r2);
 	return true;
+}
+
+void RunsTableModel::switchStartTimes(int r1, int r2)
+{
+	qfLogFuncFrame() << r1 << r2;
+	int col = columnIndex("startTimeMs");
+	QF_ASSERT(col >= 0, "Bad column!", return);
+
+	QModelIndex ix1 = index(r1, col);
+	QVariant v1 = ix1.data(Qt::EditRole);
+	QModelIndex ix2 = index(r2, col);
+	QVariant v2 = ix2.data(Qt::EditRole);
+	setData(ix1, v2);
+	setData(ix2, v1);
+	postRow(r1, true);
+	postRow(r2, true);
+	emit startTimesSwitched(r1, r2);
 }
 

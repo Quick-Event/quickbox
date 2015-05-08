@@ -73,6 +73,8 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
 
+	connect(m_runsModel, &RunsTableModel::startTimesSwitched, ui->tblRuns, &qf::qmlwidgets::TableView::reload);
+
 	connect(ui->tblRuns->horizontalHeader(), &QHeaderView::sortIndicatorChanged, [this](int logical_index, Qt::SortOrder order)
 	{
 		auto cd = m_runsModel->columnDefinition(logical_index);

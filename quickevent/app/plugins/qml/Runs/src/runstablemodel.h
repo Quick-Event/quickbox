@@ -18,6 +18,10 @@ public:
 	Qt::DropActions supportedDropActions() const Q_DECL_OVERRIDE;
 	//bool canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const Q_DECL_OVERRIDE;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) Q_DECL_OVERRIDE;
+
+	void switchStartTimes(int r1, int r2);
+	Q_SIGNAL void startTimesSwitched(int r1, int r2);
+
 };
 
 #endif // RUNSTABLEMODEL_H

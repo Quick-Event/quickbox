@@ -223,8 +223,12 @@ void TableView::resetColumnsSettings()
 void TableView::reload()
 {
 	qfLogFuncFrame();
+	int sort_column = -1;
+	Qt::SortOrder sort_order;
 	if(horizontalHeader()) {
 		savePersistentSettings();
+		sort_column = horizontalHeader()->sortIndicatorSection();
+		sort_order = horizontalHeader()->sortIndicatorOrder();
 		horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
 	}
 	qf::core::model::TableModel *table_model = tableModel();
@@ -239,6 +243,11 @@ void TableView::reload()
 		ix = model()->index(r, c);
 		setCurrentIndex(ix);
 		//updateDataArea();
+	}
+	if(horizontalHeader()) {
+		if(sort_column >= 1) {
+			horizontalHeader()->setSortIndicator(sort_column, sort_order);
+		}
 	}
 	refreshActions();
 }
