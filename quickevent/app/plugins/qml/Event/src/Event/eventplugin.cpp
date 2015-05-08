@@ -37,11 +37,24 @@ namespace qfs = qf::core::sql;
 
 using namespace Event;
 
+static auto QBE_EXT = QStringLiteral(".qbe");
+
 static QString eventNameToFileName(const QString &event_name)
 {
 	ConnectionSettings connection_settings;
-	QString ret = connection_settings.singleWorkingDir() + '/' + event_name + ".qbe";
+	QString ret = connection_settings.singleWorkingDir() + '/' + event_name + QBE_EXT;
 	return ret;
+}
+
+static QString fileNameToEventName(const QString &file_name)
+{
+	QString fn = file_name;
+	fn.replace("\\", "/");
+	int ix = fn.lastIndexOf("/");
+	QString event_name = fn.mid(ix + 1);
+	if(event_name.endsWith(QBE_EXT, Qt::CaseInsensitive))
+		event_name = event_name.mid(0, event_name.length() - QBE_EXT.length());
+	return event_name;
 }
 
 const char *EventPlugin::DBEVENT_NOTIFY_NAME = "quickboxDbEvent";
@@ -366,11 +379,12 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 				break;
 			transaction.commit();
 		} while(false);
-		if(ok) {
-		}
-		else {
+		if(!ok) {
 			qfd::MessageBox::showError(fwk, tr("Create Database Error: %1").arg(q.lastError().text()));
 		}
+	}
+	else {
+		qfd::MessageBox::showError(fwk, tr("Cannot create event, database is not open: %1").arg(conn.lastError().text()));
 	}
 	if(ok) {
 		ok = openEvent(event_name);
@@ -428,33 +442,32 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		QString event_fn;
 		if(!event_name.isEmpty()) {
 			event_fn = eventNameToFileName(event_name);
+			if(!QFile::exists(event_fn)) {
+				event_fn = event_name = QString();
+			}
 		}
-		else {
-			QString qbe_ext(".qbe");
-			event_fn = qfd::FileDialog::getOpenFileName(fwk, tr("Select event"), connection_settings.singleWorkingDir(), tr("Quick Event files (*%1)").arg(qbe_ext));
-			if(!event_fn.isEmpty()) {
-				event_fn.replace("\\", "/");
-				int ix = event_fn.lastIndexOf("/");
-				event_name = event_fn.mid(ix + 1);
-				if(event_name.endsWith(qbe_ext, Qt::CaseInsensitive))
-					event_name = event_name.mid(0, event_name.length() - qbe_ext.length());
-				QString working_dir = event_fn.mid(0, ix);
-				if(!event_name.isEmpty()) {
-					//qfError() << "set event name:" << event_name;
-					connection_settings.setEventName(event_name);
-					connection_settings.setSingleWorkingDir(working_dir);
-				}
+		if(event_name.isEmpty()) {
+			QDir working_dir(connection_settings.singleWorkingDir());
+			QStringList event_names = working_dir.entryList(QStringList() << ('*' + QBE_EXT), QDir::Files | QDir::Readable, QDir::Name);
+			for (int i = 0; i < event_names.count(); ++i) {
+				event_names[i] = fileNameToEventName(event_names[i]);
+			}
+			bool ok;
+			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), event_names, 0, false, &ok);
+			//event_fn = qfd::FileDialog::getOpenFileName(fwk, tr("Select event"), connection_settings.singleWorkingDir(), tr("Quick Event files (*%1)").arg(qbe_ext));
+			if(ok && !event_name.isEmpty()) {
+				event_fn = eventNameToFileName(event_name);
 			}
 		}
 		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
-		if(!event_fn.isEmpty()) {
-			{
-				qfs::Connection conn(QSqlDatabase::database());
-				conn.close();
-				qfInfo() << "removing database:" << conn.connectionName();
-				QSqlDatabase::removeDatabase(conn.connectionName());
-			}
+		{
+			qfs::Connection conn(QSqlDatabase::database());
+			conn.close();
+			qfInfo() << "removing database:" << conn.connectionName();
+			QSqlDatabase::removeDatabase(conn.connectionName());
 			QSqlDatabase::addDatabase("QSQLITE");
+		}
+		if(QFile::exists(event_fn)) {
 			qfs::Connection conn(QSqlDatabase::database());
 			conn.setDatabaseName(event_fn);
 			qfInfo() << "Opening database file";
@@ -465,6 +478,9 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			else {
 				qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
 			}
+		}
+		else {
+			qfd::MessageBox::showError(fwk, tr("Database file %1 doesn't exist.").arg(event_fn));
 		}
 	}
 	else {
