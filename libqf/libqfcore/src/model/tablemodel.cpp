@@ -89,6 +89,9 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	if(role == RawValueRole) {
 		ret = value(index.row(), index.column());
 	}
+	else if(role == SortRole) {
+		ret = data(index, Qt::DisplayRole);
+	}
 	else if(role == Qt::DisplayRole) {
 		ColumnDefinition cd = m_columns.value(index.column());
 		if(cd.isNull()) {

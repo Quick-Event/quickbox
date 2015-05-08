@@ -55,18 +55,25 @@ void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 					quickevent::og::TimeMs tms = m->data(index, qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
 					int start_ms = tms.msec();
 					int prev_start_ms = m_classStart;
+					QString club = m->data(index).toString().mid(0, 3).trimmed();
+					QString prev_club;
 					if(index.row() > 0) {
 						tms = m->data(index.sibling(index.row() - 1, index.column()), qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
 						prev_start_ms = tms.msec();
+						prev_club = m->data(index.sibling(index.row() - 1, index.column())).toString().mid(0, 3).trimmed();
 					}
 					//qfWarning() << index.row() << start_ms << prev_start_ms << "diff:" << (start_ms - prev_start_ms) << m_classInterval;
 					QColor c;
-					if((start_ms - prev_start_ms) % m_classInterval) {
+					if((start_ms > m_classStart && start_ms == prev_start_ms) || ((start_ms - prev_start_ms) % m_classInterval) != 0) {
 						c = Qt::red;
 					}
 					else if((start_ms - prev_start_ms) > m_classInterval) {
 						//qfInfo() << (start_ms - prev_start_ms) << m_classInterval;
 						c = QColor("lime");
+					}
+					else if(club == prev_club) {
+						//qfInfo() << (start_ms - prev_start_ms) << m_classInterval;
+						c = QColor(Qt::magenta);
 					}
 					if(c.isValid()) {
 						painter->fillRect(option.rect, c);

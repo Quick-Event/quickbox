@@ -27,7 +27,9 @@ private:
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
 					   FieldTypeRole, //FieldIsNullableRole,
-					   RawValueRole, ValueIsNullRole, ColumnDefinitionRole, FirstUnusedRole };
+					   RawValueRole, ValueIsNullRole, ColumnDefinitionRole,
+					   SortRole,
+					   FirstUnusedRole };
 	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition

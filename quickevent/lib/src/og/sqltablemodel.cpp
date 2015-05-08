@@ -20,21 +20,29 @@ SqlTableModel::~SqlTableModel()
 
 QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 {
-	QVariant ret = Super::data(index, role);
 	if(role == Qt::DisplayRole) {
-		int type = ret.userType();
+		QVariant v = Super::data(index, RawValueRole);
+		int type = v.userType();
 		if(type == qMetaTypeId<TimeMs>()) {
-			TimeMs t = ret.value<TimeMs>();
-			ret = t.toString();
+			TimeMs t = v.value<TimeMs>();
+			return t.toString();
+		}
+	}
+	else if(role == SortRole) {
+		QVariant v = Super::data(index, RawValueRole);
+		int type = v.userType();
+		if(type == qMetaTypeId<TimeMs>()) {
+			TimeMs t = v.value<TimeMs>();
+			return t.msec();
 		}
 	}
 	else if(role == Qt::TextAlignmentRole) {
 		QVariant v = Super::data(index, RawValueRole);
 		if(v.userType() == qMetaTypeId<TimeMs>()) {
-			ret = Qt::AlignRight;
+			return Qt::AlignRight;
 		}
 	}
-	return ret;
+	return Super::data(index, role);
 }
 
 QVariant SqlTableModel::value(int row_ix, int column_ix) const
