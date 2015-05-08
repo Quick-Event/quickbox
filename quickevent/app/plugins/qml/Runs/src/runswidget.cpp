@@ -49,6 +49,13 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
 	m_runsTableItemDelegate = new RunsTableItemDelegate(ui->tblRuns);
 	ui->tblRuns->setItemDelegate(m_runsTableItemDelegate);
+
+	ui->tblRuns->setSelectionMode(QTableView::SingleSelection);
+	ui->tblRuns->viewport()->setAcceptDrops(true);
+	ui->tblRuns->setDropIndicatorShown(true);
+	ui->tblRuns->setDragDropMode(QAbstractItemView::InternalMove);
+	ui->tblRuns->setDragEnabled(false);
+
 	auto m = new RunsTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
@@ -69,9 +76,11 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	connect(ui->tblRuns->horizontalHeader(), &QHeaderView::sortIndicatorChanged, [this](int logical_index, Qt::SortOrder order)
 	{
 		auto cd = m_runsModel->columnDefinition(logical_index);
-		m_runsTableItemDelegate->setStartTimeHighlightVisible(cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))
-															  && order == Qt::AscendingOrder
-															  && ui->tblRuns->filterString().isEmpty());
+		bool is_sort_start_time_asc = (cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))
+									   && order == Qt::AscendingOrder
+									   && ui->tblRuns->filterString().isEmpty());
+		m_runsTableItemDelegate->setStartTimeHighlightVisible(is_sort_start_time_asc);
+		ui->tblRuns->setDragEnabled(is_sort_start_time_asc);
 	});
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);

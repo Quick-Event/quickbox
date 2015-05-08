@@ -12,6 +12,12 @@ public:
 	RunsTableModel(QObject *parent = nullptr);
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+	QStringList mimeTypes() const Q_DECL_OVERRIDE;
+	QMimeData *mimeData(const QModelIndexList &indexes) const Q_DECL_OVERRIDE;
+	Qt::DropActions supportedDropActions() const Q_DECL_OVERRIDE;
+	//bool canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const Q_DECL_OVERRIDE;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) Q_DECL_OVERRIDE;
 };
 
 #endif // RUNSTABLEMODEL_H
