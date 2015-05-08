@@ -10,6 +10,9 @@ private:
 	typedef qf::core::model::SqlDataDocument Super;
 public:
 	ClassDocument(QObject *parent = nullptr);
+protected:
+	bool saveData() Q_DECL_OVERRIDE;
+	bool dropData() Q_DECL_OVERRIDE;
 };
 
 #endif // CLASSDOCUMENT_H

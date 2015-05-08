@@ -17,20 +17,13 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 			.from("competitors")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
-	/*
-	{
-		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-		EventPlugin *event_plugin = qobject_cast<EventPlugin *>(plugin);
-		{
-			int ret;
-			QMetaObject::invokeMethod(plugin, "incDlTest", Q_RETURN_ARG(int, ret));
-			qfInfo() << "DL invoke:" << ret;
-		}
-		qfInfo() << "DL call:" << event_plugin->incDlTest();
-		qfInfo() << "DL SC:" << event_plugin->stageCount();
-	}
-	*/
+}
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	return qobject_cast<Event::EventPlugin *>(plugin);
 }
 
 bool CompetitorDocument::saveData()
@@ -43,20 +36,10 @@ bool CompetitorDocument::saveData()
 			// insert runs
 			int competitor_id = dataId().toInt();
 			int si_id = value("competitors.siId").toInt();
-			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-			qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-			auto event_plugin = qobject_cast<Event::EventPlugin *>(plugin);
+
+			auto *event_plugin = eventPlugin();
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
-			/*
-			{
-				int ret;
-				QMetaObject::invokeMethod(plugin, "incDlTest", Q_RETURN_ARG(int, ret));
-				qfInfo() << "DL invoke:" << ret;
-			}
-			qfInfo() << "DL call:" << event_plugin->incDlTest();
-			qfInfo() << "DL SC:" << event_plugin->stageCount();
-			*/
-			//int stage_count = event_plugin->property("stageCount").toInt();
+
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
 			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
@@ -86,7 +69,6 @@ bool CompetitorDocument::saveData()
 		}
 	}
 	return ret;
-
 }
 
 bool CompetitorDocument::dropData()
