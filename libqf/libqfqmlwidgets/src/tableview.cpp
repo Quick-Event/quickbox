@@ -482,7 +482,7 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
 				model()->setData(ix, new_val);
 			}
-			if(inlineEditStrategy() == OnCurrentRowChange && selected_row_indexes.count() > 1) {
+			if(selected_row_indexes.count() > 1) {
 				// post edits in every row when more rows is selected
 				if(!postRow(row_ix))
 					return;

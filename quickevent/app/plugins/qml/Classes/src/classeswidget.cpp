@@ -198,8 +198,14 @@ void ClassesWidget::import_ocad()
 						}
 					}
 				}
-				if(class_names.isEmpty())
-					class_names << course_name;
+				else {
+					class_names << class_name;
+				}
+				if(class_names.isEmpty()) {
+					//class_names << course_name;
+					qfWarning() << "cannot deduce class name, skipping line:" << line;
+					continue;
+				}
 				if(defined_courses.contains(course_name)) {
 					CourseDef cd = defined_courses.value(course_name);
 					QStringList classes = cd.classes() << class_names;

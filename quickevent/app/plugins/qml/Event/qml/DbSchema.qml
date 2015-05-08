@@ -55,6 +55,7 @@ Schema {
 				Field { name: 'code'; type: Int { } },
 				Field { name: 'outOfOrder'; 
 					type: Boolean { } 
+					defaultValue: false;
 					notNull: true
 				}
 			]

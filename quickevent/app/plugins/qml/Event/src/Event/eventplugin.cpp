@@ -470,7 +470,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		if(QFile::exists(event_fn)) {
 			qfs::Connection conn(QSqlDatabase::database());
 			conn.setDatabaseName(event_fn);
-			qfInfo() << "Opening database file";
+			qfInfo() << "Opening database file" << event_fn;
 			if(conn.open()) {
 				qfs::Query q(conn);
 				ok = q.exec("PRAGMA foreign_keys=ON");
@@ -488,6 +488,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	}
 	if(ok) {
 		eventConfig(true);
+		connection_settings.setEventName(event_name);
 		setEventName(event_name);
 		emit eventOpened(eventName());
 		//emit reloadDataRequest();

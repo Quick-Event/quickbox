@@ -56,8 +56,7 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 	qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 	try {
 		qf::core::sql::Query q;
-		q.exec("DELETE FROM classdefs WHERE stageId=" QF_IARG(current_stage), qf::core::Exception::Throw);
-		gcCourses();
+		deleteCourses(current_stage);
 
 		QSet<int> all_codes;
 		QMap<QString, int> course_ids;
@@ -84,12 +83,12 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 				course_id = q.lastInsertId().toInt();
 			}
 			{
-				QString qs = "INSERT INTO classdefs (classId, courseId, stageId) VALUES (:classId, :courseId, :stageId)";
+				QString qs = "UPDATE classdefs SET courseId=:courseId WHERE classId=:classId AND stageId=:stageId";
 				q.prepare(qs, qf::core::Exception::Throw);
 				for(auto class_name : cd.classes()) {
 					int class_id = class_ids.value(class_name);
 					if(class_id > 0) {
-						qfInfo() << "\t" << "inserting classdefs" << class_name;
+						qfInfo() << "\t" << "updateing classdefs for" << class_name << "stage:" << current_stage;
 						q.bindValue(":classId", class_id);
 						q.bindValue(":courseId", course_id);
 						q.bindValue(":stageId", current_stage);
@@ -148,11 +147,21 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 	}
 }
 
+void ClassesPlugin::deleteCourses(int stage_id)
+{
+	qf::core::sql::Query q;
+	q.exec("UPDATE classdefs SET courseId=NULL WHERE stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+	gcCourses();
+}
+
 void ClassesPlugin::gcCourses()
 {
 	qf::core::sql::Query q;
 	q.exec("DELETE FROM coursecodes WHERE id IN ("
-		"SELECT coursecodes.id FROM coursecodes LEFT JOIN courses ON coursecodes.courseId=courses.id LEFT JOIN classdefs ON classdefs.courseId=courses.id WHERE classdefs.Id IS NULL"
+		"SELECT coursecodes.id FROM coursecodes"
+		   " LEFT JOIN courses ON coursecodes.courseId=courses.id"
+		   " LEFT JOIN classdefs ON classdefs.courseId=courses.id"
+		   " WHERE classdefs.Id IS NULL"
 		")", qf::core::Exception::Throw);
 	q.exec("DELETE FROM courses WHERE id IN ("
 		"SELECT courses.id FROM courses LEFT JOIN classdefs ON classdefs.courseId=courses.id WHERE classdefs.Id IS NULL"
