@@ -42,27 +42,30 @@ void RunsTableItemDelegate::setHighlightedClassId(int class_id)
 	}
 }
 
-void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &ix) const
 {
 	qf::qmlwidgets::TableView *v = view();
-	if(v) {
+	if(v) do {
 		auto *m = v->model();
 		auto *tm = qobject_cast<qf::core::model::SqlTableModel*>(v->tableModel());
 		if(m && tm) {
 			if(m_highlightedClassId > 0 && m_classInterval > 0 && isStartTimeHighlightVisible()) {
-				auto cd = tm->columnDefinition(index.column());
+				auto cd = tm->columnDefinition(ix.column());
 				if(cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))) {
-					quickevent::og::TimeMs tms = m->data(index, qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
+					quickevent::og::TimeMs tms = m->data(ix, qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
 					int start_ms = tms.msec();
 					int prev_start_ms = m_classStart;
-					QString club = m->data(index).toString().mid(0, 3).trimmed();
+					//int table_row = v->toTableModelRowNo(index.row());
+					int reg_col = v->logicalColumnIndex("registration");
+					QF_ASSERT(reg_col >= 0, "Bad registration column!", break);
+					QString club = m->data(ix.sibling(ix.row(), reg_col), qf::core::model::TableModel::RawValueRole).toString().mid(0, 3).trimmed();
 					QString prev_club;
-					if(index.row() > 0) {
-						tms = m->data(index.sibling(index.row() - 1, index.column()), qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
+					if(ix.row() > 0) {
+						tms = m->data(ix.sibling(ix.row() - 1, ix.column()), qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
 						prev_start_ms = tms.msec();
-						prev_club = m->data(index.sibling(index.row() - 1, index.column())).toString().mid(0, 3).trimmed();
+						prev_club = m->data(ix.sibling(ix.row() - 1, reg_col), qf::core::model::TableModel::RawValueRole).toString().mid(0, 3).trimmed();
 					}
-					//qfWarning() << index.row() << start_ms << prev_start_ms << "diff:" << (start_ms - prev_start_ms) << m_classInterval;
+					//qfWarning() << ix.row() << club << prev_club;
 					QColor c;
 					if((start_ms > m_classStart && start_ms == prev_start_ms) || ((start_ms - prev_start_ms) % m_classInterval) != 0) {
 						c = Qt::red;
@@ -81,6 +84,6 @@ void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 				}
 			}
 		}
-	}
-	Super::paint(painter, option, index);
+	} while(false);
+	Super::paint(painter, option, ix);
 }

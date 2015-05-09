@@ -695,6 +695,17 @@ qf::core::utils::TableRow TableView::tableRow(int row_no) const
 	return ret;
 }
 
+int TableView::logicalColumnIndex(const QString &field_name) const
+{
+	auto *m = model();
+	if(m) for (int i = 0; i < m->columnCount(); ++i) {
+		QString fldn = m->headerData(i, Qt::Horizontal, qf::core::model::TableModel::FieldNameRole).toString();
+		if(qf::core::Utils::fieldNameEndsWith(fldn, field_name))
+			return i;
+	}
+	return -1;
+}
+
 QList<int> TableView::selectedRowsIndexes() const
 {
 	QModelIndexList lst = selectedIndexes();

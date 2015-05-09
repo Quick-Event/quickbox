@@ -26,8 +26,8 @@ private:
 	typedef QAbstractTableModel Super;
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
-					   FieldTypeRole, //FieldIsNullableRole,
-					   RawValueRole, ValueIsNullRole, ColumnDefinitionRole,
+					   FieldTypeRole, ColumnDefinitionRole,
+					   RawValueRole, ValueIsNullRole,
 					   SortRole,
 					   FirstUnusedRole };
 	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};

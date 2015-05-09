@@ -111,6 +111,8 @@ public:
 	qf::core::utils::TableRow tableRow(int row_no = -1) const;
 	qf::core::utils::TableRow selectedRow() const {return tableRow();}
 
+	int logicalColumnIndex(const QString &field_name) const;
+
 	QList<int> selectedRowsIndexes() const;
 	QList<int> selectedColumnsIndexes() const;
 

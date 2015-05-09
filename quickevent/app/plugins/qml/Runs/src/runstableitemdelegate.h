@@ -17,7 +17,7 @@ public:
 
 	void setHighlightedClassId(int class_id);
 
-	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
+	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &ix) const Q_DECL_OVERRIDE;
 private:
 	int m_highlightedClassId = 0;
 	int m_classStart;
