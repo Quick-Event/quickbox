@@ -188,6 +188,7 @@ void StartSlotHeader::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		dt.setIgnoreClassClashCheck(a_clash->isChecked());
 		startSlotItem()->setData(dt);
 		update();
+		startSlotItem()->ganttItem()->checkClassClash();
 	}
 	else if(a == a_locked) {
 		startSlotItem()->setLocked(!startSlotItem()->isLocked());

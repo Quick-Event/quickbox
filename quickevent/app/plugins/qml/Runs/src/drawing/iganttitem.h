@@ -19,7 +19,7 @@ public:
 
 	int pxToMin(int px) const;
 	int minToPx(int min) const;
-protected:
+
 	const GanttItem *ganttItem() const;
 	GanttItem *ganttItem();
 private:
