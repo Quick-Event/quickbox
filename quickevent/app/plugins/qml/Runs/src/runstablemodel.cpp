@@ -1,6 +1,11 @@
 #include "runstablemodel.h"
 
+#include <qf/core/sql/connection.h>
+#include <qf/core/sql/transaction.h>
+
 #include <QMimeData>
+
+#include <quickevent/og/timems.h>
 
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
@@ -87,17 +92,53 @@ bool RunsTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, 
 void RunsTableModel::switchStartTimes(int r1, int r2)
 {
 	qfLogFuncFrame() << r1 << r2;
-	int col = columnIndex("startTimeMs");
-	QF_ASSERT(col >= 0, "Bad column!", return);
+	//int col_id = columnIndex("runs.id");
+	int col_stime = columnIndex("startTimeMs");
+	//QF_ASSERT(col_id >= 0, "Bad runs.id column!", return);
+	QF_ASSERT(col_stime >= 0, "Bad startTimeMs column!", return);
 
-	QModelIndex ix1 = index(r1, col);
+	int id1 = value(r1, "runs.id").toInt();
+	int id2 = value(r2, "runs.id").toInt();
+	QString err_msg;
+	QModelIndex ix1 = index(r1, col_stime);
 	QVariant v1 = ix1.data(Qt::EditRole);
-	QModelIndex ix2 = index(r2, col);
+	QModelIndex ix2 = index(r2, col_stime);
 	QVariant v2 = ix2.data(Qt::EditRole);
-	setData(ix1, v2);
-	setData(ix2, v1);
-	postRow(r1, true);
-	postRow(r2, true);
-	emit startTimesSwitched(r1, r2);
+
+	bool is_single_user = sqlConnection().driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
+	if(is_single_user) {
+		setData(ix1, v2);
+		setData(ix2, v1);
+		postRow(r1, true);
+		postRow(r2, true);
+	}
+	else {
+		qf::core::sql::Transaction transaction(sqlConnection());
+		quickevent::og::TimeMs t1 = v1.value<quickevent::og::TimeMs>();
+		quickevent::og::TimeMs t2 = v2.value<quickevent::og::TimeMs>();
+		int msec1 = -1, msec2 = -1;
+		qf::core::sql::Query q(transaction.connection());
+		QString qs = "SELECT id, startTimeMs FROM runs WHERE id IN (" QF_IARG(id1) ", " QF_IARG(id2) ") FOR UPDATE";
+		q.exec(qs, qf::core::Exception::Throw);
+		while(q.next()) {
+			int id = q.value("id").toInt();
+			if(id == id1)
+				msec1 = q.value("startTimeMs").toInt();
+			else if(id == id2)
+				msec2 = q.value("startTimeMs").toInt();
+		}
+		qfDebug() << t1.msec() << msec1 << t2.msec() << msec2;
+		if(msec1 == t1.msec() && msec2 == t2.msec()) {
+			setData(ix1, v2);
+			setData(ix2, v1);
+			postRow(r1, true);
+			postRow(r2, true);
+			transaction.commit();
+		}
+		else {
+			err_msg = tr("Mid-air collision switching start times, reload table and try it again.");
+		}
+	}
+	emit startTimesSwitched(id1, id2, err_msg);
 }
 

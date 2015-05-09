@@ -50,14 +50,14 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m_runsTableItemDelegate = new RunsTableItemDelegate(ui->tblRuns);
 	ui->tblRuns->setItemDelegate(m_runsTableItemDelegate);
 
-	ui->tblRuns->setSelectionMode(QTableView::SingleSelection);
+	//ui->tblRuns->setSelectionMode(QTableView::SingleSelection);
 	ui->tblRuns->viewport()->setAcceptDrops(true);
 	ui->tblRuns->setDropIndicatorShown(true);
 	ui->tblRuns->setDragDropMode(QAbstractItemView::InternalMove);
 	ui->tblRuns->setDragEnabled(false);
 
 	auto m = new RunsTableModel(this);
-	m->addColumn("id").setReadOnly(true);
+	m->addColumn("runs.id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.siId", tr("SI"));
 	m->addColumn("competitorName", tr("Name"));
@@ -73,7 +73,16 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
 
-	connect(m_runsModel, &RunsTableModel::startTimesSwitched, ui->tblRuns, &qf::qmlwidgets::TableView::reload);
+	connect(m_runsModel, &RunsTableModel::startTimesSwitched, ui->tblRuns, [this](int id1, int id2, const QString &err_msg)
+	{
+		Q_UNUSED(id1)
+		Q_UNUSED(id2)
+		if(!err_msg.isEmpty()) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, err_msg);
+		}
+		//ui->tblRuns->reload(true);
+		m_runsModel->reload();
+	});
 
 	connect(ui->tblRuns->horizontalHeader(), &QHeaderView::sortIndicatorChanged, [this](int logical_index, Qt::SortOrder order)
 	{

@@ -20,6 +20,7 @@ public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
 	QVariant value(int row_ix, int column_ix) const Q_DECL_OVERRIDE;
+	using Super::value;
 	bool setValue(int row, int column, const QVariant &val) Q_DECL_OVERRIDE;
 
 	//Q_INVOKABLE int ogTimeMsTypeId() const;

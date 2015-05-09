@@ -20,8 +20,7 @@ public:
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) Q_DECL_OVERRIDE;
 
 	void switchStartTimes(int r1, int r2);
-	Q_SIGNAL void startTimesSwitched(int r1, int r2);
-
+	Q_SIGNAL void startTimesSwitched(int id1, int id2, const QString &err_msg);
 };
 
 #endif // RUNSTABLEMODEL_H

@@ -220,7 +220,7 @@ void TableView::resetColumnsSettings()
 	resizeColumnsToContents();
 }
 
-void TableView::reload()
+void TableView::reload(bool preserve_sorting)
 {
 	qfLogFuncFrame();
 	int sort_column = -1;
@@ -244,7 +244,7 @@ void TableView::reload()
 		setCurrentIndex(ix);
 		//updateDataArea();
 	}
-	if(horizontalHeader()) {
+	if(horizontalHeader() && preserve_sorting) {
 		if(sort_column >= 1) {
 			horizontalHeader()->setSortIndicator(sort_column, sort_order);
 		}

@@ -75,7 +75,7 @@ public:
 
 	Q_SLOT void resetColumnsSettings();
 
-	Q_SLOT virtual void reload();
+	Q_SLOT virtual void reload(bool preserve_sorting = false);
 
 	Q_SLOT virtual void insertRow();
 	//! @param row_no if @a row_no < 0 than post current row.
