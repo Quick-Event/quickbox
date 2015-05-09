@@ -1,4 +1,5 @@
 #include "query.h"
+#include "connection.h"
 #include "querybuilder.h"
 
 #include "../core/log.h"
@@ -15,7 +16,7 @@ Query::Query(const QSqlDatabase &db)
 }
 
 Query::Query(const QString &connection_name)
-	: Super(QSqlDatabase::database(connection_name.isEmpty()? QLatin1String(QSqlDatabase::defaultConnection): connection_name, false))
+	: Super(Connection::forName(connection_name))
 {
 }
 

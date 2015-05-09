@@ -42,7 +42,7 @@ void RunsPlugin::onInstalled()
 	emit nativeInstalled();
 
 	auto *a_draw = m_partWidget->menuBar()->actionForPath("drawing");
-	a_draw->setText("&Draw");
+	a_draw->setText("&Drawing");
 	{
 		qfw::Action *a = new qfw::Action("Classes layout");
 		a_draw->addActionInto(a);

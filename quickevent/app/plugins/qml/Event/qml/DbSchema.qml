@@ -180,12 +180,6 @@ Schema {
 					defaultValue: 'OFF';
 					notNull: true
 					comment: "referencing enumz.runs.status"
-				},
-				Field { name: 'startTimeAlignment';
-					type: Int {}
-					defaultValue: 50;
-					notNull: true
-					comment: "0 - beginning of start field, 100 - end of start field"
 				}
 			]
 			indexes: [

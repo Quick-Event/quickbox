@@ -27,6 +27,8 @@
 #include <QDateTime>
 #include <QLabel>
 
+#include <algorithm>
+
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
@@ -176,6 +178,58 @@ void RunsWidget::reset()
 	reload();
 }
 
+static bool list_length_greater_than(const QList<int> &lst1, const QList<int> &lst2)
+{
+	return lst1.count() > lst2.count();
+}
+
+static void shuffle(QList<int> &lst)
+{
+	std::random_shuffle(lst.begin(), lst.end());
+}
+
+QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int class_id)
+{
+	qfLogFuncFrame();
+	QMap<QString, QList<int> > ids_by_clubs;
+	qf::core::sql::QueryBuilder qb;
+	qb.select2("runs", "id")
+			.select2("competitors", "registration")
+			.from("competitors")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id))
+			.where("competitors.classId=" QF_IARG(class_id));
+	qfs::Query q;
+	q.exec(qb.toString(), qf::core::Exception::Throw);
+	while(q.next()) {
+		QString club = q.value("registration").toString().mid(0, 3).trimmed().toUpper();
+		ids_by_clubs[club] << q.value("runs.id").toInt();
+	}
+	{
+		for(auto club : ids_by_clubs.keys()) {
+			QStringList sl;
+			for(auto id : ids_by_clubs.value(club)) {
+				sl << QString::number(id);
+			}
+			qfDebug() << "\t" << club << ":" << sl.join(", ");
+		}
+	}
+	QList< QList<int> > ret = ids_by_clubs.values();
+	// use list_length_greater_than to sort DESC
+	qSort(ret.begin(), ret.end(), list_length_greater_than);
+	for (int i = 0; i < ret.count(); ++i) {
+		shuffle(ret[i]);
+	}
+	{
+		for(auto lst : ret) {
+			QStringList sl;
+			for(auto id : lst) {
+				sl << QString::number(id);
+			}
+			qfDebug() << "\t sorted:" << sl.join(", ");
+		}
+	}
+	return ret;
+}
 
 void RunsWidget::on_btDraw_clicked()
 {
@@ -213,43 +267,70 @@ void RunsWidget::on_btDraw_clicked()
 						.from("classdefs")
 						.where("stageId=" QF_IARG(stage_id))
 						.where("classId=" QF_IARG(class_id));
-				qfs::Query q(transaction.connection());
-				q.exec(qb.toString(), qf::core::Exception::Throw);
-				if(q.next()) {
-					int interval = q.value("startIntervalMin").toInt() * 60 * 1000;
-					if(interval == 0) {
-						if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Start interval is zero, proceed anyway?"), false))
-							continue;
-					}
-					int start0 = q.value("startTimeMin").toInt() * 60 * 1000;
-					int vacants_before = q.value("vacantsBefore").toInt();
-					int vacant_every = q.value("vacantEvery").toInt();
-					//int va = q.value("vacantsAfter").toInt();
-					int start = start0 + vacants_before * interval;
-					int n = 0;
-					QMap<int, int> positions;
-					qsrand(QTime::currentTime().msecsSinceStartOfDay());
-					qb.clear();
-					qb.select2("runs", "id")
-							.from("competitors")
-							.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id))
-							.where("competitors.classId=" QF_IARG(class_id))
-							.orderBy("runs.startTimeAlignment");
-					q.exec(qb.toString(), qf::core::Exception::Throw);
-					while(q.next()) {
-						int rnd = qrand();
-						positions[rnd] = q.value("runs.id").toInt();
-					}
-					q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
-					QMapIterator<int, int> it(positions);
-					while(it.hasNext()) {
-						it.next();
-						q.bindValue(QStringLiteral(":startTimeMs"), start);
-						q.bindValue(QStringLiteral(":id"), it.value());
-						q.exec(qf::core::Exception::Throw);
-						start += interval;
-						if(n > 0 && n % vacant_every == 0)
-							start += interval;
+				qfs::Query q_classdefs(transaction.connection());
+				q_classdefs.exec(qb.toString(), qf::core::Exception::Throw);
+				if(q_classdefs.next()) {
+					QList< QList<int> > runners_by_club = runnersByClubSortedByCount(stage_id, class_id);
+					if(runners_by_club.count()) {
+						int runners_cnt = 0;
+						for(auto lst : runners_by_club)
+							runners_cnt += lst.count();
+						QList<int> max_club_ids = runners_by_club.takeFirst();
+						QList<int> runners_draw_ids;
+						runners_draw_ids.reserve(runners_cnt);
+						runners_draw_ids << max_club_ids;
+						int club_ix = 0;
+						int slot_len = 1;
+						int insert_ix = slot_len;
+						while(!runners_by_club.isEmpty()) {
+							QList<int> &club_runners = runners_by_club[club_ix];
+							QF_ASSERT(club_runners.count() > 0, "Club runners cannot be empty in this phase!", break);
+							int runner_id = club_runners.takeFirst();
+							runners_draw_ids.insert(insert_ix, runner_id);
+
+							// set club index for next scan
+							if(club_runners.isEmpty()) {
+								// remove list when it is emptied
+								runners_by_club.removeAt(club_ix);
+							}
+							else {
+								// take next club
+								club_ix++;
+							}
+							if(club_ix >= runners_by_club.count())
+								club_ix = 0;
+
+							// set insert index for next scan
+							insert_ix += slot_len + 1;
+							if(insert_ix > runners_draw_ids.count()) {
+								slot_len++;
+								insert_ix = slot_len;
+							}
+						}
+						{
+							// save drawing to SQL
+							int interval = q_classdefs.value("startIntervalMin").toInt() * 60 * 1000;
+							if(interval == 0) {
+								if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Start interval is zero, proceed anyway?"), false))
+									continue;
+							}
+							int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
+							int vacants_before = q_classdefs.value("vacantsBefore").toInt();
+							int vacant_every = q_classdefs.value("vacantEvery").toInt();
+							int start = start0 + vacants_before * interval;
+							int n = 0;
+
+							qfs::Query q(transaction.connection());
+							q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
+							for(int runner_id : runners_draw_ids) {
+								q.bindValue(QStringLiteral(":startTimeMs"), start);
+								q.bindValue(QStringLiteral(":id"), runner_id);
+								q.exec(qf::core::Exception::Throw);
+								start += interval;
+								if(n > 0 && n % vacant_every == 0)
+									start += interval;
+							}
+						}
 					}
 				}
 			}

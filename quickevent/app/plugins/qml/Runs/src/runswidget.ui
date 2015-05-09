@@ -81,8 +81,11 @@
       </item>
       <item>
        <widget class="QPushButton" name="btDraw">
+        <property name="toolTip">
+         <string>Draw selected  class or all classes when all the clases are selected.</string>
+        </property>
         <property name="text">
-         <string>Proceed</string>
+         <string>Draw class</string>
         </property>
        </widget>
       </item>

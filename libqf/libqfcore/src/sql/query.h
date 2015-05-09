@@ -18,9 +18,9 @@ class QFCORE_DECL_EXPORT Query : public QSqlQuery
 private:
 	typedef QSqlQuery Super;
 public:
-	/// If db is invalid, the application's default database will be used.
-	explicit Query(const QSqlDatabase &db = QSqlDatabase());
-	explicit Query(const QString &connection_name);
+	explicit Query(const QSqlDatabase &db);
+	/// If connection_name is empty, the application's default database will be used.
+	explicit Query(const QString &connection_name = QString());
 public:
 	//using Super::prepare;
 	bool prepare(const QString& query, bool throw_exc = false);
