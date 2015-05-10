@@ -294,11 +294,11 @@ void DbFsDriver::cacheRemove_helper(T &map, const QString &path, DbFsDriver::Cac
 		auto it = map.lowerBound(path);
 		while(it != map.end()) {
 			QString s = it.key();
-			qfInfo() << "checking:" << s;
+			qfDebug() << "checking:" << s;
 			if(s.startsWith(path)) {
 				if(mode == DbFsDriver::CRM_Single) {
 					if(s == path) {
-						qfWarning() << "removing" << s << "from cache";
+						qfDebug() << "removing" << s << "from cache";
 						map.erase(it);
 						break;
 					}
@@ -308,7 +308,7 @@ void DbFsDriver::cacheRemove_helper(T &map, const QString &path, DbFsDriver::Cac
 				}
 				else {
 					if(path.isEmpty() || s.length() == path.length() || s[path.length()] == '/') {
-						qfWarning() << "removing" << s << "from cache";
+						qfDebug() << "removing" << s << "from cache";
 						it = map.erase(it);
 					}
 					else {

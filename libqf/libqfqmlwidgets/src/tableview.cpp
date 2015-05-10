@@ -384,8 +384,11 @@ void TableView::paste()
 	//if(!f_contextMenuActions.contains(action("paste"))) return;
 	//if(!action("paste")->isEnabled() || !action("paste")->isVisible()) return;
 	QModelIndex origin_ix = currentIndex();
-	if(origin_ix.isValid()) {
+	if(!origin_ix.isValid())
+		return;
+	try {
 		dialogs::Dialog dlg(this);
+		dlg.setButtons(QDialogButtonBox::Ok);
 		internal::TableViewCopyToDialogWidget *w = new internal::TableViewCopyToDialogWidget();
 		dlg.setCentralWidget(w);
 		int col_cnt = 0;
@@ -468,6 +471,9 @@ void TableView::paste()
 			QItemSelectionModel *sm = selectionModel();
 			sm->select(sel, QItemSelectionModel::Select);
 		}
+	}
+	catch(qfc::Exception &e) {
+		emit sqlException(e.message(), e.where(), e.stackTrace());
 	}
 }
 
