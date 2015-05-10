@@ -42,6 +42,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->setupUi(this);
 
 	ui->cbxDrawMethod->addItem(tr("Random number"), static_cast<int>(DrawMethod::RandomNumber));
+	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->frmDrawing->setVisible(false);
 
 	ui->tblRunsToolBar->setTableView(ui->tblRuns);
@@ -231,6 +232,23 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	return ret;
 }
 
+QList<int> RunsWidget::runnersForClass(int stage_id, int class_id)
+{
+	qfLogFuncFrame();
+	QList<int> ret;
+	qf::core::sql::QueryBuilder qb;
+	qb.select2("runs", "id")
+			.from("competitors")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id))
+			.where("competitors.classId=" QF_IARG(class_id));
+	qfs::Query q;
+	q.exec(qb.toString(), qf::core::Exception::Throw);
+	while(q.next()) {
+		ret << q.value("runs.id").toInt();
+	}
+	return ret;
+}
+
 void RunsWidget::on_btDraw_clicked()
 {
 	qfLogFuncFrame();
@@ -260,8 +278,7 @@ void RunsWidget::on_btDraw_clicked()
 	try {
 		qf::core::sql::Transaction transaction(qfs::Connection::forName());
 		for(int class_id : class_ids) {
-			DrawMethod dm = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
-			if(dm == DrawMethod::RandomNumber) {
+			{
 				qf::core::sql::QueryBuilder qb;
 				qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
 						.from("classdefs")
@@ -269,36 +286,38 @@ void RunsWidget::on_btDraw_clicked()
 						.where("classId=" QF_IARG(class_id));
 				qfs::Query q_classdefs(transaction.connection());
 				q_classdefs.exec(qb.toString(), qf::core::Exception::Throw);
-				if(q_classdefs.next()) {
+				if(!q_classdefs.next())
+					continue;
+				QList<int> runners_draw_ids;
+				DrawMethod dm = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
+				if(dm == DrawMethod::RandomNumber) {
+					runners_draw_ids = runnersForClass(stage_id, class_id);
+					shuffle(runners_draw_ids);
+				}
+				else if(dm == DrawMethod::EquidistantClubs) {
 					QList< QList<int> > runners_by_club = runnersByClubSortedByCount(stage_id, class_id);
 					if(runners_by_club.count()) {
 						int runners_cnt = 0;
 						for(auto lst : runners_by_club)
 							runners_cnt += lst.count();
-						QList<int> max_club_ids = runners_by_club.takeFirst();
-						QList<int> runners_draw_ids;
 						runners_draw_ids.reserve(runners_cnt);
-						runners_draw_ids << max_club_ids;
-						int club_ix = 0;
+						runners_draw_ids << runners_by_club.first();
+						int club_ix = 1;
 						int slot_len = 1;
 						int insert_ix = slot_len;
-						while(!runners_by_club.isEmpty()) {
+						while(club_ix < runners_by_club.count()) {
 							QList<int> &club_runners = runners_by_club[club_ix];
 							QF_ASSERT(club_runners.count() > 0, "Club runners cannot be empty in this phase!", break);
 							int runner_id = club_runners.takeFirst();
+							qfDebug() << "inserting id:" << runner_id << "at index:" << insert_ix;
 							runners_draw_ids.insert(insert_ix, runner_id);
 
 							// set club index for next scan
 							if(club_runners.isEmpty()) {
-								// remove list when it is emptied
-								runners_by_club.removeAt(club_ix);
-							}
-							else {
 								// take next club
 								club_ix++;
+								qfDebug() << "club_ix:" << club_ix;
 							}
-							if(club_ix >= runners_by_club.count())
-								club_ix = 0;
 
 							// set insert index for next scan
 							insert_ix += slot_len + 1;
@@ -307,30 +326,30 @@ void RunsWidget::on_btDraw_clicked()
 								insert_ix = slot_len;
 							}
 						}
-						{
-							// save drawing to SQL
-							int interval = q_classdefs.value("startIntervalMin").toInt() * 60 * 1000;
-							if(interval == 0) {
-								if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Start interval is zero, proceed anyway?"), false))
-									continue;
-							}
-							int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
-							int vacants_before = q_classdefs.value("vacantsBefore").toInt();
-							int vacant_every = q_classdefs.value("vacantEvery").toInt();
-							int start = start0 + vacants_before * interval;
-							int n = 0;
+					}
+				}
+				if(runners_draw_ids.count()) {
+					// save drawing to SQL
+					int interval = q_classdefs.value("startIntervalMin").toInt() * 60 * 1000;
+					if(interval == 0) {
+						if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Start interval is zero, proceed anyway?"), false))
+							continue;
+					}
+					int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
+					int vacants_before = q_classdefs.value("vacantsBefore").toInt();
+					int vacant_every = q_classdefs.value("vacantEvery").toInt();
+					int start = start0 + vacants_before * interval;
+					int n = 0;
 
-							qfs::Query q(transaction.connection());
-							q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
-							for(int runner_id : runners_draw_ids) {
-								q.bindValue(QStringLiteral(":startTimeMs"), start);
-								q.bindValue(QStringLiteral(":id"), runner_id);
-								q.exec(qf::core::Exception::Throw);
-								start += interval;
-								if(n > 0 && n % vacant_every == 0)
-									start += interval;
-							}
-						}
+					qfs::Query q(transaction.connection());
+					q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
+					for(int runner_id : runners_draw_ids) {
+						q.bindValue(QStringLiteral(":startTimeMs"), start);
+						q.bindValue(QStringLiteral(":id"), runner_id);
+						q.exec(qf::core::Exception::Throw);
+						start += interval;
+						if(n > 0 && n % vacant_every == 0)
+							start += interval;
 					}
 				}
 			}
@@ -340,7 +359,24 @@ void RunsWidget::on_btDraw_clicked()
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
-	reload();
+	m_runsModel->reload();
+	//reload();
 }
 
-
+void RunsWidget::on_btDrawRemove_clicked()
+{
+	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Reset all start times for this class?"), false))
+		return;
+	try {
+		qf::core::sql::Transaction transaction(qfs::Connection::forName());
+		for (int i = 0; i < m_runsModel->rowCount(); ++i) {
+			m_runsModel->setValue(i, "startTimeMs", QVariant());
+			m_runsModel->postRow(i, qf::core::Exception::Throw);
+		}
+		transaction.commit();
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+	}
+	m_runsModel->reload();
+}

@@ -52,8 +52,12 @@ void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 			if(m_highlightedClassId > 0 && m_classInterval > 0 && isStartTimeHighlightVisible()) {
 				auto cd = tm->columnDefinition(ix.column());
 				if(cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))) {
-					quickevent::og::TimeMs tms = m->data(ix, qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
-					int start_ms = tms.msec();
+					QVariant stime_v = m->data(ix, qf::core::model::TableModel::RawValueRole);
+					quickevent::og::TimeMs stime = stime_v.value<quickevent::og::TimeMs>();
+					if(!stime.isValid())
+						break;
+
+					int start_ms = stime.msec();
 					int prev_start_ms = m_classStart;
 					//int table_row = v->toTableModelRowNo(index.row());
 					int reg_col = v->logicalColumnIndex("registration");
@@ -61,8 +65,8 @@ void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 					QString club = m->data(ix.sibling(ix.row(), reg_col), qf::core::model::TableModel::RawValueRole).toString().mid(0, 3).trimmed();
 					QString prev_club;
 					if(ix.row() > 0) {
-						tms = m->data(ix.sibling(ix.row() - 1, ix.column()), qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
-						prev_start_ms = tms.msec();
+						stime = m->data(ix.sibling(ix.row() - 1, ix.column()), qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
+						prev_start_ms = stime.msec();
 						prev_club = m->data(ix.sibling(ix.row() - 1, reg_col), qf::core::model::TableModel::RawValueRole).toString().mid(0, 3).trimmed();
 					}
 					//qfWarning() << ix.row() << club << prev_club;

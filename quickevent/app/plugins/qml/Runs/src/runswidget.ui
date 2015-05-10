@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>777</width>
+    <height>423</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -78,6 +78,16 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btDrawRemove">
+        <property name="toolTip">
+         <string>Draw selected  class or all classes when all the clases are selected.</string>
+        </property>
+        <property name="text">
+         <string>Remove drawing</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btDraw">

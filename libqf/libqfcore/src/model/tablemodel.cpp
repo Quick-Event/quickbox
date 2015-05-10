@@ -106,7 +106,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				return QStringLiteral("null");
 			return QVariant();
 		}
-		ret = data(index, RawValueRole);
+		ret = data(index, Qt::EditRole);
 		int type = columnType(index.column());
 		if(type == QVariant::Invalid)
 			type = ret.type(); /// pokud jsou sloupce virtualni (sloupce se pocitaji, nemusi byt pro ne definovan typ)
@@ -164,6 +164,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	}
 	else if(role == Qt::EditRole) {
 		ret = data(index, RawValueRole);
+		ret = rawValueToEdit(index.column(), ret);
 	}
 	else if (role == ValueIsNullRole) {
 		ret = data(index, RawValueRole);
@@ -275,7 +276,8 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	if(!index.isValid())
 		return ret;
 	if(role == Qt::EditRole) {
-		ret = setValue(index.row(), index.column(), value);
+		QVariant val = editValueToRaw(index.column(), value);
+		ret = setValue(index.row(), index.column(), val);
 		if(ret)
 			emit dataChanged(index, index);
 	}
@@ -510,6 +512,18 @@ int TableModel::columnType(int column_index) const
 		ret = fld.type();
 	}
 	return ret;
+}
+
+QVariant TableModel::rawValueToEdit(int column_index, const QVariant &val) const
+{
+	Q_UNUSED(column_index);
+	return val;
+}
+
+QVariant TableModel::editValueToRaw(int column_index, const QVariant &val) const
+{
+	Q_UNUSED(column_index);
+	return val;
 }
 
 int TableModel::columnIndex(const QString &column_name) const

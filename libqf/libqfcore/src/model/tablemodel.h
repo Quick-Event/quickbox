@@ -184,6 +184,10 @@ protected:
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
 	int columnType(int column_index) const;
+
+	virtual QVariant rawValueToEdit(int column_index, const QVariant &val) const;
+	virtual QVariant editValueToRaw(int column_index, const QVariant &val) const;
+
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
 	/// @returns: index of inserted line or -1

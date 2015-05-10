@@ -405,6 +405,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 void SqlTableModel::revertRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
+	Super::revertRow(row_no);
 }
 
 int SqlTableModel::reloadRow(int row_no)

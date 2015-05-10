@@ -10,18 +10,16 @@ using namespace quickevent::og;
 SqlTableModel::SqlTableModel(QObject *parent)
 	: Super(parent)
 {
-
 }
 
 SqlTableModel::~SqlTableModel()
 {
-
 }
 
 QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 {
 	if(role == Qt::DisplayRole) {
-		QVariant v = Super::data(index, RawValueRole);
+		QVariant v = Super::data(index, Qt::EditRole);
 		int type = v.userType();
 		if(type == qMetaTypeId<TimeMs>()) {
 			TimeMs t = v.value<TimeMs>();
@@ -29,15 +27,10 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	else if(role == SortRole) {
-		QVariant v = Super::data(index, RawValueRole);
-		int type = v.userType();
-		if(type == qMetaTypeId<TimeMs>()) {
-			TimeMs t = v.value<TimeMs>();
-			return t.msec();
-		}
+		return Super::data(index, RawValueRole);
 	}
 	else if(role == Qt::TextAlignmentRole) {
-		QVariant v = Super::data(index, RawValueRole);
+		QVariant v = Super::data(index, Qt::EditRole);
 		if(v.userType() == qMetaTypeId<TimeMs>()) {
 			return Qt::AlignRight;
 		}
@@ -45,11 +38,10 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 	return Super::data(index, role);
 }
 
-QVariant SqlTableModel::value(int row_ix, int column_ix) const
+QVariant SqlTableModel::rawValueToEdit(int column_index, const QVariant &val) const
 {
-	//qfLogFuncFrame() << row_ix << column_ix << columnType(column_ix);
-	QVariant ret = Super::value(row_ix, column_ix);
-	int type = columnType(column_ix);
+	QVariant ret = val;
+	int type = columnType(column_index);
 	if(type == qMetaTypeId<TimeMs>()) {
 		TimeMs t;
 		if(!ret.isNull()) {
@@ -60,20 +52,13 @@ QVariant SqlTableModel::value(int row_ix, int column_ix) const
 	return ret;
 }
 
-bool SqlTableModel::setValue(int row, int column, const QVariant &val)
+QVariant SqlTableModel::editValueToRaw(int column_index, const QVariant &val) const
 {
-	int type = val.userType();
-	QVariant v = val;
+	QVariant ret = val;
+	int type = columnType(column_index);
 	if(type == qMetaTypeId<TimeMs>()) {
 		TimeMs t = val.value<TimeMs>();
-		v = t.msec();
+		ret = t.msec();
 	}
-	return Super::setValue(row, column, v);
+	return ret;
 }
-/*
-int SqlTableModel::ogTimeMsTypeId() const
-{
-	//qfWarning() << "qMetaTypeId<TimeMs>():" << qMetaTypeId<TimeMs>();
-	return qMetaTypeId<TimeMs>();
-}
-*/

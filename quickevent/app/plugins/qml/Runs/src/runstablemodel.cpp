@@ -92,9 +92,7 @@ bool RunsTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, 
 void RunsTableModel::switchStartTimes(int r1, int r2)
 {
 	qfLogFuncFrame() << r1 << r2;
-	//int col_id = columnIndex("runs.id");
 	int col_stime = columnIndex("startTimeMs");
-	//QF_ASSERT(col_id >= 0, "Bad runs.id column!", return);
 	QF_ASSERT(col_stime >= 0, "Bad startTimeMs column!", return);
 
 	int id1 = value(r1, "runs.id").toInt();
@@ -140,5 +138,41 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 		}
 	}
 	emit startTimesSwitched(id1, id2, err_msg);
+}
+
+bool RunsTableModel::postRow(int row_no, bool throw_exc)
+{
+	bool is_single_user = sqlConnection().driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
+	if(is_single_user)
+		return Super::postRow(row_no, throw_exc);
+
+	int col_stime = columnIndex("startTimeMs");
+	QF_ASSERT(col_stime >= 0, "Bad startTimeMs column!", return false);
+	if(isDirty(row_no, col_stime)) {
+		int id = value(row_no, "runs.id").toInt();
+		int orig_msec = origValue(row_no, col_stime).toInt();
+		int db_msec = 0;
+
+		qf::core::sql::Transaction transaction(sqlConnection());
+		QString qs = "SELECT id, startTimeMs FROM runs WHERE id=" QF_IARG(id) " FOR UPDATE";
+		qf::core::sql::Query q(transaction.connection());
+		q.exec(qs, qf::core::Exception::Throw);
+		if(q.next()) {
+			db_msec = q.value("startTimeMs").toInt();
+		}
+		if(orig_msec == db_msec) {
+			bool ret = Super::postRow(row_no, throw_exc);
+			transaction.commit();
+			return ret;
+		}
+		else {
+			QString err_msg = tr("Mid-air collision setting start time, reload table and try it again.");
+			revertRow(row_no);
+			if(throw_exc)
+				QF_EXCEPTION(err_msg);
+			return false;
+		}
+	}
+	return Super::postRow(row_no, throw_exc);
 }
 

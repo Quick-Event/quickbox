@@ -40,6 +40,8 @@ public:
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private slots:
 	void on_btDraw_clicked();
+	void on_btDrawRemove_clicked();
+
 private:
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();
@@ -50,8 +52,9 @@ private:
 	 * @return list of runs.id for each club sorted by their count, longest list of runners is first
 	 */
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id);
+	QList<int> runnersForClass(int stage_id, int class_id);
 private:
-	enum class DrawMethod : int {Invalid = 0, RandomNumber};
+	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs};
 
 	Ui::RunsWidget *ui;
 	RunsTableModel *m_runsModel;
