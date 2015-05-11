@@ -189,7 +189,7 @@ void ForeignKeyComboBox::loadItems(bool force)
 			if(!query_str.isEmpty()) {
 				qf::core::sql::Query q(connection_name);
 				qfDebug() << "\t query_str:" << query_str;
-				QStringList caption_fields;
+				QSet<QString> field_captions;
 				QString caption_format = itemCaptionFormat();
 				if(!caption_format.isEmpty()) {
 					qfDebug() << "\t itemCaptionFormat:" << caption_format;
@@ -199,6 +199,8 @@ void ForeignKeyComboBox::loadItems(bool force)
 						caption_format.replace(referencedFieldPlaceHolder, "{{" + fldname + "}}", Qt::CaseInsensitive);
 					if(caption_format.contains(referencedCaptionFieldPlaceHolder, Qt::CaseInsensitive))
 						caption_format.replace(referencedCaptionFieldPlaceHolder, "{{" + capfldname + "}}", Qt::CaseInsensitive);
+					field_captions = qf::core::Utils::findCaptions(caption_format);
+					/*
 					QRegExp rx;
 					rx.setPattern("\\{\\{([A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9]*)*)\\}\\}");
 					rx.setPatternSyntax(QRegExp::RegExp);
@@ -208,16 +210,16 @@ void ForeignKeyComboBox::loadItems(bool force)
 						caption_fields << rx.cap(1);
 						ix += rx.matchedLength();
 					}
+					*/
 				}
 				qfDebug() << "\t capname:" << capfldname;
 				q.exec(query_str);
 				while(q.next()) {
 					QString caption = caption_format;
-					for(QString fld : caption_fields) {
+					for(QString fld : field_captions) {
 						qfDebug() << "\t replacing caption field:" << fld;
-						QString fld_val = q.value(fld).toString();
-						//if(QFSql::sqlIdCmp(fld, capfldname)) fld_val = localizeCaption(fld_val);
-						caption.replace("{{" + fld + "}}", fld_val);
+						QVariant fld_val = q.value(fld);
+						caption = qf::core::Utils::replaceCaption(caption, fld, fld_val);
 					}
 					QVariant id = q.value(fldname);
 					/*

@@ -120,6 +120,16 @@ public:
 	static QVariant retypeVariant(const QVariant &_val, QVariant::Type type);
 	static QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 
+	/**
+	 * @brief findCaptions
+	 * Finds in string all captions in form {{captionName}}
+	 * @param str
+	 * @return Set of found captions.
+	 */
+	static QSet<QString> findCaptions(const QString caption_format);
+	static QString replaceCaption(const QString format_str, const QString &caption_name, const QVariant &caption_value);
+	static QString replaceCaptions(const QString format_str, const QVariantMap &replacements);
+
 	/// invoke method of prototype bool method()
 	static bool invokeMethod_B_V(QObject *obj, const char *method_name);
 

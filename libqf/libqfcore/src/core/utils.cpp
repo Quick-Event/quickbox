@@ -165,6 +165,38 @@ QVariant Utils::retypeStringValue(const QString &str_val, const QString &type_na
 	return ret;
 }
 
+QSet<QString> Utils::findCaptions(const QString caption_format)
+{
+	QSet<QString> ret;
+	QRegExp rx;
+	rx.setPattern("\\{\\{([A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9]*)*)\\}\\}");
+	rx.setPatternSyntax(QRegExp::RegExp);
+	int ix = 0;
+	while((ix = rx.indexIn(caption_format, ix)) != -1) {
+		ret << rx.cap(1);
+		ix += rx.matchedLength();
+	}
+	return ret;
+}
+
+QString Utils::replaceCaption(const QString format_str, const QString &caption_name, const QVariant &caption_value)
+{
+	QString ret = format_str;
+	QString placeholder = QLatin1String("{{") + caption_name + QLatin1String("}}");
+	ret.replace(placeholder, caption_value.toString());
+	return ret;
+}
+
+QString Utils::replaceCaptions(const QString format_str, const QVariantMap &replacements)
+{
+	QString ret = format_str;
+	QMapIterator<QString, QVariant> it(replacements);
+	while(it.hasNext()) {
+		ret = replaceCaption(ret, it.key(), it.value());
+	}
+	return ret;
+}
+
 bool Utils::invokeMethod_B_V(QObject *obj, const char *method_name)
 {
 	QVariant ret = false;
