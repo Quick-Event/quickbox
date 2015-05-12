@@ -127,7 +127,7 @@ public:
 	 * @return Set of found captions.
 	 */
 	static QSet<QString> findCaptions(const QString caption_format);
-	static QString replaceCaption(const QString format_str, const QString &caption_name, const QVariant &caption_value);
+	static QString replaceCaptions(const QString format_str, const QString &caption_name, const QVariant &caption_value);
 	static QString replaceCaptions(const QString format_str, const QVariantMap &replacements);
 
 	/// invoke method of prototype bool method()

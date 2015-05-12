@@ -42,7 +42,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 	case QtFatalMsg: level = Log::LOG_FATAL; break;
 	}
 	for(auto log_device : logDevices()) {
-		if(log_device->checkLogPermisions(LogDevice::domainFromContext(context), level)) {
+		if(log_device->checkLogPermisions(context, level)) {
 			log_device->log(level, context, msg);
 		}
 	}
@@ -148,7 +148,7 @@ Log::Level LogDevice::logTreshold()
 	return m_logTreshold;
 }
 
-bool LogDevice::checkLogPermisions(const QString &_domain, Log::Level _level)
+bool LogDevice::checkLogPermisions(const QMessageLogContext &context, Log::Level _level)
 {
 	bool ret = false;
 	do {
@@ -160,13 +160,15 @@ bool LogDevice::checkLogPermisions(const QString &_domain, Log::Level _level)
 #endif
 		}
 		bool domain_level_found = false;
+		QString domain = prettyDomain(domainFromContext(context));
 		QMapIterator<QString, int> it(m_domainTresholds);
 		while (it.hasNext()) {
 			it.next();
-			if(_domain.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
-				//printf("found %s %d \n", qPrintable(_domain), it.value());
+			if(domain.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
+				//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
 				domain_level_found = true;
-				if(_level <= it.value()) ret = true;
+				if(_level <= it.value())
+					ret = true;
 				break;
 			}
 		}

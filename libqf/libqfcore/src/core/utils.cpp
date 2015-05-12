@@ -179,7 +179,7 @@ QSet<QString> Utils::findCaptions(const QString caption_format)
 	return ret;
 }
 
-QString Utils::replaceCaption(const QString format_str, const QString &caption_name, const QVariant &caption_value)
+QString Utils::replaceCaptions(const QString format_str, const QString &caption_name, const QVariant &caption_value)
 {
 	QString ret = format_str;
 	QString placeholder = QLatin1String("{{") + caption_name + QLatin1String("}}");
@@ -192,7 +192,7 @@ QString Utils::replaceCaptions(const QString format_str, const QVariantMap &repl
 	QString ret = format_str;
 	QMapIterator<QString, QVariant> it(replacements);
 	while(it.hasNext()) {
-		ret = replaceCaption(ret, it.key(), it.value());
+		ret = replaceCaptions(ret, it.key(), it.value());
 	}
 	return ret;
 }

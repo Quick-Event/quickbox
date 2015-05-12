@@ -219,7 +219,7 @@ void ForeignKeyComboBox::loadItems(bool force)
 					for(QString fld : field_captions) {
 						qfDebug() << "\t replacing caption field:" << fld;
 						QVariant fld_val = q.value(fld);
-						caption = qf::core::Utils::replaceCaption(caption, fld, fld_val);
+						caption = qf::core::Utils::replaceCaptions(caption, fld, fld_val);
 					}
 					QVariant id = q.value(fldname);
 					/*
