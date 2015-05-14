@@ -99,7 +99,7 @@
 	public: void setter_prefix##name_rest(const ptype &val) {d->getter_prefix##name_rest = val;}
 
 /// for implicitly shared classes properties
-#define QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(ptype, getter_prefix, setter_prefix, name_rest) \
+#define QF_SHARED_CLASS_BIT_FIELD_RW(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const {return d->getter_prefix##name_rest;} \
 	public: void setter_prefix##name_rest(const ptype &val) {d->getter_prefix##name_rest = val;}
 

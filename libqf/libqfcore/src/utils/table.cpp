@@ -575,6 +575,7 @@ Table::Table(const QStringList &col_names)
 	d = new Data();
 	for(int i=0; i<col_names.count(); i++) {
 		Field fld(col_names[i], QVariant::String);
+		fld.setCanUpdate(true);
 		fieldsRef().append(fld);
 	}
 }

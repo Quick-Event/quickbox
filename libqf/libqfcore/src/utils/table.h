@@ -27,6 +27,12 @@ class QFCORE_DECL_EXPORT Table
 {
 	//Q_DECLARE_TR_FUNCTIONS(qf::core::utils::Table);
 public:
+	class FieldList;
+	Table();
+	Table(const QStringList &col_names);
+	Table(const FieldList &col_defs);
+	virtual ~Table();
+public:
 	typedef TableRow Row;
 	enum CleanupDataOption {ClearFieldsRows = 1, ClearRows};
 	class QFCORE_DECL_EXPORT TextImportOptions : public QVariantMap
@@ -133,9 +139,9 @@ public:
 
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
-		QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(bool, c, setC, anUpdate)
-		QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(bool, is, set, PriKey)
-		QF_SHARED_CLASS_PRIMITIVE_FIELD_RW(bool, is, set, Serial)
+		QF_SHARED_CLASS_BIT_FIELD_RW(bool, c, setC, anUpdate)
+		QF_SHARED_CLASS_BIT_FIELD_RW(bool, is, set, PriKey)
+		QF_SHARED_CLASS_BIT_FIELD_RW(bool, is, set, Serial)
 		//QF_SHARED_CLASS_FIELD_RW(bool, is, set, Nullable)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
@@ -307,11 +313,6 @@ public:
 	/// ulozi data v tabulce jako QVariantList QVariantListu (kazdy radek je jeden QVariantList)
 	QVariantList dataToVariantList() const;
 	void dataFromVariantList(const QVariantList &_lst);
-public:
-	Table();
-	Table(const QStringList &col_names);
-	Table(const FieldList &col_defs);
-	virtual ~Table();
 };
 
 //! One row in table, implicitly shared.
