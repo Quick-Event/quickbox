@@ -246,19 +246,18 @@ QVariant TreeTableRow::value(const QString &col_or_key_name, const QVariant &def
 
 void TreeTableRow::setValue(int col, const QVariant &val)
 {
-	//if(isNull()) return;
-	//if(0 <= col && col < columns().count()) {
-		if(f_row.isList()) f_row.setProperty(col, val);
-		else if(f_row.isMap()) {
-			SValue sv = f_row[TreeTable::KEY_ROW];
-			sv.setProperty(col, val);
-		}
-		else {
-			/// at je tam co chce, udelej z toho radek
-			//if(f_row.isValid()) f_row.setValue(QVariant()); /// vyhni se warningu
-			f_row.setProperty(col, val);
-		}
-	//}
+	if(f_row.isList()) {
+		f_row.setProperty(col, val);
+	}
+	else if(f_row.isMap()) {
+		SValue sv = f_row[TreeTable::KEY_ROW];
+		sv.setProperty(col, val);
+	}
+	else {
+		/// at je tam co chce, udelej z toho radek
+		//if(f_row.isValid()) f_row.setValue(QVariant()); /// vyhni se warningu
+		f_row.setProperty(col, val);
+	}
 }
 
 void TreeTableRow::setValue(const QString &col_or_key_name, const QVariant &val)

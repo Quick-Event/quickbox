@@ -75,6 +75,7 @@ bool SqlTableModel::reload(const QString &query_str)
 	bool ok = reloadTable(query_str);
 	checkColumns();
 	endResetModel();
+	emit reloaded();
 	return ok;
 }
 
@@ -605,7 +606,6 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 			}
 		}
 	}
-	emit reloaded();
 	return true;
 }
 

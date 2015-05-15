@@ -3,3 +3,4 @@ module reports
 ReportStyleCommon 1.0 ReportStyleCommon.qml
 Cell 1.0 Cell.qml
 HeaderCell 1.0 HeaderCell.qml
+QuickEventHeaderFooter 1.0 QuickEventHeaderFooter.qml

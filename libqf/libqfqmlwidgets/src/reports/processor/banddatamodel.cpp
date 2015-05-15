@@ -65,6 +65,7 @@ QVariant TreeTableBandDataModel::tableData(const QString &key, BandDataModel::Da
 	qfu::TreeTable ttr = treeTable();
 	ret = ttr.value(key);
 	//qfWarning() << key << "->" << ret.typeName();
+	//qfWarning() << ttr.toString();
 	return ret;
 }
 

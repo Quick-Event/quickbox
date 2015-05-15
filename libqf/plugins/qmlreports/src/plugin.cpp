@@ -31,6 +31,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItem>(uri, 1, 0, "Item");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemReport>(uri, 1, 0, "Report");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemFrame>(uri, 1, 0, "Frame");
+		qmlRegisterType<qf::qmlwidgets::reports::ReportItemFrame>(uri, 1, 0, "Space");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemBand>(uri, 1, 0, "Band");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemDetail>(uri, 1, 0, "Detail");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemPara>(uri, 1, 0, "Para");

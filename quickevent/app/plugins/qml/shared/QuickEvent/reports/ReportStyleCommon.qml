@@ -42,6 +42,12 @@ StyleSheet {
 			color: Color {def:"blue"}
 		},
 		Pen {
+			id: penBlue1
+			name: "blue1"
+			basedOn: "black1"
+			color: Color {def:"blue"}
+		},
+		Pen {
 			name: "blue1dash"
 			basedOn: "black1dash"
 			color: Color {def:"blue"}
@@ -75,6 +81,11 @@ StyleSheet {
 			style: Font.StyleItalic
 		},
 		Font {
+			id: fontItalic
+			basedOn: "default"
+			style: Font.StyleItalic
+		},
+		Font {
 			id: fontBig
 			pointSize: fontDefault.pointSize * 2
 		}
@@ -93,6 +104,11 @@ StyleSheet {
 		TextStyle {
 			name: "tableHeader"
 			font: fontBoldItalic
+		},
+		TextStyle {
+			name: "reportHeader"
+			font: fontItalic
+			pen: penBlue1
 		},
 		TextStyle {
 			id: tsBig

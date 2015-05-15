@@ -83,11 +83,20 @@ Table.prototype.setName = function(nm)
 Table.prototype.value = function(row_ix, col_ix)
 {
 	var ret = undefined;
-	if(typeof(row_ix) == 'number') {
+	if(typeof(row_ix) === 'number') {
 		// table rows values
 		if(this._data.rows && this._data.rows instanceof Array) {
 			if(row_ix >= 0) {
-				var row = this._data.rows[row_ix];
+				var row_o = this._data.rows[row_ix];
+				var row = undefined;
+				if(row_o) {
+					if(row_o instanceof Array) {
+						row = row_o;
+					}
+					else if(row_o instanceof Object) {
+						row = row_o.row
+					}
+				}
 				if(row && row instanceof Array) {
 					if(typeof(col_ix) == 'number') {
 						if(col_ix >= 0)
@@ -98,7 +107,7 @@ Table.prototype.value = function(row_ix, col_ix)
 						var fields = this._data.fields;
 						if(fields && fields instanceof Array) {
 							for(var i=0; i<fields.length; i++) {
-								var fld = this.fields[i];
+								var fld = fields[i];
 								if(fld && sqlEndsWith(fld.name, fld_name)) {
 									ret = row[i];
 									break;
@@ -130,14 +139,29 @@ Table.prototype.setValue = function(row_ix, col_ix, val)
 			if(!this._data.rows || !(this._data.rows instanceof Array)) {
 				this._data.rows = [];
 			}
-			var row = this._data.rows[row_ix];
-			if(!row || !(row instanceof Array)) {
-				this._data.rows[row_ix] = [];
-				row = this._data.rows[row_ix];
+			var row_o = this._data.rows[row_ix];
+			var row = undefined;
+			if(!row_o) {
+				row = [];
+				this._data.rows[row_ix] = row;
 			}
+			else if(row_o instanceof Array) {
+				row = row_o
+			}
+			else if(row instanceof Object) {
+				row = row_o.row;
+				if(!(row_o instanceof Array)) {
+					row = [];
+					row_o.row = row;
+				}
+			}
+			else {
+				throw "Table corrupted";
+			}
+
 			if(typeof(col_ix) == 'number') {
 				if(col_ix >= 0) {
-					row[col_ix];
+					row[col_ix] = val;
 					ret = true;
 				}
 			}
@@ -173,25 +197,57 @@ Table.prototype.setValue = function(row_ix, col_ix, val)
 Table.prototype.table = function(row_ix, table_name)
 {
 	var ret = undefined;
-	if(this._data.tables) {
-		var table_data = this._data.tables[row_ix];
-		if(table_data) {
-			ret = new Table(table_data);
+	if(!this._data) {
+		throw "Table is not initialized";
+	}
+	if(typeof(row_ix) == 'number') {
+		// table rows values
+		if(this._data.rows && this._data.rows instanceof Array) {
+			if(row_ix >= 0) {
+				var row_o = this._data.rows[row_ix];
+				if(row_o && row_o instanceof Object) {
+					var tables = row_o.tables;
+					if(tables instanceof Array) {
+						for(var i=0; i<tables.length; i++) {
+							var table_data = tables[i];
+							if(table_data && table_data.meta) {
+								if(!table_name || table_data.meta.name === table_name) {
+									ret = new Table(table_data);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
-
 	return ret;
 }
 
-Table.prototype.setTable = function(row_ix, table)
+Table.prototype.addTable = function(row_ix, table)
 {
-	if(!this._data.tables || !(this._data.tables instanceof Array)) {
-		this._data.tables = []
+	if(!this._data || !(this._data instanceof Object)) {
+		throw "Invalid table";
+	}
+	var rows = this._data.rows;
+	if(!rows && !(rows instanceof Array)) {
+		rows = []
+		this._data.rows = rows;
+	}
+	var row_o = rows[row_ix];
+	if(row_o instanceof Array) {
+		row_o = {row: row_o, tables: []};
+		rows[row_ix] = row_o;
+	}
+	var tables = row_o.tables;
+	if(!(tables instanceof Array)) {
+		tables = [];
+		row_o.tables = tables;
 	}
 	if(table instanceof Table)
-		this._data.tables.push(table.data);
+		tables.push(table.data);
 	else if(table instanceof Object)
-		this._data.tables.push(table);
+		tables.push(table);
 }
 
 Table.prototype.data = function()

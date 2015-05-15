@@ -560,40 +560,52 @@ bool MainWindow::execQuery(const QString& query_str)
 	QString qs = query_str.trimmed();
 	appendInfo(qs);
 	bool ok = true;
-	if(qs.startsWith(QLatin1String("SELECT"), Qt::CaseInsensitive)) {
-		qf::core::model::SqlTableModel *m = queryViewModel();
-		m->clearColumns();
-		m->setQuery(qs);
-		ok = m->reload();
-		QSqlQuery q = m->recentlyExecutedQuery();
-		if(ok) {
-			if(q.isSelect()) {
-				/// if query was select
-				ui.queryView->tableView()->resizeColumnsToContents();
-				ui.queryView->setInfo(qs);
+	bool is_select = qs.startsWith(QLatin1String("SELECT"), Qt::CaseInsensitive);
+	do {
+		if(is_select) {
+			qf::core::model::SqlTableModel *m = queryViewModel();
+			m->clearColumns();
+			m->setQuery(qs);
+			ok = m->reload();
+			QSqlQuery q = m->recentlyExecutedQuery();
+			if(ok) {
+				if(q.isSelect()) {
+					/// if query was select
+					ui.queryView->tableView()->resizeColumnsToContents();
+					ui.queryView->setInfo(qs);
+				}
+				else {
+					appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+				}
 			}
 			else {
-				appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+				QString msg = q.lastError().text();
+				qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
+				appendInfo(msg);
 			}
 		}
 		else {
-			QString msg = q.lastError().text();
-			qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
-			appendInfo(msg);
+			qf::core::sql::Query q(activeConnection());
+			ok = q.exec(qs);
+			if(!ok) {
+				QString msg = q.lastError().text();
+				qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
+				appendInfo(msg);
+			}
+			else {
+				if(q.isSelect()) {
+					//qfInfo() << "SELECT";
+					// it was actualy SELECT, sqlite PRAGMA table_info can behave like this
+					is_select = true;
+					continue;
+				}
+				else {
+					appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+				}
+			}
 		}
-	}
-	else {
-		qf::core::sql::Query q(activeConnection());
-		ok = q.exec(qs);
-		if(!ok) {
-			QString msg = q.lastError().text();
-			qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
-			appendInfo(msg);
-		}
-		else {
-			appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
-		}
-	}
+		break;
+	} while(true);
 
 	return ok;
 }
@@ -907,7 +919,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 	QModelIndex mi = ui_srv.treeServers->indexAt(point);
 	{
 		if(!mi.isValid()) {
-		// Server popup
+			// Server popup
 			QMenu menu(this);
 			menu.setTitle(tr("Server menu"));
 			menu.addAction(action("addServer"));
@@ -916,30 +928,27 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 		else {
 			ServerTreeModel *model = qobject_cast<ServerTreeModel*>(ui_srv.treeServers->model());
 			Q_ASSERT(model != NULL);
-		//QString s = model->data(mi).toString();
 			QObject *o = model->index2object(mi);
 			Q_ASSERT(o != NULL);
-		//s = o->metaObject()->className() + QString(":") + s;
-		//QMessageBox::information(this, "Debug Msg", s);
 			if(Connection *connection = qobject_cast<Connection*>(o)) {
 				QMenu menu(this);
 				menu.setTitle(tr("Connection menu"));
 				menu.addAction(action("addServer"));
-				QAction *a2 = menu.addAction(tr("Edit connection"));
-				QAction *a4 = menu.addAction(tr("Copy connection"));
-				QAction *a3 = menu.addAction(tr("Remove connection"));
+				QAction *act_editConnection = menu.addAction(tr("Edit connection"));
+				QAction *act_copyConnection = menu.addAction(tr("Copy connection"));
+				QAction *act_removeConnection = menu.addAction(tr("Remove connection"));
 				QAction *a = menu.exec(ui_srv.treeServers->viewport()->mapToGlobal(point));
-				if(a == a2) {
+				if(a == act_editConnection) {
 					DlgEditConnection dlg(this);
 					dlg.setParams(connection->params());
 					if(dlg.exec() == QDialog::Accepted) {
 						connection->setParams(dlg.params());
 					}
 				}
-				else if(a == a4) {
+				else if(a == act_copyConnection) {
 					addServer(connection);
 				}
-				else if(a == a3) {
+				else if(a == act_removeConnection) {
 					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Delete connection ?"), false)) {
 						qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
 						/* old impl
@@ -1157,7 +1166,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				}
 				else if(a == actShowFKeys) {
 					if(activeConnection().driverName().endsWith("SQLITE")) {
-						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("Not implemented yet."));
+						QString s = "PRAGMA foreign_key_list(%1)";
+						execQuery(s.arg(table->objectName()));
 					}
 					else if(activeConnection().driverName().endsWith("PSQL")) {
 						QString s = "SELECT conname AS constrname, fromcols.attname AS fkeys, tocols.attname AS referncedfields,"
