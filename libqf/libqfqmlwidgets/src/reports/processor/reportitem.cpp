@@ -177,7 +177,7 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	//if(res.value == PrintNotFit) {
 	//qfWarning().noSpace() << "PrintNotFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "' recentlyPrintNotFit: " << recentlyPrintNotFit << " keepall: " << keepAll;
 	//}
-	if(isKeepAll() && m_recentlyPrintNotFit && res == PR_PrintAgainOnNextPage) {
+	if(!canBreak() && m_recentlyPrintNotFit && res == PR_PrintAgainOnNextPage) {
 		//qfWarning().noSpace() << "PrintNeverFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "'";
 		ret = PR_ErrorNeverFit;
 	}

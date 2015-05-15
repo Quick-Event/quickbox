@@ -632,7 +632,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 			//qfInfo().color(QFLog::Yellow) << element.tagName() << "keep all:" << keepAll << "column" << current_column_index << "of" << column_sizes.count();
 			//qfInfo().color(QFLog::Yellow) << "column_br:" << column_br.toString() << "frame_content_br:" << frame_content_br.toString();
 			/// pokud je result neverfit, nech ho tam, at aspon vidime, co se nikdy nevejde
-			if(isKeepAll() && !(res == PR_ErrorNeverFit)) {
+			if(!canBreak() && !(res == PR_ErrorNeverFit)) {
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				//qfInfo() << "keepAll && !(res.flags & FlagPrintNeverFit)";
 				QF_SAFE_DELETE(mp);

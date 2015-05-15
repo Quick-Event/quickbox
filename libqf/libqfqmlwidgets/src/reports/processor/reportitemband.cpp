@@ -122,6 +122,20 @@ void ReportItemBand::resetIndexToPrintRecursively(bool including_para_texts)
 	}
 }
 
+bool ReportItemBand::canBreak()
+{
+	bool ret = Super::canBreak();
+	if(ret) {
+		if(keepFirst() > 0) {
+			ReportItemDetail *det = detail();
+			if(det) {
+				ret = (det->currentIndex() > keepFirst());
+			}
+		}
+	}
+	return ret;
+}
+
 ReportItemDetail *ReportItemBand::detail()
 {
 	ReportItemDetail *ret = findChild<ReportItemDetail*>(QString(), Qt::FindDirectChildrenOnly);

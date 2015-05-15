@@ -55,7 +55,7 @@ Report {
 					id: detail
 					objectName: "detail"
 					width: "%"
-					keepAll: true
+					//keepAll: true
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
 					Space { height: 5 }
@@ -79,6 +79,7 @@ Report {
 					Band {
 						id: runnersBand
 						objectName: "runnersBand"
+						keepFirst: 3
 						Detail {
 							id: runnersDetail
 							objectName: "runnersDetail"

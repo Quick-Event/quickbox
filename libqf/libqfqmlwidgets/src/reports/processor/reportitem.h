@@ -46,13 +46,16 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserSta
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
 	Q_ENUMS(Layout)
-	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll NOTIFY keepAllChanged)
+	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
+	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll)
 	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 private:
 	typedef QObject Super;
 public:
 	ReportItem(ReportItem *parent = nullptr);
 	~ReportItem() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_BOOL_IMPL2(k, K, eepAll, false);
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
 				 LayoutHorizontal = graphics::LayoutHorizontal,
@@ -61,8 +64,6 @@ public:
 				};
 	//typedef graphics::Layout Layout;
 
-	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
-	QF_PROPERTY_BOOL_IMPL(k, K, eepAll)
 	Q_INVOKABLE bool isVisible();
 	Q_SLOT void setVisible(bool b) {
 		if(m_visible != b) {
@@ -340,6 +341,8 @@ public:
 	/// then \a including_para_texts == false
 	virtual void resetIndexToPrintRecursively(bool including_para_texts) {Q_UNUSED(including_para_texts);}
 	virtual bool isBreak() {return false;}
+
+	virtual bool canBreak() {return !isKeepAll();}
 
 	virtual QString toString(int indent = 2, int indent_offset = 0);
 

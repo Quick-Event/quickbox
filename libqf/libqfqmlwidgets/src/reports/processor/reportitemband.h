@@ -25,6 +25,8 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	Q_PROPERTY(QVariant modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
 	Q_PROPERTY(bool createFromData READ isCreateFromData WRITE setCreateFromData NOTIFY createFromDataChanged)
 	Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
+	Q_CLASSINFO("property.keepFirst.doc", "Number of band details printed, which cannot be splitted by page/column break.")
+	Q_PROPERTY(int keepFirst READ keepFirst WRITE setKeepFirst NOTIFY keepFirstChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
@@ -34,6 +36,7 @@ public:
 	//QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
 	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
 	QF_PROPERTY_BOOL_IMPL(c, C, reateFromData)
+	QF_PROPERTY_IMPL2(int, k, K, eepFirst, 0)
 public:
 	QVariant modelData() const { return m_data; }
 	void setModelData(QVariant d);
@@ -49,6 +52,8 @@ public:
 	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
 
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
+	bool canBreak() Q_DECL_OVERRIDE;
+
 protected:
 	ReportItemDetail* detail();
 	void createChildItemsFromData();
