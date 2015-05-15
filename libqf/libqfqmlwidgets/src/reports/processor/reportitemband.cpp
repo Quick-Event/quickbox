@@ -43,16 +43,17 @@ void ReportItemBand::setModelData(QVariant d)
 
 BandDataModel *ReportItemBand::model()
 {
-	if(!m_model) {
+	if(!m_model || m_model->isDataInvalid()) {
+		ReportItemDetail *parent_detail = nullptr;
 		QVariant dta = modelData();
 		if(!dta.isValid() || dta.userType() == QVariant::String) {
 			QString data_key = dta.toString();
 			ReportItemBand *pr = parentBand();
 			if(pr) {
 				BandDataModel *dm = pr->model();
-				ReportItemDetail *det = pr->detail();
-				if(dm && det) {
-					dta = dm->table(det->currentIndex(), data_key);
+				parent_detail = pr->detail();
+				if(dm && parent_detail) {
+					dta = dm->table(parent_detail->currentIndex(), data_key);
 				}
 			}
 			else {
@@ -63,7 +64,10 @@ BandDataModel *ReportItemBand::model()
 				}
 			}
 		}
+		QF_SAFE_DELETE(m_model);
 		m_model = BandDataModel::createFromData(dta, this);
+		if(parent_detail)
+			connect(parent_detail, &ReportItemDetail::currentIndexChanged, m_model, &BandDataModel::invalidateData);
 		emit modelLoadedChanged(true);
 	}
 	return m_model;

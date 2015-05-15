@@ -27,6 +27,8 @@ public:
 	typedef Qt::ItemDataRole DataRole;
 public:
 	explicit BandDataModel(QObject *parent = 0);
+
+	QF_PROPERTY_BOOL_IMPL2(d, D, ataInvalid, false)
 public:
 	virtual int rowCount() = 0;
 	virtual int columnCount() = 0;
@@ -36,6 +38,8 @@ public:
 	virtual QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) = 0;
 	virtual QVariant table(int row_no, const QString &table_name);
 	virtual QString dump() const {return QString();}
+
+	Q_SLOT void invalidateData() {setDataInvalid(true);}
 public:
 	static BandDataModel* createFromData(const QVariant &data, QObject *parent = nullptr);
 };

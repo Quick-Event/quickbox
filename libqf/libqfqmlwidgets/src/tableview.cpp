@@ -192,8 +192,8 @@ void TableView::refreshActions()
 		action("insertRow")->setEnabled(is_insert_rows_allowed);
 		action("cloneRow")->setEnabled(is_copy_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
-		action("sortAsc")->setEnabled(true);
-		action("sortDesc")->setEnabled(true);
+		//action("sortAsc")->setEnabled(true);
+		//action("sortDesc")->setEnabled(true);
 		//action("filter")->setEnabled(true);
 		//action("addColumnFilter")->setEnabled(true);
 		//action("removeColumnFilter")->setEnabled(true);
@@ -1372,6 +1372,7 @@ void TableView::createActions()
 		a->setOid("editRowExternal");
 		m_actions[a->oid()] = a;
 	}
+	/*
 	{
 		a = new Action(style->icon("sort-asc"), tr("Sort ascending"), this);
 		a->setOid("sortAsc");
@@ -1392,6 +1393,7 @@ void TableView::createActions()
 		//connect(a, SIGNAL(triggered(bool)), this, SLOT(sortDesc(bool)));
 		m_actions[a->oid()] = a;
 	}
+	*/
 	{
 		a = new Action(style->icon("find"), tr("Filter table"), this);
 		a->setOid("filter");
@@ -1583,8 +1585,8 @@ void TableView::createActions()
 	m_toolBarActions << action("reload");
 	a = new Action(this); a->setSeparator(true);
 	m_toolBarActions << a;
-	m_toolBarActions << action("sortAsc");
-	m_toolBarActions << action("sortDesc");
+	//m_toolBarActions << action("sortAsc");
+	//m_toolBarActions << action("sortDesc");
 
 	//f_contextMenuActions = standardContextMenuActions();
 
