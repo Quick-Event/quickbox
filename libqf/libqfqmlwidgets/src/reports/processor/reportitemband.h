@@ -47,6 +47,8 @@ public:
 public:
 	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
 	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
+
+	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
 protected:
 	ReportItemDetail* detail();
 	void createChildItemsFromData();

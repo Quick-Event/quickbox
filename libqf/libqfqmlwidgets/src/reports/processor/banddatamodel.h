@@ -28,7 +28,7 @@ public:
 public:
 	explicit BandDataModel(QObject *parent = 0);
 
-	QF_PROPERTY_BOOL_IMPL2(d, D, ataInvalid, false)
+	QF_PROPERTY_BOOL_IMPL2(d, D, ataValid, false)
 public:
 	virtual int rowCount() = 0;
 	virtual int columnCount() = 0;
@@ -39,7 +39,7 @@ public:
 	virtual QVariant table(int row_no, const QString &table_name);
 	virtual QString dump() const {return QString();}
 
-	Q_SLOT void invalidateData() {setDataInvalid(true);}
+	Q_SLOT void invalidateData() {setDataValid(false);}
 public:
 	static BandDataModel* createFromData(const QVariant &data, QObject *parent = nullptr);
 };
@@ -52,8 +52,6 @@ private:
 public:
 	explicit TreeTableBandDataModel(QObject *parent = 0);
 public:
-	QF_PROPERTY_IMPL(qf::core::utils::TreeTable, t, T, reeTable)
-public:
 	int rowCount() Q_DECL_OVERRIDE;
 	int columnCount() Q_DECL_OVERRIDE;
 	QVariant tableData(const QString &key, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
@@ -62,6 +60,11 @@ public:
 	QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant table(int row_no, const QString &table_name) Q_DECL_OVERRIDE;
 	QString dump() const Q_DECL_OVERRIDE;
+
+	const qf::core::utils::TreeTable& treeTable() const;
+	void setTreeTable(const qf::core::utils::TreeTable &tree_table);
+private:
+	qf::core::utils::TreeTable m_treeTable;
 };
 
 }}}

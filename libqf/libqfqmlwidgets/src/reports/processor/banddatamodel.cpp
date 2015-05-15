@@ -129,3 +129,14 @@ QString TreeTableBandDataModel::dump() const
 {
 	return treeTable().toString();
 }
+const qf::core::utils::TreeTable& TreeTableBandDataModel::treeTable() const
+{
+	return m_treeTable;
+}
+
+void TreeTableBandDataModel::setTreeTable(const qf::core::utils::TreeTable &tree_table)
+{
+	m_treeTable = tree_table;
+	setDataValid(true);
+}
+

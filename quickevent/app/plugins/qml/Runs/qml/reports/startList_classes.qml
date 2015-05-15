@@ -41,6 +41,7 @@ Report {
 			vinset: 10
 			Band {
 				id: band
+				objectName: "band"
 				width: "%"
 				height: "%"
 				Frame {
@@ -52,7 +53,9 @@ Report {
 				}
 				Detail {
 					id: detail
+					objectName: "detail"
 					width: "%"
+					keepAll: true
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
 					Space { height: 5 }
@@ -75,10 +78,11 @@ Report {
 					//expandChildrenFrames: true
 					Band {
 						id: runnersBand
+						objectName: "runnersBand"
 						Detail {
 							id: runnersDetail
+							objectName: "runnersDetail"
 							width: "%"
-							//fill: Brush {color: Color {def: "khaki"} }
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
@@ -90,9 +94,14 @@ Report {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
-							Cell {
-								//width: "%"
+							Para {
+								width: 18
 								textFn: runnersDetail.dataFn("registration");
+							}
+							Cell {
+								width: 18
+								halign: Frame.AlignRight
+								textFn: runnersDetail.dataFn("runs.siId");
 							}
 						}
 					}

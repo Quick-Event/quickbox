@@ -43,7 +43,7 @@ void ReportItemBand::setModelData(QVariant d)
 
 BandDataModel *ReportItemBand::model()
 {
-	if(!m_model || m_model->isDataInvalid()) {
+	if(!m_model || !m_model->isDataValid()) {
 		ReportItemDetail *parent_detail = nullptr;
 		QVariant dta = modelData();
 		if(!dta.isValid() || dta.userType() == QVariant::String) {
@@ -75,7 +75,7 @@ BandDataModel *ReportItemBand::model()
 
 bool ReportItemBand::modelLoaded() const
 {
-	return (m_model != nullptr);
+	return (m_model != nullptr && m_model->isDataValid());
 }
 
 QVariant ReportItemBand::data(const QString &field_name, int role)
@@ -109,6 +109,17 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 	PrintResult res = Super::printMetaPaint(out, bounding_rect);
 	qfDebug() << "\tRETURN:" << res.toString();
 	return res;
+}
+
+void ReportItemBand::resetIndexToPrintRecursively(bool including_para_texts)
+{
+	qfLogFuncFrame() << objectName();// << currentIndex();
+	Super::resetIndexToPrintRecursively(including_para_texts);
+	//dataTableLoaded = false;
+	ReportItemDetail *det = detail();
+	if(det) {
+		det->resetCurrentIndex();
+	}
 }
 
 ReportItemDetail *ReportItemBand::detail()
