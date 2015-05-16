@@ -25,7 +25,7 @@ ReportItemPara::ReportItemPara(ReportItem * parent)
 void ReportItemPara::resetIndexToPrintRecursively(bool including_para_texts)
 {
 	if(including_para_texts)
-		indexToPrint = 0;
+		m_indexToPrint = 0;
 }
 
 ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
@@ -38,12 +38,12 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 {
 	qfLogFuncFrame() << this << bounding_rect.toString();
 	PrintResult res = PR_PrintedOk;
-	if(indexToPrint == 0) {
+	if(m_indexToPrint == 0) {
 		printedText = paraText();
 	}
 	//qfInfo() << printedText;
-	QString text = printedText.mid(indexToPrint);
-	int initial_index_to_print = indexToPrint;
+	QString text = printedText.mid(m_indexToPrint);
+	int initial_index_to_print = m_indexToPrint;
 
 	QString sql_id = sqlId();
 	/// tiskne se prazdny text
@@ -79,7 +79,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			//bool check_on = rx.capturedTexts().value(1) == "1";
 			rendered_bounding_rect = font_metrics.boundingRect('X');
 			render_check_mark = true;
-			indexToPrint += text_to_layout.length();
+			m_indexToPrint += text_to_layout.length();
 		}
 		else {
 			if(text_to_layout.isEmpty()) {
@@ -130,7 +130,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 								else {
 									/// neco se preci jenom veslo
 									int pos = line.textStart();
-									indexToPrint += pos;
+									m_indexToPrint += pos;
 									break;
 								}
 							}
@@ -141,7 +141,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 						}
 					}
 					if(finished) {
-						indexToPrint = printedText.length();
+						m_indexToPrint = printedText.length();
 					}
 				}
 				textLayout.endLayout();
@@ -164,7 +164,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			//qfInfo() << "creating item:" << mt;
 			mt->pen = style.pen();
 			mt->font = style.font();
-			mt->text = text.mid(0, indexToPrint - initial_index_to_print);
+			mt->text = text.mid(0, m_indexToPrint - initial_index_to_print);
 			//qfWarning() << "text:" << text;
 			mt->textOption = text_option;
 			mt->renderedRect = rendered_bounding_rect;

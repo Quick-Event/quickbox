@@ -48,6 +48,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserSta
 	Q_ENUMS(Layout)
 	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
 	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll)
+	Q_PROPERTY(bool keepWithPrev READ isKeepWithPrev WRITE setKeepWithPrev)
 	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
 private:
 	typedef QObject Super;
@@ -55,7 +56,8 @@ public:
 	ReportItem(ReportItem *parent = nullptr);
 	~ReportItem() Q_DECL_OVERRIDE;
 
-	QF_PROPERTY_BOOL_IMPL2(k, K, eepAll, false);
+	QF_PROPERTY_BOOL_IMPL2(k, K, eepAll, false)
+	QF_PROPERTY_BOOL_IMPL2(k, K, eepWithPrev, false)
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
 				 LayoutHorizontal = graphics::LayoutHorizontal,
@@ -226,15 +228,10 @@ public:
 
 		static QString flagsToString(unsigned flags) {
 			QString ret;
-			//if(flags & LeftFixed) ret += 'L';
-			//if(flags & TopFixed) ret += 'T';
-			//if(flags & RightFixed) ret += 'R';
-			//if(flags & BottomFixed) ret += 'B';
 			if(flags & FillLayout) ret += 'F';
 			if(flags & ExpandChildrenFrames) ret += 'X';
 			if(flags & LayoutHorizontalFlag) ret += 'H';
 			if(flags & LayoutVerticalFlag) ret += 'V';
-			//--if(flags & BackgroundItem) ret += '^';
 			return ret;
 		}
 	private:
@@ -244,7 +241,6 @@ public:
 		}
 	public:
 		Rect() : graphics::Rect() {init();}
-		//Rect(qreal x, qreal y) : QRectF(x, y) {init();}
 		Rect(const QPointF &topLeft, const QSizeF &size) : graphics::Rect(topLeft, size) {init();}
 		Rect(qreal x, qreal y, qreal width, qreal height) : graphics::Rect(x, y, width, height) {init();}
 		Rect(const QRectF &r) : graphics::Rect(r) {init();}
@@ -303,8 +299,6 @@ public:
 	};
 public:
 	virtual ReportItemFrame* toFrame() {return NULL;}
-protected:
-	//--qf::core::utils::TreeTable findDataTable(const QString &name);
 protected:
 	ReportItemBand *parentBand();
 

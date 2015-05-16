@@ -103,7 +103,7 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 		ReportItemDetail *it_det = detail();
 		if(it_det)
 			it_det->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-		indexToPrint = 0;
+		m_indexToPrint = 0;
 	}
 	model(); // load model before rendering
 	PrintResult res = Super::printMetaPaint(out, bounding_rect);

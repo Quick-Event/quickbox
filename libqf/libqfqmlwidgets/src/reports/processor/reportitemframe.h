@@ -78,16 +78,8 @@ public:
 	enum VAlignment { AlignTop = Qt::AlignTop,
 					  AlignBottom = Qt::AlignBottom,
 					  AlignVCenter = Qt::AlignVCenter };
-	//QF_PROPERTY_IMPL(qreal, x, X, 1)
-	//QF_PROPERTY_IMPL(qreal, y, Y, 1)
-	//QF_PROPERTY_IMPL(qreal, x, X, 2)
-	//QF_PROPERTY_IMPL(qreal, y, Y, 2)
 	QF_PROPERTY_IMPL2(qreal, h, H, inset, 0)
 	QF_PROPERTY_IMPL2(qreal, v, V, inset, 0)
-	//QF_PROPERTY_IMPL(QVariant, w, W, idth)
-	//QF_PROPERTY_IMPL(QVariant, h, H, eight)
-	//QF_PROPERTY_IMPL2(Layout, l, L, ayout, LayoutVertical)
-	//QF_PROPERTY_BOOL_IMPL(e, E, xpandChildrenFrames)
 	QF_PROPERTY_IMPL2(qreal, r, R, enderedWidth, 0)
 	QF_PROPERTY_IMPL2(qreal, r, R, enderedHeight, 0)
 	QF_PROPERTY_IMPL2(HAlignment, h, H, orizontalAlignment, AlignLeft)
@@ -167,8 +159,6 @@ protected:
 	ChildSize childSize(Layout parent_layout) Q_DECL_OVERRIDE;
 	ReportItemFrame* toFrame() Q_DECL_OVERRIDE {return this;}
 
-	//void setupMetaPaintItem(ReportItemMetaPaint *mpi) Q_DECL_OVERRIDE;
-
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 	Layout parentLayout() const
 	{
@@ -187,8 +177,6 @@ public:
 
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
-	//--const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
-	//--void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
 
 	void addItem(ReportItem *item);
 
@@ -207,10 +195,9 @@ private:
 	ReportItem* itemAt(int index);
 protected:
 	//! children, kterym se ma zacit pri tisku
-	int indexToPrint;
+	int m_indexToPrint;
 private:
 	QList<ReportItem*> m_items;
-	//--QList<double> f_gridLayoutSizes;
 };
 
 }}}
