@@ -61,6 +61,7 @@ class QFCORE_DECL_EXPORT TreeItemBase
 		}
 		/// if ix < 0, than index is counted from end
 		virtual TreeItemBase* child(int ix) const;
+		//TreeItemBase* lastChild() const {return child(-1);}
 		int indexOfChild(TreeItemBase *it_child) const {return f_children.indexOf(it_child);}
 		TreeItemPath path() const;
 		virtual TreeItemBase* cd(const TreeItemPath &path) const;

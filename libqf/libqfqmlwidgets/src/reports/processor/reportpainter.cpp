@@ -41,7 +41,7 @@ ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportIte
 		QF_EXCEPTION("report_item is NULL.");
 	if(!report_item->processor())
 		QF_EXCEPTION("report_item->processor is NULL.");
-	f_reportItem = report_item;
+	//f_reportItem = report_item;
 	{
 		double fill_vertical_layout_ratio = report_item->childSize(ReportItem::LayoutVertical).fillLayoutRatio();
 		setFillVLayoutRatio(fill_vertical_layout_ratio);
@@ -62,12 +62,12 @@ ReportItemMetaPaint* ReportItemMetaPaint::child(int ix) const
 	}
 	return ret;
 }
-
+/*
 ReportItem* ReportItemMetaPaint::reportItem()
 {
 	return f_reportItem;
 }
-
+*/
 void ReportItemMetaPaint::paint(ReportPainter *painter, unsigned mode)
 {
 	foreach(Super *_it, children()) {
@@ -157,7 +157,7 @@ style::CompiledTextStyle ReportItemMetaPaint::effectiveTextStyle()
 
 void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 {
-	qfLogFuncFrame() << this->reportItem() << "rendered rect:" << renderedRect.toString();
+	qfLogFuncFrame() << "rendered rect:" << renderedRect.toString();
 	bool has_expandable_children = false;
 	for(int i=0; i<childrenCount(); i++) {
 		ReportItemMetaPaint *it = child(i);
@@ -240,7 +240,7 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 		for(int i=0; i<childrenCount(); i++) {
 			ReportItemMetaPaint *it = child(i);
 			double d = it->fillVLayoutRatio();
-			qfDebug() << it->reportItem() << "d:" << d;
+			//qfDebug() << it->reportItem() << "d:" << d;
 			if(d >= 0) {
 				if(d == 0)
 					d = 1;

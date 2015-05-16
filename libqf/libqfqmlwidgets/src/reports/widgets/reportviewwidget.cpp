@@ -859,7 +859,7 @@ ReportItemMetaPaint* ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it
 {
 	ReportItemMetaPaint *ret = nullptr;
 	if(it && it->isPointInside(p)) {
-		qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
+		//qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
 		ret = it;
 		//qfInfo() << it->dump();
 		/// traverse items in reverse order to select top level items in stacked layout

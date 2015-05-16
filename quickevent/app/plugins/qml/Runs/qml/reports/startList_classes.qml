@@ -80,6 +80,7 @@ Report {
 						id: runnersBand
 						objectName: "runnersBand"
 						keepFirst: 3
+						keepWithPrev: true
 						Detail {
 							id: runnersDetail
 							objectName: "runnersDetail"

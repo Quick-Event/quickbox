@@ -503,17 +503,16 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// print % like a rubber dimension and if print result is PrintOk resize rendered rect of printed metapaint item
 		/// break funguje tak, ze pri 1., 3., 5. atd. tisku vraci PrintNotFit a pri sudych PrintOk
 		/// prvni break na strance znamena, ze jsem tu uz po zalomeni, takze se tiskne to za break.
-		//if(it->isBreak() && i > indexToPrint && layout == LayoutVertical) break;
 		int index_to_print_0 = m_indexToPrint;
 		for(; m_indexToPrint<itemsToPrintCount(); m_indexToPrint++) {
-			ReportItem *it = itemToPrintAt(m_indexToPrint);
+			ReportItem *child_item_to_print = itemToPrintAt(m_indexToPrint);
 			Rect children_paint_area_rect = paint_area_rect;
 			qfDebug() << "\tch_bbr v1:" << children_paint_area_rect.toString();
 
 			{
 				/// find child paint area size in layout direction
 				qreal d = children_paint_area_rect.sizeInLayout(layout());
-				ChildSize sz = it->childSize(layout());
+				ChildSize sz = child_item_to_print->childSize(layout());
 				//qfInfo() << it << "chbrd:" << ch_bbr.toString() << "d:" << d;// << "size in ly:" << sz.fillLayoutRatio();
 				if(sz.fillLayoutRatio() >= 0) {
 				}
@@ -522,9 +521,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						d = sz.size;
 				}
 				else {
-					ReportItemFrame *frit = qobject_cast<ReportItemFrame*>(it);
+					ReportItemFrame *frit = qobject_cast<ReportItemFrame*>(child_item_to_print);
 					if(frit)
-						qfWarning() << "This should never happen" << it;
+						qfWarning() << "This should never happen" << child_item_to_print;
 				}
 				//qfInfo() << "\t ch_bbr.sizeInLayout(layout():" << ch_bbr.sizeInLayout(layout()) << "d:" << d;
 				d = qMin(children_paint_area_rect.sizeInLayout(layout()), d);
@@ -534,7 +533,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			{
 				/// orthogonal size
 				Layout ol = orthogonalLayout();
-				ChildSize o_sz = it->childSize(ol);
+				ChildSize o_sz = child_item_to_print->childSize(ol);
 				if(o_sz.unit == Rect::UnitPercent) {
 					if(o_sz.size == 0)
 						o_sz.size = paint_area_rect.sizeInLayout(ol);
@@ -550,7 +549,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			}
 			qfDebug() << "\tch_bbr v2:" << children_paint_area_rect.toString();
 			int prev_children_cnt = out->childrenCount();
-			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
+			PrintResult ch_res = child_item_to_print->printMetaPaint(out, children_paint_area_rect);
 			if(ch_res == PR_PrintedOk || ch_res == PR_PrintAgainDetail) {
 				/// muze se stat, ze se dite nevytiskne, napriklad band nema zadna data
 				if(out->children().count() > prev_children_cnt) {
@@ -570,7 +569,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				res = ch_res;
 				break;
 			}
-			if(it->isBreak() && m_indexToPrint > index_to_print_0)
+			if(child_item_to_print->isBreak() && m_indexToPrint > index_to_print_0)
 				break;
 		}
 	}
@@ -610,24 +609,55 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		double ly_size = frame_content_br.width() - (columns_gap * (sl.count() - 1));
 		column_sizes = qf::qmlwidgets::graphics::makeLayoutSizes(sl, ly_size);
 	}
-	ReportItemMetaPaintFrame *mp = new ReportItemMetaPaintFrame(out, this);
-	QF_ASSERT_EX(mp != nullptr, "Meta paint item for item " + QString(this->metaObject()->className()) + " not created.");
-	mp->setInset(hinset(), vinset());
-	mp->setLayout((qf::qmlwidgets::graphics::Layout)layout());
-	mp->setAlignment(horizontalAlignment(), verticalAlignment());
+	ReportItemMetaPaintFrame *metapaint_frame = new ReportItemMetaPaintFrame(out, this);
+	QF_ASSERT_EX(metapaint_frame != nullptr, "Meta paint item for item " + QString(this->metaObject()->className()) + " not created.");
+	metapaint_frame->setInset(hinset(), vinset());
+	metapaint_frame->setLayout((qf::qmlwidgets::graphics::Layout)layout());
+	metapaint_frame->setAlignment(horizontalAlignment(), verticalAlignment());
 	Rect column_br_helper = frame_content_br;
 	for(int current_column_index=0; current_column_index<column_sizes.count(); current_column_index++) {
 		Rect column_br = column_br_helper;
 		column_br.setWidth(column_sizes.value(current_column_index));
 		qfDebug() << "\tcolumn bounding rect:" << column_br.toString();
 
-		res = printMetaPaintChildren(mp, column_br);
+		res = printMetaPaintChildren(metapaint_frame, column_br);
 
 		if(res == PR_PrintAgainOnNextPage) {
 			/// pokud je result neverfit, nech ho tam, at aspon vidime, co se nikdy nevejde
 			if(!canBreak() && !(res == PR_ErrorNeverFit)) {
+				// always delete current metapaint item when it cannot be broken
+				// when keepWithPrev is true, delete also metapaint item for all metapaint items in it's keepWithPrev chain
+				ReportItemFrame *parent_frame = this->parentFrame();
+				if(!parent_frame) {
+					qfWarning() << "Parent frame shall not be NULL!";
+				}
+				else {
+					QF_CHECK(parent_frame->itemToPrintAt(parent_frame->m_indexToPrint) == this, "Internal error!");
+					while(true) {
+						ReportItem *it = parent_frame->itemToPrintAt(parent_frame->m_indexToPrint);
+						QF_ASSERT(it != nullptr, "Internal error!", break);
+						//qfWarning() << "reseting index of:" << it;
+						it->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+						ReportItemMetaPaint *mpit = out->lastChild();
+						QF_ASSERT(mpit != nullptr, "Cannot delete NULL metapaint item!", break);
+						QF_SAFE_DELETE(mpit);
+						if(it->isKeepWithPrev()) {
+							if(parent_frame->m_indexToPrint > 0) {
+								parent_frame->m_indexToPrint--;
+								//qfWarning() << "new m_indexToPrint:" << parent_frame->m_indexToPrint;
+								continue;
+							}
+							else {
+								qfWarning() << "Index to print == 0: Internal error!";
+							}
+						}
+						break;
+					}
+				}
+				/*
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 				QF_SAFE_DELETE(mp);
+				*/
 				return checkPrintResult(res);
 			}
 		}
@@ -640,8 +670,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	dirty_rect.flags = designedRect.flags;
 	{
 		/// musim to proste secist
-		for(int i=0; i<mp->childrenCount(); i++) {
-			ReportItemMetaPaint *it = mp->child(i);
+		for(int i=0; i<metapaint_frame->childrenCount(); i++) {
+			ReportItemMetaPaint *it = metapaint_frame->child(i);
 			if(dirty_rect.isNull())
 				dirty_rect = it->renderedRect;
 			else
@@ -662,27 +692,27 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	/// alignment
 	//qfDebug() << "\tALIGN:" << QString::number((int)alignment, 16);
 	dirty_rect.adjust(-hinset(), -vinset(), hinset(), vinset());
-	mp->renderedRect = dirty_rect;
+	metapaint_frame->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
 	//qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
 	{
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
 		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
 			/// pokud se vytiskl frame, jehoz vertikalni rozmer nebyl zadan jako % a ma dite s %, roztahni dite a pripadne i jeho deti
-			mp->expandChildVerticalSpringFrames();
+			metapaint_frame->expandChildVerticalSpringFrames();
 		}
 		//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();
-		mp->alignChildren();
-		mp->renderedRect.flags = designedRect.flags;
+		metapaint_frame->alignChildren();
+		metapaint_frame->renderedRect.flags = designedRect.flags;
 		/// mohl bych to udelat tak, ze bych vsem detem dal %, ale je to moc klikani v repeditu
 		if(designedRect.flags & ReportItem::Rect::ExpandChildrenFrames) {
-			mp->expandChildrenFramesRecursively();
+			metapaint_frame->expandChildrenFramesRecursively();
 		}
 	}
-	qfDebug() << "\trenderedRect:" << mp->renderedRect.toString();
+	qfDebug() << "\trenderedRect:" << metapaint_frame->renderedRect.toString();
 	res = checkPrintResult(res);
-	setRenderedWidth(mp->renderedRect.width());
-	setRenderedHeight(mp->renderedRect.height());
+	setRenderedWidth(metapaint_frame->renderedRect.width());
+	setRenderedHeight(metapaint_frame->renderedRect.height());
 	//qfDebug().color(QFLog::Cyan) << "\t<<<< FRAME return:" << res.toString() << element.tagName() << "id:" << element.attribute("id");
 	return res;
 }

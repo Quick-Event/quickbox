@@ -59,10 +59,7 @@ public:
 		};
 	};
 public:
-	//ReportProcessor* reportProcessor();
-    //const ReportProcessorContext& context() {return f_procesorContext;}
-	ReportItem* reportItem();
-	//const LayoutSetting& layoutSettings() {return f_layoutSettings;}
+	//ReportItem* reportItem();
 	void setInset(qreal horizontal, qreal vertical);
 	qreal insetHorizontal() {return f_layoutSettings.value(LayoutSetting::HInset).toDouble();}
 	qreal insetVertical() {return f_layoutSettings.value(LayoutSetting::VInset).toDouble();}
@@ -90,13 +87,17 @@ public:
 
 	virtual ReportItemMetaPaint* parent() const {return dynamic_cast<ReportItemMetaPaint*>(qf::core::utils::TreeItemBase::parent());}
 	virtual ReportItemMetaPaint* child(int ix) const;
-	virtual ReportItemMetaPaint* firstChild() const {
-		if(childrenCount()) return child(0);
-		return NULL;
+	virtual ReportItemMetaPaint* firstChild() const
+	{
+		if(childrenCount())
+			return child(0);
+		return nullptr;
 	}
-	virtual ReportItemMetaPaint* lastChild() const {
-		if(childrenCount()) return child(childrenCount()-1);
-		return NULL;
+	virtual ReportItemMetaPaint* lastChild() const
+	{
+		if(childrenCount())
+			return child(childrenCount()-1);
+		return nullptr;
 	}
 
 	virtual void paint(ReportPainter *painter, unsigned mode);
@@ -129,12 +130,8 @@ public:
 	virtual QString dump(int indent = 0);
 public:
 	ReportItem::Rect renderedRect; ///< rozmery v mm
-	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
-	//QFTreeItemPath f_reportItemPath;
-	//ReportProcessor *f_reportProcessor;
-    //ReportProcessorContext f_procesorContext;
 
-	ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
+	//ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
 	LayoutSetting f_layoutSettings;
 	style::CompiledTextStyle m_textStyle;
 };
@@ -157,6 +154,9 @@ class ReportItemMetaPaintFrame : public ReportItemMetaPaint
 private:
 	typedef ReportItemMetaPaint Super;
 public:
+	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportItem *report_item);
+	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
+public:
 	enum LinePos {LBrd = 1, RBrd, TBrd, BBrd};
 public:
 	QBrush fill;
@@ -167,9 +167,6 @@ protected:
 	void drawLine(QPainter *painter, LinePos where, const QPen &pen);
 public:
 	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
-public:
-	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportItem *report_item);
-	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
 };
 //! TODO documentation
 class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintText : public ReportItemMetaPaint
