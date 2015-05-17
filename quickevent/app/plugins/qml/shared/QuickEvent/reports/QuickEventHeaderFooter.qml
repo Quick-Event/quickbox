@@ -2,6 +2,9 @@ import qf.qmlreports 1.0
 
 Frame {
 	id: root
+
+	property string reportTitle
+
 	width: "%"
 	height: "%"
 	textStyle: TextStyle {basedOn: "reportHeader"}
@@ -19,7 +22,7 @@ Frame {
 		}
 		Para {
 			text: {
-				"" + new Date();
+				new Date();
 			}
 		}
 	}
@@ -31,6 +34,9 @@ Frame {
 		width: "%"
 		layout: Frame.LayoutHorizontal
 		topBorder: Pen {basedOn: "blue1"}
+		Para {
+			text: root.reportTitle
+		}
 		Para {
 			width: "%"
 		}

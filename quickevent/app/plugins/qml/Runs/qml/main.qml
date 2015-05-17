@@ -39,7 +39,9 @@ RunsPlugin {
 	function printStartListClasses()
 	{
 		Log.info("runs printStartListClasses triggered");
-		var stage_id = FrameWork.plugin("Event").currentStageId;
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		//var stage_data = event_plugin.stageDataMap(stage_id);
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()
@@ -52,7 +54,8 @@ RunsPlugin {
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
-		tt.setValue("title", qsTr("Start list by classes"))
+		tt.setValue("stageId", stage_id)
+		tt.setValue("event", event_plugin.eventConfig.value("event"));
 
 		console.debug(tt.toString());
 

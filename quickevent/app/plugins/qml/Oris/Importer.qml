@@ -2,9 +2,6 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
 import "qrc:/qf/core/qml/js/stringext.js" as StringExt
-// import Event 1.0
-// import Classes 1.0
-// import Competitors 1.0
 
 QtObject {
 	id: root
@@ -53,7 +50,7 @@ QtObject {
 				}
 			}
 			else {
-                MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
+				MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)
 			}
 
 		});
@@ -68,25 +65,29 @@ QtObject {
 			if(get_ok) {
 				//Log.info("Imported event:", json_str);
 				var event_api = FrameWork.plugin("Event");
-                var data = JSON.parse(json_str).Data;
+				var data = JSON.parse(json_str).Data;
 				var stage_count = parseInt(data.Stages);
 				if(!stage_count)
 					stage_count = 1;
 				Log.info("pocet etap:", stage_count);
 				event_api.initEventConfig();
-                var cfg = event_api.eventConfig;
-				cfg.setValue('event.stageCount', stage_count);
-				cfg.setValue('event.name', data.Name);
-				cfg.setValue('event.description', '');
-				cfg.setValue('event.date', data.Date);
-				cfg.setValue('event.place', data.Place);
-				cfg.setValue('event.mainReferee', data.MainReferee.FirstName + ' ' + data.MainReferee.LastName);
-				cfg.setValue('event.director', data.Director.FirstName + ' ' + data.Director.LastName);
-				cfg.setValue('event.importId', event_id);
+				var cfg = event_api.eventConfig;
+				var ecfg = {
+					stageCount: stage_count,
+					name: data.Name,
+					description: '',
+					date: data.Date,
+					place: data.Place,
+					mainReferee: data.MainReferee.FirstName + ' ' + data.MainReferee.LastName,
+					director: data.Director.FirstName + ' ' + data.Director.LastName,
+					importId: event_id
+				}
+				cfg.setValue('event', ecfg);
+
 
 				if(!event_api.createEvent("", cfg.values()))
 					return;
-				//cfg.load();
+
 				var event_name = event_api.eventName;
 				if(!event_api.openEvent(event_name))
 					return;
@@ -256,7 +257,7 @@ QtObject {
 						var obj = data[obj_key];
 						//Log.debug(JSON.stringify(obj, null, 2));
 						if(items_processed % 100 === 0) {
-							Log.info(items_count, obj.RegNo);
+							//Log.info(items_count, obj.RegNo);
 							FrameWork.showProgress(obj.RegNo, items_processed, items_count);
 						}
 

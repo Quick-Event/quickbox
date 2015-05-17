@@ -7,6 +7,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+#include <QDateTime>
+
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
 
@@ -193,7 +195,12 @@ QString ReportItemPara::paraText()
 	QString ret;
 	if(m_getTextJsFn.isCallable()) {
 		QJSValue jsv = m_getTextJsFn.call();
-		ret = jsv.toString();
+		if(jsv.isDate()) {
+			QDateTime dt = jsv.toDateTime();
+			ret = dt.toString(Qt::ISODate);//.date().toString(Qt::ISODate);
+		}
+		else
+			ret = jsv.toString();
 	}
 	else if(m_getTextCppFn) {
 		ret = m_getTextCppFn();

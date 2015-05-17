@@ -313,10 +313,10 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 	QVariantMap new_params = event_w->saveParams();
 	Event::EventConfig event_config;
 	ConnectionSettings connection_settings;
-	event_config.setValues(new_params);
-	int stage_count = event_params.value("event.stageCount").toInt();
+	event_config.setValue("event", new_params);
+	int stage_count = event_params.value("stageCount").toInt();
 	if(stage_count == 0)
-		stage_count = event_config.value("event.stageCount").toInt();
+		stage_count = event_config.stageCount();
 	qfInfo() << "createEvent, stage_count:" << stage_count;
 	QF_ASSERT(stage_count > 0, "Stage count have to be greater than 0", return false);
 

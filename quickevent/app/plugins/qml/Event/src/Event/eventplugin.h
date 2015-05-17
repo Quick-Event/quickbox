@@ -48,6 +48,7 @@ public:
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
+	//Q_INVOKABLE QVariantMap stageDataMap(int stage_id) {return stageData(stage_id);}
 	StageData stageData(int stage_id);
 	Q_SLOT void clearStageDataCache();
 

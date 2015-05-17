@@ -17,18 +17,22 @@ class EVENTPLUGIN_DECL_EXPORT EventConfig : public QObject
 public:
 	explicit EventConfig(QObject *parent = 0);
 public slots:
-	QVariantMap values() const {return m_data;}
-	void setValues(const QVariantMap &vals);
-	QVariant value(const QString &key, const QVariant &default_value = QVariant()) const;
-	void setValue(const QString &key, const QVariant &val);
+	//QVariantMap values() const {return m_data;}
+	//void setValues(const QVariantMap &vals);
+	QVariant value(const QStringList &path, const QVariant &default_value = QVariant()) const;
+	QVariant value(const QString &path, const QVariant &default_value = QVariant()) const {return value(path.split('.'), default_value);}
+	void setValue(const QStringList &path, const QVariant &val);
+	void setValue(const QString &path, const QVariant &val) {setValue(path.split('.'), val);}
 	void load();
-	void save(const QString &key_to_save = QString());
+	void save(const QString &path_to_save = QString());
 
 	int stageCount() const;
 	//QString eventName() const;
 	//void setEventName(const QString &n);
 private:
-	static const QSet<QString>& knownKeys();
+	//static const QSet<QString>& knownKeys();
+	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
+	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);
 private:
 	QVariantMap m_data;
 };

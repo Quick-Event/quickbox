@@ -16,7 +16,7 @@ EventConfig::EventConfig(QObject *parent)
 	: QObject(parent)
 {
 }
-
+/*
 void EventConfig::setValues(const QVariantMap &vals)
 {
 	m_data.clear();
@@ -29,17 +29,26 @@ void EventConfig::setValues(const QVariantMap &vals)
 		}
 	}
 }
-
-QVariant EventConfig::value(const QString &key, const QVariant &default_value) const
+*/
+QVariant EventConfig::value(const QStringList &path, const QVariant &default_value) const
 {
-	QF_ASSERT(knownKeys().contains(key), "Key " + key + " is not known key!", return QVariant());
-	return m_data.value(key, default_value);
+	//QF_ASSERT(knownKeys().contains(key), "Key " + key + " is not known key!", return QVariant());
+	QVariant ret = default_value;
+	if(!path.isEmpty()) {
+		QVariantMap m = m_data;
+		for (int i = 0; i < path.count() - 1; ++i) {
+			const QString &key = path[i];
+			m = m.value(key).toMap();
+		}
+		ret = m.value(path.last(), default_value);
+	}
+	return ret;
 }
 
-void EventConfig::setValue(const QString &key, const QVariant &val)
+void EventConfig::setValue(const QStringList &path, const QVariant &val)
 {
-	QF_ASSERT(knownKeys().contains(key), "Key " + key + " is not known key!", return);
-	m_data[key] = val;
+	QF_ASSERT(!path.isEmpty(), "Empty path!", return);
+	m_data = setValue_helper(m_data, path, val);
 }
 
 void EventConfig::load()
@@ -48,42 +57,84 @@ void EventConfig::load()
 	Connection conn = Connection::forName();
 	Query q(conn);
 	QueryBuilder qb;
-	qb.select("ckey, cvalue, ctype").from("config");
+	qb.select("ckey, cvalue, ctype").from("config").orderBy("ckey");
 	if(q.exec(qb.toString())) while(q.next()) {
 		QString key = q.value(0).toString();
-		if(knownKeys().contains(key)) {
-			QVariant val = q.value(1);
-			QString type = q.value(2).toString();
-			m_data[key] = qf::core::Utils::retypeStringValue(val.toString(), type);
+		/*
+		if(!knownKeys().contains(key)) {
+			qfWarning() << "Config key" << key << "is not known to the QuickEvent config system";
+		}
+		*/
+		QVariant val = q.value(1);
+		QString type = q.value(2).toString();
+		QVariant v = qf::core::Utils::retypeStringValue(val.toString(), type);
+		setValue(key, v);
+	}
+}
+
+void EventConfig::save(const QString &path_to_save)
+{
+	QVariantMap m;
+	save_helper(m, QString(), m_data);
+	using namespace qf::core::sql;
+	Connection conn = Connection::forName();
+	Query q_up(conn);
+	q_up.prepare("UPDATE config SET cvalue=:val WHERE ckey=:key", qf::core::Exception::Throw);
+	Query q_ins(conn);
+	q_ins.prepare("INSERT INTO config (ckey, cvalue, ctype) VALUES (:key, :val, :type)", qf::core::Exception::Throw);
+	QMapIterator<QString, QVariant> it(m);
+	while(it.hasNext()) {
+		it.next();
+		QString key = it.key();
+		if(!path_to_save.isEmpty() && key != path_to_save)
+			continue;
+		QVariant val = it.value();
+		q_up.bindValue(":key", key);
+		q_up.bindValue(":val", val);
+		q_up.exec();
+		if(q_up.numRowsAffected() < 1) {
+			QString type = val.typeName();
+			q_ins.bindValue(":key", key);
+			q_ins.bindValue(":type", type);
+			q_ins.bindValue(":val", val);
+			q_ins.exec();
 		}
 	}
 }
 
-void EventConfig::save(const QString &key_to_save)
+void EventConfig::save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val)
 {
-	using namespace qf::core::sql;
-	Connection conn = Connection::forName();
-	Query q(conn);
-	QMapIterator<QString, QVariant> it(m_data);
-	while(it.hasNext()) {
-		it.next();
-		QString key = it.key();
-		if(!key_to_save.isEmpty() && key != key_to_save)
-			continue;
-		QVariant val = m_data[key];
-		q.prepare("UPDATE config SET cvalue=:val WHERE ckey=:key");
-		q.bindValue(":key", key);
-		q.bindValue(":val", val);
-		q.exec();
-		if(q.numRowsAffected() < 1) {
-			QString type = val.typeName();
-			q.prepare("INSERT INTO config (ckey, cvalue, ctype) VALUES (:key, :val, :type)");
-			q.bindValue(":key", key);
-			q.bindValue(":type", type);
-			q.bindValue(":val", val);
-			q.exec();
+	if(val.type() == QVariant::Map) {
+		QVariantMap m = val.toMap();
+		QMapIterator<QString, QVariant> it(m);
+		while(it.hasNext()) {
+			it.next();
+			QString cp = it.key();
+			if(!current_path.isEmpty())
+				cp = current_path + '.' + cp;
+			save_helper(ret, cp, it.value());
 		}
 	}
+	else {
+		ret[current_path] = val;
+	}
+}
+
+QVariantMap EventConfig::setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val)
+{
+	QVariantMap ret;
+	QF_ASSERT(!path.isEmpty(), "Empty path!", return ret);
+	if(path.count() == 1) {
+		ret = m;
+		ret[path.first()] = val;
+	}
+	else {
+		QStringList p = path;
+		QString key = p.takeFirst();
+		ret = m;
+		ret[key] = setValue_helper(m.value(key).toMap(), p, val);
+	}
+	return ret;
 }
 
 int EventConfig::stageCount() const
@@ -91,17 +142,6 @@ int EventConfig::stageCount() const
 	return value(QStringLiteral("event.stageCount")).toInt();
 }
 /*
-QString EventConfig::eventName() const
-{
-	return value(EVENT_NAME).toString();
-}
-
-void EventConfig::setEventName(const QString &n)
-{
-	setValue(EVENT_NAME, n);
-	save(EVENT_NAME);
-}
-*/
 const QSet<QString> &EventConfig::knownKeys()
 {
 	static QSet<QString> s;
@@ -117,4 +157,5 @@ const QSet<QString> &EventConfig::knownKeys()
 	}
 	return s;
 }
+*/
 
