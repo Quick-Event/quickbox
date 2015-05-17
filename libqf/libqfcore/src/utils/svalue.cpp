@@ -317,10 +317,7 @@ void SValue::setVariant(const QVariant &json)
 {
 	qfLogFuncFrame();// << QFJson::variantToString(json);
 	QVariant v = variant_to_value(json);
-	if(v.userType() == qMetaTypeId<SValue>()) {
-		*this = qvariant_cast<SValue>(v);
-	}
-	else setValue(v);
+	setValue(v);
 }
 /*
 void SValue::removeJSTypes()
