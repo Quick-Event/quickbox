@@ -66,10 +66,10 @@ bool SqlTableModel::reload()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
-	return reload(qs);
+	return reloadQuery(qs);
 }
 
-bool SqlTableModel::reload(const QString &query_str)
+bool SqlTableModel::reloadQuery(const QString &query_str)
 {
 	beginResetModel();
 	bool ok = reloadTable(query_str);

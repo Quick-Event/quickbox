@@ -34,6 +34,7 @@ SqlQueryBuilder *SqlTableModel::qmlSqlQueryBuilder()
 		m_qmlQueryBuilder = new SqlQueryBuilder(this);
 		QQmlEngine::setObjectOwnership(m_qmlQueryBuilder, QQmlEngine::CppOwnership);
 	}
+	setQuery(QString());
 	return m_qmlQueryBuilder;
 }
 

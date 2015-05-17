@@ -27,6 +27,13 @@ RunsPlugin {
 			onTriggered: {
 				root.printStartListClasses()
 			}
+		},
+		Action {
+			id: act_print_startList_clubs
+			text: qsTr('C&lubs')
+			onTriggered: {
+				root.printStartListClubs()
+			}
 		}
 	]
 
@@ -36,6 +43,7 @@ RunsPlugin {
 		a.text = qsTr("&Print");
 		a = a.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_print_startList_classes);
+		a.addActionInto(act_print_startList_clubs);
 	}
 
 	function printStartListClasses()
@@ -89,5 +97,45 @@ RunsPlugin {
 		dlg.exec();
 		dlg.destroy();
 		*/
+	}
+
+	function printStartListClubs()
+	{
+		Log.info("runs printStartListClubs triggered");
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		var tt = new TreeTable.Table();
+
+		var qs1 = "SELECT * FROM ( SELECT substr(registration, 1, 3) AS clubAbbr FROM competitors) AS t GROUP BY clubAbbr ORDER BY clubAbbr";
+		reportModel.query = "SELECT clubs.* FROM ( " + qs1 + " ) AS t2"
+				+ " LEFT JOIN clubs ON t2.clubAbbr=clubs.abbr"
+				+ " WHERE clubs.id IS NOT NULL"
+				+ " ORDER BY clubs.abbr";
+		reportModel.reload();
+		tt.setData(reportModel.toTreeTableData());
+		tt.setValue("stageId", stage_id)
+		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		console.debug(tt.toString());
+
+		reportModel.queryBuilder.clear()
+			.select2('competitors', 'registration')
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select2('classes', 'name')
+			.select2('runs', 'siId, startTimeMs')
+			.from('competitors')
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
+			.join("competitors.classId", "classes.id")
+			.where("substr(competitors.registration, 1, 3)='{{club_abbr}}'")
+			.orderBy('classes.name, runs.startTimeMs');
+		for(var i=0; i<tt.rowCount(); i++) {
+			var club_abbr = tt.value(i, "abbr");
+			console.debug("club_abbr:", club_abbr);
+			reportModel.setQueryParameters({club_abbr: club_abbr, stage_id: stage_id});
+			reportModel.reload();
+			var ttd = reportModel.toTreeTableData();
+			tt.addTable(i, ttd);
+		}
+		//console.debug(tt.toString());
+		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_clubs.qml", tt.data(), qsTr("Start list by clubs"));
 	}
 }

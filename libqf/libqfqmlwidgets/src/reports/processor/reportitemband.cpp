@@ -66,6 +66,8 @@ BandDataModel *ReportItemBand::model()
 		}
 		QF_SAFE_DELETE(m_model);
 		m_model = BandDataModel::createFromData(dta, this);
+		//qfError() << dta;
+		QF_ASSERT(m_model != nullptr, "Bad data!", return m_model);
 		if(parent_detail)
 			connect(parent_detail, &ReportItemDetail::currentIndexChanged, m_model, &BandDataModel::invalidateData);
 		emit modelLoadedChanged(true);
