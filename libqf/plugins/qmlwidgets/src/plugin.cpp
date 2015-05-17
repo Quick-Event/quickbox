@@ -46,11 +46,11 @@
 
 class QmlPlugin : public QQmlExtensionPlugin
 {
-    Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
+	Q_OBJECT
+	Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 public:
-    void registerTypes(const char *uri)
-    {
+	void registerTypes(const char *uri)
+	{
 		qfLogFuncFrame() << uri;
 		Q_ASSERT(uri == QLatin1String("qf.qmlwidgets"));
 
@@ -98,8 +98,8 @@ public:
 		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
 
 		qmlRegisterType<qf::qmlwidgets::LayoutTypeProperties>(uri, 1, 0, "LayoutProperties");
-//		qmlRegisterType<qf::qmlwidgets::GridLayoutTypeProperties>(uri, 1, 0, "GridLayoutTypeProperties");
-//		qmlRegisterType<qf::qmlwidgets::BoxLayoutTypeProperties>(uri, 1, 0, "BoxLayoutTypeProperties");
+		//		qmlRegisterType<qf::qmlwidgets::GridLayoutTypeProperties>(uri, 1, 0, "GridLayoutTypeProperties");
+		//		qmlRegisterType<qf::qmlwidgets::BoxLayoutTypeProperties>(uri, 1, 0, "BoxLayoutTypeProperties");
 
 		qmlRegisterType<qf::qmlwidgets::dialogs::QmlDialog>(uri, 1, 0, "Dialog");
 		qmlRegisterType<qf::qmlwidgets::dialogs::InputDialog>(uri, 1, 0, "InputDialog");

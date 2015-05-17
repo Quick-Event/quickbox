@@ -9,10 +9,12 @@ RunsPlugin {
 	id: root
 
 	property QfObject internals: QfObject {
+		/*
 		Component {
 			id: cReportViewWidget
 			ReportViewWidget {}
 		}
+		*/
 		SqlTableModel {
 			id: reportModel
 		}
@@ -57,7 +59,7 @@ RunsPlugin {
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
 
-		console.debug(tt.toString());
+		//console.debug(tt.toString());
 
 		reportModel.queryBuilder.clear()
 			.select2('competitors', 'registration')
@@ -75,8 +77,9 @@ RunsPlugin {
 			var ttd = reportModel.toTreeTableData();
 			tt.addTable(i, ttd);
 		}
-		console.debug(tt.toString());
-
+		//console.debug(tt.toString());
+		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_classes.qml", tt.data(), qsTr("Start list by clases"));
+		/*
 		var w = cReportViewWidget.createObject(null);
 		w.windowTitle = qsTr("Start list by clases");
 		w.setReport(root.manifest.homeDir + "/reports/startList_classes.qml");
@@ -85,5 +88,6 @@ RunsPlugin {
 		dlg.setDialogWidget(w);
 		dlg.exec();
 		dlg.destroy();
+		*/
 	}
 }
