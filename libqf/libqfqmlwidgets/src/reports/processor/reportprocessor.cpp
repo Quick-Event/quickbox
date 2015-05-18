@@ -279,6 +279,7 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 		if(el.tagName() == "div") {
 			if(el.attribute(HTML_ATTRIBUTE_ITEM) == QStringLiteral("band")) {
 				// change divs to table for Band
+				//qfWarning() << "BAND";
 				QDomElement el_table = el.ownerDocument().createElement("table");
 				QDomNode old_el = parent_nd.replaceChild(el_table, el);
 				el_table.setAttribute("border", 1);
@@ -306,6 +307,7 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 					QDomElement el_table = el.ownerDocument().createElement("table");
 					parent_nd.replaceChild(el_table, el);
 					el_table.appendChild(el_tr);
+					el = el_table;
 				}
 			}
 		}
@@ -320,13 +322,13 @@ QDomElement ReportProcessor::convertHorizontalDivToTableRow(QDomElement &el_div)
 {
 	QDomElement el_table_row;
 	if(el_div.tagName() == QLatin1String("div") && el_div.attribute(HTML_ATTRIBUTE_LAYOUT) == QStringLiteral("horizontal")) {
-		bool is_header = el_div.attribute(HTML_ATTRIBUTE_ITEM) == QStringLiteral("header");
+		bool is_detail = el_div.attribute(HTML_ATTRIBUTE_ITEM) == QStringLiteral("detail");
 		el_table_row = el_div.ownerDocument().createElement("tr");
 		while(true) {
 			QDomElement el2 = el_div.firstChildElement();
 			if(el2.isNull())
 				break;
-			QString td_tag_name = (is_header)? QStringLiteral("th"): QStringLiteral("td");
+			QString td_tag_name = (is_detail)? QStringLiteral("td"): QStringLiteral("th");
 			QDomElement el_td = el_div.ownerDocument().createElement(td_tag_name);
 			el_table_row.appendChild(el_td);
 			el_td.appendChild(el2);

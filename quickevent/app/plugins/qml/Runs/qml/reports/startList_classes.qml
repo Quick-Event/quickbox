@@ -107,6 +107,7 @@ Report {
 						objectName: "runnersBand"
 						keepFirst: 3
 						keepWithPrev: true
+						exportAsHtmlTable: true
 						Detail {
 							id: runnersDetail
 							objectName: "runnersDetail"

@@ -51,8 +51,9 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 
 	qfDebug() << "\tparent html element:" << out.tagName();
 	if(itemsToPrintCount() > 0) {
-		if(itemsToPrintCount() == 1) {
+		if(false && itemsToPrintCount() == 1) {
 			/// jedno dite vyres tak, ze se vubec nevytiskne rodicovsky frame
+			/// does not work for bands, they cannot be converted to table than
 			ReportItem *it = itemToPrintAt(0);
 			res = it->printHtml(out);
 		}
@@ -84,15 +85,9 @@ ReportItem::PrintResult ReportItemBand::printHtml(ReportItem::HTMLElement &out)
 	qfLogFuncFrame() << this;
 	PrintResult res = Super::printHtml(out);
 	if(res == PR_PrintedOk) {
-		QDomElement el_band = out.lastChild().toElement();
-		el_band.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("band"));
-		for(QDomElement el = el_band.firstChildElement(); !el.isNull(); el = el.nextSiblingElement()) {
-			if(el.tagName() == QStringLiteral("div")) {
-				if(el.attribute(ReportProcessor::HTML_ATTRIBUTE_ITEM) != QStringLiteral("detail")) {
-					/// non detail rows in band should be exported to HTML as rows
-					el.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("header"));
-				}
-			}
+		if(isExportAsHtmlTable()) {
+			QDomElement el_band = out.lastChild().toElement();
+			el_band.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("band"));
 		}
 	}
 	return res;
