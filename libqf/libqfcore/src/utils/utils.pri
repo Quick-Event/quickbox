@@ -8,7 +8,8 @@ HEADERS += \
 	$$PWD/treeitembase.h \
 	$$PWD/clioptions.h \
     $$PWD/settings.h \
-    $$PWD/timescope.h
+    $$PWD/timescope.h \
+    $$PWD/htmlutils.h
 
 SOURCES += \
     $$PWD/crypt.cpp \
@@ -20,5 +21,6 @@ SOURCES += \
 	$$PWD/treeitembase.cpp \
 	$$PWD/clioptions.cpp \
     $$PWD/settings.cpp \
-    $$PWD/timescope.cpp
+    $$PWD/timescope.cpp \
+    $$PWD/htmlutils.cpp
 
