@@ -21,6 +21,7 @@ private:
 public:
 	Connection();
 	explicit Connection(const QSqlDatabase& qdb);
+	Connection& operator=(const QSqlDatabase& o);
 public:
 	typedef QMap<QString, QString> ConnectionOptions;
 	struct QFCORE_DECL_EXPORT IndexInfo {

@@ -75,12 +75,13 @@ int main(int argc, char *argv[])
 			std::cout << "\t--dbfs\t" << "DBFS options separator, all options prior this will be ignored by DBFS" << std::endl;
 			std::cout << "\t--host <host>\t" << "Database host" << std::endl;
 			std::cout << "\t--port <port>\t" << "Database port" << std::endl;
-			std::cout << "\t--u" << std::endl;
+			std::cout << "\t -u" << std::endl;
 			std::cout << "\t--user <user>\t" << "Database user" << std::endl;
-			std::cout << "\t--p" << std::endl;
+			std::cout << "\t -p" << std::endl;
 			std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
 			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
-			std::cout << "\t--table-name\t" << "DBFS table name" << std::endl;
+			std::cout << "\t--db-schema\t" << "Database schema name" << std::endl;
+			std::cout << "\t--table-name\t" << "DBFS table name, default is 'dbfs'" << std::endl;
 			std::cout << "\t--create\t" << "Create DBFS tables" << std::endl;
 			exit(0);
 		}
@@ -101,6 +102,7 @@ int main(int argc, char *argv[])
 	QString o_password;
 	QString o_host;
 	int o_port = 0;
+	QString o_db_schema;
 	QString o_table_name;
 	bool o_create_db = false;
 	bool o_ask_passwd = false;
@@ -143,6 +145,12 @@ int main(int argc, char *argv[])
 				o_database = argv[i];
 			}
 		}
+		else if(arg == QStringLiteral("--db-schema")) {
+			if(i<argc-1) {
+				i++;
+				o_db_schema = argv[i];
+			}
+		}
 		else if(arg == QStringLiteral("--table-name")) {
 			if(i<argc-1) {
 				i++;
@@ -161,8 +169,13 @@ int main(int argc, char *argv[])
 		o_password = QString::fromUtf8(pwd);
 	}
 
+	if(o_database.isEmpty()) {
+		qfError() << "Empty database name.";
+		exit(1);
+	}
+
 	qfs::DbFsDriver *dbfs_drv = nullptr;
-	QSqlDatabase db_connection;
+	qf::core::sql::Connection db_connection;
 	if(dbfs_switch_index < (argc - 1)) {
 		db_connection = QSqlDatabase::addDatabase("QPSQL");
 		db_connection.setHostName(o_host);
@@ -174,6 +187,12 @@ int main(int argc, char *argv[])
 		if(!ok) {
 			qfError() << db_connection.lastError().text();
 			exit(1);
+		}
+		if(!o_db_schema.isEmpty()) {
+			if(!db_connection.setCurrentSchema(o_db_schema)) {
+				qfError() << "Error setting db schema to:" << o_db_schema;
+				exit(1);
+			}
 		}
 		dbfs_drv = new qfs::DbFsDriver();
 		dbfs_drv->setConnectionName(db_connection.connectionName());

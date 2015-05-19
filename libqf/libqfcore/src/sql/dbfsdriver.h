@@ -34,7 +34,7 @@ public:
 	~DbFsDriver() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QString, c, C, onnectionName)
-	QF_PROPERTY_IMPL(QString, t, T, ableName)
+	QF_PROPERTY_IMPL2(QString, t, T, ableName, QStringLiteral("dbfs"))
 
 	bool checkDbFs();
 	bool createDbFs();

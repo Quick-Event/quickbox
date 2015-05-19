@@ -45,7 +45,6 @@ DbFsDriver::DbFsDriver(QObject *parent)
 	: QObject(parent)
 {
 	m_connectionName = QLatin1String(QSqlDatabase::defaultConnection);
-	m_tableName = QStringLiteral("dbfs");
 }
 
 DbFsDriver::~DbFsDriver()

@@ -70,6 +70,12 @@ Connection::Connection(const QSqlDatabase& qdb)
 {
 }
 
+Connection &Connection::operator=(const QSqlDatabase &o)
+{
+	this->QSqlDatabase::operator=(o);
+	return *this;
+}
+
 bool Connection::open()
 {
 	s_clearCache(connectionName());
@@ -857,6 +863,7 @@ bool Connection::createSchema(const QString &schema_name)
 
 QString Connection::currentSchema() const
 {
+	qfLogFuncFrame();
 	static auto na = QStringLiteral("N/A");
 	QString ret = na;
 	if(driverName().endsWith(QLatin1String("MYSQL"))) {
@@ -883,6 +890,7 @@ QString Connection::currentSchema() const
 		qfError() << "Error getting curent schema";
 		ret = QString();
 	}
+	qfDebug() << "\t return:" << ret;
 	return ret;
 }
 
