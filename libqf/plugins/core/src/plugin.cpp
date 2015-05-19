@@ -1,7 +1,8 @@
-#include "qmllogsingleton.h"
 #include "crypt.h"
 #include "settings.h"
 
+#include "qmllogsingleton.h"
+#include "qmlfilesingleton.h"
 #include "sql/qmlsqlsingleton.h"
 #include "sql/sqlconnection.h"
 #include "sql/sqlquery.h"
@@ -34,6 +35,7 @@ public:
 		Q_ASSERT(uri == QLatin1String("qf.core"));
 
 		qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
+		qmlRegisterSingletonType<qf::core::qml::QmlFileSingleton>(uri, 1, 0, "File", &qf::core::qml::QmlFileSingleton::singletontype_provider);
 		qmlRegisterSingletonType<qf::core::qml::QmlSqlSingleton>(uri, 1, 0, "Sql", &qf::core::qml::QmlSqlSingleton::singletontype_provider);
 
 		qmlRegisterType<qf::core::qml::Settings>(uri, 1, 0, "Settings");
