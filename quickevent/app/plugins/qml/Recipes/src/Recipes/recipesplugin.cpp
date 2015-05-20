@@ -1,5 +1,5 @@
-#include "receipesplugin.h"
-#include "../receipespartwidget.h"
+#include "recipesplugin.h"
+#include "../recipespartwidget.h"
 
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
@@ -22,22 +22,22 @@
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 
-using namespace Receipes;
+using namespace Recipes;
 
-ReceipesPlugin::ReceipesPlugin(QObject *parent)
+RecipesPlugin::RecipesPlugin(QObject *parent)
 	: Super(parent)
 {
-	connect(this, &ReceipesPlugin::installed, this, &ReceipesPlugin::onInstalled);
+	connect(this, &RecipesPlugin::installed, this, &RecipesPlugin::onInstalled);
 }
 
-void ReceipesPlugin::onInstalled()
+void RecipesPlugin::onInstalled()
 {
 	qff::MainWindow *framework = qff::MainWindow::frameWork();
-	ReceipesPartWidget *pw = new ReceipesPartWidget(manifest()->featureId());
+	RecipesPartWidget *pw = new RecipesPartWidget(manifest()->featureId());
 	framework->addPartWidget(pw);
 }
 
-CardReader::CardReaderPlugin *ReceipesPlugin::cardReaderPlugin()
+CardReader::CardReaderPlugin *RecipesPlugin::cardReaderPlugin()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	auto ret = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
@@ -45,7 +45,7 @@ CardReader::CardReaderPlugin *ReceipesPlugin::cardReaderPlugin()
 	return ret;
 }
 
-Event::EventPlugin *ReceipesPlugin::eventPlugin()
+Event::EventPlugin *RecipesPlugin::eventPlugin()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	auto ret = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
@@ -53,7 +53,7 @@ Event::EventPlugin *ReceipesPlugin::eventPlugin()
 	return ret;
 }
 
-QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
+QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
 	QVariantMap ret;
@@ -241,16 +241,16 @@ QVariantMap ReceipesPlugin::receipeTablesData(int card_id)
 	return ret;
 }
 
-void ReceipesPlugin::previewReceipe(int card_id)
+void RecipesPlugin::previewRecipe(int card_id)
 {
 	//QMetaObject::invokeMethod(this, "previewReceipeClassic", Qt::DirectConnection, Q_ARG(QVariant, card_id));
-	previewReceipe_classic(card_id);
+	previewRecipe_classic(card_id);
 }
 
-bool ReceipesPlugin::printReceipe(int card_id, const QPrinterInfo &printer_info)
+bool RecipesPlugin::printRecipe(int card_id, const QPrinterInfo &printer_info)
 {
 	try {
-		printReceipe_classic(card_id, printer_info);
+		printRecipe_classic(card_id, printer_info);
 		return true;
 	}
 	catch(const qf::core::Exception &e) {
@@ -259,7 +259,7 @@ bool ReceipesPlugin::printReceipe(int card_id, const QPrinterInfo &printer_info)
 	return false;
 }
 
-void ReceipesPlugin::previewReceipe_classic(int card_id)
+void RecipesPlugin::previewRecipe_classic(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
@@ -267,7 +267,7 @@ void ReceipesPlugin::previewReceipe_classic(int card_id)
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Receipe"));
 	w->setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
-	QVariantMap dt = receipeTablesData(card_id);
+	QVariantMap dt = recipeTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -276,7 +276,7 @@ void ReceipesPlugin::previewReceipe_classic(int card_id)
 	dlg.exec();
 }
 
-void ReceipesPlugin::printReceipe_classic(int card_id, const QPrinterInfo &printer_info)
+void RecipesPlugin::printRecipe_classic(int card_id, const QPrinterInfo &printer_info)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	//qfInfo() << "printReceipe_classic, card id:" << card_id;
@@ -295,7 +295,7 @@ void ReceipesPlugin::printReceipe_classic(int card_id, const QPrinterInfo &print
 	QPrinter printer(pi);
 	qf::qmlwidgets::reports::ReportProcessor rp(&printer);
 	rp.setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
-	QVariantMap dt = receipeTablesData(card_id);
+	QVariantMap dt = recipeTablesData(card_id);
 	for(auto key : dt.keys()) {
 		rp.setTableData(key, dt.value(key));
 	}

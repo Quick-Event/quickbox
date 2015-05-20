@@ -1,27 +1,27 @@
-#include "receipespartwidget.h"
-#include "receipeswidget.h"
+#include "recipespartwidget.h"
+#include "recipeswidget.h"
 
 #include <qf/qmlwidgets/frame.h>
 
 #include <QMetaObject>
 
-ReceipesPartWidget::ReceipesPartWidget(const QString &feature_id, QWidget *parent)
+RecipesPartWidget::RecipesPartWidget(const QString &feature_id, QWidget *parent)
 	: Super(feature_id, parent)
 {
 	setTitle(tr("Receipes"));
 
-	ReceipesWidget *w = new ReceipesWidget();
+	RecipesWidget *w = new RecipesWidget();
 	centralFrame()->addWidget(w);
 	w->settleDownInPartWidget(this);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
 
-ReceipesPartWidget::~ReceipesPartWidget()
+RecipesPartWidget::~RecipesPartWidget()
 {
 }
 
-void ReceipesPartWidget::lazyInit()
+void RecipesPartWidget::lazyInit()
 {
 }
 

@@ -1,11 +1,11 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
-import Receipes 1.0
+import Recipes 1.0
 
 //import "CardCheckers" as CardCheckers
 
-ReceipesPlugin {
+RecipesPlugin {
 	id: root
 /*
 	property QfObject internals: QfObject

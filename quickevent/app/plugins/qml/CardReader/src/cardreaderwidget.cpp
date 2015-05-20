@@ -394,10 +394,10 @@ CardReader::CardReaderPlugin *CardReaderWidget::thisPlugin()
 	return cardreader_plugin;
 }
 
-qf::qmlwidgets::framework::Plugin *CardReaderWidget::receipesPlugin()
+qf::qmlwidgets::framework::Plugin *CardReaderWidget::recipesPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipes"));
+	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Recipes"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
@@ -418,7 +418,7 @@ void CardReaderWidget::onCbxCardCheckersActivated(int ix)
 void CardReaderWidget::showSelectedCard()
 {
 	qfLogFuncFrame();
-	auto receipes_plugin = receipesPlugin();
+	auto receipes_plugin = recipesPlugin();
 	if(!receipes_plugin)
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();

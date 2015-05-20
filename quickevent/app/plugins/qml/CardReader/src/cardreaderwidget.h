@@ -86,7 +86,7 @@ private:
 	void updateTableView(int card_id);
 
 	CardReader::CardReaderPlugin* thisPlugin();
-	qf::qmlwidgets::framework::Plugin* receipesPlugin();
+	qf::qmlwidgets::framework::Plugin* recipesPlugin();
 	Event::EventPlugin* eventPlugin();
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 

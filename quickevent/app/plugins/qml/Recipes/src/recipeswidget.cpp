@@ -1,7 +1,7 @@
-#include "receipeswidget.h"
-#include "ui_receipeswidget.h"
-#include "receipespartwidget.h"
-#include "Receipes/receipesplugin.h"
+#include "recipeswidget.h"
+#include "ui_recipeswidget.h"
+#include "recipespartwidget.h"
+#include "Recipes/recipesplugin.h"
 
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
@@ -38,11 +38,11 @@ namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
-const char *ReceipesWidget::SETTINGS_PREFIX = "plugins/Receipes";
+const char *RecipesWidget::SETTINGS_PREFIX = "plugins/Recipes";
 
-ReceipesWidget::ReceipesWidget(QWidget *parent) :
+RecipesWidget::RecipesWidget(QWidget *parent) :
 	Super(parent),
-	ui(new Ui::ReceipesWidget)
+	ui(new Ui::RecipesWidget)
 {
 	ui->setupUi(this);
 
@@ -78,15 +78,15 @@ ReceipesWidget::ReceipesWidget(QWidget *parent) :
 	}
 
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceipesWidget::onCustomContextMenuRequest);
+	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &RecipesWidget::onCustomContextMenuRequest);
 }
 
-ReceipesWidget::~ReceipesWidget()
+RecipesWidget::~RecipesWidget()
 {
 	delete ui;
 }
 
-void ReceipesWidget::settleDownInPartWidget(ReceipesPartWidget *part_widget)
+void RecipesWidget::settleDownInPartWidget(RecipesPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
@@ -94,7 +94,7 @@ void ReceipesWidget::settleDownInPartWidget(ReceipesPartWidget *part_widget)
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 }
 
-void ReceipesWidget::reload()
+void RecipesWidget::reload()
 {
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
@@ -113,15 +113,15 @@ void ReceipesWidget::reload()
 	m_cardsModel->reload();
 }
 
-Receipes::ReceipesPlugin *ReceipesWidget::receipesPlugin()
+Recipes::RecipesPlugin *RecipesWidget::recipesPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Receipes::ReceipesPlugin *>(fwk->plugin("Receipes"));
+	auto plugin = qobject_cast<Recipes::RecipesPlugin *>(fwk->plugin("Receipes"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
 
-Event::EventPlugin *ReceipesWidget::eventPlugin()
+Event::EventPlugin *RecipesWidget::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
@@ -129,7 +129,7 @@ Event::EventPlugin *ReceipesWidget::eventPlugin()
 	return plugin;
 }
 
-void ReceipesWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void RecipesWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	Q_UNUSED(payload)
 	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
@@ -137,7 +137,7 @@ void ReceipesWidget::onDbEventNotify(const QString &domain, const QVariant &payl
 	}
 }
 
-void ReceipesWidget::createActions()
+void RecipesWidget::createActions()
 {
 	//QStyle *sty = style();
 	/*
@@ -151,19 +151,19 @@ void ReceipesWidget::createActions()
 	*/
 }
 
-void ReceipesWidget::loadPrinters()
+void RecipesWidget::loadPrinters()
 {
 	ui->cbxPrinters->addItems(QPrinterInfo::availablePrinterNames());
 	QString def = QPrinterInfo::defaultPrinterName();
 	ui->cbxPrinters->setCurrentText(def);
 }
 
-QPrinterInfo ReceipesWidget::currentPrinter()
+QPrinterInfo RecipesWidget::currentPrinter()
 {
 	return QPrinterInfo::printerInfo(ui->cbxPrinters->currentText());
 }
 
-int ReceipesWidget::currentStageId()
+int RecipesWidget::currentStageId()
 {
 	auto event_plugin = eventPlugin();
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
@@ -171,7 +171,7 @@ int ReceipesWidget::currentStageId()
 	return ret;
 }
 
-void ReceipesWidget::onCardRead()
+void RecipesWidget::onCardRead()
 {
 	if(ui->chkAutoPrint->isChecked()) {
 		printNewCards();
@@ -179,7 +179,7 @@ void ReceipesWidget::onCardRead()
 	loadNewCards();
 }
 
-void ReceipesWidget::printNewCards()
+void RecipesWidget::printNewCards()
 {
 	auto conn  = qf::core::sql::Connection::forName();
 	int connection_id = conn.connectionId();
@@ -198,25 +198,25 @@ void ReceipesWidget::printNewCards()
 		q.exec(qs, qf::core::Exception::Throw);
 		while(q.next()) {
 			int card_id = q.value(0).toInt();
-			if(!printReceipe(card_id)) {
+			if(!printRecipe(card_id)) {
 				break;
 			}
 		}
 	}
 }
 
-void ReceipesWidget::loadNewCards()
+void RecipesWidget::loadNewCards()
 {
 	m_cardsModel->reloadInserts(QStringLiteral("cards.id"));
 }
 
-void ReceipesWidget::on_btPrintNew_clicked()
+void RecipesWidget::on_btPrintNew_clicked()
 {
 	printNewCards();
 	loadNewCards();
 }
 
-void ReceipesWidget::onCustomContextMenuRequest(const QPoint &pos)
+void RecipesWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
 	QAction a_print_card(tr("Print selected cards"), nullptr);
@@ -228,17 +228,17 @@ void ReceipesWidget::onCustomContextMenuRequest(const QPoint &pos)
 	}
 }
 
-void ReceipesWidget::printSelectedCards()
+void RecipesWidget::printSelectedCards()
 {
 	for(int i : ui->tblCards->selectedRowsIndexes()) {
 		int card_id = ui->tblCards->tableRow(i).value("cards.id").toInt();
 		QF_ASSERT(card_id > 0, "Bad card ID", return);
-		printReceipe(card_id);
+		printRecipe(card_id);
 	}
 }
 
-bool ReceipesWidget::printReceipe(int card_id)
+bool RecipesWidget::printRecipe(int card_id)
 {
-	return receipesPlugin()->printReceipe(card_id, currentPrinter());
+	return recipesPlugin()->printRecipe(card_id, currentPrinter());
 }
 

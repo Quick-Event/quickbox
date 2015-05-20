@@ -1,4 +1,4 @@
-#include "Receipes/receipesplugin.h"
+#include "Recipes/recipesplugin.h"
 
 #include <qf/core/log.h>
 
@@ -13,9 +13,9 @@ public:
 	void registerTypes(const char *uri)
 	{
 		qfLogFuncFrame() << uri;
-		Q_ASSERT(uri == QLatin1String("Receipes"));
+		Q_ASSERT(uri == QLatin1String("Recipes"));
 
-		qmlRegisterType<Receipes::ReceipesPlugin>(uri, 1, 0, "ReceipesPlugin");
+		qmlRegisterType<Recipes::RecipesPlugin>(uri, 1, 0, "RecipesPlugin");
 	}
 };
 
