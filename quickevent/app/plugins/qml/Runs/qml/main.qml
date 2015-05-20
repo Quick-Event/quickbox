@@ -40,7 +40,17 @@ RunsPlugin {
 			id: act_export_html_startList_classes
 			text: qsTr('&Classes')
 			onTriggered: {
-				root.exportHtmlStartListClasses()
+				//var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("HTML files (*.html)"));
+				var fn = root.exportHtmlStartListClasses()
+				File.openUrl(File.toUrl(fn));
+			}
+		},
+		Action {
+			id: act_export_html_startList_clubs
+			text: qsTr('&Clubs')
+			onTriggered: {
+				var fn = root.exportHtmlStartListClubs()
+				File.openUrl(File.toUrl(fn));
 			}
 		}
 	]
@@ -58,6 +68,7 @@ RunsPlugin {
 		a = a.addMenuInto("html", "&HTML");
 		a = a.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_export_html_startList_classes);
+		a.addActionInto(act_export_html_startList_clubs);
 	}
 
 	function startListClassesTable()
@@ -165,10 +176,8 @@ RunsPlugin {
 
 	function exportHtmlStartListClasses()
 	{
-		var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), "startlist-classes.html", qsTr("HTML files (*.html)"));
-		//Log.info(file_name);
-		if(!file_name)
-			return;
+		var default_file_name = "startlist-classes.html";
+
 		var tt1 = startListClassesTable();
 		var body = ['body']
 		var h1_str = "{{documentTitle}}";
@@ -182,7 +191,7 @@ RunsPlugin {
 		var div1 = ['div'];
 		body.push(div1);
 		for(var i=0; i<tt1.rowCount(); i++) {
-			div1.push(['a', {"href": "#class_" + tt1.value(i, 'classes.name')}, tt1.value(i, 'classes.name')], "nbsp;")
+			div1.push(['a', {"href": "#class_" + tt1.value(i, 'classes.name')}, tt1.value(i, 'classes.name')], "&nbsp;")
 		}
 		for(var i=0; i<tt1.rowCount(); i++) {
 			div1 = ['h2', ['a', {"name": "class_" + tt1.value(i, 'classes.name')}, tt1.value(i, 'classes.name')]];
@@ -210,7 +219,71 @@ RunsPlugin {
 				table.push(tr);
 			}
 		}
+		var file_name = File.tempPath() + "/quickevent/e" + tt1.value("stageId");
+		if(File.mkpath(file_name)) {
+			file_name += "/" + default_file_name;
+			File.writeHtml(file_name, body, {documentTitle: qsTr("Start list by classes")});
+			Log.info("exported:", file_name);
+			return file_name;
+		}
+		return "";
+	}
+
+	function exportHtmlStartListClubs()
+	{
+		var default_file_name = "startlist-clubs.html";
+
+		var tt1 = startListClubsTable();
+		var body = ['body']
+		var h1_str = "{{documentTitle}}";
+		var event = tt1.value("event");
+		if(event.stageCount > 1)
+			h1_str = "E" + tt1.value("stageId") + " " + h1_str;
+		body.push(['h1', h1_str]);
+		body.push(['h2', event.name]);
+		body.push(['h3', event.place]);
+		body.push(['h3', event.date]);
+		var div1 = ['div'];
+		body.push(div1);
+		for(var i=0; i<tt1.rowCount(); i++) {
+			div1.push(['a', {"href": "#club_" + tt1.value(i, 'abbr')}, tt1.value(i, 'abbr')], "&nbsp;")
+		}
+		for(var i=0; i<tt1.rowCount(); i++) {
+			div1 = ['h2', ['a', {"name": "club_" + tt1.value(i, 'abbr')}, tt1.value(i, 'abbr')]];
+			body.push(div1);
+			div1 = ['h3', tt1.value(i, 'name')];
+			body.push(div1);
+			var table = ['table'];
+			body.push(table);
+			var tt2 = tt1.table(i);
+			var tr = ['tr',
+					  ['th', qsTr("Start")],
+					  ['th', qsTr("Class")],
+					  ['th', qsTr("Name")],
+					  ['th', qsTr("Registration")],
+					  ['th', qsTr("SI")]
+					];
+			table.push(tr);
+			for(var j=0; j<tt2.rowCount(); j++) {
+				tr = ['tr'];
+				if(j % 2)
+					tr.push({"class": "odd"});
+				tr.push(['td', OGTime.msecToString(tt2.value(j, 'startTimeMs'))]);
+				tr.push(['td', tt2.value(j, 'classes.name')]);
+				tr.push(['td', tt2.value(j, 'competitorName')]);
+				tr.push(['td', tt2.value(j, 'registration')]);
+				tr.push(['td', tt2.value(j, 'runs.siId')]);
+				table.push(tr);
+			}
+		}
 		//var s = JSON.stringify(html, null, 2);
-		File.writeHtml(file_name, body, {documentTitle: qsTr("Start list by classes")});
+		var file_name = File.tempPath() + "/quickevent/e" + tt1.value("stageId");
+		if(File.mkpath(file_name)) {
+			file_name += "/" + default_file_name;
+			File.writeHtml(file_name, body, {documentTitle: qsTr("Start list by clubs")});
+			Log.info("exported:", file_name);
+			return file_name;
+		}
+		return "";
 	}
 }

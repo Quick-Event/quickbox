@@ -2,6 +2,7 @@
 #define QF_CORE_QML_QMLFILESINGLETON_H
 
 #include <QObject>
+#include <QUrl>
 
 class QQmlEngine;
 class QJSEngine;
@@ -21,6 +22,11 @@ public:
 
 	Q_INVOKABLE bool write(const QString &file_path, const QString &content);
 	Q_INVOKABLE bool writeHtml(const QString &file_path, const QVariant &body_list, const QVariantMap &options);
+
+	Q_INVOKABLE QString tempPath();
+	Q_INVOKABLE bool mkpath(const QString &absolute_dir_path);
+	Q_INVOKABLE QUrl toUrl(const QString &file_path);
+	Q_INVOKABLE void openUrl(const QUrl &url);
 };
 
 } // namespace qml

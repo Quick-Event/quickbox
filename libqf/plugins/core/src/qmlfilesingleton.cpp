@@ -4,8 +4,10 @@
 #include <qf/core/utils/htmlutils.h>
 
 #include <QFile>
+#include <QDir>
 #include <QQmlEngine>
 #include <QJSEngine>
+#include <QDesktopServices>
 
 using namespace qf::core::qml;
 
@@ -49,5 +51,26 @@ bool QmlFileSingleton::writeHtml(const QString &file_path, const QVariant &body_
 		str = qf::core::utils::HtmlUtils::fromHtmlList(html_lst, opts);
 	}
 	return write(file_path, str);
+}
+
+QString QmlFileSingleton::tempPath()
+{
+	return QDir::tempPath();
+}
+
+bool QmlFileSingleton::mkpath(const QString &absolute_dir_path)
+{
+	QDir dir(absolute_dir_path);
+	return dir.mkpath(QStringLiteral("."));
+}
+
+QUrl QmlFileSingleton::toUrl(const QString &file_path)
+{
+	return QUrl::fromLocalFile(file_path);
+}
+
+void QmlFileSingleton::openUrl(const QUrl &url)
+{
+	QDesktopServices::openUrl(url);
 }
 
