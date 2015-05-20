@@ -5,6 +5,7 @@
 *********************************************************************/
 #include "servertreemodel.h"
 #include "servertreeitem.h"
+#include "theapp.h"
 
 #include <qf/core/log.h>
 
@@ -85,40 +86,49 @@ void ServerTreeModel::loadSettings()
 {
 	qfLogFuncFrame();
 	init();
-	QSettings settings;
-	QJsonParseError err;
-	QByteArray ba = settings.value("connections").toString().toUtf8();
 	QVariantList connections_lst;
-	if(!ba.isEmpty()) {
-		QJsonDocument jsd = QJsonDocument::fromJson(ba, &err);
-		if(err.error != QJsonParseError::NoError) {
-			qfError() << "Cannot load connections definition from settings:" << err.errorString();
-		}
-		else {
-			connections_lst = jsd.toVariant().toList();
+	QString otcs = TheApp::instance()->oneTimeConnectionSettings();
+	if(otcs.isEmpty()) {
+		QSettings settings;
+		QJsonParseError err;
+		QByteArray ba = settings.value("connections").toString().toUtf8();
+		if(!ba.isEmpty()) {
+			QJsonDocument jsd = QJsonDocument::fromJson(ba, &err);
+			if(err.error != QJsonParseError::NoError) {
+				qfError() << "Cannot load connections definition from settings:" << err.errorString();
+			}
+			else {
+				connections_lst = jsd.toVariant().toList();
+			}
 		}
 	}
-	QSet<int> ids;
+	else {
+		Connection::Params params;
+		for(QString keyval : otcs.split('&')) {
+			QString key = keyval.section('=', 0, 0);
+			QString val = keyval.section('=', 1, 1);
+			params.setParam(key, val);
+		}
+		connections_lst << params;
+	}
+	Connection *c = nullptr;
 	for(auto val : connections_lst) {
 		QVariantMap m = val.toMap();
-		new Connection(m, m_rootObj);
+		c = new Connection(m, m_rootObj);
 	}
 }
 
 void ServerTreeModel::saveSettings()
 {
 	qfLogFuncFrame();
+	QString otcs = TheApp::instance()->oneTimeConnectionSettings();
+	if(!otcs.isEmpty())
+		return;
+
 	QVariantList connections_lst;
 	for(auto c : m_rootObj->findChildren<Connection*>(QString())) {
 		qfDebug() << c;
 		QVariantMap m = c->params();
-		/*
-		QMapIterator<QString, QVariant> it(m);
-		while(it.hasNext()) {
-			it.next();
-			qfDebug() << "\t" << it.key() << "->" << it.value().toString();
-		}
-		*/
 		connections_lst << m;
 	}
 	QSettings settings;

@@ -4,7 +4,7 @@ PLUGIN_NAME = Core
 
 include ( ../quickeventqmlplugin.pri )
 
-QT += widgets
+QT += widgets sql
 
 CONFIG += c++11 hide_symbols
 

@@ -49,6 +49,15 @@ CorePlugin {
 				Log.info(text, "triggered");
 				Qt.quit();
 			}
+		},
+		Action {
+			id: actLaunchSqlTool
+			//oid: 'quit'
+			text: qsTr('&SQL tool')
+			onTriggered: {
+				Log.info(text, "triggered");
+				root.launchSqlTool();
+			}
 		}
 	]
 
@@ -89,6 +98,7 @@ CorePlugin {
 
 		var tools = FrameWork.menuBar.actionForPath('tools');
 		tools.text = qsTr('&Tools');
+		tools.addActionInto(actLaunchSqlTool);
 		tools.addMenuInto('pluginSettings', qsTr('&Plugin settings'));
 
 		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');

@@ -13,6 +13,8 @@ public:
 	CorePlugin(QObject *parent = nullptr);
 public:
 	QSettings settings();
+
+	Q_INVOKABLE void launchSqlTool();
 private:
 	Q_SLOT void onInstalled();
 };

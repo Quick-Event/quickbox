@@ -3,6 +3,12 @@
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
+#include <qf/core/sql/connection.h>
+
+#include <QCoreApplication>
+#include <QProcess>
+
+
 namespace qff = qf::qmlwidgets::framework;
 
 CorePlugin::CorePlugin(QObject *parent)
@@ -15,5 +21,31 @@ void CorePlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	fwk->setStatusBar(new AppStatusBar());
+}
+
+void CorePlugin::launchSqlTool()
+{
+	qfLogFuncFrame();
+	QString program = QCoreApplication::applicationDirPath() + "/qsqlmon";
+#ifdef Q_OS_WIN
+	program += ".exe";
+#endif
+	qfDebug() << "launchnig" << program;
+	QStringList otcs;
+	{
+		auto conn = qf::core::sql::Connection::forName();
+		otcs << "description=QuickEvent";
+		otcs << "driver=" + conn.driverName();
+		otcs << "host=" + conn.hostName();
+		otcs << "port=" + QString::number(conn.port());
+		otcs << "user=" + conn.userName();
+		otcs << "password=" + conn.password();
+		otcs << "database=" + conn.databaseName();
+	}
+
+	QStringList arguments;
+	arguments << "--one-time-connection-settings" << otcs.join('&');
+	QProcess *process = new QProcess(this);
+	process->start(program, arguments);
 }
 
