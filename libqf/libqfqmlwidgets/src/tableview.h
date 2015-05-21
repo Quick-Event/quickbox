@@ -33,6 +33,7 @@ class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::
 	Q_PROPERTY(InlineEditStrategy inlineEditStrategy READ inlineEditStrategy WRITE setInlineEditStrategy NOTIFY inlineEditStrategyChanged)
 	Q_PROPERTY(QString idColumnName READ idColumnName WRITE setIdColumnName)
 	Q_PROPERTY(bool showExceptionDialog READ isShowExceptionDialog WRITE setShowExceptionDialog NOTIFY showExceptionDialogChanged)
+	Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged)
 private:
 	typedef QTableView Super;
 public:
@@ -64,6 +65,7 @@ public:
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)
+	QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
 public:
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);

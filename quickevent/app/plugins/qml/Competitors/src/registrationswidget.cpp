@@ -16,7 +16,7 @@ RegistrationsWidget::RegistrationsWidget(QWidget *parent) :
 	ui->tblRegistrationsTB->setTableView(ui->tblRegistrations);
 
 	ui->tblRegistrations->setPersistentSettingsId("tblRegistrations");
-	//ui->tblRegistrations->setRowEditorMode(qfw::TableView::EditRowsMixed);
+	ui->tblRegistrations->setReadOnly(true);
 	//ui->tblRegistrations->setInlineEditStrategy(qfw::TableView::OnCurrentFieldChange);
 	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 	m->addColumn("competitorName", tr("Name"));

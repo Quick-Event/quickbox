@@ -46,6 +46,7 @@ TableView::TableView(QWidget *parent) :
 {
 	qfLogFuncFrame() << this;
 	m_proxyModel = new TableViewProxyModel(this);
+	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
 	m_proxyModel->setDynamicSortFilter(false);
 	Super::setModel(m_proxyModel);
 	setItemDelegate(new TableItemDelegate(this));
@@ -125,6 +126,7 @@ void TableView::setTableModel(core::model::TableModel *m)
 		QAbstractProxyModel *pxm = lastProxyModel();
 		pxm->setSourceModel(m);
 		m_proxyModel->setSortRole(qf::core::model::TableModel::SortRole);
+		refreshActions();
 		emit tableModelChanged();
 	}
 }
@@ -165,9 +167,13 @@ void TableView::refreshActions()
 	//action("editRowExternal")->setVisible(true);
 
 	bool is_insert_rows_allowed = !(m_proxyModel->dynamicSortFilter() && !m_proxyModel->isIdle());
+	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
+	is_edit_rows_allowed = is_edit_rows_allowed && !isReadOnly();
 	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
+	is_delete_rows_allowed = is_delete_rows_allowed && !isReadOnly();
 	bool is_copy_rows_allowed = m_proxyModel->rowCount()>0 && is_insert_rows_allowed;
+	is_copy_rows_allowed = is_copy_rows_allowed && !isReadOnly();
 	//qfInfo() << "\tinsert allowed:" << is_insert_rows_allowed;
 	//qfDebug() << "\tdelete allowed:" << is_delete_rows_allowed;
 	//qfDebug() << "\tedit allowed:" << is_edit_rows_allowed;
