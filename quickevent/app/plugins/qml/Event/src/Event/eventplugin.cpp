@@ -420,9 +420,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		qfd::MessageBox::showError(fwk, tr("Cannot create event, database is not open: %1").arg(conn.lastError().text()));
 	}
 	if(ok) {
-		ok = openEvent(event_name);
-		if(ok)
-			event_config.save();
+		ok = openEvent(event_name, &event_config);
 	}
 	return ok;
 
@@ -435,7 +433,7 @@ bool EventPlugin::closeEvent()
 	return true;
 }
 
-bool EventPlugin::openEvent(const QString &_event_name)
+bool EventPlugin::openEvent(const QString &_event_name, EventConfig *created_event_config)
 {
 	closeEvent();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -449,7 +447,8 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		qfs::Connection conn(QSqlDatabase::database());
 		qfs::Query q(conn);
 		qfs::QueryBuilder qb;
-		if(event_name.isEmpty()) {
+		ok = !event_name.isEmpty();
+		if(!ok) {
 			qb.select("nspname")
 					.from("pg_catalog.pg_namespace  AS n")
 					.where("nspname NOT LIKE 'pg\\_%'")
@@ -460,10 +459,11 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			while(q.next()) {
 				events << q.value("nspname").toString();
 			}
-			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), events, 0, false);
+			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), events, 0, false, &ok);
 		}
 		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
-		if(!event_name.isEmpty()) {
+		ok = ok && !event_name.isEmpty();
+		if(ok) {
 			if(conn.setCurrentSchema(event_name)) {
 				ConnectionSettings settings;
 				settings.setEventName(event_name);
@@ -485,7 +485,6 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			for (int i = 0; i < event_names.count(); ++i) {
 				event_names[i] = fileNameToEventName(event_names[i]);
 			}
-			bool ok;
 			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), event_names, 0, false, &ok);
 			//event_fn = qfd::FileDialog::getOpenFileName(fwk, tr("Select event"), connection_settings.singleWorkingDir(), tr("Quick Event files (*%1)").arg(qbe_ext));
 			if(ok && !event_name.isEmpty()) {
@@ -500,26 +499,33 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			QSqlDatabase::removeDatabase(conn.connectionName());
 			QSqlDatabase::addDatabase("QSQLITE");
 		}
-		if(QFile::exists(event_fn)) {
-			qfs::Connection conn(QSqlDatabase::database());
-			conn.setDatabaseName(event_fn);
-			qfInfo() << "Opening database file" << event_fn;
-			if(conn.open()) {
-				qfs::Query q(conn);
-				ok = q.exec("PRAGMA foreign_keys=ON");
-			}
-			else {
-				qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
-			}
+		if(event_fn.isEmpty()) {
+			ok = false;
 		}
 		else {
-			qfd::MessageBox::showError(fwk, tr("Database file %1 doesn't exist.").arg(event_fn));
+			if(QFile::exists(event_fn)) {
+				qfs::Connection conn(QSqlDatabase::database());
+				conn.setDatabaseName(event_fn);
+				qfInfo() << "Opening database file" << event_fn;
+				if(conn.open()) {
+					qfs::Query q(conn);
+					ok = q.exec("PRAGMA foreign_keys=ON");
+				}
+				else {
+					qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
+				}
+			}
+			else {
+				qfd::MessageBox::showError(fwk, tr("Database file %1 doesn't exist.").arg(event_fn));
+			}
 		}
 	}
 	else {
 		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
+		if(created_event_config)
+			created_event_config->save();
 		eventConfig(true);
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);
