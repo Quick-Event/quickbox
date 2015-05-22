@@ -24,6 +24,9 @@ public:
 
 	void reload();
 private:
+	void onFilterTextChanged();
+	void onGrpFilterToggled();
+private:
 	Ui::RegistrationsWidget *ui;
 	qf::core::model::SqlTableModel *m_registrationsModel;
 };

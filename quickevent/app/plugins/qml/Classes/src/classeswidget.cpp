@@ -127,7 +127,7 @@ void ClassesWidget::reload()
 		if(ro) {
 			qfWarning() << tr("Courses are not imported, class table is read only.");
 		}
-		ui->tblClasses->setEnabled(!ro);
+		ui->tblClasses->setReadOnly(ro);
 	}
 	reloadCourseCodes();
 }

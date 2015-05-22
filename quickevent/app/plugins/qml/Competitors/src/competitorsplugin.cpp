@@ -70,8 +70,8 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 	if(on && !m_registrationsDockWidget->widget()) {
 		auto *rw = new RegistrationsWidget();
 		m_registrationsDockWidget->setWidget(rw);
-		rw->reload();
-		m_registrationsDockWidget->loadPersistentSettingsRecursively();
+		//rw->reload();
+		//m_registrationsDockWidget->loadPersistentSettingsRecursively();
 	}
 }
 

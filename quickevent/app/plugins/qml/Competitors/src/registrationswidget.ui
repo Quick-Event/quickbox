@@ -30,7 +30,66 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblRegistrationsTB" native="true"/>
+    <widget class="QGroupBox" name="grpFilter">
+     <property name="title">
+      <string>Filter</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QLineEdit" name="edNameFilter">
+        <property name="placeholderText">
+         <string>Name</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edRegistrationFilter">
+        <property name="placeholderText">
+         <string>Registration</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="edSiIdFilter">
+        <property name="placeholderText">
+         <string>SI</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblRegistrationsTB" native="true">
+     <zorder>tblRegistrations</zorder>
+    </widget>
    </item>
    <item>
     <widget class="qf::qmlwidgets::TableView" name="tblRegistrations"/>
