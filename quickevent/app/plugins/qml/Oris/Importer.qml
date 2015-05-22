@@ -289,7 +289,7 @@ QtObject {
 					db.rollback();
 				q.destroy();
 				FrameWork.showProgress("", 0, 0);
-				//FrameWork.plugin("Event").reloadDataRequest();
+				FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
 			}
 			else {
 				MessageBoxSingleton.critical(FrameWork, "http get error: " + json_str + ' on: ' + url)

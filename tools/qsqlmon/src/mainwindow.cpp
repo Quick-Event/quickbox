@@ -1246,8 +1246,16 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				else if(a == actTruncateTable) {
 					if(table->kind == QSql::Tables) {
 						if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy truncate the table '%1'").arg(full_table_name), true)) {
-							QString s = "TRUNCATE TABLE " + full_table_name;
-							execCommand(s);
+							if(activeConnection().driverName().endsWith("SQLITE")) {
+								QString s = "DELETE FROM " + full_table_name;
+								execCommand(s);
+								s = "VACUUM";
+								execCommand(s);
+							}
+							else {
+								QString s = "TRUNCATE TABLE " + full_table_name;
+								execCommand(s);
+							}
 						}
 					}
 				}

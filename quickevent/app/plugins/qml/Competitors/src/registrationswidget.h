@@ -23,9 +23,7 @@ public:
 	~RegistrationsWidget();
 
 	void reload();
-private:
-	void onFilterTextChanged();
-	void onGrpFilterToggled();
+	Q_SLOT void onDbEvent(const QString &domain, const QVariant &payload);
 private:
 	Ui::RegistrationsWidget *ui;
 	qf::core::model::SqlTableModel *m_registrationsModel;

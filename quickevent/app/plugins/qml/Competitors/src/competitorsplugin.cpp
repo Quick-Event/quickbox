@@ -69,8 +69,10 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 {
 	if(on && !m_registrationsDockWidget->widget()) {
 		auto *rw = new RegistrationsWidget();
+		qff::MainWindow *fwk = qff::MainWindow::frameWork();
+		connect(fwk->plugin("Event"), SIGNAL(dbEventNotify(QString, QVariant)), rw, SLOT(onDbEvent(QString, QVariant)));
 		m_registrationsDockWidget->setWidget(rw);
-		//rw->reload();
+		rw->reload();
 		//m_registrationsDockWidget->loadPersistentSettingsRecursively();
 	}
 }

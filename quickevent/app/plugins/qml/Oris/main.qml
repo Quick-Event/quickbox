@@ -40,6 +40,14 @@ Plugin {
 			onTriggered: {
 				orisImporter.importRegistrations();
 			}
+		},
+		Action {
+			id: actTest
+			text: qsTr('&Test')
+			//enabled: internal.pluginSqlDb.api.sqlServerConnected
+			onTriggered: {
+				FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
+			}
 		}
 	]
 
@@ -51,6 +59,7 @@ Plugin {
 		act_import_oris.addActionInto(actImportEventOris)
 		act_import_oris.addActionInto(actImportClubsOris)
 		act_import_oris.addActionInto(actImportRegistrationsOris)
+		//act_import_oris.addActionInto(actTest)
 		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
 		//quit.addSeparatorBefore();
 		//FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);

@@ -57,7 +57,10 @@ static QString fileNameToEventName(const QString &file_name)
 	return event_name;
 }
 
-const char *EventPlugin::DBEVENT_NOTIFY_NAME = "quickboxDbEvent";
+/// strange is that 'quickboxDbEvent' just doesn't work without any error
+/// from psql doc: Commonly, the channel name is the same as the name of some table in the database
+/// I guess that channel name cannot contain capital letters to work
+const char *EventPlugin::DBEVENT_NOTIFY_NAME = "quickbox_db_event";
 
 EventPlugin::EventPlugin(QObject *parent)
 	: Super(parent)
@@ -180,11 +183,16 @@ void EventPlugin::editStage()
 	}
 }
 
-void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload)
+void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bool loopback)
 {
-	emit dbEventNotify(domain, payload);
-	QVariantMap m;
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	if(loopback)
+		emit dbEventNotify(domain, payload);
+	if(connectionType() == ConnectionType::SingleFile)
+		return;
+	//QVariantMap m;
 	QJsonObject jso;
+	jso[QLatin1String("event")] = eventName();
 	jso[QLatin1String("domain")] = domain;
 	jso[QLatin1String("payload")] = QJsonValue::fromVariant(payload);
 	QJsonDocument jsd(jso);
@@ -192,6 +200,7 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload)
 	payload_str = qf::core::sql::Connection::escapeJsonForSql(payload_str);
 	qf::core::sql::Connection conn = qf::core::sql::Connection::forName();
 	QString qs = QString("NOTIFY ") + DBEVENT_NOTIFY_NAME + ", '" + payload_str + "'";
+	qfDebug() << conn.driver() << "executing SQL:" << qs;
 	QSqlQuery q(conn);
 	if(!q.exec(qs)) {
 		qfError() << "emitDbEventNotify Error:" << qs << q.lastError().text();
@@ -200,6 +209,7 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload)
 
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
 {
+	qfLogFuncFrame() << "name:" << name << "source:" << source << "payload:" << payload;
 	if(name == QLatin1String(DBEVENT_NOTIFY_NAME)) {
 		if(source == QSqlDriver::OtherSource) {
 			QJsonDocument jsd = QJsonDocument::fromJson(payload.toString().toUtf8());
@@ -207,11 +217,21 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 			QString domain = m.value(QStringLiteral("domain")).toString();
 			if(domain.isEmpty()) {
 				qfWarning() << "DbNotify with invalid domain, payload:" << payload.toString();
+				return;
 			}
-			else {
+			QString event_name = m.value(QStringLiteral("event")).toString();
+			if(event_name.isEmpty()) {
+				qfWarning() << "DbNotify with invalid event name, payload:" << payload.toString();
+				return;
+			}
+			if(event_name == eventName()) {
 				QVariant pl = m.value(QStringLiteral("payload"));
+				qfDebug() << "emitting domain:" << domain << "payload:" << pl;
 				emit dbEventNotify(domain, pl);
 			}
+		}
+		else {
+			//qfDebug() << "self db notify";
 		}
 	}
 }
@@ -228,6 +248,12 @@ void EventPlugin::onEventOpened()
 	m_cbxStage->setCurrentIndex(0);
 	m_cbxStage->blockSignals(false);
 	emit this->currentStageIdChanged(currentStageId());
+}
+
+EventPlugin::ConnectionType EventPlugin::connectionType() const
+{
+	ConnectionSettings connection_settings;
+	return connection_settings.connectionType();
 }
 
 void EventPlugin::connectToSqlServer()
@@ -268,8 +294,15 @@ void EventPlugin::connectToSqlServer()
 				qfInfo().nospace() << "connecting to: " << db.userName() << "@" << db.hostName() << ":" << db.port();
 				connect_ok = db.open();
 				if(connect_ok) {
-					connect(db.driver(), SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource,QVariant)));
-					db.driver()->subscribeToNotification(DBEVENT_NOTIFY_NAME);
+					bool ok = connect(db.driver(), SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource,QVariant)));
+					if(ok)
+						ok = db.driver()->subscribeToNotification(DBEVENT_NOTIFY_NAME);
+					if(!ok)
+						qfError() << "Failed to subscribe db notification:" << DBEVENT_NOTIFY_NAME;
+					else {
+						qfInfo() << "Successfully subscribe db notification:" << DBEVENT_NOTIFY_NAME;
+						qfInfo() << db.driver() << "subscribedToNotifications:" << db.driver()->subscribedToNotifications().join(", ");
+					}
 				}
 			}
 			if(!connect_ok) {
@@ -312,7 +345,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 
 	QVariantMap new_params = event_w->saveParams();
 	Event::EventConfig event_config;
-	ConnectionSettings connection_settings;
+	//ConnectionSettings connection_settings;
 	event_config.setValue("event", new_params);
 	int stage_count = event_params.value("stageCount").toInt();
 	if(stage_count == 0)
@@ -321,7 +354,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 	QF_ASSERT(stage_count > 0, "Stage count have to be greater than 0", return false);
 
 	qfInfo() << "will create:" << event_name;
-	EventPlugin::ConnectionType connection_type = connection_settings.connectionType();
+	EventPlugin::ConnectionType connection_type = connectionType();
 	qfs::Connection conn = qfs::Connection::forName();
 	//QF_ASSERT(conn.isOpen(), "Connection is not open", return false);
 	if(connection_type == ConnectionType::SingleFile) {
@@ -503,5 +536,6 @@ void EventPlugin::setDbOpen(bool ok)
 		emit dbOpenChanged(ok);
 	}
 }
+
 
 

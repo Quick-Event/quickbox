@@ -63,10 +63,12 @@ public:
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
 
-	void emitDbEvent(const QString &domain, const QVariant &payload);
+	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 private:
 	void setDbOpen(bool ok);
+
+	ConnectionType connectionType() const;
 
 	Q_SLOT void onInstalled();
 	Q_SLOT void onEventOpened();

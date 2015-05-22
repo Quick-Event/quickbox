@@ -25,10 +25,10 @@ RegistrationsWidget::RegistrationsWidget(QWidget *parent) :
 	ui->tblRegistrations->setTableModel(m);
 	m_registrationsModel = m;
 
-	connect(ui->edNameFilter, &QLineEdit::textChanged, this, &RegistrationsWidget::onFilterTextChanged);
-	connect(ui->edRegistrationFilter, &QLineEdit::textChanged, this, &RegistrationsWidget::onFilterTextChanged);
-	connect(ui->edSiIdFilter, &QLineEdit::textChanged, this, &RegistrationsWidget::onFilterTextChanged);
-	connect(ui->grpFilter, &QGroupBox::toggled, this, &RegistrationsWidget::onGrpFilterToggled);
+	connect(ui->edNameFilter, &QLineEdit::textChanged, this, &RegistrationsWidget::reload);
+	connect(ui->edRegistrationFilter, &QLineEdit::textChanged, this, &RegistrationsWidget::reload);
+	connect(ui->edSiIdFilter, &QLineEdit::textChanged, this, &RegistrationsWidget::reload);
+	connect(ui->grpFilter, &QGroupBox::toggled, this, &RegistrationsWidget::reload);
 }
 
 RegistrationsWidget::~RegistrationsWidget()
@@ -38,6 +38,8 @@ RegistrationsWidget::~RegistrationsWidget()
 
 void RegistrationsWidget::reload()
 {
+	if(!isVisible())
+		return;
 	qfs::QueryBuilder qb;
 	qb.select2("registrations", "registration, siId")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -53,6 +55,14 @@ void RegistrationsWidget::reload()
 		}
 		QString registration_filter = ui->edRegistrationFilter->text().trimmed();
 		QString siid_filter = ui->edSiIdFilter->text().trimmed();
+
+		int l = first_name_filter.length()
+				+ last_name_filter.length()
+				+ registration_filter.length()
+				+ siid_filter.length();
+		if(l < 3)
+			return;
+
 		if(!first_name_filter.isEmpty())
 			qb.where("firstName LIKE '%" + first_name_filter + "%'");
 		if(!last_name_filter.isEmpty())
@@ -67,23 +77,10 @@ void RegistrationsWidget::reload()
 	ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 }
 
-void RegistrationsWidget::onFilterTextChanged()
+void RegistrationsWidget::onDbEvent(const QString &domain, const QVariant &payload)
 {
-	if(ui->grpFilter->isChecked()) {
-		int l = ui->edNameFilter->text().trimmed().length()
-				+ ui->edRegistrationFilter->text().trimmed().length()
-				+ ui->edSiIdFilter->text().trimmed().length();
-		if(l >= 3)
-			reload();
-	}
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	if(domain == "Oris.registrationImported")
+		reload();
 }
 
-void RegistrationsWidget::onGrpFilterToggled()
-{
-	if(!ui->grpFilter->isChecked()) {
-		reload();
-	}
-	else {
-		onFilterTextChanged();
-	}
-}

@@ -367,7 +367,7 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		thisPlugin()->updateRunLapsSql(checked_card);
 	}
 	if(card_id > 0) {
-		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id);
+		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
 		updateTableView(card_id);
 	}
 }
