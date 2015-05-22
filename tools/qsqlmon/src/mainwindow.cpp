@@ -471,10 +471,6 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    /*
-	toolbarFile = addToolBar(tr("File"));
-	toolbarFile->addAction(action("connect"));
-	*/
 	QToolBar *t;
 	t = addToolBar(tr("Sql"));
 	t->setObjectName("mainToolBar");

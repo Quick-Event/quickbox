@@ -49,33 +49,29 @@ void CompetitorsPlugin::onInstalled()
 	m_partWidget = new ThisPartWidget();
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 	{
-		qfw::Action *a = new qfw::Action("Show registrations");
-		a->setCheckable(true);
-		a->setShortcut("ctrl+shift+R");
-		//fwk->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(actConfigureLogging);
+		m_registrationsDockWidget = new qff::DockWidget(nullptr);
+		m_registrationsDockWidget->setObjectName("registrationsDockWidget");
+		m_registrationsDockWidget->setWindowTitle(tr("Registrations"));
+		fwk->addDockWidget(Qt::RightDockWidgetArea, m_registrationsDockWidget);
+		m_registrationsDockWidget->hide();
+		connect(m_registrationsDockWidget, &qff::DockWidget::visibleChanged, this, &CompetitorsPlugin::onRegistrationsDockVisibleChanged);
+	}
+	{
+		auto *a = m_registrationsDockWidget->toggleViewAction();
+		//a->setCheckable(true);
+		a->setShortcut(QKeySequence("ctrl+shift+R"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
-		connect(a, &qfw::Action::triggered, this, &CompetitorsPlugin::setRegistrationsDockVisible);
 	}
 	emit nativeInstalled();
 }
 
-void CompetitorsPlugin::setRegistrationsDockVisible(bool on)
+void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 {
-	if(on && !m_registrationsDockWidget) {
-		m_registrationsDockWidget = new qff::DockWidget(nullptr);
-		m_registrationsDockWidget->setObjectName("registrationsDockWidget");
-		auto rw = new RegistrationsWidget();
+	if(on && !m_registrationsDockWidget->widget()) {
+		auto *rw = new RegistrationsWidget();
 		m_registrationsDockWidget->setWidget(rw);
-		qff::MainWindow *fwk = qff::MainWindow::frameWork();
-		fwk->addDockWidget(Qt::RightDockWidgetArea, m_registrationsDockWidget);
 		rw->reload();
 		m_registrationsDockWidget->loadPersistentSettingsRecursively();
 	}
-	if(m_registrationsDockWidget)
-		//if(on) {
-		//	auto rw = qobject_cast<RegistrationsWidget*>(m_registrationsDockWidget->widget());
-		//	rw->reload();
-		//}
-		m_registrationsDockWidget->setVisible(on);
 }
 

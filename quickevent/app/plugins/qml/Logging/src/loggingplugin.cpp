@@ -26,12 +26,22 @@ void LoggingPlugin::onInstalled()
 
 	connect(fwk, &qff::MainWindow::aboutToClose, this, &LoggingPlugin::saveSettings);
 
-	qfw::Action *a = new qfw::Action("Show application log");
-	a->setShortcut("ctrl+shift+L");
-	a->setCheckable(true);
-	//fwk->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(actConfigureLogging);
-	fwk->menuBar()->actionForPath("view")->addActionInto(a);
-	connect(a, &qfw::Action::triggered, this, &LoggingPlugin::setLogDockVisible);
+	{
+		m_logDockWidget = new qff::DockWidget(nullptr);
+		m_logDockWidget->setObjectName("loggingDockWidget");
+		m_logDockWidget->setWindowTitle(tr("Application log"));
+		fwk->addDockWidget(Qt::BottomDockWidgetArea, m_logDockWidget);
+		auto *w = new LoggerWidget();
+		m_logDockWidget->setWidget(w);
+		m_logDockWidget->hide();
+		connect(m_logDockWidget, &qff::DockWidget::visibleChanged, this, &LoggingPlugin::onLogDockVisibleChanged);
+	}
+	{
+		auto *a = m_logDockWidget->toggleViewAction();
+		//a->setCheckable(true);
+		a->setShortcut(QKeySequence("ctrl+shift+L"));
+		fwk->menuBar()->actionForPath("view")->addActionInto(a);
+	}
 	loadSettings();
 }
 
@@ -39,35 +49,34 @@ void LoggingPlugin::saveSettings()
 {
 	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
+	/*
 	if(!path.isEmpty()) {
 		qfu::Settings settings;
 		settings.beginGroup(path + "/ui/docks/Logger");
 		settings.setValue("visible", m_logDockWidget? m_logDockWidget->isVisible(): false);
 	}
+	*/
 }
 
 void LoggingPlugin::loadSettings()
 {
 	QString path = persistentSettingsPath();
 	qfLogFuncFrame() << path;
+	/*
 	if(!path.isEmpty()) {
 		qfu::Settings settings;
 		settings.beginGroup(path + "/ui/docks/Logger");
 		bool visible = settings.value("visible", false).toBool();
-		setLogDockVisible(visible);
+		onLogDockVisibleChanged(visible);
 	}
+	*/
 }
 
-void LoggingPlugin::setLogDockVisible(bool on)
+void LoggingPlugin::onLogDockVisibleChanged(bool on)
 {
-	if(on && !m_logDockWidget) {
-		m_logDockWidget = new qff::DockWidget(nullptr);
-		m_logDockWidget->setObjectName("logDockWidget");
-		m_logDockWidget->setWidget(new LoggerWidget());
-		qff::MainWindow *fwk = qff::MainWindow::frameWork();
-		fwk->addDockWidget(Qt::BottomDockWidgetArea, m_logDockWidget);
+	if(on) {
+		//w->reload();
+		//m_logDockWidget->loadPersistentSettingsRecursively();
 	}
-	if(m_logDockWidget)
-		m_logDockWidget->setVisible(on);
 }
 

@@ -34,7 +34,7 @@ public:
 	Q_SIGNAL void nativeInstalled();
 private:
 	Q_SLOT void onInstalled();
-	void setRegistrationsDockVisible(bool on = true);
+	void onRegistrationsDockVisibleChanged(bool on = true);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::qmlwidgets::framework::DockWidget *m_registrationsDockWidget = nullptr;
