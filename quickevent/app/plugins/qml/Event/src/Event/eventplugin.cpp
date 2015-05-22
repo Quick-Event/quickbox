@@ -410,6 +410,8 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 			}
 			if(!ok)
 				break;
+			conn.setCurrentSchema(event_name);
+			event_config.save();
 			transaction.commit();
 		} while(false);
 		if(!ok) {
@@ -420,7 +422,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		qfd::MessageBox::showError(fwk, tr("Cannot create event, database is not open: %1").arg(conn.lastError().text()));
 	}
 	if(ok) {
-		ok = openEvent(event_name, &event_config);
+		ok = openEvent(event_name);
 	}
 	return ok;
 
@@ -433,7 +435,7 @@ bool EventPlugin::closeEvent()
 	return true;
 }
 
-bool EventPlugin::openEvent(const QString &_event_name, EventConfig *created_event_config)
+bool EventPlugin::openEvent(const QString &_event_name)
 {
 	closeEvent();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -524,8 +526,6 @@ bool EventPlugin::openEvent(const QString &_event_name, EventConfig *created_eve
 		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
-		if(created_event_config)
-			created_event_config->save();
 		eventConfig(true);
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);

@@ -54,7 +54,7 @@ public:
 
 	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
 	Q_SLOT bool closeEvent();
-	Q_SLOT bool openEvent(const QString &event_name = QString(), EventConfig *created_event_config = nullptr);
+	Q_SLOT bool openEvent(const QString &event_name = QString());
 
 	Q_SIGNAL void reloadDataRequest();
 
