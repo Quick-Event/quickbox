@@ -29,7 +29,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 
 	ui->tblCompetitors->setPersistentSettingsId("tblCompetitors");
 	ui->tblCompetitors->setRowEditorMode(qfw::TableView::EditRowsMixed);
-	ui->tblCompetitors->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
+	ui->tblCompetitors->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));

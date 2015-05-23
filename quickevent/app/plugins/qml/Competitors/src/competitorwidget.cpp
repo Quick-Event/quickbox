@@ -3,6 +3,7 @@
 
 #include "competitordocument.h"
 
+#include <quickevent/og/itemdelegate.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/timems.h>
 
@@ -38,7 +39,11 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>());
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
+	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
+	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
+
 	connect(dataController()->document(), &qf::core::model::DataDocument::loaded, this, &CompetitorWidget::loadRunsTable);
+	connect(dataController()->document(), &qf::core::model::DataDocument::saved, this, &CompetitorWidget::saveRunsTable);
 }
 
 CompetitorWidget::~CompetitorWidget()
@@ -56,4 +61,10 @@ void CompetitorWidget::loadRunsTable()
 			.orderBy("runs.stageId");
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
+}
+
+void CompetitorWidget::saveRunsTable()
+{
+	qfLogFuncFrame();
+	m_runsModel->postAll(false);
 }

@@ -49,7 +49,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 
 	ui->tblRuns->setPersistentSettingsId("tblRuns");
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
-	ui->tblRuns->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
+	ui->tblRuns->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 	m_runsTableItemDelegate = new RunsTableItemDelegate(ui->tblRuns);
 	ui->tblRuns->setItemDelegate(m_runsTableItemDelegate);
 

@@ -22,6 +22,7 @@ public:
 	~CompetitorWidget() Q_DECL_OVERRIDE;
 private:
 	Q_SLOT void loadRunsTable();
+	Q_SLOT void saveRunsTable();
 private:
 	Ui::CompetitorWidget *ui;
 	quickevent::og::SqlTableModel *m_runsModel;

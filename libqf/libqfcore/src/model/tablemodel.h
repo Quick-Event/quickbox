@@ -130,7 +130,9 @@ public:
 
 	Q_SLOT virtual bool reload();
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
+	Q_SLOT virtual bool postAll(bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
+	Q_SLOT virtual void revertAll();
 	Q_SLOT virtual int reloadRow(int row_no);
 	Q_SLOT virtual int reloadInserts(const QString &id_column_name) { Q_UNUSED(id_column_name) return 0;}
 	int appendRow() {return insertRows(rowCount(), 1);}

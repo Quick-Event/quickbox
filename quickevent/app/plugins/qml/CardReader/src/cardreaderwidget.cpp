@@ -81,7 +81,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 
 		ui->tblCards->setPersistentSettingsId("tblCards");
 		ui->tblCards->setRowEditorMode(qfw::TableView::EditRowsMixed);
-		ui->tblCards->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
+		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
 		auto m = new quickevent::og::SqlTableModel(this);
 		m->addColumn("cards.id", "ID").setReadOnly(true);

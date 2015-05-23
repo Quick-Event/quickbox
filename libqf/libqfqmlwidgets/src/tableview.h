@@ -23,14 +23,14 @@ class QFQMLWIDGETS_DECL_EXPORT TableView : public QTableView, public framework::
 {
 	Q_OBJECT
 
-	Q_ENUMS(InlineEditStrategy)
+	Q_ENUMS(InlineEditSaveStrategy)
 	Q_ENUMS(RowEditorMode)
 	Q_ENUMS(RecordEditMode)
 
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(qf::core::model::TableModel* model READ tableModel WRITE setTableModel NOTIFY tableModelChanged)
 	Q_PROPERTY(RowEditorMode rowEditorMode READ rowEditorMode WRITE setRowEditorMode NOTIFY rowEditorModeChanged)
-	Q_PROPERTY(InlineEditStrategy inlineEditStrategy READ inlineEditStrategy WRITE setInlineEditStrategy NOTIFY inlineEditStrategyChanged)
+	Q_PROPERTY(InlineEditSaveStrategy inlineEditSaveStrategy READ inlineEditSaveStrategy WRITE setInlineEditSaveStrategy NOTIFY inlineEditSaveStrategyChanged)
 	Q_PROPERTY(QString idColumnName READ idColumnName WRITE setIdColumnName)
 	Q_PROPERTY(bool showExceptionDialog READ isShowExceptionDialog WRITE setShowExceptionDialog NOTIFY showExceptionDialogChanged)
 	Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly NOTIFY readOnlyChanged)
@@ -44,9 +44,10 @@ public:
 	explicit TableView(QWidget *parent = 0);
 	~TableView() Q_DECL_OVERRIDE;
 public:
-	enum InlineEditStrategy {
+	enum InlineEditSaveStrategy {
 		OnCurrentRowChange,
-		OnEditedValueCommit
+		OnEditedValueCommit,
+		OnManualSubmit
 	};
 	enum RowEditorMode {
 		EditRowsInline,
@@ -61,7 +62,7 @@ public:
 		ModeDelete = qf::core::model::DataDocument::ModeDelete
 	};
 
-	QF_PROPERTY_IMPL2(InlineEditStrategy, i, I, nlineEditStrategy, OnEditedValueCommit)
+	QF_PROPERTY_IMPL2(InlineEditSaveStrategy, i, I, nlineEditSaveStrategy, OnEditedValueCommit)
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)

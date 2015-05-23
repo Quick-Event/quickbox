@@ -325,10 +325,34 @@ bool TableModel::postRow(int row_no, bool throw_exc)
 	return true;
 }
 
+bool TableModel::postAll(bool throw_exc)
+{
+	bool ok = true;
+	for (int row_no = 0; row_no < rowCount(); ++row_no) {
+		qfu::TableRow row = m_table.row(row_no);
+		if(row.isDirty()) {
+			ok = postRow(row_no, throw_exc);
+			if(!ok)
+				break;
+		}
+	}
+	return ok;
+}
+
 void TableModel::revertRow(int row_no)
 {
 	qfu::TableRow &row = m_table.rowRef(row_no);
 	row.restoreOrigValues();
+}
+
+void TableModel::revertAll()
+{
+	for (int row_no = 0; row_no < rowCount(); ++row_no) {
+		qfu::TableRow row = m_table.row(row_no);
+		if(row.isDirty()) {
+			revertRow(row_no);
+		}
+	}
 }
 
 int TableModel::reloadRow(int row_no)

@@ -55,7 +55,7 @@ RecipesWidget::RecipesWidget(QWidget *parent) :
 
 		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
-		ui->tblCards->setInlineEditStrategy(qfw::TableView::OnEditedValueCommit);
+		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
 		auto m = new quickevent::og::SqlTableModel(this);
 

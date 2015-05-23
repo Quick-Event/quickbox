@@ -1727,7 +1727,10 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 		int row_to_save = (row_changed)? previous.row(): current.row();
 		qfDebug() << "\tsaving row:" << row_to_save;
 		bool ok = false;
-		ok = postRow(row_to_save);
+		if(inlineEditSaveStrategy() == OnManualSubmit)
+			ok = true;
+		else
+			ok = postRow(row_to_save);
 		if(!ok)
 			setCurrentIndex(previous);
 		//qfDebug() << "\t" << __LINE__;
@@ -1853,7 +1856,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 							/// handle bool values changes
 							/// booleans are not using editor created by ItemDelegate, but set model data directly using Qt::CheckStateRole
 							qfDebug() << "check state changed:" << orig_check_state << "->" << new_check_state;
-							if(inlineEditStrategy() == OnEditedValueCommit) {
+							if(inlineEditSaveStrategy() == OnEditedValueCommit) {
 								postRow(currentIndex().row());
 							}
 							refreshActions();
@@ -1896,7 +1899,7 @@ void TableView::commitData(QWidget *editor)
 {
 	qfLogFuncFrame() << editor;
 	Super::commitData(editor);
-	if(inlineEditStrategy() == OnEditedValueCommit) {
+	if(inlineEditSaveStrategy() == OnEditedValueCommit) {
 		postRow(currentIndex().row());
 	}
 }

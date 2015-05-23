@@ -18,7 +18,7 @@ TableView::TableView(QWidget *parent)
 {
 	qfLogFuncFrame();
 	setPersistentSettingsId("tableView");
-	setInlineEditStrategy(OnCurrentRowChange);
+	setInlineEditSaveStrategy(OnCurrentRowChange);
 	//setInlineEditStrategy(OnEditedValueCommit);
 }
 //======================================================
