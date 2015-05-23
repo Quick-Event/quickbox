@@ -94,7 +94,6 @@ public:
 		/// for double see QString::number(...)
 		/// for QTime see QTime::toString(...)
 		/// for QDate see QDate::toString(...)
-		/// for DbEnum: "dbenum:group_id"
 		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
 		ColumnDefinition& setCastType(int t) {d->castType = t; return *this;}
