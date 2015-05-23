@@ -50,12 +50,10 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 
 	createActions();
 
+	/*
 	qff::Application *app = qff::Application::instance();
 	qff::MainWindow *fw = app->frameWork();
-
 	fw->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(m_actSettings);
-
-	/*
 	qfw::Action *a = fw->menuBar()->actionForPath("view", false);
 	if(!a) {
 		qfError() << "View doesn't exist";
@@ -126,11 +124,16 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
-
-	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
-	a->setText("&Station");
-	a->addActionInto(m_actCommOpen);
-
+	{
+		qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
+		a->setText("&Station");
+		a->addActionInto(m_actCommOpen);
+	}
+	{
+		qfw::Action *a = part_widget->menuBar()->actionForPath("tools", true);
+		a->setText("&Tools");
+		a->addActionInto(m_actSettings);
+	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
 	{
