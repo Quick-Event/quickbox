@@ -1,6 +1,8 @@
 #ifndef LOGGERWIDGET_H
 #define LOGGERWIDGET_H
 
+#include "Logging/loggingplugin.h"
+
 #include <QFrame>
 
 namespace Ui {
@@ -20,6 +22,8 @@ public:
 	explicit LoggerWidget(QWidget *parent = 0);
 	~LoggerWidget() Q_DECL_OVERRIDE;
 private:
+	Logging::LoggingPlugin* loggingPlugin();
+
 	Q_SLOT void onLogEntry(const QVariantMap &log_entry);
 	Q_SLOT void onLogLevelSet(int ix);
 private:

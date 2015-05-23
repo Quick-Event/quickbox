@@ -1,10 +1,13 @@
 #include "loggerwidget.h"
 #include "ui_loggerwidget.h"
 
+#include <qf/qmlwidgets/framework/mainwindow.h>
+
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
 
 #include <QComboBox>
+
 
 LoggerWidget::LoggerWidget(QWidget *parent) :
 	QFrame(parent),
@@ -25,6 +28,13 @@ LoggerWidget::LoggerWidget(QWidget *parent) :
 LoggerWidget::~LoggerWidget()
 {
 	delete ui;
+}
+
+Logging::LoggingPlugin *LoggerWidget::loggingPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Logging");
+	return qobject_cast<Logging::LoggingPlugin *>(plugin);
 }
 
 void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
@@ -49,6 +59,9 @@ void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
 	message = message.arg(log_level_str).arg(em.domain()).arg(msg).arg(color);
 
 	ui->txtLog->appendHtml(message);
+	if(level <= qf::core::Log::LOG_WARN) {
+		loggingPlugin()->setLogDockVisible(true);
+	}
 }
 
 void LoggerWidget::onLogLevelSet(int ix)

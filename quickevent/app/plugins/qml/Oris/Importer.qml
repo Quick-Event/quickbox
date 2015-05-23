@@ -69,6 +69,7 @@ QtObject {
 				var stage_count = parseInt(data.Stages);
 				if(!stage_count)
 					stage_count = 1;
+				stage_count = 3;
 				Log.info("pocet etap:", stage_count);
 				event_api.initEventConfig();
 				var cfg = event_api.eventConfig;
@@ -85,7 +86,7 @@ QtObject {
 				cfg.setValue('event', ecfg);
 
 
-				if(!event_api.createEvent("", cfg.values()))
+				if(!event_api.createEvent("", cfg.value("event")))
 					return;
 
 				var event_name = event_api.eventName;

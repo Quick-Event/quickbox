@@ -2,7 +2,7 @@
 
 #include <qf/core/utils/settings.h>
 
-#include "loggerwidget.h"
+#include "../loggerwidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -13,11 +13,18 @@ namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
+using namespace Logging;
+
 LoggingPlugin::LoggingPlugin(QObject *parent)
 	: Super(parent), qf::qmlwidgets::framework::IPersistentSettings(this)
 {
 	setPersistentSettingsId("LoggingPlugin");
 	connect(this, &LoggingPlugin::installed, this, &LoggingPlugin::onInstalled, Qt::QueuedConnection);
+}
+
+void LoggingPlugin::setLogDockVisible(bool b)
+{
+	m_logDockWidget->toggleViewAction()->setChecked(b);
 }
 
 void LoggingPlugin::onInstalled()

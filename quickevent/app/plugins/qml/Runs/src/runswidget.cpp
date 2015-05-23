@@ -117,6 +117,7 @@ void RunsWidget::reload()
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
+			.where("NOT runs.offRace")
 			.join("runs.competitorId", "competitors.id")
 			.join("competitors.classId", "classes.id")
 			.orderBy("runs.id");//.limit(10);
@@ -239,7 +240,7 @@ QList<int> RunsWidget::runnersForClass(int stage_id, int class_id)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "id")
 			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id))
+			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id), "JOIN")
 			.where("competitors.classId=" QF_IARG(class_id));
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
