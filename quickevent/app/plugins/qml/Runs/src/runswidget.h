@@ -43,6 +43,8 @@ private slots:
 	void on_btDrawRemove_clicked();
 
 private:
+	int currentStageId();
+
 	Q_SLOT void lazyInit();
 	Q_SLOT void reset();
 	Q_SLOT void reload();

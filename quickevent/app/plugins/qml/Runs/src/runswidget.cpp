@@ -118,6 +118,7 @@ void RunsWidget::reload()
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
 			.where("NOT runs.offRace")
+			.where("runs.stageId=" QF_IARG(currentStageId()))
 			.join("runs.competitorId", "competitors.id")
 			.join("competitors.classId", "classes.id")
 			.orderBy("runs.id");//.limit(10);
@@ -380,4 +381,12 @@ void RunsWidget::on_btDrawRemove_clicked()
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
 	m_runsModel->reload();
+}
+
+int RunsWidget::currentStageId()
+{
+	auto event_plugin = eventPlugin();
+	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
+	int ret = event_plugin->currentStageId();
+	return ret;
 }

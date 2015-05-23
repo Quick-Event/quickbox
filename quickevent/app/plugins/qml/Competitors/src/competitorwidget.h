@@ -3,6 +3,11 @@
 
 #include <qf/qmlwidgets/framework/datadialogwidget.h>
 
+namespace quickevent {
+namespace og {
+class SqlTableModel;
+} }
+
 namespace Ui {
 class CompetitorWidget;
 }
@@ -16,7 +21,10 @@ public:
 	explicit CompetitorWidget(QWidget *parent = 0);
 	~CompetitorWidget() Q_DECL_OVERRIDE;
 private:
+	Q_SLOT void loadRunsTable();
+private:
 	Ui::CompetitorWidget *ui;
+	quickevent::og::SqlTableModel *m_runsModel;
 };
 
 #endif // COMPETITORWIDGET_H
