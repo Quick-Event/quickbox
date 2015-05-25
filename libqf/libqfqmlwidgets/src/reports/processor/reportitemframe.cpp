@@ -203,8 +203,9 @@ QQmlListProperty<ReportItem> ReportItemFrame::items()
 										);
 }
 
-void ReportItemFrame::addItem(ReportItem *item)
+void ReportItemFrame::addItem(QObject *item_object)
 {
+	ReportItem *item = qobject_cast<ReportItem *>(item_object);
 	if (item) {
 		item->setParent(this);
 		this->m_items << item;

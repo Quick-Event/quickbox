@@ -38,8 +38,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	runs_status_db_enum_cast_props.setGroupName("runs.status");
 	m_runsModel->addColumn("runs.status", tr("Status"))
 			.setToolTip(tr("Run status in this stage"))
-			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
-			.setCastProperties(runs_status_db_enum_cast_props);
+			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), runs_status_db_enum_cast_props);
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);

@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 	file_log_device->setDomainTresholds(argc, argv);
 	file_log_device->setPrettyDomain(true);
 
-	qfError() << "QFLog(ERROR) test OK.";
+	qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
 	qfWarning() << "QFLog(WARNING) test OK.";
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";

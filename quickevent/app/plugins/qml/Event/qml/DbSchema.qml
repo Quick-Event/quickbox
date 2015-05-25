@@ -57,6 +57,11 @@ Schema {
 					type: Boolean { } 
 					defaultValue: false;
 					notNull: true
+				},
+				Field { name: 'radio'; 
+					type: Boolean { } 
+					defaultValue: false;
+					notNull: true
 				}
 			]
 			indexes: [
@@ -198,6 +203,7 @@ Schema {
 				Index {fields: ['status', 'timeMs'] }
 			]
 		},
+		/*
 		Table { name: 'runlaps'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
@@ -213,6 +219,7 @@ Schema {
 				Index {fields: ['position', 'lapTimeMs'] }
 			]
 		},
+		*/
 		Table { name: 'clubs'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
@@ -300,6 +307,26 @@ Schema {
 				Index { fields: ['printerConnectionId']; unique: false },
 				Index { fields: ['stageId', 'siId']; unique: false },
 				Index { fields: ['runId']; unique: false }
+			]
+		},
+		Table { name: 'rpunches'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'codeId'; type: Int { } },
+				Field { name: 'siId'; type: Int {} },
+				Field { name: 'punchTimeMs'; type: Int {}
+					comment: 'in miliseconds'
+				},
+				Field { name: 'stageId'; type: Int { }
+					comment: 'We cannot take stageId from runId linked table, because we need select rpunches for stage even without runId assigned'
+				},
+				Field { name: 'runId'; type: Int {} },
+				Field { name: 'timeMs'; type: Int {}
+					comment: 'in miliseconds'
+				}
+			]
+			indexes: [
+				Index {fields: ['runId']; unique: false }
 			]
 		}
 	]

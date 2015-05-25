@@ -178,7 +178,7 @@ public:
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
 
-	void addItem(ReportItem *item);
+	Q_INVOKABLE void addItem(QObject *item_object);
 
 	QString toString(int indent = 2, int indent_offset = 0) Q_DECL_OVERRIDE;
 private:

@@ -24,7 +24,7 @@ LoggingPlugin::LoggingPlugin(QObject *parent)
 
 void LoggingPlugin::setLogDockVisible(bool b)
 {
-	m_logDockWidget->toggleViewAction()->setChecked(b);
+	m_logDockWidget->setVisible(b);
 }
 
 void LoggingPlugin::onInstalled()

@@ -111,7 +111,7 @@ void ReportProcessor::setData(const QString &key, const QVariant &data)
 ReportItemReport* ReportProcessor::documentInstanceRoot()
 {
 	if(!m_documentInstanceRoot) {
-		QObject *o = qobject_cast<ReportItemReport*>(m_reportDocumentComponent->create(qmlEngine()->rootContext()));
+		QObject *o = m_reportDocumentComponent->beginCreate(qmlEngine()->rootContext());
 		m_documentInstanceRoot = qobject_cast<ReportItemReport*>(o);
 		if(!m_documentInstanceRoot) {
 			qfError() << "Error creating root object from component:" << m_reportDocumentComponent;
@@ -119,16 +119,13 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			QF_SAFE_DELETE(o);
 		}
 		else {
+			m_documentInstanceRoot->setProperty("stage_count", 3);
+			m_reportDocumentComponent->completeCreate();
 			m_documentInstanceRoot->setReportProcessor(this);
 			style::Text *st = m_documentInstanceRoot->textStyle();
 			if(!st) {
 				qfWarning() << "Report document has not the textStyle property set to valid TextStyle object, "
 							   "Para.text will not have implicit TextStyle definition.";
-			/*
-				st = new style::Text(m_documentInstanceRoot);
-				st->setProperty("basedOn", "default");
-				m_documentInstanceRoot->setTextStyle(st);
-			*/
 			}
 			style::Sheet *ss = m_documentInstanceRoot->styleSheet();
 			if(ss)

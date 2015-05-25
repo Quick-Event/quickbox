@@ -14,17 +14,18 @@ CompetitorsPlugin {
 			id: cReportViewWidget
 			ReportViewWidget {}
 		}
-		CompetitorsReportModel {
-			id: competitorsModel
+		Statistics {
+			id: statistics
+			competitorsPlugin: root
 		}
 	}
 
 	property list<Action> actions: [
 		Action {
-			id: actPrintAll
-			text: qsTr('All')
+			id: actPrintCompetitorsStatistics
+			text: qsTr('Competitors statistics')
 			onTriggered: {
-				root.printAll()
+				statistics.printCompetitorsStatistics()
 			}
 		}
 	]
@@ -33,27 +34,7 @@ CompetitorsPlugin {
 	{
 		var a = root.partWidget.menuBar.actionForPath("print", true);
 		a.text = qsTr("&Print");
-		a.addActionInto(actPrintAll);		
+		a.addActionInto(actPrintCompetitorsStatistics);
 	}
 
-	function printAll()
-	{
-		Log.info("competitors print all triggered");
-		competitorsModel.reload();
-		var tt = new TreeTable.Table();
-		tt.setData(competitorsModel.toTreeTableData());
-		tt.setValue("title", "Competitors list")
-		//console.warn("tt1", tt.toString());
-		tt.addColumn("test_col");
-		for(var i=0; i<tt.rowCount(); i++)
-			tt.setValue(i, "test_col", "test_data_" + i);
-		var w = cReportViewWidget.createObject(null);
-		w.windowTitle = qsTr("Competitors");
-		w.setReport(root.manifest.homeDir + "/reports/list.qml");
-		w.setTableData(tt.data());
-		var dlg = FrameWork.createQmlDialog();
-		dlg.setDialogWidget(w);
-		dlg.exec();
-		dlg.destroy();
-	}
 }
