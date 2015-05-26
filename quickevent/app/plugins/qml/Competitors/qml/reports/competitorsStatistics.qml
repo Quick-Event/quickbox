@@ -6,7 +6,7 @@ import "qrc:/quickevent/js/ogtime.js" as OGTime
 
 Report {
 	id: root
-	property int stage_count: 1
+	property int stageCount: 1
 
 	property string reportTitle: qsTr("Competitors statistics")
 
@@ -71,9 +71,9 @@ Report {
 						text: qsTr("Class name")
 					}
 					Component.onCompleted: {
-						console.warn("##############", root.stage_count)
-						for(var i=0; i<root.stage_count; i++) {
-							var c = cCell.createObject(null, {"text": "E" + (i+1) + " count", "width": 20});
+						console.debug("stageCount", root.stageCount)
+						for(var i=0; i<root.stageCount; i++) {
+							var c = cCell.createObject(null, {"text": "E" + (i+1) + " count maps", "width": 30, "halign": Frame.AlignRight});
 							head.addItem(c);
 						}
 					}
@@ -82,31 +82,44 @@ Report {
 				Detail {
 					id: detail
 					width: "%"
-					//keepAll: true
 					layout: Frame.LayoutHorizontal
-					//function dataFn(field_name) {return function() {return rowData(field_name);}}
 					//Space { height: 5 }
 					Cell {
 						width: cellClassName.renderedWidth
 						text: detail.data(detail.currentIndex, "classes.name");
 					}
-					Cell {
-						width: "20"
-						halign: Frame.AlignRight
-						text: detail.data(detail.currentIndex, "e1_runsCount");
-					}
-					function currentData(field_name) {
-						return function () {
+					function makeCurrentDataFn(field_name) {
+						// make extra capture context for returned closure
+						// see: MDN Creating closures in loops: A common mistake
+						return function() {
 							return detail.data(detail.currentIndex, field_name);
+						}
+					}
+					function makeMissingMapsFn(fld_run_cnt, fld_map_cnt) {
+						return function() {
+							var run_cnt = detail.data(detail.currentIndex, fld_run_cnt);
+							var map_cnt = detail.data(detail.currentIndex, fld_map_cnt);
+							return map_cnt - run_cnt;
 						}
 					}
 
 					Component.onCompleted: {
-						console.warn("=============", root.stage_count)
-						for(var i=0; i<root.stage_count; i++) {
-							var c = cCell.createObject(null, {"width": 20});
-							var fld_name = "e" + (i+1) + "_runsCount";
-							c.textFn = function() { return detail.data(detail.currentIndex, fld_name); }
+						//console.warn("=============", root.stageCount)
+						for(var i=0; i<root.stageCount; i++) {
+							var fld_run_cnt = "e" + (i+1) + "_runsCount";
+							var fld_map_cnt = "e" + (i+1) + "_mapCount";
+							var run_cnt_fn = detail.makeCurrentDataFn(fld_run_cnt);
+							var map_cnt_fn = detail.makeCurrentDataFn(fld_map_cnt);
+							var c = cCell.createObject(null, {"width": 10, "halign": Frame.AlignRight});
+							c.textFn = run_cnt_fn;
+							detail.addItem(c);
+
+							c = cCell.createObject(null, {"width": 10, "halign": Frame.AlignRight});
+							c.textFn = map_cnt_fn;
+							detail.addItem(c);
+
+							c = cCell.createObject(null, {"width": 10, "halign": Frame.AlignRight});
+							c.textFn = detail.makeMissingMapsFn(fld_run_cnt, fld_map_cnt);
 							detail.addItem(c);
 						}
 					}

@@ -53,7 +53,7 @@ public:
 	/// vymaze vsechna data vznikla predchozimi kompilacemi
 	void reset();
 	//--void setReport(const ReportDocument &doc);
-	void setReport(const QString &rep_file_name);
+	void setReport(const QString &rep_file_name, const QVariantMap &report_init_properties = QVariantMap());
 	QUrl reportUrl() const;
 	//--ReportDocument report() {return fReport;}
 	//--ReportDocument& reportRef() {return fReport;}
@@ -116,6 +116,7 @@ private:
 
 	QQmlEngine *m_qmlEngine = nullptr;
 	ReportDocument *m_reportDocumentComponent = nullptr;
+	QVariantMap m_reportInitProperties;
 	QVariantMap m_data;
 	QPaintDevice *m_paintDevice = nullptr;
 	//! Tree of instantiated QML report objects.

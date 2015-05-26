@@ -50,8 +50,10 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 		}
 	}
 	else {
-		ret = QStringLiteral("N/A");
+		//qfWarning() << "row_no:" << row_no;
+		ret = QStringLiteral("BAD_ROW");
 	}
+	qfDebug() << "\t RETURN:" << ret;
 	return ret;
 }
 

@@ -22,7 +22,7 @@ QtObject {
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
 		.join("classes.id", "competitors.classId")
-		.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId={{stage_id}}")
+		.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId={{stage_id}}", "JOIN")
 		.groupBy("competitors.classId")
 		.orderBy("classes.name");
 		reportModel.setQueryParameters({stage_id: stage_id})
@@ -45,20 +45,23 @@ QtObject {
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
-		//console.warn("tt1", tt.toString());
 		for(var e=0; e<event_plugin.stageCount; e++) {
 			var prefix = "e" + (e+1) + "_"
 			var col_runs_count = prefix + "runsCount";
 			var col_map_count = prefix + "mapCount";
 			tt.addColumn(col_runs_count, "int");
 			tt.addColumn(col_map_count, "int");
-			var tt2 = runsCountByClassesTable(stage_id);
+			var tt2 = runsCountByClassesTable(e+1);
+			//console.warn("tt2", tt2.toString());
 			for(var i=0; i<tt2.rowCount(); i++) {
 				//console.debug("class id:", class_id);
 				tt.setValue(i, col_runs_count, tt2.value(i, "runsCount"));
 				tt.setValue(i, col_map_count, tt2.value(i, "mapCount"));
 			}
 		}
-		QmlWidgetsSingleton.showReport(competitorsPlugin.manifest.homeDir + "/reports/competitorsStatistics.qml", tt.data(), qsTr("Competitors statistics"));
+		//console.warn("tt", tt.toString());
+		QmlWidgetsSingleton.showReport(competitorsPlugin.manifest.homeDir + "/reports/competitorsStatistics.qml", tt.data()
+									   , qsTr("Competitors statistics"), ""
+									   , {stageCount: event_plugin.stageCount});
 	}
 }

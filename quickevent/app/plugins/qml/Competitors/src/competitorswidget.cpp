@@ -34,7 +34,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitorName", tr("Name"));
-	m->addColumn("registration", tr("Reg"));
+	m->addColumn("registration", tr("Reg")).setReadOnly(true);
 	m->addColumn("siId", tr("SI")).setReadOnly(true);
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;

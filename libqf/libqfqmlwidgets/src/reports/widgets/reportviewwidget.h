@@ -131,7 +131,7 @@ public:
 		setTableData(QString(), data);
 	}
 
-	Q_SLOT void setReport(const QString &file_name);
+	Q_SLOT void setReport(const QString &file_name, const QVariantMap &report_init_properties = QVariantMap());
 
 	/// stranky se pocitaji od 0
 	int currentPageNo() const {return m_currentPageNo;}

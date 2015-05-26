@@ -712,11 +712,11 @@ void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
 	//doc->dump();
 }
 	*/
-void ReportViewWidget::setReport(const QString &file_name)
+void ReportViewWidget::setReport(const QString &file_name, const QVariantMap &report_init_properties)
 {
 	qfLogFuncFrame() << "file_name:" << file_name;
 	//qfDebug() << "\tdata:" << fData.toString();
-	reportProcessor()->setReport(file_name);
+	reportProcessor()->setReport(file_name, report_init_properties);
 	//out.dump();
 }
 

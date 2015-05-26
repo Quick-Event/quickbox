@@ -63,8 +63,9 @@ void ReportProcessor::setReport(const ReportDocument &doc)
 	reset();
 }
 --*/
-void ReportProcessor::setReport(const QString &rep_file_name)
+void ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap &report_init_properties)
 {
+	m_reportInitProperties = report_init_properties;
 	QF_SAFE_DELETE(m_reportDocumentComponent);
 	QString fn = rep_file_name;
 	m_reportDocumentComponent = new ReportDocument(qmlEngine(true), this);
@@ -119,7 +120,12 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			QF_SAFE_DELETE(o);
 		}
 		else {
-			m_documentInstanceRoot->setProperty("stage_count", 3);
+			QMapIterator<QString, QVariant> it(m_reportInitProperties);
+			while(it.hasNext()) {
+				it.next();
+				QByteArray ba = it.key().toLatin1();
+				m_documentInstanceRoot->setProperty(ba.constData(), it.value());
+			}
 			m_reportDocumentComponent->completeCreate();
 			m_documentInstanceRoot->setReportProcessor(this);
 			style::Text *st = m_documentInstanceRoot->textStyle();

@@ -59,7 +59,6 @@ public:
 	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
 
 	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
-
 protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);

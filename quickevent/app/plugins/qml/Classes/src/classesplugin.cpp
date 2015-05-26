@@ -61,7 +61,6 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 		QSet<int> all_codes;
 		QMap<QString, int> course_ids;
 		QMap<int, QList<int> > course_codes;
-		//QMap<QString, int> class_course_ids;
 		{
 			// if classes are not imported from Oris, import also classes
 			q.exec("SELECT COUNT(*) FROM classes", qf::core::Exception::Throw);
