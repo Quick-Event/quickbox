@@ -180,8 +180,6 @@ void ClassesWidget::import_ocad()
 			lines << QString::fromUtf8(ba).trimmed();
 		}
 		try {
-			//QSet<QString> parsed_classes;
-			//QSet<QString> parsed_courses;
 			QMap<QString, CourseDef> defined_courses;
 			for(QString line : lines) {
 				// [classname];coursename;0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
@@ -197,6 +195,8 @@ void ClassesWidget::import_ocad()
 							break;
 						}
 					}
+					if(class_names.isEmpty() && !course_name.isEmpty())
+						class_names << course_name;
 				}
 				else {
 					class_names << class_name;

@@ -62,6 +62,25 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 		QMap<QString, int> course_ids;
 		QMap<int, QList<int> > course_codes;
 		//QMap<QString, int> class_course_ids;
+		{
+			// if classes are not imported from Oris, import also classes
+			q.exec("SELECT COUNT(*) FROM classes", qf::core::Exception::Throw);
+			if(q.next() && q.value(0).toInt() == 0) {
+				QSet<QString> class_names;
+				for(auto v : courses) {
+					CourseDef cd(v.toMap());
+					for(auto class_name : cd.classes())
+						class_names << class_name;
+				}
+				ClassDocument doc;
+				for(auto class_name : class_names) {
+					qfInfo() << "inserting class" << class_name;
+					doc.loadForInsert();
+					doc.setValue("name", class_name);
+					doc.save();
+				}
+			}
+		}
 		QMap<QString, int> class_ids;
 		{
 			q.exec("SELECT id, name FROM classes");
@@ -73,7 +92,7 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 			CourseDef cd(v.toMap());
 			int course_id = 0;
 			{
-				qfWarning() << "inserting course" << cd.course();
+				qfInfo() << "inserting course" << cd.course();
 				QString qs = "INSERT INTO courses (name, length, climb) VALUES (:name, :length, :climb)";
 				q.prepare(qs, qf::core::Exception::Throw);
 				q.bindValue(":name", cd.course());
