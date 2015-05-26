@@ -41,6 +41,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	ui->cbxDrawMethod->addItem(tr("Randomized equidistant clubs"), static_cast<int>(DrawMethod::RandomizedEquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Random number"), static_cast<int>(DrawMethod::RandomNumber));
 	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->frmDrawing->setVisible(false);
@@ -191,7 +192,7 @@ static void shuffle(QList<int> &lst)
 	std::random_shuffle(lst.begin(), lst.end());
 }
 
-QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int class_id)
+QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club)
 {
 	qfLogFuncFrame();
 	QMap<QString, QList<int> > ids_by_clubs;
@@ -205,7 +206,9 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	while(q.next()) {
 		QString club = q.value("registration").toString().mid(0, 3).trimmed().toUpper();
-		ids_by_clubs[club] << q.value("runs.id").toInt();
+		int id = q.value("runs.id").toInt();
+		ids_by_clubs[club] << id;
+		runner_id_to_club[id] = club;
 	}
 	{
 		for(auto club : ids_by_clubs.keys()) {
@@ -296,8 +299,9 @@ void RunsWidget::on_btDraw_clicked()
 					runners_draw_ids = runnersForClass(stage_id, class_id);
 					shuffle(runners_draw_ids);
 				}
-				else if(dm == DrawMethod::EquidistantClubs) {
-					QList< QList<int> > runners_by_club = runnersByClubSortedByCount(stage_id, class_id);
+				else if(dm == DrawMethod::EquidistantClubs || dm == DrawMethod::RandomizedEquidistantClubs) {
+					QMap<int, QString> runner_id_to_club;
+					QList< QList<int> > runners_by_club = runnersByClubSortedByCount(stage_id, class_id, runner_id_to_club);
 					if(runners_by_club.count()) {
 						int runners_cnt = 0;
 						for(auto lst : runners_by_club)
@@ -327,6 +331,49 @@ void RunsWidget::on_btDraw_clicked()
 								slot_len++;
 								insert_ix = slot_len;
 							}
+						}
+					}
+					if(dm == DrawMethod::RandomizedEquidistantClubs) {
+						qsrand(QTime::currentTime().msecsSinceStartOfDay());
+						int cnt = runners_draw_ids.count();
+						for (int i = 0; i < 2*cnt; ++i) {
+							// randomly switch rudders fi their clubs will not get consequent
+							int ix1 = (int)(qrand() * (double)cnt / RAND_MAX);
+							if(ix1 >= cnt)
+								ix1 = cnt - 1;
+							int ix2 = (int)(qrand() * (double)cnt / RAND_MAX);
+							if(ix2 >= cnt)
+								ix2 = cnt - 1;
+							if(ix1 == ix2)
+								continue;
+							if((ix1 - ix2) == 1 || (ix2 - ix1) == 1)
+								continue;
+							QString club1 = runner_id_to_club.value(runners_draw_ids[ix1]);
+							QString club2 = runner_id_to_club.value(runners_draw_ids[ix2]);
+							if(ix1 > 0) {
+								QString club = runner_id_to_club.value(runners_draw_ids[ix1 - 1]);
+								if(club == club2)
+									continue;
+							}
+							if(ix1 < cnt - 1) {
+								QString club = runner_id_to_club.value(runners_draw_ids[ix1 + 1]);
+								if(club == club2)
+									continue;
+							}
+							if(ix2 > 0) {
+								QString club = runner_id_to_club.value(runners_draw_ids[ix2 - 1]);
+								if(club == club1)
+									continue;
+							}
+							if(ix2 < cnt - 1) {
+								QString club = runner_id_to_club.value(runners_draw_ids[ix2 + 1]);
+								if(club == club1)
+									continue;
+							}
+							// can switch
+							int id = runners_draw_ids[ix1];
+							runners_draw_ids[ix1] = runners_draw_ids[ix2];
+							runners_draw_ids[ix2] = id;
 						}
 					}
 				}

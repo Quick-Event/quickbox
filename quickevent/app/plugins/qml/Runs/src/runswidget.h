@@ -53,10 +53,10 @@ private:
 	 * @brief runnersInClubsHistogram
 	 * @return list of runs.id for each club sorted by their count, longest list of runners is first
 	 */
-	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id);
+	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
 	QList<int> runnersForClass(int stage_id, int class_id);
 private:
-	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs};
+	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs};
 
 	Ui::RunsWidget *ui;
 	RunsTableModel *m_runsModel;
