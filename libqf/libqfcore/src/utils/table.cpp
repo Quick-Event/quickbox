@@ -330,6 +330,7 @@ bool TableRow::isDirty(int field_no) const
 	if(field_no < d->dirtyFlags.count()) {
 		ret = d->dirtyFlags.at(field_no);
 	}
+	//qfInfo() << field_no << "->" << ret;
 	return ret;
 }
 
@@ -343,6 +344,7 @@ void TableRow::setDirty(int field_no, bool val)
 		d->dirtyFlags.clear();
 		d->dirtyFlags.resize(d->values.size());
 	}
+	//qfInfo() << val << "->" << field_no;
 	d->dirtyFlags[field_no] = val;
 }
 

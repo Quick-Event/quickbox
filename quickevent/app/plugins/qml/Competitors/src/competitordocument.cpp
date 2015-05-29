@@ -29,6 +29,7 @@ static Event::EventPlugin* eventPlugin()
 bool CompetitorDocument::saveData()
 {
 	RecordEditMode old_mode = mode();
+	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
 	//Log.info("CompetitorDocument", saveData_qml, "ret:", ret, "old_mode", old_mode, "vs", DataDocument.ModeInsert, old_mode == DataDocument.ModeInsert);
 	if(ret) {
@@ -55,15 +56,18 @@ bool CompetitorDocument::saveData()
 			}
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
-			int si_id = value("competitors.siId").toInt();
-			if(si_id > 0) {
-				int competitor_id = dataId().toInt();
-				qf::core::sql::Query q(model()->connectionName());
-				q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId AND siId IS NULL", qf::core::Exception::Throw);
-				q.bindValue(":competitorId", competitor_id);
-				q.bindValue(":siId", si_id);
-				if(!q.exec()) {
-					qfError() << q.lastError().text();
+			if(si_dirty) {
+				//qfWarning() << __LINE__;
+				int si_id = value("competitors.siId").toInt();
+				if(si_id > 0) {
+					int competitor_id = dataId().toInt();
+					qf::core::sql::Query q(model()->connectionName());
+					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
+					q.bindValue(":competitorId", competitor_id);
+					q.bindValue(":siId", si_id);
+					if(!q.exec()) {
+						qfError() << q.lastError().text();
+					}
 				}
 			}
 		}

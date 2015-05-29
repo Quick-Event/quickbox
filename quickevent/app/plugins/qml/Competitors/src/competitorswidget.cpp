@@ -52,7 +52,7 @@ CompetitorsWidget::~CompetitorsWidget()
 void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
+	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 	/*
 	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
 	a->setText("&Station");

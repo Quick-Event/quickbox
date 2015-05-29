@@ -101,13 +101,14 @@ QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 			{
 				// find best laps for competitors class
 				qf::core::sql::QueryBuilder qb;
-				qb.select("runlaps", "position")
+				qb.select2("runlaps", "position")
 						.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
 						.joinRestricted("runs.id", "runlaps.runId", "runlaps.lapTimeMs > 0")
 						.groupBy("runlaps.position")
 						.orderBy("runlaps.position");
+				qfInfo() << qb.toString();
 				qf::core::sql::Query q;
 				q.exec(qb.toString());
 				while(q.next()) {
@@ -265,7 +266,7 @@ void RecipesPlugin::previewRecipe_classic(int card_id)
 	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
-	w->setWindowTitle(tr("Receipe"));
+	w->setWindowTitle(tr("Recipe"));
 	w->setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
 	QVariantMap dt = recipeTablesData(card_id);
 	for(auto key : dt.keys())

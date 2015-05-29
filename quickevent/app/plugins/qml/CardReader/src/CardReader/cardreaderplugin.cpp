@@ -137,14 +137,15 @@ void CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 	try {
 		{
 			q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
-			q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+			//q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+			q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 			auto punch_list = checked_card.punches();
 			if(punch_list.count()) {
 				{
 					CardReader::CheckedPunch last_punch(punch_list.last().toMap());
 					CardReader::CheckedPunch finish_punch;
 					finish_punch.setPosition(punch_list.count() + 1);
-					finish_punch.setCode(999);
+					//finish_punch.setCode(999);
 					finish_punch.setStpTimeMs(checked_card.timeMs());
 					if(last_punch.position() > 0) {
 						finish_punch.setLapTimeMs(finish_punch.stpTimeMs() - last_punch.stpTimeMs());
@@ -154,7 +155,7 @@ void CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 				for(auto v : punch_list) {
 					CardReader::CheckedPunch cp(v.toMap());
 					q.bindValue(QStringLiteral(":runId"), run_id);
-					q.bindValue(QStringLiteral(":code"), cp.code());
+					//q.bindValue(QStringLiteral(":code"), cp.code());
 					q.bindValue(QStringLiteral(":position"), cp.position());
 					q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
 					q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());

@@ -48,6 +48,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
+
 	createActions();
 
 	/*
@@ -424,6 +426,6 @@ void CardReaderWidget::showSelectedCard()
 	if(!receipes_plugin)
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(receipes_plugin, "previewReceipe", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(receipes_plugin, "previewRecipe", Q_ARG(int, card_id));
 }
 
