@@ -59,24 +59,27 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 		ColumnDefinition cd = m_columns.value(index.column());
 		if(!cd.isNull()) {
 			can_edit = !cd.isReadOnly();
-			qfu::Table::Field field = tableField(index.column());
-			if(!field.isNull()) {
-				can_edit = can_edit && field.canUpdate();
-				int type = columnType(index.column());
-				// BLOB fields cannot be edited in grid.
-				//can_edit = can_edit && (type != QVariant::ByteArray);
-				if(type == QVariant::Bool) {
-					flags |= Qt::ItemIsUserCheckable;// << Qt::ItemIsEnabled;
+			if(!cd.isVirtual()) {
+				qfu::Table::Field field = tableField(index.column());
+				if(!field.isNull()) {
+					can_edit = can_edit && field.canUpdate();
+					int type = columnType(index.column());
+					// BLOB fields cannot be edited in grid.
+					//can_edit = can_edit && (type != QVariant::ByteArray);
+					if(type == QVariant::Bool) {
+						flags |= Qt::ItemIsUserCheckable;// << Qt::ItemIsEnabled;
+					}
 				}
-			}
-			else {
-				can_edit = false;
+				else {
+					can_edit = false;
+				}
 			}
 		}
 		if(can_edit)
 			flags |= Qt::ItemIsEditable;
 		else
 			flags &= ~Qt::ItemIsEditable;
+		//qfInfo() << cd.fieldName() << flags << "checkable:" << (flags & Qt::ItemIsUserCheckable);
 	}
 	return flags;
 }
@@ -97,10 +100,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		if(cd.isNull()) {
 			return QString("!%1").arg(index.column());
 		}
-		qfu::Table::Field field = tableField(index.column());
-		if(field.isNull())
-			return QString("!%1").arg(cd.fieldName());
-
 		if(data(index, ValueIsNullRole).toBool()) {
 			if(isNullReportedAsString())
 				return QStringLiteral("null");
@@ -203,6 +202,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 			//qfInfo() << "BOOL";
 			return (data(index, Qt::EditRole).toBool()? Qt::Checked: Qt::Unchecked);
 		}
+		return QVariant();
 	}
 	else if (role == Qt::ToolTipRole) {
 		QString s = data(index, Qt::DisplayRole).toString();
@@ -282,6 +282,7 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 			emit dataChanged(index, index);
 	}
 	else if(role == Qt::CheckStateRole) {
+		//qfInfo() << __LINE__;
 		bool chk_val = (value.toInt() == Qt::Unchecked)? 0: 1;
 		ret = setValue(index.row(), index.column(), chk_val);
 		if(ret)
@@ -513,9 +514,12 @@ void TableModel::fillColumnIndexes()
 {
 	for(int i=0; i<m_columns.count(); i++) {
 		ColumnDefinition &c = m_columns[i];
-		int ix = m_table.fields().fieldIndex(c.fieldName());
-		if(ix < 0)
-			qfWarning() << "\tcolumn" << c.fieldName() << "not found in fields.";
+		int ix = -1;
+		if(!c.isVirtual()) {
+			ix = m_table.fields().fieldIndex(c.fieldName());
+			if(ix < 0)
+				qfWarning() << "\tcolumn" << c.fieldName() << "not found in fields.";
+		}
 		c.setFieldIndex(ix);
 	}
 }
@@ -529,12 +533,16 @@ int TableModel::columnType(int column_index) const
 			  return ret);
 	ret = cd.castType();
 	if(ret == QVariant::Invalid) {
-		qfu::Table::Field fld = tableField(column_index);
-		QF_ASSERT(!fld.isNull(),
-				  tr("Invalid field for column index: %1").arg(column_index),
-				  return ret);
-		ret = fld.type();
+		if(cd.isVirtual()) {
+			qfWarning() << "Virtual column shoul have cast type defined!";
+		}
+		else {
+			qfu::Table::Field fld = tableField(column_index);
+			QF_ASSERT(!fld.isNull(), tr("Invalid field for column index: %1").arg(column_index), return ret);
+			ret = fld.type();
+		}
 	}
+	//qfInfo() << cd.fieldName() << ret;
 	return ret;
 }
 

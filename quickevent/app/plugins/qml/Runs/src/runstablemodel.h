@@ -15,6 +15,11 @@ public:
 	//bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
 	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+	using Super::value;
+	QVariant value(int row_ix, int column_ix) const Q_DECL_OVERRIDE;
+	using Super::setValue;
+	bool setValue(int row_ix, int column_ix, const QVariant &val) Q_DECL_OVERRIDE;
+
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 
 	QStringList mimeTypes() const Q_DECL_OVERRIDE;

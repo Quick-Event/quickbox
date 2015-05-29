@@ -52,13 +52,14 @@ public:
 			QString caption;
 			QString toolTip;
 			//int initialSize; //!< initial width of column
-			bool readOnly;
+			bool isReadOnly = false;
+			bool isVirtual = false;
 			Qt::Alignment alignment;
 			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
 			int castType;
 			QVariantMap castProperties;
 
-			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
+			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), castType(QVariant::Invalid) {}
 		};
 	private:
 		QSharedDataPointer<Data> d;
@@ -86,8 +87,15 @@ public:
 		ColumnDefinition& setToolTip(const QString &s) {d->toolTip = s; return *this;}
 		//int initialSize() const {return d->initialSize;}
 		//ColumnDefinition& setInitialSize(int i) {d->initialSize = i; return *this;}
-		bool isReadOnly() const {return d->readOnly;}
-		ColumnDefinition& setReadOnly(bool b = true) {d->readOnly = b; return *this;}
+		bool isReadOnly() const {return d->isReadOnly;}
+		ColumnDefinition& setReadOnly(bool b = true) {d->isReadOnly = b; return *this;}
+		bool isVirtual() const {return d->isVirtual;}
+		ColumnDefinition& setVirtual(bool b, int cast_type, const QVariantMap &cast_properties = QVariantMap())
+		{
+			d->isVirtual = b;
+			setCastType(cast_type, cast_properties);
+			return *this;
+		}
 		Qt::Alignment alignment() const {return d->alignment;}
 		ColumnDefinition& setAlignment(const Qt::Alignment &al) {d->alignment = al; return *this;}
 		QString format() const {return d->format;}
@@ -96,15 +104,14 @@ public:
 		/// for QDate see QDate::toString(...)
 		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
-		ColumnDefinition& setCastType(int t) {d->castType = t; return *this;}
 		int castType() const {return d->castType;}
-		QF_SHARED_CLASS_FIELD_RW(QVariantMap, c, setC, astProperties)
-		ColumnDefinition& setCastType(int t, const QVariantMap &cast_properties)
+		ColumnDefinition& setCastType(int t, const QVariantMap &cast_properties = QVariantMap())
 		{
-			setCastType(t);
-			setCastProperties(cast_properties);
+			d->castType = t;
+			d->castProperties = cast_properties;
 			return *this;
 		}
+		const QVariantMap& castProperties() const {return d->castProperties;}
 
 		bool matchesSqlId(const QString column_name) const;
 	};

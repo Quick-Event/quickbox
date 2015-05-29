@@ -68,12 +68,11 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("registration", tr("Reg"));
 	m->addColumn("runs.siId", tr("SI"));
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("virtual.finishTimeMs", tr("Finish")).setVirtual(true, qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 	status_props.setGroupName("runs.status");
-	m->addColumn("runs.status", tr("Status"))
-			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
-			.setCastProperties(status_props);
+	m->addColumn("runs.status", tr("Status")).setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
 

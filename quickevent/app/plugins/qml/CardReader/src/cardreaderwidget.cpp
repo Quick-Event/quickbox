@@ -92,8 +92,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
 		m->addColumn("runs.status", tr("Status"))
-				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
-				.setCastProperties(status_props);
+				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
 		ui->tblCards->setTableModel(m);
 		m_cardsModel = m;
 	}

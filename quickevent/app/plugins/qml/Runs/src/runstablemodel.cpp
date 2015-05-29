@@ -1,11 +1,11 @@
 #include "runstablemodel.h"
 
+#include <quickevent/og/timems.h>
+
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
 
 #include <QMimeData>
-
-#include <quickevent/og/timems.h>
 
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
@@ -15,7 +15,8 @@ RunsTableModel::RunsTableModel(QObject *parent)
 
 QVariant RunsTableModel::data(const QModelIndex &index, int role) const
 {
-	QVariant ret = Super::data(index, role);
+	QVariant ret;
+	ret = Super::data(index, role);
 	return ret;
 }
 
@@ -28,6 +29,58 @@ Qt::ItemFlags RunsTableModel::flags(const QModelIndex &index) const
 		//qfInfo() << flgs;
 	}
 	return flgs;
+}
+
+QVariant RunsTableModel::value(int row_ix, int column_ix) const
+{
+	ColumnDefinition cd = columnDefinition(column_ix);
+	if(cd.matchesSqlId(QStringLiteral("virtual.finishTimeMs"))) {
+		QVariant ret;
+		QVariant start_ms = value(row_ix, "startTimeMs");
+		QVariant time_ms = value(row_ix, "timeMs");
+		if(!start_ms.isNull() && !time_ms.isNull()) {
+			ret = start_ms.toInt() + time_ms.toInt();
+		}
+		return ret;
+	}
+	return Super::value(row_ix, column_ix);
+}
+
+bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
+{
+	bool ret;
+	//bool update_row = false;
+	QString new_status;
+	ColumnDefinition cd = columnDefinition(column_ix);
+	if(cd.matchesSqlId(QStringLiteral("virtual.finishTimeMs"))) {
+		QVariant start_ms = value(row_ix, "startTimeMs");
+		if(!start_ms.isNull()) {
+			int time_ms = val.toInt() - start_ms.toInt();
+			if(time_ms > 0) {
+				setValue(row_ix, "timeMs", time_ms);
+				//QModelIndex ix1 = index(row_ix, column_ix);
+				//QModelIndex ix2 = index(row_ix, columnCount() - 1);
+				//emit dataChanged(ix1, ix2);
+				new_status = "FINISH";
+			}
+		}
+		ret = true;
+	}
+	else {
+		ret = Super::setValue(row_ix, column_ix, val);
+		if(cd.matchesSqlId(QStringLiteral("timeMs"))) {
+			int time_ms = val.toInt();
+			if(time_ms > 0) {
+				new_status = "FINISH";
+				//QModelIndex ix1 = index(row_ix, column_ix);
+				//emit dataChanged(ix1, ix1);
+			}
+		}
+	}
+	if(!new_status.isEmpty()) {
+		setValue(row_ix, "status", new_status);
+	}
+	return ret;
 }
 
 static auto MIME_TYPE = QStringLiteral("application/quickevent.startTime");

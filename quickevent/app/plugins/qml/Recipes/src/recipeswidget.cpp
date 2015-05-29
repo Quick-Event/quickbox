@@ -69,8 +69,7 @@ RecipesWidget::RecipesWidget(QWidget *parent) :
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
 		m->addColumn("runs.status", tr("Status"))
-				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>())
-				.setCastProperties(status_props);
+				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
 		m->addColumn("cards.printerConnectionId", tr("printer"));
 
 		ui->tblCards->setTableModel(m);
