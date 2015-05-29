@@ -91,7 +91,7 @@ Report {
 						fill: Brush {color: Color {def: "khaki"} }
 						Cell {
 							width: "%"
-							textFn: detail.dataFn("abbr");
+							textFn: detail.dataFn("clubAbbr");
 							textStyle: myStyle.textStyleBold
 						}
 						Cell {

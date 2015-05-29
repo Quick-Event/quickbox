@@ -71,6 +71,7 @@ bool SqlTableModel::reload()
 
 bool SqlTableModel::reloadQuery(const QString &query_str)
 {
+	qfLogFuncFrame() << query_str;
 	beginResetModel();
 	bool ok = reloadTable(query_str);
 	checkColumns();

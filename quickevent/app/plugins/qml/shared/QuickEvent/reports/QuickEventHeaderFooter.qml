@@ -42,7 +42,7 @@ Frame {
 		}
 		Para {
 			text: {
-				"Page " + (reportProcessor.processedPageNo + 1) + "/NIY";
+				"Page " + (reportProcessor.processedPageNo + 1) + "/@{n}";
 			}
 		}
 	}

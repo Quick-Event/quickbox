@@ -197,20 +197,7 @@ void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 	//painter.setBrush(Qt::yellow);
 	QRect r1 = rect();
 	painter.fillRect(r1, QBrush(QColor("#CCFF99")));
-	//int d = (int)(ReportViewWidget::PageBorder * reportViewWidget()->scale());
-	//r.adjust(d, d, -d, -d);
-	/*
-	QPen p(Qt::blue);
-	p.setBrush(QColor("red"));
-	//p.setWidth(2);
-	painter.setPen(p);
-	painter.drawRect(rect().adjusted(0, 0, -1, -1));
-	painter.setBrush(Qt::green);
-	QFont f("autobus", 30);
-	f.setStyleHint(QFont::Times);
-	painter.setFont(f);
-	//painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, "<qt>Qt <b>kjutyn</b> <br>indian</qt>");
-	*/
+
 	reportViewWidget()->setupPainter(&painter);
 	ReportItemMetaPaintFrame *frm = reportViewWidget()->currentPage();
 	if(!frm) return;
@@ -688,30 +675,14 @@ void ReportViewWidget::setupPainterWidgetSize()
 void ReportViewWidget::setupPainter(ReportPainter *p)
 {
 	QF_ASSERT(p != nullptr, "painter is NULL", return);
-	//qfInfo() << QF_FUNC_NAME;
-	//qfInfo() << "\t painterScale:" << ReportItem::Size(painterScale).toString();
 	//p->currentPage = currentPageNo();
 	p->pageCount = pageCount();
-	//QFDomElement el;
-	//if(f_selectedItem) el = f_selectedItem->reportElement;
 	p->setSelectedItem(m_selectedItem);
-	//if(f_selectedItem) qfInfo() << "painter selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
 	p->scale(scale(), scale());
-	//p->scale(painterScale.width(), painterScale.height());
-	//qfInfo() << "\t painter world matrix m11:" << p->worldMatrix().m11() << "m12:" << p->worldMatrix().m12();
-	//qfInfo() << "\t painter world matrix m21:" << p->worldMatrix().m21() << "m22:" << p->worldMatrix().m22();
 	p->translate(qmlwidgets::graphics::mm2device(qmlwidgets::graphics::Point(PageBorder, PageBorder), p->device()));
 	m_painterInverseMatrix = p->matrix().inverted();
 }
-/*
-void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
-{
-	qfDebug() << QF_FUNC_NAME;
-	fDocument = doc;
-	if(!doc) return;
-	//doc->dump();
-}
-	*/
+
 void ReportViewWidget::setReport(const QString &file_name, const QVariantMap &report_init_properties)
 {
 	qfLogFuncFrame() << "file_name:" << file_name;
