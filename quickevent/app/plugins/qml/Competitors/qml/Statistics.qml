@@ -13,11 +13,11 @@ QtObject {
 		property SqlTableModel reportModel: SqlTableModel { id: reportModel }
 	}
 
-	function runsCountByClassesTable(stage_id)
+	function runCountByClassesTable(stage_id)
 	{
 		reportModel.queryBuilder.clear()
 		.select2("classes", "name")
-		.select("COUNT(competitors.classId) AS runsCount")
+		.select("COUNT(competitors.classId) AS runCount")
 		.select2("classdefs", "mapCount")
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
@@ -47,15 +47,15 @@ QtObject {
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
 		for(var e=0; e<event_plugin.stageCount; e++) {
 			var prefix = "e" + (e+1) + "_"
-			var col_runs_count = prefix + "runsCount";
+			var col_runs_count = prefix + "runCount";
 			var col_map_count = prefix + "mapCount";
 			tt.addColumn(col_runs_count, "int");
 			tt.addColumn(col_map_count, "int");
-			var tt2 = runsCountByClassesTable(e+1);
+			var tt2 = runCountByClassesTable(e+1);
 			//console.warn("tt2", tt2.toString());
 			for(var i=0; i<tt2.rowCount(); i++) {
 				//console.debug("class id:", class_id);
-				tt.setValue(i, col_runs_count, tt2.value(i, "runsCount"));
+				tt.setValue(i, col_runs_count, tt2.value(i, "runCount"));
 				tt.setValue(i, col_map_count, tt2.value(i, "mapCount"));
 			}
 		}
