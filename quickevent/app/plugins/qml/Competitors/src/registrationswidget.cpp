@@ -38,10 +38,11 @@ RegistrationsWidget::~RegistrationsWidget()
 
 void RegistrationsWidget::reload()
 {
+	qfLogFuncFrame();
 	if(!isVisible())
 		return;
 	qfs::QueryBuilder qb;
-	qb.select2("registrations", "registration, siId")
+	qb.select2("registrations", "firstName, lastName, licence, registration, siId")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("registrations")
 			.orderBy("registration");
@@ -50,8 +51,8 @@ void RegistrationsWidget::reload()
 		QString last_name_filter = ui->edNameFilter->text().trimmed();
 		int ix = last_name_filter.indexOf(' ');
 		if(ix > 0) {
-			last_name_filter = last_name_filter.mid(0, ix).trimmed();
 			first_name_filter = last_name_filter.mid(ix + 1).trimmed();
+			last_name_filter = last_name_filter.mid(0, ix).trimmed();
 		}
 		QString registration_filter = ui->edRegistrationFilter->text().trimmed();
 		QString siid_filter = ui->edSiIdFilter->text().trimmed();
@@ -62,7 +63,7 @@ void RegistrationsWidget::reload()
 				+ siid_filter.length();
 		if(l < 3)
 			return;
-
+		qfDebug() << "first_name:" << first_name_filter << "last_name:" << last_name_filter;
 		if(!first_name_filter.isEmpty())
 			qb.where("firstName LIKE '%" + first_name_filter + "%'");
 		if(!last_name_filter.isEmpty())
@@ -82,5 +83,21 @@ void RegistrationsWidget::onDbEvent(const QString &domain, const QVariant &paylo
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
 	if(domain == "Oris.registrationImported")
 		reload();
+}
+
+void RegistrationsWidget::setFocusToWidget(RegistrationsWidget::FocusWidget fw)
+{
+	switch (fw) {
+	case FocusWidget::Registrations:
+		ui->edRegistrationFilter->setFocus();
+		break;
+	default:
+		break;
+	}
+}
+
+qf::qmlwidgets::TableView *RegistrationsWidget::tableView()
+{
+	return ui->tblRegistrations;
 }
 

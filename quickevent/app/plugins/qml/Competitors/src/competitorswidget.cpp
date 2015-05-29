@@ -116,7 +116,8 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
 	if(mode == qf::core::model::DataDocument::ModeInsert) {
-		w->dataController()->document()->setValue("competitors.classId", ui->tblCompetitors->tableRow().value("classId"));
+		int class_id = m_cbxClasses->currentData().toInt();
+		w->dataController()->document()->setValue("competitors.classId", class_id);
 	}
 	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
 	dlg.exec();

@@ -2,12 +2,17 @@
 #include "ui_competitorwidget.h"
 
 #include "competitordocument.h"
+#include "registrationswidget.h"
 
 #include <quickevent/og/itemdelegate.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/timems.h>
 
+#include <qf/qmlwidgets/dialogs/dialog.h>
+
 #include <qf/core/sql/dbenum.h>
+
+namespace qfd = qf::qmlwidgets::dialogs;
 
 CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	Super(parent),
@@ -69,4 +74,26 @@ void CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
 	m_runsModel->postAll(false);
+}
+
+void CompetitorWidget::on_btChooseFromRegistrations_clicked()
+{
+	qfLogFuncFrame();
+	auto *w = new RegistrationsWidget();
+	w->setWindowTitle(tr("Find in registrations"));
+	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+	//dlg.setDefaultButton(QDialogButtonBox::Ok);
+	dlg.setCentralWidget(w);
+	w->setFocusToWidget(RegistrationsWidget::FocusWidget::Registrations);
+	if(dlg.exec()) {
+		qf::core::utils::TableRow r = w->tableView()->tableRow();
+		if(r.isNull())
+			r = w->tableView()->tableRow(0);
+		if(!r.isNull()) {
+			qf::core::model::DataDocument*doc = dataController()->document();
+			for(auto s : {"firstName", "lastName", "registration", "licence", "siId"}) {
+				doc->setValue(s, r.value(s));
+			}
+		}
+	}
 }

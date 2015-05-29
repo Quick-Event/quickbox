@@ -45,7 +45,7 @@ IDataWidget *DataController::dataWidget(const QString &data_id)
 {
 	IDataWidget *ret = nullptr;
 	for(auto dw : dataWidgets()) {
-		if(data_id.compare(dw->dataId(), Qt::CaseInsensitive) == 0) {
+		if(qf::core::Utils::fieldNameEndsWith(dw->dataId(), data_id)) {
 			ret = dw;
 			break;
 		}
