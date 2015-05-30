@@ -84,7 +84,7 @@ void CompetitorWidget::on_btChooseFromRegistrations_clicked()
 	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
 	//dlg.setDefaultButton(QDialogButtonBox::Ok);
 	dlg.setCentralWidget(w);
-	w->setFocusToWidget(RegistrationsWidget::FocusWidget::Registrations);
+	w->setFocusToWidget(RegistrationsWidget::FocusWidget::Registration);
 	if(dlg.exec()) {
 		qf::core::utils::TableRow r = w->tableView()->tableRow();
 		if(r.isNull())

@@ -20,7 +20,7 @@ class RegistrationsWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	enum class FocusWidget {Registrations};
+	enum class FocusWidget {Registration};
 public:
 	explicit RegistrationsWidget(QWidget *parent = 0);
 	~RegistrationsWidget();

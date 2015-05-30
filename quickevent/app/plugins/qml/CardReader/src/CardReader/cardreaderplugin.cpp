@@ -42,12 +42,14 @@ QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProp
 	return QQmlListProperty<CardReader::CardChecker>(this, m_cardCheckers);
 }
 
-CheckedCard CardReaderPlugin::checkCard(int card_id)
+CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
 {
 	qf::core::sql::Query q;
 	if(q.exec("SELECT * FROM cards WHERE id=" QF_IARG(card_id))) {
 		if(q.next()) {
 			ReadCard rc(q.record());
+			if(run_id > 0)
+				rc.setRunId(run_id);
 			return checkCard(rc);
 		}
 	}
@@ -128,12 +130,12 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	return ret;
 }
 
-void CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_card)
+bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_card)
 {
 	qf::core::sql::Query q;
 	int run_id = checked_card.runId();
 	if(run_id <= 0)
-		return;
+		return false;
 	try {
 		{
 			q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
@@ -166,15 +168,19 @@ void CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 			}
 		}
 		{
-			q.prepare("UPDATE runs SET timeMs=:timeMs, cardError=:cardError, status=:status WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
+			q.prepare("UPDATE runs SET timeMs=:timeMs, cardError=:cardError, disqualified=:disqualified, status=:status WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
 			q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
 			q.bindValue(QStringLiteral(":cardError"), !checked_card.isOk());
+			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 			q.bindValue(QStringLiteral(":status"), QStringLiteral("FINISH"));
 			q.exec(qf::core::Exception::Throw);
+			if(q.numRowsAffected() == 1)
+				return true;
 		}
 	}
 	catch (const qf::core::Exception &e) {
 		qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
 	}
+	return false;
 }
 

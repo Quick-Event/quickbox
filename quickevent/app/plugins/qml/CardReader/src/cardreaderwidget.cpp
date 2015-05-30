@@ -8,6 +8,7 @@
 #include "CardReader/checkedcard.h"
 
 #include <Event/eventplugin.h>
+#include <Runs/findrunnerwidget.h>
 
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
@@ -22,6 +23,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
@@ -39,6 +41,7 @@ namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
+namespace qfd = qf::qmlwidgets::dialogs;
 
 const char *CardReaderWidget::SETTINGS_PREFIX = "plugins/CardReader";
 
@@ -52,23 +55,6 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 
 	createActions();
 
-	/*
-	qff::Application *app = qff::Application::instance();
-	qff::MainWindow *fw = app->frameWork();
-	fw->menuBar()->actionForPath("tools/pluginSettings")->addActionInto(m_actSettings);
-	qfw::Action *a = fw->menuBar()->actionForPath("view", false);
-	if(!a) {
-		qfError() << "View doesn't exist";
-	}
-	else {
-		a = a->addMenuBefore("cards", "&Cards");
-		a->addActionInto(m_actCommOpen);
-		//a->addActionInto(m_actSqlConnect);
-	}
-
-	qfw::ToolBar *main_tb = fw->toolBar("main", true);
-	main_tb->addAction(m_actCommOpen);
-	*/
 	{
 		siut::DeviceDriver *drv = siDriver();
 		connect(drv, &siut::DeviceDriver::driverInfo, this, &CardReaderWidget::processDriverInfo, Qt::QueuedConnection);
@@ -91,6 +77,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 		m->addColumn("competitors.registration", tr("Reg"));
 		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		m->addColumn("runs.cardError", tr("Error")).setToolTip(tr("Card error"));
+		m->addColumn("runs.disqualified", tr("DISK")).setToolTip(tr("Disqualified"));
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
 		m->addColumn("runs.status", tr("Status"))
@@ -106,11 +94,15 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
 	QAction a_show_card(tr("Show card"), nullptr);
+	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card;
+	lst << &a_show_card << &a_assign_runner;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_card) {
 		showSelectedCard();
+	}
+	else if(a == &a_assign_runner) {
+		assignRunnerToSelectedCard();
 	}
 }
 
@@ -156,7 +148,7 @@ void CardReaderWidget::reload()
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
-			.select2("runs", "startTimeMs, timeMs, status")
+			.select2("runs", "startTimeMs, timeMs, status, cardError, disqualified")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -409,9 +401,9 @@ qf::qmlwidgets::framework::Plugin *CardReaderWidget::recipesPlugin()
 Event::EventPlugin *CardReaderWidget::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto cardreader_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT_EX(cardreader_plugin != nullptr, "Bad plugin");
-	return cardreader_plugin;
+	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
+	return plugin;
 }
 
 void CardReaderWidget::onCbxCardCheckersActivated(int ix)
@@ -427,5 +419,39 @@ void CardReaderWidget::showSelectedCard()
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
 	QMetaObject::invokeMethod(recipes_plugin, "previewRecipe", Q_ARG(int, card_id));
+}
+
+void CardReaderWidget::assignRunnerToSelectedCard()
+{
+	qfLogFuncFrame();
+	int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
+	QF_ASSERT(card_id > 0, "Bad card id!", return);
+	auto *w = new Runs::FindRunnerWidget(eventPlugin()->currentStageId());
+	w->setWindowTitle(tr("Find runner"));
+	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+	//dlg.setDefaultButton(QDialogButtonBox::Ok);
+	dlg.setCentralWidget(w);
+	w->setFocusToWidget(Runs::FindRunnerWidget::FocusWidget::Name);
+	if(dlg.exec()) {
+		qf::core::utils::TableRow r = w->tableView()->tableRow();
+		if(r.isNull())
+			r = w->tableView()->tableRow(0);
+		if(!r.isNull()) {
+			int run_id = r.value("runs.id").toInt();
+			if(run_id) {
+				CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
+				if(thisPlugin()->updateRunLapsSql(checked_card)) {
+					qf::core::sql::Query q;
+					try {
+						q.exec("UPDATE cards SET runId=" QF_IARG(run_id) " WHERE id=" QF_IARG(card_id), qf::core::Exception::Throw);
+						ui->tblCards->reloadRow();
+					}
+					catch (const qf::core::Exception &e) {
+						qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
+					}
+				}
+			}
+		}
+	}
 }
 

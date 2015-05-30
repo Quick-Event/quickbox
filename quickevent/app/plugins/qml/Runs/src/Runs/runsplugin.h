@@ -1,7 +1,7 @@
 #ifndef RUNSPLUGIN_H
 #define RUNSPLUGIN_H
 
-#include "runspluginglobal.h"
+#include "../runspluginglobal.h"
 
 #include <qf/qmlwidgets/framework/plugin.h>
 

@@ -3,6 +3,6 @@ import qf.qmlwidgets 1.0
 
 PluginManifest {
 	id: root
-	dependsOnFeatureIds: ['Event']
+	dependsOnFeatureIds: ['Runs']
 	addFromBottom: true
 }

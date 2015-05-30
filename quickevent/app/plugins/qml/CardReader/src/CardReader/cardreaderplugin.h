@@ -33,15 +33,16 @@ public:
 
 	int currentStageId();
 	int findRunId(int si_id);
-	CheckedCard checkCard(int card_id);
-	CheckedCard checkCard(const CardReader::ReadCard &read_card);
-	int saveCardToSql(const CardReader::ReadCard &read_card);
-	void updateRunLapsSql(const CardReader::CheckedCard &checked_card);
+	CheckedCard checkCard(int card_id, int run_id = 0);
+	CheckedCard checkCard(const ReadCard &read_card);
+	int saveCardToSql(const ReadCard &read_card);
+	//ReadCard loadCardFromSql(int card_id);
+	bool updateRunLapsSql(const CheckedCard &checked_card);
 private:
 	void onInstalled();
-	QQmlListProperty<CardReader::CardChecker> cardCheckersListProperty();
+	QQmlListProperty<CardChecker> cardCheckersListProperty();
 private:
-	QList<CardReader::CardChecker*> m_cardCheckers;
+	QList<CardChecker*> m_cardCheckers;
 };
 
 }

@@ -365,10 +365,28 @@ bool TableView::postRow(int row_no)
 void TableView::revertRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
+	if(row_no < 0)
+		row_no = currentIndex().row();
+	if(row_no < 0)
+		return;
 	qfc::model::TableModel *m = tableModel();
 	if(m) {
 		m->revertRow(toTableModelRowNo(row_no));
 	}
+}
+
+int TableView::reloadRow(int row_no)
+{
+	qfLogFuncFrame() << row_no;
+	if(row_no < 0)
+		row_no = currentIndex().row();
+	if(row_no < 0)
+		return 0;
+	qfc::model::TableModel *m = tableModel();
+	if(m) {
+		return m->reloadRow(toTableModelRowNo(row_no));
+	}
+	return 0;
 }
 
 void TableView::copy()

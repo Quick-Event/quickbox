@@ -92,6 +92,7 @@ private:
 
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void showSelectedCard();
+	void assignRunnerToSelectedCard();
 private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;

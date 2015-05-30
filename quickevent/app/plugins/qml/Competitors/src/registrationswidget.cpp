@@ -88,7 +88,7 @@ void RegistrationsWidget::onDbEvent(const QString &domain, const QVariant &paylo
 void RegistrationsWidget::setFocusToWidget(RegistrationsWidget::FocusWidget fw)
 {
 	switch (fw) {
-	case FocusWidget::Registrations:
+	case FocusWidget::Registration:
 		ui->edRegistrationFilter->setFocus();
 		break;
 	default:

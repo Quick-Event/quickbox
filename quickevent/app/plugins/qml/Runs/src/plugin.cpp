@@ -1,4 +1,4 @@
-#include "runsplugin.h"
+#include "Runs/runsplugin.h"
 
 #include <qf/core/log.h>
 

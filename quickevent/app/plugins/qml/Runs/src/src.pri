@@ -1,8 +1,9 @@
 message(including $$PWD)
 
+include($$PWD/Runs/Runs.pri)
+
 HEADERS += \
     $$PWD/runspluginglobal.h \
-    $$PWD/runsplugin.h \
     $$PWD/thispartwidget.h \
     $$PWD/runswidget.h \
     $$PWD/runstablemodel.h \
@@ -19,7 +20,6 @@ HEADERS += \
 
 SOURCES += \
 	$$PWD/plugin.cpp \
-    $$PWD/runsplugin.cpp \
     $$PWD/thispartwidget.cpp \
     $$PWD/runswidget.cpp \
     $$PWD/runstablemodel.cpp \
