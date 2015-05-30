@@ -55,6 +55,8 @@ private:
 	 */
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
 	QList<int> runnersForClass(int stage_id, int class_id);
+
+	void onCustomContextMenuRequest(const QPoint &pos);
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs};
 

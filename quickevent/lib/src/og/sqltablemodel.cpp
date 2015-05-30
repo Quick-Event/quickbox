@@ -27,7 +27,13 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	else if(role == SortRole) {
-		return Super::data(index, RawValueRole);
+		QVariant v = Super::data(index, Qt::EditRole);
+		int type = v.userType();
+		if(type == qMetaTypeId<TimeMs>()) {
+			TimeMs t = v.value<TimeMs>();
+			return t.msec();
+		}
+		return Super::data(index, role);
 	}
 	else if(role == Qt::TextAlignmentRole) {
 		QVariant v = Super::data(index, Qt::EditRole);

@@ -26,6 +26,7 @@
 
 #include <QDateTime>
 #include <QLabel>
+#include <QMenu>
 
 #include <algorithm>
 
@@ -59,6 +60,8 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->tblRuns->setDropIndicatorShown(true);
 	ui->tblRuns->setDragDropMode(QAbstractItemView::InternalMove);
 	ui->tblRuns->setDragEnabled(false);
+	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &RunsWidget::onCustomContextMenuRequest);
 
 	auto m = new RunsTableModel(this);
 	m->addColumn("runs.id").setReadOnly(true);
@@ -70,6 +73,8 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("virtual.finishTimeMs", tr("Finish")).setVirtual(true, qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("runs.cardError", tr("Error")).setToolTip(tr("Card error")).setReadOnly(true);
+	m->addColumn("runs.disqualified", tr("DISK")).setToolTip(tr("Disqualified"));
 	qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 	status_props.setGroupName("runs.status");
 	m->addColumn("runs.status", tr("Status")).setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
@@ -436,3 +441,16 @@ int RunsWidget::currentStageId()
 	int ret = event_plugin->currentStageId();
 	return ret;
 }
+
+void RunsWidget::onCustomContextMenuRequest(const QPoint &pos)
+{
+	qfLogFuncFrame();
+	QAction a_load_card(tr("Load times from card"), nullptr);
+	QList<QAction*> lst;
+	lst << &a_load_card;
+	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
+	if(a == &a_load_card) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
+	}
+}
+

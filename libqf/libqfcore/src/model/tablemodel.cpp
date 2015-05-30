@@ -93,7 +93,11 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		ret = value(index.row(), index.column());
 	}
 	else if(role == SortRole) {
-		ret = data(index, Qt::DisplayRole);
+		int type = columnType(index.column());
+		if(type == QVariant::Bool)
+			ret = value(index.row(), index.column()).toBool();
+		else
+			ret = data(index, Qt::DisplayRole);
 	}
 	else if(role == Qt::DisplayRole) {
 		ColumnDefinition cd = m_columns.value(index.column());
