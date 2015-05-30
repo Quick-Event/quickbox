@@ -422,10 +422,10 @@ void CardReaderWidget::onCbxCardCheckersActivated(int ix)
 void CardReaderWidget::showSelectedCard()
 {
 	qfLogFuncFrame();
-	auto receipes_plugin = recipesPlugin();
-	if(!receipes_plugin)
+	auto recipes_plugin = recipesPlugin();
+	if(!recipes_plugin)
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(receipes_plugin, "previewRecipe", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(recipes_plugin, "previewRecipe", Q_ARG(int, card_id));
 }
 

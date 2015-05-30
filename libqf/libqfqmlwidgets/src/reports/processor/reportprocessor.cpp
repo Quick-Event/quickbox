@@ -115,8 +115,10 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 		QObject *o = m_reportDocumentComponent->beginCreate(qmlEngine()->rootContext());
 		m_documentInstanceRoot = qobject_cast<ReportItemReport*>(o);
 		if(!m_documentInstanceRoot) {
-			qfError() << "Error creating root object from component:" << m_reportDocumentComponent;
+			qfError() << "Error creating root object from component:" << m_reportDocumentComponent << m_reportDocumentComponent->url();
 			qfError() << "Created object:" << o;
+			for(auto err : m_reportDocumentComponent->errors())
+				qfError() << err.toString();
 			QF_SAFE_DELETE(o);
 		}
 		else {

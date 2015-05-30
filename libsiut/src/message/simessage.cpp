@@ -532,7 +532,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		for(int i=0; i<punch_cnt; i++) {
 			int offset = 4*i;
 			//if(i >= (32-14)) offset += dataOffsetInPacket(); /// dalsi packet
-			qfInfo() << i << "->" << QString::number(offset, 16);
+			//qfInfo() << i << "->" << QString::number(offset, 16);
 			Punch p(raw_data, base + offset, PunchRecordExtended);
 			ret << p;
 		}

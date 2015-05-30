@@ -94,9 +94,9 @@ QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 				.join("runs.competitorId", "competitors.id")
 				.join("competitors.classId", "classes.id")
 				.where("runs.id=" QF_IARG(run_id));
-        model.setQuery(qb.toString());
-        model.reload();
-        if(model.rowCount() == 1) {
+		model.setQuery(qb.toString());
+		model.reload();
+		if(model.rowCount() == 1) {
 			int class_id = model.value(0, "competitors.classId").toInt();
 			{
 				// find best laps for competitors class
@@ -105,10 +105,11 @@ QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 						.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
-						.joinRestricted("runs.id", "runlaps.runId", "runlaps.lapTimeMs > 0")
+						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0")
+						.where("runlaps.lapTimeMs > 0")
 						.groupBy("runlaps.position")
 						.orderBy("runlaps.position");
-				qfInfo() << qb.toString();
+				//qfInfo() << qb.toString();
 				qf::core::sql::Query q;
 				q.exec(qb.toString());
 				while(q.next()) {
@@ -123,6 +124,7 @@ QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 						continue;
 					}
 					best_laps[pos] = lap;
+					//qfInfo() << "bestlaps[" << pos << "] =" << lap;
 				}
 			}
 			{
@@ -214,9 +216,10 @@ QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 			// runlaps table contains also finish time entry, it is under last position
 			// for exaple: if course is of 10 controls best_laps[10] contains best finish lap time for this class
 			int loss = 0;
-			int best_lap = best_laps.value(control_count);
+			int best_lap = best_laps.value(control_count + 1);
 			if(best_lap > 0)
 				loss = checked_card.finishLapTimeMs() - best_lap;
+			//qfInfo() << "control_count:" << control_count << "finishLapTimeMs:" << checked_card.finishLapTimeMs() << "- best_lap:" << best_lap << "=" << loss;
 			tt.setValue("finishLossMs", loss);
 		}
 		{
@@ -267,7 +270,7 @@ void RecipesPlugin::previewRecipe_classic(int card_id)
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Recipe"));
-	w->setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
+	w->setReport(manifest()->homeDir() + "/reports/recipeClassic.qml");
 	QVariantMap dt = recipeTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
@@ -295,7 +298,7 @@ void RecipesPlugin::printRecipe_classic(int card_id, const QPrinterInfo &printer
 	qfInfo() << "printing on:" << pi.printerName();
 	QPrinter printer(pi);
 	qf::qmlwidgets::reports::ReportProcessor rp(&printer);
-	rp.setReport(manifest()->homeDir() + "/reports/receipeClassic.qml");
+	rp.setReport(manifest()->homeDir() + "/reports/recipeClassic.qml");
 	QVariantMap dt = recipeTablesData(card_id);
 	for(auto key : dt.keys()) {
 		rp.setTableData(key, dt.value(key));

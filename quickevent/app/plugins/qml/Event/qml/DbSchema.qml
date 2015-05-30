@@ -203,13 +203,12 @@ Schema {
 				Index {fields: ['status', 'timeMs'] }
 			]
 		},
-		/*
 		Table { name: 'runlaps'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'runId'; type: Int {} },
 				Field { name: 'position'; type: Int {} },
-				//Field { name: 'code'; type: Int {} },
+				Field { name: 'code'; type: Int {} },
 				Field { name: 'stpTimeMs'; type: Int { } },
 				Field { name: 'lapTimeMs'; type: Int { } }
 			]
@@ -219,7 +218,6 @@ Schema {
 				Index {fields: ['position', 'lapTimeMs'] }
 			]
 		},
-		*/
 		Table { name: 'clubs'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },

@@ -10,7 +10,7 @@ CardChecker
 	
 	function checkCard(read_card)
 	{
-		console.debug("checking card:", JSON.stringify(read_card, null, 2));
+		console.debug("read card:", JSON.stringify(read_card, null, 2));
 
 		var run_id = read_card.runId;
 		var course = {};
