@@ -296,7 +296,6 @@ void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap
 			try {
 				Option &opt = optionRef(key);
 				if(!opt.isSet()) {
-					qfWarning() << key << "->" << v;
 					opt.setValue(v);
 				}
 			}
