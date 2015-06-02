@@ -1,10 +1,10 @@
 #include "clioptions.h"
 #include "../core/log.h"
+#include "../core/assert.h"
 
-#include <QSettings>
 #include <QStringBuilder>
 #include <QStringList>
-#include <QCoreApplication>
+#include <QDir>
 
 #include <limits>
 
@@ -97,12 +97,18 @@ CLIOptions::Option& CLIOptions::optionRef(const QString& name) throw(Exception)
 
 QVariant CLIOptions::value(const QString& name, const QVariant default_value) const
 {
-	QVariant ret = option(name, false).value();
-	if(!ret.isValid()) ret = default_value;
+	QVariant ret;
+	Option opt = option(name, false);
+	if(opt.isNull())
+		ret = default_value;
+	else
+		ret = opt.value();
+	if(!ret.isValid())
+		ret = default_value;
 	return ret;
 }
 
-void CLIOptions::setValue(const QString& name, const QVariant val, bool throw_exc) throw(Exception)
+bool CLIOptions::setValue(const QString& name, const QVariant val, bool throw_exc) throw(Exception)
 {
 	Option o = option(name, false);
 	if(o.isNull()) {
@@ -111,11 +117,13 @@ void CLIOptions::setValue(const QString& name, const QVariant val, bool throw_ex
 		if(throw_exc) {
 			throw Exception(msg);
 		}
+		return false;
 	}
 	else {
 		Option &orf = optionRef(name);
 		orf.setValue(val);
 	}
+	return true;
 }
 
 QString CLIOptions::takeArg()
@@ -127,7 +135,8 @@ QString CLIOptions::takeArg()
 void CLIOptions::parse(int argc, char* argv[])
 {
 	QStringList args;
-	for(int i=0; i<argc; i++) args << QString::fromUtf8(argv[i]);
+	for(int i=0; i<argc; i++)
+		args << QString::fromUtf8(argv[i]);
 	parse(args);
 }
 
@@ -143,7 +152,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 
 	while(true) {
 		QString arg = takeArg();
-		if(arg.isEmpty()) break;
+		if(arg.isEmpty())
+			break;
 		if(arg == "--help" || arg == "-h") {
 			help();
 			m_isAppBreak = true;
@@ -170,7 +180,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 				}
 			}
 			if(!found) {
-				if(arg.startsWith("-")) m_unusedArguments << arg;
+				if(arg.startsWith("-"))
+					m_unusedArguments << arg;
 			}
 		}
 	}
@@ -187,19 +198,30 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 	}
 }
 
-QString CLIOptions::applicationName() const
+QPair<QString, QString> CLIOptions::applicationDirAndName() const
 {
-	QString ret;
+	QPair<QString, QString> ret;
 	if(m_allArgs.size()) {
-		ret = m_allArgs[0];
+		QString arg0 = m_allArgs[0];
 #ifdef Q_OS_WIN
 		QChar sep = '\\';
 #else
 		QChar sep = '/';
 #endif
-		ret = ret.section(sep, -1);
+		ret.first = arg0.section(sep, 0, -2);
+		ret.second = arg0.section(sep, -1);
 	}
 	return ret;
+}
+
+QString CLIOptions::applicationDir() const
+{
+	return QDir::fromNativeSeparators(applicationDirAndName().first);
+}
+
+QString CLIOptions::applicationName() const
+{
+	return applicationDirAndName().second;
 }
 
 void CLIOptions::help(QTextStream& os) const
@@ -251,7 +273,36 @@ void CLIOptions::dump() const
 
 void CLIOptions::addParseError(const QString& err)
 {
-	//LOGDEB() << "addParseError:" << err;
 	m_parseErrors << err;
-	//LOGDEB() << "isParseError:" << isParseError();
+}
+
+void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map)
+{
+	QMapIterator<QString, QVariant> it(config_map);
+	while(it.hasNext()) {
+		it.next();
+		QString key = it.key().trimmed();
+		QF_ASSERT(!key.isEmpty(), "Empty key!", continue);
+		if(!key_prefix.isEmpty()) {
+			key[0] = key[0].toUpper();
+			key = key_prefix + key;
+		}
+		QVariant v = it.value();
+		if(v.type() == QVariant::Map) {
+			QVariantMap m = v.toMap();
+			mergeConfig_helper(key, m);
+		}
+		else {
+			try {
+				Option &opt = optionRef(key);
+				if(!opt.isSet()) {
+					qfWarning() << key << "->" << v;
+					opt.setValue(v);
+				}
+			}
+			catch(const qf::core::Exception &e) {
+				qfWarning() << "Merge option" << key << "error:" << e.message();
+			}
+		}
+	}
 }

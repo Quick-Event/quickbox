@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QDate>
+#include <QRegularExpression>
 
 using namespace qf::core;
 
@@ -196,6 +197,15 @@ QString Utils::replaceCaptions(const QString format_str, const QVariantMap &repl
 		it.next();
 		ret = replaceCaptions(ret, it.key(), it.value());
 	}
+	return ret;
+}
+
+QString Utils::removeJsonComments(const QString json_str)
+{
+	// http://blog.ostermiller.org/find-comment
+	QString ret = json_str;
+	ret.replace(QRegularExpression("/\\*(?:.|[\\n])*?\\*/"), QString());
+	ret.replace(QRegularExpression("//.*[\\n]"), "\n");
 	return ret;
 }
 

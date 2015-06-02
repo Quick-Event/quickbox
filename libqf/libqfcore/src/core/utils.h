@@ -130,6 +130,8 @@ public:
 	static QString replaceCaptions(const QString format_str, const QString &caption_name, const QVariant &caption_value);
 	static QString replaceCaptions(const QString format_str, const QVariantMap &replacements);
 
+	static QString removeJsonComments(const QString json_str);
+
 	/// invoke method of prototype bool method()
 	static bool invokeMethod_B_V(QObject *obj, const char *method_name);
 

@@ -64,13 +64,14 @@ public:
 		QString comment() const {return d->comment;}
 		Option& setMandatory(bool b) {d->mandatory = b; return *this;}
 		bool isMandatory() const {return d->mandatory;}
+		bool isSet() const {return value().isValid();}
 	public:
 		Option();
 		Option(QVariant::Type type);
 	};
 public:
 	Option& addOption(const QString key, const Option &opt = Option());
-	void setValue(const QString &name, const QVariant val, bool throw_exc = true) throw(Exception);
+	bool setValue(const QString &name, const QVariant val, bool throw_exc = true) throw(Exception);
 	Option option(const QString &name, bool throw_exc = true) const throw(Exception);
 	Option& optionRef(const QString &name) throw(Exception);
 	QMap<QString, Option> options() const {return m_options;}
@@ -81,6 +82,10 @@ public:
 	bool isAppBreak() const {return m_isAppBreak;}
 	QStringList parseErrors() const {return m_parseErrors;}
 	QStringList unusedArguments() {return m_unusedArguments;}
+
+	void mergeConfig(const QVariantMap &config_map) {mergeConfig_helper(QString(), config_map);}
+
+	QString applicationDir() const;
 	QString applicationName() const;
 	void help() const;
 	void help(QTextStream &os) const;
@@ -89,8 +94,10 @@ public:
 public slots:
 	QVariant value(const QString &name, const QVariant default_value = QVariant()) const;
 protected:
+	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();
 	void addParseError(const QString &err);
+	void mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map);
 private:
 	QMap<QString, Option> m_options;
 	QStringList m_arguments;
@@ -106,9 +113,10 @@ private:
 #define CLIOPTION_GETTER_SETTER(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const { \
 		Option opt = option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
-		QVariant ret = opt.value(); \
-		if(!ret.isValid()) ret = opt.defaultValue(); \
-		return qvariant_cast<ptype>(ret); \
+		QVariant val = opt.value(); \
+		if(!val.isValid()) \
+			val = opt.defaultValue(); \
+		return qvariant_cast<ptype>(val); \
 	} \
 	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
 
