@@ -46,7 +46,7 @@ private:
 	int currentStageId();
 
 	Q_SLOT void lazyInit();
-	Q_SLOT void reset();
+	Q_SLOT void reset(int class_id = 0);
 	Q_SLOT void reload();
 
 	/**

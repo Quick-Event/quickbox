@@ -26,6 +26,7 @@ private slots:
 private:
 	Q_SLOT void loadRunsTable();
 	Q_SLOT void saveRunsTable();
+	void onRunsTableCustomContextMenuRequest(const QPoint &pos);
 private:
 	Ui::CompetitorWidget *ui;
 	quickevent::og::SqlTableModel *m_runsModel;

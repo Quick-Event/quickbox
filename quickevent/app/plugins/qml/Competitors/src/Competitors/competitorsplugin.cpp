@@ -1,7 +1,7 @@
 #include "competitorsplugin.h"
-#include "thispartwidget.h"
+#include "../thispartwidget.h"
 #include "competitordocument.h"
-#include "registrationswidget.h"
+#include "../registrationswidget.h"
 
 //#include <EventPlugin/eventplugin.h>
 

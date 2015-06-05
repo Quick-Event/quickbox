@@ -1,5 +1,7 @@
-#ifndef COMPETITORSPLUGIN_H
-#define COMPETITORSPLUGIN_H
+#ifndef COMPETITORS_COMPETITORSPLUGIN_H
+#define COMPETITORS_COMPETITORSPLUGIN_H
+
+#include "../competitorspluginglobal.h"
 
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -11,13 +13,11 @@ class Action;
 namespace framework {
 class PartWidget;
 class DockWidget;
-}
-}
-}
+}}}
 
 namespace Competitors {
 
-class CompetitorsPlugin : public qf::qmlwidgets::framework::Plugin
+class COMPETITORSPLUGIN_DECL_EXPORT CompetitorsPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)
@@ -32,6 +32,7 @@ public:
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 
 	Q_SIGNAL void nativeInstalled();
+	Q_SIGNAL void editClassStartTimesRequest(int stage_id, int class_id, int competitor_id);
 private:
 	Q_SLOT void onInstalled();
 	void onRegistrationsDockVisibleChanged(bool on = true);
@@ -42,4 +43,4 @@ private:
 
 }
 
-#endif // COMPETITORSPLUGIN_H
+#endif // COMPETITORS_COMPETITORSPLUGIN_H

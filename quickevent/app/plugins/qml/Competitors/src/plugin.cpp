@@ -1,4 +1,4 @@
-#include "competitorsplugin.h"
+#include "Competitors/competitorsplugin.h"
 
 #include <qf/core/log.h>
 

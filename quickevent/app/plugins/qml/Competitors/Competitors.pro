@@ -8,6 +8,8 @@ QT += widgets sql
 
 CONFIG += c++11 hide_symbols
 
+DEFINES += COMPETITORSPLUGIN_BUILD_DLL
+
 INCLUDEPATH += \
     $$PWD/../../../../lib/include \
     $$PWD/../Event/include \

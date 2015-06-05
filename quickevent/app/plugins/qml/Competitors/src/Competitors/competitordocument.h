@@ -3,6 +3,8 @@
 
 #include <qf/core/model/sqldatadocument.h>
 
+namespace Competitors {
+
 class CompetitorDocument : public qf::core::model::SqlDataDocument
 {
 	Q_OBJECT
@@ -14,5 +16,7 @@ protected:
 	bool saveData() Q_DECL_OVERRIDE;
 	bool dropData() Q_DECL_OVERRIDE;
 };
+
+}
 
 #endif // COMPETITORS_COMPETITORDOCUMENT_H

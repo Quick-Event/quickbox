@@ -13,6 +13,7 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <QQmlEngine>
 
@@ -39,6 +40,8 @@ void RunsPlugin::onInstalled()
 	m_partWidget = new ThisPartWidget();
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
+	connect(fwk->plugin("Competitors"), SIGNAL(editClassStartTimesRequest(int,int,int)), this, SLOT(onEditClassStartTimesRequest(int,int,int)), Qt::QueuedConnection);
+
 	emit nativeInstalled();
 
 	auto *a_draw = m_partWidget->menuBar()->actionForPath("drawing");
@@ -61,6 +64,11 @@ void RunsPlugin::onInstalled()
 		a_draw->addActionInto(a);
 		//connect(a, &qfw::Action::triggered, this, &RunsPlugin::setRegistrationsDockVisible);
 	}
+}
+
+void RunsPlugin::onEditClassStartTimesRequest(int stage_id, int class_id, int competitor_id)
+{
+	qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
 }
 
 int RunsPlugin::courseForRun(int run_id)

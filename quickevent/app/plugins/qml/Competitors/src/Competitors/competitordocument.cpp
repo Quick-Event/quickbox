@@ -8,6 +8,8 @@
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>
 
+using namespace Competitors;
+
 CompetitorDocument::CompetitorDocument(QObject *parent)
 	: Super(parent)
 {
