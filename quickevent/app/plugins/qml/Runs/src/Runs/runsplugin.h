@@ -37,7 +37,7 @@ public:
 
 private:
 	Q_SLOT void onInstalled();
-	Q_SLOT void onEditClassStartTimesRequest(int stage_id, int class_id, int competitor_id);
+	Q_SLOT void onEditStartListRequest(int stage_id, int class_id, int competitor_id);
 
 	int courseForRun_Classic(int run_id);
 private:

@@ -40,7 +40,7 @@ void RunsPlugin::onInstalled()
 	m_partWidget = new ThisPartWidget();
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
-	connect(fwk->plugin("Competitors"), SIGNAL(editClassStartTimesRequest(int,int,int)), this, SLOT(onEditClassStartTimesRequest(int,int,int)), Qt::QueuedConnection);
+	connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
 
 	emit nativeInstalled();
 
@@ -66,9 +66,11 @@ void RunsPlugin::onInstalled()
 	}
 }
 
-void RunsPlugin::onEditClassStartTimesRequest(int stage_id, int class_id, int competitor_id)
+void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competitor_id)
 {
-	qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
+	//qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	fwk->setActivePart("Runs");
 }
 
 int RunsPlugin::courseForRun(int run_id)

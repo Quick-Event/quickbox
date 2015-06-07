@@ -32,7 +32,6 @@ public:
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 
 	Q_SIGNAL void nativeInstalled();
-	Q_SIGNAL void editClassStartTimesRequest(int stage_id, int class_id, int competitor_id);
 private:
 	Q_SLOT void onInstalled();
 	void onRegistrationsDockVisibleChanged(bool on = true);

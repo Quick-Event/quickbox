@@ -5,6 +5,8 @@
 #include "Competitors/competitorsplugin.h"
 #include "registrationswidget.h"
 
+#include "Event/eventplugin.h"
+
 #include <quickevent/og/itemdelegate.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/timems.h>
@@ -25,6 +27,13 @@ static Competitors::CompetitorsPlugin* competitorsPlugin()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Competitors");
 	return qobject_cast<Competitors::CompetitorsPlugin *>(plugin);
+}
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	return qobject_cast<Event::EventPlugin*>(plugin);
 }
 
 CompetitorWidget::CompetitorWidget(QWidget *parent) :
@@ -105,7 +114,7 @@ void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 		int stage_no = row.value("stageId").toInt();
 		int class_id = row.value("classId").toInt();
 		int competitor_id = row.value("competitorId").toInt();
-		emit competitorsPlugin()->editClassStartTimesRequest(stage_no, class_id, competitor_id);
+		emit eventPlugin()->editStartListRequest(stage_no, class_id, competitor_id);
 	}
 }
 

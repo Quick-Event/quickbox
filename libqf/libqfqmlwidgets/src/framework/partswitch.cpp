@@ -91,12 +91,12 @@ void PartSwitch::setCurrentPartIndex(int ix, bool is_active)
 		return;
 	PartSwitchToolButton *bt1 = buttonAt(m_currentPartIndex);
 	PartSwitchToolButton *bt2 = buttonAt(ix);
-	bool ok1 = m_centralWidget->setPartActive(m_currentPartIndex, false);
+	bool ok1 = m_centralWidget->setActivePart(m_currentPartIndex, false);
 	bool ok2 = false;
 	if(ok1) {
 		int old_ix = m_currentPartIndex;
 		m_currentPartIndex = ix;
-		ok2 = m_centralWidget->setPartActive(ix, true);
+		ok2 = m_centralWidget->setActivePart(ix, true);
 		if(!ok2) {
 			m_currentPartIndex = old_ix;
 		}

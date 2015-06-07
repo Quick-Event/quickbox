@@ -82,6 +82,8 @@ public:
 #endif
 	static MainWindow* frameWork();
 
+	Q_SLOT bool setActivePart(const QString &feature_id);
+
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;

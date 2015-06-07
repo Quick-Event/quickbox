@@ -65,6 +65,9 @@ public:
 
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
+public:
+	// event wide signals
+	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private:
 	void setDbOpen(bool ok);
 

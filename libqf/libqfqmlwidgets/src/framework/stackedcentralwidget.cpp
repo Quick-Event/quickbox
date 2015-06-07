@@ -24,7 +24,7 @@ StackedCentralWidget::StackedCentralWidget(MainWindow *parent) :
 	setLayout(ly);
 
 	m_partSwitch = new PartSwitch(this);
-    connect(this, SIGNAL(partActivated(int, bool)), m_partSwitch, SLOT(setCurrentPartIndex(int, bool)));
+	connect(this, SIGNAL(partActivated(int, bool)), m_partSwitch, SLOT(setCurrentPartIndex(int, bool)));
 	MainWindow::frameWork()->addToolBar(Qt::LeftToolBarArea, m_partSwitch);
 }
 
@@ -42,9 +42,9 @@ void StackedCentralWidget::addPartWidget(PartWidget *widget)
 	QMetaObject::invokeMethod(widget, "updateCaptionFrame", Qt::QueuedConnection);
 }
 
-bool StackedCentralWidget::setPartActive(int part_index, bool set_active)
+bool StackedCentralWidget::setActivePart(int part_index, bool set_active)
 {
-    qfLogFuncFrame() << "part index:" << part_index << "set active:" << set_active;
+	qfLogFuncFrame() << "part index:" << part_index << "set active:" << set_active;
 	bool ret = true;
 	PartWidget *pw = partWidget(part_index);
 	if(pw) {
@@ -53,18 +53,29 @@ bool StackedCentralWidget::setPartActive(int part_index, bool set_active)
 		if(ix >= 0) {
 			pw->metaObject()->method(ix).invoke(pw, Qt::DirectConnection,
 												Q_RETURN_ARG(QVariant, ret_val),
-											    Q_ARG(QVariant, set_active));
+												Q_ARG(QVariant, set_active));
 		}
 		ret = ret_val.toBool();
 		if(ret) {
-            pw->setActive(set_active);
-            if(set_active)
-                m_centralWidget->setCurrentIndex(part_index);
+			pw->setActive(set_active);
+			if(set_active)
+				m_centralWidget->setCurrentIndex(part_index);
 			emit partActivated(pw->featureId(), set_active);
-            emit partActivated(part_index, set_active);
+			emit partActivated(part_index, set_active);
 		}
 	}
 	return ret;
+}
+
+int StackedCentralWidget::featureToIndex(const QString &feature_id)
+{
+	for (int i = 0; i < m_centralWidget->count(); ++i) {
+		auto *pw = partWidget(i);
+		if(pw->featureId() == feature_id) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 PartWidget *StackedCentralWidget::partWidget(int part_index)

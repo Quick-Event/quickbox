@@ -166,6 +166,14 @@ MainWindow *MainWindow::frameWork()
 	return self;
 }
 
+bool MainWindow::setActivePart(const QString &feature_id)
+{
+	int ix = centralWidget()->featureToIndex(feature_id);
+	if(ix < 0)
+		return false;
+	return centralWidget()->setActivePart(ix, true);
+}
+
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
 	emit aboutToClose();
@@ -174,7 +182,7 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 
 void MainWindow::whenPluginsLoaded()
 {
-	centralWidget()->setPartActive(0, true);
+	centralWidget()->setActivePart(0, true);
 }
 
 void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)
