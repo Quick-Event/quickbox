@@ -87,9 +87,9 @@ public:
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
+	Q_SLOT virtual void whenPluginsLoaded();
 private:
 	Q_SLOT void savePersistentSettings();
-	Q_SLOT void whenPluginsLoaded();
 	//void setupSettingsPersistence();
 private:
 	PluginLoader *m_pluginLoader;

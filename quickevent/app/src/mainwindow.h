@@ -11,7 +11,8 @@ private:
 public:
 	explicit MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow();
-private:
+protected:
+	void whenPluginsLoaded() Q_DECL_OVERRIDE;
 };
 
 #endif // MAINWINDOW_H

@@ -48,6 +48,7 @@ bool StackedCentralWidget::setActivePart(int part_index, bool set_active)
 	bool ret = true;
 	PartWidget *pw = partWidget(part_index);
 	if(pw) {
+		qfDebug() << "featureId:" << pw->featureId();
 		QVariant ret_val(true);
 		int ix = pw->metaObject()->indexOfMethod("canActivate(QVariant)");
 		if(ix >= 0) {
