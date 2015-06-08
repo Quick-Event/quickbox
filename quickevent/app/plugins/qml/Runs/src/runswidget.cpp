@@ -136,6 +136,19 @@ void RunsWidget::reload()
 	m_runsModel->reload();
 }
 
+void RunsWidget::editStartList(int class_id, int competitor_id)
+{
+	reset(class_id);
+	int stime_ix = m_runsModel->columnIndex("runs.startTimeMs");
+	ui->tblRuns->horizontalHeader()->setSortIndicator(stime_ix, Qt::AscendingOrder);
+	for (int i = 0; i < ui->tblRuns->model()->rowCount(); ++i) {
+		auto r = ui->tblRuns->tableRow(i);
+		if(r.value("competitorId").toInt() == competitor_id) {
+			ui->tblRuns->setCurrentIndex(ui->tblRuns->model()->index(i, stime_ix));
+		}
+	}
+}
+
 Event::EventPlugin *RunsWidget::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();

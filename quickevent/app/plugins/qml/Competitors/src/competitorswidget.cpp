@@ -3,6 +3,8 @@
 #include "competitorwidget.h"
 #include "thispartwidget.h"
 
+#include "Event/eventplugin.h"
+
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -18,6 +20,13 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	return qobject_cast<Event::EventPlugin*>(plugin);
+}
 
 CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	Super(parent),
@@ -109,7 +118,7 @@ void CompetitorsWidget::reload()
 void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
-	CompetitorWidget *w = new CompetitorWidget();
+	auto *w = new CompetitorWidget();
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
@@ -120,5 +129,9 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 		w->dataController()->document()->setValue("competitors.classId", class_id);
 	}
 	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
+	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
+		dlg.accept();
+		emit eventPlugin()->editStartListRequest(stage_id, class_id, competitor_id);
+	});
 	dlg.exec();
 }

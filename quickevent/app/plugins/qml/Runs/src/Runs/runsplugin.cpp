@@ -1,8 +1,9 @@
 #include "runsplugin.h"
 #include "thispartwidget.h"
+#include "../runswidget.h"
 #include "drawing/drawingganttwidget.h"
 
-//#include <EventPlugin/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -23,6 +24,13 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
 
 using namespace Runs;
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	return qobject_cast<Event::EventPlugin*>(plugin);
+}
 
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super(parent)
@@ -70,7 +78,13 @@ void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competit
 {
 	//qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	fwk->setActivePart("Runs");
+	if(!fwk->setActivePart("Runs"))
+		return;
+	auto *rw = partWidget()->findChild<RunsWidget*>();
+	if(!rw)
+		return;
+	eventPlugin()->setCurrentStageId(stage_id);
+	rw->editStartList(class_id, competitor_id);
 }
 
 int RunsPlugin::courseForRun(int run_id)

@@ -45,6 +45,7 @@ public:
 	Event::EventConfig* eventConfig(bool reload = false);
 	int stageCount() {return eventConfig()->stageCount();}
 
+	Q_SLOT void setCurrentStageId(int stage_id);
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 

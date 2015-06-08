@@ -20,9 +20,10 @@ private:
 public:
 	explicit CompetitorWidget(QWidget *parent = 0);
 	~CompetitorWidget() Q_DECL_OVERRIDE;
+
+	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private slots:
 	void on_btChooseFromRegistrations_clicked();
-
 private:
 	Q_SLOT void loadRunsTable();
 	Q_SLOT void saveRunsTable();

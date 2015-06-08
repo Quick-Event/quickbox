@@ -35,9 +35,14 @@ public:
 	explicit RunsWidget(QWidget *parent = 0);
 	~RunsWidget() Q_DECL_OVERRIDE;
 
+	void settleDownInPartWidget(ThisPartWidget *part_widget);
+
 	static Event::EventPlugin* eventPlugin();
 
-	void settleDownInPartWidget(ThisPartWidget *part_widget);
+	Q_SLOT void reset(int class_id = 0);
+	Q_SLOT void reload();
+
+	void editStartList(int class_id, int competitor_id);
 private slots:
 	void on_btDraw_clicked();
 	void on_btDrawRemove_clicked();
@@ -46,8 +51,6 @@ private:
 	int currentStageId();
 
 	Q_SLOT void lazyInit();
-	Q_SLOT void reset(int class_id = 0);
-	Q_SLOT void reload();
 
 	/**
 	 * @brief runnersInClubsHistogram

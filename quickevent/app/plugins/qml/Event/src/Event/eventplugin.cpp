@@ -91,6 +91,12 @@ Event::EventConfig *EventPlugin::eventConfig(bool reload)
 	return m_eventConfig;
 }
 
+void EventPlugin::setCurrentStageId(int stage_id)
+{
+	m_cbxStage->setCurrentIndex(stage_id - 1);
+	emit currentStageIdChanged(stage_id);
+}
+
 int EventPlugin::currentStageId()
 {
 	return m_cbxStage->currentIndex() + 1;
