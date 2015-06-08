@@ -8,7 +8,7 @@
 RecipesPartWidget::RecipesPartWidget(const QString &feature_id, QWidget *parent)
 	: Super(feature_id, parent)
 {
-	setTitle(tr("Receipes"));
+	setTitle(tr("Recipes"));
 
 	RecipesWidget *w = new RecipesWidget();
 	centralFrame()->addWidget(w);

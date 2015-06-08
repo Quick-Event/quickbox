@@ -1767,20 +1767,25 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 void TableView::insertRowInline()
 {
 	qfLogFuncFrame();
-	QModelIndex ix = currentIndex();
 	int ri = model()->rowCount();
-	if(ix.isValid())
+	int tri = ri;
+	QModelIndex ix = currentIndex();
+	ix = ix.sibling(ix.row() + 1, ix.column());
+	if(ix.isValid()) {
 		ri = ix.row();
-	int tri = toTableModelRowNo(ri);
-	if(tri < 0) {
-		/// this can happen when one inserts to empty table
-		tri = 0;
+		int tri = toTableModelRowNo(ri);
+		if(tri < 0) {
+			qfWarning() << "Valid proxy model index has invalid table model index!";
+			/// this can happen when one inserts to empty table ???? why ????
+			tri = 0;
+		}
 	}
 	tableModel()->insertRow(tri);
+	ix = model()->index(ix.row(), ix.column());
 	if(ix.isValid())
-		setCurrentIndex(ix.sibling(ri, ix.column()));
+		setCurrentIndex(ix);
 	else
-		setCurrentIndex(model()->index(ri, 0, QModelIndex()));
+		setCurrentIndex(model()->index(tri, 0));
 }
 
 void TableView::removeSelectedRowsInline()

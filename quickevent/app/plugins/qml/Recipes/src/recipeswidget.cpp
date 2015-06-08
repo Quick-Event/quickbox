@@ -115,7 +115,7 @@ void RecipesWidget::reload()
 Recipes::RecipesPlugin *RecipesWidget::recipesPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Recipes::RecipesPlugin *>(fwk->plugin("Receipes"));
+	auto plugin = qobject_cast<Recipes::RecipesPlugin *>(fwk->plugin("Recipes"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
@@ -141,7 +141,7 @@ void RecipesWidget::createActions()
 	//QStyle *sty = style();
 	/*
 	{
-		QIcon ico(":/quickevent/Receipes/images/comm");
+		QIcon ico(":/quickevent/Recipes/images/comm");
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
 		a->setCheckable(true);
 		connect(a, SIGNAL(triggered(bool)), this, SLOT(onCommOpen(bool)));

@@ -27,7 +27,7 @@ RecipesPlugin {
 		//var act_competitors = act_file.addMenuAfter('competitors', qsTr('&Competitors'));
 		//var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
 		//act_print.addActionInto(actPrintAll);
-		var w = cReceipesPartWidget.createObject(FrameWork);
+		var w = cRecipesPartWidget.createObject(FrameWork);
 		w.objectName = "cardReadoutPartWidget";
 
 		root.internals.thisPartWidget = w;
