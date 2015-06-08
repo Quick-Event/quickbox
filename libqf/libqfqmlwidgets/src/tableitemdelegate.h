@@ -22,6 +22,8 @@ public:
 	QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 protected:
 	TableView* view() const;
+	virtual void paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+	virtual void paintForeground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 }}

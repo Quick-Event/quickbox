@@ -84,7 +84,7 @@ RunsPlugin {
 			.from('classes')
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stageId}}")
 			.join("classdefs.courseId", "courses.id")
-			.orderBy('classes.name').limit(1);
+			.orderBy('classes.name');//.limit(1);
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
@@ -136,7 +136,7 @@ RunsPlugin {
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
 			.join("competitors.classId", "classes.id")
 			.where("substr(competitors.registration, 1, 3)='{{club_abbr}}'")
-			.orderBy('classes.name, runs.startTimeMs');
+			.orderBy('runs.startTimeMs, classes.name');
 		for(var i=0; i<tt.rowCount(); i++) {
 			var club_abbr = tt.value(i, "clubAbbr");
 			console.debug("club_abbr:", club_abbr);
@@ -244,10 +244,10 @@ RunsPlugin {
 		var div1 = ['div'];
 		body.push(div1);
 		for(var i=0; i<tt1.rowCount(); i++) {
-			div1.push(['a', {"href": "#club_" + tt1.value(i, 'abbr')}, tt1.value(i, 'abbr')], "&nbsp;")
+			div1.push(['a', {"href": "#club_" + tt1.value(i, 'clubAbbr')}, tt1.value(i, 'clubAbbr')], "&nbsp;")
 		}
 		for(var i=0; i<tt1.rowCount(); i++) {
-			div1 = ['h2', ['a', {"name": "club_" + tt1.value(i, 'abbr')}, tt1.value(i, 'abbr')]];
+			div1 = ['h2', ['a', {"name": "club_" + tt1.value(i, 'clubAbbr')}, tt1.value(i, 'clubAbbr')]];
 			body.push(div1);
 			div1 = ['h3', tt1.value(i, 'name')];
 			body.push(div1);

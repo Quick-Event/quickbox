@@ -20,7 +20,7 @@ TableView * TableItemDelegate::view() const
 	return view;
 }
 
-void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+void TableItemDelegate::paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	/**
 	Protoze z nepochopitelnyho duvodu neni funkce drawBackground() virtualni, musim patchovat QItemDelegate::drawBackground() v QT, kdyz chci podsvitit aktivni radek
@@ -54,7 +54,17 @@ void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & o
 			}
 		}
 	}
+}
+
+void TableItemDelegate::paintForeground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
 	Super::paint(painter, option, index);
+}
+
+void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+	paintBackground(painter, option, index);
+	paintForeground(painter, option, index);
 }
 
 QWidget *TableItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const

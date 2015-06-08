@@ -42,17 +42,18 @@ void RunsTableItemDelegate::setHighlightedClassId(int class_id)
 	}
 }
 
-void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &ix) const
+void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	qf::qmlwidgets::TableView *v = view();
 	if(v) do {
 		auto *m = v->model();
 		auto *tm = qobject_cast<qf::core::model::SqlTableModel*>(v->tableModel());
 		if(m && tm) {
+			//qfInfo() << m_highlightedClassId << m_classInterval << isStartTimeHighlightVisible();
 			if(m_highlightedClassId > 0 && m_classInterval > 0 && isStartTimeHighlightVisible()) {
-				auto cd = tm->columnDefinition(ix.column());
+				auto cd = tm->columnDefinition(index.column());
 				if(cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))) {
-					QVariant stime_v = m->data(ix, qf::core::model::TableModel::RawValueRole);
+					QVariant stime_v = m->data(index, Qt::EditRole);
 					quickevent::og::TimeMs stime = stime_v.value<quickevent::og::TimeMs>();
 					if(!stime.isValid())
 						break;
@@ -62,20 +63,20 @@ void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 					//int table_row = v->toTableModelRowNo(index.row());
 					int reg_col = v->logicalColumnIndex("registration");
 					QF_ASSERT(reg_col >= 0, "Bad registration column!", break);
-					QString club = m->data(ix.sibling(ix.row(), reg_col), qf::core::model::TableModel::RawValueRole).toString().mid(0, 3).trimmed();
+					QString club = m->data(index.sibling(index.row(), reg_col), Qt::EditRole).toString().mid(0, 3).trimmed();
 					QString prev_club;
-					if(ix.row() > 0) {
-						stime = m->data(ix.sibling(ix.row() - 1, ix.column()), qf::core::model::TableModel::RawValueRole).value<quickevent::og::TimeMs>();
+					if(index.row() > 0) {
+						stime = m->data(index.sibling(index.row() - 1, index.column()), Qt::EditRole).value<quickevent::og::TimeMs>();
 						prev_start_ms = stime.msec();
-						prev_club = m->data(ix.sibling(ix.row() - 1, reg_col), qf::core::model::TableModel::RawValueRole).toString().mid(0, 3).trimmed();
+						prev_club = m->data(index.sibling(index.row() - 1, reg_col), Qt::EditRole).toString().mid(0, 3).trimmed();
 					}
 					//qfWarning() << ix.row() << club << prev_club;
 					QColor c;
+					//qfInfo() << prev_start_ms << start_ms << (start_ms - prev_start_ms) << m_classInterval;
 					if((start_ms > m_classStart && start_ms == prev_start_ms) || ((start_ms - prev_start_ms) % m_classInterval) != 0) {
 						c = Qt::red;
 					}
 					else if((start_ms - prev_start_ms) > m_classInterval) {
-						//qfInfo() << (start_ms - prev_start_ms) << m_classInterval;
 						c = QColor("lime");
 					}
 					else if(club == prev_club) {
@@ -84,10 +85,11 @@ void RunsTableItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 					}
 					if(c.isValid()) {
 						painter->fillRect(option.rect, c);
+						return;
 					}
 				}
 			}
 		}
 	} while(false);
-	Super::paint(painter, option, ix);
+	Super::paintBackground(painter, option, index);
 }
