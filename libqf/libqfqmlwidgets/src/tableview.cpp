@@ -91,6 +91,11 @@ TableView::~TableView()
 	savePersistentSettings();
 }
 
+QSortFilterProxyModel *TableView::sortFilterProxyModel() const
+{
+	return m_proxyModel;
+}
+
 QAbstractProxyModel* TableView::lastProxyModel() const
 {
 	QAbstractProxyModel *ret = nullptr;

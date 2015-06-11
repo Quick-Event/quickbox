@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QLabel>
 #include <QMenu>
+#include <QSortFilterProxyModel>
 
 #include <algorithm>
 
@@ -80,6 +81,9 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("runs.status", tr("Status")).setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
+
+	// this ensures that table is sorted every time when start time is edited
+	ui->tblRuns->sortFilterProxyModel()->setDynamicSortFilter(true);
 
 	connect(m_runsModel, &RunsTableModel::startTimesSwitched, ui->tblRuns, [this](int id1, int id2, const QString &err_msg)
 	{
