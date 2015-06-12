@@ -49,33 +49,9 @@ Report {
 				objectName: "band"
 				width: "%"
 				height: "%"
-				Frame {
-					Para {
-						textStyle: TextStyle {basedOn: "big"}
-						textFn: function() {
-							var ret = root.reportTitle;
-							var stage_cnt = band.data("event").stageCount
-							if(stage_cnt > 1)
-								ret = "E" + band.data("stageId") + " " + ret;
-							return ret;
-						}
-					}
-					function eventConfigValueFn(key) {
-						return function() {
-							var event_cfg = band.data("event")
-							return event_cfg[key];
-						}
-					}
-					Para {
-						textStyle: myStyle.textStyleBold
-						textFn: function() { var event_cfg = band.data("event"); return event_cfg.name; }
-					}
-					Para {
-						textFn: function() { var event_cfg = band.data("event"); return event_cfg.date; }
-					}
-					Para {
-						textFn: function() { var event_cfg = band.data("event"); return event_cfg.place; }
-					}
+				QuickEventReportHeader {
+					dataBand: band
+					reportTitle: root.reportTitle
 				}
 				Detail {
 					id: detail

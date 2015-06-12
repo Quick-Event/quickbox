@@ -66,12 +66,6 @@ void RunsPlugin::onInstalled()
 			dlg.exec();
 		});
 	}
-	{
-		qfw::Action *a = new qfw::Action("Draw current class");
-		//a->setShortcut("ctrl+shift+R");
-		a_draw->addActionInto(a);
-		//connect(a, &qfw::Action::triggered, this, &RunsPlugin::setRegistrationsDockVisible);
-	}
 }
 
 void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competitor_id)
