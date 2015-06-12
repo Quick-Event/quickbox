@@ -59,17 +59,17 @@ public:
 	static const char *SETTINGS_PREFIX;
 
 	Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
-	Q_SIGNAL void logRequest(int level, const QString &msg);
-	void emitLogRequest(int level, const QString &msg) {emit logRequest(level, msg);}
+	Q_SIGNAL void logRequest(qf::core::Log::Level level, const QString &msg);
+	void emitLogRequest(qf::core::Log::Level level, const QString &msg) {emit logRequest(level, msg);}
 
 	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
 
 	Q_SLOT void reset() {reload();}
 	Q_SLOT void reload();
 private slots:
-	void appendLog(int level, const QString &msg);
-	void appendLogPre(int level, const QString &msg);
-	void processDriverInfo(int level, const QString &msg);
+	void appendLog(qf::core::Log::Level level, const QString &msg);
+	void appendLogPre(qf::core::Log::Level level, const QString &msg);
+	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
 	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
 	void onCommOpen(bool checked);

@@ -50,16 +50,16 @@ void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
 
 	QString color;
 	switch(level) {
-	case qf::core::Log::LOG_ERR: color = "#FF0000"; break;
-	case qf::core::Log::LOG_WARN: color = "#FF00FF"; break;
-	case qf::core::Log::LOG_INFO: color = "#0000FF"; break;
+	case qf::core::Log::Level::Error: color = "#FF0000"; break;
+	case qf::core::Log::Level::Warning: color = "#FF00FF"; break;
+	case qf::core::Log::Level::Info: color = "#0000FF"; break;
 	default: color = "#000000"; break;
 	}
 	QString message = "<font color=\"%4\">&lt;%1&gt;[%2] %3<font>";
 	message = message.arg(log_level_str).arg(em.domain()).arg(msg).arg(color);
 
 	ui->txtLog->appendHtml(message);
-	if(level <= qf::core::Log::LOG_WARN) {
+	if(level <= qf::core::Log::Level::Warning) {
 		loggingPlugin()->setLogDockVisible(true);
 	}
 }

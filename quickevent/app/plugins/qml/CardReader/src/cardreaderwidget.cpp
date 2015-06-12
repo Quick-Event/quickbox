@@ -203,14 +203,14 @@ qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 	QString level_str = settings.value(key).toString().toLower();
 	//if(level_str == "trash") return qf::core::Log::LOG_TRASH;
 	if(level_str == "debug")
-		return qf::core::Log::LOG_DEB;
+		return qf::core::Log::Level::Debug;
 	if(level_str == "info")
-		return qf::core::Log::LOG_INFO;
+		return qf::core::Log::Level::Info;
 	if(level_str == "warning")
-		return qf::core::Log::LOG_WARN;
+		return qf::core::Log::Level::Warning;
 	if(level_str == "error")
-		return qf::core::Log::LOG_ERR;
-	return qf::core::Log::LOG_INFO;
+		return qf::core::Log::Level::Error;
+	return qf::core::Log::Level::Info;
 }
 
 QTextStream& CardReaderWidget::cardLog()
@@ -223,17 +223,17 @@ QTextStream& CardReaderWidget::cardLog()
 			QF_SAFE_DELETE(m_cardLogFile);
 			m_cardLogFile = new QFile(fn);
 			if(m_cardLogFile->open(QFile::Append)) {
-				emitLogRequest(qf::core::Log::LOG_INFO, tr("Openned card log file '%1' for append.").arg(fn));
+				emitLogRequest(qf::core::Log::Level::Info, tr("Openned card log file '%1' for append.").arg(fn));
 				m_cardLog = new QTextStream(m_cardLogFile);
 			}
 			else {
-				emitLogRequest(qf::core::Log::LOG_ERR, tr("Can't open card log file '%1' for append.").arg(fn));
+				emitLogRequest(qf::core::Log::Level::Error, tr("Can't open card log file '%1' for append.").arg(fn));
 			}
 		}
 		if(!m_cardLog) {
 			/// log to stdout
 			m_cardLog = new QTextStream(stdout);
-			emitLogRequest(qf::core::Log::LOG_INFO, tr("Card log file redirected to stdout."));
+			emitLogRequest(qf::core::Log::Level::Info, tr("Card log file redirected to stdout."));
 		}
 	}
 	return *m_cardLog;
@@ -241,7 +241,7 @@ QTextStream& CardReaderWidget::cardLog()
 
 void CardReaderWidget::closeCardLog()
 {
-	emitLogRequest(qf::core::Log::LOG_INFO, tr("Closing card log."));
+	emitLogRequest(qf::core::Log::Level::Info, tr("Closing card log."));
 	QF_SAFE_DELETE(m_cardLog);
 }
 
@@ -274,18 +274,18 @@ void CardReaderWidget::onCommOpen(bool checked)
 	}
 }
 
-void CardReaderWidget::appendLog(int level, const QString& msg)
+void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 {
 	qf::core::Log::Level treshold = logLevelFromSettings();
-	if(level <= (int)treshold) {
+	if(level <= treshold) {
 		qfLog(level) << msg;
 		QString div = "<div style=\"color:%1\">%2</div>";
 		QString color_name;
-		switch((qf::core::Log::Level)level) {
-		case qf::core::Log::LOG_ERR: color_name = "red"; break;
-		case qf::core::Log::LOG_WARN: color_name = "blue"; break;
-		case qf::core::Log::LOG_INFO: color_name = "black"; break;
-		case qf::core::Log::LOG_DEB: color_name = "darkgray"; break;
+		switch(level) {
+		case qf::core::Log::Level::Error: color_name = "red"; break;
+		case qf::core::Log::Level::Warning: color_name = "blue"; break;
+		case qf::core::Log::Level::Info: color_name = "black"; break;
+		case qf::core::Log::Level::Debug: color_name = "darkgray"; break;
 		default: color_name = "darkgray"; break;
 		}
 		ui->txtLog->insertHtml(div.arg(color_name).arg(msg));
@@ -295,7 +295,7 @@ void CardReaderWidget::appendLog(int level, const QString& msg)
 	}
 }
 
-void CardReaderWidget::appendLogPre(int level, const QString& msg)
+void CardReaderWidget::appendLogPre(qf::core::Log::Level level, const QString& msg)
 {
 	appendLog(level, "<pre>" + msg + "</pre>");
 }
@@ -303,13 +303,13 @@ void CardReaderWidget::appendLogPre(int level, const QString& msg)
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
-	//appendLog(qf::core::Log::LOG_INFO, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
+	//appendLog(qf::core::Log::Level::Info, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MsgCardReadOut) {
 		SIMessageCardReadOut card(msg_data);
 		processSICard(card);
 	}
 	else if(msg_data.type() == SIMessageData::MsgCardEvent) {
-		appendLogPre(qf::core::Log::LOG_DEB, msg_data.dump());
+		appendLogPre(qf::core::Log::Level::Debug, msg_data.dump());
 		if(msg_data.command() == SIMessageData::CmdSICard5DetectedExt) {
 			QByteArray data(1, 0);
 			data[0] = 0;
@@ -329,13 +329,13 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 		}
 	}
 	else {
-		appendLogPre(qf::core::Log::LOG_DEB, msg_data.dump());
+		appendLogPre(qf::core::Log::Level::Debug, msg_data.dump());
 	}
 }
 
-void CardReaderWidget::processDriverInfo ( int level, const QString& msg )
+void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QString& msg )
 {
-	qfLogFuncFrame() << level << msg;
+	qfLogFuncFrame() << qf::core::Log::levelName(level) << msg;
 	appendLog(level, trUtf8("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
 }
 
@@ -344,17 +344,17 @@ void CardReaderWidget::processDriverRawData(const QByteArray& data)
 	QSettings settings;
 	if(settings.value("comm/debug/showRawComData").toBool()) {
 		QString msg = SIMessageData::dumpData(data);
-		appendLog(qf::core::Log::LOG_DEB, trUtf8("DriverRawData: %1").arg(msg));
+		appendLog(qf::core::Log::Level::Debug, trUtf8("DriverRawData: %1").arg(msg));
 	}
 }
 
 void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 {
-	appendLogPre(qf::core::Log::LOG_DEB, card.dump());
-	appendLog(qf::core::Log::LOG_INFO, trUtf8("card: %1").arg(card.cardNumber()));
+	appendLogPre(qf::core::Log::Level::Debug, card.dump());
+	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
 	int run_id = thisPlugin()->findRunId(card.cardNumber());
 	if(run_id == 0)
-		appendLog(qf::core::Log::LOG_ERR, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
+		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
 	CardReader::ReadCard read_card(card);
 	read_card.setRunId(run_id);
 	int card_id = thisPlugin()->saveCardToSql(read_card);

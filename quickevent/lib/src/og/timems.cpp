@@ -26,12 +26,12 @@ QString TimeMs::toString(bool including_msec) const
 	int msec = m_msec % 1000;
 	int sec = (m_msec / 1000) % 60;
 	int min = m_msec / (1000 * 60);
-	QString ret = QString::number(min) + ':';
+	QString ret = QString::number(min) + '.';
 	if(sec < 10)
 		ret += '0';
 	ret += QString::number(sec);
 	if(including_msec || msec > 0) {
-		ret += '.';
+		ret += '/';
 		if(msec < 100)
 			ret += '0';
 		if(msec < 10)
@@ -64,13 +64,19 @@ TimeMs TimeMs::fromString(const QString &time_str)
 	int min = 0;
 	int ix1 = 0;
 
-	int ix2 = time_str.indexOf(':', ix1);
+	int ix2 = time_str.indexOf('.', ix1);
+	if(ix2 < 0)
+		ix2 = time_str.indexOf(':', ix1);
+	if(ix2 < 0)
+		ix2 = time_str.indexOf('-', ix1);
+	if(ix2 < 0)
+		ix2 = time_str.indexOf(',', ix1);
 	if(ix2 < 0)
 		ix2 = time_str.length();
 	min = str2int(time_str.mid(ix1, ix2));
 	ix1 = ix2 + 1;
 
-	ix2 = time_str.indexOf('.', ix1);
+	ix2 = time_str.indexOf('/', ix1);
 	if(ix2 < 0)
 		ix2 = time_str.length();
 	sec = str2int(time_str.mid(ix1, ix2));

@@ -41,17 +41,17 @@ DeviceDriver::~DeviceDriver()
 }
 
 namespace {
-	int byte_at(const QByteArray &ba, int ix)
-	{
-		int ret = -1;
-		if(ix < ba.count()) ret = (unsigned char)ba.at(ix);
-		return ret;
-	}
+int byte_at(const QByteArray &ba, int ix)
+{
+	int ret = -1;
+	if(ix < ba.count()) ret = (unsigned char)ba.at(ix);
+	return ret;
+}
 
-	void set_byte_at(QByteArray &ba, int ix, unsigned char b)
-	{
-		ba[ix] = b;
-	}
+void set_byte_at(QByteArray &ba, int ix, unsigned char b)
+{
+	ba[ix] = b;
+}
 }
 
 void DeviceDriver::commDataReceived()
@@ -81,13 +81,13 @@ void DeviceDriver::packetReceived(const QByteArray &msg_data)
 	qfLogFuncFrame();
 	f_messageData.addRawDataBlock(msg_data);
 	f_packetToFinishCount--;
-	emitDriverInfo(qf::core::Log::LOG_DEB, tr("packetReceived, packetToFinishCount: %1").arg(f_packetToFinishCount));
+	emitDriverInfo(qf::core::Log::Level::Debug, tr("packetReceived, packetToFinishCount: %1").arg(f_packetToFinishCount));
 	if(f_packetToFinishCount == 0) {
 		f_status = StatusMessageOk;
 	}
 	else if(f_packetToFinishCount < 0) {
 		f_status = StatusMessageError;
-		emitDriverInfo(qf::core::Log::LOG_ERR, tr("f_packetToFinishCount < 0 - This should never happen!"));
+		emitDriverInfo(qf::core::Log::Level::Error, tr("f_packetToFinishCount < 0 - This should never happen!"));
 	}
 	else {
 		f_status = StatusMessageIncomplete;
@@ -96,11 +96,11 @@ void DeviceDriver::packetReceived(const QByteArray &msg_data)
 
 namespace
 {
-	static const char STX = 0x02;
-	static const char ETX = 0x03;
-	//static const char ACK = 0x06;
-	static const char NAK = 0x15;
-	static const char DLE = 0x10;
+static const char STX = 0x02;
+static const char ETX = 0x03;
+//static const char ACK = 0x06;
+static const char NAK = 0x15;
+static const char DLE = 0x10;
 }
 
 void DeviceDriver::processRxData()
@@ -152,7 +152,7 @@ void DeviceDriver::processRxData()
 							/// whole packed received
 							if(ci == NAK) {
 								f_status = StatusMessageError;
-								emitDriverInfo(qf::core::Log::LOG_ERR, tr("NAK received"));
+								emitDriverInfo(qf::core::Log::Level::Error, tr("NAK received"));
 							}
 							else {
 								packetReceived(msg_data);
@@ -208,20 +208,20 @@ void DeviceDriver::processRxData()
 					}
 					else if(status == NAK) {
 						f_status = StatusMessageError;
-						emitDriverInfo(qf::core::Log::LOG_ERR, tr("NAK received"));
+						emitDriverInfo(qf::core::Log::Level::Error, tr("NAK received"));
 					}
 					else {
 						int crc1 = (byte_at(f_rxData, len + 3) << 8) + byte_at(f_rxData, len + 4);
 						int crc2 = crc((unsigned int)len + 2, (unsigned char*)f_rxData.constData() + 1);
 						if(settings.value("comm/debug/disableCRCCheck").toBool() || (crc1 == crc2)) {
-							emitDriverInfo(qf::core::Log::LOG_DEB, tr("CRC check - data CRC is: %1 0x%3 computed CRC: %2 0x%4").arg(crc1).arg(crc2).arg(crc1, 0, 16).arg(crc2, 0, 16));
+							emitDriverInfo(qf::core::Log::Level::Debug, tr("CRC check - data CRC is: %1 0x%3 computed CRC: %2 0x%4").arg(crc1).arg(crc2).arg(crc1, 0, 16).arg(crc2, 0, 16));
 							/// remove transport protocol data (STX, ... msg ... , CRC1, CRC0, ETX)
 							QByteArray msg_data = f_rxData.mid(1, len + 2);
 							packetReceived(msg_data);
 						}
 						else {
 							f_status = StatusMessageError;
-							emitDriverInfo(qf::core::Log::LOG_ERR, tr("CRC error - data CRC is: %1 0x%3 computed CRC: %2 0x%4").arg(crc1).arg(crc2).arg(crc1, 0, 16).arg(crc2, 0, 16));
+							emitDriverInfo(qf::core::Log::Level::Error, tr("CRC error - data CRC is: %1 0x%3 computed CRC: %2 0x%4").arg(crc1).arg(crc2).arg(crc1, 0, 16).arg(crc2, 0, 16));
 						}
 					}
 					f_rxData = f_rxData.mid(len + 6);
@@ -236,14 +236,14 @@ void DeviceDriver::processRxData()
 
 void DeviceDriver::rxDataTimeout()
 {
-	emitDriverInfo(qf::core::Log::LOG_ERR, tr("RX data timeout"));
+	emitDriverInfo(qf::core::Log::Level::Error, tr("RX data timeout"));
 	f_rxData.clear();
 	f_messageData = SIMessageData();
 	f_status = StatusIdle;
 	//f_rxTimer->stop();
 }
 
-void DeviceDriver::emitDriverInfo ( int level, const QString& msg )
+void DeviceDriver::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
 {
 	//qfLog(level) << msg;
 	emit driverInfo(level, msg);
@@ -251,26 +251,26 @@ void DeviceDriver::emitDriverInfo ( int level, const QString& msg )
 
 bool DeviceDriver::openCommPort(const QString& _device, int baudrate, int data_bits, const QString& parity_str, bool two_stop_bits)
 {
-    qfLogFuncFrame();
-    QString device = _device;
-    {
-        qfDebug() << "Port enumeration";
-        QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
-        QStringList sl;
-        for(auto port : port_list) {
-            if(device.isEmpty()) device = port.systemLocation();
-            sl << QString("%1 %2").arg(port.portName()).arg(port.systemLocation());
-            qfDebug() << "\t" << port.portName();
-        }
-        emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
-    }
+	qfLogFuncFrame();
+	QString device = _device;
+	{
+		qfDebug() << "Port enumeration";
+		QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+		QStringList sl;
+		for(auto port : port_list) {
+			if(device.isEmpty()) device = port.systemLocation();
+			sl << QString("%1 %2").arg(port.portName()).arg(port.systemLocation());
+			qfDebug() << "\t" << port.portName();
+		}
+		emitDriverInfo(qf::core::Log::Level::Info, trUtf8("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
+	}
 	f_commPort->setPortName(device);
 	f_commPort->setBaudRate(baudrate);
 	f_commPort->setDataBitsAsInt(data_bits);
 	f_commPort->setParityAsString(parity_str);
 	f_commPort->setStopBits(two_stop_bits? QSerialPort::TwoStop: QSerialPort::OneStop);
 	//f_commPort->setFlowControl(p.flowControl);
-	emitDriverInfo(qf::core::Log::LOG_DEB, trUtf8("Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5")
+	emitDriverInfo(qf::core::Log::Level::Debug, trUtf8("Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5")
 				   .arg(f_commPort->portName())
 				   .arg(f_commPort->baudRate())
 				   .arg(f_commPort->dataBits())
@@ -279,27 +279,27 @@ bool DeviceDriver::openCommPort(const QString& _device, int baudrate, int data_b
 				   );
 	bool ret = f_commPort->open(QIODevice::ReadWrite);
 	if(ret) {
-		emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("%1 connected OK").arg(device));
+		emitDriverInfo(qf::core::Log::Level::Info, trUtf8("%1 connected OK").arg(device));
 	}
 	else {
-		emitDriverInfo(qf::core::Log::LOG_ERR, trUtf8("%1 connect ERROR: %2").arg(device).arg(f_commPort->errorString()));
+		emitDriverInfo(qf::core::Log::Level::Error, trUtf8("%1 connect ERROR: %2").arg(device).arg(f_commPort->errorString()));
 	}
 	return ret;
 }
 
 void DeviceDriver::closeCommPort()
 {
-    if(f_commPort->isOpen()) {
+	if(f_commPort->isOpen()) {
 		f_commPort->close();
-        emitDriverInfo(qf::core::Log::LOG_INFO, trUtf8("%1 closed").arg(f_commPort->portName()));
-    }
+		emitDriverInfo(qf::core::Log::Level::Info, trUtf8("%1 closed").arg(f_commPort->portName()));
+	}
 }
 
 void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 {
 	qfLogFuncFrame();
 	if(cmd < 0x80) {
-		emitDriverInfo(qf::core::Log::LOG_ERR, trUtf8("SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending."));
+		emitDriverInfo(qf::core::Log::Level::Error, trUtf8("SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending."));
 	}
 	else {
 		QByteArray ba;
