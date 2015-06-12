@@ -10,12 +10,10 @@ RunsPlugin {
 	id: root
 
 	property QfObject internals: QfObject {
-		/*
-		Component {
-			id: cReportViewWidget
-			ReportViewWidget {}
+		Results {
+			id: results
+			runsPlugin: root
 		}
-		*/
 		SqlTableModel {
 			id: reportModel
 		}
@@ -59,6 +57,13 @@ RunsPlugin {
 				var fn = root.exportHtmlStartListClubs()
 				File.openUrl(File.toUrl(fn));
 			}
+		},
+		Action {
+			id: act_print_results_currentStage
+			text: qsTr('&Current stage')
+			onTriggered: {
+				results.printCurrentStage()
+			}
 		}
 	]
 
@@ -66,10 +71,14 @@ RunsPlugin {
 	{
 		var a = root.partWidget.menuBar.actionForPath("print", true);
 		a.text = qsTr("&Print");
-		a = a.addMenuInto("startList", "&Start list");
+		var a_print = a;
+		a = a_print.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_print_startList_classes);
 		a.addActionInto(act_print_startList_clubs);
 		a.addActionInto(act_print_startList_starters);
+
+		a = a_print.addMenuInto("results", "&Results");
+		a.addActionInto(act_print_results_currentStage);
 
 		a = root.partWidget.menuBar.actionForPath("exportHtml", true);
 		a.text = qsTr("E&xport");

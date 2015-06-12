@@ -107,8 +107,11 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 			it_det->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 		m_indexToPrint = 0;
 	}
-	model(); // load model before rendering
-	PrintResult res = Super::printMetaPaint(out, bounding_rect);
+	auto *m = model(); // load model before rendering
+	PrintResult res = PR_PrintedOk;
+	if(m->rowCount() > 0) {
+		res = Super::printMetaPaint(out, bounding_rect);
+	}
 	qfDebug() << "\tRETURN:" << res.toString();
 	return res;
 }
