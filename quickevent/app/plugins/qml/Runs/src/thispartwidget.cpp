@@ -8,7 +8,7 @@
 ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
-	setTitle(tr("Runs"));
+	setTitle(tr("&Runs"));
 
 	RunsWidget *w = new RunsWidget();
 	centralFrame()->addWidget(w);

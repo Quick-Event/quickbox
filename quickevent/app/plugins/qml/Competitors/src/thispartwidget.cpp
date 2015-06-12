@@ -8,7 +8,7 @@
 ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
-	setTitle(tr("Competitors"));
+	setTitle(tr("&Competitors"));
 
 	CompetitorsWidget *w = new CompetitorsWidget();
 	centralFrame()->addWidget(w);

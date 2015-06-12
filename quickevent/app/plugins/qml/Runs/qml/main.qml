@@ -37,6 +37,13 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_startList_starters
+			text: qsTr('&Starters')
+			onTriggered: {
+				root.printStartListStarters()
+			}
+		},
+		Action {
 			id: act_export_html_startList_classes
 			text: qsTr('&Classes')
 			onTriggered: {
@@ -62,6 +69,7 @@ RunsPlugin {
 		a = a.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_print_startList_classes);
 		a.addActionInto(act_print_startList_clubs);
+		a.addActionInto(act_print_startList_starters);
 
 		a = root.partWidget.menuBar.actionForPath("exportHtml", true);
 		a.text = qsTr("E&xport");
@@ -148,6 +156,32 @@ RunsPlugin {
 		return tt;
 	}
 
+	function startListStartersTable()
+	{
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		//var stage_data = event_plugin.stageDataMap(stage_id);
+		var tt = new TreeTable.Table();
+
+		reportModel.queryBuilder.clear()
+			.select2('competitors', 'registration')
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select("COALESCE(runs.startTimeMs / 1000 / 60, 0) AS startTimeMin")
+			.select2('runs', 'siId, startTimeMs')
+			.select2('classes', 'name')
+			.from('competitors')
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}}")
+			.join("competitors.classId", "classes.id")
+			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
+		reportModel.setQueryParameters({stageId: stage_id})
+		reportModel.reload();
+		tt.setData(reportModel.toTreeTableData());
+		tt.setValue("stageId", stage_id)
+		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		//console.warn(tt.toString());
+		return tt;
+	}
+
 	function printStartListClasses()
 	{
 		Log.info("runs printStartListClasses triggered");
@@ -170,6 +204,13 @@ RunsPlugin {
 		Log.info("runs printStartListClubs triggered");
 		var tt = startListClubsTable();
 		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_clubs.qml", tt.data(), qsTr("Start list by clubs"));
+	}
+
+	function printStartListStarters()
+	{
+		Log.info("runs printStartListStarters triggered");
+		var tt = startListStartersTable();
+		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
 	}
 
 	function exportHtmlStartListClasses()

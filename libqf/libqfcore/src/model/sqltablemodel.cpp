@@ -583,9 +583,10 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 		qfu::Table::FieldList table_fields;
 		QSqlRecord rec = m_recentlyExecutedQuery.record();
 		int fld_cnt = rec.count();
+		//qfInfo() << query_str;
 		for(int i=0; i<fld_cnt; i++) {
 			QSqlField rec_fld = rec.field(i);
-			//qfInfo() << rec_fld.name();
+			//qfInfo() << rec_fld.name() << rec_fld.type() << QVariant::typeToName(rec_fld.type());
 			qfu::Table::Field fld(rec_fld.name(), rec_fld.type());
 			table_fields << fld;
 		}
