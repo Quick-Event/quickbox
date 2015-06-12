@@ -24,7 +24,7 @@ CommPort::~CommPort()
 void CommPort::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
 {
 	qfLog(level) << msg;
-	emit driverInfo((int)level, msg);
+	emit driverInfo(level, msg);
 }
 
 void CommPort::setDataBitsAsInt(int data_bits)

@@ -25,9 +25,9 @@ public:
 	virtual ~CommPort();
 protected:
 	virtual void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
-signals:
-	void driverInfo(int level, const QString &msg);
 public:
+	Q_SIGNAL void driverInfo(qf::core::Log::Level level, const QString &msg);
+
 	void setDataBitsAsInt(int data_bits);
 	void setParityAsString(const QString &parity_str);
 };

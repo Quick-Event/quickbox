@@ -33,6 +33,8 @@ public:
 
 	static const QLoggingCategory& categoryForLevel(Level level);
 	static const char *levelName(Level level);
+
+	static void checkLogLevelMetaTypeRegistered();
 public:
 	static QString stackTrace();
 };
@@ -40,4 +42,6 @@ public:
 }
 }
 
-#endif			
+Q_DECLARE_METATYPE(qf::core::Log::Level)
+
+#endif

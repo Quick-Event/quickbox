@@ -48,6 +48,14 @@ const char *qf::core::Log::levelName(qf::core::Log::Level level)
 	return "???";
 }
 
+void Log::checkLogLevelMetaTypeRegistered()
+{
+	int id = qMetaTypeId<qf::core::Log::Level>();
+	if(!QMetaType::isRegistered(id)) {
+		qRegisterMetaType<qf::core::Log::Level>();
+	}
+}
+
 QString Log::stackTrace()
 {
 	return StackTrace::stackTrace().toString();

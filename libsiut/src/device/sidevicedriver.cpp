@@ -24,6 +24,7 @@ using namespace siut;
 DeviceDriver::DeviceDriver(QObject *parent)
 	: Super(parent)
 {
+	qf::core::Log::checkLogLevelMetaTypeRegistered();
 	f_commPort = new CommPort(this);
 	f_status = StatusIdle;
 	//f_socketNotifier = NULL;
@@ -31,7 +32,7 @@ DeviceDriver::DeviceDriver(QObject *parent)
 	f_rxTimer->setSingleShot(true);
 	connect(f_rxTimer, SIGNAL(timeout()), this, SLOT(rxDataTimeout()));
 	connect(f_commPort, SIGNAL(readyRead()), this, SLOT(commDataReceived()));
-	connect(f_commPort, SIGNAL(driverInfo(int,QString)), this, SIGNAL(driverInfo(int,QString)), Qt::QueuedConnection);
+	connect(f_commPort, &CommPort::driverInfo, this, &DeviceDriver::driverInfo, Qt::QueuedConnection);
 }
 
 DeviceDriver::~DeviceDriver()
@@ -41,17 +42,17 @@ DeviceDriver::~DeviceDriver()
 }
 
 namespace {
-int byte_at(const QByteArray &ba, int ix)
-{
-	int ret = -1;
-	if(ix < ba.count()) ret = (unsigned char)ba.at(ix);
-	return ret;
-}
+	int byte_at(const QByteArray &ba, int ix)
+	{
+		int ret = -1;
+		if(ix < ba.count()) ret = (unsigned char)ba.at(ix);
+		return ret;
+	}
 
-void set_byte_at(QByteArray &ba, int ix, unsigned char b)
-{
-	ba[ix] = b;
-}
+	void set_byte_at(QByteArray &ba, int ix, unsigned char b)
+	{
+		ba[ix] = b;
+	}
 }
 
 void DeviceDriver::commDataReceived()
