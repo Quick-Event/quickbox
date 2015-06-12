@@ -11,19 +11,20 @@ const char* Log::categoryWarningName = "QF_CATEGORY_WARNING";
 const char* Log::categoryErrorName = "QF_CATEGORY_ERROR";
 const char* Log::categoryFatalName = "QF_CATEGORY_FATAL";
 
-const QLoggingCategory &Log::categoryForLevel(int level)
+const QLoggingCategory &Log::categoryForLevel(Level level)
 {
 	static QLoggingCategory catDebug(categoryDebugName);
 	static QLoggingCategory catInfo(categoryInfoName);
 	static QLoggingCategory catWarning(categoryWarningName);
 	static QLoggingCategory catError(categoryErrorName);
 	static QLoggingCategory catFatal(categoryFatalName);
-	switch(level) {
-		case LOG_DEB: return catDebug;
-		case LOG_INFO: return catInfo;
-		case LOG_WARN: return catWarning;
-		case LOG_ERR: return catError;
-		case LOG_FATAL: return catFatal;
+	switch(Log::Level(level)) {
+		case Log::Level::Debug: return catDebug;
+		case Log::Level::Info: return catInfo;
+		case Log::Level::Warning: return catWarning;
+		case Log::Level::Error: return catError;
+		case Log::Level::Fatal:
+		default: return catFatal;
 	}
 	return catDebug;
 }
@@ -31,17 +32,17 @@ const QLoggingCategory &Log::categoryForLevel(int level)
 const char *qf::core::Log::levelName(qf::core::Log::Level level)
 {
 	switch(level) {
-	case qf::core::Log::LOG_FATAL:
+	case Log::Level::Fatal:
 		return "FATAL";
-	case qf::core::Log::LOG_ERR:
+	case Log::Level::Error:
 		return "ERR";
-	case qf::core::Log::LOG_WARN:
+	case Log::Level::Warning:
 		return "WARN";
-	case qf::core::Log::LOG_INFO:
+	case Log::Level::Info:
 		return "INFO";
-	case qf::core::Log::LOG_DEB:
+	case Log::Level::Debug:
 		return "DEB";
-	case qf::core::Log::LOG_INVALID:
+	case Log::Level::Invalid:
 		return "INVALID";
 	}
 	return "???";

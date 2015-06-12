@@ -35,7 +35,7 @@ protected:
 	static Log::Level environmentLogTreshold;
 	static Log::Level commandLineLogTreshold;
 
-	QMap<QString, int> m_domainTresholds;
+	QMap<QString, Log::Level> m_domainTresholds;
 	Log::Level m_logTreshold;
 	int m_count;
 	bool m_isPrettyDomain;
@@ -65,7 +65,7 @@ public:
 	//enum Key {KeyLevel, KeyDomain, KeyMessage, KeyFile, KeyLine, KeyFunction};
 public:
 	LogEntryMap() : QVariantMap() {}
-	LogEntryMap(int level, const QString &domain, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());
+	LogEntryMap(Log::Level level, const QString &domain, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());
 	LogEntryMap(const QVariantMap &m) : QVariantMap(m) {}
 public:
 	qf::core::Log::Level level() const;

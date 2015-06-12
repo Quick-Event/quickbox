@@ -15,31 +15,44 @@ namespace {
 Log::Level environment_treshold()
 {
 	const QByteArray ba = qgetenv("QF_LOG_TRESHOLD");
-	if(ba.isEmpty()) return Log::LOG_INVALID;
+	if(ba.isEmpty())
+		return Log::Level::Invalid;
 	QString s = QString::fromLatin1(ba.data());
 	bool ok;
 	int ret =  s.toInt(&ok);
-	if(!ok) return Log::LOG_INVALID;
-	return (Log::Level)ret;
+	if(!ok)
+		return Log::Level::Invalid;
+	return Log::Level(ret);
 }
 
 QList< LogDevice* >& logDevices();
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-	Log::Level level = Log::LOG_DEB;
+	Log::Level level = Log::Level::Debug;
 	switch(type) {
-	case QtDebugMsg: level = Log::LOG_DEB; break;
-	case QtWarningMsg:
-		if(QLatin1String(context.category) == Log::categoryDebugName) level = Log::LOG_DEB;
-		else if(QLatin1String(context.category) == Log::categoryInfoName) level = Log::LOG_INFO;
-		else if(QLatin1String(context.category) == Log::categoryWarningName) level = Log::LOG_WARN;
-		else if(QLatin1String(context.category) == Log::categoryErrorName) level = Log::LOG_ERR;
-		else if(QLatin1String(context.category) == Log::categoryFatalName) level = Log::LOG_FATAL;
-		else level = Log::LOG_WARN;
+	case QtDebugMsg:
+		level = Log::Level::Debug;
 		break;
-	case QtCriticalMsg: level = Log::LOG_ERR; break;
-	case QtFatalMsg: level = Log::LOG_FATAL; break;
+	case QtWarningMsg:
+		if(QLatin1String(context.category) == Log::categoryDebugName)
+			level = Log::Level::Debug;
+		else if(QLatin1String(context.category) == Log::categoryInfoName)
+			level = Log::Level::Info;
+		else if(QLatin1String(context.category) == Log::categoryWarningName)
+			level = Log::Level::Warning;
+		else if(QLatin1String(context.category) == Log::categoryErrorName)
+			level = Log::Level::Error;
+		else if(QLatin1String(context.category) == Log::categoryFatalName)
+			level = Log::Level::Fatal;
+		else level = Log::Level::Warning;
+		break;
+	case QtCriticalMsg:
+		level = Log::Level::Error;
+		break;
+	case QtFatalMsg:
+		level = Log::Level::Fatal;
+		break;
 	}
 	for(auto log_device : logDevices()) {
 		if(log_device->checkLogPermisions(context, level)) {
@@ -64,10 +77,13 @@ QList< LogDevice* >& logDevices()
 // LogDevice
 //=========================================================
 Log::Level LogDevice::environmentLogTreshold = environment_treshold();
-Log::Level LogDevice::commandLineLogTreshold = Log::LOG_INVALID;
+Log::Level LogDevice::commandLineLogTreshold = Log::Level::Invalid;
 
 LogDevice::LogDevice(QObject *parent)
-	: QObject(parent), m_logTreshold(Log::LOG_INFO), m_count(0), m_isPrettyDomain(false)
+	: QObject(parent)
+	, m_logTreshold(Log::Level::Info)
+	, m_count(0)
+	, m_isPrettyDomain(false)
 {
 	//setDomainTresholds(parent, argv);
 }
@@ -119,14 +135,18 @@ QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 		int ix = dom_tres.indexOf(':');
 		QString domain = dom_tres;
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
-		Log::Level level = Log::LOG_DEB;
+		Log::Level level = Log::Level::Debug;
 		if(ix > 0) {
 			domain = dom_tres.mid(0, ix);
 			QString s = dom_tres.mid(ix + 1).toLower();
-			if(s == "DEB") level = Log::LOG_DEB;
-			else if(s == "INFO") level = Log::LOG_INFO;
-			else if(s == "WARN") level = Log::LOG_WARN;
-			else if(s == "ERR") level = Log::LOG_ERR;
+			if(s == "DEB")
+				level = Log::Level::Debug;
+			else if(s == "INFO")
+				level = Log::Level::Info;
+			else if(s == "WARN")
+				level = Log::Level::Warning;
+			else if(s == "ERR")
+				level = Log::Level::Error;
 		}
 		if(domain.isEmpty()) {
 			setLogTreshold(level);
@@ -141,9 +161,9 @@ QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 
 Log::Level LogDevice::logTreshold()
 {
-	if(commandLineLogTreshold >= 0)
+	if(commandLineLogTreshold > Log::Level::Invalid)
 		return commandLineLogTreshold;
-	if(environmentLogTreshold >= 0)
+	if(environmentLogTreshold > Log::Level::Invalid)
 		return environmentLogTreshold;
 	return m_logTreshold;
 }
@@ -152,16 +172,19 @@ bool LogDevice::checkLogPermisions(const QMessageLogContext &context, Log::Level
 {
 	bool ret = false;
 	do {
-		if(_level < 0) break;
-		if(_level == Log::LOG_FATAL) {ret = true; break;}
-		if(_level == Log::LOG_DEB) {
+		if(_level <= Log::Level::Invalid) break;
+		if(_level == Log::Level::Fatal) {
+			ret = true;
+			break;
+		}
+		if(_level == Log::Level::Debug) {
 #ifdef QF_NO_DEBUG_LOG
 			break;
 #endif
 		}
 		bool domain_level_found = false;
 		QString domain = prettyDomain(domainFromContext(context));
-		QMapIterator<QString, int> it(m_domainTresholds);
+		QMapIterator<QString, Log::Level> it(m_domainTresholds);
 		while (it.hasNext()) {
 			it.next();
 			if(domain.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
@@ -247,11 +270,11 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 		TerminalColor fg, bg = Black;
 		TerminalAttr attr = AttrReset;
 		switch(level) {
-		case Log::LOG_INFO: fg = Cyan; break;
-		case Log::LOG_WARN: fg = Magenta; attr = AttrBright; break;
-		case Log::LOG_ERR:
-		case Log::LOG_FATAL: fg = Red; attr = AttrBright; break;
-		case Log::LOG_DEB:
+		case Log::Level::Info: fg = Cyan; break;
+		case Log::Level::Warning: fg = Magenta; attr = AttrBright; break;
+		case Log::Level::Error:
+		case Log::Level::Fatal: fg = Red; attr = AttrBright; break;
+		case Log::Level::Debug:
 		default: fg = White; break;
 		}
 		QString s;
@@ -299,9 +322,9 @@ static const auto KeyFile = QStringLiteral("file");
 static const auto KeyLine = QStringLiteral("line");
 static const auto KeyFunction = QStringLiteral("function");
 
-LogEntryMap::LogEntryMap(int level, const QString &domain, const QString &message, const QString &file, int line, const QString &function)
+LogEntryMap::LogEntryMap(Log::Level level, const QString &domain, const QString &message, const QString &file, int line, const QString &function)
 {
-	this->operator[](KeyLevel) = level;
+	this->operator[](KeyLevel) = (int)level;
 	this->operator[](KeyDomain) = domain;
 	this->operator[](KeyMessage) = message;
 	this->operator[](KeyFile) = file;
@@ -347,7 +370,7 @@ QString LogEntryMap::function() const
 QString LogEntryMap::toString() const
 {
 	QString ret = "{";
-	ret += "\"level\":" + QString::number(level()) + ", ";
+	ret += "\"level\":" + QString::number((int)level()) + ", ";
 	ret += "\"domain\":" + domain() + ", ";
 	ret += "\"message\":" + message() + ", ";
 	ret += "\"file\":" + file() + ", ";

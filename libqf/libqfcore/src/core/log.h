@@ -6,7 +6,7 @@
 #include <QDebug>
 
 #define qfDebug qDebug
-#define qfInfo() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::LOG_INFO))
+#define qfInfo() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::Level::Info))
 #define qfWarning qWarning
 #define qfError qCritical
 #define qfFatal if(qCritical() << qf::core::Log::stackTrace(), true) qFatal
@@ -23,7 +23,7 @@ namespace core {
 class QFCORE_DECL_EXPORT Log
 {
 public:
-	enum Level { LOG_INVALID = -1, LOG_FATAL, LOG_ERR, LOG_WARN, LOG_INFO, LOG_DEB };
+	enum class Level : int { Invalid = -1, Fatal, Error, Warning, Info, Debug };
 public:
 	static const char* categoryDebugName;
 	static const char* categoryInfoName;
@@ -31,7 +31,7 @@ public:
 	static const char* categoryErrorName;
 	static const char* categoryFatalName;
 
-	static const QLoggingCategory& categoryForLevel(int level);
+	static const QLoggingCategory& categoryForLevel(Level level);
 	static const char *levelName(Level level);
 public:
 	static QString stackTrace();
