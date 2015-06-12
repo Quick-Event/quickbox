@@ -15,7 +15,6 @@ private:
 	typedef LogDevice Super;
 protected:
 	explicit SysLogDevice(QObject *parent = 0);
-public:
 	~SysLogDevice() Q_DECL_OVERRIDE;
 public:
 	static SysLogDevice* install();
