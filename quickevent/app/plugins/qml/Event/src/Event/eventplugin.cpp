@@ -455,19 +455,23 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		qfs::Connection conn(QSqlDatabase::database());
 		qfs::Query q(conn);
 		qfs::QueryBuilder qb;
-		ok = !event_name.isEmpty();
-		if(!ok) {
+		QStringList event_names;
+		{
 			qb.select("nspname")
 					.from("pg_catalog.pg_namespace  AS n")
 					.where("nspname NOT LIKE 'pg\\_%'")
 					.where("nspname NOT IN ('public', 'information_schema')")
 					.orderBy("nspname");
 			q.exec(qb.toString());
-			QStringList events;
 			while(q.next()) {
-				events << q.value("nspname").toString();
+				event_names << q.value("nspname").toString();
 			}
-			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), events, 0, false, &ok);
+		}
+		if(!event_names.contains(event_name))
+			event_name = QString();
+		ok = !event_name.isEmpty();
+		if(!ok) {
+			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), event_names, 0, false, &ok);
 		}
 		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
 		ok = ok && !event_name.isEmpty();

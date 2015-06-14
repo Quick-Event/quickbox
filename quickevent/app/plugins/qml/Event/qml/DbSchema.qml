@@ -167,12 +167,12 @@ Schema {
 				Field { name: 'offRace'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-					comment: "Competitor doesn't run in this stage" 
+					comment: "Competitor does not run in this stage"
 				},
-				Field { name: 'offCompetition'; type: Boolean { }
+				Field { name: 'offResults'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-					comment: "Competitor does run in this stage but out of competition" 
+					comment: "Competitor does run in this stage but out of results"
 				},
 				Field { name: 'disqualified'; type: Boolean { }
 					defaultValue: false;

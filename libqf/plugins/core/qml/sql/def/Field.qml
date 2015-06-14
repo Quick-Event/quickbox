@@ -12,12 +12,15 @@ QtObject {
 
 	function createSqlScript(options)
 	{
+		var driver_name = options.driverName;
 		var def = '\t' + name + ' ' + type.createSqlScript(options);
 		if(notNull)
 			def += ' NOT NULL';
 		if(defaultValue !== null) {
 			def += ' DEFAULT ';
-			if(typeof defaultValue !== 'number')
+			if(typeof defaultValue === 'boolean' && driver_name.endsWith("SQLITE"))
+				def += (defaultValue)? 1: 0;
+			else if(typeof defaultValue === 'string')
 				def += "'" + defaultValue + "'";
 			else
 				def += defaultValue;
