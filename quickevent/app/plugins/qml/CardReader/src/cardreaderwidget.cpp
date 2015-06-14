@@ -390,10 +390,10 @@ CardReader::CardReaderPlugin *CardReaderWidget::thisPlugin()
 	return cardreader_plugin;
 }
 
-qf::qmlwidgets::framework::Plugin *CardReaderWidget::recipesPlugin()
+qf::qmlwidgets::framework::Plugin *CardReaderWidget::receiptsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Recipes"));
+	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipts"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
@@ -414,11 +414,11 @@ void CardReaderWidget::onCbxCardCheckersActivated(int ix)
 void CardReaderWidget::showSelectedCard()
 {
 	qfLogFuncFrame();
-	auto recipes_plugin = recipesPlugin();
-	if(!recipes_plugin)
+	auto receipts_plugin = receiptsPlugin();
+	if(!receipts_plugin)
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
-	QMetaObject::invokeMethod(recipes_plugin, "previewRecipe", Q_ARG(int, card_id));
+	QMetaObject::invokeMethod(receipts_plugin, "previewReceipt", Q_ARG(int, card_id));
 }
 
 void CardReaderWidget::assignRunnerToSelectedCard()

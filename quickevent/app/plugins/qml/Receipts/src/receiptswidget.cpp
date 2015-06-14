@@ -1,7 +1,7 @@
-#include "recipeswidget.h"
-#include "ui_recipeswidget.h"
-#include "recipespartwidget.h"
-#include "Recipes/recipesplugin.h"
+#include "receiptswidget.h"
+#include "ui_receiptswidget.h"
+#include "receiptspartwidget.h"
+#include "Receipts/receiptsplugin.h"
 
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
@@ -38,11 +38,11 @@ namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
-const char *RecipesWidget::SETTINGS_PREFIX = "plugins/Recipes";
+const char *ReceiptsWidget::SETTINGS_PREFIX = "plugins/Receipts";
 
-RecipesWidget::RecipesWidget(QWidget *parent) :
+ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	Super(parent),
-	ui(new Ui::RecipesWidget)
+	ui(new Ui::ReceiptsWidget)
 {
 	ui->setupUi(this);
 
@@ -77,15 +77,15 @@ RecipesWidget::RecipesWidget(QWidget *parent) :
 	}
 
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &RecipesWidget::onCustomContextMenuRequest);
+	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
 }
 
-RecipesWidget::~RecipesWidget()
+ReceiptsWidget::~ReceiptsWidget()
 {
 	delete ui;
 }
 
-void RecipesWidget::settleDownInPartWidget(RecipesPartWidget *part_widget)
+void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
@@ -93,7 +93,7 @@ void RecipesWidget::settleDownInPartWidget(RecipesPartWidget *part_widget)
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 }
 
-void RecipesWidget::reload()
+void ReceiptsWidget::reload()
 {
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
@@ -112,15 +112,15 @@ void RecipesWidget::reload()
 	m_cardsModel->reload();
 }
 
-Recipes::RecipesPlugin *RecipesWidget::recipesPlugin()
+Receipts::ReceiptsPlugin *ReceiptsWidget::receiptsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Recipes::RecipesPlugin *>(fwk->plugin("Recipes"));
+	auto plugin = qobject_cast<Receipts::ReceiptsPlugin *>(fwk->plugin("Receipts"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
 
-Event::EventPlugin *RecipesWidget::eventPlugin()
+Event::EventPlugin *ReceiptsWidget::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
@@ -128,7 +128,7 @@ Event::EventPlugin *RecipesWidget::eventPlugin()
 	return plugin;
 }
 
-void RecipesWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void ReceiptsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	Q_UNUSED(payload)
 	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
@@ -136,12 +136,12 @@ void RecipesWidget::onDbEventNotify(const QString &domain, const QVariant &paylo
 	}
 }
 
-void RecipesWidget::createActions()
+void ReceiptsWidget::createActions()
 {
 	//QStyle *sty = style();
 	/*
 	{
-		QIcon ico(":/quickevent/Recipes/images/comm");
+		QIcon ico(":/quickevent/Receipts/images/comm");
 		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(ico, tr("Open COM"), this);
 		a->setCheckable(true);
 		connect(a, SIGNAL(triggered(bool)), this, SLOT(onCommOpen(bool)));
@@ -150,19 +150,19 @@ void RecipesWidget::createActions()
 	*/
 }
 
-void RecipesWidget::loadPrinters()
+void ReceiptsWidget::loadPrinters()
 {
 	ui->cbxPrinters->addItems(QPrinterInfo::availablePrinterNames());
 	QString def = QPrinterInfo::defaultPrinterName();
 	ui->cbxPrinters->setCurrentText(def);
 }
 
-QPrinterInfo RecipesWidget::currentPrinter()
+QPrinterInfo ReceiptsWidget::currentPrinter()
 {
 	return QPrinterInfo::printerInfo(ui->cbxPrinters->currentText());
 }
 
-int RecipesWidget::currentStageId()
+int ReceiptsWidget::currentStageId()
 {
 	auto event_plugin = eventPlugin();
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
@@ -170,7 +170,7 @@ int RecipesWidget::currentStageId()
 	return ret;
 }
 
-void RecipesWidget::onCardRead()
+void ReceiptsWidget::onCardRead()
 {
 	if(ui->chkAutoPrint->isChecked()) {
 		printNewCards();
@@ -178,7 +178,7 @@ void RecipesWidget::onCardRead()
 	loadNewCards();
 }
 
-void RecipesWidget::printNewCards()
+void ReceiptsWidget::printNewCards()
 {
 	auto conn  = qf::core::sql::Connection::forName();
 	int connection_id = conn.connectionId();
@@ -197,25 +197,25 @@ void RecipesWidget::printNewCards()
 		q.exec(qs, qf::core::Exception::Throw);
 		while(q.next()) {
 			int card_id = q.value(0).toInt();
-			if(!printRecipe(card_id)) {
+			if(!printReceipt(card_id)) {
 				break;
 			}
 		}
 	}
 }
 
-void RecipesWidget::loadNewCards()
+void ReceiptsWidget::loadNewCards()
 {
 	m_cardsModel->reloadInserts(QStringLiteral("cards.id"));
 }
 
-void RecipesWidget::on_btPrintNew_clicked()
+void ReceiptsWidget::on_btPrintNew_clicked()
 {
 	printNewCards();
 	loadNewCards();
 }
 
-void RecipesWidget::onCustomContextMenuRequest(const QPoint &pos)
+void ReceiptsWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
 	QAction a_print_card(tr("Print selected cards"), nullptr);
@@ -227,17 +227,17 @@ void RecipesWidget::onCustomContextMenuRequest(const QPoint &pos)
 	}
 }
 
-void RecipesWidget::printSelectedCards()
+void ReceiptsWidget::printSelectedCards()
 {
 	for(int i : ui->tblCards->selectedRowsIndexes()) {
 		int card_id = ui->tblCards->tableRow(i).value("cards.id").toInt();
 		QF_ASSERT(card_id > 0, "Bad card ID", return);
-		printRecipe(card_id);
+		printReceipt(card_id);
 	}
 }
 
-bool RecipesWidget::printRecipe(int card_id)
+bool ReceiptsWidget::printReceipt(int card_id)
 {
-	return recipesPlugin()->printRecipe(card_id, currentPrinter());
+	return receiptsPlugin()->printReceipt(card_id, currentPrinter());
 }
 

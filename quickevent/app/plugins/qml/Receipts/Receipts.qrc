@@ -1,5 +1,5 @@
 <RCC>
-	<qresource prefix="/quickevent/Recipes">
+	<qresource prefix="/quickevent/Receipts">
 <!-- 		<file>images/comm.png</file> -->
     </qresource>
 </RCC>

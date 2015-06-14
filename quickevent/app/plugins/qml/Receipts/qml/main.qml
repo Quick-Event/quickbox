@@ -1,11 +1,11 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
-import Recipes 1.0
+import Receipts 1.0
 
 //import "CardCheckers" as CardCheckers
 
-RecipesPlugin {
+ReceiptsPlugin {
 	id: root
 /*
 	property QfObject internals: QfObject
@@ -27,7 +27,7 @@ RecipesPlugin {
 		//var act_competitors = act_file.addMenuAfter('competitors', qsTr('&Competitors'));
 		//var act_print = act_competitors.addMenuInto('print', qsTr('&Print'));
 		//act_print.addActionInto(actPrintAll);
-		var w = cRecipesPartWidget.createObject(FrameWork);
+		var w = cReceiptsPartWidget.createObject(FrameWork);
 		w.objectName = "cardReadoutPartWidget";
 
 		root.internals.thisPartWidget = w;

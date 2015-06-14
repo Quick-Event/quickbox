@@ -1,5 +1,5 @@
-#ifndef RECIPESWIDGET_H
-#define RECIPESWIDGET_H
+#ifndef RECEIPTSWIDGET_H
+#define RECEIPTSWIDGET_H
 
 //#include <qf/core/log.h>
 
@@ -8,7 +8,7 @@
 class QPrinterInfo;
 
 namespace Ui {
-	class RecipesWidget;
+	class ReceiptsWidget;
 }
 
 namespace qf {
@@ -25,26 +25,26 @@ class PartWidget;
 }
 }
 
-class RecipesPartWidget;
+class ReceiptsPartWidget;
 namespace Event {
 class EventPlugin;
 }
-namespace Recipes {
-class RecipesPlugin;
+namespace Receipts {
+class ReceiptsPlugin;
 }
 
-class RecipesWidget : public QFrame
+class ReceiptsWidget : public QFrame
 {
 	Q_OBJECT
 private:
 	typedef QFrame Super;
 public:
-	explicit RecipesWidget(QWidget *parent = 0);
-	~RecipesWidget() Q_DECL_OVERRIDE;
+	explicit ReceiptsWidget(QWidget *parent = 0);
+	~ReceiptsWidget() Q_DECL_OVERRIDE;
 
 	static const char *SETTINGS_PREFIX;
 
-	void settleDownInPartWidget(RecipesPartWidget *part_widget);
+	void settleDownInPartWidget(ReceiptsPartWidget *part_widget);
 
 	Q_SLOT void reset() {reload();}
 	Q_SLOT void reload();
@@ -53,22 +53,22 @@ private:
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void printSelectedCards();
 
-	Recipes::RecipesPlugin* recipesPlugin();
+	Receipts::ReceiptsPlugin* receiptsPlugin();
 	Event::EventPlugin* eventPlugin();
 	void onCardRead();
 	void printNewCards();
 	void loadNewCards();
 	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
 
-	bool printRecipe(int card_id);
+	bool printReceipt(int card_id);
 
 	void createActions();
 	void loadPrinters();
 	QPrinterInfo currentPrinter();
 	int currentStageId();
 private:
-	Ui::RecipesWidget *ui;
+	Ui::ReceiptsWidget *ui;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 };
 
-#endif // RECIPESWIDGET_H
+#endif // RECEIPTSWIDGET_H

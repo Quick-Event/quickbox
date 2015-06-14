@@ -1,5 +1,5 @@
-#include "recipesplugin.h"
-#include "../recipespartwidget.h"
+#include "receiptsplugin.h"
+#include "../receiptspartwidget.h"
 
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
@@ -22,22 +22,22 @@
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 
-using namespace Recipes;
+using namespace Receipts;
 
-RecipesPlugin::RecipesPlugin(QObject *parent)
+ReceiptsPlugin::ReceiptsPlugin(QObject *parent)
 	: Super(parent)
 {
-	connect(this, &RecipesPlugin::installed, this, &RecipesPlugin::onInstalled);
+	connect(this, &ReceiptsPlugin::installed, this, &ReceiptsPlugin::onInstalled);
 }
 
-void RecipesPlugin::onInstalled()
+void ReceiptsPlugin::onInstalled()
 {
 	qff::MainWindow *framework = qff::MainWindow::frameWork();
-	RecipesPartWidget *pw = new RecipesPartWidget(manifest()->featureId());
+	ReceiptsPartWidget *pw = new ReceiptsPartWidget(manifest()->featureId());
 	framework->addPartWidget(pw);
 }
 
-CardReader::CardReaderPlugin *RecipesPlugin::cardReaderPlugin()
+CardReader::CardReaderPlugin *ReceiptsPlugin::cardReaderPlugin()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	auto ret = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
@@ -45,7 +45,7 @@ CardReader::CardReaderPlugin *RecipesPlugin::cardReaderPlugin()
 	return ret;
 }
 
-Event::EventPlugin *RecipesPlugin::eventPlugin()
+Event::EventPlugin *ReceiptsPlugin::eventPlugin()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	auto ret = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
@@ -53,7 +53,7 @@ Event::EventPlugin *RecipesPlugin::eventPlugin()
 	return ret;
 }
 
-QVariantMap RecipesPlugin::recipeTablesData(int card_id)
+QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
 	QVariantMap ret;
@@ -245,16 +245,16 @@ QVariantMap RecipesPlugin::recipeTablesData(int card_id)
 	return ret;
 }
 
-void RecipesPlugin::previewRecipe(int card_id)
+void ReceiptsPlugin::previewReceipt(int card_id)
 {
 	//QMetaObject::invokeMethod(this, "previewReceipeClassic", Qt::DirectConnection, Q_ARG(QVariant, card_id));
-	previewRecipe_classic(card_id);
+	previewReceipt_classic(card_id);
 }
 
-bool RecipesPlugin::printRecipe(int card_id, const QPrinterInfo &printer_info)
+bool ReceiptsPlugin::printReceipt(int card_id, const QPrinterInfo &printer_info)
 {
 	try {
-		printRecipe_classic(card_id, printer_info);
+		printReceipt_classic(card_id, printer_info);
 		return true;
 	}
 	catch(const qf::core::Exception &e) {
@@ -263,15 +263,15 @@ bool RecipesPlugin::printRecipe(int card_id, const QPrinterInfo &printer_info)
 	return false;
 }
 
-void RecipesPlugin::previewRecipe_classic(int card_id)
+void ReceiptsPlugin::previewReceipt_classic(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
-	w->setWindowTitle(tr("Recipe"));
-	w->setReport(manifest()->homeDir() + "/reports/recipeClassic.qml");
-	QVariantMap dt = recipeTablesData(card_id);
+	w->setWindowTitle(tr("Receipt"));
+	w->setReport(manifest()->homeDir() + "/reports/receiptClassic.qml");
+	QVariantMap dt = receiptTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -280,7 +280,7 @@ void RecipesPlugin::previewRecipe_classic(int card_id)
 	dlg.exec();
 }
 
-void RecipesPlugin::printRecipe_classic(int card_id, const QPrinterInfo &printer_info)
+void ReceiptsPlugin::printReceipt_classic(int card_id, const QPrinterInfo &printer_info)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	//qfInfo() << "printReceipe_classic, card id:" << card_id;
@@ -298,8 +298,8 @@ void RecipesPlugin::printRecipe_classic(int card_id, const QPrinterInfo &printer
 	qfInfo() << "printing on:" << pi.printerName();
 	QPrinter printer(pi);
 	qf::qmlwidgets::reports::ReportProcessor rp(&printer);
-	rp.setReport(manifest()->homeDir() + "/reports/recipeClassic.qml");
-	QVariantMap dt = recipeTablesData(card_id);
+	rp.setReport(manifest()->homeDir() + "/reports/receiptClassic.qml");
+	QVariantMap dt = receiptTablesData(card_id);
 	for(auto key : dt.keys()) {
 		rp.setTableData(key, dt.value(key));
 	}
