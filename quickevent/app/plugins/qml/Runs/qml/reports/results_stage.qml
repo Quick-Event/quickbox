@@ -91,6 +91,16 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
+								width: 10
+								halign: Frame.AlignRight
+								textFn: function() {
+									var pos = runnersDetail.rowData("pos");
+									if(pos)
+										return pos + ".";
+									return "";
+								}
+							}
+							Cell {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
@@ -104,8 +114,13 @@ Report {
 								textFn: function() { return OGTime.msecToString(runnersDetail.rowData("timeMs"));}
 							}
 							Para {
-								width: 18
-								textFn: runnersDetail.dataFn("disqualified");
+								width: 10
+								textFn: function() {
+									var disq = runnersDetail.rowData("disqualified");
+									if(disq)
+										return qsTr("DISQ");
+									return "";
+								}
 							}
 						}
 					}

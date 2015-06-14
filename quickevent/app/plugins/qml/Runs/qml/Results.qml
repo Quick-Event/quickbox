@@ -50,6 +50,15 @@ QtObject {
 			reportModel.setQueryParameters({stage_id: stage_id, class_id: class_id});
 			reportModel.reload();
 			var ttd = reportModel.toTreeTableData();
+			var tt2 = new TreeTable.Table(ttd);
+			tt2.addColumn("pos", "int");
+			for(var j=0; j<tt2.rowCount(); j++) {
+				var has_pos = !tt2.value(j, "disqualified")// && !tt2.value(j, "offResults");
+				if(has_pos)
+					tt2.setValue(j, "pos", j+1);
+				else
+					tt2.setValue(j, "pos", '');
+			}
 			tt.addTable(i, ttd);
 		}
 		console.debug(tt.toString());

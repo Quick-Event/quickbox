@@ -133,7 +133,7 @@ Table.prototype.setValue = function(row_ix, col_ix, val)
 	if(!this._data) {
 		throw "Table is not initialized";
 	}
-	if(typeof(row_ix) == 'number') {
+	if(typeof(row_ix) === 'number') {
 		// table rows values
 		if(row_ix >= 0) {
 			if(!this._data.rows || !(this._data.rows instanceof Array)) {
@@ -173,11 +173,14 @@ Table.prototype.setValue = function(row_ix, col_ix, val)
 						var fld = fields[i];
 						if(fld && sqlEndsWith(fld.name, fld_name)) {
 							row[i] = val;
+							//console.warn(fld_name, "row:", i, "=", val)
 							ret = true;
 							break;
 						}
 					}
 				}
+				if(!ret)
+					console.warn("Cannot find column", fld_name)
 			}
 		}
 	}
