@@ -64,6 +64,14 @@ RunsPlugin {
 			onTriggered: {
 				results.printCurrentStage()
 			}
+		},
+		Action {
+			id: act_export_results_iofxml
+			text: qsTr('&IOF XML')
+			onTriggered: {
+				var fn = results.exportIofXml()
+				File.openUrl(File.toUrl(fn));
+			}
 		}
 	]
 
@@ -80,12 +88,16 @@ RunsPlugin {
 		a = a_print.addMenuInto("results", "&Results");
 		a.addActionInto(act_print_results_currentStage);
 
-		a = root.partWidget.menuBar.actionForPath("exportHtml", true);
-		a.text = qsTr("E&xport");
+		a_export = root.partWidget.menuBar.actionForPath("export", true);
+		a_export.text = qsTr("E&xport");
+		a = a_export.addMenuInto("startList", "&Start list");
 		a = a.addMenuInto("html", "&HTML");
-		a = a.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_export_html_startList_classes);
 		a.addActionInto(act_export_html_startList_clubs);
+
+		a = a_export.addMenuInto("results", "&Results");
+		a.addActionInto(act_export_results_iofxml);
+
 	}
 
 	function startListClassesTable()

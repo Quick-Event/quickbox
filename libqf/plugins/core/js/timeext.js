@@ -22,3 +22,8 @@ function msecSinceMidnight(d)
 	var e = new Date(d);
 	return d - e.setHours(0,0,0,0);
 }
+
+function dateToISOString(d)
+{
+	return d.toISOString().slice(0, 10);
+}

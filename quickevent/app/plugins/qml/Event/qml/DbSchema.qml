@@ -161,6 +161,9 @@ Schema {
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
+				Field { name: 'finishTimeMs'; type: Int {}
+					comment: 'in miliseconds'
+				},
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -185,13 +188,15 @@ Schema {
 				Field { name: 'cardLent'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-				},
+				}
+				/*,
 				Field { name: 'status';
 					type: String {}
 					defaultValue: 'OFF';
 					notNull: true
 					comment: "referencing enumz.runs.status"
 				}
+				*/
 			]
 			indexes: [
 				Index {
@@ -335,6 +340,7 @@ Schema {
 		}
 	]
 	inserts: [
+		/*
 		Insert {
 			table: enumz
 			fields: ['groupName', 'groupId', 'pos']
@@ -344,6 +350,7 @@ Schema {
 				['runs.status', 'FINISH', 3]
 			]
 		},
+		*/
 		Insert {
 			table: config
 			rows: [
