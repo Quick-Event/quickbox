@@ -32,6 +32,7 @@ Qt::ItemFlags RunsTableModel::flags(const QModelIndex &index) const
 
 QVariant RunsTableModel::value(int row_ix, int column_ix) const
 {
+	/*
 	ColumnDefinition cd = columnDefinition(column_ix);
 	if(cd.matchesSqlId(QStringLiteral("virtual.finishTimeMs"))) {
 		QVariant ret;
@@ -42,43 +43,48 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 		}
 		return ret;
 	}
+	*/
 	return Super::value(row_ix, column_ix);
 }
 
 bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 {
 	bool ret;
-	//bool update_row = false;
-	QString new_status;
 	ColumnDefinition cd = columnDefinition(column_ix);
-	if(cd.matchesSqlId(QStringLiteral("virtual.finishTimeMs"))) {
+	if(cd.matchesSqlId(QStringLiteral("finishTimeMs"))) {
 		QVariant start_ms = value(row_ix, "startTimeMs");
 		if(!start_ms.isNull()) {
 			int time_ms = val.toInt() - start_ms.toInt();
 			if(time_ms > 0) {
-				setValue(row_ix, "timeMs", time_ms);
-				//QModelIndex ix1 = index(row_ix, column_ix);
-				//QModelIndex ix2 = index(row_ix, columnCount() - 1);
-				//emit dataChanged(ix1, ix2);
-				new_status = "FINISH";
-			}
-		}
-		ret = true;
-	}
-	else {
-		ret = Super::setValue(row_ix, column_ix, val);
-		if(cd.matchesSqlId(QStringLiteral("timeMs"))) {
-			int time_ms = val.toInt();
-			if(time_ms > 0) {
-				new_status = "FINISH";
-				//QModelIndex ix1 = index(row_ix, column_ix);
-				//emit dataChanged(ix1, ix1);
+				Super::setValue(row_ix, "timeMs", time_ms);
 			}
 		}
 	}
-	if(!new_status.isEmpty()) {
-		setValue(row_ix, "status", new_status);
+	else if(cd.matchesSqlId(QStringLiteral("timeMs"))) {
+		QVariant start_ms = value(row_ix, "startTimeMs");
+		if(!start_ms.isNull()) {
+			int finish_ms = val.toInt() + start_ms.toInt();
+			if(finish_ms > 0) {
+				Super::setValue(row_ix, "finishTimeMs", finish_ms);
+			}
+		}
 	}
+	else if(cd.matchesSqlId(QStringLiteral("startTimeMs"))) {
+		if(!val.isNull()) {
+			int start_ms = val.toInt();
+			int finish_ms = value(row_ix, "finishTimeMs").toInt();
+			int time_ms = value(row_ix, "timeMs").toInt();
+			if(finish_ms > 0) {
+				int time_ms = finish_ms - start_ms;
+				Super::setValue(row_ix, "timeMs", time_ms);
+			}
+			else if(time_ms > 0) {
+				finish_ms = start_ms + time_ms;
+				Super::setValue(row_ix, "finishTimeMs", finish_ms);
+			}
+		}
+	}
+	ret = Super::setValue(row_ix, column_ix, val);
 	return ret;
 }
 

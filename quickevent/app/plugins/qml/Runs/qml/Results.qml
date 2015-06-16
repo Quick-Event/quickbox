@@ -40,9 +40,9 @@ QtObject {
 		reportModel.queryBuilder.clear()
 			.select2('competitors', 'registration, lastName, firstName')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-			.select2('runs', 'siId, timeMs, offRace, disqualified, cardError')
+			.select2('runs', '*')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.status='FINISH'", "JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy('runs.disqualified, runs.timeMs');
 		for(var i=0; i<tt.rowCount(); i++) {
@@ -73,10 +73,8 @@ QtObject {
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml", tt.data(), qsTr("Start list by clases"));
 	}
 
-	function exportIofXml()
+	function exportIofXml(file_path)
 	{
-		var default_file_name = "results-iof.xml";
-
 		var tt1 = currentStageTable();
 		var result_list = ['ResultList', {"status": "complete"}];
 		result_list.push(['IOFVersion', {"version": "2.0.3"}]);
@@ -88,7 +86,7 @@ QtObject {
 		ev.push(['Name', event.name]);
 		ev.push(['EventClassificationId', {type: "int", idManager: "IOF"}, 0]);
 		ev.push(['StartDate', ['Date', TimeExt.dateToISOString(event.date)]]);
-		ev.push(['Organiser' ['Club', ['ShortName', "NIY"]]]);
+		ev.push(['Organiser', ['Club', ['ShortName', "NIY"]]]);
 		ev.push(['EventOfficial', ['Person', ['PersonName', ['Family', event.director]]]]);
 		ev.push(['EventOfficial', ['Person', ['PersonName', ['Family', event.mainReferee]]]]);
 
@@ -97,55 +95,61 @@ QtObject {
 			result_list.push(class_result);
 			class_result.push(['ClassShortName', tt1.value(i, "classes.name")]);
 			var tt2 = tt1.table(i);
+			var pos = 0;
 			for(var j=0; j<tt2.rowCount(); j++) {
-				pos += 1
+				pos++;
 				var person_result = ['PersonResult'];
 				class_result.push(person_result);
 				var person = ['Person'];
 				person_result.push(person);
-				family = tt2.value(j, "competitors.lastName");
-				given = tt2.value(j, "competitors.firstName");
+				var family = tt2.value(j, "competitors.lastName");
+				var given = tt2.value(j, "competitors.firstName");
 				person.push(['PersonName', ['Family', family], ['Given', given]]);
 				person.push(['PersonId', tt2.value(j, "registration")]);
 				var result = ['Result'];
 				person_result.push(result);
-				result.push(['StartTime', ['Clock' + secToTimeStr(AMPMC(runner.stime), separator=':') + '</Clock></StartTime>')
-				if runner.ftime >= 0:
-					printout('<FinishTime><Clock>' + secToTimeStr(AMPMC(runner.ftime), separator=':') + '</Clock></FinishTime>')
-				printout('<Time>', secToOBTime(runner.laptime, separator=':'), '</Time>')
-				competitor_status = 'OK'
-				if runner.status == 'DISK': competitor_status = 'MisPunch'
-				elif runner.status == 'NOT_RUN': competitor_status = 'DidNotFinish'
-				if competitor_status == 'OK': printout('<ResultPosition>', pos, '</ResultPosition>')
-				printout('<CompetitorStatus value="' + competitor_status + '"/>')
-				printout('<CourseLength unit="m">', katsplit.get('classinfo').get('length'), '</CourseLength>')
-				printout('<CourseClimb unit="m">', katsplit.get('classinfo').get('climb'), '</CourseClimb>') # porusuje IOF DTD
-				no = 0
-				for punch in runner.punches:
-					no += 1
-					printout('<SplitTime sequence="%s">' % no)
-					printout('<ControlCode>', punch.code, '</ControlCode>')
-					printout('<Time>', secToOBTime(punch.stp, separator=':'), '</Time>')
-					printout('</SplitTime>')
-				printout('</Result>')
-				printout('</PersonResult>')
+				var stime = tt2.value(j, "startTimeMs");
+				var ftime = tt2.value(j, "finishTimeMs");
+				var time = tt2.value(j, "timeMs");
+				if(ftime && time)
+					stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
+				result.push(['StartTime', ['Clock', OGTime.msecToString(stime, ':')]])
+				if(ftime)
+					result.push(['FinishTime', ['Clock', OGTime.msecToString(ftime, ':')]])
+				result.push(['Time', ['Clock', OGTime.msecToString(time, ':')]])
+				var competitor_status = 'OK'
+				if (!ftime)
+					 competitor_status = 'DidNotFinish'
+				if (tt2.value(j, "misPunch"))
+					 competitor_status = 'MisPunch'
+				else if (tt2.value(j, "disqualified"))
+					 competitor_status = 'Disqualified'
+				if (competitor_status == 'OK')
+					result.push(['ResultPosition', tt2.value(j, "pos")])
+				result.push(['CompetitorStatus', {"value": competitor_status}])
+				result.push(['CourseVariation'
+							 , ['CourseLength', {unit: "m"}, tt1.value(i, "courses.length")]
+							 , ['CourseClimb', {unit: "m"}, tt1.value(i, "courses.climb")]
+							]);
+				reportModel.queryBuilder.clear()
+					.select2('runlaps', '*')
+					.from('runlaps')
+					.where("runlaps.runId={{run_id}}")
+					.where("runlaps.code!=999") // omit finish lap
+					.orderBy('runlaps.position');
+				reportModel.setQueryParameters({run_id: tt2.value(j, "runs.id")})
+				reportModel.reload();
+				for(var k=0; k<reportModel.rowCount(); k++) {
+					//console.info(k, reportModel.value(k, "position"));
+					result.push(['SplitTime', {"sequence": reportModel.value(k, "position")}]);
+					result.push(['ControlCode', reportModel.value(k, "code")]);
+					result.push(['Time', OGTime.msecToString(reportModel.value(k, "stpTimeMs"), ':')]);
+				}
 			}
 		}
 
-//				printout('''<?xml version="1.0" encoding="{0}"?>
-//			<!DOCTYPE ResultList SYSTEM "IOFdata.dtd">
-//			<ResultList status="complete">
-//				<IOFVersion version="2.0.3" />
-//			'''.format(o_defaultEncoding))
-
-				var file_name = File.tempPath() + "/quickevent/e" + tt1.value("stageId");
-				if(File.mkpath(file_name)) {
-					file_name += "/" + default_file_name;
-					File.writeHtml(file_name, body, {documentTitle: qsTr("Start list by classes")});
-					Log.info("exported:", file_name);
-					return file_name;
-				}
-				return "";
+		File.writeXml(file_path, result_list, {documentTitle: qsTr("E%1 IOF XML stage results").arg(tt1.value("stageId"))});
+		Log.info("exported:", file_path);
 	}
 
 }

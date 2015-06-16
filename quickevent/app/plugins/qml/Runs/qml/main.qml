@@ -45,7 +45,6 @@ RunsPlugin {
 			id: act_export_html_startList_classes
 			text: qsTr('&Classes')
 			onTriggered: {
-				//var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("HTML files (*.html)"));
 				var fn = root.exportHtmlStartListClasses()
 				File.openUrl(File.toUrl(fn));
 			}
@@ -67,10 +66,11 @@ RunsPlugin {
 		},
 		Action {
 			id: act_export_results_iofxml
-			text: qsTr('&IOF XML')
+			text: qsTr('&IOF XML 2.3')
 			onTriggered: {
-				var fn = results.exportIofXml()
-				File.openUrl(File.toUrl(fn));
+				var default_file_name = "results-iof.xml";
+				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.html)"));
+				results.exportIofXml(file_name)
 			}
 		}
 	]
@@ -88,7 +88,7 @@ RunsPlugin {
 		a = a_print.addMenuInto("results", "&Results");
 		a.addActionInto(act_print_results_currentStage);
 
-		a_export = root.partWidget.menuBar.actionForPath("export", true);
+		var a_export = root.partWidget.menuBar.actionForPath("export", true);
 		a_export.text = qsTr("E&xport");
 		a = a_export.addMenuInto("startList", "&Start list");
 		a = a.addMenuInto("html", "&HTML");

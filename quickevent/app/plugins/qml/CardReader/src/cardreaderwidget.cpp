@@ -77,12 +77,15 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 		m->addColumn("competitors.registration", tr("Reg"));
 		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-		m->addColumn("runs.cardError", tr("Error")).setToolTip(tr("Card error"));
-		m->addColumn("runs.disqualified", tr("DISK")).setToolTip(tr("Disqualified"));
+		m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch"));
+		m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
+		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
 		m->addColumn("runs.status", tr("Status"))
 				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
+		*/
 		ui->tblCards->setTableModel(m);
 		m_cardsModel = m;
 	}
@@ -148,7 +151,7 @@ void CardReaderWidget::reload()
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
-			.select2("runs", "startTimeMs, timeMs, status, cardError, disqualified")
+			.select2("runs", "startTimeMs, timeMs, finishTimeMs, misPunch, disqualified")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")

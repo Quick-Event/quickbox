@@ -53,6 +53,20 @@ bool QmlFileSingleton::writeHtml(const QString &file_path, const QVariant &body_
 	return write(file_path, str);
 }
 
+bool QmlFileSingleton::writeXml(const QString &file_path, const QVariant &body_list, const QVariantMap &options)
+{
+	QString str;
+	QVariantList xml_lst = body_list.toList();
+	if(xml_lst.isEmpty()) {
+		str = body_list.toString();
+	}
+	else {
+		qf::core::utils::HtmlUtils::FromXmlListOptions opts(options);
+		str = qf::core::utils::HtmlUtils::fromXmlList(xml_lst, opts);
+	}
+	return write(file_path, str);
+}
+
 QString QmlFileSingleton::tempPath()
 {
 	return QDir::tempPath();

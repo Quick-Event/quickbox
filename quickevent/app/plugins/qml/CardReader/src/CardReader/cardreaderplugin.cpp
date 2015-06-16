@@ -168,11 +168,11 @@ bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 			}
 		}
 		{
-			q.prepare("UPDATE runs SET timeMs=:timeMs, cardError=:cardError, disqualified=:disqualified, status=:status WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
+			q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
 			q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
-			q.bindValue(QStringLiteral(":cardError"), !checked_card.isOk());
+			q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
+			q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
 			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
-			q.bindValue(QStringLiteral(":status"), QStringLiteral("FINISH"));
 			q.exec(qf::core::Exception::Throw);
 			if(q.numRowsAffected() == 1)
 				return true;

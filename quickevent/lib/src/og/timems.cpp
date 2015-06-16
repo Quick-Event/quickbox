@@ -18,7 +18,7 @@ TimeMs::TimeMs(int msec)
 
 }
 
-QString TimeMs::toString(bool including_msec) const
+QString TimeMs::toString(QChar sec_sep, QChar msec_sep) const
 {
 	if(!isValid())
 		return QString();
@@ -26,12 +26,12 @@ QString TimeMs::toString(bool including_msec) const
 	int msec = m_msec % 1000;
 	int sec = (m_msec / 1000) % 60;
 	int min = m_msec / (1000 * 60);
-	QString ret = QString::number(min) + '.';
+	QString ret = QString::number(min) + sec_sep;
 	if(sec < 10)
 		ret += '0';
 	ret += QString::number(sec);
-	if(including_msec || msec > 0) {
-		ret += '/';
+	if(!msec_sep.isNull()) {
+		ret += msec_sep;
 		if(msec < 100)
 			ret += '0';
 		if(msec < 10)

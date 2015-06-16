@@ -2,14 +2,54 @@
 
 using namespace qf::core::utils;
 
+HtmlUtils::FromHtmlListOptions::FromHtmlListOptions()
+{
+	static FromHtmlListOptions default_options = FromHtmlListOptions(0);
+	if(default_options.isEmpty()) {
+		default_options.setEncoding(QStringLiteral("utf-8"));
+		default_options.setDocumentTitle(QStringLiteral("html document"));
+	}
+	*this = default_options;
+}
+
+HtmlUtils::FromHtmlListOptions::FromHtmlListOptions(const QVariantMap &o)
+	: FromHtmlListOptions()
+{
+	QMapIterator<QString, QVariant> it(o);
+	while(it.hasNext()) {
+		it.next();
+		this->operator [](it.key()) = it.value();
+	}
+}
+
+HtmlUtils::FromXmlListOptions::FromXmlListOptions()
+{
+	static FromXmlListOptions default_options = FromXmlListOptions(0);
+	if(default_options.isEmpty()) {
+		default_options.setEncoding(QStringLiteral("utf-8"));
+		default_options.setDocumentTitle(QStringLiteral("xml document"));
+	}
+	*this = default_options;
+}
+
+HtmlUtils::FromXmlListOptions::FromXmlListOptions(const QVariantMap &o)
+	: FromXmlListOptions()
+{
+	QMapIterator<QString, QVariant> it(o);
+	while(it.hasNext()) {
+		it.next();
+		this->operator [](it.key()) = it.value();
+	}
+}
+
 QString HtmlUtils::fromHtmlList(const QVariantList &body_list, const HtmlUtils::FromHtmlListOptions &options)
 {
 	QString html_header =
-		"<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+		"<?xml version=\"1.0\" encoding=\"{{encoding}}\"?>\n"
 		"<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
 		"<html xmlns=\"http://www.w3.org/1999/xhtml\">\n"
 		"	<head>\n"
-		"		<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
+		"		<meta http-equiv=\"content-type\" content=\"text/html; charset={{encoding}}\" />\n"
 		"		<title>{{documentTitle}}</title>\n"
 		"		<style type=\"text/css\">\n"
 		"			body {font-family: Verdana, sans-serif}\n"
@@ -39,6 +79,18 @@ QString HtmlUtils::fromHtmlList(const QVariantList &body_list, const HtmlUtils::
 	return ret;
 }
 
+QString HtmlUtils::fromXmlList(const QVariantList &body_list, const FromXmlListOptions &options)
+{
+	QString xml_header =
+		"<?xml version=\"1.0\" encoding=\"{{encoding}}\"?>\n";
+	if(!options.docType().isEmpty())
+		xml_header += "<!DOCTYPE {{docType}}>\n";
+	QString body = fromHtmlList_helper(body_list, QString());
+	QString ret = xml_header + body;
+	ret = qf::core::Utils::replaceCaptions(ret, options);
+	return ret;
+}
+
 QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &indent, const HtmlUtils::FromHtmlListOptions &options)
 {
 	QString ret;
@@ -47,6 +99,12 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 		QVariantList lst = item.toList();
 		QF_ASSERT(!lst.isEmpty(), "Bad item list!", return ret);
 		QString element_name = lst.first().toString();
+		/*
+		qfInfo() << element_name << item;
+		*/
+		if(element_name == "CompetitorStatus") {
+			qfInfo() << "item:" << item;
+		}
 		QF_ASSERT(!element_name.isEmpty(), "Bad element name!", return ret);
 		QString attrs_str;
 		int ix = 1;
@@ -61,8 +119,8 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 			ix++;
 		}
 		bool has_children = (ix < lst.count());
+		ret += '\n' + indent;
 		if(has_children) {
-			ret += '\n' + indent;
 			ret += '<' + element_name + attrs_str + '>';
 			QString indent2 = indent + '\t';
 			bool has_child_elemet = false;
@@ -70,14 +128,14 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 				QVariant v = lst[ix];
 				if(!v.toList().isEmpty())
 					has_child_elemet = true;
-				ret += fromHtmlList_helper(v, indent2, options) + ' ';
+				ret += fromHtmlList_helper(v, indent2, options);
 			}
 			if(has_child_elemet)
 				ret += '\n' + indent;
 			ret += "</" + element_name + '>';
 		}
 		else {
-			ret += '<' + element_name + '>';
+			ret += '<' + element_name + attrs_str + "/>";
 		}
 	}
 	else {
@@ -85,3 +143,7 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 	}
 	return ret;
 }
+
+
+
+

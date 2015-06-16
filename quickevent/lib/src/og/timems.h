@@ -3,6 +3,7 @@
 
 #include "../quickeventglobal.h"
 
+#include <QChar>
 #include <QMetaType>
 
 class QString;
@@ -26,7 +27,7 @@ public:
 		return msec() == o.msec();
 	}
 
-	QString toString(bool including_msec = false) const;
+	QString toString(QChar sec_sep = QChar('.'), QChar msec_sep = QChar()) const;
 	static TimeMs fromString(const QString &time_str);
 	int msec() const {return m_msec;}
 private:

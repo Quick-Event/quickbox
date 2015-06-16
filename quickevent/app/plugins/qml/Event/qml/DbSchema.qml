@@ -172,16 +172,16 @@ Schema {
 					notNull: true
 					comment: "Competitor does not run in this stage"
 				},
-				Field { name: 'offResults'; type: Boolean { }
+				Field { name: 'notCompeting'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-					comment: "Competitor does run in this stage but out of results"
+					comment: "Competitor does run in this stage but not competing"
 				},
 				Field { name: 'disqualified'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
 				},
-				Field { name: 'cardError'; type: Boolean { }
+				Field { name: 'misPunch'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
 				},
@@ -210,8 +210,7 @@ Schema {
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
 				Index {fields: ['stageId, competitorId']; unique: true }, 
-				Index {fields: ['stageId, siId']; unique: false }, // cannot be unique since Oris import sometimes contains duplicate SI
-				Index {fields: ['status', 'timeMs'] }
+				Index {fields: ['stageId, siId']; unique: false } // cannot be unique since Oris import sometimes contains duplicate SI
 			]
 		},
 		Table { name: 'runlaps'
