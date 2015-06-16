@@ -65,7 +65,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		if(!start_ms.isNull()) {
 			int finish_ms = val.toInt() + start_ms.toInt();
 			if(finish_ms > 0) {
-				Super::setValue(row_ix, "finishTimeMs", finish_ms);
+				Super::setValue(row_ix, columnIndex("finishTimeMs"), finish_ms);
 			}
 		}
 	}
@@ -76,7 +76,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 			int time_ms = value(row_ix, "timeMs").toInt();
 			if(finish_ms > 0) {
 				int time_ms = finish_ms - start_ms;
-				Super::setValue(row_ix, "timeMs", time_ms);
+				Super::setValue(row_ix, columnIndex("timeMs"), time_ms);
 			}
 			else if(time_ms > 0) {
 				finish_ms = start_ms + time_ms;
