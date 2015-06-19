@@ -3,6 +3,7 @@
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/sql/connection.h>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -41,6 +42,9 @@ void RegistrationsWidget::reload()
 	qfLogFuncFrame();
 	if(!isVisible())
 		return;
+	QString LIKE = "LIKE"; // SQLite seem to have case insensitive like by default but it doesn't support ILIKE
+	if(m_registrationsModel->sqlConnection().driverName().endsWith("PSQL"))
+		LIKE = "ILIKE";
 	qfs::QueryBuilder qb;
 	qb.select2("registrations", "firstName, lastName, licence, registration, siId")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -65,11 +69,11 @@ void RegistrationsWidget::reload()
 			return;
 		qfDebug() << "first_name:" << first_name_filter << "last_name:" << last_name_filter;
 		if(!first_name_filter.isEmpty())
-			qb.where("firstName LIKE '%" + first_name_filter + "%'");
+			qb.where("firstName " + LIKE + " '%" + first_name_filter + "%'");
 		if(!last_name_filter.isEmpty())
-			qb.where("lastName LIKE '%" + last_name_filter + "%'");
+			qb.where("lastName " + LIKE + " '%" + last_name_filter + "%'");
 		if(!registration_filter.isEmpty())
-			qb.where("registration LIKE '%" + registration_filter + "%'");
+			qb.where("registration " + LIKE + " '%" + registration_filter + "%'");
 		if(!siid_filter.isEmpty())
 			qb.where("siId LIKE '%" + siid_filter + "%'");
 	}

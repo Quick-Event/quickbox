@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>641</width>
-    <height>340</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -200,8 +200,14 @@
      </item>
      <item>
       <widget class="QToolButton" name="btChooseFromRegistrations">
+       <property name="toolTip">
+        <string>Open registrations Ctrl+R</string>
+       </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+R</string>
        </property>
       </widget>
      </item>
@@ -231,9 +237,12 @@
   <tabstop>lineEdit</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>
+  <tabstop>lineEdit_4</tabstop>
   <tabstop>lineEdit_5</tabstop>
   <tabstop>lineEdit_6</tabstop>
   <tabstop>lineEdit_7</tabstop>
+  <tabstop>btChooseFromRegistrations</tabstop>
+  <tabstop>tblRuns</tabstop>
  </tabstops>
  <resources/>
  <connections/>

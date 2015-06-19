@@ -385,6 +385,9 @@ void TableModel::setNullReportedAsString(bool arg)
 bool TableModel::setValue(int row, int column, const QVariant &val)
 {
 	bool ret = false;
+	if(!m_table.isValidRowIndex(row)) {
+		qfDebug() << "debug";
+	}
 	QF_ASSERT(m_table.isValidRowIndex(row),
 			  tr("Invalid table row: %1").arg(row),
 			  return ret);
@@ -670,6 +673,8 @@ bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
 	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
 	if(count < 0)
 		return false;
+	if(row_ix < 0)
+		row_ix = 0;
 	beginInsertRows(parent, row_ix, row_ix + count - 1);
 	bool ok = true;
 	for(int i=0; i<count; i++) {

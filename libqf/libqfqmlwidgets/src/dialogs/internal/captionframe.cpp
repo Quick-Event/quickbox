@@ -56,6 +56,7 @@ void CaptionFrame::setText(const QString & s)
 	qfLogFuncFrame() << "text:" << s;
 	qfDebug() << "\t label:" << m_captionLabel;
 	m_text = s;
+	m_text.replace('&', QString()); // remove accel keys mark, like &Run
 	update();
 }
 

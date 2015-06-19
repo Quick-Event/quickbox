@@ -51,7 +51,7 @@ void AppStatusBar::setStageNo(int stage_no)
 
 void AppStatusBar::showProgress(const QString &msg, int completed, int total)
 {
-	m_progress->setVisible(completed < total);
+	m_progress->setVisible(total > 0 && completed < total);
 	m_lblMessage->setVisible(m_progress->isVisible());
 	m_progress->setValue(completed);
 	m_progress->setMaximum(total);

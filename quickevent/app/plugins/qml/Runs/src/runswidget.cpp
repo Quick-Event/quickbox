@@ -427,6 +427,7 @@ void RunsWidget::on_btDraw_clicked()
 						start += interval;
 						if(n > 0 && n % vacant_every == 0)
 							start += interval;
+						n++;
 					}
 				}
 			}

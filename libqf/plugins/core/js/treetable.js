@@ -1,15 +1,18 @@
 .pragma library
 
-function strEndsWith(str, suffix)
+function strEndsWith(str, suffix, ignore_case)
 {
-	if(str && str.indexOf)
-		return str.indexOf(suffix, str.length - suffix.length);
+	if(str && str.indexOf) {
+		var s = (ignore_case)? str.toLowerCase(): str;
+		var suf = (ignore_case)? suffix.toLowerCase(): suffix;
+		return s.indexOf(suf, s.length - suf.length);
+	}
 	return 0;
 }
 
 function sqlEndsWith(full_field_name, short_field_name)
 {
-	var ix = strEndsWith(full_field_name, short_field_name);
+	var ix = strEndsWith(full_field_name, short_field_name, true);
 	if(ix === 0)
 		return true;
 	else if(ix > 0) {
@@ -108,6 +111,7 @@ Table.prototype.value = function(row_ix, col_ix)
 						if(fields && fields instanceof Array) {
 							for(var i=0; i<fields.length; i++) {
 								var fld = fields[i];
+								//console.warn(i, fld_name, fld.name)
 								if(fld && sqlEndsWith(fld.name, fld_name)) {
 									ret = row[i];
 									break;

@@ -256,7 +256,7 @@ RunsPlugin {
 		for(var i=0; i<tt1.rowCount(); i++) {
 			div1 = ['h2', ['a', {"name": "class_" + tt1.value(i, 'classes.name')}, tt1.value(i, 'classes.name')]];
 			body.push(div1);
-			div1 = ['h3', qsTr("length:"), tt1.value(i, 'courses.length'), qsTr("climb:"), tt1.value(i, 'courses.climb')];
+			div1 = ['h3', qsTr("length:"), tt1.value(i, 'courses.length'), ' ', qsTr("climb:"), tt1.value(i, 'courses.climb')];
 			body.push(div1);
 			var table = ['table'];
 			body.push(table);

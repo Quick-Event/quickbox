@@ -807,6 +807,10 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 			if(ri > tmd->rowCount())
 				ri = tmd->rowCount();
 			qfDebug() << "\tri:" << ri;
+			if(ri < 0) {
+				qfWarning() << "Invalid row number:" << ri;
+				ri = 0;
+			}
 			tmd->insertRow(ri);
 			tmd->setValue(ri, idColumnName(), id);
 			//qfu::TableRow &row_ref = tmd->table().rowRef(ri);
@@ -817,11 +821,13 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 				qfWarning() << "Inserted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
 				return;
 			}
-			updateRow(ri);
-			if(curr_ix.isValid())
+			if(curr_ix.isValid()) {
+				updateRow(curr_ix.row());
 				setCurrentIndex(curr_ix.sibling(ri, curr_ix.column()));
-			else
+			}
+			else {
 				setCurrentIndex(model()->index(ri, 0, QModelIndex()));
+			}
 		}
 		else {
 			if(ri < 0 || ri >= tmd->rowCount()) {
