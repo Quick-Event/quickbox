@@ -66,10 +66,12 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		m->addColumn("competitors.registration", tr("Reg"));
 		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
 		m->addColumn("runs.status", tr("Status"))
 				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
+		*/
 		m->addColumn("cards.printerConnectionId", tr("printer"));
 
 		ui->tblCards->setTableModel(m);
@@ -98,7 +100,7 @@ void ReceiptsWidget::reload()
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, printerConnectionId")
-			.select2("runs", "startTimeMs, timeMs, status")
+			.select2("runs", "startTimeMs, timeMs")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")

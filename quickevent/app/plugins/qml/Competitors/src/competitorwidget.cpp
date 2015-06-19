@@ -61,11 +61,13 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	m_runsModel->addColumn("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified in this stage"));
 	m_runsModel->addColumn("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch in this stage"));
 	m_runsModel->addColumn("runs.cardLent", tr("L", "runs.cardLent")).setToolTip(tr("Card lent in this stage"));
+	/*
 	quickevent::og::SqlTableModel::ColumnDefinition::DbEnumCastProperties runs_status_db_enum_cast_props;
 	runs_status_db_enum_cast_props.setGroupName("runs.status");
 	m_runsModel->addColumn("runs.status", tr("Status"))
 			.setToolTip(tr("Run status in this stage"))
 			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), runs_status_db_enum_cast_props);
+	*/
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);

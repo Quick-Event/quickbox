@@ -6,6 +6,8 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 
+#include <QDateTime>
+
 using namespace Event;
 
 namespace {
@@ -86,9 +88,22 @@ void EventConfig::save(const QString &path_to_save)
 	while(it.hasNext()) {
 		it.next();
 		QString key = it.key();
-		if(!path_to_save.isEmpty() && key != path_to_save)
-			continue;
+		if(!path_to_save.isEmpty()) {
+			if(!key.startsWith(path_to_save))
+				continue;
+			if(key.length() > path_to_save.length() && key[path_to_save.length()] != '.')
+				continue;
+		}
 		QVariant val = it.value();
+		QString val_str;
+		if(val.type() == QVariant::Date)
+			val_str = val.toDate().toString(Qt::ISODate);
+		else if(val.type() == QVariant::Time)
+			val_str = val.toTime().toString(Qt::ISODate);
+		else if(val.type() == QVariant::DateTime)
+			val_str = val.toDateTime().toString(Qt::ISODate);
+		else
+			val_str = val.toString();
 		q_up.bindValue(":key", key);
 		q_up.bindValue(":val", val);
 		q_up.exec();

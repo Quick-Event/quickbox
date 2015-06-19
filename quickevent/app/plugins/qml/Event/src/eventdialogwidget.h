@@ -18,6 +18,7 @@ public:
 
 	void setEventId(const QString &event_id);
 	QString eventId() const;
+	void setEventIdEditable(bool b);
 
 	void loadParams(const QVariantMap &params);
 	QVariantMap saveParams();

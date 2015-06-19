@@ -54,6 +54,7 @@ public:
 	Q_SLOT void clearStageDataCache();
 
 	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
+	Q_SLOT void editEvent();
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 
@@ -84,6 +85,7 @@ private:
 	qf::qmlwidgets::Action *m_actConnectDb;
 	qf::qmlwidgets::Action *m_actCreateEvent;
 	qf::qmlwidgets::Action *m_actOpenEvent;
+	qf::qmlwidgets::Action *m_actEditEvent;
 	qf::qmlwidgets::Action *m_actEditStage;
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;

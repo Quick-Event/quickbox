@@ -134,7 +134,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						.select("runs.disqualified OR runs.offRace OR runs.misPunch AS dis")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
-						.where("runs.status = 'FINISH'")
+						.where("runs.finishTimeMs > 0")
 						.orderBy("misPunch, disqualified, offRace, runs.timeMs");
 				qf::core::sql::Query q;
 				q.exec(qb.toString(), qf::core::Exception::Throw);

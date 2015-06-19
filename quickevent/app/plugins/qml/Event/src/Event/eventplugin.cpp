@@ -138,6 +138,14 @@ void EventPlugin::onInstalled()
 	m_actCreateEvent->setEnabled(false);
 	connect(m_actCreateEvent, SIGNAL(triggered()), this, SLOT(createEvent()));
 
+	m_actEditEvent = new qfw::Action("E&dit event");
+	//m_actEditEvent->setShortcut("Ctrl+N");
+	m_actEditEvent->setEnabled(false);
+	connect(m_actEditEvent, SIGNAL(triggered()), this, SLOT(editEvent()));
+	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
+		this->m_actEditEvent->setEnabled(!event_name.isEmpty());
+	});
+
 	//QObject *core_plugin = fwk->plugin("Core", qf::core::Exception::Throw);
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
@@ -149,6 +157,7 @@ void EventPlugin::onInstalled()
 	a_quit->addSeparatorBefore();
 	m_actConnectDb->addActionAfter(m_actCreateEvent);
 	m_actCreateEvent->addActionAfter(m_actOpenEvent);
+	m_actOpenEvent->addActionAfter(m_actEditEvent);
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
@@ -430,8 +439,25 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 	if(ok) {
 		ok = openEvent(event_name);
 	}
-	return ok;
+	return ok;	
+}
 
+void EventPlugin::editEvent()
+{
+	qfLogFuncFrame();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	qfd::Dialog dlg(fwk);
+	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	EventDialogWidget *event_w = new EventDialogWidget();
+	event_w->setEventId(eventName());
+	event_w->setEventIdEditable(false);
+	event_w->loadParams(eventConfig()->value("event").toMap());
+	dlg.setCentralWidget(event_w);
+	if(!dlg.exec())
+		return;
+
+	eventConfig()->setValue("event", event_w->saveParams());
+	eventConfig()->save("event");
 }
 
 bool EventPlugin::closeEvent()
