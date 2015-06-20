@@ -24,6 +24,7 @@ class QFQMLWIDGETS_DECL_EXPORT Font : public StyleObject
 	// there are some restrictions for assigning primitive types to default properties, see: pen.h
 	Q_CLASSINFO("DefaultProperty", "basedOn")
 	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
+	Q_PROPERTY(QString family READ family WRITE setFamily NOTIFY familyChanged)
 	Q_PROPERTY(FontStyle style READ style WRITE setStyle NOTIFY styleChanged)
 	Q_PROPERTY(FontStyleHint hint READ hint WRITE setHint NOTIFY hintChanged)
 	Q_PROPERTY(FontWeight weight READ weight WRITE setWeight NOTIFY weightChanged)
@@ -63,6 +64,7 @@ public:
 		WeightInherited
 	};
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)
+	QF_PROPERTY_IMPL(QString, f, F, amily)
 	QF_PROPERTY_IMPL2(FontStyle, s, S, tyle, StyleInherited)
 	QF_PROPERTY_IMPL2(FontStyleHint, h, H, int, HintInherited)
 	QF_PROPERTY_IMPL2(FontWeight, w, W, eight, WeightInherited)

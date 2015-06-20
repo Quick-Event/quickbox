@@ -1,9 +1,11 @@
 #include "qmlreportssingleton.h"
 
 #include <qf/qmlwidgets/reports/processor/reportitempara.h>
+#include <qf/qmlwidgets/reports/processor/reportitemimage.h>
 #include <qf/qmlwidgets/reports/processor/reportitemframe.h>
 #include <qf/qmlwidgets/reports/processor/reportitemdetail.h>
 #include <qf/qmlwidgets/reports/processor/reportitemband.h>
+#include <qf/qmlwidgets/reports/processor/reportitembreak.h>
 #include <qf/qmlwidgets/reports/processor/reportitemreport.h>
 #include <qf/qmlwidgets/reports/processor/style/sheet.h>
 #include <qf/qmlwidgets/reports/processor/style/color.h>
@@ -35,6 +37,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemBand>(uri, 1, 0, "Band");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemDetail>(uri, 1, 0, "Detail");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemPara>(uri, 1, 0, "Para");
+		qmlRegisterType<qf::qmlwidgets::reports::ReportItemImage>(uri, 1, 0, "Image");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemBreak>(uri, 1, 0, "Break");
 		qmlRegisterType<qf::qmlwidgets::reports::style::Sheet>(uri, 1, 0, "StyleSheet");
 		qmlRegisterType<qf::qmlwidgets::reports::style::Color>(uri, 1, 0, "Color");

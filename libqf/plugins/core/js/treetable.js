@@ -27,6 +27,11 @@ function Table(data)
 	this._data = data;
 }
 
+Table.prototype.isNull = function()
+{
+	return !(this._data);
+}
+
 Table.prototype.rowCount = function()
 {
 	var ret = 0;
@@ -59,11 +64,24 @@ Table.prototype.addColumn = function(col_name, col_type, col_width)
 			this._data.fields = [];
 		}
 		if(!col_type)
-			col_type = "QString"; 
+			col_type = "QString";
 		this._data.fields.push({name: col_name, type: col_type, width: col_width})
 	}
 }
-
+/*
+Table.prototype.appendRow = function()
+{
+	if(this._data) {
+		if(!(this._data.rows instanceof Array)) {
+			this._data.rows = [];
+		}
+		this._data.fields.push({name: col_name, type: col_type, width: col_width})
+	}
+	else {
+		console.warn("Cannot append row to NULL table!");
+	}
+}
+*/
 Table.prototype.name = function()
 {
 	var ret = null;

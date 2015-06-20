@@ -183,7 +183,9 @@ void ReceiptsWidget::onCardRead()
 void ReceiptsWidget::printNewCards()
 {
 	auto conn  = qf::core::sql::Connection::forName();
-	int connection_id = conn.connectionId();
+	int connection_id = 1;
+	if(!conn.driverName().endsWith("SQLITE"))
+		connection_id = conn.connectionId();
 	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return);
 	int current_stage = currentStageId();
 	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)

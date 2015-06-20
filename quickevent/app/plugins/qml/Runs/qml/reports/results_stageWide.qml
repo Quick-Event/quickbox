@@ -42,7 +42,7 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			columns: "%,%"
+			//columns: "%,%"
 			vinset: 10
 			Band {
 				id: band
@@ -103,6 +103,10 @@ Report {
 							Cell {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
+							}
+							Cell {
+								width: "%"
+								textFn: runnersDetail.dataFn("clubs.name");
 							}
 							Para {
 								width: 18

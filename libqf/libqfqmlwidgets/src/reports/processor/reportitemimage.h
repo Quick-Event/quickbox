@@ -4,8 +4,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef QF_QMLWIDGETS_REPORTS_REPORTITEMPARA_H
-#define QF_QMLWIDGETS_REPORTS_REPORTITEMPARA_H
+#ifndef QF_QMLWIDGETS_REPORTS_REPORTITEMIMAGE_H
+#define QF_QMLWIDGETS_REPORTS_REPORTITEMIMAGE_H
 
 #include "reportitemframe.h"
 #include "../../qmlwidgetsglobal.h"
@@ -61,10 +61,11 @@ public:
 	QF_PROPERTY_IMPL2(DataFormat, d, D, ataFormat, FormatAuto)
 	QF_PROPERTY_IMPL2(DataEncoding, d, D, ataEncoding, EncodingRaw)
 	QF_PROPERTY_IMPL2(DataCompression, d, D, ataCompression, CompressionNone)
-	QF_PROPERTY_IMPL2(AspectRatio, a, A, spectRatio, AspectRatioIgnore)
+	QF_PROPERTY_IMPL2(AspectRatio, a, A, spectRatio, AspectRatioKeep)
 	QF_PROPERTY_BOOL_IMPL(s, S, uppressPrintout)
-	private:
-		void updateResolvedDataSource(const QString &data_source);
+
+private:
+		void updateResolvedDataSource();
 protected:
 	//--virtual bool childrenSynced();
 	//--virtual void syncChildren();
@@ -72,11 +73,11 @@ protected:
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 protected:
 	QString m_resolvedDataSource;
-	//--bool childrenSyncedFlag;
+	QString m_currentDataSource;
 	//--QDomElement fakeLoadErrorPara;
 	//--QDomDocument fakeLoadErrorParaDocument;
 };
 
 }}}
 
-#endif // REPORTITEMIMAGE_H
+#endif // QF_QMLWIDGETS_REPORTS_REPORTITEMIMAGE_H

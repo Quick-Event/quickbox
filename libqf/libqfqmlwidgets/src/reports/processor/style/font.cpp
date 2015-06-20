@@ -59,6 +59,11 @@ QFont Font::font()
 			}
 		}
 		{
+			QString fam = family();
+			if(!fam.isEmpty())
+				m_font.setFamily(fam);
+		}
+		{
 			qreal sz = pointSize();
 			if(sz > 0)
 				m_font.setPointSizeF(sz);

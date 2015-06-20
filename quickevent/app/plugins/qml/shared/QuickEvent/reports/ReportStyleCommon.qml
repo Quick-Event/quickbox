@@ -32,6 +32,11 @@ StyleSheet {
 			width: 2
 		},
 		Pen {
+			name: "black1dot";
+			basedOn: "black1";
+			style: Pen.DotLine
+		},
+		Pen {
 			name: "black1dash";
 			basedOn: "black1";
 			style: Pen.DashLine

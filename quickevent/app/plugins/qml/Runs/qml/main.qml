@@ -65,6 +65,20 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_results_currentStageFirstN
+			text: qsTr('First &n competitors')
+			onTriggered: {
+				results.printCurrentStageFirstN()
+			}
+		},
+		Action {
+			id: act_print_results_currentStageAwards
+			text: qsTr('&Awards')
+			onTriggered: {
+				results.printCurrentStageAwards()
+			}
+		},
+		Action {
 			id: act_export_results_iofxml
 			text: qsTr('&IOF XML 2.3')
 			onTriggered: {
@@ -87,6 +101,8 @@ RunsPlugin {
 
 		a = a_print.addMenuInto("results", "&Results");
 		a.addActionInto(act_print_results_currentStage);
+		a.addActionInto(act_print_results_currentStageFirstN);
+		a.addActionInto(act_print_results_currentStageAwards);
 
 		var a_export = root.partWidget.menuBar.actionForPath("export", true);
 		a_export.text = qsTr("E&xport");

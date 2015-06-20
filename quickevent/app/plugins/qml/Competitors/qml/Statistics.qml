@@ -18,12 +18,12 @@ QtObject {
 		reportModel.queryBuilder.clear()
 		.select2("classes", "name")
 		.select("COUNT(competitors.classId) AS runCount")
-		.select2("classdefs", "mapCount")
+		.select("MAX(classdefs.mapCount) as mapCount") // classdefs.mapCount must be in any agregation function in PSQL, MIN can be here as well
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
 		.join("classes.id", "competitors.classId")
 		.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId={{stage_id}}", "JOIN")
-		.groupBy("competitors.classId")
+		.groupBy("classes.name")
 		.orderBy("classes.name");
 		reportModel.setQueryParameters({stage_id: stage_id})
 		reportModel.reload();

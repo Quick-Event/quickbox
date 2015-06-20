@@ -111,11 +111,20 @@ void ReportItemImage::syncChildren()
 ReportItemImage::ReportItemImage(ReportItem *parent)
 	: Super(parent)
 {
-	connect(this, &ReportItemImage::dataSourceChanged, this, &ReportItemImage::updateResolvedDataSource);
+	/*
+	connect(this, &ReportItemImage::dataSourceChanged, this, [this](const QString &ds) {
+		this->m_currentDataSource = ds;
+	});
+	*/
 }
 
-void ReportItemImage::updateResolvedDataSource(const QString &data_source)
+void ReportItemImage::updateResolvedDataSource()
 {
+	QString data_source = dataSource();
+	if(m_currentDataSource == data_source)
+		return;
+
+	m_currentDataSource = data_source;
 	QString processor_img_key;
 	m_resolvedDataSource = data_source;
 	ReportItem::Image im;
@@ -201,6 +210,7 @@ void ReportItemImage::updateResolvedDataSource(const QString &data_source)
 
 ReportItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaPaint* out, const ReportItem::Rect& bounding_rect)
 {
+	updateResolvedDataSource();
 	ReportItem::PrintResult ret = Super::printMetaPaint(out, bounding_rect);
 	/*--
 	ReportItemMetaPaint *mpi = out->lastChild();

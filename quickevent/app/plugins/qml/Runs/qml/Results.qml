@@ -18,7 +18,7 @@ QtObject {
 		}
 	}
 
-	function currentStageTable()
+	function currentStageTable(max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = event_plugin.currentStageId;
@@ -41,10 +41,15 @@ QtObject {
 			.select2('competitors', 'registration, lastName, firstName')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2('runs', '*')
+			.select2('clubs', 'name')
 			.from('competitors')
+			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+			//.join("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy('runs.disqualified, runs.timeMs');
+		if(max_competitors_in_class)
+			reportModel.queryBuilder.limit(max_competitors_in_class);
 		for(var i=0; i<tt.rowCount(); i++) {
 			var class_id = tt.value(i, "classes.id");
 			console.debug("class id:", class_id);
@@ -66,11 +71,86 @@ QtObject {
 		return tt;
 	}
 
+	function currentStageAwardsTable(max_competitors_in_class)
+	{
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		var tt = new TreeTable.Table();
+
+		reportModel.queryBuilder.clear()
+			.select2('classes', 'id, name')
+			.from('classes')
+			.orderBy('classes.name');//.limit(1);
+		//reportModel.setQueryParameters({stage_id: stage_id})
+		reportModel.reload();
+		var tt_classes = new TreeTable.Table(reportModel.toTreeTableData());
+
+		reportModel.queryBuilder.clear()
+			.select2('competitors', 'registration, lastName, firstName')
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select2('runs', '*')
+			.select2('clubs', 'name')
+			.from('competitors')
+			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}"
+							+ " AND NOT runs.offRace"
+							+ " AND NOT runs.disqualified"
+							+ " AND NOT runs.notCompeting"
+							+ " AND runs.finishTimeMs>0", "JOIN")
+			.where("competitors.classId={{class_id}}")
+			.orderBy('runs.timeMs');
+		if(max_competitors_in_class)
+			reportModel.queryBuilder.limit(max_competitors_in_class);
+		for(var i=0; i<tt_classes.rowCount(); i++) {
+			var class_id = tt_classes.value(i, "classes.id");
+			console.debug("class id:", class_id);
+			reportModel.setQueryParameters({stage_id: stage_id, class_id: class_id});
+			reportModel.reload();
+			var ttd = reportModel.toTreeTableData();
+			var tt2 = new TreeTable.Table(ttd);
+			tt2.addColumn("pos", "int");
+			tt2.addColumn("className", "QString");
+			for(var j=0; j<tt2.rowCount(); j++) {
+				tt2.setValue(j, "pos", j+1);
+				tt2.setValue(j, "className", tt_classes.value(i, "classes.name"));
+			}
+			if(tt.isNull()) {
+				tt.setData(ttd);
+			}
+			else {
+				var n = tt.rowCount();
+				for(var k=0; k<tt2.rowCount(); k++) {
+					for(var l=0; l<tt2.columnCount(); l++) {
+						tt.setValue(n+k, l, tt2.value(k, l));
+					}
+				}
+			}
+		}
+		//console.warn(tt.toString());
+		return tt;
+	}
+
 	function printCurrentStage()
 	{
 		Log.info("runs printResultsCurrentStage triggered");
 		var tt = currentStageTable();
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml", tt.data(), qsTr("Start list by clases"));
+	}
+
+	function printCurrentStageFirstN()
+	{
+		Log.info("runs printCurrentStageFirstN triggered");
+		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Limit number of printed runners in each class to:"), 3, 1);
+		var tt = currentStageTable(n);
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", tt.data(), qsTr("Stage results by clases"));
+	}
+
+	function printCurrentStageAwards()
+	{
+		Log.info("runs printCurrentStageAwards triggered");
+		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 3, 1);
+		var tt = currentStageAwardsTable(n);
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage_awards.qml", tt.data(), qsTr("Stage awards"));
 	}
 
 	function exportIofXml(file_path)

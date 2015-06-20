@@ -201,8 +201,13 @@ void EventPlugin::editStage()
 void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bool loopback)
 {
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
-	if(loopback)
-		emit dbEventNotify(domain, payload);
+	if(loopback) {
+		// emit queued
+		//emit dbEventNotify(domain, payload);
+		QMetaObject::invokeMethod(this, "dbEventNotify", Qt::QueuedConnection,
+								  Q_ARG(QString, domain),
+								  Q_ARG(QVariant, payload));
+	}
 	if(connectionType() == ConnectionType::SingleFile)
 		return;
 	//QVariantMap m;
