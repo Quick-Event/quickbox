@@ -107,6 +107,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>edNameFilter</tabstop>
+  <tabstop>edRegistrationFilter</tabstop>
+  <tabstop>edSiIdFilter</tabstop>
+  <tabstop>tblRegistrations</tabstop>
+  <tabstop>grpFilter</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

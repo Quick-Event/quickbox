@@ -1,5 +1,6 @@
 #include "qmlfilesingleton.h"
 
+#include <qf/core/collator.h>
 #include <qf/core/log.h>
 #include <qf/core/utils/htmlutils.h>
 
@@ -65,6 +66,11 @@ bool QmlFileSingleton::writeXml(const QString &file_path, const QVariant &body_l
 		str = qf::core::utils::HtmlUtils::fromXmlList(xml_lst, opts);
 	}
 	return write(file_path, str);
+}
+
+QString QmlFileSingleton::toAscii7(const QString &s, bool to_lower)
+{
+	return qf::core::Collator::toAscii7(s, to_lower);
 }
 
 QString QmlFileSingleton::tempPath()

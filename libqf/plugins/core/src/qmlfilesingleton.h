@@ -24,6 +24,7 @@ public:
 	Q_INVOKABLE bool writeHtml(const QString &file_path, const QVariant &body_list, const QVariantMap &options);
 	Q_INVOKABLE bool writeXml(const QString &file_path, const QVariant &body_list, const QVariantMap &options);
 
+	Q_INVOKABLE QString toAscii7(const QString &s, bool to_lower = false);
 	Q_INVOKABLE QString tempPath();
 	Q_INVOKABLE bool mkpath(const QString &absolute_dir_path);
 	Q_INVOKABLE QUrl toUrl(const QString &file_path);
