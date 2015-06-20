@@ -78,7 +78,7 @@ Report {
 					width: "%"
 					halign: Frame.AlignHCenter
 					Image {
-						height: 35
+						height: 50
 						dataSource: "/home/fanda/misc/botas/2015/triko/HD.svg"
 					}
 				}
@@ -96,7 +96,7 @@ Report {
 					textStyle: tsNormal
 					text: "za " + detail.data(detail.currentIndex, "pos") + ". místo v kategorii " + detail.data(detail.currentIndex, "className")
 				}
-				Frame { height: 50 }
+				Frame { height: 30 }
 				Frame {
 					width: "%"
 					layout: Frame.LayoutHorizontal
