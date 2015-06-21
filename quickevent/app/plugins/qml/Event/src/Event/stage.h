@@ -13,7 +13,7 @@ namespace Event {
 
 class EVENTPLUGIN_DECL_EXPORT StageDocument;
 
-class StageData : public QVariantMap
+class EVENTPLUGIN_DECL_EXPORT StageData : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;

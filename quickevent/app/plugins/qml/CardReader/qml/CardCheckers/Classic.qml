@@ -62,8 +62,10 @@ CardChecker
 		}
 		var start_time_sec = 0;
 		if(read_card.startTime === 0xEEEE) {        //take start record from start list
-			if(run_id > 0)
+			if(run_id > 0) {
 				start_time_sec = root.startTimeSec(run_id);
+				//console.warn(start_time_sec);
+			}
 			if(start_time_sec === 0) {
 				// take start from check, for testing only
 				start_time_sec = (((read_card.checkTime / 60) >> 0) + 1) * 60;
@@ -71,6 +73,7 @@ CardChecker
 			}
 			else {
 				start_time_sec = root.stageStartSec() + start_time_sec;
+				//console.warn("ddd", start_time_sec);
 			}
 		}
 		else {

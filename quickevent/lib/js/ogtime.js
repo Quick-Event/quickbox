@@ -2,6 +2,11 @@
 
 function msecToString(msec, sec_sep, msec_sep)
 {
+	if(msec < 0) {
+		console.warn("negative numbers conversion is not implemented properly");
+		return "" + (msec / 1000);
+	}
+
 	if(!sec_sep)
 		sec_sep = "."
 	var ms = msec % 1000;

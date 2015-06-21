@@ -75,6 +75,8 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	//m->addColumn("virtual.finishTimeMs", tr("Finish")).setVirtual(true, qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
+	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
 	m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
 	m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
 	/*

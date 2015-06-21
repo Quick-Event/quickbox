@@ -22,6 +22,13 @@ using namespace CardReader;
 
 const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.cardRead";
 
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	return qobject_cast<Event::EventPlugin *>(plugin);
+}
+
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -168,9 +175,14 @@ bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 			}
 		}
 		{
+			Event::StageData stage = eventPlugin()->stageData(eventPlugin()->currentStageId());
+			QTime start00 = stage.startTime();
+			if(start00.hour() >= 12)
+				start00 = start00.addSecs(-12 * 60 *60);
+			int start00_msec = start00.msecsSinceStartOfDay();
 			q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
 			q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
-			q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
+			q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs() - start00_msec);
 			q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
 			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 			q.exec(qf::core::Exception::Throw);

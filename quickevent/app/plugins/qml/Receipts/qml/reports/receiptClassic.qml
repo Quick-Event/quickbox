@@ -26,9 +26,9 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: 210 / 3
+	width: 210 / 3 - 5
 	height: 297
-	hinset: 3
+	hinset: 0
 	vinset: 5
 
 	Frame {
