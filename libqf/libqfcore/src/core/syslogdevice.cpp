@@ -38,7 +38,9 @@ void SysLogDevice::log(Log::Level level, const QMessageLogContext &context, cons
 	syslog(syslog_level, "<%s>[%s:%d] %s", Log::levelName(level), qPrintable(domain), context.line, qPrintable(msg));
 	//LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
 #else
-
+	Q_UNUSED(level)
+	Q_UNUSED(context)
+	Q_UNUSED(msg)
 #warning syslog is supported on Unix platforms only
 
 #endif

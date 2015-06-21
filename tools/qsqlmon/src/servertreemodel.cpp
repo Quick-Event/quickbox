@@ -111,10 +111,9 @@ void ServerTreeModel::loadSettings()
 		}
 		connections_lst << params;
 	}
-	Connection *c = nullptr;
 	for(auto val : connections_lst) {
 		QVariantMap m = val.toMap();
-		c = new Connection(m, m_rootObj);
+		 new Connection(m, m_rootObj);
 	}
 }
 
