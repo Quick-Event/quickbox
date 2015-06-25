@@ -183,6 +183,8 @@ int main(int argc, char *argv[])
 			db_connection.setPort(o_port);
 		db_connection.setDatabaseName(o_database);
 		db_connection.setUserName(o_user);
+		db_connection.setPassword(o_password);
+		//qfInfo() << o_host << o_port << o_user << o_database;
 		bool ok = db_connection.open();
 		if(!ok) {
 			qfError() << db_connection.lastError().text();
