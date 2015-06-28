@@ -1784,11 +1784,11 @@ void TableView::insertRowInline()
 	ix = ix.sibling(ix.row() + 1, ix.column());
 	if(ix.isValid()) {
 		ri = ix.row();
-		int tri = toTableModelRowNo(ri);
+		tri = toTableModelRowNo(ri);
 		if(tri < 0) {
 			qfWarning() << "Valid proxy model index has invalid table model index!";
 			/// this can happen when one inserts to empty table ???? why ????
-			tri = 0;
+			tri = ri = 0;
 		}
 	}
 	tableModel()->insertRow(tri);
