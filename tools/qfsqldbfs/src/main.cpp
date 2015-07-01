@@ -13,8 +13,11 @@
 #include <QSqlError>
 
 #include <iostream>
-//#include <limits>
 #include <signal.h>
+#include <iostream>
+#include <string>
+#include <termios.h>
+#include <unistd.h>
 
 #define USE_QT_EVENT_LOOP
 
@@ -78,7 +81,7 @@ int main(int argc, char *argv[])
 			std::cout << "\t -u" << std::endl;
 			std::cout << "\t--user <user>\t" << "Database user" << std::endl;
 			std::cout << "\t -p" << std::endl;
-			std::cout << "\t--password [<password>]\t" << "Database user password" << std::endl;
+			std::cout << "\t--password <password> | -\t" << "Database user password, use - (hyphen) as password for interactive input." << std::endl;
 			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
 			std::cout << "\t--db-schema\t" << "Database schema name" << std::endl;
 			std::cout << "\t--table-name\t" << "DBFS table name, default is 'dbfs'" << std::endl;
@@ -165,7 +168,13 @@ int main(int argc, char *argv[])
 	if(o_ask_passwd) {
 		char pwd[256];
 		std::cout << "Please, enter your password: ";
-		std::cin.getline (pwd, 256);
+		termios oldt;
+		tcgetattr(STDIN_FILENO, &oldt);
+		termios newt = oldt;
+		newt.c_lflag &= ~ECHO;
+		tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+		std::cin.getline(pwd, 256);
+		tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 		o_password = QString::fromUtf8(pwd);
 	}
 
