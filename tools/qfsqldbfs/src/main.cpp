@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 			std::cout << "\t -u" << std::endl;
 			std::cout << "\t--user <user>\t" << "Database user" << std::endl;
 			std::cout << "\t -p" << std::endl;
-			std::cout << "\t--password <password> | -\t" << "Database user password, use - (hyphen) as password for interactive input." << std::endl;
+			std::cout << "\t--password [<password>]\t" << "Database user password, use -p without password for interactive input." << std::endl;
 			std::cout << "\t--database <database>\t" << "Database name" << std::endl;
 			std::cout << "\t--db-schema\t" << "Database schema name" << std::endl;
 			std::cout << "\t--table-name\t" << "DBFS table name, default is 'dbfs'" << std::endl;
@@ -140,6 +140,9 @@ int main(int argc, char *argv[])
 					o_password = p;
 					i++;
 				}
+			}
+			else {
+				o_ask_passwd = true;
 			}
 		}
 		else if(arg == QStringLiteral("--database")) {
