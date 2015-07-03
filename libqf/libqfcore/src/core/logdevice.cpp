@@ -34,6 +34,9 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 	case QtDebugMsg:
 		level = Log::Level::Debug;
 		break;
+	case QtInfoMsg:
+		level = Log::Level::Info;
+		break;
 	case QtWarningMsg:
 		if(QLatin1String(context.category) == Log::categoryDebugName)
 			level = Log::Level::Debug;
