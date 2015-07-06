@@ -105,6 +105,7 @@ CardReader::CheckedCard CardReaderPlugin::checkCard(const ReadCard &read_card)
 	QVariant v = jsv.toVariant();
 	QVariantMap m = v.toMap();
 	CardReader::CheckedCard cc(m);
+	cc.setCardNumber(read_card.cardNumber());
 	return cc;
 }
 

@@ -168,6 +168,7 @@ Report {
 					}
 				}
 				Frame {
+					width: "%"
 					layout: Frame.LayoutHorizontal
 					Para {
 						width: paraCheck.width
@@ -191,6 +192,11 @@ Report {
 							}
 							return "---";
 						}
+					}
+					Para {
+						width: "%"
+						textHAlign: Frame.AlignRight
+						text: (bandCard.modelLoaded)? "SI:" + bandCard.data("cardNumber"): "";
 					}
 				}
 				bottomBorder: Pen { basedOn: "black1" }

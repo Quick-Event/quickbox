@@ -238,6 +238,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		}
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
+		tt.setValue("cardNumber", checked_card.cardNumber());
 
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
