@@ -56,14 +56,14 @@ void FindRunnerWidget::reload()
 			.orderBy("classes.name, lastName, firstName");
 	{
 		QString first_name_filter;
-		QString last_name_filter = ui->edNameFilter->text().trimmed();
+		QString last_name_filter = ui->edNameFilter->text().trimmed().toLower();
 		int ix = last_name_filter.indexOf(' ');
 		if(ix > 0) {
 			first_name_filter = last_name_filter.mid(ix + 1).trimmed();
 			last_name_filter = last_name_filter.mid(0, ix).trimmed();
 		}
-		QString class_filter = ui->edClassFilter->text().trimmed();
-		QString registration_filter = ui->edRegistrationFilter->text().trimmed();
+		QString class_filter = ui->edClassFilter->text().trimmed().toLower();
+		QString registration_filter = ui->edRegistrationFilter->text().trimmed().toLower();
 		QString siid_filter = ui->edSiIdFilter->text().trimmed();
 
 		int l = first_name_filter.length()
@@ -75,13 +75,13 @@ void FindRunnerWidget::reload()
 			return;
 		qfDebug() << "first_name:" << first_name_filter << "last_name:" << last_name_filter;
 		if(!first_name_filter.isEmpty())
-			qb.where("firstName LIKE '%" + first_name_filter + "%'");
+			qb.where("LOWER(firstName) LIKE '%" + first_name_filter + "%'");
 		if(!last_name_filter.isEmpty())
-			qb.where("lastName LIKE '%" + last_name_filter + "%'");
+			qb.where("LOWER(lastName) LIKE '%" + last_name_filter + "%'");
 		if(!class_filter.isEmpty())
-			qb.where("classes.name LIKE '%" + class_filter + "%'");
+			qb.where("LOWER(classes.name) LIKE '%" + class_filter + "%'");
 		if(!registration_filter.isEmpty())
-			qb.where("registration LIKE '%" + registration_filter + "%'");
+			qb.where("LOWER(registration) LIKE '%" + registration_filter + "%'");
 		if(!siid_filter.isEmpty())
 			qb.where("runs.siId LIKE '%" + siid_filter + "%'");
 	}
