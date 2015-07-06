@@ -26,8 +26,8 @@ else {
 	SUBDIRS += \
 		libsiut \
 		tools \
-#		qsishow \
 		quickevent \
+		qsishow \
 
 }
 

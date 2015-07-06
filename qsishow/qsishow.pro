@@ -1,44 +1,43 @@
 MY_SUBPROJECT = qsishow
-!include(go_to_top.pri):error("cann't find go_to_top.pri")
 
 message($$MY_SUBPROJECT)
 
 TEMPLATE = app
 
-QT += gui sql script scripttools #xml  scripttools
+QT += qml quick
 
-CONFIG +=                   \
-	warn_on                   \
-	qt                   \
-	thread               \
-#	uitools               \
-#	assistant	            \
+DEFINES +=
 
-DEFINES += QT
+isEmpty(QF_PROJECT_TOP_BUILDDIR) {
+	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
+}
+else {
+	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
+	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+}
+message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
+
+TARGET = $$MY_SUBPROJECT
+DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
+message ( DESTDIR: $$DESTDIR )
 
 #QML_IMPORT_PATH = /home/fanda/qt/si/qsishow/divers/qsishow/qml
 
 # tohle zajisti, aby pri exception backtrace nasel symboly z aplikace
 unix:QMAKE_LFLAGS_APP += -rdynamic
 
-TARGET = $$MY_SUBPROJECT
-DESTDIR = $$MY_BUILD_DIR/bin
-
-INCLUDEPATH += $$MY_TOP_DIR/libqf/libqfcore/include 
-#INCLUDEPATH += $$PWD/../libqfsiut/include
-
-DOLAR=$
-
 LIBS +=      \
-#	-lqfsiut$$QF_LIBRARY_DEBUG_EXT  \
-	-lqfcore$$QF_LIBRARY_DEBUG_EXT  \
+	-lqfcore  \
+	-lqfqmlwidgets  \
 
 win32: LIBS +=  \
-	-L$$MY_BUILD_DIR/bin  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
 
 unix: LIBS +=  \
-	-L$$MY_BUILD_DIR/lib  \
-	-Wl,-rpath,\'$${DOLAR}$${DOLAR}ORIGIN/../lib\'  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
+	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
+
+INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
 
 message(LIBS: $$LIBS)
 
@@ -49,23 +48,14 @@ console: message(CONSOLE)
 #RESOURCES    += $${MY_SUBPROJECT}.qrc
 #FORMS    +=   \
 
-# The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += main.cpp \
+SOURCES += \
+	main.cpp \
 	application.cpp \
-    model.cpp \
+	model.cpp \
 
-HEADERS += application.h \
-    model.h \
-
-# Please do not modify the following two lines. Required for deployment.
-include(qmlapplicationviewer/qmlapplicationviewer.pri)
-#qtcAddDeployment()
+HEADERS += \
+	application.h \
+	model.h \
 
 OTHER_FILES += \
-    divers/qsishow/qml/Cell.qml \
-    divers/qsishow/qml/scripts.js \
-    divers/qsishow/qml/main.qml \
-    divers/qsishow/qml/results/Components/qmldir \
-    divers/qsishow/qml/results/Components/Detail.qml \
-    divers/qsishow/qml/Components/qmldir \
-    divers/qsishow/qml/Components/Detail.qml
+	qsishow-data/qml/* \

@@ -1,9 +1,9 @@
 #include "application.h"
-#include "qmlapplicationviewer.h"
 
-#include <QDeclarativeContext>
+#include <QQmlContext>
 #include <QSettings>
 #include <QDebug>
+#include <QQmlApplicationEngine>
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -12,6 +12,14 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationDomain("sourceforge.net");
 	QCoreApplication::setApplicationName("QSIShow");
 
+	Application app(argc, argv);
+
+	QQmlApplicationEngine engine;
+	engine.rootContext()->setContextProperty("ctx_app", app.data());
+	engine.load(QUrl(QStringLiteral("qsishow-data/qml/main.qml")));
+
+	return app.exec();
+	/*
 	QScopedPointer<Application> app(new Application(argc, argv));
 
 	QmlApplicationViewer viewer;
@@ -26,4 +34,5 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	viewer.showExpanded();
 
 	return app->exec();
+	*/
 }

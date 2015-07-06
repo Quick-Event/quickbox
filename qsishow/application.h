@@ -1,17 +1,19 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QVariant>
 #include <QtSql/QSqlQuery>
 
-class Application : public QApplication
+class Application : public QGuiApplication
 {
-    Q_OBJECT
+	Q_OBJECT
+private:
+	typedef QGuiApplication Super;
 public:
-    explicit Application(int & argc, char ** argv);
+	explicit Application(int & argc, char ** argv);
 
-	static Application* instance();
+	static Application *instance();
 	QSqlDatabase sqlConnetion();
 	QSqlQuery execSql(const QString &query_str);
 	/// nevim proc, ale z QML nemuzu na properties objektu primo

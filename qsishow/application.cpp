@@ -10,7 +10,7 @@
 #include <QDebug>
 
 Application::Application(int &argc, char **argv)
-	: QApplication(argc, argv)
+	: Super(argc, argv)
 {
 	initSettings();
 	Model *m = new Model(this);
@@ -171,10 +171,11 @@ void Application::setSetting(const QString &path, const QVariant &val)
 	ss.setValue(path, val);
 }
 
-Application* Application::instance()
+Application *Application::instance()
 {
-	Application *ret = qobject_cast<Application*>(QApplication::instance());
-	if(!ret) qFatal("Invalid Application instance");
+	Application *ret = qobject_cast<Application*>(Super::instance());
+	if(!ret)
+		qFatal("Invalid Application instance");
 	return ret;
 }
 
