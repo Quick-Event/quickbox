@@ -1,15 +1,17 @@
-MY_SUBPROJECT = qsishow
+MY_SUBPROJECT = quickshow
 
 message($$MY_SUBPROJECT)
 
 TEMPLATE = app
 
-QT += qml quick
+CONFIG += c++11
+
+QT += qml quick sql
 
 DEFINES +=
 
 isEmpty(QF_PROJECT_TOP_BUILDDIR) {
-	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
+	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/..
 }
 else {
 	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
@@ -21,14 +23,13 @@ TARGET = $$MY_SUBPROJECT
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
-#QML_IMPORT_PATH = /home/fanda/qt/si/qsishow/divers/qsishow/qml
+QML_IMPORT_PATH = $$PWD/quickshow-data/qml
 
 # tohle zajisti, aby pri exception backtrace nasel symboly z aplikace
 unix:QMAKE_LFLAGS_APP += -rdynamic
 
-LIBS +=      \
-	-lqfcore  \
-	-lqfqmlwidgets  \
+INCLUDEPATH += \
+	$$PWD/../libqf/libqfcore/include
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
@@ -37,7 +38,9 @@ unix: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
 
-INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
+LIBS +=      \
+	-lqfcore  \
+#	-lqfqmlwidgets  \
 
 message(LIBS: $$LIBS)
 
@@ -51,11 +54,13 @@ console: message(CONSOLE)
 SOURCES += \
 	main.cpp \
 	application.cpp \
+	appclioptions.cpp \
 	model.cpp \
 
 HEADERS += \
 	application.h \
+	appclioptions.h \
 	model.h \
 
 OTHER_FILES += \
-	qsishow-data/qml/* \
+	quickshow-data/qml/* \

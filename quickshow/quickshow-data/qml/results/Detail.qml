@@ -1,5 +1,4 @@
-// import QtQuick 1.0 // to target S60 5th Edition or Maemo 5
-import QtQuick 1.1
+import QtQuick 2.4
 import "../scripts.js" as JS
 
 Rectangle {
@@ -43,8 +42,8 @@ Rectangle {
 	}
 	Text {
 		id: textReg
-        width: 60
-        text: qsTr("CHT7007")
+		width: 60
+		text: qsTr("CHT7007")
 		anchors.right: textTime.left
 		anchors.rightMargin: cell.textSpacing
 		verticalAlignment: Text.AlignVCenter
@@ -56,8 +55,8 @@ Rectangle {
 	}
 	Text {
 		id: textTime
-        width: 100
-        text: qsTr("123.55")
+		width: 100
+		text: qsTr("123.55")
 		anchors.right: textStatus.left
 		anchors.rightMargin: cell.textSpacing
 		horizontalAlignment: Text.AlignRight
@@ -83,14 +82,12 @@ Rectangle {
 	}
 	function loadData(data)
 	{
-		var pos = data.pos + ".";
-		if(data.status != "OK" || data.flag) pos = "";
-		textPos.text = pos;
-		textName.text = data.name;
-		textReg.text = data.reg;
-		textTime.text = JS.secToOBTime(data.laptime);
-		var status = data.status;
-		if(status == "OK") status = "";
-		textStatus.text = status;
+		//console.info(JSON.stringify(data))
+		var ok = !data.runs__disqualified;
+		textPos.text = (ok)? data.pos + ".": "";
+		textName.text = data.competitorname;
+		textReg.text = data.competitors__registration;
+		textTime.text = JS.msecToOBTime(data.runs__timems);
+		textStatus.text = (ok)? "": "DISK";
 	}
 }

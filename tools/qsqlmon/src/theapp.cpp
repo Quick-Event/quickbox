@@ -44,11 +44,6 @@ SqlJournal TheApp::f_sqlJournal;
 TheApp::TheApp(int & argc, char ** argv)
 	: QApplication(argc, argv)
 {
-	QCoreApplication::setOrganizationDomain("quickbox.org");
-	QCoreApplication::setOrganizationName("QuickBox");
-	//f_reportProcessorSearchDirs = NULL;
-	setApplicationName("qsqlmon");
-
 	QSqlDatabase::registerSqlDriver("QFHTTPMYSQL", new QFHttpMySqlDriverCreator());
 
 	QStringList args = arguments();

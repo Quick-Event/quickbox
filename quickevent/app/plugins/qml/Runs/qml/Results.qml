@@ -47,7 +47,7 @@ QtObject {
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
 			//.join("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
 			.where("competitors.classId={{class_id}}")
-			.orderBy('runs.disqualified, runs.timeMs');
+			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		if(max_competitors_in_class)
 			reportModel.queryBuilder.limit(max_competitors_in_class);
 		for(var i=0; i<tt.rowCount(); i++) {

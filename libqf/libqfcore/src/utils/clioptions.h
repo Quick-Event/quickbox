@@ -92,7 +92,8 @@ public:
 	void dump() const;
 	void dump(QTextStream &os) const;
 public slots:
-	QVariant value(const QString &name, const QVariant default_value = QVariant()) const;
+	QVariant value(const QString &name) const;
+	QVariant value(const QString &name, const QVariant default_value) const;
 protected:
 	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();
@@ -112,13 +113,17 @@ private:
 
 #define CLIOPTION_GETTER_SETTER(ptype, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const { \
-		Option opt = option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
-		QVariant val = opt.value(); \
-		if(!val.isValid()) \
-			val = opt.defaultValue(); \
+		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
 		return qvariant_cast<ptype>(val); \
 	} \
 	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
+
+#define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
+	public: ptype getter_prefix##name_rest() const { \
+		QVariant val = value(pkey); \
+		return qvariant_cast<ptype>(val); \
+	} \
+	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
 
 }}}
 

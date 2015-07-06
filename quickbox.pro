@@ -27,7 +27,7 @@ else {
 		libsiut \
 		tools \
 		quickevent \
-		qsishow \
+		quickshow \
 
 }
 

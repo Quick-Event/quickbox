@@ -95,14 +95,18 @@ CLIOptions::Option& CLIOptions::optionRef(const QString& name) throw(Exception)
 	return m_options[name];
 }
 
+QVariant CLIOptions::value(const QString &name) const
+{
+	Option opt = option(name, qf::core::Exception::Throw);
+	QVariant ret = opt.value();
+	if(!ret.isValid())
+		ret = opt.defaultValue();
+	return ret;
+}
+
 QVariant CLIOptions::value(const QString& name, const QVariant default_value) const
 {
-	QVariant ret;
-	Option opt = option(name, false);
-	if(opt.isNull())
-		ret = default_value;
-	else
-		ret = opt.value();
+	QVariant ret = value(name);
 	if(!ret.isValid())
 		ret = default_value;
 	return ret;
@@ -284,8 +288,7 @@ void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap
 		QString key = it.key().trimmed();
 		QF_ASSERT(!key.isEmpty(), "Empty key!", continue);
 		if(!key_prefix.isEmpty()) {
-			key[0] = key[0].toUpper();
-			key = key_prefix + key;
+			key = key_prefix + '.' + key;
 		}
 		QVariant v = it.value();
 		if(v.type() == QVariant::Map) {

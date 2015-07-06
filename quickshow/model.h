@@ -22,7 +22,7 @@ protected:
 	bool addCategoryToStorage();
 protected:
 	QVariantList f_storage;
-	QStringList f_categoriesToProceed;
+	QVariantList f_categoriesToProceed;
 	QVariantMap f_queryPlaceholders;
 	int f_shiftOffset;
 };
