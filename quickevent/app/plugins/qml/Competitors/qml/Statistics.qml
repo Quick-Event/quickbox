@@ -60,8 +60,10 @@ QtObject {
 			}
 		}
 		//console.warn("tt", tt.toString());
-		QmlWidgetsSingleton.showReport(competitorsPlugin.manifest.homeDir + "/reports/competitorsStatistics.qml", tt.data()
-									   , qsTr("Competitors statistics"), ""
+		QmlWidgetsSingleton.showReport(competitorsPlugin.manifest.homeDir + "/reports/competitorsStatistics.qml"
+									   , tt.data()
+									   , qsTr("Competitors statistics")
+									   , ""
 									   , {stageCount: event_plugin.stageCount});
 	}
 }

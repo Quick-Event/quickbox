@@ -6,13 +6,16 @@ Frame {
 	id: root
 	property Band dataBand
 	property string reportTitle
+	property bool showStageNumber: true
 	Para {
 		textStyle: TextStyle {basedOn: "big"}
 		textFn: function() {
 			var ret = root.reportTitle;
-			var stage_cnt = dataBand.data("event").stageCount
-			if(stage_cnt > 1)
-				ret = "E" + dataBand.data("stageId") + " " + ret;
+			if(root.showStageNumber) {
+				var stage_cnt = dataBand.data("event").stageCount
+				if(stage_cnt > 1)
+					ret = "E" + dataBand.data("stageId") + " " + ret;
+			}
 			return ret;
 		}
 	}

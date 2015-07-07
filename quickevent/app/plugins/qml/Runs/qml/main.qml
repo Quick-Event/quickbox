@@ -10,6 +10,10 @@ RunsPlugin {
 	id: root
 
 	property QfObject internals: QfObject {
+		StartLists {
+			id: startLists
+			runsPlugin: root
+		}
 		Results {
 			id: results
 			runsPlugin: root
@@ -25,6 +29,13 @@ RunsPlugin {
 			text: qsTr('&Classes')
 			onTriggered: {
 				root.printStartListClasses()
+			}
+		},
+		Action {
+			id: act_print_startList_classes_nstages
+			text: qsTr('Classes n stages')
+			onTriggered: {
+				startLists.printClassesNStages()
 			}
 		},
 		Action {
@@ -98,6 +109,8 @@ RunsPlugin {
 		a.addActionInto(act_print_startList_classes);
 		a.addActionInto(act_print_startList_clubs);
 		a.addActionInto(act_print_startList_starters);
+		a.addSeparatorInto();
+		a.addActionInto(act_print_startList_classes_nstages);
 
 		a = a_print.addMenuInto("results", "&Results");
 		a.addActionInto(act_print_results_currentStage);

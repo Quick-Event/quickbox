@@ -74,7 +74,7 @@ public:
 	QueryBuilder& from(const QueryBuilder &table);
 
 	//! @param t1_key in form tablename.keyname.
-	//! @param t2_key in form tablename.keyname.
+	//! @param t2_key in form tablename.keyname or tablename.keyname AS tablename_alias.
 	QueryBuilder& join(const QString &t1_key, const QString &t2_key, const QString  &join_kind = "LEFT JOIN");
 	//! Tady si muzu do joinu napsat co chci (vcetne join_kind), nekdy to jinak nejde.
 	QueryBuilder& join(const QString &join);
@@ -122,6 +122,7 @@ private:
 	struct TableKey
 	{
 		QString table;
+		QString tableAlias;
 		QString field;
 
 		TableKey(const QString &t, const QString &f) : table(t), field(f) {}
@@ -135,10 +136,15 @@ private:
 			else {
 				field = n;
 			}
+			ix = field.indexOf(QLatin1String(" AS "), Qt::CaseInsensitive);
+			if(ix > 0) {
+				tableAlias = field.mid(ix + 4);
+				field = field.mid(0, ix);
+			}
 		}
 
 		bool isEmpty() const {return table.isEmpty() && field.isEmpty();}
-		QString buildString() const {return table + '.' + field;}
+		QString buildString() const {return (tableAlias.isEmpty()? table: tableAlias) + '.' + field;}
 	};
 	struct SelectTableFields {
 		QString table;

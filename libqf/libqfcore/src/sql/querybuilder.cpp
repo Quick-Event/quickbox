@@ -103,8 +103,11 @@ QString QueryBuilder::JoinDefinition::buildString(const QueryBuilder::BuildOptio
 			relation = joinRelation.toString();
 		}
 	}
-	if(relation.isEmpty())
+	if(relation.isEmpty()) {
 		relation = slaveKey.table;
+		if(!slaveKey.tableAlias.isEmpty())
+			relation += " AS " + slaveKey.tableAlias;
+	}
 	QString ret;
 	if(masterKey.isEmpty() && slaveKey.isEmpty()) {
 		ret += relation;
