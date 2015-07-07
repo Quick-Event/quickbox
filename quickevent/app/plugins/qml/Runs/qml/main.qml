@@ -46,6 +46,13 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_startList_clubs_nstages
+			text: qsTr('Clubs n stages')
+			onTriggered: {
+				startLists.printClubsNStages()
+			}
+		},
+		Action {
 			id: act_print_startList_starters
 			text: qsTr('&Starters')
 			onTriggered: {
@@ -111,6 +118,7 @@ RunsPlugin {
 		a.addActionInto(act_print_startList_starters);
 		a.addSeparatorInto();
 		a.addActionInto(act_print_startList_classes_nstages);
+		a.addActionInto(act_print_startList_clubs_nstages);
 
 		a = a_print.addMenuInto("results", "&Results");
 		a.addActionInto(act_print_results_currentStage);
