@@ -159,9 +159,9 @@ class ReportViewWidget::PainterWidget : public QWidget
 {
 	Q_OBJECT
 protected:
-	virtual void mousePressEvent(QMouseEvent *e);
-	virtual void wheelEvent(QWheelEvent *event);
-	virtual void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
+	//virtual void wheelEvent(QWheelEvent *event);
+	void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 	ReportViewWidget* reportViewWidget();
 	/// screen dots per mm
 signals:
@@ -178,12 +178,12 @@ protected:
 	QPoint f_dragMouseStartPos;
 	QPoint f_dragViewportStartPos;
 protected:
-	virtual void keyPressEvent(QKeyEvent *ev);
-	virtual void keyReleaseEvent(QKeyEvent *ev);
-	virtual void wheelEvent(QWheelEvent *e);
-	virtual void mousePressEvent(QMouseEvent *ev);
-	virtual void mouseReleaseEvent(QMouseEvent *ev);
-	virtual void mouseMoveEvent(QMouseEvent *ev);
+	void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+	void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+	void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
+	void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+	void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+	void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 	//virtual void dragMoveEvent(QDragMoveEvent *ev);
 signals:
 	void showNextPage();

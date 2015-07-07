@@ -64,6 +64,18 @@ void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 		}
 		else {
 			QScrollBar *sb = verticalScrollBar();
+			if(sb) {
+				if(sb->value() == sb->minimum() && ev->delta() > 0) {
+					emit showPreviousPage();
+					ev->accept();
+					return;
+				}
+				if(sb->value() == sb->maximum() && ev->delta() < 0) {
+					emit showNextPage();
+					ev->accept();
+					return;
+				}
+			}
 			if(!sb || !sb->isVisible()) {
 				/// pokud neni scroll bar, nemuzu se spolehnout na funkci verticalScrollBarValueChanged(), protoze value je pro oba smery == 0
 				//qfInfo() << e->delta();
@@ -274,25 +286,6 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 			}
 		}
 	}
-}
-
-void ReportViewWidget::PainterWidget::wheelEvent(QWheelEvent *event)
-{
-	/*
-	if(event->modifiers() == Qt::ControlModifier) {
-		int delta = event->delta();
-		//int numSteps = numDegrees / 15;
-
-		if (event->orientation() == Qt::Horizontal) {
-			//scrollHorizontally(numSteps);
-		} else {
-			emit zoomOnWheel(delta, event->pos());
-		}
-		event->accept();
-	}
-	else
-		*/
-		QWidget::wheelEvent(event);
 }
 
 //====================================================
