@@ -55,8 +55,8 @@ QVariant TableViewProxyModel::data(const QModelIndex &index, int role) const
 
 QVariant TableViewProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
-		return section;
+	if(orientation == Qt::Vertical && role == Qt::DisplayRole)
+		return section + 1;
 	return Super::headerData(section, orientation, role);
 }
 
