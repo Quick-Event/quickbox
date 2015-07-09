@@ -53,6 +53,13 @@ QVariant TableViewProxyModel::data(const QModelIndex &index, int role) const
 	return ret;
 }
 
+QVariant TableViewProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
+		return section;
+	return Super::headerData(section, orientation, role);
+}
+
 bool TableViewProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
 	if(m_rowFilterString.isEmpty())

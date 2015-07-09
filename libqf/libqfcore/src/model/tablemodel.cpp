@@ -92,6 +92,9 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	if(role == RawValueRole) {
 		ret = value(index.row(), index.column());
 	}
+	else if(role == ValueIsDirtyRole) {
+		ret = isDirty(index.row(), index.column());
+	}
 	else if(role == SortRole) {
 		int type = columnType(index.column());
 		if(type == QVariant::Bool)
@@ -136,14 +139,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				format = m_defaultDateTimeFormat;
 				//qfInfo() << "format" << format;
 			}
-			/*
-			else if(type == QVariant::Int) {
-				format = intFormat();
-			}
-			else if(type == QVariant::Double) {
-				format = doubleFormat();
-			}
-			*/
 		}
 		if(!format.isEmpty()) {
 			if(type == QVariant::Time) {
@@ -158,11 +153,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				QDateTime dt = ret.toDateTime();
 				ret = dt.toString(format);
 			}
-			/*
-			else if(type == QVariant::Double) {
-				ret = QFString::number(ret.toDouble(), format);
-			}
-			*/
 		}
 	}
 	else if(role == Qt::EditRole) {
@@ -292,6 +282,10 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 		if(ret)
 			emit dataChanged(index, index);
 	}
+	else if(role == ValueIsDirtyRole) {
+		bool d = value.toBool();
+		setDirty(index.row(), index.column(), d);
+	}
 	return ret;
 }
 
@@ -385,9 +379,6 @@ void TableModel::setNullReportedAsString(bool arg)
 bool TableModel::setValue(int row, int column, const QVariant &val)
 {
 	bool ret = false;
-	if(!m_table.isValidRowIndex(row)) {
-		qfDebug() << "debug";
-	}
 	QF_ASSERT(m_table.isValidRowIndex(row),
 			  tr("Invalid table row: %1").arg(row),
 			  return ret);
@@ -498,6 +489,31 @@ bool TableModel::isDirty(int row_ix, const QString &col_name) const
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return ret);
 	return isDirty(row_ix, col_ix);
+}
+
+void TableModel::setDirty(int row, int column, bool d)
+{
+	QF_ASSERT(m_table.isValidRowIndex(row),
+			  tr("Invalid table row: %1").arg(row),
+			  return);
+	int table_field_index = tableFieldIndex(column);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field index for column index: %1").arg(column),
+			  return);
+	QF_ASSERT(m_table.isValidFieldIndex(table_field_index),
+			  tr("Invalid table field index: %1").arg(table_field_index),
+			  return);
+	qfu::TableRow &r = m_table.rowRef(row);
+	r.setDirty(table_field_index, d);
+}
+
+void TableModel::setDirty(int row_ix, const QString &col_name, bool d)
+{
+	int col_ix = columnIndex(col_name);
+	QF_ASSERT(col_ix >= 0,
+			  tr("Cannot find column index for name: '%1'").arg(col_name),
+			  return);
+	return setDirty(row_ix, col_ix, d);
 }
 
 qf::core::utils::TableRow TableModel::tableRow(int row_no)

@@ -27,7 +27,7 @@ private:
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
 					   FieldTypeRole, ColumnDefinitionRole,
-					   RawValueRole, ValueIsNullRole,
+					   RawValueRole, ValueIsNullRole, ValueIsDirtyRole,
 					   SortRole,
 					   FirstUnusedRole };
 	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
@@ -174,8 +174,11 @@ public:
 	Q_INVOKABLE virtual QVariant origValue(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant origValue(int row_ix, const QString& col_name) const;
 	Q_INVOKABLE virtual QVariantMap values(int row_ix) const;
-	Q_INVOKABLE bool isDirty(int row_ix, int column_ix) const;
+	Q_INVOKABLE virtual bool isDirty(int row_ix, int column_ix) const;
 	Q_INVOKABLE bool isDirty(int row_ix, const QString& col_name) const;
+
+	Q_INVOKABLE virtual void setDirty(int row, int column, bool d);
+	Q_INVOKABLE void setDirty(int row_ix, const QString& col_name, bool d);
 
 	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
 	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
