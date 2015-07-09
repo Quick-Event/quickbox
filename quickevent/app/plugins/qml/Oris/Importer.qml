@@ -144,7 +144,7 @@ QtObject {
 				var competitor_doc = cp.createCompetitorDocument(root);
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
-					Log.debug(JSON.stringify(competitor_obj, null, 2));
+					console.debug(JSON.stringify(competitor_obj, null, 2));
 					Log.info(competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
 					var siid = parseInt(competitor_obj.SI);
 					var note = competitor_obj.Note;
@@ -155,12 +155,22 @@ QtObject {
 					if(competitor_obj.RequestedStart) {
 						note += ' req. start: ' + competitor_obj.RequestedStart;
 					}
+					var first_name = competitor_obj.FirstName;
+					var last_name = competitor_obj.LastName;
+					if(!first_name && !last_name) {
+						var name = competitor_obj.Name;
+						if(name) {
+							var arr = name.split(' ');
+							last_name = arr[0];
+							first_name = arr[1];
+						}
+					}
 					FrameWork.showProgress("Importing: " + competitor_obj.LastName + " " + competitor_obj.FirstName, items_processed, competitors_count);
 					competitor_doc.loadForInsert();
 					competitor_doc.setValue('classId', parseInt(competitor_obj.ClassID));
 					competitor_doc.setValue('siId', siid);
-					competitor_doc.setValue('firstName', competitor_obj.FirstName);
-					competitor_doc.setValue('lastName', competitor_obj.LastName);
+					competitor_doc.setValue('firstName', first_name);
+					competitor_doc.setValue('lastName', last_name);
 					competitor_doc.setValue('registration', competitor_obj.RegNo);
 					competitor_doc.setValue('licence', competitor_obj.Licence);
 					competitor_doc.setValue('note', note);

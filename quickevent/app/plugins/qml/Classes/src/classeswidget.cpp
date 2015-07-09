@@ -230,7 +230,12 @@ void ClassesWidget::import_ocad()
 					QVariantList codes;
 					QStringList sl = s.splitAndTrim(';');
 					for (int i = 0; i < sl.count()-2; i+=2) {
-						codes << sl[i+1].toInt();
+						bool ok;
+						int code = sl[i+1].toInt(&ok);
+						if(ok)
+							codes << code;
+						else
+							QF_EXCEPTION(QString("Invalid code definition '%1' at sequence no: %2 in '%3'\nline: %4").arg(sl[i+1]).arg(i).arg(s).arg(line));
 					}
 					cd.setCodes(codes);
 				}
@@ -240,7 +245,7 @@ void ClassesWidget::import_ocad()
 				courses << cd;
 			{
 				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				qfDebug() << doc.toJson();
+				qfInfo().noquote() << doc.toJson();
 			}
 
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();

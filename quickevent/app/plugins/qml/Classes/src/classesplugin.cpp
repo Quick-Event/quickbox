@@ -106,7 +106,7 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 				for(auto class_name : cd.classes()) {
 					int class_id = class_ids.value(class_name);
 					if(class_id > 0) {
-						qfInfo() << "\t" << "updateing classdefs for" << class_name << "stage:" << current_stage;
+						qfInfo() << "\t" << "updating classdefs for" << class_name << "stage:" << current_stage;
 						q.bindValue(":classId", class_id);
 						q.bindValue(":courseId", course_id);
 						q.bindValue(":stageId", current_stage);

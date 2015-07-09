@@ -57,11 +57,12 @@ private:
 	 * @return list of runs.id for each club sorted by their count, longest list of runners is first
 	 */
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
-	QList<int> runnersForClass(int stage_id, int class_id);
+	QList<int> runsForClass(int stage_id, int class_id);
+	QMap<int, int> competitorsForClass(int stage_id, int class_id);
 
 	void onCustomContextMenuRequest(const QPoint &pos);
 private:
-	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs};
+	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder};
 
 	Ui::RunsWidget *ui;
 	RunsTableModel *m_runsModel;

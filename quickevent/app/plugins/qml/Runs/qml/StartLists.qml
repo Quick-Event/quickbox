@@ -94,7 +94,7 @@ QtObject {
 			var tt2 = new TreeTable.Table(ttd);
 			tt.addTable(i, ttd);
 		}
-		console.info(tt.toString());
+		console.debug(tt.toString());
 		return tt;
 	}
 

@@ -46,6 +46,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->cbxDrawMethod->addItem(tr("Randomized equidistant clubs"), static_cast<int>(DrawMethod::RandomizedEquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Random number"), static_cast<int>(DrawMethod::RandomNumber));
 	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
+	ui->cbxDrawMethod->addItem(tr("Stage 1 reverse order"), static_cast<int>(DrawMethod::StageReverseOrder));
 	ui->frmDrawing->setVisible(false);
 
 	ui->tblRunsToolBar->setTableView(ui->tblRuns);
@@ -79,6 +80,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
 	m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
 	m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
+	m->addColumn("competitors.note", tr("Note"));
 	/*
 	qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 	status_props.setGroupName("runs.status");
@@ -127,7 +129,7 @@ void RunsWidget::reload()
 {
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "registration, siId")
+			.select2("competitors", "registration, siId, note")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
@@ -267,19 +269,26 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	return ret;
 }
 
-QList<int> RunsWidget::runnersForClass(int stage_id, int class_id)
+QList<int> RunsWidget::runsForClass(int stage_id, int class_id)
 {
 	qfLogFuncFrame();
-	QList<int> ret;
+	QList<int> ret = competitorsForClass(stage_id, class_id).values();
+	return ret;
+}
+
+QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
+{
+	qfLogFuncFrame();
+	QMap<int, int> ret;
 	qf::core::sql::QueryBuilder qb;
-	qb.select2("runs", "id")
+	qb.select2("runs", "id, competitorId")
 			.from("competitors")
 			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id), "JOIN")
 			.where("competitors.classId=" QF_IARG(class_id));
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	while(q.next()) {
-		ret << q.value("runs.id").toInt();
+		ret[q.value("competitorId").toInt()] = q.value("id").toInt();
 	}
 	return ret;
 }
@@ -325,9 +334,36 @@ void RunsWidget::on_btDraw_clicked()
 					continue;
 				QList<int> runners_draw_ids;
 				DrawMethod dm = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
+				qfDebug() << "DrawMethod:" << (int)dm;
 				if(dm == DrawMethod::RandomNumber) {
-					runners_draw_ids = runnersForClass(stage_id, class_id);
+					runners_draw_ids = runsForClass(stage_id, class_id);
 					shuffle(runners_draw_ids);
+				}
+				else if(dm == DrawMethod::StageReverseOrder) {
+					QMap<int, int> competitor_to_run = competitorsForClass(stage_id, class_id);
+					//for(auto i : orig_lst)
+					//	qfDebug() << "A:" << i;
+					//runners_draw_ids.clear();
+					qf::core::sql::QueryBuilder qb1;
+					qb1.select2("runs", "competitorId")
+							//.select2("competitors", "lastName")
+							.from("competitors")
+							.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(1), "JOIN")
+							.where("competitors.classId=" QF_IARG(class_id))
+							.orderBy("runs.startTimeMs DESC");
+					qfs::Query q(transaction.connection());
+					q.exec(qb1.toString(), qf::core::Exception::Throw);
+					while(q.next()) {
+						int competitor_id = q.value("competitorId").toInt();
+						//qfDebug() << competitor_id << q.value("lastName").toString();
+						if(competitor_to_run.contains(competitor_id)) {
+							//qfDebug() << "\t adding to poll";
+							runners_draw_ids << competitor_to_run.take(competitor_id);
+						}
+					}
+					runners_draw_ids << competitor_to_run.values();
+					//for(auto i : runners_draw_ids)
+					//	qfDebug() << "B:" << i;
 				}
 				else if(dm == DrawMethod::EquidistantClubs || dm == DrawMethod::RandomizedEquidistantClubs) {
 					QMap<int, QString> runner_id_to_club;
@@ -427,7 +463,7 @@ void RunsWidget::on_btDraw_clicked()
 						q.bindValue(QStringLiteral(":id"), runner_id);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
-						if(n > 0 && n % vacant_every == 0)
+						if(n > 0 && vacant_every > 0 && (n % vacant_every) == 0)
 							start += interval;
 						n++;
 					}
@@ -451,7 +487,8 @@ void RunsWidget::on_btDrawRemove_clicked()
 		qf::core::sql::Transaction transaction(qfs::Connection::forName());
 		for (int i = 0; i < m_runsModel->rowCount(); ++i) {
 			m_runsModel->setValue(i, "startTimeMs", QVariant());
-			m_runsModel->postRow(i, qf::core::Exception::Throw);
+			// bypass midair collision check
+			m_runsModel->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
 		}
 		transaction.commit();
 	}
