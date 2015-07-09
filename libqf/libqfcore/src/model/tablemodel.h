@@ -177,8 +177,8 @@ public:
 	Q_INVOKABLE virtual bool isDirty(int row_ix, int column_ix) const;
 	Q_INVOKABLE bool isDirty(int row_ix, const QString& col_name) const;
 
-	Q_INVOKABLE virtual void setDirty(int row, int column, bool d);
-	Q_INVOKABLE void setDirty(int row_ix, const QString& col_name, bool d);
+	Q_INVOKABLE virtual bool setDirty(int row, int column, bool d);
+	Q_INVOKABLE bool setDirty(int row_ix, const QString& col_name, bool d);
 
 	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
 	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
