@@ -80,6 +80,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent) :
 		m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 		m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch"));
 		m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
+		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
 		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
@@ -151,7 +152,7 @@ void CardReaderWidget::reload()
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
-			.select2("runs", "startTimeMs, timeMs, finishTimeMs, misPunch, disqualified")
+			.select2("runs", "startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")

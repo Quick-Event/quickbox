@@ -129,8 +129,8 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 		int class_id = m_cbxClasses->currentData().toInt();
 		qf::core::model::DataDocument *doc = w->dataController()->document();
 		doc->setValue("competitors.classId", class_id);
-		doc->save();
-		w->load(doc->dataId());
+		//doc->save();
+		//w->load(doc->dataId());
 	}
 	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {

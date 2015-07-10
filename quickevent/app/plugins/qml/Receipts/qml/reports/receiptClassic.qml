@@ -71,7 +71,44 @@ Report {
 						vinset: 1
 						halign: Frame.AlignHCenter
 						Para {
-							text: "HSH actions";
+							textStyle: myStyle.textStyleBold
+							text: "Slosovatelný kupón";
+						}
+						Para {
+							textStyle: myStyle.textStyleBold
+							text: "Každé vyhlášení - 3x hodinky";
+						}
+						Frame { height: 2 }
+						Frame {
+							layout: Frame.LayoutHorizontal
+							valign: Frame.AlignVCenter
+							Frame {
+								width: "%"
+								bottomBorder: Pen { basedOn: "black1dot" }
+							}
+							Para {
+								text: "zde odstřihnout";
+							}
+							Frame {
+								width: "%"
+								bottomBorder: Pen { basedOn: "black1dot" }
+							}
+						}
+						Frame { height: 2 }
+						Para {
+							textStyle: myStyle.textStyleBold
+							text: "500 za vaši starou";
+						}
+						Para {
+							halign: Frame.AlignHCenter
+							text: "500 Kč sleva na rychloustalující";
+						}
+						Para {
+							halign: Frame.AlignHCenter
+							text: "buzoly SUUNTO ARROW";
+						}
+						Para {
+							text: "Platí ve stánku HSH Sport";
 						}
 					}
 				}
