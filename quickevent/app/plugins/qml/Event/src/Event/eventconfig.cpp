@@ -156,6 +156,11 @@ int EventConfig::stageCount() const
 {
 	return value(QStringLiteral("event.stageCount")).toInt();
 }
+
+int EventConfig::handicapLength() const
+{
+	return value(QStringLiteral("event.handicapLength")).toInt();
+}
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {

@@ -62,7 +62,7 @@ private:
 
 	void onCustomContextMenuRequest(const QPoint &pos);
 private:
-	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder};
+	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap};
 
 	Ui::RunsWidget *ui;
 	RunsTableModel *m_runsModel;

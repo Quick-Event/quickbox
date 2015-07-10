@@ -114,12 +114,93 @@ int RunsPlugin::courseForRun_Classic(int run_id)
 	return ret;
 }
 
+qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id)
+{
+	qfs::QueryBuilder qb;
+	qb.select2("competitors", "id, registration")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.from("competitors")
+			.where("competitors.classId=" QF_IARG(class_id));
+	for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
+		//qb.select("0 AS runId" QF_IARG(stage_id));
+		qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeMs" QF_IARG(stage_id));
+		qb.select("'' AS pos" QF_IARG(stage_id));
+	}
+	qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeMs");
+	qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeLossMs");
+	qb.select("'' AS pos");
+	qf::core::model::SqlTableModel mod;
+	mod.setQueryBuilder(qb);
+	mod.reload();
+	QMap<int, int> competitor_id_to_row;
+	for (int j = 0; j < mod.rowCount(); ++j) {
+		competitor_id_to_row[mod.value(j, "competitors.id").toInt()] = j;
+	}
+	for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
+		qfs::QueryBuilder qb;
+		qb.select2("runs", "competitorId, timeMs, notCompeting, disqualified")
+				.from("competitors")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+				.where("competitors.classId=" QF_IARG(class_id))
+				.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
+		qfs::Query q;
+		q.exec(qb.toString());
+		int pos = 0;
+		while (q.next()) {
+			++pos;
+			int competitor_id = q.value("competitorId").toInt();
+			int row_ix = competitor_id_to_row.value(competitor_id, -1);
+			QF_ASSERT(row_ix >= 0, "Bad row index!", continue);
+			QString p = QString::number(pos);
+			if(q.value("notCompeting").toBool())
+				p = "N";
+			if(q.value("disqualified").toBool())
+				p = "D";
+			mod.setValue(row_ix, QString("pos%1").arg(stage_id), p);
+			mod.setValue(row_ix, QString("timeMs%1").arg(stage_id), q.value("timeMs"));
+		}
+	}
+	for (int j = 0; j < mod.rowCount(); ++j) {
+		int time_ms = 0;
+		for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
+			QString pos_str = mod.value(j, QString("pos%1").arg(stage_id)).toString();
+			int pos = pos_str.toInt();
+			int tms = mod.value(j, QString("timeMs%1").arg(stage_id)).toInt();
+			if(pos > 0 && tms < UNREAL_TIME_MS && time_ms < UNREAL_TIME_MS)
+				time_ms += tms;
+			else
+				time_ms = UNREAL_TIME_MS;
+		}
+		mod.setValue(j, "timeMs", time_ms);
+	}
+	qfu::Table t = mod.table();
+	t.sort("timeMs");
+	int pos = 0;
+	int time_ms1 = 0;
+	for (int j = 0; j < t.rowCount(); ++j) {
+		++pos;
+		QString p = QString::number(pos) + '.';
+		int time_ms = t.row(j).value("timeMs").toInt();
+		int loss_ms = UNREAL_TIME_MS;
+		if(time_ms < UNREAL_TIME_MS) {
+			if(time_ms1 == 0)
+				time_ms1 = time_ms;
+			loss_ms = time_ms - time_ms1;
+		}
+		else {
+			p = "";
+		}
+		t.rowRef(j).setValue("pos", p);
+		t.rowRef(j).setValue("timeLossMs", loss_ms);
+	}
+	return t;
+}
+
 QVariant RunsPlugin::nstagesResultsTableData(int stages_count)
 {
 	qfLogFuncFrame();
 	//qf::core::utils::Table::FieldList cols;
 	//cols << qf::core::utils::Table::Field("")
-	static constexpr int UNREAL_TIME_MS = 999 * 60 * 1000;
 	qf::core::model::SqlTableModel mod;
 	{
 		qfs::QueryBuilder qb;
@@ -135,82 +216,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count)
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
 		qfInfo() << "Processing class:" << tt_row.value("name").toString();
 		int class_id = tt_row.value("id").toInt();
-
-		qfs::QueryBuilder qb;
-		qb.select2("competitors", "id, registration")
-				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-				.from("competitors")
-				.where("competitors.classId=" QF_IARG(class_id));
-		for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
-			qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeMs" QF_IARG(stage_id));
-			qb.select("'' AS pos" QF_IARG(stage_id));
-		}
-		qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeMs");
-		qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeLossMs");
-		qb.select("'' AS pos");
-		mod.setQueryBuilder(qb);
-		mod.reload();
-		QMap<int, int> competitor_id_to_row;
-		for (int j = 0; j < mod.rowCount(); ++j) {
-			competitor_id_to_row[mod.value(j, "competitors.id").toInt()] = j;
-		}
-		for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
-			qfs::QueryBuilder qb;
-			qb.select2("runs", "competitorId, timeMs, notCompeting, disqualified")
-					.from("competitors")
-					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
-					.where("competitors.classId=" QF_IARG(class_id))
-					.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
-			qfs::Query q;
-			q.exec(qb.toString());
-			int pos = 0;
-			while (q.next()) {
-				++pos;
-				int competitor_id = q.value("competitorId").toInt();
-				int row_ix = competitor_id_to_row.value(competitor_id, -1);
-				QF_ASSERT(row_ix >= 0, "Bad row index!", continue);
-				QString p = QString::number(pos);
-				if(q.value("notCompeting").toBool())
-					p = "N";
-				if(q.value("disqualified").toBool())
-					p = "D";
-				mod.setValue(row_ix, QString("pos%1").arg(stage_id), p);
-				mod.setValue(row_ix, QString("timeMs%1").arg(stage_id), q.value("timeMs"));
-			}
-		}
-		for (int j = 0; j < mod.rowCount(); ++j) {
-			int time_ms = 0;
-			for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
-				QString pos_str = mod.value(j, QString("pos%1").arg(stage_id)).toString();
-				int pos = pos_str.toInt();
-				int tms = mod.value(j, QString("timeMs%1").arg(stage_id)).toInt();
-				if(pos > 0 && tms < UNREAL_TIME_MS && time_ms < UNREAL_TIME_MS)
-					time_ms += tms;
-				else
-					time_ms = UNREAL_TIME_MS;
-			}
-			mod.setValue(j, "timeMs", time_ms);
-		}
-		qfu::Table t = mod.table();
-		t.sort("timeMs");
-		int pos = 0;
-		int time_ms1 = 0;
-		for (int j = 0; j < t.rowCount(); ++j) {
-			++pos;
-			QString p = QString::number(pos) + '.';
-			int time_ms = t.row(j).value("timeMs").toInt();
-			int loss_ms = UNREAL_TIME_MS;
-			if(time_ms < UNREAL_TIME_MS) {
-				if(time_ms1 == 0)
-					time_ms1 = time_ms;
-				loss_ms = time_ms - time_ms1;
-			}
-			else {
-				p = "";
-			}
-			t.rowRef(j).setValue("pos", p);
-			t.rowRef(j).setValue("timeLossMs", loss_ms);
-		}
+		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
 		tt_row.appendTable(tt2);
 	}

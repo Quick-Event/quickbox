@@ -42,6 +42,7 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 	ui->ed_place->setText(params.value("place").toString());
 	ui->ed_mainReferee->setText(params.value("mainReferee").toString());
 	ui->ed_director->setText(params.value("director").toString());
+	ui->ed_handicapLength->setValue(params.value("handicapLength").toInt());
 }
 
 QVariantMap EventDialogWidget::saveParams()
@@ -54,5 +55,6 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["place"] = ui->ed_place->text();
 	ret["mainReferee"] = ui->ed_mainReferee->text();
 	ret["director"] = ui->ed_director->text();
+	ret["handicapLength"] = ui->ed_handicapLength->value();
 	return ret;
 }

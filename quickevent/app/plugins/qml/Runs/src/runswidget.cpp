@@ -3,6 +3,7 @@
 #include "thispartwidget.h"
 #include "runstablemodel.h"
 #include "runstableitemdelegate.h"
+#include "Runs/runsplugin.h"
 
 #include <Event/eventplugin.h>
 
@@ -47,6 +48,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->cbxDrawMethod->addItem(tr("Random number"), static_cast<int>(DrawMethod::RandomNumber));
 	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Stage 1 reverse order"), static_cast<int>(DrawMethod::StageReverseOrder));
+	ui->cbxDrawMethod->addItem(tr("Handicap"), static_cast<int>(DrawMethod::Handicap));
 	ui->frmDrawing->setVisible(false);
 
 	ui->tblRunsToolBar->setTableView(ui->tblRuns);
@@ -163,7 +165,15 @@ void RunsWidget::editStartList(int class_id, int competitor_id)
 Event::EventPlugin *RunsWidget::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
+	return plugin;
+}
+
+static Runs::RunsPlugin *runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
 	return plugin;
 }
@@ -322,145 +332,183 @@ void RunsWidget::on_btDraw_clicked()
 	try {
 		qf::core::sql::Transaction transaction(qfs::Connection::forName());
 		for(int class_id : class_ids) {
-			{
-				qf::core::sql::QueryBuilder qb;
-				qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
-						.from("classdefs")
-						.where("stageId=" QF_IARG(stage_id))
-						.where("classId=" QF_IARG(class_id));
-				qfs::Query q_classdefs(transaction.connection());
-				q_classdefs.exec(qb.toString(), qf::core::Exception::Throw);
-				if(!q_classdefs.next())
-					continue;
-				QList<int> runners_draw_ids;
-				DrawMethod dm = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
-				qfDebug() << "DrawMethod:" << (int)dm;
-				if(dm == DrawMethod::RandomNumber) {
-					runners_draw_ids = runsForClass(stage_id, class_id);
-					shuffle(runners_draw_ids);
-				}
-				else if(dm == DrawMethod::StageReverseOrder) {
-					QMap<int, int> competitor_to_run = competitorsForClass(stage_id, class_id);
-					//for(auto i : orig_lst)
-					//	qfDebug() << "A:" << i;
-					//runners_draw_ids.clear();
-					qf::core::sql::QueryBuilder qb1;
-					qb1.select2("runs", "competitorId")
-							//.select2("competitors", "lastName")
-							.from("competitors")
-							.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(1), "JOIN")
-							.where("competitors.classId=" QF_IARG(class_id))
-							.orderBy("runs.startTimeMs DESC");
-					qfs::Query q(transaction.connection());
-					q.exec(qb1.toString(), qf::core::Exception::Throw);
-					while(q.next()) {
-						int competitor_id = q.value("competitorId").toInt();
-						//qfDebug() << competitor_id << q.value("lastName").toString();
-						if(competitor_to_run.contains(competitor_id)) {
-							//qfDebug() << "\t adding to poll";
-							runners_draw_ids << competitor_to_run.take(competitor_id);
+			int handicap_length_ms = eventPlugin()->eventConfig()->handicapLength() * 60 * 1000;
+			QVector<int> handicap_times;
+			qf::core::sql::QueryBuilder qb;
+			qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
+					.from("classdefs")
+					.where("stageId=" QF_IARG(stage_id))
+					.where("classId=" QF_IARG(class_id));
+			qfs::Query q_classdefs(transaction.connection());
+			q_classdefs.exec(qb.toString(), qf::core::Exception::Throw);
+			if(!q_classdefs.next())
+				continue;
+			QList<int> runners_draw_ids;
+			DrawMethod draw_method = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
+			qfDebug() << "DrawMethod:" << (int)draw_method;
+			if(draw_method == DrawMethod::RandomNumber) {
+				runners_draw_ids = runsForClass(stage_id, class_id);
+				shuffle(runners_draw_ids);
+			}
+			else if(draw_method == DrawMethod::Handicap) {
+				int stage_count = eventPlugin()->eventConfig()->stageCount();
+				qf::core::utils::Table results = runsPlugin()->nstagesResultsTable(stage_count, class_id);
+				QMap<int, int> competitor_to_run = competitorsForClass(stage_count, class_id);
+				//int n = 0;
+				for (int i = 0; i < results.rowCount(); ++i) {
+					qf::core::utils::TableRow r = results.row(i);
+					int run_id = competitor_to_run.take(r.value("competitors.id").toInt());
+					if(run_id > 0) {
+						runners_draw_ids << run_id;
+						int loss_ms = r.value("timeLossMs").toInt();
+						if(loss_ms < handicap_length_ms) {
+							handicap_times << loss_ms;
 						}
+						//else {
+						//	handicap_times << handicap_length_ms + (++n);
+						//}
 					}
-					runners_draw_ids << competitor_to_run.values();
-					//for(auto i : runners_draw_ids)
-					//	qfDebug() << "B:" << i;
 				}
-				else if(dm == DrawMethod::EquidistantClubs || dm == DrawMethod::RandomizedEquidistantClubs) {
-					QMap<int, QString> runner_id_to_club;
-					QList< QList<int> > runners_by_club = runnersByClubSortedByCount(stage_id, class_id, runner_id_to_club);
-					if(runners_by_club.count()) {
-						int runners_cnt = 0;
-						for(auto lst : runners_by_club)
-							runners_cnt += lst.count();
-						runners_draw_ids.reserve(runners_cnt);
-						runners_draw_ids << runners_by_club.first();
-						int club_ix = 1;
-						int slot_len = 1;
-						int insert_ix = slot_len;
-						while(club_ix < runners_by_club.count()) {
-							QList<int> &club_runners = runners_by_club[club_ix];
-							QF_ASSERT(club_runners.count() > 0, "Club runners cannot be empty in this phase!", break);
-							int runner_id = club_runners.takeFirst();
-							qfDebug() << "inserting id:" << runner_id << "at index:" << insert_ix;
-							runners_draw_ids.insert(insert_ix, runner_id);
+				runners_draw_ids << competitor_to_run.values();
+			}
+			else if(draw_method == DrawMethod::StageReverseOrder) {
+				QMap<int, int> competitor_to_run = competitorsForClass(stage_id, class_id);
+				//for(auto i : orig_lst)
+				//	qfDebug() << "A:" << i;
+				//runners_draw_ids.clear();
+				qf::core::sql::QueryBuilder qb1;
+				qb1.select2("runs", "competitorId")
+						//.select2("competitors", "lastName")
+						.from("competitors")
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(1), "JOIN")
+						.where("competitors.classId=" QF_IARG(class_id))
+						.orderBy("runs.startTimeMs DESC");
+				qfs::Query q(transaction.connection());
+				q.exec(qb1.toString(), qf::core::Exception::Throw);
+				while(q.next()) {
+					int competitor_id = q.value("competitorId").toInt();
+					//qfDebug() << competitor_id << q.value("lastName").toString();
+					if(competitor_to_run.contains(competitor_id)) {
+						//qfDebug() << "\t adding to poll";
+						runners_draw_ids << competitor_to_run.take(competitor_id);
+					}
+				}
+				runners_draw_ids << competitor_to_run.values();
+				//for(auto i : runners_draw_ids)
+				//	qfDebug() << "B:" << i;
+			}
+			else if(draw_method == DrawMethod::EquidistantClubs || draw_method == DrawMethod::RandomizedEquidistantClubs) {
+				QMap<int, QString> runner_id_to_club;
+				QList< QList<int> > runners_by_club = runnersByClubSortedByCount(stage_id, class_id, runner_id_to_club);
+				if(runners_by_club.count()) {
+					int runners_cnt = 0;
+					for(auto lst : runners_by_club)
+						runners_cnt += lst.count();
+					runners_draw_ids.reserve(runners_cnt);
+					runners_draw_ids << runners_by_club.first();
+					int club_ix = 1;
+					int slot_len = 1;
+					int insert_ix = slot_len;
+					while(club_ix < runners_by_club.count()) {
+						QList<int> &club_runners = runners_by_club[club_ix];
+						QF_ASSERT(club_runners.count() > 0, "Club runners cannot be empty in this phase!", break);
+						int runner_id = club_runners.takeFirst();
+						qfDebug() << "inserting id:" << runner_id << "at index:" << insert_ix;
+						runners_draw_ids.insert(insert_ix, runner_id);
 
-							// set club index for next scan
-							if(club_runners.isEmpty()) {
-								// take next club
-								club_ix++;
-								qfDebug() << "club_ix:" << club_ix;
-							}
-
-							// set insert index for next scan
-							insert_ix += slot_len + 1;
-							if(insert_ix > runners_draw_ids.count()) {
-								slot_len++;
-								insert_ix = slot_len;
-							}
+						// set club index for next scan
+						if(club_runners.isEmpty()) {
+							// take next club
+							club_ix++;
+							qfDebug() << "club_ix:" << club_ix;
 						}
-					}
-					if(dm == DrawMethod::RandomizedEquidistantClubs) {
-						qsrand(QTime::currentTime().msecsSinceStartOfDay());
-						int cnt = runners_draw_ids.count();
-						for (int i = 0; i < 2*cnt; ++i) {
-							// randomly switch rudders fi their clubs will not get consequent
-							int ix1 = (int)(qrand() * (double)cnt / RAND_MAX);
-							if(ix1 >= cnt)
-								ix1 = cnt - 1;
-							int ix2 = (int)(qrand() * (double)cnt / RAND_MAX);
-							if(ix2 >= cnt)
-								ix2 = cnt - 1;
-							if(ix1 == ix2)
-								continue;
-							if((ix1 - ix2) == 1 || (ix2 - ix1) == 1)
-								continue;
-							QString club1 = runner_id_to_club.value(runners_draw_ids[ix1]);
-							QString club2 = runner_id_to_club.value(runners_draw_ids[ix2]);
-							if(ix1 > 0) {
-								QString club = runner_id_to_club.value(runners_draw_ids[ix1 - 1]);
-								if(club == club2)
-									continue;
-							}
-							if(ix1 < cnt - 1) {
-								QString club = runner_id_to_club.value(runners_draw_ids[ix1 + 1]);
-								if(club == club2)
-									continue;
-							}
-							if(ix2 > 0) {
-								QString club = runner_id_to_club.value(runners_draw_ids[ix2 - 1]);
-								if(club == club1)
-									continue;
-							}
-							if(ix2 < cnt - 1) {
-								QString club = runner_id_to_club.value(runners_draw_ids[ix2 + 1]);
-								if(club == club1)
-									continue;
-							}
-							// can switch
-							int id = runners_draw_ids[ix1];
-							runners_draw_ids[ix1] = runners_draw_ids[ix2];
-							runners_draw_ids[ix2] = id;
+
+						// set insert index for next scan
+						insert_ix += slot_len + 1;
+						if(insert_ix > runners_draw_ids.count()) {
+							slot_len++;
+							insert_ix = slot_len;
 						}
 					}
 				}
-				if(runners_draw_ids.count()) {
-					// save drawing to SQL
-					int interval = q_classdefs.value("startIntervalMin").toInt() * 60 * 1000;
-					if(interval == 0) {
-						if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Start interval is zero, proceed anyway?"), false))
+				if(draw_method == DrawMethod::RandomizedEquidistantClubs) {
+					qsrand(QTime::currentTime().msecsSinceStartOfDay());
+					int cnt = runners_draw_ids.count();
+					for (int i = 0; i < 2*cnt; ++i) {
+						// randomly switch rudders fi their clubs will not get consequent
+						int ix1 = (int)(qrand() * (double)cnt / RAND_MAX);
+						if(ix1 >= cnt)
+							ix1 = cnt - 1;
+						int ix2 = (int)(qrand() * (double)cnt / RAND_MAX);
+						if(ix2 >= cnt)
+							ix2 = cnt - 1;
+						if(ix1 == ix2)
 							continue;
+						if((ix1 - ix2) == 1 || (ix2 - ix1) == 1)
+							continue;
+						QString club1 = runner_id_to_club.value(runners_draw_ids[ix1]);
+						QString club2 = runner_id_to_club.value(runners_draw_ids[ix2]);
+						if(ix1 > 0) {
+							QString club = runner_id_to_club.value(runners_draw_ids[ix1 - 1]);
+							if(club == club2)
+								continue;
+						}
+						if(ix1 < cnt - 1) {
+							QString club = runner_id_to_club.value(runners_draw_ids[ix1 + 1]);
+							if(club == club2)
+								continue;
+						}
+						if(ix2 > 0) {
+							QString club = runner_id_to_club.value(runners_draw_ids[ix2 - 1]);
+							if(club == club1)
+								continue;
+						}
+						if(ix2 < cnt - 1) {
+							QString club = runner_id_to_club.value(runners_draw_ids[ix2 + 1]);
+							if(club == club1)
+								continue;
+						}
+						// can switch
+						int id = runners_draw_ids[ix1];
+						runners_draw_ids[ix1] = runners_draw_ids[ix2];
+						runners_draw_ids[ix2] = id;
 					}
-					int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
-					int vacants_before = q_classdefs.value("vacantsBefore").toInt();
-					int vacant_every = q_classdefs.value("vacantEvery").toInt();
-					int start = start0 + vacants_before * interval;
-					int n = 0;
+				}
+			}
+			if(runners_draw_ids.count()) {
+				// save drawing to SQL
+				int interval = q_classdefs.value("startIntervalMin").toInt() * 60 * 1000;
+				if(interval == 0) {
+					if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Start interval is zero, proceed anyway?"), false))
+						continue;
+				}
+				int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
+				int vacants_before = q_classdefs.value("vacantsBefore").toInt();
+				int vacant_every = q_classdefs.value("vacantEvery").toInt();
+				int start = start0;
+				int n = 0;
 
-					qfs::Query q(transaction.connection());
-					q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
-					for(int runner_id : runners_draw_ids) {
+				if(draw_method != DrawMethod::Handicap) {
+					start += vacants_before * interval;
+				}
+
+				qfs::Query q(transaction.connection());
+				q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
+				for(int runner_id : runners_draw_ids) {
+					q.bindValue(QStringLiteral(":id"), runner_id);
+					if(draw_method == DrawMethod::Handicap) {
+						if(handicap_times.isEmpty()) {
+							++n;
+							start += handicap_length_ms + n * 60 * 1000;
+						}
+						else {
+							start = start0 + handicap_times.takeFirst();
+						}
 						q.bindValue(QStringLiteral(":startTimeMs"), start);
-						q.bindValue(QStringLiteral(":id"), runner_id);
+						q.exec(qf::core::Exception::Throw);
+					}
+					else {
+						q.bindValue(QStringLiteral(":startTimeMs"), start);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
 						if(n > 0 && vacant_every > 0 && (n % vacant_every) == 0)

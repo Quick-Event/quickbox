@@ -8,13 +8,18 @@
 #include <qf/core/utils.h>
 
 namespace qf {
-namespace qmlwidgets {
-class Action;
-namespace framework {
-class PartWidget;
-class DockWidget;
-}
-}
+	namespace core {
+		namespace utils {
+			class Table;
+		}
+	}
+	namespace qmlwidgets {
+		class Action;
+		namespace framework {
+			class PartWidget;
+			class DockWidget;
+		}
+	}
 }
 
 namespace Runs {
@@ -26,6 +31,8 @@ class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plug
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
+	static constexpr int UNREAL_TIME_MS = 999 * 60 * 1000;
+public:
 	RunsPlugin(QObject *parent = nullptr);
 	~RunsPlugin() Q_DECL_OVERRIDE;
 
@@ -34,6 +41,7 @@ public:
 	Q_SIGNAL void nativeInstalled();
 
 	Q_INVOKABLE int courseForRun(int run_id);
+	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count);
 
 private:
