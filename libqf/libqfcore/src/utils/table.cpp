@@ -77,7 +77,7 @@ bool Table::LessThan::lessThan_helper(int _row, const QVariant &v, bool switch_p
 
 int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::SortDef &sd) const
 {
-	//qfInfo() << QF_FUNC_NAME << "l:" << l.toString() << "r:" << r.toString();
+	//qfInfo() << QF_FUNC_NAME << "l:" << l << "r:" << r;
 	/// NULL je nejmensi ze vsech
 	if(!l.isValid() && r.isValid())
 		return -1;
@@ -145,7 +145,7 @@ int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::Sort
 				break;
 		}
 	}
-	//qfDebug() << "\tret:" << ret;
+	//qfInfo() << "\tret:" << ret;
 	return ret;
 }
 
@@ -1370,7 +1370,8 @@ SValue Table::toTreeTable(const QString &col_names, const QString &table_name) c
 	{
 		SValue srows;
 		int ix = 0;
-		for(auto r : rows()) {
+		for(int j=0; j<rowCount(); j++) {
+			TableRow r = row(j);
 			QVariantList row_lst;
 			for(int i=0; i<ixs.count(); i++) {
 				row_lst << r.value(ixs[i]);

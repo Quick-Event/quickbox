@@ -218,6 +218,7 @@ public:
 		return sumValue(fields().fieldIndex(field_name));
 	}
 private:
+	/// unsorted, unfiltered table rows
 	const RowList& rows() const {return d->rows;}
 	RowList& rowsRef() {return d->rows;}
 	//! clears all rows, if \a fields_options tells what else will be cleared.

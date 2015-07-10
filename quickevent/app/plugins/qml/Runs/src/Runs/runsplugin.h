@@ -34,6 +34,7 @@ public:
 	Q_SIGNAL void nativeInstalled();
 
 	Q_INVOKABLE int courseForRun(int run_id);
+	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count);
 
 private:
 	Q_SLOT void onInstalled();

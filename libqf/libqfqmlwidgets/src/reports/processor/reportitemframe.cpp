@@ -203,16 +203,21 @@ QQmlListProperty<ReportItem> ReportItemFrame::items()
 										);
 }
 
-void ReportItemFrame::addItem(QObject *item_object)
+void ReportItemFrame::insertItem(int ix, QObject *item_object)
 {
 	ReportItem *item = qobject_cast<ReportItem *>(item_object);
 	if (item) {
 		item->setParent(this);
-		this->m_items << item;
+		this->m_items.insert(ix, item);
 		ReportItemFrame *frm = qobject_cast<ReportItemFrame*>(item);
 		if(frm)
 			frm->initDesignedRect();
 	}
+}
+
+void ReportItemFrame::addItem(QObject *item_object)
+{
+	insertItem(m_items.count(), item_object);
 }
 
 void ReportItemFrame::addItemFunction(QQmlListProperty<ReportItem> *list_property, ReportItem *item)
@@ -733,4 +738,5 @@ void ReportItemFrame::resetIndexToPrintRecursively(bool including_para_texts)
 	}
 	*/
 }
+
 

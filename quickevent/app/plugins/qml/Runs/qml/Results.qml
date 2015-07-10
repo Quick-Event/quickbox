@@ -232,4 +232,31 @@ QtObject {
 		Log.info("exported:", file_path);
 	}
 
+	function nStagesResultsTable(stages_count)
+	{
+		var event_plugin = FrameWork.plugin("Event");
+
+		var tt = new TreeTable.Table();
+		tt.setData(runsPlugin.nstagesResultsTableData(stages_count));
+		tt.setValue("stagesCount", stages_count)
+		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		//console.info(tt.toString());
+		return tt;
+	}
+
+	function printNStages(stages_count)
+	{
+		Log.info("runs results printNStages triggered");
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
+		var tt = nStagesResultsTable(n);
+		//console.info("n:", n)
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages.qml"
+									   , tt.data()
+									   , qsTr("Results after " + n + " stages")
+									   , ""
+									   , {stagesCount: n});
+	}
 }
+

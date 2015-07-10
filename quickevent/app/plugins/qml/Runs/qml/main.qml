@@ -83,6 +83,13 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_results_nStages
+			text: qsTr('&After n stages')
+			onTriggered: {
+				results.printNStages()
+			}
+		},
+		Action {
 			id: act_print_results_currentStageFirstN
 			text: qsTr('First &n competitors')
 			onTriggered: {
@@ -124,6 +131,8 @@ RunsPlugin {
 		a.addActionInto(act_print_results_currentStage);
 		a.addActionInto(act_print_results_currentStageFirstN);
 		a.addActionInto(act_print_results_currentStageAwards);
+		a.addSeparatorInto();
+		a.addActionInto(act_print_results_nStages);
 
 		var a_export = root.partWidget.menuBar.actionForPath("export", true);
 		a_export.text = qsTr("E&xport");
