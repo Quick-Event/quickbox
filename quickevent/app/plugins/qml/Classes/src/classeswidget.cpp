@@ -245,7 +245,7 @@ void ClassesWidget::import_ocad()
 				courses << cd;
 			{
 				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				qfInfo().noquote() << doc.toJson();
+				qfInfo() << doc.toJson();
 			}
 
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
