@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.0
 
 Rectangle {
 
@@ -108,8 +108,10 @@ Rectangle {
 			headerTextProfile.text = qsTr("Výsledky");
 		else if(profile == "startlist")
 			headerTextProfile.text = qsTr("Startovní listina");
+		console.warn("##############################################")
+		console.warn(JSON.stringify(event_info))
 		if(event_info.stageCount > 1)
-			headerTextEtap.text = "E" + ctx_app.ctx_app.cliOptionValue("stage");
+			headerTextEtap.text = "E" + ctx_app.cliOptionValue("event.stage");
 		else
 			headerTextEtap.text = "";
 		headerTextDescription.text = event_info.name;

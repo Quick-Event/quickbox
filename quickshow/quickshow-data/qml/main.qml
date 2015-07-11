@@ -1,4 +1,4 @@
-import QtQuick 2.4
+import QtQuick 2.0
 import QtQuick.Window 2.2
 
 Window {
