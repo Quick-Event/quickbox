@@ -48,10 +48,8 @@ int CardChecker::stageStartSec()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	Event::StageData stage_data = event_plugin->stageData(event_plugin->currentStageId());
-	QTime start_time = stage_data.startTime();
-	int ret = start_time.msecsSinceStartOfDay() / 1000;
-	return ret;
+	int ret = event_plugin->stageStart(event_plugin->currentStageId());
+	return ret / 1000;
 }
 
 int CardChecker::startTimeSec(int run_id)

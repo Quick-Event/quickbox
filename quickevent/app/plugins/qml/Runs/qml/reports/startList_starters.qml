@@ -86,12 +86,6 @@ Report {
 					Frame {
 						width: "%"
 						layout: Frame.LayoutHorizontal
-						/*
-						Cell {
-							width: 15
-							text: OGTime.msecToString(detail.data(detail.currentIndex, "startTimeMs"));
-						}
-						*/
 						Cell {
 							width: 12
 							text: detail.data(detail.currentIndex, "classes.name");
@@ -108,6 +102,10 @@ Report {
 							width: 20
 							halign: Frame.AlignRight
 							text: detail.data(detail.currentIndex, "runs.siId");
+						}
+						Cell {
+							width: 15
+							text: OGTime.msecToString(detail.data(detail.currentIndex, "startTimeMs"));
 						}
 					}
 					//expandChildrenFrames: true

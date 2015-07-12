@@ -28,6 +28,7 @@ QtObject {
 			.select2('classes', 'id, name')
 			.select2('courses', 'length, climb')
 			.from('classes')
+			//.where("classes.name NOT IN ('D21B', 'H40B', 'H35B', 'H55B')")
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 			.join("classdefs.courseId", "courses.id")
 			.orderBy('classes.name');//.limit(1);
@@ -155,6 +156,9 @@ QtObject {
 
 	function exportIofXml(file_path)
 	{
+		var event_plugin = FrameWork.plugin("Event");
+		var start00_msec = event_plugin.stageStart(event_plugin.currentStageId);
+
 		var tt1 = currentStageTable();
 		var result_list = ['ResultList', {"status": "complete"}];
 		result_list.push(['IOFVersion', {"version": "2.0.3"}]);
@@ -188,15 +192,15 @@ QtObject {
 				person.push(['PersonId', tt2.value(j, "registration")]);
 				var result = ['Result'];
 				person_result.push(result);
-				var stime = tt2.value(j, "startTimeMs");
-				var ftime = tt2.value(j, "finishTimeMs");
+				var stime = start00_msec + tt2.value(j, "startTimeMs");
+				var ftime = start00_msec + tt2.value(j, "finishTimeMs");
 				var time = tt2.value(j, "timeMs");
 				if(ftime && time)
 					stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
-				result.push(['StartTime', ['Clock', OGTime.msecToString(stime, ':')]])
+				result.push(['StartTime', ['Clock', OGTime.msecToHMS(stime, ':')]])
 				if(ftime)
-					result.push(['FinishTime', ['Clock', OGTime.msecToString(ftime, ':')]])
-				result.push(['Time', ['Clock', OGTime.msecToString(time, ':')]])
+					result.push(['FinishTime', ['Clock', OGTime.msecToHMS(ftime, ':')]])
+				result.push(['Time', {timeFormat: "MM:SS"}, OGTime.msecToString(time, ':')])
 				var competitor_status = 'OK'
 				if (!ftime)
 					 competitor_status = 'DidNotFinish'
@@ -207,10 +211,16 @@ QtObject {
 				if (competitor_status == 'OK')
 					result.push(['ResultPosition', tt2.value(j, "pos")])
 				result.push(['CompetitorStatus', {"value": competitor_status}])
+				/*
+				  according to DTD
 				result.push(['CourseVariation'
 							 , ['CourseLength', {unit: "m"}, tt1.value(i, "courses.length")]
 							 , ['CourseClimb', {unit: "m"}, tt1.value(i, "courses.climb")]
 							]);
+				*/
+				// working
+				result.push(['CourseLength', {unit: "m"}, tt1.value(i, "courses.length")]);
+				result.push(['CourseClimb', {unit: "m"}, tt1.value(i, "courses.climb")]);
 				reportModel.queryBuilder.clear()
 					.select2('runlaps', '*')
 					.from('runlaps')
@@ -221,9 +231,10 @@ QtObject {
 				reportModel.reload();
 				for(var k=0; k<reportModel.rowCount(); k++) {
 					//console.info(k, reportModel.value(k, "position"));
-					result.push(['SplitTime', {"sequence": reportModel.value(k, "position")}]);
-					result.push(['ControlCode', reportModel.value(k, "code")]);
-					result.push(['Time', OGTime.msecToString(reportModel.value(k, "stpTimeMs"), ':')]);
+					result.push(['SplitTime', {"sequence": reportModel.value(k, "position")}
+								 , ['ControlCode', reportModel.value(k, "code")]
+								 , ['Time', OGTime.msecToString(reportModel.value(k, "stpTimeMs"), ':')]
+								]);
 				}
 			}
 		}
@@ -232,12 +243,12 @@ QtObject {
 		Log.info("exported:", file_path);
 	}
 
-	function nStagesResultsTable(stages_count)
+	function nStagesResultsTable(stages_count, places)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 
 		var tt = new TreeTable.Table();
-		tt.setData(runsPlugin.nstagesResultsTableData(stages_count));
+		tt.setData(runsPlugin.nstagesResultsTableData(stages_count, places));
 		tt.setValue("stagesCount", stages_count)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
 		//console.info(tt.toString());
@@ -250,7 +261,8 @@ QtObject {
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = event_plugin.currentStageId;
 		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
-		var tt = nStagesResultsTable(n);
+		var places = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 9999, 1);
+		var tt = nStagesResultsTable(n, places);
 		//console.info("n:", n)
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages.qml"
 									   , tt.data()
@@ -258,5 +270,18 @@ QtObject {
 									   , ""
 									   , {stagesCount: n});
 	}
+
+	function printNStageAwards()
+	{
+		Log.info("runs printNStageAwards triggered");
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		var stage = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
+		var places = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 3, 1);
+		var tt = nStagesResultsTable(stage, places);
+		console.info(tt.toString());
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages_awards.qml", tt.data(), qsTr("Stage awards"));
+	}
+
 }
 

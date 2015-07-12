@@ -67,7 +67,8 @@ CardChecker
 				start_time_sec = root.startTimeSec(run_id);
 				//console.warn(start_time_sec);
 			}
-			if(start_time_sec === 0) {
+			var is_debug = false;
+			if(start_time_sec === 0 && is_debug) {
 				// take start from check, for testing only
 				start_time_sec = (((read_card.checkTime / 60) >> 0) + 1) * 60;
 				console.warn("Taking start time from check for debugging purposes only, start time;", start_time_sec / 60, read_card.checkTime)

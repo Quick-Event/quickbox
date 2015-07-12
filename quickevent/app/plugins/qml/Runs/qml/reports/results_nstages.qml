@@ -9,7 +9,7 @@ Report {
 
 	property int stagesCount: 1
 	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
-	property int timeCellWidth: 15
+	property int timeCellWidth: 17
 	property int posCellWidth: 10
 	property int unrealTimeMs: 999 * 60 * 1000
 

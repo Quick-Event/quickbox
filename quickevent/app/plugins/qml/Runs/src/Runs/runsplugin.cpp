@@ -114,7 +114,7 @@ int RunsPlugin::courseForRun_Classic(int run_id)
 	return ret;
 }
 
-qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id)
+qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places)
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "id, registration")
@@ -177,6 +177,8 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	t.sort("timeMs");
 	int pos = 0;
 	int time_ms1 = 0;
+	bool trim_disq = false;
+	int trim_at = -1;
 	for (int j = 0; j < t.rowCount(); ++j) {
 		++pos;
 		QString p = QString::number(pos) + '.';
@@ -188,15 +190,30 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 			loss_ms = time_ms - time_ms1;
 		}
 		else {
+			if(trim_disq) {
+				trim_at = j;
+				break;
+			}
 			p = "";
 		}
 		t.rowRef(j).setValue("pos", p);
 		t.rowRef(j).setValue("timeLossMs", loss_ms);
 	}
+	if(trim_at < 0) {
+		if(places > 0)
+			trim_at = places;
+	}
+	else {
+		if(places > 0 && trim_at > places)
+			trim_at = places;
+	}
+	if(trim_at >= 0)
+		while(t.rowCount() > trim_at)
+			t.removeRow(trim_at);
 	return t;
 }
 
-QVariant RunsPlugin::nstagesResultsTableData(int stages_count)
+QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 {
 	qfLogFuncFrame();
 	//qf::core::utils::Table::FieldList cols;
@@ -206,7 +223,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count)
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "id, name")
 				.from("classes")
-				//.where("name='D10'")
+				//.where("name NOT IN ('D21B', 'H40B', 'H35B', 'H55B')")
 				.orderBy("name");//.limit(1);
 		mod.setQueryBuilder(qb);
 	}
@@ -216,7 +233,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count)
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
 		qfInfo() << "Processing class:" << tt_row.value("name").toString();
 		int class_id = tt_row.value("id").toInt();
-		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id);
+		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id, places);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
 		tt_row.appendTable(tt2);
 	}

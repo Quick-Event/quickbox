@@ -99,12 +99,7 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 		QVariantList lst = item.toList();
 		QF_ASSERT(!lst.isEmpty(), "Bad item list!", return ret);
 		QString element_name = lst.first().toString();
-		/*
-		qfInfo() << element_name << item;
-		*/
-		if(element_name == "CompetitorStatus") {
-			qfInfo() << "item:" << item;
-		}
+		//qfInfo() << element_name << item;
 		QF_ASSERT(!element_name.isEmpty(), "Bad element name!", return ret);
 		QString attrs_str;
 		int ix = 1;

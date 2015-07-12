@@ -102,6 +102,14 @@ int EventPlugin::currentStageId()
 	return m_cbxStage->currentIndex() + 1;
 }
 
+int EventPlugin::stageStart(int stage_id)
+{
+	Event::StageData stage_data = stageData(stage_id);
+	QTime start_time = stage_data.startTime();
+	int ret = start_time.msecsSinceStartOfDay();
+	return ret;
+}
+
 StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;

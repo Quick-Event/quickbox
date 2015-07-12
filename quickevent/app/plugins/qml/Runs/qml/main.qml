@@ -97,6 +97,13 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_results_NStageAwards
+			text: qsTr('Awards after n stages')
+			onTriggered: {
+				results.printNStageAwards()
+			}
+		},
+		Action {
 			id: act_print_results_currentStageAwards
 			text: qsTr('&Awards')
 			onTriggered: {
@@ -133,6 +140,7 @@ RunsPlugin {
 		a.addActionInto(act_print_results_currentStageAwards);
 		a.addSeparatorInto();
 		a.addActionInto(act_print_results_nStages);
+		a.addActionInto(act_print_results_NStageAwards);
 
 		var a_export = root.partWidget.menuBar.actionForPath("export", true);
 		a_export.text = qsTr("E&xport");
@@ -219,11 +227,11 @@ RunsPlugin {
 			reportModel.reload();
 			var ttd = reportModel.toTreeTableData();
 			tt.addTable(i, ttd);
-		}
 		return tt;
+		}
 	}
 
-	function startListStartersTable()
+	function startListStartersTable(class_letter)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = event_plugin.currentStageId;
@@ -240,6 +248,12 @@ RunsPlugin {
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}}")
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
+		if(class_letter === 'H') {
+			reportModel.queryBuilder.where("classes.name NOT LIKE '" + class_letter + "%'")
+		}
+		else if(class_letter === 'D'){
+			reportModel.queryBuilder.where("classes.name NOT LIKE 'H%'")
+		}
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
@@ -276,7 +290,8 @@ RunsPlugin {
 	function printStartListStarters()
 	{
 		Log.info("runs printStartListStarters triggered");
-		var tt = startListStartersTable();
+		var class_letter = InputDialogSingleton.getItem(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("All")], 0, false);
+		var tt = startListStartersTable(class_letter);
 		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
 	}
 

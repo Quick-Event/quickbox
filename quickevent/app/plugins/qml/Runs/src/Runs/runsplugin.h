@@ -41,8 +41,8 @@ public:
 	Q_SIGNAL void nativeInstalled();
 
 	Q_INVOKABLE int courseForRun(int run_id);
-	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id);
-	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count);
+	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id, int places = -1);
+	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1);
 
 private:
 	Q_SLOT void onInstalled();

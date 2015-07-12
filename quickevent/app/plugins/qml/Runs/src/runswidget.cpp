@@ -352,7 +352,7 @@ void RunsWidget::on_btDraw_clicked()
 			}
 			else if(draw_method == DrawMethod::Handicap) {
 				int stage_count = eventPlugin()->eventConfig()->stageCount();
-				qf::core::utils::Table results = runsPlugin()->nstagesResultsTable(stage_count, class_id);
+				qf::core::utils::Table results = runsPlugin()->nstagesResultsTable(stage_count - 1, class_id);
 				QMap<int, int> competitor_to_run = competitorsForClass(stage_count, class_id);
 				//int n = 0;
 				for (int i = 0; i < results.rowCount(); ++i) {
@@ -362,6 +362,7 @@ void RunsWidget::on_btDraw_clicked()
 						runners_draw_ids << run_id;
 						int loss_ms = r.value("timeLossMs").toInt();
 						if(loss_ms < handicap_length_ms) {
+							qfDebug() << "loss:" << loss_ms;
 							handicap_times << loss_ms;
 						}
 						//else {
@@ -499,7 +500,7 @@ void RunsWidget::on_btDraw_clicked()
 					if(draw_method == DrawMethod::Handicap) {
 						if(handicap_times.isEmpty()) {
 							++n;
-							start += handicap_length_ms + n * 60 * 1000;
+							start = start0 + handicap_length_ms + n * interval;
 						}
 						else {
 							start = start0 + handicap_times.takeFirst();

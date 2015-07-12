@@ -183,7 +183,11 @@ bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 			int start00_msec = start00.msecsSinceStartOfDay();
 			q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
 			q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
-			q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs() - start00_msec);
+			int finish_time = checked_card.finishTimeMs() - start00_msec;
+			// DIRTY QUICK FIX !!!
+			while(finish_time < 0)
+				finish_time += 12 * 60 * 60 * 1000;
+			q.bindValue(QStringLiteral(":finishTimeMs"), finish_time);
 			q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
 			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 			q.exec(qf::core::Exception::Throw);

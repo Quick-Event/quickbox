@@ -97,18 +97,24 @@ Report {
 						Frame { height: 2 }
 						Para {
 							textStyle: myStyle.textStyleBold
-							text: "500 za vaši starou";
+							text: "Čip + buzola = ComCard.";
 						}
 						Para {
 							halign: Frame.AlignHCenter
-							text: "500 Kč sleva na rychloustalující";
+							text: "Rychlé ražení.";
 						}
 						Para {
 							halign: Frame.AlignHCenter
-							text: "buzoly SUUNTO ARROW";
+							text: "Žádné zastrkávání, stačí přiložit.";
 						}
 						Para {
-							text: "Platí ve stánku HSH Sport";
+							halign: Frame.AlignHCenter
+							text: "Zvládnete to jedním prstem.";
+						}
+						Para {
+							halign: Frame.AlignHCenter
+							text: "Se slevou ve stánku HSH";
+							textStyle: myStyle.textStyleBold
 						}
 					}
 				}
