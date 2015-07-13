@@ -45,7 +45,7 @@ CardChecker
 				}
 				if(k >= checked_punches.length) {// course code not found in read_card punches
 					//var nocheck = course_code_record.outoforder; for postgres, Query.values() should return lower case keys
-					var nocheck = course_code_record.outOfOrder;
+					var nocheck = course_code_record.outoforder;
 					if(!nocheck)
 						error = true;
 				}

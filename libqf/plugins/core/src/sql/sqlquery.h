@@ -39,7 +39,7 @@ public:
 	Q_INVOKABLE int numRowsAffected();
 	Q_INVOKABLE QVariant value(int ix);
 	Q_INVOKABLE QVariant value(const QString &field_name);
-	Q_INVOKABLE QVariantList values();
+	//Q_INVOKABLE QVariantList values();
 	Q_INVOKABLE qf::core::qml::SqlRecord* record();
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* createBuilder();
 

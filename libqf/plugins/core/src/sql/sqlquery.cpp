@@ -117,7 +117,7 @@ QVariant SqlQuery::value(const QString &field_name)
 	}
 	return ret;
 }
-
+/*
 QVariantList SqlQuery::values()
 {
 	QVariantList ret;
@@ -127,7 +127,7 @@ QVariantList SqlQuery::values()
 	}
 	return ret;
 }
-
+*/
 SqlRecord *SqlQuery::record()
 {
 	if(!m_record)

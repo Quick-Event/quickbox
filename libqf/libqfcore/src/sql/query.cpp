@@ -111,9 +111,10 @@ QVariantMap Query::values() const
 	QVariantMap ret;
 	auto rec = record();
 	for (int i=0; i<rec.count(); ++i) {
-		QString key;
-		qf::core::Utils::parseFieldName(rec.fieldName(i), &key);
-		ret[key] = value(i);
+		QString fld_name;
+		qf::core::Utils::parseFieldName(rec.fieldName(i), &fld_name);
+		// SQL is case insensitive
+		ret[fld_name.toLower()] = value(i);
 	}
 	return ret;
 }
