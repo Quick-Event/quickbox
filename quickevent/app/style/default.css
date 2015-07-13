@@ -3,14 +3,11 @@ QMenu,QMenuBar {
 	color: white;
 	border: 1px solid gray;
 }
-/*
+
 QMenu::item, QMenuBar::item {
-     spacing: 3px; 
-   padding: 4px 4px;
-     background: transparent;
-     border-radius: 4px;
- }
-*/
+	background-color: #525252;
+}
+
  QMenu::item:disabled, QMenuBar::item:disabled {
      color: gray;
  }
