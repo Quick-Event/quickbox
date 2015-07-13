@@ -60,7 +60,7 @@ QtObject {
 			var tt2 = new TreeTable.Table(ttd);
 			tt2.addColumn("pos", "int");
 			for(var j=0; j<tt2.rowCount(); j++) {
-				var has_pos = !tt2.value(j, "disqualified")// && !tt2.value(j, "offResults");
+				var has_pos = !tt2.value(j, "disqualified") && !tt2.value(j, "notCompeting");
 				if(has_pos)
 					tt2.setValue(j, "pos", j+1);
 				else
@@ -81,6 +81,7 @@ QtObject {
 		reportModel.queryBuilder.clear()
 			.select2('classes', 'id, name')
 			.from('classes')
+			//.where("name NOT IN ('D21B', 'H40B', 'H35B', 'H55B')")
 			.orderBy('classes.name');//.limit(1);
 		//reportModel.setQueryParameters({stage_id: stage_id})
 		reportModel.reload();
@@ -202,12 +203,15 @@ QtObject {
 					result.push(['FinishTime', ['Clock', OGTime.msecToHMS(ftime, ':')]])
 				result.push(['Time', {timeFormat: "MM:SS"}, OGTime.msecToString(time, ':')])
 				var competitor_status = 'OK'
-				if (!ftime)
+				if (!ftime) {
 					 competitor_status = 'DidNotFinish'
-				if (tt2.value(j, "misPunch"))
-					 competitor_status = 'MisPunch'
-				else if (tt2.value(j, "disqualified"))
-					 competitor_status = 'Disqualified'
+				}
+				else if (tt2.value(j, "disqualified")) {
+					if (tt2.value(j, "misPunch"))
+						competitor_status = 'MisPunch'
+					else
+						competitor_status = 'Disqualified'
+				}
 				if (competitor_status == 'OK')
 					result.push(['ResultPosition', tt2.value(j, "pos")])
 				result.push(['CompetitorStatus', {"value": competitor_status}])

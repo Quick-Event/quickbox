@@ -115,7 +115,7 @@ RunsPlugin {
 			text: qsTr('&IOF XML 2.3')
 			onTriggered: {
 				var default_file_name = "results-iof.xml";
-				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.html)"));
+				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
 				results.exportIofXml(file_name)
 			}
 		}
