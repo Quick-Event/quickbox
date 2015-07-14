@@ -223,7 +223,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "id, name")
 				.from("classes")
-				//.where("name NOT IN ('D21B', 'H40B', 'H35B', 'H55B')")
+				//.where("name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
 				.orderBy("name");//.limit(1);
 		mod.setQueryBuilder(qb);
 	}

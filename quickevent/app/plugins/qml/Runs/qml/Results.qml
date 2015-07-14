@@ -28,7 +28,7 @@ QtObject {
 			.select2('classes', 'id, name')
 			.select2('courses', 'length, climb')
 			.from('classes')
-			//.where("classes.name NOT IN ('D21B', 'H40B', 'H35B', 'H55B')")
+			//.where("classes.name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 			.join("classdefs.courseId", "courses.id")
 			.orderBy('classes.name');//.limit(1);

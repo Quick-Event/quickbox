@@ -22,7 +22,7 @@ QtObject {
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
 		.join("classes.id", "competitors.classId")
-		.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId={{stage_id}}", "JOIN")
+		.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId={{stage_id}}")
 		.groupBy("classes.name")
 		.orderBy("classes.name");
 		reportModel.setQueryParameters({stage_id: stage_id})
@@ -52,7 +52,7 @@ QtObject {
 			tt.addColumn(col_runs_count, "int");
 			tt.addColumn(col_map_count, "int");
 			var tt2 = runCountByClassesTable(e+1);
-			//console.warn("tt2", tt2.toString());
+			//console.warn(e, "tt2", tt2.toString());
 			for(var i=0; i<tt2.rowCount(); i++) {
 				//console.debug("class id:", class_id);
 				tt.setValue(i, col_runs_count, tt2.value(i, "runCount"));
