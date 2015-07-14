@@ -440,15 +440,24 @@ void TableView::paste()
 				qfu::Table t(col_names);
 				for(int row=0; row<table.count(); row++) {
 					QStringList row_sl = table[row];
-					if(row_sl.count() != col_cnt) {
+					if(row_sl.count() == 0) {
 						/// invalidni radek, napr. excel nechava na konci jeden prazdnej radek
-						qfDebug() << "invalid row:" << row_sl.join("|");
-						qfDebug() << "cell count is:" << row_sl.count() << "should be:" << col_cnt;
+						qfInfo() << "invalid row:" << row_sl.join("|");
+						qfInfo() << "cell count is:" << row_sl.count() << "should be:" << col_cnt;
 						continue;
 					}
+					/*
+					else if(row_sl.count() < col_cnt) {
+						/// invalidni radek, napr. excel nechava na konci jeden prazdnej radek
+						qfInfo() << "invalid row:" << row_sl.join("|");
+						qfInfo() << "cell count is:" << row_sl.count() << "should be:" << col_cnt;
+						continue;
+					}
+					*/
 					qfu::TableRow &r = t.appendRow();
 					for(int col=0; col<col_cnt; col++) {
-						r.setValue(col, row_sl[col]);
+						QString val_str = row_sl.value(col);
+						r.setValue(col, val_str);
 					}
 					r.clearEditFlags();
 				}

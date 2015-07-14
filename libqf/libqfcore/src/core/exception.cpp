@@ -9,44 +9,17 @@
 
 using namespace qf::core;
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
+	#define logWarning() qWarning()
+#else
+	#define logWarning() qWarning().noquote()
+#endif
+
 //============================================================
 //                      Exception
 //============================================================
 bool Exception::terminateOnException = false;
-/*
-bool Exception::f_assertThrowsException = false;
-bool Exception::f_logStackTrace = false;
 
-bool Exception::isAssertThrowsException()
-{
-	return f_assertThrowsException;
-}
-
-void Exception::setAssertThrowsException(bool b)
-{
-	f_assertThrowsException = b;
-}
-
-bool Exception::isExceptionAbortsApplication()
-{
-	return f_exceptionAbortsApplication;
-}
-
-void Exception::setExceptionAbortsApplication(bool b)
-{
-	f_exceptionAbortsApplication = b;
-}
-
-bool Exception::isLogStackTrace()
-{
-	return f_logStackTrace;
-}
-
-void Exception::setLogStackTrace(bool b)
-{
-	f_logStackTrace = b;
-}
-*/
 namespace {
 
 bool isLogStackTrace()
@@ -58,7 +31,6 @@ bool isLogStackTrace()
 
 void Exception::init(const QString& _msg, const QString& _where)
 {
-	//m_type = _type;
 	m_where = _where;
 	m_msg = _msg;
 	m_what = m_msg.toUtf8();
@@ -70,19 +42,13 @@ void Exception::init(const QString& _msg, const QString& _where)
 	m_stackTrace = sl.join("\n");
 	*/
 }
-/*
-Exception& Exception::recentExceptionRef()
-{
-	static Exception e;
-	return e;
-}
-*/
+
 void Exception::log()
 {
 	if(isLogStackTrace())
-		qWarning() << message() << "\n" << where() << "\n----- stack trace -----\n" << stackTrace();
+		logWarning() << message() << "\n" << where() << "\n----- stack trace -----\n" << stackTrace();
 	else
-		qWarning() << message() << "\n" << where();
+		logWarning() << message() << "\n" << where();
 }
 
 QString Exception::toString() const
@@ -110,16 +76,3 @@ void Exception::setGlobalFlags(int argc, char *argv[])
 	}
 }
 */
-//============================================================
-#if 0
-void QFInternalErrorException::init(const QString& _msg, const QString& _where)
-{
-	Exception::init("QFInternalErrorException", _msg, _where);
-}
-
-void QFInternalErrorException::log()
-{
-	qfLog(QFLog::LOG_ERR) << message() << "\n" << where() << "\n----- stack trace -----\n" << stackTrace();
-}
-#endif
-//============================================================
