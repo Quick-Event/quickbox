@@ -23,12 +23,14 @@
 #define qfWarning qfWarning_q()
 #define qfError qfError_q()
 #define qfFatal qfFatal_q
+#define qfLog qfLog_q
 #else
 #define qfDebug qfDebug_q().noquote
 #define qfInfo qfInfo_q().noquote
 #define qfWarning qfWarning_q().noquote
 #define qfError qfError_q().noquote
 #define qfFatal qfFatal_q
+#define qfLog qfLog_q().noquote
 #endif
 
 
