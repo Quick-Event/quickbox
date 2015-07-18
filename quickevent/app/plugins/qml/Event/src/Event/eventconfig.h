@@ -27,6 +27,7 @@ public slots:
 	void save(const QString &path_to_save = QString());
 
 	int stageCount() const;
+	int currentStageId() const;
 	int handicapLength() const;
 	//QString eventName() const;
 	//void setEventName(const QString &n);

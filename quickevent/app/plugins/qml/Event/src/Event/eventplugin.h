@@ -81,6 +81,8 @@ private:
 	Q_SLOT void onEventOpened();
 	Q_SLOT void connectToSqlServer();
 	Q_SLOT void onCbxStageActivated(int ix);
+	Q_SLOT void loadCurrentStageId();
+	Q_SLOT void saveCurrentStageId(int current_stage);
 	Q_SLOT void editStage();
 	Q_SLOT void onDbEvent(const QString & name, QSqlDriver::NotificationSource source, const QVariant & payload);
 private:

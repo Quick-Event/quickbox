@@ -653,14 +653,14 @@ Table::Field Table::field(int fld_ix) const
 
 TableRow& Table::insertRow(int before_row)
 {
-	qfLogFuncFrame();// << Log::stackTrace();
+	//qfLogFuncFrame();// << Log::stackTrace();
 	TableRow &row = insertRow(before_row, isolatedRow());
 	return row;
 }
 
 TableRow& Table::insertRow(int before_row, const TableRow &_row)
 {
-	qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
+	//qfLogFuncFrame() << "before_row:" << before_row << "row cnt:" << rowCount();
 	if(columnCount() <= 0) {
 		qfFatal("Table has no columns, row can not be inserted.");
 	}
@@ -681,7 +681,7 @@ TableRow& Table::insertRow(int before_row, const TableRow &_row)
 
 TableRow Table::isolatedRow()
 {
-	qfLogFuncFrame();// << Log::stackTrace();
+	//qfLogFuncFrame();// << Log::stackTrace();
 	TableRow empty_row(tableProperties());
 	return empty_row;
 }

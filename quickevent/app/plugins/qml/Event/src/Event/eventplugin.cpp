@@ -68,6 +68,7 @@ EventPlugin::EventPlugin(QObject *parent)
 	: Super(parent)
 {
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
+	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::saveCurrentStageId);
 }
 
 void EventPlugin::initEventConfig()
@@ -205,6 +206,20 @@ void EventPlugin::onCbxStageActivated(int ix)
 	emit this->currentStageIdChanged(ix + 1);
 }
 
+void EventPlugin::loadCurrentStageId()
+{
+	int stage_id = eventConfig()->currentStageId();
+	setCurrentStageId(stage_id);
+}
+
+void EventPlugin::saveCurrentStageId(int current_stage)
+{
+	if(current_stage != eventConfig()->currentStageId()) {
+		eventConfig()->setValue("event.currentStageId", current_stage);
+		eventConfig()->save("event");
+	}
+}
+
 void EventPlugin::editStage()
 {
 	qfLogFuncFrame();// << "id:" << id << "mode:" << mode;
@@ -292,7 +307,8 @@ void EventPlugin::onEventOpened()
 	}
 	m_cbxStage->setCurrentIndex(0);
 	m_cbxStage->blockSignals(false);
-	emit this->currentStageIdChanged(currentStageId());
+	loadCurrentStageId();
+	//emit this->currentStageIdChanged(currentStageId());
 }
 
 EventPlugin::ConnectionType EventPlugin::connectionType() const
