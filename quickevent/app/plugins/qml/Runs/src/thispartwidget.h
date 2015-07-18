@@ -10,8 +10,8 @@ private:
 	typedef quickevent::PartWidget Super;
 public:
 	ThisPartWidget(QWidget *parent = nullptr);
-protected:
-	//void reload() Q_DECL_OVERRIDE;
+
+	Q_SIGNAL void selectedStageIdChanged(int stage_id);
 };
 
 #endif // THISPARTWIDGET_H

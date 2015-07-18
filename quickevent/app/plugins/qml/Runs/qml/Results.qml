@@ -21,7 +21,7 @@ QtObject {
 	function currentStageTable(max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
+		var stage_id = runsPlugin.selectedStageId;
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()
@@ -75,7 +75,7 @@ QtObject {
 	function currentStageAwardsTable(max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
+		var stage_id = runsPlugin.selectedStageId;
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()
@@ -158,7 +158,7 @@ QtObject {
 	function exportIofXml(file_path)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var start00_msec = event_plugin.stageStart(event_plugin.currentStageId);
+		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId());
 
 		var tt1 = currentStageTable();
 		var result_list = ['ResultList', {"status": "complete"}];

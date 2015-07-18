@@ -129,6 +129,7 @@ void RunsWidget::lazyInit()
 
 void RunsWidget::reload()
 {
+	qfLogFuncFrame();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("competitors", "registration, siId, note")
@@ -136,7 +137,7 @@ void RunsWidget::reload()
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
 			.where("NOT runs.offRace")
-			.where("runs.stageId=" QF_IARG(currentStageId()))
+			.where("runs.stageId=" QF_IARG(selectedStageId()))
 			.join("runs.competitorId", "competitors.id")
 			.join("competitors.classId", "classes.id")
 			.orderBy("runs.id");//.limit(10);
@@ -144,6 +145,7 @@ void RunsWidget::reload()
 	if(class_id > 0) {
 		qb.where("competitors.classId=" + QString::number(class_id));
 	}
+	qfDebug() << qb.toString();
 	m_runsTableItemDelegate->setHighlightedClassId(class_id);
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
@@ -190,6 +192,14 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	//main_tb->addAction(m_actCommOpen);
 	{
+		QLabel *lbl = new QLabel(tr("Stage "));
+		main_tb->addWidget(lbl);
+	}
+	{
+		m_cbxStage = new QComboBox();
+		main_tb->addWidget(m_cbxStage);
+	}
+	{
 		QLabel *lbl = new QLabel(tr("Class "));
 		main_tb->addWidget(lbl);
 	}
@@ -210,6 +220,15 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 
 void RunsWidget::reset(int class_id)
 {
+	{
+		m_cbxStage->blockSignals(true);
+		m_cbxStage->clear();
+		for(int i=0; i<eventPlugin()->stageCount(); i++)
+			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
+		m_cbxStage->blockSignals(false);
+	}
 	{
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);
@@ -547,12 +566,14 @@ void RunsWidget::on_btDrawRemove_clicked()
 	m_runsModel->reload();
 }
 
-int RunsWidget::currentStageId()
+void RunsWidget::emitSelectedStageIdChanged(int ix)
 {
-	auto event_plugin = eventPlugin();
-	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->currentStageId();
-	return ret;
+	emit selectedStageIdChanged(ix + 1);
+}
+
+int RunsWidget::selectedStageId()
+{
+	return m_cbxStage->currentData().toInt();
 }
 
 void RunsWidget::onCustomContextMenuRequest(const QPoint &pos)

@@ -157,7 +157,7 @@ RunsPlugin {
 	function startListClassesTable()
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
+		var stage_id = root.selectedStageId;
 		//var stage_data = event_plugin.stageDataMap(stage_id);
 		var tt = new TreeTable.Table();
 
@@ -197,7 +197,7 @@ RunsPlugin {
 	function startListClubsTable()
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
+		var stage_id = root.selectedStageId;
 		var tt = new TreeTable.Table();
 
 		var qs1 = "SELECT * FROM ( SELECT substr(registration, 1, 3) AS clubAbbr FROM competitors) AS t GROUP BY clubAbbr ORDER BY clubAbbr";
@@ -234,7 +234,7 @@ RunsPlugin {
 	function startListStartersTable(class_letter)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
+		var stage_id = root.selectedStageId;
 		//var stage_data = event_plugin.stageDataMap(stage_id);
 		var tt = new TreeTable.Table();
 
