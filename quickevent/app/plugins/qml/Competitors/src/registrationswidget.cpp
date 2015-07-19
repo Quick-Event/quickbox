@@ -62,8 +62,11 @@ void RegistrationsWidget::reload()
 			qb.where("nameSearchKey LIKE '" + name_filter + "%'");
 		if(!registration_filter.isEmpty())
 			qb.where("registration LIKE '%" + registration_filter + "%'");
-		if(!siid_filter.isEmpty())
-			qb.where("siId LIKE '%" + siid_filter + "%'");
+		if(!siid_filter.isEmpty()) {
+			// this works for sqlite
+			// postgres doesn't allow to test integer using LIKE
+			qb.where("'' || siId LIKE '%" + siid_filter + "%'");
+		}
 	}
 	m_registrationsModel->setQueryBuilder(qb);
 	m_registrationsModel->reload();
