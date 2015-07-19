@@ -83,7 +83,8 @@ void FindRunnerWidget::reload()
 		if(!registration_filter.isEmpty())
 			qb.where("LOWER(registration) LIKE '%" + registration_filter + "%'");
 		if(!siid_filter.isEmpty())
-			qb.where("runs.siId LIKE '%" + siid_filter + "%'");
+			qb.where("'' || runs.siId LIKE '%" + siid_filter + "%'");
+		qfDebug() << qb.toString();
 	}
 	m_runnersModel->setQueryBuilder(qb);
 	m_runnersModel->reload();

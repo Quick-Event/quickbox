@@ -48,8 +48,8 @@ void RegistrationsWidget::reload()
 			.from("registrations")
 			.orderBy("registration");
 	if(ui->grpFilter->isChecked()) {
-		QString name_filter = ui->edNameFilter->text().trimmed();
-		QString registration_filter = ui->edRegistrationFilter->text().trimmed();
+		QString name_filter = ui->edNameFilter->text().trimmed().toLower();
+		QString registration_filter = ui->edRegistrationFilter->text().trimmed().toLower();
 		QString siid_filter = ui->edSiIdFilter->text().trimmed();
 
 		int l = name_filter.length()
@@ -61,7 +61,7 @@ void RegistrationsWidget::reload()
 		if(!name_filter.isEmpty())
 			qb.where("nameSearchKey LIKE '" + name_filter + "%'");
 		if(!registration_filter.isEmpty())
-			qb.where("registration LIKE '%" + registration_filter + "%'");
+			qb.where("LOWER(registration) LIKE '%" + registration_filter + "%'");
 		if(!siid_filter.isEmpty()) {
 			// this works for sqlite
 			// postgres doesn't allow to test integer using LIKE
