@@ -7,3 +7,10 @@ PLUGIN_NAME = shared
 
 include ( ../quickeventqmlplugin.pri )
 
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \
+
+lupdate_only {
+SOURCES += \
+	$$PWD/QuickEvent/reports/*.qml \
+}

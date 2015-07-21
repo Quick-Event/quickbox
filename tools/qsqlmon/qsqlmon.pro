@@ -46,3 +46,5 @@ console: message(CONSOLE)
 
 include($$PWD/src/src.pri)
 
+TRANSLATIONS += \
+	$${TARGET}.cs_CZ.ts \

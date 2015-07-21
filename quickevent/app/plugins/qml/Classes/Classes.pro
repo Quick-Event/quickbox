@@ -21,3 +21,11 @@ include (src/src.pri)
 RESOURCES += \
 #    $${PLUGIN_NAME}.qrc \
 
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \
+
+lupdate_only {
+SOURCES += \
+	$$PWD/qml/*.qml \
+	$$PWD/qml/reports/*.qml \
+}

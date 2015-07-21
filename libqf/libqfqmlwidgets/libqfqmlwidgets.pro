@@ -40,3 +40,6 @@ include($$PWD/src/src.pri)
 RESOURCES += \
     $$PWD/images/images.qrc \
     $$PWD/images/flat/flat.qrc
+
+TRANSLATIONS += \
+	libqfqmlwidgets.cs_CZ.ts \

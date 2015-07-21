@@ -7,3 +7,13 @@ PLUGIN_NAME = Oris
 
 include ( ../quickeventqmlplugin.pri )
 
+OTHER_FILES += \
+	*.qml \
+
+lupdate_only {
+SOURCES += \
+	*.qml \
+}
+
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \

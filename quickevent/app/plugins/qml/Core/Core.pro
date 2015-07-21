@@ -12,3 +12,10 @@ include (src/src.pri)
 
 RESOURCES += \
 
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \
+
+lupdate_only {
+SOURCES += \
+	$$PWD/qml/*.qml \
+}

@@ -28,3 +28,11 @@ RESOURCES += \
 OTHER_FILES += \
 	$$PWD/qml/CardCheckers/* \
 
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \
+
+lupdate_only {
+SOURCES += \
+	$$PWD/qml/*.qml \
+	$$PWD/qml/CardCheckers/*.qml \
+}
