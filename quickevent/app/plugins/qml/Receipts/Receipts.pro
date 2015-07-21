@@ -27,3 +27,11 @@ RESOURCES += \
 DISTFILES += \
     qml/reports/receiptClassic.qml
 
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \
+
+lupdate_only {
+SOURCES += \
+	$$PWD/qml/*.qml \
+	$$PWD/qml/reports/*.qml \
+}

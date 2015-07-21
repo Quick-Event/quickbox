@@ -64,3 +64,6 @@ win32:CONFIG(debug, debug|release):CONFIG += console
 
 QMAKE_EXTRA_TARGETS += datafiles
 PRE_TARGETDEPS += datafiles
+
+TRANSLATIONS += \
+	$${TARGET}.cs_CZ.ts \

@@ -16,15 +16,25 @@
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
+#include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
+
+#include <QComboBox>
 
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	return qobject_cast<Event::EventPlugin *>(plugin);
+}
 
 ClassesWidget::ClassesWidget(QWidget *parent) :
 	Super(parent),
@@ -68,6 +78,11 @@ ClassesWidget::~ClassesWidget()
 	delete ui;
 }
 
+int ClassesWidget::selectedStageId()
+{
+	return m_cbxStage->currentData().toInt();
+}
+
 void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
@@ -80,18 +95,38 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(a_ocad, SIGNAL(triggered()), this, SLOT(import_ocad()));
 
 	a_import->addActionInto(a_ocad);
+
+	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
+	//main_tb->addAction(m_actCommOpen);
+	{
+		QLabel *lbl = new QLabel(tr("Stage "));
+		main_tb->addWidget(lbl);
+	}
+	{
+		m_cbxStage = new QComboBox();
+		main_tb->addWidget(m_cbxStage);
+	}
+
 }
 
 void ClassesWidget::reset()
 {
+	{
+		m_cbxStage->blockSignals(true);
+		m_cbxStage->clear();
+		for(int i=0; i<eventPlugin()->stageCount(); i++)
+			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
+		m_cbxStage->blockSignals(false);
+	}
 	reload();
 }
 
 void ClassesWidget::reload()
 {
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	Event::EventPlugin *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	int stage_id = event_plugin->currentStageId();
+	//qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	//Event::EventPlugin *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	int stage_id = selectedStageId();
 	{
 		qf::core::sql::QueryBuilder qb1;
 		qb1.select("COUNT(*)")
@@ -252,9 +287,9 @@ void ClassesWidget::import_ocad()
 			auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 			auto *classes_plugin = qobject_cast<Classes::ClassesPlugin *>(fwk->plugin("Classes"));
 			if(event_plugin && classes_plugin) {
-				QString msg = tr("Delete all courses definitions for stage %1?").arg(event_plugin->currentStageId());
+				QString msg = tr("Delete all courses definitions for stage %1?").arg(selectedStageId());
 				if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
-					classes_plugin->createCourses(event_plugin->currentStageId(), courses);
+					classes_plugin->createCourses(selectedStageId(), courses);
 					reload();
 				}
 			}

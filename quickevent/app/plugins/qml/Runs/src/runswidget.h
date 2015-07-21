@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+class QComboBox;
+
 namespace qf {
 namespace core {
 namespace model {
@@ -42,13 +44,15 @@ public:
 	Q_SLOT void reset(int class_id = 0);
 	Q_SLOT void reload();
 
+	Q_INVOKABLE int selectedStageId();
+	Q_SIGNAL void selectedStageIdChanged(int stage_id);
+
 	void editStartList(int class_id, int competitor_id);
 private slots:
 	void on_btDraw_clicked();
 	void on_btDrawRemove_clicked();
-
+	void emitSelectedStageIdChanged(int ix);
 private:
-	int currentStageId();
 
 	Q_SLOT void lazyInit();
 
@@ -68,6 +72,7 @@ private:
 	RunsTableModel *m_runsModel;
 	RunsTableItemDelegate *m_runsTableItemDelegate;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
+	QComboBox *m_cbxStage = nullptr;
 };
 
 #endif // RUNSWIDGET_H

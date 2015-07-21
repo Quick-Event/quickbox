@@ -28,6 +28,7 @@ class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plug
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)
+	Q_PROPERTY(int selectedStageId READ selectedStageId WRITE setSelectedStageId NOTIFY selectedStageIdChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
@@ -35,6 +36,8 @@ public:
 public:
 	RunsPlugin(QObject *parent = nullptr);
 	~RunsPlugin() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_IMPL2(int, s, S, electedStageId, 1)
 
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 

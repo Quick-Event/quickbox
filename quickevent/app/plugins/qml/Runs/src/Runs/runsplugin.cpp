@@ -48,7 +48,13 @@ RunsPlugin::~RunsPlugin()
 void RunsPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	m_partWidget = new ThisPartWidget();
+	auto *tpw = new ThisPartWidget();
+	m_partWidget = tpw;
+	connect(tpw, &ThisPartWidget::selectedStageIdChanged, [this](int stage_id) {
+		qfInfo() << stage_id;
+		this->setSelectedStageId(stage_id);
+	});
+
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
 	connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);

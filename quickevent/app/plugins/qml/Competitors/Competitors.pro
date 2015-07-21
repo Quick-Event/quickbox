@@ -29,5 +29,11 @@ RESOURCES += \
 OTHER_FILES += \
 	$$PWD/qml/reports/* \
 
-#DISTFILES += \
-#    qml/CompetitorsModel.qml
+TRANSLATIONS += \
+	$${PLUGIN_NAME}.cs_CZ.ts \
+
+lupdate_only {
+SOURCES += \
+	$$PWD/qml/*.qml \
+	$$PWD/qml/reports/*.qml \
+}

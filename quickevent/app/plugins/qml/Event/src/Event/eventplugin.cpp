@@ -29,6 +29,8 @@
 #include <QMetaObject>
 #include <QSqlDriver>
 #include <QJsonObject>
+#include <QPushButton>
+#include <QToolButton>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
@@ -66,6 +68,7 @@ EventPlugin::EventPlugin(QObject *parent)
 	: Super(parent)
 {
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
+	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::saveCurrentStageId);
 }
 
 void EventPlugin::initEventConfig()
@@ -169,23 +172,52 @@ void EventPlugin::onInstalled()
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
-	tb->addWidget(new QLabel(tr("Stage ")));
-	m_cbxStage = new QComboBox();
-	connect(m_cbxStage, SIGNAL(activated(int)), this, SLOT(onCbxStageActivated(int)));
-	tb->addWidget(m_cbxStage);
+	{
+		QToolButton *bt_stage = new QToolButton();
+		//bt_stage->setFlat(true);
+		bt_stage->setAutoRaise(true);
+		bt_stage->setCheckable(true);
+		tb->addWidget(bt_stage);
+		m_cbxStage = new QComboBox();
+		connect(m_cbxStage, SIGNAL(activated(int)), this, SLOT(onCbxStageActivated(int)));
+		connect(this, &EventPlugin::currentStageIdChanged, [bt_stage](int stage_id) {
+			bt_stage->setText(tr("Current stage E%1").arg(stage_id));
+		});
+		QAction *act_stage = tb->addWidget(m_cbxStage);
+		act_stage->setVisible(false);
 
 
-	auto *style = qf::qmlwidgets::Style::instance();
-	QIcon ico(style->icon("settings"));
-	m_actEditStage = new qfw::Action(ico, "Stage settings");
-	//m_actOpenEvent->setEnabled(false);
-	connect(m_actEditStage, SIGNAL(triggered()), this, SLOT(editStage()));
-	tb->addAction(m_actEditStage);
+		auto *style = qf::qmlwidgets::Style::instance();
+		QIcon ico(style->icon("settings"));
+		m_actEditStage = new qfw::Action(ico, "Stage settings");
+		m_actEditStage->setVisible(false);
+		connect(m_actEditStage, SIGNAL(triggered()), this, SLOT(editStage()));
+		tb->addAction(m_actEditStage);
+
+		connect(bt_stage, &QPushButton::clicked, [this, act_stage](bool checked) {
+			act_stage->setVisible(checked);
+			m_actEditStage->setVisible(checked);
+		});
+	}
 }
 
 void EventPlugin::onCbxStageActivated(int ix)
 {
 	emit this->currentStageIdChanged(ix + 1);
+}
+
+void EventPlugin::loadCurrentStageId()
+{
+	int stage_id = eventConfig()->currentStageId();
+	setCurrentStageId(stage_id);
+}
+
+void EventPlugin::saveCurrentStageId(int current_stage)
+{
+	if(current_stage != eventConfig()->currentStageId()) {
+		eventConfig()->setValue("event.currentStageId", current_stage);
+		eventConfig()->save("event");
+	}
 }
 
 void EventPlugin::editStage()
@@ -275,7 +307,8 @@ void EventPlugin::onEventOpened()
 	}
 	m_cbxStage->setCurrentIndex(0);
 	m_cbxStage->blockSignals(false);
-	emit this->currentStageIdChanged(currentStageId());
+	loadCurrentStageId();
+	//emit this->currentStageIdChanged(currentStageId());
 }
 
 EventPlugin::ConnectionType EventPlugin::connectionType() const

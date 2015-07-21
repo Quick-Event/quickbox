@@ -826,7 +826,14 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 			//row_ref.setValue(idColumnName(), id);
 			//row_ref.setInsert(false);
 			int reloaded_row_cnt = tmd->reloadRow(ri);
-			if(reloaded_row_cnt != 1) {
+			if(reloaded_row_cnt == 0) {
+				//inserted row cannot be reloaded, it can happen if it doesn't meet WHERE contition of query
+				// remove just inserted row from table
+				qfWarning() << "Inserted/Copied row id:" << id.toString() << "cannot be reloaded, it will be deleted in table.";
+				tmd->qfm::TableModel::removeRowNoOverload(ri, !qf::core::Exception::Throw);
+				return;
+			}
+			else if(reloaded_row_cnt != 1) {
 				qfWarning() << "Inserted/Copied row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
 				return;
 			}

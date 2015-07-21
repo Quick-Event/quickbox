@@ -36,6 +36,7 @@ void EventDialogWidget::setEventIdEditable(bool b)
 void EventDialogWidget::loadParams(const QVariantMap &params)
 {
 	ui->ed_stageCount->setValue(params.value("stageCount").toInt());
+	//ui->ed_currentStage->setValue(params.value("currentStageId").toInt());
 	ui->ed_name->setText(params.value("name").toString());
 	ui->ed_date->setDate(params.value("date").toDate());
 	ui->ed_description->setText(params.value("description").toString());
@@ -49,6 +50,7 @@ QVariantMap EventDialogWidget::saveParams()
 {
 	QVariantMap ret;
 	ret["stageCount"] = ui->ed_stageCount->value();
+	//ret["currentStageId"] = ui->ed_currentStage->value();
 	ret["name"] = ui->ed_name->text();
 	ret["date"] = ui->ed_date->date();
 	ret["description"] = ui->ed_description->text();
