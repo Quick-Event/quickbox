@@ -8,6 +8,7 @@
 #include "ui_dlgsettings.h"
 #include "dlgsettings.h"
 #include "cardreaderwidget.h"
+#include "CardReader/cardreaderplugin.h"
 
 //#include "theapp.h"
 
@@ -59,7 +60,7 @@ void DlgSettings::load()
 {
 	QSettings settings;
 	//settings.clear();
-	settings.beginGroup(CardReaderWidget::SETTINGS_PREFIX);
+	settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
 
 	settings.beginGroup("comm");
 	settings.beginGroup("connection");
@@ -86,7 +87,7 @@ void DlgSettings::load()
 void DlgSettings::save()
 {
 	QSettings settings;
-	settings.beginGroup(CardReaderWidget::SETTINGS_PREFIX);
+	settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
 
 	settings.beginGroup("comm");
 	settings.beginGroup("connection");
