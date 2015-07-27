@@ -155,9 +155,6 @@ void Dialog::loadPersistentSettings()
 			}
 		}
 	}
-	else if(!id.isEmpty()) {
-		qfWarning() << "Not empty persistent Id:" << id << "with empty persistent path, persistent data wasn't loaded', this can happen when Dialog has no parent.";
-	}
 }
 
 bool Dialog::doneRequest(int result)
