@@ -1915,6 +1915,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 				}
 			}
 			else  if(rowEditorMode() == EditRowsExternal || rowEditorMode() == EditRowsMixed) {
+				ret = false;
 				if(rowEditorMode() == EditRowsMixed) {
 					ret = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t RowEditorMixed QTableView::edit() returned:" << ret;
