@@ -71,14 +71,14 @@ bool DataDocument::load()
 	RecordEditMode m = mode();
 	QVariant id = dataId();
 	if(m == ModeCopy && !id.isNull()) {
-		ret = invokeLoadData();
+		ret = loadData();
 		if(ret) {
 			ret = copy();
 		}
 	}
 	else {
 		setMode(m);
-		ret = invokeLoadData();
+		ret = loadData();
 		if(ret) {
 			emit loaded();
 		}
@@ -94,7 +94,7 @@ bool DataDocument::save()
 		RecordEditMode m = mode();
 		QVariant id = dataId();
 		emit aboutToSave(id, m);
-		ret = invokeSaveData();
+		ret = saveData();
 		if(ret) {
 			// reload data id, can be set from serie for mode INSERT
 			id = dataId();
@@ -111,7 +111,7 @@ bool DataDocument::drop()
 	bool ret = false;
 	QVariant id = dataId();
 	emit aboutToDrop(id);
-	ret = invokeDropData();
+	ret = dropData();
 	if(ret) {
 		emit saved(id, ModeDelete);
 		emit dropped(id);
@@ -124,7 +124,7 @@ bool DataDocument::copy()
 	qfLogFuncFrame();
 	bool ret = false;
 	if(mode() != ModeInsert) {
-		ret = invokeCopyData();
+		ret = copyData();
 		if(ret) {
 			setMode(ModeInsert);
 			//setDataDirty_helper(isDataDirty());
