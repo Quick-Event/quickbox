@@ -72,28 +72,12 @@ public:
 protected:
 	///! load model persistent storage via model
 	Q_INVOKABLE virtual bool loadData();
-	//Q_INVOKABLE QVariant loadData_qml() {return loadData();}
-	//bool invokeLoadData() {return qf::core::Utils::invokeMethod_B_V(this, "loadData_qml");}
-	bool invokeLoadData() {return loadData();}
-
 	///! save dirty data to persistent storage via model
 	Q_INVOKABLE virtual bool saveData();
-	//Q_INVOKABLE QVariant saveData_qml() {return saveData();}
-	//bool invokeSaveData() {return qf::core::Utils::invokeMethod_B_V(this, "saveData_qml");}
-	bool invokeSaveData() {return saveData();}
-
 	///! drop data in persistent storage via model
 	Q_INVOKABLE virtual bool dropData();
-	//Q_INVOKABLE QVariant dropData_qml() {return dropData();}
-	//bool invokeDropData() {return qf::core::Utils::invokeMethod_B_V(this, "dropData_qml");}
-	bool invokeDropData() {return dropData();}
-
 	//! prepare loaded data to create document copy on next save() call
 	Q_INVOKABLE virtual bool copyData();
-	//Q_INVOKABLE QVariant copyData_qml() {return copyData();}
-	//bool invokeCopyData() {return qf::core::Utils::invokeMethod_B_V(this, "copyData_qml");}
-	bool invokeCopyData() {return copyData();}
-
 
 	virtual TableModel* createModel(QObject *parent);
 protected:

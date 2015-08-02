@@ -318,8 +318,9 @@ void TableView::cloneRow()
 		cloneRowInline();
 	}
 	else {
+		QVariant id = selectedRow().value(idColumnName());
 		qfDebug() << "\t emit editRowInExternalEditor(ModeCopy)";
-		emit editRowInExternalEditor(QVariant(), ModeCopy);
+		emit editRowInExternalEditor(id, ModeCopy);
 	}
 	refreshActions();
 }
@@ -784,14 +785,12 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 		if(mode == ModeInsert || mode == ModeCopy) {
 			/// ModeInsert or ModeCopy
 			qfDebug() << "\t ModeInsert or ModeCopy";
-			int ri = 0;
 			//qfDebug() << "\tri:" << ri;
 			//qfDebug() << "\tmodel->rowCount():" << ri;
 			QModelIndex curr_ix = currentIndex();
-			if(curr_ix.isValid()) {
-				ri = curr_ix.row() + 1;
+			int ri = curr_ix.row() + 1;
+			if(ri >= 0 && ri < model()->rowCount())
 				ri = toTableModelRowNo(ri);
-			}
 			else
 				ri = tmd->rowCount();
 			if(ri > tmd->rowCount())
