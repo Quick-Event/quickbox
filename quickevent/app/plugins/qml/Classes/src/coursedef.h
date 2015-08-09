@@ -6,7 +6,7 @@
 struct CourseDef : public QVariantMap
 {
 	//QF_VARIANTMAP_FIELD2(int, c, setC, ourseId, 0)
-	QF_VARIANTMAP_FIELD(QString, c, setC, ourse)
+	QF_VARIANTMAP_FIELD(QString, n, setN, ame)
 	QF_VARIANTMAP_FIELD2(int, l, setL, enght, 0)
 	QF_VARIANTMAP_FIELD2(int, c, setC, limb, 0)
 	QF_VARIANTMAP_FIELD(QStringList, c, setC, lasses)

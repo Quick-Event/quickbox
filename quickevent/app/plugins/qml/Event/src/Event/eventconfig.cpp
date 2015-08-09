@@ -159,7 +159,10 @@ int EventConfig::stageCount() const
 
 int EventConfig::currentStageId() const
 {
-	return value(QStringLiteral("event.currentStageId")).toInt();
+	int ret = value(QStringLiteral("event.currentStageId")).toInt();
+	if(ret == 0)
+		ret = 1;
+	return ret;
 }
 
 int EventConfig::handicapLength() const
