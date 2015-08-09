@@ -12,6 +12,11 @@
 #include <QSqlDriver>
 
 namespace qf {
+namespace core {
+namespace sql {
+class Query;
+}
+}
 namespace qmlwidgets {
 class Action;
 namespace framework {
@@ -59,6 +64,7 @@ public:
 	Q_SLOT void editEvent();
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
+	Q_SLOT void exportEvent();
 
 	Q_SIGNAL void reloadDataRequest();
 
@@ -85,12 +91,16 @@ private:
 	Q_SLOT void saveCurrentStageId(int current_stage);
 	Q_SLOT void editStage();
 	Q_SLOT void onDbEvent(const QString & name, QSqlDriver::NotificationSource source, const QVariant & payload);
+
+	bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
 private:
-	qf::qmlwidgets::Action *m_actConnectDb;
-	qf::qmlwidgets::Action *m_actCreateEvent;
-	qf::qmlwidgets::Action *m_actOpenEvent;
-	qf::qmlwidgets::Action *m_actEditEvent;
-	qf::qmlwidgets::Action *m_actEditStage;
+	qf::qmlwidgets::Action *m_actConnectDb = nullptr;
+	qf::qmlwidgets::Action *m_actEvent = nullptr;
+	qf::qmlwidgets::Action *m_actCreateEvent = nullptr;
+	qf::qmlwidgets::Action *m_actOpenEvent = nullptr;
+	qf::qmlwidgets::Action *m_actEditEvent = nullptr;
+	qf::qmlwidgets::Action *m_actExportEvent = nullptr;
+	qf::qmlwidgets::Action *m_actEditStage = nullptr;
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;
 	QComboBox *m_cbxStage = nullptr;

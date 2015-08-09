@@ -190,17 +190,18 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 	QStringList ret;
 	if(driverName().endsWith(QLatin1String("PSQL"))) {
 		QSqlQuery q(*this);
-		QString s = "SELECT table_name FROM information_schema.tables"
+		QString qs = "SELECT table_name FROM information_schema.tables"
 					" WHERE table_schema='%1' AND table_type IN (%2)"
 					" ORDER BY table_type, table_name";
-		s = s.arg(dbname);
+		qs = qs.arg(dbname.isEmpty()? QStringLiteral("public"): dbname);
 		QStringList table_types;
 		if(type & QSql::Tables)
 			table_types << "'BASE TABLE'";
 		if(type & QSql::Views)
 			table_types << "'VIEW'";
-		s = s.arg(table_types.join(','));
-		q.exec(s);
+		qs = qs.arg(table_types.join(','));
+		qfInfo() << qs;
+		q.exec(qs);
 		while(q.next()) {
 			ret << q.value(0).toString();
 		}

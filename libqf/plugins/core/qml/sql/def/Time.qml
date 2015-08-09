@@ -8,4 +8,9 @@ FieldType
 		var def = 'time';
 		return def;
 	}
+
+	function variantTypeName()
+	{
+		return "QTime";
+	}
 }

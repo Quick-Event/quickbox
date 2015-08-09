@@ -8,4 +8,9 @@ FieldType
 		var def = 'timestamp';
 		return def;
 	}
+
+	function variantTypeName()
+	{
+		return "QDateTime";
+	}
 }

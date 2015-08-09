@@ -19,4 +19,9 @@ FieldType
 			def = def + ' COLLATE "' + coll + '"';
 		return def;
 	}
+
+	function variantTypeName()
+	{
+		return "QString";
+	}
 }

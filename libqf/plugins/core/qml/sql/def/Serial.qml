@@ -11,7 +11,12 @@ Int {
 			var def = (length > 32)? 'bigserial': 'serial';
 		}
 		if(primaryKey)
-		def += " PRIMARY KEY";
+			def += " PRIMARY KEY";
 		return def;
+	}
+
+	function variantTypeName()
+	{
+		return (length > 32)? 'quint32': 'quint64';
 	}
 }
