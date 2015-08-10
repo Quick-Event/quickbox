@@ -3,13 +3,13 @@ import "qrc:/qf/core/qml/js/stringext.js" as StringExt
 
 QtObject
 {
-	property string metaTypeName: variantTypeName()
+	property string metaTypeName: metaTypeNameFn()
 	function createSqlType(options)
 	{
 		return '';
 	}
 
-	function variantTypeName()
+	function metaTypeNameFn()
 	{
 		return "Invalid";
 	}

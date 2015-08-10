@@ -25,6 +25,7 @@ namespace framework {
 }
 
 class QComboBox;
+class DbSchema;
 
 namespace Event {
 
@@ -75,6 +76,8 @@ public:
 
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
+
+	DbSchema dbSchema();
 public:
 	// event wide signals
 	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
@@ -92,7 +95,7 @@ private:
 	Q_SLOT void editStage();
 	Q_SLOT void onDbEvent(const QString & name, QSqlDriver::NotificationSource source, const QVariant & payload);
 
-	bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
+	//bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
 private:
 	qf::qmlwidgets::Action *m_actConnectDb = nullptr;
 	qf::qmlwidgets::Action *m_actEvent = nullptr;

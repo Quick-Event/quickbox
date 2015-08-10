@@ -10,7 +10,7 @@ FieldType {
 		return def;
 	}
 
-	function variantTypeName()
+	function metaTypeNameFn()
 	{
 		return "int";
 	}

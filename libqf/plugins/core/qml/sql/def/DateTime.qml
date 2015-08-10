@@ -9,7 +9,7 @@ FieldType
 		return def;
 	}
 
-	function variantTypeName()
+	function metaTypeNameFn()
 	{
 		return "QDateTime";
 	}

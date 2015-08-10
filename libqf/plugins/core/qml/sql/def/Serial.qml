@@ -15,7 +15,7 @@ Int {
 		return def;
 	}
 
-	function variantTypeName()
+	function metaTypeNameFn()
 	{
 		return (length > 32)? 'quint32': 'quint64';
 	}

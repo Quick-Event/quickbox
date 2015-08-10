@@ -2,6 +2,7 @@
 #include "../connectdbdialogwidget.h"
 #include "../connectionsettings.h"
 #include "../eventdialogwidget.h"
+#include "../dbschema.h"
 #include "stagedocument.h"
 #include "stagewidget.h"
 
@@ -276,6 +277,11 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bo
 	}
 }
 
+DbSchema EventPlugin::dbSchema()
+{
+	return DbSchema(this);
+}
+
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
 {
 	qfLogFuncFrame() << "name:" << name << "source:" << source << "payload:" << payload;
@@ -394,7 +400,7 @@ void EventPlugin::connectToSqlServer()
 	}
 }
 
-bool EventPlugin::runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines)
+static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines)
 {
 	qfLogFuncFrame();
 	for(auto cmd : sql_lines) {
@@ -469,7 +475,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		qfs::Query q(conn);
 		do {
 			qfs::Transaction transaction(conn);
-			ok = runSqlScript(q, create_script);
+			ok = run_sql_script(q, create_script);
 			if(!ok)
 				break;
 			qfDebug() << "creating stages:" << stage_count;
@@ -640,16 +646,15 @@ void EventPlugin::setDbOpen(bool ok)
 	}
 }
 
-static QString copy_sql_table(const QString &table_name, qfs::Connection &from_conn, qfs::Connection &to_conn)
+static QString copy_sql_table(const QString &table_name, const QSqlRecord &rec, qfs::Connection &from_conn, qfs::Connection &to_conn)
 {
 	qfLogFuncFrame() << table_name;
 	qfs::Query from_q(from_conn);
 	if(!from_q.exec(QString("SELECT * FROM %1").arg(table_name))) {
 		return QString("SQL Error: %1").arg(from_q.lastError().text());
 	}
-	QSqlRecord from_rec = from_q.record();
 	auto *sqldrv = to_conn.driver();
-	QString qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table_name, from_rec, true);
+	QString qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table_name, rec, true);
 	qfs::Query to_q(to_conn);
 	if(!to_q.prepare(qs)) {
 		qfWarning() << "Cannot prepare insert table SQL statement, table" << table_name << "probably doesn't exist in target database and it will not be copied.";
@@ -660,9 +665,10 @@ static QString copy_sql_table(const QString &table_name, qfs::Connection &from_c
 			if(from_q.value(0).toString() == QLatin1String("db.version"))
 				continue;
 		}
-		for (int i = 0; i < from_rec.count(); ++i) {
+		for (int i = 0; i < rec.count(); ++i) {
+			QString fld_name = rec.field(i).name();
 			//qfDebug() << from_rec.field(i).name() << "->" << from_q.value(i);
-			to_q.addBindValue(from_q.value(i));
+			to_q.bindValue(':' + fld_name, from_q.value(fld_name));
 		}
 		if(!to_q.exec())
 			return QString("SQL Error: %1").arg(to_q.lastError().text());
@@ -698,51 +704,23 @@ void EventPlugin::exportEvent()
 		}
 		qfs::Transaction transaction(ex_conn);
 
-		QVariantMap create_options;
-		create_options["schemaName"] = "";
-		create_options["driverName"] = ex_conn.driverName();
+		DbSchema db_schema = dbSchema();
 		{
-			QVariant ret_val;
-			QMetaObject::invokeMethod(this, "createDbSqlScript", Qt::DirectConnection,
-									  Q_RETURN_ARG(QVariant, ret_val),
-									  Q_ARG(QVariant, create_options));
-			QStringList create_script = ret_val.toStringList();
+			DbSchema::CreateDbSqlScriptOptions create_options;
+			create_options.setDriverName(ex_conn.driverName());
+			QStringList create_script = db_schema.createDbSqlScript(create_options);
 			qfs::Query ex_q(ex_conn);
-			if(!runSqlScript(ex_q, create_script)) {
+			if(!run_sql_script(ex_q, create_script)) {
 				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
 				break;
 			}
 		}
-		QObject *db_schema = nullptr;
-		{
-			QVariant ret_val;
-			if(!QMetaObject::invokeMethod(this, "dbSchema", Qt::DirectConnection, Q_RETURN_ARG(QVariant, ret_val))) {
-				err_str = "Internal error: Cannot get db schema";
-				break;
-			}
-			db_schema = ret_val.value<QObject*>();
-			QF_ASSERT(db_schema != nullptr, "Internal error: Cannot get db schema", break);
-		}
-		QQmlListReference tables(db_schema, "tables", qmlEngine());
-		for (int i = 0; i < tables.count(); ++i) {
-			QObject *table = tables.at(i);
-			qfInfo() << i << table->property("name");
-			QQmlListReference fields(table, "fields", qmlEngine());
-			for (int j = 0; j < fields.count(); ++j) {
-				QObject *field = fields.at(j);
-				QString name = field->property("name").toString();
-				QVariant typev = field->property("type");
-				QObject *type = typev.value<QObject*>();
-				QF_ASSERT(type != nullptr, "Internal error: Cannot get field type", break);
-				QString type_name = type->property("metaTypeName").toString();
-				//QString type_name = field->property("aaa").toString();
-				qfInfo() << type << "name:" << name << "type:" << type_name;
-			}
-		}
 		qfs::Connection conn = qfs::Connection::forName();
-		for(QString table_name : conn.tables(conn.currentSchema())) {
+		for(QObject *table : db_schema.tables()) {
+			QString table_name = table->property("name").toString();
 			qfDebug() << "Copying table" << table_name;
-			err_str = copy_sql_table(table_name, conn, ex_conn);
+			QSqlRecord rec = db_schema.sqlRecord(table);
+			err_str = copy_sql_table(table_name, rec, conn, ex_conn);
 			if(!err_str.isEmpty())
 				break;
 		}
