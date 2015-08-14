@@ -5,7 +5,12 @@
 
 #include <QDebug>
 
+#ifdef QT_DEBUG
 #define qfDebug_q qDebug
+#else
+#define qfDebug_q while(0) qDebug
+#endif
+
 #if (QT_VERSION < QT_VERSION_CHECK(5, 5, 0))
 #define qfInfo_q() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::Level::Info))
 #else

@@ -23,6 +23,8 @@ public:
 	void setItems(const QStringList &items);
 	int currentItemIndex();
 	void setCurrentItemIndex(int ix);
+
+	static int getItem(QWidget *parent, const QString &title, const QString &label_text, const QStringList &items, int current_item_index = -1);
 private:
 	QLabel *m_label;
 	QComboBox *m_comboBox;
