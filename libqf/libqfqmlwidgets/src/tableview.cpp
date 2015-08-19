@@ -235,7 +235,7 @@ void TableView::reload(bool preserve_sorting)
 {
 	qfLogFuncFrame();
 	int sort_column = -1;
-	Qt::SortOrder sort_order;
+	Qt::SortOrder sort_order(Qt::AscendingOrder);
 	if(horizontalHeader()) {
 		savePersistentSettings();
 		sort_column = horizontalHeader()->sortIndicatorSection();
