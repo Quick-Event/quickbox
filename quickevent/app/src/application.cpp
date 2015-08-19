@@ -37,9 +37,9 @@ Application::Application(int &argc, char **argv)
 		}
 	}
 #ifdef Q_OS_UNIX
-	QString plugin_path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName();
+	QString plugin_path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName().toLower();
 #else
-	QString plugin_path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName();
+	QString plugin_path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName().toLower();
 #ifdef Q_OS_WIN
 	qfInfo() << "Adding DLL search path:" << plugin_path;
 	SetDllDirectory(reinterpret_cast<LPCWSTR>(plugin_path.utf16()));
