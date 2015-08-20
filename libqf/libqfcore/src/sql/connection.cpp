@@ -200,7 +200,6 @@ QStringList Connection::tables(const QString& dbname, QSql::TableType type) cons
 		if(type & QSql::Views)
 			table_types << "'VIEW'";
 		qs = qs.arg(table_types.join(','));
-		qfInfo() << qs;
 		q.exec(qs);
 		while(q.next()) {
 			ret << q.value(0).toString();
