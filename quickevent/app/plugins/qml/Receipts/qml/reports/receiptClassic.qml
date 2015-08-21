@@ -126,7 +126,17 @@ Report {
 					hinset: 1
 					vinset: 1
 					Para {
-						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.name"): "";
+						text: {
+							if(bandCompetitor.modelLoaded) {
+								var s = "";
+								var stage_cnt = bandCompetitor.data("stageCount")
+								if(stage_cnt > 1)
+									s = qsTr("E") + bandCompetitor.data("currentStageId") + " - ";
+								s += bandCompetitor.data("event.name")
+								return s;
+							}
+							return "";
+						}
 					}
 					Para {
 						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.date").toISOString().substring(0, 10)
