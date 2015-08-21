@@ -18,9 +18,9 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName("QuickEvent");
 
 	QString o_log_file;
-	for (int i = 0; i < argc; ++i) {
+	for (int i = 1; i < argc-1; ++i) {
 		if(argv[i] == QLatin1String("--log-file"))
-			o_log_file = argv[i];
+			o_log_file = argv[i + 1];
 	}
 
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());

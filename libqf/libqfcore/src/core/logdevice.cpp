@@ -261,6 +261,7 @@ void FileLogDevice::setFile(const QString &path_to_file)
 	else {
 		FILE *f = ::fopen(qPrintable(path_to_file), "w");
 		if(f) {
+			fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
 			m_file = f;
 		}
 		else {
