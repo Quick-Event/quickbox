@@ -17,7 +17,14 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationDomain("quickbox.org");
 	QCoreApplication::setApplicationName("QuickEvent");
 
-	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
+	QString o_log_file;
+	for (int i = 0; i < argc; ++i) {
+		if(argv[i] == QLatin1String("--log-file"))
+			o_log_file = argv[i];
+	}
+
+	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
+	file_log_device->setFile(o_log_file);
 	file_log_device->setDomainTresholds(argc, argv);
 	file_log_device->setPrettyDomain(true);
 

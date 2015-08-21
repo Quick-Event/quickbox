@@ -252,12 +252,20 @@ FileLogDevice *FileLogDevice::install()
 
 void FileLogDevice::setFile(const QString &path_to_file)
 {
-	FILE *f = ::fopen(qPrintable(path_to_file), "w");
-	if(f) {
-		m_file = f;
+	if(m_file && m_file != stderr) {
+		::fclose(m_file);
+	}
+	if(path_to_file.isEmpty()) {
+		m_file = stderr;
 	}
 	else {
-		fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
+		FILE *f = ::fopen(qPrintable(path_to_file), "w");
+		if(f) {
+			m_file = f;
+		}
+		else {
+			fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
+		}
 	}
 }
 

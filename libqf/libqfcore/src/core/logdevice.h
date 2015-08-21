@@ -48,8 +48,8 @@ private:
 	typedef LogDevice Super;
 protected:
 	FileLogDevice(QObject *parent = 0);
-	~FileLogDevice() Q_DECL_OVERRIDE;
 public:
+	~FileLogDevice() Q_DECL_OVERRIDE;
 	static FileLogDevice* install();
 
 	void setFile(const QString &path_to_file);
