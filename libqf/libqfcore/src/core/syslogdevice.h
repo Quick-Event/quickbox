@@ -1,6 +1,8 @@
 #ifndef QF_CORE_SYSLOGDEVICE_H
 #define QF_CORE_SYSLOGDEVICE_H
 
+#ifdef Q_OS_UNIX
+
 #include "logdevice.h"
 
 #include <QObject>
@@ -24,5 +26,7 @@ public:
 
 } // namespace core
 } // namespace qf
+
+#endif // Q_OS_UNIX
 
 #endif // QF_CORE_SYSLOGDEVICE_H
