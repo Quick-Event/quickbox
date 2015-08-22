@@ -261,6 +261,7 @@ void CardReaderWidget::onCommOpen(bool checked)
 	qfLogFuncFrame() << "checked:" << checked;
 	if(checked) {
 		QSettings settings;
+		settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
 		settings.beginGroup("comm");
 		settings.beginGroup("connection");
 		QString device = settings.value("device", "").toString();
