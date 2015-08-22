@@ -43,9 +43,9 @@ void CommPort::setDataBitsAsInt(int data_bits)
 void CommPort::setParityAsString(const QString &parity_str)
 {
 	Parity parity = NoParity;
-	if(parity_str.compare(QStringLiteral("odd"), Qt::CaseInsensitive)) parity = OddParity;
-	else if(parity_str.compare(QStringLiteral("even"), Qt::CaseInsensitive)) parity = EvenParity;
-	else if(parity_str.compare(QStringLiteral("space"), Qt::CaseInsensitive)) parity = SpaceParity;
-	else if(parity_str.compare(QStringLiteral("mark"), Qt::CaseInsensitive)) parity = MarkParity;
+    if(parity_str.compare(QStringLiteral("odd"), Qt::CaseInsensitive) == 0) parity = OddParity;
+    else if(parity_str.compare(QStringLiteral("even"), Qt::CaseInsensitive) == 0) parity = EvenParity;
+    else if(parity_str.compare(QStringLiteral("space"), Qt::CaseInsensitive) == 0) parity = SpaceParity;
+    else if(parity_str.compare(QStringLiteral("mark"), Qt::CaseInsensitive) == 0) parity = MarkParity;
 	setParity(parity);
 }
