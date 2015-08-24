@@ -56,8 +56,6 @@ public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
 
-	static const char *SETTINGS_PREFIX;
-
 	Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
 	Q_SIGNAL void logRequest(qf::core::Log::Level level, const QString &msg);
 	void emitLogRequest(qf::core::Log::Level level, const QString &msg) {emit logRequest(level, msg);}

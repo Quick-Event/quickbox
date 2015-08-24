@@ -64,6 +64,7 @@ void MainWindow::loadPlugins()
 	QStringList feature_ids;
 	for(auto o : arr)
 		feature_ids << o.toString();
+	QString ui_language_name;
 	m_pluginLoader->loadPlugins(feature_ids);
 }
 

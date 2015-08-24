@@ -42,6 +42,14 @@ class  QFQMLWIDGETS_DECL_EXPORT ReportProcessor : public QObject
 	//! cislo stranky, ktera se zrovna zpracovava, pocitaji se od 0.
 	Q_PROPERTY(int processedPageNo READ processedPageNo WRITE setProcessedPageNo NOTIFY processedPageNoChanged)
 public:
+	class QFQMLWIDGETS_DECL_EXPORT HtmlExportOptions : public QVariantMap
+	{
+	public:
+		HtmlExportOptions(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
+
+		QF_VARIANTMAP_FIELD2(bool, isC, setC, onvertBandsToTables, true)
+	};
+public:
 	enum ProcessorMode {SinglePage = 1, FirstPage, AllPages};
 	typedef QMap<QString, ReportItem::Image> ImageMap;
 public:
@@ -90,7 +98,7 @@ public:
 	ReportItemReport* documentInstanceRoot();
 public:
 	/// vlozi do el_body report ve formatu HTML
-	virtual void processHtml(QDomElement &el_body);
+	virtual void processHtml(QDomElement &el_body, const HtmlExportOptions &opts = HtmlExportOptions());
 	static QString HTML_ATTRIBUTE_ITEM;
 	static QString HTML_ATTRIBUTE_LAYOUT;
 
@@ -98,7 +106,7 @@ public:
 protected:
 	//void fixTableTags(QDomElement &el);
 	QDomElement removeRedundantDivs(QDomElement &el);
-	QDomElement fixLayoutHtml(QDomElement &el);
+	QDomElement convertBandsToTables(QDomElement &el);
 	QDomElement convertHorizontalDivToTableRow(QDomElement &el_div);
 signals:
 	//! emitovan vzdy, kdyz procesor dokonci dalsi stranku.

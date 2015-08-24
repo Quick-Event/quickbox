@@ -1099,14 +1099,15 @@ void ReportViewWidget::file_export_pdf(bool open)
 	qfDebug() << QF_FUNC_NAME;
 	//reportProcessor()->dump();
 	QString fn;
+	QString ext = ".pdf";
 	if(open)
 		fn = QDir::tempPath() + "/report.pdf";
 	else
-		fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as PDF"), QString(), "*.pdf");
+		fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as PDF"), QString(), '*' + ext);
 	if(fn.isEmpty())
 		return;
-	if(!fn.endsWith(".pdf", Qt::CaseInsensitive))
-		fn += ".pdf";
+	if(!fn.endsWith(ext, Qt::CaseInsensitive))
+		fn += ext;
 	exportPdf(fn);
 	if(open) {
 		QDesktopServices::openUrl(QUrl::fromLocalFile(fn));

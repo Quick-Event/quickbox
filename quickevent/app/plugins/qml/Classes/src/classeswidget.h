@@ -2,6 +2,7 @@
 #define CLASSESWIDGET_H
 
 #include "thispartwidget.h"
+#include "coursedef.h"
 
 #include <QFrame>
 
@@ -35,10 +36,13 @@ public:
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private:
-	Q_SLOT void import_ocad();
+	Q_SLOT void import_ocad_v8();
+	Q_SLOT void import_ocad_iofxml();
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 	Q_SLOT void reloadCourseCodes();
+private:
+	void importCourses(const QList<CourseDef> &course_defs);
 private:
 	Ui::ClassesWidget *ui;
 	qf::core::model::SqlTableModel *m_classesModel;

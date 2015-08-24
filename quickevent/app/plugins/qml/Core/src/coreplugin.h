@@ -11,10 +11,10 @@ class CorePlugin : public qf::qmlwidgets::framework::Plugin
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
 	CorePlugin(QObject *parent = nullptr);
-public:
-	QSettings settings();
 
 	Q_INVOKABLE void launchSqlTool();
+	Q_INVOKABLE void aboutQuickEvent();
+	Q_INVOKABLE void aboutQt();
 private:
 	Q_SLOT void onInstalled();
 };

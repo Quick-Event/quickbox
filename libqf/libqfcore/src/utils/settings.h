@@ -16,8 +16,8 @@ class QFCORE_DECL_EXPORT Settings : public QSettings
 public:
 	Settings(QObject *parent = nullptr) : Super(parent) {}
 
-	void setValue(const QString & key, const QVariant & value);
-	QVariant value(const QString & key, const QVariant & default_value = QVariant()) const;
+	Q_INVOKABLE void setValue(const QString & key, const QVariant & value);
+	Q_INVOKABLE QVariant value(const QString & key, const QVariant & default_value = QVariant()) const;
 
 };
 

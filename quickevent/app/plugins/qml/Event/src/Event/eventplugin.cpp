@@ -2,6 +2,7 @@
 #include "../connectdbdialogwidget.h"
 #include "../connectionsettings.h"
 #include "../eventdialogwidget.h"
+#include "../dbschema.h"
 #include "stagedocument.h"
 #include "stagewidget.h"
 
@@ -23,6 +24,8 @@
 
 #include <QInputDialog>
 #include <QSqlDatabase>
+#include <QSqlRecord>
+#include <QSqlField>
 #include <QSqlError>
 #include <QComboBox>
 #include <QLabel>
@@ -135,21 +138,21 @@ void EventPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 
-	m_actConnectDb = new qfw::Action("&Connect to database");
+	m_actConnectDb = new qfw::Action(tr("&Connect to database"));
 	//a->setShortcut("ctrl+L");
 	connect(m_actConnectDb, SIGNAL(triggered()), this, SLOT(connectToSqlServer()));
 
-	m_actOpenEvent = new qfw::Action("&Open event");
+	m_actOpenEvent = new qfw::Action(tr("&Open event"));
 	m_actOpenEvent->setShortcut("Ctrl+O");
 	m_actOpenEvent->setEnabled(false);
 	connect(m_actOpenEvent, SIGNAL(triggered()), this, SLOT(openEvent()));
 
-	m_actCreateEvent = new qfw::Action("Create eve&nt");
+	m_actCreateEvent = new qfw::Action(tr("Create eve&nt"));
 	m_actCreateEvent->setShortcut("Ctrl+N");
 	m_actCreateEvent->setEnabled(false);
 	connect(m_actCreateEvent, SIGNAL(triggered()), this, SLOT(createEvent()));
 
-	m_actEditEvent = new qfw::Action("E&dit event");
+	m_actEditEvent = new qfw::Action(tr("E&dit event"));
 	//m_actEditEvent->setShortcut("Ctrl+N");
 	m_actEditEvent->setEnabled(false);
 	connect(m_actEditEvent, SIGNAL(triggered()), this, SLOT(editEvent()));
@@ -157,7 +160,10 @@ void EventPlugin::onInstalled()
 		this->m_actEditEvent->setEnabled(!event_name.isEmpty());
 	});
 
-	//QObject *core_plugin = fwk->plugin("Core", qf::core::Exception::Throw);
+	m_actExportEvent = new qfw::Action(tr("E&xport event"));
+	m_actExportEvent->setEnabled(false);
+	connect(m_actExportEvent, &QAction::triggered, this, &EventPlugin::exportEvent);
+
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
@@ -166,9 +172,13 @@ void EventPlugin::onInstalled()
 	qfw::Action *a_quit = fwk->menuBar()->actionForPath("file/import", false);
 	a_quit->addActionBefore(m_actConnectDb);
 	a_quit->addSeparatorBefore();
-	m_actConnectDb->addActionAfter(m_actCreateEvent);
-	m_actCreateEvent->addActionAfter(m_actOpenEvent);
-	m_actOpenEvent->addActionAfter(m_actEditEvent);
+
+	m_actEvent = m_actConnectDb->addMenuAfter("file.event", tr("&Event"));
+
+	m_actEvent->addActionInto(m_actCreateEvent);
+	m_actEvent->addActionInto(m_actOpenEvent);
+	m_actEvent->addActionInto(m_actEditEvent);
+	m_actEvent->addActionInto(m_actExportEvent);
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
@@ -265,6 +275,11 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bo
 	if(!q.exec(qs)) {
 		qfError() << "emitDbEventNotify Error:" << qs << q.lastError().text();
 	}
+}
+
+DbSchema EventPlugin::dbSchema()
+{
+	return DbSchema(this);
 }
 
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
@@ -378,9 +393,30 @@ void EventPlugin::connectToSqlServer()
 	setDbOpen(connect_ok);
 	m_actCreateEvent->setEnabled(connect_ok);
 	m_actOpenEvent->setEnabled(connect_ok);
+	m_actEditEvent->setEnabled(connect_ok);
+	m_actExportEvent->setEnabled(connect_ok);
 	if(connect_ok) {
 		openEvent(conn_w->eventName());
 	}
+}
+
+static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines)
+{
+	qfLogFuncFrame();
+	for(auto cmd : sql_lines) {
+		if(cmd.isEmpty())
+			continue;
+		if(cmd.startsWith(QLatin1String("--")))
+			continue;
+		qfDebug() << cmd << ';';
+		bool ok = q.exec(cmd);
+		if(!ok) {
+			qfInfo() << cmd;
+			qfError() << q.lastError().text();
+			return false;
+		}
+	}
+	return true;
 }
 
 bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &event_params)
@@ -424,9 +460,6 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		conn.setDatabaseName(event_fn);
 		conn.open();
 	}
-	//else {
-	//	conn.setCurrentSchema(event_name);
-	//}
 	if(conn.isOpen()) {
 		QVariantMap create_options;
 		create_options["schemaName"] = event_name;
@@ -442,19 +475,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		qfs::Query q(conn);
 		do {
 			qfs::Transaction transaction(conn);
-			for(auto cmd : create_script) {
-				if(cmd.isEmpty())
-					continue;
-				if(cmd.startsWith(QLatin1String("--")))
-					continue;
-				qfDebug() << cmd << ';';
-				ok = q.exec(cmd);
-				if(!ok) {
-					qfInfo() << cmd;
-					qfError() << q.lastError().text();
-					break;
-				}
-			}
+			ok = run_sql_script(q, create_script);
 			if(!ok)
 				break;
 			qfDebug() << "creating stages:" << stage_count;
@@ -622,6 +643,99 @@ void EventPlugin::setDbOpen(bool ok)
 	if(ok != m_dbOpen) {
 		m_dbOpen = ok;
 		emit dbOpenChanged(ok);
+	}
+}
+
+static QString copy_sql_table(const QString &table_name, const QSqlRecord &rec, qfs::Connection &from_conn, qfs::Connection &to_conn)
+{
+	qfLogFuncFrame() << table_name;
+	qfs::Query from_q(from_conn);
+	if(!from_q.exec(QString("SELECT * FROM %1").arg(table_name))) {
+		return QString("SQL Error: %1").arg(from_q.lastError().text());
+	}
+	auto *sqldrv = to_conn.driver();
+	QString qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table_name, rec, true);
+	qfs::Query to_q(to_conn);
+	if(!to_q.prepare(qs)) {
+		qfWarning() << "Cannot prepare insert table SQL statement, table" << table_name << "probably doesn't exist in target database and it will not be copied.";
+		return QString();
+	}
+	while(from_q.next()) {
+		if(table_name == QLatin1String("config")) {
+			if(from_q.value(0).toString() == QLatin1String("db.version"))
+				continue;
+		}
+		for (int i = 0; i < rec.count(); ++i) {
+			QString fld_name = rec.field(i).name();
+			//qfDebug() << from_rec.field(i).name() << "->" << from_q.value(i);
+			to_q.bindValue(':' + fld_name, from_q.value(fld_name));
+		}
+		if(!to_q.exec())
+			return QString("SQL Error: %1").arg(to_q.lastError().text());
+	}
+	return QString();
+}
+
+void EventPlugin::exportEvent()
+{
+	qfLogFuncFrame();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	QString ext = ".qbe";
+	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), QString(), '*' + ext);
+	if(ex_fn.isEmpty())
+		return;
+	if(!ex_fn.endsWith(ext, Qt::CaseInsensitive))
+		ex_fn += ext;
+	QString err_str;
+	QString export_connection_name = QStringLiteral("qe_export_connection");
+	do {
+		if(QFile::exists(ex_fn)) {
+			if(!QFile::remove(ex_fn)) {
+				err_str = tr("Cannot delete existing file %1").arg(ex_fn);
+				break;
+			}
+		}
+		qfs::Connection ex_conn(QSqlDatabase::addDatabase("QSQLITE", export_connection_name));
+		ex_conn.setDatabaseName(ex_fn);
+		qfInfo() << "Opening export database file" << ex_fn;
+		if(!ex_conn.open()) {
+			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(ex_conn.errorString()));
+			return;
+		}
+		qfs::Transaction transaction(ex_conn);
+
+		DbSchema db_schema = dbSchema();
+		{
+			DbSchema::CreateDbSqlScriptOptions create_options;
+			create_options.setDriverName(ex_conn.driverName());
+			QStringList create_script = db_schema.createDbSqlScript(create_options);
+			qfs::Query ex_q(ex_conn);
+			if(!run_sql_script(ex_q, create_script)) {
+				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
+				break;
+			}
+		}
+		qfs::Connection conn = qfs::Connection::forName();
+		for(QObject *table : db_schema.tables()) {
+			QString table_name = table->property("name").toString();
+			qfDebug() << "Copying table" << table_name;
+			QSqlRecord rec = db_schema.sqlRecord(table);
+			err_str = copy_sql_table(table_name, rec, conn, ex_conn);
+			if(!err_str.isEmpty())
+				break;
+		}
+		if(!err_str.isEmpty())
+			break;
+		transaction.commit();
+	} while(false);
+	{
+		QSqlDatabase c = QSqlDatabase::database(export_connection_name, false);
+		if(c.isOpen())
+			c.close();
+	}
+	QSqlDatabase::removeDatabase(export_connection_name);
+	if(!err_str.isEmpty()) {
+		qfd::MessageBox::showError(fwk, err_str);
 	}
 }
 

@@ -11,6 +11,11 @@ private:
 public:
 	explicit MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow();
+
+	Q_INVOKABLE QString versionString();
+
+	static const QLatin1String SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE;
+	Q_INVOKABLE QString settingsPrefix_application_locale_language();
 protected:
 	void whenPluginsLoaded() Q_DECL_OVERRIDE;
 };

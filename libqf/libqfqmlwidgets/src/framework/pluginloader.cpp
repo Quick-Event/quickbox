@@ -13,6 +13,7 @@
 #include <QQmlComponent>
 #include <QQmlProperty>
 #include <QDirIterator>
+#include <QTranslator>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -141,6 +142,19 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 	if(ok) {
 		QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->homeDir() + "/main.qml");
 		qfInfo() << "Installing feature:" << feature_id << "from:" << plugin_loader_url.toString();
+		QString lc_name = mainWindow()->uiLanguageName();
+		if(!lc_name.isEmpty()) {
+			QString tr_name = feature_id + '.' + lc_name;
+			QTranslator *trans = new QTranslator(mainWindow());
+			bool ok = trans->load(tr_name, QCoreApplication::applicationDirPath());
+			if(ok) {
+				qfInfo() << "Found translation file for:" << tr_name;
+				QCoreApplication::instance()->installTranslator(trans);
+			}
+			else {
+				delete trans;
+			}
+		}
 		QQmlComponent *c = new QQmlComponent(qe, plugin_loader_url, QQmlComponent::PreferSynchronous);
 		if(c->isLoading()) {
 			qfError() << "Asynchronous plugin loading is not supported!";

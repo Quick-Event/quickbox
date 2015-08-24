@@ -3,15 +3,28 @@
 
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
+#include <qf/core/utils/settings.h>
 
 #include <QtQml>
 #include <QLocale>
 
 #include <iostream>
 
+
 int main(int argc, char *argv[])
 {
-	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
+	QCoreApplication::setOrganizationName("QuickBox");
+	QCoreApplication::setOrganizationDomain("quickbox.org");
+	QCoreApplication::setApplicationName("QuickEvent");
+
+	QString o_log_file;
+	for (int i = 1; i < argc-1; ++i) {
+		if(argv[i] == QLatin1String("--log-file"))
+			o_log_file = argv[i + 1];
+	}
+
+	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
+	file_log_device->setFile(o_log_file);
 	file_log_device->setDomainTresholds(argc, argv);
 	file_log_device->setPrettyDomain(true);
 
@@ -44,8 +57,41 @@ int main(int argc, char *argv[])
 		std::cout << "\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, default level is INFO" << std::endl;
 		return 0;
 	}
-
+	QString lc_name;
+	{
+		qf::core::utils::Settings settings;
+		lc_name = settings.value(MainWindow::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE).toString();
+		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
+			lc_name = QLocale::system().name();
+		qfInfo() << "Loading translations for:" << lc_name;
+		{
+			QTranslator *qt_translator = new QTranslator(&app);
+			QString tr_name = "qt_" + lc_name;
+			bool ok = qt_translator->load(tr_name, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+			if(ok) {
+				qfInfo() << "Installing translator for:" << tr_name;
+				app.installTranslator(qt_translator);
+			}
+			else {
+				qfWarning() << "Erorr loading translator:" << tr_name << "from:" << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+			}
+		}
+		for(QString prefix : {"libqfcore", "libqfqmlwidgets", "quickevent"}) {
+			QTranslator *qt_translator = new QTranslator(&app);
+			QString tr_name = prefix + "." + lc_name;
+			//qfInfo() << "##" << QCoreApplication::applicationDirPath();
+			bool ok = qt_translator->load(tr_name, QCoreApplication::applicationDirPath());
+			if(ok) {
+				qfInfo() << "Installing translator for:" << tr_name;
+				app.installTranslator(qt_translator);
+			}
+			else {
+				qfWarning() << "Erorr loading translator:" << tr_name;
+			}
+		}
+	}
 	MainWindow main_window;
+	main_window.setUiLanguageName(lc_name);
 	//QObject::connect(signal_log_device.data(), &qf::core::SignalLogDevice::logEntry, &main_window, &MainWindow::logEntry, Qt::QueuedConnection);
 	/*
 	QObject::connect(signal_log_device.data(), SIGNAL(logEntry(int, QVariantMap)),

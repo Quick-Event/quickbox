@@ -142,26 +142,10 @@
         </spacer>
        </item>
        <item>
-        <widget class="QToolButton" name="btAdd">
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../libqf/libqfqmlwidgets/images/open-iconic/open-iconic.qrc">
-           <normaloff>:/qf/qmlwidgets/images/open-iconic/chevron-left.svg</normaloff>:/qf/qmlwidgets/images/open-iconic/chevron-left.svg</iconset>
-         </property>
-        </widget>
+        <widget class="QToolButton" name="btAdd"/>
        </item>
        <item>
-        <widget class="QToolButton" name="btRemove">
-         <property name="text">
-          <string>...</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../../libqf/libqfqmlwidgets/images/open-iconic/open-iconic.qrc">
-           <normaloff>:/qf/qmlwidgets/images/open-iconic/chevron-right.svg</normaloff>:/qf/qmlwidgets/images/open-iconic/chevron-right.svg</iconset>
-         </property>
-        </widget>
+        <widget class="QToolButton" name="btRemove"/>
        </item>
        <item>
         <spacer>
@@ -258,25 +242,31 @@
   </layout>
   <action name="actionRemoveFieldFromIndex">
    <property name="icon">
-    <iconset>
-     <normaloff>:/libqfgui/images/right.png</normaloff>:/libqfgui/images/right.png</iconset>
+    <iconset resource="../../../libqf/libqfqmlwidgets/images/images.qrc">
+     <normaloff>:/qf/qmlwidgets/images/right.svg</normaloff>:/qf/qmlwidgets/images/right.svg</iconset>
    </property>
    <property name="text">
     <string>RemoveFieldFromIndex</string>
    </property>
+   <property name="toolTip">
+    <string>Remove field from index</string>
+   </property>
   </action>
   <action name="actionAddFieldToIndex">
    <property name="icon">
-    <iconset>
-     <normaloff>:/libqfgui/images/left.png</normaloff>:/libqfgui/images/left.png</iconset>
+    <iconset resource="../../../libqf/libqfqmlwidgets/images/images.qrc">
+     <normaloff>:/qf/qmlwidgets/images/left.svg</normaloff>:/qf/qmlwidgets/images/left.svg</iconset>
    </property>
    <property name="text">
     <string>AddFieldToIndex</string>
    </property>
+   <property name="toolTip">
+    <string>Add field to index</string>
+   </property>
   </action>
  </widget>
  <resources>
-  <include location="../../../libqf/libqfqmlwidgets/images/open-iconic/open-iconic.qrc"/>
+  <include location="../../../libqf/libqfqmlwidgets/images/images.qrc"/>
  </resources>
  <connections>
   <connection>

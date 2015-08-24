@@ -7,16 +7,20 @@ import Event 1.0
 EventPlugin {
 	id: root
 
-	property QfObject internals: QfObject
+	property QtObject internals: QtObject
 	{
-		DbSchema {
-			id: dbSchema
-		}
+		property DbSchema dbSchema: DbSchema {}
 	}
 	function createDbSqlScript(create_options)
 	{
-		return dbSchema.createSqlScript(create_options);
+		return root.internals.dbSchema.createSqlScript(create_options);
 	}
+
+	function dbSchema()
+	{
+		return root.internals.dbSchema;
+	}
+
 	/*
 	property QtObject api: QtObject
 	{

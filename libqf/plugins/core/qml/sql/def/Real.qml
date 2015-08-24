@@ -9,4 +9,9 @@ FieldType
 		var def = (length > 32) 'double precision': 'real';
 		return def;
 	}
+
+	function metaTypeNameFn()
+	{
+		return "double";
+	}
 }

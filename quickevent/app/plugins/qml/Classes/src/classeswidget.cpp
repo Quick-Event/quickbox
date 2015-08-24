@@ -2,7 +2,6 @@
 #include "ui_classeswidget.h"
 
 #include "classesplugin.h"
-#include "coursedef.h"
 
 #include <Event/eventplugin.h>
 
@@ -21,6 +20,7 @@
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
+#include <QDomDocument>
 #include <QComboBox>
 
 namespace qfc = qf::core;
@@ -90,12 +90,16 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
 	a_import->setText("&Import");
-
-	qfw::Action *a_ocad = new qfw::Action("OCad", this);
-	connect(a_ocad, SIGNAL(triggered()), this, SLOT(import_ocad()));
-
-	a_import->addActionInto(a_ocad);
-
+	{
+		qfw::Action *a = new qfw::Action("OCad v8", this);
+		connect(a, SIGNAL(triggered()), this, SLOT(import_ocad_v8()));
+		a_import->addActionInto(a);
+	}
+	{
+		qfw::Action *a = new qfw::Action("OCad IOF-XML", this);
+		connect(a, SIGNAL(triggered()), this, SLOT(import_ocad_iofxml()));
+		a_import->addActionInto(a);
+	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	//main_tb->addAction(m_actCommOpen);
 	{
@@ -192,6 +196,27 @@ void ClassesWidget::reloadCourseCodes()
 	}
 }
 
+void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	auto *classes_plugin = qobject_cast<Classes::ClassesPlugin *>(fwk->plugin("Classes"));
+	if(event_plugin && classes_plugin) {
+		QString msg = tr("Delete all courses definitions for stage %1?").arg(selectedStageId());
+		if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
+			QVariantList courses;
+			for(const auto &cd : course_defs)
+				courses << cd;
+			{
+				QJsonDocument doc = QJsonDocument::fromVariant(courses);
+				qfInfo() << doc.toJson();
+			}
+			classes_plugin->createCourses(selectedStageId(), courses);
+			reload();
+		}
+	}
+}
+
 static QString normalize_course_name(const QString &name)
 {
 	QString ret = qf::core::Collator::toAscii7(name, false);
@@ -200,7 +225,7 @@ static QString normalize_course_name(const QString &name)
 	return ret;
 }
 
-void ClassesWidget::import_ocad()
+void ClassesWidget::import_ocad_v8()
 {
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"));
 	if(fn.isEmpty())
@@ -215,7 +240,7 @@ void ClassesWidget::import_ocad()
 			lines << QString::fromUtf8(ba).trimmed();
 		}
 		try {
-			QMap<QString, CourseDef> defined_courses;
+			QMap<QString, CourseDef> defined_courses_map;
 			for(QString line : lines) {
 				// [classname];coursename;0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
 				if(line.isEmpty())
@@ -241,14 +266,14 @@ void ClassesWidget::import_ocad()
 					qfWarning() << "cannot deduce class name, skipping line:" << line;
 					continue;
 				}
-				if(defined_courses.contains(course_name)) {
-					CourseDef cd = defined_courses.value(course_name);
+				if(defined_courses_map.contains(course_name)) {
+					CourseDef cd = defined_courses_map.value(course_name);
 					QStringList classes = cd.classes() << class_names;
-					defined_courses[course_name].setClasses(classes);
+					defined_courses_map[course_name].setClasses(classes);
 					continue;
 				}
-				CourseDef &cd = defined_courses[course_name];
-				cd.setCourse(course_name);
+				CourseDef &cd = defined_courses_map[course_name];
+				cd.setName(course_name);
 				cd.setClasses(class_names);
 				{
 					QString s = line.section(';', 3, 3).trimmed();
@@ -275,29 +300,94 @@ void ClassesWidget::import_ocad()
 					cd.setCodes(codes);
 				}
 			}
-			QVariantList courses;
-			for(auto cd : defined_courses.values())
-				courses << cd;
-			{
-				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				qfInfo() << doc.toJson();
-			}
-
-			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-			auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-			auto *classes_plugin = qobject_cast<Classes::ClassesPlugin *>(fwk->plugin("Classes"));
-			if(event_plugin && classes_plugin) {
-				QString msg = tr("Delete all courses definitions for stage %1?").arg(selectedStageId());
-				if(qfd::MessageBox::askYesNo(fwk, msg, false)) {
-					classes_plugin->createCourses(selectedStageId(), courses);
-					reload();
-				}
-			}
+			importCourses(defined_courses_map.values());
 		}
 		catch (const qf::core::Exception &e) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 		}
+	}
+}
+
+static QString element_text(const QDomElement &parent, const QString &tag_name)
+{
+	QDomElement el = parent.firstChildElement(tag_name);
+	return el.text();
+}
+
+static QString dump_element(const QDomElement &el)
+{
+	QString ret;
+	QTextStream s(&ret);
+	el.save(s, QDomNode::EncodingFromDocument);
+	return ret;
+}
+
+void ClassesWidget::import_ocad_iofxml()
+{
+	qfLogFuncFrame();
+	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), "XML files (*.xml);; All files (*)");
+	if(fn.isEmpty())
+		return;
+	try {
+		QFile f(fn);
+		if(f.open(QFile::ReadOnly)) {
+			QDomDocument xdoc;
+			QString err_str; int err_line;
+			if(!xdoc.setContent(&f, &err_str, &err_line))
+				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(err_str).arg(err_line));
+
+			QDomNodeList xml_courses = xdoc.elementsByTagName(QStringLiteral("Course"));
+
+			QList<CourseDef> defined_courses_list;
+			for (int i = 0; i < xml_courses.count(); ++i) {
+				QDomElement el_course = xml_courses.at(i).toElement();
+				if(el_course.isNull())
+					QF_EXCEPTION(QString("Xml file format error: bad element '%1'").arg("Course"));
+				CourseDef coursedef;
+				QString course_name = element_text(el_course, QStringLiteral("CourseName"));
+				course_name.replace(' ', QString());
+				course_name.replace(';', '-');
+				course_name.replace(',', '-');
+				course_name.replace(':', '-');
+				course_name.replace('+', '-');
+				coursedef.setName(course_name);
+
+				QStringList class_names;
+				QDomNodeList xml_classes = el_course.elementsByTagName(QStringLiteral("ClassShortName"));
+				for (int j = 0; j < xml_classes.count(); ++j) {
+					QString class_name = xml_classes.at(j).toElement().text().trimmed();
+					class_names << class_name;
+				}
+				coursedef.setClasses(class_names);
+
+				QDomElement el_course_variantion = el_course.firstChildElement(QStringLiteral("CourseVariation"));
+				if(el_course_variantion.isNull())
+					QF_EXCEPTION(QString("Xml file format error: missing element '%1'").arg("CourseVariation"));
+				coursedef.setLenght(element_text(el_course_variantion, QStringLiteral("CourseLength")).trimmed().toInt());
+				coursedef.setClimb(element_text(el_course_variantion, QStringLiteral("CourseClimb")).trimmed().toInt());
+
+				QMap<int, QVariant> codes;
+				QDomNodeList xml_controls = el_course.elementsByTagName(QStringLiteral("CourseControl"));
+				for (int j = 0; j < xml_controls.count(); ++j) {
+					QDomElement el_control = xml_controls.at(j).toElement();
+					int no = element_text(el_control, QStringLiteral("Sequence")).trimmed().toInt();
+					if(no <= 0)
+						QF_EXCEPTION(QString("Xml file format error: bad sequence number %1 in %2").arg(no).arg(dump_element(el_control)));
+					int code = element_text(el_control, QStringLiteral("ControlCode")).trimmed().toInt();
+					if(code <= 0)
+						QF_EXCEPTION(QString("Xml file format error: bad control code %1 in %2").arg(code).arg(dump_element(el_control)));
+					codes[no] = code;
+				}
+				coursedef.setCodes(codes.values());
+				defined_courses_list << coursedef;
+			}
+			importCourses(defined_courses_list);
+		}
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 	}
 }
 

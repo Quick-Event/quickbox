@@ -7,7 +7,7 @@
 
 #include <QCoreApplication>
 #include <QProcess>
-
+#include <QMessageBox>
 
 namespace qff = qf::qmlwidgets::framework;
 
@@ -21,6 +21,8 @@ void CorePlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	fwk->setStatusBar(new AppStatusBar());
+
+
 }
 
 void CorePlugin::launchSqlTool()
@@ -47,5 +49,28 @@ void CorePlugin::launchSqlTool()
 	arguments << "--one-time-connection-settings" << otcs.join('&');
 	QProcess *process = new QProcess(this);
 	process->start(program, arguments);
+}
+
+void CorePlugin::aboutQuickEvent()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	QString version_string;
+	QMetaObject::invokeMethod(fwk, "versionString", Qt::DirectConnection
+							  , Q_RETURN_ARG(QString, version_string));
+	QMessageBox::about(fwk
+					   , tr("About Quick Event")
+					   , tr("The <b>Quick Event</b> is an application which helps you to organize the orienteering events."
+							"<br/><br/>"
+							"version: %1"
+							"<br/>"
+							"build: %2 %3"
+							).arg(version_string).arg(__DATE__).arg(__TIME__)
+					   );
+}
+
+void CorePlugin::aboutQt()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	QMessageBox::aboutQt(fwk , tr("About Qt"));
 }
 

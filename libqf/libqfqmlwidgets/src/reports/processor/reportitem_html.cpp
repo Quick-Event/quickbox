@@ -45,8 +45,8 @@ QDomText setElementText(QDomElement &el, const QString &str)
 ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();
-	PrintResult res = PR_PrintedOk;
-	if(out.isNull())
+	PrintResult res = Super::printHtml(out);
+	if(!(res == PR_PrintedOk))
 		return res;
 
 	qfDebug() << "\tparent html element:" << out.tagName();
@@ -59,6 +59,7 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 		}
 		else {
 			QDomElement el_div = out.ownerDocument().createElement("div");
+			createHtmlExportAttributes(el_div);
 			if(layout() == LayoutHorizontal) {
 				el_div.setAttribute(ReportProcessor::HTML_ATTRIBUTE_LAYOUT, QStringLiteral("horizontal"));
 			}
@@ -85,7 +86,7 @@ ReportItem::PrintResult ReportItemBand::printHtml(ReportItem::HTMLElement &out)
 	qfLogFuncFrame() << this;
 	PrintResult res = Super::printHtml(out);
 	if(res == PR_PrintedOk) {
-		if(isExportAsHtmlTable()) {
+		if(isHtmlExportAsTable()) {
 			QDomElement el_band = out.lastChild().toElement();
 			el_band.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("band"));
 		}
@@ -114,6 +115,7 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 	if(res == PR_PrintedOk) {
 		{
 			QDomElement el = out.lastChild().toElement();
+			createHtmlExportAttributes(el);
 			el.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("detail"));
 		}
 		if(model) {
@@ -138,8 +140,9 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 ReportItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id");
-	PrintResult res = PR_PrintedOk;
-	if(out.isNull()) return res;
+	PrintResult res = Super::printHtml(out);
+	if(!(res == PR_PrintedOk))
+		return res;
 
 	QDomElement el_div = out.ownerDocument().createElement("div");
 	QDomElement el_p = out.ownerDocument().createElement("p");
@@ -152,5 +155,6 @@ ReportItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 	setElementText(el_p, text);
 	out.appendChild(el_div);
 	el_div.appendChild(el_p);
+	createHtmlExportAttributes(el_p);
 	return res;
 }

@@ -43,11 +43,9 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 
-const char *CardReaderWidget::SETTINGS_PREFIX = "plugins/CardReader";
-
-CardReaderWidget::CardReaderWidget(QWidget *parent) :
-	Super(parent),
-	ui(new Ui::CardReaderWidget)
+CardReaderWidget::CardReaderWidget(QWidget *parent)
+	: Super(parent)
+	, ui(new Ui::CardReaderWidget)
 {
 	ui->setupUi(this);
 
@@ -203,7 +201,7 @@ void CardReaderWidget::openSettings()
 qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 {
 	QSettings settings;
-	QString key = QString(SETTINGS_PREFIX) + "/logging/level";
+	QString key = QString(CardReader::CardReaderPlugin::SETTINGS_PREFIX) + "/logging/level";
 	QString level_str = settings.value(key).toString().toLower();
 	//if(level_str == "trash") return qf::core::Log::LOG_TRASH;
 	if(level_str == "debug")
@@ -221,7 +219,7 @@ QTextStream& CardReaderWidget::cardLog()
 {
 	if(!m_cardLog) {
 		QSettings settings;
-		QString key = QString(SETTINGS_PREFIX) + "/logging/cardLog";
+		QString key = QString(CardReader::CardReaderPlugin::SETTINGS_PREFIX) + "/logging/cardLog";
 		QString fn = settings.value(key).toString();
 		if(!fn.isEmpty()) {
 			QF_SAFE_DELETE(m_cardLogFile);
@@ -263,6 +261,7 @@ void CardReaderWidget::onCommOpen(bool checked)
 	qfLogFuncFrame() << "checked:" << checked;
 	if(checked) {
 		QSettings settings;
+		settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
 		settings.beginGroup("comm");
 		settings.beginGroup("connection");
 		QString device = settings.value("device", "").toString();

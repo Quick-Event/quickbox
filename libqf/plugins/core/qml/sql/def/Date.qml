@@ -8,4 +8,9 @@ FieldType
 		var def = 'date';
 		return def;
 	}
+
+	function metaTypeNameFn()
+	{
+		return "QDate";
+	}
 }

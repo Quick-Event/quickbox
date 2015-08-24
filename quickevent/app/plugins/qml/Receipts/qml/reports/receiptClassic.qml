@@ -54,12 +54,14 @@ Report {
 						layout: Frame.LayoutHorizontal
 						textStyle: myStyle.textStyleBold
 						bottomBorder: Pen { basedOn: "black2" }
+						htmlExportAttributes: {"lpt_textStyle": "bold"}
 						Para {
 							width: "%"
 							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") + " " + detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
 						}
 						Para {
 							textHAlign: Frame.AlignRight
+							htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 							text: {
 								var t = detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration");
 								return (t)? t: "NO_REG";
@@ -70,11 +72,14 @@ Report {
 						width: "%"
 						vinset: 1
 						halign: Frame.AlignHCenter
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
 						Para {
+							htmlExportAttributes: {"lpt_textStyle": "bold"}
 							textStyle: myStyle.textStyleBold
 							text: "Slosovatelný kupón";
 						}
 						Para {
+							htmlExportAttributes: {"lpt_textStyle": "bold"}
 							textStyle: myStyle.textStyleBold
 							text: "Každé vyhlášení - 3x hodinky";
 						}
@@ -85,6 +90,7 @@ Report {
 							Frame {
 								width: "%"
 								bottomBorder: Pen { basedOn: "black1dot" }
+								htmlExportAttributes: {"lpt_text": "-----"}
 							}
 							Para {
 								text: "zde odstřihnout";
@@ -92,6 +98,7 @@ Report {
 							Frame {
 								width: "%"
 								bottomBorder: Pen { basedOn: "black1dot" }
+								htmlExportAttributes: {"lpt_text": "-----"}
 							}
 						}
 						Frame { height: 2 }
@@ -112,6 +119,7 @@ Report {
 							text: "Zvládnete to jedním prstem.";
 						}
 						Para {
+							htmlExportAttributes: {"lpt_textStyle": "bold"}
 							halign: Frame.AlignHCenter
 							text: "Se slevou ve stánku HSH";
 							textStyle: myStyle.textStyleBold
@@ -119,6 +127,7 @@ Report {
 					}
 				}
 				Frame {
+					htmlExportAttributes: {"lpt_borderTop": "=", "lpt_borderBottom": "-"}
 					width: "%"
 					fill: Brush { color: Color { def: "powderblue" } }
 					topBorder: Pen { basedOn: "black2" }
@@ -126,7 +135,17 @@ Report {
 					hinset: 1
 					vinset: 1
 					Para {
-						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.name"): "";
+						text: {
+							if(bandCompetitor.modelLoaded) {
+								var s = "";
+								var stage_cnt = bandCompetitor.data("stageCount")
+								if(stage_cnt > 1)
+									s = qsTr("E") + bandCompetitor.data("currentStageId") + " - ";
+								s += bandCompetitor.data("event.name")
+								return s;
+							}
+							return "";
+						}
 					}
 					Para {
 						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.date").toISOString().substring(0, 10)
@@ -135,6 +154,7 @@ Report {
 					}
 				}
 				Frame {
+					htmlExportAttributes: {"lpt_textStyle": "bold"}
 					hinset: 1
 					vinset: 1
 					textStyle: myStyle.textStyleBold
@@ -147,6 +167,7 @@ Report {
 							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") + " " + detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
 						}
 						Para {
+							htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 							textHAlign: Frame.AlignRight
 							text: {
 								var t = detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration");
@@ -158,6 +179,7 @@ Report {
 						width: "%"
 						layout: Frame.LayoutHorizontal
 						Para {
+							htmlExportAttributes: {"lpt_textWidth": "%"}
 							width: "%"
 							//textHAlign: Frame.AlignLeft
 							text: "SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
@@ -184,8 +206,10 @@ Report {
 			modelData: "card"
 			width: "%"
 			Frame {
+				htmlExportAttributes: {"lpt_borderBottom": "-"}
 				hinset: 1
 				width: "%"
+				bottomBorder: Pen { basedOn: "black1" }
 				Frame {
 					layout: Frame.LayoutHorizontal
 					Para {
@@ -194,17 +218,20 @@ Report {
 						text: "Check:"
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						id: paraCheckTime
 						width: 15
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("checkTimeMs")): "";
 					}
 					Cell {
+						htmlExportAttributes: {"lpt_textWidth": "%"}
 						width: "%"
 						textHAlign: Frame.AlignRight
 						text: "Finish:"
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("finishTimeMs")): "";
@@ -218,6 +245,7 @@ Report {
 						text: "Start:"
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("startTimeMs")): "";
@@ -237,12 +265,12 @@ Report {
 						}
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: "%"
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? "SI:" + bandCard.data("cardNumber"): "";
 					}
 				}
-				bottomBorder: Pen { basedOn: "black1" }
 			}
 			Detail {
 				id: dc
@@ -257,6 +285,7 @@ Report {
 				}
 				Cell {
 					id: cellPos
+					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
 					width: 8
 					textHAlign: Frame.AlignRight
 					text: {
@@ -268,23 +297,27 @@ Report {
 				}
 				Para {
 					id: cellCode
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: 10
 					//textHAlign: Frame.AlignRight
 					text: dc.data(dc.currentIndex, "code");
 				}
 				Para {
 					id: cellStp
+					htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "stpTimeMs"));
 				}
 				Para {
 					id: cellLap
+					htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
 				Para {
+					htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
@@ -293,37 +326,43 @@ Report {
 			}
 			Frame {
 				width: "%"
+				htmlExportAttributes: {"lpt_borderTop": "-", "lpt_borderBottom": "="}
 				textStyle: myStyle.textStyleBold
 				topBorder: Pen { basedOn: "black1" }
+				bottomBorder: Pen { basedOn: "black2" }
 				Frame {
 					layout: Frame.LayoutHorizontal
 					Cell {
+						htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
 						width: cellPos.width
 						textHAlign: Frame.AlignRight
 						text: "FI:"
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: cellCode.width
 						//textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? bandCard.data("isOk")? "OK": "DISK": "---";
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
 						width: cellStp.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishStpTimeMs")): "---";
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
 						width: cellLap.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLapTimeMs")): "---";
 					}
 					Para {
+						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
 						width: cellLoss.width
 						textHAlign: Frame.AlignRight
 						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLossMs")): "---";
 					}
 				}
-				bottomBorder: Pen { basedOn: "black2" }
 			}
 			Para {
 				vinset: 1
@@ -362,6 +401,7 @@ Report {
 					}
 				}
 				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: {

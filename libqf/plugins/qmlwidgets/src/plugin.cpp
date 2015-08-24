@@ -10,6 +10,7 @@
 #include <qf/qmlwidgets/splitter.h>
 #include <qf/qmlwidgets/statusbar.h>
 #include <qf/qmlwidgets/action.h>
+#include <qf/qmlwidgets/actiongroup.h>
 #include <qf/qmlwidgets/progressbar.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
@@ -79,6 +80,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::TableViewToolBar>(uri, 1, 0, "TableViewToolBar");
 
 		qmlRegisterType<qf::qmlwidgets::Action>(uri, 1, 0, "Action");
+		qmlRegisterType<qf::qmlwidgets::ActionGroup>(uri, 1, 0, "ActionGroup");
 		// Menu is not needed for now
 		//qmlRegisterType<qf::qmlwidgets::Menu>(uri, 1, 0, "Menu");
 		qmlRegisterType<qf::qmlwidgets::MenuBar>(uri, 1, 0, "MenuBar");

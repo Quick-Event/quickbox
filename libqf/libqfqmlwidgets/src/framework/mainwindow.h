@@ -4,6 +4,8 @@
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
 
+#include <qf/core/utils.h>
+
 #include <QMainWindow>
 #include <QMap>
 
@@ -38,6 +40,7 @@ class QFQMLWIDGETS_DECL_EXPORT MainWindow : public QMainWindow, public IPersiste
 	Q_PROPERTY(qf::qmlwidgets::MenuBar* menuBar READ menuBar)
 	Q_PROPERTY(qf::qmlwidgets::StatusBar* statusBar READ statusBar)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
+	Q_PROPERTY(QString uiLanguageName READ uiLanguageName WRITE setUiLanguageName NOTIFY uiLanguageNameChanged)
 private:
 	typedef QMainWindow Super;
 public:
@@ -45,6 +48,8 @@ public:
 public:
 	explicit MainWindow(QWidget * parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_IMPL(QString, u, U, iLanguageName)
 public:
 	CentralWidget* centralWidget();
 	void setCentralWidget(CentralWidget *widget);

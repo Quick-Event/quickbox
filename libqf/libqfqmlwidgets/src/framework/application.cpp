@@ -27,9 +27,9 @@ Application::Application(int &argc, char **argv) :
 	{
 		QString path;
 #ifdef Q_OS_UNIX
-		path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName();
+		path = QCoreApplication::applicationDirPath() + "/../lib/qml/" + QCoreApplication::applicationName().toLower();
 #else
-		path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName();
+		path = QCoreApplication::applicationDirPath() + "/qml/" + QCoreApplication::applicationName().toLower();
 #endif
 		m_qmlPluginImportPaths << path;
 	}
@@ -173,7 +173,7 @@ void Application::loadStyleSheet(const QUrl &url)
 
 void Application::initStyleSheet()
 {
-	QString app_name = Application::applicationName();
+	QString app_name = Application::applicationName().toLower();
 	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/" + app_name + "-data/style/default.css");
 	qfInfo() << "Opening style sheet:" << css_file_name;
 	loadStyleSheet(QUrl::fromLocalFile(css_file_name));

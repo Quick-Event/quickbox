@@ -61,6 +61,7 @@ win32 {
 }
 
 win32:CONFIG(debug, debug|release):CONFIG += console
+#CONFIG += console
 
 QMAKE_EXTRA_TARGETS += datafiles
 PRE_TARGETDEPS += datafiles

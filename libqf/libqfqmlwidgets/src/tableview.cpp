@@ -235,7 +235,7 @@ void TableView::reload(bool preserve_sorting)
 {
 	qfLogFuncFrame();
 	int sort_column = -1;
-	Qt::SortOrder sort_order;
+	Qt::SortOrder sort_order(Qt::AscendingOrder);
 	if(horizontalHeader()) {
 		savePersistentSettings();
 		sort_column = horizontalHeader()->sortIndicatorSection();
@@ -318,8 +318,9 @@ void TableView::cloneRow()
 		cloneRowInline();
 	}
 	else {
+		QVariant id = selectedRow().value(idColumnName());
 		qfDebug() << "\t emit editRowInExternalEditor(ModeCopy)";
-		emit editRowInExternalEditor(QVariant(), ModeCopy);
+		emit editRowInExternalEditor(id, ModeCopy);
 	}
 	refreshActions();
 }
@@ -781,36 +782,15 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 	qfLogFuncFrame() << "id:" << id.toString() << "mode:" << mode;
 	qfm::TableModel *tmd = tableModel();
 	if(tmd) {
-		/// find row with id
-		/// start with currentRow, because id value is most probabbly here
-		//int id_fldix = model()->fieldIndex(idColumnName(), !Qf::ThrowExc);
-		//int id_col_ix = model()->columnIndex(idColumnName(), !Qf::ThrowExc);
-		//qfDebug() << "\t model:" << m << "id column nme:" << idColumnName() << "id field index:" << id_fldix;
-		int ri = currentIndex().row();
-		if(ri >= 0) {
-			QVariant v = tmd->value(ri, idColumnName());
-			//qfDebug() << "\t found id:" << v.toString();
-			if(v != id)
-				ri = -1;
-		}
-		if(ri < 0) for(ri=0; ri<tmd->rowCount(); ri++) {
-			QVariant v = tmd->value(ri, idColumnName());
-			//qfDebug() << "\t row" << ri << "id:" << v.toString();
-			if(v == id) {
-				break;
-			}
-		}
 		if(mode == ModeInsert || mode == ModeCopy) {
 			/// ModeInsert or ModeCopy
-			qfDebug() << "\t ModeInsert or ModeCopy, current row:" << ri;
-			int ri = 0;
+			qfDebug() << "\t ModeInsert or ModeCopy";
 			//qfDebug() << "\tri:" << ri;
 			//qfDebug() << "\tmodel->rowCount():" << ri;
 			QModelIndex curr_ix = currentIndex();
-			if(curr_ix.isValid()) {
-				ri = curr_ix.row() + 1;
+			int ri = curr_ix.row() + 1;
+			if(ri >= 0 && ri < model()->rowCount())
 				ri = toTableModelRowNo(ri);
-			}
 			else
 				ri = tmd->rowCount();
 			if(ri > tmd->rowCount())
@@ -844,8 +824,25 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 			else {
 				setCurrentIndex(model()->index(ri, 0, QModelIndex()));
 			}
+			updateRow(currentIndex().row());
 		}
 		else {
+			/// find row with id
+			/// start with currentRow, because id value is most probabbly here
+			int ri = currentIndex().row();
+			if(ri >= 0) {
+				QVariant v = tmd->value(ri, idColumnName());
+				//qfDebug() << "\t found id:" << v.toString();
+				if(v != id)
+					ri = -1;
+			}
+			if(ri < 0) for(ri=0; ri<tmd->rowCount(); ri++) {
+				QVariant v = tmd->value(ri, idColumnName());
+				//qfDebug() << "\t row" << ri << "id:" << v.toString();
+				if(v == id) {
+					break;
+				}
+			}
 			if(ri < 0 || ri >= tmd->rowCount()) {
 				qfWarning() << "Cannot find table row for id:" << id.toString() << "mode:" << mode;
 			}
@@ -855,6 +852,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 					if(reloaded_row_cnt != 1) {
 						qfWarning() << "Edited row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
 					}
+					updateRow(currentIndex().row());
 				}
 				else if(mode == ModeDelete) {
 					int reloaded_row_cnt = tmd->reloadRow(ri);
@@ -1915,6 +1913,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 				}
 			}
 			else  if(rowEditorMode() == EditRowsExternal || rowEditorMode() == EditRowsMixed) {
+				ret = false;
 				if(rowEditorMode() == EditRowsMixed) {
 					ret = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t RowEditorMixed QTableView::edit() returned:" << ret;

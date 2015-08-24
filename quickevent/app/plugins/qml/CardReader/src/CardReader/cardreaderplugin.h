@@ -25,11 +25,14 @@ public:
 	CardReaderPlugin(QObject *parent = nullptr);
 
 	static const char* DBEVENTDOMAIN_CARDREADER_CARDREAD;
+	static const QLatin1String SETTINGS_PREFIX;
 
 	QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, -1)
 
 	const QList<CardReader::CardChecker*>& cardCheckers() {return m_cardCheckers;}
 	CardReader::CardChecker* currentCardChecker();
+
+	Q_INVOKABLE QString settingsPrefix();
 
 	int currentStageId();
 	int findRunId(int si_id);

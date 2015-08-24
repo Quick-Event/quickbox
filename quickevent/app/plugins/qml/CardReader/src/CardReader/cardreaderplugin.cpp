@@ -21,6 +21,7 @@ namespace qff = qf::qmlwidgets::framework;
 using namespace CardReader;
 
 const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.cardRead";
+const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
 
 static Event::EventPlugin* eventPlugin()
 {
@@ -33,6 +34,12 @@ CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
 {
 	connect(this, &CardReaderPlugin::installed, this, &CardReaderPlugin::onInstalled);
+}
+
+QString CardReaderPlugin::settingsPrefix()
+{
+	static const QString s = CardReaderPlugin::SETTINGS_PREFIX;
+	return s;
 }
 
 void CardReaderPlugin::onInstalled()
