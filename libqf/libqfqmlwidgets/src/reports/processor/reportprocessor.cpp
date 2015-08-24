@@ -218,14 +218,13 @@ QString ReportProcessor::resolveFN(const QString &f_name)
 }
 */
 
-void ReportProcessor::processHtml(QDomElement & el_body)
+void ReportProcessor::processHtml(QDomElement & el_body, const HtmlExportOptions &opts)
 {
 	documentInstanceRoot()->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
 	documentInstanceRoot()->printHtml(el_body);
-	//fixTableTags(el_body);
 	removeRedundantDivs(el_body);
-	/// tak a z divu s horizontalnim layoutem udelej tabulky
-	fixLayoutHtml(el_body);
+	if(opts.isConvertBandsToTables())
+		convertBandsToTables(el_body);
 }
 /*
 void ReportProcessor::fixTableTags(QDomElement & _el)
@@ -256,11 +255,12 @@ QDomElement ReportProcessor::removeRedundantDivs(QDomElement & _el)
 	qfLogFuncFrame() << _el.tagName() << "children cnt:" << _el.childNodes().count();
 	QDomElement el(_el);
 	//qfDebug() << "\t path:" << el.path();
-	/// pokud ma div prave jedno dite, je na prd
-	while(el.tagName() == "div" && el.childNodes().count() == 1) {
+	/// div is superfluous if it has zero or one child and no attributes
+	while(el.tagName() == "div" && el.childNodes().count() <= 1 && el.attributes().isEmpty()) {
 		QDomNode parent_nd = el.parentNode();
 		QDomElement el_child = el.childNodes().at(0).toElement();
-		if(el_child.isNull()) break;
+		if(el_child.isNull())
+			break;
 		if(!el_child.isNull() && !parent_nd.isNull()) {
 			qfDebug() << "\t child el:" << el_child.tagName() << "children cnt:" << el_child.childNodes().count();
 			parent_nd.replaceChild(el_child, el).toElement();
@@ -275,7 +275,7 @@ QDomElement ReportProcessor::removeRedundantDivs(QDomElement & _el)
 	return el;
 }
 
-QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
+QDomElement ReportProcessor::convertBandsToTables(QDomElement & _el)
 {
 	qfLogFuncFrame() << _el.tagName() << "children cnt:" << _el.childNodes().count();
 	QDomElement el(_el);
@@ -318,7 +318,7 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 		}
 	}
 	for(QDomElement el1 = el.firstChildElement(); !el1.isNull(); el1 = el1.nextSiblingElement()) {
-		el1 = fixLayoutHtml(el1);
+		el1 = convertBandsToTables(el1);
 	}
 	return el;
 }
@@ -326,8 +326,8 @@ QDomElement ReportProcessor::fixLayoutHtml(QDomElement & _el)
 QDomElement ReportProcessor::convertHorizontalDivToTableRow(QDomElement &el_div)
 {
 	QDomElement el_table_row;
-	if(el_div.tagName() == QLatin1String("div") && el_div.attribute(HTML_ATTRIBUTE_LAYOUT) == QStringLiteral("horizontal")) {
-		bool is_detail = el_div.attribute(HTML_ATTRIBUTE_ITEM) == QStringLiteral("detail");
+	if(el_div.tagName() == QLatin1String("div") && el_div.attribute(HTML_ATTRIBUTE_LAYOUT) == QLatin1String("horizontal")) {
+		bool is_detail = el_div.attribute(HTML_ATTRIBUTE_ITEM) == QLatin1String("detail");
 		el_table_row = el_div.ownerDocument().createElement("tr");
 		while(true) {
 			QDomElement el2 = el_div.firstChildElement();

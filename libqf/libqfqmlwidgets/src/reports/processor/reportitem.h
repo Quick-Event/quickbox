@@ -50,6 +50,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserSta
 	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll)
 	Q_PROPERTY(bool keepWithPrev READ isKeepWithPrev WRITE setKeepWithPrev)
 	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
+	Q_PROPERTY(QVariantMap htmlExportAttributes READ htmlExportAttributes WRITE setHtmlExportAttributes NOTIFY htmlExportAttributesChanged)
 private:
 	typedef QObject Super;
 public:
@@ -58,6 +59,7 @@ public:
 
 	QF_PROPERTY_BOOL_IMPL2(k, K, eepAll, false)
 	QF_PROPERTY_BOOL_IMPL2(k, K, eepWithPrev, false)
+	QF_PROPERTY_IMPL(QVariantMap, h, H, tmlExportAttributes)
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
 				 LayoutHorizontal = graphics::LayoutHorizontal,
@@ -320,7 +322,7 @@ public:
 	//! Print item in form, that understandable by ReportPainter.
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PR_PrintedOk;}
 	//! Print item in HTML element form.
-	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PR_PrintedOk;}
+	virtual PrintResult printHtml(HTMLElement &out);
 	/// vrati definovanou velikost pro item a layout
 	virtual ChildSize childSize(Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize();}
 
@@ -342,6 +344,8 @@ public:
 
 protected:
 	style::Text* effectiveTextStyle();
+
+	void createHtmlExportAttributes(HTMLElement &out);
 
 	void classBegin() Q_DECL_OVERRIDE;
 	void componentComplete() Q_DECL_OVERRIDE;

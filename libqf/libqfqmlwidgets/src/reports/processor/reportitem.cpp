@@ -16,6 +16,7 @@
 #include <qf/core/string.h>
 #include <qf/core/utils/fileutils.h>
 
+#include <QDomElement>
 #include <QDate>
 #include <QStringBuilder>
 #include <QUrl>
@@ -201,6 +202,22 @@ ReportProcessor *ReportItem::processor(bool throw_exc)
 		QF_EXCEPTION("ReportItem without ReportProcessor");
 	}
 	return ret;
+}
+
+ReportItem::PrintResult ReportItem::printHtml(ReportItem::HTMLElement &out)
+{
+	if(out.isNull())
+		return PR_ErrorNeverFit;
+	return PR_PrintedOk;
+}
+
+void ReportItem::createHtmlExportAttributes(ReportItem::HTMLElement &out)
+{
+	QMapIterator<QString, QVariant> it(htmlExportAttributes());
+	while(it.hasNext()) {
+		it.next();
+		out.setAttribute(it.key(), it.value().toString());
+	}
 }
 
 void ReportItem::classBegin()

@@ -78,7 +78,7 @@ Report {
 				objectName: "band"
 				width: "%"
 				height: "%"
-				exportAsHtmlTable: true
+				htmlExportAsTable: true
 				Frame {
 					Para {
 						textStyle: TextStyle {basedOn: "big"}
