@@ -11,7 +11,7 @@ QString CourseDef::toString() const
 	for(auto c : classes())
 		sl_classes << c.toString();
 	*/
-	ret += "course: " + course() + " classes: " + classes().join(',') + " length: " + QString::number(lenght()) + " climb: " + QString::number(climb());
+	ret += "course: " + name() + " classes: " + classes().join(',') + " length: " + QString::number(lenght()) + " climb: " + QString::number(climb());
 	ret += "\n\tcodes: " + sl_codes.join(',');
 	return ret;
 }

@@ -9,4 +9,9 @@ FieldType {
 		var def = (length > 32)? 'bigint': 'integer';
 		return def;
 	}
+
+	function metaTypeNameFn()
+	{
+		return "int";
+	}
 }

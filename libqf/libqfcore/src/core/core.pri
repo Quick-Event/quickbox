@@ -8,7 +8,6 @@ HEADERS += \
 	$$PWD/string.h \
     $$PWD/logdevice.h \
     $$PWD/collator.h \
-    $$PWD/syslogdevice.h
 
 SOURCES += \
 	$$PWD/exception.cpp \
@@ -18,5 +17,11 @@ SOURCES += \
     $$PWD/logdevice.cpp \
     $$PWD/utils.cpp \
     $$PWD/collator.cpp \
-    $$PWD/syslogdevice.cpp
 
+unix {
+HEADERS += \
+	$$PWD/syslogdevice.h
+
+SOURCES += \
+	$$PWD/syslogdevice.cpp
+}

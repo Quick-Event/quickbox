@@ -355,7 +355,8 @@ Schema {
 		Insert {
 			table: config
 			rows: [
-				['db.version', qsTr('Data version'), '10001', 'int'],
+				['db.version', qsTr('Data version'), '10001', 'int']
+				/*
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],
 				['event.date', qsTr('Event date'), '', 'QDate'],
@@ -364,6 +365,7 @@ Schema {
 				['event.mainReferee', qsTr('Main referee'), '', 'QString'],
 				['event.director', qsTr('Director'), '', 'QString'],
 				['event.importId', qsTr('Import ID'), '', 'int']
+				*/
 			]
 		}
 	]

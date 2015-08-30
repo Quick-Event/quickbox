@@ -8,4 +8,9 @@ FieldType
 		var def = 'time';
 		return def;
 	}
+
+	function metaTypeNameFn()
+	{
+		return "QTime";
+	}
 }

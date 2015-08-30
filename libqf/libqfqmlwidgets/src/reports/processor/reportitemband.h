@@ -27,7 +27,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
 	Q_CLASSINFO("property.keepFirst.doc", "Number of band details printed, which cannot be splitted by page/column break.")
 	Q_PROPERTY(int keepFirst READ keepFirst WRITE setKeepFirst NOTIFY keepFirstChanged)
-	Q_PROPERTY(bool exportAsHtmlTable READ isExportAsHtmlTable WRITE setExportAsHtmlTable NOTIFY exportAsHtmlTableChanged)
+	Q_PROPERTY(bool htmlExportAsTable READ isHtmlExportAsTable WRITE setHtmlExportAsTable NOTIFY htmlExportAsTableChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
@@ -37,7 +37,7 @@ public:
 	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
 	QF_PROPERTY_BOOL_IMPL(c, C, reateFromData)
 	QF_PROPERTY_IMPL2(int, k, K, eepFirst, 0)
-	QF_PROPERTY_BOOL_IMPL(e, E, xportAsHtmlTable)
+	QF_PROPERTY_BOOL_IMPL2(h, H, tmlExportAsTable, true)
 public:
 	QVariant modelData() const { return m_data; }
 	void setModelData(QVariant d);

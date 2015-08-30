@@ -41,6 +41,7 @@ bool Query::exec(const QString &query, bool throw_exc)
 			QF_EXCEPTION(query + '\n' + lastError().text());
 		qfWarning() << query << '\n' << lastError().text();
 	}
+	//qfDebug() << "return:" << ret;
 	return ret;
 }
 

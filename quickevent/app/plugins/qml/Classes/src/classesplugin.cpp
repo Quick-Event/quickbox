@@ -91,10 +91,10 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 			CourseDef cd(v.toMap());
 			int course_id = 0;
 			{
-				qfInfo() << "inserting course" << cd.course();
+				qfInfo() << "inserting course" << cd.name();
 				QString qs = "INSERT INTO courses (name, length, climb) VALUES (:name, :length, :climb)";
 				q.prepare(qs, qf::core::Exception::Throw);
-				q.bindValue(":name", cd.course());
+				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
 				q.exec(qf::core::Exception::Throw);
@@ -117,7 +117,7 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 					}
 				}
 			}
-			course_ids[cd.course()] = course_id;
+			course_ids[cd.name()] = course_id;
 			for(auto v : cd.codes()) {
 				int code = v.toInt();
 				all_codes << code;

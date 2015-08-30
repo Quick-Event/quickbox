@@ -7,4 +7,9 @@ FieldType
 		var def = 'boolean';
 		return def;
 	}
+
+	function metaTypeNameFn()
+	{
+		return "bool";
+	}
 }

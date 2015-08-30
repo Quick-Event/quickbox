@@ -26,6 +26,6 @@ void ReportDocument::setFileName(const QString &fname)
 	if(fn.startsWith(QLatin1String(":/")))
 		fn = "qrc" + fn;
 	QUrl url(QUrl::fromLocalFile(fn));
-	qDebug() << "loading url:" << url.toString();
+	qfDebug() << "loading url:" << url.toString();
 	loadUrl(url);
 }

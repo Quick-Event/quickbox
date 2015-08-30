@@ -5,7 +5,16 @@
 
 #include <QDebug>
 
+#ifndef QT_DEBUG
+#define NO_QF_DEBUG
+#endif
+
+#ifdef NO_QF_DEBUG
+#define qfDebug_q while(0) qDebug
+#else
 #define qfDebug_q qDebug
+#endif
+
 #if (QT_VERSION < QT_VERSION_CHECK(5, 5, 0))
 #define qfInfo_q() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::Level::Info))
 #else
@@ -15,7 +24,7 @@
 #define qfError_q qCritical
 #define qfFatal_q if(qCritical() << qf::core::Log::stackTrace(), true) qFatal
 
-#define qfLog(level) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(level))
+#define qfLog_q(level) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(level))
 
 #if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
 #define qfDebug qfDebug_q()
@@ -33,9 +42,12 @@
 #define qfLog(level) qfLog_q(level).noquote()
 #endif
 
-
+#ifdef NO_QF_DEBUG
+#define qfLogFuncFrame() while(0) qDebug()
+#else
 #define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "     EXIT FN" << Q_FUNC_INFO; \
 	qfDebug() << ">>>> ENTER FN" << Q_FUNC_INFO
+#endif
 
 class QLoggingCategory;
 

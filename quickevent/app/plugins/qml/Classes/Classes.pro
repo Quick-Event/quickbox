@@ -4,7 +4,7 @@ PLUGIN_NAME = Classes
 
 include ( ../quickeventqmlplugin.pri )
 
-QT += widgets sql
+QT += widgets sql xml
 
 CONFIG += c++11 hide_symbols
 

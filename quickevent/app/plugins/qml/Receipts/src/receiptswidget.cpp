@@ -242,6 +242,9 @@ void ReceiptsWidget::printSelectedCards()
 
 bool ReceiptsWidget::printReceipt(int card_id)
 {
-	return receiptsPlugin()->printReceipt(card_id, currentPrinter());
+	QString direct_printer;
+	if(ui->cbxDirectPrinters->currentIndex() > 0)
+		direct_printer = ui->cbxDirectPrinters->currentText();
+	return receiptsPlugin()->printReceipt(card_id, currentPrinter(), direct_printer);
 }
 

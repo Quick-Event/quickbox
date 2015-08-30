@@ -8,4 +8,9 @@ FieldType
 		var def = 'timestamp';
 		return def;
 	}
+
+	function metaTypeNameFn()
+	{
+		return "QDateTime";
+	}
 }
