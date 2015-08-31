@@ -45,7 +45,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	ui(new Ui::ReceiptsWidget)
 {
 	ui->setupUi(this);
-
+	//ui->cbxDirectPrinters->setCurrentIndex(2);
 	createActions();
 
 	loadPrinters();

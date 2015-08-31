@@ -324,29 +324,52 @@ void ReceiptsPlugin::printReceipt_classic(int card_id, const QPrinterInfo &print
 		rp.processHtml(el_body, opts);
 		qfInfo() << doc.toString();
 		QList<QByteArray> ba_lst = createPrinterData(el_body, printer_info);
+		QFile f(text_print_device_name);
+		//QFile f("/home/fanda/t/receipt.txt");
+		if(f.open(QFile::WriteOnly)) {
+			for(QByteArray ba : ba_lst) {
+				f.write(ba);
+				f.write("\n");
+			}
+		}
+		else {
+			qfError() << "Cannot open file" << f.fileName() << "for writing!";
+		}
 	}
 }
-namespace {
-/*
-const char CMD_EOL[] = "{{EOL}}";
-const char CMD_BOLD_ON[] = "{{B1}}";
-const char CMD_BOLD_OFF[] = "{{B0}}";
-const char CMD_UNDERLINE_ON[] = "{{U1}}";
-const char CMD_UNDERLINE_OFF[] = "{{U0}}";
-const char CMD_UNDERLINE2_ON[] = "{{u1}}";
-const char CMD_UNDERLINE2_OFF[] = "{{u0}}";
-*/
-}
+
+static const QByteArray epson_commands[] =
+{
+	QByteArray("\033E\x01"),		//    BoldOn
+	QByteArray("\033E\x00", 3),		//    BoldOff
+	QByteArray("\033-\x01"),		//    UnderlineOn
+	QByteArray("\033-\x00", 3),		//    UnderlineOff
+	QByteArray("\033-\x02"),		//    Underline2On
+	QByteArray("\033-\x00", 3),		//    Underline2Off
+	QByteArray("\033a\x00", 3),		//    AlignLeft
+	QByteArray("\033a\x01", 3),		//    AlignCenter
+	QByteArray("\033a\x02", 3),		//    AlignRight
+	QByteArray("\033@"),			//    Init
+	QByteArray("\035V\102\x00", 4),	//    Cut
+	QByteArray("\n"),				//    Eoln
+};
+
 struct PrintData
 {
 	enum class Command : int {
-		BoldOn,
+		BoldOn = 0,
 		BoldOff,
 		UnderlineOn,
 		UnderlineOff,
 		Underline2On,
 		Underline2Off,
+		AlignLeft,
+		AlignCenter,
+		AlignRight,
+		Init,
+		Cut,
 		Eoln,
+		HorizontalLine,
 		Text,
 	};
 	Command command;
@@ -359,6 +382,32 @@ struct PrintData
 	{}
 	bool isCommand() const {return command != Command::Text;}
 	int textLength() const {return isCommand()? 0: data.length();}
+	const QByteArray toByteArray() const
+	{
+		QByteArray ret;
+		switch(command) {
+		case Command::BoldOn: ret += "<B>"; break;
+		case Command::BoldOff: ret += "</B>"; break;
+		case Command::UnderlineOn: ret += "<U>"; break;
+		case Command::UnderlineOff: ret += "</U>:"; break;
+		case Command::Underline2On: ret += "<u>:"; break;
+		case Command::Underline2Off: ret += "</u>:"; break;
+		case Command::AlignLeft: ret += "<|-->"; break;
+		case Command::AlignCenter: ret += "<-|->"; break;
+		case Command::AlignRight: ret += "<--|>"; break;
+		case Command::Init: ret += "<INIT>"; break;
+		case Command::Cut: ret += "<CUT>"; break;
+		case Command::Eoln: ret += "<EOL>"; break;
+		case Command::HorizontalLine: ret += "<HR>"; break;
+		case Command::Text:
+			if(width == 0)
+				ret += data;
+			else
+				ret += "<" + (width < 0? "%:": QByteArray::number(width) + ":") + data + ">";
+			break;
+		}
+		return ret;
+	}
 };
 typedef QList<PrintData> PrintLine;
 
@@ -367,7 +416,7 @@ class DirectPrintContext
 public:
 	PrintLine line;
 	int horizontalLayoutNestCount = 0;
-	int lineWidth = 42;
+	int printerLineWidth = 42;
 };
 
 void ReceiptsPlugin::createPrinterData_helper(const QDomElement &el, DirectPrintContext *print_context)
@@ -376,7 +425,6 @@ void ReceiptsPlugin::createPrinterData_helper(const QDomElement &el, DirectPrint
 	PrintLine pre_commands;
 	PrintLine post_commands;
 	int text_width = 0;
-	Qt::Alignment text_align = Qt::AlignLeft;
 	bool is_halign = el.tagName() == QLatin1String("div")
 			&& el.attribute(qf::qmlwidgets::reports::ReportProcessor::HTML_ATTRIBUTE_LAYOUT) == QLatin1String("horizontal");
 	if(is_halign)
@@ -410,102 +458,119 @@ void ReceiptsPlugin::createPrinterData_helper(const QDomElement &el, DirectPrint
 				}
 			}
 		}
-		else if(key == QLatin1String("lpt_textAlign")) {
+		else if(key == QLatin1String("lpt_textAlign") && el.tagName() != QLatin1String("p")) {
 			QString val = attr.value();
-			if(val == "right")
-				text_align = Qt::AlignRight;
-			else if(val == "center")
-				text_align = Qt::AlignHCenter;
+			if(val == QLatin1String("right")) {
+				pre_commands << PrintData(PrintData::Command::AlignRight);
+				post_commands.insert(0, PrintData(PrintData::Command::AlignLeft));
+			}
+			else if(val == QLatin1String("center")) {
+				pre_commands << PrintData(PrintData::Command::AlignCenter);
+				post_commands.insert(0, PrintData(PrintData::Command::AlignLeft));
+			}
+			else if(val == QLatin1String("left")) {
+				pre_commands << PrintData(PrintData::Command::AlignLeft);
+				post_commands.insert(0, PrintData(PrintData::Command::AlignLeft));
+			}
+		}
+		else if(key == QLatin1String("lpt_borderTop")) {
+			QString val = attr.value();
+			pre_commands << PrintData(PrintData::Command::HorizontalLine, val.toUtf8());
+		}
+		else if(key == QLatin1String("lpt_borderBottom")) {
+			QString val = attr.value();
+			post_commands << PrintData(PrintData::Command::HorizontalLine, val.toUtf8());
 		}
 	}
 	print_context->line << pre_commands;
 	if(el.tagName() == QLatin1String("p")) {
+		QString ta = el.attribute(QLatin1String("lpt_textAlign"));
+		Qt::Alignment text_align = Qt::AlignLeft;
+		if(ta == QLatin1String("right"))
+			text_align = Qt::AlignRight;
+		else if(ta == QLatin1String("center"))
+			text_align = Qt::AlignHCenter;
 		QByteArray text = qf::core::Collator::toAscii7(el.text(), false);
 		print_context->line << PrintData(PrintData::Command::Text, text, text_width, text_align);
 	}
 	{
-		for(QDomElement el1 = el.firstChildElement(); !el1.isNull(); el1 = el1.nextSiblingElement()) {
-			if(!is_halign || (is_halign && print_context->horizontalLayoutNestCount == 1)) {
-				print_context->line << PrintData(PrintData::Command::Eoln);
-			}
+		for(QDomElement el1 = el.firstChildElement(); !el1.isNull(); ) {
 			createPrinterData_helper(el1, print_context);
+			el1 = el1.nextSiblingElement();
+			if(!el1.isNull()) {
+				//if(!is_halign || (is_halign && print_context->horizontalLayoutNestCount == 1)) {
+				if(!is_halign) {
+					print_context->line << PrintData(PrintData::Command::Eoln);
+				}
+			}
 		}
 	}
 	print_context->line << post_commands;
+	if(is_halign)
+		print_context->horizontalLayoutNestCount--;
 }
-/*
-static QByteArray createAlignedText(const PrintData &pd, int spring_width)
-{
-	QByteArray ret = pd.data;
-	int w = pd.width;
-	if(w < 0)
-		w = spring_width;
-	if(w > 0) {
-		int w2 = w - pd.textLength();
-		if(w2 > 0) {
-			if(pd.alignment == Qt::AlignLeft)
-				ret = ret + QByteArray(' ', w2);
-			else if(pd.alignment == Qt::AlignRight)
-				ret = QByteArray(' ', w2) + ret;
-			else if(pd.alignment == Qt::AlignHCenter)
-				pd.data = QByteArray(' ', w2/2+1) + ret + QByteArray(' ', w2/2+1);
-		}
-		ret = ret.mid(0, w);
-	}
-}
-*/
+
 static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context)
 {
 	QList<PrintLine> ret;
 	PrintLine line;
-	int line_len = 0;
-	int spring_cnt = 0;
+	{
+		line << PrintData(PrintData::Command::Init);
+		ret.insert(ret.length(), line);
+	}
+	line.clear();
 	for (int i = 0; i < print_context->line.count(); ++i) {
 		const PrintData &pd = print_context->line[i];
-		if((pd.command == PrintData::Command::Eoln)
-				|| (i == (print_context->line.count() - 1) && !line.isEmpty())) {
+		bool is_eol = (pd.command == PrintData::Command::Eoln) || (i == (print_context->line.count() - 1));
+		if(pd.command != PrintData::Command::Eoln) {
+			line << pd;
+		}
+		if(is_eol) {
+			int fixed_text_len = 0;
+			int spring_cnt = 0;
+			for (int j = 0; j < line.length(); ++j) {
+				const PrintData &pd2 = line[j];
+				if(pd2.width < 0)
+					spring_cnt++;
+				else if(pd2.width > 0)
+					fixed_text_len += pd2.width;
+				else
+					fixed_text_len += pd2.textLength();
+			}
 			for (int j = 0; j < line.length(); ++j) {
 				PrintData &pd2 = line[j];
 				if(pd2.isCommand())
 					continue;
 				int w = pd2.width;
 				if(w < 0)
-					w = (print_context->lineWidth - line_len) / spring_cnt;
+					w = (print_context->printerLineWidth - fixed_text_len) / spring_cnt;
 				if(w > 0) {
-					int w2 = w - pd.textLength();
-					if(w2 > 0) {
+					int w_rest = w - pd2.textLength();
+					if(w_rest > 0) {
 						if(pd2.alignment == Qt::AlignLeft)
-							pd2.data = pd2.data + QByteArray(' ', w2);
+							pd2.data = pd2.data + QByteArray(w_rest, ' ');
 						else if(pd2.alignment == Qt::AlignRight)
-							pd2.data = QByteArray(' ', w2) + pd2.data;
+							pd2.data = QByteArray(w_rest, ' ') + pd2.data;
 						else if(pd2.alignment == Qt::AlignHCenter)
-							pd2.data = QByteArray(' ', w2/2+1) + pd2.data + QByteArray(' ', w2/2+1);
+							pd2.data = QByteArray(w_rest/2+1, ' ') + pd2.data + QByteArray(w_rest/2+1, ' ');
 					}
 					pd2.data = pd2.data.mid(0, w);
+					pd2.width = 0;
 				}
 			}
 			ret.insert(ret.length(), line);
 			line.clear();
 		}
-		else {
-			line << pd;
-		}
+	}
+	{
+		line.clear();
+		line << PrintData(PrintData::Command::Cut);
+		ret.insert(ret.length(), line);
 	}
 	return ret;
 }
 
-static const char *epson_commands[] =
-{
-"\033E\x01", //    BoldOn
-"\033E\x00", //    BoldOff
-"\033-\x01", //    UnderlineOn
-"\033-\x00", //    UnderlineOff
-"\033-\x02", //    Underline2On
-"\033-\x00", //    Underline2Off
-"\n", //    Eoln
-};
-
-static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines)
+static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, DirectPrintContext *ctx)
 {
 	QList<QByteArray> ret;
 	const int cmd_length = sizeof(epson_commands) / sizeof(char*);
@@ -515,13 +580,22 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines)
 			if(pd.command == PrintData::Command::Text) {
 				ba += pd.data;
 			}
+			else if(pd.command == PrintData::Command::HorizontalLine) {
+				QByteArray line_data(ctx->printerLineWidth, pd.data[0]);
+				if(ba.isEmpty())
+					ret.insert(ret.length(), line_data);
+				else {
+					ret.insert(ret.length(), ba);
+					ba = line_data;
+				}
+			}
 			else {
 				int ix = (int)pd.command;
-				QF_ASSERT(ix < cmd_length, "Bad command index!", continue);
+				QF_ASSERT(ix < cmd_length, QString("%1 - Bad command index!").arg(ix), continue);
 				ba += epson_commands[ix];
 			}
-			ret.insert(ret.length(), ba);
 		}
+		ret.insert(ret.length(), ba);
 	}
 	return ret;
 }
@@ -529,10 +603,22 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines)
 QList<QByteArray> ReceiptsPlugin::createPrinterData(const QDomElement &body, const QPrinterInfo &printer_info)
 {
 	DirectPrintContext dpc;
-	dpc.lineWidth = 42;
+	dpc.printerLineWidth = 42;
 	createPrinterData_helper(body, &dpc);
+	{
+		QByteArray ba;
+		for(auto d : dpc.line)
+			ba += d.toByteArray();
+		qfInfo() << ba;
+	}
 	QList<PrintLine> lines = alignPrinterData(&dpc);
-	QList<QByteArray> ret = interpretControlCodes(lines);
+	for(auto l : lines) {
+		QByteArray ba;
+		for(auto d : l)
+			ba += d.toByteArray();
+		qfInfo() << ba;
+	}
+	QList<QByteArray> ret = interpretControlCodes(lines, &dpc);
 	return ret;
 }
 

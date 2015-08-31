@@ -1,3 +1,4 @@
+import QtQml 2.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
 import "qrc:/qf/core/qml/js/timeext.js" as TimeExt
@@ -54,7 +55,7 @@ Report {
 						layout: Frame.LayoutHorizontal
 						textStyle: myStyle.textStyleBold
 						bottomBorder: Pen { basedOn: "black2" }
-						htmlExportAttributes: {"lpt_textStyle": "bold"}
+						htmlExportAttributes: {"lpt_textStyle": "bold,underline2"}
 						Para {
 							width: "%"
 							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") + " " + detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
@@ -90,7 +91,7 @@ Report {
 							Frame {
 								width: "%"
 								bottomBorder: Pen { basedOn: "black1dot" }
-								htmlExportAttributes: {"lpt_text": "-----"}
+								//htmlExportAttributes: {"lpt_text": "-----"}
 							}
 							Para {
 								text: "zde odstřihnout";
@@ -98,7 +99,7 @@ Report {
 							Frame {
 								width: "%"
 								bottomBorder: Pen { basedOn: "black1dot" }
-								htmlExportAttributes: {"lpt_text": "-----"}
+								//htmlExportAttributes: {"lpt_text": "-----"}
 							}
 						}
 						Frame { height: 2 }
@@ -127,7 +128,7 @@ Report {
 					}
 				}
 				Frame {
-					htmlExportAttributes: {"lpt_borderTop": "=", "lpt_borderBottom": "-"}
+					htmlExportAttributes: {"lpt_textAlign": "left", "lpt_borderTop": "=", "lpt_borderBottom": "-"}
 					width: "%"
 					fill: Brush { color: Color { def: "powderblue" } }
 					topBorder: Pen { basedOn: "black2" }
@@ -135,22 +136,19 @@ Report {
 					hinset: 1
 					vinset: 1
 					Para {
-						text: {
-							if(bandCompetitor.modelLoaded) {
-								var s = "";
-								var stage_cnt = bandCompetitor.data("stageCount")
-								if(stage_cnt > 1)
-									s = qsTr("E") + bandCompetitor.data("currentStageId") + " - ";
-								s += bandCompetitor.data("event.name")
-								return s;
-							}
-							return "";
+						textFn: function() {
+							var s = "";
+							var stage_cnt = bandCompetitor.data("stageCount")
+							if(stage_cnt > 1)
+								s = qsTr("E") + bandCompetitor.data("currentStageId") + " - ";
+							s += bandCompetitor.data("event.name")
+							return s;
 						}
 					}
 					Para {
-						text: (bandCompetitor.modelLoaded)? bandCompetitor.data("event.date").toISOString().substring(0, 10)
-														  + " " + bandCompetitor.data("event.place")
-														  : "";
+						textFn: function() {
+							return bandCompetitor.data("event.date").toISOString().substring(0, 10) + " " + bandCompetitor.data("event.place")
+						}
 					}
 				}
 				Frame {
@@ -185,17 +183,16 @@ Report {
 							text: "SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
 						}
 						Para {
-							text: {
-								if(bandCompetitor.modelLoaded) {
-									var l = bandCompetitor.data("courses.length");
-									root.courseLength = (l)? l : 0;
-									return (root.courseLength / 1000) + "km";
-								}
-								return "";
+							textFn: function() {
+								var l = bandCompetitor.data("courses.length");
+								root.courseLength = (l)? l : 0;
+								return (root.courseLength / 1000) + "km";
 							}
 						}
 						Para {
-							text: (bandCompetitor.modelLoaded)? " " + bandCompetitor.data("courses.climb") + "m": "";
+							textFn: function() {
+								return " " + bandCompetitor.data("courses.climb") + "m";
+							}
 						}
 					}
 				}
@@ -205,6 +202,9 @@ Report {
 			id: bandCard
 			modelData: "card"
 			width: "%"
+			Component.onCompleted: {
+				//console.warn("band created +++++++++++++++")
+			}
 			Frame {
 				htmlExportAttributes: {"lpt_borderBottom": "-"}
 				hinset: 1
@@ -222,10 +222,10 @@ Report {
 						id: paraCheckTime
 						width: 15
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("checkTimeMs")): "";
+						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("checkTimeMs")); }
 					}
 					Cell {
-						htmlExportAttributes: {"lpt_textWidth": "%"}
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: "%"
 						textHAlign: Frame.AlignRight
 						text: "Finish:"
@@ -234,7 +234,7 @@ Report {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("finishTimeMs")): "";
+						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("finishTimeMs")); }
 					}
 				}
 				Frame {
@@ -248,27 +248,24 @@ Report {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? TimeExt.msecToTimeString(bandCard.data("startTimeMs")): "";
+						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("startTimeMs")); }
 					}
 					Cell {
 						text: "/"
 					}
 					Para {
-						text: {
-							if(bandCard.modelLoaded) {
-								var start = bandCard.data("startTimeMs");
-								var start00 = bandCard.data("stageStart");
-								start00 = TimeExt.msecSinceMidnight(start00);
-								return OGTime.msecToString(start - start00)
-							}
-							return "---";
+						textFn: function() {
+							var start = bandCard.data("startTimeMs");
+							var start00 = bandCard.data("stageStart");
+							start00 = TimeExt.msecSinceMidnight(start00);
+							return OGTime.msecToString(start - start00)
 						}
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: "%"
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? "SI:" + bandCard.data("cardNumber"): "";
+						textFn: function() { return "SI:" + bandCard.data("cardNumber"); }
 					}
 				}
 			}
@@ -297,27 +294,27 @@ Report {
 				}
 				Para {
 					id: cellCode
-					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 					width: 10
 					//textHAlign: Frame.AlignRight
 					text: dc.data(dc.currentIndex, "code");
 				}
 				Para {
 					id: cellStp
-					htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "stpTimeMs"));
 				}
 				Para {
 					id: cellLap
-					htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
 				Para {
-					htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
@@ -331,6 +328,7 @@ Report {
 				topBorder: Pen { basedOn: "black1" }
 				bottomBorder: Pen { basedOn: "black2" }
 				Frame {
+					htmlExportAttributes: {"lpt_textStyle": "bold"}
 					layout: Frame.LayoutHorizontal
 					Cell {
 						htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
@@ -339,49 +337,47 @@ Report {
 						text: "FI:"
 					}
 					Para {
-						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+						htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 						width: cellCode.width
 						//textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? bandCard.data("isOk")? "OK": "DISK": "---";
+						textFn: function() { return bandCard.data("isOk")? "OK": "DISK"; }
 					}
 					Para {
-						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: cellStp.width
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishStpTimeMs")): "---";
+						textFn: function() { return OGTime.msecToString(bandCard.data("finishStpTimeMs")); }
 					}
 					Para {
-						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: cellLap.width
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLapTimeMs")): "---";
+						textFn: function() { return OGTime.msecToString(bandCard.data("finishLapTimeMs")); }
 					}
 					Para {
-						htmlExportAttributes: {"lpt_textWidth": "7", "lpt_textAlign": "right"}
+						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 						width: cellLoss.width
 						textHAlign: Frame.AlignRight
-						text: (bandCard.modelLoaded)? OGTime.msecToString(bandCard.data("finishLossMs")): "---";
+						textFn: function() { return OGTime.msecToString(bandCard.data("finishLossMs")); }
 					}
 				}
 			}
 			Para {
 				vinset: 1
 				hinset: 1
-				text: {
-					if(bandCard.modelLoaded) {
-						var missing_codes = bandCard.data("missingCodes");
-						//console.warn("missing_codes:", JSON.stringify(missing_codes, null, 2));
-						if(missing_codes) {
-							var mcs = [];
-							for(var i=0; i<missing_codes.length; i++) {
-								var mca = missing_codes[i];
-								mcs.push(mca[0] + "-" + mca[1]);
-							}
-							var ret = qsTr("missing: ") + mcs.join(", ");
-							return ret;
+				textFn: function() {
+					var missing_codes = bandCard.data("missingCodes");
+					//console.warn("missing_codes:", JSON.stringify(missing_codes, null, 2));
+					if(missing_codes) {
+						var mcs = [];
+						for(var i=0; i<missing_codes.length; i++) {
+							var mca = missing_codes[i];
+							mcs.push(mca[0] + "-" + mca[1]);
 						}
+						var ret = qsTr("missing: ") + mcs.join(", ");
+						return ret;
 					}
-					return "";
+					return ""
 				}
 			}
 			Frame {
@@ -390,27 +386,22 @@ Report {
 				hinset: 1
 				layout: Frame.LayoutHorizontal
 				Para {
-					text: {
-						if(bandCard.modelLoaded) {
-							var current_standings = bandCard.data("currentStandings");
-							var competitors_count = bandCard.data("competitorsFinished");
-							var ret = qsTr("standings: ") + current_standings + "/" + competitors_count;
-							return ret;
-						}
-						return "";
+					textFn: function() {
+						var current_standings = bandCard.data("currentStandings");
+						var competitors_count = bandCard.data("competitorsFinished");
+						var ret = qsTr("standings: ") + current_standings + "/" + competitors_count;
+						return ret;
 					}
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: {
-						if(bandCard.modelLoaded) {
-							var time = bandCard.data("finishStpTimeMs");
-							var length = root.courseLength;
-							if(length > 0)
-								return OGTime.msecToString(((time / length) >> 0) * 1000) + "min/km";
-						}
+					textFn: function() {
+						var time = bandCard.data("finishStpTimeMs");
+						var length = root.courseLength;
+						if(length > 0)
+							return OGTime.msecToString(((time / length) >> 0) * 1000) + "min/km";
 						return "";
 					}
 				}
