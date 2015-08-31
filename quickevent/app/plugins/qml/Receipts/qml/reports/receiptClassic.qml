@@ -174,6 +174,7 @@ Report {
 						}
 					}
 					Frame {
+						htmlExportAttributes: {"lpt_textStyle": "underline2"}
 						width: "%"
 						layout: Frame.LayoutHorizontal
 						Para {
@@ -202,11 +203,8 @@ Report {
 			id: bandCard
 			modelData: "card"
 			width: "%"
-			Component.onCompleted: {
-				//console.warn("band created +++++++++++++++")
-			}
 			Frame {
-				htmlExportAttributes: {"lpt_borderBottom": "-"}
+				//htmlExportAttributes: {"lpt_borderBottom": "-"}
 				hinset: 1
 				width: "%"
 				bottomBorder: Pen { basedOn: "black1" }
@@ -238,6 +236,7 @@ Report {
 					}
 				}
 				Frame {
+					htmlExportAttributes: {"lpt_textStyle": "underline2"}
 					width: "%"
 					layout: Frame.LayoutHorizontal
 					Para {
