@@ -132,27 +132,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="102"/>
+        <location filename="src/classeswidget.cpp" line="106"/>
         <source>Stage </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="118"/>
+        <location filename="src/classeswidget.cpp" line="122"/>
         <source>E%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="163"/>
+        <location filename="src/classeswidget.cpp" line="167"/>
         <source>Courses are not imported, class table is read only.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="205"/>
+        <location filename="src/classeswidget.cpp" line="230"/>
+        <location filename="src/classeswidget.cpp" line="329"/>
         <source>Open file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="290"/>
+        <location filename="src/classeswidget.cpp" line="205"/>
         <source>Delete all courses definitions for stage %1?</source>
         <translation type="unfinished"></translation>
     </message>

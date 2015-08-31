@@ -86,99 +86,101 @@
         <source>Data version</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="359"/>
-        <source>Stage count</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="360"/>
-        <source>Event name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="361"/>
-        <source>Event date</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="362"/>
-        <source>Event description</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="363"/>
-        <source>Event place</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="364"/>
-        <source>Main referee</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="365"/>
-        <source>Director</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/DbSchema.qml" line="366"/>
-        <source>Import ID</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Event::EventPlugin</name>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="184"/>
+        <location filename="src/Event/eventplugin.cpp" line="141"/>
+        <source>&amp;Connect to database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="145"/>
+        <source>&amp;Open event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="150"/>
+        <source>Create eve&amp;nt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="155"/>
+        <source>E&amp;dit event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="163"/>
+        <source>E&amp;xport event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="176"/>
+        <source>&amp;Event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="194"/>
         <source>Current stage E%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="230"/>
+        <location filename="src/Event/eventplugin.cpp" line="240"/>
         <source>Edit Stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="371"/>
+        <location filename="src/Event/eventplugin.cpp" line="386"/>
         <source>Connect Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="403"/>
+        <location filename="src/Event/eventplugin.cpp" line="439"/>
         <source>Event ID cannot be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="479"/>
+        <location filename="src/Event/eventplugin.cpp" line="500"/>
+        <location filename="src/Event/eventplugin.cpp" line="714"/>
         <source>Create Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="483"/>
+        <location filename="src/Event/eventplugin.cpp" line="504"/>
         <source>Cannot create event, database is not open: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="546"/>
-        <location filename="src/Event/eventplugin.cpp" line="572"/>
+        <location filename="src/Event/eventplugin.cpp" line="567"/>
+        <location filename="src/Event/eventplugin.cpp" line="593"/>
         <source>Query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="546"/>
-        <location filename="src/Event/eventplugin.cpp" line="572"/>
+        <location filename="src/Event/eventplugin.cpp" line="567"/>
+        <location filename="src/Event/eventplugin.cpp" line="593"/>
         <source>Open event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="599"/>
+        <location filename="src/Event/eventplugin.cpp" line="620"/>
+        <location filename="src/Event/eventplugin.cpp" line="702"/>
         <source>Open Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="603"/>
+        <location filename="src/Event/eventplugin.cpp" line="624"/>
         <source>Database file %1 doesn&apos;t exist.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="684"/>
+        <source>Export as Quick Event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="694"/>
+        <source>Cannot delete existing file %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
