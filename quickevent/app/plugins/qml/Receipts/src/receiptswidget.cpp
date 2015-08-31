@@ -1,6 +1,7 @@
 #include "receiptswidget.h"
 #include "ui_receiptswidget.h"
 #include "receiptspartwidget.h"
+#include "receiptsprinteroptionsdialog.h"
 #include "Receipts/receiptsplugin.h"
 
 #include <Event/eventplugin.h>
@@ -47,8 +48,6 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	ui->setupUi(this);
 	//ui->cbxDirectPrinters->setCurrentIndex(2);
 	createActions();
-
-	loadPrinters();
 
 	{
 		ui->tblPrintJobsTB->setTableView(ui->tblCards);
@@ -152,16 +151,9 @@ void ReceiptsWidget::createActions()
 	*/
 }
 
-void ReceiptsWidget::loadPrinters()
-{
-	ui->cbxPrinters->addItems(QPrinterInfo::availablePrinterNames());
-	QString def = QPrinterInfo::defaultPrinterName();
-	ui->cbxPrinters->setCurrentText(def);
-}
-
 QPrinterInfo ReceiptsWidget::currentPrinter()
 {
-	return QPrinterInfo::printerInfo(ui->cbxPrinters->currentText());
+	return QPrinterInfo::printerInfo(ui->btPrinterOptions->text());
 }
 
 int ReceiptsWidget::currentStageId()
@@ -243,8 +235,14 @@ void ReceiptsWidget::printSelectedCards()
 bool ReceiptsWidget::printReceipt(int card_id)
 {
 	QString direct_printer;
-	if(ui->cbxDirectPrinters->currentIndex() > 0)
-		direct_printer = ui->cbxDirectPrinters->currentText();
+	//if(ui->cbxDirectPrinters->currentIndex() > 0)
+	//	direct_printer = ui->cbxDirectPrinters->currentText();
 	return receiptsPlugin()->printReceipt(card_id, currentPrinter(), direct_printer);
 }
 
+
+void ReceiptsWidget::on_btPrinterOptions_clicked()
+{
+	ReceiptsPrinterOptionsDialog dlg(this);
+	dlg.exec();
+}
