@@ -7,7 +7,7 @@
 #include <sstream>
 #include <stdlib.h>
 
-#if defined Q_CC_GNU && !defined Q_CC_MINGW
+#if defined Q_CC_GNU && !defined Q_CC_MINGW && !defined ANDROID
 	#include <execinfo.h>
 #endif
 
@@ -128,7 +128,7 @@ QString QFStackTrace::trace2str()
 	SimpleSymbolEngine::instance().StackTrace( &context, oss );
 	return oss.str();
 }
-#elif defined Q_CC_GNU && !defined Q_CC_MINGW
+#elif defined Q_CC_GNU && !defined Q_CC_MINGW && !defined ANDROID
 QStringList StackTrace::trace2str()
 {
 	static const int MAX_CNT = 100;
