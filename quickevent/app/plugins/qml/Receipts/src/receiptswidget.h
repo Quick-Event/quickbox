@@ -1,11 +1,7 @@
 #ifndef RECEIPTSWIDGET_H
 #define RECEIPTSWIDGET_H
 
-//#include <qf/core/log.h>
-
 #include <QFrame>
-
-class QPrinterInfo;
 
 namespace Ui {
 	class ReceiptsWidget;
@@ -66,7 +62,6 @@ private:
 	bool printReceipt(int card_id);
 
 	void createActions();
-	QPrinterInfo currentPrinter();
 	int currentStageId();
 private:
 	Ui::ReceiptsWidget *ui;

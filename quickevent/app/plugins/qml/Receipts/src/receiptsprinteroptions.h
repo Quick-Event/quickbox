@@ -14,7 +14,13 @@ class ReceiptsPrinterOptions : public QVariantMap
 	QF_VARIANTMAP_FIELD2(int, c, setC, haracterPrinterLineLength, 41)
 public:
 	enum class PrinterType : int {GraphicsPrinter = 0, CharacterPrinter};
+public:
 	explicit ReceiptsPrinterOptions(const QVariantMap &o = QVariantMap());
+
+	QString printerCaption() const;
+
+	static ReceiptsPrinterOptions fromJson(const QByteArray &json);
+	QByteArray toJson() const;
 };
 
 #endif // RECEIPTSPRINTEROPTIONS_H

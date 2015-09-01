@@ -151,11 +151,6 @@ void ReceiptsWidget::createActions()
 	*/
 }
 
-QPrinterInfo ReceiptsWidget::currentPrinter()
-{
-	return QPrinterInfo::printerInfo(ui->btPrinterOptions->text());
-}
-
 int ReceiptsWidget::currentStageId()
 {
 	auto event_plugin = eventPlugin();
@@ -234,10 +229,7 @@ void ReceiptsWidget::printSelectedCards()
 
 bool ReceiptsWidget::printReceipt(int card_id)
 {
-	QString direct_printer;
-	//if(ui->cbxDirectPrinters->currentIndex() > 0)
-	//	direct_printer = ui->cbxDirectPrinters->currentText();
-	return receiptsPlugin()->printReceipt(card_id, currentPrinter(), direct_printer);
+	return receiptsPlugin()->printReceipt(card_id);
 }
 
 
