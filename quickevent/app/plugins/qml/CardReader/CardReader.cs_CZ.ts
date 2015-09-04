@@ -145,32 +145,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="341"/>
+        <location filename="src/cardreaderwidget.cpp" line="342"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="349"/>
+        <location filename="src/cardreaderwidget.cpp" line="350"/>
         <source>DriverRawData: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="356"/>
+        <location filename="src/cardreaderwidget.cpp" line="357"/>
         <source>card: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="359"/>
+        <location filename="src/cardreaderwidget.cpp" line="360"/>
         <source>Cannot find run for SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="432"/>
+        <location filename="src/cardreaderwidget.cpp" line="433"/>
         <source>Find runner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="452"/>
+        <location filename="src/cardreaderwidget.cpp" line="453"/>
         <source>Save card runlaps ERROR: %1</source>
         <translation type="unfinished"></translation>
     </message>

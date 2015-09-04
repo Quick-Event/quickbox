@@ -152,7 +152,7 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 				QCoreApplication::instance()->installTranslator(trans);
 			}
 			else {
-				qfWarning() << "Cannot load translation file for:" << tr_name << "in:" << QCoreApplication::applicationDirPath();
+				qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << QCoreApplication::applicationDirPath();
 				delete trans;
 			}
 		}

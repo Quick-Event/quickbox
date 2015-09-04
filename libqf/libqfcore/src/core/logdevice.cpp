@@ -6,7 +6,9 @@
 
 #ifdef Q_OS_UNIX
 #include <unistd.h>
+#include <cstdio>
 #endif
+
 
 using namespace qf::core;
 

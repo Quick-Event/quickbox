@@ -1,4 +1,4 @@
-#include "log.h"
+#include "logcore.h"
 #include "stacktrace.h"
 
 #include <QLoggingCategory>

@@ -48,6 +48,9 @@ public:
 
 	Q_SLOT void reset() {reload();}
 	Q_SLOT void reload();
+private slots:
+	void on_btPrinterOptions_clicked();
+
 private:
 	Q_SLOT void on_btPrintNew_clicked();
 	void onCustomContextMenuRequest(const QPoint &pos);
@@ -63,7 +66,6 @@ private:
 	bool printReceipt(int card_id);
 
 	void createActions();
-	void loadPrinters();
 	QPrinterInfo currentPrinter();
 	int currentStageId();
 private:
