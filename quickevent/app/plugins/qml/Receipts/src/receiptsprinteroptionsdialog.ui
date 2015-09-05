@@ -21,6 +21,10 @@
        <property name="text">
         <string>Graphics printer</string>
        </property>
+       <property name="icon">
+        <iconset resource="../Receipts.qrc">
+         <normaloff>:/quickevent/Receipts/images/graphic-printer.svg</normaloff>:/quickevent/Receipts/images/graphic-printer.svg</iconset>
+       </property>
        <property name="checked">
         <bool>true</bool>
        </property>
@@ -30,6 +34,10 @@
       <widget class="QRadioButton" name="btCharacterPrinter">
        <property name="text">
         <string>Character printer</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../Receipts.qrc">
+         <normaloff>:/quickevent/Receipts/images/character-printer.svg</normaloff>:/quickevent/Receipts/images/character-printer.svg</iconset>
        </property>
       </widget>
      </item>
@@ -148,7 +156,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../Receipts.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

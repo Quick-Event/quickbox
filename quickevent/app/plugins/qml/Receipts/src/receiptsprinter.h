@@ -14,6 +14,8 @@ class ReceiptsPrinter : public QObject
 public:
 	explicit ReceiptsPrinter(const ReceiptsPrinterOptions &opts,  QObject *parent = 0);
 
+	const ReceiptsPrinterOptions& printerOptions() const {return m_printerOptions;}
+
 	void printReceipt(const QString &report_file_name, const QVariantMap &report_data);
 private:
 	QList<QByteArray> createPrinterData(const QDomElement &body, const ReceiptsPrinterOptions &printer_options);

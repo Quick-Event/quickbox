@@ -10,11 +10,13 @@ ReceiptsPrinterOptionsDialog::ReceiptsPrinterOptionsDialog(QWidget *parent) :
 	ui(new Ui::ReceiptsPrinterOptionsDialog)
 {
 	ui->setupUi(this);
-	connect(ui->btGraphicsPrinter, &QPushButton::clicked, [this]() {
-		this->ui->stackedWidget->setCurrentIndex(0);
+	connect(ui->btGraphicsPrinter, &QPushButton::toggled, [this](bool checked) {
+		if(checked)
+			this->ui->stackedWidget->setCurrentIndex(0);
 	});
-	connect(ui->btCharacterPrinter, &QPushButton::clicked, [this]() {
-		this->ui->stackedWidget->setCurrentIndex(1);
+	connect(ui->btCharacterPrinter, &QPushButton::toggled, [this](bool checked) {
+		if(checked)
+			this->ui->stackedWidget->setCurrentIndex(1);
 	});
 	loadPrinters();
 }
@@ -33,7 +35,7 @@ void ReceiptsPrinterOptionsDialog::loadPrinters()
 
 void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOptions &opts)
 {
-	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicsPrinter) {
+	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
 		ui->btGraphicsPrinter->setChecked(true);
 		ui->cbxGraphicPrinter->setCurrentText(opts.graphicsPrinterName());
 	}
@@ -49,7 +51,7 @@ ReceiptsPrinterOptions ReceiptsPrinterOptionsDialog::printerOptions()
 {
 	ReceiptsPrinterOptions ret;
 	if(ui->btGraphicsPrinter->isChecked()) {
-		ret.setPrinterType((int)ReceiptsPrinterOptions::PrinterType::GraphicsPrinter);
+		ret.setPrinterType((int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter);
 		ret.setGraphicsPrinterName(ui->cbxGraphicPrinter->currentText());
 	}
 	else {

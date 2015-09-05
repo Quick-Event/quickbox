@@ -61,6 +61,9 @@ private:
 
 	bool printReceipt(int card_id);
 
+	void lazyInit();
+	void updateReceiptsPrinterLabel();
+
 	void createActions();
 	int currentStageId();
 private:

@@ -38,13 +38,13 @@ public:
 	Q_INVOKABLE QVariantMap receiptTablesData(int card_id);
 
 	void setReceiptsPrinterOptions(const ReceiptsPrinterOptions &opts);
+	ReceiptsPrinter* receiptsPrinter();
 private:
 	void onInstalled();
 	CardReader::CardReaderPlugin* cardReaderPlugin();
 	Event::EventPlugin* eventPlugin();
 
 	ReceiptsPrinterOptions receiptsPrinterOptions();
-	ReceiptsPrinter* receiptsPrinter();
 
 	void previewReceipt_classic(int card_id);
 	void printReceipt_classic(int card_id);

@@ -34,7 +34,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 	const ReceiptsPrinterOptions &printer_opts = m_printerOptions;
 	QPrinter *printer = nullptr;
 	QPaintDevice *paint_device = nullptr;
-	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicsPrinter) {
+	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
 		QPrinterInfo pi = QPrinterInfo::printerInfo(printer_opts.graphicsPrinterName());
 		if(pi.isNull()) {
 			for(auto s : QPrinterInfo::availablePrinterNames()) {
@@ -60,7 +60,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 	for(auto key : report_data.keys()) {
 		rp.setTableData(key, report_data.value(key));
 	}
-	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicsPrinter) {
+	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
 		rp.process();
 		qf::qmlwidgets::reports::ReportItemMetaPaintReport *doc = rp.processorOutput();
 		qf::qmlwidgets::reports::ReportItemMetaPaint *it = doc->child(0);
@@ -77,7 +77,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		qf::qmlwidgets::reports::ReportProcessor::HtmlExportOptions opts;
 		opts.setConvertBandsToTables(false);
 		rp.processHtml(el_body, opts);
-		qfInfo() << doc.toString();
+		//qfInfo() << doc.toString();
 		QList<QByteArray> ba_lst = createPrinterData(el_body, printer_opts);
 		QFile f(printer_opts.characterPrinterDevice());
 		//QFile f("/home/fanda/t/receipt.txt");
@@ -331,17 +331,22 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, Di
 	const int cmd_length = sizeof(epson_commands) / sizeof(char*);
 	for(const PrintLine line : lines) {
 		QByteArray ba;
+		int line_text_len = 0;
 		for(const PrintData &pd : line) {
 			if(pd.command == PrintData::Command::Text) {
 				ba += pd.data;
+				line_text_len += pd.data.length();
 			}
 			else if(pd.command == PrintData::Command::HorizontalLine) {
-				QByteArray line_data(ctx->printerLineWidth, pd.data[0]);
-				if(ba.isEmpty())
-					ret.insert(ret.length(), line_data);
+				QByteArray hr_data(ctx->printerLineWidth, pd.data[0]);
+				if(line_text_len == 0) {
+					ret.insert(ret.length(), ba + hr_data);
+					ba.clear();
+				}
 				else {
 					ret.insert(ret.length(), ba);
-					ba = line_data;
+					ba = hr_data;
+					line_text_len = hr_data.length();
 				}
 			}
 			else {
@@ -360,20 +365,25 @@ QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, co
 	DirectPrintContext dpc;
 	dpc.printerLineWidth = printer_options.characterPrinterLineLength();
 	createPrinterData_helper(body, &dpc);
+	/*
 	{
 		QByteArray ba;
 		for(auto d : dpc.line)
 			ba += d.toByteArray();
 		qfInfo() << ba;
 	}
+	*/
 	QList<PrintLine> lines = alignPrinterData(&dpc);
 	for(auto l : lines) {
 		QByteArray ba;
 		for(auto d : l)
 			ba += d.toByteArray();
-		qfInfo() << ba;
+		qfDebug() << ba;
 	}
 	QList<QByteArray> ret = interpretControlCodes(lines, &dpc);
+	for(auto ba : ret) {
+		qDebug() << ba;
+	}
 	return ret;
 }
 

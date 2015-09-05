@@ -2,6 +2,8 @@
 #include "ui_receiptswidget.h"
 #include "receiptspartwidget.h"
 #include "receiptsprinteroptionsdialog.h"
+#include "receiptsprinter.h"
+#include "receiptsprinteroptions.h"
 #include "Receipts/receiptsplugin.h"
 
 #include <Event/eventplugin.h>
@@ -33,6 +35,7 @@
 #include <QMetaObject>
 #include <QJSValue>
 #include <QPrinterInfo>
+#include <QTimer>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -79,11 +82,18 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
+
+	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }
 
 ReceiptsWidget::~ReceiptsWidget()
 {
 	delete ui;
+}
+
+void ReceiptsWidget::lazyInit()
+{
+	updateReceiptsPrinterLabel();
 }
 
 void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
@@ -232,9 +242,22 @@ bool ReceiptsWidget::printReceipt(int card_id)
 	return receiptsPlugin()->printReceipt(card_id);
 }
 
+void ReceiptsWidget::updateReceiptsPrinterLabel()
+{
+	const auto &opts = receiptsPlugin()->receiptsPrinter()->printerOptions();
+	ui->btPrinterOptions->setText(opts.printerCaption());
+	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter)
+		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/graphic-printer.svg"));
+	else
+		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/character-printer.svg"));
+}
 
 void ReceiptsWidget::on_btPrinterOptions_clicked()
 {
 	ReceiptsPrinterOptionsDialog dlg(this);
-	dlg.exec();
+	dlg.setPrinterOptions(receiptsPlugin()->receiptsPrinter()->printerOptions());
+	if(dlg.exec()) {
+		receiptsPlugin()->setReceiptsPrinterOptions(dlg.printerOptions());
+		updateReceiptsPrinterLabel();
+	}
 }
