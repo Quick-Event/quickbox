@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.core.sql.def 1.0
 
 Schema {
-	name: 'untitled'
+	//name: 'main'
 	tables: [
 		Table { id: enumz; name: 'enumz'
 			fields: [
