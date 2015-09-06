@@ -35,6 +35,7 @@ class QFile;
 class QComboBox;
 
 class CardReaderPartWidget;
+class SIMessageTransmitRecord;
 
 namespace CardReader {
 class CardReaderPlugin;
@@ -66,7 +67,6 @@ public:
 	Q_SLOT void reload();
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
-	void appendLogPre(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
 	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
@@ -74,12 +74,13 @@ private slots:
 private:
 	void createActions();
 	Q_SLOT void openSettings();
-	qf::core::Log::Level logLevelFromSettings();
-	QTextStream& cardLog();
-	void closeCardLog();
+	//qf::core::Log::Level logLevelFromSettings();
+	//QTextStream& cardLog();
+	//void closeCardLog();
 	siut::DeviceDriver *siDriver();
 
 	void processSICard(const SIMessageCardReadOut &card);
+	void processSIPunch(const SIMessageTransmitRecord &rec);
 
 	void updateTableView(int card_id);
 
@@ -95,8 +96,8 @@ private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
-	QTextStream *m_cardLog = nullptr;
-	QFile *m_cardLogFile = nullptr;
+	//QTextStream *m_cardLog = nullptr;
+	//QFile *m_cardLogFile = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;

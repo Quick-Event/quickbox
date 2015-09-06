@@ -80,6 +80,8 @@ void DeviceDriver::commDataReceived()
 void DeviceDriver::packetReceived(const QByteArray &msg_data)
 {
 	qfLogFuncFrame();
+	//qWarning() << msg_data;
+	emit rawDataReceived(msg_data);
 	f_messageData.addRawDataBlock(msg_data);
 	f_packetToFinishCount--;
 	emitDriverInfo(qf::core::Log::Level::Debug, tr("packetReceived, packetToFinishCount: %1").arg(f_packetToFinishCount));
@@ -131,8 +133,10 @@ void DeviceDriver::processRxData()
 				//qfInfo() << "CMD:" << QString::number(cmd, 16);
 				if(cmd < 0x80) {
 					if(prev_status == StatusIdle) {
-						if(cmd == SIMessageData::CmdGetSICard6) f_packetToFinishCount = 3;
-						else f_packetToFinishCount = 1;
+						if(cmd == SIMessageData::CmdGetSICard6)
+							f_packetToFinishCount = 3;
+						else
+							f_packetToFinishCount = 1;
 					}
 					/// base protocol instruction (using DLE)
 					stx_pos += 2; /// skip STX + CMD
@@ -178,9 +182,12 @@ void DeviceDriver::processRxData()
 				else {
 					/// extended mode
 					if(prev_status == StatusIdle) {
-						if(cmd == SIMessageData::CmdGetSICard8Ext) f_packetToFinishCount = 2; /// card 8/9/10/11
-						else if(cmd == SIMessageData::CmdGetSICard6Ext) f_packetToFinishCount = 3; /// card 6
-						else f_packetToFinishCount = 1;
+						if(cmd == SIMessageData::CmdGetSICard8Ext)
+							f_packetToFinishCount = 2; /// card 8/9/10/11
+						else if(cmd == SIMessageData::CmdGetSICard6Ext)
+							f_packetToFinishCount = 3; /// card 6
+						else
+							f_packetToFinishCount = 1;
 					}
 					else if(prev_status == StatusMessageIncomplete) {
 						if(cmd == SIMessageData::CmdGetSICard8Ext) {

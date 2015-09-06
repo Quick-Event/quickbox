@@ -36,7 +36,7 @@ SIMessageData::Command SIMessageData::command(const QByteArray &raw_data_with_he
 	}
 	else {
 		qfError() << "empty message";
-		qfInfo() << qf::core::Log::stackTrace();
+		//qfInfo() << qf::core::Log::stackTrace();
 	}
 	return ret;
 }
@@ -73,7 +73,8 @@ SIMessageData::MessageType SIMessageData::type() const
 {
 	MessageType ret = MsgInvalid;
 	SIMessageData::Command cmd = command();
-	if(cmd > SIMessageData::CmdInvalid) switch(cmd) {
+	if(cmd > SIMessageData::CmdInvalid)
+		switch(cmd) {
 		case SIMessageData::CmdSICard5DetectedExt:
 		case SIMessageData::CmdSICard6DetectedExt:
 		case SIMessageData::CmdSICard8AndHigherDetectedExt:
@@ -89,6 +90,7 @@ SIMessageData::MessageType SIMessageData::type() const
 			ret = MsgCardReadOut;
 			break;
 		case SIMessageData::CmdGetPunch2:
+		case SIMessageData::CmdTransmitRecordExt:
 			ret = MsgPunch;
 			break;
 		case SIMessageData::DriverInfo:
@@ -97,7 +99,7 @@ SIMessageData::MessageType SIMessageData::type() const
 		default:
 			ret = MsgOther;
 			break;
-	}
+		}
 	return ret;
 }
 
@@ -105,18 +107,19 @@ int SIMessageData::headerLength(SIMessageData::Command cmd)
 {
 	int ret = 0;
 	switch(cmd) {
-		case SIMessageData::CmdSICardRemovedExt: ret = 8; break;
-		case SIMessageData::CmdSICard5DetectedExt: ret = 8; break;
-		case SIMessageData::CmdSICard6DetectedExt: ret = 8; break;
-		case SIMessageData::CmdSICard8AndHigherDetectedExt: ret = 8; break;
-		case SIMessageData::CmdGetSICard5: ret = 2; break;
-		case SIMessageData::CmdGetSICard5Ext: ret = 4; break;
-		case SIMessageData::CmdGetSICard6: ret = 3; break;
-		case SIMessageData::CmdGetSICard6Ext: ret = 5; break;
-		case SIMessageData::CmdGetSICard8Ext: ret = 5; break;
-		default:
-			qfError() << "Can't find header length for command:" << cmd << SIMessageData::commandName(cmd);
-			break;
+	case SIMessageData::CmdSICardRemovedExt: ret = 8; break;
+	case SIMessageData::CmdSICard5DetectedExt: ret = 8; break;
+	case SIMessageData::CmdSICard6DetectedExt: ret = 8; break;
+	case SIMessageData::CmdSICard8AndHigherDetectedExt: ret = 8; break;
+	case SIMessageData::CmdGetSICard5: ret = 2; break;
+	case SIMessageData::CmdGetSICard5Ext: ret = 4; break;
+	case SIMessageData::CmdGetSICard6: ret = 3; break;
+	case SIMessageData::CmdGetSICard6Ext: ret = 5; break;
+	case SIMessageData::CmdGetSICard8Ext: ret = 5; break;
+	case SIMessageData::CmdTransmitRecordExt: ret = 15; break;
+	default:
+		qfError() << "Can't find header length for command:" << cmd << SIMessageData::commandName(cmd);
+		break;
 	}
 	return ret;
 }
@@ -169,7 +172,8 @@ void SIMessageData::addRawDataBlock(const QByteArray& raw_data_with_header)
 		setHeader(hdr);
 	}
 	QByteArray data = raw_data_with_header.mid(hdr_len);
-	if(!data.isEmpty()) f_blockIndex[block_no] = data;
+	if(!data.isEmpty())
+		f_blockIndex[block_no] = data;
 }
 
 static char hex_digit(int d)

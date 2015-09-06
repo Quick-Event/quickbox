@@ -30,6 +30,7 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/model/sqltablemodel.h>
+#include <qf/core/utils/settings.h>
 
 #include <QSettings>
 #include <QFile>
@@ -110,8 +111,8 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 
 CardReaderWidget::~CardReaderWidget()
 {
-	QF_SAFE_DELETE(m_cardLog);
-	QF_SAFE_DELETE(m_cardLogFile);
+	//QF_SAFE_DELETE(m_cardLog);
+	//QF_SAFE_DELETE(m_cardLogFile);
 	delete ui;
 }
 
@@ -194,10 +195,10 @@ void CardReaderWidget::openSettings()
 {
 	DlgSettings dlg(this);
 	if(dlg.exec()) {
-		closeCardLog();
+		//closeCardLog();
 	}
 }
-
+/*
 qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 {
 	QSettings settings;
@@ -218,7 +219,7 @@ qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 QTextStream& CardReaderWidget::cardLog()
 {
 	if(!m_cardLog) {
-		QSettings settings;
+		qf::core::utils::Settings settings;
 		QString key = QString(CardReader::CardReaderPlugin::SETTINGS_PREFIX) + "/logging/cardLog";
 		QString fn = settings.value(key).toString();
 		if(!fn.isEmpty()) {
@@ -246,7 +247,7 @@ void CardReaderWidget::closeCardLog()
 	emitLogRequest(qf::core::Log::Level::Info, tr("Closing card log."));
 	QF_SAFE_DELETE(m_cardLog);
 }
-
+*/
 siut::DeviceDriver *CardReaderWidget::siDriver()
 {
 	if(!f_siDriver) {
@@ -279,28 +280,7 @@ void CardReaderWidget::onCommOpen(bool checked)
 
 void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 {
-	qf::core::Log::Level treshold = logLevelFromSettings();
-	if(level <= treshold) {
-		qfLog(level) << msg;
-		QString div = "<div style=\"color:%1\">%2</div>";
-		QString color_name;
-		switch(level) {
-		case qf::core::Log::Level::Error: color_name = "red"; break;
-		case qf::core::Log::Level::Warning: color_name = "blue"; break;
-		case qf::core::Log::Level::Info: color_name = "black"; break;
-		case qf::core::Log::Level::Debug: color_name = "darkgray"; break;
-		default: color_name = "darkgray"; break;
-		}
-		ui->txtLog->insertHtml(div.arg(color_name).arg(msg));
-		ui->txtLog->append(QString());
-		ui->txtLog->textCursor().movePosition(QTextCursor::End);
-		ui->txtLog->ensureCursorVisible();
-	}
-}
-
-void CardReaderWidget::appendLogPre(qf::core::Log::Level level, const QString& msg)
-{
-	appendLog(level, "<pre>" + msg + "</pre>");
+	qfLog(level) << msg;
 }
 
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
@@ -312,7 +292,7 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 		processSICard(card);
 	}
 	else if(msg_data.type() == SIMessageData::MsgCardEvent) {
-		appendLogPre(qf::core::Log::Level::Debug, msg_data.dump());
+		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 		if(msg_data.command() == SIMessageData::CmdSICard5DetectedExt) {
 			QByteArray data(1, 0);
 			data[0] = 0;
@@ -331,8 +311,12 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 			emit sendSICommand(SIMessageData::CmdGetSICard8Ext, data);
 		}
 	}
+	else if(msg_data.type() == SIMessageData::MsgPunch) {
+		SIMessageTransmitRecord rec(msg_data);
+		processSIPunch(rec);
+	}
 	else {
-		appendLogPre(qf::core::Log::Level::Debug, msg_data.dump());
+		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 	}
 }
 
@@ -344,16 +328,17 @@ void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QStr
 
 void CardReaderWidget::processDriverRawData(const QByteArray& data)
 {
-	QSettings settings;
-	if(settings.value("comm/debug/showRawComData").toBool()) {
+	qf::core::utils::Settings settings;
+	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
+	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
 		QString msg = SIMessageData::dumpData(data);
-		appendLog(qf::core::Log::Level::Debug, trUtf8("DriverRawData: %1").arg(msg));
+		appendLog(qf::core::Log::Level::Info, trUtf8("DriverRawData: %1").arg(msg));
 	}
 }
 
 void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 {
-	appendLogPre(qf::core::Log::Level::Debug, card.dump());
+	appendLog(qf::core::Log::Level::Debug, card.dump());
 	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
 	int run_id = thisPlugin()->findRunId(card.cardNumber());
 	if(run_id == 0)
@@ -368,6 +353,25 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
 		updateTableView(card_id);
+	}
+}
+
+void CardReaderWidget::processSIPunch(const SIMessageTransmitRecord &rec)
+{
+	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.punch().toString()));
+	int run_id = thisPlugin()->findRunId(rec.cardNumber());
+	if(run_id == 0)
+		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
+	CardReader::PunchRecord trans_rec(rec);
+	trans_rec.setRunId(run_id);
+	int punch_id = thisPlugin()->savePunchRecordToSql(trans_rec);
+	if(punch_id) {
+		//CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
+		//thisPlugin()->updateRunLapsSql(checked_card);
+	}
+	if(punch_id > 0) {
+		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD, punch_id, true);
+		//updateTableView(card_id);
 	}
 }
 

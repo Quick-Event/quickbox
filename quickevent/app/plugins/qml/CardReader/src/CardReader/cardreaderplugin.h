@@ -8,10 +8,13 @@
 
 #include <QQmlListProperty>
 
+class SIMessageTransmitRecord;
+
 namespace CardReader {
 
 class CardChecker;
 class ReadCard;
+class PunchRecord;
 class CheckedCard;
 
 class CARDREADERPLUGIN_DECL_EXPORT CardReaderPlugin : public qf::qmlwidgets::framework::Plugin
@@ -25,6 +28,7 @@ public:
 	CardReaderPlugin(QObject *parent = nullptr);
 
 	static const char* DBEVENTDOMAIN_CARDREADER_CARDREAD;
+	static const char* DBEVENTDOMAIN_CARDREADER_PUNCHRECORD;
 	static const QLatin1String SETTINGS_PREFIX;
 
 	QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, -1)
@@ -39,6 +43,7 @@ public:
 	CheckedCard checkCard(int card_id, int run_id = 0);
 	CheckedCard checkCard(const ReadCard &read_card);
 	int saveCardToSql(const ReadCard &read_card);
+	int savePunchRecordToSql(const PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
 	bool updateRunLapsSql(const CheckedCard &checked_card);
 private:

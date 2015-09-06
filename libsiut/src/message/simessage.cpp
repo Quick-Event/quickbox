@@ -8,6 +8,7 @@
 #include "simessage.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QStringList>
 #include <QVariantMap>
@@ -17,7 +18,7 @@
 //=================================================
 QString SIMessageBase::dump() const
 {
-	QString ret = f_data.dump();
+	QString ret = m_data.dump();
 	return ret;
 }
 
@@ -96,24 +97,6 @@ SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, PunchRecord
 	}
 }
 
-int SIMessageCardReadOut::Punch::code() const
-{
-	int ret = d->code;
-	return ret;
-}
-
-int SIMessageCardReadOut::Punch::time() const
-{
-	int ret = d->time;
-	return ret;
-}
-
-int SIMessageCardReadOut::Punch::msec() const
-{
-	int ret = d->timeMSec;
-	return ret;
-}
-
 int SIMessageCardReadOut::Punch::dayOfWeek() const
 {
 	int ret = (d->flags & (7 << 1)) >> 1;
@@ -139,7 +122,7 @@ QVariantMap SIMessageCardReadOut::Punch::toVariantMap() const
 
 static QString time_str(int _time)
 {
-	QString ret = "%1:%2.%3";
+	QString ret = "%1:%2:%3";
 	if(_time == 0xEEEE) ret = "----";
 	else {
 		int time = SIMessageCardReadOut::toAM(_time);
@@ -157,6 +140,12 @@ static QString ob_time_str(int _time)
 		ret = ret.arg(time / 60).arg(QString::number(time % 60), 2, '0');
 	}
 	return ret;
+}
+
+QString SIMessageCardReadOut::Punch::toString() const
+{
+	QString ret = "{code: %1, time: %2, msec: %3}";
+	return ret.arg(code()).arg(time_str(time())).arg(msec());
 }
 
 SIMessageCardReadOut::SIMessageCardReadOut(const SIMessageData& _data)
@@ -331,7 +320,7 @@ QString SIMessageCardReadOut::dump() const
 	return sl.join("\n");
 }
 
-QVariantMap SIMessageCardReadOut::toVariant() const
+QVariantMap SIMessageCardReadOut::toVariantMap() const
 {
 	QVariantMap ret;// = SIMessageBase::toVariant().toMap();
 	ret[QStringLiteral("stationCodeNumber")] = stationCodeNumber();
@@ -597,3 +586,31 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 	return ret;
 }
 
+SIMessageTransmitRecord::SIMessageTransmitRecord(const SIMessageData &_data)
+	: SIMessageBase(_data)
+{
+	QByteArray data = m_data.header();
+	QF_ASSERT(data.length() == 15, "Bad data length!", return);
+	int offset = 2;
+	int code = 0;
+	for (int i = 0; i < 2; ++i)
+		code = (code << 8) + (uint8_t)data[offset++];
+	m_punch.setCode(code);
+	for (int i = 0; i < 4; ++i)
+		m_cardNumber = (m_cardNumber << 8) + (uint8_t)data[offset++];
+	offset++; // skip TD, not used for now
+	int time = 0;
+	for (int i = 0; i < 2; ++i)
+		time = (time << 8) + (uint8_t)data[offset++];
+	m_punch.setTime(time);
+	int msec = (uint8_t)data[offset++];// sub second values 1/256 sec
+	msec = msec * 1000 / 256;
+	m_punch.setMsec(msec);
+}
+
+QVariantMap SIMessageTransmitRecord::toVariantMap() const
+{
+	QVariantMap ret = punch().toVariantMap();
+	ret[QStringLiteral("cardNumber")] = cardNumber();
+	return ret;
+}
