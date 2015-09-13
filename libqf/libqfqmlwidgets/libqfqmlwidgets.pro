@@ -43,3 +43,4 @@ RESOURCES += \
 
 TRANSLATIONS += \
 	libqfqmlwidgets.cs_CZ.ts \
+	libqfqmlwidgets.pl_PL.ts \

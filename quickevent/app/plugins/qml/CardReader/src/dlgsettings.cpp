@@ -18,6 +18,7 @@
 #include <QSqlDatabase>
 #include <QDir>
 #include <QFileDialog>
+#include <QLineEdit>
 
 //=================================================
 //             DlgSettings
@@ -76,11 +77,6 @@ void DlgSettings::load()
 	settings.endGroup();
 	settings.endGroup();
 
-	settings.beginGroup("logging");
-	load_combo_text(ui->lstLogLevel, settings, "level");
-	ui->edCardLog->setText(settings.value("cardLog").toString());
-	settings.endGroup();
-
 	settings.endGroup();
 }
 
@@ -103,17 +99,6 @@ void DlgSettings::save()
 	settings.endGroup();
 	settings.endGroup();
 
-	settings.beginGroup("logging");
-	settings.setValue("level", ui->lstLogLevel->currentText());
-	settings.setValue("cardLog", ui->edCardLog->text());
 	settings.endGroup();
-
-	settings.endGroup();
-}
-
-void DlgSettings::on_btCardLog_clicked()
-{
-	QString fn = QFileDialog::getSaveFileName(this, tr("Card log file"));
-	if(!fn.isEmpty()) ui->edCardLog->setText(fn);
 }
 

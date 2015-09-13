@@ -32,8 +32,8 @@ using namespace qf::qmlwidgets::reports;
 const double ReportItem::Epsilon = 1e-10;
 const QString ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE = "$INFO";
 
-ReportItem::ReportItem(ReportItem *_parent)
-	: Super(_parent) //--, processor(proc), element(el)
+ReportItem::ReportItem(ReportItem *parent)
+	: Super(parent) //--, processor(proc), element(el)
 {
 	m_keepAll = false;
 	m_visible = true;

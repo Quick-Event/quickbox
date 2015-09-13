@@ -21,6 +21,7 @@ namespace qff = qf::qmlwidgets::framework;
 using namespace CardReader;
 
 const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.cardRead";
+const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD = "CardReader.punchRecord";
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
 
 static Event::EventPlugin* eventPlugin()
@@ -141,6 +142,28 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	}
 	else {
 		qfError() << trUtf8("Save card ERROR: %1").arg(q.lastErrorText());
+	}
+	return ret;
+}
+
+int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
+{
+	int ret = 0;
+	qf::core::sql::Query q;
+	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId)"
+							 " VALUES (:siId, :code, :code, :punchTime, :punchMs, :runId, :stageId)")
+			  , qf::core::Exception::Throw);
+	q.bindValue(QStringLiteral(":siId"), punch_record.cardNumber());
+	q.bindValue(QStringLiteral(":code"), punch_record.code());
+	q.bindValue(QStringLiteral(":punchTime"), punch_record.time());
+	q.bindValue(QStringLiteral(":punchMs"), punch_record.msec());
+	q.bindValue(QStringLiteral(":runId"), punch_record.runId());
+	q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	if(q.exec()) {
+		ret = q.lastInsertId().toInt();
+	}
+	else {
+		qfError() << trUtf8("Save punch record ERROR: %1").arg(q.lastErrorText());
 	}
 	return ret;
 }

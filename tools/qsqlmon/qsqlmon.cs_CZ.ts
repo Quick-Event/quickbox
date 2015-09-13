@@ -377,34 +377,38 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgindexdef.ui" line="147"/>
-        <location filename="src/dlgindexdef.ui" line="158"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgindexdef.ui" line="201"/>
+        <location filename="src/dlgindexdef.ui" line="185"/>
         <source>Table fields</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgindexdef.ui" line="245"/>
+        <location filename="src/dlgindexdef.ui" line="229"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgindexdef.ui" line="252"/>
+        <location filename="src/dlgindexdef.ui" line="236"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgindexdef.ui" line="265"/>
+        <location filename="src/dlgindexdef.ui" line="249"/>
         <source>RemoveFieldFromIndex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgindexdef.ui" line="274"/>
+        <location filename="src/dlgindexdef.ui" line="252"/>
+        <source>Remove field from index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/dlgindexdef.ui" line="261"/>
         <source>AddFieldToIndex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/dlgindexdef.ui" line="264"/>
+        <source>Add field to index</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

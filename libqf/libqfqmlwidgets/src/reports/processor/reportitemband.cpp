@@ -49,6 +49,7 @@ BandDataModel *ReportItemBand::model()
 		if(!dta.isValid() || dta.userType() == QVariant::String) {
 			QString data_key = dta.toString();
 			ReportItemBand *pr = parentBand();
+			//qfInfo() << data_key << pr;
 			if(pr) {
 				BandDataModel *dm = pr->model();
 				parent_detail = pr->detail();
@@ -70,16 +71,16 @@ BandDataModel *ReportItemBand::model()
 		QF_ASSERT(m_model != nullptr, "Bad data!", return m_model);
 		if(parent_detail)
 			connect(parent_detail, &ReportItemDetail::currentIndexChanged, m_model, &BandDataModel::invalidateData);
-		emit modelLoadedChanged(true);
+		//emit modelLoadedChanged(true);
 	}
 	return m_model;
 }
-
+/*
 bool ReportItemBand::modelLoaded() const
 {
 	return (m_model != nullptr && m_model->isDataValid());
 }
-
+*/
 QVariant ReportItemBand::data(const QString &field_name, int role)
 {
 	qfLogFuncFrame() << "field_name:" << field_name;

@@ -69,42 +69,10 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbxPrinters"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QPushButton" name="btPrinterOptions">
        <property name="text">
-        <string>Direct</string>
+        <string>Printer options</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cbxDirectPrinters">
-       <item>
-        <property name="text">
-         <string>None</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>/dev/usb/lp1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>/dev/usb/lp2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>/dev/usb/lp3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>/dev/usb/lp4</string>
-        </property>
-       </item>
       </widget>
      </item>
     </layout>

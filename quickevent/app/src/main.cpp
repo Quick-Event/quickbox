@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 				app.installTranslator(qt_translator);
 			}
 			else {
-				qfWarning() << "Erorr loading translator:" << tr_name << "from:" << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+				qfInfo() << "Erorr loading translator:" << tr_name << "from:" << QLibraryInfo::location(QLibraryInfo::TranslationsPath);
 			}
 		}
 		for(QString prefix : {"libqfcore", "libqfqmlwidgets", "quickevent"}) {
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 				app.installTranslator(qt_translator);
 			}
 			else {
-				qfWarning() << "Erorr loading translator:" << tr_name;
+				qfInfo() << "Erorr loading translator:" << tr_name << "in:" << QCoreApplication::applicationDirPath();
 			}
 		}
 	}

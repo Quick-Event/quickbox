@@ -18,14 +18,12 @@ class CardReaderWidget;
 //! TODO: write class documentation.
 class  DlgSettings : public QDialog
 {
-	Q_OBJECT;
+	Q_OBJECT
 private:
 	Ui::DlgSettings *ui;
 protected:
 	void load();
 	void save();
-protected slots:
-	void on_btCardLog_clicked();
 public:
 	virtual void accept();
 public:

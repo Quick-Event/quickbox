@@ -22,7 +22,7 @@ public:
 		CreateDbSqlScriptOptions(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 
 		QF_VARIANTMAP_FIELD(QString, s, setS, chemaName)
-		QF_VARIANTMAP_FIELD(QString, s, setD, riverName)
+		QF_VARIANTMAP_FIELD(QString, d, setD, riverName)
 	};
 public:
 	DbSchema(Event::EventPlugin *event_plugin);

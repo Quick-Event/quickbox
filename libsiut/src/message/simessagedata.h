@@ -33,8 +33,9 @@ public:
 		DriverInfo=0x1000 /// Driver info (SI commands are only 8 bit long)
 	};
 	enum MessageType {MsgInvalid=0, MsgCardEvent, MsgCardReadOut, MsgPunch, MsgDriverInfo, MsgOther};
-private:
-	QMap<int, QByteArray> f_blockIndex; ///< block_no->rawData
+public:
+	SIMessageData() {}
+	virtual ~SIMessageData() {}
 public:
 	bool isNull() const {return f_blockIndex.isEmpty();}
 	static Command command(const QByteArray &raw_data_with_header);
@@ -52,10 +53,8 @@ public:
 	static const char* commandName(Command cmd);
 	static QString dumpData(const QByteArray &ba);
 	void addRawDataBlock(const QByteArray &raw_data_with_header);
-public:
-	SIMessageData() {}
-	virtual ~SIMessageData() {}
-	//SIMessageData(const QByteArray &raw_data);
+private:
+	QMap<int, QByteArray> f_blockIndex; ///< block_no->rawData
 };
 Q_DECLARE_METATYPE(SIMessageData);
 #if 0

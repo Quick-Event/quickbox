@@ -24,7 +24,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
 	Q_PROPERTY(QVariant modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
 	Q_PROPERTY(bool createFromData READ isCreateFromData WRITE setCreateFromData NOTIFY createFromDataChanged)
-	Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
+	//Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
 	Q_CLASSINFO("property.keepFirst.doc", "Number of band details printed, which cannot be splitted by page/column break.")
 	Q_PROPERTY(int keepFirst READ keepFirst WRITE setKeepFirst NOTIFY keepFirstChanged)
 	Q_PROPERTY(bool htmlExportAsTable READ isHtmlExportAsTable WRITE setHtmlExportAsTable NOTIFY htmlExportAsTableChanged)
@@ -44,8 +44,9 @@ public:
 	Q_SIGNAL void modelDataChanged(QVariant new_data);
 public:
 	BandDataModel* model();
-	bool modelLoaded() const;
-	Q_SIGNAL void modelLoadedChanged(bool is_loaded);
+	// modelLoaded cannot be used in QML, it was bad pattern, ReportItem has NULL parentBand when Component.onCompleted is called
+	//bool modelLoaded() const;
+	//Q_SIGNAL void modelLoadedChanged(bool is_loaded);
 
 	Q_INVOKABLE QVariant data(const QString &field_name, int role = Qt::DisplayRole);
 public:

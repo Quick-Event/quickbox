@@ -1,4 +1,4 @@
-#include "log.h"
+#include "logcore.h"
 #include "stacktrace.h"
 
 #include <QLoggingCategory>
@@ -46,6 +46,25 @@ const char *qf::core::Log::levelName(qf::core::Log::Level level)
 		return "INVALID";
 	}
 	return "???";
+}
+
+QString Log::levelToString(Log::Level level)
+{
+	switch(level) {
+	case Log::Level::Fatal:
+		return QStringLiteral("Fatal");
+	case Log::Level::Error:
+		return QStringLiteral("Error");
+	case Log::Level::Warning:
+		return QStringLiteral("Warning");
+	case Log::Level::Info:
+		return QStringLiteral("Info");
+	case Log::Level::Debug:
+		return QStringLiteral("Debug");
+	case Log::Level::Invalid:
+		return QStringLiteral("Invalid");
+	}
+	return QString();
 }
 
 void Log::checkLogLevelMetaTypeRegistered()

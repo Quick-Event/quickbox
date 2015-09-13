@@ -1,6 +1,9 @@
 #include "receiptswidget.h"
 #include "ui_receiptswidget.h"
 #include "receiptspartwidget.h"
+#include "receiptsprinteroptionsdialog.h"
+#include "receiptsprinter.h"
+#include "receiptsprinteroptions.h"
 #include "Receipts/receiptsplugin.h"
 
 #include <Event/eventplugin.h>
@@ -32,6 +35,7 @@
 #include <QMetaObject>
 #include <QJSValue>
 #include <QPrinterInfo>
+#include <QTimer>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -45,10 +49,8 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	ui(new Ui::ReceiptsWidget)
 {
 	ui->setupUi(this);
-
+	//ui->cbxDirectPrinters->setCurrentIndex(2);
 	createActions();
-
-	loadPrinters();
 
 	{
 		ui->tblPrintJobsTB->setTableView(ui->tblCards);
@@ -80,11 +82,18 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
+
+	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }
 
 ReceiptsWidget::~ReceiptsWidget()
 {
 	delete ui;
+}
+
+void ReceiptsWidget::lazyInit()
+{
+	updateReceiptsPrinterLabel();
 }
 
 void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
@@ -150,18 +159,6 @@ void ReceiptsWidget::createActions()
 		m_actCommOpen = a;
 	}
 	*/
-}
-
-void ReceiptsWidget::loadPrinters()
-{
-	ui->cbxPrinters->addItems(QPrinterInfo::availablePrinterNames());
-	QString def = QPrinterInfo::defaultPrinterName();
-	ui->cbxPrinters->setCurrentText(def);
-}
-
-QPrinterInfo ReceiptsWidget::currentPrinter()
-{
-	return QPrinterInfo::printerInfo(ui->cbxPrinters->currentText());
 }
 
 int ReceiptsWidget::currentStageId()
@@ -242,9 +239,25 @@ void ReceiptsWidget::printSelectedCards()
 
 bool ReceiptsWidget::printReceipt(int card_id)
 {
-	QString direct_printer;
-	if(ui->cbxDirectPrinters->currentIndex() > 0)
-		direct_printer = ui->cbxDirectPrinters->currentText();
-	return receiptsPlugin()->printReceipt(card_id, currentPrinter(), direct_printer);
+	return receiptsPlugin()->printReceipt(card_id);
 }
 
+void ReceiptsWidget::updateReceiptsPrinterLabel()
+{
+	const auto &opts = receiptsPlugin()->receiptsPrinter()->printerOptions();
+	ui->btPrinterOptions->setText(opts.printerCaption());
+	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter)
+		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/graphic-printer.svg"));
+	else
+		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/character-printer.svg"));
+}
+
+void ReceiptsWidget::on_btPrinterOptions_clicked()
+{
+	ReceiptsPrinterOptionsDialog dlg(this);
+	dlg.setPrinterOptions(receiptsPlugin()->receiptsPrinter()->printerOptions());
+	if(dlg.exec()) {
+		receiptsPlugin()->setReceiptsPrinterOptions(dlg.printerOptions());
+		updateReceiptsPrinterLabel();
+	}
+}

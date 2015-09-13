@@ -649,12 +649,14 @@ void EventPlugin::setDbOpen(bool ok)
 static QString copy_sql_table(const QString &table_name, const QSqlRecord &rec, qfs::Connection &from_conn, qfs::Connection &to_conn)
 {
 	qfLogFuncFrame() << table_name;
+	qfInfo() << "Copying table:" << table_name;
 	qfs::Query from_q(from_conn);
 	if(!from_q.exec(QString("SELECT * FROM %1").arg(table_name))) {
 		return QString("SQL Error: %1").arg(from_q.lastError().text());
 	}
 	auto *sqldrv = to_conn.driver();
 	QString qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table_name, rec, true);
+	qfDebug() << qs;
 	qfs::Query to_q(to_conn);
 	if(!to_q.prepare(qs)) {
 		qfWarning() << "Cannot prepare insert table SQL statement, table" << table_name << "probably doesn't exist in target database and it will not be copied.";
@@ -667,8 +669,8 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &rec, 
 		}
 		for (int i = 0; i < rec.count(); ++i) {
 			QString fld_name = rec.field(i).name();
-			//qfDebug() << from_rec.field(i).name() << "->" << from_q.value(i);
-			to_q.bindValue(':' + fld_name, from_q.value(fld_name));
+			//qfDebug() << "copy:" << fld_name << from_q.value(fld_name);
+			to_q.addBindValue(from_q.value(fld_name));
 		}
 		if(!to_q.exec())
 			return QString("SQL Error: %1").arg(to_q.lastError().text());
