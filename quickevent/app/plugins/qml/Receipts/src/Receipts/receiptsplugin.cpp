@@ -243,7 +243,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			int lap = punch.lapTimeMs();
 			ttr.setValue("lapTimeMs", lap);
 			int best_lap = best_laps.value(pos);
-			if(best_lap > 0) {
+			if(lap > 0 && best_lap > 0) {
 				int loss = lap - best_lap;
 				ttr.setValue("lossMs", loss);
 			}
