@@ -46,7 +46,7 @@ protected:
 
 	QJsonDocument profile();
 
-	void loadStyleSheet(const QUrl &url);
+	//bool loadStyleSheet(const QUrl &url);
 	virtual void initStyleSheet();
 private:
 	void releaseQmlEngine();

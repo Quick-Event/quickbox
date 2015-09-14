@@ -23,6 +23,7 @@ public:
 
 	static const QLoggingCategory& categoryForLevel(Level level);
 	static const char *levelName(Level level);
+	static QString levelToString(Level level);
 
 	static void checkLogLevelMetaTypeRegistered();
 public:
