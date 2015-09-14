@@ -156,10 +156,28 @@ QJsonDocument Application::profile()
 	}
 	return m_profile;
 }
-
-void Application::loadStyleSheet(const QUrl &url)
+/*
+bool Application::loadStyleSheet(const QUrl &url)
 {
 	QString css_file_name = url.toLocalFile();
+	QFile f(css_file_name);
+	if(f.open(QFile::ReadOnly)) {
+		QByteArray ba = f.readAll();
+		QString ss = QString::fromUtf8(ba);
+		setStyleSheet(ss);
+		return true;
+	}
+	//qfWarning() << "Cannot open style sheet:" << css_file_name;
+	return false;
+}
+*/
+void Application::initStyleSheet()
+{
+	QString app_name = Application::applicationName().toLower();
+	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/" + app_name + "-data/style/default.css");
+	if(!QFile::exists(css_file_name))
+		css_file_name = ":/" + app_name + "/style/default.css";
+	qfInfo() << "Opening style sheet:" << css_file_name;
 	QFile f(css_file_name);
 	if(f.open(QFile::ReadOnly)) {
 		QByteArray ba = f.readAll();
@@ -169,14 +187,6 @@ void Application::loadStyleSheet(const QUrl &url)
 	else {
 		qfWarning() << "Cannot open style sheet:" << css_file_name;
 	}
-}
-
-void Application::initStyleSheet()
-{
-	QString app_name = Application::applicationName().toLower();
-	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/" + app_name + "-data/style/default.css");
-	qfInfo() << "Opening style sheet:" << css_file_name;
-	loadStyleSheet(QUrl::fromLocalFile(css_file_name));
 }
 
 void Application::releaseQmlEngine()
