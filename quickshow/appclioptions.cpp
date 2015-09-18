@@ -1,10 +1,8 @@
 #include "appclioptions.h"
 
 AppCliOptions::AppCliOptions(QObject *parent)
-	: CLIOptions(parent)
+	: Super(parent)
 {
-	addOption("config").setType(QVariant::String).setNames("--config").setComment("Config name, it is loaded from {config}[.conf] if file exists in {config-path}").setDefaultValue("quickshow");
-	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where server config fiels are searched, default value: {app-dir-path}.");
 	addOption("profile").setType(QVariant::String).setNames("--profile").setComment("Profile name").setDefaultValue("results");
 	addOption("application.refreshTime").setType(QVariant::String).setNames("--refresh-time").setDefaultValue(1000).setComment("refresh time in msec");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");

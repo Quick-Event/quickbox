@@ -3,17 +3,15 @@
 
 #include <qf/core/utils/clioptions.h>
 
-class AppCliOptions : public qf::core::utils::CLIOptions
+class AppCliOptions : public qf::core::utils::ConfigCLIOptions
 {
 	Q_OBJECT
 private:
-	typedef qf::core::utils::CLIOptions Super;
+	typedef qf::core::utils::ConfigCLIOptions Super;
 public:
 	AppCliOptions(QObject *parent = NULL);
 	~AppCliOptions() Q_DECL_OVERRIDE {}
 
-	CLIOPTION_GETTER_SETTER(QString, c, setC, onfig)
-	CLIOPTION_GETTER_SETTER(QString, c, setC, onfigDir)
 	CLIOPTION_GETTER_SETTER(QString, p, setP, rofile)
 	CLIOPTION_GETTER_SETTER2(int, "pplication.refreshTime", r, setr, efreshTime)
 	CLIOPTION_GETTER_SETTER2(QString, "event.name", e, setE, ventName)
