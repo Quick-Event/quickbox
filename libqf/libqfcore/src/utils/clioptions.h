@@ -1,18 +1,21 @@
-#ifndef CLIOPTIONS_H
-#define CLIOPTIONS_H
+#ifndef QF_CORE_UTILS_CLIOPTIONS_H
+#define QF_CORE_UTILS_CLIOPTIONS_H
 
 #include "../core/coreglobal.h"
+#include "../core/exception.h"
+
 #include "../core/exception.h"
 
 #include <QObject>
 #include <QVariantMap>
 #include <QSharedData>
 #include <QStringList>
-
+/*
 #if defined(_MSC_VER)
 // disable throw() warning for MS VC
 #pragma warning( disable : 4290 )
 #endif
+*/
 
 class QTextStream;
 
@@ -83,8 +86,6 @@ public:
 	QStringList parseErrors() const {return m_parseErrors;}
 	QStringList unusedArguments() {return m_unusedArguments;}
 
-	void mergeConfig(const QVariantMap &config_map) {mergeConfig_helper(QString(), config_map);}
-
 	QString applicationDir() const;
 	QString applicationName() const;
 	void help() const;
@@ -98,7 +99,6 @@ protected:
 	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();
 	void addParseError(const QString &err);
-	void mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map);
 private:
 	QMap<QString, Option> m_options;
 	QStringList m_arguments;
@@ -125,6 +125,25 @@ private:
 	} \
 	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
 
+class QFCORE_DECL_EXPORT ConfigCLIOptions : public CLIOptions
+{
+	Q_OBJECT
+private:
+	typedef CLIOptions Super;
+public:
+	ConfigCLIOptions(QObject *parent = NULL);
+	~ConfigCLIOptions() Q_DECL_OVERRIDE {}
+
+	CLIOPTION_GETTER_SETTER(QString, c, setC, onfig)
+	CLIOPTION_GETTER_SETTER(QString, c, setC, onfigDir)
+
+	void parse(const QStringList &cmd_line_args) Q_DECL_OVERRIDE;
+	bool loadConfigFile();
+protected:
+	void mergeConfig(const QVariantMap &config_map) {mergeConfig_helper(QString(), config_map);}
+	void mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map);
+};
+
 }}}
 
-#endif // CLIOPTIONS_H
+#endif

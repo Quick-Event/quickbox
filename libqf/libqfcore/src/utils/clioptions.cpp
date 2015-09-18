@@ -1,10 +1,12 @@
 #include "clioptions.h"
 #include "../core/log.h"
 #include "../core/assert.h"
+#include "../core/utils.h"
 
 #include <QStringBuilder>
 #include <QStringList>
 #include <QDir>
+#include <QJsonParseError>
 
 #include <limits>
 
@@ -62,6 +64,8 @@ CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val)
 CLIOptions::CLIOptions(QObject *parent)
 	: QObject(parent)
 {
+	addOption("config").setType(QVariant::String).setNames("--config").setComment("Server config name, it is loaded from {config}[.conf] if file exists in {config-path}").setDefaultValue("eyassrv");
+	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where server config fiels are searched, default value: {app-dir-path}.");
 }
 
 CLIOptions::~CLIOptions()
@@ -280,8 +284,55 @@ void CLIOptions::addParseError(const QString& err)
 	m_parseErrors << err;
 }
 
-void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map)
+ConfigCLIOptions::ConfigCLIOptions(QObject *parent)
+	: Super(parent)
 {
+	addOption("config").setType(QVariant::String).setNames("--config").setComment("Server config name, it is loaded from {config}[.conf] if file exists in {config-path}, deault value is {app-name}.conf");
+	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where server config fiels are searched, default value: {app-dir-path}.");
+}
+
+void ConfigCLIOptions::parse(const QStringList &cmd_line_args)
+{
+	Super::parse(cmd_line_args);
+	if(config().isEmpty())
+		setConfig(applicationName());
+}
+
+bool ConfigCLIOptions::loadConfigFile()
+{
+	QString config_dir = configDir();
+	if(config_dir.isEmpty())
+		config_dir = applicationDir();
+	QString config_file = config();
+	qfInfo() << "config:" << config_file << "config-dir:" << config_dir;
+	if(!config_file.isEmpty()) {
+		if(!config_file.contains('.'))
+			config_file += ".conf";
+		config_file = config_dir + '/' + config_file;
+		QFile f(config_file);
+		qfInfo() << "Checking presence of config file:" << f.fileName();
+		if(f.open(QFile::ReadOnly)) {
+			qfInfo() << "Reading config file:" << f.fileName();
+			QString str = QString::fromUtf8(f.readAll());
+			str = qf::core::Utils::removeJsonComments(str);
+			qfDebug() << str;
+			QJsonParseError err;
+			auto jsd = QJsonDocument::fromJson(str.toUtf8(), &err);
+			if(err.error == QJsonParseError::NoError) {
+				mergeConfig(jsd.toVariant().toMap());
+			}
+			else {
+				qfError() << "Error parsing config file:" << f.fileName() << "on offset:" << err.offset << err.errorString();
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map)
+{
+	//qfLogFuncFrame() << key_prefix;
 	QMapIterator<QString, QVariant> it(config_map);
 	while(it.hasNext()) {
 		it.next();
@@ -299,6 +350,7 @@ void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap
 			try {
 				Option &opt = optionRef(key);
 				if(!opt.isSet()) {
+					//qfInfo() << key << "-->" << v;
 					opt.setValue(v);
 				}
 			}
@@ -308,3 +360,4 @@ void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap
 		}
 	}
 }
+

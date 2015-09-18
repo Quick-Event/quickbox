@@ -619,6 +619,7 @@ QString DbFsDriver::attributesColumns(const QString &table_alias)
 
 DbFsAttrs DbFsDriver::attributesFromQuery(const Query &q)
 {
+	qfLogFuncFrame();
 	DbFsAttrs ret;
 	ret.setInode(q.value(COL_INODE).toInt());
 	ret.setPinode(q.value(COL_PINODE).toInt());
@@ -666,7 +667,6 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &spath, int pinode)
 			else
 				qs = qs.arg(QStringLiteral("inode"));
 		}
-		//qs = "SELECT " + cols + " FROM " + tableName() + " AS t0 WHERE (inode,snapshot) = (\n" + qs + ")";
 		Connection conn = connection();
 		Query q(conn);
 		sqlDebug() << qs;
@@ -675,7 +675,7 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &spath, int pinode)
 				ret = attributesFromQuery(q);
 			}
 			else {
-				//qfWarning() << "QFDbFs::pathToId() ERROR - table:" << tableName() << "parent id:" << pinode << "path:" << path.join("/") << "not found.";
+				//qfDebug() << "QFDbFs::pathToId() ERROR - table:" << tableName() << "parent id:" << pinode << "path:" << spath << "not found.";
 			}
 		}
 		else {
