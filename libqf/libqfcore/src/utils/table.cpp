@@ -433,27 +433,20 @@ void TableRow::setValue(int col, const QVariant &v)
 		QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
 		return);
 
-	QVariant new_val = v;
-	if(v.isValid())
-		new_val = Utils::retypeVariant(v, fields()[col].type());
+	QVariant new_val = Utils::retypeVariant(v, fields()[col].type());
 	QVariant orig_val = origValue(col);
-	#if defined QT_DEBUG
-	/*
-	if(false && fields()[col].fieldName() == "data") {
-		//qfInfo() << "\t\told value:" << v2str(old_val) << "old type:" << old_val.typeName() << " isValid:" << old_val.isValid();
-		qfInfo() << "\t\tnew value:" << v2str(new_val) << "old type:" << new_val.typeName() << " isValid:" << new_val.isValid();
-	}
-	*/
-	#endif
-	if(new_val != orig_val) {
-		d->values[col] = new_val;
-		setDirty(col, true);
-		//qfWarning() << col << "<-" << new_val;
-	}
-	else {
+	//qfInfo() << new_val << "is null:" << new_val.isNull() << "==" << orig_val << "is null:" << orig_val.isNull() << "->" << (new_val == orig_val);
+	bool same_nullity = (new_val.isNull() && orig_val.isNull()) || (!new_val.isNull() && !orig_val.isNull());
+	bool same_values = same_nullity && (new_val == orig_val);
+	if(same_values) {
 		/// pokud hodnota byla nastavena (napr. po opakovanem prenastaveni) nakonec na originalni, neni nutne ji ukladat
 		d->values[col] = orig_val;
 		setDirty(col, false);
+	}
+	else {
+		d->values[col] = new_val;
+		setDirty(col, true);
+		qfWarning() << col << "<-" << new_val;
 	}
 }
 

@@ -49,6 +49,7 @@ qf--qmlwidgets--framework--PartSwitch QToolButton:hover {
 }
 
 qf--qmlwidgets--framework--PartSwitch QToolButton:checked {
+	background: lightgray;
 	/*background: #FFFD00;*/
 	color: black;
 }

@@ -524,7 +524,13 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 		row_selections[ix.row()] << ix;
 	}
 	QList<int> selected_row_indexes = row_selections.keys();
-	if(selected_row_indexes.count()) {
+	if(selected_row_indexes.count() == 1) {
+		int row_ix = selected_row_indexes.value(0);
+		foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+			model()->setData(ix, new_val);
+		}
+	}
+	else if(selected_row_indexes.count() > 1) {
 		qfc::sql::Connection conn;
 		{
 			qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
@@ -537,11 +543,8 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
 				model()->setData(ix, new_val);
 			}
-			if(selected_row_indexes.count() > 1) {
-				// post edits in every row when more rows is selected
-				if(!postRow(row_ix))
-					return;
-			}
+			if(!postRow(row_ix))
+				return;
 		}
 		transaction.commit();
 	}
