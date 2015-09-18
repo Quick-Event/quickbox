@@ -18,7 +18,7 @@ Report {
 			id: cBandCell
 			Cell {
 				property string fieldName
-				text: data();
+				text: {var d = data(); return d? d: "";}
 				function data() {
 					return detail.data(detail.currentIndex, fieldName);
 				}
@@ -28,7 +28,13 @@ Report {
 			id: cMapDiffCell
 			Cell {
 				property int stage
-				property int diff: data("e" + stage + "_mapCount") - data("e" + stage + "_runCount");
+				property int diff: {
+					var maps = data("e" + stage + "_mapCount");
+					var runners = data("e" + stage + "_runCount");
+					if(maps && runners)
+						return maps - runners;
+					return 0;
+				}
 				text: diff;
 				fill: (diff < 0)? brushError: brushNone;
 				function data(field_name) {

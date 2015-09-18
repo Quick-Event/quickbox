@@ -446,7 +446,6 @@ void TableRow::setValue(int col, const QVariant &v)
 	else {
 		d->values[col] = new_val;
 		setDirty(col, true);
-		qfWarning() << col << "<-" << new_val;
 	}
 }
 
