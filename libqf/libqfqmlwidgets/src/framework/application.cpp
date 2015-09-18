@@ -33,7 +33,7 @@ Application::Application(int &argc, char **argv) :
 #endif
 		m_qmlPluginImportPaths << path;
 	}
-	initStyleSheet();
+	//loadStyleSheet();
 }
 
 Application::~Application()
@@ -171,12 +171,15 @@ bool Application::loadStyleSheet(const QUrl &url)
 	return false;
 }
 */
-void Application::initStyleSheet()
+void Application::loadStyleSheet(const QString &file)
 {
-	QString app_name = Application::applicationName().toLower();
-	QString css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/" + app_name + "-data/style/default.css");
-	if(!QFile::exists(css_file_name))
-		css_file_name = ":/" + app_name + "/style/default.css";
+	QString css_file_name = file;
+	if(css_file_name.isEmpty()) {
+		QString app_name = Application::applicationName().toLower();
+		css_file_name = qfu::FileUtils::joinPath(Application::applicationDirPath(), "/" + app_name + "-data/style/default.css");
+		if(!QFile::exists(css_file_name))
+			css_file_name = ":/" + app_name + "/style/default.css";
+	}
 	qfInfo() << "Opening style sheet:" << css_file_name;
 	QFile f(css_file_name);
 	if(f.open(QFile::ReadOnly)) {

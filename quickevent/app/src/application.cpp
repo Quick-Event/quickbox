@@ -18,6 +18,8 @@ Application::Application(int &argc, char **argv)
 	auto *style = qf::qmlwidgets::Style::instance();
 	style->setIconPath(":/qf/qmlwidgets/images/flat");
 
+	loadStyleSheet();
+
 	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 	QString http_proxy = env.value(QStringLiteral("http_proxy"));
 	if(!http_proxy.isEmpty()) {
