@@ -59,7 +59,7 @@ public:
 	//virtual QString catchLocation() const {return f_catchLocation;}
 	//void setCatchLocation(const QString &loc) {f_catchLocation = loc;}
 	//virtual const char* trace() const throw();
-	virtual const char* what() const throw();
+	const char* what() const throw() Q_DECL_OVERRIDE;
 	operator const char *() const  throw(){return what();}
 	/// nastavi globalni promenne exceptionAbortsApplication, assertThrowsException, logStackTrace z parametru prikazove radky
 	/// --exception-aborts, --assert-throws, --log-stacktrace

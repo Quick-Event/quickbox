@@ -85,8 +85,8 @@ public:
 public:
 	void setRenderedRectRect(const QRectF &new_size) {renderedRect = new_size;}
 
-	virtual ReportItemMetaPaint* parent() const {return dynamic_cast<ReportItemMetaPaint*>(qf::core::utils::TreeItemBase::parent());}
-	virtual ReportItemMetaPaint* child(int ix) const;
+	ReportItemMetaPaint* parent() const Q_DECL_OVERRIDE {return dynamic_cast<ReportItemMetaPaint*>(qf::core::utils::TreeItemBase::parent());}
+	ReportItemMetaPaint* child(int ix) const Q_DECL_OVERRIDE;
 	virtual ReportItemMetaPaint* firstChild() const
 	{
 		if(childrenCount())
@@ -166,7 +166,7 @@ protected:
 	virtual void frameItem(QPainter *painter, bool selected = false);
 	void drawLine(QPainter *painter, LinePos where, const QPen &pen);
 public:
-	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
+	void paint(ReportPainter *painter, unsigned mode = PaintAll) Q_DECL_OVERRIDE;
 };
 //! TODO documentation
 class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintText : public ReportItemMetaPaint
@@ -183,12 +183,12 @@ public:
 	QTextOption textOption;
 	QString editGrants;
 public:
-	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
-	virtual bool isPointInside(const QPointF &p) {Q_UNUSED(p); return false;}
+	void paint(ReportPainter *painter, unsigned mode = PaintAll) Q_DECL_OVERRIDE;
+	bool isPointInside(const QPointF &p) Q_DECL_OVERRIDE {Q_UNUSED(p); return false;}
 
 	//void setAlignment(const Qt::Alignment &al) { alignmentFlags = al;}
 
-	virtual QString dump(int indent = 0);
+	QString dump(int indent = 0) Q_DECL_OVERRIDE;
 public:
 	ReportItemMetaPaintText(ReportItemMetaPaint *parent, ReportItem *report_item)
 	: ReportItemMetaPaint(parent, report_item) {}
