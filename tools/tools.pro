@@ -1,12 +1,15 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 
+#message (tools config: $$CONFIG)
+
 SUBDIRS += \
 	qsqlmon \
 
 unix {
-SUBDIRS += \
-	qfsqldbfs \
+	!qsqlmon {
+		SUBDIRS += \
+			qfsqldbfs \
+	}
 }
-
 
