@@ -21,14 +21,14 @@
 //             ColumnSelectorWidget
 //=================================================
 ColumnSelectorWidget::ColumnSelectorWidget(QString table_name, const QSqlDatabase &conn, QWidget *parent)
-	: qf::qmlwidgets::framework::PartWidget(parent), f_tableName(table_name)
+	: Super(parent), m_tableName(table_name)
 {
 	ui = new Ui::ColumnSelectorWidget;
 	ui->setupUi(this);
 	//Qf::connectSlotsByName(centralWidget(), this);
 	{
 		qf::core::sql::Connection dbi(conn);
-		QStringList fields = dbi.fields(f_tableName);
+		QStringList fields = dbi.fields(m_tableName);
 		QListWidget *w = ui->lstFields;
 		foreach(QString fld, fields) {
 			QListWidgetItem *it = new QListWidgetItem(fld);
@@ -79,14 +79,14 @@ void ColumnSelectorWidget::on_btPasteSelectedColumns_clicked()
 		QModelIndex ix = m->index(i, 0);
 		if(sm->isSelected(ix)) {
 			QString s = m->data(ix).toString();
-			if(ui->chkIncludeTableNames->isChecked()) s = f_tableName%'.'%s;
+			if(ui->chkIncludeTableNames->isChecked()) s = m_tableName%'.'%s;
 			col_names << s;
 		}
 	}
 	if(!col_names.isEmpty()) {
 		QString s = col_names.join(ui->edColumnSeparator->text());
 		QClipboard *clipboard = QApplication::clipboard();
-		if(ui->chkIncludeSelect->isChecked()) s = "SELECT "%s%" FROM "%f_tableName;
+		if(ui->chkIncludeSelect->isChecked()) s = "SELECT "%s%" FROM "%m_tableName;
 		clipboard->setText(s);
 		emit columnNamesCopiedToClipboard(s);
 	}
