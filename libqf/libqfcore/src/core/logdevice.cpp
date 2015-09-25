@@ -31,6 +31,8 @@ QList< LogDevice* >& logDevices();
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+	if(!LogDevice::isLoggingEnabled())
+		return;
 	Log::Level level = Log::Level::Debug;
 	switch(type) {
 	case QtDebugMsg:
@@ -62,7 +64,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		break;
 	}
 	for(auto log_device : logDevices()) {
-		if(log_device->checkLogPermisions(context, level)) {
+		if(log_device->isEnabled() && log_device->checkLogPermisions(context, level)) {
 			log_device->log(level, context, msg);
 		}
 	}
@@ -81,85 +83,19 @@ QList< LogDevice* >& logDevices()
 }
 
 //=========================================================
-// LogEntryMap
-//=========================================================
-static const auto KeyLevel = QStringLiteral("level");
-static const auto KeyDomain = QStringLiteral("domain");
-static const auto KeyMessage = QStringLiteral("message");
-static const auto KeyFile = QStringLiteral("file");
-static const auto KeyLine = QStringLiteral("line");
-static const auto KeyFunction = QStringLiteral("function");
-
-LogEntryMap::LogEntryMap(Log::Level level, const QString &domain, const QString &message, const QString &file, int line, const QString &function)
-{
-	this->operator[](KeyLevel) = (int)level;
-	this->operator[](KeyDomain) = domain;
-	this->operator[](KeyMessage) = message;
-	this->operator[](KeyFile) = file;
-	this->operator[](KeyLine) = line;
-	this->operator[](KeyFunction) = function;
-}
-
-Log::Level LogEntryMap::level() const
-{
-	return (Log::Level)value(KeyLevel).toInt();
-}
-
-QString LogEntryMap::levelStr() const
-{
-	return Log::levelName(level());
-}
-
-QString LogEntryMap::message() const
-{
-	return value(KeyMessage).toString();
-}
-
-QString LogEntryMap::domain() const
-{
-	return value(KeyDomain).toString();
-}
-
-QString LogEntryMap::file() const
-{
-	return value(KeyFile).toString();
-}
-
-int LogEntryMap::line() const
-{
-	return value(KeyLine).toInt();
-}
-
-QString LogEntryMap::function() const
-{
-	return value(KeyFunction).toString();
-}
-
-QString LogEntryMap::toString() const
-{
-	QString ret = "{";
-	ret += "\"level\":" + QString::number((int)level()) + ", ";
-	ret += "\"domain\":" + domain() + ", ";
-	ret += "\"message\":" + message() + ", ";
-	ret += "\"file\":" + file() + ", ";
-	ret += "\"line\":" + QString::number(line()) + ", ";
-	ret += "\"function\":" + function() + "}";
-	return ret;
-}
-
-//=========================================================
 // LogDevice
 //=========================================================
 Log::Level LogDevice::environmentLogTreshold = environment_treshold();
 Log::Level LogDevice::commandLineLogTreshold = Log::Level::Invalid;
 
+bool LogDevice::m_loggingEnabled = true;
+
 LogDevice::LogDevice(QObject *parent)
 	: QObject(parent)
 	, m_logTreshold(Log::Level::Info)
 	, m_count(0)
-	, m_isPrettyDomain(false)
+	, m_isPrettyDomain(true)
 {
-	setEmitLogEntries(true);
 }
 
 LogDevice::~LogDevice()
@@ -196,9 +132,7 @@ QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 			continue;
 		}
 		if(s.startsWith("-d")) {
-			//printf("1 %s\n", qPrintable(s));
 			s = s.mid(2);
-			//printf("2 %s\n", qPrintable(s));
 			tresholds << s;
 		}
 		else {
@@ -277,6 +211,21 @@ bool LogDevice::checkLogPermisions(const QMessageLogContext &context, Log::Level
 	return ret;
 }
 
+void LogDevice::setLoggingEnabled(bool on)
+{
+	m_loggingEnabled = on;
+}
+
+bool LogDevice::isLoggingEnabled()
+{
+	return m_loggingEnabled;
+}
+
+void LogDevice::setEnabled(bool b)
+{
+	m_enabled = b;
+}
+
 void LogDevice::setPrettyDomain(bool b)
 {
 	m_isPrettyDomain = b;
@@ -295,15 +244,6 @@ QString LogDevice::prettyDomain(const QString &domain)
 	return domain.section(rx, -1);
 }
 
-void LogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
-{
-	if(isEmitLogEntries()) {
-		QString domain = prettyDomain(domainFromContext(context));
-		LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
-		emit logEntry(m);
-	}
-}
-
 //=========================================================
 // FileLogDevice
 //=========================================================
@@ -312,7 +252,6 @@ FileLogDevice::FileLogDevice(QObject *parent)
 	: Super(parent)
 {
 	m_file = stderr;
-	setEmitLogEntries(false);
 }
 
 FileLogDevice::~FileLogDevice()
@@ -340,18 +279,19 @@ void FileLogDevice::setFile(const QString &path_to_file)
 	else {
 		FILE *f = ::fopen(qPrintable(path_to_file), "w");
 		if(f) {
-			fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
+			std::fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
 			m_file = f;
 		}
 		else {
-			fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
+			std::fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
 		}
 	}
 }
 
 void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
-	if(!m_file) return;
+	if(!m_file)
+		return;
 #ifdef Q_OS_UNIX
 	bool is_tty = ::isatty(fileno(m_file));
 	enum TerminalColor {Black = 0, Red, Green, Yellow, Blue, Magenta, Cyan, White};
@@ -363,12 +303,16 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 		TerminalColor fg, bg = Black;
 		TerminalAttr attr = AttrReset;
 		switch(level) {
-		case Log::Level::Info: fg = Cyan; break;
-		case Log::Level::Warning: fg = Magenta; attr = AttrBright; break;
+		case Log::Level::Info:
+			fg = Cyan; break;
+		case Log::Level::Warning:
+			fg = Magenta; attr = AttrBright; break;
 		case Log::Level::Error:
-		case Log::Level::Fatal: fg = Red; attr = AttrBright; break;
+		case Log::Level::Fatal:
+			fg = Red; attr = AttrBright; break;
 		case Log::Level::Debug:
-		default: fg = White; break;
+		default:
+			fg = White; break;
 		}
 		QString s;
 		std::fprintf(m_file, "%c[%d;%d;%dm", 0x1B, attr, fg + 30, bg + 40);
@@ -408,11 +352,79 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	//if(level == Log::LOG_FATAL) std::terminate(); Qt will do it itself
 }
 
-/*
+//=========================================================
+// LogEntryMap
+//=========================================================
+static const auto KeyLevel = QStringLiteral("level");
+static const auto KeyDomain = QStringLiteral("domain");
+static const auto KeyMessage = QStringLiteral("message");
+static const auto KeyFile = QStringLiteral("file");
+static const auto KeyLine = QStringLiteral("line");
+static const auto KeyFunction = QStringLiteral("function");
+
+LogEntryMap::LogEntryMap(Log::Level level, const QString &domain, const QString &message, const QString &file, int line, const QString &function)
+{
+	this->operator[](KeyLevel) = (int)level;
+	this->operator[](KeyDomain) = domain;
+	this->operator[](KeyMessage) = message;
+	this->operator[](KeyFile) = file;
+	this->operator[](KeyLine) = line;
+	this->operator[](KeyFunction) = function;
+}
+
+Log::Level LogEntryMap::level() const
+{
+	return (Log::Level)value(KeyLevel).toInt();
+}
+
+QString LogEntryMap::levelStr() const
+{
+	return Log::levelName(level());
+}
+
+QString LogEntryMap::message() const
+{
+	return value(KeyMessage).toString();
+}
+
+QString LogEntryMap::domain() const
+{
+	return value(KeyDomain).toString();
+}
+
+QString LogEntryMap::file() const
+{
+	return value(KeyFile).toString();
+}
+
+int LogEntryMap::line() const
+{
+	return value(KeyLine).toInt();
+}
+
+QString LogEntryMap::function() const
+{
+	return value(KeyFunction).toString();
+}
+
+QString LogEntryMap::toString() const
+{
+	QString ret = "{";
+	ret += "\"level\":" + QString::number((int)level()) + ", ";
+	ret += "\"domain\":" + domain() + ", ";
+	ret += "\"message\":" + message() + ", ";
+	ret += "\"file\":" + file() + ", ";
+	ret += "\"line\":" + QString::number(line()) + ", ";
+	ret += "\"function\":" + function() + "}";
+	return ret;
+}
+
+//=========================================================
+// SignalLogDevice
+//=========================================================
 SignalLogDevice::SignalLogDevice(QObject *parent)
 	: Super(parent)
 {
-	setPrettyDomain(true);
 }
 
 SignalLogDevice::~SignalLogDevice()
@@ -432,4 +444,4 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 	LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
 	emit logEntry(m);
 }
-*/
+
