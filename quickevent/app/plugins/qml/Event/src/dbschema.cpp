@@ -61,13 +61,15 @@ QObject *DbSchema::table(const QString &table_name)
 	return nullptr;
 }
 
-QSqlRecord DbSchema::sqlRecord(QObject *table)
+QSqlRecord DbSchema::sqlRecord(QObject *table, bool lowercase_field_names)
 {
 	QSqlRecord ret;
 	QQmlListReference fields(table, "fields", m_eventPlugin->qmlEngine());
 	for (int i = 0; i < fields.count(); ++i) {
 		QObject *field = fields.at(i);
 		QString name = field->property("name").toString();
+		if(lowercase_field_names)
+			name = name.toLower();
 		QVariant typev = field->property("type");
 		QObject *type = typev.value<QObject*>();
 		QF_ASSERT(type != nullptr, "Internal error: Cannot get field type", return QSqlRecord());

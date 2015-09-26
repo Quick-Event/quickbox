@@ -315,7 +315,10 @@ bool Connection::tableExists(const QString &_table_name)
 		}
 	}
 	else {
-		qfError() << Q_FUNC_INFO << "not supported for driver:" << driverName();
+		QSqlQuery q(*this);
+		if(q.exec("SELECT COUNT(*) FROM " QF_CARG(_table_name))) {
+			ret = true;
+		}
 	}
 	return ret;
 }

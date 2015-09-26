@@ -66,7 +66,7 @@ public:
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 	Q_SLOT void exportEvent();
-	Q_SLOT void importEvent();
+	Q_SLOT void importEvent_qbe();
 
 	Q_SIGNAL void reloadDataRequest();
 
@@ -86,6 +86,8 @@ private:
 	void setDbOpen(bool ok);
 
 	ConnectionType connectionType() const;
+	QStringList existingSqlEventNames() const;
+	QStringList existingFileEventNames(const QString &dir) const;
 
 	Q_SLOT void onInstalled();
 	Q_SLOT void onEventOpened();

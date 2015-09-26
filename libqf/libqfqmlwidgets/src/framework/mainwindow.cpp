@@ -98,6 +98,11 @@ void MainWindow::showProgress(const QString &msg, int completed, int total)
 	QCoreApplication::processEvents();
 	emit progress(msg, completed, total);
 }
+
+void MainWindow::hideProgress()
+{
+	showProgress(QString(), 0, 0);
+}
 #ifdef GET_RESOURCE_IN_FRAMEWORK
 QNetworkAccessManager *manager = new QNetworkAccessManager();
 QMap<int, QNetworkReply*> servedReplies;

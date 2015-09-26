@@ -31,7 +31,7 @@ public:
 	QStringList createDbSqlScript(const CreateDbSqlScriptOptions &create_options);
 	QList<QObject*> tables();
 	QObject* table(const QString &table_name);
-	QSqlRecord sqlRecord(QObject *table);
+	QSqlRecord sqlRecord(QObject *table, bool lowercase_field_names = false);
 private:
 	Event::EventPlugin *m_eventPlugin;
 };
