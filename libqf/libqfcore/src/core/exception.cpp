@@ -18,7 +18,7 @@ using namespace qf::core;
 //============================================================
 //                      Exception
 //============================================================
-bool Exception::terminateOnException = false;
+bool Exception::s_abortOnException = false;
 
 namespace {
 

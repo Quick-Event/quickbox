@@ -64,7 +64,9 @@ CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val)
 CLIOptions::CLIOptions(QObject *parent)
 	: QObject(parent)
 {
-	addOption("config").setType(QVariant::String).setNames("--config").setComment("Server config name, it is loaded from {config}[.conf] if file exists in {config-path}").setDefaultValue("eyassrv");
+	addOption("abortOnException").setType(QVariant::Bool).setNames("--abort-on-exception").setComment(tr("Abort application on exception"));
+	addOption("help").setType(QVariant::Bool).setNames("-h", "--help").setComment(tr("Print help"));
+	addOption("config").setType(QVariant::String).setNames("--config").setComment(tr("Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}"));
 	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where server config fiels are searched, default value: {app-dir-path}.");
 }
 
@@ -163,7 +165,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 		if(arg.isEmpty())
 			break;
 		if(arg == "--help" || arg == "-h") {
-			help();
+			setHelp(true);
+			printHelp();
 			m_isAppBreak = true;
 			return;
 		}
@@ -204,6 +207,7 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			}
 		}
 	}
+	qf::core::Exception::setAbortOnException(isAbortOnException());
 }
 
 QPair<QString, QString> CLIOptions::applicationDirAndName() const
@@ -232,7 +236,7 @@ QString CLIOptions::applicationName() const
 	return applicationDirAndName().second;
 }
 
-void CLIOptions::help(QTextStream& os) const
+void CLIOptions::printHelp(QTextStream& os) const
 {
 	os << applicationName() << " [OPTIONS]" << endl << endl;
 	os << "OPTIONS:" << endl << endl;
@@ -255,10 +259,10 @@ void CLIOptions::help(QTextStream& os) const
 	}
 }
 
-void CLIOptions::help() const
+void CLIOptions::printHelp() const
 {
 	QTextStream ts(stdout);
-	help(ts);
+	printHelp(ts);
 }
 
 void CLIOptions::dump(QTextStream &os) const

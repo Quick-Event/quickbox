@@ -236,6 +236,13 @@ bool LogDevice::isPrettyDomain() const
 	return m_isPrettyDomain;
 }
 
+const char* LogDevice::dCommandLineSwitchHelp()
+{
+	return "-d[domain[:LEVEL]]\tset debug domain and level\n"
+	"\t\t\tdomain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
+	"\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, default level is INFO\n";
+}
+
 QString LogDevice::prettyDomain(const QString &domain)
 {
 	if(!isPrettyDomain())

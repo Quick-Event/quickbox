@@ -35,6 +35,8 @@ public:
 	void setPrettyDomain(bool b);
 	bool isPrettyDomain() const;
 
+	static const char *dCommandLineSwitchHelp();
+
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
 	virtual QString prettyDomain(const QString &domain);

@@ -23,12 +23,33 @@ namespace qf {
 namespace core {
 namespace utils {
 
+#define CLIOPTION_QUOTE_ME(x) QStringLiteral(#x)
+
+#define CLIOPTION_GETTER_SETTER(ptype, getter_prefix, setter_prefix, name_rest) \
+	public: ptype getter_prefix##name_rest() const { \
+		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
+		return qvariant_cast<ptype>(val); \
+	} \
+	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).value().isValid();} \
+	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
+
+#define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
+	public: ptype getter_prefix##name_rest() const { \
+		QVariant val = value(pkey); \
+		return qvariant_cast<ptype>(val); \
+	} \
+	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).value().isValid();} \
+	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
+
 class QFCORE_DECL_EXPORT CLIOptions : public QObject
 {
 	Q_OBJECT
 public:
 	CLIOptions(QObject *parent = NULL);
 	virtual ~CLIOptions();
+
+	CLIOPTION_GETTER_SETTER2(bool, "abortOnException", is, set, AbortOnException)
+	CLIOPTION_GETTER_SETTER2(bool, "help", is, set, Help)
 public:
 	class QFCORE_DECL_EXPORT Option
 	{
@@ -88,8 +109,8 @@ public:
 
 	QString applicationDir() const;
 	QString applicationName() const;
-	void help() const;
-	void help(QTextStream &os) const;
+	void printHelp() const;
+	void printHelp(QTextStream &os) const;
 	void dump() const;
 	void dump(QTextStream &os) const;
 public slots:
@@ -108,22 +129,6 @@ private:
 	bool m_isAppBreak;
 	QStringList m_allArgs;
 };
-
-#define CLIOPTION_QUOTE_ME(x) QStringLiteral(#x)
-
-#define CLIOPTION_GETTER_SETTER(ptype, getter_prefix, setter_prefix, name_rest) \
-	public: ptype getter_prefix##name_rest() const { \
-		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
-		return qvariant_cast<ptype>(val); \
-	} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
-
-#define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
-	public: ptype getter_prefix##name_rest() const { \
-		QVariant val = value(pkey); \
-		return qvariant_cast<ptype>(val); \
-	} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
 
 class QFCORE_DECL_EXPORT ConfigCLIOptions : public CLIOptions
 {
