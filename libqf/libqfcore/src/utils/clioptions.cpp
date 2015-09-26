@@ -291,8 +291,8 @@ void CLIOptions::addParseError(const QString& err)
 ConfigCLIOptions::ConfigCLIOptions(QObject *parent)
 	: Super(parent)
 {
-	addOption("config").setType(QVariant::String).setNames("--config").setComment("Server config name, it is loaded from {config}[.conf] if file exists in {config-path}, deault value is {app-name}.conf");
-	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where server config fiels are searched, default value: {app-dir-path}.");
+	addOption("config").setType(QVariant::String).setNames("--config").setComment("Application config name, it is loaded from {config}[.conf] if file exists in {config-path}, deault value is {app-name}.conf");
+	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where application config fiels are searched, default value: {app-dir-path}.");
 }
 
 void ConfigCLIOptions::parse(const QStringList &cmd_line_args)

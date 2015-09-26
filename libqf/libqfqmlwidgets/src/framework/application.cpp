@@ -138,6 +138,16 @@ QJsonDocument Application::profile()
 			if(arg == QLatin1String("--profile")) {
 				QString profile_path = args.value(++i);
 				if(!profile_path.isEmpty()) {
+					if(!profile_path.contains('.'))
+						profile_path += ".profile";
+#ifdef Q_OS_UNIX
+					if(!profile_path.contains('/'))
+						profile_path = QCoreApplication::applicationDirPath() + '/' + profile_path;
+#endif
+#ifdef Q_OS_WIN
+					if(!profile_path.contains('\\'))
+						profile_path = QCoreApplication::applicationDirPath() + '/' + profile_path;
+#endif
 					QFile f(profile_path);
 					if(!f.open(QIODevice::ReadOnly)) {
 						qfError() << "Cannot open profile file" << f.fileName() << "for reading.";

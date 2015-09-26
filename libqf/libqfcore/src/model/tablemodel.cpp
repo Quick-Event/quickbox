@@ -39,6 +39,11 @@ TableModel::TableModel(QObject *parent) :
 {
 }
 
+void TableModel::clearRows()
+{
+	m_table.clearRows();
+}
+
 int TableModel::rowCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent);
@@ -415,8 +420,10 @@ QVariant TableModel::value(int row_ix, int column_ix) const
 {
 	QVariant ret;
 	int table_field_index = tableFieldIndex(column_ix);
+	//if(table_field_index < 0)
+	//	qfDebug() << "debug";
 	QF_ASSERT(table_field_index >= 0,
-			  tr("Cannot find table field for column index: %1").arg(column_ix),
+			  tr("%2 Cannot find table field for column index: %1 (row index: %3)").arg(column_ix).arg(objectName()).arg(row_ix),
 			  return ret);
 	ret = m_table.row(row_ix).value(table_field_index);
 	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
@@ -623,6 +630,9 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 {
 	qfu::Table::Field ret;
 	int table_field_index = tableFieldIndex(column_index);
+	//if(table_field_index < 0) for (int i = 0; i < columnCount(); ++i) {
+	//	qfInfo() << i << columnDefinition(i).fieldName() << columnDefinition(i).fieldIndex();
+	//}
 	QF_ASSERT(table_field_index >= 0,
 			  tr("Cannot find field index for column index: %1 of %2 columns").arg(column_index).arg(columnCount()),
 			  return ret);

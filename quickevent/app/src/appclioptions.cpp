@@ -4,6 +4,5 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	: Super(parent)
 {
 	addOption("locale").setType(QVariant::String).setNames("--locale").setComment(tr("Application locale")).setDefaultValue("system");
-	//addOption("server.host").setType(QVariant::String).setNames("-s", "--server-host").setComment(tr("EYAS server host")).setDefaultValue("localhost");
-	//addOption("server.port").setType(QVariant::Int).setNames("-p", "--server-port").setComment(tr("EYAS server port")).setDefaultValue(3745);
+	addOption("profile").setType(QVariant::String).setNames("--profile").setComment(tr("Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles"));
 }

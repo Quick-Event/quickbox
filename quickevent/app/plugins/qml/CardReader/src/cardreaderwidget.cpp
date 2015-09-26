@@ -146,6 +146,15 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	}
 }
 
+void CardReaderWidget::reset()
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_cardsModel->clearRows();
+		return;
+	}
+	reload();
+}
+
 void CardReaderWidget::reload()
 {
 	int current_stage = thisPlugin()->currentStageId();

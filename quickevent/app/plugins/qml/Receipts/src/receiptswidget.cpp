@@ -104,6 +104,15 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 }
 
+void ReceiptsWidget::reset()
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_cardsModel->clearRows();
+		return;
+	}
+	reload();
+}
+
 void ReceiptsWidget::reload()
 {
 	int current_stage = currentStageId();

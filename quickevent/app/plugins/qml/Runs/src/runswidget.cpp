@@ -127,9 +127,39 @@ void RunsWidget::lazyInit()
 {
 }
 
+void RunsWidget::reset(int class_id)
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_runsModel->clearRows();
+		return;
+	}
+	{
+		m_cbxStage->blockSignals(true);
+		m_cbxStage->clear();
+		for(int i=0; i<eventPlugin()->stageCount(); i++)
+			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
+		m_cbxStage->blockSignals(false);
+	}
+	{
+		m_cbxClasses->blockSignals(true);
+		m_cbxClasses->loadItems(true);
+		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
+		if(class_id <= 0)
+			m_cbxClasses->setCurrentIndex(1);
+		else
+			m_cbxClasses->setCurrentData(class_id);
+		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
+		m_cbxClasses->blockSignals(false);
+	}
+	reload();
+}
+
 void RunsWidget::reload()
 {
 	qfLogFuncFrame();
+	int stage_id = selectedStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("competitors", "registration, siId, note")
@@ -137,7 +167,7 @@ void RunsWidget::reload()
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
 			.where("NOT runs.offRace")
-			.where("runs.stageId=" QF_IARG(selectedStageId()))
+			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")
 			.join("competitors.classId", "classes.id")
 			.orderBy("runs.id");//.limit(10);
@@ -216,31 +246,6 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		bt->setCheckable(true);
 		connect(bt, &QPushButton::toggled, ui->frmDrawing, &QFrame::setVisible);
 	}
-}
-
-void RunsWidget::reset(int class_id)
-{
-	{
-		m_cbxStage->blockSignals(true);
-		m_cbxStage->clear();
-		for(int i=0; i<eventPlugin()->stageCount(); i++)
-			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
-		m_cbxStage->blockSignals(false);
-	}
-	{
-		m_cbxClasses->blockSignals(true);
-		m_cbxClasses->loadItems(true);
-		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
-		if(class_id <= 0)
-			m_cbxClasses->setCurrentIndex(1);
-		else
-			m_cbxClasses->setCurrentData(class_id);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
-		m_cbxClasses->blockSignals(false);
-	}
-	reload();
 }
 
 static bool list_length_greater_than(const QList<int> &lst1, const QList<int> &lst2)

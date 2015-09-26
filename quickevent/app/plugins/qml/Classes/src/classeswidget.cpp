@@ -44,6 +44,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	{
 		ui->tblClassesTB->setTableView(ui->tblClasses);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
+		m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
@@ -64,6 +65,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	{
 		ui->tblCourseCodesTB->setTableView(ui->tblCourseCodes);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
+		m->setObjectName("classes.coursesModel");
 		m->addColumn("coursecodes.position", tr("Pos")).setReadOnly(true);
 		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
 		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order"));
@@ -120,16 +122,19 @@ void ClassesWidget::reset()
 		m_cbxStage->clear();
 		for(int i=0; i<eventPlugin()->stageCount(); i++)
 			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
 		m_cbxStage->blockSignals(false);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
 	}
 	reload();
 }
 
 void ClassesWidget::reload()
 {
-	//qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	//Event::EventPlugin *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_classesModel->clearRows();
+		m_courseCodesModel->clearRows();
+		return;
+	}
 	int stage_id = selectedStageId();
 	{
 		qf::core::sql::QueryBuilder qb1;
@@ -159,7 +164,7 @@ void ClassesWidget::reload()
 	}
 	{
 		qf::core::sql::Query q(m_classesModel->sqlConnection());
-		q.exec("SELECT COUNT(*) FROM classdefs WHERE stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+		q.exec("SELECT COUNT(*) FROM classdefs WHERE stageId=" QF_IARG(stage_id));
 		bool ro = true;
 		if(q.next())
 			ro = (q.value(0).toInt() == 0);

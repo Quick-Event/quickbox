@@ -17,6 +17,7 @@ public:
 	CLIOPTION_GETTER_SETTER2(QString, "server.host", s, setS, erverHost)
 	CLIOPTION_GETTER_SETTER2(int, "server.port", s, setS, erverPort)
 	CLIOPTION_GETTER_SETTER(QString, l, setL, ocale)
+	CLIOPTION_GETTER_SETTER(QString, p, setP, rofile)
 };
 
 #endif // APPCLIOPTIONS_H

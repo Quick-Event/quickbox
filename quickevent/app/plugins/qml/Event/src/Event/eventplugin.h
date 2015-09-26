@@ -49,7 +49,7 @@ public:
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
-	int stageCount() {return eventConfig()->stageCount();}
+	int stageCount();
 
 	Q_SLOT void setCurrentStageId(int stage_id);
 	int currentStageId();
@@ -66,6 +66,7 @@ public:
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 	Q_SLOT void exportEvent();
+	Q_SLOT void importEvent();
 
 	Q_SIGNAL void reloadDataRequest();
 
@@ -103,6 +104,7 @@ private:
 	qf::qmlwidgets::Action *m_actOpenEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditEvent = nullptr;
 	qf::qmlwidgets::Action *m_actExportEvent = nullptr;
+	qf::qmlwidgets::Action *m_actImportEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditStage = nullptr;
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;

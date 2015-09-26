@@ -118,6 +118,7 @@ public:
 	typedef QList<ColumnDefinition> ColumnList;
 
 public:
+	void clearRows();
 	void clearColumns();
 	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString()) {
 		return insertColumn(m_columns.count(), field_name, caption);

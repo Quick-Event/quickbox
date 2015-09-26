@@ -245,7 +245,7 @@ public:
 	//static TableRow nullRow() {return TableRow::sharedNull();}
 public:
 	//! Clear all except column definitions.
-	void clearData() {cleanupData(ClearRows);}
+	void clearRows() {cleanupData(ClearRows);}
 	//! frees all allocated resources (fields, columns, rows, indexes, etc.)
 	void clear() {cleanupData(ClearFieldsRows);}
 

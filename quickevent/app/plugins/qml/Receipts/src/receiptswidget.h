@@ -42,7 +42,7 @@ public:
 
 	void settleDownInPartWidget(ReceiptsPartWidget *part_widget);
 
-	Q_SLOT void reset() {reload();}
+	Q_SLOT void reset();
 	Q_SLOT void reload();
 private slots:
 	void on_btPrinterOptions_clicked();

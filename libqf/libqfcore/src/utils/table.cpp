@@ -1419,7 +1419,7 @@ QVariantList Table::dataToVariantList() const
 
 void Table::dataFromVariantList(const QVariantList &_lst)
 {
-	clearData();
+	clearRows();
 	foreach(QVariant _v, _lst) {
 		QVariantList lst = _v.toList();
 		TableRow r(tableProperties());

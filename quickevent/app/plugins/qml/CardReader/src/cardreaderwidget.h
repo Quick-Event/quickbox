@@ -63,7 +63,7 @@ public:
 
 	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
 
-	Q_SLOT void reset() {reload();}
+	Q_SLOT void reset();
 	Q_SLOT void reload();
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);

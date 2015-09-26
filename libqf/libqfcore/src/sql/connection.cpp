@@ -898,6 +898,7 @@ bool Connection::setCurrentSchema(const QString &schema_name)
 {
 	qfLogFuncFrame() << schema_name;
 	bool ret = true;
+	s_clearCache(connectionName());
 	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		if(!q.exec("USE " + schema_name)) {

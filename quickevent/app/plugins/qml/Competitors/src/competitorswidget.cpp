@@ -89,6 +89,11 @@ void CompetitorsWidget::lazyInit()
 
 void CompetitorsWidget::reset()
 {
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_competitorsModel->clearRows();
+		return;
+	}
+	reload();
 	{
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);
