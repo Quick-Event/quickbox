@@ -370,7 +370,7 @@ QStringList EventPlugin::existingSqlEventNames() const
 	return event_names;
 }
 
-QStringList EventPlugin::existingFileEventNames(const QString &dir) const
+QStringList EventPlugin::existingFileEventNames(const QString &_dir) const
 {
 	/*
 	QStringList ret;
@@ -381,6 +381,11 @@ QStringList EventPlugin::existingFileEventNames(const QString &dir) const
 	}
 	return ret;
 	*/
+	QString dir = _dir;
+	if(dir.isEmpty()) {
+		ConnectionSettings connection_settings;
+		dir = connection_settings.singleWorkingDir();
+	}
 	QDir working_dir(dir);
 	QStringList event_names = working_dir.entryList(QStringList() << ('*' + QBE_EXT), QDir::Files | QDir::Readable, QDir::Name);
 	for (int i = 0; i < event_names.count(); ++i) {
@@ -477,28 +482,44 @@ static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines
 	return true;
 }
 
-bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &event_params)
+bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &event_params)
 {
 	qfLogFuncFrame();
 	closeEvent();
-	bool ok = false;
+
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	qfd::Dialog dlg(fwk);
-	dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-	EventDialogWidget *event_w = new EventDialogWidget();
-	event_w->setEventId(_event_name);
-	event_w->loadParams(event_params);
-	dlg.setCentralWidget(event_w);
-	if(!dlg.exec())
-		return false;
+	EventPlugin::ConnectionType connection_type = connectionType();
+	QStringList existing_event_ids;
+	if(connection_type == ConnectionType::SingleFile)
+		existing_event_ids = existingFileEventNames();
+	else
+		existing_event_ids = existingSqlEventNames();
+	QString event_id = event_name;
+	QVariantMap new_params = event_params;
+	do {
+		qfd::Dialog dlg(fwk);
+		dlg.setButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+		EventDialogWidget *event_w = new EventDialogWidget();
+		event_w->setEventId(event_id);
+		event_w->loadParams(new_params);
+		dlg.setCentralWidget(event_w);
+		if(!dlg.exec())
+			return false;
 
-	QString event_name = event_w->eventId();
-	if(event_name.isEmpty()) {
-		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Event ID cannot be empty."));
-		return false;
-	}
+		event_id = event_w->eventId();
+		new_params = event_w->saveParams();
+		if(event_id.isEmpty()) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Event ID cannot be empty."));
+			continue;
+		}
+		if(existing_event_ids.contains(event_id)) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Event ID %1 exists already.").arg(event_id));
+			continue;
+		}
+		break;
+	} while(true);
 
-	QVariantMap new_params = event_w->saveParams();
+	bool ok = false;
 	Event::EventConfig event_config;
 	//ConnectionSettings connection_settings;
 	event_config.setValue("event", new_params);
@@ -508,19 +529,18 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 	qfInfo() << "createEvent, stage_count:" << stage_count;
 	QF_ASSERT(stage_count > 0, "Stage count have to be greater than 0", return false);
 
-	qfInfo() << "will create:" << event_name;
-	EventPlugin::ConnectionType connection_type = connectionType();
+	qfInfo() << "will create:" << event_id;
 	qfs::Connection conn = qfs::Connection::forName();
 	//QF_ASSERT(conn.isOpen(), "Connection is not open", return false);
 	if(connection_type == ConnectionType::SingleFile) {
-		QString event_fn = eventNameToFileName(event_name);
+		QString event_fn = eventNameToFileName(event_id);
 		conn.close();
 		conn.setDatabaseName(event_fn);
 		conn.open();
 	}
 	if(conn.isOpen()) {
 		QVariantMap create_options;
-		create_options["schemaName"] = event_name;
+		create_options["schemaName"] = event_id;
 		create_options["driverName"] = conn.driverName();
 
 		QVariant ret_val;
@@ -539,7 +559,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 			qfDebug() << "creating stages:" << stage_count;
 			QString stage_table_name = "stages";
 			if(connection_type == ConnectionType::SqlServer)
-				stage_table_name = event_name + '.' + stage_table_name;
+				stage_table_name = event_id + '.' + stage_table_name;
 			q.prepare("INSERT INTO " + stage_table_name + " (id) VALUES (:id)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":id", i+1);
@@ -550,7 +570,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 			}
 			if(!ok)
 				break;
-			conn.setCurrentSchema(event_name);
+			conn.setCurrentSchema(event_id);
 			event_config.save();
 			transaction.commit();
 		} while(false);
@@ -562,7 +582,7 @@ bool EventPlugin::createEvent(const QString &_event_name, const QVariantMap &eve
 		qfd::MessageBox::showError(fwk, tr("Cannot create event, database is not open: %1").arg(conn.lastError().text()));
 	}
 	if(ok) {
-		ok = openEvent(event_name);
+		ok = openEvent(event_id);
 	}
 	return ok;	
 }
@@ -589,6 +609,7 @@ bool EventPlugin::closeEvent()
 {
 	qfLogFuncFrame();
 	setEventName(QString());
+	QF_SAFE_DELETE(m_eventConfig);
 	emit eventOpened(eventName()); //comment it till QE can load event with invalid name
 	return true;
 }

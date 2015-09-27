@@ -41,7 +41,11 @@ TableModel::TableModel(QObject *parent) :
 
 void TableModel::clearRows()
 {
-	m_table.clearRows();
+	if(rowCount() > 0) {
+		beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+		m_table.clearRows();
+		endRemoveRows();
+	}
 }
 
 int TableModel::rowCount(const QModelIndex &parent) const

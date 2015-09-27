@@ -21,6 +21,17 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	setQueryBuilder(qb);
 }
 
+QString CompetitorDocument::safeSave(bool save_siid_to_runs)
+{
+	try {
+		m_saveSiidToRuns = save_siid_to_runs;
+		save();
+	} catch (qf::core::Exception &e) {
+		return e.message();
+	}
+	return QString();
+}
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -49,12 +60,15 @@ bool CompetitorDocument::saveData()
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
-				if(si_id > 0)
+				if(si_id > 0 && m_saveSiidToRuns)
 					q.bindValue(":siId", si_id);
+				q.exec(qf::core::Exception::Throw);
+				/*
 				if(!q.exec()) {
 					qfError() << q.lastError().text();
 					//break; can be succesfull in other stages
 				}
+				*/
 			}
 		}
 		else if(old_mode == DataDocument::ModeEdit) {

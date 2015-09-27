@@ -738,11 +738,9 @@ TableRow& Table::rowRef(int ri)
 TableRow Table::row(int ri) const
 {
 	TableRow ret;
-	/*
 	if(!isValidRowIndex(ri)) {
 		qfDebug() << "invalid row";
 	}
-	*/
 	QF_ASSERT(isValidRowIndex(ri),
 			  QString("row: %1 is out of range of rows (%2)").arg(ri).arg(d->rows.size()),
 			  return ret);

@@ -55,6 +55,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	m_runsModel = new quickevent::og::SqlTableModel(this);
 	m_runsModel->addColumn("runs.offRace", tr("Off", "runs.offRace")).setToolTip(tr("Off race in this stage"));
 	m_runsModel->addColumn("runs.stageId", tr("Stage")).setReadOnly(true);
+	m_runsModel->addColumn("runs.siid", tr("SI")).setReadOnly(false);
 	m_runsModel->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m_runsModel->addColumn("runs.timeMs", tr("Time"))
 			.setCastType(qMetaTypeId<quickevent::og::TimeMs>());

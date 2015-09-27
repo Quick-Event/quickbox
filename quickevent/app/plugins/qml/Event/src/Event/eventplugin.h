@@ -61,7 +61,7 @@ public:
 	StageData stageData(int stage_id);
 	Q_SLOT void clearStageDataCache();
 
-	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
+	Q_SLOT bool createEvent(const QString &event_name = QString(), const QVariantMap &event_params = QVariantMap());
 	Q_SLOT void editEvent();
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
@@ -87,7 +87,7 @@ private:
 
 	ConnectionType connectionType() const;
 	QStringList existingSqlEventNames() const;
-	QStringList existingFileEventNames(const QString &dir) const;
+	QStringList existingFileEventNames(const QString &dir = QString()) const;
 
 	Q_SLOT void onInstalled();
 	Q_SLOT void onEventOpened();
