@@ -107,6 +107,8 @@ QVariant CLIOptions::value(const QString &name) const
 	QVariant ret = opt.value();
 	if(!ret.isValid())
 		ret = opt.defaultValue();
+	if(!ret.isValid())
+		ret = QVariant(opt.type());
 	return ret;
 }
 
