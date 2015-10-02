@@ -11,7 +11,6 @@
 
 #include <iostream>
 
-
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("QuickBox");
@@ -23,6 +22,7 @@ int main(int argc, char *argv[])
 		if(argv[i] == QLatin1String("--log-file"))
 			o_log_file = argv[i + 1];
 	}
+	//o_log_file = "c:\\temp\\QE.log";
 
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
 	file_log_device->setFile(o_log_file);

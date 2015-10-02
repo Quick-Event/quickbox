@@ -214,7 +214,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 
 QPair<QString, QString> CLIOptions::applicationDirAndName() const
 {
-	QPair<QString, QString> ret;
+	QString app_dir;
+	QString app_name;
 	if(m_allArgs.size()) {
 		QString arg0 = m_allArgs[0];
 #ifdef Q_OS_WIN
@@ -222,10 +223,14 @@ QPair<QString, QString> CLIOptions::applicationDirAndName() const
 #else
 		QChar sep = '/';
 #endif
-		ret.first = arg0.section(sep, 0, -2);
-		ret.second = arg0.section(sep, -1);
+		app_dir = arg0.section(sep, 0, -2);
+		app_name = arg0.section(sep, -1);
+#ifdef Q_OS_WIN
+		if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
+			app_name = app_name.mid(0, app_name.length() - 4);
+#endif
 	}
-	return ret;
+	return QPair<QString, QString>(app_dir, app_name);
 }
 
 QString CLIOptions::applicationDir() const
@@ -310,7 +315,7 @@ bool ConfigCLIOptions::loadConfigFile()
 	if(config_dir.isEmpty())
 		config_dir = applicationDir();
 	QString config_file = config();
-	qfInfo() << "config:" << config_file << "config-dir:" << config_dir;
+	qfInfo() << "config-file:" << config_file << "config-dir:" << config_dir;
 	if(!config_file.isEmpty()) {
 		if(!config_file.contains('.'))
 			config_file += ".conf";
