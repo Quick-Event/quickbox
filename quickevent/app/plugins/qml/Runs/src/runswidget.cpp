@@ -7,6 +7,7 @@
 
 #include <Event/eventplugin.h>
 
+#include <quickevent/og/siid.h>
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
@@ -73,7 +74,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	m->addColumn("competitors.siId", tr("SI"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg"));
-	m->addColumn("runs.siId", tr("SI"));
+	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	//m->addColumn("virtual.finishTimeMs", tr("Finish")).setVirtual(true, qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());

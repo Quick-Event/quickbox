@@ -1,6 +1,8 @@
 #include "sqltablemodel.h"
 #include "timems.h"
 
+#include <quickevent/og/siid.h>
+
 #include <qf/core/log.h>
 
 #include <QMetaType>
@@ -24,6 +26,12 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 		if(type == qMetaTypeId<TimeMs>()) {
 			TimeMs t = v.value<TimeMs>();
 			return t.toString();
+		}
+		else if(type == qMetaTypeId<SiId>()) {
+			int id = (int)v.value<SiId>();
+			if(id == 0)
+				return QString();// QStringLiteral("null");
+			return id;
 		}
 	}
 	else if(role == SortRole) {
@@ -55,6 +63,10 @@ QVariant SqlTableModel::rawValueToEdit(int column_index, const QVariant &val) co
 		}
 		ret = QVariant::fromValue(t);
 	}
+	else if(type == qMetaTypeId<SiId>()) {
+		quickevent::og::SiId id(val.toInt());
+		ret = QVariant::fromValue(id);
+	}
 	return ret;
 }
 
@@ -66,5 +78,13 @@ QVariant SqlTableModel::editValueToRaw(int column_index, const QVariant &val) co
 		TimeMs t = val.value<TimeMs>();
 		ret = t.msec();
 	}
+	else if(type == qMetaTypeId<SiId>()) {
+		auto id = (int)val.value<SiId>();
+		if(id == 0)
+			ret = QVariant(QVariant::Int);
+		else
+			ret = id;
+	}
+	qfInfo() << val << ret;
 	return ret;
 }

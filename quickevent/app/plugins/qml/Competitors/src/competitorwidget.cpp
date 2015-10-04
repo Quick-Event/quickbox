@@ -12,6 +12,7 @@
 #include <quickevent/og/timems.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/sql/dbenum.h>
@@ -102,7 +103,12 @@ void CompetitorWidget::loadRunsTable()
 void CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
-	m_runsModel->postAll(false);
+	try {
+		m_runsModel->postAll(true);
+	}
+	catch (qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+	}
 }
 
 void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
