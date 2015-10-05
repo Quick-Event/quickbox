@@ -158,7 +158,7 @@ QtObject {
 	function exportIofXml(file_path)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId());
+		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId);
 
 		var tt1 = currentStageTable();
 		var result_list = ['ResultList', {"status": "complete"}];
