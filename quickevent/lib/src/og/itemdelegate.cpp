@@ -1,33 +1,13 @@
 #include "itemdelegate.h"
 #include "timeedit.h"
 #include "siid.h"
+#include "siidedit.h"
 
 #include <QItemEditorFactory>
 #include <QSpinBox>
 
 namespace quickevent {
 namespace og {
-
-namespace {
-class SpinBox : public QSpinBox
-{
-	Q_OBJECT
-
-	Q_PROPERTY(quickevent::og::SiId siid READ siid WRITE setSiid USER true)
-private:
-	typedef QSpinBox Super;
-public:
-	SpinBox(QWidget *parent = nullptr)
-		: Super(parent)
-	{
-		setMaximum(999999999);
-		setMinimum(0);
-	}
-
-	SiId siid() const {return SiId(value());}
-	void setSiid(SiId id) {setValue((int)id);}
-};
-}
 
 ItemDelegate::ItemDelegate(qf::qmlwidgets::TableView *parent)
 	: Super(parent)
@@ -42,7 +22,7 @@ ItemDelegate::ItemDelegate(qf::qmlwidgets::TableView *parent)
 		fact->registerEditor(qMetaTypeId<TimeMs>(), creator);
 	}
 	{
-		auto creator = new QStandardItemEditorCreator<SpinBox>();
+		auto creator = new QStandardItemEditorCreator<SiIdEdit>();
 		fact->registerEditor(qMetaTypeId<SiId>(), creator);
 	}
 }
@@ -56,4 +36,4 @@ ItemDelegate::~ItemDelegate()
 }
 }
 
-#include "itemdelegate.moc"
+//#include "itemdelegate.moc"

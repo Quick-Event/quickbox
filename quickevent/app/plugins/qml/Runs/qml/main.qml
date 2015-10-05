@@ -227,8 +227,8 @@ RunsPlugin {
 			reportModel.reload();
 			var ttd = reportModel.toTreeTableData();
 			tt.addTable(i, ttd);
-		return tt;
 		}
+		return tt;
 	}
 
 	function startListStartersTable(class_letter)

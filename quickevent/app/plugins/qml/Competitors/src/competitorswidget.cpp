@@ -5,6 +5,8 @@
 
 #include "Event/eventplugin.h"
 
+#include <quickevent/og/siid.h>
+
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -44,7 +46,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg")).setReadOnly(true);
-	m->addColumn("siId", tr("SI")).setReadOnly(true);
+	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;

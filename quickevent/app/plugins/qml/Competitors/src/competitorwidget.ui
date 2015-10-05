@@ -17,7 +17,7 @@
    <item row="3" column="2">
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>C&amp;ountry</string>
+      <string>Co&amp;untry</string>
      </property>
      <property name="buddy">
       <cstring>lineEdit_7</cstring>
@@ -27,7 +27,7 @@
    <item row="1" column="3">
     <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_3">
      <property name="dataId" stdset="0">
-      <string>competitors.lastName</string>
+      <string notr="true">competitors.lastName</string>
      </property>
     </widget>
    </item>
@@ -37,14 +37,14 @@
       <string>&amp;SI</string>
      </property>
      <property name="buddy">
-      <cstring>lineEdit</cstring>
+      <cstring>spinBox</cstring>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>&amp;First name</string>
+      <string>First na&amp;me</string>
      </property>
      <property name="buddy">
       <cstring>lineEdit_2</cstring>
@@ -54,14 +54,14 @@
    <item row="3" column="3">
     <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_7">
      <property name="dataId" stdset="0">
-      <string>competitors.country</string>
+      <string notr="true">competitors.country</string>
      </property>
     </widget>
    </item>
    <item row="3" column="1">
     <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_6">
      <property name="dataId" stdset="0">
-      <string>competitors.club</string>
+      <string notr="true">competitors.club</string>
      </property>
     </widget>
    </item>
@@ -105,7 +105,7 @@
    <item row="2" column="3">
     <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_5">
      <property name="dataId" stdset="0">
-      <string>competitors.licence</string>
+      <string notr="true">competitors.licence</string>
      </property>
     </widget>
    </item>
@@ -139,16 +139,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="qf::qmlwidgets::LineEdit" name="lineEdit">
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="dataId" stdset="0">
-      <string>competitors.siId</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
@@ -162,21 +152,21 @@
    <item row="4" column="1" colspan="3">
     <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_8">
      <property name="dataId" stdset="0">
-      <string>competitors.note</string>
+      <string notr="true">competitors.note</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1">
     <widget class="qf::qmlwidgets::ForeignKeyComboBox" name="cbxClass">
      <property name="dataId" stdset="0">
-      <string>competitors.classId</string>
+      <string notr="true">competitors.classId</string>
      </property>
     </widget>
    </item>
    <item row="1" column="1">
     <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_2">
      <property name="dataId" stdset="0">
-      <string>competitors.firstName</string>
+      <string notr="true">competitors.firstName</string>
      </property>
     </widget>
    </item>
@@ -188,7 +178,7 @@
      <item>
       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_4">
        <property name="dataId" stdset="0">
-        <string>competitors.registration</string>
+        <string notr="true">competitors.registration</string>
        </property>
       </widget>
      </item>
@@ -217,6 +207,16 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="3">
+    <widget class="quickevent::og::SiIdEdit" name="spinBox">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">competitors.siId</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -235,10 +235,14 @@
    <extends>QTableView</extends>
    <header location="global">qf/qmlwidgets/tableview.h</header>
   </customwidget>
+  <customwidget>
+   <class>quickevent::og::SiIdEdit</class>
+   <extends>QSpinBox</extends>
+   <header location="global">quickevent/og/siidedit.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cbxClass</tabstop>
-  <tabstop>lineEdit</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>
   <tabstop>lineEdit_4</tabstop>
