@@ -151,8 +151,8 @@ int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
 	int ret = 0;
 	qf::core::sql::Query q;
 	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId)"
-							 " VALUES (:siId, :code, :code, :punchTime, :punchMs, :runId, :stageId)")
-			  , qf::core::Exception::Throw);
+							 " VALUES (:siId, :code, :punchTime, :punchMs, :runId, :stageId)")
+							, qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":siId"), punch_record.cardNumber());
 	q.bindValue(QStringLiteral(":code"), punch_record.code());
 	q.bindValue(QStringLiteral(":punchTime"), punch_record.time());
@@ -228,6 +228,26 @@ bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 	catch (const qf::core::Exception &e) {
 		qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
 	}
+	return false;
+}
+
+bool CardReaderPlugin::reloadTimesFromCard(int run_id)
+{
+	/*
+	if(run_id) {
+		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
+		if(thisPlugin()->updateRunLapsSql(checked_card)) {
+			qf::core::sql::Query q;
+			try {
+				q.exec("UPDATE cards SET runId=" QF_IARG(run_id) " WHERE id=" QF_IARG(card_id), qf::core::Exception::Throw);
+				ui->tblCards->reloadRow();
+			}
+			catch (const qf::core::Exception &e) {
+				qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
+			}
+		}
+	}
+	*/
 	return false;
 }
 

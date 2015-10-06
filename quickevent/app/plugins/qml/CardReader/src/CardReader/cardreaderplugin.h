@@ -46,6 +46,8 @@ public:
 	int savePunchRecordToSql(const PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
 	bool updateRunLapsSql(const CheckedCard &checked_card);
+
+	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();

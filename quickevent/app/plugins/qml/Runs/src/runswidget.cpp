@@ -390,18 +390,12 @@ void RunsWidget::on_btDraw_clicked()
 							qfDebug() << "loss:" << loss_ms;
 							handicap_times << loss_ms;
 						}
-						//else {
-						//	handicap_times << handicap_length_ms + (++n);
-						//}
 					}
 				}
 				runners_draw_ids << competitor_to_run.values();
 			}
 			else if(draw_method == DrawMethod::StageReverseOrder) {
 				QMap<int, int> competitor_to_run = competitorsForClass(stage_id, class_id);
-				//for(auto i : orig_lst)
-				//	qfDebug() << "A:" << i;
-				//runners_draw_ids.clear();
 				qf::core::sql::QueryBuilder qb1;
 				qb1.select2("runs", "competitorId")
 						//.select2("competitors", "lastName")
@@ -413,15 +407,12 @@ void RunsWidget::on_btDraw_clicked()
 				q.exec(qb1.toString(), qf::core::Exception::Throw);
 				while(q.next()) {
 					int competitor_id = q.value("competitorId").toInt();
-					//qfDebug() << competitor_id << q.value("lastName").toString();
 					if(competitor_to_run.contains(competitor_id)) {
 						//qfDebug() << "\t adding to poll";
 						runners_draw_ids << competitor_to_run.take(competitor_id);
 					}
 				}
 				runners_draw_ids << competitor_to_run.values();
-				//for(auto i : runners_draw_ids)
-				//	qfDebug() << "B:" << i;
 			}
 			else if(draw_method == DrawMethod::EquidistantClubs || draw_method == DrawMethod::RandomizedEquidistantClubs) {
 				QMap<int, QString> runner_id_to_club;
@@ -585,12 +576,13 @@ int RunsWidget::selectedStageId()
 void RunsWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_load_card(tr("Load times from card"), nullptr);
+	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_load_card;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
+		//for(int ix : ui->tblRuns->selectedRowsIndexes()) {  }
 	}
 }
 
