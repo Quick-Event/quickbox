@@ -23,6 +23,9 @@
 #include <QSqlRecord>
 #include <QPrinterInfo>
 
+//#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/timescope.h>
+
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 
@@ -91,6 +94,7 @@ ReceiptsPrinter *ReceiptsPlugin::receiptsPrinter()
 QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
+	QF_TIME_SCOPE("receiptTablesData()");
 	QVariantMap ret;
 	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(card_id);
 	int current_stage_id = eventPlugin()->currentStageId();
@@ -290,6 +294,7 @@ void ReceiptsPlugin::previewReceipt(int card_id)
 
 bool ReceiptsPlugin::printReceipt(int card_id)
 {
+	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
 	try {
 		printReceipt_classic(card_id);
 		return true;

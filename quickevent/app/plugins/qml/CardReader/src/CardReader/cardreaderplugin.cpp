@@ -18,7 +18,7 @@
 #include <QMetaObject>
 #include <QSqlRecord>
 
-#define QF_TIMESCOPE_ENABLED
+//#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
 
 namespace qff = qf::qmlwidgets::framework;

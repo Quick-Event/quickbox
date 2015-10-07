@@ -11,6 +11,9 @@
 #include <QPrinter>
 #include <QPrinterInfo>
 
+//#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/timescope.h>
+
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 
@@ -31,10 +34,12 @@ static Receipts::ReceiptsPlugin *receiptsPlugin()
 void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
 {
 	qfLogFuncFrame();
+	QF_TIME_SCOPE("ReceiptsPrinter::printReceipt()");
 	const ReceiptsPrinterOptions &printer_opts = m_printerOptions;
 	QPrinter *printer = nullptr;
 	QPaintDevice *paint_device = nullptr;
 	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+		QF_TIME_SCOPE("init graphics printer");
 		QPrinterInfo pi = QPrinterInfo::printerInfo(printer_opts.graphicsPrinterName());
 		if(pi.isNull()) {
 			for(auto s : QPrinterInfo::availablePrinterNames()) {
@@ -56,15 +61,27 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		paint_device = fwk;
 	}
 	qf::qmlwidgets::reports::ReportProcessor rp(paint_device);
-	rp.setReport(report_file_name);
-	for(auto key : report_data.keys()) {
-		rp.setTableData(key, report_data.value(key));
+	{
+		QF_TIME_SCOPE("setting report and data");
+		rp.setReport(report_file_name);
+		for(auto key : report_data.keys()) {
+			rp.setTableData(key, report_data.value(key));
+		}
 	}
 	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
-		rp.process();
-		qf::qmlwidgets::reports::ReportItemMetaPaintReport *doc = rp.processorOutput();
+		QF_TIME_SCOPE("process graphics");
+		{
+			QF_TIME_SCOPE("process report");
+			rp.process();
+		}
+		qf::qmlwidgets::reports::ReportItemMetaPaintReport *doc;
+		{
+			QF_TIME_SCOPE("getting processor output");
+			doc = rp.processorOutput();
+		}
 		qf::qmlwidgets::reports::ReportItemMetaPaint *it = doc->child(0);
 		if(it) {
+			QF_TIME_SCOPE("draw meta-paint");
 			qf::qmlwidgets::reports::ReportPainter painter(paint_device);
 			painter.drawMetaPaint(it);
 		}
