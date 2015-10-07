@@ -11,10 +11,15 @@
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
 #include <qf/core/sql/query.h>
+#include <qf/core/sql/connection.h>
+#include <qf/core/sql/transaction.h>
 
 #include <QJSValue>
 #include <QMetaObject>
 #include <QSqlRecord>
+
+#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/timescope.h>
 
 namespace qff = qf::qmlwidgets::framework;
 
@@ -57,21 +62,6 @@ QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProp
 	return QQmlListProperty<CardReader::CardChecker>(this, m_cardCheckers);
 }
 
-CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
-{
-	qf::core::sql::Query q;
-	if(q.exec("SELECT * FROM cards WHERE id=" QF_IARG(card_id))) {
-		if(q.next()) {
-			ReadCard rc(q.record());
-			if(run_id > 0)
-				rc.setRunId(run_id);
-			return checkCard(rc);
-		}
-	}
-	qfWarning() << "Cannot find card record for id:" << card_id;
-	return CheckedCard();
-}
-
 CardChecker *CardReaderPlugin::currentCardChecker()
 {
 	auto ret = m_cardCheckers.value(currentCardCheckerIndex());
@@ -100,8 +90,26 @@ int CardReaderPlugin::findRunId(int si_id)
 	return ret;
 }
 
+CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id << "card id:" << card_id;
+	qf::core::sql::Query q;
+	if(q.exec("SELECT * FROM cards WHERE id=" QF_IARG(card_id))) {
+		if(q.next()) {
+			ReadCard rc(q.record());
+			if(run_id > 0)
+				rc.setRunId(run_id);
+			return checkCard(rc);
+		}
+	}
+	qfWarning() << "Cannot find card record for id:" << card_id;
+	return CheckedCard();
+}
+
 CardReader::CheckedCard CardReaderPlugin::checkCard(const ReadCard &read_card)
 {
+	qfLogFuncFrame();
+	QF_TIME_SCOPE("checkCard()");
 	//updateRunLapsSql(card, run_id);
 	CardReader::CardChecker *chk = currentCardChecker();
 	QF_ASSERT(chk != nullptr, "CardChecker is NULL", return CardReader::CheckedCard());
@@ -114,6 +122,7 @@ CardReader::CheckedCard CardReaderPlugin::checkCard(const ReadCard &read_card)
 	QVariantMap m = v.toMap();
 	CardReader::CheckedCard cc(m);
 	cc.setCardNumber(read_card.cardNumber());
+	//cc.setCardId(read_card.cardId());
 	return cc;
 }
 
@@ -168,15 +177,22 @@ int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
 	return ret;
 }
 
-bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_card)
+bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard &checked_card)
 {
-	qf::core::sql::Query q;
+	QF_TIME_SCOPE("updateCheckedCardValuesSql()");
 	int run_id = checked_card.runId();
+	//int card_id = checked_card.cardId();
 	if(run_id <= 0)
 		return false;
+	auto cc = qf::core::sql::Connection::forName();
+	qf::core::sql::Query q(cc);
 	try {
+		qf::core::sql::Transaction transaction(cc);
 		{
-			q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
+			{
+				QF_TIME_SCOPE("delete from runlaps");
+				q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
+			}
 			q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 			//q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 			auto punch_list = checked_card.punches();
@@ -221,9 +237,11 @@ bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 			q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
 			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 			q.exec(qf::core::Exception::Throw);
-			if(q.numRowsAffected() == 1)
-				return true;
+			if(q.numRowsAffected() != 1)
+				return false;
 		}
+		transaction.commit();
+		return true;
 	}
 	catch (const qf::core::Exception &e) {
 		qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
@@ -231,23 +249,42 @@ bool CardReaderPlugin::updateRunLapsSql(const CardReader::CheckedCard &checked_c
 	return false;
 }
 
+bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
+{
+	QF_TIME_SCOPE("saveCardAssignedRunnerIdSql()");
+	auto cc = qf::core::sql::Connection::forName();
+	qf::core::sql::Query q(cc);
+	QString now = QStringLiteral("now()");
+	if(cc.driverName().endsWith("SQLITE", Qt::CaseInsensitive))
+		now = QStringLiteral("CURRENT_TIMESTAMP");
+	bool ret = q.exec("UPDATE cards SET runId=" QF_IARG(run_id) ", runIdAssignTS=" + now + " WHERE id=" QF_IARG(card_id), !qf::core::Exception::Throw);
+	return ret;
+}
+
 bool CardReaderPlugin::reloadTimesFromCard(int run_id)
 {
-	/*
-	if(run_id) {
-		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
-		if(thisPlugin()->updateRunLapsSql(checked_card)) {
-			qf::core::sql::Query q;
-			try {
-				q.exec("UPDATE cards SET runId=" QF_IARG(run_id) " WHERE id=" QF_IARG(card_id), qf::core::Exception::Throw);
-				ui->tblCards->reloadRow();
+	qfLogFuncFrame() << "run id:" << run_id;
+	QF_TIME_SCOPE("reloadTimesFromCard()");
+	if(!run_id)
+		return false;
+	int card_id = 0;
+	{
+		qf::core::sql::Query q;
+		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS LIMIT 1")) {
+			if(q.next()) {
+				card_id = q.value(0).toInt();
 			}
-			catch (const qf::core::Exception &e) {
-				qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
+			else {
+				qfWarning() << "Cannot find card record for run id:" << run_id;
 			}
 		}
 	}
-	*/
+	if(card_id == 0)
+		return false;
+	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
+	if(updateCheckedCardValuesSql(checked_card))
+		if(saveCardAssignedRunnerIdSql(card_id, run_id))
+			return true;
 	return false;
 }
 

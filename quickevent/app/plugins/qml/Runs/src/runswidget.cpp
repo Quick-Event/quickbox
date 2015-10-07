@@ -581,8 +581,23 @@ void RunsWidget::onCustomContextMenuRequest(const QPoint &pos)
 	lst << &a_load_card;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
-		qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
-		//for(int ix : ui->tblRuns->selectedRowsIndexes()) {  }
+		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		qf::qmlwidgets::framework::Plugin *cardreader_plugin = fwk->plugin("CardReader");
+		if(!cardreader_plugin) {
+			qfError() << "CardReader plugin not installed!";
+			return;
+		}
+		for(int ix : ui->tblRuns->selectedRowsIndexes()) {
+			int run_id = ui->tblRuns->tableRow(ix).value(QStringLiteral("runs.id")).toInt();
+			bool ok;
+			QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
+			                          Q_RETURN_ARG(bool, ok),
+			                          Q_ARG(int, run_id));
+			//QF_ASSERT(ok == true, "reloadTimesFromCard error!", break);
+			if(ok)
+				ui->tblRuns->reloadRow(ix);
+		}
 	}
 }
 

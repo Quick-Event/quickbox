@@ -358,7 +358,7 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(run_id) {
 		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
-		thisPlugin()->updateRunLapsSql(checked_card);
+		thisPlugin()->updateCheckedCardValuesSql(checked_card);
 	}
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
@@ -457,15 +457,9 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 			int run_id = r.value("runs.id").toInt();
 			if(run_id) {
 				CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
-				if(thisPlugin()->updateRunLapsSql(checked_card)) {
-					qf::core::sql::Query q;
-					try {
-						q.exec("UPDATE cards SET runId=" QF_IARG(run_id) " WHERE id=" QF_IARG(card_id), qf::core::Exception::Throw);
+				if(thisPlugin()->updateCheckedCardValuesSql(checked_card)) {
+					if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
 						ui->tblCards->reloadRow();
-					}
-					catch (const qf::core::Exception &e) {
-						qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
-					}
 				}
 			}
 		}

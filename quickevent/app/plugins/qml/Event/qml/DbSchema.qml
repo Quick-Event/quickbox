@@ -266,6 +266,9 @@ Schema {
 				Field { name: 'runId'
 					type: Int { }
 				},
+				Field { name: 'runIdAssignTS'
+					type: DateTime { }
+				},
 				Field { name: 'stageId'
 					type: Int { }
 					comment: 'We cannot take stageId from runId linked table, because we need select cards for stage even without runId assigned'
@@ -358,7 +361,7 @@ Schema {
 		Insert {
 			table: config
 			rows: [
-				['db.version', qsTr('Data version'), '10002', 'int']
+				['db.version', qsTr('Data version'), '10003', 'int']
 				/*
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],
