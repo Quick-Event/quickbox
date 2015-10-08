@@ -216,7 +216,7 @@ void ForeignKeyComboBox::loadItems(bool force)
 				q.exec(query_str);
 				while(q.next()) {
 					QString caption = caption_format;
-					for(QString fld : field_captions) {
+					Q_FOREACH(QString fld, field_captions) {
 						qfDebug() << "\t replacing caption field:" << fld;
 						QVariant fld_val = q.value(fld);
 						caption = qf::core::Utils::replaceCaptions(caption, fld, fld_val);

@@ -1206,7 +1206,7 @@ QVariant Table::sumValue(int field_ix) const
 		case QVariant::UInt:
 		{
 			int d = 0;
-			for(auto r : rows())
+			Q_FOREACH(auto r, rows())
 				d += r.value(field_ix).toInt();
 			ret = d;
 			break;
@@ -1215,7 +1215,7 @@ QVariant Table::sumValue(int field_ix) const
 		default:
 		{
 			double d = 0;
-			for(auto r : rows())
+			Q_FOREACH(auto r, rows())
 				d += r.value(field_ix).toDouble();
 			ret = d;
 			break;
@@ -1404,9 +1404,9 @@ bool Table::fromTreeTable(const SValue& tree_table)
 QVariantList Table::dataToVariantList() const
 {
 	QVariantList ret;
-	for(auto r : rows()) {
+	Q_FOREACH(auto r, rows()) {
 		QVariantList lst;
-		for(auto v : r.values())
+		Q_FOREACH(auto v, r.values())
 			lst << v;
 		QVariant v = lst; /// pozor. 4.5 maji appent pro QList
 		///ret.append(lst); tohle nefunguje

@@ -69,7 +69,7 @@ void TableViewToolBar::setTableView(TableView *table_view)
 void TableViewToolBar::addPendingActions()
 {
 	QList<QAction*> lst;
-	for(auto a : m_pendingActions)
+	Q_FOREACH(auto a, m_pendingActions)
 		lst << a;
 	addActions(lst);
 	QLabel *lbl = new QLabel(tr("Filter"));

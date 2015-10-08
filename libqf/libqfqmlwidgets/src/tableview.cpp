@@ -71,7 +71,7 @@ TableView::TableView(QWidget *parent) :
 				bt->setToolTip(trUtf8("Right click for menu."));
 				bt->setContextMenuPolicy(Qt::ActionsContextMenu);
 				QList<QAction*> lst;
-				for(auto a : contextMenuActionsForGroups(AllActions))
+				Q_FOREACH(auto a, contextMenuActionsForGroups(AllActions))
 					lst << a;
 				bt->addActions(lst);
 			};
@@ -265,7 +265,7 @@ void TableView::reload(bool preserve_sorting)
 
 void TableView::enableAllActions(bool on)
 {
-	for(auto a : m_actions) {
+	Q_FOREACH(auto a, m_actions) {
 		a->setEnabled(on);
 		//if(on) a->setVisible(true);
 	}
@@ -553,7 +553,7 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 void TableView::setValueInSelection()
 {
 	QString new_val_str;
-	for(auto ix : selectedIndexes()) {
+	Q_FOREACH(auto ix, selectedIndexes()) {
 		if(new_val_str.isEmpty()) {
 			new_val_str = model()->data(ix, Qt::DisplayRole).toString();
 		}
@@ -756,7 +756,7 @@ int TableView::logicalColumnIndex(const QString &field_name) const
 
 QList<int> TableView::selectedRowsIndexes() const
 {
-	QModelIndexList lst = selectedIndexes();
+	const QModelIndexList lst = selectedIndexes();
 	QSet<int> set;
 	for(const QModelIndex &ix : lst) {
 		if(ix.row() >= 0)
@@ -769,7 +769,7 @@ QList<int> TableView::selectedRowsIndexes() const
 
 QList<int> TableView::selectedColumnsIndexes() const
 {
-	QModelIndexList lst = selectedIndexes();
+	const QModelIndexList lst = selectedIndexes();
 	QSet<int> set;
 	for(const QModelIndex &ix : lst) {
 		if(ix.column() >= 0)
@@ -1288,7 +1288,7 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 {
 	qfLogFuncFrame();
 	QList<QAction*> lst;
-	for(auto a : contextMenuActions())
+	Q_FOREACH(auto a, contextMenuActions())
 		lst << a;
 	QMenu::exec(lst, viewport()->mapToGlobal(e->pos()));
 }
@@ -1643,7 +1643,7 @@ void TableView::createActions()
 	//f_contextMenuActions = standardContextMenuActions();
 
 	{
-		for(Action *a : m_actions) {
+		Q_FOREACH(Action *a, m_actions) {
 			if(!a->shortcut().isEmpty()) {
 				//qfInfo() << "\t inserting action" << a->text() << a->shortcut().toString();
 				addAction(a); /// aby chodily shortcuty, musi byt akce pridany widgetu
@@ -1743,7 +1743,7 @@ QList<Action *> TableView::contextMenuActionsForGroups(int action_groups)
 				act_separator = m_separatorsForGroup.value((ActionGroup)grp);
 				ret << act_separator;
 			}
-			for(auto oid : sl) {
+			Q_FOREACH(auto oid, sl) {
 				Action *a = m_actions.value(oid);
 				if(a == nullptr)
 					qfWarning() << QString("Cannot find action for oid: '%1'").arg(oid);
@@ -1854,7 +1854,7 @@ void TableView::removeSelectedRowsInline()
 	}
 	QModelIndex ix = currentIndex();
 	//ignoreCurrentChanged = true; /// na false ho nastavi currentChanged()
-	for(const RowList &rl : continuous_sections) {
+	Q_FOREACH(const RowList &rl, continuous_sections) {
 		model()->removeRows(rl[0], rl.count());
 	}
 	setCurrentIndex(ix);

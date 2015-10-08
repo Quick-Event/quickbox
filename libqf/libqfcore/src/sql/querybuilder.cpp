@@ -61,7 +61,7 @@ QString QueryBuilder::buildSelect(const BuildOptions &opts) const
 {
 	QStringList select_fields;
 	QVariant v = m_queryMap.value(SelectKey);
-	SelectTableFieldsList lst = v.value<SelectTableFieldsList>();
+	const SelectTableFieldsList lst = v.value<SelectTableFieldsList>();
 	for(const SelectTableFields &flds : lst) {
 		if(flds.table.isEmpty()) {
 			select_fields << flds.fields;
@@ -75,7 +75,7 @@ QString QueryBuilder::buildSelect(const BuildOptions &opts) const
 			else {
 				fldlst = qf::core::String(flds.fields).splitAndTrim(',');
 			}
-			for(const QString &orig_fld_name : fldlst) {
+			Q_FOREACH(const QString &orig_fld_name, fldlst) {
 				QString new_fld_name = flds.table + '.' + orig_fld_name;
 				if(is_mangle_table_name) {
 					QString as = QStringLiteral(" AS ");
@@ -145,7 +145,7 @@ QString QueryBuilder::buildFrom(const QueryBuilder::BuildOptions &opts) const
 {
 	QString ret;
 	QVariant v = m_queryMap.value(FromKey);
-	JoinDefinitionList lst = v.value<JoinDefinitionList>();
+	const JoinDefinitionList lst = v.value<JoinDefinitionList>();
 	for(const JoinDefinition &join_def : lst) {
 		ret += ' ' + join_def.buildString(opts);
 	}

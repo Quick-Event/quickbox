@@ -110,11 +110,11 @@ void Application::setupQmlImportPaths()
 {
 	QF_ASSERT(m_qmlEngine != nullptr, "", return);
 
-	for(auto path : m_qmlLibraryImportPaths) {
+	Q_FOREACH(auto path, m_qmlLibraryImportPaths) {
 		qfInfo() << "Adding QML library import path:" << path;
 		m_qmlEngine->addImportPath(path);
 	}
-	for(auto path : m_qmlPluginImportPaths) {
+	Q_FOREACH(auto path, m_qmlPluginImportPaths) {
 		qfInfo() << "Adding QML plugin import path:" << path;
 		m_qmlEngine->addImportPath(path);
 	}
@@ -122,7 +122,7 @@ void Application::setupQmlImportPaths()
 
 void Application::onQmlError(const QList<QQmlError> &qmlerror_list)
 {
-	for(auto err : qmlerror_list) {
+	Q_FOREACH(auto err, qmlerror_list) {
 		qfError() << "QML ERROR:" << err.toString();
 	}
 	m_qmlErrorList << qmlerror_list;

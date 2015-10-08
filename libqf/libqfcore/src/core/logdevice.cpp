@@ -1,4 +1,5 @@
 #include "logdevice.h"
+#include "utils.h"
 
 #include <QByteArray>
 #include <QString>
@@ -63,7 +64,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		level = Log::Level::Fatal;
 		break;
 	}
-	for(auto log_device : logDevices()) {
+	Q_FOREACH(auto log_device, logDevices()) {
 		if(log_device->isEnabled() && log_device->checkLogPermisions(context, level)) {
 			log_device->log(level, context, msg);
 		}

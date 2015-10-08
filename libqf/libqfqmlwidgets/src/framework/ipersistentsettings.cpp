@@ -45,7 +45,7 @@ static void callMethodRecursively(QObject *obj, const char *method_name)
 		QMetaMethod mm = obj->metaObject()->method(ix);
 		mm.invoke(obj);
 	}
-	for(auto o : obj->children()) {
+	Q_FOREACH(auto o, obj->children()) {
 		callMethodRecursively(o, method_name);
 	}
 }

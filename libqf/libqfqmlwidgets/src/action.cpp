@@ -59,7 +59,7 @@ void Action::addActionAfter(QAction *new_act)
 	QF_ASSERT(parent_w!=nullptr, "bad parent", return);
 	new_act->setParent(parent_w);
 	Action *next_act = nullptr;
-	for(auto a : parent_w->actions()) {
+	Q_FOREACH(auto a, parent_w->actions()) {
 		Action *aa = qobject_cast<Action*>(a);
 		if(!aa)
 			continue;

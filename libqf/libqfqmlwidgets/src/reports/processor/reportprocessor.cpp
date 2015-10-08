@@ -117,7 +117,7 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 		if(!m_documentInstanceRoot) {
 			qfError() << "Error creating root object from component:" << m_reportDocumentComponent << m_reportDocumentComponent->url();
 			qfError() << "Created object:" << o;
-			for(auto err : m_reportDocumentComponent->errors())
+			Q_FOREACH(auto err, m_reportDocumentComponent->errors())
 				qfError() << err.toString();
 			QF_SAFE_DELETE(o);
 		}
@@ -373,7 +373,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
 		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
-		for(auto path : qmlEngineImportPaths()) {
+		Q_FOREACH(auto path, qmlEngineImportPaths()) {
 			qfInfo() << "Adding ReportProcessor QML engine import path:" << path;
 			m_qmlEngine->addImportPath(path);
 		}

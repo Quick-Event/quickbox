@@ -33,7 +33,7 @@ QWidget *SqlTableItemDelegate::createEditor(QWidget *parent, const QStyleOptionV
 			auto cache = qf::core::sql::DbEnumCache::instance(m->connectionName());
 			auto dbe = v.value<qf::core::sql::DbEnum>();
 			QString group_name = dbe.groupName();
-			for(auto e : cache.dbEnumsForGroup(group_name)) {
+			Q_FOREACH(auto e, cache.dbEnumsForGroup(group_name)) {
 				editor->addItem(e.caption(), e.groupId());
 			}
 		}

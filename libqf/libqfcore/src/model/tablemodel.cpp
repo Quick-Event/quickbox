@@ -539,7 +539,7 @@ qf::core::utils::TableRow TableModel::tableRow(int row_no)
 void TableModel::createColumnsFromTableFields()
 {
 	clearColumns();
-	for(auto fld : m_table.fields()) {
+	Q_FOREACH(auto fld, m_table.fields()) {
 		QString caption;
 		qfc::Utils::parseFieldName(fld.name(), &caption);
 		addColumn(fld.name(), caption);
@@ -599,7 +599,7 @@ QVariant TableModel::editValueToRaw(int column_index, const QVariant &val) const
 int TableModel::columnIndex(const QString &column_name) const
 {
 	int ret = -1, i = 0;
-	for(auto cd : m_columns) {
+	Q_FOREACH(auto cd, m_columns) {
 		//qfTrash() << "\ttrying:" << cd.fieldName();
 		if(qfc::Utils::fieldNameEndsWith(cd.fieldName(), column_name)) {
 			ret = i;
