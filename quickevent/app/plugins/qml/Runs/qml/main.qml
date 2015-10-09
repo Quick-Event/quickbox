@@ -154,7 +154,7 @@ RunsPlugin {
 
 	}
 
-	function startListClassesTable()
+	function startListClassesTable(class_mask)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = root.selectedStageId;
@@ -168,6 +168,11 @@ RunsPlugin {
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stageId}}")
 			.join("classdefs.courseId", "courses.id")
 			.orderBy('classes.name');//.limit(1);
+		if(class_mask) {
+			class_mask = class_mask.replace("*", "%");
+			class_mask = class_mask.replace("?", "_");
+			reportModel.queryBuilder.where("classes.name LIKE '" + class_mask + "'");
+		}
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
@@ -266,7 +271,8 @@ RunsPlugin {
 	function printStartListClasses()
 	{
 		Log.info("runs printStartListClasses triggered");
-		var tt = startListClassesTable();
+		var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
+		var tt = startListClassesTable(mask);
 		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_classes.qml", tt.data(), qsTr("Start list by clases"));
 		/*
 		var w = cReportViewWidget.createObject(null);
