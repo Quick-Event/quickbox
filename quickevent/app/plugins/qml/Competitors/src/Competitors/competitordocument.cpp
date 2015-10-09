@@ -7,6 +7,7 @@
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>
+#include <qf/core/sql/transaction.h>
 
 using namespace Competitors;
 
@@ -41,13 +42,16 @@ static Event::EventPlugin* eventPlugin()
 
 bool CompetitorDocument::saveData()
 {
+	qfLogFuncFrame();
+	qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
 	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
-	//Log.info("CompetitorDocument", saveData_qml, "ret:", ret, "old_mode", old_mode, "vs", DataDocument.ModeInsert, old_mode == DataDocument.ModeInsert);
+	qfDebug() << "Super save data:" << ret;
 	if(ret) {
 		if(old_mode == DataDocument::ModeInsert) {
 			// insert runs
+			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
 			int si_id = value("competitors.siId").toInt();
 
@@ -73,7 +77,7 @@ bool CompetitorDocument::saveData()
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
 			if(si_dirty) {
-				//qfWarning() << __LINE__;
+				qfDebug() << "updating SIID in run tables";
 				int si_id = value("competitors.siId").toInt();
 				if(si_id > 0) {
 					int competitor_id = dataId().toInt();
@@ -88,6 +92,8 @@ bool CompetitorDocument::saveData()
 			}
 		}
 	}
+	if(ret)
+		transaction.commit();
 	return ret;
 }
 

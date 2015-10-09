@@ -294,8 +294,8 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				if(!ok && throw_exc) {
 					QF_EXCEPTION(q.lastError().text());
 				}
-				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
 				int num_rows_affected = q.numRowsAffected();
+				qfDebug() << "\tnum rows affected:" << num_rows_affected;
 				/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
 				/// numRowsAffected() returns 0.
 				if(num_rows_affected > 1) {

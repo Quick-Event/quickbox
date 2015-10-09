@@ -9,6 +9,8 @@ using namespace qf::core::sql;
 Transaction::Transaction(const Connection &conn)
 	: m_connection(conn)
 {
+	if(!m_connection.isValid())
+		m_connection = Connection::forName();
 	if(m_connection.isValid())
 		m_connection.transaction();
 }

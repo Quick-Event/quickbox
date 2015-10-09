@@ -128,6 +128,17 @@ void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 	}
 }
 
+bool CompetitorWidget::saveData()
+{
+	try {
+		return Super::saveData();
+	}
+	catch (qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+	}
+	return false;
+}
+
 void CompetitorWidget::on_btChooseFromRegistrations_clicked()
 {
 	qfLogFuncFrame();

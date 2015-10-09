@@ -28,6 +28,7 @@ private:
 	Q_SLOT void loadRunsTable();
 	Q_SLOT void saveRunsTable();
 	void onRunsTableCustomContextMenuRequest(const QPoint &pos);
+	bool saveData() Q_DECL_OVERRIDE;
 private:
 	Ui::CompetitorWidget *ui;
 	quickevent::og::SqlTableModel *m_runsModel;
