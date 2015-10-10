@@ -17,6 +17,13 @@ DataController::~DataController()
 
 }
 
+qf::core::model::DataDocument *DataController::document(bool throw_exc) const
+{
+	if(!m_document && throw_exc)
+		QF_EXCEPTION("DataDocument is NULL!");
+	return m_document;
+}
+
 void DataController::setDocument(qf::core::model::DataDocument *doc)
 {
 	if(m_document != doc) {

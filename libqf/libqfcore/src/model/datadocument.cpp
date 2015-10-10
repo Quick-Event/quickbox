@@ -215,6 +215,35 @@ void DataDocument::setValue(const QString &data_id, const QVariant &val)
 	}
 }
 
+DataDocument::EditState DataDocument::saveEditState() const
+{
+	EditState ret;
+	const TableModel *m = model();
+	int ri = currentModelRow();
+	for (int i=0; i<m->columnCount(); ++i) {
+		if(m->isDirty(ri, i))
+			ret.dirtyValues[i] = m->value(ri, i);
+	}
+	ret.editMode = mode();
+	return ret;
+
+}
+
+void DataDocument::restoreEditState(const DataDocument::EditState &edit_state)
+{
+	TableModel *m = model();
+	int ri = currentModelRow();
+	QMapIterator<int, QVariant> it(edit_state.dirtyValues);
+	while (it.hasNext()) {
+		it.next();
+		m->setValue(ri, it.key(), it.value());
+		m->setDirty(ri, it.key(), true);
+	}
+	setMode(edit_state.editMode);
+	if(edit_state.editMode == ModeInsert || edit_state.editMode == ModeCopy)
+		m->tableRef().rowRef(ri).setInsert(true);
+}
+
 bool DataDocument::loadData()
 {
 	qfLogFuncFrame();

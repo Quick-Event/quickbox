@@ -430,7 +430,7 @@ QVariant TableModel::value(int row_ix, int column_ix) const
 			  tr("%2 Cannot find table field for column index: %1 (row index: %3)").arg(column_ix).arg(objectName()).arg(row_ix),
 			  return ret);
 	ret = m_table.row(row_ix).value(table_field_index);
-	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
+	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate column type
 	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
 	//qfInfo() << row_ix << column_ix << "->" << ret.toString() << ret.typeName();
 	return ret;

@@ -77,8 +77,8 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
 
-	connect(dataController()->document(), &qf::core::model::DataDocument::loaded, this, &CompetitorWidget::loadRunsTable);
-	connect(dataController()->document(), &qf::core::model::DataDocument::saved, this, &CompetitorWidget::saveRunsTable);
+	//connect(dataController()->document(), &qf::core::model::DataDocument::loaded, this, &CompetitorWidget::loadRunsTable);
+	//connect(dataController()->document(), &qf::core::model::DataDocument::saved, this, &CompetitorWidget::saveRunsTable);
 }
 
 CompetitorWidget::~CompetitorWidget()
@@ -86,7 +86,7 @@ CompetitorWidget::~CompetitorWidget()
 	delete ui;
 }
 
-void CompetitorWidget::loadRunsTable()
+bool CompetitorWidget::loadRunsTable()
 {
 	qf::core::model::DataDocument *doc = dataController()->document();
 	qf::core::sql::QueryBuilder qb;
@@ -97,18 +97,13 @@ void CompetitorWidget::loadRunsTable()
 			.where("runs.competitorId=" QF_IARG(doc->value("competitors.id").toInt()))
 			.orderBy("runs.stageId");
 	m_runsModel->setQueryBuilder(qb);
-	m_runsModel->reload();
+	return m_runsModel->reload();
 }
 
-void CompetitorWidget::saveRunsTable()
+bool CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
-	try {
-		m_runsModel->postAll(true);
-	}
-	catch (qf::core::Exception &e) {
-		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
-	}
+	return m_runsModel->postAll(true);
 }
 
 void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
@@ -128,13 +123,24 @@ void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 	}
 }
 
+bool CompetitorWidget::load(const QVariant &id, int mode)
+{
+	if(Super::load(id, mode))
+		return loadRunsTable();
+	return false;
+}
+
 bool CompetitorWidget::saveData()
 {
+	qf::core::model::DataDocument *doc = dataController()->document();
+	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
 	try {
-		return Super::saveData();
+		if(Super::saveData())
+			return saveRunsTable();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		doc->restoreEditState(edit_state);
 	}
 	return false;
 }

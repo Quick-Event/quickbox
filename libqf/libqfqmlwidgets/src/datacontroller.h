@@ -26,7 +26,7 @@ public:
 
 	//QF_PROPERTY_IMPL2(QString, d, D, bConnectionName, QSqlDatabase::defaultConnection)
 
-	qf::core::model::DataDocument* document() const { return m_document;}
+	qf::core::model::DataDocument* document(bool throw_exc = qf::core::Exception::Throw) const;
 	void setDocument(qf::core::model::DataDocument *doc);
 	Q_SIGNAL void documentChanged(qf::core::model::DataDocument *doc);
 

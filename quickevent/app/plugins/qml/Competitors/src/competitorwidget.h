@@ -21,12 +21,14 @@ public:
 	explicit CompetitorWidget(QWidget *parent = 0);
 	~CompetitorWidget() Q_DECL_OVERRIDE;
 
+	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;
+
 	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private slots:
 	void on_btChooseFromRegistrations_clicked();
 private:
-	Q_SLOT void loadRunsTable();
-	Q_SLOT void saveRunsTable();
+	Q_SLOT bool loadRunsTable();
+	Q_SLOT bool saveRunsTable();
 	void onRunsTableCustomContextMenuRequest(const QPoint &pos);
 	bool saveData() Q_DECL_OVERRIDE;
 private:

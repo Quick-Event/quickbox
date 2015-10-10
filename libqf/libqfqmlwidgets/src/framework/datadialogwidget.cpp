@@ -31,20 +31,23 @@ void DataDialogWidget::setDataController(qf::qmlwidgets::DataController *dc)
 	m_dataController = dc;
 }
 
-void DataDialogWidget::load(const QVariant &id, int mode)
+bool DataDialogWidget::load(const QVariant &id, int mode)
 {
 	qf::qmlwidgets::DataController *dc = dataController();
 	if(dc) {
-		auto doc = dc->document();
+		auto doc = dc->document(false);
 		if(doc) {
 			//connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
 			//qfInfo() << "============" << (bool)c;
 			connect(doc, &qfm::DataDocument::saved, this, &DataDialogWidget::dataSaved, Qt::UniqueConnection);
-			doc->load(id, qf::core::model::DataDocument::RecordEditMode(mode));
+			bool ok = doc->load(id, qf::core::model::DataDocument::RecordEditMode(mode));
 			//qfInfo() << "emit ...";
-			emit recordEditModeChanged(mode);
+			if(ok)
+				emit recordEditModeChanged(mode);
+			return ok;
 		}
 	}
+	return false;
 }
 
 bool DataDialogWidget::dialogDoneRequest(int result)
@@ -70,7 +73,7 @@ bool DataDialogWidget::dialogDoneRequest(int result)
 int DataDialogWidget::recordEditMode()
 {
 	int ret = -1;
-	if(m_dataController && m_dataController->document()) {
+	if(m_dataController && m_dataController->document(false)) {
 		ret = m_dataController->document()->mode();
 	}
 	return ret;
@@ -81,7 +84,7 @@ bool DataDialogWidget::saveData()
 	bool ret = false;
 	DataController *dc = dataController();
 	if(dc) {
-		qfm::DataDocument *doc = dc->document();
+		qfm::DataDocument *doc = dc->document(false);
 		if(doc) {
 			ret = doc->save();
 		}
@@ -94,7 +97,7 @@ bool DataDialogWidget::dropData()
 	bool ret = false;
 	DataController *dc = dataController();
 	if(dc) {
-		qfm::DataDocument *doc = dc->document();
+		qfm::DataDocument *doc = dc->document(false);
 		if(doc) {
 			ret = doc->drop();
 		}

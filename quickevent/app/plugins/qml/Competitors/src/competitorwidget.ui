@@ -243,6 +243,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>cbxClass</tabstop>
+  <tabstop>spinBox</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>
   <tabstop>lineEdit_4</tabstop>
