@@ -35,6 +35,8 @@
 #include <QClipboard>
 #include <QTextEdit>
 #include <QInputDialog>
+#include <QFileDialog>
+
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -151,8 +153,8 @@ void TableView::refreshActions()
 	action("resizeColumnsToContents")->setEnabled(true);
 	action("resetColumnsSettings")->setEnabled(true);
 	action("showCurrentCellText")->setEnabled(true);
-	//action("saveCurrentCellBlob")->setEnabled(true);
-	//action("loadCurrentCellBlob")->setEnabled(true);
+    action("saveCurrentCellBlob")->setEnabled(true);
+    action("loadCurrentCellBlob")->setEnabled(true);
 	//action("insertRowsStatement")->setEnabled(true);
 	//action("import")->setEnabled(true);
 	//action("importCSV")->setEnabled(true);
@@ -565,6 +567,8 @@ void TableView::setValueInSelection()
 	setValueInSelection_helper(new_val_str);
 }
 
+
+
 void TableView::editCellContentInEditor()
 {
 	QModelIndex ix = currentIndex();
@@ -628,6 +632,39 @@ void TableView::exportReport()
 	dlg.loadPersistentSettingsRecursively();
 	connect(w, &reports::PrintTableViewWidget::printRequest, this, &TableView::exportReport_helper);
 	dlg.exec();
+}
+
+//.............................Context Load and Save blob type ................................................
+
+void TableView::saveCurrentCellBlob()
+{
+    QVariant v = model()->data(currentIndex(), Qt::EditRole);
+    //if(v.type() == QVariant::ByteArray) {
+        QString fn = QFileDialog::getSaveFileName(this, tr("Save File"));
+        if(!fn.isEmpty()) {
+            QFile f(fn);
+            if(f.open(QIODevice::WriteOnly)) {
+                f.write(v.toByteArray());
+            }
+        }
+    //}
+}
+
+void TableView::loadCurrentCellBlob()
+{
+    qfLogFuncFrame();
+    //QVariant v = model()->data(currentIndex(), Qt::EditRole);
+    //qfTrash() << "\t variant type:" << QVariant::typeToName(v.type());
+    //if(v.type() == QVariant::ByteArray) {
+        QString fn = QFileDialog::getOpenFileName(this, tr("Open File"));
+        if(!fn.isEmpty()) {
+            QFile f(fn);
+            if(f.open(QIODevice::ReadOnly)) {
+                QByteArray ba =  f.readAll();
+                model()->setData(currentIndex(), ba);
+            }
+        }
+    //}
 }
 
 void TableView::exportReport_helper(const QVariant& _options)
@@ -1470,8 +1507,8 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Save BLOB"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
+        a->setShortcutContext(Qt::WidgetShortcut);
+        connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
 		a->setOid("saveCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1479,8 +1516,8 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Load BLOB from file"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
+        a->setShortcutContext(Qt::WidgetShortcut);
+        connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
 		a->setOid("loadCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
 		m_actions[a->oid()] = a;
