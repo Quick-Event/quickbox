@@ -38,6 +38,7 @@
 #include <QTextStream>
 #include <QComboBox>
 #include <QLabel>
+#include <QCheckBox>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -145,6 +146,13 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		connect(m_cbxCardCheckers, SIGNAL(activated(int)), this, SLOT(onCbxCardCheckersActivated(int)));
 		onCbxCardCheckersActivated(m_cbxCardCheckers->currentIndex());
 	}
+	main_tb->addSeparator();
+	{
+		m_cbxAutoRefresh = new QCheckBox();
+		m_cbxAutoRefresh->setText(tr("Auto refresh"));
+		main_tb->addWidget(m_cbxAutoRefresh);
+	}
+	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 }
 
 void CardReaderWidget::reset()
@@ -173,6 +181,16 @@ void CardReaderWidget::reload()
 			.orderBy("cards.id DESC");
 	m_cardsModel->setQueryBuilder(qb);
 	m_cardsModel->reload();
+}
+
+void CardReaderWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+{
+	int card_id = payload.toInt();
+	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
+		// TODO: only if widget is visible (plugin window active)
+		if(m_cbxAutoRefresh->isChecked())
+			updateTableView(card_id);
+	}
 }
 
 void CardReaderWidget::createActions()
@@ -362,7 +380,7 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	}
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
-		updateTableView(card_id);
+		//updateTableView(card_id);
 	}
 }
 

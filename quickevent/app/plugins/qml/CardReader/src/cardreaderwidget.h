@@ -30,13 +30,6 @@ class DeviceDriver;
 class SIMessageData;
 class SIMessageCardReadOut;
 
-class QTextStream;
-class QFile;
-class QComboBox;
-
-class CardReaderPartWidget;
-class SIMessageTransmitRecord;
-
 namespace CardReader {
 class CardReaderPlugin;
 class CardChecker;
@@ -47,6 +40,14 @@ class CheckedCard;
 namespace Event {
 class EventPlugin;
 }
+
+class QTextStream;
+class QFile;
+class QComboBox;
+class QCheckBox;
+
+class CardReaderPartWidget;
+class SIMessageTransmitRecord;
 
 class CardReaderWidget : public QFrame
 {
@@ -65,6 +66,8 @@ public:
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();
+
+	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
@@ -101,6 +104,7 @@ private:
 	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
+	QCheckBox *m_cbxAutoRefresh = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

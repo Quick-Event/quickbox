@@ -78,6 +78,7 @@ RunsPlugin {
 		Action {
 			id: act_print_results_currentStage
 			text: qsTr('&Current stage')
+			shortcut: "Ctrl+P"
 			onTriggered: {
 				results.printCurrentStage()
 			}
@@ -272,6 +273,8 @@ RunsPlugin {
 	{
 		Log.info("runs printStartListClasses triggered");
 		var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
+		if(!mask)
+			return;
 		var tt = startListClassesTable(mask);
 		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_classes.qml", tt.data(), qsTr("Start list by clases"));
 		/*

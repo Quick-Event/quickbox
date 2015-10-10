@@ -142,6 +142,8 @@ QtObject {
 	{
 		Log.info("runs printResultsCurrentStage triggered");
 		var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
+		if(!mask)
+			return;
 		var tt = currentStageTable(mask);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml", tt.data(), qsTr("Start list by clases"));
 	}
