@@ -4,7 +4,6 @@
 #include "qmlwidgetsglobal.h"
 #include "framework/ipersistentsettings.h"
 
-//#include <qf/core/model/sqltablemodel.h>
 #include <qf/core/utils.h>
 #include <qf/core/utils/table.h>
 #include <qf/core/model/datadocument.h>
@@ -68,8 +67,8 @@ public:
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)
 	QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
-public:
-	QSortFilterProxyModel* sortFilterProxyModel() const;
+	public:
+		QSortFilterProxyModel* sortFilterProxyModel() const;
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);
 	Q_SIGNAL void tableModelChanged();
@@ -104,8 +103,8 @@ public:
 
 	Q_SLOT void exportReport();
 
-    Q_SLOT void saveCurrentCellBlob();
-    Q_SLOT void loadCurrentCellBlob();
+	Q_SLOT void saveCurrentCellBlob();
+	Q_SLOT void loadCurrentCellBlob();
 
 	/**
 	* calls update viewport with rect clipping row \a row.

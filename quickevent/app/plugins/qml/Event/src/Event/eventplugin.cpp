@@ -730,20 +730,39 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &rec, 
 	if(!to_q.prepare(qs)) {
 		return QString("Cannot prepare insert table SQL statement, table: %1.").arg(table_name);
 	}
+	bool has_id_int = false;
 	while(from_q.next()) {
 		if(table_name == QLatin1String("config")) {
 			if(from_q.value(0).toString() == QLatin1String("db.version"))
 				continue;
 		}
 		for (int i = 0; i < rec.count(); ++i) {
-			QString fld_name = rec.field(i).name();
+			QSqlField fld = rec.field(i);
+			QString fld_name = fld.name();
 			//qfDebug() << "copy:" << fld_name << from_q.value(fld_name);
 			QVariant v = from_q.value(fld_name);
 			v.convert(rec.field(i).type());
+			if(!has_id_int
+					&& (fld.type() == QVariant::Int
+						|| fld.type() == QVariant::UInt
+						|| fld.type() == QVariant::LongLong
+						|| fld.type() == QVariant::ULongLong)
+					&& fld_name == QLatin1String("id")) {
+				// probably ID INT AUTO_INCREMENT
+				//max_id = qMax(max_id, v.toInt());
+				has_id_int = true;
+			}
 			to_q.addBindValue(v);
 		}
 		if(!to_q.exec())
 			return QString("SQL Error: %1").arg(to_q.lastError().text());
+	}
+	if(has_id_int && to_conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive)) {
+		// set sequence current value when importing to PSQL
+		qfInfo() << "updating seq number table:" << table_name;
+		if(!to_q.exec("SELECT pg_catalog.setval(pg_get_serial_sequence(" QF_SARG(table_name) ", 'id'), MAX(id)) FROM " QF_CARG(table_name), !qf::core::Exception::Throw)) {
+			return QString("Cannot update sequence counter, table: %1.").arg(table_name);
+		}
 	}
 	return QString();
 }
@@ -843,27 +862,27 @@ void EventPlugin::importEvent_qbe()
 	do {
 		qfs::Connection current_conn(QSqlDatabase::database());
 
-		qfs::Connection im_conn(QSqlDatabase::addDatabase("QSQLITE", import_connection_name));
-		im_conn.setDatabaseName(fn);
+		qfs::Connection imp_conn(QSqlDatabase::addDatabase("QSQLITE", import_connection_name));
+		imp_conn.setDatabaseName(fn);
 		qfInfo() << "Opening import database file" << fn;
-		if(!im_conn.open()) {
-			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(im_conn.errorString()));
+		if(!imp_conn.open()) {
+			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(imp_conn.errorString()));
 			return;
 		}
 
-		qfs::Connection ex_conn(QSqlDatabase::addDatabase(current_conn.driverName(), export_connection_name));
-		ex_conn.setHostName(current_conn.hostName());
-		ex_conn.setPort(current_conn.port());
-		ex_conn.setUserName(current_conn.userName());
-		ex_conn.setPassword(current_conn.password());
-		ex_conn.setDatabaseName(current_conn.databaseName());
+		qfs::Connection exp_conn(QSqlDatabase::addDatabase(current_conn.driverName(), export_connection_name));
+		exp_conn.setHostName(current_conn.hostName());
+		exp_conn.setPort(current_conn.port());
+		exp_conn.setUserName(current_conn.userName());
+		exp_conn.setPassword(current_conn.password());
+		exp_conn.setDatabaseName(current_conn.databaseName());
 		qfInfo() << "Opening export database file" << fn;
-		if(!ex_conn.open()) {
-			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(ex_conn.errorString()));
+		if(!exp_conn.open()) {
+			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(exp_conn.errorString()));
 			return;
 		}
 
-		qfs::Transaction transaction(ex_conn);
+		qfs::Transaction transaction(exp_conn);
 
 		DbSchema db_schema = dbSchema();
 		auto tables = db_schema.tables();
@@ -872,22 +891,22 @@ void EventPlugin::importEvent_qbe()
 		fwk->showProgress(tr("Creating database"), ++step_no, step_cnt);
 		{
 			DbSchema::CreateDbSqlScriptOptions create_options;
-			create_options.setDriverName(ex_conn.driverName());
+			create_options.setDriverName(exp_conn.driverName());
 			create_options.setSchemaName(event_name);
 			QStringList create_script = db_schema.createDbSqlScript(create_options);
-			qfs::Query ex_q(ex_conn);
+			qfs::Query ex_q(exp_conn);
 			if(!run_sql_script(ex_q, create_script)) {
 				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
 				break;
 			}
 		}
-		ex_conn.setCurrentSchema(event_name);
+		exp_conn.setCurrentSchema(event_name);
 		for(QObject *table : tables) {
 			QString table_name = table->property("name").toString();
 			qfDebug() << "Copying table" << table_name;
 			fwk->showProgress(tr("Copying table %1").arg(table_name), ++step_no, step_cnt);
 			QSqlRecord rec = db_schema.sqlRecord(table, true);
-			err_str = copy_sql_table(table_name, rec, im_conn, ex_conn);
+			err_str = copy_sql_table(table_name, rec, imp_conn, exp_conn);
 			if(!err_str.isEmpty())
 				break;
 		}
