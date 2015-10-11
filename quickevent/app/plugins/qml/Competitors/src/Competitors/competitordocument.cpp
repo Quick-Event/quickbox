@@ -43,7 +43,7 @@ static Event::EventPlugin* eventPlugin()
 bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
-	qf::core::sql::Transaction transaction;
+	//qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
 	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
@@ -60,40 +60,30 @@ bool CompetitorDocument::saveData()
 
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
-			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
+			q.prepare("INSERT INTO runs (competitorId, stageId) VALUES (:competitorId, :stageId)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
 				if(si_id > 0 && m_saveSiidToRuns)
 					q.bindValue(":siId", si_id);
 				q.exec(qf::core::Exception::Throw);
-				/*
-				if(!q.exec()) {
-					qfError() << q.lastError().text();
-					//break; can be succesfull in other stages
-				}
-				*/
 			}
 		}
-		else if(old_mode == DataDocument::ModeEdit) {
-			if(si_dirty) {
-				qfDebug() << "updating SIID in run tables";
-				int si_id = value("competitors.siId").toInt();
-				if(si_id > 0) {
-					int competitor_id = dataId().toInt();
-					qf::core::sql::Query q(model()->connectionName());
-					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
-					q.bindValue(":competitorId", competitor_id);
-					q.bindValue(":siId", si_id);
-					if(!q.exec()) {
-						qfError() << q.lastError().text();
-					}
-				}
+		if(si_dirty) {
+			qfDebug() << "updating SIID in run tables";
+			int si_id = value("competitors.siId").toInt();
+			if(si_id > 0) {
+				int competitor_id = dataId().toInt();
+				qf::core::sql::Query q(model()->connectionName());
+				q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
+				q.bindValue(":competitorId", competitor_id);
+				q.bindValue(":siId", si_id);
+				q.exec(qf::core::Exception::Throw);
 			}
 		}
 	}
-	if(ret)
-		transaction.commit();
+	//if(ret)
+	//	transaction.commit();
 	return ret;
 }
 

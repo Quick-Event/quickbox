@@ -214,7 +214,7 @@ void DataDocument::setValue(const QString &data_id, const QVariant &val)
 		}
 	}
 }
-
+/*
 DataDocument::EditState DataDocument::saveEditState() const
 {
 	EditState ret;
@@ -243,7 +243,7 @@ void DataDocument::restoreEditState(const DataDocument::EditState &edit_state)
 	if(edit_state.editMode == ModeInsert || edit_state.editMode == ModeCopy)
 		m->tableRef().rowRef(ri).setInsert(true);
 }
-
+*/
 bool DataDocument::loadData()
 {
 	qfLogFuncFrame();

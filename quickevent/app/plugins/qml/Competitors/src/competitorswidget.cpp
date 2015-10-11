@@ -140,7 +140,8 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 		//doc->save();
 		//w->load(doc->dataId());
 	}
-	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
+	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)), Qt::QueuedConnection);
+
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
 		dlg.accept();
 		emit eventPlugin()->editStartListRequest(stage_id, class_id, competitor_id);
