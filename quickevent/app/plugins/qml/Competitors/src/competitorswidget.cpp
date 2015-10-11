@@ -2,6 +2,7 @@
 #include "ui_competitorswidget.h"
 #include "competitorwidget.h"
 #include "thispartwidget.h"
+#include "Competitors/competitordocument.h"
 
 #include "Event/eventplugin.h"
 
@@ -133,14 +134,13 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
+	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
+	QF_ASSERT(doc != nullptr, "Document is null!", return);
 	if(mode == qf::core::model::DataDocument::ModeInsert) {
 		int class_id = m_cbxClasses->currentData().toInt();
-		qf::core::model::DataDocument *doc = w->dataController()->document();
 		doc->setValue("competitors.classId", class_id);
-		//doc->save();
-		//w->load(doc->dataId());
 	}
-	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)), Qt::QueuedConnection);
+	connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
 		dlg.accept();

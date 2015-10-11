@@ -69,6 +69,7 @@ bool CompetitorDocument::saveData()
 				q.exec(qf::core::Exception::Throw);
 			}
 		}
+		emit competitorSaved(dataId(), old_mode);
 		if(si_dirty) {
 			qfDebug() << "updating SIID in run tables";
 			int si_id = value("competitors.siId").toInt();
@@ -101,6 +102,9 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
+	}
+	if(ret) {
+		emit competitorSaved(id, ModeDelete);
 	}
 	return ret;
 }

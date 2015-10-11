@@ -132,19 +132,12 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 
 bool CompetitorWidget::saveData()
 {
-	qf::core::model::DataDocument *doc = dataController()->document();
-	qf::core::model::DataDocument::RecordEditMode old_mode = doc->mode();
-	//qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
 	try {
 		if(Super::saveData())
 			return saveRunsTable();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
-		//doc->restoreEditState(edit_state);
-		// if exception is caused by siId unique key constrain, then datasaved for new competitor should be emited anyway
-		// in other case, the competitors table view don't reload new row
-		emit dataSaved(doc->dataId(), old_mode);
 	}
 	return false;
 }
