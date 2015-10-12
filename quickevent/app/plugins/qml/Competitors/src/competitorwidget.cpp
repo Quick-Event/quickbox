@@ -141,7 +141,7 @@ bool CompetitorWidget::saveData()
 	}
 	return false;
 }
-
+/*
 void CompetitorWidget::on_btChooseFromRegistrations_clicked()
 {
 	qfLogFuncFrame();
@@ -163,3 +163,4 @@ void CompetitorWidget::on_btChooseFromRegistrations_clicked()
 		}
 	}
 }
+*/

@@ -3,23 +3,22 @@
 #include "competitordocument.h"
 #include "../registrationswidget.h"
 
-//#include <EventPlugin/eventplugin.h>
-
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 
-//#include <qf/core/log.h>
+#include <qf/core/model/sqltablemodel.h>
+#include <qf/core/log.h>
 
 #include <QQmlEngine>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
-//namespace qfd = qf::qmlwidgets::dialogs;
-//namespace qfs = qf::core::sql;
+namespace qfm = qf::core::model;
+namespace qfs = qf::core::sql;
 
-using namespace Competitors;
+namespace Competitors {
 
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super(parent)
@@ -77,3 +76,27 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 	}
 }
 
+
+qf::core::model::SqlTableModel* CompetitorsPlugin::registrationsModel()
+{
+	if(!m_registrationsModel) {
+		m_registrationsModel = new qf::core::model::SqlTableModel(this);
+		m_registrationsModel->addColumn("competitorName", tr("Name"));
+		m_registrationsModel->addColumn("registration", tr("Reg"));
+		m_registrationsModel->addColumn("licence", tr("Lic"));
+		m_registrationsModel->addColumn("siId", tr("SI"));
+		//m_registrationsModel->addColumn("fistName");
+		//m_registrationsModel->addColumn("lastName");
+		//m_registrationsModel->addColumn("nameSearchKey");
+		qfs::QueryBuilder qb;
+		qb.select2("registrations", "firstName, lastName, licence, registration, siId, nameSearchKey")
+				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+				.from("registrations")
+				.orderBy("registration");
+		m_registrationsModel->setQueryBuilder(qb);
+		m_registrationsModel->reload();
+	}
+	return m_registrationsModel;
+}
+
+}

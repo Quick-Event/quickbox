@@ -6,21 +6,19 @@
 namespace Ui {
 class RegistrationsWidget;
 }
+
 namespace qf {
-namespace core {
-namespace model {
-class SqlTableModel;
-}}
 namespace qmlwidgets {
 class TableView;
-}
-}
+}}
+
+//class QSortFilterProxyModel;
 
 class RegistrationsWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	enum class FocusWidget {Registration};
+	//enum class FocusWidget {Registration};
 public:
 	explicit RegistrationsWidget(QWidget *parent = 0);
 	~RegistrationsWidget();
@@ -28,11 +26,11 @@ public:
 	void reload();
 	Q_SLOT void onDbEvent(const QString &domain, const QVariant &payload);
 
-	void setFocusToWidget(FocusWidget fw);
+	//void setFocusToWidget(FocusWidget fw);
 	qf::qmlwidgets::TableView* tableView();
 private:
 	Ui::RegistrationsWidget *ui;
-	qf::core::model::SqlTableModel *m_registrationsModel;
+	//QSortFilterProxyModel *m_tableModel = nullptr;
 };
 
 #endif // REGISTRATIONSWIDGET_H

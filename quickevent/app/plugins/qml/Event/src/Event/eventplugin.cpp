@@ -154,17 +154,16 @@ void EventPlugin::onInstalled()
 	connect(m_actConnectDb, SIGNAL(triggered()), this, SLOT(connectToSqlServer()));
 
 	m_actOpenEvent = new qfw::Action(tr("&Open event"));
-	m_actOpenEvent->setShortcut("Ctrl+O");
+	//m_actOpenEvent->setShortcut("Ctrl+O");
 	m_actOpenEvent->setEnabled(false);
 	connect(m_actOpenEvent, SIGNAL(triggered()), this, SLOT(openEvent()));
 
 	m_actCreateEvent = new qfw::Action(tr("Create eve&nt"));
-	m_actCreateEvent->setShortcut("Ctrl+N");
+	//m_actCreateEvent->setShortcut("Ctrl+N");
 	m_actCreateEvent->setEnabled(false);
 	connect(m_actCreateEvent, SIGNAL(triggered()), this, SLOT(createEvent()));
 
 	m_actEditEvent = new qfw::Action(tr("E&dit event"));
-	//m_actEditEvent->setShortcut("Ctrl+N");
 	m_actEditEvent->setEnabled(false);
 	connect(m_actEditEvent, SIGNAL(triggered()), this, SLOT(editEvent()));
 	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {

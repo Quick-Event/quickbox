@@ -8,12 +8,20 @@
 #include <qf/core/utils.h>
 
 namespace qf {
+
+namespace core {
+namespace model {
+class SqlTableModel;
+}}
+
 namespace qmlwidgets {
 class Action;
 namespace framework {
 class PartWidget;
 class DockWidget;
-}}}
+}}
+
+}
 
 namespace Competitors {
 
@@ -32,12 +40,14 @@ public:
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 
 	Q_SIGNAL void nativeInstalled();
+	qf::core::model::SqlTableModel* registrationsModel();
 private:
 	Q_SLOT void onInstalled();
 	void onRegistrationsDockVisibleChanged(bool on = true);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::qmlwidgets::framework::DockWidget *m_registrationsDockWidget = nullptr;
+	qf::core::model::SqlTableModel *m_registrationsModel = nullptr;
 };
 
 }
