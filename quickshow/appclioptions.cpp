@@ -3,7 +3,7 @@
 AppCliOptions::AppCliOptions(QObject *parent)
 	: Super(parent)
 {
-	addOption("profile").setType(QVariant::String).setNames("--profile").setComment("Profile name").setDefaultValue("results");
+	addOption("profile").setType(QVariant::String).setNames("--profile").setComment("Profile name [startlist | results]").setDefaultValue("results");
 	addOption("application.refreshTime").setType(QVariant::String).setNames("--refresh-time").setDefaultValue(1000).setComment("refresh time in msec");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");
 	addOption("event.stage").setType(QVariant::Int).setNames("-s", "--stage").setDefaultValue(1);
