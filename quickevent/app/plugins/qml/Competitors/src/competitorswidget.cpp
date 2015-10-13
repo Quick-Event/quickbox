@@ -2,6 +2,7 @@
 #include "ui_competitorswidget.h"
 #include "competitorwidget.h"
 #include "thispartwidget.h"
+
 #include "Competitors/competitordocument.h"
 
 #include "Event/eventplugin.h"
@@ -28,6 +29,7 @@ static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
 	return qobject_cast<Event::EventPlugin*>(plugin);
 }
 

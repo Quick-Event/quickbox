@@ -19,6 +19,7 @@
 
 #include <QMenu>
 #include <QAction>
+#include <QCompleter>
 
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfw = qf::qmlwidgets;
@@ -46,11 +47,12 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 
 	setTitle(tr("competitor"));
 
-	qf::qmlwidgets::ForeignKeyComboBox *cbx = ui->cbxClass;
-
-	cbx->setReferencedTable("classes");
-	cbx->setReferencedField("id");
-	cbx->setReferencedCaptionField("name");
+	{
+		qf::qmlwidgets::ForeignKeyComboBox *cbx = ui->cbxClass;
+		cbx->setReferencedTable("classes");
+		cbx->setReferencedField("id");
+		cbx->setReferencedCaptionField("name");
+	}
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
 	m_runsModel = new quickevent::og::SqlTableModel(this);
@@ -79,6 +81,15 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 
 	//connect(dataController()->document(), &qf::core::model::DataDocument::loaded, this, &CompetitorWidget::loadRunsTable);
 	//connect(dataController()->document(), &qf::core::model::DataDocument::saved, this, &CompetitorWidget::saveRunsTable);
+	/*
+	{
+		QStringList wordList;
+		wordList << "alpha" << "omega" << "omicron" << "zeta";
+		QCompleter *cmpl = new QCompleter(wordList, this);
+		cmpl->setCaseSensitivity(Qt::CaseInsensitive);
+		ui->edFind->setCompleter(cmpl);
+	}
+	*/
 }
 
 CompetitorWidget::~CompetitorWidget()
@@ -125,6 +136,10 @@ void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 
 bool CompetitorWidget::load(const QVariant &id, int mode)
 {
+	ui->edFind->setVisible(mode == qf::core::model::DataDocument::ModeInsert);
+	if(mode == qf::core::model::DataDocument::ModeInsert) {
+		ui->edFind->setFocus();
+	}
 	if(Super::load(id, mode))
 		return loadRunsTable();
 	return false;
