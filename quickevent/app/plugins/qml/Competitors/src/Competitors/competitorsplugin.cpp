@@ -89,7 +89,7 @@ qf::core::model::SqlTableModel* CompetitorsPlugin::registrationsModel()
 		//m_registrationsModel->addColumn("lastName");
 		//m_registrationsModel->addColumn("nameSearchKey");
 		qfs::QueryBuilder qb;
-		qb.select2("registrations", "firstName, lastName, licence, registration, siId")
+		qb.select2("registrations", "firstName, lastName, licence, registration, siId, nameSearchKey")
 				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 				.from("registrations")
 				.orderBy("lastName, firstName");

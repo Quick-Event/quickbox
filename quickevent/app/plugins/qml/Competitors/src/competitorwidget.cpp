@@ -42,6 +42,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::CompetitorWidget)
 {
+	qfLogFuncFrame();
 	setPersistentSettingsId("CompetitorWidget");
 	ui->setupUi(this);
 
@@ -53,6 +54,8 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 		cbx->setReferencedField("id");
 		cbx->setReferencedCaptionField("name");
 	}
+
+	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
 	m_runsModel = new quickevent::og::SqlTableModel(this);
@@ -81,15 +84,6 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 
 	//connect(dataController()->document(), &qf::core::model::DataDocument::loaded, this, &CompetitorWidget::loadRunsTable);
 	//connect(dataController()->document(), &qf::core::model::DataDocument::saved, this, &CompetitorWidget::saveRunsTable);
-	/*
-	{
-		QStringList wordList;
-		wordList << "alpha" << "omega" << "omicron" << "zeta";
-		QCompleter *cmpl = new QCompleter(wordList, this);
-		cmpl->setCaseSensitivity(Qt::CaseInsensitive);
-		ui->edFind->setCompleter(cmpl);
-	}
-	*/
 }
 
 CompetitorWidget::~CompetitorWidget()
@@ -145,6 +139,16 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 	return false;
 }
 
+void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
+{
+	qfLogFuncFrame();
+	qf::core::model::DataDocument*doc = dataController()->document();
+	for(auto s : {"firstname", "lastname", "registration", "licence", "siid"}) {
+		qfDebug() << "\t" << s << "->" << values.value(s);
+		doc->setValue(s, values.value(s));
+	}
+}
+
 bool CompetitorWidget::saveData()
 {
 	try {
@@ -156,26 +160,4 @@ bool CompetitorWidget::saveData()
 	}
 	return false;
 }
-/*
-void CompetitorWidget::on_btChooseFromRegistrations_clicked()
-{
-	qfLogFuncFrame();
-	auto *w = new RegistrationsWidget();
-	w->setWindowTitle(tr("Find in registrations"));
-	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-	//dlg.setDefaultButton(QDialogButtonBox::Ok);
-	dlg.setCentralWidget(w);
-	w->setFocusToWidget(RegistrationsWidget::FocusWidget::Registration);
-	if(dlg.exec()) {
-		qf::core::utils::TableRow r = w->tableView()->tableRow();
-		if(r.isNull())
-			r = w->tableView()->tableRow(0);
-		if(!r.isNull()) {
-			qf::core::model::DataDocument*doc = dataController()->document();
-			for(auto s : {"firstName", "lastName", "registration", "licence", "siId"}) {
-				doc->setValue(s, r.value(s));
-			}
-		}
-	}
-}
-*/
+

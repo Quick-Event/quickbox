@@ -25,7 +25,7 @@ public:
 
 	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private slots:
-	//void on_btChooseFromRegistrations_clicked();
+	void onRegistrationSelected(const QVariantMap &values);
 private:
 	Q_SLOT bool loadRunsTable();
 	Q_SLOT bool saveRunsTable();

@@ -346,11 +346,6 @@ private:
 	static const TableRow& sharedNull();
 	TableRow(SharedDummyHelper);
 public:
-	QVector<QVariant>& valuesRef() {return d->values;}
-	const QVector<QVariant>& values() const {return d->values;}
-	QVariantMap valuesMap() const;
-	//QBitArray& nullFlagsRef() {return d->nullFlags;}
-public:
 	void saveValues();
 	void restoreOrigValues();
 	void clearEditFlags();
@@ -363,7 +358,10 @@ public:
 	//bool hasNullFlag(int col) const;
 	QVariant value(int col) const;
 	QVariant value(const QString &field_name) const;
-	QVariantMap valueMap() const;
+
+	QVector<QVariant>& valuesRef() {return d->values;}
+	const QVector<QVariant>& values() const {return d->values;}
+	QVariantMap valuesMap(bool full_names = false) const;
 
 	//! Dirty flag nastavi, jen kdyz je value jina, nez ta, co uz tam byla.
 	void setValue(int col, const QVariant &v);

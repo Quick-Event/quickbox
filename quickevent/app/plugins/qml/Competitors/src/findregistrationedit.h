@@ -3,6 +3,8 @@
 
 #include <QLineEdit>
 
+class FindRegistrationsModel;
+
 class FindRegistrationEdit : public QLineEdit
 {
 	Q_OBJECT
@@ -10,8 +12,12 @@ private:
 	typedef QLineEdit Super;
 public:
 	FindRegistrationEdit(QWidget *parent = nullptr);
+
+	Q_SIGNAL void registrationSelected(const QVariantMap &registration_values);
 private:
-	void onEditTextChanged(const QString &new_text);
+	Q_SLOT void onCompleterActivated(const QModelIndex &index);
+private:
+	FindRegistrationsModel *m_findRegistrationsModel = nullptr;
 };
 
 #endif // FINDREGISTRATIONEDIT_H

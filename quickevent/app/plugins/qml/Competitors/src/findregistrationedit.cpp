@@ -9,8 +9,7 @@
 
 #include <QCompleter>
 #include <QAbstractTableModel>
-
-namespace {
+#include <QAbstractProxyModel>
 
 static Competitors::CompetitorsPlugin* competitorsPlugin()
 {
@@ -20,60 +19,82 @@ static Competitors::CompetitorsPlugin* competitorsPlugin()
 	return plugin;
 }
 
-class FilterModel : public QAbstractTableModel
+class FindRegistrationsModel : public QAbstractTableModel
 {
 private:
 	typedef QAbstractTableModel Super;
 public:
-	FilterModel(QObject *parent);
+	FindRegistrationsModel(QObject *parent);
 
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE {Q_UNUSED(parent) return 1;}
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	const qf::core::utils::Table& registrationsTable() const {return m_registrationsModel->table();}
 private:
 	qf::core::model::SqlTableModel *m_registrationsModel = nullptr;
 };
 
-FilterModel::FilterModel(QObject *parent)
+FindRegistrationsModel::FindRegistrationsModel(QObject *parent)
 	: Super(parent)
 {
 	m_registrationsModel = competitorsPlugin()->registrationsModel();
 }
 
-int FilterModel::rowCount(const QModelIndex &parent) const
+int FindRegistrationsModel::rowCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent)
 	const qf::core::utils::Table &table = m_registrationsModel->table();
 	return table.rowCount();
 }
 
-QVariant FilterModel::data(const QModelIndex &index, int role) const
+QVariant FindRegistrationsModel::data(const QModelIndex &index, int role) const
 {
-	const qf::core::utils::Table &table = m_registrationsModel->table();
+	const qf::core::utils::Table &table = registrationsTable();
 	int row_no = index.row();
 	if(row_no >= 0 && row_no < table.rowCount()) {
-		if(role == Qt::EditRole || role == Qt::DisplayRole) {
-			qf::core::utils::TableRow table_row = table.row(row_no);
-			const qf::core::utils::Table::FieldList &fields = table.fields();
-			static auto col_name = fields.fieldIndex(QStringLiteral("competitorName"));
-			static int col_registration = fields.fieldIndex(QStringLiteral("registration"));
-			static auto col_siid = fields.fieldIndex(QStringLiteral("siid"));
-			static auto SI = QStringLiteral("SI:");
+		qf::core::utils::TableRow table_row = table.row(row_no);
+		const qf::core::utils::Table::FieldList &fields = table.fields();
+		static auto col_name = fields.fieldIndex(QStringLiteral("competitorName"));
+		static auto col_searchkey = fields.fieldIndex(QStringLiteral("nameSearchKey"));
+		static int col_registration = fields.fieldIndex(QStringLiteral("registration"));
+		static auto col_siid = fields.fieldIndex(QStringLiteral("siid"));
+		static auto SI = QStringLiteral("SI:");
+		if(role == Qt::DisplayRole) {
 			return table_row.value(col_name).toString() + ' '
 					+ table_row.value(col_registration).toString() + ' '
 					+ SI + table_row.value(col_siid).toString();
+		}
+		else if(role == Qt::EditRole) {
+			return table_row.value(col_searchkey).toString() + ' '
+					+ table_row.value(col_registration).toString() + ' '
+					+ SI + table_row.value(col_siid).toString() + ' '
+					+ table_row.value(col_name).toString();
 		}
 	}
 	return QVariant();
 }
 
-}
-
 FindRegistrationEdit::FindRegistrationEdit(QWidget *parent)
 	: Super(parent)
-{
-	QCompleter *cmpl = new QCompleter(new FilterModel(this), this);
+{	
+	m_findRegistrationsModel = new FindRegistrationsModel(this);
+	QCompleter *cmpl = new QCompleter(m_findRegistrationsModel, this);
 	cmpl->setCaseSensitivity(Qt::CaseInsensitive);
 	cmpl->setFilterMode(Qt::MatchContains);
 	setCompleter(cmpl);
+	connect(cmpl, SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)));
+}
+
+void FindRegistrationEdit::onCompleterActivated(const QModelIndex &index)
+{
+	qfLogFuncFrame() << index << index.data();
+	auto *proxy_model = qobject_cast<QAbstractProxyModel*>(completer()->completionModel());
+	QF_ASSERT(proxy_model != nullptr, "Bat proxy model!", return);
+	QModelIndex ix = proxy_model->mapToSource(index);
+	const qf::core::utils::Table &table = m_findRegistrationsModel->registrationsTable();
+	int row_no = ix.row();
+	if(row_no >= 0 && row_no < table.rowCount()) {
+		qf::core::utils::TableRow table_row = table.row(row_no);
+		emit registrationSelected(table_row.valuesMap(false));
+	}
 }
