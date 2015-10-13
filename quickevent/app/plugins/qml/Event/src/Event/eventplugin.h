@@ -78,6 +78,8 @@ public:
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 
+	Q_INVOKABLE QString classNameById(int class_id);
+
 	DbSchema dbSchema();
 public:
 	// event wide signals
@@ -112,6 +114,7 @@ private:
 	bool m_dbOpen = false;
 	QComboBox *m_cbxStage = nullptr;
 	QMap<int, StageData> m_stageCache;
+	QMap<int, QString> m_classNameCache;
 };
 
 }

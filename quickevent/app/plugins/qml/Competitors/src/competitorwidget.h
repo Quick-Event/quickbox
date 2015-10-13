@@ -36,6 +36,8 @@ private:
 	QVector<int> juniorAges();
 	QVector<int> veteranAges();
 	QString classNameFromRegistration(const QString &registration);
+
+	void showRunsTable(int stage_id);
 private:
 	Ui::CompetitorWidget *ui;
 	quickevent::og::SqlTableModel *m_runsModel;

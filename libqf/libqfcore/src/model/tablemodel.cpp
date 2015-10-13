@@ -600,7 +600,7 @@ int TableModel::columnIndex(const QString &column_name) const
 {
 	int ret = -1, i = 0;
 	Q_FOREACH(auto cd, m_columns) {
-		//qfTrash() << "\ttrying:" << cd.fieldName();
+		//qfInfo() << cd.fieldName() << "vs." << column_name;
 		if(qfc::Utils::fieldNameEndsWith(cd.fieldName(), column_name)) {
 			ret = i;
 			break;

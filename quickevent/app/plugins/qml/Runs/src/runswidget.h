@@ -25,8 +25,6 @@ class RunsWidget;
 }
 
 class ThisPartWidget;
-class RunsTableModel;
-class RunsTableItemDelegate;
 
 class RunsWidget : public QFrame
 {
@@ -47,7 +45,7 @@ public:
 	Q_INVOKABLE int selectedStageId();
 	Q_SIGNAL void selectedStageIdChanged(int stage_id);
 
-	void editStartList(int class_id, int competitor_id);
+	//void editStartList(int class_id, int competitor_id);
 private slots:
 	void on_btDraw_clicked();
 	void on_btDrawRemove_clicked();
@@ -63,14 +61,10 @@ private:
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
 	QList<int> runsForClass(int stage_id, int class_id);
 	QMap<int, int> competitorsForClass(int stage_id, int class_id);
-
-	void onCustomContextMenuRequest(const QPoint &pos);
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap};
 
 	Ui::RunsWidget *ui;
-	RunsTableModel *m_runsModel;
-	RunsTableItemDelegate *m_runsTableItemDelegate;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
 };

@@ -294,6 +294,18 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bo
 	}
 }
 
+QString EventPlugin::classNameById(int class_id)
+{
+	if(m_classNameCache.isEmpty()) {
+		qf::core::sql::Query q;
+		q.exec("SELECT id, name FROM classes");
+		while (q.next()) {
+			m_classNameCache[q.value(0).toInt()] = q.value(1).toString();
+		}
+	}
+	return m_classNameCache.value(class_id);
+}
+
 DbSchema EventPlugin::dbSchema()
 {
 	return DbSchema(this);
@@ -607,6 +619,7 @@ void EventPlugin::editEvent()
 bool EventPlugin::closeEvent()
 {
 	qfLogFuncFrame();
+	m_classNameCache.clear();
 	setEventName(QString());
 	QF_SAFE_DELETE(m_eventConfig);
 	emit eventOpened(eventName()); //comment it till QE can load event with invalid name

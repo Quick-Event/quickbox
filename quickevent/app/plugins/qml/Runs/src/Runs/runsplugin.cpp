@@ -2,14 +2,9 @@
 #include "thispartwidget.h"
 #include "../runswidget.h"
 #include "drawing/drawingganttwidget.h"
+#include "../runstabledialogwidget.h"
 
 #include <Event/eventplugin.h>
-
-#include <qf/core/log.h>
-#include <qf/core/sql/query.h>
-#include <qf/core/sql/querybuilder.h>
-#include <qf/core/utils/table.h>
-#include <qf/core/utils/treetable.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -17,6 +12,12 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
+
+#include <qf/core/log.h>
+#include <qf/core/sql/query.h>
+#include <qf/core/sql/querybuilder.h>
+#include <qf/core/utils/table.h>
+#include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 
 #include <QQmlEngine>
@@ -57,7 +58,7 @@ void RunsPlugin::onInstalled()
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
-	connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
+	//connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
 
 	emit nativeInstalled();
 
@@ -76,7 +77,7 @@ void RunsPlugin::onInstalled()
 		});
 	}
 }
-
+/*
 void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competitor_id)
 {
 	//qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
@@ -89,7 +90,7 @@ void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competit
 	eventPlugin()->setCurrentStageId(stage_id);
 	rw->editStartList(class_id, competitor_id);
 }
-
+*/
 int RunsPlugin::courseForRun(int run_id)
 {
 	// TODO: implementation should be dependend on event type and exposed to QML
@@ -244,6 +245,16 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 		tt_row.appendTable(tt2);
 	}
 	return tt.toVariant();
+}
+
+void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+{
+	auto *w = new RunsTableDialogWidget();
+	w->reload(stage_id, class_id, sort_column, select_competitor_id);
+	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
+	//dlg.setButtons(QDialogButtonBox::Save);
+	dlg.setCentralWidget(w);
+	dlg.exec();
 }
 
 

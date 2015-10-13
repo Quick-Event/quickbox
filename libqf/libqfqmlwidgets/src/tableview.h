@@ -67,8 +67,9 @@ public:
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)
 	QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
-	public:
-		QSortFilterProxyModel* sortFilterProxyModel() const;
+
+public:
+	QSortFilterProxyModel* sortFilterProxyModel() const;
 	qf::core::model::TableModel* tableModel() const;
 	void setTableModel(qf::core::model::TableModel* m);
 	Q_SIGNAL void tableModelChanged();

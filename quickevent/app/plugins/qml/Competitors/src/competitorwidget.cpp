@@ -5,7 +5,7 @@
 #include "Competitors/competitorsplugin.h"
 #include "registrationswidget.h"
 
-//#include "Event/eventplugin.h"
+#include "Event/eventplugin.h"
 
 #include <quickevent/og/itemdelegate.h>
 #include <quickevent/og/sqltablemodel.h>
@@ -21,6 +21,7 @@
 #include <QAction>
 #include <QCompleter>
 #include <QDate>
+#include <QPushButton>
 
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfw = qf::qmlwidgets;
@@ -32,13 +33,16 @@ static Competitors::CompetitorsPlugin* competitorsPlugin()
 	return qobject_cast<Competitors::CompetitorsPlugin *>(plugin);
 }
 
+*/
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin*>(plugin);
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
 }
-*/
+
 CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::CompetitorWidget)
@@ -85,8 +89,17 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
 
-	//connect(dataController()->document(), &qf::core::model::DataDocument::loaded, this, &CompetitorWidget::loadRunsTable);
-	//connect(dataController()->document(), &qf::core::model::DataDocument::saved, this, &CompetitorWidget::saveRunsTable);
+	{
+		int stage_cnt = eventPlugin()->stageCount();
+		auto *ly = new QHBoxLayout(ui->grpStartTimes);
+		for (int i = 1; i <= stage_cnt; ++i) {
+			QPushButton *bt = new QPushButton(tr("E&%1").arg(i));
+			ly->addWidget(bt);
+			connect(bt, &QPushButton::clicked, [this, i]() {
+				this->showRunsTable(i);
+			});
+		}
+	}
 }
 
 CompetitorWidget::~CompetitorWidget()
@@ -162,6 +175,26 @@ QString CompetitorWidget::classNameFromRegistration(const QString &registration)
 			return c + QString::number(y);
 	}
 	return QString();
+}
+
+void CompetitorWidget::showRunsTable(int stage_id)
+{
+	if(!saveData())
+		return;
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	QObject *runs_plugin = fwk->plugin("Runs");
+	if(runs_plugin) {
+		qf::core::model::DataDocument*doc = dataController()->document();
+		int competitor_id = doc->value("competitors.id").toInt();
+		int class_id = ui->cbxClass->currentData().toInt();
+		QString sort_col = QStringLiteral("runs.startTimeMs");
+		QMetaObject::invokeMethod(runs_plugin, "showRunsTable"
+								  , Q_ARG(int, stage_id)
+								  , Q_ARG(int, class_id)
+								  , Q_ARG(QString, sort_col)
+								  , Q_ARG(int, competitor_id));
+		loadRunsTable();
+	}
 }
 
 void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
