@@ -20,6 +20,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QCompleter>
+#include <QDate>
 
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfw = qf::qmlwidgets;
@@ -139,6 +140,28 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 	return false;
 }
 
+QString CompetitorWidget::classNameFromRegistration(const QString &registration)
+{
+	qfLogFuncFrame() << registration;
+	QString reg = registration.mid(3);
+	int year = registration.mid(3, 2).toInt() + 1900;
+	int curr_year = QDate::currentDate().year();
+	int age = curr_year - year;
+	if(age >= 100)
+		age -= 100;
+	qfDebug() << "\t age:" << age;
+	QChar c = (registration.mid(5, 1).toInt() == 5)? 'D': 'H';
+	for(int y : juniorAges()) {
+		if(y >= age)
+			return c + QString::number(y);
+	}
+	for(int y : veteranAges()) {
+		if(age >= y)
+			return c + QString::number(y);
+	}
+	return QString();
+}
+
 void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 {
 	qfLogFuncFrame();
@@ -146,6 +169,16 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 	for(auto s : {"firstname", "lastname", "registration", "licence", "siid"}) {
 		qfDebug() << "\t" << s << "->" << values.value(s);
 		doc->setValue(s, values.value(s));
+	}
+	QString class_name_prefix = classNameFromRegistration(values.value("registration").toString());
+	if(!class_name_prefix.isEmpty()) {
+		for (int i = 0; i < ui->cbxClass->count(); ++i) {
+			QString class_name = ui->cbxClass->itemText(i);
+			if(class_name.startsWith(class_name_prefix)) {
+				ui->cbxClass->setCurrentText(class_name);
+				break;
+			}
+		}
 	}
 }
 
@@ -159,5 +192,31 @@ bool CompetitorWidget::saveData()
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
 	return false;
+}
+
+QVector<int> CompetitorWidget::juniorAges()
+{
+	QVector<int> ret;
+	for (int i = 0; i < ui->cbxClass->count(); ++i) {
+		QString class_name = ui->cbxClass->itemText(i);
+		int age = class_name.mid(1, 2).toInt();
+		if(age > 0 && age < 21)
+			ret << age;
+	}
+	std::sort(ret.begin(), ret.end());
+	return ret;
+}
+
+QVector<int> CompetitorWidget::veteranAges()
+{
+	QVector<int> ret;
+	for (int i = 0; i < ui->cbxClass->count(); ++i) {
+		QString class_name = ui->cbxClass->itemText(i);
+		int age = class_name.mid(1, 2).toInt();
+		if(age > 0 && age >= 21)
+			ret << age;
+	}
+	std::sort(ret.begin(), ret.end(), std::greater<int>());
+	return ret;
 }
 
