@@ -51,11 +51,11 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	m->addColumn("registration", tr("Reg"));
 	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	//m->addColumn("virtual.finishTimeMs", tr("Finish")).setVirtual(true, qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
 	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
+	m->addColumn("runs.cardReturned", tr("R")).setToolTip(tr("Card returned"));
 	m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
 	m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
 	m->addColumn("competitors.note", tr("Note"));

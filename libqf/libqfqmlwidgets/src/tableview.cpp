@@ -1915,7 +1915,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 			ret = true;
 			//return ret;
 		}
-		bool read_only = false;
+		bool read_only = isReadOnly();
 		/*
 		if(!read_only) {
 			qfc::model::TableModel *m = tableModel();
@@ -1923,45 +1923,47 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 		}
 		*/
 		try {
+			ret = false;
+			bool inline_editor_called = false;
+			int orig_check_state = index.data(Qt::CheckStateRole).toInt();
 			if(rowEditorMode() == EditRowsInline) {
 				if(!read_only) {
 					qfDebug() << "\t RowEditorInline";
-					int orig_check_state = index.data(Qt::CheckStateRole).toInt();
-					ret = QTableView::edit(index, trigger, event);
+					inline_editor_called = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t QTableView::edit() returned:" << ret;
-					if(ret) {
-						int new_check_state = index.data(Qt::CheckStateRole).toInt();
-						if(orig_check_state != new_check_state) {
-							/// handle bool values changes
-							/// booleans are not using editor created by ItemDelegate, but set model data directly using Qt::CheckStateRole
-							qfDebug() << "check state changed:" << orig_check_state << "->" << new_check_state;
-							if(inlineEditSaveStrategy() == OnEditedValueCommit) {
-								postRow(currentIndex().row());
-							}
-							refreshActions();
-						}
-					}
 				}
 			}
 			else  if(rowEditorMode() == EditRowsExternal || rowEditorMode() == EditRowsMixed) {
-				ret = false;
 				if(rowEditorMode() == EditRowsMixed) {
-					ret = QTableView::edit(index, trigger, event);
+					inline_editor_called = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t RowEditorMixed QTableView::edit() returned:" << ret;
 				}
-				if(!ret) {
-					if(trigger == QTableView::DoubleClicked || trigger == QTableView::EditKeyPressed) {
-						if(read_only) {
-						}
-						else {
-							QVariant id = selectedRow().value(idColumnName());
-							if(id.isValid()) {
-								emit editRowInExternalEditor(id, ModeEdit);
-							}
-						}
-						ret = false;
-						event->accept();
+			}
+			if(inline_editor_called) {
+				int new_check_state = index.data(Qt::CheckStateRole).toInt();
+				qfDebug() << "check state changed:" << orig_check_state << "->" << new_check_state;
+				if(orig_check_state != new_check_state) {
+					/// handle bool values changes
+					/// booleans are not using editor created by ItemDelegate, but set model data directly using Qt::CheckStateRole
+					if(inlineEditSaveStrategy() == OnEditedValueCommit) {
+						postRow(currentIndex().row());
 					}
+					refreshActions();
+				}
+				ret = true;
+			}
+			else {
+				if(trigger == QTableView::DoubleClicked || trigger == QTableView::EditKeyPressed) {
+					if(read_only) {
+					}
+					else {
+						QVariant id = selectedRow().value(idColumnName());
+						if(id.isValid()) {
+							emit editRowInExternalEditor(id, ModeEdit);
+						}
+					}
+					ret = false;
+					event->accept();
 				}
 			}
 		}
