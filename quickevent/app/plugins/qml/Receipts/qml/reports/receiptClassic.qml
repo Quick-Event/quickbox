@@ -132,15 +132,18 @@ Report {
 					layout: Frame.LayoutHorizontal
 					Para {
 						id: paraCheck
-						width: 12
+						width: 10
 						text: "Check:"
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						id: paraCheckTime
-						width: 15
+						width: 14
 						textHAlign: Frame.AlignRight
-						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("checkTimeMs")); }
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToTimeString(start00msec + bandCard.data("checkTimeMs"));
+						}
 					}
 					Cell {
 						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
@@ -152,7 +155,10 @@ Report {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
-						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("finishTimeMs")); }
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToTimeString(start00msec + bandCard.data("finishTimeMs"));
+						}
 					}
 				}
 				Frame {
@@ -167,7 +173,10 @@ Report {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
-						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("startTimeMs")); }
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToTimeString(start00msec + bandCard.data("startTimeMs"));
+						}
 					}
 					Cell {
 						text: "/"
@@ -175,9 +184,7 @@ Report {
 					Para {
 						textFn: function() {
 							var start = bandCard.data("startTimeMs");
-							var start00 = bandCard.data("stageStart");
-							start00 = TimeExt.msecSinceMidnight(start00);
-							return OGTime.msecToString(start - start00)
+							return OGTime.msecToString(start)
 						}
 					}
 					Para {

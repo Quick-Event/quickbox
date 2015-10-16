@@ -188,6 +188,10 @@ Schema {
 				Field { name: 'cardLent'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
+				},
+				Field { name: 'cardReturned'; type: Boolean { }
+					defaultValue: false;
+					notNull: true
 				}
 				/*,
 				Field { name: 'status';
@@ -361,7 +365,7 @@ Schema {
 		Insert {
 			table: config
 			rows: [
-				['db.version', qsTr('Data version'), '10003', 'int']
+				['db.version', qsTr('Data version'), '10004', 'int']
 				/*
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],

@@ -29,13 +29,6 @@ const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.ca
 const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD = "CardReader.punchRecord";
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
 
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin *>(plugin);
-}
-
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -194,18 +187,14 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 				q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
 			}
 			q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
-			//q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 			auto punch_list = checked_card.punches();
 			if(punch_list.count()) {
 				{
-					CardReader::CheckedPunch last_punch(punch_list.last().toMap());
 					CardReader::CheckedPunch finish_punch;
 					finish_punch.setPosition(punch_list.count() + 1);
 					finish_punch.setCode(999);
-					finish_punch.setStpTimeMs(checked_card.timeMs());
-					if(last_punch.position() > 0) {
-						finish_punch.setLapTimeMs(finish_punch.stpTimeMs() - last_punch.stpTimeMs());
-					}
+					finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
+					finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
 					punch_list << finish_punch;
 				}
 				for(auto v : punch_list) {
@@ -222,18 +211,9 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 			}
 		}
 		{
-			Event::StageData stage = eventPlugin()->stageData(eventPlugin()->currentStageId());
-			QTime start00 = stage.startTime();
-			if(start00.hour() >= 12)
-				start00 = start00.addSecs(-12 * 60 *60);
-			int start00_msec = start00.msecsSinceStartOfDay();
 			q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
 			q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
-			int finish_time = checked_card.finishTimeMs() - start00_msec;
-			// DIRTY QUICK FIX !!!
-			while(finish_time < 0)
-				finish_time += 12 * 60 * 60 * 1000;
-			q.bindValue(QStringLiteral(":finishTimeMs"), finish_time);
+			q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
 			q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
 			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 			q.exec(qf::core::Exception::Throw);

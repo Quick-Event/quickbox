@@ -269,16 +269,9 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			//mc.insert(mc.count(), QVariantList() << 1 << 101);
 			tt.setValue("missingCodes", mc);
 		}
-		{
-			Event::StageData stage = eventPlugin()->stageData(eventPlugin()->currentStageId());
-			QTime start00 = stage.startTime();
-			if(start00.hour() >= 12)
-				start00 = start00.addSecs(-12 * 60 *60);
-			tt.setValue("stageStart", start00);
-		}
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
-		tt.setValue("cardNumber", checked_card.cardNumber());
+		//tt.setValue("cardNumber", checked_card.cardNumber());
 
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
