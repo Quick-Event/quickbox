@@ -184,7 +184,7 @@ public:
 	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
 	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
 
-	qf::core::utils::TableRow tableRow(int row_no);
+	qf::core::utils::TableRow tableRow(int row_no) const;
 
 	class QFCORE_DECL_EXPORT TreeTableExportOptions : public QVariantMap
 	{

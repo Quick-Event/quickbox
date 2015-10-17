@@ -46,6 +46,32 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 
+namespace {
+class Model : public quickevent::og::SqlTableModel
+{
+	Q_OBJECT
+private:
+	typedef quickevent::og::SqlTableModel Super;
+public:
+	explicit Model(QObject *parent) : Super(parent) {}
+
+	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+};
+
+QVariant Model::data(const QModelIndex &index, int role) const
+{
+	if(role == Qt::BackgroundRole) {
+		static auto C_RUNID = QStringLiteral("cards.runId");
+		int run_id = tableRow(index.row()).value(C_RUNID).toInt();
+		if(run_id == 0) {
+			static auto c = QColor(Qt::red).lighter(150);
+			return c;
+		}
+	}
+	return Super::data(index, role);
+}
+}
+
 CardReaderWidget::CardReaderWidget(QWidget *parent)
 	: Super(parent)
 	, ui(new Ui::CardReaderWidget)
@@ -70,7 +96,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		ui->tblCards->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
-		auto m = new quickevent::og::SqlTableModel(this);
+		auto m = new Model(this);
 		m->addColumn("cards.id", "ID").setReadOnly(true);
 		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
 		m->addColumn("classes.name", tr("Class"));
@@ -168,7 +194,7 @@ void CardReaderWidget::reload()
 {
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId")
+	qb.select2("cards", "id, siId, runId")
 			.select2("runs", "startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
@@ -483,4 +509,6 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		}
 	}
 }
+
+#include "cardreaderwidget.moc"
 
