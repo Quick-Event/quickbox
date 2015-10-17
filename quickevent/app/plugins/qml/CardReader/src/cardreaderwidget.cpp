@@ -14,6 +14,7 @@
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
 #include <quickevent/og/siid.h>
+#include <quickevent/audio/player.h>
 
 #include <siut/sidevicedriver.h>
 #include <siut/simessage.h>
@@ -407,8 +408,18 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	appendLog(qf::core::Log::Level::Debug, card.dump());
 	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
 	int run_id = thisPlugin()->findRunId(card.cardNumber());
-	if(run_id == 0)
+	if(run_id == 0) {
+		operatorAudioWakeUp();
 		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
+	}
+	else {
+		qf::core::sql::Query q;
+		q.exec("SELECT cardLent, cardReturned FROM runs WHERE id=" QF_IARG(run_id) );
+		if(q.next()) {
+			if(q.value(0).toBool() && !q.value(1).toBool())
+				operatorAudioNotify();
+		}
+	}
 	CardReader::ReadCard read_card(card);
 	read_card.setRunId(run_id);
 	int card_id = thisPlugin()->saveCardToSql(read_card);
@@ -519,6 +530,23 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		}
 	});
 	dlg.exec();
+}
+
+quickevent::audio::Player *CardReaderWidget::audioPlayer()
+{
+	if(!m_audioPlayer)
+		m_audioPlayer = new quickevent::audio::Player(this);
+	return m_audioPlayer;
+}
+
+void CardReaderWidget::operatorAudioWakeUp()
+{
+	audioPlayer()->playAlert(quickevent::audio::Player::AlertKind::OperatorWakeUp);
+}
+
+void CardReaderWidget::operatorAudioNotify()
+{
+	audioPlayer()->playAlert(quickevent::audio::Player::AlertKind::OperatorNotify);
 }
 
 #include "cardreaderwidget.moc"

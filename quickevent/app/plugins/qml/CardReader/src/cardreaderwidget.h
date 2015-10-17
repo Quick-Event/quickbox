@@ -10,11 +10,7 @@ namespace Ui {
 }
 
 namespace qf {
-namespace core {
-namespace model {
-class SqlTableModel;
-}
-}
+namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets {
 class Action;
 namespace framework {
@@ -23,12 +19,9 @@ class Plugin;
 }
 }
 }
-namespace siut {
-class DeviceDriver;
-}
+namespace siut { class DeviceDriver; }
 
-class SIMessageData;
-class SIMessageCardReadOut;
+namespace quickevent { namespace audio { class Player; }}
 
 namespace CardReader {
 class CardReaderPlugin;
@@ -37,17 +30,18 @@ class ReadCard;
 class CheckedCard;
 }
 
-namespace Event {
-class EventPlugin;
-}
+namespace Event { class EventPlugin; }
 
 class QTextStream;
 class QFile;
 class QComboBox;
 class QCheckBox;
 
-class CardReaderPartWidget;
 class SIMessageTransmitRecord;
+class SIMessageData;
+class SIMessageCardReadOut;
+
+class CardReaderPartWidget;
 
 class CardReaderWidget : public QFrame
 {
@@ -95,6 +89,10 @@ private:
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void showSelectedCard();
 	void assignRunnerToSelectedCard();
+
+	quickevent::audio::Player* audioPlayer();
+	void operatorAudioWakeUp();
+	void operatorAudioNotify();
 private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
@@ -105,6 +103,7 @@ private:
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QCheckBox *m_cbxAutoRefresh = nullptr;
+	quickevent::audio::Player *m_audioPlayer = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H
