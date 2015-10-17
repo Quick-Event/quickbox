@@ -6,6 +6,7 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
+#include <qf/core/utils/table.h>
 
 namespace qf {
 	namespace core {
@@ -43,6 +44,8 @@ public:
 
 	Q_SIGNAL void nativeInstalled();
 
+	const qf::core::utils::Table& runsTable(int stage_id);
+
 	Q_INVOKABLE int courseForRun(int run_id);
 	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id, int places = -1);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1);
@@ -54,6 +57,8 @@ private:
 	int courseForRun_Classic(int run_id);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
+	qf::core::utils::Table m_runsTable;
+	int m_runsTableStageId = 0;
 };
 
 }

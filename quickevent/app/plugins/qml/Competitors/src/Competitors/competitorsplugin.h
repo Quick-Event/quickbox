@@ -6,10 +6,12 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
+#include <qf/core/utils/table.h>
 
 namespace qf {
 
 namespace core {
+
 namespace model {
 class SqlTableModel;
 }}
@@ -41,6 +43,7 @@ public:
 
 	Q_SIGNAL void nativeInstalled();
 	qf::core::model::SqlTableModel* registrationsModel();
+	const qf::core::utils::Table& registrationsTable();
 private:
 	Q_SLOT void onInstalled();
 	void onRegistrationsDockVisibleChanged(bool on = true);
@@ -48,6 +51,7 @@ private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::qmlwidgets::framework::DockWidget *m_registrationsDockWidget = nullptr;
 	qf::core::model::SqlTableModel *m_registrationsModel = nullptr;
+	qf::core::utils::Table m_registrationsTable;
 };
 
 }

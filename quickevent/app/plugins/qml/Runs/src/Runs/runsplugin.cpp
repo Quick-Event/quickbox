@@ -4,7 +4,7 @@
 #include "drawing/drawingganttwidget.h"
 #include "../runstabledialogwidget.h"
 
-#include <Event/eventplugin.h>
+//#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -28,14 +28,14 @@ namespace qfu = qf::core::utils;
 namespace qfs = qf::core::sql;
 
 using namespace Runs;
-
+/*
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
 	return qobject_cast<Event::EventPlugin*>(plugin);
 }
-
+*/
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -44,6 +44,39 @@ RunsPlugin::RunsPlugin(QObject *parent)
 
 RunsPlugin::~RunsPlugin()
 {
+}
+
+const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
+{
+	if(m_runsTableStageId != stage_id) {
+		qfs::QueryBuilder qb;
+		qb.select2("competitors", "registration")
+				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+				.select2("runs", "id, siId")
+				.select("runs.id AS runId")
+				.select2("classes", "name")
+				.from("competitors")
+				.join("competitors.classId", "classes.id")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id), "JOIN")
+				.orderBy("classes.name, lastName, firstName");
+		qf::core::model::SqlTableModel m;
+		m.setQueryBuilder(qb);
+		m.reload();
+		m_runsTable = m.table();
+
+		auto c_nsk = QStringLiteral("competitorNameAscii7");
+		m_runsTable.appendColumn(c_nsk, QVariant::String);
+		int ix_nsk = m_runsTable.fields().fieldIndex(c_nsk);
+		int ix_cname = m_runsTable.fields().fieldIndex(QStringLiteral("competitorName"));
+		for (int i = 0; i < m_runsTable.rowCount(); ++i) {
+			qf::core::utils::TableRow &row_ref = m_runsTable.rowRef(i);
+			QString nsk = row_ref.value(ix_cname).toString();
+			nsk = QString::fromLatin1(qf::core::Collator::toAscii7(QLocale::Czech, nsk, true));
+			row_ref.setValue(ix_nsk, nsk);
+		}
+		m_runsTableStageId = stage_id;
+	}
+	return m_runsTable;
 }
 
 void RunsPlugin::onInstalled()

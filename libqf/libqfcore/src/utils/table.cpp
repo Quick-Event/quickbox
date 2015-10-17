@@ -22,9 +22,10 @@ using namespace qf::core::utils;
 //                      Table::LessThan
 //====================================================
 Table::LessThan::LessThan(const Table &t)
-	: table(t), sortedFields(t.tableProperties().sortDefinition())
+	: table(t)
+	, sortedFields(t.tableProperties().sortDefinition())
+	, sortCollator(t.sortCollator())
 {
-	sortCollator = table.sortCollator();
 	//qfLogFuncFrame() << "sortedFields.count():" << sortedFields.count();
 	for(int i=0; i<sortedFields.count(); i++) {
 		if(!table.fields().isValidFieldIndex(sortedFields[i].fieldIndex))
@@ -88,8 +89,8 @@ int Table::LessThan::cmp(const QVariant &l, const QVariant &r, const Table::Sort
 	int ret = 1;
 	if(l.type() == QVariant::String) {
 		if(sd.ascii7bit) {
-			QByteArray la = qf::core::Collator::toAscii7(l.toString(), !sd.caseSensitive);
-			QByteArray ra = qf::core::Collator::toAscii7(r.toString(), !sd.caseSensitive);
+			QByteArray la = qf::core::Collator::toAscii7(QLocale::Czech, l.toString(), !sd.caseSensitive);
+			QByteArray ra = qf::core::Collator::toAscii7(QLocale::Czech, r.toString(), !sd.caseSensitive);
 			if(la < ra)
 				ret = -1;
 			else if(la == ra)
@@ -293,7 +294,8 @@ TableRow::Data::Data(const Table::TableProperties &props)
 	//flags.forcedInsert = false;
 	Table::FieldList flst = tableProperties.fields();
 	values.resize(flst.count());
-	for(int i=0; i<flst.count(); i++) values[i] = QVariant();/// NULL je QVariant(), to kvuli QDate. (flst[i].type());
+	for(int i=0; i<flst.count(); i++)
+		values[i] = QVariant();/// NULL je QVariant(), to kvuli QDate. (flst[i].type());
 }
 
 TableRow::Data::~Data()
@@ -309,7 +311,16 @@ TableRow::TableRow(SharedDummyHelper)
 {
 	d = new Data();
 }
-
+/*
+void TableRow::initValues()
+{
+	d->origValues.clear();
+	const Table::FieldList &flst = tableProperties.fields();
+	d->values.resize(flst.count());
+	for(int i=0; i<flst.count(); i++)
+		d->values[i] = QVariant();/// NULL je QVariant(), to kvuli QDate. (flst[i].type());
+}
+*/
 TableRow::TableRow(const Table::TableProperties &props)
 {
 	d = new Data(props);
@@ -319,6 +330,13 @@ const TableRow& TableRow::sharedNull()
 {
 	static TableRow n = TableRow(SharedDummyHelper());
 	return n;
+}
+
+void TableRow::insertInitValue(int ix)
+{
+	d->origValues.clear();
+	d->dirtyFlags.clear();
+	d->values.insert(ix, QVariant());
 }
 
 bool TableRow::isDirty(int field_no) const
@@ -534,6 +552,7 @@ QString TableRow::toString(const QString &sep) const
 //                          Table
 //=========================================
 Table::Data::Data()
+	: sortCollator(QLocale::Czech)
 {
 	sortCollator.setIgnorePunctuation(true);
 }
@@ -601,6 +620,18 @@ int Table::rowCount() const
 int Table::columnCount() const
 {
 	return fields().count();
+}
+
+Table::Field &Table::insertColumn(int ix, const QString &name, QVariant::Type t)
+{
+	FieldList &fields = fieldsRef();
+	fields.insert(ix, Field(name, t));
+	for (int i = 0; i < rowCount(); ++i) {
+		TableRow &r = rowRef(i);
+		r.setTableProperties(tableProperties());
+		r.insertInitValue(ix);
+	}
+	return fields[ix];
 }
 
 bool Table::isValidRowIndex(int row) const //throw(QFException)

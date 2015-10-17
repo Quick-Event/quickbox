@@ -433,10 +433,15 @@ int SqlTableModel::reloadRow(int row_no)
 				// doesn't contain classes.id and still can be reloaded
 				continue;
 			}
+			QVariant pri_ix_val = row_ref.value(fld_ix);
+			if(pri_ix_val.isNull()) {
+				// LEFT JOIN-ed table with missing record, don't include this constrain in reload row query
+				continue;
+			}
 			qfu::Table::Field fld = m_table.fields().at(fld_ix);
 			QSqlField sqlfld(fld.shortName(), fld.type());
 			// cannot use origValue() here, since reloadRow() must work for even edited primary keys
-			sqlfld.setValue(row_ref.value(fld_ix));
+			sqlfld.setValue(pri_ix_val);
 			QString formated_val = sqldrv->formatValue(sqlfld);
 			qb.where(full_fld_name + "=" + formated_val);
 		}

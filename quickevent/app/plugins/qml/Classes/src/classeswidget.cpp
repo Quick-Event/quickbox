@@ -224,7 +224,7 @@ void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
 
 static QString normalize_course_name(const QString &name)
 {
-	QString ret = qf::core::Collator::toAscii7(name, false);
+	QString ret = qf::core::Collator::toAscii7(QLocale::Czech, name, false);
 	ret.replace(' ', QString());
 	ret.replace(',', '+');
 	return ret;

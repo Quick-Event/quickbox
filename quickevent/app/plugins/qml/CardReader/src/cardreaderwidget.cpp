@@ -107,7 +107,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
 		m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
 		m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
-		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
+		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true);
+		m->addColumn("runs.cardReturned", tr("R")).setToolTip(tr("Card returned"));
 		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
@@ -125,12 +126,23 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
 	QAction a_show_card(tr("Show card"), nullptr);
+	QAction a_print_card(tr("Print card"), nullptr);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card << &a_assign_runner;
+	lst << &a_show_card << &a_print_card << &a_assign_runner;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_card) {
 		showSelectedCard();
+	}
+	else if(a == &a_print_card) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		auto *plugin = fwk->plugin("Receipts");
+		if(!plugin) {
+			qfError() << "Cannot find Receipts plugin!";
+			return;
+		}
+		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
+		QMetaObject::invokeMethod(plugin, "printReceipt", Q_ARG(int, card_id));
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
@@ -195,7 +207,7 @@ void CardReaderWidget::reload()
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, runId")
-			.select2("runs", "startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent")
+			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent, cardReturned")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -490,24 +502,23 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 	auto *w = new Runs::FindRunnerWidget(eventPlugin()->currentStageId());
 	w->setWindowTitle(tr("Find runner"));
 	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+	dlg.setPersistentSettingsId("dlgAssignRunnerToSelectedCard");
 	//dlg.setDefaultButton(QDialogButtonBox::Ok);
 	dlg.setCentralWidget(w);
-	w->setFocusToWidget(Runs::FindRunnerWidget::FocusWidget::Name);
-	if(dlg.exec()) {
-		qf::core::utils::TableRow r = w->tableView()->tableRow();
-		if(r.isNull())
-			r = w->tableView()->tableRow(0);
-		if(!r.isNull()) {
-			int run_id = r.value("runs.id").toInt();
-			if(run_id) {
-				CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
-				if(thisPlugin()->updateCheckedCardValuesSql(checked_card)) {
-					if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
-						ui->tblCards->reloadRow();
-				}
+	//w->setFocusToWidget(Runs::FindRunnerWidget::FocusWidget::Name);
+	w->focusLineEdit();
+	connect(w, &Runs::FindRunnerWidget::runnerSelected, [this, card_id, &dlg](const QVariantMap &values) {
+		dlg.accept();
+		int run_id = values.value("runid").toInt();
+		if(run_id) {
+			CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
+			if(thisPlugin()->updateCheckedCardValuesSql(checked_card)) {
+				if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
+					this->ui->tblCards->reloadRow();
 			}
 		}
-	}
+	});
+	dlg.exec();
 }
 
 #include "cardreaderwidget.moc"

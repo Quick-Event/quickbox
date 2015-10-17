@@ -281,7 +281,7 @@ QtObject {
 				var ok = true;
 				ok = q.exec("DELETE FROM registrations");
 				if(ok) {
-					q.prepare('INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, nameSearchKey, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :nameSearchKey, :importId)');
+					q.prepare('INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :importId)');
 					for(var obj_key in data) {
 						var obj = data[obj_key];
 						//Log.debug(JSON.stringify(obj, null, 2));
@@ -292,8 +292,8 @@ QtObject {
 
 						q.bindValue(':firstName', obj.FirstName);
 						q.bindValue(':lastName', obj.LastName);
-						var name_search_key = File.toAscii7(obj.LastName + " " + obj.FirstName, true);
-						q.bindValue(':nameSearchKey', name_search_key);
+						//var name_search_key = File.toAscii7(obj.LastName + " " + obj.FirstName, true);
+						//q.bindValue(':nameSearchKey', name_search_key);
 						var reg = obj.RegNo;
 						if(reg) {
 							q.bindValue(':registration', reg);

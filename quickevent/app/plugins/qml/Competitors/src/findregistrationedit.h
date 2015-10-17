@@ -11,6 +11,8 @@ class FindRegistrationEdit : public QLineEdit
 private:
 	typedef QLineEdit Super;
 public:
+	static constexpr int CompletionRole = Qt::UserRole + 1;
+
 	FindRegistrationEdit(QWidget *parent = nullptr);
 
 	Q_SIGNAL void registrationSelected(const QVariantMap &registration_values);

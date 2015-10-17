@@ -70,7 +70,7 @@ bool QmlFileSingleton::writeXml(const QString &file_path, const QVariant &body_l
 
 QString QmlFileSingleton::toAscii7(const QString &s, bool to_lower)
 {
-	return qf::core::Collator::toAscii7(s, to_lower);
+	return qf::core::Collator::toAscii7(QLocale::Czech, s, to_lower);
 }
 
 QString QmlFileSingleton::tempPath()

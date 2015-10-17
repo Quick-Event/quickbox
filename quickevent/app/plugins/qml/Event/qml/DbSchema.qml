@@ -253,12 +253,12 @@ Schema {
 				Field { name: 'clubAbbr'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } },
-				Field { name: 'nameSearchKey'; type: String {} },
+				//Field { name: 'nameSearchKey'; type: String {} },
 				Field { name: 'importId'; type: Int { } }
 			]
 			indexes: [
-				Index {fields: ['registration'] },
-				Index {fields: ['nameSearchKey'] }
+				Index {fields: ['registration'] }
+				//Index {fields: ['nameSearchKey'] }
 			]
 		},
 		Table { name: 'cards'

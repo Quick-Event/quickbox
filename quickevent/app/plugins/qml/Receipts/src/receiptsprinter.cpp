@@ -262,7 +262,7 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 			text_align = Qt::AlignRight;
 		else if(ta == QLatin1String("center"))
 			text_align = Qt::AlignHCenter;
-		QByteArray text = qf::core::Collator::toAscii7(el.text(), false);
+		QByteArray text = qf::core::Collator::toAscii7(QLocale::Czech, el.text(), false);
 		print_context->line << PrintData(PrintData::Command::Text, text, text_width, text_align);
 	}
 	{
