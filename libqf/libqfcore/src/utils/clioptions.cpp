@@ -8,6 +8,10 @@
 #include <QDir>
 #include <QJsonParseError>
 
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+#endif
+
 #include <limits>
 
 using namespace qf::core::utils;
@@ -214,21 +218,31 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 
 QPair<QString, QString> CLIOptions::applicationDirAndName() const
 {
-	QString app_dir;
-	QString app_name;
-	if(m_allArgs.size()) {
-		QString arg0 = m_allArgs[0];
-#ifdef Q_OS_WIN
-		QChar sep = '\\';
-#else
-		QChar sep = '/';
-#endif
-		app_dir = arg0.section(sep, 0, -2);
-		app_name = arg0.section(sep, -1);
-#ifdef Q_OS_WIN
-		if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
-			app_name = app_name.mid(0, app_name.length() - 4);
-#endif
+	static QString app_dir;
+	static QString app_name;
+	if(app_name.isEmpty()) {
+		if(m_allArgs.size()) {
+	#ifdef Q_OS_WIN
+			//static constexpr int MAX_PATH = 1024;
+			QString app_file_path;
+			wchar_t buffer[MAX_PATH + 2];
+			DWORD v = GetModuleFileName(0, buffer, MAX_PATH + 1);
+			buffer[MAX_PATH + 1] = 0;
+			if (v <= MAX_PATH)
+				app_file_path = QString::fromWCharArray(buffer);
+			QChar sep = '\\';
+	#else
+			QString app_file_path = m_allArgs[0];
+			QChar sep = '/';
+	#endif
+			app_dir = app_file_path.section(sep, 0, -2);
+			app_name = app_file_path.section(sep, -1);
+			qfInfo() << "app dir:" << app_dir << "name:" << app_name;
+	#ifdef Q_OS_WIN
+			if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
+				app_name = app_name.mid(0, app_name.length() - 4);
+	#endif
+		}
 	}
 	return QPair<QString, QString>(app_dir, app_name);
 }
@@ -315,7 +329,7 @@ bool ConfigCLIOptions::loadConfigFile()
 	if(config_dir.isEmpty())
 		config_dir = applicationDir();
 	QString config_file = config();
-	qfInfo() << "config-file:" << config_file << "config-dir:" << config_dir;
+	qfInfo() << "config-dir:" << config_dir << "config-file:" << config_file;
 	if(!config_file.isEmpty()) {
 		if(!config_file.contains('.'))
 			config_file += ".conf";
