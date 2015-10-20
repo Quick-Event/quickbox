@@ -107,15 +107,16 @@ public:
 	QStringList parseErrors() const {return m_parseErrors;}
 	QStringList unusedArguments() {return m_unusedArguments;}
 
-	QString applicationDir() const;
-	QString applicationName() const;
-	void printHelp() const;
+	Q_INVOKABLE QString applicationDir() const;
+	Q_INVOKABLE QString applicationName() const;
+	Q_INVOKABLE void printHelp() const;
 	void printHelp(QTextStream &os) const;
-	void dump() const;
+	Q_INVOKABLE void dump() const;
 	void dump(QTextStream &os) const;
-public slots:
-	QVariant value(const QString &name) const;
-	QVariant value(const QString &name, const QVariant default_value) const;
+
+	Q_INVOKABLE QVariantMap values() const;
+	Q_INVOKABLE QVariant value(const QString &name) const;
+	Q_INVOKABLE QVariant value(const QString &name, const QVariant default_value) const;
 protected:
 	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();

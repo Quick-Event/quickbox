@@ -105,6 +105,17 @@ CLIOptions::Option& CLIOptions::optionRef(const QString& name) throw(Exception)
 	return m_options[name];
 }
 
+QVariantMap CLIOptions::values() const
+{
+	QVariantMap ret;
+	QMapIterator<QString, Option> it(m_options);
+	while(it.hasNext()) {
+		it.next();
+		ret[it.key()] = value(it.key());
+	}
+	return ret;
+}
+
 QVariant CLIOptions::value(const QString &name) const
 {
 	Option opt = option(name, qf::core::Exception::Throw);
