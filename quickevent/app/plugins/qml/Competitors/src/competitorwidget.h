@@ -23,14 +23,14 @@ public:
 
 	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
+	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 
 private slots:
 	void onRegistrationSelected(const QVariantMap &values);
 private:
 	Q_SLOT bool loadRunsTable();
 	Q_SLOT bool saveRunsTable();
-	void onRunsTableCustomContextMenuRequest(const QPoint &pos);
+	//void onRunsTableCustomContextMenuRequest(const QPoint &pos);
 	bool saveData() Q_DECL_OVERRIDE;
 
 	QVector<int> juniorAges();

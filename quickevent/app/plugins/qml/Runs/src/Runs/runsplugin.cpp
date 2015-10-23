@@ -285,7 +285,7 @@ void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_c
 	auto *w = new RunsTableDialogWidget();
 	w->reload(stage_id, class_id, sort_column, select_competitor_id);
 	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
-	//dlg.setButtons(QDialogButtonBox::Save);
+	dlg.setButtons(QDialogButtonBox::Cancel);
 	dlg.setCentralWidget(w);
 	dlg.exec();
 }

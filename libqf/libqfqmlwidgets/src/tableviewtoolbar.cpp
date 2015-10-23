@@ -41,6 +41,8 @@ TableViewToolBar::TableViewToolBar(QWidget *parent) :
 	QToolBar(parent)
 {
 	m_filterCombo = new FilterCombo();
+	//m_filterCombo->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Preferred);
+	m_filterCombo->setMinimumWidth(fontMetrics().width('X') * 15);
 	m_filterCombo->setEditable(true);
 	m_filterCombo->lineEdit()->setClearButtonEnabled(true);
 	connect(m_filterCombo, &QComboBox::editTextChanged, this, &TableViewToolBar::emitFilterStringChanged);

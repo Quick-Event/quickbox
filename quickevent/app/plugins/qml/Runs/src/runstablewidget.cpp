@@ -14,6 +14,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QMenu>
+#include <QTimer>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
@@ -133,7 +134,11 @@ void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_col
 				if(competitor_id == select_competitor_id) {
 					QModelIndex ix = m_runsModel->index(i, sort_col_ix);
 					ix = ui->tblRuns->sortFilterProxyModel()->mapFromSource(ix);
-					ui->tblRuns->selectionModel()->select(ix, QItemSelectionModel::ClearAndSelect);
+					ui->tblRuns->setCurrentIndex(ix);
+					//ui->tblRuns->selectionModel()->select(ix, QItemSelectionModel::ClearAndSelect);
+					QTimer::singleShot(0, [this, ix]() {
+						this->ui->tblRuns->scrollTo(ix);
+					});
 				}
 			}
 		}

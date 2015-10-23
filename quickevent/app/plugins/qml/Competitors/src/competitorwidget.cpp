@@ -86,8 +86,8 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
 	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
-	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
+	//ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
+	//connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
 
 	{
 		int stage_cnt = eventPlugin()->stageCount();
@@ -126,7 +126,7 @@ bool CompetitorWidget::saveRunsTable()
 	qfLogFuncFrame();
 	return m_runsModel->postAll(true);
 }
-
+/*
 void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
@@ -143,7 +143,7 @@ void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 		emit editStartListRequest(stage_no, class_id, competitor_id);
 	}
 }
-
+*/
 bool CompetitorWidget::load(const QVariant &id, int mode)
 {
 	ui->chkFind->setChecked(mode == qf::core::model::DataDocument::ModeInsert);

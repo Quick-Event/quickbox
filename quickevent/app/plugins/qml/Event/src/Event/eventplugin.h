@@ -83,7 +83,7 @@ public:
 	DbSchema dbSchema();
 public:
 	// event wide signals
-	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
+	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private:
 	void setDbOpen(bool ok);
 

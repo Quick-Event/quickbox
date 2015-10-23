@@ -81,6 +81,7 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
+		m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
 		m_cbxClasses->setMaxVisibleItems(100);
 		m_cbxClasses->setReferencedTable("classes");
 		m_cbxClasses->setReferencedField("id");
@@ -143,10 +144,11 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 		doc->setValue("competitors.classId", class_id);
 	}
 	connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
-
+	/*
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
 		dlg.accept();
 		emit eventPlugin()->editStartListRequest(stage_id, class_id, competitor_id);
 	});
+	*/
 	dlg.exec();
 }
