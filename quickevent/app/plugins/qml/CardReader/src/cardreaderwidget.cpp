@@ -170,6 +170,11 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		qfw::Action *a = part_widget->menuBar()->actionForPath("tools", true);
 		a->setText("&Tools");
 		a->addActionInto(m_actSettings);
+		{
+			qfw::Action *a2 = new qfw::Action("Test audio");
+			connect(a2, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::operatorAudioNotify);
+			a->addActionInto(a2);
+		}
 	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
