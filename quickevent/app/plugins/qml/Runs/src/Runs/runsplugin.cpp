@@ -290,4 +290,24 @@ void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_c
 	dlg.exec();
 }
 
+int RunsPlugin::cardForRun(int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id;
+	//QF_TIME_SCOPE("reloadTimesFromCard()");
+	if(!run_id)
+		return 0;
+	int card_id = 0;
+	{
+		qf::core::sql::Query q;
+		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS LIMIT 1")) {
+			if(q.next()) {
+				card_id = q.value(0).toInt();
+			}
+			else {
+				qfWarning() << "Cannot find card record for run id:" << run_id;
+			}
+		}
+	}
+	return card_id;
+}
 

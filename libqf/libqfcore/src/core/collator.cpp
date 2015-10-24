@@ -99,6 +99,7 @@ static const char bt7_chars[] = "aaabccddeeeefghiiijklllmnnooopqrrssttuuuuvwxyyz
 
 QChar Collator::removePunctuation(QLocale::Language lang, QChar c)
 {
+	Q_UNUSED(lang)
 	static QHash<QChar, QChar> punct_to_bt7;
 	if(punct_to_bt7.isEmpty()) {
 		const QString all_str = QString::fromUtf8(all_chars_cs);

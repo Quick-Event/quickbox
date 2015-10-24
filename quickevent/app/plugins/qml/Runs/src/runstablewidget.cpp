@@ -2,6 +2,7 @@
 #include "ui_runstablewidget.h"
 #include "runstablemodel.h"
 #include "runstableitemdelegate.h"
+#include "Runs/runsplugin.h"
 
 #include <quickevent/og/siid.h>
 #include <quickevent/og/timems.h>
@@ -21,6 +22,14 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
+
+static Runs::RunsPlugin *runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
+	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
+	return plugin;
+}
 
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
@@ -148,9 +157,11 @@ void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_col
 void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
+	QAction a_show_card(tr("Show card"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
+	QAction a_print_card(tr("Print card"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_load_card;
+	lst << &a_show_card << &a_load_card << &a_print_card;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
 		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
@@ -162,13 +173,50 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		}
 		for(int ix : ui->tblRuns->selectedRowsIndexes()) {
 			int run_id = ui->tblRuns->tableRow(ix).value(QStringLiteral("runs.id")).toInt();
-			bool ok;
-			QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
-			                          Q_RETURN_ARG(bool, ok),
-			                          Q_ARG(int, run_id));
-			//QF_ASSERT(ok == true, "reloadTimesFromCard error!", break);
-			if(ok)
-				ui->tblRuns->reloadRow(ix);
+			Runs::RunsPlugin *runs_plugin = runsPlugin();
+			if(runs_plugin) {
+				int card_id = runs_plugin->cardForRun(run_id);
+				bool ok;
+				QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
+				                          Q_RETURN_ARG(bool, ok),
+				                          Q_ARG(int, card_id),
+										  Q_ARG(int, run_id));
+				//QF_ASSERT(ok == true, "reloadTimesFromCard error!", break);
+				if(ok)
+					ui->tblRuns->reloadRow(ix);
+			}
+		}
+	}
+	else if(a == &a_show_card) {
+		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
+		Runs::RunsPlugin *runs_plugin = runsPlugin();
+		if(!runs_plugin)
+			return;
+		int card_id = runs_plugin->cardForRun(run_id);
+		if(card_id > 0) {
+			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+			qf::qmlwidgets::framework::Plugin *receipts_plugin = fwk->plugin("Receipts");
+			if(!receipts_plugin) {
+				qfError() << "Receipts plugin not installed!";
+				return;
+			}
+			QMetaObject::invokeMethod(receipts_plugin, "previewReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+		}
+	}
+	else if(a == &a_print_card) {
+		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
+		Runs::RunsPlugin *runs_plugin = runsPlugin();
+		if(!runs_plugin)
+			return;
+		int card_id = runs_plugin->cardForRun(run_id);
+		if(card_id > 0) {
+			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+			qf::qmlwidgets::framework::Plugin *receipts_plugin = fwk->plugin("Receipts");
+			if(!receipts_plugin) {
+				qfError() << "Receipts plugin not installed!";
+				return;
+			}
+			QMetaObject::invokeMethod(receipts_plugin, "printReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
 		}
 	}
 }

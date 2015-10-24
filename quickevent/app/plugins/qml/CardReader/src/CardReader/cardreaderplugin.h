@@ -48,7 +48,7 @@ public:
 	bool updateCheckedCardValuesSql(const CheckedCard &checked_card);
 	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
 
-	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
+	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();

@@ -72,6 +72,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	m_runsModel->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m_runsModel->addColumn("runs.timeMs", tr("Time"))
 			.setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m_runsModel->addColumn("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing"));
 	m_runsModel->addColumn("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified in this stage"));
 	m_runsModel->addColumn("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch in this stage"));
 	m_runsModel->addColumn("runs.cardLent", tr("L", "runs.cardLent")).setToolTip(tr("Card lent in this stage"));

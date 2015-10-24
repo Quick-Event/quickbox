@@ -199,7 +199,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 				}
 				for(auto v : punch_list) {
 					CardReader::CheckedPunch cp(v.toMap());
-					if(cp.position() > 0) {
+					if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
 						q.bindValue(QStringLiteral(":runId"), run_id);
 						q.bindValue(QStringLiteral(":code"), cp.code());
 						q.bindValue(QStringLiteral(":position"), cp.position());
@@ -241,26 +241,27 @@ bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
 	return ret;
 }
 
-bool CardReaderPlugin::reloadTimesFromCard(int run_id)
+bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 {
-	qfLogFuncFrame() << "run id:" << run_id;
+	qfLogFuncFrame() << "card id:" << run_id;
 	QF_TIME_SCOPE("reloadTimesFromCard()");
-	if(!run_id)
+	if(!card_id)
 		return false;
-	int card_id = 0;
-	{
+	if(run_id == 0) {
 		qf::core::sql::Query q;
-		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS LIMIT 1")) {
+		if(q.exec("SELECT runId FROM cards WHERE id=" QF_IARG(card_id))) {
 			if(q.next()) {
-				card_id = q.value(0).toInt();
+				run_id = q.value(0).toInt();
 			}
 			else {
-				qfWarning() << "Cannot find card record for run id:" << run_id;
+				qfWarning() << "Cannot find card record for id:" << card_id;
 			}
 		}
 	}
-	if(card_id == 0)
+	if(run_id == 0) {
+		qfWarning() << "Cannot find runs id for card id:" << card_id;
 		return false;
+	}
 	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
 	if(updateCheckedCardValuesSql(checked_card))
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))

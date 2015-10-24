@@ -110,7 +110,7 @@ Report {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: myStyle.textStyleBold
-							text: "Jan Krejsa";
+							text: "Martin Pitra";
 						}
 						Para {
 							width: "%"
@@ -135,7 +135,7 @@ Report {
 								width: "%"
 								halign: Frame.AlignHCenter
 								textStyle: myStyle.textStyleBold
-								text: "Petr Martinec";
+								text: "Jaroslav Matras";
 							}
 							Para {
 								width: "%"
