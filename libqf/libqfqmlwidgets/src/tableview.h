@@ -77,6 +77,9 @@ public:
 
 	Q_SLOT virtual void refreshActions();
 	QList<Action*> toolBarActions() const {return m_toolBarActions;}
+	void setInsertRowEnabled(bool b);
+	void setRemoveRowEnabled(bool b);
+	void setCloneRowEnabled(bool b);
 
 	Q_SLOT void resetColumnsSettings();
 

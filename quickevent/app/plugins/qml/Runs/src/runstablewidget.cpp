@@ -39,6 +39,9 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 
 	ui->tblRunsToolBar->setTableView(ui->tblRuns);
 
+	ui->tblRuns->setInsertRowEnabled(false);
+	ui->tblRuns->setRemoveRowEnabled(false);
+	ui->tblRuns->setCloneRowEnabled(false);
 	ui->tblRuns->setPersistentSettingsId("tblRuns");
 	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRuns->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
