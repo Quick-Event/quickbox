@@ -13,42 +13,50 @@ CardChecker
 		console.debug("read card:", JSON.stringify(read_card, null, 2));
 
 		var run_id = read_card.runId;
-		var course = {};
-		if(run_id > 0)
-			course = root.courseForRunId(run_id);
-		//Log.info("course:", JSON.stringify(course, null, 2));
-		
 		var checked_card = {courseId: course.id, runId: run_id, punches: []};
+		if(run_id <= 0)
+			return checked_card;
+		var course = root.courseCodesForRunId(run_id);
+		var course_codes = course.codes;
+		var checked_card_punches = checked_card.punches;
+		var code_to_pos = {};
+		for(var j=0; j<course_codes.length; j++) {
+			var c = course_codes[j].code;
+			checked_card_punches.push({code: c});
+			code_to_pos[c] = j;
+		}
+		var finish_code = root.finishPunchCode();
+		checked_card_punches.push({code: finish_code});
+		code_to_pos[finish_code] = j;
+		//Log.info("course:", JSON.stringify(course, null, 2));
+		/*
 		var read_punches = read_card.punches;
-		var checked_punches = checked_card.punches;
 		for(var k=0; k<read_punches.length; k++) {
 			var read_punch = read_punches[k];
-			checked_punches.push({code: read_punch.code});
+			checked_card_punches.push({code: read_punch.code});
 		}
-
-		var course_codes = course.codes;
+		*/
 		var error = false;
-		var check_ix = 0;
-		if(course_codes) {
-			for(var j=0; j<course_codes.length; j++) { //scan course codes
-				var course_code_record = course_codes[j];
-
-				var code = course_code_record.code;
-				for(var k=check_ix; k<checked_punches.length; k++) { //scan card
-					//var read_punch = read_punches[k];
-					var checked_punch = checked_punches[k];
-					if(checked_punch.code === code) {
-						checked_punch.position = course_code_record.position;
-						check_ix = k + 1;
-						break;
-					}
+		var read_card_punches = read_card.punches;
+		var read_card_check_ix = 0;
+		for(j=0; j<checked_card_punches.length; j++) { //scan card codes
+			var checked_card_punch = checked_card_punches[j];
+			//var code = course_code_record.code;
+			for(var k=read_card_check_ix; k<read_card_punches.length; k++) { //scan card
+				//var read_punch = read_punches[k];
+				var read_card_punch = read_card_punches[k];
+				// uncomment following when altCode will be present in database
+				if(read_card_punch.code === course_codes[j].code /*|| read_card_punch.code === course_codes[j].altcode*/) {
+					checked_card_punch = read_card_punch;
+					read_card_check_ix = k + 1;
+					break;
 				}
-				if(k >= checked_punches.length) {// course code not found in read_card punches
-					//var nocheck = course_code_record.outoforder; for postgres, Query.values() should return lower case keys
-					var nocheck = course_code_record.outoforder;
-					if(!nocheck)
-						error = true;
-				}
+			}
+			if(k >= read_card_punches.length) {// course code not found in read_card punches
+				//var nocheck = course_code_record.outoforder; for postgres, Query.values() should return lower case keys
+				var nocheck = course_codes[j].outoforder;
+				if(!nocheck)
+					error = true;
 			}
 		}
 
@@ -90,21 +98,30 @@ CardChecker
 
 		var prev_position = 0;
 		var prev_position_stp = 0;
-		for(var k=0; k<read_punches.length; k++) { //compute lap times
-			var read_punch = read_punches[k];
-			var checked_punch = checked_punches[k];
-			checked_punch.stpTimeMs = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, read_punch.time * 1000 + read_punch.msec);
-			checked_punch.lapTimeMs = 0;
-			if(checked_punch.position > prev_position) {  // positions are starting with 1, like 1,2,3,4,5
-				if(checked_punch.position - 1 == prev_position) {  
-					checked_punch.lapTimeMs = checked_punch.stpTimeMs - prev_position_stp;
+		for(k=0; k<checked_card_punches.length; k++) { //compute lap times
+			//var read_punch = read_punches[k];
+			checked_card_punch = checked_card_punches[k];
+			var stp_time_ms;
+			if(k == checked_card_punches.length - 1) {
+				stp_time_ms = checked_card.finishTimeMs - checked_card.startTimeMs;
+			}
+			else {
+				stp_time_ms = checked_card_punch.time;
+				if(stp_time_ms) {
+					stp_time_ms = stp_time_ms * 1000 + checked_card_punch.msec;
+					stp_time_ms = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, stp_time_ms);
 				}
-				prev_position = checked_punch.position;
-				prev_position_stp = checked_punch.stpTimeMs;
+			}
+			if(stp_time_ms) {
+				checked_card_punch.stpTimeMs = stp_time_ms;
+				checked_card_punch.lapTimeMs = 0;
+				if(checked_card_punches[k-1].stpTimeMs) {
+					checked_card_punch.lapTimeMs = checked_card_punch.stpTimeMs - checked_card_punches[k-1].stpTimeMs;
+				}
 			}
 		}
-		checked_card.finishStpTimeMs = root.msecIntervalAM(checked_card.startTimeMs, checked_card.finishTimeMs);
-		checked_card.finishLapTimeMs = checked_card.finishStpTimeMs - prev_position_stp;
+		//checked_card.finishStpTimeMs = checked_card_punch.stpTimeMs;
+		//checked_card.finishLapTimeMs = checked_card_punch.lapTimeMs;
 		console.debug("check result:", JSON.stringify(checked_card, null, 2));
 		return checked_card;
 	}
