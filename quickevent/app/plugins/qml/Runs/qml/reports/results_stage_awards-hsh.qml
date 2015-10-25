@@ -1,3 +1,4 @@
+import QtQml 2.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
 import "qrc:/quickevent/js/ogtime.js" as OGTime
@@ -7,6 +8,7 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Results by classes")
+	property var eventConfig
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -110,7 +112,8 @@ Report {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: myStyle.textStyleBold
-							textFn: function() { return band.data("mainReferee"); }
+							//text: root.eventConfig.event.mainReferee
+							text: root.eventConfig.mainReferee()
 						}
 						Para {
 							width: "%"
@@ -135,11 +138,7 @@ Report {
 								width: "%"
 								halign: Frame.AlignHCenter
 								textStyle: myStyle.textStyleBold
-								textFn: function() {
-									var ret = band.data("director");
-									//console.info("director:", ret);
-									return ret;
-								}
+								text: root.eventConfig.director()
 							}
 							Para {
 								width: "%"

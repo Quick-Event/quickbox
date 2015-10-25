@@ -122,6 +122,7 @@ QtObject {
 				tt2.setValue(j, "pos", j+1);
 				tt2.setValue(j, "className", tt_classes.value(i, "classes.name"));
 			}
+			tt2.setValue("eventConfig", event_plugin.eventConfig.values());
 			tt2.setValue("director", event_plugin.eventConfig.director());
 			tt2.setValue("mainReferee", event_plugin.eventConfig.mainReferee());
 			if(tt.isNull()) {
@@ -165,7 +166,10 @@ QtObject {
 		var tt = currentStageAwardsTable(n);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage_awards.qml"
 									   , tt.data()
-									   , qsTr("Stage awards"));
+									   , qsTr("Stage awards")
+									   , ""
+									   , {eventConfig: FrameWork.plugin("Event").eventConfig});
+									//   , {eventConfig: FrameWork.plugin("Event").eventConfig.values()});
 	}
 
 	function exportIofXml(file_path)
