@@ -27,7 +27,8 @@ public:
 	Q_INVOKABLE int toAM(int time_sec);
 	Q_INVOKABLE int stageStartSec();
 	Q_INVOKABLE int startTimeSec(int run_id);
-	Q_INVOKABLE QVariantMap courseForRunId(int run_id);
+	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
+	Q_INVOKABLE int finishPunchCode();
 
 	//Q_INVOKABLE QVariant checkCard(const QVariant &card, const QVariant &run_id);
 };

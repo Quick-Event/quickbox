@@ -191,8 +191,8 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 			if(punch_list.count()) {
 				{
 					CardReader::CheckedPunch finish_punch;
-					finish_punch.setPosition(punch_list.count() + 1);
-					finish_punch.setCode(999);
+					finish_punch.setPosition(FINISH_PUNCH_POS);
+					finish_punch.setCode(FINISH_PUNCH_CODE);
 					finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
 					finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
 					punch_list << finish_punch;

@@ -1,4 +1,5 @@
 #include "cardchecker.h"
+#include "../CardReader/cardreaderplugin.h"
 
 #include <Event/eventplugin.h>
 #include <Event/stage.h>
@@ -73,7 +74,7 @@ int CardChecker::startTimeSec(int run_id)
 	return ret;
 }
 
-QVariantMap CardChecker::courseForRunId(int run_id)
+QVariantMap CardChecker::courseCodesForRunId(int run_id)
 {
 	QVariantMap ret;
 	if(run_id <= 0) {
@@ -116,5 +117,10 @@ QVariantMap CardChecker::courseForRunId(int run_id)
 		ret["codes"] = codes;
 	}
 	return ret;
+}
+
+int CardChecker::finishPunchCode()
+{
+	return CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
 }
 

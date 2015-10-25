@@ -139,18 +139,26 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			int class_id = model.value(0, "competitors.classId").toInt();
 			{
 				// find best laps for competitors class
-				qf::core::sql::QueryBuilder qb;
-				qb.select2("runlaps", "position")
-						.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs")
+				qf::core::sql::QueryBuilder qb_minlaps;
+				qb_minlaps.select("runlaps.code, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
-						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
-						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0")
-						.where("runlaps.lapTimeMs > 0")
-						.groupBy("runlaps.position")
-						.orderBy("runlaps.position");
-				//qfInfo() << qb.toString();
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), "JOIN")
+						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", "JOIN")
+						.groupBy("runlaps.code")
+						.as("minlaps");
+				qf::core::sql::QueryBuilder qb_class_codes;
+				qb_class_codes.select("coursecodes.position, codes.code")
+						.from("classdefs")
+						.joinRestricted("classdefs.courseId", "coursecodes.courseId", "classdefs.stageId=" QF_IARG(current_stage_id) " AND classdefs.classId=" QF_IARG(class_id), "JOIN")
+						.join("coursecodes.codeId", "codes.id")
+						.orderBy("codes.code")
+						.as("classcodes");
+				QString qs = "SELECT * FROM " + qb_minlaps.toString()
+						+ " JOIN " + qb_class_codes.toString() + " ON minlaps.code=classcodes.code"
+						+ " ORDER BY classcodes.position";
+				qfInfo() << qs;
 				qf::core::sql::Query q;
-				q.exec(qb.toString());
+				q.exec(qs);
 				while(q.next()) {
 					int pos = q.value("position").toInt();
 					if(pos == 0) {
@@ -256,7 +264,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			// runlaps table contains also finish time entry, it is under last position
 			// for exaple: if course is of 10 controls best_laps[10] contains best finish lap time for this class
 			int loss = 0;
-			int best_lap = best_laps.value(control_count + 1);
+			int best_lap = best_laps.value(CardReader::CardReaderPlugin::FINISH_PUNCH_POS);
 			if(best_lap > 0)
 				loss = checked_card.finishLapTimeMs() - best_lap;
 			//qfInfo() << "control_count:" << control_count << "finishLapTimeMs:" << checked_card.finishLapTimeMs() << "- best_lap:" << best_lap << "=" << loss;
