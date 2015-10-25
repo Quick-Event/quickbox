@@ -28,6 +28,8 @@ using namespace CardReader;
 const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.cardRead";
 const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD = "CardReader.punchRecord";
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
+const int CardReaderPlugin::FINISH_PUNCH_CODE = 999;
+//const int CardReaderPlugin::FINISH_PUNCH_POS = CardReaderPlugin::FINISH_PUNCH_CODE;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
@@ -191,7 +193,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 			if(punch_list.count()) {
 				{
 					CardReader::CheckedPunch finish_punch;
-					finish_punch.setPosition(FINISH_PUNCH_POS);
+					finish_punch.setPosition(0); // TODO: remove position field from DB in 0.1.5
 					finish_punch.setCode(FINISH_PUNCH_CODE);
 					finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
 					finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
@@ -202,7 +204,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 					if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
 						q.bindValue(QStringLiteral(":runId"), run_id);
 						q.bindValue(QStringLiteral(":code"), cp.code());
-						q.bindValue(QStringLiteral(":position"), cp.position());
+						q.bindValue(QStringLiteral(":position"), 0); ; // TODO: remove position field from DB in 0.1.5
 						q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
 						q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
 						q.exec(qf::core::Exception::Throw);

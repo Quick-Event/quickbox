@@ -15,10 +15,13 @@ CardChecker
 		var run_id = read_card.runId;
 		var course = {};
 		if(run_id > 0)
-			course = root.courseForRunId(run_id);
+			course = root.courseCodesForRunId(run_id);
 		//Log.info("course:", JSON.stringify(course, null, 2));
 		
 		var checked_card = {courseId: course.id, runId: run_id, punches: []};
+		if(!course)
+			return checked_card;
+
 		var read_punches = read_card.punches;
 		var checked_punches = checked_card.punches;
 		for(var k=0; k<read_punches.length; k++) {
@@ -33,11 +36,10 @@ CardChecker
 			for(var j=0; j<course_codes.length; j++) { //scan course codes
 				var course_code_record = course_codes[j];
 
-				var code = course_code_record.code;
 				for(var k=check_ix; k<checked_punches.length; k++) { //scan card
 					//var read_punch = read_punches[k];
 					var checked_punch = checked_punches[k];
-					if(checked_punch.code === code) {
+					if(checked_punch.code === course_code_record.code /*|| checked_punch.code === course_code_record.altcode*/) {
 						checked_punch.position = course_code_record.position;
 						check_ix = k + 1;
 						break;

@@ -30,8 +30,8 @@ public:
 	static const char* DBEVENTDOMAIN_CARDREADER_CARDREAD;
 	static const char* DBEVENTDOMAIN_CARDREADER_PUNCHRECORD;
 	static const QLatin1String SETTINGS_PREFIX;
-	static constexpr int FINISH_PUNCH_CODE = 999;
-	static constexpr int FINISH_PUNCH_POS = FINISH_PUNCH_CODE;
+	static const int FINISH_PUNCH_CODE;
+	//static const int FINISH_PUNCH_POS;
 
 	QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, -1)
 
