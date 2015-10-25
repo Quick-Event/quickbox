@@ -110,7 +110,7 @@ Report {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: myStyle.textStyleBold
-							text: "Martin Pitra";
+							textFn: function() { return band.data("mainReferee"); }
 						}
 						Para {
 							width: "%"
@@ -135,7 +135,11 @@ Report {
 								width: "%"
 								halign: Frame.AlignHCenter
 								textStyle: myStyle.textStyleBold
-								text: "Jaroslav Matras";
+								textFn: function() {
+									var ret = band.data("director");
+									//console.info("director:", ret);
+									return ret;
+								}
 							}
 							Para {
 								width: "%"

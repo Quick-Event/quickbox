@@ -27,8 +27,10 @@ public slots:
 	void save(const QString &path_to_save = QString());
 
 	int stageCount() const;
-	int currentStageId() const;
-	int handicapLength() const;
+	Q_INVOKABLE int currentStageId() const;
+	Q_INVOKABLE int handicapLength() const;
+	Q_INVOKABLE QString director() const;
+	Q_INVOKABLE QString mainReferee() const;
 	//QString eventName() const;
 	//void setEventName(const QString &n);
 private:
