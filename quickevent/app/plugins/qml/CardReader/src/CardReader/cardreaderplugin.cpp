@@ -201,7 +201,8 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 				}
 				for(auto v : punch_list) {
 					CardReader::CheckedPunch cp(v.toMap());
-					if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
+					qfInfo() << cp;
+					if(cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
 						q.bindValue(QStringLiteral(":runId"), run_id);
 						q.bindValue(QStringLiteral(":code"), cp.code());
 						q.bindValue(QStringLiteral(":position"), 0); ; // TODO: remove position field from DB in 0.1.5

@@ -299,7 +299,7 @@ int RunsPlugin::cardForRun(int run_id)
 	int card_id = 0;
 	{
 		qf::core::sql::Query q;
-		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS LIMIT 1")) {
+		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS DESC LIMIT 1")) {
 			if(q.next()) {
 				card_id = q.value(0).toInt();
 			}

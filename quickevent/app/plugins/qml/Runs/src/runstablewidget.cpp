@@ -171,8 +171,12 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			qfError() << "CardReader plugin not installed!";
 			return;
 		}
-		for(int ix : ui->tblRuns->selectedRowsIndexes()) {
-			int run_id = ui->tblRuns->tableRow(ix).value(QStringLiteral("runs.id")).toInt();
+		int curr_ix = 0;
+		QList<int> sel_ixs = ui->tblRuns->selectedRowsIndexes();
+		for(int ix : sel_ixs) {
+			qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
+			int run_id = row.value(QStringLiteral("runs.id")).toInt();
+			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
 			Runs::RunsPlugin *runs_plugin = runsPlugin();
 			if(runs_plugin) {
 				int card_id = runs_plugin->cardForRun(run_id);
@@ -186,6 +190,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 					ui->tblRuns->reloadRow(ix);
 			}
 		}
+		fwk->hideProgress();
 	}
 	else if(a == &a_show_card) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();

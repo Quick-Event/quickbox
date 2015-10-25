@@ -149,7 +149,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				qb_minlaps.select("runlaps.code, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), "JOIN")
-						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", "JOIN")
+						.joinRestricted("runs.id", "runlaps.runId", "runlaps.lapTimeMs > 0", "JOIN")
 						.groupBy("runlaps.code");
 				QString qs = qb_minlaps.toString();
 				qfInfo() << qs;
