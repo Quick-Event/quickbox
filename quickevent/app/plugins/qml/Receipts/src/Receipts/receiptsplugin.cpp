@@ -146,19 +146,19 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				// find best laps for competitors class
 				qf::core::sql::QueryBuilder qb_minlaps;
 				// TODO: remove position field from DB in 0.1.5
-				qb_minlaps.select("runlaps.code, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
+				qb_minlaps.select("runlaps.position, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), "JOIN")
-						.joinRestricted("runs.id", "runlaps.runId", "runlaps.lapTimeMs > 0", "JOIN")
-						.groupBy("runlaps.code");
+						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", "JOIN")
+						.groupBy("runlaps.position");
 				QString qs = qb_minlaps.toString();
 				qfInfo() << qs;
 				qf::core::sql::Query q;
 				q.exec(qs);
 				while(q.next()) {
-					int code = q.value("code").toInt();
-					if(code == 0) {
-						qfWarning() << "code == 0 in best runlaps";
+					int position = q.value("position").toInt();
+					if(position == 0) {
+						qfWarning() << "position == 0 in best runlaps";
 						continue;
 					}
 					int lap = q.value("minLapTimeMs").toInt();
@@ -166,7 +166,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						qfWarning() << "minLapTimeMs == 0 in best runlaps";
 						continue;
 					}
-					best_laps[code] = lap;
+					best_laps[position] = lap;
 					//qfInfo() << "bestlaps[" << pos << "] =" << lap;
 				}
 			}
@@ -242,27 +242,27 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		for(auto v : checked_card.punches()) {
 			CardReader::CheckedPunch punch(v.toMap());
 			qfu::TreeTableRow ttr = tt.appendRow();
-			int pos = punch.position();
+			int position = punch.position();
 			int code = punch.code();
-			if(pos > 0) {
-				missing_codes.remove(pos);
+			if(position > 0) {
+				missing_codes.remove(position);
 			}
-			ttr.setValue("position", pos);
+			ttr.setValue("position", position);
 			ttr.setValue("code", code);
 			ttr.setValue("stpTimeMs", punch.stpTimeMs());
 			int lap = punch.lapTimeMs();
 			ttr.setValue("lapTimeMs", lap);
-			int best_lap = best_laps.value(code);
+			int best_lap = best_laps.value(position);
 			if(lap > 0 && best_lap > 0) {
 				int loss = lap - best_lap;
 				ttr.setValue("lossMs", loss);
 			}
 		}
 		{
-			// runlaps table contains also finish time entry, it is under FINISH_PUNCH_CODE
+			// runlaps table contains also finish time entry, it is under FINISH_PUNCH_POS
 			// currently best_laps[999] contains best finish lap time for this class
 			int loss = 0;
-			int best_lap = best_laps.value(CardReader::CardReaderPlugin::FINISH_PUNCH_CODE);
+			int best_lap = best_laps.value(CardReader::CardReaderPlugin::FINISH_PUNCH_POS);
 			if(best_lap > 0)
 				loss = checked_card.finishLapTimeMs() - best_lap;
 			//qfInfo() << "control_count:" << control_count << "finishLapTimeMs:" << checked_card.finishLapTimeMs() << "- best_lap:" << best_lap << "=" << loss;

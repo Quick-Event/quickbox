@@ -225,7 +225,7 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'runId'; type: Int {} },
-				Field { name: 'position'; type: Int {} }, // TODO: remove position field from DB in 0.1.5
+				Field { name: 'position'; type: Int {} },
 				Field { name: 'code'; type: Int {} },
 				Field { name: 'stpTimeMs'; type: Int { } },
 				Field { name: 'lapTimeMs'; type: Int { } }
