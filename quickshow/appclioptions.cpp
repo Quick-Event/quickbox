@@ -12,4 +12,5 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user");
 	addOption("connection.password").setType(QVariant::String).setNames("-p", "--password");
 	addOption("connection.database").setType(QVariant::String).setNames("-d", "--database").setDefaultValue("quickevent");
+	addOption("connection.driver").setType(QVariant::String).setNames("--sqlDriver").setDefaultValue("QPSQL");
 }

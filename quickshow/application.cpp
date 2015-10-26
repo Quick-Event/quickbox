@@ -21,50 +21,7 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	m_model = new Model(this);
 	//setProperty("model", QVariant::fromValue(qobject_cast<QObject*>(m)));
 }
-/*
-void Application::initSettings()
-{
-	QSettings ss;
-	if(ss.childGroups().isEmpty()) {
-		ss.beginGroup("application");
-		ss.setValue("profile", "results");
-		ss.endGroup();
-		ss.beginGroup("profile");
-		ss.beginGroup("results");
-		ss.beginGroup("query");
-		ss.setValue("categories", "SELECT classname FROM classes ORDER BY classname");
-		ss.setValue("category", "SELECT classdefs.* FROM classdefs"
-								" WHERE classdefs.etap={{event/etap}}"
-								" AND classdefs.classname='{{CATEGORY}}'");
-		ss.setValue("details", "SELECT runners.*, laps.* FROM runners JOIN laps ON runners.id = laps.idrunner"
-							   " WHERE laps.etap={{event/etap}}"
-							   " AND runners.classname='{{CATEGORY}}'"
-							   "  AND laps.IDSI > 0"
-							   "  AND laps.status != 'NOT_RUN'"
-							   " ORDER BY runners.flag, laps.status, laps.laptime, laps.laptimems");
 
-		ss.endGroup();
-		ss.endGroup();
-
-		ss.beginGroup("startlist");
-		ss.beginGroup("query");
-		ss.setValue("categories", "SELECT classname FROM classes ORDER BY classname");
-		ss.setValue("category", "SELECT classdefs.* FROM classdefs"
-								" WHERE classdefs.etap={{event/etap}}"
-								" AND classdefs.classname='{{CATEGORY}}'");
-		ss.setValue("details", "SELECT runners.id, runners.name, runners.course, runners.reg, runners.flag"
-							   " ,laps.start, laps.laptime, laps.status, laps.idsi"
-							   " FROM runners JOIN laps ON runners.id=laps.idrunner"
-							   " WHERE laps.etap={{event/etap}}"
-							   "  AND classname='{{CATEGORY}}'"
-							   " ORDER BY laps.start");
-		ss.endGroup();
-		ss.endGroup();
-
-		ss.endGroup();
-	}
-}
-*/
 Application *Application::instance()
 {
 	Application *ret = qobject_cast<Application*>(Super::instance());
@@ -79,27 +36,27 @@ qf::core::sql::Connection Application::sqlConnetion()
 	if(!db.isValid()) {
 		if(cliOptions()->eventName().isEmpty())
 			qfFatal("Event name is empty!");
-		db = QSqlDatabase::addDatabase("QPSQL");
+		db = QSqlDatabase::addDatabase(cliOptions()->sqlDriver());
 		db.setHostName(cliOptions()->host());
 		db.setPort(cliOptions()->port());
 		db.setDatabaseName(cliOptions()->database());
 		db.setUserName(cliOptions()->user());
 		db.setPassword(cliOptions()->password());
-		//QString opts = "QF_CODEC_NAME=cp1250;QF_MYSQL_SET_NAMES=latin1";
-		qfInfo() << "connecting to:" << db.hostName() << db.port() << db.userName() << "...";// << db.password();
-		//db.setConnectOptions(opts);
-		//db.setPassword("toor");
+		qfInfo() << "connecting to:" << db.driverName() << db.hostName() << db.port() << db.userName() << "...";// << db.password();
 		bool ok = db.open();
 		if(!ok) {
 			qfError() << "ERROR open database:" << db.lastError().text();
 		}
 		else {
-			qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
-			db.setCurrentSchema(cliOptions()->eventName());
-			if(db.currentSchema() != cliOptions()->eventName()) {
-				qfError() << "ERROR open event:" << cliOptions()->eventName();
+			if(!cliOptions()->sqlDriver().endsWith(QLatin1String("SQLITE"))) {
+				qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
+				db.setCurrentSchema(cliOptions()->eventName());
+				if(db.currentSchema() != cliOptions()->eventName()) {
+					qfError() << "ERROR open event:" << cliOptions()->eventName();
+					ok = false;
+				}
 			}
-			else {
+			if(ok) {
 				qfInfo() << "\tOK";
 				setSqlConnected(true);
 			}

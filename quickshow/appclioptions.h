@@ -21,6 +21,7 @@ public:
 	CLIOPTION_GETTER_SETTER2(QString, "connection.user", u, setU, ser)
 	CLIOPTION_GETTER_SETTER2(QString, "connection.password", p, setP, assword)
 	CLIOPTION_GETTER_SETTER2(QString, "connection.database", d, setD, atabase)
+	CLIOPTION_GETTER_SETTER2(QString, "connection.driver", s, setS, qlDriver)
 };
 
 #endif // APPCLIOPTIONS_H
