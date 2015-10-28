@@ -12,11 +12,14 @@
 #include <windows.h>
 #endif
 
-Application::Application(int &argc, char **argv)
+Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	: Super(argc, argv)
+	, m_cliOptions(cli_opts)
 {
 	auto *style = qf::qmlwidgets::Style::instance();
 	style->setIconPath(":/qf/qmlwidgets/images/flat");
+
+	loadStyleSheet();
 
 	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 	QString http_proxy = env.value(QStringLiteral("http_proxy"));

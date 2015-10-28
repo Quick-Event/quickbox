@@ -13,6 +13,8 @@
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
+#include <quickevent/og/siid.h>
+#include <quickevent/audio/player.h>
 
 #include <siut/sidevicedriver.h>
 #include <siut/simessage.h>
@@ -30,12 +32,14 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/model/sqltablemodel.h>
+#include <qf/core/utils/settings.h>
 
 #include <QSettings>
 #include <QFile>
 #include <QTextStream>
 #include <QComboBox>
 #include <QLabel>
+#include <QCheckBox>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -43,12 +47,41 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 
+namespace {
+class Model : public quickevent::og::SqlTableModel
+{
+	Q_OBJECT
+private:
+	typedef quickevent::og::SqlTableModel Super;
+public:
+	explicit Model(QObject *parent) : Super(parent) {}
+
+	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+};
+
+QVariant Model::data(const QModelIndex &index, int role) const
+{
+	if(role == Qt::BackgroundRole) {
+		static auto C_RUNID = QStringLiteral("cards.runId");
+		int run_id = tableRow(index.row()).value(C_RUNID).toInt();
+		if(run_id == 0) {
+			static auto c = QColor(Qt::red).lighter(150);
+			return c;
+		}
+	}
+	return Super::data(index, role);
+}
+}
+
 CardReaderWidget::CardReaderWidget(QWidget *parent)
 	: Super(parent)
 	, ui(new Ui::CardReaderWidget)
 {
 	ui->setupUi(this);
 
+	ui->tblCards->setInsertRowEnabled(false);
+	ui->tblCards->setRemoveRowEnabled(false);
+	ui->tblCards->setCloneRowEnabled(false);
 	ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 
 	createActions();
@@ -67,9 +100,9 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		ui->tblCards->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
-		auto m = new quickevent::og::SqlTableModel(this);
+		auto m = new Model(this);
 		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true);
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
 		m->addColumn("competitors.registration", tr("Reg"));
@@ -78,7 +111,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
 		m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
 		m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
-		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
+		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true);
+		m->addColumn("runs.cardReturned", tr("R")).setToolTip(tr("Card returned"));
 		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
@@ -96,12 +130,23 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
 	QAction a_show_card(tr("Show card"), nullptr);
+	QAction a_print_card(tr("Print card"), nullptr);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card << &a_assign_runner;
+	lst << &a_show_card << &a_print_card << &a_assign_runner;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_card) {
 		showSelectedCard();
+	}
+	else if(a == &a_print_card) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		auto *plugin = fwk->plugin("Receipts");
+		if(!plugin) {
+			qfError() << "Cannot find Receipts plugin!";
+			return;
+		}
+		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
+		QMetaObject::invokeMethod(plugin, "printReceipt", Q_ARG(int, card_id));
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
@@ -110,8 +155,8 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 
 CardReaderWidget::~CardReaderWidget()
 {
-	QF_SAFE_DELETE(m_cardLog);
-	QF_SAFE_DELETE(m_cardLogFile);
+	//QF_SAFE_DELETE(m_cardLog);
+	//QF_SAFE_DELETE(m_cardLogFile);
 	delete ui;
 }
 
@@ -128,6 +173,11 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		qfw::Action *a = part_widget->menuBar()->actionForPath("tools", true);
 		a->setText("&Tools");
 		a->addActionInto(m_actSettings);
+		{
+			qfw::Action *a2 = new qfw::Action("Test audio");
+			connect(a2, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::operatorAudioNotify);
+			a->addActionInto(a2);
+		}
 	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
@@ -143,14 +193,30 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		connect(m_cbxCardCheckers, SIGNAL(activated(int)), this, SLOT(onCbxCardCheckersActivated(int)));
 		onCbxCardCheckersActivated(m_cbxCardCheckers->currentIndex());
 	}
+	main_tb->addSeparator();
+	{
+		m_cbxAutoRefresh = new QCheckBox();
+		m_cbxAutoRefresh->setText(tr("Auto refresh"));
+		main_tb->addWidget(m_cbxAutoRefresh);
+	}
+	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+}
+
+void CardReaderWidget::reset()
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_cardsModel->clearRows();
+		return;
+	}
+	reload();
 }
 
 void CardReaderWidget::reload()
 {
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId")
-			.select2("runs", "startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent")
+	qb.select2("cards", "id, siId, runId")
+			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent, cardReturned")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -162,6 +228,16 @@ void CardReaderWidget::reload()
 			.orderBy("cards.id DESC");
 	m_cardsModel->setQueryBuilder(qb);
 	m_cardsModel->reload();
+}
+
+void CardReaderWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+{
+	int card_id = payload.toInt();
+	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
+		// TODO: only if widget is visible (plugin window active)
+		if(m_cbxAutoRefresh->isChecked())
+			updateTableView(card_id);
+	}
 }
 
 void CardReaderWidget::createActions()
@@ -194,10 +270,10 @@ void CardReaderWidget::openSettings()
 {
 	DlgSettings dlg(this);
 	if(dlg.exec()) {
-		closeCardLog();
+		//closeCardLog();
 	}
 }
-
+/*
 qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 {
 	QSettings settings;
@@ -218,7 +294,7 @@ qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
 QTextStream& CardReaderWidget::cardLog()
 {
 	if(!m_cardLog) {
-		QSettings settings;
+		qf::core::utils::Settings settings;
 		QString key = QString(CardReader::CardReaderPlugin::SETTINGS_PREFIX) + "/logging/cardLog";
 		QString fn = settings.value(key).toString();
 		if(!fn.isEmpty()) {
@@ -246,7 +322,7 @@ void CardReaderWidget::closeCardLog()
 	emitLogRequest(qf::core::Log::Level::Info, tr("Closing card log."));
 	QF_SAFE_DELETE(m_cardLog);
 }
-
+*/
 siut::DeviceDriver *CardReaderWidget::siDriver()
 {
 	if(!f_siDriver) {
@@ -279,28 +355,7 @@ void CardReaderWidget::onCommOpen(bool checked)
 
 void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 {
-	qf::core::Log::Level treshold = logLevelFromSettings();
-	if(level <= treshold) {
-		qfLog(level) << msg;
-		QString div = "<div style=\"color:%1\">%2</div>";
-		QString color_name;
-		switch(level) {
-		case qf::core::Log::Level::Error: color_name = "red"; break;
-		case qf::core::Log::Level::Warning: color_name = "blue"; break;
-		case qf::core::Log::Level::Info: color_name = "black"; break;
-		case qf::core::Log::Level::Debug: color_name = "darkgray"; break;
-		default: color_name = "darkgray"; break;
-		}
-		ui->txtLog->insertHtml(div.arg(color_name).arg(msg));
-		ui->txtLog->append(QString());
-		ui->txtLog->textCursor().movePosition(QTextCursor::End);
-		ui->txtLog->ensureCursorVisible();
-	}
-}
-
-void CardReaderWidget::appendLogPre(qf::core::Log::Level level, const QString& msg)
-{
-	appendLog(level, "<pre>" + msg + "</pre>");
+	qfLog(level) << msg;
 }
 
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
@@ -312,7 +367,7 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 		processSICard(card);
 	}
 	else if(msg_data.type() == SIMessageData::MsgCardEvent) {
-		appendLogPre(qf::core::Log::Level::Debug, msg_data.dump());
+		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 		if(msg_data.command() == SIMessageData::CmdSICard5DetectedExt) {
 			QByteArray data(1, 0);
 			data[0] = 0;
@@ -331,8 +386,12 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 			emit sendSICommand(SIMessageData::CmdGetSICard8Ext, data);
 		}
 	}
+	else if(msg_data.type() == SIMessageData::MsgPunch) {
+		SIMessageTransmitRecord rec(msg_data);
+		processSIPunch(rec);
+	}
 	else {
-		appendLogPre(qf::core::Log::Level::Debug, msg_data.dump());
+		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 	}
 }
 
@@ -344,30 +403,60 @@ void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QStr
 
 void CardReaderWidget::processDriverRawData(const QByteArray& data)
 {
-	QSettings settings;
-	if(settings.value("comm/debug/showRawComData").toBool()) {
+	qf::core::utils::Settings settings;
+	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
+	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
 		QString msg = SIMessageData::dumpData(data);
-		appendLog(qf::core::Log::Level::Debug, trUtf8("DriverRawData: %1").arg(msg));
+		appendLog(qf::core::Log::Level::Info, trUtf8("DriverRawData: %1").arg(msg));
 	}
 }
 
 void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 {
-	appendLogPre(qf::core::Log::Level::Debug, card.dump());
+	appendLog(qf::core::Log::Level::Debug, card.dump());
 	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
 	int run_id = thisPlugin()->findRunId(card.cardNumber());
-	if(run_id == 0)
+	if(run_id == 0) {
+		operatorAudioWakeUp();
 		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
+	}
+	else {
+		qf::core::sql::Query q;
+		q.exec("SELECT cardLent, cardReturned FROM runs WHERE id=" QF_IARG(run_id) );
+		if(q.next()) {
+			if(q.value(0).toBool() && !q.value(1).toBool())
+				operatorAudioNotify();
+		}
+	}
 	CardReader::ReadCard read_card(card);
 	read_card.setRunId(run_id);
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(run_id) {
 		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
-		thisPlugin()->updateRunLapsSql(checked_card);
+		thisPlugin()->updateCheckedCardValuesSql(checked_card);
 	}
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
-		updateTableView(card_id);
+		//updateTableView(card_id);
+	}
+}
+
+void CardReaderWidget::processSIPunch(const SIMessageTransmitRecord &rec)
+{
+	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.punch().toString()));
+	int run_id = thisPlugin()->findRunId(rec.cardNumber());
+	if(run_id == 0)
+		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
+	CardReader::PunchRecord trans_rec(rec);
+	trans_rec.setRunId(run_id);
+	int punch_id = thisPlugin()->savePunchRecordToSql(trans_rec);
+	if(punch_id) {
+		//CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
+		//thisPlugin()->updateRunLapsSql(checked_card);
+	}
+	if(punch_id > 0) {
+		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD, punch_id, true);
+		//updateTableView(card_id);
 	}
 }
 
@@ -432,29 +521,41 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 	auto *w = new Runs::FindRunnerWidget(eventPlugin()->currentStageId());
 	w->setWindowTitle(tr("Find runner"));
 	qfd::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+	dlg.setPersistentSettingsId("dlgAssignRunnerToSelectedCard");
 	//dlg.setDefaultButton(QDialogButtonBox::Ok);
 	dlg.setCentralWidget(w);
-	w->setFocusToWidget(Runs::FindRunnerWidget::FocusWidget::Name);
-	if(dlg.exec()) {
-		qf::core::utils::TableRow r = w->tableView()->tableRow();
-		if(r.isNull())
-			r = w->tableView()->tableRow(0);
-		if(!r.isNull()) {
-			int run_id = r.value("runs.id").toInt();
-			if(run_id) {
-				CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
-				if(thisPlugin()->updateRunLapsSql(checked_card)) {
-					qf::core::sql::Query q;
-					try {
-						q.exec("UPDATE cards SET runId=" QF_IARG(run_id) " WHERE id=" QF_IARG(card_id), qf::core::Exception::Throw);
-						ui->tblCards->reloadRow();
-					}
-					catch (const qf::core::Exception &e) {
-						qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
-					}
-				}
+	//w->setFocusToWidget(Runs::FindRunnerWidget::FocusWidget::Name);
+	w->focusLineEdit();
+	connect(w, &Runs::FindRunnerWidget::runnerSelected, [this, card_id, &dlg](const QVariantMap &values) {
+		dlg.accept();
+		int run_id = values.value("runid").toInt();
+		if(run_id) {
+			CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
+			if(thisPlugin()->updateCheckedCardValuesSql(checked_card)) {
+				if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
+					this->ui->tblCards->reloadRow();
 			}
 		}
-	}
+	});
+	dlg.exec();
 }
+
+quickevent::audio::Player *CardReaderWidget::audioPlayer()
+{
+	if(!m_audioPlayer)
+		m_audioPlayer = new quickevent::audio::Player(this);
+	return m_audioPlayer;
+}
+
+void CardReaderWidget::operatorAudioWakeUp()
+{
+	audioPlayer()->playAlert(quickevent::audio::Player::AlertKind::OperatorWakeUp);
+}
+
+void CardReaderWidget::operatorAudioNotify()
+{
+	audioPlayer()->playAlert(quickevent::audio::Player::AlertKind::OperatorNotify);
+}
+
+#include "cardreaderwidget.moc"
 

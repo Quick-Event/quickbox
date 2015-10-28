@@ -5,6 +5,8 @@
 
 #include <QFrame>
 
+namespace qf { namespace core { class LogEntryMap; }}
+
 namespace Ui {
 class LoggerWidget;
 }
@@ -24,7 +26,7 @@ public:
 private:
 	Logging::LoggingPlugin* loggingPlugin();
 
-	Q_SLOT void onLogEntry(const QVariantMap &log_entry);
+	Q_SLOT void onLogEntry(const qf::core::LogEntryMap &log_entry);
 	Q_SLOT void onLogLevelSet(int ix);
 private:
 	Ui::LoggerWidget *ui;

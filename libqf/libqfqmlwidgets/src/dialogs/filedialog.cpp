@@ -3,6 +3,8 @@
 #include <qf/core/log.h>
 #include <qf/core/utils/fileutils.h>
 
+#include <QApplication>
+
 using namespace qf::qmlwidgets::dialogs;
 
 QString FileDialog::s_recentOpenFileDir;
@@ -23,6 +25,8 @@ QString FileDialog::getOpenFileName(QWidget *parent, const QString &caption,
 		dir = s_recentOpenFileDir;
 		fn = qf::core::utils::FileUtils::joinPath(dir, fn);
 	}
+	if(parent == nullptr)
+		parent = QApplication::activeWindow();
 	QString ret = QFileDialog::getOpenFileName(parent, caption, fn, filter, selectedFilter, options);
 	if(!ret.isEmpty()) {
 		s_recentOpenFileDir = qf::core::utils::FileUtils::path(ret);
@@ -40,6 +44,8 @@ QStringList FileDialog::getOpenFileNames(QWidget *parent, const QString &caption
 		dir = s_recentOpenFileDir;
 		fn = qf::core::utils::FileUtils::joinPath(dir, fn);
 	}
+	if(parent == nullptr)
+		parent = QApplication::activeWindow();
 	QStringList ret = QFileDialog::getOpenFileNames(parent, caption, fn, filter, selectedFilter, options);
 	if(!ret.isEmpty()) {
 		s_recentOpenFileDir = qf::core::utils::FileUtils::path(ret[0]);
@@ -60,8 +66,12 @@ QString FileDialog::getSaveFileName(QWidget * parent, const QString & caption,
 		dir = s_recentSaveFileDir;
 		fn = qf::core::utils::FileUtils::joinPath(dir, fn);
 	}
-	qDebug() << "\t fn2:" << fn;
+	//options |= QFileDialog::DontUseNativeDialog;
+	if(parent == nullptr)
+		parent = QApplication::activeWindow();
+	qfDebug() << "\t fn2:" << fn << "parent:" << parent;
 	QString ret = QFileDialog::getSaveFileName(parent, caption, fn, filter, selectedFilter, options);
+	qfDebug() << "\t ret:" << ret;
 	if(!ret.isEmpty()) {
 		s_recentSaveFileDir = qf::core::utils::FileUtils::path(ret);
 	}
@@ -74,6 +84,8 @@ QString FileDialog::getExistingDirectory(QWidget *parent, const QString &caption
 	if(dir.isEmpty()) {
 		dir = s_recentOpenFileDir;
 	}
+	if(parent == nullptr)
+		parent = QApplication::activeWindow();
 	QString ret = QFileDialog::getExistingDirectory(parent, caption, dir, options);
 	if(!ret.isEmpty()) {
 		s_recentOpenFileDir = ret;

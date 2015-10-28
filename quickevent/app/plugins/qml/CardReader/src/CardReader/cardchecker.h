@@ -19,13 +19,16 @@ public:
 
 	QF_PROPERTY_IMPL(QString, c, C, aption)
 
-	/// if time2 < time1 add 12 hours to time2 and return it
-	Q_INVOKABLE int fixTimeWrap(int time1_msec, int time2_msec);
+	/// while time2 < time1 add 12 hours to time2 and return difference
+	Q_INVOKABLE int msecIntervalAM(int time1_msec, int time2_msec);
+	/// while time2 < time1 add 12 hours to time2 and return it
+	Q_INVOKABLE int fixTimeWrapAM(int time1_msec, int time2_msec);
 	Q_INVOKABLE int toAMms(int time_msec);
 	Q_INVOKABLE int toAM(int time_sec);
 	Q_INVOKABLE int stageStartSec();
 	Q_INVOKABLE int startTimeSec(int run_id);
-	Q_INVOKABLE QVariantMap courseForRunId(int run_id);
+	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
+	Q_INVOKABLE int finishPunchCode();
 
 	//Q_INVOKABLE QVariant checkCard(const QVariant &card, const QVariant &run_id);
 };

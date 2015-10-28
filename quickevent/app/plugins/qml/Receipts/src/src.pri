@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/receiptswidget.h \
     $$PWD/Receipts/receiptsplugin.h \
     $$PWD/receiptsprinteroptions.h \
-    $$PWD/receiptsprinteroptionsdialog.h
+    $$PWD/receiptsprinteroptionsdialog.h \
+    $$PWD/receiptsprinter.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -13,7 +14,8 @@ SOURCES += \
     $$PWD/receiptswidget.cpp \
     $$PWD/Receipts/receiptsplugin.cpp \
     $$PWD/receiptsprinteroptions.cpp \
-    $$PWD/receiptsprinteroptionsdialog.cpp
+    $$PWD/receiptsprinteroptionsdialog.cpp \
+    $$PWD/receiptsprinter.cpp
 
 FORMS += \
     $$PWD/receiptswidget.ui \

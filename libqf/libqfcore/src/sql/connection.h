@@ -19,6 +19,10 @@ class QFCORE_DECL_EXPORT Connection : public QSqlDatabase
 private:
 	typedef QSqlDatabase Super;
 public:
+	/**
+	 * @brief Connection
+	 * Creates an empty, invalid Connection object.
+	 */
 	Connection();
 	explicit Connection(const QSqlDatabase& qdb);
 	Connection& operator=(const QSqlDatabase& o);

@@ -2,6 +2,8 @@
 #include "ui_receiptswidget.h"
 #include "receiptspartwidget.h"
 #include "receiptsprinteroptionsdialog.h"
+#include "receiptsprinter.h"
+#include "receiptsprinteroptions.h"
 #include "Receipts/receiptsplugin.h"
 
 #include <Event/eventplugin.h>
@@ -10,6 +12,7 @@
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
+#include <quickevent/og/siid.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -33,6 +36,7 @@
 #include <QMetaObject>
 #include <QJSValue>
 #include <QPrinterInfo>
+#include <QTimer>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -52,6 +56,9 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	{
 		ui->tblPrintJobsTB->setTableView(ui->tblCards);
 
+		ui->tblCards->setInsertRowEnabled(false);
+		ui->tblCards->setRemoveRowEnabled(false);
+		ui->tblCards->setCloneRowEnabled(false);
 		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
@@ -59,7 +66,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		auto m = new quickevent::og::SqlTableModel(this);
 
 		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true);
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
 		m->addColumn("competitors.registration", tr("Reg"));
@@ -79,11 +86,18 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
+
+	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }
 
 ReceiptsWidget::~ReceiptsWidget()
 {
 	delete ui;
+}
+
+void ReceiptsWidget::lazyInit()
+{
+	updateReceiptsPrinterLabel();
 }
 
 void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
@@ -92,6 +106,15 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
 
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+}
+
+void ReceiptsWidget::reset()
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_cardsModel->clearRows();
+		return;
+	}
+	reload();
 }
 
 void ReceiptsWidget::reload()
@@ -149,11 +172,6 @@ void ReceiptsWidget::createActions()
 		m_actCommOpen = a;
 	}
 	*/
-}
-
-QPrinterInfo ReceiptsWidget::currentPrinter()
-{
-	return QPrinterInfo::printerInfo(ui->btPrinterOptions->text());
 }
 
 int ReceiptsWidget::currentStageId()
@@ -234,15 +252,25 @@ void ReceiptsWidget::printSelectedCards()
 
 bool ReceiptsWidget::printReceipt(int card_id)
 {
-	QString direct_printer;
-	//if(ui->cbxDirectPrinters->currentIndex() > 0)
-	//	direct_printer = ui->cbxDirectPrinters->currentText();
-	return receiptsPlugin()->printReceipt(card_id, currentPrinter(), direct_printer);
+	return receiptsPlugin()->printReceipt(card_id);
 }
 
+void ReceiptsWidget::updateReceiptsPrinterLabel()
+{
+	const auto &opts = receiptsPlugin()->receiptsPrinter()->printerOptions();
+	ui->btPrinterOptions->setText(opts.printerCaption());
+	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter)
+		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/graphic-printer.svg"));
+	else
+		ui->btPrinterOptions->setIcon(QIcon(":/quickevent/Receipts/images/character-printer.svg"));
+}
 
 void ReceiptsWidget::on_btPrinterOptions_clicked()
 {
 	ReceiptsPrinterOptionsDialog dlg(this);
-	dlg.exec();
+	dlg.setPrinterOptions(receiptsPlugin()->receiptsPrinter()->printerOptions());
+	if(dlg.exec()) {
+		receiptsPlugin()->setReceiptsPrinterOptions(dlg.printerOptions());
+		updateReceiptsPrinterLabel();
+	}
 }

@@ -1,6 +1,7 @@
 #include "captionframe.h"
 #include "../../framework/mainwindow.h"
 #include "../../framework/plugin.h"
+#include "../../style.h"
 
 #include <qf/core/log.h>
 #include <qf/core/model/datadocument.h>
@@ -127,7 +128,7 @@ void CaptionFrame::update()
 	setVisible(is_visible);
 	if(is_visible) {
 		if(isAlert()) {
-			QPixmap pm(":/qf/qmlwidgets/images/alert");
+			QPixmap pm = qf::qmlwidgets::Style::instance()->pixmap(":/qf/qmlwidgets/images/alert", 32);
 			m_captionIconLabel->setPixmap(pm);
 		}
 		else {

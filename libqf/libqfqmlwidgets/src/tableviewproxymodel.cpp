@@ -23,7 +23,7 @@ TableViewProxyModel::~TableViewProxyModel()
 void TableViewProxyModel::setRowFilterString(const QString &s)
 {
 	qfLogFuncFrame() << s;
-	QByteArray ba = qf::core::Collator::toAscii7(s, true);
+	QByteArray ba = qf::core::Collator::toAscii7(QLocale::Czech, s, true);
 	qfDebug() << ba;
 	if(ba == m_rowFilterString)
 		return;
@@ -81,8 +81,8 @@ bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &r
 		QVariant lv = source_model->data(left, Qt::EditRole); /// comparing display role is not working for NULL values
 		QVariant rv = source_model->data(right, Qt::EditRole);
 		if(lv.userType() == qMetaTypeId<QString>() && rv.userType() == qMetaTypeId<QString>()) {
-			const QByteArray lb = qf::core::Collator::toAscii7(lv.toString(), true);
-			const QByteArray rb = qf::core::Collator::toAscii7(rv.toString(), true);
+			const QByteArray lb = qf::core::Collator::toAscii7(QLocale::Czech, lv.toString(), true);
+			const QByteArray rb = qf::core::Collator::toAscii7(QLocale::Czech, rv.toString(), true);
 			int lsz = lb.size();
 			int rsz = rb.size();
 			for(int i=0; ; i++) {
@@ -115,7 +115,7 @@ bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &r
 bool TableViewProxyModel::dataMatchFilter(const QVariant &d) const
 {
 	QString s = d.toString();
-	QByteArray ba = qf::core::Collator::toAscii7(s, true);
+	QByteArray ba = qf::core::Collator::toAscii7(QLocale::Czech, s, true);
 	bool ret = ba.contains(m_rowFilterString);
 	return ret;
 }

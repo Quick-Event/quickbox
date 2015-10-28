@@ -1,4 +1,5 @@
 #include "logdevice.h"
+#include "utils.h"
 
 #include <QByteArray>
 #include <QString>
@@ -31,6 +32,8 @@ QList< LogDevice* >& logDevices();
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+	if(!LogDevice::isLoggingEnabled())
+		return;
 	Log::Level level = Log::Level::Debug;
 	switch(type) {
 	case QtDebugMsg:
@@ -61,8 +64,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		level = Log::Level::Fatal;
 		break;
 	}
-	for(auto log_device : logDevices()) {
-		if(log_device->checkLogPermisions(context, level)) {
+	Q_FOREACH(auto log_device, logDevices()) {
+		if(log_device->isEnabled() && log_device->checkLogPermisions(context, level)) {
 			log_device->log(level, context, msg);
 		}
 	}
@@ -86,13 +89,14 @@ QList< LogDevice* >& logDevices()
 Log::Level LogDevice::environmentLogTreshold = environment_treshold();
 Log::Level LogDevice::commandLineLogTreshold = Log::Level::Invalid;
 
+bool LogDevice::m_loggingEnabled = true;
+
 LogDevice::LogDevice(QObject *parent)
 	: QObject(parent)
 	, m_logTreshold(Log::Level::Info)
 	, m_count(0)
-	, m_isPrettyDomain(false)
+	, m_isPrettyDomain(true)
 {
-	//setDomainTresholds(parent, argv);
 }
 
 LogDevice::~LogDevice()
@@ -129,9 +133,7 @@ QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 			continue;
 		}
 		if(s.startsWith("-d")) {
-			//printf("1 %s\n", qPrintable(s));
 			s = s.mid(2);
-			//printf("2 %s\n", qPrintable(s));
 			tresholds << s;
 		}
 		else {
@@ -210,6 +212,21 @@ bool LogDevice::checkLogPermisions(const QMessageLogContext &context, Log::Level
 	return ret;
 }
 
+void LogDevice::setLoggingEnabled(bool on)
+{
+	m_loggingEnabled = on;
+}
+
+bool LogDevice::isLoggingEnabled()
+{
+	return m_loggingEnabled;
+}
+
+void LogDevice::setEnabled(bool b)
+{
+	m_enabled = b;
+}
+
 void LogDevice::setPrettyDomain(bool b)
 {
 	m_isPrettyDomain = b;
@@ -218,6 +235,13 @@ void LogDevice::setPrettyDomain(bool b)
 bool LogDevice::isPrettyDomain() const
 {
 	return m_isPrettyDomain;
+}
+
+const char* LogDevice::dCommandLineSwitchHelp()
+{
+	return "-d[domain[:LEVEL]]\tset debug domain and level\n"
+	"\t\t\tdomain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
+	"\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, default level is INFO\n";
 }
 
 QString LogDevice::prettyDomain(const QString &domain)
@@ -263,18 +287,19 @@ void FileLogDevice::setFile(const QString &path_to_file)
 	else {
 		FILE *f = ::fopen(qPrintable(path_to_file), "w");
 		if(f) {
-			fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
+			std::fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
 			m_file = f;
 		}
 		else {
-			fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
+			std::fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
 		}
 	}
 }
 
 void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
-	if(!m_file) return;
+	if(!m_file)
+		return;
 #ifdef Q_OS_UNIX
 	bool is_tty = ::isatty(fileno(m_file));
 	enum TerminalColor {Black = 0, Red, Green, Yellow, Blue, Magenta, Cyan, White};
@@ -286,12 +311,16 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 		TerminalColor fg, bg = Black;
 		TerminalAttr attr = AttrReset;
 		switch(level) {
-		case Log::Level::Info: fg = Cyan; break;
-		case Log::Level::Warning: fg = Magenta; attr = AttrBright; break;
+		case Log::Level::Info:
+			fg = Cyan; break;
+		case Log::Level::Warning:
+			fg = Magenta; attr = AttrBright; break;
 		case Log::Level::Error:
-		case Log::Level::Fatal: fg = Red; attr = AttrBright; break;
+		case Log::Level::Fatal:
+			fg = Red; attr = AttrBright; break;
 		case Log::Level::Debug:
-		default: fg = White; break;
+		default:
+			fg = White; break;
 		}
 		QString s;
 		std::fprintf(m_file, "%c[%d;%d;%dm", 0x1B, attr, fg + 30, bg + 40);
@@ -331,6 +360,9 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	//if(level == Log::LOG_FATAL) std::terminate(); Qt will do it itself
 }
 
+//=========================================================
+// LogEntryMap
+//=========================================================
 static const auto KeyLevel = QStringLiteral("level");
 static const auto KeyDomain = QStringLiteral("domain");
 static const auto KeyMessage = QStringLiteral("message");
@@ -395,10 +427,12 @@ QString LogEntryMap::toString() const
 	return ret;
 }
 
+//=========================================================
+// SignalLogDevice
+//=========================================================
 SignalLogDevice::SignalLogDevice(QObject *parent)
 	: Super(parent)
 {
-	setPrettyDomain(true);
 }
 
 SignalLogDevice::~SignalLogDevice()
@@ -418,3 +452,4 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 	LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
 	emit logEntry(m);
 }
+

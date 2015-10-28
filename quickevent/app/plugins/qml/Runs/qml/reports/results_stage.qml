@@ -116,9 +116,10 @@ Report {
 							Para {
 								width: 10
 								textFn: function() {
-									var disq = runnersDetail.rowData("disqualified");
-									if(disq)
+									if(runnersDetail.rowData("disqualified"))
 										return qsTr("DISQ");
+									if(runnersDetail.rowData("notCompeting"))
+										return qsTr("NC");
 									return "";
 								}
 							}

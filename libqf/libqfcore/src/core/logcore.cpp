@@ -48,6 +48,25 @@ const char *qf::core::Log::levelName(qf::core::Log::Level level)
 	return "???";
 }
 
+QString Log::levelToString(Log::Level level)
+{
+	switch(level) {
+	case Log::Level::Fatal:
+		return QStringLiteral("Fatal");
+	case Log::Level::Error:
+		return QStringLiteral("Error");
+	case Log::Level::Warning:
+		return QStringLiteral("Warning");
+	case Log::Level::Info:
+		return QStringLiteral("Info");
+	case Log::Level::Debug:
+		return QStringLiteral("Debug");
+	case Log::Level::Invalid:
+		return QStringLiteral("Invalid");
+	}
+	return QString();
+}
+
 void Log::checkLogLevelMetaTypeRegistered()
 {
 	int id = qMetaTypeId<qf::core::Log::Level>();

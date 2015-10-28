@@ -1,11 +1,7 @@
 #ifndef RECEIPTSWIDGET_H
 #define RECEIPTSWIDGET_H
 
-//#include <qf/core/log.h>
-
 #include <QFrame>
-
-class QPrinterInfo;
 
 namespace Ui {
 	class ReceiptsWidget;
@@ -46,7 +42,7 @@ public:
 
 	void settleDownInPartWidget(ReceiptsPartWidget *part_widget);
 
-	Q_SLOT void reset() {reload();}
+	Q_SLOT void reset();
 	Q_SLOT void reload();
 private slots:
 	void on_btPrinterOptions_clicked();
@@ -65,8 +61,10 @@ private:
 
 	bool printReceipt(int card_id);
 
+	void lazyInit();
+	void updateReceiptsPrinterLabel();
+
 	void createActions();
-	QPrinterInfo currentPrinter();
 	int currentStageId();
 private:
 	Ui::ReceiptsWidget *ui;

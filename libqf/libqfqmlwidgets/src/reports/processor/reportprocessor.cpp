@@ -13,6 +13,9 @@
 #include <QDomElement>
 #include <QQmlContext>
 
+//#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/timescope.h>
+
 namespace qfu = qf::core::utils;
 
 using namespace qf::qmlwidgets::reports;
@@ -41,13 +44,6 @@ ReportProcessor::~ReportProcessor()
 	//qfInfo() << "delete ReportProcessor" << this;
 }
 
-/*--
-qfu::SearchDirs* ReportProcessor::searchDirs(bool throw_exc)
-{
-	if(!f_searchDirs && throw_exc) QF_EXCEPTION(trUtf8("ReportProcessor search dirs is NULL."));
-	return f_searchDirs;
-}
---*/
 void ReportProcessor::reset()
 {
 	qfLogFuncFrame();
@@ -55,16 +51,9 @@ void ReportProcessor::reset()
 	QF_SAFE_DELETE(m_processorOutput);
 }
 
-/*--
-void ReportProcessor::setReport(const ReportDocument &doc)
-{
-	qfLogFuncFrame();
-	fReport = doc;
-	reset();
-}
---*/
 void ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap &report_init_properties)
 {
+	QF_TIME_SCOPE("ReportProcessor::setReport()");
 	m_reportInitProperties = report_init_properties;
 	QF_SAFE_DELETE(m_reportDocumentComponent);
 	QString fn = rep_file_name;
@@ -111,17 +100,23 @@ void ReportProcessor::setData(const QString &key, const QVariant &data)
 
 ReportItemReport* ReportProcessor::documentInstanceRoot()
 {
+	QF_TIME_SCOPE("ReportProcessor::documentInstanceRoot()");
 	if(!m_documentInstanceRoot) {
-		QObject *o = m_reportDocumentComponent->beginCreate(qmlEngine()->rootContext());
-		m_documentInstanceRoot = qobject_cast<ReportItemReport*>(o);
+		QObject *o;
+		{
+			QF_TIME_SCOPE("ReportProcessor::documentInstanceRoot() - creating report object begin");
+			o = m_reportDocumentComponent->beginCreate(qmlEngine()->rootContext());
+			m_documentInstanceRoot = qobject_cast<ReportItemReport*>(o);
+		}
 		if(!m_documentInstanceRoot) {
 			qfError() << "Error creating root object from component:" << m_reportDocumentComponent << m_reportDocumentComponent->url();
 			qfError() << "Created object:" << o;
-			for(auto err : m_reportDocumentComponent->errors())
+			Q_FOREACH(auto err, m_reportDocumentComponent->errors())
 				qfError() << err.toString();
 			QF_SAFE_DELETE(o);
 		}
 		else {
+			QF_TIME_SCOPE("ReportProcessor::documentInstanceRoot() - creating report object finish");
 			QMapIterator<QString, QVariant> it(m_reportInitProperties);
 			while(it.hasNext()) {
 				it.next();
@@ -147,6 +142,7 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 {
 	qfLogFuncFrame() << "mode:" << mode;
+	QF_TIME_SCOPE("ReportProcessor::process");
 	if(mode == FirstPage || mode == AllPages) {
 		setProcessedPageNo(0);
 		QF_SAFE_DELETE(m_processorOutput);
@@ -158,8 +154,11 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 	ReportItemMetaPaint mpit;
 	//context().dump();
 	while(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
-		m_singlePageProcessResult = processPage(&mpit);
-		qfDebug() << "singlePageProcessResult:" << m_singlePageProcessResult.toString();
+		{
+			QF_TIME_SCOPE("processing page");
+			m_singlePageProcessResult = processPage(&mpit);
+			qfDebug() << "singlePageProcessResult:" << m_singlePageProcessResult.toString();
+		}
 		//qfDebug().color(QFLog::Yellow) << context().styleCache().toString();
 		//mpit.dump();
 		ReportItemMetaPaint *it = mpit.firstChild();
@@ -190,8 +189,10 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 ReportItem::PrintResult ReportProcessor::processPage(ReportItemMetaPaint *out)
 {
 	qfLogFuncFrame();
+	QF_TIME_SCOPE("ReportProcessor::processPage()");
 	ReportItem::PrintResult res;
 	if(documentInstanceRoot()) {
+		QF_TIME_SCOPE("ReportProcessor::processPage - documentInstanceRoot()->printMetaPaint()");
 		res = documentInstanceRoot()->printMetaPaint(out, ReportItem::Rect());
 		qfDebug() << "\tres:" << res.toString();
 	}
@@ -202,21 +203,6 @@ QFontMetricsF ReportProcessor::fontMetrics(const QFont &font)
 {
 	return QFontMetricsF(font, paintDevice());
 }
-/*
-QString ReportProcessor::resolveFileName(const QString &f_name)
-{
-	qfLogFuncFrame();
-	QString ret = f_searchDirs.findFile(f_name);
-	if(ret.isEmpty()) QF_EXCEPTION(tr("File '%1' can not be resolved trying %2.").arg(f_name).arg(f_searchDirs.dirs().join(", ")));
-	return ret;
-}
-*/
-/*
-QString ReportProcessor::resolveFN(const QString &f_name)
-{
-	return resolveFileName(f_name);
-}
-*/
 
 void ReportProcessor::processHtml(QDomElement & el_body, const HtmlExportOptions &opts)
 {
@@ -373,7 +359,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
 		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
-		for(auto path : qmlEngineImportPaths()) {
+		Q_FOREACH(auto path, qmlEngineImportPaths()) {
 			qfInfo() << "Adding ReportProcessor QML engine import path:" << path;
 			m_qmlEngine->addImportPath(path);
 		}

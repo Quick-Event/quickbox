@@ -169,6 +169,16 @@ int EventConfig::handicapLength() const
 {
 	return value(QStringLiteral("event.handicapLength")).toInt();
 }
+
+QString EventConfig::director() const
+{
+	return value(QStringLiteral("event.director")).toString();
+}
+
+QString EventConfig::mainReferee() const
+{
+	return value(QStringLiteral("event.mainReferee")).toString();
+}
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {

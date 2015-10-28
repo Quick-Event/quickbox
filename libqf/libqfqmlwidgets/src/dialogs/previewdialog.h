@@ -32,7 +32,7 @@ public:
 	void setFile(const QString& file_name, const QString &codec_name = QString());
 	void setUrl(const QUrl &url, const QString &codec_name = QString());
 
-	int exec() {return Super::exec();}
+	int exec() Q_DECL_OVERRIDE {return Super::exec();}
 	int exec(const QString &content, const QString &suggested_file_name = QString(), const QString &persistent_data_id = QString());
 
 	QTextEdit* editor();

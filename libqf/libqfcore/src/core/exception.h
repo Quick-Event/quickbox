@@ -21,7 +21,7 @@ namespace core {
 
 //! if Exception::terminateOnException is true, abort application instead of throw. For debug purposes to get the stacktrace.
 #define QF_EXCEPTION(msg) \
-	QF_THROW(qf::core::Exception, msg, qf::core::Exception::terminateOnException)
+	QF_THROW(qf::core::Exception, msg, qf::core::Exception::isAbortOnException())
 
 //---------------------------------------------------------------------
 class QFCORE_DECL_EXPORT Exception : public std::exception
@@ -39,8 +39,8 @@ public:
 	~Exception() throw() Q_DECL_OVERRIDE {}
 public:
 	static const bool Throw = true;
-	static bool terminateOnException;
 protected:
+	static bool s_abortOnException;
 	//QString m_type;
 	QString m_msg;
 	QByteArray m_what;
@@ -59,11 +59,12 @@ public:
 	//virtual QString catchLocation() const {return f_catchLocation;}
 	//void setCatchLocation(const QString &loc) {f_catchLocation = loc;}
 	//virtual const char* trace() const throw();
-	virtual const char* what() const throw();
+	const char* what() const throw() Q_DECL_OVERRIDE;
 	operator const char *() const  throw(){return what();}
-	/// nastavi globalni promenne exceptionAbortsApplication, assertThrowsException, logStackTrace z parametru prikazove radky
-	/// --exception-aborts, --assert-throws, --log-stacktrace
-	//static void setGlobalFlags(int argc, char *argv[]);
+	// set global variables: abortOnException from command line
+	// --abort-on-exception
+	static void setAbortOnException(bool on) {s_abortOnException = on;}
+	static bool isAbortOnException() {return s_abortOnException;}
 };
 
 }}

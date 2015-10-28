@@ -172,8 +172,8 @@ protected:
 
 	void componentComplete() Q_DECL_OVERRIDE;
 public:
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-	virtual PrintResult printHtml(HTMLElement &out);
+	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
+	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
 
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;

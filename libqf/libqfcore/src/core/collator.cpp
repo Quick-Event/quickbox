@@ -4,10 +4,16 @@
 #include <QString>
 
 using namespace qf::core;
-
+/*
 Collator::Collator()
 {
 	*this = sharedNull();
+}
+*/
+Collator::Collator(QLocale::Language lang)
+{
+	d = new Data();
+	setLanguage(lang);
 }
 
 Collator::Collator(Collator::SharedDummyHelper)
@@ -62,7 +68,7 @@ int Collator::sortIndex(QChar c) const
 		co = co.toLower();
 	}
 	if(ignorePunctuation())
-		co = removePunctuation(co);
+		co = removePunctuation(language(), co);
 	int ret = sortCache().value(co, -1);
 	if(ret < 0) {
 		return co.unicode() % 256;
@@ -73,14 +79,14 @@ int Collator::sortIndex(QChar c) const
 	return ret;
 }
 
-QByteArray Collator::toAscii7(const QString &s, bool to_lower)
+QByteArray Collator::toAscii7(QLocale::Language lang, const QString &s, bool to_lower)
 {
 	QByteArray ret;
 	ret.reserve(s.length());
 	for(int i=0; i < s.length(); i++) {
 		QChar c = s[i];
 		bool is_upper = c.isUpper();
-		c = removePunctuation(c.toLower());
+		c = removePunctuation(lang, c.toLower());
 		if(is_upper && !to_lower)
 			c = c.toUpper();
 		ret.append(c);
@@ -88,14 +94,15 @@ QByteArray Collator::toAscii7(const QString &s, bool to_lower)
 	return ret;
 }
 
-static const char all_chars[] = "aáäbcčdďeéěëfghiíïjklĺľmnňoóöpqrřsštťuůúüvwxyýzž";
+static const char all_chars_cs[] = "aáäbcčdďeéěëfghiíïjklĺľmnňoóöpqrřsštťuůúüvwxyýzž";
 static const char bt7_chars[] = "aaabccddeeeefghiiijklllmnnooopqrrssttuuuuvwxyyzz";
 
-QChar Collator::removePunctuation(QChar c)
+QChar Collator::removePunctuation(QLocale::Language lang, QChar c)
 {
+	Q_UNUSED(lang)
 	static QHash<QChar, QChar> punct_to_bt7;
 	if(punct_to_bt7.isEmpty()) {
-		const QString all_str = QString::fromUtf8(all_chars);
+		const QString all_str = QString::fromUtf8(all_chars_cs);
 		const QString bt7_str = QString::fromUtf8(bt7_chars);
 		Q_ASSERT(all_str.length() == bt7_str.length());
 		for(int i=0; i<all_str.length(); i++)
@@ -112,7 +119,7 @@ QHash<QChar, int> Collator::sortCache()
 {
 	static QHash<QChar, int> ret;
 	if(ret.isEmpty()) {
-		static const QString chars = QString::fromUtf8(all_chars);
+		static const QString chars = QString::fromUtf8(all_chars_cs);
 		for(int i=0; i<chars.length(); i++)
 			ret[chars[i]] = i;
 	}

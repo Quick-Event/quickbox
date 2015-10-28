@@ -71,7 +71,7 @@ void DlgIndexDef::loadIndexDefinition()
 	QString s = "%1.%2";
 	qfc::sql::Connection dbi(connection());
 	qfc::sql::Connection::IndexList il = dbi.indexes(s.arg(dbName).arg(tableName));
-	for(qfc::sql::Connection::IndexInfo ii : il) {
+	Q_FOREACH(qfc::sql::Connection::IndexInfo ii, il) {
 		if(ii.name == indexName) {
 			ui->chkUnique->setChecked(ii.unique);
 			foreach(s, ii.fields) ui->lstIndex->addItem(s);

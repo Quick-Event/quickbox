@@ -11,7 +11,7 @@ namespace sql {
 class QFCORE_DECL_EXPORT Transaction
 {
 public:
-	Transaction(const Connection &conn);
+	Transaction(const Connection &conn = Connection());
 	virtual ~Transaction();
 
 	void commit();

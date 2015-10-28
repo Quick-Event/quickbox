@@ -103,24 +103,23 @@
     </widget>
    </item>
    <item>
-    <widget class="qf::qmlwidgets::TableViewToolBar" name="tblRunsToolBar" native="true"/>
-   </item>
-   <item>
-    <widget class="qf::qmlwidgets::TableView" name="tblRuns"/>
+    <widget class="RunsTableWidget" name="wRunsTableWidget" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="2" margin="3"/>
  <customwidgets>
   <customwidget>
-   <class>qf::qmlwidgets::TableView</class>
-   <extends>QTableView</extends>
-   <header location="global">qf/qmlwidgets/tableview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>qf::qmlwidgets::TableViewToolBar</class>
+   <class>RunsTableWidget</class>
    <extends>QWidget</extends>
-   <header>qf/qmlwidgets/tableviewtoolbar.h</header>
+   <header>src/runstablewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

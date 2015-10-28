@@ -18,7 +18,7 @@ QtObject {
 		}
 	}
 
-	function currentStageTable(max_competitors_in_class)
+	function currentStageTable(class_mask, max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = runsPlugin.selectedStageId;
@@ -32,6 +32,12 @@ QtObject {
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 			.join("classdefs.courseId", "courses.id")
 			.orderBy('classes.name');//.limit(1);
+		if(class_mask) {
+			class_mask = class_mask.replace("*", "%");
+			class_mask = class_mask.replace("?", "_");
+			reportModel.queryBuilder.where("classes.name LIKE '" + class_mask + "'");
+		}
+
 		reportModel.setQueryParameters({stage_id: stage_id})
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
@@ -116,6 +122,9 @@ QtObject {
 				tt2.setValue(j, "pos", j+1);
 				tt2.setValue(j, "className", tt_classes.value(i, "classes.name"));
 			}
+			tt2.setValue("eventConfig", event_plugin.eventConfig.values());
+			tt2.setValue("director", event_plugin.eventConfig.director());
+			tt2.setValue("mainReferee", event_plugin.eventConfig.mainReferee());
 			if(tt.isNull()) {
 				tt.setData(ttd);
 			}
@@ -135,7 +144,10 @@ QtObject {
 	function printCurrentStage()
 	{
 		Log.info("runs printResultsCurrentStage triggered");
-		var tt = currentStageTable();
+		var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
+		if(!mask)
+			return;
+		var tt = currentStageTable(mask);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml", tt.data(), qsTr("Start list by clases"));
 	}
 
@@ -143,7 +155,7 @@ QtObject {
 	{
 		Log.info("runs printCurrentStageFirstN triggered");
 		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Limit number of printed runners in each class to:"), 3, 1);
-		var tt = currentStageTable(n);
+		var tt = currentStageTable("", n);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", tt.data(), qsTr("Stage results by clases"));
 	}
 
@@ -152,13 +164,18 @@ QtObject {
 		Log.info("runs printCurrentStageAwards triggered");
 		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 3, 1);
 		var tt = currentStageAwardsTable(n);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage_awards.qml", tt.data(), qsTr("Stage awards"));
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage_awards.qml"
+									   , tt.data()
+									   , qsTr("Stage awards")
+									   , ""
+									   , {eventConfig: FrameWork.plugin("Event").eventConfig});
+									//   , {eventConfig: FrameWork.plugin("Event").eventConfig.values()});
 	}
 
 	function exportIofXml(file_path)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId());
+		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId);
 
 		var tt1 = currentStageTable();
 		var result_list = ['ResultList', {"status": "complete"}];

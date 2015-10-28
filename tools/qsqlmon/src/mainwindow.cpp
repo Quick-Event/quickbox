@@ -24,6 +24,7 @@
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/previewdialog.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <QStandardItemModel>
 #include <QTextCursor>
@@ -1205,14 +1206,11 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				}
 				else if(a == actColumnSelector) {
 					qf::core::sql::Connection conn = activeConnection();
-					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
-					/*
 					ColumnSelectorWidget *w = new ColumnSelectorWidget(table->objectName(), conn);
-					QFDialog dlg(this);
-					dlg.setDialogWidget(w);
+					qf::qmlwidgets::dialogs::Dialog dlg(this);
+					dlg.setCentralWidget(w);
 					connect(w, SIGNAL(columnNamesCopiedToClipboard(QString)), sqlDock->sqlTextEdit(), SLOT(paste()));
 					if(dlg.exec() == QDialog::Accepted) {}
-					*/
 				}
 				else if(a == actAlterTable) {
 					DlgAlterTable *dlg = new DlgAlterTable(this, table->parent()->objectName(), table->objectName());

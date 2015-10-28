@@ -46,87 +46,7 @@ Report {
 				width: "%"
 				layout: Frame.LayoutVertical
 				bottomBorder: Pen { basedOn: "black2" }
-				Frame {
-					//visible: false
-					hinset: 1
-					vinset: 1
-					Frame {
-						width: "%"
-						layout: Frame.LayoutHorizontal
-						textStyle: myStyle.textStyleBold
-						bottomBorder: Pen { basedOn: "black2" }
-						htmlExportAttributes: {"lpt_textStyle": "bold,underline2"}
-						Para {
-							width: "%"
-							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") + " " + detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
-						}
-						Para {
-							textHAlign: Frame.AlignRight
-							htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-							text: {
-								var t = detailCompetitor.data(detailCompetitor.currentIndex, "competitors.registration");
-								return (t)? t: "NO_REG";
-							}
-						}
-					}
-					Frame {
-						width: "%"
-						vinset: 1
-						halign: Frame.AlignHCenter
-						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
-						Para {
-							htmlExportAttributes: {"lpt_textStyle": "bold"}
-							textStyle: myStyle.textStyleBold
-							text: "Slosovatelný kupón";
-						}
-						Para {
-							htmlExportAttributes: {"lpt_textStyle": "bold"}
-							textStyle: myStyle.textStyleBold
-							text: "Každé vyhlášení - 3x hodinky";
-						}
-						Frame { height: 2 }
-						Frame {
-							layout: Frame.LayoutHorizontal
-							valign: Frame.AlignVCenter
-							Frame {
-								width: "%"
-								bottomBorder: Pen { basedOn: "black1dot" }
-								//htmlExportAttributes: {"lpt_text": "-----"}
-							}
-							Para {
-								text: "zde odstřihnout";
-							}
-							Frame {
-								width: "%"
-								bottomBorder: Pen { basedOn: "black1dot" }
-								//htmlExportAttributes: {"lpt_text": "-----"}
-							}
-						}
-						Frame { height: 2 }
-						Para {
-							textStyle: myStyle.textStyleBold
-							text: "Čip + buzola = ComCard.";
-						}
-						Para {
-							halign: Frame.AlignHCenter
-							text: "Rychlé ražení.";
-						}
-						Para {
-							halign: Frame.AlignHCenter
-							text: "Žádné zastrkávání, stačí přiložit.";
-						}
-						Para {
-							halign: Frame.AlignHCenter
-							text: "Zvládnete to jedním prstem.";
-						}
-						Para {
-							htmlExportAttributes: {"lpt_textStyle": "bold"}
-							halign: Frame.AlignHCenter
-							text: "Se slevou ve stánku HSH";
-							textStyle: myStyle.textStyleBold
-						}
-					}
-				}
+				//LotteryTicket {}
 				Frame {
 					htmlExportAttributes: {"lpt_textAlign": "left", "lpt_borderTop": "=", "lpt_borderBottom": "-"}
 					width: "%"
@@ -212,15 +132,18 @@ Report {
 					layout: Frame.LayoutHorizontal
 					Para {
 						id: paraCheck
-						width: 12
+						width: 10
 						text: "Check:"
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						id: paraCheckTime
-						width: 15
+						width: 14
 						textHAlign: Frame.AlignRight
-						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("checkTimeMs")); }
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToTimeString(start00msec + bandCard.data("checkTimeMs"));
+						}
 					}
 					Cell {
 						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
@@ -232,7 +155,10 @@ Report {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
-						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("finishTimeMs")); }
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToTimeString(start00msec + bandCard.data("finishTimeMs"));
+						}
 					}
 				}
 				Frame {
@@ -247,7 +173,10 @@ Report {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						width: paraCheckTime.width
 						textHAlign: Frame.AlignRight
-						textFn: function() { return TimeExt.msecToTimeString(bandCard.data("startTimeMs")); }
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToTimeString(start00msec + bandCard.data("startTimeMs"));
+						}
 					}
 					Cell {
 						text: "/"
@@ -255,9 +184,7 @@ Report {
 					Para {
 						textFn: function() {
 							var start = bandCard.data("startTimeMs");
-							var start00 = bandCard.data("stageStart");
-							start00 = TimeExt.msecSinceMidnight(start00);
-							return OGTime.msecToString(start - start00)
+							return OGTime.msecToString(start)
 						}
 					}
 					Para {

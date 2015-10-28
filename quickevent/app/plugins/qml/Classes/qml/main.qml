@@ -9,7 +9,7 @@ ClassesPlugin {
 	property QfObject internals: QfObject
 	{
 	}
-
+/*
 	property list<Action> actions: [
 		Action {
 			id: actPrintAll
@@ -19,13 +19,12 @@ ClassesPlugin {
 			}
 		}
 	]
-
+*/
 	onNativeInstalled:
 	{
-		
-		var a = root.partWidget.menuBar.actionForPath("print", true);
-		a.text = qsTr("&Print");
-		a.addActionInto(actPrintAll);		
+		//var a = root.partWidget.menuBar.actionForPath("print", true);
+		//a.text = qsTr("&Print");
+		//a.addActionInto(actPrintAll);
 	}
 
 }

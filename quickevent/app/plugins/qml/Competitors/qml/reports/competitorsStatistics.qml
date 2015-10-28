@@ -18,7 +18,7 @@ Report {
 			id: cBandCell
 			Cell {
 				property string fieldName
-				text: data();
+				text: {var d = data(); return d? d: "";}
 				function data() {
 					return detail.data(detail.currentIndex, fieldName);
 				}
@@ -28,11 +28,27 @@ Report {
 			id: cMapDiffCell
 			Cell {
 				property int stage
-				property int diff: data("e" + stage + "_mapCount") - data("e" + stage + "_runCount");
+				property int diff: {
+					var maps = data("e" + stage + "_mapCount");
+					var runners = data("e" + stage + "_runCount");
+					if(maps && runners)
+						return maps - runners;
+					return 0;
+				}
 				text: diff;
 				fill: (diff < 0)? brushError: brushNone;
 				function data(field_name) {
 					return detail.data(detail.currentIndex, field_name);
+				}
+			}
+		}
+		Component {
+			id: cSumCell
+			Cell {
+				property string fieldName
+				textFn: function() {var d = data(); return d? d: "";}
+				function data() {
+					return band.data("SUM(" + fieldName + ")");
 				}
 			}
 		}
@@ -100,6 +116,7 @@ Report {
 					id: head
 					layout: Frame.LayoutHorizontal
 					textStyle: myStyle.textStyleBold
+					bottomBorder: Pen { basedOn: "black1" }
 					Cell {
 						id: cellClassName
 						text: qsTr("Class name")
@@ -109,14 +126,13 @@ Report {
 						for(var i=0; i<root.stageCount; i++) {
 							var c = cCell.createObject(null, {"text": "E" + (i+1), "width": 10, "halign": Frame.AlignRight});
 							head.addItem(c);
-							c = cCell.createObject(null, {"text": "cnt", "width": 10, "halign": Frame.AlignRight});
+							c = cCell.createObject(null, {"text": qsTr("maps"), "width": 10, "halign": Frame.AlignRight});
 							head.addItem(c);
-							c = cCell.createObject(null, {"text": "mps", "width": 10, "halign": Frame.AlignRight});
+							c = cCell.createObject(null, {"text": qsTr("res"), "width": 10, "halign": Frame.AlignRight});
 							head.addItem(c);
 						}
 					}
 				}
-
 				Detail {
 					id: detail
 					width: "%"
@@ -126,17 +142,6 @@ Report {
 						width: cellClassName.renderedWidth
 						text: detail.data(detail.currentIndex, "classes.name");
 					}
-					/*
-					function makeMissingMapsFn(fld_run_cnt, fld_map_cnt) {
-						// make extra capture context for returned closure
-						// see: MDN Creating closures in loops: A common mistake
-						return function() {
-							var run_cnt = detail.data(detail.currentIndex, fld_run_cnt);
-							var map_cnt = detail.data(detail.currentIndex, fld_map_cnt);
-							return map_cnt - run_cnt;
-						}
-					}
-					*/
 					Component.onCompleted: {
 						//console.warn("=============", root.stageCount)
 						for(var i=0; i<root.stageCount; i++) {
@@ -147,12 +152,31 @@ Report {
 
 							c = cBandCell.createObject(null, {"width": 10, "halign": Frame.AlignRight, "fieldName": fld_map_cnt});
 							detail.addItem(c);
-							/*
-							c = cCell.createObject(null, {"width": 10, "halign": Frame.AlignRight});
-							c.textFn = detail.makeMissingMapsFn(fld_run_cnt, fld_map_cnt);
-							*/
 							c = cMapDiffCell.createObject(null, {"width": 10, "halign": Frame.AlignRight, "stage": (i+1)});
 							detail.addItem(c);
+						}
+					}
+				}
+				Frame {
+					id: footer
+					layout: Frame.LayoutHorizontal
+					textStyle: myStyle.textStyleBold
+					topBorder: Pen { basedOn: "black1" }
+					Cell {
+						width: cellClassName.renderedWidth
+						text: qsTr("Sum")
+					}
+					Component.onCompleted: {
+						//console.debug("stageCount", root.stageCount)
+						for(var i=0; i<root.stageCount; i++) {
+							var fld_run_cnt = "e" + (i+1) + "_runCount";
+							var fld_map_cnt = "e" + (i+1) + "_mapCount";
+							var c = cSumCell.createObject(null, {"fieldName": fld_run_cnt, "width": 10, "halign": Frame.AlignRight});
+							footer.addItem(c);
+							c = cSumCell.createObject(null, {"fieldName": fld_map_cnt, "width": 10, "halign": Frame.AlignRight});
+							footer.addItem(c);
+							c = cCell.createObject(null, {"text": "", "width": 10, "halign": Frame.AlignRight});
+							footer.addItem(c);
 						}
 					}
 				}

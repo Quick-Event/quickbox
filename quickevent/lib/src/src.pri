@@ -10,4 +10,5 @@ FORMS += \
 OTHER_FILES += \
 
 include($$PWD/og/og.pri)
+include ($$PWD/audio/audio.pri)
 

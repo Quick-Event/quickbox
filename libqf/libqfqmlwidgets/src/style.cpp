@@ -15,16 +15,19 @@ static const char *PROPERTY_STYLE_INSTANCE = "qf::qmlwidget::Style::instance";
 Style::Style(QObject *parent)
 	: QObject(parent)
 {
-	setDefaultIconSize(QSize(16, 16));
+	m_defaultIconSize = QSize(16, 16);
+	//setDefaultIconSize(QSize(16, 16));
 }
 
 QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)
 {
 	QPixmap ret;
 	QSize px_sz = pixmap_size;
-	if(!px_sz.isValid())
+	if(px_sz.isEmpty())
 		px_sz = defaultIconSize();
-	QString file_name = iconPath() + '/' + name;
+	QString file_name = name;
+	if(!file_name.startsWith(QLatin1String(":/")))
+		file_name = iconPath() + '/' + name;
 	{
 		QString svg_file_name = file_name;
 		if(!name.endsWith(QLatin1String(".svg"))) {
@@ -56,15 +59,32 @@ QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)
 	return ret;
 }
 
-QIcon Style::icon(const QString &name)
+QPixmap Style::pixmap(const QString &name, const QSize &pixmap_size)
+{
+	QSize sz = pixmap_size;
+	if(sz.isEmpty())
+		sz = defaultIconSize();
+	QPixmap ret = pixmapFromSvg(name, sz);
+	if(ret.isNull()) {
+		QString file_name = name;
+		if(!file_name.startsWith(QLatin1String(":/")))
+			file_name = iconPath() + '/' + name;
+		ret = QPixmap(file_name);
+		if(!ret.isNull())
+			ret = ret.scaled(sz, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	}
+	return ret;
+}
+
+QPixmap Style::pixmap(const QString &name, int height)
+{
+	return pixmap(name, QSize(height, height));
+}
+
+QIcon Style::icon(const QString &name, const QSize &pixmap_size)
 {
 	QIcon ret;
-	QPixmap pxm = pixmapFromSvg(name, defaultIconSize());
-	if(!pxm.isNull()) {
-		ret.addPixmap(pxm);
-		return ret;
-	}
-	ret.addFile(iconPath() + '/' + name);
+	ret.addPixmap(pixmap(name, pixmap_size));
 	return ret;
 }
 

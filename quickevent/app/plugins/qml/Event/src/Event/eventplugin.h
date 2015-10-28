@@ -49,7 +49,7 @@ public:
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
-	int stageCount() {return eventConfig()->stageCount();}
+	int stageCount();
 
 	Q_SLOT void setCurrentStageId(int stage_id);
 	int currentStageId();
@@ -61,11 +61,12 @@ public:
 	StageData stageData(int stage_id);
 	Q_SLOT void clearStageDataCache();
 
-	Q_SLOT bool createEvent(const QString &_event_name = QString(), const QVariantMap &event_params = QVariantMap());
+	Q_SLOT bool createEvent(const QString &event_name = QString(), const QVariantMap &event_params = QVariantMap());
 	Q_SLOT void editEvent();
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
 	Q_SLOT void exportEvent();
+	Q_SLOT void importEvent_qbe();
 
 	Q_SIGNAL void reloadDataRequest();
 
@@ -77,14 +78,18 @@ public:
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 
+	Q_INVOKABLE QString classNameById(int class_id);
+
 	DbSchema dbSchema();
 public:
 	// event wide signals
-	Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
+	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private:
 	void setDbOpen(bool ok);
 
 	ConnectionType connectionType() const;
+	QStringList existingSqlEventNames() const;
+	QStringList existingFileEventNames(const QString &dir = QString()) const;
 
 	Q_SLOT void onInstalled();
 	Q_SLOT void onEventOpened();
@@ -103,11 +108,13 @@ private:
 	qf::qmlwidgets::Action *m_actOpenEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditEvent = nullptr;
 	qf::qmlwidgets::Action *m_actExportEvent = nullptr;
+	qf::qmlwidgets::Action *m_actImportEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditStage = nullptr;
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_dbOpen = false;
 	QComboBox *m_cbxStage = nullptr;
 	QMap<int, StageData> m_stageCache;
+	QMap<int, QString> m_classNameCache;
 };
 
 }

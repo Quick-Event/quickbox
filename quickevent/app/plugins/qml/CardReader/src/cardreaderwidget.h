@@ -10,11 +10,7 @@ namespace Ui {
 }
 
 namespace qf {
-namespace core {
-namespace model {
-class SqlTableModel;
-}
-}
+namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets {
 class Action;
 namespace framework {
@@ -23,18 +19,9 @@ class Plugin;
 }
 }
 }
-namespace siut {
-class DeviceDriver;
-}
+namespace siut { class DeviceDriver; }
 
-class SIMessageData;
-class SIMessageCardReadOut;
-
-class QTextStream;
-class QFile;
-class QComboBox;
-
-class CardReaderPartWidget;
+namespace quickevent { namespace audio { class Player; }}
 
 namespace CardReader {
 class CardReaderPlugin;
@@ -43,9 +30,18 @@ class ReadCard;
 class CheckedCard;
 }
 
-namespace Event {
-class EventPlugin;
-}
+namespace Event { class EventPlugin; }
+
+class QTextStream;
+class QFile;
+class QComboBox;
+class QCheckBox;
+
+class SIMessageTransmitRecord;
+class SIMessageData;
+class SIMessageCardReadOut;
+
+class CardReaderPartWidget;
 
 class CardReaderWidget : public QFrame
 {
@@ -62,11 +58,12 @@ public:
 
 	void settleDownInPartWidget(CardReaderPartWidget *part_widget);
 
-	Q_SLOT void reset() {reload();}
+	Q_SLOT void reset();
 	Q_SLOT void reload();
+
+	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
-	void appendLogPre(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
 	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
@@ -74,12 +71,13 @@ private slots:
 private:
 	void createActions();
 	Q_SLOT void openSettings();
-	qf::core::Log::Level logLevelFromSettings();
-	QTextStream& cardLog();
-	void closeCardLog();
+	//qf::core::Log::Level logLevelFromSettings();
+	//QTextStream& cardLog();
+	//void closeCardLog();
 	siut::DeviceDriver *siDriver();
 
 	void processSICard(const SIMessageCardReadOut &card);
+	void processSIPunch(const SIMessageTransmitRecord &rec);
 
 	void updateTableView(int card_id);
 
@@ -91,15 +89,21 @@ private:
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void showSelectedCard();
 	void assignRunnerToSelectedCard();
+
+	quickevent::audio::Player* audioPlayer();
+	void operatorAudioWakeUp();
+	void operatorAudioNotify();
 private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
-	QTextStream *m_cardLog = nullptr;
-	QFile *m_cardLogFile = nullptr;
+	//QTextStream *m_cardLog = nullptr;
+	//QFile *m_cardLogFile = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
+	QCheckBox *m_cbxAutoRefresh = nullptr;
+	quickevent::audio::Player *m_audioPlayer = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

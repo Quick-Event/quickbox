@@ -17,6 +17,13 @@ DataController::~DataController()
 
 }
 
+qf::core::model::DataDocument *DataController::document(bool throw_exc) const
+{
+	if(!m_document && throw_exc)
+		QF_EXCEPTION("DataDocument is NULL!");
+	return m_document;
+}
+
 void DataController::setDocument(qf::core::model::DataDocument *doc)
 {
 	if(m_document != doc) {
@@ -31,7 +38,7 @@ void DataController::setDocument(qf::core::model::DataDocument *doc)
 QList<IDataWidget *> DataController::dataWidgets()
 {
 	if(m_dataWidgets.isEmpty()) {
-		QList<QWidget *> lst = m_dataWidgetsParent->findChildren<QWidget*>();
+		const QList<QWidget *> lst = m_dataWidgetsParent->findChildren<QWidget*>();
 		for(auto w : lst) {
 			IDataWidget *dw = dynamic_cast<IDataWidget*>(w);
 			if(dw)
@@ -44,7 +51,7 @@ QList<IDataWidget *> DataController::dataWidgets()
 IDataWidget *DataController::dataWidget(const QString &data_id)
 {
 	IDataWidget *ret = nullptr;
-	for(auto dw : dataWidgets()) {
+	Q_FOREACH(auto dw, dataWidgets()) {
 		if(qf::core::Utils::fieldNameEndsWith(dw->dataId(), data_id)) {
 			ret = dw;
 			break;
@@ -60,7 +67,7 @@ void DataController::clearDataWidgetsCache()
 
 void DataController::documentLoaded()
 {
-	for(auto dw : dataWidgets()) {
+	Q_FOREACH(auto dw, dataWidgets()) {
 		dw->loadDataValue(this);
 	}
 }
@@ -81,7 +88,7 @@ void DataController::documentValueChanged(const QString &data_id, const QVariant
 
 void DataController::documentAboutToSave()
 {
-	for(auto dw : dataWidgets()) {
+	Q_FOREACH(auto dw, dataWidgets()) {
 		dw->finishDataValueEdits();
 	}
 }

@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.core.sql.def 1.0
 
 Schema {
-	name: 'untitled'
+	//name: 'main'
 	tables: [
 		Table { id: enumz; name: 'enumz'
 			fields: [
@@ -185,7 +185,15 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				},
+				Field { name: 'badCheck'; type: Boolean { }
+					defaultValue: false;
+					notNull: true
+				},
 				Field { name: 'cardLent'; type: Boolean { }
+					defaultValue: false;
+					notNull: true
+				},
+				Field { name: 'cardReturned'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
 				}
@@ -209,8 +217,8 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId, competitorId']; unique: true }, 
-				Index {fields: ['stageId, siId']; unique: false } // cannot be unique since Oris import sometimes contains duplicate SI
+				Index {fields: ['stageId, competitorId']; unique: true },
+				Index {fields: ['stageId, siId']; unique: true } // cannot be unique since Oris import sometimes contains duplicate SI
 			]
 		},
 		Table { name: 'runlaps'
@@ -249,12 +257,12 @@ Schema {
 				Field { name: 'clubAbbr'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } },
-				Field { name: 'nameSearchKey'; type: String {} },
+				//Field { name: 'nameSearchKey'; type: String {} },
 				Field { name: 'importId'; type: Int { } }
 			]
 			indexes: [
-				Index {fields: ['registration'] },
-				Index {fields: ['nameSearchKey'] }
+				Index {fields: ['registration'] }
+				//Index {fields: ['nameSearchKey'] }
 			]
 		},
 		Table { name: 'cards'
@@ -265,6 +273,9 @@ Schema {
 				},
 				Field { name: 'runId'
 					type: Int { }
+				},
+				Field { name: 'runIdAssignTS'
+					type: DateTime { }
 				},
 				Field { name: 'stageId'
 					type: Int { }
@@ -319,16 +330,19 @@ Schema {
 				Index { fields: ['runId']; unique: false }
 			]
 		},
-		Table { name: 'rpunches'
+		Table { name: 'punches'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
-				Field { name: 'codeId'; type: Int { } },
+				Field { name: 'code'; type: Int { } },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'punchTimeMs'; type: Int {}
-					comment: 'in miliseconds'
+				Field { name: 'punchTime'; type: Int {}
+					comment: 'seconds in range 0 - 12 hours'
+				},
+				Field { name: 'punchMs'; type: Int {}
+					comment: 'msec part od punch time'
 				},
 				Field { name: 'stageId'; type: Int { }
-					comment: 'We cannot take stageId from runId linked table, because we need select rpunches for stage even without runId assigned'
+					comment: 'We cannot take stageId from runId linked table, because we need select punches for stage even without runId assigned'
 				},
 				Field { name: 'runId'; type: Int {} },
 				Field { name: 'timeMs'; type: Int {}
@@ -355,7 +369,7 @@ Schema {
 		Insert {
 			table: config
 			rows: [
-				['db.version', qsTr('Data version'), '10001', 'int']
+				['db.version', qsTr('Data version'), '10004', 'int']
 				/*
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],

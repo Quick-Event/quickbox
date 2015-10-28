@@ -18,14 +18,19 @@ public:
 	explicit Style(QObject *parent = 0);
 
 	QF_PROPERTY_IMPL2(QString, i, I, conPath, QStringLiteral(":/qf/qmlwidgets/images/"))
-	QF_PROPERTY_IMPL(QSize, d, D, efaultIconSize)
+	//QF_PROPERTY_IMPL(QSize, d, D, efaultIconSize)
+
+	const QSize& defaultIconSize() const {return m_defaultIconSize;}
 
 	QPixmap pixmapFromSvg(const QString &name, const QSize &pixmap_size = QSize());
-	QIcon icon(const QString &name);
+	QPixmap pixmap(const QString &name, const QSize &pixmap_size = QSize());
+	QPixmap pixmap(const QString &name, int height);
+	QIcon icon(const QString &name, const QSize &pixmap_size = QSize());
 
 	static Style* instance();
 	static void setInstance(Style *style);
 private:
+	QSize m_defaultIconSize;
 };
 
 }}

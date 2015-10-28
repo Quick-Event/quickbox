@@ -9,6 +9,8 @@ include(top.pri)
 TEMPLATE = subdirs
 CONFIG += ordered
 
+#message (config: $$CONFIG)
+
 SUBDIRS += \
 	libqf \
 

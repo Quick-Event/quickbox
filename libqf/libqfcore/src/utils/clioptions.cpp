@@ -1,10 +1,16 @@
 #include "clioptions.h"
 #include "../core/log.h"
 #include "../core/assert.h"
+#include "../core/utils.h"
 
 #include <QStringBuilder>
 #include <QStringList>
 #include <QDir>
+#include <QJsonParseError>
+
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+#endif
 
 #include <limits>
 
@@ -62,6 +68,10 @@ CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val)
 CLIOptions::CLIOptions(QObject *parent)
 	: QObject(parent)
 {
+	addOption("abortOnException").setType(QVariant::Bool).setNames("--abort-on-exception").setComment(tr("Abort application on exception"));
+	addOption("help").setType(QVariant::Bool).setNames("-h", "--help").setComment(tr("Print help"));
+	addOption("config").setType(QVariant::String).setNames("--config").setComment(tr("Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}"));
+	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where server config fiels are searched, default value: {app-dir-path}.");
 }
 
 CLIOptions::~CLIOptions()
@@ -95,12 +105,25 @@ CLIOptions::Option& CLIOptions::optionRef(const QString& name) throw(Exception)
 	return m_options[name];
 }
 
+QVariantMap CLIOptions::values() const
+{
+	QVariantMap ret;
+	QMapIterator<QString, Option> it(m_options);
+	while(it.hasNext()) {
+		it.next();
+		ret[it.key()] = value(it.key());
+	}
+	return ret;
+}
+
 QVariant CLIOptions::value(const QString &name) const
 {
 	Option opt = option(name, qf::core::Exception::Throw);
 	QVariant ret = opt.value();
 	if(!ret.isValid())
 		ret = opt.defaultValue();
+	if(!ret.isValid())
+		ret = QVariant(opt.type());
 	return ret;
 }
 
@@ -159,7 +182,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 		if(arg.isEmpty())
 			break;
 		if(arg == "--help" || arg == "-h") {
-			help();
+			setHelp(true);
+			printHelp();
 			m_isAppBreak = true;
 			return;
 		}
@@ -200,22 +224,38 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			}
 		}
 	}
+	qf::core::Exception::setAbortOnException(isAbortOnException());
 }
 
 QPair<QString, QString> CLIOptions::applicationDirAndName() const
 {
-	QPair<QString, QString> ret;
-	if(m_allArgs.size()) {
-		QString arg0 = m_allArgs[0];
-#ifdef Q_OS_WIN
-		QChar sep = '\\';
-#else
-		QChar sep = '/';
-#endif
-		ret.first = arg0.section(sep, 0, -2);
-		ret.second = arg0.section(sep, -1);
+	static QString app_dir;
+	static QString app_name;
+	if(app_name.isEmpty()) {
+		if(m_allArgs.size()) {
+	#ifdef Q_OS_WIN
+			//static constexpr int MAX_PATH = 1024;
+			QString app_file_path;
+			wchar_t buffer[MAX_PATH + 2];
+			DWORD v = GetModuleFileName(0, buffer, MAX_PATH + 1);
+			buffer[MAX_PATH + 1] = 0;
+			if (v <= MAX_PATH)
+				app_file_path = QString::fromWCharArray(buffer);
+			QChar sep = '\\';
+	#else
+			QString app_file_path = m_allArgs[0];
+			QChar sep = '/';
+	#endif
+			app_dir = app_file_path.section(sep, 0, -2);
+			app_name = app_file_path.section(sep, -1);
+			qfInfo() << "app dir:" << app_dir << "name:" << app_name;
+	#ifdef Q_OS_WIN
+			if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
+				app_name = app_name.mid(0, app_name.length() - 4);
+	#endif
+		}
 	}
-	return ret;
+	return QPair<QString, QString>(app_dir, app_name);
 }
 
 QString CLIOptions::applicationDir() const
@@ -228,7 +268,7 @@ QString CLIOptions::applicationName() const
 	return applicationDirAndName().second;
 }
 
-void CLIOptions::help(QTextStream& os) const
+void CLIOptions::printHelp(QTextStream& os) const
 {
 	os << applicationName() << " [OPTIONS]" << endl << endl;
 	os << "OPTIONS:" << endl << endl;
@@ -251,10 +291,10 @@ void CLIOptions::help(QTextStream& os) const
 	}
 }
 
-void CLIOptions::help() const
+void CLIOptions::printHelp() const
 {
 	QTextStream ts(stdout);
-	help(ts);
+	printHelp(ts);
 }
 
 void CLIOptions::dump(QTextStream &os) const
@@ -280,8 +320,55 @@ void CLIOptions::addParseError(const QString& err)
 	m_parseErrors << err;
 }
 
-void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map)
+ConfigCLIOptions::ConfigCLIOptions(QObject *parent)
+	: Super(parent)
 {
+	addOption("config").setType(QVariant::String).setNames("--config").setComment("Application config name, it is loaded from {config}[.conf] if file exists in {config-path}, deault value is {app-name}.conf");
+	addOption("configDir").setType(QVariant::String).setNames("--config-dir").setComment("Directory where application config fiels are searched, default value: {app-dir-path}.");
+}
+
+void ConfigCLIOptions::parse(const QStringList &cmd_line_args)
+{
+	Super::parse(cmd_line_args);
+	if(config().isEmpty())
+		setConfig(applicationName());
+}
+
+bool ConfigCLIOptions::loadConfigFile()
+{
+	QString config_dir = configDir();
+	if(config_dir.isEmpty())
+		config_dir = applicationDir();
+	QString config_file = config();
+	qfInfo() << "config-dir:" << config_dir << "config-file:" << config_file;
+	if(!config_file.isEmpty()) {
+		if(!config_file.contains('.'))
+			config_file += ".conf";
+		config_file = config_dir + '/' + config_file;
+		QFile f(config_file);
+		qfInfo() << "Checking presence of config file:" << f.fileName();
+		if(f.open(QFile::ReadOnly)) {
+			qfInfo() << "Reading config file:" << f.fileName();
+			QString str = QString::fromUtf8(f.readAll());
+			str = qf::core::Utils::removeJsonComments(str);
+			qfDebug() << str;
+			QJsonParseError err;
+			auto jsd = QJsonDocument::fromJson(str.toUtf8(), &err);
+			if(err.error == QJsonParseError::NoError) {
+				mergeConfig(jsd.toVariant().toMap());
+			}
+			else {
+				qfError() << "Error parsing config file:" << f.fileName() << "on offset:" << err.offset << err.errorString();
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map)
+{
+	//qfLogFuncFrame() << key_prefix;
 	QMapIterator<QString, QVariant> it(config_map);
 	while(it.hasNext()) {
 		it.next();
@@ -299,6 +386,7 @@ void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap
 			try {
 				Option &opt = optionRef(key);
 				if(!opt.isSet()) {
+					//qfInfo() << key << "-->" << v;
 					opt.setValue(v);
 				}
 			}
@@ -308,3 +396,4 @@ void CLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap
 		}
 	}
 }
+

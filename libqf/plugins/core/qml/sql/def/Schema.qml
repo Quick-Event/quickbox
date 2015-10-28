@@ -5,21 +5,23 @@ import "qrc:/qf/core/qml/js/stringext.js" as StringExt
 
 QtObject {
 	id: root
-	property string name
-    property list<Table> tables
+	//property string name
+	property list<Table> tables
 	property list<Insert> inserts
 
 	function createSqlScript(options)
 	{
-		name = options.schemaName;
+		console.debug("createSqlScript options:", JSON.stringify(options, null, 2));
+		//if(options.schemaName)
+		//	name = options.schemaName;
 		var driver_name = options.driverName;
 		var ret = [];
 
 		ret.push('------------------------------------');
-		ret.push('-- create schema ' + name);
+		ret.push('-- create schema ' + options.schemaName);
 		ret.push('------------------------------------');
 		if(driver_name.endsWith("PSQL"))
-			ret.push('CREATE SCHEMA ' + name);
+			ret.push('CREATE SCHEMA ' + options.schemaName);
 		for(var i=0; i<tables.length; i++) {
 			ret.push('');
 			ret.push.apply(ret, tables[i].createSqlScript(options));

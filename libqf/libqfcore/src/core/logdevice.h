@@ -2,9 +2,9 @@
 #define QF_CORE_LOGDEVICE_H
 
 #include "coreglobal.h"
-#include "log.h"
+#include "logcore.h"
 
-#include <QMap>
+#include <QVariantMap>
 #include <QObject>
 
 namespace qf {
@@ -24,11 +24,20 @@ public:
 	/// @return list of arguments wthout ones used for domain tresholds setting
 	QStringList setDomainTresholds(int argc, char *argv[]);
 	Log::Level logTreshold();
-	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 	virtual bool checkLogPermisions(const QMessageLogContext &context, Log::Level _level);
+
+	static void setLoggingEnabled(bool on);
+	static bool isLoggingEnabled();
+
+	void setEnabled(bool b);
+	bool isEnabled() const {return m_enabled;}
 
 	void setPrettyDomain(bool b);
 	bool isPrettyDomain() const;
+
+	static const char *dCommandLineSwitchHelp();
+
+	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
 	virtual QString prettyDomain(const QString &domain);
 protected:
@@ -39,6 +48,8 @@ protected:
 	Log::Level m_logTreshold;
 	int m_count;
 	bool m_isPrettyDomain;
+	bool m_enabled = true;
+	static bool m_loggingEnabled;
 };
 
 class QFCORE_DECL_EXPORT FileLogDevice : public LogDevice
@@ -85,16 +96,21 @@ private:
 	typedef LogDevice Super;
 protected:
 	SignalLogDevice(QObject *parent = 0);
-	~SignalLogDevice() Q_DECL_OVERRIDE;
 public:
+	~SignalLogDevice() Q_DECL_OVERRIDE;
+
 	static SignalLogDevice* install();
 
 	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void logEntry(const QVariantMap &log_entry_map);
+	Q_SIGNAL void logEntry(const LogEntryMap &log_entry_map);
 };
 
 }
 }
+
+// signal logEntry() must not be used by queued connection to avoid recursive logging
+// finaly I've found that qMessageHandler itself is recursion safe
+//Q_DECLARE_METATYPE(qf::core::LogEntryMap)
 
 #endif // QF_CORE_LOGDEVICE_H

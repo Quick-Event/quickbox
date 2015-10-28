@@ -41,8 +41,9 @@ void TableItemDelegate::paintBackground(QPainter *painter, const QStyleOptionVie
 			/// fill current row background
 			/// da se to udelat i takhle bez patchovani QT
 			/// pozor, aby to fungovalo musi se jeste v TableView::currentChanged() volat updateRow() na radky u kterych se meni selekce
-			static const QColor sel_row_background(245, 245, 184);
-			painter->fillRect(option.rect, sel_row_background);
+			static const QColor sel_row_background1(245, 245, 184);
+			static const QColor sel_row_background2(210, 240, 184);
+			painter->fillRect(option.rect, (v->inlineEditSaveStrategy() == TableView::OnEditedValueCommit)? sel_row_background2: sel_row_background1);
 		}
 		else {
 			/// fill background of RO cells

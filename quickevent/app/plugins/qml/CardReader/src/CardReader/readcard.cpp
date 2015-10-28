@@ -32,6 +32,7 @@ QString ReadPunch::toJsonArrayString() const
 
 ReadCard::ReadCard(const QSqlRecord &rec)
 {
+	//setCardId(rec.value("cards.id").toInt());
 	setRunId(rec.value("runId").toInt());
 	setStationCodeNumber(rec.value("stationNumber").toInt());
 	setCardNumber(rec.value("siId").toInt());
@@ -50,6 +51,11 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 }
 
 ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
-	: Super(si_card.toVariant())
+	: Super(si_card.toVariantMap())
+{
+}
+
+PunchRecord::PunchRecord(const SIMessageTransmitRecord &rec)
+	: Super(rec.toVariantMap())
 {
 }

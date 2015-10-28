@@ -17,7 +17,7 @@ class EVENTPLUGIN_DECL_EXPORT EventConfig : public QObject
 public:
 	explicit EventConfig(QObject *parent = 0);
 public slots:
-	//QVariantMap values() const {return m_data;}
+	QVariantMap values() const {return m_data;}
 	//void setValues(const QVariantMap &vals);
 	QVariant value(const QStringList &path, const QVariant &default_value = QVariant()) const;
 	QVariant value(const QString &path, const QVariant &default_value = QVariant()) const {return value(path.split('.'), default_value);}
@@ -29,6 +29,8 @@ public slots:
 	int stageCount() const;
 	int currentStageId() const;
 	int handicapLength() const;
+	QString director() const;
+	QString mainReferee() const;
 	//QString eventName() const;
 	//void setEventName(const QString &n);
 private:

@@ -70,7 +70,7 @@ QList<DbFsAttrs> DbFsDriver::childAttributes(const QString &parent_path)
 	QString clean_ppath = cleanPath(parent_path);
 	QList<DbFsAttrs> ret;
 	if(m_directoryCache.contains(clean_ppath)) {
-		for(QString entry : m_directoryCache.value(clean_ppath)) {
+		Q_FOREACH(QString entry, m_directoryCache.value(clean_ppath)) {
 			QString p = joinPath(clean_ppath, entry);
 			ret << attributes(p);
 		}
@@ -81,7 +81,7 @@ QList<DbFsAttrs> DbFsDriver::childAttributes(const QString &parent_path)
 		if(!parent_attrs.isNull() && parent_attrs.type() == DbFsAttrs::Dir) {
 			int parent_inode = parent_attrs.inode();
 			ret = readChildAttrs(parent_inode);
-			for(auto attrs : ret) {
+			Q_FOREACH(auto attrs, ret) {
 				QString path = joinPath(clean_ppath, attrs.name());
 				//qfDebug() << clean_ppath + "name:" << attrs.name() << "->" << path;
 				m_fileAttributesCache[path] = attrs;
@@ -619,6 +619,7 @@ QString DbFsDriver::attributesColumns(const QString &table_alias)
 
 DbFsAttrs DbFsDriver::attributesFromQuery(const Query &q)
 {
+	qfLogFuncFrame();
 	DbFsAttrs ret;
 	ret.setInode(q.value(COL_INODE).toInt());
 	ret.setPinode(q.value(COL_PINODE).toInt());
@@ -666,7 +667,6 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &spath, int pinode)
 			else
 				qs = qs.arg(QStringLiteral("inode"));
 		}
-		//qs = "SELECT " + cols + " FROM " + tableName() + " AS t0 WHERE (inode,snapshot) = (\n" + qs + ")";
 		Connection conn = connection();
 		Query q(conn);
 		sqlDebug() << qs;
@@ -675,7 +675,7 @@ DbFsAttrs DbFsDriver::readAttrs(const QString &spath, int pinode)
 				ret = attributesFromQuery(q);
 			}
 			else {
-				//qfWarning() << "QFDbFs::pathToId() ERROR - table:" << tableName() << "parent id:" << pinode << "path:" << path.join("/") << "not found.";
+				//qfDebug() << "QFDbFs::pathToId() ERROR - table:" << tableName() << "parent id:" << pinode << "path:" << spath << "not found.";
 			}
 		}
 		else {

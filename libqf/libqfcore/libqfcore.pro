@@ -35,3 +35,4 @@ RESOURCES += \
 
 TRANSLATIONS += \
 	libqfcore.cs_CZ.ts \
+	libqfcore.pl_PL.ts \
