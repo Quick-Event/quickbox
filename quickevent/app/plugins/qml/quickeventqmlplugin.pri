@@ -20,10 +20,15 @@ QML_IMPORT_PATH += \
 	$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME/$$PLUGIN_NAME
 
 unix {
-	# T flag is important, qml symlink in SRC/qml dir is created on second install without it
-	qmlfiles.commands = \
-		ln -sfT $$PLUGIN_TOP_SRCDIR $$DESTDIR/$$PLUGIN_NAME
-		#rsync -r $$PLUGIN_TOP_SRCDIR/qml $$DESTDIR/$$PLUGIN_NAME
+	CONFIG(debug, debug|release) {
+		# T flag is important, qml symlink in SRC/qml dir is created on second install without it
+		qmlfiles.commands = \
+			ln -sfT $$PLUGIN_TOP_SRCDIR $$DESTDIR/$$PLUGIN_NAME
+	}
+	else {
+		qmlfiles.commands = \
+			rsync -r $$PLUGIN_TOP_SRCDIR/ $$DESTDIR/$$PLUGIN_NAME
+	}
 }
 win32 {
 	#mkdir not needed for windows
