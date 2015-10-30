@@ -1,8 +1,22 @@
 #!/bin/sh
 
-QT_DIR=/home/fanda/programs/qt/5.5/gcc
-LIB_DIR=lib
-BIN_DIR=bin
+WORK_DIR=/home/fanda/t/_distro
+DISTRO_NAME=quickevent-linux64
+DISTRO_VER=0.1.4
+# QT_DIR=/home/fanda/programs/qt/5.5/gcc
+QT_DIR=/home/fanda/programs/qt5.5/5.5/gcc_64
+BUILD_DIR=/home/fanda/proj/_build/quickbox-release
+DIST_DIR=$WORK_DIR/$DISTRO_NAME
+LIB_DIR=$DIST_DIR/lib
+BIN_DIR=$DIST_DIR/bin
+
+mkdir -p $DIST_DIR
+rm -r $DIST_DIR/*
+
+rsync -av --exclude '*.debug' $BUILD_DIR/lib/ $LIB_DIR
+rsync -av --exclude '*.debug' $BUILD_DIR/bin/ $BIN_DIR
+
+rsync -av $QT_DIR/lib/libicu* $LIB_DIR
 
 rsync -av $QT_DIR/lib/libQt5Core.so* $LIB_DIR
 rsync -av $QT_DIR/lib/libQt5Gui.so* $LIB_DIR
@@ -27,6 +41,8 @@ rsync -av $QT_DIR/plugins/imageformats/libqsvg.so $BIN_DIR/imageformats
 rsync -av $QT_DIR/plugins/sqldrivers/libqsqlite.so $BIN_DIR/sqldrivers
 rsync -av $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $BIN_DIR/sqldrivers
 
+mkdir -p $BIN_DIR/QtQuick/Window.2
 rsync -av $QT_DIR/qml/QtQuick/Window.2/ $BIN_DIR/QtQuick/Window.2
-rsync -av $QT_DIR/qml/QtQuick.2/ $LIB_DIR/QtQuick.2
+rsync -av $QT_DIR/qml/QtQuick.2/ $BIN_DIR/QtQuick.2
 
+tar -cvzf $WORK_DIR/$DISTRO_NAME-$DISTRO_VER  -C $WORK_DIR ./$DISTRO_NAME
