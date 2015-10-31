@@ -61,6 +61,8 @@ private:
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
 	QList<int> runsForClass(int stage_id, int class_id);
 	QMap<int, int> competitorsForClass(int stage_id, int class_id);
+
+	void import_start_times_ob2000();
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap};
 

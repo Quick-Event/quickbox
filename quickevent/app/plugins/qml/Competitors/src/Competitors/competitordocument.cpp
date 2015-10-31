@@ -54,7 +54,15 @@ bool CompetitorDocument::saveData()
 			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
 			int si_id = value("competitors.siId").toInt();
-
+			/*
+			if(si_id > 0 && m_savedSI.contains(si_id)) {
+				qfError() << "SI:" << si_id << "saved already!!!";
+				si_id = 0;
+			}
+			else {
+				m_savedSI[si_id];
+			}
+			*/
 			auto *event_plugin = eventPlugin();
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 
@@ -68,6 +76,7 @@ bool CompetitorDocument::saveData()
 					q.bindValue(":siId", si_id);
 				q.exec(qf::core::Exception::Throw);
 			}
+			si_dirty = false;
 		}
 		emit competitorSaved(dataId(), old_mode);
 		if(si_dirty) {

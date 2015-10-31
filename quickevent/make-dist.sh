@@ -45,4 +45,4 @@ mkdir -p $BIN_DIR/QtQuick/Window.2
 rsync -av $QT_DIR/qml/QtQuick/Window.2/ $BIN_DIR/QtQuick/Window.2
 rsync -av $QT_DIR/qml/QtQuick.2/ $BIN_DIR/QtQuick.2
 
-tar -cvzf $WORK_DIR/$DISTRO_NAME-$DISTRO_VER  -C $WORK_DIR ./$DISTRO_NAME
+tar -cvzf $WORK_DIR/$DISTRO_NAME-$DISTRO_VER.tgz  -C $WORK_DIR ./$DISTRO_NAME

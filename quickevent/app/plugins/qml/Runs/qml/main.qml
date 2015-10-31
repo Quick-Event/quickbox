@@ -125,7 +125,7 @@ RunsPlugin {
 	onNativeInstalled:
 	{
 		var a = root.partWidget.menuBar.actionForPath("print", true);
-		a.text = qsTr("&Print");
+		//a.text = qsTr("&Print");
 		var a_print = a;
 		a = a_print.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_print_startList_classes);
@@ -143,8 +143,11 @@ RunsPlugin {
 		a.addActionInto(act_print_results_nStages);
 		a.addActionInto(act_print_results_NStageAwards);
 
+		//var a_import = root.partWidget.menuBar.actionForPath("import", true);
+		//a_import.text = qsTr("&Import");
+
 		var a_export = root.partWidget.menuBar.actionForPath("export", true);
-		a_export.text = qsTr("E&xport");
+		//a_export.text = qsTr("E&xport");
 		a = a_export.addMenuInto("startList", "&Start list");
 		a = a.addMenuInto("html", "&HTML");
 		a.addActionInto(act_export_html_startList_classes);

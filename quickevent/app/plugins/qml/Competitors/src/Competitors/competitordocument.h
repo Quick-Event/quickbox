@@ -20,6 +20,7 @@ protected:
 	bool dropData() Q_DECL_OVERRIDE;
 private:
 	bool m_saveSiidToRuns = true;
+	//QMap<int, QString> m_savedSI;
 };
 
 }
