@@ -1339,24 +1339,27 @@ void MainWindow::availableDrivers()
 void MainWindow::checkDrivers()
 {
 	QString msg;
+	QTextStream ts(&msg);
 	{
-		QTextStream ts(&msg);
-		QString path = qf::core::utils::FileUtils::joinPath(qf::core::utils::FileUtils::appDir(), "sqldrivers");
-		ts << tr("Plugins found (looked in %1):").arg(QDir::toNativeSeparators(path)) << endl;
-		QDir dir(path);
-		dir.setFilter(QDir::Files);
-		//dir.setNameFilters(QStringList() << "*.dll");
-		QStringList file_names = dir.entryList();
-		foreach (QString file_name, file_names) {
-			ts << tr("checking: ") << file_name << ": ";
-			QPluginLoader loader(dir.absoluteFilePath(file_name));
-			QObject *plugin = loader.instance();
-			if(plugin) {
-				ts << tr("OK ") << endl;
-			}
-			else {
-				ts << tr("ERROR ") << endl;
-				ts << loader.errorString() << endl;
+		for(QString plugin_dir : QCoreApplication::libraryPaths()) {
+			qfInfo() << "plugin dir:" << plugin_dir;
+			QString path = qf::core::utils::FileUtils::joinPath(plugin_dir, "sqldrivers");
+			ts << tr("Plugins found (looked in %1):").arg(QDir::toNativeSeparators(path)) << endl;
+			QDir dir(path);
+			dir.setFilter(QDir::Files);
+			//dir.setNameFilters(QStringList() << "*.dll");
+			QStringList file_names = dir.entryList();
+			foreach (QString file_name, file_names) {
+				ts << tr("checking: ") << file_name << ": ";
+				QPluginLoader loader(dir.absoluteFilePath(file_name));
+				QObject *plugin = loader.instance();
+				if(plugin) {
+					ts << tr("OK ") << endl;
+				}
+				else {
+					ts << tr("ERROR ") << endl;
+					ts << loader.errorString() << endl;
+				}
 			}
 		}
 	}
