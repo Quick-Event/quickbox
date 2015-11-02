@@ -206,13 +206,15 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 		qfDebug() << "\t" << s << "->" << values.value(s);
 		doc->setValue(s, values.value(s));
 	}
-	QString class_name_prefix = classNameFromRegistration(values.value("registration").toString());
-	if(!class_name_prefix.isEmpty()) {
-		for (int i = 0; i < ui->cbxClass->count(); ++i) {
-			QString class_name = ui->cbxClass->itemText(i);
-			if(class_name.startsWith(class_name_prefix)) {
-				ui->cbxClass->setCurrentText(class_name);
-				break;
+	if(!doc->isDirty(QStringLiteral("classId"))) {
+		QString class_name_prefix = classNameFromRegistration(values.value("registration").toString());
+		if(!class_name_prefix.isEmpty()) {
+			for (int i = 0; i < ui->cbxClass->count(); ++i) {
+				QString class_name = ui->cbxClass->itemText(i);
+				if(class_name.startsWith(class_name_prefix)) {
+					ui->cbxClass->setCurrentText(class_name);
+					break;
+				}
 			}
 		}
 	}
