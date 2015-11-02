@@ -9,195 +9,186 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="20"/>
-        <source>C&amp;ountry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="30"/>
-        <source>competitors.lastName</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="37"/>
+        <location filename="src/competitorwidget.ui" line="64"/>
         <source>&amp;SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="47"/>
-        <source>&amp;First name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="57"/>
-        <source>competitors.country</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="64"/>
-        <source>competitors.club</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="71"/>
+        <location filename="src/competitorwidget.ui" line="219"/>
         <source>Runs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="98"/>
+        <location filename="src/competitorwidget.ui" line="145"/>
         <source>Clu&amp;b</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="108"/>
-        <source>competitors.licence</source>
+        <location filename="src/competitorwidget.ui" line="22"/>
+        <source>&amp;Find in registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="115"/>
+        <location filename="src/competitorwidget.ui" line="29"/>
+        <source>Type to find competitor in registrations ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.ui" line="41"/>
+        <source>Competitor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.ui" line="47"/>
         <source>&amp;Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="125"/>
+        <location filename="src/competitorwidget.ui" line="84"/>
+        <source>First na&amp;me</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.ui" line="128"/>
         <source>Licenc&amp;e</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="135"/>
+        <location filename="src/competitorwidget.ui" line="162"/>
+        <source>Co&amp;untry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.ui" line="206"/>
+        <source>Start times</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.ui" line="101"/>
         <source>&amp;Last name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="148"/>
-        <source>competitors.siId</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="155"/>
+        <location filename="src/competitorwidget.ui" line="118"/>
         <source>&amp;Registration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.ui" line="165"/>
-        <source>competitors.note</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="172"/>
-        <source>competitors.classId</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/competitorwidget.ui" line="179"/>
-        <source>competitors.firstName</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="191"/>
-        <source>competitors.registration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="198"/>
-        <source>Open registrations Ctrl+R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="201"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="204"/>
-        <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.ui" line="213"/>
         <source>&amp;Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="46"/>
+        <location filename="src/competitorwidget.cpp" line="56"/>
         <source>competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="56"/>
+        <location filename="src/competitorwidget.cpp" line="69"/>
         <source>Off</source>
         <comment>runs.offRace</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="56"/>
+        <location filename="src/competitorwidget.cpp" line="69"/>
         <source>Off race in this stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="57"/>
+        <location filename="src/competitorwidget.cpp" line="70"/>
         <source>Stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="58"/>
+        <location filename="src/competitorwidget.cpp" line="71"/>
+        <source>SI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.cpp" line="72"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="59"/>
+        <location filename="src/competitorwidget.cpp" line="73"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="61"/>
+        <location filename="src/competitorwidget.cpp" line="75"/>
+        <source>NC</source>
+        <comment>runs.notCompeting</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.cpp" line="75"/>
+        <source>Not competing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.cpp" line="76"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="61"/>
+        <location filename="src/competitorwidget.cpp" line="76"/>
         <source>Disqualified in this stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="62"/>
+        <location filename="src/competitorwidget.cpp" line="77"/>
         <source>E</source>
         <comment>runs.misPunch</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="62"/>
+        <location filename="src/competitorwidget.cpp" line="77"/>
         <source>Card mispunch in this stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="63"/>
+        <location filename="src/competitorwidget.cpp" line="78"/>
         <source>L</source>
         <comment>runs.cardLent</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="63"/>
+        <location filename="src/competitorwidget.cpp" line="78"/>
         <source>Card lent in this stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="110"/>
-        <source>Show in runs table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/competitorwidget.cpp" line="128"/>
-        <source>Find in registrations</source>
+        <location filename="src/competitorwidget.cpp" line="97"/>
+        <source>E&amp;%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Competitors::CompetitorsPlugin</name>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="54"/>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="53"/>
         <source>Registrations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="84"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="85"/>
+        <source>Reg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="86"/>
+        <source>Lic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="87"/>
+        <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -209,42 +200,42 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="44"/>
+        <location filename="src/competitorswidget.cpp" line="50"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="45"/>
+        <location filename="src/competitorswidget.cpp" line="51"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="46"/>
+        <location filename="src/competitorswidget.cpp" line="52"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="47"/>
+        <location filename="src/competitorswidget.cpp" line="53"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="48"/>
+        <location filename="src/competitorswidget.cpp" line="54"/>
         <source>Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="74"/>
+        <location filename="src/competitorswidget.cpp" line="80"/>
         <source>Class </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="95"/>
+        <location filename="src/competitorswidget.cpp" line="108"/>
         <source>--- all ---</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="123"/>
+        <location filename="src/competitorswidget.cpp" line="136"/>
         <source>Edit Competitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -254,33 +245,6 @@
     <message>
         <location filename="src/registrationswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/registrationswidget.ui" line="35"/>
-        <source>Filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/registrationswidget.ui" line="59"/>
-        <location filename="src/registrationswidget.cpp" line="23"/>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/registrationswidget.ui" line="69"/>
-        <source>Registration</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/registrationswidget.ui" line="79"/>
-        <location filename="src/registrationswidget.cpp" line="25"/>
-        <source>SI</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/registrationswidget.cpp" line="24"/>
-        <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -308,8 +272,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/competitorsStatistics.qml" line="105"/>
+        <location filename="qml/reports/competitorsStatistics.qml" line="122"/>
         <source>Class name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
+        <source>maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
+        <source>res</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
+        <source>Sum</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

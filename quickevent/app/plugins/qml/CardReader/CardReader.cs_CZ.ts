@@ -4,12 +4,17 @@
 <context>
     <name>CardReader::CardReaderPlugin</name>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="143"/>
+        <location filename="src/CardReader/cardreaderplugin.cpp" line="148"/>
         <source>Save card ERROR: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="206"/>
+        <location filename="src/CardReader/cardreaderplugin.cpp" line="170"/>
+        <source>Save punch record ERROR: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/CardReader/cardreaderplugin.cpp" line="230"/>
         <source>Save card runlaps ERROR: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30,148 +35,143 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.ui" line="42"/>
-        <source>Cards</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.ui" line="97"/>
-        <source>Log</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="72"/>
+        <location filename="src/cardreaderwidget.cpp" line="105"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="73"/>
+        <location filename="src/cardreaderwidget.cpp" line="106"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="74"/>
+        <location filename="src/cardreaderwidget.cpp" line="107"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="75"/>
+        <location filename="src/cardreaderwidget.cpp" line="108"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="76"/>
+        <location filename="src/cardreaderwidget.cpp" line="109"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="77"/>
+        <location filename="src/cardreaderwidget.cpp" line="110"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="78"/>
+        <location filename="src/cardreaderwidget.cpp" line="111"/>
         <source>Finish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="79"/>
+        <location filename="src/cardreaderwidget.cpp" line="112"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="79"/>
+        <location filename="src/cardreaderwidget.cpp" line="112"/>
         <source>Card mispunch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="80"/>
+        <location filename="src/cardreaderwidget.cpp" line="113"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="80"/>
+        <location filename="src/cardreaderwidget.cpp" line="113"/>
         <source>Disqualified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="81"/>
+        <location filename="src/cardreaderwidget.cpp" line="114"/>
         <source>L</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="81"/>
+        <location filename="src/cardreaderwidget.cpp" line="114"/>
         <source>Card lent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="98"/>
+        <location filename="src/cardreaderwidget.cpp" line="115"/>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="115"/>
+        <source>Card returned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="132"/>
         <source>Show card</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="99"/>
+        <location filename="src/cardreaderwidget.cpp" line="133"/>
+        <source>Print card</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="134"/>
         <source>Assign card to runner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="172"/>
+        <location filename="src/cardreaderwidget.cpp" line="199"/>
+        <source>Auto refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="248"/>
         <source>Open COM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="178"/>
+        <location filename="src/cardreaderwidget.cpp" line="254"/>
         <source>Card readout settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="228"/>
-        <source>Openned card log file &apos;%1&apos; for append.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="232"/>
-        <source>Can&apos;t open card log file &apos;%1&apos; for append.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="238"/>
-        <source>Card log file redirected to stdout.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="246"/>
-        <source>Closing card log.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="342"/>
+        <location filename="src/cardreaderwidget.cpp" line="401"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="350"/>
+        <location filename="src/cardreaderwidget.cpp" line="410"/>
         <source>DriverRawData: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="357"/>
+        <location filename="src/cardreaderwidget.cpp" line="417"/>
         <source>card: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="360"/>
+        <location filename="src/cardreaderwidget.cpp" line="421"/>
         <source>Cannot find run for SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="433"/>
-        <source>Find runner</source>
+        <location filename="src/cardreaderwidget.cpp" line="446"/>
+        <source>punch: %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="453"/>
-        <source>Save card runlaps ERROR: %1</source>
+        <location filename="src/cardreaderwidget.cpp" line="449"/>
+        <source>Cannot find run for punch record SI: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="522"/>
+        <source>Find runner</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -194,187 +194,138 @@
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="39"/>
-        <source>Device:</source>
+        <source>De&amp;vice:</source>
+        <oldsource>Device:</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="62"/>
-        <source>/dev/ttyUSB0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="70"/>
+        <location filename="src/dlgsettings.ui" line="52"/>
         <source>Baud rate:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="87"/>
+        <location filename="src/dlgsettings.ui" line="69"/>
         <source>38400</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="92"/>
+        <location filename="src/dlgsettings.ui" line="74"/>
         <source>4800</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="100"/>
+        <location filename="src/dlgsettings.ui" line="82"/>
         <source>Data bits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="117"/>
+        <location filename="src/dlgsettings.ui" line="99"/>
         <source>8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="122"/>
+        <location filename="src/dlgsettings.ui" line="104"/>
         <source>7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="127"/>
+        <location filename="src/dlgsettings.ui" line="109"/>
         <source>6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="132"/>
+        <location filename="src/dlgsettings.ui" line="114"/>
         <source>5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="140"/>
+        <location filename="src/dlgsettings.ui" line="122"/>
         <source>Stop bits:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="154"/>
+        <location filename="src/dlgsettings.ui" line="136"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="159"/>
+        <location filename="src/dlgsettings.ui" line="141"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="167"/>
+        <location filename="src/dlgsettings.ui" line="149"/>
         <source>Parity:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="181"/>
+        <location filename="src/dlgsettings.ui" line="163"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="186"/>
+        <location filename="src/dlgsettings.ui" line="168"/>
         <source>Odd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="191"/>
+        <location filename="src/dlgsettings.ui" line="173"/>
         <source>Even</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="196"/>
+        <location filename="src/dlgsettings.ui" line="178"/>
         <source>Mark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="201"/>
+        <location filename="src/dlgsettings.ui" line="183"/>
         <source>Space</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="212"/>
+        <location filename="src/dlgsettings.ui" line="207"/>
         <source>Debugging</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="218"/>
+        <location filename="src/dlgsettings.ui" line="213"/>
         <source>show raw data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="225"/>
+        <location filename="src/dlgsettings.ui" line="220"/>
         <source>disable CRC check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="236"/>
+        <location filename="src/dlgsettings.ui" line="231"/>
         <source>Plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="242"/>
-        <source>Logging</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="248"/>
-        <source>log level</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="256"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="261"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="266"/>
-        <source>Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="271"/>
-        <source>Debug</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="279"/>
-        <source>card log</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="295"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="307"/>
+        <location filename="src/dlgsettings.ui" line="237"/>
         <source>Card check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="313"/>
+        <location filename="src/dlgsettings.ui" line="243"/>
         <source>type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="321"/>
+        <location filename="src/dlgsettings.ui" line="251"/>
         <source>Classic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="326"/>
+        <location filename="src/dlgsettings.ui" line="256"/>
         <source>Beer race</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="331"/>
+        <location filename="src/dlgsettings.ui" line="261"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.cpp" line="116"/>
-        <source>Card log file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
