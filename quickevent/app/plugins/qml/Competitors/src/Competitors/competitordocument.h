@@ -13,14 +13,12 @@ private:
 public:
 	CompetitorDocument(QObject *parent = nullptr);
 
-	Q_SIGNAL void competitorSaved(const QVariant &id,int mode);
 	Q_INVOKABLE QString safeSave(bool save_siid_to_runs);
 protected:
 	bool saveData() Q_DECL_OVERRIDE;
 	bool dropData() Q_DECL_OVERRIDE;
 private:
 	bool m_saveSiidToRuns = true;
-	//QMap<int, QString> m_savedSI;
 };
 
 }

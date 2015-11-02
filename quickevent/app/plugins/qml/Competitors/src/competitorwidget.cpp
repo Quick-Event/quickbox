@@ -220,12 +220,15 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 
 bool CompetitorWidget::saveData()
 {
+	qf::core::model::DataDocument *doc = dataController()->document();
+	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
 	try {
 		if(Super::saveData())
 			return saveRunsTable();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		doc->restoreEditState(edit_state);
 	}
 	return false;
 }

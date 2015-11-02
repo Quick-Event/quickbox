@@ -43,7 +43,7 @@ static Event::EventPlugin* eventPlugin()
 bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
-	//qf::core::sql::Transaction transaction;
+	qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
 	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
@@ -68,7 +68,7 @@ bool CompetitorDocument::saveData()
 
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
-			q.prepare("INSERT INTO runs (competitorId, stageId) VALUES (:competitorId, :stageId)");
+			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
@@ -76,24 +76,23 @@ bool CompetitorDocument::saveData()
 					q.bindValue(":siId", si_id);
 				q.exec(qf::core::Exception::Throw);
 			}
-			si_dirty = false;
 		}
-		emit competitorSaved(dataId(), old_mode);
-		if(si_dirty) {
-			qfDebug() << "updating SIID in run tables";
-			int si_id = value("competitors.siId").toInt();
-			if(si_id > 0) {
-				int competitor_id = dataId().toInt();
-				qf::core::sql::Query q(model()->connectionName());
-				q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
-				q.bindValue(":competitorId", competitor_id);
-				q.bindValue(":siId", si_id);
-				q.exec(qf::core::Exception::Throw);
+		else if(old_mode == DataDocument::ModeEdit) {
+			if(si_dirty) {
+				qfDebug() << "updating SIID in run tables";
+				int si_id = value("competitors.siId").toInt();
+				if(si_id > 0) {
+					int competitor_id = dataId().toInt();
+					qf::core::sql::Query q(model()->connectionName());
+					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
+					q.bindValue(":competitorId", competitor_id);
+					q.bindValue(":siId", si_id);
+					q.exec(qf::core::Exception::Throw);
+				}
 			}
 		}
+		transaction.commit();
 	}
-	//if(ret)
-	//	transaction.commit();
 	return ret;
 }
 
@@ -111,9 +110,6 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
-	}
-	if(ret) {
-		emit competitorSaved(id, ModeDelete);
 	}
 	return ret;
 }
