@@ -1,8 +1,9 @@
 #!/bin/sh
 
+DISTRO_VER=0.1.6
+
 WORK_DIR=/home/fanda/t/_distro
 DISTRO_NAME=quickevent-linux64
-DISTRO_VER=0.1.5
 # QT_DIR=/home/fanda/programs/qt/5.5/gcc
 QT_DIR=/home/fanda/programs/qt5.5/5.5/gcc_64
 BUILD_DIR=/home/fanda/proj/_build/quickbox-release
@@ -32,14 +33,18 @@ rsync -av $QT_DIR/lib/libQt5Script.so* $LIB_DIR
 rsync -av $QT_DIR/lib/libQt5ScriptTools.so* $LIB_DIR
 rsync -av $QT_DIR/lib/libQt5PrintSupport.so* $LIB_DIR
 rsync -av $QT_DIR/lib/libQt5SerialPort.so* $LIB_DIR
+rsync -av $QT_DIR/lib/libQt5DBus.so* $LIB_DIR
 rsync -av $QT_DIR/lib/libQt5Multimedia.so* $LIB_DIR
+rsync -av $QT_DIR/lib/libQt5XcbQpa.so* $LIB_DIR
 
 rsync -av $QT_DIR/plugins/platforms/ $BIN_DIR/platforms
 rsync -av $QT_DIR/plugins/printsupport/ $BIN_DIR/printsupport
-rsync -av $QT_DIR/plugins/imageformats/libqjpeg.so $BIN_DIR/imageformats
-rsync -av $QT_DIR/plugins/imageformats/libqsvg.so $BIN_DIR/imageformats
-rsync -av $QT_DIR/plugins/sqldrivers/libqsqlite.so $BIN_DIR/sqldrivers
-rsync -av $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $BIN_DIR/sqldrivers
+mkdir -p $BIN_DIR/imageformats
+rsync -av $QT_DIR/plugins/imageformats/libqjpeg.so $BIN_DIR/imageformats/
+rsync -av $QT_DIR/plugins/imageformats/libqsvg.so $BIN_DIR/imageformats/
+mkdir -p $BIN_DIR/sqldrivers
+rsync -av $QT_DIR/plugins/sqldrivers/libqsqlite.so $BIN_DIR/sqldrivers/
+rsync -av $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $BIN_DIR/sqldrivers/
 
 mkdir -p $BIN_DIR/QtQuick/Window.2
 rsync -av $QT_DIR/qml/QtQuick/Window.2/ $BIN_DIR/QtQuick/Window.2
