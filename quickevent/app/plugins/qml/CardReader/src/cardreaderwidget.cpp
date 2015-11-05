@@ -33,6 +33,7 @@
 #include <qf/core/exception.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/dbenum.h>
+#include <qf/core/sql/transaction.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/utils/settings.h>
 #include <qf/core/utils/csvreader.h>
@@ -447,10 +448,24 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	}
 	CardReader::ReadCard read_card(card);
 	read_card.setRunId(run_id);
-	processReadCard(read_card);
+	processReadCardSafe(read_card);
 }
 
-void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card)
+bool CardReaderWidget::processReadCardSafe(const CardReader::ReadCard &read_card)
+{
+	try {
+		qf::core::sql::Transaction transaction;
+		processReadCard(read_card);
+		transaction.commit();
+		return true;
+	}
+	catch (qf::core::Exception &e) {
+		qfError() << "ERROR processReadCardSafe:" << e.message();
+	}
+	return false;
+}
+
+void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card) throw(qf::core::Exception)
 {
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(read_card.runId()) {
@@ -545,7 +560,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		int run_id = values.value("runid").toInt();
 		if(run_id) {
 			CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
-			if(thisPlugin()->updateCheckedCardValuesSql(checked_card)) {
+			if(thisPlugin()->updateCheckedCardValuesSqlSafe(checked_card)) {
 				if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
 					this->ui->tblCards->reloadRow();
 			}
@@ -645,6 +660,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 	QTextStream ts(&f);
 	qf::core::utils::CSVReader reader(&ts);
 	try {
+		qf::core::sql::Transaction transaction;
 		while (!ts.atEnd()) {
 			QStringList sl = reader.readCSVLineSplitted();
 			int csv_ix = 0;
@@ -699,6 +715,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			qfDebug() << read_card.toString();
 			processReadCard(read_card);
 		}
+		transaction.commit();
 	}
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);

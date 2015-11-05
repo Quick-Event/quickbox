@@ -1,6 +1,7 @@
 #ifndef CARDREADERWIDGET_H
 #define CARDREADERWIDGET_H
 
+#include <qf/core/exception.h>
 #include <qf/core/log.h>
 
 #include <QFrame>
@@ -78,7 +79,8 @@ private:
 	void processSICard(const SIMessageCardReadOut &card);
 	void processSIPunch(const SIMessageTransmitRecord &rec);
 
-	void processReadCard(const CardReader::ReadCard &read_card);
+	bool processReadCardSafe(const CardReader::ReadCard &read_card);
+	void processReadCard(const CardReader::ReadCard &read_card) throw(qf::core::Exception);
 
 	void updateTableView(int card_id);
 
