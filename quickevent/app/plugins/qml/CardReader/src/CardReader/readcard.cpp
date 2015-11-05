@@ -55,6 +55,34 @@ ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
 {
 }
 
+static QString secToStr(int sec)
+{
+	int hr = sec / 60 / 60;
+	int min = (sec / 60) % 60;
+	sec = sec % 60;
+	QString ret("%1:%2:%3");
+	return ret.arg(hr, 2, 10, QLatin1Char('0')).arg(min, 2, 10, QLatin1Char('0')).arg(sec, 2, 10, QLatin1Char('0'));
+}
+
+QString ReadCard::toString() const
+{
+	QString ret;
+	QStringList punch_lst;
+	for(auto v : punches()) {
+		ReadPunch p(v.toMap());
+		punch_lst << QString("[%1, %2]").arg(p.code()).arg(secToStr(p.time()));
+	}
+	ret += QString("SI: %1, run_id: %2, check: %3, start: %4, finish: %5, %6 punches: %7")
+			.arg(cardNumber())
+			.arg(runId())
+			.arg(secToStr(checkTime()))
+			.arg(secToStr(startTime()))
+			.arg(secToStr(finishTime()))
+			.arg(punches().count())
+			.arg(punch_lst.join(", "));
+	return ret;
+}
+
 PunchRecord::PunchRecord(const SIMessageTransmitRecord &rec)
 	: Super(rec.toVariantMap())
 {

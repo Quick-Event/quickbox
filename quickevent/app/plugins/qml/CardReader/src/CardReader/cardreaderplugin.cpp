@@ -201,7 +201,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 				}
 				for(auto v : punch_list) {
 					CardReader::CheckedPunch cp(v.toMap());
-					qfInfo() << cp;
+					//qfInfo() << cp;
 					if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
 						q.bindValue(QStringLiteral(":runId"), run_id);
 						q.bindValue(QStringLiteral(":code"), cp.code());

@@ -7,8 +7,6 @@
 
 #include <Event/eventplugin.h>
 
-//#include <quickevent/og/siid.h>
-//#include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
 

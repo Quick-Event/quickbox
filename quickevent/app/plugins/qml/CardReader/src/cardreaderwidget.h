@@ -68,22 +68,22 @@ private slots:
 	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
 	void onCommOpen(bool checked);
+
+	void importCards_lapsOnlyCsv();
 private:
 	void createActions();
 	Q_SLOT void openSettings();
-	//qf::core::Log::Level logLevelFromSettings();
-	//QTextStream& cardLog();
-	//void closeCardLog();
 	siut::DeviceDriver *siDriver();
 
 	void processSICard(const SIMessageCardReadOut &card);
 	void processSIPunch(const SIMessageTransmitRecord &rec);
 
+	void processReadCard(const CardReader::ReadCard &read_card);
+
 	void updateTableView(int card_id);
 
 	CardReader::CardReaderPlugin* thisPlugin();
 	qf::qmlwidgets::framework::Plugin* receiptsPlugin();
-	Event::EventPlugin* eventPlugin();
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 
 	void onCustomContextMenuRequest(const QPoint &pos);
@@ -97,8 +97,6 @@ private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
-	//QTextStream *m_cardLog = nullptr;
-	//QFile *m_cardLogFile = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;

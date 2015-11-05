@@ -26,6 +26,8 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
+#include <qf/qmlwidgets/dialogs/filedialog.h>
 
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
@@ -33,6 +35,7 @@
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/utils/settings.h>
+#include <qf/core/utils/csvreader.h>
 
 #include <QSettings>
 #include <QFile>
@@ -46,6 +49,14 @@ namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 namespace {
 class Model : public quickevent::og::SqlTableModel
@@ -155,8 +166,6 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 
 CardReaderWidget::~CardReaderWidget()
 {
-	//QF_SAFE_DELETE(m_cardLog);
-	//QF_SAFE_DELETE(m_cardLogFile);
 	delete ui;
 }
 
@@ -170,13 +179,21 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		a->addActionInto(m_actCommOpen);
 	}
 	{
-		qfw::Action *a = part_widget->menuBar()->actionForPath("tools", true);
-		a->setText("&Tools");
-		a->addActionInto(m_actSettings);
+		qfw::Action *a_tools = part_widget->menuBar()->actionForPath("tools", true);
+		a_tools->setText("&Tools");
+		a_tools->addActionInto(m_actSettings);
 		{
-			qfw::Action *a2 = new qfw::Action("Test audio");
-			connect(a2, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::operatorAudioNotify);
-			a->addActionInto(a2);
+			auto *m_import_cards = a_tools->addMenuInto("importCards", tr("Import cards"));
+			{
+				qfw::Action *a = new qfw::Action("Laps only CSV");
+				connect(a, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::importCards_lapsOnlyCsv);
+				m_import_cards->addActionInto(a);
+			}
+		}
+		{
+			qfw::Action *a = new qfw::Action("Test audio");
+			connect(a, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::operatorAudioNotify);
+			a_tools->addActionInto(a);
 		}
 	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
@@ -430,14 +447,19 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 	}
 	CardReader::ReadCard read_card(card);
 	read_card.setRunId(run_id);
+	processReadCard(read_card);
+}
+
+void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card)
+{
 	int card_id = thisPlugin()->saveCardToSql(read_card);
-	if(run_id) {
+	if(read_card.runId()) {
+		thisPlugin()->saveCardAssignedRunnerIdSql(card_id, read_card.runId());
 		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
 		thisPlugin()->updateCheckedCardValuesSql(checked_card);
 	}
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
-		//updateTableView(card_id);
 	}
 }
 
@@ -487,14 +509,6 @@ qf::qmlwidgets::framework::Plugin *CardReaderWidget::receiptsPlugin()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipts"));
 	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
-}
-
-Event::EventPlugin *CardReaderWidget::eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
 	return plugin;
 }
 
@@ -555,6 +569,132 @@ void CardReaderWidget::operatorAudioWakeUp()
 void CardReaderWidget::operatorAudioNotify()
 {
 	audioPlayer()->playAlert(quickevent::audio::Player::AlertKind::OperatorNotify);
+}
+
+static int msecToSISec(int msec)
+{
+	//static constexpr int secs_to_noon = 12 * 60 * 60;
+	return (msec / 1000);// % secs_to_noon;
+}
+
+static int obStringTosec(const QString &time_str)
+{
+	bool ok;
+	int min = time_str.section('.', 0, 0).toInt(&ok);
+	int sec = 0;
+	QF_ASSERT_EX(ok == true, QString("Cannot convert time string '%1'!").arg(time_str));
+	QString sec_str = time_str.section('.', 1).trimmed();
+	if(!sec_str.isEmpty()) {
+		if(sec_str.length() == 1)
+			sec_str = sec_str + '0';
+		sec = sec_str.toInt(&ok);
+		QF_ASSERT_EX(ok == true, QString("Cannot convert time string '%1'!").arg(time_str));
+	}
+	return (60 * min + sec) * 1000;
+}
+
+static QList<int> codesForClassName(const QString &class_name, int stage_id)
+{
+	QList<int> ret;
+	int course_id = 0;
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("classdefs", "courseId")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(stage_id))
+				.where("classes.name=" QF_SARG(class_name));
+		qfs::Query q;
+		q.exec(qb.toString(), qf::core::Exception::Throw);
+		if(q.next())
+			course_id = q.value(0).toInt();
+	}
+	QF_ASSERT_EX(course_id > 0, QString("Cannot find course for class %1 and stage %2").arg(class_name).arg(stage_id));
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("coursecodes", "position")
+				.select2("codes", "code")
+				.from("coursecodes")
+				.join("coursecodes.codeId", "codes.id")
+				.where("coursecodes.courseId=" QF_IARG(course_id))
+				.orderBy("coursecodes.position");
+		qfs::Query q;
+		q.exec(qb.toString(), qf::core::Exception::Throw);
+		while (q.next()) {
+			int code = q.value("code").toInt();
+			QF_ASSERT_EX(code > 0, "Code must be > 0");
+			ret << code;
+		}
+	}
+	QF_ASSERT_EX(ret.count() > 0, QString("Cannot load codes for class %1 and stage %2").arg(class_name).arg(stage_id));
+	return ret;
+}
+
+void CardReaderWidget::importCards_lapsOnlyCsv()
+{
+	// CSV record must have format:
+	// D12C,7203463,"2,28","3,34","2,42","3,29","3,12","1,38","1,13","3,18","1,17","0,15"
+	qfLogFuncFrame();
+	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Import CSV"));
+	if(fn.isEmpty())
+		return;
+	QFile f(fn);
+	if(!f.open(QFile::ReadOnly)) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot open file '%1' for reading.").arg(f.fileName()));
+		return;
+	}
+	QTextStream ts(&f);
+	qf::core::utils::CSVReader reader(&ts);
+	try {
+		while (!ts.atEnd()) {
+			QStringList sl = reader.readCSVLineSplitted();
+			int csv_ix = 0;
+			QString class_name = sl.value(csv_ix++);
+			int siid = sl.value(csv_ix++).toInt();
+			QF_ASSERT_EX(siid > 0, "Bad SI!");
+			int stage_id = eventPlugin()->currentStageId();
+			QF_ASSERT_EX(stage_id > 0, tr("Bad stage!"));
+			int start00 = eventPlugin()->stageStart(stage_id);
+			int run_id = 0;
+			int start_time = 0;
+			{
+				qfs::QueryBuilder qb;
+				qb.select2("runs", "id, startTimeMs") .from("runs") .where("runs.siId=" QF_IARG(siid));
+				qfs::Query q;
+				q.exec(qb.toString(), qf::core::Exception::Throw);
+				if(q.next()) {
+					run_id = q.value(0).toInt();
+					start_time = start00 + q.value(1).toInt();
+				}
+			}
+			QF_ASSERT_EX(run_id > 0, tr("Cannot find runs record for SI %1!").arg(siid));
+			CardReader::ReadCard read_card;
+			read_card.setCardNumber(siid);
+			read_card.setRunId(run_id);
+			read_card.setStartTime(msecToSISec(start_time));
+			read_card.setCheckTime(msecToSISec(start_time - (1000 * 90)));
+			QVariantList punches;
+			int stp_time = start_time;
+			QList<int> codes = codesForClassName(class_name, stage_id);
+			codes << CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
+			for (int i = 0; i < codes.count(); ++i) {
+				QString lap_str = sl.value(csv_ix + i);
+				lap_str.replace(',', '.');
+				int lap_time = obStringTosec(lap_str);
+				stp_time += lap_time;
+				CardReader::ReadPunch punch;
+				punch.setCode(codes[i]);
+				punch.setTime(msecToSISec(stp_time));
+				punches << punch;
+			}
+			read_card.setFinishTime(CardReader::ReadPunch(punches.takeLast().toMap()).time());
+			read_card.setPunches(punches);
+			qfDebug() << read_card.toString();
+			processReadCard(read_card);
+		}
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+	}
 }
 
 #include "cardreaderwidget.moc"

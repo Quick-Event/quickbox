@@ -32,8 +32,9 @@ namespace qfs = qf::core::sql;
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin *>(plugin);
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
 }
 
 ClassesWidget::ClassesWidget(QWidget *parent) :
