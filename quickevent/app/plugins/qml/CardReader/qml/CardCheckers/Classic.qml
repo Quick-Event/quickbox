@@ -16,7 +16,7 @@ CardChecker
 		var course = {};
 		if(run_id > 0)
 			course = root.courseCodesForRunId(run_id);
-		//Log.info("course:", JSON.stringify(course, null, 2));
+		//Log.info("course:", JSON.stringify(read_card, null, 2));
 		
 		var checked_card = {courseId: course.id, runId: run_id, punches: []};
 		if(!course)
@@ -95,14 +95,20 @@ CardChecker
 		for(var k=0; k<read_punches.length; k++) { //compute lap times
 			var read_punch = read_punches[k];
 			var checked_punch = checked_punches[k];
-			checked_punch.stpTimeMs = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, read_punch.time * 1000 + read_punch.msec);
+			//console.info(checked_card.stageStartTimeMs, checked_card.startTimeMs, read_punch.time, read_punch.msec);
+			var read_punch_time_ms = read_punch.time * 1000;
+			if(read_punch.msec)
+				read_punch_time_ms += read_punch.msec;
+			checked_punch.stpTimeMs = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, read_punch_time_ms);
 			checked_punch.lapTimeMs = 0;
+			//console.info(k, prev_position, checked_punch.position, checked_punch.code);
 			if(checked_punch.position > prev_position) {  // positions are starting with 1, like 1,2,3,4,5
 				if(checked_punch.position - 1 == prev_position) {  
 					checked_punch.lapTimeMs = checked_punch.stpTimeMs - prev_position_stp;
 				}
 				prev_position = checked_punch.position;
 				prev_position_stp = checked_punch.stpTimeMs;
+				//console.info(k, checked_punch.position, checked_punch.code, checked_punch.stpTimeMs, checked_punch.lapTimeMs);
 			}
 		}
 		checked_card.finishStpTimeMs = root.msecIntervalAM(checked_card.startTimeMs, checked_card.finishTimeMs);
