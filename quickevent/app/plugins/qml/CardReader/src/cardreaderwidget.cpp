@@ -632,7 +632,7 @@ static QList<int> codesForClassName(const QString &class_name, int stage_id)
 void CardReaderWidget::importCards_lapsOnlyCsv()
 {
 	// CSV record must have format:
-	// D12C,7203463,"2,28","3,34","2,42","3,29","3,12","1,38","1,13","3,18","1,17","0,15"
+	// 7203463,"2,28","3,34","2,42","3,29","3,12","1,38","1,13","3,18","1,17","0,15"
 	qfLogFuncFrame();
 	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Import CSV"));
 	if(fn.isEmpty())
@@ -648,27 +648,35 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 		while (!ts.atEnd()) {
 			QStringList sl = reader.readCSVLineSplitted();
 			int csv_ix = 0;
-			QString class_name = sl.value(csv_ix++);
-			int siid = sl.value(csv_ix++).toInt();
-			QF_ASSERT_EX(siid > 0, "Bad SI!");
+			int si_id = sl.value(csv_ix++).toInt();
+			QF_ASSERT_EX(si_id > 0, "Bad SI!");
 			int stage_id = eventPlugin()->currentStageId();
 			QF_ASSERT_EX(stage_id > 0, tr("Bad stage!"));
 			int start00 = eventPlugin()->stageStart(stage_id);
 			int run_id = 0;
 			int start_time = 0;
+			QString class_name;
 			{
 				qfs::QueryBuilder qb;
-				qb.select2("runs", "id, startTimeMs") .from("runs") .where("runs.siId=" QF_IARG(siid));
+				qb.select2("runs", "id, startTimeMs")
+						.select2("classes", "name")
+						.from("runs")
+						.innerJoin("runs.competitorId", "competitors.id")
+						.innerJoin("competitors.classId", "classes.id")
+						.where("runs.stageId=" QF_IARG(stage_id))
+						.where("runs.siId=" QF_IARG(si_id)) ;
 				qfs::Query q;
 				q.exec(qb.toString(), qf::core::Exception::Throw);
 				if(q.next()) {
-					run_id = q.value(0).toInt();
-					start_time = start00 + q.value(1).toInt();
+					run_id = q.value("runs.id").toInt();
+					start_time = start00 + q.value("runs.startTimeMs").toInt();
+					class_name = q.value("classes.name").toString();
 				}
 			}
-			QF_ASSERT_EX(run_id > 0, tr("Cannot find runs record for SI %1!").arg(siid));
+			QF_ASSERT_EX(run_id > 0, tr("Cannot find runs record for SI %1!").arg(si_id));
+			QF_ASSERT_EX(!class_name.isEmpty(), tr("Cannot find class for SI %1!").arg(si_id));
 			CardReader::ReadCard read_card;
-			read_card.setCardNumber(siid);
+			read_card.setCardNumber(si_id);
 			read_card.setRunId(run_id);
 			read_card.setStartTime(msecToSISec(start_time));
 			read_card.setCheckTime(msecToSISec(start_time - (1000 * 90)));
