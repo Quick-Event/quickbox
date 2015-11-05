@@ -12,6 +12,10 @@ using namespace qf::core::sql;
 //==================================================================
 //            QueryBuilder
 //==================================================================
+
+const QString QueryBuilder::INNER_JOIN = QStringLiteral("INNER JOIN");
+const QString QueryBuilder::LEFT_JOIN = QStringLiteral("LEFT JOIN");
+
 QueryBuilder::QueryBuilder()
 {
 }
