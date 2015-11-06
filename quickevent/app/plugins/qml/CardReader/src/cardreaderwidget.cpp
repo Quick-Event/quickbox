@@ -648,7 +648,12 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 {
 	// CSV record must have format:
 	// 7203463,"2,28","3,34","2,42","3,29","3,12","1,38","1,13","3,18","1,17","0,15"
+	// CSV rows can be commented by #
 	qfLogFuncFrame();
+	qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("<p>CSV record must have format:</p>"
+														   "<p>7203463,\"2,28\",\"3,34\",\"2,42\",\"3,29\",\"3,12\",\"1,38\",\"1,13\",\"3,18\",\"1,17\",\"0,15\"</p>"
+														   "<p>Any row can be commented by leading #</p>"
+														   "<p>Decimal point is also supported, the quotes can be omited than.</p>"));
 	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Import CSV"));
 	if(fn.isEmpty())
 		return;
@@ -659,6 +664,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 	}
 	QTextStream ts(&f);
 	qf::core::utils::CSVReader reader(&ts);
+	//reader.setSeparator(';');
 	reader.setLineComment('#');
 	try {
 		qf::core::sql::Transaction transaction;
@@ -708,7 +714,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			if(csv_ix + codes.count() != sl.count()) {
 				qfWarning() << codes;
 				qfWarning() << sl;
-				QF_EXCEPTION(tr("SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same!")
+				QF_EXCEPTION(tr("SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.")
 							 .arg(si_id).arg(class_name).arg(sl.count() - csv_ix).arg(codes.count()));
 			}
 			for (int i = 0; i < codes.count(); ++i) {
