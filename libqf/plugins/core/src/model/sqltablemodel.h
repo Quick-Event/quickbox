@@ -17,18 +17,24 @@ class TableModelColumn;
 class SqlTableModel : public qf::core::model::SqlTableModel
 {
 	Q_OBJECT
-	Q_PROPERTY(qf::core::qml::SqlQueryBuilder* queryBuilder READ qmlSqlQueryBuilder)
-	Q_PROPERTY(QQmlListProperty<qf::core::qml::TableModelColumn> columns READ columns)
+	Q_PROPERTY(qf::core::qml::SqlQueryBuilder* queryBuilder READ sqlQueryBuilder /*NOTIFY queryBuilderChanged*/)
+	Q_PROPERTY(QQmlListProperty<qf::core::qml::TableModelColumn> columns READ columns /*NOTIFY columnsChanged*/)
 	Q_CLASSINFO("DefaultProperty", "columns")
 private:
 	typedef qf::core::model::SqlTableModel Super;
 public:
 	explicit SqlTableModel(QObject *parent = 0);
 	~SqlTableModel() Q_DECL_OVERRIDE;
+
+	bool reload() Q_DECL_OVERRIDE;
+
+	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* sqlQueryBuilder();
+	Q_SIGNAL void queryBuilderChanged();
+
+	//Q_SIGNAL void columnsChanged();
 protected:
 	QString buildQuery() Q_DECL_OVERRIDE;
 private:
-	SqlQueryBuilder* qmlSqlQueryBuilder();
 
 	void updateColumnDefinitionFromQml(int col_ix);
 
@@ -39,7 +45,7 @@ private:
 	static int countColumnsFunction(QQmlListProperty<TableModelColumn> *list_property);
 
 private:
-	qf::core::qml::SqlQueryBuilder* m_qmlQueryBuilder;
+	qf::core::qml::SqlQueryBuilder* m_qmlQueryBuilder = nullptr;
 	QList<TableModelColumn*> m_qmlColumns;
 };
 

@@ -29,12 +29,18 @@ QVariant BandDataModel::table(int row_no, const QString &table_name)
 BandDataModel* BandDataModel::createFromData(const QVariant &data, QObject *parent)
 {
 	BandDataModel *ret = nullptr;
+	// only tree table is supported currently
+	// so every data is tree table itself or treetable data for now
+	qfu::TreeTable tt;
 	if(data.userType() == qMetaTypeId<qfu::TreeTable>()) {
-		TreeTableBandDataModel *m = new TreeTableBandDataModel(parent);
-		qfu::TreeTable tt = data.value<qfu::TreeTable>();
-		m->setTreeTable(tt);
-		ret = m;
+		tt = data.value<qfu::TreeTable>();
 	}
+	else {
+		tt.setVariant(data);
+	}
+	TreeTableBandDataModel *m = new TreeTableBandDataModel(parent);
+	m->setTreeTable(tt);
+	ret = m;
 	return ret;
 }
 

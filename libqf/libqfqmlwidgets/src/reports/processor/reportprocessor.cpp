@@ -121,7 +121,8 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			while(it.hasNext()) {
 				it.next();
 				QByteArray ba = it.key().toLatin1();
-				m_documentInstanceRoot->setProperty(ba.constData(), it.value());
+				if(!m_documentInstanceRoot->setProperty(ba.constData(), it.value()))
+					qfWarning() << "Cannot set report root property" << ba << ", root element should have this property defined explicitly.";
 			}
 			m_reportDocumentComponent->completeCreate();
 			m_documentInstanceRoot->setReportProcessor(this);
@@ -134,6 +135,7 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			if(ss)
 				ss->createStyleCache();
 			setDesignMode(m_documentInstanceRoot->debugLevel() > 0);
+			m_documentInstanceRoot->setCreated(true);
 		}
 	}
 	return m_documentInstanceRoot;

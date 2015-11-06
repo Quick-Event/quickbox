@@ -49,7 +49,7 @@ Action* MenuBar::actionForPath(const QString &path, bool create_if_not_exists)
 			ret = new Action(parent_w);
 			ret->setMenu(m);
 			ret->setOid(id);
-			ret->setText("Untitled");
+			ret->setText(id);
 			qfDebug() << "\t created menu" << ret;
 			parent_w->addAction(ret);
 		}

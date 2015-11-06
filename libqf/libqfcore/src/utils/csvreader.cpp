@@ -38,6 +38,17 @@ QString CSVReader::unquoteCSVField(const QString &s)
 QString CSVReader::readCSVLine()
 {
 	QString ret;
+	while (!textStream().atEnd()) {
+		ret = readCSVLine1();
+		if(m_lineComment.isNull() || !ret.startsWith(m_lineComment))
+			break;
+	}
+	return ret;
+}
+
+QString CSVReader::readCSVLine1()
+{
+	QString ret;
 	int qcnt = 0;
 	do {
 		QString s = textStream().readLine();

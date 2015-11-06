@@ -659,11 +659,16 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 	}
 	QTextStream ts(&f);
 	qf::core::utils::CSVReader reader(&ts);
+	reader.setLineComment('#');
 	try {
 		qf::core::sql::Transaction transaction;
 		while (!ts.atEnd()) {
 			QStringList sl = reader.readCSVLineSplitted();
-			int csv_ix = 0;
+			// remove empty strings in the end of line
+			int csv_ix = sl.indexOf(QString());
+			if(csv_ix >= 0)
+				sl = sl.mid(0, csv_ix);
+			csv_ix = 0;
 			int si_id = sl.value(csv_ix++).toInt();
 			QF_ASSERT_EX(si_id > 0, "Bad SI!");
 			int stage_id = eventPlugin()->currentStageId();
@@ -700,8 +705,14 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			int stp_time = start_time;
 			QList<int> codes = codesForClassName(class_name, stage_id);
 			codes << CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
+			if(csv_ix + codes.count() != sl.count()) {
+				qfWarning() << codes;
+				qfWarning() << sl;
+				QF_EXCEPTION(tr("SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same!")
+							 .arg(si_id).arg(class_name).arg(sl.count() - csv_ix).arg(codes.count()));
+			}
 			for (int i = 0; i < codes.count(); ++i) {
-				QString lap_str = sl.value(csv_ix + i);
+				QString lap_str = sl.value(csv_ix++);
 				lap_str.replace(',', '.');
 				int lap_time = obStringTosec(lap_str);
 				stp_time += lap_time;
