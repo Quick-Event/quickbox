@@ -810,7 +810,6 @@ QString Table::quoteCSV(const QString &s, const Table::TextExportOptions &opts)
 void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExportOptions opts) const
 {
 	QList<int> ixs;
-	//emit progressValue(0, tr("Exportuji CSV"));
 	if(col_names == "*") {
 		for(int i=0; i<fields().count(); i++) ixs.append(i);
 	}
@@ -830,7 +829,8 @@ void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExpor
 	if(opts.isExportColumnNames()) {
 		/// export field names
 		QVariantMap column_captions;
-		if(opts.isUseColumnCaptions()) column_captions = opts.columnCaptions();
+		if(opts.isUseColumnCaptions())
+			column_captions = opts.columnCaptions();
 		QStringList caption_field_names = column_captions.keys();
 		for(int i=0; i<ixs.count(); i++) {
 			if(i > 0) ts << opts.fieldSeparator();
@@ -852,21 +852,18 @@ void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExpor
 		ts << '\n';
 	}
 	// export data
-	// export data
-	//int n = 0, cnt = rowCount(), steps = 100, progress_step = cnt / steps + 1;
 	int n1 = opts.fromLine();
 	int n2 = opts.toLine();
 	if(n2 < 0) n2 = INT_MAX;
 	for(int i=n1; i<rowCount() && i<=n2; i++) {
 		TableRow r = row(i);
-		//if(cnt) if(n++ % progress_step) emit progressValue(1.*n/cnt, tr("Probiha export"));
 		for(int i=0; i<ixs.count(); i++) {
-			if(i > 0) ts << opts.fieldSeparator();
+			if(i > 0)
+				ts << opts.fieldSeparator();
 			ts << quoteCSV(r.value(ixs[i]).toString(), opts);
 		}
 		ts << '\n';
 	}
-	//emit progressValue(-1);
 }
 
 const QString Table::CVSTableEndTag = "#CVS_TABLE_END";

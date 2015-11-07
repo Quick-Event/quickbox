@@ -6,7 +6,7 @@
 
 #include <QStandardItemModel>
 
-using namespace qf::qmlwidgets::reports;
+using namespace qf::qmlwidgets::internal;
 
 //=================================================
 //             TableViewChooseColumnsWidget

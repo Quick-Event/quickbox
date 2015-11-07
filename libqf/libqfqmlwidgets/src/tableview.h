@@ -105,6 +105,8 @@ public:
 
 	Q_SLOT void editCellContentInEditor();
 
+	Q_SLOT void exportCSV();
+
 	Q_SLOT void exportReport();
 
 	Q_SLOT void saveCurrentCellBlob();
@@ -147,6 +149,7 @@ private:
 	void cancelSeek();
 
 	void exportReport_helper(const QVariant& _options);
+	void exportCSV_helper(const QVariant& export_options);
 
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
