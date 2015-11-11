@@ -9,34 +9,38 @@
     </message>
     <message>
         <source>Import event</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovat závod</translation>
     </message>
     <message>
         <source>Importing clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuji kluby</translation>
     </message>
     <message>
         <source>Importing registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuji registrace</translation>
+    </message>
+    <message>
+        <source>%1 %2 %3 SI: %4 is duplicit!</source>
+        <translation>%1 %2 %3 SI: %4 je duplicitní!</translation>
     </message>
 </context>
 <context>
     <name>main</name>
     <message>
         <source>&amp;Event</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Závod</translation>
     </message>
     <message>
         <source>&amp;Clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kluby</translation>
     </message>
     <message>
         <source>&amp;Registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Registrace</translation>
     </message>
     <message>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Test</translation>
     </message>
     <message>
         <source>&amp;Oris</source>
