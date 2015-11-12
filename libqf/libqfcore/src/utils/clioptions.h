@@ -79,7 +79,7 @@ public:
 		QStringList names() const {return d->names;}
 		Option& setType(QVariant::Type type) {d->type = type; return *this;}
 		QVariant::Type type() const {return d->type;}
-		Option& setValueString(const QString &val);
+		Option& setValueString(const QString &val_str);
 		Option& setValue(const QVariant &val) {d->value = val; return *this;}
 		QVariant value() const {return d->value;}
 		Option& setDefaultValue(const QVariant &val) {d->defaultValue = val; return *this;}
@@ -120,6 +120,7 @@ public:
 protected:
 	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();
+	QString peekArg() const;
 	void addParseError(const QString &err);
 private:
 	QMap<QString, Option> m_options;

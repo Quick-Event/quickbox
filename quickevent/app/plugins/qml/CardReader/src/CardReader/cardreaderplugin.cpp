@@ -172,64 +172,64 @@ int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
 	return ret;
 }
 
-bool CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard &checked_card)
+bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const CheckedCard &checked_card)
 {
-	QF_TIME_SCOPE("updateCheckedCardValuesSql()");
-	int run_id = checked_card.runId();
-	//int card_id = checked_card.cardId();
-	if(run_id <= 0)
-		return false;
-	auto cc = qf::core::sql::Connection::forName();
-	qf::core::sql::Query q(cc);
 	try {
-		qf::core::sql::Transaction transaction(cc);
-		{
-			{
-				QF_TIME_SCOPE("delete from runlaps");
-				q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
-			}
-			q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
-			auto punch_list = checked_card.punches();
-			if(punch_list.count()) {
-				{
-					CardReader::CheckedPunch finish_punch;
-					finish_punch.setPosition(FINISH_PUNCH_POS); 
-					finish_punch.setCode(FINISH_PUNCH_CODE);
-					finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
-					finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
-					punch_list << finish_punch;
-				}
-				for(auto v : punch_list) {
-					CardReader::CheckedPunch cp(v.toMap());
-					qfInfo() << cp;
-					if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
-						q.bindValue(QStringLiteral(":runId"), run_id);
-						q.bindValue(QStringLiteral(":code"), cp.code());
-						q.bindValue(QStringLiteral(":position"), cp.position()); 
-						q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
-						q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
-						q.exec(qf::core::Exception::Throw);
-					}
-				}
-			}
-		}
-		{
-			q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
-			q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
-			q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
-			q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
-			q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
-			q.exec(qf::core::Exception::Throw);
-			if(q.numRowsAffected() != 1)
-				return false;
-		}
+		qf::core::sql::Transaction transaction;
+		updateCheckedCardValuesSql(checked_card);
 		transaction.commit();
 		return true;
 	}
 	catch (const qf::core::Exception &e) {
-		qfError() << trUtf8("Save card runlaps ERROR: %1").arg(q.lastErrorText());
+		qfError() << trUtf8("Update runs & runlaps ERROR:") << e.message();
 	}
 	return false;
+}
+
+void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard &checked_card) throw(qf::core::Exception)
+{
+	QF_TIME_SCOPE("updateCheckedCardValuesSql()");
+	int run_id = checked_card.runId();
+	if(run_id <= 0)
+		QF_EXCEPTION("Card doesn't contain runId information!");
+	auto cc = qf::core::sql::Connection::forName();
+	qf::core::sql::Query q(cc);
+	{
+		QF_TIME_SCOPE("delete from runlaps");
+		q.exec("DELETE FROM runlaps WHERE runId=" QF_IARG(run_id), qf::core::Exception::Throw);
+	}
+	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+	auto punch_list = checked_card.punches();
+	if(punch_list.count()) {
+		{
+			CardReader::CheckedPunch finish_punch;
+			finish_punch.setPosition(FINISH_PUNCH_POS);
+			finish_punch.setCode(FINISH_PUNCH_CODE);
+			finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
+			finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
+			punch_list << finish_punch;
+		}
+		for(auto v : punch_list) {
+			CardReader::CheckedPunch cp(v.toMap());
+			//qfInfo() << cp;
+			if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
+				q.bindValue(QStringLiteral(":runId"), run_id);
+				q.bindValue(QStringLiteral(":code"), cp.code());
+				q.bindValue(QStringLiteral(":position"), cp.position());
+				q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
+				q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
+				q.exec(qf::core::Exception::Throw);
+			}
+		}
+	}
+	q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
+	q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
+	q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
+	q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
+	q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
+	q.exec(qf::core::Exception::Throw);
+	if(q.numRowsAffected() != 1)
+		QF_EXCEPTION("Update runs error!");
 }
 
 bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
@@ -266,7 +266,7 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		return false;
 	}
 	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
-	if(updateCheckedCardValuesSql(checked_card))
+	if(updateCheckedCardValuesSqlSafe(checked_card))
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))
 			return true;
 	return false;

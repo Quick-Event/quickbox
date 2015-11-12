@@ -10,6 +10,7 @@
 #include <QCompleter>
 #include <QAbstractTableModel>
 #include <QAbstractProxyModel>
+#include <QKeyEvent>
 
 static Competitors::CompetitorsPlugin* competitorsPlugin()
 {
@@ -88,7 +89,17 @@ FindRegistrationEdit::FindRegistrationEdit(QWidget *parent)
 	cmpl->setCaseSensitivity(Qt::CaseInsensitive);
 	cmpl->setFilterMode(Qt::MatchContains);
 	setCompleter(cmpl);
-	connect(cmpl, SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)));
+}
+
+void FindRegistrationEdit::focusInEvent(QFocusEvent *event)
+{
+	Super::focusInEvent(event);
+	if(event->FocusIn) {
+		//qfInfo() << event->FocusIn;
+		/// don't know why, but QCompleter::activated is not connected any more when FindRegistrationEdit loose its focus
+		/// nasty hack is to reconnect signal every time when FindRegistrationEdit get focus again
+		connect(completer(), SIGNAL(activated(QModelIndex)), this, SLOT(onCompleterActivated(QModelIndex)), Qt::UniqueConnection);
+	}
 }
 
 void FindRegistrationEdit::onCompleterActivated(const QModelIndex &index)

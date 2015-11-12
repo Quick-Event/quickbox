@@ -15,7 +15,7 @@ class TableModel;
 }
 
 namespace qmlwidgets {
-namespace reports {
+namespace internal {
 
 namespace Ui {
 class TableViewChooseColumnsWidget;

@@ -33,7 +33,9 @@ HEADERS += \
     $$PWD/dateedit.h \
     $$PWD/style.h \
     $$PWD/actiongroup.h \
-    $$PWD/checkbox.h
+    $$PWD/checkbox.h \
+    $$PWD/exporttableviewwidget.h \
+    $$PWD/exportcsvtableviewwidget.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -67,11 +69,14 @@ SOURCES += \
     $$PWD/dateedit.cpp \
     $$PWD/style.cpp \
     $$PWD/actiongroup.cpp \
-    $$PWD/checkbox.cpp
+    $$PWD/checkbox.cpp \
+    $$PWD/exporttableviewwidget.cpp \
+    $$PWD/exportcsvtableviewwidget.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \
     $$PWD/texteditwidget.ui \
+    $$PWD/exporttableviewwidget.ui
 
 include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)

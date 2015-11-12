@@ -47,7 +47,8 @@ public:
 	int saveCardToSql(const ReadCard &read_card);
 	int savePunchRecordToSql(const PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
-	bool updateCheckedCardValuesSql(const CheckedCard &checked_card);
+	bool updateCheckedCardValuesSqlSafe(const CheckedCard &checked_card);
+	void updateCheckedCardValuesSql(const CheckedCard &checked_card) throw(qf::core::Exception);
 	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);

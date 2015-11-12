@@ -63,6 +63,7 @@ void PartSwitch::addPartWidget(PartWidget *widget)
 		}
 	}
 	PartSwitchToolButton *bt = new PartSwitchToolButton();
+	bt->setCheckable(true);
 	connect(bt, SIGNAL(clicked(int)), this, SLOT(setCurrentPartIndex(int)));
 	bt->setText(widget->title());
 	bt->setPartIndex(buttonCount());

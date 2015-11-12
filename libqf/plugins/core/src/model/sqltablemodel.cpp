@@ -9,7 +9,7 @@
 using namespace qf::core::qml;
 
 SqlTableModel::SqlTableModel(QObject *parent)
-	: Super(parent), m_qmlQueryBuilder(nullptr)
+	: Super(parent)
 {
 	qfLogFuncFrame() << this;
 }
@@ -20,6 +20,14 @@ SqlTableModel::~SqlTableModel()
 	qDeleteAll(m_qmlColumns);
 }
 
+bool SqlTableModel::reload()
+{
+	bool ret = Super::reload();
+	//if(ret)
+	//	emit columnsChanged();
+	return ret;
+}
+
 QString SqlTableModel::buildQuery()
 {
 	if(m_qmlQueryBuilder) {
@@ -28,11 +36,12 @@ QString SqlTableModel::buildQuery()
 	return Super::buildQuery();
 }
 
-SqlQueryBuilder *SqlTableModel::qmlSqlQueryBuilder()
+SqlQueryBuilder *SqlTableModel::sqlQueryBuilder()
 {
 	if(!m_qmlQueryBuilder) {
 		m_qmlQueryBuilder = new SqlQueryBuilder(this);
 		QQmlEngine::setObjectOwnership(m_qmlQueryBuilder, QQmlEngine::CppOwnership);
+		emit queryBuilderChanged();
 	}
 	setQuery(QString());
 	return m_qmlQueryBuilder;

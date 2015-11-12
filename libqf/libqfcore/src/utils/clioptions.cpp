@@ -37,30 +37,31 @@ CLIOptions::Option::Option(QVariant::Type type)
 	d = new Data(type);
 }
 
-CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val)
+CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val_str)
 {
 	QVariant::Type t = type();
 	switch(t) {
 	case(QVariant::Invalid):
-		qfWarning() << "Setting value:" << val << "to an invalid type option.";
+		qfWarning() << "Setting value:" << val_str << "to an invalid type option.";
 		break;
 	case(QVariant::Int):
 	{
 		bool ok;
-		setValue(val.toInt(&ok));
+		setValue(val_str.toInt(&ok));
 		if(!ok)
-			qfWarning() << "Value:" << val << "cannot be converted to Int.";
+			qfWarning() << "Value:" << val_str << "cannot be converted to Int.";
 		break;
 	}
 	case(QVariant::Double):
 	{
 		bool ok;
-		setValue(val.toDouble(&ok));
-		if(!ok) qfWarning() << "Value:" << val << "cannot be converted to Double.";
+		setValue(val_str.toDouble(&ok));
+		if(!ok) qfWarning() << "Value:" << val_str << "cannot be converted to Double.";
 		break;
 	}
 	default:
-		setValue(val);
+		setValue(val_str);
+		//qfWarning() << val_str << "->" << names() << "->" << value();
 	}
 	return *this;
 }
@@ -159,6 +160,12 @@ QString CLIOptions::takeArg()
 	return ret;
 }
 
+QString CLIOptions::peekArg() const
+{
+	QString ret = m_arguments.value(m_parsedArgIndex);
+	return ret;
+}
+
 void CLIOptions::parse(int argc, char* argv[])
 {
 	QStringList args;
@@ -169,7 +176,7 @@ void CLIOptions::parse(int argc, char* argv[])
 
 void CLIOptions::parse(const QStringList& cmd_line_args)
 {
-	qfLogFuncFrame() << cmd_line_args.join(' ');
+	qfLogFuncFrame() << cmd_line_args;
 	m_isAppBreak = false;
 	m_parsedArgIndex = 0;
 	m_arguments = cmd_line_args.mid(1);
@@ -181,7 +188,7 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 		QString arg = takeArg();
 		if(arg.isEmpty())
 			break;
-		if(arg == "--help" || arg == "-h") {
+		if(arg == QStringLiteral("--help") || arg == QStringLiteral("-h")) {
 			setHelp(true);
 			printHelp();
 			m_isAppBreak = true;
@@ -197,11 +204,17 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 				if(names.contains(arg)) {
 					found = true;
 					if(opt.type() != QVariant::Bool) {
-						arg = takeArg();
+						arg = peekArg();
+						if(arg.startsWith('-') || arg.isEmpty()) {
+							// switch has no value entered
+							arg = QString();
+						}
+						else {
+							arg = takeArg();
+						}
 						opt.setValueString(arg);
 					}
 					else {
-						//LOGDEB() << "setting true";
 						opt.setValue(true);
 					}
 					break;

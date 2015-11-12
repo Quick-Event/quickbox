@@ -46,6 +46,7 @@ BandDataModel *ReportItemBand::model()
 	if(!m_model || !m_model->isDataValid()) {
 		ReportItemDetail *parent_detail = nullptr;
 		QVariant dta = modelData();
+		//qfInfo() << "1:" << dta;
 		if(!dta.isValid() || dta.userType() == QVariant::String) {
 			QString data_key = dta.toString();
 			ReportItemBand *pr = parentBand();
@@ -65,6 +66,7 @@ BandDataModel *ReportItemBand::model()
 				}
 			}
 		}
+		//qfInfo() << "2:" << dta;
 		QF_SAFE_DELETE(m_model);
 		m_model = BandDataModel::createFromData(dta, this);
 		//qfError() << dta;

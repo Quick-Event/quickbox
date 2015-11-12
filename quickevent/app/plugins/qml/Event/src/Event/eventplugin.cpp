@@ -126,7 +126,12 @@ int EventPlugin::stageStart(int stage_id)
 	int ret = start_time.msecsSinceStartOfDay();
 	return ret;
 }
-
+/*
+int EventPlugin::currentStageStartMsec()
+{
+	return stageStart(currentStageId());
+}
+*/
 StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;

@@ -152,7 +152,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", "JOIN")
 						.groupBy("runlaps.position");
 				QString qs = qb_minlaps.toString();
-				qfInfo() << qs;
+				//qfInfo() << qs;
 				qf::core::sql::Query q;
 				q.exec(qs);
 				while(q.next()) {
@@ -179,6 +179,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
 						.where("runs.finishTimeMs > 0")
 						.orderBy("misPunch, disqualified, offRace, runs.timeMs");
+				//qfInfo() << qb.toString();
 				qf::core::sql::Query q;
 				q.exec(qb.toString(), qf::core::Exception::Throw);
 				while (q.next()) {

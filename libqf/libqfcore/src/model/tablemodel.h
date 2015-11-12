@@ -197,6 +197,7 @@ public:
 
 	ColumnDefinition columnDefinition(int ix) const;
 	int columnIndex(const QString &column_name) const;
+
 protected:
 	virtual void checkColumns();
 	void createColumnsFromTableFields();

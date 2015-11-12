@@ -16,6 +16,8 @@ public:
 	FindRegistrationEdit(QWidget *parent = nullptr);
 
 	Q_SIGNAL void registrationSelected(const QVariantMap &registration_values);
+protected:
+	void focusInEvent(QFocusEvent * event) Q_DECL_OVERRIDE;
 private:
 	Q_SLOT void onCompleterActivated(const QModelIndex &index);
 private:

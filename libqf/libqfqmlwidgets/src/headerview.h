@@ -21,6 +21,8 @@ public:
 public:
 	Q_SLOT void setSeekString(const QString &str);
 protected:
+	void contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
+protected:
 	QLabel *m_seekStringLabel;
 };
 

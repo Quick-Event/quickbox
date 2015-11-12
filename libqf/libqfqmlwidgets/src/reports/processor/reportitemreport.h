@@ -21,6 +21,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemFrame
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Sheet* styleSheet READ styleSheet WRITE setStyleSheet NOTIFY styleSheetChanged)
 	Q_PROPERTY(int debugLevel READ debugLevel WRITE setDebugLevel)
+	Q_PROPERTY(bool created READ isCreated NOTIFY createdChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
@@ -29,6 +30,7 @@ public:
 public:
 	QF_PROPERTY_OBJECT_IMPL(style::Sheet*, s, S, tyleSheet)
 	QF_PROPERTY_IMPL2(int, d, D, ebugLevel, 0)
+	QF_PROPERTY_BOOL_IMPL(c, C, reated)
 public:
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE
 	{

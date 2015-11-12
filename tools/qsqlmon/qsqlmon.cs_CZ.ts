@@ -415,387 +415,387 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="src/mainwindow.cpp" line="86"/>
+        <location filename="src/mainwindow.cpp" line="87"/>
         <source>QT SQL Monitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="315"/>
+        <location filename="src/mainwindow.cpp" line="316"/>
         <source>About Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="316"/>
+        <location filename="src/mainwindow.cpp" line="317"/>
         <source>&lt;b&gt;Qt SQL Monitor&lt;/b&gt;&lt;br&gt;%2&lt;br&gt;ver. %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="322"/>
+        <location filename="src/mainwindow.cpp" line="323"/>
         <source>&lt;p&gt;&lt;b&gt;Qt %1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.trolltech.com/qt/&quot;&gt;www.trolltech.com/qt/&lt;/a&gt;&lt;p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="325"/>
+        <location filename="src/mainwindow.cpp" line="326"/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="344"/>
+        <location filename="src/mainwindow.cpp" line="345"/>
         <source>&amp;Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="345"/>
+        <location filename="src/mainwindow.cpp" line="346"/>
         <source>Open the aplication config window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="349"/>
+        <location filename="src/mainwindow.cpp" line="350"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="350"/>
+        <location filename="src/mainwindow.cpp" line="351"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="351"/>
+        <location filename="src/mainwindow.cpp" line="352"/>
         <source>Exit the application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="356"/>
+        <location filename="src/mainwindow.cpp" line="357"/>
         <source>Shift+Enter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="357"/>
+        <location filename="src/mainwindow.cpp" line="358"/>
         <source>Execute SQL command</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="363"/>
+        <location filename="src/mainwindow.cpp" line="364"/>
         <source>Execute SQL script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="369"/>
+        <location filename="src/mainwindow.cpp" line="370"/>
         <source>Execute selected lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="375"/>
+        <location filename="src/mainwindow.cpp" line="376"/>
         <source>Set SQL delimiter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="383"/>
+        <location filename="src/mainwindow.cpp" line="384"/>
         <source>Tear off SQL table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="384"/>
+        <location filename="src/mainwindow.cpp" line="385"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="385"/>
+        <location filename="src/mainwindow.cpp" line="386"/>
         <source>Tear off SQL table in a new modeless window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="389"/>
+        <location filename="src/mainwindow.cpp" line="390"/>
         <source>Word wrap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="398"/>
+        <location filename="src/mainwindow.cpp" line="399"/>
         <source>&amp;About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="399"/>
+        <location filename="src/mainwindow.cpp" line="400"/>
         <source>Show the application&apos;s About box</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="403"/>
+        <location filename="src/mainwindow.cpp" line="404"/>
         <source>&amp;About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="408"/>
+        <location filename="src/mainwindow.cpp" line="409"/>
         <source>&amp;Change Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="412"/>
+        <location filename="src/mainwindow.cpp" line="413"/>
         <source>&amp;MySQL syntax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="416"/>
+        <location filename="src/mainwindow.cpp" line="417"/>
         <source>&amp;SQLite syntax</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="420"/>
+        <location filename="src/mainwindow.cpp" line="421"/>
         <source>&amp;Available drivers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="424"/>
+        <location filename="src/mainwindow.cpp" line="425"/>
         <source>&amp;Check drivers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="433"/>
+        <location filename="src/mainwindow.cpp" line="434"/>
         <source>Add connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="434"/>
+        <location filename="src/mainwindow.cpp" line="435"/>
         <source>Add database connection to the tree</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="441"/>
+        <location filename="src/mainwindow.cpp" line="442"/>
         <source>&amp;Server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="448"/>
+        <location filename="src/mainwindow.cpp" line="449"/>
         <source>&amp;Sql</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="456"/>
+        <location filename="src/mainwindow.cpp" line="457"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="460"/>
+        <location filename="src/mainwindow.cpp" line="461"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="475"/>
+        <location filename="src/mainwindow.cpp" line="476"/>
         <source>Sql</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="483"/>
+        <location filename="src/mainwindow.cpp" line="484"/>
         <source>limit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="487"/>
+        <location filename="src/mainwindow.cpp" line="488"/>
         <source>unlimited</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="495"/>
+        <location filename="src/mainwindow.cpp" line="496"/>
         <source>not connected ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="496"/>
+        <location filename="src/mainwindow.cpp" line="497"/>
         <source>info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="552"/>
-        <location filename="src/mainwindow.cpp" line="619"/>
+        <location filename="src/mainwindow.cpp" line="553"/>
+        <location filename="src/mainwindow.cpp" line="620"/>
         <source>No active connection !</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="574"/>
-        <location filename="src/mainwindow.cpp" line="599"/>
-        <location filename="src/mainwindow.cpp" line="626"/>
+        <location filename="src/mainwindow.cpp" line="575"/>
+        <location filename="src/mainwindow.cpp" line="600"/>
+        <location filename="src/mainwindow.cpp" line="627"/>
         <source>affected rows: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="920"/>
+        <location filename="src/mainwindow.cpp" line="921"/>
         <source>Server menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="931"/>
+        <location filename="src/mainwindow.cpp" line="932"/>
         <source>Connection menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="933"/>
+        <location filename="src/mainwindow.cpp" line="934"/>
         <source>Edit connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="934"/>
+        <location filename="src/mainwindow.cpp" line="935"/>
         <source>Copy connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="935"/>
+        <location filename="src/mainwindow.cpp" line="936"/>
         <source>Remove connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="948"/>
+        <location filename="src/mainwindow.cpp" line="949"/>
         <source>Delete connection ?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="963"/>
+        <location filename="src/mainwindow.cpp" line="964"/>
         <source>Database menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="964"/>
+        <location filename="src/mainwindow.cpp" line="965"/>
         <source>Create schema</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="967"/>
-        <location filename="src/mainwindow.cpp" line="998"/>
-        <location filename="src/mainwindow.cpp" line="1222"/>
+        <location filename="src/mainwindow.cpp" line="968"/>
+        <location filename="src/mainwindow.cpp" line="999"/>
+        <location filename="src/mainwindow.cpp" line="1220"/>
         <source>Query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="967"/>
+        <location filename="src/mainwindow.cpp" line="968"/>
         <source>Enter schema name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="988"/>
+        <location filename="src/mainwindow.cpp" line="989"/>
         <source>Schema menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="989"/>
+        <location filename="src/mainwindow.cpp" line="990"/>
         <source>Create table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="991"/>
+        <location filename="src/mainwindow.cpp" line="992"/>
         <source>Create database script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="992"/>
+        <location filename="src/mainwindow.cpp" line="993"/>
         <source>Dump database script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="994"/>
+        <location filename="src/mainwindow.cpp" line="995"/>
         <source>Drop schema</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="995"/>
+        <location filename="src/mainwindow.cpp" line="996"/>
         <source>Check database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="998"/>
+        <location filename="src/mainwindow.cpp" line="999"/>
         <source>Enter table name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1046"/>
+        <location filename="src/mainwindow.cpp" line="1047"/>
         <source>Realy drop schema &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1097"/>
+        <location filename="src/mainwindow.cpp" line="1098"/>
         <source>Table menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1098"/>
+        <location filename="src/mainwindow.cpp" line="1099"/>
         <source>Show columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1099"/>
+        <location filename="src/mainwindow.cpp" line="1100"/>
         <source>Show indexes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1100"/>
+        <location filename="src/mainwindow.cpp" line="1101"/>
         <source>Show foreign keys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1101"/>
+        <location filename="src/mainwindow.cpp" line="1102"/>
         <source>Create table script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1102"/>
+        <location filename="src/mainwindow.cpp" line="1103"/>
         <source>Dump table script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1104"/>
+        <location filename="src/mainwindow.cpp" line="1105"/>
         <source>Column selector</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1106"/>
+        <location filename="src/mainwindow.cpp" line="1107"/>
         <source>Alter table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1107"/>
+        <location filename="src/mainwindow.cpp" line="1108"/>
         <source>Drop table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1108"/>
+        <location filename="src/mainwindow.cpp" line="1109"/>
         <source>Truncate table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1109"/>
+        <location filename="src/mainwindow.cpp" line="1110"/>
         <source>Rename table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1116"/>
+        <location filename="src/mainwindow.cpp" line="1117"/>
         <source>Check table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1117"/>
+        <location filename="src/mainwindow.cpp" line="1118"/>
         <source>Repair table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1118"/>
+        <location filename="src/mainwindow.cpp" line="1119"/>
         <source>Optimize table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1187"/>
+        <location filename="src/mainwindow.cpp" line="1188"/>
         <source>Not implemented yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1222"/>
+        <location filename="src/mainwindow.cpp" line="1220"/>
         <source>Enter new table name for table %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1236"/>
+        <location filename="src/mainwindow.cpp" line="1234"/>
         <source>Realy drop the table &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1248"/>
+        <location filename="src/mainwindow.cpp" line="1246"/>
         <source>Realy truncate the table &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -820,12 +820,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1452"/>
+        <location filename="src/mainwindow.cpp" line="1453"/>
         <source>Get delimiter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="1452"/>
+        <location filename="src/mainwindow.cpp" line="1453"/>
         <source>SQL commands delimiter (one character):</source>
         <translation type="unfinished"></translation>
     </message>

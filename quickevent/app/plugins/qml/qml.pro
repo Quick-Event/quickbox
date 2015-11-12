@@ -12,5 +12,7 @@ SUBDIRS += \
 	CardReader \
 	Receipts \
 	Oris \
+	ExamplePureQmlPlugin \
+	ExampleCppQmlPlugin \
 
 

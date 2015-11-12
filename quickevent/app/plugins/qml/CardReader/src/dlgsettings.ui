@@ -36,7 +36,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="textLabel1">
             <property name="text">
-             <string>Device:</string>
+             <string>De&amp;vice:</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -44,24 +44,6 @@
             <property name="buddy">
              <cstring>lstDevice</cstring>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="lstDevice">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-            <item>
-             <property name="text">
-              <string>/dev/ttyUSB0</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item row="1" column="0">
@@ -201,6 +183,19 @@
               <string>Space</string>
              </property>
             </item>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="lstDevice">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>

@@ -144,7 +144,8 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 		int class_id = m_cbxClasses->currentData().toInt();
 		doc->setValue("competitors.classId", class_id);
 	}
-	connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
+	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
+	//connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	/*
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
 		dlg.accept();

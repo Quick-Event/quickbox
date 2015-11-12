@@ -7,15 +7,15 @@
 
 #include <Event/eventplugin.h>
 
-//#include <quickevent/og/siid.h>
-//#include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
-//#include <qf/qmlwidgets/framework/plugin.h>
+#include <qf/qmlwidgets/dialogs/filedialog.h>
+#include <qf/qmlwidgets/menubar.h>
+#include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/combobox.h>
 
@@ -134,11 +134,20 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
-	/*
-	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
-	a->setText("&Station");
-	a->addActionInto(m_actCommOpen);
-	*/
+
+	qfw::Action *a_print = part_widget->menuBar()->actionForPath("print", true);
+	a_print->setText("&Print");
+
+	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
+	a_import->setText("&Import");
+	qfw::Action *a_import_start_times = a_import->addMenuInto("startTimes", tr("Start times"));
+	qfw::Action *a_import_start_times_ob2000 = new qfw::Action("ob2000", tr("OB 2000"));
+	a_import_start_times->addActionInto(a_import_start_times_ob2000);
+	connect(a_import_start_times_ob2000, &qfw::Action::triggered, this, &RunsWidget::import_start_times_ob2000);
+
+	qfw::Action *a_export = part_widget->menuBar()->actionForPath("export", true);
+	a_export->setText("&Export");
+
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	//main_tb->addAction(m_actCommOpen);
 	{
@@ -246,6 +255,87 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
 		ret[q.value("competitorId").toInt()] = q.value("id").toInt();
 	}
 	return ret;
+}
+
+void RunsWidget::import_start_times_ob2000()
+{
+	qfLogFuncFrame();
+	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Import"));
+	if(!fn.isEmpty()) {
+		QFile f(fn);
+		if(f.open(QFile::ReadOnly)) {
+			struct Run {
+				int runsId;
+				QString className;
+				//int startTimeMs;
+			};
+			try {
+				qf::core::sql::Transaction transaction;
+				qfs::Query q;
+				QMap< QString, Run > runners;
+				{
+					qf::core::sql::QueryBuilder qb;
+					qb.select2("runs", "id, startTimeMs")
+							.select2("competitors", "registration")
+							.select2("classes", "name")
+							.from("competitors")
+							.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(selectedStageId()), "JOIN")
+							.join("competitors.classId", "classes.id");
+					q.exec(qb.toString(), qf::core::Exception::Throw);
+					while(q.next()) {
+						QString reg = q.value("registration").toString().toUpper().trimmed();
+						if(reg.isEmpty())
+							continue;
+						auto &runner = runners[reg];
+						runner.runsId = q.value("runs.id").toInt();
+						runner.className = q.value("classes.name").toString();
+					}
+				}
+				q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
+				while(!f.atEnd()) {
+					QByteArray ba = f.readLine();
+					if(!ba.startsWith("    "))
+						continue;
+					qfDebug() << ba.size() << ba;
+					//if(ba.isEmpty())
+					//	break;
+					QStringList sl = QString::fromLatin1(ba).split(' ', QString::SkipEmptyParts);
+					if(sl.count() < 5)
+						continue;
+					bool ok;
+					double d = sl.value(0).toDouble(&ok);
+					if(!ok) {
+						qfWarning() << "Cannot convert" << sl.value(0) << "to double.";
+						qfInfo() << ba;
+						continue;
+					}
+					int st_time = ((int)d) * 60 + (((int)(d * 100)) % 100);
+					st_time *= 1000;
+					QString reg = sl.value(sl.count() - 2) + sl.value(sl.count() - 1);
+					reg = reg.toUpper().trimmed();
+					QString class_name = sl.value(sl.count() - 3);
+					if(runners.contains(reg)) {
+						const auto &runner = runners[reg];
+						if(runner.className == class_name) {
+							q.bindValue(QStringLiteral(":id"), runner.runsId);
+							q.bindValue(QStringLiteral(":startTimeMs"), st_time);
+							q.exec(qf::core::Exception::Throw);
+							qfDebug() << reg << "->" << QString::number(st_time / 1000 / 60) + '.' + QString::number(st_time / 1000 % 60);
+						}
+						else {
+							qfWarning() << "Different classname" << class_name << runner.className << "start time will not be imported";
+							qfInfo() << ba;
+						}
+					}
+				}
+				transaction.commit();
+			}
+			catch (const qf::core::Exception &e) {
+				qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+			}
+			ui->wRunsTableWidget->runsModel()->reload();
+		}
+	}
 }
 
 void RunsWidget::on_btDraw_clicked()

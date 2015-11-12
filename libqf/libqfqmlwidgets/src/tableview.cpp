@@ -4,10 +4,13 @@
 #include "action.h"
 #include "tableitemdelegate.h"
 #include "dialogs/messagebox.h"
-#include "dialogs/dialog.h"
 #include "dialogbuttonbox.h"
+#include "exportcsvtableviewwidget.h"
 #include "style.h"
 #include "texteditwidget.h"
+
+#include "dialogs/dialog.h"
+#include "dialogs/filedialog.h"
 
 #include "reports/widgets/printtableviewwidget/printtableviewwidget.h"
 #include "reports/widgets/reportviewwidget.h"
@@ -158,7 +161,7 @@ void TableView::refreshActions()
 	//action("importCSV")->setEnabled(true);
 	action("export")->setEnabled(true);
 	action("exportReport")->setEnabled(true);
-	//action("exportCSV")->setEnabled(true);
+	action("exportCSV")->setEnabled(true);
 	//action("exportXML")->setEnabled(true);
 	//action("exportXLS")->setEnabled(true);
 	//action("exportHTML")->setEnabled(true);
@@ -635,6 +638,29 @@ void TableView::editCellContentInEditor()
 	}
 }
 
+void TableView::exportCSV()
+{
+	core::model::TableModel *m = tableModel();
+	if(!m)
+		return;
+
+	qf::qmlwidgets::ExportCsvTableViewWidget *w = new qf::qmlwidgets::ExportCsvTableViewWidget(this, this);
+	if(!persistentSettingsPath().isEmpty()) {
+		w->setPersistentOptionsPath(persistentSettingsPath() + "/exportCSV");
+		w->loadPersistentOptions();
+	}
+	dialogs::Dialog dlg(this);
+	DialogButtonBox *bb = new DialogButtonBox(QDialogButtonBox::Cancel, this);
+	QAbstractButton *bt_apply = bb->addButton(QDialogButtonBox::Apply);
+	connect(bt_apply, &QAbstractButton::clicked, w, &qf::qmlwidgets::ExportCsvTableViewWidget::applyOptions, Qt::QueuedConnection);
+	dlg.setButtonBox(bb);
+	dlg.setCentralWidget(w);
+	dlg.setPersistentSettingsId("exportCSV");
+	dlg.loadPersistentSettingsRecursively();
+	connect(w, &qf::qmlwidgets::ExportCsvTableViewWidget::exportRequest, this, &TableView::exportCSV_helper);
+	dlg.exec();
+}
+
 void TableView::exportReport()
 {
 	qfLogFuncFrame();
@@ -728,6 +754,67 @@ void TableView::exportReport_helper(const QVariant& _options)
 	}
 	catch(qfc::Exception &e) {
 		dialogs::MessageBox::showException(this, e);
+	}
+}
+
+void TableView::exportCSV_helper(const QVariant &export_options)
+{
+	QAbstractItemModel *m = model();
+	if(!m)
+		return;
+	QString fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName(this, tr("Save as ..."), "data.csv", "Coma Separated Values *.csv (*.csv)");
+	if(fn.isEmpty())
+		return;
+
+	QFile f(fn);
+	if(!f.open(QFile::WriteOnly)) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot open file '%1' for writing.").arg(f.fileName()));
+		return;
+	}
+	try {
+		QVariantMap export_opts = export_options.toMap();
+		qf::core::utils::Table::TextExportOptions text_export_opts(export_opts);
+
+		QTextStream ts(&f);
+		ts.setCodec(text_export_opts.codecName().toLatin1().constData());
+
+		QVector<int> exported_columns;
+		for(auto v : export_opts.value("columns").toList())
+			exported_columns << v.toInt();
+		if(text_export_opts.isExportColumnNames()) {
+			for (int i = 0; i < exported_columns.count(); ++i) {
+				if(i > 0)
+					ts << text_export_opts.fieldSeparator();
+				int ix = exported_columns[i];
+				QString cap = m->headerData(ix, Qt::Horizontal).toString();
+				//if(!opts.isFullColumnNames())
+				//	qf::core::Utils::parseFieldName(cap, &cap);
+				ts << qf::core::utils::Table::quoteCSV(cap, text_export_opts);
+			}
+			ts << '\n';
+		}
+		//qfInfo() << "header exported";
+		// export data
+		//int n = 0, cnt = rowCount(), steps = 100, progress_step = cnt / steps + 1;
+		int n1 = text_export_opts.fromLine();
+		int n2 = text_export_opts.toLine();
+		if(n2 < 0)
+			n2 = std::numeric_limits<int>::max();
+		for(int row_ix=n1; row_ix<m->rowCount() && row_ix<=n2; row_ix++) {
+			//if(cnt) if(n++ % progress_step) emit progressValue(1.*n/cnt, tr("Probiha export"));
+			for(int j=0; j<exported_columns.count(); j++) {
+				int col_ix = exported_columns[j];
+				QModelIndex ix = m->index(row_ix, col_ix);
+				QVariant val = m->data(ix);
+				if(j > 0)
+					ts << text_export_opts.fieldSeparator();
+				ts << qf::core::utils::Table::quoteCSV(val.toString(), text_export_opts);
+			}
+			ts << '\n';
+		}
+	}
+	catch(qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
 }
 
@@ -1030,6 +1117,11 @@ void TableView::loadPersistentSettings()
 		QSettings settings;
 		settings.beginGroup(path);
 
+		QByteArray header_state = settings.value("horizontalheader").toString().toLatin1();
+		header_state = QByteArray::fromBase64(header_state);
+		horiz_header->restoreState(header_state);
+
+#if 0
 		QString s = settings.value("horizontalheader").toString();
 		QJsonDocument jd = QJsonDocument::fromJson(s.toUtf8());
 		QVariantMap m;
@@ -1105,6 +1197,7 @@ void TableView::loadPersistentSettings()
 			}
 			horiz_header->blockSignals(false);
 		}
+#endif
 	}
 }
 
@@ -1116,6 +1209,10 @@ void TableView::savePersistentSettings()
 		QSettings settings;
 		settings.beginGroup(path);
 		HeaderView *horiz_header = qobject_cast<HeaderView*>(horizontalHeader());
+
+		QByteArray header_state = horiz_header->saveState();
+		settings.setValue("horizontalheader", QString::fromLatin1(header_state.toBase64()));
+#if 0
 		qf::core::model::TableModel *mod = tableModel();
 		if(horiz_header && mod) {
 			QVariantMap sections;
@@ -1141,6 +1238,7 @@ void TableView::savePersistentSettings()
 			QJsonDocument jd = QJsonDocument::fromVariant(m);
 			settings.setValue("horizontalheader", QString::fromUtf8(jd.toJson(QJsonDocument::Compact)));
 		}
+#endif
 	}
 }
 
@@ -1629,7 +1727,7 @@ void TableView::createActions()
 		}
 		{
 			a = new Action(tr("CSV"), this);
-			//connect(a, SIGNAL(triggered()), this, SLOT(exportCSV()));
+			connect(a, &Action::triggered, this, &TableView::exportCSV);
 			a->setOid("exportCSV");
 			m_actions[a->oid()] = a;
 			m->addAction(a);

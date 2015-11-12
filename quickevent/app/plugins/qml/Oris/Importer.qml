@@ -145,8 +145,8 @@ QtObject {
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					console.debug(JSON.stringify(competitor_obj, null, 2));
-					Log.info("SI:", competitor_obj.SI, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
 					var siid = parseInt(competitor_obj.SI);
+					Log.info("SI:", competitor_obj.SI, siid, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
 					var note = competitor_obj.Note;
 					if(isNaN(siid)) {
 						note += ' SI:' + competitor_obj.SI;
@@ -199,7 +199,7 @@ QtObject {
 				}
 				db.commit();
 				competitor_doc.destroy();
-				FrameWork.showProgress("", 0, 0);
+				FrameWork.hideProgress();
 				FrameWork.plugin("Event").reloadDataRequest();
 			}
 			else {
@@ -251,7 +251,7 @@ QtObject {
 				else
 					db.rollback();
 				q.destroy();
-				FrameWork.showProgress("", 0, 0);
+				FrameWork.hideProgress();
 				//FrameWork.plugin("Event").reloadDataRequest();
 			}
 			else {
@@ -319,7 +319,7 @@ QtObject {
 				else
 					db.rollback();
 				q.destroy();
-				FrameWork.showProgress("", 0, 0);
+				FrameWork.hideProgress();
 				FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
 			}
 			else {

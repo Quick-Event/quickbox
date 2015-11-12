@@ -206,13 +206,15 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 		qfDebug() << "\t" << s << "->" << values.value(s);
 		doc->setValue(s, values.value(s));
 	}
-	QString class_name_prefix = classNameFromRegistration(values.value("registration").toString());
-	if(!class_name_prefix.isEmpty()) {
-		for (int i = 0; i < ui->cbxClass->count(); ++i) {
-			QString class_name = ui->cbxClass->itemText(i);
-			if(class_name.startsWith(class_name_prefix)) {
-				ui->cbxClass->setCurrentText(class_name);
-				break;
+	if(!doc->isDirty(QStringLiteral("classId"))) {
+		QString class_name_prefix = classNameFromRegistration(values.value("registration").toString());
+		if(!class_name_prefix.isEmpty()) {
+			for (int i = 0; i < ui->cbxClass->count(); ++i) {
+				QString class_name = ui->cbxClass->itemText(i);
+				if(class_name.startsWith(class_name_prefix)) {
+					ui->cbxClass->setCurrentText(class_name);
+					break;
+				}
 			}
 		}
 	}
@@ -220,12 +222,15 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 
 bool CompetitorWidget::saveData()
 {
+	qf::core::model::DataDocument *doc = dataController()->document();
+	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
 	try {
 		if(Super::saveData())
 			return saveRunsTable();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		doc->restoreEditState(edit_state);
 	}
 	return false;
 }

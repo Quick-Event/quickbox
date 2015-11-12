@@ -31,6 +31,9 @@ public:
 public:
 	QueryBuilder();
 	virtual ~QueryBuilder();
+
+	static const QString INNER_JOIN;
+	static const QString LEFT_JOIN;
 public:
 	QString toString(const BuildOptions &opts = BuildOptions()) const {return buildQuery(opts);}
 	bool isEmpty() const {return m_queryMap.isEmpty();}
@@ -75,7 +78,8 @@ public:
 
 	//! @param t1_key in form tablename.keyname.
 	//! @param t2_key in form tablename.keyname or tablename.keyname AS tablename_alias.
-	QueryBuilder& join(const QString &t1_key, const QString &t2_key, const QString  &join_kind = "LEFT JOIN");
+	QueryBuilder& join(const QString &t1_key, const QString &t2_key, const QString  &join_kind = LEFT_JOIN);
+	QueryBuilder& innerJoin(const QString &t1_key, const QString &t2_key) {return join(t1_key, t2_key, INNER_JOIN);}
 	//! Tady si muzu do joinu napsat co chci (vcetne join_kind), nekdy to jinak nejde.
 	QueryBuilder& join(const QString &join);
 	/**
@@ -83,13 +87,17 @@ public:
 	* @param t1_key in form tablename.keyname.
 	* @param t2_name Can be table name or SELECT ... . In both cases a last word is considered to be a tablename.
 	*/
-	QueryBuilder& joinQuery(const QString &t1_key, const QString &t2_select_query, const QString &t2_key_field, const QString  &join_kind = "LEFT JOIN");
-	QueryBuilder& joinQuery(const QString &t1_key, const QueryBuilder &t2_select_query, const QString &t2_key_field, const QString  &join_kind = "LEFT JOIN");
+	QueryBuilder& joinQuery(const QString &t1_key, const QString &t2_select_query, const QString &t2_key_field, const QString  &join_kind = LEFT_JOIN);
+	QueryBuilder& joinQuery(const QString &t1_key, const QueryBuilder &t2_select_query, const QString &t2_key_field, const QString  &join_kind = LEFT_JOIN);
 
 	/// @param where_restriction se prida pomoci logickeho operatoru AND k ON klauzuli JOINu
-	QueryBuilder& joinRestricted(const QString &t1_key, const QString &t2_key, const QString &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN");
-	QueryBuilder& joinQueryRestricted(const QString &t1_key, const QString &t2_select_query, const QString &t2_key_field, const QString  &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN");
-	QueryBuilder& joinQueryRestricted(const QString &t1_key, const QueryBuilder &t2_select_query, const QString &t2_key_field, const QString  &where_restriction = QString(), const QString  &join_kind = "LEFT JOIN");
+	QueryBuilder& joinRestricted(const QString &t1_key, const QString &t2_key, const QString &where_restriction, const QString  &join_kind = LEFT_JOIN);
+	QueryBuilder& innerJoinRestricted(const QString &t1_key, const QString &t2_key, const QString &where_restriction)
+	{
+		return joinRestricted(t1_key, t2_key, where_restriction, INNER_JOIN);
+	}
+	QueryBuilder& joinQueryRestricted(const QString &t1_key, const QString &t2_select_query, const QString &t2_key_field, const QString  &where_restriction, const QString  &join_kind = LEFT_JOIN);
+	QueryBuilder& joinQueryRestricted(const QString &t1_key, const QueryBuilder &t2_select_query, const QString &t2_key_field, const QString  &where_restriction, const QString  &join_kind = LEFT_JOIN);
 	/**
 	* @param oper Condition can be chained using multiple calls of where(), than \a oper is used to join logical conditions.
 	*/

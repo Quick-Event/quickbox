@@ -43,9 +43,10 @@ private:
 	QF_VARIANTMAP_FIELD2(int, f, setF, inishTimeMs, 0)
 	QF_VARIANTMAP_FIELD(QVariantList, p, setP, unches)
 public:
-	ReadCard(const QVariantMap &data = QVariantMap());
+	ReadCard(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadCard(const QSqlRecord &rec);
 	ReadCard(const SIMessageCardReadOut &si_card);
+	QString toString() const;
 };
 
 

@@ -33,9 +33,6 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 	qfLogFuncFrame() << "row_no:" << row_no << "field_name:" << field_name;
 	QVariant ret;
 	if(row_no >= 0) {
-		//if(field_name == "startTimeMsd") {
-		//	qfWarning() << "invalid field name:" << field_name;
-		//}
 		ReportItemBand *band = parentBand();
 		if(band) {
 			BandDataModel *m = band->model();
@@ -53,7 +50,7 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 		}
 	}
 	else {
-		// this is not neccessarry error
+		// this is not necessary error
 		// when data is not loaded and QML is instantiated then currentIndex == -1 and code goes this way
 		// return QString to avoid warning: Unable to assign [undefined] to QString
 		// when data is assigned to QML property of type string

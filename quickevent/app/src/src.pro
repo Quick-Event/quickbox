@@ -49,10 +49,17 @@ QML_IMPORT_PATH += \
 DATA_DIR_NAME = $${TARGET}-data
 
 unix {
-	# T flag is important, qml symlink in SRC/qml dir is created on second install without it
-	datafiles.commands = \
-		mkdir -p $$DESTDIR/$$DATA_DIR_NAME && \
-		ln -sfT $$PWD/../style $$DESTDIR/$$DATA_DIR_NAME/style
+	CONFIG(debug, debug|release) {
+		# T flag is important, qml symlink in SRC/qml dir is created on second install without it
+		datafiles.commands = \
+			mkdir -p $$DESTDIR/$$DATA_DIR_NAME && \
+			ln -sfT $$PWD/../style $$DESTDIR/$$DATA_DIR_NAME/style
+	}
+	else {
+		datafiles.commands = \
+			mkdir -p $$DESTDIR/$$DATA_DIR_NAME && \
+			rsync -r $$PWD/../style $$DESTDIR/$$DATA_DIR_NAME/
+	}
 }
 win32 {
 	#mkdir not needed for windows
