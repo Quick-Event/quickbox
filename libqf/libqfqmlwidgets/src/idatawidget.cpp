@@ -20,7 +20,7 @@ void IDataWidget::loadDataValue(DataController *dc)
 {
 	if(dc != m_dataController)
 		m_dataController = dc;
-	qfm::DataDocument *doc = dataDocument();
+	qfm::DataDocument *doc = dataDocument(false);
 	if(doc) {
 		setDataValue(doc->value(dataId()));
 	}
@@ -28,7 +28,7 @@ void IDataWidget::loadDataValue(DataController *dc)
 
 void IDataWidget::saveDataValue()
 {
-	qfm::DataDocument *doc = dataDocument();
+	qfm::DataDocument *doc = dataDocument(false);
 	if(doc) {
 		doc->setValue(dataId(), dataValue());
 	}
@@ -49,11 +49,11 @@ void IDataWidget::setDataValue(const QVariant &val)
 	qfLogFuncFrame() << dataId() << "->" << val.toString();
 }
 
-qfm::DataDocument *IDataWidget::dataDocument()
+qfm::DataDocument *IDataWidget::dataDocument(bool throw_exc)
 {
 	qfm::DataDocument *ret = nullptr;
 	if(m_dataController) {
-		ret = m_dataController->document();
+		ret = m_dataController->document(throw_exc);
 	}
 	return ret;
 }

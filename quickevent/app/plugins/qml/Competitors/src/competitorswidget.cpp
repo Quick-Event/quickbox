@@ -3,7 +3,11 @@
 #include "competitorwidget.h"
 #include "thispartwidget.h"
 
+#include "Competitors/competitordocument.h"
+
 #include "Event/eventplugin.h"
+
+#include <quickevent/og/siid.h>
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
@@ -25,6 +29,7 @@ static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
 	return qobject_cast<Event::EventPlugin*>(plugin);
 }
 
@@ -36,6 +41,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 
 	ui->tblCompetitorsToolBar->setTableView(ui->tblCompetitors);
 
+	ui->tblCompetitors->setCloneRowEnabled(false);
 	ui->tblCompetitors->setPersistentSettingsId("tblCompetitors");
 	ui->tblCompetitors->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblCompetitors->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
@@ -44,7 +50,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg")).setReadOnly(true);
-	m->addColumn("siId", tr("SI")).setReadOnly(true);
+	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;
@@ -76,6 +82,8 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
+		m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
+		m_cbxClasses->setMaxVisibleItems(100);
 		m_cbxClasses->setReferencedTable("classes");
 		m_cbxClasses->setReferencedField("id");
 		m_cbxClasses->setReferencedCaptionField("name");
@@ -89,6 +97,11 @@ void CompetitorsWidget::lazyInit()
 
 void CompetitorsWidget::reset()
 {
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_competitorsModel->clearRows();
+		return;
+	}
+	reload();
 	{
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);
@@ -125,17 +138,18 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
+	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
+	QF_ASSERT(doc != nullptr, "Document is null!", return);
 	if(mode == qf::core::model::DataDocument::ModeInsert) {
 		int class_id = m_cbxClasses->currentData().toInt();
-		qf::core::model::DataDocument *doc = w->dataController()->document();
 		doc->setValue("competitors.classId", class_id);
-		//doc->save();
-		//w->load(doc->dataId());
 	}
-	connect(w, SIGNAL(dataSaved(QVariant,int)), ui->tblCompetitors, SLOT(rowExternallySaved(QVariant,int)));
+	connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
+	/*
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
 		dlg.accept();
 		emit eventPlugin()->editStartListRequest(stage_id, class_id, competitor_id);
 	});
+	*/
 	dlg.exec();
 }

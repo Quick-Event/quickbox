@@ -104,14 +104,14 @@ void ServerTreeModel::loadSettings()
 	}
 	else {
 		Connection::Params params;
-		for(QString keyval : otcs.split('&')) {
+		Q_FOREACH(QString keyval, otcs.split('&')) {
 			QString key = keyval.section('=', 0, 0);
 			QString val = keyval.section('=', 1, 1);
 			params.setParam(key, val);
 		}
 		connections_lst << params;
 	}
-	for(auto val : connections_lst) {
+	Q_FOREACH(auto val, connections_lst) {
 		QVariantMap m = val.toMap();
 		 new Connection(m, m_rootObj);
 	}
@@ -125,7 +125,7 @@ void ServerTreeModel::saveSettings()
 		return;
 
 	QVariantList connections_lst;
-	for(auto c : m_rootObj->findChildren<Connection*>(QString())) {
+	Q_FOREACH(auto c, m_rootObj->findChildren<Connection*>(QString())) {
 		qfDebug() << c;
 		QVariantMap m = c->params();
 		connections_lst << m;

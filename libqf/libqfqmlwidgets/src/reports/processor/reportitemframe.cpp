@@ -8,6 +8,7 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+//#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
 
 namespace qfc = qf::core;
@@ -21,11 +22,6 @@ ReportItemFrame::ReportItemFrame(ReportItem *parent)
 	: Super(parent)
 {
 	qfLogFuncFrame();
-	//m_x1 = -1;
-	//m_y1 = -1;
-	//m_x2 = -1;
-	//m_y2 = -1;
-	//m_hInset = m_vInset = 0;
 	m_layout = LayoutVertical;
 	m_expandChildrenFrames = false;
 	m_horizontalAlignment = AlignLeft;
@@ -69,31 +65,7 @@ void ReportItemFrame::componentComplete()
 void ReportItemFrame::initDesignedRect()
 {
 	qfLogFuncFrame();
-	QF_TIME_SCOPE("ReportItemFrame::initDesignedRect");
-	// update designed rect
-	/*--
-	Point p;
-	if(x1() >= 0) {
-		designedRect.flags |= Rect::LeftFixed;
-		p.rx() = x1();
-	}
-	if(y1() >= 0) {
-		designedRect.flags |= Rect::TopFixed;
-		p.ry() = y1();
-	}
-	designedRect.setTopLeft(p);
-	if(x2() >= 0) {
-		designedRect.flags |= Rect::RightFixed;
-		p.rx() = x2();
-	}
-	if(y2() >= 0) {
-		designedRect.flags |= Rect::BottomFixed;
-		p.ry() = y2();
-	}
-	designedRect.setBottomRight(p);
-	--*/
-	//qfDebug() << "\t" << __LINE__ << "designedRect:" << designedRect.toString();
-	//static const QString S_PERCENT = "%";
+	//QF_TIME_SCOPE("ReportItemFrame::initDesignedRect");
 	designedRect = Rect();
 	{
 		QVariant v = width();
@@ -112,17 +84,6 @@ void ReportItemFrame::initDesignedRect()
 					if(!ok)
 						qfWarning() << "Cannot convert" << s << "to real number." << this;
 				}
-				/*--
-				if(d > 0) {
-					if(designedRect.flags & Rect::RightFixed) {
-						qreal r = designedRect.right();
-						designedRect.setWidth(d);
-						designedRect.moveRight(r);
-					}
-					else
-						designedRect.setWidth(d);
-				}
-				--*/
 			}
 		}
 		else if(v.isValid()) {
@@ -149,17 +110,6 @@ void ReportItemFrame::initDesignedRect()
 					if(!ok)
 						qfWarning() << "Cannot convert" << s << "to real number." << this;
 				}
-				/*--
-				if(d > 0) {
-					if(designedRect.flags & Rect::BottomFixed) {
-						qreal b = designedRect.bottom();
-						designedRect.setWidth(d);
-						designedRect.moveBottom(b);
-					}
-					else
-						designedRect.setHeight(d);
-				}
-				--*/
 			}
 		}
 		else if(v.isValid()) {
@@ -257,29 +207,33 @@ ReportItem *ReportItemFrame::itemAt(int index)
 {
 	return m_items[index];
 }
-/*
-void ReportItemFrame::setupMetaPaintItem(ReportItemMetaPaint *mpit)
-{
-	Super::setupMetaPaintItem(mpit);
-	style::Text *pts = effectiveTextStyle();
-	if(pts) {
-		style::CompiledTextStyle ts = pts->textStyle();
-		mpit->setTextStyle(ts);
-	}
-}
-*/
+
 ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 {
 	if(parent_layout == LayoutHorizontal)
 		return ChildSize(designedRect.width(), designedRect.horizontalUnit);
 	return ChildSize(designedRect.height(), designedRect.verticalUnit);
 }
+/*
+class N
+{
+	static int& nref() {
+		static int n = 0;
+		return n;
+	}
+public:
+	N() {nref()++;}
+	~N() {nref()--;}
 
+	operator int() const {return nref();}
+};
+*/
 ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
-	QF_TIME_SCOPE("ReportItemFrame::printMetaPaintChildren");
+	//N n;
+	//QF_TIME_SCOPE(QString::number((int)n) + ": ReportItemFrame::printMetaPaintChildren");
 	PrintResult res = PR_PrintedOk;
 	Rect paint_area_rect = bounding_rect;
 	if(layout() == LayoutStacked) {

@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/qf/qmlwidgets/style">
+		<file>dark.css</file>
+	</qresource>
+</RCC>

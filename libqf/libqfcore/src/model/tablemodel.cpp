@@ -39,6 +39,15 @@ TableModel::TableModel(QObject *parent) :
 {
 }
 
+void TableModel::clearRows()
+{
+	if(rowCount() > 0) {
+		beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+		m_table.clearRows();
+		endRemoveRows();
+	}
+}
+
 int TableModel::rowCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent);
@@ -415,11 +424,13 @@ QVariant TableModel::value(int row_ix, int column_ix) const
 {
 	QVariant ret;
 	int table_field_index = tableFieldIndex(column_ix);
+	//if(table_field_index < 0)
+	//	qfDebug() << "debug";
 	QF_ASSERT(table_field_index >= 0,
-			  tr("Cannot find table field for column index: %1").arg(column_ix),
+			  tr("%2 Cannot find table field for column index: %1 (row index: %3)").arg(column_ix).arg(objectName()).arg(row_ix),
 			  return ret);
 	ret = m_table.row(row_ix).value(table_field_index);
-	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
+	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate column type
 	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
 	//qfInfo() << row_ix << column_ix << "->" << ret.toString() << ret.typeName();
 	return ret;
@@ -520,7 +531,7 @@ bool TableModel::setDirty(int row_ix, const QString &col_name, bool d)
 	return setDirty(row_ix, col_ix, d);
 }
 
-qf::core::utils::TableRow TableModel::tableRow(int row_no)
+qf::core::utils::TableRow TableModel::tableRow(int row_no) const
 {
 	return m_table.row(row_no);
 }
@@ -528,7 +539,7 @@ qf::core::utils::TableRow TableModel::tableRow(int row_no)
 void TableModel::createColumnsFromTableFields()
 {
 	clearColumns();
-	for(auto fld : m_table.fields()) {
+	Q_FOREACH(auto fld, m_table.fields()) {
 		QString caption;
 		qfc::Utils::parseFieldName(fld.name(), &caption);
 		addColumn(fld.name(), caption);
@@ -588,8 +599,8 @@ QVariant TableModel::editValueToRaw(int column_index, const QVariant &val) const
 int TableModel::columnIndex(const QString &column_name) const
 {
 	int ret = -1, i = 0;
-	for(auto cd : m_columns) {
-		//qfTrash() << "\ttrying:" << cd.fieldName();
+	Q_FOREACH(auto cd, m_columns) {
+		//qfInfo() << cd.fieldName() << "vs." << column_name;
 		if(qfc::Utils::fieldNameEndsWith(cd.fieldName(), column_name)) {
 			ret = i;
 			break;
@@ -623,6 +634,9 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 {
 	qfu::Table::Field ret;
 	int table_field_index = tableFieldIndex(column_index);
+	//if(table_field_index < 0) for (int i = 0; i < columnCount(); ++i) {
+	//	qfInfo() << i << columnDefinition(i).fieldName() << columnDefinition(i).fieldIndex();
+	//}
 	QF_ASSERT(table_field_index >= 0,
 			  tr("Cannot find field index for column index: %1 of %2 columns").arg(column_index).arg(columnCount()),
 			  return ret);

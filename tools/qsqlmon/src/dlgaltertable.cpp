@@ -115,7 +115,7 @@ void DlgAlterTable::on_btFieldInsert_clicked(bool append)
 				continue;
 			}
 			bool sql_ok = true;
-			for(QString sql_cmd : sql_commands) {
+			Q_FOREACH(QString sql_cmd, sql_commands) {
 				if(!sql_commands.isEmpty()) {
 					bool do_exec = true;
 					if(dlg.isShowCommand()) {

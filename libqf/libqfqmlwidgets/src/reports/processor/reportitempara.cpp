@@ -185,7 +185,7 @@ void ReportItemPara::setTextFn(const QJSValue &val)
 		m_getTextJsFn = val;
 	}
 	else {
-		qfError() << "Setting not callable JavaScript value to textFn property might not work as expected.";
+		qfError() << "JavaScript callable value (aka function) must be set to textFn property.";
 	}
 }
 

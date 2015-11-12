@@ -18,7 +18,7 @@ LoggerWidget::LoggerWidget(QWidget *parent) :
 	m_logDevice->setParent(this);
 	//m_logDevice->setLogTreshold(qf::core::Log::LOG_WARN);
 
-	connect(m_logDevice, &qf::core::SignalLogDevice::logEntry, this, &LoggerWidget::onLogEntry, Qt::QueuedConnection);
+	connect(m_logDevice, &qf::core::SignalLogDevice::logEntry, this, &LoggerWidget::onLogEntry);
 	connect(ui->lstLogLevel, SIGNAL(activated(int)), this, SLOT(onLogLevelSet(int)));
 	connect(ui->btClearLog, &QToolButton::clicked, ui->txtLog, &QPlainTextEdit::clear);
 	//connect(ui->btClearLog, SIGNAL(clicked()), this, SLOT(clearLog()));
@@ -37,15 +37,15 @@ Logging::LoggingPlugin *LoggerWidget::loggingPlugin()
 	return qobject_cast<Logging::LoggingPlugin *>(plugin);
 }
 
-void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
+void LoggerWidget::onLogEntry(const qf::core::LogEntryMap &log_entry)
 {
 	/// !!!! do not call log in log handler !!!
-	qf::core::LogEntryMap em(log_entry);
-	QString msg = em.message();
+	//qf::core::LogEntryMap log_entry(log_entry);
+	QString msg = log_entry.message();
 	QString filter_str = ui->edDomainFilter->text();
 	if(!filter_str.isEmpty() && !msg.contains(filter_str, Qt::CaseInsensitive))
 		return;
-	qf::core::Log::Level level = em.level();
+	qf::core::Log::Level level = log_entry.level();
 	QString log_level_str = qf::core::Log::levelName(level);
 
 	QString color;
@@ -56,7 +56,7 @@ void LoggerWidget::onLogEntry(const QVariantMap &log_entry)
 	default: color = "#000000"; break;
 	}
 	QString message = "<font color=\"%4\">&lt;%1&gt;[%2] %3<font>";
-	message = message.arg(log_level_str).arg(em.domain()).arg(msg).arg(color);
+	message = message.arg(log_level_str).arg(log_entry.domain()).arg(msg).arg(color);
 
 	ui->txtLog->appendHtml(message);
 	if(level <= qf::core::Log::Level::Warning) {

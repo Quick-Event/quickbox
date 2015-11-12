@@ -12,6 +12,7 @@
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
+#include <quickevent/og/siid.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -55,6 +56,9 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	{
 		ui->tblPrintJobsTB->setTableView(ui->tblCards);
 
+		ui->tblCards->setInsertRowEnabled(false);
+		ui->tblCards->setRemoveRowEnabled(false);
+		ui->tblCards->setCloneRowEnabled(false);
 		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
@@ -62,7 +66,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		auto m = new quickevent::og::SqlTableModel(this);
 
 		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true);
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
 		m->addColumn("competitors.registration", tr("Reg"));
@@ -102,6 +106,15 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
 
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+}
+
+void ReceiptsWidget::reset()
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		m_cardsModel->clearRows();
+		return;
+	}
+	reload();
 }
 
 void ReceiptsWidget::reload()

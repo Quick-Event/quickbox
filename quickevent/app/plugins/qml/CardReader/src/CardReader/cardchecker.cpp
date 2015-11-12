@@ -1,4 +1,5 @@
 #include "cardchecker.h"
+#include "../CardReader/cardreaderplugin.h"
 
 #include <Event/eventplugin.h>
 #include <Event/stage.h>
@@ -25,12 +26,17 @@ CardChecker::CardChecker(QObject *parent)
 
 }
 
-int CardChecker::fixTimeWrap(int time1_msec, int time2_msec)
+int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
 {
 	constexpr int hr12ms = 12 * 60 * 60 * 1000;
 	while(time2_msec < time1_msec)
 		time2_msec += hr12ms;
 	return time2_msec;
+}
+
+int CardChecker::msecIntervalAM(int time1_msec, int time2_msec)
+{
+	return fixTimeWrapAM(time1_msec, time2_msec) - time1_msec;
 }
 
 int CardChecker::toAMms(int time_msec)
@@ -68,7 +74,7 @@ int CardChecker::startTimeSec(int run_id)
 	return ret;
 }
 
-QVariantMap CardChecker::courseForRunId(int run_id)
+QVariantMap CardChecker::courseCodesForRunId(int run_id)
 {
 	QVariantMap ret;
 	if(run_id <= 0) {
@@ -111,5 +117,10 @@ QVariantMap CardChecker::courseForRunId(int run_id)
 		ret["codes"] = codes;
 	}
 	return ret;
+}
+
+int CardChecker::finishPunchCode()
+{
+	return CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
 }
 

@@ -35,6 +35,8 @@
 #include <QClipboard>
 #include <QTextEdit>
 #include <QInputDialog>
+#include <QFileDialog>
+
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -71,7 +73,7 @@ TableView::TableView(QWidget *parent) :
 				bt->setToolTip(trUtf8("Right click for menu."));
 				bt->setContextMenuPolicy(Qt::ActionsContextMenu);
 				QList<QAction*> lst;
-				for(auto a : contextMenuActionsForGroups(AllActions))
+				Q_FOREACH(auto a, contextMenuActionsForGroups(AllActions))
 					lst << a;
 				bt->addActions(lst);
 			};
@@ -151,8 +153,6 @@ void TableView::refreshActions()
 	action("resizeColumnsToContents")->setEnabled(true);
 	action("resetColumnsSettings")->setEnabled(true);
 	action("showCurrentCellText")->setEnabled(true);
-	//action("saveCurrentCellBlob")->setEnabled(true);
-	//action("loadCurrentCellBlob")->setEnabled(true);
 	//action("insertRowsStatement")->setEnabled(true);
 	//action("import")->setEnabled(true);
 	//action("importCSV")->setEnabled(true);
@@ -183,9 +183,12 @@ void TableView::refreshActions()
 	//qfDebug() << "\tdelete allowed:" << is_delete_rows_allowed;
 	//qfDebug() << "\tedit allowed:" << is_edit_rows_allowed;
 	//action("insertRow")->setVisible(is_insert_rows_allowed && isInsertRowActionVisible());
-	action("cloneRow")->setEnabled(is_copy_rows_allowed);
+	Action *a_insert_row = action("insertRow");
+	Action *a_remove_sel_rows = action("removeSelectedRows");
+	Action *a_clone_row = action("cloneRow");
+	a_clone_row->setEnabled(a_clone_row->isVisible() && is_copy_rows_allowed);
 	//action("cloneRow")->setVisible(iscloneRowActionVisible());
-	action("removeSelectedRows")->setEnabled(is_delete_rows_allowed);// && action("removeSelectedRows")->isVisible());
+	a_remove_sel_rows->setEnabled(a_remove_sel_rows->isVisible() && is_delete_rows_allowed);
 	//action("postRow")->setVisible((is_edit_rows_allowed || is_insert_rows_allowed) && action("postRow")->isVisible());
 	//action("revertRow")->setVisible(action("postRow")->isVisible() && action("revertRow")->isVisible());
 	//action("editRowExternal")->setVisible(is_edit_rows_allowed && action("editRowExternal")->isVisible());
@@ -200,8 +203,8 @@ void TableView::refreshActions()
 		action("revertRow")->setEnabled(true);
 	}
 	else {
-		action("insertRow")->setEnabled(is_insert_rows_allowed);
-		action("cloneRow")->setEnabled(is_copy_rows_allowed && curr_ix.isValid());
+		a_insert_row->setEnabled(a_insert_row->isVisible() && is_insert_rows_allowed);
+		a_clone_row->setEnabled(a_clone_row->isVisible() && is_copy_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
 		//action("sortAsc")->setEnabled(true);
 		//action("sortDesc")->setEnabled(true);
@@ -215,6 +218,8 @@ void TableView::refreshActions()
 		action("paste")->setEnabled(is_edit_rows_allowed && is_insert_rows_allowed);
 	}
 	action("revertRow")->setEnabled(action("postRow")->isEnabled());
+	action("saveCurrentCellBlob")->setEnabled(true);
+	action("loadCurrentCellBlob")->setEnabled(is_edit_rows_allowed);
 }
 
 void TableView::resetColumnsSettings()
@@ -265,10 +270,28 @@ void TableView::reload(bool preserve_sorting)
 
 void TableView::enableAllActions(bool on)
 {
-	for(auto a : m_actions) {
+	Q_FOREACH(auto a, m_actions) {
 		a->setEnabled(on);
 		//if(on) a->setVisible(true);
 	}
+}
+
+void TableView::setInsertRowEnabled(bool b)
+{
+	Action *a = action(QStringLiteral("insertRow"));
+	a->setVisible(b);
+}
+
+void TableView::setRemoveRowEnabled(bool b)
+{
+	Action *a = action(QStringLiteral("removeSelectedRows"));
+	a->setVisible(b);
+}
+
+void TableView::setCloneRowEnabled(bool b)
+{
+	Action *a = action(QStringLiteral("cloneRow"));
+	a->setVisible(b);
 }
 
 void TableView::insertRow()
@@ -524,7 +547,13 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 		row_selections[ix.row()] << ix;
 	}
 	QList<int> selected_row_indexes = row_selections.keys();
-	if(selected_row_indexes.count()) {
+	if(selected_row_indexes.count() == 1) {
+		int row_ix = selected_row_indexes.value(0);
+		foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+			model()->setData(ix, new_val);
+		}
+	}
+	else if(selected_row_indexes.count() > 1) {
 		qfc::sql::Connection conn;
 		{
 			qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
@@ -537,11 +566,8 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
 				model()->setData(ix, new_val);
 			}
-			if(selected_row_indexes.count() > 1) {
-				// post edits in every row when more rows is selected
-				if(!postRow(row_ix))
-					return;
-			}
+			if(!postRow(row_ix))
+				return;
 		}
 		transaction.commit();
 	}
@@ -550,7 +576,7 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 void TableView::setValueInSelection()
 {
 	QString new_val_str;
-	for(auto ix : selectedIndexes()) {
+	Q_FOREACH(auto ix, selectedIndexes()) {
 		if(new_val_str.isEmpty()) {
 			new_val_str = model()->data(ix, Qt::DisplayRole).toString();
 		}
@@ -561,6 +587,8 @@ void TableView::setValueInSelection()
 		return;
 	setValueInSelection_helper(new_val_str);
 }
+
+
 
 void TableView::editCellContentInEditor()
 {
@@ -627,9 +655,33 @@ void TableView::exportReport()
 	dlg.exec();
 }
 
+void TableView::saveCurrentCellBlob()
+{
+	QVariant v = model()->data(currentIndex(), Qt::EditRole);
+	QString fn = QFileDialog::getSaveFileName(this, tr("Save File"));
+	if(!fn.isEmpty()) {
+		QFile f(fn);
+		if(f.open(QIODevice::WriteOnly)) {
+			f.write(v.toByteArray());
+		}
+	}
+}
+
+void TableView::loadCurrentCellBlob()
+{
+	qfLogFuncFrame();
+	QString fn = QFileDialog::getOpenFileName(this, tr("Open File"));
+	if(!fn.isEmpty()) {
+		QFile f(fn);
+		if(f.open(QIODevice::ReadOnly)) {
+			QByteArray ba =  f.readAll();
+			model()->setData(currentIndex(), ba);
+		}
+	}
+}
+
 void TableView::exportReport_helper(const QVariant& _options)
 {
-	//qfInfo() << "exportReport_helper";
 	try {
 		QVariantMap options = _options.toMap();
 		qfu::Table::TextExportOptions opts(options.value("options").toMap());
@@ -753,7 +805,7 @@ int TableView::logicalColumnIndex(const QString &field_name) const
 
 QList<int> TableView::selectedRowsIndexes() const
 {
-	QModelIndexList lst = selectedIndexes();
+	const QModelIndexList lst = selectedIndexes();
 	QSet<int> set;
 	for(const QModelIndex &ix : lst) {
 		if(ix.row() >= 0)
@@ -766,7 +818,7 @@ QList<int> TableView::selectedRowsIndexes() const
 
 QList<int> TableView::selectedColumnsIndexes() const
 {
-	QModelIndexList lst = selectedIndexes();
+	const QModelIndexList lst = selectedIndexes();
 	QSet<int> set;
 	for(const QModelIndex &ix : lst) {
 		if(ix.column() >= 0)
@@ -1285,7 +1337,7 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 {
 	qfLogFuncFrame();
 	QList<QAction*> lst;
-	for(auto a : contextMenuActions())
+	Q_FOREACH(auto a, contextMenuActions())
 		lst << a;
 	QMenu::exec(lst, viewport()->mapToGlobal(e->pos()));
 }
@@ -1467,8 +1519,8 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Save BLOB"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
+		a->setShortcutContext(Qt::WidgetShortcut);
+		connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
 		a->setOid("saveCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1476,8 +1528,8 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Load BLOB from file"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
-		//connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
+		a->setShortcutContext(Qt::WidgetShortcut);
+		connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
 		a->setOid("loadCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1640,7 +1692,7 @@ void TableView::createActions()
 	//f_contextMenuActions = standardContextMenuActions();
 
 	{
-		for(Action *a : m_actions) {
+		Q_FOREACH(Action *a, m_actions) {
 			if(!a->shortcut().isEmpty()) {
 				//qfInfo() << "\t inserting action" << a->text() << a->shortcut().toString();
 				addAction(a); /// aby chodily shortcuty, musi byt akce pridany widgetu
@@ -1740,7 +1792,7 @@ QList<Action *> TableView::contextMenuActionsForGroups(int action_groups)
 				act_separator = m_separatorsForGroup.value((ActionGroup)grp);
 				ret << act_separator;
 			}
-			for(auto oid : sl) {
+			Q_FOREACH(auto oid, sl) {
 				Action *a = m_actions.value(oid);
 				if(a == nullptr)
 					qfWarning() << QString("Cannot find action for oid: '%1'").arg(oid);
@@ -1851,7 +1903,7 @@ void TableView::removeSelectedRowsInline()
 	}
 	QModelIndex ix = currentIndex();
 	//ignoreCurrentChanged = true; /// na false ho nastavi currentChanged()
-	for(const RowList &rl : continuous_sections) {
+	Q_FOREACH(const RowList &rl, continuous_sections) {
 		model()->removeRows(rl[0], rl.count());
 	}
 	setCurrentIndex(ix);
@@ -1884,7 +1936,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 			ret = true;
 			//return ret;
 		}
-		bool read_only = false;
+		bool read_only = isReadOnly();
 		/*
 		if(!read_only) {
 			qfc::model::TableModel *m = tableModel();
@@ -1892,45 +1944,47 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 		}
 		*/
 		try {
+			ret = false;
+			bool inline_editor_called = false;
+			int orig_check_state = index.data(Qt::CheckStateRole).toInt();
 			if(rowEditorMode() == EditRowsInline) {
 				if(!read_only) {
 					qfDebug() << "\t RowEditorInline";
-					int orig_check_state = index.data(Qt::CheckStateRole).toInt();
-					ret = QTableView::edit(index, trigger, event);
+					inline_editor_called = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t QTableView::edit() returned:" << ret;
-					if(ret) {
-						int new_check_state = index.data(Qt::CheckStateRole).toInt();
-						if(orig_check_state != new_check_state) {
-							/// handle bool values changes
-							/// booleans are not using editor created by ItemDelegate, but set model data directly using Qt::CheckStateRole
-							qfDebug() << "check state changed:" << orig_check_state << "->" << new_check_state;
-							if(inlineEditSaveStrategy() == OnEditedValueCommit) {
-								postRow(currentIndex().row());
-							}
-							refreshActions();
-						}
-					}
 				}
 			}
 			else  if(rowEditorMode() == EditRowsExternal || rowEditorMode() == EditRowsMixed) {
-				ret = false;
 				if(rowEditorMode() == EditRowsMixed) {
-					ret = QTableView::edit(index, trigger, event);
+					inline_editor_called = QTableView::edit(index, trigger, event);
 					qfDebug() << "\t RowEditorMixed QTableView::edit() returned:" << ret;
 				}
-				if(!ret) {
-					if(trigger == QTableView::DoubleClicked || trigger == QTableView::EditKeyPressed) {
-						if(read_only) {
-						}
-						else {
-							QVariant id = selectedRow().value(idColumnName());
-							if(id.isValid()) {
-								emit editRowInExternalEditor(id, ModeEdit);
-							}
-						}
-						ret = false;
-						event->accept();
+			}
+			if(inline_editor_called) {
+				int new_check_state = index.data(Qt::CheckStateRole).toInt();
+				qfDebug() << "check state changed:" << orig_check_state << "->" << new_check_state;
+				if(orig_check_state != new_check_state) {
+					/// handle bool values changes
+					/// booleans are not using editor created by ItemDelegate, but set model data directly using Qt::CheckStateRole
+					if(inlineEditSaveStrategy() == OnEditedValueCommit) {
+						postRow(currentIndex().row());
 					}
+					refreshActions();
+				}
+				ret = true;
+			}
+			else {
+				if(trigger == QTableView::DoubleClicked || trigger == QTableView::EditKeyPressed) {
+					if(read_only) {
+					}
+					else {
+						QVariant id = selectedRow().value(idColumnName());
+						if(id.isValid()) {
+							emit editRowInExternalEditor(id, ModeEdit);
+						}
+					}
+					ret = false;
+					event->accept();
 				}
 			}
 		}

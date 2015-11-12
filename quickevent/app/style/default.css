@@ -5,7 +5,7 @@ QMenu,QMenuBar {
 }
 
 QMenu::item, QMenuBar::item {
-	background-color: #525252;
+	background-color: transparent;
 }
 
  QMenu::item:disabled, QMenuBar::item:disabled {
@@ -49,7 +49,7 @@ qf--qmlwidgets--framework--PartSwitch QToolButton:hover {
 }
 
 qf--qmlwidgets--framework--PartSwitch QToolButton:checked {
-	/*background: #FFFD00;*/
+	background: lightgray;
 	color: black;
 }
 

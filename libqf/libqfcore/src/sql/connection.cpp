@@ -315,7 +315,10 @@ bool Connection::tableExists(const QString &_table_name)
 		}
 	}
 	else {
-		qfError() << Q_FUNC_INFO << "not supported for driver:" << driverName();
+		QSqlQuery q(*this);
+		if(q.exec("SELECT COUNT(*) FROM " QF_CARG(_table_name))) {
+			ret = true;
+		}
 	}
 	return ret;
 }
@@ -898,6 +901,7 @@ bool Connection::setCurrentSchema(const QString &schema_name)
 {
 	qfLogFuncFrame() << schema_name;
 	bool ret = true;
+	s_clearCache(connectionName());
 	if(driverName().endsWith(QLatin1String("MYSQL"))) {
 		QSqlQuery q(*this);
 		if(!q.exec("USE " + schema_name)) {

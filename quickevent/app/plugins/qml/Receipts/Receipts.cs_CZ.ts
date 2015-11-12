@@ -4,9 +4,9 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="275"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="313"/>
         <source>Receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Mezičasy</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,83 @@
     <message>
         <location filename="src/receiptspartwidget.cpp" line="11"/>
         <source>Receipts</source>
+        <translation>Mezičasy</translation>
+    </message>
+</context>
+<context>
+    <name>ReceiptsPrinterOptions</name>
+    <message>
+        <location filename="src/receiptsprinteroptions.cpp" line="15"/>
+        <source>Graphics</source>
+        <translation>Graficky</translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptions.cpp" line="18"/>
+        <source>Character</source>
+        <translation>Znakově</translation>
+    </message>
+</context>
+<context>
+    <name>ReceiptsPrinterOptionsDialog</name>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="14"/>
+        <source>Dialog</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="22"/>
+        <source>Graphics printer</source>
+        <translation>Grafická tiskárna</translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="36"/>
+        <source>Character printer</source>
+        <translation>Textová tiskárna</translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="63"/>
+        <source>Device</source>
+        <translation>Zařízení</translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="74"/>
+        <source>/dev/usb/lp1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="79"/>
+        <source>/dev/usb/lp2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="84"/>
+        <source>/dev/usb/lp3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="89"/>
+        <source>/dev/usb/lp4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="97"/>
+        <source>Printer</source>
+        <translation>Tiskárna</translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="105"/>
+        <source>Epson TM-T88V</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="113"/>
+        <source>Line length</source>
+        <translation>Délka řádku</translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="120"/>
+        <source> characters</source>
+        <translation>znaků</translation>
     </message>
 </context>
 <context>
@@ -27,105 +103,80 @@
     <message>
         <location filename="src/receiptswidget.ui" line="40"/>
         <source>Print new</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout nové</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="47"/>
         <source>Auto print</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatický tisk</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="67"/>
         <source>Printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="77"/>
-        <source>Direct</source>
-        <translation type="unfinished"></translation>
+        <location filename="src/receiptswidget.ui" line="74"/>
+        <source>Printer options</source>
+        <translation>Nastavení tiskárny</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="85"/>
-        <source>None</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/receiptswidget.ui" line="90"/>
-        <source>/dev/usb/lp1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/receiptswidget.ui" line="95"/>
-        <source>/dev/usb/lp2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/receiptswidget.ui" line="100"/>
-        <source>/dev/usb/lp3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/receiptswidget.ui" line="105"/>
-        <source>/dev/usb/lp4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/receiptswidget.cpp" line="63"/>
+        <location filename="src/receiptswidget.cpp" line="69"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="64"/>
+        <location filename="src/receiptswidget.cpp" line="70"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Katrgorie</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="65"/>
+        <location filename="src/receiptswidget.cpp" line="71"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="66"/>
+        <location filename="src/receiptswidget.cpp" line="72"/>
         <source>Reg</source>
-        <translation type="unfinished"></translation>
+        <translation>Reg.č.</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="67"/>
+        <location filename="src/receiptswidget.cpp" line="73"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="68"/>
+        <location filename="src/receiptswidget.cpp" line="74"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="75"/>
+        <location filename="src/receiptswidget.cpp" line="81"/>
         <source>printer</source>
-        <translation type="unfinished"></translation>
+        <translation>tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="225"/>
+        <location filename="src/receiptswidget.cpp" line="235"/>
         <source>Print selected cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout vybrané čipy</translation>
     </message>
 </context>
 <context>
     <name>receiptClassic</name>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="143"/>
+        <location filename="qml/reports/receiptClassic.qml" line="63"/>
         <source>E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="377"/>
+        <location filename="qml/reports/receiptClassic.qml" line="303"/>
         <source>missing: </source>
-        <translation type="unfinished"></translation>
+        <translation>chybějící:</translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="392"/>
+        <location filename="qml/reports/receiptClassic.qml" line="318"/>
         <source>standings: </source>
-        <translation type="unfinished"></translation>
+        <translation>pořadí:</translation>
     </message>
 </context>
 </TS>

@@ -1,18 +1,21 @@
-#ifndef CLIOPTIONS_H
-#define CLIOPTIONS_H
+#ifndef QF_CORE_UTILS_CLIOPTIONS_H
+#define QF_CORE_UTILS_CLIOPTIONS_H
 
 #include "../core/coreglobal.h"
+#include "../core/exception.h"
+
 #include "../core/exception.h"
 
 #include <QObject>
 #include <QVariantMap>
 #include <QSharedData>
 #include <QStringList>
-
+/*
 #if defined(_MSC_VER)
 // disable throw() warning for MS VC
 #pragma warning( disable : 4290 )
 #endif
+*/
 
 class QTextStream;
 
@@ -20,12 +23,33 @@ namespace qf {
 namespace core {
 namespace utils {
 
+#define CLIOPTION_QUOTE_ME(x) QStringLiteral(#x)
+
+#define CLIOPTION_GETTER_SETTER(ptype, getter_prefix, setter_prefix, name_rest) \
+	public: ptype getter_prefix##name_rest() const { \
+		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
+		return qvariant_cast<ptype>(val); \
+	} \
+	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).value().isValid();} \
+	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
+
+#define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
+	public: ptype getter_prefix##name_rest() const { \
+		QVariant val = value(pkey); \
+		return qvariant_cast<ptype>(val); \
+	} \
+	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).value().isValid();} \
+	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
+
 class QFCORE_DECL_EXPORT CLIOptions : public QObject
 {
 	Q_OBJECT
 public:
 	CLIOptions(QObject *parent = NULL);
 	virtual ~CLIOptions();
+
+	CLIOPTION_GETTER_SETTER2(bool, "abortOnException", is, set, AbortOnException)
+	CLIOPTION_GETTER_SETTER2(bool, "help", is, set, Help)
 public:
 	class QFCORE_DECL_EXPORT Option
 	{
@@ -83,22 +107,20 @@ public:
 	QStringList parseErrors() const {return m_parseErrors;}
 	QStringList unusedArguments() {return m_unusedArguments;}
 
-	void mergeConfig(const QVariantMap &config_map) {mergeConfig_helper(QString(), config_map);}
-
-	QString applicationDir() const;
-	QString applicationName() const;
-	void help() const;
-	void help(QTextStream &os) const;
-	void dump() const;
+	Q_INVOKABLE QString applicationDir() const;
+	Q_INVOKABLE QString applicationName() const;
+	Q_INVOKABLE void printHelp() const;
+	void printHelp(QTextStream &os) const;
+	Q_INVOKABLE void dump() const;
 	void dump(QTextStream &os) const;
-public slots:
-	QVariant value(const QString &name) const;
-	QVariant value(const QString &name, const QVariant default_value) const;
+
+	Q_INVOKABLE QVariantMap values() const;
+	Q_INVOKABLE QVariant value(const QString &name) const;
+	Q_INVOKABLE QVariant value(const QString &name, const QVariant default_value) const;
 protected:
 	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();
 	void addParseError(const QString &err);
-	void mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map);
 private:
 	QMap<QString, Option> m_options;
 	QStringList m_arguments;
@@ -109,22 +131,25 @@ private:
 	QStringList m_allArgs;
 };
 
-#define CLIOPTION_QUOTE_ME(x) QStringLiteral(#x)
+class QFCORE_DECL_EXPORT ConfigCLIOptions : public CLIOptions
+{
+	Q_OBJECT
+private:
+	typedef CLIOptions Super;
+public:
+	ConfigCLIOptions(QObject *parent = NULL);
+	~ConfigCLIOptions() Q_DECL_OVERRIDE {}
 
-#define CLIOPTION_GETTER_SETTER(ptype, getter_prefix, setter_prefix, name_rest) \
-	public: ptype getter_prefix##name_rest() const { \
-		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
-		return qvariant_cast<ptype>(val); \
-	} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
+	CLIOPTION_GETTER_SETTER(QString, c, setC, onfig)
+	CLIOPTION_GETTER_SETTER(QString, c, setC, onfigDir)
 
-#define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
-	public: ptype getter_prefix##name_rest() const { \
-		QVariant val = value(pkey); \
-		return qvariant_cast<ptype>(val); \
-	} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
+	void parse(const QStringList &cmd_line_args) Q_DECL_OVERRIDE;
+	bool loadConfigFile();
+protected:
+	void mergeConfig(const QVariantMap &config_map) {mergeConfig_helper(QString(), config_map);}
+	void mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map);
+};
 
 }}}
 
-#endif // CLIOPTIONS_H
+#endif

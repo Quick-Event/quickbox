@@ -7,14 +7,15 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/og/timems.h>
+//#include <quickevent/og/siid.h>
+//#include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
-#include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
-#include <qf/qmlwidgets/framework/plugin.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
+//#include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/combobox.h>
 
@@ -27,8 +28,8 @@
 
 #include <QDateTime>
 #include <QLabel>
-#include <QMenu>
-#include <QSortFilterProxyModel>
+//#include <QMenu>
+//#include <QSortFilterProxyModel>
 
 #include <algorithm>
 
@@ -51,70 +52,6 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->cbxDrawMethod->addItem(tr("Handicap"), static_cast<int>(DrawMethod::Handicap));
 	ui->frmDrawing->setVisible(false);
 
-	ui->tblRunsToolBar->setTableView(ui->tblRuns);
-
-	ui->tblRuns->setPersistentSettingsId("tblRuns");
-	ui->tblRuns->setRowEditorMode(qfw::TableView::EditRowsMixed);
-	ui->tblRuns->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-	m_runsTableItemDelegate = new RunsTableItemDelegate(ui->tblRuns);
-	ui->tblRuns->setItemDelegate(m_runsTableItemDelegate);
-
-	//ui->tblRuns->setSelectionMode(QTableView::SingleSelection);
-	ui->tblRuns->viewport()->setAcceptDrops(true);
-	ui->tblRuns->setDropIndicatorShown(true);
-	ui->tblRuns->setDragDropMode(QAbstractItemView::InternalMove);
-	ui->tblRuns->setDragEnabled(false);
-	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &RunsWidget::onCustomContextMenuRequest);
-
-	auto m = new RunsTableModel(this);
-	m->addColumn("runs.id").setReadOnly(true);
-	m->addColumn("classes.name", tr("Class"));
-	m->addColumn("competitors.siId", tr("SI"));
-	m->addColumn("competitorName", tr("Name"));
-	m->addColumn("registration", tr("Reg"));
-	m->addColumn("runs.siId", tr("SI"));
-	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	//m->addColumn("virtual.finishTimeMs", tr("Finish")).setVirtual(true, qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
-	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
-	m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
-	m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
-	m->addColumn("competitors.note", tr("Note"));
-	/*
-	qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
-	status_props.setGroupName("runs.status");
-	m->addColumn("runs.status", tr("Status")).setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
-	*/
-	ui->tblRuns->setTableModel(m);
-	m_runsModel = m;
-
-	// this ensures that table is sorted every time when start time is edited
-	ui->tblRuns->sortFilterProxyModel()->setDynamicSortFilter(true);
-
-	connect(m_runsModel, &RunsTableModel::startTimesSwitched, ui->tblRuns, [this](int id1, int id2, const QString &err_msg)
-	{
-		Q_UNUSED(id1)
-		Q_UNUSED(id2)
-		if(!err_msg.isEmpty()) {
-			qf::qmlwidgets::dialogs::MessageBox::showError(this, err_msg);
-		}
-		//ui->tblRuns->reload(true);
-		m_runsModel->reload();
-	});
-
-	connect(ui->tblRuns->horizontalHeader(), &QHeaderView::sortIndicatorChanged, [this](int logical_index, Qt::SortOrder order)
-	{
-		auto cd = m_runsModel->columnDefinition(logical_index);
-		bool is_sort_start_time_asc = (cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))
-									   && order == Qt::AscendingOrder
-									   && ui->tblRuns->filterString().isEmpty());
-		m_runsTableItemDelegate->setStartTimeHighlightVisible(is_sort_start_time_asc);
-		ui->tblRuns->setDragEnabled(is_sort_start_time_asc);
-	});
-
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
 
@@ -127,30 +64,43 @@ void RunsWidget::lazyInit()
 {
 }
 
+void RunsWidget::reset(int class_id)
+{
+	if(eventPlugin()->eventName().isEmpty()) {
+		ui->wRunsTableWidget->clear();
+		return;
+	}
+	{
+		m_cbxStage->blockSignals(true);
+		m_cbxStage->clear();
+		for(int i=0; i<eventPlugin()->stageCount(); i++)
+			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
+		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
+		m_cbxStage->blockSignals(false);
+	}
+	{
+		m_cbxClasses->blockSignals(true);
+		m_cbxClasses->loadItems(true);
+		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
+		if(class_id <= 0)
+			m_cbxClasses->setCurrentIndex(1);
+		else
+			m_cbxClasses->setCurrentData(class_id);
+		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
+		m_cbxClasses->blockSignals(false);
+	}
+	reload();
+}
+
 void RunsWidget::reload()
 {
 	qfLogFuncFrame();
-	qfs::QueryBuilder qb;
-	qb.select2("runs", "*")
-			.select2("competitors", "registration, siId, note")
-			.select2("classes", "name")
-			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-			.from("runs")
-			.where("NOT runs.offRace")
-			.where("runs.stageId=" QF_IARG(selectedStageId()))
-			.join("runs.competitorId", "competitors.id")
-			.join("competitors.classId", "classes.id")
-			.orderBy("runs.id");//.limit(10);
+	int stage_id = selectedStageId();
 	int class_id = m_cbxClasses->currentData().toInt();
-	if(class_id > 0) {
-		qb.where("competitors.classId=" + QString::number(class_id));
-	}
-	qfDebug() << qb.toString();
-	m_runsTableItemDelegate->setHighlightedClassId(class_id);
-	m_runsModel->setQueryBuilder(qb);
-	m_runsModel->reload();
+	ui->wRunsTableWidget->reload(stage_id, class_id);
 }
-
+/*
 void RunsWidget::editStartList(int class_id, int competitor_id)
 {
 	reset(class_id);
@@ -163,7 +113,7 @@ void RunsWidget::editStartList(int class_id, int competitor_id)
 		}
 	}
 }
-
+*/
 Event::EventPlugin *RunsWidget::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -205,6 +155,7 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
+		m_cbxClasses->setMaxVisibleItems(100);
 		m_cbxClasses->setReferencedTable("classes");
 		m_cbxClasses->setReferencedField("id");
 		m_cbxClasses->setReferencedCaptionField("name");
@@ -216,31 +167,6 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		bt->setCheckable(true);
 		connect(bt, &QPushButton::toggled, ui->frmDrawing, &QFrame::setVisible);
 	}
-}
-
-void RunsWidget::reset(int class_id)
-{
-	{
-		m_cbxStage->blockSignals(true);
-		m_cbxStage->clear();
-		for(int i=0; i<eventPlugin()->stageCount(); i++)
-			m_cbxStage->addItem(tr("E%1").arg(i+1), i+1);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
-		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
-		m_cbxStage->blockSignals(false);
-	}
-	{
-		m_cbxClasses->blockSignals(true);
-		m_cbxClasses->loadItems(true);
-		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
-		if(class_id <= 0)
-			m_cbxClasses->setCurrentIndex(1);
-		else
-			m_cbxClasses->setCurrentData(class_id);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
-		m_cbxClasses->blockSignals(false);
-	}
-	reload();
 }
 
 static bool list_length_greater_than(const QList<int> &lst1, const QList<int> &lst2)
@@ -384,18 +310,12 @@ void RunsWidget::on_btDraw_clicked()
 							qfDebug() << "loss:" << loss_ms;
 							handicap_times << loss_ms;
 						}
-						//else {
-						//	handicap_times << handicap_length_ms + (++n);
-						//}
 					}
 				}
 				runners_draw_ids << competitor_to_run.values();
 			}
 			else if(draw_method == DrawMethod::StageReverseOrder) {
 				QMap<int, int> competitor_to_run = competitorsForClass(stage_id, class_id);
-				//for(auto i : orig_lst)
-				//	qfDebug() << "A:" << i;
-				//runners_draw_ids.clear();
 				qf::core::sql::QueryBuilder qb1;
 				qb1.select2("runs", "competitorId")
 						//.select2("competitors", "lastName")
@@ -407,15 +327,12 @@ void RunsWidget::on_btDraw_clicked()
 				q.exec(qb1.toString(), qf::core::Exception::Throw);
 				while(q.next()) {
 					int competitor_id = q.value("competitorId").toInt();
-					//qfDebug() << competitor_id << q.value("lastName").toString();
 					if(competitor_to_run.contains(competitor_id)) {
 						//qfDebug() << "\t adding to poll";
 						runners_draw_ids << competitor_to_run.take(competitor_id);
 					}
 				}
 				runners_draw_ids << competitor_to_run.values();
-				//for(auto i : runners_draw_ids)
-				//	qfDebug() << "B:" << i;
 			}
 			else if(draw_method == DrawMethod::EquidistantClubs || draw_method == DrawMethod::RandomizedEquidistantClubs) {
 				QMap<int, QString> runner_id_to_club;
@@ -543,7 +460,7 @@ void RunsWidget::on_btDraw_clicked()
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
-	m_runsModel->reload();
+	ui->wRunsTableWidget->runsModel()->reload();
 	//reload();
 }
 
@@ -552,18 +469,19 @@ void RunsWidget::on_btDrawRemove_clicked()
 	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Reset all start times for this class?"), false))
 		return;
 	try {
+		auto *runs_model = ui->wRunsTableWidget->runsModel();
 		qf::core::sql::Transaction transaction(qfs::Connection::forName());
-		for (int i = 0; i < m_runsModel->rowCount(); ++i) {
-			m_runsModel->setValue(i, "startTimeMs", QVariant());
-			// bypass midair collision check
-			m_runsModel->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
+		for (int i = 0; i < runs_model->rowCount(); ++i) {
+			runs_model->setValue(i, "startTimeMs", QVariant());
+			// bypass mid-air collision check
+			runs_model->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
 		}
 		transaction.commit();
+		runs_model->reload();
 	}
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
-	m_runsModel->reload();
 }
 
 void RunsWidget::emitSelectedStageIdChanged(int ix)
@@ -574,17 +492,5 @@ void RunsWidget::emitSelectedStageIdChanged(int ix)
 int RunsWidget::selectedStageId()
 {
 	return m_cbxStage->currentData().toInt();
-}
-
-void RunsWidget::onCustomContextMenuRequest(const QPoint &pos)
-{
-	qfLogFuncFrame();
-	QAction a_load_card(tr("Load times from card"), nullptr);
-	QList<QAction*> lst;
-	lst << &a_load_card;
-	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
-	if(a == &a_load_card) {
-		qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
-	}
 }
 

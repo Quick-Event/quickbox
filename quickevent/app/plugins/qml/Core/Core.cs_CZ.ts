@@ -47,12 +47,12 @@
     <message>
         <location filename="qml/main.qml" line="95"/>
         <source>&amp;About Quick event</source>
-        <translation>O aplikaci Quick Event</translation>
+        <translation>O &amp;aplikaci Quick Event</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="103"/>
         <source>About &amp;Qt</source>
-        <translation>O knihovně Qt</translation>
+        <translation>O knihovně &amp;Qt</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="130"/>

@@ -62,9 +62,9 @@ void MainWindow::loadPlugins()
 	QJsonDocument profile = app->profile();
 	QJsonArray arr = profile.object().value(QStringLiteral("plugins")).toObject().value(QStringLiteral("features")).toArray();
 	QStringList feature_ids;
-	for(auto o : arr)
+	Q_FOREACH(auto o, arr)
 		feature_ids << o.toString();
-	QString ui_language_name;
+	//QString ui_language_name;
 	m_pluginLoader->loadPlugins(feature_ids);
 }
 
@@ -97,6 +97,11 @@ void MainWindow::showProgress(const QString &msg, int completed, int total)
 	qfLogFuncFrame() << msg << completed << total;
 	QCoreApplication::processEvents();
 	emit progress(msg, completed, total);
+}
+
+void MainWindow::hideProgress()
+{
+	showProgress(QString(), 0, 0);
 }
 #ifdef GET_RESOURCE_IN_FRAMEWORK
 QNetworkAccessManager *manager = new QNetworkAccessManager();

@@ -80,13 +80,14 @@ bool Utils::fieldNameCmp(const QString &fld_name1, const QString &fld_name2)
 QVariant Utils::retypeVariant(const QVariant &val, QVariant::Type type)
 {
 	if(type == QVariant::Invalid) {
-		qfWarning() << "Cannot convert" << val << "to QVariant::Invalid type!";
+		//qfWarning() << "Cannot convert" << val << "to QVariant::Invalid type!";
+		// retype whatever to invalid variant
 		return QVariant();
 	}
 	if(val.type() == type)
 		return val;
 	if(!val.isValid())
-		return val;
+		return QVariant(type);
 	if(val.isNull())
 		return QVariant(type);
 	if(val.canConvert(type)) {

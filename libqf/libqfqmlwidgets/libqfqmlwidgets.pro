@@ -38,6 +38,7 @@ include ($$PWD/../../crosscompile-support.pri)
 include($$PWD/src/src.pri)
 
 RESOURCES += \
+    $$PWD/style/style.qrc \
     $$PWD/images/images.qrc \
     $$PWD/images/flat/flat.qrc
 

@@ -11,47 +11,47 @@
     <message>
         <location filename="src/loggerwidget.ui" line="56"/>
         <source>Clear log</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyčistit log</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="59"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyčistit</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="73"/>
         <source>Log level</source>
-        <translation type="unfinished"></translation>
+        <translation>Úroveň logování</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="80"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyby</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="89"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Upozornění</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="98"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informace</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="107"/>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation>Ladící</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="119"/>
         <source>Log only text containnig</source>
-        <translation type="unfinished"></translation>
+        <translation>Logovat pouze text obsahující</translation>
     </message>
     <message>
         <location filename="src/loggerwidget.ui" line="126"/>
         <source>Log filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr logu</translation>
     </message>
 </context>
 <context>
@@ -59,7 +59,7 @@
     <message>
         <location filename="src/Logging/loggingplugin.cpp" line="39"/>
         <source>Application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikační log</translation>
     </message>
 </context>
 </TS>

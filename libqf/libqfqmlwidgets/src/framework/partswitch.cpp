@@ -116,7 +116,7 @@ int PartSwitch::buttonCount()
 PartSwitchToolButton *PartSwitch::buttonAt(int part_index)
 {
 	PartSwitchToolButton *ret = nullptr;
-	QList<PartSwitchToolButton*> lst = findChildren<PartSwitchToolButton*>(QString(), Qt::FindDirectChildrenOnly);
+	const QList<PartSwitchToolButton*> lst = findChildren<PartSwitchToolButton*>(QString(), Qt::FindDirectChildrenOnly);
 	for(auto bt : lst) {
 		if(bt->partIndex() == part_index) {
 			ret = bt;

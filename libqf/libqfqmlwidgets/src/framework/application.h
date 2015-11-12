@@ -33,6 +33,8 @@ public:
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
 	MainWindow* frameWork();
+
+	void loadStyleSheet(const QString &file = QString());
 public slots:
 	QString applicationDirPath();
 	QString applicationName();
@@ -45,9 +47,6 @@ protected:
 	Q_SLOT void onQmlError(const QList<QQmlError> &qmlerror_list);
 
 	QJsonDocument profile();
-
-	void loadStyleSheet(const QUrl &url);
-	virtual void initStyleSheet();
 private:
 	void releaseQmlEngine();
 	void setupQmlImportPaths();

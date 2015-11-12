@@ -69,6 +69,15 @@ public:
 
 	Q_SLOT virtual void setValue(const QString &data_id, const QVariant &val);
 	//Q_SLOT void setValue_qml(const QVariant &data_id, const QVariant &val) {setValue(data_id.toString(), val);}
+	/*
+	struct QFCORE_DECL_EXPORT EditState
+	{
+		RecordEditMode editMode = ModeView;
+		QMap<int, QVariant> dirtyValues;
+	};
+	EditState saveEditState() const;
+	void restoreEditState(const EditState &edit_state);
+	*/
 protected:
 	///! load model persistent storage via model
 	Q_INVOKABLE virtual bool loadData();

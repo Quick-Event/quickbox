@@ -3,13 +3,14 @@
 #include "connectionsettings.h"
 
 #include <qf/qmlwidgets/dialogs/filedialog.h>
+//#include <qf/qmlwidgets/framework/mainwindow.h>
 
 ConnectDbDialogWidget::ConnectDbDialogWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::ConnectDbDialogWidget)
 {
 	setPersistentSettingsId("ConnectDbDialogWidget");
-	setTitle("Data storage setup");
+    setTitle(tr("Data storage setup"));
 
 	ui->setupUi(this);
 }
@@ -79,6 +80,7 @@ void ConnectDbDialogWidget::saveSettings()
 
 void ConnectDbDialogWidget::on_btSingleWorkingDirectory_clicked()
 {
+	//qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	QString wd = qf::qmlwidgets::dialogs::FileDialog::getExistingDirectory(this, tr("Event files directory"), ui->edSingleWorkingDir->text());
 	if(!wd.isEmpty())
 		ui->edSingleWorkingDir->setText(wd);

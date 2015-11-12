@@ -1,5 +1,6 @@
 #include "sqltablemodel.h"
 #include "../core/assert.h"
+#include "../core/utils.h"
 #include "../core/exception.h"
 #include "../sql/connection.h"
 #include "../sql/dbenum.h"
@@ -96,7 +97,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 		//int tbl_cnt = 0;
 		qf::core::sql::Connection sql_conn = sqlConnection();
 		QSqlDriver *sqldrv = sql_conn.driver();
-		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
+		const QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 		for(QString table_id : table_ids) {
 			qfDebug() << "\ttable:" << table_id;
 			QSqlRecord rec;
@@ -106,7 +107,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			int primary_ix = -1;
 			//QSqlIndex pri_ix = ti.primaryIndex();
 			//bool has_blob_field = false;
-			for(const qf::core::utils::Table::Field &fld : row_ref.fields()) {
+			Q_FOREACH(const qf::core::utils::Table::Field &fld, row_ref.fields()) {
 				i++;
 				if(fld.tableId() != table_id)
 					continue;
@@ -217,13 +218,13 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 		qfDebug() << "\tEDIT";
 		qf::core::sql::Connection sql_conn = sqlConnection();
 		QSqlDriver *sqldrv = sql_conn.driver();
-		for(QString table_id : tableIds(m_table.fields())) {
+		Q_FOREACH(QString table_id, tableIds(m_table.fields())) {
 			qfDebug() << "\ttableid:" << table_id;
 			//table = conn.fullTableNameToQtDriverTableName(table);
 			QSqlRecord edit_rec;
 			int i = -1;
 			bool has_blob_field = true;
-			for(qfu::Table::Field fld : row_ref.fields()) {
+			Q_FOREACH(qfu::Table::Field fld, row_ref.fields()) {
 				i++;
 				//qfDebug() << "\t\tfield:" << fld.toString();
 				if(fld.tableId() != table_id)
@@ -252,7 +253,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				query_str += " ";
 				QSqlRecord where_rec;
 				qfDebug() << "looking for primary index of table:" << table_id;
-				for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+				Q_FOREACH(auto fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
 					QString full_fld_name = table_id + '.' + fld_name;
 					qfDebug() << "\t checking value of field:" << full_fld_name;
 					int fld_ix = m_table.fields().fieldIndex(full_fld_name);
@@ -293,8 +294,8 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				if(!ok && throw_exc) {
 					QF_EXCEPTION(q.lastError().text());
 				}
-				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
 				int num_rows_affected = q.numRowsAffected();
+				qfDebug() << "\tnum rows affected:" << num_rows_affected;
 				/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
 				/// numRowsAffected() returns 0.
 				if(num_rows_affected > 1) {
@@ -326,7 +327,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 		QSet<QString> referenced_foreign_tables = referencedForeignTables();
 		int table_id_cnt = 0;
-		for(const QString &table_id : table_ids) {
+		Q_FOREACH(const QString &table_id, table_ids) {
 			/// Allways delete in first table
 			if(table_id_cnt++ > 0) {
 				/// delete in rest of the tables only if they are implicitly referenced, see: addForeignKeyDependency(...)
@@ -343,7 +344,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 			query_str += sqldrv->sqlStatement(QSqlDriver::DeleteStatement, table, rec, false);
 			query_str += " ";
 			QSqlRecord where_rec;
-			for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+			Q_FOREACH(QString fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
 				QString full_fld_name = table_id + '.' + fld_name;
 				int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 				QF_ASSERT(fld_ix >= 0,
@@ -421,9 +422,9 @@ int SqlTableModel::reloadRow(int row_no)
 	qfu::TableRow &row_ref = m_table.rowRef(row_no);
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	QSqlDriver *sqldrv = sql_conn.driver();
-	for(QString table_id : tableIds(m_table.fields())) {
+	Q_FOREACH(QString table_id, tableIds(m_table.fields())) {
 		qfDebug() << "\ttableid:" << table_id;
-		for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+		Q_FOREACH(QString fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
 			QString full_fld_name = table_id + '.' + fld_name;
 			int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 			if(fld_ix < 0) {
@@ -432,10 +433,15 @@ int SqlTableModel::reloadRow(int row_no)
 				// doesn't contain classes.id and still can be reloaded
 				continue;
 			}
+			QVariant pri_ix_val = row_ref.value(fld_ix);
+			if(pri_ix_val.isNull()) {
+				// LEFT JOIN-ed table with missing record, don't include this constrain in reload row query
+				continue;
+			}
 			qfu::Table::Field fld = m_table.fields().at(fld_ix);
 			QSqlField sqlfld(fld.shortName(), fld.type());
 			// cannot use origValue() here, since reloadRow() must work for even edited primary keys
-			sqlfld.setValue(row_ref.value(fld_ix));
+			sqlfld.setValue(pri_ix_val);
 			QString formated_val = sqldrv->formatValue(sqlfld);
 			qb.where(full_fld_name + "=" + formated_val);
 		}
@@ -637,7 +643,7 @@ QStringList SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &tab
 static QMap< QString, QSet<QString> > separateFields(const qf::core::utils::Table::FieldList &table_fields)
 {
 	QMap< QString, QSet<QString> > field_ids;
-	for(const qfu::Table::Field &fld : table_fields) {
+	Q_FOREACH(const qfu::Table::Field &fld, table_fields) {
 		QString fn, tn;
 		qf::core::Utils::parseFieldName(fld.name(), &fn, &tn);
 		if(!tn.isEmpty())
@@ -676,14 +682,14 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 	}
 	QMap<QString, QString> serial_field_names;
 	QSet<QString> updateable_table_ids;
-	for(QString table_id : field_ids.keys()) {
+	Q_FOREACH(QString table_id, field_ids.keys()) {
 		QString serial_field_name = sqlConnection().serialFieldName(table_id);
 		//qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
 		serial_field_names[table_id] = serial_field_name;
-		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
+		const QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
 		QSet<QString> flds = field_ids.value(table_id);
-		for(auto pk_f : prikey_fields) {
+		Q_FOREACH(auto pk_f, prikey_fields) {
 			qDebug() << "\t checking if query contains primary key:" << pk_f << "in table id:" << table_id;
 			if(!flds.contains(pk_f)) {
 				ok = false;
@@ -714,7 +720,7 @@ QSet<QString> SqlTableModel::referencedForeignTables()
 	qfLogFuncFrame();
 	QSet<QString> ret;
 	{
-		QStringList sl = m_foreignKeyDependencies.values();
+		const QStringList sl = m_foreignKeyDependencies.values();
 		for(QString s : sl) {
 			QString tbl_name;
 			qf::core::Utils::parseFieldName(s, nullptr, &tbl_name);

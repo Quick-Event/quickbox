@@ -1,20 +1,30 @@
 #include "itemdelegate.h"
 #include "timeedit.h"
+#include "siid.h"
+#include "siidedit.h"
 
 #include <QItemEditorFactory>
+#include <QSpinBox>
 
-using namespace quickevent::og;
+namespace quickevent {
+namespace og {
 
 ItemDelegate::ItemDelegate(qf::qmlwidgets::TableView *parent)
 	: Super(parent)
 {
-	auto creator = new QStandardItemEditorCreator<TimeEdit>();
 	QItemEditorFactory *fact = itemEditorFactory();
 	if(!fact) {
 		fact = m_factory = new QItemEditorFactory();
 		setItemEditorFactory(m_factory);
 	}
-	fact->registerEditor(qMetaTypeId<TimeMs>(), creator);
+	{
+		auto creator = new QStandardItemEditorCreator<TimeEdit>();
+		fact->registerEditor(qMetaTypeId<TimeMs>(), creator);
+	}
+	{
+		auto creator = new QStandardItemEditorCreator<SiIdEdit>();
+		fact->registerEditor(qMetaTypeId<SiId>(), creator);
+	}
 }
 
 ItemDelegate::~ItemDelegate()
@@ -23,3 +33,7 @@ ItemDelegate::~ItemDelegate()
 	QF_SAFE_DELETE(m_factory);
 }
 
+}
+}
+
+//#include "itemdelegate.moc"

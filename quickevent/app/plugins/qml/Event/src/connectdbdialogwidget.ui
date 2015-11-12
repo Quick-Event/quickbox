@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>601</width>
-    <height>349</height>
+    <height>384</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,7 +50,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>&amp;Event ID</string>
+         <string>E&amp;vent ID</string>
         </property>
         <property name="buddy">
          <cstring>edEventName</cstring>
@@ -61,6 +61,9 @@
        <widget class="QLineEdit" name="edEventName">
         <property name="placeholderText">
          <string>Event name can be specified later on in File/Open</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -106,7 +109,11 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="edServerHost"/>
+           <widget class="QLineEdit" name="edServerHost">
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_2">
@@ -139,12 +146,19 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QLineEdit" name="edServerUser"/>
+           <widget class="QLineEdit" name="edServerUser">
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item row="3" column="1">
            <widget class="QLineEdit" name="edServerPassword">
             <property name="echoMode">
              <enum>QLineEdit::Password</enum>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -174,7 +188,7 @@
           <item>
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>&amp;Working directory</string>
+             <string>Wor&amp;king directory</string>
             </property>
             <property name="buddy">
              <cstring>edSingleWorkingDir</cstring>
@@ -187,6 +201,9 @@
              <widget class="QLineEdit" name="edSingleWorkingDir">
               <property name="placeholderText">
                <string>Directory where event files are placed.</string>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
               </property>
              </widget>
             </item>

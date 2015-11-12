@@ -44,7 +44,7 @@ void Frame::setLayoutType(Frame::LayoutType ly_type)
 			delete old_ly;
 		}
 		m_layoutType = ly_type;
-		for(auto w : m_childWidgets) {
+		Q_FOREACH(auto w, m_childWidgets) {
 			addToLayout(w);
 		}
 		qfDebug() << "new layout:" << layout();

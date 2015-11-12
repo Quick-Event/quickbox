@@ -6,6 +6,8 @@
 
 #include <QVariant>
 
+#define QF_AS_CONST(obj) const_cast<const decltype(obj) &>(obj)
+
 #define QF_SAFE_DELETE(x) if(x != nullptr) {delete x; x = nullptr;}
 
 #define QF_CARG(s) "" + QString(s) + ""

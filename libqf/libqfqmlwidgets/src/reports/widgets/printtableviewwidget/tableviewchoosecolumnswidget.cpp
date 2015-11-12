@@ -53,7 +53,7 @@ void TableViewChooseColumnsWidget::loadColumns(qf::core::model::TableModel *mode
 		{
 			QListWidget *w = ui->lstTableColumns;
 			int i = 0;
-			for(const qf::core::utils::Table::Field &fld : tbl.fields()) {
+			Q_FOREACH(const qf::core::utils::Table::Field &fld, tbl.fields()) {
 				/// pokud je field soucasti modelu
 				QListWidgetItem *it = new QListWidgetItem(fld.name());
 				it->setData(Qt::UserRole, "table");

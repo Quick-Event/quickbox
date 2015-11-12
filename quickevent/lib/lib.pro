@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = quickevent
 
-QT += widgets sql qml
+QT += widgets sql qml multimedia
 
 CONFIG += qt dll
 CONFIG += c++11 hide_symbols

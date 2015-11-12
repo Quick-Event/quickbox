@@ -2,14 +2,9 @@
 #include "thispartwidget.h"
 #include "../runswidget.h"
 #include "drawing/drawingganttwidget.h"
+#include "../runstabledialogwidget.h"
 
-#include <Event/eventplugin.h>
-
-#include <qf/core/log.h>
-#include <qf/core/sql/query.h>
-#include <qf/core/sql/querybuilder.h>
-#include <qf/core/utils/table.h>
-#include <qf/core/utils/treetable.h>
+//#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -17,6 +12,12 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
+
+#include <qf/core/log.h>
+#include <qf/core/sql/query.h>
+#include <qf/core/sql/querybuilder.h>
+#include <qf/core/utils/table.h>
+#include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 
 #include <QQmlEngine>
@@ -27,14 +28,14 @@ namespace qfu = qf::core::utils;
 namespace qfs = qf::core::sql;
 
 using namespace Runs;
-
+/*
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
 	return qobject_cast<Event::EventPlugin*>(plugin);
 }
-
+*/
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -43,6 +44,39 @@ RunsPlugin::RunsPlugin(QObject *parent)
 
 RunsPlugin::~RunsPlugin()
 {
+}
+
+const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
+{
+	if(m_runsTableStageId != stage_id) {
+		qfs::QueryBuilder qb;
+		qb.select2("competitors", "registration")
+				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+				.select2("runs", "id, siId")
+				.select("runs.id AS runId")
+				.select2("classes", "name")
+				.from("competitors")
+				.join("competitors.classId", "classes.id")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id), "JOIN")
+				.orderBy("classes.name, lastName, firstName");
+		qf::core::model::SqlTableModel m;
+		m.setQueryBuilder(qb);
+		m.reload();
+		m_runsTable = m.table();
+
+		auto c_nsk = QStringLiteral("competitorNameAscii7");
+		m_runsTable.appendColumn(c_nsk, QVariant::String);
+		int ix_nsk = m_runsTable.fields().fieldIndex(c_nsk);
+		int ix_cname = m_runsTable.fields().fieldIndex(QStringLiteral("competitorName"));
+		for (int i = 0; i < m_runsTable.rowCount(); ++i) {
+			qf::core::utils::TableRow &row_ref = m_runsTable.rowRef(i);
+			QString nsk = row_ref.value(ix_cname).toString();
+			nsk = QString::fromLatin1(qf::core::Collator::toAscii7(QLocale::Czech, nsk, true));
+			row_ref.setValue(ix_nsk, nsk);
+		}
+		m_runsTableStageId = stage_id;
+	}
+	return m_runsTable;
 }
 
 void RunsPlugin::onInstalled()
@@ -57,7 +91,7 @@ void RunsPlugin::onInstalled()
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
-	connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
+	//connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
 
 	emit nativeInstalled();
 
@@ -76,7 +110,7 @@ void RunsPlugin::onInstalled()
 		});
 	}
 }
-
+/*
 void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competitor_id)
 {
 	//qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
@@ -89,7 +123,7 @@ void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competit
 	eventPlugin()->setCurrentStageId(stage_id);
 	rw->editStartList(class_id, competitor_id);
 }
-
+*/
 int RunsPlugin::courseForRun(int run_id)
 {
 	// TODO: implementation should be dependend on event type and exposed to QML
@@ -246,4 +280,34 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 	return tt.toVariant();
 }
 
+void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+{
+	auto *w = new RunsTableDialogWidget();
+	w->reload(stage_id, class_id, sort_column, select_competitor_id);
+	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
+	dlg.setButtons(QDialogButtonBox::Cancel);
+	dlg.setCentralWidget(w);
+	dlg.exec();
+}
+
+int RunsPlugin::cardForRun(int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id;
+	//QF_TIME_SCOPE("reloadTimesFromCard()");
+	if(!run_id)
+		return 0;
+	int card_id = 0;
+	{
+		qf::core::sql::Query q;
+		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS DESC LIMIT 1")) {
+			if(q.next()) {
+				card_id = q.value(0).toInt();
+			}
+			else {
+				qfWarning() << "Cannot find card record for run id:" << run_id;
+			}
+		}
+	}
+	return card_id;
+}
 

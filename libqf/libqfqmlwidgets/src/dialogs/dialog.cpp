@@ -209,7 +209,7 @@ void Dialog::updateLayout()
 	}
 	else if(!m_toolBars.isEmpty()) {
 		QHBoxLayout *ly1 = new QHBoxLayout(nullptr);
-		for(auto tb_name : m_toolBars.keys()) {
+		Q_FOREACH(auto tb_name, m_toolBars.keys()) {
 			ToolBar *tb = m_toolBars.value(tb_name);
 			tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			ly1->addWidget(tb);

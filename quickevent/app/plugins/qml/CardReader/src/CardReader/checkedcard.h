@@ -18,18 +18,19 @@ private:
 	QF_VARIANTMAP_FIELD2(int, r, setR, unId, 0)
 	QF_VARIANTMAP_FIELD2(bool, is, set, Ok, true)
 	QF_VARIANTMAP_FIELD2(int, c, setC, ourseId, 0)
-	QF_VARIANTMAP_FIELD2(int, C, setC, heckTimeMs, 0)
-	QF_VARIANTMAP_FIELD2(int, s, setS, tartTimeMs, 0)
-	QF_VARIANTMAP_FIELD2(int, f, setF, inishTimeMs, 0)
-	QF_VARIANTMAP_FIELD2(int, f, setF, inishLapTimeMs, 0)
-	QF_VARIANTMAP_FIELD2(int, f, setF, inishStpTimeMs, 0)
+	QF_VARIANTMAP_FIELD2(int, s, setS, tageStartTimeMs, 0) //< stage start till midnight
+	QF_VARIANTMAP_FIELD2(int, C, setC, heckTimeMs, 0) //< check time till stage start
+	QF_VARIANTMAP_FIELD2(int, s, setS, tartTimeMs, 0) //< start time till stage start
+	QF_VARIANTMAP_FIELD2(int, f, setF, inishTimeMs, 0) //< fimish time till stage start
+	QF_VARIANTMAP_FIELD2(int, f, setF, inishLapTimeMs, 0) //< finish lap time till competitor start time
+	QF_VARIANTMAP_FIELD2(int, f, setF, inishStpTimeMs, 0) //< finish stp time till competitor start time
 	QF_VARIANTMAP_FIELD2(int, c, setC, ardNumber, 0)
-	QF_VARIANTMAP_FIELD(QVariantList, p, setP, unches)
+	QF_VARIANTMAP_FIELD(QVariantList, p, setP, unches) //< punch times are measured till competitor start time
 
 public:
 	CheckedCard(const QVariantMap &data = QVariantMap());
 
-	int timeMs() const {return finishTimeMs() - startTimeMs();}
+	int timeMs() const {return finishStpTimeMs();}
 };
 
 }

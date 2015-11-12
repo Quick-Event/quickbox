@@ -29,7 +29,7 @@ PluginLoader::ManifestMap PluginLoader::findPlugins()
 	ManifestMap ret;
 	QQmlEngine *qe = Application::instance()->qmlEngine();
 
-	for(auto path : Application::instance()->qmlPluginImportPaths()) {
+	Q_FOREACH(auto path, Application::instance()->qmlPluginImportPaths()) {
 		qfInfo() << "Finding plugin manifests on:" << path;
 		QDirIterator it(path, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::FollowSymlinks);
 		while(it.hasNext()) {
@@ -100,9 +100,9 @@ void PluginLoader::loadPlugins(const QStringList &feature_ids)
 	m_manifestsToLoad = findPlugins();
 	QStringList fids = feature_ids;
 	if(fids.isEmpty())
-		for(auto m : m_manifestsToLoad)
+		Q_FOREACH(auto m, m_manifestsToLoad)
 			fids << m->featureId();
-	for(auto feature_id : fids)
+	Q_FOREACH(auto feature_id, fids)
 		loadPlugin(feature_id);
 	emit loadingFinished();
 }
@@ -125,7 +125,7 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 
 	bool ok = true;
 	QStringList depends_on = manifest->dependsOnFeatureIds();
-	for(auto required_feature_id : depends_on) {
+	Q_FOREACH(auto required_feature_id, depends_on) {
 		if(!m_loadedPlugins.contains(required_feature_id)) {
 			qfInfo() << feature_id << "solving dependency on" << required_feature_id;
 			ok = loadPlugin(required_feature_id);
@@ -145,14 +145,15 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 		QString lc_name = mainWindow()->uiLanguageName();
 		if(!lc_name.isEmpty()) {
 			QString tr_name = feature_id + '.' + lc_name;
+			QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
 			QTranslator *trans = new QTranslator(mainWindow());
-			bool ok = trans->load(tr_name, QCoreApplication::applicationDirPath());
+			bool ok = trans->load(tr_name, app_translations_path);
 			if(ok) {
 				qfInfo() << "Found translation file for:" << tr_name;
 				QCoreApplication::instance()->installTranslator(trans);
 			}
 			else {
-				qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << QCoreApplication::applicationDirPath();
+				qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << app_translations_path;
 				delete trans;
 			}
 		}
@@ -224,7 +225,7 @@ void PluginLoader::loadNextPlugin()
 		QString feature_id = it.key();
 		QStringList depends_on = manifest->dependsOnFeatureIds();
 		bool dependency_satisfied = true;
-		for(auto required_feature_id : depends_on) {
+		Q_FOREACH(auto required_feature_id, depends_on) {
 			if(!m_loadedPlugins.contains(required_feature_id)) {
 				dependency_satisfied = false;
 				break;

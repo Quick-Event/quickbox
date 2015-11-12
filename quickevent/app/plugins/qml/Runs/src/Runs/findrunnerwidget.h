@@ -30,14 +30,12 @@ public:
 	explicit FindRunnerWidget(int stage_id, QWidget *parent = 0);
 	~FindRunnerWidget() Q_DECL_OVERRIDE;
 
-	void reload();
+	Q_SIGNAL void runnerSelected(const QVariantMap &runner_values);
 
-	void setFocusToWidget(FocusWidget fw);
-	qf::qmlwidgets::TableView* tableView();
+	void focusLineEdit();
 private:
 	Ui::FindRunnerWidget *ui;
-	qf::core::model::SqlTableModel *m_runnersModel;
-	int m_stageId = 0;
+	//int m_stageId = 0;
 };
 
 }

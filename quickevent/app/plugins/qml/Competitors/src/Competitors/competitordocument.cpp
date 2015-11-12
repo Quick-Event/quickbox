@@ -7,6 +7,7 @@
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>
+#include <qf/core/sql/transaction.h>
 
 using namespace Competitors;
 
@@ -21,6 +22,17 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	setQueryBuilder(qb);
 }
 
+QString CompetitorDocument::safeSave(bool save_siid_to_runs)
+{
+	try {
+		m_saveSiidToRuns = save_siid_to_runs;
+		save();
+	} catch (qf::core::Exception &e) {
+		return e.message();
+	}
+	return QString();
+}
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -30,13 +42,16 @@ static Event::EventPlugin* eventPlugin()
 
 bool CompetitorDocument::saveData()
 {
+	qfLogFuncFrame();
+	//qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
 	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
-	//Log.info("CompetitorDocument", saveData_qml, "ret:", ret, "old_mode", old_mode, "vs", DataDocument.ModeInsert, old_mode == DataDocument.ModeInsert);
+	qfDebug() << "Super save data:" << ret;
 	if(ret) {
 		if(old_mode == DataDocument::ModeInsert) {
 			// insert runs
+			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
 			int si_id = value("competitors.siId").toInt();
 
@@ -45,35 +60,31 @@ bool CompetitorDocument::saveData()
 
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
-			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
+			q.prepare("INSERT INTO runs (competitorId, stageId) VALUES (:competitorId, :stageId)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
-				if(si_id > 0)
+				if(si_id > 0 && m_saveSiidToRuns)
 					q.bindValue(":siId", si_id);
-				if(!q.exec()) {
-					qfError() << q.lastError().text();
-					//break; can be succesfull in other stages
-				}
+				q.exec(qf::core::Exception::Throw);
 			}
 		}
-		else if(old_mode == DataDocument::ModeEdit) {
-			if(si_dirty) {
-				//qfWarning() << __LINE__;
-				int si_id = value("competitors.siId").toInt();
-				if(si_id > 0) {
-					int competitor_id = dataId().toInt();
-					qf::core::sql::Query q(model()->connectionName());
-					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
-					q.bindValue(":competitorId", competitor_id);
-					q.bindValue(":siId", si_id);
-					if(!q.exec()) {
-						qfError() << q.lastError().text();
-					}
-				}
+		emit competitorSaved(dataId(), old_mode);
+		if(si_dirty) {
+			qfDebug() << "updating SIID in run tables";
+			int si_id = value("competitors.siId").toInt();
+			if(si_id > 0) {
+				int competitor_id = dataId().toInt();
+				qf::core::sql::Query q(model()->connectionName());
+				q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
+				q.bindValue(":competitorId", competitor_id);
+				q.bindValue(":siId", si_id);
+				q.exec(qf::core::Exception::Throw);
 			}
 		}
 	}
+	//if(ret)
+	//	transaction.commit();
 	return ret;
 }
 
@@ -91,6 +102,9 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
+	}
+	if(ret) {
+		emit competitorSaved(id, ModeDelete);
 	}
 	return ret;
 }

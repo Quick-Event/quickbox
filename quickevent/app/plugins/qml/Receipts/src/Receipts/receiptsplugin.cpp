@@ -23,6 +23,9 @@
 #include <QSqlRecord>
 #include <QPrinterInfo>
 
+//#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/timescope.h>
+
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 
@@ -91,6 +94,7 @@ ReceiptsPrinter *ReceiptsPlugin::receiptsPrinter()
 QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
+	QF_TIME_SCOPE("receiptTablesData()");
 	QVariantMap ret;
 	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(card_id);
 	int current_stage_id = eventPlugin()->currentStageId();
@@ -98,9 +102,9 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	int course_id = checked_card.courseId();
 	int current_standings = 1;
 	int competitors_finished = 0;
-	int control_count = 0;
-	QMap<int, int> best_laps;
-	QMap<int, int> missing_codes;
+	QMap<int, int> best_laps; //< code->time
+	QMap<int, int> missing_codes; //< pos->code
+	QSet<int> out_of_order_codes;
 	{
 		// load all codes as missing ones
 		qf::core::sql::QueryBuilder qb;
@@ -109,13 +113,18 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				.from("coursecodes")
 				.join("coursecodes.codeId", "codes.id")
 				.where("coursecodes.courseId=" QF_IARG(course_id))
-				.where("NOT codes.outOfOrder")
+				//.where("NOT codes.outOfOrder")
 				.orderBy("coursecodes.position");
 		qf::core::sql::Query q;
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		while (q.next()) {
-			missing_codes[q.value("position").toInt()] = q.value("code").toInt();
-			control_count++;
+			int pos = q.value("position").toInt();
+			int code = q.value("code").toInt();
+			bool ooo = q.value("outOfOrder").toBool();
+			//class_codes << code;
+			missing_codes[pos] = code;
+			if(ooo)
+				out_of_order_codes << code;
 		}
 	}
 	{
@@ -135,21 +144,20 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			int class_id = model.value(0, "competitors.classId").toInt();
 			{
 				// find best laps for competitors class
-				qf::core::sql::QueryBuilder qb;
-				qb.select2("runlaps", "position")
-						.select("MIN(runlaps.lapTimeMs) AS minLapTimeMs")
+				qf::core::sql::QueryBuilder qb_minlaps;
+				// TODO: remove position field from DB in 0.1.5
+				qb_minlaps.select("runlaps.position, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
-						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
-						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0")
-						.where("runlaps.lapTimeMs > 0")
-						.groupBy("runlaps.position")
-						.orderBy("runlaps.position");
-				//qfInfo() << qb.toString();
+						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), "JOIN")
+						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", "JOIN")
+						.groupBy("runlaps.position");
+				QString qs = qb_minlaps.toString();
+				qfInfo() << qs;
 				qf::core::sql::Query q;
-				q.exec(qb.toString());
+				q.exec(qs);
 				while(q.next()) {
-					int pos = q.value("position").toInt();
-					if(pos == 0) {
+					int position = q.value("position").toInt();
+					if(position == 0) {
 						qfWarning() << "position == 0 in best runlaps";
 						continue;
 					}
@@ -158,7 +166,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						qfWarning() << "minLapTimeMs == 0 in best runlaps";
 						continue;
 					}
-					best_laps[pos] = lap;
+					best_laps[position] = lap;
 					//qfInfo() << "bestlaps[" << pos << "] =" << lap;
 				}
 			}
@@ -234,25 +242,27 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		for(auto v : checked_card.punches()) {
 			CardReader::CheckedPunch punch(v.toMap());
 			qfu::TreeTableRow ttr = tt.appendRow();
-			int pos = punch.position();
-			if(pos > 0)
-				missing_codes.remove(pos);
-			ttr.setValue("position", pos);
-			ttr.setValue("code", punch.code());
+			int position = punch.position();
+			int code = punch.code();
+			if(position > 0) {
+				missing_codes.remove(position);
+			}
+			ttr.setValue("position", position);
+			ttr.setValue("code", code);
 			ttr.setValue("stpTimeMs", punch.stpTimeMs());
 			int lap = punch.lapTimeMs();
 			ttr.setValue("lapTimeMs", lap);
-			int best_lap = best_laps.value(pos);
-			if(best_lap > 0) {
+			int best_lap = best_laps.value(position);
+			if(lap > 0 && best_lap > 0) {
 				int loss = lap - best_lap;
 				ttr.setValue("lossMs", loss);
 			}
 		}
 		{
-			// runlaps table contains also finish time entry, it is under last position
-			// for exaple: if course is of 10 controls best_laps[10] contains best finish lap time for this class
+			// runlaps table contains also finish time entry, it is under FINISH_PUNCH_POS
+			// currently best_laps[999] contains best finish lap time for this class
 			int loss = 0;
-			int best_lap = best_laps.value(control_count + 1);
+			int best_lap = best_laps.value(CardReader::CardReaderPlugin::FINISH_PUNCH_POS);
 			if(best_lap > 0)
 				loss = checked_card.finishLapTimeMs() - best_lap;
 			//qfInfo() << "control_count:" << control_count << "finishLapTimeMs:" << checked_card.finishLapTimeMs() << "- best_lap:" << best_lap << "=" << loss;
@@ -265,16 +275,9 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			//mc.insert(mc.count(), QVariantList() << 1 << 101);
 			tt.setValue("missingCodes", mc);
 		}
-		{
-			Event::StageData stage = eventPlugin()->stageData(eventPlugin()->currentStageId());
-			QTime start00 = stage.startTime();
-			if(start00.hour() >= 12)
-				start00 = start00.addSecs(-12 * 60 *60);
-			tt.setValue("stageStart", start00);
-		}
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
-		tt.setValue("cardNumber", checked_card.cardNumber());
+		//tt.setValue("cardNumber", checked_card.cardNumber());
 
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
@@ -290,6 +293,7 @@ void ReceiptsPlugin::previewReceipt(int card_id)
 
 bool ReceiptsPlugin::printReceipt(int card_id)
 {
+	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
 	try {
 		printReceipt_classic(card_id);
 		return true;

@@ -194,7 +194,7 @@ int qfsqldbfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
 	filler(buf, "..", NULL, 0);
 	QString spath = QString::fromUtf8(path);
 	QList<qfs::DbFsAttrs> attrs = dbfsdrv()->childAttributes(spath);
-	for(qfs::DbFsAttrs attr : attrs) {
+	Q_FOREACH(qfs::DbFsAttrs attr, attrs) {
 		QByteArray ba = attr.name().toUtf8();
 		const char *pname = ba.constData();
 		//qfWarning() << "\t" << pname;
@@ -612,7 +612,7 @@ int qfsqldbfs_truncate(const char *path, off_t new_size)
 
 	QString spath = QString::fromUtf8(path);
 	OpenHandles handles = openFileHandles(spath);
-	for(uint64_t handle : handles) {
+	Q_FOREACH(uint64_t handle, handles) {
 		OpenFile of = openFile(handle);
 		if(of.isNull()) {
 			if(!dbfsdrv()->truncate(spath, new_size))

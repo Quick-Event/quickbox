@@ -29,6 +29,7 @@ QtObject {
 	function chooseAndImport()
 	{
 		var d = new Date;
+		//d.setMonth(d.getMonth());
 		d.setMonth(d.getMonth() - 1);
 		var url = 'http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=' + d.toISOString().slice(0, 10);
 		FrameWork.plugin("Core").api.downloadContent(url, function(get_ok, json_str)
@@ -71,8 +72,8 @@ QtObject {
 					stage_count = 1;
 				//stage_count = 3;
 				Log.info("pocet etap:", stage_count);
-				event_api.initEventConfig();
-				var cfg = event_api.eventConfig;
+				//event_api.initEventConfig();
+				//var cfg = event_api.eventConfig;
 				var ecfg = {
 					stageCount: stage_count,
 					name: data.Name,
@@ -83,15 +84,13 @@ QtObject {
 					director: data.Director.FirstName + ' ' + data.Director.LastName,
 					importId: event_id
 				}
-				cfg.setValue('event', ecfg);
-
-
-				if(!event_api.createEvent("", cfg.value("event")))
+				//cfg.setValue('event', ecfg);
+				if(!event_api.createEvent("", ecfg))
 					return;
 
 				var event_name = event_api.eventName;
-				if(!event_api.openEvent(event_name))
-					return;
+				//if(!event_api.openEvent(event_name))
+				//	return;
 
 				db.transaction();
 				var items_processed = 0;
@@ -142,15 +141,28 @@ QtObject {
 				db.transaction();
 				var cp = FrameWork.plugin("Competitors");
 				var competitor_doc = cp.createCompetitorDocument(root);
+				var siids_imported = {};
 				for(var competitor_obj_key in data) {
 					var competitor_obj = data[competitor_obj_key];
 					console.debug(JSON.stringify(competitor_obj, null, 2));
-					Log.info(competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
+					Log.info("SI:", competitor_obj.SI, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
 					var siid = parseInt(competitor_obj.SI);
 					var note = competitor_obj.Note;
 					if(isNaN(siid)) {
 						note += ' SI:' + competitor_obj.SI;
 						siid = 0;
+					}
+					var siid_duplicit = false;
+					if(siid > 0) {
+						// check duplicit SI
+						var id = siids_imported[siid];
+						//Log.error("siiid type:", typeof siid, siid, "->", siids_imported[siid], "id:", id, "type:", typeof id);
+						if(id) {
+							siid_duplicit = true;
+						}
+						else {
+							siids_imported[siid] = siid;
+						}
 					}
 					if(competitor_obj.RequestedStart) {
 						note += ' req. start: ' + competitor_obj.RequestedStart;
@@ -166,6 +178,8 @@ QtObject {
 						}
 					}
 					FrameWork.showProgress("Importing: " + competitor_obj.LastName + " " + competitor_obj.FirstName, items_processed, competitors_count);
+					if(siid_duplicit)
+						Log.warning(qsTr("%1 %2 %3 SI: %4 is duplicit!").arg(competitor_obj.RegNo).arg(last_name).arg(first_name).arg(siid));
 					competitor_doc.loadForInsert();
 					competitor_doc.setValue('classId', parseInt(competitor_obj.ClassID));
 					competitor_doc.setValue('siId', siid);
@@ -175,8 +189,12 @@ QtObject {
 					competitor_doc.setValue('licence', competitor_obj.Licence);
 					competitor_doc.setValue('note', note);
 					competitor_doc.setValue('importId', competitor_obj.ID);
-					competitor_doc.save();
-					//break;
+					var err = competitor_doc.safeSave(!siid_duplicit);
+					if(err) {
+						MessageBoxSingleton.critical(FrameWork, "SQL error: " + err);
+						db.rollback();
+						return;
+					}
 					items_processed++;
 				}
 				db.commit();
@@ -263,7 +281,7 @@ QtObject {
 				var ok = true;
 				ok = q.exec("DELETE FROM registrations");
 				if(ok) {
-					q.prepare('INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, nameSearchKey, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :nameSearchKey, :importId)');
+					q.prepare('INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :importId)');
 					for(var obj_key in data) {
 						var obj = data[obj_key];
 						//Log.debug(JSON.stringify(obj, null, 2));
@@ -274,8 +292,8 @@ QtObject {
 
 						q.bindValue(':firstName', obj.FirstName);
 						q.bindValue(':lastName', obj.LastName);
-						var name_search_key = File.toAscii7(obj.LastName + " " + obj.FirstName, true);
-						q.bindValue(':nameSearchKey', name_search_key);
+						//var name_search_key = File.toAscii7(obj.LastName + " " + obj.FirstName, true);
+						//q.bindValue(':nameSearchKey', name_search_key);
 						var reg = obj.RegNo;
 						if(reg) {
 							q.bindValue(':registration', reg);
