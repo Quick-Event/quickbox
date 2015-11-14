@@ -64,3 +64,28 @@ HEADERS += \
 
 OTHER_FILES += \
 	quickshow-data/qml/* \
+
+DATA_DIR_NAME = $${TARGET}-data
+
+unix {
+    CONFIG(debug, debug|release) {
+        # T flag is important, qml symlink in SRC/qml dir is created on second install without it
+        datafiles.commands = \
+            ln -sfT $$PWD/$$DATA_DIR_NAME $$DESTDIR/$$DATA_DIR_NAME
+    }
+    else {
+        datafiles.commands = \
+            rsync -r $$PWD/$$DATA_DIR_NAME $$DESTDIR/
+    }
+}
+win32 {
+    #mkdir not needed for windows
+    datafiles.commands = \
+        xcopy $$shell_path($$PWD/$$DATA_DIR_NAME) $$shell_path($$DESTDIR/$$DATA_DIR_NAME) /E /Y /I
+}
+
+win32:CONFIG(debug, debug|release):CONFIG += console
+#CONFIG += console
+
+QMAKE_EXTRA_TARGETS += datafiles
+PRE_TARGETDEPS += datafiles
