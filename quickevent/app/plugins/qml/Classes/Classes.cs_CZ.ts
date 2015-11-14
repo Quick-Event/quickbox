@@ -19,12 +19,12 @@
     <message>
         <location filename="src/classeswidget.ui" line="36"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="70"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódy</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="91"/>
@@ -34,62 +34,62 @@
     <message>
         <location filename="src/classeswidget.cpp" line="49"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="50"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="51"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intverval</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="52"/>
         <source>VB</source>
-        <translation type="unfinished"></translation>
+        <translation>Vak.P</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="52"/>
         <source>Vacants before</source>
-        <translation type="unfinished"></translation>
+        <translation>Vakanti před</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="53"/>
         <source>VE</source>
-        <translation type="unfinished"></translation>
+        <translation>Vak.B</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="53"/>
         <source>Vacant every</source>
-        <translation type="unfinished"></translation>
+        <translation>Vakanti během</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="54"/>
         <source>VA</source>
-        <translation type="unfinished"></translation>
+        <translation>Vak.Po</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="54"/>
         <source>Vacants after</source>
-        <translation type="unfinished"></translation>
+        <translation>Vakanti po</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="56"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="56"/>
         <source>Runners count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet závodníků</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="57"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Map</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="58"/>
@@ -99,42 +99,42 @@
     <message>
         <location filename="src/classeswidget.cpp" line="59"/>
         <source>Course</source>
-        <translation type="unfinished"></translation>
+        <translation>Trať</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="60"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="61"/>
         <source>Climb</source>
-        <translation type="unfinished"></translation>
+        <translation>Převýšení</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="69"/>
         <source>Pos</source>
-        <translation type="unfinished"></translation>
+        <translation>Pos</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="70"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kód</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="71"/>
         <source>O</source>
-        <translation type="unfinished"></translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="71"/>
         <source>Out of order</source>
-        <translation type="unfinished"></translation>
+        <translation>Mimo provoz</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="108"/>
         <source>Stage </source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="124"/>
@@ -144,18 +144,18 @@
     <message>
         <location filename="src/classeswidget.cpp" line="172"/>
         <source>Courses are not imported, class table is read only.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tratě nejsou importovány, tabulka kategorií je jen pro čtení.</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
         <location filename="src/classeswidget.cpp" line="334"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="210"/>
         <source>Delete all courses definitions for stage %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vymazat všechny traťe pro etapu %1?</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,18 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="9"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
+    </message>
+</context>
+<context>
+    <name>main</name>
+    <message>
+        <source>All</source>
+        <translation type="vanished">Vše</translation>
+    </message>
+    <message>
+        <source>&amp;Print</source>
+        <translation type="vanished">Tisk</translation>
     </message>
 </context>
 <context>

@@ -38,7 +38,7 @@
         <location filename="src/model/tablemodel.cpp" line="395"/>
         <location filename="src/model/tablemodel.cpp" line="511"/>
         <source>Invalid table row: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybný řádek tabulky: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="402"/>
@@ -70,7 +70,7 @@
         <location filename="src/model/tablemodel.cpp" line="570"/>
         <location filename="src/model/tablemodel.cpp" line="627"/>
         <source>Invalid column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybný index řádku: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="579"/>
@@ -93,7 +93,7 @@
     <message>
         <location filename="src/sql/dbfsdriver.cpp" line="102"/>
         <source>Connection &apos;%1&apos; is not open!</source>
-        <translation type="unfinished"></translation>
+        <translation>Spojení &apos;%1&apos; není otevřeno!</translation>
     </message>
 </context>
 <context>

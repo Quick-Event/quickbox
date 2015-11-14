@@ -6,12 +6,12 @@
     <message>
         <location filename="qml/Results.qml" line="147"/>
         <source>Get text</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadej text</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="147"/>
         <source>Class mask (use wild cards [*?]):</source>
-        <translation type="unfinished"></translation>
+        <translation>Maska kategorie (lze použít zástupné znaky [*?]):</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="151"/>
@@ -60,7 +60,7 @@
         <location filename="qml/Results.qml" line="284"/>
         <location filename="qml/Results.qml" line="300"/>
         <source>Number of stages:</source>
-        <translation>Počet etap&quot;</translation>
+        <translation>Počet etap:</translation>
     </message>
 </context>
 <context>
@@ -73,7 +73,7 @@
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="20"/>
         <source>Name, registration, SI</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno, registrace, SI</translation>
     </message>
     <message>
         <source>Name</source>
@@ -98,7 +98,7 @@
     <message>
         <location filename="src/runstabledialogwidget.cpp" line="40"/>
         <source>Stage %1 Class %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa %1 Kategorie %2</translation>
     </message>
 </context>
 <context>
@@ -124,7 +124,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="61"/>
         <source>Class</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="62"/>
@@ -135,102 +135,102 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="63"/>
         <source>Name</source>
-        <translation type="unfinished">Jméno</translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="64"/>
         <source>Reg</source>
-        <translation type="unfinished"></translation>
+        <translation>Reg.č.</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="66"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="67"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="68"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Cíl</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="69"/>
         <source>NC</source>
-        <translation type="unfinished"></translation>
+        <translation>Nest</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="69"/>
         <source>Not competing</source>
-        <translation type="unfinished"></translation>
+        <translation>Nestartoval</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="70"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation>PČ</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="70"/>
         <source>Card lent</source>
-        <translation type="unfinished"></translation>
+        <translation>Půjčený čip</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="71"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>ČV</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="71"/>
         <source>Card returned</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip vrácen</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="72"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="72"/>
         <source>Card mispunch</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba ražení</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="73"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="73"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifikován</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="74"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Poznámka</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="163"/>
         <source>Show card</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit čip</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="164"/>
         <source>Load times from card in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrát časy z čipu ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="165"/>
         <source>Print card</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout čip</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="182"/>
         <source>Reloading times for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Znovu načítám časy pro %1</translation>
     </message>
 </context>
 <context>
@@ -243,7 +243,7 @@
     <message>
         <location filename="src/runswidget.ui" line="62"/>
         <source>Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metoda</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="85"/>
@@ -262,27 +262,27 @@
         <translation>Losuj kategorii</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="50"/>
+        <location filename="src/runswidget.cpp" line="48"/>
         <source>Randomized equidistant clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="51"/>
+        <location filename="src/runswidget.cpp" line="49"/>
         <source>Random number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="52"/>
+        <location filename="src/runswidget.cpp" line="50"/>
         <source>Equidistant clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="53"/>
+        <location filename="src/runswidget.cpp" line="51"/>
         <source>Stage 1 reverse order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="54"/>
+        <location filename="src/runswidget.cpp" line="52"/>
         <source>Handicap</source>
         <translation type="unfinished"></translation>
     </message>
@@ -295,57 +295,42 @@
         <translation type="obsolete">Jméno</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="156"/>
+        <location filename="src/runswidget.cpp" line="145"/>
         <source>Stage </source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="164"/>
+        <location filename="src/runswidget.cpp" line="153"/>
         <source>Class </source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="176"/>
+        <location filename="src/runswidget.cpp" line="165"/>
         <source>&amp;Draw options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="79"/>
+        <location filename="src/runswidget.cpp" line="77"/>
         <source>E%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="87"/>
+        <location filename="src/runswidget.cpp" line="85"/>
         <source>--- all ---</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="145"/>
-        <source>Start times</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/runswidget.cpp" line="146"/>
-        <source>OB 2000</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/runswidget.cpp" line="265"/>
-        <source>Import</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/runswidget.cpp" line="350"/>
+        <location filename="src/runswidget.cpp" line="258"/>
         <source>Draw all clases without any start time set?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="511"/>
+        <location filename="src/runswidget.cpp" line="419"/>
         <source>Start interval is zero, proceed anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="561"/>
+        <location filename="src/runswidget.cpp" line="469"/>
         <source>Reset all start times for this class?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -356,23 +341,23 @@
         <location filename="qml/StartLists.qml" line="106"/>
         <location filename="qml/StartLists.qml" line="121"/>
         <source>Get number</source>
-        <translation type="unfinished">Vložte číslo</translation>
+        <translation>Vložte číslo</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="106"/>
         <location filename="qml/StartLists.qml" line="121"/>
         <source>Number of stages:</source>
-        <translation type="unfinished">Počet etap&quot;</translation>
+        <translation>Počet etap:</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="111"/>
         <source>Start list by clases</source>
-        <translation type="unfinished">Startovní listina po kategoriích</translation>
+        <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="126"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní listina po klubech</translation>
     </message>
 </context>
 <context>
@@ -380,7 +365,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="11"/>
         <source>&amp;Runs</source>
-        <translation type="unfinished"></translation>
+        <translation>Úseky/&amp;Etapy</translation>
     </message>
 </context>
 <context>
@@ -491,7 +476,7 @@
         <location filename="qml/main.qml" line="29"/>
         <location filename="qml/main.qml" line="64"/>
         <source>&amp;Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="36"/>
@@ -559,97 +544,107 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="278"/>
+        <location filename="qml/main.qml" line="128"/>
+        <source>&amp;Print</source>
+        <translation>&amp;Tisk</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="147"/>
+        <source>E&amp;xport</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="275"/>
         <source>Get text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="278"/>
+        <location filename="qml/main.qml" line="275"/>
         <source>Class mask (use wild cards [*?]):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="282"/>
+        <location filename="qml/main.qml" line="279"/>
         <source>Start list by clases</source>
         <translation type="unfinished">Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="299"/>
-        <location filename="qml/main.qml" line="416"/>
+        <location filename="qml/main.qml" line="296"/>
+        <location filename="qml/main.qml" line="413"/>
         <source>Start list by clubs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>Get item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>Corridor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>H</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="307"/>
+        <location filename="qml/main.qml" line="304"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="332"/>
+        <location filename="qml/main.qml" line="329"/>
         <source>length:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="332"/>
+        <location filename="qml/main.qml" line="329"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="338"/>
-        <location filename="qml/main.qml" line="393"/>
+        <location filename="qml/main.qml" line="335"/>
+        <location filename="qml/main.qml" line="390"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="339"/>
-        <location filename="qml/main.qml" line="395"/>
+        <location filename="qml/main.qml" line="336"/>
+        <location filename="qml/main.qml" line="392"/>
         <source>Name</source>
         <translation type="unfinished">Jméno</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="340"/>
-        <location filename="qml/main.qml" line="396"/>
+        <location filename="qml/main.qml" line="337"/>
+        <location filename="qml/main.qml" line="393"/>
         <source>Registration</source>
         <translation type="unfinished">Registrace</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="341"/>
-        <location filename="qml/main.qml" line="397"/>
+        <location filename="qml/main.qml" line="338"/>
+        <location filename="qml/main.qml" line="394"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="358"/>
+        <location filename="qml/main.qml" line="355"/>
         <source>Start list by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="394"/>
+        <location filename="qml/main.qml" line="391"/>
         <source>Class</source>
         <translation type="unfinished">Kategorie</translation>
     </message>
@@ -659,7 +654,7 @@
     <message>
         <location filename="qml/reports/results_nstages.qml" line="11"/>
         <source>Results after %1 stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledkypo %1 etapách</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="128"/>
@@ -669,22 +664,22 @@
     <message>
         <location filename="qml/reports/results_nstages.qml" line="133"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="136"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="138"/>
         <source>Loss</source>
-        <translation type="unfinished"></translation>
+        <translation>Ztráta</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="176"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
 </context>
 <context>
@@ -692,7 +687,7 @@
     <message>
         <location filename="qml/reports/results_nstages_awards.qml" line="9"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -700,27 +695,27 @@
     <message>
         <location filename="qml/reports/results_stage.qml" line="9"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="74"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>délka:</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="77"/>
         <source>climb: </source>
-        <translation type="unfinished"></translation>
+        <translation>převýšení:</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="120"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="122"/>
         <source>NC</source>
-        <translation type="unfinished"></translation>
+        <translation>Nestartoval</translation>
     </message>
 </context>
 <context>
@@ -728,30 +723,22 @@
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="9"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="74"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>délka:</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="77"/>
         <source>climb: </source>
-        <translation type="unfinished"></translation>
+        <translation>převýšení:</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="125"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>results_stage_awards</name>
-    <message>
-        <location filename="qml/reports/results_stage_awards.qml" line="10"/>
-        <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
 </context>
 <context>
@@ -759,7 +746,7 @@
     <message>
         <location filename="qml/reports/results_stage_awards-default.qml" line="9"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -767,7 +754,7 @@
     <message>
         <location filename="qml/reports/results_stage_awards-hsh.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -775,17 +762,17 @@
     <message>
         <location filename="qml/reports/startList_classes.qml" line="9"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="74"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>délka:</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="77"/>
         <source>climb: </source>
-        <translation type="unfinished"></translation>
+        <translation>převýšení:</translation>
     </message>
 </context>
 <context>
@@ -793,7 +780,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="9"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní listina po klubech</translation>
     </message>
 </context>
 <context>
@@ -801,7 +788,7 @@
     <message>
         <location filename="qml/reports/startList_starters.qml" line="9"/>
         <source>Start list for starters</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní listina pro startéry</translation>
     </message>
 </context>
 <context>
@@ -809,7 +796,7 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="11"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="99"/>
@@ -824,7 +811,7 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="112"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa</translation>
     </message>
 </context>
 <context>
@@ -832,12 +819,12 @@
     <message>
         <location filename="qml/reports/startLists_clubs_nstages.qml" line="11"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní listina po klubech</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_clubs_nstages.qml" line="103"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Etapa</translation>
     </message>
 </context>
 </TS>
