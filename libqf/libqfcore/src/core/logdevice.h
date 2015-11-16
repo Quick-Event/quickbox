@@ -104,13 +104,16 @@ public:
 	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
 
 	Q_SIGNAL void logEntry(const LogEntryMap &log_entry_map);
+private:
+	Q_SIGNAL void __logEntry(const LogEntryMap &log_entry_map);
+	//void onLogEntry(const LogEntryMap &log_entry_map);
 };
 
 }
 }
 
-// signal logEntry() must not be used by queued connection to avoid recursive logging
+// signal logEntry() must not be used by ???queued??? (why?, direct connection should IMO stay here) connection to avoid recursive logging
 // finaly I've found that qMessageHandler itself is recursion safe
-//Q_DECLARE_METATYPE(qf::core::LogEntryMap)
+Q_DECLARE_METATYPE(qf::core::LogEntryMap)
 
 #endif // QF_CORE_LOGDEVICE_H

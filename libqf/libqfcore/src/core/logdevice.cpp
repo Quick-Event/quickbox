@@ -433,6 +433,9 @@ QString LogEntryMap::toString() const
 SignalLogDevice::SignalLogDevice(QObject *parent)
 	: Super(parent)
 {
+	//qRegisterMetaType<qf::core::LogEntryMap>("qf::core::LogEntryMap");
+	connect(this, &SignalLogDevice::__logEntry, this, &SignalLogDevice::logEntry, Qt::QueuedConnection);
+	//connect(this, &SignalLogDevice::__logEntry, this, &SignalLogDevice::onLogEntry);
 }
 
 SignalLogDevice::~SignalLogDevice()
@@ -450,6 +453,12 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 {
 	QString domain = prettyDomain(domainFromContext(context));
 	LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
-	emit logEntry(m);
+	//fprintf(stderr, "emit -------------------->\n");
+	emit __logEntry(m);
 }
-
+/*
+void SignalLogDevice::onLogEntry(const LogEntryMap &log_entry_map)
+{
+	fprintf(stderr, "emit <<<<<<<<<<<<<<<<<<<<<<<<\n");
+}
+*/
