@@ -58,7 +58,7 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="430"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 Nie można znaleźć pola tabeli dla indeksu kolumny: %1 (wiersz indeksu: %3)</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="455"/>
@@ -108,19 +108,19 @@
 <context>
     <name>qf::core::utils::CLIOptions</name>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="71"/>
-        <source>Abort application on exception</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/utils/clioptions.cpp" line="72"/>
-        <source>Print help</source>
-        <translation type="unfinished"></translation>
+        <source>Abort application on exception</source>
+        <translation>Przerwij aplikację na wyjątek</translation>
     </message>
     <message>
         <location filename="src/utils/clioptions.cpp" line="73"/>
+        <source>Print help</source>
+        <translation>Drukuj pomoc</translation>
+    </message>
+    <message>
+        <location filename="src/utils/clioptions.cpp" line="74"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfiguracja nazwy, jest ładowana z {app-name}[.conf] jeśli plik istnieje w {config-path}</translation>
     </message>
 </context>
 </TS>

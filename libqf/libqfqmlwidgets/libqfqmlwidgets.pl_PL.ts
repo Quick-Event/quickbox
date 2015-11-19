@@ -15,6 +15,122 @@
     </message>
 </context>
 <context>
+    <name>qf::qmlwidgets::ExportTableViewWidget</name>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formularz</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="30"/>
+        <source>CSV options</source>
+        <translation>Opcje CSV</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="42"/>
+        <source>header</source>
+        <translation>Nagłówek</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="60"/>
+        <source>lines from</source>
+        <translation>Linie z</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="89"/>
+        <source>to</source>
+        <translation>do</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="102"/>
+        <source>value -1 means all lines</source>
+        <translation>Wartość 1 oznacza wszystkie linie</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="147"/>
+        <source>codec</source>
+        <translation>kodek</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="178"/>
+        <source>separator</source>
+        <translation>rozdzielacz</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="186"/>
+        <source>other</source>
+        <translation>inne</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="202"/>
+        <source>,</source>
+        <translation>,</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="224"/>
+        <source>Tab</source>
+        <translation>Karta</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="237"/>
+        <source>quotes</source>
+        <translation>Notowania</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="243"/>
+        <source>alwa&amp;ys</source>
+        <translation>zaws&amp;ze</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="250"/>
+        <source>when necessary</source>
+        <translation>Kiedy konieczne</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="260"/>
+        <source>ne&amp;ver</source>
+        <translation>ni&amp;gdy</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="269"/>
+        <source>quote char</source>
+        <translation>Znak notowania</translation>
+    </message>
+    <message>
+        <location filename="src/exporttableviewwidget.ui" line="282"/>
+        <source>&quot;</source>
+        <translation>&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>qf::qmlwidgets::HeaderView</name>
+    <message>
+        <location filename="src/headerview.cpp" line="62"/>
+        <source>Resize section to contents</source>
+        <translation>Zmień rozmiar sekcji w stosunku do zawartości</translation>
+    </message>
+    <message>
+        <location filename="src/headerview.cpp" line="63"/>
+        <source>Resize all sections to contents</source>
+        <translation>Zmień rozmiar wszystkich sekcji w stosunku do zawartości</translation>
+    </message>
+    <message>
+        <location filename="src/headerview.cpp" line="64"/>
+        <source>Hide section</source>
+        <translation>Ukryj sekcję</translation>
+    </message>
+    <message>
+        <location filename="src/headerview.cpp" line="65"/>
+        <source>Show all sections</source>
+        <translation>Pokaż wszystkie sekcje</translation>
+    </message>
+    <message>
+        <location filename="src/headerview.cpp" line="66"/>
+        <source>Sections in natural order</source>
+        <translation>Sekcje w naturalnym porządku</translation>
+    </message>
+</context>
+<context>
     <name>qf::qmlwidgets::SaveOptionsWidget</name>
     <message>
         <location filename="src/saveoptionswidget.ui" line="14"/>
@@ -31,305 +147,315 @@
 <context>
     <name>qf::qmlwidgets::TableView</name>
     <message>
-        <location filename="src/tableview.cpp" line="73"/>
+        <location filename="src/tableview.cpp" line="76"/>
         <source>Right click for menu.</source>
         <translation>Klikiij prawym aby wybrać menu.</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="585"/>
+        <location filename="src/tableview.cpp" line="588"/>
         <source>Enter value</source>
         <translation>Wprowadź wartość</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="585"/>
+        <location filename="src/tableview.cpp" line="588"/>
         <source>new value:</source>
         <translation>Nowa wartość:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="661"/>
+        <location filename="src/tableview.cpp" line="687"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz plik</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="673"/>
+        <location filename="src/tableview.cpp" line="699"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Otwórz plik</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1350"/>
+        <location filename="src/tableview.cpp" line="765"/>
+        <source>Save as ...</source>
+        <translation>Zapisz jako ...</translation>
+    </message>
+    <message>
+        <location filename="src/tableview.cpp" line="771"/>
+        <source>Cannot open file &apos;%1&apos; for writing.</source>
+        <translation>Nie można otworzyć pliku  %1 do zapisu.</translation>
+    </message>
+    <message>
+        <location filename="src/tableview.cpp" line="1448"/>
         <source>Resize columns to contents</source>
         <translation>Dopasuj kolumny do zawartości</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1359"/>
+        <location filename="src/tableview.cpp" line="1457"/>
         <source>Reset columns settings</source>
         <translation>Resetuj ustawienia kolumn</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1360"/>
+        <location filename="src/tableview.cpp" line="1458"/>
         <source>Reset column widths and positions.</source>
         <translation>Resetuj szerokość kolumn i pozycji.</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1369"/>
+        <location filename="src/tableview.cpp" line="1467"/>
         <source>Reload</source>
         <translation>Załaduj ponownie</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1371"/>
+        <location filename="src/tableview.cpp" line="1469"/>
         <source>Ctrl+R</source>
         <comment>reload SQL table</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1379"/>
+        <location filename="src/tableview.cpp" line="1477"/>
         <source>Copy</source>
         <translation>Kopiuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1381"/>
+        <location filename="src/tableview.cpp" line="1479"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1389"/>
+        <location filename="src/tableview.cpp" line="1487"/>
         <source>Copy special</source>
         <translation>Kopiuj specjalnie</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1399"/>
+        <location filename="src/tableview.cpp" line="1497"/>
         <source>Paste</source>
         <translation>Wklej</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1401"/>
+        <location filename="src/tableview.cpp" line="1499"/>
         <source>Ctrl+V</source>
         <comment>Paste rows</comment>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1409"/>
+        <location filename="src/tableview.cpp" line="1507"/>
         <source>Insert row</source>
         <translation>Wstaw wiersz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1410"/>
+        <location filename="src/tableview.cpp" line="1508"/>
         <source>Ctrl+Ins</source>
         <comment>insert row SQL table</comment>
         <translation>Ctrl+Ins</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1418"/>
+        <location filename="src/tableview.cpp" line="1516"/>
         <source>Delete selected rows</source>
         <translation>Usuń wybrane wiersze</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1419"/>
+        <location filename="src/tableview.cpp" line="1517"/>
         <source>Ctrl+Del</source>
         <comment>delete row SQL table</comment>
         <translation>Ctrl+Del</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1427"/>
+        <location filename="src/tableview.cpp" line="1525"/>
         <source>Post row edits</source>
         <translation>Dodaj edycję wierszy</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1429"/>
+        <location filename="src/tableview.cpp" line="1527"/>
         <source>Ctrl+Return</source>
         <comment>post row SQL table</comment>
         <translation>Ctrl+Return</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1437"/>
+        <location filename="src/tableview.cpp" line="1535"/>
         <source>Revert row edits</source>
         <translation>Przywróć zmiany wierszy</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1439"/>
+        <location filename="src/tableview.cpp" line="1537"/>
         <source>Ctrl+Z</source>
         <comment>revert edited row</comment>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1447"/>
+        <location filename="src/tableview.cpp" line="1545"/>
         <source>Clone row</source>
         <translation>Klonuj wiersz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1452"/>
+        <location filename="src/tableview.cpp" line="1550"/>
         <source>Ctrl+D</source>
         <comment>insert row copy</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1459"/>
+        <location filename="src/tableview.cpp" line="1557"/>
         <source>Zobrazit ve formulari</source>
         <translation>Wyświetl w formularzu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1461"/>
+        <location filename="src/tableview.cpp" line="1559"/>
         <source>Zobrazit radek v formulari pro cteni</source>
         <translation>Pokaż wiersz w formie do odczytu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1468"/>
+        <location filename="src/tableview.cpp" line="1566"/>
         <source>Upravit ve formulari</source>
         <translation>Edytuj w formularzu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1470"/>
+        <location filename="src/tableview.cpp" line="1568"/>
         <source>Upravit radek ve formulari</source>
         <translation>Edytuj wiersz w formularzu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1499"/>
+        <location filename="src/tableview.cpp" line="1597"/>
         <source>Filter table</source>
         <translation>Filtruj tabelę</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1503"/>
+        <location filename="src/tableview.cpp" line="1601"/>
         <source>Ctrl+F</source>
         <comment>filter table</comment>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1510"/>
+        <location filename="src/tableview.cpp" line="1608"/>
         <source>Edit cell content</source>
         <translation>Edytuj zawartość komurek</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1512"/>
+        <location filename="src/tableview.cpp" line="1610"/>
         <source>Ctrl+Shift+T</source>
         <comment>Edit cell content</comment>
         <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1520"/>
+        <location filename="src/tableview.cpp" line="1618"/>
         <source>Save BLOB</source>
         <translation>Zapisz BLOB</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1529"/>
+        <location filename="src/tableview.cpp" line="1627"/>
         <source>Load BLOB from file</source>
         <translation>Załaduj BLOB z pliku</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1538"/>
+        <location filename="src/tableview.cpp" line="1636"/>
         <source>Insert rows statement</source>
         <translation>Wstaw komunikat do wiersza</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1547"/>
+        <location filename="src/tableview.cpp" line="1645"/>
         <source>Set NULL in selection</source>
         <translation>Ustaw NULL przy wyborze</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1549"/>
+        <location filename="src/tableview.cpp" line="1647"/>
         <source>Ctrl+Shift+L</source>
         <comment>Set NULL in selection</comment>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1557"/>
+        <location filename="src/tableview.cpp" line="1655"/>
         <source>Set value in selection</source>
         <translation>Ustaw wybraną wartość przy wyborze</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1558"/>
+        <location filename="src/tableview.cpp" line="1656"/>
         <source>Ctrl+Shift+E</source>
         <comment>Set value in selection</comment>
         <translation>Ctrl+Shift+E</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1566"/>
+        <location filename="src/tableview.cpp" line="1664"/>
         <source>Generate sequence in selection</source>
         <translation>Wygeneruj sekwencje przy wyborze</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1575"/>
+        <location filename="src/tableview.cpp" line="1673"/>
         <source>Select</source>
         <translation>Wybierz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1582"/>
+        <location filename="src/tableview.cpp" line="1680"/>
         <source>Select current column</source>
         <translation>Wybierz bieżącą kolumnę</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1589"/>
+        <location filename="src/tableview.cpp" line="1687"/>
         <source>Select current row</source>
         <translation>Wybierz bieżący wiersz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1597"/>
+        <location filename="src/tableview.cpp" line="1695"/>
         <source>Calculate</source>
         <translation>Przelicz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1604"/>
+        <location filename="src/tableview.cpp" line="1702"/>
         <source>Sum column</source>
         <translation>Sumuj kolumny</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1610"/>
+        <location filename="src/tableview.cpp" line="1708"/>
         <source>Sum selection</source>
         <translation>Sumuj wybrane</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1617"/>
+        <location filename="src/tableview.cpp" line="1715"/>
         <source>Export</source>
         <translation>Eksportuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1624"/>
+        <location filename="src/tableview.cpp" line="1722"/>
         <source>Report</source>
         <translation>Raportuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1631"/>
-        <location filename="src/tableview.cpp" line="1669"/>
+        <location filename="src/tableview.cpp" line="1729"/>
+        <location filename="src/tableview.cpp" line="1767"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1638"/>
+        <location filename="src/tableview.cpp" line="1736"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1646"/>
+        <location filename="src/tableview.cpp" line="1744"/>
         <source>XLS - MS Excel</source>
         <translation>XLS - MS Excel</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1654"/>
+        <location filename="src/tableview.cpp" line="1752"/>
         <source>XML (MS Excel 2003)</source>
         <translation>XML (MS Excel 2003)</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1662"/>
+        <location filename="src/tableview.cpp" line="1760"/>
         <source>Import</source>
         <translation>Importuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1760"/>
+        <location filename="src/tableview.cpp" line="1858"/>
         <source>Enter start value</source>
         <translation>Wprowadź wartość początkową</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1760"/>
+        <location filename="src/tableview.cpp" line="1858"/>
         <source>start value:</source>
         <translation>Wartość początkowa:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1899"/>
+        <location filename="src/tableview.cpp" line="1997"/>
         <source>Do you realy want to remove row?</source>
         <translation>Czy na pewno chcesz usunąć wiersz?</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1902"/>
+        <location filename="src/tableview.cpp" line="2000"/>
         <source>Do you realy want to remove all selected rows?</source>
         <translation>Czy na pewno chcesz usunąć wszystkie zaznaczone wiersze?</translation>
     </message>
@@ -466,7 +592,7 @@
     <message>
         <location filename="src/dialogs/previewdialog.cpp" line="51"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation>Nie można otworzyć pliku  %1 do zapisu.</translation>
+        <translation>Nie można otworzyć pliku  %1 do odczytu.</translation>
     </message>
 </context>
 <context>
@@ -544,6 +670,86 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="67"/>
         <source>replace escapes</source>
         <translation>Zastąp wyjście</translation>
+    </message>
+</context>
+<context>
+    <name>qf::qmlwidgets::internal::TableViewChooseColumnsWidget</name>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formularz</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="32"/>
+        <source>exported columns</source>
+        <translation>Kolumny eksportowane</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="40"/>
+        <source>shift selected column up</source>
+        <translation>Przesuń wybraną kolumnę wyżej</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="43"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="53"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="63"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="110"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="124"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="138"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="152"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="50"/>
+        <source>shift selected column down</source>
+        <translation>Przesuń wybrane kolumny w dół</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="60"/>
+        <source>Remove selected columns</source>
+        <translation>Usuń wybrane kolumny</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="99"/>
+        <source>source columns</source>
+        <translation>Kolumny źródłowe</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="107"/>
+        <source>select all</source>
+        <translation>Zaznacz wszystko</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="121"/>
+        <source>select none</source>
+        <translation>Nic nie zaznaczaj</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="135"/>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="149"/>
+        <source>invert selection</source>
+        <translation>Odwróć wybór</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="182"/>
+        <source>model</source>
+        <translation>model</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="196"/>
+        <source>table</source>
+        <translation>tabela</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.cpp" line="28"/>
+        <source>name</source>
+        <translation>nazwa</translation>
+    </message>
+    <message>
+        <location filename="src/internal/tableviewchoosecolumnswidget.cpp" line="28"/>
+        <source>width</source>
+        <translation>szerokość</translation>
     </message>
 </context>
 <context>
@@ -772,81 +978,60 @@
 <context>
     <name>qf::qmlwidgets::reports::TableViewChooseColumnsWidget</name>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Formularz</translation>
+        <translation type="vanished">Formularz</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="32"/>
         <source>exported columns</source>
-        <translation>Kolumny eksportowane</translation>
+        <translation type="vanished">Kolumny eksportowane</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="40"/>
         <source>shift selected column up</source>
-        <translation>Przesuń wybraną kolumnę wyżej</translation>
+        <translation type="vanished">Przesuń wybraną kolumnę wyżej</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="43"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="53"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="63"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="110"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="124"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="138"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="152"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="vanished">...</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="50"/>
         <source>shift selected column down</source>
-        <translation>Przesuń wybrane kolumny w dół</translation>
+        <translation type="vanished">Przesuń wybrane kolumny w dół</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="60"/>
         <source>Remove selected columns</source>
-        <translation>Usuń wybrane kolumny</translation>
+        <translation type="vanished">Usuń wybrane kolumny</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="99"/>
         <source>source columns</source>
-        <translation>Kolumny źródłowe</translation>
+        <translation type="vanished">Kolumny źródłowe</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="107"/>
         <source>select all</source>
-        <translation>Zaznacz wszystko</translation>
+        <translation type="vanished">Zaznacz wszystko</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="121"/>
         <source>select none</source>
-        <translation>Nic nie zaznaczaj</translation>
+        <translation type="vanished">Nic nie zaznaczaj</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="135"/>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="149"/>
         <source>invert selection</source>
-        <translation>Odwróć wybór</translation>
+        <translation type="vanished">Odwróć wybór</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="182"/>
         <source>model</source>
-        <translation>model</translation>
+        <translation type="vanished">model</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.ui" line="196"/>
         <source>table</source>
-        <translation>tabela</translation>
+        <translation type="vanished">tabela</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.cpp" line="28"/>
         <source>name</source>
-        <translation>nazwa</translation>
+        <translation type="vanished">nazwa</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.cpp" line="28"/>
         <source>width</source>
-        <translation>szerokość</translation>
+        <translation type="vanished">szerokość</translation>
     </message>
 </context>
 </TS>
