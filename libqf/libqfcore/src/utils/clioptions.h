@@ -30,7 +30,7 @@ namespace utils {
 		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
 		return qvariant_cast<ptype>(val); \
 	} \
-	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).value().isValid();} \
+	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest), false).value().isValid();} \
 	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
 
 #define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
@@ -38,7 +38,7 @@ namespace utils {
 		QVariant val = value(pkey); \
 		return qvariant_cast<ptype>(val); \
 	} \
-	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).value().isValid();} \
+	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest), false).value().isValid();} \
 	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
 
 class QFCORE_DECL_EXPORT CLIOptions : public QObject
