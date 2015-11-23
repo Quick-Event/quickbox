@@ -39,6 +39,8 @@
 #include <QTextEdit>
 #include <QInputDialog>
 #include <QFileDialog>
+#include <QPainter>
+#include <QToolButton>
 
 
 namespace qfc = qf::core;
@@ -50,10 +52,6 @@ TableView::TableView(QWidget *parent) :
 	Super(parent), framework::IPersistentSettings(this)
 {
 	qfLogFuncFrame() << this;
-	m_proxyModel = new TableViewProxyModel(this);
-	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
-	m_proxyModel->setDynamicSortFilter(false);
-	Super::setModel(m_proxyModel);
 	setItemDelegate(new TableItemDelegate(this));
 	{
 		HeaderView *h = new HeaderView(Qt::Horizontal, this);
@@ -68,19 +66,19 @@ TableView::TableView(QWidget *parent) :
 
 	createActions();
 	{
-		/// top left corner actions
-		foreach(QAbstractButton *bt, findChildren<QAbstractButton*>()) {
-			if(bt->metaObject()->className() == QString("QTableCornerButton")) { /// src/gui/itemviews/qtableview.cpp:103
-				//qfInfo() << "addidng actions";
-				bt->setText("M");
-				bt->setToolTip(trUtf8("Right click for menu."));
-				bt->setContextMenuPolicy(Qt::ActionsContextMenu);
-				QList<QAction*> lst;
-				Q_FOREACH(auto a, contextMenuActionsForGroups(AllActions))
-					lst << a;
-				bt->addActions(lst);
-			};
-		}
+		auto *style = Style::instance();
+		auto *bt = new QToolButton(this);
+		bt->setAutoRaise(true);
+		bt->setIcon(style->icon("menu"));
+		bt->setToolTip(trUtf8("Left click selects all, right click for menu."));
+		QObject::connect(bt, &QPushButton::clicked, this, &QTableView::selectAll);
+		//qfInfo() << "addidng actions";
+		bt->setContextMenuPolicy(Qt::ActionsContextMenu);
+		QList<QAction*> lst;
+		Q_FOREACH(auto a, contextMenuActionsForGroups(AllActions))
+			lst << a;
+		bt->addActions(lst);
+		m_leftTopCornerButton = bt;
 	}
 	m_contextMenuActions = standardContextMenuActions();
 	setContextMenuPolicy(Qt::DefaultContextMenu);
@@ -88,12 +86,32 @@ TableView::TableView(QWidget *parent) :
 	// queued connection is important since the message box showing the exception, can steal cell editor focus and emit next postRow request,
 	// which can cause second exception in the row
 	connect(this, &TableView::sqlException, this, &TableView::onSqlException, Qt::QueuedConnection);
+
+	m_proxyModel = new TableViewProxyModel(this);
+	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
+	m_proxyModel->setDynamicSortFilter(false);
+	Super::setModel(m_proxyModel);
 }
 
 TableView::~TableView()
 {
 	qfLogFuncFrame() << this;
 	savePersistentSettings();
+}
+
+QWidget *TableView::cornerWidget() const
+{
+	foreach(QAbstractButton *bt, findChildren<QAbstractButton*>(QString(), Qt::FindDirectChildrenOnly)) {
+		if(bt->metaObject()->className() == QString("QTableCornerButton")) { /// src/gui/itemviews/qtableview.cpp:103
+			return bt;
+		};
+	}
+	return nullptr;
+}
+
+QAbstractButton *TableView::leftTopCornerButton() const
+{
+	return m_leftTopCornerButton;
 }
 
 QSortFilterProxyModel *TableView::sortFilterProxyModel() const
@@ -1438,6 +1456,19 @@ void TableView::contextMenuEvent(QContextMenuEvent *e)
 	Q_FOREACH(auto a, contextMenuActions())
 		lst << a;
 	QMenu::exec(lst, viewport()->mapToGlobal(e->pos()));
+}
+
+void TableView::updateGeometries()
+{
+	Super::updateGeometries();
+	QWidget *corner_widget = cornerWidget();
+	if(corner_widget && corner_widget->isVisible()) {
+		leftTopCornerButton()->setVisible(true);
+		leftTopCornerButton()->setGeometry(cornerWidget()->geometry());
+	}
+	else {
+		leftTopCornerButton()->setVisible(false);
+	}
 }
 
 void TableView::createActions()

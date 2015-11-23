@@ -12,6 +12,7 @@
 
 class QAbstractProxyModel;
 class QSortFilterProxyModel;
+class QAbstractButton;
 
 namespace qf {
 namespace qmlwidgets {
@@ -161,6 +162,8 @@ protected:
 	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QContextMenuEvent *e) Q_DECL_OVERRIDE;
 
+	void updateGeometries() Q_DECL_OVERRIDE;
+
 	bool edit(const QModelIndex& index, EditTrigger trigger, QEvent* event) Q_DECL_OVERRIDE;
 	void commitData(QWidget *editor) Q_DECL_OVERRIDE;
 	void currentChanged(const QModelIndex& current, const QModelIndex& previous) Q_DECL_OVERRIDE;
@@ -187,6 +190,9 @@ protected:
 private:
 	/// hide this function do disable filter proxymodel bypassing
 	void setModel(QAbstractItemModel *model) Q_DECL_OVERRIDE;
+
+	QWidget* cornerWidget() const;
+	QAbstractButton* leftTopCornerButton() const;
 protected:
 	QString m_seekString;
 	QMap<QString, Action*> m_actions;
@@ -195,6 +201,7 @@ protected:
 	QList<Action*> m_toolBarActions;
 	QList<Action*> m_contextMenuActions;
 	TableViewProxyModel *m_proxyModel;
+	QAbstractButton *m_leftTopCornerButton = nullptr;
 };
 
 }}
