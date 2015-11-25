@@ -1137,7 +1137,8 @@ void TableView::loadPersistentSettings()
 
 		QByteArray header_state = settings.value("horizontalheader").toString().toLatin1();
 		header_state = QByteArray::fromBase64(header_state);
-		horiz_header->restoreState(header_state);
+		if(!header_state.isEmpty())
+			horiz_header->restoreState(header_state);
 
 #if 0
 		QString s = settings.value("horizontalheader").toString();
