@@ -35,8 +35,10 @@ static QByteArray code_byte(quint8 b)
 		ret.append(b);
 	}
 	else {
-		buff[0] = b%10 + '0';
-		buff[1] = b/10 + 'A';
+		quint8 b1 = b%10;
+		b /= 10;
+		buff[0] = b1 + '0';
+		buff[1] = (b1 % 2)? b + 'A': b + 'a';
 		ret.append(buff);
 	}
 	return ret;
@@ -77,10 +79,11 @@ static quint8 take_byte(const QByteArray &ba, int &i)
 	}
 	else {
 		quint8 b1 = b;
-		b = b1 - '0';
+		b1 = b1 - '0';
 		if(i < ba.size()) {
-			b1 = ba[i++];
-			b +=  10 * (b1 - 'A');
+			b = ba[i++];
+			b = (b1 % 2)? (b - 'A'): (b - 'a');
+			b = 10 * b + b1;
 		}
 		else {
 			qfError() << QF_FUNC_NAME << ": byte array corupted:" << ba.constData();
