@@ -52,7 +52,7 @@ void ConnectionSettings::setServerUser(const QString &s)
 
 void ConnectionSettings::setServerPassword(const QString &s)
 {
-	QByteArray ba = s_crypt.encrypt(s, 32);
+	QByteArray ba = s_crypt.encrypt(s.toUtf8(), 32);
 	setValue(EVENT + '/' + DATA_STORAGE + '/' + SQL_SERVER + '/' + PASSWORD, QString::fromLatin1(ba));
 }
 
@@ -91,8 +91,8 @@ QString ConnectionSettings::serverUser()
 
 QString ConnectionSettings::serverPassword()
 {
-	QByteArray ba = value(EVENT + '/' + DATA_STORAGE + '/' + SQL_SERVER + '/' + PASSWORD).toString().toUtf8();
-	return s_crypt.decrypt(ba);
+	QByteArray ba = value(EVENT + '/' + DATA_STORAGE + '/' + SQL_SERVER + '/' + PASSWORD).toString().toLatin1();
+	return QString::fromUtf8(s_crypt.decrypt(ba));
 }
 
 QString ConnectionSettings::singleWorkingDir()

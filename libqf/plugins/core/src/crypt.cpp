@@ -15,11 +15,11 @@ void Crypt::initGenerator(unsigned a, unsigned b, unsigned max_rand)
 
 QString Crypt::encrypt(const QString &s, int min_length) const
 {
-	return QString::fromLatin1(m_crypt.encrypt(s, min_length));
+	return QString::fromLatin1(m_crypt.encrypt(s.toUtf8(), min_length));
 }
 
 QString Crypt::decrypt(const QString &s) const
 {
-	return m_crypt.decrypt(s.toLatin1());
+	return QString::fromUtf8(m_crypt.decrypt(s.toLatin1()));
 }
 
