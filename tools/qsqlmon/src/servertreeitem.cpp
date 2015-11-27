@@ -197,7 +197,7 @@ void Connection::Params::setParam(const QString& name, const QVariant &value)
 	QVariant val = value;
 	if(name == "password") {
 		//qfDebug() << "password:" << s;
-		val = theApp()->crypt().encrypt(value.toString(), 32);
+		val = theApp()->crypt().encrypt(value.toString().toUtf8(), 32);
 	}
 	(*this)[name] = val;
 }

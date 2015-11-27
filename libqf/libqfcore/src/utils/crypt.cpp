@@ -42,10 +42,9 @@ static QByteArray code_byte(quint8 b)
 	return ret;
 }
 
-QByteArray Crypt::encrypt(const QString &s, int min_length) const
+QByteArray Crypt::encrypt(const QByteArray &data, int min_length) const
 {
 	QByteArray dest;
-	QByteArray src = s.toUtf8();
 
 	/// nahodne se vybere hodnota, kterou se string zaxoruje a ta se ulozi na zacatek
 	unsigned val = (unsigned)qrand();
@@ -57,9 +56,9 @@ QByteArray Crypt::encrypt(const QString &s, int min_length) const
 	dest += code_byte(b);
 
 	/// a tou se to zaxoruje
-	for(int i=0; i<src.count(); i++) {
+	for(int i=0; i<data.count(); i++) {
 		val = m_generator(val);
-		b = ((quint8)src[i]);
+		b = ((quint8)data[i]);
 		b = b ^ (quint8)val;
 		dest += code_byte(b);
 	}
@@ -108,10 +107,10 @@ QByteArray Crypt::decodeArray(const QByteArray &ba) const
 	return ret;
 }
 
-QString Crypt::decrypt(const QByteArray &_ba) const
+QByteArray Crypt::decrypt(const QByteArray &data) const
 {
 	/// odstran vsechny bile znaky, v zakodovanem textu nemohou byt, muzou to byt ale zalomeni radku
-	QByteArray ba = _ba.simplified();
+	QByteArray ba = data.simplified();
 	ba.replace(' ', "");
 	ba = decodeArray(ba);
 	///odstran \0 na konci, byly tam asi umele pridany
@@ -126,5 +125,5 @@ QString Crypt::decrypt(const QByteArray &_ba) const
 		}
 	}
 	ba = ba.mid(0, pos);
-	return QString::fromUtf8(ba);
+	return ba;
 }
