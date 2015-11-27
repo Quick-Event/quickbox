@@ -268,8 +268,8 @@ bool DataDocument::saveData()
 		//qfTrash() << "\ttable type:" << model()->table()->metaObject()->className();
 		QVariant old_id = dataId();
 		model()->postRow(currentModelRow(), qf::core::Exception::Throw);
-		if(mode() == ModeInsert) {
-			QVariant id = value(idFieldName());
+		QVariant id = value(idFieldName());
+		if(!(old_id == id)) {
 			qfDebug() << "\t id field name:" << idFieldName() << "inserted ID:" << id.toString();
 			setDataId(id);
 			emit valueChanged(idFieldName(), old_id, id);/// to refresh also widgets with dataId() == "id"

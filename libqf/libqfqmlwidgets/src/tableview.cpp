@@ -999,14 +999,19 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 					break;
 				}
 			}
-			if(ri < 0 || ri >= tmd->rowCount()) {
-				qfWarning() << "Cannot find table row for id:" << id.toString() << "mode:" << mode;
+			if((ri < 0 || ri >= tmd->rowCount()) && currentIndex().row() >= 0) {
+				// this can happen if ID column value is changed
+				// reload current row to do the best
+				ri = currentIndex().row();
+				// set ID value to the new one
+				tmd->setValue(ri, idColumnName(), id);
+				tmd->setDirty(ri, idColumnName(), false);
 			}
-			else {
+			if(ri >= 0) {
 				if(mode == ModeEdit || mode == ModeView) {
 					int reloaded_row_cnt = tmd->reloadRow(ri);
 					if(reloaded_row_cnt != 1) {
-						qfWarning() << "Edited row id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
+						qfWarning() << "Edited row index:" << ri << "id:" << id.toString() << "reloaded in" << reloaded_row_cnt << "instances.";
 					}
 					updateRow(currentIndex().row());
 				}
