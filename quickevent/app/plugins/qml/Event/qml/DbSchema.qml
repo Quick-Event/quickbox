@@ -53,6 +53,7 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'code'; type: Int { } },
+				Field { name: 'altCode'; type: Int { } },
 				Field { name: 'outOfOrder'; 
 					type: Boolean { } 
 					defaultValue: false;

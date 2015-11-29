@@ -22,41 +22,10 @@ CardChecker
 		if(!course)
 			return checked_card;
 
-		var read_punches = read_card.punches;
+		var error_mis_punch = false;
 		var checked_punches = checked_card.punches;
-		for(var k=0; k<read_punches.length; k++) {
-			var read_punch = read_punches[k];
-			checked_punches.push({code: read_punch.code});
-		}
-
 		var course_codes = course.codes;
-		var error = false;
-		var check_ix = 0;
-		if(course_codes) {
-			for(var j=0; j<course_codes.length; j++) { //scan course codes
-				var course_code_record = course_codes[j];
-
-				for(var k=check_ix; k<checked_punches.length; k++) { //scan card
-					//var read_punch = read_punches[k];
-					var checked_punch = checked_punches[k];
-					if(checked_punch.code === course_code_record.code /*|| checked_punch.code === course_code_record.altcode*/) {
-						checked_punch.position = course_code_record.position;
-						check_ix = k + 1;
-						break;
-					}
-				}
-				if(k >= checked_punches.length) {// course code not found in read_card punches
-					//var nocheck = course_code_record.outoforder; for postgres, Query.values() should return lower case keys
-					var nocheck = course_code_record.outoforder;
-					if(!nocheck)
-						error = true;
-				}
-			}
-		}
-
-		if(read_card.finishTime === 0xEEEE)
-			error = true;
-		checked_card.isOk = !error
+		var read_punches = read_card.punches;
 
 		//........... normalize times .....................
 		// checked card times are in msec relative to run start time
@@ -86,33 +55,59 @@ CardChecker
 		}
 		
 		checked_card.finishTimeMs = null;
-		if(read_card.finishTime !== 0xEEEE) {
+		if(read_card.finishTime === 0xEEEE) {
+			error_mis_punch = true;
+		}
+		else {
 			checked_card.finishTimeMs = root.msecIntervalAM(start00sec * 1000, read_card.finishTime * 1000);
+			if(read_card.finishTimeMs)
+				checked_card.finishTimeMs += read_card.finishTimeMs;
 		}
 
-		var prev_position = 0;
-		var prev_position_stp = 0;
-		for(var k=0; k<read_punches.length; k++) { //compute lap times
-			var read_punch = read_punches[k];
-			var checked_punch = checked_punches[k];
-			//console.info(checked_card.stageStartTimeMs, checked_card.startTimeMs, read_punch.time, read_punch.msec);
-			var read_punch_time_ms = read_punch.time * 1000;
-			if(read_punch.msec)
-				read_punch_time_ms += read_punch.msec;
-			checked_punch.stpTimeMs = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, read_punch_time_ms);
-			checked_punch.lapTimeMs = 0;
-			//console.info(k, prev_position, checked_punch.position, checked_punch.code);
-			if(checked_punch.position > prev_position) {  // positions are starting with 1, like 1,2,3,4,5
-				if(checked_punch.position - 1 == prev_position) {  
-					checked_punch.lapTimeMs = checked_punch.stpTimeMs - prev_position_stp;
+		var read_punch_check_ix = 0;
+		for(var j=0; j<course_codes.length; j++) {
+			var course_code = course_codes[j];
+			var checked_punch = {code: course_code.code};
+			checked_punches.push(checked_punch);
+			for(var k=read_punch_check_ix; k<read_punches.length; k++) { //scan card
+				var read_punch = read_punches[k];
+				if(read_punch.code === course_code.code || read_punch.code === course_code.altcode) {
+					var read_punch_time_ms = read_punch.time * 1000;
+					if(read_punch.msec)
+						read_punch_time_ms += read_punch.msec;
+					checked_punch.stpTimeMs = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, read_punch_time_ms);
+					break;
 				}
-				prev_position = checked_punch.position;
-				prev_position_stp = checked_punch.stpTimeMs;
-				//console.info(k, checked_punch.position, checked_punch.code, checked_punch.stpTimeMs, checked_punch.lapTimeMs);
+			}
+			if(k === read_punches.length) {
+				// code not found
+				if(!course_code.outoforder) // for postgres, Query.values() should return lower case keys
+					error_mis_punch = true;
+			}
+			else {
+				read_punch_check_ix = k + 1;
 			}
 		}
-		checked_card.finishStpTimeMs = root.msecIntervalAM(checked_card.startTimeMs, checked_card.finishTimeMs);
-		checked_card.finishLapTimeMs = checked_card.finishStpTimeMs - prev_position_stp;
+
+		var finish_punch = {
+			code: root.FINISH_PUNCH_CODE,
+			stpTimeMs: root.msecIntervalAM(checked_card.startTimeMs, checked_card.finishTimeMs)
+		}
+		checked_punches.push(finish_punch);
+
+		var prev_stp_time_ms = 0;
+		for(k=0; k<checked_punches.length; k++) {
+			checked_punch = checked_punches[k];
+			if(checked_punch.stpTimeMs) {
+				if(prev_stp_time_ms !== null)
+					checked_punch.lapTimeMs = checked_punch.stpTimeMs - prev_stp_time_ms;
+				prev_stp_time_ms = checked_punch.stpTimeMs;
+			}
+			else {
+				prev_stp_time_ms = null;
+			}
+		}
+
 		console.debug("check result:", JSON.stringify(checked_card, null, 2));
 		return checked_card;
 	}

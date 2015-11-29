@@ -201,6 +201,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 	auto punch_list = checked_card.punches();
 	if(punch_list.count()) {
+		/*
 		{
 			CardReader::CheckedPunch finish_punch;
 			finish_punch.setPosition(FINISH_PUNCH_POS);
@@ -209,13 +210,16 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 			finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
 			punch_list << finish_punch;
 		}
+		*/
+		int position = 0;
 		for(auto v : punch_list) {
+			position++;
 			CardReader::CheckedPunch cp(v.toMap());
 			//qfInfo() << cp;
-			if(cp.position() > 0 && cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
+			if(cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
 				q.bindValue(QStringLiteral(":runId"), run_id);
 				q.bindValue(QStringLiteral(":code"), cp.code());
-				q.bindValue(QStringLiteral(":position"), cp.position());
+				q.bindValue(QStringLiteral(":position"), position);
 				q.bindValue(QStringLiteral(":stpTimeMs"), cp.stpTimeMs());
 				q.bindValue(QStringLiteral(":lapTimeMs"), cp.lapTimeMs());
 				q.exec(qf::core::Exception::Throw);

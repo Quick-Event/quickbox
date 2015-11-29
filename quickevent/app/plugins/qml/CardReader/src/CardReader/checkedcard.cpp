@@ -10,14 +10,25 @@ CheckedCard::CheckedCard(const QVariantMap &data)
 
 }
 
+int CheckedCard::timeMs() const
+{
+	QVariant v = punches().value(punches().count()  -1);
+	if(v.isValid()) {
+		CheckedPunch p(v.toMap());
+		return p.stpTimeMs();
+	}
+	return 0;
+}
+
 QString CheckedCard::toString() const
 {
 	QString ret;
 	QStringList punch_lst;
+	int position = 0;
 	for(auto v : punches()) {
 		CheckedPunch p(v.toMap());
-		punch_lst << QString("[%1(%2) %3 %4]")
-					 .arg(p.position())
+		punch_lst << QString("[%1. %2: %3 %4]")
+					 .arg(++position)
 					 .arg(p.code())
 					 .arg(quickevent::og::TimeMs(p.stpTimeMs()).toString())
 					 .arg(quickevent::og::TimeMs(p.lapTimeMs()).toString());

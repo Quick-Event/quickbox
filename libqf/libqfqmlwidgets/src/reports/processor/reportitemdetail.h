@@ -11,6 +11,7 @@ namespace reports {
 class QFQMLWIDGETS_DECL_EXPORT ReportItemDetail : public ReportItemFrame
 {
 	Q_OBJECT
+	Q_PROPERTY(int rowCount READ rowCount NOTIFY rowCountChanged)
 	Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentIndexChanged)
 private:
 	typedef ReportItemFrame Super;
@@ -24,6 +25,8 @@ public:
 	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
 
 	void resetCurrentIndex();
+	int rowCount();
+	Q_SIGNAL void rowCountChanged();
 public:
 	Q_INVOKABLE QVariant data(int row_no, const QString &field_name, int role = Qt::DisplayRole);
 	Q_INVOKABLE QVariant rowData(const QString &field_name, int role = Qt::DisplayRole);

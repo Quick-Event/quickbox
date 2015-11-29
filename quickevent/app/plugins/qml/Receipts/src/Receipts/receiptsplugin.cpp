@@ -102,9 +102,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	int course_id = checked_card.courseId();
 	int current_standings = 1;
 	int competitors_finished = 0;
-	QMap<int, int> best_laps; //< code->time
-	QMap<int, int> missing_codes; //< pos->code
-	QSet<int> out_of_order_codes;
+	QMap<int, int> best_laps; //< position->time
+	///QMap<int, int> missing_codes; //< pos->code
+	///QSet<int> out_of_order_codes;
+	/*
 	{
 		// load all codes as missing ones
 		qf::core::sql::QueryBuilder qb;
@@ -118,7 +119,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		qf::core::sql::Query q;
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		while (q.next()) {
-			int pos = q.value("position").toInt();
+			//int pos = q.value("position").toInt();
 			int code = q.value("code").toInt();
 			bool ooo = q.value("outOfOrder").toBool();
 			//class_codes << code;
@@ -127,6 +128,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				out_of_order_codes << code;
 		}
 	}
+	*/
 	{
 		qf::core::model::SqlTableModel model;
 		qf::core::sql::QueryBuilder qb;
@@ -240,14 +242,12 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			if(it.key() != QLatin1String("punches"))
 				tt.setValue(it.key(), it.value());
 		}
+		int position = 0;
 		for(auto v : checked_card.punches()) {
 			CardReader::CheckedPunch punch(v.toMap());
 			qfu::TreeTableRow ttr = tt.appendRow();
-			int position = punch.position();
+			++position;
 			int code = punch.code();
-			if(position > 0) {
-				missing_codes.remove(position);
-			}
 			ttr.setValue("position", position);
 			ttr.setValue("code", code);
 			ttr.setValue("stpTimeMs", punch.stpTimeMs());
@@ -259,6 +259,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				ttr.setValue("lossMs", loss);
 			}
 		}
+		/*
 		{
 			// runlaps table contains also finish time entry, it is under FINISH_PUNCH_POS
 			// currently best_laps[999] contains best finish lap time for this class
@@ -276,9 +277,10 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			//mc.insert(mc.count(), QVariantList() << 1 << 101);
 			tt.setValue("missingCodes", mc);
 		}
+		*/
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
-		//tt.setValue("cardNumber", checked_card.cardNumber());
+		tt.setValue("timeMs", checked_card.timeMs());
 
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();

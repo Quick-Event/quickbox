@@ -6,6 +6,8 @@ StyleSheet {
 	property alias textStyleDefault: tsDefault
 	property alias textStyleBig: tsBig
 	property alias textStyleBold: tsBold
+	property alias penBlack1: penBlack1
+	property alias penBlue1: penBlack1
 	objectName: "MyStyleSheet"
 	//basedOn: "by_name"
 	colors: [
@@ -22,6 +24,7 @@ StyleSheet {
 			width: 0.5
 		},
 		Pen {
+			id: penBlack1
 			name: "black1"
 			color: Color {def:Qt.black}
 			width: 1

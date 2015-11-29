@@ -17,6 +17,12 @@ using namespace qf::qmlwidgets::reports;
 BandDataModel::BandDataModel(QObject *parent) :
 	Super(parent)
 {
+	qfLogFuncFrame() << this;
+}
+
+BandDataModel::~BandDataModel()
+{
+	qfLogFuncFrame() << this;
 }
 
 QVariant BandDataModel::table(int row_no, const QString &table_name)

@@ -1,11 +1,11 @@
 #!/bin/sh
 
-DISTRO_VER=0.1.6
+DISTRO_VER=0.1.7
 
 WORK_DIR=/home/fanda/t/_distro
 DISTRO_NAME=quickevent-linux64
 # QT_DIR=/home/fanda/programs/qt/5.5/gcc
-QT_DIR=/home/fanda/programs/qt5.5/5.5/gcc_64
+QT_DIR=/home/fanda/programs/qt5/5.5/gcc_64
 BUILD_DIR=/home/fanda/proj/_build/quickbox-release
 DIST_DIR=$WORK_DIR/$DISTRO_NAME
 LIB_DIR=$DIST_DIR/lib

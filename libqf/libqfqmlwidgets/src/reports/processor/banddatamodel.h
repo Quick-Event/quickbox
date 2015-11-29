@@ -27,6 +27,7 @@ public:
 	typedef Qt::ItemDataRole DataRole;
 public:
 	explicit BandDataModel(QObject *parent = 0);
+	~BandDataModel() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_BOOL_IMPL2(d, D, ataValid, false)
 public:

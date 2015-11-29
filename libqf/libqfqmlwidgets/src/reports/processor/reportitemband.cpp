@@ -17,12 +17,12 @@ using namespace qf::qmlwidgets::reports;
 ReportItemBand::ReportItemBand(ReportItem *parent)
 	: Super(parent)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << this;
 }
 
 ReportItemBand::~ReportItemBand()
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << this;
 	QF_SAFE_DELETE(m_model);
 }
 
@@ -43,9 +43,11 @@ void ReportItemBand::setModelData(QVariant d)
 
 BandDataModel *ReportItemBand::model()
 {
+	//qfLogFuncFrame() << this << "m_model:" << m_model << "isDataValid:" << (m_model? m_model->isDataValid(): false);
 	if(!m_model || !m_model->isDataValid()) {
 		ReportItemDetail *parent_detail = nullptr;
 		QVariant dta = modelData();
+		//qfInfo() << this << "creating data model";
 		//qfInfo() << "1:" << dta;
 		if(!dta.isValid() || dta.userType() == QVariant::String) {
 			QString data_key = dta.toString();
@@ -69,7 +71,7 @@ BandDataModel *ReportItemBand::model()
 		//qfInfo() << "2:" << dta;
 		QF_SAFE_DELETE(m_model);
 		m_model = BandDataModel::createFromData(dta, this);
-		//qfError() << dta;
+		//qfError() << m_model;
 		QF_ASSERT(m_model != nullptr, "Bad data!", return m_model);
 		if(parent_detail)
 			connect(parent_detail, &ReportItemDetail::currentIndexChanged, m_model, &BandDataModel::invalidateData);
@@ -77,12 +79,12 @@ BandDataModel *ReportItemBand::model()
 	}
 	return m_model;
 }
-/*
-bool ReportItemBand::modelLoaded() const
+
+bool ReportItemBand::isModelLoaded()
 {
 	return (m_model != nullptr && m_model->isDataValid());
 }
-*/
+
 QVariant ReportItemBand::data(const QString &field_name, int role)
 {
 	qfLogFuncFrame() << "field_name:" << field_name;
@@ -112,6 +114,7 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 	}
 	auto *m = model(); // load model before rendering
 	PrintResult res = PR_PrintedOk;
+	qfDebug() << "model:" << m << "row count:" << m->rowCount();
 	if(m->rowCount() > 0) {
 		res = Super::printMetaPaint(out, bounding_rect);
 	}
@@ -209,81 +212,4 @@ void ReportItemBand::createChildItemsFromData()
 	//dumpObjectTree();
 }
 
-#if 0
-//==========================================================
-//                                    ReportItemBand
-//==========================================================
-ReportItemBand::ReportItemBand(ReportItem *parent)
-	: ReportItemFrame(parent), dataTableLoaded(false)
-{
-	qfLogFuncFrame();
-}
 
-ReportItemBand::~ReportItemBand()
-{
-	qfLogFuncFrame();
-}
-
-void ReportItemBand::resetIndexToPrintRecursively(bool including_para_texts)
-{
-	ReportItemFrame::resetIndexToPrintRecursively(including_para_texts);
-	dataTableLoaded = false;
-	ReportItemDetail *det = detail();
-	if(det) {
-		//qfInfo() << "resetCurrentRowNo() elid:" << det->element.attribute("id");
-		det->resetCurrentRowNo();
-	}
-}
-
-ReportItemDetail* ReportItemBand::detail()
-{
-	ReportItemDetail *ret = NULL;
-	for(int i=0; i<itemCount(); i++) {
-		ReportItem *it = itemAt(i);
-		ret = it->toDetail();
-		if(ret) break;
-	}
-	return ret;
-}
-
-qfu::TreeTable ReportItemBand::dataTable()
-{
-	//qfLogFuncFrame() << "dataTableLoaded:" << dataTableLoaded;
-	if(!dataTableLoaded) {
-		f_dataTable = data();
-		if(f_dataTable.isNull()) {
-			QString data_src = dataSource();
-			f_dataTable = findDataTable(data_src);
-		}
-		//qfu::TreeTable t =v.value<qfu::TreeTable>();
-		dataTableLoaded = true;
-	}
-	return f_dataTable;
-}
-
-ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
-{
-	qfLogFuncFrame() << this;
-	//qfInfo() << dataTable().toString();
-	/*--
-	if(dataTable().isNull() && !processor()->isDesignMode()) { /// pokud neni table (treba bez radku), band se vubec netiskne
-		PrintResult res;
-		res.value = PrintOk;
-		return res;
-	}
-	--*/
-	if(isHeaderOnBreak()) {
-		/// print everything except of detail again
-		for(int i=0; i<itemCount(); i++) {
-			ReportItem *it = itemAt(i);
-			if(it->toDetail() == NULL)
-				it->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-		}
-		indexToPrint = 0;
-	}
-	PrintResult res = ReportItemFrame::printMetaPaint(out, bounding_rect);
-	qfDebug() << "\tRETURN:" << res.toString();
-	return res;
-}
-
-#endif

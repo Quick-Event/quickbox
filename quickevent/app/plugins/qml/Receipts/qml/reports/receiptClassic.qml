@@ -39,6 +39,7 @@ Report {
 		border: Pen { basedOn: "blue05" }
 		Band {
 			id: bandCompetitor
+			objectName: "band_competitor"
 			modelData: "competitor"
 			width: "%"
 			Detail {
@@ -121,6 +122,7 @@ Report {
 		}
 		Band {
 			id: bandCard
+			objectName: "band_card"
 			modelData: "card"
 			width: "%"
 			Frame {
@@ -132,13 +134,13 @@ Report {
 					layout: Frame.LayoutHorizontal
 					Para {
 						id: paraCheck
-						width: 10
+						width: 11
 						text: "Check:"
 					}
 					Para {
 						htmlExportAttributes: {"lpt_textWidth": "9", "lpt_textAlign": "right"}
 						id: paraCheckTime
-						width: 14
+						width: 15
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
@@ -201,11 +203,13 @@ Report {
 				layout: Frame.LayoutHorizontal
 				expandChildrenFrames: true
 				fill: {
-					var pos = data(dc.currentIndex, "position");
-					if(!pos)
+					var tm = data(dc.currentIndex, "stpTimeMs");
+					if(!tm)
 						return brushError;
 					return brushNone;
 				}
+				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
+				textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
 				Cell {
 					id: cellPos
 					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
@@ -213,7 +217,7 @@ Report {
 					textHAlign: Frame.AlignRight
 					text: {
 						var pos = dc.data(dc.currentIndex, "position");
-						if(pos)
+						if(pos && dc.currentIndex < (dc.rowCount - 1))
 							return pos + ".";
 						return "";
 					}
@@ -223,7 +227,7 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 					width: 10
 					//textHAlign: Frame.AlignRight
-					text: dc.data(dc.currentIndex, "code");
+					text: (dc.currentIndex < (dc.rowCount - 1))? dc.data(dc.currentIndex, "code"): qsTr("FI");
 				}
 				Para {
 					id: cellStp
@@ -249,45 +253,10 @@ Report {
 			}
 			Frame {
 				width: "%"
-				htmlExportAttributes: {"lpt_borderTop": "-", "lpt_borderBottom": "="}
-				textStyle: myStyle.textStyleBold
-				topBorder: Pen { basedOn: "black1" }
 				bottomBorder: Pen { basedOn: "black2" }
-				Frame {
-					htmlExportAttributes: {"lpt_textStyle": "bold"}
-					layout: Frame.LayoutHorizontal
-					Cell {
-						htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
-						width: cellPos.width
-						textHAlign: Frame.AlignRight
-						text: "FI:"
-					}
-					Para {
-						htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
-						width: cellCode.width
-						//textHAlign: Frame.AlignRight
-						textFn: function() { return bandCard.data("isOk")? "OK": "DISK"; }
-					}
-					Para {
-						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-						width: cellStp.width
-						textHAlign: Frame.AlignRight
-						textFn: function() { return OGTime.msecToString(bandCard.data("finishStpTimeMs")); }
-					}
-					Para {
-						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-						width: cellLap.width
-						textHAlign: Frame.AlignRight
-						textFn: function() { return OGTime.msecToString(bandCard.data("finishLapTimeMs")); }
-					}
-					Para {
-						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-						width: cellLoss.width
-						textHAlign: Frame.AlignRight
-						textFn: function() { return OGTime.msecToString(bandCard.data("finishLossMs")); }
-					}
-				}
 			}
+
+			/*
 			Para {
 				vinset: 1
 				hinset: 1
@@ -306,6 +275,7 @@ Report {
 					return ""
 				}
 			}
+			*/
 			Frame {
 				width: "%"
 				vinset: 1
@@ -324,7 +294,7 @@ Report {
 					width: "%"
 					textHAlign: Frame.AlignRight
 					textFn: function() {
-						var time = bandCard.data("finishStpTimeMs");
+						var time = bandCard.data("timeMs");
 						var length = root.courseLength;
 						if(length > 0)
 							return OGTime.msecToString(((time / length) >> 0) * 1000) + "min/km";
