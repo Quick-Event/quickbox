@@ -130,7 +130,7 @@
         <location filename="src/runstablewidget.cpp" line="62"/>
         <location filename="src/runstablewidget.cpp" line="65"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="63"/>
@@ -307,7 +307,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="165"/>
         <source>&amp;Draw options</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nastavení losování</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="77"/>
@@ -406,7 +406,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="27"/>
         <source>Lock class start time</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzamknout startovní časy v kategorii</translation>
     </message>
 </context>
 <context>
@@ -419,17 +419,17 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uložit</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="18"/>
         <source>Draw tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Nástroj pro losování</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="41"/>
         <source>&amp;Draw</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Losovat</translation>
     </message>
 </context>
 <context>
@@ -486,7 +486,7 @@
     <message>
         <location filename="qml/main.qml" line="43"/>
         <source>C&amp;lubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Kluby</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="50"/>
@@ -501,7 +501,7 @@
     <message>
         <location filename="qml/main.qml" line="72"/>
         <source>&amp;Clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Kluby</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="80"/>
@@ -551,7 +551,7 @@
     <message>
         <location filename="qml/main.qml" line="147"/>
         <source>E&amp;xport</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="275"/>
@@ -587,12 +587,12 @@
     <message>
         <location filename="qml/main.qml" line="302"/>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="302"/>
         <source>D</source>
-        <translation type="unfinished"></translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="302"/>
@@ -602,12 +602,12 @@
     <message>
         <location filename="qml/main.qml" line="304"/>
         <source>Start list for starters</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovky pro startéry</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="329"/>
         <source>length:</source>
-        <translation type="unfinished"></translation>
+        <translation>Délka:</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="329"/>
@@ -618,35 +618,35 @@
         <location filename="qml/main.qml" line="335"/>
         <location filename="qml/main.qml" line="390"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="336"/>
         <location filename="qml/main.qml" line="392"/>
         <source>Name</source>
-        <translation type="unfinished">Jméno</translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="337"/>
         <location filename="qml/main.qml" line="393"/>
         <source>Registration</source>
-        <translation type="unfinished">Registrace</translation>
+        <translation>Registrace</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="338"/>
         <location filename="qml/main.qml" line="394"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="355"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovky po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="391"/>
         <source>Class</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
 </context>
 <context>
@@ -659,7 +659,7 @@
     <message>
         <location filename="qml/reports/results_nstages.qml" line="128"/>
         <source>registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrace</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="133"/>
@@ -801,12 +801,12 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="99"/>
         <source>registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrace</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="106"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="112"/>

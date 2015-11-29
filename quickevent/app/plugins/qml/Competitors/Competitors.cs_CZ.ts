@@ -114,7 +114,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="71"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="72"/>
@@ -190,7 +190,7 @@
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="84"/>
         <source>Name</source>
-        <translation type="unfinished">Jméno</translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="85"/>
@@ -200,12 +200,12 @@
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="86"/>
         <source>Lic</source>
-        <translation type="unfinished"></translation>
+        <translation>Licence</translation>
     </message>
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="87"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
 </context>
 <context>

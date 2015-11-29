@@ -56,7 +56,7 @@ SELECT ...</source>
     <message>
         <location filename="src/columnselectorwidget.ui" line="80"/>
         <source>&amp;Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vložit</translation>
     </message>
 </context>
 <context>
@@ -64,7 +64,7 @@ SELECT ...</source>
     <message>
         <location filename="src/servertreeitem.cpp" line="428"/>
         <source>Error opening database %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při otvírání databáze %1</translation>
     </message>
 </context>
 <context>
@@ -93,13 +93,13 @@ SELECT ...</source>
         <location filename="src/dlgaltertable.ui" line="90"/>
         <location filename="src/dlgaltertable.ui" line="173"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit</translation>
     </message>
     <message>
         <location filename="src/dlgaltertable.ui" line="97"/>
         <location filename="src/dlgaltertable.ui" line="180"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat</translation>
     </message>
     <message>
         <location filename="src/dlgaltertable.ui" line="122"/>
@@ -114,7 +114,7 @@ SELECT ...</source>
     <message>
         <location filename="src/dlgaltertable.ui" line="207"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Poznámka</translation>
     </message>
     <message>
         <location filename="src/dlgaltertable.cpp" line="231"/>
@@ -162,12 +162,12 @@ SELECT ...</source>
     <message>
         <location filename="src/dlgcolumndef.ui" line="110"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Jméno</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="123"/>
         <source>&amp;Length</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Délka</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="136"/>
@@ -194,12 +194,12 @@ SELECT ...</source>
         <location filename="src/dlgcolumndef.cpp" line="329"/>
         <location filename="src/dlgcolumndef.cpp" line="336"/>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>Základní</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="188"/>
         <source>Utf8</source>
-        <translation type="unfinished"></translation>
+        <translation>Utf8</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="193"/>
@@ -224,7 +224,7 @@ SELECT ...</source>
     <message>
         <location filename="src/dlgcolumndef.ui" line="258"/>
         <source>color: black</source>
-        <translation type="unfinished"></translation>
+        <translation>barva: černá</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="261"/>
@@ -233,12 +233,16 @@ SELECT ...</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Nimbus Sans L&apos;; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Nimbus Sans L&apos;; font-size:12pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="285"/>
         <source>&amp;Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Poznámka</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="334"/>
@@ -253,12 +257,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/dlgcolumndef.ui" line="357"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zrušit</translation>
     </message>
     <message>
         <location filename="src/dlgcolumndef.ui" line="364"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
 </context>
 <context>
@@ -266,7 +270,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/dlgeditconnection.ui" line="14"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojení</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="37"/>
@@ -276,32 +280,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/dlgeditconnection.ui" line="50"/>
         <source>Driver</source>
-        <translation type="unfinished"></translation>
+        <translation>Ovladač</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="98"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="107"/>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Uživatel</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="117"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="127"/>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Databáze</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="137"/>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Heslo</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="154"/>
@@ -311,17 +315,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/dlgeditconnection.ui" line="164"/>
         <source>Codec</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodek</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="208"/>
         <source>MySQL options</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL možnosti</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="214"/>
         <source>Set names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit jména</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="244"/>
@@ -341,17 +345,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/dlgeditconnection.ui" line="314"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;OK</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.ui" line="324"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zrušit</translation>
     </message>
     <message>
         <location filename="src/dlgeditconnection.cpp" line="119"/>
         <source>Open database file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít databázový soubor</translation>
     </message>
 </context>
 <context>
@@ -384,12 +388,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/dlgindexdef.ui" line="229"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="src/dlgindexdef.ui" line="236"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="src/dlgindexdef.ui" line="249"/>
@@ -422,17 +426,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="316"/>
         <source>About Application</source>
-        <translation type="unfinished"></translation>
+        <translation>O Aplikaci</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="317"/>
         <source>&lt;b&gt;Qt SQL Monitor&lt;/b&gt;&lt;br&gt;%2&lt;br&gt;ver. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Qt SQL Monitor&lt;/b&gt;&lt;br&gt;%2&lt;br&gt;ver. %1</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="323"/>
         <source>&lt;p&gt;&lt;b&gt;Qt %1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.trolltech.com/qt/&quot;&gt;www.trolltech.com/qt/&lt;/a&gt;&lt;p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Qt %1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://www.trolltech.com/qt/&quot;&gt;www.trolltech.com/qt/&lt;/a&gt;&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="326"/>
@@ -457,17 +461,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="351"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="352"/>
         <source>Exit the application</source>
-        <translation type="unfinished"></translation>
+        <translation>Opustit aplikaci</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="357"/>
         <source>Shift+Enter</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+Enter</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="358"/>
@@ -497,7 +501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="385"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+T</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="386"/>
@@ -527,7 +531,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="409"/>
         <source>&amp;Change Log</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Popis změn</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="413"/>
@@ -552,7 +556,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="434"/>
         <source>Add connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat připojení</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="435"/>
@@ -562,27 +566,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="442"/>
         <source>&amp;Server</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Server</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="449"/>
         <source>&amp;Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sql</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="457"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zobrazit</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="461"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pomoc</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="476"/>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="484"/>
@@ -597,7 +601,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="496"/>
         <source>not connected ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepřipojeno...</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="497"/>
@@ -630,22 +634,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="934"/>
         <source>Edit connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit připojení</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="935"/>
         <source>Copy connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkopírovat připojení</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="936"/>
         <source>Remove connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrat připojení</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="949"/>
         <source>Delete connection ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat připojení?</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="964"/>
@@ -677,7 +681,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="990"/>
         <source>Create table</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit tabulku</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="992"/>
@@ -762,22 +766,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="1110"/>
         <source>Rename table</source>
-        <translation type="unfinished"></translation>
+        <translation>Přejmenovat tabulku</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="1117"/>
         <source>Check table</source>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat tabulku</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="1118"/>
         <source>Repair table</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravit tabulku</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="1119"/>
         <source>Optimize table</source>
-        <translation type="unfinished"></translation>
+        <translation>Optimalizovat tabulku</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="1188"/>
@@ -812,12 +816,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/mainwindow.cpp" line="1357"/>
         <source>OK </source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="1360"/>
         <source>ERROR </source>
-        <translation type="unfinished"></translation>
+        <translation>CHYBA</translation>
     </message>
     <message>
         <location filename="src/mainwindow.cpp" line="1453"/>
@@ -853,7 +857,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/servertreemodel.cpp" line="75"/>
         <source>Description</source>
-        <translation type="unfinished"></translation>
+        <translation>Popis</translation>
     </message>
     <message>
         <location filename="src/servertreemodel.cpp" line="76"/>
@@ -863,7 +867,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/servertreemodel.cpp" line="77"/>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Databáze</translation>
     </message>
     <message>
         <location filename="src/servertreemodel.cpp" line="78"/>
@@ -889,7 +893,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/sqlwidget.ui" line="30"/>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="src/sqlwidget.ui" line="42"/>

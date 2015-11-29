@@ -76,7 +76,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="213"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>

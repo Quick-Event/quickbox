@@ -6,7 +6,7 @@
     <message>
         <location filename="src/classesplugin.cpp" line="155"/>
         <source>Cannot find id for code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít id pro kód:%1</translation>
     </message>
 </context>
 <context>
@@ -29,7 +29,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="91"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="49"/>
@@ -94,7 +94,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="58"/>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>id</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="59"/>
@@ -139,7 +139,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="124"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="172"/>
@@ -182,17 +182,17 @@
     <message>
         <location filename="qml/reports/table.qml" line="40"/>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>id</translation>
     </message>
     <message>
         <location filename="qml/reports/table.qml" line="45"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="qml/reports/table.qml" line="50"/>
         <source>Course ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Trať ID</translation>
     </message>
 </context>
 </TS>

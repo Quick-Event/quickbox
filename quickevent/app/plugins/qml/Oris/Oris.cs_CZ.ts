@@ -23,10 +23,6 @@
         <source>%1 %2 %3 SI: %4 is duplicit!</source>
         <translation>%1 %2 %3 SI: %4 je duplicitní!</translation>
     </message>
-    <message>
-        <source>%1 %2 %3 SI: %4 is duplicit!</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>main</name>
@@ -48,7 +44,7 @@
     </message>
     <message>
         <source>&amp;Oris</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oris</translation>
     </message>
 </context>
 </TS>

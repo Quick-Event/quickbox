@@ -41,7 +41,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="105"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="106"/>
@@ -56,7 +56,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="108"/>
         <source>Reg</source>
-        <translation>Reg.č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="109"/>
@@ -156,7 +156,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="417"/>
         <source>card: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="421"/>
@@ -218,12 +218,12 @@
     <message>
         <location filename="src/dlgsettings.ui" line="87"/>
         <source>38400</source>
-        <translation type="unfinished"></translation>
+        <translation>38400</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="92"/>
         <source>4800</source>
-        <translation type="unfinished"></translation>
+        <translation>4800</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="100"/>
@@ -233,22 +233,22 @@
     <message>
         <location filename="src/dlgsettings.ui" line="117"/>
         <source>8</source>
-        <translation type="unfinished"></translation>
+        <translation>8</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="122"/>
         <source>7</source>
-        <translation type="unfinished"></translation>
+        <translation>7</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="127"/>
         <source>6</source>
-        <translation type="unfinished"></translation>
+        <translation>6</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="132"/>
         <source>5</source>
-        <translation type="unfinished"></translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="140"/>
@@ -258,12 +258,12 @@
     <message>
         <location filename="src/dlgsettings.ui" line="154"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="159"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="167"/>
@@ -323,7 +323,7 @@
     <message>
         <location filename="src/dlgsettings.ui" line="248"/>
         <source>type</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="256"/>
@@ -338,7 +338,7 @@
     <message>
         <location filename="src/dlgsettings.ui" line="266"/>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlastní</translation>
     </message>
 </context>
 </TS>

@@ -108,17 +108,17 @@
 <context>
     <name>qf::core::utils::CLIOptions</name>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="72"/>
+        <location filename="src/utils/clioptions.cpp" line="71"/>
         <source>Abort application on exception</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="73"/>
+        <location filename="src/utils/clioptions.cpp" line="72"/>
         <source>Print help</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout nápovědu</translation>
     </message>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="74"/>
+        <location filename="src/utils/clioptions.cpp" line="73"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
         <translation type="unfinished"></translation>
     </message>

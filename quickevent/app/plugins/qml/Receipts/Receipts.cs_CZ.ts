@@ -123,7 +123,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="69"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="70"/>
@@ -166,7 +166,7 @@
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="63"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="303"/>
