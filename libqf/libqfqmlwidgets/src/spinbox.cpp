@@ -17,10 +17,15 @@ QVariant SpinBox::dataValue()
 void SpinBox::setDataValue(const QVariant &val)
 {
 	int n = val.toInt();
-	if(n != value()) {
+	if(checkSetDataValueFirstTime()) {
 		setValue(n);
-		saveDataValue();
-		emit dataValueChanged(n);
+	}
+	else {
+		if(n != value()) {
+			setValue(n);
+			saveDataValue();
+			emit dataValueChanged(n);
+		}
 	}
 }
 

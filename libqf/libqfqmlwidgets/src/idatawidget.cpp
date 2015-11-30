@@ -58,3 +58,12 @@ qfm::DataDocument *IDataWidget::dataDocument(bool throw_exc)
 	return ret;
 }
 
+bool IDataWidget::checkSetDataValueFirstTime()
+{
+	if(!m_isSetDataValueFirstTime) {
+		m_isSetDataValueFirstTime = true;
+		return true;
+	}
+	return false;
+}
+

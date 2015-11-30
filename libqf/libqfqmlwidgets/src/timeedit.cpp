@@ -31,11 +31,16 @@ void TimeEdit::setDataValue(const QVariant &val)
 {
 	qfLogFuncFrame() << val;
 	QTime new_time = val.toTime();
-	if(new_time != time()) {
-		BlockerScope bs(m_blockTimeChanged);
+	if(checkSetDataValueFirstTime()) {
 		setTime(new_time);
-		saveDataValue();
-		emit dataValueChanged(new_time);
+	}
+	else {
+		if(new_time != time()) {
+			BlockerScope bs(m_blockTimeChanged);
+			setTime(new_time);
+			saveDataValue();
+			emit dataValueChanged(new_time);
+		}
 	}
 }
 

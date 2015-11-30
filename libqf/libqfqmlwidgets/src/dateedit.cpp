@@ -31,11 +31,16 @@ void DateEdit::setDataValue(const QVariant &val)
 {
 	qfLogFuncFrame() << "new:" << val << "old:" << date();
 	QDate new_date = val.toDate();
-	if(new_date != date()) {
-		BlockerScope bs(m_blockDateChanged);
+	if(checkSetDataValueFirstTime()) {
 		setDate(new_date);
-		saveDataValue();
-		emit dataValueChanged(new_date);
+	}
+	else {
+		if(new_date != date()) {
+			BlockerScope bs(m_blockDateChanged);
+			setDate(new_date);
+			saveDataValue();
+			emit dataValueChanged(new_date);
+		}
 	}
 }
 
