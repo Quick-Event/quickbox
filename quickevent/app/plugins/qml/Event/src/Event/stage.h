@@ -18,7 +18,7 @@ class EVENTPLUGIN_DECL_EXPORT StageData : public QVariantMap
 private:
 	typedef QVariantMap Super;
 
-	QF_VARIANTMAP_FIELD2(int, i, setI, d, 0)
+	QF_VARIANTMAP_FIELD(int, i, setI, d)
 	QF_VARIANTMAP_FIELD(QTime, s, setS, tartTime)
 	QF_VARIANTMAP_FIELD(QDate, d, setD, ate)
 	QF_VARIANTMAP_FIELD(QVariantMap, d, setD, rawingConfig)

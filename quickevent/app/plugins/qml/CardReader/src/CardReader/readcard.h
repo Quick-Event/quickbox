@@ -16,11 +16,11 @@ class ReadPunch : public QVariantMap
 private:
 	typedef QVariantMap Super;
 
-	QF_VARIANTMAP_FIELD2(int, c, setC, ode, 0)
-	QF_VARIANTMAP_FIELD2(int, t, setT, ime, 0)
-	QF_VARIANTMAP_FIELD2(int, m, setM, sec, 0)
-	QF_VARIANTMAP_FIELD2(int, d, setD, ay, 0)
-	QF_VARIANTMAP_FIELD2(int, w, setW, eek, 0)
+	QF_VARIANTMAP_FIELD(int, c, setC, ode)
+	QF_VARIANTMAP_FIELD(int, t, setT, ime)
+	QF_VARIANTMAP_FIELD(int, m, setM, sec)
+	QF_VARIANTMAP_FIELD(int, d, setD, ay)
+	QF_VARIANTMAP_FIELD(int, w, setW, eek)
 public:
 	ReadPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadPunch(const QVariantList &var_list);
@@ -34,13 +34,13 @@ class ReadCard : public QVariantMap
 private:
 	typedef QVariantMap Super;
 
-	QF_VARIANTMAP_FIELD2(int, r, setR, unId, 0)
-	QF_VARIANTMAP_FIELD2(int, s, setS, tationCodeNumber, 0)
-	QF_VARIANTMAP_FIELD2(int, c, setC, ardNumber, 0)
-	QF_VARIANTMAP_FIELD2(int, c, setC, heckTime, 0)
-	QF_VARIANTMAP_FIELD2(int, s, setS, tartTime, 0)
-	QF_VARIANTMAP_FIELD2(int, f, setF, inishTime, 0)
-	QF_VARIANTMAP_FIELD2(int, f, setF, inishTimeMs, 0)
+	QF_VARIANTMAP_FIELD(int, r, setR, unId)
+	QF_VARIANTMAP_FIELD(int, s, setS, tationCodeNumber)
+	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
+	QF_VARIANTMAP_FIELD(int, c, setC, heckTime)
+	QF_VARIANTMAP_FIELD(int, s, setS, tartTime)
+	QF_VARIANTMAP_FIELD(int, f, setF, inishTime)
+	QF_VARIANTMAP_FIELD(int, f, setF, inishTimeMs)
 	QF_VARIANTMAP_FIELD(QVariantList, p, setP, unches)
 public:
 	ReadCard(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
@@ -55,13 +55,13 @@ class PunchRecord : public QVariantMap
 private:
 	typedef QVariantMap Super;
 
-	QF_VARIANTMAP_FIELD2(int, r, setR, unId, 0)
-	QF_VARIANTMAP_FIELD2(int, c, setC, ardNumber, 0)
-	QF_VARIANTMAP_FIELD2(int, c, setC, ode, 0)
-	QF_VARIANTMAP_FIELD2(int, t, setT, ime, 0)
-	QF_VARIANTMAP_FIELD2(int, m, setM, sec, 0)
-	QF_VARIANTMAP_FIELD2(int, d, setD, ay, 0)
-	QF_VARIANTMAP_FIELD2(int, w, setW, eek, 0)
+	QF_VARIANTMAP_FIELD(int, r, setR, unId)
+	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
+	QF_VARIANTMAP_FIELD(int, c, setC, ode)
+	QF_VARIANTMAP_FIELD(int, t, setT, ime)
+	QF_VARIANTMAP_FIELD(int, m, setM, sec)
+	QF_VARIANTMAP_FIELD(int, d, setD, ay)
+	QF_VARIANTMAP_FIELD(int, w, setW, eek)
 public:
 	PunchRecord(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	PunchRecord(const SIMessageTransmitRecord &rec);

@@ -28,20 +28,20 @@ public:
 private:
 	typedef QVariantMap Super;
 
-	QF_VARIANTMAP_FIELD2(int, i, setI, d, 0)
-	QF_VARIANTMAP_FIELD2(QString, c, setC, lassName, 0)
-	QF_VARIANTMAP_FIELD2(int, c, setC, lassId, 0)
-	QF_VARIANTMAP_FIELD2(QString, c, setC, ourseName, 0)
-	QF_VARIANTMAP_FIELD2(int, c, setC, ourseId, 0)
+	QF_VARIANTMAP_FIELD(int, i, setI, d)
+	QF_VARIANTMAP_FIELD(QString, c, setC, lassName)
+	QF_VARIANTMAP_FIELD(int, c, setC, lassId)
+	QF_VARIANTMAP_FIELD(QString, c, setC, ourseName)
+	QF_VARIANTMAP_FIELD(int, c, setC, ourseId)
 	QF_VARIANTMAP_FIELD2(int, s, setS, tartSlotIndex, -1)
 	QF_VARIANTMAP_FIELD2(int, c, setC, lassIndex, -1) ///< not SQL value, internal usage
-	QF_VARIANTMAP_FIELD2(int, s, setS, tartTimeMin, 0)
-	QF_VARIANTMAP_FIELD2(int, s, setS, tartIntervalMin, 0)
-	QF_VARIANTMAP_FIELD2(int, v, setV, acantsBefore, 0)
-	QF_VARIANTMAP_FIELD2(int, v, setV, acantEvery, 0)
-	QF_VARIANTMAP_FIELD2(int, v, setV, acantsAfter, 0)
-	QF_VARIANTMAP_FIELD2(int, f, setF, irstCode, 0)
-	QF_VARIANTMAP_FIELD2(int, r, setr, unsCount, 0)
+	QF_VARIANTMAP_FIELD(int, s, setS, tartTimeMin)
+	QF_VARIANTMAP_FIELD(int, s, setS, tartIntervalMin)
+	QF_VARIANTMAP_FIELD(int, v, setV, acantsBefore)
+	QF_VARIANTMAP_FIELD(int, v, setV, acantEvery)
+	QF_VARIANTMAP_FIELD(int, v, setV, acantsAfter)
+	QF_VARIANTMAP_FIELD(int, f, setF, irstCode)
+	QF_VARIANTMAP_FIELD(int, r, setr, unsCount)
 	//QF_VARIANTMAP_FIELD2(bool, isD, setD, rawnIn, false) ///< not SQL value, internal usage
 	QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
 	QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)

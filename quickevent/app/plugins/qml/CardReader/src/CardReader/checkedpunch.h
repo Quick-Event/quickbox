@@ -11,10 +11,10 @@ namespace CardReader {
 
 class CARDREADERPLUGIN_DECL_EXPORT CheckedPunch : public QVariantMap
 {
-	QF_VARIANTMAP_FIELD2(int, c, setC, ode, 0)
+	QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	//QF_VARIANTMAP_FIELD2(int, p, setP, osition, 0)
-	QF_VARIANTMAP_FIELD2(int, s, setS, tpTimeMs, 0)
-	QF_VARIANTMAP_FIELD2(int, l, setL, apTimeMs, 0)
+	QF_VARIANTMAP_FIELD(int, s, setS, tpTimeMs)
+	QF_VARIANTMAP_FIELD(int, l, setL, apTimeMs)
 public:
 	CheckedPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 };
