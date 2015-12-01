@@ -295,17 +295,17 @@
         <translation type="obsolete">Jméno</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="145"/>
+        <location filename="src/runswidget.cpp" line="154"/>
         <source>Stage </source>
         <translation>Etapa</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="153"/>
+        <location filename="src/runswidget.cpp" line="162"/>
         <source>Class </source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="165"/>
+        <location filename="src/runswidget.cpp" line="174"/>
         <source>&amp;Draw options</source>
         <translation>&amp;Nastavení losování</translation>
     </message>
@@ -320,17 +320,32 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="258"/>
+        <location filename="src/runswidget.cpp" line="143"/>
+        <source>Start times</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/runswidget.cpp" line="144"/>
+        <source>OB 2000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/runswidget.cpp" line="263"/>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/runswidget.cpp" line="348"/>
         <source>Draw all clases without any start time set?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="419"/>
+        <location filename="src/runswidget.cpp" line="509"/>
         <source>Start interval is zero, proceed anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="469"/>
+        <location filename="src/runswidget.cpp" line="559"/>
         <source>Reset all start times for this class?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -544,107 +559,105 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="128"/>
         <source>&amp;Print</source>
-        <translation>&amp;Tisk</translation>
+        <translation type="vanished">&amp;Tisk</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="147"/>
         <source>E&amp;xport</source>
-        <translation>Exportovat</translation>
+        <translation type="vanished">Exportovat</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="275"/>
+        <location filename="qml/main.qml" line="278"/>
         <source>Get text</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zadej text</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="275"/>
+        <location filename="qml/main.qml" line="278"/>
         <source>Class mask (use wild cards [*?]):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Maska kategorie (lze použít zástupné znaky [*?]):</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="279"/>
+        <location filename="qml/main.qml" line="282"/>
         <source>Start list by clases</source>
         <translation type="unfinished">Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="296"/>
-        <location filename="qml/main.qml" line="413"/>
+        <location filename="qml/main.qml" line="299"/>
+        <location filename="qml/main.qml" line="416"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Startovní listina po klubech</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="302"/>
+        <location filename="qml/main.qml" line="305"/>
         <source>Get item</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="302"/>
+        <location filename="qml/main.qml" line="305"/>
         <source>Corridor:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="302"/>
+        <location filename="qml/main.qml" line="305"/>
         <source>H</source>
         <translation>H</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="302"/>
+        <location filename="qml/main.qml" line="305"/>
         <source>D</source>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="302"/>
+        <location filename="qml/main.qml" line="305"/>
         <source>All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="304"/>
+        <location filename="qml/main.qml" line="307"/>
         <source>Start list for starters</source>
         <translation>Startovky pro startéry</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="329"/>
+        <location filename="qml/main.qml" line="332"/>
         <source>length:</source>
         <translation>Délka:</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="329"/>
+        <location filename="qml/main.qml" line="332"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="335"/>
-        <location filename="qml/main.qml" line="390"/>
+        <location filename="qml/main.qml" line="338"/>
+        <location filename="qml/main.qml" line="393"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="336"/>
-        <location filename="qml/main.qml" line="392"/>
+        <location filename="qml/main.qml" line="339"/>
+        <location filename="qml/main.qml" line="395"/>
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="337"/>
-        <location filename="qml/main.qml" line="393"/>
+        <location filename="qml/main.qml" line="340"/>
+        <location filename="qml/main.qml" line="396"/>
         <source>Registration</source>
         <translation>Registrace</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="338"/>
-        <location filename="qml/main.qml" line="394"/>
+        <location filename="qml/main.qml" line="341"/>
+        <location filename="qml/main.qml" line="397"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="355"/>
+        <location filename="qml/main.qml" line="358"/>
         <source>Start list by classes</source>
         <translation>Startovky po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="391"/>
+        <location filename="qml/main.qml" line="394"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
@@ -739,6 +752,14 @@
         <location filename="qml/reports/results_stageWide.qml" line="125"/>
         <source>DISQ</source>
         <translation>DISK</translation>
+    </message>
+</context>
+<context>
+    <name>results_stage_awards</name>
+    <message>
+        <location filename="qml/reports/results_stage_awards.qml" line="10"/>
+        <source>Results by classes</source>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>

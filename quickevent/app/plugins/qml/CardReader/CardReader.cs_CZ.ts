@@ -14,9 +14,13 @@
         <translation>Chyba při ukládání záznamu o ražení z čipu: %1</translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="230"/>
+        <location filename="src/CardReader/cardreaderplugin.cpp" line="184"/>
+        <source>Update runs &amp; runlaps ERROR:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Save card runlaps ERROR: %1</source>
-        <translation>Chyba při ukládání mezičasů z čipu: %1</translation>
+        <translation type="vanished">Chyba při ukládání mezičasů z čipu: %1</translation>
     </message>
 </context>
 <context>
@@ -39,144 +43,184 @@
         <translation type="vanished">Čipy</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="105"/>
+        <location filename="src/cardreaderwidget.cpp" line="117"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="106"/>
+        <location filename="src/cardreaderwidget.cpp" line="118"/>
         <source>Class</source>
         <translation>Kategori</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="107"/>
+        <location filename="src/cardreaderwidget.cpp" line="119"/>
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="108"/>
+        <location filename="src/cardreaderwidget.cpp" line="120"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="109"/>
+        <location filename="src/cardreaderwidget.cpp" line="121"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="110"/>
+        <location filename="src/cardreaderwidget.cpp" line="122"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="111"/>
+        <location filename="src/cardreaderwidget.cpp" line="123"/>
         <source>Finish</source>
         <translation>Cíl</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="112"/>
+        <location filename="src/cardreaderwidget.cpp" line="124"/>
         <source>Error</source>
         <translation>Chyba</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="112"/>
+        <location filename="src/cardreaderwidget.cpp" line="124"/>
         <source>Card mispunch</source>
         <translation>Chyba ražení</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="113"/>
+        <location filename="src/cardreaderwidget.cpp" line="125"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="113"/>
+        <location filename="src/cardreaderwidget.cpp" line="125"/>
         <source>Disqualified</source>
         <translation>Diskvalifikován</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="114"/>
+        <location filename="src/cardreaderwidget.cpp" line="126"/>
         <source>L</source>
         <translation>PČ</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="114"/>
+        <location filename="src/cardreaderwidget.cpp" line="126"/>
         <source>Card lent</source>
         <translation>Půjčený čip</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="115"/>
+        <location filename="src/cardreaderwidget.cpp" line="127"/>
         <source>R</source>
         <translation>ČV</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="115"/>
+        <location filename="src/cardreaderwidget.cpp" line="127"/>
         <source>Card returned</source>
         <translation>Čip vrácen</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="132"/>
+        <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Show card</source>
         <translation>Zobrazit čip</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="133"/>
+        <location filename="src/cardreaderwidget.cpp" line="145"/>
         <source>Print card</source>
         <translation>Vytisknout čip</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="134"/>
+        <location filename="src/cardreaderwidget.cpp" line="146"/>
         <source>Assign card to runner</source>
         <translation>Přiřadit čip zavodníkovi</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="199"/>
+        <location filename="src/cardreaderwidget.cpp" line="187"/>
+        <source>Import cards</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="217"/>
         <source>Auto refresh</source>
         <translation>Automatické obnovování</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="248"/>
+        <location filename="src/cardreaderwidget.cpp" line="266"/>
         <source>Open COM</source>
         <translation>Otevřít COM</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="254"/>
+        <location filename="src/cardreaderwidget.cpp" line="272"/>
         <source>Card readout settings</source>
         <translation>Nastavení vyčítání čipů</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="401"/>
+        <location filename="src/cardreaderwidget.cpp" line="419"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="410"/>
+        <location filename="src/cardreaderwidget.cpp" line="428"/>
         <source>DriverRawData: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="417"/>
+        <location filename="src/cardreaderwidget.cpp" line="435"/>
         <source>card: %1</source>
         <translation>Čip: %1</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="421"/>
+        <location filename="src/cardreaderwidget.cpp" line="439"/>
         <source>Cannot find run for SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="446"/>
+        <location filename="src/cardreaderwidget.cpp" line="483"/>
         <source>punch: %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="449"/>
+        <location filename="src/cardreaderwidget.cpp" line="486"/>
         <source>Cannot find run for punch record SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="522"/>
+        <location filename="src/cardreaderwidget.cpp" line="551"/>
         <source>Find runner</source>
         <translation>Najít zavodníka</translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="653"/>
+        <source>&lt;p&gt;CSV record must have format:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Any row can be commented by leading #&lt;/p&gt;&lt;p&gt;Decimal point is also supported, the quotes can be omited than.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="657"/>
+        <source>Import CSV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="662"/>
+        <source>Cannot open file &apos;%1&apos; for reading.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="681"/>
+        <source>Bad stage!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="703"/>
+        <source>Cannot find runs record for SI %1!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="704"/>
+        <source>Cannot find class for SI %1!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="717"/>
+        <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save card runlaps ERROR: %1</source>
@@ -202,141 +246,137 @@
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="39"/>
-        <source>Device:</source>
-        <translation>Zařízení:</translation>
+        <source>De&amp;vice:</source>
+        <oldsource>Device:</oldsource>
+        <translation type="unfinished">Zařízení:</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="62"/>
-        <source>/dev/ttyUSB0</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/dlgsettings.ui" line="70"/>
+        <location filename="src/dlgsettings.ui" line="52"/>
         <source>Baud rate:</source>
         <translation>Bity za sekundu:</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="87"/>
+        <location filename="src/dlgsettings.ui" line="69"/>
         <source>38400</source>
         <translation>38400</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="92"/>
+        <location filename="src/dlgsettings.ui" line="74"/>
         <source>4800</source>
         <translation>4800</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="100"/>
+        <location filename="src/dlgsettings.ui" line="82"/>
         <source>Data bits:</source>
         <translation>Datové bity:</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="117"/>
+        <location filename="src/dlgsettings.ui" line="99"/>
         <source>8</source>
         <translation>8</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="122"/>
+        <location filename="src/dlgsettings.ui" line="104"/>
         <source>7</source>
         <translation>7</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="127"/>
+        <location filename="src/dlgsettings.ui" line="109"/>
         <source>6</source>
         <translation>6</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="132"/>
+        <location filename="src/dlgsettings.ui" line="114"/>
         <source>5</source>
         <translation>5</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="140"/>
+        <location filename="src/dlgsettings.ui" line="122"/>
         <source>Stop bits:</source>
         <translation>Stop bity:</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="154"/>
+        <location filename="src/dlgsettings.ui" line="136"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="159"/>
+        <location filename="src/dlgsettings.ui" line="141"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="167"/>
+        <location filename="src/dlgsettings.ui" line="149"/>
         <source>Parity:</source>
         <translation>Parita:</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="181"/>
+        <location filename="src/dlgsettings.ui" line="163"/>
         <source>None</source>
         <translation>Žádná</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="186"/>
+        <location filename="src/dlgsettings.ui" line="168"/>
         <source>Odd</source>
         <translation>Lichá</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="191"/>
+        <location filename="src/dlgsettings.ui" line="173"/>
         <source>Even</source>
         <translation>Sudá</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="196"/>
+        <location filename="src/dlgsettings.ui" line="178"/>
         <source>Mark</source>
         <translation>Značka</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="201"/>
+        <location filename="src/dlgsettings.ui" line="183"/>
         <source>Space</source>
         <translation>Mezera</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="212"/>
+        <location filename="src/dlgsettings.ui" line="207"/>
         <source>Debugging</source>
         <translation>Ladění</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="218"/>
+        <location filename="src/dlgsettings.ui" line="213"/>
         <source>show raw data</source>
         <translation>ukaž surová data</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="225"/>
+        <location filename="src/dlgsettings.ui" line="220"/>
         <source>disable CRC check</source>
         <translation>zakázat CRC check</translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="236"/>
+        <location filename="src/dlgsettings.ui" line="231"/>
         <source>Plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="242"/>
+        <location filename="src/dlgsettings.ui" line="237"/>
         <source>Card check</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="248"/>
+        <location filename="src/dlgsettings.ui" line="243"/>
         <source>type</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="256"/>
+        <location filename="src/dlgsettings.ui" line="251"/>
         <source>Classic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="261"/>
+        <location filename="src/dlgsettings.ui" line="256"/>
         <source>Beer race</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/dlgsettings.ui" line="266"/>
+        <location filename="src/dlgsettings.ui" line="261"/>
         <source>Custom</source>
         <translation>Vlastní</translation>
     </message>

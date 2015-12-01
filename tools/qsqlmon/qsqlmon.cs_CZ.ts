@@ -872,7 +872,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/servertreemodel.cpp" line="78"/>
         <source>Driver</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ovladač</translation>
     </message>
 </context>
 <context>
@@ -916,7 +916,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="src/tableviewwidget.ui" line="544"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="src/tableviewwidget.ui" line="570"/>

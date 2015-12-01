@@ -4,7 +4,7 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="313"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="316"/>
         <source>Receipt</source>
         <translation>Mezičasy</translation>
     </message>
@@ -164,17 +164,21 @@
 <context>
     <name>receiptClassic</name>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="63"/>
+        <location filename="qml/reports/receiptClassic.qml" line="64"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="303"/>
-        <source>missing: </source>
-        <translation>chybějící:</translation>
+        <location filename="qml/reports/receiptClassic.qml" line="230"/>
+        <source>FI</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="318"/>
+        <source>missing: </source>
+        <translation type="vanished">chybějící:</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receiptClassic.qml" line="288"/>
         <source>standings: </source>
         <translation>pořadí:</translation>
     </message>

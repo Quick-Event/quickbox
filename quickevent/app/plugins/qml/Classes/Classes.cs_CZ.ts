@@ -32,128 +32,128 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="49"/>
+        <location filename="src/classeswidget.cpp" line="50"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="50"/>
+        <location filename="src/classeswidget.cpp" line="51"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="51"/>
+        <location filename="src/classeswidget.cpp" line="52"/>
         <source>Interval</source>
         <translation>Intverval</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="52"/>
+        <location filename="src/classeswidget.cpp" line="53"/>
         <source>VB</source>
         <translation>Vak.P</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="52"/>
+        <location filename="src/classeswidget.cpp" line="53"/>
         <source>Vacants before</source>
         <translation>Vakanti před</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="53"/>
+        <location filename="src/classeswidget.cpp" line="54"/>
         <source>VE</source>
         <translation>Vak.B</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="53"/>
+        <location filename="src/classeswidget.cpp" line="54"/>
         <source>Vacant every</source>
         <translation>Vakanti během</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="54"/>
+        <location filename="src/classeswidget.cpp" line="55"/>
         <source>VA</source>
         <translation>Vak.Po</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="54"/>
+        <location filename="src/classeswidget.cpp" line="55"/>
         <source>Vacants after</source>
         <translation>Vakanti po</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="56"/>
+        <location filename="src/classeswidget.cpp" line="57"/>
         <source>Count</source>
         <translation>Počet</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="56"/>
+        <location filename="src/classeswidget.cpp" line="57"/>
         <source>Runners count</source>
         <translation>Počet závodníků</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="57"/>
+        <location filename="src/classeswidget.cpp" line="58"/>
         <source>Maps</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="58"/>
+        <location filename="src/classeswidget.cpp" line="59"/>
         <source>id</source>
         <translation>id</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="59"/>
+        <location filename="src/classeswidget.cpp" line="60"/>
         <source>Course</source>
         <translation>Trať</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="60"/>
+        <location filename="src/classeswidget.cpp" line="61"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="61"/>
+        <location filename="src/classeswidget.cpp" line="62"/>
         <source>Climb</source>
         <translation>Převýšení</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="69"/>
+        <location filename="src/classeswidget.cpp" line="70"/>
         <source>Pos</source>
         <translation>Pos</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="70"/>
+        <location filename="src/classeswidget.cpp" line="71"/>
         <source>Code</source>
         <translation>Kód</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="71"/>
+        <location filename="src/classeswidget.cpp" line="72"/>
         <source>O</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="71"/>
+        <location filename="src/classeswidget.cpp" line="72"/>
         <source>Out of order</source>
         <translation>Mimo provoz</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="108"/>
+        <location filename="src/classeswidget.cpp" line="109"/>
         <source>Stage </source>
         <translation>Etapa</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="124"/>
+        <location filename="src/classeswidget.cpp" line="125"/>
         <source>E%1</source>
         <translation>E%1</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="172"/>
+        <location filename="src/classeswidget.cpp" line="173"/>
         <source>Courses are not imported, class table is read only.</source>
         <translation>Tratě nejsou importovány, tabulka kategorií je jen pro čtení.</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="235"/>
-        <location filename="src/classeswidget.cpp" line="334"/>
+        <location filename="src/classeswidget.cpp" line="236"/>
+        <location filename="src/classeswidget.cpp" line="335"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="210"/>
+        <location filename="src/classeswidget.cpp" line="211"/>
         <source>Delete all courses definitions for stage %1?</source>
         <translation>Vymazat všechny traťe pro etapu %1?</translation>
     </message>
