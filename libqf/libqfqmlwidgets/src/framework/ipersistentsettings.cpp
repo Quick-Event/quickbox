@@ -62,7 +62,7 @@ void IPersistentSettings::savePersistentSettingsRecursively()
 
 QString IPersistentSettings::persistentSettingsPathPrefix()
 {
-	static QString s("persistentSettings");
+	static QString s("ui");
 	return s;
 }
 
