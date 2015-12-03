@@ -238,7 +238,7 @@ void DlgAlterTable::on_btFieldDelete_clicked()
 
 MainWindow* DlgAlterTable::mainWindow()
 {
-	MainWindow *w = qfFindParent<MainWindow*>(this);
+	MainWindow *w = qf::core::Utils::findParent<MainWindow*>(this);
 	return w;
 }
 

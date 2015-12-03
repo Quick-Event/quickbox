@@ -99,7 +99,7 @@ DlgColumnDef::~DlgColumnDef()
 QSqlDatabase DlgColumnDef::connection()
 {
 	//qfLogFuncFrame();
-	MainWindow *w = qfFindParent<MainWindow*>(this);
+	MainWindow *w = qf::core::Utils::findParent<MainWindow*>(this);
 	return w->activeConnection();
 }
 

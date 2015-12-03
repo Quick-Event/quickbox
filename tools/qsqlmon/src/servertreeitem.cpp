@@ -36,7 +36,7 @@ ServerTreeItem::~ServerTreeItem()
 
 MainWindow * ServerTreeItem::mainWindow()
 {
-	MainWindow *ret = qfFindParent<MainWindow*>(model());
+	MainWindow *ret = qf::core::Utils::findParent<MainWindow*>(model());
 	return ret;
 }
 
@@ -241,7 +241,7 @@ void Connection::setParams(const Connection::Params &prms)
 Database::Database(QObject *parent, const QString& name)
 	: ServerTreeItem(parent, name)
 {
-	QObject *o = qfFindParent<MainWindow*>(this);
+	QObject *o = qf::core::Utils::findParent<MainWindow*>(this);
 	if(o)
 		connect(this, SIGNAL(connectionInfo(const QString&)), o, SLOT(appendInfo(const QString&)));
 }

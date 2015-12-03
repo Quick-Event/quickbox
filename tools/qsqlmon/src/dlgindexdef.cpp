@@ -38,7 +38,7 @@ DlgIndexDef::~DlgIndexDef()
 QSqlDatabase DlgIndexDef::connection()
 {
 	//qfTrash() << QF_FUNC_NAME;
-	MainWindow *w = qfFindParent<MainWindow*>(this);
+	MainWindow *w = qf::core::Utils::findParent<MainWindow*>(this);
 	return w->activeConnection();
 }
 
