@@ -134,6 +134,9 @@ public:
 
 	static QString removeJsonComments(const QString json_str);
 
+	static int versionStringToInt(const QString &version_string);
+	static QString intToVersionString(int ver);
+
 	/// invoke method of prototype bool method()
 	static bool invokeMethod_B_V(QObject *obj, const char *method_name);
 

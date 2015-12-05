@@ -214,6 +214,33 @@ QString Utils::removeJsonComments(const QString json_str)
 	return ret;
 }
 
+int Utils::versionStringToInt(const QString &version_string)
+{
+	int ret = 0;
+	for(QString s : version_string.split('.')) {
+		int i = s.toInt();
+		ret = 100 * ret + i;
+	}
+	return ret;
+}
+
+QString Utils::intToVersionString(int ver)
+{
+	QString ret;
+	while(ver) {
+		int i = ver % 100;
+		ver /= 100;
+		QString s = QString::number(i);
+		//if(i < 10 && ver > 0)
+		//	s = '0' + s;
+		if(ret.isEmpty())
+			ret = s;
+		else
+			ret = s + '.' + ret;
+	}
+	return ret;
+}
+
 bool Utils::invokeMethod_B_V(QObject *obj, const char *method_name)
 {
 	QVariant ret = false;
