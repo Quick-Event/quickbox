@@ -18,11 +18,11 @@ protected:
 public:
 	virtual ~LogDevice();
 public:
-	virtual QString domainFromContext(const QMessageLogContext &context);
+	virtual QString moduleFromContext(const QMessageLogContext &context);
 	static void install(LogDevice *dev);
 	Log::Level setLogTreshold(Log::Level level);
 	/// @return list of arguments wthout ones used for domain tresholds setting
-	QStringList setDomainTresholds(int argc, char *argv[]);
+	QStringList setModulesTresholds(int argc, char *argv[]);
 	Log::Level logTreshold();
 	virtual bool checkLogPermisions(const QMessageLogContext &context, Log::Level _level);
 
@@ -32,22 +32,22 @@ public:
 	void setEnabled(bool b);
 	bool isEnabled() const {return m_enabled;}
 
-	void setPrettyDomain(bool b);
-	bool isPrettyDomain() const;
+	//void setPrettyDomain(bool b);
+	//bool isPrettyDomain() const;
 
 	static const char *dCommandLineSwitchHelp();
 
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
-	virtual QString prettyDomain(const QString &domain);
+	//virtual QString prettyDomain(const QString &domain);
 protected:
 	static Log::Level environmentLogTreshold;
 	static Log::Level commandLineLogTreshold;
 
-	QMap<QString, Log::Level> m_domainTresholds;
+	QMap<QString, Log::Level> m_modulesTresholds;
 	Log::Level m_logTreshold;
 	int m_count;
-	bool m_isPrettyDomain;
+	//bool m_isPrettyDomain;
 	bool m_enabled = true;
 	static bool m_loggingEnabled;
 };

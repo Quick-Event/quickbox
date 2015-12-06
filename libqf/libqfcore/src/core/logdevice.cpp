@@ -95,7 +95,7 @@ LogDevice::LogDevice(QObject *parent)
 	: QObject(parent)
 	, m_logTreshold(Log::Level::Info)
 	, m_count(0)
-	, m_isPrettyDomain(true)
+	//, m_isPrettyDomain(true)
 {
 }
 
@@ -104,9 +104,12 @@ LogDevice::~LogDevice()
 	logDevices().removeOne(this);
 }
 
-QString LogDevice::domainFromContext(const QMessageLogContext &context)
+QString LogDevice::moduleFromContext(const QMessageLogContext &context)
 {
-	return QString::fromUtf8(context.file);
+	QString ret = QString::fromUtf8(context.file);
+	static QRegExp rx("(\\\\|\\/)");
+	ret = ret.section(rx, -1);
+	return ret;
 }
 
 void LogDevice::install(LogDevice *dev)
@@ -121,10 +124,10 @@ Log::Level LogDevice::setLogTreshold(Log::Level level)
 	return old;
 }
 
-QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
+QStringList LogDevice::setModulesTresholds(int argc, char *argv[])
 {
 	QStringList ret;
-	m_domainTresholds.clear();
+	m_modulesTresholds.clear();
 	QStringList tresholds;
 	for(int i=0; i<argc; i++) {
 		QString s = QString::fromUtf8(argv[i]);
@@ -132,7 +135,8 @@ QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 			ret << s;
 			continue;
 		}
-		if(s.startsWith("-d")) {
+		if(s == QLatin1String("-d")) {
+			i++;
 			s = s.mid(2);
 			tresholds << s;
 		}
@@ -140,29 +144,30 @@ QStringList LogDevice::setDomainTresholds(int argc, char *argv[])
 			ret << s;
 		}
 	}
-	for(QString dom_tres : tresholds) {
-		int ix = dom_tres.indexOf(':');
-		QString domain = dom_tres;
+	for(QString mod_tres : tresholds) {
+		int ix = mod_tres.indexOf(':');
+		QString module = mod_tres;
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
 		Log::Level level = Log::Level::Debug;
 		if(ix > 0) {
-			domain = dom_tres.mid(0, ix);
-			QString s = dom_tres.mid(ix + 1).toLower();
-			if(s == "DEB")
+			module = mod_tres.mid(0, ix);
+			QString s = mod_tres.mid(ix + 1, 1);
+			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
+			if(c == 'D')
 				level = Log::Level::Debug;
-			else if(s == "INFO")
+			else if(c == 'I')
 				level = Log::Level::Info;
-			else if(s == "WARN")
+			else if(c == 'W')
 				level = Log::Level::Warning;
-			else if(s == "ERR")
+			else if(c == 'E')
 				level = Log::Level::Error;
 		}
-		if(domain.isEmpty()) {
+		if(module.isEmpty()) {
 			setLogTreshold(level);
 		}
 		else {
 			//printf("add domainTreshold %s %d \n", qPrintable(domain), level);
-			m_domainTresholds[domain] = level;
+			m_modulesTresholds[module] = level;
 		}
 	}
 	return ret;
@@ -191,21 +196,22 @@ bool LogDevice::checkLogPermisions(const QMessageLogContext &context, Log::Level
 			break;
 #endif
 		}
-		bool domain_level_found = false;
-		QString domain = prettyDomain(domainFromContext(context));
-		QMapIterator<QString, Log::Level> it(m_domainTresholds);
+		bool module_level_found = false;
+		QString module = moduleFromContext(context);
+		QMapIterator<QString, Log::Level> it(m_modulesTresholds);
 		while (it.hasNext()) {
 			it.next();
-			if(domain.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
+			if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
 				//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
-				domain_level_found = true;
+				module_level_found = true;
 				if(_level <= it.value())
 					ret = true;
 				break;
 			}
 		}
-		if(!domain_level_found) {
-			if(_level <= logTreshold()) ret = true;
+		if(!module_level_found) {
+			if(_level <= logTreshold())
+				ret = true;
 		}
 	} while(false);
 	//printf("%s %d \n", qPrintable(_domain), ret);
@@ -226,7 +232,7 @@ void LogDevice::setEnabled(bool b)
 {
 	m_enabled = b;
 }
-
+/*
 void LogDevice::setPrettyDomain(bool b)
 {
 	m_isPrettyDomain = b;
@@ -236,14 +242,14 @@ bool LogDevice::isPrettyDomain() const
 {
 	return m_isPrettyDomain;
 }
-
+*/
 const char* LogDevice::dCommandLineSwitchHelp()
 {
 	return "-d[domain[:LEVEL]]\tset debug domain and level\n"
 	"\t\t\tdomain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
 	"\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, default level is INFO\n";
 }
-
+/*
 QString LogDevice::prettyDomain(const QString &domain)
 {
 	if(!isPrettyDomain())
@@ -251,7 +257,7 @@ QString LogDevice::prettyDomain(const QString &domain)
 	static QRegExp rx("(\\\\|\\/)");
 	return domain.section(rx, -1);
 }
-
+*/
 //=========================================================
 // FileLogDevice
 //=========================================================
@@ -337,9 +343,9 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 #endif
 
 	std::fprintf(m_file, "<%s>", Log::levelName(level));
-	QString domain = prettyDomain(domainFromContext(context));
-	if(!domain.isEmpty()) {
-		std::fprintf(m_file, "[%s:%d] ", qPrintable(domain), context.line);
+	QString module = moduleFromContext(context);
+	if(!module.isEmpty()) {
+		std::fprintf(m_file, "[%s:%d] ", qPrintable(module), context.line);
 	}
 	std::fprintf(m_file, "%s", qPrintable(msg));
 #ifdef Q_OS_UNIX
@@ -451,8 +457,8 @@ SignalLogDevice *SignalLogDevice::install()
 
 void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
-	QString domain = prettyDomain(domainFromContext(context));
-	LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
+	QString module = moduleFromContext(context);
+	LogEntryMap m(level, module, msg, context.file, context.line, context.function);
 	//fprintf(stderr, "emit -------------------->\n");
 	emit __logEntry(m);
 }
