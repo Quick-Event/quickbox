@@ -1,5 +1,6 @@
 #include "clioptions.h"
 #include "../core/log.h"
+#include "../core/logdevice.h"
 #include "../core/assert.h"
 #include "../core/utils.h"
 
@@ -302,6 +303,8 @@ void CLIOptions::printHelp(QTextStream& os) const
 		QString oc = opt.comment();
 		if(!oc.isEmpty()) os << "\t" << opt.comment() << endl;
 	}
+	os << qf::core::LogDevice::logModulesCLIHelp() << endl;
+	os << qf::core::LogDevice::logDomainsCLIHelp() << endl;
 }
 
 void CLIOptions::printHelp() const

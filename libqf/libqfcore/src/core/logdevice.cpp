@@ -82,7 +82,10 @@ Log::Level LogDevice::s_environmentLogTreshold = environment_treshold();
 Log::Level LogDevice::s_commandLineLogTreshold = Log::Level::Invalid;
 
 QMap<QString, Log::Level> LogDevice::s_modulesTresholds;
-QMap<QString, Log::Level> LogDevice::s_categoriesTresholds;
+QMap<QString, Log::Level> LogDevice::s_domainsTresholds;
+QStringList LogDevice::s_definedDomains;
+bool LogDevice::s_logAllDomains = false;
+bool LogDevice::s_inverseDomainFilter = false;
 
 bool LogDevice::s_loggingEnabled = true;
 
@@ -115,31 +118,71 @@ void LogDevice::install(LogDevice *dev)
 QStringList LogDevice::setCLITresholds(int argc, char *argv[])
 {
 	QStringList ret;
+	for(int i=1; i<argc; i++) {
+		QString s = QString::fromUtf8(argv[i]);
+		ret << s;
+	}
+	ret = setModulesTresholds(ret);
+	ret = setDomainTresholds(ret);
+	ret.insert(0, argv[0]);
+	return ret;
+}
+
+QString LogDevice::modulesLogInfo()
+{
+	QString ret;
+	QStringList sl;
+	QMapIterator<QString, Log::Level> it(s_modulesTresholds);
+	while (it.hasNext()) {
+		it.next();
+		sl << it.key() + ':' + qf::core::Log::levelName(it.value());
+	}
+	ret += sl.join(',');
+	return ret;
+}
+
+QString LogDevice::domainsLogInfo()
+{
+	QString ret;
+	if(s_logAllDomains) {
+		ret += s_definedDomains.join(',');
+	}
+	else {
+		ret += s_inverseDomainFilter? "All except of": "";
+		QStringList sl;
+		QMapIterator<QString, Log::Level> it(s_domainsTresholds);
+		while (it.hasNext()) {
+			it.next();
+			sl << it.key() + ':' + qf::core::Log::levelName(it.value());
+		}
+		ret += sl.join(',');
+	}
+	return ret;
+}
+
+QStringList LogDevice::setModulesTresholds(const QStringList &args)
+{
+	QStringList ret;
 	s_modulesTresholds.clear();
 	QStringList tresholds;
-	for(int i=0; i<argc; i++) {
-		QString s = QString::fromUtf8(argv[i]);
-		if(i == 0) {
-			ret << s;
-			continue;
-		}
-		if(s == QLatin1String("-d")) {
+	for(int i=0; i<args.count(); i++) {
+		QString s = args[i];
+		if(s == QLatin1String("-d") || s == QLatin1String("--debug")) {
 			i++;
 			s = s.mid(2);
-			tresholds << s;
+			tresholds << s.split(',');
 		}
 		else {
 			ret << s;
 		}
 	}
-	for(QString mod_tres : tresholds) {
-		int ix = mod_tres.indexOf(':');
-		QString module = mod_tres;
+	for(QString module : tresholds) {
+		int ix = module.indexOf(':');
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
 		Log::Level level = Log::Level::Debug;
 		if(ix > 0) {
-			module = mod_tres.mid(0, ix);
-			QString s = mod_tres.mid(ix + 1, 1);
+			QString s = module.mid(ix + 1, 1);
+			module = module.mid(0, ix);
 			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
 			if(c == 'D')
 				level = Log::Level::Debug;
@@ -150,13 +193,54 @@ QStringList LogDevice::setCLITresholds(int argc, char *argv[])
 			else if(c == 'E')
 				level = Log::Level::Error;
 		}
-		if(module.isEmpty()) {
+		if(module.isEmpty())
 			s_commandLineLogTreshold = level;
+		else
+			s_modulesTresholds[module] = level;
+	}
+	return ret;
+}
+
+QStringList LogDevice::setDomainTresholds(const QStringList &args)
+{
+	QStringList ret;
+	s_domainsTresholds.clear();
+	QStringList tresholds;
+	for(int i=0; i<args.count(); i++) {
+		QString s = args[i];
+		if(s == QLatin1String("-v") || s == QLatin1String("--verbose")) {
+			i++;
+			s = s.mid(2);
+			if(s.startsWith('^')) {
+				s_inverseDomainFilter = true;
+				s = s.mid(1);
+			}
+			tresholds << s.split(',');
+			s_logAllDomains = tresholds.isEmpty();
 		}
 		else {
-			//printf("add domainTreshold %s %d \n", qPrintable(domain), level);
-			s_modulesTresholds[module] = level;
+			ret << s;
 		}
+	}
+	for(QString domain : tresholds) {
+		int ix = domain.indexOf(':');
+		//printf("domainTreshold %s\n", qPrintable(dom_tres));
+		Log::Level level = Log::Level::Debug;
+		if(ix > 0) {
+			QString s = domain.mid(ix + 1, 1);
+			domain = domain.mid(0, ix);
+			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
+			if(c == 'D')
+				level = Log::Level::Debug;
+			else if(c == 'I')
+				level = Log::Level::Info;
+			else if(c == 'W')
+				level = Log::Level::Warning;
+			else if(c == 'E')
+				level = Log::Level::Error;
+		}
+		if(!domain.isEmpty())
+			s_domainsTresholds[domain] = level;
 	}
 	return ret;
 }
@@ -182,12 +266,12 @@ Log::Level LogDevice::setLogTreshold(Log::Level level)
 	return old;
 }
 
-bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *category)
+bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *domain)
 {
-	return checkGlobalLogContext(level, file_name, category);
+	return checkGlobalLogContext(level, file_name, domain);
 }
 
-bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, const char *category)
+bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, const char *domain)
 {
 	bool ret = false;
 	do {
@@ -201,21 +285,21 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 			break;
 #endif
 		}
-		if(category && category[0]) {
+		if(!s_definedDomains.isEmpty() && domain && domain[0]) {
 			// category specified
-			bool category_level_found = false;
-			QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
+			bool domain_level_found = false;
+			QMapIterator<QString, Log::Level> it(s_domainsTresholds);
 			while (it.hasNext()) {
 				it.next();
-				if(it.key() == QLatin1String(category)) {
+				if(it.key() == QLatin1String(domain)) {
 					//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
-					category_level_found = true;
+					domain_level_found = true;
 					if(level <= it.value())
 						ret = true;
 					break;
 				}
 			}
-			if(!category_level_found) {
+			if(!domain_level_found) {
 				if(level <= globalLogTreshold())
 					ret = true;
 			}
@@ -283,12 +367,30 @@ bool LogDevice::isPrettyDomain() const
 	return m_isPrettyDomain;
 }
 */
-const char* LogDevice::dCommandLineSwitchHelp()
+QString LogDevice::logModulesCLIHelp()
 {
-	return "-d[domain[:LEVEL]]\tset debug domain and level\n"
+	return "-d,--debug [domain[:LEVEL][,domain[:LEVEL]]]\tset debug domain and level\n"
 	"\t\t\tdomain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
-	"\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, default level is INFO\n";
+	"\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, [D,I,W,E] can be used as well, default level is INFO\n";
 }
+
+QString LogDevice::logDomainsCLIHelp()
+{
+	QString ret;
+	if(s_definedDomains.isEmpty())
+		return ret;
+	ret =
+		"-v,--verbose [^][" + s_definedDomains.join(",][") + "]"
+		"\n\t more comma delimited modules enabled."
+		"\n\t When list starts with ^, the module list is excluded."
+		"\n\t Case insensitive."
+		"\n\t StartsWith or CamelCase match enabled."
+		"\n\t Example: -v is equal to --verbose enables all domains logging"
+		"\n\t Example: -v fo,tram is equal to --verbose FreeOpcua,TramMove"
+		"\n\t Example: -v ^opcua,tram means log all except modules starting with 'opcua' or 'tram'";
+	return ret;
+}
+
 /*
 QString LogDevice::prettyDomain(const QString &domain)
 {

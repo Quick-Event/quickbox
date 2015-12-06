@@ -17,10 +17,15 @@ protected:
 	LogDevice(QObject *parent = 0);
 public:
 	virtual ~LogDevice();
-public:
-	static QStringList setCLITresholds(int argc, char *argv[]);
 
 	static void install(LogDevice *dev);
+
+	static QStringList setCLITresholds(int argc, char *argv[]);
+	static QString modulesLogInfo();
+	static QString domainsLogInfo();
+
+	static void setDefinedDomains(const QStringList &domains) {s_definedDomains = domains;}
+	static QStringList definedDomains() { return s_definedDomains; }
 
 	static Log::Level globalLogTreshold();
 
@@ -38,23 +43,29 @@ public:
 	//void setPrettyDomain(bool b);
 	//bool isPrettyDomain() const;
 
-	static const char *dCommandLineSwitchHelp();
+	static QString logModulesCLIHelp();
+	static QString logDomainsCLIHelp();
 
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
+	static QStringList setModulesTresholds(const QStringList &args);
+	static QStringList setDomainTresholds(const QStringList &args);
 	static QString moduleFromFileName(const char *file_name);
-	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
+	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *domain);
 	/**
 	 * @brief checkLogContext
 	 * @return true if message with this context will be logged
 	 */
-	static bool checkGlobalLogContext(Log::Level level, const char *file_name, const char *category);
+	static bool checkGlobalLogContext(Log::Level level, const char *file_name, const char *domain);
 protected:
 	static Log::Level s_environmentLogTreshold;
 	static Log::Level s_commandLineLogTreshold;
 
 	static QMap<QString, Log::Level> s_modulesTresholds;
-	static QMap<QString, Log::Level> s_categoriesTresholds;
+	static QMap<QString, Log::Level> s_domainsTresholds;
+	static QStringList s_definedDomains;
+	static bool s_logAllDomains;
+	static bool s_inverseDomainFilter;
 
 	static bool s_loggingEnabled;
 
