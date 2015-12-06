@@ -47,19 +47,6 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		break;
 #endif
 	case QtWarningMsg:
-		/*
-		if(QLatin1String(context.category) == Log::categoryDebugName)
-			level = Log::Level::Debug;
-		else if(QLatin1String(context.category) == Log::categoryInfoName)
-			level = Log::Level::Info;
-		else if(QLatin1String(context.category) == Log::categoryWarningName)
-			level = Log::Level::Warning;
-		else if(QLatin1String(context.category) == Log::categoryErrorName)
-			level = Log::Level::Error;
-		else if(QLatin1String(context.category) == Log::categoryFatalName)
-			level = Log::Level::Fatal;
-		else level = Log::Level::Warning;
-		*/
 		level = Log::Level::Warning;
 		break;
 	case QtCriticalMsg:
@@ -70,9 +57,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		break;
 	}
 	Q_FOREACH(auto log_device, logDevices()) {
-		if(log_device->isEnabled() && log_device->checkLogPermisions(context, level)) {
-			log_device->log(level, context, msg);
-		}
+		log_device->log(level, context, msg);
 	}
 }
 
@@ -111,9 +96,9 @@ LogDevice::~LogDevice()
 	logDevices().removeOne(this);
 }
 
-QString LogDevice::moduleFromContext(const QMessageLogContext &context)
+QString LogDevice::moduleFromFileName(const char *file_name)
 {
-	QString ret = QString::fromUtf8(context.file);
+	QString ret = QString::fromUtf8(file_name);
 	static QRegExp rx("(\\\\|\\/)");
 	ret = ret.section(rx, -1);
 	return ret;
@@ -189,36 +174,60 @@ Log::Level LogDevice::logTreshold()
 	return m_logTreshold;
 }
 
-bool LogDevice::checkLogPermisions(const QMessageLogContext &context, Log::Level _level)
+bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *category)
 {
 	bool ret = false;
 	do {
-		if(_level <= Log::Level::Invalid) break;
-		if(_level == Log::Level::Fatal) {
+		if(level <= Log::Level::Invalid) break;
+		if(level == Log::Level::Fatal) {
 			ret = true;
 			break;
 		}
-		if(_level == Log::Level::Debug) {
+		if(level == Log::Level::Debug) {
 #ifdef QF_NO_DEBUG_LOG
 			break;
 #endif
 		}
-		bool module_level_found = false;
-		QString module = moduleFromContext(context);
-		QMapIterator<QString, Log::Level> it(m_modulesTresholds);
-		while (it.hasNext()) {
-			it.next();
-			if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
-				//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
-				module_level_found = true;
-				if(_level <= it.value())
+		if(category && category[0]) {
+			// category specified
+			bool category_level_found = false;
+			QMapIterator<QString, Log::Level> it(m_categoriesTresholds);
+			while (it.hasNext()) {
+				it.next();
+				if(it.key() == QLatin1String(category)) {
+					//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
+					category_level_found = true;
+					if(level <= it.value())
+						ret = true;
+					break;
+				}
+			}
+			if(!category_level_found) {
+				if(level <= logTreshold())
 					ret = true;
-				break;
 			}
 		}
-		if(!module_level_found) {
-			if(_level <= logTreshold())
-				ret = true;
+		else {
+			ret = true;
+		}
+		if(ret) {
+			bool module_level_found = false;
+			QString module = moduleFromFileName(file_name);
+			QMapIterator<QString, Log::Level> it(m_modulesTresholds);
+			while (it.hasNext()) {
+				it.next();
+				if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
+					//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
+					module_level_found = true;
+					if(level <= it.value())
+						ret = true;
+					break;
+				}
+			}
+			if(!module_level_found) {
+				if(level <= logTreshold())
+					ret = true;
+			}
 		}
 	} while(false);
 	//printf("%s %d \n", qPrintable(_domain), ret);
@@ -239,6 +248,17 @@ void LogDevice::setEnabled(bool b)
 {
 	m_enabled = b;
 }
+
+bool LogDevice::checkAllLogContext(Log::Level level, const char *file_name, const char *category)
+{
+	Q_FOREACH(auto log_device, logDevices()) {
+		if(log_device->isEnabled() && log_device->checkLogContext(level, file_name, category)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /*
 void LogDevice::setPrettyDomain(bool b)
 {
@@ -350,7 +370,7 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 #endif
 
 	std::fprintf(m_file, "<%s>", Log::levelName(level));
-	QString module = moduleFromContext(context);
+	QString module = moduleFromFileName(context.file);
 	if(!module.isEmpty()) {
 		std::fprintf(m_file, "[%s:%d] ", qPrintable(module), context.line);
 	}
@@ -463,7 +483,7 @@ SignalLogDevice *SignalLogDevice::install()
 
 void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
-	QString module = moduleFromContext(context);
+	QString module = moduleFromFileName(context.file);
 	LogEntryMap m(level, module, msg, context.file, context.line, context.function);
 	emit __logEntry(m);
 }

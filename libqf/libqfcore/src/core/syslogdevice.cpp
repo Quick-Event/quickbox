@@ -34,7 +34,7 @@ void SysLogDevice::log(Log::Level level, const QMessageLogContext &context, cons
 	case Log::Level::Error: syslog_level = LOG_CRIT; break;
 	default: syslog_level = LOG_EMERG; break;
 	}
-	QString module = moduleFromContext(context);
+	QString module = moduleFromFileName(context.file);
 	syslog(syslog_level, "<%s>[%s:%d] %s", Log::levelName(level), qPrintable(module), context.line, qPrintable(msg));
 	//LogEntryMap m(level, domain, msg, context.file, context.line, context.function);
 #else

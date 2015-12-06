@@ -18,13 +18,19 @@ protected:
 public:
 	virtual ~LogDevice();
 public:
-	virtual QString moduleFromContext(const QMessageLogContext &context);
+	virtual QString moduleFromFileName(const char *file_name);
 	static void install(LogDevice *dev);
 	Log::Level setLogTreshold(Log::Level level);
 	/// @return list of arguments wthout ones used for domain tresholds setting
 	QStringList setModulesTresholds(int argc, char *argv[]);
 	Log::Level logTreshold();
-	virtual bool checkLogPermisions(const QMessageLogContext &context, Log::Level _level);
+
+	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
+	/**
+	 * @brief checkLogContext
+	 * @return true if message with this context will be logged
+	 */
+	static bool checkAllLogContext(Log::Level level, const char *file_name, const char *category = nullptr);
 
 	static void setLoggingEnabled(bool on);
 	static bool isLoggingEnabled();
@@ -45,6 +51,7 @@ protected:
 	static Log::Level commandLineLogTreshold;
 
 	QMap<QString, Log::Level> m_modulesTresholds;
+	QMap<QString, Log::Level> m_categoriesTresholds;
 	Log::Level m_logTreshold;
 	int m_count;
 	//bool m_isPrettyDomain;
