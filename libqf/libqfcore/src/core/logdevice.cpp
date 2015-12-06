@@ -28,7 +28,9 @@ Log::Level environment_treshold()
 	return Log::Level(ret);
 }
 
+namespace {
 QList< LogDevice* >& logDevices();
+}
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -45,6 +47,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		break;
 #endif
 	case QtWarningMsg:
+		/*
 		if(QLatin1String(context.category) == Log::categoryDebugName)
 			level = Log::Level::Debug;
 		else if(QLatin1String(context.category) == Log::categoryInfoName)
@@ -56,6 +59,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		else if(QLatin1String(context.category) == Log::categoryFatalName)
 			level = Log::Level::Fatal;
 		else level = Log::Level::Warning;
+		*/
+		level = Log::Level::Warning;
 		break;
 	case QtCriticalMsg:
 		level = Log::Level::Error;
@@ -71,6 +76,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 	}
 }
 
+namespace {
 QList< LogDevice* >& logDevices()
 {
 	static bool first_run = true;
@@ -79,6 +85,7 @@ QList< LogDevice* >& logDevices()
 	}
 	static QList< LogDevice* > log_devices;
 	return log_devices;
+}
 }
 
 }
@@ -441,7 +448,6 @@ SignalLogDevice::SignalLogDevice(QObject *parent)
 {
 	//qRegisterMetaType<qf::core::LogEntryMap>("qf::core::LogEntryMap");
 	connect(this, &SignalLogDevice::__logEntry, this, &SignalLogDevice::logEntry, Qt::QueuedConnection);
-	//connect(this, &SignalLogDevice::__logEntry, this, &SignalLogDevice::onLogEntry);
 }
 
 SignalLogDevice::~SignalLogDevice()
@@ -459,12 +465,5 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 {
 	QString module = moduleFromContext(context);
 	LogEntryMap m(level, module, msg, context.file, context.line, context.function);
-	//fprintf(stderr, "emit -------------------->\n");
 	emit __logEntry(m);
 }
-/*
-void SignalLogDevice::onLogEntry(const LogEntryMap &log_entry_map)
-{
-	fprintf(stderr, "emit <<<<<<<<<<<<<<<<<<<<<<<<\n");
-}
-*/

@@ -15,6 +15,7 @@ class QFCORE_DECL_EXPORT Log
 public:
 	enum class Level : int { Invalid = -1, Fatal, Error, Warning, Info, Debug };
 public:
+	/*
 	static const char* categoryDebugName;
 	static const char* categoryInfoName;
 	static const char* categoryWarningName;
@@ -22,6 +23,7 @@ public:
 	static const char* categoryFatalName;
 
 	static const QLoggingCategory& categoryForLevel(Level level);
+	*/
 	static const char *levelName(Level level);
 	static QString levelToString(Level level);
 

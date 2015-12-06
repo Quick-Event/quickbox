@@ -15,11 +15,7 @@
 #define qfDebug_q qDebug
 #endif
 
-#if (QT_VERSION < QT_VERSION_CHECK(5, 5, 0))
-#define qfInfo_q() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::Level::Info))
-#else
 #define qfInfo_q qInfo
-#endif
 #define qfWarning_q qWarning
 #define qfError_q qCritical
 #define qfFatal_q if(qCritical() << qf::core::Log::stackTrace(), true) qFatal

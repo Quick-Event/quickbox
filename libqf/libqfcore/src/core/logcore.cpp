@@ -4,7 +4,7 @@
 #include <QLoggingCategory>
 
 using namespace qf::core;
-
+/*
 const char* Log::categoryDebugName = "QF_CATEGORY_DEBUG";
 const char* Log::categoryInfoName = "QF_CATEGORY_INFO";
 const char* Log::categoryWarningName = "QF_CATEGORY_WARNING";
@@ -28,7 +28,7 @@ const QLoggingCategory &Log::categoryForLevel(Level level)
 	}
 	return catDebug;
 }
-
+*/
 const char *qf::core::Log::levelName(qf::core::Log::Level level)
 {
 	switch(level) {

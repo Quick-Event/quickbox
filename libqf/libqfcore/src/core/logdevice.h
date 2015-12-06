@@ -106,7 +106,6 @@ public:
 	Q_SIGNAL void logEntry(const LogEntryMap &log_entry_map);
 private:
 	Q_SIGNAL void __logEntry(const LogEntryMap &log_entry_map);
-	//void onLogEntry(const LogEntryMap &log_entry_map);
 };
 
 }
