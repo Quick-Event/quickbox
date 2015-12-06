@@ -18,18 +18,15 @@ protected:
 public:
 	virtual ~LogDevice();
 public:
-	virtual QString moduleFromFileName(const char *file_name);
+	static QStringList setCLITresholds(int argc, char *argv[]);
+
 	static void install(LogDevice *dev);
+
+	static Log::Level globalLogTreshold();
+
 	Log::Level setLogTreshold(Log::Level level);
-	/// @return list of arguments wthout ones used for domain tresholds setting
-	QStringList setModulesTresholds(int argc, char *argv[]);
 	Log::Level logTreshold();
 
-	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
-	/**
-	 * @brief checkLogContext
-	 * @return true if message with this context will be logged
-	 */
 	static bool checkAllLogContext(Log::Level level, const char *file_name, const char *category = nullptr);
 
 	static void setLoggingEnabled(bool on);
@@ -45,18 +42,26 @@ public:
 
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
-	//virtual QString prettyDomain(const QString &domain);
+	static QString moduleFromFileName(const char *file_name);
+	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
+	/**
+	 * @brief checkLogContext
+	 * @return true if message with this context will be logged
+	 */
+	static bool checkGlobalLogContext(Log::Level level, const char *file_name, const char *category);
 protected:
-	static Log::Level environmentLogTreshold;
-	static Log::Level commandLineLogTreshold;
+	static Log::Level s_environmentLogTreshold;
+	static Log::Level s_commandLineLogTreshold;
 
-	QMap<QString, Log::Level> m_modulesTresholds;
-	QMap<QString, Log::Level> m_categoriesTresholds;
+	static QMap<QString, Log::Level> s_modulesTresholds;
+	static QMap<QString, Log::Level> s_categoriesTresholds;
+
+	static bool s_loggingEnabled;
+
 	Log::Level m_logTreshold;
 	int m_count;
 	//bool m_isPrettyDomain;
 	bool m_enabled = true;
-	static bool m_loggingEnabled;
 };
 
 class QFCORE_DECL_EXPORT FileLogDevice : public LogDevice

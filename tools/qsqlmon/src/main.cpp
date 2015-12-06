@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("QuickBox");
 	QCoreApplication::setApplicationName("qsqlmon");
 
+	qf::core::LogDevice::setCLITresholds(argc, argv);
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
-	file_log_device->setModulesTresholds(argc, argv);
 
 	qfError() << "qfError() test OK.";
 	qfWarning() << "qfWarning() test OK.";

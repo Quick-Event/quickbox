@@ -78,10 +78,13 @@ QList< LogDevice* >& logDevices()
 //=========================================================
 // LogDevice
 //=========================================================
-Log::Level LogDevice::environmentLogTreshold = environment_treshold();
-Log::Level LogDevice::commandLineLogTreshold = Log::Level::Invalid;
+Log::Level LogDevice::s_environmentLogTreshold = environment_treshold();
+Log::Level LogDevice::s_commandLineLogTreshold = Log::Level::Invalid;
 
-bool LogDevice::m_loggingEnabled = true;
+QMap<QString, Log::Level> LogDevice::s_modulesTresholds;
+QMap<QString, Log::Level> LogDevice::s_categoriesTresholds;
+
+bool LogDevice::s_loggingEnabled = true;
 
 LogDevice::LogDevice(QObject *parent)
 	: QObject(parent)
@@ -109,17 +112,10 @@ void LogDevice::install(LogDevice *dev)
 	logDevices() << dev;
 }
 
-Log::Level LogDevice::setLogTreshold(Log::Level level)
-{
-	Log::Level old = m_logTreshold;
-	m_logTreshold = level;
-	return old;
-}
-
-QStringList LogDevice::setModulesTresholds(int argc, char *argv[])
+QStringList LogDevice::setCLITresholds(int argc, char *argv[])
 {
 	QStringList ret;
-	m_modulesTresholds.clear();
+	s_modulesTresholds.clear();
 	QStringList tresholds;
 	for(int i=0; i<argc; i++) {
 		QString s = QString::fromUtf8(argv[i]);
@@ -155,26 +151,43 @@ QStringList LogDevice::setModulesTresholds(int argc, char *argv[])
 				level = Log::Level::Error;
 		}
 		if(module.isEmpty()) {
-			setLogTreshold(level);
+			s_commandLineLogTreshold = level;
 		}
 		else {
 			//printf("add domainTreshold %s %d \n", qPrintable(domain), level);
-			m_modulesTresholds[module] = level;
+			s_modulesTresholds[module] = level;
 		}
 	}
 	return ret;
 }
 
+Log::Level LogDevice::globalLogTreshold()
+{
+	if(s_commandLineLogTreshold > Log::Level::Invalid)
+		return s_commandLineLogTreshold;
+	if(s_environmentLogTreshold > Log::Level::Invalid)
+		return s_environmentLogTreshold;
+	return Log::Level::Invalid;
+}
+
 Log::Level LogDevice::logTreshold()
 {
-	if(commandLineLogTreshold > Log::Level::Invalid)
-		return commandLineLogTreshold;
-	if(environmentLogTreshold > Log::Level::Invalid)
-		return environmentLogTreshold;
 	return m_logTreshold;
 }
 
+Log::Level LogDevice::setLogTreshold(Log::Level level)
+{
+	Log::Level old = m_logTreshold;
+	m_logTreshold = level;
+	return old;
+}
+
 bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *category)
+{
+	return checkGlobalLogContext(level, file_name, category);
+}
+
+bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, const char *category)
 {
 	bool ret = false;
 	do {
@@ -191,7 +204,7 @@ bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const c
 		if(category && category[0]) {
 			// category specified
 			bool category_level_found = false;
-			QMapIterator<QString, Log::Level> it(m_categoriesTresholds);
+			QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
 			while (it.hasNext()) {
 				it.next();
 				if(it.key() == QLatin1String(category)) {
@@ -203,7 +216,7 @@ bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const c
 				}
 			}
 			if(!category_level_found) {
-				if(level <= logTreshold())
+				if(level <= globalLogTreshold())
 					ret = true;
 			}
 		}
@@ -213,7 +226,7 @@ bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const c
 		if(ret) {
 			bool module_level_found = false;
 			QString module = moduleFromFileName(file_name);
-			QMapIterator<QString, Log::Level> it(m_modulesTresholds);
+			QMapIterator<QString, Log::Level> it(s_modulesTresholds);
 			while (it.hasNext()) {
 				it.next();
 				if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
@@ -225,7 +238,7 @@ bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const c
 				}
 			}
 			if(!module_level_found) {
-				if(level <= logTreshold())
+				if(level <= globalLogTreshold())
 					ret = true;
 			}
 		}
@@ -236,12 +249,12 @@ bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const c
 
 void LogDevice::setLoggingEnabled(bool on)
 {
-	m_loggingEnabled = on;
+	s_loggingEnabled = on;
 }
 
 bool LogDevice::isLoggingEnabled()
 {
-	return m_loggingEnabled;
+	return s_loggingEnabled;
 }
 
 void LogDevice::setEnabled(bool b)
