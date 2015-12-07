@@ -262,7 +262,7 @@ QPair<QString, QString> CLIOptions::applicationDirAndName() const
 	#endif
 			app_dir = app_file_path.section(sep, 0, -2);
 			app_name = app_file_path.section(sep, -1);
-			qfInfo() << "app dir:" << app_dir << "name:" << app_name;
+			//qfInfo() << "app dir:" << app_dir << "name:" << app_name;
 	#ifdef Q_OS_WIN
 			if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
 				app_name = app_name.mid(0, app_name.length() - 4);
@@ -304,7 +304,7 @@ void CLIOptions::printHelp(QTextStream& os) const
 		if(!oc.isEmpty()) os << "\t" << opt.comment() << endl;
 	}
 	os << qf::core::LogDevice::logModulesCLIHelp() << endl;
-	os << qf::core::LogDevice::logDomainsCLIHelp() << endl;
+	os << qf::core::LogDevice::logCategoriesCLIHelp() << endl;
 }
 
 void CLIOptions::printHelp() const

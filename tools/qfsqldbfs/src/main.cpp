@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 		}
 
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
-	qf::core::LogDevice::setCLITresholds(argc - dbfs_switch_index, argv + dbfs_switch_index);
+	qf::core::LogDevice::setGlobalTresholds(argc - dbfs_switch_index, argv + dbfs_switch_index);
 	//file_log_device->setPrettyDomain(true);
 
 	QString o_database;

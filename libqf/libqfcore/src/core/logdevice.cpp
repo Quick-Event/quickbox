@@ -56,6 +56,11 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		level = Log::Level::Fatal;
 		break;
 	}
+	if(level == Log::Level::Debug && msg.isEmpty()) {
+		// do not log empty debug message like qDebug();
+		// qfLogFuncFrame cannot be implemented optimaly without this hack
+		return;
+	}
 	Q_FOREACH(auto log_device, logDevices()) {
 		log_device->log(level, context, msg);
 	}
@@ -76,16 +81,16 @@ QList< LogDevice* >& logDevices()
 }
 
 //=========================================================
-// LogDevice
+//                       LogDevice
 //=========================================================
 Log::Level LogDevice::s_environmentLogTreshold = environment_treshold();
-Log::Level LogDevice::s_commandLineLogTreshold = Log::Level::Invalid;
+Log::Level LogDevice::s_commandLineLogTreshold = Log::Level::Info;
 
 QMap<QString, Log::Level> LogDevice::s_modulesTresholds;
-QMap<QString, Log::Level> LogDevice::s_domainsTresholds;
-QStringList LogDevice::s_definedDomains;
-bool LogDevice::s_logAllDomains = false;
-bool LogDevice::s_inverseDomainFilter = false;
+QMap<QString, Log::Level> LogDevice::s_categoriesTresholds;
+QStringList LogDevice::s_definedCategories;
+bool LogDevice::s_logAllCategories = false;
+bool LogDevice::s_inverseCategoriesFilter = false;
 
 bool LogDevice::s_loggingEnabled = true;
 
@@ -115,7 +120,7 @@ void LogDevice::install(LogDevice *dev)
 	logDevices() << dev;
 }
 
-QStringList LogDevice::setCLITresholds(int argc, char *argv[])
+QStringList LogDevice::setGlobalTresholds(int argc, char *argv[])
 {
 	QStringList ret;
 	for(int i=1; i<argc; i++) {
@@ -144,13 +149,13 @@ QString LogDevice::modulesLogInfo()
 QString LogDevice::domainsLogInfo()
 {
 	QString ret;
-	if(s_logAllDomains) {
-		ret += s_definedDomains.join(',');
+	if(s_logAllCategories) {
+		ret += s_definedCategories.join(',');
 	}
 	else {
-		ret += s_inverseDomainFilter? "All except of": "";
+		ret += s_inverseCategoriesFilter? "All except of": "";
 		QStringList sl;
-		QMapIterator<QString, Log::Level> it(s_domainsTresholds);
+		QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
 		while (it.hasNext()) {
 			it.next();
 			sl << it.key() + ':' + qf::core::Log::levelName(it.value());
@@ -204,7 +209,7 @@ QStringList LogDevice::setModulesTresholds(const QStringList &args)
 QStringList LogDevice::setDomainTresholds(const QStringList &args)
 {
 	QStringList ret;
-	s_domainsTresholds.clear();
+	s_categoriesTresholds.clear();
 	QStringList tresholds;
 	for(int i=0; i<args.count(); i++) {
 		QString s = args[i];
@@ -212,11 +217,11 @@ QStringList LogDevice::setDomainTresholds(const QStringList &args)
 			i++;
 			s = s.mid(2);
 			if(s.startsWith('^')) {
-				s_inverseDomainFilter = true;
+				s_inverseCategoriesFilter = true;
 				s = s.mid(1);
 			}
 			tresholds << s.split(',');
-			s_logAllDomains = tresholds.isEmpty();
+			s_logAllCategories = tresholds.isEmpty();
 		}
 		else {
 			ret << s;
@@ -240,7 +245,7 @@ QStringList LogDevice::setDomainTresholds(const QStringList &args)
 				level = Log::Level::Error;
 		}
 		if(!domain.isEmpty())
-			s_domainsTresholds[domain] = level;
+			s_categoriesTresholds[domain] = level;
 	}
 	return ret;
 }
@@ -266,12 +271,12 @@ Log::Level LogDevice::setLogTreshold(Log::Level level)
 	return old;
 }
 
-bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *domain)
+bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *category)
 {
-	return checkGlobalLogContext(level, file_name, domain);
+	return checkGlobalLogContext(level, file_name, category);
 }
 
-bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, const char *domain)
+bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, const char *category)
 {
 	bool ret = false;
 	do {
@@ -285,21 +290,21 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 			break;
 #endif
 		}
-		if(!s_definedDomains.isEmpty() && domain && domain[0]) {
+		if(!s_definedCategories.isEmpty() && category && category[0]) {
 			// category specified
-			bool domain_level_found = false;
-			QMapIterator<QString, Log::Level> it(s_domainsTresholds);
+			bool category_level_found = false;
+			QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
 			while (it.hasNext()) {
 				it.next();
-				if(it.key() == QLatin1String(domain)) {
+				if(it.key() == QLatin1String(category)) {
 					//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
-					domain_level_found = true;
+					category_level_found = true;
 					if(level <= it.value())
 						ret = true;
 					break;
 				}
 			}
-			if(!domain_level_found) {
+			if(!category_level_found) {
 				if(level <= globalLogTreshold())
 					ret = true;
 			}
@@ -308,6 +313,7 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 			ret = true;
 		}
 		if(ret) {
+			ret = false;
 			bool module_level_found = false;
 			QString module = moduleFromFileName(file_name);
 			QMapIterator<QString, Log::Level> it(s_modulesTresholds);
@@ -369,25 +375,27 @@ bool LogDevice::isPrettyDomain() const
 */
 QString LogDevice::logModulesCLIHelp()
 {
-	return "-d,--debug [domain[:LEVEL][,domain[:LEVEL]]]\tset debug domain and level\n"
-	"\t\t\tdomain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
-	"\t\t\tLEVEL: any of DEB, INFO, WARN, ERR, [D,I,W,E] can be used as well, default level is INFO\n";
+	return "-d,--debug [domain[:LEVEL][,domain[:LEVEL]]]\n"
+	"\t set debug domain and level\n"
+	"\t\t domain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
+	"\t\t LEVEL: any of DEB, INFO, WARN, ERR, [D,I,W,E] can be used as well, default level is INFO";
 }
 
-QString LogDevice::logDomainsCLIHelp()
+QString LogDevice::logCategoriesCLIHelp()
 {
 	QString ret;
-	if(s_definedDomains.isEmpty())
+	if(s_definedCategories.isEmpty())
 		return ret;
 	ret =
-		"-v,--verbose [^][" + s_definedDomains.join(",][") + "]"
-		"\n\t more comma delimited modules enabled."
-		"\n\t When list starts with ^, the module list is excluded."
-		"\n\t Case insensitive."
-		"\n\t StartsWith or CamelCase match enabled."
-		"\n\t Example: -v is equal to --verbose enables all domains logging"
-		"\n\t Example: -v fo,tram is equal to --verbose FreeOpcua,TramMove"
-		"\n\t Example: -v ^opcua,tram means log all except modules starting with 'opcua' or 'tram'";
+		"-v,--verbose [^][" + s_definedCategories.join(",][") + "]"
+		"\n\t controls defined categories log verbosity"
+		"\n\t\t more comma delimited categories enabled."
+		"\n\t\t When list starts with ^, the categories listed are excluded."
+		"\n\t\t Case insensitive."
+		"\n\t\t StartsWith or CamelCase match enabled."
+		"\n\t\t Example: -v is equal to --verbose enables all categories logging"
+		"\n\t\t Example: -v fo,tram is equal to --verbose FreeOpcua,TramMove"
+		"\n\t\t Example: -v ^opcua,tram means log all except modules starting with 'opcua' or 'tram'";
 	return ret;
 }
 
@@ -512,16 +520,16 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 // LogEntryMap
 //=========================================================
 static const auto KeyLevel = QStringLiteral("level");
-static const auto KeyDomain = QStringLiteral("domain");
+static const auto KeyCategory = QStringLiteral("category");
 static const auto KeyMessage = QStringLiteral("message");
 static const auto KeyFile = QStringLiteral("file");
 static const auto KeyLine = QStringLiteral("line");
 static const auto KeyFunction = QStringLiteral("function");
 
-LogEntryMap::LogEntryMap(Log::Level level, const QString &domain, const QString &message, const QString &file, int line, const QString &function)
+LogEntryMap::LogEntryMap(Log::Level level, const QString &category, const QString &message, const QString &file, int line, const QString &function)
 {
 	this->operator[](KeyLevel) = (int)level;
-	this->operator[](KeyDomain) = domain;
+	this->operator[](KeyCategory) = category;
 	this->operator[](KeyMessage) = message;
 	this->operator[](KeyFile) = file;
 	this->operator[](KeyLine) = line;
@@ -543,9 +551,9 @@ QString LogEntryMap::message() const
 	return value(KeyMessage).toString();
 }
 
-QString LogEntryMap::domain() const
+QString LogEntryMap::category() const
 {
-	return value(KeyDomain).toString();
+	return value(KeyCategory).toString();
 }
 
 QString LogEntryMap::file() const
@@ -567,7 +575,7 @@ QString LogEntryMap::toString() const
 {
 	QString ret = "{";
 	ret += "\"level\":" + QString::number((int)level()) + ", ";
-	ret += "\"domain\":" + domain() + ", ";
+	ret += "\"category\":" + category() + ", ";
 	ret += "\"message\":" + message() + ", ";
 	ret += "\"file\":" + file() + ", ";
 	ret += "\"line\":" + QString::number(line()) + ", ";

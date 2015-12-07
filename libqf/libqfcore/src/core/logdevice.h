@@ -20,12 +20,12 @@ public:
 
 	static void install(LogDevice *dev);
 
-	static QStringList setCLITresholds(int argc, char *argv[]);
+	static QStringList setGlobalTresholds(int argc, char *argv[]);
 	static QString modulesLogInfo();
 	static QString domainsLogInfo();
 
-	static void setDefinedDomains(const QStringList &domains) {s_definedDomains = domains;}
-	static QStringList definedDomains() { return s_definedDomains; }
+	static void setDefinedCategories(const QStringList &categories) {s_definedCategories = categories;}
+	static QStringList definedCategories() { return s_definedCategories; }
 
 	static Log::Level globalLogTreshold();
 
@@ -44,34 +44,33 @@ public:
 	//bool isPrettyDomain() const;
 
 	static QString logModulesCLIHelp();
-	static QString logDomainsCLIHelp();
+	static QString logCategoriesCLIHelp();
 
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
 	static QStringList setModulesTresholds(const QStringList &args);
 	static QStringList setDomainTresholds(const QStringList &args);
 	static QString moduleFromFileName(const char *file_name);
-	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *domain);
+	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
 	/**
 	 * @brief checkLogContext
 	 * @return true if message with this context will be logged
 	 */
-	static bool checkGlobalLogContext(Log::Level level, const char *file_name, const char *domain);
+	static bool checkGlobalLogContext(Log::Level level, const char *file_name, const char *category);
 protected:
 	static Log::Level s_environmentLogTreshold;
 	static Log::Level s_commandLineLogTreshold;
 
 	static QMap<QString, Log::Level> s_modulesTresholds;
-	static QMap<QString, Log::Level> s_domainsTresholds;
-	static QStringList s_definedDomains;
-	static bool s_logAllDomains;
-	static bool s_inverseDomainFilter;
+	static QMap<QString, Log::Level> s_categoriesTresholds;
+	static QStringList s_definedCategories;
+	static bool s_logAllCategories;
+	static bool s_inverseCategoriesFilter;
 
 	static bool s_loggingEnabled;
 
 	Log::Level m_logTreshold;
 	int m_count;
-	//bool m_isPrettyDomain;
 	bool m_enabled = true;
 };
 
@@ -99,12 +98,12 @@ public:
 	//enum Key {KeyLevel, KeyDomain, KeyMessage, KeyFile, KeyLine, KeyFunction};
 public:
 	LogEntryMap() : QVariantMap() {}
-	LogEntryMap(Log::Level level, const QString &domain, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());
+	LogEntryMap(Log::Level level, const QString &category, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());
 	LogEntryMap(const QVariantMap &m) : QVariantMap(m) {}
 public:
 	qf::core::Log::Level level() const;
 	QString levelStr() const;
-	QString domain() const;
+	QString category() const;
 	QString message() const;
 	QString file() const;
 	int line() const;
