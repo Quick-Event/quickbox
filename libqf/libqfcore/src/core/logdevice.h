@@ -22,10 +22,11 @@ public:
 
 	static QStringList setGlobalTresholds(int argc, char *argv[]);
 	static QString modulesLogInfo();
-	static QString domainsLogInfo();
+	static QString categoriesLogInfo();
 
 	static void setDefinedCategories(const QStringList &categories) {s_definedCategories = categories;}
 	static QStringList definedCategories() { return s_definedCategories; }
+	static bool isCategoryLogEnabled(const QString &category);
 
 	static Log::Level globalLogTreshold();
 
@@ -40,16 +41,13 @@ public:
 	void setEnabled(bool b);
 	bool isEnabled() const {return m_enabled;}
 
-	//void setPrettyDomain(bool b);
-	//bool isPrettyDomain() const;
-
 	static QString logModulesCLIHelp();
 	static QString logCategoriesCLIHelp();
 
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
 	static QStringList setModulesTresholds(const QStringList &args);
-	static QStringList setDomainTresholds(const QStringList &args);
+	static QStringList setCategoriesTresholds(const QStringList &args);
 	static QString moduleFromFileName(const char *file_name);
 	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
 	/**
@@ -94,8 +92,6 @@ protected:
 
 class QFCORE_DECL_EXPORT LogEntryMap : public QVariantMap
 {
-public:
-	//enum Key {KeyLevel, KeyDomain, KeyMessage, KeyFile, KeyLine, KeyFunction};
 public:
 	LogEntryMap() : QVariantMap() {}
 	LogEntryMap(Log::Level level, const QString &category, const QString &message, const QString &file = QString(), int line = -1, const QString &function = QString());

@@ -400,10 +400,16 @@ void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVari
 		}
 		else {
 			try {
-				Option &opt = optionRef(key);
-				if(!opt.isSet()) {
-					//qfInfo() << key << "-->" << v;
-					opt.setValue(v);
+				bool opt_exists = !option(key, !qf::core::Exception::Throw).isNull();
+				if(opt_exists) {
+					Option &opt = optionRef(key);
+					if(!opt.isSet()) {
+						//qfInfo() << key << "-->" << v;
+						opt.setValue(v);
+					}
+				}
+				else {
+					qfWarning() << "Cannot merge nonexisting option key:" << key;
 				}
 			}
 			catch(const qf::core::Exception &e) {

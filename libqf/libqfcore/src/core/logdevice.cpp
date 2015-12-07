@@ -128,7 +128,7 @@ QStringList LogDevice::setGlobalTresholds(int argc, char *argv[])
 		ret << s;
 	}
 	ret = setModulesTresholds(ret);
-	ret = setDomainTresholds(ret);
+	ret = setCategoriesTresholds(ret);
 	ret.insert(0, argv[0]);
 	return ret;
 }
@@ -146,14 +146,14 @@ QString LogDevice::modulesLogInfo()
 	return ret;
 }
 
-QString LogDevice::domainsLogInfo()
+QString LogDevice::categoriesLogInfo()
 {
 	QString ret;
 	if(s_logAllCategories) {
 		ret += s_definedCategories.join(',');
 	}
 	else {
-		ret += s_inverseCategoriesFilter? "All except of": "";
+		ret += s_inverseCategoriesFilter? "All except of ": "";
 		QStringList sl;
 		QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
 		while (it.hasNext()) {
@@ -165,6 +165,20 @@ QString LogDevice::domainsLogInfo()
 	return ret;
 }
 
+bool LogDevice::isCategoryLogEnabled(const QString &category)
+{
+	bool ok = false;
+	QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
+	while (it.hasNext()) {
+		it.next();
+		if(it.key() == category) {
+			ok = (it.value() <= globalLogTreshold());
+			break;
+		}
+	}
+	return ok;
+}
+
 QStringList LogDevice::setModulesTresholds(const QStringList &args)
 {
 	QStringList ret;
@@ -173,9 +187,8 @@ QStringList LogDevice::setModulesTresholds(const QStringList &args)
 	for(int i=0; i<args.count(); i++) {
 		QString s = args[i];
 		if(s == QLatin1String("-d") || s == QLatin1String("--debug")) {
-			i++;
-			s = s.mid(2);
-			tresholds << s.split(',');
+			s = args.value(++i);
+			tresholds << s.split(',', QString::SkipEmptyParts);
 		}
 		else {
 			ret << s;
@@ -185,9 +198,9 @@ QStringList LogDevice::setModulesTresholds(const QStringList &args)
 		int ix = module.indexOf(':');
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
 		Log::Level level = Log::Level::Debug;
-		if(ix > 0) {
+		if(ix >= 0) {
 			QString s = module.mid(ix + 1, 1);
-			module = module.mid(0, ix);
+			module = module.mid(0, ix).trimmed();
 			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
 			if(c == 'D')
 				level = Log::Level::Debug;
@@ -206,7 +219,29 @@ QStringList LogDevice::setModulesTresholds(const QStringList &args)
 	return ret;
 }
 
-QStringList LogDevice::setDomainTresholds(const QStringList &args)
+static QStringList tokenize_at_capital(const QString &category)
+{
+	QStringList ret;
+	QString token;
+	for (int i = 0; i < category.length(); ++i) {
+		const QChar c = category[i];
+		if(c.isUpper()) {
+			if(!token.isEmpty()) {
+				ret << token;
+			}
+			token = c;
+		}
+		else {
+			token += c;
+		}
+	}
+	if(!token.isEmpty()) {
+		ret << token;
+	}
+	return ret;
+}
+
+QStringList LogDevice::setCategoriesTresholds(const QStringList &args)
 {
 	QStringList ret;
 	s_categoriesTresholds.clear();
@@ -214,26 +249,24 @@ QStringList LogDevice::setDomainTresholds(const QStringList &args)
 	for(int i=0; i<args.count(); i++) {
 		QString s = args[i];
 		if(s == QLatin1String("-v") || s == QLatin1String("--verbose")) {
-			i++;
-			s = s.mid(2);
+			s = args.value(++i);
 			if(s.startsWith('^')) {
 				s_inverseCategoriesFilter = true;
 				s = s.mid(1);
 			}
-			tresholds << s.split(',');
+			tresholds << s.split(',', QString::SkipEmptyParts);
 			s_logAllCategories = tresholds.isEmpty();
 		}
 		else {
 			ret << s;
 		}
 	}
-	for(QString domain : tresholds) {
-		int ix = domain.indexOf(':');
+	for(QString category : tresholds) {
+		int ix = category.indexOf(':');
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
 		Log::Level level = Log::Level::Debug;
-		if(ix > 0) {
-			QString s = domain.mid(ix + 1, 1);
-			domain = domain.mid(0, ix);
+		if(ix >= 0) {
+			QString s = category.mid(ix + 1, 1);
 			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
 			if(c == 'D')
 				level = Log::Level::Debug;
@@ -243,9 +276,27 @@ QStringList LogDevice::setDomainTresholds(const QStringList &args)
 				level = Log::Level::Warning;
 			else if(c == 'E')
 				level = Log::Level::Error;
+			category = category.mid(0, ix);
 		}
-		if(!domain.isEmpty())
-			s_categoriesTresholds[domain] = level;
+		for(const QString def_cat : definedCategories()) {
+			QStringList def_cat_sl = tokenize_at_capital(def_cat);
+			QStringList cli_cat_sl = tokenize_at_capital(category);
+			bool match = true;
+			for (int i = 0; i < cli_cat_sl.length(); ++i) {
+				QString def_token = def_cat_sl.value(i);
+				if(def_token.isEmpty()) {
+					match = false;
+					break;
+				}
+				QString cli_token = cli_cat_sl.value(i);
+				if(!def_token.startsWith(cli_token, Qt::CaseSensitive)) {
+					match = false;
+					break;
+				}
+			}
+			if(match)
+				s_categoriesTresholds[def_cat] = level;
+		}
 	}
 	return ret;
 }
@@ -290,23 +341,21 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 			break;
 #endif
 		}
-		if(!s_definedCategories.isEmpty() && category && category[0]) {
+		if(category && category[0]) {
 			// category specified
-			bool category_level_found = false;
-			QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
-			while (it.hasNext()) {
-				it.next();
-				if(it.key() == QLatin1String(category)) {
-					//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
-					category_level_found = true;
-					if(level <= it.value())
-						ret = true;
-					break;
-				}
+			qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
+			if(s_logAllCategories)
+				category_level = globalLogTreshold();
+			else if(s_inverseCategoriesFilter) {
+				if(!s_categoriesTresholds.contains(QLatin1String(category)))
+					category_level = globalLogTreshold();
 			}
-			if(!category_level_found) {
-				if(level <= globalLogTreshold())
-					ret = true;
+			else {
+				QString cat = QLatin1String(category);
+				category_level = s_categoriesTresholds.value(cat, qf::core::Log::Level::Invalid);
+			}
+			if(category_level != qf::core::Log::Level::Invalid) {
+				ret = (level <= category_level);
 			}
 		}
 		else {
@@ -391,11 +440,11 @@ QString LogDevice::logCategoriesCLIHelp()
 		"\n\t controls defined categories log verbosity"
 		"\n\t\t more comma delimited categories enabled."
 		"\n\t\t When list starts with ^, the categories listed are excluded."
-		"\n\t\t Case insensitive."
+		"\n\t\t Case sensitive."
 		"\n\t\t StartsWith or CamelCase match enabled."
 		"\n\t\t Example: -v is equal to --verbose enables all categories logging"
-		"\n\t\t Example: -v fo,tram is equal to --verbose FreeOpcua,TramMove"
-		"\n\t\t Example: -v ^opcua,tram means log all except modules starting with 'opcua' or 'tram'";
+		"\n\t\t Example: -v FO,TrM is equal to --verbose F*O*,Tr*M*"
+		"\n\t\t Example: -v ^Opcua,TM means log all except modules starting with 'Opcua' or has pattern 'T*M*'";
 	return ret;
 }
 
@@ -495,9 +544,11 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	std::fprintf(m_file, "<%s>", Log::levelName(level));
 	QString module = moduleFromFileName(context.file);
 	if(!module.isEmpty()) {
-		std::fprintf(m_file, "[%s:%d] ", qPrintable(module), context.line);
+		std::fprintf(m_file, "[%s:%d]", qPrintable(module), context.line);
 	}
-	std::fprintf(m_file, "%s", qPrintable(msg));
+	if(context.category && context.category[0])
+		std::fprintf(m_file, "(%s)", context.category);
+	std::fprintf(m_file, " %s", qPrintable(msg));
 #ifdef Q_OS_UNIX
 	if(is_tty) {
 		QString s;
