@@ -408,6 +408,14 @@ void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVari
 						opt.setValue(v);
 					}
 				}
+				else if(key == QLatin1String("debug")) {
+					// allways understand --debug parameter even if it is not defined explicitly in CLI options
+					qf::core::LogDevice::setModulesTresholds(v.toString());
+				}
+				else if(key == QLatin1String("verbose")) {
+					// allways understand --verbose parameter even if it is not defined explicitly in CLI options
+					qf::core::LogDevice::setCategoriesTresholds(v.toString());
+				}
 				else {
 					qfWarning() << "Cannot merge nonexisting option key:" << key;
 				}

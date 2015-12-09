@@ -127,8 +127,8 @@ QStringList LogDevice::setGlobalTresholds(int argc, char *argv[])
 		QString s = QString::fromUtf8(argv[i]);
 		ret << s;
 	}
-	ret = setModulesTresholds(ret);
-	ret = setCategoriesTresholds(ret);
+	ret = setModulesTresholdsFromArgs(ret);
+	ret = setCategoriesTresholdsFromArgs(ret);
 	ret.insert(0, argv[0]);
 	return ret;
 }
@@ -179,7 +179,7 @@ bool LogDevice::isCategoryLogEnabled(const QString &category)
 	return ok;
 }
 
-QStringList LogDevice::setModulesTresholds(const QStringList &args)
+QStringList LogDevice::setModulesTresholdsFromArgs(const QStringList &args)
 {
 	QStringList ret;
 	s_modulesTresholds.clear();
@@ -188,12 +188,23 @@ QStringList LogDevice::setModulesTresholds(const QStringList &args)
 		QString s = args[i];
 		if(s == QLatin1String("-d") || s == QLatin1String("--debug")) {
 			s = args.value(++i);
-			tresholds << s.split(',', QString::SkipEmptyParts);
+			setModulesTresholds(s);
 		}
 		else {
 			ret << s;
 		}
 	}
+	return ret;
+}
+
+void LogDevice::setModulesTresholds(const QString &s)
+{
+	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
+	setModulesTresholds(tresholds);
+}
+
+void LogDevice::setModulesTresholds(const QStringList &tresholds)
+{
 	for(QString module : tresholds) {
 		int ix = module.indexOf(':');
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
@@ -216,7 +227,6 @@ QStringList LogDevice::setModulesTresholds(const QStringList &args)
 		else
 			s_modulesTresholds[module] = level;
 	}
-	return ret;
 }
 
 static QStringList tokenize_at_capital(const QString &category)
@@ -241,7 +251,7 @@ static QStringList tokenize_at_capital(const QString &category)
 	return ret;
 }
 
-QStringList LogDevice::setCategoriesTresholds(const QStringList &args)
+QStringList LogDevice::setCategoriesTresholdsFromArgs(const QStringList &args)
 {
 	QStringList ret;
 	s_categoriesTresholds.clear();
@@ -250,20 +260,33 @@ QStringList LogDevice::setCategoriesTresholds(const QStringList &args)
 		QString s = args[i];
 		if(s == QLatin1String("-v") || s == QLatin1String("--verbose")) {
 			s = args.value(++i);
-			if(s.startsWith('^')) {
-				s_inverseCategoriesFilter = true;
-				s = s.mid(1);
-			}
-			tresholds << s.split(',', QString::SkipEmptyParts);
-			s_logAllCategories = tresholds.isEmpty();
+			setCategoriesTresholds(s);
 		}
 		else {
 			ret << s;
 		}
 	}
+	setCategoriesTresholds(tresholds);
+	return ret;
+}
+
+void LogDevice::setCategoriesTresholds(const QString &trsh)
+{
+	QString s = trsh;
+	if(s.startsWith('^')) {
+		s_inverseCategoriesFilter = true;
+		s = s.mid(1);
+	}
+	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
+	setCategoriesTresholds(tresholds);
+	s_logAllCategories = s_categoriesTresholds.isEmpty();
+}
+
+void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
+{
 	for(QString category : tresholds) {
 		int ix = category.indexOf(':');
-		//printf("domainTreshold %s\n", qPrintable(dom_tres));
+		//printf("category treshold %s\n", qPrintable(category));
 		Log::Level level = Log::Level::Debug;
 		if(ix >= 0) {
 			QString s = category.mid(ix + 1, 1);
@@ -279,26 +302,30 @@ QStringList LogDevice::setCategoriesTresholds(const QStringList &args)
 			category = category.mid(0, ix);
 		}
 		for(const QString def_cat : definedCategories()) {
+			//printf("\t def_cat %s\n", qPrintable(def_cat));
 			QStringList def_cat_sl = tokenize_at_capital(def_cat);
 			QStringList cli_cat_sl = tokenize_at_capital(category);
 			bool match = true;
 			for (int i = 0; i < cli_cat_sl.length(); ++i) {
 				QString def_token = def_cat_sl.value(i);
+				//printf("\t\t def_token %s\n", qPrintable(def_token));
 				if(def_token.isEmpty()) {
 					match = false;
 					break;
 				}
 				QString cli_token = cli_cat_sl.value(i);
+				//printf("\t\t cli_token %s\n", qPrintable(cli_token));
 				if(!def_token.startsWith(cli_token, Qt::CaseSensitive)) {
 					match = false;
 					break;
 				}
 			}
-			if(match)
+			if(match) {
+				//printf("\t\t match with %s\n", qPrintable(def_cat));
 				s_categoriesTresholds[def_cat] = level;
+			}
 		}
 	}
-	return ret;
 }
 
 Log::Level LogDevice::globalLogTreshold()

@@ -21,6 +21,8 @@ public:
 	static void install(LogDevice *dev);
 
 	static QStringList setGlobalTresholds(int argc, char *argv[]);
+	static void setModulesTresholds(const QString &s);
+	static void setCategoriesTresholds(const QString &s);
 	static QString modulesLogInfo();
 	static QString categoriesLogInfo();
 
@@ -46,8 +48,10 @@ public:
 
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
-	static QStringList setModulesTresholds(const QStringList &args);
-	static QStringList setCategoriesTresholds(const QStringList &args);
+	static QStringList setModulesTresholdsFromArgs(const QStringList &args);
+	static void setModulesTresholds(const QStringList &tresholds);
+	static QStringList setCategoriesTresholdsFromArgs(const QStringList &args);
+	static void setCategoriesTresholds(const QStringList &tresholds);
 	static QString moduleFromFileName(const char *file_name);
 	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
 	/**
