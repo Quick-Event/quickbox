@@ -44,15 +44,15 @@
 #ifdef NO_QF_DEBUG
 #define qfCDebug(category) while(false) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).debug
 #else
-#define qfCDebug(category) for(bool en = qf::core::LogDevice::checkAllLogContext(qf::core::Log::Level::Debug, __FILE__, category); en; en = false) \
+#define qfCDebug(category) for(bool en = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Debug, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).debug
 #endif
 
-#define qfCInfo(category) for(bool en = qf::core::LogDevice::checkAllLogContext(qf::core::Log::Level::Info, __FILE__, category); en; en = false) \
+#define qfCInfo(category) for(bool en = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Info, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).info
-#define qfCWarning(category) for(bool en = qf::core::LogDevice::checkAllLogContext(qf::core::Log::Level::Warning, __FILE__, category); en; en = false) \
+#define qfCWarning(category) for(bool en = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Warning, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).warning
-#define qfCError(category) for(bool en = qf::core::LogDevice::checkAllLogContext(qf::core::Log::Level::Error, __FILE__, category); en; en = false) \
+#define qfCError(category) for(bool en = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Error, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).critical
 
 #define qfDebug qfCDebug("")
@@ -63,7 +63,7 @@
 #ifdef NO_QF_DEBUG
 #define qfLogFuncFrame() while(0) qDebug()
 #else
-#define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = qf::core::LogDevice::checkAllLogContext(qf::core::Log::Level::Debug, __FILE__, "")? QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "     EXIT FN" << Q_FUNC_INFO: QMessageLogger().debug(); \
+#define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Debug, __FILE__, "")? QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "     EXIT FN" << Q_FUNC_INFO: QMessageLogger().debug(); \
 	qfDebug() << ">>>> ENTER FN" << Q_FUNC_INFO
 #endif
 

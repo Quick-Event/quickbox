@@ -14,7 +14,7 @@
 using namespace qf::core;
 
 namespace {
-
+/*
 Log::Level environment_treshold()
 {
 	const QByteArray ba = qgetenv("QF_LOG_TRESHOLD");
@@ -27,10 +27,10 @@ Log::Level environment_treshold()
 		return Log::Level::Invalid;
 	return Log::Level(ret);
 }
+*/
 
-namespace {
 QList< LogDevice* >& logDevices();
-}
+
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -62,11 +62,13 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		return;
 	}
 	Q_FOREACH(auto log_device, logDevices()) {
-		log_device->log(level, context, msg);
+		// check if log is enabled for this device particulary
+		// checking is done twice for successful log device and once for the unsuccessful one (in isMatchingAllDevicesLogFilter)
+		if(log_device->isMatchingLogFilter(level, context.file, context.category))
+			log_device->log(level, context, msg);
 	}
 }
 
-namespace {
 QList< LogDevice* >& logDevices()
 {
 	static bool first_run = true;
@@ -76,29 +78,28 @@ QList< LogDevice* >& logDevices()
 	static QList< LogDevice* > log_devices;
 	return log_devices;
 }
-}
 
 }
 
 //=========================================================
 //                       LogDevice
 //=========================================================
-Log::Level LogDevice::s_environmentLogTreshold = environment_treshold();
-Log::Level LogDevice::s_commandLineLogTreshold = Log::Level::Info;
+//Log::Level LogDevice::s_environmentLogTreshold = environment_treshold();
+//Log::Level LogDevice::s_commandLineLogTreshold = Log::Level::Info;
 
-QMap<QString, Log::Level> LogDevice::s_modulesTresholds;
-QMap<QString, Log::Level> LogDevice::s_categoriesTresholds;
+//QMap<QString, Log::Level> LogDevice::s_modulesTresholds;
+//QMap<QString, Log::Level> LogDevice::s_categoriesTresholds;
+//bool LogDevice::s_logAllCategories = false;
+//bool LogDevice::s_inverseCategoriesFilter = false;
+LogDevice::LogFilter LogDevice::s_globalLogFilter;
 QStringList LogDevice::s_definedCategories;
-bool LogDevice::s_logAllCategories = false;
-bool LogDevice::s_inverseCategoriesFilter = false;
 
 bool LogDevice::s_loggingEnabled = true;
 
 LogDevice::LogDevice(QObject *parent)
 	: QObject(parent)
-	, m_logTreshold(Log::Level::Info)
+	//, m_logTreshold(Log::Level::Info)
 	, m_count(0)
-	//, m_isPrettyDomain(true)
 {
 }
 
@@ -107,11 +108,11 @@ LogDevice::~LogDevice()
 	logDevices().removeOne(this);
 }
 
-QString LogDevice::moduleFromFileName(const char *file_name)
+QString LogDevice::moduleFromFileName(const QString &file_name)
 {
-	QString ret = QString::fromUtf8(file_name);
+	//QString ret = QString::fromUtf8(file_name);
 	static QRegExp rx("(\\\\|\\/)");
-	ret = ret.section(rx, -1);
+	QString ret = file_name.section(rx, -1);
 	return ret;
 }
 
@@ -137,7 +138,7 @@ QString LogDevice::modulesLogInfo()
 {
 	QString ret;
 	QStringList sl;
-	QMapIterator<QString, Log::Level> it(s_modulesTresholds);
+	QMapIterator<QString, Log::Level> it(s_globalLogFilter.modulesTresholds);
 	while (it.hasNext()) {
 		it.next();
 		sl << it.key() + ':' + qf::core::Log::levelName(it.value());
@@ -149,13 +150,13 @@ QString LogDevice::modulesLogInfo()
 QString LogDevice::categoriesLogInfo()
 {
 	QString ret;
-	if(s_logAllCategories) {
+	if(s_globalLogFilter.logAllCategories) {
 		ret += s_definedCategories.join(',');
 	}
 	else {
-		ret += s_inverseCategoriesFilter? "All except of ": "";
+		ret += s_globalLogFilter.inverseCategoriesFilter? "All except of ": "";
 		QStringList sl;
-		QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
+		QMapIterator<QString, Log::Level> it(s_globalLogFilter.categoriesTresholds);
 		while (it.hasNext()) {
 			it.next();
 			sl << it.key() + ':' + qf::core::Log::levelName(it.value());
@@ -168,7 +169,7 @@ QString LogDevice::categoriesLogInfo()
 bool LogDevice::isCategoryLogEnabled(const QString &category)
 {
 	bool ok = false;
-	QMapIterator<QString, Log::Level> it(s_categoriesTresholds);
+	QMapIterator<QString, Log::Level> it(s_globalLogFilter.categoriesTresholds);
 	while (it.hasNext()) {
 		it.next();
 		if(it.key() == category) {
@@ -182,7 +183,7 @@ bool LogDevice::isCategoryLogEnabled(const QString &category)
 QStringList LogDevice::setModulesTresholdsFromArgs(const QStringList &args)
 {
 	QStringList ret;
-	s_modulesTresholds.clear();
+	s_globalLogFilter.modulesTresholds.clear();
 	QStringList tresholds;
 	for(int i=0; i<args.count(); i++) {
 		QString s = args[i];
@@ -223,9 +224,9 @@ void LogDevice::setModulesTresholds(const QStringList &tresholds)
 				level = Log::Level::Error;
 		}
 		if(module.isEmpty())
-			s_commandLineLogTreshold = level;
+			s_globalLogFilter.defaultLogTreshold = level;
 		else
-			s_modulesTresholds[module] = level;
+			s_globalLogFilter.modulesTresholds[module] = level;
 	}
 }
 
@@ -254,7 +255,7 @@ static QStringList tokenize_at_capital(const QString &category)
 QStringList LogDevice::setCategoriesTresholdsFromArgs(const QStringList &args)
 {
 	QStringList ret;
-	s_categoriesTresholds.clear();
+	s_globalLogFilter.categoriesTresholds.clear();
 	QStringList tresholds;
 	for(int i=0; i<args.count(); i++) {
 		QString s = args[i];
@@ -274,12 +275,12 @@ void LogDevice::setCategoriesTresholds(const QString &trsh)
 {
 	QString s = trsh;
 	if(s.startsWith('^')) {
-		s_inverseCategoriesFilter = true;
+		s_globalLogFilter.inverseCategoriesFilter = true;
 		s = s.mid(1);
 	}
 	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
 	setCategoriesTresholds(tresholds);
-	s_logAllCategories = s_categoriesTresholds.isEmpty();
+	s_globalLogFilter.logAllCategories = s_globalLogFilter.categoriesTresholds.isEmpty();
 }
 
 void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
@@ -287,7 +288,7 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 	for(QString category : tresholds) {
 		int ix = category.indexOf(':');
 		//printf("category treshold %s\n", qPrintable(category));
-		Log::Level level = Log::Level::Debug;
+		Log::Level level = Log::Level::Invalid; // if level is not specified for category, modules treshold is used
 		if(ix >= 0) {
 			QString s = category.mid(ix + 1, 1);
 			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
@@ -299,6 +300,8 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 				level = Log::Level::Warning;
 			else if(c == 'E')
 				level = Log::Level::Error;
+			else
+				level = Log::Level::Invalid;
 			category = category.mid(0, ix);
 		}
 		for(const QString def_cat : definedCategories()) {
@@ -322,7 +325,7 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 			}
 			if(match) {
 				//printf("\t\t match with %s\n", qPrintable(def_cat));
-				s_categoriesTresholds[def_cat] = level;
+				s_globalLogFilter.categoriesTresholds[def_cat] = level;
 			}
 		}
 	}
@@ -330,13 +333,9 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 
 Log::Level LogDevice::globalLogTreshold()
 {
-	if(s_commandLineLogTreshold > Log::Level::Invalid)
-		return s_commandLineLogTreshold;
-	if(s_environmentLogTreshold > Log::Level::Invalid)
-		return s_environmentLogTreshold;
-	return Log::Level::Invalid;
+	return s_globalLogFilter.defaultLogTreshold;
 }
-
+/*
 Log::Level LogDevice::logTreshold()
 {
 	return m_logTreshold;
@@ -348,13 +347,19 @@ Log::Level LogDevice::setLogTreshold(Log::Level level)
 	m_logTreshold = level;
 	return old;
 }
-
-bool LogDevice::checkLogContext(Log::Level level, const char *file_name, const char *category)
+*/
+bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, const char *category)
 {
-	return checkGlobalLogContext(level, file_name, category);
+	return isMatchingGlobalLogFilter(level, file_name, category);
 }
 
-bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, const char *category)
+bool LogDevice::isMatchingGlobalLogFilter(Log::Level level, const char *file_name, const char *category)
+{
+	bool ret = isMatchingLogFilter(level, file_name, category, s_globalLogFilter);
+	return ret;
+}
+
+bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, const char *category, const LogDevice::LogFilter &log_filter)
 {
 	bool ret = false;
 	do {
@@ -371,15 +376,17 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 		if(category && category[0]) {
 			// category specified
 			qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
-			if(s_logAllCategories)
-				category_level = globalLogTreshold();
-			else if(s_inverseCategoriesFilter) {
-				if(!s_categoriesTresholds.contains(QLatin1String(category)))
-					category_level = globalLogTreshold();
+			if(log_filter.logAllCategories)
+				category_level = log_filter.defaultLogTreshold;
+			else if(log_filter.inverseCategoriesFilter) {
+				if(!log_filter.categoriesTresholds.contains(QLatin1String(category)))
+					category_level = log_filter.defaultLogTreshold;
 			}
 			else {
 				QString cat = QLatin1String(category);
-				category_level = s_categoriesTresholds.value(cat, qf::core::Log::Level::Invalid);
+				if(log_filter.categoriesTresholds.contains(cat)) {
+					category_level = log_filter.categoriesTresholds.value(cat, log_filter.defaultLogTreshold);
+				}
 			}
 			if(category_level != qf::core::Log::Level::Invalid) {
 				ret = (level <= category_level);
@@ -392,7 +399,7 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 			ret = false;
 			bool module_level_found = false;
 			QString module = moduleFromFileName(file_name);
-			QMapIterator<QString, Log::Level> it(s_modulesTresholds);
+			QMapIterator<QString, Log::Level> it(log_filter.modulesTresholds);
 			while (it.hasNext()) {
 				it.next();
 				if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
@@ -404,7 +411,7 @@ bool LogDevice::checkGlobalLogContext(Log::Level level, const char *file_name, c
 				}
 			}
 			if(!module_level_found) {
-				if(level <= globalLogTreshold())
+				if(level <= log_filter.defaultLogTreshold)
 					ret = true;
 			}
 		}
@@ -428,11 +435,15 @@ void LogDevice::setEnabled(bool b)
 	m_enabled = b;
 }
 
-bool LogDevice::checkAllLogContext(Log::Level level, const char *file_name, const char *category)
+bool LogDevice::isMatchingAllDevicesLogFilter(Log::Level level, const char *file_name, const char *category)
 {
 	Q_FOREACH(auto log_device, logDevices()) {
-		if(log_device->isEnabled() && log_device->checkLogContext(level, file_name, category)) {
-			return true;
+		if(log_device->isEnabled()) {
+			bool ok = log_device->isMatchingLogFilter(level, file_name, category);
+			//if(category && category[0])
+			//	printf("%s %s %d\n", log_device->metaObject()->className(), category, ok);
+			if(ok)
+				return true;
 		}
 	}
 	return false;
@@ -671,10 +682,6 @@ SignalLogDevice::SignalLogDevice(QObject *parent)
 	connect(this, &SignalLogDevice::__logEntry, this, &SignalLogDevice::logEntry, Qt::QueuedConnection);
 }
 
-SignalLogDevice::~SignalLogDevice()
-{
-}
-
 SignalLogDevice *SignalLogDevice::install()
 {
 	SignalLogDevice *ret = new SignalLogDevice();
@@ -684,7 +691,6 @@ SignalLogDevice *SignalLogDevice::install()
 
 void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
-	QString module = moduleFromFileName(context.file);
-	LogEntryMap m(level, module, msg, context.file, context.line, context.function);
+	LogEntryMap m(level, context.category, msg, context.file, context.line, context.function);
 	emit __logEntry(m);
 }

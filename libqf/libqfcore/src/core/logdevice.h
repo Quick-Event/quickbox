@@ -32,10 +32,12 @@ public:
 
 	static Log::Level globalLogTreshold();
 
-	Log::Level setLogTreshold(Log::Level level);
-	Log::Level logTreshold();
+	//Log::Level setLogTreshold(Log::Level level);
+	//Log::Level logTreshold();
 
-	static bool checkAllLogContext(Log::Level level, const char *file_name, const char *category = nullptr);
+	static bool isMatchingAllDevicesLogFilter(Log::Level level, const char *file_name, const char *category = nullptr);
+
+	virtual bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category);
 
 	static void setLoggingEnabled(bool on);
 	static bool isLoggingEnabled();
@@ -46,32 +48,34 @@ public:
 	static QString logModulesCLIHelp();
 	static QString logCategoriesCLIHelp();
 
+	static QString moduleFromFileName(const QString &file_name);
+
 	virtual void log(Log::Level level, const QMessageLogContext &context, const QString &msg) = 0;
 protected:
+	struct QFCORE_DECL_EXPORT LogFilter
+	{
+		Log::Level defaultLogTreshold = qf::core::Log::Level::Info;
+		QMap<QString, Log::Level> modulesTresholds;
+		QMap<QString, Log::Level> categoriesTresholds;
+		bool logAllCategories = false;
+		bool inverseCategoriesFilter = false;
+	};
+	static bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category, const LogFilter &log_filter);
+	static bool isMatchingGlobalLogFilter(Log::Level level, const char *file_name, const char *category);
+
 	static QStringList setModulesTresholdsFromArgs(const QStringList &args);
 	static void setModulesTresholds(const QStringList &tresholds);
 	static QStringList setCategoriesTresholdsFromArgs(const QStringList &args);
 	static void setCategoriesTresholds(const QStringList &tresholds);
-	static QString moduleFromFileName(const char *file_name);
-	virtual bool checkLogContext(Log::Level level, const char *file_name, const char *category);
-	/**
-	 * @brief checkLogContext
-	 * @return true if message with this context will be logged
-	 */
-	static bool checkGlobalLogContext(Log::Level level, const char *file_name, const char *category);
 protected:
-	static Log::Level s_environmentLogTreshold;
-	static Log::Level s_commandLineLogTreshold;
+	//static Log::Level s_environmentLogTreshold;
+	//static Log::Level s_commandLineLogTreshold;
 
-	static QMap<QString, Log::Level> s_modulesTresholds;
-	static QMap<QString, Log::Level> s_categoriesTresholds;
 	static QStringList s_definedCategories;
-	static bool s_logAllCategories;
-	static bool s_inverseCategoriesFilter;
-
 	static bool s_loggingEnabled;
+	static LogFilter s_globalLogFilter;
 
-	Log::Level m_logTreshold;
+	//Log::Level m_logTreshold;
 	int m_count;
 	bool m_enabled = true;
 };
@@ -119,7 +123,7 @@ private:
 protected:
 	SignalLogDevice(QObject *parent = 0);
 public:
-	~SignalLogDevice() Q_DECL_OVERRIDE;
+	//~SignalLogDevice() Q_DECL_OVERRIDE;
 
 	static SignalLogDevice* install();
 
