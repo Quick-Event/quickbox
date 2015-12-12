@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>qf::qmlwiggets::framework::LogWidget</class>
- <widget class="QWidget" name="qf::qmlwiggets::framework::LogWidget">
+ <class>qf::qmlwidgets::framework::LogWidget</class>
+ <widget class="QWidget" name="qf::qmlwidgets::framework::LogWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

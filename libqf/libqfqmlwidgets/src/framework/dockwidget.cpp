@@ -9,9 +9,9 @@
 
 using namespace qf::qmlwidgets::framework;
 
-DockWidget::DockWidget(QWidget *parent, Qt::WindowFlags flags) :
-	Super(parent, flags)
-  , framework::IPersistentSettings(this)
+DockWidget::DockWidget(const QString &window_title, QWidget *parent, Qt::WindowFlags flags)
+	: Super(window_title, parent, flags)
+	, framework::IPersistentSettings(this)
 {
 	qfLogFuncFrame();
 }
