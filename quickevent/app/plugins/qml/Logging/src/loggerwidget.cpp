@@ -55,8 +55,14 @@ void LoggerWidget::onLogEntry(const qf::core::LogEntryMap &log_entry)
 	case qf::core::Log::Level::Info: color = "#0000FF"; break;
 	default: color = "#000000"; break;
 	}
-	QString message = "<font color=\"%4\">&lt;%1&gt;[%2] %3<font>";
-	message = message.arg(log_level_str).arg(log_entry.domain()).arg(msg).arg(color);
+	QString message = "<font color=\"%4\">&lt;%1&gt;[%2]%5 %3<font>";
+	message = message
+			  .arg(log_level_str)
+			  .arg(qf::core::LogDevice::moduleFromFileName(log_entry.file()))
+			  .arg(msg)
+			  .arg(color);
+	QString category = log_entry.category().isEmpty()? QString(): '(' + log_entry.category() + ')';
+	message = message.arg(category);
 
 	ui->txtLog->appendHtml(message);
 	if(level <= qf::core::Log::Level::Warning) {

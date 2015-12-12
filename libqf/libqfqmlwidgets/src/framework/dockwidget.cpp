@@ -21,6 +21,18 @@ DockWidget::~DockWidget()
 	qfLogFuncFrame();
 }
 
+bool DockWidget::event(QEvent *ev)
+{
+	if(ev->type() == QEvent::MouseButtonDblClick) {
+		//maximizeOnScreen();
+		if(isFloating()) {
+			setWindowState(windowState() ^ Qt::WindowFullScreen);
+			return true;
+		}
+	}
+	return Super::event(ev);
+}
+/*
 void DockWidget::showEvent(QShowEvent *ev)
 {
 	Super::showEvent(ev);
@@ -36,7 +48,7 @@ void DockWidget::showEvent(QShowEvent *ev)
 		}
 	}
 }
-
+*/
 void DockWidget::setQmlWidget(QWidget *w)
 {
 	w->setParent(0);

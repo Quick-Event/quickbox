@@ -1,4 +1,3 @@
-
 //
 // Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2012
 //
@@ -6,6 +5,8 @@
 //
 
 #include "commport.h"
+
+#include <qf/core/log.h>
 
 using namespace siut;
 
@@ -23,7 +24,13 @@ CommPort::~CommPort()
 
 void CommPort::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
 {
-	qfLog(level) << msg;
+	//qfLog(level) << msg;
+	switch (level) {
+	case qf::core::Log::Level::Debug: qfDebug() << msg; break;
+	case qf::core::Log::Level::Info: qfInfo() << msg; break;
+	case qf::core::Log::Level::Warning: qfWarning() << msg; break;
+	default: qfError() << msg; break;
+	}
 	emit driverInfo(level, msg);
 }
 

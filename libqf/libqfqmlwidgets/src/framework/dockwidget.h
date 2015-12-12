@@ -23,9 +23,11 @@ public:
 	explicit DockWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~DockWidget() Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void visibleChanged(bool visible);
+	// visibilityChanged() exists already in QDockWidget
+	//Q_SIGNAL void visibleChanged(bool visible);
 protected:
-	void showEvent(QShowEvent *ev) Q_DECL_OVERRIDE;
+	bool event(QEvent *ev) Q_DECL_OVERRIDE;
+	//void showEvent(QShowEvent *ev) Q_DECL_OVERRIDE;
 private:
 	void setQmlWidget(QWidget *w);
 };

@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
 	}
 	//o_log_file = "c:\\temp\\QE.log";
 
+	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
 	file_log_device->setFile(o_log_file);
-	QStringList args = file_log_device->setDomainTresholds(argc, argv);
 
 	qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
 	qfWarning() << "QFLog(WARNING) test OK.";
@@ -35,22 +35,22 @@ int main(int argc, char *argv[])
 
 	AppCliOptions cli_opts;
 	cli_opts.parse(args);
+	cli_opts.parse(args);
 	if(cli_opts.isParseError()) {
 		foreach(QString err, cli_opts.parseErrors())
 			qfError() << err;
-		return 1;
+		return EXIT_FAILURE;
 	}
 	if(cli_opts.isAppBreak()) {
-		if(cli_opts.isHelp())
-			std::cout << qf::core::LogDevice::dCommandLineSwitchHelp();
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	foreach(QString s, cli_opts.unusedArguments()) {
-		qfWarning() << "Undefined argument:" << s;
+		qDebug() << "Undefined argument:" << s;
 	}
 
-	if(!cli_opts.loadConfigFile())
-		return 1;
+	if(!cli_opts.loadConfigFile()) {
+		return EXIT_FAILURE;
+	}
 
 	qDebug() << "creating application instance";
 	Application app(argc, argv, &cli_opts);
