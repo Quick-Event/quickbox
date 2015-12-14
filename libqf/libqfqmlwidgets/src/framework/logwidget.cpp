@@ -8,6 +8,8 @@
 #include <QSortFilterProxyModel>
 #include <QDateTime>
 
+namespace qfm = qf::core::model;
+
 namespace qf {
 namespace qmlwidgets {
 namespace framework {
@@ -36,14 +38,14 @@ private:
 
 bool LogFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
-	auto *log_model = qobject_cast<qf::core::model::LogTableModel*>(sourceModel());
-	QModelIndex index = log_model->index(source_row, qf::core::model::LogTableModel::TableRow::Severity, source_parent);
+	auto *log_model = qobject_cast<qfm::LogTableModel*>(sourceModel());
+	QModelIndex index = log_model->index(source_row, qfm::LogTableModel::Cols::Severity, source_parent);
 	bool ok = (log_model->data(index, Qt::EditRole).toInt() <= m_treshold);
 	//qfDebug() << log_model->data(index, Qt::EditRole).toInt() << m_treshold << ok;
 	if(ok && !m_filterString.isEmpty()) {
 		ok = false;
 		index = log_model->index(source_row, 0, source_parent);
-		for (int i = 0; i < qf::core::model::LogTableModel::TableRow::Cols::Count; ++i) {
+		for (int i = 0; i < qfm::LogTableModel::Cols::Count; ++i) {
 			index = index.sibling(index.row(), i);
 			QString s = log_model->data(index, Qt::DisplayRole).toString();
 			if(s.contains(m_filterString, Qt::CaseInsensitive)) {
@@ -66,7 +68,8 @@ LogWidget::LogWidget(QWidget *parent)
 	ui->tableView->horizontalHeader()->setSectionsMovable(true);
 	ui->tableView->verticalHeader()->setDefaultSectionSize((int)(fontMetrics().lineSpacing() * 1.3));
 	//ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-	ui->tableView->setModel(m_filterModel = new LogFilterProxyModel(this));
+	m_filterModel = new LogFilterProxyModel(this);
+	ui->tableView->setModel(m_filterModel);
 
 	for (int i = static_cast<int>(qf::core::Log::Level::Error); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
 		ui->severityTreshold->addItem(qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i)), QVariant::fromValue(i));
@@ -81,44 +84,52 @@ LogWidget::~LogWidget()
 	delete ui;
 }
 
-void LogWidget::onDockWidgetVisibleChanged(bool visible)
-{
-	Super::onDockWidgetVisibleChanged(visible);
-	if(visible) {
-		m_filterModel->setSourceModel(logTableModel());
-		ui->tableView->setModel(m_filterModel);
-		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	}
-	else {
-		// disconnect view when hidden, this can spped up app start significantly
-		ui->tableView->setModel(nullptr);
-	}
-}
-
 void LogWidget::clear()
 {
-	QF_SAFE_DELETE(m_logTableModel);
+	if(m_logTableModel)
+		m_logTableModel->clear();
+}
+
+void LogWidget::setLogTableModel(core::model::LogTableModel *m)
+{
+	m_logTableModel = m;
+	m_filterModel->setSourceModel(m_logTableModel);
+}
+
+void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
+{
+	bool first_time = (logTableModel()->rowCount() == 0);
+	logTableModel()->addLogEntry(severity, category, file, line, msg, time_stamp, user_data);
+	if(first_time)
+		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+	if(isVisible())
+		ui->tableView->scrollToBottom();
 }
 
 void LogWidget::addLogEntry(const qf::core::LogEntryMap &le)
 {
-	logTableModel()->addLogEntry(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime());
-	ui->tableView->scrollToBottom();
+	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime());
 }
-
+/*
+core::model::LogTableModel *LogWidget::createLogTableModel(QObject *parent)
+{
+	return new qfm::LogTableModel(parent);
+}
+*/
 qf::core::model::LogTableModel *LogWidget::logTableModel()
 {
 	if(!m_logTableModel) {
-		m_logTableModel = new qf::core::model::LogTableModel(this);
+		m_logTableModel = new qfm::LogTableModel(this);
+		setLogTableModel(m_logTableModel);
 	}
 	return m_logTableModel;
 }
-
+/*
 bool LogWidget::isModelLoaded() const
 {
 	return m_logTableModel != nullptr;
 }
-
+*/
 void LogWidget::tresholdChanged(int index)
 {
 	Q_UNUSED(index);
@@ -130,9 +141,9 @@ void LogWidget::filterStringChanged(const QString &filter_string)
 	m_filterModel->setFilterString(filter_string);
 }
 
-void LogWidget::on_btClearEvents_clicked()
+void LogWidget::on_btClearLog_clicked()
 {
-	logTableModel()->clear();
+	clear();
 }
 
 void LogWidget::on_btResizeColumns_clicked()
@@ -143,6 +154,11 @@ void LogWidget::on_btResizeColumns_clicked()
 QAbstractButton *LogWidget::tableMenuButton()
 {
 	return ui->btTableMenu;
+}
+
+QTableView *LogWidget::tableView() const
+{
+	return ui->tableView;
 }
 
 } // namespace framework

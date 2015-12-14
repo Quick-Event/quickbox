@@ -12,11 +12,6 @@ DockableWidget::DockableWidget(QWidget *parent)
 
 }
 
-void DockableWidget::onDockWidgetVisibleChanged(bool visible)
-{
-	qfLogFuncFrame() << this << visible;
-}
-
 } // namespace framework
 } // namespace qmlwidgets
 } // namespace qf

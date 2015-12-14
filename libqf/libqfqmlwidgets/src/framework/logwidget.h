@@ -4,6 +4,7 @@
 #include "dockablewidget.h"
 
 class QAbstractButton;
+class QTableView;
 
 namespace qf {
 namespace core {
@@ -30,18 +31,21 @@ private:
 public:
 	explicit LogWidget(QWidget *parent = 0);
 	~LogWidget();
-	void onDockWidgetVisibleChanged(bool visible) Q_DECL_OVERRIDE;
-	void clear();
 
+	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QVariant &user_data = QVariant());
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
+
+	void clear();
 protected:
+	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
 	qf::core::model::LogTableModel* logTableModel();
-	bool isModelLoaded() const;
+	//bool isModelLoaded() const;
 	Q_SLOT void tresholdChanged(int index);
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	QAbstractButton* tableMenuButton();
+	QTableView* tableView() const;
 private slots:
-	void on_btClearEvents_clicked();
+	void on_btClearLog_clicked();
 	void on_btResizeColumns_clicked();
 private:
 	Ui::LogWidget *ui;

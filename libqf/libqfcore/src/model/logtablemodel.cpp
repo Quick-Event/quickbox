@@ -8,17 +8,19 @@ namespace qf {
 namespace core {
 namespace model {
 
-LogTableModel::TableRow::TableRow(qf::core::Log::Level severity, const QString &domain, const QString &file, const QString &msg, const QDateTime &time_stamp)
+LogTableModel::Row::Row(qf::core::Log::Level severity, const QString &domain, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
 {
 	m_data.resize(Cols::Count);
 	m_data[Cols::Severity] = QVariant::fromValue(severity);
-	m_data[Cols::Domain] = domain;
+	m_data[Cols::Category] = domain;
 	m_data[Cols::File] = file;
+	m_data[Cols::Line] = line;
 	m_data[Cols::Message] = msg;
-	m_data[Cols::Timestamp] = time_stamp;
+	m_data[Cols::TimeStamp] = time_stamp;
+	m_data[Cols::UserData] = user_data;
 }
 
-QVariant LogTableModel::TableRow::value(int col) const
+QVariant LogTableModel::Row::value(int col) const
 {
 	QVariant val = m_data.value(col);
 	return val;
@@ -33,22 +35,23 @@ QVariant LogTableModel::headerData(int section, Qt::Orientation orientation, int
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 		switch (section) {
-		case TableRow::Domain:
-			return tr("Domain");
-		case TableRow::File:
+		case Cols::Category:
+			return tr("Category");
+		case Cols::File:
 			return tr("File");
-		case TableRow::Severity:
+		case Cols::Line:
+			return tr("Line");
+		case Cols::Severity:
 			return tr("Severity");
-		case TableRow::Timestamp:
-			return tr("Time");
-		case TableRow::Message:
+		case Cols::TimeStamp:
+			return tr("Time stamp");
+		case Cols::Message:
 			return tr("Message");
+		case Cols::UserData:
+			return tr("Data");
 		};
 		return Super::headerData(section, orientation, role);
 	}
-	//if (orientation == Qt::Vertical && role == Qt::DisplayRole) {
-	//	return rowCount() - section;
-	//}
 	return Super::headerData(section, orientation, role);
 }
 
@@ -61,7 +64,7 @@ int LogTableModel::rowCount(const QModelIndex &parent) const
 int LogTableModel::columnCount(const QModelIndex &parent) const
 {
 	Q_UNUSED(parent)
-	return TableRow::Count;
+	return Cols::Count;
 }
 
 QVariant LogTableModel::data(const QModelIndex &index, int role) const
@@ -78,8 +81,17 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 	}
 	case Qt::EditRole:
 		return m_rows[index.row()].value(index.column());
+	case Qt::ForegroundRole: {
+		auto severity = m_rows[index.row()].value(Cols::Severity).value<qf::core::Log::Level>();
+		switch (severity) {
+		case qf::core::Log::Level::Info:
+			return QColor(Qt::blue);
+		default:
+			return QVariant();
+		}
+	}
 	case Qt::BackgroundRole: {
-		auto severity = m_rows[index.row()].value(TableRow::Severity).value<qf::core::Log::Level>();
+		auto severity = m_rows[index.row()].value(Cols::Severity).value<qf::core::Log::Level>();
 		switch (severity) {
 		case qf::core::Log::Level::Invalid:
 		case qf::core::Log::Level::Fatal:
@@ -87,8 +99,6 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 			return QColor(Qt::red).lighter(170);
 		case qf::core::Log::Level::Warning:
 			return QColor(Qt::cyan).lighter(170);
-		case qf::core::Log::Level::Info:
-			return QColor(Qt::yellow).lighter(170);
 		default:
 			return QVariant();
 		}
@@ -104,16 +114,16 @@ void LogTableModel::clear()
 	endResetModel();
 }
 
-LogTableModel::TableRow LogTableModel::rowAt(int row) const
+LogTableModel::Row LogTableModel::rowAt(int row) const
 {
 	return m_rows.value(row);
 }
 
-void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &domain, const QString &file, int line, const QString &msg, const QDateTime &time_stamp)
+void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
 {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	QString module = qf::core::LogDevice::moduleFromFileName(file);
-	m_rows.append(TableRow(severity, domain, QString("%1:%2").arg(module).arg(line), msg, time_stamp));
+	m_rows.append(Row(severity, category, module, line, msg, time_stamp, user_data));
 	endInsertRows();
 }
 

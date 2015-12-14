@@ -14,8 +14,6 @@ private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
 	DockableWidget(QWidget *parent = nullptr);
-
-	virtual void onDockWidgetVisibleChanged(bool visible);
 };
 
 } // namespace framework

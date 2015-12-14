@@ -16,12 +16,11 @@ class QFCORE_DECL_EXPORT LogTableModel : public QAbstractTableModel
 private:
 	typedef QAbstractTableModel Super;
 public:
-	class TableRow {
+	enum Cols {Severity, Category, File, Line, Message, TimeStamp, UserData, Count};
+	class Row {
 	public:
-		enum Cols {Severity, Domain, File, Message, Timestamp, Count};
-
-		explicit TableRow() {}
-		explicit TableRow(qf::core::Log::Level severity, const QString& domain, const QString& file, const QString& msg, const QDateTime& time_stamp);
+		explicit Row() {}
+		explicit Row(qf::core::Log::Level severity, const QString& domain, const QString& file, int line, const QString& msg, const QDateTime& time_stamp, const QVariant &user_data = QVariant());
 
 		QVariant value(int col) const;
 	private:
@@ -36,10 +35,10 @@ public:
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 
 	void clear();
-	TableRow rowAt(int row) const;
-	void addLogEntry(qf::core::Log::Level severity, const QString& domain, const QString &file, int line, const QString& msg, const QDateTime& time_stamp);
+	Row rowAt(int row) const;
+	void addLogEntry(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QVariant &user_data = QVariant());
 private:
-	QList<TableRow> m_rows;
+	QList<Row> m_rows;
 };
 
 }}}
