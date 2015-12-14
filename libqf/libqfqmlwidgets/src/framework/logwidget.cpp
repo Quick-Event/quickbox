@@ -141,6 +141,7 @@ LogWidget::LogWidget(QWidget *parent)
 	ui->tableView->horizontalHeader()->setSectionsMovable(true);
 	ui->tableView->verticalHeader()->setDefaultSectionSize((int)(fontMetrics().lineSpacing() * 1.3));
 	m_filterModel = new LogFilterProxyModel(this);
+	m_filterModel->setDynamicSortFilter(false);
 	ui->tableView->setModel(m_filterModel);
 
 	for (int i = static_cast<int>(qf::core::Log::Level::Error); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {

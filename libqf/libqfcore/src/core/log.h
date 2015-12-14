@@ -63,7 +63,7 @@
 #ifdef NO_QF_DEBUG
 #define qfLogFuncFrame() while(0) qDebug()
 #else
-#define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Debug, __FILE__, "")? QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "     EXIT FN" << Q_FUNC_INFO: QMessageLogger().debug(); \
+#define qfLogFuncFrame() QDebug __qf_func_frame_exit_logger__ = qf::core::LogDevice::isMatchingAllDevicesLogFilter(qf::core::Log::Level::Debug, __FILE__, "")? QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, "").debug() << "     EXIT FN" << Q_FUNC_INFO: QMessageLogger().debug(); \
 	qfDebug() << ">>>> ENTER FN" << Q_FUNC_INFO
 #endif
 

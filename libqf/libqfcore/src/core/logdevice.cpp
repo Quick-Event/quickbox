@@ -184,7 +184,7 @@ QStringList LogDevice::setModulesTresholdsFromArgs(const QStringList &args)
 {
 	QStringList ret;
 	s_globalLogFilter.modulesTresholds.clear();
-	QStringList tresholds;
+	//QStringList tresholds;
 	for(int i=0; i<args.count(); i++) {
 		QString s = args[i];
 		if(s == QLatin1String("-d") || s == QLatin1String("--debug")) {
@@ -206,7 +206,10 @@ void LogDevice::setModulesTresholds(const QString &s)
 
 void LogDevice::setModulesTresholds(const QStringList &tresholds)
 {
-	for(QString module : tresholds) {
+	if(tresholds.isEmpty()) {
+		s_globalLogFilter.defaultLogTreshold = Log::Level::Debug;
+	}
+	else for(QString module : tresholds) {
 		int ix = module.indexOf(':');
 		//printf("domainTreshold %s\n", qPrintable(dom_tres));
 		Log::Level level = Log::Level::Debug;
