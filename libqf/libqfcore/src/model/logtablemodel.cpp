@@ -3,6 +3,7 @@
 #include "../core/logdevice.h"
 
 #include <QColor>
+#include <QDateTime>
 
 namespace qf {
 namespace core {
@@ -77,6 +78,8 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 		QVariant ret = data(index, Qt::EditRole);
 		if(ret.userType() == qMetaTypeId<qf::core::Log::Level>())
 			ret = qf::core::Log::levelToString(ret.value<qf::core::Log::Level>());
+		else if(ret.userType() == qMetaTypeId<QDateTime>())
+			ret = ret.value<QDateTime>().toString(Qt::ISODate);
 		return ret;
 	}
 	case Qt::EditRole:
@@ -122,9 +125,14 @@ LogTableModel::Row LogTableModel::rowAt(int row) const
 void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
 {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
-	QString module = qf::core::LogDevice::moduleFromFileName(file);
+	QString module = prettyFileName(file);
 	m_rows.append(Row(severity, category, module, line, msg, time_stamp, user_data));
 	endInsertRows();
+}
+
+QString LogTableModel::prettyFileName(const QString &file_name)
+{
+	return qf::core::LogDevice::moduleFromFileName(file_name);
 }
 
 }}}
