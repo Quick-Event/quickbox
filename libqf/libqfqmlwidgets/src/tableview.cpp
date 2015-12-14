@@ -1842,38 +1842,39 @@ void TableView::copySpecial_helper(const QString &fields_separator, const QStrin
 	auto *m = model();
 	if(!m)
 		return;
-	//int old_elide = m->elideDisplayedTextAt();
-	//m->setElideDisplayedTextAt(0);
-	QStringList rows;
+	int n = 0;
+	QString rows;
 	QItemSelection sel = selectionModel()->selection();
 	foreach(QItemSelectionRange sel1, sel) {
 		//QItemSelectionRange sel1 = sel.value(0);
 		if(sel1.isValid()) {
 			//qfInfo() << "sel count:" << sel.count() << "sel range left:" << sel1.left() << "right:" << sel1.right() << "top:" << sel1.top() << "bottom:" << sel1.bottom();
 			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
-				QStringList cells;
+				QString cells;
 				for(int col=sel1.left(); col<=sel1.right(); col++) {
-					QModelIndex ix = model()->index(row, col);
+					QModelIndex ix = m->index(row, col);
 					QString s;
-					s = m->data(ix, Qt::DisplayRole).toString();
+					s = ix.data(Qt::DisplayRole).toString();
 					if(replace_escapes) {
-						s.replace('\r', "\\r");
-						s.replace('\n', "\\n");
-						s.replace('\t', "\\t");
+						s.replace('\r', QStringLiteral("\\r"));
+						s.replace('\n', QStringLiteral("\\n"));
+						s.replace('\t', QStringLiteral("\\t"));
 					}
 					//qfInfo() << ix.row() << '\t' << ix.column() << '\t' << s;
-					cells << (field_quotes + s + field_quotes);
+					if(col > sel1.left())
+						cells += fields_separator;
+					cells += (field_quotes + s + field_quotes);
 				}
-				rows << cells.join(fields_separator);
+				if(n++ > 0)
+					rows += rows_separator;
+				rows += cells;
 			}
 		}
 	}
-	//m->setElideDisplayedTextAt(old_elide);
-	QString text = rows.join(rows_separator);
-	if(!text.isEmpty()) {
-		qfDebug() << "\tSetting clipboard:" << text;
+	if(!rows.isEmpty()) {
+		qfDebug() << "\tSetting clipboard:" << rows;
 		QClipboard *clipboard = QApplication::clipboard();
-		clipboard->setText(text);
+		clipboard->setText(rows);
 	}
 }
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>300</height>
+    <width>445</width>
+    <height>308</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,9 +119,12 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableView" name="tableView">
+    <widget class="qf::qmlwidgets::framework::LogWidgetTableView" name="tableView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="gridStyle">
       <enum>Qt::NoPen</enum>
@@ -133,6 +136,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qf::qmlwidgets::framework::LogWidgetTableView</class>
+   <extends>QTableView</extends>
+   <header>src/framework/logwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../images/flat/flat.qrc"/>
  </resources>

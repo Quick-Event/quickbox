@@ -1,18 +1,91 @@
 #include "logwidget.h"
 #include "ui_logwidget.h"
 
+#include "../style.h"
+
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
 #include <qf/core/model/logtablemodel.h>
 
 #include <QSortFilterProxyModel>
 #include <QDateTime>
+#include <QClipboard>
+#include <QKeyEvent>
 
 namespace qfm = qf::core::model;
 
 namespace qf {
 namespace qmlwidgets {
 namespace framework {
+
+LogWidgetTableView::LogWidgetTableView(QWidget *parent)
+	: Super(parent)
+{
+	auto *style = qf::qmlwidgets::Style::instance();
+	QAction *a;
+	{
+		a = new QAction(tr("Copy"), this);
+		a->setIcon(style->icon("copy"));
+		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
+		a->setShortcutContext(Qt::WidgetShortcut);
+		connect(a, &QAction::triggered, this, &LogWidgetTableView::copy);
+		addAction(a);
+	}
+	setContextMenuPolicy(Qt::ActionsContextMenu);
+}
+
+void LogWidgetTableView::copy()
+{
+	qfLogFuncFrame();
+	auto *m = model();
+	if(!m)
+		return;
+	int n = 0;
+	QString rows;
+	QItemSelection sel = selectionModel()->selection();
+	foreach(const QItemSelectionRange &sel1, sel) {
+		if(sel1.isValid()) {
+			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
+				QString cells;
+				for(int col=sel1.left(); col<=sel1.right(); col++) {
+					QModelIndex ix = m->index(row, col);
+					QString s;
+					s = ix.data(Qt::DisplayRole).toString();
+					static constexpr bool replace_escapes = true;
+					if(replace_escapes) {
+						s.replace('\r', QStringLiteral("\\r"));
+						s.replace('\n', QStringLiteral("\\n"));
+						s.replace('\t', QStringLiteral("\\t"));
+					}
+					if(col > sel1.left())
+						cells += '\t';
+					cells += s;
+				}
+				if(n++ > 0)
+					rows += '\n';
+				rows += cells;
+			}
+		}
+	}
+	if(!rows.isEmpty()) {
+		qfDebug() << "\tSetting clipboard:" << rows;
+		QClipboard *clipboard = QApplication::clipboard();
+		clipboard->setText(rows);
+	}
+}
+
+void LogWidgetTableView::keyPressEvent(QKeyEvent *e)
+{
+	qfLogFuncFrame() << "key:" << e->key() << "modifiers:" << e->modifiers();
+	if(e->modifiers() == Qt::ControlModifier) {
+		if(e->key() == Qt::Key_C) {
+			copy();
+			e->accept();
+			return;
+		}
+	}
+	Super::keyPressEvent(e);
+}
 
 class LogFilterProxyModel : public QSortFilterProxyModel
 {
@@ -67,16 +140,16 @@ LogWidget::LogWidget(QWidget *parent)
 	//ui->tableView->horizontalHeader()->setSectionHidden(0, true);
 	ui->tableView->horizontalHeader()->setSectionsMovable(true);
 	ui->tableView->verticalHeader()->setDefaultSectionSize((int)(fontMetrics().lineSpacing() * 1.3));
-	//ui->tableView->setContextMenuPolicy(Qt::CustomContextMenu);
 	m_filterModel = new LogFilterProxyModel(this);
 	ui->tableView->setModel(m_filterModel);
 
 	for (int i = static_cast<int>(qf::core::Log::Level::Error); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
 		ui->severityTreshold->addItem(qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i)), QVariant::fromValue(i));
 	}
+	ui->severityTreshold->setCurrentIndex(static_cast<int>(qf::core::Log::Level::Info));
+
 	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(tresholdChanged(int)));
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
-	ui->severityTreshold->setCurrentIndex(static_cast<int>(qf::core::Log::Level::Info));
 }
 
 LogWidget::~LogWidget()
@@ -160,6 +233,7 @@ QTableView *LogWidget::tableView() const
 {
 	return ui->tableView;
 }
+
 
 } // namespace framework
 } // namespace qmlwiggets

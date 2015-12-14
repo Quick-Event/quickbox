@@ -3,8 +3,9 @@
 
 #include "dockablewidget.h"
 
+#include <QTableView>
+
 class QAbstractButton;
-class QTableView;
 
 namespace qf {
 namespace core {
@@ -22,6 +23,19 @@ class LogFilterProxyModel;
 namespace Ui {
 class LogWidget;
 }
+
+class LogWidgetTableView : public QTableView
+{
+	Q_OBJECT
+private:
+	typedef QTableView Super;
+public:
+	LogWidgetTableView(QWidget *parent);
+
+	void copy();
+protected:
+	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+};
 
 class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::DockableWidget
 {
