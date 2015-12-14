@@ -169,10 +169,10 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 	m_filterModel->setSourceModel(m_logTableModel);
 }
 
-void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
+void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
 	bool first_time = (logTableModel()->rowCount() == 0);
-	logTableModel()->addLogEntry(severity, category, file, line, msg, time_stamp, user_data);
+	logTableModel()->addLogEntry(severity, category, file, line, msg, time_stamp, function, user_data);
 	if(first_time)
 		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 	if(isVisible())
@@ -181,14 +181,9 @@ void LogWidget::addLog(core::Log::Level severity, const QString &category, const
 
 void LogWidget::addLogEntry(const qf::core::LogEntryMap &le)
 {
-	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime());
+	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime(), le.function());
 }
-/*
-core::model::LogTableModel *LogWidget::createLogTableModel(QObject *parent)
-{
-	return new qfm::LogTableModel(parent);
-}
-*/
+
 qf::core::model::LogTableModel *LogWidget::logTableModel()
 {
 	if(!m_logTableModel) {
@@ -197,12 +192,7 @@ qf::core::model::LogTableModel *LogWidget::logTableModel()
 	}
 	return m_logTableModel;
 }
-/*
-bool LogWidget::isModelLoaded() const
-{
-	return m_logTableModel != nullptr;
-}
-*/
+
 void LogWidget::tresholdChanged(int index)
 {
 	Q_UNUSED(index);

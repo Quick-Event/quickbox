@@ -9,13 +9,14 @@ namespace qf {
 namespace core {
 namespace model {
 
-LogTableModel::Row::Row(qf::core::Log::Level severity, const QString &domain, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
+LogTableModel::Row::Row(qf::core::Log::Level severity, const QString &domain, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
 	m_data.resize(Cols::Count);
 	m_data[Cols::Severity] = QVariant::fromValue(severity);
 	m_data[Cols::Category] = domain;
 	m_data[Cols::File] = file;
 	m_data[Cols::Line] = line;
+	m_data[Cols::Function] = function;
 	m_data[Cols::Message] = msg;
 	m_data[Cols::TimeStamp] = time_stamp;
 	m_data[Cols::UserData] = user_data;
@@ -48,6 +49,8 @@ QVariant LogTableModel::headerData(int section, Qt::Orientation orientation, int
 			return tr("Time stamp");
 		case Cols::Message:
 			return tr("Message");
+		case Cols::Function:
+			return tr("Function");
 		case Cols::UserData:
 			return tr("Data");
 		};
@@ -122,11 +125,11 @@ LogTableModel::Row LogTableModel::rowAt(int row) const
 	return m_rows.value(row);
 }
 
-void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QVariant &user_data)
+void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	QString module = prettyFileName(file);
-	m_rows.append(Row(severity, category, module, line, msg, time_stamp, user_data));
+	m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));
 	endInsertRows();
 }
 

@@ -46,7 +46,7 @@ public:
 	explicit LogWidget(QWidget *parent = 0);
 	~LogWidget();
 
-	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QVariant &user_data = QVariant());
+	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
 
 	void clear();

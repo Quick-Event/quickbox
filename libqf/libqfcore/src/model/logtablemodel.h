@@ -16,11 +16,11 @@ class QFCORE_DECL_EXPORT LogTableModel : public QAbstractTableModel
 private:
 	typedef QAbstractTableModel Super;
 public:
-	enum Cols {Severity, Category, File, Line, Message, TimeStamp, UserData, Count};
+	enum Cols {Severity, Category, Message, TimeStamp, File, Line, Function, UserData, Count};
 	class Row {
 	public:
 		explicit Row() {}
-		explicit Row(qf::core::Log::Level severity, const QString& domain, const QString& file, int line, const QString& msg, const QDateTime& time_stamp, const QVariant &user_data = QVariant());
+		explicit Row(qf::core::Log::Level severity, const QString& domain, const QString& file, int line, const QString& msg, const QDateTime& time_stamp, const QString& function = QString(), const QVariant &user_data = QVariant());
 
 		QVariant value(int col) const;
 	private:
@@ -36,7 +36,7 @@ public:
 
 	void clear();
 	Row rowAt(int row) const;
-	void addLogEntry(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QVariant &user_data = QVariant());
+	void addLogEntry(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function = QString(), const QVariant &user_data = QVariant());
 protected:
 	virtual QString prettyFileName(const QString &file_name);
 private:
