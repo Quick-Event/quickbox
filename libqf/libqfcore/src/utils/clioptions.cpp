@@ -177,7 +177,7 @@ void CLIOptions::parse(int argc, char* argv[])
 
 void CLIOptions::parse(const QStringList& cmd_line_args)
 {
-	qfLogFuncFrame() << cmd_line_args;
+	//qfLogFuncFrame() << cmd_line_args;
 	m_isAppBreak = false;
 	m_parsedArgIndex = 0;
 	m_arguments = cmd_line_args.mid(1);

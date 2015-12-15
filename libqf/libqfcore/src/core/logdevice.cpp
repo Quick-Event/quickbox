@@ -151,7 +151,7 @@ QString LogDevice::categoriesLogInfo()
 {
 	QString ret;
 	if(s_globalLogFilter.logAllCategories) {
-		ret += s_definedCategories.join(',');
+		ret += "All defined categories (" + s_definedCategories.join(',') + ") with treshold: " + qf::core::Log::levelName(s_globalLogFilter.defaultLogTreshold);
 	}
 	else {
 		ret += s_globalLogFilter.inverseCategoriesFilter? "All except of ": "";
@@ -291,7 +291,7 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 	for(QString category : tresholds) {
 		int ix = category.indexOf(':');
 		//printf("category treshold %s\n", qPrintable(category));
-		Log::Level level = Log::Level::Invalid; // if level is not specified for category, modules treshold is used
+		Log::Level level = Log::Level::Debug;
 		if(ix >= 0) {
 			QString s = category.mid(ix + 1, 1);
 			QChar c = s.isEmpty()? QChar(): s[0].toUpper();
@@ -308,27 +308,32 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 			category = category.mid(0, ix);
 		}
 		for(const QString def_cat : definedCategories()) {
-			//printf("\t def_cat %s\n", qPrintable(def_cat));
-			QStringList def_cat_sl = tokenize_at_capital(def_cat);
-			QStringList cli_cat_sl = tokenize_at_capital(category);
 			bool match = true;
-			for (int i = 0; i < cli_cat_sl.length(); ++i) {
-				QString def_token = def_cat_sl.value(i);
-				//printf("\t\t def_token %s\n", qPrintable(def_token));
-				if(def_token.isEmpty()) {
-					match = false;
-					break;
-				}
-				QString cli_token = cli_cat_sl.value(i);
-				//printf("\t\t cli_token %s\n", qPrintable(cli_token));
-				if(!def_token.startsWith(cli_token, Qt::CaseSensitive)) {
-					match = false;
-					break;
+			if(def_cat.compare(category, Qt::CaseInsensitive) != 0) {
+				//printf("\t def_cat %s\n", qPrintable(def_cat));
+				QStringList def_cat_sl = tokenize_at_capital(def_cat);
+				QStringList cli_cat_sl = tokenize_at_capital(category);
+				for (int i = 0; i < cli_cat_sl.length(); ++i) {
+					QString def_token = def_cat_sl.value(i);
+					//printf("\t\t def_token %s\n", qPrintable(def_token));
+					if(def_token.isEmpty()) {
+						match = false;
+						break;
+					}
+					QString cli_token = cli_cat_sl.value(i);
+					//printf("\t\t cli_token %s\n", qPrintable(cli_token));
+					if(!def_token.startsWith(cli_token, Qt::CaseSensitive)) {
+						match = false;
+						break;
+					}
 				}
 			}
 			if(match) {
 				//printf("\t\t match with %s\n", qPrintable(def_cat));
 				s_globalLogFilter.categoriesTresholds[def_cat] = level;
+			}
+			else {
+				fprintf(stderr, "Category '%s' is not found in defined logging categories: %s\n", qPrintable(category), qPrintable(definedCategories().join(", ")));
 			}
 		}
 	}
@@ -364,63 +369,45 @@ bool LogDevice::isMatchingGlobalLogFilter(Log::Level level, const char *file_nam
 
 bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, const char *category, const LogDevice::LogFilter &log_filter)
 {
-	bool ret = false;
-	do {
-		if(level <= Log::Level::Invalid) break;
-		if(level == Log::Level::Fatal) {
-			ret = true;
-			break;
-		}
-		if(level == Log::Level::Debug) {
+	if(level == Log::Level::Fatal) {
+		return true;
+	}
+	if(level == Log::Level::Debug) {
 #ifdef QF_NO_DEBUG_LOG
-			break;
+		return false;
 #endif
+	}
+	//fprintf(stderr, "!!!!!!!!!!!!! %s: '%s'\n", file_name, qPrintable(category));
+	if(category && category[0] && !(QLatin1String("default") == QLatin1String(category))) { // default category is implicit in QMessageLogger, so filter it out
+		// category specified
+		qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
+		if(log_filter.logAllCategories) {
+			return category_level <= log_filter.defaultLogTreshold;
 		}
-		if(category && category[0]) {
-			// category specified
-			qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
-			if(log_filter.logAllCategories)
-				category_level = log_filter.defaultLogTreshold;
-			else if(log_filter.inverseCategoriesFilter) {
-				if(!log_filter.categoriesTresholds.contains(QLatin1String(category)))
-					category_level = log_filter.defaultLogTreshold;
-			}
-			else {
-				QString cat = QLatin1String(category);
-				if(log_filter.categoriesTresholds.contains(cat)) {
-					category_level = log_filter.categoriesTresholds.value(cat, log_filter.defaultLogTreshold);
-				}
-			}
-			if(category_level != qf::core::Log::Level::Invalid) {
-				ret = (level <= category_level);
-			}
+		else if(log_filter.inverseCategoriesFilter) {
+			if(!log_filter.categoriesTresholds.contains(QLatin1String(category)))
+				return category_level <= log_filter.defaultLogTreshold;
 		}
 		else {
-			ret = true;
+			QString cat = QLatin1String(category);
+			category_level = log_filter.categoriesTresholds.value(cat, qf::core::Log::Level::Invalid);
+			//fprintf(stderr, "%s: '%s' -> %s\n", file_name, qPrintable(category), qPrintable(qf::core::Log::levelName(category_level)));
+			return level <= category_level;
 		}
-		if(ret) {
-			ret = false;
-			bool module_level_found = false;
-			QString module = moduleFromFileName(file_name);
-			QMapIterator<QString, Log::Level> it(log_filter.modulesTresholds);
-			while (it.hasNext()) {
-				it.next();
-				if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
-					//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
-					module_level_found = true;
-					if(level <= it.value())
-						ret = true;
-					break;
-				}
-			}
-			if(!module_level_found) {
-				if(level <= log_filter.defaultLogTreshold)
-					ret = true;
+	}
+	{
+		QString module = moduleFromFileName(file_name);
+		QMapIterator<QString, Log::Level> it(log_filter.modulesTresholds);
+		while (it.hasNext()) {
+			it.next();
+			if(module.indexOf(it.key(), 0, Qt::CaseInsensitive) >= 0) {
+				//printf("found '%s' in '%s' treshold: %d \n", qPrintable(it.key()), qPrintable(_domain), it.value());
+				return level <= it.value();
 			}
 		}
-	} while(false);
+	}
 	//printf("%s %d \n", qPrintable(_domain), ret);
-	return ret;
+	return level <= log_filter.defaultLogTreshold;
 }
 
 void LogDevice::setLoggingEnabled(bool on)
