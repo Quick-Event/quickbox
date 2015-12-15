@@ -5,6 +5,7 @@
 
 #include <QElapsedTimer>
 #include <QString>
+//#include <QLoggingCategory>
 
 //#define QF_TIMESCOPE_ENABLED
 
@@ -31,8 +32,11 @@ private:
 	static int s_level;
 };
 
+//Q_DECLARE_LOGGING_CATEGORY(logcatTimeScope)
+
 } // namespace utils
 } // namespace core
 } // namespace qf
+
 
 #endif // QF_CORE_UTILS_TIMESCOPE_H
