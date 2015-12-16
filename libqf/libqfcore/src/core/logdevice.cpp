@@ -307,9 +307,10 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 				level = Log::Level::Invalid;
 			category = category.mid(0, ix);
 		}
+		int match_cnt = 0;
 		for(const QString def_cat : definedCategories()) {
-			bool match = true;
-			if(def_cat.compare(category, Qt::CaseInsensitive) != 0) {
+			bool match = (def_cat.compare(category, Qt::CaseInsensitive) == 0);
+			if(!match) {
 				//printf("\t def_cat %s\n", qPrintable(def_cat));
 				QStringList def_cat_sl = tokenize_at_capital(def_cat);
 				QStringList cli_cat_sl = tokenize_at_capital(category);
@@ -326,15 +327,17 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 						match = false;
 						break;
 					}
+					match = true;
 				}
 			}
 			if(match) {
 				//printf("\t\t match with %s\n", qPrintable(def_cat));
 				s_globalLogFilter.categoriesTresholds[def_cat] = level;
+				match_cnt++;
 			}
-			else {
-				fprintf(stderr, "Category '%s' is not found in defined logging categories: %s\n", qPrintable(category), qPrintable(definedCategories().join(", ")));
-			}
+		}
+		if(match_cnt == 0) {
+			fprintf(stderr, "Category '%s' is not found in defined logging categories: %s\n", qPrintable(category), qPrintable(definedCategories().join(", ")));
 		}
 	}
 }
