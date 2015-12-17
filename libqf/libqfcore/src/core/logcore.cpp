@@ -43,7 +43,7 @@ const char *qf::core::Log::levelName(qf::core::Log::Level level)
 	case Log::Level::Debug:
 		return "DEB";
 	case Log::Level::Invalid:
-		return "INVALID";
+		return "NOLOG";
 	}
 	return "???";
 }
@@ -62,7 +62,7 @@ QString Log::levelToString(Log::Level level)
 	case Log::Level::Debug:
 		return QStringLiteral("Debug");
 	case Log::Level::Invalid:
-		return QStringLiteral("Invalid");
+		return QStringLiteral("NoLog");
 	}
 	return QString();
 }

@@ -26,6 +26,8 @@ public:
 	static QString modulesLogInfo();
 	static QString categoriesLogInfo();
 
+	static QPair<QString, Log::Level> parseCategoryLevel(const QString &category);
+
 	static void setDefinedCategories(const QStringList &categories) {s_definedCategories = categories;}
 	static QStringList definedCategories() { return s_definedCategories; }
 	static bool isCategoryLogEnabled(const QString &category);
@@ -58,7 +60,7 @@ protected:
 		QMap<QString, Log::Level> modulesTresholds;
 		QMap<QString, Log::Level> categoriesTresholds;
 		bool logAllCategories = false;
-		bool inverseCategoriesFilter = false;
+		//bool inverseCategoriesFilter = false;
 	};
 	static bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category, const LogFilter &log_filter);
 	static bool isMatchingGlobalLogFilter(Log::Level level, const char *file_name, const char *category);
@@ -68,14 +70,10 @@ protected:
 	static QStringList setCategoriesTresholdsFromArgs(const QStringList &args);
 	static void setCategoriesTresholds(const QStringList &tresholds);
 protected:
-	//static Log::Level s_environmentLogTreshold;
-	//static Log::Level s_commandLineLogTreshold;
-
 	static QStringList s_definedCategories;
 	static bool s_loggingEnabled;
 	static LogFilter s_globalLogFilter;
 
-	//Log::Level m_logTreshold;
 	int m_count;
 	bool m_enabled = true;
 };
