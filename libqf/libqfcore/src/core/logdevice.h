@@ -37,7 +37,7 @@ public:
 	//Log::Level setLogTreshold(Log::Level level);
 	//Log::Level logTreshold();
 
-	static bool isMatchingAllDevicesLogFilter(Log::Level level, const char *file_name, const char *category = nullptr);
+	static bool isMatchingAnyDeviceLogFilter(Log::Level level, const char *file_name, const char *category = nullptr);
 
 	virtual bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category);
 
@@ -91,6 +91,7 @@ public:
 
 	void setFile(const QString &path_to_file);
 
+	bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category) Q_DECL_OVERRIDE;
 	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;
 protected:
 	FILE *m_file;

@@ -63,7 +63,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 	}
 	Q_FOREACH(auto log_device, logDevices()) {
 		// check if log is enabled for this device particulary
-		// checking is done twice for successful log device and once for the unsuccessful one (in isMatchingAllDevicesLogFilter)
+		// checking is done twice for successful log device and once for the unsuccessful one (in isMatchingAnyDeviceLogFilter)
 		if(log_device->isMatchingLogFilter(level, context.file, context.category))
 			log_device->log(level, context, msg);
 	}
@@ -430,7 +430,7 @@ void LogDevice::setEnabled(bool b)
 	m_enabled = b;
 }
 
-bool LogDevice::isMatchingAllDevicesLogFilter(Log::Level level, const char *file_name, const char *category)
+bool LogDevice::isMatchingAnyDeviceLogFilter(Log::Level level, const char *file_name, const char *category)
 {
 	Q_FOREACH(auto log_device, logDevices()) {
 		if(log_device->isEnabled()) {
@@ -530,6 +530,14 @@ void FileLogDevice::setFile(const QString &path_to_file)
 			std::fprintf(stderr, "Cannot open log file '%s' for writing\n", qPrintable(path_to_file));
 		}
 	}
+}
+
+bool FileLogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, const char *category)
+{
+	bool ok = Super::isMatchingLogFilter(level, file_name, category);
+	//if(QLatin1String(category) == QLatin1String("Vetra"))
+	//	printf("%p %s %s:%d vs. %d -> %d\n", this, file_name, category, level, s_globalLogFilter.categoriesTresholds.value(category), ok);
+	return ok;
 }
 
 void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
