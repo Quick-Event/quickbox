@@ -35,11 +35,11 @@ namespace utils {
 
 #define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const { \
-		QVariant val = value(pkey); \
+		QVariant val = value(QStringLiteral(pkey)); \
 		return qvariant_cast<ptype>(val); \
 	} \
-	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest), false).value().isValid();} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(pkey).setValue(val);}
+	public: bool getter_prefix##name_rest##_isset() const {return option(QStringLiteral(pkey), false).value().isValid();} \
+	public: void setter_prefix##name_rest(const ptype &val) {optionRef(QStringLiteral(pkey)).setValue(val);}
 
 class QFCORE_DECL_EXPORT CLIOptions : public QObject
 {

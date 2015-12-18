@@ -57,7 +57,8 @@ CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val_str)
 	{
 		bool ok;
 		setValue(val_str.toDouble(&ok));
-		if(!ok) qfWarning() << "Value:" << val_str << "cannot be converted to Double.";
+		if(!ok)
+			qfWarning() << "Value:" << val_str << "cannot be converted to Double.";
 		break;
 	}
 	default:

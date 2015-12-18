@@ -469,15 +469,13 @@ QString LogDevice::logCategoriesCLIHelp()
 	if(s_definedCategories.isEmpty())
 		return ret;
 	ret =
-		"-v,--verbose [^][" + s_definedCategories.join(",][") + "]"
+		"-v,--verbose [" + s_definedCategories.join(",][") + "]"
 		"\n\t controls defined categories log verbosity"
 		"\n\t\t more comma delimited categories enabled."
-		"\n\t\t When list starts with ^, the categories listed are excluded."
 		"\n\t\t Case sensitive."
 		"\n\t\t StartsWith or CamelCase match enabled."
 		"\n\t\t Example: -v is equal to --verbose enables all categories logging"
-		"\n\t\t Example: -v FO,TrM is equal to --verbose F*O*,Tr*M*"
-		"\n\t\t Example: -v ^Opcua,TM means log all except modules starting with 'Opcua' or has pattern 'T*M*'";
+		"\n\t\t Example: -v FO,TrM is equal to --verbose F*O*,Tr*M*";
 	return ret;
 }
 
