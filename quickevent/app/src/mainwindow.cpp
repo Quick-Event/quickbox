@@ -28,7 +28,9 @@ QString MainWindow::settingsPrefix_application_locale_language()
 	return s;
 }
 
-void MainWindow::whenPluginsLoaded()
+void MainWindow::onPluginsLoaded()
 {
 	centralWidget()->setActivePart("Competitors", true);
+	setPersistentSettingsId("MainWindow");
+	loadPersistentSettings();
 }

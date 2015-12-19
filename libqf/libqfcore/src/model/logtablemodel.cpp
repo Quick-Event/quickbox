@@ -1,6 +1,6 @@
 #include "logtablemodel.h"
 
-#include "../core/log.h"
+#include "../core/logdevice.h"
 
 #include <QColor>
 #include <QDateTime>
@@ -127,7 +127,6 @@ LogTableModel::Row LogTableModel::rowAt(int row) const
 
 void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
-	qfLogFuncFrame();
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	QString module = prettyFileName(file);
 	m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));

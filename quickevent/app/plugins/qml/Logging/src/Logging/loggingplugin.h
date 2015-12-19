@@ -27,10 +27,10 @@ public:
 	Q_SLOT void setLogDockVisible(bool b);
 private:
 	Q_SLOT void onInstalled();
-	Q_SLOT void saveSettings();
-	void loadSettings();
+	//Q_SLOT void saveSettings();
+	//void loadSettings();
 private:
-	void onLogDockVisibleChanged(bool on = true);
+	//void onLogDockVisibleChanged(bool on = true);
 private:
 	qf::qmlwidgets::framework::DockWidget *m_logDockWidget = nullptr;
 };

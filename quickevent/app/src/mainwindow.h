@@ -17,7 +17,7 @@ public:
 	static const QLatin1String SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE;
 	Q_INVOKABLE QString settingsPrefix_application_locale_language();
 protected:
-	void whenPluginsLoaded() Q_DECL_OVERRIDE;
+	void onPluginsLoaded() Q_DECL_OVERRIDE;
 };
 
 #endif // MAINWINDOW_H

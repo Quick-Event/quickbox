@@ -31,7 +31,7 @@ void LoggingPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 
-	connect(fwk, &qff::MainWindow::aboutToClose, this, &LoggingPlugin::saveSettings);
+	//connect(fwk, &qff::MainWindow::aboutToClose, this, &LoggingPlugin::saveSettings);
 
 	{
 		m_logDockWidget = new qff::DockWidget(nullptr);
@@ -41,7 +41,7 @@ void LoggingPlugin::onInstalled()
 		auto *w = new LoggerWidget();
 		m_logDockWidget->setWidget(w);
 		m_logDockWidget->hide();
-		connect(m_logDockWidget, &qff::DockWidget::visibleChanged, this, &LoggingPlugin::onLogDockVisibleChanged);
+		//connect(m_logDockWidget, &qff::DockWidget::visibleChanged, this, &LoggingPlugin::onLogDockVisibleChanged);
 	}
 	{
 		auto *a = m_logDockWidget->toggleViewAction();
@@ -49,9 +49,9 @@ void LoggingPlugin::onInstalled()
 		a->setShortcut(QKeySequence("ctrl+shift+L"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
-	loadSettings();
+	//loadSettings();
 }
-
+#if 0
 void LoggingPlugin::saveSettings()
 {
 	QString path = persistentSettingsPath();
@@ -78,7 +78,8 @@ void LoggingPlugin::loadSettings()
 	}
 	*/
 }
-
+#endif
+/*
 void LoggingPlugin::onLogDockVisibleChanged(bool on)
 {
 	if(on) {
@@ -86,4 +87,4 @@ void LoggingPlugin::onLogDockVisibleChanged(bool on)
 		//m_logDockWidget->loadPersistentSettingsRecursively();
 	}
 }
-
+*/

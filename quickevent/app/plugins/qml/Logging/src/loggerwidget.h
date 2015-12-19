@@ -3,13 +3,9 @@
 
 #include "Logging/loggingplugin.h"
 
-#include <QFrame>
+#include <qf/qmlwidgets/framework/logwidget.h>
 
 namespace qf { namespace core { class LogEntryMap; }}
-
-namespace Ui {
-class LoggerWidget;
-}
 
 namespace qf {
 namespace core {
@@ -17,20 +13,24 @@ class SignalLogDevice;
 }
 }
 
-class LoggerWidget : public QFrame
+class LoggerLogDevice;
+
+class LoggerWidget : public qf::qmlwidgets::framework::LogWidget
 {
 	Q_OBJECT
+private:
+	typedef qf::qmlwidgets::framework::LogWidget Super;
 public:
 	explicit LoggerWidget(QWidget *parent = 0);
 	~LoggerWidget() Q_DECL_OVERRIDE;
 private:
 	Logging::LoggingPlugin* loggingPlugin();
 
-	Q_SLOT void onLogEntry(const qf::core::LogEntryMap &log_entry);
-	Q_SLOT void onLogLevelSet(int ix);
+	void registerLogCategories() Q_DECL_OVERRIDE;
+
+	//Q_SLOT void onLogEntry(const qf::core::LogEntryMap &log_entry);
 private:
-	Ui::LoggerWidget *ui;
-	qf::core::SignalLogDevice *m_logDevice;
+	LoggerLogDevice *m_logDevice = nullptr;
 };
 
 #endif // LOGGERWIDGET_H

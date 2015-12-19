@@ -58,6 +58,12 @@ protected:
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	QAbstractButton* tableMenuButton();
 	QTableView* tableView() const;
+
+	virtual void addCategoryActions(const QString &caption, const QString &id, qf::core::Log::Level level = qf::core::Log::Level::Invalid);
+	QMap<QString, core::Log::Level> selectedLogCategories() const;
+	virtual void registerLogCategories();
+
+	Q_SLOT void onDockWidgetVisibleChanged(bool visible);
 private slots:
 	void on_btClearLog_clicked();
 	void on_btResizeColumns_clicked();
@@ -65,6 +71,10 @@ private:
 	Ui::LogWidget *ui;
 	qf::core::model::LogTableModel* m_logTableModel = nullptr;
 	LogFilterProxyModel* m_filterModel = nullptr;
+
+	QList<QAction*> m_logLevelActions;
+	QList<QMenu*> m_loggingCategoriesMenus;
+	bool m_loggingCategoriesRegistered = false;
 };
 
 

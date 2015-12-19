@@ -10,4 +10,3 @@ SOURCES += \
     $$PWD/Logging/loggingplugin.cpp \
 
 FORMS += \
-    $$PWD/loggerwidget.ui \

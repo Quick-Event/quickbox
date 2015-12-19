@@ -373,7 +373,12 @@ void CardReaderWidget::onCommOpen(bool checked)
 
 void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 {
-	qfLog(level) << msg;
+	switch (level) {
+	case qf::core::Log::Level::Debug: qfDebug() << msg; break;
+	case qf::core::Log::Level::Info: qfInfo() << msg; break;
+	case qf::core::Log::Level::Warning: qfWarning() << msg; break;
+	default: qfError() << msg; break;
+	}
 }
 
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)

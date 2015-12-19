@@ -11,6 +11,7 @@
 #include <QDateTime>
 #include <QClipboard>
 #include <QKeyEvent>
+#include <QMenu>
 
 namespace qfm = qf::core::model;
 
@@ -224,6 +225,71 @@ QTableView *LogWidget::tableView() const
 {
 	return ui->tableView;
 }
+
+void LogWidget::addCategoryActions(const QString &caption, const QString &id, core::Log::Level level)
+{
+	QString menu_caption = "[%1] " + caption;
+	QMenu *m = new QMenu(this);
+	QAction *a = new QAction(caption, m);
+	a->setData(id);
+	a->setMenu(m);
+	tableMenuButton()->addAction(a);
+	QActionGroup *ag_loglevel = new QActionGroup(a);
+	for (int i = static_cast<int>(qf::core::Log::Level::Invalid); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
+		if(i == static_cast<int>(qf::core::Log::Level::Fatal))
+			continue;
+		QString cap = qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i));
+		QAction *a2 = new QAction(cap, a);
+		ag_loglevel->addAction(a2);
+		m->addAction(a2);
+		a2->setCheckable(true);
+		a2->setChecked(static_cast<qf::core::Log::Level>(i) == level);
+		connect(a2, &QAction::triggered, this, &LogWidget::registerLogCategories);
+		QChar level_c = (i == static_cast<int>(qf::core::Log::Level::Invalid))? ' ': qf::core::Log::levelName(static_cast<qf::core::Log::Level>(i))[0];
+		a2->setData(i);
+		if(a2->isChecked())
+			menu_caption = menu_caption.arg(level_c);
+		m_logLevelActions << a2;
+	}
+	m->setTitle(menu_caption);
+}
+
+QMap<QString, qf::core::Log::Level> LogWidget::selectedLogCategories() const
+{
+	QMap<QString, qf::core::Log::Level> categories;
+	for(QAction *a : m_logLevelActions) {
+		if(a->isChecked()) {
+			QAction *pa = qobject_cast<QAction*>(a->parent());
+			QF_ASSERT(pa != nullptr, "Bad parent", continue);
+			qf::core::Log::Level level = static_cast<qf::core::Log::Level>(a->data().toInt());
+			QChar level_c = (level == qf::core::Log::Level::Invalid)? ' ': qf::core::Log::levelName(level)[0];
+			{
+				QMenu *m = pa->menu();
+				QString cap = m->title();
+				cap[1] = level_c;
+				m->setTitle(cap);
+			}
+			QString category = pa->data().toString();
+			QPair<QString, qf::core::Log::Level> lev = qf::core::LogDevice::parseCategoryLevel(category);
+			if(level != qf::core::Log::Level::Invalid)
+				categories[category] = level;
+		}
+	}
+	return categories;
+}
+
+void LogWidget::registerLogCategories()
+{
+	m_loggingCategoriesRegistered = true;
+}
+
+void LogWidget::onDockWidgetVisibleChanged(bool visible)
+{
+	//Super::onDockWidgetVisibleChanged(visible);
+	if(visible && !m_loggingCategoriesRegistered && !m_loggingCategoriesMenus.isEmpty())
+		registerLogCategories();
+}
+
 
 
 } // namespace framework
