@@ -125,8 +125,27 @@ LogTableModel::Row LogTableModel::rowAt(int row) const
 	return m_rows.value(row);
 }
 
-void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+void LogTableModel::addLogEntry(const LogEntryMap &le)
 {
+	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), le.timeStamp(), le.function());
+}
+
+void LogTableModel::addLog(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+{
+	//printf("%p %s %s:%d -> %d\n", this, qPrintable(msg), qPrintable(file), line, (int)severity);
+	static constexpr int ROWS_OVERLAP = 100;
+	if(rowCount() >= maximumRowCount() + ROWS_OVERLAP) {
+		if(direction() == Direction::AppendToBottom) {
+			beginRemoveRows(QModelIndex(), 0, ROWS_OVERLAP - 1);
+			m_rows = m_rows.mid(ROWS_OVERLAP);
+			endRemoveRows();
+		}
+		else {
+			beginRemoveRows(QModelIndex(), rowCount() - ROWS_OVERLAP, rowCount() - 1);
+			m_rows = m_rows.mid(0, rowCount() - ROWS_OVERLAP);
+			endRemoveRows();
+		}
+	}
 	QString module = prettyFileName(file);
 	if(direction() == Direction::AppendToBottom) {
 		beginInsertRows(QModelIndex(), rowCount(), rowCount());

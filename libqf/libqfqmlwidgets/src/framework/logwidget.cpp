@@ -12,6 +12,7 @@
 #include <QClipboard>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QInputDialog>
 
 namespace qfm = qf::core::model;
 
@@ -137,6 +138,23 @@ LogWidget::LogWidget(QWidget *parent)
 {
 	ui->setupUi(this);
 	//setPersistentSettingsId();
+	{
+		QAction *a = new QAction(tr("Maximal log length"), this);
+		connect(a, &QAction::triggered, [this]() {
+			qf::core::model::LogTableModel *m = this->logTableModel();
+			int max_rows = m->maximumRowCount();
+			bool ok;
+			max_rows = QInputDialog::getInt(this, tr("Get number"), tr("Maximal log row count:"), max_rows, 0, std::numeric_limits<int>::max(), 100, &ok);
+			if (ok)
+				m->setMaximumRowCount(max_rows);
+		});
+		tableMenuButton()->addAction(a);
+	}
+	{
+		QAction *a = new QAction(this);
+		a->setSeparator(true);
+		tableMenuButton()->addAction(a);
+	}
 
 	//ui->tableView->horizontalHeader()->setSectionHidden(0, true);
 	ui->tableView->horizontalHeader()->setSectionsMovable(true);
@@ -167,28 +185,31 @@ void LogWidget::clear()
 
 void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 {
-	m_logTableModel = m;
-	m_filterModel->setSourceModel(m_logTableModel);
-	if(m_logTableModel) {
-		connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+	if(m_logTableModel != m) {
+		m_logTableModel = m;
+		m_filterModel->setSourceModel(m_logTableModel);
+		if(m_logTableModel) {
+			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+		}
 	}
 }
 
 void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
-	logTableModel()->addLogEntry(severity, category, file, line, msg, time_stamp, function, user_data);
+	logTableModel()->addLog(severity, category, file, line, msg, time_stamp, function, user_data);
 }
 
 void LogWidget::addLogEntry(const qf::core::LogEntryMap &le)
 {
-	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime(), le.function());
+	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), le.timeStamp(), le.function());
 }
 
 void LogWidget::scrollToLastEntry()
 {
-	bool first_time = (logTableModel()->rowCount() == 0);
-	if(first_time)
+	if(!m_columnsResized) {
+		m_columnsResized = false;
 		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+	}
 	if(isVisible()) {
 		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom)
 			ui->tableView->scrollToBottom();
@@ -298,17 +319,14 @@ QMap<QString, qf::core::Log::Level> LogWidget::selectedLogCategories() const
 
 void LogWidget::registerLogCategories()
 {
-	m_loggingCategoriesRegistered = true;
+	m_logCategoriesRegistered = true;
 }
 
 void LogWidget::onDockWidgetVisibleChanged(bool visible)
 {
-	//Super::onDockWidgetVisibleChanged(visible);
-	if(visible && !m_loggingCategoriesRegistered && !m_loggingCategoriesMenus.isEmpty())
+	if(visible && !m_logCategoriesRegistered)
 		registerLogCategories();
 }
-
-
 
 } // namespace framework
 } // namespace qmlwiggets

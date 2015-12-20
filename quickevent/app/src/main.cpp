@@ -1,10 +1,12 @@
 #include "mainwindow.h"
 #include "application.h"
 #include "appclioptions.h"
+#include "tablemodellogdevice.h"
 
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
 #include <qf/core/utils/settings.h>
+#include <qf/core/model/logtablemodel.h>
 
 #include <QtQml>
 #include <QLocale>
@@ -27,6 +29,9 @@ int main(int argc, char *argv[])
 	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
 	file_log_device->setFile(o_log_file);
+
+	QScopedPointer<TableModelLogDevice> table_model_log_device(TableModelLogDevice::install());
+	table_model_log_device->setObjectName("table_model_log_device");
 
 	qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
 	qfWarning() << "QFLog(WARNING) test OK.";
@@ -96,7 +101,6 @@ int main(int argc, char *argv[])
 
 	MainWindow main_window;
 	main_window.setUiLanguageName(lc_name);
-	//QObject::connect(signal_log_device.data(), &qf::core::SignalLogDevice::logEntry, &main_window, &MainWindow::logEntry, Qt::QueuedConnection);
 	/*
 	QObject::connect(signal_log_device.data(), SIGNAL(logEntry(int, QVariantMap)),
 					 &main_window, SIGNAL(logEntry(int, QVariantMap)),

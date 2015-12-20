@@ -1,6 +1,12 @@
 #include "mainwindow.h"
+#include "application.h"
+#include "loggerwidget.h"
+#include "tablemodellogdevice.h"
 
 #include <qf/qmlwidgets/framework/centralwidget.h>
+#include <qf/qmlwidgets/framework/dockwidget.h>
+#include <qf/qmlwidgets/menubar.h>
+#include <qf/qmlwidgets/action.h>
 
 #include <QLabel>
 
@@ -30,6 +36,21 @@ QString MainWindow::settingsPrefix_application_locale_language()
 
 void MainWindow::onPluginsLoaded()
 {
+	{
+		auto *dw = new qf::qmlwidgets::framework::DockWidget(nullptr);
+		dw->setObjectName("loggingDockWidget");
+		dw->setWindowTitle(tr("Application log"));
+		addDockWidget(Qt::BottomDockWidgetArea, dw);
+		auto *w = new LoggerWidget();
+		connect(dw, &qf::qmlwidgets::framework::DockWidget::visibilityChanged, w, &LoggerWidget::onDockWidgetVisibleChanged);
+		dw->setWidget(w);
+		dw->hide();
+		auto *a = dw->toggleViewAction();
+		//a->setCheckable(true);
+		a->setShortcut(QKeySequence("ctrl+shift+L"));
+		menuBar()->actionForPath("view")->addActionInto(a);
+	}
+
 	centralWidget()->setActivePart("Competitors", true);
 	setPersistentSettingsId("MainWindow");
 	loadPersistentSettings();

@@ -51,9 +51,9 @@ public:
 	Q_SLOT void scrollToLastEntry();
 
 	void clear();
-protected:
 	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
 	qf::core::model::LogTableModel* logTableModel();
+protected:
 	//bool isModelLoaded() const;
 	Q_SLOT void tresholdChanged(int index);
 	Q_SLOT void filterStringChanged(const QString &filter_string);
@@ -65,18 +65,20 @@ protected:
 	QMap<QString, core::Log::Level> selectedLogCategories() const;
 	virtual void registerLogCategories();
 
-	Q_SLOT void onDockWidgetVisibleChanged(bool visible);
+	virtual void onDockWidgetVisibleChanged(bool visible);
 private slots:
 	void on_btClearLog_clicked();
 	void on_btResizeColumns_clicked();
-private:
-	Ui::LogWidget *ui;
+protected:
 	qf::core::model::LogTableModel* m_logTableModel = nullptr;
 	LogFilterProxyModel* m_filterModel = nullptr;
-	bool m_loggingCategoriesRegistered = false;
+private:
+	Ui::LogWidget *ui;
+	bool m_logCategoriesRegistered = false;
 
 	QList<QAction*> m_logLevelActions;
 	QList<QMenu*> m_loggingCategoriesMenus;
+	bool m_columnsResized = false;
 };
 
 

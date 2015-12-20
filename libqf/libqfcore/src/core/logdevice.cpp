@@ -121,6 +121,17 @@ void LogDevice::install(LogDevice *dev)
 	logDevices() << dev;
 }
 
+LogDevice *LogDevice::findDevice(const QString &object_name, bool throw_exc)
+{
+	for(auto *ld : logDevices()) {
+		if(ld->objectName() == object_name)
+			return ld;
+	}
+	if(throw_exc)
+		QF_EXCEPTION(tr("Cannot find log device by object name '%1'").arg(object_name));
+	return nullptr;
+}
+
 QStringList LogDevice::setGlobalTresholds(int argc, char *argv[])
 {
 	QStringList ret;
@@ -615,6 +626,7 @@ static const auto KeyMessage = QStringLiteral("message");
 static const auto KeyFile = QStringLiteral("file");
 static const auto KeyLine = QStringLiteral("line");
 static const auto KeyFunction = QStringLiteral("function");
+static const auto KeyTimeStamp = QStringLiteral("timestamp");
 
 LogEntryMap::LogEntryMap(Log::Level level, const QString &category, const QString &message, const QString &file, int line, const QString &function)
 {
@@ -624,6 +636,7 @@ LogEntryMap::LogEntryMap(Log::Level level, const QString &category, const QStrin
 	this->operator[](KeyFile) = file;
 	this->operator[](KeyLine) = line;
 	this->operator[](KeyFunction) = function;
+	this->operator[](KeyTimeStamp) = QDateTime::currentDateTime();
 }
 
 Log::Level LogEntryMap::level() const
@@ -661,15 +674,26 @@ QString LogEntryMap::function() const
 	return value(KeyFunction).toString();
 }
 
+QDateTime LogEntryMap::timeStamp() const
+{
+	return value(KeyTimeStamp).toDateTime();
+}
+
+void LogEntryMap::setTimeStamp(const QDateTime &ts)
+{
+	this->operator[](KeyTimeStamp) = ts;
+}
+
 QString LogEntryMap::toString() const
 {
 	QString ret = "{";
 	ret += "\"level\":" + QString::number((int)level()) + ", ";
-	ret += "\"category\":" + category() + ", ";
-	ret += "\"message\":" + message() + ", ";
-	ret += "\"file\":" + file() + ", ";
+	ret += "\"category\":\"" + category() + "\", ";
+	ret += "\"message\":\"" + message() + "\", ";
+	ret += "\"file\":\"" + file() + "\", ";
 	ret += "\"line\":" + QString::number(line()) + ", ";
-	ret += "\"function\":" + function() + "}";
+	ret += "\"time\":\"" + timeStamp().toString(Qt::ISODate) + "\", ";
+	ret += "\"function\":\"" + function() + "\"}";
 	return ret;
 }
 

@@ -31,7 +31,7 @@ include($$PWD/src/src.pri)
 include ($$PWD/../../crosscompile-support.pri)
 
 RESOURCES += \
-	$${TARGET}.qrc \
+	$$PWD/images/images.qrc \
 
 TRANSLATIONS += \
 	libqfcore.cs_CZ.ts \
