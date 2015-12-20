@@ -169,21 +169,32 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 {
 	m_logTableModel = m;
 	m_filterModel->setSourceModel(m_logTableModel);
+	if(m_logTableModel) {
+		connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+	}
 }
 
 void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
-	bool first_time = (logTableModel()->rowCount() == 0);
 	logTableModel()->addLogEntry(severity, category, file, line, msg, time_stamp, function, user_data);
-	if(first_time)
-		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	if(isVisible())
-		ui->tableView->scrollToBottom();
 }
 
 void LogWidget::addLogEntry(const qf::core::LogEntryMap &le)
 {
 	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime(), le.function());
+}
+
+void LogWidget::scrollToLastEntry()
+{
+	bool first_time = (logTableModel()->rowCount() == 0);
+	if(first_time)
+		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+	if(isVisible()) {
+		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom)
+			ui->tableView->scrollToBottom();
+		else
+			ui->tableView->scrollToTop();
+	}
 }
 
 qf::core::model::LogTableModel *LogWidget::logTableModel()
@@ -224,6 +235,13 @@ QAbstractButton *LogWidget::tableMenuButton()
 QTableView *LogWidget::tableView() const
 {
 	return ui->tableView;
+}
+
+void LogWidget::clearCategoryActions()
+{
+	m_logLevelActions.clear();
+	qDeleteAll(m_loggingCategoriesMenus);
+	m_loggingCategoriesMenus.clear();
 }
 
 void LogWidget::addCategoryActions(const QString &caption, const QString &id, core::Log::Level level)

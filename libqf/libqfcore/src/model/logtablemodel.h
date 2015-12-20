@@ -3,6 +3,7 @@
 
 #include "../core/coreglobal.h"
 #include "../core/logcore.h"
+#include "../core/utils.h"
 
 #include <QAbstractTableModel>
 
@@ -29,6 +30,10 @@ public:
 public:
 	LogTableModel(QObject *parent = 0);
 
+	enum class Direction {AppendToTop, AppendToBottom};
+
+	QF_PROPERTY_IMPL2(Direction, d, D, irection, Direction::AppendToBottom)
+
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
@@ -37,6 +42,7 @@ public:
 	void clear();
 	Row rowAt(int row) const;
 	void addLogEntry(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function = QString(), const QVariant &user_data = QVariant());
+	Q_SIGNAL void logEntryInserted(int row_no);
 protected:
 	virtual QString prettyFileName(const QString &file_name);
 private:

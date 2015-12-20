@@ -127,10 +127,19 @@ LogTableModel::Row LogTableModel::rowAt(int row) const
 
 void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
-	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	QString module = prettyFileName(file);
-	m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));
-	endInsertRows();
+	if(direction() == Direction::AppendToBottom) {
+		beginInsertRows(QModelIndex(), rowCount(), rowCount());
+		m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));
+		endInsertRows();
+		emit logEntryInserted(rowCount() - 1);
+	}
+	else {
+		beginInsertRows(QModelIndex(), 0, 0);
+		m_rows.insert(0, Row(severity, category, module, line, msg, time_stamp, function, user_data));
+		endInsertRows();
+		emit logEntryInserted(0);
+	}
 }
 
 QString LogTableModel::prettyFileName(const QString &file_name)

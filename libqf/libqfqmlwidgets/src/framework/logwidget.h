@@ -48,6 +48,7 @@ public:
 
 	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
+	Q_SLOT void scrollToLastEntry();
 
 	void clear();
 protected:
@@ -59,6 +60,7 @@ protected:
 	QAbstractButton* tableMenuButton();
 	QTableView* tableView() const;
 
+	void clearCategoryActions();
 	virtual void addCategoryActions(const QString &caption, const QString &id, qf::core::Log::Level level = qf::core::Log::Level::Invalid);
 	QMap<QString, core::Log::Level> selectedLogCategories() const;
 	virtual void registerLogCategories();
@@ -71,10 +73,10 @@ private:
 	Ui::LogWidget *ui;
 	qf::core::model::LogTableModel* m_logTableModel = nullptr;
 	LogFilterProxyModel* m_filterModel = nullptr;
+	bool m_loggingCategoriesRegistered = false;
 
 	QList<QAction*> m_logLevelActions;
 	QList<QMenu*> m_loggingCategoriesMenus;
-	bool m_loggingCategoriesRegistered = false;
 };
 
 
