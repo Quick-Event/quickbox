@@ -67,6 +67,21 @@ QString Log::levelToString(Log::Level level)
 	return QString();
 }
 
+Log::Level Log::stringToLevel(const QString &level_name)
+{
+	if(!level_name.isEmpty()) {
+		QChar c = level_name[0].toUpper();
+		switch (c.unicode()) {
+		case 'D': return Level::Debug;
+		case 'I': return Level::Info;
+		case 'W': return Level::Warning;
+		case 'E': return Level::Error;
+		case 'F': return Level::Fatal;
+		}
+	}
+	return Level::Invalid;
+}
+
 void Log::checkLogLevelMetaTypeRegistered()
 {
 	int id = qMetaTypeId<qf::core::Log::Level>();
