@@ -13,6 +13,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QInputDialog>
+#include <QScrollBar>
 
 namespace qfm = qf::core::model;
 
@@ -190,12 +191,16 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 		m_filterModel->setSourceModel(m_logTableModel);
 		if(m_logTableModel) {
 			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+			QScrollBar *sb = ui->tableView->verticalScrollBar();
+			if(sb)
+				connect(sb, &QScrollBar::sliderReleased, this, &LogWidget::onSliderReleased, Qt::UniqueConnection);
 		}
 	}
 }
 
 void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
+	//fprintf(stderr, "%s:%d(%s) %s\n", qPrintable(file), line, qPrintable(category), qPrintable(msg));
 	logTableModel()->addLog(severity, category, file, line, msg, time_stamp, function, user_data);
 }
 
@@ -204,25 +209,11 @@ void LogWidget::addLogEntry(const qf::core::LogEntryMap &le)
 	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), le.timeStamp(), le.function());
 }
 
-void LogWidget::scrollToLastEntry()
-{
-	if(!m_columnsResized) {
-		m_columnsResized = false;
-		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	}
-	if(isVisible()) {
-		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom)
-			ui->tableView->scrollToBottom();
-		else
-			ui->tableView->scrollToTop();
-	}
-}
-
 qf::core::model::LogTableModel *LogWidget::logTableModel()
 {
 	if(!m_logTableModel) {
-		m_logTableModel = new qfm::LogTableModel(this);
-		setLogTableModel(m_logTableModel);
+		auto *m = new qfm::LogTableModel(this);
+		setLogTableModel(m);
 	}
 	return m_logTableModel;
 }
@@ -324,8 +315,42 @@ void LogWidget::registerLogCategories()
 
 void LogWidget::onDockWidgetVisibleChanged(bool visible)
 {
-	if(visible && !m_logCategoriesRegistered)
+	if(visible && !m_logCategoriesRegistered) {
 		registerLogCategories();
+	}
+}
+
+void LogWidget::onSliderReleased()
+{
+	QScrollBar *sb = ui->tableView->verticalScrollBar();
+	if(sb) {
+		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
+			m_isAutoScroll = (sb->value() == sb->maximum());
+			//fprintf(stderr, "BOTTOM scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
+		}
+		else {
+			m_isAutoScroll = (sb->value() == sb->minimum());
+			//fprintf(stderr, "TOP scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
+		}
+	}
+}
+
+void LogWidget::scrollToLastEntry()
+{
+	if(isVisible()) {
+		if(!m_columnsResized) {
+			m_columnsResized = false;
+			ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		}
+		if(m_isAutoScroll) {
+			if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
+				ui->tableView->scrollToBottom();
+			}
+			else {
+				ui->tableView->scrollToTop();
+			}
+		}
+	}
 }
 
 } // namespace framework

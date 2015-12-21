@@ -54,7 +54,6 @@ public:
 	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
 	qf::core::model::LogTableModel* logTableModel();
 protected:
-	//bool isModelLoaded() const;
 	Q_SLOT void tresholdChanged(int index);
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	QAbstractButton* tableMenuButton();
@@ -66,6 +65,7 @@ protected:
 	virtual void registerLogCategories();
 
 	virtual void onDockWidgetVisibleChanged(bool visible);
+	void onSliderReleased();
 private slots:
 	void on_btClearLog_clicked();
 	void on_btResizeColumns_clicked();
@@ -79,6 +79,7 @@ private:
 	QList<QAction*> m_logLevelActions;
 	QList<QMenu*> m_loggingCategoriesMenus;
 	bool m_columnsResized = false;
+	bool m_isAutoScroll = true;
 };
 
 
