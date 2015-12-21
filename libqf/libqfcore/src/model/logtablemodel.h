@@ -48,7 +48,7 @@ public:
 	Q_SIGNAL void logEntryInserted(int row_no);
 protected:
 	virtual QString prettyFileName(const QString &file_name);
-private:
+protected:
 	QList<Row> m_rows;
 };
 
