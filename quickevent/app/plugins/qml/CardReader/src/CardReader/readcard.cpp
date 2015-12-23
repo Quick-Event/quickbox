@@ -1,5 +1,7 @@
 #include "readcard.h"
 
+#include <quickevent/og/timems.h>
+
 #include <siut/simessage.h>
 
 #include <QSqlRecord>
@@ -53,6 +55,13 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
 	: Super(si_card.toVariantMap())
 {
+}
+
+int ReadCard::timeMs() const
+{
+	int ret = quickevent::og::TimeMs::fixTimeWrapAM(0, (finishTime() - startTime()) * 1000);
+	ret += finishTimeMs();
+	return ret;
 }
 
 static QString secToStr(int sec)

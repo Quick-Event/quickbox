@@ -42,6 +42,7 @@ public:
 
 	int currentStageId();
 	int findRunId(int si_id);
+	ReadCard readCard(int card_id);
 	CheckedCard checkCard(int card_id, int run_id = 0);
 	CheckedCard checkCard(const ReadCard &read_card);
 	int saveCardToSql(const ReadCard &read_card);

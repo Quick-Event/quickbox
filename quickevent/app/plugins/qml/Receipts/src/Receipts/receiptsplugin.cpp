@@ -5,6 +5,7 @@
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
 #include <CardReader/checkedcard.h>
+#include <CardReader/readcard.h>
 
 #include <qf/core/utils/settings.h>
 #include <qf/core/utils/treetable.h>
@@ -18,6 +19,7 @@
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
 #include <qf/qmlwidgets/reports/processor/reportitem.h>
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
+#include <quickevent/og/timems.h>
 
 #include <QDomDocument>
 #include <QSqlRecord>
@@ -91,6 +93,46 @@ ReceiptsPrinter *ReceiptsPlugin::receiptsPrinter()
 	return m_receiptsPrinter;
 }
 
+QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
+{
+	qfLogFuncFrame() << card_id;
+	QVariantMap ret;
+	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
+	{
+		qfu::TreeTable tt;
+		tt.appendColumn("position", QVariant::Int);
+		tt.appendColumn("code", QVariant::Int);
+		tt.appendColumn("stpTimeMs", QVariant::Int);
+		tt.appendColumn("lapTimeMs", QVariant::Int);
+ 		QMapIterator<QString, QVariant> it(read_card);
+		while(it.hasNext()) {
+			it.next();
+			if(it.key() != QLatin1String("punches"))
+				tt.setValue(it.key(), it.value());
+		}
+		int position = 0;
+		int start_time_ms = read_card.startTime() * 1000;
+		int prev_time_ms = start_time_ms;
+		for(auto v : read_card.punches()) {
+			CardReader::ReadPunch punch(v.toMap());
+			int stp_time_ms = punch.time() * 1000 + punch.msec();
+			qfu::TreeTableRow ttr = tt.appendRow();
+			++position;
+			int code = punch.code();
+			ttr.setValue("position", position);
+			ttr.setValue("code", code);
+			ttr.setValue("stpTimeMs", stp_time_ms);
+			ttr.setValue("lapTimeMs", quickevent::og::TimeMs::msecIntervalAM(prev_time_ms, stp_time_ms));
+			prev_time_ms = stp_time_ms;
+		}
+		tt.setValue("timeMs", read_card.timeMs());
+
+		qfDebug() << "card:\n" << tt.toString();
+		ret["card"] = tt.toVariant();
+	}
+	return ret;
+}
+
 QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
@@ -105,30 +147,6 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	QMap<int, int> best_laps; //< position->time
 	///QMap<int, int> missing_codes; //< pos->code
 	///QSet<int> out_of_order_codes;
-	/*
-	{
-		// load all codes as missing ones
-		qf::core::sql::QueryBuilder qb;
-		qb.select2("coursecodes", "position")
-				.select2("codes", "code, outOfOrder")
-				.from("coursecodes")
-				.join("coursecodes.codeId", "codes.id")
-				.where("coursecodes.courseId=" QF_IARG(course_id))
-				//.where("NOT codes.outOfOrder")
-				.orderBy("coursecodes.position");
-		qf::core::sql::Query q;
-		q.exec(qb.toString(), qf::core::Exception::Throw);
-		while (q.next()) {
-			//int pos = q.value("position").toInt();
-			int code = q.value("code").toInt();
-			bool ooo = q.value("outOfOrder").toBool();
-			//class_codes << code;
-			missing_codes[pos] = code;
-			if(ooo)
-				out_of_order_codes << code;
-		}
-	}
-	*/
 	{
 		qf::core::model::SqlTableModel model;
 		qf::core::sql::QueryBuilder qb;
@@ -286,6 +304,23 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		ret["card"] = tt.toVariant();
 	}
 	return ret;
+}
+
+void ReceiptsPlugin::previewCard(int card_id)
+{
+	qfLogFuncFrame() << "card id:" << card_id;
+	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
+	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
+	w->setPersistentSettingsId("cardPreview");
+	w->setWindowTitle(tr("Card"));
+	w->setReport(manifest()->homeDir() + "/reports/sicard.qml");
+	QVariantMap dt = readCardTablesData(card_id);
+	for(auto key : dt.keys())
+		w->setTableData(key, dt.value(key));
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::Dialog dlg(fwk);
+	dlg.setCentralWidget(w);
+	dlg.exec();
 }
 
 void ReceiptsPlugin::previewReceipt(int card_id)

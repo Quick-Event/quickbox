@@ -32,9 +32,11 @@ public:
 
 	static const QLatin1String SETTINGS_PREFIX;
 
+	Q_INVOKABLE void previewCard(int card_id);
 	Q_INVOKABLE void previewReceipt(int card_id);
 	Q_INVOKABLE bool printReceipt(int card_id);
 
+	QVariantMap readCardTablesData(int card_id);
 	Q_INVOKABLE QVariantMap receiptTablesData(int card_id);
 
 	void setReceiptsPrinterOptions(const ReceiptsPrinterOptions &opts);
