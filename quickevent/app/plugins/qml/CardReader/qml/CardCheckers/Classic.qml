@@ -19,7 +19,7 @@ CardChecker
 		//Log.info("course:", JSON.stringify(read_card, null, 2));
 		
 		var checked_card = {courseId: course.id, runId: run_id, punches: []};
-		if(!course)
+		if(!course.id)
 			return checked_card;
 
 		var error_mis_punch = false;
