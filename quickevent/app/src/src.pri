@@ -16,6 +16,11 @@ HEADERS  += \
 
 FORMS +=
 
+RESOURCES += \
+    $$PWD/images/images.qrc \
+
+RC_FILE = $$PWD/app.rc
+
 OTHER_FILES += \
 	$$PWD/main.qml
 

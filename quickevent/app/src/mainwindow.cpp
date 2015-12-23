@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	Super(parent, flags)
 {
 	setWindowTitle(tr("Quick Event ver. %1").arg(versionString()));
+	setWindowIcon(QIcon(":/quickevent/images/quickevent64.png"));
 }
 
 MainWindow::~MainWindow()
