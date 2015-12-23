@@ -315,8 +315,11 @@ void LogWidget::registerLogCategories()
 
 void LogWidget::onDockWidgetVisibleChanged(bool visible)
 {
-	if(visible && !m_logCategoriesRegistered) {
-		registerLogCategories();
+	if(visible) {
+		if(!m_logCategoriesRegistered) {
+			registerLogCategories();
+		}
+		scrollToLastEntry();
 	}
 }
 
