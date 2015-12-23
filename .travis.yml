@@ -18,4 +18,4 @@ install:
   #- sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
   #- sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 90
 
-script: qmake -r && make
+script: source /opt/qt55/bin/qt551-env.sh && qmake -r && make
