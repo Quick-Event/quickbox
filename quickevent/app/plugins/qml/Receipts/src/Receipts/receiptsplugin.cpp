@@ -131,6 +131,20 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 			ttr.setValue("lapTimeMs", stp_time_ms - prev_stp_time_ms);
 			prev_stp_time_ms = stp_time_ms;
 		}
+		{
+			qf::core::sql::QueryBuilder qb;
+			qb.select2("config", "ckey, cvalue, ctype")
+					.from("config")
+					.where("ckey LIKE 'event.%'");
+			qf::core::sql::Query q;
+			q.exec(qb.toString());
+			while(q.next()) {
+				QVariant v = qf::core::Utils::retypeStringValue(q.value("cvalue").toString(), q.value("ctype").toString());
+				tt.setValue(q.value("ckey").toString(), v);
+			}
+		}
+		tt.setValue("stageCount", eventPlugin()->stageCount());
+		tt.setValue("currentStageId", eventPlugin()->currentStageId());
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
 	}

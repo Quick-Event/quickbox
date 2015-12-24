@@ -126,7 +126,6 @@ Report {
 			modelData: "card"
 			width: "%"
 			Frame {
-				//htmlExportAttributes: {"lpt_borderBottom": "-"}
 				hinset: 1
 				width: "%"
 				bottomBorder: Pen { basedOn: "black1" }
@@ -210,6 +209,7 @@ Report {
 				}
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
 				textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
+				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};
 				Cell {
 					id: cellPos
 					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
@@ -281,6 +281,7 @@ Report {
 				vinset: 1
 				hinset: 1
 				layout: Frame.LayoutHorizontal
+				//htmlExportAttributes: {"lpt_borderTop": "-"}
 				Para {
 					textFn: function() {
 						var current_standings = bandCard.data("currentStandings");
