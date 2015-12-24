@@ -16,6 +16,11 @@ Report {
 				id: brushNone
 				name: "none"
 				color: Color {def:"#00000000"}
+			},
+			Brush {
+				id: brushError
+				name: "error"
+				color: Color {def:"salmon"}
 			}
 		]
 	}
@@ -25,6 +30,13 @@ Report {
 	height: 297
 	hinset: 0
 	vinset: 5
+
+	function siMSecToString(msec)
+	{
+		if(msec === 0xeeee * 1000)
+			return "--:--:--";
+		return TimeExt.msecToString_hhmmss(msec)
+	}
 
 	Frame {
 		width: "%"
@@ -40,34 +52,14 @@ Report {
 				hinset: 1
 				width: "%"
 				bottomBorder: Pen { basedOn: "black1" }
-				Frame {
+				Para {
 					width: "%"
-					layout: Frame.LayoutHorizontal
-					Para {
-						id: paraStart
-						width: 15
-						text: "Start:"
-					}
-					Para {
-						width: "%"
-						textFn: function() {
-							var msec = bandCard.data("startTime") * 1000;
-							return TimeExt.msecToTimeString(msec)
-						}
-					}
-					Cell {
-						//htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-						width: paraStart.width
-						textHAlign: Frame.AlignRight
-						text: "Finish:"
-					}
-					Para {
-						width: "%"
-						textFn: function() {
-							var msec = bandCard.data("finishTime") * 1000 + bandCard.data("finishTimeMs");
-							return TimeExt.msecToTimeString(msec)
-						}
-					}
+					textStyle: myStyle.textStyleBold
+					textHAlign: Frame.AlignHCenter
+					topBorder: Pen { basedOn: "black2" }
+					bottomBorder: Pen { basedOn: "black2" }
+					fill: brushError
+					text: qsTr("Unassigned card - will not be included in the results !!!");
 				}
 				Frame {
 					width: "%"
@@ -80,13 +72,42 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var msec = bandCard.data("checkTime") * 1000;
-							return TimeExt.msecToTimeString(msec)
+							return siMSecToString(msec)
 						}
 					}
 					Para {
 						width: "%"
 						textHAlign: Frame.AlignRight
 						textFn: function() { return "SI:" + bandCard.data("cardNumber"); }
+					}
+				}
+				Frame {
+					width: "%"
+					layout: Frame.LayoutHorizontal
+					Para {
+						id: paraStart
+						width: 15
+						text: "Start:"
+					}
+					Para {
+						width: "%"
+						textFn: function() {
+							var msec = bandCard.data("startTime") * 1000;
+							return siMSecToString(msec)
+						}
+					}
+					Cell {
+						//htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+						width: paraStart.width
+						textHAlign: Frame.AlignRight
+						text: "Finish:"
+					}
+					Para {
+						width: "%"
+						textFn: function() {
+							var msec = bandCard.data("finishTime") * 1000 + bandCard.data("finishTimeMs");
+							return siMSecToString(msec)
+						}
 					}
 				}
 			}
@@ -98,7 +119,6 @@ Report {
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
 				textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
 				Cell {
-					id: cellPos
 					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
 					width: 8
 					textHAlign: Frame.AlignRight
@@ -110,31 +130,35 @@ Report {
 					}
 				}
 				Para {
-					id: cellCode
 					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 					width: 10
 					//textHAlign: Frame.AlignRight
 					text: (dc.currentIndex < (dc.rowCount - 1))? dc.data(dc.currentIndex, "code"): qsTr("FI");
 				}
 				Para {
-					id: cellStp
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: TimeExt.msecToTimeString(dc.data(dc.currentIndex, "stpTimeMs"));
+					text: TimeExt.msecToString_hhmmss(dc.data(dc.currentIndex, "punchTimeMs"));
 				}
 				Para {
-					id: cellLap
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-					width: "%"
+					width: "30%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "stpTimeMs"));
+				}
+				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+					width: "30%"
+					textHAlign: Frame.AlignRight
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
 			}
 			Frame {
 				width: "%"
 				bottomBorder: Pen { basedOn: "black2" }
 			}
+			/*
 			Frame {
 				width: "%"
 				vinset: 1
@@ -147,10 +171,11 @@ Report {
 					width: "%"
 					textFn: function() {
 						var msec = bandCard.data("timeMs");
-						return OGTime.msecToString(msec);
+						return OGTime.msecToString_mmss(msec);
 					}
 				}
 			}
+			*/
 		}
 	}
 }

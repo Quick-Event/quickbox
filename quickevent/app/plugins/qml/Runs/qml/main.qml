@@ -345,7 +345,7 @@ RunsPlugin {
 				tr = ['tr'];
 				if(j % 2)
 					tr.push({"class": "odd"});
-				tr.push(['td', OGTime.msecToString(tt2.value(j, 'startTimeMs'))]);
+				tr.push(['td', OGTime.msecToString_mmss(tt2.value(j, 'startTimeMs'))]);
 				tr.push(['td', tt2.value(j, 'competitorName')]);
 				tr.push(['td', tt2.value(j, 'registration')]);
 				tr.push(['td', tt2.value(j, 'runs.siId')]);
@@ -401,7 +401,7 @@ RunsPlugin {
 				tr = ['tr'];
 				if(j % 2)
 					tr.push({"class": "odd"});
-				tr.push(['td', OGTime.msecToString(tt2.value(j, 'startTimeMs'))]);
+				tr.push(['td', OGTime.msecToString_mmss(tt2.value(j, 'startTimeMs'))]);
 				tr.push(['td', tt2.value(j, 'classes.name')]);
 				tr.push(['td', tt2.value(j, 'competitorName')]);
 				tr.push(['td', tt2.value(j, 'registration')]);

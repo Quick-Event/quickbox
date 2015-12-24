@@ -56,14 +56,17 @@ ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
 	: Super(si_card.toVariantMap())
 {
 }
-
+/*
 int ReadCard::timeMs() const
 {
-	int ret = quickevent::og::TimeMs::fixTimeWrapAM(0, (finishTime() - startTime()) * 1000);
-	ret += finishTimeMs();
+	int ret = 0xeeee * 1000;
+	if(finishTime() != 0xeeee && startTime() != 0xeeee) {
+		ret = quickevent::og::TimeMs::fixTimeWrapAM(0, (finishTime() - startTime()) * 1000);
+		ret += finishTimeMs();
+	}
 	return ret;
 }
-
+*/
 static QString secToStr(int sec)
 {
 	int hr = sec / 60 / 60;

@@ -102,6 +102,7 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 		qfu::TreeTable tt;
 		tt.appendColumn("position", QVariant::Int);
 		tt.appendColumn("code", QVariant::Int);
+		tt.appendColumn("punchTimeMs", QVariant::Int);
 		tt.appendColumn("stpTimeMs", QVariant::Int);
 		tt.appendColumn("lapTimeMs", QVariant::Int);
  		QMapIterator<QString, QVariant> it(read_card);
@@ -111,22 +112,25 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 				tt.setValue(it.key(), it.value());
 		}
 		int position = 0;
-		int start_time_ms = read_card.startTime() * 1000;
-		int prev_time_ms = start_time_ms;
+		int start_time_ms = read_card.startTime();
+		if(start_time_ms == 0xeeee)
+			start_time_ms = read_card.checkTime();
+		start_time_ms *= 1000;
+		int prev_stp_time_ms = 0;
 		for(auto v : read_card.punches()) {
 			CardReader::ReadPunch punch(v.toMap());
-			int stp_time_ms = punch.time() * 1000 + punch.msec();
+			int punch_time_ms = punch.time() * 1000 + punch.msec();
+			int stp_time_ms = quickevent::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
 			qfu::TreeTableRow ttr = tt.appendRow();
 			++position;
 			int code = punch.code();
 			ttr.setValue("position", position);
 			ttr.setValue("code", code);
+			ttr.setValue("punchTimeMs", punch_time_ms);
 			ttr.setValue("stpTimeMs", stp_time_ms);
-			ttr.setValue("lapTimeMs", quickevent::og::TimeMs::msecIntervalAM(prev_time_ms, stp_time_ms));
-			prev_time_ms = stp_time_ms;
+			ttr.setValue("lapTimeMs", stp_time_ms - prev_stp_time_ms);
+			prev_stp_time_ms = stp_time_ms;
 		}
-		tt.setValue("timeMs", read_card.timeMs());
-
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();
 	}
@@ -334,6 +338,21 @@ bool ReceiptsPlugin::printReceipt(int card_id)
 	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
 	try {
 		printReceipt_classic(card_id);
+		return true;
+	}
+	catch(const qf::core::Exception &e) {
+		qfError() << e.toString();
+	}
+	return false;
+}
+
+bool ReceiptsPlugin::printCard(int card_id)
+{
+	qfLogFuncFrame() << "card id:" << card_id;
+	QF_TIME_SCOPE("ReceiptsPlugin::printCard()");
+	try {
+		QVariantMap dt = readCardTablesData(card_id);
+		receiptsPrinter()->printReceipt(manifest()->homeDir() + "/reports/sicard.qml", dt);
 		return true;
 	}
 	catch(const qf::core::Exception &e) {

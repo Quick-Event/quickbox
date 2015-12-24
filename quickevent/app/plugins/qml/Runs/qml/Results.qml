@@ -218,7 +218,7 @@ QtObject {
 				result.push(['StartTime', ['Clock', OGTime.msecToHMS(stime, ':')]])
 				if(ftime)
 					result.push(['FinishTime', ['Clock', OGTime.msecToHMS(ftime, ':')]])
-				result.push(['Time', {timeFormat: "MM:SS"}, OGTime.msecToString(time, ':')])
+				result.push(['Time', {timeFormat: "MM:SS"}, OGTime.msecToString_mmss(time, ':')])
 				var competitor_status = 'OK'
 				if (!ftime) {
 					 competitor_status = 'DidNotFinish'
@@ -254,7 +254,7 @@ QtObject {
 					//console.info(k, reportModel.value(k, "position"));
 					result.push(['SplitTime', {"sequence": reportModel.value(k, "position")}
 								 , ['ControlCode', reportModel.value(k, "code")]
-								 , ['Time', OGTime.msecToString(reportModel.value(k, "stpTimeMs"), ':')]
+								 , ['Time', OGTime.msecToString_mmss(reportModel.value(k, "stpTimeMs"), ':')]
 								]);
 				}
 			}

@@ -144,7 +144,7 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToTimeString(start00msec + bandCard.data("checkTimeMs"));
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("checkTimeMs"));
 						}
 					}
 					Cell {
@@ -159,7 +159,7 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToTimeString(start00msec + bandCard.data("finishTimeMs"));
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("finishTimeMs"));
 						}
 					}
 				}
@@ -177,7 +177,7 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToTimeString(start00msec + bandCard.data("startTimeMs"));
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("startTimeMs"));
 						}
 					}
 					Cell {
@@ -186,7 +186,7 @@ Report {
 					Para {
 						textFn: function() {
 							var start = bandCard.data("startTimeMs");
-							return OGTime.msecToString(start)
+							return OGTime.msecToString_mmss(start)
 						}
 					}
 					Para {
@@ -234,21 +234,21 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "stpTimeMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "stpTimeMs"));
 				}
 				Para {
 					id: cellLap
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "lossMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lossMs"));
 				}
 			}
 			Frame {
@@ -297,7 +297,7 @@ Report {
 						var time = bandCard.data("timeMs");
 						var length = root.courseLength;
 						if(length > 0)
-							return OGTime.msecToString(((time / length) >> 0) * 1000) + "min/km";
+							return OGTime.msecToString_mmss(((time / length) >> 0) * 1000) + "min/km";
 						return "";
 					}
 				}

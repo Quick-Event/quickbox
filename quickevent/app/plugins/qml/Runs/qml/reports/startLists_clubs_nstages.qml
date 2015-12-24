@@ -22,7 +22,7 @@ Report {
 			Cell {
 				property string fieldName
 				textFn: function() {
-					return OGTime.msecToString(runnersDetail.data(runnersDetail.currentIndex, fieldName));
+					return OGTime.msecToString_mmss(runnersDetail.data(runnersDetail.currentIndex, fieldName));
 				}
 			}
 		}

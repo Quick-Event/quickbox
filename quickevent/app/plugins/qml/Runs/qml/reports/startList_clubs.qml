@@ -90,7 +90,7 @@ Report {
 							Cell {
 								width: 15
 								halign: Frame.AlignRight
-								textFn: function() { return OGTime.msecToString(runnersDetail.rowData("startTimeMs"));}
+								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
 							}
 							Cell {
 								width: 12

@@ -49,7 +49,7 @@ public:
 	ReadCard(const QSqlRecord &rec);
 	ReadCard(const SIMessageCardReadOut &si_card);
 
-	int timeMs() const;
+	//int timeMs() const;
 	QString toString() const;
 };
 
