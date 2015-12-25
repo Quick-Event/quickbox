@@ -8,6 +8,7 @@
 CardReaderPartWidget::CardReaderPartWidget(const QString &feature_id, QWidget *parent)
 	: Super(feature_id, parent)
 {
+	setPersistentSettingsId("CardReader");
 	setTitle(tr("Card reader"));
 
 	CardReaderWidget *w = new CardReaderWidget();

@@ -9,6 +9,7 @@ ReceiptsPartWidget::ReceiptsPartWidget(const QString &feature_id, QWidget *paren
 	: Super(feature_id, parent)
 {
 	setTitle(tr("Receipts"));
+	setPersistentSettingsId("Receipts");
 
 	ReceiptsWidget *w = new ReceiptsWidget();
 	centralFrame()->addWidget(w);

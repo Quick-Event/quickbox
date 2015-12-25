@@ -8,6 +8,7 @@
 ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
+	setPersistentSettingsId("Runs");
 	setTitle(tr("&Runs"));
 
 	RunsWidget *w = new RunsWidget();

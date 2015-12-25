@@ -43,9 +43,10 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 	{
+		ui->tblClasses->setPersistentSettingsId("tblClasses");
 		ui->tblClassesTB->setTableView(ui->tblClasses);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
-		m->setObjectName("classes.classesModel");
+		//m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
@@ -64,11 +65,13 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m_classesModel = m;
 	}
 	{
+		ui->tblCourseCodes->setPersistentSettingsId("tblCourseCodes");
 		ui->tblCourseCodesTB->setTableView(ui->tblCourseCodes);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
-		m->setObjectName("classes.coursesModel");
+		//m->setObjectName("classes.coursesModel");
 		m->addColumn("coursecodes.position", tr("Pos")).setReadOnly(true);
 		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
+		m->addColumn("codes.altCode", tr("Alt")).setToolTip(tr("Code alternative")).setReadOnly(false);
 		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order"));
 		ui->tblCourseCodes->setTableModel(m);
 		m_courseCodesModel = m;
