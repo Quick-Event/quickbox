@@ -42,6 +42,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	ui(new Ui::ClassesWidget)
 {
 	ui->setupUi(this);
+	ui->splitter->setPersistentSettingsId(ui->splitter->objectName());
 	{
 		ui->tblClasses->setPersistentSettingsId("tblClasses");
 		ui->tblClassesTB->setTableView(ui->tblClasses);

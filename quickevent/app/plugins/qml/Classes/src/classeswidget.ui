@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <widget class="QSplitter" name="splitter">
+    <widget class="qf::qmlwidgets::Splitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -115,6 +115,12 @@
    <class>qf::qmlwidgets::TableView</class>
    <extends>QTableView</extends>
    <header location="global">qf/qmlwidgets/tableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::Splitter</class>
+   <extends>QSplitter</extends>
+   <header location="global">qf/qmlwidgets/splitter.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
