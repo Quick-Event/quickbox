@@ -2,6 +2,7 @@
 #include "ui_classeswidget.h"
 
 #include "classesplugin.h"
+#include "editcodeswidget.h"
 
 #include <Event/eventplugin.h>
 
@@ -17,6 +18,7 @@
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
@@ -45,6 +47,9 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	ui->splitter->setPersistentSettingsId(ui->splitter->objectName());
 	{
 		ui->tblClasses->setPersistentSettingsId("tblClasses");
+		ui->tblClasses->setInsertRowEnabled(false);
+		ui->tblClasses->setCloneRowEnabled(false);
+		ui->tblClasses->setRemoveRowEnabled(false);
 		ui->tblClassesTB->setTableView(ui->tblClasses);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.classesModel");
@@ -58,7 +63,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->addColumn("classdefs.lastTimeMin", tr("Last"));
 		m->addColumn("runsCount", tr("Count")).setToolTip(tr("Runners count"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
-		m->addColumn("courses.id", tr("id")).setReadOnly(true);
+		//m->addColumn("courses.id", tr("id")).setReadOnly(true);
 		m->addColumn("courses.name", tr("Course")).setReadOnly(true);
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
@@ -67,6 +72,9 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	}
 	{
 		ui->tblCourseCodes->setPersistentSettingsId("tblCourseCodes");
+		ui->tblCourseCodes->setInsertRowEnabled(false);
+		ui->tblCourseCodes->setCloneRowEnabled(false);
+		ui->tblCourseCodes->setRemoveRowEnabled(false);
 		ui->tblCourseCodesTB->setTableView(ui->tblCourseCodes);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.coursesModel");
@@ -95,16 +103,34 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
+	qfw::Action *a_edit = part_widget->menuBar()->actionForPath("edit", true);
+	a_edit->setText("&Edit");
+	{
+		qfw::Action *a = new qfw::Action("&Classes", this);
+		//connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
+		a_edit->addActionInto(a);
+	}
+	{
+		qfw::Action *a = new qfw::Action("Cou&rses", this);
+		//connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
+		a_edit->addActionInto(a);
+	}
+	{
+		qfw::Action *a = new qfw::Action("Co&des", this);
+		connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
+		a_edit->addActionInto(a);
+	}
+
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
 	a_import->setText("&Import");
 	{
 		qfw::Action *a = new qfw::Action("OCad v8", this);
-		connect(a, SIGNAL(triggered()), this, SLOT(import_ocad_v8()));
+		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_v8);
 		a_import->addActionInto(a);
 	}
 	{
 		qfw::Action *a = new qfw::Action("OCad IOF-XML", this);
-		connect(a, SIGNAL(triggered()), this, SLOT(import_ocad_iofxml()));
+		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml);
 		a_import->addActionInto(a);
 	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
@@ -118,6 +144,16 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		main_tb->addWidget(m_cbxStage);
 	}
 
+}
+
+void ClassesWidget::edit_codes()
+{
+	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close, this);
+	auto *w = new EditCodesWidget();
+	dlg.setCentralWidget(w);
+	//auto *bt_apply = dlg.buttonBox()->button(QDialogButtonBox::Apply);
+	//connect(bt_apply, &QPushButton::clicked, this, &MainWindow::askUserToRestartAppServer);
+	dlg.exec();
 }
 
 void ClassesWidget::reset()
