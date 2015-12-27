@@ -30,6 +30,7 @@ public:
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private:
+	void edit_courses();
 	void edit_codes();
 
 	void import_ocad_v8();

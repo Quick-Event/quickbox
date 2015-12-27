@@ -2113,6 +2113,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 					if(read_only) {
 					}
 					else {
+						emit editCellRequest(index);
 						QVariant id = selectedRow().value(idColumnName());
 						if(id.isValid()) {
 							emit editRowInExternalEditor(id, ModeEdit);

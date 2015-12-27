@@ -3,6 +3,7 @@
 
 #include "classesplugin.h"
 #include "editcodeswidget.h"
+#include "editcourseswidget.h"
 
 #include <Event/eventplugin.h>
 
@@ -112,7 +113,7 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	{
 		qfw::Action *a = new qfw::Action("Cou&rses", this);
-		//connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
+		connect(a, &QAction::triggered, this, &ClassesWidget::edit_courses);
 		a_edit->addActionInto(a);
 	}
 	{
@@ -144,6 +145,14 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		main_tb->addWidget(m_cbxStage);
 	}
 
+}
+
+void ClassesWidget::edit_courses()
+{
+	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close, this);
+	auto *w = new EditCoursesWidget();
+	dlg.setCentralWidget(w);
+	dlg.exec();
 }
 
 void ClassesWidget::edit_codes()

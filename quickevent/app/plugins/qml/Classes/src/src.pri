@@ -6,7 +6,9 @@ HEADERS += \
     $$PWD/classeswidget.h \
     $$PWD/classdocument.h \
     $$PWD/coursedef.h \
-    $$PWD/editcodeswidget.h
+    $$PWD/editcodeswidget.h \
+    $$PWD/editcourseswidget.h \
+    $$PWD/editcoursecodeswidget.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -15,8 +17,12 @@ SOURCES += \
     $$PWD/classeswidget.cpp \
     $$PWD/classdocument.cpp \
     $$PWD/coursedef.cpp \
-    $$PWD/editcodeswidget.cpp
+    $$PWD/editcodeswidget.cpp \
+    $$PWD/editcourseswidget.cpp \
+    $$PWD/editcoursecodeswidget.cpp
 
 FORMS += \
     $$PWD/classeswidget.ui \
-    $$PWD/editcodeswidget.ui
+    $$PWD/editcodeswidget.ui \
+    $$PWD/editcourseswidget.ui \
+    $$PWD/editcoursecodeswidget.ui
