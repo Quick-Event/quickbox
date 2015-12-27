@@ -88,9 +88,11 @@ void HeaderView::contextMenuEvent(QContextMenuEvent *event)
 	}
 	else if(a == &a_show_all_sections) {
 		for (int i = 0; i < count(); ++i) {
-			if(isSectionHidden(i))
+			if(isSectionHidden(i)) {
 				showSection(i);
+			}
 		}
+		reset(); // revealed columns are not sometimes visible without reaet(), atleast in 5.5.1
 	}
 	else if(a == &a_sections_natural_order) {
 		for (int i = 0; i < count(); ++i) {
