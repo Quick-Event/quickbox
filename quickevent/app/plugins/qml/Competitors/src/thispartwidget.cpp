@@ -8,6 +8,7 @@
 ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
+	setPersistentSettingsId("Competitors");
 	setTitle(tr("&Competitors"));
 
 	CompetitorsWidget *w = new CompetitorsWidget();

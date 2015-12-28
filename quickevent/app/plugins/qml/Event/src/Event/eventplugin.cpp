@@ -443,6 +443,7 @@ void EventPlugin::connectToSqlServer()
 				db.setHostName(conn_w->serverHost());
 				db.setPort(conn_w->serverPort());
 				db.setUserName(conn_w->serverUser());
+				//qfInfo() << conn_w->serverPassword();
 				db.setPassword(conn_w->serverPassword());
 				db.setDatabaseName("quickevent");
 				qfInfo().nospace() << "connecting to: " << db.userName() << "@" << db.hostName() << ":" << db.port();

@@ -54,3 +54,12 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 Application::~Application()
 {
 }
+
+Application *Application::instance(bool must_exist)
+{
+	Application *ret = qobject_cast<Application*>(Super::instance());
+	if(!ret && must_exist) {
+		qfFatal("Application instance MUST exist.");
+	}
+	return ret;
+}

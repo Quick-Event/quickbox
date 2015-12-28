@@ -115,7 +115,7 @@ Report {
 							Cell {
 								width: 15
 								halign: Frame.AlignRight
-								textFn: function() { return OGTime.msecToString(runnersDetail.rowData("timeMs"));}
+								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("timeMs"));}
 							}
 							Para {
 								width: 10

@@ -1,6 +1,8 @@
 #ifndef CARDREADER_READCARD_H
 #define CARDREADER_READCARD_H
 
+#include "../cardreaderpluginglobal.h"
+
 #include <qf/core/utils.h>
 
 #include <QVariantMap>
@@ -11,7 +13,7 @@ class SIMessageTransmitRecord;
 
 namespace CardReader {
 
-class ReadPunch : public QVariantMap
+class CARDREADERPLUGIN_DECL_EXPORT ReadPunch : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
@@ -29,7 +31,7 @@ public:
 	QString toJsonArrayString() const;
 };
 
-class ReadCard : public QVariantMap
+class CARDREADERPLUGIN_DECL_EXPORT ReadCard : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
@@ -46,11 +48,13 @@ public:
 	ReadCard(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadCard(const QSqlRecord &rec);
 	ReadCard(const SIMessageCardReadOut &si_card);
+
+	//int timeMs() const;
 	QString toString() const;
 };
 
 
-class PunchRecord : public QVariantMap
+class CARDREADERPLUGIN_DECL_EXPORT PunchRecord : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;

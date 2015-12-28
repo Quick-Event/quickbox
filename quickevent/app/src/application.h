@@ -4,6 +4,7 @@
 #include <qf/qmlwidgets/framework/application.h>
 
 class AppCliOptions;
+class TableModelLogDevice;
 
 class Application : public qf::qmlwidgets::framework::Application
 {
@@ -13,6 +14,8 @@ private:
 public:
 	Application(int & argc, char ** argv, AppCliOptions *cli_opts);
 	~Application() Q_DECL_OVERRIDE;
+
+	static Application* instance(bool must_exist = true);
 
 	AppCliOptions* cliOptions() {return m_cliOptions;}
 private:

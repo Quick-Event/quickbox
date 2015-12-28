@@ -5,6 +5,8 @@
 #include <Event/stage.h>
 #include <Runs/runsplugin.h>
 
+#include <quickevent/og/timems.h>
+
 #include <siut/simessage.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -28,25 +30,24 @@ CardChecker::CardChecker(QObject *parent)
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
 {
-	constexpr int hr12ms = 12 * 60 * 60 * 1000;
-	while(time2_msec < time1_msec)
-		time2_msec += hr12ms;
-	return time2_msec;
+	return quickevent::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
 }
 
 int CardChecker::msecIntervalAM(int time1_msec, int time2_msec)
 {
-	return fixTimeWrapAM(time1_msec, time2_msec) - time1_msec;
+	return quickevent::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
 }
 
 int CardChecker::toAMms(int time_msec)
 {
-	return SIMessageCardReadOut::toAMms(time_msec);
+	return fixTimeWrapAM(0, time_msec);
+	//return SIMessageCardReadOut::toAMms(time_msec);
 }
 
 int CardChecker::toAM(int time_sec)
 {
-	return SIMessageCardReadOut::toAM(time_sec);
+	return toAMms(time_sec * 1000) / 1000;
+	//return SIMessageCardReadOut::toAM(time_sec);
 }
 
 int CardChecker::stageStartSec()

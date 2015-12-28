@@ -25,7 +25,8 @@ RESOURCES += \
     $${PLUGIN_NAME}.qrc \
 
 DISTFILES += \
-    qml/reports/receiptClassic.qml
+    qml/reports/receiptClassic.qml \
+    qml/reports/sicard.qml \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \

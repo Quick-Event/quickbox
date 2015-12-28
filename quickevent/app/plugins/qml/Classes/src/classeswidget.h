@@ -13,14 +13,8 @@ namespace Ui {
 }
 
 namespace qf {
-namespace core {
-namespace model {
-class SqlTableModel;
-}
-}
-namespace qmlwidgets {
-class ForeignKeyComboBox;
-}
+namespace core { namespace model { class SqlTableModel; } }
+namespace qmlwidgets { class ForeignKeyComboBox; }
 }
 
 class ClassesWidget : public QFrame
@@ -36,8 +30,12 @@ public:
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 private:
-	Q_SLOT void import_ocad_v8();
-	Q_SLOT void import_ocad_iofxml();
+	void edit_courses();
+	void edit_codes();
+
+	void import_ocad_v8();
+	void import_ocad_iofxml();
+
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 	Q_SLOT void reloadCourseCodes();

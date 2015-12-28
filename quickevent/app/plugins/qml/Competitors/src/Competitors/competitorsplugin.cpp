@@ -53,7 +53,7 @@ void CompetitorsPlugin::onInstalled()
 		m_registrationsDockWidget->setWindowTitle(tr("Registrations"));
 		fwk->addDockWidget(Qt::RightDockWidgetArea, m_registrationsDockWidget);
 		m_registrationsDockWidget->hide();
-		connect(m_registrationsDockWidget, &qff::DockWidget::visibleChanged, this, &CompetitorsPlugin::onRegistrationsDockVisibleChanged);
+		connect(m_registrationsDockWidget, &qff::DockWidget::visibilityChanged, this, &CompetitorsPlugin::onRegistrationsDockVisibleChanged);
 	}
 	{
 		auto *a = m_registrationsDockWidget->toggleViewAction();

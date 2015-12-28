@@ -6,6 +6,7 @@
 ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
+	setPersistentSettingsId("Classes");
 	setTitle(tr("Classes"));
 
 	ClassesWidget *w = new ClassesWidget();

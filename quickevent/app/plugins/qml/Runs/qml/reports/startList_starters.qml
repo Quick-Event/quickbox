@@ -105,7 +105,7 @@ Report {
 						}
 						Cell {
 							width: 15
-							text: OGTime.msecToString(detail.data(detail.currentIndex, "startTimeMs"));
+							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}
 					}
 					//expandChildrenFrames: true

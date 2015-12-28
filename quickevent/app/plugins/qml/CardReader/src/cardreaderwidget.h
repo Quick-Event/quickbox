@@ -89,6 +89,7 @@ private:
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 
 	void onCustomContextMenuRequest(const QPoint &pos);
+	void showSelectedReceipt();
 	void showSelectedCard();
 	void assignRunnerToSelectedCard();
 

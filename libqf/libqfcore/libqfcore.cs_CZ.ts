@@ -11,6 +11,57 @@
     </message>
 </context>
 <context>
+    <name>qf::core::LogDevice</name>
+    <message>
+        <location filename="src/core/logdevice.cpp" line="131"/>
+        <source>Cannot find log device by object name &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>qf::core::model::LogTableModel</name>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="41"/>
+        <source>Category</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="43"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="45"/>
+        <source>Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="47"/>
+        <source>Severity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="49"/>
+        <source>Time stamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="51"/>
+        <source>Message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="53"/>
+        <source>Function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/model/logtablemodel.cpp" line="55"/>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
         <location filename="src/model/sqltablemodel.cpp" line="183"/>
@@ -108,17 +159,17 @@
 <context>
     <name>qf::core::utils::CLIOptions</name>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="72"/>
+        <location filename="src/utils/clioptions.cpp" line="74"/>
         <source>Abort application on exception</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="73"/>
+        <location filename="src/utils/clioptions.cpp" line="75"/>
         <source>Print help</source>
         <translation>Vytisknout nápovědu</translation>
     </message>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="74"/>
+        <location filename="src/utils/clioptions.cpp" line="76"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
         <translation type="unfinished"></translation>
     </message>

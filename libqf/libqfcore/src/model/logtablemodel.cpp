@@ -1,6 +1,6 @@
 #include "logtablemodel.h"
 
-#include "../core/log.h"
+#include "../core/logdevice.h"
 
 #include <QColor>
 #include <QDateTime>
@@ -73,7 +73,7 @@ int LogTableModel::columnCount(const QModelIndex &parent) const
 
 QVariant LogTableModel::data(const QModelIndex &index, int role) const
 {
-	if (index.row() < 0 && index.row() >= rowCount()) {
+	if (index.row() < 0 || index.row() >= rowCount()) {
 		return QVariant();
 	}
 	switch (role) {
@@ -125,13 +125,40 @@ LogTableModel::Row LogTableModel::rowAt(int row) const
 	return m_rows.value(row);
 }
 
-void LogTableModel::addLogEntry(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+void LogTableModel::addLogEntry(const LogEntryMap &le)
 {
-	qfLogFuncFrame();
-	beginInsertRows(QModelIndex(), rowCount(), rowCount());
+	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), le.timeStamp(), le.function());
+}
+
+void LogTableModel::addLog(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+{
+	//printf("%p %s %s:%d -> %d\n", this, qPrintable(msg), qPrintable(file), line, (int)severity);
+	static constexpr int ROWS_OVERLAP = 100;
+	if(rowCount() >= maximumRowCount() + ROWS_OVERLAP) {
+		if(direction() == Direction::AppendToBottom) {
+			beginRemoveRows(QModelIndex(), 0, ROWS_OVERLAP - 1);
+			m_rows = m_rows.mid(ROWS_OVERLAP);
+			endRemoveRows();
+		}
+		else {
+			beginRemoveRows(QModelIndex(), rowCount() - ROWS_OVERLAP, rowCount() - 1);
+			m_rows = m_rows.mid(0, rowCount() - ROWS_OVERLAP);
+			endRemoveRows();
+		}
+	}
 	QString module = prettyFileName(file);
-	m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));
-	endInsertRows();
+	if(direction() == Direction::AppendToBottom) {
+		beginInsertRows(QModelIndex(), rowCount(), rowCount());
+		m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));
+		endInsertRows();
+		emit logEntryInserted(rowCount() - 1);
+	}
+	else {
+		beginInsertRows(QModelIndex(), 0, 0);
+		m_rows.insert(0, Row(severity, category, module, line, msg, time_stamp, function, user_data));
+		endInsertRows();
+		emit logEntryInserted(0);
+	}
 }
 
 QString LogTableModel::prettyFileName(const QString &file_name)

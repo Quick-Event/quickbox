@@ -56,7 +56,7 @@ void MainWindow::loadPlugins()
 	QF_SAFE_DELETE(m_pluginLoader);
 	m_pluginLoader = new PluginLoader(this);
 	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
-	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::whenPluginsLoaded);
+	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
 	//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
 	Application *app = qobject_cast<Application*>(QCoreApplication::instance());
 	QJsonDocument profile = app->profile();
@@ -186,9 +186,9 @@ void MainWindow::closeEvent(QCloseEvent *ev)
 	ev->accept();
 }
 
-void MainWindow::whenPluginsLoaded()
+void MainWindow::onPluginsLoaded()
 {
-	centralWidget()->setActivePart(0, true);
+	//centralWidget()->setActivePart(0, true);
 }
 
 void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)

@@ -11,6 +11,9 @@
 #include <QDateTime>
 #include <QClipboard>
 #include <QKeyEvent>
+#include <QMenu>
+#include <QInputDialog>
+#include <QScrollBar>
 
 namespace qfm = qf::core::model;
 
@@ -136,6 +139,23 @@ LogWidget::LogWidget(QWidget *parent)
 {
 	ui->setupUi(this);
 	//setPersistentSettingsId();
+	{
+		QAction *a = new QAction(tr("Maximal log length"), this);
+		connect(a, &QAction::triggered, [this]() {
+			qf::core::model::LogTableModel *m = this->logTableModel();
+			int max_rows = m->maximumRowCount();
+			bool ok;
+			max_rows = QInputDialog::getInt(this, tr("Get number"), tr("Maximal log row count:"), max_rows, 0, std::numeric_limits<int>::max(), 100, &ok);
+			if (ok)
+				m->setMaximumRowCount(max_rows);
+		});
+		tableMenuButton()->addAction(a);
+	}
+	{
+		QAction *a = new QAction(this);
+		a->setSeparator(true);
+		tableMenuButton()->addAction(a);
+	}
 
 	//ui->tableView->horizontalHeader()->setSectionHidden(0, true);
 	ui->tableView->horizontalHeader()->setSectionsMovable(true);
@@ -166,30 +186,34 @@ void LogWidget::clear()
 
 void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 {
-	m_logTableModel = m;
-	m_filterModel->setSourceModel(m_logTableModel);
+	if(m_logTableModel != m) {
+		m_logTableModel = m;
+		m_filterModel->setSourceModel(m_logTableModel);
+		if(m_logTableModel) {
+			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+			QScrollBar *sb = ui->tableView->verticalScrollBar();
+			if(sb)
+				connect(sb, &QScrollBar::sliderReleased, this, &LogWidget::onSliderReleased, Qt::UniqueConnection);
+		}
+	}
 }
 
 void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
-	bool first_time = (logTableModel()->rowCount() == 0);
-	logTableModel()->addLogEntry(severity, category, file, line, msg, time_stamp, function, user_data);
-	if(first_time)
-		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-	if(isVisible())
-		ui->tableView->scrollToBottom();
+	//fprintf(stderr, "%s:%d(%s) %s\n", qPrintable(file), line, qPrintable(category), qPrintable(msg));
+	logTableModel()->addLog(severity, category, file, line, msg, time_stamp, function, user_data);
 }
 
 void LogWidget::addLogEntry(const qf::core::LogEntryMap &le)
 {
-	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), QDateTime::currentDateTime(), le.function());
+	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), le.timeStamp(), le.function());
 }
 
 qf::core::model::LogTableModel *LogWidget::logTableModel()
 {
 	if(!m_logTableModel) {
-		m_logTableModel = new qfm::LogTableModel(this);
-		setLogTableModel(m_logTableModel);
+		auto *m = new qfm::LogTableModel(this);
+		setLogTableModel(m);
 	}
 	return m_logTableModel;
 }
@@ -225,6 +249,112 @@ QTableView *LogWidget::tableView() const
 	return ui->tableView;
 }
 
+void LogWidget::clearCategoryActions()
+{
+	m_logLevelActions.clear();
+	qDeleteAll(m_loggingCategoriesMenus);
+	m_loggingCategoriesMenus.clear();
+}
+
+void LogWidget::addCategoryActions(const QString &caption, const QString &id, core::Log::Level level)
+{
+	QString menu_caption = "[%1] " + caption;
+	QMenu *m = new QMenu(this);
+	QAction *a = new QAction(caption, m);
+	a->setData(id);
+	a->setMenu(m);
+	tableMenuButton()->addAction(a);
+	QActionGroup *ag_loglevel = new QActionGroup(a);
+	for (int i = static_cast<int>(qf::core::Log::Level::Invalid); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
+		if(i == static_cast<int>(qf::core::Log::Level::Fatal))
+			continue;
+		QString cap = qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i));
+		QAction *a2 = new QAction(cap, a);
+		ag_loglevel->addAction(a2);
+		m->addAction(a2);
+		a2->setCheckable(true);
+		a2->setChecked(static_cast<qf::core::Log::Level>(i) == level);
+		connect(a2, &QAction::triggered, this, &LogWidget::registerLogCategories);
+		QChar level_c = (i == static_cast<int>(qf::core::Log::Level::Invalid))? ' ': qf::core::Log::levelName(static_cast<qf::core::Log::Level>(i))[0];
+		a2->setData(i);
+		if(a2->isChecked())
+			menu_caption = menu_caption.arg(level_c);
+		m_logLevelActions << a2;
+	}
+	m->setTitle(menu_caption);
+}
+
+QMap<QString, qf::core::Log::Level> LogWidget::selectedLogCategories() const
+{
+	QMap<QString, qf::core::Log::Level> categories;
+	for(QAction *a : m_logLevelActions) {
+		if(a->isChecked()) {
+			QAction *pa = qobject_cast<QAction*>(a->parent());
+			QF_ASSERT(pa != nullptr, "Bad parent", continue);
+			qf::core::Log::Level level = static_cast<qf::core::Log::Level>(a->data().toInt());
+			QChar level_c = (level == qf::core::Log::Level::Invalid)? ' ': qf::core::Log::levelName(level)[0];
+			{
+				QMenu *m = pa->menu();
+				QString cap = m->title();
+				cap[1] = level_c;
+				m->setTitle(cap);
+			}
+			QString category = pa->data().toString();
+			QPair<QString, qf::core::Log::Level> lev = qf::core::LogDevice::parseCategoryLevel(category);
+			if(level != qf::core::Log::Level::Invalid)
+				categories[category] = level;
+		}
+	}
+	return categories;
+}
+
+void LogWidget::registerLogCategories()
+{
+	m_logCategoriesRegistered = true;
+}
+
+void LogWidget::onDockWidgetVisibleChanged(bool visible)
+{
+	if(visible) {
+		if(!m_logCategoriesRegistered) {
+			registerLogCategories();
+		}
+		scrollToLastEntry();
+	}
+}
+
+void LogWidget::onSliderReleased()
+{
+	QScrollBar *sb = ui->tableView->verticalScrollBar();
+	if(sb) {
+		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
+			m_isAutoScroll = (sb->value() == sb->maximum());
+			//fprintf(stderr, "BOTTOM scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
+		}
+		else {
+			m_isAutoScroll = (sb->value() == sb->minimum());
+			//fprintf(stderr, "TOP scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
+		}
+	}
+}
+
+void LogWidget::scrollToLastEntry()
+{
+	if(isVisible()) {
+		if(!m_columnsResized) {
+			m_columnsResized = false;
+			ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		}
+		if(m_isAutoScroll) {
+			if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
+				ui->tableView->scrollToBottom();
+			}
+			else {
+				ui->tableView->scrollToTop();
+			}
+		}
+	}
+}
 
 } // namespace framework
 } // namespace qmlwiggets

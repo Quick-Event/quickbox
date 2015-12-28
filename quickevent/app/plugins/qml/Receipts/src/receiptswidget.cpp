@@ -211,9 +211,8 @@ void ReceiptsWidget::printNewCards()
 		q.exec(qs, qf::core::Exception::Throw);
 		while(q.next()) {
 			int card_id = q.value(0).toInt();
-			if(!printReceipt(card_id)) {
+			if(!printReceipt(card_id))
 				break;
-			}
 		}
 	}
 }
@@ -252,7 +251,17 @@ void ReceiptsWidget::printSelectedCards()
 
 bool ReceiptsWidget::printReceipt(int card_id)
 {
-	return receiptsPlugin()->printReceipt(card_id);
+	qf::core::sql::Query q;
+	if(q.exec("SELECT runId FROM cards WHERE id=" QF_IARG(card_id))) {
+		if(q.next()) {
+			int run_id = q.value(0).toInt();
+			if(run_id > 0)
+				return receiptsPlugin()->printReceipt(card_id);
+			else
+				return receiptsPlugin()->printCard(card_id);
+		}
+	}
+	return false;
 }
 
 void ReceiptsWidget::updateReceiptsPrinterLabel()

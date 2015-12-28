@@ -26,6 +26,7 @@ public:
 	*/
 	static const char *levelName(Level level);
 	static QString levelToString(Level level);
+	static Level stringToLevel(const QString &level_name);
 
 	static void checkLogLevelMetaTypeRegistered();
 public:

@@ -87,3 +87,18 @@ TimeMs TimeMs::fromString(const QString &time_str)
 	return TimeMs(msec + (sec + (min * 60)) * 1000);
 }
 
+int TimeMs::fixTimeWrapAM(int time1_msec, int time2_msec)
+{
+	constexpr int hr12ms = 12 * 60 * 60 * 1000;
+	while(time2_msec < time1_msec)
+		time2_msec += hr12ms;
+	while(time1_msec <= time2_msec - hr12ms)
+		time2_msec -= hr12ms;
+	return time2_msec;
+}
+
+int TimeMs::msecIntervalAM(int time1_msec, int time2_msec)
+{
+	return fixTimeWrapAM(time1_msec, time2_msec) - time1_msec;
+}
+

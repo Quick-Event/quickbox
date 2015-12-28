@@ -19,11 +19,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("QuickBox");
 	QCoreApplication::setApplicationName("quickshow");
 
-	QStringList args;
-
+	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::LogDevice> log_device(qf::core::FileLogDevice::install());
-	args = log_device->setDomainTresholds(argc, argv);
-	log_device->setPrettyDomain(true);
 
 	AppCliOptions cli_opts;
 	cli_opts.parse(args);

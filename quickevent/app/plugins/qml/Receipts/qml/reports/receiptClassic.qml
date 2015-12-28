@@ -126,7 +126,6 @@ Report {
 			modelData: "card"
 			width: "%"
 			Frame {
-				//htmlExportAttributes: {"lpt_borderBottom": "-"}
 				hinset: 1
 				width: "%"
 				bottomBorder: Pen { basedOn: "black1" }
@@ -144,7 +143,7 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToTimeString(start00msec + bandCard.data("checkTimeMs"));
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("checkTimeMs"));
 						}
 					}
 					Cell {
@@ -159,7 +158,7 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToTimeString(start00msec + bandCard.data("finishTimeMs"));
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("finishTimeMs"));
 						}
 					}
 				}
@@ -177,7 +176,7 @@ Report {
 						textHAlign: Frame.AlignRight
 						textFn: function() {
 							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToTimeString(start00msec + bandCard.data("startTimeMs"));
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("startTimeMs"));
 						}
 					}
 					Cell {
@@ -186,7 +185,7 @@ Report {
 					Para {
 						textFn: function() {
 							var start = bandCard.data("startTimeMs");
-							return OGTime.msecToString(start)
+							return OGTime.msecToString_mmss(start)
 						}
 					}
 					Para {
@@ -210,6 +209,7 @@ Report {
 				}
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
 				textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
+				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};
 				Cell {
 					id: cellPos
 					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
@@ -234,21 +234,21 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "stpTimeMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "stpTimeMs"));
 				}
 				Para {
 					id: cellLap
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "lapTimeMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString(dc.data(dc.currentIndex, "lossMs"));
+					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lossMs"));
 				}
 			}
 			Frame {
@@ -281,6 +281,7 @@ Report {
 				vinset: 1
 				hinset: 1
 				layout: Frame.LayoutHorizontal
+				//htmlExportAttributes: {"lpt_borderTop": "-"}
 				Para {
 					textFn: function() {
 						var current_standings = bandCard.data("currentStandings");
@@ -297,7 +298,7 @@ Report {
 						var time = bandCard.data("timeMs");
 						var length = root.courseLength;
 						if(length > 0)
-							return OGTime.msecToString(((time / length) >> 0) * 1000) + "min/km";
+							return OGTime.msecToString_mmss(((time / length) >> 0) * 1000) + "min/km";
 						return "";
 					}
 				}

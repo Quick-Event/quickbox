@@ -46,7 +46,8 @@ Schema {
 				//Field { name: 'stageId'; type: Int { } },
 				Field { name: 'name'; type: String { } },
 				Field { name: 'length'; type: Int { } },
-				Field { name: 'climb'; type: Int { } }
+				Field { name: 'climb'; type: Int { } },
+				Field { name: 'note'; type: String { } }
 			]
 		},
 		Table { name: 'codes'
@@ -63,7 +64,8 @@ Schema {
 					type: Boolean { } 
 					defaultValue: false;
 					notNull: true
-				}
+				},
+				Field { name: 'note'; type: String { } }
 			]
 			indexes: [
 				//Index {fields: ['stageId', 'code']; unique: true }

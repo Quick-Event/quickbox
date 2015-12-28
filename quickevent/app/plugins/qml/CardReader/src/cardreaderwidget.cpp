@@ -141,16 +141,20 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
+	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QAction a_show_card(tr("Show card"), nullptr);
-	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_print_receipt(tr("Print receipt"), nullptr);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card << &a_print_card << &a_assign_runner;
+	lst << &a_show_receipt << &a_print_receipt << &a_show_card << &a_assign_runner;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
+	if(a == &a_show_receipt) {
+		showSelectedReceipt();
+	}
 	if(a == &a_show_card) {
 		showSelectedCard();
 	}
-	else if(a == &a_print_card) {
+	else if(a == &a_print_receipt) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		auto *plugin = fwk->plugin("Receipts");
 		if(!plugin) {
@@ -291,56 +295,7 @@ void CardReaderWidget::openSettings()
 		//closeCardLog();
 	}
 }
-/*
-qf::core::Log::Level CardReaderWidget::logLevelFromSettings()
-{
-	QSettings settings;
-	QString key = QString(CardReader::CardReaderPlugin::SETTINGS_PREFIX) + "/logging/level";
-	QString level_str = settings.value(key).toString().toLower();
-	//if(level_str == "trash") return qf::core::Log::LOG_TRASH;
-	if(level_str == "debug")
-		return qf::core::Log::Level::Debug;
-	if(level_str == "info")
-		return qf::core::Log::Level::Info;
-	if(level_str == "warning")
-		return qf::core::Log::Level::Warning;
-	if(level_str == "error")
-		return qf::core::Log::Level::Error;
-	return qf::core::Log::Level::Info;
-}
 
-QTextStream& CardReaderWidget::cardLog()
-{
-	if(!m_cardLog) {
-		qf::core::utils::Settings settings;
-		QString key = QString(CardReader::CardReaderPlugin::SETTINGS_PREFIX) + "/logging/cardLog";
-		QString fn = settings.value(key).toString();
-		if(!fn.isEmpty()) {
-			QF_SAFE_DELETE(m_cardLogFile);
-			m_cardLogFile = new QFile(fn);
-			if(m_cardLogFile->open(QFile::Append)) {
-				emitLogRequest(qf::core::Log::Level::Info, tr("Openned card log file '%1' for append.").arg(fn));
-				m_cardLog = new QTextStream(m_cardLogFile);
-			}
-			else {
-				emitLogRequest(qf::core::Log::Level::Error, tr("Can't open card log file '%1' for append.").arg(fn));
-			}
-		}
-		if(!m_cardLog) {
-			/// log to stdout
-			m_cardLog = new QTextStream(stdout);
-			emitLogRequest(qf::core::Log::Level::Info, tr("Card log file redirected to stdout."));
-		}
-	}
-	return *m_cardLog;
-}
-
-void CardReaderWidget::closeCardLog()
-{
-	emitLogRequest(qf::core::Log::Level::Info, tr("Closing card log."));
-	QF_SAFE_DELETE(m_cardLog);
-}
-*/
 siut::DeviceDriver *CardReaderWidget::siDriver()
 {
 	if(!f_siDriver) {
@@ -373,7 +328,12 @@ void CardReaderWidget::onCommOpen(bool checked)
 
 void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 {
-	qfLog(level) << msg;
+	switch (level) {
+	case qf::core::Log::Level::Debug: qfDebug() << msg; break;
+	case qf::core::Log::Level::Info: qfInfo() << msg; break;
+	case qf::core::Log::Level::Warning: qfWarning() << msg; break;
+	default: qfError() << msg; break;
+	}
 }
 
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
@@ -532,7 +492,7 @@ void CardReaderWidget::onCbxCardCheckersActivated(int ix)
 	thisPlugin()->setCurrentCardCheckerIndex(ix);
 }
 
-void CardReaderWidget::showSelectedCard()
+void CardReaderWidget::showSelectedReceipt()
 {
 	qfLogFuncFrame();
 	auto receipts_plugin = receiptsPlugin();
@@ -540,6 +500,16 @@ void CardReaderWidget::showSelectedCard()
 		return;
 	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
 	QMetaObject::invokeMethod(receipts_plugin, "previewReceipt", Q_ARG(int, card_id));
+}
+
+void CardReaderWidget::showSelectedCard()
+{
+	qfLogFuncFrame();
+	auto receipts_plugin = receiptsPlugin();
+	if(!receipts_plugin)
+		return;
+	int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
+	QMetaObject::invokeMethod(receipts_plugin, "previewCard", Q_ARG(int, card_id));
 }
 
 void CardReaderWidget::assignRunnerToSelectedCard()

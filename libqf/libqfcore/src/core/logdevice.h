@@ -19,6 +19,7 @@ public:
 	virtual ~LogDevice();
 
 	static void install(LogDevice *dev);
+	static LogDevice* findDevice(const QString &object_name, bool throw_exc = true);
 
 	static QStringList setGlobalTresholds(int argc, char *argv[]);
 	static void setModulesTresholds(const QString &s);
@@ -111,6 +112,8 @@ public:
 	QString file() const;
 	int line() const;
 	QString function() const;
+	QDateTime timeStamp() const;
+	void setTimeStamp(const QDateTime &ts);
 	virtual QString toString() const;
 };
 

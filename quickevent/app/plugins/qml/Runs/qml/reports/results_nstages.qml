@@ -28,7 +28,7 @@ Report {
 				textFn: function() {
 					var time_ms = runnersDetail.data(runnersDetail.currentIndex, fieldName);
 					if(time_ms < unrealTimeMs)
-						return OGTime.msecToString(time_ms);
+						return OGTime.msecToString_mmss(time_ms);
 					return invalidTimeString;
 				}
 			}
@@ -40,7 +40,7 @@ Report {
 				textFn: function() {
 					var loss_ms = runnersDetail.data(runnersDetail.currentIndex, fieldName);
 					if(loss_ms < unrealTimeMs)
-						return "+" + OGTime.msecToString(loss_ms);
+						return "+" + OGTime.msecToString_mmss(loss_ms);
 					return "";
 				}
 			}

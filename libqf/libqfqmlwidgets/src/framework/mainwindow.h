@@ -54,7 +54,7 @@ public:
 	CentralWidget* centralWidget();
 	void setCentralWidget(CentralWidget *widget);
 public:
-	void loadPlugins();
+	virtual void loadPlugins();
 	/// framework API
 	Q_INVOKABLE void setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name = QString());
 
@@ -93,7 +93,7 @@ public:
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
-	Q_SLOT virtual void whenPluginsLoaded();
+	Q_SLOT virtual void onPluginsLoaded();
 private:
 	Q_SLOT void savePersistentSettings();
 	//void setupSettingsPersistence();

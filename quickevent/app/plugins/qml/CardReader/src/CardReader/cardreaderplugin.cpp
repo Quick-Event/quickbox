@@ -85,19 +85,29 @@ int CardReaderPlugin::findRunId(int si_id)
 	return ret;
 }
 
-CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
+ReadCard CardReaderPlugin::readCard(int card_id)
 {
-	qfLogFuncFrame() << "run id:" << run_id << "card id:" << card_id;
+	qfLogFuncFrame() << "card id:" << card_id;
 	qf::core::sql::Query q;
 	if(q.exec("SELECT * FROM cards WHERE id=" QF_IARG(card_id))) {
 		if(q.next()) {
 			ReadCard rc(q.record());
-			if(run_id > 0)
-				rc.setRunId(run_id);
-			return checkCard(rc);
+			return rc;
 		}
 	}
 	qfWarning() << "Cannot find card record for id:" << card_id;
+	return ReadCard();
+}
+
+CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id << "card id:" << card_id;
+	ReadCard rc = readCard(card_id);
+	if(!rc.isEmpty()) {
+		if(run_id > 0)
+			rc.setRunId(run_id);
+		return checkCard(rc);
+	}
 	return CheckedCard();
 }
 
