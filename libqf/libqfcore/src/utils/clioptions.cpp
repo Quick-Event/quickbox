@@ -267,6 +267,11 @@ QPair<QString, QString> CLIOptions::applicationDirAndName() const
 	#ifdef Q_OS_WIN
 			if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
 				app_name = app_name.mid(0, app_name.length() - 4);
+	#else
+			if(app_name.endsWith(QLatin1String(".so"), Qt::CaseInsensitive)) {
+				// for example zygotized Android application
+				app_name = app_name.mid(0, app_name.length() - 3);
+			}
 	#endif
 		}
 	}
@@ -359,8 +364,8 @@ bool ConfigCLIOptions::loadConfigFile()
 	QString config_file = config();
 	qfInfo() << "config-dir:" << config_dir << "config-file:" << config_file;
 	if(!config_file.isEmpty()) {
-		if(!config_file.contains('.'))
-			config_file += ".conf";
+		//if(!config_file.contains('.'))
+		//	config_file += ".conf";
 		config_file = config_dir + '/' + config_file;
 		QFile f(config_file);
 		qfInfo() << "Checking presence of config file:" << f.fileName();
