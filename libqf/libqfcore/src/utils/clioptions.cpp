@@ -353,7 +353,7 @@ void ConfigCLIOptions::parse(const QStringList &cmd_line_args)
 {
 	Super::parse(cmd_line_args);
 	if(config().isEmpty())
-		setConfig(applicationName());
+		setConfig(applicationName() + ".conf");
 }
 
 bool ConfigCLIOptions::loadConfigFile()
