@@ -38,11 +38,10 @@ public:
 	QF_PROPERTY_IMPL(QString, i, I, conSource)
 
 	/// called when dialog wants to get close
-	/// if returned value is false, close action is cancelled
-	/// all params and ret val have to be a QVariant type to be possibly overriden in QML
-	Q_INVOKABLE virtual bool dialogDoneRequest(int result);
-	/// dialogDoneRequestNative is used to call C++ dialogDoneRequest implementation from QML overloads
-	Q_INVOKABLE QVariant dialogDoneRequest_qml(const QVariant &result);
+	/// if returned value is false, done() action is cancelled
+	Q_INVOKABLE virtual bool acceptDialogDone(int result);
+
+	Q_SIGNAL void closeDialogRequest(int done_result);
 public:
 	/// define this slot to allow QML code call C++ settleDownInDialog() implementation,
 	/// when settleDownInDialog() is implemented in QML and hides C++ implementations

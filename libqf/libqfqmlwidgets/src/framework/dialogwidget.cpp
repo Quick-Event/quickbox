@@ -16,18 +16,18 @@ DialogWidget::~DialogWidget()
 {
 }
 
-bool DialogWidget::dialogDoneRequest(int result)
+bool DialogWidget::acceptDialogDone(int result)
 {
 	qfLogFuncFrame();
 	Q_UNUSED(result);
 	return true;
 }
-
-QVariant DialogWidget::dialogDoneRequest_qml(const QVariant &result)
+/*
+QVariant DialogWidget::acceptDialogDone_qml(const QVariant &result)
 {
-	return dialogDoneRequest(result.toBool());
+	return acceptDialogDone(result.toBool());
 }
-
+*/
 void DialogWidget::settleDownInDialog_qml(const QVariant &dlg)
 {
 	QObject *o = dlg.value<QObject*>();

@@ -50,7 +50,7 @@ bool DataDialogWidget::load(const QVariant &id, int mode)
 	return false;
 }
 
-bool DataDialogWidget::dialogDoneRequest(int result)
+bool DataDialogWidget::acceptDialogDone(int result)
 {
 	qfLogFuncFrame();
 	bool ret = true;
@@ -66,7 +66,7 @@ bool DataDialogWidget::dialogDoneRequest(int result)
 		}
 	}
 	if(ret)
-		ret = Super::dialogDoneRequest(result);
+		ret = Super::acceptDialogDone(result);
 	return ret;
 }
 

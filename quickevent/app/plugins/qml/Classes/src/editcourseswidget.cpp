@@ -5,6 +5,8 @@
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/connection.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogbuttonbox.h>
+#include <QPushButton>
 
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
@@ -73,8 +75,17 @@ void EditCoursesWidget::editCourseCodes(const QModelIndex &ix)
 	int course_id = m->tableRow(row_no).value("courses.id").toInt();
 	if(course_id <= 0)
 		return;
-	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close, this);
-	auto *w = new EditCourseCodesWidget(course_id);
+	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close | QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Reset, this);
+	auto *w = new EditCourseCodesWidget();
+	{
+		QPushButton *bt = dlg.buttonBox()->button(QDialogButtonBox::Apply);
+		connect(bt, &QPushButton::clicked, w, &EditCourseCodesWidget::save);
+	}
+	{
+		QPushButton *bt = dlg.buttonBox()->button(QDialogButtonBox::Reset);
+		connect(bt, &QPushButton::clicked, w, &EditCourseCodesWidget::reload);
+	}
+	w->reload(course_id);
 	dlg.setCentralWidget(w);
 	dlg.exec();
 }

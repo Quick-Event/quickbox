@@ -82,8 +82,8 @@ Schema {
 				Index {fields: ['courseId']; references: ForeignKeyReference {table: 'courses'; fields: ['id']; } },
 				Index {fields: ['codeId']; references: ForeignKeyReference {table: 'codes'; fields: ['id']; } },
 				Index {
-					fields: ['courseId', 'codeId']
-					unique: true
+					fields: ['courseId', 'position']
+					unique: false
 				}
 			]
 		},
