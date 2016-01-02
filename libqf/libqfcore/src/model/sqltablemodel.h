@@ -29,6 +29,7 @@ public:
 	~SqlTableModel() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
+	QF_PROPERTY_BOOL_IMPL(i, I, ncludeJoinedTablesIdsToReloadRowQuery)
 public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 

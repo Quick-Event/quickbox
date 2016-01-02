@@ -92,11 +92,12 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 			int course_id = 0;
 			{
 				qfInfo() << "inserting course" << cd.name();
-				QString qs = "INSERT INTO courses (name, length, climb) VALUES (:name, :length, :climb)";
+				QString qs = "INSERT INTO courses (name, length, climb, note) VALUES (:name, :length, :climb, :note)";
 				q.prepare(qs, qf::core::Exception::Throw);
 				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
+				q.bindValue(":note", QString("E%").arg(current_stage));
 				q.exec(qf::core::Exception::Throw);
 				course_id = q.lastInsertId().toInt();
 			}

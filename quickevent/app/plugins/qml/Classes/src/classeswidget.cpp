@@ -25,12 +25,73 @@
 
 #include <QDomDocument>
 #include <QComboBox>
+#include <QStyledItemDelegate>
 
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
+
+class CourseItemDelegate : public QStyledItemDelegate
+{
+	Q_OBJECT
+public:
+	CourseItemDelegate(QObject *parent) : QStyledItemDelegate(parent) {}
+
+	Q_SIGNAL void courseIdChanged();
+
+	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE
+	{
+		Q_UNUSED(option)
+		Q_UNUSED(index)
+		auto *editor = new QComboBox(parent);
+		QMapIterator<QString, int> it(m_courseNameToId);
+		while(it.hasNext()) {
+			it.next();
+			editor->addItem(it.key(), it.value());
+		}
+		return editor;
+	}
+	void setEditorData(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE
+	{
+		auto *cbx = qobject_cast<QComboBox *>(editor);
+		QF_ASSERT(cbx != nullptr, "Bad combo!", return);
+		QString id = index.data(Qt::EditRole).toString();
+		int ix = cbx->findData(id);
+		cbx->setCurrentIndex(ix);
+	}
+	void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const Q_DECL_OVERRIDE
+	{
+		qfLogFuncFrame();
+		auto *cbx = qobject_cast<QComboBox *>(editor);
+		QF_ASSERT(cbx != nullptr, "Bad combo!", return);
+		qfDebug() << "setting model data:" << cbx->currentText() << cbx->currentData();
+		model->setData(index, cbx->currentData(), Qt::EditRole);
+		emit const_cast<CourseItemDelegate*>(this)->courseIdChanged();
+	}
+
+	QString displayText(const QVariant &value, const QLocale &locale) const Q_DECL_OVERRIDE
+	{
+		Q_UNUSED(locale);
+		return m_idToCourseName.value(value.toInt(), QStringLiteral("???"));
+	}
+
+	void setCourses(const QMap<int, QString> &courses)
+	{
+		m_idToCourseName = courses;
+		m_courseNameToId.clear();
+		QMapIterator<int, QString> it(m_idToCourseName);
+		while(it.hasNext()) {
+			it.next();
+			m_courseNameToId.insertMulti(it.value(), it.key());
+		}
+	}
+
+private:
+	QMap<int, QString> m_idToCourseName;
+	QMultiMap<QString, int> m_courseNameToId;
+};
 
 static Event::EventPlugin* eventPlugin()
 {
@@ -50,7 +111,8 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		ui->tblClasses->setPersistentSettingsId("tblClasses");
 		ui->tblClasses->setInsertRowEnabled(false);
 		ui->tblClasses->setCloneRowEnabled(false);
-		ui->tblClasses->setRemoveRowEnabled(false);
+		ui->tblClasses->setRemoveRowEnabled(false);		
+
 		ui->tblClassesTB->setTableView(ui->tblClasses);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.classesModel");
@@ -64,11 +126,17 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->addColumn("classdefs.lastTimeMin", tr("Last"));
 		m->addColumn("runsCount", tr("Count")).setToolTip(tr("Runners count"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
-		//m->addColumn("courses.id", tr("id")).setReadOnly(true);
-		m->addColumn("courses.name", tr("Course")).setReadOnly(true);
+		m->addColumn("classdefs.courseId", tr("Course"));
+		//m->addColumn("courses.name", tr("Course")).setReadOnly(true);
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
 		ui->tblClasses->setTableModel(m);
+
+		m_courseItemDelegate = new CourseItemDelegate(this);
+		ui->tblClasses->setItemDelegateForColumn(m->columnIndex("classdefs.courseId"), m_courseItemDelegate);
+
+		connect(m_courseItemDelegate, &CourseItemDelegate::courseIdChanged, ui->tblClasses, &qfw::TableView::reloadCurrentRow, Qt::QueuedConnection);
+
 		m_classesModel = m;
 	}
 	{
@@ -222,6 +290,15 @@ void ClassesWidget::reload()
 			qfWarning() << tr("Courses are not imported, class table is read only.");
 		}
 		ui->tblClasses->setReadOnly(ro);
+	}
+	{
+		QMap<int, QString> courses;
+		qf::core::sql::Query q;
+		q.exec("SELECT id, name, note FROM courses ORDER BY name, note");
+		while(q.next()) {
+			courses[q.value(0).toInt()] = q.value(1).toString() + ' ' + q.value(2).toString();
+		}
+		m_courseItemDelegate->setCourses(courses);
 	}
 	reloadCourseCodes();
 }
@@ -446,3 +523,4 @@ void ClassesWidget::import_ocad_iofxml()
 	}
 }
 
+#include "classeswidget.moc"

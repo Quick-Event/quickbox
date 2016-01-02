@@ -92,6 +92,7 @@ public:
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);
+	Q_SLOT int reloadCurrentRow() {return reloadRow(-1);}
 	Q_SLOT int reloadRow(int row_no = -1);
 
 	Q_SLOT virtual void cloneRowInline();

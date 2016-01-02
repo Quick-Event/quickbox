@@ -445,6 +445,8 @@ int SqlTableModel::reloadRow(int row_no)
 			QString formated_val = sqldrv->formatValue(sqlfld);
 			qb.where(full_fld_name + "=" + formated_val);
 		}
+		if(!isIncludeJoinedTablesIdsToReloadRowQuery())
+			break;
 	}
 	qfs::Query q = qfs::Query(sql_conn);
 	qfs::QueryBuilder::BuildOptions opts;

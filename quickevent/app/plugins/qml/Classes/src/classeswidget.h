@@ -17,6 +17,8 @@ namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets { class ForeignKeyComboBox; }
 }
 
+class CourseItemDelegate;
+
 class ClassesWidget : public QFrame
 {
 	Q_OBJECT
@@ -46,6 +48,7 @@ private:
 	qf::core::model::SqlTableModel *m_classesModel;
 	qf::core::model::SqlTableModel *m_courseCodesModel;
 	QComboBox *m_cbxStage = nullptr;
+	CourseItemDelegate *m_courseItemDelegate = nullptr;
 };
 
 #endif // CLASSESWIDGET_H
