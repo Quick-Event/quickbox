@@ -109,9 +109,9 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	ui->splitter->setPersistentSettingsId(ui->splitter->objectName());
 	{
 		ui->tblClasses->setPersistentSettingsId("tblClasses");
-		ui->tblClasses->setInsertRowEnabled(false);
+		ui->tblClasses->setInsertRowEnabled(true);
 		ui->tblClasses->setCloneRowEnabled(false);
-		ui->tblClasses->setRemoveRowEnabled(false);		
+		ui->tblClasses->setRemoveRowEnabled(true);
 
 		ui->tblClassesTB->setTableView(ui->tblClasses);
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
@@ -174,11 +174,13 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 
 	qfw::Action *a_edit = part_widget->menuBar()->actionForPath("edit", true);
 	a_edit->setText("&Edit");
+	/*
 	{
 		qfw::Action *a = new qfw::Action("&Classes", this);
 		//connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
 		a_edit->addActionInto(a);
 	}
+	*/
 	{
 		qfw::Action *a = new qfw::Action("Cou&rses", this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::edit_courses);

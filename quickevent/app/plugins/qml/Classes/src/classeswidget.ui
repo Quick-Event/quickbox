@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1255</width>
-    <height>831</height>
+    <width>1267</width>
+    <height>836</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -55,7 +55,7 @@
         <widget class="qf::qmlwidgets::TableViewToolBar" name="tblClassesTB" native="true"/>
        </item>
        <item>
-        <widget class="qf::qmlwidgets::TableView" name="tblClasses"/>
+        <widget class="ClassesTableView" name="tblClasses"/>
        </item>
       </layout>
      </widget>
@@ -121,6 +121,11 @@
    <extends>QSplitter</extends>
    <header location="global">qf/qmlwidgets/splitter.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ClassesTableView</class>
+   <extends>QTableView</extends>
+   <header>src/classestableview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

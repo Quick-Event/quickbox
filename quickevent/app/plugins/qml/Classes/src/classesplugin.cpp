@@ -24,7 +24,17 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
 
 using namespace Classes;
-
+/*
+static int stageCount()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = fwk->plugin(QStringLiteral("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	int stage_count = plugin->property("stageCount").toInt();
+	QF_ASSERT_EX(stage_count > 0, "Stage count == 0!");
+	return stage_count;
+}
+*/
 ClassesPlugin::ClassesPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -50,13 +60,31 @@ QObject *ClassesPlugin::createClassDocument(QObject *parent)
 	return ret;
 }
 
-void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses)
+void ClassesPlugin::createClass(const QString &class_name) throw(qf::core::Exception)
+{
+	//qf::core::sql::Transaction transaction;
+	ClassDocument doc;
+	doc.loadForInsert();
+	doc.setValue(QStringLiteral("classes.name"), class_name);
+	doc.save();
+	//transaction.commit();
+}
+
+void ClassesPlugin::dropClass(int class_id) throw(qf::core::Exception)
+{
+	QF_ASSERT_EX(class_id > 0, "Bad classes.id value.");
+	ClassDocument doc;
+	doc.load(class_id, ClassDocument::RecordEditMode::ModeDelete);
+	doc.drop();
+}
+
+void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 {
 	qfLogFuncFrame();
-	qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 	try {
+		qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 		qf::core::sql::Query q;
-		deleteCourses(current_stage);
+		deleteCourses(stage_id);
 
 		QSet<int> all_codes;
 		QMap<QString, int> course_ids;
@@ -97,7 +125,7 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
-				q.bindValue(":note", QString("E%").arg(current_stage));
+				q.bindValue(":note", QString("E%").arg(stage_id));
 				q.exec(qf::core::Exception::Throw);
 				course_id = q.lastInsertId().toInt();
 			}
@@ -107,10 +135,10 @@ void ClassesPlugin::createCourses(int current_stage, const QVariantList &courses
 				for(auto class_name : cd.classes()) {
 					int class_id = class_ids.value(class_name);
 					if(class_id > 0) {
-						qfInfo() << "\t" << "updating classdefs for" << class_name << "stage:" << current_stage;
+						qfInfo() << "\t" << "updating classdefs for" << class_name << "stage:" << stage_id;
 						q.bindValue(":classId", class_id);
 						q.bindValue(":courseId", course_id);
-						q.bindValue(":stageId", current_stage);
+						q.bindValue(":stageId", stage_id);
 						q.exec(qf::core::Exception::Throw);
 					}
 					else {

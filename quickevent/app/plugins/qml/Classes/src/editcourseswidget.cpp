@@ -23,7 +23,7 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 	{
 		ui->tblCourses->setPersistentSettingsId("tblCourses");
 		ui->tblCoursesTB->setTableView(ui->tblCourses);
-		ui->tblCourses->setRowEditorMode(qfw::TableView::RowEditorMode::EditRowsMixed);
+		ui->tblCourses->setRowEditorMode(qfw::TableView::RowEditorMode::EditRowsInline);
 		connect(ui->tblCourses, &qfw::TableView::editCellRequest, [this](const QModelIndex &ix) {
 			if(ix.column() == this->m_coursesModel->columnIndex("code_list")) {
 				editCourseCodes(ix);
@@ -50,10 +50,22 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 				.groupBy("courses.id")
 				.orderBy("courses.name");//.limit(10);
 		qf::core::sql::Connection conn = m_coursesModel->sqlConnection();
-		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive))
-			qb.select("string_agg(CAST(codes.code as VARCHAR), ',') AS code_list");
-		else
+		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive)) {
+			qb.select("string_agg(CAST(codes.code as VARCHAR), ',' ORDER BY coursecodes.position) AS code_list");
+		}
+		else {
+			// SQLite doesn't support ORDER BY in GROUP_CONCAT
+			// fortunately coursecodes.position has same order as soursecodes.id in current implementation
+			// SELECT id, NAME, (
+			//   SELECT GROUP_CONCAT(codes.code)
+			//   FROM coursecodes
+			//   LEFT JOIN codes ON coursecodes.codeId=codes.id
+			//   WHERE coursecodes.courseId=courses.id
+			//   ORDER BY coursecodes.POSITION
+			// ) AS code_list FROM courses;
+			// can do the trick otherwise (cannot be used for postgres)
 			qb.select("GROUP_CONCAT(codes.code, ',') AS code_list");
+		}
 		m_coursesModel->setQueryBuilder(qb);
 		m_coursesModel->reload();
 	}
@@ -77,6 +89,7 @@ void EditCoursesWidget::editCourseCodes(const QModelIndex &ix)
 		return;
 	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close | QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Reset, this);
 	auto *w = new EditCourseCodesWidget();
+	connect(w, &EditCourseCodesWidget::courseCodesSaved, ui->tblCourses, &qfw::TableView::reloadCurrentRow);
 	{
 		QPushButton *bt = dlg.buttonBox()->button(QDialogButtonBox::Apply);
 		connect(bt, &QPushButton::clicked, w, &EditCourseCodesWidget::save);

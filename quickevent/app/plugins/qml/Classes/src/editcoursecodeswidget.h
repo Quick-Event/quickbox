@@ -26,6 +26,8 @@ public:
 	void save();
 
 	bool acceptDialogDone(int result) Q_DECL_OVERRIDE;
+
+	Q_SIGNAL void courseCodesSaved();
 private:
 	void loadAllCodes();
 	void addCourseCode(int code_id);

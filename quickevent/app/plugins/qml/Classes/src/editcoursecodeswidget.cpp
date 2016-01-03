@@ -83,6 +83,7 @@ void EditCourseCodesWidget::save()
 			q.exec(qfc::Exception::Throw);
 		}
 		transaction.commit();
+		emit courseCodesSaved();
 	}
 	catch (qfc::Exception &ex) {
 		qfd::MessageBox::showException(this, ex);

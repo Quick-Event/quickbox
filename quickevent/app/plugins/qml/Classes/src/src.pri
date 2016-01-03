@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/coursedef.h \
     $$PWD/editcodeswidget.h \
     $$PWD/editcourseswidget.h \
-    $$PWD/editcoursecodeswidget.h
+    $$PWD/editcoursecodeswidget.h \
+    $$PWD/classestableview.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -19,7 +20,8 @@ SOURCES += \
     $$PWD/coursedef.cpp \
     $$PWD/editcodeswidget.cpp \
     $$PWD/editcourseswidget.cpp \
-    $$PWD/editcoursecodeswidget.cpp
+    $$PWD/editcoursecodeswidget.cpp \
+    $$PWD/classestableview.cpp
 
 FORMS += \
     $$PWD/classeswidget.ui \

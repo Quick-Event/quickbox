@@ -87,8 +87,8 @@ public:
 	Q_SLOT virtual void reload(bool preserve_sorting = false);
 
 	Q_SLOT virtual void insertRow();
+	Q_SLOT virtual void removeSelectedRows();
 	//! @param row_no if @a row_no < 0 than post current row.
-	Q_SLOT void removeSelectedRows();
 	Q_SLOT virtual bool postRow(int row_no = -1);
 	//! discard all the row data changes.
 	Q_SLOT virtual void revertRow(int row_no = -1);

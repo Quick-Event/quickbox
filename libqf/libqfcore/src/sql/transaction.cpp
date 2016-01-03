@@ -11,8 +11,10 @@ Transaction::Transaction(const Connection &conn)
 {
 	if(!m_connection.isValid())
 		m_connection = Connection::forName();
-	if(m_connection.isValid())
+	if(m_connection.isValid()) {
+		qfDebug() << "BEGIN";
 		m_connection.transaction();
+	}
 }
 Transaction::~Transaction()
 {
@@ -26,7 +28,7 @@ void Transaction::commit()
 		return;
 	}
 	bool ok = m_connection.commit();
-	qfInfo() << "COMMIT";
+	qfDebug() << "COMMIT";
 	if(!ok) {
 		qfError() << "COMMIT transaction error -" << m_connection.lastError().text();
 	}
@@ -39,7 +41,7 @@ void Transaction::rollback()
 		return;
 	}
 	bool ok = m_connection.rollback();
-	qfInfo() << "ROLLBACK";
+	qfDebug() << "ROLLBACK";
 	if(!ok) {
 		qfError() << "ROLLBACK transaction error -" << m_connection.lastError().text();
 	}
