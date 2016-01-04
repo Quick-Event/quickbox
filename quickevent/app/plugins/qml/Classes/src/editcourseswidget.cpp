@@ -41,31 +41,27 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 		m_coursesModel = m;
 	}
 	{
-		qfs::QueryBuilder qb;
-		qb.select2("courses", "*")
-				.select("COUNT(codes.code) AS code_count")
-				.from("courses")
-				.join("courses.id", "coursecodes.courseId")
-				.join("coursecodes.codeId", "codes.id")
-				.groupBy("courses.id")
-				.orderBy("courses.name");//.limit(10);
 		qf::core::sql::Connection conn = m_coursesModel->sqlConnection();
+		qfs::QueryBuilder qb_code_count;
+		qb_code_count.select("COUNT(*)").from("coursecodes").where("coursecodes.courseId=courses.id").as("code_count");
+		qfs::QueryBuilder qb_code_list;
+		qb_code_list.from("coursecodes")
+				.join("coursecodes.codeId", "codes.id")
+				.where("coursecodes.courseId=courses.id")
+				.as("code_list");
 		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive)) {
-			qb.select("string_agg(CAST(codes.code as VARCHAR), ',' ORDER BY coursecodes.position) AS code_list");
+			qb_code_list.select("string_agg(CAST(codes.code as VARCHAR), ',' ORDER BY coursecodes.position)");
 		}
 		else {
-			// SQLite doesn't support ORDER BY in GROUP_CONCAT
-			// fortunately coursecodes.position has same order as soursecodes.id in current implementation
-			// SELECT id, NAME, (
-			//   SELECT GROUP_CONCAT(codes.code)
-			//   FROM coursecodes
-			//   LEFT JOIN codes ON coursecodes.codeId=codes.id
-			//   WHERE coursecodes.courseId=courses.id
-			//   ORDER BY coursecodes.POSITION
-			// ) AS code_list FROM courses;
-			// can do the trick otherwise (cannot be used for postgres)
-			qb.select("GROUP_CONCAT(codes.code, ',') AS code_list");
+			qb_code_list.select("GROUP_CONCAT(codes.code)")
+				.orderBy("coursecodes.position");
 		}
+		qfs::QueryBuilder qb;
+		qb.select2("courses", "*")
+				.select(qb_code_list.toString())
+				.select(qb_code_count.toString())
+				.from("courses")
+				.orderBy("courses.name");
 		m_coursesModel->setQueryBuilder(qb);
 		m_coursesModel->reload();
 	}
