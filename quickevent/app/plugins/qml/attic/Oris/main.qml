@@ -17,38 +17,38 @@ Plugin {
 	}
 
 	property list<Action> actions: [
-		Action {
-			id: actImportEventOris
-			text: qsTr('&Event')
-			//enabled: internal.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				orisImporter.chooseAndImport()
-			}
-		},
-		Action {
-			id: actImportClubsOris
-			text: qsTr('&Clubs')
-			//enabled: internal.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				orisImporter.importClubs();
-			}
-		},
-		Action {
-			id: actImportRegistrationsOris
-			text: qsTr('&Registrations')
-			//enabled: internal.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				orisImporter.importRegistrations();
-			}
-		},
-		Action {
-			id: actTest
-			text: qsTr('&Test')
-			//enabled: internal.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
-			}
+	Action {
+		id: actImportEventOris
+		text: qsTr('&Event')
+		//enabled: internal.pluginSqlDb.api.sqlServerConnected
+		onTriggered: {
+			orisImporter.chooseAndImport()
 		}
+	},
+	Action {
+		id: actImportClubsOris
+		text: qsTr('&Clubs')
+		//enabled: internal.pluginSqlDb.api.sqlServerConnected
+		onTriggered: {
+			orisImporter.importClubs();
+		}
+	},
+	Action {
+		id: actImportRegistrationsOris
+		text: qsTr('&Registrations')
+		//enabled: internal.pluginSqlDb.api.sqlServerConnected
+		onTriggered: {
+			orisImporter.importRegistrations();
+		}
+	},
+	Action {
+		id: actTest
+		text: qsTr('&Test')
+		//enabled: internal.pluginSqlDb.api.sqlServerConnected
+		onTriggered: {
+			FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
+		}
+	}
 	]
 
 	onInstalled:

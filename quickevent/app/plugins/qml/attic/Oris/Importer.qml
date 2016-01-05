@@ -12,7 +12,7 @@ QtObject {
 			id: db
 		}
 	}
-
+/*
 	function whenServerConnected()
 	{
 		console.debug("whenServerConnected");
@@ -25,7 +25,7 @@ QtObject {
 			openEvent(event_name);
 		}
 	}
-
+*/
 	function chooseAndImport()
 	{
 		var d = new Date;
