@@ -1,10 +1,11 @@
 #include "networkreply.h"
-
-#include <qf/core/log.h>
+#include "../core/log.h"
 
 #include <QNetworkReply>
 
-using namespace qf::core::qml;
+namespace qf {
+namespace core {
+namespace network {
 
 NetworkReply::NetworkReply(QObject *parent) :
 	QObject(parent), m_reply(nullptr)
@@ -30,8 +31,9 @@ NetworkReply::~NetworkReply()
 	}
 }
 
-void qf::core::qml::NetworkReply::setReply(QNetworkReply *repl)
+void NetworkReply::setReply(QNetworkReply *repl)
 {
+	qfLogFuncFrame() << repl << (repl? repl->url().toString(): QString()) << "finished:" << (repl? repl->isFinished(): true);
 	m_reply = repl;
 	m_reply->setParent(nullptr);
 	m_data.clear();
@@ -44,7 +46,7 @@ void qf::core::qml::NetworkReply::setReply(QNetworkReply *repl)
 							  Q_ARG(qint64, 100));
 }
 
-QString qf::core::qml::NetworkReply::errorString() const
+QString NetworkReply::errorString() const
 {
 	QString ret;
 	if(m_reply) {
@@ -53,7 +55,7 @@ QString qf::core::qml::NetworkReply::errorString() const
 	return ret;
 }
 
-QString qf::core::qml::NetworkReply::textData() const
+QString NetworkReply::textData() const
 {
 	return QString::fromUtf8(m_data);
 }
@@ -67,7 +69,7 @@ QUrl NetworkReply::url() const
 	return ret;
 }
 
-void qf::core::qml::NetworkReply::downloadProgress_helper(qint64 bytes_received, qint64 bytes_total)
+void NetworkReply::downloadProgress_helper(qint64 bytes_received, qint64 bytes_total)
 {
 	qfLogFuncFrame() << bytes_received << "of" << bytes_total;
 	if(m_reply) {
@@ -81,7 +83,7 @@ void qf::core::qml::NetworkReply::downloadProgress_helper(qint64 bytes_received,
 	}
 }
 
-void qf::core::qml::NetworkReply::finished_helper()
+void NetworkReply::finished_helper()
 {
 	if(m_reply) {
 		emit finished(m_reply->error() == QNetworkReply::NoError);
@@ -89,7 +91,7 @@ void qf::core::qml::NetworkReply::finished_helper()
 	}
 }
 
-void qf::core::qml::NetworkReply::readyRead_helper()
+void NetworkReply::readyRead_helper()
 {
 	qfLogFuncFrame();
 	if(m_reply) {
@@ -98,3 +100,5 @@ void qf::core::qml::NetworkReply::readyRead_helper()
 		qfDebug() << "Chunk of" << (m_data.length() - sz) << "read.";
 	}
 }
+
+}}}

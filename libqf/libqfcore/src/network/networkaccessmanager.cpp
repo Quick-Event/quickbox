@@ -1,13 +1,15 @@
 #include "networkaccessmanager.h"
 #include "networkreply.h"
 
-#include <qf/core/log.h>
+#include "../core/log.h"
 
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-using namespace qf::core::qml;
+namespace qf {
+namespace core {
+namespace network {
 
 NetworkAccessManager::NetworkAccessManager(QObject *parent) :
 	Super(parent)
@@ -21,6 +23,7 @@ NetworkAccessManager::~NetworkAccessManager()
 
 NetworkReply *NetworkAccessManager::get(const QUrl &url)
 {
+	qfLogFuncFrame() << url.toString();
 	NetworkReply *ret = new NetworkReply();
 	QNetworkRequest rq(url);
 	//rq.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
@@ -29,3 +32,4 @@ NetworkReply *NetworkAccessManager::get(const QUrl &url)
 	return ret;
 }
 
+}}}
