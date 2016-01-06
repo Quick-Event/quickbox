@@ -260,6 +260,7 @@ void LogWidget::addCategoryActions(const QString &caption, const QString &id, co
 {
 	QString menu_caption = "[%1] " + caption;
 	QMenu *m = new QMenu(this);
+	m_loggingCategoriesMenus << m;
 	QAction *a = new QAction(caption, m);
 	a->setData(id);
 	a->setMenu(m);
