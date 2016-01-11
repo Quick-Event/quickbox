@@ -19,7 +19,7 @@ private:
 	typedef QAbstractTableModel Super;
 public:
 	enum Cols {Severity, Category, Message, TimeStamp, File, Line, Function, UserData, Count};
-	class Row {
+	class QFCORE_DECL_EXPORT Row {
 	public:
 		explicit Row() {}
 		explicit Row(qf::core::Log::Level severity, const QString& domain, const QString& file, int line, const QString& msg, const QDateTime& time_stamp, const QString& function = QString(), const QVariant &user_data = QVariant());
