@@ -19,17 +19,26 @@
 #define QF_FIELD_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest; \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: void set##upper_letter##name_rest(const ptype &val) { m_##lower_letter##name_rest = val; }
+	public: bool set##upper_letter##name_rest(const ptype &val) { \
+		if(m_##lower_letter##name_rest != val) { m_##lower_letter##name_rest = val; return true; } \
+		return false; \
+	}
 
 #define QF_FIELD_IMPL2(ptype, lower_letter, upper_letter, name_rest, default_value) \
 	private: ptype m_##lower_letter##name_rest = default_value; \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: void set##upper_letter##name_rest(const ptype &val) { m_##lower_letter##name_rest = val; }
+	public: bool set##upper_letter##name_rest(const ptype &val) { \
+		if(m_##lower_letter##name_rest != val) { m_##lower_letter##name_rest = val; return true; } \
+		return false; \
+	}
 
 #define QF_FIELD_BOOL_IMPL2(lower_letter, upper_letter, name_rest, default_value) \
 	private: bool m_##lower_letter##name_rest = default_value; \
 	public: bool is##upper_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: void set##upper_letter##name_rest(bool val) { m_##lower_letter##name_rest = val; }
+	public: bool set##upper_letter##name_rest(bool val) { \
+		if(m_##lower_letter##name_rest != val) { m_##lower_letter##name_rest = val; return true; } \
+		return false; \
+	}
 
 #define QF_FIELD_BOOL_IMPL(lower_letter, upper_letter, name_rest) \
 	QF_FIELD_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
@@ -38,29 +47,33 @@
 	private: ptype m_##lower_letter##name_rest = default_value; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: Q_SLOT void set##upper_letter##name_rest(const ptype &val) { \
+	public: Q_SLOT bool set##upper_letter##name_rest(const ptype &val) { \
 		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
+			return true; \
 		} \
+		return false; \
 	}
 
 #define QF_PROPERTY_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: Q_SLOT void set##upper_letter##name_rest(const ptype &val) { \
+	public: Q_SLOT bool set##upper_letter##name_rest(const ptype &val) { \
 		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
+			return true; \
 		} \
+		return false; \
 	}
 
 #define QF_PROPERTY_OBJECT_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest = nullptr; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(ptype new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: Q_SLOT void set##upper_letter##name_rest(ptype val) { \
+	public: Q_SLOT bool set##upper_letter##name_rest(ptype val) { \
 		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			if(m_##lower_letter##name_rest != nullptr) \
@@ -70,18 +83,22 @@
 					m_##lower_letter##name_rest->setParent(this); */\
 				} \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
+			return true; \
 		}\
+		return false; \
 	}
 
 #define QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, default_value) \
 	private: bool m_##lower_letter##name_rest = default_value; \
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const bool &new_val); \
 	public: bool is##upper_letter##name_rest() const {return m_##lower_letter##name_rest;} \
-	public: Q_SLOT void set##upper_letter##name_rest(bool val) { \
+	public: Q_SLOT bool set##upper_letter##name_rest(bool val) { \
 		if(m_##lower_letter##name_rest != val) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
+			return true; \
 		}\
+		return false; \
 	}
 
 #define QF_PROPERTY_BOOL_IMPL(lower_letter, upper_letter, name_rest) \
