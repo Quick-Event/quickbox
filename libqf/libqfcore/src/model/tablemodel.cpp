@@ -531,6 +531,11 @@ bool TableModel::setDirty(int row_ix, const QString &col_name, bool d)
 	return setDirty(row_ix, col_ix, d);
 }
 
+qf::core::utils::TableRow &TableModel::tableRowRef(int row_no)
+{
+	return m_table.rowRef(row_no);
+}
+
 qf::core::utils::TableRow TableModel::tableRow(int row_no) const
 {
 	return m_table.row(row_no);
