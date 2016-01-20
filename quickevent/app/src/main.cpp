@@ -47,6 +47,8 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 	if(cli_opts.isAppBreak()) {
+		if(cli_opts.isHelp())
+			cli_opts.printHelp();
 		return EXIT_SUCCESS;
 	}
 	foreach(QString s, cli_opts.unusedArguments()) {
