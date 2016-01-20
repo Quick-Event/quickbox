@@ -100,6 +100,73 @@ void OrisImporter::chooseAndImport()
 		int ix = qf::qmlwidgets::dialogs::GetItemInputDialog::getItem(fwk, tr("Get item"), tr("Select event to import"), event_descriptions);
 		if(ix >= 0) {
 			qfInfo() << "importEvent:" << event_ids[ix] << event_descriptions[ix];
+			importEvent(event_ids[ix]);
+		}
+	});
+
+
+void OrisImporter::importEvent(int event_id)
+{
+	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=").arg(event_id));
+	getJsonToProcess(url, [](const QJsonDocument &jsd) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		try {
+			qf::core::sql::Transaction transaction;
+
+			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+			int stage_count = data.value(QStringLiteral("Stages")).toString().toInt();
+			if(!stage_count)
+				stage_count = 1;
+			qfInfo() << "pocet etap:" << stage_count;
+			//event_api.initEventConfig();
+			//var cfg = event_api.eventConfig;
+			var ecfg = {
+				stageCount: stage_count,
+				name: data.Name,
+				description: '',
+				date: data.Date,
+				place: data.Place,
+				mainReferee: data.MainReferee.FirstName + ' ' + data.MainReferee.LastName,
+				director: data.Director.FirstName + ' ' + data.Director.LastName,
+				importId: event_id
+			}
+			//cfg.setValue('event', ecfg);
+			if(!event_api.createEvent("", ecfg))
+				return;
+
+			var event_name = event_api.eventName;
+			//if(!event_api.openEvent(event_name))
+			//	return;
+
+			db.transaction();
+			var items_processed = 0;
+			var items_count = 0;
+			for(var class_obj in data.Classes) {
+				items_count++;
+			}
+			var cp = FrameWork.plugin("Classes");
+			var class_doc = cp.createClassDocument(root);
+			for(var class_obj in data.Classes) {
+				var class_id = parseInt(data.Classes[class_obj].ID);
+				var class_name = data.Classes[class_obj].Name;
+				FrameWork.showProgress("Importing class: " + class_name, items_processed++, items_count);
+				Log.info("adding class id:", class_id, "name:", class_name);
+				class_doc.loadForInsert();
+				class_doc.setValue("id", class_id);
+				class_doc.setValue("name", class_name);
+				class_doc.save();
+				//break;
+			}
+			db.commit();
+			class_doc.destroy();
+
+			importEventOrisRunners(event_id, stage_count)
+
+			transaction.commit();
+			fwk->hideProgress();
+		}
+		catch (qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 		}
 	});
 }
@@ -126,7 +193,7 @@ void OrisImporter::importRegistrations()
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
 				QJsonObject obj = it.value().toObject();
 				//Log.debug(JSON.stringify(obj, null, 2));
-				QString reg = obj.value(QStringLiteral("RegNo")).toString();
+ 				QString reg = obj.value(QStringLiteral("RegNo")).toString();
 				if(items_processed % 100 == 0) {
 					//Log.info(items_count, obj.RegNo);
 					fwk->showProgress(reg, items_processed, items_count);
@@ -159,6 +226,46 @@ void OrisImporter::importRegistrations()
 									  , Q_ARG(QVariant, QVariant())
 									  , Q_ARG(bool, true)
 									  );
+		}
+		catch (qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+		}
+	});
+}
+
+void OrisImporter::importClubs()
+{
+	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList");
+	getJsonToProcess(url, [](const QJsonDocument &jsd) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+		// import clubs
+		int items_processed = 0;
+		int items_count = 0;
+		for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
+			items_count++;
+		}
+		fwk->showProgress(tr("Importing clubs"), 1, items_count);
+		try {
+			qf::core::sql::Transaction transaction;
+			qf::core::sql::Query q;
+			q.exec("DELETE FROM clubs WHERE importId IS NOT NULL", qf::core::Exception::Throw);
+			q.prepare("INSERT INTO clubs (name, abbr, importId) VALUES (:name, :abbr, :importId)", qf::core::Exception::Throw);
+			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
+				QJsonObject obj = it.value().toObject();
+				//Log.debug(JSON.stringify(obj, null, 2));
+				QString abbr = obj.value(QStringLiteral("Abbr")).toString();
+				QString name = obj.value(QStringLiteral("Name")).toString();
+				fwk->showProgress(abbr + ' ' + name, items_processed, items_count);
+				q.bindValue(":abbr", abbr);
+				q.bindValue(":name", name);
+				q.bindValue(":importId", obj.value(QStringLiteral("ID")).toString().toInt());
+				q.exec(qf::core::Exception::Throw);
+
+				items_processed++;
+			}
+			transaction.commit();
+			fwk->hideProgress();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

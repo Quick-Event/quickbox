@@ -14,7 +14,9 @@ public:
 	explicit OrisImporter(QObject *parent = 0);
 
 	Q_INVOKABLE void chooseAndImport();
+	void importEvent(int event_id);
 	Q_INVOKABLE void importRegistrations();
+	Q_INVOKABLE void importClubs();
 private:
 	void getJsonToProcess(const QUrl &url, std::function<void (const QJsonDocument &data)> process_call_back);
 	qf::core::network::NetworkAccessManager *networkAccessManager();
