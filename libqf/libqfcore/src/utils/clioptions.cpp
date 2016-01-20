@@ -192,7 +192,7 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			break;
 		if(arg == QStringLiteral("--help") || arg == QStringLiteral("-h")) {
 			setHelp(true);
-			printHelp();
+			//printHelp();
 			m_isAppBreak = true;
 			return;
 		}
