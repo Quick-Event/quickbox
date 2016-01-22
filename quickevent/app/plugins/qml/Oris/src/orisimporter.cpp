@@ -1,5 +1,11 @@
 #include "orisimporter.h"
 
+#include <Event/eventplugin.h>
+#include <Classes/classesplugin.h>
+#include <Classes/classdocument.h>
+#include <Competitors/competitorsplugin.h>
+#include <Competitors/competitordocument.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -17,6 +23,30 @@
 #include <QNetworkReply>
 #include <QUrl>
 
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
+}
+/*
+static Event::EventPlugin* classesPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
+}
+
+static Competitors::CompetitorsPlugin* competitorsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
+	return plugin;
+}
+*/
 OrisImporter::OrisImporter(QObject *parent)
 	: QObject(parent)
 {
@@ -31,7 +61,7 @@ qf::core::network::NetworkAccessManager *OrisImporter::networkAccessManager()
 	return m_networkAccessManager;
 }
 
-void OrisImporter::getJsonToProcess(const QUrl &url, std::function<void (const QJsonDocument &)> process_call_back)
+void OrisImporter::getJsonAndProcess(const QUrl &url, std::function<void (const QJsonDocument &)> process_call_back)
 {
 	auto *manager = networkAccessManager();
 	qf::core::network::NetworkReply *reply = manager->get(url);
@@ -81,7 +111,7 @@ void OrisImporter::chooseAndImport()
 		qfInfo() << progress << "/" << total;
 	});
 	*/
-	getJsonToProcess(url, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, [this](const QJsonDocument &jsd) {
 		//qfWarning().noquote() << QString::fromUtf8(jsd.toJson());
 		QJsonObject jso = jsd.object().value(QStringLiteral("Data")).toObject();;
 		QStringList event_descriptions;
@@ -103,12 +133,18 @@ void OrisImporter::chooseAndImport()
 			importEvent(event_ids[ix]);
 		}
 	});
+}
 
+static QString jsonObjectToFullName(const QJsonObject &data, const QString &field_name)
+{
+	QJsonObject jso = data.value(field_name).toObject();
+	return jso.value(QStringLiteral("FirstName")).toString() + ' ' + jso.value(QStringLiteral("LastName")).toString();
+}
 
 void OrisImporter::importEvent(int event_id)
 {
-	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=").arg(event_id));
-	getJsonToProcess(url, [](const QJsonDocument &jsd) {
+	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=%1").arg(event_id));
+	getJsonAndProcess(url, [this, event_id](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			qf::core::sql::Transaction transaction;
@@ -120,48 +156,110 @@ void OrisImporter::importEvent(int event_id)
 			qfInfo() << "pocet etap:" << stage_count;
 			//event_api.initEventConfig();
 			//var cfg = event_api.eventConfig;
-			var ecfg = {
-				stageCount: stage_count,
-				name: data.Name,
-				description: '',
-				date: data.Date,
-				place: data.Place,
-				mainReferee: data.MainReferee.FirstName + ' ' + data.MainReferee.LastName,
-				director: data.Director.FirstName + ' ' + data.Director.LastName,
-				importId: event_id
-			}
-			//cfg.setValue('event', ecfg);
-			if(!event_api.createEvent("", ecfg))
+			QVariantMap ecfg;
+			ecfg["stageCount"] = stage_count;
+			ecfg["name"] = data.value(QStringLiteral("Name")).toString();
+			ecfg["description"] = QString();
+			ecfg["date"] = QDate::fromString(data.value(QStringLiteral("Date")).toString(), Qt::ISODate);
+			ecfg["place"] = data.value(QStringLiteral("Place")).toString();
+			ecfg["mainReferee"] = jsonObjectToFullName(data, QStringLiteral("MainReferee"));
+			ecfg["director"] = jsonObjectToFullName(data, QStringLiteral("Director"));
+			ecfg["importId"] = event_id;
+			if(!eventPlugin()->createEvent(QString(), ecfg))
 				return;
+			//QString event_name = eventPlugin()->eventName();
 
-			var event_name = event_api.eventName;
-			//if(!event_api.openEvent(event_name))
-			//	return;
-
-			db.transaction();
-			var items_processed = 0;
-			var items_count = 0;
-			for(var class_obj in data.Classes) {
+			int items_processed = 0;
+			int items_count = 0;
+			QJsonObject classes_o = data.value(QStringLiteral("Classes")).toObject();
+			for(auto it = classes_o.constBegin(); it != classes_o.constEnd(); ++it) {
 				items_count++;
 			}
-			var cp = FrameWork.plugin("Classes");
-			var class_doc = cp.createClassDocument(root);
-			for(var class_obj in data.Classes) {
-				var class_id = parseInt(data.Classes[class_obj].ID);
-				var class_name = data.Classes[class_obj].Name;
-				FrameWork.showProgress("Importing class: " + class_name, items_processed++, items_count);
-				Log.info("adding class id:", class_id, "name:", class_name);
-				class_doc.loadForInsert();
-				class_doc.setValue("id", class_id);
-				class_doc.setValue("name", class_name);
-				class_doc.save();
-				//break;
+			Classes::ClassDocument doc;
+			for(auto it = classes_o.constBegin(); it != classes_o.constEnd(); ++it) {
+				QJsonObject class_o = it.value().toObject();
+				int class_id = class_o.value(QStringLiteral("ID")).toString().toInt();
+				QString class_name = class_o.value(QStringLiteral("Name")).toString();
+				fwk->showProgress("Importing class: " + class_name, items_processed++, items_count);
+				qfInfo() << "adding class id:" << class_id << "name:" << class_name;
+				doc.loadForInsert();
+				doc.setValue("id", class_id);
+				doc.setValue("name", class_name);
+				doc.save();
 			}
-			db.commit();
-			class_doc.destroy();
+			transaction.commit();
+			fwk->hideProgress();
+		}
+		catch (qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+		}
+		importEventOrisRunners(event_id);
+	});
+}
 
-			importEventOrisRunners(event_id, stage_count)
-
+void OrisImporter::importEventOrisRunners(int event_id)
+{
+	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
+	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		try {
+			qf::core::sql::Transaction transaction;
+			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+			int items_processed = 0;
+			int items_count = 0;
+			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
+				items_count++;
+			}
+			QSet<int> siids_imported;
+			Competitors::CompetitorDocument doc;
+			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
+				QJsonObject competitor_o = it.value().toObject();
+				doc.loadForInsert();
+				QString siid_str = competitor_o.value(QStringLiteral("SI")).toString();
+				bool ok;
+				int siid = siid_str.toInt(&ok);
+				//qfInfo() << "SI:" << siid, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
+				QString note = competitor_o.value(QStringLiteral("Note")).toString();
+				if(!ok) {
+					note += " SI:" + siid_str;
+				}
+				bool siid_duplicit = false;
+				if(siid > 0) {
+					// check duplicit SI
+					siid_duplicit = siids_imported.contains(siid);
+					if(!siid_duplicit)
+						siids_imported << siid;
+				}
+				QString requested_start = competitor_o.value(QStringLiteral("RequestedStart")).toString();
+				if(!requested_start.isEmpty()) {
+					note += " req. start: " + requested_start;
+				}
+				QString first_name = competitor_o.value(QStringLiteral("FirstName")).toString();
+				QString last_name = competitor_o.value(QStringLiteral("LastName")).toString();
+				if(first_name.isEmpty() && last_name.isEmpty()) {
+					QString name = competitor_o.value(QStringLiteral("Name")).toString();
+					if(!name.isEmpty()) {
+						last_name = name.section(' ', 0, 0);
+						first_name = name.section(' ', 1);
+					}
+				}
+				QString reg_no = competitor_o.value(QStringLiteral("RegNo")).toString();
+				fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
+				if(siid_duplicit)
+					qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
+				doc.loadForInsert();
+				doc.setValue("classId", competitor_o.value(QStringLiteral("ClassID")).toString().toInt());
+				doc.setValue("siId", siid);
+				doc.setValue("firstName", first_name);
+				doc.setValue("lastName", last_name);
+				doc.setValue("registration", reg_no);
+				doc.setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
+				doc.setValue("note", note);
+				doc.setValue("importId", competitor_o.value(QStringLiteral("ID")).toString().toInt());
+				doc.setSaveSiidToRuns(!siid_duplicit);
+				doc.save();
+				items_processed++;
+			}
 			transaction.commit();
 			fwk->hideProgress();
 		}
@@ -175,7 +273,7 @@ void OrisImporter::importRegistrations()
 {
 	int year = QDate::currentDate().year();
 	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=1&year=%1").arg(year));
-	getJsonToProcess(url, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 		// import clubs
@@ -236,7 +334,7 @@ void OrisImporter::importRegistrations()
 void OrisImporter::importClubs()
 {
 	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList");
-	getJsonToProcess(url, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 		// import clubs

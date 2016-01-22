@@ -8,6 +8,8 @@ QT += widgets sql xml
 
 CONFIG += c++11 hide_symbols
 
+DEFINES += CLASSESPLUGIN_BUILD_DLL
+
 INCLUDEPATH += $$PWD/../../../../lib/include
 LIBS += -lquickevent
 

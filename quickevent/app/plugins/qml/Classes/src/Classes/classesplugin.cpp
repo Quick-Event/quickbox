@@ -1,8 +1,8 @@
 #include "classesplugin.h"
-#include "thispartwidget.h"
+#include "../thispartwidget.h"
 #include "classdocument.h"
 
-#include "coursedef.h"
+#include "../coursedef.h"
 
 //#include <EventPlugin/eventplugin.h>
 

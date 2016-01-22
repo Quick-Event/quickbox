@@ -22,17 +22,6 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	setQueryBuilder(qb);
 }
 
-QString CompetitorDocument::safeSave(bool save_siid_to_runs)
-{
-	try {
-		m_saveSiidToRuns = save_siid_to_runs;
-		save();
-	} catch (qf::core::Exception &e) {
-		return e.message();
-	}
-	return QString();
-}
-
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -112,5 +101,15 @@ bool CompetitorDocument::dropData()
 		ret = Super::dropData();
 	}
 	return ret;
+}
+
+bool CompetitorDocument::isSaveSiidToRuns() const
+{
+	return m_saveSiidToRuns;
+}
+
+void CompetitorDocument::setSaveSiidToRuns(bool save_siid_to_runs)
+{
+	m_saveSiidToRuns = save_siid_to_runs;
 }
 

@@ -8,6 +8,17 @@ QT += widgets sql network
 
 CONFIG += c++11 hide_symbols
 
+INCLUDEPATH += \
+    $$PWD/../Event/include \
+    $$PWD/../Classes/include \
+    $$PWD/../Competitors/include \
+
+LIBS += \
+    -L$$DESTDIR \
+    -lEventplugin \
+    -lClassesplugin \
+    -lCompetitorsplugin \
+
 include (src/src.pri)
 
 #RESOURCES += \
