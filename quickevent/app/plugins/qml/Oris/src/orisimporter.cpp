@@ -7,20 +7,26 @@
 #include <Competitors/competitordocument.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/plugin.h>
+#include <qf/qmlwidgets/dialogbuttonbox.h>
+#include <qf/qmlwidgets/htmlviewwidget.h>
 
 #include <qf/core/network/networkaccessmanager.h>
 #include <qf/core/network/networkreply.h>
 #include <qf/core/log.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/utils/htmlutils.h>
 
 #include <QDate>
+#include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
+#include <QPushButton>
 #include <QUrl>
 
 static Event::EventPlugin* eventPlugin()
@@ -91,7 +97,7 @@ void OrisImporter::chooseAndImport()
 	qfLogFuncFrame();
 	QDate d = QDate::currentDate();
 	d = d.addMonths(-1);
-	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&sport=1&datefrom=" + d.toString(Qt::ISODate));
+	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&datefrom=" + d.toString(Qt::ISODate));
 	/*
 	qfInfo() << url;
 	// manager cannot be an automatic value, it destroys all replies when destructed
@@ -114,23 +120,31 @@ void OrisImporter::chooseAndImport()
 	getJsonAndProcess(url, [this](const QJsonDocument &jsd) {
 		//qfWarning().noquote() << QString::fromUtf8(jsd.toJson());
 		QJsonObject jso = jsd.object().value(QStringLiteral("Data")).toObject();;
-		QStringList event_descriptions;
-		QList<int> event_ids;
+		QMap<QString, int> events; // descr->id
 		for(auto it = jso.constBegin(); it != jso.constEnd(); ++it) {
 			QJsonObject event = it.value().toObject();
 			//Log.info(event.Name)
-			event_ids << event.value(QStringLiteral("ID")).toString().toInt();
+			int id = event.value(QStringLiteral("ID")).toString().toInt();
 			QJsonObject org1 = event.value(QStringLiteral("Org1")).toObject();
+			QJsonObject sport = event.value(QStringLiteral("Sport")).toObject();
+			int sport_id = sport.value(QStringLiteral("ID")).toString().toInt();
+			QString sport_abbr = (sport_id == 1)? tr("OB"): (sport_id == 2)? tr("LOB"): (sport_id == 3)? tr("MTBO"): tr("???");
 			QString event_description = event.value(QStringLiteral("Date")).toString()
+										+ " " + sport_abbr
 										+ " " + org1.value(QStringLiteral("Abbr")).toString()
 										+ " " + event.value(QStringLiteral("Name")).toString();
-			event_descriptions << event_description;
+			//qfInfo() << event_description;
+			events[event_description] = id;
 		}
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		int ix = qf::qmlwidgets::dialogs::GetItemInputDialog::getItem(fwk, tr("Get item"), tr("Select event to import"), event_descriptions);
+		QStringList descriptions = events.keys();
+		int ix = qf::qmlwidgets::dialogs::GetItemInputDialog::getItem(fwk, tr("Get item"), tr("Select event to import"), descriptions);
 		if(ix >= 0) {
-			qfInfo() << "importEvent:" << event_ids[ix] << event_descriptions[ix];
-			importEvent(event_ids[ix]);
+			QString descr = descriptions.value(ix);
+			int event_id = events.value(descr);
+			qfInfo() << "importEvent:" << event_id << descr;
+			QF_ASSERT(event_id > 0, "Invalid event ID", return);
+			importEvent(event_id);
 		}
 	});
 }
@@ -147,8 +161,6 @@ void OrisImporter::importEvent(int event_id)
 	getJsonAndProcess(url, [this, event_id](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
-			qf::core::sql::Transaction transaction;
-
 			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 			int stage_count = data.value(QStringLiteral("Stages")).toString().toInt();
 			if(!stage_count)
@@ -168,6 +180,7 @@ void OrisImporter::importEvent(int event_id)
 			if(!eventPlugin()->createEvent(QString(), ecfg))
 				return;
 			//QString event_name = eventPlugin()->eventName();
+			qf::core::sql::Transaction transaction;
 
 			int items_processed = 0;
 			int items_count = 0;
@@ -197,24 +210,55 @@ void OrisImporter::importEvent(int event_id)
 	});
 }
 
+static QVariantList create_html_table(const QString &title, const QStringList &flds, const QVariantList &rows)
+{
+	QVariantList div = QVariantList() << QStringLiteral("div");
+	div.insert(div.length(), QVariantList() << QStringLiteral("h2") << title);
+	QVariantList table = QVariantList() << QStringLiteral("table");
+	QVariantList header = QVariantList() << QStringLiteral("tr");
+	for(auto fld : flds)
+		header.insert(header.length(), QVariantList() << QStringLiteral("th") << fld);
+	table.insert(table.length(), header);
+	table << rows;
+	div.insert(div.length(), table);
+	return div;
+}
+
 void OrisImporter::importEventOrisRunners(int event_id)
 {
 	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
-			qf::core::sql::Transaction transaction;
+			QMap<int, int> imported_competitors; // importId->id
+			qf::core::sql::Query q;
+			q.exec("SELECT id, importId FROM competitors WHERE importId>0 ORDER BY importId", qf::core::Exception::Throw);
+			while(q.next()) {
+				imported_competitors[q.value(1).toInt()] = q.value(0).toInt();
+			}
 			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 			int items_processed = 0;
 			int items_count = 0;
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
 				items_count++;
 			}
-			QSet<int> siids_imported;
-			Competitors::CompetitorDocument doc;
+			QList<Competitors::CompetitorDocument*> doc_lst;
+			doc_lst.reserve(items_count);
+			//QSet<int> siids_imported;
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
 				QJsonObject competitor_o = it.value().toObject();
-				doc.loadForInsert();
+				Competitors::CompetitorDocument *doc = new Competitors::CompetitorDocument();
+				doc_lst << doc;
+				doc->setSaveSiidToRuns(false);
+				int import_id = competitor_o.value(QStringLiteral("ID")).toString().toInt();
+				int id = imported_competitors.value(import_id);
+				if(id > 0) {
+					doc->load(id);
+					imported_competitors.remove(import_id);
+				}
+				else {
+					doc->loadForInsert();
+				}
 				QString siid_str = competitor_o.value(QStringLiteral("SI")).toString();
 				bool ok;
 				int siid = siid_str.toInt(&ok);
@@ -223,6 +267,7 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				if(!ok) {
 					note += " SI:" + siid_str;
 				}
+				/*
 				bool siid_duplicit = false;
 				if(siid > 0) {
 					// check duplicit SI
@@ -230,6 +275,7 @@ void OrisImporter::importEventOrisRunners(int event_id)
 					if(!siid_duplicit)
 						siids_imported << siid;
 				}
+				*/
 				QString requested_start = competitor_o.value(QStringLiteral("RequestedStart")).toString();
 				if(!requested_start.isEmpty()) {
 					note += " req. start: " + requested_start;
@@ -245,23 +291,114 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				}
 				QString reg_no = competitor_o.value(QStringLiteral("RegNo")).toString();
 				fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
-				if(siid_duplicit)
-					qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
-				doc.loadForInsert();
-				doc.setValue("classId", competitor_o.value(QStringLiteral("ClassID")).toString().toInt());
-				doc.setValue("siId", siid);
-				doc.setValue("firstName", first_name);
-				doc.setValue("lastName", last_name);
-				doc.setValue("registration", reg_no);
-				doc.setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
-				doc.setValue("note", note);
-				doc.setValue("importId", competitor_o.value(QStringLiteral("ID")).toString().toInt());
-				doc.setSaveSiidToRuns(!siid_duplicit);
-				doc.save();
+				//if(siid_duplicit)
+				//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
+				//doc.loadForInsert();
+				doc->setValue("classId", competitor_o.value(QStringLiteral("ClassID")).toString().toInt());
+				doc->setValue("siId", siid);
+				doc->setValue("firstName", first_name);
+				doc->setValue("lastName", last_name);
+				doc->setValue("registration", reg_no);
+				doc->setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
+				doc->setValue("note", note);
+				doc->setValue("importId", import_id);
+				//doc.save();
 				items_processed++;
 			}
-			transaction.commit();
+			for(int id : imported_competitors.values()) {
+				Competitors::CompetitorDocument *doc = new Competitors::CompetitorDocument();
+				doc_lst << doc;
+				doc->load(id, doc->ModeDelete);
+			}
+			static const QStringList fields = QStringList()
+											  << QStringLiteral("className")
+											  << QStringLiteral("lastName")
+											  << QStringLiteral("firstName")
+											  << QStringLiteral("registration")
+											  << QStringLiteral("siId")
+											  << QStringLiteral("licence")
+											  << QStringLiteral("note")
+											  << QStringLiteral("importId");
+			QVariantList new_entries_rows;
+			QVariantList edited_entries_rows;
+			QVariantList deleted_entries_rows;
+			for(Competitors::CompetitorDocument *doc : doc_lst) {
+				QVariantList tr = QVariantList() << QStringLiteral("tr");
+				if(doc->mode() == doc->ModeInsert) {
+					for(QString fldn : fields) {
+						auto td = QVariantList() << QStringLiteral("td") << doc->value(fldn).toString();
+						tr.insert(tr.length(), td);
+					}
+					new_entries_rows.insert(new_entries_rows.length(), tr);
+				}
+				else if(doc->mode() == doc->ModeEdit) {
+					if(doc->isDirty()) {
+						for(QString fldn : fields) {
+							static QVariantMap green_attrs;
+							if(green_attrs.isEmpty())
+								green_attrs["bgcolor"] = QStringLiteral("green");
+							auto td = QVariantList() << QStringLiteral("td");
+							if(doc->isDirty(fldn))
+								td << green_attrs;
+							td << doc->value(fldn).toString();
+							tr.insert(tr.length(), td);
+						}
+						edited_entries_rows.insert(edited_entries_rows.length(), tr);
+					}
+				}
+				else if(doc->mode() == doc->ModeDelete) {
+					for(QString fldn : fields) {
+						auto td = QVariantList() << QStringLiteral("td") << doc->value(fldn).toString();
+						tr.insert(tr.length(), td);
+					}
+					deleted_entries_rows.insert(new_entries_rows.length(), tr);
+				}
+			}
+			QVariantList html_body = QVariantList() << QStringLiteral("body");
+			html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
+			html_body.insert(html_body.length(), create_html_table(tr("New entries"), fields, new_entries_rows));
+			html_body.insert(html_body.length(), create_html_table(tr("Edited entries"), fields, edited_entries_rows));
+			html_body.insert(html_body.length(), create_html_table(tr("Deleted entries"), fields, deleted_entries_rows));
 			fwk->hideProgress();
+			qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+			opts.setDocumentTitle(tr("Oris import report"));
+			QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
+			if(false) {
+				QFile f("/tmp/1.html");
+				if(f.open(QFile::WriteOnly)) {
+					f.write(html.toUtf8());
+				}
+			}
+			qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
+			qf::qmlwidgets::DialogButtonBox *bbx = dlg.buttonBox();
+			QPushButton *bt_no_drops = new QPushButton(tr("Save without drops"));
+			bool no_drops = false;
+			connect(bt_no_drops, &QPushButton::clicked, [&no_drops]() {
+				no_drops = true;
+			});
+			bbx->addButton(bt_no_drops, QDialogButtonBox::AcceptRole);
+			auto *w = new qf::qmlwidgets::HtmlViewWidget();
+			dlg.setCentralWidget(w);
+			w->setHtmlText(html);
+			if(dlg.exec()) {
+				qf::core::sql::Transaction transaction;
+				for(Competitors::CompetitorDocument *doc : doc_lst) {
+					if(doc->mode() == doc->ModeInsert) {
+						doc->save();
+					}
+					else if(doc->mode() == doc->ModeEdit) {
+						if(doc->isDirty()) {
+							doc->save();
+						}
+					}
+					else if(doc->mode() == doc->ModeDelete) {
+						if(!no_drops)
+							doc->drop();
+					}
+				}
+				transaction.commit();
+			}
+			qDeleteAll(doc_lst);
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

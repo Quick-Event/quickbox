@@ -55,6 +55,7 @@ public:
 	Q_INVOKABLE virtual bool isEmpty() const;
 	Q_INVOKABLE QStringList fieldNames() const;
 	Q_INVOKABLE virtual bool isValidFieldName(const QString &data_id) const;
+	Q_INVOKABLE virtual bool isDirty() const;
 	Q_INVOKABLE virtual bool isDirty(const QString &data_id) const;
 	Q_INVOKABLE virtual QVariant value(const QString &data_id) const;
 	Q_INVOKABLE QVariant value(const QString &data_id, const QVariant &default_value) const

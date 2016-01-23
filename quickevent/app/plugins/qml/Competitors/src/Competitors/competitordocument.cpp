@@ -17,7 +17,9 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("competitors", "*")
 			.select("lastName || ' ' || firstName AS name")
+			.select2("classes", "name AS className")
 			.from("competitors")
+			.join("competitors.classId", "classes.id")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
 }
@@ -32,7 +34,6 @@ static Event::EventPlugin* eventPlugin()
 bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
-	qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
 	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
@@ -80,7 +81,6 @@ bool CompetitorDocument::saveData()
 				}
 			}
 		}
-		transaction.commit();
 	}
 	return ret;
 }
