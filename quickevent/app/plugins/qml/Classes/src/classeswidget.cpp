@@ -1,7 +1,7 @@
 #include "classeswidget.h"
 #include "ui_classeswidget.h"
 
-#include "classesplugin.h"
+#include "Classes/classesplugin.h"
 #include "editcodeswidget.h"
 #include "editcourseswidget.h"
 

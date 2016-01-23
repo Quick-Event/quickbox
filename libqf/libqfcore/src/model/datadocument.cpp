@@ -158,6 +158,17 @@ bool DataDocument::isValidFieldName(const QString &data_id) const
 	return m->columnIndex(data_id) >= 0;
 }
 
+bool DataDocument::isDirty() const
+{
+	const TableModel *m = model();
+	int r = currentModelRow();
+	for (int i = 0; i < m->columnCount(); ++i) {
+		if(m->isDirty(r, i))
+			return true;
+	}
+	return false;
+}
+
 bool DataDocument::isDirty(const QString &data_id) const
 {
 	bool ret = false;

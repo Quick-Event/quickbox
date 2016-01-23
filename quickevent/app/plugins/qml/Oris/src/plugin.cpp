@@ -1,4 +1,5 @@
-#include "Classes/classesplugin.h"
+#include "oris.h"
+#include "orisimporter.h"
 
 #include <qf/core/log.h>
 
@@ -13,10 +14,10 @@ public:
 	void registerTypes(const char *uri)
 	{
 		qfLogFuncFrame() << uri;
-		Q_ASSERT(uri == QLatin1String("Classes"));
+		Q_ASSERT(uri == QLatin1String("Oris"));
 
-		//qmlRegisterSingletonType<qf::core::qml::QmlLogSingleton>(uri, 1, 0, "Log_helper", &qf::core::qml::QmlLogSingleton::singletontype_provider);
-		qmlRegisterType<Classes::ClassesPlugin>(uri, 1, 0, "ClassesPlugin");
+		qmlRegisterType<Oris>(uri, 1, 0, "Oris");
+		qmlRegisterType<OrisImporter>(uri, 1, 0, "OrisImporter");
 	}
 };
 

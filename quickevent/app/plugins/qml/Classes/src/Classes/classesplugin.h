@@ -1,5 +1,7 @@
-#ifndef CLASSESPLUGIN_H
-#define CLASSESPLUGIN_H
+#ifndef CLASSES_CLASSESPLUGIN_H
+#define CLASSES_CLASSESPLUGIN_H
+
+#include "../classespluginglobal.h"
 
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -16,7 +18,7 @@ class PartWidget;
 
 namespace Classes {
 
-class ClassesPlugin : public qf::qmlwidgets::framework::Plugin
+class CLASSESPLUGIN_DECL_EXPORT ClassesPlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PartWidget* partWidget READ partWidget FINAL)

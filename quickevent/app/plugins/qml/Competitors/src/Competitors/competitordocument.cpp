@@ -17,20 +17,11 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("competitors", "*")
 			.select("lastName || ' ' || firstName AS name")
+			.select2("classes", "name AS className")
 			.from("competitors")
+			.join("competitors.classId", "classes.id")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
-}
-
-QString CompetitorDocument::safeSave(bool save_siid_to_runs)
-{
-	try {
-		m_saveSiidToRuns = save_siid_to_runs;
-		save();
-	} catch (qf::core::Exception &e) {
-		return e.message();
-	}
-	return QString();
 }
 
 static Event::EventPlugin* eventPlugin()
@@ -43,7 +34,6 @@ static Event::EventPlugin* eventPlugin()
 bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
-	qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
 	bool si_dirty = isDirty("competitors.siId");
 	bool ret = Super::saveData();
@@ -91,7 +81,6 @@ bool CompetitorDocument::saveData()
 				}
 			}
 		}
-		transaction.commit();
 	}
 	return ret;
 }
@@ -112,5 +101,15 @@ bool CompetitorDocument::dropData()
 		ret = Super::dropData();
 	}
 	return ret;
+}
+
+bool CompetitorDocument::isSaveSiidToRuns() const
+{
+	return m_saveSiidToRuns;
+}
+
+void CompetitorDocument::setSaveSiidToRuns(bool save_siid_to_runs)
+{
+	m_saveSiidToRuns = save_siid_to_runs;
 }
 

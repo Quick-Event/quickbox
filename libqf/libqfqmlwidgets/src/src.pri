@@ -35,7 +35,8 @@ HEADERS += \
     $$PWD/actiongroup.h \
     $$PWD/checkbox.h \
     $$PWD/exporttableviewwidget.h \
-    $$PWD/exportcsvtableviewwidget.h
+    $$PWD/exportcsvtableviewwidget.h \
+    $$PWD/htmlviewwidget.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -71,12 +72,14 @@ SOURCES += \
     $$PWD/actiongroup.cpp \
     $$PWD/checkbox.cpp \
     $$PWD/exporttableviewwidget.cpp \
-    $$PWD/exportcsvtableviewwidget.cpp
+    $$PWD/exportcsvtableviewwidget.cpp \
+    $$PWD/htmlviewwidget.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \
     $$PWD/texteditwidget.ui \
-    $$PWD/exporttableviewwidget.ui
+    $$PWD/exporttableviewwidget.ui \
+    $$PWD/htmlviewwidget.ui
 
 include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)

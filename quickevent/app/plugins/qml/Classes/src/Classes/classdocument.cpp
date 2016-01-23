@@ -7,6 +7,8 @@
 
 #include <qf/core/sql/querybuilder.h>
 
+namespace Classes {
+
 ClassDocument::ClassDocument(QObject *parent)
 	: Super(parent)
 {
@@ -72,3 +74,4 @@ bool ClassDocument::dropData()
 	return ret;
 }
 
+}

@@ -147,7 +147,7 @@ Schema {
 				Field { name: 'siId'; type: Int { } },
 				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
-				Field { name: 'importId'; type: String {} }
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },

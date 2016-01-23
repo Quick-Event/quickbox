@@ -30,6 +30,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 		return 1;
 	}
 	if(cli_opts.isAppBreak()) {
+		if(cli_opts.isHelp())
+			cli_opts.printHelp();
 		return 0;
 	}
 	foreach(QString s, cli_opts.unusedArguments()) {

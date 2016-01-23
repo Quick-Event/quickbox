@@ -38,29 +38,6 @@ EventPlugin {
 	}
 
 
-	property list<Action> actions: [
-		Action {
-			id: actCreateEvent
-			text: qsTr('Create &new event')
-			shortcut: "Ctrl+N"
-			enabled: internals.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				Log.info(text, "triggered");
-				event.createEvent();
-			}
-		},
-		Action {
-			id: actOpenEvent
-			text: qsTr('&Open event')
-			shortcut: "Ctrl+O"
-			enabled: internals.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				Log.info(text, "triggered");
-				event.openEvent();
-			}
-		}
-	]
-
 	onInstalled:
 	{
 		var quit = FrameWork.menuBar.actionForPath('file/quit');

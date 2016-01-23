@@ -13,8 +13,8 @@
 #include "model/sqltablemodel.h"
 #include "model/tablemodelcolumn.h"
 
-#include "network/networkaccessmanager.h"
-#include "network/networkreply.h"
+#include <qf/core/network/networkaccessmanager.h>
+#include <qf/core/network/networkreply.h>
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/model/datadocument.h>
@@ -52,8 +52,8 @@ public:
 		qmlRegisterType<qf::core::model::DataDocument>(uri, 1, 0, "DataDocument");
 		qmlRegisterType<qf::core::qml::SqlDataDocument>(uri, 1, 0, "SqlDataDocument");
 
-		qmlRegisterType<qf::core::qml::NetworkAccessManager>(uri, 1, 0, "NetworkAccessManager");
-		qmlRegisterType<qf::core::qml::NetworkReply>(uri, 1, 0, "NetworkReply");
+		qmlRegisterType<qf::core::network::NetworkAccessManager>(uri, 1, 0, "NetworkAccessManager");
+		qmlRegisterType<qf::core::network::NetworkReply>(uri, 1, 0, "NetworkReply");
     }
 };
 

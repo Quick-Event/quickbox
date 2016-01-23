@@ -1,18 +1,19 @@
 #ifndef QF_CORE_NETWORK_NETWORKACCESSMANAGER_H
 #define QF_CORE_NETWORK_NETWORKACCESSMANAGER_H
 
+#include "../core/coreglobal.h"
+
 #include <QNetworkAccessManager>
-//#include <QNetworkReply>
 
 class QUrl;
 
 namespace qf {
 namespace core {
-namespace qml {
+namespace network {
 
 class NetworkReply;
 
-class NetworkAccessManager : public QNetworkAccessManager
+class QFCORE_DECL_EXPORT NetworkAccessManager : public QNetworkAccessManager
 {
 	Q_OBJECT
 private:
@@ -21,7 +22,7 @@ public:
 	explicit NetworkAccessManager(QObject *parent = 0);
 	~NetworkAccessManager() Q_DECL_OVERRIDE;
 public:
-	Q_SLOT qf::core::qml::NetworkReply* get(const QUrl &url);
+	Q_SLOT qf::core::network::NetworkReply* get(const QUrl &url);
 private:
 };
 

@@ -13,4 +13,3 @@ SOURCES += \
 
 include ($$PWD/sql/sql.pri)
 include ($$PWD/model/model.pri)
-include ($$PWD/network/network.pri)
