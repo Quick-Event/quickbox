@@ -1,4 +1,4 @@
-#include "classesplugin.h"
+#include "Classes/classesplugin.h"
 
 #include <qf/core/log.h>
 
