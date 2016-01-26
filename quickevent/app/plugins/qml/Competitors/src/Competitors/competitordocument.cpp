@@ -17,9 +17,9 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("competitors", "*")
 			.select("lastName || ' ' || firstName AS name")
-			.select2("classes", "name AS className")
+			//.select2("classes", "name AS className")
 			.from("competitors")
-			.join("competitors.classId", "classes.id")
+			//.join("competitors.classId", "classes.id")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
 }
@@ -35,7 +35,8 @@ bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
 	RecordEditMode old_mode = mode();
-	bool si_dirty = isDirty("competitors.siId");
+	bool siid_dirty = isDirty("competitors.siId");
+	int old_siid = value("competitors.siId").toInt();
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
 	if(ret) {
@@ -44,15 +45,6 @@ bool CompetitorDocument::saveData()
 			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
 			int si_id = value("competitors.siId").toInt();
-			/*
-			if(si_id > 0 && m_savedSI.contains(si_id)) {
-				qfError() << "SI:" << si_id << "saved already!!!";
-				si_id = 0;
-			}
-			else {
-				m_savedSI[si_id];
-			}
-			*/
 			auto *event_plugin = eventPlugin();
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 
@@ -68,10 +60,10 @@ bool CompetitorDocument::saveData()
 			}
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
-			if(si_dirty) {
+			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
 				int si_id = value("competitors.siId").toInt();
-				if(si_id > 0) {
+				if(si_id > 0 && m_saveSiidToRuns) {
 					int competitor_id = dataId().toInt();
 					qf::core::sql::Query q(model()->connectionName());
 					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);

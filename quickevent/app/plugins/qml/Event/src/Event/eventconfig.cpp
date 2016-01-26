@@ -165,6 +165,11 @@ int EventConfig::currentStageId() const
 	return ret;
 }
 
+int EventConfig::importId() const
+{
+	return value(QStringLiteral("event.importId")).toInt();
+}
+
 int EventConfig::handicapLength() const
 {
 	return value(QStringLiteral("event.handicapLength")).toInt();

@@ -19,6 +19,7 @@
 #include <qf/core/log.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/utils/fileutils.h>
 #include <qf/core/utils/htmlutils.h>
 
 #include <QDate>
@@ -53,6 +54,29 @@ static Competitors::CompetitorsPlugin* competitorsPlugin()
 	return plugin;
 }
 */
+
+static void save_json(const QString &fn, const QJsonDocument &jsd)
+{
+	QString dir = qf::core::utils::FileUtils::osTempDir() + '/' + "quickevent";
+	qf::core::utils::FileUtils::ensurePath(dir);
+	QFile f(dir + '/' + fn + ".json");
+	if(f.open(QFile::WriteOnly)) {
+		QByteArray ba = jsd.toJson();
+		f.write(ba);
+	}
+}
+
+static QJsonDocument load_json(const QString &fn)
+{
+	QJsonDocument ret;
+	QString dir = qf::core::utils::FileUtils::osTempDir() + '/' + "quickevent";
+	QFile f(dir + '/' + fn + ".load.json");
+	if(f.open(QFile::ReadOnly)) {
+		ret = QJsonDocument::fromJson(f.readAll());
+	}
+	return ret;
+}
+
 OrisImporter::OrisImporter(QObject *parent)
 	: QObject(parent)
 {
@@ -92,6 +116,18 @@ void OrisImporter::getJsonAndProcess(const QUrl &url, std::function<void (const 
 	});
 }
 
+void OrisImporter::syncCurrentEventEntries()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	//if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(fwk, tr("All runners entries imported from Oris will be synchronized, manual changes will be lost!")))
+	int oris_id = eventPlugin()->eventConfig()->importId();
+	if(oris_id == 0) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot find Oris import ID."));
+		return;
+	}
+	importEventOrisEntries(oris_id);
+}
+
 void OrisImporter::chooseAndImport()
 {
 	qfLogFuncFrame();
@@ -119,6 +155,7 @@ void OrisImporter::chooseAndImport()
 	*/
 	getJsonAndProcess(url, [this](const QJsonDocument &jsd) {
 		//qfWarning().noquote() << QString::fromUtf8(jsd.toJson());
+		save_json("EventList", jsd);
 		QJsonObject jso = jsd.object().value(QStringLiteral("Data")).toObject();;
 		QMap<QString, int> events; // descr->id
 		for(auto it = jso.constBegin(); it != jso.constEnd(); ++it) {
@@ -161,6 +198,7 @@ void OrisImporter::importEvent(int event_id)
 	getJsonAndProcess(url, [this, event_id](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
+			save_json("Event", jsd);
 			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 			int stage_count = data.value(QStringLiteral("Stages")).toString().toInt();
 			if(!stage_count)
@@ -206,7 +244,7 @@ void OrisImporter::importEvent(int event_id)
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 		}
-		importEventOrisRunners(event_id);
+		importEventOrisEntries(event_id);
 	});
 }
 
@@ -224,19 +262,29 @@ static QVariantList create_html_table(const QString &title, const QStringList &f
 	return div;
 }
 
-void OrisImporter::importEventOrisRunners(int event_id)
+void OrisImporter::importEventOrisEntries(int event_id)
 {
 	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+		static const QString json_fn = "EventEntries";
+		save_json(json_fn, jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
-			QMap<int, int> imported_competitors; // importId->id
 			qf::core::sql::Query q;
+			QMap<int, QString> classes_map; // classes.id->classes.name
+			q.exec("SELECT id, name FROM classes", qf::core::Exception::Throw);
+			while(q.next()) {
+				classes_map[q.value(0).toInt()] = q.value(1).toString();
+			}
+			QMap<int, int> imported_competitors; // importId->id
 			q.exec("SELECT id, importId FROM competitors WHERE importId>0 ORDER BY importId", qf::core::Exception::Throw);
 			while(q.next()) {
 				imported_competitors[q.value(1).toInt()] = q.value(0).toInt();
 			}
-			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+			QJsonDocument jsd2 = load_json(json_fn);
+			if(jsd2.isNull())
+				jsd2 = jsd;
+			QJsonObject data = jsd2.object().value(QStringLiteral("Data")).toObject();;
 			int items_processed = 0;
 			int items_count = 0;
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
@@ -244,7 +292,6 @@ void OrisImporter::importEventOrisRunners(int event_id)
 			}
 			QList<Competitors::CompetitorDocument*> doc_lst;
 			doc_lst.reserve(items_count);
-			//QSet<int> siids_imported;
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
 				QJsonObject competitor_o = it.value().toObject();
 				Competitors::CompetitorDocument *doc = new Competitors::CompetitorDocument();
@@ -267,15 +314,6 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				if(!ok) {
 					note += " SI:" + siid_str;
 				}
-				/*
-				bool siid_duplicit = false;
-				if(siid > 0) {
-					// check duplicit SI
-					siid_duplicit = siids_imported.contains(siid);
-					if(!siid_duplicit)
-						siids_imported << siid;
-				}
-				*/
 				QString requested_start = competitor_o.value(QStringLiteral("RequestedStart")).toString();
 				if(!requested_start.isEmpty()) {
 					note += " req. start: " + requested_start;
@@ -291,9 +329,7 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				}
 				QString reg_no = competitor_o.value(QStringLiteral("RegNo")).toString();
 				fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
-				//if(siid_duplicit)
 				//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
-				//doc.loadForInsert();
 				doc->setValue("classId", competitor_o.value(QStringLiteral("ClassID")).toString().toInt());
 				doc->setValue("siId", siid);
 				doc->setValue("firstName", first_name);
@@ -302,7 +338,6 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				doc->setValue("licence", competitor_o.value(QStringLiteral("Licence")).toString());
 				doc->setValue("note", note);
 				doc->setValue("importId", import_id);
-				//doc.save();
 				items_processed++;
 			}
 			for(int id : imported_competitors.values()) {
@@ -311,6 +346,7 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				doc->load(id, doc->ModeDelete);
 			}
 			static const QStringList fields = QStringList()
+											  << QStringLiteral("classId")
 											  << QStringLiteral("className")
 											  << QStringLiteral("lastName")
 											  << QStringLiteral("firstName")
@@ -322,11 +358,19 @@ void OrisImporter::importEventOrisRunners(int event_id)
 			QVariantList new_entries_rows;
 			QVariantList edited_entries_rows;
 			QVariantList deleted_entries_rows;
+			auto field_string = [classes_map](Competitors::CompetitorDocument *doc, const QString fldn) {
+				QString s;
+				if(fldn == QLatin1String("className"))
+					s = classes_map.value(doc->value(QStringLiteral("classId")).toInt());
+				else
+					s = doc->value(fldn).toString();
+				return s;
+			};
 			for(Competitors::CompetitorDocument *doc : doc_lst) {
 				QVariantList tr = QVariantList() << QStringLiteral("tr");
 				if(doc->mode() == doc->ModeInsert) {
 					for(QString fldn : fields) {
-						auto td = QVariantList() << QStringLiteral("td") << doc->value(fldn).toString();
+						auto td = QVariantList() << QStringLiteral("td") << field_string(doc, fldn);
 						tr.insert(tr.length(), td);
 					}
 					new_entries_rows.insert(new_entries_rows.length(), tr);
@@ -338,9 +382,9 @@ void OrisImporter::importEventOrisRunners(int event_id)
 							if(green_attrs.isEmpty())
 								green_attrs["bgcolor"] = QStringLiteral("green");
 							auto td = QVariantList() << QStringLiteral("td");
-							if(doc->isDirty(fldn))
+							if(fldn != QLatin1String("className") && doc->isDirty(fldn))
 								td << green_attrs;
-							td << doc->value(fldn).toString();
+							td << field_string(doc, fldn);
 							tr.insert(tr.length(), td);
 						}
 						edited_entries_rows.insert(edited_entries_rows.length(), tr);
@@ -348,7 +392,7 @@ void OrisImporter::importEventOrisRunners(int event_id)
 				}
 				else if(doc->mode() == doc->ModeDelete) {
 					for(QString fldn : fields) {
-						auto td = QVariantList() << QStringLiteral("td") << doc->value(fldn).toString();
+						auto td = QVariantList() << QStringLiteral("td") << field_string(doc, fldn);
 						tr.insert(tr.length(), td);
 					}
 					deleted_entries_rows.insert(new_entries_rows.length(), tr);
@@ -382,12 +426,18 @@ void OrisImporter::importEventOrisRunners(int event_id)
 			w->setHtmlText(html);
 			if(dlg.exec()) {
 				qf::core::sql::Transaction transaction;
+				QMap<int, int> siid_changes; // competitorId->siId
+				const auto SIID = QStringLiteral("siId");
 				for(Competitors::CompetitorDocument *doc : doc_lst) {
 					if(doc->mode() == doc->ModeInsert) {
 						doc->save();
+						int siid = doc->value(SIID).toInt();
+						siid_changes[doc->dataId().toInt()] = siid;
 					}
 					else if(doc->mode() == doc->ModeEdit) {
 						if(doc->isDirty()) {
+							int siid = doc->value(SIID).toInt();
+							siid_changes[doc->dataId().toInt()] = siid;
 							doc->save();
 						}
 					}
@@ -396,9 +446,57 @@ void OrisImporter::importEventOrisRunners(int event_id)
 							doc->drop();
 					}
 				}
+				int stage_cnt = eventPlugin()->stageCount();
+				for (int stage_id = 1; stage_id <= stage_cnt; ++stage_id) {
+					QMap<int, int> si_map; // siId->competitorId
+					q.exec("SELECT competitorId, siId FROM runs WHERE siId IS NOT NULL AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+					while(q.next()) {
+						int cid = q.value(0).toInt();
+						int sid = q.value(1).toInt();
+						si_map[sid] = cid;
+					}
+					{
+						// create unique SI->competitor assignment
+						QMapIterator<int, int> it(siid_changes);
+						while(it.hasNext()) {
+							it.next();
+							int competitor_id = it.key();
+							int si_id = it.value();
+							si_map[si_id] = competitor_id;
+						}
+					}
+					{
+						// delete duplicit competitor->SI assignmets
+						QMutableMapIterator<int, int> it(siid_changes);
+						while(it.hasNext()) {
+							it.next();
+							int competitor_id = it.key();
+							int si_id = it.value();
+							int unique_siid_competitor_id = si_map.value(si_id);
+							if(unique_siid_competitor_id != competitor_id) {
+								qfInfo() << "SI:" << si_id << "is duplicit in stage:" << stage_id;
+								it.setValue(0);
+							}
+						}
+					}
+					{
+						// write SI changes to runs table
+						q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+						QMapIterator<int, int> it(siid_changes);
+						while(it.hasNext()) {
+							it.next();
+							int competitor_id = it.key();
+							int si_id = it.value();
+							q.bindValue(QStringLiteral(":competitorId"), competitor_id);
+							q.bindValue(QStringLiteral(":siId"), (si_id > 0)? si_id: QVariant(QVariant::Int));
+							q.exec(qf::core::Exception::Throw);
+						}
+					}
+				}
 				transaction.commit();
 			}
 			qDeleteAll(doc_lst);
+			emit eventPlugin()->reloadDataRequest();
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -411,6 +509,7 @@ void OrisImporter::importRegistrations()
 	int year = QDate::currentDate().year();
 	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=1&year=%1").arg(year));
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+		save_json("Registrations", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 		// import clubs
@@ -472,6 +571,7 @@ void OrisImporter::importClubs()
 {
 	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList");
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+		save_json("Clubs", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 		// import clubs

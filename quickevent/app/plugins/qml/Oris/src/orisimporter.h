@@ -14,8 +14,9 @@ public:
 	explicit OrisImporter(QObject *parent = 0);
 
 	Q_INVOKABLE void chooseAndImport();
+	Q_INVOKABLE  void syncCurrentEventEntries();
 	void importEvent(int event_id);
-	void importEventOrisRunners(int event_id);
+	void importEventOrisEntries(int event_id);
 	Q_INVOKABLE void importRegistrations();
 	Q_INVOKABLE void importClubs();
 private:

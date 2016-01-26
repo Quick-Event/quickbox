@@ -23,6 +23,13 @@ Oris {
 			}
 		},
 		Action {
+			id: actSyncCurrentEventEntries
+			text: qsTr('&Sync current event entries')
+			onTriggered: {
+				orisImporter.syncCurrentEventEntries()
+			}
+		},
+		Action {
 			id: actImportClubsOris
 			text: qsTr('&Clubs')
 			//enabled: internal.pluginSqlDb.api.sqlServerConnected
@@ -55,9 +62,11 @@ Oris {
 		//console.warn("Oris installed");
 		var act_import_oris = FrameWork.menuBar.actionForPath('file/import/oris');
 		act_import_oris.text = qsTr("&Oris");
-		act_import_oris.addActionInto(actImportEventOris)
-		act_import_oris.addActionInto(actImportClubsOris)
-		act_import_oris.addActionInto(actImportRegistrationsOris)
+		act_import_oris.addActionInto(actImportEventOris);
+		act_import_oris.addActionInto(actSyncCurrentEventEntries);
+		act_import_oris.addSeparatorInto();
+		act_import_oris.addActionInto(actImportClubsOris);
+		act_import_oris.addActionInto(actImportRegistrationsOris);
 		//act_import_oris.addActionInto(actTest)
 		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
 		//quit.addSeparatorBefore();
