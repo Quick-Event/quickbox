@@ -110,9 +110,14 @@ LogDevice::~LogDevice()
 
 QString LogDevice::moduleFromFileName(const QString &file_name)
 {
-	//QString ret = QString::fromUtf8(file_name);
-	static QRegExp rx("(\\\\|\\/)");
-	QString ret = file_name.section(rx, -1);
+	QString ret = file_name;
+	int ix = file_name.lastIndexOf('/');
+#if defined Q_OS_WIN
+	if(ix < 0)
+		ix = file_name.lastIndexOf('\\');
+#endif
+	if(ix >= 0)
+		ret = ret.mid(ix + 1);
 	return ret;
 }
 
