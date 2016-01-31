@@ -343,7 +343,7 @@ void LogWidget::scrollToLastEntry()
 {
 	if(isVisible()) {
 		if(!m_columnsResized) {
-			m_columnsResized = false;
+			m_columnsResized = true;
 			ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 		}
 		if(m_isAutoScroll) {
