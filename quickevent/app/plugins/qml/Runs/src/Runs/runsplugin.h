@@ -51,6 +51,8 @@ public:
 	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id, int places = -1);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1);
 	Q_INVOKABLE void showRunsTable(int stage_id, int class_id, const QString &sort_column = QString(), int select_competitor_id = 0);
+
+	Q_INVOKABLE QWidget* createReportOptionsDialog(QWidget *parent = nullptr);
 private:
 	Q_SLOT void onInstalled();
 	//Q_SLOT void onEditStartListRequest(int stage_id, int class_id, int competitor_id);

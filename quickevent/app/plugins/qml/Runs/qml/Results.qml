@@ -18,7 +18,7 @@ QtObject {
 		}
 	}
 
-	function currentStageTable(class_mask, max_competitors_in_class)
+	function currentStageTable(class_filter, max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = runsPlugin.selectedStageId;
@@ -32,13 +32,12 @@ QtObject {
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 			.join("classdefs.courseId", "courses.id")
 			.orderBy('classes.name');//.limit(1);
-		if(class_mask) {
-			class_mask = class_mask.replace("*", "%");
-			class_mask = class_mask.replace("?", "_");
-			reportModel.queryBuilder.where("classes.name LIKE '" + class_mask + "'");
+		if(class_filter) {
+			reportModel.queryBuilder.where(class_filter);
 		}
 
 		reportModel.setQueryParameters({stage_id: stage_id})
+		console.info("currentStageTable query:", reportModel.effectiveQuery());
 		reportModel.reload();
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
@@ -144,11 +143,18 @@ QtObject {
 	function printCurrentStage()
 	{
 		Log.info("runs printResultsCurrentStage triggered");
-		var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
-		if(!mask)
-			return;
-		var tt = currentStageTable(mask);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml", tt.data(), qsTr("Start list by clases"));
+		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
+		if(dlg.exec()) {
+			var tt = currentStageTable(dlg.sqlWhereExpression());
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"
+										   , tt.data()
+										   , qsTr("Start list by clases")
+										   , "printCurrentStage"
+										   , {everyClassOnNewPage: dlg.isEveryClassOnNewPage()}
+										   );
+		}
+		dlg.destroy();
 	}
 
 	function printCurrentStageFirstN()

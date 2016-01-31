@@ -36,7 +36,7 @@ bool CompetitorDocument::saveData()
 	qfLogFuncFrame();
 	RecordEditMode old_mode = mode();
 	bool siid_dirty = isDirty("competitors.siId");
-	int old_siid = value("competitors.siId").toInt();
+	//int old_siid = value("competitors.siId").toInt();
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
 	if(ret) {

@@ -205,7 +205,7 @@ int ReportItemFrame::itemCount() const
 
 ReportItem *ReportItemFrame::itemAt(int index)
 {
-	return m_items[index];
+	return m_items.value(index);
 }
 
 ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
@@ -463,7 +463,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// print % like a rubber dimension and if print result is PrintOk resize rendered rect of printed metapaint item
 		/// break funguje tak, ze pri 1., 3., 5. atd. tisku vraci PrintNotFit a pri sudych PrintOk
 		/// prvni break na strance znamena, ze jsem tu uz po zalomeni, takze se tiskne to za break.
-		int index_to_print_0 = m_indexToPrint;
+		//int index_to_print_0 = m_indexToPrint;
 		for(; m_indexToPrint<itemsToPrintCount(); m_indexToPrint++) {
 			ReportItem *child_item_to_print = itemToPrintAt(m_indexToPrint);
 			Rect children_paint_area_rect = paint_area_rect;
@@ -529,8 +529,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				res = ch_res;
 				break;
 			}
-			if(child_item_to_print->isBreak() && m_indexToPrint > index_to_print_0)
-				break;
+			//if(child_item_to_print->isBreak() && m_indexToPrint > index_to_print_0)
+			//	break;
 		}
 	}
 	//res = checkPrintResult(res);
@@ -578,7 +578,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	for(int current_column_index=0; current_column_index<column_sizes.count(); current_column_index++) {
 		Rect column_br = column_br_helper;
 		column_br.setWidth(column_sizes.value(current_column_index));
-		qfDebug() << "\tcolumn bounding rect:" << column_br.toString();
+		if(column_sizes.count() > 1) {
+			qfInfo() << current_column_index << "column bounding rect:" << column_br.toString();
+			ReportItem *child_item_to_print = itemToPrintAt(m_indexToPrint);
+			if(child_item_to_print)
+				qfInfo() << "first child to print:" << child_item_to_print;
+		}
 
 		res = printMetaPaintChildren(metapaint_frame, column_br);
 
@@ -621,7 +626,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 				return checkPrintResult(res);
 			}
 		}
-		column_br_helper = column_br;
+		//column_br_helper = column_br;
 		column_br_helper.moveLeft(column_br.right() + columns_gap);
 	}
 

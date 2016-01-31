@@ -79,6 +79,8 @@ public:
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 
+	Q_INVOKABLE QString sqlDriverName();
+
 	Q_INVOKABLE QString classNameById(int class_id);
 
 	DbSchema dbSchema();

@@ -1,3 +1,4 @@
+#include "reportoptionsdialog.h"
 #include "runsplugin.h"
 #include "thispartwidget.h"
 #include "../runswidget.h"
@@ -288,6 +289,15 @@ void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_c
 	dlg.setButtons(QDialogButtonBox::Cancel);
 	dlg.setCentralWidget(w);
 	dlg.exec();
+}
+
+QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
+{
+	if(!parent) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		parent = fwk;
+	}
+	return new Runs::ReportOptionsDialog(parent);
 }
 
 int RunsPlugin::cardForRun(int run_id)

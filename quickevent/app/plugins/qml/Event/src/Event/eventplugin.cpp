@@ -299,6 +299,12 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bo
 	}
 }
 
+QString EventPlugin::sqlDriverName()
+{
+	qf::core::sql::Connection cc = qf::core::sql::Connection::forName();
+	return cc.driverName();
+}
+
 QString EventPlugin::classNameById(int class_id)
 {
 	if(m_classNameCache.isEmpty()) {

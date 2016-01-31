@@ -102,8 +102,8 @@ public:
 			switch(value) {
 			case PR_NotPrintedYet: ret = QStringLiteral("PR_NotPrintedYet"); break;
 			case PR_PrintedOk: ret = QStringLiteral("PR_PrintedOk"); break;
-			case PR_PrintAgainOnNextPage: ret = QStringLiteral(""); break;
-			case PR_PrintAgainDetail: ret = QStringLiteral("PR_PrintAgainOnNextPage"); break;
+			case PR_PrintAgainOnNextPage: ret = QStringLiteral("PR_PrintAgainOnNextPage"); break;
+			case PR_PrintAgainDetail: ret = QStringLiteral("PR_PrintAgainDetail"); break;
 			case PR_ErrorNeverFit: ret = QStringLiteral("PR_ErrorNeverFit"); break;
 			default: ret = QStringLiteral("UNKNOWN"); break;
 			}

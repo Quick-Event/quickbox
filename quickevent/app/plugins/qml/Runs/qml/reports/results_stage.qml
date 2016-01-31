@@ -7,6 +7,7 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Results by classes")
+	property bool everyClassOnNewPage: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -42,13 +43,13 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			columns: "%,%"
+			columns: "%,%";
 			vinset: 10
 			Band {
 				id: band
 				objectName: "band"
 				width: "%"
-				height: "%"
+				//height: "%"
 				QuickEventReportHeader {
 					dataBand: band
 					reportTitle: root.reportTitle
@@ -125,6 +126,7 @@ Report {
 							}
 						}
 					}
+					Break { visible: root.everyClassOnNewPage }
 				}
 			}
 		}
