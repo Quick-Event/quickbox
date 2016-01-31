@@ -61,6 +61,9 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		// qfLogFuncFrame cannot be implemented optimaly without this hack
 		return;
 	}
+	//if(!msg.contains("111111"))
+	//	return;
+	//fprintf(stderr, "%s\n", qPrintable(msg));
 	Q_FOREACH(auto log_device, logDevices()) {
 		// check if log is enabled for this device particulary
 		// checking is done twice for successful log device and once for the unsuccessful one (in isMatchingAnyDeviceLogFilter)
@@ -397,7 +400,9 @@ bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, con
 #endif
 	}
 	//fprintf(stderr, "!!!!!!!!!!!!! %s: '%s'\n", file_name, qPrintable(category));
-	if(category && category[0] && !(QLatin1String("default") == QLatin1String(category))) { // default category is implicit in QMessageLogger, so filter it out
+	if(category && category[0]
+	   && !(QLatin1String("default") == QLatin1String(category))
+	   && !(QLatin1String("qml") == QLatin1String(category))) { // default, qml category is implicit in QMessageLogger, so filter it out
 		// category specified
 		qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
 		if(log_filter.logAllCategories) {
