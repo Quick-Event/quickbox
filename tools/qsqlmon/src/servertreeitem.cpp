@@ -401,7 +401,7 @@ bool Database::open()
 	m_sqlConnection.setPort(c->params().param("port").toInt());
 	m_sqlConnection.setUserName(c->params().param("user").toString());
 	m_sqlConnection.setPassword(c->params().param("password").toString());
-	//qDebug() << sqlConnection.password();
+	//qfInfo() << m_sqlConnection.password();
 	m_sqlConnection.setDatabaseName(objectName());
 	//qfDebug() << "\t" << m_sqlConnection.info();
 	QStringList opts;

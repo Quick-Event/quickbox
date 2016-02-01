@@ -958,6 +958,11 @@ QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
 	if(!db.isEmpty())
 		tbl = db + '.' + tbl;
 	QProcess proc;
+
+	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+	env.insert("PGPASSWORD", password());
+	proc.setProcessEnvironment(env);
+
 	QString prog_name = "pg_dump";
 	QStringList params;
 	if(!dump_data)
