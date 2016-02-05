@@ -131,6 +131,14 @@
     </message>
 </context>
 <context>
+    <name>qf::qmlwidgets::HtmlViewWidget</name>
+    <message>
+        <location filename="src/htmlviewwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Formularz</translation>
+    </message>
+</context>
+<context>
     <name>qf::qmlwidgets::SaveOptionsWidget</name>
     <message>
         <location filename="src/saveoptionswidget.ui" line="14"/>
@@ -543,12 +551,12 @@
 <context>
     <name>qf::qmlwidgets::dialogs::Dialog</name>
     <message>
-        <location filename="src/dialogs/dialog.cpp" line="126"/>
+        <location filename="src/dialogs/dialog.cpp" line="136"/>
         <source>Delete</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="src/dialogs/dialog.cpp" line="129"/>
+        <location filename="src/dialogs/dialog.cpp" line="139"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
@@ -556,32 +564,32 @@
 <context>
     <name>qf::qmlwidgets::dialogs::MessageBox</name>
     <message>
-        <location filename="src/dialogs/messagebox.cpp" line="17"/>
+        <location filename="src/dialogs/messagebox.cpp" line="21"/>
         <source>Exception</source>
         <translation>Wyjątek</translation>
     </message>
     <message>
-        <location filename="src/dialogs/messagebox.cpp" line="27"/>
+        <location filename="src/dialogs/messagebox.cpp" line="31"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="src/dialogs/messagebox.cpp" line="32"/>
+        <location filename="src/dialogs/messagebox.cpp" line="36"/>
         <source>Information</source>
         <translation>Informacja</translation>
     </message>
     <message>
-        <location filename="src/dialogs/messagebox.cpp" line="38"/>
+        <location filename="src/dialogs/messagebox.cpp" line="42"/>
         <source>Question</source>
         <translation>Pytanie</translation>
     </message>
     <message>
-        <location filename="src/dialogs/messagebox.cpp" line="39"/>
+        <location filename="src/dialogs/messagebox.cpp" line="43"/>
         <source>&amp;Yes</source>
         <translation>&amp;Tak</translation>
     </message>
     <message>
-        <location filename="src/dialogs/messagebox.cpp" line="39"/>
+        <location filename="src/dialogs/messagebox.cpp" line="43"/>
         <source>&amp;No</source>
         <translation>&amp;Nie</translation>
     </message>
