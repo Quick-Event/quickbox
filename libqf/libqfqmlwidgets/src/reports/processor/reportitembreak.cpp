@@ -22,16 +22,16 @@ ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out
 	if(!isVisible()) {
 		return PrintResult::createPrintFinished();
 	}
+	PrintResult ret = PrintResult::createPrintFinished();
 	if(!m_breaking) {
-		PrintResult res = PrintResult::createPrintAgain();
+		ret = PrintResult::createPrintAgain();
 		if(breakType() == BreakType::Page)
-			res.setPageBreak(true);
+			ret.setPageBreak(true);
 		else if(breakType() == BreakType::Column)
-			res.setColumnBreak(true);
-		return res;
+			ret.setColumnBreak(true);
 	}
 	m_breaking = !m_breaking;
-	return PrintResult::createPrintFinished();
+	return ret;
 }
 
 } // namespace reports

@@ -126,7 +126,10 @@ Report {
 							}
 						}
 					}
-					Break { visible: root.everyClassOnNewPage }
+					Break {
+						breakType: Break.Page
+						visible: root.everyClassOnNewPage
+					}
 				}
 			}
 		}
