@@ -7,7 +7,8 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Results by classes")
-	property bool everyClassOnNewPage: false
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -127,8 +128,8 @@ Report {
 						}
 					}
 					Break {
-						breakType: Break.Page
-						visible: root.everyClassOnNewPage
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
 					}
 				}
 			}

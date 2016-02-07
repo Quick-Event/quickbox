@@ -7,6 +7,8 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Start list by classes")
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -109,6 +111,10 @@ Report {
 								textFn: runnersDetail.dataFn("runs.siId");
 							}
 						}
+					}
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
 					}
 				}
 			}

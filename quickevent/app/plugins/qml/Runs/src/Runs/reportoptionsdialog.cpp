@@ -22,8 +22,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	ui->edFilter->setText("h1%");
-	ui->chkPrintEveryClassOnNewPage->setChecked(true);
+	//ui->edFilter->setText("h1%");
 	//ui->grpClassFilter->setChecked(false);
 	ui->btRegExp->setEnabled(eventPlugin()->sqlDriverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 }
@@ -33,9 +32,9 @@ ReportOptionsDialog::~ReportOptionsDialog()
 	delete ui;
 }
 
-bool ReportOptionsDialog::isEveryClassOnNewPage() const
+ReportOptionsDialog::BreakType ReportOptionsDialog::breakType() const
 {
-	return ui->chkPrintEveryClassOnNewPage->isChecked();
+	return static_cast<BreakType>(ui->cbxBreakAfterClassType->currentIndex());
 }
 
 QString ReportOptionsDialog::sqlWhereExpression() const
@@ -64,7 +63,7 @@ QString ReportOptionsDialog::sqlWhereExpression() const
 QVariantMap ReportOptionsDialog::optionsToMap() const
 {
 	QVariantMap ret;
-	ret["everyClassOnNewPage"] = ui->chkPrintEveryClassOnNewPage->isChecked();
+	ret["breakAfterEachClass"] = ui->chkPrintEveryClassOnNewPage->isChecked();
 	if(ui->grpClassFilter->isChecked()) {
 		QVariantMap m;
 		m["filterDoesnMatch"] = ui->chkClassFilterDoesntMatch->isChecked();

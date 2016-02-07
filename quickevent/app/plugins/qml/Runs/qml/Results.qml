@@ -149,9 +149,9 @@ QtObject {
 			var tt = currentStageTable(dlg.sqlWhereExpression());
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"
 										   , tt.data()
-										   , qsTr("Start list by clases")
+										   , qsTr("Results by clases")
 										   , "printCurrentStage"
-										   , {everyClassOnNewPage: dlg.isEveryClassOnNewPage()}
+										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
 										   );
 		}
 		dlg.destroy();
