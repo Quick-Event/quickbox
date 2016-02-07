@@ -19,16 +19,19 @@ ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out
 	qfLogFuncFrame() << "is breaking:" << m_breaking;
 	Q_UNUSED(bounding_rect);
 	Q_UNUSED(out);
-	PrintResult res = PR_PrintedOk;
 	if(!isVisible()) {
-		return res;
+		return PrintResult::createPrintFinished();
 	}
 	if(!m_breaking) {
-		res = PR_PrintAgainOnNextPage;
-		//res.flags = FlagPrintBreak;
+		PrintResult res = PrintResult::createPrintAgain();
+		if(breakType() == BreakType::Page)
+			res.setPageBreak(true);
+		else if(breakType() == BreakType::Column)
+			res.setColumnBreak(true);
+		return res;
 	}
 	m_breaking = !m_breaking;
-	return res;
+	return PrintResult::createPrintFinished();
 }
 
 } // namespace reports

@@ -113,7 +113,7 @@ ReportItem::PrintResult ReportItemBand::printMetaPaint(ReportItemMetaPaint *out,
 		m_indexToPrint = 0;
 	}
 	auto *m = model(); // load model before rendering
-	PrintResult res = PR_PrintedOk;
+	PrintResult res = PrintResult::createPrintFinished();
 	qfDebug() << "model:" << m << "row count:" << m->rowCount();
 	if(m->rowCount() > 0) {
 		res = Super::printMetaPaint(out, bounding_rect);

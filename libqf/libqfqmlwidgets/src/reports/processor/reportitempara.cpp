@@ -39,7 +39,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out,
 ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame() << this << bounding_rect.toString();
-	PrintResult res = PR_PrintedOk;
+	PrintResult res = PrintResult::createPrintFinished();
 	if(m_indexToPrint == 0) {
 		printedText = paraText();
 	}
@@ -123,7 +123,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 						else {
 							qreal interline_space = (height > 0)? leading: 0;
 							if(height + interline_space + line.height() > rendered_bounding_rect.height()) {
-								res = PR_PrintAgainOnNextPage;
+								res = PrintResult::createPrintAgain();
 								if(height == 0) {
 									/// nevejde se ani jeden radek
 									text_item_should_be_created = false;
