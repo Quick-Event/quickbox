@@ -921,6 +921,14 @@ bool Connection::setCurrentSchema(const QString &schema_name)
 	return ret;
 }
 
+QString Connection::createSchemaSqlCommand(const QString &schema_name, bool include_data)
+{
+	if(driverName().endsWith(QLatin1String("PSQL"))) {
+		return dumpSqlSchema_psql(schema_name, include_data);
+	}
+	return "unsupported for " + driverName();
+}
+
 QStringList Connection::serverVersion() const
 {
 	QSqlQuery q = exec("SHOW variables LIKE 'version'");
@@ -950,34 +958,16 @@ QString Connection::escapeJsonForSql(const QString &json_string)
 	return ret;
 }
 
-QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
+QString Connection::invokeProcess(const QString &prog_name, const QStringList params, const QProcessEnvironment &env)
 {
-	qfLogFuncFrame() << tblname << dump_data;
-	QString db, tbl;
-	qf::core::Utils::parseFieldName(tblname, &tbl, &db);
-	if(!db.isEmpty())
-		tbl = db + '.' + tbl;
+	qfLogFuncFrame() << params;
+
 	QProcess proc;
 
-	QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-	env.insert("PGPASSWORD", password());
-	proc.setProcessEnvironment(env);
+	QProcessEnvironment proc_env = QProcessEnvironment::systemEnvironment();
+	proc_env.insert(env);
+	proc.setProcessEnvironment(proc_env);
 
-	QString prog_name = "pg_dump";
-	QStringList params;
-	if(!dump_data)
-		params << "-s";
-	if(!hostName().isEmpty()) {
-		params << "-h";
-		params << hostName();
-	}
-	params << "-p";
-	params << QString::number(port());
-	params << "-U";
-	params << userName();
-	params << "-t";
-	params << tblname;
-	params << databaseName();
 	QString s = prog_name + " " + params.join(" ");
 	proc.start(prog_name, params);
 	qfDebug() << "\tcalling:" << s;
@@ -996,5 +986,61 @@ QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
 	}
 	QByteArray result = proc.readAll();
 	return s + QString(result);
+}
+
+QString Connection::dumpSqlSchema_psql(const QString &schema_name, bool dump_data)
+{
+	qfLogFuncFrame() << schema_name << dump_data;
+
+	QProcessEnvironment env;
+	env.insert("PGPASSWORD", password());
+
+	QString prog_name = "pg_dump";
+	QStringList params;
+	if(!dump_data)
+		params << "--schema-only";
+	if(!hostName().isEmpty()) {
+		params << "-h";
+		params << hostName();
+	}
+	params << "-p";
+	params << QString::number(port());
+	params << "-U";
+	params << userName();
+	params << "--schema";
+	params << schema_name;
+	params << databaseName();
+
+	return invokeProcess(prog_name, params, env);
+}
+
+QString Connection::dumpSqlTable_psql(const QString &tblname, bool dump_data)
+{
+	qfLogFuncFrame() << tblname << dump_data;
+	QString db, tbl;
+	qf::core::Utils::parseFieldName(tblname, &tbl, &db);
+	if(!db.isEmpty())
+		tbl = db + '.' + tbl;
+
+	QProcessEnvironment env;
+	env.insert("PGPASSWORD", password());
+
+	QString prog_name = "pg_dump";
+	QStringList params;
+	if(!dump_data)
+		params << "-s";
+	if(!hostName().isEmpty()) {
+		params << "-h";
+		params << hostName();
+	}
+	params << "-p";
+	params << QString::number(port());
+	params << "-U";
+	params << userName();
+	params << "-t";
+	params << tblname;
+	params << databaseName();
+
+	return invokeProcess(prog_name, params, env);
 }
 

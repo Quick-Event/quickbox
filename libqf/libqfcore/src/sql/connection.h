@@ -10,6 +10,8 @@
 #include <QSharedData>
 #include <QStringList>
 
+class QProcessEnvironment;
+
 namespace qf {
 namespace core {
 namespace sql {
@@ -82,6 +84,8 @@ public:
 	QString currentSchema() const;
 	bool setCurrentSchema(const QString &schema_name);
 
+	QString createSchemaSqlCommand(const QString &schema_name, bool include_data);
+
 	//! retrieves CREATE TABLE ... Sql script for \a tblname.
 	QString createTableSqlCommand(const QString &tblname);
 
@@ -93,6 +97,8 @@ public:
 
 	static QString escapeJsonForSql(const QString &json_string);
 private:
+	QString invokeProcess(const QString &prog_name, const QStringList params, const QProcessEnvironment &env);
+	QString dumpSqlSchema_psql(const QString &schema_name, bool dump_data);
 	QString dumpSqlTable_psql(const QString &tblname, bool dump_data);
 	//! take CREATE TABLE ... and parse fields definitions from it.
 	static QStringList fieldDefsFromCreateTableCommand(const QString &cmd);

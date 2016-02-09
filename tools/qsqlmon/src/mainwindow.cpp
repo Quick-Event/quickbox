@@ -1022,15 +1022,11 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 				else if(a == actCreateDatabaseScript) {
-					QString s = current_schema->createScript(Schema::CreateTableSql | Schema::IncludeViews);
-					qfInfo() << s;
-					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
-					/*
-					QString fn = qf::core::utils::FileUtils::joinPath(qfApp()->tempDir(), sch->objectName() + ".sql");
-					QUrl url = QFFileUtils::saveText(s, fn);
-					if(!url.isEmpty()) QFDlgOpenUrl::openUrl(url);
-					else QFMessage::error(tr("Chyba pri ukladani docasneho souboru '%1'").arg(fn));
-					*/
+					qf::core::sql::Connection dbi(activeConnection());
+					QString s = dbi.createSchemaSqlCommand(current_schema->objectName(), false);
+					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
+					new QFSqlSyntaxHighlighter(dlg.editor());
+					dlg.exec(s, "create_" + current_schema->objectName() +".sql", "dlgTextView");
 				}
 				else if(a == actDumpDatabaseScript) {
 					QString s = current_schema->createScript(Schema::CreateTableSql | Schema::DumpTableSql | Schema::IncludeViews);
