@@ -15,7 +15,7 @@
     <message>
         <location filename="src/core/logdevice.cpp" line="139"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można odnaleźć urządzenia zalogowanego pod nazwą &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -23,42 +23,42 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="41"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategoria</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="43"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="45"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linia</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="47"/>
         <source>Severity</source>
-        <translation type="unfinished"></translation>
+        <translation>Trudności</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Time stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Znacznik czasu</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="51"/>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Wiadomość</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="53"/>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkcja</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Dane</translation>
     </message>
 </context>
 <context>

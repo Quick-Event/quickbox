@@ -135,7 +135,7 @@
     <message>
         <location filename="src/htmlviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
 </context>
 <context>
@@ -161,7 +161,7 @@
     <message>
         <location filename="src/tableview.cpp" line="73"/>
         <source>Left click selects all, right click for menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknij lewym aby wybrać wszystko, kliknij prawym aby wybrać menu.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="605"/>
@@ -633,52 +633,52 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formularz</translation>
+        <translation>Formularz</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="37"/>
         <source>Show:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż:</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="47"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtruj</translation>
+        <translation>Filtruj</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="74"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
         <source>Resize columns to fit content</source>
-        <translation type="unfinished"></translation>
+        <translation>Dopasuj kolumny do zawartości</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
         <source>Event log options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje dziennika zdarzeń</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="105"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="143"/>
         <source>Maximal log length</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna długość dziennika</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="148"/>
         <source>Get number</source>
-        <translation type="unfinished"></translation>
+        <translation>Pobierz numer</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="148"/>
         <source>Maximal log row count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksymalna liczba wierszy dziennika:</translation>
     </message>
 </context>
 <context>
@@ -686,13 +686,13 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="30"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiuj</translation>
+        <translation>Kopiuj</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="32"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
-        <translation type="unfinished">Ctrl+R</translation>
+        <translation>Ctrl+C kopjuj wybrane</translation>
     </message>
 </context>
 <context>
