@@ -54,8 +54,7 @@ void CompetitorsPlugin::onInstalled()
 		fwk->addDockWidget(Qt::RightDockWidgetArea, m_registrationsDockWidget);
 		m_registrationsDockWidget->hide();
 		connect(m_registrationsDockWidget, &qff::DockWidget::visibilityChanged, this, &CompetitorsPlugin::onRegistrationsDockVisibleChanged);
-	}
-	{
+
 		auto *a = m_registrationsDockWidget->toggleViewAction();
 		//a->setCheckable(true);
 		a->setShortcut(QKeySequence("ctrl+shift+R"));

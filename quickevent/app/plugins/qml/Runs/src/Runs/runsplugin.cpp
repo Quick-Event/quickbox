@@ -4,6 +4,7 @@
 #include "../runswidget.h"
 #include "drawing/drawingganttwidget.h"
 #include "../runstabledialogwidget.h"
+#include "../eventstatisticswidget.h"
 
 //#include <Event/eventplugin.h>
 
@@ -45,6 +46,8 @@ RunsPlugin::RunsPlugin(QObject *parent)
 
 RunsPlugin::~RunsPlugin()
 {
+	if(m_eventStatisticsDockWidget)
+		m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
 }
 
 const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
@@ -92,7 +95,19 @@ void RunsPlugin::onInstalled()
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
-	//connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
+	{
+		m_eventStatisticsDockWidget = new qff::DockWidget(nullptr);
+		m_eventStatisticsDockWidget->setObjectName("eventStatisticsDockWidget");
+		m_eventStatisticsDockWidget->setWindowTitle(tr("Event statistics"));
+		fwk->addDockWidget(Qt::RightDockWidgetArea, m_eventStatisticsDockWidget);
+		m_eventStatisticsDockWidget->hide();
+		connect(m_eventStatisticsDockWidget, &qff::DockWidget::visibilityChanged, this, &RunsPlugin::onEventStatisticsDockVisibleChanged);
+
+		auto *a = m_eventStatisticsDockWidget->toggleViewAction();
+		//a->setCheckable(true);
+		a->setShortcut(QKeySequence("ctrl+shift+E"));
+		fwk->menuBar()->actionForPath("view")->addActionInto(a);
+	}
 
 	emit nativeInstalled();
 
@@ -109,6 +124,18 @@ void RunsPlugin::onInstalled()
 			dlg.setCentralWidget(w);
 			dlg.exec();
 		});
+	}
+}
+
+void RunsPlugin::onEventStatisticsDockVisibleChanged(bool on)
+{
+	if(on && !m_eventStatisticsDockWidget->widget()) {
+		auto *rw = new EventStatisticsWidget();
+		qff::MainWindow *fwk = qff::MainWindow::frameWork();
+		connect(fwk->plugin("Event"), SIGNAL(dbEventNotify(QString, QVariant)), rw, SLOT(onDbEvent(QString, QVariant)));
+		m_eventStatisticsDockWidget->setWidget(rw);
+		rw->reload();
+		//m_registrationsDockWidget->loadPersistentSettingsRecursively();
 	}
 }
 /*

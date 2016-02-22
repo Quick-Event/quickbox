@@ -18,7 +18,8 @@ HEADERS += \
     $$PWD/drawing/startslotheader.h \
     $$PWD/runstableitemdelegate.h \
     $$PWD/runstablewidget.h \
-    $$PWD/runstabledialogwidget.h
+    $$PWD/runstabledialogwidget.h \
+    $$PWD/eventstatisticswidget.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -36,10 +37,12 @@ SOURCES += \
     $$PWD/drawing/startslotheader.cpp \
     $$PWD/runstableitemdelegate.cpp \
     $$PWD/runstablewidget.cpp \
-    $$PWD/runstabledialogwidget.cpp
+    $$PWD/runstabledialogwidget.cpp \
+    $$PWD/eventstatisticswidget.cpp
 
 FORMS += \
     $$PWD/runswidget.ui \
     $$PWD/drawing/drawingganttwidget.ui \
     $$PWD/runstablewidget.ui \
-    $$PWD/runstabledialogwidget.ui
+    $$PWD/runstabledialogwidget.ui \
+    $$PWD/eventstatisticswidget.ui

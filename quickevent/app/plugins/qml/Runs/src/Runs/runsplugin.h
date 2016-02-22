@@ -55,13 +55,14 @@ public:
 	Q_INVOKABLE QWidget* createReportOptionsDialog(QWidget *parent = nullptr);
 private:
 	Q_SLOT void onInstalled();
-	//Q_SLOT void onEditStartListRequest(int stage_id, int class_id, int competitor_id);
+	void onEventStatisticsDockVisibleChanged(bool on = true);
 
 	int courseForRun_Classic(int run_id);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runsTable;
 	int m_runsTableStageId = 0;
+	qf::qmlwidgets::framework::DockWidget *m_eventStatisticsDockWidget = nullptr;
 };
 
 }
