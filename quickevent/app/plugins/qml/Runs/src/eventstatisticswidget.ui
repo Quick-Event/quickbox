@@ -86,6 +86,23 @@
    <item>
     <widget class="qf::qmlwidgets::TableView" name="tableView"/>
    </item>
+   <item>
+    <layout class="QHBoxLayout" name="footerLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QWidget" name="footerSpacerWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>5</width>
+         <height>5</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <customwidgets>

@@ -7,6 +7,8 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
+#include <QTimer>
+
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
 
@@ -25,8 +27,6 @@ public:
 	EventStatisticsModel(QObject *parent);
 
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
-protected:
-	bool reloadTable(const QString &query_str) Q_DECL_OVERRIDE;
 };
 
 EventStatisticsModel::EventStatisticsModel(QObject *parent)
@@ -82,40 +82,14 @@ QVariant EventStatisticsModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	else if(role == Qt::BackgroundRole) {
-		if(index.row() == rowCount() - 1) {
-			return QColor("khaki");
-		}
-		else {
-			if(col == col_free_map_count) {
-				int cnt = data(index, Qt::DisplayRole).toInt();
-				if(cnt < 0)
-					return QColor(Qt::red);
-				return QVariant();
-			}
+		if(col == col_free_map_count) {
+			int cnt = data(index, Qt::DisplayRole).toInt();
+			if(cnt < 0)
+				return QColor(Qt::red);
+			return QVariant();
 		}
 	}
 	return Super::data(index, role);
-}
-
-bool EventStatisticsModel::reloadTable(const QString &query_str)
-{
-	bool ret = Super::reloadTable(query_str);
-	if(ret && m_recentlyExecutedQuery.isSelect()) {
-		qfu::TableRow &row = m_table.appendRow();
-		row.setInsert(false);
-		for(int i=0; i<columnCount(); i++) {
-			int type = columnType(i);
-			if(type == QVariant::Int) {
-				int sum = 0;
-				for (int j = 0; j < m_table.rowCount() - 1; ++j) {
-					int val = m_table.row(j).value(i).toInt();
-					sum += val;
-				}
-				row.setBareBoneValue(i, sum);
-			}
-		}
-	}
-	return ret;
 }
 
 //============================================================
@@ -129,6 +103,12 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent) :
 	ui->tableView->setPersistentSettingsId("tblEventStatistics");
 	ui->tableView->setReadOnly(true);
 
+	m_tableFooter = new QHeaderView(Qt::Horizontal);
+	m_tableFooter->setMaximumHeight(ui->tableView->verticalHeader()->defaultSectionSize());
+	m_tableFooter->setSectionResizeMode(QHeaderView::Fixed);
+	ui->footerLayout->addWidget(m_tableFooter);
+
+	connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &EventStatisticsWidget::onSectionResized);
 	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
 }
 
@@ -152,12 +132,14 @@ void EventStatisticsWidget::reload()
 
 		ui->tableView->setTableModel(m_tableModel);
 		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		m_tableFooter->setModel(ui->tableView->model());
 	}
 	QVariantMap qm;
 	qm[QStringLiteral("stage_id")] = currentStageId();
 	m_tableModel->setQueryParameters(qm);
 	m_tableModel->reload();
-	m_tableModel->recentlyExecutedQuery();
+	//m_tableModel->recentlyExecutedQuery();
+	QTimer::singleShot(10, this, &EventStatisticsWidget::syncFooterSectionSizes);
 }
 
 void EventStatisticsWidget::onDbEvent(const QString &domain, const QVariant &payload)
@@ -174,4 +156,23 @@ int EventStatisticsWidget::currentStageId()
 void EventStatisticsWidget::on_btReload_clicked()
 {
 	reload();
+}
+
+void EventStatisticsWidget::onSectionResized(int logical_index, int old_size, int new_size)
+{
+	//QHeaderView *hw1 = ui->tableView->horizontalHeader();
+	m_tableFooter->resizeSection(logical_index, new_size);
+}
+
+void EventStatisticsWidget::syncFooterSectionSizes()
+{
+	QHeaderView *hw1 = ui->tableView->horizontalHeader();
+	//int w = ui->tableView->verticalHeader()->width();
+	int w = ui->tableView->verticalHeader()->width();
+	//qfInfo() << w;
+	ui->footerSpacerWidget->setMinimumWidth(w);
+	ui->footerSpacerWidget->setMaximumWidth(w);
+	for (int i = 0; i < hw1->count(); ++i) {
+		m_tableFooter->resizeSection(i, hw1->sectionSize(i));
+	}
 }
