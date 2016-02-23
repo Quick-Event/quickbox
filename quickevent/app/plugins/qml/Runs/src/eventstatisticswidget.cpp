@@ -15,6 +15,81 @@ static Event::EventPlugin* eventPlugin()
 	return qobject_cast<Event::EventPlugin*>(plugin);
 }
 
+class EventStatisticsModel : public qf::core::model::SqlTableModel
+{
+	typedef qf::core::model::SqlTableModel Super;
+public:
+	EventStatisticsModel(QObject *parent);
+
+	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+};
+
+EventStatisticsModel::EventStatisticsModel(QObject *parent)
+	: Super(parent)
+{
+	addColumn("classes.name", tr("Class"));
+	addColumn("classdefs.mapCount", tr("Maps"));
+	addColumn("freeMapCount", tr("Free maps"));
+	addColumn("runnersCount", tr("Runners"));
+	addColumn("runnersFinished", tr("Finished"));
+	addColumn("runnersNotFinished", tr("Not finished"));
+	{
+		qf::core::sql::QueryBuilder qb_runners_count;
+		qb_runners_count.select("COUNT(runs.id)")
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN);
+		qf::core::sql::QueryBuilder qb_runners_finished;
+		qb_runners_finished.select("COUNT(runs.id)")
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.where("runs.finishTimeMs > 0");
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("classes", "*")
+				.select2("classdefs", "*")
+				.select("(" + qb_runners_count.toString() + ") AS runnersCount")
+				.select("(" + qb_runners_finished.toString() + ") AS runnersFinished")
+				.select("0 AS freeMapCount")
+				.select("0 AS runnersNotFinished")
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
+				//.join("classes.id", "competitors.classId")
+				//.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
+				//.groupBy("classes.id")
+				.orderBy("classes.name");
+		setQueryBuilder(qb);
+	}
+}
+
+QVariant EventStatisticsModel::data(const QModelIndex &index, int role) const
+{
+	int col = index.column();
+	static int col_map_count = columnIndex(QStringLiteral("classdefs.mapCount"));
+	static int col_free_map_count = columnIndex(QStringLiteral("freeMapCount"));
+	static int col_runners_count = columnIndex(QStringLiteral("runnersCount"));
+	static int col_runners_finished = columnIndex(QStringLiteral("runnersFinished"));
+	static int col_runners_not_finished = columnIndex(QStringLiteral("runnersNotFinished"));
+	if(role == Qt::DisplayRole) {
+		if(col == col_free_map_count) {
+			int cnt = value(index.row(), col_map_count).toInt() - value(index.row(), col_runners_count).toInt();
+			return cnt;
+		}
+		else if(col == col_runners_not_finished) {
+			int cnt = value(index.row(), col_runners_count).toInt() - value(index.row(), col_runners_finished).toInt();
+			return cnt;
+		}
+	}
+	else if(role == Qt::BackgroundRole) {
+		if(col == col_free_map_count) {
+			int cnt = data(index, Qt::DisplayRole).toInt();
+			if(cnt < 0)
+				return QColor(Qt::red);
+			return QVariant();
+		}
+	}
+	return Super::data(index, role);
+}
+
+//============================================================
+//                EventStatisticsWidget
+//============================================================
 EventStatisticsWidget::EventStatisticsWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::EventStatisticsWidget)
@@ -42,32 +117,7 @@ void EventStatisticsWidget::reload()
 		return;
 
 	if(!m_tableModel) {
-		m_tableModel = new qf::core::model::SqlTableModel(this);
-		m_tableModel->addColumn("classes.name", tr("Class"));
-		m_tableModel->addColumn("classdefs.mapCount", tr("Maps"));
-		m_tableModel->addColumn("runnersCount", tr("Runners"));
-		m_tableModel->addColumn("runnersFinished", tr("Finished"));
-		{
-			qf::core::sql::QueryBuilder qb_runners_count;
-			qb_runners_count.select("COUNT(runs.id)")
-					.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN);
-			qf::core::sql::QueryBuilder qb_runners_finished;
-			qb_runners_finished.select("COUNT(runs.id)")
-					.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
-					.where("runs.finishTimeMs > 0");
-			qf::core::sql::QueryBuilder qb;
-			qb.select2("classes", "*")
-					.select2("classdefs", "*")
-					.select("(" + qb_runners_count.toString() + ") AS runnersCount")
-					.select("(" + qb_runners_finished.toString() + ") AS runnersFinished")
-					.from("classes")
-					.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
-					//.join("classes.id", "competitors.classId")
-					//.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
-					//.groupBy("classes.id")
-					.orderBy("classes.name");
-			m_tableModel->setQueryBuilder(qb);
-		}
+		m_tableModel = new EventStatisticsModel(this);
 
 		ui->tableView->setTableModel(m_tableModel);
 		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
@@ -88,4 +138,9 @@ int EventStatisticsWidget::currentStageId()
 {
 	int ret = eventPlugin()->currentStageId();
 	return ret;
+}
+
+void EventStatisticsWidget::on_btReload_clicked()
+{
+	reload();
 }

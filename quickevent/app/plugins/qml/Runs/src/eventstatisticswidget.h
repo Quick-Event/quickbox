@@ -9,6 +9,8 @@ namespace Ui {
 class EventStatisticsWidget;
 }
 
+class EventStatisticsModel;
+
 class EventStatisticsWidget : public QWidget
 {
 	Q_OBJECT
@@ -19,11 +21,13 @@ public:
 
 	void reload();
 	Q_SLOT void onDbEvent(const QString &domain, const QVariant &payload);
+private slots:
+	void on_btReload_clicked();
 private:
 	int currentStageId();
 private:
 	Ui::EventStatisticsWidget *ui;
-	qf::core::model::SqlTableModel *m_tableModel = nullptr;
+	EventStatisticsModel *m_tableModel = nullptr;
 };
 
 #endif // EVENTSTATISTICSWIDGET_H
