@@ -16,6 +16,7 @@
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
+
 using namespace qf::core::model;
 
 SqlTableModel::SqlTableModel(QObject *parent)

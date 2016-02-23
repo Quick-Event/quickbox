@@ -67,7 +67,7 @@ protected:
 
 	bool reloadQuery(const QString &query_str);
 
-	bool reloadTable(const QString &query_str);
+	virtual bool reloadTable(const QString &query_str);
 	QStringList tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 

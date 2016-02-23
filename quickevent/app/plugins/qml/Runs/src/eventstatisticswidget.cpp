@@ -7,6 +7,9 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
+namespace qfs = qf::core::sql;
+namespace qfu = qf::core::utils;
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -22,6 +25,8 @@ public:
 	EventStatisticsModel(QObject *parent);
 
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+protected:
+	bool reloadTable(const QString &query_str) Q_DECL_OVERRIDE;
 };
 
 EventStatisticsModel::EventStatisticsModel(QObject *parent)
@@ -77,14 +82,40 @@ QVariant EventStatisticsModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	else if(role == Qt::BackgroundRole) {
-		if(col == col_free_map_count) {
-			int cnt = data(index, Qt::DisplayRole).toInt();
-			if(cnt < 0)
-				return QColor(Qt::red);
-			return QVariant();
+		if(index.row() == rowCount() - 1) {
+			return QColor("khaki");
+		}
+		else {
+			if(col == col_free_map_count) {
+				int cnt = data(index, Qt::DisplayRole).toInt();
+				if(cnt < 0)
+					return QColor(Qt::red);
+				return QVariant();
+			}
 		}
 	}
 	return Super::data(index, role);
+}
+
+bool EventStatisticsModel::reloadTable(const QString &query_str)
+{
+	bool ret = Super::reloadTable(query_str);
+	if(ret && m_recentlyExecutedQuery.isSelect()) {
+		qfu::TableRow &row = m_table.appendRow();
+		row.setInsert(false);
+		for(int i=0; i<columnCount(); i++) {
+			int type = columnType(i);
+			if(type == QVariant::Int) {
+				int sum = 0;
+				for (int j = 0; j < m_table.rowCount() - 1; ++j) {
+					int val = m_table.row(j).value(i).toInt();
+					sum += val;
+				}
+				row.setBareBoneValue(i, sum);
+			}
+		}
+	}
+	return ret;
 }
 
 //============================================================
