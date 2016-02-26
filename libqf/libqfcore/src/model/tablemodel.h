@@ -198,12 +198,12 @@ public:
 
 	ColumnDefinition columnDefinition(int ix) const;
 	int columnIndex(const QString &column_name) const;
+	int columnType(int column_index) const;
 
 protected:
 	virtual void checkColumns();
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
-	int columnType(int column_index) const;
 
 	virtual QVariant rawValueToEdit(int column_index, const QVariant &val) const;
 	virtual QVariant editValueToRaw(int column_index, const QVariant &val) const;

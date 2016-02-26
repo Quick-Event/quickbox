@@ -325,6 +325,7 @@ bool TableModel::reload()
 	beginResetModel();
 	checkColumns();
 	endResetModel();
+	emit reloaded();
 	return true;
 }
 
