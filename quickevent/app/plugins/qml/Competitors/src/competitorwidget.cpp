@@ -126,7 +126,10 @@ bool CompetitorWidget::loadRunsTable()
 bool CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
-	return m_runsModel->postAll(true);
+	bool ret = m_runsModel->postAll(true);
+	if(ret)
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+	return ret;
 }
 /*
 void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)

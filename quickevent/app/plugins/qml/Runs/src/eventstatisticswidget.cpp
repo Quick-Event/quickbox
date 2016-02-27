@@ -264,13 +264,20 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent) :
 	m_tableFooterView = new FooterView(ui->tableView);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
-	//connect(ui->tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &EventStatisticsWidget::onSectionResized);
+	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
 }
 
 EventStatisticsWidget::~EventStatisticsWidget()
 {
 	delete ui;
+}
+
+void EventStatisticsWidget::reloadLater()
+{
+	QTimer *tm = reloadLaterTimer();
+	if(!tm->isActive())
+		tm->start();
 }
 
 void EventStatisticsWidget::reload()
@@ -300,15 +307,30 @@ void EventStatisticsWidget::reload()
 	QTimer::singleShot(10, m_tableFooterView, &FooterView::syncSectionSizes);
 }
 
-void EventStatisticsWidget::onDbEvent(const QString &domain, const QVariant &payload)
+void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
-
+	Q_UNUSED(payload)
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)
+	   || domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED)) {
+		reloadLater();
+	}
 }
 
 int EventStatisticsWidget::currentStageId()
 {
 	int ret = eventPlugin()->currentStageId();
 	return ret;
+}
+
+QTimer *EventStatisticsWidget::reloadLaterTimer()
+{
+	if(!m_reloadLaterTimer) {
+		m_reloadLaterTimer = new QTimer(this);
+		m_reloadLaterTimer->setInterval(1000);
+		m_reloadLaterTimer->setSingleShot(true);
+		connect(m_reloadLaterTimer, &QTimer::timeout, this, &EventStatisticsWidget::reload);
+	}
+	return m_reloadLaterTimer;
 }
 
 void EventStatisticsWidget::on_btReload_clicked()

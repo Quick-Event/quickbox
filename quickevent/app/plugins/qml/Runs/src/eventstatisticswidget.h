@@ -21,17 +21,20 @@ public:
 	explicit EventStatisticsWidget(QWidget *parent = 0);
 	~EventStatisticsWidget();
 
+	Q_SLOT void reloadLater();
 	void reload();
-	Q_SLOT void onDbEvent(const QString &domain, const QVariant &payload);
+	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
 private slots:
 	void on_btReload_clicked();
 private:
 	int currentStageId();
+	QTimer* reloadLaterTimer();
 private:
 	Ui::EventStatisticsWidget *ui;
 	FooterView *m_tableFooterView = nullptr;
 	FooterModel *m_tableFooterModel = nullptr;
 	EventStatisticsModel *m_tableModel = nullptr;
+	QTimer *m_reloadLaterTimer = nullptr;
 };
 
 #endif // EVENTSTATISTICSWIDGET_H

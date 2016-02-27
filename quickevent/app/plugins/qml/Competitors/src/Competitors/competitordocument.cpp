@@ -36,6 +36,7 @@ bool CompetitorDocument::saveData()
 	qfLogFuncFrame();
 	RecordEditMode old_mode = mode();
 	bool siid_dirty = isDirty("competitors.siId");
+	bool class_dirty = isDirty("competitors.classId");
 	//int old_siid = value("competitors.siId").toInt();
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
@@ -58,6 +59,7 @@ bool CompetitorDocument::saveData()
 					q.bindValue(":siId", si_id);
 				q.exec(qf::core::Exception::Throw);
 			}
+			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
 			if(siid_dirty) {
@@ -72,6 +74,8 @@ bool CompetitorDocument::saveData()
 					q.exec(qf::core::Exception::Throw);
 				}
 			}
+			if(class_dirty)
+				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 	}
 	return ret;
@@ -91,6 +95,7 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	}
 	return ret;
 }

@@ -41,9 +41,13 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 
-using namespace Event;
+namespace Event {
 
 static auto QBE_EXT = QStringLiteral(".qbe");
+
+const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
+const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
+const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 
 static QString eventNameToFileName(const QString &event_name)
 {
@@ -972,5 +976,5 @@ void EventPlugin::importEvent_qbe()
 	}
 }
 
-
+}
 

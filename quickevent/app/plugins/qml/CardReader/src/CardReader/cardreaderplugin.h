@@ -27,8 +27,6 @@ private:
 public:
 	CardReaderPlugin(QObject *parent = nullptr);
 
-	static const char* DBEVENTDOMAIN_CARDREADER_CARDREAD;
-	static const char* DBEVENTDOMAIN_CARDREADER_PUNCHRECORD;
 	static const QLatin1String SETTINGS_PREFIX;
 	static const int FINISH_PUNCH_CODE;
 	static const int FINISH_PUNCH_POS;

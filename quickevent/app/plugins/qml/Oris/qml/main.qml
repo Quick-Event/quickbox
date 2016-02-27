@@ -45,16 +45,6 @@ Oris {
 				orisImporter.importRegistrations();
 			}
 		}
-		/*
-		Action {
-			id: actTest
-			text: qsTr('&Test')
-			//enabled: internal.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
-			}
-		}
-		*/
 	]
 
 	onInstalled:
