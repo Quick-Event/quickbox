@@ -65,6 +65,7 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	//m->addColumn("runs.timeMs", tr("Time raw"));
 	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
 	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));

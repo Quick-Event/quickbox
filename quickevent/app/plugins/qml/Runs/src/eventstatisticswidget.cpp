@@ -6,11 +6,14 @@
 
 #include <Event/eventplugin.h>
 
-#include <qf/core/model/sqltablemodel.h>
+#include <quickevent/og/sqltablemodel.h>
+#include <quickevent/og/timems.h>
+
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 
+#include <QElapsedTimer>
 #include <QTimer>
 
 namespace qfs = qf::core::sql;
@@ -35,9 +38,9 @@ static Runs::RunsPlugin* runsPlugin()
 //============================================================
 //                EventStatisticsModel
 //============================================================
-class EventStatisticsModel : public qf::core::model::SqlTableModel
+class EventStatisticsModel : public quickevent::og::SqlTableModel
 {
-	typedef qf::core::model::SqlTableModel Super;
+	typedef quickevent::og::SqlTableModel Super;
 public:
 	EventStatisticsModel(QObject *parent);
 
@@ -52,6 +55,9 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	addColumn("classdefs.mapCount", tr("Maps"));
 	addColumn("freeMapCount", tr("Free maps"));
 	addColumn("runnersCount", tr("Runners"));
+	addColumn("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	addColumn("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	addColumn("time3Ms", tr("Time 3")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	addColumn("runnersFinished", tr("Finished"));
 	addColumn("runnersNotFinished", tr("Not finished"));
 	addColumn("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results."));
@@ -62,12 +68,35 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 		qf::core::sql::QueryBuilder qb_runners_finished;
 		qb_runners_finished.select("COUNT(runs.id)")
 				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
-				.where("runs.finishTimeMs > 0");
+				.where("runs.finishTimeMs > 0 OR runs.disqualified");
+		qf::core::sql::QueryBuilder qb_runners_start_first;
+		qb_runners_start_first.select("MIN(runs.startTimeMs)")
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.where("runs.startTimeMs IS NOT NULL");
+		qf::core::sql::QueryBuilder qb_runners_start_last;
+		qb_runners_start_last.select("MAX(runs.startTimeMs)")
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.where("runs.startTimeMs IS NOT NULL");
+		qf::core::sql::QueryBuilder qb_third_time;
+		{
+			qf::core::sql::QueryBuilder qb;
+			qb.select("runs.timeMs")
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id AND runs.timeMs>0 AND NOT runs.disqualified", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.orderBy("runs.timeMs")
+				.limit(3)
+				.as("results3");
+			qb_third_time.select("MAX(timeMs) AS time3Ms")//.select("COUNT(timeMs) AS count3")
+					.from(qb.toString());
+		}
+
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("classes", "*")
 				.select2("classdefs", "*")
 				.select("(" + qb_runners_count.toString() + ") AS runnersCount")
 				.select("(" + qb_runners_finished.toString() + ") AS runnersFinished")
+				.select("(" + qb_runners_start_first.toString() + ") AS startFirstMs")
+				.select("(" + qb_runners_start_last.toString() + ") AS startLastMs")
+				.select("(" + qb_third_time.toString() + ") AS time3Ms")
 				.select("0 AS freeMapCount")
 				.select("0 AS runnersNotFinished")
 				.select("0 AS resultsNotPrinted")
@@ -322,8 +351,11 @@ void EventStatisticsWidget::reload()
 	QVariantMap qm;
 	qm[QStringLiteral("stage_id")] = currentStageId();
 	m_tableModel->setQueryParameters(qm);
+	QElapsedTimer tm;
+	tm.start();
 	m_tableModel->reload();
-	//m_tableModel->recentlyExecutedQuery();
+	qfInfo() << m_tableModel->effectiveQuery();
+	qfInfo() << "query execution time:" << tm.elapsed() << "msec";
 	QTimer::singleShot(10, m_tableFooterView, &FooterView::syncSectionSizes);
 }
 
