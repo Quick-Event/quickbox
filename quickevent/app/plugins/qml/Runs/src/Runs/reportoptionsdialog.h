@@ -19,6 +19,8 @@ public:
 	explicit ReportOptionsDialog(QWidget *parent = 0);
 	~ReportOptionsDialog();
 
+	void setClassNamesFilter(const QStringList &class_names);
+
 	BreakType breakType() const;
 	//Q_INVOKABLE QVariantMap optionsToMap() const;
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}

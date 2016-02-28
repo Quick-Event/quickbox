@@ -17,6 +17,7 @@
 #include "../../menubar.h"
 #include "../../toolbar.h"
 #include "../../framework/cursoroverrider.h"
+#include "../../framework/mainwindow.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
@@ -51,6 +52,47 @@ ReportViewWidget::ScrollArea::ScrollArea(QWidget * parent)
 : QScrollArea(parent)
 {
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(verticalScrollBarValueChanged(int)));
+}
+
+bool ReportViewWidget::showReport(QWidget *parent
+								, const QString &report_qml_file
+								, const QVariant &single_table_data
+								, const QString &window_title
+								, const QString &persistent_settings_id
+								, const QVariantMap &report_init_properties)
+{
+	QVariantMap m;
+	m[QString()] = single_table_data;
+	return showReport2(parent, report_qml_file, m, window_title, persistent_settings_id, report_init_properties);
+}
+
+bool ReportViewWidget::showReport2(QWidget *parent
+								, const QString &report_qml_file
+								, const QVariantMap &multiple_table_data
+								, const QString &window_title
+								, const QString &persistent_settings_id
+								, const QVariantMap &report_init_properties)
+{
+	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
+	w->setWindowTitle(window_title);
+	if(!persistent_settings_id.isEmpty())
+		w->setPersistentSettingsId(persistent_settings_id);
+	w->setReport(report_qml_file, report_init_properties);
+	QMapIterator<QString, QVariant> it(multiple_table_data);
+	while(it.hasNext()) {
+		it.next();
+		w->setTableData(it.key(), it.value());
+	}
+	if(!parent)
+		parent = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::Dialog dlg(parent);
+	dlg.setCentralWidget(w);
+	bool report_printed = false;
+	connect(w, &qf::qmlwidgets::reports::ReportViewWidget::reportPrinted, [&report_printed](int) {
+		report_printed = true;
+	});
+	dlg.exec();
+	return report_printed;
 }
 
 void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
@@ -970,12 +1012,10 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 	qfLogFuncFrame();
 
 	framework::CursorOverrider cov(Qt::WaitCursor);
-	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	ReportPainter painter(&printer);
 
 	typedef ReportItem::Rect Rect;
-	//typedef ReportItem::Size Size;
 
 	int pg_no = options.value("fromPage", 1).toInt() - 1;
 	int to_page = options.value("toPage", pageCount()).toInt();
@@ -1004,9 +1044,7 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 			printer.newPage();
 		}
 	}
-
-	//QApplication::restoreOverrideCursor();
-	//emit reportPrinted();
+	emit reportPrinted(printer.outputFormat());
 }
 
 void ReportViewWidget::print()

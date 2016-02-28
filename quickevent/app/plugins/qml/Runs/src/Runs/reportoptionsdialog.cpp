@@ -6,6 +6,8 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
+#include <qf/core/string.h>
+
 namespace Runs {
 
 static Event::EventPlugin* eventPlugin()
@@ -32,6 +34,14 @@ ReportOptionsDialog::~ReportOptionsDialog()
 	delete ui;
 }
 
+void ReportOptionsDialog::setClassNamesFilter(const QStringList &class_names)
+{
+	ui->grpClassFilter->setChecked(true);
+	ui->btClassNames->setChecked(true);
+	ui->chkClassFilterDoesntMatch->setChecked(false);
+	ui->edFilter->setText(class_names.join(','));
+}
+
 ReportOptionsDialog::BreakType ReportOptionsDialog::breakType() const
 {
 	return static_cast<BreakType>(ui->cbxBreakAfterClassType->currentIndex());
@@ -53,6 +63,14 @@ QString ReportOptionsDialog::sqlWhereExpression() const
 				QString filter_operator = ui->chkClassFilterDoesntMatch->isChecked()? "NOT LIKE": "LIKE";
 				QString ret = "classes.name %1 '%2'";
 				ret = ret.arg(filter_operator).arg(filter_str);
+				return ret;
+			}
+			else if(ui->btClassNames->isChecked()) {
+				qf::core::String s = filter_str;
+				QStringList sl = s.splitAndTrim(',');
+				QString filter_operator = ui->chkClassFilterDoesntMatch->isChecked()? "NOT IN": "IN";
+				QString ret = "classes.name %1('%2')";
+				ret = ret.arg(filter_operator).arg(sl.join("','"));
 				return ret;
 			}
 		}

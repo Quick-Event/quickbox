@@ -54,17 +54,18 @@
        <number>1</number>
       </property>
       <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QToolButton" name="btPrintResults">
+        <property name="toolTip">
+         <string>Print results in selected rows</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>345</width>
-          <height>20</height>
-         </size>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/printer.svg</normaloff>:/qf/qmlwidgets/images/flat/printer.svg</iconset>
         </property>
-       </spacer>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QToolButton" name="btReload">
@@ -79,6 +80,19 @@
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>

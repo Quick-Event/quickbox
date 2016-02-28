@@ -24,8 +24,11 @@ public:
 	Q_SLOT void reloadLater();
 	void reload();
 	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
+	Q_SLOT void onVisibleChanged(bool is_visible);
 private slots:
 	void on_btReload_clicked();
+	void on_btPrintResults_clicked();
+
 private:
 	int currentStageId();
 	QTimer* reloadLaterTimer();

@@ -18,6 +18,21 @@ QtObject {
 		}
 	}
 
+	function currentStageTableData(class_filter, max_competitors_in_class)
+	{
+		var td = runsPlugin.currentStageResultsTableData(class_filter, max_competitors_in_class);
+		return td;
+	}
+
+	function currentStageTable(class_filter, max_competitors_in_class)
+	{
+		var td = runsPlugin.currentStageResultsTableData(class_filter, max_competitors_in_class);
+		var tt = new TreeTable.Table();
+		tt.setData(td);
+		return tt;
+	}
+
+	/*
 	function currentStageTable(class_filter, max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
@@ -76,7 +91,7 @@ QtObject {
 		console.debug(tt.toString());
 		return tt;
 	}
-
+	*/
 	function currentStageAwardsTable(max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
@@ -146,9 +161,9 @@ QtObject {
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
-			var tt = currentStageTable(dlg.sqlWhereExpression());
+			var td = currentStageTableData(dlg.sqlWhereExpression());
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"
-										   , tt.data()
+										   , td
 										   , qsTr("Results by clases")
 										   , "printCurrentStage"
 										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
@@ -161,8 +176,8 @@ QtObject {
 	{
 		Log.info("runs printCurrentStageFirstN triggered");
 		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Limit number of printed runners in each class to:"), 3, 1);
-		var tt = currentStageTable("", n);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", tt.data(), qsTr("Stage results by clases"));
+		var td = currentStageTableData("", n);
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", td, qsTr("Stage results by clases"));
 	}
 
 	function printCurrentStageAwards()

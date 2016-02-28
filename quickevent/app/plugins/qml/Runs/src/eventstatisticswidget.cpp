@@ -1,11 +1,15 @@
 #include "eventstatisticswidget.h"
 #include "ui_eventstatisticswidget.h"
 
+#include "Runs/reportoptionsdialog.h"
+#include "Runs/runsplugin.h"
+
 #include <Event/eventplugin.h>
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 
 #include <QTimer>
 
@@ -15,9 +19,17 @@ namespace qfu = qf::core::utils;
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
 	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return qobject_cast<Event::EventPlugin*>(plugin);
+	return plugin;
+}
+
+static Runs::RunsPlugin* runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Runs plugin!");
+	return plugin;
 }
 
 //============================================================
@@ -42,6 +54,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	addColumn("runnersCount", tr("Runners"));
 	addColumn("runnersFinished", tr("Finished"));
 	addColumn("runnersNotFinished", tr("Not finished"));
+	addColumn("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results."));
 	{
 		qf::core::sql::QueryBuilder qb_runners_count;
 		qb_runners_count.select("COUNT(runs.id)")
@@ -57,6 +70,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.select("(" + qb_runners_finished.toString() + ") AS runnersFinished")
 				.select("0 AS freeMapCount")
 				.select("0 AS runnersNotFinished")
+				.select("0 AS resultsNotPrinted")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 				//.join("classes.id", "competitors.classId")
@@ -74,12 +88,18 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 	static int col_runners_count = columnIndex(QStringLiteral("runnersCount"));
 	static int col_runners_finished = columnIndex(QStringLiteral("runnersFinished"));
 	static int col_runners_not_finished = columnIndex(QStringLiteral("runnersNotFinished"));
+	static int col_results_not_printed = columnIndex(QStringLiteral("resultsNotPrinted"));
 	if(column_ix == col_free_map_count) {
 		int cnt = value(row_ix, col_map_count).toInt() - value(row_ix, col_runners_count).toInt();
 		return cnt;
 	}
 	else if(column_ix == col_runners_not_finished) {
 		int cnt = value(row_ix, col_runners_count).toInt() - value(row_ix, col_runners_finished).toInt();
+		return cnt;
+	}
+	else if(column_ix == col_results_not_printed) {
+		int results_count = tableRow(row_ix).value(QStringLiteral("resultsCount")).toInt();
+		int cnt = value(row_ix, col_runners_finished).toInt() - results_count;
 		return cnt;
 	}
 	return Super::value(row_ix, column_ix);
@@ -316,6 +336,12 @@ void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVarian
 	}
 }
 
+void EventStatisticsWidget::onVisibleChanged(bool is_visible)
+{
+	Q_UNUSED(is_visible)
+	reload();
+}
+
 int EventStatisticsWidget::currentStageId()
 {
 	int ret = eventPlugin()->currentStageId();
@@ -336,4 +362,44 @@ QTimer *EventStatisticsWidget::reloadLaterTimer()
 void EventStatisticsWidget::on_btReload_clicked()
 {
 	reload();
+}
+
+void EventStatisticsWidget::on_btPrintResults_clicked()
+{
+	QStringList class_names;
+	QList<int> classdefs_ids;
+	QList<int> runners_finished;
+	for(int i : ui->tableView->selectedRowsIndexes()) {
+		qf::core::utils::TableRow row = ui->tableView->tableRow(i);
+		class_names << row.value(QStringLiteral("classes.name")).toString();
+		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
+		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
+	}
+	bool report_printed;
+	Runs::ReportOptionsDialog dlg(this);
+	dlg.setClassNamesFilter(class_names);
+	if(dlg.exec()) {
+		QVariant td = runsPlugin()->currentStageResultsTableData(dlg.sqlWhereExpression());
+		QVariantMap props;
+		props["isBreakAfterEachClass"] = dlg.isBreakAfterEachClass();
+		props["isColumnBreak"] = dlg.isColumnBreak();
+		report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
+									, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
+									, td
+									, tr("Results by clases")
+									, "printCurrentStage"
+									, props
+									);
+	}
+	if(report_printed) {
+		QString qs = "UPDATE classdefs SET resultsCount=:resultsCount WHERE id=:id";
+		qf::core::sql::Query q;
+		q.prepare(qs, qf::core::Exception::Throw);
+		for (int i = 0; i < classdefs_ids.count(); ++i) {
+			q.bindValue(":resultsCount", runners_finished[i]);
+			q.bindValue(":id", classdefs_ids[i]);
+			q.exec(qf::core::Exception::Throw);
+		}
+		reloadLater();
+	}
 }

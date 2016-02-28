@@ -41,9 +41,6 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0" colspan="2">
-       <widget class="QLineEdit" name="edFilter"/>
-      </item>
       <item row="0" column="1">
        <widget class="QRadioButton" name="btRegExp">
         <property name="toolTip">
@@ -73,6 +70,19 @@
          <string>Doesn't match</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QRadioButton" name="btClassNames">
+        <property name="toolTip">
+         <string>Coma delimited list of class names</string>
+        </property>
+        <property name="text">
+         <string>Class names</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="3">
+       <widget class="QLineEdit" name="edFilter"/>
       </item>
      </layout>
     </widget>

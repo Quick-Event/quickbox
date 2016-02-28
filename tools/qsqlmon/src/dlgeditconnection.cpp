@@ -116,7 +116,8 @@ void DlgEditConnection::on_cbxDriver_currentIndexChanged(const QString &s)
 
 void DlgEditConnection::on_btFindDatabaseFile_clicked()
 {
-	QString s = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Open database file"));
+	QString s = edDatabase->text();
+	s = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Open database file"), s);
 	if(!s.isEmpty())
 		edDatabase->setText(s);
 }
