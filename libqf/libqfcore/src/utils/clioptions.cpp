@@ -121,20 +121,28 @@ QVariantMap CLIOptions::values() const
 
 QVariant CLIOptions::value(const QString &name) const
 {
-	Option opt = option(name, qf::core::Exception::Throw);
-	QVariant ret = opt.value();
-	if(!ret.isValid())
-		ret = opt.defaultValue();
-	if(!ret.isValid())
-		ret = QVariant(opt.type());
+	QVariant ret = value_helper(name, qf::core::Exception::Throw);
 	return ret;
 }
 
 QVariant CLIOptions::value(const QString& name, const QVariant default_value) const
 {
-	QVariant ret = value(name);
+	QVariant ret = value_helper(name, !qf::core::Exception::Throw);
 	if(!ret.isValid())
 		ret = default_value;
+	return ret;
+}
+
+QVariant CLIOptions::value_helper(const QString &name, bool throw_exception) const
+{
+	Option opt = option(name, throw_exception);
+	if(opt.isNull())
+		return QVariant();
+	QVariant ret = opt.value();
+	if(!ret.isValid())
+		ret = opt.defaultValue();
+	if(!ret.isValid())
+		ret = QVariant(opt.type());
 	return ret;
 }
 

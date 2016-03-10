@@ -118,6 +118,7 @@ public:
 	Q_INVOKABLE QVariant value(const QString &name) const;
 	Q_INVOKABLE QVariant value(const QString &name, const QVariant default_value) const;
 protected:
+	QVariant value_helper(const QString &name, bool throw_exception) const;
 	QPair<QString, QString> applicationDirAndName() const;
 	QString takeArg();
 	QString peekArg() const;
