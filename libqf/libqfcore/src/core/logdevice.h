@@ -106,14 +106,21 @@ public:
 	LogEntryMap(const QVariantMap &m) : QVariantMap(m) {}
 public:
 	qf::core::Log::Level level() const;
+	LogEntryMap& setLevel(qf::core::Log::Level l);
 	QString levelStr() const;
 	QString category() const;
+	LogEntryMap& setCategory(const QString &c);
 	QString message() const;
+	LogEntryMap& setMessage(const QString &m);
 	QString file() const;
+	LogEntryMap& setFile(const QString &f);
 	int line() const;
+	LogEntryMap& setLine(int l);
 	QString function() const;
+	LogEntryMap& setFunction(const QString &f);
 	QDateTime timeStamp() const;
-	void setTimeStamp(const QDateTime &ts);
+	LogEntryMap& setTimeStamp(const QDateTime &ts);
+
 	virtual QString toString() const;
 };
 

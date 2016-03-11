@@ -378,7 +378,7 @@ void TableView::removeSelectedRows()
 		else {
 			QList<int> sel_rows = selectedRowsIndexes();
 			if(sel_rows.count() == 1) {
-				QVariant id = tableModel()->value(toTableModelRowNo(sel_rows.value(0)), "id");
+				QVariant id = tableRow(sel_rows.value(0)).value(idColumnName());
 				if(id.isValid())
 					emit editRowInExternalEditor(id, ModeDelete);
 			}

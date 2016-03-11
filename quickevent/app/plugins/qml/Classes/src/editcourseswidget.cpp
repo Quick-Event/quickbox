@@ -5,6 +5,8 @@
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/connection.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogbuttonbox.h>
+#include <QPushButton>
 
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
@@ -21,7 +23,7 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 	{
 		ui->tblCourses->setPersistentSettingsId("tblCourses");
 		ui->tblCoursesTB->setTableView(ui->tblCourses);
-		ui->tblCourses->setRowEditorMode(qfw::TableView::RowEditorMode::EditRowsMixed);
+		ui->tblCourses->setRowEditorMode(qfw::TableView::RowEditorMode::EditRowsInline);
 		connect(ui->tblCourses, &qfw::TableView::editCellRequest, [this](const QModelIndex &ix) {
 			if(ix.column() == this->m_coursesModel->columnIndex("code_list")) {
 				editCourseCodes(ix);
@@ -39,19 +41,27 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 		m_coursesModel = m;
 	}
 	{
+		qf::core::sql::Connection conn = m_coursesModel->sqlConnection();
+		qfs::QueryBuilder qb_code_count;
+		qb_code_count.select("COUNT(*)").from("coursecodes").where("coursecodes.courseId=courses.id").as("code_count");
+		qfs::QueryBuilder qb_code_list;
+		qb_code_list.from("coursecodes")
+				.join("coursecodes.codeId", "codes.id")
+				.where("coursecodes.courseId=courses.id")
+				.as("code_list");
+		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive)) {
+			qb_code_list.select("string_agg(CAST(codes.code as VARCHAR), ',' ORDER BY coursecodes.position)");
+		}
+		else {
+			qb_code_list.select("GROUP_CONCAT(codes.code)")
+				.orderBy("coursecodes.position");
+		}
 		qfs::QueryBuilder qb;
 		qb.select2("courses", "*")
-				.select("COUNT(codes.code) AS code_count")
+				.select(qb_code_list.toString())
+				.select(qb_code_count.toString())
 				.from("courses")
-				.join("courses.id", "coursecodes.courseId")
-				.join("coursecodes.codeId", "codes.id")
-				.groupBy("courses.id")
-				.orderBy("courses.name");//.limit(10);
-		qf::core::sql::Connection conn = m_coursesModel->sqlConnection();
-		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive))
-			qb.select("string_agg(CAST(codes.code as VARCHAR), ',') AS code_list");
-		else
-			qb.select("GROUP_CONCAT(codes.code, ',') AS code_list");
+				.orderBy("courses.name");
 		m_coursesModel->setQueryBuilder(qb);
 		m_coursesModel->reload();
 	}
@@ -73,8 +83,18 @@ void EditCoursesWidget::editCourseCodes(const QModelIndex &ix)
 	int course_id = m->tableRow(row_no).value("courses.id").toInt();
 	if(course_id <= 0)
 		return;
-	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close, this);
-	auto *w = new EditCourseCodesWidget(course_id);
+	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Close | QDialogButtonBox::Ok | QDialogButtonBox::Apply | QDialogButtonBox::Reset, this);
+	auto *w = new EditCourseCodesWidget();
+	connect(w, &EditCourseCodesWidget::courseCodesSaved, ui->tblCourses, &qfw::TableView::reloadCurrentRow);
+	{
+		QPushButton *bt = dlg.buttonBox()->button(QDialogButtonBox::Apply);
+		connect(bt, &QPushButton::clicked, w, &EditCourseCodesWidget::save);
+	}
+	{
+		QPushButton *bt = dlg.buttonBox()->button(QDialogButtonBox::Reset);
+		connect(bt, &QPushButton::clicked, w, &EditCourseCodesWidget::reload);
+	}
+	w->reload(course_id);
 	dlg.setCentralWidget(w);
 	dlg.exec();
 }

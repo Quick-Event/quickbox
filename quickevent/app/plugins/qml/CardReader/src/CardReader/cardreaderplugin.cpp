@@ -25,8 +25,6 @@ namespace qff = qf::qmlwidgets::framework;
 
 using namespace CardReader;
 
-const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD = "CardReader.cardRead";
-const char* CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD = "CardReader.punchRecord";
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
 const int CardReaderPlugin::FINISH_PUNCH_CODE = 999;
 const int CardReaderPlugin::FINISH_PUNCH_POS = CardReaderPlugin::FINISH_PUNCH_CODE;

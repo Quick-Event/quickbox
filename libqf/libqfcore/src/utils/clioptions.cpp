@@ -121,20 +121,28 @@ QVariantMap CLIOptions::values() const
 
 QVariant CLIOptions::value(const QString &name) const
 {
-	Option opt = option(name, qf::core::Exception::Throw);
-	QVariant ret = opt.value();
-	if(!ret.isValid())
-		ret = opt.defaultValue();
-	if(!ret.isValid())
-		ret = QVariant(opt.type());
+	QVariant ret = value_helper(name, qf::core::Exception::Throw);
 	return ret;
 }
 
 QVariant CLIOptions::value(const QString& name, const QVariant default_value) const
 {
-	QVariant ret = value(name);
+	QVariant ret = value_helper(name, !qf::core::Exception::Throw);
 	if(!ret.isValid())
 		ret = default_value;
+	return ret;
+}
+
+QVariant CLIOptions::value_helper(const QString &name, bool throw_exception) const
+{
+	Option opt = option(name, throw_exception);
+	if(opt.isNull())
+		return QVariant();
+	QVariant ret = opt.value();
+	if(!ret.isValid())
+		ret = opt.defaultValue();
+	if(!ret.isValid())
+		ret = QVariant(opt.type());
 	return ret;
 }
 
@@ -192,7 +200,7 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			break;
 		if(arg == QStringLiteral("--help") || arg == QStringLiteral("-h")) {
 			setHelp(true);
-			printHelp();
+			//printHelp();
 			m_isAppBreak = true;
 			return;
 		}
@@ -267,6 +275,11 @@ QPair<QString, QString> CLIOptions::applicationDirAndName() const
 	#ifdef Q_OS_WIN
 			if(app_name.endsWith(QLatin1String(".exe"), Qt::CaseInsensitive))
 				app_name = app_name.mid(0, app_name.length() - 4);
+	#else
+			if(app_name.endsWith(QLatin1String(".so"), Qt::CaseInsensitive)) {
+				// for example zygotized Android application
+				app_name = app_name.mid(0, app_name.length() - 3);
+			}
 	#endif
 		}
 	}
@@ -348,7 +361,7 @@ void ConfigCLIOptions::parse(const QStringList &cmd_line_args)
 {
 	Super::parse(cmd_line_args);
 	if(config().isEmpty())
-		setConfig(applicationName());
+		setConfig(applicationName() + ".conf");
 }
 
 bool ConfigCLIOptions::loadConfigFile()
@@ -359,8 +372,8 @@ bool ConfigCLIOptions::loadConfigFile()
 	QString config_file = config();
 	qfInfo() << "config-dir:" << config_dir << "config-file:" << config_file;
 	if(!config_file.isEmpty()) {
-		if(!config_file.contains('.'))
-			config_file += ".conf";
+		//if(!config_file.contains('.'))
+		//	config_file += ".conf";
 		config_file = config_dir + '/' + config_file;
 		QFile f(config_file);
 		qfInfo() << "Checking presence of config file:" << f.fileName();

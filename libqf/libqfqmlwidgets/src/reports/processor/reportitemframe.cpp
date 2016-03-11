@@ -205,7 +205,7 @@ int ReportItemFrame::itemCount() const
 
 ReportItem *ReportItemFrame::itemAt(int index)
 {
-	return m_items[index];
+	return m_items.value(index);
 }
 
 ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
@@ -234,7 +234,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 	qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
 	//N n;
 	//QF_TIME_SCOPE(QString::number((int)n) + ": ReportItemFrame::printMetaPaintChildren");
-	PrintResult res = PR_PrintedOk;
+	PrintResult res = PrintResult::createPrintFinished();
 	Rect paint_area_rect = bounding_rect;
 	if(layout() == LayoutStacked) {
 		/// allways print all the children) in the stacked layout
@@ -246,8 +246,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			ChildSize sz = it->childSize(LayoutVertical);
 			children_paint_area_rect.setHeight(sz.fromParentSize(paint_area_rect.height()));
 			PrintResult ch_res = it->printMetaPaint(out, children_paint_area_rect);
-			if(ch_res == PR_PrintAgainOnNextPage) {
-				if(res == PR_PrintedOk) {
+			if(!ch_res.isPrintFinished()) {
+				if(res.isPrintFinished()) {
 					/// only one child can be printed again
 					/// others are ignored in ch_res flags
 					res = ch_res;
@@ -317,14 +317,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					double width = out->lastChild()->renderedRect.width();
 					sum_mm += width;
 					//qfInfo() << "\t sum_mm:" << sum_mm;
-					if(ch_res == PR_PrintAgainOnNextPage) {
+					if(!ch_res.isPrintAgain()) {
 						/// para can be printed as NotFit if it owerflows its parent frame
 						res = ch_res;
 					}
 				}
 				else {
-					if(ch_res == PR_PrintedOk) {
-						/// jediny, kdo se nemusi vytisknout je band
+					if(ch_res.isPrintFinished()) {
 						if(it->isVisible()) {
 							qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
 						}
@@ -342,7 +341,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		}
 		qreal rest_mm = paint_area_rect.width() - sum_mm;
 
-		if(res == PR_PrintedOk) {
+		if(res.isPrintFinished()) {
 			if(has_percent) {
 				/// divide rest of space to xx% items
 				qreal sum_percent = 0;
@@ -387,13 +386,13 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							if(out->children().count() > prev_children_cnt) {
 								//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
 								layout_ix_to_print_ix[i] = prev_children_cnt;
-								if(ch_res == PR_PrintAgainOnNextPage) {
+								if(ch_res.isPrintAgain()) {
 									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
 									res = ch_res;
 								}
 							}
 							else {
-								if(ch_res == PR_PrintedOk) {
+								if(ch_res.isPrintFinished()) {
 									/// jediny, kdo se nemusi vytisknout je band
 									if(it->isVisible()) {
 										qfWarning() << "jak to, ze se dite nevytisklo v horizontalnim layoutu?" << it;
@@ -452,7 +451,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				}
 			}
 		}
-		if(res == PR_PrintAgainOnNextPage) {
+		if(res.isPrintAgain()) {
 			/// detail by mel mit, pokud se ma zalamovat, vzdy vertikalni layout, jinak tato funkce zpusobi, ze se po zalomeni vsechny dcerine bandy budou tisknout cele znova
 			/// zakomentoval jsem to a zda se, ze to zatim nicemu nevadi
 			//resetIndexToPrintRecursively(!ReportItem::IncludingParaTexts);
@@ -463,7 +462,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 		/// print % like a rubber dimension and if print result is PrintOk resize rendered rect of printed metapaint item
 		/// break funguje tak, ze pri 1., 3., 5. atd. tisku vraci PrintNotFit a pri sudych PrintOk
 		/// prvni break na strance znamena, ze jsem tu uz po zalomeni, takze se tiskne to za break.
-		int index_to_print_0 = m_indexToPrint;
+		//int index_to_print_0 = m_indexToPrint;
 		for(; m_indexToPrint<itemsToPrintCount(); m_indexToPrint++) {
 			ReportItem *child_item_to_print = itemToPrintAt(m_indexToPrint);
 			Rect children_paint_area_rect = paint_area_rect;
@@ -510,7 +509,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 			qfDebug() << "\tch_bbr v2:" << children_paint_area_rect.toString();
 			int prev_children_cnt = out->childrenCount();
 			PrintResult ch_res = child_item_to_print->printMetaPaint(out, children_paint_area_rect);
-			if(ch_res == PR_PrintedOk || ch_res == PR_PrintAgainDetail) {
+			if(ch_res.isPrintFinished()) {
 				/// muze se stat, ze se dite nevytiskne, napriklad band nema zadna data
 				if(out->children().count() > prev_children_cnt) {
 					ReportItemMetaPaint *mpi = out->lastChild();
@@ -518,7 +517,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						const Rect &r = mpi->renderedRect;
 						/// cut rendered area
 						paint_area_rect.cutSizeInLayout(r, layout());
-						if(ch_res == PR_PrintAgainDetail) {
+						if(ch_res.isNextDetailRowExists()) {
 							m_indexToPrint--; /// vytiskni ho znovu
 						}
 					}
@@ -529,8 +528,8 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 				res = ch_res;
 				break;
 			}
-			if(child_item_to_print->isBreak() && m_indexToPrint > index_to_print_0)
-				break;
+			//if(child_item_to_print->isBreak() && m_indexToPrint > index_to_print_0)
+			//	break;
 		}
 	}
 	//res = checkPrintResult(res);
@@ -545,18 +544,18 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	qfDebug() << "\tdesignedRect:" << designedRect.toString();// << "isLeftTopFloating:" << isLeftTopFloating() << "isRightBottomFloating:" << isRightBottomFloating();
 	qfDebug() << "\tlayout:" << ((layout() == LayoutHorizontal)? "horizontal": "vertical") << ", is rubber:" << isRubber(layout());
 	QF_TIME_SCOPE("ReportItemFrame::printMetaPaint ***");
-	PrintResult res = PR_PrintedOk;
+	PrintResult res = PrintResult::createPrintFinished();
 	if(!isVisible())
 		return res;
 	Rect frame_content_br = bounding_rect;
 	qfDebug() << "\tbbr 0:" << frame_content_br.toString();
 	if(designedRect.horizontalUnit == Rect::UnitMM && designedRect.width() - Epsilon > bounding_rect.width()) {
 		qfDebug() << "\t<<<< FRAME NOT FIT WIDTH";
-		return checkPrintResult(PR_PrintAgainOnNextPage);
+		return checkPrintResult(PrintResult::createPrintAgain());
 	}
 	if(designedRect.verticalUnit == Rect::UnitMM && designedRect.height() - Epsilon > bounding_rect.height()) {
 		qfDebug() << "\t<<<< FRAME NOT FIT HEIGHT";
-		return checkPrintResult(PR_PrintAgainOnNextPage);
+		return checkPrintResult(PrintResult::createPrintAgain());
 	}
 	frame_content_br.adjust(hinset(), vinset(), -hinset(), -vinset());
 
@@ -578,13 +577,17 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	for(int current_column_index=0; current_column_index<column_sizes.count(); current_column_index++) {
 		Rect column_br = column_br_helper;
 		column_br.setWidth(column_sizes.value(current_column_index));
-		qfDebug() << "\tcolumn bounding rect:" << column_br.toString();
+		//if(column_sizes.count() > 1) {
+		//	qfInfo() << current_column_index << "column bounding rect:" << column_br.toString();
+		//}
 
 		res = printMetaPaintChildren(metapaint_frame, column_br);
 
-		if(res == PR_PrintAgainOnNextPage) {
-			/// pokud je result neverfit, nech ho tam, at aspon vidime, co se nikdy nevejde
-			if(!canBreak() && !(res == PR_ErrorNeverFit)) {
+		if(res.isPrintAgain()) {
+			if(res.isPageBreak()) {
+				current_column_index = column_sizes.count();
+			}
+			if(!canBreak()) {
 				// always delete current metapaint item when it cannot be broken
 				// when keepWithPrev is true, delete also metapaint item for all metapaint items in it's keepWithPrev chain
 				ReportItemFrame *parent_frame = this->parentFrame();
@@ -621,7 +624,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 				return checkPrintResult(res);
 			}
 		}
-		column_br_helper = column_br;
+		//column_br_helper = column_br;
 		column_br_helper.moveLeft(column_br.right() + columns_gap);
 	}
 

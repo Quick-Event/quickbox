@@ -44,6 +44,30 @@ private:
 public:
 	ReportViewWidget(QWidget *parent = NULL);
 	~ReportViewWidget() Q_DECL_OVERRIDE;
+
+	/**
+	 * @brief showReport
+	 * @param parent
+	 * @param report_qml_file
+	 * @param single_table_data
+	 * @param window_title
+	 * @param config_persistent_id
+	 * @param report_init_properties
+	 * @return true if report was printed
+	 */
+	static bool showReport(QWidget *parent
+			, const QString &report_qml_file
+			, const QVariant &single_table_data
+			, const QString &window_title = tr("Report preview")
+			, const QString &config_persistent_id = QString()
+			, const QVariantMap &report_init_properties = QVariantMap());
+	static bool showReport2(QWidget *parent
+			, const QString &report_qml_file
+			, const QVariantMap &multiple_table_data
+			, const QString &window_title = tr("Report preview")
+			, const QString &persistent_settings_id = QString()
+			, const QVariantMap &report_init_properties = QVariantMap());
+
 protected:
 	class ScrollArea;
 	class PainterWidget;
@@ -151,6 +175,7 @@ public:
 	ReportItemMetaPaint* selectedItem() const {return m_selectedItem;}
 	virtual void prePrint() {}
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
+	Q_SIGNAL void reportPrinted(int printer_output_format);
 private:
 	QLineEdit *m_edCurrentPage = nullptr;
 };

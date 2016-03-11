@@ -22,10 +22,7 @@ SqlTableModel::~SqlTableModel()
 
 bool SqlTableModel::reload()
 {
-	bool ret = Super::reload();
-	//if(ret)
-	//	emit columnsChanged();
-	return ret;
+	return Super::reload();
 }
 
 QString SqlTableModel::buildQuery()

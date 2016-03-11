@@ -29,9 +29,11 @@ public:
 	~SqlTableModel() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
+	QF_PROPERTY_BOOL_IMPL(i, I, ncludeJoinedTablesIdsToReloadRowQuery)
 public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
+	Q_INVOKABLE QString effectiveQuery();
 	bool reload() Q_DECL_OVERRIDE;
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
@@ -65,7 +67,7 @@ protected:
 
 	bool reloadQuery(const QString &query_str);
 
-	bool reloadTable(const QString &query_str);
+	virtual bool reloadTable(const QString &query_str);
 	QStringList tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 

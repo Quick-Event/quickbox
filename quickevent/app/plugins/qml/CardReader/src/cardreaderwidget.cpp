@@ -255,7 +255,7 @@ void CardReaderWidget::reload()
 void CardReaderWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	int card_id = payload.toInt();
-	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		// TODO: only if widget is visible (plugin window active)
 		if(m_cbxAutoRefresh->isChecked())
 			updateTableView(card_id);
@@ -434,7 +434,7 @@ void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card) th
 		thisPlugin()->updateCheckedCardValuesSql(checked_card);
 	}
 	if(card_id > 0) {
-		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD, card_id, true);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
 	}
 }
 
@@ -452,7 +452,7 @@ void CardReaderWidget::processSIPunch(const SIMessageTransmitRecord &rec)
 		//thisPlugin()->updateRunLapsSql(checked_card);
 	}
 	if(punch_id > 0) {
-		eventPlugin()->emitDbEvent(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_PUNCHRECORD, punch_id, true);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch_id, true);
 		//updateTableView(card_id);
 	}
 }

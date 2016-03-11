@@ -97,8 +97,8 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 			}
 		}
 	}
-	PrintResult res;
 	/*--
+	PrintResult res;
 	bool design_mode = processor()->isDesignMode(); /// true znamena, zobraz prvni radek, i kdyz tam nejsou data.
 	//qfInfo() << "design mode:" << design_mode;
 	if(!design_mode && (data_table.isNull() || dataRow().isNull())) {
@@ -107,8 +107,8 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 		return res;
 	}
 	--*/
-	res = Super::printMetaPaint(out, bounding_rect);
-	if(res == PR_PrintedOk) {
+	PrintResult res = Super::printMetaPaint(out, bounding_rect);
+	if(res.isPrintFinished()) {
 		if(model) {
 			/// take next data row
 			int ix = currentIndex() + 1;
@@ -118,7 +118,7 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 				QF_TIME_SCOPE("ReportItemDetail::printMetaPaint 3");
 				setCurrentIndex(ix);
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res = PR_PrintAgainDetail;
+				res.setNextDetailRowExists(true);
 			}
 			else {
 				resetCurrentIndex();

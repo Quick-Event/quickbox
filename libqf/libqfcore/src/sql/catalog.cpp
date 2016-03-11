@@ -145,29 +145,42 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 		fi.setName(full_table_name + "." + short_field_name);
 		fi.setAutoIncrement(fi.isAutoValue());
 		if(driver_name.endsWith("PSQL")) {
-			// fill seqname
+			// fill seqname from default value in form: nextval('events_id_seq'::regclass)
+			const QLatin1String pre("nextval('");
+			const QLatin1String pos("'::regclass)");
+			QString def_val = fi.defaultValue().toString();
+			if(def_val.startsWith(pre, Qt::CaseInsensitive) && def_val.endsWith(pos, Qt::CaseInsensitive)) {
+				QString seq_name = def_val.mid(pre.size());
+				seq_name = seq_name.mid(0, seq_name.size() - pos.size());
+				seq_name = table_name + '.' + seq_name;
+				//qfInfo() << seq_name;
+				fi.setSeqName(seq_name);
+				fi.setAutoIncrement(true);
+				qfDebug() << "\t\t name:" << fi.name() << "seq name:" << fi.seqName();
+			}
+			//qfInfo().noquote() << fi.toString();
+			/*
 			QSqlQuery q1(connection);
 			q1.setForwardOnly(true);
 			QString s = full_table_name;
 			QString qs = QString("SELECT pg_get_serial_sequence('%1', '%2');").arg(s).arg(fi.shortName());
-			//qfDebug() << qs;
-			if(q1.exec(qs)) if(q1.next()) {
+			qfInfo() << qs;
+			if(q1.exec(qs) && q1.next()) {
 				QString seq_name = q1.value(0).toString();
 				if(!seq_name.isEmpty()) {
+					qfInfo() << seq_name;
 					fi.setSeqName(seq_name);
 					fi.setAutoIncrement(true);
 					qfDebug() << "\t\t name:" << fi.name() << "seq name:" << fi.seqName();
 				}
 			}
-			// fill prikey flag
-			if(primary_keys.contains(fi.shortName()))
-				fi.setPriKey(true);
+			*/
 		}
 		else if(driver_name.endsWith("MYSQL")) {
-			// fill prikey flag
-			if(primary_keys.contains(fi.shortName()))
-				fi.setPriKey(true);
 		}
+		// fill prikey flag
+		if(primary_keys.contains(fi.shortName()))
+			fi.setPriKey(true);
 		//qfInfo() << "#1 FieldInfo:" << fi.toString();
 	}
 	if(driver_name.endsWith("PSQL")) {

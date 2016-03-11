@@ -46,7 +46,7 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();
 	PrintResult res = Super::printHtml(out);
-	if(!(res == PR_PrintedOk))
+	if(!res.isPrintFinished())
 		return res;
 
 	qfDebug() << "\tparent html element:" << out.tagName();
@@ -68,7 +68,7 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 				PrintResult ch_res;
 				do {
 					ch_res = it->printHtml(el_div);
-				} while(ch_res == PR_PrintAgainDetail);
+				} while(ch_res.isPrintFinished() && ch_res.isNextDetailRowExists());
 				res = ch_res;
 			}
 			out.appendChild(el_div);
@@ -85,7 +85,7 @@ ReportItem::PrintResult ReportItemBand::printHtml(ReportItem::HTMLElement &out)
 {
 	qfLogFuncFrame() << this;
 	PrintResult res = Super::printHtml(out);
-	if(res == PR_PrintedOk) {
+	if(res.isPrintFinished()) {
 		if(isHtmlExportAsTable()) {
 			QDomElement el_band = out.lastChild().toElement();
 			el_band.setAttribute(ReportProcessor::HTML_ATTRIBUTE_ITEM, QStringLiteral("band"));
@@ -112,7 +112,7 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 	}
 	PrintResult res;
 	res = Super::printHtml(out);
-	if(res == PR_PrintedOk) {
+	if(res.isPrintFinished()) {
 		{
 			QDomElement el = out.lastChild().toElement();
 			createHtmlExportAttributes(el);
@@ -124,7 +124,7 @@ ReportItem::PrintResult ReportItemDetail::printHtml(HTMLElement & out)
 			if(ix < model->rowCount()) {
 				setCurrentIndex(ix);
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res = PR_PrintAgainDetail;
+				res.setNextDetailRowExists(true);
 			}
 			else {
 				resetCurrentIndex();
@@ -141,7 +141,7 @@ ReportItem::PrintResult ReportItemPara::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id");
 	PrintResult res = Super::printHtml(out);
-	if(!(res == PR_PrintedOk))
+	if(!res.isPrintFinished())
 		return res;
 
 	QDomElement el_div = out.ownerDocument().createElement("div");

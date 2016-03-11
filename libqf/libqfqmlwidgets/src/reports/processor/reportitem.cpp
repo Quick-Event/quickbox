@@ -38,7 +38,7 @@ ReportItem::ReportItem(ReportItem *parent)
 	m_keepAll = false;
 	m_visible = true;
 	//QF_ASSERT_EX(processor != nullptr, "Processor can not be NULL.");
-	m_recentlyPrintNotFit = false;
+	m_recentPrintNotFinished = false;
 	//--keepAll = qfc::String(element.attribute("keepall")).toBool();
 	//if(keepAll) { qfInfo() << "KEEP ALL is true" << element.attribute("keepall"); }
 }
@@ -178,11 +178,11 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	//if(res.value == PrintNotFit) {
 	//qfWarning().noSpace() << "PrintNotFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "' recentlyPrintNotFit: " << recentlyPrintNotFit << " keepall: " << keepAll;
 	//}
-	if(!canBreak() && m_recentlyPrintNotFit && res == PR_PrintAgainOnNextPage) {
+	if(!canBreak() && m_recentPrintNotFinished && !res.isPrintFinished()) {
 		//qfWarning().noSpace() << "PrintNeverFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "'";
-		ret = PR_ErrorNeverFit;
+		ret = PrintResult::createPrintError();
 	}
-	m_recentlyPrintNotFit = (res == PR_PrintAgainOnNextPage);
+	m_recentPrintNotFinished = !res.isPrintFinished();
 	return ret;
 }
 
@@ -207,8 +207,8 @@ ReportProcessor *ReportItem::processor(bool throw_exc)
 ReportItem::PrintResult ReportItem::printHtml(ReportItem::HTMLElement &out)
 {
 	if(out.isNull())
-		return PR_ErrorNeverFit;
-	return PR_PrintedOk;
+		return PrintResult::createPrintError();
+	return PrintResult::createPrintFinished();
 }
 
 void ReportItem::createHtmlExportAttributes(ReportItem::HTMLElement &out)

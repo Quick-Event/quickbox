@@ -61,6 +61,9 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		// qfLogFuncFrame cannot be implemented optimaly without this hack
 		return;
 	}
+	//if(!msg.contains("111111"))
+	//	return;
+	//fprintf(stderr, "%s\n", qPrintable(msg));
 	Q_FOREACH(auto log_device, logDevices()) {
 		// check if log is enabled for this device particulary
 		// checking is done twice for successful log device and once for the unsuccessful one (in isMatchingAnyDeviceLogFilter)
@@ -110,9 +113,14 @@ LogDevice::~LogDevice()
 
 QString LogDevice::moduleFromFileName(const QString &file_name)
 {
-	//QString ret = QString::fromUtf8(file_name);
-	static QRegExp rx("(\\\\|\\/)");
-	QString ret = file_name.section(rx, -1);
+	QString ret = file_name;
+	int ix = file_name.lastIndexOf('/');
+#if defined Q_OS_WIN
+	if(ix < 0)
+		ix = file_name.lastIndexOf('\\');
+#endif
+	if(ix >= 0)
+		ret = ret.mid(ix + 1);
 	return ret;
 }
 
@@ -392,7 +400,9 @@ bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, con
 #endif
 	}
 	//fprintf(stderr, "!!!!!!!!!!!!! %s: '%s'\n", file_name, qPrintable(category));
-	if(category && category[0] && !(QLatin1String("default") == QLatin1String(category))) { // default category is implicit in QMessageLogger, so filter it out
+	if(category && category[0]
+	   && !(QLatin1String("default") == QLatin1String(category))
+	   && !(QLatin1String("qml") == QLatin1String(category))) { // default, qml category is implicit in QMessageLogger, so filter it out
 		// category specified
 		qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
 		if(log_filter.logAllCategories) {
@@ -620,28 +630,34 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 //=========================================================
 // LogEntryMap
 //=========================================================
-static const auto KeyLevel = QStringLiteral("level");
-static const auto KeyCategory = QStringLiteral("category");
-static const auto KeyMessage = QStringLiteral("message");
-static const auto KeyFile = QStringLiteral("file");
-static const auto KeyLine = QStringLiteral("line");
-static const auto KeyFunction = QStringLiteral("function");
-static const auto KeyTimeStamp = QStringLiteral("timestamp");
+static const auto KEY_LEVEL = QStringLiteral("level");
+static const auto KEY_CATEGORY = QStringLiteral("category");
+static const auto KEY_MESSAGE = QStringLiteral("message");
+static const auto KEY_FILE = QStringLiteral("file");
+static const auto KEY_LINE = QStringLiteral("line");
+static const auto KEY_FUNCTION = QStringLiteral("function");
+static const auto KEY_TIME_STAMP = QStringLiteral("timestamp");
 
 LogEntryMap::LogEntryMap(Log::Level level, const QString &category, const QString &message, const QString &file, int line, const QString &function)
 {
-	this->operator[](KeyLevel) = (int)level;
-	this->operator[](KeyCategory) = category;
-	this->operator[](KeyMessage) = message;
-	this->operator[](KeyFile) = file;
-	this->operator[](KeyLine) = line;
-	this->operator[](KeyFunction) = function;
-	this->operator[](KeyTimeStamp) = QDateTime::currentDateTime();
+	this->operator[](KEY_LEVEL) = (int)level;
+	this->operator[](KEY_CATEGORY) = category;
+	this->operator[](KEY_MESSAGE) = message;
+	this->operator[](KEY_FILE) = file;
+	this->operator[](KEY_LINE) = line;
+	this->operator[](KEY_FUNCTION) = function;
+	this->operator[](KEY_TIME_STAMP) = QDateTime::currentDateTime();
 }
 
 Log::Level LogEntryMap::level() const
 {
-	return (Log::Level)value(KeyLevel).toInt();
+	return (Log::Level)value(KEY_LEVEL).toInt();
+}
+
+LogEntryMap &LogEntryMap::setLevel(Log::Level l)
+{
+	(*this)[KEY_LEVEL] = (int)l;
+	return *this;
 }
 
 QString LogEntryMap::levelStr() const
@@ -651,37 +667,68 @@ QString LogEntryMap::levelStr() const
 
 QString LogEntryMap::message() const
 {
-	return value(KeyMessage).toString();
+	return value(KEY_MESSAGE).toString();
+}
+
+LogEntryMap &LogEntryMap::setMessage(const QString &m)
+{
+	(*this)[KEY_MESSAGE] = m;
+	return *this;
 }
 
 QString LogEntryMap::category() const
 {
-	return value(KeyCategory).toString();
+	return value(KEY_CATEGORY).toString();
+}
+
+LogEntryMap &LogEntryMap::setCategory(const QString &c)
+{
+	(*this)[KEY_CATEGORY] = c;
+	return *this;
 }
 
 QString LogEntryMap::file() const
 {
-	return value(KeyFile).toString();
+	return value(KEY_FILE).toString();
+}
+
+LogEntryMap &LogEntryMap::setFile(const QString &f)
+{
+	(*this)[KEY_FILE] = f;
+	return *this;
 }
 
 int LogEntryMap::line() const
 {
-	return value(KeyLine).toInt();
+	return value(KEY_LINE).toInt();
+}
+
+LogEntryMap &LogEntryMap::setLine(int l)
+{
+	(*this)[KEY_LINE] = l;
+	return *this;
 }
 
 QString LogEntryMap::function() const
 {
-	return value(KeyFunction).toString();
+	return value(KEY_FUNCTION).toString();
+}
+
+LogEntryMap &LogEntryMap::setFunction(const QString &f)
+{
+	(*this)[KEY_FUNCTION] = f;
+	return *this;
 }
 
 QDateTime LogEntryMap::timeStamp() const
 {
-	return value(KeyTimeStamp).toDateTime();
+	return value(KEY_TIME_STAMP).toDateTime();
 }
 
-void LogEntryMap::setTimeStamp(const QDateTime &ts)
+LogEntryMap &LogEntryMap::setTimeStamp(const QDateTime &ts)
 {
-	this->operator[](KeyTimeStamp) = ts;
+	(*this)[KEY_TIME_STAMP] = ts;
+	return *this;
 }
 
 QString LogEntryMap::toString() const

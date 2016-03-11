@@ -325,6 +325,7 @@ bool TableModel::reload()
 	beginResetModel();
 	checkColumns();
 	endResetModel();
+	emit reloaded();
 	return true;
 }
 
@@ -370,6 +371,9 @@ int TableModel::reloadRow(int row_no)
 {
 	qfu::TableRow &row = m_table.rowRef(row_no);
 	row.clearEditFlags();
+	QModelIndex ix1 = index(row_no, 0);
+	QModelIndex ix2 = index(row_no, columnCount() - 1);
+	emit dataChanged(ix1, ix2);
 	return 1;
 }
 
@@ -529,6 +533,11 @@ bool TableModel::setDirty(int row_ix, const QString &col_name, bool d)
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return false);
 	return setDirty(row_ix, col_ix, d);
+}
+
+qf::core::utils::TableRow &TableModel::tableRowRef(int row_no)
+{
+	return m_table.rowRef(row_no);
 }
 
 qf::core::utils::TableRow TableModel::tableRow(int row_no) const

@@ -2,6 +2,8 @@
 
 #include <qf/core/exception.h>
 
+#include <QApplication>
+
 using namespace qf::qmlwidgets::dialogs;
 
 MessageBox::MessageBox(QWidget *parent) :
@@ -14,6 +16,8 @@ void MessageBox::showException(QWidget *parent, const QString &what, const QStri
 	Q_UNUSED(where);
 	Q_UNUSED(stack_trace);
 	QString msg = what;
+	if(!parent)
+		parent = QApplication::activeWindow();
 	QMessageBox::critical(parent, tr("Exception"), msg);
 }
 

@@ -17,20 +17,11 @@ CompetitorDocument::CompetitorDocument(QObject *parent)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("competitors", "*")
 			.select("lastName || ' ' || firstName AS name")
+			//.select2("classes", "name AS className")
 			.from("competitors")
+			//.join("competitors.classId", "classes.id")
 			.where("competitors.id={{ID}}");
 	setQueryBuilder(qb);
-}
-
-QString CompetitorDocument::safeSave(bool save_siid_to_runs)
-{
-	try {
-		m_saveSiidToRuns = save_siid_to_runs;
-		save();
-	} catch (qf::core::Exception &e) {
-		return e.message();
-	}
-	return QString();
 }
 
 static Event::EventPlugin* eventPlugin()
@@ -43,9 +34,10 @@ static Event::EventPlugin* eventPlugin()
 bool CompetitorDocument::saveData()
 {
 	qfLogFuncFrame();
-	qf::core::sql::Transaction transaction;
 	RecordEditMode old_mode = mode();
-	bool si_dirty = isDirty("competitors.siId");
+	bool siid_dirty = isDirty("competitors.siId");
+	bool class_dirty = isDirty("competitors.classId");
+	//int old_siid = value("competitors.siId").toInt();
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
 	if(ret) {
@@ -54,15 +46,6 @@ bool CompetitorDocument::saveData()
 			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
 			int si_id = value("competitors.siId").toInt();
-			/*
-			if(si_id > 0 && m_savedSI.contains(si_id)) {
-				qfError() << "SI:" << si_id << "saved already!!!";
-				si_id = 0;
-			}
-			else {
-				m_savedSI[si_id];
-			}
-			*/
 			auto *event_plugin = eventPlugin();
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 
@@ -76,12 +59,13 @@ bool CompetitorDocument::saveData()
 					q.bindValue(":siId", si_id);
 				q.exec(qf::core::Exception::Throw);
 			}
+			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
 		else if(old_mode == DataDocument::ModeEdit) {
-			if(si_dirty) {
+			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
 				int si_id = value("competitors.siId").toInt();
-				if(si_id > 0) {
+				if(si_id > 0 && m_saveSiidToRuns) {
 					int competitor_id = dataId().toInt();
 					qf::core::sql::Query q(model()->connectionName());
 					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
@@ -90,8 +74,9 @@ bool CompetitorDocument::saveData()
 					q.exec(qf::core::Exception::Throw);
 				}
 			}
+			if(class_dirty)
+				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}
-		transaction.commit();
 	}
 	return ret;
 }
@@ -110,7 +95,18 @@ bool CompetitorDocument::dropData()
 	}
 	if(ret) {
 		ret = Super::dropData();
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 	}
 	return ret;
+}
+
+bool CompetitorDocument::isSaveSiidToRuns() const
+{
+	return m_saveSiidToRuns;
+}
+
+void CompetitorDocument::setSaveSiidToRuns(bool save_siid_to_runs)
+{
+	m_saveSiidToRuns = save_siid_to_runs;
 }
 

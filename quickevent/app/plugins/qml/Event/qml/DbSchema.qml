@@ -82,8 +82,8 @@ Schema {
 				Index {fields: ['courseId']; references: ForeignKeyReference {table: 'courses'; fields: ['id']; } },
 				Index {fields: ['codeId']; references: ForeignKeyReference {table: 'codes'; fields: ['id']; } },
 				Index {
-					fields: ['courseId', 'codeId']
-					unique: true
+					fields: ['courseId', 'position']
+					unique: false
 				}
 			]
 		},
@@ -112,12 +112,15 @@ Schema {
 						comment: 'place n vacants gap before first competitor in class start list'
 				},
 				Field { name: 'vacantEvery'; type: Int { } 
-						comment: 'place vacant every n-th competitor in class start list'
+					comment: 'place vacant every n-th competitor in class start list'
 				},
 				Field { name: 'vacantsAfter'; type: Int { } 
-						comment: 'place n vacants gap after last competitor in class start list'
+					comment: 'place n vacants gap after last competitor in class start list'
 				},
-				Field { name: 'mapCount'; type: Int { } }
+				Field { name: 'mapCount'; type: Int { } },
+				Field { name: 'resultsCount'; type: Int { }
+					comment: 'number of finished competitors, when the results were printed'
+				}
 				/*
 				Field { name: 'isDrawnIn'; type: Boolean { } 
 					defaultValue: false
@@ -147,7 +150,7 @@ Schema {
 				Field { name: 'siId'; type: Int { } },
 				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
-				Field { name: 'importId'; type: String {} }
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },

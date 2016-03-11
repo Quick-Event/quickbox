@@ -26,7 +26,7 @@ public:
 	explicit SqlTableModel(QObject *parent = 0);
 	~SqlTableModel() Q_DECL_OVERRIDE;
 
-	bool reload() Q_DECL_OVERRIDE;
+	Q_INVOKABLE bool reload() Q_DECL_OVERRIDE;
 
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* sqlQueryBuilder();
 	Q_SIGNAL void queryBuilderChanged();

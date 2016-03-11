@@ -7,11 +7,13 @@
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
 
+#include <QCryptographicHash>
 #include <QDomDocument>
 #include <QPrinter>
 #include <QPrinterInfo>
 
 //#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/fileutils.h>
 #include <qf/core/utils/timescope.h>
 
 namespace qfu = qf::core::utils;
@@ -87,7 +89,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		}
 		QF_SAFE_DELETE(printer);
 	}
-	else {
+	else if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::CharacterPrinter) {
 		QDomDocument doc;
 		doc.setContent(QLatin1String("<?xml version=\"1.0\"?><report><body/></report>"));
 		QDomElement el_body = doc.documentElement().firstChildElement("body");
@@ -95,17 +97,30 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		opts.setConvertBandsToTables(false);
 		rp.processHtml(el_body, opts);
 		//qfInfo() << doc.toString();
-		QList<QByteArray> ba_lst = createPrinterData(el_body, printer_opts);
-		QFile f(printer_opts.characterPrinterDevice());
-		//QFile f("/home/fanda/t/receipt.txt");
-		if(f.open(QFile::WriteOnly)) {
-			for(QByteArray ba : ba_lst) {
-				f.write(ba);
-				f.write("\n");
+		QList<QByteArray> data_lines = createPrinterData(el_body, printer_opts);
+		auto save_file = [data_lines](const QString &fn) {
+			QFile f(fn);
+			if(f.open(QFile::WriteOnly)) {
+				for(QByteArray ba : data_lines) {
+					f.write(ba);
+					f.write("\n");
+				}
 			}
+			else {
+				qfError() << "Cannot open file" << f.fileName() << "for writing!";
+			}
+		};
+		if(!printer_opts.characterPrinterDirectory().isEmpty()) {
+			QString fn = printer_opts.characterPrinterDirectory();
+			qf::core::utils::FileUtils::ensurePath(fn);
+			QCryptographicHash ch(QCryptographicHash::Sha1);
+			for(QByteArray ba : data_lines)
+				ch.addData(ba);
+			fn += '/' + QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
+			save_file(fn);
 		}
-		else {
-			qfError() << "Cannot open file" << f.fileName() << "for writing!";
+		else if (!printer_opts.characterPrinterDevice().isEmpty()) {
+			save_file(printer_opts.characterPrinterDevice());
 		}
 	}
 }
@@ -188,7 +203,7 @@ class DirectPrintContext
 public:
 	PrintLine line;
 	int horizontalLayoutNestCount = 0;
-	int printerLineWidth = 42;
+	//int printerLineWidth = 42;
 };
 
 void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrintContext *print_context)
@@ -282,9 +297,10 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 		print_context->horizontalLayoutNestCount--;
 }
 
-static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context)
+static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context, const ReceiptsPrinterOptions &printer_options)
 {
 	QList<PrintLine> ret;
+	int line_length = printer_options.characterPrinterLineLength();
 	PrintLine line;
 	{
 		line << PrintData(PrintData::Command::Init);
@@ -315,7 +331,7 @@ static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context)
 					continue;
 				int w = pd2.width;
 				if(w < 0)
-					w = (print_context->printerLineWidth - fixed_text_len) / spring_cnt;
+					w = (line_length - fixed_text_len) / spring_cnt;
 				if(w > 0) {
 					int w_rest = w - pd2.textLength();
 					if(w_rest > 0) {
@@ -342,9 +358,11 @@ static QList<PrintLine> alignPrinterData(DirectPrintContext *print_context)
 	return ret;
 }
 
-static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, DirectPrintContext *ctx)
+static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, const ReceiptsPrinterOptions &printer_options)
 {
 	QList<QByteArray> ret;
+	int line_length = printer_options.characterPrinterLineLength();
+	bool include_escapes = printer_options.isCharacterPrinterGenerateControlCodes();
 	const int cmd_length = sizeof(epson_commands) / sizeof(char*);
 	for(const PrintLine line : lines) {
 		QByteArray ba;
@@ -355,7 +373,7 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, Di
 				line_text_len += pd.data.length();
 			}
 			else if(pd.command == PrintData::Command::HorizontalLine) {
-				QByteArray hr_data(ctx->printerLineWidth, pd.data[0]);
+				QByteArray hr_data(line_length, pd.data[0]);
 				if(line_text_len == 0) {
 					ret.insert(ret.length(), ba + hr_data);
 					ba.clear();
@@ -366,7 +384,7 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, Di
 					line_text_len = hr_data.length();
 				}
 			}
-			else {
+			else if(include_escapes) {
 				int ix = (int)pd.command;
 				QF_ASSERT(ix < cmd_length, QString("%1 - Bad command index!").arg(ix), continue);
 				ba += epson_commands[ix];
@@ -380,7 +398,7 @@ static QList<QByteArray> interpretControlCodes(const QList<PrintLine> &lines, Di
 QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, const ReceiptsPrinterOptions &printer_options)
 {
 	DirectPrintContext dpc;
-	dpc.printerLineWidth = printer_options.characterPrinterLineLength();
+	//dpc.printerLineWidth = printer_options.characterPrinterLineLength();
 	createPrinterData_helper(body, &dpc);
 	/*
 	{
@@ -390,17 +408,17 @@ QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, co
 		qfInfo() << ba;
 	}
 	*/
-	QList<PrintLine> lines = alignPrinterData(&dpc);
+	QList<PrintLine> lines = alignPrinterData(&dpc, printer_options);
 	for(auto l : lines) {
 		QByteArray ba;
 		for(auto d : l)
 			ba += d.toByteArray();
-		qfDebug() << ba;
+		//qfDebug() << ba;
 	}
-	QList<QByteArray> ret = interpretControlCodes(lines, &dpc);
-	for(auto ba : ret) {
-		qDebug() << ba;
-	}
+	QList<QByteArray> ret = interpretControlCodes(lines, printer_options);
+	//for(auto ba : ret) {
+	//	qDebug() << ba;
+	//}
 	return ret;
 }
 

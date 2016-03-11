@@ -13,6 +13,8 @@ namespace qf {
 namespace core {
 namespace sql {
 
+class QueryBuilder;
+
 class QFCORE_DECL_EXPORT Query : public QSqlQuery
 {
 private:
@@ -26,6 +28,8 @@ public:
 	bool prepare(const QString& query, bool throw_exc = false);
 	//using Super::exec;
 	bool exec(const QString &query, bool throw_exc = false);
+	bool exec(const QueryBuilder &query_builder, bool throw_exc = false);
+	// necessary for proper overloading, const char* is treated as bool without this function
 	bool exec(const char *query, bool throw_exc = false) {return exec(QString::fromUtf8(query), throw_exc);}
 	bool exec(bool throw_exc = false);
 	bool execCommands(const QStringList &commands, const QMap<QString, QString> &replacements = QMap<QString, QString>());

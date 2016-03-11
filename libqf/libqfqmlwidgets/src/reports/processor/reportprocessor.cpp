@@ -27,7 +27,7 @@ QString ReportProcessor::HTML_ATTRIBUTE_ITEM = QStringLiteral("__qf_qml_report_i
 QString ReportProcessor::HTML_ATTRIBUTE_LAYOUT = QStringLiteral("__qf_qml_report_layout");
 
 ReportProcessor::ReportProcessor(QPaintDevice *paint_device, QObject *parent)
-	: QObject(parent)//, m_Context(qf::qmlwidgets::graphics::StyleCache())
+	: QObject(parent)
 {
 	qfLogFuncFrame();
 	m_qmlEngine = nullptr;
@@ -150,12 +150,12 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 		QF_SAFE_DELETE(m_processorOutput);
 		if(documentInstanceRoot()) {
 			m_processorOutput = new ReportItemMetaPaintReport(documentInstanceRoot());
-			m_singlePageProcessResult = ReportItem::PR_PrintAgainOnNextPage;
+			m_singlePageProcessResult = ReportItem::PrintResult::createPrintAgain();
 		}
 	}
 	ReportItemMetaPaint mpit;
 	//context().dump();
-	while(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
+	while(m_singlePageProcessResult.isPrintAgain()) {
 		{
 			QF_TIME_SCOPE("processing page");
 			m_singlePageProcessResult = processPage(&mpit);
@@ -168,14 +168,14 @@ void ReportProcessor::process(ReportProcessor::ProcessorMode mode)
 			it->setParent(m_processorOutput);
 			if(mode == FirstPage || mode == SinglePage) {
 				emit pageProcessed();
-				if(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
+				if(m_singlePageProcessResult.isPrintAgain()) {
 					setProcessedPageNo(processedPageNo() + 1);
 				}
 				//qfInfo() << "pageProcessed:" << fProcessedPageNo;
 				break;
 			}
 			else {
-				if(m_singlePageProcessResult == ReportItem::PR_PrintAgainOnNextPage) {
+				if(m_singlePageProcessResult.isPrintAgain()) {
 					setProcessedPageNo(processedPageNo() + 1);
 				}
 				else {

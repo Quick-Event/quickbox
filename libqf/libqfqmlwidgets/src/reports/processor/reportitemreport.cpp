@@ -22,12 +22,12 @@ ReportItem::PrintResult ReportItemReport::printMetaPaint(ReportItemMetaPaint *ou
 {
 	qfLogFuncFrame() << "\x1B[1;31;40m***ROOT***ROOT***ROOT***ROOT***\x1B[0;37;40m" << this;
 	Q_UNUSED(bounding_rect);
-	PrintResult res = PR_PrintedOk;
+	//PrintResult res = PrintResult::createPrintFinished();
 	//updateChildren();
 	//ReportItemMetaPaintPage *pg = new ReportItemMetaPaintPage(out, element, processor()->context());
 	//pg->renderedRect = designedRect;
 	//indexToPrint = 0; /// vzdy vytiskni header a footer. (footer je absolutni header, umisteny pred detailem)
-	res = Super::printMetaPaint(out, designedRect);
+	PrintResult res = Super::printMetaPaint(out, designedRect);
 	//res = printMetaPaintChildren(pg, pg->renderedRect);
 	qfDebug() << "\t\x1B[1;31;40m<<< ***ROOT***ROOT***ROOT***ROOT***\x1B[0;37;40m";
 	//res = checkPrintResult(res);

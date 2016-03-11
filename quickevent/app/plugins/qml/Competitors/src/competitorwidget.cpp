@@ -16,6 +16,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/sql/dbenum.h>
+#include <qf/core/sql/transaction.h>
 
 #include <QMenu>
 #include <QAction>
@@ -125,7 +126,10 @@ bool CompetitorWidget::loadRunsTable()
 bool CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
-	return m_runsModel->postAll(true);
+	bool ret = m_runsModel->postAll(true);
+	if(ret)
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
+	return ret;
 }
 /*
 void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
@@ -224,15 +228,18 @@ bool CompetitorWidget::saveData()
 {
 	qf::core::model::DataDocument *doc = dataController()->document();
 	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
+	bool ret = false;
 	try {
+		qf::core::sql::Transaction transaction;
 		if(Super::saveData())
-			return saveRunsTable();
+			ret = saveRunsTable();
+		transaction.commit();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 		doc->restoreEditState(edit_state);
 	}
-	return false;
+	return ret;
 }
 
 QVector<int> CompetitorWidget::juniorAges()

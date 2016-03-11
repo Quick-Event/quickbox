@@ -28,6 +28,7 @@ public slots:
 
 	int stageCount() const;
 	int currentStageId() const;
+	int importId() const;
 	int handicapLength() const;
 	QString director() const;
 	QString mainReferee() const;

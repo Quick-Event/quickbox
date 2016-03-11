@@ -46,6 +46,9 @@ public:
 	QF_PROPERTY_IMPL(QString, e, E, ventName)
 
 	static const char *DBEVENT_NOTIFY_NAME;
+	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
+	static const char* DBEVENT_CARD_READ;
+	static const char* DBEVENT_PUNCH_RECEIVED;
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
@@ -78,6 +81,8 @@ public:
 
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
+
+	Q_INVOKABLE QString sqlDriverName();
 
 	Q_INVOKABLE QString classNameById(int class_id);
 

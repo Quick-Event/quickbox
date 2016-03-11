@@ -155,7 +155,7 @@ Event::EventPlugin *ReceiptsWidget::eventPlugin()
 void ReceiptsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	Q_UNUSED(payload)
-	if(domain == QLatin1String(CardReader::CardReaderPlugin::DBEVENTDOMAIN_CARDREADER_CARDREAD)) {
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		onCardRead();
 	}
 }

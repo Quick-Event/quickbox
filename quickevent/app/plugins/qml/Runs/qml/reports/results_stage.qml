@@ -7,6 +7,8 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Results by classes")
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -42,13 +44,13 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			columns: "%,%"
+			columns: "%,%";
 			vinset: 10
 			Band {
 				id: band
 				objectName: "band"
 				width: "%"
-				height: "%"
+				//height: "%"
 				QuickEventReportHeader {
 					dataBand: band
 					reportTitle: root.reportTitle
@@ -124,6 +126,10 @@ Report {
 								}
 							}
 						}
+					}
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
 					}
 				}
 			}

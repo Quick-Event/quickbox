@@ -45,6 +45,11 @@ bool Query::exec(const QString &query, bool throw_exc)
 	return ret;
 }
 
+bool Query::exec(const QueryBuilder &query_builder, bool throw_exc)
+{
+	return exec(query_builder.toString(), throw_exc);
+}
+
 bool Query::exec(bool throw_exc)
 {
 	//qfLogFuncFrame();

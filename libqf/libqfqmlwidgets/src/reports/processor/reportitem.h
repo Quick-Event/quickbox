@@ -81,30 +81,52 @@ public:
 	static const double Epsilon;
 	static const QString INFO_IF_NOT_FOUND_DEFAULT_VALUE;
 	//typedef Layout Layout;
-	enum PrintResultValue {
-		PR_NotPrintedYet,
-		PR_PrintedOk, ///< whole frame printed successfully
-		PR_PrintAgainOnNextPage, ///< partialy printed, insert new page to document and repeat print
-		PR_PrintAgainDetail, ///< Used with ReportItemDetail, the detail is printed successfuly but there are more row to print again, this value can be removed if ReportItemDetail will handle it in printMetapaintChildren, currently it is delegated to the ReportItemFrame::printMetapainChildren
-		PR_ErrorNeverFit ///< When keepAll is set and frame can is rendered higher than page, stop to try print it on the next page
-	};
 	class PrintResult
 	{
-		PrintResultValue value;
-	public:
-		PrintResult(PrintResultValue v = PR_NotPrintedYet) : value(v) {}
+	private:
+		enum class Result : quint8 {
+			Invalid,
+			PrintFinished, ///< whole frame printed successfully
+			PrintAgain, ///< partialy printed, repeat print in next column
+			PrintError, ///< When keepAll is set and frame can is rendered higher than page, stop to try print it on the next page
+		};
+		enum Flag : quint8 {
+			ColumnBreak = (1 << 0),
+			PageBreak = (1 << 1),
+			NextDetailRowExists = (1 << 2),
+			ErrorNeverFit = (1 << 3),
+		};
 
-		PrintResult& operator=(PrintResultValue v) {this->value = v; return *this;}
-		bool operator==(PrintResultValue v) const {return this->value == v;}
+		Result result;
+		quint8 flags = 0;
+
+		PrintResult(Result r) : result(r) {}
+	public:
+		PrintResult() : PrintResult(Result::Invalid) {}
+
+		//static PrintResult createInvalid() {return PrintResult(Result::Invalid);}
+		static PrintResult createPrintFinished() {return PrintResult(Result::PrintFinished);}
+		static PrintResult createPrintAgain() {return PrintResult(Result::PrintAgain);}
+		static PrintResult createPrintError() {return PrintResult(Result::PrintError);}
+
+		bool isValid() const {return result == Result::Invalid;}
+		bool isPrintFinished() const {return result == Result::PrintFinished;}
+		bool isPrintAgain() const {return result != Result::PrintFinished && result != Result::PrintError;}
+		bool isNextDetailRowExists() const {return flags & NextDetailRowExists;}
+		void setNextDetailRowExists(bool b) {flags = b? flags | NextDetailRowExists: flags & ~NextDetailRowExists;}
+		bool isColumnBreak() const {return flags & ColumnBreak;}
+		void setColumnBreak(bool b) {flags = b? flags | ColumnBreak: flags & ~ColumnBreak;}
+		bool isPageBreak() const {return flags & PageBreak;}
+		void setPageBreak(bool b) {flags = b? flags | PageBreak: flags & ~PageBreak;}
+		bool isPrintError() const {return result == Result::PrintError;}
 
 		QString toString() const {
 			QString ret;
-			switch(value) {
-			case PR_NotPrintedYet: ret = QStringLiteral("PR_NotPrintedYet"); break;
-			case PR_PrintedOk: ret = QStringLiteral("PR_PrintedOk"); break;
-			case PR_PrintAgainOnNextPage: ret = QStringLiteral(""); break;
-			case PR_PrintAgainDetail: ret = QStringLiteral("PR_PrintAgainOnNextPage"); break;
-			case PR_ErrorNeverFit: ret = QStringLiteral("PR_ErrorNeverFit"); break;
+			switch(result) {
+			case Result::Invalid: ret = QStringLiteral("Invalid"); break;
+			case Result::PrintFinished: ret = QStringLiteral("PrintFinished"); break;
+			case Result::PrintAgain: ret = QStringLiteral("PrintAgain"); break;
+			case Result::PrintError: ret = QStringLiteral("PrintError"); break;
 			default: ret = QStringLiteral("UNKNOWN"); break;
 			}
 			return ret;
@@ -320,7 +342,7 @@ public:
 		return static_cast<ReportItem*>(this->Super::parent());
 	}
 	//! Print item in form, that understandable by ReportPainter.
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PR_PrintedOk;}
+	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PrintResult::createPrintFinished();}
 	//! Print item in HTML element form.
 	virtual PrintResult printHtml(HTMLElement &out);
 	/// vrati definovanou velikost pro item a layout
@@ -336,7 +358,7 @@ public:
 	/// sometimes is necessarry to continue printing of overflowed text and print brorders for it again,
 	/// then \a including_para_texts == false
 	virtual void resetIndexToPrintRecursively(bool including_para_texts) {Q_UNUSED(including_para_texts);}
-	virtual bool isBreak() {return false;}
+	//virtual bool isBreak() {return false;}
 
 	virtual bool canBreak() {return !isKeepAll();}
 
@@ -352,7 +374,7 @@ protected:
 public:
 	Rect designedRect;
 protected:
-	bool m_recentlyPrintNotFit;
+	bool m_recentPrintNotFinished;
 private:
 	bool m_visible;
 };

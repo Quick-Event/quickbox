@@ -42,8 +42,10 @@ void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOption
 	else {
 		ui->btCharacterPrinter->setChecked(true);
 		ui->cbxCharacterPrinterDevice->setCurrentText(opts.characterPrinterDevice());
+		ui->edCharacterPrinterDirectory->setText(opts.characterPrinterDirectory());
 		ui->cbxCharacterPrinterModel->setCurrentText(opts.characterPrinterModel());
 		ui->edCharacterPrinterLineLength->setValue(opts.characterPrinterLineLength());
+		ui->chkCharacterPrinterGenerateControlCodes->setChecked(opts.isCharacterPrinterGenerateControlCodes());
 	}
 }
 
@@ -57,8 +59,10 @@ ReceiptsPrinterOptions ReceiptsPrinterOptionsDialog::printerOptions()
 	else {
 		ret.setPrinterType((int)ReceiptsPrinterOptions::PrinterType::CharacterPrinter);
 		ret.setCharacterPrinterDevice(ui->cbxCharacterPrinterDevice->currentText());
+		ret.setCharacterPrinterDirectory(ui->edCharacterPrinterDirectory->text());
 		ret.setCharacterPrinterModel(ui->cbxCharacterPrinterModel->currentText());
 		ret.setCharacterPrinterLineLength(ui->edCharacterPrinterLineLength->value());
+		ret.setCharacterPrinterGenerateControlCodes(ui->chkCharacterPrinterGenerateControlCodes->isChecked());
 	}
 	return ret;
 }

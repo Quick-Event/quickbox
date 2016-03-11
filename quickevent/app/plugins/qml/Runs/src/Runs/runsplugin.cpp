@@ -1,10 +1,12 @@
+#include "reportoptionsdialog.h"
 #include "runsplugin.h"
 #include "thispartwidget.h"
 #include "../runswidget.h"
 #include "drawing/drawingganttwidget.h"
 #include "../runstabledialogwidget.h"
+#include "../eventstatisticswidget.h"
 
-//#include <Event/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -27,15 +29,16 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfu = qf::core::utils;
 namespace qfs = qf::core::sql;
 
-using namespace Runs;
-/*
+namespace Runs {
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	return qobject_cast<Event::EventPlugin*>(plugin);
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
 }
-*/
+
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -44,6 +47,8 @@ RunsPlugin::RunsPlugin(QObject *parent)
 
 RunsPlugin::~RunsPlugin()
 {
+	if(m_eventStatisticsDockWidget)
+		m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
 }
 
 const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
@@ -91,7 +96,22 @@ void RunsPlugin::onInstalled()
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
-	//connect(fwk->plugin("Event"), SIGNAL(editStartListRequest(int,int,int)), this, SLOT(onEditStartListRequest(int,int,int)), Qt::QueuedConnection);
+	{
+		m_eventStatisticsDockWidget = new qff::DockWidget(nullptr);
+		m_eventStatisticsDockWidget->setObjectName("eventStatisticsDockWidget");
+		m_eventStatisticsDockWidget->setWindowTitle(tr("Event statistics"));		
+		auto *ew = new EventStatisticsWidget();
+		m_eventStatisticsDockWidget->setWidget(ew);
+		fwk->addDockWidget(Qt::RightDockWidgetArea, m_eventStatisticsDockWidget);
+		m_eventStatisticsDockWidget->hide();
+
+		connect(m_eventStatisticsDockWidget, &qff::DockWidget::visibilityChanged, ew, &EventStatisticsWidget::onVisibleChanged);
+
+		auto *a = m_eventStatisticsDockWidget->toggleViewAction();
+		//a->setCheckable(true);
+		a->setShortcut(QKeySequence("ctrl+shift+E"));
+		fwk->menuBar()->actionForPath("view")->addActionInto(a);
+	}
 
 	emit nativeInstalled();
 
@@ -110,6 +130,7 @@ void RunsPlugin::onInstalled()
 		});
 	}
 }
+
 /*
 void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competitor_id)
 {
@@ -152,6 +173,46 @@ int RunsPlugin::courseForRun_Classic(int run_id)
 		cnt++;
 	}
 	return ret;
+}
+
+void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+{
+	auto *w = new RunsTableDialogWidget();
+	w->reload(stage_id, class_id, sort_column, select_competitor_id);
+	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
+	dlg.setButtons(QDialogButtonBox::Cancel);
+	dlg.setCentralWidget(w);
+	dlg.exec();
+}
+
+QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
+{
+	if(!parent) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		parent = fwk;
+	}
+	return new Runs::ReportOptionsDialog(parent);
+}
+
+int RunsPlugin::cardForRun(int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id;
+	//QF_TIME_SCOPE("reloadTimesFromCard()");
+	if(!run_id)
+		return 0;
+	int card_id = 0;
+	{
+		qf::core::sql::Query q;
+		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS DESC LIMIT 1")) {
+			if(q.next()) {
+				card_id = q.value(0).toInt();
+			}
+			else {
+				qfWarning() << "Cannot find card record for run id:" << run_id;
+			}
+		}
+	}
+	return card_id;
 }
 
 qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places)
@@ -280,34 +341,76 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 	return tt.toVariant();
 }
 
-void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class)
 {
-	auto *w = new RunsTableDialogWidget();
-	w->reload(stage_id, class_id, sort_column, select_competitor_id);
-	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
-	dlg.setButtons(QDialogButtonBox::Cancel);
-	dlg.setCentralWidget(w);
-	dlg.exec();
-}
-
-int RunsPlugin::cardForRun(int run_id)
-{
-	qfLogFuncFrame() << "run id:" << run_id;
-	//QF_TIME_SCOPE("reloadTimesFromCard()");
-	if(!run_id)
-		return 0;
-	int card_id = 0;
+	//var event_plugin = FrameWork.plugin("Event");
+	qf::core::model::SqlTableModel model;
 	{
-		qf::core::sql::Query q;
-		if(q.exec("SELECT id FROM cards WHERE runId=" QF_IARG(run_id) " ORDER BY runIdAssignTS DESC LIMIT 1")) {
-			if(q.next()) {
-				card_id = q.value(0).toInt();
-			}
-			else {
-				qfWarning() << "Cannot find card record for run id:" << run_id;
-			}
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("classes", "id, name")
+			.select2("courses", "length, climb")
+			.from("classes")
+			//.where("classes.name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
+			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
+			.join("classdefs.courseId", "courses.id")
+			.orderBy("classes.name");//.limit(1);
+		if(!class_filter.isEmpty()) {
+			qb.where(class_filter);
 		}
+		model.setQueryBuilder(qb);
 	}
-	return card_id;
+
+	int stage_id = selectedStageId();
+	{
+		QVariantMap qm;
+		qm["stage_id"] = stage_id;
+		model.setQueryParameters(qm);
+	}
+
+	//console.info("currentStageTable query:", reportModel.effectiveQuery());
+	model.reload();
+	qf::core::utils::TreeTable tt = model.toTreeTable();
+	tt.setValue("stageId", stage_id);
+	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
+
+	{
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("competitors", "registration, lastName, firstName")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select2("runs", "*")
+			.select2("clubs", "name")
+			.from("competitors")
+			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+			//.join("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+			.where("competitors.classId={{class_id}}")
+			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
+		if(max_competitors_in_class > 0)
+			qb.limit(max_competitors_in_class);
+		model.setQueryBuilder(qb);
+	}
+	for(int i=0; i<tt.rowCount(); i++) {
+		int class_id = tt.row(i).value("classes.id").toInt();
+		//console.debug("class id:", class_id);
+		QVariantMap qm;
+		qm["stage_id"] = stage_id;
+		qm["class_id"] = class_id;
+		model.setQueryParameters(qm);
+		model.reload();
+		qf::core::utils::TreeTable tt2 = model.toTreeTable();
+		tt2.appendColumn("pos", QVariant::Int);
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow row = tt2.row(j);
+			bool has_pos = !row.value(QStringLiteral("disqualified")).toBool() && !row.value(QStringLiteral("notCompeting")).toBool();
+			if(has_pos)
+				row.setValue("pos", j+1);
+			else
+				row.setValue("pos", 0);
+		}
+		tt.row(i).appendTable(tt2);
+	}
+	//console.debug(tt.toString());
+	return tt.toVariant();
 }
 
+}

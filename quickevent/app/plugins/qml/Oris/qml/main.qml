@@ -1,17 +1,14 @@
 import QtQml 2.0
 import qf.core 1.0
 import qf.qmlwidgets 1.0
+import Oris 1.0
 
-Plugin {
+Oris {
 	id: root
 
 	property QfObject internal: QfObject
 	{
-		//property Plugin pluginSqlDb: FrameWork.plugin("SqlDb")
-		SqlConnection {
-			id: db
-		}
-		Importer {
+		OrisImporter {
 			id: orisImporter
 		}
 	}
@@ -23,6 +20,13 @@ Plugin {
 			//enabled: internal.pluginSqlDb.api.sqlServerConnected
 			onTriggered: {
 				orisImporter.chooseAndImport()
+			}
+		},
+		Action {
+			id: actSyncCurrentEventEntries
+			text: qsTr('&Sync current event entries')
+			onTriggered: {
+				orisImporter.syncCurrentEventEntries()
 			}
 		},
 		Action {
@@ -40,14 +44,6 @@ Plugin {
 			onTriggered: {
 				orisImporter.importRegistrations();
 			}
-		},
-		Action {
-			id: actTest
-			text: qsTr('&Test')
-			//enabled: internal.pluginSqlDb.api.sqlServerConnected
-			onTriggered: {
-				FrameWork.plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
-			}
 		}
 	]
 
@@ -56,9 +52,11 @@ Plugin {
 		//console.warn("Oris installed");
 		var act_import_oris = FrameWork.menuBar.actionForPath('file/import/oris');
 		act_import_oris.text = qsTr("&Oris");
-		act_import_oris.addActionInto(actImportEventOris)
-		act_import_oris.addActionInto(actImportClubsOris)
-		act_import_oris.addActionInto(actImportRegistrationsOris)
+		act_import_oris.addActionInto(actImportEventOris);
+		act_import_oris.addActionInto(actSyncCurrentEventEntries);
+		act_import_oris.addSeparatorInto();
+		act_import_oris.addActionInto(actImportClubsOris);
+		act_import_oris.addActionInto(actImportRegistrationsOris);
 		//act_import_oris.addActionInto(actTest)
 		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
 		//quit.addSeparatorBefore();

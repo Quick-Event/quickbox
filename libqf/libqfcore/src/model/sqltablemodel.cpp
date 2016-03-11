@@ -16,6 +16,7 @@
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
+
 using namespace qf::core::model;
 
 SqlTableModel::SqlTableModel(QObject *parent)
@@ -63,10 +64,16 @@ void SqlTableModel::addForeignKeyDependency(const QString &master_table_key, con
 	m_foreignKeyDependencies[master_table_key] = slave_table_key;
 }
 
-bool SqlTableModel::reload()
+QString SqlTableModel::effectiveQuery()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
+	return qs;
+}
+
+bool SqlTableModel::reload()
+{
+	QString qs = effectiveQuery();
 	return reloadQuery(qs);
 }
 
@@ -445,6 +452,8 @@ int SqlTableModel::reloadRow(int row_no)
 			QString formated_val = sqldrv->formatValue(sqlfld);
 			qb.where(full_fld_name + "=" + formated_val);
 		}
+		if(!isIncludeJoinedTablesIdsToReloadRowQuery())
+			break;
 	}
 	qfs::Query q = qfs::Query(sql_conn);
 	qfs::QueryBuilder::BuildOptions opts;
@@ -521,7 +530,7 @@ int SqlTableModel::reloadInserts(const QString &id_column_name)
 
 QString SqlTableModel::buildQuery()
 {
-	QString ret = m_query;
+	QString ret = query();
 	if(ret.isEmpty()) {
 		qfs::QueryBuilder::BuildOptions opts;
 		opts.setConnectionName(connectionName());
@@ -654,7 +663,7 @@ static QMap< QString, QSet<QString> > separateFields(const qf::core::utils::Tabl
 
 void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
 {
-	qfLogFuncFrame();
+	//qfLogFuncFrame();
 	//QSet<QString> table_ids = tableIds(table_fields);
 	QMap< QString, QSet<QString> > field_ids = separateFields(table_fields);
 	if(field_ids.isEmpty()) {
@@ -690,14 +699,14 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 		bool ok = true;
 		QSet<QString> flds = field_ids.value(table_id);
 		Q_FOREACH(auto pk_f, prikey_fields) {
-			qDebug() << "\t checking if query contains primary key:" << pk_f << "in table id:" << table_id;
+			//qDebug() << "\t checking if query contains primary key:" << pk_f << "in table id:" << table_id;
 			if(!flds.contains(pk_f)) {
 				ok = false;
 				break;
 			}
 		}
 		if(ok) {
-			qDebug() << "\t setting update flag on table id:" << table_id;
+			//qDebug() << "\t setting update flag on table id:" << table_id;
 			updateable_table_ids << table_id;
 		}
 	}

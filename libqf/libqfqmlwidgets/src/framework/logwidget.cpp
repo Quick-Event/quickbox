@@ -260,6 +260,7 @@ void LogWidget::addCategoryActions(const QString &caption, const QString &id, co
 {
 	QString menu_caption = "[%1] " + caption;
 	QMenu *m = new QMenu(this);
+	m_loggingCategoriesMenus << m;
 	QAction *a = new QAction(caption, m);
 	a->setData(id);
 	a->setMenu(m);
@@ -342,7 +343,7 @@ void LogWidget::scrollToLastEntry()
 {
 	if(isVisible()) {
 		if(!m_columnsResized) {
-			m_columnsResized = false;
+			m_columnsResized = true;
 			ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 		}
 		if(m_isAutoScroll) {

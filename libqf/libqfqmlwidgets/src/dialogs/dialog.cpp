@@ -49,6 +49,7 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 			m_centralWidget->setSizePolicy(sp);
 		}
 		if(dialog_widget) {
+			connect(dialog_widget, &qf::qmlwidgets::framework::DialogWidget::closeDialogRequest, this, &Dialog::done);
 			QMetaObject::invokeMethod(this, "settleDownDialogWidget", Qt::QueuedConnection);
 		}
 		else {
@@ -106,6 +107,14 @@ int Dialog::exec()
 void Dialog::done(int result)
 {
 	qfLogFuncFrame() << result;
+	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
+	bool ok = true;
+	if(dw) {
+		ok = dw->acceptDialogDone(result);
+	}
+	if(ok)
+		Super::done(result);
+	/*
 	QVariant ok = true;
 	QMetaObject::invokeMethod(this, "doneRequest_qml", Qt::DirectConnection,
 							  Q_RETURN_ARG(QVariant, ok),
@@ -113,6 +122,7 @@ void Dialog::done(int result)
 	if(ok.toBool()) {
 		Super::done(result);
 	}
+	*/
 }
 
 void Dialog::setRecordEditMode(int mode)
@@ -156,25 +166,28 @@ void Dialog::loadPersistentSettings()
 		}
 	}
 }
-
+#if 0
 bool Dialog::doneRequest(int result)
 {
 	qfLogFuncFrame() << "result:" << result;
-	QVariant ret = true;
 	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
 	if(dw) {
+		return dw->acceptDialogDone(result);
+		/*
 		QMetaObject::invokeMethod(dw, "dialogDoneRequest_qml", Qt::DirectConnection,
 								  Q_RETURN_ARG(QVariant, ret),
 								  Q_ARG(QVariant, result));
+		*/
 	}
-	return ret.toBool();
+	return true;
 }
-
+#endif
+/*
 QVariant Dialog::doneRequest_qml(const QVariant &result)
 {
 	return doneRequest(result.toBool());
 }
-
+*/
 void Dialog::savePersistentSettings()
 {
 	QString path = persistentSettingsPath();

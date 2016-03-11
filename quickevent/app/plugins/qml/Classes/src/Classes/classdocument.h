@@ -1,9 +1,13 @@
-#ifndef CLASSDOCUMENT_H
-#define CLASSDOCUMENT_H
+#ifndef CLASSES_CLASSDOCUMENT_H
+#define CLASSES_CLASSDOCUMENT_H
+
+#include "../classespluginglobal.h"
 
 #include <qf/core/model/sqldatadocument.h>
 
-class ClassDocument : public qf::core::model::SqlDataDocument
+namespace Classes {
+
+class CLASSESPLUGIN_DECL_EXPORT ClassDocument : public qf::core::model::SqlDataDocument
 {
 	Q_OBJECT
 private:
@@ -14,5 +18,7 @@ protected:
 	bool saveData() Q_DECL_OVERRIDE;
 	bool dropData() Q_DECL_OVERRIDE;
 };
+
+}
 
 #endif // CLASSDOCUMENT_H
