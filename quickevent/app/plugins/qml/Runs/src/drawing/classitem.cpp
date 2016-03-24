@@ -4,6 +4,7 @@
 #include "ganttitem.h"
 
 #include <qf/core/sql/query.h>
+#include <qf/core/assert.h>
 
 #include <QDrag>
 #include <QJsonDocument>

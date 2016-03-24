@@ -9,6 +9,7 @@
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <qf/core/sql/transaction.h>
+#include <qf/core/assert.h>
 
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;

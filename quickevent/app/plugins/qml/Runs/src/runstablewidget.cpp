@@ -12,6 +12,7 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QSortFilterProxyModel>
 #include <QMenu>

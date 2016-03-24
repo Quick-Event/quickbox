@@ -3,6 +3,8 @@
 #include "ganttscene.h"
 #include "ganttitem.h"
 
+#include <qf/core/assert.h>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneWheelEvent>
 #include <QMenu>

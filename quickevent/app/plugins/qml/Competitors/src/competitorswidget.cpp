@@ -9,13 +9,15 @@
 
 #include <quickevent/og/siid.h>
 
-#include <qf/core/model/sqltablemodel.h>
-#include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/combobox.h>
+
+#include <qf/core/model/sqltablemodel.h>
+#include <qf/core/sql/querybuilder.h>
+#include <qf/core/assert.h>
 
 #include <QLabel>
 

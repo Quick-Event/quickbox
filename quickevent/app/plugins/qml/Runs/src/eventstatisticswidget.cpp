@@ -13,6 +13,8 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 
+#include <qf/core/assert.h>
+
 #include <QElapsedTimer>
 #include <QTimer>
 

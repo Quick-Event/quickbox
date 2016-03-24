@@ -7,6 +7,7 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/string.h>
+#include <qf/core/assert.h>
 
 namespace Runs {
 

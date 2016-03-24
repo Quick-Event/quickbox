@@ -7,14 +7,6 @@
 
 #include <Event/eventplugin.h>
 
-#include <qf/core/string.h>
-#include <qf/core/utils.h>
-#include <qf/core/collator.h>
-
-#include <qf/core/model/sqltablemodel.h>
-#include <qf/core/sql/querybuilder.h>
-#include <qf/core/sql/connection.h>
-
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
@@ -22,6 +14,14 @@
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
+
+#include <qf/core/string.h>
+#include <qf/core/utils.h>
+#include <qf/core/collator.h>
+#include <qf/core/model/sqltablemodel.h>
+#include <qf/core/sql/querybuilder.h>
+#include <qf/core/sql/connection.h>
+#include <qf/core/assert.h>
 
 #include <QDomDocument>
 #include <QComboBox>

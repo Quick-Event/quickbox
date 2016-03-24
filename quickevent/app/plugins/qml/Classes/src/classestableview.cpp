@@ -2,6 +2,7 @@
 #include "classestableview.h"
 #include "classeswidget.h"
 
+#include <qf/core/assert.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>

@@ -6,6 +6,7 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/assert.h>
 
 namespace Classes {
 

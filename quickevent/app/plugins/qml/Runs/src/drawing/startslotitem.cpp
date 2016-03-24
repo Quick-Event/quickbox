@@ -4,6 +4,8 @@
 #include "ganttscene.h"
 #include "startslotheader.h"
 
+#include <qf/core/assert.h>
+
 #include <QGraphicsSceneMouseEvent>
 #include <QJsonDocument>
 #include <QPainter>

@@ -17,6 +17,7 @@
 #include <qf/qmlwidgets/style.h>
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/connection.h>
