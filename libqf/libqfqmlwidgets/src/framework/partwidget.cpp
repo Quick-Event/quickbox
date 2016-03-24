@@ -8,6 +8,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include <qf/core/assert.h>
 
 #include <QVBoxLayout>
 #include <QIcon>

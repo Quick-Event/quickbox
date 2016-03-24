@@ -3,6 +3,7 @@
 #include "../../../tableview.h"
 
 #include <qf/core/utils/fileutils.h>
+#include <qf/core/log.h>
 
 #include <QFileDialog>
 
@@ -41,7 +42,7 @@ PrintTableViewWidget::~PrintTableViewWidget()
 
 void PrintTableViewWidget::onLstQrcReportsActivated(int ix)
 {
-    qfLogFuncFrame();
+	qfLogFuncFrame();
 	QString fn = ui->lstQrcReports->itemData(ix).toString();
 	ui->edReportFileName->setText(fn);
 }

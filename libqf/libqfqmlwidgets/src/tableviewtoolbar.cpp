@@ -3,6 +3,8 @@
 #include "action.h"
 #include "style.h"
 
+#include <qf/core/log.h>
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QLabel>

@@ -1,5 +1,7 @@
 #include "sheet.h"
 
+#include <qf/core/log.h>
+
 using namespace qf::qmlwidgets::reports::style;
 
 //==========================================================

@@ -4,6 +4,7 @@
 
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/log.h>
 
 #include <QLineEdit>
 

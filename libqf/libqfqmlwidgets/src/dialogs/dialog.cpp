@@ -9,6 +9,7 @@
 #include "../internal/desktoputils.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QVBoxLayout>
 #include <QSettings>

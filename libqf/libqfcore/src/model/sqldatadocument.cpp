@@ -1,4 +1,5 @@
 #include "sqldatadocument.h"
+#include "../core/assert.h"
 
 using namespace qf::core::model;
 

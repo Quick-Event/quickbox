@@ -3,6 +3,7 @@
 #include "query.h"
 #include "tablelocker.h"
 #include "../model/sqltablemodel.h"
+#include "../core/assert.h"
 
 #include <QSqlDatabase>
 #include <QSqlError>

@@ -1,4 +1,5 @@
 #include "htmlutils.h"
+#include "../core/assert.h"
 
 using namespace qf::core::utils;
 

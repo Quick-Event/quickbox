@@ -1,6 +1,7 @@
 #include "datadocument.h"
 
 #include "../core/log.h"
+#include "../core/assert.h"
 #include "../utils/table.h"
 
 namespace qfc = qf::core;

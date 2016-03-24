@@ -3,6 +3,7 @@
 
 #include <qf/core/sql/dbfsdriver.h>
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QMutex>
 #include <QMutexLocker>

@@ -4,6 +4,8 @@
 #include "../dialogs/dialog.h"
 
 #include <qf/core/exception.h>
+#include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 using namespace qf::qmlwidgets::framework;
 
