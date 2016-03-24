@@ -90,11 +90,10 @@ QString FieldInfo::toString(const QString& indent) const
 	ts << indent << "required: " << requiredStatus() << "\n";
 	ts << indent << "autovalue: " << isAutoValue() << "\n";
 	ts << indent << "generated: " << isGenerated() << "\n";
-	ts << indent << "nulable: " << isNullable() << "\n";
+	ts << indent << "nullable: " << isNullable() << "\n";
 	ts << indent << "read only: " << isReadOnly() << "\n";
 	ts << indent << "requiredStatus: " << requiredStatus() << "\n";
 
-	ts << indent << "nullable: " << isNullable() << "\n";
 	ts << indent << "native type: " << nativeType() << "\n";
 	ts << indent << "pri key: " << isPriKey() << "\n";
 	ts << indent << "auto increment: " << isAutoIncrement() << "\n";

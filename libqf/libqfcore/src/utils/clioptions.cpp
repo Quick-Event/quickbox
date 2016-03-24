@@ -45,6 +45,30 @@ CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val_str)
 	case(QVariant::Invalid):
 		qfWarning() << "Setting value:" << val_str << "to an invalid type option.";
 		break;
+	case(QVariant::Bool):
+	{
+		if(val_str.isEmpty()) {
+			setValue(true);
+		}
+		else {
+			bool ok;
+			int n = val_str.toInt(&ok);
+			if(ok) {
+				setValue(n != 0);
+			}
+			else {
+				bool is_true = true;
+				for(const char * const s : {"n", "no", "false"}) {
+					if(val_str.compare(QLatin1String(s), Qt::CaseInsensitive)) {
+						is_true = false;
+						break;
+					}
+				}
+				setValue(is_true);
+			}
+		}
+		break;
+	}
 	case(QVariant::Int):
 	{
 		bool ok;
@@ -213,20 +237,15 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 				QStringList names = opt.names();
 				if(names.contains(arg)) {
 					found = true;
-					if(opt.type() != QVariant::Bool) {
-						arg = peekArg();
-						if(arg.startsWith('-') || arg.isEmpty()) {
-							// switch has no value entered
-							arg = QString();
-						}
-						else {
-							arg = takeArg();
-						}
-						opt.setValueString(arg);
+					arg = peekArg();
+					if(arg.startsWith('-') || arg.isEmpty()) {
+						// switch has no value entered
+						arg = QString();
 					}
 					else {
-						opt.setValue(true);
+						arg = takeArg();
 					}
+					opt.setValueString(arg);
 					break;
 				}
 			}

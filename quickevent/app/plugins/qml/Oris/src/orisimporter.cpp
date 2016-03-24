@@ -526,7 +526,7 @@ void OrisImporter::importRegistrations()
 			q.prepare("INSERT INTO registrations (firstName, lastName, registration, licence, clubAbbr, siId, importId) VALUES (:firstName, :lastName, :registration, :licence, :clubAbbr, :siId, :importId)", qf::core::Exception::Throw);
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
 				QJsonObject obj = it.value().toObject();
-				//Log.debug(JSON.stringify(obj, null, 2));
+				//qfInfo() << obj.value("LastName") << obj.value("SI") << obj.value("UserID");
  				QString reg = obj.value(QStringLiteral("RegNo")).toString();
 				if(items_processed % 100 == 0) {
 					//Log.info(items_count, obj.RegNo);
@@ -542,8 +542,8 @@ void OrisImporter::importRegistrations()
 					q.bindValue(":clubAbbr", reg.mid(0, 3));
 				}
 				q.bindValue(":licence", obj.value(QStringLiteral("Lic")).toString());
-				q.bindValue(":siId", obj.value(QStringLiteral("SI")).toString());
-				q.bindValue(":importId", obj.value(QStringLiteral("UserID")).toString());
+				q.bindValue(":siId", obj.value(QStringLiteral("SI")).toString().toInt());
+				q.bindValue(":importId", obj.value(QStringLiteral("UserID")).toString().toInt());
 
 				//q.bindValue(":abbr", obj.Abbr);
 				//q.bindValue(":name", obj.Name);

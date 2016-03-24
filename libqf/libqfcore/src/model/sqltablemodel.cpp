@@ -118,7 +118,7 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				i++;
 				if(fld.tableId() != table_id)
 					continue;
-				//qfInfo() << table_id << "field:" << fld.name();
+				//qfInfo() << table_id << "field:" << fld.name() << "is serial:" << fld.isSerial();
 				bool is_field_dirty = row_ref.isDirty(i);
 				if(fld.isSerial()) {
 					/// always include serial fields, an empty line cannot be inserted in other case
@@ -693,7 +693,7 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 	QSet<QString> updateable_table_ids;
 	Q_FOREACH(QString table_id, field_ids.keys()) {
 		QString serial_field_name = sqlConnection().serialFieldName(table_id);
-		//qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
+		//qfInfo() << "serial field for table id:" << table_id << "is:" << serial_field_name;
 		serial_field_names[table_id] = serial_field_name;
 		const QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
