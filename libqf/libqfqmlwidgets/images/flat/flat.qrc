@@ -1,5 +1,6 @@
 <RCC>
 	<qresource prefix="/qf/qmlwidgets/images/flat">
+		<file>home.svg</file>
 		<file>new.svg</file>
 		<file>open.svg</file>
 		<file>save.svg</file>
