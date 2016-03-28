@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">  
+<qresource prefix="/qf/qmlwidgets/reports">
+    <file>portrait.qml</file>
+    <file>landscape.qml</file>
+	<file>MyStyle.qml</file>
+	<file>HeaderFooter.qml</file>
+</qresource>      
+</RCC>                                

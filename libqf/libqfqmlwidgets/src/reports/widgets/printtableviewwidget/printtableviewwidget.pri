@@ -8,4 +8,4 @@ FORMS += \
     $$PWD/printtableviewwidget.ui \
 
 RESOURCES += \
-    $$PWD/printtableviewwidget.qrc \
+    $$PWD/reports/reports.qrc \

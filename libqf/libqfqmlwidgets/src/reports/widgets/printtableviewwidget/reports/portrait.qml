@@ -1,5 +1,5 @@
 import qf.qmlreports 1.0
-//import shared.QuickEvent.reports 1.0
+//import shared.QuickEvent.reports 1.
 
 Report {
 	id: root
@@ -11,30 +11,41 @@ Report {
 		colors: [
 		]
 		pens: [
+			/*
 			Pen {name: "red1dot"
 				basedOn: "black1"
 				color: Color {def:"red"}
 				style: Pen.DotLine
 			}
+			*/
 		]
 	}
 	textStyle: myStyle.textStyleDefault
 	width: 210
 	height: 297
-	vinset: 10
 	hinset: 5
+	vinset: 5
 	//layout: Frame.LayoutVertical
-	Band {
-		id: band
+	Frame {
 		width: "%"
 		height: "%"
-		createFromData: true
-		Frame {
-			objectName: "frame00"
+		layout: Frame.LayoutStacked
+		HeaderFooter {
+			//reportTitle: root.reportTitle
+		}
+		Band {
+			id: band
+			vinset: 10
 			width: "%"
-			Para {
-				textFn: function() {return band.data("title");}
-				textStyle: TextStyle {basedOn: "big"}
+			height: "%"
+			createFromData: true
+			Frame {
+				objectName: "frame00"
+				width: "%"
+				Para {
+					textFn: function() {return band.data("title");}
+					textStyle: TextStyle {basedOn: "big"}
+				}
 			}
 		}
 	}
