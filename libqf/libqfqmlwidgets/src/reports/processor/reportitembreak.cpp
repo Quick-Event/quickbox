@@ -1,5 +1,7 @@
 #include "reportitembreak.h"
 
+#include <qf/core/log.h>
+
 namespace qf {
 namespace qmlwidgets {
 namespace reports {

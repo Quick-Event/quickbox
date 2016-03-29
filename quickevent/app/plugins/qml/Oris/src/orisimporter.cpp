@@ -22,6 +22,9 @@
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/utils/htmlutils.h>
 
+#include <qf/core/assert.h>
+#include <qf/core/log.h>
+
 #include <QDate>
 #include <QFile>
 #include <QJsonDocument>

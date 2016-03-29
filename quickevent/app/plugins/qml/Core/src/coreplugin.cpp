@@ -4,6 +4,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/sql/connection.h>
+#include <qf/core/log.h>
 
 #include <QCoreApplication>
 #include <QProcess>

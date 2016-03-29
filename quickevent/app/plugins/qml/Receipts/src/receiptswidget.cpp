@@ -22,6 +22,7 @@
 #include <qf/qmlwidgets/toolbar.h>
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 #include <qf/core/exception.h>
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>

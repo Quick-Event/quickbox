@@ -17,6 +17,7 @@
 
 #include <qf/core/sql/dbenum.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/assert.h>
 
 #include <QMenu>
 #include <QAction>

@@ -6,6 +6,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/utils.h>
+#include <qf/core/assert.h>
 
 static Event::EventPlugin* eventPlugin()
 {

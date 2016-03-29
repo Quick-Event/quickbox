@@ -4,6 +4,7 @@
 
 #include <qf/core/utils.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/log.h>
 
 #include <QSqlDatabase>
 #include <QSqlQuery>

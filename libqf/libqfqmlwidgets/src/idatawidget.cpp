@@ -3,6 +3,7 @@
 #include "datacontroller.h"
 
 #include <qf/core/model/datadocument.h>
+#include <qf/core/assert.h>
 
 namespace qfm = qf::core::model;
 using namespace qf::qmlwidgets;

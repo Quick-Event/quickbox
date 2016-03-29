@@ -11,6 +11,7 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/assert.h>
 
 #include <QJsonDocument>
 

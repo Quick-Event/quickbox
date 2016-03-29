@@ -2,6 +2,7 @@
 #include "../dialogs/dialog.h"
 
 #include <qf/core/model/datadocument.h>
+#include <qf/core/log.h>
 
 namespace qfm = qf::core::model;
 using namespace qf::qmlwidgets::framework;

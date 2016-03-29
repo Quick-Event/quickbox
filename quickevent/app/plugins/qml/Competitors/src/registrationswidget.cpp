@@ -7,6 +7,7 @@
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/connection.h>
+#include <qf/core/assert.h>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;

@@ -8,10 +8,10 @@
 #include <qf/qmlwidgets/tableview.h>
 
 #include <qf/core/model/sqltablemodel.h>
-
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QPainter>
 

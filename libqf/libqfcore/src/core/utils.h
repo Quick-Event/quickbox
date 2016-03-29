@@ -2,7 +2,7 @@
 #define QF_CORE_UTILS_H
 
 #include "coreglobal.h"
-#include "assert.h"
+#include "exception.h"
 
 #include <QVariant>
 
@@ -78,8 +78,8 @@
 			m_##lower_letter##name_rest = val; \
 			if(m_##lower_letter##name_rest != nullptr) \
 				if(m_##lower_letter##name_rest->parent() == nullptr) { \
-					qfWarning() << "setting object without parent:" << m_##lower_letter##name_rest << "to property:" << QF_QUOTEME(lower_letter##name_rest) << "of:" << this; \
-					/*qfWarning() << "reparenting:" << m_##lower_letter##name_rest << "to:" << this; \
+					/*qfWarning() << "setting object without parent:" << m_##lower_letter##name_rest << "to property:" << QF_QUOTEME(lower_letter##name_rest) << "of:" << this; \
+					qfWarning() << "reparenting:" << m_##lower_letter##name_rest << "to:" << this; \
 					m_##lower_letter##name_rest->setParent(this); */\
 				} \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \

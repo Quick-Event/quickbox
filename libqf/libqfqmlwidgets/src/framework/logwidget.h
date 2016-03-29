@@ -3,6 +3,8 @@
 
 #include "dockablewidget.h"
 
+#include <qf/core/logcore.h>
+
 #include <QTableView>
 
 class QAbstractButton;

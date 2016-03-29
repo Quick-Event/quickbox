@@ -4,6 +4,7 @@
 #include "../style.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 #include <qf/core/logdevice.h>
 #include <qf/core/model/logtablemodel.h>
 

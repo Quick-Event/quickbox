@@ -2,6 +2,7 @@
 #include "../reportitemreport.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QObject>
 

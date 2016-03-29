@@ -1,5 +1,7 @@
 #include "pluginmanifest.h"
 
+#include <qf/core/log.h>
+
 using namespace qf::qmlwidgets::framework;
 
 PluginManifest::PluginManifest(QObject *parent) :

@@ -1,5 +1,7 @@
 #include "receiptsprinteroptions.h"
 
+#include <qf/core/log.h>
+
 #include <QJsonDocument>
 #include <QJsonObject>
 

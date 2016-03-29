@@ -4,6 +4,7 @@
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/assert.h>
 
 #include <QMimeData>
 
