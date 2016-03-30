@@ -409,7 +409,7 @@ void EventStatisticsWidget::on_btPrintResults_clicked()
 		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
 	}
-	bool report_printed;
+    bool report_printed = false;
 	Runs::ReportOptionsDialog dlg(this);
 	dlg.setClassNamesFilter(class_names);
 	if(dlg.exec()) {
