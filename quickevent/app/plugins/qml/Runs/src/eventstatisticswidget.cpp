@@ -313,6 +313,7 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent) :
 	ui->tableView->setReadOnly(true);
 
 	m_tableFooterView = new FooterView(ui->tableView);
+	m_tableFooterView->setMinimumHeight(20);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
