@@ -241,7 +241,7 @@ QtObject {
 	{
 		Log.info("runs printStartListClubs triggered");
 		var tt = startListClubsTable();
-		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_clubs.qml", tt.data(), qsTr("Start list by clubs"));
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_clubs.qml", tt.data(), qsTr("Start list by clubs"));
 	}
 
 	function printStartListStarters()
@@ -249,7 +249,7 @@ QtObject {
 		Log.info("runs printStartListStarters triggered");
 		var class_letter = InputDialogSingleton.getItem(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("All")], 0, false);
 		var tt = startListStartersTable(class_letter);
-		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
 	}
 
 	function printClassesNStages()
