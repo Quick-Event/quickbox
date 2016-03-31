@@ -777,13 +777,13 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 		QString cap = col.value("caption").toString();
 		int ix = col.value("index").toInt();
 		qfu::TreeTableColumn tt_col;
-		if(col.value("origin") == QLatin1String("model")) {
-			QVariant::Type t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
-			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
-		}
-		else {
+		if(col.value("origin") == QLatin1String("table")) {
 			QVariant::Type t = m_table.field(ix).type();
 			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
+		}
+		else {
+			QVariant::Type t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
+			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
 		}
 		tt_col.setWidth(col.value("width").toString());
 	}
@@ -795,23 +795,24 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 		for(int i=0; i<rowCount(); i++) {
 			QVariantList srow_lst;
 			qfu::Table::Row tbl_row = m_table.row(i);
-			//if(cnt) if(n++ % progress_step) emit progressValue(1.*n/cnt, tr("Probiha export"));
 			for(int j=0; j<exported_columns.count(); j++) {
 				QVariantMap col = exported_columns[j].toMap();
 				QVariant val;
 				int ix = col.value("index").toInt();
-				if(col.value("origin") == QLatin1String("model")) {
+				if(col.value("origin") == QLatin1String("table")) {
+					val = tbl_row.value(ix);
+					//qfWarning() << col << val.typeName() << "val:" << val.toString();
+				}
+				else {
 					if(raw_values) {
 						val = value(i, ix);
-						//qfWarning() << val.typeName() << "val:" << val.toString();
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
 					}
 					else {
 						QModelIndex mix = index(i, ix);
 						val = data(mix);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
 					}
-				}
-				else {
-					val = tbl_row.value(ix);
 				}
 				srow_lst << val;
 			}
