@@ -339,6 +339,33 @@ void RunsWidget::import_start_times_ob2000()
 	}
 }
 
+bool RunsWidget::isLockedForDrawing(int class_id, int stage_id)
+{
+	qf::core::sql::QueryBuilder qb;
+	qb.select2("classdefs", "drawLock")
+			.select2("classes", "name")
+			.from("classdefs")
+			.join("classdefs.classId", "classes.id")
+			.where("stageId=" QF_IARG(stage_id))
+			.where("classId=" QF_IARG(class_id) );
+	qfs::Query q;
+	QString qs = qb.toString();
+	q.exec(qs, qf::core::Exception::Throw);
+	if(q.next()) {
+		bool is_locked = q.value("drawLock").toBool();
+		return is_locked;
+	}
+	return false;
+}
+
+void RunsWidget::saveLockedForDrawing(int class_id, int stage_id, bool is_locked)
+{
+	qfs::Query q;
+	q.prepare("UPDATE classdefs SET drawLock=:drawLock WHERE stageId=" QF_IARG(stage_id) " AND classId=" QF_IARG(class_id), qf::core::Exception::Throw);
+	q.bindValue(":drawLock", is_locked);
+	q.exec(qf::core::Exception::Throw);
+}
+
 void RunsWidget::on_btDraw_clicked()
 {
 	qfLogFuncFrame();
@@ -346,23 +373,25 @@ void RunsWidget::on_btDraw_clicked()
 	QList<int> class_ids;
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id == 0) {
-		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Draw all clases without any start time set?"), false))
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Draw all clases without draw lock?"), false))
 			return;
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("competitors", "classId")
-				.select("MIN(runs.startTimeMs) AS minStartTime")
-				.select("MAX(runs.startTimeMs) AS maxStartTime")
-				.from("competitors")
-				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id))
-				.groupBy("competitors.classId")
-				.as("t");
-		qfs::Query q(qfs::Connection::forName());
-		QString qs = "SELECT * FROM " + qb.toString() + " WHERE minStartTime IS NULL AND maxStartTime IS NULL";
+		qb.select2("classdefs", "classId")
+				.from("classdefs")
+				.where("stageId=" QF_IARG(stage_id))
+				.where("NOT drawLock");
+		qfs::Query q;
+		QString qs = qb.toString();
 		q.exec(qs, qf::core::Exception::Throw);
 		while(q.next())
 			class_ids << q.value("classId").toInt();
 	}
 	else {
+		bool is_locked = isLockedForDrawing(class_id, stage_id);
+		if(is_locked) {
+			qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("Class is locked for drawing."));
+			return;
+		}
 		class_ids << class_id;
 	}
 	try {
@@ -544,6 +573,7 @@ void RunsWidget::on_btDraw_clicked()
 						n++;
 					}
 				}
+				saveLockedForDrawing(class_id, stage_id, true);
 			}
 		}
 		transaction.commit();
@@ -557,7 +587,10 @@ void RunsWidget::on_btDraw_clicked()
 
 void RunsWidget::on_btDrawRemove_clicked()
 {
-	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Reset all start times for this class?"), false))
+	int class_id = m_cbxClasses->currentData().toInt();
+	if(class_id == 0)
+		return;
+	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Reset all start times and unlock for drawing for this class?"), false))
 		return;
 	try {
 		auto *runs_model = ui->wRunsTableWidget->runsModel();
@@ -567,6 +600,8 @@ void RunsWidget::on_btDrawRemove_clicked()
 			// bypass mid-air collision check
 			runs_model->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
 		}
+		int stage_id = eventPlugin()->currentStageId();
+		saveLockedForDrawing(class_id, stage_id, false);
 		transaction.commit();
 		runs_model->reload();
 	}
