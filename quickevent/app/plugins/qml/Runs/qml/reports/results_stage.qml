@@ -55,6 +55,7 @@ Report {
 					dataBand: band
 					reportTitle: root.reportTitle
 				}
+				Space { height: 5 }
 				Detail {
 					id: detail
 					objectName: "detail"
@@ -62,7 +63,11 @@ Report {
 					//keepAll: true
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
-					Space { height: 5 }
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
+						skipFirst: true
+					}
 					Frame {
 						width: "%"
 						layout: Frame.LayoutHorizontal
@@ -126,10 +131,6 @@ Report {
 								}
 							}
 						}
-					}
-					Break {
-						breakType: root.isColumnBreak? Break.Column: Break.Page;
-						visible: root.isBreakAfterEachClass;
 					}
 				}
 			}
