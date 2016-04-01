@@ -378,8 +378,8 @@ void EventStatisticsWidget::reload()
 	QElapsedTimer tm;
 	tm.start();
 	m_tableModel->reload();
-	qfInfo() << m_tableModel->effectiveQuery();
-	qfInfo() << "query execution time:" << tm.elapsed() << "msec";
+	qfDebug() << m_tableModel->effectiveQuery();
+	qfDebug() << "query execution time:" << tm.elapsed() << "msec";
 	QTimer::singleShot(10, m_tableFooterView, &FooterView::syncSectionSizes);
 }
 
