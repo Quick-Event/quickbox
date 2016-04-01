@@ -17,12 +17,15 @@ public:
 	IPersistentSettings(QObject *controlled_object);
 public:
 	static QString persistentSettingsPathPrefix();
+
 	virtual QString persistentSettingsId();
-	void setPersistentSettingsId(const QString &id);
+	virtual void setPersistentSettingsId(const QString &id);
+
 	virtual QString persistentSettingsPath();
-	void setPersistentSettingsPath(const QString &path);
-	void loadPersistentSettingsRecursively();
-	void savePersistentSettingsRecursively();
+	virtual void setPersistentSettingsPath(const QString &path);
+
+	virtual void loadPersistentSettingsRecursively();
+	virtual void savePersistentSettingsRecursively();
 private:
 	QString generatePersistentSettingsPath();
 private:
