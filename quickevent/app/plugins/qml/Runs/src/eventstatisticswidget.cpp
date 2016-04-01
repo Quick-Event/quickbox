@@ -240,6 +240,7 @@ void FooterModel::setMasterModel(qf::core::model::TableModel *masterModel)
 
 void FooterModel::reload()
 {
+	qfLogFuncFrame();
 	auto *mm = masterModel();
 	m_columnSums.resize(columnCount());
 	for (int i = 0; i < columnCount(); ++i) {
@@ -251,10 +252,14 @@ void FooterModel::reload()
 		bool double_col = (type == QVariant::Double);
 		for (int j = 0; j < mm->rowCount(); ++j) {
 			//QModelIndex ix = mm->index(j, i);
-			if(int_col)
+			if(int_col) {
+				if(i == 2)
+					qfDebug() << mm->value(j, i);
 				isum += mm->value(j, i).toInt();
-			else if(double_col)
+			}
+			else if(double_col) {
 				dsum += mm->value(j, i).toDouble();
+			}
 		}
 		if(int_col)
 			m_columnSums[i] = isum;
@@ -262,7 +267,10 @@ void FooterModel::reload()
 			m_columnSums[i] = dsum;
 		else
 			m_columnSums[i] = QVariant();
+		if(i == 2)
+			qfDebug() << "SUM:" << m_columnSums[i];
 	}
+	emit headerDataChanged(Qt::Horizontal, 0, columnCount() - 1);
 }
 
 //============================================================
