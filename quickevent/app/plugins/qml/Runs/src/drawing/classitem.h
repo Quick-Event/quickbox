@@ -43,8 +43,8 @@ private:
 	QF_VARIANTMAP_FIELD(int, f, setF, irstCode)
 	QF_VARIANTMAP_FIELD(int, r, setr, unsCount)
 	//QF_VARIANTMAP_FIELD2(bool, isD, setD, rawnIn, false) ///< not SQL value, internal usage
-	QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
-	QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)
+	//QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
+	//QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)
 public:
 	ClassData(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ClassData(const qf::core::sql::Query &q);

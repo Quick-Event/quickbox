@@ -35,6 +35,7 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 		if(!v.isNull())
 			setStartSlotIndex(v.toInt());
 	}
+	/*
 	{
 		QVariant v = q.value("minStartTime");
 		if(!v.isNull())
@@ -45,6 +46,7 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 		if(!v.isNull())
 			setMaxStartTimeSec(v.toInt() / 1000);
 	}
+	*/
 }
 
 ClassItem::ClassItem(QGraphicsItem *parent)
@@ -191,11 +193,12 @@ void ClassItem::updateGeometry()
 	m_classText->setHtml(QString("<b>%1</b> %2+%3").arg(dt.className()).arg(dt.runsCount()).arg(runsAndVacantCount() - dt.runsCount()));
 	m_courseText->setHtml(QString("<b>%1</b> (%2)").arg(dt.firstCode()).arg(dt.courseId()));
 	dt.setStartTimeMin(pxToMin(pos().x()));
-	m_classdefsText->setPlainText(QString("%1 / %2 <%3, %4>")
+	m_classdefsText->setPlainText(QString("<%1-%3>/%2")
 								  .arg(dt.startTimeMin())
 								  .arg(dt.startIntervalMin())
-								  .arg((dt.minStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.minStartTimeSec() / 60))
-								  .arg((dt.maxStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.maxStartTimeSec() / 60))
+								  .arg(dt.startTimeMin() + durationMin())
+								  //.arg((dt.minStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.minStartTimeSec() / 60))
+								  //.arg((dt.maxStartTimeSec() == ClassData::INVALID_START_TIME_SEC)? QString(): QString::number(dt.maxStartTimeSec() / 60))
 								  );
 	int slot_ix = ganttItem()->startSlotItemIndex(startSlotItem());
 	int class_ix = startSlotItem()->classItemIndex(this);
@@ -214,9 +217,9 @@ void ClassItem::updateToolTip()
 	tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
 	tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
 	tool_tip += tr("class start: %1, interval: %2, duration: %3, end: %4<br/>").arg(dt.startTimeMin()).arg(dt.startIntervalMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
-	if(dt.minStartTimeSec() != ClassData::INVALID_START_TIME_SEC || dt.maxStartTimeSec() != ClassData::INVALID_START_TIME_SEC) {
-		tool_tip += tr("competitors start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
-	}
+	//if(dt.minStartTimeSec() != ClassData::INVALID_START_TIME_SEC || dt.maxStartTimeSec() != ClassData::INVALID_START_TIME_SEC) {
+	//	tool_tip += tr("competitors start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
+	//}
 	auto clst = clashingClasses();
 	if(clst.count()) {
 		QStringList sl;
