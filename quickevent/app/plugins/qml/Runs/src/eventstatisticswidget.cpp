@@ -59,7 +59,8 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	addColumn("runnersCount", tr("Runners"));
 	addColumn("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	addColumn("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	addColumn("time3Ms", tr("Time 3")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	addColumn("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	addColumn("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	addColumn("runnersFinished", tr("Finished"));
 	addColumn("runnersNotFinished", tr("Not finished"));
 	addColumn("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results."));
@@ -79,6 +80,17 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 		qb_runners_start_last.select("MAX(runs.startTimeMs)")
 				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
 				.where("runs.startTimeMs IS NOT NULL");
+		qf::core::sql::QueryBuilder qb_first_time;
+		{
+			qf::core::sql::QueryBuilder qb;
+			qb.select("runs.timeMs")
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id AND runs.timeMs>0 AND NOT runs.disqualified", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.orderBy("runs.timeMs")
+				.limit(1)
+				.as("results1");
+			qb_first_time.select("MAX(timeMs)")
+					.from(qb.toString());
+		}
 		qf::core::sql::QueryBuilder qb_third_time;
 		{
 			qf::core::sql::QueryBuilder qb;
@@ -87,7 +99,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.orderBy("runs.timeMs")
 				.limit(3)
 				.as("results3");
-			qb_third_time.select("MAX(timeMs) AS time3Ms")//.select("COUNT(timeMs) AS count3")
+			qb_third_time.select("MAX(timeMs)")//.select("COUNT(timeMs) AS count3")
 					.from(qb.toString());
 		}
 
@@ -98,6 +110,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.select("(" + qb_runners_finished.toString() + ") AS runnersFinished")
 				.select("(" + qb_runners_start_first.toString() + ") AS startFirstMs")
 				.select("(" + qb_runners_start_last.toString() + ") AS startLastMs")
+				.select("(" + qb_first_time.toString() + ") AS time1Ms")
 				.select("(" + qb_third_time.toString() + ") AS time3Ms")
 				.select("0 AS freeMapCount")
 				.select("0 AS runnersNotFinished")
@@ -234,7 +247,7 @@ void FooterModel::reload()
 		//qfInfo() << type << "type:" << QVariant::typeToName(type);
 		int isum = 0;
 		double dsum = 0;
-		bool int_col = (type == QVariant::Int || type == QVariant::UInt);
+		bool int_col = (type == QVariant::Int || type == QVariant::UInt || type == QVariant::LongLong || type == QVariant::ULongLong);
 		bool double_col = (type == QVariant::Double);
 		for (int j = 0; j < mm->rowCount(); ++j) {
 			//QModelIndex ix = mm->index(j, i);

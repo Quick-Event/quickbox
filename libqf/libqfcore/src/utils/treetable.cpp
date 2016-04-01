@@ -159,7 +159,8 @@ QVariant TreeTableRow::value_helper(int col, bool &found) const
 			if(v.isValid()) {
 				TreeTableColumn cd = columns()[col];
 				QString ts = cd.property(TreeTable::KEY_TYPE).toString();
-				QVariant::Type t = QVariant::nameToType(qPrintable(ts));
+				int t = QMetaType::type(ts.toLatin1().constData());
+				//QVariant::Type t = QVariant::nameToType(qPrintable(ts));
 				ret = Utils::retypeVariant(v, t);
 			}
 		}

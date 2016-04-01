@@ -137,7 +137,7 @@ public:
 	/// @returns: True if @a field_name1 ends with @a field_name2. Comparision is case insensitive
 	static bool fieldNameEndsWith(const QString &field_name1, const QString &field_name2);
 	static bool fieldNameCmp(const QString &fld_name1, const QString &fld_name2);
-	static QVariant retypeVariant(const QVariant &_val, QVariant::Type type);
+	static QVariant retypeVariant(const QVariant &_val, int meta_type_id);
 	static QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 
 	/**

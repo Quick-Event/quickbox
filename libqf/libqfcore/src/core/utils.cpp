@@ -77,90 +77,31 @@ bool Utils::fieldNameCmp(const QString &fld_name1, const QString &fld_name2)
 	return false;
 }
 
-QVariant Utils::retypeVariant(const QVariant &val, QVariant::Type type)
+QVariant Utils::retypeVariant(const QVariant &val, int meta_type_id)
 {
-	if(type == QVariant::Invalid) {
+	if(meta_type_id == QVariant::Invalid) {
 		//qfWarning() << "Cannot convert" << val << "to QVariant::Invalid type!";
 		// retype whatever to invalid variant
 		return QVariant();
 	}
-	if(val.type() == type)
+	if(val.userType() == meta_type_id)
 		return val;
 	if(!val.isValid())
-		return QVariant(type);
+		return QVariant(meta_type_id);
 	if(val.isNull())
-		return QVariant(type);
-	if(val.canConvert(type)) {
+		return QVariant(meta_type_id);
+	if(val.canConvert(meta_type_id)) {
 		QVariant ret = val;
-		ret.convert(type);
+		ret.convert(meta_type_id);
 		return ret;
 	}
-	/*
-	switch(type) {
-	case QVariant::Bool:
-		return QVariant(val.toBool());
-	case QVariant::LongLong:
-		if(val.type() == QVariant::Double) return val.toLongLong();
-		else if(val.type() == QVariant::Bool) return val.toBool()? 1: 0;
-		return QVariant(val.toLongLong());
-	case QVariant::ULongLong:
-		if(val.type() == QVariant::Double) return val.toULongLong();
-		else if(val.type() == QVariant::Bool) return val.toBool()? 1: 0;
-		return QVariant(val.toULongLong());
-	case QVariant::Int:
-		if(val.type() == QVariant::Double) return val.toInt();
-		else if(val.type() == QVariant::Bool) return val.toBool()? 1: 0;
-		return QVariant(val.toInt());
-	case QVariant::UInt:
-		if(val.type() == QVariant::Double) return val.toUInt();
-		else if(val.type() == QVariant::Bool) return val.toBool()? 1: 0;
-		return QVariant(val.toUInt());
-	case QVariant::Double:
-		if(val.type() == QVariant::Bool) return val.toBool()? 1: 0;
-		return QVariant(val.toDouble());
-	case QVariant::Date: {
-		QString str_val = val.toString();
-		if(str_val.isEmpty()) {
-			return QVariant(QDate());
-		}
-		else	{
-			if(val.type() == QVariant::DateTime)
-				return val.toDate();
-			return QDate::fromString(val.toString());
-			//if(QLocale().name() == "cs_CZ") return QVariant(QDate::fromString(str_val, "d.M.yyyy") );
-			//return QVariant(QDate::fromString(str_val, Qt::ISODate) );
-		}
-	}
-	case QVariant::Time: {
-		QString str_val = val.toString();
-		if (str_val.isEmpty()) {
-			return QVariant(QTime());
-		}
-		else {
-			if(val.type() == QVariant::DateTime) return val.toTime();
-			return QVariant(QTime::fromString(str_val, Qt::ISODate));
-		}
-	}
-	case QVariant::DateTime: {
-		QString str_val = val.toString();
-		if (str_val.isEmpty()) {
-			return QVariant(QDateTime());
-		}
-		if (str_val.length() == 14) {
-			/// TIMESTAMPS with format yyyyMMddhhmmss
-			str_val.insert(4, QLatin1Char('-')).insert(7, QLatin1Char('-')).insert(10, QLatin1Char('T')).insert(13, QLatin1Char(':')).insert(16, QLatin1Char(':'));
-		}
-		return QVariant(QDateTime::fromString(str_val, Qt::ISODate));
-	}
-	case QVariant::String:
-	default: {
-		QString str_val = val.toString();
-		return QVariant(str_val);
-	}
-	}
-	*/
-	qfWarning() << "Don't know, how to convert variant type" << val.typeName() << "to:" << QVariant::typeToName(type);
-	return QVariant();
+	//if(meta_type_id >= QVariant::UserType) {
+	//	if(val.userType() >= QVariant::UserType) {
+	//		if()
+	//	}
+	//}
+	qfWarning() << "Don't know, how to convert variant type" << val.typeName() << "to:" << meta_type_id << QMetaType::typeName(meta_type_id);
+	return val;
 }
 
 QVariant Utils::retypeStringValue(const QString &str_val, const QString &type_name)

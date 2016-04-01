@@ -56,8 +56,10 @@ void ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap 
 	QF_TIME_SCOPE("ReportProcessor::setReport()");
 	m_reportInitProperties = report_init_properties;
 	QF_SAFE_DELETE(m_reportDocumentComponent);
-	QString fn = rep_file_name;
 	m_reportDocumentComponent = new ReportDocument(qmlEngine(true), this);
+	//QString fn = rep_file_name;
+	//if(fn.startsWith(QLatin1String("qrc://")))
+	//	fn = fn.mid(3);
 	m_reportDocumentComponent->setFileName(rep_file_name);
 	if(m_reportDocumentComponent->isError()) {
 		qfError() << "Erorr loading report component:" << m_reportDocumentComponent->errorString();
