@@ -67,7 +67,7 @@ Report {
 				}
 				Para {
 					textFn: function() {
-						return bandCard.data("event.date").toISOString().substring(0, 10) + " " + bandCard.data("event.place")
+						return TimeExt.dateToISOString(bandCard.data("event.date")) + " " + bandCard.data("event.place")
 					}
 				}
 			}
@@ -192,13 +192,13 @@ Report {
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-					width: "7"
+					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "stpTimeMs"));
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-					width: "7"
+					width: "%"
 					textHAlign: Frame.AlignRight
 					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lapTimeMs"));
 				}
