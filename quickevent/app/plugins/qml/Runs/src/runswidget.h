@@ -62,6 +62,9 @@ private:
 	QList<int> runsForClass(int stage_id, int class_id);
 	QMap<int, int> competitorsForClass(int stage_id, int class_id);
 
+	bool isLockedForDrawing(int class_id, int stage_id);
+	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked);
+
 	void import_start_times_ob2000();
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap};

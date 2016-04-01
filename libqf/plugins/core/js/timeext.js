@@ -6,9 +6,17 @@ function msecSinceMidnight(d)
 	return d - e.setHours(0,0,0,0);
 }
 
-function dateToISOString(d)
+function dateToISOString(dt)
 {
-	return d.toISOString().slice(0, 10);
+	var y = dt.getFullYear();
+	var m = dt.getMonth() + 1;
+	if(m < 10)
+		m = "0" + m;
+	var d = dt.getDate();
+	if(d < 10)
+		d = "0" + d;
+	var ret = y + "-" + m + "-" + d;
+	return ret;
 }
 
 function msecToString_hhmmss(msec)

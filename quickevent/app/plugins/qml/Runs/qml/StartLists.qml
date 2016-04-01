@@ -8,7 +8,7 @@ import "qrc:/qf/core/qml/js/timeext.js" as TimeExt
 import "qrc:/quickevent/js/ogtime.js" as OGTime
 
 QtObject {
-	id: root
+	//id: root
 	property RunsPlugin runsPlugin
 
 
@@ -75,7 +75,7 @@ QtObject {
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
-		//console.debug(tt.toString());
+		//console.info(tt.toString());
 
 		reportModel.queryBuilder.clear()
 			.select2('competitors', 'registration')
@@ -116,17 +116,20 @@ QtObject {
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
 		if(class_letter === 'H') {
-			reportModel.queryBuilder.where("classes.name NOT LIKE '" + class_letter + "%'")
+			reportModel.queryBuilder.where("classes.name LIKE 'H%'")
 		}
 		else if(class_letter === 'D'){
-			reportModel.queryBuilder.where("classes.name NOT LIKE 'H%'")
+			reportModel.queryBuilder.where("classes.name LIKE 'D%'")
+		}
+		else if(class_letter === 'O'){
+			reportModel.queryBuilder.where("(classes.name NOT LIKE 'H%' AND classes.name NOT LIKE 'D%') OR (classes.name LIKE 'HD%')");
 		}
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
+		console.info(reportModel.effectiveQuery());
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
-		//console.warn(tt.toString());
 		return tt;
 	}
 
@@ -247,7 +250,8 @@ QtObject {
 	function printStartListStarters()
 	{
 		Log.info("runs printStartListStarters triggered");
-		var class_letter = InputDialogSingleton.getItem(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("All")], 0, false);
+		var ix = InputDialogSingleton.getItemIndex(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("Other"), qsTr("All")], 0, false);
+		var class_letter = (ix === 0)? 'H': (ix === 1)? 'D': (ix === 2)? 'O': '';
 		var tt = startListStartersTable(class_letter);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
 	}

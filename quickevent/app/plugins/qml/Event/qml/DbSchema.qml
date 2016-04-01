@@ -120,14 +120,12 @@ Schema {
 				Field { name: 'mapCount'; type: Int { } },
 				Field { name: 'resultsCount'; type: Int { }
 					comment: 'number of finished competitors, when the results were printed'
-				}
-				/*
-				Field { name: 'isDrawnIn'; type: Boolean { } 
+				},
+				Field { name: 'drawLock'; type: Boolean { }
 					defaultValue: false
 					notNull: true
-					comment: 'The draw of this class was processed'
-				},
-				*/
+					comment: 'The draw of this class is prohibited'
+				}
 			]
 			indexes: [
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },

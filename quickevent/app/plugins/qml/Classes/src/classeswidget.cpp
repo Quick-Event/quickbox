@@ -118,6 +118,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
+		m->addColumn("classdefs.drawLock", tr("DL")).setToolTip(tr("Locked for drawing"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
 		m->addColumn("classdefs.startIntervalMin", tr("Interval"));
 		m->addColumn("classdefs.vacantsBefore", tr("VB")).setToolTip(tr("Vacants before"));
@@ -493,6 +494,8 @@ void ClassesWidget::import_ocad_iofxml()
 					QString class_name = xml_classes.at(j).toElement().text().trimmed();
 					class_names << class_name;
 				}
+				if(class_names.isEmpty())
+					class_names << course_name;
 				coursedef.setClasses(class_names);
 
 				QDomElement el_course_variantion = el_course.firstChildElement(QStringLiteral("CourseVariation"));

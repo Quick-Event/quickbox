@@ -68,7 +68,7 @@ Report {
 					}
 					Para {
 						textFn: function() {
-							return bandCompetitor.data("event.date").toISOString().substring(0, 10) + " " + bandCompetitor.data("event.place")
+							return TimeExt.dateToISOString(bandCompetitor.data("event.date")) + " " + bandCompetitor.data("event.place")
 						}
 					}
 				}

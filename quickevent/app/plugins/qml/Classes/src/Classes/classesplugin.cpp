@@ -126,7 +126,7 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
-				q.bindValue(":note", QString("E%").arg(stage_id));
+				q.bindValue(":note", QString("E%1").arg(stage_id));
 				q.exec(qf::core::Exception::Throw);
 				course_id = q.lastInsertId().toInt();
 			}
