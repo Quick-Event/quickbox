@@ -124,11 +124,11 @@ Report {
 					Component.onCompleted: {
 						console.debug("stageCount", root.stageCount)
 						for(var i=0; i<root.stageCount; i++) {
-							var c = cCell.createObject(null, {"text": "E" + (i+1), "width": 10, "halign": Frame.AlignRight});
+							var c = cCell.createObject(null, {"text": "E" + (i+1), "width": 15, "halign": Frame.AlignRight});
 							head.addItem(c);
-							c = cCell.createObject(null, {"text": qsTr("maps"), "width": 10, "halign": Frame.AlignRight});
+							c = cCell.createObject(null, {"text": qsTr("maps"), "width": 15, "halign": Frame.AlignRight});
 							head.addItem(c);
-							c = cCell.createObject(null, {"text": qsTr("res"), "width": 10, "halign": Frame.AlignRight});
+							c = cCell.createObject(null, {"text": qsTr("res"), "width": 15, "halign": Frame.AlignRight});
 							head.addItem(c);
 						}
 					}
@@ -147,12 +147,12 @@ Report {
 						for(var i=0; i<root.stageCount; i++) {
 							var fld_run_cnt = "e" + (i+1) + "_runCount";
 							var fld_map_cnt = "e" + (i+1) + "_mapCount";
-							var c = cBandCell.createObject(null, {"width": 10, "halign": Frame.AlignRight, "fieldName": fld_run_cnt});
+							var c = cBandCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": fld_run_cnt});
 							detail.addItem(c);
 
-							c = cBandCell.createObject(null, {"width": 10, "halign": Frame.AlignRight, "fieldName": fld_map_cnt});
+							c = cBandCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": fld_map_cnt});
 							detail.addItem(c);
-							c = cMapDiffCell.createObject(null, {"width": 10, "halign": Frame.AlignRight, "stage": (i+1)});
+							c = cMapDiffCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "stage": (i+1)});
 							detail.addItem(c);
 						}
 					}
@@ -171,11 +171,11 @@ Report {
 						for(var i=0; i<root.stageCount; i++) {
 							var fld_run_cnt = "e" + (i+1) + "_runCount";
 							var fld_map_cnt = "e" + (i+1) + "_mapCount";
-							var c = cSumCell.createObject(null, {"fieldName": fld_run_cnt, "width": 10, "halign": Frame.AlignRight});
+							var c = cSumCell.createObject(null, {"fieldName": fld_run_cnt, "width": 15, "halign": Frame.AlignRight});
 							footer.addItem(c);
-							c = cSumCell.createObject(null, {"fieldName": fld_map_cnt, "width": 10, "halign": Frame.AlignRight});
+							c = cSumCell.createObject(null, {"fieldName": fld_map_cnt, "width": 15, "halign": Frame.AlignRight});
 							footer.addItem(c);
-							c = cCell.createObject(null, {"text": "", "width": 10, "halign": Frame.AlignRight});
+							c = cCell.createObject(null, {"text": "", "width": 15, "halign": Frame.AlignRight});
 							footer.addItem(c);
 						}
 					}
