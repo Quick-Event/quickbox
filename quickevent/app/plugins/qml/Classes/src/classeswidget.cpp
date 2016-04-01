@@ -493,6 +493,8 @@ void ClassesWidget::import_ocad_iofxml()
 					QString class_name = xml_classes.at(j).toElement().text().trimmed();
 					class_names << class_name;
 				}
+				if(class_names.isEmpty())
+					class_names << course_name;
 				coursedef.setClasses(class_names);
 
 				QDomElement el_course_variantion = el_course.firstChildElement(QStringLiteral("CourseVariation"));
