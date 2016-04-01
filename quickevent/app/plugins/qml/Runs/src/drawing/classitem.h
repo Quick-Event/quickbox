@@ -49,10 +49,10 @@ public:
 	ClassData(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ClassData(const qf::core::sql::Query &q);
 
-	bool isDrawnIn() const
-	{
-		return !(minStartTimeSec() == INVALID_START_TIME_SEC && maxStartTimeSec() == INVALID_START_TIME_SEC);
-	}
+	//bool isDrawnIn() const
+	//{
+	//	return !(minStartTimeSec() == INVALID_START_TIME_SEC && maxStartTimeSec() == INVALID_START_TIME_SEC);
+	//}
 };
 
 class ClassItem : public QGraphicsRectItem, public IGanttItem

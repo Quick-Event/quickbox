@@ -122,6 +122,8 @@ Schema {
 					comment: 'number of finished competitors, when the results were printed'
 				},
 				Field { name: 'drawLock'; type: Boolean { }
+					defaultValue: false
+					notNull: true
 					comment: 'The draw of this class is prohibited'
 				}
 			]

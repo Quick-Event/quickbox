@@ -118,6 +118,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
+		m->addColumn("classdefs.drawLock", tr("DL")).setToolTip(tr("Locked for drawing"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
 		m->addColumn("classdefs.startIntervalMin", tr("Interval"));
 		m->addColumn("classdefs.vacantsBefore", tr("VB")).setToolTip(tr("Vacants before"));
