@@ -238,9 +238,9 @@ QtObject {
 				var time = tt2.value(j, "timeMs");
 				if(ftime && time)
 					stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
-				result.push(['StartTime', ['Clock', OGTime.msecToHMS(stime, ':')]])
+                result.push(['StartTime', ['Clock', TimeExt.msecToString_hhmmss(stime)]])
 				if(ftime)
-					result.push(['FinishTime', ['Clock', OGTime.msecToHMS(ftime, ':')]])
+                    result.push(['FinishTime', ['Clock', TimeExt.msecToString_hhmmss(ftime)]])
 				result.push(['Time', {timeFormat: "MM:SS"}, OGTime.msecToString_mmss(time, ':')])
 				var competitor_status = 'OK'
 				if (!ftime) {
