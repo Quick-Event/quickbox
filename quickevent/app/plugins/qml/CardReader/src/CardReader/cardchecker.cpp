@@ -104,12 +104,13 @@ QVariantMap CardChecker::courseCodesForRunId(int run_id)
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("coursecodes", "position")
-				.select2("codes", "code, outOfOrder")
+				.select2("codes", "code, altCode, outOfOrder")
 				.from("coursecodes")
 				.join("coursecodes.codeId", "codes.id")
 				.where("coursecodes.courseId=" QF_IARG(course_id))
 				.orderBy("coursecodes.position");
 		qfs::Query q;
+		//qfWarning() << qb.toString();
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		QVariantList codes;
 		while (q.next()) {

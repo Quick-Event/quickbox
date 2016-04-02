@@ -243,21 +243,36 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "stpTimeMs"));
+					text: {
+						var msec = dc.data(dc.currentIndex, "stpTimeMs");
+						if(msec > 0)
+							return OGTime.msecToString_mmss(msec);
+						return qsTr("-----");
+					}
 				}
 				Para {
 					id: cellLap
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lapTimeMs"));
+					text: {
+						var msec = dc.data(dc.currentIndex, "lapTimeMs");
+						if(msec > 0)
+							return OGTime.msecToString_mmss(msec);
+						return qsTr("-----");
+					}
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lossMs"));
+					text: {
+						var msec = dc.data(dc.currentIndex, "lossMs");
+						if(msec > 0)
+							return OGTime.msecToString_mmss(msec);
+						return qsTr("-----");
+					}
 				}
 			}
 			Frame {

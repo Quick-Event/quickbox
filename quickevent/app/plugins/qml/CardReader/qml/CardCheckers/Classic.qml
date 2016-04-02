@@ -71,16 +71,20 @@ CardChecker
 			checked_punches.push(checked_punch);
 			for(var k=read_punch_check_ix; k<read_punches.length; k++) { //scan card
 				var read_punch = read_punches[k];
+				console.debug(j, k, "looking for:", course_code.code, "on card:", read_punch.code, "vs. code:", course_code.code, "alt:", course_code.altcode);
+				//console.info("code:", JSON.stringify(course_code, null, 2));
 				if(read_punch.code === course_code.code || read_punch.code === course_code.altcode) {
 					var read_punch_time_ms = read_punch.time * 1000;
 					if(read_punch.msec)
 						read_punch_time_ms += read_punch.msec;
 					checked_punch.stpTimeMs = root.msecIntervalAM(checked_card.stageStartTimeMs + checked_card.startTimeMs, read_punch_time_ms);
+					console.debug(j, "OK");
 					break;
 				}
 			}
 			if(k === read_punches.length) {
 				// code not found
+				console.debug(j, "NOT FOUND");
 				if(!course_code.outoforder) // for postgres, Query.values() should return lower case keys
 					error_mis_punch = true;
 			}
