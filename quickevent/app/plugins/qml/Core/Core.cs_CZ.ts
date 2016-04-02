@@ -72,7 +72,7 @@
     <message>
         <location filename="qml/main.qml" line="144"/>
         <source>&amp;Locale</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lokalizace</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="145"/>
@@ -82,17 +82,17 @@
     <message>
         <location filename="qml/main.qml" line="147"/>
         <source>System</source>
-        <translation>&amp;Systémový</translation>
+        <translation>Systémový</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="148"/>
         <source>Czech</source>
-        <translation>&amp;Český</translation>
+        <translation>Čeština</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="149"/>
         <source>English</source>
-        <translation>&amp;Anglický</translation>
+        <translation>Angličtina</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="162"/>

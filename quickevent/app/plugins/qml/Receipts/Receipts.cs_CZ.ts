@@ -35,7 +35,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení tiskárny</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="22"/>

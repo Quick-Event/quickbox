@@ -68,7 +68,7 @@
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="14"/>
         <source>Form</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="20"/>
@@ -160,12 +160,12 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="69"/>
         <source>NC</source>
-        <translation>Nest</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="69"/>
         <source>Not competing</source>
-        <translation>Nestartoval</translation>
+        <translation>Mimo soutež</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="70"/>
@@ -249,7 +249,7 @@
         <location filename="src/runswidget.ui" line="85"/>
         <location filename="src/runswidget.ui" line="95"/>
         <source>Draw selected  class or all classes when all the clases are selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Losování vybraných kategorií nebo všech kategorií, pokud jsou vybrány.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="88"/>
@@ -269,7 +269,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="49"/>
         <source>Random number</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhodné číslo</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="50"/>
@@ -312,42 +312,42 @@
     <message>
         <location filename="src/runswidget.cpp" line="77"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="85"/>
         <source>--- all ---</source>
-        <translation type="unfinished"></translation>
+        <translation>--- všechno ---</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="143"/>
         <source>Start times</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní časy</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="144"/>
         <source>OB 2000</source>
-        <translation type="unfinished"></translation>
+        <translation>OB 2000</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="263"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Import</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="348"/>
         <source>Draw all clases without any start time set?</source>
-        <translation type="unfinished"></translation>
+        <translation>Losovat všechny kategorie bez zadání startovního času?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="509"/>
         <source>Start interval is zero, proceed anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Interval mezi závodníky je nula. Přesto pokračovat?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="559"/>
         <source>Reset all start times for this class?</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit všechny startovní časy pro tuto kategorii?</translation>
     </message>
 </context>
 <context>
@@ -467,7 +467,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="160"/>
         <source>Locked</source>
-        <translation type="unfinished"></translation>
+        <translation>Uzamknuto</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="163"/>
@@ -496,7 +496,7 @@
     <message>
         <location filename="qml/main.qml" line="36"/>
         <source>Classes n stages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kategorie n etapa</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="43"/>
@@ -506,12 +506,12 @@
     <message>
         <location filename="qml/main.qml" line="50"/>
         <source>Clubs n stages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kluby n etapa</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="57"/>
         <source>&amp;Starters</source>
-        <translation type="unfinished"></translation>
+        <translation>Startéři</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="72"/>
@@ -521,42 +521,42 @@
     <message>
         <location filename="qml/main.qml" line="80"/>
         <source>&amp;Current stage</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Současná etapa</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="88"/>
         <source>&amp;After n stages</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Po n etapách</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="95"/>
         <source>First &amp;n competitors</source>
-        <translation type="unfinished"></translation>
+        <translation>Prvních &amp;n závodníků</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="102"/>
         <source>Awards after n stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Diplomy po n etapách</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="109"/>
         <source>&amp;Awards</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Diplomy</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="116"/>
         <source>&amp;IOF XML 2.3</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;IOF XML 2.3</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="119"/>
         <source>Get file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Získat jméno souboru</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="119"/>
         <source>XML files (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML files (*.xml)</translation>
     </message>
     <message>
         <source>&amp;Print</source>
@@ -569,23 +569,23 @@
     <message>
         <location filename="qml/main.qml" line="278"/>
         <source>Get text</source>
-        <translation type="unfinished">Zadej text</translation>
+        <translation>Zadej text</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="278"/>
         <source>Class mask (use wild cards [*?]):</source>
-        <translation type="unfinished">Maska kategorie (lze použít zástupné znaky [*?]):</translation>
+        <translation>Maska kategorie (lze použít zástupné znaky [*?]):</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="282"/>
         <source>Start list by clases</source>
-        <translation type="unfinished">Startovní listina po kategoriích</translation>
+        <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="299"/>
         <location filename="qml/main.qml" line="416"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished">Startovní listina po klubech</translation>
+        <translation>Startovní listina po klubech</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="305"/>
@@ -595,7 +595,7 @@
     <message>
         <location filename="qml/main.qml" line="305"/>
         <source>Corridor:</source>
-        <translation type="unfinished"></translation>
+        <translation>Koridor:</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="305"/>
@@ -610,7 +610,7 @@
     <message>
         <location filename="qml/main.qml" line="305"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Vše</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="307"/>
@@ -625,7 +625,7 @@
     <message>
         <location filename="qml/main.qml" line="332"/>
         <source>climb:</source>
-        <translation type="unfinished"></translation>
+        <translation>převýšení:</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="338"/>
@@ -759,7 +759,7 @@
     <message>
         <location filename="qml/reports/results_stage_awards.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>

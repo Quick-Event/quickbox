@@ -15,7 +15,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="64"/>
         <source>&amp;SI</source>
-        <translation></translation>
+        <translation>SI</translation>
     </message>
     <message>
         <source>&amp;First name</source>
@@ -130,12 +130,12 @@
         <location filename="src/competitorwidget.cpp" line="75"/>
         <source>NC</source>
         <comment>runs.notCompeting</comment>
-        <translation>Nest</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="75"/>
         <source>Not competing</source>
-        <translation>Nestartuje</translation>
+        <translation>Mimo soutež</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="76"/>
@@ -173,7 +173,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="97"/>
         <source>E&amp;%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
     <message>
         <source>Find in registrations</source>
@@ -289,7 +289,7 @@
     <message>
         <location filename="qml/Statistics.qml" line="65"/>
         <source>Competitors statistics</source>
-        <translation>Statistiky závodníka</translation>
+        <translation>Statistiky závodníků</translation>
     </message>
 </context>
 <context>
@@ -305,7 +305,7 @@
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="10"/>
         <source>Competitors statistics</source>
-        <translation>Statistiky závodníka</translation>
+        <translation>Statistiky závodníků</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="122"/>
@@ -333,7 +333,7 @@
     <message>
         <location filename="qml/main.qml" line="26"/>
         <source>Competitors statistics</source>
-        <translation>Statistiky závodníka</translation>
+        <translation>Statistiky závodníků</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="36"/>
