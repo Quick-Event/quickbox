@@ -227,7 +227,16 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 					width: 10
 					//textHAlign: Frame.AlignRight
-					text: (dc.currentIndex < (dc.rowCount - 1))? dc.data(dc.currentIndex, "code"): qsTr("FI");
+					textFn: function() {
+						var ret;
+						if(dc.currentIndex < (dc.rowCount - 1)) {
+							ret = dc.data(dc.currentIndex, "code");
+						}
+						else {
+							ret = bandCard.data("isOk")? qsTr("OK"): qsTr("DISQ");
+						}
+						return ret;
+					}
 				}
 				Para {
 					id: cellStp

@@ -88,6 +88,7 @@ CardChecker
 				read_punch_check_ix = k + 1;
 			}
 		}
+		checked_card.isMisPunch = error_mis_punch;
 
 		var finish_punch = {
 			code: root.FINISH_PUNCH_CODE,
