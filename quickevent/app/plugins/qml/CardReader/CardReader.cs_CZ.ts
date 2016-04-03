@@ -50,7 +50,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="118"/>
         <source>Class</source>
-        <translation>Kategori</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="119"/>
@@ -135,7 +135,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="187"/>
         <source>Import cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovat čipy</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="217"/>
@@ -175,7 +175,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="483"/>
         <source>punch: %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ražení: %1 %2</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="486"/>
@@ -190,22 +190,22 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="653"/>
         <source>&lt;p&gt;CSV record must have format:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Any row can be commented by leading #&lt;/p&gt;&lt;p&gt;Decimal point is also supported, the quotes can be omited than.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;CSV záznam musí mít formát:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Jakýkoliv řádek může být zakomentován pomocí #&lt;/p&gt;&lt;p&gt;Desetinná tečka je také podporována, uvozovky mohou být v tom případě vynechány.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="657"/>
         <source>Import CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovat CSV</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="662"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze otevřít soubor &apos;%1&apos; pro čtení.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="681"/>
         <source>Bad stage!</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatná etapa!</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="703"/>
@@ -220,7 +220,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="717"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SI: %1 Kategorie %2 - Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
     </message>
     <message>
         <source>Save card runlaps ERROR: %1</source>
@@ -232,7 +232,7 @@
     <message>
         <location filename="src/dlgsettings.ui" line="14"/>
         <source>CuteCom</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení vyčítání čipu</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="27"/>
@@ -248,7 +248,7 @@
         <location filename="src/dlgsettings.ui" line="39"/>
         <source>De&amp;vice:</source>
         <oldsource>Device:</oldsource>
-        <translation type="unfinished">Zařízení:</translation>
+        <translation>Zařízení:</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="52"/>
@@ -353,12 +353,12 @@
     <message>
         <location filename="src/dlgsettings.ui" line="231"/>
         <source>Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="237"/>
         <source>Card check</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola čipu</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="243"/>
@@ -368,7 +368,7 @@
     <message>
         <location filename="src/dlgsettings.ui" line="251"/>
         <source>Classic</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasický</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="256"/>

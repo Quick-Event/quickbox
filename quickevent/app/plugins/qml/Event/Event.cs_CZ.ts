@@ -37,7 +37,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="104"/>
         <source>&amp;Host</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Host</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="121"/>
@@ -94,7 +94,7 @@
     <message>
         <location filename="qml/DbSchema.qml" line="373"/>
         <source>Data version</source>
-        <translation type="unfinished"></translation>
+        <translation>Verze dat</translation>
     </message>
 </context>
 <context>
@@ -112,7 +112,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="166"/>
         <source>Create eve&amp;nt</source>
-        <translation>Vytvořít závod</translation>
+        <translation>Vytvořit závod</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="171"/>
@@ -169,7 +169,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="598"/>
         <source>Cannot create event, database is not open: %1</source>
-        <translation>Nelze vytvořit závod, databázen ení otevřena: %1</translation>
+        <translation>Nelze vytvořit závod, databáze není otevřena: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="651"/>
@@ -200,7 +200,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="806"/>
         <source>Export as Quick Event</source>
-        <translation>Export jako Quick Event</translation>
+        <translation>Exportovat jako Quick Event</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="806"/>
@@ -210,7 +210,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="816"/>
         <source>Cannot delete existing file %1</source>
-        <translation>Nemohu smazar existujicí soubor %1</translation>
+        <translation>Nemohu smazat existujicí soubor %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="833"/>
@@ -260,12 +260,12 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="30"/>
         <source>dd.MM. yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM. yyyy</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="36"/>
         <source>stages.startDate</source>
-        <translation type="unfinished"></translation>
+        <translation>Datum začátku etapy</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="43"/>
@@ -275,7 +275,7 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="53"/>
         <source>stages.startTime</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas začátku etapy</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.cpp" line="14"/>
@@ -318,7 +318,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="77"/>
         <source>dd.MM.yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM.yyyy</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="87"/>
