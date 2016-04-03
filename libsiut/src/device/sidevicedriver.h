@@ -54,6 +54,9 @@ signals:
 public:
 	DeviceDriver(QObject *parent = NULL);
 	virtual ~DeviceDriver();
+
+private:
+	void sendAck();
 };
 
 }

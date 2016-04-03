@@ -348,21 +348,13 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 	else if(msg_data.type() == SIMessageData::MsgCardEvent) {
 		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 		if(msg_data.command() == SIMessageData::CmdSICard5DetectedExt) {
-			QByteArray data(1, 0);
-			data[0] = 0;
-			emit sendSICommand(SIMessageData::CmdGetSICard5Ext, data);
+			emit sendSICommand(SIMessageData::CmdGetSICard5Ext, QByteArray());
 		}
 		else if(msg_data.command() == SIMessageData::CmdSICard6DetectedExt) {
-			QByteArray data(2, 0);
-			data[0] = 1;
-			data[1] = 8;
-			emit sendSICommand(SIMessageData::CmdGetSICard6Ext, data);
+			emit sendSICommand(SIMessageData::CmdGetSICard6Ext, QByteArray("\x08", 1));
 		}
 		else if(msg_data.command() == SIMessageData::CmdSICard8AndHigherDetectedExt) {
-			QByteArray data(2, 0);
-			data[0] = 1;
-			data[1] = 8;
-			emit sendSICommand(SIMessageData::CmdGetSICard8Ext, data);
+			emit sendSICommand(SIMessageData::CmdGetSICard8Ext, QByteArray("\x08", 1));
 		}
 	}
 	else if(msg_data.type() == SIMessageData::MsgPunch) {
