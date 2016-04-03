@@ -68,6 +68,20 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="btClearNewInSelectedRows">
+        <property name="toolTip">
+         <string>Clear new results in selected rows</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/delete.svg</normaloff>:/qf/qmlwidgets/images/flat/delete.svg</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QToolButton" name="btReload">
         <property name="toolTip">
          <string>Reload table</string>

@@ -417,6 +417,7 @@ QTimer *EventStatisticsWidget::reloadLaterTimer()
 
 void EventStatisticsWidget::on_btReload_clicked()
 {
+	qfLogFuncFrame();
 	reload();
 }
 
@@ -431,7 +432,7 @@ void EventStatisticsWidget::on_btPrintResults_clicked()
 		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
 	}
-    bool report_printed = false;
+	bool report_printed = false;
 	Runs::ReportOptionsDialog dlg(this);
 	dlg.setClassNamesFilter(class_names);
 	if(dlg.exec()) {
@@ -448,14 +449,41 @@ void EventStatisticsWidget::on_btPrintResults_clicked()
 									);
 	}
 	if(report_printed) {
-		QString qs = "UPDATE classdefs SET resultsCount=:resultsCount WHERE id=:id";
-		qf::core::sql::Query q;
-		q.prepare(qs, qf::core::Exception::Throw);
-		for (int i = 0; i < classdefs_ids.count(); ++i) {
-			q.bindValue(":resultsCount", runners_finished[i]);
-			q.bindValue(":id", classdefs_ids[i]);
-			q.exec(qf::core::Exception::Throw);
-		}
-		reloadLater();
+		clerNewResults(classdefs_ids, runners_finished);
+		reload();
 	}
 }
+
+void EventStatisticsWidget::on_btClearNewInSelectedRows_clicked()
+{
+	qfLogFuncFrame();
+	QList<int> classdefs_ids;
+	QList<int> runners_finished;
+	QList<int> sel_rows = ui->tableView->selectedRowsIndexes();
+	if(sel_rows.isEmpty())
+		ui->tableView->selectAll();
+	sel_rows = ui->tableView->selectedRowsIndexes();
+	for(int i : sel_rows) {
+		qf::core::utils::TableRow row = ui->tableView->tableRow(i);
+		//class_names << row.value(QStringLiteral("classes.name")).toString();
+		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
+		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
+	}
+	clerNewResults(classdefs_ids, runners_finished);
+	reload();
+}
+
+void EventStatisticsWidget::clerNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished)
+{
+	qfLogFuncFrame();
+	QString qs = "UPDATE classdefs SET resultsCount=:resultsCount WHERE id=:id";
+	qf::core::sql::Query q;
+	q.prepare(qs, qf::core::Exception::Throw);
+	for (int i = 0; i < classdefs_ids.count(); ++i) {
+		qfDebug() << classdefs_ids[i] << runners_finished[i];
+		q.bindValue(":resultsCount", runners_finished[i]);
+		q.bindValue(":id", classdefs_ids[i]);
+		q.exec(qf::core::Exception::Throw);
+	}
+}
+
