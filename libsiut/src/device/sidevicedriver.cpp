@@ -69,6 +69,9 @@ void DeviceDriver::commDataReceived()
 			f_rxTimer->stop();
 			if(f_status == StatusMessageOk) {
 				//qfInfo() << "new message:" << f_messageData.dump();
+				if(f_messageData.type() == SIMessageData::MsgCardReadOut) {
+					sendAck();
+				}
 				emit messageReady(f_messageData);
 				f_messageData = SIMessageData();
 			}
@@ -101,7 +104,7 @@ namespace
 {
 static const char STX = 0x02;
 static const char ETX = 0x03;
-//static const char ACK = 0x06;
+static const char ACK = 0x06;
 static const char NAK = 0x15;
 static const char DLE = 0x10;
 }
@@ -326,4 +329,9 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 		qfInfo() << "sending command:" << SIMessageData::dumpData(ba);
 		f_commPort->write(ba);
 	}
+}
+
+void DeviceDriver::sendAck() 
+{
+	f_commPort->write(QByteArray(1, ACK));
 }
