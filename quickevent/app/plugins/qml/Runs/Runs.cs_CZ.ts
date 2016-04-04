@@ -140,7 +140,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="64"/>
         <source>Reg</source>
-        <translation>Reg.č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="66"/>
@@ -175,7 +175,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="70"/>
         <source>Card lent</source>
-        <translation>Půjčený čip</translation>
+        <translation>Půjčen čip</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="71"/>
@@ -284,7 +284,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="52"/>
         <source>Handicap</source>
-        <translation type="unfinished"></translation>
+        <translation>Hendikep</translation>
     </message>
     <message>
         <source>Class</source>
@@ -297,12 +297,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="154"/>
         <source>Stage </source>
-        <translation>Etapa</translation>
+        <translation>Etapa </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="162"/>
         <source>Class </source>
-        <translation>Kategorie</translation>
+        <translation>Kategorie </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="174"/>
@@ -388,27 +388,27 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="212"/>
         <source>class: &lt;b&gt;%1&lt;/b&gt;, %2 runners + %3 vacants&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>kategorie: &lt;b&gt;%1&lt;/b&gt;, %2 závodníků + %3 vakantů&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="213"/>
         <source>first code &lt;b&gt;%1&lt;/b&gt;, course %2 - %3&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>první kód &lt;b&gt;%1&lt;/b&gt;, trať %2 - %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="214"/>
         <source>vacants before: %1, every: %2, after: %3&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>vakantů před: %1, každé: %2, po: %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="215"/>
         <source>class start: %1, interval: %2, duration: %3, end: %4&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>start kategorie: %1, interval: %2, délka trvání: %3, konec: %4&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="217"/>
         <source>competitors start first: %1, last: %2&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>start prvního závodníka: %1, posledního: %2&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="225"/>
@@ -590,7 +590,7 @@
     <message>
         <location filename="qml/main.qml" line="305"/>
         <source>Get item</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyber možnost</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="305"/>
@@ -713,12 +713,12 @@
     <message>
         <location filename="qml/reports/results_stage.qml" line="74"/>
         <source>length: </source>
-        <translation>délka:</translation>
+        <translation>délka: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="77"/>
         <source>climb: </source>
-        <translation>převýšení:</translation>
+        <translation>převýšení: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="120"/>
@@ -728,7 +728,7 @@
     <message>
         <location filename="qml/reports/results_stage.qml" line="122"/>
         <source>NC</source>
-        <translation>Nestartoval</translation>
+        <translation>MS</translation>
     </message>
 </context>
 <context>
@@ -741,12 +741,12 @@
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="74"/>
         <source>length: </source>
-        <translation>délka:</translation>
+        <translation>délka: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="77"/>
         <source>climb: </source>
-        <translation>převýšení:</translation>
+        <translation>převýšení: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="125"/>
@@ -788,12 +788,12 @@
     <message>
         <location filename="qml/reports/startList_classes.qml" line="74"/>
         <source>length: </source>
-        <translation>délka:</translation>
+        <translation>délka: </translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="77"/>
         <source>climb: </source>
-        <translation>převýšení:</translation>
+        <translation>převýšení: </translation>
     </message>
 </context>
 <context>

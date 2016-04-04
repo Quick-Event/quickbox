@@ -34,7 +34,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="22"/>
         <source>&amp;Find in registrations</source>
-        <translation>Najdi v registraci</translation>
+        <translation>Najít v registracích</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="29"/>
@@ -141,7 +141,7 @@
         <location filename="src/competitorwidget.cpp" line="76"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
-        <translation>Disk</translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="76"/>
@@ -163,7 +163,7 @@
         <location filename="src/competitorwidget.cpp" line="78"/>
         <source>L</source>
         <comment>runs.cardLent</comment>
-        <translation>Pujčen čip</translation>
+        <translation>Půjčen čip</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="78"/>
@@ -195,7 +195,7 @@
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="85"/>
         <source>Reg</source>
-        <translation>Reg.č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="86"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="52"/>
         <source>Reg</source>
-        <translation>Reg.č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="53"/>
@@ -253,7 +253,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="136"/>
         <source>Edit Competitor</source>
-        <translation>Změň závodníka</translation>
+        <translation>Uprav závodníka</translation>
     </message>
 </context>
 <context>
@@ -315,12 +315,12 @@
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
         <source>maps</source>
-        <translation>mapy</translation>
+        <translation>Mapy</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
         <source>res</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozdíl</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="167"/>

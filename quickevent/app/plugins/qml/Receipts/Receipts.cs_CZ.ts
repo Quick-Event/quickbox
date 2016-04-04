@@ -6,7 +6,7 @@
     <message>
         <location filename="src/Receipts/receiptsplugin.cpp" line="316"/>
         <source>Receipt</source>
-        <translation>Mezičasy</translation>
+        <translation>Mezičas</translation>
     </message>
 </context>
 <context>
@@ -55,22 +55,22 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="74"/>
         <source>/dev/usb/lp1</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp1</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="79"/>
         <source>/dev/usb/lp2</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp2</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="84"/>
         <source>/dev/usb/lp3</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp3</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="89"/>
         <source>/dev/usb/lp4</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp4</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="97"/>
@@ -80,7 +80,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="105"/>
         <source>Epson TM-T88V</source>
-        <translation type="unfinished"></translation>
+        <translation>Epson TM-T88V</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="113"/>
@@ -128,7 +128,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="70"/>
         <source>Class</source>
-        <translation>Katrgorie</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="71"/>
@@ -138,7 +138,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="72"/>
         <source>Reg</source>
-        <translation>Reg.č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="73"/>
@@ -180,7 +180,7 @@
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="288"/>
         <source>standings: </source>
-        <translation>pořadí:</translation>
+        <translation>pořadí: </translation>
     </message>
 </context>
 </TS>

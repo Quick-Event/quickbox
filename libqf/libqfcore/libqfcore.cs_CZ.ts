@@ -23,12 +23,12 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="41"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="43"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubor</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="45"/>
@@ -43,22 +43,22 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Time stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Časové razítko</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="51"/>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Zpráva</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="53"/>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funkce</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Data</translation>
     </message>
 </context>
 <context>
@@ -95,7 +95,7 @@
         <location filename="src/model/tablemodel.cpp" line="405"/>
         <location filename="src/model/tablemodel.cpp" line="521"/>
         <source>Invalid table field index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neplatný index políčka tabulky: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="421"/>
@@ -104,7 +104,7 @@
         <location filename="src/model/tablemodel.cpp" line="506"/>
         <location filename="src/model/tablemodel.cpp" line="532"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze najít index sloupce pro jméno: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="433"/>
@@ -121,7 +121,7 @@
         <location filename="src/model/tablemodel.cpp" line="578"/>
         <location filename="src/model/tablemodel.cpp" line="635"/>
         <source>Invalid column index: %1</source>
-        <translation>Chybný index řádku: %1</translation>
+        <translation>Chybný index sloupce: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="587"/>

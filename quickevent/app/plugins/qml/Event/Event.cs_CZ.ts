@@ -6,7 +6,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení cesty k úložišti závodu</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
@@ -71,7 +71,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="203"/>
         <source>Directory where event files are placed.</source>
-        <translation>Adresář kde jsou umístěny soubory závodu.</translation>
+        <translation>Adresář, kde jsou umístěny soubory závodu.</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="213"/>
@@ -102,7 +102,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="157"/>
         <source>&amp;Connect to database</source>
-        <translation>Připoji k databázi</translation>
+        <translation>Připojit k databázi</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="161"/>
@@ -227,7 +227,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="881"/>
         <source>Import as Quick Event</source>
-        <translation>Import jako Quick Event</translation>
+        <translation>Importovat jako Quick Event</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="884"/>
@@ -288,7 +288,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit závod</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="20"/>
@@ -343,12 +343,12 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="139"/>
         <source>&amp;Handicap length</source>
-        <translation>Délka hendikapu</translation>
+        <translation>Délka hendikepu</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="149"/>
         <source>min</source>
-        <translation type="unfinished"></translation>
+        <translation>min</translation>
     </message>
 </context>
 </TS>
