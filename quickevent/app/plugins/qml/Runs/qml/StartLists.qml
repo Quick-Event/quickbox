@@ -27,6 +27,7 @@ QtObject {
 
 		reportModel.queryBuilder.clear()
 			.select2('classes', 'id, name')
+			.select2('classdefs', 'startTimeMin, startIntervalMin')
 			.select2('courses', 'length, climb')
 			.from('classes')
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stageId}}")
@@ -55,6 +56,27 @@ QtObject {
 			reportModel.setQueryParameters({stage_id: stage_id, class_id: class_id});
 			reportModel.reload();
 			var ttd = reportModel.toTreeTableData();
+			var tt2 = new TreeTable.Table(ttd);
+			var start_time_0 = tt.value(i, "startTimeMin") * 60 * 1000;
+			var start_interval = tt.value(i, "startIntervalMin") * 60 * 1000;
+			if(start_interval > 0) {
+				for(var j=0; j<tt2.rowCount(); j++) {
+					var start_time = tt2.value(j, "startTimeMs");
+					//console.info(j, "t0:", start_time_0, start_time_0/60/1000, "start:", start_time, start_time/60/1000)
+					while(start_time_0 < start_time) {
+						// insert vakant row
+						//console.info("adding row:", start_time_0)
+						tt2.addRow(j);
+						tt2.setValue(j, "startTimeMs", start_time_0);
+						tt2.setValue(j, "competitorName", "---");
+						tt2.setValue(j, "registration", "");
+						tt2.setValue(j, "siId", 0);
+						start_time_0 += start_interval;
+						j++;
+					}
+					start_time_0 += start_interval;
+				}
+			}
 			tt.addTable(i, ttd);
 		}
 		console.debug(tt.toString());
