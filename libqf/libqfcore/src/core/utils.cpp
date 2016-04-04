@@ -86,14 +86,16 @@ QVariant Utils::retypeVariant(const QVariant &val, int meta_type_id)
 	}
 	if(val.userType() == meta_type_id)
 		return val;
-	if(!val.isValid())
-		return QVariant(meta_type_id);
-	if(val.isNull())
-		return QVariant(meta_type_id);
 	if(val.canConvert(meta_type_id)) {
 		QVariant ret = val;
 		ret.convert(meta_type_id);
 		return ret;
+	}
+	if(meta_type_id < QMetaType::User) {
+		if(val.isNull()) {
+			QVariant::Type t = (QVariant::Type)meta_type_id;
+			return QVariant(t);
+		}
 	}
 	//if(meta_type_id >= QVariant::UserType) {
 	//	if(val.userType() >= QVariant::UserType) {
