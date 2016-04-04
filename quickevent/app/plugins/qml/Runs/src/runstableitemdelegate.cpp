@@ -77,7 +77,8 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 						c = Qt::red;
 						c.setAlphaF(0.5);
 					}
-					else if((start_ms - prev_start_ms) > m_classInterval) {
+					else if(((start_ms - prev_start_ms) > m_classInterval)
+							|| ((index.row() == 0) && (start_ms > m_classStart))) {
 						c = QColor("lime");
 					}
 					else if(club == prev_club) {
