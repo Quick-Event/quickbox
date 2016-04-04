@@ -17,6 +17,7 @@ public:
 		col_competitors_siId,
 		col_competitorName,
 		col_registration,
+		col_runs_license,
 		col_runs_siId,
 		col_runs_startTimeMs,
 		col_runs_timeMs,

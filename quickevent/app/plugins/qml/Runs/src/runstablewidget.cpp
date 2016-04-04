@@ -130,7 +130,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	}
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "id, registration, startNumber, siId, note")
+			.select2("competitors", "id, registration, licence, startNumber, siId, note")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("'' AS disqReason")
