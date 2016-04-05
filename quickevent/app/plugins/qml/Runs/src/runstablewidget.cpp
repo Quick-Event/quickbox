@@ -64,7 +64,8 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg"));
 	m->addColumn("licence", tr("Lic"));
-	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
+    m->addColumn("ranking", tr("Rank"));
+    m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	//m->addColumn("runs.timeMs", tr("Time raw"));
@@ -123,7 +124,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_col
 	qfLogFuncFrame();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "registration, licence, siId, note")
+            .select2("competitors", "registration, licence, ranking, siId, note")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
