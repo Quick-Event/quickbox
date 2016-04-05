@@ -114,7 +114,7 @@ if [[ $O_COMMAND == "update" ]]; then
 		echo "--src-dir must be set"
 		exit 1
 	fi
-	lupdate=lupdate
+	lupdate="lupdate -no-obsolete"
 	if [[ -n $O_QT_BIN_DIR ]]; then
 		lupdate=$O_QT_BIN_DIR/$lupdate
 	fi

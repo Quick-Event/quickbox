@@ -472,7 +472,7 @@
 <context>
     <name>qf::qmlwidgets::TableViewToolBar</name>
     <message>
-        <location filename="src/tableviewtoolbar.cpp" line="77"/>
+        <location filename="src/tableviewtoolbar.cpp" line="79"/>
         <source>Filter</source>
         <translation>Filtr</translation>
     </message>
@@ -548,12 +548,12 @@
 <context>
     <name>qf::qmlwidgets::dialogs::Dialog</name>
     <message>
-        <location filename="src/dialogs/dialog.cpp" line="136"/>
+        <location filename="src/dialogs/dialog.cpp" line="137"/>
         <source>Delete</source>
         <translation>Smaž</translation>
     </message>
     <message>
-        <location filename="src/dialogs/dialog.cpp" line="139"/>
+        <location filename="src/dialogs/dialog.cpp" line="140"/>
         <source>Save</source>
         <translation>Ulož</translation>
     </message>
@@ -620,7 +620,7 @@
 <context>
     <name>qf::qmlwidgets::framework::DialogWidget</name>
     <message>
-        <location filename="src/framework/dialogwidget.cpp" line="49"/>
+        <location filename="src/framework/dialogwidget.cpp" line="51"/>
         <source>Cannot find action name &apos;%1&apos;</source>
         <translation>Nelze najít název akce &apos;%1&apos;</translation>
     </message>
@@ -663,17 +663,17 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="143"/>
+        <location filename="src/framework/logwidget.cpp" line="144"/>
         <source>Maximal log length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="148"/>
+        <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Get number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="148"/>
+        <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Maximal log row count:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -681,12 +681,12 @@
 <context>
     <name>qf::qmlwidgets::framework::LogWidgetTableView</name>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="30"/>
+        <location filename="src/framework/logwidget.cpp" line="31"/>
         <source>Copy</source>
         <translation>Kopíruj</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="32"/>
+        <location filename="src/framework/logwidget.cpp" line="33"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
         <translation>Ctrl+C</translation>
@@ -907,22 +907,22 @@
         <translation>pouze vybrané řádky</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="23"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="24"/>
         <source>portrait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="24"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="25"/>
         <source>landscape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="58"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>Open report file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="58"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>QML reports (*.qml)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -930,7 +930,7 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportProcessor</name>
     <message>
-        <location filename="src/reports/processor/reportprocessor.cpp" line="67"/>
+        <location filename="src/reports/processor/reportprocessor.cpp" line="69"/>
         <source>QML component</source>
         <translation type="unfinished"></translation>
     </message>
@@ -938,115 +938,121 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="520"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="562"/>
         <source>&amp;File</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="528"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;View</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="565"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
         <source>First page</source>
         <translation>První strana</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="572"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="614"/>
         <source>Prev page</source>
         <translation>Předchozí strana</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="579"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="621"/>
         <source>Next page</source>
         <translation>Další strana</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="586"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="628"/>
         <source>Last page</source>
         <translation>Poslední strana</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="593"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="635"/>
         <source>Zoom in</source>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="600"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="642"/>
         <source>Zoom out</source>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="649"/>
         <source>Zoom to fit width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="614"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="656"/>
         <source>Zoom to fit height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="621"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="663"/>
         <source>&amp;Print</source>
         <translation>&amp;Tisk</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="629"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>Print pre&amp;view</source>
         <translation>Náhled tisku</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="637"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
         <source>Export PD&amp;F</source>
         <translation>Exportovat PDF</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="638"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
         <source>Export in the Adobe Acrobat PDF format</source>
         <translation>Exportovat v  Adobe Acrobat PDF formátu</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="645"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
         <source>Export &amp;HTML</source>
         <translation>Exportovat HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="646"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
         <source>Export data in HTML</source>
         <translation>Exportovat data v HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1045"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1083"/>
         <source>empty file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1106"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1144"/>
         <source>Save as PDF</source>
         <translation>Ulož jako PDF</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1121"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1159"/>
         <source>Save as HTML</source>
         <translation>Ulož jako HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1126"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1164"/>
         <source>Cannot open &apos;%1&apos; for write.</source>
         <translation>Nejde otevřít soubor %1 pro zápis.</translation>
+    </message>
+    <message>
+        <location filename="src/reports/widgets/reportviewwidget.h" line="61"/>
+        <location filename="src/reports/widgets/reportviewwidget.h" line="67"/>
+        <source>Report preview</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget::PainterWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="247"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="289"/>
         <source>Item menu</source>
         <translation>Menu</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="248"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="290"/>
         <source>Editovat text</source>
         <translation>Editovat text</translation>
     </message>

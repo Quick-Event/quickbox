@@ -2,26 +2,66 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="cs_CZ">
 <context>
-    <name>Importer</name>
+    <name>OrisImporter</name>
     <message>
-        <source>Query</source>
+        <source>JSON document parse error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Import event</source>
-        <translation>Importovat závod</translation>
+        <source>Cannot find Oris import ID.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Importing clubs</source>
-        <translation>Importuji kluby</translation>
+        <source>OB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LOB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MTBO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>???</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get item</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select event to import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edited entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleted entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oris import report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save without drops</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Importing registrations</source>
-        <translation>Importuji registrace</translation>
+        <translation type="unfinished">Importuji registrace</translation>
     </message>
     <message>
-        <source>%1 %2 %3 SI: %4 is duplicit!</source>
-        <translation>%1 %2 %3 SI: %4 je duplicitní!</translation>
+        <source>Importing clubs</source>
+        <translation type="unfinished">Importuji kluby</translation>
     </message>
 </context>
 <context>
@@ -39,12 +79,12 @@
         <translation>&amp;Registrace</translation>
     </message>
     <message>
-        <source>&amp;Test</source>
-        <translation>&amp;Test</translation>
-    </message>
-    <message>
         <source>&amp;Oris</source>
         <translation>&amp;Oris</translation>
+    </message>
+    <message>
+        <source>&amp;Sync current event entries</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
