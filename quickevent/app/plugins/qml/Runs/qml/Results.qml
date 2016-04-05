@@ -252,6 +252,8 @@ QtObject {
 					else
 						competitor_status = 'Disqualified'
 				}
+				else if (tt2.value(j, "notCompeting"))
+					competitor_status = 'NotCompeting'
 				if (competitor_status == 'OK')
 					result.push(['ResultPosition', tt2.value(j, "pos")])
 				result.push(['CompetitorStatus', {"value": competitor_status}])
