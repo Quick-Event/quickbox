@@ -63,10 +63,10 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	m->addColumn("competitors.siId", tr("SI"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg"));
-	m->addColumn("licence", tr("Lic"));
-    m->addColumn("ranking", tr("Rank"));
+    m->addColumn("licence", tr("Lic")).setToolTip(tr("Licence"));
+    m->addColumn("ranking", tr("Rank")).setToolTip(tr("Ranking"));
     m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
-	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+    m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setToolTip(tr("Start time. Colors: red = duplicate, lime = same clubs together, green = vacant space before"));
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	//m->addColumn("runs.timeMs", tr("Time raw"));
 	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
