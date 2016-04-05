@@ -28,10 +28,11 @@ public:
 private slots:
 	void on_btReload_clicked();
 	void on_btPrintResults_clicked();
-
+	void on_btClearNewInSelectedRows_clicked();
 private:
 	int currentStageId();
 	QTimer* reloadLaterTimer();
+	void clerNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished);
 private:
 	Ui::EventStatisticsWidget *ui;
 	FooterView *m_tableFooterView = nullptr;

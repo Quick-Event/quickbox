@@ -27,6 +27,7 @@ QtObject {
 
 		reportModel.queryBuilder.clear()
 			.select2('classes', 'id, name')
+			.select2('classdefs', 'startTimeMin, startIntervalMin')
 			.select2('courses', 'length, climb')
 			.from('classes')
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stageId}}")
@@ -55,6 +56,27 @@ QtObject {
 			reportModel.setQueryParameters({stage_id: stage_id, class_id: class_id});
 			reportModel.reload();
 			var ttd = reportModel.toTreeTableData();
+			var tt2 = new TreeTable.Table(ttd);
+			var start_time_0 = tt.value(i, "startTimeMin") * 60 * 1000;
+			var start_interval = tt.value(i, "startIntervalMin") * 60 * 1000;
+			if(start_interval > 0) {
+				for(var j=0; j<tt2.rowCount(); j++) {
+					var start_time = tt2.value(j, "startTimeMs");
+					//console.info(j, "t0:", start_time_0, start_time_0/60/1000, "start:", start_time, start_time/60/1000)
+					while(start_time_0 < start_time) {
+						// insert vakant row
+						//console.info("adding row:", start_time_0)
+						tt2.addRow(j);
+						tt2.setValue(j, "startTimeMs", start_time_0);
+						tt2.setValue(j, "competitorName", "---");
+						tt2.setValue(j, "registration", "");
+						tt2.setValue(j, "siId", 0);
+						start_time_0 += start_interval;
+						j++;
+					}
+					start_time_0 += start_interval;
+				}
+			}
 			tt.addTable(i, ttd);
 		}
 		console.debug(tt.toString());
@@ -98,7 +120,7 @@ QtObject {
 		return tt;
 	}
 
-	function startListStartersTable(class_letter)
+	function startListStartersTable(class_group)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = runsPlugin.selectedStageId;
@@ -115,13 +137,16 @@ QtObject {
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}}")
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
-		if(class_letter === 'H') {
+		if(class_group === 'H') {
 			reportModel.queryBuilder.where("classes.name LIKE 'H%'")
 		}
-		else if(class_letter === 'D'){
+		else if(class_group === 'D'){
 			reportModel.queryBuilder.where("classes.name LIKE 'D%'")
 		}
-		else if(class_letter === 'O'){
+		else if(class_group === 'HD'){
+			reportModel.queryBuilder.where("(classes.name LIKE 'H%' OR classes.name LIKE 'D%') AND (classes.name NOT LIKE 'HD%')");
+		}
+		else if(class_group === 'O'){
 			reportModel.queryBuilder.where("(classes.name NOT LIKE 'H%' AND classes.name NOT LIKE 'D%') OR (classes.name LIKE 'HD%')");
 		}
 		reportModel.setQueryParameters({stageId: stage_id})
@@ -217,6 +242,8 @@ QtObject {
 	{
 		Log.info("runs printResultsCurrentStage triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "startListReportOptions";
+		//dlg.dialogType = RunsPlugin.StartListReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
 			var tt = startListClassesTable(dlg.sqlWhereExpression());
@@ -250,9 +277,10 @@ QtObject {
 	function printStartListStarters()
 	{
 		Log.info("runs printStartListStarters triggered");
-		var ix = InputDialogSingleton.getItemIndex(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("Other"), qsTr("All")], 0, false);
-		var class_letter = (ix === 0)? 'H': (ix === 1)? 'D': (ix === 2)? 'O': '';
-		var tt = startListStartersTable(class_letter);
+		var ix = InputDialogSingleton.getItemIndex(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("H+D"), qsTr("Other"), qsTr("All")], 0, false);
+		var groups = ["H", "D", "HD", "O", ""]
+		var class_group = groups[ix];
+		var tt = startListStartersTable(class_group);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
 	}
 

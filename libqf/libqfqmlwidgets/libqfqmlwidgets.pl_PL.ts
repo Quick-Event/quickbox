@@ -155,10 +155,6 @@
 <context>
     <name>qf::qmlwidgets::TableView</name>
     <message>
-        <source>Right click for menu.</source>
-        <translation type="vanished">Klikiij prawym aby wybrać menu.</translation>
-    </message>
-    <message>
         <location filename="src/tableview.cpp" line="73"/>
         <source>Left click selects all, right click for menu.</source>
         <translation>Kliknij lewym aby wybrać wszystko, kliknij prawym aby wybrać menu.</translation>
@@ -475,7 +471,7 @@
 <context>
     <name>qf::qmlwidgets::TableViewToolBar</name>
     <message>
-        <location filename="src/tableviewtoolbar.cpp" line="77"/>
+        <location filename="src/tableviewtoolbar.cpp" line="79"/>
         <source>Filter</source>
         <translation>Filtruj</translation>
     </message>
@@ -551,12 +547,12 @@
 <context>
     <name>qf::qmlwidgets::dialogs::Dialog</name>
     <message>
-        <location filename="src/dialogs/dialog.cpp" line="136"/>
+        <location filename="src/dialogs/dialog.cpp" line="137"/>
         <source>Delete</source>
         <translation>Usuń</translation>
     </message>
     <message>
-        <location filename="src/dialogs/dialog.cpp" line="139"/>
+        <location filename="src/dialogs/dialog.cpp" line="140"/>
         <source>Save</source>
         <translation>Zapisz</translation>
     </message>
@@ -623,7 +619,7 @@
 <context>
     <name>qf::qmlwidgets::framework::DialogWidget</name>
     <message>
-        <location filename="src/framework/dialogwidget.cpp" line="49"/>
+        <location filename="src/framework/dialogwidget.cpp" line="51"/>
         <source>Cannot find action name &apos;%1&apos;</source>
         <translation>Nie można znaleźć nazwy działania &apos;%1&apos;</translation>
     </message>
@@ -666,17 +662,17 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="143"/>
+        <location filename="src/framework/logwidget.cpp" line="144"/>
         <source>Maximal log length</source>
         <translation>Maksymalna długość dziennika</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="148"/>
+        <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Get number</source>
         <translation>Pobierz numer</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="148"/>
+        <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Maximal log row count:</source>
         <translation>Maksymalna liczba wierszy dziennika:</translation>
     </message>
@@ -684,12 +680,12 @@
 <context>
     <name>qf::qmlwidgets::framework::LogWidgetTableView</name>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="30"/>
+        <location filename="src/framework/logwidget.cpp" line="31"/>
         <source>Copy</source>
         <translation>Kopiuj</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="32"/>
+        <location filename="src/framework/logwidget.cpp" line="33"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
         <translation>Ctrl+C kopjuj wybrane</translation>
@@ -910,22 +906,22 @@
         <translation>tylko wybrane wiersze</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="23"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="24"/>
         <source>portrait</source>
         <translation>portret</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="24"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="25"/>
         <source>landscape</source>
         <translation>Krajobraz</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="58"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>Open report file</source>
         <translation>Otwórz plik raportu</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="58"/>
+        <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>QML reports (*.qml)</source>
         <translation>QML raporty (*.qml)</translation>
     </message>
@@ -933,7 +929,7 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportProcessor</name>
     <message>
-        <location filename="src/reports/processor/reportprocessor.cpp" line="67"/>
+        <location filename="src/reports/processor/reportprocessor.cpp" line="69"/>
         <source>QML component</source>
         <translation>QML element</translation>
     </message>
@@ -941,176 +937,123 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="520"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="562"/>
         <source>&amp;File</source>
         <translation>&amp;Plik</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="528"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
         <source>&amp;View</source>
         <translation>&amp;Widok</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="565"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
         <source>First page</source>
         <translation>Pierwsza strona</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="572"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="614"/>
         <source>Prev page</source>
         <translation>Poprzednia strona</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="579"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="621"/>
         <source>Next page</source>
         <translation>Następna strona</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="586"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="628"/>
         <source>Last page</source>
         <translation>Ostatnia strona</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="593"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="635"/>
         <source>Zoom in</source>
         <translation>Przybliż</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="600"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="642"/>
         <source>Zoom out</source>
         <translation>Oddal</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="649"/>
         <source>Zoom to fit width</source>
         <translation>Dopasuj do szerokości</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="614"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="656"/>
         <source>Zoom to fit height</source>
         <translation>Dopasuj do wysokości</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="621"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="663"/>
         <source>&amp;Print</source>
         <translation>&amp;Drukuj</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="629"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>Print pre&amp;view</source>
         <translation>&amp;Podgląd wydruku</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="637"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
         <source>Export PD&amp;F</source>
         <translation>Eksportuj PD&amp;F</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="638"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
         <source>Export in the Adobe Acrobat PDF format</source>
         <translation>Eksportuj w formacie Adobe Acrobat PDF</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="645"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
         <source>Export &amp;HTML</source>
         <translation>Eksportuj &amp;HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="646"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
         <source>Export data in HTML</source>
         <translation>Eksportuj dane w HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1045"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1083"/>
         <source>empty file name</source>
         <translation>pusta nazwa pliku</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1106"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1144"/>
         <source>Save as PDF</source>
         <translation>Zapisz jako PDF</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1121"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1159"/>
         <source>Save as HTML</source>
         <translation>Zapisz jako HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1126"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1164"/>
         <source>Cannot open &apos;%1&apos; for write.</source>
         <translation>Nie można otworzyć &apos;%1&apos; do zapisu.</translation>
+    </message>
+    <message>
+        <location filename="src/reports/widgets/reportviewwidget.h" line="61"/>
+        <location filename="src/reports/widgets/reportviewwidget.h" line="67"/>
+        <source>Report preview</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget::PainterWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="247"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="289"/>
         <source>Item menu</source>
         <translation>Menu elementów</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="248"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="290"/>
         <source>Editovat text</source>
         <translation>Edytuj tekst</translation>
-    </message>
-</context>
-<context>
-    <name>qf::qmlwidgets::reports::TableViewChooseColumnsWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="vanished">Formularz</translation>
-    </message>
-    <message>
-        <source>exported columns</source>
-        <translation type="vanished">Kolumny eksportowane</translation>
-    </message>
-    <message>
-        <source>shift selected column up</source>
-        <translation type="vanished">Przesuń wybraną kolumnę wyżej</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="vanished">...</translation>
-    </message>
-    <message>
-        <source>shift selected column down</source>
-        <translation type="vanished">Przesuń wybrane kolumny w dół</translation>
-    </message>
-    <message>
-        <source>Remove selected columns</source>
-        <translation type="vanished">Usuń wybrane kolumny</translation>
-    </message>
-    <message>
-        <source>source columns</source>
-        <translation type="vanished">Kolumny źródłowe</translation>
-    </message>
-    <message>
-        <source>select all</source>
-        <translation type="vanished">Zaznacz wszystko</translation>
-    </message>
-    <message>
-        <source>select none</source>
-        <translation type="vanished">Nic nie zaznaczaj</translation>
-    </message>
-    <message>
-        <source>invert selection</source>
-        <translation type="vanished">Odwróć wybór</translation>
-    </message>
-    <message>
-        <source>model</source>
-        <translation type="vanished">model</translation>
-    </message>
-    <message>
-        <source>table</source>
-        <translation type="vanished">tabela</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="vanished">nazwa</translation>
-    </message>
-    <message>
-        <source>width</source>
-        <translation type="vanished">szerokość</translation>
     </message>
 </context>
 </TS>

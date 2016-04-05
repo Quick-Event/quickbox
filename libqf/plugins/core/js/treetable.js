@@ -40,6 +40,22 @@ Table.prototype.rowCount = function()
 	return ret;
 }
 
+Table.prototype.addRow = function(before_ix)
+{
+	var rows = this._data.rows;
+	if(!(rows instanceof Array))
+		rows = [];
+
+	if(typeof before_ix === 'undefined')
+		before_ix = rows.length;
+	//rows.push([]);
+	for(var i=rows.length; i>before_ix; i--) {
+		rows[i] = rows[i-1];
+	}
+	rows[before_ix] = [];
+	this._data.rows = rows;
+}
+
 Table.prototype.columnCount = function()
 {
 	var ret = 0;
@@ -115,7 +131,7 @@ Table.prototype.value = function(row_ix, col_ix)
 						row = row_o;
 					}
 					else if(row_o instanceof Object) {
-						row = row_o.row
+						row = row_o.row // object -> row_line_array + tables_array
 					}
 				}
 				if(row && row instanceof Array) {

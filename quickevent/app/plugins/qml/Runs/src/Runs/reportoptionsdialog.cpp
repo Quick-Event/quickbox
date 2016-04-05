@@ -9,6 +9,8 @@
 #include <qf/core/string.h>
 #include <qf/core/assert.h>
 
+#include <QSettings>
+
 namespace Runs {
 
 static Event::EventPlugin* eventPlugin()
@@ -21,6 +23,7 @@ static Event::EventPlugin* eventPlugin()
 
 ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	: QDialog(parent)
+	, qf::qmlwidgets::framework::IPersistentSettings(this)
 	, ui(new Ui::ReportOptionsDialog)
 {
 	ui->setupUi(this);
@@ -78,6 +81,50 @@ QString ReportOptionsDialog::sqlWhereExpression() const
 	}
 	return QString();
 }
+
+int ReportOptionsDialog::exec()
+{
+	loadPersistentSettings();
+	int result = Super::exec();
+	if(result == QDialog::Accepted)
+		savePersistentSettings();
+	return result;
+}
+
+void ReportOptionsDialog::loadPersistentSettings()
+{
+	if(persistentSettingsId().isEmpty())
+		return;
+	QSettings settings;
+	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
+	Options opts(m);
+	ui->cbxBreakAfterClassType->setCurrentIndex(opts.breakType());
+	ui->grpClassFilter->setChecked(opts.isUseClassFilter());
+	ui->chkClassFilterDoesntMatch->setChecked(opts.isInvertClassFilter());
+	ui->edFilter->setText(opts.classFilter());
+	FilterType filter_type = (FilterType)opts.classFilterType();
+	ui->btWildCard->setChecked(filter_type == FilterType::WildCard);
+	ui->btRegExp->setChecked(filter_type == FilterType::RegExp);
+	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
+}
+
+void ReportOptionsDialog::savePersistentSettings()
+{
+	if(persistentSettingsId().isEmpty())
+		return;
+
+	Options opts;
+	opts.setBreakType(ui->cbxBreakAfterClassType->currentIndex());
+	opts.setUseClassFilter(ui->grpClassFilter);
+	opts.setInvertClassFilter(ui->chkClassFilterDoesntMatch->isChecked());
+	opts.setClassFilter(ui->edFilter->text());
+	FilterType filter_type =  ui->btWildCard->isChecked()? FilterType::WildCard: ui->btRegExp->isChecked()? FilterType::RegExp: FilterType::ClassName;
+	opts.setClassFilterType((int)filter_type);
+
+	QSettings settings;
+	settings.setValue(persistentSettingsPath(), opts);
+}
+
 /*
 QVariantMap ReportOptionsDialog::optionsToMap() const
 {

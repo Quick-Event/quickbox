@@ -14,7 +14,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBreak : public ReportItem
 	Q_OBJECT
 	Q_ENUMS(BreakType)
 	Q_PROPERTY(BreakType breakType READ breakType WRITE setBreakType NOTIFY breakTypeChanged)
-	//Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
+	Q_PROPERTY(bool skipFirst READ isSkipFirst WRITE setSkipFirst)
 private:
 	typedef ReportItem Super;
 public:
@@ -25,6 +25,9 @@ public:
 	QF_PROPERTY_IMPL2(BreakType, b, B, reakType, Column)
 
 	//bool isBreak() {return true;} Q_DECL_OVERRIDE;
+	bool isSkipFirst() const {return m_skipFirst;}
+	void setSkipFirst(bool is_set);
+
 
 	virtual ChildSize childSize(Layout parent_layout) {
 		Q_UNUSED(parent_layout);
@@ -32,7 +35,8 @@ public:
 	}
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 private:
-	bool m_breaking;
+	bool m_breaking = false;
+	bool m_skipFirst = false; // skip first page break
 };
 
 } // namespace reports

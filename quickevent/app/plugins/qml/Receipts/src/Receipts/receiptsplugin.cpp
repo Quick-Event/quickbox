@@ -278,6 +278,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			if(it.key() != QLatin1String("punches"))
 				tt.setValue(it.key(), it.value());
 		}
+		tt.setValue("isOk", checked_card.isOk());
 		int position = 0;
 		for(auto v : checked_card.punches()) {
 			CardReader::CheckedPunch punch(v.toMap());

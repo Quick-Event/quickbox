@@ -159,6 +159,8 @@ QtObject {
 	{
 		Log.info("runs printResultsCurrentStage triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "resultsReportOptions";
+		//dlg.dialogType = RunsPlugin.ResultsReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
 			var td = currentStageTableData(dlg.sqlWhereExpression());
@@ -236,9 +238,9 @@ QtObject {
 				var time = tt2.value(j, "timeMs");
 				if(ftime && time)
 					stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
-				result.push(['StartTime', ['Clock', OGTime.msecToHMS(stime, ':')]])
+				result.push(['StartTime', ['Clock', TimeExt.msecToString_hhmmss(stime)]])
 				if(ftime)
-					result.push(['FinishTime', ['Clock', OGTime.msecToHMS(ftime, ':')]])
+					result.push(['FinishTime', ['Clock', TimeExt.msecToString_hhmmss(ftime)]])
 				result.push(['Time', {timeFormat: "MM:SS"}, OGTime.msecToString_mmss(time, ':')])
 				var competitor_status = 'OK'
 				if (!ftime) {
@@ -250,6 +252,8 @@ QtObject {
 					else
 						competitor_status = 'Disqualified'
 				}
+				else if (tt2.value(j, "notCompeting"))
+					competitor_status = 'NotCompeting'
 				if (competitor_status == 'OK')
 					result.push(['ResultPosition', tt2.value(j, "pos")])
 				result.push(['CompetitorStatus', {"value": competitor_status}])

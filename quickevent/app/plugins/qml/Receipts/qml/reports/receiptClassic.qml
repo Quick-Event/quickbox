@@ -227,28 +227,52 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
 					width: 10
 					//textHAlign: Frame.AlignRight
-					text: (dc.currentIndex < (dc.rowCount - 1))? dc.data(dc.currentIndex, "code"): qsTr("FI");
+					textFn: function() {
+						var ret;
+						if(dc.currentIndex < (dc.rowCount - 1)) {
+							ret = dc.data(dc.currentIndex, "code");
+						}
+						else {
+							ret = bandCard.data("isOk")? qsTr("OK"): qsTr("DISQ");
+						}
+						return ret;
+					}
 				}
 				Para {
 					id: cellStp
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "stpTimeMs"));
+					text: {
+						var msec = dc.data(dc.currentIndex, "stpTimeMs");
+						if(msec > 0)
+							return OGTime.msecToString_mmss(msec);
+						return qsTr("-----");
+					}
 				}
 				Para {
 					id: cellLap
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lapTimeMs"));
+					text: {
+						var msec = dc.data(dc.currentIndex, "lapTimeMs");
+						if(msec > 0)
+							return OGTime.msecToString_mmss(msec);
+						return qsTr("-----");
+					}
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
 					id: cellLoss
 					width: "%"
 					textHAlign: Frame.AlignRight
-					text: OGTime.msecToString_mmss(dc.data(dc.currentIndex, "lossMs"));
+					text: {
+						var msec = dc.data(dc.currentIndex, "lossMs");
+						if(msec > 0)
+							return OGTime.msecToString_mmss(msec);
+						return qsTr("-----");
+					}
 				}
 			}
 			Frame {

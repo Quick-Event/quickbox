@@ -13,7 +13,12 @@ ReportItemBreak::ReportItemBreak(ReportItem *parent)
 	//QF_ASSERT_EX(proc, "processor is NULL", return);
 	designedRect.verticalUnit = Rect::UnitInvalid;
 	//qfInfo() << element.attribute("id");
-	m_breaking = false;
+}
+
+void ReportItemBreak::setSkipFirst(bool is_set)
+{
+	m_skipFirst = is_set;
+	m_breaking = is_set;
 }
 
 ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )

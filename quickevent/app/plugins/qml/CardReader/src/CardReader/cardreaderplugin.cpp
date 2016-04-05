@@ -238,7 +238,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 	q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
 	q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
-	q.bindValue(QStringLiteral(":misPunch"), !checked_card.isOk());
+	q.bindValue(QStringLiteral(":misPunch"), checked_card.isMisPunch());
 	q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 	q.exec(qf::core::Exception::Throw);
 	if(q.numRowsAffected() != 1)
@@ -279,6 +279,7 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		return false;
 	}
 	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
+	qfInfo() << checked_card.isMisPunch() << checked_card.isOk();
 	if(updateCheckedCardValuesSqlSafe(checked_card))
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))
 			return true;
