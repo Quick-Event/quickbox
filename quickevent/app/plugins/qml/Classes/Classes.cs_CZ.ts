@@ -6,7 +6,7 @@
     <message>
         <location filename="src/classesplugin.cpp" line="155"/>
         <source>Cannot find id for code: %1</source>
-        <translation>Nelze najít id pro kód:%1</translation>
+        <translation>Nelze najít ID pro kód:%1</translation>
     </message>
 </context>
 <context>
@@ -44,12 +44,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="52"/>
         <source>Interval</source>
-        <translation>Intverval</translation>
+        <translation>Interval</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="53"/>
         <source>VB</source>
-        <translation>Vak.P</translation>
+        <translation>Vak. P</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="53"/>
@@ -59,7 +59,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="54"/>
         <source>VE</source>
-        <translation>Vak.B</translation>
+        <translation>Vak. B</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="54"/>
@@ -69,7 +69,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="55"/>
         <source>VA</source>
-        <translation>Vak.Po</translation>
+        <translation>Vak. Po</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="55"/>

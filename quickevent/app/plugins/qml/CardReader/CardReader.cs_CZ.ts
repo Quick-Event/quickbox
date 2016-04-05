@@ -16,7 +16,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="184"/>
         <source>Update runs &amp; runlaps ERROR:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Chyba při aktualizaci běhů &amp; mezičasů:</translation>
     </message>
     <message>
         <source>Save card runlaps ERROR: %1</source>
@@ -105,7 +105,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="126"/>
         <source>Card lent</source>
-        <translation>Půjčený čip</translation>
+        <translation>Půjčen čip</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="127"/>
@@ -170,17 +170,17 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="439"/>
         <source>Cannot find run for SI: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze najít běh pro SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="483"/>
         <source>punch: %1 %2</source>
-        <translation type="unfinished">ražení: %1 %2</translation>
+        <translation>Ražení: %1 %2</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="486"/>
         <source>Cannot find run for punch record SI: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze najít běh pro záznam ražení SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="551"/>
@@ -210,12 +210,12 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="703"/>
         <source>Cannot find runs record for SI %1!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nelze najít záznam běhu pro SI: %1!</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="704"/>
         <source>Cannot find class for SI %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít kategorii pro SI: %1!</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="717"/>
@@ -343,12 +343,12 @@
     <message>
         <location filename="src/dlgsettings.ui" line="213"/>
         <source>show raw data</source>
-        <translation>ukaž surová data</translation>
+        <translation>Ukaž surová data</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="220"/>
         <source>disable CRC check</source>
-        <translation>zakázat CRC check</translation>
+        <translation>Zakázat CRC check</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="231"/>
@@ -363,7 +363,7 @@
     <message>
         <location filename="src/dlgsettings.ui" line="243"/>
         <source>type</source>
-        <translation></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="251"/>

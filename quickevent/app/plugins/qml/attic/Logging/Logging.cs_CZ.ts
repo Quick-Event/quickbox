@@ -59,7 +59,7 @@
     <message>
         <location filename="src/Logging/loggingplugin.cpp" line="39"/>
         <source>Application log</source>
-        <translation>Aplikační log</translation>
+        <translation>Log aplikace</translation>
     </message>
 </context>
 </TS>
