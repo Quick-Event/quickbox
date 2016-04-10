@@ -162,7 +162,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_col
 void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_show_card(tr("Show card"), nullptr);
+	QAction a_show_card(tr("Show receipt"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
 	QAction a_print_card(tr("Print card"), nullptr);
 	QList<QAction*> lst;
