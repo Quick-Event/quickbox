@@ -358,11 +358,13 @@ bool RunsWidget::isLockedForDrawing(int class_id, int stage_id)
 	return false;
 }
 
-void RunsWidget::saveLockedForDrawing(int class_id, int stage_id, bool is_locked)
+void RunsWidget::saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min)
 {
 	qfs::Query q;
-	q.prepare("UPDATE classdefs SET drawLock=:drawLock WHERE stageId=" QF_IARG(stage_id) " AND classId=" QF_IARG(class_id), qf::core::Exception::Throw);
+	q.prepare("UPDATE classdefs SET drawLock=:drawLock, lastStartTimeMin=:lastStartTimeMin"
+			  " WHERE stageId=" QF_IARG(stage_id) " AND classId=" QF_IARG(class_id), qf::core::Exception::Throw);
 	q.bindValue(":drawLock", is_locked);
+	q.bindValue(":lastStartTimeMin", start_last_min);
 	q.exec(qf::core::Exception::Throw);
 }
 
@@ -542,6 +544,7 @@ void RunsWidget::on_btDraw_clicked()
 				int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
 				int vacants_before = q_classdefs.value("vacantsBefore").toInt();
 				int vacant_every = q_classdefs.value("vacantEvery").toInt();
+				int vacants_after = q_classdefs.value("vacantsAfter").toInt();
 				int start = start0;
 				int n = 0;
 
@@ -573,7 +576,8 @@ void RunsWidget::on_btDraw_clicked()
 						n++;
 					}
 				}
-				saveLockedForDrawing(class_id, stage_id, true);
+				start += (vacants_after - 1) * interval;
+				saveLockedForDrawing(class_id, stage_id, true, start / 60 / 1000);
 			}
 		}
 		transaction.commit();
@@ -601,7 +605,7 @@ void RunsWidget::on_btDrawRemove_clicked()
 			runs_model->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
 		}
 		int stage_id = eventPlugin()->currentStageId();
-		saveLockedForDrawing(class_id, stage_id, false);
+		saveLockedForDrawing(class_id, stage_id, false, 0);
 		transaction.commit();
 		runs_model->reload();
 	}

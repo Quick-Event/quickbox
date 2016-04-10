@@ -121,6 +121,7 @@ Schema {
 				Field { name: 'resultsCount'; type: Int { }
 					comment: 'number of finished competitors, when the results were printed'
 				},
+				Field { name: 'lastStartTimeMin'; type: Int { } },
 				Field { name: 'drawLock'; type: Boolean { }
 					defaultValue: false
 					notNull: true

@@ -124,7 +124,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("classdefs.vacantsBefore", tr("VB")).setToolTip(tr("Vacants before"));
 		m->addColumn("classdefs.vacantEvery", tr("VE")).setToolTip(tr("Vacant every"));
 		m->addColumn("classdefs.vacantsAfter", tr("VA")).setToolTip(tr("Vacants after"));
-		//m->addColumn("classdefs.lastTimeMin", tr("Last"));
+		m->addColumn("classdefs.lastStartTimeMin", tr("Last")).setToolTip(tr("Start time of last competitor in class."));
 		m->addColumn("runsCount", tr("Count")).setToolTip(tr("Runners count"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
 		m->addColumn("classdefs.courseId", tr("Course"));
