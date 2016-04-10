@@ -59,7 +59,14 @@ Report {
 					width: "%"
 					//keepAll: true
 					layout: Frame.LayoutVertical
-					function dataFn(field_name) {return function() {return rowData(field_name);}}
+					function dataFn(field_name) {
+						return function() {
+							var d = rowData(field_name);
+							if(!d)
+								d = "---";
+							return d;
+						}
+					}
 					Space { height: 5 }
 					Frame {
 						width: "%"

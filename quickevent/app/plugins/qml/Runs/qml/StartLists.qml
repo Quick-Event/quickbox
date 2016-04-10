@@ -89,7 +89,7 @@ QtObject {
 		var stage_id = runsPlugin.selectedStageId;
 		var tt = new TreeTable.Table();
 
-		var qs1 = "SELECT * FROM ( SELECT substr(registration, 1, 3) AS clubAbbr FROM competitors) AS t GROUP BY clubAbbr ORDER BY clubAbbr";
+		var qs1 = "SELECT COALESCE(substr(registration, 1, 3), '') AS clubAbbr FROM competitors GROUP BY clubAbbr ORDER BY clubAbbr";
 		reportModel.query = "SELECT t2.clubAbbr, clubs.name FROM ( " + qs1 + " ) AS t2"
 				+ " LEFT JOIN clubs ON t2.clubAbbr=clubs.abbr"
 				+ " ORDER BY t2.clubAbbr";
@@ -97,6 +97,7 @@ QtObject {
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		tt.column(0).type = "QString"; // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
 		//console.info(tt.toString());
 
 		reportModel.queryBuilder.clear()
@@ -107,13 +108,14 @@ QtObject {
 			.from('competitors')
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
 			.join("competitors.classId", "classes.id")
-			.where("substr(competitors.registration, 1, 3)='{{club_abbr}}'")
+			.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
 			.orderBy('runs.startTimeMs, classes.name');
 		for(var i=0; i<tt.rowCount(); i++) {
 			var club_abbr = tt.value(i, "clubAbbr");
 			console.debug("club_abbr:", club_abbr);
 			reportModel.setQueryParameters({club_abbr: club_abbr, stage_id: stage_id});
 			reportModel.reload();
+			//console.info(reportModel.effectiveQuery());
 			var ttd = reportModel.toTreeTableData();
 			tt.addTable(i, ttd);
 		}

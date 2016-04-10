@@ -772,6 +772,7 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 			exported_columns << col;
 		}
 	}
+	bool raw_values = opts.isExportRawValues();
 	for(int i=0; i<exported_columns.count(); i++) {
 		QVariantMap col = exported_columns[i].toMap();
 		QString cap = col.value("caption").toString();
@@ -782,7 +783,15 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
 		}
 		else {
-			QVariant::Type t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
+			QVariant::Type t;
+			if(raw_values) {
+				qfu::Table::Field fld = tableField(ix);
+				t = fld.type();
+				//qfWarning() << fld.toString();
+			}
+			else {
+				t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
+			}
 			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
 		}
 		tt_col.setWidth(col.value("width").toString());
@@ -790,7 +799,6 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 
 	/// export data
 	{
-		bool raw_values = opts.isExportRawValues();
 		qfu::SValue srows;
 		for(int i=0; i<rowCount(); i++) {
 			QVariantList srow_lst;
