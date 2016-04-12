@@ -636,6 +636,7 @@ void EventPlugin::editEvent()
 bool EventPlugin::closeEvent()
 {
 	qfLogFuncFrame();
+	clearStageDataCache();
 	m_classNameCache.clear();
 	setEventName(QString());
 	QF_SAFE_DELETE(m_eventConfig);
