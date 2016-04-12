@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DISTRO_VER=1.0.0
+DISTRO_VER=1.0.2
 
 WORK_DIR=/home/fanda/t/_distro
 DISTRO_NAME=quickevent-linux64

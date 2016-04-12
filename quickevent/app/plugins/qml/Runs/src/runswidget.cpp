@@ -571,7 +571,7 @@ void RunsWidget::on_btDraw_clicked()
 						q.bindValue(QStringLiteral(":startTimeMs"), start);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
-						if(n > 0 && vacant_every > 0 && (n % vacant_every) == 0)
+						if(vacant_every > 0 && ((n+1) % vacant_every) == 0)
 							start += interval;
 						n++;
 					}
