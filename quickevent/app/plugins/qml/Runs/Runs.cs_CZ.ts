@@ -112,10 +112,10 @@
     <message>
         <location filename="qml/Results.qml" line="180"/>
         <location filename="qml/Results.qml" line="188"/>
-        <location filename="qml/Results.qml" line="307"/>
-        <location filename="qml/Results.qml" line="308"/>
-        <location filename="qml/Results.qml" line="323"/>
-        <location filename="qml/Results.qml" line="324"/>
+        <location filename="qml/Results.qml" line="309"/>
+        <location filename="qml/Results.qml" line="310"/>
+        <location filename="qml/Results.qml" line="325"/>
+        <location filename="qml/Results.qml" line="326"/>
         <source>Get number</source>
         <translation>Vložte číslo</translation>
     </message>
@@ -131,25 +131,25 @@
     </message>
     <message>
         <location filename="qml/Results.qml" line="188"/>
-        <location filename="qml/Results.qml" line="308"/>
-        <location filename="qml/Results.qml" line="324"/>
+        <location filename="qml/Results.qml" line="310"/>
+        <location filename="qml/Results.qml" line="326"/>
         <source>Number of places in each class:</source>
         <translation>Počet míst v každé kategorii:</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="192"/>
-        <location filename="qml/Results.qml" line="327"/>
+        <location filename="qml/Results.qml" line="329"/>
         <source>Stage awards</source>
         <translation>Etapové diplomy</translation>
     </message>
     <message>
-        <location filename="qml/Results.qml" line="286"/>
+        <location filename="qml/Results.qml" line="288"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
     <message>
-        <location filename="qml/Results.qml" line="307"/>
-        <location filename="qml/Results.qml" line="323"/>
+        <location filename="qml/Results.qml" line="309"/>
+        <location filename="qml/Results.qml" line="325"/>
         <source>Number of stages:</source>
         <translation>Počet etap:</translation>
     </message>
@@ -374,8 +374,9 @@
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="165"/>
-        <source>Show card</source>
-        <translation>Zobrazit čip</translation>
+        <source>Show receipt</source>
+        <oldsource>Show card</oldsource>
+        <translation type="unfinished">Zobrazit čip</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="166"/>
@@ -447,17 +448,17 @@
         <translation>Hendikep</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="376"/>
+        <location filename="src/runswidget.cpp" line="378"/>
         <source>Draw all clases without draw lock?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="392"/>
+        <location filename="src/runswidget.cpp" line="394"/>
         <source>Class is locked for drawing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="593"/>
+        <location filename="src/runswidget.cpp" line="597"/>
         <source>Reset all start times and unlock for drawing for this class?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -502,7 +503,7 @@
         <translation>Import</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="539"/>
+        <location filename="src/runswidget.cpp" line="541"/>
         <source>Start interval is zero, proceed anyway?</source>
         <translation>Interval mezi závodníky je nula. Přesto pokračovat?</translation>
     </message>
@@ -510,111 +511,111 @@
 <context>
     <name>StartLists</name>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>Get item</source>
         <translation type="unfinished">Vyber možnost</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>Corridor:</source>
         <translation type="unfinished">Koridor:</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>H</source>
         <translation type="unfinished">H</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>D</source>
         <translation type="unfinished">D</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>H+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>Other</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="280"/>
+        <location filename="qml/StartLists.qml" line="282"/>
         <source>All</source>
         <translation type="unfinished">Vše</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="284"/>
+        <location filename="qml/StartLists.qml" line="286"/>
         <source>Start list for starters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Startovní listina pro startéry</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="292"/>
-        <location filename="qml/StartLists.qml" line="307"/>
+        <location filename="qml/StartLists.qml" line="294"/>
+        <location filename="qml/StartLists.qml" line="309"/>
         <source>Get number</source>
         <translation>Vložte číslo</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="292"/>
-        <location filename="qml/StartLists.qml" line="307"/>
+        <location filename="qml/StartLists.qml" line="294"/>
+        <location filename="qml/StartLists.qml" line="309"/>
         <source>Number of stages:</source>
         <translation>Počet etap:</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="339"/>
+        <location filename="qml/StartLists.qml" line="341"/>
         <source>length:</source>
         <translation type="unfinished">Délka:</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="339"/>
+        <location filename="qml/StartLists.qml" line="341"/>
         <source>climb:</source>
         <translation type="unfinished">převýšení:</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="345"/>
-        <location filename="qml/StartLists.qml" line="400"/>
+        <location filename="qml/StartLists.qml" line="347"/>
+        <location filename="qml/StartLists.qml" line="402"/>
         <source>Start</source>
         <translation type="unfinished">Start</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="346"/>
-        <location filename="qml/StartLists.qml" line="402"/>
+        <location filename="qml/StartLists.qml" line="348"/>
+        <location filename="qml/StartLists.qml" line="404"/>
         <source>Name</source>
         <translation type="unfinished">Jméno</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="347"/>
-        <location filename="qml/StartLists.qml" line="403"/>
+        <location filename="qml/StartLists.qml" line="349"/>
+        <location filename="qml/StartLists.qml" line="405"/>
         <source>Registration</source>
         <translation type="unfinished">Registrace</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="348"/>
-        <location filename="qml/StartLists.qml" line="404"/>
+        <location filename="qml/StartLists.qml" line="350"/>
+        <location filename="qml/StartLists.qml" line="406"/>
         <source>SI</source>
         <translation type="unfinished">SI</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="365"/>
+        <location filename="qml/StartLists.qml" line="367"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="401"/>
+        <location filename="qml/StartLists.qml" line="403"/>
         <source>Class</source>
         <translation type="unfinished">Kategorie</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="252"/>
-        <location filename="qml/StartLists.qml" line="297"/>
+        <location filename="qml/StartLists.qml" line="254"/>
+        <location filename="qml/StartLists.qml" line="299"/>
         <source>Start list by clases</source>
         <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/StartLists.qml" line="274"/>
-        <location filename="qml/StartLists.qml" line="312"/>
-        <location filename="qml/StartLists.qml" line="423"/>
+        <location filename="qml/StartLists.qml" line="276"/>
+        <location filename="qml/StartLists.qml" line="314"/>
+        <location filename="qml/StartLists.qml" line="425"/>
         <source>Start list by clubs</source>
         <translation>Startovní listina po klubech</translation>
     </message>
@@ -648,12 +649,6 @@
         <location filename="src/drawing/classitem.cpp" line="219"/>
         <source>class start: %1, interval: %2, duration: %3, end: %4&lt;br/&gt;</source>
         <translation>start kategorie: %1, interval: %2, délka trvání: %3, konec: %4&lt;br/&gt;</translation>
-    </message>
-    <message>
-        <location filename="src/drawing/classitem.cpp" line="217"/>
-        <source>first code &lt;b&gt;%1&lt;/b&gt;, course %2 - %3&lt;br/&gt;</source>
-        <oldsource>competitors start first: %1, last: %2&lt;br/&gt;</oldsource>
-        <translation type="unfinished">start prvního závodníka: %1, posledního: %2&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="229"/>

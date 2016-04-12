@@ -33,7 +33,7 @@
       <bool>true</bool>
      </property>
      <property name="dataId" stdset="0">
-      <string>stages.startDate</string>
+      <string notr="true">stages.startDate</string>
      </property>
     </widget>
    </item>
@@ -50,7 +50,7 @@
    <item row="1" column="1">
     <widget class="qf::qmlwidgets::TimeEdit" name="timeEdit">
      <property name="dataId" stdset="0">
-      <string>stages.startTime</string>
+      <string notr="true">stages.startTime</string>
      </property>
     </widget>
    </item>

@@ -105,6 +105,16 @@
         <translation>Vakanti po</translation>
     </message>
     <message>
+        <location filename="src/classeswidget.cpp" line="127"/>
+        <source>Last</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="127"/>
+        <source>Start time of last competitor in class.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="src/classeswidget.cpp" line="128"/>
         <source>Count</source>
         <translation>Počet</translation>
