@@ -27,10 +27,9 @@
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 
+#include <QCheckBox>
 #include <QDateTime>
 #include <QLabel>
-//#include <QMenu>
-//#include <QSortFilterProxyModel>
 
 #include <algorithm>
 
@@ -99,7 +98,7 @@ void RunsWidget::reload()
 	qfLogFuncFrame();
 	int stage_id = selectedStageId();
 	int class_id = m_cbxClasses->currentData().toInt();
-	ui->wRunsTableWidget->reload(stage_id, class_id);
+	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
 }
 /*
 void RunsWidget::editStartList(int class_id, int competitor_id)
@@ -170,6 +169,13 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxClasses->setReferencedField("id");
 		m_cbxClasses->setReferencedCaptionField("name");
 		main_tb->addWidget(m_cbxClasses);
+	}
+	{
+		m_chkShowOffRace = new QCheckBox();
+		m_chkShowOffRace->setText(tr("Show o&ff-race"));
+		m_chkShowOffRace->setToolTip(tr("Show off race competitors"));
+		connect(m_chkShowOffRace, &QCheckBox::toggled, this, &RunsWidget::reload);
+		main_tb->addWidget(m_chkShowOffRace);
 	}
 	{
 		auto *bt = new QPushButton(tr("&Draw options"));

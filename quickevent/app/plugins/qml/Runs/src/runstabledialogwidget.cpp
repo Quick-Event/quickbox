@@ -35,9 +35,9 @@ RunsTableWidget *RunsTableDialogWidget::runsTableWidget()
 	return ui->runsTableWidget;
 }
 
-void RunsTableDialogWidget::reload(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+void RunsTableDialogWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	QString class_name = eventPlugin()->classNameById(class_id);
 	setTitle(tr("Stage %1 Class %2").arg(stage_id).arg(class_name));
-	runsTableWidget()->reload(stage_id, class_id, sort_column, select_competitor_id);
+	runsTableWidget()->reload(stage_id, class_id, show_offrace, sort_column, select_competitor_id);
 }

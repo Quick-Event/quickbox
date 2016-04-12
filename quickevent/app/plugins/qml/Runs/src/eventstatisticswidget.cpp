@@ -65,26 +65,28 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	addColumn("runnersNotFinished", tr("Not finished"));
 	addColumn("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results."));
 	{
+		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND NOT runs.offRace AND competitors.classId=classes.id");
 		qf::core::sql::QueryBuilder qb_runners_count;
 		qb_runners_count.select("COUNT(runs.id)")
-				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN);
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", competiting_cond, qf::core::sql::QueryBuilder::INNER_JOIN);
 		qf::core::sql::QueryBuilder qb_runners_finished;
 		qb_runners_finished.select("COUNT(runs.id)")
-				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", competiting_cond, qf::core::sql::QueryBuilder::INNER_JOIN)
 				.where("runs.finishTimeMs > 0 OR runs.disqualified");
 		qf::core::sql::QueryBuilder qb_runners_start_first;
 		qb_runners_start_first.select("MIN(runs.startTimeMs)")
-				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", competiting_cond, qf::core::sql::QueryBuilder::INNER_JOIN)
 				.where("runs.startTimeMs IS NOT NULL");
 		qf::core::sql::QueryBuilder qb_runners_start_last;
 		qb_runners_start_last.select("MAX(runs.startTimeMs)")
-				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", competiting_cond, qf::core::sql::QueryBuilder::INNER_JOIN)
 				.where("runs.startTimeMs IS NOT NULL");
+		static const auto in_results_cond = competiting_cond + QStringLiteral(" AND runs.timeMs>0 AND NOT runs.disqualified");
 		qf::core::sql::QueryBuilder qb_first_time;
 		{
 			qf::core::sql::QueryBuilder qb;
 			qb.select("runs.timeMs")
-				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id AND runs.timeMs>0 AND NOT runs.disqualified", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", in_results_cond, qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.timeMs")
 				.limit(1)
 				.as("results1");
@@ -95,7 +97,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 		{
 			qf::core::sql::QueryBuilder qb;
 			qb.select("runs.timeMs")
-				.from("runs").joinRestricted("runs.competitorId", "competitors.id", "runs.stageId={{stage_id}} AND competitors.classId=classes.id AND runs.timeMs>0 AND NOT runs.disqualified", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.from("runs").joinRestricted("runs.competitorId", "competitors.id", in_results_cond, qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.timeMs")
 				.limit(3)
 				.as("results3");

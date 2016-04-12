@@ -4,6 +4,7 @@
 #include <QFrame>
 
 class QComboBox;
+class QCheckBox;
 
 namespace qf {
 namespace core {
@@ -72,6 +73,7 @@ private:
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
+	QCheckBox *m_chkShowOffRace = nullptr;
 };
 
 #endif // RUNSWIDGET_H

@@ -197,6 +197,7 @@ void CompetitorWidget::showRunsTable(int stage_id)
 		QMetaObject::invokeMethod(runs_plugin, "showRunsTable"
 								  , Q_ARG(int, stage_id)
 								  , Q_ARG(int, class_id)
+								  , Q_ARG(bool, false)
 								  , Q_ARG(QString, sort_col)
 								  , Q_ARG(int, competitor_id));
 		loadRunsTable();

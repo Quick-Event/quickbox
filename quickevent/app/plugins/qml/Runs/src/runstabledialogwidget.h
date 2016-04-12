@@ -21,7 +21,7 @@ public:
 	~RunsTableDialogWidget();
 
 	RunsTableWidget* runsTableWidget();
-	void reload(int stage_id, int class_id, const QString &sort_column = QString(), int select_competitor_id = 0);
+	void reload(int stage_id, int class_id, bool show_offrace = false, const QString &sort_column = QString(), int select_competitor_id = 0);
 private:
 	Ui::RunsTableDialogWidget *ui;
 };

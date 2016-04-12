@@ -176,10 +176,10 @@ int RunsPlugin::courseForRun_Classic(int run_id)
 	return ret;
 }
 
-void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+void RunsPlugin::showRunsTable(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	auto *w = new RunsTableDialogWidget();
-	w->reload(stage_id, class_id, sort_column, select_competitor_id);
+	w->reload(stage_id, class_id, show_offrace, sort_column, select_competitor_id);
 	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
 	dlg.setButtons(QDialogButtonBox::Cancel);
 	dlg.setCentralWidget(w);

@@ -58,6 +58,7 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &RunsTableWidget::onCustomContextMenuRequest);
 
 	auto m = new RunsTableModel(this);
+	m->addColumn("runs.offRace", tr("Off race"));
 	m->addColumn("runs.id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.siId", tr("SI"));
@@ -66,7 +67,6 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
 	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	//m->addColumn("runs.timeMs", tr("Time raw"));
 	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
 	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
@@ -117,7 +117,7 @@ void RunsTableWidget::clear()
 	m_runsModel->clearRows();
 }
 
-void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	qfLogFuncFrame();
 	qfs::QueryBuilder qb;
@@ -126,7 +126,6 @@ void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_col
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
-			.where("NOT runs.offRace")
 			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")
 			.join("competitors.classId", "classes.id")
@@ -134,10 +133,16 @@ void RunsTableWidget::reload(int stage_id, int class_id, const QString &sort_col
 	if(class_id > 0) {
 		qb.where("competitors.classId=" + QString::number(class_id));
 	}
+	if(!show_offrace)
+		qb.where("NOT runs.offRace");
 	qfDebug() << qb.toString();
 	m_runsTableItemDelegate->setHighlightedClassId(class_id);
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
+
+	static int col_off_race = m_runsModel->columnIndex(QStringLiteral("runs.offRace"));
+	ui->tblRuns->horizontalHeader()->setSectionHidden(col_off_race, !show_offrace);
+
 	int sort_col_ix = m_runsModel->columnIndex(sort_column);
 	if(sort_col_ix >= 0) {
 		QHeaderView *hdrv = ui->tblRuns->horizontalHeader();
