@@ -76,6 +76,15 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_export_startList_iofxml3
+			text: qsTr('&IOF-XML 3.0')
+			onTriggered: {
+				var default_file_name = "startlist-iof3.xml";
+				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
+				startLists.exportStartListIofXml3(file_name)
+			}
+		},
+		Action {
 			id: act_print_results_currentStage
 			text: qsTr('&Current stage')
 			shortcut: "Ctrl+P"
@@ -117,7 +126,7 @@ RunsPlugin {
 			onTriggered: {
 				var default_file_name = "results-iof.xml";
 				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
-				results.exportIofXml(file_name)
+				results.exportIofXml2(file_name)
 			}
 		}
 	]
@@ -148,13 +157,15 @@ RunsPlugin {
 
 		var a_export = root.partWidget.menuBar.actionForPath("export", true);
 		//a_export.text = qsTr("E&xport");
-		a = a_export.addMenuInto("startList", "&Start list");
-		a = a.addMenuInto("html", "&HTML");
+		var m_stlist = a_export.addMenuInto("startList", "&Start list");
+		a = m_stlist.addMenuInto("html", "&HTML");
 		a.addActionInto(act_export_html_startList_classes);
 		a.addActionInto(act_export_html_startList_clubs);
+		a = m_stlist.addMenuInto("xml", "&XML");
+		a.addActionInto(act_export_startList_iofxml3);
 
-		a = a_export.addMenuInto("results", "&Results");
-		a.addActionInto(act_export_results_iofxml);
+		var m_results = a_export.addMenuInto("results", "&Results");
+		m_results.addActionInto(act_export_results_iofxml);
 
 	}
 }

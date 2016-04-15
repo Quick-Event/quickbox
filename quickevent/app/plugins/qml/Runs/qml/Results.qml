@@ -195,7 +195,7 @@ QtObject {
 									//   , {eventConfig: FrameWork.plugin("Event").eventConfig.values()});
 	}
 
-	function exportIofXml(file_path)
+	function exportIofXml2(file_path)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId);

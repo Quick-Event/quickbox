@@ -131,6 +131,28 @@ int EventPlugin::stageStart(int stage_id)
 	int ret = start_time.msecsSinceStartOfDay();
 	return ret;
 }
+
+QDate EventPlugin::stageStartDate(int stage_id)
+{
+	Event::StageData stage_data = stageData(stage_id);
+	return stage_data.startDate();
+}
+
+QTime EventPlugin::stageStartTime(int stage_id)
+{
+	Event::StageData stage_data = stageData(stage_id);
+	return stage_data.startTime();
+}
+
+QDateTime EventPlugin::stageStartDateTime(int stage_id)
+{
+	Event::StageData stage_data = stageData(stage_id);
+	QTime t = stage_data.startTime();
+	QDate d = stage_data.startDate();
+	QDateTime dt(d, t);
+	//qfInfo() << stage_id << d << t << dt;
+	return dt;
+}
 /*
 int EventPlugin::currentStageStartMsec()
 {

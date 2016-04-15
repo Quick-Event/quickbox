@@ -19,6 +19,23 @@ function dateToISOString(dt)
 	return ret;
 }
 
+function dateTimeToUTCISOString(dt)
+{
+	return dt.toISOString();
+}
+
+function dateToUTCISOString(dt)
+{
+	var s = dateTimeToUTCISOString(dt);
+	return s.substr(0, 10);
+}
+
+function timeToUTCISOString(dt)
+{
+	var s = dateTimeToUTCISOString(dt);
+	return s.substr(11);
+}
+
 function msecToString_hhmmss(msec)
 {
 	if(msec < 0) {

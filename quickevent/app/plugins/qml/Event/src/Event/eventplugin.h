@@ -59,6 +59,9 @@ public:
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
 	Q_INVOKABLE int stageStart(int stage_id);
+	Q_INVOKABLE QDate stageStartDate(int stage_id);
+	Q_INVOKABLE QTime stageStartTime(int stage_id);
+	Q_INVOKABLE QDateTime stageStartDateTime(int stage_id);
 	//Q_INVOKABLE int currentStageStartMsec();
 
 	//Q_INVOKABLE QVariantMap stageDataMap(int stage_id) {return stageData(stage_id);}

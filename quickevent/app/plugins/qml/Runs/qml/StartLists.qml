@@ -371,6 +371,64 @@ QtObject {
 		return "";
 	}
 
+	function exportStartListIofXml3(file_path)
+	{
+		var event_plugin = FrameWork.plugin("Event");
+		//var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId);
+		var start00_datetime = event_plugin.stageStartDateTime(runsPlugin.selectedStageId);
+		//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
+		var start00_epoch_sec = start00_datetime.getTime();
+
+		var tt1 = startListClassesTable();
+
+		var xml_root = ['StartList' ,
+						{ "xmlns": "http://www.orienteering.org/datastandard/3.0",
+							"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+							"iofVersion": "3.0" , "creator": "QuickEvent",
+							"createTime": TimeExt.dateTimeToUTCISOString(new Date())
+						}];
+
+		var event = tt1.value("event");
+		var xml_event = ['Event'];
+		xml_root.push(xml_event);
+		xml_event.push(['Name', event.name]);
+		xml_event.push(['StartTime', ['Date', TimeExt.dateToUTCISOString(event.date)], ['Time', TimeExt.timeToUTCISOString(event.date)]]);
+		xml_event.push(['EndTime', ['Date', TimeExt.dateToUTCISOString(event.date)], ['Time', TimeExt.timeToUTCISOString(event.date)]]);
+		var director = (event.director + '').split(' ');
+		var main_referee = (event.mainReferee + '').split(' ');
+		xml_event.push(['Official', {"type": "Director"}, ['Person', ['Name', ['Family', director[0]], ['Given', director[1]]]]]);
+		xml_event.push(['Official', {"type": "MainReferee"}, ['Person', ['Name', ['Family', main_referee[0]], ['Given', main_referee[1]]]]]);
+
+		for(var i=0; i<tt1.rowCount(); i++) {
+			var class_start = ['ClassStart'];
+			xml_root.push(class_start);
+			class_start.push(['Class', ["Id", tt1.value(i, "classes.id")], ["Name", tt1.value(i, "classes.name")]]);
+			class_start.push(['Course', ["Length", tt1.value(i, "courses.length")], ["Climb", tt1.value(i, "courses.climb")]]);
+			class_start.push(['StartName', "Start1"]);
+			var tt2 = tt1.table(i);
+			var pos = 0;
+			for(var j=0; j<tt2.rowCount(); j++) {
+				pos++;
+				var xml_person = ['PersonStart'];
+				class_start.push(xml_person);
+				var person = ['Person'];
+				xml_person.push(person);
+				person.push(['Id', tt2.value(j, "competitors.registration")]);
+				var family = tt2.value(j, "competitors.lastName");
+				var given = tt2.value(j, "competitors.firstName");
+				person.push(['Name', ['Family', family], ['Given', given]]);
+				var xml_start = ['Start'];
+				xml_person.push(xml_start);
+				var stime_epoch_sec = start00_epoch_sec + tt2.value(j, "startTimeMs") / 1000;
+				xml_start.push(['StartTime', TimeExt.dateTimeToUTCISOString(new Date(stime_epoch_sec))])
+				xml_start.push(['ControlCard', tt2.value(j, "runs.siId")])
+			}
+		}
+
+		File.writeXml(file_path, xml_root, {documentTitle: qsTr("E%1 IOF XML stage results").arg(tt1.value("stageId"))});
+		Log.info("exported:", file_path);
+	}
+
 	function exportHtmlStartListClubs()
 	{
 		var default_file_name = "startlist-clubs.html";
