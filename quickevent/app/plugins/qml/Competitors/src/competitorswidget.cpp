@@ -78,9 +78,10 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	*/
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	//main_tb->addAction(m_actCommOpen);
+	QLabel *lbl_class;
 	{
-		QLabel *lbl = new QLabel(tr("Class "));
-		main_tb->addWidget(lbl);
+		lbl_class = new QLabel(tr("&Class "));
+		main_tb->addWidget(lbl_class);
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
@@ -91,6 +92,7 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxClasses->setReferencedCaptionField("name");
 		main_tb->addWidget(m_cbxClasses);
 	}
+	lbl_class->setBuddy(m_cbxClasses);
 }
 
 void CompetitorsWidget::lazyInit()

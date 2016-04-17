@@ -158,9 +158,10 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxStage = new QComboBox();
 		main_tb->addWidget(m_cbxStage);
 	}
+	QLabel *lbl_classes;
 	{
-		QLabel *lbl = new QLabel(tr("Class "));
-		main_tb->addWidget(lbl);
+		lbl_classes = new QLabel(tr("&Class "));
+		main_tb->addWidget(lbl_classes);
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
@@ -170,6 +171,7 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxClasses->setReferencedCaptionField("name");
 		main_tb->addWidget(m_cbxClasses);
 	}
+	lbl_classes->setBuddy(m_cbxClasses);
 	{
 		m_chkShowOffRace = new QCheckBox();
 		m_chkShowOffRace->setText(tr("Show o&ff-race"));

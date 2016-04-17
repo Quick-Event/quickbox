@@ -18,7 +18,7 @@ QtObject {
 		}
 	}
 
-	function startListClassesTable(class_filter)
+	function startListClassesTable(class_filter, insert_vakants)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = runsPlugin.selectedStageId;
@@ -43,7 +43,7 @@ QtObject {
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
 
 		reportModel.queryBuilder.clear()
-			.select2('competitors', 'registration')
+			.select2('competitors', 'lastName, firstName, registration')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
@@ -59,7 +59,7 @@ QtObject {
 			var tt2 = new TreeTable.Table(ttd);
 			var start_time_0 = tt.value(i, "startTimeMin") * 60 * 1000;
 			var start_interval = tt.value(i, "startIntervalMin") * 60 * 1000;
-			if(start_interval > 0) {
+			if(start_interval > 0 && insert_vakants) {
 				for(var j=0; j<tt2.rowCount(); j++) {
 					var start_time = tt2.value(j, "startTimeMs");
 					//console.info(j, "t0:", start_time_0, start_time_0/60/1000, "start:", start_time, start_time/60/1000)
@@ -248,7 +248,7 @@ QtObject {
 		//dlg.dialogType = RunsPlugin.StartListReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
-			var tt = startListClassesTable(dlg.sqlWhereExpression());
+			var tt = startListClassesTable(dlg.sqlWhereExpression(), true);
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_classes.qml"
 										   , tt.data()
 										   , qsTr("Start list by clases")
@@ -320,7 +320,7 @@ QtObject {
 	{
 		var default_file_name = "startlist-classes.html";
 
-		var tt1 = startListClassesTable();
+		var tt1 = startListClassesTable("", true);
 		var body = ['body']
 		var h1_str = "{{documentTitle}}";
 		var event = tt1.value("event");
@@ -379,7 +379,7 @@ QtObject {
 		//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
 		var start00_epoch_sec = start00_datetime.getTime();
 
-		var tt1 = startListClassesTable();
+		var tt1 = startListClassesTable("", false);
 
 		var xml_root = ['StartList' ,
 						{ "xmlns": "http://www.orienteering.org/datastandard/3.0",
@@ -419,8 +419,14 @@ QtObject {
 				person.push(['Name', ['Family', family], ['Given', given]]);
 				var xml_start = ['Start'];
 				xml_person.push(xml_start);
-				var stime_epoch_sec = start00_epoch_sec + tt2.value(j, "startTimeMs") / 1000;
-				xml_start.push(['StartTime', TimeExt.dateTimeToUTCISOString(new Date(stime_epoch_sec))])
+				var stime_msec = tt2.value(j, "startTimeMs");
+				//console.info(start00_datetime.toJSON(), start00_datetime.getHours(), start00_epoch_sec / 60 / 60);
+				//console.info(family, given, start00_epoch_sec, stime_sec, stime_sec / 60);
+				var stime_datetime = new Date(start00_epoch_sec + stime_msec);
+				//sdatetime.setTime(start00_epoch_sec);
+				//console.warn(stime_datetime.toJSON());
+				//stime_epoch_sec = start00_epoch_sec + stime_epoch_sec;
+				xml_start.push(['StartTime', TimeExt.dateTimeToUTCISOString(stime_datetime)])
 				xml_start.push(['ControlCard', tt2.value(j, "runs.siId")])
 			}
 		}
