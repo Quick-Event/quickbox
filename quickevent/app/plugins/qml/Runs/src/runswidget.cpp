@@ -244,10 +244,10 @@ QList<int> RunsWidget::runsForClass(int stage_id, int class_id)
 	return ret;
 }
 
-QList<int> RunsWidget::runsForClassCondition(int stage_id, int class_id, QString condition)
+QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &extra_condition)
 {
         qfLogFuncFrame();
-        QList<int> ret = competitorsForClassCondition(stage_id, class_id, condition).values();
+		QList<int> ret = competitorsForClass(stage_id, class_id, extra_condition).values();
         return ret;
 }
 
@@ -261,7 +261,7 @@ qf::core::sql::QueryBuilder competitorBaseQuery(int stage_id, int class_id)
     return qb;
 }
 
-QMap<int, int> RunsWidget::runCompetitorQuery(QString query)
+QMap<int, int> RunsWidget::runCompetitorQuery(const QString &query)
 {
     QMap<int, int> ret;
     qfs::Query q;
@@ -280,12 +280,11 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
 }
 
 
-QMap<int, int> RunsWidget::competitorsForClassCondition(int stage_id, int class_id, QString condition)
+QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_condition)
 {
         qfLogFuncFrame();
-        QMap<int, int> ret;
-        qf::core::sql::QueryBuilder qb = competitorBaseQuery(stage_id, class_id)
-                        .where(condition);
+		qf::core::sql::QueryBuilder qb = competitorBaseQuery(stage_id, class_id)
+						.where(extra_condition);
         return runCompetitorQuery(qb.toString());
 }
 
@@ -447,25 +446,25 @@ void RunsWidget::on_btDraw_clicked()
 				shuffle(runners_draw_ids);
 			}
             else if(draw_method == DrawMethod::GroupedC) {
-                QList<int> group1 = runsForClassCondition(stage_id, class_id, "licence='C' or licence is null");
-                QList<int> group2 = runsForClassCondition(stage_id, class_id, "licence='A' or licence='B'");
+				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "licence='A' or licence='B'");
                 shuffle(group1);
                 shuffle(group2);
                 runners_draw_ids = group1 + group2;
             }
             else if(draw_method == DrawMethod::GroupedCB) {
-                QList<int> group1 = runsForClassCondition(stage_id, class_id, "licence='C' or licence is null");
-                QList<int> group2 = runsForClassCondition(stage_id, class_id, "licence='B'");
-                QList<int> group3 = runsForClassCondition(stage_id, class_id, "licence='A' or licence='R' or licence='E'");
+				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "licence='B'");
+				QList<int> group3 = runsForClass(stage_id, class_id, "licence='A' or licence='R' or licence='E'");
                 shuffle(group1);
                 shuffle(group2);
                 shuffle(group3);
                 runners_draw_ids = group1 + group2 + group3;
             }
             else if(draw_method == DrawMethod::GroupedRanking) {
-                QList<int> group1 = runsForClassCondition(stage_id, class_id, "ranking>300 or ranking is null");
-                QList<int> group2 = runsForClassCondition(stage_id, class_id, "ranking>100 and ranking<=300");
-                QList<int> group3 = runsForClassCondition(stage_id, class_id, "ranking<=100");
+				QList<int> group1 = runsForClass(stage_id, class_id, "ranking>300 or ranking is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "ranking>100 and ranking<=300");
+				QList<int> group3 = runsForClass(stage_id, class_id, "ranking<=100");
                 shuffle(group1);
                 shuffle(group2);
                 shuffle(group3);

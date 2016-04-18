@@ -62,9 +62,9 @@ private:
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
 	QList<int> runsForClass(int stage_id, int class_id);
 	QMap<int, int> competitorsForClass(int stage_id, int class_id);
-    QList<int> runsForClassCondition(int stage_id, int class_id, QString condition);
-    QMap<int, int> competitorsForClassCondition(int stage_id, int class_id, QString condition);
-    QMap<int, int> runCompetitorQuery(QString query);
+	QList<int> runsForClass(int stage_id, int class_id, const QString &extra_condition);
+	QMap<int, int> competitorsForClass(int stage_id, int class_id, const QString &extra_condition);
+	QMap<int, int> runCompetitorQuery(const QString &query);
 
 	bool isLockedForDrawing(int class_id, int stage_id);
 	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked);
