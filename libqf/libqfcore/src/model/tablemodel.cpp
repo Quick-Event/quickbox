@@ -616,15 +616,14 @@ int TableModel::columnIndex(const QString &column_name) const
 		}
 		i++;
 	}
-	/*
-	if(throw_exc && ret < 0) {
+	if(ret < 0) {
 		QStringList sl;
-		foreach(ColumnDefinition cd, columns()) sl << cd.fieldName();
+		Q_FOREACH(const ColumnDefinition &cd, m_columns)
+			sl << cd.fieldName();
 		QString s = sl.join(", ");
 		QString msg = tr("Column named '%1' not found in column list. Existing columns: [%2]").arg(column_name).arg(s);
-		QF_EXCEPTION(msg);
+		qfError() << msg;
 	}
-	*/
 	return ret;
 }
 
