@@ -654,14 +654,19 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 	return ret;
 }
 
-void TableModel::clearColumns()
+void TableModel::clearColumns(int new_column_count)
 {
-	if(m_columns.isEmpty())
-		return;
-	beginRemoveColumns(QModelIndex(), 0, m_columns.count() - 1);
-	m_columns.clear();
+	if(m_columns.count()) {
+		beginRemoveColumns(QModelIndex(), 0, m_columns.count() - 1);
+		m_columns.clear();
+		endRemoveColumns();
+	}
+	if(new_column_count > 0) {
+		beginInsertColumns(QModelIndex(), 0, new_column_count - 1);
+		m_columns = ColumnList(new_column_count);
+		endInsertColumns();
+	}
 	m_autoColumns = false;
-	endRemoveColumns();
 }
 
 TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const QString &field_name, const QString &caption)

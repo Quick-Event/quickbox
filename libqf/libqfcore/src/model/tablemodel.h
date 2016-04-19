@@ -76,6 +76,10 @@ public:
 		ColumnDefinition(const QString &fldname) {
 			d = new Data(fldname);
 		}
+		ColumnDefinition(const QString &fldname, const QString &caption) {
+			d = new Data(fldname);
+			setCaption(caption);
+		}
 
 		QString fieldName() const {return d->fieldName;}
 		ColumnDefinition& setFieldName(const QString &s) {d->fieldName = s; return *this;}
@@ -115,11 +119,11 @@ public:
 
 		bool matchesSqlId(const QString column_name) const;
 	};
-	typedef QList<ColumnDefinition> ColumnList;
+	typedef QVector<ColumnDefinition> ColumnList;
 
 public:
 	void clearRows();
-	void clearColumns();
+	void clearColumns(int new_column_count = 0);
 	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString()) {
 		return insertColumn(m_columns.count(), field_name, caption);
 	}
