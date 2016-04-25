@@ -455,7 +455,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="394"/>
         <source>Class is locked for drawing.</source>
-        <translation>Kategorie je uzamklá pro losování.</translation>
+        <translation>Kategorie je uzamčena pro losování.</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="597"/>
