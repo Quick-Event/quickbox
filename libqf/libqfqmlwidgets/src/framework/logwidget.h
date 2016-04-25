@@ -55,9 +55,10 @@ public:
 	void clear();
 	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
 	qf::core::model::LogTableModel* logTableModel();
+
+	Q_SIGNAL void severityTresholdChanged(qf::core::Log::Level lvl);
+	void setSeverityTreshold(qf::core::Log::Level lvl);
 protected:
-	Q_SLOT void tresholdChanged(int index);
-	Q_SLOT void filterStringChanged(const QString &filter_string);
 	QAbstractButton* tableMenuButton();
 	QTableView* tableView() const;
 
@@ -68,9 +69,11 @@ protected:
 
 	virtual void onDockWidgetVisibleChanged(bool visible);
 	void onSliderReleased();
-private slots:
-	void on_btClearLog_clicked();
-	void on_btResizeColumns_clicked();
+private:
+	Q_SLOT void onSeverityTresholdChanged(int index);
+	Q_SLOT void filterStringChanged(const QString &filter_string);
+	Q_SLOT void on_btClearLog_clicked();
+	Q_SLOT void on_btResizeColumns_clicked();
 protected:
 	qf::core::model::LogTableModel* m_logTableModel = nullptr;
 	LogFilterProxyModel* m_filterModel = nullptr;
