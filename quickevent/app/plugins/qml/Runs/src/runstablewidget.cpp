@@ -143,21 +143,23 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	static int col_off_race = m_runsModel->columnIndex(QStringLiteral("runs.offRace"));
 	ui->tblRuns->horizontalHeader()->setSectionHidden(col_off_race, !show_offrace);
 
-	int sort_col_ix = m_runsModel->columnIndex(sort_column);
-	if(sort_col_ix >= 0) {
-		QHeaderView *hdrv = ui->tblRuns->horizontalHeader();
-		hdrv->setSortIndicator(sort_col_ix, Qt::AscendingOrder);
-		if(select_competitor_id > 0) {
-			for (int i = 0; i < m_runsModel->rowCount(); ++i) {
-				int competitor_id = m_runsModel->table().row(i).value(QStringLiteral("competitorId")).toInt();
-				if(competitor_id == select_competitor_id) {
-					QModelIndex ix = m_runsModel->index(i, sort_col_ix);
-					ix = ui->tblRuns->sortFilterProxyModel()->mapFromSource(ix);
-					ui->tblRuns->setCurrentIndex(ix);
-					//ui->tblRuns->selectionModel()->select(ix, QItemSelectionModel::ClearAndSelect);
-					QTimer::singleShot(0, [this, ix]() {
-						this->ui->tblRuns->scrollTo(ix);
-					});
+	if(!sort_column.isEmpty()) {
+		int sort_col_ix = m_runsModel->columnIndex(sort_column);
+		if(sort_col_ix >= 0) {
+			QHeaderView *hdrv = ui->tblRuns->horizontalHeader();
+			hdrv->setSortIndicator(sort_col_ix, Qt::AscendingOrder);
+			if(select_competitor_id > 0) {
+				for (int i = 0; i < m_runsModel->rowCount(); ++i) {
+					int competitor_id = m_runsModel->table().row(i).value(QStringLiteral("competitorId")).toInt();
+					if(competitor_id == select_competitor_id) {
+						QModelIndex ix = m_runsModel->index(i, sort_col_ix);
+						ix = ui->tblRuns->sortFilterProxyModel()->mapFromSource(ix);
+						ui->tblRuns->setCurrentIndex(ix);
+						//ui->tblRuns->selectionModel()->select(ix, QItemSelectionModel::ClearAndSelect);
+						QTimer::singleShot(0, [this, ix]() {
+							this->ui->tblRuns->scrollTo(ix);
+						});
+					}
 				}
 			}
 		}

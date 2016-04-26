@@ -27,7 +27,7 @@ QtObject {
 
 		reportModel.queryBuilder.clear()
 			.select2('classes', 'id, name')
-			.select2('classdefs', 'startTimeMin, startIntervalMin')
+			.select2('classdefs', 'startTimeMin, lastStartTimeMin, startIntervalMin')
 			.select2('courses', 'length, climb')
 			.from('classes')
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stageId}}")
@@ -58,6 +58,7 @@ QtObject {
 			var ttd = reportModel.toTreeTableData();
 			var tt2 = new TreeTable.Table(ttd);
 			var start_time_0 = tt.value(i, "startTimeMin") * 60 * 1000;
+			var start_time_last = tt.value(i, "lastStartTimeMin") * 60 * 1000;
 			var start_interval = tt.value(i, "startIntervalMin") * 60 * 1000;
 			if(start_interval > 0 && insert_vakants) {
 				for(var j=0; j<tt2.rowCount(); j++) {
@@ -75,6 +76,16 @@ QtObject {
 						j++;
 					}
 					start_time_0 += start_interval;
+				}
+				while(start_time_0 <= start_time_last) {
+					// insert vakants after
+					tt2.addRow();
+					tt2.setValue(j, "startTimeMs", start_time_0);
+					tt2.setValue(j, "competitorName", "---");
+					tt2.setValue(j, "registration", "");
+					tt2.setValue(j, "siId", 0);
+					start_time_0 += start_interval;
+					j++;
 				}
 			}
 			tt.addTable(i, ttd);
@@ -379,7 +390,7 @@ QtObject {
 		//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
 		var start00_epoch_sec = start00_datetime.getTime();
 
-		var tt1 = startListClassesTable("", false);
+		var tt1 = startListClassesTable("", true);
 
 		var xml_root = ['StartList' ,
 						{ "xmlns": "http://www.orienteering.org/datastandard/3.0",
