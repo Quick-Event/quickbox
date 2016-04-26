@@ -22,7 +22,6 @@ QtObject {
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = runsPlugin.selectedStageId;
-		//var stage_data = event_plugin.stageDataMap(stage_id);
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()

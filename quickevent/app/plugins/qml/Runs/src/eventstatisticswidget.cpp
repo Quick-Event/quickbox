@@ -44,6 +44,22 @@ class EventStatisticsModel : public quickevent::og::SqlTableModel
 {
 	typedef quickevent::og::SqlTableModel Super;
 public:
+	enum Cols {
+		col_classes_name,
+		col_mapCount,
+		col_freeMapCount,
+		col_runnersCount,
+		col_startFirstMs,
+		col_startLastMs,
+		col_time1Ms,
+		col_time3Ms,
+		col_timeToCloseMs,
+		col_runnersFinished,
+		col_runnersNotFinished,
+		col_resultsNotPrinted,
+		col_COUNT
+	};
+public:
 	EventStatisticsModel(QObject *parent);
 
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
@@ -53,17 +69,19 @@ public:
 EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	: Super(parent)
 {
-	addColumn("classes.name", tr("Class"));
-	addColumn("classdefs.mapCount", tr("Maps"));
-	addColumn("freeMapCount", tr("Free maps"));
-	addColumn("runnersCount", tr("Runners"));
-	addColumn("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	addColumn("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	addColumn("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	addColumn("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	addColumn("runnersFinished", tr("Finished"));
-	addColumn("runnersNotFinished", tr("Not finished"));
-	addColumn("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results."));
+	clearColumns(col_COUNT);
+	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
+	setColumn(col_mapCount, ColumnDefinition("classdefs.mapCount", tr("Maps")));
+	setColumn(col_freeMapCount, ColumnDefinition("freeMapCount", tr("Free maps")));
+	setColumn(col_runnersCount, ColumnDefinition("runnersCount", tr("Runners")));
+	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
+	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
+	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
 	{
 		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND NOT runs.offRace AND competitors.classId=classes.id");
 		qf::core::sql::QueryBuilder qb_runners_count;
@@ -114,6 +132,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.select("(" + qb_runners_start_last.toString() + ") AS startLastMs")
 				.select("(" + qb_first_time.toString() + ") AS time1Ms")
 				.select("(" + qb_third_time.toString() + ") AS time3Ms")
+				.select("0 AS timeToCloseMs")
 				.select("0 AS freeMapCount")
 				.select("0 AS runnersNotFinished")
 				.select("0 AS resultsNotPrinted")
@@ -129,23 +148,27 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 
 QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 {
-	static int col_map_count = columnIndex(QStringLiteral("classdefs.mapCount"));
-	static int col_free_map_count = columnIndex(QStringLiteral("freeMapCount"));
-	static int col_runners_count = columnIndex(QStringLiteral("runnersCount"));
-	static int col_runners_finished = columnIndex(QStringLiteral("runnersFinished"));
-	static int col_runners_not_finished = columnIndex(QStringLiteral("runnersNotFinished"));
-	static int col_results_not_printed = columnIndex(QStringLiteral("resultsNotPrinted"));
-	if(column_ix == col_free_map_count) {
-		int cnt = value(row_ix, col_map_count).toInt() - value(row_ix, col_runners_count).toInt();
+	if(column_ix == col_freeMapCount) {
+		int cnt = value(row_ix, col_mapCount).toInt() - value(row_ix, col_runnersCount).toInt();
 		return cnt;
 	}
-	else if(column_ix == col_runners_not_finished) {
-		int cnt = value(row_ix, col_runners_count).toInt() - value(row_ix, col_runners_finished).toInt();
+	if(column_ix == col_timeToCloseMs) {
+		int stage_start_msec = eventPlugin()->stageStart(eventPlugin()->currentStageId());
+		int curr_time_msec = QTime::currentTime().msecsSinceStartOfDay();
+		int start_last_msec = value(row_ix, col_startLastMs).toInt();
+		int time3_msec = value(row_ix, col_time3Ms).toInt();
+		int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
+		if(time_to_close_msec < 0)
+			time_to_close_msec = 0;
+		return time_to_close_msec;
+	}
+	else if(column_ix == col_runnersNotFinished) {
+		int cnt = value(row_ix, col_runnersCount).toInt() - value(row_ix, col_runnersFinished).toInt();
 		return cnt;
 	}
-	else if(column_ix == col_results_not_printed) {
+	else if(column_ix == col_resultsNotPrinted) {
 		int results_count = tableRow(row_ix).value(QStringLiteral("resultsCount")).toInt();
-		int cnt = value(row_ix, col_runners_finished).toInt() - results_count;
+		int cnt = value(row_ix, col_runnersFinished).toInt() - results_count;
 		return cnt;
 	}
 	return Super::value(row_ix, column_ix);
@@ -154,9 +177,8 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 QVariant EventStatisticsModel::data(const QModelIndex &index, int role) const
 {
 	int col = index.column();
-	static int col_free_map_count = columnIndex(QStringLiteral("freeMapCount"));
 	if(role == Qt::BackgroundRole) {
-		if(col == col_free_map_count) {
+		if(col == col_freeMapCount) {
 			int cnt = data(index, Qt::DisplayRole).toInt();
 			if(cnt < 0)
 				return QColor(Qt::red);
