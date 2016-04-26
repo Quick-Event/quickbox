@@ -17,7 +17,7 @@
         <location filename="src/connectdbdialogwidget.ui" line="53"/>
         <source>E&amp;vent ID</source>
         <oldsource>&amp;Event ID</oldsource>
-        <translation>ID závodu</translation>
+        <translation>ID &amp;závodu</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
@@ -52,7 +52,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="141"/>
         <source>Pa&amp;ssword</source>
-        <translation>Heslo</translation>
+        <translation>He&amp;slo</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="185"/>
@@ -62,7 +62,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="191"/>
         <source>Wor&amp;king directory</source>
-        <translation>Pracovní adresář</translation>
+        <translation>Pracovní &amp;adresář</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="203"/>
@@ -98,22 +98,22 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="162"/>
         <source>&amp;Connect to database</source>
-        <translation>Připojit k databázi</translation>
+        <translation>&amp;Připojit k databázi</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="166"/>
         <source>&amp;Open event</source>
-        <translation>Otevřít závod</translation>
+        <translation>&amp;Otevřít závod</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="171"/>
         <source>Create eve&amp;nt</source>
-        <translation>Vytvořit závod</translation>
+        <translation>&amp;Vytvořit závod</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="176"/>
         <source>E&amp;dit event</source>
-        <translation>Upravit závod</translation>
+        <translation>&amp;Upravit závod</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="183"/>
@@ -128,7 +128,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="200"/>
         <source>&amp;Event</source>
-        <translation>Závod</translation>
+        <translation>&amp;Závod</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="219"/>
@@ -143,7 +143,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="476"/>
         <source>Connect Database Error: %1</source>
-        <translation>Chyba připojování databáze: %1</translation>
+        <translation>Chyba při připojování k databázi: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="540"/>
@@ -246,12 +246,12 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprav etapu</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="20"/>
         <source>&amp;Date</source>
-        <translation>Datum</translation>
+        <translation>&amp;Datum</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="30"/>
@@ -261,7 +261,7 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="43"/>
         <source>&amp;Time</source>
-        <translation>Čas</translation>
+        <translation>Ča&amp;s</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.cpp" line="14"/>
@@ -289,17 +289,17 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="37"/>
         <source>&amp;Name</source>
-        <translation>Jméno</translation>
+        <translation>&amp;Jméno</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="50"/>
         <source>&amp;Stage count</source>
-        <translation>Počet etap</translation>
+        <translation>&amp;Počet etap</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="67"/>
         <source>&amp;Date</source>
-        <translation>Datum</translation>
+        <translation>&amp;Datum</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="77"/>
@@ -309,27 +309,27 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="87"/>
         <source>&amp;Place</source>
-        <translation>Místo</translation>
+        <translation>&amp;Místo</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="100"/>
         <source>Des&amp;cription</source>
-        <translation>Popis</translation>
+        <translation>P&amp;opis</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="113"/>
         <source>Main r&amp;eferee</source>
-        <translation>Hlavní rozhodčí</translation>
+        <translation>Hlavní &amp;rozhodčí</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="126"/>
         <source>D&amp;irector</source>
-        <translation>Ředitel</translation>
+        <translation>Ř&amp;editel</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="139"/>
         <source>&amp;Handicap length</source>
-        <translation>Délka hendikepu</translation>
+        <translation>Délka &amp;hendikepu</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="149"/>
@@ -339,7 +339,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="168"/>
         <source>Import ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovat ID</translation>
     </message>
 </context>
 </TS>

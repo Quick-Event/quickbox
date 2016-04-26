@@ -6,7 +6,7 @@
     <message>
         <location filename="src/Receipts/receiptsplugin.cpp" line="334"/>
         <source>Card</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip</translation>
     </message>
     <message>
         <location filename="src/Receipts/receiptsplugin.cpp" line="385"/>
@@ -85,7 +85,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="103"/>
         <source>\\.\LPT1</source>
-        <translation type="unfinished"></translation>
+        <translation>\\.\LPT1</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="117"/>
@@ -110,7 +110,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="165"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="175"/>
@@ -123,7 +123,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Mezičasy</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="40"/>
@@ -196,19 +196,19 @@
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="236"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="236"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="250"/>
         <location filename="qml/reports/receiptClassic.qml" line="262"/>
         <location filename="qml/reports/receiptClassic.qml" line="274"/>
         <source>-----</source>
-        <translation type="unfinished"></translation>
+        <translation>-----</translation>
     </message>
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="313"/>
@@ -221,22 +221,22 @@
     <message>
         <location filename="qml/reports/sicard.qml" line="63"/>
         <source>E</source>
-        <translation type="unfinished">E</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="83"/>
         <source>Unassigned card !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepřiřazený čip !!!</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="92"/>
         <source>It will not be included in the results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebude zahrnuto ve výsledcích.</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="185"/>
         <source>FI</source>
-        <translation type="unfinished"></translation>
+        <translation>FI</translation>
     </message>
 </context>
 </TS>

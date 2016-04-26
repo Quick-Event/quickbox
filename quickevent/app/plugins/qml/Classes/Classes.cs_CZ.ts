@@ -6,7 +6,7 @@
     <message>
         <location filename="src/Classes/classesplugin.cpp" line="185"/>
         <source>Cannot find id for code: %1</source>
-        <translation>Nelze najít ID pro kód:%1</translation>
+        <translation>Nelze najít ID pro kód: %1</translation>
     </message>
 </context>
 <context>
@@ -14,17 +14,17 @@
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>Get text</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadej text</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>New class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno nové kategorie:</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="44"/>
         <source>Realy delete all selected classes? This action cannot be undone!</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu smazat všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
     </message>
 </context>
 <context>
@@ -32,7 +32,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="36"/>
@@ -42,7 +42,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="70"/>
         <source>Codes</source>
-        <translation>Kódy</translation>
+        <translation>Kontroly</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="91"/>
@@ -57,12 +57,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="121"/>
         <source>DL</source>
-        <translation type="unfinished"></translation>
+        <translation>LU</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="121"/>
         <source>Locked for drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Losování uzamčeno</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="122"/>
@@ -107,12 +107,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Last</source>
-        <translation type="unfinished"></translation>
+        <translation>Poslední</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Start time of last competitor in class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní čas posledního závodníka v kategorii.</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="128"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="129"/>
         <source>Maps</source>
-        <translation>Map</translation>
+        <translation>Mapy</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
@@ -152,17 +152,17 @@
     <message>
         <location filename="src/classeswidget.cpp" line="152"/>
         <source>Code</source>
-        <translation>Kód</translation>
+        <translation>Kontrola</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="153"/>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhradní</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="153"/>
         <source>Code alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhradní kontrola</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="154"/>
@@ -177,7 +177,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="211"/>
         <source>Stage </source>
-        <translation>Etapa</translation>
+        <translation>Etapa </translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="245"/>
@@ -198,7 +198,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="340"/>
         <source>Delete all courses definitions for stage %1?</source>
-        <translation>Vymazat všechny traťe pro etapu %1?</translation>
+        <translation>Vymazat všechny definice tratí pro etapu %1?</translation>
     </message>
 </context>
 <context>
@@ -206,42 +206,42 @@
     <message>
         <location filename="src/editcodeswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Úprava kontrol</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="27"/>
         <source>Code</source>
-        <translation type="unfinished">Kód</translation>
+        <translation>Kontrola</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
         <source>Alt</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhradní</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
         <source>Code alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhradní kontrola</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="29"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Poznámka</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="30"/>
         <source>O</source>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="30"/>
         <source>Out of order</source>
-        <translation type="unfinished">Mimo provoz</translation>
+        <translation>Mimo provoz</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="31"/>
         <source>Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Rádio</translation>
     </message>
 </context>
 <context>
@@ -249,48 +249,48 @@
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravit kontroly pro kategorii</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="20"/>
         <source>Course codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontroly kategorie</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="78"/>
         <source>Move selected codes up</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout vybrané kontroly nahoru</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="89"/>
         <source>Move selected codes down</source>
-        <translation type="unfinished"></translation>
+        <translation>Posunout vybrané kontroly dolů</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="150"/>
         <source>Add selected codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat vybrané kontroly</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="161"/>
         <source>Remove selected codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Odebrat vybrané kontroly</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="188"/>
         <source>All codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Všechny kontroly</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.cpp" line="56"/>
         <location filename="src/editcoursecodeswidget.cpp" line="108"/>
         <source>Code</source>
-        <translation type="unfinished">Kód</translation>
+        <translation>Kontrola</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.cpp" line="98"/>
         <source>Save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit změny?</translation>
     </message>
 </context>
 <context>
@@ -298,47 +298,47 @@
     <message>
         <location filename="src/editcourseswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Úprava kategorií</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.ui" line="39"/>
         <source>Courses</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="34"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="35"/>
         <source>Length</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="36"/>
         <source>Climb</source>
-        <translation type="unfinished">Převýšení</translation>
+        <translation>Převýšení</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="37"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Poznámka</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="38"/>
         <source>Cnt</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="38"/>
         <source>Codes count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet kontrol</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="39"/>
         <source>Codes</source>
-        <translation type="unfinished">Kódy</translation>
+        <translation>Kontroly</translation>
     </message>
 </context>
 <context>
