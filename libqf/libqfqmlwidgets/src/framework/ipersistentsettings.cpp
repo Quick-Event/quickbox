@@ -71,7 +71,6 @@ QString IPersistentSettings::persistentSettingsPathPrefix()
 
 void IPersistentSettings::setPersistentSettingsPathPrefix(const QString &prefix)
 {
-	qfWarning() << this << "m_persistentSettingsPathPrefix <-" << prefix;
 	m_persistentSettingsPathPrefix = prefix;
 }
 
