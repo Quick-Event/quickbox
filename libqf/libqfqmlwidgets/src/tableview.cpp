@@ -42,6 +42,8 @@
 #include <QPainter>
 #include <QToolButton>
 
+#define QF_TIMESCOPE_ENABLED
+#include <qf/core/utils/timescope.h>
 
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
@@ -581,6 +583,7 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 				conn = sql_m->sqlConnection();
 			}
 		}
+		QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
 		qfc::sql::Transaction transaction(conn);
 		foreach(int row_ix, selected_row_indexes) {
 			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
