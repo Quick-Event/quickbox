@@ -238,7 +238,15 @@ bool CompetitorWidget::saveData()
 		transaction.commit();
 	}
 	catch (qf::core::Exception &e) {
-		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		QString what = e.message();
+		if(what.contains(QLatin1String("runs.stageId")) && what.contains(QLatin1String("runs.siId"))) {
+			// "UNIQUE constraint failed: runs.stageId, runs.siId Unable to fetch row"
+			// duplicate SI insertion attempt
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Duplicate SI inserted."));
+		}
+		else {
+			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		}
 		doc->restoreEditState(edit_state);
 	}
 	return ret;

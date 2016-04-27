@@ -391,7 +391,7 @@ void TableView::removeSelectedRows()
 	}
 }
 
-bool TableView::postRow(int row_no)
+bool TableView::postRowImpl(int row_no)
 {
 	qfLogFuncFrame() << row_no;
 	if(row_no < 0)
@@ -399,13 +399,21 @@ bool TableView::postRow(int row_no)
 	if(row_no < 0)
 		return false;
 	bool ret = false;
+	qfc::model::TableModel *m = tableModel();
+	if(m) {
+		ret = m->postRow(toTableModelRowNo(row_no), true);
+		if(ret)
+			updateRow(row_no);
+	}
+	return ret;
+}
+
+bool TableView::postRow(int row_no)
+{
+	qfLogFuncFrame() << row_no;
+	bool ret = false;
 	try {
-		qfc::model::TableModel *m = tableModel();
-		if(m) {
-			ret = m->postRow(toTableModelRowNo(row_no), true);
-			if(ret)
-				updateRow(row_no);
-		}
+		ret = postRowImpl(row_no);
 	}
 	catch(qfc::Exception &e) {
 		emit sqlException(e.message(), e.where(), e.stackTrace());

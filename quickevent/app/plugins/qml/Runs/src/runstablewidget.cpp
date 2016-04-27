@@ -31,7 +31,27 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
+/*
+class RunsTableView : public qf::qmlwidgets::TableView
+{
+private:
+	using Super = qf::qmlwidgets::TableView;
+public:
+	explicit TableView(QWidget *parent = nullptr) : Super(parent) {}
 
+	bool postRowImpl(int row_no = -1) Q_DECL_OVERRIDE;
+};
+
+bool RunsTableView::postRow(int row_no)
+{
+	try {
+		return Super::postRow(row_no);
+	}
+	catch (qf::core::Exception &e) {
+
+	}
+}
+*/
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::RunsTableWidget)
@@ -40,6 +60,8 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 
 	ui->tblRunsToolBar->setTableView(ui->tblRuns);
 
+	ui->tblRuns->setShowExceptionDialog(false);
+	connect(ui->tblRuns, &qf::qmlwidgets::TableView::sqlException, this, &RunsTableWidget::onTableViewSqlException, Qt::QueuedConnection);
 	ui->tblRuns->setInsertRowEnabled(false);
 	ui->tblRuns->setRemoveRowEnabled(false);
 	ui->tblRuns->setCloneRowEnabled(false);
@@ -237,4 +259,16 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		}
 	}
 }
+
+void RunsTableWidget::onTableViewSqlException(const QString &what, const QString &where, const QString &stack_trace)
+{
+	if(what.contains(QLatin1String("runs.stageId")) && what.contains(QLatin1String("runs.siId"))) {
+		// "UNIQUE constraint failed: runs.stageId, runs.siId Unable to fetch row"
+		// duplicate SI insertion attempt
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Duplicate SI inserted."));
+		return;
+	}
+	qf::qmlwidgets::dialogs::MessageBox::showException(this, what, where, stack_trace);
+}
+
 

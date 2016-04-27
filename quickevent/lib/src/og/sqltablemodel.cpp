@@ -85,6 +85,6 @@ QVariant SqlTableModel::editValueToRaw(int column_index, const QVariant &val) co
 		else
 			ret = id;
 	}
-	qfInfo() << val << ret;
+	//qfInfo() << val << ret;
 	return ret;
 }
