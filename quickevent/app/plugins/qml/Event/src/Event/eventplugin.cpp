@@ -162,6 +162,8 @@ int EventPlugin::currentStageStartMsec()
 StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;
+	if(stage_id == 0)
+		return ret;
 	if(!m_stageCache.contains(stage_id)) {
 		Event::StageDocument doc;
 		doc.load(stage_id);

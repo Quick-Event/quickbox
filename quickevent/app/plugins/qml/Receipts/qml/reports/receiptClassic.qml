@@ -270,8 +270,8 @@ Report {
 					text: {
 						var msec = dc.data(dc.currentIndex, "lossMs");
 						if(msec > 0)
-							return OGTime.msecToString_mmss(msec);
-						return qsTr("-----");
+							return "+" + OGTime.msecToString_mmss(msec);
+						return "";
 					}
 				}
 			}

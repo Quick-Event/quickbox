@@ -372,9 +372,11 @@ EventStatisticsWidget::~EventStatisticsWidget()
 
 void EventStatisticsWidget::reloadLater()
 {
-	QTimer *tm = reloadLaterTimer();
-	if(!tm->isActive())
-		tm->start();
+	if(ui->chkAutoRefresh->isChecked()) {
+		QTimer *tm = reloadLaterTimer();
+		if(!tm->isActive())
+			tm->start();
+	}
 }
 
 void EventStatisticsWidget::reload()
