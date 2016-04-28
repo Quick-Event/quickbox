@@ -31,27 +31,7 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
-/*
-class RunsTableView : public qf::qmlwidgets::TableView
-{
-private:
-	using Super = qf::qmlwidgets::TableView;
-public:
-	explicit TableView(QWidget *parent = nullptr) : Super(parent) {}
 
-	bool postRowImpl(int row_no = -1) Q_DECL_OVERRIDE;
-};
-
-bool RunsTableView::postRow(int row_no)
-{
-	try {
-		return Super::postRow(row_no);
-	}
-	catch (qf::core::Exception &e) {
-
-	}
-}
-*/
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::RunsTableWidget)

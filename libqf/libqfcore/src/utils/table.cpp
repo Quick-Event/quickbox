@@ -764,9 +764,11 @@ TableRow Table::row(int ri) const
 	if(!isValidRowIndex(ri)) {
 		qfDebug() << "invalid row";
 	}
-	QF_ASSERT(isValidRowIndex(ri),
-			  QString("row: %1 is out of range of rows (%2)").arg(ri).arg(d->rows.size()),
-			  return ret);
+	if(!isValidRowIndex(ri)) {
+			auto msg = QString("row: %1 is out of range of row count (%2)").arg(ri).arg(d->rows.size());
+			qfError() << msg;
+			return ret;
+	}
 	ret = rows().value(rowNumberToRowIndex(ri));
 	return ret;
 }

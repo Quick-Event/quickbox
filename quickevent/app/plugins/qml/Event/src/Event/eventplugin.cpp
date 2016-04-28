@@ -165,6 +165,10 @@ StageData EventPlugin::stageData(int stage_id)
 	if(!m_stageCache.contains(stage_id)) {
 		Event::StageDocument doc;
 		doc.load(stage_id);
+		if(doc.isEmpty()) {
+			qfError() << "Cannot provide stage data for invalid stage id:" << stage_id;
+			return ret;
+		}
 		StageData s(&doc);
 		m_stageCache[stage_id] = s;
 	}
@@ -535,7 +539,6 @@ static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines
 bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &event_params)
 {
 	qfLogFuncFrame();
-	closeEvent();
 
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	EventPlugin::ConnectionType connection_type = connectionType();
@@ -569,8 +572,10 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		break;
 	} while(true);
 
-	bool ok = false;
+	closeEvent();
+
 	Event::EventConfig event_config;
+	bool ok = false;
 	//ConnectionSettings connection_settings;
 	event_config.setValue("event", new_params);
 	int stage_count = event_params.value("stageCount").toInt();
