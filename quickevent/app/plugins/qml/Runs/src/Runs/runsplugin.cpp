@@ -40,6 +40,14 @@ static Event::EventPlugin* eventPlugin()
 	return plugin;
 }
 
+static qf::qmlwidgets::framework::Plugin* competitorsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = fwk->plugin("Competitors");
+	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
+	return plugin;
+}
+
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -52,9 +60,9 @@ RunsPlugin::~RunsPlugin()
 		m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
 }
 
-const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
+const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
 {
-	if(m_runsTableStageId != stage_id) {
+	if(m_runnersTableCacheStageId != stage_id) {
 		qfs::QueryBuilder qb;
 		qb.select2("competitors", "registration")
 				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -68,21 +76,27 @@ const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
 		qf::core::model::SqlTableModel m;
 		m.setQueryBuilder(qb);
 		m.reload();
-		m_runsTable = m.table();
+		m_runnersTableCache = m.table();
 
 		auto c_nsk = QStringLiteral("competitorNameAscii7");
-		m_runsTable.appendColumn(c_nsk, QVariant::String);
-		int ix_nsk = m_runsTable.fields().fieldIndex(c_nsk);
-		int ix_cname = m_runsTable.fields().fieldIndex(QStringLiteral("competitorName"));
-		for (int i = 0; i < m_runsTable.rowCount(); ++i) {
-			qf::core::utils::TableRow &row_ref = m_runsTable.rowRef(i);
+		m_runnersTableCache.appendColumn(c_nsk, QVariant::String);
+		int ix_nsk = m_runnersTableCache.fields().fieldIndex(c_nsk);
+		int ix_cname = m_runnersTableCache.fields().fieldIndex(QStringLiteral("competitorName"));
+		for (int i = 0; i < m_runnersTableCache.rowCount(); ++i) {
+			qf::core::utils::TableRow &row_ref = m_runnersTableCache.rowRef(i);
 			QString nsk = row_ref.value(ix_cname).toString();
 			nsk = QString::fromLatin1(qf::core::Collator::toAscii7(QLocale::Czech, nsk, true));
 			row_ref.setValue(ix_nsk, nsk);
 		}
-		m_runsTableStageId = stage_id;
+		m_runnersTableCacheStageId = stage_id;
 	}
-	return m_runsTable;
+	return m_runnersTableCache;
+}
+
+void RunsPlugin::clearRunnersTableCache()
+{
+	//qfInfo() << QF_FUNC_NAME;
+	m_runnersTableCacheStageId = 0;
 }
 
 void RunsPlugin::onInstalled()
@@ -94,6 +108,7 @@ void RunsPlugin::onInstalled()
 		qfInfo() << stage_id;
 		this->setSelectedStageId(stage_id);
 	});
+	connect(competitorsPlugin(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 

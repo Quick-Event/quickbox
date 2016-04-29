@@ -4,6 +4,7 @@
 #include "thispartwidget.h"
 
 #include "Competitors/competitordocument.h"
+#include "Competitors/competitorsplugin.h"
 
 #include "Event/eventplugin.h"
 
@@ -30,9 +31,17 @@ namespace qfm = qf::core::model;
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
 	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return qobject_cast<Event::EventPlugin*>(plugin);
+	return plugin;
+}
+
+static Competitors::CompetitorsPlugin* competitorsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
+	return plugin;
 }
 
 CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
@@ -149,6 +158,7 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 		doc->setValue("competitors.classId", class_id);
 	}
 	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
+	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
 	//connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	/*
 	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {

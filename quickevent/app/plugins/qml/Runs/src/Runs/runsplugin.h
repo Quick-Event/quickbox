@@ -44,7 +44,8 @@ public:
 
 	Q_SIGNAL void nativeInstalled();
 
-	const qf::core::utils::Table& runsTable(int stage_id);
+	const qf::core::utils::Table& runnersTable(int stage_id);
+	Q_SLOT void clearRunnersTableCache();
 
 	Q_INVOKABLE int courseForRun(int run_id);
 	Q_INVOKABLE int cardForRun(int run_id);
@@ -60,8 +61,8 @@ private:
 	int courseForRun_Classic(int run_id);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
-	qf::core::utils::Table m_runsTable;
-	int m_runsTableStageId = 0;
+	qf::core::utils::Table m_runnersTableCache;
+	int m_runnersTableCacheStageId = 0;
 	qf::qmlwidgets::framework::DockWidget *m_eventStatisticsDockWidget = nullptr;
 };
 

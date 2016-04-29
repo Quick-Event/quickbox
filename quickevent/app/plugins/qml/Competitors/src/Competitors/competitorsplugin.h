@@ -41,6 +41,8 @@ public:
 
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 
+	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
+
 	Q_SIGNAL void nativeInstalled();
 	qf::core::model::SqlTableModel* registrationsModel();
 	const qf::core::utils::Table& registrationsTable();
