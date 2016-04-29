@@ -52,6 +52,7 @@ Oris {
 		//console.warn("Oris installed");
 		var act_import_oris = FrameWork.menuBar.actionForPath('file/import/oris');
 		act_import_oris.text = qsTr("&Oris");
+		act_import_oris.enabled = false;
 		act_import_oris.addActionInto(actImportEventOris);
 		act_import_oris.addActionInto(actSyncCurrentEventEntries);
 		act_import_oris.addSeparatorInto();
@@ -61,6 +62,11 @@ Oris {
 		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
 		//quit.addSeparatorBefore();
 		//FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
+
+		var refreshActions = function(is_db_open) {
+			act_import_oris.enabled = is_db_open;
+		}
+		FrameWork.plugin("Event").dbOpenChanged.connect(refreshActions);
 	}
 
 }
