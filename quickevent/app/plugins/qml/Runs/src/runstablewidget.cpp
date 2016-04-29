@@ -66,8 +66,10 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	m->addColumn("competitors.siId", tr("SI"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg"));
-	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
-	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+    m->addColumn("licence", tr("Lic")).setToolTip(tr("Licence"));
+    m->addColumn("ranking", tr("Rank")).setToolTip(tr("Ranking"));
+    m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
+    m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setToolTip(tr("Start time. Colors: red = duplicate, lime = same clubs together, green = vacant space before"));
 	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
@@ -124,7 +126,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	qfLogFuncFrame();
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "registration, siId, note")
+            .select2("competitors", "registration, licence, ranking, siId, note")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")

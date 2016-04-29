@@ -47,7 +47,10 @@ RunsWidget::RunsWidget(QWidget *parent) :
 
 	ui->cbxDrawMethod->addItem(tr("Randomized equidistant clubs"), static_cast<int>(DrawMethod::RandomizedEquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Random number"), static_cast<int>(DrawMethod::RandomNumber));
-	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
+    ui->cbxDrawMethod->addItem(tr("Grouped: C, B+A"), static_cast<int>(DrawMethod::GroupedC));
+    ui->cbxDrawMethod->addItem(tr("Grouped: C, B, A+E+R"), static_cast<int>(DrawMethod::GroupedCB));
+    ui->cbxDrawMethod->addItem(tr("Grouped by ranking"), static_cast<int>(DrawMethod::GroupedRanking));
+    ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Stage 1 reverse order"), static_cast<int>(DrawMethod::StageReverseOrder));
 	ui->cbxDrawMethod->addItem(tr("Handicap"), static_cast<int>(DrawMethod::Handicap));
 	ui->frmDrawing->setVisible(false);
@@ -249,21 +252,48 @@ QList<int> RunsWidget::runsForClass(int stage_id, int class_id)
 	return ret;
 }
 
+QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &extra_condition)
+{
+        qfLogFuncFrame();
+		QList<int> ret = competitorsForClass(stage_id, class_id, extra_condition).values();
+        return ret;
+}
+
+qf::core::sql::QueryBuilder competitorBaseQuery(int stage_id, int class_id)
+{
+    qf::core::sql::QueryBuilder qb;
+    qb.select2("runs", "id, competitorId")
+            .from("competitors")
+            .joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id), "JOIN")
+            .where("competitors.classId=" QF_IARG(class_id));
+    return qb;
+}
+
+QMap<int, int> RunsWidget::runCompetitorQuery(const QString &query)
+{
+    QMap<int, int> ret;
+    qfs::Query q;
+    q.exec(query, qf::core::Exception::Throw);
+    while(q.next()) {
+        ret[q.value("competitorId").toInt()] = q.value("id").toInt();
+    }
+    return ret;
+}
+
 QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
 {
 	qfLogFuncFrame();
-	QMap<int, int> ret;
-	qf::core::sql::QueryBuilder qb;
-	qb.select2("runs", "id, competitorId")
-			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id), "JOIN")
-			.where("competitors.classId=" QF_IARG(class_id));
-	qfs::Query q;
-	q.exec(qb.toString(), qf::core::Exception::Throw);
-	while(q.next()) {
-		ret[q.value("competitorId").toInt()] = q.value("id").toInt();
-	}
-	return ret;
+    qf::core::sql::QueryBuilder qb = competitorBaseQuery(stage_id, class_id);
+    return runCompetitorQuery(qb.toString());
+}
+
+
+QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_condition)
+{
+        qfLogFuncFrame();
+		qf::core::sql::QueryBuilder qb = competitorBaseQuery(stage_id, class_id)
+						.where(extra_condition);
+        return runCompetitorQuery(qb.toString());
 }
 
 void RunsWidget::import_start_times_ob2000()
@@ -425,7 +455,32 @@ void RunsWidget::on_btDraw_clicked()
 				runners_draw_ids = runsForClass(stage_id, class_id);
 				shuffle(runners_draw_ids);
 			}
-			else if(draw_method == DrawMethod::Handicap) {
+            else if(draw_method == DrawMethod::GroupedC) {
+				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "licence='A' or licence='B'");
+                shuffle(group1);
+                shuffle(group2);
+                runners_draw_ids = group1 + group2;
+            }
+            else if(draw_method == DrawMethod::GroupedCB) {
+				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "licence='B'");
+				QList<int> group3 = runsForClass(stage_id, class_id, "licence='A' or licence='R' or licence='E'");
+                shuffle(group1);
+                shuffle(group2);
+                shuffle(group3);
+                runners_draw_ids = group1 + group2 + group3;
+            }
+            else if(draw_method == DrawMethod::GroupedRanking) {
+				QList<int> group1 = runsForClass(stage_id, class_id, "ranking>300 or ranking is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "ranking>100 and ranking<=300");
+				QList<int> group3 = runsForClass(stage_id, class_id, "ranking<=100");
+                shuffle(group1);
+                shuffle(group2);
+                shuffle(group3);
+                runners_draw_ids = group1 + group2 + group3;
+            }
+            else if(draw_method == DrawMethod::Handicap) {
 				int stage_count = eventPlugin()->eventConfig()->stageCount();
 				qf::core::utils::Table results = runsPlugin()->nstagesResultsTable(stage_count - 1, class_id);
 				QMap<int, int> competitor_to_run = competitorsForClass(stage_count, class_id);
