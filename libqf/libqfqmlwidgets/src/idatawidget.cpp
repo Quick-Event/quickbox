@@ -19,6 +19,8 @@ IDataWidget::~IDataWidget()
 
 void IDataWidget::loadDataValue(DataController *dc)
 {
+	if(dataId().isEmpty())
+		return;
 	if(dc != m_dataController)
 		m_dataController = dc;
 	qfm::DataDocument *doc = dataDocument(false);

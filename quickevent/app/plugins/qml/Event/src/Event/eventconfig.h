@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QVariantMap>
 #include <QSet>
+#include <QDateTime>
 
 namespace Event {
 
@@ -32,10 +33,9 @@ public slots:
 	int handicapLength() const;
 	QString director() const;
 	QString mainReferee() const;
-	//QString eventName() const;
-	//void setEventName(const QString &n);
+	QDateTime eventDateTime() const;
+	int dbVersion() const;
 private:
-	//static const QSet<QString>& knownKeys();
 	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
 	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);
 private:

@@ -32,8 +32,9 @@ Schema {
 		Table { name: 'stages'
 			fields: [
 				Field { name: 'id'; type: Int {} },
-				Field { name: 'startTime'; type: Time {} },
-				Field { name: 'startDate'; type: Date {} },
+				Field { name: 'startDateTime'; type: DateTime {} },
+				//Field { name: 'startTime'; type: Time {} },
+				//Field { name: 'startDate'; type: Date {} },
 				Field { name: 'drawingConfig'; type: String {} }
 			]
 			indexes: [
@@ -374,7 +375,7 @@ Schema {
 		Insert {
 			table: config
 			rows: [
-				['db.version', qsTr('Data version'), '10004', 'int']
+				['db.version', qsTr('Data version'), '{{minDbVersion}}', 'int']
 				/*
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],

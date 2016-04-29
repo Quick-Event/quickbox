@@ -15,11 +15,14 @@ class StageWidget : public qf::qmlwidgets::framework::DataDialogWidget
 {
 	Q_OBJECT
 private:
-	typedef qf::qmlwidgets::framework::DataDialogWidget Super;
+	using Super = qf::qmlwidgets::framework::DataDialogWidget;
 public:
 	explicit StageWidget(QWidget *parent = 0);
 	~StageWidget();
 
+	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;
+protected:
+	bool saveData() Q_DECL_OVERRIDE;
 private:
 	Ui::StageWidget *ui;
 };

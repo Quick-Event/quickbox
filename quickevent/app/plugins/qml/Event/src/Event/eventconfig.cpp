@@ -184,6 +184,26 @@ QString EventConfig::mainReferee() const
 {
 	return value(QStringLiteral("event.mainReferee")).toString();
 }
+
+QDateTime EventConfig::eventDateTime() const
+{
+	QDateTime dt;
+	QVariant v = value(QStringLiteral("event.dateTime"));
+	if(v.isValid()) {
+		dt = v.toDateTime();
+	}
+	else {
+		QVariant v = value(QStringLiteral("event.date"));
+		dt.setDate(v.toDate());
+		dt = dt.addSecs(10 * 60 * 60); // start at 10:00 if not specified
+	}
+	return dt;
+}
+
+int EventConfig::dbVersion() const
+{
+	return value(QStringLiteral("db.version")).toInt();
+}
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {

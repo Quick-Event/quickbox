@@ -13,10 +13,24 @@ StageData::StageData(const QVariantMap &data)
 
 Event::StageData::StageData(const Event::StageDocument *doc)
 {
-	for(auto s : {"id", "startTime", "startDate"}) {
-		insert(s, doc->value(s));
+	const auto START_DATE_TIME = QStringLiteral("startDateTime");
+	const auto ID = QStringLiteral("id");
+	insert(ID, doc->value(ID));
+	QDateTime dt = doc->value(ID).toDateTime();
+	/*
+	if(doc->isValidFieldName(START_DATE_TIME)) {
+		dt = doc->value(ID).toDateTime();
 	}
-	QByteArray ba = doc->value("drawingConfig").toString().toUtf8();
+	else {
+		// for compatibility with old DB versions
+		QDate d = doc->value(QStringLiteral("startDate")).toDate();
+		QTime t = doc->value(QStringLiteral("startTime")).toTime();
+		dt.setDate(d);
+		dt.setTime(t);
+	}
+	*/
+	insert(START_DATE_TIME, dt);
+	QByteArray ba = doc->value(QStringLiteral("drawingConfig")).toString().toUtf8();
 	QJsonDocument jsd = QJsonDocument::fromJson(ba);
-	insert("drawingConfig", jsd.object().toVariantMap());
+	insert(QStringLiteral("drawingConfig"), jsd.object().toVariantMap());
 }

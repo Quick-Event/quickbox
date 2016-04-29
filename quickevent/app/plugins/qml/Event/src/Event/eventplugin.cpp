@@ -126,31 +126,25 @@ int EventPlugin::currentStageId()
 
 int EventPlugin::stageStart(int stage_id)
 {
-	Event::StageData stage_data = stageData(stage_id);
-	QTime start_time = stage_data.startTime();
+	QTime start_time = stageStartTime(stage_id);
 	int ret = start_time.msecsSinceStartOfDay();
 	return ret;
 }
 
 QDate EventPlugin::stageStartDate(int stage_id)
 {
-	Event::StageData stage_data = stageData(stage_id);
-	return stage_data.startDate();
+	return stageStartDateTime(stage_id).date();
 }
 
 QTime EventPlugin::stageStartTime(int stage_id)
 {
-	Event::StageData stage_data = stageData(stage_id);
-	return stage_data.startTime();
+	return stageStartDateTime(stage_id).time();
 }
 
 QDateTime EventPlugin::stageStartDateTime(int stage_id)
 {
 	Event::StageData stage_data = stageData(stage_id);
-	QTime t = stage_data.startTime();
-	QDate d = stage_data.startDate();
-	QDateTime dt(d, t);
-	//qfInfo() << stage_id << d << t << dt;
+	QDateTime dt = stage_data.startDateTime();
 	return dt;
 }
 /*
@@ -355,6 +349,11 @@ DbSchema EventPlugin::dbSchema()
 	return DbSchema(this);
 }
 
+int EventPlugin::minDbVersion()
+{
+	return 10005;
+}
+
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
 {
 	qfLogFuncFrame() << "name:" << name << "source:" << source << "payload:" << payload;
@@ -381,6 +380,23 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 		else {
 			//qfDebug() << "self db notify";
 		}
+	}
+}
+
+void EventPlugin::repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn)
+{
+	qfs::Query to_q(to_conn);
+	qfs::Query from_q(from_conn);
+	from_q.exec("SELECT * FROM stages ORDER BY id");
+	while(from_q.next()) {
+		int ix = from_q.fieldIndex(QStringLiteral("startDate"));
+		if(ix < 0)
+			break;
+		QDate d = from_q.value(ix).toDate();
+		QTime t = from_q.value("startTime").toTime();
+		QDateTime dt(d, t);
+		int id = from_q.value("id").toInt();
+		to_q.exec("UPDATE stages SET startDateTime=" QF_SARG(dt.toString(Qt::ISODate)) " WHERE id=" QF_IARG(id));
 	}
 }
 
@@ -522,12 +538,15 @@ void EventPlugin::connectToSqlServer()
 static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines)
 {
 	qfLogFuncFrame();
+	QVariantMap replacements;
+	replacements["minDbVersion"] = EventPlugin::minDbVersion();
 	for(auto cmd : sql_lines) {
 		if(cmd.isEmpty())
 			continue;
 		if(cmd.startsWith(QLatin1String("--")))
 			continue;
 		qfDebug() << cmd << ';';
+		cmd = qf::core::Utils::replaceCaptions(cmd, replacements);
 		bool ok = q.exec(cmd);
 		if(!ok) {
 			qfInfo() << cmd;
@@ -617,13 +636,16 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 			QString stage_table_name = "stages";
 			if(connection_type == ConnectionType::SqlServer)
 				stage_table_name = event_id + '.' + stage_table_name;
-			q.prepare("INSERT INTO " + stage_table_name + " (id) VALUES (:id)");
+			QDateTime start_dt = event_config.eventDateTime();
+			q.prepare("INSERT INTO " + stage_table_name + " (id) VALUES (:id, :startDateTime)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":id", i+1);
+				q.bindValue(":startDateTime", start_dt);
 				ok = q.exec();
 				if(!ok) {
 					break;
 				}
+				start_dt = start_dt.addDays(1);
 			}
 			if(!ok)
 				break;
@@ -756,7 +778,18 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
-		eventConfig(true);
+		EventConfig *evc = eventConfig(true);
+		if(evc->dbVersion() < minDbVersion()) {
+			qfd::MessageBox::showError(fwk, tr("Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.")
+									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion()))
+									   .arg(qf::core::Utils::intToVersionString(minDbVersion())));
+			closeEvent();
+			return false;
+		}
+		if(evc->dbVersion() > minDbVersion()) {
+			qfd::MessageBox::showError(fwk, tr("Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.")
+									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion())));
+		}
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);
 		emit eventOpened(eventName());
@@ -990,6 +1023,9 @@ void EventPlugin::importEvent_qbe()
 			err_str = copy_sql_table(table_name, rec, imp_conn, exp_conn);
 			if(!err_str.isEmpty())
 				break;
+			if(table_name == QLatin1String("stages")) {
+				repairStageStarts(imp_conn, exp_conn);
+			}
 		}
 		if(!err_str.isEmpty())
 			break;

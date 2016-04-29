@@ -176,6 +176,8 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 
 QVariant EventStatisticsModel::data(const QModelIndex &index, int role) const
 {
+	if(eventPlugin()->eventName().isEmpty())
+		return QVariant();
 	int col = index.column();
 	if(role == Qt::BackgroundRole) {
 		if(col == col_freeMapCount) {
