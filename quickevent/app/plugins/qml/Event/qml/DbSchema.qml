@@ -351,7 +351,7 @@ Schema {
 					comment: 'We cannot take stageId from runId linked table, because we need select punches for stage even without runId assigned'
 				},
 				Field { name: 'runId'; type: Int {} },
-				Field { name: 'timeMs'; type: Int {}
+				Field { name: 'punchTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				}
 			]

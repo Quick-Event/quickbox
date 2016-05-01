@@ -114,7 +114,6 @@ void CompetitorsWidget::reset()
 		m_competitorsModel->clearRows();
 		return;
 	}
-	reload();
 	{
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);

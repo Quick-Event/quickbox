@@ -1,4 +1,5 @@
-#include "speaker.h"
+#include "speakerplugin.h"
+#include "../thispartwidget.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -11,20 +12,21 @@
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
-Speaker::Speaker(QObject *parent)
+namespace Speaker {
+
+SpeakerPlugin::SpeakerPlugin(QObject *parent)
 	: Super(parent), qf::qmlwidgets::framework::IPersistentSettings(this)
 {
-	setPersistentSettingsId("Speaker");
-	connect(this, &Speaker::installed, this, &Speaker::onInstalled, Qt::QueuedConnection);
+	setPersistentSettingsId("SpeakerPlugin");
+	connect(this, &SpeakerPlugin::installed, this, &SpeakerPlugin::onInstalled, Qt::QueuedConnection);
 }
 
-void Speaker::onInstalled()
+void SpeakerPlugin::onInstalled()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto *a = new qfw::Action("Vacuum Database");
-	fwk->menuBar()->actionForPath("tools")->addActionInto(a);
-	//connect(a, &qfw::Action::triggered, this, &Speaker::doDbVacuum);
+	m_partWidget = new ThisPartWidget();
+	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 }
 
 }

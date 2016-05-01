@@ -10,7 +10,7 @@ SUBDIRS += \
 	Runs \
 	CardReader \
 	Receipts \
-	#Speaker \
+	Speaker \
 	Oris \
 	ExamplePureQml \
 	ExampleCppQml \

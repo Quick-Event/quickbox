@@ -1,3 +1,3 @@
-module ExampleCppQmlPlugin
+module Speaker
 
-plugin ExampleCppQmlPluginplugin ..
+plugin Speakerplugin ..
