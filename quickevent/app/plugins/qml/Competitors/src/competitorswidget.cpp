@@ -110,7 +110,7 @@ void CompetitorsWidget::lazyInit()
 
 void CompetitorsWidget::reset()
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		m_competitorsModel->clearRows();
 		return;
 	}

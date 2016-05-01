@@ -251,7 +251,7 @@ void ClassesWidget::reset()
 
 void ClassesWidget::reload()
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		m_classesModel->clearRows();
 		m_courseCodesModel->clearRows();
 		return;

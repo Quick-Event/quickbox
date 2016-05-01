@@ -3,6 +3,8 @@
 #include "competitordocument.h"
 #include "../registrationswidget.h"
 
+#include <Event/eventplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/action.h>
@@ -10,6 +12,7 @@
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QQmlEngine>
 
@@ -19,6 +22,14 @@ namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 
 namespace Competitors {
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super(parent)
@@ -60,6 +71,10 @@ void CompetitorsPlugin::onInstalled()
 		a->setShortcut(QKeySequence("ctrl+shift+R"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
+
+	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, this, &CompetitorsPlugin::reloadRegistrationsModel);
+	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &CompetitorsPlugin::onDbEventNotify);
+
 	emit nativeInstalled();
 }
 
@@ -67,14 +82,31 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 {
 	if(on && !m_registrationsDockWidget->widget()) {
 		auto *rw = new RegistrationsWidget();
-		qff::MainWindow *fwk = qff::MainWindow::frameWork();
-		connect(fwk->plugin("Event"), SIGNAL(dbEventNotify(QString, QVariant)), rw, SLOT(onDbEvent(QString, QVariant)));
 		m_registrationsDockWidget->setWidget(rw);
-		rw->reload();
+		rw->checkModel();
+		//if(eventPlugin()->isDbOpen())
+		//	rw->reload();
 		//m_registrationsDockWidget->loadPersistentSettingsRecursively();
 	}
 }
 
+void CompetitorsPlugin::onDbEventNotify(const QString &domain, const QVariant &payload)
+{
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	if(domain == QLatin1String("Oris.registrationImported"))
+		reloadRegistrationsModel();
+}
+
+void CompetitorsPlugin::reloadRegistrationsModel()
+{
+	qfLogFuncFrame() << "isEventOpen():" << eventPlugin()->isEventOpen();
+	if(eventPlugin()->isEventOpen())
+		registrationsModel()->reload();
+	else
+		registrationsModel()->clearRows();
+	// clear registration table to be regenerated when registrationsTable() will be called
+	m_registrationsTable = qf::core::utils::Table();
+}
 
 qf::core::model::SqlTableModel* CompetitorsPlugin::registrationsModel()
 {
@@ -92,9 +124,6 @@ qf::core::model::SqlTableModel* CompetitorsPlugin::registrationsModel()
 				.from("registrations")
 				.orderBy("lastName, firstName");
 		m_registrationsModel->setQueryBuilder(qb);
-		m_registrationsModel->reload();
-		// clear registration table to be regenerated when registrationsTable() will be called
-		m_registrationsTable = qf::core::utils::Table();
 	}
 	return m_registrationsModel;
 }
@@ -102,7 +131,7 @@ qf::core::model::SqlTableModel* CompetitorsPlugin::registrationsModel()
 const qf::core::utils::Table &CompetitorsPlugin::registrationsTable()
 {
 	qf::core::model::SqlTableModel *m = registrationsModel();
-	if(m_registrationsTable.isNull()) {
+	if(m_registrationsTable.isNull() && !m->table().isNull()) {
 		m_registrationsTable = m->table();
 		auto c_nsk = QStringLiteral("competitorNameAscii7");
 		m_registrationsTable.appendColumn(c_nsk, QVariant::String);

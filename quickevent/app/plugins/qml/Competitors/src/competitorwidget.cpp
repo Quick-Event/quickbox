@@ -228,7 +228,11 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 
 bool CompetitorWidget::saveData()
 {
-	qf::core::model::DataDocument *doc = dataController()->document();
+	qf::core::model::DataDocument *doc = dataDocument();
+	if(doc->value(QStringLiteral("classId")).toInt() == 0) {
+		qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
+		return false;
+	}
 	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
 	bool ret = false;
 	try {

@@ -31,6 +31,11 @@ void MessageBox::showError(QWidget *parent, const QString &message)
 	QMessageBox::critical(parent, tr("Error"), message);
 }
 
+void MessageBox::showWarning(QWidget *parent, const QString &message)
+{
+	QMessageBox::warning(parent, tr("Warning"), message);
+}
+
 void MessageBox::showInfo(QWidget *parent, const QString &message)
 {
 	QMessageBox::information(parent, tr("Information"), message);

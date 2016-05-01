@@ -66,7 +66,7 @@ void RunsWidget::lazyInit()
 
 void RunsWidget::reset(int class_id)
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		ui->wRunsTableWidget->clear();
 		return;
 	}

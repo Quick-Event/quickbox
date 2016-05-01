@@ -227,7 +227,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 
 void CardReaderWidget::reset()
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		m_cardsModel->clearRows();
 		return;
 	}

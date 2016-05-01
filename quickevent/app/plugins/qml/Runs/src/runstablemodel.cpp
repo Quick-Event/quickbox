@@ -1,6 +1,7 @@
 #include "runstablemodel.h"
 
 #include <quickevent/og/timems.h>
+#include <quickevent/og/siid.h>
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
@@ -11,6 +12,25 @@
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
 {
+	clearColumns(col_COUNT);
+	setColumn(col_runs_offRace, ColumnDefinition("runs.offRace", tr("Off race")));
+	setColumn(col_runs_id, ColumnDefinition("runs.id").setReadOnly(true));
+	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
+	setColumn(col_competitors_siId, ColumnDefinition("competitors.siId", tr("SI")));
+	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
+	setColumn(col_registration, ColumnDefinition("registration", tr("Reg")));
+	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>()));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
+	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L")).setToolTip(tr("Card lent")));
+	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
+	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
+	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
+	setColumn(col_competitors_note, ColumnDefinition("competitors.note", tr("Note")));
+
+	connect(this, &RunsTableModel::dataChanged, this, &RunsTableModel::onDataChanged, Qt::QueuedConnection);
 }
 
 QVariant RunsTableModel::data(const QModelIndex &index, int role) const
@@ -197,6 +217,13 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 		}
 	}
 	emit startTimesSwitched(id1, id2, err_msg);
+}
+
+void RunsTableModel::onDataChanged(const QModelIndex &top_left, const QModelIndex &bottom_right, const QVector<int> &roles)
+{
+	Q_UNUSED(roles)
+	if(top_left.column() <= RunsTableModel::col_runs_siId && bottom_right.column() >= RunsTableModel::col_runs_siId)
+		emit runnerSiIdEdited();
 }
 
 bool RunsTableModel::postRow(int row_no, bool throw_exc)

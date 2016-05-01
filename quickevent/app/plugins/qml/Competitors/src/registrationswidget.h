@@ -23,8 +23,7 @@ public:
 	explicit RegistrationsWidget(QWidget *parent = 0);
 	~RegistrationsWidget();
 
-	void reload();
-	Q_SLOT void onDbEvent(const QString &domain, const QVariant &payload);
+	void checkModel();
 
 	//void setFocusToWidget(FocusWidget fw);
 	qf::qmlwidgets::TableView* tableView();

@@ -78,6 +78,9 @@ EventPlugin::EventPlugin(QObject *parent)
 {
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::saveCurrentStageId);
+	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
+		setEventOpen(!event_name.isEmpty());
+	});
 }
 
 void EventPlugin::initEventConfig()

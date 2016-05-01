@@ -21,6 +21,7 @@ public:
 	static void showException(QWidget *parent, const QString &what, const QString &where, const QString &stack_trace);
 	static void showException(QWidget *parent, const qf::core::Exception &exc);
 	static void showError(QWidget *parent, const QString &message);
+	static void showWarning(QWidget *parent, const QString &message);
 	static void showInfo(QWidget *parent, const QString &message);
 	static bool askYesNo(QWidget *parent, const QString & msg, bool default_ret = true);
 };

@@ -37,6 +37,7 @@ class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Pl
 	Q_PROPERTY(int currentStageId READ currentStageId NOTIFY currentStageIdChanged)
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
+	Q_PROPERTY(bool eventOpen READ isEventOpen NOTIFY eventOpenChanged)
 	Q_PROPERTY(bool dbOpen READ isDbOpen NOTIFY dbOpenChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
@@ -44,6 +45,7 @@ public:
 	enum class ConnectionType : int {SqlServer = 0, SingleFile};
 	EventPlugin(QObject *parent = nullptr);
 
+	QF_PROPERTY_BOOL_IMPL(e, E, ventOpen)
 	QF_PROPERTY_IMPL(QString, e, E, ventName)
 
 	static const char *DBEVENT_NOTIFY_NAME;

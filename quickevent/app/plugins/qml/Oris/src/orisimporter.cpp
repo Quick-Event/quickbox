@@ -512,7 +512,6 @@ void OrisImporter::importRegistrations()
 			}
 			transaction.commit();
 			fwk->hideProgress();
-			//fwk->plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
 			QMetaObject::invokeMethod(fwk->plugin("Event"), "emitDbEvent", Qt::QueuedConnection
 									  , Q_ARG(QString, "Oris.registrationImported")
 									  , Q_ARG(QVariant, QVariant())

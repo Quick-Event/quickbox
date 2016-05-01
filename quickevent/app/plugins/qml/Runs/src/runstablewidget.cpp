@@ -4,6 +4,8 @@
 #include "runstableitemdelegate.h"
 #include "Runs/runsplugin.h"
 
+#include <Event/eventplugin.h>
+
 #include <quickevent/og/siid.h>
 #include <quickevent/og/timems.h>
 
@@ -31,7 +33,15 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
-
+/*
+static Event::EventPlugin *eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT(plugin != nullptr, "Event plugin not installed!", return nullptr);
+	return plugin;
+}
+*/
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::RunsTableWidget)
@@ -60,29 +70,9 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &RunsTableWidget::onCustomContextMenuRequest);
 
 	auto m = new RunsTableModel(this);
-	m->addColumn("runs.offRace", tr("Off race"));
-	m->addColumn("runs.id").setReadOnly(true);
-	m->addColumn("classes.name", tr("Class"));
-	m->addColumn("competitors.siId", tr("SI"));
-	m->addColumn("competitorName", tr("Name"));
-	m->addColumn("registration", tr("Reg"));
-	m->addColumn("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>());
-	m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing"));
-	m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent"));
-	m->addColumn("runs.cardReturned", tr("R")).setToolTip(tr("Card returned"));
-	m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
-	m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
-	m->addColumn("competitors.note", tr("Note"));
-	/*
-	qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
-	status_props.setGroupName("runs.status");
-	m->addColumn("runs.status", tr("Status")).setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
-	*/
 	ui->tblRuns->setTableModel(m);
 	m_runsModel = m;
+	connect(m_runsModel, &RunsTableModel::runnerSiIdEdited, runsPlugin(), &Runs::RunsPlugin::clearRunnersTableCache);
 
 	// this ensures that table is sorted every time when start time is edited
 	ui->tblRuns->sortFilterProxyModel()->setDynamicSortFilter(true);
@@ -142,8 +132,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
 
-	static int col_off_race = m_runsModel->columnIndex(QStringLiteral("runs.offRace"));
-	ui->tblRuns->horizontalHeader()->setSectionHidden(col_off_race, !show_offrace);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_offRace, !show_offrace);
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);

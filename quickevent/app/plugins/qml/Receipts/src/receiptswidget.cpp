@@ -111,7 +111,7 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 
 void ReceiptsWidget::reset()
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		m_cardsModel->clearRows();
 		return;
 	}
