@@ -119,7 +119,7 @@ QtObject {
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
 			.join("competitors.classId", "classes.id")
 			.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
-			.orderBy('runs.startTimeMs, classes.name');
+			.orderBy('classes.name, runs.startTimeMs');
 		for(var i=0; i<tt.rowCount(); i++) {
 			var club_abbr = tt.value(i, "clubAbbr");
 			console.debug("club_abbr:", club_abbr);
@@ -254,7 +254,7 @@ QtObject {
 	{
 		Log.info("runs printResultsCurrentStage triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
-		dlg.persistentSettingsId = "startListReportOptions";
+		dlg.persistentSettingsId = "startListClassesReportOptions";
 		//dlg.dialogType = RunsPlugin.StartListReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
@@ -262,7 +262,7 @@ QtObject {
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_classes.qml"
 										   , tt.data()
 										   , qsTr("Start list by clases")
-										   , "printCurrentStage"
+										   , "printStartList"
 										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
 										   );
 		}
@@ -282,8 +282,19 @@ QtObject {
 	function printStartListClubs()
 	{
 		Log.info("runs printStartListClubs triggered");
-		var tt = startListClubsTable();
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_clubs.qml", tt.data(), qsTr("Start list by clubs"));
+		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "startListClubsReportOptions";
+		dlg.classFilterVisible = false;
+		if(dlg.exec()) {
+			var tt = startListClubsTable();
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_clubs.qml"
+										   , tt.data()
+										   , qsTr("Start list by clubs")
+										   , "printStartList"
+										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
+										   );
+		}
+		dlg.destroy();
 	}
 
 	function printStartListStarters()

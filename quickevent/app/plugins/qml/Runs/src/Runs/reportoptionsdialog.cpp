@@ -10,6 +10,7 @@
 #include <qf/core/assert.h>
 
 #include <QSettings>
+#include <QTimer>
 
 namespace Runs {
 
@@ -85,6 +86,9 @@ QString ReportOptionsDialog::sqlWhereExpression() const
 int ReportOptionsDialog::exec()
 {
 	loadPersistentSettings();
+	QTimer::singleShot(0, [this]() {
+		ui->grpClassFilter->setVisible(isClassFilterVisible());
+	});
 	int result = Super::exec();
 	if(result == QDialog::Accepted)
 		savePersistentSettings();
