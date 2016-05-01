@@ -21,7 +21,7 @@ static Competitors::CompetitorsPlugin* thisPlugin()
 	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
 	return plugin;
 }
-
+/*
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -29,7 +29,7 @@ static Event::EventPlugin* eventPlugin()
 	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
 	return plugin;
 }
-
+*/
 RegistrationsWidget::RegistrationsWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::RegistrationsWidget)

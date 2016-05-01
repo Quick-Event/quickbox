@@ -1,10 +1,10 @@
 message(including $$PWD)
 
 HEADERS += \
-    $$PWD/examplecppqmlplugin.h \
+    $$PWD/speaker.h \
 
 SOURCES += \
 	$$PWD/plugin.cpp \
-    $$PWD/examplecppqmlplugin.cpp \
+    $$PWD/speaker.cpp \
 
 FORMS += \

@@ -1,6 +1,6 @@
 message(including plugin $$PWD)
 
-PLUGIN_NAME = ExampleCppQmlPlugin
+PLUGIN_NAME = ExampleCppQml
 
 include ( ../quickeventqmlplugin.pri )
 

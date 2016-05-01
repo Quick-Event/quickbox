@@ -1,4 +1,4 @@
-#include "examplecppqmlplugin.h"
+#include "examplecppqml.h"
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -11,23 +11,23 @@
 namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 
-ExampleCppQmlPlugin::ExampleCppQmlPlugin(QObject *parent)
+ExampleCppQml::ExampleCppQml(QObject *parent)
 	: Super(parent), qf::qmlwidgets::framework::IPersistentSettings(this)
 {
-	setPersistentSettingsId("ExampleCppQmlPlugin");
-	connect(this, &ExampleCppQmlPlugin::installed, this, &ExampleCppQmlPlugin::onInstalled, Qt::QueuedConnection);
+	setPersistentSettingsId("ExampleCppQml");
+	connect(this, &ExampleCppQml::installed, this, &ExampleCppQml::onInstalled, Qt::QueuedConnection);
 }
 
-void ExampleCppQmlPlugin::onInstalled()
+void ExampleCppQml::onInstalled()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	auto *a = new qfw::Action("Vacuum Database");
 	fwk->menuBar()->actionForPath("tools")->addActionInto(a);
-	connect(a, &qfw::Action::triggered, this, &ExampleCppQmlPlugin::doDbVacuum);
+	connect(a, &qfw::Action::triggered, this, &ExampleCppQml::doDbVacuum);
 }
 
-void ExampleCppQmlPlugin::doDbVacuum()
+void ExampleCppQml::doDbVacuum()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	if(!qfw::dialogs::MessageBox::askYesNo(fwk, tr("Process VACUUM on current event database?")))
