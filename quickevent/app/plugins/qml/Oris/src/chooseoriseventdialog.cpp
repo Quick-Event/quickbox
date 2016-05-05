@@ -4,12 +4,14 @@
 #include "orisimporter.h"
 
 #include <qf/core/utils.h>
+#include <qf/core/log.h>
 
 #include <QDate>
 #include <QUrl>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QCompleter>
+#include <QLineEdit>
 
 ChooseOrisEventDialog::ChooseOrisEventDialog(OrisImporter *importer, QWidget *parent)
 	: QDialog(parent)
@@ -37,6 +39,9 @@ int ChooseOrisEventDialog::eventId()
 
 void ChooseOrisEventDialog::load()
 {
+	ui->cbxOrisEvent->lineEdit()->setPlaceholderText(tr("Loading event list from Oris ..."));
+	ui->cbxOrisEvent->clear();
+	//QCoreApplication::processEvents();
 	QDate d = QDate::currentDate();
 	d = d.addMonths(-1);
 	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&all=1&datefrom=" + d.toString(Qt::ISODate));
@@ -58,14 +63,23 @@ void ChooseOrisEventDialog::load()
 										+ " " + org1.value(QStringLiteral("Abbr")).toString()
 										+ " " + event.value(QStringLiteral("Name")).toString();
 			//qfInfo() << event_description;
-			ui->cbxOrisEvent->addItem(event_description, event_id);
 			events_by_descr[event_description] = event_id;
 		}
+		QMapIterator<QString, int> it(events_by_descr);
+		while(it.hasNext()) {
+			it.next();
+			ui->cbxOrisEvent->addItem(it.key(), it.value());
+		}
 		QF_SAFE_DELETE(m_completer);
-		m_completer = new QCompleter(events_by_descr.keys(), this);
+		m_completer = new QCompleter(ui->cbxOrisEvent->model(), this);
 		m_completer->setFilterMode(Qt::MatchContains);
-		//ui->edOrisEvent->setCompleter(m_completer);
+		m_completer->setCaseSensitivity(Qt::CaseInsensitive);
 		ui->cbxOrisEvent->setCompleter(m_completer);
+
+		ui->cbxOrisEvent->lineEdit()->setPlaceholderText(tr("Search in events ..."));
+		//ui->cbxOrisEvent->lineEdit()->selectAll();
+		ui->cbxOrisEvent->lineEdit()->clear();
+		ui->edEventId->setValue(0);
 	});
 }
 
