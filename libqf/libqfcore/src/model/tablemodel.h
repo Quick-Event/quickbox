@@ -34,14 +34,6 @@ public:
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
 	{
-	public:
-		class QFCORE_DECL_EXPORT DbEnumCastProperties : public QVariantMap
-		{
-			QF_VARIANTMAP_FIELD(QString, g, setG, roupName)
-			//QF_VARIANTMAP_FIELD2(QString, c, setC, aptionFormat, QStringLiteral("{{caption}}"))
-			public:
-				DbEnumCastProperties(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
-		};
 	private:
 		class SharedDummyHelper {};
 		class Data : public QSharedData
@@ -55,7 +47,7 @@ public:
 			bool isReadOnly = false;
 			bool isVirtual = false;
 			Qt::Alignment alignment;
-			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
+			QString format; //!< format for date, time, ... types
 			int castType;
 			QVariantMap castProperties;
 
@@ -204,6 +196,7 @@ public:
 	int columnIndex(const QString &column_name) const;
 	int columnType(int column_index) const;
 
+	static QColor contrastTextColor(const QColor &background_color);
 protected:
 	virtual void checkColumns();
 	void createColumnsFromTableFields();

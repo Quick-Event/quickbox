@@ -215,6 +215,10 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		//ret = data(index, Qt::DisplayRole);
 		//qfInfo() << ret.toString();
 	}
+	else if(role == ColumnDefinitionRole) {
+		ColumnDefinition cd = m_columns.value(index.column());
+		ret = QVariant::fromValue(cd);
+	}
 	return ret;
 }
 
@@ -591,6 +595,11 @@ int TableModel::columnType(int column_index) const
 	}
 	//qfInfo() << cd.fieldName() << ret;
 	return ret;
+}
+
+QColor TableModel::contrastTextColor(const QColor &background_color)
+{
+	return (qGray(background_color.rgb()) < 128)? QColor(Qt::white) : QColor(Qt::black);
 }
 
 QVariant TableModel::rawValueToEdit(int column_index, const QVariant &val) const

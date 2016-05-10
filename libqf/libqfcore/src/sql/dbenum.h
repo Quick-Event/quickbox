@@ -11,6 +11,7 @@
 
 #include <QVariant>
 #include <QMap>
+#include <QVector>
 
 namespace qf {
 namespace core {
@@ -21,7 +22,7 @@ class Query;
 class QFCORE_DECL_EXPORT DbEnum
 {
 public:
-	enum FieldIndexes {FieldId = 0, FieldGroupName, FieldGroupId, FieldPos, FieldAbbreviation, FieldValue, FieldCaption, FieldUserText, FieldGrants, LastFieldIndex};
+	enum FieldIndexes {FieldId = 0, FieldGroupName, FieldGroupId, FieldPos, FieldAbbreviation, FieldValue, FieldCaption, FieldColor, FieldGrants, LastFieldIndex};
 public:
 	DbEnum() {}
 	DbEnum(const Query &q);
@@ -40,8 +41,9 @@ public:
 	QString caption() const;
 	//QString localizedCaption() const;
 	void setCaption(const QString &s) {setValue(FieldCaption, s);}
-	QString userText() const {return m_values.value(FieldUserText).toString();}
-	void setUserText(const QString &s) {setValue(FieldUserText, s);}
+	QColor color() const;
+	void setColor(const QString &s);
+	void setColor(const QColor &c);
 	bool isValid() const {return !m_values.isEmpty();}
 	QString grants() const {return m_values.value(FieldGrants).toString();}
 	QString fillInPlaceholders(const QString &text_with_placeholders) const;
@@ -50,7 +52,7 @@ public:
 private:
 	void setValue(FieldIndexes ix, const QVariant &val);
 private:
-	QVariantList m_values;
+	QVector<QVariant> m_values;
 	static QMap<QString, int> s_fieldMapping;
 };
 
