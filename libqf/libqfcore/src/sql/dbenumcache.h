@@ -33,7 +33,7 @@ public:
 	//bool isValid() const {return !m_connectionName.isEmpty();}
 	QString connectionName() const;
 
-	static QSharedPointer<DbEnumCache> instanceForConnection(const QString &connection_name = QString());
+	static DbEnumCache &instanceForConnection(const QString &connection_name = QString());
 
 	EnumList dbEnumsForGroup(const QString &group_name);
 	DbEnum dbEnum(const QString &group_name, const QString &group_id);

@@ -34,8 +34,8 @@ QWidget *SqlTableItemDelegate::createEditor(QWidget *parent, const QStyleOptionV
 		auto m = qobject_cast<const qf::core::model::SqlTableModel*>(view()->tableModel());
 		if(m) {
 			qf::core::model::SqlTableModel::DbEnumCastProperties props(cd.castProperties());
-			QSharedPointer<qf::core::sql::DbEnumCache> db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(m->connectionName());
-			Q_FOREACH(auto dbe, db_enum_cache->dbEnumsForGroup(props.groupName())) {
+			qf::core::sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(m->connectionName());
+			Q_FOREACH(auto dbe, db_enum_cache.dbEnumsForGroup(props.groupName())) {
 				QString cap = dbe.fillInPlaceholders(props.captionFormat());
 				editor->addItem(cap, dbe.groupId());
 				QColor c = dbe.color();

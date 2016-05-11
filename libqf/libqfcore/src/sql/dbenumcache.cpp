@@ -15,7 +15,7 @@ using namespace qf::core::sql;
 
 namespace {
 
-QMap< QString, QSharedPointer<DbEnumCache> > instances;
+std::map< QString, DbEnumCache > instances;
 
 }
 
@@ -84,14 +84,13 @@ void DbEnumCache::ensure(const QString & group_name)
 		reload(group_name);
 }
 
-QSharedPointer<DbEnumCache> DbEnumCache::instanceForConnection(const QString &connection_name)
+DbEnumCache& DbEnumCache::instanceForConnection(const QString &connection_name)
 {
 	QString cn = connection_name;
 	if(cn.isEmpty())
 		cn = QSqlDatabase::defaultConnection;
-	if(!instances.contains(cn)) {
-		QSharedPointer<DbEnumCache> p(new DbEnumCache(cn));
-		instances[cn] = p;
+	if(instances.count(cn) == 0) {
+		instances[cn] = DbEnumCache(cn);
 	}
 	return instances[cn];
 }

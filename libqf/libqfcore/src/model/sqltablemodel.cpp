@@ -41,9 +41,9 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 			QString group_name = props.groupName();
 			if(!group_name.isEmpty()) {
 				QVariant v = data(index, Qt::EditRole);
-				QSharedPointer<sql::DbEnumCache> db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
+				sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
 				QString group_id = v.toString();
-				sql::DbEnum dbe = db_enum_cache->dbEnum(group_name, group_id);
+				sql::DbEnum dbe = db_enum_cache.dbEnum(group_name, group_id);
 				QString caption_format = props.captionFormat();
 				QString caption = dbe.fillInPlaceholders(caption_format);
 				return caption;
@@ -60,8 +60,8 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 				QVariant v = data(index, Qt::EditRole);
 				QString group_id = v.toString();
 				if(!group_id.isEmpty()) {
-					QSharedPointer<sql::DbEnumCache> db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
-					sql::DbEnum dbe = db_enum_cache->dbEnum(group_name, group_id);
+					sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
+					sql::DbEnum dbe = db_enum_cache.dbEnum(group_name, group_id);
 					QColor color = dbe.color();
 					if(color.isValid())
 						return color;
