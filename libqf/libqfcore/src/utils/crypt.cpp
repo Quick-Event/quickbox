@@ -59,15 +59,19 @@ QByteArray Crypt::encrypt(const QByteArray &data, int min_length) const
 
 	/// a tou se to zaxoruje
 	for(int i=0; i<data.count(); i++) {
-		val = m_generator(val);
 		b = ((quint8)data[i]);
+		if(b == 0)
+			break;
+		val = m_generator(val);
 		b = b ^ (quint8)val;
 		dest += code_byte(b);
 	}
+	quint8 bb = 0;
 	while(dest.size() < min_length) {
 		val = m_generator(val);
-		b = 0 ^ (quint8)val;
+		b = bb ^ (quint8)val;
 		dest += code_byte(b);
+		bb = (quint8)qrand();
 	}
 	return dest;
 }
@@ -117,15 +121,11 @@ QByteArray Crypt::decrypt(const QByteArray &data) const
 	ba.replace(' ', "");
 	ba = decodeArray(ba);
 	///odstran \0 na konci, byly tam asi umele pridany
-	int pos = ba.size();
-	while(pos > 0) {
-		pos--;
-		if(ba[pos] == '\0') {
-		}
-		else {
-			pos++;
+	int pos = 0;
+	while(pos < ba.size()) {
+		if(ba[pos] == '\0')
 			break;
-		}
+		pos++;
 	}
 	ba = ba.mid(0, pos);
 	return ba;
