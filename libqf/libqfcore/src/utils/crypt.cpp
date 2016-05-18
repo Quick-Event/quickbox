@@ -11,16 +11,21 @@ using namespace qf::core::utils;
 //===================================================================
 /// http://www.math.utah.edu/~pa/Random/Random.html
 Crypt::Crypt(Crypt::Generator gen)
+	: m_generator(gen)
 {
-	m_generator = gen;
-	if(m_generator == NULL)
+	if(m_generator == nullptr)
 		m_generator = Crypt::createGenerator(16811, 7, 2147483647);
 }
 
-Crypt::Generator Crypt::createGenerator(unsigned a, unsigned b, unsigned max_rand)
+Crypt::Generator Crypt::createGenerator(quint32 a, quint32 b, quint32 max_rand)
 {
-	auto ret = [=](unsigned val) {
-		return (a * val + b) % max_rand;
+	auto ret = [a, b, max_rand](quint32 val) -> quint32 {
+		quint64 ret = val;
+		ret *= a;
+		ret += b;
+		ret %= max_rand;
+		//qfWarning() << '(' << a << '*' << val << '+' << b << ") %" << max_rand << "---->" << ret;
+		return ret;
 	};
 	return ret;
 }

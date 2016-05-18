@@ -13,11 +13,11 @@ namespace utils {
 class QFCORE_DECL_EXPORT Crypt
 {
 public:
-	typedef std::function< unsigned (unsigned) > Generator;
+	typedef std::function< quint32 (quint32) > Generator;
 public:
-	Crypt(Generator gen = NULL);
+	Crypt(Generator gen = nullptr);
 public:
-	static Generator createGenerator(unsigned a, unsigned b, unsigned max_rand);
+	static Generator createGenerator(quint32 a, quint32 b, quint32 max_rand);
 
 	/// any of function, functor or lambda can be set as a random number generator
 	void setGenerator(Generator gen) {m_generator = gen;}

@@ -14,10 +14,14 @@ class Crypt:
 
 	@staticmethod
 	def _generator_for_params(params):
-		to_uint32 = Crypt._to_uint32
+		#print "PARMS:::::::::::::", params
+		a = params['a']
+		c = params['c']
+		max_rnd = params['max_rnd']
 		def gen(val):
-			n = to_uint32(to_uint32(params.a*val) + params.c) % params.max_rnd;
-			return to_uint32(n);
+			ret = (a * val + c) % max_rnd
+			#print '(', a, "*", val, '+', c, ') %', max_rnd, '--->', ret
+			return ret;
 		return gen
 
 	@staticmethod # http://www.geocities.com/foetsch/python/new_style_classes.htm
@@ -51,7 +55,7 @@ class Crypt:
 		else:
 			self.generator = Crypt._defaultGenerator
 
-	def crypt(self, s, min_length = 16):
+	def encrypt(self, s, min_length = 16):
 		#sys.stderr.write("crypting: %s\n" % s)
 		if type(s) == unicode: src = s.encode('utf-8')
 		else: src = str(s)
@@ -79,16 +83,17 @@ class Crypt:
 	@staticmethod
 	def _getByte(arr, pos):
 		c = arr[pos]
-		pos += 1
+		#print pos, "get:", c
 		b = ord(c)
+		pos += 1
 		if (c >= 'A' and c <= 'Z') or (c >= 'a' and c <= 'z'):
 			pass
 		else:
-			b1 = b - ord('0')
-			b = b1
+			b = b - ord('0')
 			c = arr[pos]
+			#print pos, "get:", c
 			pos += 1
-			b1 = 10 * (ord(c) - (ord('A') if (b1 % 2) else ord('a')))
+			b1 = 10 * (ord(c) - (ord('A') if (b % 2) else ord('a')))
 			b += b1
 		return (b % 256, pos)
 
@@ -102,10 +107,11 @@ class Crypt:
 		if len(s) > 0:
 			(b, pos) = Crypt._getByte(s, pos)
 			val = b;
-			#print hex(b), b, chr(b)
+			#print val, hex(val)
 			while pos < len(s):
 				val = self.generator(val)
 				(b, pos) = Crypt._getByte(s, pos)
+				#print hex(b), b, chr(b), "val:", (val % 256)
 				b = b ^ (val % 256)
 				c = chr(b)
 				#print hex(b), b, c
@@ -167,7 +173,7 @@ EXAMPLES:
 		if not coefs:
 			coefs = o_generator.split(';')
 		if coefs:
-			generator_coefs = {a:coefs[0], c:coefs[1], max_rnd:coefs[2]}
+			generator_coefs = {'a':int(coefs[0], 0), 'c':int(coefs[1], 0), 'max_rnd':int(coefs[2], 0)}
 
 	if src == '-':
 		src = sys.stdin.read()
@@ -176,5 +182,5 @@ EXAMPLES:
 	if o_direction == 'd':
 		print c.decrypt(src)
 	else:
-		print c.crypt(src)
+		print c.encrypt(src)
 
