@@ -12,6 +12,7 @@ Schema {
 				Field { name: 'groupId'; type: String {} },
 				Field { name: 'pos'; type: Int {} },
 				Field { name: 'caption'; type: String {} },
+				Field { name: 'color'; type: String {} },
 				Field { name: 'value'; type: String {} }
 			]
 			indexes: [
