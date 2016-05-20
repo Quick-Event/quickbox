@@ -1865,7 +1865,15 @@ void TableView::copySpecial_helper(const QString &fields_separator, const QStrin
 				for(int col=sel1.left(); col<=sel1.right(); col++) {
 					QModelIndex ix = m->index(row, col);
 					QString s;
-					s = ix.data(Qt::DisplayRole).toString();
+					if(!ix.data(qf::core::model::TableModel::ValueIsNullRole).toBool()) {
+						s = ix.data(Qt::DisplayRole).toString();
+						if(s.isEmpty()) {
+							QVariant v = ix.data(Qt::CheckStateRole);
+							if(v.isValid()) {
+								s = (v.toInt() == Qt::Checked)? QStringLiteral("True"): QStringLiteral("False");
+							}
+						}
+					}
 					if(replace_escapes) {
 						s.replace('\r', QStringLiteral("\\r"));
 						s.replace('\n', QStringLiteral("\\n"));
