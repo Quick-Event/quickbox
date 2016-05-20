@@ -206,7 +206,6 @@
     <message>
         <location filename="qml/reports/receiptClassic.qml" line="250"/>
         <location filename="qml/reports/receiptClassic.qml" line="262"/>
-        <location filename="qml/reports/receiptClassic.qml" line="274"/>
         <source>-----</source>
         <translation>-----</translation>
     </message>

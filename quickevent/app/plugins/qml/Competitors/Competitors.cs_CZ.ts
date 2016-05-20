@@ -163,31 +163,41 @@
         <source>E&amp;%1</source>
         <translation>E&amp;%1</translation>
     </message>
+    <message>
+        <location filename="src/competitorwidget.cpp" line="233"/>
+        <source>Class should be entered.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorwidget.cpp" line="249"/>
+        <source>Duplicate SI inserted.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Competitors::CompetitorsPlugin</name>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="53"/>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="64"/>
         <source>Registrations</source>
         <translation>Registrace</translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="83"/>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="115"/>
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="84"/>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="116"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="85"/>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="117"/>
         <source>Lic</source>
         <translation>Licence</translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="86"/>
+        <location filename="src/Competitors/competitorsplugin.cpp" line="118"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
@@ -200,42 +210,46 @@
         <translation>Závodníci</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="52"/>
+        <location filename="src/competitorswidget.cpp" line="61"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="53"/>
+        <location filename="src/competitorswidget.cpp" line="62"/>
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="54"/>
+        <location filename="src/competitorswidget.cpp" line="63"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="55"/>
+        <location filename="src/competitorswidget.cpp" line="64"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="56"/>
+        <location filename="src/competitorswidget.cpp" line="65"/>
         <source>Note</source>
         <translation>Poznámka</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="82"/>
-        <source>Class </source>
-        <translation>Kategorie </translation>
+        <location filename="src/competitorswidget.cpp" line="92"/>
+        <source>&amp;Class </source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="110"/>
+        <source>Class </source>
+        <translation type="vanished">Kategorie </translation>
+    </message>
+    <message>
+        <location filename="src/competitorswidget.cpp" line="120"/>
         <source>--- all ---</source>
         <translation>--- všechno ---</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="138"/>
+        <location filename="src/competitorswidget.cpp" line="148"/>
         <source>Edit Competitor</source>
         <translation>Uprav závodníka</translation>
     </message>

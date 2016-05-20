@@ -2,6 +2,45 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="cs_CZ">
 <context>
+    <name>ChooseOrisEventDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oris event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oris event ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading event list from Oris ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OB</source>
+        <translation type="unfinished">OB</translation>
+    </message>
+    <message>
+        <source>LOB</source>
+        <translation type="unfinished">LOB</translation>
+    </message>
+    <message>
+        <source>MTBO</source>
+        <translation type="unfinished">MTBO</translation>
+    </message>
+    <message>
+        <source>???</source>
+        <translation type="unfinished">???</translation>
+    </message>
+    <message>
+        <source>Search in events ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OrisImporter</name>
     <message>
         <source>JSON document parse error: %1</source>
@@ -13,27 +52,23 @@
     </message>
     <message>
         <source>OB</source>
-        <translation>OB</translation>
+        <translation type="vanished">OB</translation>
     </message>
     <message>
         <source>LOB</source>
-        <translation>LOB</translation>
+        <translation type="vanished">LOB</translation>
     </message>
     <message>
         <source>MTBO</source>
-        <translation>MTBO</translation>
+        <translation type="vanished">MTBO</translation>
     </message>
     <message>
         <source>???</source>
-        <translation>???</translation>
-    </message>
-    <message>
-        <source>Get item</source>
-        <translation type="unfinished"></translation>
+        <translation type="vanished">???</translation>
     </message>
     <message>
         <source>Select event to import</source>
-        <translation>Vyber závod pro import</translation>
+        <translation type="vanished">Vyber závod pro import</translation>
     </message>
     <message>
         <source>New entries</source>
