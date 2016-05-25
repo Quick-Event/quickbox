@@ -640,7 +640,8 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 			if(connection_type == ConnectionType::SqlServer)
 				stage_table_name = event_id + '.' + stage_table_name;
 			QDateTime start_dt = event_config.eventDateTime();
-			q.prepare("INSERT INTO " + stage_table_name + " (id) VALUES (:id, :startDateTime)");
+			// FIXME: handle SQL errors here and below in q.exec()
+			q.prepare("INSERT INTO " + stage_table_name + " (id, startDateTime) VALUES (:id, :startDateTime)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":id", i+1);
 				q.bindValue(":startDateTime", start_dt);
