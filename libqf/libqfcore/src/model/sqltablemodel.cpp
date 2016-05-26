@@ -196,8 +196,8 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			qfs::Query q(sql_conn);
 			if(rec.isEmpty()) {
 				if(serial_ix >= 0) {
-					qs = "INSERT INTO %1 (%2) VALUES (DEFAULT)";
-					qs = qs.arg(table, row_ref.fields().at(serial_ix).shortName());
+					qs = "INSERT INTO %1 DEFAULT VALUES";
+					qs = qs.arg(table);
 				}
 			}
 			else {
