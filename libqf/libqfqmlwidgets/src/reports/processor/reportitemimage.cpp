@@ -316,18 +316,18 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 		/// vymysli rozmer br, do kteryho to potom reportpainter nacpe, at je to veliky jak chce
 		if(designedRect.width() == 0 && designedRect.horizontalUnit == Rect::UnitMM && designedRect.height() == 0 && designedRect.verticalUnit == Rect::UnitMM) {
 			/// ani jeden smer neni zadan, vezmi ozmery z obrazku
-			double w = 0;
-			double h = 0;
 			if(im.isImage()) {
-				w = im.image.width() / (im.image.dotsPerMeterX() / 1000.);
-				h = im.image.height() / (im.image.dotsPerMeterY() / 1000.);
-				if(w > 0 && w < br.width()) br.setWidth(w);
-				if(h > 0 && h < br.height()) br.setHeight(w);
+				double w = im.image.width() / (im.image.dotsPerMeterX() / 1000.);
+				double h = im.image.height() / (im.image.dotsPerMeterY() / 1000.);
+				if(w > 0 && w < br.width())
+					br.setWidth(w);
+				if(h > 0 && h < br.height())
+					br.setHeight(w);
 				//qfInfo() << "image bounding rect w:" << w << "h:" << h << "designed rect:" << designedRect.toString();
 			}
 			else if(im.isPicture()) {
-				w  =im.picture.boundingRect().width();
-				h = im.picture.boundingRect().height();
+				//w  =im.picture.boundingRect().width();
+				//h = im.picture.boundingRect().height();
 				//qfInfo() << "picture bounding rect w:" << w << "h:" << h << "designed rect:" << designedRect.toString();
 			}
 		}

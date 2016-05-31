@@ -2087,7 +2087,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 			emit activated(currentIndex());
 			//activated_emited = true;
 			event->accept();
-			ret = true;
+			//ret = true;
 			//return ret;
 		}
 		bool read_only = isReadOnly();
