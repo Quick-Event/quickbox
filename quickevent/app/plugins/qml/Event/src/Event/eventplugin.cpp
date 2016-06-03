@@ -22,6 +22,7 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/utils/fileutils.h>
 
 #include <QInputDialog>
 #include <QSqlDatabase>
@@ -957,10 +958,11 @@ void EventPlugin::importEvent_qbe()
 	}
 	*/
 	QString ext = ".qbe";
-	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName (fwk, tr("Import as Quick Event"), QString(), "Quick Event files *.qbe (*.qbe)");
+	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName (fwk, tr("Import as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(fn.isEmpty())
 		return;
-	QString event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:")).trimmed();
+	QString event_name = qf::core::utils::FileUtils::baseName(fn) + "-2";
+	event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:"), QLineEdit::Normal, event_name).trimmed();
 	if(event_name.isEmpty())
 		return;
 	QStringList existing_events = (connectionType() == ConnectionType::SingleFile)? existingFileEventNames(): existingSqlEventNames();
