@@ -66,7 +66,7 @@ private:
 };
 
 #if 0
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemDetail : public ReportItemFrame
 {
 	Q_OBJECT
@@ -93,7 +93,7 @@ public:
 	virtual ~ReportItemDetail() {}
 };
 
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 {
 	Q_OBJECT

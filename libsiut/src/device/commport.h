@@ -14,7 +14,7 @@
 
 namespace siut {
 
-//! TODO: write class documentation.
+
 class  CommPort : public QSerialPort
 {
 	Q_OBJECT

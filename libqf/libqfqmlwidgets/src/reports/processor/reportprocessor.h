@@ -35,7 +35,7 @@ class ReportItemBand;
 class ReportItemMetaPaint;
 class ReportItemMetaPaintReport;
 
-//! TODO: write class documentation.
+
 class  QFQMLWIDGETS_DECL_EXPORT ReportProcessor : public QObject
 {
 	Q_OBJECT

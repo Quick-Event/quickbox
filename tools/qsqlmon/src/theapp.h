@@ -27,7 +27,7 @@ public:
 	void setContent(const QStringList &sl) {m_log = sl;}
 };
 
-//! TODO: write class documentation.
+
 class  TheApp : public QApplication //, public QFAppReportSearchDirsInterface
 {
 	Q_OBJECT

@@ -19,7 +19,7 @@ class QTimer;
 
 namespace siut {
 
-//! TODO: write class documentation.
+
 class SIUT_DECL_EXPORT DeviceDriver : public QObject
 {
 	Q_OBJECT

@@ -16,7 +16,7 @@ namespace reports {
 
 namespace Ui {class ItemValueEditorWidget;};
 
-//! TODO: write class documentation.
+
 class  ItemValueEditorWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT

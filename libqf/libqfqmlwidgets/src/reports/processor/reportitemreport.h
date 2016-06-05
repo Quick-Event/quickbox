@@ -15,7 +15,7 @@ namespace qf {
 namespace qmlwidgets {
 namespace reports {
 
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemReport : public ReportItemFrame
 {
 	Q_OBJECT
@@ -44,7 +44,7 @@ private:
 	ReportProcessor *m_reportProcessor;
 };
 #if 0
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemBody : public ReportItemDetail
 {
 	Q_OBJECT

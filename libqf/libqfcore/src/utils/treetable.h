@@ -39,7 +39,7 @@ public:
 	//virtual ~TreeTableRow();
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeTableColumns : public SValue
 {
 protected:
@@ -54,7 +54,7 @@ public:
 	//virtual ~TreeTableRow();
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeTableRow// : public SValue
 {
 protected:
@@ -90,7 +90,7 @@ public:
 	virtual ~TreeTableRow();
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeTable : public SValue
 {
 public:
