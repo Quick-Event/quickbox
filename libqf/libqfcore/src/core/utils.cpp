@@ -114,6 +114,20 @@ QVariant Utils::retypeStringValue(const QString &str_val, const QString &type_na
 	return ret;
 }
 
+int Utils::findCaption(const QString &caption_format, int from_ix, QString *caption)
+{
+	int ix1 = caption_format.indexOf(QLatin1String("{{"), from_ix);
+	if(ix1 >= 0) {
+		int ix2 = caption_format.indexOf(QLatin1String("}}"), ix1+2);
+		if(ix2 > ix1) {
+			if(caption)
+				*caption = caption_format.mid(ix1+2, ix2-ix1-2);
+			return ix1;
+		}
+	}
+	return -1;
+}
+
 QSet<QString> Utils::findCaptions(const QString caption_format)
 {
 	QSet<QString> ret;

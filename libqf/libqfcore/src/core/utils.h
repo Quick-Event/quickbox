@@ -140,6 +140,7 @@ public:
 	static QVariant retypeVariant(const QVariant &_val, int meta_type_id);
 	static QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 
+	static int findCaption(const QString &caption_format, int from_ix, QString *caption);
 	/**
 	 * @brief findCaptions
 	 * Finds in string all captions in form {{captionName}}
