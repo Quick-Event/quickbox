@@ -132,6 +132,17 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 			prev_stp_time_ms = stp_time_ms;
 		}
 		{
+			qfu::TreeTableRow ttr = tt.appendRow();
+			//int code = punch.code();
+			//ttr.setValue("position", position);
+			//ttr.setValue("code", code);
+			int punch_time_ms = read_card.finishTime() * 1000 + read_card.finishTimeMs();
+			int stp_time_ms = quickevent::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
+			ttr.setValue("punchTimeMs", punch_time_ms);
+			ttr.setValue("stpTimeMs", stp_time_ms);
+			ttr.setValue("lapTimeMs", stp_time_ms - prev_stp_time_ms);
+		}
+		{
 			qf::core::sql::QueryBuilder qb;
 			qb.select2("config", "ckey, cvalue, ctype")
 					.from("config")

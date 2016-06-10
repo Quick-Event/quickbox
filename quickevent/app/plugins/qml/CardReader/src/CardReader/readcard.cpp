@@ -4,6 +4,8 @@
 
 #include <siut/simessage.h>
 
+#include <qf/core/log.h>
+
 #include <QSqlRecord>
 #include <QJsonDocument>
 

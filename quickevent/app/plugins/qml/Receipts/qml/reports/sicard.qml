@@ -180,13 +180,13 @@ Report {
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
-					width: 10
+					width: 8
 					//textHAlign: Frame.AlignRight
 					text: (dc.currentIndex < (dc.rowCount - 1))? dc.data(dc.currentIndex, "code"): qsTr("FI");
 				}
 				Para {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
-					width: "%"
+					width: "40%"
 					textHAlign: Frame.AlignRight
 					text: TimeExt.msecToString_hhmmss(dc.data(dc.currentIndex, "punchTimeMs"));
 				}
