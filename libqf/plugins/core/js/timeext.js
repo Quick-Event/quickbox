@@ -21,6 +21,8 @@ function dateToISOString(dt)
 
 function dateTimeToUTCISOString(dt)
 {
+	if(!dt || isNaN(dt.getTime()))
+		return "";
 	return dt.toISOString();
 }
 

@@ -16,7 +16,7 @@ Event::StageData::StageData(const Event::StageDocument *doc)
 	const auto START_DATE_TIME = QStringLiteral("startDateTime");
 	const auto ID = QStringLiteral("id");
 	insert(ID, doc->value(ID));
-	QDateTime dt = doc->value(ID).toDateTime();
+	QDateTime dt = doc->value(START_DATE_TIME).toDateTime();
 	/*
 	if(doc->isValidFieldName(START_DATE_TIME)) {
 		dt = doc->value(ID).toDateTime();
