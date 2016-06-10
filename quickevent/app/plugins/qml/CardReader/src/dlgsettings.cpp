@@ -33,7 +33,7 @@ DlgSettings::DlgSettings(QWidget *parent)
 		ui->lstDevice->addItem(QString("\\COM%1").arg(i));
 #elif defined Q_OS_UNIX
 	for(int i=0; i<4; i++)
-		ui->lstDevice->addItem(QString("/dev/ttyUSB0%1").arg(i));
+		ui->lstDevice->addItem(QString("/dev/ttyUSB%1").arg(i));
 #endif
 
 	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));

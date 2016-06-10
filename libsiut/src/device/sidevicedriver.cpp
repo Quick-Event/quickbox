@@ -58,6 +58,7 @@ namespace {
 void DeviceDriver::commDataReceived()
 {
 	QByteArray ba = f_commPort->readAll();
+	//qfInfo() << "=============>" << ba;
 	if(ba.size() > 0) {
 		f_rxData.append(ba);
 		processRxData();
