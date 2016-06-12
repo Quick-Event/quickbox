@@ -11,8 +11,10 @@
 		<file>sort-asc.svg</file>
 		<file>sort-desc.svg</file>
 		<file>insert-row.svg</file>
+		<file>insert-column.svg</file>
 		<file>clone-row.svg</file>
 		<file>delete-row.svg</file>
+		<file>delete-column.svg</file>
 		<file>copy.svg</file>
 		<file>cut.svg</file>
 		<file>paste.svg</file>
