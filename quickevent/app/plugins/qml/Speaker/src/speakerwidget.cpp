@@ -19,7 +19,9 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
 
+#include <QJsonObject>
 #include <QLabel>
+#include <QSettings>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
@@ -55,9 +57,8 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	ui->tblPunches->setTableModel(m);
 	m_punchesModel = m;
 
-	//connect(ui->tblPunches, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)), Qt::QueuedConnection);
-
-	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	connect(fwk, &qf::qmlwidgets::framework::MainWindow::aboutToClose, this, &SpeakerWidget::saveSettings);
 }
 
 SpeakerWidget::~SpeakerWidget()
@@ -95,10 +96,6 @@ void SpeakerWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	*/
 }
 
-void SpeakerWidget::lazyInit()
-{
-}
-
 void SpeakerWidget::reset()
 {
 	if(!eventPlugin()->isEventOpen()) {
@@ -132,4 +129,31 @@ void SpeakerWidget::reload()
 	//}
 	m_punchesModel->setQueryBuilder(qb);
 	m_punchesModel->reload();
+}
+
+void SpeakerWidget::saveSettings()
+{
+	QSettings settings;
+	QByteArray ba = ui->gridWidget->saveLayout();
+	settings.setValue("plugins/speaker/grid", QString::fromUtf8(ba));
+}
+
+void SpeakerWidget::on_btInsertColumn_clicked()
+{
+	ui->gridWidget->addColumn();
+}
+
+void SpeakerWidget::on_btInsertRow_clicked()
+{
+	ui->gridWidget->addRow();
+}
+
+void SpeakerWidget::on_btDeleteColumn_clicked()
+{
+	ui->gridWidget->removeColumn();
+}
+
+void SpeakerWidget::on_btDeleteRow_clicked()
+{
+	ui->gridWidget->removeRow();
 }

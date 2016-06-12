@@ -19,6 +19,10 @@ public:
 	void removeColumn();
 	void addRow();
 	void removeRow();
+
+	QByteArray saveLayout();
+private:
+	CodeClassResultsWidget* resultsWidgetAt(int row, int col);
 private:
 	CodeClassResultsWidget* createClassResultsWidget();
 	QGridLayout* m_gridLayout;

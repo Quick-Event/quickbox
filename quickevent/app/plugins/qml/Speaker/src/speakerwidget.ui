@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>450</width>
+    <height>323</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,6 +60,117 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>2</number>
+       </property>
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="frame">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>3</number>
+          </property>
+          <property name="leftMargin">
+           <number>2</number>
+          </property>
+          <property name="topMargin">
+           <number>2</number>
+          </property>
+          <property name="rightMargin">
+           <number>2</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QToolButton" name="btInsertColumn">
+            <property name="icon">
+             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+              <normaloff>:/qf/qmlwidgets/images/flat/insert-column.svg</normaloff>:/qf/qmlwidgets/images/flat/insert-column.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btInsertRow">
+            <property name="icon">
+             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+              <normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btDeleteColumn">
+            <property name="icon">
+             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+              <normaloff>:/qf/qmlwidgets/images/flat/delete-column.svg</normaloff>:/qf/qmlwidgets/images/flat/delete-column.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="btDeleteRow">
+            <property name="icon">
+             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+              <normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</iconset>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>68</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="CodeClassResultsGridWidget" name="gridWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -74,10 +185,18 @@
   <customwidget>
    <class>qf::qmlwidgets::TableViewToolBar</class>
    <extends>QWidget</extends>
-   <header>qf/qmlwidgets/tableviewtoolbar.h</header>
+   <header location="global">qf/qmlwidgets/tableviewtoolbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CodeClassResultsGridWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">src/codeclassresultsgridwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+ </resources>
  <connections/>
 </ui>

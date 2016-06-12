@@ -29,10 +29,17 @@ public:
 	~SpeakerWidget() Q_DECL_OVERRIDE;
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
+private slots:
+	void on_btInsertColumn_clicked();
+	void on_btInsertRow_clicked();
+	void on_btDeleteColumn_clicked();
+	void on_btDeleteRow_clicked();
 private:
-	Q_SLOT void lazyInit();
+	//Q_SLOT void lazyInit();
 	Q_SLOT void reset();
 	Q_SLOT void reload();
+
+	void saveSettings();
 private:
 	Ui::SpeakerWidget *ui;
 	qf::core::model::SqlTableModel *m_punchesModel;
