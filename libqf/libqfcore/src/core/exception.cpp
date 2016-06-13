@@ -29,18 +29,13 @@ bool isLogStackTrace()
 
 }
 
-void Exception::init(const QString& _msg, const QString& _where)
+Exception::Exception(const QString &_msg, const QString &_where)
 {
 	m_where = _where;
 	m_msg = _msg;
 	m_what = m_msg.toUtf8();
 	m_stackTrace = StackTrace::stackTrace().toString();
-	/*
-	/// remove first 4 levels of stack (theese are exception initialization functions)
-	QStringList sl = s.split("\n");
-	for(int i=0; i<4 && sl.size()>1; i++) sl.removeAt(1); /// keep column captions
-	m_stackTrace = sl.join("\n");
-	*/
+	log();
 }
 
 void Exception::log()
