@@ -310,9 +310,9 @@ void LogDevice::setCategoriesTresholds(const QString &trsh)
 		s = s.mid(1);
 	}
 	*/
+	s_globalLogFilter.logAllCategories = trsh.isEmpty() || (trsh.compare(QLatin1String("all"), Qt::CaseInsensitive) == 0);
 	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
 	setCategoriesTresholds(tresholds);
-	s_globalLogFilter.logAllCategories = s_globalLogFilter.categoriesTresholds.isEmpty();
 }
 
 void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
