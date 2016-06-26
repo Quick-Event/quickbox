@@ -166,12 +166,12 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="233"/>
         <source>Class should be entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Musí být zadána kategorie.</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="249"/>
         <source>Duplicate SI inserted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bylo vloženo duplicitní SI.</translation>
     </message>
 </context>
 <context>
@@ -237,7 +237,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="92"/>
         <source>&amp;Class </source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kategorie </translation>
     </message>
     <message>
         <source>Class </source>

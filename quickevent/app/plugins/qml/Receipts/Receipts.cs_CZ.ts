@@ -105,7 +105,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="146"/>
         <source> characters</source>
-        <translation>znaků</translation>
+        <translation> znaků</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="165"/>
