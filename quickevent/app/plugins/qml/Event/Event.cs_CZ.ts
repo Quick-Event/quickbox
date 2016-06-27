@@ -196,12 +196,12 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="786"/>
         <source>Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.</source>
-        <translation>Data závodu jsou ve staré verzi (%1), minimální verze je (%2). Použij Závod/Import ke konvertování závodu na aktuální verzi.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="793"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
-        <translation>Závod byl vytvořen v novější verzi QuickEventu (%1) a program nemusí pracovat správně. Stáhněte si nejnovější verzi QuickEventu.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="884"/>

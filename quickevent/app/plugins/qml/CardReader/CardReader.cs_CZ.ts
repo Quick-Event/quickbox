@@ -16,7 +16,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="193"/>
         <source>Update runs &amp; runlaps ERROR:</source>
-        <translation>Chyba při aktualizaci etap (úseků) &amp; mezičasů:</translation>
+        <translation type="unfinished">Chyba při aktualizaci běhů &amp; mezičasů:</translation>
     </message>
 </context>
 <context>
@@ -167,7 +167,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="392"/>
         <source>Cannot find run for SI: %1</source>
-        <translation>Nelze najít úsek (etapu) pro SI: %1</translation>
+        <translation type="unfinished">Nelze najít úsek (etapu) pro SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="436"/>
@@ -177,7 +177,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="439"/>
         <source>Cannot find run for punch record SI: %1</source>
-        <translation>Nelze najít úsek (etapu) pro záznam ražení SI: %1</translation>
+        <translation type="unfinished">Nelze najít úsek (etapu) pro záznam ražení SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="514"/>
