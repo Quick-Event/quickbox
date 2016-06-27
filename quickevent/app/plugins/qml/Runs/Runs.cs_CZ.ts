@@ -56,12 +56,12 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="81"/>
         <source>Time to close</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas do uzavření</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="81"/>
         <source>Time to class close</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas do uzavření kategorie</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="82"/>
@@ -109,7 +109,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="101"/>
         <source>auto refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Automatické obnovování</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="474"/>
@@ -174,7 +174,7 @@
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Statistiky závodu</translation>
+        <translation>Statistiky závodu</translation>
     </message>
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="20"/>
@@ -197,32 +197,32 @@
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="47"/>
         <source>Posix regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>POSIX regulární výraz</translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="50"/>
         <source>RegExp</source>
-        <translation type="unfinished"></translation>
+        <translation>RegExp</translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="57"/>
         <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Otazník (?) zastupuje libovolný znak, hvězdička (*) zastupuje skupinu 0 - n libovolných znaků</translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="60"/>
         <source>Wild card</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="70"/>
         <source>Doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevyhovuje filtru</translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="77"/>
         <source>Coma delimited list of class names</source>
-        <translation type="unfinished"></translation>
+        <translation>Seznam kategorií oddělený čárkou</translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="80"/>
@@ -232,7 +232,7 @@
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="93"/>
         <source>Page layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozvržení stránky</translation>
     </message>
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="100"/>
@@ -252,7 +252,7 @@
     <message>
         <location filename="src/Runs/reportoptionsdialog.ui" line="131"/>
         <source>Break type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ zalomení</translation>
     </message>
     <message>
         <source>Break after each class</source>
@@ -272,7 +272,7 @@
     <message>
         <location filename="src/runstabledialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Statistiky závodu</translation>
+        <translation>Statistiky závodu</translation>
     </message>
     <message>
         <location filename="src/runstabledialogwidget.cpp" line="41"/>
@@ -285,98 +285,98 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="16"/>
         <source>Off race</source>
-        <translation type="unfinished"></translation>
+        <translation>Odhlášen</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="18"/>
         <source>Class</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="19"/>
         <location filename="src/runstablemodel.cpp" line="22"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="20"/>
         <source>Name</source>
-        <translation type="unfinished">Jméno</translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="21"/>
         <source>Reg</source>
-        <translation type="unfinished">Reg. č.</translation>
+        <translation>Registrace</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="23"/>
         <source>Start</source>
-        <translation type="unfinished">Start</translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="24"/>
         <source>Time</source>
-        <translation type="unfinished">Čas</translation>
+        <translation>Čas</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="25"/>
         <source>Finish</source>
-        <translation type="unfinished">Cíl</translation>
+        <translation>Cíl</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="26"/>
         <source>NC</source>
-        <translation type="unfinished">MS</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="26"/>
         <source>Not competing</source>
-        <translation type="unfinished">Mimo soutež</translation>
+        <translation>Mimo soutež</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
         <source>L</source>
-        <translation type="unfinished">PČ</translation>
+        <translation>P</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
         <source>Card lent</source>
-        <translation type="unfinished">Půjčen čip</translation>
+        <translation>Čip půjčen</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="28"/>
         <source>R</source>
-        <translation type="unfinished">ČV</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="28"/>
         <source>Card returned</source>
-        <translation type="unfinished">Čip vrácen</translation>
+        <translation>Čip vrácen</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="29"/>
         <source>Error</source>
-        <translation type="unfinished">Chyba</translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="29"/>
         <source>Card mispunch</source>
-        <translation type="unfinished">Chyba ražení</translation>
+        <translation>Chyba ražení</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="30"/>
         <source>DISQ</source>
-        <translation type="unfinished">DISK</translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="30"/>
         <source>Disqualified</source>
-        <translation type="unfinished">Diskvalifikován</translation>
+        <translation>Diskvalifikace</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
         <source>Note</source>
-        <translation type="unfinished">Poznámka</translation>
+        <translation>Poznámka</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="216"/>
