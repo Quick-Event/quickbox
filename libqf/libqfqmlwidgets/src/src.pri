@@ -25,6 +25,18 @@ HEADERS += \
     $$PWD/datacontroller.h \
     $$PWD/idatawidget.h \
     $$PWD/combobox.h \
+    $$PWD/spinbox.h \
+    $$PWD/tableviewproxymodel.h \
+    $$PWD/texteditwidget.h \
+    $$PWD/sqltableitemdelegate.h \
+    $$PWD/timeedit.h \
+    $$PWD/dateedit.h \
+    $$PWD/style.h \
+    $$PWD/actiongroup.h \
+    $$PWD/checkbox.h \
+    $$PWD/exporttableviewwidget.h \
+    $$PWD/exportcsvtableviewwidget.h \
+    $$PWD/htmlviewwidget.h
 
 SOURCES += \
 	$$PWD/frame.cpp \
@@ -50,9 +62,24 @@ SOURCES += \
     $$PWD/datacontroller.cpp \
     $$PWD/idatawidget.cpp \
     $$PWD/combobox.cpp \
+    $$PWD/spinbox.cpp \
+    $$PWD/tableviewproxymodel.cpp \
+    $$PWD/texteditwidget.cpp \
+    $$PWD/sqltableitemdelegate.cpp \
+    $$PWD/timeedit.cpp \
+    $$PWD/dateedit.cpp \
+    $$PWD/style.cpp \
+    $$PWD/actiongroup.cpp \
+    $$PWD/checkbox.cpp \
+    $$PWD/exporttableviewwidget.cpp \
+    $$PWD/exportcsvtableviewwidget.cpp \
+    $$PWD/htmlviewwidget.cpp
 
 FORMS += \
     $$PWD/saveoptionswidget.ui \
+    $$PWD/texteditwidget.ui \
+    $$PWD/exporttableviewwidget.ui \
+    $$PWD/htmlviewwidget.ui
 
 include ($$PWD/internal/internal.pri)
 include ($$PWD/framework/framework.pri)

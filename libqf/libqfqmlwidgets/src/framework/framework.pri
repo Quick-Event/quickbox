@@ -13,7 +13,9 @@ HEADERS += \
     $$PWD/dialogwidget.h \
     $$PWD/ipersistentoptions.h \
     $$PWD/cursoroverrider.h \
-    $$PWD/datadialogwidget.h
+    $$PWD/datadialogwidget.h \
+    $$PWD/dockablewidget.h \
+    $$PWD/logwidget.h
 
 SOURCES += \
     $$PWD/mainwindow.cpp \
@@ -30,4 +32,9 @@ SOURCES += \
     $$PWD/dialogwidget.cpp \
     $$PWD/ipersistentoptions.cpp \
     $$PWD/cursoroverrider.cpp \
-    $$PWD/datadialogwidget.cpp
+    $$PWD/datadialogwidget.cpp \
+    $$PWD/dockablewidget.cpp \
+    $$PWD/logwidget.cpp
+
+FORMS += \
+    $$PWD/logwidget.ui

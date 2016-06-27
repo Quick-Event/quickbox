@@ -46,23 +46,28 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItem : public QObject, public QQmlParserSta
 	Q_OBJECT
 	Q_INTERFACES(QQmlParserStatus)
 	Q_ENUMS(Layout)
-	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll NOTIFY keepAllChanged)
+	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
+	Q_PROPERTY(bool keepAll READ isKeepAll WRITE setKeepAll)
+	Q_PROPERTY(bool keepWithPrev READ isKeepWithPrev WRITE setKeepWithPrev)
 	Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged)
+	Q_PROPERTY(QVariantMap htmlExportAttributes READ htmlExportAttributes WRITE setHtmlExportAttributes NOTIFY htmlExportAttributesChanged)
 private:
 	typedef QObject Super;
 public:
 	ReportItem(ReportItem *parent = nullptr);
 	~ReportItem() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_BOOL_IMPL2(k, K, eepAll, false)
+	QF_PROPERTY_BOOL_IMPL2(k, K, eepWithPrev, false)
+	QF_PROPERTY_IMPL(QVariantMap, h, H, tmlExportAttributes)
 public:
 	enum Layout {LayoutInvalid = graphics::LayoutInvalid,
 				 LayoutHorizontal = graphics::LayoutHorizontal,
 				 LayoutVertical = graphics::LayoutVertical,
-				 LayoutStack = graphics::LayoutStack
+				 LayoutStacked = graphics::LayoutStacked
 				};
 	//typedef graphics::Layout Layout;
 
-	/// Pokud ma frame keepAll atribut a dvakrat za sebou se nevytiskne, znamena to, ze se nevytiskne uz nikdy.
-	QF_PROPERTY_BOOL_IMPL(k, K, eepAll)
 	Q_INVOKABLE bool isVisible();
 	Q_SLOT void setVisible(bool b) {
 		if(m_visible != b) {
@@ -76,27 +81,56 @@ public:
 	static const double Epsilon;
 	static const QString INFO_IF_NOT_FOUND_DEFAULT_VALUE;
 	//typedef Layout Layout;
-	enum PrintResultValue {
-		PrintNotPrintedYet = 0,
-		PrintOk = 1, ///< tisk se zdaril
-		PrintNotFit ///< nevytiskl se item nebo vsechny jeho deti, zalomi se stranka/sloupec se a zkusi se to znovu
-	};
-	enum PrintResultFlags {
-		FlagNone = 0,
-		FlagPrintAgain = 1, ///< detail se sice vesel, ale protoze data obsahuji dalsi radky, tiskni ho dal, pouziva se s PrintOk.
-		//FlagPrintWidthNotFit = 2, ///< Text se nevesel na sirku, takze se neda nic delat, pouziva se s PrintNotFit
-		FlagPrintNeverFit = 4, ///< tisk se nepodaril a nikdy se nepodari, pouziva se s PrintNotFit
-		FlagPrintBreak = 8 ///< PrintNotFit je protoze je page nebo column break
-	};
-	struct PrintResult
+	class PrintResult
 	{
-		quint16 value;
-		quint16 flags;
-		PrintResult() : value(0), flags(0) {}
-		PrintResult(PrintResultValue val, PrintResultFlags f = FlagNone) : value((quint16)val), flags((quint16)f) {}
-		QString toString() const {return QString("value: %1 flags: %2")
-					.arg(value==PrintOk? "OK": value==PrintNotFit? "NotFit": "NotPrintedYet")
-					.arg(QString((flags & FlagPrintAgain)? "PrintAgain ": " ")) + ((flags & FlagPrintNeverFit)? "PrintNeverFit ": " ");}
+	private:
+		enum class Result : quint8 {
+			Invalid,
+			PrintFinished, ///< whole frame printed successfully
+			PrintAgain, ///< partialy printed, repeat print in next column
+			PrintError, ///< When keepAll is set and frame can is rendered higher than page, stop to try print it on the next page
+		};
+		enum Flag : quint8 {
+			ColumnBreak = (1 << 0),
+			PageBreak = (1 << 1),
+			NextDetailRowExists = (1 << 2),
+			ErrorNeverFit = (1 << 3),
+		};
+
+		Result result;
+		quint8 flags = 0;
+
+		PrintResult(Result r) : result(r) {}
+	public:
+		PrintResult() : PrintResult(Result::Invalid) {}
+
+		//static PrintResult createInvalid() {return PrintResult(Result::Invalid);}
+		static PrintResult createPrintFinished() {return PrintResult(Result::PrintFinished);}
+		static PrintResult createPrintAgain() {return PrintResult(Result::PrintAgain);}
+		static PrintResult createPrintError() {return PrintResult(Result::PrintError);}
+
+		bool isValid() const {return result == Result::Invalid;}
+		bool isPrintFinished() const {return result == Result::PrintFinished;}
+		bool isPrintAgain() const {return result != Result::PrintFinished && result != Result::PrintError;}
+		bool isNextDetailRowExists() const {return flags & NextDetailRowExists;}
+		void setNextDetailRowExists(bool b) {flags = b? flags | NextDetailRowExists: flags & ~NextDetailRowExists;}
+		bool isColumnBreak() const {return flags & ColumnBreak;}
+		void setColumnBreak(bool b) {flags = b? flags | ColumnBreak: flags & ~ColumnBreak;}
+		bool isPageBreak() const {return flags & PageBreak;}
+		void setPageBreak(bool b) {flags = b? flags | PageBreak: flags & ~PageBreak;}
+		bool isPrintError() const {return result == Result::PrintError;}
+
+		QString toString() const {
+			QString ret;
+			switch(result) {
+			case Result::Invalid: ret = QStringLiteral("Invalid"); break;
+			case Result::PrintFinished: ret = QStringLiteral("PrintFinished"); break;
+			case Result::PrintAgain: ret = QStringLiteral("PrintAgain"); break;
+			case Result::PrintError: ret = QStringLiteral("PrintError"); break;
+			default: ret = QStringLiteral("UNKNOWN"); break;
+			}
+			return ret;
+		}
 	};
 public:
 	typedef graphics::Point Point;
@@ -172,8 +206,10 @@ public:
 		}
 		Rect& setSizeInLayout(qreal sz, Layout ly)
 		{
-			if(ly == LayoutHorizontal) setWidth(sz);
-			else setHeight(sz);
+			if(ly == LayoutHorizontal)
+				setWidth(sz);
+			else
+				setHeight(sz);
 			return *this;
 		}
 		Rect& cutSizeInLayout(const Rect &rect, Layout ly)
@@ -216,15 +252,10 @@ public:
 
 		static QString flagsToString(unsigned flags) {
 			QString ret;
-			//if(flags & LeftFixed) ret += 'L';
-			//if(flags & TopFixed) ret += 'T';
-			//if(flags & RightFixed) ret += 'R';
-			//if(flags & BottomFixed) ret += 'B';
 			if(flags & FillLayout) ret += 'F';
 			if(flags & ExpandChildrenFrames) ret += 'X';
 			if(flags & LayoutHorizontalFlag) ret += 'H';
 			if(flags & LayoutVerticalFlag) ret += 'V';
-			//--if(flags & BackgroundItem) ret += '^';
 			return ret;
 		}
 	private:
@@ -234,7 +265,6 @@ public:
 		}
 	public:
 		Rect() : graphics::Rect() {init();}
-		//Rect(qreal x, qreal y) : QRectF(x, y) {init();}
 		Rect(const QPointF &topLeft, const QSizeF &size) : graphics::Rect(topLeft, size) {init();}
 		Rect(qreal x, qreal y, qreal width, qreal height) : graphics::Rect(x, y, width, height) {init();}
 		Rect(const QRectF &r) : graphics::Rect(r) {init();}
@@ -242,13 +272,30 @@ public:
 	};
 public:
 	struct ChildSize {
-		qreal size;
-		Rect::Unit unit;
 
-		double fillLayoutRatio() const {
+		ChildSize(qreal s = 0, Rect::Unit u = Rect::UnitMM) : size(s), unit(u) {}
+
+		double fillLayoutRatio() const
+		{
 			return (unit == Rect::UnitPercent)? size / 100.: -1;
 		}
-		ChildSize(qreal s = 0, Rect::Unit u = Rect::UnitMM) : size(s), unit(u) {}
+
+		double fromParentSize(double parent_size) const
+		{
+			double ret = parent_size;
+			if(unit == Rect::UnitMM) {
+				if(size > 0)
+					ret = size;
+			}
+			else if(unit == Rect::UnitPercent) {
+				if(size > 0)
+					ret = size / 100 * ret;
+			}
+			return ret;
+		}
+
+		qreal size;
+		Rect::Unit unit;
 	};
 public:
 	struct Image
@@ -276,33 +323,17 @@ public:
 	};
 public:
 	virtual ReportItemFrame* toFrame() {return NULL;}
-	//--virtual  ReportItemBand* toBand()  {return NULL;}
-	//--virtual  ReportItemDetail* toDetail()  {return NULL;}
-	//--virtual ReportItemBand* parentBand();
-protected:
-	//--qf::core::utils::TreeTable findDataTable(const QString &name);
 protected:
 	ReportItemBand *parentBand();
 
 	QVariant value(const QString &data_src, const QString &domain = "row", const QVariantList &params = QVariantList(), const QVariant &default_value = ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE, bool sql_match = true);
 	/// poukud ma node jen jedno dite vrati to jeho hodnotu vcetne typu, pokud je deti vic, udela to z nich jeden string
-	//--QVariant concatenateNodeChildrenValues(const QDomNode &nd) ;
-	//--QString nodeText(const QDomNode &nd) ;
-	//--QVariant nodeValue(const QDomNode &nd) ;
 
 	//! Pokud byl predchozi result PrintNotFit a soucasny opet PrintNotFit, znamena to, ze se item uz nikdy nevejde,
 	//! zavedenim tohoto fieldu zabranim nekonecnemu odstrankovavani.
 	PrintResult checkPrintResult(PrintResult res);
-	/*--
-	void updateChildren() {
-		if(!childrenSynced()) { syncChildren(); }
-	}
-	virtual bool childrenSynced();
-	virtual void syncChildren();
-	void deleteChildren();
-	--*/
 public:
-	ReportProcessor* processor();
+	ReportProcessor* processor(bool throw_exc = qf::core::Exception::Throw);
 	//! Vraci atribut elementu itemu.
 	//! Pokud hodnota \a attr_name je ve tvaru 'script:funcname', zavola se scriptDriver processoru, jinak se vrati atribut.
 	//--QString elementAttribute(const QString &attr_name, const QString &default_val = QString());
@@ -310,11 +341,10 @@ public:
 	ReportItem* parent() const {
 		return static_cast<ReportItem*>(this->Super::parent());
 	}
-	//--virtual ReportItem* childAt(int ix) const {return static_cast<ReportItem*>(this->children()[ix]);}
 	//! Print item in form, that understandable by ReportPainter.
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PrintOk;}
+	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) {Q_UNUSED(out); Q_UNUSED(bounding_rect); return PrintResult::createPrintFinished();}
 	//! Print item in HTML element form.
-	virtual PrintResult printHtml(HTMLElement &out) {Q_UNUSED(out); return PrintOk;}
+	virtual PrintResult printHtml(HTMLElement &out);
 	/// vrati definovanou velikost pro item a layout
 	virtual ChildSize childSize(Layout parent_layout) {Q_UNUSED(parent_layout); return ChildSize();}
 
@@ -325,56 +355,32 @@ public:
 		return NULL;
 	}
 	static const bool IncludingParaTexts = true;
-	/// nekdy je potreba jen dotisknout texty a ramecky vytisknout znova, pak je \a including_para_texts == false
+	/// sometimes is necessarry to continue printing of overflowed text and print brorders for it again,
+	/// then \a including_para_texts == false
 	virtual void resetIndexToPrintRecursively(bool including_para_texts) {Q_UNUSED(including_para_texts);}
-	virtual bool isBreak() {return false;}
+	//virtual bool isBreak() {return false;}
+
+	virtual bool canBreak() {return !isKeepAll();}
 
 	virtual QString toString(int indent = 2, int indent_offset = 0);
 
-	/*--
-	virtual ReportItem* cd(const qf::core::utils::TreeItemPath &path) const {
-		return dynamic_cast<ReportItem*>(Super::cd(path));
-	}
-	--*/
 protected:
 	style::Text* effectiveTextStyle();
-	//virtual void setupMetaPaintItem(ReportItemMetaPaint *mpit);
+
+	void createHtmlExportAttributes(HTMLElement &out);
 
 	void classBegin() Q_DECL_OVERRIDE;
-    void componentComplete() Q_DECL_OVERRIDE;
+	void componentComplete() Q_DECL_OVERRIDE;
 public:
-	//--QDomElement element;
 	Rect designedRect;
-
-	bool recentlyPrintNotFit;
-	//PrintResult recentPrintResult;
+protected:
+	bool m_recentPrintNotFinished;
 private:
 	bool m_visible;
 };
 
-//! TODO: write class documentation.
-class QFQMLWIDGETS_DECL_EXPORT ReportItemBreak : public ReportItem
-{
-	Q_OBJECT
-private:
-	typedef ReportItem Super;
-protected:
-	bool breaking;
-public:
-	virtual bool isBreak() {return true;}
-
-	virtual ChildSize childSize(Layout parent_layout) {
-		Q_UNUSED(parent_layout);
-		return ChildSize(0, Rect::UnitInvalid);
-	}
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-public:
-	ReportItemBreak(ReportItem *parent = nullptr);
-};
-
-
 /*--
-//! TODO: write class documentation.
+
 class ReportItemTable : public ReportItemBand
 {
 	Q_OBJECT
@@ -395,7 +401,7 @@ public:
 --*/
 
 #ifdef REPORT_ITEM_GRAPH
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemGraph : public ReportItemImage
 {
 	Q_OBJECT

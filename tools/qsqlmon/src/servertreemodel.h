@@ -7,7 +7,7 @@
 	author:		Fanda Vacek (fanda.vacek@volny.cz)
 *********************************************************************/
 
-#include <qfobjectitemmodel.h>
+#include "qfobjectitemmodel.h"
 
 #include <QWidget>
 
@@ -26,9 +26,9 @@ public:
 	ServerTreeModel(QObject *parent = NULL);
 	~ServerTreeModel() Q_DECL_OVERRIDE;
 public:
-	int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
-	QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
-	QVariant headerData ( int section, Qt::Orientation o, int role = Qt::DisplayRole ) const;
+	int columnCount ( const QModelIndex & parent = QModelIndex() ) const Q_DECL_OVERRIDE;
+	QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const Q_DECL_OVERRIDE;
+	QVariant headerData ( int section, Qt::Orientation o, int role = Qt::DisplayRole ) const Q_DECL_OVERRIDE;
 
 public:
 	void loadSettings();

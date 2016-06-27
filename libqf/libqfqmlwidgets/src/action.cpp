@@ -34,7 +34,7 @@ void Action::setShortcut(const QString &new_text)
 	}
 }
 
-void Action::addAction(Action *action)
+void Action::addActionInto(QAction *action)
 {
 	QMenu *w = menu();
 	QF_ASSERT(w!=nullptr, "bad menu", return);
@@ -44,7 +44,7 @@ void Action::addAction(Action *action)
 	w->addAction(action);
 }
 
-void Action::prependAction(Action *action)
+void Action::addActionBefore(QAction *action)
 {
 	QWidget *w = parentMenu();
 	QF_ASSERT(w!=nullptr, "bad parent", return);
@@ -53,13 +53,13 @@ void Action::prependAction(Action *action)
 	w->insertAction(this, action);
 }
 
-void Action::appendAction(Action *new_act)
+void Action::addActionAfter(QAction *new_act)
 {
 	QWidget *parent_w = parentMenu();
 	QF_ASSERT(parent_w!=nullptr, "bad parent", return);
 	new_act->setParent(parent_w);
 	Action *next_act = nullptr;
-	for(auto a : parent_w->actions()) {
+	Q_FOREACH(auto a, parent_w->actions()) {
 		Action *aa = qobject_cast<Action*>(a);
 		if(!aa)
 			continue;
@@ -78,7 +78,7 @@ void Action::appendAction(Action *new_act)
 		parent_w->addAction(new_act);
 }
 
-Action *Action::addMenu(const QString &id, const QString &text)
+Action *Action::addMenuInto(const QString &id, const QString &text)
 {
 	Action *ret = nullptr;
 	QWidget *parent_w = this->menu();
@@ -89,12 +89,12 @@ Action *Action::addMenu(const QString &id, const QString &text)
 		ret->setMenu(m);
 		ret->setOid(id);
 		ret->setText(text);
-		addAction(ret);
+		addActionInto(ret);
 	}
 	return ret;
 }
 
-Action* Action::appendMenu(const QString &id, const QString &text)
+Action* Action::addMenuAfter(const QString &id, const QString &text)
 {
 	QWidget *parent_w = parentMenu();
 	QMenu *m = new QMenu(parent_w);
@@ -103,11 +103,11 @@ Action* Action::appendMenu(const QString &id, const QString &text)
 	new_act->setMenu(m);
 	new_act->setOid(id);
 	new_act->setText(text);
-	appendAction(new_act);
+	addActionAfter(new_act);
 	return new_act;
 }
 
-Action *Action::prependMenu(const QString &id, const QString &text)
+Action *Action::addMenuBefore(const QString &id, const QString &text)
 {
 	QWidget *parent_w = parentMenu();
 	QMenu *m = new QMenu(parent_w);
@@ -119,7 +119,7 @@ Action *Action::prependMenu(const QString &id, const QString &text)
 	return new_act;
 }
 
-void Action::addSeparator()
+void Action::addSeparatorInto()
 {
 	QMenu *w = menu();
 	QF_ASSERT(w!=nullptr, "bad menu", return);
@@ -129,7 +129,7 @@ void Action::addSeparator()
 	w->addAction(a);
 }
 
-void Action::prependSeparator()
+void Action::addSeparatorBefore()
 {
 	QWidget *w = parentMenu();
 	QF_ASSERT(w!=nullptr, "bad parent", return);

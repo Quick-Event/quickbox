@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>PreviewDialog</class>
- <widget class="QDialog" name="PreviewDialog">
+ <widget class="QWidget" name="PreviewDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>451</width>
+    <height>317</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Dialog</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>1</number>
+   </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item>
     <widget class="QFrame" name="frame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
@@ -47,7 +56,7 @@
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../../qfqmlwidgets.qrc">
+         <iconset resource="../../images/images.qrc">
           <normaloff>:/qf/qmlwidgets/images/wordwrap.png</normaloff>:/qf/qmlwidgets/images/wordwrap.png</iconset>
         </property>
         <property name="checkable">
@@ -81,50 +90,10 @@
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources>
-  <include location="../../qfqmlwidgets.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>PreviewDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>247</x>
-     <y>275</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>396</x>
-     <y>231</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>PreviewDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>341</x>
-     <y>279</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>398</x>
-     <y>190</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

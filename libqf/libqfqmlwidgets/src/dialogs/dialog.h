@@ -4,9 +4,12 @@
 #include "../qmlwidgetsglobal.h"
 #include "../framework/ipersistentsettings.h"
 
+#include <qf/core/utils.h>
+
 #include <QDialog>
 #include <QQmlListProperty>
 #include <QQmlParserStatus>
+#include <QDialogButtonBox>
 
 class QLabel;
 class QToolButton;
@@ -31,35 +34,45 @@ class CaptionFrame;
 class QFQMLWIDGETS_DECL_EXPORT Dialog : public QDialog, public framework::IPersistentSettings
 {
 	Q_OBJECT
-	Q_ENUMS(DoneResult)
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(qf::qmlwidgets::DialogButtonBox* buttonBox READ buttonBox WRITE setButtonBox NOTIFY buttonBoxChanged)
+	Q_PROPERTY(bool savePersistentPosition READ isSavePersistentPosition WRITE setSavePersistentPosition NOTIFY savePersistentPositionChanged)
 private:
 	typedef QDialog Super;
 public:
 	enum DoneResult {ResultReject = Rejected, ResultAccept = Accepted, ResultDelete};
 public:
 	explicit Dialog(QWidget *parent = 0);
+	explicit Dialog(QDialogButtonBox::StandardButtons buttons, QWidget *parent = 0);
 	~Dialog() Q_DECL_OVERRIDE;
+
+	QF_PROPERTY_BOOL_IMPL2(s, S, avePersistentPosition, true)
 public:
 	void setCentralWidget(QWidget *central_widget);
 
 	Q_INVOKABLE MenuBar* menuBar();
-	Q_INVOKABLE ToolBar* addToolBar();
+	Q_INVOKABLE ToolBar* toolBar(const QString &name, bool create_if_not_exists = false);
 
 	DialogButtonBox* buttonBox() {return m_dialogButtonBox;}
 	void setButtonBox(DialogButtonBox *dbb);
 	Q_SIGNAL void buttonBoxChanged();
 
+	void setButtons(QDialogButtonBox::StandardButtons buttons);
+	Q_INVOKABLE void setDefaultButton(int standard_button);
+
 	Q_SLOT void loadPersistentSettings();
 
 	/// called when dialog wants to get close
-	/// if returned value is false, close action is cancelled
-	Q_SLOT virtual bool doneRequest(int result);
-	Q_SLOT QVariant doneRequest_qml(const QVariant &result);
+	/// if returned value is passed to QDialog::done() function
+	//Q_SLOT virtual int doneRequest(int result);
+	//Q_SLOT QVariant doneRequest_qml(const QVariant &result);
 
 	int exec() Q_DECL_OVERRIDE;
 	void done(int result) Q_DECL_OVERRIDE;
+
+	Q_SLOT void setRecordEditMode(int mode);
+
+	Q_SIGNAL void visibleChanged(bool visible);
 private:
 	Q_SLOT void savePersistentSettings();
 
@@ -69,11 +82,13 @@ protected:
 	void updateLayout();
 
 	qf::qmlwidgets::framework::DialogWidget* dialogWidget();
+
+	void showEvent(QShowEvent *ev) Q_DECL_OVERRIDE;
 protected:
 	bool m_doneCancelled;
 	internal::CaptionFrame *m_captionFrame = nullptr;
 	MenuBar *m_menuBar = nullptr;
-	QList<ToolBar*> m_toolBars;
+	QMap<QString, ToolBar*> m_toolBars;
 	QWidget *m_centralWidget = nullptr;
 	DialogButtonBox *m_dialogButtonBox = nullptr;
 };

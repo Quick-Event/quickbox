@@ -10,6 +10,7 @@
 #include "../core/log.h"
 #include "../core/utils.h"
 #include "../core/string.h"
+#include "../utils/timescope.h"
 
 using namespace qf::core::utils;
 
@@ -158,7 +159,8 @@ QVariant TreeTableRow::value_helper(int col, bool &found) const
 			if(v.isValid()) {
 				TreeTableColumn cd = columns()[col];
 				QString ts = cd.property(TreeTable::KEY_TYPE).toString();
-				QVariant::Type t = QVariant::nameToType(qPrintable(ts));
+				int t = QMetaType::type(ts.toLatin1().constData());
+				//QVariant::Type t = QVariant::nameToType(qPrintable(ts));
 				ret = Utils::retypeVariant(v, t);
 			}
 		}
@@ -201,7 +203,8 @@ QVariant TreeTableRow::value_helper(const QString &col_or_key_name, bool &found)
 			//qfInfo() << col_or_key_name << "->" << sv.toString(2);
 			found = sv.hasProperty(col_or_key_name, &ret);
 		}
-		else found = false;
+		else
+			found = false;
 	}
 	else ret = value_helper(ix, found);
 	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
@@ -215,8 +218,16 @@ QVariant TreeTableRow::value(const QString &col_or_key_name) const
 	QVariant ret = value_helper(col_or_key_name, found);
 	if(!found) {
 		SValue sv = f_row.property(TreeTable::KEY_KEYVALS);
+		QStringList cols;
+		{
+			auto cc = columns();
+			for(int i=0; i<cc.count(); i++) {
+				TreeTableColumn c = cc.column(i);
+				cols << c.name();
+			}
+		}
 		QStringList keys = sv.keys();
-		qfError() << QString("key '%1' not found in columns or keyvals\n\nkeys:\n%2").arg(col_or_key_name).arg(keys.join(","));
+		qfError() << QString("key '%1' not found in columns or keyvals\n\tcolumns: %2\n\tkeys: %3").arg(col_or_key_name).arg(cols.join(", ")).arg(keys.join(", "));
 	}
 	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
 	return ret;
@@ -236,19 +247,18 @@ QVariant TreeTableRow::value(const QString &col_or_key_name, const QVariant &def
 
 void TreeTableRow::setValue(int col, const QVariant &val)
 {
-	//if(isNull()) return;
-	//if(0 <= col && col < columns().count()) {
-		if(f_row.isList()) f_row.setProperty(col, val);
-		else if(f_row.isMap()) {
-			SValue sv = f_row[TreeTable::KEY_ROW];
-			sv.setProperty(col, val);
-		}
-		else {
-			/// at je tam co chce, udelej z toho radek
-			//if(f_row.isValid()) f_row.setValue(QVariant()); /// vyhni se warningu
-			f_row.setProperty(col, val);
-		}
-	//}
+	if(f_row.isList()) {
+		f_row.setProperty(col, val);
+	}
+	else if(f_row.isMap()) {
+		SValue sv = f_row[TreeTable::KEY_ROW];
+		sv.setProperty(col, val);
+	}
+	else {
+		/// at je tam co chce, udelej z toho radek
+		//if(f_row.isValid()) f_row.setValue(QVariant()); /// vyhni se warningu
+		f_row.setProperty(col, val);
+	}
 }
 
 void TreeTableRow::setValue(const QString &col_or_key_name, const QVariant &val)
@@ -351,6 +361,14 @@ TreeTable::~TreeTable()
 {
 }
 
+int TreeTable::rowCount() const
+{
+	QF_TIME_SCOPE("RTreeTable::rowCount");
+	SValue rs = rows();
+	int ret = rs.count();
+	return ret;
+}
+
 TreeTableRow TreeTable::appendRow()
 {
 	SValue row_data = (*this)[KEY_ROWS][rowCount()];
@@ -402,17 +420,26 @@ QString TreeTable::columnFooter(const QString &col_name) const
 	if(ix >= 0) ret = columns().column(ix).footer();
 	return ret;
 }
-
+/*
 QString TreeTable::columnHAlignment(const QString &col_name) const
 {
 	QString ret;
 	int ix = columns().indexOf(col_name);
-	if(ix < 0) return ret;
+	if(ix < 0)
+		return ret;
 	TreeTableColumn col = columns().column(ix);
 	ret = col.hAlignment();
 	return ret;
 }
-
+*/
+/*
+QString TreeTable::columnWidth(int col_no) const
+{
+	TreeTableColumn col = columns().column(col_no);
+	ret = col.width();
+	return ret;
+}
+*/
 void TreeTable::setColumnAlignment(const QString &col_name, Qt::Alignment alignment)
 {
 	qfLogFuncFrame();
@@ -519,6 +546,10 @@ QVariant TreeTable::value(const QString &_key_name, const QVariant &default_val,
 				}
 			}
 		}
+	}
+	if(ret.userType() == qMetaTypeId<SValue>()) {
+		SValue sv = ret.value<SValue>();
+		ret = sv.toVariant();
 	}
 	qfDebug() << "\treturn:" << ret.toString();
 	return ret;

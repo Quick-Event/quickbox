@@ -7,7 +7,7 @@
 #include <sstream>
 #include <stdlib.h>
 
-#if defined Q_CC_GNU && !defined Q_CC_MINGW
+#if defined Q_CC_GNU && !defined Q_CC_MINGW && !defined ANDROID
 	#include <execinfo.h>
 #endif
 
@@ -15,35 +15,46 @@ using namespace qf::core;
 
 #if defined Q_CC_GNU && !defined Q_CC_MINGW
 
+static QString cutName(QString &s)
+{
+	QString ret;
+	int ix = 0;
+	while(ix < s.length() && s[ix] >= '0' && s[ix] <= '9') {
+		ix++;
+	}
+	if(ix < s.length()) {
+		int l = s.mid(0, ix).toInt();
+		ret = s.mid(ix, l);
+		s = s.mid(ix + l);
+	}
+	return ret;
+}
+
 static QString demangle_gcc(const QString &_s)
 {
-	//qDebug() << __PRETTY_FUNCTION__ << _s;
 	String s = _s;
 	String ret;
 	int first_digit_pos;
 	for(first_digit_pos=0; first_digit_pos<_s.length(); first_digit_pos++) {
 		QChar c = _s[first_digit_pos];
-		if(c >= '0' && c <= '9') break;
+		if(c >= '0' && c <= '9')
+			break;
 	}
-	if(first_digit_pos < _s.length()) {
+	if(first_digit_pos < s.length()) {
 		s = s.slice(first_digit_pos);
-		int ix = 0;
-		while(s[ix] >= '0' && s[ix] <= '9') ix++;
-		String s1 = s.slice(0, ix);
-		s = s.slice(ix);
-		ix = s1.toInt();
-		ret += s.slice(0, ix);
-		s = s.slice(ix);
-		ix = 0;
-		while(s[ix] >= '0' && s[ix] <= '9') ix++;
-		s1 = s.slice(0, ix);
-		s = s.slice(ix);
-		ix = s1.toInt();
-		String s2 = s.slice(0, ix);
-		if(!s2.isEmpty()) ret += "::" + s2;
-		ret += "(" + s.slice(ix) + ")";
+		while(true) {
+			QString ns = cutName(s);
+			if(ns.isEmpty())
+				break;
+			if(ret.isEmpty())
+				ret = ns;
+			else
+				ret += "::" + ns;
+		}
+		ret += "(" + s + ")";
 	}
-	else ret = s;
+	else
+		ret = s;
 	//qDebug() << "\t ret:" << ret;
 	return ret;
 }
@@ -117,7 +128,7 @@ QString QFStackTrace::trace2str()
 	SimpleSymbolEngine::instance().StackTrace( &context, oss );
 	return oss.str();
 }
-#elif defined Q_CC_GNU && !defined Q_CC_MINGW
+#elif defined Q_CC_GNU && !defined Q_CC_MINGW && !defined ANDROID
 QStringList StackTrace::trace2str()
 {
 	static const int MAX_CNT = 100;

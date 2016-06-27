@@ -1,8 +1,12 @@
 #include "plugin.h"
 #include "pluginmanifest.h"
+#include "application.h"
 
 #include <qf/core/utils.h>
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
+
+#include <QQmlEngine>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -16,7 +20,7 @@ Plugin::~Plugin()
 {
 	qfLogFuncFrame() << this;
 }
-
+/*
 QString Plugin::homeDir() const
 {
 	QString ret;
@@ -27,7 +31,7 @@ QString Plugin::homeDir() const
 		qfWarning() << "Cannot find manifest of plugin:" << this;
 	return ret;
 }
-
+*/
 void Plugin::setManifest(PluginManifest *mf)
 {
 	if(mf != m_manifest) {
@@ -37,4 +41,11 @@ void Plugin::setManifest(PluginManifest *mf)
 			setObjectName(mf->featureId());
 		emit manifestChanged(mf);
 	}
+}
+
+QQmlEngine *Plugin::qmlEngine()
+{
+	QQmlEngine *qe = Application::instance()->qmlEngine();
+	QF_ASSERT(qe != nullptr, "Qml engine is NULL", return nullptr);
+	return qe;
 }

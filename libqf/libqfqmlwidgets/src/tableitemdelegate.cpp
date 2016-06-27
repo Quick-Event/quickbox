@@ -20,7 +20,7 @@ TableView * TableItemDelegate::view() const
 	return view;
 }
 
-void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+void TableItemDelegate::paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	/**
 	Protoze z nepochopitelnyho duvodu neni funkce drawBackground() virtualni, musim patchovat QItemDelegate::drawBackground() v QT, kdyz chci podsvitit aktivni radek
@@ -41,8 +41,9 @@ void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & o
 			/// fill current row background
 			/// da se to udelat i takhle bez patchovani QT
 			/// pozor, aby to fungovalo musi se jeste v TableView::currentChanged() volat updateRow() na radky u kterych se meni selekce
-			static const QColor sel_row_background(245, 245, 184);
-			painter->fillRect(option.rect, sel_row_background);
+			static const QColor sel_row_background1(245, 245, 184);
+			static const QColor sel_row_background2(210, 240, 184);
+			painter->fillRect(option.rect, (v->inlineEditSaveStrategy() == TableView::OnEditedValueCommit)? sel_row_background2: sel_row_background1);
 		}
 		else {
 			/// fill background of RO cells
@@ -54,6 +55,21 @@ void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & o
 			}
 		}
 	}
+}
+
+void TableItemDelegate::paintForeground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
 	Super::paint(painter, option, index);
 }
 
+void TableItemDelegate::paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const
+{
+	paintBackground(painter, option, index);
+	paintForeground(painter, option, index);
+}
+
+QWidget *TableItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+	QWidget *ret = Super::createEditor(parent, option, index);
+	return ret;
+}

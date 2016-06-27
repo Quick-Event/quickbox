@@ -22,6 +22,11 @@ const TableModel::ColumnDefinition & TableModel::ColumnDefinition::sharedNull()
 	return n;
 }
 
+bool TableModel::ColumnDefinition::matchesSqlId(const QString column_name) const
+{
+	return qf::core::Utils::fieldNameEndsWith(fieldName(), column_name);
+}
+
 //=========================================
 //        TableModel
 //=========================================
@@ -32,6 +37,15 @@ QString TableModel::m_defaultDateTimeFormat = QStringLiteral("yyyy-MM-ddThh:mm:s
 TableModel::TableModel(QObject *parent) :
 	Super(parent), m_autoColumns(false), m_nullReportedAsString(true)
 {
+}
+
+void TableModel::clearRows()
+{
+	if(rowCount() > 0) {
+		beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+		m_table.clearRows();
+		endRemoveRows();
+	}
 }
 
 int TableModel::rowCount(const QModelIndex &parent) const
@@ -54,24 +68,27 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 		ColumnDefinition cd = m_columns.value(index.column());
 		if(!cd.isNull()) {
 			can_edit = !cd.isReadOnly();
-			qfu::Table::Field field = tableField(index.column());
-			if(!field.isNull()) {
-				can_edit = can_edit && field.canUpdate();
-				QVariant::Type type = columnType(index.column());
-				// BLOB fields cannot be edited in grid.
-				//can_edit = can_edit && (type != QVariant::ByteArray);
-				if(type == QVariant::Bool) {
-					flags |= Qt::ItemIsUserCheckable;// << Qt::ItemIsEnabled;
+			if(!cd.isVirtual()) {
+				qfu::Table::Field field = tableField(index.column());
+				if(!field.isNull()) {
+					can_edit = can_edit && field.canUpdate();
+					int type = columnType(index.column());
+					// BLOB fields cannot be edited in grid.
+					//can_edit = can_edit && (type != QVariant::ByteArray);
+					if(type == QVariant::Bool) {
+						flags |= Qt::ItemIsUserCheckable;// << Qt::ItemIsEnabled;
+					}
 				}
-			}
-			else {
-				can_edit = false;
+				else {
+					can_edit = false;
+				}
 			}
 		}
 		if(can_edit)
 			flags |= Qt::ItemIsEditable;
 		else
 			flags &= ~Qt::ItemIsEditable;
+		//qfInfo() << cd.fieldName() << flags << "checkable:" << (flags & Qt::ItemIsUserCheckable);
 	}
 	return flags;
 }
@@ -84,22 +101,28 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	if(role == RawValueRole) {
 		ret = value(index.row(), index.column());
 	}
+	else if(role == ValueIsDirtyRole) {
+		ret = isDirty(index.row(), index.column());
+	}
+	else if(role == SortRole) {
+		int type = columnType(index.column());
+		if(type == QVariant::Bool)
+			ret = value(index.row(), index.column()).toBool();
+		else
+			ret = data(index, Qt::DisplayRole);
+	}
 	else if(role == Qt::DisplayRole) {
 		ColumnDefinition cd = m_columns.value(index.column());
 		if(cd.isNull()) {
 			return QString("!%1").arg(index.column());
 		}
-		qfu::Table::Field field = tableField(index.column());
-		if(field.isNull())
-			return QString("!%1").arg(cd.fieldName());
-
 		if(data(index, ValueIsNullRole).toBool()) {
 			if(isNullReportedAsString())
 				return QStringLiteral("null");
 			return QVariant();
 		}
-		ret = data(index, RawValueRole);
-		QVariant::Type type = columnType(index.column());
+		ret = data(index, Qt::EditRole);
+		int type = columnType(index.column());
 		if(type == QVariant::Invalid)
 			type = ret.type(); /// pokud jsou sloupce virtualni (sloupce se pocitaji, nemusi byt pro ne definovan typ)
 		if(type == QVariant::ByteArray) {
@@ -125,14 +148,6 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				format = m_defaultDateTimeFormat;
 				//qfInfo() << "format" << format;
 			}
-			/*
-			else if(type == QVariant::Int) {
-				format = intFormat();
-			}
-			else if(type == QVariant::Double) {
-				format = doubleFormat();
-			}
-			*/
 		}
 		if(!format.isEmpty()) {
 			if(type == QVariant::Time) {
@@ -147,18 +162,11 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 				QDateTime dt = ret.toDateTime();
 				ret = dt.toString(format);
 			}
-			/*
-			else if(type == QVariant::Int) {
-				ret = QFString::number(ret.toInt(), format);
-			}
-			else if(type == QVariant::Double) {
-				ret = QFString::number(ret.toDouble(), format);
-			}
-			*/
 		}
 	}
 	else if(role == Qt::EditRole) {
 		ret = data(index, RawValueRole);
+		ret = rawValueToEdit(index.column(), ret);
 	}
 	else if (role == ValueIsNullRole) {
 		ret = data(index, RawValueRole);
@@ -180,7 +188,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		}
 	}
 	else if(role == Qt::TextColorRole) {
-		QVariant::Type type = columnType(index.column());
+		int type = columnType(index.column());
 		if(type == QVariant::ByteArray)
 			return QColor(Qt::blue);
 		if(data(index, ValueIsNullRole).toBool()) {
@@ -192,11 +200,12 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		/// delegate does it
 	}
 	else if (role == Qt::CheckStateRole) {
-		QVariant::Type type = columnType(index.column());
+		int type = columnType(index.column());
 		if(type == QVariant::Bool) {
 			//qfInfo() << "BOOL";
 			return (data(index, Qt::EditRole).toBool()? Qt::Checked: Qt::Unchecked);
 		}
+		return QVariant();
 	}
 	else if (role == Qt::ToolTipRole) {
 		QString s = data(index, Qt::DisplayRole).toString();
@@ -205,6 +214,10 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		ret = s;
 		//ret = data(index, Qt::DisplayRole);
 		//qfInfo() << ret.toString();
+	}
+	else if(role == ColumnDefinitionRole) {
+		ColumnDefinition cd = m_columns.value(index.column());
+		ret = QVariant::fromValue(cd);
 	}
 	return ret;
 }
@@ -229,16 +242,13 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 			ret = cd.toolTip();
 		}
 		else if (role == FieldTypeRole) {
-			QVariant::Type type = columnType(section);
-			return QVariant((int)type);
+			int type = columnType(section);
+			return type;
 		}
-		/*
-		else if (role == FieldIsNullableRole) {
-			qfu::Table::Field field = tableField(section);
-			/// drivery nastavuji requiredStatus() jako !nullable
-			return QVariant(field.isNullable());
+		else if(role == ColumnDefinitionRole) {
+			ColumnDefinition cd = m_columns.value(section);
+			ret = QVariant::fromValue(cd);
 		}
-		*/
 		else if(role == FieldNameRole) {
 			ret = m_columns.value(section).fieldName();
 		}
@@ -268,20 +278,29 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 
 bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-	qfLogFuncFrame() << value.toString() << "role:" << role;
+	qfLogFuncFrame() << value << "role:" << role;
 	bool ret = false;
 	if(!index.isValid())
 		return ret;
 	if(role == Qt::EditRole) {
-		ret = setValue(index.row(), index.column(), value);
+		QVariant val = editValueToRaw(index.column(), value);
+		ret = setValue(index.row(), index.column(), val);
 		if(ret)
 			emit dataChanged(index, index);
 	}
 	else if(role == Qt::CheckStateRole) {
+		//qfInfo() << __LINE__;
 		bool chk_val = (value.toInt() == Qt::Unchecked)? 0: 1;
 		ret = setValue(index.row(), index.column(), chk_val);
 		if(ret)
 			emit dataChanged(index, index);
+	}
+	else if(role == ValueIsDirtyRole) {
+		bool d = value.toBool();
+		ret = setDirty(index.row(), index.column(), d);
+	}
+	else {
+		ret = Super::setData(index, value, role);
 	}
 	return ret;
 }
@@ -310,6 +329,7 @@ bool TableModel::reload()
 	beginResetModel();
 	checkColumns();
 	endResetModel();
+	emit reloaded();
 	return true;
 }
 
@@ -321,16 +341,43 @@ bool TableModel::postRow(int row_no, bool throw_exc)
 	return true;
 }
 
+bool TableModel::postAll(bool throw_exc)
+{
+	bool ok = true;
+	for (int row_no = 0; row_no < rowCount(); ++row_no) {
+		qfu::TableRow row = m_table.row(row_no);
+		if(row.isDirty()) {
+			ok = postRow(row_no, throw_exc);
+			if(!ok)
+				break;
+		}
+	}
+	return ok;
+}
+
 void TableModel::revertRow(int row_no)
 {
 	qfu::TableRow &row = m_table.rowRef(row_no);
 	row.restoreOrigValues();
 }
 
+void TableModel::revertAll()
+{
+	for (int row_no = 0; row_no < rowCount(); ++row_no) {
+		qfu::TableRow row = m_table.row(row_no);
+		if(row.isDirty()) {
+			revertRow(row_no);
+		}
+	}
+}
+
 int TableModel::reloadRow(int row_no)
 {
 	qfu::TableRow &row = m_table.rowRef(row_no);
 	row.clearEditFlags();
+	QModelIndex ix1 = index(row_no, 0);
+	QModelIndex ix2 = index(row_no, columnCount() - 1);
+	emit dataChanged(ix1, ix2);
 	return 1;
 }
 
@@ -385,11 +432,13 @@ QVariant TableModel::value(int row_ix, int column_ix) const
 {
 	QVariant ret;
 	int table_field_index = tableFieldIndex(column_ix);
+	//if(table_field_index < 0)
+	//	qfDebug() << "debug";
 	QF_ASSERT(table_field_index >= 0,
-			  tr("Cannot find table field for column index: %1").arg(column_ix),
+			  tr("%2 Cannot find table field for column index: %1 (row index: %3)").arg(column_ix).arg(objectName()).arg(row_ix),
 			  return ret);
 	ret = m_table.row(row_ix).value(table_field_index);
-	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate columnt type
+	/// DO NOT foreget that SQL NULL values are represented by null QVariants of appropriate column type
 	/// NULL String is represented by QVariant(QVariant::String) NOT by QVariant()
 	//qfInfo() << row_ix << column_ix << "->" << ret.toString() << ret.typeName();
 	return ret;
@@ -399,9 +448,10 @@ QVariant TableModel::value(int row_ix, const QString &col_name) const
 {
 	QVariant ret;
 	int col_ix = columnIndex(col_name);
-	QF_ASSERT(col_ix >= 0,
-			  tr("Cannot find column index for name: '%1'").arg(col_name),
-			  return ret);
+	if(col_ix < 0) {
+		qfError() << tr("Cannot find column index for name: '%1'").arg(col_name);
+		return ret;
+	}
 	return value(row_ix, col_ix);
 }
 
@@ -428,6 +478,18 @@ QVariant TableModel::origValue(int row_ix, const QString &col_name) const
 	return origValue(row_ix, col_ix);
 }
 
+QVariantMap TableModel::values(int row_ix) const
+{
+	QVariantMap ret;
+	for (int i=0; i<columnCount(); ++i) {
+		auto cd = columnDefinition(i);
+		QString key;
+		qf::core::Utils::parseFieldName(cd.fieldName(), &key);
+		ret[key] = value(row_ix, i);
+	}
+	return ret;
+}
+
 bool TableModel::isDirty(int row_ix, int column_ix) const
 {
 	bool ret = false;
@@ -451,7 +513,38 @@ bool TableModel::isDirty(int row_ix, const QString &col_name) const
 	return isDirty(row_ix, col_ix);
 }
 
-qf::core::utils::TableRow TableModel::tableRow(int row_no)
+bool TableModel::setDirty(int row, int column, bool d)
+{
+	QF_ASSERT(m_table.isValidRowIndex(row),
+			  tr("Invalid table row: %1").arg(row),
+			  return false);
+	int table_field_index = tableFieldIndex(column);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field index for column index: %1").arg(column),
+			  return false);
+	QF_ASSERT(m_table.isValidFieldIndex(table_field_index),
+			  tr("Invalid table field index: %1").arg(table_field_index),
+			  return false);
+	qfu::TableRow &r = m_table.rowRef(row);
+	r.setDirty(table_field_index, d);
+	return true;
+}
+
+bool TableModel::setDirty(int row_ix, const QString &col_name, bool d)
+{
+	int col_ix = columnIndex(col_name);
+	QF_ASSERT(col_ix >= 0,
+			  tr("Cannot find column index for name: '%1'").arg(col_name),
+			  return false);
+	return setDirty(row_ix, col_ix, d);
+}
+
+qf::core::utils::TableRow &TableModel::tableRowRef(int row_no)
+{
+	return m_table.rowRef(row_no);
+}
+
+qf::core::utils::TableRow TableModel::tableRow(int row_no) const
 {
 	return m_table.row(row_no);
 }
@@ -459,7 +552,7 @@ qf::core::utils::TableRow TableModel::tableRow(int row_no)
 void TableModel::createColumnsFromTableFields()
 {
 	clearColumns();
-	for(auto fld : m_table.fields()) {
+	Q_FOREACH(auto fld, m_table.fields()) {
 		QString caption;
 		qfc::Utils::parseFieldName(fld.name(), &caption);
 		addColumn(fld.name(), caption);
@@ -472,51 +565,74 @@ void TableModel::fillColumnIndexes()
 {
 	for(int i=0; i<m_columns.count(); i++) {
 		ColumnDefinition &c = m_columns[i];
-		int ix = m_table.fields().fieldIndex(c.fieldName());
-		if(ix < 0)
-			qfWarning() << "\tcolumn" << c.fieldName() << "not found in fields.";
+		int ix = -1;
+		if(!c.isVirtual()) {
+			ix = m_table.fields().fieldIndex(c.fieldName());
+			if(ix < 0)
+				qfWarning() << "\tcolumn" << c.fieldName() << "not found in fields.";
+		}
 		c.setFieldIndex(ix);
 	}
 }
 
-QVariant::Type TableModel::columnType(int column_index) const
+int TableModel::columnType(int column_index) const
 {
-	QVariant::Type ret = QVariant::Invalid;
+	int ret = QVariant::Invalid;
 	ColumnDefinition cd = m_columns.value(column_index);
 	QF_ASSERT(!cd.isNull(),
 			  tr("Invalid column index: %1").arg(column_index),
 			  return ret);
 	ret = cd.castType();
 	if(ret == QVariant::Invalid) {
-		qfu::Table::Field fld = tableField(column_index);
-		QF_ASSERT(!fld.isNull(),
-				  tr("Invalid field for column index: %1").arg(column_index),
-				  return ret);
-		ret = fld.type();
+		if(cd.isVirtual()) {
+			qfWarning() << "Virtual column shoul have cast type defined!";
+		}
+		else {
+			qfu::Table::Field fld = tableField(column_index);
+			QF_ASSERT(!fld.isNull(), tr("Invalid field for column index: %1").arg(column_index), return ret);
+			ret = fld.type();
+		}
 	}
+	//qfInfo() << cd.fieldName() << ret;
 	return ret;
+}
+
+QColor TableModel::contrastTextColor(const QColor &background_color)
+{
+	return (qGray(background_color.rgb()) < 128)? QColor(Qt::white) : QColor(Qt::black);
+}
+
+QVariant TableModel::rawValueToEdit(int column_index, const QVariant &val) const
+{
+	Q_UNUSED(column_index);
+	return val;
+}
+
+QVariant TableModel::editValueToRaw(int column_index, const QVariant &val) const
+{
+	Q_UNUSED(column_index);
+	return val;
 }
 
 int TableModel::columnIndex(const QString &column_name) const
 {
 	int ret = -1, i = 0;
-	for(auto cd : m_columns) {
-		//qfTrash() << "\ttrying:" << cd.fieldName();
+	Q_FOREACH(auto cd, m_columns) {
+		//qfInfo() << cd.fieldName() << "vs." << column_name;
 		if(qfc::Utils::fieldNameEndsWith(cd.fieldName(), column_name)) {
 			ret = i;
 			break;
 		}
 		i++;
 	}
-	/*
-	if(throw_exc && ret < 0) {
+	if(ret < 0) {
 		QStringList sl;
-		foreach(ColumnDefinition cd, columns()) sl << cd.fieldName();
+		Q_FOREACH(const ColumnDefinition &cd, m_columns)
+			sl << cd.fieldName();
 		QString s = sl.join(", ");
 		QString msg = tr("Column named '%1' not found in column list. Existing columns: [%2]").arg(column_name).arg(s);
-		QF_EXCEPTION(msg);
+		qfError() << msg;
 	}
-	*/
 	return ret;
 }
 
@@ -535,8 +651,11 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 {
 	qfu::Table::Field ret;
 	int table_field_index = tableFieldIndex(column_index);
+	//if(table_field_index < 0) for (int i = 0; i < columnCount(); ++i) {
+	//	qfInfo() << i << columnDefinition(i).fieldName() << columnDefinition(i).fieldIndex();
+	//}
 	QF_ASSERT(table_field_index >= 0,
-			  tr("Invalid column index: %1").arg(column_index),
+			  tr("Cannot find field index for column index: %1 of %2 columns").arg(column_index).arg(columnCount()),
 			  return ret);
 	ret = m_table.field(table_field_index);
 	QF_CHECK(!ret.isNull(),
@@ -544,14 +663,19 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 	return ret;
 }
 
-void TableModel::clearColumns()
+void TableModel::clearColumns(int new_column_count)
 {
-	if(m_columns.isEmpty())
-		return;
-	beginRemoveColumns(QModelIndex(), 0, m_columns.count() - 1);
-	m_columns.clear();
+	if(m_columns.count()) {
+		beginRemoveColumns(QModelIndex(), 0, m_columns.count() - 1);
+		m_columns.clear();
+		endRemoveColumns();
+	}
+	if(new_column_count > 0) {
+		beginInsertColumns(QModelIndex(), 0, new_column_count - 1);
+		m_columns = ColumnList(new_column_count);
+		endInsertColumns();
+	}
 	m_autoColumns = false;
-	endRemoveColumns();
 }
 
 TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const QString &field_name, const QString &caption)
@@ -568,6 +692,12 @@ TableModel::ColumnDefinition &TableModel::insertColumn(int before_ix, const Tabl
 	m_columns.insert(before_ix, cd);
 	ColumnDefinition &c = m_columns[before_ix];
 	return c;
+}
+
+void TableModel::setColumn(int ix, const TableModel::ColumnDefinition &cd)
+{
+	QF_ASSERT(ix >= 0 && ix < columnCount(), "invalid column index", return);
+	m_columns[ix] = cd;
 }
 
 TableModel::ColumnDefinition TableModel::removeColumn(int ix)
@@ -599,6 +729,8 @@ bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
 	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
 	if(count < 0)
 		return false;
+	if(row_ix < 0)
+		row_ix = 0;
 	beginInsertRows(parent, row_ix, row_ix + count - 1);
 	bool ok = true;
 	for(int i=0; i<count; i++) {
@@ -617,15 +749,15 @@ bool TableModel::removeTableRow(int row_ix, bool throw_exc)
 	return ok;
 }
 
-bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
+bool TableModel::removeRows(int row_ix, int count, bool throw_exc)
 {
 	qfLogFuncFrame() << "row:" << row_ix << "count:" << count;
 	if(count < 0)
 		return false;
 	bool ok = true;
-	beginRemoveRows(parent, row_ix, row_ix + count - 1);
+	beginRemoveRows(QModelIndex(), row_ix, row_ix + count - 1);
 	for(int i=0; i<count; i++) {
-		ok = removeTableRow(row_ix);
+		ok = removeTableRow(row_ix, throw_exc);
 		if(!ok)
 			break;
 	}
@@ -633,28 +765,46 @@ bool TableModel::removeRows(int row_ix, int count, const QModelIndex &parent)
 	return ok;
 }
 
-qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, const QString& table_name, const TreeTableExportOptions &opts) const
+bool TableModel::removeRowNoOverload(int row_ix, bool throw_exc)
+{
+	qfLogFuncFrame() << "row:" << row_ix;
+	beginRemoveRows(QModelIndex(), row_ix, row_ix);
+	bool ok = TableModel::removeTableRow(row_ix, throw_exc);
+	endRemoveRows();
+	return ok;
+}
+
+qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariantList& _exported_columns, const TreeTableExportOptions &opts) const
 {
 	qfu::TreeTable ret(table_name);
 	QVariantList exported_columns = _exported_columns;
 	if(exported_columns.isEmpty()) {
-		for(int ix=0; ix<columnCount(); ix++) {
+		for(int ix=0; ix<m_table.columnCount(); ix++) {
 			QVariantMap col;
 			col[QStringLiteral("index")] = ix;
 			exported_columns << col;
 		}
 	}
+	bool raw_values = opts.isExportRawValues();
 	for(int i=0; i<exported_columns.count(); i++) {
 		QVariantMap col = exported_columns[i].toMap();
 		QString cap = col.value("caption").toString();
 		int ix = col.value("index").toInt();
 		qfu::TreeTableColumn tt_col;
-		if(col.value("origin") == "table") {
+		if(col.value("origin") == QLatin1String("table")) {
 			QVariant::Type t = m_table.field(ix).type();
 			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
 		}
 		else {
-			QVariant::Type t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
+			QVariant::Type t;
+			if(raw_values) {
+				qfu::Table::Field fld = tableField(ix);
+				t = fld.type();
+				//qfWarning() << fld.toString();
+			}
+			else {
+				t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
+			}
 			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
 		}
 		tt_col.setWidth(col.value("width").toString());
@@ -662,27 +812,27 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 
 	/// export data
 	{
-		bool raw_values = opts.isExportRawValues();
 		qfu::SValue srows;
 		for(int i=0; i<rowCount(); i++) {
 			QVariantList srow_lst;
 			qfu::Table::Row tbl_row = m_table.row(i);
-			//if(cnt) if(n++ % progress_step) emit progressValue(1.*n/cnt, tr("Probiha export"));
 			for(int j=0; j<exported_columns.count(); j++) {
 				QVariantMap col = exported_columns[j].toMap();
 				QVariant val;
 				int ix = col.value("index").toInt();
-				if(col.value("origin") == "table") {
+				if(col.value("origin") == QLatin1String("table")) {
 					val = tbl_row.value(ix);
+					//qfWarning() << col << val.typeName() << "val:" << val.toString();
 				}
 				else {
 					if(raw_values) {
 						val = value(i, ix);
-						//qfWarning() << val.typeName() << "val:" << val.toString();
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
 					}
 					else {
 						QModelIndex mix = index(i, ix);
 						val = data(mix);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
 					}
 				}
 				srow_lst << val;
@@ -694,10 +844,15 @@ qfu::TreeTable TableModel::toTreeTable(const QVariantList& _exported_columns, co
 	return ret;
 }
 
-QVariant TableModel::toTreeTableData(const QVariantList &exported_columns, const QString &table_name) const
+QVariant TableModel::toTreeTableData(const QString &table_name, const QVariantList &exported_columns) const
 {
-	qfu::TreeTable tt = toTreeTable(exported_columns, table_name);
+	qfu::TreeTable tt = toTreeTable(table_name, exported_columns);
 	//qfInfo() << tt.toString();
 	QVariant ret = tt.toVariant();
 	return ret;
+}
+
+TableModel::ColumnDefinition TableModel::columnDefinition(int ix) const
+{
+	return m_columns.value(ix);
 }

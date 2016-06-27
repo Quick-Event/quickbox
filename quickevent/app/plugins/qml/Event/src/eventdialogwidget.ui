@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EventDialogWidget</class>
+ <widget class="QWidget" name="EventDialogWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>431</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Event ID</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_name</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="ed_eventId">
+     <property name="placeholderText">
+      <string>Enter event database name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&amp;Name</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_name</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="ed_name"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>&amp;Stage count</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_stageCount</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="ed_stageCount">
+     <property name="minimum">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>&amp;Date</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_date</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QDateEdit" name="ed_date">
+     <property name="displayFormat">
+      <string>dd.MM.yyyy</string>
+     </property>
+     <property name="calendarPopup">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>&amp;Place</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_place</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="ed_place"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Des&amp;cription</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_description</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QLineEdit" name="ed_description"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Main r&amp;eferee</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_mainReferee</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QLineEdit" name="ed_mainReferee"/>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>D&amp;irector</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_director</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QLineEdit" name="ed_director"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>&amp;Handicap length</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_handicapLength</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QSpinBox" name="ed_handicapLength">
+     <property name="suffix">
+      <string>min</string>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>99999</number>
+     </property>
+     <property name="singleStep">
+      <number>10</number>
+     </property>
+     <property name="value">
+      <number>50</number>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Import ID</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_handicapLength</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="ed_importId">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>ed_eventId</tabstop>
+  <tabstop>ed_name</tabstop>
+  <tabstop>ed_stageCount</tabstop>
+  <tabstop>ed_date</tabstop>
+  <tabstop>ed_place</tabstop>
+  <tabstop>ed_description</tabstop>
+  <tabstop>ed_mainReferee</tabstop>
+  <tabstop>ed_director</tabstop>
+  <tabstop>ed_handicapLength</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

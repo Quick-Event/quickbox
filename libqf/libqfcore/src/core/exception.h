@@ -11,9 +11,9 @@
 namespace qf {
 namespace core {
 
-#define QF_THROW(exception_type, msg, abort) \
+#define QF_THROW(exception_type, msg) \
 	do { \
-		if(abort) \
+		if(qf::core::Exception::isAbortOnException()) \
 			qFatal("EXCEPTION %s", qPrintable(msg)); \
 		else \
 			throw exception_type (msg, QString("%1:%2\n%3\n").arg(__FILE__).arg(__LINE__).arg(QF_FUNC_NAME)); \
@@ -21,82 +21,44 @@ namespace core {
 
 //! if Exception::terminateOnException is true, abort application instead of throw. For debug purposes to get the stacktrace.
 #define QF_EXCEPTION(msg) \
-	QF_THROW(qf::core::Exception, msg, qf::core::Exception::terminateOnException)
-/*
-#define QF_SQL_EXCEPTION(msg) \
-	QF_THROW(qf::core::SqlException, msg, false)
-#define QF_INTERNAL_ERROR(msg, abort)  \
-	QF_THROW(qf::core::SqlException, msg, abort)
-*/
+	QF_THROW(qf::core::Exception, msg)
+
 //---------------------------------------------------------------------
 class QFCORE_DECL_EXPORT Exception : public std::exception
 {
-    public:
-	    static const bool Throw = true;
-		static bool terminateOnException;
-	protected:
-		QString m_type;
-		QString m_msg;
-		QByteArray m_what;
-		QString m_where;
-		QString m_stackTrace;
-		//QString f_catchLocation;
-	protected:
-		void init(const QString& type, const QString& _msg, const QString& _where);
-	public:
-		virtual void log();
-		virtual QString type() const {return m_type;}
-		virtual QString message() const {return m_msg;}
-		virtual QString where() const {return m_where;}
-		virtual QString stackTrace() const {return m_stackTrace;}
-		virtual QString toString() const;
-		//virtual QString catchLocation() const {return f_catchLocation;}
-		//void setCatchLocation(const QString &loc) {f_catchLocation = loc;}
-		//virtual const char* trace() const throw();
-		virtual const char* what() const throw();
-		operator const char *() const  throw(){return what();}
-		/// nastavi globalni promenne exceptionAbortsApplication, assertThrowsException, logStackTrace z parametru prikazove radky
-		/// --exception-aborts, --assert-throws, --log-stacktrace
-		//static void setGlobalFlags(int argc, char *argv[]);
-	public:
-		Exception()
-		{
-			init("Exception", QString(), QString());
-		}
-		Exception(const QString& _msg, const QString& _where = QString())
-		{
-			init("qf::core::Exception", _msg, _where);
-			log();
-		}
-		~Exception() throw() {}
-};
-/*
-class QFCORE_DECL_EXPORT QFInternalErrorException : public Exception
-{
-	protected:
-		void init(const QString& _msg, const QString& _where);
-		void log();
-	public:
-		QFInternalErrorException(const QString& _msg, const QString& _where = QString())
-	: Exception()
-		{
-			init(_msg, _where);
-			log();
-		}
+public:
+	Exception(const QString& _msg, const QString& _where = QString());
+	~Exception() throw() Q_DECL_OVERRIDE {}
+public:
+	static constexpr bool Throw = true;
+protected:
+	static bool s_abortOnException;
+	//QString m_type;
+	QString m_msg;
+	QByteArray m_what;
+	QString m_where;
+	QString m_stackTrace;
+	//QString f_catchLocation;
+protected:
+	void init(const QString& _msg, const QString& _where);
+public:
+	virtual void log();
+	//virtual QString type() const {return m_type;}
+	virtual QString message() const {return m_msg;}
+	virtual QString where() const {return m_where;}
+	virtual QString stackTrace() const {return m_stackTrace;}
+	virtual QString toString() const;
+	//virtual QString catchLocation() const {return f_catchLocation;}
+	//void setCatchLocation(const QString &loc) {f_catchLocation = loc;}
+	//virtual const char* trace() const throw();
+	const char* what() const throw() Q_DECL_OVERRIDE;
+	operator const char *() const  throw(){return what();}
+	// set global variables: abortOnException from command line
+	// --abort-on-exception
+	static void setAbortOnException(bool on) {s_abortOnException = on;}
+	static bool isAbortOnException() {return s_abortOnException;}
 };
 
-class QFCORE_DECL_EXPORT SqlException : public Exception
-{
-	public:
-		SqlException(const QString& _msg = QString(), const QString& _where = QString())
-			: Exception()
-		{
-			init("qf::core::SqlException", _msg, _where);
-			//log();
-		}
-};
-*/
-}
-}
+}}
 
 #endif

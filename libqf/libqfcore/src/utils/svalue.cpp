@@ -1,8 +1,10 @@
 #include "svalue.h"
 
 #include "../core/log.h"
+#include "../utils/timescope.h"
 
 #include <QJsonDocument>
+#include <QJSValue>
 
 using namespace qf::core::utils;
 
@@ -19,6 +21,7 @@ SValue::SValue()
 
 SValue::SValue(const QVariant &v)
 {
+	QF_TIME_SCOPE("SValue::SValue");
 	if(v.userType() == qMetaTypeId<SValue>()) {
 		*this = qvariant_cast<SValue>(v);
 	}
@@ -40,6 +43,12 @@ static QVariant value_to_variant(const QVariant &v)
 		SValue sv = qvariant_cast<SValue>(v);
 		ret = value_to_variant(sv.value());
 	}
+	/*
+	else if(v.userType() == qMetaTypeId<QJSValue>()) {
+		QJSValue sv = qvariant_cast<QJSValue>(v);
+		ret = sv.toVariant();
+	}
+	*/
 	else if(v.type() == QVariant::List) {
 		/// ARRAY
 		QVariantList vl = v.toList();
@@ -65,19 +74,25 @@ static QVariant value_to_variant(const QVariant &v)
 static QVariant variant_to_value(const QVariant &json)
 {
 	//qfLogFuncFrame() << QFJson::variantToString(json);
-	QVariant ret;
-	if(json.type() == QVariant::List) {
+	QVariant ret = json;
+	if(json.userType() == qMetaTypeId<QJSValue>()) {
+		// convert JavaScript value
+		QJSValue sv = qvariant_cast<QJSValue>(ret);
+		ret = sv.toVariant();
+	}
+
+	if(ret.type() == QVariant::List) {
 		/// ARRAY
 		SValue sv;
-		QVariantList vl = json.toList();
+		QVariantList vl = ret.toList();
 		for(int i=0; i<vl.count(); i++) {
 			sv.setProperty(i, variant_to_value(vl[i]));
 		}
 		ret.setValue(sv);
 	}
-	else if(json.type() == QVariant::Map) {
+	else if(ret.type() == QVariant::Map) {
 		SValue sv;
-		QVariantMap m = json.toMap();
+		QVariantMap m = ret.toMap();
 		QMapIterator<QString, QVariant> i(m);
 		while(i.hasNext()) {
 			i.next();
@@ -85,7 +100,6 @@ static QVariant variant_to_value(const QVariant &json)
 		}
 		ret.setValue(sv);
 	}
-	else ret = json;
 	return ret;
 }
 
@@ -129,7 +143,12 @@ QStringList SValue::keys() const
 QVariant SValue::property(const QString &name, const QVariant &default_value) const
 {
 	//qfLogFuncFrame() << name << QFJson::variantToString(d->value);
-	QVariant ret = d->value.toMap().value(name, default_value);
+	QF_TIME_SCOPE("SValue::property");
+	QVariant v = d->value;
+	if(v.userType() == qMetaTypeId<QJSValue>())
+		qfWarning() << "Converting QJSValue to QVariantMap can be very time consuming (depending on JS object size), use SValue::removeJSTypes() to get rid of this mesage.";
+	QVariantMap m = v.toMap();
+	QVariant ret = m.value(name, default_value);
 	//qfDebug() << "\t return:" << ret.toString();
 	return ret;
 }
@@ -241,7 +260,7 @@ void SValue::setProperty(const QString &name, const QVariant &val)
 	}
 	QVariant v = val;
 	if(val.userType() != qMetaTypeId<SValue>())
-		v = variant_to_value(v);
+		v = variant_to_value(val);
 	m[name] = v;
 	d->value = m;
 }
@@ -298,12 +317,15 @@ void SValue::setVariant(const QVariant &json)
 {
 	qfLogFuncFrame();// << QFJson::variantToString(json);
 	QVariant v = variant_to_value(json);
-	if(v.userType() == qMetaTypeId<SValue>()) {
-		*this = qvariant_cast<SValue>(v);
-	}
-	else setValue(v);
+	setValue(v);
 }
-
+/*
+void SValue::removeJSTypes()
+{
+	QVariant v = toVariant();
+	setVariant(v);
+}
+*/
 SValue& SValue::operator+=(const QVariantMap &m)
 {
 	QMapIterator<QString, QVariant> it(m);

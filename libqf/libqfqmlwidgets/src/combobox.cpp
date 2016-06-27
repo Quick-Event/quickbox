@@ -4,6 +4,7 @@
 
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/log.h>
 
 #include <QLineEdit>
 
@@ -16,11 +17,50 @@ ComboBox::ComboBox(QWidget *parent)
 	: Super(parent), IDataWidget(this)
 {
 	connect(this, &ComboBox::currentTextChanged, this, &ComboBox::onCurrentTextChanged);
+	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentDataChanged_helper(int)));
+	connect(this, SIGNAL(activated(int)), this, SLOT(currentDataActivated_helper(int)));
 }
 
 ComboBox::~ComboBox()
 {
 
+}
+
+void ComboBox::setCurrentData(const QVariant &val)
+{
+	QVariant old_val = currentData();
+	if(old_val != val) {
+		for(int i=0; i<count(); i++) {
+			QVariant v = itemData(i);
+			if(v == val) {
+				setCurrentIndex(i);
+				emit currentDataChanged(val);
+				break;
+			}
+		}
+	}
+}
+
+void ComboBox::insertItem(int index, const QString &text, const QVariant &user_data)
+{
+	Super::insertItem(index, text, user_data);
+}
+
+void ComboBox::setItems(const QVariantList &items)
+{
+	blockSignals(true);
+	clear();
+	for(auto v : items) {
+		QVariantList vl = v.toList();
+		if(vl.isEmpty()) {
+			Super::addItem(v.toString());
+		}
+		else {
+			Super::addItem(vl.value(0).toString(), vl.value(1));
+		}
+	}
+	setCurrentIndex(-1);
+	blockSignals(false);
 }
 
 QVariant ComboBox::dataValue()
@@ -63,6 +103,11 @@ void ComboBox::removeItems()
 	Super::clear();
 }
 
+void ComboBox::loadItems(bool force)
+{
+	Q_UNUSED(force)
+}
+
 void ComboBox::onCurrentTextChanged(const QString &txt)
 {
 	if(!m_loadingState) {
@@ -70,6 +115,16 @@ void ComboBox::onCurrentTextChanged(const QString &txt)
 		saveDataValue();
 		emit dataValueChanged(dataValue());
 	}
+}
+
+void ComboBox::currentDataChanged_helper(int ix)
+{
+	emit currentDataChanged(itemData(ix));
+}
+
+void ComboBox::currentDataActivated_helper(int ix)
+{
+	emit currentDataActivated(itemData(ix));
 }
 
 //===============================================================
@@ -91,25 +146,21 @@ void ForeignKeyComboBox::removeItems()
 	m_itemsLoaded = false;
 }
 
-void ForeignKeyComboBox::loadItems()
+void ForeignKeyComboBox::loadItems(bool force)
 {
 	static QString referencedTablePlaceHolder = QStringLiteral("{{referencedTable}}");
 	static QString referencedFieldPlaceHolder = QStringLiteral("{{referencedField}}");
 	static QString referencedCaptionFieldPlaceHolder = QStringLiteral("{{captionField}}");
+	if(force)
+		removeItems();
 	if(!m_itemsLoaded) do {
+		QString connection_name;
 		qfLogFuncFrame() << this << "data controler:" << m_dataController;
 		if(!m_dataController) {
-			qfWarning("Data controller is NULL.");
-			break;
+			connection_name = QLatin1String(QSqlDatabase::defaultConnection);
+			qfDebug() << "Data controller is NULL, using default connection name:" << connection_name;
 		}
 		m_loadingState = true;
-		/*
-			if(query_str.compare("<none>", Qt::CaseInsensitive) == 0) {
-				itemsLoaded = true;
-				break;
-			}
-			*/
-		removeItems();
 		{
 			QString tblname = referencedTable();
 			QString fldname = referencedField();
@@ -137,9 +188,9 @@ void ForeignKeyComboBox::loadItems()
 			}
 			query_str = query_str.trimmed();
 			if(!query_str.isEmpty()) {
-				qf::core::sql::Query q(m_dataController->dbConnectionName());
+				qf::core::sql::Query q(connection_name);
 				qfDebug() << "\t query_str:" << query_str;
-				QStringList caption_fields;
+				QSet<QString> field_captions;
 				QString caption_format = itemCaptionFormat();
 				if(!caption_format.isEmpty()) {
 					qfDebug() << "\t itemCaptionFormat:" << caption_format;
@@ -149,6 +200,8 @@ void ForeignKeyComboBox::loadItems()
 						caption_format.replace(referencedFieldPlaceHolder, "{{" + fldname + "}}", Qt::CaseInsensitive);
 					if(caption_format.contains(referencedCaptionFieldPlaceHolder, Qt::CaseInsensitive))
 						caption_format.replace(referencedCaptionFieldPlaceHolder, "{{" + capfldname + "}}", Qt::CaseInsensitive);
+					field_captions = qf::core::Utils::findCaptions(caption_format);
+					/*
 					QRegExp rx;
 					rx.setPattern("\\{\\{([A-Za-z][A-Za-z0-9]*(\\.[A-Za-z][A-Za-z0-9]*)*)\\}\\}");
 					rx.setPatternSyntax(QRegExp::RegExp);
@@ -158,16 +211,16 @@ void ForeignKeyComboBox::loadItems()
 						caption_fields << rx.cap(1);
 						ix += rx.matchedLength();
 					}
+					*/
 				}
 				qfDebug() << "\t capname:" << capfldname;
 				q.exec(query_str);
 				while(q.next()) {
 					QString caption = caption_format;
-					for(QString fld : caption_fields) {
+					Q_FOREACH(QString fld, field_captions) {
 						qfDebug() << "\t replacing caption field:" << fld;
-						QString fld_val = q.value(fld).toString();
-						//if(QFSql::sqlIdCmp(fld, capfldname)) fld_val = localizeCaption(fld_val);
-						caption.replace("{{" + fld + "}}", fld_val);
+						QVariant fld_val = q.value(fld);
+						caption = qf::core::Utils::replaceCaptions(caption, fld, fld_val);
 					}
 					QVariant id = q.value(fldname);
 					/*

@@ -10,7 +10,8 @@ HEADERS +=                            \
     $$PWD/reportitemimage.h \
     $$PWD/banddatamodel.h \
     $$PWD/reportitemband.h \
-    $$PWD/reportitemdetail.h
+    $$PWD/reportitemdetail.h \
+    $$PWD/reportitembreak.h
 
 SOURCES +=                            \
 	$$PWD/reportpainter.cpp       \
@@ -25,6 +26,7 @@ SOURCES +=                            \
     $$PWD/reportitemimage.cpp \
     $$PWD/banddatamodel.cpp \
     $$PWD/reportitemband.cpp \
-    $$PWD/reportitemdetail.cpp
+    $$PWD/reportitemdetail.cpp \
+    $$PWD/reportitembreak.cpp
 
 include ($$PWD/style/style.pri)

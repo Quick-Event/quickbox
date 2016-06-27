@@ -44,7 +44,7 @@ void Frame::setLayoutType(Frame::LayoutType ly_type)
 			delete old_ly;
 		}
 		m_layoutType = ly_type;
-		for(auto w : m_childWidgets) {
+		Q_FOREACH(auto w, m_childWidgets) {
 			addToLayout(w);
 		}
 		qfDebug() << "new layout:" << layout();
@@ -141,11 +141,19 @@ void Frame::setLayoutTypeProperties(LayoutTypeProperties *props)
 void Frame::addToLayout(QWidget *widget)
 {
 	qfLogFuncFrame();
+	QF_ASSERT(widget != nullptr, "Widget is NULL", return);
 	if(!layout()) {
 		createLayout(layoutType());
 		qfDebug() << "\tnew layout:" << layout() << this;
 	}
 	qfDebug() << "\tadding:" << widget << "to layout:" << layout() << this;
+	LayoutPropertiesAttached *layout_props_attached = qobject_cast<LayoutPropertiesAttached*>(qmlAttachedPropertiesObject<LayoutProperties>(widget, false));
+	if(layout_props_attached) {
+		LayoutTypeProperties::SizePolicy sph = layout_props_attached->horizontalSizePolicy();
+		LayoutTypeProperties::SizePolicy spv = layout_props_attached->verticalSizePolicy();
+		if(sph != LayoutTypeProperties::Preferred || spv != LayoutTypeProperties::Preferred)
+			widget->setSizePolicy((QSizePolicy::Policy)sph, (QSizePolicy::Policy)spv);
+	}
 	{
 		QGridLayout *ly = qobject_cast<QGridLayout*>(layout());
 		if(ly) {
@@ -162,10 +170,9 @@ void Frame::addToLayout(QWidget *widget)
 			if(cnt <= 0)
 				cnt = 2;
 			int row_span = 1, column_span = 1;
-			LayoutPropertiesAttached *lpa = qobject_cast<LayoutPropertiesAttached*>(qmlAttachedPropertiesObject<LayoutProperties>(widget, false));
-			if(lpa) {
-				row_span = lpa->rowSpan();
-				column_span = lpa->columnSpan();
+			if(layout_props_attached) {
+				row_span = layout_props_attached->rowSpan();
+				column_span = layout_props_attached->columnSpan();
 			}
 			if(flow == LayoutTypeProperties::LeftToRight) {
 				ly->addWidget(widget, m_currentLayoutRow, m_currentLayoutColumn, 1, column_span);
@@ -191,10 +198,9 @@ void Frame::addToLayout(QWidget *widget)
 		if(ly) {
 			QString buddy_text;
 			int column_span = 1;
-			LayoutPropertiesAttached *lpa = qobject_cast<LayoutPropertiesAttached*>(qmlAttachedPropertiesObject<LayoutProperties>(widget, false));
-			if(lpa) {
-				column_span = lpa->columnSpan();
-				buddy_text = lpa->buddyText();
+			if(layout_props_attached) {
+				column_span = layout_props_attached->columnSpan();
+				buddy_text = layout_props_attached->buddyText();
 			}
 			if(!buddy_text.isEmpty()) {
 				qfDebug() << "\t add with buddy:" << buddy_text;

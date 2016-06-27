@@ -41,13 +41,7 @@ ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportIte
 		QF_EXCEPTION("report_item is NULL.");
 	if(!report_item->processor())
 		QF_EXCEPTION("report_item->processor is NULL.");
-	f_reportItem = report_item;
-	//f_reportProcessor = report_item->processor;
-	//context = report_item->processor->context();
-	//f_reportItemPath = report_item->path();
-	//f_layoutSettings = NULL;
-    //if(report_item && report_item->processor())
-    //	f_procesorContext = report_item->processor()->context();
+	//f_reportItem = report_item;
 	{
 		double fill_vertical_layout_ratio = report_item->childSize(ReportItem::LayoutVertical).fillLayoutRatio();
 		setFillVLayoutRatio(fill_vertical_layout_ratio);
@@ -68,12 +62,12 @@ ReportItemMetaPaint* ReportItemMetaPaint::child(int ix) const
 	}
 	return ret;
 }
-
+/*
 ReportItem* ReportItemMetaPaint::reportItem()
 {
 	return f_reportItem;
 }
-
+*/
 void ReportItemMetaPaint::paint(ReportPainter *painter, unsigned mode)
 {
 	foreach(Super *_it, children()) {
@@ -192,23 +186,25 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 				sum_mm += it->renderedRect.height();
 			}
 			else {
-				if(d == 0) cnt_0_percent++;
-				else sum_percent += d;
+				if(d == 0)
+					cnt_0_percent++;
+				else
+					sum_percent += d;
 				spring_children_ixs << i;
 			}
 		}
+		qreal rest_percent = 1 - sum_percent;
+		if(rest_percent < 0)
+			rest_percent = 0;
+		qreal percent_0 = 0;
+		if(cnt_0_percent > 0)
+			percent_0 = rest_percent / cnt_0_percent;
 		if(spring_children_ixs.count()) {
-			qreal rest_percent = 1 - sum_percent;
-			if(rest_percent < 0)
-				rest_percent = 0;
-			qreal percent_0 = 0;
-			if(cnt_0_percent > 0)
-				percent_0 = rest_percent / cnt_0_percent;
 
 			double rest_mm = layout_size - sum_mm;
-			//reklamacewqfInfo() << "layout_size:" << layout_size << "sum_mm:" << sum_mm;
 			if(rest_mm < 0)
 				rest_mm = 0;
+
 			double children_ly_offset = 0; //insetVertical();
 			for(int i=0; i<childrenCount(); i++) {
 				ReportItemMetaPaint *it = child(i);
@@ -237,6 +233,21 @@ void ReportItemMetaPaint::expandChildVerticalSpringFrames()
 						children_ly_offset += ly_size_offset;
 					}
 				}
+			}
+		}
+	}
+	else if(layout() == qf::qmlwidgets::graphics::LayoutStacked) {
+		for(int i=0; i<childrenCount(); i++) {
+			ReportItemMetaPaint *it = child(i);
+			double d = it->fillVLayoutRatio();
+			//qfDebug() << it->reportItem() << "d:" << d;
+			if(d >= 0) {
+				if(d == 0)
+					d = 1;
+				qreal new_ly_size = d * layout_size;
+				it->renderedRect.setHeight(new_ly_size);
+				it->alignChildren(); /// kdyz neco expanduju, tak to musim taky zarovnat
+				it->expandChildVerticalSpringFrames();
 			}
 		}
 	}
@@ -358,33 +369,38 @@ ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportItem *report_item)
 //           ReportItemMetaPaintFrame
 //=================================================
 ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent, ReportItem *report_item)
-: ReportItemMetaPaint(_parent, report_item), lbrd(Qt::NoPen), rbrd(Qt::NoPen), tbrd(Qt::NoPen), bbrd(Qt::NoPen)
+	: ReportItemMetaPaint(_parent, report_item), lbrd(Qt::NoPen), rbrd(Qt::NoPen), tbrd(Qt::NoPen), bbrd(Qt::NoPen)
 {
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
-    QF_ASSERT_EX(report_item != nullptr, "ReportItem is NULL");
+	QF_ASSERT_EX(report_item != nullptr, "ReportItem is NULL");
 	fill = Qt::NoBrush;
 	bool design_mode = false;
 	ReportProcessor *proc = report_item->processor();
 	if(proc)
 		design_mode = proc->isDesignMode();
-    ReportItemFrame *frame_item = qobject_cast<ReportItemFrame*>(report_item);
-    if(frame_item) {
-        {
-            style::Brush *b = frame_item->fill();
-            if(b)
-                fill = b->brush();
-        }
-        {
-            style::Pen *p = frame_item->border();
-			//qfInfo() << report_item << p;
-            if(p)
-                lbrd = rbrd = tbrd = bbrd = p->pen();
-			else if(design_mode) {
+	ReportItemFrame *frame_item = qobject_cast<ReportItemFrame*>(report_item);
+	if(frame_item) {
+		{
+			style::Brush *b = frame_item->fill();
+			if(b)
+				fill = b->brush();
+		}
+		{
+			if(design_mode) {
 				QPen pn(Qt::DotLine);
 				pn.setColor(Qt::blue);
 				lbrd = rbrd = tbrd = bbrd = pn;
 			}
-        }
+			if(frame_item->leftBorder())
+				lbrd = frame_item->leftBorder()->pen();
+			if(frame_item->rightBorder())
+				rbrd = frame_item->rightBorder()->pen();
+			if(frame_item->topBorder())
+				tbrd = frame_item->topBorder()->pen();
+			if(frame_item->bottomBorder())
+				bbrd = frame_item->bottomBorder()->pen();
+			//qfInfo() << report_item << p;
+		}
 		{
 			style::Text *pts = frame_item->textStyle();
 			if(pts) {
@@ -392,8 +408,8 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 				setTextStyle(ts);
 			}
 		}
-    }
-    /*--
+	}
+	/*--
 	QString s = report_item->property("fill").toString();
 	if(!s.isEmpty()) {
 		if(s.startsWith("{grid:")) {
@@ -416,8 +432,8 @@ ReportItemMetaPaintFrame::ReportItemMetaPaintFrame(ReportItemMetaPaint *_parent,
 	s = report_item->property("bbrd").toString();
 	if(!s.isEmpty())
 		bbrd = context().styleCache().pen(s);
-    --*/
-    //qfDebug() << "\tRETURN";
+	--*/
+	//qfDebug() << "\tRETURN";
 }
 
 void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
@@ -425,11 +441,13 @@ void ReportItemMetaPaintFrame::paint(ReportPainter *painter, unsigned mode)
 	//qfDebug() << QF_FUNC_NAME << reportElement.tagName();
 	QF_ASSERT(painter, "painter is NULL", return);
 	//qfDebug() << "\trenderedRect:" << renderedRect.toString();
-	bool selected = (painter->selectedItem() && painter->selectedItem() == this);
+	auto selected_item = painter->selectedItem();
+	bool selected = (selected_item == this);
+	if(selected)
+		qfDebug() << selected_item;
 	if(mode & PaintFill)
 		fillItem(painter, selected);
 	Super::paint(painter, mode);
-	//if(selected) qfDebug() << "\tBINGO";
 	if(mode & PaintBorder)
 		frameItem(painter, selected);
 }
@@ -455,7 +473,7 @@ void ReportItemMetaPaintFrame::fillItem(QPainter *painter, bool selected)
 
 void ReportItemMetaPaintFrame::frameItem(QPainter *painter, bool selected)
 {
-    Q_UNUSED(selected);
+	Q_UNUSED(selected);
 	if(selected) {
 		QPen p(Qt::SolidLine);
 		p.setColor(Qt::magenta);
@@ -550,10 +568,22 @@ void ReportItemMetaPaintText::paint(ReportPainter *painter, unsigned mode)
 		//s = s.replace(currentPageReportSubstitution, QString::number(painter->currentPage + 1));
 		s = s.replace(pageCountReportSubstitution, QString::number(painter->pageCount));
 	}
-	Rect br = qf::qmlwidgets::graphics::mm2device(renderedRect, painter->device());
+	Rect br = renderedRect;
+	auto parent_item = parent();
+	if(parent_item) {
+		Rect pbr = parent_item->renderedRect;
+		qreal hinset = br.left() - pbr.left();
+		if(textOption.alignment() & Qt::AlignRight) {
+			br.moveLeft(br.left() + pbr.width() - br.width() - hinset - hinset);
+		}
+		else if(textOption.alignment() & Qt::AlignHCenter) {
+			br.moveLeft(br.left() + (pbr.width() - br.width()) / 2 - hinset);
+		}
+	}
+	br = qf::qmlwidgets::graphics::mm2device(br, painter->device());
 	br.adjust(0, 0, 1, 1); /// nekdy se stane, kvuji nepresnostem prepocitavani jednotek, ze se to vyrendruje pri tisku jinak, nez pri kompilaci, tohle trochu pomaha:)
-	//r.setHeight(500);
 	//qfWarning().noSpace() << "'" << s << "' flags: " << flags;
+	//painter->drawRect(br);
 #if 0
 	painter->drawText(br, flags, s);
 #else
@@ -575,7 +605,8 @@ void ReportItemMetaPaintText::paint(ReportPainter *painter, unsigned mode)
 			break;
 		}
 		line.setLineWidth(br.width());
-		if(height > 0) height += leading;
+		if(height > 0)
+			height += leading;
 		line.setPosition(QPointF(0., height));
 		height += line.height();
 		//width = qMax(width, line.naturalTextWidth());
@@ -618,20 +649,17 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 		/// V tabulkach by jako check OFF slo netisknout vubec nic,
 		/// ale na ostatnich mistech repotu je to zavadejici .
 
-		//qfInfo() << check_on;
 		/// BOX
-        //QString s_box;
-        //s_box = (check_on)? "color: black; style: solid; size:1": "color: gray; style: solid; size:1";
-        painter->setPen(QPen(Qt::SolidLine));
+		painter->setPen(QPen(Qt::SolidLine));
 		painter->setBrush(QBrush());
 		ReportItem::Rect r = renderedRect;
 		r.translate(0, -font_metrics.leading());
 		qreal w = renderedRect.width();
 		Qt::Alignment alignment_flags = textOption.alignment();
-		if(alignment_flags & Qt::AlignHCenter) r.translate((w - r.width())/2., 0);
-		else if(alignment_flags & Qt::AlignRight) r.translate(w - r.width(), 0);
-			//r.setWidth(2* r.width() / 3.);
-			//r.setHeight(2 * r.height() / 3.);
+		if(alignment_flags & Qt::AlignHCenter)
+			r.translate((w - r.width())/2., 0);
+		else if(alignment_flags & Qt::AlignRight)
+			r.translate(w - r.width(), 0);
 		painter->drawRect(qf::qmlwidgets::graphics::mm2device(r, painter->device()));
 
 		if(check_on) {
@@ -647,17 +675,14 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 			painter->drawLine(p2, p1);
 #else
 			/// CHECK cross
-            //--static QString s_check = "color: maroon; style: solid; size:2";
-            QPen p(Qt::SolidLine);
-            QColor c;
-            c.setNamedColor("maroon");
-            p.setColor(c);
-            painter->setPen(p);
+			//--static QString s_check = "color: maroon; style: solid; size:2";
+			QPen p(Qt::SolidLine);
+			QColor c;
+			c.setNamedColor("maroon");
+			p.setColor(c);
+			painter->setPen(p);
 			r = qf::qmlwidgets::graphics::mm2device(r, painter->device());
-			//QPointF p1(r.left(), r.top() + r.height() / 2);
-			//QPointF p2(r.left() + r.width() / 2, r.bottom());
 			painter->drawLine(r.topLeft(), r.bottomRight());
-			//p1 = QPointF(r.right() + 0.2 * r.width(), r.top());
 			painter->drawLine(r.bottomLeft(), r.topRight());
 #endif
 		}

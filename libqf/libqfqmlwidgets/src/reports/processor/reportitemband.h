@@ -22,29 +22,43 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	Q_OBJECT
 	//Q_PROPERTY(qf::qmlwidgets::reports::ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
 	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
-	Q_PROPERTY(QVariant data READ data WRITE setData NOTIFY dataChanged)
+	Q_PROPERTY(QVariant modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
+	Q_PROPERTY(bool createFromData READ isCreateFromData WRITE setCreateFromData NOTIFY createFromDataChanged)
+	//Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
+	Q_CLASSINFO("property.keepFirst.doc", "Number of band details printed, which cannot be splitted by page/column break.")
+	Q_PROPERTY(int keepFirst READ keepFirst WRITE setKeepFirst NOTIFY keepFirstChanged)
+	Q_PROPERTY(bool htmlExportAsTable READ isHtmlExportAsTable WRITE setHtmlExportAsTable NOTIFY htmlExportAsTableChanged)
 private:
 	typedef ReportItemFrame Super;
 public:
 	ReportItemBand(ReportItem *parent = nullptr);
 	~ReportItemBand() Q_DECL_OVERRIDE;
 public:
-	//QF_PROPERTY_OBJECT_IMPL(ReportItemFrame*, h, H, eader)
 	QF_PROPERTY_BOOL_IMPL(h, H, eaderOnBreak)
+	QF_PROPERTY_BOOL_IMPL(c, C, reateFromData)
+	QF_PROPERTY_IMPL2(int, k, K, eepFirst, 0)
+	QF_PROPERTY_BOOL_IMPL2(h, H, tmlExportAsTable, true)
 public:
-	QVariant data() const { return m_data; }
-	void setData(QVariant d);
-	Q_SIGNAL void dataChanged(QVariant new_data);
+	QVariant modelData() const { return m_data; }
+	void setModelData(QVariant d);
+	Q_SIGNAL void modelDataChanged(QVariant new_data);
 public:
 	BandDataModel* model();
-public:
-	//--virtual void resetIndexToPrintRecursively(bool including_para_texts);
-	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
+	bool isModelLoaded();
+	// modelLoaded cannot be used in QML, it was bad pattern, ReportItem has NULL parentBand when Component.onCompleted is called
+	//Q_SIGNAL void modelLoadedChanged(bool is_loaded);
 
-	//--qf::core::utils::TreeTable dataTable();
-	//--qf::core::utils::TreeTableRow dataRow();
+	Q_INVOKABLE QVariant data(const QString &field_name, int role = Qt::DisplayRole);
+public:
+	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
+	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
+
+	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
+	bool canBreak() Q_DECL_OVERRIDE;
+
 protected:
 	ReportItemDetail* detail();
+	void createChildItemsFromData();
 protected:
 	BandDataModel *m_model = nullptr;
 private:
@@ -52,7 +66,7 @@ private:
 };
 
 #if 0
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemDetail : public ReportItemFrame
 {
 	Q_OBJECT
@@ -79,7 +93,7 @@ public:
 	virtual ~ReportItemDetail() {}
 };
 
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 {
 	Q_OBJECT

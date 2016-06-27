@@ -1,0 +1,44 @@
+#include "reportoptionsdialog.h"
+#include "ui_generatereportoptionsdialog.h"
+
+#include <Event/eventplugin.h>
+
+#include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/framework/plugin.h>
+
+namespace Runs {
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return qobject_cast<Event::EventPlugin*>(plugin);
+}
+
+ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
+	: QDialog(parent)
+	, ui(new Ui::ReportOptionsDialog)
+{
+	ui->setupUi(this);
+	ui->btRegExp->setEnabled(eventPlugin()->sqlDriverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
+}
+
+ReportOptionsDialog::~ReportOptionsDialog()
+{
+	delete ui;
+}
+
+QVariantMap ReportOptionsDialog::optionsToMap() const
+{
+	QVariantMap ret;
+	ret["everyClassOnNewPage"] = ui->chkPrintEveryClassOnNewPage->isChecked();
+	if(ui->grpClassFilter->isChecked()) {
+		QVariantMap m;
+		m["filterType"] = ui->btRegExp->isChecked()? "regExp": "wildCard";
+		ret["classFilter"] = m;
+	}
+	return ret;
+}
+
+} // namespace Runs

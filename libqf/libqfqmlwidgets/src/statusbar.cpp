@@ -11,7 +11,14 @@ StatusBar::StatusBar(QWidget *parent) :
 
 qf::qmlwidgets::StatusBar::~StatusBar()
 {
+	qfLogFuncFrame() << this;
+}
 
+void StatusBar::showProgress(const QString &msg, int completed, int total)
+{
+	Q_UNUSED(completed);
+	Q_UNUSED(total);
+	showMessage(msg);
 }
 
 void StatusBar::showMessage(const QString &message, int timeout)

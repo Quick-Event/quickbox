@@ -1,0 +1,3 @@
+module Receipts
+
+plugin Receiptsplugin ..

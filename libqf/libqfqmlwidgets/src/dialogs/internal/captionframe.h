@@ -1,6 +1,8 @@
 #ifndef QF_QMLWIDGETS_DIALOGS_DIALOG_INTERNAL_CAPTIONFRAME_H
 #define QF_QMLWIDGETS_DIALOGS_DIALOG_INTERNAL_CAPTIONFRAME_H
 
+#include <qf/core/utils.h>
+
 #include <QFrame>
 #include <QIcon>
 
@@ -15,10 +17,14 @@ namespace internal {
 class CaptionFrame : public QFrame
 {
 	Q_OBJECT
+	Q_PROPERTY(QString text READ text WRITE setText)
+	Q_PROPERTY(bool alert READ isAlert WRITE setAlert NOTIFY alertChanged)
 public:
 	//enum FrameStyle {StyleDefault=0, StyleLight, StyleDark};
 public:
 	CaptionFrame(QWidget *parent = NULL);
+
+	QF_PROPERTY_BOOL_IMPL2(a, A, lert, false)
 signals:
 	void closeButtonClicked();
 public:
@@ -30,12 +36,15 @@ public:
 	//void setFrameStyle(FrameStyle st);
 	QIcon createIcon();
 	Q_SLOT void update();
+	Q_SLOT void setRecordEditMode(int mode);
 protected:
+	QString m_text;
 	QString m_iconSource;
 	QIcon m_icon;
-	QLabel *captionIconLabel;
-	QLabel *captionLabel;
-	QToolButton *closeButton;
+	QLabel *m_captionIconLabel;
+	QLabel *m_captionLabel;
+	QToolButton *m_closeButton;
+	int m_recordEditMode = -1;
 };
 
 }}}}

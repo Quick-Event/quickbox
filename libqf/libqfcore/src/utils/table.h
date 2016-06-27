@@ -27,28 +27,34 @@ class QFCORE_DECL_EXPORT Table
 {
 	//Q_DECLARE_TR_FUNCTIONS(qf::core::utils::Table);
 public:
+	class FieldList;
+	Table();
+	Table(const QStringList &col_names);
+	Table(const FieldList &col_defs);
+	virtual ~Table();
+public:
 	typedef TableRow Row;
 	enum CleanupDataOption {ClearFieldsRows = 1, ClearRows};
 	class QFCORE_DECL_EXPORT TextImportOptions : public QVariantMap
 	{
 	public:
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldSeparator, ",")
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldQuotes, "\"")
-		QF_OPTION_FIELD2_RW(bool, isI, setI, mportColumnNames, true)
-		QF_OPTION_FIELD2_RW(bool, isI, setI, mportAppend, false)
-		QF_OPTION_FIELD2_RW(int, i, setI, gnoreFirstLinesCount, 0)
-		QF_OPTION_FIELD2_RW(bool, isT, setT, rimValues, true)
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldSeparator, ",")
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldQuotes, "\"")
+		QF_VARIANTMAP_FIELD2(bool, isI, setI, mportColumnNames, true)
+		QF_VARIANTMAP_FIELD2(bool, isI, setI, mportAppend, false)
+		QF_VARIANTMAP_FIELD2(int, i, setI, gnoreFirstLinesCount, 0)
+		QF_VARIANTMAP_FIELD2(bool, isT, setT, rimValues, true)
 	};
 	class QFCORE_DECL_EXPORT TextExportOptions : public QVariantMap
 	{
 	public:
 		enum FieldQuoting {Never=1, IfNecessary, Always};
 	public:
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldSeparator, ",")
-		QF_OPTION_FIELD2_RW(QString, f, setF, ieldQuotes, "\"")
-		QF_OPTION_FIELD2_RW(bool, isE, setE, xportColumnNames, true)
-		QF_OPTION_FIELD2_RW(bool, isF, setF, ullColumnNames, true)
-		QF_OPTION_FIELD2_RW(bool, isU, setU, seColumnCaptions, true)
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldSeparator, ",")
+		QF_VARIANTMAP_FIELD2(QString, f, setF, ieldQuotes, "\"")
+		QF_VARIANTMAP_FIELD2(bool, isE, setE, xportColumnNames, true)
+		QF_VARIANTMAP_FIELD2(bool, isF, setF, ullColumnNames, true)
+		QF_VARIANTMAP_FIELD2(bool, isU, setU, seColumnCaptions, true)
 
 		QVariantMap columnCaptions() const {return value("columnCaptions").toMap();}
 		TextExportOptions& setColumnCaptions(const QVariantMap &cc) {this->operator[]("columnCaptions") = cc; return *this;}
@@ -56,13 +62,13 @@ public:
 		FieldQuoting fieldQuotingPolicy() const {return (FieldQuoting)(value("fieldQuotingPolicy", IfNecessary).toInt());}
 		TextExportOptions& setFieldQuotingPolicy(FieldQuoting fq) {this->operator[]("fieldQuotingPolicy") = fq; return *this;}
 
-		//QF_OPTION_FIELD2_RW(FieldQuoting, f, setF, ieldQuotingPolicy, IfNecessary)
-		QF_OPTION_FIELD_RW(QString, c, setC, odecName)
-		QF_OPTION_FIELD2_RW(int, f, setF, romLine, 0)
-		QF_OPTION_FIELD2_RW(int, t, setT, oLine, -1)
-		QF_OPTION_FIELD_RW(QString, n, setN, ote)
+		//QF_VARIANTMAP_FIELD(FieldQuoting, f, setF, ieldQuotingPolicy, IfNecessary)
+		QF_VARIANTMAP_FIELD(QString, c, setC, odecName)
+		QF_VARIANTMAP_FIELD2(int, f, setF, romLine, 0)
+		QF_VARIANTMAP_FIELD2(int, t, setT, oLine, -1)
+		QF_VARIANTMAP_FIELD(QString, n, setN, ote)
 		/// pri exportu do XLS se vlozi tabulka slozena z radku XLS prologu
-		QF_OPTION_FIELD_RW(QVariantList, x, setX, lsProlog)
+		QF_VARIANTMAP_FIELD(QVariantList, x, setX, lsProlog)
 		public:
 			TextExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};
@@ -133,9 +139,9 @@ public:
 
 		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
-		QF_SHARED_CLASS_FIELD_RW(bool, c, setC, anUpdate)
-		QF_SHARED_CLASS_FIELD_RW(bool, is, set, PriKey)
-		QF_SHARED_CLASS_FIELD_RW(bool, is, set, Serial)
+		QF_SHARED_CLASS_BIT_FIELD_RW(bool, c, setC, anUpdate)
+		QF_SHARED_CLASS_BIT_FIELD_RW(bool, is, set, PriKey)
+		QF_SHARED_CLASS_BIT_FIELD_RW(bool, is, set, Serial)
 		//QF_SHARED_CLASS_FIELD_RW(bool, is, set, Nullable)
 	};
 	class QFCORE_DECL_EXPORT FieldList : public QList<Field>
@@ -212,6 +218,7 @@ public:
 		return sumValue(fields().fieldIndex(field_name));
 	}
 private:
+	/// unsorted, unfiltered table rows
 	const RowList& rows() const {return d->rows;}
 	RowList& rowsRef() {return d->rows;}
 	//! clears all rows, if \a fields_options tells what else will be cleared.
@@ -238,7 +245,7 @@ public:
 	//static TableRow nullRow() {return TableRow::sharedNull();}
 public:
 	//! Clear all except column definitions.
-	void clearData() {cleanupData(ClearRows);}
+	void clearRows() {cleanupData(ClearRows);}
 	//! frees all allocated resources (fields, columns, rows, indexes, etc.)
 	void clear() {cleanupData(ClearFieldsRows);}
 
@@ -248,10 +255,13 @@ public:
 		return fields().isValidFieldIndex(fld_ix);
 	}
 public:
+	virtual int columnCount() const;
+	Field& insertColumn(int ix, const QString &name, QVariant::Type t);
+	Field& appendColumn(const QString &name, QVariant::Type t) {return insertColumn(columnCount(), name, t);}
+
 	//! return empty row which is not inserted in the table rows
 	TableRow isolatedRow();
 	virtual int rowCount() const;
-	virtual int columnCount() const;
 	TableRow& insertRow(int before_row);
 	virtual TableRow& insertRow(int before_row, const TableRow &_row);
 	TableRow& appendRow() {return insertRow(rowCount());}
@@ -307,22 +317,17 @@ public:
 	/// ulozi data v tabulce jako QVariantList QVariantListu (kazdy radek je jeden QVariantList)
 	QVariantList dataToVariantList() const;
 	void dataFromVariantList(const QVariantList &_lst);
-public:
-	Table();
-	Table(const QStringList &col_names);
-	Table(const FieldList &col_defs);
-	virtual ~Table();
 };
 
 //! One row in table, implicitly shared.
 class QFCORE_DECL_EXPORT TableRow
 {
-	//friend class QFSqlQueryTable;
-	//friend class QFTableModel;
-	//friend class QFSqlQueryModel;
+public:
+	TableRow();
+	TableRow(const Table::TableProperties &props);
 private:
 	class SharedDummyHelper {};
-    class QFCORE_DECL_EXPORT Data : public QSharedData
+	class QFCORE_DECL_EXPORT Data : public QSharedData
 	{
 		friend class TableRow;
 	public:
@@ -344,11 +349,7 @@ private:
 	static const TableRow& sharedNull();
 	TableRow(SharedDummyHelper);
 public:
-	QVector<QVariant>& valuesRef() {return d->values;}
-	const QVector<QVariant>& values() const {return d->values;}
-	QVariantMap valuesMap() const;
-	//QBitArray& nullFlagsRef() {return d->nullFlags;}
-public:
+	//void initValues();
 	void saveValues();
 	void restoreOrigValues();
 	void clearEditFlags();
@@ -361,17 +362,24 @@ public:
 	//bool hasNullFlag(int col) const;
 	QVariant value(int col) const;
 	QVariant value(const QString &field_name) const;
+
+	//QVector<QVariant>& valuesRef() {return d->values;}
+	const QVector<QVariant>& values() const {return d->values;}
+	QVariantMap valuesMap(bool full_names = false) const;
+
 	//! Dirty flag nastavi, jen kdyz je value jina, nez ta, co uz tam byla.
 	void setValue(int col, const QVariant &v);
 	void setValue(const QString &field_name, const QVariant &v);
 	//! Set value without retyping and checks, useful only when table data are loaded from QSL query or something like that.
 	/// Very fast and very dangerous function
 	void setBareBoneValue(int col, const QVariant &val);
+	/// when table column is inserted, all table rows values should be inserted too
+	void insertInitValue(int ix);
+
 	bool isDirty() const;
 	bool isDirty(int field_no) const;
 	void setDirty(int field_no, bool val = true);
 
-	//void fillDefaultAndAutogeneratedValues();
 
 	//! returns number of fields in the row.
 	int fieldCount() const {return fields().count();}
@@ -384,20 +392,11 @@ public:
 	/// viz. napr. PPKlientKartaDataFormDocument::loadData()
 	//void setForcedInsert(bool b = true) {d->flags.forcedInsert = b;}
 	bool isNull() const {return d == sharedNull().d;}
-	//void setFields(const FieldList& flds) {d->fields = flds;}
 	const Table::TableProperties& tableProperties() const {return d->tableProperties;}
-	//TableProperties& tablePropertiesRef() {return d->tableProperties;}
+	void setTableProperties(const Table::TableProperties &tp) {d->tableProperties = tp;}
 	const Table::FieldList& fields() const {return d->tableProperties.fields();}
-	//FieldList& fieldsRef() {return d->tableProperties.fieldsRef();}
-	//public:
-	//static TableRow nullRow();
-	//bool operator<(const TableRow &r) const;
 
 	QString toString(const QString &sep = "\t") const;
-public:
-	TableRow();
-	TableRow(const Table::TableProperties &props);
-	//virtual ~TableRow();
 };
 
 }}}

@@ -15,7 +15,9 @@ QStringList DlgEditConnection::mysqlCodecs;
 DlgEditConnection::DlgEditConnection(QWidget *parent) :
 	QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint)
 {
+	qfLogFuncFrame();
 	setupUi(this);
+	btFindDatabaseFile->setVisible(false);
 	drivers = QSqlDatabase::drivers();
 	//drivers << "QMYSQL" << "QFMYSQL" << "QPSQL" << "QFPSQL" << "QSQLITE" << "QFSQLITE" << "QIBASE" << "QFIBASE";
 	cbxDriver->addItems(drivers);
@@ -33,8 +35,6 @@ DlgEditConnection::DlgEditConnection(QWidget *parent) :
 	lstMySqlSetNames->addItems(mysqlCodecs);
 	//codecs = QTextCodec::availableCodecs();
 	//foreach(QByteArray ba, codecs) lstCodec->addItem(QString(ba));
-
-	btFindDatabaseFile->setVisible(false);
 }
 
 void DlgEditConnection::setParams(const Connection::Params &params)
@@ -98,6 +98,7 @@ void DlgEditConnection::on_btOk_clicked()
 
 void DlgEditConnection::on_cbxDriver_currentIndexChanged(const QString &s)
 {
+	qfLogFuncFrame() << s << (s.endsWith("SQLITE") || s.endsWith("IBASE"));
 	//qfTrash() << QF_FUNC_NAME << s << QFSqlConnectionBase::defaultPort(s);
 	//if(edPort->value() == 0)
 	//	edPort->setValue(QString::number(QFSqlConnectionBase::defaultPort(s)));
@@ -115,7 +116,8 @@ void DlgEditConnection::on_cbxDriver_currentIndexChanged(const QString &s)
 
 void DlgEditConnection::on_btFindDatabaseFile_clicked()
 {
-	QString s = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Open database file"));
+	QString s = edDatabase->text();
+	s = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Open database file"), s);
 	if(!s.isEmpty())
 		edDatabase->setText(s);
 }

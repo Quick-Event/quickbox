@@ -2,25 +2,32 @@
 #include "plugin.h"
 #include "mainwindow.h"
 #include "../frame.h"
+#include "../menubar.h"
+#include "../toolbar.h"
 #include "../dialogs/internal/captionframe.h"
 
 #include <qf/core/log.h>
 #include <qf/core/utils.h>
+#include <qf/core/assert.h>
 
 #include <QVBoxLayout>
 #include <QIcon>
 
 using namespace qf::qmlwidgets::framework;
 
-PartWidget::PartWidget(QWidget *parent) :
-	Super(parent), IPersistentSettings(this)
+PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
+	: Super(parent)
+	, IPersistentSettings(this)
 {
 	qfLogFuncFrame();
+	setFeatureId(feature_id);
 	m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
 	m_centralFrame = new Frame(this);
+	m_centralFrame->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 	m_centralFrame->setLayoutType(Frame::LayoutVertical);
 	QBoxLayout *ly = new QVBoxLayout(this);
 	ly->setMargin(0);
+	ly->setSpacing(1);
 	ly->addWidget(m_captionFrame);
 	qfDebug() << "\t adding:" << m_centralFrame << "to layout:" << ly;
 	ly->addWidget(m_centralFrame);
@@ -70,6 +77,58 @@ void PartWidget::updateCaptionFrame()
 	m_captionFrame->setIcon(ico);
 }
 
+qf::qmlwidgets::MenuBar *PartWidget::menuBar()
+{
+	if(!m_menuBar) {
+		m_menuBar = new MenuBar();
+		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
+		QF_ASSERT_EX(ly != nullptr, "wrong layout");
+		ly->insertWidget(1, m_menuBar);
+	}
+	return m_menuBar;
+}
+
+qf::qmlwidgets::ToolBar *PartWidget::toolBar(const QString &name, bool create_if_not_exists)
+{
+	qf::qmlwidgets::ToolBar *ret = m_toolBars.value(name);
+	if(ret) {
+		return ret;
+	}
+	if(!create_if_not_exists) {
+		return nullptr;
+	}
+	if(m_toolBarsLayout == nullptr) {
+		QFrame *frm = new QFrame(this);
+		QBoxLayout *ly = qobject_cast<QBoxLayout*>(layout());
+		QF_ASSERT_EX(ly != nullptr, "wrong layout");
+		int ix = (m_menuBar)? 2: 1;
+		ly->insertWidget(ix, frm);
+
+		m_toolBarsLayout = new QHBoxLayout(frm);
+		m_toolBarsLayout->setMargin(0);
+		m_toolBarsLayout->setSpacing(1);
+		m_toolBarsLayout->addStretch();
+	}
+	ret = new qf::qmlwidgets::ToolBar(this);
+	m_toolBarsLayout->insertWidget(m_toolBars.count(), ret);
+	m_toolBars[name] = ret;
+	return ret;
+}
+
+bool PartWidget::isAddToPartSwitchFromBottom()
+{
+	bool add_from_bottom = false;
+	auto framework = framework::MainWindow::frameWork();
+	if(framework) {
+		auto plugin = framework->plugin(featureId());
+		if(plugin) {
+			auto manifest = plugin->manifest();
+			add_from_bottom = manifest->isAddFromBottom();
+		}
+	}
+	return add_from_bottom;
+}
+
 QIcon PartWidget::createIcon()
 {
 	QIcon ico;
@@ -85,15 +144,13 @@ QIcon PartWidget::createIcon()
 		else {
 			QString icon_path = iconSource();
 			if(icon_path.isEmpty())
-				icon_path = "images/feature.png";
+				icon_path = "images/feature";
 			if(!icon_path.startsWith(":/")) {
 				icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
 			}
-			QPixmap pm(icon_path);
-			if(pm.isNull())
+			ico = QIcon(icon_path);
+			if(ico.isNull())
 				qfWarning() << "Cannot load icon on path:" << icon_path;
-			else
-				ico = QIcon(pm);
 		}
 	}
 	if(ico.isNull())
@@ -117,6 +174,12 @@ bool PartWidget::canActivate(bool active_on)
 QQmlListProperty<QWidget> PartWidget::widgets()
 {
 	return m_centralFrame->widgets();
+}
+
+qf::qmlwidgets::Frame *PartWidget::centralFrame()
+{
+	QF_ASSERT_EX(m_centralFrame != nullptr, "Centralframe is NULL");
+	return m_centralFrame;
 }
 
 void PartWidget::loadPersistentSettings()
@@ -148,3 +211,8 @@ void PartWidget::componentComplete()
 {
 }
 
+qf::qmlwidgets::framework::Plugin *qf::qmlwidgets::framework::PartWidget::plugin(bool throw_exc)
+{
+	qf::qmlwidgets::framework::Plugin *ret = qf::qmlwidgets::framework::MainWindow::frameWork()->plugin(featureId(), throw_exc);
+	return ret;
+}

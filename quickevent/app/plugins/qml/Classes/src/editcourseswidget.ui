@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EditCoursesWidget</class>
+ <widget class="QWidget" name="EditCoursesWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <item>
+    <widget class="qf::qmlwidgets::Splitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Courses</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <property name="leftMargin">
+        <number>3</number>
+       </property>
+       <property name="topMargin">
+        <number>3</number>
+       </property>
+       <property name="rightMargin">
+        <number>3</number>
+       </property>
+       <property name="bottomMargin">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="qf::qmlwidgets::TableViewToolBar" name="tblCoursesTB" native="true"/>
+       </item>
+       <item>
+        <widget class="qf::qmlwidgets::TableView" name="tblCourses"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qf::qmlwidgets::TableViewToolBar</class>
+   <extends>QWidget</extends>
+   <header location="global">qf/qmlwidgets/tableviewtoolbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::TableView</class>
+   <extends>QTableView</extends>
+   <header location="global">qf/qmlwidgets/tableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::Splitter</class>
+   <extends>QSplitter</extends>
+   <header location="global">qf/qmlwidgets/splitter.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

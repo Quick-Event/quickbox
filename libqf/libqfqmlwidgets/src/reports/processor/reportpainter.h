@@ -27,7 +27,7 @@ namespace reports {
 class ReportPainter;
 
 //! Base trida objektu, ktere vzniknou prekladem reportu.
-class ReportItemMetaPaint : public qf::core::utils::TreeItemBase
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaint : public qf::core::utils::TreeItemBase
 {
 private:
 	typedef qf::core::utils::TreeItemBase Super;
@@ -49,16 +49,17 @@ public:
 	class LayoutSetting : public QMap<int, QVariant>
 	{
 	public:
-		enum {HInset, VInset, Layout, Alignment
-		,SuppressPrintOut///<  frame a jeho deti se objevi pouze v nahledu
-		,FillVLayoutRatio
+		enum {
+			HInset,
+			VInset,
+			Layout,
+			Alignment,
+			SuppressPrintOut, ///<  frame a jeho deti se objevi pouze v nahledu
+			FillVLayoutRatio
 		};
 	};
 public:
-	//ReportProcessor* reportProcessor();
-    //const ReportProcessorContext& context() {return f_procesorContext;}
-	ReportItem* reportItem();
-	//const LayoutSetting& layoutSettings() {return f_layoutSettings;}
+	//ReportItem* reportItem();
 	void setInset(qreal horizontal, qreal vertical);
 	qreal insetHorizontal() {return f_layoutSettings.value(LayoutSetting::HInset).toDouble();}
 	qreal insetVertical() {return f_layoutSettings.value(LayoutSetting::VInset).toDouble();}
@@ -84,15 +85,19 @@ public:
 public:
 	void setRenderedRectRect(const QRectF &new_size) {renderedRect = new_size;}
 
-	virtual ReportItemMetaPaint* parent() const {return dynamic_cast<ReportItemMetaPaint*>(qf::core::utils::TreeItemBase::parent());}
-	virtual ReportItemMetaPaint* child(int ix) const;
-	virtual ReportItemMetaPaint* firstChild() const {
-		if(childrenCount()) return child(0);
-		return NULL;
+	ReportItemMetaPaint* parent() const Q_DECL_OVERRIDE {return dynamic_cast<ReportItemMetaPaint*>(qf::core::utils::TreeItemBase::parent());}
+	ReportItemMetaPaint* child(int ix) const Q_DECL_OVERRIDE;
+	virtual ReportItemMetaPaint* firstChild() const
+	{
+		if(childrenCount())
+			return child(0);
+		return nullptr;
 	}
-	virtual ReportItemMetaPaint* lastChild() const {
-		if(childrenCount()) return child(childrenCount()-1);
-		return NULL;
+	virtual ReportItemMetaPaint* lastChild() const
+	{
+		if(childrenCount())
+			return child(childrenCount()-1);
+		return nullptr;
 	}
 
 	virtual void paint(ReportPainter *painter, unsigned mode);
@@ -125,18 +130,14 @@ public:
 	virtual QString dump(int indent = 0);
 public:
 	ReportItem::Rect renderedRect; ///< rozmery v mm
-	//QFDomElement reportElement; ///< for designer, to know which of elements was clicked, jinak se nepouziva vubec na nic.
-	//QFTreeItemPath f_reportItemPath;
-	//ReportProcessor *f_reportProcessor;
-    //ReportProcessorContext f_procesorContext;
 
-	ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
+	//ReportItem *f_reportItem; /// je potreba jen kvuli selekci v report editoru
 	LayoutSetting f_layoutSettings;
 	style::CompiledTextStyle m_textStyle;
 };
 
-//! TODO documentation
-class ReportItemMetaPaintReport : public ReportItemMetaPaint
+
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintReport : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaint Super;
@@ -147,11 +148,14 @@ public:
 	QSize pageSize;
 };
 
-//! TODO documentation
+
 class ReportItemMetaPaintFrame : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaint Super;
+public:
+	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportItem *report_item);
+	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
 public:
 	enum LinePos {LBrd = 1, RBrd, TBrd, BBrd};
 public:
@@ -162,13 +166,10 @@ protected:
 	virtual void frameItem(QPainter *painter, bool selected = false);
 	void drawLine(QPainter *painter, LinePos where, const QPen &pen);
 public:
-	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
-public:
-	ReportItemMetaPaintFrame(ReportItemMetaPaint *parent, ReportItem *report_item);
-	~ReportItemMetaPaintFrame() Q_DECL_OVERRIDE {}
+	void paint(ReportPainter *painter, unsigned mode = PaintAll) Q_DECL_OVERRIDE;
 };
-//! TODO documentation
-class ReportItemMetaPaintText : public ReportItemMetaPaint
+
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintText : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaint Super;
@@ -182,20 +183,20 @@ public:
 	QTextOption textOption;
 	QString editGrants;
 public:
-	virtual void paint(ReportPainter *painter, unsigned mode = PaintAll);
-	virtual bool isPointInside(const QPointF &p) {Q_UNUSED(p); return false;}
+	void paint(ReportPainter *painter, unsigned mode = PaintAll) Q_DECL_OVERRIDE;
+	bool isPointInside(const QPointF &p) Q_DECL_OVERRIDE {Q_UNUSED(p); return false;}
 
 	//void setAlignment(const Qt::Alignment &al) { alignmentFlags = al;}
 
-	virtual QString dump(int indent = 0);
+	QString dump(int indent = 0) Q_DECL_OVERRIDE;
 public:
 	ReportItemMetaPaintText(ReportItemMetaPaint *parent, ReportItem *report_item)
 	: ReportItemMetaPaint(parent, report_item) {}
 	~ReportItemMetaPaintText() Q_DECL_OVERRIDE {}
 };
 
-//! TODO documentation
-class ReportItemMetaPaintCheck : public ReportItemMetaPaintText
+
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintCheck : public ReportItemMetaPaintText
 {
 private:
 	typedef ReportItemMetaPaintText Super;
@@ -207,8 +208,8 @@ public:
 	: ReportItemMetaPaintText(parent, report_item) {}
 };
 
-//! TODO documentation
-class ReportItemMetaPaintImage : public ReportItemMetaPaint
+
+class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintImage : public ReportItemMetaPaint
 {
 private:
 	typedef ReportItemMetaPaintImage Super;
@@ -226,8 +227,8 @@ public:
 	: ReportItemMetaPaint(parent, report_item), aspectRatioMode(Qt::IgnoreAspectRatio)/*, resize(true)*/ {}
 };
 
-//! TODO: write class documentation.
-class  ReportPainter : public QPainter
+
+class QFQMLWIDGETS_DECL_EXPORT ReportPainter : public QPainter
 {
 private:
 	typedef QPainter Super;

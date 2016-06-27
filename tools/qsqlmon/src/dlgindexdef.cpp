@@ -38,7 +38,7 @@ DlgIndexDef::~DlgIndexDef()
 QSqlDatabase DlgIndexDef::connection()
 {
 	//qfTrash() << QF_FUNC_NAME;
-	MainWindow *w = qfFindParent<MainWindow*>(this);
+	MainWindow *w = qf::core::Utils::findParent<MainWindow*>(this);
 	return w->activeConnection();
 }
 
@@ -50,7 +50,7 @@ void DlgIndexDef::on_actionAddFieldToIndex_triggered()
 		it = ui->lstTable->currentItem();
 		if(it) {
 			qfc::String s = it->text();
-			ui->edIndexName->setText("x" + s.slice(0, 1).toUpper() + s.slice(1));
+			ui->edIndexName->setText(tableName + "_x" + s.slice(0, 1).toUpper() + s.slice(1));
 		}
 	}
 	it = ui->lstTable->currentItem();
@@ -71,7 +71,7 @@ void DlgIndexDef::loadIndexDefinition()
 	QString s = "%1.%2";
 	qfc::sql::Connection dbi(connection());
 	qfc::sql::Connection::IndexList il = dbi.indexes(s.arg(dbName).arg(tableName));
-	for(qfc::sql::Connection::IndexInfo ii : il) {
+	Q_FOREACH(qfc::sql::Connection::IndexInfo ii, il) {
 		if(ii.name == indexName) {
 			ui->chkUnique->setChecked(ii.unique);
 			foreach(s, ii.fields) ui->lstIndex->addItem(s);

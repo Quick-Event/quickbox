@@ -23,7 +23,7 @@ public:
 public:
 	explicit PluginLoader(MainWindow *parent = 0);
 
-	void loadPlugins();
+	void loadPlugins(const QStringList &feature_ids = QStringList());
 	const PluginMap& loadedPlugins() {return m_loadedPlugins;}
 
 	Q_SIGNAL void loadingFinished();
@@ -31,14 +31,16 @@ private:
 	MainWindow *mainWindow();
 
 	ManifestMap findPlugins();
-	void loadPlugins(const ManifestMap &manifests_to_load);
-	Q_SLOT void loadNextPlugin();
-	Q_SLOT void continueLoading();
+	bool loadPlugin(const QString feature_id);
+	bool loadPluginComponent(QQmlComponent *plugin_component, PluginManifest *manifest);
+
+	//Q_SLOT void loadNextPlugin();
+	//Q_SLOT void continueLoading();
 private:
 	PluginMap m_loadedPlugins;
 	ManifestMap m_manifestsToLoad;
-	QString m_currentlyLoadedFeatureId;
-	QQmlComponent *m_currentlyLoadedComponent;
+	//QString m_currentlyLoadedFeatureId;
+	//QQmlComponent *m_currentlyLoadedComponent;
 };
 
 }}}

@@ -1,0 +1,72 @@
+{
+  "cardNumber": 4634083,
+  "checkTime": 9030,
+  "finishTime": 10096,
+  "punchList": [
+    {
+      "code": 101,
+      "timeMs": 52368
+    },
+    {
+      "code": 102,
+      "time": 52429
+    },
+    {
+      "code": 103,
+      "time": 52530
+    },
+    {
+      "code": 104,
+      "time": 52986
+    },
+    {
+      "code": 105,
+      "time": 53159
+    },
+    {
+      "code": 100,
+      "time": 53277
+    }
+  ],
+  "startTime": 61166,
+  "stationCodeNumber": 17538
+}
+
+course: {
+  "climb": 28,
+  "codes": [
+    {
+      "code": 101,
+      "outoforder": false,
+      "position": 1
+    },
+    {
+      "code": 102,
+      "outoforder": false,
+      "position": 2
+    },
+    {
+      "code": 103,
+      "outoforder": false,
+      "position": 3
+    },
+    {
+      "code": 104,
+      "outoforder": false,
+      "position": 4
+    },
+    {
+      "code": 105,
+      "outoforder": false,
+      "position": 5
+    },
+    {
+      "code": 100,
+      "outoforder": false,
+      "position": 6
+    }
+  ],
+  "id": 7,
+  "length": 1100,
+  "name": "H10+D10"
+}

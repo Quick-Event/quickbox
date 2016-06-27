@@ -11,16 +11,21 @@ using namespace qf::core::utils;
 //===================================================================
 /// http://www.math.utah.edu/~pa/Random/Random.html
 Crypt::Crypt(Crypt::Generator gen)
+	: m_generator(gen)
 {
-	m_generator = gen;
-	if(m_generator == NULL)
+	if(m_generator == nullptr)
 		m_generator = Crypt::createGenerator(16811, 7, 2147483647);
 }
 
-Crypt::Generator Crypt::createGenerator(unsigned a, unsigned b, unsigned max_rand)
+Crypt::Generator Crypt::createGenerator(quint32 a, quint32 b, quint32 max_rand)
 {
-	auto ret = [=](unsigned val) {
-		return (a * val + b) % max_rand;
+	auto ret = [a, b, max_rand](quint32 val) -> quint32 {
+		quint64 ret = val;
+		ret *= a;
+		ret += b;
+		ret %= max_rand;
+		//qfWarning() << '(' << a << '*' << val << '+' << b << ") %" << max_rand << "---->" << ret;
+		return ret;
 	};
 	return ret;
 }
@@ -35,37 +40,43 @@ static QByteArray code_byte(quint8 b)
 		ret.append(b);
 	}
 	else {
-		buff[0] = b%10 + '0';
-		buff[1] = b/10 + 'A';
+		quint8 b1 = b%10;
+		b /= 10;
+		buff[0] = b1 + '0';
+		buff[1] = (b1 % 2)? b + 'A': b + 'a';
 		ret.append(buff);
 	}
 	return ret;
 }
 
-QByteArray Crypt::encrypt(const QString &s, int min_length) const
+QByteArray Crypt::encrypt(const QByteArray &data, int min_length) const
 {
 	QByteArray dest;
-	QByteArray src = s.toUtf8();
 
-   	/// nahodne se vybere hodnota, kterou se string zaxoruje a ta se ulozi na zacatek
+	/// nahodne se vybere hodnota, kterou se string zaxoruje a ta se ulozi na zacatek
 	unsigned val = (unsigned)qrand();
 	val += QTime::currentTime().msec();
 	val %= 256;
-	if(val == 0) val = 1;/// at to neblbne pro 0 sekund a generator ktrey ma c==0
+	if(val == 0)
+		val = 1;/// fix case vhen val == 0 and generator C == 0 also
 	quint8 b = (quint8)val;
 	dest += code_byte(b);
 
-    /// a tou se to zaxoruje
-	for(int i=0; i<src.count(); i++) {
+	/// a tou se to zaxoruje
+	for(int i=0; i<data.count(); i++) {
+		b = ((quint8)data[i]);
+		if(b == 0)
+			break;
 		val = m_generator(val);
-		b = ((quint8)src[i]);
 		b = b ^ (quint8)val;
 		dest += code_byte(b);
 	}
+	quint8 bb = 0;
 	while(dest.size() < min_length) {
 		val = m_generator(val);
-		b = 0 ^ (quint8)val;
+		b = bb ^ (quint8)val;
 		dest += code_byte(b);
+		bb = (quint8)qrand();
 	}
 	return dest;
 }
@@ -77,10 +88,11 @@ static quint8 take_byte(const QByteArray &ba, int &i)
 	}
 	else {
 		quint8 b1 = b;
-		b = b1 - '0';
+		b1 = b1 - '0';
 		if(i < ba.size()) {
-			b1 = ba[i++];
-			b +=  10 * (b1 - 'A');
+			b = ba[i++];
+			b = (b1 % 2)? (b - 'A'): (b - 'a');
+			b = 10 * b + b1;
 		}
 		else {
 			qfError() << QF_FUNC_NAME << ": byte array corupted:" << ba.constData();
@@ -107,23 +119,19 @@ QByteArray Crypt::decodeArray(const QByteArray &ba) const
 	return ret;
 }
 
-QString Crypt::decrypt(const QByteArray &_ba) const
+QByteArray Crypt::decrypt(const QByteArray &data) const
 {
 	/// odstran vsechny bile znaky, v zakodovanem textu nemohou byt, muzou to byt ale zalomeni radku
-	QByteArray ba = _ba.simplified();
+	QByteArray ba = data.simplified();
 	ba.replace(' ', "");
 	ba = decodeArray(ba);
 	///odstran \0 na konci, byly tam asi umele pridany
-	int pos = ba.size();
-	while(pos > 0) {
-		pos--;
-		if(ba[pos] == '\0') {
-		}
-		else {
-			pos++;
+	int pos = 0;
+	while(pos < ba.size()) {
+		if(ba[pos] == '\0')
 			break;
-		}
+		pos++;
 	}
 	ba = ba.mid(0, pos);
-	return QString::fromUtf8(ba);
+	return ba;
 }

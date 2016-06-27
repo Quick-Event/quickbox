@@ -39,6 +39,8 @@ public:
 	Q_SIGNAL void layoutTypeChanged(LayoutType ly);
 	QQmlListProperty<QWidget> widgets();
 
+	void addWidget(QWidget *control) {add(control);}
+
 	void setVisible(bool b) Q_DECL_OVERRIDE;
 	Q_SIGNAL void visibleChanged(bool visible);
 private:

@@ -1,9 +1,9 @@
 #ifndef QF_QMLWIDGETS_FRAMEWORK_CENTRALWIDGET_H
 #define QF_QMLWIDGETS_FRAMEWORK_CENTRALWIDGET_H
 
-#include <QWidget>
+#include "../qmlwidgetsglobal.h"
 
-class QStackedWidget;
+#include <QWidget>
 
 namespace qf {
 namespace qmlwidgets {
@@ -12,7 +12,7 @@ namespace framework {
 class PartWidget;
 class MainWindow;
 
-class CentralWidget : public QWidget
+class QFQMLWIDGETS_DECL_EXPORT CentralWidget : public QWidget
 {
 	Q_OBJECT
 private:
@@ -20,10 +20,15 @@ private:
 public:
 	explicit CentralWidget(MainWindow *parent = 0);
 public:
-	Q_SLOT virtual bool setPartActive(int part_index, bool set_active) = 0;
+	Q_SLOT virtual bool setActivePart(int part_index, bool set_active) = 0;
+	Q_SLOT bool setActivePart(const QString &feature_id, bool set_active)
+	{
+		return setActivePart(featureToIndex(feature_id), set_active);
+	}
+	Q_INVOKABLE virtual int featureToIndex(const QString &feature_id) = 0;
 
-    Q_SIGNAL void partActivated(const QString &feature_id, bool is_active);
-    Q_SIGNAL void partActivated(int part_index, bool is_active);
+	Q_SIGNAL void partActivated(const QString &feature_id, bool is_active);
+	Q_SIGNAL void partActivated(int part_index, bool is_active);
 public:
 	virtual void addPartWidget(PartWidget *widget) = 0;
 };

@@ -18,8 +18,6 @@ TARGET = $$OUT_PWD/../bin/$$MY_SUBPROJECT
 INCLUDEPATH += $$PWD/../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../libsiut/include
 
-DOLAR=$
-
 LIBS +=      \
 	-lsiut  \
 	-lqfcore  \
@@ -29,7 +27,7 @@ win32: LIBS +=  \
 
 unix: LIBS +=  \
 	-L../lib  \
-	-Wl,-rpath,\'$${DOLAR}$${DOLAR}ORIGIN/../lib\'  \
+	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
 
 message(LIBS: $$LIBS)
 

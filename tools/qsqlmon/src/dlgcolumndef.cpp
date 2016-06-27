@@ -99,7 +99,7 @@ DlgColumnDef::~DlgColumnDef()
 QSqlDatabase DlgColumnDef::connection()
 {
 	//qfLogFuncFrame();
-	MainWindow *w = qfFindParent<MainWindow*>(this);
+	MainWindow *w = qf::core::Utils::findParent<MainWindow*>(this);
 	return w->activeConnection();
 }
 
@@ -184,7 +184,7 @@ void DlgColumnDef::loadColumnDefinition(const qf::core::sql::FieldInfo &fi)
 		edName->setEnabled(true);
 	}
 	else if(connection().driverName().endsWith("PSQL")) {
-		qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Altering columns is not fully supported yet.");
+		//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "Altering columns is not fully supported yet.");
 		edName->setEnabled(true);
 		lstType->setEnabled(true);
 		edDefaultValue->setEnabled(true);
@@ -254,48 +254,52 @@ QString DlgColumnDef::toString()
 		if(!s.isEmpty()) {
 			ret += "(" + s;
 			s = edDecimals->text().trimmed();
-			if(!s.isEmpty() && s != "0") ret += "," + s;
+			if(!s.isEmpty() && s != "0")
+				ret += "," + s;
 			ret += ")";
 		}
 	}
-	if(chkUnsigned->isChecked()) ret += " UNSIGNED";
-	if(lstCharacterSet->isEnabled() && lstCharacterSet->currentIndex() > 0) ret += " CHARACTER SET " + lstCharacterSet->currentText();
-	if(lstCollation->isEnabled() && lstCollation->currentIndex() > 0) ret += " COLLATE " + lstCollation->currentText();
+	if(chkUnsigned->isChecked())
+		ret += " UNSIGNED";
+	if(lstCharacterSet->isEnabled() && lstCharacterSet->currentIndex() > 0)
+		ret += " CHARACTER SET " + lstCharacterSet->currentText();
+	if(lstCollation->isEnabled() && lstCollation->currentIndex() > 0)
+		ret += " COLLATE " + lstCollation->currentText();
 	QString s = edDefaultValue->text();
-	if(!s.isEmpty()) {
+	if(!s.isEmpty())
 		ret += " DEFAULT " + s;
-	}
-	if(chkNotNull->isChecked()) ret += " NOT NULL";
-	if(chkUnique->isChecked()) ret += " UNIQUE";
+
+	if(chkNotNull->isChecked())
+		ret += " NOT NULL";
+	if(chkUnique->isChecked())
+		ret += " UNIQUE";
 
 	if(connection().driverName().endsWith("SQLITE")) {
 		/// sqlite umi jen prejmenovat sloupec, takze vrat nove jmeno
 		//ret = edName->text();
 	}
 	else if(connection().driverName().endsWith("PSQL") ||
-		        connection().driverName().endsWith("MYSQL")) {
-		if(chkPrimaryKey->isChecked()) ret += " PRIMARY KEY";
+			connection().driverName().endsWith("MYSQL")) {
+		if(chkPrimaryKey->isChecked())
+			ret += " PRIMARY KEY";
 		s = lstRefTable->currentText();
 		if(!s.isEmpty()) {
 			ret += " REFERENCES " + s;
 			s = lstRefColumn->currentText();
-			if(!s.isEmpty()) {
+			if(!s.isEmpty())
 				ret += " (" + s + ")";
-			}
 		}
 	}
 	if(connection().driverName().endsWith("MYSQL")) {
 		s = txtComment->toPlainText().trimmed();
-		if(!s.isEmpty()) ret += " COMMENT '" + s + "'";
-	}
-	else {
-		ret = QString();
+		if(!s.isEmpty())
+			ret += " COMMENT '" + s + "'";
 	}
 	return ret;
 }
 
 
-bool DlgColumnDef::showCommand()
+bool DlgColumnDef::isShowCommand()
 {
 	return chkShowCommand->isChecked();
 }

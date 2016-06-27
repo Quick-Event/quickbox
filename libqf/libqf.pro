@@ -4,8 +4,6 @@ CONFIG += ordered
 SUBDIRS += \
 	libqfcore \
 	libqfqmlwidgets \
-	libqfcoreqmlplugin \
-	libqfqmlwidgetsplugin \
-	libqfqmlreportsplugin \
+	plugins \
 
 

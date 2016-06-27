@@ -19,7 +19,7 @@ class QTimer;
 
 namespace siut {
 
-//! TODO: write class documentation.
+
 class SIUT_DECL_EXPORT DeviceDriver : public QObject
 {
 	Q_OBJECT
@@ -38,7 +38,7 @@ protected:
 protected:
 	void packetReceived(const QByteArray &msg_data);
 	void processRxData();
-	void emitDriverInfo(int level, const QString &msg);
+	void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
 public:
 	bool openCommPort(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
 	void closeCommPort();
@@ -48,12 +48,15 @@ protected slots:
 public slots:
 	void sendCommand(int cmd, const QByteArray& data);
 signals:
-	void driverInfo(/*QFLog::Level*/int level, const QString &msg);
+	void driverInfo(qf::core::Log::Level level, const QString &msg);
 	void messageReady(const SIMessageData &msg);
 	void rawDataReceived(const QByteArray &data);
 public:
 	DeviceDriver(QObject *parent = NULL);
 	virtual ~DeviceDriver();
+
+private:
+	void sendAck();
 };
 
 }

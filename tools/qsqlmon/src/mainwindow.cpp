@@ -24,6 +24,7 @@
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/previewdialog.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <QStandardItemModel>
 #include <QTextCursor>
@@ -132,7 +133,7 @@ qf::core::model::SqlTableModel* MainWindow::queryViewModel()
 
 void MainWindow::setQueryViewModel(qf::core::model::SqlTableModel *m)
 {
-	ui.queryView->tableView()->setModel(m);
+	ui.queryView->tableView()->setTableModel(m);
 	if(m) {
 		m->setParent(ui.queryView);
 		connect(m, SIGNAL(reloaded()), ui.queryView, SLOT(updateStatus()));
@@ -471,10 +472,6 @@ void MainWindow::createMenus()
 
 void MainWindow::createToolBars()
 {
-    /*
-	toolbarFile = addToolBar(tr("File"));
-	toolbarFile->addAction(action("connect"));
-	*/
 	QToolBar *t;
 	t = addToolBar(tr("Sql"));
 	t->setObjectName("mainToolBar");
@@ -559,26 +556,54 @@ bool MainWindow::execQuery(const QString& query_str)
 
 	QString qs = query_str.trimmed();
 	appendInfo(qs);
-	qf::core::model::SqlTableModel *m = queryViewModel();
-	m->clearColumns();
-	m->setQuery(qs);
-	bool ok = m->reload();
-	QSqlQuery q = m->recentlyExecutedQuery();
-	if(ok) {
-		if(q.isSelect()) {
-			/// if query was select
-			ui.queryView->tableView()->resizeColumnsToContents();
-			ui.queryView->setInfo(qs);
+	bool ok = true;
+	bool is_select = qs.startsWith(QLatin1String("SELECT"), Qt::CaseInsensitive);
+	do {
+		if(is_select) {
+			qf::core::model::SqlTableModel *m = queryViewModel();
+			m->clearColumns();
+			m->setQuery(qs);
+			ok = m->reload();
+			QSqlQuery q = m->recentlyExecutedQuery();
+			if(ok) {
+				if(q.isSelect()) {
+					/// if query was select
+					ui.queryView->tableView()->resizeColumnsToContents();
+					ui.queryView->setInfo(qs);
+				}
+				else {
+					appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+				}
+			}
+			else {
+				QString msg = q.lastError().text();
+				qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
+				appendInfo(msg);
+			}
 		}
 		else {
-			appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+			qf::core::sql::Query q(activeConnection());
+			ok = q.exec(qs);
+			if(!ok) {
+				QString msg = q.lastError().text();
+				qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
+				appendInfo(msg);
+			}
+			else {
+				if(q.isSelect()) {
+					//qfInfo() << "SELECT";
+					// it was actualy SELECT, sqlite PRAGMA table_info can behave like this
+					is_select = true;
+					continue;
+				}
+				else {
+					appendInfo(tr("affected rows: %1").arg(q.numRowsAffected()));
+				}
+			}
 		}
-	}
-	else {
-		QString msg = q.lastError().text();
-		qf::qmlwidgets::dialogs::MessageBox::showError(this, msg);
-		appendInfo(msg);
-	}
+		break;
+	} while(true);
+
 	return ok;
 }
 
@@ -737,6 +762,16 @@ void MainWindow::setDbSearchPath(const QString &path)
 			return;
 		}
 	}
+	else if(activeConnection().driverName().endsWith("PSQL")) {
+		if(!path.isEmpty()) {
+			QSqlQuery q(activeConnection());
+			QString s = "SET SCHEMA '" + path + "'";
+			qfDebug() << QString("Executing SQL: [%1]").arg(s);
+			q.exec(s);
+			setStatusText(path, 2);
+			return;
+		}
+	}
 	setStatusText(QString(), 2);
 }
 
@@ -881,7 +916,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 	QModelIndex mi = ui_srv.treeServers->indexAt(point);
 	{
 		if(!mi.isValid()) {
-		// Server popup
+			// Server popup
 			QMenu menu(this);
 			menu.setTitle(tr("Server menu"));
 			menu.addAction(action("addServer"));
@@ -890,30 +925,27 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 		else {
 			ServerTreeModel *model = qobject_cast<ServerTreeModel*>(ui_srv.treeServers->model());
 			Q_ASSERT(model != NULL);
-		//QString s = model->data(mi).toString();
 			QObject *o = model->index2object(mi);
 			Q_ASSERT(o != NULL);
-		//s = o->metaObject()->className() + QString(":") + s;
-		//QMessageBox::information(this, "Debug Msg", s);
 			if(Connection *connection = qobject_cast<Connection*>(o)) {
 				QMenu menu(this);
 				menu.setTitle(tr("Connection menu"));
 				menu.addAction(action("addServer"));
-				QAction *a2 = menu.addAction(tr("Edit connection"));
-				QAction *a4 = menu.addAction(tr("Copy connection"));
-				QAction *a3 = menu.addAction(tr("Remove connection"));
+				QAction *act_editConnection = menu.addAction(tr("Edit connection"));
+				QAction *act_copyConnection = menu.addAction(tr("Copy connection"));
+				QAction *act_removeConnection = menu.addAction(tr("Remove connection"));
 				QAction *a = menu.exec(ui_srv.treeServers->viewport()->mapToGlobal(point));
-				if(a == a2) {
+				if(a == act_editConnection) {
 					DlgEditConnection dlg(this);
 					dlg.setParams(connection->params());
 					if(dlg.exec() == QDialog::Accepted) {
 						connection->setParams(dlg.params());
 					}
 				}
-				else if(a == a4) {
+				else if(a == act_copyConnection) {
 					addServer(connection);
 				}
-				else if(a == a3) {
+				else if(a == act_removeConnection) {
 					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Delete connection ?"), false)) {
 						qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
 						/* old impl
@@ -951,8 +983,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 			}
-			else if(Schema *sch = qobject_cast<Schema*>(o)) {
-				Q_UNUSED(sch);
+			else if(Schema *current_schema = qobject_cast<Schema*>(o)) {
+				Q_UNUSED(current_schema);
 				QMenu menu(this);
 				menu.setTitle(tr("Schema menu"));
 				QAction *actCreateTable = menu.addAction(tr("Create table"));
@@ -968,7 +1000,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					if(!s.isEmpty()) {
 						s = s.trimmed();
 						if(!s.isEmpty()) {
-							QString s1 = sch->objectName() + "." + s;
+							QString s1 = current_schema->objectName() + "." + s;
 							QString qs = "UNSUPPORTED DRIVER " + activeConnection().driverName();
 							if(activeConnection().driverName().endsWith("SQLITE")) {
 								qs = "CREATE TABLE " + s1 + " (id integer PRIMARY KEY AUTOINCREMENT);";
@@ -990,18 +1022,14 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 				else if(a == actCreateDatabaseScript) {
-					QString s = sch->createScript(Schema::CreateTableSql | Schema::IncludeViews);
-					qfInfo() << s;
-					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
-					/*
-					QString fn = qf::core::utils::FileUtils::joinPath(qfApp()->tempDir(), sch->objectName() + ".sql");
-					QUrl url = QFFileUtils::saveText(s, fn);
-					if(!url.isEmpty()) QFDlgOpenUrl::openUrl(url);
-					else QFMessage::error(tr("Chyba pri ukladani docasneho souboru '%1'").arg(fn));
-					*/
+					qf::core::sql::Connection dbi(activeConnection());
+					QString s = dbi.createSchemaSqlCommand(current_schema->objectName(), false);
+					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
+					new QFSqlSyntaxHighlighter(dlg.editor());
+					dlg.exec(s, "create_" + current_schema->objectName() +".sql", "dlgTextView");
 				}
 				else if(a == actDumpDatabaseScript) {
-					QString s = sch->createScript(Schema::CreateTableSql | Schema::DumpTableSql | Schema::IncludeViews);
+					QString s = current_schema->createScript(Schema::CreateTableSql | Schema::DumpTableSql | Schema::IncludeViews);
 					qfInfo() << s;
 					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
 					/*
@@ -1012,8 +1040,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					*/
 				}
 				else if(a == actDropSchema) {
-					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy drop schema '%1'").arg(sch->objectName()), true)) {
-						QString qs = "DROP SCHEMA " + sch->objectName();
+					if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy drop schema '%1'").arg(current_schema->objectName()), true)) {
+						QString qs = "DROP SCHEMA " + current_schema->objectName();
 						qf::core::sql::Connection c = activeConnection();
 						if(c.driverName().endsWith("PSQL", Qt::CaseInsensitive)) {
 							qs += " CASCADE";
@@ -1058,6 +1086,10 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				}
 			}
 			else if(Table *table = qobject_cast<Table*>(o)) {
+				Schema *current_schema = qobject_cast<Schema*>(table->parent());
+				QF_ASSERT(current_schema != nullptr, "Parent schema is NULL", return);
+				QString full_table_name = current_schema->objectName() + '.' + table->objectName();
+
 				QMenu menu(this);
 				menu.setTitle(tr("Table menu"));
 				QAction *actDescribeTable = menu.addAction(tr("Show columns"));
@@ -1105,7 +1137,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
 						QString s = "SHOW FULL COLUMNS FROM %1";
-						execQuery(s.arg(table->objectName()));
+						execQuery(s.arg(full_table_name));
 					}
 				}
 				else if(a == actShowIndexes) {
@@ -1121,13 +1153,14 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 						execQuery(s.arg(table->parent()->objectName()).arg(table->objectName()));
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
-						QString s = "SHOW INDEXES FROM  %1.%2";
-						execQuery(s.arg(table->parent()->objectName()).arg(table->objectName()));
+						QString s = "SHOW INDEXES FROM  %1";
+						execQuery(s.arg(full_table_name));
 					}
 				}
 				else if(a == actShowFKeys) {
 					if(activeConnection().driverName().endsWith("SQLITE")) {
-						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("Not implemented yet."));
+						QString s = "PRAGMA foreign_key_list(%1)";
+						execQuery(s.arg(table->objectName()));
 					}
 					else if(activeConnection().driverName().endsWith("PSQL")) {
 						QString s = "SELECT conname AS constrname, fromcols.attname AS fkeys, tocols.attname AS referncedfields,"
@@ -1144,8 +1177,8 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 								" LEFT JOIN pg_attribute AS fromcols ON cc.conrelid=fromcols.attrelid"
 								" LEFT JOIN pg_attribute AS tocols ON cc.conrelid=tocols.attrelid"
 								" WHERE cc.contype = 'f' AND fromcols.attnum = ANY(cc.conkey) AND tocols.attnum = ANY(cc.confkey)"
-								"  AND cc.conrelid='%1.%2'::regclass";
-						execQuery(s.arg(table->parent()->objectName()).arg(table->objectName()));
+								"  AND cc.conrelid='%1'::regclass";
+						execQuery(s.arg(full_table_name));
 					}
 					else if(activeConnection().driverName().endsWith("MYSQL")) {
 						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("Not implemented yet."));
@@ -1153,30 +1186,27 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				}
 				else if(a == actCreateScript) {
 					qf::core::sql::Connection dbi(activeConnection());
-					QString s = dbi.createTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
+					QString s = dbi.createTableSqlCommand(full_table_name);
 					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
 					new QFSqlSyntaxHighlighter(dlg.editor());
 					dlg.exec(s, "create_" + table->objectName()+".sql", "dlgTextView");
 				}
 				else if(a == actDumpScript) {
 					qf::core::sql::Connection dbi(activeConnection());
-					QString s = dbi.createTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
+					QString s = dbi.createTableSqlCommand(full_table_name);
 					s += "\n\n";
-					s += dbi.dumpTableSqlCommand(table->parent()->objectName()  + "." + table->objectName());
+					s += dbi.dumpTableSqlCommand(full_table_name);
 					qf::qmlwidgets::dialogs::PreviewDialog dlg(this);
 					new QFSqlSyntaxHighlighter(dlg.editor());
 					dlg.exec(s, "dump_" + table->objectName()+".sql", "dlgTextView");
 				}
 				else if(a == actColumnSelector) {
 					qf::core::sql::Connection conn = activeConnection();
-					qf::qmlwidgets::dialogs::MessageBox::showError(this, "NIY");
-					/*
 					ColumnSelectorWidget *w = new ColumnSelectorWidget(table->objectName(), conn);
-					QFDialog dlg(this);
-					dlg.setDialogWidget(w);
+					qf::qmlwidgets::dialogs::Dialog dlg(this);
+					dlg.setCentralWidget(w);
 					connect(w, SIGNAL(columnNamesCopiedToClipboard(QString)), sqlDock->sqlTextEdit(), SLOT(paste()));
 					if(dlg.exec() == QDialog::Accepted) {}
-					*/
 				}
 				else if(a == actAlterTable) {
 					DlgAlterTable *dlg = new DlgAlterTable(this, table->parent()->objectName(), table->objectName());
@@ -1208,28 +1238,35 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 					}
 				}
 				else if(a == actTruncateTable) {
-					QString s = table->objectName();
 					if(table->kind == QSql::Tables) {
-						if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy truncate the table '%1'").arg(s), true)) {
-							s = "TRUNCATE TABLE " + s;
-							execCommand(s);
+						if(qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy truncate the table '%1'").arg(full_table_name), true)) {
+							if(activeConnection().driverName().endsWith("SQLITE")) {
+								QString s = "DELETE FROM " + full_table_name;
+								execCommand(s);
+								s = "VACUUM";
+								execCommand(s);
+							}
+							else {
+								QString s = "TRUNCATE TABLE " + full_table_name;
+								execCommand(s);
+							}
 						}
 					}
 				}
 				else if(a == actMysqlCheckTable) {
-					QString s = table->objectName();
+					QString s = full_table_name;
 					s = "CHECK TABLE " + s;
 					execQuery(s);
 					//QFDlgTextView dlg(this);
 					//dlg.exec(s, "check_" + table->objectName()+".txt", "dlgTextView");
 				}
 				else if(a == actMysqlOptimizeTable) {
-					QString s = table->objectName();
+					QString s = full_table_name;
 					s = "OPTIMIZE TABLE " + s;
 					execQuery(s);
 				}
 				else if(a == actMysqlRepairTable) {
-					QString s = table->objectName();
+					QString s = full_table_name;
 					s = "REPAIR TABLE " + s;
 					execQuery(s);
 				}
@@ -1298,24 +1335,27 @@ void MainWindow::availableDrivers()
 void MainWindow::checkDrivers()
 {
 	QString msg;
+	QTextStream ts(&msg);
 	{
-		QTextStream ts(&msg);
-		QString path = qf::core::utils::FileUtils::joinPath(qf::core::utils::FileUtils::appDir(), "sqldrivers");
-		ts << tr("Plugins found (looked in %1):").arg(QDir::toNativeSeparators(path)) << endl;
-		QDir dir(path);
-		dir.setFilter(QDir::Files);
-		//dir.setNameFilters(QStringList() << "*.dll");
-		QStringList file_names = dir.entryList();
-		foreach (QString file_name, file_names) {
-			ts << tr("checking: ") << file_name << ": ";
-			QPluginLoader loader(dir.absoluteFilePath(file_name));
-			QObject *plugin = loader.instance();
-			if(plugin) {
-				ts << tr("OK ") << endl;
-			}
-			else {
-				ts << tr("ERROR ") << endl;
-				ts << loader.errorString() << endl;
+		for(QString plugin_dir : QCoreApplication::libraryPaths()) {
+			qfInfo() << "plugin dir:" << plugin_dir;
+			QString path = qf::core::utils::FileUtils::joinPath(plugin_dir, "sqldrivers");
+			ts << tr("Plugins found (looked in %1):").arg(QDir::toNativeSeparators(path)) << endl;
+			QDir dir(path);
+			dir.setFilter(QDir::Files);
+			//dir.setNameFilters(QStringList() << "*.dll");
+			QStringList file_names = dir.entryList();
+			foreach (QString file_name, file_names) {
+				ts << tr("checking: ") << file_name << ": ";
+				QPluginLoader loader(dir.absoluteFilePath(file_name));
+				QObject *plugin = loader.instance();
+				if(plugin) {
+					ts << tr("OK ") << endl;
+				}
+				else {
+					ts << tr("ERROR ") << endl;
+					ts << loader.errorString() << endl;
+				}
 			}
 		}
 	}

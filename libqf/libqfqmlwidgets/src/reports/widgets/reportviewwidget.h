@@ -35,7 +35,7 @@ class ReportItemMetaPaintFrame;
 class ReportPainter;
 class ReportProcessor;
 
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT  ReportViewWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT
@@ -44,15 +44,36 @@ private:
 public:
 	ReportViewWidget(QWidget *parent = NULL);
 	~ReportViewWidget() Q_DECL_OVERRIDE;
+
+	/**
+	 * @brief showReport
+	 * @param parent
+	 * @param report_qml_file
+	 * @param single_table_data
+	 * @param window_title
+	 * @param config_persistent_id
+	 * @param report_init_properties
+	 * @return true if report was printed
+	 */
+	static bool showReport(QWidget *parent
+			, const QString &report_qml_file
+			, const QVariant &single_table_data
+			, const QString &window_title = tr("Report preview")
+			, const QString &config_persistent_id = QString()
+			, const QVariantMap &report_init_properties = QVariantMap());
+	static bool showReport2(QWidget *parent
+			, const QString &report_qml_file
+			, const QVariantMap &multiple_table_data
+			, const QString &window_title = tr("Report preview")
+			, const QString &persistent_settings_id = QString()
+			, const QVariantMap &report_init_properties = QVariantMap());
+
 protected:
 	class ScrollArea;
 	class PainterWidget;
 
 	PainterWidget *m_painterWidget;
 	ScrollArea *m_scrollArea;
-
-	//QFAction::ActionList f_actionList;
-	//QFUiBuilder *f_uiBuilder;
 
 	int m_currentPageNo;
 	qreal m_scale;
@@ -70,9 +91,8 @@ protected:
 
 	qf::qmlwidgets::StatusBar *m_statusBar;
 private:
-	//void selectElement_helper(ReportItemMetaPaint *it, const QFDomElement &el);
 	void selectItem(const QPointF &p);
-	bool selectItem_helper(ReportItemMetaPaint *it, const QPointF &p);
+	ReportItemMetaPaint* selectItem_helper(ReportItemMetaPaint *it, const QPointF &p);
 protected:
 	qf::qmlwidgets::StatusBar* statusBar();
 	QSpinBox *zoomStatusSpinBox;
@@ -85,13 +105,10 @@ protected:
 	void refreshWidget();
 	void refreshActions();
 
-	virtual void attachPrintout() {}
-
 	void print();
 	void exportPdf(const QString &file_name);
 	QString exportHtml();
 signals:
-	//void elementSelected(const QFDomElement &el);
 	void sqlValueEdited(const QString &sql_id, const QVariant &val);
 protected slots:
 	void edCurrentPageEdited();
@@ -104,21 +121,15 @@ public:
 public slots:
 	void print(QPrinter *printer); /// slot ktery potrebuje print preview
 	/// prerendruje report
-	void render();
+	//void render();
 	//! Zacne prekladat report a jak pribyvaji stranky, zobrazuji se ve view, nemuzu pro to pouzit specialni thread,
 	//! protoze QFont musi byt pouzivan v GUI threadu, tak prekladam stranku po strance pomoci QTimer::singleShot()
 	void processReport();
-	//void selectElement(const QFDomElement &el);
 
 	virtual void file_print();
 	virtual void file_printPreview();
-	virtual void file_export_pdf(bool open = false);
-	virtual void file_export_pdf_open() {file_export_pdf(true);}
+	virtual void file_export_pdf(bool open = true);
 	virtual void file_export_html();
-	virtual void file_export_email();
-	virtual void report_edit();
-
-	void data_showHtml();
 
 	void view_nextPage(PageScrollPosition scroll_pos = ScrollToPageTop);
 	void view_prevPage(PageScrollPosition scroll_pos = ScrollToPageTop);
@@ -138,14 +149,13 @@ public:
 	void setVisible(bool visible) Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaintReport* document(bool throw_exc = true);
-	void setData(const QString &key, const qf::core::utils::TreeTable &data);
-	Q_INVOKABLE void setData(const QString &key, const QVariant &data);
-	Q_INVOKABLE void setData(const QVariant &data) {
-		setData(QString(), data);
+	void setTableData(const QString &key, const qf::core::utils::TreeTable &table_data);
+	Q_INVOKABLE void setTableData(const QString &key, const QVariant &table_data);
+	Q_INVOKABLE void setTableData(const QVariant &data) {
+		setTableData(QString(), data);
 	}
 
-	//! Volani teto funkce zpusobi prelozeni reportu, vlozeni pripadnych dat a jeho zobrazeni.
-	Q_SLOT void setReport(const QString &file_name);
+	Q_SLOT void setReport(const QString &file_name, const QVariantMap &report_init_properties = QVariantMap());
 
 	/// stranky se pocitaji od 0
 	int currentPageNo() const {return m_currentPageNo;}
@@ -160,22 +170,23 @@ public:
 	void setScale(qreal _scale);
 
 	void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
-	ActionMap actions() Q_DECL_OVERRIDE;
+	ActionMap createActions() Q_DECL_OVERRIDE;
 
 	ReportItemMetaPaint* selectedItem() const {return m_selectedItem;}
 	virtual void prePrint() {}
 	void print(QPrinter &printer, const QVariantMap &options = QVariantMap());
+	Q_SIGNAL void reportPrinted(int printer_output_format);
 private:
-	ActionMap m_actions;
+	QLineEdit *m_edCurrentPage = nullptr;
 };
 
 class ReportViewWidget::PainterWidget : public QWidget
 {
 	Q_OBJECT
 protected:
-	virtual void mousePressEvent(QMouseEvent *e);
-	virtual void wheelEvent(QWheelEvent *event);
-	virtual void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent *e) Q_DECL_OVERRIDE;
+	//virtual void wheelEvent(QWheelEvent *event);
+	void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 	ReportViewWidget* reportViewWidget();
 	/// screen dots per mm
 signals:
@@ -192,12 +203,12 @@ protected:
 	QPoint f_dragMouseStartPos;
 	QPoint f_dragViewportStartPos;
 protected:
-	virtual void keyPressEvent(QKeyEvent *ev);
-	virtual void keyReleaseEvent(QKeyEvent *ev);
-	virtual void wheelEvent(QWheelEvent *e);
-	virtual void mousePressEvent(QMouseEvent *ev);
-	virtual void mouseReleaseEvent(QMouseEvent *ev);
-	virtual void mouseMoveEvent(QMouseEvent *ev);
+	void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+	void keyReleaseEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+	void wheelEvent(QWheelEvent *e) Q_DECL_OVERRIDE;
+	void mousePressEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+	void mouseReleaseEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
+	void mouseMoveEvent(QMouseEvent *ev) Q_DECL_OVERRIDE;
 	//virtual void dragMoveEvent(QDragMoveEvent *ev);
 signals:
 	void showNextPage();

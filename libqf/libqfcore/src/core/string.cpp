@@ -45,7 +45,7 @@ QChar String::value(int ix) const
 QStringList String::splitAndTrim(QChar sep, QChar quote, bool trim_parts, QString::SplitBehavior keep_empty_parts) const
 {
 	QStringList ret;
-	String fs = *this, s;
+	String fs = *this, fs2;
 	bool first_scan = true;
 	while(!fs.isEmpty()) {
 		if(first_scan)
@@ -54,20 +54,22 @@ QStringList String::splitAndTrim(QChar sep, QChar quote, bool trim_parts, QStrin
 			fs = fs.slice(1); // remove separator
 		int ix = fs.pos(sep, quote);
 		if(ix >= 0) {
-			s = fs.slice(0, ix);
+			fs2 = fs.slice(0, ix);
 			fs = fs.slice(ix);
 		}
 		else {
-			s = fs;
+			fs2 = fs;
 			fs = QString();
 		}
 		if(trim_parts) {
-			s = s.trimmed();
-			if(s[0] == quote && s[-1] == quote)
-				s = s.slice(1, -1);
+			fs2 = fs2.trimmed();
+			if(fs2.value(0) == quote && fs2.value(-1) == quote)
+				fs2 = fs2.slice(1, -1);
 		}
-		if(!s.isEmpty()) ret.append(s);
-		else if(keep_empty_parts == KeepEmptyParts) ret.append(s);
+		if(!fs2.isEmpty())
+			ret.append(fs2);
+		else if(keep_empty_parts == KeepEmptyParts)
+			ret.append(fs2);
 	}
 	return ret;
 }

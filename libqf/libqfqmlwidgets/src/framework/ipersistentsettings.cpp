@@ -3,7 +3,7 @@
 #include <qf/core/assert.h>
 
 #include <QMetaMethod>
-//#include <QQmlProperty>
+#include <QString>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -25,15 +25,13 @@ void IPersistentSettings::setPersistentSettingsId(const QString &id)
 
 QString IPersistentSettings::persistentSettingsPath()
 {
-	if(!m_persistentSettingsId.isEmpty() && m_path.isEmpty()) {
-		m_path = generatePersistentSettingsPath();
-	}
-	return m_path;
-}
+	if(m_persistentSettingsId.isEmpty())
+		return QString();
 
-void IPersistentSettings::setPersistentSettingsPath(const QString &path)
-{
-	m_path = path;
+	if(m_persistentSettingsPath.isEmpty()) {
+		m_persistentSettingsPath = effectivePersistentSettingsPathPrefix() + '/' + rawPersistentSettingsPath();
+	}
+	return m_persistentSettingsPath;
 }
 
 static void callMethodRecursively(QObject *obj, const char *method_name)
@@ -45,7 +43,7 @@ static void callMethodRecursively(QObject *obj, const char *method_name)
 		QMetaMethod mm = obj->metaObject()->method(ix);
 		mm.invoke(obj);
 	}
-	for(auto o : obj->children()) {
+	Q_FOREACH(auto o, obj->children()) {
 		callMethodRecursively(o, method_name);
 	}
 }
@@ -60,35 +58,64 @@ void IPersistentSettings::savePersistentSettingsRecursively()
 	callMethodRecursively(m_controlledObject, "savePersistentSettings()");
 }
 
-QString IPersistentSettings::generatePersistentSettingsPath()
+const QString &IPersistentSettings::defaultPersistentSettingsPathPrefix()
+{
+	static auto s = QStringLiteral("ui");
+	return s;
+}
+
+QString IPersistentSettings::persistentSettingsPathPrefix()
+{
+	return m_persistentSettingsPathPrefix;
+}
+
+void IPersistentSettings::setPersistentSettingsPathPrefix(const QString &prefix)
+{
+	m_persistentSettingsPathPrefix = prefix;
+}
+
+QString IPersistentSettings::effectivePersistentSettingsPathPrefix()
+{
+	QString pp = persistentSettingsPathPrefix();
+	if(!pp.isEmpty())
+		return pp;
+	for(QObject *obj=m_controlledObject->parent(); obj!=nullptr; obj=obj->parent()) {
+		IPersistentSettings *ps = dynamic_cast<IPersistentSettings*>(obj);
+		if(ps)
+			return ps->effectivePersistentSettingsPathPrefix();
+	}
+	return defaultPersistentSettingsPathPrefix();
+}
+
+QString IPersistentSettings::rawPersistentSettingsPath()
 {
 	qfLogFuncFrame() << persistentSettingsId() << m_controlledObject->property("persistentSettingsId").toString();
-	QString generated_path = persistentSettingsId();
-	QString ret;
-	if(!generated_path.isEmpty()) {
+	QString persistent_id = persistentSettingsId();
+	QStringList raw_path;
+	if(!persistent_id.isEmpty()) {
 		for(QObject *obj=m_controlledObject->parent(); obj!=nullptr; obj=obj->parent()) {
 			IPersistentSettings *ps = dynamic_cast<IPersistentSettings*>(obj);
 			if(ps) {
-				ret = ps->persistentSettingsPath() + '/' + generated_path;
+				QString pp = ps->rawPersistentSettingsPath();
+				if(!pp.isEmpty())
+					raw_path.insert(0, pp);
 				//qfWarning() << "reading property 'persistentSettingsId' error" << obj << "casted to IPersistentSettings" << ps;
 				//qfWarning() << "\tcorrect value should be:" << parent_id;
 				break;
 			}
 			else {
 				QVariant vid = obj->property("persistentSettingsId");
-				QString id = vid.toString();
-				if(!id.isEmpty()) {
-					ret = id + '/' + generated_path;
+				QString parent_id = vid.toString();
+				if(!parent_id.isEmpty()) {
+					raw_path.insert(0, parent_id);
 				}
 			}
 			// reading property using QQmlProperty is crashing my app Qt 5.3.1 commit a83826dad0f62d7a96f5a6093240e4c8f7f2e06e
 			//QQmlProperty p(obj, "persistentSettingsId");
 			//QVariant v2 = p.read();
 		}
-		if(ret.isEmpty()) {
-			static const QLatin1Literal PersistentSettings("persistentSettings");
-			ret = PersistentSettings + '/' + generated_path;
-		}
+		raw_path.append(persistent_id);
 	}
-	return ret;
+	return raw_path.join('/');
 }
+

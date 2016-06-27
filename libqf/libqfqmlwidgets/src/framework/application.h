@@ -4,6 +4,7 @@
 #include "../qmlwidgetsglobal.h"
 
 #include <QApplication>
+#include <QJsonDocument>
 
 class QQmlEngine;
 class QQmlError;
@@ -12,9 +13,12 @@ namespace qf {
 namespace qmlwidgets {
 namespace framework {
 
+class MainWindow;
+
 class QFQMLWIDGETS_DECL_EXPORT Application : public QApplication
 {
 	Q_OBJECT
+	friend class MainWindow;
 private:
 	typedef QApplication Super;
 public:
@@ -28,6 +32,9 @@ public:
 	const QList<QQmlError>& qmlErrorList();
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
+	MainWindow* frameWork();
+
+	void loadStyleSheet(const QString &file = QString());
 public slots:
 	QString applicationDirPath();
 	QString applicationName();
@@ -39,7 +46,7 @@ protected:
 
 	Q_SLOT void onQmlError(const QList<QQmlError> &qmlerror_list);
 
-	virtual void initStyleSheet();
+	QJsonDocument profile();
 private:
 	void releaseQmlEngine();
 	void setupQmlImportPaths();
@@ -48,6 +55,9 @@ protected:
 	QStringList m_qmlLibraryImportPaths;
 	QStringList m_qmlPluginImportPaths;
 	QList<QQmlError> m_qmlErrorList;
+	QJsonDocument m_profile;
+	bool m_profileLoaded = false;
+	MainWindow* m_frameWork = nullptr;
 };
 
 }}}

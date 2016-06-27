@@ -19,14 +19,14 @@ class QFQMLWIDGETS_DECL_EXPORT DataController : public QObject
 	Q_OBJECT
 	Q_PROPERTY(qf::core::model::DataDocument* document READ document WRITE setDocument NOTIFY documentChanged)
 	Q_PROPERTY(QWidget* widget READ widget WRITE setWidget NOTIFY widgetChanged)
-	Q_PROPERTY(QString dbConnectionName READ dbConnectionName WRITE setDbConnectionName)
+	//Q_PROPERTY(QString dbConnectionName READ dbConnectionName WRITE setDbConnectionName)
 public:
 	explicit DataController(QObject *parent = 0);
 	~DataController() Q_DECL_OVERRIDE;
 
-	QF_PROPERTY_IMPL2(QString, d, D, bConnectionName, QSqlDatabase::defaultConnection)
+	//QF_PROPERTY_IMPL2(QString, d, D, bConnectionName, QSqlDatabase::defaultConnection)
 
-	qf::core::model::DataDocument* document() const { return m_document;}
+	qf::core::model::DataDocument* document(bool throw_exc = qf::core::Exception::Throw) const;
 	void setDocument(qf::core::model::DataDocument *doc);
 	Q_SIGNAL void documentChanged(qf::core::model::DataDocument *doc);
 

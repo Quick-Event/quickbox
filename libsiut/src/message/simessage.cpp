@@ -8,15 +8,17 @@
 #include "simessage.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QStringList>
+#include <QVariantMap>
 
 //=================================================
 //             SIMessageBase
 //=================================================
 QString SIMessageBase::dump() const
 {
-	QString ret = f_data.dump();
+	QString ret = m_data.dump();
 	return ret;
 }
 
@@ -39,28 +41,28 @@ const SIMessageCardReadOut::Punch & SIMessageCardReadOut::Punch::sharedNull()
 	return n;
 }
 
-SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, int record_type)
+SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, PunchRecordType record_type)
 {
 	d = new Data();
-	if(record_type == 2) {
+	if(record_type == PunchRecordClasic) {
 		//d->is24HoursTimeFormat = false;
 		//flags = 0;
 		if(ba.length() > offset + 2) {
 			d->code = (unsigned char)ba[offset];
 			d->time = (((int)(unsigned char)ba[offset + 1]) << 8) + (unsigned char)ba[offset + 2];
 		}
-		else qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 3 << "offset:" << offset;
+		else
+			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 3 << "offset:" << offset;
 	}
-	else if(record_type == 1) {
-		//d->is24HoursTimeFormat = false;
-		//flags = 0;
+	else if(record_type == PunchRecordDegraded) {
 		if(ba.length() > offset) {
 			d->code = (unsigned char)ba[offset];
 		}
-		else qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 0 << "offset:" << offset;
+		else
+			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 0 << "offset:" << offset;
 		d->time = 0xEEEE;
 	}
-	else if(record_type == 4) {
+	else if(record_type == PunchRecordExtended) {
 		//d->is24HoursTimeFormat = true;
 		if(ba.length() > offset + 3) {
 			d->flags = (unsigned char)ba[offset];
@@ -72,48 +74,27 @@ SIMessageCardReadOut::Punch::Punch(const QByteArray& ba, int offset, int record_
 			 *
 			 */
 			d->code = (unsigned char)ba[offset + 1];
-			if(d->flags & (1<<7)) d->code = 0;
-			else d->code += 256 * ((d->flags & (3 << 6)) >> 6);
+			if(d->flags & (1<<7))
+				d->code = 0;
+			else
+				d->code += 256 * ((d->flags & (3 << 6)) >> 6);
 			/** code
 			 * CN - control station code number, 0...255 or subsecond value1
 			 * subsecond value only for “start” and “finish” possible
 			 * new from sw5.49: bit7=1 in PTD-byte indicates a subsecond value in CN byte (use always code numbers <256 for start/finish)
 			 */
 			d->time = (((int)(unsigned char)ba[offset + 2]) << 8) + (unsigned char)ba[offset + 3];
-			if(d->flags & (1 << 0)) d->time += 12*60*60;
+			if(d->flags & (1 << 0))
+				d->time += 12*60*60;
 			//qfInfo() << ba.mid(offset, 4).toHex();
 			//qfInfo() << "code:" << d->code;
 		}
-		else qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 4 << "offset:" << offset;
+		else
+			qfError() << "Incorrect punch data:" << SIMessageData::dumpData(ba) << "correct length is:" << offset + 4 << "offset:" << offset;
 	}
 	else {
 		qfError() << "Incorrect punch record type:" << record_type;
 	}
-}
-
-int SIMessageCardReadOut::Punch::code() const
-{
-	int ret = d->code;
-	return ret;
-}
-
-int SIMessageCardReadOut::Punch::time() const
-{
-	int ret = d->time;
-	//if(is24HoursTimeFormat() && d.flags & (1<<0)) ret += 12*60*60;
-	return ret;
-}
-
-int SIMessageCardReadOut::Punch::timeMSec() const
-{
-	int ret = d->timeMSec;
-	/*
-	if(d.flags & (1<<7)) {
-		ret = d.code; /// 1/256 sec
-		ret = 1000 * ret / 256;
-	}
-	*/
-	return ret;
 }
 
 int SIMessageCardReadOut::Punch::dayOfWeek() const
@@ -128,19 +109,23 @@ int SIMessageCardReadOut::Punch::weekCnt() const
 	return ret;
 }
 
-static int to_AM(int secs)
+QVariantMap SIMessageCardReadOut::Punch::toVariantMap() const
 {
-	while(secs > 12*60*60) secs -= 12*60*60;
-	while(secs < 0) secs += 12*60*60;
-	return secs;
+	QVariantMap ret;
+	ret[QStringLiteral("code")] = code();
+	ret[QStringLiteral("time")] = time();
+	ret[QStringLiteral("msec")] = msec();
+	//ret[QStringLiteral("day")] = dayOfWeek();
+	//ret[QStringLiteral("week")] = weekCnt();
+	return ret;
 }
 
 static QString time_str(int _time)
 {
-	QString ret = "%1:%2.%3";
+	QString ret = "%1:%2:%3";
 	if(_time == 0xEEEE) ret = "----";
 	else {
-		int time = to_AM(_time);
+		int time = SIMessageCardReadOut::toAM(_time);
 		ret = ret.arg(time / (60*60)).arg(QString::number((time / 60) % 60), 2, '0').arg(QString::number(time % 60), 2, '0');
 	}
 	return ret;
@@ -151,10 +136,16 @@ static QString ob_time_str(int _time)
 	QString ret = "%1.%2";
 	if(_time == 0xEEEE) ret = "----";
 	else {
-		int time = to_AM(_time);
+		int time = SIMessageCardReadOut::toAM(_time);
 		ret = ret.arg(time / 60).arg(QString::number(time % 60), 2, '0');
 	}
 	return ret;
+}
+
+QString SIMessageCardReadOut::Punch::toString() const
+{
+	QString ret = "{code: %1, time: %2, msec: %3}";
+	return ret.arg(code()).arg(time_str(time())).arg(msec());
 }
 
 SIMessageCardReadOut::SIMessageCardReadOut(const SIMessageData& _data)
@@ -180,6 +171,27 @@ QString SIMessageCardReadOut::cardTypeToString(SIMessageCardReadOut::CardType ca
 	return ret;
 }
 
+bool SIMessageCardReadOut::isTimeValid(int time)
+{
+	return time >= 0 && time < 0xEEEE;
+}
+
+int SIMessageCardReadOut::toAM(int time_sec)
+{
+	return toAMms(time_sec * 1000) / 1000;
+}
+
+int SIMessageCardReadOut::toAMms(int time_msec)
+{
+	constexpr int msec12hr = 12 * 60 * 60 * 1000;
+	int ret = time_msec;
+	while(ret < 0)
+		ret += msec12hr;
+	while(ret >= msec12hr)
+		ret -= msec12hr;
+	return ret;
+}
+
 QString SIMessageCardReadOut::cardDataLayoutTypeToString(SIMessageCardReadOut::CardDataLayoutType card_layout_type)
 {
 	QString ret;
@@ -198,28 +210,31 @@ SIMessageCardReadOut::CardDataLayoutType SIMessageCardReadOut::cardDataLayoutTyp
 {
 	CardDataLayoutType ret = DataLayoutUnknown;
 	switch(cardType()) {
-		case CardType5:
-			ret = DataLayout5;
-			break;
-		case CardType6:
-			ret = DataLayout6;
-			break;
-		case CardType8:
-			ret = DataLayout8;
-			break;
-		case CardType9:
-		case CardTypeT:
-			ret = DataLayout9;
-			break;
-		case CardTypeSIAC:
-		case CardType10:
-		case CardType11:
-			ret = DataLayout10;
-			break;
-		default:
-			qfError() << "Can't assign cardDataLayout for card type:" << rawCardType() << cardTypeToString(cardType());
-			ret = DataLayoutUnknown;
-			break;
+	case CardType5:
+		ret = DataLayout5;
+		break;
+	case CardType6:
+		ret = DataLayout6;
+		break;
+	case CardType8:
+		ret = DataLayout8;
+		break;
+	case CardType9:
+	case CardTypeT:
+		ret = DataLayout9;
+		break;
+	case CardTypeP:
+		ret = DataLayoutP;
+		break;
+	case CardTypeSIAC:
+	case CardType10:
+	case CardType11:
+		ret = DataLayout10;
+		break;
+	default:
+		qfError() << "Can't assign cardDataLayout for card type:" << rawCardType() << cardTypeToString(cardType());
+		ret = DataLayoutUnknown;
+		break;
 	}
 	return ret;
 }
@@ -237,7 +252,7 @@ int SIMessageCardReadOut::rawCardType() const
 		{
 			QByteArray raw_data = data().blockData(0);
 			ret = (int)(((unsigned char)raw_data[6 * 4]) & 0x0F);
-			qfInfo() << "raw card type:" << ret;
+			//qfInfo() << "raw card type:" << ret;
 			break;
 		}
 		default:
@@ -263,7 +278,7 @@ SIMessageCardReadOut::CardType SIMessageCardReadOut::cardType() const
 		{
 			QByteArray raw_data = data().blockData(0);
 			int n = rawCardType();
-			qfInfo() << "raw card type:" << n;
+			//qfInfo() << "raw card type:" << n;
 			switch(n) {
 				case 1: ret = CardType9; break;
 				case 2: ret = CardType8; break;
@@ -293,37 +308,36 @@ QString SIMessageCardReadOut::dump() const
 	//sl << tr("countryCode: %1").arg(countryCode());
 	//sl << tr("clubCode: %1").arg(clubCode());
 	int start = startTime();
-	if(start == 0xEEEE) start = checkTime();
+	if(start == 0xEEEE)
+		start = checkTime();
 	sl << tr("check: %1").arg(time_str(checkTime()));
 	sl << tr("start: %1").arg(time_str(startTime()));
 	sl << tr("finish: %1 (%2)").arg(time_str(finishTime())).arg(ob_time_str(finishTime() - start));
 	int i = 0;
-	foreach(const Punch &p, punchList()) {
+	foreach(const Punch &p, punches()) {
 		sl << QString::number(++i) + ".\t" + QString::number(p.code()) + "\t" + ob_time_str(p.time()) + "\t" + ob_time_str(p.time() - start);
 	}
 	return sl.join("\n");
 }
 
-QVariant SIMessageCardReadOut::toVariant() const
+QVariantMap SIMessageCardReadOut::toVariantMap() const
 {
 	QVariantMap ret;// = SIMessageBase::toVariant().toMap();
-	ret["stationCodeNumber"] = stationCodeNumber();
-	ret["cardNumber"] = cardNumber();
-	ret["cardNumberFull"] = (cardNumber() < 100000)? 100000 + cardNumber(): cardNumber();
+	ret[QStringLiteral("stationCodeNumber")] = stationCodeNumber();
+	ret[QStringLiteral("cardNumber")] = cardNumber();
+	//ret["cardNumberFull"] = (cardNumber() < 100000)? 100000 + cardNumber(): cardNumber();
 	//ret["startNumber"] = startNumber();
 	//ret["countryCode"] = countryCode();
 	//ret["clubCode"] = clubCode();
-	ret["checkTime"] = checkTime();
-	ret["startTime"] = startTime();
-	ret["finishTime"] = finishTime();
+	ret[QStringLiteral("checkTime")] = checkTime();
+	ret[QStringLiteral("startTime")] = startTime();
+	ret[QStringLiteral("finishTime")] = finishTime();
+	ret[QStringLiteral("finishTimeMs")] = 0; // TODO: some cards supports msecs, read it
 	QVariantList punch_list;
-	foreach(const Punch &p, punchList()) {
-		QVariantMap m;
-		m["code"] = p.code();
-		m["time"] = p.time();
-		punch_list << m;
+	foreach(const Punch &p, punches()) {
+		punch_list << p.toVariantMap();
 	}
-	ret["punchList"] = punch_list;
+	ret["punches"] = punch_list;
 	return ret;
 }
 
@@ -359,7 +373,8 @@ int SIMessageCardReadOut::cardNumber() const
 		int base = 4;
 		ret = (((int)(unsigned char)raw_data[base]) << 8) + (unsigned char)raw_data[base + 1];
 		int cs = (unsigned char)raw_data[base + 2];
-		if(cs > 1) ret += 100000 * cs;
+		if(cs > 1)
+			ret += 100000 * cs;
 		//qfInfo() << SIMessageData::dumpData(raw_data);
 		//qfInfo() << "n:" << ret << "cs:" << cs;
 		//ret += (cs << 16);
@@ -376,6 +391,8 @@ int SIMessageCardReadOut::cardNumber() const
 		//qfInfo() << ba.toHex();
 		ret = (((int)(unsigned char)raw_data[base+1]) << 16) + (((int)(unsigned char)raw_data[base+2]) << 8) + (unsigned char)raw_data[base+3];
 	}
+	if(ret < 200000)
+		ret = ret % 100000;
 	return ret;
 }
 /*
@@ -450,7 +467,7 @@ int SIMessageCardReadOut::finishTime() const
 	return ret;
 }
 
-SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
+SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 {
 	qfLogFuncFrame();
 	PunchList ret;
@@ -463,12 +480,12 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 		for(int i=0; i<30 && i<punch_cnt; i++) {
 			int offset = 3*i + i/5 + 1;
 			//qfInfo() << i << "->" << QString::number(offset, 16);
-			Punch p(raw_data, base + offset, 2);
+			Punch p(raw_data, base + offset, PunchRecordClasic);
 			ret << p;
 		}
 		for(int i=30; i<36 && i<punch_cnt; i++) {
 			int offset = 16*(i-30);
-			Punch p(raw_data, base + offset, 1);
+			Punch p(raw_data, base + offset, PunchRecordDegraded);
 			ret << p;
 		}
 	}
@@ -481,14 +498,15 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 		int curr_block_no = -1;
 		for(int i=0; i<punch_cnt; i++) {
 			int block_no = i / 32;
-			if(block_no < 2) block_no += 6;
+			if(block_no < 2)
+				block_no += 6;
 			if(curr_block_no != block_no) {
 				raw_data = data().blockData(block_no);
 				curr_block_no = block_no;
 			}
 			int offset = (i % 32) * 4;
 			//qfInfo() << raw_data.mid(offset, 16).toHex();
-			Punch p(raw_data, offset, 4);
+			Punch p(raw_data, offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
@@ -503,8 +521,8 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 		for(int i=0; i<punch_cnt; i++) {
 			int offset = 4*i;
 			//if(i >= (32-14)) offset += dataOffsetInPacket(); /// dalsi packet
-			qfInfo() << i << "->" << QString::number(offset, 16);
-			Punch p(raw_data, base + offset, 4);
+			//qfInfo() << i << "->" << QString::number(offset, 16);
+			Punch p(raw_data, base + offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
@@ -531,7 +549,22 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 				//qfInfo() << i << "->" << "base page:" << (base / 4) << "offset page:" << (offset / 4);
 			}
 			//qfInfo() << i << "->" << QString::number(offset, 16);
-			Punch p(raw_data, base + offset, 4);
+			Punch p(raw_data, base + offset, PunchRecordExtended);
+			ret << p;
+		}
+	}
+	else if(card_data_layout_type == DataLayoutP) {
+		QByteArray raw_data = data().blockData(0);
+		int punch_cnt = (unsigned char)raw_data[5*4 + 2];
+		/// blocks 1
+		/// block 1 has 20 punches starting on page 1 offset 12
+		/// each punch has 4 bytes
+		int base = 12*4;
+		for(int i=0; i<punch_cnt && i<20; i++) {
+			int offset = 4 * i;
+			raw_data = data().blockData(1);
+			//qfInfo() << i << "->" << QString::number(offset, 16);
+			Punch p(raw_data, base + offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
@@ -546,10 +579,38 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punchList() const
 			raw_data = data().blockData(block_no);
 			int offset = (i % 32) * 4;
 			//qfInfo() << raw_data.mid(offset, 16).toHex();
-			Punch p(raw_data, offset, 4);
+			Punch p(raw_data, offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
 	return ret;
 }
 
+SIMessageTransmitRecord::SIMessageTransmitRecord(const SIMessageData &_data)
+	: SIMessageBase(_data)
+{
+	QByteArray data = m_data.header();
+	QF_ASSERT(data.length() == 15, "Bad data length!", return);
+	int offset = 2;
+	int code = 0;
+	for (int i = 0; i < 2; ++i)
+		code = (code << 8) + (uint8_t)data[offset++];
+	m_punch.setCode(code);
+	for (int i = 0; i < 4; ++i)
+		m_cardNumber = (m_cardNumber << 8) + (uint8_t)data[offset++];
+	offset++; // skip TD, not used for now
+	int time = 0;
+	for (int i = 0; i < 2; ++i)
+		time = (time << 8) + (uint8_t)data[offset++];
+	m_punch.setTime(time);
+	int msec = (uint8_t)data[offset++];// sub second values 1/256 sec
+	msec = msec * 1000 / 256;
+	m_punch.setMsec(msec);
+}
+
+QVariantMap SIMessageTransmitRecord::toVariantMap() const
+{
+	QVariantMap ret = punch().toVariantMap();
+	ret[QStringLiteral("cardNumber")] = cardNumber();
+	return ret;
+}

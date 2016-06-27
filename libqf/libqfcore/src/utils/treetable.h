@@ -39,7 +39,7 @@ public:
 	//virtual ~TreeTableRow();
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeTableColumns : public SValue
 {
 protected:
@@ -54,7 +54,7 @@ public:
 	//virtual ~TreeTableRow();
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeTableRow// : public SValue
 {
 protected:
@@ -90,7 +90,7 @@ public:
 	virtual ~TreeTableRow();
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeTable : public SValue
 {
 public:
@@ -117,7 +117,7 @@ public:
 	void setName(const QString &n) {(*this)[KEY_META][KEY_NAME] = n;}
 	TreeTableColumns columns() const {return TreeTableColumns(property(KEY_COLUMNS));}
 	int columnCount() const {return columns().count();}
-	int rowCount() const {return rows().count();}
+	int rowCount() const;
 	TreeTableRow row(int ix) const {return TreeTableRow(columns(), rows().property(ix));}
 	TreeTableRow appendRow();
 	void removeRow(int ix);
@@ -129,7 +129,9 @@ public:
 	/// pokud je tabulka v reportu generovana z dat, je sloupec takto zarovnan
 	void setColumnAlignment(const QString &col_name, Qt::Alignment alignment);
 	void setColumnAlignment(int col_no, Qt::Alignment alignment);
-	QString columnHAlignment(const QString &col_name) const;
+	//QString columnHAlignment(const QString &col_name) const;
+
+	//QString columnWidth(int col_no) const;
 
 	//! pokud je \a caption == QString(), vezme se to za posledni teckou z \a name nebo cely \a name , kdyz tam neni tecka.
 	TreeTableColumn appendColumn(const QString &name, QVariant::Type type = QVariant::String, const QString &caption = QString());

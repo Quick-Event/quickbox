@@ -1,43 +1,70 @@
 #ifndef QF_CORE_LOG_H
 #define QF_CORE_LOG_H
 
-#include "coreglobal.h"
+#include "logcore.h"
+#include "logdevice.h"
 
 #include <QDebug>
 
-#define qfDebug qDebug
-#define qfInfo() QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(qf::core::Log::LOG_INFO))
-#define qfWarning qWarning
-#define qfError qCritical
+#ifndef QT_DEBUG
+#define NO_QF_DEBUG
+#endif
+/*
+#ifdef NO_QF_DEBUG
+#define qfDebug_q while(0) qDebug
+#else
+#define qfDebug_q qDebug
+#endif
+#define qfInfo_q qInfo
+#define qfWarning_q qWarning
+#define qfError_q qCritical
+#define qfFatal_q if(qCritical() << qf::core::Log::stackTrace(), true) qFatal
+
+//#define qfLog_q(level) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(level))
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 3, 0)) || (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))
+#define qfDebug qfDebug_q()
+#define qfInfo qfInfo_q()
+#define qfWarning qfWarning_q()
+#define qfError qfError_q()
+#define qfFatal qfFatal_q
+//#define qfLog(level) qfLog_q(level)
+#else
+#define qfDebug qfDebug_q().noquote
+#define qfInfo qfInfo_q().noquote
+#define qfWarning qfWarning_q().noquote
+#define qfError qfError_q().noquote
+#define qfFatal qfFatal_q
+//#define qfLog(level) qfLog_q(level).noquote()
+#endif
+*/
+
 #define qfFatal if(qCritical() << qf::core::Log::stackTrace(), true) qFatal
-#define qfLog(level) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).warning(qf::core::Log::categoryForLevel(level))
 
-#define qfLogFuncFrame() QDebug __func_frame_exit_logger__ = QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO).debug() << "<< FN EXIT" << Q_FUNC_INFO; \
-	qfDebug() << ">> FN ENTER" << Q_FUNC_INFO
+#ifdef NO_QF_DEBUG
+#define qfCDebug(category) while(false) QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).debug
+#else
+#define qfCDebug(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Debug, __FILE__, category); en; en = false) \
+	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).debug
+#endif
 
-class QLoggingCategory;
+#define qfCInfo(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Info, __FILE__, category); en; en = false) \
+	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).info
+#define qfCWarning(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Warning, __FILE__, category); en; en = false) \
+	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).warning
+#define qfCError(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Error, __FILE__, category); en; en = false) \
+	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).critical
 
-namespace qf {
-namespace core {
+#define qfDebug qfCDebug("")
+#define qfInfo qfCInfo("")
+#define qfWarning qfCWarning("")
+#define qfError qfCError("")
 
-class QFCORE_DECL_EXPORT Log
-{
-public:
-	enum Level {LOG_INVALID = -1, LOG_DEB, LOG_INFO, LOG_WARN, LOG_ERR, LOG_FATAL};
-public:
-	static const char* categoryDebugName;
-	static const char* categoryInfoName;
-	static const char* categoryWarningName;
-	static const char* categoryErrorName;
-	static const char* categoryFatalName;
+#ifdef NO_QF_DEBUG
+#define qfLogFuncFrame() while(0) qDebug()
+#else
+#define qfLogFuncFrame() QDebug __qf_func_frame_exit_logger__ = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Debug, __FILE__, "")? QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, "").debug() << "     EXIT FN" << Q_FUNC_INFO: QMessageLogger().debug(); \
+	qfDebug() << ">>>> ENTER FN" << Q_FUNC_INFO
+#endif
 
-	static const QLoggingCategory& categoryForLevel(int level);
-	static const char *levelName(Level level);
-public:
-	static QString stackTrace();
-};
-
-}
-}
-
-#endif			
+#endif

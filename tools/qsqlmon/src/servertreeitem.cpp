@@ -36,7 +36,7 @@ ServerTreeItem::~ServerTreeItem()
 
 MainWindow * ServerTreeItem::mainWindow()
 {
-	MainWindow *ret = qfFindParent<MainWindow*>(model());
+	MainWindow *ret = qf::core::Utils::findParent<MainWindow*>(model());
 	return ret;
 }
 
@@ -197,7 +197,7 @@ void Connection::Params::setParam(const QString& name, const QVariant &value)
 	QVariant val = value;
 	if(name == "password") {
 		//qfDebug() << "password:" << s;
-		val = theApp()->crypt().encrypt(value.toString(), 32);
+		val = theApp()->crypt().encrypt(value.toString().toUtf8(), 32);
 	}
 	(*this)[name] = val;
 }
@@ -241,7 +241,7 @@ void Connection::setParams(const Connection::Params &prms)
 Database::Database(QObject *parent, const QString& name)
 	: ServerTreeItem(parent, name)
 {
-	QObject *o = qfFindParent<MainWindow*>(this);
+	QObject *o = qf::core::Utils::findParent<MainWindow*>(this);
 	if(o)
 		connect(this, SIGNAL(connectionInfo(const QString&)), o, SLOT(appendInfo(const QString&)));
 }
@@ -401,7 +401,7 @@ bool Database::open()
 	m_sqlConnection.setPort(c->params().param("port").toInt());
 	m_sqlConnection.setUserName(c->params().param("user").toString());
 	m_sqlConnection.setPassword(c->params().param("password").toString());
-	//qDebug() << sqlConnection.password();
+	//qfInfo() << m_sqlConnection.password();
 	m_sqlConnection.setDatabaseName(objectName());
 	//qfDebug() << "\t" << m_sqlConnection.info();
 	QStringList opts;

@@ -16,9 +16,6 @@ private:
 	typedef qf::qmlwidgets::TableView Super;
 public:
 	TableView(QWidget *parent = nullptr);
-protected:
-	//virtual void importCSV();
-	//virtual QString exportReportDialogXmlPersistentId();
 };
 
 class TableViewWidget : public QWidget

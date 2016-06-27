@@ -17,12 +17,15 @@ public:
 private:
 	typedef DataDocument Super;
 public:
-	virtual SqlTableModel* model();
+	SqlTableModel* model() Q_DECL_OVERRIDE;
+
+	qf::core::sql::QueryBuilder queryBuilder();
+	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
 protected:
 	SqlTableModel* createModel(QObject *parent) Q_DECL_OVERRIDE;
 
 	///! load model persistent storage via model
-	virtual bool loadData();
+	bool loadData() Q_DECL_OVERRIDE;
 	/*
 	///! save dirty data to persistent storage via model
 	virtual bool saveData();

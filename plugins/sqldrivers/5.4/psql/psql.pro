@@ -2,13 +2,25 @@ TARGET = qfpsql
 #TARGET = $${TARGET}$$QF_LIBRARY_DEBUG_EXT
 
 DEFINES += QF_PATCH
-unix:
-    PSQL_HEADERS = /usr/include/postgresql # fanda QF_PATCH
 
-win32 {
-    PSQL_HOME = C:\app\psql
-    PSQL_HEADERS = $$PSQL_HOME\include
-    PSQL_LIBS = $$PSQL_HOME\lib
+PSQL_HOME = $$(PSQL_HOME)
+
+isEmpty(PSQL_HOME) {
+	win32 {
+		PSQL_HOME = "C:\Program Files (x86)\PostgreSQL\9.3"
+	}
+}
+
+unix {
+	PSQL_HEADERS = /usr/include/postgresql
+}
+else:!isEmpty(PSQL_HOME) {
+	PSQL_HEADERS = $$PSQL_HOME/include
+	PSQL_LIBS = $$PSQL_HOME/lib
+	win32 {
+		# uncomment following line if compiler complains about redefining struct timespec in pthread.h
+		#DEFINES += HAVE_STRUCT_TIMESPEC
+	}
 }
 
 HEADERS += \
@@ -21,10 +33,10 @@ SOURCES += \
 LIBS += -lpq
 
 win32 {
-    LIBS += -L$$PSQL_LIBS
+	LIBS += -L$$PSQL_LIBS
 }
 
 INCLUDEPATH += \
-        $$PSQL_HEADERS \
+		$$PSQL_HEADERS \
 
 include(../../qsqldriverbase.pri)

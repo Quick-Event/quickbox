@@ -111,11 +111,20 @@ void ReportItemImage::syncChildren()
 ReportItemImage::ReportItemImage(ReportItem *parent)
 	: Super(parent)
 {
-	connect(this, &ReportItemImage::dataSourceChanged, this, &ReportItemImage::updateResolvedDataSource);
+	/*
+	connect(this, &ReportItemImage::dataSourceChanged, this, [this](const QString &ds) {
+		this->m_currentDataSource = ds;
+	});
+	*/
 }
 
-void ReportItemImage::updateResolvedDataSource(const QString &data_source)
+void ReportItemImage::updateResolvedDataSource()
 {
+	QString data_source = dataSource();
+	if(m_currentDataSource == data_source)
+		return;
+
+	m_currentDataSource = data_source;
 	QString processor_img_key;
 	m_resolvedDataSource = data_source;
 	ReportItem::Image im;
@@ -201,7 +210,8 @@ void ReportItemImage::updateResolvedDataSource(const QString &data_source)
 
 ReportItem::PrintResult ReportItemImage::printMetaPaint(ReportItemMetaPaint* out, const ReportItem::Rect& bounding_rect)
 {
-	ReportItem::PrintResult ret = ReportItemFrame::printMetaPaint(out, bounding_rect);
+	updateResolvedDataSource();
+	ReportItem::PrintResult ret = Super::printMetaPaint(out, bounding_rect);
 	/*--
 	ReportItemMetaPaint *mpi = out->lastChild();
 	if(mpi) {
@@ -225,7 +235,7 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 {
 	//qfDebug().color(QFLog::Magenta) << QF_FUNC_NAME << element.tagName() << "id:" << element.attribute("id");
 	//qfDebug() << "\tbounding_rect:" << bounding_rect.toString();
-	PrintResult res = PrintOk;
+	PrintResult res = PrintResult::createPrintFinished();
 	Rect br = bounding_rect;
 	/*--
 	if(!fakeLoadErrorPara.isNull()) {
@@ -306,18 +316,18 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 		/// vymysli rozmer br, do kteryho to potom reportpainter nacpe, at je to veliky jak chce
 		if(designedRect.width() == 0 && designedRect.horizontalUnit == Rect::UnitMM && designedRect.height() == 0 && designedRect.verticalUnit == Rect::UnitMM) {
 			/// ani jeden smer neni zadan, vezmi ozmery z obrazku
-			double w = 0;
-			double h = 0;
 			if(im.isImage()) {
-				w = im.image.width() / (im.image.dotsPerMeterX() / 1000.);
-				h = im.image.height() / (im.image.dotsPerMeterY() / 1000.);
-				if(w > 0 && w < br.width()) br.setWidth(w);
-				if(h > 0 && h < br.height()) br.setHeight(w);
+				double w = im.image.width() / (im.image.dotsPerMeterX() / 1000.);
+				double h = im.image.height() / (im.image.dotsPerMeterY() / 1000.);
+				if(w > 0 && w < br.width())
+					br.setWidth(w);
+				if(h > 0 && h < br.height())
+					br.setHeight(w);
 				//qfInfo() << "image bounding rect w:" << w << "h:" << h << "designed rect:" << designedRect.toString();
 			}
 			else if(im.isPicture()) {
-				w  =im.picture.boundingRect().width();
-				h = im.picture.boundingRect().height();
+				//w  =im.picture.boundingRect().width();
+				//h = im.picture.boundingRect().height();
 				//qfInfo() << "picture bounding rect w:" << w << "h:" << h << "designed rect:" << designedRect.toString();
 			}
 		}

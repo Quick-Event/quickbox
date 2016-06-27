@@ -2,21 +2,33 @@
 #include "internal/captionframe.h"
 #include "../frame.h"
 #include "../framework/dialogwidget.h"
+#include "../framework/datadialogwidget.h"
 #include "../menubar.h"
 #include "../toolbar.h"
 #include "../dialogbuttonbox.h"
+#include "../internal/desktoputils.h"
 
 #include <qf/core/log.h>
+#include <qf/core/assert.h>
 
 #include <QVBoxLayout>
 #include <QSettings>
+#include <QShowEvent>
+#include <QPushButton>
 
 using namespace qf::qmlwidgets::dialogs;
 
 Dialog::Dialog(QWidget *parent) :
-	QDialog(parent), framework::IPersistentSettings(this)
+	Dialog(QDialogButtonBox::NoButton, parent)
 {
 	qfLogFuncFrame();
+}
+
+Dialog::Dialog(QDialogButtonBox::StandardButtons buttons, QWidget *parent)
+	: QDialog(parent), framework::IPersistentSettings(this)
+{
+	qfLogFuncFrame();
+	setButtons(buttons);
 }
 
 Dialog::~Dialog()
@@ -33,9 +45,17 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 		if(m_centralWidget) {
 			m_centralWidget->setParent(nullptr);
 			m_centralWidget->setParent(this);
+			auto sp = m_centralWidget->sizePolicy();
+			sp.setVerticalPolicy(QSizePolicy::MinimumExpanding);
+			m_centralWidget->setSizePolicy(sp);
 		}
 		if(dialog_widget) {
+			connect(dialog_widget, &qf::qmlwidgets::framework::DialogWidget::closeDialogRequest, this, &Dialog::done);
 			QMetaObject::invokeMethod(this, "settleDownDialogWidget", Qt::QueuedConnection);
+		}
+		else {
+			updateCaptionFrame();
+			updateLayout();
 		}
 	}
 }
@@ -44,9 +64,15 @@ void Dialog::settleDownDialogWidget()
 {
 	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
 	if(dialog_widget) {
-		dialog_widget->settleDownInDialog(this);
-		updateCaptionFrame();
-		updateLayout();
+		QVariant dlg = QVariant::fromValue(this);
+		bool ok = QMetaObject::invokeMethod(dialog_widget, "settleDownInDialog_qml", Qt::DirectConnection, Q_ARG(QVariant, dlg));
+		if(!ok) {
+			qfWarning() << this << "Method settleDownInDialog_qml() invocation failed!";
+		}
+		else {
+			updateCaptionFrame();
+			updateLayout();
+		}
 	}
 }
 
@@ -58,10 +84,18 @@ qf::qmlwidgets::MenuBar* Dialog::menuBar()
 	return m_menuBar;
 }
 
-qf::qmlwidgets::ToolBar *Dialog::addToolBar()
+qf::qmlwidgets::ToolBar *Dialog::toolBar(const QString &name, bool create_if_not_exists)
 {
-	qf::qmlwidgets::ToolBar *ret = new qf::qmlwidgets::ToolBar(this);
-	m_toolBars << ret;
+	qf::qmlwidgets::ToolBar *ret = m_toolBars.value(name);
+	if(ret) {
+		return ret;
+	}
+	if(!create_if_not_exists) {
+		return nullptr;
+	}
+	ret = new qf::qmlwidgets::ToolBar(this);
+	m_toolBars[name] = ret;
+	updateLayout();
 	return ret;
 }
 
@@ -74,12 +108,38 @@ int Dialog::exec()
 void Dialog::done(int result)
 {
 	qfLogFuncFrame() << result;
+	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
+	bool ok = true;
+	if(dw) {
+		ok = dw->acceptDialogDone(result);
+	}
+	if(ok)
+		Super::done(result);
+	/*
 	QVariant ok = true;
 	QMetaObject::invokeMethod(this, "doneRequest_qml", Qt::DirectConnection,
 							  Q_RETURN_ARG(QVariant, ok),
 							  Q_ARG(QVariant, result));
 	if(ok.toBool()) {
 		Super::done(result);
+	}
+	*/
+}
+
+void Dialog::setRecordEditMode(int mode)
+{
+	if(m_captionFrame)
+		m_captionFrame->setRecordEditMode(mode);
+	if(m_dialogButtonBox) {
+		auto bt_save = m_dialogButtonBox->button(QDialogButtonBox::Save);
+		if(bt_save) {
+			if(mode == qf::core::model::DataDocument::ModeDelete) {
+				bt_save->setText(tr("Delete"));
+			}
+			else {
+				bt_save->setText(tr("Save"));
+			}
+		}
 	}
 }
 
@@ -97,29 +157,38 @@ void Dialog::loadPersistentSettings()
 		settings.beginGroup(path);
 		QRect geometry = settings.value("geometry").toRect();
 		if(geometry.isValid()) {
-			this->setGeometry(geometry);
+			if(isSavePersistentPosition()) {
+				geometry = qf::qmlwidgets::internal::DesktopUtils::moveRectToVisibleDesktopScreen(geometry);
+				this->setGeometry(geometry);
+			}
+			else {
+				this->resize(geometry.size());
+			}
 		}
 	}
 }
-
+#if 0
 bool Dialog::doneRequest(int result)
 {
 	qfLogFuncFrame() << "result:" << result;
-	QVariant ret = true;
 	qf::qmlwidgets::framework::DialogWidget *dw = dialogWidget();
 	if(dw) {
+		return dw->acceptDialogDone(result);
+		/*
 		QMetaObject::invokeMethod(dw, "dialogDoneRequest_qml", Qt::DirectConnection,
 								  Q_RETURN_ARG(QVariant, ret),
 								  Q_ARG(QVariant, result));
+		*/
 	}
-	return ret.toBool();
+	return true;
 }
-
+#endif
+/*
 QVariant Dialog::doneRequest_qml(const QVariant &result)
 {
 	return doneRequest(result.toBool());
 }
-
+*/
 void Dialog::savePersistentSettings()
 {
 	QString path = persistentSettingsPath();
@@ -138,22 +207,24 @@ void Dialog::updateLayout()
 	QF_SAFE_DELETE(ly_orig);
 	QBoxLayout *ly_root = new QVBoxLayout();
 	ly_root->setMargin(0);
+	ly_root->setSpacing(0);
 	setLayout(ly_root);
-
-	if(m_menuBar)
-		ly_root->addWidget(m_menuBar);
 
 	if(m_captionFrame)
 		ly_root->addWidget(m_captionFrame);
 
+	if(m_menuBar)
+		ly_root->addWidget(m_menuBar);
+
 	if(m_toolBars.count() == 1) {
-		ToolBar *tb = m_toolBars[0];
+		ToolBar *tb = m_toolBars.first();
 		tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		ly_root->addWidget(tb);
 	}
 	else if(!m_toolBars.isEmpty()) {
 		QHBoxLayout *ly1 = new QHBoxLayout(nullptr);
-		for(auto tb : m_toolBars) {
+		Q_FOREACH(auto tb_name, m_toolBars.keys()) {
+			ToolBar *tb = m_toolBars.value(tb_name);
 			tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 			ly1->addWidget(tb);
 		}
@@ -181,12 +252,37 @@ qf::qmlwidgets::framework::DialogWidget *Dialog::dialogWidget()
 	return ret;
 }
 
+void Dialog::showEvent(QShowEvent *ev)
+{
+	Super::showEvent(ev);
+	if(!ev->spontaneous()) {
+		// There are two kinds of show events: show events caused by the window system (spontaneous), and internal show events.
+		// Spontaneous (QEvent::spontaneous()) show events are sent just after the window system shows the window;
+		// they are also sent when a top-level window is redisplayed after being iconified. Internal show events are delivered just before the widget becomes visible.
+		if(ev->type() == QEvent::Show) {
+			emit visibleChanged(true);
+		}
+		else if(ev->type() == QEvent::Hide) {
+			emit visibleChanged(false);
+		}
+	}
+}
+
 void Dialog::updateCaptionFrame()
 {
+	qfLogFuncFrame() << m_centralWidget;
 	qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(m_centralWidget);
+	qf::qmlwidgets::framework::DataDialogWidget *data_dialog_widget = qobject_cast<qf::qmlwidgets::framework::DataDialogWidget *>(m_centralWidget);
 	if(dialog_widget) {
-		if(!m_captionFrame)
+		if(!m_captionFrame) {
 			m_captionFrame = new qf::qmlwidgets::dialogs::internal::CaptionFrame(this);
+			connect(dialog_widget, &qf::qmlwidgets::framework::DialogWidget::titleChanged, m_captionFrame, &qf::qmlwidgets::dialogs::internal::CaptionFrame::setText);
+			if(data_dialog_widget) {
+				connect(data_dialog_widget, &qf::qmlwidgets::framework::DataDialogWidget::recordEditModeChanged, this, &Dialog::setRecordEditMode);
+				setRecordEditMode(data_dialog_widget->recordEditMode());
+				//qfInfo() << "conected:" << ok;
+			}
+		}
 		m_captionFrame->setText(dialog_widget->title());
 		m_captionFrame->setIconSource(dialog_widget->iconSource());
 		m_captionFrame->setIcon(m_captionFrame->createIcon());
@@ -215,5 +311,27 @@ void Dialog::setButtonBox(DialogButtonBox *dbb)
 		}
 		emit buttonBoxChanged();
 	}
+}
+
+void Dialog::setButtons(QDialogButtonBox::StandardButtons buttons)
+{
+	DialogButtonBox *bbx = buttonBox();
+	if(!bbx) {
+		bbx = new DialogButtonBox();
+		setButtonBox(bbx);
+	}
+	bbx->setStandardButtons(buttons);
+}
+
+void Dialog::setDefaultButton(int standard_button)
+{
+	QPushButton *bt = nullptr;
+	DialogButtonBox *bbx = buttonBox();
+	if(bbx) {
+		bt = bbx->button((QDialogButtonBox::StandardButton)standard_button);
+		if(bt)
+			bt->setDefault(true);
+	}
+	QF_CHECK(bt != nullptr, QString("Cannot find standard button: %1").arg(standard_button));
 }
 

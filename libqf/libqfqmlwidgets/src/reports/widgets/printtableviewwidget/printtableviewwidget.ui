@@ -133,7 +133,7 @@
         </widget>
        </item>
        <item>
-        <widget class="qf::qmlwidgets::reports::TableViewChooseColumnsWidget" name="columnsChooser" native="true">
+        <widget class="qf::qmlwidgets::internal::TableViewChooseColumnsWidget" name="columnsChooser" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -150,9 +150,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>qf::qmlwidgets::reports::TableViewChooseColumnsWidget</class>
+   <class>qf::qmlwidgets::internal::TableViewChooseColumnsWidget</class>
    <extends>QWidget</extends>
-   <header location="global">src/reports/widgets/printtableviewwidget/tableviewchoosecolumnswidget.h</header>
+   <header location="global">src/internal/tableviewchoosecolumnswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

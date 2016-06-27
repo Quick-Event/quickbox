@@ -3,6 +3,8 @@
 
 #include "qmlwidgetsglobal.h"
 
+#include <qf/core/exception.h>
+
 #include <QString>
 #include <QPointer>
 
@@ -39,10 +41,12 @@ public:
 
 	QWidget* dataWidget() {return m_dataWidget;}
 protected:
-	qf::core::model::DataDocument* dataDocument();
+	qf::core::model::DataDocument* dataDocument(bool throw_exc = qf::core::Exception::Throw);
+	bool checkSetDataValueFirstTime();
 protected:
 	QPointer<DataController> m_dataController;
 private:
+	bool m_isSetDataValueFirstTime = false;
 	QWidget *m_dataWidget;
 	QString m_dataId;
 };

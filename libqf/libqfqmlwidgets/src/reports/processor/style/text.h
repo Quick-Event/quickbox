@@ -20,8 +20,9 @@ namespace style {
 class QFQMLWIDGETS_DECL_EXPORT Text : public StyleObject
 {
 	Q_OBJECT
-	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
+	// there are some restrictions for assigning primitive types to default properties, see: pen.h
 	Q_CLASSINFO("DefaultProperty", "basedOn")
+	Q_PROPERTY(QVariant basedOn READ basedOn WRITE setBasedOn)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* pen READ pen WRITE setPen NOTIFY penChanged)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Font* font READ font WRITE setFont NOTIFY fontChanged)
 public:

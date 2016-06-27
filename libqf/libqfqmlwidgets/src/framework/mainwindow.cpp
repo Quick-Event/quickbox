@@ -6,8 +6,11 @@
 #include "stackedcentralwidget.h"
 #include "../menubar.h"
 #include "../statusbar.h"
+#include "../toolbar.h"
+#include "../dialogs/qmldialog.h"
 
 #include <qf/core/log.h>
+#include <qf/core/exception.h>
 #include <qf/core/assert.h>
 #include <qf/core/utils.h>
 //#include <qf/core/settings.h>
@@ -20,6 +23,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QJsonObject>
+#include <QJsonArray>
 
 using namespace qf::qmlwidgets::framework;
 
@@ -34,7 +39,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 
 	m_pluginLoader = nullptr;
 
-	QQmlEngine *qe = Application::instance()->qmlEngine();
+	Application *app = Application::instance();
+	app->m_frameWork = this;
+	QQmlEngine *qe = app->qmlEngine();
 	qe->rootContext()->setContextProperty("FrameWork", this);
 }
 
@@ -49,8 +56,16 @@ void MainWindow::loadPlugins()
 	QF_SAFE_DELETE(m_pluginLoader);
 	m_pluginLoader = new PluginLoader(this);
 	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
-	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
-	m_pluginLoader->loadPlugins();
+	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
+	//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
+	Application *app = qobject_cast<Application*>(QCoreApplication::instance());
+	QJsonDocument profile = app->profile();
+	QJsonArray arr = profile.object().value(QStringLiteral("plugins")).toObject().value(QStringLiteral("features")).toArray();
+	QStringList feature_ids;
+	Q_FOREACH(auto o, arr)
+		feature_ids << o.toString();
+	//QString ui_language_name;
+	m_pluginLoader->loadPlugins(feature_ids);
 }
 
 void MainWindow::loadPersistentSettings()
@@ -80,7 +95,13 @@ void MainWindow::savePersistentSettings()
 void MainWindow::showProgress(const QString &msg, int completed, int total)
 {
 	qfLogFuncFrame() << msg << completed << total;
+	QCoreApplication::processEvents();
 	emit progress(msg, completed, total);
+}
+
+void MainWindow::hideProgress()
+{
+	showProgress(QString(), 0, 0);
 }
 #ifdef GET_RESOURCE_IN_FRAMEWORK
 QNetworkAccessManager *manager = new QNetworkAccessManager();
@@ -151,15 +172,23 @@ MainWindow *MainWindow::frameWork()
 	return self;
 }
 
+bool MainWindow::setActivePart(const QString &feature_id)
+{
+	int ix = centralWidget()->featureToIndex(feature_id);
+	if(ix < 0)
+		return false;
+	return centralWidget()->setActivePart(ix, true);
+}
+
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
 	emit aboutToClose();
 	ev->accept();
 }
 
-void MainWindow::whenPluginsLoaded()
+void MainWindow::onPluginsLoaded()
 {
-	centralWidget()->setPartActive(0, true);
+	//centralWidget()->setActivePart(0, true);
 }
 
 void MainWindow::setPersistentSettingDomains(const QString &organization_domain, const QString &organization_name, const QString &application_name)
@@ -184,6 +213,17 @@ qf::qmlwidgets::MenuBar *MainWindow::menuBar()
 	return menu_bar;
 }
 
+qf::qmlwidgets::ToolBar *MainWindow::toolBar(const QString &name, bool create_if_not_exists)
+{
+	qf::qmlwidgets::ToolBar *ret = m_toolBars.value(name);
+	if(!ret && !create_if_not_exists)
+		return nullptr;
+	ret = new qf::qmlwidgets::ToolBar(this);
+	addToolBar(Qt::TopToolBarArea, ret);
+	m_toolBars[name] = ret;
+	return ret;
+}
+
 qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 {
 	QStatusBar *sb = Super::statusBar();
@@ -198,14 +238,10 @@ qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 
 void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 {
-	//QStatusBar *sb = Super::statusBar();
 	qfLogFuncFrame() << sbar << "previous:" << Super::statusBar();
-	//QF_SAFE_DELETE(sb);
 	sbar->setParent(0);
-	//sbar->setParent(this);
-	//sbar->setVisible(true);
+	connect(this, SIGNAL(progress(QString,int,int)), sbar, SLOT(showProgress(QString,int,int)));
 	Super::setStatusBar(sbar); /// deletes old status bar
-	//sbar->showMessage("ahoj babi");
 	qfDebug() << Super::statusBar();
 }
 
@@ -216,6 +252,7 @@ CentralWidget *MainWindow::centralWidget()
 	if(!central_widget) {
 		QF_SAFE_DELETE(cw);
 		central_widget = new StackedCentralWidget(this);
+		//central_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 		//central_widget->setStyleSheet("background:rgb(67, 67, 67)");
 		Super::setCentralWidget(central_widget);
 	}
@@ -229,7 +266,7 @@ void MainWindow::setCentralWidget(CentralWidget *widget)
 	Super::setCentralWidget(widget);
 }
 
-void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
+void MainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget)
 {
 	dockwidget->setParent(0);
 	Super::addDockWidget(area, dockwidget);
@@ -237,6 +274,7 @@ void MainWindow::addDockWidget(Qt::DockWidgetArea area, DockWidget *dockwidget)
 
 void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 {
+	QF_ASSERT(widget != nullptr, "Widget is NULL", return);
 	if(!feature_id.isEmpty()) {
 		if(widget->featureId().isEmpty()) {
 			qfDebug() << "setting" << widget << "featureId to:" << feature_id;
@@ -247,12 +285,11 @@ void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 	}
 	if(widget->featureId().isEmpty())
 		qfWarning() << widget << "adding part widget without featureId set can harm some default functionality.";
-	//qfWarning() << widget << widget->featureId() << "alias" << widget->persistentSettingsId() << "path:" << widget->persistentSettingsPath();
 	widget->loadPersistentSettingsRecursively();
 	centralWidget()->addPartWidget(widget);
 }
 
-Plugin *MainWindow::plugin(const QString &feature_id)
+Plugin *MainWindow::plugin(const QString &feature_id, bool throw_exc)
 {
 	Plugin *ret = nullptr;
 	if(m_pluginLoader) {
@@ -261,6 +298,8 @@ Plugin *MainWindow::plugin(const QString &feature_id)
 	if(!ret) {
 		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
 		qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
+		if(throw_exc)
+			QF_EXCEPTION(tr("Plugin for feature id: '%1' is not installed!").arg(feature_id));
 	}
 	return ret;
 }
@@ -280,6 +319,17 @@ Plugin *MainWindow::pluginForObject(QObject *qml_object)
 	}
 	if(!ret)
 		qfWarning() << "Cannot find plugin of:" << qml_object;
+	return ret;
+}
+
+qf::qmlwidgets::dialogs::QmlDialog *MainWindow::createQmlDialog(QWidget *parent)
+{
+	if(parent == nullptr)
+		parent = this;
+	qf::qmlwidgets::dialogs::QmlDialog *ret = new qf::qmlwidgets::dialogs::QmlDialog(parent);
+	//Application *app = Application::instance();
+	//QQmlEngine *qe = app->qmlEngine();
+	//qe->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
 	return ret;
 }
 

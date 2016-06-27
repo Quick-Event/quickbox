@@ -5,6 +5,7 @@
 #include "../core/utils.h"
 #include "../sql/querybuilder.h"
 #include "../sql/query.h"
+#include "../sql/dbenumcache.h"
 
 #include <QMap>
 #include <QString>
@@ -21,7 +22,7 @@ class QFCORE_DECL_EXPORT SqlTableModel : public TableModel
 	Q_OBJECT
 	Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged)
 	//Q_PROPERTY(QVariant queryParameters READ queryParameters WRITE setQueryParameters NOTIFY queryParametersChanged)
-	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName)
+	Q_PROPERTY(QString connectionName READ connectionName WRITE setConnectionName NOTIFY connectionNameChanged)
 private:
 	typedef TableModel Super;
 public:
@@ -29,19 +30,41 @@ public:
 	~SqlTableModel() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
+	QF_PROPERTY_BOOL_IMPL(i, I, ncludeJoinedTablesIdsToReloadRowQuery)
+
 public:
-	bool reload(const QString &query_str);
+	class QFCORE_DECL_EXPORT DbEnumCastProperties : public QVariantMap
+	{
+		QF_VARIANTMAP_FIELD(QString, g, setG, roupName)
+		QF_VARIANTMAP_FIELD2(QString, c, setC, aptionFormat, QStringLiteral("{{caption}}"))
+
+	public:
+		DbEnumCastProperties(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
+};
+public:
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
+	Q_INVOKABLE QString effectiveQuery();
 	bool reload() Q_DECL_OVERRIDE;
 	bool postRow(int row_no, bool throw_exc) Q_DECL_OVERRIDE;
 	void revertRow(int row_no) Q_DECL_OVERRIDE;
 	int reloadRow(int row_no) Q_DECL_OVERRIDE;
+	int reloadInserts(const QString &id_column_name) Q_DECL_OVERRIDE;
 public:
 	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
 	const qf::core::sql::QueryBuilder& queryBuilder() const;
 
 	QString connectionName() const { return m_connectionName; }
-	void setConnectionName(QString arg) { m_connectionName = arg; }
+	void setConnectionName(QString arg)
+	{
+		if(m_connectionName != arg) {
+			m_connectionName = arg;
+			emit connectionNameChanged(arg);
+		}
+	}
+	Q_SIGNAL void connectionNameChanged(QString arg);
 
+	qf::core::sql::Connection sqlConnection();
 	QString query() const { return m_query; }
 	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }
 	Q_SIGNAL void queryChanged(QString arg);
@@ -49,13 +72,14 @@ public:
 	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
 
 	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
-
 protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
-	qf::core::sql::Connection sqlConnection();
-	bool reloadTable(const QString &query_str);
-	QSet<QString> tableIds(const utils::Table::FieldList &table_fields);
+
+	bool reloadQuery(const QString &query_str);
+
+	virtual bool reloadTable(const QString &query_str);
+	QStringList tableIds(const utils::Table::FieldList &table_fields);
 	void setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str);
 
 	QSet<QString> referencedForeignTables();

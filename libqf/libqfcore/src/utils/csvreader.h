@@ -17,21 +17,15 @@ public:
 	CSVReader(QTextStream *ts = NULL, char _separator = ',', char _quote = '"');
 	virtual ~CSVReader();
 public:
-	enum {AppendEndl = 1};
-protected:
-	QTextStream *fTextStream;
-	char fSeparator, fQuote;
-	QString singleQuote, doubleQuote, charsToQuote; ///< pomocne promenne
+	enum OptionFlag {AppendEndl = 1};
 public:
-	void setSeparator(char _separator) {fSeparator = _separator;}
-	void setQuote(char _quote) {fQuote = _quote;}
-	void setTextStream(QTextStream *ts)
+	void setSeparator(QChar _separator) {m_separator = _separator;}
+	void setQuote(QChar _quote) {m_quote = _quote;}
+	void setLineComment(QChar comment_char) {m_lineComment = comment_char;}
+	void setTextStream(QTextStream *ts) { setTextStream(ts, m_separator, m_quote); }
+	void setTextStream(QTextStream *ts, QChar _separator, QChar _quote = '"')
 	{
-		setTextStream(ts, fSeparator, fQuote);
-	}
-	void setTextStream(QTextStream *ts, char _separator, char _quote = '"')
-	{
-		fTextStream = ts;
+		m_textStream = ts;
 		setSeparator(_separator);
 		setQuote(_quote);
 	}
@@ -42,6 +36,13 @@ public:
 	QStringList readCSVLineSplitted();
 	QString quoteCSVField(const QString &s);
 	void writeCSVLine(const QStringList &values, int option_flags = 0);
+protected:
+	QString readCSVLine1();
+protected:
+	QTextStream *m_textStream;
+	QChar m_separator, m_quote, m_lineComment;
+private:
+	QString m_singleQuote, m_doubleQuote, m_charsToQuote; ///< pomocne promenne
 };
 
 }}}

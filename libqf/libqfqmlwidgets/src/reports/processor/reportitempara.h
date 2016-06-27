@@ -10,6 +10,10 @@
 #include "reportitemframe.h"
 #include "../../qmlwidgetsglobal.h"
 
+#include <QJSValue>
+
+#include <functional>
+
 namespace qf {
 namespace qmlwidgets {
 namespace reports {
@@ -24,6 +28,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemPara : public ReportItemFrame
 	Q_PROPERTY(HAlignment textHAlign READ textHAlign WRITE setTextHAlign NOTIFY textHAlignChanged)
 	Q_PROPERTY(VAlignment textVAlign READ textVAlign WRITE setTextVAlign NOTIFY textVAlignChanged)
 	Q_PROPERTY(bool textWrap READ isTextWrap WRITE setTextWrap NOTIFY textWrapChanged)
+	Q_PROPERTY(QJSValue textFn READ textFn WRITE setTextFn)
 private:
 	typedef ReportItemFrame Super;
 
@@ -33,20 +38,30 @@ private:
 	QF_PROPERTY_IMPL2(HAlignment, t, T, extHAlign, AlignLeft)
 	QF_PROPERTY_IMPL2(VAlignment, t, T, extVAlign, AlignTop)
 	QF_PROPERTY_BOOL_IMPL2(t, T, extWrap, true)
+	//QF_PROPERTY_IMPL(QJSValue, t, T, extFn)
 public:
 	ReportItemPara(ReportItem *parent = nullptr);
 	virtual ~ReportItemPara() {}
+
+	QJSValue textFn() const {return m_getTextJsFn;}
+	void setTextFn(const QJSValue &val);
+
+	typedef std::function< QString (void) > GetTextFunction;
+	void setGetTextCppFunction(const GetTextFunction &fn) {m_getTextCppFn = fn;}
 protected:
 	/// tiskne se printed text od indexToPrint, pouziva se pouze v pripade, ze text pretece na dalsi stranku
 	QString printedText;
 	QTextLayout textLayout;
 protected:
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
-	QString paraText();
+	virtual QString paraText();
 public:
 	virtual void resetIndexToPrintRecursively(bool including_para_texts);
 	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
 	virtual PrintResult printHtml(HTMLElement &out);
+private:
+	GetTextFunction m_getTextCppFn = nullptr;
+	QJSValue m_getTextJsFn;
 };
 
 }}}

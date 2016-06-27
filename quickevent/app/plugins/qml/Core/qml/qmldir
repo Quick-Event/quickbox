@@ -1,0 +1,3 @@
+module Core
+
+plugin Coreplugin ..

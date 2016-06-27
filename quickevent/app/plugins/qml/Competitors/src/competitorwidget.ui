@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CompetitorWidget</class>
+ <widget class="QWidget" name="CompetitorWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>668</width>
+    <height>576</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="chkFind">
+       <property name="text">
+        <string>&amp;Find in registrations</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="FindRegistrationEdit" name="edFind">
+       <property name="placeholderText">
+        <string>Type to find competitor in registrations ...</string>
+       </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Competitor</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="1">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&amp;Class</string>
+        </property>
+        <property name="buddy">
+         <cstring>cbxClass</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="qf::qmlwidgets::ForeignKeyComboBox" name="cbxClass">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.classId</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>&amp;SI</string>
+        </property>
+        <property name="buddy">
+         <cstring>spinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="quickevent::og::SiIdEdit" name="spinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.siId</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>First na&amp;me</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_2</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_2">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.firstName</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&amp;Last name</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_3</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_3">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.lastName</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>&amp;Registration</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_4</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Licenc&amp;e</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_5</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_5">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.licence</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Clu&amp;b</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_6</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_6">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.club</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Co&amp;untry</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_7</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="4">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_7">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.country</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>&amp;Note</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_8</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2" colspan="3">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_8">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.note</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_4">
+        <property name="dataId" stdset="0">
+         <string notr="true">competitors.registration</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="grpStartTimes">
+     <property name="title">
+      <string>Start times</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Runs</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="qf::qmlwidgets::TableView" name="tblRuns"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qf::qmlwidgets::TableView</class>
+   <extends>QTableView</extends>
+   <header location="global">qf/qmlwidgets/tableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::LineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">qf/qmlwidgets/lineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::ForeignKeyComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qf/qmlwidgets/combobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>quickevent::og::SiIdEdit</class>
+   <extends>QSpinBox</extends>
+   <header location="global">quickevent/og/siidedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>FindRegistrationEdit</class>
+   <extends>QLineEdit</extends>
+   <header>src/findregistrationedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>cbxClass</tabstop>
+  <tabstop>spinBox</tabstop>
+  <tabstop>lineEdit_2</tabstop>
+  <tabstop>lineEdit_3</tabstop>
+  <tabstop>lineEdit_4</tabstop>
+  <tabstop>lineEdit_5</tabstop>
+  <tabstop>lineEdit_6</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>lineEdit_8</tabstop>
+  <tabstop>tblRuns</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>chkFind</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>edFind</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>71</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>318</x>
+     <y>27</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

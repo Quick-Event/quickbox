@@ -12,8 +12,11 @@ namespace qmlwidgets {
 class QFQMLWIDGETS_DECL_EXPORT LineEdit : public QLineEdit, public IDataWidget
 {
 	Q_OBJECT
+	Q_ENUMS(EchoMode)
 	Q_PROPERTY(QVariant dataValue READ dataValue WRITE setDataValue NOTIFY dataValueChanged)
 	Q_PROPERTY(QString dataId READ dataId WRITE setDataId)
+private:
+	typedef QLineEdit Super;
 public:
 	explicit LineEdit(QWidget *parent = nullptr);
 protected:

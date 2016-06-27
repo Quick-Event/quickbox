@@ -44,18 +44,12 @@ SqlJournal TheApp::f_sqlJournal;
 TheApp::TheApp(int & argc, char ** argv)
 	: QApplication(argc, argv)
 {
-	QCoreApplication::setOrganizationDomain("quickbox.org");
-	QCoreApplication::setOrganizationName("QuickBox");
-	//f_reportProcessorSearchDirs = NULL;
-	setApplicationName("qsqlmon");
-
 	QSqlDatabase::registerSqlDriver("QFHTTPMYSQL", new QFHttpMySqlDriverCreator());
-	/*
-	QFXmlConfigSplittedFileLoader *ldr = new QFXmlConfigSplittedFileLoader(this);
-	f_config = new QFXmlConfig(this);
-	f_config->setConfigLoader(ldr);
-	f_config->load();
-	*/
+
+	QStringList args = arguments();
+	int ix = args.indexOf(QLatin1String("--one-time-connection-settings"));
+	if(ix >= 0)
+		setOneTimeConnectionSettings(args.value(ix + 1));
 }
 
 TheApp::~TheApp()

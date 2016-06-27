@@ -24,13 +24,19 @@ public:
 	qf::qmlwidgets::DataController *dataController();
 	void setDataController(qf::qmlwidgets::DataController *dc);
 
-	Q_SLOT void load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit);
+	core::model::DataDocument* dataDocument(bool throw_exc = qf::core::Exception::Throw);
 
-	bool dialogDoneRequest(int result) Q_DECL_OVERRIDE;
+	Q_SLOT virtual bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit);
+
+	bool acceptDialogDone(int result) Q_DECL_OVERRIDE;
 
 	Q_SIGNAL void dataSaved(const QVariant &id, int mode);
+
+	int recordEditMode();
+	Q_SIGNAL void recordEditModeChanged(int record_edit_mode);
 protected:
 	virtual bool saveData();
+	virtual bool dropData();
 protected:
 	qf::qmlwidgets::DataController *m_dataController = nullptr;
 };

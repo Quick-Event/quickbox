@@ -7,6 +7,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+#include <qf/core/utils/timescope.h>
+
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
 
@@ -24,6 +26,19 @@ ReportItemDetail::ReportItemDetail(ReportItem *parent)
 ReportItemDetail::~ReportItemDetail()
 {
 	qfLogFuncFrame();
+}
+
+int ReportItemDetail::rowCount()
+{
+	int ret = 0;
+	ReportItemBand *band = parentBand();
+	if(band && band->isModelLoaded()) {
+		BandDataModel *m = band->model();
+		if(m) {
+			ret = m->rowCount();
+		}
+	}
+	return ret;
 }
 
 QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
@@ -48,27 +63,42 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 		}
 	}
 	else {
-		ret = QStringLiteral("N/A");
+		// this is not necessary error
+		// when data is not loaded and QML is instantiated then currentIndex == -1 and code goes this way
+		// return QString to avoid warning: Unable to assign [undefined] to QString
+		// when data is assigned to QML property of type string
+		ret = QString();
+		//qfWarning() << "row_no:" << row_no;
+		//ret = QStringLiteral("BAD_ROW");
 	}
+	qfDebug() << "\t RETURN:" << ret;
 	return ret;
+}
+
+QVariant ReportItemDetail::rowData(const QString &field_name, int role)
+{
+	qfLogFuncFrame() << currentIndex() << field_name;
+	return data(currentIndex(), field_name, role);
 }
 
 ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();
+	QF_TIME_SCOPE("ReportItemDetail::printMetaPaint");
 	ReportItemBand *band = qobject_cast<ReportItemBand*>(parent());
 	BandDataModel *model = nullptr;
 	if(band) {
 		model = band->model();
 		if(model) {
 			if(currentIndex() < 0) {
-				/// kdyz neni f_dataRow, vezmi prvni radek dat
+				//qfWarning() << "emit rowCountChanged()";
+				//emit rowCountChanged();
 				setCurrentIndex(0);
 			}
 		}
 	}
-	PrintResult res;
 	/*--
+	PrintResult res;
 	bool design_mode = processor()->isDesignMode(); /// true znamena, zobraz prvni radek, i kdyz tam nejsou data.
 	//qfInfo() << "design mode:" << design_mode;
 	if(!design_mode && (data_table.isNull() || dataRow().isNull())) {
@@ -77,101 +107,23 @@ ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *ou
 		return res;
 	}
 	--*/
-	res = Super::printMetaPaint(out, bounding_rect);
-	if(res.value == PrintOk) {
+	PrintResult res = Super::printMetaPaint(out, bounding_rect);
+	if(res.isPrintFinished()) {
 		if(model) {
 			/// take next data row
 			int ix = currentIndex() + 1;
 			qfDebug() << currentIndex() << "/" << model->rowCount();
 			//qfDebug() << model->dump();
 			if(ix < model->rowCount()) {
+				QF_TIME_SCOPE("ReportItemDetail::printMetaPaint 3");
 				setCurrentIndex(ix);
 				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res.flags |= FlagPrintAgain;
-			}
-		}
-	}
-	return res;
-}
-
-#if 0
-
-ReportItemDetail::ReportItemDetail(ReportItem *parent)
-	: ReportItemFrame(parent)
-{
-	//qfInfo() << QF_FUNC_NAME << "element id:" << element.attribute("id");
-	f_currentRowNo = -1;
-}
-
-qfu::TreeTable ReportItemDetail::dataTable()
-{
-	ReportItemBand *b = parentBand();
-	qfu::TreeTable data_table;
-	if(b) {
-		//qfDebug() << "band:" << b << "\ttable is null:" << b->dataTable().isNull();
-		data_table = b->dataTable();
-	}
-	return data_table;
-}
-
-qfu::TreeTableRow ReportItemDetail::dataRow()
-{
-	return dataTable().row(currentRowNo());
-}
-
-void ReportItemDetail::resetIndexToPrintRecursively(bool including_para_texts)
-{
-	ReportItemFrame::resetIndexToPrintRecursively(including_para_texts);
-}
-
-ReportItem::PrintResult ReportItemDetail::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
-{
-	qfLogFuncFrame() << this;
-	//qfInfo() << QF_FUNC_NAME;
-	bool design_mode = processor()->isDesignMode(); /// true znamena, zobraz prvni radek, i kdyz tam nejsou data.
-	//qfInfo() << "design mode:" << design_mode;
-	ReportItemBand *b = parentBand();
-	qfu::TreeTable data_table;
-	if(b) {
-		data_table = b->dataTable();
-		//qfInfo()<< element.attribute("id") << "band:" << b << "\ttable is null:" << b->dataTable().isNull() << "f_currentRowNo:" << f_currentRowNo << "of" << data_table.rowCount();
-		if(!data_table.isNull()) {
-			//design_view = false;
-			if(currentRowNo() < 0) {
-				/// kdyz neni f_dataRow, vezmi prvni radek dat
-				//qfInfo() << "init f_currentRowNo to 0, element id:" << element.attribute("id");
-				resetCurrentRowNo();
-			}
-		}
-	}
-	PrintResult res;
-	if(!design_mode && (data_table.isNull() || dataRow().isNull())) {
-		/// prazdnej detail vubec netiskni
-		res.value = PrintOk;
-		return res;
-	}
-	res = ReportItemFrame::printMetaPaint(out, bounding_rect);
-	if(res.value == PrintOk) {
-		if(b) {
-			/// vezmi dalsi radek dat
-			f_currentRowNo++;
-			//qfInfo() << "vezmi dalsi radek dat element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
-			if(currentRowNo() < data_table.rowCount()) {
-				resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-				res.flags |= FlagPrintAgain;
+				res.setNextDetailRowExists(true);
 			}
 			else {
-				//qfInfo() << "detail setting f_currentRowNo to 0, element id:" << element.attribute("id");
-				resetCurrentRowNo();
+				resetCurrentIndex();
 			}
 		}
 	}
-	else {
-		//qfWarning() << "detail print !OK, element id:" << element.attribute("id") << "f_currentRowNo:" << f_currentRowNo;
-	}
-	//res = checkPrintResult(res);
-	qfDebug() << "\treturn:" << res.toString();
 	return res;
 }
-
-#endif

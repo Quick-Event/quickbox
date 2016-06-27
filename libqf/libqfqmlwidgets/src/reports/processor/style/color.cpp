@@ -6,7 +6,7 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Color::Color(QObject *parent) :
-    StyleObject(parent, StyleObject::SGColor)
+	StyleObject(parent, StyleObject::SGColor)
 {
 	qfLogFuncFrame() << this << "parent:" << parent;
 	connect(this, SIGNAL(definitionChanged(QVariant)), this, SLOT(setDirty()));
@@ -15,13 +15,13 @@ Color::Color(QObject *parent) :
 Color::~Color()
 {
 	qfLogFuncFrame() << this << "parent:" << parent();
-    setName(QString());
+	setName(QString());
 }
 
 QColor Color::color()
 {
-    if(isDirty()) {
-        setDirty(false);
+	if(isDirty()) {
+		setDirty(false);
 		QVariant v = definition();
 		//qfInfo() << v.toString() << "type:" << v.typeName();
 		if(v.type() == QVariant::String) {

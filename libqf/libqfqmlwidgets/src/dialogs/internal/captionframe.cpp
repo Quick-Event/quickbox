@@ -1,8 +1,10 @@
 #include "captionframe.h"
 #include "../../framework/mainwindow.h"
 #include "../../framework/plugin.h"
+#include "../../style.h"
 
 #include <qf/core/log.h>
+#include <qf/core/model/datadocument.h>
 
 #include <QBoxLayout>
 #include <QLabel>
@@ -18,25 +20,26 @@ CaptionFrame::CaptionFrame(QWidget *parent)
 	setFrameShape(QFrame::StyledPanel);
 	setFrameShadow(QFrame::Raised);
 	QBoxLayout *ly = new QHBoxLayout(this);
-	ly->setMargin(0);
-	//ly->setContentsMargins(5, 1, 5, 1);
+	//ly->setMargin(0);
+	ly->setContentsMargins(5, 1, 5, 1);
 	ly->setSpacing(6);
-	captionIconLabel = new QLabel();
+	m_captionIconLabel = new QLabel();
 		//captionLabel->setPixmap(icon.pixmap(32));
-	ly->addWidget(captionIconLabel);
+	ly->addWidget(m_captionIconLabel);
 
-	captionLabel = new QLabel();
-	ly->addWidget(captionLabel);
+	m_captionLabel = new QLabel();
+	ly->addWidget(m_captionLabel);
 	ly->addStretch();
-	closeButton = new QToolButton();
-	closeButton->setVisible(false);
+	m_closeButton = new QToolButton();
+	m_closeButton->setVisible(false);
 	QStyle *sty = style();
-	closeButton->setIcon(sty->standardIcon(QStyle::SP_DialogDiscardButton));
-	connect(closeButton, SIGNAL(clicked()), this, SIGNAL(closeButtonClicked()));
-	closeButton->setAutoRaise(true);
-	ly->addWidget(closeButton);
+	m_closeButton->setIcon(sty->standardIcon(QStyle::SP_DialogDiscardButton));
+	connect(m_closeButton, SIGNAL(clicked()), this, SIGNAL(closeButtonClicked()));
+	m_closeButton->setAutoRaise(true);
+	ly->addWidget(m_closeButton);
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 	//setFrameStyle(StyleDefault);
+	connect(this, &CaptionFrame::alertChanged, this, &CaptionFrame::update);
 }
 /*
 void CaptionFrame::setFrameStyle(CaptionFrame::FrameStyle st)
@@ -52,27 +55,27 @@ void CaptionFrame::setFrameStyle(CaptionFrame::FrameStyle st)
 void CaptionFrame::setText(const QString & s)
 {
 	qfLogFuncFrame() << "text:" << s;
-	qfDebug() << "\t label:" << captionLabel;
-	captionLabel->setText(s);
+	qfDebug() << "\t label:" << m_captionLabel;
+	m_text = s;
+	m_text.replace('&', QString()); // remove accel keys mark, like &Run
 	update();
 }
 
 QString CaptionFrame::text() const
 {
-	return captionLabel->text();
+	return m_text;
 }
 
 void CaptionFrame::setIcon(const QIcon & ico)
 {
 	m_icon = ico;
-	captionIconLabel->setPixmap(m_icon.pixmap(32));
 	update();
 }
 
 void CaptionFrame::setCloseButtonVisible(bool b)
 {
 	//qfInfo() << "set close button visible:" << b;
-	closeButton->setVisible(b);
+	m_closeButton->setVisible(b);
 }
 
 QIcon CaptionFrame::createIcon()
@@ -100,8 +103,38 @@ QIcon CaptionFrame::createIcon()
 	return ico;
 }
 
+void CaptionFrame::setRecordEditMode(int mode)
+{
+	qfLogFuncFrame() << "mode:" << qf::core::model::DataDocument::recordEditModeToString(qf::core::model::DataDocument::RecordEditMode(mode));
+	m_recordEditMode = mode;
+	update();
+}
+
 void CaptionFrame::update()
 {
-	setVisible(!(captionLabel->text().isEmpty() && m_icon.isNull()));
+	qfLogFuncFrame() << "text:" << text();
+	QString label_text = text();
+	if(m_recordEditMode >= 0) {
+		qf::core::model::DataDocument::RecordEditMode mode = qf::core::model::DataDocument::RecordEditMode(m_recordEditMode);
+		if(mode == qf::core::model::DataDocument::ModeDelete) {
+			label_text = tr("Delete ") + label_text;
+			setAlert(true);
+		}
+		else if(mode == qf::core::model::DataDocument::ModeEdit) {
+			label_text = tr("Edit ") + label_text;
+		}
+	}
+	bool is_visible = (!label_text.isEmpty() || !m_icon.isNull() || isAlert());
+	setVisible(is_visible);
+	if(is_visible) {
+		if(isAlert()) {
+			QPixmap pm = qf::qmlwidgets::Style::instance()->pixmap(":/qf/qmlwidgets/images/alert", 32);
+			m_captionIconLabel->setPixmap(pm);
+		}
+		else {
+			m_captionIconLabel->setPixmap(m_icon.pixmap(32));
+		}
+		m_captionLabel->setText(" " + label_text);
+	}
 }
 

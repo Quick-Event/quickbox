@@ -1,4 +1,3 @@
-
 //
 // Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2012
 //
@@ -23,9 +22,15 @@ CommPort::~CommPort()
 {
 }
 
-void CommPort::emitDriverInfo ( int level, const QString& msg )
+void CommPort::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
 {
-	qfLog(level) << msg;
+	//qfLog(level) << msg;
+	switch (level) {
+	case qf::core::Log::Level::Debug: qfDebug() << msg; break;
+	case qf::core::Log::Level::Info: qfInfo() << msg; break;
+	case qf::core::Log::Level::Warning: qfWarning() << msg; break;
+	default: qfError() << msg; break;
+	}
 	emit driverInfo(level, msg);
 }
 
@@ -45,9 +50,9 @@ void CommPort::setDataBitsAsInt(int data_bits)
 void CommPort::setParityAsString(const QString &parity_str)
 {
 	Parity parity = NoParity;
-	if(parity_str.compare(QStringLiteral("odd"), Qt::CaseInsensitive)) parity = OddParity;
-	else if(parity_str.compare(QStringLiteral("even"), Qt::CaseInsensitive)) parity = EvenParity;
-	else if(parity_str.compare(QStringLiteral("space"), Qt::CaseInsensitive)) parity = SpaceParity;
-	else if(parity_str.compare(QStringLiteral("mark"), Qt::CaseInsensitive)) parity = MarkParity;
+	if(parity_str.compare(QLatin1String("odd"), Qt::CaseInsensitive) == 0) parity = OddParity;
+	else if(parity_str.compare(QLatin1String("even"), Qt::CaseInsensitive) == 0) parity = EvenParity;
+	else if(parity_str.compare(QLatin1String("space"), Qt::CaseInsensitive) == 0) parity = SpaceParity;
+	else if(parity_str.compare(QLatin1String("mark"), Qt::CaseInsensitive) == 0) parity = MarkParity;
 	setParity(parity);
 }

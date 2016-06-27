@@ -26,13 +26,14 @@ private:
 	typedef QAbstractTableModel Super;
 public:
 	enum ItemDataRole {FieldNameRole = Qt::UserRole+1,
-					   FieldTypeRole, //FieldIsNullableRole,
-					   RawValueRole, ValueIsNullRole, FirstUnusedRole };
+					   FieldTypeRole, ColumnDefinitionRole,
+					   RawValueRole, ValueIsNullRole, ValueIsDirtyRole,
+					   SortRole,
+					   FirstUnusedRole };
 	//enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
 	{
-	public:
 	private:
 		class SharedDummyHelper {};
 		class Data : public QSharedData
@@ -43,13 +44,14 @@ public:
 			QString caption;
 			QString toolTip;
 			//int initialSize; //!< initial width of column
-			bool readOnly;
+			bool isReadOnly = false;
+			bool isVirtual = false;
 			Qt::Alignment alignment;
-			//QPointer<QFDlgDataTable> chooser;
-			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
-			QVariant::Type castType;
+			QString format; //!< format for date, time, ... types
+			int castType;
+			QVariantMap castProperties;
 
-			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), readOnly(false), castType(QVariant::Invalid) {}
+			Data(const QString &fldname = QString()) : fieldName(fldname), fieldIndex(-1), castType(QVariant::Invalid) {}
 		};
 	private:
 		QSharedDataPointer<Data> d;
@@ -66,6 +68,10 @@ public:
 		ColumnDefinition(const QString &fldname) {
 			d = new Data(fldname);
 		}
+		ColumnDefinition(const QString &fldname, const QString &caption) {
+			d = new Data(fldname);
+			setCaption(caption);
+		}
 
 		QString fieldName() const {return d->fieldName;}
 		ColumnDefinition& setFieldName(const QString &s) {d->fieldName = s; return *this;}
@@ -77,8 +83,15 @@ public:
 		ColumnDefinition& setToolTip(const QString &s) {d->toolTip = s; return *this;}
 		//int initialSize() const {return d->initialSize;}
 		//ColumnDefinition& setInitialSize(int i) {d->initialSize = i; return *this;}
-		bool isReadOnly() const {return d->readOnly;}
-		ColumnDefinition& setReadOnly(bool b = true) {d->readOnly = b; return *this;}
+		bool isReadOnly() const {return d->isReadOnly;}
+		ColumnDefinition& setReadOnly(bool b = true) {d->isReadOnly = b; return *this;}
+		bool isVirtual() const {return d->isVirtual;}
+		ColumnDefinition& setVirtual(bool b, int cast_type, const QVariantMap &cast_properties = QVariantMap())
+		{
+			d->isVirtual = b;
+			setCastType(cast_type, cast_properties);
+			return *this;
+		}
 		Qt::Alignment alignment() const {return d->alignment;}
 		ColumnDefinition& setAlignment(const Qt::Alignment &al) {d->alignment = al; return *this;}
 		QString format() const {return d->format;}
@@ -87,42 +100,63 @@ public:
 		/// for QDate see QDate::toString(...)
 		ColumnDefinition& setFormat(const QString &s) {d->format = s; return *this;}
 
-		ColumnDefinition& setCastType(QVariant::Type t) {d->castType = t; return *this;}
-		QVariant::Type castType() const {return d->castType;}
+		int castType() const {return d->castType;}
+		ColumnDefinition& setCastType(int t, const QVariantMap &cast_properties = QVariantMap())
+		{
+			d->castType = t;
+			d->castProperties = cast_properties;
+			return *this;
+		}
+		const QVariantMap& castProperties() const {return d->castProperties;}
+
+		bool matchesSqlId(const QString column_name) const;
 	};
-	typedef QList<ColumnDefinition> ColumnList;
+	typedef QVector<ColumnDefinition> ColumnList;
 
 public:
-	void clearColumns();
+	void clearRows();
+	void clearColumns(int new_column_count = 0);
 	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString()) {
 		return insertColumn(m_columns.count(), field_name, caption);
 	}
 	ColumnDefinition& insertColumn(int before_ix, const QString &field_name, const QString &_caption = QString());
 	ColumnDefinition& insertColumn(int before_ix, const ColumnDefinition &cd);
+	void setColumn(int ix, const ColumnDefinition &cd);
 	ColumnDefinition removeColumn(int ix);
 public:
 	const qf::core::utils::Table& table() {return m_table;}
+	qf::core::utils::Table& tableRef() {return m_table;}
 	void setTable(const qf::core::utils::Table &t);
 
-	int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-	Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
-	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-	bool setData(const QModelIndex &index, const QVariant & value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
+	Q_INVOKABLE int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+	Q_INVOKABLE int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+	Q_INVOKABLE Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+	Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	Q_INVOKABLE QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+	Q_INVOKABLE bool setData(const QModelIndex &index, const QVariant & value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 
 	Q_SLOT virtual bool reload();
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);
+	Q_SLOT virtual bool postAll(bool throw_exc);
 	Q_SLOT virtual void revertRow(int row_no);
+	Q_SLOT virtual void revertAll();
 	Q_SLOT virtual int reloadRow(int row_no);
+	Q_SLOT virtual int reloadInserts(const QString &id_column_name) { Q_UNUSED(id_column_name) return 0;}
 	int appendRow() {return insertRows(rowCount(), 1);}
-	bool dropRow(int row_ix) {return removeRows(row_ix, 1);}
+	bool dropRow(int row_ix, bool throw_exc) {return removeRows(row_ix, 1, throw_exc);}
 	bool prepareForCopyRow(int row_no);
 
 	bool insertRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
-	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+	bool removeRows(int row_ix, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE
+	{
+		Q_UNUSED(parent)
+		return removeRows(row_ix, count, qf::core::Exception::Throw);
+	}
+	virtual bool removeRows(int row_ix, int count, bool throw_exc);
+	// used by TableView to delete row, when it was deleted externaly
+	bool removeRowNoOverload(int row_ix, bool throw_exc);
 
 	bool isNullReportedAsString() const { return m_nullReportedAsString; }
 	void setNullReportedAsString(bool arg);
@@ -131,32 +165,46 @@ public:
 	Q_SIGNAL void columnsAutoGenerated();
 	Q_SIGNAL void reloaded();
 
-	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
-	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
+	Q_INVOKABLE bool isEmpty() const {return rowCount() == 0;}
 	Q_INVOKABLE virtual QVariant value(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant value(int row_ix, const QString& col_name) const;
 	Q_INVOKABLE virtual QVariant origValue(int row_ix, int column_ix) const;
 	Q_INVOKABLE QVariant origValue(int row_ix, const QString& col_name) const;
-	Q_INVOKABLE bool isDirty(int row_ix, int column_ix) const;
+	Q_INVOKABLE virtual QVariantMap values(int row_ix) const;
+	Q_INVOKABLE virtual bool isDirty(int row_ix, int column_ix) const;
 	Q_INVOKABLE bool isDirty(int row_ix, const QString& col_name) const;
 
-	qf::core::utils::TableRow tableRow(int row_no);
+	Q_INVOKABLE virtual bool setDirty(int row, int column, bool d);
+	Q_INVOKABLE bool setDirty(int row_ix, const QString& col_name, bool d);
+
+	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
+	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
+
+	qf::core::utils::TableRow& tableRowRef(int row_no);
+	qf::core::utils::TableRow tableRow(int row_no) const;
 
 	class QFCORE_DECL_EXPORT TreeTableExportOptions : public QVariantMap
 	{
-		QF_OPTION_FIELD2_RW(bool, is, set, ExportRawValues, true)
+		QF_VARIANTMAP_FIELD2(bool, is, set, ExportRawValues, true)
 		public:
 			TreeTableExportOptions(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 	};
-	qf::core::utils::TreeTable toTreeTable(const QVariantList& exported_columns, const QString& table_name, const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
-	Q_INVOKABLE QVariant toTreeTableData(const QVariantList& exported_columns = QVariantList(), const QString& table_name = QString()) const;
+	qf::core::utils::TreeTable toTreeTable(const QString& table_name = QString(), const QVariantList& exported_columns = QVariantList(), const TreeTableExportOptions &opts = TreeTableExportOptions()) const;
+	Q_INVOKABLE QVariant toTreeTableData(const QString& table_name = QString(), const QVariantList& exported_columns = QVariantList()) const;
 
+	ColumnDefinition columnDefinition(int ix) const;
 	int columnIndex(const QString &column_name) const;
+	int columnType(int column_index) const;
+
+	static QColor contrastTextColor(const QColor &background_color);
 protected:
 	virtual void checkColumns();
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
-	QVariant::Type columnType(int column_index) const;
+
+	virtual QVariant rawValueToEdit(int column_index, const QVariant &val) const;
+	virtual QVariant editValueToRaw(int column_index, const QVariant &val) const;
+
 	int tableFieldIndex(int column_index) const;
 	qf::core::utils::Table::Field tableField(int column_index) const;
 	/// @returns: index of inserted line or -1
@@ -173,5 +221,7 @@ protected:
 };
 
 }}}
+
+Q_DECLARE_METATYPE(qf::core::model::TableModel::ColumnDefinition)
 
 #endif // QF_CORE_MODEL_TABLEMODEL_H

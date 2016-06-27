@@ -2,9 +2,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-	src \
-	plugins \
+	lib \
+	app \
 
-
-OTHER_FILES += \
-	$$PWD/plugins/qml/Event/Event.qml \

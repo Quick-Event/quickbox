@@ -30,7 +30,7 @@
      <x>0</x>
      <y>0</y>
      <width>679</width>
-     <height>21</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -90,7 +90,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="qsicli.qrc">
+    <iconset resource="src.qrc">
      <normaloff>:/images/comm.png</normaloff>:/images/comm.png</iconset>
    </property>
    <property name="text">
@@ -115,7 +115,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="qsicli.qrc">
+    <iconset resource="src.qrc">
      <normaloff>:/images/sql.png</normaloff>:/images/sql.png</iconset>
    </property>
    <property name="text">
@@ -137,7 +137,7 @@
   </action>
  </widget>
  <resources>
-  <include location="qsicli.qrc"/>
+  <include location="src.qrc"/>
  </resources>
  <connections/>
 </ui>

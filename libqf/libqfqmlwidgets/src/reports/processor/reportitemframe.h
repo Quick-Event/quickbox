@@ -21,13 +21,9 @@ private:
 	typedef ReportItem Super;
 public:
 	Q_CLASSINFO("DefaultProperty", "items")
-	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	Q_ENUMS(HAlignment)
 	Q_ENUMS(VAlignment)
-	//Q_PROPERTY(qreal x1 READ x1 WRITE setX1 NOTIFY x1Changed)
-	//Q_PROPERTY(qreal x2 READ x2 WRITE setX2 NOTIFY x2Changed)
-	//Q_PROPERTY(qreal y1 READ y1 WRITE setY1 NOTIFY y1Changed)
-	//Q_PROPERTY(qreal y2 READ y2 WRITE setY2 NOTIFY y2Changed)
+	Q_PROPERTY(QQmlListProperty<qf::qmlwidgets::reports::ReportItem> items READ items)
 	Q_PROPERTY(qreal hinset READ hinset WRITE setHinset NOTIFY hinsetChanged)
 	Q_PROPERTY(qreal vinset READ vinset WRITE setVinset NOTIFY vinsetChanged)
 	//Q_PROPERTY(qreal inset READ inset WRITE setInset NOTIFY insetChanged)
@@ -55,16 +51,25 @@ public:
 				"zvetsuji se tak, aby vyplnily cely parent frame.  Objekty typu QFReportItemMetaPaintText jsou ignorovany"
 				)
 	Q_PROPERTY(bool expandChildrenFrames READ isExpandChildrenFrames WRITE setExpandChildrenFrames NOTIFY expandChildrenFramesChanged)
+	Q_PROPERTY(qreal renderedWidth READ renderedWidth NOTIFY renderedWidthChanged)
+	Q_PROPERTY(qreal renderedHeight READ renderedHeight NOTIFY renderedHeightChanged)
 	Q_PROPERTY(HAlignment halign READ horizontalAlignment WRITE setHorizontalAlignment NOTIFY horizontalAlignmentChanged)
 	Q_PROPERTY(VAlignment valign READ verticalAlignment WRITE setVerticalAlignment NOTIFY verticalAlignmentChanged)
 	Q_PROPERTY(QString columns READ columns WRITE setColumns NOTIFY columnsChanged)
 	Q_PROPERTY(double columnsGap READ columnsGap WRITE setColumnsGap NOTIFY columnsGapChanged)
-    Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* border READ border WRITE setBorder NOTIFY borderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* border READ border WRITE setBorder NOTIFY borderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* topBorder READ topBorder WRITE setTopBorder NOTIFY topBorderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* bottomBorder READ bottomBorder WRITE setBottomBorder NOTIFY bottomBorderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* leftBorder READ leftBorder WRITE setLeftBorder NOTIFY leftBorderChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* rightBorder READ rightBorder WRITE setRightBorder NOTIFY rightBorderChanged)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Brush* fill READ fill WRITE setFill NOTIFY fillChanged)
 	Q_CLASSINFO("property.textStyle.doc",
 				"Set text style for this frame and all the children recursively"
 				)
-    Q_PROPERTY(qf::qmlwidgets::reports::style::Text* textStyle READ textStyle WRITE setTextStyle NOTIFY textStyleChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::style::Text* textStyle READ textStyle WRITE setTextStyle NOTIFY textStyleChanged)
+public:
+	ReportItemFrame(ReportItem *parent = nullptr);
+	~ReportItemFrame() Q_DECL_OVERRIDE;
 public:
 	enum HAlignment { AlignLeft = Qt::AlignLeft,
 					  AlignRight = Qt::AlignRight,
@@ -73,26 +78,70 @@ public:
 	enum VAlignment { AlignTop = Qt::AlignTop,
 					  AlignBottom = Qt::AlignBottom,
 					  AlignVCenter = Qt::AlignVCenter };
-	//QF_PROPERTY_IMPL(qreal, x, X, 1)
-	//QF_PROPERTY_IMPL(qreal, y, Y, 1)
-	//QF_PROPERTY_IMPL(qreal, x, X, 2)
-	//QF_PROPERTY_IMPL(qreal, y, Y, 2)
-	QF_PROPERTY_IMPL(qreal, h, H, inset)
-	QF_PROPERTY_IMPL(qreal, v, V, inset)
-	QF_PROPERTY_IMPL(QVariant, w, W, idth)
-	QF_PROPERTY_IMPL(QVariant, h, H, eight)
-	QF_PROPERTY_IMPL2(Layout, l, L, ayout, LayoutVertical)
-	QF_PROPERTY_BOOL_IMPL(e, E, xpandChildrenFrames)
+	QF_PROPERTY_IMPL2(qreal, h, H, inset, 0)
+	QF_PROPERTY_IMPL2(qreal, v, V, inset, 0)
+	QF_PROPERTY_IMPL2(qreal, r, R, enderedWidth, 0)
+	QF_PROPERTY_IMPL2(qreal, r, R, enderedHeight, 0)
 	QF_PROPERTY_IMPL2(HAlignment, h, H, orizontalAlignment, AlignLeft)
 	QF_PROPERTY_IMPL2(VAlignment, v, V, erticalAlignment, AlignTop)
 	QF_PROPERTY_IMPL2(QString, c, C, olumns, QStringLiteral("%"))
 	QF_PROPERTY_IMPL2(double, c, C, olumnsGap, 3)
-    QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, order)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, t, T, opBorder)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, b, B, ottomBorder)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, l, L, eftBorder)
+	QF_PROPERTY_OBJECT_IMPL(style::Pen*, r, R, ightBorder)
 	QF_PROPERTY_OBJECT_IMPL(style::Brush*, f, F, ill)
-    QF_PROPERTY_OBJECT_IMPL(style::Text*, t, T, extStyle)
+	QF_PROPERTY_OBJECT_IMPL(style::Text*, t, T, extStyle)
+
+	style::Pen* border() const;
+	void setBorder(style::Pen *b);
+	Q_SIGNAL void borderChanged(style::Pen* b);
+
+private:
+	QVariant m_width;
+	QVariant m_height;
+	Layout m_layout = LayoutVertical;
+	bool m_expandChildrenFrames = false;
 public:
-	ReportItemFrame(ReportItem *parent = nullptr);
-	~ReportItemFrame() Q_DECL_OVERRIDE;
+	Q_SIGNAL void widthChanged(const QVariant &new_val);
+	Q_SIGNAL void heightChanged(const QVariant &new_val);
+	Q_SIGNAL void layoutChanged(const Layout &new_val);
+	Q_SIGNAL void expandChildrenFramesChanged(const bool &new_val);
+public:
+	QVariant width() const {return m_width;}
+	QVariant height() const {return m_height;}
+	Layout layout() const {return m_layout;}
+	bool isExpandChildrenFrames() const {return m_expandChildrenFrames;}
+public:
+	Q_SLOT void setWidth(const QVariant &val) {
+		if(m_width != val) {
+			m_width = val;
+			initDesignedRect();
+			emit widthChanged(m_width);
+		}
+	}
+	Q_SLOT void setHeight(const QVariant &val) {
+		if(m_height != val) {
+			m_height = val;
+			initDesignedRect();
+			emit heightChanged(m_height);
+		}
+	}
+	Q_SLOT void setLayout(const Layout &val) {
+		if(m_layout != val) {
+			m_layout = val;
+			initDesignedRect();
+			emit layoutChanged(m_layout);
+		}
+	}
+	Q_SLOT void setExpandChildrenFrames(const bool &val) {
+		if(m_expandChildrenFrames != val) {
+			m_expandChildrenFrames = val;
+			initDesignedRect();
+			emit expandChildrenFramesChanged(m_expandChildrenFrames);
+		}
+	}
+
 public:
 	bool isRubber(Layout ly) {
 		ChildSize sz = childSize(ly);
@@ -110,8 +159,6 @@ protected:
 	ChildSize childSize(Layout parent_layout) Q_DECL_OVERRIDE;
 	ReportItemFrame* toFrame() Q_DECL_OVERRIDE {return this;}
 
-	//void setupMetaPaintItem(ReportItemMetaPaint *mpi) Q_DECL_OVERRIDE;
-
 	virtual PrintResult printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect);
 	Layout parentLayout() const
 	{
@@ -121,15 +168,18 @@ protected:
 		return frm->layout();
 	}
 
+	void initDesignedRect();
+
 	void componentComplete() Q_DECL_OVERRIDE;
 public:
-	virtual PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect);
-	virtual PrintResult printHtml(HTMLElement &out);
+	PrintResult printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect) Q_DECL_OVERRIDE;
+	PrintResult printHtml(HTMLElement &out) Q_DECL_OVERRIDE;
 
 	//! Nastavi u sebe a u deti indexToPrint na nulu, aby se vytiskly na dalsi strance znovu.
 	void resetIndexToPrintRecursively(bool including_para_texts) Q_DECL_OVERRIDE;
-	//--const QList<double>& gridLayoutSizes() {return f_gridLayoutSizes;}
-	//--void setGridLayoutSizes(const QList<double> &szs) {f_gridLayoutSizes = szs;}
+
+	Q_INVOKABLE void insertItem(int ix, QObject *item_object);
+	Q_INVOKABLE void addItem(QObject *item_object);
 
 	QString toString(int indent = 2, int indent_offset = 0) Q_DECL_OVERRIDE;
 private:
@@ -146,10 +196,9 @@ private:
 	ReportItem* itemAt(int index);
 protected:
 	//! children, kterym se ma zacit pri tisku
-	int indexToPrint;
+	int m_indexToPrint;
 private:
 	QList<ReportItem*> m_items;
-	//--QList<double> f_gridLayoutSizes;
 };
 
 }}}

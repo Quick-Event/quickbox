@@ -1,8 +1,11 @@
 #include "query.h"
+#include "connection.h"
+#include "querybuilder.h"
 
 #include "../core/log.h"
 
 #include <QSqlRecord>
+#include <QSqlField>
 #include <QVariant>
 
 using namespace qf::core::sql;
@@ -13,8 +16,64 @@ Query::Query(const QSqlDatabase &db)
 }
 
 Query::Query(const QString &connection_name)
-	: Super(QSqlDatabase::database(connection_name, false))
+	: Super(Connection::forName(connection_name))
 {
+}
+
+bool Query::prepare(const QString &query, bool throw_exc)
+{
+	qfLogFuncFrame() << query;
+	bool ret = Super::prepare(query);
+	if(!ret) {
+		if(throw_exc)
+			QF_EXCEPTION(lastError().text());
+		qfWarning() << lastError().text();
+	}
+	return ret;
+}
+
+bool Query::exec(const QString &query, bool throw_exc)
+{
+	qfLogFuncFrame() << query;
+	bool ret = Super::exec(query);
+	if(!ret) {
+		if(throw_exc)
+			QF_EXCEPTION(query + '\n' + lastError().text());
+		qfError() << query << '\n' << lastError().text();
+	}
+	//qfDebug() << "return:" << ret;
+	return ret;
+}
+
+bool Query::exec(const QueryBuilder &query_builder, bool throw_exc)
+{
+	return exec(query_builder.toString(), throw_exc);
+}
+
+bool Query::exec(bool throw_exc)
+{
+	//qfLogFuncFrame();
+	bool ret = Super::exec();
+	if(!ret) {
+		if(throw_exc)
+			QF_EXCEPTION(lastError().text());
+		qfWarning() << lastError().text();
+	}
+	return ret;
+}
+
+QSqlRecord Query::record() const
+{
+	QSqlRecord ret = Super::record();
+	for(int i=0; i<ret.count(); i++) {
+		QSqlField fld = ret.field(i);
+		QString n = QueryBuilder::unmangleLongFieldName(fld.name());
+		if(n != fld.name()) {
+			fld.setName(n);
+			ret.replace(i, fld);
+		}
+	}
+	return ret;
 }
 
 int Query::fieldIndex(const QString &field_name) const
@@ -51,4 +110,56 @@ QVariant Query::value(const QString &field_name) const
 	else
 		ret = value(ix);
 	return ret;
+}
+
+QVariantMap Query::values() const
+{
+	QVariantMap ret;
+	auto rec = record();
+	for (int i=0; i<rec.count(); ++i) {
+		QString fld_name;
+		qf::core::Utils::parseFieldName(rec.fieldName(i), &fld_name);
+		// SQL is case insensitive
+		ret[fld_name.toLower()] = value(i);
+	}
+	return ret;
+}
+
+QString Query::lastErrorText() const
+{
+	QString ret;
+	QSqlError err = lastError();
+	if(err.isValid()) {
+		ret = err.text();
+	}
+	return ret;
+}
+
+bool Query::execCommands(const QStringList &commands, const QMap<QString, QString> &replacements)
+{
+	for(QString qs : commands) {
+		QMapIterator<QString, QString> it(replacements);
+		if(it.hasNext()) {
+			it.next();
+			QString key = "{{" + it.key() + "}}";
+			qs.replace(key, it.value());
+		}
+		if(!exec(qs, !qf::core::Exception::Throw)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void Query::execCommandsThrow(const QStringList &commands, const QMap<QString, QString> &replacements)
+{
+	for(QString qs : commands) {
+		QMapIterator<QString, QString> it(replacements);
+		if(it.hasNext()) {
+			it.next();
+			QString key = "{{" + it.key() + "}}";
+			qs.replace(key, it.value());
+		}
+		exec(qs, qf::core::Exception::Throw);
+	}
 }

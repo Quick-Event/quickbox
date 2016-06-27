@@ -13,15 +13,10 @@
 #include <QQmlComponent>
 #include <QQmlProperty>
 #include <QDirIterator>
+#include <QTranslator>
 
 using namespace qf::qmlwidgets::framework;
-/*
-const char * PluginLoader::prop_plugin_path = "__pluginPath";
 
-static const char * prop_feature_id = "featureId";
-static const char * prop_plugin_main_qml_file = "pluginMainQml";
-static const char * prop_depends_on_feature_ids = "dependsOnFeatureIds";
-*/
 static const QLatin1String CoreFeatureId("Core");
 
 PluginLoader::PluginLoader(MainWindow *parent) :
@@ -29,31 +24,12 @@ PluginLoader::PluginLoader(MainWindow *parent) :
 {
 }
 
-void PluginLoader::loadPlugins()
-{
-	qfLogFuncFrame();
-	loadPlugins(findPlugins());
-}
-
-void PluginLoader::loadPlugins(const PluginLoader::ManifestMap &manifests_to_load)
-{
-	m_manifestsToLoad = manifests_to_load;
-	loadNextPlugin();
-}
-
-MainWindow *PluginLoader::mainWindow()
-{
-	MainWindow *ret = qobject_cast<MainWindow*>(this->parent());
-	Q_ASSERT(ret != nullptr);
-	return ret;
-}
-
 PluginLoader::ManifestMap PluginLoader::findPlugins()
 {
 	ManifestMap ret;
 	QQmlEngine *qe = Application::instance()->qmlEngine();
 
-	for(auto path : Application::instance()->qmlPluginImportPaths()) {
+	Q_FOREACH(auto path, Application::instance()->qmlPluginImportPaths()) {
 		qfInfo() << "Finding plugin manifests on:" << path;
 		QDirIterator it(path, QDir::Dirs | QDir::NoDotAndDotDot, QDirIterator::FollowSymlinks);
 		while(it.hasNext()) {
@@ -118,6 +94,124 @@ PluginLoader::ManifestMap PluginLoader::findPlugins()
 	return ret;
 }
 
+void PluginLoader::loadPlugins(const QStringList &feature_ids)
+{
+	qfLogFuncFrame();
+	m_manifestsToLoad = findPlugins();
+	QStringList fids = feature_ids;
+	if(fids.isEmpty())
+		Q_FOREACH(auto m, m_manifestsToLoad)
+			fids << m->featureId();
+	Q_FOREACH(auto feature_id, fids)
+		loadPlugin(feature_id);
+	emit loadingFinished();
+}
+
+bool PluginLoader::loadPlugin(const QString feature_id)
+{
+	if(m_loadedPlugins.contains(feature_id)) {
+		// feature installed already
+		return true;
+	}
+
+	PluginManifest *manifest = m_manifestsToLoad.take(feature_id);
+	if(manifest == nullptr) {
+		qfError() << QString("Feature id: '%1' - Invalid manifest!").arg(feature_id);
+		return false;
+	}
+
+	QQmlEngine *qe = Application::instance()->qmlEngine();
+	QF_ASSERT(qe != nullptr, "Qml engine is NULL", return false);
+
+	bool ok = true;
+	QStringList depends_on = manifest->dependsOnFeatureIds();
+	Q_FOREACH(auto required_feature_id, depends_on) {
+		if(!m_loadedPlugins.contains(required_feature_id)) {
+			qfInfo() << feature_id << "solving dependency on" << required_feature_id;
+			ok = loadPlugin(required_feature_id);
+			if(!ok) {
+				qfError() << "Cannot load feature:" << feature_id << "due to unsatisfied dependecies!";
+				qfError() << "\t!!!" << feature_id << "depends on:" << depends_on.join(", ");
+				break;
+			}
+		}
+		else {
+			qfInfo() << feature_id << "dependency on" << required_feature_id << "satisfied";
+		}
+	}
+	if(ok) {
+		QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->homeDir() + "/main.qml");
+		qfInfo() << "Installing feature:" << feature_id << "from:" << plugin_loader_url.toString();
+		QString lc_name = mainWindow()->uiLanguageName();
+		if(!lc_name.isEmpty()) {
+			QString tr_name = feature_id + '.' + lc_name;
+			QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
+			QTranslator *trans = new QTranslator(mainWindow());
+			bool ok = trans->load(tr_name, app_translations_path);
+			if(ok) {
+				qfInfo() << "Found translation file for:" << tr_name;
+				QCoreApplication::instance()->installTranslator(trans);
+			}
+			else {
+				qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << app_translations_path;
+				delete trans;
+			}
+		}
+		QQmlComponent *c = new QQmlComponent(qe, plugin_loader_url, QQmlComponent::PreferSynchronous);
+		if(c->isLoading()) {
+			qfError() << "Asynchronous plugin loading is not supported!";
+			ok = false;
+			//QObject::connect(m_currentlyLoadedComponent, &QQmlComponent::statusChanged, this, &PluginLoader::continueLoading);
+		}
+		else {
+			ok = loadPluginComponent(c, manifest);
+		}
+	}
+	if(!ok) {
+		QF_SAFE_DELETE(manifest);
+		qfError() << "ERROR load feature:" << feature_id;
+	}
+	return ok;
+}
+
+bool PluginLoader::loadPluginComponent(QQmlComponent *plugin_component, PluginManifest *manifest)
+{
+	Application *app = Application::instance();
+	app->clearQmlErrorList();
+
+	Plugin *plugin = nullptr;
+	QObject *root = plugin_component->beginCreate(app->qmlEngine()->rootContext());
+	if(root) {
+		plugin = qobject_cast<Plugin*>(root);
+		if(plugin) {
+			//qfInfo() << "set manifest:" << manifest << "to plugin:" << plugin;
+			plugin->setManifest(manifest);
+		}
+		else {
+			qfError() << "Loaded component is not a kind of Plugin:" << root << plugin_component->url().toString();
+		}
+		plugin_component->completeCreate();
+	}
+	bool ret = (plugin != nullptr);
+	if(!plugin) {
+		qfError() << "Error creating plugin:" << plugin_component->url().toString();
+		qfError() << plugin_component->errorString();
+	}
+	else {
+		plugin->setParent(mainWindow());
+		m_loadedPlugins[manifest->featureId()] = plugin;
+	}
+
+	if(!ret) {
+		qfError() << "Feature:" << manifest->featureId() << "install ERROR";
+	}
+	else {
+		qfInfo() << "Feature:" << manifest->featureId() << "install SUCCESS";
+		emit plugin->installed();
+	}
+	return ret;
+}
+#if 0
 void PluginLoader::loadNextPlugin()
 {
 	QQmlEngine *qe = Application::instance()->qmlEngine();
@@ -131,7 +225,7 @@ void PluginLoader::loadNextPlugin()
 		QString feature_id = it.key();
 		QStringList depends_on = manifest->dependsOnFeatureIds();
 		bool dependency_satisfied = true;
-		for(auto required_feature_id : depends_on) {
+		Q_FOREACH(auto required_feature_id, depends_on) {
 			if(!m_loadedPlugins.contains(required_feature_id)) {
 				dependency_satisfied = false;
 				break;
@@ -153,13 +247,14 @@ void PluginLoader::loadNextPlugin()
 	}
 	if(!m_manifestsToLoad.isEmpty() && m_currentlyLoadedFeatureId.isEmpty()) {
 		qfError() << "Features not installed due to unsatisfied dependeces:";
-		QMapIterator<QString, PluginManifest*> it(m_manifestsToLoad);
+		QMutableMapIterator<QString, PluginManifest*> it(m_manifestsToLoad);
 		while (it.hasNext()) {
 			it.next();
 			PluginManifest *manifest = it.value();
 			QString feature_id = it.key();
 			QStringList depends_on = manifest->dependsOnFeatureIds();
 			qfError() << "\t!!!" << feature_id << "depends on:" << depends_on.join(", ");
+			QF_SAFE_DELETE(manifest);
 		}
 	}
 	if(m_currentlyLoadedFeatureId.isEmpty()) {
@@ -201,10 +296,11 @@ void PluginLoader::continueLoading()
 		}
 
 		if(app->qmlErrorList().count()) {
-			qfError() << "Feature:" << m_currentlyLoadedFeatureId << "install ERROR.";
+			qfError() << "Feature:" << m_currentlyLoadedFeatureId << "install ERROR";
 		}
 		else {
-			qfInfo() << "Feature:" << m_currentlyLoadedFeatureId << "install SUCCESS.";
+			qfInfo() << "Feature:" << m_currentlyLoadedFeatureId << "install SUCCESS";
+			emit plugin->installed();
 		}
 	}
 	else {
@@ -214,3 +310,11 @@ void PluginLoader::continueLoading()
 	QF_SAFE_DELETE(m_currentlyLoadedComponent);
 	QMetaObject::invokeMethod(this, "loadNextPlugin", Qt::QueuedConnection);
 }
+#endif
+MainWindow *PluginLoader::mainWindow()
+{
+	MainWindow *ret = qobject_cast<MainWindow*>(this->parent());
+	Q_ASSERT(ret != nullptr);
+	return ret;
+}
+

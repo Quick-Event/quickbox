@@ -12,10 +12,12 @@
 #include "../../action.h"
 #include "../../dialogs/dialog.h"
 #include "../../dialogs/filedialog.h"
+#include "../../dialogs/messagebox.h"
 #include "../../statusbar.h"
 #include "../../menubar.h"
 #include "../../toolbar.h"
 #include "../../framework/cursoroverrider.h"
+#include "../../framework/mainwindow.h"
 
 #include <qf/core/utils/fileutils.h>
 #include <qf/core/log.h>
@@ -35,6 +37,8 @@
 #include <QLineEdit>
 #include <QDomDocument>
 #include <QDir>
+#include <QApplication>
+//#include <QStyle>
 
 #include <typeinfo>
 
@@ -50,21 +54,70 @@ ReportViewWidget::ScrollArea::ScrollArea(QWidget * parent)
 	connect(verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(verticalScrollBarValueChanged(int)));
 }
 
+bool ReportViewWidget::showReport(QWidget *parent
+								, const QString &report_qml_file
+								, const QVariant &single_table_data
+								, const QString &window_title
+								, const QString &persistent_settings_id
+								, const QVariantMap &report_init_properties)
+{
+	QVariantMap m;
+	m[QString()] = single_table_data;
+	return showReport2(parent, report_qml_file, m, window_title, persistent_settings_id, report_init_properties);
+}
+
+bool ReportViewWidget::showReport2(QWidget *parent
+								, const QString &report_qml_file
+								, const QVariantMap &multiple_table_data
+								, const QString &window_title
+								, const QString &persistent_settings_id
+								, const QVariantMap &report_init_properties)
+{
+	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
+	w->setWindowTitle(window_title);
+	if(!persistent_settings_id.isEmpty())
+		w->setPersistentSettingsId(persistent_settings_id);
+	w->setReport(report_qml_file, report_init_properties);
+	QMapIterator<QString, QVariant> it(multiple_table_data);
+	while(it.hasNext()) {
+		it.next();
+		w->setTableData(it.key(), it.value());
+	}
+	if(!parent)
+		parent = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::Dialog dlg(parent);
+	dlg.setCentralWidget(w);
+	bool report_printed = false;
+	connect(w, &qf::qmlwidgets::reports::ReportViewWidget::reportPrinted, [&report_printed](int) {
+		report_printed = true;
+	});
+	dlg.exec();
+	return report_printed;
+}
+
 void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 {
 	if(ev->orientation() == Qt::Vertical) {
-		if(ev->modifiers() == Qt::ShiftModifier) {
+		if(ev->modifiers() == Qt::ControlModifier) {
 			int delta = ev->delta();
-			if (ev->orientation() == Qt::Horizontal) {
-			}
-			else {
-				emit zoomOnWheel(delta, ev->pos());
-			}
+			emit zoomOnWheel(delta, ev->pos());
 			ev->accept();
 			return;
 		}
 		else {
 			QScrollBar *sb = verticalScrollBar();
+			if(sb) {
+				if(sb->value() == sb->minimum() && ev->delta() > 0) {
+					emit showPreviousPage();
+					ev->accept();
+					return;
+				}
+				if(sb->value() == sb->maximum() && ev->delta() < 0) {
+					emit showNextPage();
+					ev->accept();
+					return;
+				}
+			}
 			if(!sb || !sb->isVisible()) {
 				/// pokud neni scroll bar, nemuzu se spolehnout na funkci verticalScrollBarValueChanged(), protoze value je pro oba smery == 0
 				//qfInfo() << e->delta();
@@ -84,11 +137,11 @@ void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 
 void ReportViewWidget::ScrollArea::keyPressEvent(QKeyEvent* ev)
 {
-	if(ev->modifiers() == Qt::ShiftModifier) {
+	if(ev->modifiers() == Qt::ControlModifier) {
 		static QCursor c;
 		if(c.bitmap() == NULL) {
-			QBitmap b1(":/libqfgui/images/zoomin_cursor_bitmap.png");
-			QBitmap b2(":/libqfgui/images/zoomin_cursor_mask.png");
+			QBitmap b1(":/qf/qmlwidgets/images/zoomin_cursor_bitmap.png");
+			QBitmap b2(":/qf/qmlwidgets/images/zoomin_cursor_mask.png");
 			c = QCursor(b1, b2, 18, 12);
 		}
 		setCursor(c);
@@ -104,7 +157,7 @@ void ReportViewWidget::ScrollArea::keyReleaseEvent(QKeyEvent* ev)
 
 void ReportViewWidget::ScrollArea::mousePressEvent(QMouseEvent* ev)
 {
-	if (ev->button() == Qt::LeftButton && ev->modifiers() == Qt::ShiftModifier) {
+	if (ev->button() == Qt::LeftButton && ev->modifiers() == Qt::ControlModifier) {
 		f_dragMouseStartPos = ev->pos();
 		f_dragViewportStartPos = -widget()->pos();
 		setCursor(QCursor(Qt::ClosedHandCursor));
@@ -131,8 +184,8 @@ void ReportViewWidget::ScrollArea::mouseReleaseEvent(QMouseEvent* ev)
 
 void ReportViewWidget::ScrollArea::mouseMoveEvent(QMouseEvent* ev)
 {
-	//qfInfo() << "move buttons:" << ev->buttons() << ev->button() << "mod:" << QString::number(ev->modifiers(), 16) << (ev->button() == Qt::LeftButton) << (ev->modifiers() == Qt::ShiftModifier);
-	if(ev->buttons() == Qt::LeftButton && ev->modifiers() == Qt::ShiftModifier) {
+	//qfInfo() << "move buttons:" << ev->buttons() << ev->button() << "mod:" << QString::number(ev->modifiers(), 16) << (ev->button() == Qt::LeftButton) << (ev->modifiers() == Qt::ControlModifier);
+	if(ev->buttons() == Qt::LeftButton && ev->modifiers() == Qt::ControlModifier) {
 		QPoint pos = ev->pos();
 		//qfInfo() << "start pos:" << f_dragStartPos.x() << f_dragStartPos.y() << "pos:" << pos.x() << pos.y();
 		/// dej startpos na pos
@@ -184,7 +237,7 @@ ReportViewWidget::PainterWidget::PainterWidget(QWidget *parent)
 
 ReportViewWidget* ReportViewWidget::PainterWidget::reportViewWidget()
 {
-	return qf::core::findParent<ReportViewWidget*>(this);
+	return qf::core::Utils::findParent<ReportViewWidget*>(this);
 }
 
 void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
@@ -198,20 +251,7 @@ void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 	//painter.setBrush(Qt::yellow);
 	QRect r1 = rect();
 	painter.fillRect(r1, QBrush(QColor("#CCFF99")));
-	//int d = (int)(ReportViewWidget::PageBorder * reportViewWidget()->scale());
-	//r.adjust(d, d, -d, -d);
-	/*
-	QPen p(Qt::blue);
-	p.setBrush(QColor("red"));
-	//p.setWidth(2);
-	painter.setPen(p);
-	painter.drawRect(rect().adjusted(0, 0, -1, -1));
-	painter.setBrush(Qt::green);
-	QFont f("autobus", 30);
-	f.setStyleHint(QFont::Times);
-	painter.setFont(f);
-	//painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, "<qt>Qt <b>kjutyn</b> <br>indian</qt>");
-	*/
+
 	reportViewWidget()->setupPainter(&painter);
 	ReportItemMetaPaintFrame *frm = reportViewWidget()->currentPage();
 	if(!frm) return;
@@ -230,7 +270,7 @@ void ReportViewWidget::PainterWidget::paintEvent(QPaintEvent *ev)
 void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 {
 	qfLogFuncFrame();
-	if(e->button() == Qt::LeftButton && e->modifiers() == Qt::ShiftModifier) {
+	if(e->button() == Qt::LeftButton && e->modifiers() == Qt::ControlModifier) {
 		QWidget::mousePressEvent(e); /// ignoruj posouvani reportu mysi
 	}
 	else {
@@ -290,25 +330,6 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 	}
 }
 
-void ReportViewWidget::PainterWidget::wheelEvent(QWheelEvent *event)
-{
-	/*
-	if(event->modifiers() == Qt::ShiftModifier) {
-		int delta = event->delta();
-		//int numSteps = numDegrees / 15;
-
-		if (event->orientation() == Qt::Horizontal) {
-			//scrollHorizontally(numSteps);
-		} else {
-			emit zoomOnWheel(delta, event->pos());
-		}
-		event->accept();
-	}
-	else
-		*/
-		QWidget::wheelEvent(event);
-}
-
 //====================================================
 //                                 ReportViewWidget
 //====================================================
@@ -328,6 +349,8 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	m_currentPageNo = -1;
 	m_selectedItem = NULL;
 
+	setPersistentSettingsId("reportViewWidget");
+
 	m_scrollArea = new ScrollArea(NULL);
 	/// zajimavy, odkomentuju tenhle radek a nemuzu nastavit pozadi zadnyho widgetu na scrollArea.
 	//f_scrollArea->setBackgroundRole(QPalette::Dark);
@@ -343,8 +366,6 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 
 	connect(m_scrollArea, SIGNAL(showNextPage()), this, SLOT(scrollToNextPage()));
 	connect(m_scrollArea, SIGNAL(showPreviousPage()), this, SLOT(scrollToPrevPage()));
-
-	//--QFUiBuilder::connectActions(f_actionList, this);
 }
 
 ReportViewWidget::~ReportViewWidget()
@@ -466,16 +487,12 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 {
 	qfLogFuncFrame() << "center_pos:" << center_pos.x() << center_pos.y();
 	const QRect visible_rect(-m_scrollArea->widget()->pos(), m_scrollArea->viewport()->size());
-	//QSizeF old_report_size = f_scrollArea->widget()->size();
 	QPointF old_abs_center_pos = visible_rect.topLeft() + center_pos;
 	qfDebug() << "visible rect:" << qmlwidgets::graphics::Rect(visible_rect).toString();
 	QScrollBar *hsb = m_scrollArea->horizontalScrollBar();
 	QScrollBar *vsb = m_scrollArea->verticalScrollBar();
 
 	qreal old_scale = scale(), new_scale;
-	//QPointF old_report_pos = QPointF(abs_center_pos) / old_scale;
-	//if(old_scale > 2) new_scale = old_scale - 1;
-	//else
 	new_scale = old_scale / 1.33;
 	setScale(new_scale);
 
@@ -494,8 +511,10 @@ void ReportViewWidget::view_zoomOut(const QPoint &center_pos)
 
 void ReportViewWidget::zoomOnWheel(int delta, const QPoint &center_pos)
 {
-	if(delta < 0) view_zoomIn(center_pos);
-	else if(delta > 0) view_zoomOut(center_pos);
+	if(delta > 0)
+		view_zoomIn(center_pos);
+	else if(delta < 0)
+		view_zoomOut(center_pos);
 }
 
 void ReportViewWidget::view_zoomToFitWidth()
@@ -539,53 +558,138 @@ void ReportViewWidget::setScale(qreal _scale)
 void ReportViewWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg)
 {
 	qfLogFuncFrame();
-	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
-	act_view->setText(tr("View"));
-	act_view->addAction(action("view.zoomIn"));
-	act_view->addAction(action("view.zoomOut"));
-	act_view->addAction(action("view.zoomFitWidth"));
-	act_view->addAction(action("view.zoomFitHeight"));
+	qf::qmlwidgets::Action *act_file = dlg->menuBar()->actionForPath("file");
+	act_file->setText(tr("&File"));
+	act_file->addActionInto(action("file.print"));
+	act_file->addActionInto(action("file.printPreview"));
+	act_file->addSeparatorInto();
+	act_file->addActionInto(action("file.export.pdf"));
+	act_file->addActionInto(action("file.export.html"));
 
-	qf::qmlwidgets::ToolBar *tool_bar = dlg->addToolBar();
+	qf::qmlwidgets::Action *act_view = dlg->menuBar()->actionForPath("view");
+	act_view->setText(tr("&View"));
+	act_view->addActionInto(action("view.firstPage"));
+	act_view->addActionInto(action("view.prevPage"));
+	act_view->addActionInto(action("view.nextPage"));
+	act_view->addActionInto(action("view.lastPage"));
+	act_view->addActionInto(action("view.zoomIn"));
+	act_view->addActionInto(action("view.zoomOut"));
+	act_view->addActionInto(action("view.zoomFitWidth"));
+	act_view->addActionInto(action("view.zoomFitHeight"));
+
+	qf::qmlwidgets::ToolBar *tool_bar = dlg->toolBar("main", true);
+	tool_bar->addAction(action("file.print"));
+	tool_bar->addAction(action("file.export.pdf"));
+	tool_bar->addSeparator();
+	tool_bar->addAction(action("view.firstPage"));
+	tool_bar->addAction(action("view.prevPage"));
+	m_edCurrentPage = new QLineEdit;
+	m_edCurrentPage->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
+	m_edCurrentPage->setAlignment(Qt::AlignRight);
+	tool_bar->addWidget(m_edCurrentPage);
+	tool_bar->addAction(action("view.nextPage"));
+	tool_bar->addAction(action("view.lastPage"));
 	tool_bar->addAction(action("view.zoomIn"));
 	tool_bar->addAction(action("view.zoomOut"));
 	tool_bar->addAction(action("view.zoomFitWidth"));
 	tool_bar->addAction(action("view.zoomFitHeight"));
 }
 
-qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::actions()
+qf::qmlwidgets::framework::DialogWidget::ActionMap ReportViewWidget::createActions()
 {
-	if(m_actions.isEmpty()) {
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_in");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
-			m_actions[QStringLiteral("view.zoomIn")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomIn()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_out");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
-			m_actions[QStringLiteral("view.zoomOut")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomOut()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
-			m_actions[QStringLiteral("view.zoomFitWidth")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitWidth()));
-		}
-		{
-			qf::qmlwidgets::Action *a;
-			QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
-			a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
-			m_actions[QStringLiteral("view.zoomFitHeight")] = a;
-			connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
-		}
+	ActionMap ret;
+
+	//QStyle *sty = style();
+	//QIcon ico = sty->standardIcon(QStyle::SP_MediaSkipForward);
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/frev");
+		a = new qf::qmlwidgets::Action(ico, tr("First page"), this);
+		ret[QStringLiteral("view.firstPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_firstPage()));
 	}
-	return m_actions;
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/rev");
+		a = new qf::qmlwidgets::Action(ico, tr("Prev page"), this);
+		ret[QStringLiteral("view.prevPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_prevPage()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/fwd");
+		a = new qf::qmlwidgets::Action(ico, tr("Next page"), this);
+		ret[QStringLiteral("view.nextPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_nextPage()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/ffwd");
+		a = new qf::qmlwidgets::Action(ico, tr("Last page"), this);
+		ret[QStringLiteral("view.lastPage")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_lastPage()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_in");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom in"), this);
+		ret[QStringLiteral("view.zoomIn")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomIn()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_out");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom out"), this);
+		ret[QStringLiteral("view.zoomOut")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomOut()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_fitwidth");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit width"), this);
+		ret[QStringLiteral("view.zoomFitWidth")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitWidth()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/zoom_fitheight");
+		a = new qf::qmlwidgets::Action(ico, tr("Zoom to fit height"), this);
+		ret[QStringLiteral("view.zoomFitHeight")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(view_zoomToFitHeight()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/print.png");
+		a = new qf::qmlwidgets::Action(ico, tr("&Print"), this);
+		//a->setTooltip(tr("Tisk"));
+		ret[QStringLiteral("file.print")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_print()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/print-preview.png");
+		a = new qf::qmlwidgets::Action(ico, tr("Print pre&view"), this);
+		//a->setToolTip(tr("Náhled tisku"));
+		ret[QStringLiteral("file.printPreview")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_printPreview()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/acrobat.png");
+		a = new qf::qmlwidgets::Action(ico, tr("Export PD&F"), this);
+		a->setToolTip(tr("Export in the Adobe Acrobat PDF format"));
+		ret[QStringLiteral("file.export.pdf")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_export_pdf()));
+	}
+	{
+		qf::qmlwidgets::Action *a;
+		QIcon ico(":/qf/qmlwidgets/images/network.png");
+		a = new qf::qmlwidgets::Action(ico, tr("Export &HTML"), this);
+		a->setToolTip(tr("Export data in HTML"));
+		ret[QStringLiteral("file.export.html")] = a;
+		connect(a, SIGNAL(triggered()), this, SLOT(file_export_html()));
+	}
+	return ret;
 }
 
 void ReportViewWidget::setupPainterWidgetSize()
@@ -606,41 +710,25 @@ void ReportViewWidget::setupPainterWidgetSize()
 void ReportViewWidget::setupPainter(ReportPainter *p)
 {
 	QF_ASSERT(p != nullptr, "painter is NULL", return);
-	//qfInfo() << QF_FUNC_NAME;
-	//qfInfo() << "\t painterScale:" << ReportItem::Size(painterScale).toString();
 	//p->currentPage = currentPageNo();
 	p->pageCount = pageCount();
-	//QFDomElement el;
-	//if(f_selectedItem) el = f_selectedItem->reportElement;
 	p->setSelectedItem(m_selectedItem);
-	//if(f_selectedItem) qfInfo() << "painter selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
 	p->scale(scale(), scale());
-	//p->scale(painterScale.width(), painterScale.height());
-	//qfInfo() << "\t painter world matrix m11:" << p->worldMatrix().m11() << "m12:" << p->worldMatrix().m12();
-	//qfInfo() << "\t painter world matrix m21:" << p->worldMatrix().m21() << "m22:" << p->worldMatrix().m22();
 	p->translate(qmlwidgets::graphics::mm2device(qmlwidgets::graphics::Point(PageBorder, PageBorder), p->device()));
 	m_painterInverseMatrix = p->matrix().inverted();
 }
-/*
-void ReportViewWidget::setDocument(ReportItemMetaPaint* doc)
-{
-	qfDebug() << QF_FUNC_NAME;
-	fDocument = doc;
-	if(!doc) return;
-	//doc->dump();
-}
-	*/
-void ReportViewWidget::setReport(const QString &file_name)
+
+void ReportViewWidget::setReport(const QString &file_name, const QVariantMap &report_init_properties)
 {
 	qfLogFuncFrame() << "file_name:" << file_name;
 	//qfDebug() << "\tdata:" << fData.toString();
-	reportProcessor()->setReport(file_name);
+	reportProcessor()->setReport(file_name, report_init_properties);
 	//out.dump();
 }
 
 void ReportViewWidget::pageProcessed()
 {
-	qfDebug() << QF_FUNC_NAME;
+	qfLogFuncFrame();
 	if(m_whenRenderingSetCurrentPageTo >= 0) {
 		if(pageCount() - 1 == m_whenRenderingSetCurrentPageTo) {
 			setCurrentPageNo(m_whenRenderingSetCurrentPageTo);
@@ -648,9 +736,9 @@ void ReportViewWidget::pageProcessed()
 		}
 	}
 	else {
-		if(pageCount() == 1) setCurrentPageNo(0);
+		if(pageCount() == 1)
+			setCurrentPageNo(0);
 	}
-	//QApplication::processEvents();
 	refreshWidget();
 	//setCurrentPageNo(0);
 	QTimer::singleShot(10, reportProcessor(), SLOT(processSinglePage())); /// 10 je kompromis mezi rychlosti prekladu a sviznosti GUI
@@ -664,18 +752,15 @@ ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
 	return doc;
 }
 
-void ReportViewWidget::setData(const QString &key, const qf::core::utils::TreeTable &data)
+void ReportViewWidget::setTableData(const QString &key, const qf::core::utils::TreeTable &table_data)
 {
 	qfLogFuncFrame();
-	QVariant v = QVariant::fromValue(data);
-	reportProcessor()->setData(key, v);
+	reportProcessor()->setTableData(key, table_data);
 }
 
-void ReportViewWidget::setData(const QString &key, const QVariant &data)
+void ReportViewWidget::setTableData(const QString &key, const QVariant &table_data)
 {
-	qfu::TreeTable tt;
-	tt.setVariant(data);
-	setData(key, tt);
+	reportProcessor()->setTableData(key, table_data);
 }
 
 int ReportViewWidget::pageCount()
@@ -685,10 +770,6 @@ int ReportViewWidget::pageCount()
 	if(document(!qf::core::Exception::Throw)) {
 		ret = document()->childrenCount();
 	}
-	else {
-		//qfDebug() << "\tdocument is null";
-	}
-	//qfDebug() << "\treturn:" << ret;
 	return ret;
 }
 
@@ -780,88 +861,32 @@ static QString is_fake_element(const QFDomElement &_el)
 	return fake_path;
 }
 --*/
-bool ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF &p)
+ReportItemMetaPaint* ReportViewWidget::selectItem_helper(ReportItemMetaPaint *it, const QPointF &p)
 {
-	bool ret = false;
-	if(it->isPointInside(p)) {
-		ret = true;
-		qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
+	ReportItemMetaPaint *ret = nullptr;
+	if(it && it->isPointInside(p)) {
+		//qfLogFuncFrame() << "point inside:" << it->reportItem() << it->renderedRect.toString();
+		ret = it;
 		//qfInfo() << it->dump();
-		bool in_child = false;
-		foreach(qfu::TreeItemBase *_it, it->children()) {
-			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(_it);
-			if(selectItem_helper(it1, p)) {
-				in_child = true;
-				break;
-			}
-		}
-		if(!in_child) {
-			//bool selectable_element_found = false;
-			if(m_selectedItem != it) {
-				m_selectedItem = it;
-				//qfInfo() << "selected item:" << f_selectedItem->reportItem()->path().toString() << f_selectedItem->reportItem()->element.tagName();
-				/// muze se stat, ze item nema element, pak hledej u rodicu
-				while(it) {
-					ReportItem *r_it = it->reportItem();
-					if(r_it) {
-						m_painterWidget->update();
-#ifdef QML_SELECT_ITEM_IMPLEMENTED
-						/// pokus se najit nejaky rozumny element pro tento report item
-						QFDomElement el = r_it->element;
-						if(!!el) {
-							if(el.attribute("unselectable").toBool()) { ret = false; break; }
-							/// nalezeny element nesmi pochazet z fakeBand, pozna se to tak, ze element nebo nektery z jeho predku ma atribut "__fake"
-							QString fake_path = is_fake_element(el);
-							//qfInfo() << "fake path:" << fake_path;
-							if(!fake_path.isEmpty()) {
-								/// pokud je to fake element, bylo by fajn, kdyby se emitoval element, ze ktereho byl fake element vytvoren
-								/// najdi element table
-								ReportItemTable *t_it = NULL;
-								while(r_it) {
-									t_it = dynamic_cast<ReportItemTable*>(r_it);
-									if(t_it) break;
-									r_it = r_it->parent();
-								}
-								QDomElement faked_el;
-								if(t_it) {
-									if(fake_path == "-") {
-										faked_el = t_it->element;
-									}
-									else {
-										//qfInfo() << "cd" << fake_path;
-										el = t_it->element;
-										faked_el = el.cd(fake_path, !qf::core::Exception::Throw);
-										/*
-										if(!faked_el.isNull()) {
-											qfInfo() << "\tOK";
-											//selectable_element_found = true;
-											//qfDebug() << "element:" << fSelectedElement.toString();
-										}
-										*/
-									}
-									qfDebug() << "\t EMIT:" << faked_el.tagName();
-									emit elementSelected(faked_el);
-								}
-							}
-							else {
-								//selectable_element_found = true;
-								//qfDebug() << "element:" << fSelectedElement.toString();
-								qfDebug() << "\t EMIT:" << el.tagName();
-								emit elementSelected(el);
-							}
-						}
-#endif
+		/// traverse items in reverse order to select top level items in stacked layout
+		auto chlst = it->children();
+		for(int i=chlst.count()-1; i>=0; i--) {
+			ReportItemMetaPaint *it1 = static_cast<ReportItemMetaPaint*>(chlst[i]);
+			ReportItemMetaPaint *child_sel_it = selectItem_helper(it1, p);
+			if(child_sel_it) {
+				if(ret == it)
+					ret = child_sel_it;
+				else {
+					// if more children have item under cursor,
+					// then select one with smaller area
+					ReportItem::Rect r1 = ret->renderedRect;
+					ReportItem::Rect r2 = child_sel_it->renderedRect;
+					if(r1.area() > r2.area()) {
+						ret = child_sel_it;
 					}
-					else {
-						//qfWarning() << "item for path:" << it->path().toString() << "NOT FOUND.";
-					}
-					break;
-					//it = it->parent();
 				}
 			}
-			//return true;
 		}
-		//return true;
 	}
 	return ret;
 }
@@ -872,9 +897,8 @@ void ReportViewWidget::selectItem(const QPointF &p)
 	ReportItemMetaPaintFrame *frm = currentPage();
 	ReportItemMetaPaint *old_selected_item = m_selectedItem;
 	//QFDomElement old_el = fSelectedElement;
-	m_selectedItem = NULL;
-	if(frm) selectItem_helper(frm, p);
-	if(!m_selectedItem && old_selected_item) {
+	m_selectedItem = selectItem_helper(frm, p);
+	if(m_selectedItem != old_selected_item) {
 		/// odznac puvodni selekci
 		m_painterWidget->update();
 	}
@@ -883,10 +907,7 @@ void ReportViewWidget::selectItem(const QPointF &p)
 void ReportViewWidget::setVisible(bool visible)
 {
 	qfLogFuncFrame() << "visible:" << visible;
-	//setCurrentPageNo(0);
 	Super::setVisible(visible);
-	//setCurrentPageNo(0);
-	//QTimer::singleShot(0, this, SLOT(processReport()));
 	if(visible)
 		processReport();
 }
@@ -900,7 +921,7 @@ void ReportViewWidget::processReport()
 	setCurrentPageNo(0);
 	setScale(1);
 }
-
+/*
 void ReportViewWidget::render()
 {
 	qfLogFuncFrame();
@@ -913,27 +934,27 @@ void ReportViewWidget::render()
 	//qfInfo() << "setCurrentPageNo:" << cur_page_no;
 	//setCurrentPageNo(cur_page_no);
 }
-
+*/
 void ReportViewWidget::refreshWidget()
 {
 	statusBar();
-	if(edCurrentPage)
-		edCurrentPage->setText(QString::number(currentPageNo()+1) + "/" + QString::number(pageCount()));
+	if(m_edCurrentPage)
+		m_edCurrentPage->setText(QString::number(currentPageNo()+1) + "/" + QString::number(pageCount()));
 	refreshActions();
 	zoomStatusSpinBox->setValue((int)(scale() * 100));
 	//statusBar()->setText("zoom: " + QString::number((int)(scale() * 100)) + "%");
+	QApplication::processEvents();
 }
 
 void ReportViewWidget::refreshActions()
 {
-	/*--
 	int pgno = currentPageNo();
 	int pgcnt = pageCount();
+	qfLogFuncFrame() << pgno << "of" << pgcnt;
 	action("view.firstPage")->setEnabled(pgno > 0 && pgcnt > 0);
 	action("view.prevPage")->setEnabled(pgno > 0 && pgcnt > 0);
 	action("view.nextPage")->setEnabled(pgno < pgcnt - 1);
 	action("view.lastPage")->setEnabled(pgno < pgcnt - 1);
-	--*/
 }
 
 void ReportViewWidget::view_nextPage(PageScrollPosition scroll_pos)
@@ -991,12 +1012,10 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 	qfLogFuncFrame();
 
 	framework::CursorOverrider cov(Qt::WaitCursor);
-	//QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
 	ReportPainter painter(&printer);
 
 	typedef ReportItem::Rect Rect;
-	//typedef ReportItem::Size Size;
 
 	int pg_no = options.value("fromPage", 1).toInt() - 1;
 	int to_page = options.value("toPage", pageCount()).toInt();
@@ -1005,7 +1024,8 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 	if(frm) {
 		Rect r = frm->renderedRect;
 		bool landscape = r.width() > r.height();
-		if(landscape) printer.setOrientation(QPrinter::Landscape);
+		if(landscape)
+			printer.setOrientation(QPrinter::Landscape);
 		//Rect printer_pg_rect = QRectF(printer.pageRect());
 		//qfWarning() << "\tprinter page rect:" << printer_pg_rect.toString();
 		//qfWarning() << "\tresolution:" << printer.resolution() << Size(printer_pg_rect.size()/printer.resolution()).toString(); /// resolution je v DPI
@@ -1017,14 +1037,14 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 			painter.drawMetaPaint(frm);
 			pg_no++;
 			frm = getPage(pg_no);
-			if(!frm) break;
-			if(pg_no >= to_page) break;
+			if(!frm)
+				break;
+			if(pg_no >= to_page)
+				break;
 			printer.newPage();
 		}
 	}
-
-	//QApplication::restoreOverrideCursor();
-	//emit reportPrinted();
+	emit reportPrinted(printer.outputFormat());
 }
 
 void ReportViewWidget::print()
@@ -1039,7 +1059,8 @@ void ReportViewWidget::print()
 	printer.setOrientation(document()->orientation);
 
 	QPrintDialog dlg(&printer, this);
-	if(dlg.exec() != QDialog::Accepted) return;
+	if(dlg.exec() != QDialog::Accepted)
+		return;
 
 	qfDebug() << "options:" << dlg.options();
 	QVariantMap opts;
@@ -1114,17 +1135,17 @@ QString ReportViewWidget::exportHtml()
 void ReportViewWidget::file_export_pdf(bool open)
 {
 	qfDebug() << QF_FUNC_NAME;
-	attachPrintout();
 	//reportProcessor()->dump();
 	QString fn;
+	QString ext = ".pdf";
 	if(open)
 		fn = QDir::tempPath() + "/report.pdf";
 	else
-		fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as PDF"), QString(), "*.pdf");
+		fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as PDF"), QString(), '*' + ext);
 	if(fn.isEmpty())
 		return;
-	if(!fn.endsWith(".pdf", Qt::CaseInsensitive))
-		fn += ".pdf";
+	if(!fn.endsWith(ext, Qt::CaseInsensitive))
+		fn += ext;
 	exportPdf(fn);
 	if(open) {
 		QDesktopServices::openUrl(QUrl::fromLocalFile(fn));
@@ -1135,41 +1156,23 @@ void ReportViewWidget::file_export_html()
 {
 	qfLogFuncFrame();
 	QString fn = "report.html";
-	QString s = exportHtml();
-	qfError() << Q_FUNC_INFO << "NIY";
-	/*--
-	QFHtmlViewUtils hut(!QFHtmlViewUtils::UseWebKit);
-	hut.showOrSaveHtml(s, fn, "showOrSaveHtml");
-	--*/
-}
-
-void ReportViewWidget::file_export_email()
-{
-	/// uloz pdf do tmp file report.pdf
-	attachPrintout();
-	QString fn = QDir::tempPath() + "/report.pdf";
-	exportPdf(fn);
-}
-
-void ReportViewWidget::data_showHtml()
-{
-	qfDebug() << QF_FUNC_NAME;
-	QVariant v = reportProcessor()->data(QString());
-	qfu::TreeTable tt = v.value<qfu::TreeTable>();
-	QString s = tt.toHtml();
-	s = addHtmlEnvelope(s);
-	QString file_name = "data.html";
-	qfError() << Q_FUNC_INFO << "showing" << file_name << "not implemented yet.";
-	/*--
-	QFHtmlViewUtils hu(!QFHtmlViewUtils::UseWebKit);
-	hu.showOrSaveHtml(s, file_name);
-	--*/
+	fn = dialogs::FileDialog::getSaveFileName (this, tr("Save as HTML"), fn, "*.html");
+	if(!fn.isEmpty()) {
+		QString s = exportHtml();
+		QFile f(fn);
+		if(!f.open(QFile::WriteOnly)) {
+			dialogs::MessageBox::showError(this, tr("Cannot open '%1' for write.").arg(f.fileName()));
+			return;
+		}
+		QTextStream out(&f);
+		out.setCodec("UTF-8");
+		out << s;
+	}
 }
 
 void ReportViewWidget::file_print()
 {
 	qfDebug() << QF_FUNC_NAME;
-	attachPrintout();
 	print();
 }
 
@@ -1181,61 +1184,5 @@ void ReportViewWidget::file_printPreview()
 	connect(&preview, SIGNAL(paintRequested(QPrinter*)), this, SLOT(print(QPrinter*)));
 	preview.exec();
 }
-
-void ReportViewWidget::report_edit()
-{
-	qfLogFuncFrame();
-	// will not be possible in GUI with qmlreports
-#if 0
-	QString program = qfu::FileUtils::appDir() + "/repedit";
-	#if defined Q_OS_WIN
-	program += ".exe";
-	#endif
-	QStringList arguments;
-	{
-		QFSqlSearchDirs *sql_sd = dynamic_cast<QFSqlSearchDirs*>(reportProcessor()->searchDirs(!qf::core::Exception::Throw));
-		if(sql_sd) {
-			QFAppDbConnectionInterface *appi = dynamic_cast<QFAppDbConnectionInterface*>(QCoreApplication::instance());
-			if(appi) {
-				QFSqlConnection &c = appi->connection();
-				/// user:password@host:port
-				QString sql_connection = c.userName() % ':' % c.password() % '@' % c.hostName() % ':' % QString::number(c.port());
-				/*
-				QString sql_connection = "sql://" % c.userName() % ':' % c.password() % '@' % c.hostName() % ':' % QString::number(c.port())
-				% '/' % c.databaseName()
-				% '/' % sql_sd->tableName()
-				% '/' % sql_sd->ckeyColumnName()
-				% '/' % sql_sd->dataColumnName();
-				*/
-				arguments << "--sql-connection=" + sql_connection;
-				//arguments << "--dbfs-profile=" + sql_connection;
-				arguments << "--report-search-sql-dirs=" + sql_sd->sqlDirs().join("::");
-			}
-		}
-	}
-	{
-		QFSearchDirs *sd = dynamic_cast<QFSearchDirs*>(reportProcessor()->searchDirs(!qf::core::Exception::Throw));
-		if(sd) {
-			arguments << "--report-search-dirs=" + sd->dirs().join("::");
-			if(sd->dirs().count()) arguments << "--saved-files-root-dir=" + sd->dirs().first();
-		}
-	}
-	QFDataTranslator *dtr = dataTranslator();
-	if(dtr) {
-		QString lc_domain = dtr->currentLocalesName();
-		if(!lc_domain.isEmpty()) arguments << "--force-lc-domain=" + lc_domain;
-	}
-	arguments << reportProcessor()->report().fileName();
-	//arguments << "-dqfdom";
-#if defined QT_DEBUG /// aby se mi netisklo heslo do logu v release verzi
-	qfDebug() << "\t command line:" << program << arguments.join(" ");
-#endif
-	QProcess *proc = new QProcess(qfApp());
-	proc->start(program, arguments);
-#endif
-}
-
-
-
 
 

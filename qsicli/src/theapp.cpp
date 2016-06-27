@@ -137,10 +137,14 @@ qf::core::Log::Level TheApp::logLevelFromSettings()
 	QSettings settings;
 	QString level_str = settings.value("app/logging/level").toString().toLower();
 	//if(level_str == "trash") return qf::core::Log::LOG_TRASH;
-	if(level_str == "debug") return qf::core::Log::LOG_DEB;
-	if(level_str == "info") return qf::core::Log::LOG_INFO;
-	if(level_str == "warning") return qf::core::Log::LOG_WARN;
-	if(level_str == "error") return qf::core::Log::LOG_ERR;
+	if(level_str == "debug")
+		return qf::core::Log::LOG_DEB;
+	if(level_str == "info")
+		return qf::core::Log::LOG_INFO;
+	if(level_str == "warning")
+		return qf::core::Log::LOG_WARN;
+	if(level_str == "error")
+		return qf::core::Log::LOG_ERR;
 	return qf::core::Log::LOG_INFO;
 }
 

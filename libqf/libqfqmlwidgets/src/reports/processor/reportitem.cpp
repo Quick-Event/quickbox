@@ -16,6 +16,7 @@
 #include <qf/core/string.h>
 #include <qf/core/utils/fileutils.h>
 
+#include <QDomElement>
 #include <QDate>
 #include <QStringBuilder>
 #include <QUrl>
@@ -31,13 +32,13 @@ using namespace qf::qmlwidgets::reports;
 const double ReportItem::Epsilon = 1e-10;
 const QString ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE = "$INFO";
 
-ReportItem::ReportItem(ReportItem *_parent)
-	: Super(_parent) //--, processor(proc), element(el)
+ReportItem::ReportItem(ReportItem *parent)
+	: Super(parent) //--, processor(proc), element(el)
 {
 	m_keepAll = false;
 	m_visible = true;
 	//QF_ASSERT_EX(processor != nullptr, "Processor can not be NULL.");
-	recentlyPrintNotFit = false;
+	m_recentPrintNotFinished = false;
 	//--keepAll = qfc::String(element.attribute("keepall")).toBool();
 	//if(keepAll) { qfInfo() << "KEEP ALL is true" << element.attribute("keepall"); }
 }
@@ -149,7 +150,7 @@ ReportItemBand* ReportItem::parentBand()
 --*/
 ReportItemBand* ReportItem::parentBand()
 {
-	ReportItemBand *ret = qf::core::findParent<ReportItemBand*>(this, false);
+	ReportItemBand *ret = qf::core::Utils::findParent<ReportItemBand*>(this, false);
 	return ret;
 }
 /*--
@@ -177,15 +178,15 @@ ReportItem::PrintResult ReportItem::checkPrintResult(ReportItem::PrintResult res
 	//if(res.value == PrintNotFit) {
 	//qfWarning().noSpace() << "PrintNotFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "' recentlyPrintNotFit: " << recentlyPrintNotFit << " keepall: " << keepAll;
 	//}
-	if(isKeepAll() && recentlyPrintNotFit && res.value == PrintNotFit) {
+	if(!canBreak() && m_recentPrintNotFinished && !res.isPrintFinished()) {
 		//qfWarning().noSpace() << "PrintNeverFit element: '" << element.tagName() << "' id: '" << element.attribute("id") << "'";
-		ret.flags |= FlagPrintNeverFit;
+		ret = PrintResult::createPrintError();
 	}
-	recentlyPrintNotFit = (ret.value == PrintNotFit);
+	m_recentPrintNotFinished = !res.isPrintFinished();
 	return ret;
 }
 
-ReportProcessor *ReportItem::processor()
+ReportProcessor *ReportItem::processor(bool throw_exc)
 {
 	ReportProcessor *ret = nullptr;
 	QObject *it = this;
@@ -197,453 +198,28 @@ ReportProcessor *ReportItem::processor()
 		}
 		it = it->QObject::parent();
 	}
-	QF_ASSERT_EX(ret != nullptr, "ReportItem without ReportProcessor");
-	return ret;
-}
-
-/*--
-QVariant ReportItem::concatenateNodeChildrenValues(const QDomNode & nd)
-{
-	QVariant ret;
-	QDomElement el = nd.toElement();
-	for(QFDomNode nd1 = el.firstChild(); !!nd1; nd1 = nd1.nextSibling()) {
-		QVariant v1 = nodeValue(nd1);
-		if(0) {
-			QDomElement eel = nd1.toElement();
-			qfInfo() << "node value:" << eel.toString() << v1.toString();
-		}
-		if(!ret.isValid()) ret = v1;
-		else ret = ret.toString() + v1.toString();
+	if(ret == nullptr && throw_exc) {
+		QF_EXCEPTION("ReportItem without ReportProcessor");
 	}
 	return ret;
 }
 
-QString ReportItem::nodeText(const QDomNode &nd)
+ReportItem::PrintResult ReportItem::printHtml(ReportItem::HTMLElement &out)
 {
-	QVariant node_value = nodeValue(nd);
-	if(node_value.canConvert<qfu::TreeTable>()) {
-		/// jedna se o XML tabulku, ktera je vysledkem SQL dotazu, vezmi z ni pouze 1. hodnotu na 1. radku
-		qfu::TreeTable t = node_value.value<qfu::TreeTable>();
-		node_value = t.row(0).value(0);
-	}
-	QString ret;
-	if(nd.isElement()) {
-		do {
-			QDomElement el = nd.toElement();
-			QString null_text = el.attribute("nullText");
-			if(!node_value.isValid() && !null_text.isEmpty()) {
-				ret = null_text;
-				break;
-			}
-			bool hide_zero = el.attribute("hidezero").toBool();
-			if(hide_zero) {
-				if(node_value.type() == QVariant::Int && node_value.toInt() == 0) {
-					break;
-				}
-				else if(node_value.type() == QVariant::Double && node_value.toDouble() == 0) {
-					break;
-				}
-				else if(node_value.toString() == "0") {
-					break;
-				}
-			}
-			QString currency_symbol;
-			{
-				QString currency = el.attribute("currency");
-				if(!currency.isEmpty()) {
-					QFCurrencyRates cr = processor()->currencyRates();
-					double d = node_value.toDouble();
-					node_value = cr.convertSACToCurrency(d, currency);
-					currency_symbol = cr.currencySymbol(currency);
-				}
-			}
-			{
-				QString lc_domain = el.attribute("lcDomain");
-				if(!lc_domain.isEmpty()) {
-					QFDataTranslator *dtr = processor()->dataTranslator();
-					if(dtr) {
-						node_value = dtr->translate(node_value.toString(), lc_domain);
-					}
-				}
-			}
-			QString format = el.attribute("format");
-			if(format == "check") {
-				//qfInfo() << "hide null:" << hide_null << "is valid:" << node_value.isValid() << "is null:" << node_value.isNull() << "val:" << node_value.toString();
-				//if(!hide_null && node_value.isNull()) { /// !isValid() tady nefunguje
-				//	ret = "--";
-				//}
-				//else {
-					bool b = node_value.toBool();
-					QString s = ReportItemMetaPaint::checkReportSubstitution;
-					s.replace("${STATE}", (b)? "1": "0");
-					ret = s;
-				//}
-				//qfWarning() << ret;
-			}
-			else if(node_value.type() == QVariant::Bool) {
-				//qfInfo() << "Date format:" << format;
-				ret = QString::fromBool(node_value, format);
-			}
-			else if(node_value.type() == QVariant::Date) {
-				//qfInfo() << "Date format:" << format;
-				if(format.isNull()) ret = node_value.toDate().toString(Qf::defaultDateFormat());
-				else ret = node_value.toDate().toString(format);
-			}
-			else if(node_value.type() == QVariant::Time) {
-				if(format.isNull()) ret = node_value.toString();
-				else ret = node_value.toTime().toString(format);
-			}
-			else if(node_value.type() == QVariant::DateTime) {
-				//qfInfo() << v.toString();
-				if(format.isNull()) ret = node_value.toDateTime().toString(Qf::defaultDateTimeFormat());
-				else ret = node_value.toTime().toString(format);
-			}
-			else if(node_value.type() == QVariant::Double) {
-				if(!format.isNull()) ret = QString::number(node_value.toDouble(), format);
-				else ret = node_value.toString();
-			}
-			else if(node_value.type() == QVariant::Int) {
-				if(!format.isNull()) ret = QString::number(node_value.toInt(), format);
-				else ret = node_value.toString();
-			}
-			else if(node_value.type() == QVariant::String) {
-				QString str = node_value.toString();
-				ret = str;
-				if(!str.isEmpty()) {
-					if(format.startsWith("enumz/")) {
-						QFDbApplication *db_app = QFDbApplication::instance(!Qf::ThrowExc);
-						if(db_app && db_app->connection().isOpen()) {
-							QString group_name = format.section('/', 1, 1);
-							QString caption = format.section('/', 2);
-							if(caption.isEmpty()) caption = "${caption}";
-							else if(caption[0] == '\'') caption = QString(caption).slice(1, -1);
-							QStringList sl = str.split(',');
-							QStringList sl_ret;
-							foreach(QString enum_id, sl) {
-								QFDbEnum enm = qfDbApp()->dbEnum(group_name, enum_id);
-								if(enm.isValid()) sl_ret << enm.fillInPlaceholders(caption);
-								else sl_ret << QString("NO_ENUM(%1:%2)").arg(group_name).arg(enum_id);
-							}
-							ret = sl_ret.join(", ");
-						}
-					}
-				}
-			}
-			else if(node_value.type() == QVariant::Map) {
-				QVariantMap m = node_value.toMap();
-				QString str = node_value.toString();
-				ret = str;
-				if(!str.isEmpty()) {
-					if(format.startsWith("enumz/")) {
-						QFDbApplication *db_app = QFDbApplication::instance(!Qf::ThrowExc);
-						if(db_app && db_app->connection().isOpen()) {
-							QString group_name = format.section('/', 1, 1);
-							QString caption = format.section('/', 2);
-							if(caption.isEmpty()) caption = "${caption}";
-							else if(caption[0] == '\'') caption = QString(caption).slice(1, -1);
-							QFDbEnum enm = qfDbApp()->dbEnum(group_name, str);
-							if(enm.isValid()) ret = enm.fillInPlaceholders(caption);
-							else ret = QString("NO_ENUM(%1.%2)").arg(group_name).arg(str);
-						}
-					}
-				}
-			}
-			else {
-				ret = node_value.toString();
-			}
-			if(!currency_symbol.isEmpty()) {
-				bool show_currency_symbol = QString(el.attribute("currencySymbolVisible", "true")).toBool();
-				//qfInfo() << currency_symbol << el.attribute("currencySymbolVisible") << show_currency_symbol;
-				if(show_currency_symbol) ret = ret % ' ' % currency_symbol;
-			}
-			{
-				QString prefix = el.attribute("prefix");
-				if(!prefix.isEmpty()) ret = prefix % ret;
-			}
-			{
-				QString suffix = el.attribute("suffix");
-				if(!suffix.isEmpty()) ret = ret % suffix;
-			}
-		} while(false);
-	}
-	else ret = node_value.toString();
-	//qfInfo() << ret;
-	return ret;
+	if(out.isNull())
+		return PrintResult::createPrintError();
+	return PrintResult::createPrintFinished();
 }
 
-QVariant ReportItem::nodeValue(const QDomNode &nd)
+void ReportItem::createHtmlExportAttributes(ReportItem::HTMLElement &out)
 {
-	qfDebug().color(QFLog::Cyan) << QF_FUNC_NAME;
-	static const QString S_ATTR_DOMAIN = "domain";
-	static const QString S_CAST = "cast";
-	static const QString S_KEY = "key";
-	static const QString S_EL_DATA = "data";
-	QVariant ret;
-	qfDebug() << "\tnode type:" << nd.nodeType();
-	if(nd.isText()) {
-		QString s = nd.toText().data();
-		//if(s.endsWith("23")) qfInfo().noSpace() << "\t\ttext: '" << s << "'";
-		ret = s;
+	QMapIterator<QString, QVariant> it(htmlExportAttributes());
+	while(it.hasNext()) {
+		it.next();
+		out.setAttribute(it.key(), it.value().toString());
 	}
-	else if(nd.isElement()) {
-		QDomElement el = nd.toElement();
-		if(el.tagName() == S_EL_DATA) {
-			QString default_value, default_text;
-			{
-				QDomElement el1 = el.firstChildElement("default");
-				default_text = el1.text();
-			}
-			default_value = el.attribute("defaultValue", ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE);
-			QString cast = el.attribute(S_CAST);
-			QString data_src = el.attribute("src").trimmed();
-			qfDebug().noSpace() << "\t\tdata: '" << data_src << "'";
-			QString domain = el.attribute(S_ATTR_DOMAIN, "row");
-			QString data_property_key = el.attribute(S_KEY);
-			if(processor()->isDesignMode()) {
-				QString s = data_src;
-				if(!data_property_key.isEmpty()) { s = s%"."%data_property_key; }
-				if(domain == "row") ret = QString('['%s%']');
-				else ret = QString('{'%s%'}');
-			}
-			else {
-				bool sql_match = el.attribute("sqlmatch", "true").toBool();
-				QVariantList params;
-				if(domain == "script") {
-					for(QDomElement el_param = el.firstChildElement("param"); !!el_param; el_param = el_param.nextSiblingElement("param")) {
-						//qfInfo() << concatenateNodeChildrenValues(el_param).toString();
-						params << concatenateNodeChildrenValues(el_param);
-					}
-				}
-				else if(domain == "sql" || domain == "scriptcode") {
-					QString code;
-					for(QDomNode nd = el.firstChildElement("code").firstChild(); !nd.isNull(); nd = nd.nextSibling()) {
-						if(nd.isCDATASection()) {
-							code = nd.toCDATASection().data();
-							break;
-						}
-					}
-					if(!code.isEmpty()) {
-						QVariantMap params;
-						for(QDomElement el_param = el.firstChildElement("param"); !!el_param; el_param = el_param.nextSiblingElement("param")) {
-							QString param_name = el_param.attribute("name");
-							if(!param_name.isEmpty()) {
-								params[param_name] = concatenateNodeChildrenValues(el_param);
-							}
-						}
-						QMapIterator<QString, QVariant> i(params);
-						while(i.hasNext()) {
-							i.next();
-							code.replace("${" + i.key() + '}', i.value().toString());
-						}
-						data_src = code;
-					}
-				}
-				QVariant data_value = value(data_src, domain, params, default_value, sql_match);
-				//if(data_src == "ukonceniDny") qfWarning() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type()) << data_value.isValid() << data_value.isNull();
-				{
-					if(!data_property_key.isEmpty() && data_value.type() == QVariant::String) {
-						/// pokud je key a data_value je string zacinajici na { a koncici na }, udelej z nej QVariantMap
-						QString fs = data_value.toString().trimmed();
-						if(fs.value(0) == '{' && fs.value(-1) == '}') {
-							data_value = QFJson::stringToVariant(fs);
-						}
-					}
-				}
-				if(data_value.userType() == qMetaTypeId<QFSValue>()) {
-					QStringList keys = data_property_key.split('.', QString::SkipEmptyParts);
-					foreach(QString key, keys) {
-						QFSValue sv(data_value);
-						data_value = sv.property(key);
-					}
-					if(data_value.userType() == qMetaTypeId<QFSValue>()) {
-						QFSValue sv(data_value);
-						data_value = sv.property("value");
-					}
-					//qfInfo() << data_value.toString();
-				}
-				else if(data_value.type() == QVariant::Map) {
-					//qfInfo() << "MAP";
-					QStringList keys = data_property_key.split('.', QString::SkipEmptyParts);
-					foreach(QString key, keys) {
-						QVariantMap m = data_value.toMap();
-						data_value = m.value(key);
-						//qfInfo() << key << "->" << QFJson::variantToString(data_value);
-					}
-					if(data_value.userType() == qMetaTypeId<QVariantMap>()) {
-						QVariantMap m = data_value.toMap();
-						data_value = m.value("value");
-					}
-				}
-				if(!cast.isEmpty()) {
-					if(cast == "double") {
-						data_value = Qf::retypeVariant(data_value, QVariant::Double);
-					}
-					else if(cast == "int") {
-						data_value = Qf::retypeVariant(data_value, QVariant::Int);
-					}
-					else if(cast == "date") {
-						//qfInfo() << "casting date" << data_value.toString();
-						data_value = Qf::retypeVariant(data_value, QVariant::Date);
-						//qfInfo() << "to" << data_value.toString();
-					}
-					else if(cast == "time") {
-						data_value = Qf::retypeVariant(data_value, QVariant::Time);
-					}
-				}
-				//if(data_src == "reportSValues") { qfInfo() << "data_value type:" << data_value.typeName() << "val:" << data_value.toString(); }
-				if(!data_value.isValid() || (data_value.type() == QVariant::String && data_value.toString().isEmpty())) ret = default_text;
-				else ret = data_value;
-			}
-		}
-		else {
-			qfWarning() << "unprocessible element:" << el.tagName();
-		}
-	}
-	return ret;
 }
---*/
-#if 0
-QVariant ReportItem::value(const QString &data_src, const QString & domain, const QVariantList &params, const QVariant &default_value, bool sql_match)
-{
-	//qfInfo() << "data_src:" << data_src << "domain:" << domain;
-	qfLogFuncFrame() << "data_src:" << data_src << "domain:" << domain << "sql_match:" << sql_match;
-	static const QString S_DOMAIN_SYSTEM = "system";
-	static const QString S_DOMAIN_REPORT = "report";
-	static const QString S_DOMAIN_ROW = "row";
-	static const QString S_DOMAIN_TABLE = "table";
-	static const QString S_DOMAIN_SCRIPT = "script";
-	static const QString S_DOMAIN_SCRIPT_CODE = "scriptcode";
-	static const QString S_DOMAIN_SQL = "sql";
-	static const QString S_SYSTEM_DATE = "date";
-	static const QString S_SYSTEM_TIME = "time";
-	static const QString S_TABLE_ROWNO = "ROW_NO()";
-	QVariant data_value = default_value;
-	bool info_if_not_found = (default_value == ReportItem::INFO_IF_NOT_FOUND_DEFAULT_VALUE);
-	if(domain == S_DOMAIN_SYSTEM) {
-		if(data_src == S_SYSTEM_DATE) {
-			data_value = QDate::currentDate();//.toString(date_format);
-		}
-		else if(data_src == S_SYSTEM_TIME) {
-			data_value = QTime::currentTime();
-		}
-		else if(data_src == "page") {
-			data_value = QString::number(processor()->processedPageNo() + 1);
-		}
-		else if(data_src == "pageCount") {
-			data_value = ReportItemMetaPaint::pageCountReportSubstitution; /// takovyhle blby zkratky mam proto, aby to zabralo zhruba stejne mista jako cislo, za ktery se to vymeni
-		}
-	}
-	/*--
-	else if(domain == S_DOMAIN_SCRIPT) {
-		try {
-			data_value = QFScriptDriver::scriptValueToVariant(processor()->scriptDriver()->call(this, data_src, params));
-		}
-		catch(QFException &e) {
-			qfError() << "Report table data load error:" << e.msg();
-		}
-	}
-	else if(domain == S_DOMAIN_SCRIPT_CODE) {
-		try {
-			ReportProcessorScriptDriver *sd = processor()->scriptDriver();
-			if(sd) {
-				sd->setCurrentCallContextItem(this);
-				data_value = QFScriptDriver::scriptValueToVariant(sd->evaluate(data_src));
-			}
-		}
-		catch(QFException &e) {
-			qfError() << "Report table data load error:" << e.msg();
-		}
-	}
-	else if(domain == S_DOMAIN_SQL) {
-		//qfInfo() << "element:" << element.toString();
-		if(!processor()->isDesignMode()) {
-			QString qs = data_src;
-			//qfInfo() << "qs:" << qs;
-			if(!qs.isEmpty()) try {
-				QFSqlQueryTable t;
-				t.reload(qs);
-				QFSValue tt = t.toTreeTable();
-				//qfInfo() << doc.toString();
-				QVariant v;
-				v.setValue(tt);
-				data_value.setValue(tt);
-			}
-			catch(QFException &e) {
-				qfError() << "Report table data load error:" << e.msg();
-			}
-		}
-	}
-	else if(domain == S_DOMAIN_REPORT) {
-		QString path = QFFileUtils::path(data_src);
-		QString key = QFFileUtils::file(data_src);
-		//qfDebug().noSpace() << "\t\tpath: '" << path << "'" << "\t\tname: '" << data << "'";
-		QDomElement el = element.cd(path + "keyvals", !Qf::ThrowExc);
-		if(!!el) {
-			QFXmlKeyVals kv(el);
-			data_value = kv.value(key, default_value);
-		}
-		else {
-			qfWarning() << QString("Report path '%1' does not exist. Domain: %2 Element path: '%3'").arg(path + "keyvals").arg(domain).arg(element.path());
-		}
-	}
-	else if(domain == S_DOMAIN_TABLE) {
-		ReportItemBand *band = parentBand();
-		if(!band) qfWarning().noSpace() << "'" << data_src << "' band is null";
-		if(band) {
-			if(data_src.startsWith("/")) {
-				/// skoc na root band, coz je vlastne body
-				while(true) {
-					ReportItemBand *it = band->parentBand();
-					if(!it) break;
-					band = it;
-				}
-			}
-			qfu::TreeTable t = band->dataTable();
-			if(t.isNull()) {
-				//qfInfo() << data_src << "table is NULL";
-				if(info_if_not_found) data_value = '{' + data_src + '}';//qfWarning().noSpace() << "'" << data_src << "' table is null";
-			}
-			else {
-				data_value = t.value(data_src, (info_if_not_found)? "$" + data_src: default_value, sql_match);
-			}
-		}
-	}
-	else if(domain == S_DOMAIN_ROW) {
-		ReportItemDetail *det = currentDetail();
-		if(det) {
-			qfu::TreeTableRow r = det->dataRow();
-			qfDebug() << "\t\tdata row is null:" << r.isNull();
-			//if(data_src == "groupHeader") qfInfo() << data_src << "data_row:" << r.rowData().toString(2);
-			if(r.isNull()) {
-				if(info_if_not_found) data_value = '[' + data_src + ']';
-			}
-			else {
-				if(data_src == S_TABLE_ROWNO) {
-					data_value = det->currentRowNo() + 1;
-				}
-				else {
-					data_value = r.value(data_src, (info_if_not_found)? "$" + data_src: default_value);
-					//if(!data_value.isValid()) data_value = default_value;
-					//qfInfo() << data_src << "=>" << data_value.toString() << "default value:" << ((info_if_not_found)? "$" + data_src: default_value).toString() << "info if not found:" << info_if_not_found;
-				}
-			}
-		}
-		else {
-			if(info_if_not_found) data_value = "$" + data_src + " no detail";
-		}
-	}
-	--*/
-	//qfDebug() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type());
-	//qfInfo() << "\treturn:" << data_value.toString() << QVariant::typeToName(data_value.type());
-	return data_value;
-}
-#endif
-/*
-void ReportItem::setupMetaPaintItem(ReportItemMetaPaint *mpit)
-{
-	Q_UNUSED(mpit);
-}
-*/
+
 void ReportItem::classBegin()
 {
 	qfLogFuncFrame();
@@ -681,72 +257,6 @@ style::Text *ReportItem::effectiveTextStyle()
 	return ret;
 }
 
-//==========================================================
-//                    ReportItemBreak
-//==========================================================
-ReportItemBreak::ReportItemBreak(ReportItem *parent)
-	: Super(parent)
-{
-	/// attribut type (page | column) zatim nedela nic
-	//QF_ASSERT_EX(proc, "processor is NULL", return);
-	designedRect.verticalUnit = Rect::UnitInvalid;
-	//qfInfo() << element.attribute("id");
-	breaking = false;
-}
-
-ReportItem::PrintResult ReportItemBreak::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
-{
-	qfLogFuncFrame();
-	Q_UNUSED(bounding_rect);
-	Q_UNUSED(out);
-	PrintResult res = PrintOk;
-	if(!isVisible()) { return res; }
-	if(!breaking) {res = PrintNotFit; res.flags = FlagPrintBreak;}
-	breaking = !breaking;
-	return res;
-}
-
-//==========================================================
-//                                    ReportItemBody
-//==========================================================
-/*
-ReportItem::PrintResult ReportItemBody::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
-{
-	qfDebug() << QF_FUNC_NAME;
-	PrintResult res = ReportItemDetail::printMetaPaint(out, bounding_rect);
-	/// body jediny ma tu vysadu, ze se muze vickrat za sebou nevytisknout a neznamena to print forever.
-	if(res == PrintNeverFit) res = PrintNotFit;
-	return res;
-}
-*/
-#if 0
-//==========================================================
-//                                    ReportItemHeaderFrame
-//==========================================================
-ReportItem::PrintResult ReportItemHeaderFrame::printMetaPaint(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect )
-{
-	qfDebug() << QF_FUNC_NAME;
-	return ReportItemFrame::printMetaPaint(out, bounding_rect);
-}
-
-//==========================================================
-//                                    ReportItemRow
-//==========================================================
-ReportItem::PrintResult ReportItemRow::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
-{
-	qfDebug() << QF_FUNC_NAME;
-	return ReportItemFrame::printMetaPaint(out, bounding_rect);
-}
-
-//==========================================================
-//                                    ReportItemCell
-//==========================================================
-ReportItem::PrintResult ReportItemCell::printMetaPaint(ReportItemMetaPaint *out, const Rect &bounding_rect)
-{
-	qfDebug() << QF_FUNC_NAME;
-	return ReportItemFrame::printMetaPaint(out, bounding_rect);
-}
-#endif
 #ifdef REPORT_ITEM_TABLE
 //==========================================================
 //                                    ReportItemTable

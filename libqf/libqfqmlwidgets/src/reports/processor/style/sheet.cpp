@@ -1,5 +1,7 @@
 #include "sheet.h"
 
+#include <qf/core/log.h>
+
 using namespace qf::qmlwidgets::reports::style;
 
 //==========================================================
@@ -27,7 +29,7 @@ void Sheet::createStyleCache_helper(QObject *parent)
 {
 	if(!parent)
 		return;
-	for(auto child : parent->children()) {
+	Q_FOREACH(auto child, parent->children()) {
 		StyleObject *so = dynamic_cast<StyleObject*>(child);
 		if(so) {
 			QString name = so->name();

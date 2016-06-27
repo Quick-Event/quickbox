@@ -6,7 +6,10 @@ HEADERS += \
     $$PWD/csvreader.h \
 	$$PWD/fileutils.h \
 	$$PWD/treeitembase.h \
-#	$$PWD/searchdirs.h \
+	$$PWD/clioptions.h \
+    $$PWD/settings.h \
+    $$PWD/timescope.h \
+    $$PWD/htmlutils.h
 
 SOURCES += \
     $$PWD/crypt.cpp \
@@ -16,5 +19,8 @@ SOURCES += \
     $$PWD/csvreader.cpp \
 	$$PWD/fileutils.cpp \
 	$$PWD/treeitembase.cpp \
-#	$$PWD/searchdirs.cpp \
+	$$PWD/clioptions.cpp \
+    $$PWD/settings.cpp \
+    $$PWD/timescope.cpp \
+    $$PWD/htmlutils.cpp
 

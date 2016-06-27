@@ -1,8 +1,10 @@
 #include "sqltablemodel.h"
 #include "../core/assert.h"
+#include "../core/utils.h"
 #include "../core/exception.h"
 #include "../sql/connection.h"
-//#include "../sql/query.h"
+#include "../sql/dbenum.h"
+#include "../sql/dbenumcache.h"
 
 #include <QRegExp>
 #include <QSqlError>
@@ -10,9 +12,12 @@
 #include <QSqlIndex>
 #include <QSqlField>
 #include <QSqlDriver>
+#include <QJSValue>
+#include <QColor>
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
+
 using namespace qf::core::model;
 
 SqlTableModel::SqlTableModel(QObject *parent)
@@ -24,6 +29,62 @@ SqlTableModel::SqlTableModel(QObject *parent)
 SqlTableModel::~SqlTableModel()
 {
 
+}
+
+QVariant SqlTableModel::data(const QModelIndex &index, int role) const
+{
+	if(role == Qt::DisplayRole) {
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			DbEnumCastProperties props(cd.castProperties());
+			QString group_name = props.groupName();
+			if(!group_name.isEmpty()) {
+				QVariant v = data(index, Qt::EditRole);
+				sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
+				QString group_id = v.toString();
+				sql::DbEnum dbe = db_enum_cache.dbEnum(group_name, group_id);
+				QString caption_format = props.captionFormat();
+				QString caption = dbe.fillInPlaceholders(caption_format);
+				return caption;
+			}
+		}
+	}
+	else if(role == Qt::BackgroundColorRole) {
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			DbEnumCastProperties props(cd.castProperties());
+			QString group_name = props.groupName();
+			if(!group_name.isEmpty()) {
+				QVariant v = data(index, Qt::EditRole);
+				QString group_id = v.toString();
+				if(!group_id.isEmpty()) {
+					sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
+					sql::DbEnum dbe = db_enum_cache.dbEnum(group_name, group_id);
+					QColor color = dbe.color();
+					if(color.isValid())
+						return color;
+				}
+			}
+			return QVariant();
+		}
+	}
+	else if(role == Qt::TextColorRole) {
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			QVariant v = data(index, Qt::BackgroundRole);
+			if(v.isValid()) {
+				QColor bgr_color = v.value<QColor>();
+				if(bgr_color.isValid()) {
+					return contrastTextColor(bgr_color);
+				}
+			}
+		}
+	}
+	QVariant ret = Super::data(index, role);
+	return ret;
 }
 
 void SqlTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
@@ -41,19 +102,27 @@ void SqlTableModel::addForeignKeyDependency(const QString &master_table_key, con
 	m_foreignKeyDependencies[master_table_key] = slave_table_key;
 }
 
-bool SqlTableModel::reload()
+QString SqlTableModel::effectiveQuery()
 {
 	QString qs = buildQuery();
 	qs = replaceQueryParameters(qs);
-	return reload(qs);
+	return qs;
 }
 
-bool SqlTableModel::reload(const QString &query_str)
+bool SqlTableModel::reload()
 {
+	QString qs = effectiveQuery();
+	return reloadQuery(qs);
+}
+
+bool SqlTableModel::reloadQuery(const QString &query_str)
+{
+	qfLogFuncFrame() << query_str;
 	beginResetModel();
 	bool ok = reloadTable(query_str);
 	checkColumns();
 	endResetModel();
+	emit reloaded();
 	return ok;
 }
 
@@ -73,30 +142,34 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 		//int tbl_cnt = 0;
 		qf::core::sql::Connection sql_conn = sqlConnection();
 		QSqlDriver *sqldrv = sql_conn.driver();
-		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
+		const QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 		for(QString table_id : table_ids) {
 			qfDebug() << "\ttable:" << table_id;
 			QSqlRecord rec;
 			int i = -1;
 			int serial_ix = -1;
+			bool serial_ix_explicitly_set = false;
 			int primary_ix = -1;
 			//QSqlIndex pri_ix = ti.primaryIndex();
 			//bool has_blob_field = false;
-			for(const qf::core::utils::Table::Field &fld : row_ref.fields()) {
+			Q_FOREACH(const qf::core::utils::Table::Field &fld, row_ref.fields()) {
 				i++;
 				if(fld.tableId() != table_id)
 					continue;
+				//qfInfo() << table_id << "field:" << fld.name() << "is serial:" << fld.isSerial();
 				bool is_field_dirty = row_ref.isDirty(i);
 				if(fld.isSerial()) {
 					/// always include serial fields, an empty line cannot be inserted in other case
 					//is_field_dirty = true;
 					serial_ix = i;
+					serial_ix_explicitly_set = is_field_dirty;
 					qfDebug() << "\t serial ix:" << serial_ix;
 				}
 				if(fld.isPriKey()) {
 					/// always include prikey field, an empty line cannot be inserted in other case
 					//is_field_dirty = true;
 					primary_ix = i;
+					qfDebug() << "\t primary ix:" << primary_ix;
 				}
 				if(!is_field_dirty)
 					continue;
@@ -119,19 +192,20 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 
 			qfDebug() << "updating table inserts" << table_id;
 			QString qs;
-			qf::core::sql::Connection dbinfo(sql_conn);
-			QString table = dbinfo.fullTableNameToQtDriverTableName(table_id);
+			QString table = sql_conn.fullTableNameToQtDriverTableName(table_id);
 			qfs::Query q(sql_conn);
 			if(rec.isEmpty()) {
 				if(serial_ix >= 0) {
-					qs = "INSERT INTO %1 (%2) VALUES (DEFAULT)";
-					qs = qs.arg(table, row_ref.fields().at(serial_ix).shortName());
+					qs = "INSERT INTO %1 DEFAULT VALUES";
+					qs = qs.arg(table);
 				}
 			}
 			else {
 				qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table, rec, true);
 				//qs = fixSerialDefaultValue(qs, serial_ix, rec);
 			}
+			if(qs.isEmpty())
+				continue;
 			qfDebug() << "\texecuting prepared query:" << qs;
 			bool ok = q.prepare(qs);
 			if(!ok) {
@@ -146,25 +220,23 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				}
 			}
 			ok = q.exec();
-			if(!ok) {
-				QString errs = tr("Error executing query: %1\n %2").arg(qs).arg(q.lastError().text());
-				if(throw_exc)
-					QF_EXCEPTION(errs);
-				else
-					qfError() << errs;
-			}
-			else {
+			if(ok) {
 				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
 				int num_rows_affected = q.numRowsAffected();
 				//setNumRowsAffected(q.numRowsAffected());
 				QF_ASSERT(num_rows_affected == 1,
 						  tr("numRowsAffected() = %1, should be 1\n%2").arg(num_rows_affected).arg(qs),
 						  return false);
-				if(serial_ix >= 0) {
+				if(serial_ix >= 0 && !serial_ix_explicitly_set) {
 					QVariant v = q.lastInsertId();
-					qfDebug() << "\tsetting serial index:" << serial_ix << "to generated value:" << v.toString();
-					row_ref.setValue(serial_ix, v);
-					row_ref.setDirty(serial_ix, false);
+					qfDebug() << "\tsetting serial index:" << serial_ix << "to generated value:" << v;
+					if(v.isValid()) {
+						row_ref.setValue(serial_ix, v);
+						row_ref.setDirty(serial_ix, false);
+					}
+					else {
+						qfWarning() << "Serial field will not be initialized properly. This can make current transaction aborted.";
+					}
 				}
 				if(primary_ix >= 0) {
 					/// update foreign keys in the slave tables
@@ -178,21 +250,28 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 					}
 				}
 			}
+			else {
+				QString errs = tr("Error executing query: %1\n %2").arg(qs).arg(q.lastError().text());
+				if(throw_exc)
+					QF_EXCEPTION(errs);
+				else
+					qfError() << errs;
+			}
 		}
 	}
 	else {
 		qfDebug() << "\tEDIT";
 		qf::core::sql::Connection sql_conn = sqlConnection();
 		QSqlDriver *sqldrv = sql_conn.driver();
-		for(QString table_id : tableIds(m_table.fields())) {
+		Q_FOREACH(QString table_id, tableIds(m_table.fields())) {
 			qfDebug() << "\ttableid:" << table_id;
 			//table = conn.fullTableNameToQtDriverTableName(table);
 			QSqlRecord edit_rec;
 			int i = -1;
 			bool has_blob_field = true;
-			for(qfu::Table::Field fld : row_ref.fields()) {
+			Q_FOREACH(qfu::Table::Field fld, row_ref.fields()) {
 				i++;
-				qfDebug() << "\t\tfield:" << fld.toString();
+				//qfDebug() << "\t\tfield:" << fld.toString();
 				if(fld.tableId() != table_id)
 					continue;
 				if(!row_ref.isDirty(i))
@@ -218,16 +297,26 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				query_str += sqldrv->sqlStatement(QSqlDriver::UpdateStatement, table_id, edit_rec, has_blob_field);
 				query_str += " ";
 				QSqlRecord where_rec;
-				for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+				qfDebug() << "looking for primary index of table:" << table_id;
+				Q_FOREACH(auto fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
 					QString full_fld_name = table_id + '.' + fld_name;
+					qfDebug() << "\t checking value of field:" << full_fld_name;
 					int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 					QF_ASSERT(fld_ix >= 0,
 							  QString("Cannot find field '%1'").arg(full_fld_name),
 							  continue);
 					qfu::Table::Field fld = m_table.fields().at(fld_ix);
+					qfDebug() << "\t found field:" << fld.name() << "at index:" << fld_ix;
 					QSqlField sqlfld(fld.shortName(), fld.type());
 					sqlfld.setValue(row_ref.origValue(fld_ix));
-					//qfDebug() << "\tpri index" << f.name() << ":" << f.value().toString() << "value type:" << QVariant::typeToName(f.value().type()) << "field type:" << QVariant::typeToName(f.type());
+					/*
+					if(row_ref.isDirty(fld_ix))
+						sqlfld.setValue(row_ref.origValue(fld_ix));
+					else
+						sqlfld.setValue(row_ref.value(fld_ix));
+					*/
+					//qfDebug() << row_ref.toString();
+					qfDebug() << "\tpri index field" << full_fld_name << "type:" << sqlfld.type() << "orig val:" << row_ref.origValue(fld_ix) << "current val:" << row_ref.value(fld_ix);
 					where_rec.append(sqlfld);
 				}
 				QF_ASSERT(!where_rec.isEmpty(),
@@ -250,8 +339,8 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 				if(!ok && throw_exc) {
 					QF_EXCEPTION(q.lastError().text());
 				}
-				qfDebug() << "\tnum rows affected:" << q.numRowsAffected();
 				int num_rows_affected = q.numRowsAffected();
+				qfDebug() << "\tnum rows affected:" << num_rows_affected;
 				/// if update command does not really change data for ex. (UPDATE woffice.kontakty SET id=8 WHERE id = 8)
 				/// numRowsAffected() returns 0.
 				if(num_rows_affected > 1) {
@@ -283,7 +372,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 		QStringList table_ids = tableIdsSortedAccordingToForeignKeys();
 		QSet<QString> referenced_foreign_tables = referencedForeignTables();
 		int table_id_cnt = 0;
-		for(const QString &table_id : table_ids) {
+		Q_FOREACH(const QString &table_id, table_ids) {
 			/// Allways delete in first table
 			if(table_id_cnt++ > 0) {
 				/// delete in rest of the tables only if they are implicitly referenced, see: addForeignKeyDependency(...)
@@ -300,7 +389,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 			query_str += sqldrv->sqlStatement(QSqlDriver::DeleteStatement, table, rec, false);
 			query_str += " ";
 			QSqlRecord where_rec;
-			for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+			Q_FOREACH(QString fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
 				QString full_fld_name = table_id + '.' + fld_name;
 				int fld_ix = m_table.fields().fieldIndex(full_fld_name);
 				QF_ASSERT(fld_ix >= 0,
@@ -364,6 +453,7 @@ bool SqlTableModel::removeTableRow(int row_no, bool throw_exc)
 void SqlTableModel::revertRow(int row_no)
 {
 	qfLogFuncFrame() << row_no;
+	Super::revertRow(row_no);
 }
 
 int SqlTableModel::reloadRow(int row_no)
@@ -377,32 +467,36 @@ int SqlTableModel::reloadRow(int row_no)
 	qfu::TableRow &row_ref = m_table.rowRef(row_no);
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	QSqlDriver *sqldrv = sql_conn.driver();
-	for(QString table_id : tableIds(m_table.fields())) {
+	Q_FOREACH(QString table_id, tableIds(m_table.fields())) {
 		qfDebug() << "\ttableid:" << table_id;
-		for(QString fld_name : sql_conn.primaryIndexFieldNames(table_id)) {
+		Q_FOREACH(QString fld_name, sql_conn.primaryIndexFieldNames(table_id)) {
 			QString full_fld_name = table_id + '.' + fld_name;
 			int fld_ix = m_table.fields().fieldIndex(full_fld_name);
-			QF_ASSERT(fld_ix >= 0,
-					  QString("Cannot find field '%1'").arg(full_fld_name),
-					  continue);
-			/*
-				QVariant val = row.origValue(fld_ix);
-				QString formated_val = val.toString();
-				if(val.type() == QVariant::String) {
-					formated_val.replace('\'', "''");
-					formated_val = '\'' + formated_val + '\'';
-				}
-				*/
+			if(fld_ix < 0) {
+				// result may not contain all the tables primary keys
+				// for example SELECT competitors.*, classes.name FROM competitors LEFT JOIN classes ON competitors.classId=classes.id
+				// doesn't contain classes.id and still can be reloaded
+				continue;
+			}
+			QVariant pri_ix_val = row_ref.value(fld_ix);
+			if(pri_ix_val.isNull()) {
+				// LEFT JOIN-ed table with missing record, don't include this constrain in reload row query
+				continue;
+			}
 			qfu::Table::Field fld = m_table.fields().at(fld_ix);
 			QSqlField sqlfld(fld.shortName(), fld.type());
 			// cannot use origValue() here, since reloadRow() must work for even edited primary keys
-			sqlfld.setValue(row_ref.value(fld_ix));
+			sqlfld.setValue(pri_ix_val);
 			QString formated_val = sqldrv->formatValue(sqlfld);
 			qb.where(full_fld_name + "=" + formated_val);
 		}
+		if(!isIncludeJoinedTablesIdsToReloadRowQuery())
+			break;
 	}
 	qfs::Query q = qfs::Query(sql_conn);
-	QString query_str = qb.toString();
+	qfs::QueryBuilder::BuildOptions opts;
+	opts.setConnectionName(connectionName());
+	QString query_str = qb.toString(opts);
 	query_str = replaceQueryParameters(query_str);
 	qfDebug() << "\t reload row query:" << query_str;
 	bool ok = q.exec(query_str);
@@ -424,11 +518,61 @@ int SqlTableModel::reloadRow(int row_no)
 	return row_cnt;
 }
 
+int SqlTableModel::reloadInserts(const QString &id_column_name)
+{
+	qfLogFuncFrame();
+	int id_ix = columnIndex(id_column_name);
+	QF_ASSERT(id_ix >= 0, QString("ID column name '%1' not found").arg(id_column_name), return 0);
+	int max_id = 0;
+	for (int i = 0; i < rowCount(); ++i) {
+		int id = value(i, id_ix).toInt();
+		max_id = qMax(max_id, id);
+	}
+
+	qf::core::sql::QueryBuilder qb = m_queryBuilder;
+	if(qb.isEmpty()) {
+		qfWarning() << "Empty queryBuilder";
+		return false;
+	}
+
+	qb.takeOrderBy();
+	qb.orderBy(id_column_name);
+	qb.where(id_column_name + " > " + QF_IARG(max_id));
+	qfs::QueryBuilder::BuildOptions opts;
+	opts.setConnectionName(connectionName());
+	QString query_str = qb.toString(opts);
+	query_str = replaceQueryParameters(query_str);
+	qfDebug() << "\t reload row query:" << query_str;
+	qf::core::sql::Connection sql_conn = sqlConnection();
+	qfs::Query q = qfs::Query(sql_conn);
+	bool ok = q.exec(query_str);
+	QF_ASSERT(ok == true,
+			  QString("SQL Error: %1\n%2").arg(q.lastError().text()).arg(query_str),
+			  return 0);
+	int ret = 0;
+	while(q.next()) {
+		qfu::TableRow &row = m_table.insertRow(0);
+		row.setInsert(false);
+		int fld_cnt = m_table.fields().count();
+		for(int i=0; i<fld_cnt; i++) {
+			row.setBareBoneValue(i, q.value(i));
+		}
+		ret++;
+	}
+	if(ret > 0) {
+		beginInsertRows(QModelIndex(), 0, ret - 1);
+		endInsertRows();
+	}
+	return ret;
+}
+
 QString SqlTableModel::buildQuery()
 {
-	QString ret = m_query;
+	QString ret = query();
 	if(ret.isEmpty()) {
-		ret = m_queryBuilder.toString();
+		qfs::QueryBuilder::BuildOptions opts;
+		opts.setConnectionName(connectionName());
+		ret = m_queryBuilder.toString(opts);
 	}
 	return ret;
 }
@@ -447,6 +591,10 @@ QString SqlTableModel::replaceQueryParameters(const QString query_str)
 {
 	QString ret = query_str;
 	QVariant par_v = queryParameters();
+	if(par_v.userType() == qMetaTypeId<QJSValue>()) {
+		auto jsv = par_v.value<QJSValue>();
+		par_v = jsv.toVariant();
+	}
 	if(par_v.type() == QVariant::Map) {
 		QVariantMap par_map = par_v.toMap();
 		QMapIterator<QString, QVariant> it(par_map);
@@ -475,18 +623,23 @@ qf::core::sql::Connection SqlTableModel::sqlConnection()
 
 bool SqlTableModel::reloadTable(const QString &query_str)
 {
+	qfLogFuncFrame() << query_str;
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	m_recentlyExecutedQuery = qfs::Query(sql_conn);
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
-	QF_ASSERT(ok == true,
-			  QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str),
-			  return false);
+	if(!ok) {
+		qfError() << QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str);
+		return false;
+	}
 	if(m_recentlyExecutedQuery.isSelect()) {
+		bool retype_null_values = sql_conn.driverName().endsWith(QLatin1String("SQLITE"), Qt::CaseInsensitive);
 		qfu::Table::FieldList table_fields;
 		QSqlRecord rec = m_recentlyExecutedQuery.record();
 		int fld_cnt = rec.count();
+		//qfInfo() << query_str;
 		for(int i=0; i<fld_cnt; i++) {
 			QSqlField rec_fld = rec.field(i);
+			//qfInfo() << rec_fld.name() << rec_fld.type() << QVariant::typeToName(rec_fld.type());
 			qfu::Table::Field fld(rec_fld.name(), rec_fld.type());
 			table_fields << fld;
 		}
@@ -496,11 +649,18 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 			qfu::TableRow &row = m_table.appendRow();
 			row.setInsert(false);
 			for(int i=0; i<fld_cnt; i++) {
-				row.setBareBoneValue(i, m_recentlyExecutedQuery.value(i));
+				QVariant v = m_recentlyExecutedQuery.value(i);
+				//qfInfo() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
+				if(retype_null_values) {
+					// SQLite driver reports NULL values as QString()
+					if(v.isNull())
+						v = QVariant(table_fields.value(i).type());
+				}
+				//qfWarning() << table_fields.value(i).name() << table_fields.value(i).type() << i << v << "null:" << v.isNull();
+				row.setBareBoneValue(i, v);
 			}
 		}
 	}
-	emit reloaded();
 	return true;
 }
 
@@ -512,33 +672,39 @@ static QString compose_table_id(const QString &table_name, const QString &schema
 	return ret;
 }
 
-QSet<QString> SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &table_fields)
+QStringList SqlTableModel::tableIds(const qf::core::utils::Table::FieldList &table_fields)
 {
-	QSet<QString> ret;
+	QStringList ret;
 	int fld_cnt = table_fields.count();
 	for(int i=0; i<fld_cnt; i++) {
 		const qfu::Table::Field &fld = table_fields[i];
 		QString fs, ts, ds;
 		qf::core::Utils::parseFieldName(fld.name(), &fs, &ts, &ds);
 		ts = compose_table_id(ts, ds);
-		if(!ts.isEmpty())
+		if(!ts.isEmpty() && !ret.contains(ts))
 			ret << ts;
 	}
 	return ret;
 }
 
+static QMap< QString, QSet<QString> > separateFields(const qf::core::utils::Table::FieldList &table_fields)
+{
+	QMap< QString, QSet<QString> > field_ids;
+	Q_FOREACH(const qfu::Table::Field &fld, table_fields) {
+		QString fn, tn;
+		qf::core::Utils::parseFieldName(fld.name(), &fn, &tn);
+		if(!tn.isEmpty())
+			field_ids[tn] << fn;
+	}
+	return field_ids;
+}
+
 void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields, const QString &query_str)
 {
-	qfLogFuncFrame();
-	QSet<QString> table_ids = tableIds(table_fields);
-	QSet<QString> field_ids;
-	int fld_cnt = table_fields.count();
-	for(const qfu::Table::Field &fld : table_fields) {
-		QString fs;
-		qf::core::Utils::parseFieldName(fld.name(), &fs);
-		field_ids << fs;
-	}
-	if(table_ids.isEmpty()) {
+	//qfLogFuncFrame();
+	//QSet<QString> table_ids = tableIds(table_fields);
+	QMap< QString, QSet<QString> > field_ids = separateFields(table_fields);
+	if(field_ids.isEmpty()) {
 		/// SQL driver doesn't support table names in returned QSqlRecord
 		/// try to guess it from select
 		int ix1 = query_str.indexOf(QLatin1String(" JOIN "), Qt::CaseInsensitive);
@@ -552,35 +718,37 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 					ix2 = query_str.length();
 				if(ix2 > ix1) {
 					QString table_id_from_query = query_str.mid(ix1, ix2 - ix1);
-					for(int i=0; i<fld_cnt; i++) {
-						qfu::Table::Field &fld = table_fields[i];
+					qf::core::Utils::parseFieldName(table_id_from_query, &table_id_from_query);
+					for(qfu::Table::Field &fld : table_fields) {
 						fld.setName(table_id_from_query + '.' + fld.name());
 					}
-					table_ids << table_id_from_query;
 				}
+				field_ids = separateFields(table_fields);
 			}
 		}
 	}
 	QMap<QString, QString> serial_field_names;
 	QSet<QString> updateable_table_ids;
-	for(QString table_id : table_ids) {
+	Q_FOREACH(QString table_id, field_ids.keys()) {
 		QString serial_field_name = sqlConnection().serialFieldName(table_id);
-		qfDebug() << "serial field for table id:" << table_id << "is:" << serial_field_name;
+		//qfInfo() << "serial field for table id:" << table_id << "is:" << serial_field_name;
 		serial_field_names[table_id] = serial_field_name;
-		QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
+		const QStringList prikey_fields = sqlConnection().primaryIndexFieldNames(table_id);
 		bool ok = true;
-		for(auto pk_f : prikey_fields) {
-			if(!field_ids.contains(pk_f)) {
+		QSet<QString> flds = field_ids.value(table_id);
+		Q_FOREACH(auto pk_f, prikey_fields) {
+			//qDebug() << "\t checking if query contains primary key:" << pk_f << "in table id:" << table_id;
+			if(!flds.contains(pk_f)) {
 				ok = false;
 				break;
 			}
 		}
 		if(ok) {
+			//qDebug() << "\t setting update flag on table id:" << table_id;
 			updateable_table_ids << table_id;
 		}
 	}
-	for(int i=0; i<fld_cnt; i++) {
-		qfu::Table::Field &fld = table_fields[i];
+	for(qfu::Table::Field &fld : table_fields) {
 		QString table_id = fld.tableId();
 		if(!table_id.isEmpty()) {
 			fld.setCanUpdate(updateable_table_ids.contains(table_id));
@@ -588,8 +756,9 @@ void SqlTableModel::setSqlFlags(qf::core::utils::Table::FieldList &table_fields,
 			fld.setPriKey(prikey_fields.contains(fld.shortName()));
 			//qfDebug() << "table_id;" << table_id << "fldname:" << fld.shortName() << "serial_field_names.value(table_id):" << serial_field_names.value(table_id);
 			fld.setSerial(serial_field_names.value(table_id) == fld.shortName());
-			qfDebug() << fld.name() << "is serial:" << fld.isSerial();
+			//qfDebug() << fld.name() << "is serial:" << fld.isSerial();
 		}
+		//qfInfo() << fld.toString();
 	}
 }
 
@@ -598,7 +767,7 @@ QSet<QString> SqlTableModel::referencedForeignTables()
 	qfLogFuncFrame();
 	QSet<QString> ret;
 	{
-		QStringList sl = m_foreignKeyDependencies.values();
+		const QStringList sl = m_foreignKeyDependencies.values();
 		for(QString s : sl) {
 			QString tbl_name;
 			qf::core::Utils::parseFieldName(s, nullptr, &tbl_name);
@@ -617,7 +786,7 @@ QStringList SqlTableModel::tableIdsSortedAccordingToForeignKeys()
 {
 	qfLogFuncFrame();
 	QStringList ret;
-	QStringList table_ids(tableIds(m_table.fields()).toList());
+	QStringList table_ids = tableIds(m_table.fields());
 
 	while(!table_ids.isEmpty()) {
 		int table_ix;

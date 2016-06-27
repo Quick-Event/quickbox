@@ -4,6 +4,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/string.h>
 
+#include <qf/core/utils/timescope.h>
+
 namespace qfc = qf::core;
 namespace qfu = qf::core::utils;
 
@@ -15,6 +17,12 @@ using namespace qf::qmlwidgets::reports;
 BandDataModel::BandDataModel(QObject *parent) :
 	Super(parent)
 {
+	qfLogFuncFrame() << this;
+}
+
+BandDataModel::~BandDataModel()
+{
+	qfLogFuncFrame() << this;
 }
 
 QVariant BandDataModel::table(int row_no, const QString &table_name)
@@ -27,12 +35,18 @@ QVariant BandDataModel::table(int row_no, const QString &table_name)
 BandDataModel* BandDataModel::createFromData(const QVariant &data, QObject *parent)
 {
 	BandDataModel *ret = nullptr;
+	// only tree table is supported currently
+	// so every data is tree table itself or treetable data for now
+	qfu::TreeTable tt;
 	if(data.userType() == qMetaTypeId<qfu::TreeTable>()) {
-		TreeTableBandDataModel *m = new TreeTableBandDataModel(parent);
-		qfu::TreeTable tt = data.value<qfu::TreeTable>();
-		m->setTreeTable(tt);
-		ret = m;
+		tt = data.value<qfu::TreeTable>();
 	}
+	else {
+		tt.setVariant(data);
+	}
+	TreeTableBandDataModel *m = new TreeTableBandDataModel(parent);
+	m->setTreeTable(tt);
+	ret = m;
 	return ret;
 }
 
@@ -47,12 +61,24 @@ TreeTableBandDataModel::TreeTableBandDataModel(QObject *parent)
 
 int TreeTableBandDataModel::rowCount()
 {
+	QF_TIME_SCOPE("TreeTableBandDataModel::rowCount");
 	return treeTable().rowCount();
 }
 
 int TreeTableBandDataModel::columnCount()
 {
 	return treeTable().columnCount();
+}
+
+QVariant TreeTableBandDataModel::tableData(const QString &key, BandDataModel::DataRole role)
+{
+	Q_UNUSED(role);
+	QVariant ret;
+	qfu::TreeTable ttr = treeTable();
+	ret = ttr.value(key);
+	//qfWarning() << key << "->" << ret.typeName();
+	//qfWarning() << ttr.toString();
+	return ret;
 }
 
 QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole role)
@@ -63,6 +89,9 @@ QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole 
 	if(col.isValid()) {
 		if(role == Qt::DisplayRole) {
 			ret = col.header();
+		}
+		else if(role == Qt::SizeHintRole) {
+			ret = col.width();
 		}
 	}
 	return ret;
@@ -112,3 +141,14 @@ QString TreeTableBandDataModel::dump() const
 {
 	return treeTable().toString();
 }
+const qf::core::utils::TreeTable& TreeTableBandDataModel::treeTable() const
+{
+	return m_treeTable;
+}
+
+void TreeTableBandDataModel::setTreeTable(const qf::core::utils::TreeTable &tree_table)
+{
+	m_treeTable = tree_table;
+	setDataValid(true);
+}
+

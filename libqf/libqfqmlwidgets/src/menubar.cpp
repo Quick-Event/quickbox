@@ -22,7 +22,7 @@ Action* MenuBar::actionForPath(const QString &path, bool create_if_not_exists)
 	QWidget *parent_w = this;
 	Action *ret = nullptr;
 	QStringList path_list = qf::core::String(path).splitAndTrim('/');
-	for(auto id : path_list) {
+	Q_FOREACH(auto id, path_list) {
 		qfDebug() << id << "of path:" << path;
 		if(!parent_w) {
 			/// recent action was not a menu one
@@ -30,7 +30,7 @@ Action* MenuBar::actionForPath(const QString &path, bool create_if_not_exists)
 			break;
 		}
 		ret = nullptr;
-		for(auto a : parent_w->actions()) {
+		Q_FOREACH(auto a, parent_w->actions()) {
 			qfDebug() << a;
 			Action *act = qobject_cast<Action*>(a);
 			//if(!ret) continue;
@@ -49,7 +49,7 @@ Action* MenuBar::actionForPath(const QString &path, bool create_if_not_exists)
 			ret = new Action(parent_w);
 			ret->setMenu(m);
 			ret->setOid(id);
-			ret->setText("Untitled");
+			ret->setText(id);
 			qfDebug() << "\t created menu" << ret;
 			parent_w->addAction(ret);
 		}

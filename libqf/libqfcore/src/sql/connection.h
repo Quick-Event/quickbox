@@ -10,6 +10,8 @@
 #include <QSharedData>
 #include <QStringList>
 
+class QProcessEnvironment;
+
 namespace qf {
 namespace core {
 namespace sql {
@@ -19,11 +21,13 @@ class QFCORE_DECL_EXPORT Connection : public QSqlDatabase
 private:
 	typedef QSqlDatabase Super;
 public:
+	/**
+	 * @brief Connection
+	 * Creates an empty, invalid Connection object.
+	 */
 	Connection();
 	explicit Connection(const QSqlDatabase& qdb);
-	//explicit DbInfo(const QString &driver_name);
-	//explicit DbInfo(QSqlDriver *drv);
-	//virtual ~DbInfo();
+	Connection& operator=(const QSqlDatabase& o);
 public:
 	typedef QMap<QString, QString> ConnectionOptions;
 	struct QFCORE_DECL_EXPORT IndexInfo {
@@ -39,13 +43,18 @@ private:
 	bool open(const QString& user, const QString& password);
 public:
 	bool open();
-    void close();
+	void close();
+
+	static Connection forName(const QString &connection_name = QString());
+
+	int connectionId();
 
 	//! @return list of fields in table or view
 	QStringList fields(const QString& tbl_name) const;
 
 	/// @return list of available tables
 	QStringList tables(const QString& dbname = QString::null, QSql::TableType type = QSql::Tables) const;
+	bool tableExists(const QString &table_name);
 
 	/// @return list of indexes for table \a tbl_name .
 	IndexList indexes(const QString& tbl_name) const;
@@ -56,39 +65,26 @@ public:
 	/// @return list of available schemas in current connection
 	QStringList schemas() const;
 
-	QSqlIndex primaryIndex(const QString& table_id);
+	QSqlIndex primaryIndex(const QString& table_id) const;
 	QStringList primaryIndexFieldNames(const QString &table_id);
 	QString serialFieldName(const QString &table_id);
 
-	QSqlRecord record(const QString & tablename) const;
+	QSqlRecord record(const QString & table_id) const;
 
-	/// @return kind of relname.
-	/// \sa RelationKindKind
-	//QFSql::RelationKind relationKind(const QString& relname);
-
-	/**
-		 * @return string unique per user,database_name,host,driver
-		 */
+	/// @return string unique per user,database_name,host,driver
 	QString signature() const;
-	//static QString signature2driverName(const QString &sig);
 	//! Returns human readable textual information about current connection.
 	QString info(int verbosity = 1) const;
 	bool isOpen() const;
-	/*
-		/// if successfull, lastError() returns information about connection.
-		void open(const ConnectionOptions &options = ConnectionOptions());
-		void open(const QString & user, const QString & password, const ConnectionOptions &options = ConnectionOptions())
-		{
-			setUserName(user);
-			setPassword(password);
-			open(options);
-		}
-		void close();
-		*/
+	QString errorString() const;
+
 	static int defaultPort(const QString &driver_name);
 public:
-	//QString currentSchema() const;
-	void setCurrentSchema(const QString &schema_name);
+	bool createSchema(const QString &schema_name);
+	QString currentSchema() const;
+	bool setCurrentSchema(const QString &schema_name);
+
+	QString createSchemaSqlCommand(const QString &schema_name, bool include_data);
 
 	//! retrieves CREATE TABLE ... Sql script for \a tblname.
 	QString createTableSqlCommand(const QString &tblname);
@@ -99,7 +95,11 @@ public:
 	QStringList serverVersion() const;
 	QString fullTableNameToQtDriverTableName(const QString &full_table_name) const;
 
+	static QString escapeJsonForSql(const QString &json_string);
 private:
+	QString invokeProcess(const QString &prog_name, const QStringList params, const QProcessEnvironment &env);
+	QString dumpSqlSchema_psql(const QString &schema_name, bool dump_data);
+	QString dumpSqlTable_psql(const QString &tblname, bool dump_data);
 	//! take CREATE TABLE ... and parse fields definitions from it.
 	static QStringList fieldDefsFromCreateTableCommand(const QString &cmd);
 

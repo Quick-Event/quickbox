@@ -11,11 +11,15 @@
 
 int main(int argc, char *argv[])
 {
-    int ret = 0;
+	int ret = 0;
 
+	QCoreApplication::setOrganizationDomain("quickbox.org");
+	QCoreApplication::setOrganizationName("QuickBox");
+	QCoreApplication::setApplicationName("qsqlmon");
+
+	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");
+	qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
-	file_log_device->setDomainTresholds(argc, argv);
-	file_log_device->setPrettyDomain(true);
 
 	qfError() << "qfError() test OK.";
 	qfWarning() << "qfWarning() test OK.";
@@ -27,24 +31,7 @@ int main(int argc, char *argv[])
 	/// defaultni locales jsou z LC_ALL
 	qfInfo() << "Default locale set to:" << QLocale().name();
 
-	/*
-	qfTrash() << "c1";
-	QFSqlConnection c1;
-	qfTrash() << "c1.refCnt():" << c1.refCnt();
-	qfTrash() << "c2(c1)";
-	QFSqlConnection c2(c1);
-	qfTrash() << "c1.refCnt():" << c1.refCnt();
-	qfTrash() << "c2.refCnt():" << c2.refCnt();
-	qfTrash() << "c3";
-	QFSqlConnection c3;
-	qfTrash() << "c3 = c2";
-	c3 = c2;
-	qfTrash() << "c3.refCnt():" << c3.refCnt();
-	//qfTrash() << "c4";
-	//QFSqlConnection c4;
-	return 0;
-	*/
-	TheApp app(argc, argv); // have to be outside try block, because of QMessageBox
+	TheApp app(argc, argv);
 
 	MainWindow main_window;
 	main_window.show();

@@ -1,0 +1,6 @@
+<RCC>
+	<qresource prefix="/quickevent/images">
+		<file>quickevent.svg</file>
+		<file>quickevent64.png</file>
+	</qresource>
+</RCC>
