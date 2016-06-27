@@ -6,12 +6,12 @@
     <message>
         <location filename="src/examplecppqml.cpp" line="33"/>
         <source>Process VACUUM on current event database?</source>
-        <translation>Provést VACUUM u aktuální databáze závodu?</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/examplecppqml.cpp" line="38"/>
         <source>VACUUM on current event database processed successfully</source>
-        <translation>VACUUM u databáze aktuálního závodu bylo provedeno úspěšně</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

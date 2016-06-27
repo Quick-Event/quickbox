@@ -5,39 +5,39 @@
     <name>ChooseOrisEventDialog</name>
     <message>
         <source>Dialog</source>
-        <translation>Importovat závodu z Orisu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Oris event</source>
-        <translation>Závody v Orisu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Oris event ID</source>
-        <translation>ID závodu v Orisu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Loading event list from Oris ...</source>
-        <translation>Načítání závodů z Orisu...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>OB</source>
-        <translation>OB</translation>
+        <translation type="unfinished">OB</translation>
     </message>
     <message>
         <source>LOB</source>
-        <translation>LOB</translation>
+        <translation type="unfinished">LOB</translation>
     </message>
     <message>
         <source>MTBO</source>
-        <translation>MTBO</translation>
+        <translation type="unfinished">MTBO</translation>
     </message>
     <message>
         <source>???</source>
-        <translation>???</translation>
+        <translation type="unfinished">???</translation>
     </message>
     <message>
         <source>Search in events ...</source>
-        <translation>Najít v závodech ...</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48,7 +48,7 @@
     </message>
     <message>
         <source>Cannot find Oris import ID.</source>
-        <translation>Nelze najít Oris import ID.</translation>
+        <translation type="unfinished">Nelze najít Oris import ID.</translation>
     </message>
     <message>
         <source>OB</source>
@@ -84,7 +84,7 @@
     </message>
     <message>
         <source>Oris import report</source>
-        <translation>Záznam o importu z Orisu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save without drops</source>

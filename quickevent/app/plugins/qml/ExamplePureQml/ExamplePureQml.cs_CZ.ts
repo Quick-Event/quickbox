@@ -6,12 +6,12 @@
     <message>
         <location filename="main.qml" line="11"/>
         <source>&amp;Competitors with card lent</source>
-        <translation>&amp;Závodníci s půjčeným čipem</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="main.qml" line="31"/>
         <source>Competitors with card lent</source>
-        <translation>Závodníci s půjčeným čipem</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
