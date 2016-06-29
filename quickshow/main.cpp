@@ -38,6 +38,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 		qDebug() << "Undefined argument:" << s;
 	}
 
+    // Uncaught exception is intentional here
 	if(!cli_opts.loadConfigFile())
 		return 1;
 

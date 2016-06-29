@@ -18,7 +18,7 @@ namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 
 EditCourseCodesWidget::EditCourseCodesWidget(QWidget *parent)
-	: Super(parent)
+	: Super(parent), m_courseId()
 	, ui(new Ui::EditCourseCodesWidget)
 {
 	setPersistentSettingsId("EditCourseCodesWidget");

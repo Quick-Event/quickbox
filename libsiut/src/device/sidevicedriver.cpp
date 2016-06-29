@@ -22,7 +22,7 @@ using namespace siut;
 //             DeviceDriver
 //=================================================
 DeviceDriver::DeviceDriver(QObject *parent)
-	: Super(parent)
+	: Super(parent), f_packetToFinishCount()
 {
 	qf::core::Log::checkLogLevelMetaTypeRegistered();
 	f_commPort = new CommPort(this);

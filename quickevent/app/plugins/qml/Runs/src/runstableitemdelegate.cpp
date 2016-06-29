@@ -18,7 +18,7 @@
 namespace qfs = qf::core::sql;
 
 RunsTableItemDelegate::RunsTableItemDelegate(qf::qmlwidgets::TableView * parent)
-	: Super(parent)
+	: Super(parent), m_classStart(), m_classInterval()
 {
 }
 

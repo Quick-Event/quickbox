@@ -99,7 +99,6 @@ private:
 	//void setupSettingsPersistence();
 private:
 	PluginLoader *m_pluginLoader;
-	qf::qmlwidgets::StatusBar* m_statusBar;
 	QMap<QString, qf::qmlwidgets::ToolBar*> m_toolBars;
 	static MainWindow *self;
 };

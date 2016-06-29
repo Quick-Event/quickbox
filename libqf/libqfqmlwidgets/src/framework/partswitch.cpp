@@ -76,7 +76,7 @@ void PartSwitch::addPartWidget(PartWidget *widget)
 void PartSwitch::updateButtonIcon(PartSwitchToolButton *bt)
 {
 	PartWidget *pw = m_centralWidget->partWidget(bt->partIndex());
-	if(bt && pw) {
+	if(pw) {
 		QIcon ico = pw->createIcon();
 		//bt->setIconSize(bt->size());
 		bt->setIcon(ico);
