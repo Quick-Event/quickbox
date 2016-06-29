@@ -294,7 +294,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	t.sort("timeMs");
 	int pos = 0;
 	int time_ms1 = 0;
-	bool trim_disq = false;
+	const bool trim_disq = false;
 	int trim_at = -1;
 	for (int j = 0; j < t.rowCount(); ++j) {
 		++pos;
