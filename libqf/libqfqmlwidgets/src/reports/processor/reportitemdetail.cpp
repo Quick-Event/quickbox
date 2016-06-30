@@ -50,8 +50,6 @@ QVariant ReportItemDetail::data(int row_no, const QString &field_name, int role)
 		if(band) {
 			BandDataModel *m = band->model();
 			if(m) {
-				if(row_no < 0)
-					row_no = currentIndex();
 				ret = m->data(row_no, field_name, (BandDataModel::DataRole)role);
 			}
 			else {
