@@ -354,7 +354,7 @@ QString ReportItemMetaPaint::dump(int indent)
 //                              ReportItemMetaPaintReport
 //=================================================
 ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportItem *report_item)
-	: ReportItemMetaPaint(NULL, report_item)
+	: ReportItemMetaPaint(NULL, report_item), orientation()
 {
 	//f_reportProcessor = report_item->processor;
 	/*--
