@@ -131,7 +131,7 @@ int qfsqldbfs_getattr(const char *path, struct stat *stbuf)
 
 	QString spath = QString::fromUtf8(path);
 	qfs::DbFsAttrs attrs = dbfsdrv()->attributes(spath);
-	bool read_only = false;
+	const bool read_only = false;
 
 	memset(stbuf, 0, sizeof(struct stat));
 	stbuf->st_mtime = attrs.mtime().toTime_t();

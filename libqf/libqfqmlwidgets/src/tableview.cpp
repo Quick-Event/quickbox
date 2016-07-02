@@ -1973,8 +1973,9 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 	bool row_changed = (current.row() != previous.row() && previous.row() >= 0);
 	if(row_changed) {
 		// save even if inlineEditStrategy() == OnEditedValueCommit, because row can be just inserted or clonned without edits
-		int row_to_save = (row_changed)? previous.row(): current.row();
+		int row_to_save = previous.row();
 		qfDebug() << "\tsaving row:" << row_to_save;
+
 		bool ok = false;
 		if(inlineEditSaveStrategy() == OnManualSubmit)
 			ok = true;
@@ -1983,8 +1984,7 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 		if(!ok)
 			setCurrentIndex(previous);
 		//qfDebug() << "\t" << __LINE__;
-	}
-	if(row_changed) {
+
 		updateRow(previous.row());
 		updateRow(current.row());
 	}

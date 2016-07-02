@@ -14,7 +14,7 @@
 using namespace qf::qmlwidgets::framework;
 
 PartSwitchToolButton::PartSwitchToolButton(QWidget *parent)
-	: Super(parent)
+	: Super(parent), m_partIndex()
 {
 	setAutoFillBackground(false); /// musi bejt off
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);

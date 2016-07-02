@@ -19,7 +19,8 @@ using namespace qf::qmlwidgets;
 static const int DefaultLayoutMargin = 1;
 
 Frame::Frame(QWidget *parent) :
-	Super(parent), m_layoutType(LayoutInvalid), m_layoutTypeProperties(nullptr)
+	Super(parent), m_layoutType(LayoutInvalid), m_layoutTypeProperties(nullptr),
+	m_currentLayoutRow(), m_currentLayoutColumn()
 {
 }
 
