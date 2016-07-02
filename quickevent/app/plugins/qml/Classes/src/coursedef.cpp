@@ -1,5 +1,12 @@
 #include "coursedef.h"
 
+void CourseDef::addClass(const QString &class_name)
+{
+	QStringList cls = classes();
+	cls << class_name;
+	setClasses(cls);
+}
+
 QString CourseDef::toString() const
 {
 	QString ret;

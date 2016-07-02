@@ -127,7 +127,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("classdefs.lastStartTimeMin", tr("Last")).setToolTip(tr("Start time of last competitor in class."));
 		m->addColumn("runsCount", tr("Count")).setToolTip(tr("Runners count"));
 		m->addColumn("classdefs.mapCount", tr("Maps"));
-		m->addColumn("classdefs.courseId", tr("Course"));
+		m->addColumn("classdefs.courseId", tr("Course")).setAlignment(Qt::AlignLeft);
 		//m->addColumn("courses.name", tr("Course")).setReadOnly(true);
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
@@ -201,8 +201,13 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("OCad IOF-XML", this);
-		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml);
+		qfw::Action *a = new qfw::Action("OCad IOF-XML 2.0", this);
+		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_2);
+		a_import->addActionInto(a);
+	}
+	{
+		qfw::Action *a = new qfw::Action("OCad IOF-XML 3.0", this);
+		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_3);
 		a_import->addActionInto(a);
 	}
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
@@ -344,7 +349,7 @@ void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
 				courses << cd;
 			{
 				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				qfInfo() << doc.toJson();
+				//qfInfo() << doc.toJson();
 			}
 			classes_plugin->createCourses(selectedStageId(), courses);
 			reload();
@@ -352,11 +357,14 @@ void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
 	}
 }
 
-static QString normalize_course_name(const QString &name)
+static QString normalize_course_name(const QString &course_name)
 {
-	QString ret = qf::core::Collator::toAscii7(QLocale::Czech, name, false);
+	QString ret = qf::core::Collator::toAscii7(QLocale::Czech, course_name, false);
 	ret.replace(' ', QString());
+	ret.replace(';', '+');
 	ret.replace(',', '+');
+	ret.replace(':', '+');
+	ret.replace('-', '+');
 	return ret;
 }
 
@@ -458,7 +466,7 @@ static QString dump_element(const QDomElement &el)
 	return ret;
 }
 
-void ClassesWidget::import_ocad_iofxml()
+void ClassesWidget::import_ocad_iofxml_2()
 {
 	qfLogFuncFrame();
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), "XML files (*.xml);; All files (*)");
@@ -480,12 +488,7 @@ void ClassesWidget::import_ocad_iofxml()
 				if(el_course.isNull())
 					QF_EXCEPTION(QString("Xml file format error: bad element '%1'").arg("Course"));
 				CourseDef coursedef;
-				QString course_name = element_text(el_course, QStringLiteral("CourseName"));
-				course_name.replace(' ', QString());
-				course_name.replace(';', '-');
-				course_name.replace(',', '-');
-				course_name.replace(':', '-');
-				course_name.replace('+', '-');
+				QString course_name = normalize_course_name(element_text(el_course, QStringLiteral("CourseName")));
 				coursedef.setName(course_name);
 
 				QStringList class_names;
@@ -520,6 +523,110 @@ void ClassesWidget::import_ocad_iofxml()
 				defined_courses_list << coursedef;
 			}
 			importCourses(defined_courses_list);
+		}
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+	}
+}
+
+void ClassesWidget::import_ocad_iofxml_3()
+{
+	qfLogFuncFrame();
+	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), "XML files (*.xml);; All files (*)");
+	if(fn.isEmpty())
+		return;
+	try {
+		QFile f(fn);
+		if(f.open(QFile::ReadOnly)) {
+			QDomDocument xdoc;
+			QString err_str; int err_line;
+			if(!xdoc.setContent(&f, &err_str, &err_line))
+				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(err_str).arg(err_line));
+
+			QMap<QString, CourseDef> defined_courses;
+			{
+				QDomNodeList ndlst = xdoc.elementsByTagName(QStringLiteral("Course"));
+				for (int i = 0; i < ndlst.count(); ++i) {
+					QDomElement el_course = ndlst.at(i).toElement();
+					if(el_course.isNull())
+						QF_EXCEPTION(QString("Xml file format error: bad element '%1'").arg("Course"));
+					QString course_name = normalize_course_name(element_text(el_course, QStringLiteral("Name")));
+					if(course_name.isEmpty())
+						QF_EXCEPTION(QString("Xml file format error: empty course name in '%1'").arg(dump_element(el_course)));
+					CourseDef &coursedef = defined_courses[course_name];
+					coursedef.setName(course_name);
+					coursedef.setLenght(element_text(el_course, QStringLiteral("Length")).trimmed().toInt());
+					coursedef.setClimb(element_text(el_course, QStringLiteral("Climb")).trimmed().toInt());
+
+					QMap<int, QVariant> codes;
+					QDomNodeList xml_controls = el_course.elementsByTagName(QStringLiteral("CourseControl"));
+					int no = 0;
+					for (int j = 0; j < xml_controls.count(); ++j) {
+						QDomElement el_control = xml_controls.at(j).toElement();
+						if(el_control.attribute(QStringLiteral("type")) != QLatin1String("Control"))
+								continue;
+						int code = element_text(el_control, QStringLiteral("Control")).trimmed().toInt();
+						if(code <= 0)
+							QF_EXCEPTION(QString("Xml file format error: bad control code %1 in %2").arg(code).arg(dump_element(el_control)));
+						codes[++no] = code;
+					}
+					coursedef.setCodes(codes.values());
+				}
+			}
+			{
+				QDomNodeList ndlst = xdoc.elementsByTagName(QStringLiteral("ClassCourseAssignment"));
+				for (int i = 0; i < ndlst.count(); ++i) {
+					QDomElement class_assignment = ndlst.at(i).toElement();
+					QString course_name = normalize_course_name(element_text(class_assignment, QStringLiteral("CourseName")));
+					QString class_name = element_text(class_assignment, QStringLiteral("ClassName"));
+					if(class_name.isEmpty())
+						QF_EXCEPTION(QString("Xml file format error: empty class name in '%1'").arg(dump_element(class_assignment)));
+					CourseDef &coursedef = defined_courses[course_name];
+					coursedef.addClass(class_name);
+				}
+			}
+			{
+				// guess empty class names from course name
+				QMutableMapIterator<QString, CourseDef> it(defined_courses);
+				while(it.hasNext()) {
+					it.next();
+					CourseDef &cd = it.value();
+					if(cd.classes().isEmpty())
+						cd.setClasses(QStringList() << cd.name());
+				}
+			}
+			{
+				// split combined class names
+				bool split_class_names_enabled = false;
+				bool split_class_names_prompted = false;
+				QMutableMapIterator<QString, CourseDef> it(defined_courses);
+				while(it.hasNext()) {
+					it.next();
+					CourseDef &cd = it.value();
+					QStringList class_names = cd.classes();
+					QStringList split_class_names;
+					for(const QString &class_name : class_names) {
+						QString normalized_class_name = normalize_course_name(class_name);
+						//qfInfo() << cd.name() << ":" << class_name << normalized_class_name;
+						if(class_name != normalized_class_name || class_name.contains('+')) {
+							if(!split_class_names_prompted) {
+								split_class_names_enabled = qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Class name '%1' seems to be combined, separate it to more classes?").arg(class_name));
+								split_class_names_prompted = true;
+							}
+						}
+						if(split_class_names_enabled)
+							split_class_names << normalized_class_name.split('+');
+						else {
+							split_class_names << class_name;
+						}
+					}
+					if(split_class_names_enabled)
+						cd.setClasses(split_class_names);
+				}
+			}
+			importCourses(defined_courses.values());
 		}
 	}
 	catch (const qf::core::Exception &e) {

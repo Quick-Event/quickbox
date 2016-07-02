@@ -420,7 +420,8 @@ void OrisImporter::importEventOrisEntries(int event_id)
 							it.next();
 							int competitor_id = it.key();
 							int si_id = it.value();
-							si_map[si_id] = competitor_id;
+							if(si_id > 0)
+								si_map[si_id] = competitor_id;
 						}
 					}
 					{
@@ -430,10 +431,12 @@ void OrisImporter::importEventOrisEntries(int event_id)
 							it.next();
 							int competitor_id = it.key();
 							int si_id = it.value();
-							int unique_siid_competitor_id = si_map.value(si_id);
-							if(unique_siid_competitor_id != competitor_id) {
-								qfInfo() << "SI:" << si_id << "is duplicit in stage:" << stage_id;
-								it.setValue(0);
+							if(si_id > 0) {
+								int unique_siid_competitor_id = si_map.value(si_id);
+								if(unique_siid_competitor_id != competitor_id) {
+									qfInfo() << "SI:" << si_id << "is duplicit in stage:" << stage_id;
+									it.setValue(0);
+								}
 							}
 						}
 					}

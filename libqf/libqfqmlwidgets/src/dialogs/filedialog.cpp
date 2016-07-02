@@ -19,15 +19,13 @@ QString FileDialog::getOpenFileName(QWidget *parent, const QString &caption,
 									const QString &_dir, const QString &filter,
 									QString *selectedFilter, QFileDialog::Options options)
 {
-	QString fn = _dir;
-	QString dir = qf::core::utils::FileUtils::path(fn);
+	QString dir = _dir;
 	if(dir.isEmpty()) {
 		dir = s_recentOpenFileDir;
-		fn = qf::core::utils::FileUtils::joinPath(dir, fn);
 	}
 	if(parent == nullptr)
 		parent = QApplication::activeWindow();
-	QString ret = QFileDialog::getOpenFileName(parent, caption, fn, filter, selectedFilter, options);
+	QString ret = QFileDialog::getOpenFileName(parent, caption, dir, filter, selectedFilter, options);
 	if(!ret.isEmpty()) {
 		s_recentOpenFileDir = qf::core::utils::FileUtils::path(ret);
 	}

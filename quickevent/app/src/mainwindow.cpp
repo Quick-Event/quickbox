@@ -25,7 +25,7 @@ MainWindow::~MainWindow()
 
 QString MainWindow::versionString()
 {
-	static QString s = QLatin1String("1.0.6");
+	static QString s = QLatin1String("1.0.7");
 	return s;
 }
 
