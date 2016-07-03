@@ -134,6 +134,7 @@ public:
 
 	Q_SIGNAL void editCellRequest(const QModelIndex &table_view_index);
 	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, int mode);
+	Q_SIGNAL void editSelectedRowsInExternalEditor(int mode);
 	Q_SLOT virtual void rowExternallySaved(const QVariant &id, int mode);
 
 	Q_SIGNAL void filterDialogRequest();

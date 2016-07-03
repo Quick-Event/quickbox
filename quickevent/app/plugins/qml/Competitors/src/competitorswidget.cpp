@@ -11,6 +11,7 @@
 #include <quickevent/og/siid.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/toolbar.h>
@@ -18,6 +19,7 @@
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 
 #include <QLabel>
@@ -66,7 +68,9 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;
 
-	connect(ui->tblCompetitors, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)), Qt::QueuedConnection);
+	//connect(ui->tblCompetitors, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)), Qt::QueuedConnection);
+	connect(ui->tblCompetitors, &qfw::TableView::editRowInExternalEditor, this, &CompetitorsWidget::editCompetitor, Qt::QueuedConnection);
+	connect(ui->tblCompetitors, &qfw::TableView::editSelectedRowsInExternalEditor, this, &CompetitorsWidget::editCompetitors, Qt::QueuedConnection);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
@@ -152,7 +156,7 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	w->load(id, mode);
 	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
 	QF_ASSERT(doc != nullptr, "Document is null!", return);
-	if(mode == qf::core::model::DataDocument::ModeInsert) {
+	if(mode == qfm::DataDocument::ModeInsert) {
 		int class_id = m_cbxClasses->currentData().toInt();
 		doc->setValue("competitors.classId", class_id);
 	}
@@ -166,4 +170,32 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	});
 	*/
 	dlg.exec();
+}
+
+void CompetitorsWidget::editCompetitors(int mode)
+{
+	if(mode == qfm::DataDocument::ModeDelete) {
+		if(qfd::MessageBox::askYesNo(this, tr("Realy delete all the selected competitors? This action cannot be reverted."), false)) {
+			qfs::Transaction transaction;
+			int n = 0;
+			for(int ix : ui->tblCompetitors->selectedRowsIndexes()) {
+				int id = ui->tblCompetitors->tableRow(ix).value(ui->tblCompetitors->idColumnName()).toInt();
+				if(id > 0) {
+					Competitors::CompetitorDocument doc;
+					doc.load(id, qfm::DataDocument::ModeDelete);
+					doc.drop();
+					n++;
+				}
+			}
+			if(n > 0) {
+				if(qfd::MessageBox::askYesNo(this, tr("Confirm deletion of %1 competitors.").arg(n), false)) {
+					transaction.commit();
+					ui->tblCompetitors->reload();
+				}
+				else {
+					transaction.rollback();
+				}
+			}
+		}
+	}
 }

@@ -35,6 +35,7 @@ private:
 	Q_SLOT void reload();
 
 	Q_SLOT void editCompetitor(const QVariant &id, int mode);
+	Q_SLOT void editCompetitors(int mode);
 private:
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;

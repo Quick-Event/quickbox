@@ -366,6 +366,7 @@ void TableView::cloneRow()
 		QVariant id = selectedRow().value(idColumnName());
 		qfDebug() << "\t emit editRowInExternalEditor(ModeCopy)";
 		emit editRowInExternalEditor(id, ModeCopy);
+		emit editSelectedRowsInExternalEditor(ModeCopy);
 	}
 	refreshActions();
 }
@@ -384,6 +385,7 @@ void TableView::removeSelectedRows()
 				if(id.isValid())
 					emit editRowInExternalEditor(id, ModeDelete);
 			}
+			emit editSelectedRowsInExternalEditor(ModeDelete);
 		}
 	}
 	catch(qfc::Exception &e) {
@@ -2137,6 +2139,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 						if(id.isValid()) {
 							emit editRowInExternalEditor(id, ModeEdit);
 						}
+						emit editSelectedRowsInExternalEditor(ModeEdit);
 					}
 					ret = false;
 					event->accept();
