@@ -7,11 +7,23 @@ class TxtImporter : public QObject
 {
 	Q_OBJECT
 public:
+	enum TxtImportColumns {
+		ColRegistration = 0,
+		ColClassName,
+		ColSiId,
+		ColLastName,
+		ColFirstName,
+		ColLicence,
+		ColNote,
+		ColCount,
+	};
+
+public:
 	explicit TxtImporter(QObject *parent = 0);
 
-signals:
-
-public slots:
+	Q_INVOKABLE void importCompetitorsCSOS();
+protected:
+	void importParsedCsv(const QList<QVariantList> &csv);
 };
 
 #endif // TXTIMPORTER_H

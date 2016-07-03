@@ -11,6 +11,9 @@ Oris {
 		OrisImporter {
 			id: orisImporter
 		}
+		TxtImporter {
+			id: txtImporter
+		}
 	}
 
 	property list<Action> actions: [
@@ -44,6 +47,13 @@ Oris {
 			onTriggered: {
 				orisImporter.importRegistrations();
 			}
+		},
+		Action {
+			id: actImportCompetitorsCSOS
+			text: qsTr('&Competitors CSOS')
+			onTriggered: {
+				txtImporter.importCompetitorsCSOS();
+			}
 		}
 	]
 
@@ -58,13 +68,15 @@ Oris {
 		act_import_oris.addSeparatorInto();
 		act_import_oris.addActionInto(actImportClubsOris);
 		act_import_oris.addActionInto(actImportRegistrationsOris);
-		//act_import_oris.addActionInto(actTest)
-		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
-		//quit.addSeparatorBefore();
-		//FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
+
+		var act_import_txt = FrameWork.menuBar.actionForPath('file/import/txt');
+		act_import_txt.text = qsTr("&Text file");
+		act_import_txt.enabled = false;
+		act_import_txt.addActionInto(actImportCompetitorsCSOS);
 
 		var refreshActions = function(is_db_open) {
 			act_import_oris.enabled = is_db_open;
+			act_import_txt.enabled = is_db_open;
 		}
 		FrameWork.plugin("Event").dbOpenChanged.connect(refreshActions);
 	}
