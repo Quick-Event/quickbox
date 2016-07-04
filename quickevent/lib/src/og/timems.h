@@ -33,7 +33,7 @@ public:
 
 	/// while time2 < time1 add 12 hours to time2 and return it
 	static int fixTimeWrapAM(int time1_msec, int time2_msec);
-	static int msecIntervalAM(int time1_msec, int time2_msec);
+	static int msecIntervalAM(int from_time_msec, int to_time_msec);
 private:
 	int m_msec;
 	bool m_isValid;

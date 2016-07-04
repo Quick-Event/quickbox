@@ -6,6 +6,8 @@
 
 #include <Event/eventplugin.h>
 
+#include <quickevent/og/timems.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/log.h>
@@ -25,6 +27,14 @@
 namespace qff = qf::qmlwidgets::framework;
 
 using namespace CardReader;
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
 const int CardReaderPlugin::FINISH_PUNCH_CODE = 999;
@@ -163,8 +173,8 @@ int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
 {
 	int ret = 0;
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId)"
-							 " VALUES (:siId, :code, :punchTime, :punchMs, :runId, :stageId)")
+	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId, timeMs)"
+							 " VALUES (:siId, :code, :punchTime, :punchMs, :runId, :stageId, :timeMs)")
 							, qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":siId"), punch_record.cardNumber());
 	q.bindValue(QStringLiteral(":code"), punch_record.code());
@@ -172,6 +182,11 @@ int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
 	q.bindValue(QStringLiteral(":punchMs"), punch_record.msec());
 	q.bindValue(QStringLiteral(":runId"), punch_record.runId());
 	q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	Event::EventPlugin *event_plugin = eventPlugin();
+	int time_msec = event_plugin->stageStart(event_plugin->currentStageId());
+	time_msec = quickevent::og::TimeMs::msecIntervalAM(time_msec, punch_record.time() * 1000 + punch_record.msec());
+	q.bindValue(QStringLiteral(":timeMs"), time_msec);
+	/// it is not possible to save punch time as date-time to be independent on start00 since it depends on start00 due to 12H time format
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}

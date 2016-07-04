@@ -172,7 +172,7 @@ Schema {
 					comment: 'in miliseconds'
 				},
 				Field { name: 'timeMs'; type: Int {}
-					comment: 'in miliseconds'
+					comment: 'in miliseconds since event start'
 				},
 				Field { name: 'offRace'; type: Boolean { }
 					defaultValue: false;
@@ -352,8 +352,8 @@ Schema {
 					comment: 'We cannot take stageId from runId linked table, because we need select punches for stage even without runId assigned'
 				},
 				Field { name: 'runId'; type: Int {} },
-				Field { name: 'punchTimeMs'; type: Int {}
-					comment: 'in miliseconds'
+				Field { name: 'timeMs'; type: Int {}
+					comment: 'in miliseconds since event start'
 				}
 			]
 			indexes: [
