@@ -45,7 +45,7 @@ private:
 	Q_SLOT void currentDataChanged_helper(int ix);
 	Q_SLOT void currentDataActivated_helper(int ix);
 protected:
-	bool m_loadingState = false;
+	bool m_ignoreIndexChangedSignals = false;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT ForeignKeyComboBox : public ComboBox
@@ -60,13 +60,31 @@ private:
 	typedef ComboBox Super;
 public:
 	ForeignKeyComboBox(QWidget *parent = nullptr);
-	~ForeignKeyComboBox() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QString, r, R, eferencedTable)
 	QF_PROPERTY_IMPL(QString, r, R, eferencedField)
 	QF_PROPERTY_IMPL(QString, r, R, eferencedCaptionField)
 	QF_PROPERTY_IMPL2(QString, i, I, temCaptionFormat, QStringLiteral("{{captionField}}"))
 	QF_PROPERTY_IMPL(QString, q, Q, ueryString)
+public:
+	void removeItems() Q_DECL_OVERRIDE;
+	void loadItems(bool force = false) Q_DECL_OVERRIDE;
+private:
+	bool m_itemsLoaded = false;
+};
+
+class QFQMLWIDGETS_DECL_EXPORT DbEnumComboBox : public ComboBox
+{
+	Q_OBJECT
+	Q_PROPERTY(QString groupName READ groupName WRITE setGroupName NOTIFY groupNameChanged)
+	Q_PROPERTY(QString itemCaptionFormat READ itemCaptionFormat WRITE setItemCaptionFormat NOTIFY itemCaptionFormatChanged)
+private:
+	typedef ComboBox Super;
+public:
+	DbEnumComboBox(QWidget *parent = nullptr);
+
+	QF_PROPERTY_IMPL(QString, g, G, roupName)
+	QF_PROPERTY_IMPL2(QString, i, I, temCaptionFormat, QStringLiteral("{{caption}}"))
 public:
 	void removeItems() Q_DECL_OVERRIDE;
 	void loadItems(bool force = false) Q_DECL_OVERRIDE;

@@ -93,8 +93,9 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 void CompetitorsPlugin::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
-	if(domain == QLatin1String("Oris.registrationImported"))
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED))
 		reloadRegistrationsModel();
+	emit dbEventNotify(domain, payload);
 }
 
 void CompetitorsPlugin::reloadRegistrationsModel()

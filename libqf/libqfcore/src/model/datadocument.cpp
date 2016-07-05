@@ -207,6 +207,10 @@ QVariant DataDocument::origValue(const QString &data_id) const
 
 void DataDocument::setValue(const QString &data_id, const QVariant &val)
 {
+	//qfInfo() << data_id << val;
+	//if(data_id == "competitors.classId") {
+	//	qfError() << val;
+	//}
 	qfLogFuncFrame() << "data_id:" << data_id << "val:" << val.toString();
 	if(isEmpty()) {
 		qfWarning() << "data_id:" << data_id << "val:" << val.toString() << "setValue() in empty document";

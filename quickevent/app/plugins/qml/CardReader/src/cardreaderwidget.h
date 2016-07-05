@@ -104,6 +104,7 @@ private:
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QCheckBox *m_cbxAutoRefresh = nullptr;
+	QComboBox *m_cbxPunchMarking = nullptr;
 	quickevent::audio::Player *m_audioPlayer = nullptr;
 };
 

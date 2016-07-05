@@ -50,6 +50,7 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
+const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
 
 static QString eventNameToFileName(const QString &event_name)
 {
@@ -320,6 +321,14 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bo
 	jso[QLatin1String("payload")] = QJsonValue::fromVariant(payload);
 	QJsonDocument jsd(jso);
 	QString payload_str = QString::fromUtf8(jsd.toJson(QJsonDocument::Compact));
+	if(payload_str.length() > 4000) {
+		int len = payload_str.toUtf8().length();
+		if(len > 8000) {
+			qfInfo() << payload_str;
+			qfError() << "Payload of size" << len << "is too long. Max Postgres payload length is 8000 bytes.";
+			return;
+		}
+	}
 	payload_str = qf::core::sql::Connection::escapeJsonForSql(payload_str);
 	qf::core::sql::Connection conn = qf::core::sql::Connection::forName();
 	QString qs = QString("NOTIFY ") + DBEVENT_NOTIFY_NAME + ", '" + payload_str + "'";

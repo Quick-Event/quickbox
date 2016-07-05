@@ -354,6 +354,11 @@ Schema {
 				Field { name: 'runId'; type: Int {} },
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds since event start'
+				},
+				Field { name: 'marking'; type: String {}
+					notNull: true
+					defaultValue: 'race';
+					comment: 'possible values: race | entries'
 				}
 			]
 			indexes: [
@@ -365,11 +370,10 @@ Schema {
 		/*
 		Insert {
 			table: enumz
-			fields: ['groupName', 'groupId', 'pos']
+			fields: ['groupName', 'groupId', 'pos', 'caption']
 			rows: [
-				['runs.status', 'OFF', 1],
-				['runs.status', 'START', 2],
-				['runs.status', 'FINISH', 3]
+				['cardReader.punchMarking', 'race', 1, qsTr('Race')],
+				['cardReader.punchMarking', 'entries', 2, qsTr('Entries')]
 			]
 		},
 		*/

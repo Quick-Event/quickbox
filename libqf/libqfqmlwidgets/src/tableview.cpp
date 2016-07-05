@@ -1329,25 +1329,31 @@ void TableView::keyPressEvent(QKeyEvent *e)
 			//qfInfo() << "incremental search currentIndex row:" << currentIndex().row() << "col:" << currentIndex().column();
 			/// Pokud je nektery sloupec serazen vzestupne zkusi se provest incremental search,
 			/// pak se event dal nepropaguje
-			QChar seekChar = qfc::String(e->text()).value(0);
+			QChar seek_char = qfc::String(e->text()).value(0);
 			//bool is_valid_seek_char = true;
-			if(e->key() == Qt::Key_Home
-					|| e->key() == Qt::Key_End
-					|| e->key() == Qt::Key_Left
-					|| e->key() == Qt::Key_Up
-					|| e->key() == Qt::Key_Right
-					|| e->key() == Qt::Key_Down
-					|| e->key() == Qt::Key_PageUp
-					|| e->key() == Qt::Key_PageDown) {
+			if(e->key() == Qt::Key_Escape
+			   || e->key() == Qt::Key_Enter
+			   || e->key() == Qt::Key_Return
+			   || e->key() == Qt::Key_Tab
+			   || e->key() == Qt::Key_Home
+			   || e->key() == Qt::Key_End
+			   || e->key() == Qt::Key_Left
+			   || e->key() == Qt::Key_Up
+			   || e->key() == Qt::Key_Right
+			   || e->key() == Qt::Key_Down
+			   || e->key() == Qt::Key_PageUp
+			   || e->key() == Qt::Key_PageDown) {
 				incremental_search = false;
-				seekChar = QChar();
+				seek_char = QChar();
 			}
-			else if(seekChar == '\n' || seekChar == '\r')
-				seekChar = QChar();
-			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16);
+			else if(seek_char == '\n' || seek_char == '\r')
+				seek_char = QChar();
+			else if(seek_char.isSpace() && m_seekString.isEmpty())
+				seek_char = QChar();
+			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seek_char.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << "is space:" << seek_char.isSpace();
 			bool shift_only = (e->key() == Qt::Key_Shift);
 			//bool ctrl_only = (e->key() == Qt::Key_Control);
-			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << " shift only: " << shift_only;
+			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seek_char.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << " shift only: " << shift_only;
 			//bool accept = false;
 			if(incremental_search) {
 				if(e->key() == Qt::Key_Backspace) {
@@ -1358,11 +1364,11 @@ void TableView::keyPressEvent(QKeyEvent *e)
 					m_seekString = QString();
 					incremental_search_key_accepted = true;
 				}
-				else if(seekChar.isNull() && !shift_only) {
+				else if(seek_char.isNull() && !shift_only) {
 					m_seekString = QString();
 				}
-				else if(!seekChar.isNull()) {
-					m_seekString += seekChar;
+				else if(!seek_char.isNull()) {
+					m_seekString += seek_char;
 					qfDebug() << "new seek text:" << m_seekString;
 					incremental_search_key_accepted = true;
 				}

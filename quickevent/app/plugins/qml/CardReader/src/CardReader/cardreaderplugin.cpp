@@ -169,12 +169,12 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	return ret;
 }
 
-int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
+int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record, const QString &marking)
 {
 	int ret = 0;
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId, timeMs)"
-							 " VALUES (:siId, :code, :punchTime, :punchMs, :runId, :stageId, :timeMs)")
+	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId, timeMs, marking)"
+							 " VALUES (:siId, :code, :punchTime, :punchMs, :runId, :stageId, :timeMs, :marking)")
 							, qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":siId"), punch_record.cardNumber());
 	q.bindValue(QStringLiteral(":code"), punch_record.code());
@@ -186,6 +186,7 @@ int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
 	int time_msec = event_plugin->stageStart(event_plugin->currentStageId());
 	time_msec = quickevent::og::TimeMs::msecIntervalAM(time_msec, punch_record.time() * 1000 + punch_record.msec());
 	q.bindValue(QStringLiteral(":timeMs"), time_msec);
+	q.bindValue(QStringLiteral(":marking"), marking);
 	/// it is not possible to save punch time as date-time to be independent on start00 since it depends on start00 due to 12H time format
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();

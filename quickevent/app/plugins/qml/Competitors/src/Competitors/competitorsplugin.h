@@ -41,6 +41,7 @@ public:
 
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
 
+	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
 	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
 
 	Q_SIGNAL void nativeInstalled();

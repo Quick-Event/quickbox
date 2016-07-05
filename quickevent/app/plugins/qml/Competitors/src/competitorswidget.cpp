@@ -22,12 +22,14 @@
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 
+#include <QCheckBox>
 #include <QLabel>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
+namespace qfc = qf::core;
 namespace qfm = qf::core::model;
 
 static Event::EventPlugin* eventPlugin()
@@ -72,6 +74,8 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	connect(ui->tblCompetitors, &qfw::TableView::editRowInExternalEditor, this, &CompetitorsWidget::editCompetitor, Qt::QueuedConnection);
 	connect(ui->tblCompetitors, &qfw::TableView::editSelectedRowsInExternalEditor, this, &CompetitorsWidget::editCompetitors, Qt::QueuedConnection);
 
+	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
+
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }
 
@@ -84,28 +88,30 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
-	/*
-	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
-	a->setText("&Station");
-	a->addActionInto(m_actCommOpen);
-	*/
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
-	//main_tb->addAction(m_actCommOpen);
-	QLabel *lbl_class;
 	{
-		lbl_class = new QLabel(tr("&Class "));
-		main_tb->addWidget(lbl_class);
+		QLabel *lbl;
+		{
+			lbl = new QLabel(tr("&Class "));
+			main_tb->addWidget(lbl);
+		}
+		{
+			m_cbxClasses = new qfw::ForeignKeyComboBox();
+			m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
+			m_cbxClasses->setMaxVisibleItems(100);
+			m_cbxClasses->setReferencedTable("classes");
+			m_cbxClasses->setReferencedField("id");
+			m_cbxClasses->setReferencedCaptionField("name");
+			main_tb->addWidget(m_cbxClasses);
+		}
+		lbl->setBuddy(m_cbxClasses);
 	}
+	main_tb->addSeparator();
 	{
-		m_cbxClasses = new qfw::ForeignKeyComboBox();
-		m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
-		m_cbxClasses->setMaxVisibleItems(100);
-		m_cbxClasses->setReferencedTable("classes");
-		m_cbxClasses->setReferencedField("id");
-		m_cbxClasses->setReferencedCaptionField("name");
-		main_tb->addWidget(m_cbxClasses);
+		m_cbxEditCompetitorOnPunch = new QCheckBox(tr("Edit on punch"));
+		m_cbxEditCompetitorOnPunch->setToolTip(tr("Edit or insert competitor on card insert into station."));
+		main_tb->addWidget(m_cbxEditCompetitorOnPunch);
 	}
-	lbl_class->setBuddy(m_cbxClasses);
 }
 
 void CompetitorsWidget::lazyInit()
@@ -145,7 +151,7 @@ void CompetitorsWidget::reload()
 	m_competitorsModel->reload();
 }
 
-void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
+void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int siid)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	auto *w = new CompetitorWidget();
@@ -157,18 +163,16 @@ void CompetitorsWidget::editCompetitor(const QVariant &id, int mode)
 	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
 	QF_ASSERT(doc != nullptr, "Document is null!", return);
 	if(mode == qfm::DataDocument::ModeInsert) {
-		int class_id = m_cbxClasses->currentData().toInt();
-		doc->setValue("competitors.classId", class_id);
+		if(siid == 0) {
+			int class_id = m_cbxClasses->currentData().toInt();
+			doc->setValue("competitors.classId", class_id);
+		}
+		else {
+			w->loadFromRegistrations(siid);
+		}
 	}
 	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
-	//connect(doc, &Competitors::CompetitorDocument::competitorSaved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
-	/*
-	connect(w, &CompetitorWidget::editStartListRequest, [&dlg](int stage_id, int class_id, int competitor_id) {
-		dlg.accept();
-		emit eventPlugin()->editStartListRequest(stage_id, class_id, competitor_id);
-	});
-	*/
 	dlg.exec();
 }
 
@@ -197,5 +201,31 @@ void CompetitorsWidget::editCompetitors(int mode)
 				}
 			}
 		}
+	}
+}
+
+void CompetitorsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+{
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	if(m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
+		int siid = payload.toMap().value(QStringLiteral("cardNumber")).toInt();
+		if(siid > 0) {
+			editCompetitorOnPunch(siid);
+		}
+	}
+}
+
+void CompetitorsWidget::editCompetitorOnPunch(int siid)
+{
+	qfs::Query q;
+	q.exec("SELECT id FROM competitors WHERE siId=" + QString::number(siid), qfc::Exception::Throw);
+	if(q.next()) {
+		int competitor_id = q.value(0).toInt();
+		if(competitor_id > 0) {
+			editCompetitor_helper(competitor_id, qfm::DataDocument::ModeEdit, 0);
+		}
+	}
+	else {
+		editCompetitor_helper(QVariant(), qfm::DataDocument::ModeInsert, siid);
 	}
 }

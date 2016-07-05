@@ -23,6 +23,7 @@
 #include <qf/qmlwidgets/framework/application.h>
 #include <qf/qmlwidgets/framework/partwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/combobox.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -221,6 +222,15 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		m_cbxAutoRefresh = new QCheckBox();
 		m_cbxAutoRefresh->setText(tr("Auto refresh"));
 		main_tb->addWidget(m_cbxAutoRefresh);
+	}
+	main_tb->addSeparator();
+	{
+		QLabel *lbl = new QLabel(" Punch marking ");
+		main_tb->addWidget(lbl);
+		m_cbxPunchMarking = new QComboBox();
+		m_cbxPunchMarking->addItem(tr("Race"), "race");
+		m_cbxPunchMarking->addItem(tr("Entries"), "entries");
+		main_tb->addWidget(m_cbxPunchMarking);
 	}
 	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
 }
@@ -428,25 +438,36 @@ void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card) th
 	}
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
+		QString punch_marking = m_cbxPunchMarking->currentData().toString();
+		if(punch_marking == QLatin1String("entries")) {
+			// send fake punch in the 'entries' mode to enable edit_competitor_by_punch function
+			CardReader::PunchRecord punch;
+			punch.setCardNumber(card_id);
+			int punch_id = thisPlugin()->savePunchRecordToSql(punch, punch_marking);
+			if(punch_id > 0) {
+				punch["sqlId"] = punch_id;
+				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+			}
+		}
 	}
 }
 
 void CardReaderWidget::processSIPunch(const SIMessageTransmitRecord &rec)
 {
 	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.punch().toString()));
-	int run_id = thisPlugin()->findRunId(rec.cardNumber());
-	if(run_id == 0)
-		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
-	CardReader::PunchRecord trans_rec(rec);
-	trans_rec.setRunId(run_id);
-	int punch_id = thisPlugin()->savePunchRecordToSql(trans_rec);
-	if(punch_id) {
-		//CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
-		//thisPlugin()->updateRunLapsSql(checked_card);
+	CardReader::PunchRecord punch(rec);
+	QString punch_marking = m_cbxPunchMarking->currentData().toString();
+	if(punch_marking == QLatin1String("runs")) {
+		int run_id = thisPlugin()->findRunId(rec.cardNumber());
+		if(run_id == 0)
+			appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
+		else
+			punch.setRunId(run_id);
 	}
+	int punch_id = thisPlugin()->savePunchRecordToSql(punch, punch_marking);
 	if(punch_id > 0) {
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch_id, true);
-		//updateTableView(card_id);
+		punch["sqlId"] = punch_id;
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
 }
 

@@ -27,6 +27,8 @@
 
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfw = qf::qmlwidgets;
+namespace qfc = qf::core;
+namespace qfs = qf::core::sql;
 /*
 static Competitors::CompetitorsPlugin* competitorsPlugin()
 {
@@ -223,6 +225,16 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 				}
 			}
 		}
+	}
+}
+
+void CompetitorWidget::loadFromRegistrations(int siid)
+{
+	qfs::Query q;
+	q.exec("SELECT * FROM registrations WHERE siId=" + QString::number(siid), qfc::Exception::Throw);
+	if(q.next()) {
+		QVariantMap vals = q.values();
+		onRegistrationSelected(vals);
 	}
 }
 

@@ -52,6 +52,7 @@ public:
 	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
 	static const char* DBEVENT_CARD_READ;
 	static const char* DBEVENT_PUNCH_RECEIVED;
+	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);

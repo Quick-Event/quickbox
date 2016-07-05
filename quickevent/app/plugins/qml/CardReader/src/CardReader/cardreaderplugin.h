@@ -44,7 +44,7 @@ public:
 	CheckedCard checkCard(int card_id, int run_id = 0);
 	CheckedCard checkCard(const ReadCard &read_card);
 	int saveCardToSql(const ReadCard &read_card);
-	int savePunchRecordToSql(const PunchRecord &punch_record);
+	int savePunchRecordToSql(const PunchRecord &punch_record, const QString &marking);
 	//ReadCard loadCardFromSql(int card_id);
 	bool updateCheckedCardValuesSqlSafe(const CheckedCard &checked_card);
 	void updateCheckedCardValuesSql(const CheckedCard &checked_card) throw(qf::core::Exception);
