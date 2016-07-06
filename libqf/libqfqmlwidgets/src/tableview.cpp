@@ -170,7 +170,7 @@ void TableView::refreshActions()
 	action("filter")->setEnabled(true);
 	action("copy")->setEnabled(true);
 	action("copySpecial")->setEnabled(true);
-	//action("select")->setEnabled(true);
+	action("select")->setEnabled(true);
 	action("reload")->setEnabled(true);
 	action("resizeColumnsToContents")->setEnabled(true);
 	action("resetColumnsSettings")->setEnabled(true);
@@ -189,9 +189,6 @@ void TableView::refreshActions()
 	//action("removeSelectedRows")->setVisible(isRemoveRowActionVisibleInExternalMode());
 	//action("postRow")->setVisible(true);
 	//action("revertRow")->setVisible(true);
-
-	//action("viewRowExternal")->setVisible(true);
-	//action("editRowExternal")->setVisible(true);
 
 	bool is_insert_rows_allowed = !(m_proxyModel->dynamicSortFilter() && !m_proxyModel->isIdle());
 	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
@@ -734,6 +731,20 @@ void TableView::loadCurrentCellBlob()
 			model()->setData(currentIndex(), ba);
 		}
 	}
+}
+
+void TableView::selectCurrentColumn()
+{
+	QModelIndex ix = currentIndex();
+	if(ix.isValid())
+		selectColumn(ix.column());
+}
+
+void TableView::selectCurrentRow()
+{
+	QModelIndex ix = currentIndex();
+	if(ix.isValid())
+		selectRow(ix.row());
 }
 
 void TableView::exportReport_helper(const QVariant& _options)
@@ -1734,15 +1745,19 @@ void TableView::createActions()
 		{
 			a = new Action(tr("Select current column"), this);
 			a->setShortcutContext(Qt::WidgetShortcut);
-			//connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
+			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
 			a->setOid("selectCurrentColumn");
 			m->addAction(a);
+			//m_actions[a->oid()] = a;
+			//m_actionGroups[SelectActions] << a->oid();
 		}
 		{
 			a = new Action(tr("Select current row"), this);
 			a->setShortcutContext(Qt::WidgetShortcut);
-			//connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
+			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
 			a->setOid("selectCurrentRow");
+			//m_actions[a->oid()] = a;
+			//m_actionGroups[SelectActions] << a->oid();
 		}
 		m->addAction(a);
 	}

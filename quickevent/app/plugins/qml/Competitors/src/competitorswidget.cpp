@@ -66,6 +66,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg")).setReadOnly(true);
 	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
+	m->addColumn("ranking", tr("Ranking"));
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
 	m_competitorsModel = m;

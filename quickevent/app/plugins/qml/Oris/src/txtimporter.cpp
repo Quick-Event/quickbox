@@ -11,6 +11,7 @@
 #include <qf/core/exception.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/utils/csvreader.h>
 
 #include <QTextStream>
 
@@ -67,6 +68,49 @@ void TxtImporter::importCompetitorsCSOS()
 		emit eventPlugin()->reloadDataRequest();
 	}
 	catch (qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+	}
+}
+
+void TxtImporter::importRankingCsv()
+{
+	qfLogFuncFrame();
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranging CSV files (*.txt *.csv)"));
+	if(fn.isEmpty())
+		return;
+	try {
+		QFile f(fn);
+		if(!f.open(QFile::ReadOnly))
+			QF_EXCEPTION(tr("Cannot open file '%1' for reading.").arg(fn));
+		QTextStream ts(&f);
+		qf::core::utils::CSVReader reader(&ts);
+		reader.setSeparator(';');
+		//reader.setLineComment('#');
+		enum {ColPos = 0, ColLastName, ColFirstName, ColRegistration, ColPoints, ColCoef};
+
+		qf::core::sql::Transaction transaction;
+		qf::core::sql::Query q;
+		q.prepare("UPDATE competitors SET ranking=:ranking WHERE registration=:registration", qf::core::Exception::Throw);
+
+		int n = 0;
+		while (!ts.atEnd()) {
+			QStringList line = reader.readCSVLineSplitted();
+			if(n++ == 0)
+				continue;
+			QString registration = line.value(ColRegistration);
+			int pos = line.value(ColPos).toInt();
+			if(pos == 0 || registration.isEmpty()) {
+				QF_EXCEPTION(tr("Error reading CSV line: [%1]").arg(line.join(';')));
+			}
+			qfDebug() << registration << "->" << pos;
+			q.bindValue(":ranking", pos);
+			q.bindValue(":registration", registration);
+			q.exec(qf::core::Exception::Throw);
+		}
+		transaction.commit();
+	}
+	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 	}
 }

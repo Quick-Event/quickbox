@@ -114,6 +114,9 @@ public:
 	Q_SLOT void saveCurrentCellBlob();
 	Q_SLOT void loadCurrentCellBlob();
 
+	Q_SLOT void selectCurrentColumn();
+	Q_SLOT void selectCurrentRow();
+
 	/**
 	* calls update viewport with rect clipping row \a row.
 	* @param row if lower than 0 current row is updated.

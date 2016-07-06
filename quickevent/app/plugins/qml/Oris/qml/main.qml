@@ -54,6 +54,13 @@ Oris {
 			onTriggered: {
 				txtImporter.importCompetitorsCSOS();
 			}
+		},
+		Action {
+			id: actImportRankingCsv
+			text: qsTr('&Ranking CSV (Oris format)')
+			onTriggered: {
+				txtImporter.importRankingCsv();
+			}
 		}
 	]
 
@@ -73,6 +80,7 @@ Oris {
 		act_import_txt.text = qsTr("&Text file");
 		act_import_txt.enabled = false;
 		act_import_txt.addActionInto(actImportCompetitorsCSOS);
+		act_import_txt.addActionInto(actImportRankingCsv);
 
 		var refreshActions = function(is_db_open) {
 			act_import_oris.enabled = is_db_open;

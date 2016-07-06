@@ -469,7 +469,7 @@ static QString dump_element(const QDomElement &el)
 void ClassesWidget::import_ocad_iofxml_2()
 {
 	qfLogFuncFrame();
-	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), "XML files (*.xml);; All files (*)");
+	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), tr("XML files (*.xml);; All files (*)"));
 	if(fn.isEmpty())
 		return;
 	try {
