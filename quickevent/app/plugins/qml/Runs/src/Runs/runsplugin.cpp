@@ -2,7 +2,6 @@
 #include "runsplugin.h"
 #include "thispartwidget.h"
 #include "../runswidget.h"
-#include "drawing/drawingganttwidget.h"
 #include "../runstabledialogwidget.h"
 #include "../eventstatisticswidget.h"
 
@@ -130,21 +129,6 @@ void RunsPlugin::onInstalled()
 	}
 
 	emit nativeInstalled();
-
-	auto *a_draw = m_partWidget->menuBar()->actionForPath("drawing");
-	a_draw->setText("&Drawing");
-	{
-		qfw::Action *a = new qfw::Action("Classes layout");
-		a_draw->addActionInto(a);
-		connect(a, &qfw::Action::triggered, [this]()
-		{
-			auto *w = new drawing::DrawingGanttWidget;
-			qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
-			//dlg.setButtons(QDialogButtonBox::Save);
-			dlg.setCentralWidget(w);
-			dlg.exec();
-		});
-	}
 }
 
 /*
