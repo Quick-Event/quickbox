@@ -35,7 +35,7 @@ public:
 	GanttItem(QGraphicsItem * parent = 0);
 
 	void load(int stage_id);
-	void save();
+	void save(int stage_id);
 
 	void updateGeometry();
 	void checkClassClash();

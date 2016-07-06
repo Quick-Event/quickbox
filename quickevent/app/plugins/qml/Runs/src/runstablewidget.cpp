@@ -112,6 +112,20 @@ void RunsTableWidget::clear()
 void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	qfLogFuncFrame();
+	{
+		int class_start_time_min = 0;
+		int class_start_interval_min = 0;
+		if(class_id > 0) {
+			qf::core::sql::Query q;
+			q.exec("SELECT startTimeMin, startIntervalMin FROM classdefs WHERE classId=" QF_IARG(class_id) " AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+			if(q.next()) {
+				class_start_time_min = q.value(0).toInt();
+				class_start_interval_min = q.value(1).toInt();
+			}
+		}
+		ui->lblClassStart->setText(class_start_time_min > 0? QString::number(class_start_time_min): "---");
+		ui->lblClassInterval->setText(class_start_interval_min > 0? QString::number(class_start_interval_min): "---");
+	}
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("competitors", "registration, siId, note")

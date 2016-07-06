@@ -30,6 +30,7 @@ public:
 	int duToMin(int n) const;
 
 private:
+	int m_stageId = -1;
 	int m_displayUnit;
 	GanttItem *m_ganttItem;
 };

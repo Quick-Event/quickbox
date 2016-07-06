@@ -128,10 +128,9 @@ void GanttItem::load(int stage_id)
 	checkClassClash();
 }
 
-void GanttItem::save()
+void GanttItem::save(int stage_id)
 {
 	qfLogFuncFrame();
-	int stage_id = eventPlugin()->currentStageId();
 	{
 		Event::StageData stage = eventPlugin()->stageData(stage_id);
 		DrawingConfig dc(stage.drawingConfig());
