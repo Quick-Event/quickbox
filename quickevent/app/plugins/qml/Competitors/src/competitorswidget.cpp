@@ -208,11 +208,12 @@ void CompetitorsWidget::editCompetitors(int mode)
 	}
 }
 
-void CompetitorsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void CompetitorsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
-	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	Q_UNUSED(connection_id)
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(m_cbxEditCompetitorOnPunch->isEnabled() && m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::si::PunchRecord punch(payload.toMap());
+		quickevent::si::PunchRecord punch(data.toMap());
 		int siid = punch.siid();
 		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_ENTRIES) {
 			editCompetitorOnPunch(siid);

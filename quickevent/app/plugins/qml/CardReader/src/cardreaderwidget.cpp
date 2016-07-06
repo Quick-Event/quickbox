@@ -233,7 +233,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		m_cbxPunchMarking->addItem(tr("Entries"), quickevent::si::PunchRecord::MARKING_ENTRIES);
 		main_tb->addWidget(m_cbxPunchMarking);
 	}
-	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void CardReaderWidget::reset()

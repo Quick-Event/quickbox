@@ -115,6 +115,9 @@ int Connection::connectionId()
 			}
 		}
 	}
+	else if(driver_name.endsWith(QLatin1String("SQLITE"))) {
+		return 1;
+	}
 	qfWarning() << "connection id not supported for driver:" << driverName();
 	return 0;
 }

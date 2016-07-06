@@ -41,7 +41,7 @@ private:
 
 	void editCompetitor_helper(const QVariant &id, int mode, int siid);
 
-	void onDbEventNotify(const QString &domain, const QVariant &payload);
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void editCompetitorOnPunch(int siid);
 private:
 	Ui::CompetitorsWidget *ui;

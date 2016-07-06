@@ -363,7 +363,7 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent) :
 	m_tableFooterView->setMinimumHeight(20);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
-	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
 	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
 }
 

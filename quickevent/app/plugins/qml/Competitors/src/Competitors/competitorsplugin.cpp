@@ -90,12 +90,13 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 	}
 }
 
-void CompetitorsPlugin::onDbEventNotify(const QString &domain, const QVariant &payload)
+void CompetitorsPlugin::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
-	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	Q_UNUSED(connection_id)
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED))
 		reloadRegistrationsModel();
-	emit dbEventNotify(domain, payload);
+	emit dbEventNotify(domain, connection_id, data);
 }
 
 void CompetitorsPlugin::reloadRegistrationsModel()

@@ -86,8 +86,8 @@ public:
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
 
-	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
-	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
+	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &data = QVariant(), bool loopback = true);
+	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
 
 	Q_INVOKABLE QString sqlDriverName();
 

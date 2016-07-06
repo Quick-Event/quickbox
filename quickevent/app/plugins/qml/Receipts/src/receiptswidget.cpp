@@ -106,7 +106,7 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
 
-	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &ReceiptsWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void ReceiptsWidget::reset()
@@ -153,9 +153,9 @@ Event::EventPlugin *ReceiptsWidget::eventPlugin()
 	return plugin;
 }
 
-void ReceiptsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void ReceiptsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
-	Q_UNUSED(payload)
+	Q_UNUSED(data)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		onCardRead();
 	}
