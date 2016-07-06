@@ -117,6 +117,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			.select2("competitors", "registration, siId, note")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.select("'' AS disqReason")
 			.from("runs")
 			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")

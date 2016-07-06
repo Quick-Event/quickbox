@@ -23,7 +23,7 @@ public:
 		col_runs_notCompeting,
 		col_runs_cardLent,
 		col_runs_cardReturned,
-		col_runs_misPunch,
+		col_disqReason,
 		col_runs_disqualified,
 		col_competitors_note,
 		col_COUNT
