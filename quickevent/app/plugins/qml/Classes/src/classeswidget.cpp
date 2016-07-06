@@ -290,7 +290,7 @@ void ClassesWidget::reload()
 	}
 	{
 		qf::core::sql::Query q(m_classesModel->sqlConnection());
-		q.exec("SELECT COUNT(*) FROM classdefs WHERE stageId=" QF_IARG(stage_id));
+		q.exec("SELECT COUNT(*) FROM courses");
 		bool ro = true;
 		if(q.next())
 			ro = (q.value(0).toInt() == 0);
