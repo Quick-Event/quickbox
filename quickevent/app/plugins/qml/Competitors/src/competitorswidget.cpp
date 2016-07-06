@@ -8,7 +8,8 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/og/siid.h>
+#include <quickevent/si/siid.h>
+#include <quickevent/si/punchrecord.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -65,7 +66,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg")).setReadOnly(true);
-	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
+	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
 	m->addColumn("ranking", tr("Ranking"));
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
@@ -155,6 +156,7 @@ void CompetitorsWidget::reload()
 void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int siid)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
+	m_cbxEditCompetitorOnPunch->setEnabled(false);
 	auto *w = new CompetitorWidget();
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
@@ -175,6 +177,7 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
 	dlg.exec();
+	m_cbxEditCompetitorOnPunch->setEnabled(true);
 }
 
 void CompetitorsWidget::editCompetitors(int mode)
@@ -208,9 +211,10 @@ void CompetitorsWidget::editCompetitors(int mode)
 void CompetitorsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
-	if(m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		int siid = payload.toMap().value(QStringLiteral("cardNumber")).toInt();
-		if(siid > 0) {
+	if(m_cbxEditCompetitorOnPunch->isEnabled() && m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
+		quickevent::si::PunchRecord punch(payload.toMap());
+		int siid = punch.siid();
+		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_ENTRIES) {
 			editCompetitorOnPunch(siid);
 		}
 	}

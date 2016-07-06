@@ -6,7 +6,7 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/og/siid.h>
+#include <quickevent/si/siid.h>
 #include <quickevent/og/timems.h>
 
 #include <qf/qmlwidgets/dialogs/messagebox.h>

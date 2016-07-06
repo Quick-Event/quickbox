@@ -1,7 +1,7 @@
 #include "runstablemodel.h"
 
 #include <quickevent/og/timems.h>
-#include <quickevent/og/siid.h>
+#include <quickevent/si/siid.h>
 
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
@@ -19,7 +19,7 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_competitors_siId, ColumnDefinition("competitors.siId", tr("SI")));
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
 	setColumn(col_registration, ColumnDefinition("registration", tr("Reg")));
-	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::og::SiId>()));
+	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::si::SiId>()));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));

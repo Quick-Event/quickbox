@@ -342,10 +342,10 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'code'; type: Int { } },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'punchTime'; type: Int {}
+				Field { name: 'time'; type: Int {}
 					comment: 'seconds in range 0 - 12 hours'
 				},
-				Field { name: 'punchMs'; type: Int {}
+				Field { name: 'msec'; type: Int {}
 					comment: 'msec part od punch time'
 				},
 				Field { name: 'stageId'; type: Int { }

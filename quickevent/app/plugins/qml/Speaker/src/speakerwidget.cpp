@@ -7,7 +7,7 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/og/siid.h>
+#include <quickevent/si/siid.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -52,8 +52,8 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("code", tr("Code"));
-	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
-	m->addColumn("punchTime", tr("Punch time"));
+	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
+	m->addColumn("time", tr("Punch time"));
 	ui->tblPunches->setTableModel(m);
 	m_punchesModel = m;
 

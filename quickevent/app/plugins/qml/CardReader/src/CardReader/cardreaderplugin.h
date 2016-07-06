@@ -8,7 +8,7 @@
 
 #include <QQmlListProperty>
 
-class SIMessageTransmitRecord;
+namespace quickevent { namespace si { class PunchRecord; } }
 
 namespace CardReader {
 
@@ -44,7 +44,7 @@ public:
 	CheckedCard checkCard(int card_id, int run_id = 0);
 	CheckedCard checkCard(const ReadCard &read_card);
 	int saveCardToSql(const ReadCard &read_card);
-	int savePunchRecordToSql(const PunchRecord &punch_record, const QString &marking);
+	int savePunchRecordToSql(const quickevent::si::PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
 	bool updateCheckedCardValuesSqlSafe(const CheckedCard &checked_card);
 	void updateCheckedCardValuesSql(const CheckedCard &checked_card) throw(qf::core::Exception);

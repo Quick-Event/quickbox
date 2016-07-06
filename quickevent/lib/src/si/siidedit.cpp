@@ -1,7 +1,7 @@
 #include "siidedit.h"
 
 namespace quickevent {
-namespace og {
+namespace si {
 
 SiIdEdit::SiIdEdit(QWidget *parent)
 	: Super(parent)

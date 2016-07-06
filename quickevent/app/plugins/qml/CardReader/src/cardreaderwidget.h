@@ -38,7 +38,7 @@ class QFile;
 class QComboBox;
 class QCheckBox;
 
-class SIMessageTransmitRecord;
+class SIMessageTransmitPunch;
 class SIMessageData;
 class SIMessageCardReadOut;
 
@@ -77,7 +77,7 @@ private:
 	siut::DeviceDriver *siDriver();
 
 	void processSICard(const SIMessageCardReadOut &card);
-	void processSIPunch(const SIMessageTransmitRecord &rec);
+	void processSIPunch(const SIMessageTransmitPunch &rec);
 
 	bool processReadCardSafe(const CardReader::ReadCard &read_card);
 	void processReadCard(const CardReader::ReadCard &read_card) throw(qf::core::Exception);

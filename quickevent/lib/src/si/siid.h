@@ -1,12 +1,14 @@
-#ifndef QUICKEVENT_OG_SIID_H
-#define QUICKEVENT_OG_SIID_H
+#ifndef QUICKEVENT_SI_SIID_H
+#define QUICKEVENT_SI_SIID_H
+
+#include "../quickeventglobal.h"
 
 #include <QMetaType>
 
 namespace quickevent {
-namespace og {
+namespace si {
 
-class SiId
+class QUICKEVENT_DECL_EXPORT SiId
 {
 public:
 	SiId(int val = 0) : m_value(val) {}
@@ -20,6 +22,6 @@ private:
 } // namespace og
 } // namespace quickevent
 
-Q_DECLARE_METATYPE(quickevent::og::SiId)
+Q_DECLARE_METATYPE(quickevent::si::SiId)
 
-#endif // QUICKEVENT_OG_SIID_H
+#endif // QUICKEVENT_SI_SIID_H

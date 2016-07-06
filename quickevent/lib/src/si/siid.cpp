@@ -1,7 +1,7 @@
 #include "siid.h"
 
 namespace quickevent {
-namespace og {
+namespace si {
 
 } // namespace og
 } // namespace quickevent

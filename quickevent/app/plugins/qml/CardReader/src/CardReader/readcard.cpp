@@ -9,7 +9,7 @@
 #include <QSqlRecord>
 #include <QJsonDocument>
 
-using namespace CardReader;
+namespace CardReader {
 
 ReadPunch::ReadPunch(const QVariantList &var_list)
 {
@@ -97,7 +97,4 @@ QString ReadCard::toString() const
 	return ret;
 }
 
-PunchRecord::PunchRecord(const SIMessageTransmitRecord &rec)
-	: Super(rec.toVariantMap())
-{
 }

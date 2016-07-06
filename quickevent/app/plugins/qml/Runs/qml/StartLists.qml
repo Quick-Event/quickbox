@@ -40,6 +40,7 @@ QtObject {
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		tt.setValue("stageStart", event_plugin.stageStartDateTime(stage_id));
 
 		reportModel.queryBuilder.clear()
 			.select2('competitors', 'lastName, firstName, registration')
@@ -350,7 +351,7 @@ QtObject {
 		body.push(['h1', h1_str]);
 		body.push(['h2', event.name]);
 		body.push(['h3', event.place]);
-		body.push(['h3', event.date]);
+		body.push(['h3', tt1.value("stageStart")]);
 		var div1 = ['div'];
 		body.push(div1);
 		for(var i=0; i<tt1.rowCount(); i++) {
@@ -469,7 +470,7 @@ QtObject {
 		body.push(['h1', h1_str]);
 		body.push(['h2', event.name]);
 		body.push(['h3', event.place]);
-		body.push(['h3', event.date]);
+		body.push(['h3', tt1.value("stageStart")]);
 		var div1 = ['div'];
 		body.push(div1);
 		for(var i=0; i<tt1.rowCount(); i++) {

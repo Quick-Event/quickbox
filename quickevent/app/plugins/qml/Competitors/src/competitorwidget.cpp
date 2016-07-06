@@ -10,6 +10,7 @@
 #include <quickevent/og/itemdelegate.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/timems.h>
+#include <quickevent/si/siid.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -72,7 +73,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	m_runsModel = new quickevent::og::SqlTableModel(this);
 	m_runsModel->addColumn("runs.offRace", tr("Off", "runs.offRace")).setToolTip(tr("Off race in this stage"));
 	m_runsModel->addColumn("runs.stageId", tr("Stage")).setReadOnly(true);
-	m_runsModel->addColumn("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::og::SiId>());
+	m_runsModel->addColumn("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>());
 	m_runsModel->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	m_runsModel->addColumn("runs.timeMs", tr("Time"))
 			.setCastType(qMetaTypeId<quickevent::og::TimeMs>());
