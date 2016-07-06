@@ -155,6 +155,7 @@ Event::EventPlugin *ReceiptsWidget::eventPlugin()
 
 void ReceiptsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
+	Q_UNUSED(connection_id)
 	Q_UNUSED(data)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		onCardRead();
@@ -194,14 +195,15 @@ void ReceiptsWidget::onCardRead()
 void ReceiptsWidget::printNewCards()
 {
 	auto conn  = qf::core::sql::Connection::forName();
-	int connection_id = 1;
-	if(!conn.driverName().endsWith("SQLITE"))
-		connection_id = conn.connectionId();
+	int connection_id = conn.connectionId();
 	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return);
 	int current_stage = currentStageId();
 	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)
 			" WHERE printerConnectionId IS NULL"
 			" AND cards.stageId=" QF_IARG(current_stage);
+	if(ui->chkThisReaderOnly->isChecked()) {
+		qs += " AND readerConnectionId=" QF_IARG(connection_id);
+	}
 	qf::core::sql::Query q(conn);
 	q.exec(qs, qf::core::Exception::Throw);
 	int num_rows = q.numRowsAffected();

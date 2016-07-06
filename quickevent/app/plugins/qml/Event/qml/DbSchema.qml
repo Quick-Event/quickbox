@@ -326,12 +326,17 @@ Schema {
 					}
 					comment: 'JSON of format [[code, time, msec, day_of_week, week_cnt], ...]}'
 				},
+				Field { name: 'readerConnectionId'
+					type: Int { }
+					comment: 'connection id of QuickEvent instance which has read this card'
+				},
 				Field { name: 'printerConnectionId'
 					type: Int { }
 					comment: 'connection id of QuickEvent instance which has printed this strip'
 				}
   			]
 			indexes: [
+				Index { fields: ['readerConnectionId']; unique: false },
 				Index { fields: ['printerConnectionId']; unique: false },
 				Index { fields: ['stageId', 'siId']; unique: false },
 				Index { fields: ['runId']; unique: false }
@@ -362,7 +367,7 @@ Schema {
 				}
 			]
 			indexes: [
-				Index {fields: ['runId']; unique: false }
+				Index {fields: ['marking', 'runId']; unique: false }
 			]
 		}
 	]
