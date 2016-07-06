@@ -21,6 +21,8 @@ public:
 	~DrawingGanttWidget();
 
 	void settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg) Q_DECL_OVERRIDE;
+
+	void load(int stage_id);
 private slots:
 	void on_actSave_triggered();
 private:

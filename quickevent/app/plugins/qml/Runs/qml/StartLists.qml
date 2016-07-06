@@ -396,7 +396,6 @@ QtObject {
 	function exportStartListIofXml3(file_path)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		//var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId);
 		var start00_datetime = event_plugin.stageStartDateTime(runsPlugin.selectedStageId);
 		//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
 		var start00_epoch_sec = start00_datetime.getTime();

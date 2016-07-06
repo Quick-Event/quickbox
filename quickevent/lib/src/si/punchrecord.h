@@ -26,6 +26,7 @@ private:
 	QF_VARIANTMAP_FIELD(int, t, sett, ime)
 	QF_VARIANTMAP_FIELD(int, m, setm, sec)
 	QF_VARIANTMAP_FIELD(int, t, sett, imems)
+	QF_VARIANTMAP_FIELD(int, r, setr, untimems)
 	QF_VARIANTMAP_FIELD2(QString, m, setm, arking, MARKING_RACE)
 
 public:
@@ -35,6 +36,8 @@ public:
 	PunchRecord(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	PunchRecord(const SIMessageTransmitPunch &rec);
 	PunchRecord(const qf::core::sql::Query &q);
+
+	QString toString() const;
 };
 
 } // namespace si

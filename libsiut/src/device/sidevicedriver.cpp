@@ -307,6 +307,11 @@ void DeviceDriver::closeCommPort()
 	}
 }
 
+QString DeviceDriver::commPortErrorString()
+{
+	return f_commPort->errorString();
+}
+
 void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 {
 	qfLogFuncFrame();

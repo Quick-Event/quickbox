@@ -23,7 +23,6 @@ DrawingGanttWidget::DrawingGanttWidget(QWidget *parent) :
 
 	m_ganttScene = new GanttScene(this);
 	ui->ganttView->setScene(m_ganttScene);
-	m_ganttScene->load();
 }
 
 DrawingGanttWidget::~DrawingGanttWidget()
@@ -40,6 +39,12 @@ void DrawingGanttWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg
 	auto *a_file = menu->actionForPath("draw");
 	a_file->setText(tr("&Draw"));
 	a_file->addActionInto(ui->actSave);
+}
+
+void DrawingGanttWidget::load(int stage_id)
+{
+	setTitle(tr("E%1 Draw tool").arg(stage_id));
+	m_ganttScene->load(stage_id);
 }
 
 void drawing::DrawingGanttWidget::on_actSave_triggered()

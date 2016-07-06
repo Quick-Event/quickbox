@@ -34,7 +34,7 @@ private:
 public:
 	GanttItem(QGraphicsItem * parent = 0);
 
-	void load();
+	void load(int stage_id);
 	void save();
 
 	void updateGeometry();

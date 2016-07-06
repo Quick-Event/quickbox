@@ -67,10 +67,9 @@ Event::EventPlugin *GanttItem::eventPlugin()
 	return plugin;
 }
 
-void GanttItem::load()
+void GanttItem::load(int stage_id)
 {
 	qfLogFuncFrame();
-	int stage_id = eventPlugin()->currentStageId();
 	Event::StageData stage = eventPlugin()->stageData(stage_id);
 	DrawingConfig dc(stage.drawingConfig());
 	QVariantList stsllst = dc.startSlots();

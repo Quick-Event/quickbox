@@ -153,7 +153,7 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		return cnt;
 	}
 	if(column_ix == col_timeToCloseMs) {
-		int stage_start_msec = eventPlugin()->stageStart(eventPlugin()->currentStageId());
+		int stage_start_msec = eventPlugin()->stageStartMsec(eventPlugin()->currentStageId());
 		int curr_time_msec = QTime::currentTime().msecsSinceStartOfDay();
 		int start_last_msec = value(row_ix, col_startLastMs).toInt();
 		int time3_msec = value(row_ix, col_time3Ms).toInt();

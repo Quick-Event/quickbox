@@ -42,6 +42,7 @@ protected:
 public:
 	bool openCommPort(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
 	void closeCommPort();
+	QString commPortErrorString();
 protected slots:
 	void commDataReceived();
 	void rxDataTimeout();

@@ -150,8 +150,8 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 		punches << p.toJsonArrayString();
 	}
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId)"
-							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId)")
+	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId, readerConnectionId)"
+							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId, :readerConnectionId)")
 			  , qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":stationNumber"), read_card.stationCodeNumber());
 	q.bindValue(QStringLiteral(":siId"), read_card.cardNumber());
@@ -161,6 +161,7 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	q.bindValue(QStringLiteral(":punches"), '[' + punches.join(", ") + ']');
 	q.bindValue(QStringLiteral(":runId"), read_card.runId());
 	q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	q.bindValue(QStringLiteral(":readerConnectionId"), qf::core::sql::Connection::defaultConnection().connectionId());
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}
@@ -172,22 +173,40 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 
 int CardReaderPlugin::savePunchRecordToSql(const quickevent::si::PunchRecord &punch_record)
 {
+	//qfInfo() << "PUNCH:" << punch_record.toString();
 	int ret = 0;
-	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, marking)"
-							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :marking)")
-							, qf::core::Exception::Throw);
-	q.bindValue(QStringLiteral(":siId"), punch_record.siid());
-	q.bindValue(QStringLiteral(":code"), punch_record.code());
-	q.bindValue(QStringLiteral(":time"), punch_record.time());
-	q.bindValue(QStringLiteral(":msec"), punch_record.msec());
-	q.bindValue(QStringLiteral(":runId"), punch_record.runid());
-	q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	quickevent::si::PunchRecord punch = punch_record;
+	punch.setstageid(currentStageId());
+
 	Event::EventPlugin *event_plugin = eventPlugin();
-	int time_msec = event_plugin->stageStart(event_plugin->currentStageId());
-	time_msec = quickevent::og::TimeMs::msecIntervalAM(time_msec, punch_record.time() * 1000 + punch_record.msec());
-	q.bindValue(QStringLiteral(":timeMs"), time_msec);
-	q.bindValue(QStringLiteral(":marking"), punch_record.marking());
+	int stage_start_msec = event_plugin->stageStartMsec(event_plugin->currentStageId());
+	int time_msec = quickevent::og::TimeMs::msecIntervalAM(stage_start_msec, punch_record.time() * 1000 + punch_record.msec());
+	punch.settimems(time_msec);
+
+	qf::core::sql::Query q;
+	int run_id = punch.runid();
+	if(run_id > 0) {
+		q.exec("SELECT startTimeMs FROM runs WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
+		if(q.next()) {
+			QVariant v = q.value(0);
+			if(!v.isNull()) {
+				punch.setruntimems(time_msec - v.toInt());
+			}
+		}
+	}
+
+	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs, marking)"
+							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs, :marking)")
+							, qf::core::Exception::Throw);
+	q.bindValue(QStringLiteral(":siId"), punch.siid());
+	q.bindValue(QStringLiteral(":code"), punch.code());
+	q.bindValue(QStringLiteral(":time"), punch.time());
+	q.bindValue(QStringLiteral(":msec"), punch.msec());
+	q.bindValue(QStringLiteral(":runId"), punch.runid());
+	q.bindValue(QStringLiteral(":stageId"), punch.stageid());
+	q.bindValue(QStringLiteral(":marking"), punch.marking());
+	q.bindValue(QStringLiteral(":timeMs"), punch.timems());
+	q.bindValue(QStringLiteral(":runTimeMs"), punch.runtimems_isset()? punch.runtimems(): QVariant());
 	/// it is not possible to save punch time as date-time to be independent on start00 since it depends on start00 due to 12H time format
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();

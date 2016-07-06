@@ -196,6 +196,7 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 			qf::qmlwidgets::dialogs::Dialog dlg(this);
 			//dlg.setButtons(QDialogButtonBox::Save);
 			dlg.setCentralWidget(w);
+			w->load(selectedStageId());
 			dlg.exec();
 		});
 	}

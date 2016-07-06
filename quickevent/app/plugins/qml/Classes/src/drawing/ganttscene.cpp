@@ -12,12 +12,12 @@ GanttScene::GanttScene(QObject * parent)
 
 }
 
-void GanttScene::load()
+void GanttScene::load(int stage_id)
 {
 	clear();
 	m_ganttItem = new GanttItem();
 	addItem(m_ganttItem);
-	m_ganttItem->load();
+	m_ganttItem->load(stage_id);
 }
 
 void GanttScene::save()

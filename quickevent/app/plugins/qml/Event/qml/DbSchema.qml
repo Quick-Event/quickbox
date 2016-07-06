@@ -360,6 +360,9 @@ Schema {
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds since event start'
 				},
+				Field { name: 'runTimeMs'; type: Int {}
+					comment: 'in miliseconds since runner event start'
+				},
 				Field { name: 'marking'; type: String {}
 					notNull: true
 					defaultValue: 'race';
@@ -367,7 +370,8 @@ Schema {
 				}
 			]
 			indexes: [
-				Index {fields: ['marking', 'runId']; unique: false }
+				Index {fields: ['marking', 'stageId', 'code']; unique: false },
+				Index {fields: ['runId']; unique: false }
 			]
 		}
 	]
