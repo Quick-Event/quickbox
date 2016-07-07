@@ -153,6 +153,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
 		m->addColumn("codes.altCode", tr("Alt")).setToolTip(tr("Code alternative")).setReadOnly(false);
 		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order"));
+		m->addColumn("codes.radio", tr("R")).setToolTip(tr("Radio"));
 		ui->tblCourseCodes->setTableModel(m);
 		m_courseCodesModel = m;
 	}

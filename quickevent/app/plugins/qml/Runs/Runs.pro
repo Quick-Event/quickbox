@@ -11,7 +11,6 @@ CONFIG += c++11 hide_symbols
 DEFINES += RUNSPLUGIN_BUILD_DLL
 
 INCLUDEPATH += \
-    $$PWD/src \
     $$PWD/../Event/include \
 #    $$PWD/../Competitors/include \
 

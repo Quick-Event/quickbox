@@ -7,15 +7,13 @@ namespace Ui {
 class SpeakerWidget;
 }
 namespace qf {
-namespace core {
-namespace model {
-class SqlTableModel;
-}
-}
+//namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets {
 class ForeignKeyComboBox;
 }
 }
+
+namespace quickevent { namespace og { class SqlTableModel; }}
 
 class ThisPartWidget;
 
@@ -29,6 +27,8 @@ public:
 	~SpeakerWidget() Q_DECL_OVERRIDE;
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
+
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
 	void on_btInsertColumn_clicked();
 	void on_btInsertRow_clicked();
@@ -39,11 +39,18 @@ private:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
+	void updateTableView(int punch_id);
+
+	void loadSettings();
 	void saveSettings();
+
+	bool isPartActive();
 private:
 	Ui::SpeakerWidget *ui;
-	qf::core::model::SqlTableModel *m_punchesModel;
-	//qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
+	quickevent::og::SqlTableModel *m_punchesModel = nullptr;
+	ThisPartWidget *m_partWidget = nullptr;
+	bool m_resetRequest = false;
+	bool m_settingsLoaded = false;
 };
 
 #endif // SPEAKERWIDGET_H

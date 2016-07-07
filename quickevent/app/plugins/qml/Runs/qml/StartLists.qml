@@ -108,6 +108,7 @@ QtObject {
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		tt.setValue("stageStart", event_plugin.stageStartDateTime(stage_id));
 		tt.column(0).type = "QString"; // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
 		//console.info(tt.toString());
 

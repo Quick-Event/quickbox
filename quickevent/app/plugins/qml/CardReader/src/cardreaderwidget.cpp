@@ -264,9 +264,10 @@ void CardReaderWidget::reload()
 	m_cardsModel->reload();
 }
 
-void CardReaderWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
-	int card_id = payload.toInt();
+	Q_UNUSED(connection_id)
+	int card_id = data.toInt();
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		// TODO: only if widget is visible (plugin window active)
 		if(m_cbxAutoRefresh->isChecked())
@@ -408,7 +409,7 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		punch.setmarking(punch_marking);
 		int punch_id = thisPlugin()->savePunchRecordToSql(punch);
 		if(punch_id > 0) {
-			punch["sqlId"] = punch_id;
+			punch.setid(punch_id);
 			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 		}
 		return;
@@ -425,6 +426,20 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		if(q.next()) {
 			if(q.value(0).toBool() && !q.value(1).toBool())
 				operatorAudioNotify();
+		}
+		if(punch_marking == quickevent::si::PunchRecord::MARKING_RACE) {
+			// create fake punch from finish station for speaker if it doesn't exists already
+			quickevent::si::PunchRecord punch;
+			punch.setsiid(card.cardNumber());
+			punch.settime(card.finishTime());
+			punch.setcode(quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
+			punch.setmarking(punch_marking);
+			int punch_id = thisPlugin()->savePunchRecordToSql(punch);
+			if(punch_id > 0) {
+				punch.setid(punch_id);
+				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+			}
+			return;
 		}
 	}
 	CardReader::ReadCard read_card(card);
@@ -474,7 +489,7 @@ void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
 	}
 	int punch_id = thisPlugin()->savePunchRecordToSql(punch);
 	if(punch_id > 0) {
-		punch["sqlId"] = punch_id;
+		punch.setid(punch_id);
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
 }
@@ -702,7 +717,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			QVariantList punches;
 			int stp_time = start_time;
 			QList<int> codes = codesForClassName(class_name, stage_id);
-			codes << CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
+			codes << quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
 			if(csv_ix + codes.count() != sl.count()) {
 				qfWarning() << codes;
 				qfWarning() << sl;

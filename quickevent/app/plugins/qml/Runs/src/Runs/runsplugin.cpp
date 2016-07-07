@@ -1,6 +1,6 @@
 #include "reportoptionsdialog.h"
 #include "runsplugin.h"
-#include "thispartwidget.h"
+#include "../thispartwidget.h"
 #include "../runswidget.h"
 #include "../runstabledialogwidget.h"
 #include "../eventstatisticswidget.h"
@@ -104,7 +104,7 @@ void RunsPlugin::onInstalled()
 	auto *tpw = new ThisPartWidget();
 	m_partWidget = tpw;
 	connect(tpw, &ThisPartWidget::selectedStageIdChanged, [this](int stage_id) {
-		qfInfo() << stage_id;
+		//qfInfo() << stage_id;
 		this->setSelectedStageId(stage_id);
 	});
 	connect(competitorsPlugin(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));

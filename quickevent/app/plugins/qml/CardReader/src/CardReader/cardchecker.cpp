@@ -6,6 +6,7 @@
 #include <Runs/runsplugin.h>
 
 #include <quickevent/og/timems.h>
+#include <quickevent/si/punchrecord.h>
 
 #include <siut/simessage.h>
 
@@ -123,6 +124,6 @@ QVariantMap CardChecker::courseCodesForRunId(int run_id)
 
 int CardChecker::finishPunchCode()
 {
-	return CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
+	return quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
 }
 

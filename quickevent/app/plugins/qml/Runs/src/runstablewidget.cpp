@@ -13,12 +13,14 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
+#include <qf/core/sql/transaction.h>
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QTimer>
+#include <QInputDialog>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
@@ -143,7 +145,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	if(!show_offrace)
 		qb.where("NOT runs.offRace");
 	qfDebug() << qb.toString();
-	m_runsTableItemDelegate->setHighlightedClassId(class_id);
+	m_runsTableItemDelegate->setHighlightedClassId(class_id, stage_id);
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
 
@@ -178,8 +180,12 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 	QAction a_show_card(tr("Show receipt"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
 	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_sep1; a_sep1.setSeparator(true);
+	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card << &a_load_card << &a_print_card;
+	lst << &a_show_card << &a_load_card << &a_print_card
+		<< &a_sep1
+		<< &a_shift_start_times;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
 		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
@@ -200,8 +206,8 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 				int card_id = runs_plugin->cardForRun(run_id);
 				bool ok;
 				QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
-				                          Q_RETURN_ARG(bool, ok),
-				                          Q_ARG(int, card_id),
+										  Q_RETURN_ARG(bool, ok),
+										  Q_ARG(int, card_id),
 										  Q_ARG(int, run_id));
 				//QF_ASSERT(ok == true, "reloadTimesFromCard error!", break);
 				if(ok)
@@ -240,6 +246,36 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 				return;
 			}
 			QMetaObject::invokeMethod(receipts_plugin, "printReceipt", Qt::DirectConnection, Q_ARG(int, card_id));
+		}
+	}
+	else if(a == &a_shift_start_times) {
+		try {
+			int offset_msec = 0;
+			int interval = ui->lblClassInterval->text().toInt();
+			if(interval == 0)
+				interval = 1;
+			offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset [min]:"), 0, -1000, 1000, interval);
+			if(offset_msec != 0) {
+				offset_msec *= 60 * 1000;
+
+				qfs::Transaction transaction;
+				qfs::Query q(transaction.connection());
+				q.prepare("UPDATE runs SET startTimeMs = startTimeMs + :offset WHERE id=:id", qf::core::Exception::Throw);
+				QList<int> rows = ui->tblRuns->selectedRowsIndexes();
+				for(int ix : rows) {
+					qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
+					int id = row.value(ui->tblRuns->idColumnName()).toInt();
+					q.bindValue(QStringLiteral(":offset"), offset_msec);
+					q.bindValue(QStringLiteral(":id"), id);
+					//qfInfo() << id << "->" << offset_msec;
+					q.exec(qf::core::Exception::Throw);
+				}
+				transaction.commit();
+				runsModel()->reload();
+			}
+		}
+		catch (const qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 		}
 	}
 }

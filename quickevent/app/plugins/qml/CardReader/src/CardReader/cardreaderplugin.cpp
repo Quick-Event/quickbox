@@ -27,7 +27,7 @@
 
 namespace qff = qf::qmlwidgets::framework;
 
-using namespace CardReader;
+namespace CardReader {
 
 static Event::EventPlugin* eventPlugin()
 {
@@ -38,8 +38,7 @@ static Event::EventPlugin* eventPlugin()
 }
 
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
-const int CardReaderPlugin::FINISH_PUNCH_CODE = 999;
-const int CardReaderPlugin::FINISH_PUNCH_POS = CardReaderPlugin::FINISH_PUNCH_CODE;
+const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
@@ -322,3 +321,4 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 	return false;
 }
 
+}

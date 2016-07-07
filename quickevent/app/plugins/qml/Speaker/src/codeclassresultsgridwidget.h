@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+namespace quickevent { namespace si { class PunchRecord; }}
+
 class CodeClassResultsWidget;
 class QGridLayout;
 
@@ -20,6 +22,10 @@ public:
 	void addRow();
 	void removeRow();
 
+	Q_SIGNAL void punchReceived(const quickevent::si::PunchRecord &punch);
+	void onPunchReceived(const quickevent::si::PunchRecord &punch);
+
+	void loadLayout(const QByteArray &data);
 	QByteArray saveLayout();
 private:
 	CodeClassResultsWidget* resultsWidgetAt(int row, int col);

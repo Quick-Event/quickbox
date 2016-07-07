@@ -744,7 +744,7 @@ bool EventPlugin::closeEvent()
 	m_classNameCache.clear();
 	setEventName(QString());
 	QF_SAFE_DELETE(m_eventConfig);
-	emit eventOpened(eventName()); //comment it till QE can load event with invalid name
+	//emit eventOpened(eventName()); //comment it till QE can load event with invalid name
 	return true;
 }
 

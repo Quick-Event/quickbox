@@ -19,6 +19,7 @@ class QUICKEVENT_DECL_EXPORT PunchRecord : public QVariantMap
 private:
 	typedef QVariantMap Super;
 
+	QF_VARIANTMAP_FIELD(int, i, seti, d)
 	QF_VARIANTMAP_FIELD(int, r, setr, unid)
 	QF_VARIANTMAP_FIELD(int, s, sets, tageid)
 	QF_VARIANTMAP_FIELD(int, s, sets, iid)
@@ -30,6 +31,7 @@ private:
 	QF_VARIANTMAP_FIELD2(QString, m, setm, arking, MARKING_RACE)
 
 public:
+	static const int FINISH_PUNCH_CODE;
 	static const QString MARKING_RACE;
 	static const QString MARKING_ENTRIES;
 public:
