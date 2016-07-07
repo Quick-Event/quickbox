@@ -439,7 +439,6 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 				punch.setid(punch_id);
 				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 			}
-			return;
 		}
 	}
 	CardReader::ReadCard read_card(card);

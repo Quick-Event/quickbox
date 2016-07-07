@@ -237,6 +237,10 @@ void CompetitorWidget::loadFromRegistrations(int siid)
 		QVariantMap vals = q.values();
 		onRegistrationSelected(vals);
 	}
+	else {
+		qf::core::model::DataDocument*doc = dataController()->document();
+		doc->setValue(QStringLiteral("competitors.siid"), siid);
+	}
 }
 
 bool CompetitorWidget::saveData()
