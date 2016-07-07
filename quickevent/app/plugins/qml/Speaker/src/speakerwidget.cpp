@@ -112,6 +112,8 @@ void SpeakerWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 void SpeakerWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
 	Q_UNUSED(connection_id)
+	if(!isPartActive())
+		return;
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
 		quickevent::si::PunchRecord punch(data.toMap());
