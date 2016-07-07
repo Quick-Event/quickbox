@@ -50,9 +50,6 @@ QML_IMPORT_PATH += \
 	$$QF_PROJECT_TOP_BUILDDIR/lib/qml/quickevent \
 
 
-QMAKE_EXTRA_TARGETS += datafiles
-PRE_TARGETDEPS += datafiles
-
 win32:CONFIG(debug, debug|release):CONFIG += console
 #CONFIG += console
 
