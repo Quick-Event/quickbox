@@ -21,7 +21,7 @@ class ReportOptionsDialog : public QDialog, public qf::qmlwidgets::framework::IP
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 	Q_PROPERTY(bool classFilterVisible READ isClassFilterVisible WRITE setClassFilterVisible NOTIFY classFilterVisibleChanged)
 
-	QF_PROPERTY_BOOL_IMPL(c, C, lassFilterVisible)
+	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 private:
 	using Super = QDialog;
 public:
