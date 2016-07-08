@@ -431,6 +431,7 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 			// create fake punch from finish station for speaker if it doesn't exists already
 			quickevent::si::PunchRecord punch;
 			punch.setsiid(card.cardNumber());
+			punch.setrunid(run_id);
 			punch.settime(card.finishTime());
 			punch.setcode(quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
 			punch.setmarking(punch_marking);

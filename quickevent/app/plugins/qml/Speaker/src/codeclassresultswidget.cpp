@@ -57,6 +57,8 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent) :
 		}
 	});
 
+	connect(ui->btReload, &QPushButton::clicked, this, &CodeClassResultsWidget::reload);
+
 	ui->tblView->setReadOnly(true);
 	//ui->tblView->setPersistentSettingsId("tblView");
 	//ui->tblPunches->setRowEditorMode(qfw::TableView::EditRowsMixed);
@@ -87,9 +89,13 @@ void CodeClassResultsWidget::reload()
 			.joinRestricted("punches.runId", "runs.id",
 							"punches.stageId=" QF_IARG(stage_id)
 							" AND punches.code=" QF_IARG(code)
-							" AND NOT runs.disqualified")
-			.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id))
+							" AND NOT runs.disqualified",
+							qf::core::sql::QueryBuilder::INNER_JOIN)
+			.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 			.orderBy("punches.runTimeMs");//.limit(10);
+	qfInfo() << qb.toString();
+	m_tableModel->setQueryBuilder(qb);
+	m_tableModel->reload();
 }
 
 void CodeClassResultsWidget::onPunchReceived(const quickevent::si::PunchRecord &punch)
@@ -121,3 +127,4 @@ QJsonObject CodeClassResultsWidget::saveSetup()
 	ret["codeId"] = ui->lstCode->currentData().toInt();
 	return ret;
 }
+
