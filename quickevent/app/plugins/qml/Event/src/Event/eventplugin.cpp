@@ -420,7 +420,7 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 			}
 			QString event_name = dbpl.eventName();
 			if(event_name.isEmpty()) {
-				qfWarning() << "DbNotify with invalid event name, payload:" << payload.toString();
+				qfWarning() << "DbNotify with invalid event name, payload:" << event_name << payload.toString();
 				return;
 			}
 			if(event_name == eventName()) {
