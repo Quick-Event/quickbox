@@ -354,13 +354,7 @@ void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool 
 	dbpl.setData(data);
 	dbpl.setconnectionId(connection_id);
 	QByteArray json_ba = dbpl.toJson();
-	//QVariantMap m;
-	QJsonObject jso;
-	jso[QStringLiteral("event")] = eventName();
-	jso[QStringLiteral("domain")] = domain;
-	jso[QStringLiteral("payload")] = QJsonValue::fromVariant(data);
-	QJsonDocument jsd(jso);
-	QString payload_str = QString::fromUtf8(jsd.toJson(QJsonDocument::Compact));
+	QString payload_str = QString::fromUtf8(json_ba);
 	if(payload_str.length() > 4000) {
 		int len = payload_str.toUtf8().length();
 		if(len > 8000) {
