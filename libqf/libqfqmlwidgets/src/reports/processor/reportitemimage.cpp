@@ -251,8 +251,6 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 		if(src.isEmpty()) {
 			/// muze byt jeste v datech, zkus ho nahrat pro aktualni radek
 			QString data_s = data();
-			//QString data_s = nodeText(el);
-			//qfError() << data_s;
 			QByteArray img_data;
 			{
 				DataEncoding encoding = dataEncoding();

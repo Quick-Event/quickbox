@@ -137,7 +137,7 @@ Report {
 							width: "%"
 							height: 30
 							halign: Frame.AlignHCenter
-							dataSource: "/home/fanda/proj/quickbox/quickevent/app/plugins/qml/Runs/qml/images/kachna-podpis.png"
+							dataSource: "./images/kachna-podpis.png"
 						}
 						Frame {
 							width: "%"
