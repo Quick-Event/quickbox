@@ -13,11 +13,12 @@ QtObject {
 		property SqlTableModel reportModel: SqlTableModel { id: reportModel }
 	}
 
-	function runCountByClassesTable(stage_id)
+	function
+	runCountByClassesTable(stage_id)
 	{
 		reportModel.queryBuilder.clear()
 		.select2("classes", "name")
-		.select("COUNT(competitors.classId) AS runCount")
+		.select("COUNT(runs.id) AS runCount")
 		.select("MAX(classdefs.mapCount) as mapCount") // classdefs.mapCount must be in any agregation function in PSQL, MIN can be here as well
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
