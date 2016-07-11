@@ -81,6 +81,9 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 			if(time_ms > 0) {
 				Super::setValue(row_ix, "timeMs", time_ms);
 			}
+			else {
+				Super::setValue(row_ix, "timeMs", QVariant());
+			}
 		}
 	}
 	else if(cd.matchesSqlId(QStringLiteral("timeMs"))) {
@@ -89,6 +92,9 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 			int finish_ms = val.toInt() + start_ms.toInt();
 			if(finish_ms > 0) {
 				Super::setValue(row_ix, columnIndex("finishTimeMs"), finish_ms);
+			}
+			else {
+				Super::setValue(row_ix, "timeMs", QVariant());
 			}
 		}
 	}
