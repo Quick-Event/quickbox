@@ -47,7 +47,7 @@ QtObject {
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offrace", "INNER JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy('runs.startTimeMs');
 		for(var i=0; i<tt.rowCount(); i++) {
@@ -118,7 +118,7 @@ QtObject {
 			.select2('classes', 'name')
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offrace", "INNER JOIN")
 			.join("competitors.classId", "classes.id")
 			.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
 			.orderBy('classes.name, runs.startTimeMs');
@@ -148,7 +148,7 @@ QtObject {
 			.select2('runs', 'siId, startTimeMs')
 			.select2('classes', 'name')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}}")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}} AND NOT runs.offrace", "INNER JOIN")
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
 		if(class_group === 'H') {
@@ -260,7 +260,7 @@ QtObject {
 		//dlg.dialogType = RunsPlugin.StartListReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
-			var tt = startListClassesTable(dlg.sqlWhereExpression(), true);
+			var tt = startListClassesTable(dlg.sqlWhereExpression(), false);
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_classes.qml"
 										   , tt.data()
 										   , qsTr("Start list by clases")
@@ -343,7 +343,7 @@ QtObject {
 	{
 		var default_file_name = "startlist-classes.html";
 
-		var tt1 = startListClassesTable("", true);
+		var tt1 = startListClassesTable("", false);
 		var body = ['body']
 		var h1_str = "{{documentTitle}}";
 		var event = tt1.value("event");
