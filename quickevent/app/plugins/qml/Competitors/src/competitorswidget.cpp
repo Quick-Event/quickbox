@@ -183,10 +183,13 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 void CompetitorsWidget::editCompetitors(int mode)
 {
 	if(mode == qfm::DataDocument::ModeDelete) {
+		QList<int> sel_rows = ui->tblCompetitors->selectedRowsIndexes();
+		if(sel_rows.count() <= 1)
+			return;
 		if(qfd::MessageBox::askYesNo(this, tr("Realy delete all the selected competitors? This action cannot be reverted."), false)) {
 			qfs::Transaction transaction;
 			int n = 0;
-			for(int ix : ui->tblCompetitors->selectedRowsIndexes()) {
+			for(int ix : sel_rows) {
 				int id = ui->tblCompetitors->tableRow(ix).value(ui->tblCompetitors->idColumnName()).toInt();
 				if(id > 0) {
 					Competitors::CompetitorDocument doc;
