@@ -22,7 +22,7 @@ class Query;
 class QFCORE_DECL_EXPORT DbEnum
 {
 public:
-	enum FieldIndexes {FieldId = 0, FieldGroupName, FieldGroupId, FieldPos, FieldAbbreviation, FieldValue, FieldCaption, FieldColor, FieldGrants, LastFieldIndex};
+	enum FieldIndexes {FieldId = 0, FieldGroupName, FieldGroupId, FieldPos, FieldAbbreviation, FieldValue, FieldTypeInfo, FieldCaption, FieldColor, FieldGrants, LastFieldIndex};
 public:
 	DbEnum() {}
 	DbEnum(const Query &q);
@@ -38,6 +38,7 @@ public:
 	QString abbreviation() const {return m_values.value(FieldAbbreviation).toString();}
 	//QString localizedAbbreviation() const;
 	QVariant value() const {return m_values.value(FieldValue);}
+	QString typeInfo() const {return m_values.value(FieldTypeInfo).toString();}
 	QString caption() const;
 	//QString localizedCaption() const;
 	void setCaption(const QString &s) {setValue(FieldCaption, s);}
