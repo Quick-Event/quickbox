@@ -372,6 +372,7 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 	qf::core::utils::TreeTable tt = model.toTreeTable();
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
+	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(stage_id));
 
 	{
 		qf::core::sql::QueryBuilder qb;

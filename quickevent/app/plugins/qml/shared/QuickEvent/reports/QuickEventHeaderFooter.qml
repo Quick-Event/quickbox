@@ -14,7 +14,7 @@ Frame {
 		bottomBorder: Pen {basedOn: "blue1"}
 		Para {
 			text: {
-				"Quick Event 0.1";
+				"Quick Event 1.0";
 			}
 		}
 		Para {
