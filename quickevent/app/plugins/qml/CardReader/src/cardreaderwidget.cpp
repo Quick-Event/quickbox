@@ -145,11 +145,14 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
 	QAction a_show_receipt(tr("Show receipt"), nullptr);
-	QAction a_show_card(tr("Show card"), nullptr);
 	QAction a_print_receipt(tr("Print receipt"), nullptr);
+	QAction a_sep1; a_sep1.setSeparator(true);
+	QAction a_show_card(tr("Show card"), nullptr);
+	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_sep2; a_sep2.setSeparator(true);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_receipt << &a_print_receipt << &a_show_card << &a_assign_runner;
+	lst << &a_show_receipt << &a_print_receipt << &a_sep1 << &a_show_card << &a_print_card << &a_sep2 << &a_assign_runner;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_receipt) {
 		showSelectedReceipt();
@@ -166,6 +169,16 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 		}
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
 		QMetaObject::invokeMethod(plugin, "printReceipt", Q_ARG(int, card_id));
+	}
+	else if(a == &a_print_card) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		auto *plugin = fwk->plugin("Receipts");
+		if(!plugin) {
+			qfError() << "Cannot find Receipts plugin!";
+			return;
+		}
+		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
+		QMetaObject::invokeMethod(plugin, "printCard", Q_ARG(int, card_id));
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
