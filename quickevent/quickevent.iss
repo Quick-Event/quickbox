@@ -53,13 +53,12 @@ Source: {#BUILD_DIR}\bin\qfcore.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\qfqmlwidgets.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\quickevent.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\siut.dll; DestDir: {app}; Flags: ignoreversion
-;Source: .\{#APP_NAME_LOWER}global-{#COMPANY}.conf.xml; DestDir: {app}; DestName: {#APP_NAME_LOWER}global.conf.xml; Flags: ignoreversion
 
 Source: {#BUILD_DIR}\bin\qml\*; DestDir: {app}\qml; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: {#BUILD_DIR}\bin\quickevent-data\*; DestDir: {app}\quickevent-data; Flags: ignoreversion recursesubdirs createallsubdirs
 
 Source: {#BUILD_DIR}\bin\quickshow.exe; DestDir: {app}; Flags: ignoreversion
-Source: ..\quickshow\quickshow-data\*; DestDir: {app}\quickshow-data; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: {#BUILD_DIR}\bin\quickshow-data\*; DestDir: {app}\quickshow-data; Flags: ignoreversion recursesubdirs createallsubdirs
 
 Source: {#BUILD_DIR}\bin\translations\*; DestDir: {app}\translations; Flags: ignoreversion recursesubdirs createallsubdirs
 
