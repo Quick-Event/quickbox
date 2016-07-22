@@ -1,5 +1,6 @@
-#include "reportoptionsdialog.h"
 #include "runsplugin.h"
+#include "nstagesreportoptionsdialog.h"
+#include "reportoptionsdialog.h"
 #include "../thispartwidget.h"
 #include "../runswidget.h"
 #include "../runstabledialogwidget.h"
@@ -194,6 +195,15 @@ QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
 	return new Runs::ReportOptionsDialog(parent);
 }
 
+QWidget *RunsPlugin::createNStagesReportOptionsDialog(QWidget *parent)
+{
+	if(!parent) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		parent = fwk;
+	}
+	return new Runs::NStagesReportOptionsDialog(parent);
+}
+
 int RunsPlugin::cardForRun(int run_id)
 {
 	qfLogFuncFrame() << "run id:" << run_id;
@@ -215,7 +225,7 @@ int RunsPlugin::cardForRun(int run_id)
 	return card_id;
 }
 
-qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places)
+qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "id, registration")
@@ -278,7 +288,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	t.sort("timeMs");
 	int pos = 0;
 	int time_ms1 = 0;
-	const bool trim_disq = false;
+	//const bool trim_disq = false;
 	int trim_at = -1;
 	for (int j = 0; j < t.rowCount(); ++j) {
 		++pos;
@@ -291,7 +301,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 			loss_ms = time_ms - time_ms1;
 		}
 		else {
-			if(trim_disq) {
+			if(exclude_disq) {
 				trim_at = j;
 				break;
 			}
@@ -314,7 +324,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	return t;
 }
 
-QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
+QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool exclude_disq)
 {
 	qfLogFuncFrame();
 	//qf::core::utils::Table::FieldList cols;
@@ -334,7 +344,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
 		qfInfo() << "Processing class:" << tt_row.value("name").toString();
 		int class_id = tt_row.value("id").toInt();
-		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id, places);
+		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id, places, exclude_disq);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
 		tt_row.appendTable(tt2);
 	}
