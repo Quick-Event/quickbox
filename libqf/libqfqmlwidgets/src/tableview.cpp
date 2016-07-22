@@ -215,7 +215,7 @@ void TableView::refreshActions()
 	QModelIndex curr_ix = currentIndex();
 	qfu::TableRow curr_row;
 	if(curr_ix.isValid())
-		curr_row = m->tableRow(curr_ix.row());
+		curr_row = m->tableRow(toTableModelRowNo(curr_ix.row()));
 	//qfDebug() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
 	if(curr_row.isDirty()) {
 		action("postRow")->setEnabled(true);
@@ -431,6 +431,7 @@ void TableView::revertRow(int row_no)
 	if(m) {
 		m->revertRow(toTableModelRowNo(row_no));
 	}
+	refreshActions();
 }
 
 int TableView::reloadRow(int row_no)

@@ -359,6 +359,9 @@ void TableModel::revertRow(int row_no)
 {
 	qfu::TableRow &row = m_table.rowRef(row_no);
 	row.restoreOrigValues();
+	QModelIndex ix1 = index(row_no, 0);
+	QModelIndex ix2 = index(row_no, columnCount() - 1);
+	emit dataChanged(ix1, ix2);
 }
 
 void TableModel::revertAll()
