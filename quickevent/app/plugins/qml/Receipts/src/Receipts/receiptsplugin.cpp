@@ -167,7 +167,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	qfLogFuncFrame() << card_id;
 	QF_TIME_SCOPE("receiptTablesData()");
 	QVariantMap ret;
-	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(card_id);
+	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
+	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
 	int current_stage_id = eventPlugin()->currentStageId();
 	int run_id = checked_card.runId();
 	int course_id = checked_card.courseId();
@@ -318,14 +319,21 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			//qfInfo() << "control_count:" << control_count << "finishLapTimeMs:" << checked_card.finishLapTimeMs() << "- best_lap:" << best_lap << "=" << loss;
 			tt.setValue("finishLossMs", loss);
 		}
-		{
-			QVariantList mc;
-			for(auto i : missing_codes.keys())
-				mc.insert(mc.count(), QVariantList() << i << missing_codes.value(i));
-			//mc.insert(mc.count(), QVariantList() << 1 << 101);
-			tt.setValue("missingCodes", mc);
-		}
 		*/
+		{
+			QSet<int> correct_codes;
+			for (int i = 0; i < checked_card.punchCount(); ++i) {
+				correct_codes << checked_card.punchAt(i).code();
+			}
+			QVariantList xc;
+			for (int i = 0; i < read_card.punchCount(); ++i) {
+				int code = read_card.punchAt(i).code();
+				if(!correct_codes.contains(code)) {
+					xc.insert(xc.count(), QVariantList() << (i+1) << code);
+				}
+			}
+			tt.setValue("extraCodes", xc);
+		}
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
 		tt.setValue("timeMs", checked_card.timeMs());

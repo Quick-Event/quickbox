@@ -279,27 +279,24 @@ Report {
 				width: "%"
 				bottomBorder: Pen { basedOn: "black2" }
 			}
-
-			/*
 			Para {
 				vinset: 1
 				hinset: 1
 				textFn: function() {
-					var missing_codes = bandCard.data("missingCodes");
+					var extra_codes = bandCard.data("extraCodes");
 					//console.warn("missing_codes:", JSON.stringify(missing_codes, null, 2));
-					if(missing_codes) {
-						var mcs = [];
-						for(var i=0; i<missing_codes.length; i++) {
-							var mca = missing_codes[i];
-							mcs.push(mca[0] + "-" + mca[1]);
+					if(extra_codes) {
+						var xcs = [];
+						for(var i=0; i<extra_codes.length; i++) {
+							var xca = extra_codes[i];
+							xcs.push(xca[0] + "-" + xca[1]);
 						}
-						var ret = qsTr("missing: ") + mcs.join(", ");
+						var ret = qsTr("extra: ") + xcs.join(", ");
 						return ret;
 					}
-					return ""
+					return "";
 				}
 			}
-			*/
 			Frame {
 				width: "%"
 				vinset: 1

@@ -31,6 +31,9 @@ private:
 public:
 	CheckedCard(const QVariantMap &data = QVariantMap());
 
+	int punchCount() const;
+	CheckedPunch punchAt(int i) const;
+
 	int timeMs() const;
 	QString toString() const;
 

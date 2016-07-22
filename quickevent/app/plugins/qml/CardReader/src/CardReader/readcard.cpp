@@ -58,6 +58,17 @@ ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
 	: Super(si_card.toVariantMap())
 {
 }
+
+int ReadCard::punchCount() const
+{
+	return punches().count();
+}
+
+ReadPunch ReadCard::punchAt(int i) const
+{
+	QVariantMap m = punches().value(i).toMap();
+	return ReadPunch(m);
+}
 /*
 int ReadCard::timeMs() const
 {

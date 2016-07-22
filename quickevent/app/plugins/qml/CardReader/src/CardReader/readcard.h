@@ -49,7 +49,8 @@ public:
 	ReadCard(const QSqlRecord &rec);
 	ReadCard(const SIMessageCardReadOut &si_card);
 
-	//int timeMs() const;
+	int punchCount() const;
+	ReadPunch punchAt(int i) const;
 	QString toString() const;
 };
 
