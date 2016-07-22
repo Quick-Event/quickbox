@@ -671,7 +671,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 								  Q_ARG(QVariant, create_options));
 		QStringList create_script = ret_val.toStringList();
 
-		qfInfo().nospace() << create_script.join(";\n") << ';';
+		qfInfo().nospace().noquote() << create_script.join(";\n") << ';';
 		qfs::Query q(conn);
 		do {
 			qfs::Transaction transaction(conn);
@@ -1003,7 +1003,7 @@ void EventPlugin::importEvent_qbe()
 	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName (fwk, tr("Import as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(fn.isEmpty())
 		return;
-	QString event_name = qf::core::utils::FileUtils::baseName(fn) + "-2";
+	QString event_name = qf::core::utils::FileUtils::baseName(fn) + "_2";
 	event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:"), QLineEdit::Normal, event_name).trimmed();
 	if(event_name.isEmpty())
 		return;

@@ -257,10 +257,11 @@ QtObject {
 		Log.info("runs printResultsCurrentStage triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "startListClassesReportOptions";
+		dlg.startListOptionsVisible = true;
 		//dlg.dialogType = RunsPlugin.StartListReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
-			var tt = startListClassesTable(dlg.sqlWhereExpression(), false);
+			var tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants());
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_classes.qml"
 										   , tt.data()
 										   , qsTr("Start list by clases")
