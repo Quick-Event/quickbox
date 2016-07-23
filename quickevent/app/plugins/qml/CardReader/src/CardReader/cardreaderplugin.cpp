@@ -245,16 +245,6 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 	auto punch_list = checked_card.punches();
 	if(punch_list.count()) {
-		/*
-		{
-			CardReader::CheckedPunch finish_punch;
-			finish_punch.setPosition(FINISH_PUNCH_POS);
-			finish_punch.setCode(FINISH_PUNCH_CODE);
-			finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
-			finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
-			punch_list << finish_punch;
-		}
-		*/
 		int position = 0;
 		for(auto v : punch_list) {
 			position++;
@@ -314,7 +304,7 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		return false;
 	}
 	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
-	qfInfo() << checked_card.isMisPunch() << checked_card.isOk();
+	qfInfo() << Q_FUNC_INFO << checked_card.isMisPunch() << checked_card.isOk();
 	if(updateCheckedCardValuesSqlSafe(checked_card))
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))
 			return true;

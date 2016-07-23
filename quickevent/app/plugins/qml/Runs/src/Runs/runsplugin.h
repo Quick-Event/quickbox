@@ -56,6 +56,8 @@ public:
 
 	Q_INVOKABLE QWidget* createReportOptionsDialog(QWidget *parent = nullptr);
 	Q_INVOKABLE QWidget* createNStagesReportOptionsDialog(QWidget *parent = nullptr);
+
+	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
 private:
 	Q_SLOT void onInstalled();
 

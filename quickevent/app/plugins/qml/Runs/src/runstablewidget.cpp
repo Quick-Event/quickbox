@@ -79,7 +79,7 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	// this ensures that table is sorted every time when start time is edited
 	ui->tblRuns->sortFilterProxyModel()->setDynamicSortFilter(true);
 
-	connect(m_runsModel, &RunsTableModel::startTimesSwitched, ui->tblRuns, [this](int id1, int id2, const QString &err_msg)
+	connect(m_runsModel, &RunsTableModel::startTimesSwitched, [this](int id1, int id2, const QString &err_msg)
 	{
 		Q_UNUSED(id1)
 		Q_UNUSED(id2)
@@ -203,13 +203,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			fwk->showProgress(tr("Reloading times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
 			Runs::RunsPlugin *runs_plugin = runsPlugin();
 			if(runs_plugin) {
-				int card_id = runs_plugin->cardForRun(run_id);
-				bool ok;
-				QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
-										  Q_RETURN_ARG(bool, ok),
-										  Q_ARG(int, card_id),
-										  Q_ARG(int, run_id));
-				//QF_ASSERT(ok == true, "reloadTimesFromCard error!", break);
+				bool ok = runs_plugin->reloadTimesFromCard(run_id);
 				if(ok)
 					ui->tblRuns->reloadRow(ix);
 			}

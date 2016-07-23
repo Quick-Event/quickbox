@@ -1,4 +1,5 @@
 #include "runstablemodel.h"
+#include "Runs/runsplugin.h"
 
 #include <quickevent/og/timems.h>
 #include <quickevent/si/siid.h>
@@ -6,8 +7,17 @@
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
+#include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <QMimeData>
+
+static Runs::RunsPlugin *runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
+	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
+	return plugin;
+}
 
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
@@ -73,7 +83,7 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 {
 	bool ret;
-	ColumnDefinition cd = columnDefinition(column_ix);
+	//qfInfo() << column_ix << val << val.typeName() << "is null:" << val.isNull();
 	if(column_ix == col_runs_finishTimeMs) {
 		QVariant start_ms = value(row_ix, col_runs_startTimeMs);
 		if(!start_ms.isNull()) {
@@ -198,12 +208,12 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 		postRow(r2, true);
 	}
 	else {
-		qf::core::sql::Transaction transaction(sqlConnection());
+		//qf::core::sql::Transaction transaction(sqlConnection());
 		quickevent::og::TimeMs t1 = v1.value<quickevent::og::TimeMs>();
 		quickevent::og::TimeMs t2 = v2.value<quickevent::og::TimeMs>();
 		int msec1 = -1, msec2 = -1;
-		qf::core::sql::Query q(transaction.connection());
-		QString qs = "SELECT id, startTimeMs FROM runs WHERE id IN (" QF_IARG(id1) ", " QF_IARG(id2) ") FOR UPDATE";
+		qf::core::sql::Query q(sqlConnection());
+		QString qs = "SELECT id, startTimeMs FROM runs WHERE id IN (" QF_IARG(id1) ", " QF_IARG(id2) ")";
 		q.exec(qs, qf::core::Exception::Throw);
 		while(q.next()) {
 			int id = q.value("id").toInt();
@@ -216,9 +226,9 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 		if(msec1 == t1.msec() && msec2 == t2.msec()) {
 			setData(ix1, v2);
 			setData(ix2, v1);
-			Super::postRow(r1, qf::core::Exception::Throw);
-			Super::postRow(r2, qf::core::Exception::Throw);
-			transaction.commit();
+			postRow(r1, qf::core::Exception::Throw);
+			postRow(r2, qf::core::Exception::Throw);
+			//transaction.commit();
 		}
 		else {
 			err_msg = tr("Mid-air collision switching start times, reload table and try it again.");
@@ -241,25 +251,30 @@ bool RunsTableModel::postRow(int row_no, bool throw_exc)
 		return Super::postRow(row_no, throw_exc);
 
 	if(isDirty(row_no, col_runs_startTimeMs)) {
-		int id = value(row_no, "runs.id").toInt();
+		int run_id = value(row_no, col_runs_id).toInt();
 		int orig_msec = origValue(row_no, col_runs_startTimeMs).toInt();
 		int db_msec = 0;
 
-		qf::core::sql::Transaction transaction(sqlConnection());
-		QString qs = "SELECT id, startTimeMs FROM runs WHERE id=" QF_IARG(id) " FOR UPDATE";
-		qf::core::sql::Query q(transaction.connection());
+		//qf::core::sql::Transaction transaction();
+		QString qs = "SELECT id, startTimeMs FROM runs WHERE id=" QF_IARG(run_id); // " FOR UPDATE";
+		qf::core::sql::Query q(sqlConnection());
 		q.exec(qs, qf::core::Exception::Throw);
 		if(q.next()) {
 			db_msec = q.value("startTimeMs").toInt();
 		}
 		if(orig_msec == db_msec) {
 			bool ret = Super::postRow(row_no, throw_exc);
-			transaction.commit();
+			//transaction.commit();
+			QVariant v = value(row_no, col_runs_finishTimeMs);
+			if(!v.isNull()) {
+				runsPlugin()->reloadTimesFromCard(run_id);
+				reloadRow(row_no);
+			}
 			return ret;
 		}
 		else {
 			QString err_msg = tr("Mid-air collision setting start time, reload table and try it again.");
-			revertRow(row_no);
+			setValue(row_no, col_runs_startTimeMs, db_msec);
 			if(throw_exc)
 				QF_EXCEPTION(err_msg);
 			return false;

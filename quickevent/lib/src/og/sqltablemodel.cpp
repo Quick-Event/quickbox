@@ -77,7 +77,7 @@ QVariant SqlTableModel::editValueToRaw(int column_index, const QVariant &val) co
 	int type = columnType(column_index);
 	if(type == qMetaTypeId<TimeMs>()) {
 		TimeMs t = val.value<TimeMs>();
-		ret = t.msec();
+		ret = t.isValid()? t.msec(): QVariant(QVariant::Int);
 	}
 	else if(type == qMetaTypeId<si::SiId>()) {
 		auto id = (int)val.value<si::SiId>();

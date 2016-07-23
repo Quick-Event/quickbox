@@ -204,6 +204,23 @@ QWidget *RunsPlugin::createNStagesReportOptionsDialog(QWidget *parent)
 	return new Runs::NStagesReportOptionsDialog(parent);
 }
 
+bool RunsPlugin::reloadTimesFromCard(int run_id)
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *cardreader_plugin = fwk->plugin("CardReader");
+	if(!cardreader_plugin) {
+		qfError() << "CardReader plugin not installed!";
+		return false;
+	}
+	int card_id = cardForRun(run_id);
+	bool ok;
+	QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
+							  Q_RETURN_ARG(bool, ok),
+							  Q_ARG(int, card_id),
+							  Q_ARG(int, run_id));
+	return ok;
+}
+
 int RunsPlugin::cardForRun(int run_id)
 {
 	qfLogFuncFrame() << "run id:" << run_id;
