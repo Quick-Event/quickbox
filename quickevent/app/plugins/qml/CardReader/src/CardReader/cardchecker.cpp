@@ -51,12 +51,30 @@ int CardChecker::toAM(int time_sec)
 	//return SIMessageCardReadOut::toAM(time_sec);
 }
 
-int CardChecker::stageStartSec()
+int CardChecker::stageIdForRun(int run_id)
+{
+	int ret = 0;
+	qfs::QueryBuilder qb;
+	qb.select2("runs", "stageId")
+			.from("runs")
+			.where("runs.id=" QF_IARG(run_id));
+	qfs::Query q;
+	q.exec(qb.toString(), qf::core::Exception::Throw);
+	if(q.next())
+		ret = q.value(0).toInt();
+	else
+		qfError() << "Cannot find runs record for id:" << run_id;
+	return ret;
+}
+
+int CardChecker::stageStartSec(int stage_id)
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->stageStartMsec(event_plugin->currentStageId());
+	if(stage_id == 0)
+		stage_id = event_plugin->currentStageId();
+	int ret = event_plugin->stageStartMsec(stage_id);
 	return ret / 1000;
 }
 
