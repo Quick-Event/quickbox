@@ -172,7 +172,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	int current_stage_id = eventPlugin()->currentStageId();
 	int run_id = checked_card.runId();
 	int course_id = checked_card.courseId();
-	int current_standings = 1;
+	int current_standings = 0;
 	int competitors_finished = 0;
 	QMap<int, int> best_laps; //< position->time
 	///QMap<int, int> missing_codes; //< pos->code
@@ -220,7 +220,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 					//qfInfo() << "bestlaps[" << pos << "] =" << lap;
 				}
 			}
-			{
+			if(checked_card.isOk()) {
 				// find current standings
 				qf::core::sql::QueryBuilder qb;
 				qb.select2("runs", "timeMs")

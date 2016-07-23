@@ -307,8 +307,9 @@ Report {
 					textFn: function() {
 						var current_standings = bandCard.data("currentStandings");
 						var competitors_count = bandCard.data("competitorsFinished");
-						var ret = qsTr("standings: ") + current_standings + "/" + competitors_count;
-						return ret;
+						if(current_standings && competitors_count)
+							return qsTr("standings: ") + current_standings + "/" + competitors_count;
+						return "";
 					}
 				}
 				Para {
