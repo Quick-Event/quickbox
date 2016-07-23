@@ -216,8 +216,8 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 		if(msec1 == t1.msec() && msec2 == t2.msec()) {
 			setData(ix1, v2);
 			setData(ix2, v1);
-			postRow(r1, true);
-			postRow(r2, true);
+			Super::postRow(r1, qf::core::Exception::Throw);
+			Super::postRow(r2, qf::core::Exception::Throw);
 			transaction.commit();
 		}
 		else {
@@ -240,11 +240,9 @@ bool RunsTableModel::postRow(int row_no, bool throw_exc)
 	if(is_single_user)
 		return Super::postRow(row_no, throw_exc);
 
-	int col_stime = columnIndex("startTimeMs");
-	QF_ASSERT(col_stime >= 0, "Bad startTimeMs column!", return false);
-	if(isDirty(row_no, col_stime)) {
+	if(isDirty(row_no, col_runs_startTimeMs)) {
 		int id = value(row_no, "runs.id").toInt();
-		int orig_msec = origValue(row_no, col_stime).toInt();
+		int orig_msec = origValue(row_no, col_runs_startTimeMs).toInt();
 		int db_msec = 0;
 
 		qf::core::sql::Transaction transaction(sqlConnection());
