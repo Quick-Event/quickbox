@@ -47,7 +47,9 @@ Report {
 				width: "%"
 				layout: Frame.LayoutVertical
 				bottomBorder: Pen { basedOn: "black2" }
-				LotteryTicket {}
+				LotteryTicket {
+					visible: false
+				}
 				Frame {
 					htmlExportAttributes: {"lpt_textAlign": "left", "lpt_borderTop": "=", "lpt_borderBottom": "-"}
 					width: "%"
