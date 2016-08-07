@@ -37,6 +37,28 @@ TxtImporter::TxtImporter(QObject *parent)
 void TxtImporter::importCompetitorsCSOS()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
+	mbx.setIcon(QMessageBox::Information);
+	mbx.setText(tr("Import windows-1250 coded fixed column size text files in CSOS format."));
+	mbx.setInformativeText(tr("Each row should have following columns: "
+							  "<ol>"
+							  "<li>7 chars: Registration</li>"
+							  "<li>1 space</li>"
+							  "<li>10 chars: Class</li>"
+							  "<li>1 space</li>"
+							  "<li>10 chars: SI</li>"
+							  "<li>1 space</li>"
+							  "<li>25 chars: Name</li>"
+							  "<li>1 space</li>"
+							  "<li>2 chars: Licence</li>"
+							  "<li>1 space</li>"
+							  "<li>rest of line: Note</li>"
+							  "</ol>"));
+	mbx.setDoNotShowAgainPersistentKey("importCompetitorsCSOS");
+	int res = mbx.exec();
+	//qfInfo() << "RES:" << res;
+	if(res != QMessageBox::Ok)
+		return;
 	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("CSOS files (*.txt)"));
 	if(fn.isEmpty())
 		return;
@@ -61,6 +83,60 @@ void TxtImporter::importCompetitorsCSOS()
 			QString lic = line.mid(56, 2).trimmed();
 			QString note = line.mid(59).trimmed();
 			csv_rows << (QVariantList() << reg << class_name << si << last_name << QString() << lic << note);
+		}
+		qf::core::sql::Transaction transaction;
+		importParsedCsv(csv_rows);
+		transaction.commit();
+		emit eventPlugin()->reloadDataRequest();
+	}
+	catch (qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+	}
+}
+
+void TxtImporter::importCompetitorsCSV()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
+	mbx.setIcon(QMessageBox::Information);
+	mbx.setText(tr("Import comma separated values UTF8 text files without header."));
+	mbx.setInformativeText(tr("Each row should have following columns: "
+							  "<ol>"
+							  "<li>Registration</li>"
+							  "<li>Class</li>"
+							  "<li>SI</li>"
+							  "<li>LastName</li>"
+							  "<li>FirstName</li>"
+							  "<li>Licence</li>"
+							  "<li>Note</li>"
+							  "</ol>"));
+	mbx.setDoNotShowAgainPersistentKey("importCompetitorsCSV");
+	int res = mbx.exec();
+	if(res != QMessageBox::Ok)
+		return;
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("CSV files (*.csv *.txt)"));
+	if(fn.isEmpty())
+		return;
+	try {
+		QFile f(fn);
+		if(!f.open(QFile::ReadOnly))
+			QF_EXCEPTION(tr("Cannot open file '%1' for reading.").arg(fn));
+		QList<QVariantList> csv_rows;
+		QTextStream ts(&f);
+		ts.setCodec("utf-8");
+		qf::core::utils::CSVReader reader(&ts);
+		reader.setSeparator(',');
+		reader.setLineComment('#');
+		while (!ts.atEnd()) {
+			QStringList sl = reader.readCSVLineSplitted();
+			QString reg = sl.value(ColRegistration).trimmed();
+			QString class_name = sl.value(ColClassName).trimmed();
+			int si = sl.value(ColSiId).trimmed().toInt();
+			QString first_name = sl.value(ColFirstName).trimmed();
+			QString last_name = sl.value(ColLastName).trimmed();
+			QString lic = sl.value(ColLicence).trimmed();
+			QString note = sl.value(ColNote).trimmed();
+			csv_rows << (QVariantList() << reg << class_name << si << last_name << first_name << lic << note);
 		}
 		qf::core::sql::Transaction transaction;
 		importParsedCsv(csv_rows);

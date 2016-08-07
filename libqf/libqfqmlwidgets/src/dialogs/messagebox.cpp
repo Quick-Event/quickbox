@@ -1,14 +1,37 @@
 #include "messagebox.h"
+#include "../framework/ipersistentsettings.h"
 
 #include <qf/core/exception.h>
+#include <qf/core/assert.h>
 
 #include <QApplication>
+#include <QCheckBox>
+#include <QSettings>
 
-using namespace qf::qmlwidgets::dialogs;
+namespace qf {
+namespace qmlwidgets {
+namespace dialogs {
 
 MessageBox::MessageBox(QWidget *parent) :
-	QMessageBox(parent)
+	Super(parent)
 {
+}
+
+int MessageBox::exec()
+{
+	if(loadShowAgainDisabled())
+		return QMessageBox::Ok;
+	QCheckBox *show_again_cbx = nullptr;
+	QString id = showAgainPersistentSettingsId();
+	if(!id.isEmpty()) {
+		show_again_cbx = new QCheckBox(tr("Show this message again"));
+		show_again_cbx->setChecked(true);
+		setCheckBox(show_again_cbx);
+	}
+	int ret = Super::exec();
+	if(show_again_cbx && !show_again_cbx->isChecked())
+		saveShowAgainDisabled(true);
+	return ret;
 }
 
 void MessageBox::showException(QWidget *parent, const QString &what, const QString &where, const QString &stack_trace)
@@ -49,3 +72,33 @@ bool MessageBox::askYesNo(QWidget *parent, const QString &msg, bool default_ret)
 								  i_def, 1);
 	return i == 0;
 }
+
+bool MessageBox::loadShowAgainDisabled()
+{
+	QString id = showAgainPersistentSettingsId();
+	if(id.isEmpty()) {
+		return true;
+	}
+	QSettings settings;
+	bool ret = settings.value(id).toBool();
+	return ret;
+}
+
+void MessageBox::saveShowAgainDisabled(bool b)
+{
+	QString id = showAgainPersistentSettingsId();
+	QF_ASSERT(!id.isEmpty(), "Cannot set show again enabled with 'doNotShowAgainPersistentKey' property not set!", return);
+	QSettings settings;
+	settings.setValue(id, b);
+}
+
+QString MessageBox::showAgainPersistentSettingsId()
+{
+	QString key = doNotShowAgainPersistentKey();
+	if(key.isEmpty()) {
+		return QString();
+	}
+	return framework::IPersistentSettings::defaultPersistentSettingsPathPrefix() + QStringLiteral("/doNotShowMessageAgain/") + key;
+}
+
+}}}
