@@ -30,6 +30,68 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfw = qf::qmlwidgets;
 namespace qfc = qf::core;
 namespace qfs = qf::core::sql;
+
+namespace {
+
+class RunsModel : public quickevent::og::SqlTableModel
+{
+	using Super = quickevent::og::SqlTableModel;
+public:
+	RunsModel(QObject *parent = nullptr);
+
+	enum Columns {
+		col_runs_isRunning = 0,
+		col_runs_stageId,
+		col_runs_siId,
+		col_runs_startTimeMs,
+		col_runs_timeMs,
+		col_runs_notCompeting,
+		col_runs_misPunch,
+		col_runs_disqualified,
+		col_runs_cardLent,
+		col_runs_cardReturned,
+		col_COUNT
+	};
+
+	QVariant value(int row_ix, int column_ix) const Q_DECL_OVERRIDE;
+	bool setValue(int row_ix, int column_ix, const QVariant &val) Q_DECL_OVERRIDE;
+};
+
+RunsModel::RunsModel(QObject *parent)
+	: Super(parent)
+{
+	clearColumns(col_COUNT);
+	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("On", "runs.isRunning")).setToolTip(tr("Is running")));
+	setColumn(col_runs_stageId, ColumnDefinition("runs.stageId", tr("Stage")).setReadOnly(true));
+	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>()));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
+	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
+	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch")));
+	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L", "runs.cardLent")).setToolTip(tr("Card lent")));
+	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R", "runs.cardReturned")).setToolTip(tr("Card returned")));
+}
+
+QVariant RunsModel::value(int row_ix, int column_ix) const
+{
+	if(column_ix == col_runs_isRunning) {
+		bool is_running = Super::value(row_ix, column_ix).toBool();
+		return is_running;
+	}
+	return Super::value(row_ix, column_ix);
+}
+
+bool RunsModel::setValue(int row_ix, int column_ix, const QVariant &val)
+{
+	if(column_ix == col_runs_isRunning) {
+		bool is_running = val.toBool();
+		return Super::setValue(row_ix, column_ix, is_running? is_running: QVariant());
+	}
+	return Super::setValue(row_ix, column_ix, val);
+}
+
+}
 /*
 static Competitors::CompetitorsPlugin* competitorsPlugin()
 {
@@ -70,23 +132,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
 
 	dataController()->setDocument(new Competitors::CompetitorDocument(this));
-	m_runsModel = new quickevent::og::SqlTableModel(this);
-	m_runsModel->addColumn("runs.offRace", tr("Off", "runs.offRace")).setToolTip(tr("Off race in this stage"));
-	m_runsModel->addColumn("runs.stageId", tr("Stage")).setReadOnly(true);
-	m_runsModel->addColumn("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>());
-	m_runsModel->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-	m_runsModel->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-	m_runsModel->addColumn("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing"));
-	m_runsModel->addColumn("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified in this stage"));
-	m_runsModel->addColumn("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch in this stage"));
-	m_runsModel->addColumn("runs.cardLent", tr("L", "runs.cardLent")).setToolTip(tr("Card lent in this stage"));
-	/*
-	quickevent::og::SqlTableModel::ColumnDefinition::DbEnumCastProperties runs_status_db_enum_cast_props;
-	runs_status_db_enum_cast_props.setGroupName("runs.status");
-	m_runsModel->addColumn("runs.status", tr("Status"))
-			.setToolTip(tr("Run status in this stage"))
-			.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), runs_status_db_enum_cast_props);
-	*/
+	m_runsModel = new RunsModel(this);
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
@@ -297,4 +343,5 @@ QVector<int> CompetitorWidget::veteranAges()
 	std::sort(ret.begin(), ret.end(), std::greater<int>());
 	return ret;
 }
+
 

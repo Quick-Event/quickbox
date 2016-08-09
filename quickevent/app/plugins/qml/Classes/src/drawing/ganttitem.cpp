@@ -81,7 +81,7 @@ void GanttItem::load(int stage_id)
 			.select("MIN(runs.startTimeMs) AS minStartTime")
 			.select("MAX(runs.startTimeMs) AS maxStartTime")
 			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id))
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id))
 			.groupBy("competitors.classId")
 			.as("classruns");
 	qf::core::sql::QueryBuilder qb;

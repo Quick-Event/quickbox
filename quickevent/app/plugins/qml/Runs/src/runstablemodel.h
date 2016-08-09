@@ -10,7 +10,7 @@ private:
 	typedef quickevent::og::SqlTableModel Super;
 public:
 	enum Columns {
-		col_runs_offRace = 0,
+		col_runs_isRunning = 0,
 		col_runs_id,
 		col_classes_name,
 		col_competitors_siId,

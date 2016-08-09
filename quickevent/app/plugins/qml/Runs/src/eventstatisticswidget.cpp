@@ -83,7 +83,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
 	{
-		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND NOT runs.offRace AND competitors.classId=classes.id");
+		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND competitors.classId=classes.id");
 		qf::core::sql::QueryBuilder qb_runners_count;
 		qb_runners_count.select("COUNT(runs.id)")
 				.from("runs").joinRestricted("runs.competitorId", "competitors.id", competiting_cond, qf::core::sql::QueryBuilder::INNER_JOIN);

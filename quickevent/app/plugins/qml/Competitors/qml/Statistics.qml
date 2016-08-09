@@ -23,7 +23,7 @@ QtObject {
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
 		.join("classes.id", "competitors.classId")
-		.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId={{stage_id}}")
+		.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId={{stage_id}}")
 		.groupBy("classes.name")
 		.orderBy("classes.name");
 		reportModel.setQueryParameters({stage_id: stage_id})

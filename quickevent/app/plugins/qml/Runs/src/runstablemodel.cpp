@@ -23,8 +23,8 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
 {
 	clearColumns(col_COUNT);
-	setColumn(col_runs_offRace, ColumnDefinition("runs.offRace", tr("Off race")));
-	setColumn(col_runs_id, ColumnDefinition("runs.id").setReadOnly(true));
+	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("Runnig")));
+	setColumn(col_runs_id, ColumnDefinition("runs.id", tr("id")).setReadOnly(true));
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
 	setColumn(col_competitors_siId, ColumnDefinition("competitors.siId", tr("SI")));
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
@@ -77,13 +77,20 @@ QVariant RunsTableModel::value(int row_ix, int column_ix) const
 		else
 			return sl.join(',');
 	}
+	else if(column_ix == col_runs_isRunning) {
+		bool is_running = Super::value(row_ix, column_ix).toBool();
+		return is_running;
+	}
 	return Super::value(row_ix, column_ix);
 }
 
 bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 {
-	bool ret;
 	//qfInfo() << column_ix << val << val.typeName() << "is null:" << val.isNull();
+	if(column_ix == col_runs_isRunning) {
+		bool is_running = val.toBool();
+		return Super::setValue(row_ix, column_ix, is_running? is_running: QVariant());
+	}
 	if(column_ix == col_runs_finishTimeMs) {
 		QVariant start_ms = value(row_ix, col_runs_startTimeMs);
 		if(!start_ms.isNull()) {
@@ -104,7 +111,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 				Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
 			}
 			else {
-				Super::setValue(row_ix, col_runs_timeMs, QVariant());
+				Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
 			}
 		}
 	}
@@ -123,7 +130,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 			}
 		}
 	}
-	ret = Super::setValue(row_ix, column_ix, val);
+	bool ret = Super::setValue(row_ix, column_ix, val);
 	return ret;
 }
 

@@ -224,11 +224,11 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				// find current standings
 				qf::core::sql::QueryBuilder qb;
 				qb.select2("runs", "timeMs")
-						.select("runs.disqualified OR runs.offRace OR runs.misPunch AS dis")
+						.select("runs.disqualified OR NOT runs.isRunning OR runs.isRunning IS NULL OR runs.misPunch AS dis")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id))
 						.where("runs.finishTimeMs > 0")
-						.orderBy("misPunch, disqualified, offRace, runs.timeMs");
+						.orderBy("misPunch, disqualified, isRunning, runs.timeMs");
 				//qfInfo() << qb.toString();
 				qf::core::sql::Query q;
 				q.exec(qb.toString(), qf::core::Exception::Throw);

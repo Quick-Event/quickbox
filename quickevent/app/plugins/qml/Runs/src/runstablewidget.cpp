@@ -143,13 +143,13 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 		qb.where("competitors.classId=" + QString::number(class_id));
 	}
 	if(!show_offrace)
-		qb.where("NOT runs.offRace");
+		qb.where("runs.isRunning");
 	qfDebug() << qb.toString();
 	m_runsTableItemDelegate->setHighlightedClassId(class_id, stage_id);
 	m_runsModel->setQueryBuilder(qb);
 	m_runsModel->reload();
 
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_offRace, !show_offrace);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);

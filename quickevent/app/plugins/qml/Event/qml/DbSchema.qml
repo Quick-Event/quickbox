@@ -172,12 +172,11 @@ Schema {
 					comment: 'in miliseconds'
 				},
 				Field { name: 'timeMs'; type: Int {}
-					comment: 'in miliseconds since event start'
+					comment: 'in miliseconds since event run'
 				},
-				Field { name: 'offRace'; type: Boolean { }
-					defaultValue: false;
-					notNull: true
-					comment: "Competitor does not run in this stage"
+				Field { name: 'isRunning'; type: Boolean { }
+					defaultValue: true;
+					comment: "Competitor is running in this stage"
 				},
 				Field { name: 'notCompeting'; type: Boolean { }
 					defaultValue: false;
@@ -224,8 +223,8 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId, competitorId']; unique: true },
-				Index {fields: ['stageId, siId']; unique: true } // cannot be unique since Oris import sometimes contains duplicate SI
+				Index {fields: ['stageId', 'competitorId']; unique: true },
+				Index {fields: ['stageId', 'siId', 'isRunning']; unique: true }
 			]
 		},
 		Table { name: 'runlaps'

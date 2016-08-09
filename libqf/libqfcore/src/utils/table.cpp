@@ -452,7 +452,9 @@ void TableRow::setValue(int col, const QVariant &v)
 		QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
 		return);
 
-	QVariant new_val = Utils::retypeVariant(v, fields()[col].type());
+	QVariant new_val;
+	if(v.isValid())
+		new_val = Utils::retypeVariant(v, fields()[col].type());
 	QVariant orig_val = origValue(col);
 	//qfInfo() << new_val << "is null:" << new_val.isNull() << "==" << orig_val << "is null:" << orig_val.isNull() << "->" << (new_val == orig_val);
 	bool same_nullity = (new_val.isNull() && orig_val.isNull()) || (!new_val.isNull() && !orig_val.isNull());

@@ -97,8 +97,7 @@ bool Model::addCategoryToStorage()
 					.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")
 					.from("competitors")
-					//.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
 					.where("competitors.classId={{class_id}}")
 					.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 			qs = qb.toString();
@@ -109,11 +108,8 @@ bool Model::addCategoryToStorage()
 			qb.select2("competitors", "registration, lastName, firstName")
 					.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")
-					//.select2("clubs", "name")
 					.from("competitors")
-					//.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace", "JOIN")
-					//.join("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "JOIN")
 					.where("competitors.classId={{class_id}}")
 					.orderBy("runs.startTimeMs");
 			qs = qb.toString();

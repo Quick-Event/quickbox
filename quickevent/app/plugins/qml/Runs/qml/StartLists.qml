@@ -47,7 +47,7 @@ QtObject {
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offrace", "INNER JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy('runs.startTimeMs');
 		for(var i=0; i<tt.rowCount(); i++) {
@@ -118,7 +118,7 @@ QtObject {
 			.select2('classes', 'name')
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offrace", "INNER JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
 			.join("competitors.classId", "classes.id")
 			.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
 			.orderBy('classes.name, runs.startTimeMs');
@@ -148,7 +148,7 @@ QtObject {
 			.select2('runs', 'siId, startTimeMs')
 			.select2('classes', 'name')
 			.from('competitors')
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}} AND NOT runs.offrace", "INNER JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}} AND runs.isRunning", "INNER JOIN")
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
 		if(class_group === 'H') {
@@ -199,7 +199,7 @@ QtObject {
 				var runs_table = "runs" + stage_id;
 				reportModel.queryBuilder
 					.select2(runs_table, "siid, startTimeMs")
-					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND NOT " + runs_table + ".offRace")
+					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND " + runs_table + ".isRunning")
 			}
 			reportModel.setQueryParameters({class_id: class_id});
 			reportModel.reload();
@@ -240,7 +240,7 @@ QtObject {
 				var runs_table = "runs" + stage_id;
 				reportModel.queryBuilder
 					.select2(runs_table, "siid, startTimeMs")
-					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND NOT " + runs_table + ".offRace")
+					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND " + runs_table + ".isRunning")
 			}
 			reportModel.setQueryParameters({club_abbr: club_abbr});
 			reportModel.reload();

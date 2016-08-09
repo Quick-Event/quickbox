@@ -115,7 +115,7 @@ QtObject {
 			.from('competitors')
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}"
-							+ " AND NOT runs.offRace"
+							+ " AND runs.isRunning"
 							+ " AND NOT runs.disqualified"
 							+ " AND NOT runs.notCompeting"
 							+ " AND runs.finishTimeMs>0", "JOIN")

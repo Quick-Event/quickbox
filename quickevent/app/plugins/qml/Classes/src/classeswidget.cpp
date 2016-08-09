@@ -274,11 +274,10 @@ void ClassesWidget::reload()
 	int stage_id = selectedStageId();
 	{
 		qf::core::sql::QueryBuilder qb1;
-		qb1.select("COUNT(*)")
+		qb1.select("COUNT(runs.isRunning)")
 				.from("runs")
 				.join("runs.competitorId", "competitors.id")
 				.where("competitors.classId=classdefs.classId")
-				.where("NOT runs.offRace")
 				.where("runs.stageId=" QF_IARG(stage_id));
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")

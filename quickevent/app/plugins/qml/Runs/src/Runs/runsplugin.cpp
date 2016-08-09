@@ -268,7 +268,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 		qfs::QueryBuilder qb;
 		qb.select2("runs", "competitorId, timeMs, notCompeting, disqualified")
 				.from("competitors")
-				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
 				.where("competitors.classId=" QF_IARG(class_id))
 				.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		qfs::Query q;
@@ -409,8 +409,7 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 			.select2("clubs", "name")
 			.from("competitors")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
-			//.join("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		if(max_competitors_in_class > 0)

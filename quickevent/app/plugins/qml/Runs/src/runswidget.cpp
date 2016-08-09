@@ -258,7 +258,7 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "id, competitorId")
 			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id), "JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id), "JOIN")
 			.where("competitors.classId=" QF_IARG(class_id));
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
@@ -290,7 +290,7 @@ void RunsWidget::import_start_times_ob2000()
 							.select2("competitors", "registration")
 							.select2("classes", "name")
 							.from("competitors")
-							.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(selectedStageId()), "JOIN")
+							.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(selectedStageId()), "JOIN")
 							.join("competitors.classId", "classes.id");
 					q.exec(qb.toString(), qf::core::Exception::Throw);
 					while(q.next()) {
