@@ -157,7 +157,7 @@
     <message>
         <location filename="src/tableview.cpp" line="75"/>
         <source>Left click selects all, right click for menu.</source>
-        <translation>Kliknij lewym aby wybrać wszystko, kliknij prawym aby wybrać menu.</translation>
+        <translation>Kliknij lewym przyciskiem aby wybrać wszystko, kliknij prawym przyciskiem aby wybrać menu.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="616"/>
@@ -331,7 +331,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1655"/>
         <source>Edit cell content</source>
-        <translation>Edytuj zawartość komurek</translation>
+        <translation>Edytuj zawartość komórek</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1657"/>
@@ -572,7 +572,7 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="36"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostrzeżenie</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="41"/>
@@ -693,7 +693,7 @@
         <location filename="src/framework/logwidget.cpp" line="33"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
-        <translation>Ctrl+C kopjuj wybrane</translation>
+        <translation>Ctrl+C kopiuj wybrane</translation>
     </message>
 </context>
 <context>
@@ -1045,7 +1045,7 @@
         <location filename="src/reports/widgets/reportviewwidget.h" line="61"/>
         <location filename="src/reports/widgets/reportviewwidget.h" line="67"/>
         <source>Report preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Podgląd raportu</translation>
     </message>
 </context>
 <context>

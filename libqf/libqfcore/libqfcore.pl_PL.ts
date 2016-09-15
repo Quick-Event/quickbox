@@ -131,7 +131,7 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="633"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumna o nazwie &apos;%1&apos;nie znaleziona w liście kolumn. Istniejące kolumny: [%2]</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="658"/>
