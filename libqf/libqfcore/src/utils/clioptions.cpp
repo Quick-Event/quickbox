@@ -328,7 +328,7 @@ void CLIOptions::printHelp(QTextStream& os) const
 			if(opt.type() == QVariant::Int || opt.type() == QVariant::Double) os << " " << "number";
 			else os << " " << "'string'";
 		}
-		os << ':';
+		//os << ':';
 		QVariant def_val = opt.defaultValue();
 		if(def_val.isValid()) os << " [default(" << def_val.toString() << ")]";
 		if(opt.isMandatory()) os << " [MANDATORY]";
