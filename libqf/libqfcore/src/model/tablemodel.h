@@ -198,7 +198,7 @@ public:
 
 	static QColor contrastTextColor(const QColor &background_color);
 protected:
-	virtual void checkColumns(bool force);
+	virtual void checkColumns();
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
 

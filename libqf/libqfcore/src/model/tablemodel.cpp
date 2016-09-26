@@ -318,9 +318,9 @@ void TableModel::sort(int column, Qt::SortOrder order)
 	emit layoutChanged();
 }
 
-void TableModel::checkColumns(bool force)
+void TableModel::checkColumns()
 {
-	if(m_columns.isEmpty() || force) {
+	if(m_columns.isEmpty()) {
 		createColumnsFromTableFields();
 	}
 	fillColumnIndexes();
@@ -329,7 +329,7 @@ void TableModel::checkColumns(bool force)
 bool TableModel::reload()
 {
 	beginResetModel();
-	checkColumns(false);
+	checkColumns();
 	endResetModel();
 	emit reloaded();
 	return true;

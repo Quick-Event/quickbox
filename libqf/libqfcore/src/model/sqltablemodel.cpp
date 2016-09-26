@@ -112,15 +112,15 @@ QString SqlTableModel::effectiveQuery()
 bool SqlTableModel::reload()
 {
 	QString qs = effectiveQuery();
-	return reloadQuery(qs, false);
+	return reloadQuery(qs);
 }
 
-bool SqlTableModel::reloadQuery(const QString &query_str, bool reload_columns)
+bool SqlTableModel::reloadQuery(const QString &query_str)
 {
 	qfLogFuncFrame() << query_str;
 	beginResetModel();
 	bool ok = reloadTable(query_str);
-	checkColumns(reload_columns);
+	checkColumns();
 	endResetModel();
 	emit reloaded();
 	return ok;
