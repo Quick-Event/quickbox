@@ -198,7 +198,7 @@ public:
 
 	static QColor contrastTextColor(const QColor &background_color);
 protected:
-	virtual void checkColumns();
+	virtual void checkColumns(bool force);
 	void createColumnsFromTableFields();
 	void fillColumnIndexes();
 
@@ -213,7 +213,7 @@ protected:
 protected:
 	qf::core::utils::Table m_table;
 	ColumnList m_columns;
-	bool m_autoColumns;
+	//bool m_autoColumns;
 	bool m_nullReportedAsString;
 	static QString m_defaultTimeFormat;
 	static QString m_defaultDateFormat;

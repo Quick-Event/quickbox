@@ -257,11 +257,11 @@ void TableView::resetColumnsSettings()
 
 void TableView::reload(bool preserve_sorting)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "preserve_sorting:" << preserve_sorting;
 	int sort_column = -1;
 	Qt::SortOrder sort_order(Qt::AscendingOrder);
 	if(horizontalHeader()) {
-		savePersistentSettings();
+		//savePersistentSettings();
 		sort_column = horizontalHeader()->sortIndicatorSection();
 		sort_order = horizontalHeader()->sortIndicatorOrder();
 		horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);

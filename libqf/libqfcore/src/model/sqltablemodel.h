@@ -76,7 +76,7 @@ protected:
 	virtual QString buildQuery();
 	virtual QString replaceQueryParameters(const QString query_str);
 
-	bool reloadQuery(const QString &query_str);
+	bool reloadQuery(const QString &query_str, bool reload_columns);
 
 	virtual bool reloadTable(const QString &query_str);
 	QStringList tableIds(const utils::Table::FieldList &table_fields);
