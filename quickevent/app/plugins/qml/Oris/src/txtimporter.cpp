@@ -212,8 +212,8 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		if(first_name.isEmpty() && !last_name.isEmpty()) {
 			int ix = last_name.indexOf(' ');
 			if(ix > 0) {
-				first_name = last_name.mid(0, ix).trimmed();
-				last_name = last_name.mid(ix + 1).trimmed();
+				first_name = last_name.mid(ix + 1).trimmed();
+				last_name = last_name.mid(0, ix).trimmed();
 			}
 		}
 		QString reg = row.value(ColRegistration).toString();
