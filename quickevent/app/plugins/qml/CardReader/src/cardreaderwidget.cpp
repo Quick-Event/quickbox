@@ -69,19 +69,80 @@ class Model : public quickevent::og::SqlTableModel
 private:
 	typedef quickevent::og::SqlTableModel Super;
 public:
-	explicit Model(QObject *parent) : Super(parent) {}
+	enum Columns {
+		col_cards_id = 0,
+		col_cards_siId,
+		col_classes_name,
+		col_competitorName,
+		col_competitors_registration,
+		col_runs_startTimeMs,
+		col_runs_timeMs,
+		col_runs_finishTimeMs,
+		col_runs_misPunch,
+		col_runs_disqualified,
+		col_runs_cardLent,
+		col_runs_cardReturned,
+		col_cards_checkTime,
+		col_cards_startTime,
+		col_cards_finishTime,
+		col_COUNT
+	};
+public:
+	explicit Model(QObject *parent);
 
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 };
 
+Model::Model(QObject *parent)
+	: Super(parent)
+{
+	clearColumns(col_COUNT);
+	setColumn(col_cards_id, ColumnDefinition("cards.id", "ID").setReadOnly(true));
+	setColumn(col_cards_siId, ColumnDefinition("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>()));
+	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
+	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
+	setColumn(col_competitors_registration, ColumnDefinition("competitors.registration", tr("Reg")));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
+	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
+	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true));
+	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
+	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
+	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
+	setColumn(col_cards_finishTime, ColumnDefinition("cards.finishTime", tr("FTIME")).setToolTip(tr("Card finish time")).setReadOnly(true));
+}
+
 QVariant Model::data(const QModelIndex &index, int role) const
 {
+	int col = index.column();
 	if(role == Qt::BackgroundRole) {
 		static auto C_RUNID = QStringLiteral("cards.runId");
 		int run_id = tableRow(index.row()).value(C_RUNID).toInt();
 		if(run_id == 0) {
 			static auto c = QColor(Qt::red).lighter(150);
 			return c;
+		}
+	}
+	else if(role == Qt::DisplayRole) {
+		if(col == col_cards_checkTime
+		   || col == col_cards_startTime
+		   || col == col_cards_finishTime )
+		{
+			int secs = value(index.row(), col).toInt();
+			if(secs == 0xEEEE)
+				return QString();
+			int sec = secs % 60;
+			secs /= 60;
+			int min = secs % 60;
+			secs /= 60;
+			int hod = secs;
+			QString s("%1:%2:%3");
+			s = s.arg(hod, 2, 10, QChar('0'));
+			s = s.arg(min, 2, 10, QChar('0'));
+			s = s.arg(sec, 2, 10, QChar('0'));
+			return s;
 		}
 	}
 	return Super::data(index, role);
@@ -116,24 +177,6 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
 		auto m = new Model(this);
-		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
-		m->addColumn("classes.name", tr("Class"));
-		m->addColumn("competitorName", tr("Name"));
-		m->addColumn("competitors.registration", tr("Reg"));
-		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-		m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-		m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
-		m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
-		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true);
-		m->addColumn("runs.cardReturned", tr("R")).setToolTip(tr("Card returned"));
-		/*
-		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
-		status_props.setGroupName("runs.status");
-		m->addColumn("runs.status", tr("Status"))
-				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
-		*/
 		ui->tblCards->setTableModel(m);
 		m_cardsModel = m;
 	}
@@ -262,7 +305,7 @@ void CardReaderWidget::reload()
 {
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId, runId")
+	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime")
 			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent, cardReturned")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
