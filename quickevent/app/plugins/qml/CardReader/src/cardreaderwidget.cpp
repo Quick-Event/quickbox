@@ -438,7 +438,11 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 
 void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QString& msg )
 {
-	qfLogFuncFrame() << qf::core::Log::levelName(level) << msg;
+	qf::core::utils::Settings settings;
+	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
+		if(level == qf::core::Log::Level::Debug)
+			level = qf::core::Log::Level::Info;
+	}
 	appendLog(level, trUtf8("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
 }
 
