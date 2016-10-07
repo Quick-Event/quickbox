@@ -26,14 +26,18 @@ class SIUT_DECL_EXPORT DeviceDriver : public QObject
 private:
 	typedef QObject Super;
 public:
-	enum ProcessRxDataStatus {StatusIdle, StatusMessageIncomplete, StatusMessageOk, StatusMessageError};
+	enum ProcessRxDataStatus {StatusUnknown, StatusMessageOk, StatusMessageError};
+public:
+	DeviceDriver(QObject *parent = NULL);
+	virtual ~DeviceDriver();
 protected:
 	//QSocketNotifier *f_socketNotifier;
 	CommPort *f_commPort;
 	QByteArray f_rxData;
 	QTimer *f_rxTimer;
-	ProcessRxDataStatus f_status;
-	int f_packetToFinishCount;
+	ProcessRxDataStatus f_status = StatusUnknown;
+	int f_packetReceivedCount = 0;
+	int f_packetToFinishCount = 0;
 	SIMessageData f_messageData;
 protected:
 	void packetReceived(const QByteArray &msg_data);
@@ -52,12 +56,9 @@ signals:
 	void driverInfo(qf::core::Log::Level level, const QString &msg);
 	void messageReady(const SIMessageData &msg);
 	void rawDataReceived(const QByteArray &data);
-public:
-	DeviceDriver(QObject *parent = NULL);
-	virtual ~DeviceDriver();
-
 private:
 	void sendAck();
+	void abortMessage();
 };
 
 }
