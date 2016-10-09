@@ -236,7 +236,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 					bool dis = q.value("dis").toBool();
 					int time = q.value("timeMs").toInt();
 					if(!dis) {
-						if(time < checked_card.timeMs())
+						if(time <= checked_card.timeMs())
 							current_standings++;
 					}
 					competitors_finished++;
