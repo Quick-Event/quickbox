@@ -73,6 +73,7 @@ void DeviceDriver::commDataReceived()
 				emit messageReady(f_messageData);
 				f_messageData = SIMessageData();
 			}
+			f_rxTimer->stop();
 			f_packetReceivedCount = 0;
 		}
 	}
