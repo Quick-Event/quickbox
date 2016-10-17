@@ -17,6 +17,8 @@ public:
 
 private:
 	Ui::MainWindow *ui;
+protected:
+	void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 };
 
 #endif // MAINWINDOW_H

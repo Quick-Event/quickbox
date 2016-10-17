@@ -67,11 +67,24 @@ void ResultsCellRenderer::draw(const QPoint &position, QWidget *widget)
 		painter.drawRect(cell_rect);
 		painter.scale(m_fontScale, m_fontScale);
 		QPoint pos = QPoint(0, m_fontAscent);
-		QString text = QString("[%1, %2]").arg(cell_rect.left()).arg(cell_rect.top());
+		QString text = columnText((Column)i);
 		//qfDebug() << "\t" << cell_rect << text;
 		painter.drawText(pos, text);
 		x += m_cellWidths[i];
 		painter.restore();
+	}
+}
+
+QString ResultsCellRenderer::columnText(ResultsCellRenderer::Column col)
+{
+	switch(col) {
+	case Position: return QStringLiteral("999.");
+	case Name: return QStringLiteral("Kamil Vydra");
+	case Registration: return QStringLiteral("BAR7007");
+	case Time: return QStringLiteral("123.45");
+	case Status: return QStringLiteral("DISQ");
+	default:
+		return QStringLiteral("WTF");
 	}
 }
 

@@ -33,6 +33,8 @@ public:
 	void draw(const QPoint &position, QWidget *widget) Q_DECL_OVERRIDE;
 protected:
 	enum Column {Position = 0, Name, Registration, Time, Status, ColumnCount};
+	QString columnText(Column col);
+protected:
 	QVector<int> m_cellWidths;
 };
 
