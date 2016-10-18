@@ -486,10 +486,14 @@ class SIReader(object):
 
         try:
             # try at 38400 baud, extended protocol
+            if self._debug:
+                print("starting at baud rate %s" % (self._serial.baudrate))
             self._send_command(SIReader.C_SET_MS, SIReader.P_MS_DIRECT)
         except (SIReaderException, SIReaderTimeout):
             try:
                 self._serial.baudrate = 4800
+                if self._debug:
+                    print("changing baud rate to %s" % (self._serial.baudrate))
             except (SerialException, OSError) as msg:
                 raise SIReaderException('Could not set port speed to 4800: %s' % msg)
             try:
