@@ -70,6 +70,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 		if(log_device->isMatchingLogFilter(level, context.file, context.category))
 			log_device->log(level, context, msg);
 	}
+	if(level == Log::Level::Fatal)
+		abort();
 }
 
 QList< LogDevice* >& logDevices()

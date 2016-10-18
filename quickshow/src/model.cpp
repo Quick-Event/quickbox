@@ -3,6 +3,7 @@
 #include "appclioptions.h"
 
 #include <qf/core/utils.h>
+#include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/log.h>
 
@@ -24,15 +25,17 @@ void Model::shift()
 	//qDebug() << "shift offset:" << f_shiftOffset;
 }
 
-QVariant Model::data(int index)
+QVariantMap Model::data(int index)
 {
-	QVariant ret;
+	QVariantMap ret;
+	if(m_shiftOffset < 0)
+		return ret;
 	while((m_shiftOffset + index) >= m_storage.count()) {
 		if(!addCategoryToStorage()) break;
 	}
 	int ix = m_shiftOffset + index;
 	if(ix < m_storage.count()) {
-		ret = m_storage[ix];
+		ret = m_storage[ix].toMap();
 	}
 	return ret;
 }
@@ -119,17 +122,18 @@ bool Model::addCategoryToStorage()
 		}
 		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
 		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
-		QSqlQuery q = app->execSql(qs);
+		qf::core::sql::Query q = app->execSql(qs);
 		int pos = 0;
 		while(q.next()) {
 			QSqlRecord rec = q.record();
 			QVariantMap m;
-			QVariantMap detail_map = app->sqlRecordToMap(rec);
+			//QVariantMap detail_map = app->sqlRecordToMap(rec);
+			QVariantMap detail_map = q.values();
 			detail_map["pos"] = ++pos;
 			m["type"] = "detail";
 			m["detail"] = detail_map;
 			/// pridej k detailu i kategorii, protoze na prvnim miste listu se zobrazuje vzdy zahlavi aktualni kategorie kvuli prehlednosti
-			m["category"] = category_map;
+			//m["category"] = category_map;
 			m_storage << m;
 		}
 	}

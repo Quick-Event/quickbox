@@ -12,7 +12,7 @@ public:
 	explicit Model(QObject *parent = 0);
 public slots:
 	void shift();
-	QVariant data(int index);
+	QVariantMap data(int index);
 protected:
 	//void reset();
 	void reloadCategories();

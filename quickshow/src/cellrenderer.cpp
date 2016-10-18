@@ -1,6 +1,7 @@
 #include "cellrenderer.h"
 
 #include <qf/core/log.h>
+#include <qf/core/utils.h>
 
 #include <QFontMetrics>
 #include <QPainter>
@@ -40,8 +41,9 @@ ResultsCellRenderer::ResultsCellRenderer(const QSize &size, QWidget *widget)
 	m_cellWidths[Name] = name_width;
 }
 
-void ResultsCellRenderer::draw(const QPoint &position, QWidget *widget)
+void ResultsCellRenderer::draw(const QPoint &position, const QVariantMap &data, QWidget *widget)
 {
+	qfInfo() << data;
 	QPainter painter(widget);
 	//painter.fillRect(r.adjusted(2, 2, -2, -2), Qt::yellow);
 	QPen pen(Qt::SolidLine);
@@ -65,9 +67,10 @@ void ResultsCellRenderer::draw(const QPoint &position, QWidget *widget)
 		cell_rect.setRight(m_cellWidths[i]);
 		//painter.fillRect(cell_rect, QColor("green"));
 		painter.drawRect(cell_rect);
+		painter.setPen(QPen(Qt::white));
 		painter.scale(m_fontScale, m_fontScale);
 		QPoint pos = QPoint(0, m_fontAscent);
-		QString text = columnText((Column)i);
+		QString text = columnText((Column)i, data);
 		//qfDebug() << "\t" << cell_rect << text;
 		painter.drawText(pos, text);
 		x += m_cellWidths[i];
@@ -75,16 +78,20 @@ void ResultsCellRenderer::draw(const QPoint &position, QWidget *widget)
 	}
 }
 
-QString ResultsCellRenderer::columnText(ResultsCellRenderer::Column col)
+QString ResultsCellRenderer::columnText(ResultsCellRenderer::Column col, const QVariantMap &data)
 {
+	QString ret;
 	switch(col) {
-	case Position: return QStringLiteral("999.");
-	case Name: return QStringLiteral("Kamil Vydra");
-	case Registration: return QStringLiteral("BAR7007");
-	case Time: return QStringLiteral("123.45");
-	case Status: return QStringLiteral("DISQ");
+	case Position: ret = QStringLiteral("{{position}}."); break;
+	case Name: ret = QStringLiteral("{{fullName}}"); break;
+	case Registration: ret = QStringLiteral("{{registration}}"); break;
+	case Time: ret = QStringLiteral("{{type}}"); break;
+	case Status: ret = QStringLiteral("{{status}}"); break;
 	default:
-		return QStringLiteral("WTF");
+		ret = QStringLiteral("WTF");
 	}
+	//qfInfo() << ret << "---->" << qf::core::Utils::replaceCaptions(ret, data);
+	ret = qf::core::Utils::replaceCaptions(ret, data);
+	return ret;
 }
 

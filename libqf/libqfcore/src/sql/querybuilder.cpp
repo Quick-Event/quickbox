@@ -322,6 +322,15 @@ QVariant QueryBuilder::takeOrderBy()
 	return v;
 }
 
+QString QueryBuilder::unmangleLongFieldName(const QString &field)
+{
+	int ix = field.indexOf(mangleSeparator());
+	if(ix < 0)
+		return field;
+	QString ret = field;
+	return ret.replace(ix, mangleSeparator().length(), '.');
+}
+
 bool QueryBuilder::isMangleLongFieldNames(const QueryBuilder::BuildOptions &opts) const
 {
 	return !opts.isSqlDriverSupportsTableNamesInSelect();

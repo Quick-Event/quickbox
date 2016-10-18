@@ -1,15 +1,14 @@
 #include "application.h"
 #include "appclioptions.h"
-#include "model.h"
 
 #include <qf/core/log.h>
 #include <qf/core/sql/connection.h>
+#include <qf/core/sql/query.h>
 
 #include <QSettings>
 #include <QStringList>
 #include <QStringBuilder>
 #include <QSqlError>
-#include <QSqlQuery>
 #include <QSqlRecord>
 #include <QSqlDatabase>
 #include <QDebug>
@@ -18,8 +17,6 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	: Super(argc, argv)
 	, m_cliOptions(cli_opts)
 {
-	m_model = new Model(this);
-	//setProperty("model", QVariant::fromValue(qobject_cast<QObject*>(m)));
 }
 
 Application *Application::instance()
@@ -35,7 +32,7 @@ qf::core::sql::Connection Application::sqlConnetion()
 	qf::core::sql::Connection db = qf::core::sql::Connection::forName();
 	if(!db.isValid()) {
 		if(cliOptions()->eventName().isEmpty())
-			qfFatal("Event name is empty!");
+			qfError("Event name is empty!");
 		db = QSqlDatabase::addDatabase(cliOptions()->sqlDriver());
 		db.setHostName(cliOptions()->host());
 		db.setPort(cliOptions()->port());
@@ -53,7 +50,6 @@ qf::core::sql::Connection Application::sqlConnetion()
 				db.setCurrentSchema(cliOptions()->eventName());
 				if(db.currentSchema() != cliOptions()->eventName()) {
 					qfError() << "ERROR open event:" << cliOptions()->eventName();
-					ok = false;
 				}
 			}
 			if(ok) {
@@ -65,7 +61,7 @@ qf::core::sql::Connection Application::sqlConnetion()
 	return db;
 }
 
-QSqlQuery Application::execSql(const QString &query_str)
+qf::core::sql::Query Application::execSql(const QString &query_str)
 {
 	QString qs = query_str;
 	{
@@ -77,11 +73,12 @@ QSqlQuery Application::execSql(const QString &query_str)
 			pos += rx_id_placeholders.matchedLength();
 		}
 	}
-	QSqlQuery q(sqlConnetion());
+	qf::core::sql::Query q(sqlConnetion());
 	if(!q.exec(qs)) {
 		QSqlError err = q.lastError();
 		qfError() << "SQL ERROR:" << err.text();
 		//qCritical() << ("QUERY: "%q.lastQuery());
+		::exit(-1);
 	}
 	return q;
 }
@@ -122,7 +119,3 @@ QVariant Application::cliOptionValue(const QString &option_name)
 	return ret;
 }
 
-QObject *Application::model()
-{
-	return m_model;
-}

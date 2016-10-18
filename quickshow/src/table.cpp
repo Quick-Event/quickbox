@@ -1,5 +1,8 @@
 #include "table.h"
+#include "model.h"
 #include "cellrenderer.h"
+#include "application.h"
+#include "appclioptions.h"
 
 #include <qf/core/log.h>
 
@@ -12,6 +15,15 @@ Table::Table(QWidget *parent)
 	m_updateRowCountTimer = new QTimer(this);
 	m_updateRowCountTimer->setSingleShot(true);
 	connect(m_updateRowCountTimer, &QTimer::timeout, this, &Table::updateRowCount);
+
+	m_scrollTimer = new QTimer(this);
+	Application *app = Application::instance();
+	AppCliOptions *cliopts = app->cliOptions();
+	m_scrollTimer->start(cliopts->refreshTime());
+	connect(m_scrollTimer, &QTimer::timeout, [this]() {
+		model()->shift();
+		update();
+	});
 }
 
 void Table::paintEvent(QPaintEvent *event)
@@ -24,7 +36,8 @@ void Table::paintEvent(QPaintEvent *event)
 	for (int j = 0; j < m_columnCount; ++j) {
 		for (int i = 0; i < m_rowCount; ++i) {
 			QPoint pos(j * m_cellSize.width(), i * m_cellSize.height());
-			cr.draw(pos, this);
+			cr.draw(pos, model()->data(ix), this);
+			ix++;
 		}
 	}
 }
@@ -50,4 +63,12 @@ void Table::updateRowCount()
 	m_cellSize.setWidth(frame_size.width() / m_columnCount);
 	qfDebug() << "new row count:" << m_rowCount << "cell size:" << m_cellSize;
 	update();
+}
+
+Model *Table::model()
+{
+	if(!m_model) {
+		m_model = new Model(this);
+	}
+	return m_model;
 }

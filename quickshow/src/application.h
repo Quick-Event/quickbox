@@ -11,12 +11,11 @@ class QSqlQuery;
 class QSqlRecord;
 class AppCliOptions;
 
-class Model;
-
 namespace qf {
 	namespace core {
 		namespace sql {
-			class Connection;
+		class Connection;
+		class Query;
 		}
 	}
 }
@@ -36,16 +35,14 @@ public:
 	static Application *instance();
 	AppCliOptions* cliOptions() {return m_cliOptions;}
 	qf::core::sql::Connection sqlConnetion();
-	QSqlQuery execSql(const QString &query_str);
+	qf::core::sql::Query execSql(const QString &query_str);
 	QVariantMap sqlRecordToMap(const QSqlRecord &rec);
 public slots:
 	QVariant eventInfo();
 	QString profile();
 	QVariant cliOptionValue(const QString &option_name);
-	QObject* model();
 protected:
 	AppCliOptions *m_cliOptions;
-	Model *m_model;
 };
 
 #endif // APPLICATION_H

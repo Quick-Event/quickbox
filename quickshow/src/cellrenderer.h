@@ -3,6 +3,7 @@
 
 #include <QSize>
 #include <QVector>
+#include <QVariantMap>
 
 class QWidget;
 class QPainter;
@@ -13,7 +14,7 @@ class CellRenderer
 public:
 	CellRenderer(const QSize &size, QWidget *widget);
 
-	virtual void draw(const QPoint &position, QWidget *widget) = 0;
+	virtual void draw(const QPoint &position, const QVariantMap &data, QWidget *widget) = 0;
 protected:
 	const QSize m_size;
 	int m_cellSpacing;
@@ -30,10 +31,10 @@ private:
 public:
 	ResultsCellRenderer(const QSize &size, QWidget *widget);
 
-	void draw(const QPoint &position, QWidget *widget) Q_DECL_OVERRIDE;
+	void draw(const QPoint &position, const QVariantMap &data, QWidget *widget) Q_DECL_OVERRIDE;
 protected:
 	enum Column {Position = 0, Name, Registration, Time, Status, ColumnCount};
-	QString columnText(Column col);
+	QString columnText(Column col, const QVariantMap &data);
 protected:
 	QVector<int> m_cellWidths;
 };
