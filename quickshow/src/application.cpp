@@ -82,7 +82,7 @@ qf::core::sql::Query Application::execSql(const QString &query_str)
 	}
 	return q;
 }
-
+/*
 QVariantMap Application::sqlRecordToMap(const QSqlRecord &rec)
 {
 	QVariantMap ret;
@@ -95,7 +95,7 @@ QVariantMap Application::sqlRecordToMap(const QSqlRecord &rec)
 	}
 	return ret;
 }
-
+*/
 QVariant Application::eventInfo()
 {
 	static QVariantMap info;

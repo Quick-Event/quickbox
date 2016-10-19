@@ -68,9 +68,9 @@ bool Model::addCategoryToStorage()
 	QVariantMap category_map;
 	{
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("classes", "*")
-				.select2("classdefs", "*")
-				.select2("courses", "*")
+		qb.select2("classes", "name")
+				//.select2("classdefs", "")
+				.select2("courses", "length, climb")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 				.join("classdefs.courseId", "courses.id")
@@ -80,13 +80,12 @@ bool Model::addCategoryToStorage()
 			qfInfo() << "classes:" << qs;
 		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
 		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
-		QSqlQuery q = app->execSql(qs);
+		qf::core::sql::Query q = app->execSql(qs);
 		if(q.next()) {
-			QSqlRecord rec = q.record();
 			QVariantMap m;
-			category_map = app->sqlRecordToMap(rec);
-			m["type"] = "category";
-			m["category"] = category_map;
+			category_map = q.values();
+			m["type"] = "classInfo";
+			m["record"] = category_map;
 			m_storage << m;
 		}
 		else {
@@ -125,13 +124,12 @@ bool Model::addCategoryToStorage()
 		qf::core::sql::Query q = app->execSql(qs);
 		int pos = 0;
 		while(q.next()) {
-			QSqlRecord rec = q.record();
 			QVariantMap m;
 			//QVariantMap detail_map = app->sqlRecordToMap(rec);
 			QVariantMap detail_map = q.values();
 			detail_map["pos"] = ++pos;
-			m["type"] = "detail";
-			m["detail"] = detail_map;
+			m["type"] = app->cliOptions()->profile();
+			m["record"] = detail_map;
 			/// pridej k detailu i kategorii, protoze na prvnim miste listu se zobrazuje vzdy zahlavi aktualni kategorie kvuli prehlednosti
 			//m["category"] = category_map;
 			m_storage << m;

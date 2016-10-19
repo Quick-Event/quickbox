@@ -4,6 +4,7 @@
 #include <QSize>
 #include <QVector>
 #include <QVariantMap>
+#include <QCoreApplication>
 
 class QWidget;
 class QPainter;
@@ -22,6 +23,29 @@ protected:
 	int m_fontAscent;
 	int m_fontDescent;
 	int m_scaledLetterWidth;
+
+	struct CellAttribute
+	{
+		int width = 0;
+		int alignment = 0;
+		CellAttribute(int w = 0, int a = 0) : width(w), alignment(a) {}
+	};
+	QVector<CellAttribute> m_cellAttributes;
+};
+
+class ClassCellRenderer : public CellRenderer
+{
+	Q_DECLARE_TR_FUNCTIONS(ClassCellRenderer)
+private:
+	using Super = CellRenderer;
+public:
+	ClassCellRenderer(const QSize &size, QWidget *widget);
+
+	void draw(const QPoint &position, const QVariantMap &data, QWidget *widget) Q_DECL_OVERRIDE;
+protected:
+	enum Column {Name = 0, Info, ColumnCount};
+	QString columnText(Column col, const QVariantMap &data);
+protected:
 };
 
 class ResultsCellRenderer : public CellRenderer
@@ -35,8 +59,6 @@ public:
 protected:
 	enum Column {Position = 0, Name, Registration, Time, Status, ColumnCount};
 	QString columnText(Column col, const QVariantMap &data);
-protected:
-	QVector<int> m_cellWidths;
 };
 
 #endif // CELLRENDERER_H

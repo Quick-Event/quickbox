@@ -16,7 +16,7 @@
 #include <QSettings>
 #include <QSerialPortInfo>
 
-using namespace siut;
+namespace siut {
 
 //=================================================
 //             DeviceDriver
@@ -337,4 +337,6 @@ void DeviceDriver::abortMessage()
 	f_status = StatusMessageError;
 	f_packetReceivedCount = 0;
 	f_packetToFinishCount = 0;
+}
+
 }

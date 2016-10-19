@@ -31,12 +31,18 @@ void Table::paintEvent(QPaintEvent *event)
 	Super::paintEvent(event);
 	if(m_rowCount == 0)
 		return;
-	ResultsCellRenderer cr(m_cellSize, this);
+	ClassCellRenderer cr(m_cellSize, this);
+	ResultsCellRenderer rr(m_cellSize, this);
 	int ix = 0;
 	for (int j = 0; j < m_columnCount; ++j) {
 		for (int i = 0; i < m_rowCount; ++i) {
 			QPoint pos(j * m_cellSize.width(), i * m_cellSize.height());
-			cr.draw(pos, model()->data(ix), this);
+			QVariantMap data = model()->data(ix);
+			QString data_type = data.value(QStringLiteral("type")).toString();
+			if(data_type == QLatin1String("classInfo"))
+				cr.draw(pos, data, this);
+			else
+				rr.draw(pos, data, this);
 			ix++;
 		}
 	}

@@ -26,9 +26,9 @@ else:qsqlmon {
 }
 else {
 	SUBDIRS += \
-		#libsiut \
+		libsiut \
 		tools \
-		#quickevent \
+		quickevent \
 		quickshow-qml \
 		quickshow \
 
