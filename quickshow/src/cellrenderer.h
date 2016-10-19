@@ -50,6 +50,7 @@ protected:
 
 class ResultsCellRenderer : public CellRenderer
 {
+	Q_DECLARE_TR_FUNCTIONS(ResultsCellRenderer)
 private:
 	using Super = CellRenderer;
 public:

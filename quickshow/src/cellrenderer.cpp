@@ -36,7 +36,6 @@ ClassCellRenderer::ClassCellRenderer(const QSize &size, QWidget *widget)
 void ClassCellRenderer::draw(const QPoint &position, const QVariantMap &data, QWidget *widget)
 {
 	QVariantMap record = data.value(QStringLiteral("record")).toMap();
-	//qfInfo() << record;
 	QPainter painter(widget);
 	//painter.fillRect(r.adjusted(2, 2, -2, -2), Qt::yellow);
 	QPen pen(Qt::SolidLine);
@@ -108,6 +107,7 @@ ResultsCellRenderer::ResultsCellRenderer(const QSize &size, QWidget *widget)
 void ResultsCellRenderer::draw(const QPoint &position, const QVariantMap &data, QWidget *widget)
 {
 	QVariantMap record = data.value(QStringLiteral("record")).toMap();
+	//qfInfo() << record;
 	QPainter painter(widget);
 	//painter.fillRect(r.adjusted(2, 2, -2, -2), Qt::yellow);
 	QPen pen(Qt::SolidLine);
@@ -146,7 +146,13 @@ QString ResultsCellRenderer::columnText(ResultsCellRenderer::Column col, const Q
 {
 	QString ret;
 	switch(col) {
-	case Position: ret = QStringLiteral("{{pos}}."); break;
+	case Position: {
+		bool disq = data.value(QStringLiteral("disqualified")).toBool();
+		if(disq)
+			return QString();
+		ret = QStringLiteral("{{pos}}.");
+		break;
+	}
 	case Name: ret = QStringLiteral("{{lastname}} {{firstname}}"); break;
 	case Registration: ret = QStringLiteral("{{registration}}"); break;
 	case Time: {
@@ -154,7 +160,10 @@ QString ResultsCellRenderer::columnText(ResultsCellRenderer::Column col, const Q
 		ret = QString("%1.%2").arg(sec / 60).arg(sec % 60, 2, 10, QChar('0'));
 		return ret;
 	}
-	case Status: ret = QStringLiteral("{{status}}"); break;
+	case Status: {
+		bool disq = data.value(QStringLiteral("disqualified")).toBool();
+		return disq? tr("DISQ"): QString();
+	}
 	default:
 		ret = QStringLiteral("WTF");
 	}

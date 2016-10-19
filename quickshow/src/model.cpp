@@ -97,7 +97,7 @@ bool Model::addCategoryToStorage()
 		qf::core::sql::QueryBuilder qb;
 		if(app->cliOptions()->profile() == "results") {
 			qb.select2("competitors", "registration, lastName, firstName")
-					.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+					//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")
 					.from("competitors")
 					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
@@ -109,7 +109,7 @@ bool Model::addCategoryToStorage()
 		}
 		else {
 			qb.select2("competitors", "registration, lastName, firstName")
-					.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+					//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")
 					.from("competitors")
 					.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "JOIN")
