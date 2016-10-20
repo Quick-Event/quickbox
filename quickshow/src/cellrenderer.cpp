@@ -29,8 +29,8 @@ ClassCellRenderer::ClassCellRenderer(const QSize &size, QWidget *widget)
 	: Super(size, widget)
 {
 	m_cellAttributes.resize(ColumnCount);
-	m_cellAttributes[Name] = CellAttribute{size.width() / 2 - m_cellSpacing};
-	m_cellAttributes[Info] = CellAttribute{size.width() / 2 - 2 * m_cellSpacing, Qt::AlignRight};
+	m_cellAttributes[Name] = CellAttribute{size.width() / 3 - m_cellSpacing};
+	m_cellAttributes[Info] = CellAttribute{2 * size.width() / 3 - 2 * m_cellSpacing, Qt::AlignRight};
 }
 
 void ClassCellRenderer::draw(const QPoint &position, const QVariantMap &data, QWidget *widget)
@@ -44,7 +44,7 @@ void ClassCellRenderer::draw(const QPoint &position, const QVariantMap &data, QW
 	painter.translate(position);
 	QRect r(QPoint(0, 0), m_size);
 	//qfDebug() << r;
-	painter.fillRect(r.adjusted(1, 1, -1, -1), QColor("khaki"));
+	painter.fillRect(r.adjusted(1, 1, -1, -1), QColor("gold"));
 	int x = 0;
 	for (int i = 0; i < ColumnCount; ++i) {
 		painter.save();
@@ -53,7 +53,7 @@ void ClassCellRenderer::draw(const QPoint &position, const QVariantMap &data, QW
 		QRect cell_rect = r;
 		cell_rect.setLeft(0);
 		cell_rect.setRight(m_cellAttributes[i].width);
-		painter.drawRect(cell_rect);
+		//painter.drawRect(cell_rect);
 		painter.setPen(QPen(Qt::black));
 
 		painter.scale(m_fontScale, m_fontScale);
@@ -86,11 +86,11 @@ ResultsCellRenderer::ResultsCellRenderer(const QSize &size, QWidget *widget)
 	: Super(size, widget)
 {
 	m_cellAttributes.resize(ColumnCount);
-	m_cellAttributes[Position] = CellAttribute{3 * m_scaledLetterWidth, Qt::AlignRight};
+	m_cellAttributes[Position] = CellAttribute{4 * m_scaledLetterWidth, Qt::AlignRight};
 	m_cellAttributes[Name] = CellAttribute{0};
-	m_cellAttributes[Registration] = CellAttribute{7 * m_scaledLetterWidth};
-	m_cellAttributes[Time] = CellAttribute{6 * m_scaledLetterWidth, Qt::AlignRight};
-	m_cellAttributes[Status] = CellAttribute{4 * m_scaledLetterWidth};
+	m_cellAttributes[Registration] = CellAttribute{8 * m_scaledLetterWidth};
+	m_cellAttributes[Time] = CellAttribute{7 * m_scaledLetterWidth, Qt::AlignRight};
+	m_cellAttributes[Status] = CellAttribute{5 * m_scaledLetterWidth};
 	int sum = 0;
 	for (int i = 0; i < ColumnCount; ++i) {
 		sum += m_cellSpacing;
@@ -115,22 +115,20 @@ void ResultsCellRenderer::draw(const QPoint &position, const QVariantMap &data, 
 	painter.setPen(pen);
 	painter.translate(position);
 	QRect r(QPoint(0, 0), m_size);
-	//qfDebug() << r;
+
+	painter.fillRect(r, QColor(Qt::gray));
 	painter.fillRect(r.adjusted(1, 1, -1, -1), QColor("midnightblue"));
-	//painter.drawRect(r);
-	//painter.setBrush(Qt::white);
-	//double scale = m_size.height() / (double)(m_fontAscent + m_fontDescent);
-	//painter.scale(scale, scale);
+
 	int x = 0;
 	for (int i = 0; i < ColumnCount; ++i) {
 		painter.save();
 		x += m_cellSpacing;
 		painter.translate(x, 0);
-		QRect cell_rect = r;//.adjusted(0, 2, 0, -2);
+		QRect cell_rect = r.adjusted(1, 1, -1, -1);
 		cell_rect.setLeft(0);
 		cell_rect.setRight(m_cellAttributes[i].width);
-		//painter.fillRect(cell_rect, QColor("green"));
-		painter.drawRect(cell_rect);
+		//painter.fillRect(cell_rect, QColor("midnightblue"));
+		//painter.drawRect(cell_rect);
 		painter.setPen(QPen(Qt::white));
 
 		painter.scale(m_fontScale, m_fontScale);

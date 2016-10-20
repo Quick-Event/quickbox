@@ -64,6 +64,7 @@ qf::core::sql::Connection Application::sqlConnetion()
 qf::core::sql::Query Application::execSql(const QString &query_str)
 {
 	QString qs = query_str;
+	/*
 	{
 		static QRegExp rx_id_placeholders("\\{\\{([A-Za-z0-9\\.\\_\\/]+)\\}\\}");
 		int pos = 0;
@@ -73,6 +74,7 @@ qf::core::sql::Query Application::execSql(const QString &query_str)
 			pos += rx_id_placeholders.matchedLength();
 		}
 	}
+	*/
 	qf::core::sql::Query q(sqlConnetion());
 	if(!q.exec(qs)) {
 		QSqlError err = q.lastError();
@@ -96,7 +98,7 @@ QVariantMap Application::sqlRecordToMap(const QSqlRecord &rec)
 	return ret;
 }
 */
-QVariant Application::eventInfo()
+QVariantMap Application::eventInfo()
 {
 	static QVariantMap info;
 	if(info.isEmpty()) {
@@ -113,9 +115,4 @@ QString Application::profile()
 	return cliOptions()->profile();
 }
 
-QVariant Application::cliOptionValue(const QString &option_name)
-{
-	QVariant ret = cliOptions()->value(option_name);
-	return ret;
-}
 

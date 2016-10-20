@@ -37,10 +37,9 @@ public:
 	qf::core::sql::Connection sqlConnetion();
 	qf::core::sql::Query execSql(const QString &query_str);
 	//QVariantMap sqlRecordToMap(const QSqlRecord &rec);
-public slots:
-	QVariant eventInfo();
+
+	QVariantMap eventInfo();
 	QString profile();
-	QVariant cliOptionValue(const QString &option_name);
 protected:
 	AppCliOptions *m_cliOptions;
 };

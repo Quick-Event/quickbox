@@ -19,6 +19,7 @@ Table::Table(QWidget *parent)
 	m_scrollTimer = new QTimer(this);
 	Application *app = Application::instance();
 	AppCliOptions *cliopts = app->cliOptions();
+	m_columnCount = cliopts->columnCount();
 	m_scrollTimer->start(cliopts->refreshTime());
 	connect(m_scrollTimer, &QTimer::timeout, [this]() {
 		model()->shift();
@@ -60,7 +61,9 @@ void Table::updateRowCount()
 	if(!m_cellSize.isValid()) {
 		QFontMetrics fm(font(), this);
 		qfInfo() << "h:" << fm.height() << "asc:" << fm.ascent() << "desc:" << fm.descent();
-		m_cellSize.setHeight(fm.height() * 2);
+		Application *app = Application::instance();
+		AppCliOptions *cliopts = app->cliOptions();
+		m_cellSize.setHeight(fm.height() * cliopts->fontScale() / 100);
 	}
 	QSize frame_size = geometry().size();
 	m_rowCount = frame_size.height() / m_cellSize.height();

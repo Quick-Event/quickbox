@@ -13,7 +13,9 @@ public:
 	~AppCliOptions() Q_DECL_OVERRIDE {}
 
 	CLIOPTION_GETTER_SETTER(QString, p, setP, rofile)
-	CLIOPTION_GETTER_SETTER2(int, "application.refreshTime", r, setr, efreshTime)
+	CLIOPTION_GETTER_SETTER2(int, "application.refreshTime", r, setR, efreshTime)
+	CLIOPTION_GETTER_SETTER2(int, "application.columnCount", c, setC, olumnCount)
+	CLIOPTION_GETTER_SETTER2(int, "application.fontScale", f, setF, ontScale)
 	CLIOPTION_GETTER_SETTER2(QString, "event.name", e, setE, ventName)
 	CLIOPTION_GETTER_SETTER2(int, "event.stage", s, setS, tage)
 	CLIOPTION_GETTER_SETTER2(QString, "connection.host", h, setH, ost)
