@@ -14,7 +14,7 @@
 
 class QTextEdit;
 
-//! TODO: write class documentation.
+
 class QFSqlSyntaxHighlighter : public QSyntaxHighlighter
 {
 	public:

@@ -1,7 +1,7 @@
 #include "itemdelegate.h"
 #include "timeedit.h"
-#include "siid.h"
-#include "siidedit.h"
+#include "../si/siid.h"
+#include "../si/siidedit.h"
 
 #include <QItemEditorFactory>
 #include <QSpinBox>
@@ -22,8 +22,8 @@ ItemDelegate::ItemDelegate(qf::qmlwidgets::TableView *parent)
 		fact->registerEditor(qMetaTypeId<TimeMs>(), creator);
 	}
 	{
-		auto creator = new QStandardItemEditorCreator<SiIdEdit>();
-		fact->registerEditor(qMetaTypeId<SiId>(), creator);
+		auto creator = new QStandardItemEditorCreator<si::SiIdEdit>();
+		fact->registerEditor(qMetaTypeId<si::SiId>(), creator);
 	}
 }
 

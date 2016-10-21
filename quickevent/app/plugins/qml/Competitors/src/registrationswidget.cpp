@@ -2,6 +2,8 @@
 #include "ui_registrationswidget.h"
 #include "Competitors/competitorsplugin.h"
 
+#include <Event/eventplugin.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/model/sqltablemodel.h>
@@ -19,7 +21,15 @@ static Competitors::CompetitorsPlugin* thisPlugin()
 	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
 	return plugin;
 }
-
+/*
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
+*/
 RegistrationsWidget::RegistrationsWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::RegistrationsWidget)
@@ -38,36 +48,21 @@ RegistrationsWidget::~RegistrationsWidget()
 	delete ui;
 }
 
-void RegistrationsWidget::reload()
+void RegistrationsWidget::checkModel()
 {
 	qfLogFuncFrame();
 	if(!isVisible())
 		return;
 
 	if(!ui->tblRegistrations->tableModel()) {
-		ui->tblRegistrations->setTableModel(thisPlugin()->registrationsModel());
-		ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		qf::core::model::SqlTableModel *reg_model = thisPlugin()->registrationsModel();
+		ui->tblRegistrations->setTableModel(reg_model);
+		connect(reg_model, &qf::core::model::SqlTableModel::reloaded, [this]() {
+			ui->tblRegistrations->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+		});
 	}
 }
 
-void RegistrationsWidget::onDbEvent(const QString &domain, const QVariant &payload)
-{
-	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
-	if(domain == "Oris.registrationImported")
-		reload();
-}
-/*
-void RegistrationsWidget::setFocusToWidget(RegistrationsWidget::FocusWidget fw)
-{
-	switch (fw) {
-	case FocusWidget::Registration:
-		ui->edRegistrationFilter->setFocus();
-		break;
-	default:
-		break;
-	}
-}
-*/
 qf::qmlwidgets::TableView *RegistrationsWidget::tableView()
 {
 	return ui->tblRegistrations;

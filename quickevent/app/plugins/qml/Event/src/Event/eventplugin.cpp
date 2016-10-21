@@ -22,6 +22,7 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/utils/fileutils.h>
 
 #include <QInputDialog>
 #include <QSqlDatabase>
@@ -44,11 +45,49 @@ namespace qfs = qf::core::sql;
 
 namespace Event {
 
+class DbEventPayload : public QVariantMap
+{
+private:
+	typedef QVariantMap Super;
+
+	QF_VARIANTMAP_FIELD(QString, e, setE, ventName)
+	QF_VARIANTMAP_FIELD(QString, d, setD, omain)
+	QF_VARIANTMAP_FIELD(int, c, setc, onnectionId)
+	QF_VARIANTMAP_FIELD(QVariant, d, setD, ata)
+public:
+	DbEventPayload(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
+
+	static DbEventPayload fromJson(const QByteArray &json);
+
+	QByteArray toJson() const;
+};
+
+DbEventPayload DbEventPayload::fromJson(const QByteArray &json)
+{
+	QJsonParseError error;
+	QJsonDocument jsd = QJsonDocument::fromJson(json, &error);
+	if(error.error == QJsonParseError::NoError) {
+		QVariantMap m = jsd.toVariant().toMap();
+		return DbEventPayload(m);
+	}
+	else {
+		qfError() << "JSON parse error:" << error.errorString();
+	}
+	return DbEventPayload();
+}
+
+QByteArray DbEventPayload::toJson() const
+{
+	QJsonDocument jsd = QJsonDocument::fromVariant(*this);
+	return jsd.toJson(QJsonDocument::Compact);
+}
+
 static auto QBE_EXT = QStringLiteral(".qbe");
 
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
+const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
 
 static QString eventNameToFileName(const QString &event_name)
 {
@@ -78,6 +117,9 @@ EventPlugin::EventPlugin(QObject *parent)
 {
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::saveCurrentStageId);
+	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
+		setEventOpen(!event_name.isEmpty());
+	});
 }
 
 void EventPlugin::initEventConfig()
@@ -124,25 +166,42 @@ int EventPlugin::currentStageId()
 	return m_cbxStage->currentIndex() + 1;
 }
 
-int EventPlugin::stageStart(int stage_id)
+int EventPlugin::stageStartMsec(int stage_id)
 {
-	Event::StageData stage_data = stageData(stage_id);
-	QTime start_time = stage_data.startTime();
+	QTime start_time = stageStartTime(stage_id);
 	int ret = start_time.msecsSinceStartOfDay();
 	return ret;
 }
-/*
-int EventPlugin::currentStageStartMsec()
+
+QDate EventPlugin::stageStartDate(int stage_id)
 {
-	return stageStart(currentStageId());
+	return stageStartDateTime(stage_id).date();
 }
-*/
+
+QTime EventPlugin::stageStartTime(int stage_id)
+{
+	return stageStartDateTime(stage_id).time();
+}
+
+QDateTime EventPlugin::stageStartDateTime(int stage_id)
+{
+	Event::StageData stage_data = stageData(stage_id);
+	QDateTime dt = stage_data.startDateTime();
+	return dt;
+}
+
 StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;
+	if(stage_id == 0)
+		return ret;
 	if(!m_stageCache.contains(stage_id)) {
 		Event::StageDocument doc;
 		doc.load(stage_id);
+		if(doc.isEmpty()) {
+			qfError() << "Cannot provide stage data for invalid stage id:" << stage_id;
+			return ret;
+		}
 		StageData s(&doc);
 		m_stageCache[stage_id] = s;
 	}
@@ -275,25 +334,35 @@ void EventPlugin::editStage()
 	}
 }
 
-void EventPlugin::emitDbEvent(const QString &domain, const QVariant &payload, bool loopback)
+void EventPlugin::emitDbEvent(const QString &domain, const QVariant &data, bool loopback)
 {
-	qfLogFuncFrame() << "domain:" << domain << "payload:" << payload;
+	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
+	int connection_id = qf::core::sql::Connection::defaultConnection().connectionId();
 	if(loopback) {
 		// emit queued
 		//emit dbEventNotify(domain, payload);
 		QMetaObject::invokeMethod(this, "dbEventNotify", Qt::QueuedConnection,
 								  Q_ARG(QString, domain),
-								  Q_ARG(QVariant, payload));
+								  Q_ARG(int, connection_id),
+								  Q_ARG(QVariant, data));
 	}
 	if(connectionType() == ConnectionType::SingleFile)
 		return;
-	//QVariantMap m;
-	QJsonObject jso;
-	jso[QLatin1String("event")] = eventName();
-	jso[QLatin1String("domain")] = domain;
-	jso[QLatin1String("payload")] = QJsonValue::fromVariant(payload);
-	QJsonDocument jsd(jso);
-	QString payload_str = QString::fromUtf8(jsd.toJson(QJsonDocument::Compact));
+	DbEventPayload dbpl;
+	dbpl.setEventName(eventName());
+	dbpl.setDomain(domain);
+	dbpl.setData(data);
+	dbpl.setconnectionId(connection_id);
+	QByteArray json_ba = dbpl.toJson();
+	QString payload_str = QString::fromUtf8(json_ba);
+	if(payload_str.length() > 4000) {
+		int len = payload_str.toUtf8().length();
+		if(len > 8000) {
+			qfInfo() << payload_str;
+			qfError() << "Payload of size" << len << "is too long. Max Postgres payload length is 8000 bytes.";
+			return;
+		}
+	}
 	payload_str = qf::core::sql::Connection::escapeJsonForSql(payload_str);
 	qf::core::sql::Connection conn = qf::core::sql::Connection::forName();
 	QString qs = QString("NOTIFY ") + DBEVENT_NOTIFY_NAME + ", '" + payload_str + "'";
@@ -327,32 +396,53 @@ DbSchema EventPlugin::dbSchema()
 	return DbSchema(this);
 }
 
+int EventPlugin::minDbVersion()
+{
+	return 10100;
+}
+
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
 {
 	qfLogFuncFrame() << "name:" << name << "source:" << source << "payload:" << payload;
 	if(name == QLatin1String(DBEVENT_NOTIFY_NAME)) {
 		if(source == QSqlDriver::OtherSource) {
-			QJsonDocument jsd = QJsonDocument::fromJson(payload.toString().toUtf8());
-			QVariantMap m = jsd.toVariant().toMap();
-			QString domain = m.value(QStringLiteral("domain")).toString();
+			DbEventPayload dbpl = DbEventPayload::fromJson(payload.toString().toUtf8());
+			QString domain = dbpl.domain();
 			if(domain.isEmpty()) {
 				qfWarning() << "DbNotify with invalid domain, payload:" << payload.toString();
 				return;
 			}
-			QString event_name = m.value(QStringLiteral("event")).toString();
+			QString event_name = dbpl.eventName();
 			if(event_name.isEmpty()) {
-				qfWarning() << "DbNotify with invalid event name, payload:" << payload.toString();
+				qfWarning() << "DbNotify with invalid event name, payload:" << event_name << payload.toString();
 				return;
 			}
 			if(event_name == eventName()) {
-				QVariant pl = m.value(QStringLiteral("payload"));
-				qfDebug() << "emitting domain:" << domain << "payload:" << pl;
-				emit dbEventNotify(domain, pl);
+				QVariant data = dbpl.data();
+				qfDebug() << "emitting domain:" << domain << "data:" << data;
+				emit dbEventNotify(domain, dbpl.connectionId(), data);
 			}
 		}
 		else {
 			//qfDebug() << "self db notify";
 		}
+	}
+}
+
+void EventPlugin::repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn)
+{
+	qfs::Query to_q(to_conn);
+	qfs::Query from_q(from_conn);
+	from_q.exec("SELECT * FROM stages ORDER BY id");
+	while(from_q.next()) {
+		int ix = from_q.fieldIndex(QStringLiteral("startDate"));
+		if(ix < 0)
+			break;
+		QDate d = from_q.value(ix).toDate();
+		QTime t = from_q.value("startTime").toTime();
+		QDateTime dt(d, t);
+		int id = from_q.value("id").toInt();
+		to_q.exec("UPDATE stages SET startDateTime=" QF_SARG(dt.toString(Qt::ISODate)) " WHERE id=" QF_IARG(id));
 	}
 }
 
@@ -494,12 +584,15 @@ void EventPlugin::connectToSqlServer()
 static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines)
 {
 	qfLogFuncFrame();
+	QVariantMap replacements;
+	replacements["minDbVersion"] = EventPlugin::minDbVersion();
 	for(auto cmd : sql_lines) {
 		if(cmd.isEmpty())
 			continue;
 		if(cmd.startsWith(QLatin1String("--")))
 			continue;
 		qfDebug() << cmd << ';';
+		cmd = qf::core::Utils::replaceCaptions(cmd, replacements);
 		bool ok = q.exec(cmd);
 		if(!ok) {
 			qfInfo() << cmd;
@@ -513,7 +606,6 @@ static bool run_sql_script(qf::core::sql::Query &q, const QStringList &sql_lines
 bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &event_params)
 {
 	qfLogFuncFrame();
-	closeEvent();
 
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	EventPlugin::ConnectionType connection_type = connectionType();
@@ -547,8 +639,10 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		break;
 	} while(true);
 
-	bool ok = false;
+	closeEvent();
+
 	Event::EventConfig event_config;
+	bool ok = false;
 	//ConnectionSettings connection_settings;
 	event_config.setValue("event", new_params);
 	int stage_count = event_params.value("stageCount").toInt();
@@ -577,7 +671,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 								  Q_ARG(QVariant, create_options));
 		QStringList create_script = ret_val.toStringList();
 
-		qfInfo().nospace() << create_script.join(";\n") << ';';
+		qfInfo().nospace().noquote() << create_script.join(";\n") << ';';
 		qfs::Query q(conn);
 		do {
 			qfs::Transaction transaction(conn);
@@ -588,13 +682,17 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 			QString stage_table_name = "stages";
 			if(connection_type == ConnectionType::SqlServer)
 				stage_table_name = event_id + '.' + stage_table_name;
-			q.prepare("INSERT INTO " + stage_table_name + " (id) VALUES (:id)");
+			QDateTime start_dt = event_config.eventDateTime();
+			// FIXME: handle SQL errors here and below in q.exec()
+			q.prepare("INSERT INTO " + stage_table_name + " (id, startDateTime) VALUES (:id, :startDateTime)");
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":id", i+1);
+				q.bindValue(":startDateTime", start_dt);
 				ok = q.exec();
 				if(!ok) {
 					break;
 				}
+				start_dt = start_dt.addDays(1);
 			}
 			if(!ok)
 				break;
@@ -636,10 +734,11 @@ void EventPlugin::editEvent()
 bool EventPlugin::closeEvent()
 {
 	qfLogFuncFrame();
+	clearStageDataCache();
 	m_classNameCache.clear();
 	setEventName(QString());
 	QF_SAFE_DELETE(m_eventConfig);
-	emit eventOpened(eventName()); //comment it till QE can load event with invalid name
+	//emit eventOpened(eventName()); //comment it till QE can load event with invalid name
 	return true;
 }
 
@@ -726,7 +825,18 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
-		eventConfig(true);
+		EventConfig *evc = eventConfig(true);
+		if(evc->dbVersion() < minDbVersion()) {
+			qfd::MessageBox::showError(fwk, tr("Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.")
+									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion()))
+									   .arg(qf::core::Utils::intToVersionString(minDbVersion())));
+			closeEvent();
+			return false;
+		}
+		if(evc->dbVersion() > minDbVersion()) {
+			qfd::MessageBox::showError(fwk, tr("Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.")
+									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion())));
+		}
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);
 		emit eventOpened(eventName());
@@ -766,12 +876,21 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &dest_
 			rec.append(dest_rec.field(i));
 		}
 	}
+	bool is_import_offrace = false;
+	if(table_name == QLatin1String("runs")) {
+		if(!src_rec.contains("isRunning") && dest_rec.contains("isRunning") && src_rec.contains("offRace")) {
+			is_import_offrace = true;
+			rec.append(dest_rec.field("isRunning"));
+		}
+	}
 	auto *sqldrv = to_conn.driver();
 	QString qs = sqldrv->sqlStatement(QSqlDriver::InsertStatement, table_name, rec, true);
 	qfDebug() << qs;
 	qfs::Query to_q(to_conn);
 	if(!to_q.prepare(qs)) {
-		return QString("Cannot prepare insert table SQL statement, table: %1.").arg(table_name);
+		QString ret = QString("Cannot prepare insert table SQL statement, table: %1.\n%2").arg(table_name).arg(to_q.lastErrorText());
+		qfInfo() << qs;
+		return ret;
 	}
 	bool has_id_int = false;
 	while(from_q.next()) {
@@ -783,8 +902,15 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &dest_
 			QSqlField fld = rec.field(i);
 			QString fld_name = fld.name();
 			//qfDebug() << "copy:" << fld_name << from_q.value(fld_name);
-			QVariant v = from_q.value(fld_name);
-			v.convert(rec.field(i).type());
+			QVariant v;
+			if((fld_name.compare(QLatin1String("isRunning"), Qt::CaseInsensitive) == 0) && is_import_offrace) {
+				bool offrace = from_q.value(QStringLiteral("offRace")).toBool();
+				v = offrace? QVariant(): QVariant(true);
+			}
+			else {
+				v = from_q.value(fld_name);
+				v.convert(rec.field(i).type());
+			}
 			if(!has_id_int
 					&& (fld.type() == QVariant::Int
 						|| fld.type() == QVariant::UInt
@@ -890,10 +1016,11 @@ void EventPlugin::importEvent_qbe()
 	}
 	*/
 	QString ext = ".qbe";
-	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName (fwk, tr("Import as Quick Event"), QString(), "Quick Event files *.qbe (*.qbe)");
+	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName (fwk, tr("Import as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(fn.isEmpty())
 		return;
-	QString event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:")).trimmed();
+	QString event_name = qf::core::utils::FileUtils::baseName(fn) + "_2";
+	event_name = QInputDialog::getText(fwk, tr("Query"), tr("Event will be imported as ID:"), QLineEdit::Normal, event_name).trimmed();
 	if(event_name.isEmpty())
 		return;
 	QStringList existing_events = (connectionType() == ConnectionType::SingleFile)? existingFileEventNames(): existingSqlEventNames();
@@ -960,6 +1087,9 @@ void EventPlugin::importEvent_qbe()
 			err_str = copy_sql_table(table_name, rec, imp_conn, exp_conn);
 			if(!err_str.isEmpty())
 				break;
+			if(table_name == QLatin1String("stages")) {
+				repairStageStarts(imp_conn, exp_conn);
+			}
 		}
 		if(!err_str.isEmpty())
 			break;

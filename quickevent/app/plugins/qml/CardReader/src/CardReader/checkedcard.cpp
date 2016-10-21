@@ -10,6 +10,17 @@ CheckedCard::CheckedCard(const QVariantMap &data)
 
 }
 
+int CheckedCard::punchCount() const
+{
+	return punches().count();
+}
+
+CheckedPunch CheckedCard::punchAt(int i) const
+{
+	QVariantMap m = punches().value(i).toMap();
+	return CheckedPunch(m);
+}
+
 int CheckedCard::timeMs() const
 {
 	QVariant v = punches().value(punches().count()  -1);

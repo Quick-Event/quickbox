@@ -93,7 +93,7 @@ CLIOptions::Option& CLIOptions::Option::setValueString(const QString& val_str)
 }
 
 CLIOptions::CLIOptions(QObject *parent)
-	: QObject(parent)
+	: QObject(parent), m_parsedArgIndex(), m_isAppBreak()
 {
 	addOption("abortOnException").setType(QVariant::Bool).setNames("--abort-on-exception").setComment(tr("Abort application on exception"));
 	addOption("help").setType(QVariant::Bool).setNames("-h", "--help").setComment(tr("Print help"));
@@ -328,7 +328,7 @@ void CLIOptions::printHelp(QTextStream& os) const
 			if(opt.type() == QVariant::Int || opt.type() == QVariant::Double) os << " " << "number";
 			else os << " " << "'string'";
 		}
-		os << ':';
+		//os << ':';
 		QVariant def_val = opt.defaultValue();
 		if(def_val.isValid()) os << " [default(" << def_val.toString() << ")]";
 		if(opt.isMandatory()) os << " [MANDATORY]";

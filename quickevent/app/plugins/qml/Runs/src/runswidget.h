@@ -4,6 +4,7 @@
 #include <QFrame>
 
 class QComboBox;
+class QCheckBox;
 
 namespace qf {
 namespace core {
@@ -63,15 +64,16 @@ private:
 	QMap<int, int> competitorsForClass(int stage_id, int class_id);
 
 	bool isLockedForDrawing(int class_id, int stage_id);
-	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked);
+	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min);
 
 	void import_start_times_ob2000();
 private:
-	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap};
+	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap, ShiftTimes};
 
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
+	QCheckBox *m_chkShowOffRace = nullptr;
 };
 
 #endif // RUNSWIDGET_H

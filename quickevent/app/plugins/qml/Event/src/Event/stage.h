@@ -19,8 +19,9 @@ private:
 	typedef QVariantMap Super;
 
 	QF_VARIANTMAP_FIELD(int, i, setI, d)
-	QF_VARIANTMAP_FIELD(QTime, s, setS, tartTime)
-	QF_VARIANTMAP_FIELD(QDate, d, setD, ate)
+	//QF_VARIANTMAP_FIELD(QTime, s, setS, tartTime)
+	//QF_VARIANTMAP_FIELD(QDate, s, setS, tartDate)
+	QF_VARIANTMAP_FIELD(QDateTime, s, setS, tartDateTime)
 	QF_VARIANTMAP_FIELD(QVariantMap, d, setD, rawingConfig)
 public:
 	StageData(const QVariantMap &data = QVariantMap());

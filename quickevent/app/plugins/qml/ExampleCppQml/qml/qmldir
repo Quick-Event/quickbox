@@ -1,0 +1,3 @@
+module ExampleCppQml
+
+plugin ExampleCppQmlplugin ..

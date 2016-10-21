@@ -16,7 +16,7 @@
 #include <QSettings>
 #include <QSerialPortInfo>
 
-using namespace siut;
+namespace siut {
 
 //=================================================
 //             DeviceDriver
@@ -26,8 +26,6 @@ DeviceDriver::DeviceDriver(QObject *parent)
 {
 	qf::core::Log::checkLogLevelMetaTypeRegistered();
 	f_commPort = new CommPort(this);
-	f_status = StatusIdle;
-	//f_socketNotifier = NULL;
 	f_rxTimer = new QTimer(this);
 	f_rxTimer->setSingleShot(true);
 	connect(f_rxTimer, SIGNAL(timeout()), this, SLOT(rxDataTimeout()));
@@ -58,15 +56,15 @@ namespace {
 void DeviceDriver::commDataReceived()
 {
 	QByteArray ba = f_commPort->readAll();
+	//qfInfo() << "=============>" << ba;
 	if(ba.size() > 0) {
 		f_rxData.append(ba);
 		processRxData();
-		if(f_status == StatusMessageIncomplete) {
+		if(f_packetToFinishCount > 0) {
 			/// set timer to get rest of the message
 			f_rxTimer->start(1000);
 		}
 		else {
-			f_rxTimer->stop();
 			if(f_status == StatusMessageOk) {
 				//qfInfo() << "new message:" << f_messageData.dump();
 				if(f_messageData.type() == SIMessageData::MsgCardReadOut) {
@@ -75,7 +73,8 @@ void DeviceDriver::commDataReceived()
 				emit messageReady(f_messageData);
 				f_messageData = SIMessageData();
 			}
-			f_status = StatusIdle;
+			f_rxTimer->stop();
+			f_packetReceivedCount = 0;
 		}
 	}
 }
@@ -86,17 +85,15 @@ void DeviceDriver::packetReceived(const QByteArray &msg_data)
 	//qWarning() << msg_data;
 	emit rawDataReceived(msg_data);
 	f_messageData.addRawDataBlock(msg_data);
+	f_packetReceivedCount++;
 	f_packetToFinishCount--;
-	emitDriverInfo(qf::core::Log::Level::Debug, tr("packetReceived, packetToFinishCount: %1").arg(f_packetToFinishCount));
+	emitDriverInfo(qf::core::Log::Level::Debug, QString("packetReceived, packetToFinishCount: %1").arg(f_packetToFinishCount));
 	if(f_packetToFinishCount == 0) {
 		f_status = StatusMessageOk;
 	}
 	else if(f_packetToFinishCount < 0) {
-		f_status = StatusMessageError;
-		emitDriverInfo(qf::core::Log::Level::Error, tr("f_packetToFinishCount < 0 - This should never happen!"));
-	}
-	else {
-		f_status = StatusMessageIncomplete;
+		abortMessage();
+		emitDriverInfo(qf::core::Log::Level::Error, "packetToFinishCount < 0 - This should never happen!");
 	}
 }
 
@@ -129,13 +126,13 @@ void DeviceDriver::processRxData()
 				stx_pos = 0;
 			}
 			/// zacatek nove zpravy nebo pokracovani stare
-			ProcessRxDataStatus prev_status = f_status;
-			f_status = StatusMessageIncomplete;
+			//ProcessRxDataStatus prev_status = f_status;
+			//f_status = StatusMessageIncomplete;
 			while(stx_pos < f_rxData.length()) {
 				int cmd = byte_at(f_rxData, stx_pos + 1);
 				//qfInfo() << "CMD:" << QString::number(cmd, 16);
 				if(cmd < 0x80) {
-					if(prev_status == StatusIdle) {
+					if(f_packetReceivedCount == 0) {
 						if(cmd == SIMessageData::CmdGetSICard6)
 							f_packetToFinishCount = 3;
 						else
@@ -153,13 +150,12 @@ void DeviceDriver::processRxData()
 						//qfTrash() << "processing char: " << SIMessageData::dumpData(ba2) << stx_pos << "/" << f_rxData.length();
 						if(ci < 0) {
 							/// packet is not completly received
-							f_status = StatusMessageIncomplete;
 							return;
 						}
 						else if((ci == ETX || ci == NAK) && !was_dle) {
 							/// whole packed received
 							if(ci == NAK) {
-								f_status = StatusMessageError;
+								abortMessage();
 								emitDriverInfo(qf::core::Log::Level::Error, tr("NAK received"));
 							}
 							else {
@@ -184,7 +180,7 @@ void DeviceDriver::processRxData()
 				}
 				else {
 					/// extended mode
-					if(prev_status == StatusIdle) {
+					if(f_packetReceivedCount == 0) {
 						if(cmd == SIMessageData::CmdGetSICard8Ext)
 							f_packetToFinishCount = 2; /// card 8/9/10/11
 						else if(cmd == SIMessageData::CmdGetSICard6Ext)
@@ -192,7 +188,7 @@ void DeviceDriver::processRxData()
 						else
 							f_packetToFinishCount = 1;
 					}
-					else if(prev_status == StatusMessageIncomplete) {
+					else if(f_packetReceivedCount == 1) {
 						if(cmd == SIMessageData::CmdGetSICard8Ext) {
 							/// cards 8/9 sends info in blocks 0,1
 							/// cards 10/11 sends info in blocks 0,4,5,6,7
@@ -201,9 +197,6 @@ void DeviceDriver::processRxData()
 							if(bn == 4) {
 								/// card 10/11
 								f_packetToFinishCount += 3;
-							}
-							else {
-								/// card 8/9
 							}
 						}
 					}
@@ -214,11 +207,10 @@ void DeviceDriver::processRxData()
 					int status = byte_at(f_rxData, len + 5);
 					if(status < 0) {
 						/// packet is not completly received
-						f_status = StatusMessageIncomplete;
 						return;
 					}
 					else if(status == NAK) {
-						f_status = StatusMessageError;
+						abortMessage();
 						emitDriverInfo(qf::core::Log::Level::Error, tr("NAK received"));
 					}
 					else {
@@ -231,7 +223,7 @@ void DeviceDriver::processRxData()
 							packetReceived(msg_data);
 						}
 						else {
-							f_status = StatusMessageError;
+							abortMessage();
 							emitDriverInfo(qf::core::Log::Level::Error, tr("CRC error - data CRC is: %1 0x%3 computed CRC: %2 0x%4").arg(crc1).arg(crc2).arg(crc1, 0, 16).arg(crc2, 0, 16));
 						}
 					}
@@ -250,8 +242,7 @@ void DeviceDriver::rxDataTimeout()
 	emitDriverInfo(qf::core::Log::Level::Error, tr("RX data timeout"));
 	f_rxData.clear();
 	f_messageData = SIMessageData();
-	f_status = StatusIdle;
-	//f_rxTimer->stop();
+	abortMessage();
 }
 
 void DeviceDriver::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
@@ -306,6 +297,11 @@ void DeviceDriver::closeCommPort()
 	}
 }
 
+QString DeviceDriver::commPortErrorString()
+{
+	return f_commPort->errorString();
+}
+
 void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 {
 	qfLogFuncFrame();
@@ -334,4 +330,13 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 void DeviceDriver::sendAck() 
 {
 	f_commPort->write(QByteArray(1, ACK));
+}
+
+void DeviceDriver::abortMessage()
+{
+	f_status = StatusMessageError;
+	f_packetReceivedCount = 0;
+	f_packetToFinishCount = 0;
+}
+
 }

@@ -13,6 +13,7 @@
 #include <QSqlField>
 #include <QSqlDriver>
 #include <QJSValue>
+#include <QColor>
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
@@ -32,20 +33,57 @@ SqlTableModel::~SqlTableModel()
 
 QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 {
-	QVariant ret = Super::data(index, role);
 	if(role == Qt::DisplayRole) {
 		ColumnDefinition cd = columnDefinition(index.column());
 		int cast_type = cd.castType();
 		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
-			ColumnDefinition::DbEnumCastProperties props(cd.castProperties());
+			DbEnumCastProperties props(cd.castProperties());
 			QString group_name = props.groupName();
 			if(!group_name.isEmpty()) {
-				qf::core::sql::DbEnumCache &db_enum_cache = qf::core::sql::DbEnumCache::instance(connectionName());
-				auto dbe = db_enum_cache.dbEnum(group_name, ret.toString());
-				ret = QVariant::fromValue(dbe);
+				QVariant v = data(index, Qt::EditRole);
+				sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
+				QString group_id = v.toString();
+				sql::DbEnum dbe = db_enum_cache.dbEnum(group_name, group_id);
+				QString caption_format = props.captionFormat();
+				QString caption = dbe.fillInPlaceholders(caption_format);
+				return caption;
 			}
 		}
 	}
+	else if(role == Qt::BackgroundColorRole) {
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			DbEnumCastProperties props(cd.castProperties());
+			QString group_name = props.groupName();
+			if(!group_name.isEmpty()) {
+				QVariant v = data(index, Qt::EditRole);
+				QString group_id = v.toString();
+				if(!group_id.isEmpty()) {
+					sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connectionName());
+					sql::DbEnum dbe = db_enum_cache.dbEnum(group_name, group_id);
+					QColor color = dbe.color();
+					if(color.isValid())
+						return color;
+				}
+			}
+			return QVariant();
+		}
+	}
+	else if(role == Qt::TextColorRole) {
+		ColumnDefinition cd = columnDefinition(index.column());
+		int cast_type = cd.castType();
+		if(cast_type == qMetaTypeId<qf::core::sql::DbEnum>()) {
+			QVariant v = data(index, Qt::BackgroundRole);
+			if(v.isValid()) {
+				QColor bgr_color = v.value<QColor>();
+				if(bgr_color.isValid()) {
+					return contrastTextColor(bgr_color);
+				}
+			}
+		}
+	}
+	QVariant ret = Super::data(index, role);
 	return ret;
 }
 
@@ -158,8 +196,8 @@ bool SqlTableModel::postRow(int row_no, bool throw_exc)
 			qfs::Query q(sql_conn);
 			if(rec.isEmpty()) {
 				if(serial_ix >= 0) {
-					qs = "INSERT INTO %1 (%2) VALUES (DEFAULT)";
-					qs = qs.arg(table, row_ref.fields().at(serial_ix).shortName());
+					qs = "INSERT INTO %1 DEFAULT VALUES";
+					qs = qs.arg(table);
 				}
 			}
 			else {

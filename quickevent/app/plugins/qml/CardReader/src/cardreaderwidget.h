@@ -38,7 +38,7 @@ class QFile;
 class QComboBox;
 class QCheckBox;
 
-class SIMessageTransmitRecord;
+class SIMessageTransmitPunch;
 class SIMessageData;
 class SIMessageCardReadOut;
 
@@ -62,7 +62,7 @@ public:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
-	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
@@ -77,7 +77,7 @@ private:
 	siut::DeviceDriver *siDriver();
 
 	void processSICard(const SIMessageCardReadOut &card);
-	void processSIPunch(const SIMessageTransmitRecord &rec);
+	void processSIPunch(const SIMessageTransmitPunch &rec);
 
 	bool processReadCardSafe(const CardReader::ReadCard &read_card);
 	void processReadCard(const CardReader::ReadCard &read_card) throw(qf::core::Exception);
@@ -104,6 +104,7 @@ private:
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QCheckBox *m_cbxAutoRefresh = nullptr;
+	QComboBox *m_cbxPunchMarking = nullptr;
 	quickevent::audio::Player *m_audioPlayer = nullptr;
 };
 

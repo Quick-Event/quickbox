@@ -10,7 +10,7 @@
 using namespace qf::qmlwidgets::reports::style;
 
 Pen::Pen(QObject *parent) :
-	StyleObject(parent, StyleObject::SGPen)
+	StyleObject(parent, StyleObject::SGPen), m_width()
 {
 }
 

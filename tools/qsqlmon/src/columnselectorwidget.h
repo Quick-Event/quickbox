@@ -14,7 +14,7 @@
 class QSqlDatabase;
 namespace Ui {class ColumnSelectorWidget;};
 
-//! TODO: write class documentation.
+
 class  ColumnSelectorWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT

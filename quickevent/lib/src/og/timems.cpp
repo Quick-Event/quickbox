@@ -97,8 +97,8 @@ int TimeMs::fixTimeWrapAM(int time1_msec, int time2_msec)
 	return time2_msec;
 }
 
-int TimeMs::msecIntervalAM(int time1_msec, int time2_msec)
+int TimeMs::msecIntervalAM(int from_time_msec, int to_time_msec)
 {
-	return fixTimeWrapAM(time1_msec, time2_msec) - time1_msec;
+	return fixTimeWrapAM(from_time_msec, to_time_msec) - from_time_msec;
 }
 

@@ -24,7 +24,7 @@ Frame {
 		textFn: function() { var event_cfg = dataBand.data("event"); return event_cfg.name; }
 	}
 	Para {
-		textFn: function() { var event_cfg = dataBand.data("event"); return event_cfg.date; }
+		textFn: function() { return dataBand.data("stageStart"); }
 	}
 	Para {
 		textFn: function() { var event_cfg = dataBand.data("event"); return event_cfg.place; }

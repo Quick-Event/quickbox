@@ -6,6 +6,9 @@
 
 #include <Event/eventplugin.h>
 
+#include <quickevent/og/timems.h>
+#include <quickevent/si/punchrecord.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <qf/core/log.h>
@@ -24,11 +27,18 @@
 
 namespace qff = qf::qmlwidgets::framework;
 
-using namespace CardReader;
+namespace CardReader {
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
-const int CardReaderPlugin::FINISH_PUNCH_CODE = 999;
-const int CardReaderPlugin::FINISH_PUNCH_POS = CardReaderPlugin::FINISH_PUNCH_CODE;
+const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
@@ -139,8 +149,8 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 		punches << p.toJsonArrayString();
 	}
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId)"
-							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId)")
+	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId, readerConnectionId)"
+							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId, :readerConnectionId)")
 			  , qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":stationNumber"), read_card.stationCodeNumber());
 	q.bindValue(QStringLiteral(":siId"), read_card.cardNumber());
@@ -150,6 +160,7 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	q.bindValue(QStringLiteral(":punches"), '[' + punches.join(", ") + ']');
 	q.bindValue(QStringLiteral(":runId"), read_card.runId());
 	q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	q.bindValue(QStringLiteral(":readerConnectionId"), qf::core::sql::Connection::defaultConnection().connectionId());
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}
@@ -159,19 +170,43 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	return ret;
 }
 
-int CardReaderPlugin::savePunchRecordToSql(const PunchRecord &punch_record)
+int CardReaderPlugin::savePunchRecordToSql(const quickevent::si::PunchRecord &punch_record)
 {
+	//qfInfo() << "PUNCH:" << punch_record.toString();
 	int ret = 0;
+	quickevent::si::PunchRecord punch = punch_record;
+	punch.setstageid(currentStageId());
+
+	Event::EventPlugin *event_plugin = eventPlugin();
+	int stage_start_msec = event_plugin->stageStartMsec(event_plugin->currentStageId());
+	int time_msec = quickevent::og::TimeMs::msecIntervalAM(stage_start_msec, punch_record.time() * 1000 + punch_record.msec());
+	punch.settimems(time_msec);
+
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, punchTime, punchMs, runId, stageId)"
-							 " VALUES (:siId, :code, :punchTime, :punchMs, :runId, :stageId)")
+	int run_id = punch.runid();
+	if(run_id > 0) {
+		q.exec("SELECT startTimeMs FROM runs WHERE id=" QF_IARG(run_id), qf::core::Exception::Throw);
+		if(q.next()) {
+			QVariant v = q.value(0);
+			if(!v.isNull()) {
+				punch.setruntimems(time_msec - v.toInt());
+			}
+		}
+	}
+
+	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs, marking)"
+							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs, :marking)")
 							, qf::core::Exception::Throw);
-	q.bindValue(QStringLiteral(":siId"), punch_record.cardNumber());
-	q.bindValue(QStringLiteral(":code"), punch_record.code());
-	q.bindValue(QStringLiteral(":punchTime"), punch_record.time());
-	q.bindValue(QStringLiteral(":punchMs"), punch_record.msec());
-	q.bindValue(QStringLiteral(":runId"), punch_record.runId());
-	q.bindValue(QStringLiteral(":stageId"), currentStageId());
+	q.bindValue(QStringLiteral(":siId"), punch.siid());
+	q.bindValue(QStringLiteral(":code"), punch.code());
+	q.bindValue(QStringLiteral(":time"), punch.time());
+	q.bindValue(QStringLiteral(":msec"), punch.msec());
+	q.bindValue(QStringLiteral(":runId"), punch.runid());
+	q.bindValue(QStringLiteral(":stageId"), punch.stageid());
+	q.bindValue(QStringLiteral(":marking"), punch.marking());
+	q.bindValue(QStringLiteral(":timeMs"), punch.timems());
+	q.bindValue(QStringLiteral(":runTimeMs"), punch.runtimems_isset()? punch.runtimems(): QVariant());
+	/// it is not possible to save punch time as date-time to be independent on start00 since it depends on start00 due to 12H time format
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}
@@ -210,16 +245,6 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 	auto punch_list = checked_card.punches();
 	if(punch_list.count()) {
-		/*
-		{
-			CardReader::CheckedPunch finish_punch;
-			finish_punch.setPosition(FINISH_PUNCH_POS);
-			finish_punch.setCode(FINISH_PUNCH_CODE);
-			finish_punch.setStpTimeMs(checked_card.finishStpTimeMs());
-			finish_punch.setLapTimeMs(checked_card.finishLapTimeMs());
-			punch_list << finish_punch;
-		}
-		*/
 		int position = 0;
 		for(auto v : punch_list) {
 			position++;
@@ -279,10 +304,11 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		return false;
 	}
 	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
-	qfInfo() << checked_card.isMisPunch() << checked_card.isOk();
+	qfInfo() << Q_FUNC_INFO << checked_card.isMisPunch() << checked_card.isOk();
 	if(updateCheckedCardValuesSqlSafe(checked_card))
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))
 			return true;
 	return false;
 }
 
+}

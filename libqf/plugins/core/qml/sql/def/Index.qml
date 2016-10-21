@@ -66,7 +66,7 @@ QtObject
 	{
 		var ret = '';
 		if(fields) {
-			if(!primary && !unique) {
+			if(!primary && !unique && !references) {
 				ret = '(' + fields.join(', ') + ')';
 			}
 		}

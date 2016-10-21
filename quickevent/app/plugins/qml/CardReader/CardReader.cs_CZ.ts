@@ -112,7 +112,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="145"/>
         <source>Show receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukázat mezičasy</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="146"/>
@@ -122,12 +122,12 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="147"/>
         <source>Print receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout mezičasy</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="148"/>
         <source>Assign card to runner</source>
-        <translation>Přiřadit čip zavodníkovi</translation>
+        <translation>Přiřadit čip závodníkovi</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="192"/>
@@ -167,7 +167,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="392"/>
         <source>Cannot find run for SI: %1</source>
-        <translation type="unfinished">Nelze najít běh pro SI: %1</translation>
+        <translation type="unfinished">Nelze najít úsek (etapu) pro SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="436"/>
@@ -177,12 +177,12 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="439"/>
         <source>Cannot find run for punch record SI: %1</source>
-        <translation type="unfinished">Nelze najít běh pro záznam ražení SI: %1</translation>
+        <translation type="unfinished">Nelze najít úsek (etapu) pro záznam ražení SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="514"/>
         <source>Find runner</source>
-        <translation>Najít zavodníka</translation>
+        <translation>Najít závodníka</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="616"/>
@@ -197,7 +197,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="625"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation type="unfinished">Nelze otevřít soubor &apos;%1&apos; pro čtení.</translation>
+        <translation>Nelze otevřít soubor &apos;%1&apos; pro čtení.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="644"/>
@@ -207,7 +207,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="666"/>
         <source>Cannot find runs record for SI %1!</source>
-        <translation type="unfinished">Nelze najít záznam běhu pro SI: %1!</translation>
+        <translation type="unfinished">Nelze najít záznam etapy (úseku) pro SI: %1!</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="667"/>
@@ -217,7 +217,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="680"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
-        <translation type="unfinished">SI: %1 Kategorie %2 - Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
+        <translation>SI: %1 Kategorie %2 - Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
     </message>
 </context>
 <context>
@@ -241,7 +241,7 @@
         <location filename="src/dlgsettings.ui" line="39"/>
         <source>De&amp;vice:</source>
         <oldsource>Device:</oldsource>
-        <translation>Zařízení:</translation>
+        <translation>&amp;Zařízení:</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="52"/>
@@ -366,7 +366,7 @@
     <message>
         <location filename="src/dlgsettings.ui" line="256"/>
         <source>Beer race</source>
-        <translation type="unfinished"></translation>
+        <translation>Pivní závod</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="261"/>

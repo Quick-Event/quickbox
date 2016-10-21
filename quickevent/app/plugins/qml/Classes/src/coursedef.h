@@ -14,6 +14,8 @@ struct CourseDef : public QVariantMap
 
 	CourseDef() : QVariantMap() {}
 	CourseDef(const QVariantMap &m) : QVariantMap(m) {}
+
+	void addClass(const QString &class_name);
 	QString toString() const;
 };
 

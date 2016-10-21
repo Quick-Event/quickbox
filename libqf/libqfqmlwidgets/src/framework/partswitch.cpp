@@ -14,7 +14,7 @@
 using namespace qf::qmlwidgets::framework;
 
 PartSwitchToolButton::PartSwitchToolButton(QWidget *parent)
-	: Super(parent)
+	: Super(parent), m_partIndex()
 {
 	setAutoFillBackground(false); /// musi bejt off
 	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -76,7 +76,7 @@ void PartSwitch::addPartWidget(PartWidget *widget)
 void PartSwitch::updateButtonIcon(PartSwitchToolButton *bt)
 {
 	PartWidget *pw = m_centralWidget->partWidget(bt->partIndex());
-	if(bt && pw) {
+	if(pw) {
 		QIcon ico = pw->createIcon();
 		//bt->setIconSize(bt->size());
 		bt->setIcon(ico);

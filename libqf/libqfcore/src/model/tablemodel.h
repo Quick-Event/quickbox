@@ -34,14 +34,6 @@ public:
 public:
 	class QFCORE_DECL_EXPORT ColumnDefinition
 	{
-	public:
-		class QFCORE_DECL_EXPORT DbEnumCastProperties : public QVariantMap
-		{
-			QF_VARIANTMAP_FIELD(QString, g, setG, roupName)
-			//QF_VARIANTMAP_FIELD2(QString, c, setC, aptionFormat, QStringLiteral("{{caption}}"))
-			public:
-				DbEnumCastProperties(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
-		};
 	private:
 		class SharedDummyHelper {};
 		class Data : public QSharedData
@@ -55,7 +47,7 @@ public:
 			bool isReadOnly = false;
 			bool isVirtual = false;
 			Qt::Alignment alignment;
-			QString format; //!< format for date, time, ... types nebo enumz/group_name[/'ruzny place holders']
+			QString format; //!< format for date, time, ... types
 			int castType;
 			QVariantMap castProperties;
 
@@ -75,6 +67,10 @@ public:
 		}
 		ColumnDefinition(const QString &fldname) {
 			d = new Data(fldname);
+		}
+		ColumnDefinition(const QString &fldname, const QString &caption) {
+			d = new Data(fldname);
+			setCaption(caption);
 		}
 
 		QString fieldName() const {return d->fieldName;}
@@ -115,11 +111,11 @@ public:
 
 		bool matchesSqlId(const QString column_name) const;
 	};
-	typedef QList<ColumnDefinition> ColumnList;
+	typedef QVector<ColumnDefinition> ColumnList;
 
 public:
 	void clearRows();
-	void clearColumns();
+	void clearColumns(int new_column_count = 0);
 	ColumnDefinition& addColumn(const QString &field_name, const QString &caption = QString()) {
 		return insertColumn(m_columns.count(), field_name, caption);
 	}
@@ -200,6 +196,7 @@ public:
 	int columnIndex(const QString &column_name) const;
 	int columnType(int column_index) const;
 
+	static QColor contrastTextColor(const QColor &background_color);
 protected:
 	virtual void checkColumns();
 	void createColumnsFromTableFields();
@@ -216,7 +213,7 @@ protected:
 protected:
 	qf::core::utils::Table m_table;
 	ColumnList m_columns;
-	bool m_autoColumns;
+	//bool m_autoColumns;
 	bool m_nullReportedAsString;
 	static QString m_defaultTimeFormat;
 	static QString m_defaultDateFormat;

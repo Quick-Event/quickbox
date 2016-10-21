@@ -1,8 +1,8 @@
-#include "reportoptionsdialog.h"
 #include "runsplugin.h"
-#include "thispartwidget.h"
+#include "nstagesreportoptionsdialog.h"
+#include "reportoptionsdialog.h"
+#include "../thispartwidget.h"
 #include "../runswidget.h"
-#include "drawing/drawingganttwidget.h"
 #include "../runstabledialogwidget.h"
 #include "../eventstatisticswidget.h"
 
@@ -40,6 +40,14 @@ static Event::EventPlugin* eventPlugin()
 	return plugin;
 }
 
+static qf::qmlwidgets::framework::Plugin* competitorsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = fwk->plugin("Competitors");
+	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
+	return plugin;
+}
+
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -52,9 +60,9 @@ RunsPlugin::~RunsPlugin()
 		m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
 }
 
-const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
+const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
 {
-	if(m_runsTableStageId != stage_id) {
+	if(m_runnersTableCacheStageId != stage_id) {
 		qfs::QueryBuilder qb;
 		qb.select2("competitors", "registration")
 				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
@@ -68,21 +76,27 @@ const qf::core::utils::Table &RunsPlugin::runsTable(int stage_id)
 		qf::core::model::SqlTableModel m;
 		m.setQueryBuilder(qb);
 		m.reload();
-		m_runsTable = m.table();
+		m_runnersTableCache = m.table();
 
 		auto c_nsk = QStringLiteral("competitorNameAscii7");
-		m_runsTable.appendColumn(c_nsk, QVariant::String);
-		int ix_nsk = m_runsTable.fields().fieldIndex(c_nsk);
-		int ix_cname = m_runsTable.fields().fieldIndex(QStringLiteral("competitorName"));
-		for (int i = 0; i < m_runsTable.rowCount(); ++i) {
-			qf::core::utils::TableRow &row_ref = m_runsTable.rowRef(i);
+		m_runnersTableCache.appendColumn(c_nsk, QVariant::String);
+		int ix_nsk = m_runnersTableCache.fields().fieldIndex(c_nsk);
+		int ix_cname = m_runnersTableCache.fields().fieldIndex(QStringLiteral("competitorName"));
+		for (int i = 0; i < m_runnersTableCache.rowCount(); ++i) {
+			qf::core::utils::TableRow &row_ref = m_runnersTableCache.rowRef(i);
 			QString nsk = row_ref.value(ix_cname).toString();
 			nsk = QString::fromLatin1(qf::core::Collator::toAscii7(QLocale::Czech, nsk, true));
 			row_ref.setValue(ix_nsk, nsk);
 		}
-		m_runsTableStageId = stage_id;
+		m_runnersTableCacheStageId = stage_id;
 	}
-	return m_runsTable;
+	return m_runnersTableCache;
+}
+
+void RunsPlugin::clearRunnersTableCache()
+{
+	//qfInfo() << QF_FUNC_NAME;
+	m_runnersTableCacheStageId = 0;
 }
 
 void RunsPlugin::onInstalled()
@@ -91,9 +105,10 @@ void RunsPlugin::onInstalled()
 	auto *tpw = new ThisPartWidget();
 	m_partWidget = tpw;
 	connect(tpw, &ThisPartWidget::selectedStageIdChanged, [this](int stage_id) {
-		qfInfo() << stage_id;
+		//qfInfo() << stage_id;
 		this->setSelectedStageId(stage_id);
 	});
+	connect(competitorsPlugin(), SIGNAL(competitorEdited()), this, SLOT(clearRunnersTableCache()));
 
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
 
@@ -115,21 +130,6 @@ void RunsPlugin::onInstalled()
 	}
 
 	emit nativeInstalled();
-
-	auto *a_draw = m_partWidget->menuBar()->actionForPath("drawing");
-	a_draw->setText("&Drawing");
-	{
-		qfw::Action *a = new qfw::Action("Classes layout");
-		a_draw->addActionInto(a);
-		connect(a, &qfw::Action::triggered, [this]()
-		{
-			auto *w = new drawing::DrawingGanttWidget;
-			qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
-			//dlg.setButtons(QDialogButtonBox::Save);
-			dlg.setCentralWidget(w);
-			dlg.exec();
-		});
-	}
 }
 
 /*
@@ -176,10 +176,10 @@ int RunsPlugin::courseForRun_Classic(int run_id)
 	return ret;
 }
 
-void RunsPlugin::showRunsTable(int stage_id, int class_id, const QString &sort_column, int select_competitor_id)
+void RunsPlugin::showRunsTable(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	auto *w = new RunsTableDialogWidget();
-	w->reload(stage_id, class_id, sort_column, select_competitor_id);
+	w->reload(stage_id, class_id, show_offrace, sort_column, select_competitor_id);
 	qf::qmlwidgets::dialogs::Dialog dlg(this->m_partWidget);
 	dlg.setButtons(QDialogButtonBox::Cancel);
 	dlg.setCentralWidget(w);
@@ -193,6 +193,32 @@ QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
 		parent = fwk;
 	}
 	return new Runs::ReportOptionsDialog(parent);
+}
+
+QWidget *RunsPlugin::createNStagesReportOptionsDialog(QWidget *parent)
+{
+	if(!parent) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		parent = fwk;
+	}
+	return new Runs::NStagesReportOptionsDialog(parent);
+}
+
+bool RunsPlugin::reloadTimesFromCard(int run_id)
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	qf::qmlwidgets::framework::Plugin *cardreader_plugin = fwk->plugin("CardReader");
+	if(!cardreader_plugin) {
+		qfError() << "CardReader plugin not installed!";
+		return false;
+	}
+	int card_id = cardForRun(run_id);
+	bool ok;
+	QMetaObject::invokeMethod(cardreader_plugin, "reloadTimesFromCard", Qt::DirectConnection,
+							  Q_RETURN_ARG(bool, ok),
+							  Q_ARG(int, card_id),
+							  Q_ARG(int, run_id));
+	return ok;
 }
 
 int RunsPlugin::cardForRun(int run_id)
@@ -216,7 +242,7 @@ int RunsPlugin::cardForRun(int run_id)
 	return card_id;
 }
 
-qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places)
+qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "id, registration")
@@ -242,7 +268,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 		qfs::QueryBuilder qb;
 		qb.select2("runs", "competitorId, timeMs, notCompeting, disqualified")
 				.from("competitors")
-				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id) " AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
 				.where("competitors.classId=" QF_IARG(class_id))
 				.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		qfs::Query q;
@@ -279,7 +305,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	t.sort("timeMs");
 	int pos = 0;
 	int time_ms1 = 0;
-	bool trim_disq = false;
+	//const bool trim_disq = false;
 	int trim_at = -1;
 	for (int j = 0; j < t.rowCount(); ++j) {
 		++pos;
@@ -292,7 +318,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 			loss_ms = time_ms - time_ms1;
 		}
 		else {
-			if(trim_disq) {
+			if(exclude_disq) {
 				trim_at = j;
 				break;
 			}
@@ -315,7 +341,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	return t;
 }
 
-QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
+QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool exclude_disq)
 {
 	qfLogFuncFrame();
 	//qf::core::utils::Table::FieldList cols;
@@ -335,7 +361,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places)
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
 		qfInfo() << "Processing class:" << tt_row.value("name").toString();
 		int class_id = tt_row.value("id").toInt();
-		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id, places);
+		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id, places, exclude_disq);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
 		tt_row.appendTable(tt2);
 	}
@@ -373,6 +399,7 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 	qf::core::utils::TreeTable tt = model.toTreeTable();
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
+	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(stage_id));
 
 	{
 		qf::core::sql::QueryBuilder qb;
@@ -382,8 +409,7 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 			.select2("clubs", "name")
 			.from("competitors")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
-			//.join("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND NOT runs.offRace AND runs.finishTimeMs>0", "JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		if(max_competitors_in_class > 0)

@@ -7,9 +7,9 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="8"
-   height="8"
-   viewBox="0 0 8 8"
+   width="64"
+   height="64"
+   viewBox="0 0 64 64"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
@@ -36,27 +36,31 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1257"
-     inkscape:window-height="858"
+     inkscape:window-width="1758"
+     inkscape:window-height="1353"
      id="namedview6"
      showgrid="false"
-     inkscape:zoom="29.5"
-     inkscape:cx="-0.11864407"
-     inkscape:cy="4"
-     inkscape:window-x="3077"
-     inkscape:window-y="86"
+     inkscape:zoom="7.375"
+     inkscape:cx="15.851993"
+     inkscape:cy="35.536361"
+     inkscape:window-x="95"
+     inkscape:window-y="73"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg2" />
+     inkscape:current-layer="svg2"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
   <path
-     d="M 1.3559322,1.7118643 V 2.7118642 H 6.7118644 V 1.7118643 H 1.3559322 z"
+     d="m 10.879123,14.015601 v 8.037974 H 53.92997 V 14.015601 H 10.879123 z"
      id="path2991"
      inkscape:connector-curvature="0" />
   <path
-     d="m 1.3559322,3.4595761 v 1 h 5.3559322 v -1 H 1.3559322 z"
+     d="m 10.879123,28.063664 v 8.037975 H 53.92997 V 28.063664 H 10.879123 z"
      id="path2989"
      inkscape:connector-curvature="0" />
   <path
-     d="m 1.3559322,5.207288 v 1 h 5.3559322 v -1 H 1.3559322 z"
+     d="m 10.879123,42.111728 v 8.037975 H 53.92997 V 42.111728 H 10.879123 z"
      id="path4"
      inkscape:connector-curvature="0" />
 </svg>

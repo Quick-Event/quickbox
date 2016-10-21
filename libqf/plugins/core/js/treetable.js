@@ -55,7 +55,12 @@ Table.prototype.addRow = function(before_ix)
 	rows[before_ix] = [];
 	this._data.rows = rows;
 }
-
+/*
+Table.prototype.appendRow = function()
+{
+	this.addRow();
+}
+*/
 Table.prototype.columnCount = function()
 {
 	var ret = 0;

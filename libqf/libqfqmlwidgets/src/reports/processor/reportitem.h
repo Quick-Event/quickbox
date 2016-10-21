@@ -380,7 +380,7 @@ private:
 };
 
 /*--
-//! TODO: write class documentation.
+
 class ReportItemTable : public ReportItemBand
 {
 	Q_OBJECT
@@ -401,7 +401,7 @@ public:
 --*/
 
 #ifdef REPORT_ITEM_GRAPH
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemGraph : public ReportItemImage
 {
 	Q_OBJECT

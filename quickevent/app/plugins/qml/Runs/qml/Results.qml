@@ -115,7 +115,7 @@ QtObject {
 			.from('competitors')
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}"
-							+ " AND NOT runs.offRace"
+							+ " AND runs.isRunning"
 							+ " AND NOT runs.disqualified"
 							+ " AND NOT runs.notCompeting"
 							+ " AND runs.finishTimeMs>0", "JOIN")
@@ -195,10 +195,10 @@ QtObject {
 									//   , {eventConfig: FrameWork.plugin("Event").eventConfig.values()});
 	}
 
-	function exportIofXml(file_path)
+	function exportIofXml2(file_path)
 	{
 		var event_plugin = FrameWork.plugin("Event");
-		var start00_msec = event_plugin.stageStart(runsPlugin.selectedStageId);
+		var start00_msec = event_plugin.stageStartMsec(runsPlugin.selectedStageId);
 
 		var tt1 = currentStageTable();
 		var result_list = ['ResultList', {"status": "complete"}];
@@ -289,32 +289,39 @@ QtObject {
 		Log.info("exported:", file_path);
 	}
 
-	function nStagesResultsTable(stages_count, places)
+	function nStagesResultsTable(stages_count, places, exclude_disq)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 
 		var tt = new TreeTable.Table();
-		tt.setData(runsPlugin.nstagesResultsTableData(stages_count, places));
+		tt.setData(runsPlugin.nstagesResultsTableData(stages_count, places, exclude_disq));
 		tt.setValue("stagesCount", stages_count)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));
+		tt.setValue("stageStart", event_plugin.stageStartDateTime(stages_count));
 		//console.info(tt.toString());
 		return tt;
 	}
 
-	function printNStages(stages_count)
+	function printNStages()
 	{
 		Log.info("runs results printNStages triggered");
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = event_plugin.currentStageId;
-		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
-		var places = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 9999, 1);
-		var tt = nStagesResultsTable(n, places);
-		//console.info("n:", n)
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages.qml"
-									   , tt.data()
-									   , qsTr("Results after " + n + " stages")
-									   , ""
-									   , {stagesCount: n});
+		var dlg = runsPlugin.createNStagesReportOptionsDialog(FrameWork);
+		dlg.stagesCount = stage_id;
+		dlg.maxPlacesCount = 9999;
+		dlg.excludeDisqualified = true;
+		if(dlg.exec()) {
+			var tt = nStagesResultsTable(dlg.stagesCount, dlg.maxPlacesCount, dlg.excludeDisqualified);
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages.qml"
+										   , tt.data()
+										   , qsTr("Results after " + dlg.stagesCount + " stages")
+										   , ""
+										   , {stagesCount: dlg.stagesCount});
+		}
+		dlg.destroy();
+		//var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
+		//var places = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 9999, 1);
 	}
 
 	function printNStageAwards()

@@ -1,3 +1,4 @@
+#include "chooseoriseventdialog.h"
 #include "orisimporter.h"
 
 #include <Event/eventplugin.h>
@@ -58,7 +59,7 @@ static Competitors::CompetitorsPlugin* competitorsPlugin()
 }
 */
 
-static void save_json(const QString &fn, const QJsonDocument &jsd)
+void OrisImporter::saveJsonBackup(const QString &fn, const QJsonDocument &jsd)
 {
 	QString dir = qf::core::utils::FileUtils::osTempDir() + '/' + "quickevent";
 	qf::core::utils::FileUtils::ensurePath(dir);
@@ -69,7 +70,7 @@ static void save_json(const QString &fn, const QJsonDocument &jsd)
 	}
 }
 
-static QJsonDocument load_json(const QString &fn)
+static QJsonDocument load_offline_json(const QString &fn)
 {
 	QJsonDocument ret;
 	QString dir = qf::core::utils::FileUtils::osTempDir() + '/' + "quickevent";
@@ -134,59 +135,13 @@ void OrisImporter::syncCurrentEventEntries()
 void OrisImporter::chooseAndImport()
 {
 	qfLogFuncFrame();
-	QDate d = QDate::currentDate();
-	d = d.addMonths(-1);
-	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&datefrom=" + d.toString(Qt::ISODate));
-	/*
-	qfInfo() << url;
-	// manager cannot be an automatic value, it destroys all replies when destructed
-	QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-	QNetworkReply *reply = manager->get(QNetworkRequest(url));
-	//reply->setParent(nullptr);
-	connect(reply, &QNetworkReply::finished, [reply]() {
-		qfInfo() << "finished";
-	});
-	connect(reply, &QObject::destroyed, []() {
-		qfInfo() << "destroyed";
-	});
-	connect(reply, &QNetworkReply::readyRead, [reply]() {
-		qfInfo() << reply->readAll();
-	});
-	connect(reply, &QNetworkReply::downloadProgress, [](qint64 progress, qint64 total) {
-		qfInfo() << progress << "/" << total;
-	});
-	*/
-	getJsonAndProcess(url, [this](const QJsonDocument &jsd) {
-		//qfWarning().noquote() << QString::fromUtf8(jsd.toJson());
-		save_json("EventList", jsd);
-		QJsonObject jso = jsd.object().value(QStringLiteral("Data")).toObject();;
-		QMap<QString, int> events; // descr->id
-		for(auto it = jso.constBegin(); it != jso.constEnd(); ++it) {
-			QJsonObject event = it.value().toObject();
-			//Log.info(event.Name)
-			int id = event.value(QStringLiteral("ID")).toString().toInt();
-			QJsonObject org1 = event.value(QStringLiteral("Org1")).toObject();
-			QJsonObject sport = event.value(QStringLiteral("Sport")).toObject();
-			int sport_id = sport.value(QStringLiteral("ID")).toString().toInt();
-			QString sport_abbr = (sport_id == 1)? tr("OB"): (sport_id == 2)? tr("LOB"): (sport_id == 3)? tr("MTBO"): tr("???");
-			QString event_description = event.value(QStringLiteral("Date")).toString()
-										+ " " + sport_abbr
-										+ " " + org1.value(QStringLiteral("Abbr")).toString()
-										+ " " + event.value(QStringLiteral("Name")).toString();
-			//qfInfo() << event_description;
-			events[event_description] = id;
-		}
-		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		QStringList descriptions = events.keys();
-		int ix = qf::qmlwidgets::dialogs::GetItemInputDialog::getItem(fwk, tr("Get item"), tr("Select event to import"), descriptions);
-		if(ix >= 0) {
-			QString descr = descriptions.value(ix);
-			int event_id = events.value(descr);
-			qfInfo() << "importEvent:" << event_id << descr;
-			QF_ASSERT(event_id > 0, "Invalid event ID", return);
-			importEvent(event_id);
-		}
-	});
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	ChooseOrisEventDialog dlg(this, fwk);
+	if(!dlg.exec())
+		return;
+	int event_id = dlg.eventId();
+	if(event_id > 0)
+		importEvent(event_id);
 }
 
 static QString jsonObjectToFullName(const QJsonObject &data, const QString &field_name)
@@ -201,7 +156,7 @@ void OrisImporter::importEvent(int event_id)
 	getJsonAndProcess(url, [this, event_id](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
-			save_json("Event", jsd);
+			saveJsonBackup("Event", jsd);
 			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 			int stage_count = data.value(QStringLiteral("Stages")).toString().toInt();
 			if(!stage_count)
@@ -270,7 +225,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
 		static const QString json_fn = "EventEntries";
-		save_json(json_fn, jsd);
+		saveJsonBackup(json_fn, jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			qf::core::sql::Query q;
@@ -284,7 +239,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			while(q.next()) {
 				imported_competitors[q.value(1).toInt()] = q.value(0).toInt();
 			}
-			QJsonDocument jsd2 = load_json(json_fn);
+			QJsonDocument jsd2 = load_offline_json(json_fn);
 			if(jsd2.isNull())
 				jsd2 = jsd;
 			QJsonObject data = jsd2.object().value(QStringLiteral("Data")).toObject();;
@@ -301,9 +256,9 @@ void OrisImporter::importEventOrisEntries(int event_id)
 				doc_lst << doc;
 				doc->setSaveSiidToRuns(false);
 				int import_id = competitor_o.value(QStringLiteral("ID")).toString().toInt();
-				int id = imported_competitors.value(import_id);
-				if(id > 0) {
-					doc->load(id);
+				int competitor_id = imported_competitors.value(import_id);
+				if(competitor_id > 0) {
+					doc->load(competitor_id);
 					imported_competitors.remove(import_id);
 				}
 				else {
@@ -465,7 +420,8 @@ void OrisImporter::importEventOrisEntries(int event_id)
 							it.next();
 							int competitor_id = it.key();
 							int si_id = it.value();
-							si_map[si_id] = competitor_id;
+							if(si_id > 0)
+								si_map[si_id] = competitor_id;
 						}
 					}
 					{
@@ -475,10 +431,12 @@ void OrisImporter::importEventOrisEntries(int event_id)
 							it.next();
 							int competitor_id = it.key();
 							int si_id = it.value();
-							int unique_siid_competitor_id = si_map.value(si_id);
-							if(unique_siid_competitor_id != competitor_id) {
-								qfInfo() << "SI:" << si_id << "is duplicit in stage:" << stage_id;
-								it.setValue(0);
+							if(si_id > 0) {
+								int unique_siid_competitor_id = si_map.value(si_id);
+								if(unique_siid_competitor_id != competitor_id) {
+									qfInfo() << "SI:" << si_id << "is duplicit in stage:" << stage_id;
+									it.setValue(0);
+								}
 							}
 						}
 					}
@@ -512,7 +470,7 @@ void OrisImporter::importRegistrations()
 	int year = QDate::currentDate().year();
 	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=1&year=%1").arg(year));
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
-		save_json("Registrations", jsd);
+		saveJsonBackup("Registrations", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 		// import clubs
@@ -557,9 +515,8 @@ void OrisImporter::importRegistrations()
 			}
 			transaction.commit();
 			fwk->hideProgress();
-			//fwk->plugin("Event").emitDbEvent("Oris.registrationImported", null, true);
 			QMetaObject::invokeMethod(fwk->plugin("Event"), "emitDbEvent", Qt::QueuedConnection
-									  , Q_ARG(QString, "Oris.registrationImported")
+									  , Q_ARG(QString, Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED)
 									  , Q_ARG(QVariant, QVariant())
 									  , Q_ARG(bool, true)
 									  );
@@ -574,7 +531,7 @@ void OrisImporter::importClubs()
 {
 	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList");
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
-		save_json("Clubs", jsd);
+		saveJsonBackup("Clubs", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
 		// import clubs

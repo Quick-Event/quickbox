@@ -15,6 +15,7 @@ namespace qf {
 namespace core {
 namespace sql {
 class Query;
+class Connection;
 }
 }
 namespace qmlwidgets {
@@ -36,6 +37,7 @@ class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Pl
 	Q_PROPERTY(int currentStageId READ currentStageId NOTIFY currentStageIdChanged)
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
+	Q_PROPERTY(bool eventOpen READ isEventOpen NOTIFY eventOpenChanged)
 	Q_PROPERTY(bool dbOpen READ isDbOpen NOTIFY dbOpenChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
@@ -43,12 +45,14 @@ public:
 	enum class ConnectionType : int {SqlServer = 0, SingleFile};
 	EventPlugin(QObject *parent = nullptr);
 
+	QF_PROPERTY_BOOL_IMPL(e, E, ventOpen)
 	QF_PROPERTY_IMPL(QString, e, E, ventName)
 
 	static const char *DBEVENT_NOTIFY_NAME;
 	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
 	static const char* DBEVENT_CARD_READ;
 	static const char* DBEVENT_PUNCH_RECEIVED;
+	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
@@ -58,7 +62,10 @@ public:
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
-	Q_INVOKABLE int stageStart(int stage_id);
+	Q_INVOKABLE int stageStartMsec(int stage_id);
+	Q_INVOKABLE QDate stageStartDate(int stage_id);
+	Q_INVOKABLE QTime stageStartTime(int stage_id);
+	Q_INVOKABLE QDateTime stageStartDateTime(int stage_id);
 	//Q_INVOKABLE int currentStageStartMsec();
 
 	//Q_INVOKABLE QVariantMap stageDataMap(int stage_id) {return stageData(stage_id);}
@@ -79,14 +86,15 @@ public:
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
 
-	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
-	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
+	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &data = QVariant(), bool loopback = true);
+	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
 
 	Q_INVOKABLE QString sqlDriverName();
 
 	Q_INVOKABLE QString classNameById(int class_id);
 
 	DbSchema dbSchema();
+	static int minDbVersion();
 public:
 	// event wide signals
 	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
@@ -107,6 +115,7 @@ private:
 	Q_SLOT void onDbEvent(const QString & name, QSqlDriver::NotificationSource source, const QVariant & payload);
 
 	//bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
+	void repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn);
 private:
 	qf::qmlwidgets::Action *m_actConnectDb = nullptr;
 	qf::qmlwidgets::Action *m_actEvent = nullptr;

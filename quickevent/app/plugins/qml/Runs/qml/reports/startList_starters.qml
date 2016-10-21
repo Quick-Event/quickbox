@@ -108,6 +108,11 @@ Report {
 							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}
 					}
+					/* strihani pro Zbyndu
+					Frame {
+						height: 5
+					}
+					*/
 					//expandChildrenFrames: true
 				}
 			}

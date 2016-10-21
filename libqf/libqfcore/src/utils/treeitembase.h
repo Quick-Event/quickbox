@@ -38,7 +38,7 @@ class QFCORE_DECL_EXPORT TreeItemPath : public QList<int>
 		TreeItemPath(const QList<int> &o) : QList< int >(o) {};
 };
 
-//! TODO: write class documentation.
+
 class QFCORE_DECL_EXPORT TreeItemBase
 {
 	public:

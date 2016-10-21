@@ -10,6 +10,7 @@
 #include <qf/core/assert.h>
 
 #include <QSettings>
+#include <QTimer>
 
 namespace Runs {
 
@@ -29,8 +30,10 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->setupUi(this);
 
 	//ui->edFilter->setText("h1%");
-	//ui->grpClassFilter->setChecked(false);
+	ui->grpStartOptions->setVisible(false);
 	ui->btRegExp->setEnabled(eventPlugin()->sqlDriverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
+
+	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
 }
 
 ReportOptionsDialog::~ReportOptionsDialog()
@@ -49,6 +52,11 @@ void ReportOptionsDialog::setClassNamesFilter(const QStringList &class_names)
 ReportOptionsDialog::BreakType ReportOptionsDialog::breakType() const
 {
 	return static_cast<BreakType>(ui->cbxBreakAfterClassType->currentIndex());
+}
+
+bool ReportOptionsDialog::isStartListPrintVacants() const
+{
+	return ui->chkStartOpts_PrintVacants->isChecked();
 }
 
 QString ReportOptionsDialog::sqlWhereExpression() const
@@ -85,6 +93,9 @@ QString ReportOptionsDialog::sqlWhereExpression() const
 int ReportOptionsDialog::exec()
 {
 	loadPersistentSettings();
+	QTimer::singleShot(0, [this]() {
+		ui->grpClassFilter->setVisible(isClassFilterVisible());
+	});
 	int result = Super::exec();
 	if(result == QDialog::Accepted)
 		savePersistentSettings();
@@ -106,6 +117,7 @@ void ReportOptionsDialog::loadPersistentSettings()
 	ui->btWildCard->setChecked(filter_type == FilterType::WildCard);
 	ui->btRegExp->setChecked(filter_type == FilterType::RegExp);
 	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
+	ui->chkStartOpts_PrintVacants->setChecked(opts.isStartListPrintVacants());
 }
 
 void ReportOptionsDialog::savePersistentSettings()
@@ -120,6 +132,7 @@ void ReportOptionsDialog::savePersistentSettings()
 	opts.setClassFilter(ui->edFilter->text());
 	FilterType filter_type =  ui->btWildCard->isChecked()? FilterType::WildCard: ui->btRegExp->isChecked()? FilterType::RegExp: FilterType::ClassName;
 	opts.setClassFilterType((int)filter_type);
+	opts.setStartListPrintVacants(isStartListPrintVacants());
 
 	QSettings settings;
 	settings.setValue(persistentSettingsPath(), opts);

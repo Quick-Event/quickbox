@@ -9,6 +9,8 @@ TEMPLATE = app
 QF_PROJECT_TOP_SRCDIR = $$PWD/../../..
 QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../../..
 
+PROJECT_TOP_SRCDIR = $$PWD
+
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 TARGET = quickevent
 
@@ -33,6 +35,7 @@ unix: LIBS +=  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib:\$\$ORIGIN/../lib/qml/quickevent\'  \
 
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
+include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
 include($$PWD/src.pri)
 
@@ -46,32 +49,9 @@ QML_IMPORT_PATH += \
     $$QF_PROJECT_TOP_BUILDDIR/lib/qml \
 	$$QF_PROJECT_TOP_BUILDDIR/lib/qml/quickevent \
 
-DATA_DIR_NAME = $${TARGET}-data
-
-unix {
-	CONFIG(debug, debug|release) {
-		# T flag is important, qml symlink in SRC/qml dir is created on second install without it
-		datafiles.commands = \
-			mkdir -p $$DESTDIR/$$DATA_DIR_NAME && \
-			ln -sfT $$PWD/../style $$DESTDIR/$$DATA_DIR_NAME/style
-	}
-	else {
-		datafiles.commands = \
-			mkdir -p $$DESTDIR/$$DATA_DIR_NAME && \
-			rsync -r $$PWD/../style $$DESTDIR/$$DATA_DIR_NAME/
-	}
-}
-win32 {
-	#mkdir not needed for windows
-	datafiles.commands = \
-		xcopy $$shell_path($$PWD/../style) $$shell_path($$DESTDIR/$$DATA_DIR_NAME/style) /E /Y /I
-}
 
 win32:CONFIG(debug, debug|release):CONFIG += console
 #CONFIG += console
-
-QMAKE_EXTRA_TARGETS += datafiles
-PRE_TARGETDEPS += datafiles
 
 TRANSLATIONS += \
 	$${TARGET}.cs_CZ.ts \

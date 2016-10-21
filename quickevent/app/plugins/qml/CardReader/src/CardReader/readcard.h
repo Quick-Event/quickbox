@@ -9,7 +9,7 @@
 
 class QSqlRecord;
 class SIMessageCardReadOut;
-class SIMessageTransmitRecord;
+class SIMessageTransmitPunch;
 
 namespace CardReader {
 
@@ -49,29 +49,9 @@ public:
 	ReadCard(const QSqlRecord &rec);
 	ReadCard(const SIMessageCardReadOut &si_card);
 
-	//int timeMs() const;
+	int punchCount() const;
+	ReadPunch punchAt(int i) const;
 	QString toString() const;
-};
-
-
-class CARDREADERPLUGIN_DECL_EXPORT PunchRecord : public QVariantMap
-{
-private:
-	typedef QVariantMap Super;
-
-	QF_VARIANTMAP_FIELD(int, r, setR, unId)
-	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
-	QF_VARIANTMAP_FIELD(int, c, setC, ode)
-	QF_VARIANTMAP_FIELD(int, t, setT, ime)
-	QF_VARIANTMAP_FIELD(int, m, setM, sec)
-	QF_VARIANTMAP_FIELD(int, d, setD, ay)
-	QF_VARIANTMAP_FIELD(int, w, setW, eek)
-public:
-	PunchRecord(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
-	PunchRecord(const SIMessageTransmitRecord &rec);
-
-	//QVariantList toVariantList() const;
-	//QString toJsonArrayString() const;
 };
 
 } // namespace CardReader

@@ -13,7 +13,8 @@
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
-#include <quickevent/og/siid.h>
+#include <quickevent/si/punchrecord.h>
+#include <quickevent/si/siid.h>
 #include <quickevent/audio/player.h>
 
 #include <siut/sidevicedriver.h>
@@ -23,6 +24,7 @@
 #include <qf/qmlwidgets/framework/application.h>
 #include <qf/qmlwidgets/framework/partwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/combobox.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -67,19 +69,80 @@ class Model : public quickevent::og::SqlTableModel
 private:
 	typedef quickevent::og::SqlTableModel Super;
 public:
-	explicit Model(QObject *parent) : Super(parent) {}
+	enum Columns {
+		col_cards_id = 0,
+		col_cards_siId,
+		col_classes_name,
+		col_competitorName,
+		col_competitors_registration,
+		col_runs_startTimeMs,
+		col_runs_timeMs,
+		col_runs_finishTimeMs,
+		col_runs_misPunch,
+		col_runs_disqualified,
+		col_runs_cardLent,
+		col_runs_cardReturned,
+		col_cards_checkTime,
+		col_cards_startTime,
+		col_cards_finishTime,
+		col_COUNT
+	};
+public:
+	explicit Model(QObject *parent);
 
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 };
 
+Model::Model(QObject *parent)
+	: Super(parent)
+{
+	clearColumns(col_COUNT);
+	setColumn(col_cards_id, ColumnDefinition("cards.id", "ID").setReadOnly(true));
+	setColumn(col_cards_siId, ColumnDefinition("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>()));
+	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
+	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
+	setColumn(col_competitors_registration, ColumnDefinition("competitors.registration", tr("Reg")));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
+	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
+	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true));
+	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
+	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
+	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
+	setColumn(col_cards_finishTime, ColumnDefinition("cards.finishTime", tr("FTIME")).setToolTip(tr("Card finish time")).setReadOnly(true));
+}
+
 QVariant Model::data(const QModelIndex &index, int role) const
 {
+	int col = index.column();
 	if(role == Qt::BackgroundRole) {
 		static auto C_RUNID = QStringLiteral("cards.runId");
 		int run_id = tableRow(index.row()).value(C_RUNID).toInt();
 		if(run_id == 0) {
 			static auto c = QColor(Qt::red).lighter(150);
 			return c;
+		}
+	}
+	else if(role == Qt::DisplayRole) {
+		if(col == col_cards_checkTime
+		   || col == col_cards_startTime
+		   || col == col_cards_finishTime )
+		{
+			int secs = value(index.row(), col).toInt();
+			if(secs == 0xEEEE)
+				return QString();
+			int sec = secs % 60;
+			secs /= 60;
+			int min = secs % 60;
+			secs /= 60;
+			int hod = secs;
+			QString s("%1:%2:%3");
+			s = s.arg(hod, 2, 10, QChar('0'));
+			s = s.arg(min, 2, 10, QChar('0'));
+			s = s.arg(sec, 2, 10, QChar('0'));
+			return s;
 		}
 	}
 	return Super::data(index, role);
@@ -114,24 +177,6 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
 		auto m = new Model(this);
-		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
-		m->addColumn("classes.name", tr("Class"));
-		m->addColumn("competitorName", tr("Name"));
-		m->addColumn("competitors.registration", tr("Reg"));
-		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-		m->addColumn("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true);
-		m->addColumn("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true);
-		m->addColumn("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified"));
-		m->addColumn("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true);
-		m->addColumn("runs.cardReturned", tr("R")).setToolTip(tr("Card returned"));
-		/*
-		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
-		status_props.setGroupName("runs.status");
-		m->addColumn("runs.status", tr("Status"))
-				.setCastType(qMetaTypeId<qf::core::sql::DbEnum>(), status_props);
-		*/
 		ui->tblCards->setTableModel(m);
 		m_cardsModel = m;
 	}
@@ -143,11 +188,14 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 {
 	qfLogFuncFrame();
 	QAction a_show_receipt(tr("Show receipt"), nullptr);
-	QAction a_show_card(tr("Show card"), nullptr);
 	QAction a_print_receipt(tr("Print receipt"), nullptr);
+	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
+	QAction a_show_card(tr("Show card"), nullptr);
+	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_sep2(nullptr); a_sep2.setSeparator(true);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_receipt << &a_print_receipt << &a_show_card << &a_assign_runner;
+	lst << &a_show_receipt << &a_print_receipt << &a_sep1 << &a_show_card << &a_print_card << &a_sep2 << &a_assign_runner;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_receipt) {
 		showSelectedReceipt();
@@ -164,6 +212,16 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 		}
 		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
 		QMetaObject::invokeMethod(plugin, "printReceipt", Q_ARG(int, card_id));
+	}
+	else if(a == &a_print_card) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		auto *plugin = fwk->plugin("Receipts");
+		if(!plugin) {
+			qfError() << "Cannot find Receipts plugin!";
+			return;
+		}
+		int card_id = ui->tblCards->tableRow().value("cards.id").toInt();
+		QMetaObject::invokeMethod(plugin, "printCard", Q_ARG(int, card_id));
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
@@ -222,12 +280,21 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		m_cbxAutoRefresh->setText(tr("Auto refresh"));
 		main_tb->addWidget(m_cbxAutoRefresh);
 	}
-	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+	main_tb->addSeparator();
+	{
+		QLabel *lbl = new QLabel(" Reader mode ");
+		main_tb->addWidget(lbl);
+		m_cbxPunchMarking = new QComboBox();
+		m_cbxPunchMarking->addItem(tr("Race"), quickevent::si::PunchRecord::MARKING_RACE);
+		m_cbxPunchMarking->addItem(tr("Entries"), quickevent::si::PunchRecord::MARKING_ENTRIES);
+		main_tb->addWidget(m_cbxPunchMarking);
+	}
+	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &CardReaderWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void CardReaderWidget::reset()
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		m_cardsModel->clearRows();
 		return;
 	}
@@ -238,7 +305,7 @@ void CardReaderWidget::reload()
 {
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId, runId")
+	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime")
 			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent, cardReturned")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
@@ -253,9 +320,10 @@ void CardReaderWidget::reload()
 	m_cardsModel->reload();
 }
 
-void CardReaderWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
-	int card_id = payload.toInt();
+	Q_UNUSED(connection_id)
+	int card_id = data.toInt();
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		// TODO: only if widget is visible (plugin window active)
 		if(m_cbxAutoRefresh->isChecked())
@@ -319,7 +387,9 @@ void CardReaderWidget::onCommOpen(bool checked)
 		int data_bits = settings.value("dataBits", 8).toInt();
 		int stop_bits = settings.value("stopBits", 1).toInt();
 		QString parity = settings.value("parity", "none").toString();
-		siDriver()->openCommPort(device, baud_rate, data_bits, parity, stop_bits > 1);
+		if(!siDriver()->openCommPort(device, baud_rate, data_bits, parity, stop_bits > 1)) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(siDriver()->commPortErrorString()));
+		}
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
 	}
 	else {
@@ -358,7 +428,7 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 		}
 	}
 	else if(msg_data.type() == SIMessageData::MsgPunch) {
-		SIMessageTransmitRecord rec(msg_data);
+		SIMessageTransmitPunch rec(msg_data);
 		processSIPunch(rec);
 	}
 	else {
@@ -368,7 +438,11 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 
 void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QString& msg )
 {
-	qfLogFuncFrame() << qf::core::Log::levelName(level) << msg;
+	qf::core::utils::Settings settings;
+	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
+		if(level == qf::core::Log::Level::Debug)
+			level = qf::core::Log::Level::Info;
+	}
 	appendLog(level, trUtf8("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
 }
 
@@ -386,6 +460,21 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 {
 	appendLog(qf::core::Log::Level::Debug, card.dump());
 	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
+
+	QString punch_marking = m_cbxPunchMarking->currentData().toString();
+	if(punch_marking == quickevent::si::PunchRecord::MARKING_ENTRIES) {
+		// send fake punch in the 'entries' mode to enable edit_competitor_by_punch function
+		quickevent::si::PunchRecord punch;
+		punch.setsiid(card.cardNumber());
+		punch.setmarking(punch_marking);
+		int punch_id = thisPlugin()->savePunchRecordToSql(punch);
+		if(punch_id > 0) {
+			punch.setid(punch_id);
+			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+		}
+		return;
+	}
+
 	int run_id = thisPlugin()->findRunId(card.cardNumber());
 	if(run_id == 0) {
 		operatorAudioWakeUp();
@@ -397,6 +486,20 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		if(q.next()) {
 			if(q.value(0).toBool() && !q.value(1).toBool())
 				operatorAudioNotify();
+		}
+		if(punch_marking == quickevent::si::PunchRecord::MARKING_RACE) {
+			// create fake punch from finish station for speaker if it doesn't exists already
+			quickevent::si::PunchRecord punch;
+			punch.setsiid(card.cardNumber());
+			punch.setrunid(run_id);
+			punch.settime(card.finishTime());
+			punch.setcode(quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
+			punch.setmarking(punch_marking);
+			int punch_id = thisPlugin()->savePunchRecordToSql(punch);
+			if(punch_id > 0) {
+				punch.setid(punch_id);
+				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+			}
 		}
 	}
 	CardReader::ReadCard read_card(card);
@@ -431,22 +534,23 @@ void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card) th
 	}
 }
 
-void CardReaderWidget::processSIPunch(const SIMessageTransmitRecord &rec)
+void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
 {
 	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.punch().toString()));
-	int run_id = thisPlugin()->findRunId(rec.cardNumber());
-	if(run_id == 0)
-		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
-	CardReader::PunchRecord trans_rec(rec);
-	trans_rec.setRunId(run_id);
-	int punch_id = thisPlugin()->savePunchRecordToSql(trans_rec);
-	if(punch_id) {
-		//CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
-		//thisPlugin()->updateRunLapsSql(checked_card);
+	quickevent::si::PunchRecord punch(rec);
+	QString punch_marking = m_cbxPunchMarking->currentData().toString();
+	punch.setmarking(punch_marking);
+	if(punch_marking == quickevent::si::PunchRecord::MARKING_RACE) {
+		int run_id = thisPlugin()->findRunId(rec.cardNumber());
+		if(run_id == 0)
+			appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
+		else
+			punch.setrunid(run_id);
 	}
+	int punch_id = thisPlugin()->savePunchRecordToSql(punch);
 	if(punch_id > 0) {
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch_id, true);
-		//updateTableView(card_id);
+		punch.setid(punch_id);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
 }
 
@@ -642,7 +746,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			QF_ASSERT_EX(si_id > 0, "Bad SI!");
 			int stage_id = eventPlugin()->currentStageId();
 			QF_ASSERT_EX(stage_id > 0, tr("Bad stage!"));
-			int start00 = eventPlugin()->stageStart(stage_id);
+			int start00 = eventPlugin()->stageStartMsec(stage_id);
 			int run_id = 0;
 			int start_time = 0;
 			QString class_name;
@@ -673,7 +777,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			QVariantList punches;
 			int stp_time = start_time;
 			QList<int> codes = codesForClassName(class_name, stage_id);
-			codes << CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
+			codes << quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
 			if(csv_ix + codes.count() != sl.count()) {
 				qfWarning() << codes;
 				qfWarning() << sl;

@@ -22,7 +22,7 @@ public:
 	~CompetitorWidget() Q_DECL_OVERRIDE;
 
 	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;
-
+	void loadFromRegistrations(int siid);
 	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 
 private slots:

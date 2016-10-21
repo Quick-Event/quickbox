@@ -1,0 +1,3 @@
+module Speaker
+
+plugin Speakerplugin ..

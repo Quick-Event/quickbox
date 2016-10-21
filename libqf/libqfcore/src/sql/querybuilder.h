@@ -117,13 +117,7 @@ public:
 
 	static QString mangleSeparator() {static QString ret = QStringLiteral("__"); return ret;}
 	static QString mangleLongFieldName(const QString &table, const QString &field) {return table + mangleSeparator() + field;}
-	static QString unmangleLongFieldName(const QString &field) {
-		int ix = field.indexOf(mangleSeparator());
-		if(ix < 0)
-			return field;
-		QString ret = field;
-		return ret.replace(ix, mangleSeparator().length(), '.');
-	}
+	static QString unmangleLongFieldName(const QString &field);
 private:
 	enum QueryMapKey {InvalidKey = 0, SelectKey, SelectFlagsKey, FromKey, WhereKey, GroupByKey, HavingKey, OrderByKey, LimitKey, OffsetKey, AsKey};
 	typedef QMap<QueryMapKey, QVariant> QueryMap;

@@ -47,7 +47,9 @@ Report {
 				width: "%"
 				layout: Frame.LayoutVertical
 				bottomBorder: Pen { basedOn: "black2" }
-				//LotteryTicket {}
+				LotteryTicket {
+					visible: false
+				}
 				Frame {
 					htmlExportAttributes: {"lpt_textAlign": "left", "lpt_borderTop": "=", "lpt_borderBottom": "-"}
 					width: "%"
@@ -270,8 +272,8 @@ Report {
 					text: {
 						var msec = dc.data(dc.currentIndex, "lossMs");
 						if(msec > 0)
-							return OGTime.msecToString_mmss(msec);
-						return qsTr("-----");
+							return "+" + OGTime.msecToString_mmss(msec);
+						return "";
 					}
 				}
 			}
@@ -279,27 +281,24 @@ Report {
 				width: "%"
 				bottomBorder: Pen { basedOn: "black2" }
 			}
-
-			/*
 			Para {
 				vinset: 1
 				hinset: 1
 				textFn: function() {
-					var missing_codes = bandCard.data("missingCodes");
+					var extra_codes = bandCard.data("extraCodes");
 					//console.warn("missing_codes:", JSON.stringify(missing_codes, null, 2));
-					if(missing_codes) {
-						var mcs = [];
-						for(var i=0; i<missing_codes.length; i++) {
-							var mca = missing_codes[i];
-							mcs.push(mca[0] + "-" + mca[1]);
+					if(extra_codes) {
+						var xcs = [];
+						for(var i=0; i<extra_codes.length; i++) {
+							var xca = extra_codes[i];
+							xcs.push(xca[0] + "-" + xca[1]);
 						}
-						var ret = qsTr("missing: ") + mcs.join(", ");
+						var ret = qsTr("extra: ") + xcs.join(", ");
 						return ret;
 					}
-					return ""
+					return "";
 				}
 			}
-			*/
 			Frame {
 				width: "%"
 				vinset: 1
@@ -310,8 +309,9 @@ Report {
 					textFn: function() {
 						var current_standings = bandCard.data("currentStandings");
 						var competitors_count = bandCard.data("competitorsFinished");
-						var ret = qsTr("standings: ") + current_standings + "/" + competitors_count;
-						return ret;
+						if(current_standings && competitors_count)
+							return qsTr("standings: ") + current_standings + "/" + competitors_count;
+						return "";
 					}
 				}
 				Para {

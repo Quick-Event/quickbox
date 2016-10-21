@@ -15,8 +15,6 @@ class SqlDock : public QDockWidget
 public:
 	SqlDock(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
-	QMenu *menu;
-
 public:
 	SqlTextEdit* sqlTextEdit();
 public:

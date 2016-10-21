@@ -29,6 +29,7 @@ NetworkReply::~NetworkReply()
 		m_reply->deleteLater();
 #endif
 	}
+	emit downloadProgress(QString(), 0, 0);
 }
 
 void NetworkReply::setReply(QNetworkReply *repl)

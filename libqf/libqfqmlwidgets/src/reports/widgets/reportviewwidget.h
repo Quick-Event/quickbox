@@ -35,7 +35,7 @@ class ReportItemMetaPaintFrame;
 class ReportPainter;
 class ReportProcessor;
 
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT  ReportViewWidget : public qf::qmlwidgets::framework::DialogWidget
 {
 	Q_OBJECT

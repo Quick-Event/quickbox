@@ -13,12 +13,15 @@ win32:DESTDIR = $$OUT_PWD/../../bin
 
 message(Target: $$TARGET)
 
-LIBS += -L$$DESTDIR -lqfcore -lqfqmlwidgets
+LIBS += -L$$DESTDIR
+LIBS += -lqfcore -lqfqmlwidgets
+LIBS += -lsiut
 
 INCLUDEPATH += \
 	$$PWD/include \
 	$$PWD/../../libqf/libqfcore/include \
 	$$PWD/../../libqf/libqfqmlwidgets/include \
+	$$PWD/../../libsiut/include
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 

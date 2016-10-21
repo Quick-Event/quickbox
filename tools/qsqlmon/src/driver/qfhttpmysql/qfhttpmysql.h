@@ -30,8 +30,8 @@ class QNetworkReply;
 class QFHttpMySqlDriverHttp : public QObject
 {
 	Q_OBJECT
-	QF_FIELD_RW(QString, h, setH, ost)
-	QF_FIELD_RW(int, p, setP, ort)
+//	QF_FIELD_RW(QString, h, setH, ost)
+//	QF_FIELD_RW(int, p, setP, ort)
 	protected:
 		QNetworkAccessManager *f_http;
 		//QEventLoop *f_eventLoop;

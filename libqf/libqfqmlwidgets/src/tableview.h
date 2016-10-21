@@ -114,6 +114,9 @@ public:
 	Q_SLOT void saveCurrentCellBlob();
 	Q_SLOT void loadCurrentCellBlob();
 
+	Q_SLOT void selectCurrentColumn();
+	Q_SLOT void selectCurrentRow();
+
 	/**
 	* calls update viewport with rect clipping row \a row.
 	* @param row if lower than 0 current row is updated.
@@ -134,6 +137,7 @@ public:
 
 	Q_SIGNAL void editCellRequest(const QModelIndex &table_view_index);
 	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, int mode);
+	Q_SIGNAL void editSelectedRowsInExternalEditor(int mode);
 	Q_SLOT virtual void rowExternallySaved(const QVariant &id, int mode);
 
 	Q_SIGNAL void filterDialogRequest();
@@ -144,6 +148,10 @@ public:
 	int toTableModelRowNo(int table_view_row_no) const;
 
 	Q_SLOT void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate) {Super::setItemDelegateForColumn(column, delegate);}
+
+	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
+protected:
+	virtual bool postRowImpl(int row_no = -1);
 private:
 	Q_SIGNAL void seekStringChanged(const QString &str);
 	//qf::core::utils::Table::SortDef seekSortDefinition() const;
@@ -157,7 +165,6 @@ private:
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 protected:
-	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
 	Q_SLOT virtual void onSqlException(const QString &what, const QString &where, const QString &stack_trace);
 
 	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;

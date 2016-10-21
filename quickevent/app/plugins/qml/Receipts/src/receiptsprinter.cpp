@@ -409,12 +409,14 @@ QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, co
 	}
 	*/
 	QList<PrintLine> lines = alignPrinterData(&dpc, printer_options);
+#if 0
 	for(auto l : lines) {
 		QByteArray ba;
 		for(auto d : l)
 			ba += d.toByteArray();
-		//qfDebug() << ba;
+		qfDebug() << ba;
 	}
+#endif
 	QList<QByteArray> ret = interpretControlCodes(lines, printer_options);
 	//for(auto ba : ret) {
 	//	qDebug() << ba;

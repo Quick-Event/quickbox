@@ -7,12 +7,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="22"
-   height="22"
-   viewBox="0 0 22 22"
+   width="64"
+   height="64"
+   viewBox="0 0 64 64"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.5 r10040"
    sodipodi:docname="reload.svg">
   <metadata
      id="metadata10">
@@ -36,8 +36,8 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1171"
-     inkscape:window-height="911"
+     inkscape:window-width="2189"
+     inkscape:window-height="1328"
      id="namedview6"
      showgrid="false"
      fit-margin-top="0"
@@ -45,14 +45,14 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="14.75"
-     inkscape:cx="6.9674273"
-     inkscape:cy="10.765189"
-     inkscape:window-x="3133"
+     inkscape:cx="7.2174273"
+     inkscape:cy="29.93574"
+     inkscape:window-x="685"
      inkscape:window-y="28"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg2" />
   <path
-     d="M 11.010034,2.9830508 C 6.5951933,2.9830508 2.9830508,6.590678 2.9830508,11 c 0,4.409322 3.6121425,8.016949 8.0269832,8.016949 2.20742,0 4.254301,-0.861822 5.699157,-2.324915 l -1.444856,-1.443051 c -1.083643,1.082288 -2.588702,1.763729 -4.274369,1.763729 -3.3311977,0 -6.0202368,-2.685678 -6.0202368,-6.012712 0,-3.3270339 2.6890391,-6.0127119 6.0202368,-6.0127119 1.665599,0 3.110456,0.7215255 4.194099,1.823856 l -2.187353,2.1846186 h 6.020237 V 2.9830508 L 16.628922,5.3680932 C 15.184065,3.9250424 13.197387,2.9830508 10.989966,2.9830508 z"
+     d="m 32.176541,8.625915 c -12.802013,0 -23.2763867,10.493769 -23.2763867,23.319487 0,12.825717 10.4743737,23.319486 23.2763867,23.319486 6.401005,0 12.336485,-2.506845 16.526231,-6.76265 L 44.513026,44.30473 c -3.142313,3.14813 -7.506635,5.130287 -12.394678,5.130287 -9.659699,0 -17.457288,-7.812028 -17.457288,-17.489615 0,-9.677587 7.797589,-17.489615 17.457288,-17.489615 4.829851,0 9.0196,2.098754 12.161913,5.305183 l -6.342815,6.35456 H 55.394734 V 8.625915 l -6.924723,6.937547 C 44.280261,11.365955 38.519356,8.625915 32.118348,8.625915 z"
      id="path4"
      inkscape:connector-curvature="0" />
 </svg>

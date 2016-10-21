@@ -91,10 +91,17 @@ Report {
 				Para {
 					width: "%"
 					halign: Frame.AlignHCenter
+					textStyle: tsNormal
+					text: "H.S.H Vysočina Cup 2016 E2"
+				}
+				Frame {height: 5}
+				Para {
+					width: "%"
+					halign: Frame.AlignHCenter
 					textStyle: TextStyle { basedOn: tsNormal; font: Font { basedOn: fontNormal; weight: Font.WeightBold } }
 					text: detail.data(detail.currentIndex, "competitorName")
 				}
-				Frame {height: 15}
+				Frame {height: 5}
 				Para {
 					width: "%"
 					halign: Frame.AlignHCenter
@@ -130,7 +137,7 @@ Report {
 							width: "%"
 							height: 30
 							halign: Frame.AlignHCenter
-							dataSource: "/home/fanda/proj/quickbox/quickevent/app/plugins/qml/Runs/qml/images/kachna-podpis.png"
+							dataSource: "./images/kachna-podpis.png"
 						}
 						Frame {
 							width: "%"

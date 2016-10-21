@@ -25,7 +25,8 @@ public:
 	Q_INVOKABLE int msecIntervalAM(int time1_msec, int time2_msec);
 	Q_INVOKABLE int toAMms(int time_msec);
 	Q_INVOKABLE int toAM(int time_sec);
-	Q_INVOKABLE int stageStartSec();
+	Q_INVOKABLE int stageIdForRun(int run_id);
+	Q_INVOKABLE int stageStartSec(int stage_id);
 	Q_INVOKABLE int startTimeSec(int run_id);
 	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
 

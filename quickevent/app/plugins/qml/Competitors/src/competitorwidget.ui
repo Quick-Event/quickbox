@@ -6,14 +6,29 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>668</width>
-    <height>576</height>
+    <width>722</width>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>5</number>
+   </property>
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -69,7 +84,7 @@
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="quickevent::og::SiIdEdit" name="spinBox">
+       <widget class="quickevent::si::SiIdEdit" name="spinBox">
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -259,9 +274,9 @@
    <header location="global">qf/qmlwidgets/combobox.h</header>
   </customwidget>
   <customwidget>
-   <class>quickevent::og::SiIdEdit</class>
+   <class>quickevent::si::SiIdEdit</class>
    <extends>QSpinBox</extends>
-   <header location="global">quickevent/og/siidedit.h</header>
+   <header location="global">quickevent/si/siidedit.h</header>
   </customwidget>
   <customwidget>
    <class>FindRegistrationEdit</class>

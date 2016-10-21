@@ -5,6 +5,7 @@
 #include "../core/utils.h"
 #include "../sql/querybuilder.h"
 #include "../sql/query.h"
+#include "../sql/dbenumcache.h"
 
 #include <QMap>
 #include <QString>
@@ -30,6 +31,16 @@ public:
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)
 	QF_PROPERTY_BOOL_IMPL(i, I, ncludeJoinedTablesIdsToReloadRowQuery)
+
+public:
+	class QFCORE_DECL_EXPORT DbEnumCastProperties : public QVariantMap
+	{
+		QF_VARIANTMAP_FIELD(QString, g, setG, roupName)
+		QF_VARIANTMAP_FIELD2(QString, c, setC, aptionFormat, QStringLiteral("{{caption}}"))
+
+	public:
+		DbEnumCastProperties(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
+};
 public:
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 

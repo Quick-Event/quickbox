@@ -105,10 +105,12 @@
 	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
 
 #define QF_VARIANTMAP_FIELD(ptype, getter_prefix, setter_prefix, name_rest) \
+	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTEME(getter_prefix##name_rest));} \
 	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest)));} \
 	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}
 /// for default values other than QVariant()
 #define QF_VARIANTMAP_FIELD2(ptype, getter_prefix, setter_prefix, name_rest, default_value) \
+	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTEME(getter_prefix##name_rest));} \
 	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest), default_value));} \
 	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}
 	//since c++14 public: auto& setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val; return *this;}
@@ -140,6 +142,7 @@ public:
 	static QVariant retypeVariant(const QVariant &_val, int meta_type_id);
 	static QVariant retypeStringValue(const QString &str_val, const QString &type_name);
 
+	static int findCaption(const QString &caption_format, int from_ix, QString *caption);
 	/**
 	 * @brief findCaptions
 	 * Finds in string all captions in form {{captionName}}

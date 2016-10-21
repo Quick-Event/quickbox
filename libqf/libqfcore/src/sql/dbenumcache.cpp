@@ -12,6 +12,13 @@ using namespace qf::core::sql;
 //============================================================
 //                              DbEnumCache
 //============================================================
+
+namespace {
+
+std::map< QString, DbEnumCache > instances;
+
+}
+
 int DbEnumCache::EnumList::indexOf(const QString& group_id) const
 {
 	for(int ix=0; ix<count(); ix++) {
@@ -29,6 +36,21 @@ DbEnum DbEnumCache::EnumList::valueForId(const QString& group_id) const
 	return DbEnum();
 }
 
+DbEnumCache::DbEnumCache(const QString &connection_name)
+ : m_connectionName(connection_name)
+{
+	if(m_connectionName.isEmpty()) {
+		static QString cn = QString::fromLatin1(QSqlDatabase::defaultConnection);
+		m_connectionName = cn;
+	}
+	qfInfo() << "creating new DbEnumCache for connection name:" << m_connectionName;
+}
+
+DbEnumCache::~DbEnumCache()
+{
+	qfInfo() << "destroying DbEnumCache for connection name:" << m_connectionName;
+}
+
 void DbEnumCache::clear(const QString & group_name)
 {
 	if(group_name.isEmpty())
@@ -39,6 +61,10 @@ void DbEnumCache::clear(const QString & group_name)
 
 void DbEnumCache::reload(const QString & group_name)
 {
+	if(m_connectionName.isEmpty()) {
+		qfError() << "Attempt to load invalid DbEnumCache";
+		return;
+	}
 	clear(group_name);
 	Query q(m_connectionName);
 	if(q.exec("SELECT * FROM enumz WHERE groupName=" QF_SARG(group_name) " ORDER BY pos")) {
@@ -58,15 +84,13 @@ void DbEnumCache::ensure(const QString & group_name)
 		reload(group_name);
 }
 
-DbEnumCache& DbEnumCache::instance(const QString &connection_name)
+DbEnumCache& DbEnumCache::instanceForConnection(const QString &connection_name)
 {
-	static QMap<QString, DbEnumCache> instances;
 	QString cn = connection_name;
 	if(cn.isEmpty())
 		cn = QSqlDatabase::defaultConnection;
-	if(!instances.contains(cn)) {
-		qfInfo() << "creating new DbEnumCache for connection name:" << connection_name;
-		instances[cn].setConnectionName(cn);
+	if(instances.count(cn) == 0) {
+		instances.emplace(cn, cn);
 	}
 	return instances[cn];
 }

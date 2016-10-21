@@ -18,16 +18,16 @@
 namespace qfs = qf::core::sql;
 
 RunsTableItemDelegate::RunsTableItemDelegate(qf::qmlwidgets::TableView * parent)
-	: Super(parent)
+	: Super(parent), m_classStart(), m_classInterval()
 {
 }
 
-void RunsTableItemDelegate::setHighlightedClassId(int class_id)
+void RunsTableItemDelegate::setHighlightedClassId(int class_id, int stage_id)
 {
-	if(m_highlightedClassId == class_id)
+	if(m_highlightedClassId == class_id && m_stageId == stage_id)
 		return;
+	m_stageId = stage_id;
 	m_highlightedClassId = 0;
-	int stage_id = RunsWidget::eventPlugin()->currentStageId();
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
 			.from("classdefs")

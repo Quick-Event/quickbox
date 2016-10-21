@@ -136,7 +136,7 @@ public:
 	style::CompiledTextStyle m_textStyle;
 };
 
-//! TODO documentation
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintReport : public ReportItemMetaPaint
 {
 private:
@@ -148,7 +148,7 @@ public:
 	QSize pageSize;
 };
 
-//! TODO documentation
+
 class ReportItemMetaPaintFrame : public ReportItemMetaPaint
 {
 private:
@@ -168,7 +168,7 @@ protected:
 public:
 	void paint(ReportPainter *painter, unsigned mode = PaintAll) Q_DECL_OVERRIDE;
 };
-//! TODO documentation
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintText : public ReportItemMetaPaint
 {
 private:
@@ -195,7 +195,7 @@ public:
 	~ReportItemMetaPaintText() Q_DECL_OVERRIDE {}
 };
 
-//! TODO documentation
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintCheck : public ReportItemMetaPaintText
 {
 private:
@@ -208,7 +208,7 @@ public:
 	: ReportItemMetaPaintText(parent, report_item) {}
 };
 
-//! TODO documentation
+
 class QFQMLWIDGETS_DECL_EXPORT ReportItemMetaPaintImage : public ReportItemMetaPaint
 {
 private:
@@ -227,7 +227,7 @@ public:
 	: ReportItemMetaPaint(parent, report_item), aspectRatioMode(Qt::IgnoreAspectRatio)/*, resize(true)*/ {}
 };
 
-//! TODO: write class documentation.
+
 class QFQMLWIDGETS_DECL_EXPORT ReportPainter : public QPainter
 {
 private:

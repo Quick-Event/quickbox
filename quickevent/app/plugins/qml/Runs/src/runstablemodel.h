@@ -9,6 +9,26 @@ class RunsTableModel : public quickevent::og::SqlTableModel
 private:
 	typedef quickevent::og::SqlTableModel Super;
 public:
+	enum Columns {
+		col_runs_isRunning = 0,
+		col_runs_id,
+		col_classes_name,
+		col_competitors_siId,
+		col_competitorName,
+		col_registration,
+		col_runs_siId,
+		col_runs_startTimeMs,
+		col_runs_timeMs,
+		col_runs_finishTimeMs,
+		col_runs_notCompeting,
+		col_runs_cardLent,
+		col_runs_cardReturned,
+		col_disqReason,
+		col_runs_disqualified,
+		col_competitors_note,
+		col_COUNT
+	};
+
 	RunsTableModel(QObject *parent = nullptr);
 
 	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
@@ -30,6 +50,9 @@ public:
 
 	void switchStartTimes(int r1, int r2);
 	Q_SIGNAL void startTimesSwitched(int id1, int id2, const QString &err_msg);
+	Q_SIGNAL void runnerSiIdEdited();
+private:
+	void onDataChanged(const QModelIndex &top_left, const QModelIndex &bottom_right, const QVector<int> &roles);
 };
 
 #endif // RUNSTABLEMODEL_H

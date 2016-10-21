@@ -13,10 +13,21 @@
     </message>
 </context>
 <context>
+    <name>LoggerWidget</name>
+    <message>
+        <source>&lt;empty&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <source>Quick Event ver. %1</source>
         <translation>Quick Event ver. %1</translation>
+    </message>
+    <message>
+        <source>Application log</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

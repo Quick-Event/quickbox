@@ -27,10 +27,10 @@
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
 
+#include <QCheckBox>
 #include <QDateTime>
 #include <QLabel>
-//#include <QMenu>
-//#include <QSortFilterProxyModel>
+#include <QInputDialog>
 
 #include <algorithm>
 
@@ -51,6 +51,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Stage 1 reverse order"), static_cast<int>(DrawMethod::StageReverseOrder));
 	ui->cbxDrawMethod->addItem(tr("Handicap"), static_cast<int>(DrawMethod::Handicap));
+	ui->cbxDrawMethod->addItem(tr("Shift times"), static_cast<int>(DrawMethod::ShiftTimes));
 	ui->frmDrawing->setVisible(false);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
@@ -67,7 +68,7 @@ void RunsWidget::lazyInit()
 
 void RunsWidget::reset(int class_id)
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		ui->wRunsTableWidget->clear();
 		return;
 	}
@@ -99,7 +100,7 @@ void RunsWidget::reload()
 	qfLogFuncFrame();
 	int stage_id = selectedStageId();
 	int class_id = m_cbxClasses->currentData().toInt();
-	ui->wRunsTableWidget->reload(stage_id, class_id);
+	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
 }
 /*
 void RunsWidget::editStartList(int class_id, int competitor_id)
@@ -159,9 +160,10 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxStage = new QComboBox();
 		main_tb->addWidget(m_cbxStage);
 	}
+	QLabel *lbl_classes;
 	{
-		QLabel *lbl = new QLabel(tr("Class "));
-		main_tb->addWidget(lbl);
+		lbl_classes = new QLabel(tr("&Class "));
+		main_tb->addWidget(lbl_classes);
 	}
 	{
 		m_cbxClasses = new qfw::ForeignKeyComboBox();
@@ -170,6 +172,14 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxClasses->setReferencedField("id");
 		m_cbxClasses->setReferencedCaptionField("name");
 		main_tb->addWidget(m_cbxClasses);
+	}
+	lbl_classes->setBuddy(m_cbxClasses);
+	{
+		m_chkShowOffRace = new QCheckBox();
+		m_chkShowOffRace->setText(tr("Show o&ff-race"));
+		m_chkShowOffRace->setToolTip(tr("Show off race competitors"));
+		connect(m_chkShowOffRace, &QCheckBox::toggled, this, &RunsWidget::reload);
+		main_tb->addWidget(m_chkShowOffRace);
 	}
 	{
 		auto *bt = new QPushButton(tr("&Draw options"));
@@ -248,7 +258,7 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "id, competitorId")
 			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(stage_id), "JOIN")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id), "JOIN")
 			.where("competitors.classId=" QF_IARG(class_id));
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
@@ -280,7 +290,7 @@ void RunsWidget::import_start_times_ob2000()
 							.select2("competitors", "registration")
 							.select2("classes", "name")
 							.from("competitors")
-							.joinRestricted("competitors.id", "runs.competitorId", "NOT runs.offRace AND runs.stageId=" QF_IARG(selectedStageId()), "JOIN")
+							.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(selectedStageId()), "JOIN")
 							.join("competitors.classId", "classes.id");
 					q.exec(qb.toString(), qf::core::Exception::Throw);
 					while(q.next()) {
@@ -358,18 +368,22 @@ bool RunsWidget::isLockedForDrawing(int class_id, int stage_id)
 	return false;
 }
 
-void RunsWidget::saveLockedForDrawing(int class_id, int stage_id, bool is_locked)
+void RunsWidget::saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min)
 {
 	qfs::Query q;
-	q.prepare("UPDATE classdefs SET drawLock=:drawLock WHERE stageId=" QF_IARG(stage_id) " AND classId=" QF_IARG(class_id), qf::core::Exception::Throw);
+	q.prepare("UPDATE classdefs SET drawLock=:drawLock, lastStartTimeMin=:lastStartTimeMin"
+			  " WHERE stageId=" QF_IARG(stage_id) " AND classId=" QF_IARG(class_id), qf::core::Exception::Throw);
 	q.bindValue(":drawLock", is_locked);
+	q.bindValue(":lastStartTimeMin", start_last_min);
 	q.exec(qf::core::Exception::Throw);
 }
 
 void RunsWidget::on_btDraw_clicked()
 {
 	qfLogFuncFrame();
-	int stage_id = eventPlugin()->currentStageId();
+	int stage_id = selectedStageId();
+	DrawMethod draw_method = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
+	qfDebug() << "DrawMethod:" << (int)draw_method;
 	QList<int> class_ids;
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id == 0) {
@@ -394,9 +408,37 @@ void RunsWidget::on_btDraw_clicked()
 		}
 		class_ids << class_id;
 	}
+
 	try {
 		qf::core::sql::Transaction transaction(qfs::Connection::forName());
 		for(int class_id : class_ids) {
+			if(draw_method == DrawMethod::ShiftTimes) {
+				qfs::Query q(transaction.connection());
+				QString class_name;
+				q.exec("SELECT name FROM classes WHERE id=" QF_IARG(class_id), qf::core::Exception::Throw);
+				if(q.next())
+					class_name = q.value(0).toString();
+
+				int offset_msec = 0;
+				offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset for class %1 [min]:").arg(class_name), 0, -1000, 1000, 1);
+				if(offset_msec == 0)
+					continue;
+				offset_msec *= 60 * 1000;
+
+				q.prepare("UPDATE runs SET startTimeMs = startTimeMs + :offset WHERE id=:id", qf::core::Exception::Throw);
+				for(int id : runsForClass(stage_id, class_id)) {
+					q.bindValue(QStringLiteral(":offset"), offset_msec);
+					q.bindValue(QStringLiteral(":id"), id);
+					q.exec(qf::core::Exception::Throw);
+				}
+				int last_start_time = 0;
+				q.exec("SELECT lastStartTimeMin FROM classdefs WHERE classId=" QF_IARG(class_id) " AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+				if(q.next())
+					last_start_time = q.value(0).toInt();
+				saveLockedForDrawing(class_id, stage_id, true, last_start_time + offset_msec / 60 / 1000);
+				continue;
+			}
+
 			int handicap_length_ms = eventPlugin()->eventConfig()->handicapLength() * 60 * 1000;
 			QVector<int> handicap_times;
 			qf::core::sql::QueryBuilder qb;
@@ -409,8 +451,6 @@ void RunsWidget::on_btDraw_clicked()
 			if(!q_classdefs.next())
 				continue;
 			QList<int> runners_draw_ids;
-			DrawMethod draw_method = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
-			qfDebug() << "DrawMethod:" << (int)draw_method;
 			if(draw_method == DrawMethod::RandomNumber) {
 				runners_draw_ids = runsForClass(stage_id, class_id);
 				shuffle(runners_draw_ids);
@@ -542,6 +582,7 @@ void RunsWidget::on_btDraw_clicked()
 				int start0 = q_classdefs.value("startTimeMin").toInt() * 60 * 1000;
 				int vacants_before = q_classdefs.value("vacantsBefore").toInt();
 				int vacant_every = q_classdefs.value("vacantEvery").toInt();
+				int vacants_after = q_classdefs.value("vacantsAfter").toInt();
 				int start = start0;
 				int n = 0;
 
@@ -568,12 +609,13 @@ void RunsWidget::on_btDraw_clicked()
 						q.bindValue(QStringLiteral(":startTimeMs"), start);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
-						if(n > 0 && vacant_every > 0 && (n % vacant_every) == 0)
+						if(vacant_every > 0 && ((n+1) % vacant_every) == 0)
 							start += interval;
 						n++;
 					}
 				}
-				saveLockedForDrawing(class_id, stage_id, true);
+				start += (vacants_after - 1) * interval;
+				saveLockedForDrawing(class_id, stage_id, true, start / 60 / 1000);
 			}
 		}
 		transaction.commit();
@@ -600,8 +642,8 @@ void RunsWidget::on_btDrawRemove_clicked()
 			// bypass mid-air collision check
 			runs_model->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
 		}
-		int stage_id = eventPlugin()->currentStageId();
-		saveLockedForDrawing(class_id, stage_id, false);
+		int stage_id = selectedStageId();
+		saveLockedForDrawing(class_id, stage_id, false, 0);
 		transaction.commit();
 		runs_model->reload();
 	}

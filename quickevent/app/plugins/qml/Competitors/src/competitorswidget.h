@@ -3,6 +3,8 @@
 
 #include <QFrame>
 
+class QCheckBox;
+
 namespace Ui {
 class CompetitorsWidget;
 }
@@ -34,11 +36,18 @@ private:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
-	Q_SLOT void editCompetitor(const QVariant &id, int mode);
+	Q_SLOT void editCompetitor(const QVariant &id, int mode) {editCompetitor_helper(id, mode, 0);}
+	Q_SLOT void editCompetitors(int mode);
+
+	void editCompetitor_helper(const QVariant &id, int mode, int siid);
+
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
+	void editCompetitorOnPunch(int siid);
 private:
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
+	QCheckBox *m_cbxEditCompetitorOnPunch = nullptr;
 };
 
 #endif // COMPETITORSWIDGET_H

@@ -28,7 +28,7 @@ FindRunnerWidget::FindRunnerWidget(int stage_id, QWidget *parent)
 {
 	ui->setupUi(this);
 	ui->edFindRunner->setFocus();
-	ui->edFindRunner->setTable(runsPlugin()->runsTable(stage_id));
+	ui->edFindRunner->setTable(runsPlugin()->runnersTable(stage_id));
 	connect(ui->edFindRunner, &FindRunnerEdit::runnerSelected, this, &FindRunnerWidget::runnerSelected);
 }
 

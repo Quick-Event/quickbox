@@ -8,6 +8,8 @@ Report {
 	id: root
 
 	property int stagesCount: 1
+	//property bool excludeDisqualified: true
+
 	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
 	property int timeCellWidth: 17
 	property int posCellWidth: 10

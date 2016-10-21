@@ -8,6 +8,9 @@ Report {
 
 	property string reportTitle: qsTr("Start list by clubs")
 
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
+
 	//debugLevel: 1
 	styleSheet: StyleSheet {
 		objectName: "portraitStyleSheet"
@@ -59,8 +62,20 @@ Report {
 					width: "%"
 					//keepAll: true
 					layout: Frame.LayoutVertical
-					function dataFn(field_name) {return function() {return rowData(field_name);}}
-					Space { height: 5 }
+					function dataFn(field_name) {
+						return function() {
+							var d = rowData(field_name);
+							if(!d)
+								d = "---";
+							return d;
+						}
+					}
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
+						skipFirst: true
+					}
+					//Space { height: 5 }
 					Frame {
 						width: "%"
 						layout: Frame.LayoutHorizontal

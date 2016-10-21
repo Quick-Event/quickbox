@@ -4,10 +4,12 @@
 
 #include <siut/simessage.h>
 
+#include <qf/core/log.h>
+
 #include <QSqlRecord>
 #include <QJsonDocument>
 
-using namespace CardReader;
+namespace CardReader {
 
 ReadPunch::ReadPunch(const QVariantList &var_list)
 {
@@ -56,6 +58,17 @@ ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
 	: Super(si_card.toVariantMap())
 {
 }
+
+int ReadCard::punchCount() const
+{
+	return punches().count();
+}
+
+ReadPunch ReadCard::punchAt(int i) const
+{
+	QVariantMap m = punches().value(i).toMap();
+	return ReadPunch(m);
+}
 /*
 int ReadCard::timeMs() const
 {
@@ -95,7 +108,4 @@ QString ReadCard::toString() const
 	return ret;
 }
 
-PunchRecord::PunchRecord(const SIMessageTransmitRecord &rec)
-	: Super(rec.toVariantMap())
-{
 }

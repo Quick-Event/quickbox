@@ -586,7 +586,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 	return ret;
 }
 
-SIMessageTransmitRecord::SIMessageTransmitRecord(const SIMessageData &_data)
+SIMessageTransmitPunch::SIMessageTransmitPunch(const SIMessageData &_data)
 	: SIMessageBase(_data)
 {
 	QByteArray data = m_data.header();
@@ -608,9 +608,9 @@ SIMessageTransmitRecord::SIMessageTransmitRecord(const SIMessageData &_data)
 	m_punch.setMsec(msec);
 }
 
-QVariantMap SIMessageTransmitRecord::toVariantMap() const
+QVariantMap SIMessageTransmitPunch::toVariantMap() const
 {
 	QVariantMap ret = punch().toVariantMap();
-	ret[QStringLiteral("cardNumber")] = cardNumber();
+	ret[QStringLiteral("siid")] = cardNumber();
 	return ret;
 }

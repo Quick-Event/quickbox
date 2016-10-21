@@ -11,34 +11,26 @@
 namespace qf {
 namespace core {
 
-#define QF_THROW(exception_type, msg, abort) \
+#define QF_THROW(exception_type, msg) \
 	do { \
-	if(abort) \
-	qFatal("EXCEPTION %s", qPrintable(msg)); \
-	else \
-	throw exception_type (msg, QString("%1:%2\n%3\n").arg(__FILE__).arg(__LINE__).arg(QF_FUNC_NAME)); \
-} while(0)
+		if(qf::core::Exception::isAbortOnException()) \
+			qFatal("EXCEPTION %s", qPrintable(msg)); \
+		else \
+			throw exception_type (msg, QString("%1:%2\n%3\n").arg(__FILE__).arg(__LINE__).arg(QF_FUNC_NAME)); \
+	} while(0)
 
 //! if Exception::terminateOnException is true, abort application instead of throw. For debug purposes to get the stacktrace.
 #define QF_EXCEPTION(msg) \
-	QF_THROW(qf::core::Exception, msg, qf::core::Exception::isAbortOnException())
+	QF_THROW(qf::core::Exception, msg)
 
 //---------------------------------------------------------------------
 class QFCORE_DECL_EXPORT Exception : public std::exception
 {
 public:
-	Exception()
-	{
-		init(QString(), QString());
-	}
-	Exception(const QString& _msg, const QString& _where = QString())
-	{
-		init(_msg, _where);
-		log();
-	}
+	Exception(const QString& _msg, const QString& _where = QString());
 	~Exception() throw() Q_DECL_OVERRIDE {}
 public:
-	static const bool Throw = true;
+	static constexpr bool Throw = true;
 protected:
 	static bool s_abortOnException;
 	//QString m_type;

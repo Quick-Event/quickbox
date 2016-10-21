@@ -27,3 +27,4 @@ FORMS += \
     $$PWD/editcoursecodeswidget.ui
 
 include ( $$PWD/Classes/Classes.pri )
+include ( $$PWD/drawing/drawing.pri )

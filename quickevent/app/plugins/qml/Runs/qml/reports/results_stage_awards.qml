@@ -1,1 +1,1 @@
-/home/fanda/proj/quickbox/quickevent/app/plugins/qml/Runs/qml/reports/results_stage_awards-hsh.qml
+results_stage_awards-hsh.qml

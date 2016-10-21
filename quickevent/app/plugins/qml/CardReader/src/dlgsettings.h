@@ -15,7 +15,7 @@ namespace Ui {class DlgSettings;};
 
 class CardReaderWidget;
 
-//! TODO: write class documentation.
+
 class  DlgSettings : public QDialog
 {
 	Q_OBJECT

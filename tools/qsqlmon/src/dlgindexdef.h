@@ -16,7 +16,7 @@ namespace Ui {class DlgIndexDef;};
 
 class QSqlDatabase;
 
-//! TODO: write class documentation.
+
 class  DlgIndexDef : public QDialog
 {
 	Q_OBJECT

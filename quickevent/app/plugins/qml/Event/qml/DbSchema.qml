@@ -12,6 +12,7 @@ Schema {
 				Field { name: 'groupId'; type: String {} },
 				Field { name: 'pos'; type: Int {} },
 				Field { name: 'caption'; type: String {} },
+				Field { name: 'color'; type: String {} },
 				Field { name: 'value'; type: String {} }
 			]
 			indexes: [
@@ -32,8 +33,9 @@ Schema {
 		Table { name: 'stages'
 			fields: [
 				Field { name: 'id'; type: Int {} },
-				Field { name: 'startTime'; type: Time {} },
-				Field { name: 'startDate'; type: Date {} },
+				Field { name: 'startDateTime'; type: DateTime {} },
+				//Field { name: 'startTime'; type: Time {} },
+				//Field { name: 'startDate'; type: Date {} },
 				Field { name: 'drawingConfig'; type: String {} }
 			]
 			indexes: [
@@ -121,6 +123,7 @@ Schema {
 				Field { name: 'resultsCount'; type: Int { }
 					comment: 'number of finished competitors, when the results were printed'
 				},
+				Field { name: 'lastStartTimeMin'; type: Int { } },
 				Field { name: 'drawLock'; type: Boolean { }
 					defaultValue: false
 					notNull: true
@@ -169,12 +172,11 @@ Schema {
 					comment: 'in miliseconds'
 				},
 				Field { name: 'timeMs'; type: Int {}
-					comment: 'in miliseconds'
+					comment: 'in miliseconds since event run'
 				},
-				Field { name: 'offRace'; type: Boolean { }
-					defaultValue: false;
-					notNull: true
-					comment: "Competitor does not run in this stage"
+				Field { name: 'isRunning'; type: Boolean { }
+					defaultValue: true;
+					comment: "Competitor is running in this stage"
 				},
 				Field { name: 'notCompeting'; type: Boolean { }
 					defaultValue: false;
@@ -221,8 +223,8 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId, competitorId']; unique: true },
-				Index {fields: ['stageId, siId']; unique: true } // cannot be unique since Oris import sometimes contains duplicate SI
+				Index {fields: ['stageId', 'competitorId']; unique: true },
+				Index {fields: ['stageId', 'siId', 'isRunning']; unique: true }
 			]
 		},
 		Table { name: 'runlaps'
@@ -323,12 +325,17 @@ Schema {
 					}
 					comment: 'JSON of format [[code, time, msec, day_of_week, week_cnt], ...]}'
 				},
+				Field { name: 'readerConnectionId'
+					type: Int { }
+					comment: 'connection id of QuickEvent instance which has read this card'
+				},
 				Field { name: 'printerConnectionId'
 					type: Int { }
 					comment: 'connection id of QuickEvent instance which has printed this strip'
 				}
   			]
 			indexes: [
+				Index { fields: ['readerConnectionId']; unique: false },
 				Index { fields: ['printerConnectionId']; unique: false },
 				Index { fields: ['stageId', 'siId']; unique: false },
 				Index { fields: ['runId']; unique: false }
@@ -339,10 +346,10 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'code'; type: Int { } },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'punchTime'; type: Int {}
+				Field { name: 'time'; type: Int {}
 					comment: 'seconds in range 0 - 12 hours'
 				},
-				Field { name: 'punchMs'; type: Int {}
+				Field { name: 'msec'; type: Int {}
 					comment: 'msec part od punch time'
 				},
 				Field { name: 'stageId'; type: Int { }
@@ -350,10 +357,19 @@ Schema {
 				},
 				Field { name: 'runId'; type: Int {} },
 				Field { name: 'timeMs'; type: Int {}
-					comment: 'in miliseconds'
+					comment: 'in miliseconds since event start'
+				},
+				Field { name: 'runTimeMs'; type: Int {}
+					comment: 'in miliseconds since runner event start'
+				},
+				Field { name: 'marking'; type: String {}
+					notNull: true
+					defaultValue: 'race';
+					comment: 'possible values: race | entries'
 				}
 			]
 			indexes: [
+				Index {fields: ['marking', 'stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
 			]
 		}
@@ -362,18 +378,17 @@ Schema {
 		/*
 		Insert {
 			table: enumz
-			fields: ['groupName', 'groupId', 'pos']
+			fields: ['groupName', 'groupId', 'pos', 'caption']
 			rows: [
-				['runs.status', 'OFF', 1],
-				['runs.status', 'START', 2],
-				['runs.status', 'FINISH', 3]
+				['cardReader.punchMarking', 'race', 1, qsTr('Race')],
+				['cardReader.punchMarking', 'entries', 2, qsTr('Entries')]
 			]
 		},
 		*/
 		Insert {
 			table: config
 			rows: [
-				['db.version', qsTr('Data version'), '10004', 'int']
+				['db.version', qsTr('Data version'), '{{minDbVersion}}', 'int']
 				/*
 				['event.stageCount', qsTr('Stage count'), '0', 'int'],
 				['event.name', qsTr('Event name'), '', 'QString'],

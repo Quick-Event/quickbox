@@ -57,7 +57,7 @@
     <message>
         <location filename="qml/main.qml" line="130"/>
         <source>&amp;File</source>
-        <translation>&amp;Soubor</translation>
+        <translation>Soubo&amp;r</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="131"/>
@@ -102,7 +102,7 @@
     <message>
         <location filename="qml/main.qml" line="165"/>
         <source>&amp;Help</source>
-        <translation>&amp;Nápověda</translation>
+        <translation>Ná&amp;pověda</translation>
     </message>
 </context>
 </TS>

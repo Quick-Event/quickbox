@@ -19,6 +19,11 @@ class ReportOptionsDialog : public QDialog, public qf::qmlwidgets::framework::IP
 	Q_OBJECT
 
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
+	Q_PROPERTY(bool classFilterVisible READ isClassFilterVisible WRITE setClassFilterVisible NOTIFY classFilterVisibleChanged)
+	Q_PROPERTY(bool startListOptionsVisible READ isStartListOptionsVisible WRITE setStartListOptionsVisible NOTIFY startListOptionsVisibleChanged)
+
+	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
+	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
 private:
 	using Super = QDialog;
 public:
@@ -37,6 +42,7 @@ public:
 
 	BreakType breakType() const;
 	//Q_INVOKABLE QVariantMap optionsToMap() const;
+	Q_INVOKABLE bool isStartListPrintVacants() const;
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}
 	Q_INVOKABLE bool isColumnBreak() const {return breakType() == BreakType::Column;}
 	Q_INVOKABLE QString sqlWhereExpression() const;
@@ -48,6 +54,7 @@ private:
 		QF_VARIANTMAP_FIELD2(int, c, setC, lassFilterType, 0)
 		QF_VARIANTMAP_FIELD(bool, is, set, UseClassFilter)
 		QF_VARIANTMAP_FIELD(bool, is, set, InvertClassFilter)
+		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintVacants)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};

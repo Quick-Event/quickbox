@@ -13,7 +13,7 @@
 #include <QTreeView>
 
 
-//! TODO: write class documentation.
+
 class  ServerTreeView : public QTreeView
 {
 	Q_OBJECT

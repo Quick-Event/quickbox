@@ -5,7 +5,7 @@
 #include "../core/log.h"
 
 #include <QSqlRecord>
-//#include <QSqlError>
+#include <QColor>
 #include <QJsonDocument>
 
 using namespace qf::core::sql;
@@ -51,16 +51,17 @@ DbEnum::DbEnum(const Query &q)
 				s_fieldMapping[fld_name] = FieldAbbreviation;
 			else if(qf::core::Utils::fieldNameEndsWith(fld_name, QStringLiteral("value")))
 				s_fieldMapping[fld_name] = FieldValue;
+			else if(qf::core::Utils::fieldNameEndsWith(fld_name, QStringLiteral("typeInfo")))
+				s_fieldMapping[fld_name] = FieldTypeInfo;
 			else if(qf::core::Utils::fieldNameEndsWith(fld_name, QStringLiteral("caption")))
 				s_fieldMapping[fld_name] = FieldCaption;
-			else if(qf::core::Utils::fieldNameEndsWith(fld_name, QStringLiteral("userText")))
-				s_fieldMapping[fld_name] = FieldUserText;
+			else if(qf::core::Utils::fieldNameEndsWith(fld_name, QStringLiteral("color")))
+				s_fieldMapping[fld_name] = FieldColor;
 			else if(qf::core::Utils::fieldNameEndsWith(fld_name, QStringLiteral("grants")))
 				s_fieldMapping[fld_name] = FieldGrants;
 		}
 	}
-	for(int i=0; i<LastFieldIndex; i++)
-		m_values << QVariant();
+	m_values.resize(LastFieldIndex);
 	for(int i=0; i<rec.count(); i++) {
 		qfDebug() << "\t" << i << "field:" << rec.fieldName(i);
 		QString fld_name = rec.fieldName(i);
@@ -69,20 +70,27 @@ DbEnum::DbEnum(const Query &q)
 			continue;
 		QVariant v = rec.value(i);
 		if(fld_ix == FieldValue) {
-			QString s = v.toString().trimmed();
-			if(!s.isEmpty()) {
+			QString s = v.toString().simplified();
+			if(!s.isEmpty() && (s[0] == '{' || s[0] == '[')) {
 				QByteArray ba = s.toUtf8();
 				QJsonParseError err;
 				QJsonDocument jsd = QJsonDocument::fromJson(ba, &err);
 				if(err.error == QJsonParseError::NoError) {
 					v = jsd.toVariant();
+					m_values[fld_ix] = v;
 				}
 				else {
 					qfError() << "DbEnum parse value ERROR:" << s << "\n" << err.errorString();
 				}
 			}
 		}
-		m_values[fld_ix] = v;
+		else if(fld_ix == FieldColor) {
+			QString s = v.toString().trimmed();
+			setColor(s);
+		}
+		else {
+			m_values[fld_ix] = v;
+		}
 	}
 	/*
 	{
@@ -118,23 +126,40 @@ DbEnum::DbEnum(const Query &q)
 	*/
 }
 
+QColor DbEnum::color() const
+{
+	return m_values.value(FieldColor).value<QColor>();
+}
+
+void DbEnum::setColor(const QString &s)
+{
+	QColor c(s);
+	setColor(c);
+}
+
+void DbEnum::setColor(const QColor &c)
+{
+	setValue(FieldColor, c);
+}
+
 void DbEnum::setValue(DbEnum::FieldIndexes ix, const QVariant & val)
 {
 	if(m_values.isEmpty())
-		for(int i=0; i<LastFieldIndex; i++)
-			m_values << QVariant();
+		m_values.resize(LastFieldIndex);
 	m_values[ix] = val;
 }
 
 QString DbEnum::fillInPlaceholders(const QString& text_with_placeholders) const
 {
+	if(!isValid())
+		return QString();
 	QString ret = text_with_placeholders;
-	ret.replace("${groupName}", groupName());
-	ret.replace("${groupId}", groupId());
-	ret.replace("${pos}", QString::number(pos()));
-	ret.replace("${abbreviation}", abbreviation());
-	ret.replace("${value}", value().toString());
-	ret.replace("${caption}", caption());
+	ret.replace(QStringLiteral("{{groupName}}"), groupName());
+	ret.replace(QStringLiteral("{{groupId}}"), groupId());
+	ret.replace(QStringLiteral("{{pos}}"), QString::number(pos()));
+	ret.replace(QStringLiteral("{{abbreviation}}"), abbreviation());
+	ret.replace(QStringLiteral("{{value}}"), value().toString());
+	ret.replace(QStringLiteral("{{caption}}"), caption());
 	return ret;
 }
 

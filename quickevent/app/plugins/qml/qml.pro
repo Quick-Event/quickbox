@@ -10,8 +10,9 @@ SUBDIRS += \
 	Runs \
 	CardReader \
 	Receipts \
+	Speaker \
 	Oris \
-	ExamplePureQmlPlugin \
-	ExampleCppQmlPlugin \
+	ExamplePureQml \
+	ExampleCppQml \
 
 

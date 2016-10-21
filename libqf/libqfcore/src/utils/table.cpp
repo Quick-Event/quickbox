@@ -452,7 +452,9 @@ void TableRow::setValue(int col, const QVariant &v)
 		QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
 		return);
 
-	QVariant new_val = Utils::retypeVariant(v, fields()[col].type());
+	QVariant new_val;
+	if(v.isValid())
+		new_val = Utils::retypeVariant(v, fields()[col].type());
 	QVariant orig_val = origValue(col);
 	//qfInfo() << new_val << "is null:" << new_val.isNull() << "==" << orig_val << "is null:" << orig_val.isNull() << "->" << (new_val == orig_val);
 	bool same_nullity = (new_val.isNull() && orig_val.isNull()) || (!new_val.isNull() && !orig_val.isNull());
@@ -764,9 +766,11 @@ TableRow Table::row(int ri) const
 	if(!isValidRowIndex(ri)) {
 		qfDebug() << "invalid row";
 	}
-	QF_ASSERT(isValidRowIndex(ri),
-			  QString("row: %1 is out of range of rows (%2)").arg(ri).arg(d->rows.size()),
-			  return ret);
+	if(!isValidRowIndex(ri)) {
+			auto msg = QString("row: %1 is out of range of row count (%2)").arg(ri).arg(d->rows.size());
+			qfError() << msg;
+			return ret;
+	}
 	ret = rows().value(rowNumberToRowIndex(ri));
 	return ret;
 }

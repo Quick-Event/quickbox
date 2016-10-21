@@ -12,7 +12,7 @@
 #include <quickevent/og/timems.h>
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/itemdelegate.h>
-#include <quickevent/og/siid.h>
+#include <quickevent/si/siid.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -67,7 +67,7 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		auto m = new quickevent::og::SqlTableModel(this);
 
 		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::og::SiId>());
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
 		m->addColumn("competitors.registration", tr("Reg"));
@@ -106,12 +106,12 @@ void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
 
-	connect(eventPlugin(), SIGNAL(dbEventNotify(QString,QVariant)), this, SLOT(onDbEventNotify(QString,QVariant)), Qt::QueuedConnection);
+	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &ReceiptsWidget::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void ReceiptsWidget::reset()
 {
-	if(eventPlugin()->eventName().isEmpty()) {
+	if(!eventPlugin()->isEventOpen()) {
 		m_cardsModel->clearRows();
 		return;
 	}
@@ -153,9 +153,10 @@ Event::EventPlugin *ReceiptsWidget::eventPlugin()
 	return plugin;
 }
 
-void ReceiptsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
+void ReceiptsWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
-	Q_UNUSED(payload)
+	Q_UNUSED(connection_id)
+	Q_UNUSED(data)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		onCardRead();
 	}
@@ -194,14 +195,15 @@ void ReceiptsWidget::onCardRead()
 void ReceiptsWidget::printNewCards()
 {
 	auto conn  = qf::core::sql::Connection::forName();
-	int connection_id = 1;
-	if(!conn.driverName().endsWith("SQLITE"))
-		connection_id = conn.connectionId();
+	int connection_id = conn.connectionId();
 	QF_ASSERT(connection_id > 0, "Cannot get SQL connection id", return);
 	int current_stage = currentStageId();
 	QString qs = "UPDATE cards SET printerConnectionId=" QF_IARG(connection_id)
 			" WHERE printerConnectionId IS NULL"
 			" AND cards.stageId=" QF_IARG(current_stage);
+	if(ui->chkThisReaderOnly->isChecked()) {
+		qs += " AND readerConnectionId=" QF_IARG(connection_id);
+	}
 	qf::core::sql::Query q(conn);
 	q.exec(qs, qf::core::Exception::Throw);
 	int num_rows = q.numRowsAffected();
