@@ -252,6 +252,17 @@ QList<ClassItem *> ClassItem::findClashes()
 	return ret;
 }
 
+static int gcd(int a, int b)
+{
+	while (a != b) {
+		if (a > b)
+			a = a - b;
+		else
+			b = b - a;
+	}
+	return a;
+}
+
 ClassItem::ClashType ClassItem::clashWith(ClassItem *other)
 {
 	qfLogFuncFrame() << data().className() << "vs" << other->data().className();
@@ -268,12 +279,11 @@ ClassItem::ClashType ClassItem::clashWith(ClassItem *other)
 			return ClashType::CourseOverlap;
 		}
 		if(dt.firstCode() == odt.firstCode()) {
-			if(dt.startIntervalMin() > 0 && odt.startIntervalMin() > 0) {
-				if(dt.startIntervalMin() != odt.startIntervalMin()) {
-					qfDebug() << "\t ret: 1RunnersOverlap";
-					return ClashType::RunnersOverlap;
-				}
-				if((dt.startTimeMin() % dt.startIntervalMin()) == (odt.startTimeMin() % odt.startIntervalMin())) {
+			int si = dt.startIntervalMin();
+			int osi = odt.startIntervalMin();
+			if(si > 0 && osi > 0) {
+				int si_gcd = gcd(si, osi);
+				if((t1 % si_gcd) == (ot1 % si_gcd)) {
 					qfDebug() << "\t ret: 2RunnersOverlap";
 					return ClashType::RunnersOverlap;
 				}
