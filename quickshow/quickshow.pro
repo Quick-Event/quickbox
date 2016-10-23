@@ -13,23 +13,32 @@ CONFIG += c++11
 # exception backrace support
 unix:QMAKE_LFLAGS_APP += -rdynamic
 
-TARGET = $$OUT_PWD/../bin/$$MY_SUBPROJECT
+TARGET = $$MY_SUBPROJECT
+
+QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/..
+message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
+
+DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
+message ( DESTDIR: $$DESTDIR )
 
 INCLUDEPATH += $$PWD/../libqf/libqfcore/include
 
 LIBS +=      \
 	-lqfcore  \
+	-lqfqmlwidgets  \
 
 win32: LIBS +=  \
-	-L$$MY_BUILD_DIR/bin  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
 
 unix: LIBS +=  \
-	-L../lib  \
+	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
+
+include ($$PWD/../../crosscompile-support.pri)
 
 message(LIBS: $$LIBS)
 
-#win32: CONFIG += console
+win32: CONFIG += console
 
 RC_FILE = $${MY_SUBPROJECT}.rc
 

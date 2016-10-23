@@ -9,10 +9,10 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("application.fontScale").setType(QVariant::Int).setNames("--font-scale").setDefaultValue(100).setComment("font scale in %");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");
 	addOption("event.stage").setType(QVariant::Int).setNames("-n", "--stage").setDefaultValue(1);
-	addOption("connection.host").setType(QVariant::String).setNames("-s", "--host");
+	addOption("connection.host").setType(QVariant::String).setNames("-s", "--host").setDefaultValue("localhost");
 	addOption("connection.port").setType(QVariant::Int).setNames("--port").setDefaultValue(5432);
-	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user");
+	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user").setDefaultValue("quickevent");
 	addOption("connection.password").setType(QVariant::String).setNames("-p", "--password");
 	addOption("connection.database").setType(QVariant::String).setNames("-d", "--database").setDefaultValue("quickevent");
-	addOption("connection.driver").setType(QVariant::String).setNames("--sqlDriver").setDefaultValue("QPSQL");
+	addOption("connection.driver").setType(QVariant::String).setNames("--sql-driver").setDefaultValue("QPSQL");
 }
