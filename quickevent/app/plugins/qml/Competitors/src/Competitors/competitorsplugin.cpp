@@ -125,7 +125,7 @@ qf::core::model::SqlTableModel* CompetitorsPlugin::registrationsModel()
 				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 				.from("registrations")
 				.orderBy("lastName, firstName");
-		m_registrationsModel->setQueryBuilder(qb);
+		m_registrationsModel->setQueryBuilder(qb, false);
 	}
 	return m_registrationsModel;
 }

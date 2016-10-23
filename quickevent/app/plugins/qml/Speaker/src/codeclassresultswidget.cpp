@@ -94,7 +94,7 @@ void CodeClassResultsWidget::reload()
 			.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 			.orderBy("punches.runTimeMs");//.limit(10);
 	qfInfo() << qb.toString();
-	m_tableModel->setQueryBuilder(qb);
+	m_tableModel->setQueryBuilder(qb, false);
 	m_tableModel->reload();
 }
 

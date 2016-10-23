@@ -87,9 +87,11 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 	return ret;
 }
 
-void SqlTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
+void SqlTableModel::setQueryBuilder(const qf::core::sql::QueryBuilder &qb, bool clear_columns)
 {
 	m_queryBuilder = qb;
+	if(clear_columns)
+		clearColumns();
 }
 
 const qf::core::sql::QueryBuilder &SqlTableModel::queryBuilder() const

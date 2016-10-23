@@ -37,7 +37,7 @@ EditCodesWidget::EditCodesWidget(QWidget *parent)
 		qb.select2("codes", "*")
 				.from("codes")
 				.orderBy("codes.code");//.limit(10);
-		m_tableModel->setQueryBuilder(qb);
+		m_tableModel->setQueryBuilder(qb, false);
 		m_tableModel->reload();
 	}
 }

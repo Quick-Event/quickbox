@@ -74,7 +74,7 @@ const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
 				.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id), "JOIN")
 				.orderBy("classes.name, lastName, firstName");
 		qf::core::model::SqlTableModel m;
-		m.setQueryBuilder(qb);
+		m.setQueryBuilder(qb, false);
 		m.reload();
 		m_runnersTableCache = m.table();
 
@@ -258,7 +258,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeLossMs");
 	qb.select("'' AS pos");
 	qf::core::model::SqlTableModel mod;
-	mod.setQueryBuilder(qb);
+	mod.setQueryBuilder(qb, false);
 	mod.reload();
 	QMap<int, int> competitor_id_to_row;
 	for (int j = 0; j < mod.rowCount(); ++j) {
@@ -353,7 +353,7 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool 
 				.from("classes")
 				//.where("name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
 				.orderBy("name");//.limit(1);
-		mod.setQueryBuilder(qb);
+		mod.setQueryBuilder(qb, false);
 	}
 	mod.reload();
 	qf::core::utils::TreeTable tt = mod.toTreeTable();
@@ -384,7 +384,7 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 		if(!class_filter.isEmpty()) {
 			qb.where(class_filter);
 		}
-		model.setQueryBuilder(qb);
+		model.setQueryBuilder(qb, true);
 	}
 
 	int stage_id = selectedStageId();
@@ -414,7 +414,7 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		if(max_competitors_in_class > 0)
 			qb.limit(max_competitors_in_class);
-		model.setQueryBuilder(qb);
+		model.setQueryBuilder(qb, true);
 	}
 	for(int i=0; i<tt.rowCount(); i++) {
 		int class_id = tt.row(i).value("classes.id").toInt();

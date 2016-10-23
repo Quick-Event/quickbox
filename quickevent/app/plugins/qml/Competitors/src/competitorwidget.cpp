@@ -168,7 +168,7 @@ bool CompetitorWidget::loadRunsTable()
 			.join("runs.competitorId", "competitors.id")
 			.where("runs.competitorId=" QF_IARG(doc->value("competitors.id").toInt()))
 			.orderBy("runs.stageId");
-	m_runsModel->setQueryBuilder(qb);
+	m_runsModel->setQueryBuilder(qb, false);
 	return m_runsModel->reload();
 }
 

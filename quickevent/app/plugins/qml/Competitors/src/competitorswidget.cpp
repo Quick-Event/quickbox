@@ -149,7 +149,7 @@ void CompetitorsWidget::reload()
 	if(class_id > 0) {
 		qb.where("competitors.classId=" + QString::number(class_id));
 	}
-	m_competitorsModel->setQueryBuilder(qb);
+	m_competitorsModel->setQueryBuilder(qb, false);
 	m_competitorsModel->reload();
 }
 

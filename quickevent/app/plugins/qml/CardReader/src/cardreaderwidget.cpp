@@ -316,7 +316,7 @@ void CardReaderWidget::reload()
 			.join("competitors.classId", "classes.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
 			.orderBy("cards.id DESC");
-	m_cardsModel->setQueryBuilder(qb);
+	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
 }
 

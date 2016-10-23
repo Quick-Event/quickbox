@@ -146,7 +146,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 		qb.where("runs.isRunning");
 	qfDebug() << qb.toString();
 	m_runsTableItemDelegate->setHighlightedClassId(class_id, stage_id);
-	m_runsModel->setQueryBuilder(qb);
+	m_runsModel->setQueryBuilder(qb, false);
 	m_runsModel->reload();
 
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);

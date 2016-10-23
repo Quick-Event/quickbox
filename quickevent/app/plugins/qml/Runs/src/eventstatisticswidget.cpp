@@ -142,7 +142,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				//.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
 				//.groupBy("classes.id")
 				.orderBy("classes.name");
-		setQueryBuilder(qb);
+		setQueryBuilder(qb, false);
 	}
 }
 

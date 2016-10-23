@@ -51,7 +51,7 @@ public:
 	int reloadRow(int row_no) Q_DECL_OVERRIDE;
 	int reloadInserts(const QString &id_column_name) Q_DECL_OVERRIDE;
 public:
-	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
+	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb, bool clear_columns = false);
 	const qf::core::sql::QueryBuilder& queryBuilder() const;
 
 	QString connectionName() const { return m_connectionName; }

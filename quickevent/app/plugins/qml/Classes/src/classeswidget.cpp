@@ -294,7 +294,7 @@ void ClassesWidget::reload()
 			qb.where("competitors.classId=" + QString::number(class_id));
 		}
 		*/
-		m_classesModel->setQueryBuilder(qb);
+		m_classesModel->setQueryBuilder(qb, false);
 		m_classesModel->reload();
 	}
 	{
@@ -340,7 +340,7 @@ void ClassesWidget::reloadCourseCodes()
 				.join("coursecodes.codeId", "codes.id")
 				.where("coursecodes.courseId=" QF_IARG(current_course_id))
 				.orderBy("coursecodes.position");
-		m_courseCodesModel->setQueryBuilder(qb);
+		m_courseCodesModel->setQueryBuilder(qb, false);
 		m_courseCodesModel->reload();
 	}
 }

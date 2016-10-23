@@ -24,7 +24,7 @@ bool SqlDataDocument::load()
 {
 	qfm::SqlTableModel *m = model();
 	if(m && m_qmlQueryBuilder) {
-		m->setQueryBuilder(m_qmlQueryBuilder->coreBuilder());
+		m->setQueryBuilder(m_qmlQueryBuilder->coreBuilder(), false);
 	}
 	return Super::load();
 }

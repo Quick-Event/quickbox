@@ -170,7 +170,7 @@ void SpeakerWidget::reload()
 			.where("punches.stageId=" QF_IARG(stage_id))
 			.orderBy("punches.id DESC");//.limit(10);
 	//qfWarning() << qb.toString();
-	m_punchesModel->setQueryBuilder(qb);
+	m_punchesModel->setQueryBuilder(qb, false);
 	m_punchesModel->reload();
 }
 
