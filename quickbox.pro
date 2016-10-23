@@ -29,7 +29,7 @@ else {
 		libsiut \
 		tools \
 		quickevent \
-		quickshow-qml \
+		#quickshow-qml \
 		quickshow \
 
 }
