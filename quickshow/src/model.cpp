@@ -76,10 +76,10 @@ bool Model::addCategoryToStorage()
 				.join("classdefs.courseId", "courses.id")
 				.where("classes.id={{class_id}}");
 		QString qs = qb.toString();
-		if(first_run)
-			qfInfo() << "classes:" << qs;
 		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
 		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+		if(first_run)
+			qfInfo() << "classes:" << qs;
 		qf::core::sql::Query q = app->execSql(qs);
 		if(q.next()) {
 			QVariantMap m;

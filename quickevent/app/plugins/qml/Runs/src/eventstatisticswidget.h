@@ -32,7 +32,7 @@ private slots:
 private:
 	int currentStageId();
 	QTimer* reloadLaterTimer();
-	void clerNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished);
+	void clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished);
 private:
 	Ui::EventStatisticsWidget *ui;
 	FooterView *m_tableFooterView = nullptr;

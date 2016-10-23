@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "application.h"
+#include "appclioptions.h"
 
 #include <qf/core/log.h>
 
@@ -16,14 +17,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->lblHeadCenter->setStyleSheet("font-weight: bold");
 
 	Application *app = Application::instance();
+	AppCliOptions *cliopts = app->cliOptions();
 	QVariantMap event_info = app->eventInfo();
 	//qfInfo() << event_info;
 	ui->lblHeadCenter->setText(event_info.value("name").toString());
 	ui->lblHeadRight->setText(event_info.value("date").toString());
 	int stage_cnt = event_info.value("stageCount").toInt();
-	int curr_stage = event_info.value("currentStageId").toInt();
+	if(!cliopts->stage_isset())
+		cliopts->setStage(event_info.value("currentStageId").toInt());
+	int curr_stage = cliopts->stage();
 	if(stage_cnt > 1)
 		ui->lblHeadLeft->setText(tr("E%1").arg(curr_stage));
+	else
+		ui->lblHeadLeft->setText(QString());
 
 	{
 		QSettings settings;

@@ -477,7 +477,7 @@ void EventStatisticsWidget::on_btPrintResults_clicked()
 									);
 	}
 	if(report_printed) {
-		clerNewResults(classdefs_ids, runners_finished);
+		clearNewResults(classdefs_ids, runners_finished);
 		reload();
 	}
 }
@@ -497,11 +497,11 @@ void EventStatisticsWidget::on_btClearNewInSelectedRows_clicked()
 		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
 	}
-	clerNewResults(classdefs_ids, runners_finished);
+	clearNewResults(classdefs_ids, runners_finished);
 	reload();
 }
 
-void EventStatisticsWidget::clerNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished)
+void EventStatisticsWidget::clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished)
 {
 	qfLogFuncFrame();
 	QString qs = "UPDATE classdefs SET resultsCount=:resultsCount WHERE id=:id";

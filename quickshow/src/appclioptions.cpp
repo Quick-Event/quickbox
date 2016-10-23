@@ -8,7 +8,7 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("application.columnCount").setType(QVariant::Int).setNames("-c", "--column-count").setDefaultValue(2);
 	addOption("application.fontScale").setType(QVariant::Int).setNames("--font-scale").setDefaultValue(100).setComment("font scale in %");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");
-	addOption("event.stage").setType(QVariant::Int).setNames("-n", "--stage").setDefaultValue(1);
+	addOption("event.stage").setType(QVariant::Int).setNames("-n", "--stage").setComment("If not set, the current stage number is loaded from database.");
 	addOption("connection.host").setType(QVariant::String).setNames("-s", "--host").setDefaultValue("localhost");
 	addOption("connection.port").setType(QVariant::Int).setNames("--port").setDefaultValue(5432);
 	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user").setDefaultValue("quickevent");
