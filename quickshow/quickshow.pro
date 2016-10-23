@@ -34,8 +34,6 @@ unix: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
 
-include ($$PWD/../../crosscompile-support.pri)
-
 message(LIBS: $$LIBS)
 
 win32: CONFIG += console
