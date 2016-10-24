@@ -30,16 +30,16 @@ namespace utils {
 		QVariant val = value(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)); \
 		return qvariant_cast<ptype>(val); \
 	} \
-	public: bool getter_prefix##name_rest##_isset() const {return option(CLIOPTION_QUOTE_ME(getter_prefix##name_rest), false).value().isValid();} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(CLIOPTION_QUOTE_ME(getter_prefix##name_rest)).setValue(val);}
+	public: bool getter_prefix##name_rest##_isset() const {return isValueSet(CLIOPTION_QUOTE_ME(getter_prefix##name_rest));} \
+	public: bool setter_prefix##name_rest(const ptype &val) {return setValue(CLIOPTION_QUOTE_ME(getter_prefix##name_rest), val);}
 
 #define CLIOPTION_GETTER_SETTER2(ptype, pkey, getter_prefix, setter_prefix, name_rest) \
 	public: ptype getter_prefix##name_rest() const { \
 		QVariant val = value(QStringLiteral(pkey)); \
 		return qvariant_cast<ptype>(val); \
 	} \
-	public: bool getter_prefix##name_rest##_isset() const {return option(QStringLiteral(pkey), false).value().isValid();} \
-	public: void setter_prefix##name_rest(const ptype &val) {optionRef(QStringLiteral(pkey)).setValue(val);}
+	public: bool getter_prefix##name_rest##_isset() const {return isValueSet(QStringLiteral(pkey));} \
+	public: bool setter_prefix##name_rest(const ptype &val) {return setValue(QStringLiteral(pkey), val);}
 
 class QFCORE_DECL_EXPORT CLIOptions : public QObject
 {
@@ -95,7 +95,6 @@ public:
 	};
 public:
 	Option& addOption(const QString key, const Option &opt = Option());
-	bool setValue(const QString &name, const QVariant val, bool throw_exc = true) throw(Exception);
 	Option option(const QString &name, bool throw_exc = true) const throw(Exception);
 	Option& optionRef(const QString &name) throw(Exception);
 	QMap<QString, Option> options() const {return m_options;}
@@ -114,9 +113,14 @@ public:
 	Q_INVOKABLE void dump() const;
 	void dump(QTextStream &os) const;
 
+	Q_INVOKABLE bool optionExists(const QString &name) const;
 	Q_INVOKABLE QVariantMap values() const;
 	Q_INVOKABLE QVariant value(const QString &name) const;
 	Q_INVOKABLE QVariant value(const QString &name, const QVariant default_value) const;
+	/// value is explicitly set from command line or in config file
+	/// defaultValue is not considered to be an explicitly set value
+	Q_INVOKABLE bool isValueSet(const QString &name) const;
+	bool setValue(const QString &name, const QVariant val, bool throw_exc = true) throw(Exception);
 protected:
 	QVariant value_helper(const QString &name, bool throw_exception) const;
 	QPair<QString, QString> applicationDirAndName() const;
@@ -147,6 +151,8 @@ public:
 
 	void parse(const QStringList &cmd_line_args) Q_DECL_OVERRIDE;
 	bool loadConfigFile();
+protected:
+	QString configFile();
 protected:
 	void mergeConfig(const QVariantMap &config_map) {mergeConfig_helper(QString(), config_map);}
 	void mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map);

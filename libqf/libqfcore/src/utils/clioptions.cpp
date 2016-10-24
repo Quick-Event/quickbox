@@ -157,6 +157,11 @@ QVariant CLIOptions::value(const QString& name, const QVariant default_value) co
 	return ret;
 }
 
+bool CLIOptions::isValueSet(const QString &name) const
+{
+	return option(name, !qf::core::Exception::Throw).isSet();
+}
+
 QVariant CLIOptions::value_helper(const QString &name, bool throw_exception) const
 {
 	Option opt = option(name, throw_exception);
@@ -170,10 +175,20 @@ QVariant CLIOptions::value_helper(const QString &name, bool throw_exception) con
 	return ret;
 }
 
+bool CLIOptions::optionExists(const QString &name) const
+{
+	return !option(name, !qf::core::Exception::Throw).isNull();
+}
+
 bool CLIOptions::setValue(const QString& name, const QVariant val, bool throw_exc) throw(Exception)
 {
 	Option o = option(name, false);
-	if(o.isNull()) {
+	if(optionExists(name)) {
+		Option &orf = optionRef(name);
+		orf.setValue(val);
+		return true;
+	}
+	else {
 		QString msg = "setValue():"%val.toString()%" Key '"%name%"' not found.";
 		qfWarning() << msg;
 		if(throw_exc) {
@@ -181,11 +196,6 @@ bool CLIOptions::setValue(const QString& name, const QVariant val, bool throw_ex
 		}
 		return false;
 	}
-	else {
-		Option &orf = optionRef(name);
-		orf.setValue(val);
-	}
-	return true;
 }
 
 QString CLIOptions::takeArg()
@@ -379,40 +389,60 @@ ConfigCLIOptions::ConfigCLIOptions(QObject *parent)
 void ConfigCLIOptions::parse(const QStringList &cmd_line_args)
 {
 	Super::parse(cmd_line_args);
-	if(config().isEmpty())
-		setConfig(applicationName() + ".conf");
 }
 
 bool ConfigCLIOptions::loadConfigFile()
 {
+	QString config_file = configFile();
+	QFile f(config_file);
+	qfInfo() << "Checking presence of config file:" << f.fileName();
+	if(f.open(QFile::ReadOnly)) {
+		qfInfo() << "Reading config file:" << f.fileName();
+		QString str = QString::fromUtf8(f.readAll());
+		str = qf::core::Utils::removeJsonComments(str);
+		qfDebug() << str;
+		QJsonParseError err;
+		auto jsd = QJsonDocument::fromJson(str.toUtf8(), &err);
+		if(err.error == QJsonParseError::NoError) {
+			mergeConfig(jsd.toVariant().toMap());
+		}
+		else {
+			qfError() << "Error parsing config file:" << f.fileName() << "on offset:" << err.offset << err.errorString();
+			return false;
+		}
+	}
+	else {
+		qfInfo() << "Config file:" << f.fileName() << "not found.";
+	}
+	return true;
+}
+
+QString ConfigCLIOptions::configFile()
+{
+	auto config = QStringLiteral("config");
+	auto conf_ext = QStringLiteral(".conf");
+	QString config_file;
+	if(isValueSet(config)) {
+		config_file = value(config).toString();
+		if(config_file.isEmpty()) {
+			/// explicitly set empty config means DO NOT load config from any file
+			return QString();
+		}
+	}
+	else {
+		config_file = applicationName() + conf_ext;
+	}
+
 	QString config_dir = configDir();
 	if(config_dir.isEmpty())
 		config_dir = applicationDir();
-	QString config_file = config();
-	qfInfo() << "config-dir:" << config_dir << "config-file:" << config_file;
-	if(!config_file.isEmpty()) {
-		//if(!config_file.contains('.'))
-		//	config_file += ".conf";
-		config_file = config_dir + '/' + config_file;
-		QFile f(config_file);
-		qfInfo() << "Checking presence of config file:" << f.fileName();
-		if(f.open(QFile::ReadOnly)) {
-			qfInfo() << "Reading config file:" << f.fileName();
-			QString str = QString::fromUtf8(f.readAll());
-			str = qf::core::Utils::removeJsonComments(str);
-			qfDebug() << str;
-			QJsonParseError err;
-			auto jsd = QJsonDocument::fromJson(str.toUtf8(), &err);
-			if(err.error == QJsonParseError::NoError) {
-				mergeConfig(jsd.toVariant().toMap());
-			}
-			else {
-				qfError() << "Error parsing config file:" << f.fileName() << "on offset:" << err.offset << err.errorString();
-				return false;
-			}
-		}
+
+	config_file = config_dir + '/' + config_file;
+	if(!config_file.endsWith(conf_ext)) {
+		if(QFile::exists(config_file + conf_ext))
+			config_file += conf_ext;
 	}
-	return true;
+	return config_file;
 }
 
 void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVariantMap &config_map)

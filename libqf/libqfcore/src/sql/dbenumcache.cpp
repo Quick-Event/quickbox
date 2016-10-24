@@ -48,7 +48,8 @@ DbEnumCache::DbEnumCache(const QString &connection_name)
 
 DbEnumCache::~DbEnumCache()
 {
-	qfInfo() << "destroying DbEnumCache for connection name:" << m_connectionName;
+	// next line can cause seg fault on app exit because logDevice() can be destroyied before
+	//qfInfo() << "destroying DbEnumCache for connection name:" << m_connectionName;
 }
 
 void DbEnumCache::clear(const QString & group_name)
