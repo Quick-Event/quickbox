@@ -99,7 +99,7 @@ void TxtImporter::importCompetitorsCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files without header."));
+	mbx.setText(tr("Import comma separated values UTF8 text files with header."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>Registration</li>"
@@ -127,6 +127,9 @@ void TxtImporter::importCompetitorsCSV()
 		qf::core::utils::CSVReader reader(&ts);
 		reader.setSeparator(',');
 		reader.setLineComment('#');
+		/// skip header
+		if (!ts.atEnd())
+			reader.readCSVLine();
 		while (!ts.atEnd()) {
 			QStringList sl = reader.readCSVLineSplitted();
 			QString reg = sl.value(ColRegistration).trimmed();
@@ -199,7 +202,7 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 	while(q.next()) {
 		classes_map[q.value(1).toString()] = q.value(0).toInt();
 	}
-	//QSet<int> used_idsi;
+	QSet<int> used_idsi;
 	for(const QVariantList &row : csv) {
 		Competitors::CompetitorDocument doc;
 		//doc.setSaveSiidToRuns(true);
@@ -224,8 +227,10 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		//fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
 		//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
 		doc.setValue("classId", class_id);
-		if(siid > 0)
-			doc.setValue("siId", siid);
+		if(siid > 0 && !used_idsi.contains(siid)) {
+			doc.setUniqueSiid(siid);
+			used_idsi << siid;
+		}
 		doc.setValue("firstName", first_name);
 		doc.setValue("lastName", last_name);
 		doc.setValue("registration", reg);

@@ -248,13 +248,14 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			int interval = ui->lblClassInterval->text().toInt();
 			if(interval == 0)
 				interval = 1;
-			offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset [min]:"), 0, -1000, 1000, interval);
-			if(offset_msec != 0) {
+			bool ok;
+			offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset [min]:"), 0, -1000, 1000, interval, &ok);
+			if(ok) {
 				offset_msec *= 60 * 1000;
 
 				qfs::Transaction transaction;
 				qfs::Query q(transaction.connection());
-				q.prepare("UPDATE runs SET startTimeMs = startTimeMs + :offset WHERE id=:id", qf::core::Exception::Throw);
+				q.prepare("UPDATE runs SET startTimeMs = COALESCE(startTimeMs, 0) + :offset WHERE id=:id", qf::core::Exception::Throw);
 				QList<int> rows = ui->tblRuns->selectedRowsIndexes();
 				for(int ix : rows) {
 					qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);

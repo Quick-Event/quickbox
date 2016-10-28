@@ -17,11 +17,15 @@ public:
 
 	bool isSaveSiidToRuns() const;
 	void setSaveSiidToRuns(bool save_siid_to_runs);
+
+	void setUniqueSiid(int siid);
+	int uniqueSiid() const {return m_uniqueSiid;}
 protected:
 	bool saveData() Q_DECL_OVERRIDE;
 	bool dropData() Q_DECL_OVERRIDE;
 private:
 	bool m_saveSiidToRuns = true;
+	int m_uniqueSiid = 0; //< if filled, it is saved to runs
 };
 
 }

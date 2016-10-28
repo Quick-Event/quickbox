@@ -46,7 +46,7 @@ bool CompetitorDocument::saveData()
 			// insert runs
 			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
-			int si_id = value("competitors.siId").toInt();
+			int si_id = uniqueSiid()>0? uniqueSiid(): value("competitors.siId").toInt();
 			auto *event_plugin = eventPlugin();
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 
@@ -56,7 +56,7 @@ bool CompetitorDocument::saveData()
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
-				if(si_id > 0 && m_saveSiidToRuns)
+				if(si_id > 0 && (m_saveSiidToRuns || uniqueSiid() > 0))
 					q.bindValue(":siId", si_id);
 				q.exec(qf::core::Exception::Throw);
 			}
@@ -65,8 +65,8 @@ bool CompetitorDocument::saveData()
 		else if(old_mode == DataDocument::ModeEdit) {
 			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
-				int si_id = value("competitors.siId").toInt();
-				if(si_id > 0 && m_saveSiidToRuns) {
+				int si_id = uniqueSiid()>0? uniqueSiid(): value("competitors.siId").toInt();
+				if(si_id > 0 && (m_saveSiidToRuns || uniqueSiid() > 0)) {
 					int competitor_id = dataId().toInt();
 					qf::core::sql::Query q(model()->connectionName());
 					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
@@ -109,5 +109,11 @@ bool CompetitorDocument::isSaveSiidToRuns() const
 void CompetitorDocument::setSaveSiidToRuns(bool save_siid_to_runs)
 {
 	m_saveSiidToRuns = save_siid_to_runs;
+}
+
+void CompetitorDocument::setUniqueSiid(int siid)
+{
+	setValue(QStringLiteral("competitors.siId"), siid);
+	m_uniqueSiid = siid;
 }
 
