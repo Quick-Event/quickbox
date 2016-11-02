@@ -250,11 +250,11 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			}
 			QList<Competitors::CompetitorDocument*> doc_lst;
 			doc_lst.reserve(items_count);
+			QSet<int> used_idsi;
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
 				QJsonObject competitor_o = it.value().toObject();
 				Competitors::CompetitorDocument *doc = new Competitors::CompetitorDocument();
 				doc_lst << doc;
-				doc->setSaveSiidToRuns(false);
 				int import_id = competitor_o.value(QStringLiteral("ID")).toString().toInt();
 				int competitor_id = imported_competitors.value(import_id);
 				if(competitor_id > 0) {
@@ -289,7 +289,12 @@ void OrisImporter::importEventOrisEntries(int event_id)
 				fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
 				//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
 				doc->setValue("classId", competitor_o.value(QStringLiteral("ClassID")).toString().toInt());
-				doc->setValue("siId", siid);
+				if(siid > 0) {
+					bool is_unique = !used_idsi.contains(siid);
+					if(is_unique)
+						used_idsi << siid;
+					doc->setSiid(siid, is_unique);
+				}
 				doc->setValue("firstName", first_name);
 				doc->setValue("lastName", last_name);
 				doc->setValue("registration", reg_no);

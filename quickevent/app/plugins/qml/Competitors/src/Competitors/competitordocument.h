@@ -15,16 +15,17 @@ private:
 public:
 	CompetitorDocument(QObject *parent = nullptr);
 
-	bool isSaveSiidToRuns() const;
-	void setSaveSiidToRuns(bool save_siid_to_runs);
+	//bool isSaveSiidToRuns() const;
+	//void setSaveSiidToRuns(bool save_siid_to_runs);
 
-	void setUniqueSiid(int siid);
+	void setSiid(int siid, bool is_unique);
 	int uniqueSiid() const {return m_uniqueSiid;}
+	//bool isSiidUnique() const {return uniqueSiid() > 0;}
 protected:
 	bool saveData() Q_DECL_OVERRIDE;
 	bool dropData() Q_DECL_OVERRIDE;
 private:
-	bool m_saveSiidToRuns = true;
+	//bool m_saveSiidToRuns = true;
 	int m_uniqueSiid = 0; //< if filled, it is saved to runs
 };
 

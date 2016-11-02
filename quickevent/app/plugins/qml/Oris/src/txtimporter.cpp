@@ -205,7 +205,6 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 	QSet<int> used_idsi;
 	for(const QVariantList &row : csv) {
 		Competitors::CompetitorDocument doc;
-		//doc.setSaveSiidToRuns(true);
 		doc.loadForInsert();
 		int siid = row.value(ColSiId).toInt();
 		//qfInfo() << "SI:" << siid, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
@@ -227,9 +226,11 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		//fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
 		//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
 		doc.setValue("classId", class_id);
-		if(siid > 0 && !used_idsi.contains(siid)) {
-			doc.setUniqueSiid(siid);
-			used_idsi << siid;
+		if(siid > 0) {
+			bool is_unique = !used_idsi.contains(siid);
+			if(is_unique)
+				used_idsi << siid;
+			doc.setSiid(siid, is_unique);
 		}
 		doc.setValue("firstName", first_name);
 		doc.setValue("lastName", last_name);

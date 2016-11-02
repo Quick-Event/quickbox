@@ -38,7 +38,6 @@ bool CompetitorDocument::saveData()
 	RecordEditMode old_mode = mode();
 	bool siid_dirty = isDirty("competitors.siId");
 	bool class_dirty = isDirty("competitors.classId");
-	//int old_siid = value("competitors.siId").toInt();
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
 	if(ret) {
@@ -46,7 +45,6 @@ bool CompetitorDocument::saveData()
 			// insert runs
 			qfDebug() << "inserting runs";
 			int competitor_id = dataId().toInt();
-			int si_id = uniqueSiid()>0? uniqueSiid(): value("competitors.siId").toInt();
 			auto *event_plugin = eventPlugin();
 			QF_ASSERT(event_plugin != nullptr, "invalid Event plugin type", return false);
 
@@ -56,8 +54,8 @@ bool CompetitorDocument::saveData()
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
-				if(si_id > 0 && (m_saveSiidToRuns || uniqueSiid() > 0))
-					q.bindValue(":siId", si_id);
+				if(uniqueSiid() > 0)
+					q.bindValue(":siId", uniqueSiid());
 				q.exec(qf::core::Exception::Throw);
 			}
 			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
@@ -65,13 +63,12 @@ bool CompetitorDocument::saveData()
 		else if(old_mode == DataDocument::ModeEdit) {
 			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
-				int si_id = uniqueSiid()>0? uniqueSiid(): value("competitors.siId").toInt();
-				if(si_id > 0 && (m_saveSiidToRuns || uniqueSiid() > 0)) {
+				if(uniqueSiid() > 0) {
 					int competitor_id = dataId().toInt();
 					qf::core::sql::Query q(model()->connectionName());
 					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
 					q.bindValue(":competitorId", competitor_id);
-					q.bindValue(":siId", si_id);
+					q.bindValue(":siId", uniqueSiid());
 					q.exec(qf::core::Exception::Throw);
 				}
 			}
@@ -100,7 +97,7 @@ bool CompetitorDocument::dropData()
 	}
 	return ret;
 }
-
+/*
 bool CompetitorDocument::isSaveSiidToRuns() const
 {
 	return m_saveSiidToRuns;
@@ -110,10 +107,10 @@ void CompetitorDocument::setSaveSiidToRuns(bool save_siid_to_runs)
 {
 	m_saveSiidToRuns = save_siid_to_runs;
 }
-
-void CompetitorDocument::setUniqueSiid(int siid)
+*/
+void CompetitorDocument::setSiid(int siid, bool is_unique)
 {
 	setValue(QStringLiteral("competitors.siId"), siid);
-	m_uniqueSiid = siid;
+	m_uniqueSiid = is_unique? siid: 0;
 }
 
