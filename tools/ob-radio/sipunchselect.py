@@ -182,7 +182,6 @@ def main():
 						if cmd == C_TRANS_REC:
 							logger.info("==>> Sending punch %s" % (hexlify(data)))
 							vlk.send(data)
-							punch_writer.send(raw_data)
 
 
 if __name__ == "__main__":
