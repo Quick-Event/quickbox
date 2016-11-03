@@ -26,10 +26,11 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("Runnig")));
 	setColumn(col_runs_id, ColumnDefinition("runs.id", tr("id")).setReadOnly(true));
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
-	setColumn(col_competitors_siId, ColumnDefinition("competitors.siId", tr("SI")));
+	setColumn(col_competitors_startNumber, ColumnDefinition("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number")));
+	setColumn(col_competitors_siId, ColumnDefinition("competitors.siId", tr("SI")).setToolTip(tr("Registered SI")).setReadOnly(true));
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
 	setColumn(col_registration, ColumnDefinition("registration", tr("Reg")));
-	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setCastType(qMetaTypeId<quickevent::si::SiId>()));
+	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setToolTip(tr("Actual SI")).setCastType(qMetaTypeId<quickevent::si::SiId>()));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));

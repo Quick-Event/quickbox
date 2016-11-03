@@ -64,8 +64,9 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 	m->addColumn("id").setReadOnly(true);
 	m->addColumn("classes.name", tr("Class"));
+	m->addColumn("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number"));
 	m->addColumn("competitorName", tr("Name"));
-	m->addColumn("registration", tr("Reg")).setReadOnly(true);
+	m->addColumn("registration", tr("Reg"));
 	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
 	m->addColumn("ranking", tr("Ranking"));
 	m->addColumn("note", tr("Note"));

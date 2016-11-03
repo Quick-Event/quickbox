@@ -3,6 +3,7 @@
 #include "../sql/sqlquerybuilder.h"
 
 #include <qf/core/assert.h>
+#include <qf/core/log.h>
 
 #include <QQmlEngine>
 
@@ -12,6 +13,7 @@ SqlTableModel::SqlTableModel(QObject *parent)
 	: Super(parent)
 {
 	qfLogFuncFrame() << this;
+	connect(this, &SqlTableModel::queryBuilderChanged, this, &SqlTableModel::onQueryBuilderChanged);
 }
 
 SqlTableModel::~SqlTableModel()
@@ -22,7 +24,9 @@ SqlTableModel::~SqlTableModel()
 
 bool SqlTableModel::reload()
 {
-	return Super::reload();
+	bool ret = Super::reload();
+	qfDebug() << "reloaded query:" << recentlyExecutedQueryString();
+	return ret;
 }
 
 QString SqlTableModel::buildQuery()
@@ -37,6 +41,7 @@ SqlQueryBuilder *SqlTableModel::sqlQueryBuilder()
 {
 	if(!m_qmlQueryBuilder) {
 		m_qmlQueryBuilder = new SqlQueryBuilder(this);
+		connect(m_qmlQueryBuilder, &SqlQueryBuilder::cleared, this, &SqlTableModel::onQueryBuilderChanged);
 		QQmlEngine::setObjectOwnership(m_qmlQueryBuilder, QQmlEngine::CppOwnership);
 		emit queryBuilderChanged();
 	}
@@ -48,6 +53,11 @@ void SqlTableModel::updateColumnDefinitionFromQml(int col_ix)
 {
 	TableModelColumn *tc = m_qmlColumns.at(col_ix);
 	m_columns[col_ix] = tc->columnDefinition();
+}
+
+void SqlTableModel::onQueryBuilderChanged()
+{
+	clearColumns();
 }
 
 QQmlListProperty<TableModelColumn> SqlTableModel::columns()

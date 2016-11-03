@@ -13,6 +13,7 @@ public:
 		col_runs_isRunning = 0,
 		col_runs_id,
 		col_classes_name,
+		col_competitors_startNumber,
 		col_competitors_siId,
 		col_competitorName,
 		col_registration,

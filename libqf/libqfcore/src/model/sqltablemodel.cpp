@@ -628,6 +628,7 @@ bool SqlTableModel::reloadTable(const QString &query_str)
 	qfLogFuncFrame() << query_str;
 	qf::core::sql::Connection sql_conn = sqlConnection();
 	m_recentlyExecutedQuery = qfs::Query(sql_conn);
+	m_recentlyExecutedQueryString = query_str;
 	bool ok = m_recentlyExecutedQuery.exec(query_str);
 	if(!ok) {
 		qfError() << QString("SQL Error: %1\n%2").arg(m_recentlyExecutedQuery.lastError().text()).arg(query_str);
