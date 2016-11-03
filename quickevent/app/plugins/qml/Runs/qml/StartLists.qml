@@ -43,7 +43,7 @@ QtObject {
 		tt.setValue("stageStart", event_plugin.stageStartDateTime(stage_id));
 
 		reportModel.queryBuilder.clear()
-			.select2('competitors', 'lastName, firstName, registration')
+			.select2('competitors', 'lastName, firstName, registration, startNumber')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
@@ -113,7 +113,7 @@ QtObject {
 		//console.info(tt.toString());
 
 		reportModel.queryBuilder.clear()
-			.select2('competitors', 'registration')
+			.select2('competitors', 'registration, startNumber')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select2('classes', 'name')
 			.select2('runs', 'siId, startTimeMs')
@@ -266,7 +266,9 @@ QtObject {
 										   , tt.data()
 										   , qsTr("Start list by clases")
 										   , "printStartList"
-										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
+										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
+											   , isColumnBreak: dlg.isColumnBreak()
+											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers() }
 										   );
 		}
 		dlg.destroy();
@@ -288,13 +290,16 @@ QtObject {
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "startListClubsReportOptions";
 		dlg.classFilterVisible = false;
+		//dlg.startListOptionsVisible = true;
 		if(dlg.exec()) {
 			var tt = startListClubsTable();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_clubs.qml"
 										   , tt.data()
 										   , qsTr("Start list by clubs")
 										   , "printStartList"
-										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
+										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
+											   , isColumnBreak: dlg.isColumnBreak()
+											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers() }
 										   );
 		}
 		dlg.destroy();

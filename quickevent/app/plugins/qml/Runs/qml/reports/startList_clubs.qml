@@ -10,6 +10,7 @@ Report {
 
 	property bool isBreakAfterEachClass: false
 	property bool isColumnBreak: false
+	property bool isPrintStartNumbers: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -110,6 +111,12 @@ Report {
 							Cell {
 								width: 12
 								textFn: runnersDetail.dataFn("classes.name");
+							}
+							Para {
+								visible: root.isPrintStartNumbers
+								width: 8
+								halign: Frame.AlignRight
+								textFn: runnersDetail.dataFn("startNumber");
 							}
 							Cell {
 								width: "%"

@@ -124,6 +124,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="chkStartOpts_PrintStartNumbers">
+        <property name="text">
+         <string>Print start numbers</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

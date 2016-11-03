@@ -59,6 +59,11 @@ bool ReportOptionsDialog::isStartListPrintVacants() const
 	return ui->chkStartOpts_PrintVacants->isChecked();
 }
 
+bool ReportOptionsDialog::isStartListPrintStartNumbers() const
+{
+	return ui->chkStartOpts_PrintStartNumbers->isChecked();
+}
+
 QString ReportOptionsDialog::sqlWhereExpression() const
 {
 	if(ui->grpClassFilter->isChecked()) {
@@ -118,6 +123,7 @@ void ReportOptionsDialog::loadPersistentSettings()
 	ui->btRegExp->setChecked(filter_type == FilterType::RegExp);
 	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
 	ui->chkStartOpts_PrintVacants->setChecked(opts.isStartListPrintVacants());
+	ui->chkStartOpts_PrintStartNumbers->setChecked(opts.isStartListPrintStartNumbers());
 }
 
 void ReportOptionsDialog::savePersistentSettings()
@@ -133,6 +139,7 @@ void ReportOptionsDialog::savePersistentSettings()
 	FilterType filter_type =  ui->btWildCard->isChecked()? FilterType::WildCard: ui->btRegExp->isChecked()? FilterType::RegExp: FilterType::ClassName;
 	opts.setClassFilterType((int)filter_type);
 	opts.setStartListPrintVacants(isStartListPrintVacants());
+	opts.setStartListPrintStartNumbers(isStartListPrintStartNumbers());
 
 	QSettings settings;
 	settings.setValue(persistentSettingsPath(), opts);

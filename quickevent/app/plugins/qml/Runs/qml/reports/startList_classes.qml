@@ -9,6 +9,7 @@ Report {
 	property string reportTitle: qsTr("Start list by classes")
 	property bool isBreakAfterEachClass: false
 	property bool isColumnBreak: false
+	property bool isPrintStartNumbers: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -101,6 +102,12 @@ Report {
 								width: 15
 								halign: Frame.AlignRight
 								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
+							}
+							Para {
+								visible: root.isPrintStartNumbers
+								width: 8
+								halign: Frame.AlignRight
+								textFn: runnersDetail.dataFn("startNumber");
 							}
 							Cell {
 								width: "%"

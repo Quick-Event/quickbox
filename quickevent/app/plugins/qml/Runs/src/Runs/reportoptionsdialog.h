@@ -43,6 +43,7 @@ public:
 	BreakType breakType() const;
 	//Q_INVOKABLE QVariantMap optionsToMap() const;
 	Q_INVOKABLE bool isStartListPrintVacants() const;
+	Q_INVOKABLE bool isStartListPrintStartNumbers() const;
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}
 	Q_INVOKABLE bool isColumnBreak() const {return breakType() == BreakType::Column;}
 	Q_INVOKABLE QString sqlWhereExpression() const;
@@ -55,6 +56,7 @@ private:
 		QF_VARIANTMAP_FIELD(bool, is, set, UseClassFilter)
 		QF_VARIANTMAP_FIELD(bool, is, set, InvertClassFilter)
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintVacants)
+		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintStartNumbers)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
