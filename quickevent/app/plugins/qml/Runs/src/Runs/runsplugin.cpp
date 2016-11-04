@@ -56,8 +56,8 @@ RunsPlugin::RunsPlugin(QObject *parent)
 
 RunsPlugin::~RunsPlugin()
 {
-	if(m_eventStatisticsDockWidget)
-		m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
+	//if(m_eventStatisticsDockWidget)
+	//	m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
 }
 
 const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
@@ -115,7 +115,8 @@ void RunsPlugin::onInstalled()
 	{
 		m_eventStatisticsDockWidget = new qff::DockWidget(nullptr);
 		m_eventStatisticsDockWidget->setObjectName("eventStatisticsDockWidget");
-		m_eventStatisticsDockWidget->setWindowTitle(tr("Event statistics"));		
+		m_eventStatisticsDockWidget->setPersistentSettingsId("Runs/eventStatistics");
+		m_eventStatisticsDockWidget->setWindowTitle(tr("Event statistics"));
 		auto *ew = new EventStatisticsWidget();
 		m_eventStatisticsDockWidget->setWidget(ew);
 		fwk->addDockWidget(Qt::RightDockWidgetArea, m_eventStatisticsDockWidget);

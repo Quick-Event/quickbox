@@ -150,6 +150,9 @@ public:
 	Q_SLOT void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate) {Super::setItemDelegateForColumn(column, delegate);}
 
 	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
+
+	Q_SLOT void loadPersistentSettings();
+	Q_SLOT void savePersistentSettings();
 protected:
 	virtual bool postRowImpl(int row_no = -1);
 private:
@@ -161,9 +164,6 @@ private:
 
 	void exportReport_helper(const QVariant& _options);
 	void exportCSV_helper(const QVariant& export_options);
-
-	Q_SLOT void loadPersistentSettings();
-	Q_SLOT void savePersistentSettings();
 protected:
 	Q_SLOT virtual void onSqlException(const QString &what, const QString &where, const QString &stack_trace);
 

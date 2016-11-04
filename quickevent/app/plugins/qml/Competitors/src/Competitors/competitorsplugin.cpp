@@ -39,8 +39,8 @@ CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 
 CompetitorsPlugin::~CompetitorsPlugin()
 {
-	if(m_registrationsDockWidget)
-		m_registrationsDockWidget->savePersistentSettingsRecursively();
+	//if(m_registrationsDockWidget)
+	//	m_registrationsDockWidget->savePersistentSettingsRecursively();
 }
 
 QObject *CompetitorsPlugin::createCompetitorDocument(QObject *parent)

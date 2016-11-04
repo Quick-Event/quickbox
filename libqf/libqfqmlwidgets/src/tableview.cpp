@@ -1152,6 +1152,7 @@ int TableView::toTableModelRowNo(int table_view_row_no) const
 void TableView::loadPersistentSettings()
 {
 	QString path = persistentSettingsPath();
+	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		HeaderView *horiz_header = qobject_cast<HeaderView*>(horizontalHeader());
@@ -1252,6 +1253,7 @@ void TableView::loadPersistentSettings()
 void TableView::savePersistentSettings()
 {
 	QString path = persistentSettingsPath();
+	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QSettings settings;

@@ -37,6 +37,7 @@ PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
 PartWidget::~PartWidget()
 {
 	qfLogFuncFrame() << this << "title:" << title();
+	//savePersistentSettingsRecursively();
 	qDeleteAll(m_attachedObjects);
 	m_attachedObjects.clear();
 }

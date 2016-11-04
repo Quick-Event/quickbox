@@ -22,7 +22,7 @@ public:
 	virtual QString persistentSettingsPath();
 
 	virtual void loadPersistentSettingsRecursively();
-	virtual void savePersistentSettingsRecursively();
+	//virtual void savePersistentSettingsRecursively();
 
 	static const QString& defaultPersistentSettingsPathPrefix();
 	QString persistentSettingsPathPrefix();

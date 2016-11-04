@@ -16,7 +16,6 @@ class EventStatisticsModel;
 class EventStatisticsWidget : public QWidget
 {
 	Q_OBJECT
-
 public:
 	explicit EventStatisticsWidget(QWidget *parent = 0);
 	~EventStatisticsWidget();
@@ -25,6 +24,9 @@ public:
 	void reload();
 	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
 	Q_SLOT void onVisibleChanged(bool is_visible);
+
+	Q_SLOT void loadPersistentSettings();
+	Q_SLOT void savePersistentSettings();
 private slots:
 	void on_btReload_clicked();
 	void on_btPrintResults_clicked();

@@ -326,6 +326,10 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 			Q_UNUSED(old_size)
 			this->resizeSection(logical_index, new_size);
 		});
+		connect(hh, &QHeaderView::sectionMoved, [this](int logical_index, int old_visual_index, int new_visual_index) {
+			Q_UNUSED(logical_index)
+			this->moveSection(old_visual_index, new_visual_index);
+		});
 	}
 }
 
@@ -338,12 +342,21 @@ void FooterView::syncSectionSizes()
 	if(vh) {
 		int w = vh->width();
 		setViewportMargins(w, 0, 0, 0);
-		setMaximumHeight(vh->defaultSectionSize());
 	}
 	QHeaderView *hh = m_tableView->horizontalHeader();
 	if(hh) {
+		setMinimumHeight(hh->height());
+		setMaximumHeight(hh->height());
 		for (int i = 0; i < hh->count() && i < m->columnCount(); ++i) {
 			resizeSection(i, hh->sectionSize(i));
+			int vi = hh->visualIndex(i);
+			//qfInfo() << i << "vis ix:" << vi;
+			/// do not know why, but this can copy section visual index from master header view
+			if(vi != i) {
+				moveSection(vi, i);
+				//qfInfo() << "\t" << vi << "--->" << i;
+				//qfInfo() << "\t new vis ix:" << visualIndex(i);
+			}
 		}
 	}
 }
@@ -351,9 +364,9 @@ void FooterView::syncSectionSizes()
 //============================================================
 //                EventStatisticsWidget
 //============================================================
-EventStatisticsWidget::EventStatisticsWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::EventStatisticsWidget)
+EventStatisticsWidget::EventStatisticsWidget(QWidget *parent)
+	: QWidget(parent)
+	, ui(new Ui::EventStatisticsWidget)
 {
 	ui->setupUi(this);
 	ui->tableView->setPersistentSettingsId("tblEventStatistics");
@@ -399,6 +412,9 @@ void EventStatisticsWidget::reload()
 		ui->tableView->setTableModel(m_tableModel);
 		ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 		m_tableFooterView->setModel(m_tableFooterModel);
+		// we must load column size & position here, since header columns didn't exist
+		// when loadPersistentSettingsRecursively was called by framework
+		ui->tableView->loadPersistentSettings();
 	}
 	QVariantMap qm;
 	qm[QStringLiteral("stage_id")] = currentStageId();
@@ -424,6 +440,16 @@ void EventStatisticsWidget::onVisibleChanged(bool is_visible)
 {
 	Q_UNUSED(is_visible)
 	reload();
+}
+
+void EventStatisticsWidget::loadPersistentSettings()
+{
+	//qfWarning() << Q_FUNC_INFO;
+}
+
+void EventStatisticsWidget::savePersistentSettings()
+{
+	//qfWarning() << Q_FUNC_INFO;
 }
 
 int EventStatisticsWidget::currentStageId()

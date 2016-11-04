@@ -43,8 +43,13 @@ static void callMethodRecursively(QObject *obj, const char *method_name)
 		QMetaMethod mm = obj->metaObject()->method(ix);
 		mm.invoke(obj);
 	}
-	Q_FOREACH(auto o, obj->children()) {
+	Q_FOREACH(auto *o, obj->children()) {
+		//static int level = 0;
+		//level++;
+		//QString indent = QString(level, ' ');
+		//qfInfo() << indent << o << method_name;
 		callMethodRecursively(o, method_name);
+		//level--;
 	}
 }
 
@@ -52,12 +57,12 @@ void IPersistentSettings::loadPersistentSettingsRecursively()
 {
 	callMethodRecursively(m_controlledObject, "loadPersistentSettings()");
 }
-
+/*
 void IPersistentSettings::savePersistentSettingsRecursively()
 {
 	callMethodRecursively(m_controlledObject, "savePersistentSettings()");
 }
-
+*/
 const QString &IPersistentSettings::defaultPersistentSettingsPathPrefix()
 {
 	static auto s = QStringLiteral("ui");
