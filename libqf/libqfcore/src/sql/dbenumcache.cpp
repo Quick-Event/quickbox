@@ -67,11 +67,12 @@ void DbEnumCache::reload(const QString & group_name)
 		return;
 	}
 	clear(group_name);
+	EnumList &enumz = m_enumsForGroup[group_name];
 	Query q(m_connectionName);
-	if(q.exec("SELECT * FROM enumz WHERE groupName=" QF_SARG(group_name) " ORDER BY pos")) {
+	if(q.exec("SELECT * FROM enumz WHERE groupName=" QF_SARG(group_name) " ORDER BY pos", qf::core::Exception::Throw)) {
 		while(q.next()) {
 			DbEnum en(q);
-			m_enumsForGroup[group_name] << en;
+			enumz << en;
 		}
 	}
 	else {
@@ -81,8 +82,9 @@ void DbEnumCache::reload(const QString & group_name)
 
 void DbEnumCache::ensure(const QString & group_name)
 {
-	if(!m_enumsForGroup.contains(group_name))
+	if(!m_enumsForGroup.contains(group_name)) {
 		reload(group_name);
+	}
 }
 
 DbEnumCache& DbEnumCache::instanceForConnection(const QString &connection_name)
