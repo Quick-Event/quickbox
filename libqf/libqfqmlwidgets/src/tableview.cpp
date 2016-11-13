@@ -343,7 +343,9 @@ void TableView::cloneRowInline()
 		insertRowInline();
 		qfu::TableRow &r2 = tableRowRef();
 		for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
-			r2.setValue(i, r1.value(i));
+			QVariant v1 = r1.value(i);
+			r2.setValue(i, v1);
+			//qfInfo() << i << v1 << r2.value(i);
 		}
 		r2.prepareForCopy();
 	}

@@ -54,7 +54,7 @@ class SIPunchReader(SIReader):
                 self._serial.flushInput()
                 raise SIReaderException('Invalid start byte %s' % hex(byte2int(char)))
 
-            # Read command, length, data, crc, ETX
+            # Read command, length, data, crc, ETX 02 ef 01 08 ea 09 03
             cmd = self._serial.read()
             length = self._serial.read()
             station = self._serial.read(2)

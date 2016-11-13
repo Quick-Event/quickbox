@@ -129,9 +129,14 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 			type = ret.type(); /// pokud jsou sloupce virtualni (sloupce se pocitaji, nemusi byt pro ne definovan typ)
 		if(type == QVariant::ByteArray) {
 			const static QString blob_string = "{blob %1%2}";
-			int size = ret.toByteArray().size();
-			if(size < 1024) ret = blob_string.arg(size).arg(" B");
-			else ret = blob_string.arg(size/1024).arg("kB");
+			QByteArray ba = ret.toByteArray();
+			int size = ba.size();
+			if(size < 64)
+				ret = ba;
+			else if(size < 1024)
+				ret = blob_string.arg(size).arg(" B");
+			else
+				ret = blob_string.arg(size/1024).arg("kB");
 		}
 		else if(type == QVariant::Bool) {
 			/// display check
