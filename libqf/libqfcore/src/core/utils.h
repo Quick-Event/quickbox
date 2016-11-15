@@ -14,7 +14,9 @@
 #define QF_SARG(s) "'" + QString(s) + "'"
 #define QF_IARG(i) "" + QString::number(i) + ""
 
-#define QF_QUOTEME(x) QStringLiteral(#x)
+#define QF_QUOTE(x) #x
+#define QF_EXPAND_AND_QUOTE(x) QF_QUOTE(x)
+#define QF_QUOTE_QSTRINGLITERAL(x) QStringLiteral(#x)
 
 #define QF_FIELD_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest; \
@@ -105,14 +107,14 @@
 	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
 
 #define QF_VARIANTMAP_FIELD(ptype, getter_prefix, setter_prefix, name_rest) \
-	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTEME(getter_prefix##name_rest));} \
-	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest)));} \
-	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = QVariant::fromValue(val);}
+	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest));} \
+	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest)));} \
+	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest)] = QVariant::fromValue(val);}
 /// for default values other than QVariant()
 #define QF_VARIANTMAP_FIELD2(ptype, getter_prefix, setter_prefix, name_rest, default_value) \
-	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTEME(getter_prefix##name_rest));} \
-	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest), default_value));} \
-	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = QVariant::fromValue(val);}
+	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest));} \
+	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest), default_value));} \
+	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest)] = QVariant::fromValue(val);}
 	//since c++14 public: auto& setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val; return *this;}
 
 /// for implicitly shared classes properties
