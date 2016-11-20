@@ -1,0 +1,3 @@
+[submodule "3rdparty/libxlsxwriter/libxlsxwriter"]
+	path = 3rdparty/libxlsxwriter/libxlsxwriter
+	url = https://github.com/jmcnamara/libxlsxwriter.git

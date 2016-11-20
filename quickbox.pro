@@ -12,6 +12,7 @@ CONFIG += ordered
 #message (config: $$CONFIG)
 
 SUBDIRS += \
+	3rdparty \
 	libqf \
 
 qfsqldbfs {
