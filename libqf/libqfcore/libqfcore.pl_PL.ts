@@ -13,7 +13,7 @@
 <context>
     <name>qf::core::LogDevice</name>
     <message>
-        <location filename="src/core/logdevice.cpp" line="139"/>
+        <location filename="src/core/logdevice.cpp" line="141"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
         <translation>Nie można odnaleźć urządzenia zalogowanego pod nazwą &apos;%1&apos;</translation>
     </message>
@@ -64,13 +64,13 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="228"/>
+        <location filename="src/model/sqltablemodel.cpp" line="230"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation>liczba wierszy niewłaściwa() = %1, powinno być 1 %2</translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="254"/>
+        <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
         <translation>Błąd podczas wykonywania zapytania: %1 %2</translation>
@@ -79,67 +79,67 @@
 <context>
     <name>qf::core::model::TableModel</name>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="312"/>
-        <location filename="src/model/tablemodel.cpp" line="410"/>
-        <location filename="src/model/tablemodel.cpp" line="526"/>
+        <location filename="src/model/tablemodel.cpp" line="319"/>
+        <location filename="src/model/tablemodel.cpp" line="417"/>
+        <location filename="src/model/tablemodel.cpp" line="533"/>
         <source>Cannot find table field index for column index: %1</source>
         <translation>Nie można znaleźć pola indeksu tabeli dla kolumny o indeksie:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="406"/>
-        <location filename="src/model/tablemodel.cpp" line="522"/>
+        <location filename="src/model/tablemodel.cpp" line="413"/>
+        <location filename="src/model/tablemodel.cpp" line="529"/>
         <source>Invalid table row: %1</source>
         <translation>Nieprawidłowy wiersz tabeli:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="413"/>
-        <location filename="src/model/tablemodel.cpp" line="529"/>
+        <location filename="src/model/tablemodel.cpp" line="420"/>
+        <location filename="src/model/tablemodel.cpp" line="536"/>
         <source>Invalid table field index: %1</source>
         <translation>Nieprawidłowe pole indeksu tabeli:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="429"/>
-        <location filename="src/model/tablemodel.cpp" line="455"/>
-        <location filename="src/model/tablemodel.cpp" line="479"/>
-        <location filename="src/model/tablemodel.cpp" line="514"/>
-        <location filename="src/model/tablemodel.cpp" line="540"/>
+        <location filename="src/model/tablemodel.cpp" line="436"/>
+        <location filename="src/model/tablemodel.cpp" line="462"/>
+        <location filename="src/model/tablemodel.cpp" line="486"/>
+        <location filename="src/model/tablemodel.cpp" line="521"/>
+        <location filename="src/model/tablemodel.cpp" line="547"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
         <translation>Nie można znaleźć indeksu kolumny dla nazwy:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="441"/>
+        <location filename="src/model/tablemodel.cpp" line="448"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
         <translation>%2 Nie można znaleźć pola tabeli dla indeksu kolumny: %1 (wiersz indeksu: %3)</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="466"/>
-        <location filename="src/model/tablemodel.cpp" line="501"/>
+        <location filename="src/model/tablemodel.cpp" line="473"/>
+        <location filename="src/model/tablemodel.cpp" line="508"/>
         <source>Cannot find table field for column index: %1</source>
         <translation>Nie można znaleźć pola tabeli dla indeksu kolumny:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="586"/>
-        <location filename="src/model/tablemodel.cpp" line="647"/>
+        <location filename="src/model/tablemodel.cpp" line="591"/>
+        <location filename="src/model/tablemodel.cpp" line="652"/>
         <source>Invalid column index: %1</source>
         <translation>Nieprawidłowy indeks kolumny:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="595"/>
+        <location filename="src/model/tablemodel.cpp" line="600"/>
         <source>Invalid field for column index: %1</source>
         <translation>Nieprawidłowe pole dla indeksu kolumny:%1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="636"/>
+        <location filename="src/model/tablemodel.cpp" line="641"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
         <translation>Kolumna o nazwie &apos;%1&apos;nie znaleziona w liście kolumn. Istniejące kolumny: [%2]</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="661"/>
+        <location filename="src/model/tablemodel.cpp" line="666"/>
         <source>Cannot find field index for column index: %1 of %2 columns</source>
         <translation>Nie można znaleźć indeksu pola dla indeksu kolumny: %1 z %2 kolumn</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="665"/>
+        <location filename="src/model/tablemodel.cpp" line="670"/>
         <source>Cannot find table field for column index: %1, table index: %2</source>
         <translation>Nie można znaleźć pola tabeli dla indeksu kolumny: %1, indeks tabeli: %2</translation>
     </message>

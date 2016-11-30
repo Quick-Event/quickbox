@@ -13,7 +13,7 @@
 <context>
     <name>qf::core::LogDevice</name>
     <message>
-        <location filename="src/core/logdevice.cpp" line="139"/>
+        <location filename="src/core/logdevice.cpp" line="141"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -64,13 +64,13 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="228"/>
+        <location filename="src/model/sqltablemodel.cpp" line="230"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="254"/>
+        <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
         <translation type="unfinished"></translation>
@@ -79,67 +79,67 @@
 <context>
     <name>qf::core::model::TableModel</name>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="312"/>
-        <location filename="src/model/tablemodel.cpp" line="410"/>
-        <location filename="src/model/tablemodel.cpp" line="526"/>
+        <location filename="src/model/tablemodel.cpp" line="319"/>
+        <location filename="src/model/tablemodel.cpp" line="417"/>
+        <location filename="src/model/tablemodel.cpp" line="533"/>
         <source>Cannot find table field index for column index: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="406"/>
-        <location filename="src/model/tablemodel.cpp" line="522"/>
+        <location filename="src/model/tablemodel.cpp" line="413"/>
+        <location filename="src/model/tablemodel.cpp" line="529"/>
         <source>Invalid table row: %1</source>
         <translation>Chybný řádek tabulky: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="413"/>
-        <location filename="src/model/tablemodel.cpp" line="529"/>
+        <location filename="src/model/tablemodel.cpp" line="420"/>
+        <location filename="src/model/tablemodel.cpp" line="536"/>
         <source>Invalid table field index: %1</source>
         <translation type="unfinished">Neplatný index políčka tabulky: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="429"/>
-        <location filename="src/model/tablemodel.cpp" line="455"/>
-        <location filename="src/model/tablemodel.cpp" line="479"/>
-        <location filename="src/model/tablemodel.cpp" line="514"/>
-        <location filename="src/model/tablemodel.cpp" line="540"/>
+        <location filename="src/model/tablemodel.cpp" line="436"/>
+        <location filename="src/model/tablemodel.cpp" line="462"/>
+        <location filename="src/model/tablemodel.cpp" line="486"/>
+        <location filename="src/model/tablemodel.cpp" line="521"/>
+        <location filename="src/model/tablemodel.cpp" line="547"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
         <translation type="unfinished">Nelze najít index sloupce pro jméno: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="441"/>
+        <location filename="src/model/tablemodel.cpp" line="448"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="466"/>
-        <location filename="src/model/tablemodel.cpp" line="501"/>
+        <location filename="src/model/tablemodel.cpp" line="473"/>
+        <location filename="src/model/tablemodel.cpp" line="508"/>
         <source>Cannot find table field for column index: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="586"/>
-        <location filename="src/model/tablemodel.cpp" line="647"/>
+        <location filename="src/model/tablemodel.cpp" line="591"/>
+        <location filename="src/model/tablemodel.cpp" line="652"/>
         <source>Invalid column index: %1</source>
         <translation>Chybný index sloupce: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="595"/>
+        <location filename="src/model/tablemodel.cpp" line="600"/>
         <source>Invalid field for column index: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="636"/>
+        <location filename="src/model/tablemodel.cpp" line="641"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="661"/>
+        <location filename="src/model/tablemodel.cpp" line="666"/>
         <source>Cannot find field index for column index: %1 of %2 columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="665"/>
+        <location filename="src/model/tablemodel.cpp" line="670"/>
         <source>Cannot find table field for column index: %1, table index: %2</source>
         <translation type="unfinished"></translation>
     </message>
