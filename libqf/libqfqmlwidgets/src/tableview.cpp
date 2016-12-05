@@ -1109,7 +1109,7 @@ void TableView::seek(const QString &prefix_str)
 			/// QTBUG-37689 QCollator allways sorts case sensitive
 			/// workarounded by own implementation of qf::core::Collator
 			QStringRef ps(&prefix_str);
-			QStringRef ds(&data_str, 0, prefix_str.length());
+			QStringRef ds(&data_str, 0, qMin(prefix_str.length(), data_str.length()));
 			//QString ps = prefix_str.toLower();
 			//QString ds = data_str.mid(0, ps.length()).toLower();
 			int cmp = sort_collator.compare(ps, ds);
