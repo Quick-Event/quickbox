@@ -181,6 +181,12 @@ public:
 		}
 		return t;
 	}
+
+	template <typename V, typename... T>
+	constexpr static inline auto make_array(T&&... t) -> std::array < V, sizeof...(T) >
+	{
+		return {{ std::forward<T>(t)... }};
+	}
 };
 
 }}
