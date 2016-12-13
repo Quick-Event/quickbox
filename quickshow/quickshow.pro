@@ -10,9 +10,6 @@ CONFIG += warn_on qt thread
 
 CONFIG += c++11
 
-# exception backrace support
-unix:QMAKE_LFLAGS_APP += -rdynamic
-
 TARGET = $$MY_SUBPROJECT
 
 QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/..
@@ -33,6 +30,11 @@ win32: LIBS +=  \
 unix: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
+
+CONFIG(debug, debug|release) {
+	# exception backtrace support
+	unix:QMAKE_LFLAGS += -rdynamic
+}
 
 message(LIBS: $$LIBS)
 

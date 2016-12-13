@@ -1,4 +1,4 @@
-include(top.pri)
+include(utils.pri)
 
 #version check qt
 !minQtVersion(5, 2, 1) {

@@ -34,6 +34,9 @@ unix: LIBS +=  \
 	-L../../../lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib:\$\$ORIGIN/../lib/qml/quickevent\'  \
 
+# exception backtrace support
+CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
+
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 

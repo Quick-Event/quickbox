@@ -33,6 +33,9 @@ unix: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
 	-Wl,-rpath,\'\$\$ORIGIN/../lib\' \
 
+# exception backtrace support
+CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
+
 include ($$PWD/../../crosscompile-support.pri)
 
 INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
