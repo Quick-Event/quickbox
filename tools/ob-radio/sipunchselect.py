@@ -5,7 +5,7 @@
 #import queue
 import os
 import sys
-from time import sleep
+import time
 import logging
 import select
 #from logging.handlers import RotatingFileHandler
@@ -174,29 +174,37 @@ def main():
 	xbee_writer = XBeeWriter(xbee_device)
 
 	rdfs = [dev._serial for dev in si_readers]
-	while True:
-		logger.info("select ...")
-		readable, writable, exceptional = select.select(rdfs, [], [], 5)
-		if not readable:
-			logger.info("timeout")
-		else:	
-			for r in readable:
-				for si in si_readers:
-					#pudb.set_trace()
-					if si._serial == r:
-						cmd, data = si.readCommand()
-						logger.info("<<== Data read %s" % (hexlify(data)))
-						if cmd == SIReader.C_TRANS_REC:
-							logger.info("==>> Sending punch %s" % (hexlify(data)))
-							xbee_writer.send(data)
+	try:
+		while True:
+			logger.info("select ...")
+			readable, writable, exceptional = select.select(rdfs, [], [], 5)
+			if not readable:
+				logger.info("timeout")
+			else:	
+				for r in readable:
+					for si in si_readers:
+						#pudb.set_trace()
+						if si._serial == r:
+							cmd, data = si.readCommand()
+							logger.info("<<== Data read %s" % (hexlify(data)))
+							if cmd == SIReader.C_TRANS_REC:
+								logger.info("==>> Sending punch %s" % (hexlify(data)))
+								xbee_writer.send(data)
+	except Exception as e:
+		for rd in si_readers:
+			rd.disconnect()
+		xbee_writer.disconnect()
+		raise e
 
 
 if __name__ == "__main__":
-	
-	try:
-		main()
-	except Exception as e:
-		#pudb.set_trace()
-		logger.error(str(type(e)) + ": " + str(e))
+
+	while True:	
+		try:
+			main()
+		except Exception as e:
+			#pudb.set_trace()
+			logger.error(str(type(e)) + ": " + str(e))
+		time.sleep(5)
 
 
