@@ -16,6 +16,8 @@ from six import int2byte, byte2int
 from binascii import hexlify
 import pudb
 
+from sireader import SIReader, SIReaderException, SIReaderTimeout
+
 #logger
 logger = logging.getLogger('ob')
 hdlr = logging.StreamHandler(sys.stderr) 
@@ -26,16 +28,7 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
 logger.setLevel(logging.INFO)
 
-'''
-[['/dev/ttyS0', None, None],
- ['/dev/ttyUSB2', 'FTDI', 'DA01MHJF'],
- ['/dev/ttyUSB1', 'FTDI', 'DA011ZZ1'],
- ['/dev/ttyUSB0', 'FTDI', 'DA01MHJD']]
-'''
-arduino_params = type('obj', (object,), {"device": '/dev/ttyACM0'})
-jenicek_params = type('obj', (object,), {"device": '/dev/ttyUSB0', "sn": 'DA01MHJD'})
-marenka_params = type('obj', (object,), {"device": '/dev/ttyUSB2', "sn": 'DA01MHJF'})
-vlk_params = type('obj', (object,), {"device": '/dev/ttyUSB1', "sn": 'DA011ZZ1'})
+_debug = False
 
 class SerialPort(object):
 	def __init__(self, port):
@@ -77,12 +70,16 @@ class SIPunchReader(SerialPort):
 
 		try:
 			char = serial_port.read()
+			# logger.info("start: " + hex(byte2int(char)))
+			#while True:
+			#	char = serial_port.read()
+			#	logger.info(hex(byte2int(char)))
 
 			if char == b'':
 				raise SIReaderTimeout('No data available')
-			elif char == '0':
-				data = char + serial_port.read(15)
-				return (char, data)
+			#elif char == '0':
+			#	data = char + serial_port.read(15)
+			#	return (char, data)
 			elif char == SIReader.NAK:
 				raise SIReaderException('Invalid command or parameter.')
 			elif char != SIReader.STX:
@@ -91,25 +88,26 @@ class SIPunchReader(SerialPort):
 
 			# Read command, length, data, crc, ETX 02 ef 01 08 ea 09 03
 			cmd = serial_port.read()
+			# logger.info("cmd: " + hex(byte2int(cmd)))
 			length = serial_port.read()
+			# logger.info("length: " + hex(byte2int(length)))
+			#logger.info("length: %d" % (byte2int(length)-2))
 			station = serial_port.read(2)
-			self.station_code = SIReader._to_int(station)
+			# logger.info("station: " + hexlify(station).decode('ascii'))
+			station_code = SIReader._to_int(station)
 			data = serial_port.read(byte2int(length)-2)
+			# logger.info("data: " + hexlify(data).decode('ascii'))
 			crc = serial_port.read(2)
+			# logger.info("crc: " + hexlify(crc).decode('ascii'))
 			etx = serial_port.read()
-
-			if self._debug:
-				logger.info("<<== command '%s', len %i, station %s, data %s, crc %s, etx %s" % (hexlify(cmd).decode('ascii'),
-																						  byte2int(length),
-																						  hexlify(station).decode('ascii'),
-																						  ' '.join([hexlify(int2byte(c)).decode('ascii') for c in data]),
-																						  hexlify(crc).decode('ascii'),
-																						  hexlify(etx).decode('ascii'),
-																						  ))
+			# logger.info("etx: " + hex(byte2int(etx)))
 
 			if etx != SIReader.ETX:
+				logger.info("wrong ETX: " + hex(byte2int(etx)))
 				raise SIReaderException('No ETX byte received.')
 			if not SIReader._crc_check(cmd + length + station + data, crc):
+				logger.info("wrong CRC: " + hexlify(crc) + " should be: " + hexlify(SIReader._crc(cmd + length + station + data)).decode('ascii'))
+				#print hex(SIReader._to_int())
 				raise SIReaderException('CRC check failed')
 				
 		except (SerialException, OSError) as msg:
@@ -153,46 +151,52 @@ class XBeeWriter(SerialPort):
 		self._serial.reset_input_buffer()
 		self._serial.reset_output_buffer()
 
-# hub == jenicek
-# jenicek ~~~> marenka
-# vlk ~~~> jenicek
-# marenka ~~~> jenicek
-# arduino + marenka ===> vlk
-# jenicek ---> print
-
-C_TRANS_REC      = b'\xD3' # autosend timestamp (online control)
-
 def main(): 
-	vlk = XBeeWriter(vlk_params.device)
-	arduino = SIPunchReader(arduino_params.device)
-	marenka = SIPunchReader(marenka_params.device)
-	stations = [arduino, marenka]
+#2067939 [ d3 0d 00 7b 00 1f 8d e3 05 86 76 6d 00 01 00 ]
+#4634    [ d3 0d 00 7b 00 00 12 1a 05 86 85 32 00 01 08 ]
 
+	SportIdentVID = '10C4'
+	ArduinoVID = '2341'
+	XBeeVID='0403'
+	si_devices = [port.device for port in list_ports.grep(SportIdentVID + ':.*')]
+	si_devices += [port.device for port in list_ports.grep(ArduinoVID + ':.*')]
+	logger.info("SI readers: %s" % si_devices)
+	if len(si_devices) == 0:
+		raise Exception("No SI devices found!")
+
+	xbee_devices = [port.device for port in list_ports.grep(XBeeVID + ':.*')]
+	if len(xbee_devices) == 0:
+		raise Exception("No XBee device found!")
+	xbee_device = xbee_devices.pop()
+	logger.info("XBee writer: %s" % xbee_device)
+
+	si_readers = [SIPunchReader(device) for device in si_devices]
+	xbee_writer = XBeeWriter(xbee_device)
+
+	rdfs = [dev._serial for dev in si_readers]
 	while True:
 		logger.info("select ...")
-		readable, writable, exceptional = select.select([arduino._serial, marenka._serial], [], [], 5)
+		readable, writable, exceptional = select.select(rdfs, [], [], 5)
 		if not readable:
 			logger.info("timeout")
 		else:	
 			for r in readable:
-				for si in stations:
+				for si in si_readers:
+					#pudb.set_trace()
 					if si._serial == r:
 						cmd, data = si.readCommand()
 						logger.info("<<== Data read %s" % (hexlify(data)))
-						if cmd == C_TRANS_REC:
+						if cmd == SIReader.C_TRANS_REC:
 							logger.info("==>> Sending punch %s" % (hexlify(data)))
-							vlk.send(data)
+							xbee_writer.send(data)
 
 
 if __name__ == "__main__":
 	
-	while True:
-		sleep(1)
-		try:
-			main()
-		except Exception as e:
-			#pudb.set_trace()
-			logger.error(str(type(e)) + ": " + str(e))
-
+	try:
+		main()
+	except Exception as e:
+		#pudb.set_trace()
+		logger.error(str(type(e)) + ": " + str(e))
 
 
