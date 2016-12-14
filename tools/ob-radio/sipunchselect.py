@@ -14,7 +14,7 @@ from serial import Serial
 from serial.serialutil import SerialException
 from six import int2byte, byte2int
 from binascii import hexlify
-import pudb
+#import pudb
 
 from sireader import SIReader, SIReaderException, SIReaderTimeout
 
@@ -58,8 +58,10 @@ class SerialPort(object):
 		self._serial = Serial(port, baudrate=38400, timeout=timeout)
 		
 		# flush possibly available input        
-		self._serial.reset_input_buffer()
-		self._serial.reset_output_buffer()
+		self._serial.flushInput()
+		self._serial.flushOutput()
+		#self._serial.reset_input_buffer() #PY3
+		#self._serial.reset_output_buffer() #PY3
 
 class SIPunchReader(SerialPort):
 	#def __init__(self, *args, **kwargs):
@@ -148,23 +150,26 @@ class XBeeWriter(SerialPort):
 		self._serial = Serial(port, baudrate=38400, timeout=timeout)
 		
 		# flush possibly available input        
-		self._serial.reset_input_buffer()
-		self._serial.reset_output_buffer()
+		self._serial.flushInput()
+		self._serial.flushOutput()
+		#self._serial.reset_input_buffer() #PY3
+		#self._serial.reset_output_buffer() #PY3
 
 def main(): 
 #2067939 [ d3 0d 00 7b 00 1f 8d e3 05 86 76 6d 00 01 00 ]
 #4634    [ d3 0d 00 7b 00 00 12 1a 05 86 85 32 00 01 08 ]
 
-	SportIdentVID = '10C4'
+	SportIdentVID = '10c4'
 	ArduinoVID = '2341'
 	XBeeVID='0403'
-	si_devices = [port.device for port in list_ports.grep(SportIdentVID + ':.*')]
-	si_devices += [port.device for port in list_ports.grep(ArduinoVID + ':.*')]
+	si_devices = [port[0] if isinstance(port, tuple) else port.device for port in list_ports.grep(SportIdentVID + ':.*')]
+	si_devices += [port[0] if isinstance(port, tuple) else port.device for port in list_ports.grep(ArduinoVID + ':.*')]
 	logger.info("SI readers: %s" % si_devices)
 	if len(si_devices) == 0:
+		logger.info([port.hwid for port in list_ports.grep('.*')])
 		raise Exception("No SI devices found!")
 
-	xbee_devices = [port.device for port in list_ports.grep(XBeeVID + ':.*')]
+	xbee_devices = [port[0] if isinstance(port, tuple) else port.device for port in list_ports.grep(XBeeVID + ':.*')]
 	if len(xbee_devices) == 0:
 		raise Exception("No XBee device found!")
 	xbee_device = xbee_devices.pop()
