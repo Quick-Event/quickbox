@@ -10,24 +10,13 @@
 #include <cstdio>
 #endif
 
-
-using namespace qf::core;
+namespace qf {
+namespace core {
 
 namespace {
-/*
-Log::Level environment_treshold()
-{
-	const QByteArray ba = qgetenv("QF_LOG_TRESHOLD");
-	if(ba.isEmpty())
-		return Log::Level::Invalid;
-	QString s = QString::fromLatin1(ba.data());
-	bool ok;
-	int ret =  s.toInt(&ok);
-	if(!ok)
-		return Log::Level::Invalid;
-	return Log::Level(ret);
-}
-*/
+
+QLatin1String CATEGORY_DEFAULT("default");
+QLatin1String CATEGORY_QML("qml");
 
 QList< LogDevice* >& logDevices();
 
@@ -403,8 +392,8 @@ bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, con
 	}
 	//fprintf(stderr, "!!!!!!!!!!!!! %s: '%s'\n", file_name, qPrintable(category));
 	if(category && category[0]
-	   && !(QLatin1String("default") == QLatin1String(category))
-	   && !(QLatin1String("qml") == QLatin1String(category))) { // default, qml category is implicit in QMessageLogger, so filter it out
+	   && !(CATEGORY_DEFAULT == QLatin1String(category))
+	   && !(CATEGORY_QML == QLatin1String(category))) { // default, qml category is implicit in QMessageLogger, so filter it out
 		// category specified
 		qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
 		if(log_filter.logAllCategories) {
@@ -608,7 +597,7 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	if(!module.isEmpty()) {
 		std::fprintf(m_file, "[%s:%d]", qPrintable(module), context.line);
 	}
-	if(context.category && context.category[0])
+	if(context.category && context.category[0] && !(context.category == CATEGORY_DEFAULT))
 		std::fprintf(m_file, "(%s)", context.category);
 	std::fprintf(m_file, " %s", qPrintable(msg));
 #ifdef Q_OS_UNIX
@@ -768,3 +757,5 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 	LogEntryMap m(level, context.category, msg, context.file, context.line, context.function);
 	emit __logEntry(m);
 }
+
+}}
