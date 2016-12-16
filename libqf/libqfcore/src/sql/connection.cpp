@@ -174,17 +174,22 @@ static QVariant sqlite_set_pragma(QSqlQuery &q, const QString &pragma_key, const
 		qfError() << QString("SQL Error\nquery: %1;").arg(qs);
 		return QVariant();
 	}
-	q.next();
-	QVariant old_val = q.value(0);
-	qfDebug() << "\t oldval:" << old_val.toString();
-	//qfDebug() << "\t newval:" << val.toString();
-	qs = qs + "=" + formatValueForSql(val);
-	//qfInfo() << qs;
-	if(!q.exec(qs)) {
-		qfError() << QString("SQL Error\nquery: %1;").arg(qs);
-		return QVariant();
+	if(q.next()) {
+		QVariant old_val = q.value(0);
+		qfDebug() << "\t oldval:" << old_val.toString();
+		//qfDebug() << "\t newval:" << val.toString();
+		qs = qs + "=" + formatValueForSql(val);
+		//qfInfo() << qs;
+		if(!q.exec(qs)) {
+			qfError() << QString("SQL Error\nquery: %1;").arg(qs);
+			return QVariant();
+		}
+		return old_val;
 	}
-	return old_val;
+	else {
+		qfError() << "SQL PRAGMA query is supposed to return data but it hasn't";
+	}
+	return QVariant();
 }
 
 QStringList Connection::tables(const QString& dbname, QSql::TableType type) const
