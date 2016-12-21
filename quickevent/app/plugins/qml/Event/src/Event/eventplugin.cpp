@@ -658,7 +658,10 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		QString event_fn = eventNameToFileName(event_id);
 		conn.close();
 		conn.setDatabaseName(event_fn);
-		conn.open();
+		if(!conn.open()) {
+			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
+			return false;
+		}
 	}
 	if(conn.isOpen()) {
 		QVariantMap create_options;
