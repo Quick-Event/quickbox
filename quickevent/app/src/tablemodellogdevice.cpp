@@ -5,7 +5,7 @@
 TableModelLogDevice::TableModelLogDevice(QObject *parent)
  : Super(parent)
 {
-	m_logFilter.categoriesTresholds[QString()] = qf::core::Log::Level::Info;
+	m_logFilter.categoriesTresholds[QString("default")] = qf::core::Log::Level::Info;
 	m_logTableModel = new qf::core::model::LogTableModel(this);
 	QObject::connect(this, &qf::core::SignalLogDevice::logEntry, m_logTableModel, &qf::core::model::LogTableModel::addLogEntry);
 }
