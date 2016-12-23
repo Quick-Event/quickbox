@@ -432,12 +432,12 @@ QString ConfigCLIOptions::configFile()
 	else {
 		config_file = applicationName() + conf_ext;
 	}
-
-	QString config_dir = configDir();
-	if(config_dir.isEmpty())
-		config_dir = applicationDir();
-
-	config_file = config_dir + '/' + config_file;
+	if(!QDir::isAbsolutePath(config_file)) {
+		QString config_dir = configDir();
+		if(config_dir.isEmpty())
+			config_dir = applicationDir();
+		config_file = config_dir + '/' + config_file;
+	}
 	if(!config_file.endsWith(conf_ext)) {
 		if(QFile::exists(config_file + conf_ext))
 			config_file += conf_ext;
