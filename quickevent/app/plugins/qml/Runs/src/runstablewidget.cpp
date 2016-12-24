@@ -71,10 +71,10 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &RunsTableWidget::onCustomContextMenuRequest);
 
-	auto m = new RunsTableModel(this);
-	ui->tblRuns->setTableModel(m);
-	m_runsModel = m;
+	m_runsModel = new RunsTableModel(this);
+	connect(m_runsModel, &RunsTableModel::badDataInput, this, &RunsTableWidget::onBadTableDataInput, Qt::QueuedConnection);
 	connect(m_runsModel, &RunsTableModel::runnerSiIdEdited, runsPlugin(), &Runs::RunsPlugin::clearRunnersTableCache);
+	ui->tblRuns->setTableModel(m_runsModel);
 
 	// this ensures that table is sorted every time when start time is edited
 	ui->tblRuns->sortFilterProxyModel()->setDynamicSortFilter(true);
@@ -284,6 +284,11 @@ void RunsTableWidget::onTableViewSqlException(const QString &what, const QString
 		return;
 	}
 	qf::qmlwidgets::dialogs::MessageBox::showException(this, what, where, stack_trace);
+}
+
+void RunsTableWidget::onBadTableDataInput(const QString &message)
+{
+	qf::qmlwidgets::dialogs::MessageBox::showError(this, message);
 }
 
 

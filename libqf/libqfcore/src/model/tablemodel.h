@@ -134,6 +134,7 @@ public:
 	Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 	Q_INVOKABLE QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 	Q_INVOKABLE bool setData(const QModelIndex &index, const QVariant & value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
+	Q_INVOKABLE void restoreOrigData(const QModelIndex &index);
 
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 
@@ -179,6 +180,9 @@ public:
 
 	Q_INVOKABLE virtual bool setValue(int row, int column, const QVariant &val);
 	Q_INVOKABLE bool setValue(int row_ix, const QString& col_name, const QVariant &val);
+
+	Q_INVOKABLE virtual void restoreOrigValue(int row, int column);
+	//Q_INVOKABLE void restoreOrigValue(int row_ix, const QString& col_name, const QVariant &val);
 
 	qf::core::utils::TableRow& tableRowRef(int row_no);
 	qf::core::utils::TableRow tableRow(int row_no) const;

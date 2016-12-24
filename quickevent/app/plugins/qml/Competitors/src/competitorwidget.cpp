@@ -33,6 +33,17 @@ namespace qfs = qf::core::sql;
 
 namespace {
 
+class BadDataInputException : public std::runtime_error
+{
+public:
+	BadDataInputException(const QString &message) : std::runtime_error(""), m_message(message) {}
+	~BadDataInputException() Q_DECL_OVERRIDE {}
+
+	const QString& message() const {return m_message;}
+private:
+	QString m_message;
+};
+
 class RunsModel : public quickevent::og::SqlTableModel
 {
 	using Super = quickevent::og::SqlTableModel;
@@ -175,6 +186,17 @@ bool CompetitorWidget::loadRunsTable()
 bool CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
+	bool is_running_set = false;
+	for (int i = 0; i < m_runsModel->rowCount(); ++i) {
+		bool is_running = m_runsModel->value(i, RunsModel::col_runs_isRunning).toBool();
+		int time_ms = m_runsModel->value(i, RunsModel::col_runs_timeMs).toInt();
+		if(!is_running && time_ms > 0) {
+			m_runsModel->setData(m_runsModel->index(i, RunsModel::col_runs_isRunning), true);
+			is_running_set = true;
+		}
+	}
+	if(is_running_set)
+		throw BadDataInputException(tr("Canont set not running flag for competitor with valid finish time."));
 	bool ret = m_runsModel->postAll(true);
 	if(ret)
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
@@ -302,6 +324,9 @@ bool CompetitorWidget::saveData()
 		if(Super::saveData())
 			ret = saveRunsTable();
 		transaction.commit();
+	}
+	catch (BadDataInputException &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, e.message());
 	}
 	catch (qf::core::Exception &e) {
 		QString what = e.message();

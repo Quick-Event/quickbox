@@ -477,6 +477,17 @@ void TableRow::setValue(const QString &field_name, const QVariant &v)
 	setValue(col, v);
 }
 
+void TableRow::restoreOrigValue(int col)
+{
+	qfLogFuncFrame() << "col:" << col;
+	QVariant orig_val = d->origValues.value(col);
+	/// pokud hodnota byla nastavena (napr. po opakovanem prenastaveni) nakonec na originalni, neni nutne ji ukladat
+	d->values[col] = orig_val;
+	if(col < d->dirtyFlags.count()) {
+		d->dirtyFlags[col] = false;
+	}
+}
+
 void TableRow::saveValues()
 {
 	//qfInfo() << "save values:" << d->values.size();

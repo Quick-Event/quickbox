@@ -312,6 +312,14 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
 	return ret;
 }
 
+void TableModel::restoreOrigData(const QModelIndex &index)
+{
+	if(index.isValid()) {
+		restoreOrigValue(index.column(), index.row());
+		emit dataChanged(index, index);
+	}
+}
+
 void TableModel::sort(int column, Qt::SortOrder order)
 {
 	int table_field_index = tableFieldIndex(column);
@@ -436,6 +444,25 @@ bool TableModel::setValue(int row_ix, const QString &col_name, const QVariant &v
 			  tr("Cannot find column index for name: '%1'").arg(col_name),
 			  return false);
 	return setValue(row_ix, col_ix, val);
+}
+
+void TableModel::restoreOrigValue(int row, int column)
+{
+	QF_ASSERT(m_table.isValidRowIndex(row),
+			  tr("Invalid table row: %1").arg(row),
+			  return);
+	int table_field_index = tableFieldIndex(column);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field index for column index: %1").arg(column),
+			  return);
+	QF_ASSERT(m_table.isValidFieldIndex(table_field_index),
+			  tr("Invalid table field index: %1").arg(table_field_index),
+			  return);
+	//QVariant v = val;
+	//if(isNullReportedAsString() && v.toString() == qfc::Utils::nullValueString())
+	//	v = QVariant();
+	qfu::TableRow &r = m_table.rowRef(row);
+	r.restoreOrigValue(table_field_index);
 }
 
 QVariant TableModel::value(int row_ix, int column_ix) const
