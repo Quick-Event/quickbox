@@ -31,18 +31,20 @@ public:
 
 	QF_PROPERTY_BOOL_IMPL2(d, D, ataValid, false)
 public:
-	virtual int rowCount() = 0;
-	virtual int columnCount() = 0;
-	virtual QVariant tableData(const QString &key, DataRole role = Qt::DisplayRole) = 0;
-	virtual QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) = 0;
-	virtual QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) = 0;
-	virtual QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) = 0;
+	Q_INVOKABLE virtual int rowCount() {return 0;}
+	Q_INVOKABLE virtual int columnCount() {return 0;}
+	Q_INVOKABLE virtual QVariant tableData(const QString &key, DataRole role = Qt::DisplayRole) {Q_UNUSED(key) Q_UNUSED(role) return QVariant();}
+	Q_INVOKABLE virtual QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) {Q_UNUSED(col_no) Q_UNUSED(role) return QVariant();}
+	Q_INVOKABLE virtual QString columnNameToIndex(const QString &column_name) {Q_UNUSED(column_name) return QString();}
+	// cannot use arg overloading because of QML
+	Q_INVOKABLE virtual QVariant dataByIndex(int row_no, int col_no, DataRole role = Qt::DisplayRole) {Q_UNUSED(row_no) Q_UNUSED(col_no) Q_UNUSED(role) return QVariant();}
+	Q_INVOKABLE virtual QVariant dataByName(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) {Q_UNUSED(row_no) Q_UNUSED(col_name) Q_UNUSED(role) return QVariant();}
 	virtual QVariant table(int row_no, const QString &table_name);
-	virtual QString dump() const {return QString();}
+	Q_INVOKABLE virtual QString dump() const {return QString();}
 
 	Q_SLOT void invalidateData() {setDataValid(false);}
 public:
-	static BandDataModel* createFromData(const QVariant &data, QObject *parent = nullptr);
+	static BandDataModel* createFromData(const QVariant &dataByIndex, QObject *parent = nullptr);
 };
 
 class TreeTableBandDataModel : public BandDataModel
@@ -57,8 +59,8 @@ public:
 	int columnCount() Q_DECL_OVERRIDE;
 	QVariant tableData(const QString &key, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant headerData(int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
-	QVariant data(int row_no, int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
-	QVariant data(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
+	QVariant dataByIndex(int row_no, int col_no, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
+	QVariant dataByName(int row_no, const QString &col_name, DataRole role = Qt::DisplayRole) Q_DECL_OVERRIDE;
 	QVariant table(int row_no, const QString &table_name) Q_DECL_OVERRIDE;
 	QString dump() const Q_DECL_OVERRIDE;
 

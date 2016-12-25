@@ -195,12 +195,12 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 			{
 				// find best laps for competitors class
 				qf::core::sql::QueryBuilder qb_minlaps;
-				// TODO: remove position field from DB in 0.1.5
 				qb_minlaps.select("runlaps.position, MIN(runlaps.lapTimeMs) AS minLapTimeMs")
 						.from("competitors")
 						.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(current_stage_id) " AND competitors.classId=" QF_IARG(class_id), "JOIN")
 						.joinRestricted("runs.id", "runlaps.runId", "runlaps.position > 0 AND runlaps.lapTimeMs > 0", "JOIN")
-						.groupBy("runlaps.position");
+						.groupBy("runlaps.position")
+						.orderBy("runlaps.position");
 				QString qs = qb_minlaps.toString();
 				//qfInfo() << qs;
 				qf::core::sql::Query q;
@@ -308,18 +308,6 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				ttr.setValue("lossMs", loss);
 			}
 		}
-		/*
-		{
-			// runlaps table contains also finish time entry, it is under FINISH_PUNCH_POS
-			// currently best_laps[999] contains best finish lap time for this class
-			int loss = 0;
-			int best_lap = best_laps.value(CardReader::CardReaderPlugin::FINISH_PUNCH_POS);
-			if(best_lap > 0)
-				loss = checked_card.finishLapTimeMs() - best_lap;
-			//qfInfo() << "control_count:" << control_count << "finishLapTimeMs:" << checked_card.finishLapTimeMs() << "- best_lap:" << best_lap << "=" << loss;
-			tt.setValue("finishLossMs", loss);
-		}
-		*/
 		{
 			QSet<int> correct_codes;
 			for (int i = 0; i < checked_card.punchCount(); ++i) {

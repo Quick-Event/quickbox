@@ -301,7 +301,26 @@ Report {
 			}
 			Frame {
 				width: "%"
-				vinset: 1
+				//vinset: 1
+				hinset: 1
+				layout: Frame.LayoutHorizontal
+				Para {
+					textFn: function() {
+						var dm = bandCard.dataModel;
+						var overall_loss = 0;
+						//console.info("AHOJ", dm.dump());
+						for(var i = 0; i < dm.rowCount(); i++) {
+							var loss = dm.dataByName(i, 'lossMs');
+							//console.info(i, loss);
+							overall_loss += loss;
+						}
+						return qsTr("current overall loss: +") + OGTime.msecToString_mmss(overall_loss);
+					}
+				}
+			}
+			Frame {
+				width: "%"
+				//vinset: 1
 				hinset: 1
 				layout: Frame.LayoutHorizontal
 				//htmlExportAttributes: {"lpt_borderTop": "-"}

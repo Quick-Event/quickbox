@@ -202,7 +202,7 @@ void ReportItemBand::createChildItemsFromData()
 			it_para->setWidth(mod->headerData(i, Qt::SizeHintRole));
 			it_para->setHinset(1);
 			auto fn = [mod, it_det, i]()->QString {
-				QString ret = mod->data(it_det->currentIndex(), i).toString();
+				QString ret = mod->dataByIndex(it_det->currentIndex(), i).toString();
 				return ret;
 			};
 			it_para->setGetTextCppFunction(fn);

@@ -97,7 +97,7 @@ QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole 
 	return ret;
 }
 
-QVariant TreeTableBandDataModel::data(int row_no, int col_no, BandDataModel::DataRole role)
+QVariant TreeTableBandDataModel::dataByIndex(int row_no, int col_no, BandDataModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);
@@ -109,7 +109,7 @@ QVariant TreeTableBandDataModel::data(int row_no, int col_no, BandDataModel::Dat
 	return ret;
 }
 
-QVariant TreeTableBandDataModel::data(int row_no, const QString &col_name, BandDataModel::DataRole role)
+QVariant TreeTableBandDataModel::dataByName(int row_no, const QString &col_name, BandDataModel::DataRole role)
 {
 	QVariant ret;
 	qfu::TreeTableRow ttr = treeTable().row(row_no);
