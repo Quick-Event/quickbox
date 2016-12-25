@@ -62,6 +62,8 @@ public:
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
+	Q_INVOKABLE int stageIdForRun(int run_id);
+
 	Q_INVOKABLE int stageStartMsec(int stage_id);
 	Q_INVOKABLE QDate stageStartDate(int stage_id);
 	Q_INVOKABLE QTime stageStartTime(int stage_id);

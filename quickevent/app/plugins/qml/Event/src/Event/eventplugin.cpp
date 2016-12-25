@@ -166,6 +166,22 @@ int EventPlugin::currentStageId()
 	return m_cbxStage->currentIndex() + 1;
 }
 
+int EventPlugin::stageIdForRun(int run_id)
+{
+	int ret = 0;
+	qfs::QueryBuilder qb;
+	qb.select2("runs", "stageId")
+			.from("runs")
+			.where("runs.id=" QF_IARG(run_id));
+	qfs::Query q;
+	q.exec(qb.toString(), qf::core::Exception::Throw);
+	if(q.next())
+		ret = q.value(0).toInt();
+	else
+		qfError() << "Cannot find runs record for id:" << run_id;
+	return ret;
+}
+
 int EventPlugin::stageStartMsec(int stage_id)
 {
 	QTime start_time = stageStartTime(stage_id);

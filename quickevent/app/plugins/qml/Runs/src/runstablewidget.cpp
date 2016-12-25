@@ -177,13 +177,13 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_show_card(tr("Show receipt"), nullptr);
+	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
 	QAction a_print_card(tr("Print card"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
 	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card << &a_load_card << &a_print_card
+	lst << &a_show_receipt << &a_load_card << &a_print_card
 		<< &a_sep1
 		<< &a_shift_start_times;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
@@ -210,7 +210,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		}
 		fwk->hideProgress();
 	}
-	else if(a == &a_show_card) {
+	else if(a == &a_show_receipt) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
 		Runs::RunsPlugin *runs_plugin = runsPlugin();
 		if(!runs_plugin)

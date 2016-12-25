@@ -21,7 +21,15 @@
 
 namespace qfs = qf::core::sql;
 
-using namespace CardReader;
+namespace CardReader {
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 CardChecker::CardChecker(QObject *parent)
 	: QObject(parent)
@@ -53,18 +61,7 @@ int CardChecker::toAM(int time_sec)
 
 int CardChecker::stageIdForRun(int run_id)
 {
-	int ret = 0;
-	qfs::QueryBuilder qb;
-	qb.select2("runs", "stageId")
-			.from("runs")
-			.where("runs.id=" QF_IARG(run_id));
-	qfs::Query q;
-	q.exec(qb.toString(), qf::core::Exception::Throw);
-	if(q.next())
-		ret = q.value(0).toInt();
-	else
-		qfError() << "Cannot find runs record for id:" << run_id;
-	return ret;
+	return eventPlugin()->stageIdForRun(run_id);
 }
 
 int CardChecker::stageStartSec(int stage_id)
@@ -145,3 +142,4 @@ int CardChecker::finishPunchCode()
 	return quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
 }
 
+}

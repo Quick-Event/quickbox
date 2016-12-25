@@ -169,8 +169,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	QVariantMap ret;
 	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
 	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
-	int current_stage_id = eventPlugin()->currentStageId();
 	int run_id = checked_card.runId();
+	int current_stage_id = eventPlugin()->stageIdForRun(run_id);
 	int course_id = checked_card.courseId();
 	int current_standings = 0;
 	int competitors_finished = 0;
@@ -217,7 +217,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 						continue;
 					}
 					best_laps[position] = lap;
-					//qfInfo() << "bestlaps[" << pos << "] =" << lap;
+					//qfInfo() << "bestlaps[" << position << "] =" << lap;
 				}
 			}
 			if(checked_card.isOk()) {
