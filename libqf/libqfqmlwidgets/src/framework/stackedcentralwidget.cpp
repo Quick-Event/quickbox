@@ -10,7 +10,9 @@
 #include <QVBoxLayout>
 #include <QMetaMethod>
 
-using namespace qf::qmlwidgets::framework;
+namespace qf {
+namespace qmlwidgets {
+namespace framework {
 
 StackedCentralWidget::StackedCentralWidget(MainWindow *parent) :
 	Super(parent)
@@ -87,3 +89,5 @@ PartWidget *StackedCentralWidget::partWidget(int part_index)
 	}
 	return pw;
 }
+
+}}}

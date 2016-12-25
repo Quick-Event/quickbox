@@ -160,6 +160,7 @@ CorePlugin {
 		settings.destroy();
 
 		FrameWork.menuBar.actionForPath('view').text = qsTr('&View');
+		FrameWork.menuBar.actionForPath('view/toolbar').text = qsTr('&Toolbar');
 
 		var act_help = FrameWork.menuBar.actionForPath('help');
 		act_help.text = qsTr('&Help');

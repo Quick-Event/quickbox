@@ -25,6 +25,8 @@ public:
 	void addPartWidget(PartWidget *widget) Q_DECL_OVERRIDE;
 	PartWidget* partWidget(int part_index);
 
+	PartSwitch* partSwitch() {return m_partSwitch;}
+
 	bool setActivePart(int part_index, bool set_active)  Q_DECL_OVERRIDE;
 	int featureToIndex(const QString &feature_id) Q_DECL_OVERRIDE;
 private:

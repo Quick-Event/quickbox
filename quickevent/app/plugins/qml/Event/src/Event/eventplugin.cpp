@@ -266,6 +266,7 @@ void EventPlugin::onInstalled()
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
+	tb->setWindowTitle(tr("Event"));
 	{
 		QToolButton *bt_stage = new QToolButton();
 		//bt_stage->setFlat(true);
@@ -293,6 +294,7 @@ void EventPlugin::onInstalled()
 			m_actEditStage->setVisible(checked);
 		});
 	}
+	fwk->menuBar()->actionForPath("view/toolbar")->addActionInto(tb->toggleViewAction());
 }
 
 void EventPlugin::onCbxStageActivated(int ix)

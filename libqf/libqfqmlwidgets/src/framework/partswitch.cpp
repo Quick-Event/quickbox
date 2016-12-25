@@ -36,6 +36,7 @@ PartSwitch::PartSwitch(StackedCentralWidget *central_widget, QWidget *parent) :
 	Super(parent), m_centralWidget(central_widget), m_currentPartIndex(-1)
 {
 	setObjectName("partSwitch");
+	setWindowTitle(tr("Part switch"));
 	//setStyleSheet("background-color: rgb(118, 118, 118);");
 }
 
