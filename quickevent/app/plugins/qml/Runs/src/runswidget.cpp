@@ -244,14 +244,14 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	return ret;
 }
 
-QList<int> RunsWidget::runsForClass(int stage_id, int class_id)
+QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &extra_condition)
 {
 	qfLogFuncFrame();
-	QList<int> ret = competitorsForClass(stage_id, class_id).values();
+	QList<int> ret = competitorsForClass(stage_id, class_id, extra_condition).values();
 	return ret;
 }
 
-QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
+QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_condition)
 {
 	qfLogFuncFrame();
 	QMap<int, int> ret;
@@ -260,6 +260,8 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id)
 			.from("competitors")
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id), "JOIN")
 			.where("competitors.classId=" QF_IARG(class_id));
+	if(!extra_condition.isEmpty())
+		qb.where(extra_condition);
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	while(q.next()) {
