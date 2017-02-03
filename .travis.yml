@@ -5,7 +5,7 @@ before_install:
   # We need this line to have g++4.8 available in apt 
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-  - sudo apt-add-repository -y ppa:beineri/opt-qt58-trusty
+  - sudo apt-add-repository -y ppa:beineri/opt-qt562
   - sudo apt-get update -qq
   #- sudo apt-get install -qq g++-4.9
   - sudo apt-get install libsqlite3-dev libfuse-dev
@@ -18,6 +18,6 @@ install:
 
 script:
   #- g++ --version
-  - source /opt/qt58/bin/qt58-env.sh
+  - source /opt/qt562/bin/qt562-env.sh
   - qmake -r
   - make
