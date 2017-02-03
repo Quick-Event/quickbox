@@ -48,6 +48,9 @@ RunsWidget::RunsWidget(QWidget *parent) :
 
 	ui->cbxDrawMethod->addItem(tr("Randomized equidistant clubs"), static_cast<int>(DrawMethod::RandomizedEquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Random number"), static_cast<int>(DrawMethod::RandomNumber));
+	ui->cbxDrawMethod->addItem(tr("Grouped: C, B+A (PSOB DH12-14)"), static_cast<int>(DrawMethod::GroupedC));
+	ui->cbxDrawMethod->addItem(tr("Grouped: C, B, A+E+R (PSOB DH16-20)"), static_cast<int>(DrawMethod::GroupedCB));
+	ui->cbxDrawMethod->addItem(tr("Grouped by ranking (PSOB DH21L)"), static_cast<int>(DrawMethod::GroupedRanking));
 	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Stage 1 reverse order"), static_cast<int>(DrawMethod::StageReverseOrder));
 	ui->cbxDrawMethod->addItem(tr("Handicap"), static_cast<int>(DrawMethod::Handicap));
@@ -456,6 +459,31 @@ void RunsWidget::on_btDraw_clicked()
 			if(draw_method == DrawMethod::RandomNumber) {
 				runners_draw_ids = runsForClass(stage_id, class_id);
 				shuffle(runners_draw_ids);
+			}
+			else if(draw_method == DrawMethod::GroupedC) {
+				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "licence='A' or licence='B'");
+				shuffle(group1);
+				shuffle(group2);
+				runners_draw_ids = group1 + group2;
+			}
+			else if(draw_method == DrawMethod::GroupedCB) {
+				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "licence='B'");
+				QList<int> group3 = runsForClass(stage_id, class_id, "licence='A' or licence='R' or licence='E'");
+				shuffle(group1);
+				shuffle(group2);
+				shuffle(group3);
+				runners_draw_ids = group1 + group2 + group3;
+			}
+			else if(draw_method == DrawMethod::GroupedRanking) {
+				QList<int> group1 = runsForClass(stage_id, class_id, "ranking>300 or ranking is null");
+				QList<int> group2 = runsForClass(stage_id, class_id, "ranking>100 and ranking<=300");
+				QList<int> group3 = runsForClass(stage_id, class_id, "ranking<=100");
+				shuffle(group1);
+				shuffle(group2);
+				shuffle(group3);
+				runners_draw_ids = group1 + group2 + group3;
 			}
 			else if(draw_method == DrawMethod::Handicap) {
 				int stage_count = eventPlugin()->eventConfig()->stageCount();

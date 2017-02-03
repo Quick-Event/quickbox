@@ -68,7 +68,9 @@ private:
 
 	void import_start_times_ob2000();
 private:
-	enum class DrawMethod : int {Invalid = 0, RandomNumber, EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap, ShiftTimes};
+	enum class DrawMethod : int {Invalid = 0, RandomNumber,
+		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,
+		ShiftTimes, GroupedC, GroupedCB, GroupedRanking};
 
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
