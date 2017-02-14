@@ -99,9 +99,9 @@ bool Connection::isOpen()
 
 void Connection::close()
 {
-    qfLogFuncFrame();
-    if(!isOpen())
-        return;
+	qfLogFuncFrame();
+	if(!isOpen())
+		return;
 	QModelIndex ix = model()->object2index(this);
 	model()->deleteChildren(ix);
 	/*
