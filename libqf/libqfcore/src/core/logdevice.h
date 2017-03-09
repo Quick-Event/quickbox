@@ -87,10 +87,12 @@ private:
 protected:
 	FileLogDevice(QObject *parent = 0);
 public:
+	static constexpr bool LogAppend = true;
+public:
 	~FileLogDevice() Q_DECL_OVERRIDE;
 	static FileLogDevice* install();
 
-	void setFile(const QString &path_to_file);
+	void setFile(const QString &path_to_file, bool append = !LogAppend);
 
 	bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category) Q_DECL_OVERRIDE;
 	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;

@@ -524,7 +524,7 @@ FileLogDevice *FileLogDevice::install()
 	return ret;
 }
 
-void FileLogDevice::setFile(const QString &path_to_file)
+void FileLogDevice::setFile(const QString &path_to_file, bool append)
 {
 	if(m_file && m_file != stderr) {
 		::fclose(m_file);
@@ -533,7 +533,8 @@ void FileLogDevice::setFile(const QString &path_to_file)
 		m_file = stderr;
 	}
 	else {
-		FILE *f = ::fopen(qPrintable(path_to_file), "w");
+		const char *mode = append? "a": "w";
+		FILE *f = ::fopen(qPrintable(path_to_file), mode);
 		if(f) {
 			std::fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
 			m_file = f;
