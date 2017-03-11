@@ -11,6 +11,7 @@
 #include <QDomDocument>
 #include <QPrinter>
 #include <QPrinterInfo>
+#include <QTcpSocket>
 
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/fileutils.h>
@@ -110,17 +111,51 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 				qfError() << "Cannot open file" << f.fileName() << "for writing!";
 			}
 		};
-		if(!printer_opts.characterPrinterDirectory().isEmpty()) {
-			QString fn = printer_opts.characterPrinterDirectory();
-			qf::core::utils::FileUtils::ensurePath(fn);
-			QCryptographicHash ch(QCryptographicHash::Sha1);
-			for(QByteArray ba : data_lines)
-				ch.addData(ba);
-			fn += '/' + QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
-			save_file(fn);
-		}
-		else if (!printer_opts.characterPrinterDevice().isEmpty()) {
-			save_file(printer_opts.characterPrinterDevice());
+		switch(printer_opts.characterPrinterType()) {
+			case ReceiptsPrinterOptions::CharacterPrinteType::Directory: {
+				if(!printer_opts.characterPrinterDirectory().isEmpty()) {
+					QString fn = printer_opts.characterPrinterDirectory();
+					qf::core::utils::FileUtils::ensurePath(fn);
+					QCryptographicHash ch(QCryptographicHash::Sha1);
+					for(QByteArray ba : data_lines)
+						ch.addData(ba);
+					fn += '/' + QString::fromLatin1(ch.result().toHex().mid(0, 8)) + ".txt";
+					save_file(fn);
+				}
+				break;
+			}
+			case ReceiptsPrinterOptions::CharacterPrinteType::LPT: {
+				if (!printer_opts.characterPrinterDevice().isEmpty()) {
+					save_file(printer_opts.characterPrinterDevice());
+				}
+				break;
+			}
+			case ReceiptsPrinterOptions::CharacterPrinteType::Network: {
+				if (!printer_opts.characterPrinterAddress().isEmpty()) {
+					QTcpSocket socket;
+					socket.connectToHost(
+							printer_opts.characterPrinterAddress(),
+							9100,
+							QIODevice::WriteOnly);
+					if (socket.waitForConnected(1000)) {
+						for(const QByteArray& line : data_lines) {
+							socket.write(line);
+							socket.write("\n");
+						}
+						socket.disconnectFromHost();
+						if (!socket.waitForDisconnected(1000)) { // waiting till all data are sent
+							qfError() << "Error while closing the connection to printer: "
+									<< socket.error();
+						}
+					}
+					else {
+						qfError() << "Cannot open tcp connection to "
+								<< printer_opts.characterPrinterAddress()
+								<< " reason: " << socket.error();
+					}
+				}
+				break;
+			}
 		}
 	}
 }

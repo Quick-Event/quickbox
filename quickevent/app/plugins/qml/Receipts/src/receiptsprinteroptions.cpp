@@ -17,7 +17,18 @@ QString ReceiptsPrinterOptions::printerCaption() const
 		ret = tr("Graphics") + ' ' + graphicsPrinterName();
 	}
 	else {
-		ret = tr("Character") + ' ' + characterPrinterModel() + " " + characterPrinterDevice();
+		ret = tr("Character") + ' ' + characterPrinterModel() + ' ';
+		switch(characterPrinterType()) {
+			case CharacterPrinteType::LPT:
+				ret +=  characterPrinterDevice();
+				break;
+			case CharacterPrinteType::Directory:
+				ret += characterPrinterDirectory();
+				break;
+			case CharacterPrinteType::Network:
+				ret += characterPrinterAddress();
+				break;
+		}
 	}
 	return ret;
 }
