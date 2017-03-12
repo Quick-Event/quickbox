@@ -133,9 +133,13 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 			case ReceiptsPrinterOptions::CharacterPrinteType::Network: {
 				if (!printer_opts.characterPrinterAddress().isEmpty()) {
 					QTcpSocket socket;
+					QString host = printer_opts.characterPrinterAddress().section(':', 0, 0);
+					int port = printer_opts.characterPrinterAddress().section(':', 1, 1).toInt();
+					if(port == 0)
+					    port = 9100;
 					socket.connectToHost(
-							printer_opts.characterPrinterAddress(),
-							9100,
+							host,
+							port,
 							QIODevice::WriteOnly);
 					if (socket.waitForConnected(1000)) {
 						for(const QByteArray& line : data_lines) {
@@ -149,8 +153,8 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 						}
 					}
 					else {
-						qfError() << "Cannot open tcp connection to "
-								<< printer_opts.characterPrinterAddress()
+						qfError() << "Cannot open tcp connection to address "
+								<< host << " on port " << port
 								<< " reason: " << socket.error();
 					}
 				}

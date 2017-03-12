@@ -22,7 +22,7 @@ class ReceiptsPrinterOptions : public QVariantMap
 public:
 	enum class PrinterType : int {GraphicPrinter = 0, CharacterPrinter};
 	enum CharacterPrinteType {
-		LPT = 0,
+		LPT,
 		Directory,
 		Network,
 	};
