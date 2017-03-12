@@ -21,7 +21,7 @@ class ReceiptsPrinterOptions : public QVariantMap
 	QF_VARIANTMAP_FIELD(QString, c, setC, haracterPrinterAddress)
 public:
 	enum class PrinterType : int {GraphicPrinter = 0, CharacterPrinter};
-	enum CharacterPrinteType {
+	enum class CharacterPrinteType {
 		LPT,
 		Directory,
 		Network,
