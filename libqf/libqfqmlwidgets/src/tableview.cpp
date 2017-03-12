@@ -1034,7 +1034,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 				tmd->setValue(ri, idColumnName(), id);
 				tmd->setDirty(ri, idColumnName(), false);
 			}
-			if(ri >= 0) {
+			if(ri >= 0 && ri < tmd->rowCount()) {
 				if(mode == ModeEdit || mode == ModeView) {
 					int reloaded_row_cnt = tmd->reloadRow(ri);
 					if(reloaded_row_cnt != 1) {
