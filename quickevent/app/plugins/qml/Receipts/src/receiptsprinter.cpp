@@ -71,7 +71,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 			rp.setTableData(key, report_data.value(key));
 		}
 	}
-	if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+	if(printer_opts.printerType() == ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
 		QF_TIME_SCOPE("process graphics");
 		{
 			QF_TIME_SCOPE("process report");
@@ -90,7 +90,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		}
 		QF_SAFE_DELETE(printer);
 	}
-	else if(printer_opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::CharacterPrinter) {
+	else if(printer_opts.printerType() == ReceiptsPrinterOptions::PrinterType::CharacterPrinter) {
 		QDomDocument doc;
 		doc.setContent(QLatin1String("<?xml version=\"1.0\"?><report><body/></report>"));
 		QDomElement el_body = doc.documentElement().firstChildElement("body");

@@ -9,6 +9,9 @@
 class ReceiptsPrinterOptions : public QVariantMap
 {
 	Q_DECLARE_TR_FUNCTIONS(ReceiptsPrinterOptions)
+public:
+	struct PrinterType { enum Enum { GraphicPrinter,  CharacterPrinter}; };
+	struct CharacterPrinteType { enum Enum { LPT, Directory, Network, }; };
 
 	QF_VARIANTMAP_FIELD(int, p, setP, rinterType)
 	QF_VARIANTMAP_FIELD(QString, g, setG, raphicsPrinterName)
@@ -19,13 +22,6 @@ class ReceiptsPrinterOptions : public QVariantMap
 	QF_VARIANTMAP_FIELD2(bool, is, set, CharacterPrinterGenerateControlCodes, true)
 	QF_VARIANTMAP_FIELD(int, c, setC, haracterPrinterType)
 	QF_VARIANTMAP_FIELD(QString, c, setC, haracterPrinterAddress)
-public:
-	enum class PrinterType : int {GraphicPrinter = 0, CharacterPrinter};
-	enum class CharacterPrinteType {
-		LPT,
-		Directory,
-		Network,
-	};
 public:
 	explicit ReceiptsPrinterOptions(const QVariantMap &o = QVariantMap());
 

@@ -52,7 +52,7 @@ void ReceiptsPrinterOptionsDialog::loadPrinters()
 
 void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOptions &opts)
 {
-	if(opts.printerType() == (int)ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+	if(opts.printerType() == ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
 		ui->btGraphicsPrinter->setChecked(true);
 		ui->cbxGraphicPrinter->setCurrentText(opts.graphicsPrinterName());
 	}
