@@ -17,8 +17,15 @@ class ReceiptsPrinterOptions : public QVariantMap
 	QF_VARIANTMAP_FIELD2(QString, c, setC, haracterPrinterModel, QStringLiteral("Epson TM-T88V"))
 	QF_VARIANTMAP_FIELD2(int, c, setC, haracterPrinterLineLength, 41)
 	QF_VARIANTMAP_FIELD2(bool, is, set, CharacterPrinterGenerateControlCodes, true)
+	QF_VARIANTMAP_FIELD(int, c, setC, haracterPrinterType)
+	QF_VARIANTMAP_FIELD(QString, c, setC, haracterPrinterAddress)
 public:
 	enum class PrinterType : int {GraphicPrinter = 0, CharacterPrinter};
+	enum class CharacterPrinteType {
+		LPT,
+		Directory,
+		Network,
+	};
 public:
 	explicit ReceiptsPrinterOptions(const QVariantMap &o = QVariantMap());
 
