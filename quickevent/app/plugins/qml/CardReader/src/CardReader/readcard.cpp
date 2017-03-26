@@ -69,6 +69,15 @@ ReadPunch ReadCard::punchAt(int i) const
 	QVariantMap m = punches().value(i).toMap();
 	return ReadPunch(m);
 }
+
+QList<ReadPunch> ReadCard::punchList() const
+{
+	QList<ReadPunch> ret;
+	for (int i = 0; i < punchCount(); ++i) {
+		ret << punchAt(i);
+	}
+	return ret;
+}
 /*
 int ReadCard::timeMs() const
 {

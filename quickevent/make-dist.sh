@@ -15,7 +15,7 @@ SRC_DIR=/home/fanda/proj/quickbox
 WORK_DIR=/home/fanda/t/_distro
 DISTRO_NAME=quickevent-linux64-$DISTRO_VER
 # QT_DIR=/home/fanda/programs/qt/5.5/gcc
-QT_DIR=/home/fanda/programs/qt5/5.6/gcc_64
+QT_DIR=/home/fanda/programs/qt5/5.8/gcc_64
 QMAKE=$QT_DIR/bin/qmake
 
 BUILD_DIR=$WORK_DIR/_build/gcc_64
@@ -40,7 +40,7 @@ mkdir -p $DIST_DIR
 rsync -av --exclude '*.debug' $BUILD_DIR/lib/ $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $BUILD_DIR/bin/ $DIST_BIN_DIR
 
-rsync -av $QT_DIR/lib/libicu* $DIST_LIB_DIR
+#rsync -av $QT_DIR/lib/libicu* $DIST_LIB_DIR
 
 rsync -av $QT_DIR/lib/libQt5Core.so* $DIST_LIB_DIR
 rsync -av $QT_DIR/lib/libQt5Gui.so* $DIST_LIB_DIR

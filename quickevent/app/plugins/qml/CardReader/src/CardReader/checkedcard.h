@@ -18,7 +18,7 @@ private:
 	QF_VARIANTMAP_FIELD(int, r, setR, unId)
 	QF_VARIANTMAP_FIELD(int, c, setC, ourseId)
 	QF_VARIANTMAP_FIELD(int, s, setS, tageStartTimeMs) //< stage start till midnight
-	QF_VARIANTMAP_FIELD(int, C, setC, heckTimeMs) //< check time till stage start
+	QF_VARIANTMAP_FIELD(int, c, setC, heckTimeMs) //< check time till stage start
 	QF_VARIANTMAP_FIELD(int, s, setS, tartTimeMs) //< start time till stage start
 	QF_VARIANTMAP_FIELD(int, f, setF, inishTimeMs) //< finish time till stage start
 	//QF_VARIANTMAP_FIELD2(int, f, setF, inishLapTimeMs, 0) //< finish lap time till competitor start time

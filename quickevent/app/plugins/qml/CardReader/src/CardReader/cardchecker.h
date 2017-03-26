@@ -1,12 +1,22 @@
 #ifndef CARDREADER_CARDCHECKER_H
 #define CARDREADER_CARDCHECKER_H
 
+#include "checkedcard.h"
+
 #include <qf/core/utils.h>
 
 #include <QObject>
 #include <QVariant>
 
 namespace CardReader {
+
+class ReadCard;
+
+class CppCardChecker
+{
+public:
+	virtual CheckedCard checkCard(const ReadCard &read_card) {Q_UNUSED(read_card) return CheckedCard();}
+};
 
 class CardChecker : public QObject
 {

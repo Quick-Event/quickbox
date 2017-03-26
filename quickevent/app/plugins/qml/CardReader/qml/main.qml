@@ -10,6 +10,7 @@ CardReaderPlugin {
 
 	cardCheckers: [
 		CardCheckers.Classic {},
+		CardCheckerClassicCpp {},
 		CardCheckers.BeerRace {}
 	]
 /*

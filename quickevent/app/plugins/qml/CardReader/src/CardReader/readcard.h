@@ -51,6 +51,7 @@ public:
 
 	int punchCount() const;
 	ReadPunch punchAt(int i) const;
+	QList<ReadPunch> punchList() const;
 	QString toString() const;
 };
 

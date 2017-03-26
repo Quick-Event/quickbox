@@ -127,17 +127,24 @@ CardReader::CheckedCard CardReaderPlugin::checkCard(const ReadCard &read_card)
 	//updateRunLapsSql(card, run_id);
 	CardReader::CardChecker *chk = currentCardChecker();
 	QF_ASSERT(chk != nullptr, "CardChecker is NULL", return CardReader::CheckedCard());
-	QVariant ret_val;
-	QMetaObject::invokeMethod(chk, "checkCard", Qt::DirectConnection,
-	                          Q_RETURN_ARG(QVariant, ret_val),
-	                          Q_ARG(QVariant, read_card));
-	QJSValue jsv = ret_val.value<QJSValue>();
-	QVariant v = jsv.toVariant();
-	QVariantMap m = v.toMap();
-	CardReader::CheckedCard cc(m);
-	cc.setCardNumber(read_card.cardNumber());
-	//cc.setCardId(read_card.cardId());
-	return cc;
+	CardReader::CppCardChecker *cpp_chk = dynamic_cast<CardReader::CppCardChecker*>(chk);
+	if(cpp_chk) {
+		CheckedCard cc = cpp_chk->checkCard(read_card);
+		return cc;
+	}
+	else {
+		QVariant ret_val;
+		QMetaObject::invokeMethod(chk, "checkCard", Qt::DirectConnection,
+								  Q_RETURN_ARG(QVariant, ret_val),
+								  Q_ARG(QVariant, read_card));
+		QJSValue jsv = ret_val.value<QJSValue>();
+		QVariant v = jsv.toVariant();
+		QVariantMap m = v.toMap();
+		CardReader::CheckedCard cc(m);
+		cc.setCardNumber(read_card.cardNumber());
+		//cc.setCardId(read_card.cardId());
+		return cc;
+	}
 }
 
 int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)

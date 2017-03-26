@@ -8,7 +8,8 @@ HEADERS += \
     $$PWD/CardReader/cardchecker.h \
     $$PWD/CardReader/checkedcard.h \
     $$PWD/CardReader/checkedpunch.h \
-    $$PWD/CardReader/readcard.h
+    $$PWD/CardReader/readcard.h \
+    $$PWD/CardReader/cardcheckerclassiccpp.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -19,7 +20,8 @@ SOURCES += \
     $$PWD/CardReader/cardchecker.cpp \
     $$PWD/CardReader/checkedcard.cpp \
     $$PWD/CardReader/checkedpunch.cpp \
-    $$PWD/CardReader/readcard.cpp
+    $$PWD/CardReader/readcard.cpp \
+    $$PWD/CardReader/cardcheckerclassiccpp.cpp
 
 FORMS += \
     $$PWD/cardreaderwidget.ui \
