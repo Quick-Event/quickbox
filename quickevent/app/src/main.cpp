@@ -15,9 +15,11 @@
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication::setOrganizationName("QuickBox");
+	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setOrganizationDomain("quickbox.org");
-	QCoreApplication::setApplicationName("QuickEvent");
+	QCoreApplication::setApplicationName("quickevent");
+
+	QSettings::setDefaultFormat(QSettings::IniFormat);
 
 	QString o_log_file;
 	for (int i = 1; i < argc-1; ++i) {
