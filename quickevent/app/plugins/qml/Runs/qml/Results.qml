@@ -184,15 +184,19 @@ QtObject {
 
 	function printCurrentStageAwards()
 	{
-		Log.info("runs printCurrentStageAwards triggered");
-		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 3, 1);
+		var opts = runsPlugin.printAwardsOptionsWithDialog();
+		var rep_path = opts.reportPath;
+		if(!rep_path)
+			return;
+
+		var n = opts.numPlaces;
 		var tt = currentStageAwardsTable(n);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage_awards.qml"
+		Log.info("runs printCurrentStageAwards", rep_path);
+		QmlWidgetsSingleton.showReport(rep_path
 									   , tt.data()
 									   , qsTr("Stage awards")
 									   , ""
 									   , {eventConfig: FrameWork.plugin("Event").eventConfig});
-									//   , {eventConfig: FrameWork.plugin("Event").eventConfig.values()});
 	}
 
 	function exportIofXml2(file_path)

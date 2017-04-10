@@ -5,6 +5,7 @@
 #include "../runswidget.h"
 #include "../runstabledialogwidget.h"
 #include "../eventstatisticswidget.h"
+#include "../printawardsoptionsdialogwidget.h"
 
 #include <Event/eventplugin.h>
 
@@ -23,6 +24,7 @@
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 
+#include <QInputDialog>
 #include <QQmlEngine>
 
 namespace qfw = qf::qmlwidgets;
@@ -56,8 +58,6 @@ RunsPlugin::RunsPlugin(QObject *parent)
 
 RunsPlugin::~RunsPlugin()
 {
-	//if(m_eventStatisticsDockWidget)
-	//	m_eventStatisticsDockWidget->savePersistentSettingsRecursively();
 }
 
 const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
@@ -439,6 +439,21 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 	}
 	//console.debug(tt.toString());
 	return tt.toVariant();
+}
+
+QVariantMap RunsPlugin::printAwardsOptionsWithDialog()
+{
+	qfInfo() << Q_FUNC_INFO;
+	QVariantMap ret;
+	PrintAwardsOptionsDialogWidget *w = new PrintAwardsOptionsDialogWidget();
+	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, partWidget());
+	dlg.setCentralWidget(w);
+	QString plugin_home = manifest()->homeDir();
+	w->init(plugin_home);
+	if(dlg.exec()) {
+		ret = w->printOptions();
+	}
+	return ret;
 }
 
 }

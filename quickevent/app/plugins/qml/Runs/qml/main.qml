@@ -147,8 +147,9 @@ RunsPlugin {
 		a = a_print.addMenuInto("results", "&Results");
 		a.addActionInto(act_print_results_currentStage);
 		a.addActionInto(act_print_results_currentStageFirstN);
+		a.addSeparatorInto("results_awards_separator");
 		a.addActionInto(act_print_results_currentStageAwards);
-		a.addSeparatorInto();
+		a.addSeparatorInto("results_nstages_separator");
 		a.addActionInto(act_print_results_nStages);
 		a.addActionInto(act_print_results_NStageAwards);
 
@@ -166,6 +167,8 @@ RunsPlugin {
 
 		var m_results = a_export.addMenuInto("results", "&Results");
 		m_results.addActionInto(act_export_results_iofxml);
+
+		//Log.warning("onNativeInstalled");
 
 	}
 }

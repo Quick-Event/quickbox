@@ -182,12 +182,13 @@ void TxtImporter::importRankingCsv()
 			if(pos == 0 || registration.isEmpty()) {
 				QF_EXCEPTION(tr("Error reading CSV line: [%1]").arg(line.join(';')));
 			}
-			qfDebug() << registration << "->" << pos;
+			//qfInfo() << registration << "->" << pos;
 			q.bindValue(":ranking", pos);
 			q.bindValue(":registration", registration);
 			q.exec(qf::core::Exception::Throw);
 		}
 		transaction.commit();
+		qfInfo() << fn << n << "lines imported";
 	}
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);

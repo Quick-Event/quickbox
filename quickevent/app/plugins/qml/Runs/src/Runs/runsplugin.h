@@ -58,6 +58,8 @@ public:
 	Q_INVOKABLE QWidget* createNStagesReportOptionsDialog(QWidget *parent = nullptr);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
+
+	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog();
 private:
 	Q_SLOT void onInstalled();
 

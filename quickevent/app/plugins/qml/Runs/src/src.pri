@@ -10,7 +10,8 @@ HEADERS += \
     $$PWD/runstableitemdelegate.h \
     $$PWD/runstablewidget.h \
     $$PWD/runstabledialogwidget.h \
-    $$PWD/eventstatisticswidget.h
+    $$PWD/eventstatisticswidget.h \
+    $$PWD/printawardsoptionsdialogwidget.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -20,10 +21,12 @@ SOURCES += \
     $$PWD/runstableitemdelegate.cpp \
     $$PWD/runstablewidget.cpp \
     $$PWD/runstabledialogwidget.cpp \
-    $$PWD/eventstatisticswidget.cpp
+    $$PWD/eventstatisticswidget.cpp \
+    $$PWD/printawardsoptionsdialogwidget.cpp
 
 FORMS += \
     $$PWD/runswidget.ui \
     $$PWD/runstablewidget.ui \
     $$PWD/runstabledialogwidget.ui \
-    $$PWD/eventstatisticswidget.ui
+    $$PWD/eventstatisticswidget.ui \
+    $$PWD/printawardsoptionsdialogwidget.ui

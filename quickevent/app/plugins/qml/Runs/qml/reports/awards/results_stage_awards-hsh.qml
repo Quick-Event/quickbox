@@ -137,7 +137,7 @@ Report {
 							width: "%"
 							height: 30
 							halign: Frame.AlignHCenter
-							dataSource: "./images/kachna-podpis.png"
+							dataSource: "./images/director-signature.png"
 						}
 						Frame {
 							width: "%"

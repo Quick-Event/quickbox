@@ -1,3 +1,4 @@
+import QtQml 2.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
 import "qrc:/quickevent/js/ogtime.js" as OGTime
@@ -7,6 +8,7 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Results by classes")
+	property var eventConfig
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -77,9 +79,10 @@ Report {
 				Frame {
 					width: "%"
 					halign: Frame.AlignHCenter
+					hinset: 20
 					Image {
 						height: 50
-						dataSource: "/home/fanda/misc/botas/2015/triko/HD.svg"
+						dataSource: "./images/invaders.svg"
 					}
 				}
 				Frame {height: 35}
@@ -89,7 +92,7 @@ Report {
 					textStyle: TextStyle { basedOn: tsNormal; font: Font { basedOn: fontNormal; weight: Font.WeightBold } }
 					text: detail.data(detail.currentIndex, "competitorName")
 				}
-				Frame {height: 15}
+				Frame {height: 5}
 				Para {
 					width: "%"
 					halign: Frame.AlignHCenter
@@ -106,7 +109,9 @@ Report {
 						Para {
 							width: "%"
 							halign: Frame.AlignHCenter
-							text: "Jan Vacek";
+							textStyle: myStyle.textStyleBold
+							//text: root.eventConfig.event.mainReferee
+							text: root.eventConfig.mainReferee()
 						}
 						Para {
 							width: "%"
@@ -118,16 +123,27 @@ Report {
 					Frame { width: "40%" }
 					Frame {
 						width: "%"
-						Para {
+						layout: Frame.LayoutStacked
+						Image {
 							width: "%"
+							height: 30
 							halign: Frame.AlignHCenter
-							text: "František Vacek";
+							dataSource: "./images/director-signature.png"
 						}
-						Para {
+						Frame {
 							width: "%"
-							topBorder: Pen { basedOn: "black1dot" }
-							halign: Frame.AlignHCenter
-							text: "Ředitel závodu";
+							Para {
+								width: "%"
+								halign: Frame.AlignHCenter
+								textStyle: myStyle.textStyleBold
+								text: root.eventConfig.director()
+							}
+							Para {
+								width: "%"
+								topBorder: Pen { basedOn: "black1dot" }
+								halign: Frame.AlignHCenter
+								text: "Ředitel závodu";
+							}
 						}
 					}
 					Frame { width: 10 }

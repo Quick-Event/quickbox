@@ -18,14 +18,15 @@
 
 using namespace qf::qmlwidgets::dialogs;
 
-Dialog::Dialog(QWidget *parent) :
-	Dialog(QDialogButtonBox::NoButton, parent)
+Dialog::Dialog(QWidget *parent)
+	: Dialog(QDialogButtonBox::NoButton, parent)
 {
 	qfLogFuncFrame();
 }
 
 Dialog::Dialog(QDialogButtonBox::StandardButtons buttons, QWidget *parent)
-	: QDialog(parent), framework::IPersistentSettings(this)
+	: QDialog(parent)
+	, framework::IPersistentSettings(this)
 {
 	qfLogFuncFrame();
 	setButtons(buttons);
