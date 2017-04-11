@@ -689,9 +689,10 @@ qf::core::utils::Table::Field TableModel::tableField(int column_index) const
 	//if(table_field_index < 0) for (int i = 0; i < columnCount(); ++i) {
 	//	qfInfo() << i << columnDefinition(i).fieldName() << columnDefinition(i).fieldIndex();
 	//}
-	QF_ASSERT(table_field_index >= 0,
-			  tr("Cannot find field index for column index: %1 of %2 columns").arg(column_index).arg(columnCount()),
-			  return ret);
+	if(table_field_index < 0) {
+		qfError() << QString("Cannot find field index for column index: %1 of %2 columns").arg(column_index).arg(columnCount());
+		return ret;
+	}
 	ret = m_table.field(table_field_index);
 	QF_CHECK(!ret.isNull(),
 			 tr("Cannot find table field for column index: %1, table index: %2").arg(column_index).arg(table_field_index));

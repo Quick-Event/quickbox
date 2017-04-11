@@ -169,9 +169,9 @@ Table::Field::Field()
 	*this = sharedNull();
 }
 
-Table::Field::Field(const QString &name, QVariant::Type t)
+Table::Field::Field(const QString &name, int user_type)
 {
-	d = new Data(name, t);
+	d = new Data(name, user_type);
 }
 
 QString Table::Field::shortName() const
@@ -401,7 +401,7 @@ QVariant TableRow::value(int col) const
 			  QString("Column %1 is out of range %2").arg(col).arg(d->values.size()),
 			  return ret);
 	ret = d->values.value(col);
-	//qfInfo().noSpace() << "col: " << col << " value: '" << v.toString() << "' type: " << QVariant::typeToName(v.type()) << " is null: " << v.isNull() << " is valid: " << v.isValid();
+	//qfInfo().nospace() << "col: " << col << " value: '" << ret.toString() << "' type: " << ret.typeName() << " is null: " << ret.isNull() << " is valid: " << ret.isValid();
 	return ret;
 }
 
