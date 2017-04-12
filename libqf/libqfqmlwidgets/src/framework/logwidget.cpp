@@ -194,7 +194,7 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
 			QScrollBar *sb = ui->tableView->verticalScrollBar();
 			if(sb)
-				connect(sb, &QScrollBar::sliderReleased, this, &LogWidget::onSliderReleased, Qt::UniqueConnection);
+				connect(sb, &QScrollBar::valueChanged, this, &LogWidget::onVerticalScrollBarValueChanged, Qt::UniqueConnection);
 		}
 	}
 }
@@ -332,7 +332,7 @@ void LogWidget::onDockWidgetVisibleChanged(bool visible)
 	}
 }
 
-void LogWidget::onSliderReleased()
+void LogWidget::onVerticalScrollBarValueChanged()
 {
 	QScrollBar *sb = ui->tableView->verticalScrollBar();
 	if(sb) {

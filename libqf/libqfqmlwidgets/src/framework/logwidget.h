@@ -68,7 +68,7 @@ protected:
 	virtual void registerLogCategories();
 
 	virtual void onDockWidgetVisibleChanged(bool visible);
-	void onSliderReleased();
+	void onVerticalScrollBarValueChanged();
 private:
 	Q_SLOT void onSeverityTresholdChanged(int index);
 	Q_SLOT void filterStringChanged(const QString &filter_string);
