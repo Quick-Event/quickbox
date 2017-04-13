@@ -301,7 +301,7 @@ public:
 	// export / import
 	QString toString() const;
 	static const QString CVSTableEndTag;
-	static QString quoteCSV(const QString &s, const TextExportOptions &opts);
+	static QString quoteCSV(const QVariant &val, const TextExportOptions &opts);
 	void exportCSV(QTextStream &ts, const QString col_names = "*", TextExportOptions opts = TextExportOptions()) const;
 	void importCSV(QTextStream &ts, TextImportOptions opts = TextImportOptions());
 #ifdef TXT_EXPORT_IMPORT

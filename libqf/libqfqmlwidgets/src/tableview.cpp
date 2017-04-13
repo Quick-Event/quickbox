@@ -849,10 +849,12 @@ void TableView::exportCSV_helper(const QVariant &export_options)
 			for(int j=0; j<exported_columns.count(); j++) {
 				int col_ix = exported_columns[j];
 				QModelIndex ix = m->index(row_ix, col_ix);
-				QVariant val = m->data(ix);
+				QVariant val = m->data(ix, Qt::EditRole);
+				if(val.type() != QVariant::Bool)
+					val = m->data(ix, Qt::DisplayRole);
 				if(j > 0)
 					ts << text_export_opts.fieldSeparator();
-				ts << qf::core::utils::Table::quoteCSV(val.toString(), text_export_opts);
+				ts << qf::core::utils::Table::quoteCSV(val, text_export_opts);
 			}
 			ts << '\n';
 		}

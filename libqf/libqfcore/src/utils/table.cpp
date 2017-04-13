@@ -799,20 +799,34 @@ static QString quote_XML(const QString &s, const Table::TextExportOptions &opts)
 	return ret;
 }
 */
-QString Table::quoteCSV(const QString &s, const Table::TextExportOptions &opts)
+QString Table::quoteCSV(const QVariant &val, const Table::TextExportOptions &opts)
 {
-	QString ret = s;
+	QString ret;
+	if(val.type() == QVariant::Bool)
+		ret = val.toBool()? QStringLiteral("true"): QStringLiteral("false");
+	else
+		ret = val.toString();
 	bool quote = false;
 	if(opts.fieldQuotingPolicy() == Table::TextExportOptions::IfNecessary) {
-		if(ret.indexOf('"') >= 0) {ret = ret.replace('"', "\"\""); quote = true;}
-		if(!quote && ret.indexOf('\n') >= 0) quote = true;
-		if(!quote && ret.indexOf(opts.fieldSeparator()) >= 0) quote = true;
-		if(!quote && ret.indexOf('#') >= 0) quote = true; /// extended CVS, # je komentar
+		if(ret.indexOf('"') >= 0) {
+			ret = ret.replace('"', "\"\"");
+			quote = true;
+		}
+		else if(!quote && ret.indexOf('\n') >= 0) {
+			quote = true;
+		}
+		else if(!quote && ret.indexOf(opts.fieldSeparator()) >= 0) {
+			quote = true;
+		}
+		else if(!quote && ret.indexOf('#') >= 0) {
+			quote = true; /// extended CVS, # je komentar
+		}
 	}
 	else if(opts.fieldQuotingPolicy() == Table::TextExportOptions::Always) {
 		quote = true;
 	}
-	if(quote) ret = "\"" + ret + "\"";
+	if(quote)
+		ret = "\"" + ret + "\"";
 	return ret;
 }
 
@@ -869,7 +883,7 @@ void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExpor
 		for(int i=0; i<ixs.count(); i++) {
 			if(i > 0)
 				ts << opts.fieldSeparator();
-			ts << quoteCSV(r.value(ixs[i]).toString(), opts);
+			ts << quoteCSV(r.value(ixs[i]), opts);
 		}
 		ts << '\n';
 	}
