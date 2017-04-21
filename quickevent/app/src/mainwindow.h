@@ -12,7 +12,7 @@ public:
 	explicit MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~MainWindow();
 
-	Q_INVOKABLE QString versionString();
+	Q_INVOKABLE QString versionString() const;
 
 	static const QLatin1String SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE;
 	Q_INVOKABLE QString settingsPrefix_application_locale_language();

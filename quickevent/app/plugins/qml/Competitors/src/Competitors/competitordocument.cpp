@@ -37,6 +37,11 @@ bool CompetitorDocument::saveData()
 	qfLogFuncFrame();
 	RecordEditMode old_mode = mode();
 	bool siid_dirty = isDirty("competitors.siId");
+	if(siid_dirty) {
+		int id = siid().toInt();
+		if(id == 0)
+			setSiid(QVariant());
+	}
 	bool class_dirty = isDirty("competitors.classId");
 	bool ret = Super::saveData();
 	qfDebug() << "Super save data:" << ret;
@@ -54,8 +59,8 @@ bool CompetitorDocument::saveData()
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
-				if(uniqueSiid() > 0)
-					q.bindValue(":siId", uniqueSiid());
+				if(isSaveSiidToRuns())
+					q.bindValue(":siId", siid());
 				q.exec(qf::core::Exception::Throw);
 			}
 			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
@@ -63,12 +68,12 @@ bool CompetitorDocument::saveData()
 		else if(old_mode == DataDocument::ModeEdit) {
 			if(siid_dirty) {
 				qfDebug() << "updating SIID in run tables";
-				if(uniqueSiid() > 0) {
+				if(isSaveSiidToRuns()) {
 					int competitor_id = dataId().toInt();
 					qf::core::sql::Query q(model()->connectionName());
 					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
 					q.bindValue(":competitorId", competitor_id);
-					q.bindValue(":siId", uniqueSiid());
+					q.bindValue(":siId", siid());
 					q.exec(qf::core::Exception::Throw);
 				}
 			}
@@ -108,9 +113,22 @@ void CompetitorDocument::setSaveSiidToRuns(bool save_siid_to_runs)
 	m_saveSiidToRuns = save_siid_to_runs;
 }
 */
-void CompetitorDocument::setSiid(int siid, bool is_unique)
+namespace {
+const auto SIID = QStringLiteral("competitors.siId");
+}
+void CompetitorDocument::setSiid(const QVariant &siid, bool save_siid_to_runs)
 {
-	setValue(QStringLiteral("competitors.siId"), siid);
-	m_uniqueSiid = is_unique? siid: 0;
+	setValue(SIID, siid);
+	m_saveSiidToRuns = save_siid_to_runs;
+}
+
+void CompetitorDocument::setSiid(const QVariant &siid)
+{
+	setValue(SIID, siid);
+}
+
+QVariant CompetitorDocument::siid() const
+{
+	return value(SIID);
 }
 

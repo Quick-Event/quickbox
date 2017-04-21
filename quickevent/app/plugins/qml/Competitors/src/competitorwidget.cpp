@@ -312,7 +312,7 @@ void CompetitorWidget::loadFromRegistrations(int siid)
 
 bool CompetitorWidget::saveData()
 {
-	qf::core::model::DataDocument *doc = dataDocument();
+	Competitors::CompetitorDocument*doc = qobject_cast<Competitors::CompetitorDocument*>(dataController()->document());
 	if(doc->value(QStringLiteral("classId")).toInt() == 0) {
 		qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
 		return false;
@@ -321,6 +321,7 @@ bool CompetitorWidget::saveData()
 	bool ret = false;
 	try {
 		qf::core::sql::Transaction transaction;
+		doc->setSaveSiidToRuns(true);
 		if(Super::saveData())
 			ret = saveRunsTable();
 		transaction.commit();
