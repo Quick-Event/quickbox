@@ -23,9 +23,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->lblHeadCenter->setText(event_info.value("name").toString());
 	ui->lblHeadRight->setText(event_info.value("date").toString());
 	int stage_cnt = event_info.value("stageCount").toInt();
-	if(!cliopts->stage_isset())
-		cliopts->setStage(event_info.value("currentStageId").toInt());
 	int curr_stage = cliopts->stage();
+	if(!cliopts->stage_isset()) {
+		curr_stage = event_info.value("currentStageId").toInt();
+		if(curr_stage == 0)
+			curr_stage = 1;
+		qfInfo() << "Setting stage id to current stage:" << curr_stage;
+		cliopts->setStage(curr_stage);
+	}
 	if(stage_cnt > 1)
 		ui->lblHeadLeft->setText(tr("E%1").arg(curr_stage));
 	else

@@ -95,7 +95,7 @@ bool Model::addCategoryToStorage()
 	{
 		QString qs;
 		qf::core::sql::QueryBuilder qb;
-		if(app->cliOptions()->profile() == "results") {
+		if(app->cliOptions()->profile() == QLatin1String("results")) {
 			qb.select2("competitors", "registration, lastName, firstName")
 					//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")

@@ -31,25 +31,29 @@ qf::core::sql::Connection Application::sqlConnetion()
 {
 	qf::core::sql::Connection db = qf::core::sql::Connection::forName();
 	if(!db.isValid()) {
-		if(cliOptions()->eventName().isEmpty())
-			qfError("Event name is empty!");
 		db = QSqlDatabase::addDatabase(cliOptions()->sqlDriver());
 		db.setHostName(cliOptions()->host());
 		db.setPort(cliOptions()->port());
 		db.setDatabaseName(cliOptions()->database());
 		db.setUserName(cliOptions()->user());
 		db.setPassword(cliOptions()->password());
-		qfInfo() << "connecting to:" << db.driverName() << db.hostName() << db.port() << db.userName() << "...";// << db.password();
+		qfInfo() << "connecting to:" << db.database() << "...";// << db.password();
 		bool ok = db.open();
 		if(!ok) {
 			qfError() << "ERROR open database:" << db.lastError().text();
 		}
 		else {
 			if(!cliOptions()->sqlDriver().endsWith(QLatin1String("SQLITE"))) {
-				qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
-				db.setCurrentSchema(cliOptions()->eventName());
-				if(db.currentSchema() != cliOptions()->eventName()) {
-					qfError() << "ERROR open event:" << cliOptions()->eventName();
+				QString event_name = cliOptions()->eventName();
+				if(event_name.isEmpty()) {
+					qfError("Event name is empty!");
+				}
+				else {
+					qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
+					db.setCurrentSchema(cliOptions()->eventName());
+					if(db.currentSchema() != cliOptions()->eventName()) {
+						qfError() << "ERROR open event:" << cliOptions()->eventName();
+					}
 				}
 			}
 			if(ok) {

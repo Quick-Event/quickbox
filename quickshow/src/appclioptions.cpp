@@ -13,6 +13,6 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("connection.port").setType(QVariant::Int).setNames("--port").setDefaultValue(5432);
 	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user").setDefaultValue("quickevent");
 	addOption("connection.password").setType(QVariant::String).setNames("-p", "--password");
-	addOption("connection.database").setType(QVariant::String).setNames("-d", "--database").setDefaultValue("quickevent");
+	addOption("connection.database").setType(QVariant::String).setNames("-b", "--database").setDefaultValue("quickevent");
 	addOption("connection.driver").setType(QVariant::String).setNames("--sql-driver").setDefaultValue("QPSQL");
 }
