@@ -86,7 +86,7 @@ int CardReaderPlugin::findRunId(int si_id)
 {
 	int stage_no = currentStageId();
 	qf::core::sql::Query q;
-	q.exec("SELECT id FROM runs WHERE stageId=" QF_IARG(stage_no) " AND siId=" QF_IARG(si_id), qf::core::Exception::Throw);
+	q.exec("SELECT id FROM runs WHERE stageId=" QF_IARG(stage_no) " AND siId=" QF_IARG(si_id) " AND isRunning", qf::core::Exception::Throw);
 	int ret = 0;
 	if(q.next()) {
 		ret = q.value(0).toInt();
