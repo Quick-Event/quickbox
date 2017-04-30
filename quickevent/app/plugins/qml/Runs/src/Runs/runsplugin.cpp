@@ -427,13 +427,24 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 		model.reload();
 		qf::core::utils::TreeTable tt2 = model.toTreeTable();
 		tt2.appendColumn("pos", QVariant::Int);
+		int prev_time_ms = 0;
+		int prev_pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow row = tt2.row(j);
 			bool has_pos = !row.value(QStringLiteral("disqualified")).toBool() && !row.value(QStringLiteral("notCompeting")).toBool();
-			if(has_pos)
-				row.setValue("pos", j+1);
-			else
+			int time_ms = row.value(QStringLiteral("timeMs")).toInt();
+			if(has_pos) {
+				int pos = j+1;
+				if(time_ms == prev_time_ms)
+					pos = prev_pos;
+				else
+					prev_pos = pos;
+				row.setValue("pos", pos);
+			}
+			else {
 				row.setValue("pos", 0);
+			}
+			prev_time_ms = time_ms;
 		}
 		tt.row(i).appendTable(tt2);
 	}
