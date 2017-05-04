@@ -81,7 +81,8 @@ RunsPlugin {
 			onTriggered: {
 				var default_file_name = "startlist-iof3.xml";
 				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
-				startLists.exportStartListIofXml3(file_name)
+				if(file_name)
+					startLists.exportStartListIofXml3(file_name)
 			}
 		},
 		Action {

@@ -205,6 +205,11 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
 	a_import->setText("&Import");
 	{
+		qfw::Action *a = new qfw::Action("OCad TXT", this);
+		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_txt);
+		a_import->addActionInto(a);
+	}
+	{
 		qfw::Action *a = new qfw::Action("OCad v8", this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_v8);
 		a_import->addActionInto(a);
@@ -375,6 +380,81 @@ static QString normalize_course_name(const QString &course_name)
 	ret.replace(':', '+');
 	ret.replace('-', '+');
 	return ret;
+}
+
+void ClassesWidget::import_ocad_txt()
+{
+	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"));
+	if(fn.isEmpty())
+		return;
+	QFile f(fn);
+	if(f.open(QFile::ReadOnly)) {
+		QStringList lines;
+		while (true) {
+			QByteArray ba = f.readLine();
+			if(ba.isEmpty())
+				break;
+			lines << QString::fromUtf8(ba).trimmed();
+		}
+		try {
+			QMap<QString, CourseDef> defined_courses_map;
+			enum {ColCourseName = 0, ColLenght, ColClimb, ColCodesCount, ColCodes};
+			for(QString line : lines) {
+				// coursename lenght_km climb codes_count S1-code_1[-code_n]-F1
+				if(line.isEmpty())
+					continue;
+
+				QStringList sections = line.split('\t', QString::SkipEmptyParts);
+				QStringList class_names;
+
+				qfc::String course_name = normalize_course_name(sections.value(ColCourseName));
+				class_names = course_name.splitAndTrim('+');
+				//qfInfo() << course_name << class_names;
+				if(class_names.isEmpty()) {
+					//class_names << course_name;
+					qfWarning() << "cannot deduce class name, skipping line:" << line;
+					continue;
+				}
+				if(defined_courses_map.contains(course_name)) {
+					CourseDef cd = defined_courses_map.value(course_name);
+					QStringList classes = cd.classes() << class_names;
+					defined_courses_map[course_name].setClasses(classes);
+					continue;
+				}
+				CourseDef &cd = defined_courses_map[course_name];
+				cd.setName(course_name);
+				cd.setClasses(class_names);
+				{
+					QString s = sections.value(ColLenght);
+					s.replace(',', '.');
+					cd.setLenght((int)(s.toDouble() * 1000));
+				}
+				{
+					QString s = sections.value(ColClimb);
+					cd.setClimb(s.toInt());
+				}
+				{
+					QString s = sections.value(ColCodes);
+					QVariantList codes;
+					QStringList sl = s.split('-');
+					for (int i = 1; i < sl.count()-1; i++) {
+						bool ok;
+						int code = sl[i].toInt(&ok);
+						if(ok)
+							codes << code;
+						else
+							QF_EXCEPTION(QString("Invalid code definition '%1' at sequence no: %2 in '%3'\nline: %4").arg(sl[i+1]).arg(i).arg(s).arg(line));
+					}
+					cd.setCodes(codes);
+				}
+			}
+			importCourses(defined_courses_map.values());
+		}
+		catch (const qf::core::Exception &e) {
+			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+		}
+	}
 }
 
 void ClassesWidget::import_ocad_v8()
