@@ -66,8 +66,8 @@ public:
 
 	qf::core::sql::Connection sqlConnection();
 	QString query() const { return m_query; }
-	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }
-	Q_SIGNAL void queryChanged(QString arg);
+	void setQuery(const QString &query_str);
+	Q_SIGNAL void queryChanged(const QString &query_str);
 
 	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
 	const QString& recentlyExecutedQueryString() const {return m_recentlyExecutedQueryString;}
