@@ -51,26 +51,6 @@
         <translation type="unfinished">Nelze najít Oris import ID.</translation>
     </message>
     <message>
-        <source>OB</source>
-        <translation type="vanished">OB</translation>
-    </message>
-    <message>
-        <source>LOB</source>
-        <translation type="vanished">LOB</translation>
-    </message>
-    <message>
-        <source>MTBO</source>
-        <translation type="vanished">MTBO</translation>
-    </message>
-    <message>
-        <source>???</source>
-        <translation type="vanished">???</translation>
-    </message>
-    <message>
-        <source>Select event to import</source>
-        <translation type="vanished">Vyber závod pro import</translation>
-    </message>
-    <message>
         <source>New entries</source>
         <translation>Nové záznamy</translation>
     </message>
@@ -100,6 +80,53 @@
     </message>
 </context>
 <context>
+    <name>TxtImporter</name>
+    <message>
+        <source>Import windows-1250 coded fixed column size text files in CSOS format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Each row should have following columns: &lt;ol&gt;&lt;li&gt;7 chars: Registration&lt;/li&gt;&lt;li&gt;1 space&lt;/li&gt;&lt;li&gt;10 chars: Class&lt;/li&gt;&lt;li&gt;1 space&lt;/li&gt;&lt;li&gt;10 chars: SI&lt;/li&gt;&lt;li&gt;1 space&lt;/li&gt;&lt;li&gt;25 chars: Name&lt;/li&gt;&lt;li&gt;1 space&lt;/li&gt;&lt;li&gt;2 chars: Licence&lt;/li&gt;&lt;li&gt;1 space&lt;/li&gt;&lt;li&gt;rest of line: Note&lt;/li&gt;&lt;/ol&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSOS files (*.txt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &apos;%1&apos; for reading.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import comma separated values UTF8 text files with header.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Each row should have following columns: &lt;ol&gt;&lt;li&gt;Registration&lt;/li&gt;&lt;li&gt;Class&lt;/li&gt;&lt;li&gt;SI&lt;/li&gt;&lt;li&gt;LastName&lt;/li&gt;&lt;li&gt;FirstName&lt;/li&gt;&lt;li&gt;Licence&lt;/li&gt;&lt;li&gt;Note&lt;/li&gt;&lt;/ol&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CSV files (*.csv *.txt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oris ranging CSV files (*.txt *.csv)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reading CSV line: [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undefined class name: &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>main</name>
     <message>
         <source>&amp;Event</source>
@@ -120,6 +147,22 @@
     <message>
         <source>&amp;Sync current event entries</source>
         <translation>&amp;Synchronizovat záznamy aktuálního závodu</translation>
+    </message>
+    <message>
+        <source>&amp;Competitors CSOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Competitors CSV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ranking CSV (Oris format)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Text file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

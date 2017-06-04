@@ -100,7 +100,12 @@
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="165"/>
+        <location filename="qml/main.qml" line="163"/>
+        <source>&amp;Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="166"/>
         <source>&amp;Help</source>
         <translation>Ná&amp;pověda</translation>
     </message>

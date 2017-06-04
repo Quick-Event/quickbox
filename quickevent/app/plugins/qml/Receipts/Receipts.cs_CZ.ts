@@ -4,12 +4,12 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="334"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="341"/>
         <source>Card</source>
         <translation>Čip</translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="385"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="392"/>
         <source>Receipt</source>
         <translation>Mezičas</translation>
     </message>
@@ -43,77 +43,87 @@
         <translation>Nastavení tiskárny</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="22"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="25"/>
         <source>Graphics printer</source>
         <translation>Grafická tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="36"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="39"/>
         <source>Character printer</source>
         <translation>Textová tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="69"/>
-        <source>Device</source>
-        <translation>Zařízení</translation>
-    </message>
-    <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="76"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="91"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;There are two options how to configure the casch printer on Windows: &lt;/p&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\.\LPT1&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;\\computer_name\printer_share_name&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;When we want USB connected printer be accessible from LPT1 we need to : &lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Create given printer shared&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;by &amp;quot;net use LPT1 \\computer_name\printer_share_name&amp;quot;&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="83"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="98"/>
         <source>/dev/usb/lp1</source>
         <translation>/dev/usb/lp1</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="88"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="103"/>
         <source>/dev/usb/lp2</source>
         <translation>/dev/usb/lp2</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="93"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="108"/>
         <source>/dev/usb/lp3</source>
         <translation>/dev/usb/lp3</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="98"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="113"/>
         <source>/dev/usb/lp4</source>
         <translation>/dev/usb/lp4</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="103"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="118"/>
         <source>\\.\LPT1</source>
         <translation>\\.\LPT1</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="117"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="140"/>
+        <source>Network address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="193"/>
         <source>Printer</source>
         <translation>Tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="125"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="201"/>
         <source>Epson TM-T88V</source>
         <translation>Epson TM-T88V</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="139"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="206"/>
+        <source>Epson TM-U220B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="160"/>
         <source>Line length</source>
         <translation>Délka řádku</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="146"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="81"/>
+        <source>LPT device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="167"/>
         <source> characters</source>
         <translation>znaků</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="165"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="126"/>
         <source>Directory</source>
         <translation>Adresář</translation>
     </message>
     <message>
-        <location filename="src/receiptsprinteroptionsdialog.ui" line="175"/>
+        <location filename="src/receiptsprinteroptionsdialog.ui" line="180"/>
         <source>Generate printer control codes (escape sequences)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -136,12 +146,22 @@
         <translation>Automatický tisk</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="67"/>
+        <location filename="src/receiptswidget.ui" line="54"/>
+        <source>Print only cards read on this application card reader.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.ui" line="57"/>
+        <source>This reader only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.ui" line="77"/>
         <source>Printer</source>
         <translation>Tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="74"/>
+        <location filename="src/receiptswidget.ui" line="84"/>
         <source>Printer options</source>
         <translation>Nastavení tiskárny</translation>
     </message>
@@ -181,7 +201,7 @@
         <translation>tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="235"/>
+        <location filename="src/receiptswidget.cpp" line="237"/>
         <source>Print selected cards</source>
         <translation>Vytisknout vybrané čipy</translation>
     </message>
@@ -189,28 +209,38 @@
 <context>
     <name>receiptClassic</name>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="64"/>
+        <location filename="qml/reports/receiptClassic.qml" line="66"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="236"/>
+        <location filename="qml/reports/receiptClassic.qml" line="238"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="236"/>
+        <location filename="qml/reports/receiptClassic.qml" line="238"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="250"/>
-        <location filename="qml/reports/receiptClassic.qml" line="262"/>
+        <location filename="qml/reports/receiptClassic.qml" line="252"/>
+        <location filename="qml/reports/receiptClassic.qml" line="264"/>
         <source>-----</source>
         <translation>-----</translation>
     </message>
     <message>
-        <location filename="qml/reports/receiptClassic.qml" line="313"/>
+        <location filename="qml/reports/receiptClassic.qml" line="296"/>
+        <source>extra: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receiptClassic.qml" line="317"/>
+        <source>current overall loss: +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receiptClassic.qml" line="332"/>
         <source>standings: </source>
         <translation>pořadí: </translation>
     </message>

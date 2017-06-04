@@ -50,153 +50,175 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="120"/>
+        <location filename="src/classeswidget.cpp" line="121"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="121"/>
+        <location filename="src/classeswidget.cpp" line="122"/>
         <source>DL</source>
         <translation>LU</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="121"/>
+        <location filename="src/classeswidget.cpp" line="122"/>
         <source>Locked for drawing</source>
         <translation>Losování uzamčeno</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="122"/>
+        <location filename="src/classeswidget.cpp" line="123"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="123"/>
+        <location filename="src/classeswidget.cpp" line="124"/>
         <source>Interval</source>
         <translation>Interval</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="124"/>
+        <location filename="src/classeswidget.cpp" line="125"/>
         <source>VB</source>
         <translation>Vak. P</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="124"/>
+        <location filename="src/classeswidget.cpp" line="125"/>
         <source>Vacants before</source>
         <translation>Vakanti před</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="125"/>
+        <location filename="src/classeswidget.cpp" line="126"/>
         <source>VE</source>
         <translation>Vak. B</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="125"/>
+        <location filename="src/classeswidget.cpp" line="126"/>
         <source>Vacant every</source>
         <translation>Vakanti během</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="126"/>
+        <location filename="src/classeswidget.cpp" line="127"/>
         <source>VA</source>
         <translation>Vak. Po</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="126"/>
+        <location filename="src/classeswidget.cpp" line="127"/>
         <source>Vacants after</source>
         <translation>Vakanti po</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="127"/>
+        <location filename="src/classeswidget.cpp" line="128"/>
         <source>Last</source>
         <translation>Poslední</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="127"/>
+        <location filename="src/classeswidget.cpp" line="128"/>
         <source>Start time of last competitor in class.</source>
         <translation>Startovní čas posledního závodníka v kategorii.</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="128"/>
+        <location filename="src/classeswidget.cpp" line="129"/>
         <source>Count</source>
         <translation>Počet</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="128"/>
+        <location filename="src/classeswidget.cpp" line="129"/>
         <source>Runners count</source>
         <translation>Počet závodníků</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="129"/>
+        <location filename="src/classeswidget.cpp" line="130"/>
         <source>Maps</source>
         <translation>Mapy</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="130"/>
+        <location filename="src/classeswidget.cpp" line="131"/>
         <source>Course</source>
         <translation>Trať</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="132"/>
+        <location filename="src/classeswidget.cpp" line="133"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="133"/>
+        <location filename="src/classeswidget.cpp" line="134"/>
         <source>Climb</source>
         <translation>Převýšení</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="151"/>
+        <location filename="src/classeswidget.cpp" line="152"/>
         <source>Pos</source>
         <translation>Pos</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="152"/>
+        <location filename="src/classeswidget.cpp" line="153"/>
         <source>Code</source>
         <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="153"/>
+        <location filename="src/classeswidget.cpp" line="154"/>
         <source>Alt</source>
         <translation>Náhradní</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="153"/>
+        <location filename="src/classeswidget.cpp" line="154"/>
         <source>Code alternative</source>
         <translation>Náhradní kontrola</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="154"/>
+        <location filename="src/classeswidget.cpp" line="155"/>
         <source>O</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="154"/>
+        <location filename="src/classeswidget.cpp" line="155"/>
         <source>Out of order</source>
         <translation>Mimo provoz</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="211"/>
+        <location filename="src/classeswidget.cpp" line="156"/>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="156"/>
+        <source>Radio</source>
+        <translation type="unfinished">Rádio</translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="231"/>
         <source>Stage </source>
         <translation>Etapa </translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="245"/>
+        <location filename="src/classeswidget.cpp" line="265"/>
         <source>E%1</source>
         <translation>E%1</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="293"/>
+        <location filename="src/classeswidget.cpp" line="312"/>
         <source>Courses are not imported, class table is read only.</source>
         <translation>Tratě nejsou importovány, tabulka kategorií je jen pro čtení.</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="365"/>
-        <location filename="src/classeswidget.cpp" line="464"/>
+        <location filename="src/classeswidget.cpp" line="387"/>
+        <location filename="src/classeswidget.cpp" line="462"/>
+        <location filename="src/classeswidget.cpp" line="561"/>
+        <location filename="src/classeswidget.cpp" line="626"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="340"/>
+        <location filename="src/classeswidget.cpp" line="561"/>
+        <source>XML files (*.xml);; All files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="704"/>
+        <source>Class name &apos;%1&apos; seems to be combined, separate it to more classes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="359"/>
         <source>Delete all courses definitions for stage %1?</source>
         <translation>Vymazat všechny definice tratí pro etapu %1?</translation>
     </message>
@@ -347,6 +369,108 @@
         <location filename="src/thispartwidget.cpp" line="10"/>
         <source>Classes</source>
         <translation>Kategorie</translation>
+    </message>
+</context>
+<context>
+    <name>drawing::ClassItem</name>
+    <message>
+        <location filename="src/drawing/classitem.cpp" line="216"/>
+        <source>class: &lt;b&gt;%1&lt;/b&gt;, %2 runners + %3 vacants&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/classitem.cpp" line="217"/>
+        <source>first code &lt;b&gt;%1&lt;/b&gt;, course %2 - %3&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/classitem.cpp" line="218"/>
+        <source>vacants before: %1, every: %2, after: %3&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/classitem.cpp" line="219"/>
+        <source>class start: %1, interval: %2, duration: %3, end: %4&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/classitem.cpp" line="229"/>
+        <source>clash with: %1&lt;br/&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>drawing::ClassdefsLockItem</name>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="29"/>
+        <source>Lock class start time</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>drawing::DrawingGanttWidget</name>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="18"/>
+        <source>Draw tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="40"/>
+        <source>&amp;Draw</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="46"/>
+        <source>E%1 Draw tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>drawing::StartSlotHeader</name>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="86"/>
+        <source>Use mouse wheel to change start slot offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="160"/>
+        <source>Append start slot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="161"/>
+        <source>Set slot start offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="162"/>
+        <source>Locked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="165"/>
+        <source>Ignore class clash check</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="184"/>
+        <source>InputDialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/startslotheader.cpp" line="184"/>
+        <source>Start slot offset [min]:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
