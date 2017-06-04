@@ -93,6 +93,11 @@ TableView::TableView(QWidget *parent) :
 	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
 	m_proxyModel->setDynamicSortFilter(false);
 	Super::setModel(m_proxyModel);
+	/*
+	connect(this, &TableView::readOnlyChanged, [this] (bool b) {
+		setEditRowsEnabled(!b);
+	});
+	*/
 }
 
 TableView::~TableView()
@@ -311,6 +316,27 @@ void TableView::setCloneRowEnabled(bool b)
 {
 	Action *a = action(QStringLiteral("cloneRow"));
 	a->setVisible(b);
+}
+
+void TableView::setReadOnly(bool ro)
+{
+	if(ro == isReadOnly())
+		return;
+	m_isReadOnly = ro;
+
+	setInsertRowEnabled(!ro);
+	setRemoveRowEnabled(!ro);
+	setCloneRowEnabled(!ro);
+	{
+		Action *a = action(QStringLiteral("postRow"));
+		a->setVisible(!ro);
+	}
+	{
+		Action *a = action(QStringLiteral("revertRow"));
+		a->setVisible(!ro);
+	}
+
+	emit readOnlyChanged(ro);
 }
 
 void TableView::insertRow()

@@ -67,7 +67,7 @@ public:
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)
-	QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
+	//QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
 
 public:
 	QSortFilterProxyModel* sortFilterProxyModel() const;
@@ -78,6 +78,11 @@ public:
 
 	Q_SLOT virtual void refreshActions();
 	QList<Action*> toolBarActions() const {return m_toolBarActions;}
+
+	bool isReadOnly() const {return m_isReadOnly;}
+	void setReadOnly(bool ro);
+	Q_SIGNAL void readOnlyChanged(bool b);
+
 	void setInsertRowEnabled(bool b);
 	void setRemoveRowEnabled(bool b);
 	void setCloneRowEnabled(bool b);
@@ -211,6 +216,8 @@ protected:
 	QList<Action*> m_contextMenuActions;
 	TableViewProxyModel *m_proxyModel;
 	QAbstractButton *m_leftTopCornerButton = nullptr;
+private:
+	bool m_isReadOnly = false;
 };
 
 }}
