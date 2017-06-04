@@ -361,10 +361,12 @@ void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
 			QVariantList courses;
 			for(const auto &cd : course_defs)
 				courses << cd;
+			/*
 			{
 				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				//qfInfo() << doc.toJson();
+				qfInfo() << doc.toJson();
 			}
+			*/
 			classes_plugin->createCourses(selectedStageId(), courses);
 			reload();
 		}

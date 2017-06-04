@@ -156,11 +156,12 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 		}
 		QMap<int, int> code_to_id;
 		{
-			QString qs = "INSERT INTO codes (code) VALUES (:code)";
+			QString qs = "INSERT INTO codes (code, note) VALUES (:code, :note)";
 			q.prepare(qs, qf::core::Exception::Throw);
 			for(auto code : all_codes) {
 				qfDebug() << "inserting code" << code;
 				q.bindValue(":code", code);
+				q.bindValue(":note", QString("E%1").arg(stage_id));
 				q.exec(qf::core::Exception::Throw);
 				code_to_id[code] = q.lastInsertId().toInt();
 			}

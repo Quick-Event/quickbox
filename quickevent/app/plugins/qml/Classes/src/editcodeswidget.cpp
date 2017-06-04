@@ -13,6 +13,7 @@ EditCodesWidget::EditCodesWidget(QWidget *parent)
 	: Super(parent)
 	, ui(new Ui::EditCodesWidget)
 {
+	setTitle(tr("Codes"));
 	setPersistentSettingsId("EditCodesWidget");
 	ui->setupUi(this);
 	{
