@@ -21,6 +21,7 @@ public:
 	explicit CodeClassResultsWidget(QWidget *parent = 0);
 	~CodeClassResultsWidget() Q_DECL_OVERRIDE;
 
+	void reloadDeferred();
 	void reload();
 	void onPunchReceived(const quickevent::si::PunchRecord &punch);
 
@@ -29,6 +30,7 @@ public:
 private:
 	Ui::CodeClassResultsWidget *ui;
 	quickevent::og::SqlTableModel *m_tableModel = nullptr;
+	QTimer *m_reloadDeferredTimer = nullptr;
 };
 
 #endif // CODECLASSRESULTSWIDGET_H

@@ -1,12 +1,24 @@
 #include "codeclassresultsgridwidget.h"
 #include "codeclassresultswidget.h"
 
+#include "Event/eventplugin.h"
+
+#include <qf/qmlwidgets/framework/mainwindow.h>
+
 #include <qf/core/assert.h>
 
 #include <QGridLayout>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 CodeClassResultsGridWidget::CodeClassResultsGridWidget(QWidget *parent)
 	: QWidget(parent)
@@ -78,6 +90,8 @@ void CodeClassResultsGridWidget::onPunchReceived(const quickevent::si::PunchReco
 CodeClassResultsWidget *CodeClassResultsGridWidget::createClassResultsWidget()
 {
 	CodeClassResultsWidget *ret = new CodeClassResultsWidget(this);
+	if(eventPlugin()->isEventOpen())
+		ret->loadSetup(QJsonObject());
 	connect(this, &CodeClassResultsGridWidget::punchReceived, ret, &CodeClassResultsWidget::onPunchReceived);
 	return ret;
 }

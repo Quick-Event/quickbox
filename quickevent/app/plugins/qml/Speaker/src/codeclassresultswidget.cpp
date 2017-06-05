@@ -15,6 +15,7 @@
 #include <qf/core/log.h>
 
 #include <QJsonObject>
+#include <QTimer>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
@@ -30,34 +31,42 @@ static Event::EventPlugin* eventPlugin()
 	return plugin;
 }
 
-CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent) :
-	QWidget(parent),
-	ui(new Ui::CodeClassResultsWidget)
+CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
+	: QWidget(parent)
+	, ui(new Ui::CodeClassResultsWidget)
 {
 	ui->setupUi(this);
-
 	connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int ) {
 		int stage_id = eventPlugin()->currentStageId();
 		int class_id = this->ui->lstClass->currentData().toInt();
 		ui->lstCode->clear();
+		ui->lstCode->addItem(tr("Results"), "R");
+		ui->lstCode->addItem(tr("Finish"), quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
 		qf::core::sql::QueryBuilder qb;
-		qb.select2("codes", "code")
+		qb.select2("codes", "code, radio")
 				.from("classdefs")
 				.joinRestricted("classdefs.courseId", "coursecodes.courseId",
 								"classdefs.stageId=" QF_IARG(stage_id)
 								" AND classdefs.classId=" QF_IARG(class_id),
 								qf::core::sql::QueryBuilder::INNER_JOIN)
-				.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qf::core::sql::QueryBuilder::INNER_JOIN)
+				.join("coursecodes.codeId", "codes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+				//.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("coursecodes.position");
-		//qfWarning() << qb.toString();
+		qfInfo() << qb.toString();
 		qf::core::sql::Query q;
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		while(q.next()) {
-			ui->lstCode->addItem(q.value(0).toString(), q.value(0));
+			QVariant code = q.value(0);
+			bool radio =  q.value(1).toBool();
+			QString caption = code.toString();
+			if(radio)
+				caption += " " + tr("R", "Radio station");
+			ui->lstCode->addItem(caption, code);
 		}
 	});
 
-	connect(ui->btReload, &QPushButton::clicked, this, &CodeClassResultsWidget::reload);
+	//connect(ui->btReload, &QPushButton::clicked, this, &CodeClassResultsWidget::reload);
+	connect(ui->lstCode, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &CodeClassResultsWidget::reloadDeferred);
 
 	ui->tblView->setReadOnly(true);
 	//ui->tblView->setPersistentSettingsId("tblView");
@@ -66,7 +75,7 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent) :
 	quickevent::og::SqlTableModel *m = new quickevent::og::SqlTableModel(this);
 	m->addColumn("competitors.registration", tr("Reg"));//.setReadOnly(true);
 	m->addColumn("competitorName", tr("Competitor"));
-	m->addColumn("punches.runTimeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	ui->tblView->setTableModel(m);
 	m_tableModel = m;
 }
@@ -76,23 +85,63 @@ CodeClassResultsWidget::~CodeClassResultsWidget()
 	delete ui;
 }
 
+void CodeClassResultsWidget::reloadDeferred()
+{
+	if(!m_reloadDeferredTimer) {
+		m_reloadDeferredTimer = new QTimer(this);
+		m_reloadDeferredTimer->setSingleShot(true);
+		m_reloadDeferredTimer->setInterval(200);
+		connect(m_reloadDeferredTimer, &QTimer::timeout, this, &CodeClassResultsWidget::reload);
+	}
+	if(m_reloadDeferredTimer->isActive())
+		return;
+	m_reloadDeferredTimer->start();
+}
+
 void CodeClassResultsWidget::reload()
 {
+	if(!eventPlugin()->isEventOpen())
+		return;
 	int stage_id = eventPlugin()->currentStageId();
 	int class_id = this->ui->lstClass->currentData().toInt();
 	int code = this->ui->lstCode->currentData().toInt();
 	qf::core::sql::QueryBuilder qb;
-	qb.select2("punches", "runTimeMs")
-			.select2("competitors", "registration")
-			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-			.from("punches")
-			.joinRestricted("punches.runId", "runs.id",
-							"punches.stageId=" QF_IARG(stage_id)
-							" AND punches.code=" QF_IARG(code)
-							" AND NOT runs.disqualified",
-							qf::core::sql::QueryBuilder::INNER_JOIN)
-			.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
-			.orderBy("punches.runTimeMs");//.limit(10);
+	qb.select2("competitors", "registration")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName");
+	if(code == 0) {
+		// results
+		qb.select2("runs", "timeMs")
+				.from("runs")
+				.where("runs.stageId=" QF_IARG(stage_id))
+				.joinRestricted("runs.competitorId", "competitors.id",
+								"competitors.classId=" QF_IARG(class_id)
+								" AND NOT runs.disqualified"
+								" AND timeMs IS NOT NULL" ,
+								qf::core::sql::QueryBuilder::INNER_JOIN)
+				.orderBy("runs.timeMs");//.limit(10);
+	}
+	else if(code == quickevent::si::PunchRecord::FINISH_PUNCH_CODE) {
+		qb.select2("runlaps", "stpTimeMs AS timeMs")
+				.from("runlaps")
+				.joinRestricted("runlaps.runId", "runs.id",
+								"runs.stageId=" QF_IARG(stage_id)
+								" AND runlaps.code=" QF_IARG(code)
+								" AND NOT runs.disqualified",
+								qf::core::sql::QueryBuilder::INNER_JOIN)
+				.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
+				.orderBy("runlaps.stpTimeMs");//.limit(10);
+	}
+	else {
+		qb.select2("punches", "runTimeMs AS timeMs")
+				.from("punches")
+				.joinRestricted("punches.runId", "runs.id",
+								"punches.stageId=" QF_IARG(stage_id)
+								" AND punches.code=" QF_IARG(code)
+								" AND NOT runs.disqualified",
+								qf::core::sql::QueryBuilder::INNER_JOIN)
+				.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
+				.orderBy("punches.runTimeMs");//.limit(10);
+	}
 	qfInfo() << qb.toString();
 	m_tableModel->setQueryBuilder(qb, false);
 	m_tableModel->reload();
