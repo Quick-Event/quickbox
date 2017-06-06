@@ -14,6 +14,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/log.h>
 
+#include <QDropEvent>
+#include <QMimeData>
 #include <QJsonObject>
 #include <QTimer>
 
@@ -36,6 +38,7 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	, ui(new Ui::CodeClassResultsWidget)
 {
 	ui->setupUi(this);
+
 	connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int ) {
 		int stage_id = eventPlugin()->currentStageId();
 		int class_id = this->ui->lstClass->currentData().toInt();
@@ -176,4 +179,35 @@ QJsonObject CodeClassResultsWidget::saveSetup()
 	ret["codeId"] = ui->lstCode->currentData().toInt();
 	return ret;
 }
+#if 0
+void CodeClassResultsWidget::dropEvent(QDropEvent *event)
+{
+	qfInfo() << event->mimeData()->hasText();
+	Super::dropEvent(event);
+	/*
+	if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
+		QByteArray itemData = event->mimeData()->data("application/x-dnditemdata");
+		QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
+		QPixmap pixmap;
+		QPoint offset;
+		dataStream >> pixmap >> offset;
+
+		QLabel *newIcon = new QLabel(this);
+		newIcon->setPixmap(pixmap);
+		newIcon->move(event->pos() - offset);
+		newIcon->show();
+		newIcon->setAttribute(Qt::WA_DeleteOnClose);
+
+		if (event->source() == this) {
+			event->setDropAction(Qt::MoveAction);
+			event->accept();
+		} else {
+			event->acceptProposedAction();
+		}
+	} else {
+		event->ignore();
+	}
+	*/
+}
+#endif

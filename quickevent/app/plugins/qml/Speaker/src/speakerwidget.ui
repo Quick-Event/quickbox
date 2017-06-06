@@ -49,7 +49,17 @@
         <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPunchesToolBar" native="true"/>
        </item>
        <item>
-        <widget class="qf::qmlwidgets::TableView" name="tblPunches"/>
+        <widget class="PunchesTableView" name="tblPunches">
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragOnly</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -178,11 +188,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>qf::qmlwidgets::TableView</class>
-   <extends>QTableView</extends>
-   <header location="global">qf/qmlwidgets/tableview.h</header>
-  </customwidget>
-  <customwidget>
    <class>qf::qmlwidgets::TableViewToolBar</class>
    <extends>QWidget</extends>
    <header location="global">qf/qmlwidgets/tableviewtoolbar.h</header>
@@ -193,6 +198,11 @@
    <extends>QWidget</extends>
    <header location="global">src/codeclassresultsgridwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PunchesTableView</class>
+   <extends>QTableView</extends>
+   <header>src/punchestableview.h</header>
   </customwidget>
  </customwidgets>
  <resources>

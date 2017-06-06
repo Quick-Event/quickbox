@@ -17,6 +17,8 @@ class CodeClassResultsWidget;
 class CodeClassResultsWidget : public QWidget
 {
 	Q_OBJECT
+private:
+	using Super = QWidget;
 public:
 	explicit CodeClassResultsWidget(QWidget *parent = 0);
 	~CodeClassResultsWidget() Q_DECL_OVERRIDE;
@@ -27,6 +29,8 @@ public:
 
 	void loadSetup(const QJsonObject &jso);
 	QJsonObject saveSetup();
+protected:
+	//void dropEvent(QDropEvent *event) Q_DECL_OVERRIDE;
 private:
 	Ui::CodeClassResultsWidget *ui;
 	quickevent::og::SqlTableModel *m_tableModel = nullptr;

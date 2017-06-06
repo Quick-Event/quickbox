@@ -51,6 +51,14 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	ui->tblPunches->setReadOnly(true);
 	ui->tblPunches->setCloneRowEnabled(false);
 	ui->tblPunches->setPersistentSettingsId("tblPunches");
+	/*
+	ui->tblPunches->setDragEnabled(true);
+	//ui->tblView->setDragDropMode(QAbstractItemView::DragOnly);
+	ui->tblPunches->setDragDropMode(QAbstractItemView::InternalMove);
+	ui->tblPunches->setSelectionMode(QAbstractItemView::SingleSelection);
+	ui->tblPunches->viewport()->setAcceptDrops(true);
+	ui->tblPunches->setDropIndicatorShown(true);
+	*/
 	//ui->tblPunches->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	//ui->tblPunches->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 	quickevent::og::SqlTableModel *m = new quickevent::og::SqlTableModel(this);
