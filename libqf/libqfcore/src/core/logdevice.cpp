@@ -133,14 +133,21 @@ LogDevice *LogDevice::findDevice(const QString &object_name, bool throw_exc)
 
 QStringList LogDevice::setGlobalTresholds(int argc, char *argv[])
 {
-	QStringList ret;
-	for(int i=1; i<argc; i++) {
+	QStringList args;
+	for(int i=0; i<argc; i++) {
 		QString s = QString::fromUtf8(argv[i]);
-		ret << s;
+		args << s;
 	}
+	return setGlobalTresholds(args);
+}
+
+QStringList LogDevice::setGlobalTresholds(const QStringList &args)
+{
+	QStringList ret = args.mid(1);
 	ret = setModulesTresholdsFromArgs(ret);
 	ret = setCategoriesTresholdsFromArgs(ret);
-	ret.insert(0, argv[0]);
+	if(!args.isEmpty())
+		ret.insert(0, args[0]);
 	return ret;
 }
 

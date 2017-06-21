@@ -22,6 +22,7 @@ public:
 	static LogDevice* findDevice(const QString &object_name, bool throw_exc = true);
 
 	static QStringList setGlobalTresholds(int argc, char *argv[]);
+	static QStringList setGlobalTresholds(const QStringList &args);
 	static void setModulesTresholds(const QString &s);
 	static void setCategoriesTresholds(const QString &s);
 	static QString modulesLogInfo();
