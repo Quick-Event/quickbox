@@ -58,11 +58,10 @@ public:
 protected:
 	struct QFCORE_DECL_EXPORT LogFilter
 	{
-		Log::Level defaultLogTreshold = qf::core::Log::Level::Info;
+		Log::Level defaultModulesLogTreshold = qf::core::Log::Level::Info;
 		QMap<QString, Log::Level> modulesTresholds;
+		Log::Level defaultCategoriesLogTreshold = qf::core::Log::Level::Invalid;
 		QMap<QString, Log::Level> categoriesTresholds;
-		bool logAllCategories = false;
-		//bool inverseCategoriesFilter = false;
 	};
 	static bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category, const LogFilter &log_filter);
 	static bool isMatchingGlobalLogFilter(Log::Level level, const char *file_name, const char *category);
@@ -74,6 +73,7 @@ protected:
 protected:
 	static QStringList s_definedCategories;
 	static bool s_loggingEnabled;
+	static bool s_logLongFileNames;
 	static LogFilter s_globalLogFilter;
 
 	int m_count;
