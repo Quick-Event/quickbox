@@ -13,7 +13,7 @@ from serial import Serial
 from serial.serialutil import SerialException
 from six import int2byte, byte2int
 from binascii import hexlify
-import pudb
+#import pudb
 
 from sireader import SIReader, SIReaderException, SIReaderTimeout
 
