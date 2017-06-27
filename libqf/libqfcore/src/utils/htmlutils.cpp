@@ -9,6 +9,28 @@ HtmlUtils::FromHtmlListOptions::FromHtmlListOptions()
 	if(default_options.isEmpty()) {
 		default_options.setEncoding(QStringLiteral("utf-8"));
 		default_options.setDocumentTitle(QStringLiteral("html document"));
+		default_options.setStyle(QStringLiteral(
+									 "		<style type=\"text/css\">\n"
+									 "			body {font-family: Verdana, sans-serif}\n"
+									 "			h1, h2, h3, h4, h5 {\n"
+									 "				color: black;\n"
+									 "				font-family: \"Lucida Grande\", Verdana, Lucida, Helvetica, Arial, sans-serif;\n"
+									 "				font-size: 100%;\n"
+									 "				font-weight: normal;\n"
+									 "				clear: left;\n"
+									 "			}\n"
+									 "			h1 {font-size: 220%; font-weight: bold;}\n"
+									 "			h2 {font-size: 150%; font-weight: bold; border-bottom: 1px  dotted #666 ;}\n"
+									 "			h3 {font-size: 120%;  }\n"
+									 "			.text {text-align:left}\n"
+									 "			.code {background-color: lightgray; text-align:left}\n"
+									 "\n"
+									 "			table { border: 1px solid gray; border-spacing: 0px 0px;}\n"
+									 "			tr.odd { background-color: lavender; }\n"
+									 "			th { padding: 3px; border: 0px solid #53bc1f; background-color: #91e369; }\n"
+									 "			td { padding: 3px; border: 0px solid #53bc1f; }\n"
+									 "		</style>"
+									 ));
 	}
 	*this = default_options;
 }
