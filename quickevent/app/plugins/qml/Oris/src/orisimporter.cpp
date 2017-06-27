@@ -287,13 +287,17 @@ void OrisImporter::importEventOrisEntries(int event_id)
 				}
 				QString reg_no = competitor_o.value(QStringLiteral("RegNo")).toString();
 				fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
-				//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
-				doc->setValue("classId", competitor_o.value(QStringLiteral("ClassID")).toString().toInt());
+				int class_id = competitor_o.value(QStringLiteral("ClassID")).toString().toInt();
+				if(!classes_map.contains(class_id)) {
+					qfWarning() << "class id:" << class_id << "not found in the class definitions";
+					class_id = 0;
+				}
+				doc->setValue("classId", (class_id == 0)? QVariant(QVariant::Int): QVariant(class_id));
 				if(siid > 0) {
 					bool is_unique = !used_idsi.contains(siid);
 					if(is_unique)
 						used_idsi << siid;
-					doc->setSiid(siid, is_unique);
+					doc->setSiid(siid, false);
 				}
 				doc->setValue("firstName", first_name);
 				doc->setValue("lastName", last_name);
@@ -343,7 +347,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 						for(QString fldn : fields) {
 							static QVariantMap green_attrs;
 							if(green_attrs.isEmpty())
-								green_attrs["bgcolor"] = QStringLiteral("green");
+								green_attrs["bgcolor"] = QStringLiteral("khaki");
 							auto td = QVariantList() << QStringLiteral("td");
 							if(fldn != QLatin1String("className") && doc->isDirty(fldn))
 								td << green_attrs;
@@ -370,12 +374,12 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
 			opts.setDocumentTitle(tr("Oris import report"));
 			QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
-			if(false) {
-				QFile f("/tmp/1.html");
-				if(f.open(QFile::WriteOnly)) {
-					f.write(html.toUtf8());
-				}
+#ifdef Q_OS_LINUX_NNNNN
+			QFile f("/tmp/1.html");
+			if(f.open(QFile::WriteOnly)) {
+				f.write(html.toUtf8());
 			}
+#endif
 			qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, fwk);
 			qf::qmlwidgets::DialogButtonBox *bbx = dlg.buttonBox();
 			QPushButton *bt_no_drops = new QPushButton(tr("Save without drops"));
@@ -389,18 +393,18 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			w->setHtmlText(html);
 			if(dlg.exec()) {
 				qf::core::sql::Transaction transaction;
-				QMap<int, int> siid_changes; // competitorId->siId
+				QMap<int, int> cid_sid_changes; // competitorId->siId
 				const auto SIID = QStringLiteral("siId");
 				for(Competitors::CompetitorDocument *doc : doc_lst) {
 					if(doc->mode() == doc->ModeInsert) {
 						doc->save();
 						int siid = doc->value(SIID).toInt();
-						siid_changes[doc->dataId().toInt()] = siid;
+						cid_sid_changes[doc->dataId().toInt()] = siid;
 					}
 					else if(doc->mode() == doc->ModeEdit) {
 						if(doc->isDirty()) {
 							int siid = doc->value(SIID).toInt();
-							siid_changes[doc->dataId().toInt()] = siid;
+							cid_sid_changes[doc->dataId().toInt()] = siid;
 							doc->save();
 						}
 					}
@@ -409,37 +413,40 @@ void OrisImporter::importEventOrisEntries(int event_id)
 							doc->drop();
 					}
 				}
+				cid_sid_changes.remove(0);
 				int stage_cnt = eventPlugin()->stageCount();
 				for (int stage_id = 1; stage_id <= stage_cnt; ++stage_id) {
-					QMap<int, int> si_map; // siId->competitorId
+					QMap<int, int> sid_cid_map; // siId->competitorId
 					q.exec("SELECT competitorId, siId FROM runs WHERE siId IS NOT NULL AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
+					// take all SI->competitor_id assignments for this stage
 					while(q.next()) {
 						int cid = q.value(0).toInt();
 						int sid = q.value(1).toInt();
-						si_map[sid] = cid;
+						if(sid > 0)
+							sid_cid_map[sid] = cid;
 					}
 					{
-						// create unique SI->competitor assignment
-						QMapIterator<int, int> it(siid_changes);
+						// reply siid_changes changes in si_map
+						QMapIterator<int, int> it(cid_sid_changes);
 						while(it.hasNext()) {
 							it.next();
 							int competitor_id = it.key();
 							int si_id = it.value();
 							if(si_id > 0)
-								si_map[si_id] = competitor_id;
+								sid_cid_map[si_id] = competitor_id;
 						}
 					}
 					{
 						// delete duplicit competitor->SI assignmets
-						QMutableMapIterator<int, int> it(siid_changes);
+						QMutableMapIterator<int, int> it(cid_sid_changes);
 						while(it.hasNext()) {
 							it.next();
-							int competitor_id = it.key();
-							int si_id = it.value();
-							if(si_id > 0) {
-								int unique_siid_competitor_id = si_map.value(si_id);
-								if(unique_siid_competitor_id != competitor_id) {
-									qfInfo() << "SI:" << si_id << "is duplicit in stage:" << stage_id;
+							int cid = it.key();
+							int sid = it.value();
+							if(sid > 0) {
+								int unique_siid_competitor_id = sid_cid_map.value(sid);
+								if(unique_siid_competitor_id != cid) {
+									qfInfo() << "SI:" << sid << "is duplicit in stage:" << stage_id;
 									it.setValue(0);
 								}
 							}
@@ -448,11 +455,12 @@ void OrisImporter::importEventOrisEntries(int event_id)
 					{
 						// write SI changes to runs table
 						q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
-						QMapIterator<int, int> it(siid_changes);
+						QMapIterator<int, int> it(cid_sid_changes);
 						while(it.hasNext()) {
 							it.next();
 							int competitor_id = it.key();
 							int si_id = it.value();
+							qfDebug() << "stage:" << stage_id << "saving SI:" << si_id << "for competitor id:" << competitor_id;
 							q.bindValue(QStringLiteral(":competitorId"), competitor_id);
 							q.bindValue(QStringLiteral(":siId"), (si_id > 0)? si_id: QVariant(QVariant::Int));
 							q.exec(qf::core::Exception::Throw);
