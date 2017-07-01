@@ -1,6 +1,7 @@
 #include "speakerwidget.h"
 #include "ui_speakerwidget.h"
 
+#include "codeclassresultswidget.h"
 #include "thispartwidget.h"
 
 #include "Speaker/speakerplugin.h"
@@ -22,6 +23,7 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
 
+#include <QDockWidget>
 #include <QJsonObject>
 #include <QLabel>
 #include <QSettings>
@@ -51,6 +53,8 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	ui->tblPunches->setReadOnly(true);
 	ui->tblPunches->setCloneRowEnabled(false);
 	ui->tblPunches->setPersistentSettingsId("tblPunches");
+
+	connect(ui->tblPunches, &PunchesTableView::codeClassActivated, this, &SpeakerWidget::onCodeClassActivated);
 	/*
 	ui->tblPunches->setDragEnabled(true);
 	//ui->tblView->setDragDropMode(QAbstractItemView::DragOnly);
@@ -168,7 +172,7 @@ void SpeakerWidget::reload()
 	int stage_id = eventPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("punches", "*")
-			.select2("classes", "name")
+			.select2("classes", "id, name")
 			.select2("competitors", "registration")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("punches")
@@ -207,5 +211,24 @@ void SpeakerWidget::saveSettings()
 bool SpeakerWidget::isPartActive()
 {
 	return m_partWidget && m_partWidget->isActive();
+}
+
+void SpeakerWidget::onCodeClassActivated(int class_id, int code)
+{
+	CodeClassResultsWidget *w = new CodeClassResultsWidget(this);
+	w->reset(class_id, code);
+	//if(eventPlugin()->isEventOpen())
+	//	w->loadSetup(QJsonObject());
+	connect(this, &SpeakerWidget::punchReceived, w, &CodeClassResultsWidget::onPunchReceived);
+
+	QDockWidget *dw = new QDockWidget();
+	static int dock_widget_no = 0;
+	dw->setObjectName("CodeClassResultsWidgetDockWidget_" + QString::number(++dock_widget_no));
+	dw->setAllowedAreas(Qt::AllDockWidgetAreas);
+	dw->setWidget(w);
+	//dw->show();
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	fwk->addDockWidget(Qt::LeftDockWidgetArea, dw);
+	dw->setFloating(true);
 }
 

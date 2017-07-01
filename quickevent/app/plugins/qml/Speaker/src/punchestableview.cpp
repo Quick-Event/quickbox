@@ -13,6 +13,20 @@ PunchesTableView::PunchesTableView(QWidget *parent)
 {
 	setDropIndicatorShown(false);
 }
+
+bool PunchesTableView::edit(const QModelIndex &index, QAbstractItemView::EditTrigger trigger, QEvent *event)
+{
+	Q_UNUSED(event)
+	if(trigger == QAbstractItemView::EditTrigger::DoubleClicked
+	   || trigger == QAbstractItemView::EditTrigger::EditKeyPressed) {
+		qf::core::utils::TableRow row = tableRow(index.row());
+		int class_id = row.value("classes.id").toInt();
+		int code = row.value("punches.code").toInt();
+		qfDebug() << "codeClassActivated:" << class_id << code;
+		emit codeClassActivated(class_id, code);
+	}
+	return false;
+}
 /*
 void PunchesTableView::mousePressEvent(QMouseEvent *event)
 {

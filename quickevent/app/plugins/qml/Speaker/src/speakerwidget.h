@@ -42,6 +42,8 @@ private:
 	void saveSettings();
 
 	bool isPartActive();
+
+	void onCodeClassActivated(int class_id, int code);
 private:
 	Ui::SpeakerWidget *ui;
 	quickevent::og::SqlTableModel *m_punchesModel = nullptr;

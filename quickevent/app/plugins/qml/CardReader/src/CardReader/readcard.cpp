@@ -55,7 +55,7 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 }
 
 ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
-	: Super(si_card.toVariantMap())
+	: ReadCard(si_card.toVariantMap())
 {
 }
 

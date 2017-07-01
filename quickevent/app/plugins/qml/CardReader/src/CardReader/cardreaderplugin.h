@@ -51,6 +51,8 @@ public:
 	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
+
+	static int resolveAltCode(int maybe_alt_code, int stage_id);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();

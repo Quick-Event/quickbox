@@ -38,7 +38,13 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	, ui(new Ui::CodeClassResultsWidget)
 {
 	ui->setupUi(this);
-
+	{
+		qf::core::sql::Query q;
+		q.exec("SELECT id, name FROM classes ORDER BY name", qf::core::Exception::Throw);
+		while(q.next()) {
+			ui->lstClass->addItem(q.value(1).toString(), q.value(0));
+		}
+	}
 	connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int ) {
 		int stage_id = eventPlugin()->currentStageId();
 		int class_id = this->ui->lstClass->currentData().toInt();
@@ -123,6 +129,7 @@ void CodeClassResultsWidget::reload()
 								qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.timeMs");//.limit(10);
 	}
+	/*
 	else if(code == quickevent::si::PunchRecord::FINISH_PUNCH_CODE) {
 		qb.select2("runlaps", "stpTimeMs AS timeMs")
 				.from("runlaps")
@@ -134,6 +141,7 @@ void CodeClassResultsWidget::reload()
 				.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("runlaps.stpTimeMs");//.limit(10);
 	}
+	*/
 	else {
 		qb.select2("punches", "runTimeMs AS timeMs")
 				.from("punches")
@@ -158,8 +166,16 @@ void CodeClassResultsWidget::onPunchReceived(const quickevent::si::PunchRecord &
 	}
 }
 
+void CodeClassResultsWidget::reset(int class_id, int code)
+{
+	ui->lstClass->setCurrentIndex(ui->lstClass->findData(class_id));
+	ui->lstCode->setCurrentIndex(ui->lstCode->findData(code));
+}
+
 void CodeClassResultsWidget::loadSetup(const QJsonObject &jso)
 {
+	reset(jso.value("classId").toInt(), jso.value("codeId").toInt());
+	/*
 	ui->lstClass->blockSignals(true);
 	ui->lstClass->clear();
 	qf::core::sql::Query q;
@@ -170,6 +186,7 @@ void CodeClassResultsWidget::loadSetup(const QJsonObject &jso)
 	ui->lstClass->blockSignals(false);
 	ui->lstClass->setCurrentIndex(ui->lstClass->findData(jso.value("classId").toInt()));
 	ui->lstCode->setCurrentIndex(ui->lstCode->findData(jso.value("codeId").toInt()));
+	*/
 }
 
 QJsonObject CodeClassResultsWidget::saveSetup()

@@ -27,6 +27,7 @@ public:
 	void reload();
 	void onPunchReceived(const quickevent::si::PunchRecord &punch);
 
+	void reset(int class_id, int code);
 	void loadSetup(const QJsonObject &jso);
 	QJsonObject saveSetup();
 protected:

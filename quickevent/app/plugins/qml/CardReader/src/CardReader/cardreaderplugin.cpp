@@ -17,6 +17,7 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
 #include <qf/core/sql/transaction.h>
+#include <qf/core/sql/querybuilder.h>
 
 #include <QJSValue>
 #include <QMetaObject>
@@ -26,6 +27,7 @@
 #include <qf/core/utils/timescope.h>
 
 namespace qff = qf::qmlwidgets::framework;
+namespace qfs = qf::core::sql;
 
 namespace CardReader {
 
@@ -188,7 +190,6 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::si::PunchRecord &pu
 	int stage_start_msec = event_plugin->stageStartMsec(event_plugin->currentStageId());
 	int time_msec = quickevent::og::TimeMs::msecIntervalAM(stage_start_msec, punch_record.time() * 1000 + punch_record.msec());
 	punch.settimems(time_msec);
-
 	qf::core::sql::Query q;
 	int run_id = punch.runid();
 	if(run_id > 0) {
@@ -201,11 +202,13 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::si::PunchRecord &pu
 		}
 	}
 
+	int code = resolveAltCode(punch.code(), punch.stageid());
+
 	q.prepare(QStringLiteral("INSERT INTO punches (siId, code, time, msec, runId, stageId, timeMs, runTimeMs, marking)"
 							 " VALUES (:siId, :code, :time, :msec, :runId, :stageId, :timeMs, :runTimeMs, :marking)")
 							, qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":siId"), punch.siid());
-	q.bindValue(QStringLiteral(":code"), punch.code());
+	q.bindValue(QStringLiteral(":code"), code);
 	q.bindValue(QStringLiteral(":time"), punch.time());
 	q.bindValue(QStringLiteral(":msec"), punch.msec());
 	q.bindValue(QStringLiteral(":runId"), punch.runid());
@@ -316,6 +319,29 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))
 			return true;
 	return false;
+}
+
+int CardReaderPlugin::resolveAltCode(int maybe_alt_code, int stage_id)
+{
+	qfs::QueryBuilder qb;
+	qb.select2("codes", "code")
+			.from("codes")
+			.joinRestricted("codes.id", "coursecodes.codeId", "codes.altCode > 0", qfs::QueryBuilder::INNER_JOIN)
+			.joinRestricted("coursecodes.courseId", "classdefs.courseId", "classdefs.stageId=" QF_IARG(stage_id), qfs::QueryBuilder::INNER_JOIN);
+	qfDebug() << qb.toString();
+	qfs::Query q;
+	q.exec(qb, qf::core::Exception::Throw);
+	int resolved_code = 0;
+	while (q.next()) {
+		if(resolved_code) {
+			qfError() << "duplicate alt code" << maybe_alt_code << "in stage:" << stage_id;
+			return maybe_alt_code;
+		}
+		resolved_code = q.value(0).toInt();
+	}
+	if(resolved_code > 0)
+		qfDebug() << "alt code:" << maybe_alt_code << "resolved to:" << resolved_code;
+	return (resolved_code > 0)? resolved_code: maybe_alt_code;
 }
 
 }
