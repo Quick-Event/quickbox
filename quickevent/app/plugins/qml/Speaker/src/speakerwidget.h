@@ -14,6 +14,7 @@ class ForeignKeyComboBox;
 }
 
 namespace quickevent { namespace og { class SqlTableModel; }}
+namespace quickevent { namespace si { class PunchRecord; }}
 
 class ThisPartWidget;
 
@@ -29,11 +30,7 @@ public:
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
-private slots:
-	void on_btInsertColumn_clicked();
-	void on_btInsertRow_clicked();
-	void on_btDeleteColumn_clicked();
-	void on_btDeleteRow_clicked();
+	Q_SIGNAL void punchReceived(const quickevent::si::PunchRecord &punch);
 private:
 	//Q_SLOT void lazyInit();
 	Q_SLOT void reset();

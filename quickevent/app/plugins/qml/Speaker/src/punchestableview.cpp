@@ -13,7 +13,7 @@ PunchesTableView::PunchesTableView(QWidget *parent)
 {
 	setDropIndicatorShown(false);
 }
-
+/*
 void PunchesTableView::mousePressEvent(QMouseEvent *event)
 {
 	qfInfo() << Q_FUNC_INFO;
@@ -92,4 +92,4 @@ void PunchesTableView::dragMoveEvent(QDragMoveEvent *event)
 		event->ignore();
 	}
 }
-
+*/

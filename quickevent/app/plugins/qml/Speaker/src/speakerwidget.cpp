@@ -128,7 +128,7 @@ void SpeakerWidget::onDbEventNotify(const QString &domain, int connection_id, co
 		int siid = punch.siid();
 		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_RACE) {
 			updateTableView(punch.id());
-			ui->gridWidget->onPunchReceived(punch);
+			emit punchReceived(punch);
 		}
 	}
 }
@@ -198,19 +198,10 @@ void SpeakerWidget::updateTableView(int punch_id)
 
 void SpeakerWidget::loadSettings()
 {
-	if(m_settingsLoaded)
-		return;
-	m_settingsLoaded = true;
-	QSettings settings;
-	QString json = settings.value("plugins/speaker/grid").toString();
-	ui->gridWidget->loadLayout(json.toUtf8());
 }
 
 void SpeakerWidget::saveSettings()
 {
-	QSettings settings;
-	QByteArray ba = ui->gridWidget->saveLayout();
-	settings.setValue("plugins/speaker/grid", QString::fromUtf8(ba));
 }
 
 bool SpeakerWidget::isPartActive()
@@ -218,22 +209,3 @@ bool SpeakerWidget::isPartActive()
 	return m_partWidget && m_partWidget->isActive();
 }
 
-void SpeakerWidget::on_btInsertColumn_clicked()
-{
-	ui->gridWidget->addColumn();
-}
-
-void SpeakerWidget::on_btInsertRow_clicked()
-{
-	ui->gridWidget->addRow();
-}
-
-void SpeakerWidget::on_btDeleteColumn_clicked()
-{
-	ui->gridWidget->removeColumn();
-}
-
-void SpeakerWidget::on_btDeleteRow_clicked()
-{
-	ui->gridWidget->removeRow();
-}
