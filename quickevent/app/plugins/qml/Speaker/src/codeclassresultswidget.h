@@ -27,7 +27,10 @@ public:
 	void reload();
 	void onPunchReceived(const quickevent::si::PunchRecord &punch);
 
-	void reset(int class_id, int code);
+	static constexpr int ALL_CODES = 0;
+	static constexpr int RESULTS_PUNCH_CODE = 1000;
+
+	void reset(int class_id, int code, int pin_to_code = ALL_CODES);
 	void loadSetup(const QJsonObject &jso);
 	QJsonObject saveSetup();
 protected:
@@ -36,6 +39,7 @@ private:
 	Ui::CodeClassResultsWidget *ui;
 	quickevent::og::SqlTableModel *m_tableModel = nullptr;
 	QTimer *m_reloadDeferredTimer = nullptr;
+	int m_pinnedToCode = ALL_CODES;
 };
 
 #endif // CODECLASSRESULTSWIDGET_H

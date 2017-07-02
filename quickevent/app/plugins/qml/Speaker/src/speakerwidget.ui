@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>323</height>
+    <width>471</width>
+    <height>344</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>5</number>
    </property>
@@ -36,27 +36,53 @@
     <number>5</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <property name="spacing">
-      <number>1</number>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-     <item>
-      <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPunchesToolBar" native="true"/>
-     </item>
-     <item>
-      <widget class="PunchesTableView" name="tblPunches">
-       <property name="showDropIndicator" stdset="0">
-        <bool>false</bool>
+     <widget class="QFrame" name="frame">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>5</number>
        </property>
-       <property name="dragEnabled">
-        <bool>true</bool>
+       <property name="leftMargin">
+        <number>1</number>
        </property>
-       <property name="dragDropMode">
-        <enum>QAbstractItemView::DragOnly</enum>
+       <property name="topMargin">
+        <number>5</number>
        </property>
-      </widget>
-     </item>
-    </layout>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPunchesToolBar" native="true"/>
+       </item>
+       <item>
+        <widget class="PunchesTableView" name="tblPunches">
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragOnly</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="CodeClassResultsWidget" name="classResults" native="true"/>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -71,6 +97,12 @@
    <class>PunchesTableView</class>
    <extends>QTableView</extends>
    <header>src/punchestableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CodeClassResultsWidget</class>
+   <extends>QWidget</extends>
+   <header>src/codeclassresultswidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

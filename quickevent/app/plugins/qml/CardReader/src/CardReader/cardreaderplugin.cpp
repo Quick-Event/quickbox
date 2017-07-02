@@ -321,17 +321,43 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 	return false;
 }
 
+//static QMap<int, QMap<int, int>> m_altCodes; // stageId -> altCode -> code
+
 int CardReaderPlugin::resolveAltCode(int maybe_alt_code, int stage_id)
 {
+	/*
+	 * static caching is evil, better to emit dbevent when codes are edited and clear this cache then
+	if(!m_altCodes.contains(stage_id)) {
+		qfs::QueryBuilder qb;
+		qb.select2("codes", "code, altcode")
+				.from("codes")
+				.joinRestricted("codes.id", "coursecodes.codeId", "codes.altCode > 0", qfs::QueryBuilder::INNER_JOIN)
+				.joinRestricted("coursecodes.courseId", "classdefs.courseId", "classdefs.stageId=" QF_IARG(stage_id), qfs::QueryBuilder::INNER_JOIN);
+		qfs::Query q;
+		q.exec(qb, qf::core::Exception::Throw);
+		while (q.next()) {
+			int code = q.value(0).toInt();
+			int alt_code = q.value(1).toInt();
+			qfDebug() << "stage id:" << stage_id << "alt code:" << alt_code << "->" << code;
+			m_altCodes[stage_id][alt_code] = code;
+		}
+	}
+	int resolved_code = m_altCodes[stage_id].value(maybe_alt_code);
+	if(resolved_code > 0) {
+		qfDebug() << "stage:" << stage_id << "alt code:" << maybe_alt_code << "resolved to:" << resolved_code;
+		return resolved_code;
+	}
+	return maybe_alt_code;
+	*/
+	int resolved_code = 0;
 	qfs::QueryBuilder qb;
 	qb.select2("codes", "code")
 			.from("codes")
-			.joinRestricted("codes.id", "coursecodes.codeId", "codes.altCode > 0", qfs::QueryBuilder::INNER_JOIN)
+			.joinRestricted("codes.id", "coursecodes.codeId", "codes.altCode=" QF_IARG(maybe_alt_code), qfs::QueryBuilder::INNER_JOIN)
 			.joinRestricted("coursecodes.courseId", "classdefs.courseId", "classdefs.stageId=" QF_IARG(stage_id), qfs::QueryBuilder::INNER_JOIN);
 	qfDebug() << qb.toString();
 	qfs::Query q;
 	q.exec(qb, qf::core::Exception::Throw);
-	int resolved_code = 0;
 	while (q.next()) {
 		if(resolved_code) {
 			qfError() << "duplicate alt code" << maybe_alt_code << "in stage:" << stage_id;

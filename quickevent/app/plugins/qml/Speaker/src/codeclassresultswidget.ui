@@ -42,7 +42,7 @@
       <widget class="QComboBox" name="lstClass"/>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="lblCode">
        <property name="text">
         <string>Code</string>
        </property>

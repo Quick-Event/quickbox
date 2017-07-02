@@ -38,52 +38,14 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	, ui(new Ui::CodeClassResultsWidget)
 {
 	ui->setupUi(this);
-	{
-		qf::core::sql::Query q;
-		q.exec("SELECT id, name FROM classes ORDER BY name", qf::core::Exception::Throw);
-		while(q.next()) {
-			ui->lstClass->addItem(q.value(1).toString(), q.value(0));
-		}
-	}
-	connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int ) {
-		int stage_id = eventPlugin()->currentStageId();
-		int class_id = this->ui->lstClass->currentData().toInt();
-		ui->lstCode->clear();
-		ui->lstCode->addItem(tr("Results"), "R");
-		ui->lstCode->addItem(tr("Finish"), quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
-		qf::core::sql::QueryBuilder qb;
-		qb.select2("codes", "code, radio")
-				.from("classdefs")
-				.joinRestricted("classdefs.courseId", "coursecodes.courseId",
-								"classdefs.stageId=" QF_IARG(stage_id)
-								" AND classdefs.classId=" QF_IARG(class_id),
-								qf::core::sql::QueryBuilder::INNER_JOIN)
-				.join("coursecodes.codeId", "codes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
-				//.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qf::core::sql::QueryBuilder::INNER_JOIN)
-				.orderBy("coursecodes.position");
-		qfInfo() << qb.toString();
-		qf::core::sql::Query q;
-		q.exec(qb.toString(), qf::core::Exception::Throw);
-		while(q.next()) {
-			QVariant code = q.value(0);
-			bool radio =  q.value(1).toBool();
-			QString caption = code.toString();
-			if(radio)
-				caption += " " + tr("R", "Radio station");
-			ui->lstCode->addItem(caption, code);
-		}
-	});
-
-	//connect(ui->btReload, &QPushButton::clicked, this, &CodeClassResultsWidget::reload);
-	connect(ui->lstCode, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &CodeClassResultsWidget::reloadDeferred);
 
 	ui->tblView->setReadOnly(true);
 	//ui->tblView->setPersistentSettingsId("tblView");
 	//ui->tblPunches->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	//ui->tblPunches->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 	quickevent::og::SqlTableModel *m = new quickevent::og::SqlTableModel(this);
-	m->addColumn("competitors.registration", tr("Reg"));//.setReadOnly(true);
 	m->addColumn("competitorName", tr("Competitor"));
+	m->addColumn("competitors.registration", tr("Reg"));//.setReadOnly(true);
 	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
 	ui->tblView->setTableModel(m);
 	m_tableModel = m;
@@ -113,11 +75,15 @@ void CodeClassResultsWidget::reload()
 		return;
 	int stage_id = eventPlugin()->currentStageId();
 	int class_id = this->ui->lstClass->currentData().toInt();
-	int code = this->ui->lstCode->currentData().toInt();
+	int code = (m_pinnedToCode == ALL_CODES)? ui->lstCode->currentData().toInt(): m_pinnedToCode;
+	if(class_id == 0 || code == 0) {
+		m_tableModel->clearRows();
+		return;
+	}
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("competitors", "registration")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName");
-	if(code == 0) {
+	if(code == RESULTS_PUNCH_CODE) {
 		// results
 		qb.select2("runs", "timeMs")
 				.from("runs")
@@ -153,7 +119,7 @@ void CodeClassResultsWidget::reload()
 				.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("punches.runTimeMs");//.limit(10);
 	}
-	qfInfo() << qb.toString();
+	qfDebug() << qb.toString();
 	m_tableModel->setQueryBuilder(qb, false);
 	m_tableModel->reload();
 }
@@ -166,10 +132,67 @@ void CodeClassResultsWidget::onPunchReceived(const quickevent::si::PunchRecord &
 	}
 }
 
-void CodeClassResultsWidget::reset(int class_id, int code)
+void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 {
-	ui->lstClass->setCurrentIndex(ui->lstClass->findData(class_id));
-	ui->lstCode->setCurrentIndex(ui->lstCode->findData(code));
+	m_pinnedToCode = pin_to_code;
+	ui->lstClass->disconnect();
+	ui->lstCode->disconnect();
+	ui->lstClass->clear();
+	//ui->lstCode->setCurrentIndex(-1);
+	//ui->lstClass->blockSignals(true);
+	{
+		qf::core::sql::Query q;
+		q.exec("SELECT id, name FROM classes ORDER BY name", qf::core::Exception::Throw);
+		while(q.next()) {
+			ui->lstClass->addItem(q.value(1).toString(), q.value(0));
+		}
+	}
+	//ui->lstClass->blockSignals(false);
+	if(pin_to_code == ALL_CODES) {
+		ui->lblCode->show();
+		ui->lstCode->show();
+		connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [this](int ) {
+			int stage_id = eventPlugin()->currentStageId();
+			int class_id = this->ui->lstClass->currentData().toInt();
+			ui->lstCode->blockSignals(true);
+			ui->lstCode->clear();
+			ui->lstCode->addItem(tr("Results"), RESULTS_PUNCH_CODE);
+			ui->lstCode->addItem(tr("Finish"), quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
+			qf::core::sql::QueryBuilder qb;
+			qb.select2("codes", "code, radio")
+					.from("classdefs")
+					.joinRestricted("classdefs.courseId", "coursecodes.courseId",
+									"classdefs.stageId=" QF_IARG(stage_id)
+									" AND classdefs.classId=" QF_IARG(class_id),
+									qf::core::sql::QueryBuilder::INNER_JOIN)
+					.join("coursecodes.codeId", "codes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
+					//.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qf::core::sql::QueryBuilder::INNER_JOIN)
+					.orderBy("coursecodes.position");
+			qfInfo() << qb.toString();
+			qf::core::sql::Query q;
+			q.exec(qb.toString(), qf::core::Exception::Throw);
+			while(q.next()) {
+				QVariant code = q.value(0);
+				bool radio =  q.value(1).toBool();
+				QString caption = code.toString();
+				if(radio)
+					caption += " " + tr("R", "Radio station");
+				ui->lstCode->addItem(caption, code);
+			}
+			ui->lstCode->blockSignals(false);
+		});
+
+		ui->lstClass->setCurrentIndex(ui->lstClass->findData(class_id));
+		connect(ui->lstCode, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &CodeClassResultsWidget::reload);
+		ui->lstCode->setCurrentIndex(ui->lstCode->findData(code));
+		//connect(ui->btReload, &QPushButton::clicked, this, &CodeClassResultsWidget::reload);
+	}
+	else {
+		ui->lblCode->hide();
+		ui->lstCode->hide();
+		connect(ui->lstClass, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &CodeClassResultsWidget::reload);
+		ui->lstClass->setCurrentIndex(ui->lstClass->findData(class_id));
+	}
 }
 
 void CodeClassResultsWidget::loadSetup(const QJsonObject &jso)

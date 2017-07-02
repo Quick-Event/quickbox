@@ -144,19 +144,11 @@ void SpeakerWidget::reset()
 		m_punchesModel->clearRows();
 		return;
 	}
+	ui->classResults->reset(0, 0, CodeClassResultsWidget::RESULTS_PUNCH_CODE);
 	if(isPartActive())
 		reload();
 	else
 		m_resetRequest = true;
-	/*
-	{
-		m_cbxClasses->blockSignals(true);
-		m_cbxClasses->loadItems(true);
-		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
-		m_cbxClasses->blockSignals(false);
-	}
-	*/
 }
 
 void SpeakerWidget::reload()
