@@ -92,6 +92,7 @@ QtObject {
 		return tt;
 	}
 	*/
+	/*
 	function currentStageAwardsTable(max_competitors_in_class)
 	{
 		var event_plugin = FrameWork.plugin("Event");
@@ -154,7 +155,7 @@ QtObject {
 		//console.warn(tt.toString());
 		return tt;
 	}
-
+*/
 	function printCurrentStage()
 	{
 		Log.info("runs printResultsCurrentStage triggered");
@@ -189,8 +190,12 @@ QtObject {
 		if(!rep_path)
 			return;
 
-		var n = opts.numPlaces;
-		var tt = currentStageAwardsTable(n);
+		//var n = opts.numPlaces;
+		//var tt = currentStageAwardsTable(n);
+		var td = runsPlugin.currentStageResultsTableData("", opts.numPlaces);
+		var tt = new TreeTable.Table();
+		tt.setData(td);
+
 		Log.info("runs printCurrentStageAwards", rep_path);
 		QmlWidgetsSingleton.showReport(rep_path
 									   , tt.data()

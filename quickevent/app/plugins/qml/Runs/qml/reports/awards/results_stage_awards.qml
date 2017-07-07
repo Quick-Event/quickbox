@@ -62,93 +62,98 @@ Report {
 		height: "%"
 		vinset: 10
 		Band {
-			id: band
-			objectName: "runnersBand"
 			Detail {
-				id: detail
-				objectName: "runnersDetail"
-				width: "%"
-				Frame {height: 30}
-				Para {
-					width: "%"
-					halign: Frame.AlignHCenter
-					textStyle: tsDiplom
-					text: "Diplom"
-				}
-				Frame {height: 30}
-				Frame {
-					width: "%"
-					halign: Frame.AlignHCenter
-					hinset: 20
-					Image {
-						height: 50
-						dataSource: "./images/invaders.svg"
-					}
-				}
-				Frame {height: 35}
-				Para {
-					width: "%"
-					halign: Frame.AlignHCenter
-					textStyle: TextStyle { basedOn: tsNormal; font: Font { basedOn: fontNormal; weight: Font.WeightBold } }
-					text: detail.data(detail.currentIndex, "competitorName")
-				}
-				Frame {height: 5}
-				Para {
-					width: "%"
-					halign: Frame.AlignHCenter
-					textStyle: tsNormal
-					text: "za " + detail.data(detail.currentIndex, "pos") + ". místo v kategorii " + detail.data(detail.currentIndex, "className")
-				}
-				Frame { height: 30 }
-				Frame {
-					width: "%"
-					layout: Frame.LayoutHorizontal
-					Frame { width: 10 }
-					Frame {
+				id: class_detail
+				Band {
+					id: band
+					objectName: "runnersBand"
+					Detail {
+						id: detail
+						objectName: "runnersDetail"
 						width: "%"
+						Frame {height: 30}
 						Para {
 							width: "%"
 							halign: Frame.AlignHCenter
-							textStyle: myStyle.textStyleBold
-							//text: root.eventConfig.event.mainReferee
-							text: root.eventConfig.mainReferee()
+							textStyle: tsDiplom
+							text: "Diplom"
 						}
-						Para {
-							width: "%"
-							topBorder: Pen { basedOn: "black1dot" }
-							halign: Frame.AlignHCenter
-							text: "Hlavní rozhodčí";
-						}
-					}
-					Frame { width: "40%" }
-					Frame {
-						width: "%"
-						layout: Frame.LayoutStacked
-						Image {
-							width: "%"
-							height: 30
-							halign: Frame.AlignHCenter
-							dataSource: "./images/director-signature.png"
-						}
+						Frame {height: 30}
 						Frame {
 							width: "%"
-							Para {
-								width: "%"
-								halign: Frame.AlignHCenter
-								textStyle: myStyle.textStyleBold
-								text: root.eventConfig.director()
-							}
-							Para {
-								width: "%"
-								topBorder: Pen { basedOn: "black1dot" }
-								halign: Frame.AlignHCenter
-								text: "Ředitel závodu";
+							halign: Frame.AlignHCenter
+							hinset: 20
+							Image {
+								height: 50
+								dataSource: "./images/invaders.svg"
 							}
 						}
+						Frame {height: 35}
+						Para {
+							width: "%"
+							halign: Frame.AlignHCenter
+							textStyle: TextStyle { basedOn: tsNormal; font: Font { basedOn: fontNormal; weight: Font.WeightBold } }
+							text: detail.data(detail.currentIndex, "competitorName")
+						}
+						Frame {height: 5}
+						Para {
+							width: "%"
+							halign: Frame.AlignHCenter
+							textStyle: tsNormal
+							text: "za " + detail.data(detail.currentIndex, "pos") + ". místo v kategorii " + class_detail.data(class_detail.currentIndex, "classes.name")
+						}
+						Frame { height: 30 }
+						Frame {
+							width: "%"
+							layout: Frame.LayoutHorizontal
+							Frame { width: 10 }
+							Frame {
+								width: "%"
+								Para {
+									width: "%"
+									halign: Frame.AlignHCenter
+									textStyle: myStyle.textStyleBold
+									//text: root.eventConfig.event.mainReferee
+									text: root.eventConfig.mainReferee()
+								}
+								Para {
+									width: "%"
+									topBorder: Pen { basedOn: "black1dot" }
+									halign: Frame.AlignHCenter
+									text: "Hlavní rozhodčí";
+								}
+							}
+							Frame { width: "40%" }
+							Frame {
+								width: "%"
+								layout: Frame.LayoutStacked
+								Image {
+									width: "%"
+									height: 30
+									halign: Frame.AlignHCenter
+									dataSource: "./images/director-signature.png"
+								}
+								Frame {
+									width: "%"
+									Para {
+										width: "%"
+										halign: Frame.AlignHCenter
+										textStyle: myStyle.textStyleBold
+										text: root.eventConfig.director()
+									}
+									Para {
+										width: "%"
+										topBorder: Pen { basedOn: "black1dot" }
+										halign: Frame.AlignHCenter
+										text: "Ředitel závodu";
+									}
+								}
+							}
+							Frame { width: 10 }
+						}
+						Break {}
 					}
-					Frame { width: 10 }
 				}
-				Break {}
 			}
 		}
 	}
