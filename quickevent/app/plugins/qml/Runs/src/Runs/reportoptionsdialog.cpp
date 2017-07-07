@@ -133,7 +133,7 @@ void ReportOptionsDialog::savePersistentSettings()
 
 	Options opts;
 	opts.setBreakType(ui->cbxBreakAfterClassType->currentIndex());
-	opts.setUseClassFilter(ui->grpClassFilter);
+	opts.setUseClassFilter(ui->grpClassFilter->isChecked());
 	opts.setInvertClassFilter(ui->chkClassFilterDoesntMatch->isChecked());
 	opts.setClassFilter(ui->edFilter->text());
 	FilterType filter_type =  ui->btWildCard->isChecked()? FilterType::WildCard: ui->btRegExp->isChecked()? FilterType::RegExp: FilterType::ClassName;
