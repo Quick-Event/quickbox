@@ -1,6 +1,8 @@
 #include "eventstatisticswidget.h"
 #include "ui_eventstatisticswidget.h"
 
+#include "eventstatisticsoptions.h"
+
 #include "Runs/reportoptionsdialog.h"
 #include "Runs/runsplugin.h"
 
@@ -16,6 +18,7 @@
 #include <qf/core/assert.h>
 
 #include <QElapsedTimer>
+#include <QSettings>
 #include <QTimer>
 
 namespace qfs = qf::core::sql;
@@ -57,6 +60,7 @@ public:
 		col_runnersFinished,
 		col_runnersNotFinished,
 		col_resultsNotPrinted,
+		col_resultsNotPrintedSec,
 		col_COUNT
 	};
 public:
@@ -82,6 +86,17 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
+	setColumn(col_resultsNotPrintedSec, ColumnDefinition("resultsNotPrintedSec", tr("Not printed time"))
+			  .setToolTip(tr("Time since recent results printout."))
+			  .setCastType(qMetaTypeId<quickevent::og::TimeMs>())
+			  );
+	/*
+	setColumn(col_resultsPrintTS, ColumnDefinition("resultsPrintTS", tr("Results printed"))
+			  .setToolTip(tr("When results for this class were printed last time."))
+			  .setReadOnly(true)
+			  .setFormat(QStringLiteral("hh:mm:ss"))
+			  );
+	*/
 	{
 		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND competitors.classId=classes.id");
 		qf::core::sql::QueryBuilder qb_runners_count;
@@ -136,6 +151,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 				.select("0 AS freeMapCount")
 				.select("0 AS runnersNotFinished")
 				.select("0 AS resultsNotPrinted")
+				.select("0 AS resultsNotPrintedSec")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 				//.join("classes.id", "competitors.classId")
@@ -169,6 +185,14 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 	else if(column_ix == col_resultsNotPrinted) {
 		int results_count = tableRow(row_ix).value(QStringLiteral("resultsCount")).toInt();
 		int cnt = value(row_ix, col_runnersFinished).toInt() - results_count;
+		return cnt;
+	}
+	else if(column_ix == col_resultsNotPrintedSec) {
+		QDateTime dt1 = tableRow(row_ix).value(QStringLiteral("resultsPrintTS")).toDateTime();
+		QDateTime dt2 = QDateTime::currentDateTime();
+		if(!dt1.isValid())
+			dt1 = dt2.addSecs(-99*60);
+		int cnt = dt1.msecsTo(dt2);
 		return cnt;
 	}
 	return Super::value(row_ix, column_ix);
@@ -279,8 +303,6 @@ void FooterModel::reload()
 		for (int j = 0; j < mm->rowCount(); ++j) {
 			//QModelIndex ix = mm->index(j, i);
 			if(int_col) {
-				if(i == 2)
-					qfDebug() << mm->value(j, i);
 				isum += mm->value(j, i).toInt();
 			}
 			else if(double_col) {
@@ -376,6 +398,19 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent)
 	m_tableFooterView->setMinimumHeight(20);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
+	connect(ui->chkAutoRefresh, &QCheckBox::toggled, [this](bool checked) {
+		if(checked)
+			autoRefreshTimer()->start();
+		else
+			autoRefreshTimer()->stop();
+	});
+	connect(ui->chkAutoPrint, &QCheckBox::toggled, [this](bool checked) {
+		if(checked)
+			printResultsTimer()->start();
+		else
+			printResultsTimer()->stop();
+	});
+
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
 	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
 }
@@ -387,11 +422,14 @@ EventStatisticsWidget::~EventStatisticsWidget()
 
 void EventStatisticsWidget::reloadLater()
 {
-	if(ui->chkAutoRefresh->isChecked()) {
-		QTimer *tm = reloadLaterTimer();
-		if(!tm->isActive())
-			tm->start();
+	if(!m_reloadLaterTimer) {
+		m_reloadLaterTimer = new QTimer(this);
+		m_reloadLaterTimer->setInterval(200);
+		m_reloadLaterTimer->setSingleShot(true);
+		connect(m_reloadLaterTimer, &QTimer::timeout, this, &EventStatisticsWidget::reload);
 	}
+	if(!m_reloadLaterTimer->isActive())
+		m_reloadLaterTimer->start();
 }
 
 void EventStatisticsWidget::reload()
@@ -425,6 +463,8 @@ void EventStatisticsWidget::reload()
 	qfDebug() << m_tableModel->effectiveQuery();
 	qfDebug() << "query execution time:" << tm.elapsed() << "msec";
 	QTimer::singleShot(10, m_tableFooterView, &FooterView::syncSectionSizes);
+	if(ui->chkAutoPrint->isChecked())
+		checkAutoPrintResults();
 }
 
 void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
@@ -458,15 +498,25 @@ int EventStatisticsWidget::currentStageId()
 	return ret;
 }
 
-QTimer *EventStatisticsWidget::reloadLaterTimer()
+QTimer *EventStatisticsWidget::autoRefreshTimer()
 {
-	if(!m_reloadLaterTimer) {
-		m_reloadLaterTimer = new QTimer(this);
-		m_reloadLaterTimer->setInterval(1000);
-		m_reloadLaterTimer->setSingleShot(true);
-		connect(m_reloadLaterTimer, &QTimer::timeout, this, &EventStatisticsWidget::reload);
+	if(!m_autoRefreshTimer) {
+		m_autoRefreshTimer = new QTimer(this);
+		EventStatisticsOptions::Options opts(options());
+		m_autoRefreshTimer->setInterval(opts.autoRefreshSec() * 1000);
+		connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadLater);
 	}
-	return m_reloadLaterTimer;
+	return m_autoRefreshTimer;
+}
+
+QTimer *EventStatisticsWidget::printResultsTimer()
+{
+	if(!m_printResultsTimer) {
+		m_printResultsTimer = new QTimer(this);
+		m_printResultsTimer->setInterval(1000 * 60);
+		connect(m_printResultsTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadLater);
+	}
+	return m_printResultsTimer;
 }
 
 void EventStatisticsWidget::on_btReload_clicked()
@@ -477,31 +527,44 @@ void EventStatisticsWidget::on_btReload_clicked()
 
 void EventStatisticsWidget::on_btPrintResults_clicked()
 {
+	printResultsForRows(ui->tableView->selectedRowsIndexes(), true);
+}
+
+void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool with_dialog)
+{
 	QStringList class_names;
 	QList<int> classdefs_ids;
 	QList<int> runners_finished;
-	for(int i : ui->tableView->selectedRowsIndexes()) {
+	for(int i : rows) {
 		qf::core::utils::TableRow row = ui->tableView->tableRow(i);
 		class_names << row.value(QStringLiteral("classes.name")).toString();
 		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
 	}
 	bool report_printed = false;
-	Runs::ReportOptionsDialog dlg(this);
-	dlg.setClassNamesFilter(class_names);
-	if(dlg.exec()) {
-		QVariant td = runsPlugin()->currentStageResultsTableData(dlg.sqlWhereExpression());
-		QVariantMap props;
-		props["isBreakAfterEachClass"] = dlg.isBreakAfterEachClass();
-		props["isColumnBreak"] = dlg.isColumnBreak();
-		report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
-									, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
-									, td
-									, tr("Results by clases")
-									, "printCurrentStage"
-									, props
-									);
+	Runs::ReportOptionsDialog::Options opts;
+	if(with_dialog) {
+		Runs::ReportOptionsDialog dlg(this);
+		dlg.loadPersistentSettings();
+		dlg.setClassNamesFilter(class_names);
+		if(!dlg.exec())
+			return;
+		opts = dlg.options();
 	}
+	else {
+		opts = Runs::ReportOptionsDialog::savedOptions();
+	}
+	QVariant td = runsPlugin()->currentStageResultsTableData(Runs::ReportOptionsDialog::sqlWhereExpression(opts));
+	QVariantMap props;
+	props["isBreakAfterEachClass"] = (opts.breakType() != (int)Runs::ReportOptionsDialog::BreakType::None);
+	props["isColumnBreak"] = (opts.breakType() == (int)Runs::ReportOptionsDialog::BreakType::Column);
+	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
+								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
+								, td
+								, tr("Results by clases")
+								, "printCurrentStage"
+								, props
+								);
 	if(report_printed) {
 		clearNewResults(classdefs_ids, runners_finished);
 		reload();
@@ -530,14 +593,56 @@ void EventStatisticsWidget::on_btClearNewInSelectedRows_clicked()
 void EventStatisticsWidget::clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished)
 {
 	qfLogFuncFrame();
-	QString qs = "UPDATE classdefs SET resultsCount=:resultsCount WHERE id=:id";
+	QString qs = "UPDATE classdefs SET resultsCount=:resultsCount, resultsPrintTS=:resultsPrintTS WHERE id=:id";
 	qf::core::sql::Query q;
 	q.prepare(qs, qf::core::Exception::Throw);
 	for (int i = 0; i < classdefs_ids.count(); ++i) {
 		qfDebug() << classdefs_ids[i] << runners_finished[i];
 		q.bindValue(":resultsCount", runners_finished[i]);
+		q.bindValue(":resultsPrintTS", QDateTime::currentDateTime());
 		q.bindValue(":id", classdefs_ids[i]);
 		q.exec(qf::core::Exception::Throw);
 	}
 }
+
+QVariantMap EventStatisticsWidget::options()
+{
+	QSettings settings;
+	QVariantMap m = settings.value(EventStatisticsOptions::staticPersistentSettingsPath()).toMap();
+	return m;
+}
+
+void EventStatisticsWidget::on_btOptions_clicked()
+{
+	EventStatisticsOptions dlg(this);
+	if(dlg.exec()) {
+		EventStatisticsOptions::Options opts(options());
+		autoRefreshTimer()->setInterval(opts.autoRefreshSec() * 1000);
+	}
+}
+
+void EventStatisticsWidget::checkAutoPrintResults()
+{
+	qfLogFuncFrame();
+	QList<int> sel_rows;
+	EventStatisticsOptions::Options opts(options());
+	int print_new_results_cnt = opts.autoPrintNewRunners();
+	int print_new_results_sec = opts.autoPrintNewMin() * 60;
+	//QDateTime curr_dt = QDateTime::currentDateTime();
+	for (int i = 0; i < m_tableModel->rowCount(); ++i) {
+		int not_printed_cnt = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrinted).toInt();
+		int not_printed_sec = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrintedSec).toInt();
+		int not_finished = m_tableModel->value(i, EventStatisticsModel::col_runnersNotFinished).toInt();
+		if((not_printed_sec >= print_new_results_sec && not_printed_cnt > 0)
+		   || (not_printed_cnt >= print_new_results_cnt)
+		   || (not_printed_cnt > 0 && not_finished == 0) // last competitor in class
+		   ) {
+			sel_rows << i;
+		}
+	}
+	if(sel_rows.count()) {
+		printResultsForRows(sel_rows, false);
+	}
+}
+
 

@@ -161,8 +161,6 @@ QtObject {
 		Log.info("runs printResultsCurrentStage triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "resultsReportOptions";
-		//dlg.dialogType = RunsPlugin.ResultsReport;
-		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
 			var td = currentStageTableData(dlg.sqlWhereExpression());
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"

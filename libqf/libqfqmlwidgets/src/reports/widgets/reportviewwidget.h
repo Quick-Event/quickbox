@@ -112,7 +112,7 @@ signals:
 	void sqlValueEdited(const QString &sql_id, const QVariant &val);
 protected slots:
 	void edCurrentPageEdited();
-	void pageProcessed();
+	void onPageProcessed();
 	void scrollToPrevPage() {view_prevPage(ScrollToPageEnd);}
 	void scrollToNextPage() {view_nextPage(ScrollToPageTop);}
 	void setScaleProc(int proc) {setScale(proc * 0.01);}

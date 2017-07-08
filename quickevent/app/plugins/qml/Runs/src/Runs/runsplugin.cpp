@@ -193,7 +193,9 @@ QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		parent = fwk;
 	}
-	return new Runs::ReportOptionsDialog(parent);
+	Runs::ReportOptionsDialog *ret = new Runs::ReportOptionsDialog(parent);
+	ret->loadPersistentSettings();
+	return ret;
 }
 
 QWidget *RunsPlugin::createNStagesReportOptionsDialog(QWidget *parent)

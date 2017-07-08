@@ -384,7 +384,7 @@ ReportProcessor * ReportViewWidget::reportProcessor()
 void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 {
 	m_reportProcessor = proc;
-	connect(m_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(pageProcessed()));
+	connect(m_reportProcessor, SIGNAL(onPageProcessed()), this, SLOT(onPageProcessed()));
 }
 
 qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
@@ -726,7 +726,7 @@ void ReportViewWidget::setReport(const QString &file_name, const QVariantMap &re
 	//out.dump();
 }
 
-void ReportViewWidget::pageProcessed()
+void ReportViewWidget::onPageProcessed()
 {
 	qfLogFuncFrame();
 	if(m_whenRenderingSetCurrentPageTo >= 0) {
@@ -741,7 +741,7 @@ void ReportViewWidget::pageProcessed()
 	}
 	refreshWidget();
 	//setCurrentPageNo(0);
-	QTimer::singleShot(10, reportProcessor(), SLOT(processSinglePage())); /// 10 je kompromis mezi rychlosti prekladu a sviznosti GUI
+	QTimer::singleShot(10, reportProcessor(), &ReportProcessor::processSinglePage); /// 10 je kompromis mezi rychlosti prekladu a sviznosti GUI
 }
 
 ReportItemMetaPaintReport* ReportViewWidget::document(bool throw_exc)
@@ -1068,8 +1068,10 @@ void ReportViewWidget::print()
 		int from_page = dlg.fromPage();
 		int to_page = dlg.toPage();
 		qfDebug() << "fromPage:" << dlg.fromPage() << "toPage:" << dlg.toPage();
-		if(from_page > 0) opts["fromPage"] = dlg.fromPage();
-		if(to_page > 0) opts["toPage"] = dlg.toPage();
+		if(from_page > 0)
+			opts["fromPage"] = dlg.fromPage();
+		if(to_page > 0)
+			opts["toPage"] = dlg.toPage();
 	}
 
 	print(printer, opts);

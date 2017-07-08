@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>710</width>
+    <height>392</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -99,6 +99,27 @@
        <widget class="QCheckBox" name="chkAutoRefresh">
         <property name="text">
          <string>auto refresh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkAutoPrint">
+        <property name="text">
+         <string>auto print</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btOptions">
+        <property name="toolTip">
+         <string>Options</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/settings.svg</normaloff>:/qf/qmlwidgets/images/flat/settings.svg</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
