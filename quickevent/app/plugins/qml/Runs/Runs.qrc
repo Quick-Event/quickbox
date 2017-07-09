@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/quickevent/Runs">
+		<file>images/print-new.svg</file>
+    </qresource>
+</RCC>

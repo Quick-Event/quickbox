@@ -54,7 +54,21 @@
        <number>1</number>
       </property>
       <item>
-       <widget class="QToolButton" name="btPrintResults">
+       <widget class="QToolButton" name="btPrintResultsNew">
+        <property name="toolTip">
+         <string>Print results for classes with new runners</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../Runs.qrc">
+          <normaloff>:/quickevent/Runs/images/print-new.svg</normaloff>:/quickevent/Runs/images/print-new.svg</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btPrintResultsSelected">
         <property name="toolTip">
          <string>Print results in selected rows</string>
         </property>
@@ -96,20 +110,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="chkAutoRefresh">
-        <property name="text">
-         <string>auto refresh</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="chkAutoPrint">
-        <property name="text">
-         <string>auto print</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QToolButton" name="btOptions">
         <property name="toolTip">
          <string>Options</string>
@@ -120,6 +120,13 @@
         </property>
         <property name="autoRaise">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="chkAutoRefresh">
+        <property name="text">
+         <string>auto refresh</string>
         </property>
        </widget>
       </item>
@@ -160,6 +167,7 @@
  </customwidgets>
  <resources>
   <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+  <include location="../Runs.qrc"/>
  </resources>
  <connections/>
 </ui>

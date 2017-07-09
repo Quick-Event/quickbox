@@ -29,7 +29,7 @@ public:
 
 	class Options : public QVariantMap
 	{
-		QF_VARIANTMAP_FIELD2(int, a, setA, utoRefreshSec, 1)
+		QF_VARIANTMAP_FIELD2(int, a, setA, utoRefreshSec, 10)
 		QF_VARIANTMAP_FIELD2(int, a, setA, utoPrintNewRunners, 5)
 		QF_VARIANTMAP_FIELD2(int, a, setA, utoPrintNewMin, 15)
 		public:

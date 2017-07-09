@@ -30,16 +30,16 @@ public:
 private slots:
 	void on_btReload_clicked();
 	void on_btOptions_clicked();
-	void on_btPrintResults_clicked();
+	void on_btPrintResultsSelected_clicked();
+	void on_btPrintResultsNew_clicked();
 	void on_btClearNewInSelectedRows_clicked();
 private:
 	int currentStageId();
 	QTimer* autoRefreshTimer();
-	QTimer* printResultsTimer();
+	//QTimer* printResultsTimer();
 	void clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished);
 
 	QVariantMap options();
-	void checkAutoPrintResults();
 	void printResultsForRows(const QList<int> &rows, bool with_dialog);
 private:
 	Ui::EventStatisticsWidget *ui;
@@ -48,7 +48,7 @@ private:
 	EventStatisticsModel *m_tableModel = nullptr;
 	QTimer *m_reloadLaterTimer = nullptr;
 	QTimer *m_autoRefreshTimer = nullptr;
-	QTimer *m_printResultsTimer = nullptr;
+	//QTimer *m_printResultsTimer = nullptr;
 };
 
 #endif // EVENTSTATISTICSWIDGET_H

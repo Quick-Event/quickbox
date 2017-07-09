@@ -48,7 +48,7 @@ class EventStatisticsModel : public quickevent::og::SqlTableModel
 	typedef quickevent::og::SqlTableModel Super;
 public:
 	enum Cols {
-		col_classes_name,
+		col_className,
 		col_mapCount,
 		col_freeMapCount,
 		col_runnersCount,
@@ -74,7 +74,7 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	: Super(parent)
 {
 	clearColumns(col_COUNT);
-	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
+	setColumn(col_className, ColumnDefinition("classes.name", tr("Class")));
 	setColumn(col_mapCount, ColumnDefinition("classdefs.mapCount", tr("Maps")));
 	setColumn(col_freeMapCount, ColumnDefinition("freeMapCount", tr("Free maps")));
 	setColumn(col_runnersCount, ColumnDefinition("runnersCount", tr("Runners")));
@@ -90,13 +90,6 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 			  .setToolTip(tr("Time since recent results printout."))
 			  .setCastType(qMetaTypeId<quickevent::og::TimeMs>())
 			  );
-	/*
-	setColumn(col_resultsPrintTS, ColumnDefinition("resultsPrintTS", tr("Results printed"))
-			  .setToolTip(tr("When results for this class were printed last time."))
-			  .setReadOnly(true)
-			  .setFormat(QStringLiteral("hh:mm:ss"))
-			  );
-	*/
 	{
 		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND competitors.classId=classes.id");
 		qf::core::sql::QueryBuilder qb_runners_count;
@@ -191,7 +184,7 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		QDateTime dt1 = tableRow(row_ix).value(QStringLiteral("resultsPrintTS")).toDateTime();
 		QDateTime dt2 = QDateTime::currentDateTime();
 		if(!dt1.isValid())
-			dt1 = dt2.addSecs(-99*60);
+			return QVariant{QVariant::Int};
 		int cnt = dt1.msecsTo(dt2);
 		return cnt;
 	}
@@ -301,7 +294,6 @@ void FooterModel::reload()
 		bool int_col = (type == QVariant::Int || type == QVariant::UInt || type == QVariant::LongLong || type == QVariant::ULongLong);
 		bool double_col = (type == QVariant::Double);
 		for (int j = 0; j < mm->rowCount(); ++j) {
-			//QModelIndex ix = mm->index(j, i);
 			if(int_col) {
 				isum += mm->value(j, i).toInt();
 			}
@@ -404,12 +396,6 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent)
 		else
 			autoRefreshTimer()->stop();
 	});
-	connect(ui->chkAutoPrint, &QCheckBox::toggled, [this](bool checked) {
-		if(checked)
-			printResultsTimer()->start();
-		else
-			printResultsTimer()->stop();
-	});
 
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
 	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
@@ -463,8 +449,6 @@ void EventStatisticsWidget::reload()
 	qfDebug() << m_tableModel->effectiveQuery();
 	qfDebug() << "query execution time:" << tm.elapsed() << "msec";
 	QTimer::singleShot(10, m_tableFooterView, &FooterView::syncSectionSizes);
-	if(ui->chkAutoPrint->isChecked())
-		checkAutoPrintResults();
 }
 
 void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
@@ -509,34 +493,28 @@ QTimer *EventStatisticsWidget::autoRefreshTimer()
 	return m_autoRefreshTimer;
 }
 
-QTimer *EventStatisticsWidget::printResultsTimer()
-{
-	if(!m_printResultsTimer) {
-		m_printResultsTimer = new QTimer(this);
-		m_printResultsTimer->setInterval(1000 * 60);
-		connect(m_printResultsTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadLater);
-	}
-	return m_printResultsTimer;
-}
-
 void EventStatisticsWidget::on_btReload_clicked()
 {
 	qfLogFuncFrame();
 	reload();
 }
 
-void EventStatisticsWidget::on_btPrintResults_clicked()
+void EventStatisticsWidget::on_btPrintResultsSelected_clicked()
 {
-	printResultsForRows(ui->tableView->selectedRowsIndexes(), true);
+	QList<int> rows;
+	for(int i : ui->tableView->selectedRowsIndexes())
+		rows << ui->tableView->toTableModelRowNo(i);
+	printResultsForRows(rows, true);
 }
 
 void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool with_dialog)
 {
+	qfLogFuncFrame() << rows;
 	QStringList class_names;
 	QList<int> classdefs_ids;
 	QList<int> runners_finished;
 	for(int i : rows) {
-		qf::core::utils::TableRow row = ui->tableView->tableRow(i);
+		qf::core::utils::TableRow row = m_tableModel->tableRow(i);
 		class_names << row.value(QStringLiteral("classes.name")).toString();
 		classdefs_ids << row.value(QStringLiteral("classdefs.id")).toInt();
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
@@ -553,6 +531,8 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool wit
 	}
 	else {
 		opts = Runs::ReportOptionsDialog::savedOptions();
+		opts.setClassFilterType((int)Runs::ReportOptionsDialog::FilterType::ClassName);
+		opts.setClassFilter(class_names.join(','));
 	}
 	QVariant td = runsPlugin()->currentStageResultsTableData(Runs::ReportOptionsDialog::sqlWhereExpression(opts));
 	QVariantMap props;
@@ -621,23 +601,31 @@ void EventStatisticsWidget::on_btOptions_clicked()
 	}
 }
 
-void EventStatisticsWidget::checkAutoPrintResults()
+void EventStatisticsWidget::on_btPrintResultsNew_clicked()
 {
 	qfLogFuncFrame();
+	reload();
 	QList<int> sel_rows;
 	EventStatisticsOptions::Options opts(options());
 	int print_new_results_cnt = opts.autoPrintNewRunners();
 	int print_new_results_sec = opts.autoPrintNewMin() * 60;
-	//QDateTime curr_dt = QDateTime::currentDateTime();
 	for (int i = 0; i < m_tableModel->rowCount(); ++i) {
 		int not_printed_cnt = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrinted).toInt();
-		int not_printed_sec = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrintedSec).toInt();
+		QVariant not_printed_sec_v = m_tableModel->value(i, EventStatisticsModel::col_resultsNotPrintedSec);
+		int not_printed_sec = not_printed_sec_v.toInt();
 		int not_finished = m_tableModel->value(i, EventStatisticsModel::col_runnersNotFinished).toInt();
-		if((not_printed_sec >= print_new_results_sec && not_printed_cnt > 0)
+		qfDebug() << i
+				  << m_tableModel->value(i, EventStatisticsModel::col_className).toString()
+				  << "not printed cnt:" << not_printed_cnt
+				  << "not printed sec:" << not_printed_sec << not_printed_sec_v
+				  << "not_finished:" << not_finished;
+		if((not_printed_sec_v.isNull() && not_printed_cnt > 0)
+		   || (not_printed_sec > 0 && not_printed_sec >= print_new_results_sec && not_printed_cnt > 0)
 		   || (not_printed_cnt >= print_new_results_cnt)
 		   || (not_printed_cnt > 0 && not_finished == 0) // last competitor in class
 		   ) {
 			sel_rows << i;
+			qfDebug() << i << "added";
 		}
 	}
 	if(sel_rows.count()) {

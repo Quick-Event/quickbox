@@ -384,7 +384,7 @@ ReportProcessor * ReportViewWidget::reportProcessor()
 void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 {
 	m_reportProcessor = proc;
-	connect(m_reportProcessor, SIGNAL(onPageProcessed()), this, SLOT(onPageProcessed()));
+	connect(m_reportProcessor, SIGNAL(pageProcessed()), this, SLOT(onPageProcessed()));
 }
 
 qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()

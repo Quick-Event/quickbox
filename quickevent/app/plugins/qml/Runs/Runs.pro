@@ -22,7 +22,7 @@ LIBS += \
 include (src/src.pri)
 
 RESOURCES += \
-#    $${PLUGIN_NAME}.qrc \
+    $${PLUGIN_NAME}.qrc \
 
 OTHER_FILES += \
 	$$PWD/qml/reports/* \
