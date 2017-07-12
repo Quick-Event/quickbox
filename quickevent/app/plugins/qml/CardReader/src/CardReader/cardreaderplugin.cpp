@@ -96,6 +96,29 @@ int CardReaderPlugin::findRunId(int si_id)
 	return ret;
 }
 
+bool CardReaderPlugin::isCardLent(int si_id, int run_id)
+{
+	bool card_lent = false;
+	bool card_returned = false;
+	if(run_id == 0)
+		run_id = findRunId(si_id);
+	qf::core::sql::Query q;
+	if(run_id > 0) {
+		q.exec("SELECT cardLent, cardReturned FROM runs WHERE id=" QF_IARG(run_id) );
+		if(q.next()) {
+			card_lent = q.value(0).toBool();
+			card_returned = q.value(1).toBool();
+		}
+	}
+	if(!card_lent && !card_returned) {
+		q.exec("SELECT siId FROM lentcards WHERE siid=" QF_IARG(si_id) );
+		if(q.next()) {
+			card_lent = q.value(0).toBool();
+		}
+	}
+	return (card_lent && !card_returned);
+}
+
 ReadCard CardReaderPlugin::readCard(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;

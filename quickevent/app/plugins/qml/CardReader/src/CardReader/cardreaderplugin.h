@@ -40,6 +40,7 @@ public:
 
 	int currentStageId();
 	int findRunId(int si_id);
+	bool isCardLent(int si_id, int run_id = 0);
 	ReadCard readCard(int card_id);
 	CheckedCard checkCard(int card_id, int run_id = 0);
 	CheckedCard checkCard(const ReadCard &read_card);

@@ -170,6 +170,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
 	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
 	int run_id = checked_card.runId();
+	bool is_card_lent = cardReaderPlugin()->isCardLent(card_id, run_id);
 	int current_stage_id = eventPlugin()->stageIdForRun(run_id);
 	int course_id = checked_card.courseId();
 	int current_standings = 0;
@@ -325,6 +326,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.setValue("currentStandings", current_standings);
 		tt.setValue("competitorsFinished", competitors_finished);
 		tt.setValue("timeMs", checked_card.timeMs());
+		tt.setValue("isCardLent", is_card_lent);
 
 		qfDebug() << "card:\n" << tt.toString();
 		ret["card"] = tt.toVariant();

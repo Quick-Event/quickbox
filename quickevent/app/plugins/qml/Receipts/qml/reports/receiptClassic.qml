@@ -131,6 +131,7 @@ Report {
 				hinset: 1
 				width: "%"
 				bottomBorder: Pen { basedOn: "black1" }
+				htmlExportAttributes: {"lpt_borderBottom": "="}
 				Frame {
 					layout: Frame.LayoutHorizontal
 					Para {
@@ -143,10 +144,6 @@ Report {
 						id: paraCheckTime
 						width: 15
 						textHAlign: Frame.AlignRight
-						textFn: function() {
-							var start00msec = bandCard.data("stageStartTimeMs");
-							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("checkTimeMs"));
-						}
 					}
 					Cell {
 						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
@@ -280,6 +277,31 @@ Report {
 			Frame {
 				width: "%"
 				bottomBorder: Pen { basedOn: "black2" }
+				htmlExportAttributes: {"lpt_borderTop": "="}
+				// fake para, just to run code and set visibility of cardLentFrame
+				Para {
+					omitEmptyText: true
+					textFn: function() {
+						var card_lent = bandCard.data("isCardLent");
+						cardLentFrame.visible = card_lent
+						return "";
+					}
+				}
+			}
+			Frame {
+				id: cardLentFrame
+				//visible: false
+				vinset: 1
+				htmlExportAttributes: {"lpt_borderBottom": "="}
+				fill: brushError
+				bottomBorder: Pen { basedOn: "black1" }
+				textStyle: myStyle.textStyleBold
+				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
+					width: "%"
+					textHAlign: Frame.AlignHCenter
+					text: qsTr("!!! CARD LENT !!!");
+				}
 			}
 			Para {
 				vinset: 1
