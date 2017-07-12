@@ -523,14 +523,14 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool wit
 	Runs::ReportOptionsDialog::Options opts;
 	if(with_dialog) {
 		Runs::ReportOptionsDialog dlg(this);
-		dlg.loadPersistentSettings();
+		dlg.setPersistentSettingsId("resultsReportOptions");
 		dlg.setClassNamesFilter(class_names);
 		if(!dlg.exec())
 			return;
 		opts = dlg.options();
 	}
 	else {
-		opts = Runs::ReportOptionsDialog::savedOptions();
+		opts = Runs::ReportOptionsDialog::savedOptions("resultsReportOptions");
 		opts.setClassFilterType((int)Runs::ReportOptionsDialog::FilterType::ClassName);
 		opts.setClassFilter(class_names.join(','));
 	}

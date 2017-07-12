@@ -18,7 +18,7 @@ class ReportOptionsDialog : public QDialog, public qf::qmlwidgets::framework::IP
 {
 	Q_OBJECT
 
-	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
+	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId NOTIFY persistentSettingsIdChanged)
 	Q_PROPERTY(bool classFilterVisible READ isClassFilterVisible WRITE setClassFilterVisible NOTIFY classFilterVisibleChanged)
 	Q_PROPERTY(bool startListOptionsVisible READ isStartListOptionsVisible WRITE setStartListOptionsVisible NOTIFY startListOptionsVisibleChanged)
 
@@ -47,12 +47,12 @@ public:
 	~ReportOptionsDialog();
 
 	QString persistentSettingsPath() Q_DECL_OVERRIDE;
-	//int exec() Q_DECL_OVERRIDE;
-	//int exec(const Options &options);
+	bool setPersistentSettingsId(const QString &id) Q_DECL_OVERRIDE;
+	Q_SIGNAL void persistentSettingsIdChanged(const QString &id);
 
 	void setOptions(const Options &options);
 	Options options() const;
-	static Options savedOptions();
+	static Options savedOptions(const QString &persistent_settings_id = QString());
 
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();

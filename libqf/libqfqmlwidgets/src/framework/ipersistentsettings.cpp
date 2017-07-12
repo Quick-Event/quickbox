@@ -18,9 +18,12 @@ QString IPersistentSettings::persistentSettingsId()
 	return m_persistentSettingsId;
 }
 
-void IPersistentSettings::setPersistentSettingsId(const QString &id)
+bool IPersistentSettings::setPersistentSettingsId(const QString &id)
 {
+	if(id == m_persistentSettingsId)
+		return false;
 	m_persistentSettingsId = id;
+	return true;
 }
 
 QString IPersistentSettings::persistentSettingsPath()

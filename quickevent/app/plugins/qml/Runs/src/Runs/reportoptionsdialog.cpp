@@ -41,6 +41,9 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
 		savePersistentSettings();
 	});
+	connect(this, &ReportOptionsDialog::persistentSettingsIdChanged, [this]() {
+		loadPersistentSettings();
+	});
 
 	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
 }
@@ -53,6 +56,14 @@ ReportOptionsDialog::~ReportOptionsDialog()
 QString ReportOptionsDialog::persistentSettingsPath()
 {
 	return persistent_settings_path_prefix + persistentSettingsId();
+}
+
+bool ReportOptionsDialog::setPersistentSettingsId(const QString &id)
+{
+	bool ret = qf::qmlwidgets::framework::IPersistentSettings::setPersistentSettingsId(id);
+	if(ret)
+		emit persistentSettingsIdChanged(id);
+	return ret;
 }
 
 void ReportOptionsDialog::setClassNamesFilter(const QStringList &class_names)
@@ -139,6 +150,7 @@ int ReportOptionsDialog::exec(const ReportOptionsDialog::Options &options)
 */
 void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options)
 {
+	qfLogFuncFrame() << options;
 	ui->cbxBreakAfterClassType->setCurrentIndex(options.breakType());
 	ui->grpClassFilter->setChecked(options.isUseClassFilter());
 	ui->chkClassFilterDoesntMatch->setChecked(options.isInvertClassFilter());
@@ -165,31 +177,38 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	return opts;
 }
 
-ReportOptionsDialog::Options ReportOptionsDialog::savedOptions()
+ReportOptionsDialog::Options ReportOptionsDialog::savedOptions(const QString &persistent_settings_id)
 {
 	QSettings settings;
-	QVariantMap m = settings.value(persistent_settings_path_prefix + default_persistent_settings_id).toMap();
+	QString id = persistent_settings_id;
+	if(id.isEmpty())
+		id = default_persistent_settings_id;
+	QVariantMap m = settings.value(persistent_settings_path_prefix + id).toMap();
 	//qfInfo() << persistentSettingsPath() << m;
 	return Options(m);
 }
 
 void ReportOptionsDialog::loadPersistentSettings()
 {
+	qfLogFuncFrame() << persistentSettingsPath();
 	if(persistentSettingsId().isEmpty())
 		return;
 	QSettings settings;
 	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
 	//qfInfo() << persistentSettingsPath() << m;
 	Options opts(m);
+	qfDebug() << opts;
 	setOptions(opts);
 }
 
 void ReportOptionsDialog::savePersistentSettings()
 {
+	qfLogFuncFrame() << persistentSettingsPath();
 	if(persistentSettingsId().isEmpty())
 		return;
 
 	Options opts = options();
+	qfDebug() << opts;
 	QSettings settings;
 	settings.setValue(persistentSettingsPath(), opts);
 }
