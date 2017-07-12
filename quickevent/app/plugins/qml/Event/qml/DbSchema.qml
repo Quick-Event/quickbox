@@ -375,6 +375,12 @@ Schema {
 				Index {fields: ['marking', 'stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
 			]
+		},
+		Table { name: 'lentcards'
+			fields: [
+				Field { name: 'siId'; type: Int { primaryKey: true } },
+				Field { name: 'note'; type: String { } }
+			]
 		}
 	]
 	inserts: [

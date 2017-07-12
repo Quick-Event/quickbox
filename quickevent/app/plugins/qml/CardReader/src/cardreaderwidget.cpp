@@ -481,12 +481,22 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
 	}
 	else {
+		bool card_lent = false;
+		bool card_returned = false;
 		qf::core::sql::Query q;
 		q.exec("SELECT cardLent, cardReturned FROM runs WHERE id=" QF_IARG(run_id) );
 		if(q.next()) {
-			if(q.value(0).toBool() && !q.value(1).toBool())
-				operatorAudioNotify();
+			card_lent = q.value(0).toBool();
+			card_returned = q.value(1).toBool();
 		}
+		if(!card_lent && !card_returned) {
+			q.exec("SELECT siId FROM lentcards WHERE siid=" QF_IARG(card.cardNumber()) );
+			if(q.next()) {
+				card_lent = q.value(0).toBool();
+			}
+		}
+		if(card_lent && !card_returned)
+			operatorAudioNotify();
 		if(punch_marking == quickevent::si::PunchRecord::MARKING_RACE) {
 			// create fake punch from finish station for speaker if it doesn't exists already
 			quickevent::si::PunchRecord punch;

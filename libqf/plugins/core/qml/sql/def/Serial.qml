@@ -1,7 +1,4 @@
 Int {
-
-	property bool primaryKey: false
-
 	function createSqlScript(options)
 	{
 		if(options.driverName.endsWith("SQLITE")) {

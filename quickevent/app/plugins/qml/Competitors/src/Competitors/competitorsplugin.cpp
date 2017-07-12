@@ -84,9 +84,6 @@ void CompetitorsPlugin::onRegistrationsDockVisibleChanged(bool on)
 		auto *rw = new RegistrationsWidget();
 		m_registrationsDockWidget->setWidget(rw);
 		rw->checkModel();
-		//if(eventPlugin()->isDbOpen())
-		//	rw->reload();
-		//m_registrationsDockWidget->loadPersistentSettingsRecursively();
 	}
 }
 

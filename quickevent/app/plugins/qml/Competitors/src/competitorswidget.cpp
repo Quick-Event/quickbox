@@ -2,6 +2,7 @@
 #include "ui_competitorswidget.h"
 #include "competitorwidget.h"
 #include "thispartwidget.h"
+#include "lentcardswidget.h"
 
 #include "Competitors/competitordocument.h"
 #include "Competitors/competitorsplugin.h"
@@ -17,6 +18,8 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/combobox.h>
+#include <qf/qmlwidgets/action.h>
+#include <qf/qmlwidgets/menubar.h>
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
@@ -115,6 +118,23 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxEditCompetitorOnPunch->setToolTip(tr("Edit or insert competitor on card insert into station."));
 		main_tb->addWidget(m_cbxEditCompetitorOnPunch);
 	}
+
+	qf::qmlwidgets::Action *act_print = part_widget->menuBar()->actionForPath("print");
+	act_print->setText(tr("&Print"));
+
+	qf::qmlwidgets::Action *act_cards = part_widget->menuBar()->actionForPath("cards");
+	act_cards->setText(tr("&Cards"));
+	{
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Lent cards"));
+		act_cards->addActionInto(a);
+		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
+			qf::qmlwidgets::dialogs::Dialog dlg(this);
+			auto *w = new LentCardsWidget();
+			dlg.setCentralWidget(w);
+			dlg.exec();
+		});
+	}
+
 }
 
 void CompetitorsWidget::lazyInit()

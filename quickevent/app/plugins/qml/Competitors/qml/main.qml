@@ -32,8 +32,7 @@ CompetitorsPlugin {
 
 	onNativeInstalled:
 	{
-		var a = root.partWidget.menuBar.actionForPath("print", true);
-		a.text = qsTr("&Print");
+		var a = root.partWidget.menuBar.actionForPath("print", false);
 		a.addActionInto(actPrintCompetitorsStatistics);
 	}
 
