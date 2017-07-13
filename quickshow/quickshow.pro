@@ -45,3 +45,22 @@ RC_FILE = $${MY_SUBPROJECT}.rc
 include ($$PWD/src/src.pri)
 
 OTHER_FILES += \
+
+quickshow-android {
+CONFIG += mobility
+MOBILITY =
+
+deployment.files += quickshow.conf
+deployment.path = /assets
+INSTALLS += deployment
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_EXTRA_LIBS = \
+        /home/fanda/proj/quickbox/quickshow/../../../programs/qt5/5.9.1/android_armv7/lib/libQt5Xml.so \
+        /home/fanda/proj/quickbox/quickshow/../../../programs/qt5/5.9.1/android_armv7/lib/libQt5Qml.so \
+        /home/fanda/proj/quickbox/quickshow/../../../programs/qt5/5.9.1/android_armv7/lib/libQt5Network.so \
+        /home/fanda/proj/quickbox/quickshow/../../../programs/qt5/5.9.1/android_armv7/lib/libQt5PrintSupport.so \
+        $$PWD/../../../programs/qt5/5.9.1/android_armv7/lib/libQt5Svg.so
+}
+}
+

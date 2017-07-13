@@ -24,6 +24,11 @@ else:qsqlmon {
 		tools \
 
 }
+else:quickshow-android {
+	SUBDIRS += \
+		quickshow \
+
+}
 else {
 	SUBDIRS += \
 		libsiut \
