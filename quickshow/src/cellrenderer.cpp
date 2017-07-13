@@ -132,7 +132,7 @@ StartListCellRenderer::StartListCellRenderer(const QSize &size, QWidget *widget)
 	m_cellAttributes.resize(ColumnCount);
 	m_cellAttributes[StartTime] = CellAttribute{6 * m_scaledLetterWidth, Qt::AlignRight};
 	m_cellAttributes[Name] = CellAttribute{0};
-	m_cellAttributes[Registration] = CellAttribute{5 * m_scaledLetterWidth};
+	m_cellAttributes[Registration] = CellAttribute{7 * m_scaledLetterWidth};
 	m_cellAttributes[SiId] = CellAttribute{8 * m_scaledLetterWidth, Qt::AlignRight};
 	int sum = m_cellSpacing;
 	for (int i = 0; i < ColumnCount; ++i) {
@@ -176,7 +176,7 @@ ResultsCellRenderer::ResultsCellRenderer(const QSize &size, QWidget *widget)
 	m_cellAttributes.resize(ColumnCount);
 	m_cellAttributes[Position] = CellAttribute{4 * m_scaledLetterWidth, Qt::AlignRight};
 	m_cellAttributes[Name] = CellAttribute{0};
-	m_cellAttributes[Registration] = CellAttribute{5 * m_scaledLetterWidth};
+	m_cellAttributes[Registration] = CellAttribute{7 * m_scaledLetterWidth};
 	m_cellAttributes[Time] = CellAttribute{7 * m_scaledLetterWidth, Qt::AlignRight};
 	m_cellAttributes[Status] = CellAttribute{5 * m_scaledLetterWidth};
 	int sum = m_cellSpacing;
