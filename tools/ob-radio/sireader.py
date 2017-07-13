@@ -488,7 +488,7 @@ class SIReader(object):
             # try at 38400 baud, extended protocol
             if self._debug:
                 print("starting at baud rate %s" % (self._serial.baudrate))
-            self._send_command(SIReader.C_SET_MS, SIReader.P_MS_DIRECT)
+            #self._send_command(SIReader.C_SET_MS, SIReader.P_MS_DIRECT)
         except (SIReaderException, SIReaderTimeout):
             try:
                 self._serial.baudrate = 4800
@@ -503,7 +503,7 @@ class SIReader(object):
 
         self.port = port
         self.baudrate = self._serial.baudrate
-        self._update_proto_config()
+        #self._update_proto_config()
 
     def _update_proto_config(self):
         # Read protocol configuration

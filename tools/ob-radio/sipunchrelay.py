@@ -43,7 +43,9 @@ class SIPunchReader(SIReader):
 			char = self._serial.read()
 			if timeout != None:
 				self._serial.timeout = old_timeout
-
+			#print('<<<<< %s' % hex(byte2int(char)))
+			if char == SIReader.WAKEUP:
+				char = self._serial.read()
 			if char == b'':
 				raise SIReaderTimeout('No data available')
 			elif char == SIReader.NAK:
@@ -134,6 +136,7 @@ def main():
 		try:
 			for key, mask in mysel.select(timeout = None):
 				punch_reader = key.data
+				#logger.info("#### reader %s" % (punch_reader))
 				cmd, raw_data = punch_reader.readCommand()
 				if cmd == SIReader.C_TRANS_REC:
 					#logger.info("==>> Sending punch %s" % (' '.join([hexlify(int2byte(c)).decode('ascii') for c in raw_data])))
@@ -154,10 +157,10 @@ if __name__ == "__main__":
 	while True:
 		sleep(1)
 		try:
-		    main()
+			main()
 		except Exception as e:
-			#pudb.set_trace()
-		    logger.error(str(type(e)) + ": " + str(e))
+		#	pudb.set_trace()
+			logger.error(str(type(e)) + ": " + str(e))
 
 
 
