@@ -152,8 +152,8 @@ Schema {
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } },
-				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
+				Field { name: 'note'; type: String { } },
 				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
@@ -379,6 +379,10 @@ Schema {
 		Table { name: 'lentcards'
 			fields: [
 				Field { name: 'siId'; type: Int { primaryKey: true } },
+				Field { name: 'ignored'; type: Boolean { }
+					notNull: true
+					defaultValue: true
+				},
 				Field { name: 'note'; type: String { } }
 			]
 		}

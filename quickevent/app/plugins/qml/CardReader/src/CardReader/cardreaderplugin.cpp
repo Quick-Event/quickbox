@@ -111,10 +111,9 @@ bool CardReaderPlugin::isCardLent(int si_id, int run_id)
 		}
 	}
 	if(!card_lent && !card_returned) {
-		q.exec("SELECT siId FROM lentcards WHERE siid=" QF_IARG(si_id) );
-		if(q.next()) {
-			card_lent = q.value(0).toBool();
-		}
+		q.exec("SELECT siId FROM lentcards WHERE NOT ignored AND siid=" QF_IARG(si_id) );
+		if(q.next())
+			card_lent = true;
 	}
 	return (card_lent && !card_returned);
 }

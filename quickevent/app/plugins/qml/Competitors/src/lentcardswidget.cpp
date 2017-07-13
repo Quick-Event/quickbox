@@ -21,6 +21,7 @@ LentCardsWidget::LentCardsWidget(QWidget *parent)
 		ui->tblCards->setPersistentSettingsId("tableView");
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		m->addColumn("siId", tr("SI"));
+		m->addColumn("ignored", tr("Ignored"));
 		m->addColumn("note", tr("Note"));
 		ui->tblCards->setTableModel(m);
 		m_tableModel = m;

@@ -175,14 +175,14 @@ void TxtImporter::importRankingCsv()
 		int n = 0;
 		while (!ts.atEnd()) {
 			QStringList line = reader.readCSVLineSplitted();
-			if(n++ == 0)
+			if(n++ == 0) // skip column names
 				continue;
 			QString registration = line.value(ColRegistration);
 			int pos = line.value(ColPos).toInt();
 			if(pos == 0 || registration.isEmpty()) {
 				QF_EXCEPTION(tr("Error reading CSV line: [%1]").arg(line.join(';')));
 			}
-			//qfInfo() << registration << "->" << pos;
+			qfDebug() << registration << "->" << pos;
 			q.bindValue(":ranking", pos);
 			q.bindValue(":registration", registration);
 			q.exec(qf::core::Exception::Throw);
