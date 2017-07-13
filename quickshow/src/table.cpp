@@ -27,6 +27,12 @@ Table::Table(QWidget *parent)
 	});
 }
 
+void Table::resetCellSize()
+{
+	m_cellSize = QSize();
+	updateRowCount();
+}
+
 void Table::paintEvent(QPaintEvent *event)
 {
 	Super::paintEvent(event);

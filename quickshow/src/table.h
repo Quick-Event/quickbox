@@ -12,6 +12,8 @@ private:
 	using Super = QFrame;
 public:
 	Table(QWidget *parent);
+
+	void resetCellSize();
 protected:
 	void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
 	void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;

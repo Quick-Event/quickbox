@@ -5,6 +5,8 @@
 
 #include <qf/core/log.h>
 
+#include <QContextMenuEvent>
+#include <QMenu>
 #include <QSettings>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,6 +20,48 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	Application *app = Application::instance();
 	AppCliOptions *cliopts = app->cliOptions();
+
+	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
+	{
+		QAction *a = new QAction(tr("Toggle full screen"));
+		a->setShortcut(QKeySequence::FullScreen);
+		connect(a, &QAction::triggered, [this]() {
+			if(isFullScreen()) {
+				showNormal();
+			}
+			else {
+				showFullScreen();
+			}
+		});
+		addAction(a);
+	}
+	{
+		QAction *a = new QAction(tr("Increase font size"));
+		a->setShortcut(QKeySequence::ZoomIn);
+		connect(a, &QAction::triggered, [this]() {
+			Application *app = Application::instance();
+			AppCliOptions *cliopts = app->cliOptions();
+			int fs = cliopts->fontScale();
+			fs += 10;
+			cliopts->setFontScale(fs);
+			ui->frmContent->resetCellSize();
+		});
+		addAction(a);
+	}
+	{
+		QAction *a = new QAction(tr("Decrease font size"));
+		a->setShortcut(QKeySequence::ZoomOut);
+		connect(a, &QAction::triggered, [this]() {
+			Application *app = Application::instance();
+			AppCliOptions *cliopts = app->cliOptions();
+			int fs = cliopts->fontScale();
+			fs -= 10;
+			cliopts->setFontScale(fs);
+			ui->frmContent->resetCellSize();
+		});
+		addAction(a);
+	}
+
 	QVariantMap event_info = app->eventInfo();
 	//qfInfo() << event_info;
 	ui->lblHeadCenter->setText(event_info.value("name").toString());
