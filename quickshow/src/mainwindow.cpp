@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	setContextMenuPolicy(Qt::ContextMenuPolicy::ActionsContextMenu);
 	{
-		QAction *a = new QAction(tr("Toggle full screen"));
+		QAction *a = new QAction(tr("Toggle full screen"), this);
 		a->setShortcut(QKeySequence::FullScreen);
 		connect(a, &QAction::triggered, [this]() {
 			if(isFullScreen()) {
@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		addAction(a);
 	}
 	{
-		QAction *a = new QAction(tr("Increase font size"));
+		QAction *a = new QAction(tr("Increase font size"), this);
 		a->setShortcut(QKeySequence::ZoomIn);
 		connect(a, &QAction::triggered, [this]() {
 			Application *app = Application::instance();
@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 		addAction(a);
 	}
 	{
-		QAction *a = new QAction(tr("Decrease font size"));
+		QAction *a = new QAction(tr("Decrease font size"), this);
 		a->setShortcut(QKeySequence::ZoomOut);
 		connect(a, &QAction::triggered, [this]() {
 			Application *app = Application::instance();
