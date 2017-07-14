@@ -107,7 +107,7 @@ Model::Model(QObject *parent)
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
-	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true));
+	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
 	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
 	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
@@ -306,16 +306,19 @@ void CardReaderWidget::reload()
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime")
-			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardLent, cardReturned")
+			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardReturned")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.select("COALESCE(runs.cardLent, false) OR (COALESCE(lentcards.siid, 0) > 0 AND runs.id IS NOT NULL) AS cardLent")
 			.from("cards")
+			.joinRestricted("cards.siId", "lentcards.siid", "NOT lentcards.ignored")
 			.join("cards.runId", "runs.id")
 			.join("runs.competitorId", "competitors.id")
 			.join("competitors.classId", "classes.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
 			.orderBy("cards.id DESC");
+	qfDebug() << qb.toString();
 	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
 }

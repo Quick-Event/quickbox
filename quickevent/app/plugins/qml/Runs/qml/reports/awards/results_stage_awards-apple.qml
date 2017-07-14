@@ -71,7 +71,6 @@ Report {
 						id: detail
 						objectName: "runnersDetail"
 						width: "%"
-						/*
 						Frame {height: 30}
 						Para {
 							width: "%"
@@ -79,25 +78,17 @@ Report {
 							textStyle: tsDiplom
 							text: "Diplom"
 						}
-						Frame {height: 30}
+						Frame {height: 20}
 						Frame {
 							width: "%"
 							halign: Frame.AlignHCenter
+							hinset: 20
 							Image {
-								height: 50
-								dataSource: "/home/fanda/misc/botas/2015/triko/HD.svg"
+								height: 70
+								dataSource: "./images/apple.svg"
 							}
 						}
-						Frame {height: 35}
-						*/
-						Frame {height: 176}
-						Para {
-							width: "%"
-							halign: Frame.AlignHCenter
-							textStyle: tsNormal
-							text: "H.S.H Vysočina Cup 2017 E1"
-						}
-						Frame {height: 5}
+						Frame {height: 25}
 						Para {
 							width: "%"
 							halign: Frame.AlignHCenter

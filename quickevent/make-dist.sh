@@ -15,7 +15,7 @@ SRC_DIR=/home/fanda/proj/quickbox
 WORK_DIR=/home/fanda/t/_distro
 DISTRO_NAME=quickevent-linux64-$DISTRO_VER
 # QT_DIR=/home/fanda/programs/qt/5.5/gcc
-QT_DIR=/home/fanda/programs/qt5/5.9/gcc_64
+QT_DIR=/home/fanda/programs/qt5/5.9.1/gcc_64
 QMAKE=$QT_DIR/bin/qmake
 
 BUILD_DIR=$WORK_DIR/_build/gcc_64
