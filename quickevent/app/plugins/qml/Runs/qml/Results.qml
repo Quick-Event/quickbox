@@ -183,14 +183,16 @@ QtObject {
 
 	function printCurrentStageAwards()
 	{
-		var opts = runsPlugin.printAwardsOptionsWithDialog();
+		var event_plugin = FrameWork.plugin("Event");
+		var opts = {stageId: event_plugin.currentStageId}
+		opts = runsPlugin.printAwardsOptionsWithDialog(opts);
 		var rep_path = opts.reportPath;
 		if(!rep_path)
 			return;
 
 		//var n = opts.numPlaces;
 		//var tt = currentStageAwardsTable(n);
-		var td = runsPlugin.currentStageResultsTableData("", opts.numPlaces);
+		var td = runsPlugin.stageResultsTableData(opts.stageId, "", opts.numPlaces);
 		var tt = new TreeTable.Table();
 		tt.setData(td);
 
@@ -327,21 +329,23 @@ QtObject {
 										   , {stagesCount: dlg.stagesCount});
 		}
 		dlg.destroy();
-		//var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
-		//var places = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 9999, 1);
 	}
 
 	function printNStageAwards()
 	{
 		Log.info("runs printNStageAwards triggered");
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
-		var stage = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
-		var places = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of places in each class:"), 3, 1);
-		var tt = nStagesResultsTable(stage, places);
-		console.info(tt.toString());
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages_awards.qml", tt.data(), qsTr("Stage awards"));
+		var opts = {stageId: event_plugin.currentStageId}
+		opts = runsPlugin.printAwardsOptionsWithDialog(opts);
+		var rep_path = opts.reportPath;
+		if(!rep_path)
+			return;
+		var tt = nStagesResultsTable(opts.stageId, opts.numPlaces);
+		QmlWidgetsSingleton.showReport(rep_path
+									   , tt.data()
+									   , qsTr("Stage awards")
+									   , ""
+									   , {eventConfig: FrameWork.plugin("Event").eventConfig});
 	}
-
 }
 

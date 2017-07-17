@@ -152,7 +152,7 @@ QtObject {
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
 		if(class_group === 'H') {
-			reportModel.queryBuilder.where("classes.name LIKE 'H%'")
+			reportModel.queryBuilder.where("classes.name LIKE 'H%' AND classes.name <> 'HDR'")
 		}
 		else if(class_group === 'D'){
 			reportModel.queryBuilder.where("classes.name LIKE 'D%'")
@@ -406,8 +406,9 @@ QtObject {
 		var start00_datetime = event_plugin.stageStartDateTime(runsPlugin.selectedStageId);
 		//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
 		var start00_epoch_sec = start00_datetime.getTime();
-
-		var tt1 = startListClassesTable("", true);
+		var print_vacants = !(event_plugin.eventConfig.stageCount === runsPlugin.selectedStageId && event_plugin.eventConfig.isHandicap);
+		console.debug("print_vacants", print_vacants);
+		var tt1 = startListClassesTable("", print_vacants);
 
 		var xml_root = ['StartList' ,
 						{ "xmlns": "http://www.orienteering.org/datastandard/3.0",

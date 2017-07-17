@@ -21,6 +21,7 @@ public:
 	void init(const QString &plugin_home);
 
 	QVariantMap printOptions() const;
+	void setPrintOptions(const QVariantMap &opts);
 private:
 	Ui::PrintAwardsOptionsDialogWidget *ui;
 };

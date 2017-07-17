@@ -41,7 +41,14 @@ QVariantMap PrintAwardsOptionsDialogWidget::printOptions() const
 	QVariantMap ret;
 	if(ui->edReportPath->currentIndex() >= 0) {
 		ret["numPlaces"] = ui->edNumPlaces->value();
+		ret["stageId"] = ui->edStageNumber->value();
 		ret["reportPath"] = ui->edReportPath->currentData().toString();
 	}
 	return ret;
+}
+
+void PrintAwardsOptionsDialogWidget::setPrintOptions(const QVariantMap &opts)
+{
+	ui->edNumPlaces->setValue(opts.value("numPlaces").toInt());
+	ui->edStageNumber->setValue(opts.value("stageId").toInt());
 }

@@ -50,6 +50,7 @@ public:
 	Q_INVOKABLE int courseForRun(int run_id);
 	Q_INVOKABLE int cardForRun(int run_id);
 	Q_INVOKABLE QVariant currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class = 0);
+	Q_INVOKABLE QVariant stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class = 0);
 	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id, int places = -1, bool exclude_disq = true);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1, bool exclude_disq = true);
 	Q_INVOKABLE void showRunsTable(int stage_id, int class_id, bool show_offrace, const QString &sort_column = QString(), int select_competitor_id = 0);
@@ -59,7 +60,7 @@ public:
 
 	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
 
-	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog();
+	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
 private:
 	Q_SLOT void onInstalled();
 

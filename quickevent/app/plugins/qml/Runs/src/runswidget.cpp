@@ -256,7 +256,7 @@ QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &e
 
 QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_condition)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "stage:" << stage_id << "class:" << class_id;
 	QMap<int, int> ret;
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "id, competitorId")

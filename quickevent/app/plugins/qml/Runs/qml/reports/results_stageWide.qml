@@ -94,10 +94,7 @@ Report {
 								width: 10
 								halign: Frame.AlignRight
 								textFn: function() {
-									var pos = runnersDetail.rowData("pos");
-									if(pos)
-										return pos + ".";
-									return "";
+									return runnersDetail.rowData("pos");
 								}
 							}
 							Cell {

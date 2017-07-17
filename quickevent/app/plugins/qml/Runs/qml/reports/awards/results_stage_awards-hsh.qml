@@ -95,7 +95,7 @@ Report {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: tsNormal
-							text: "H.S.H Vysočina Cup 2017 E1"
+							text: "H.S.H Vysočina Cup 2017"
 						}
 						Frame {height: 5}
 						Para {
@@ -109,7 +109,7 @@ Report {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: tsNormal
-							text: "za " + detail.data(detail.currentIndex, "pos") + ". místo v kategorii " + class_detail.data(class_detail.currentIndex, "classes.name")
+							text: "za " + detail.data(detail.currentIndex, "pos") + " místo v kategorii " + class_detail.data(class_detail.currentIndex, "classes.name")
 						}
 						Frame { height: 30 }
 						Frame {

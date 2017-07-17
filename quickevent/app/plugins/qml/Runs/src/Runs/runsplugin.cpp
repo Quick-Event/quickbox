@@ -373,6 +373,12 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool 
 
 QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class)
 {
+	int stage_id = selectedStageId();
+	return stageResultsTableData(stage_id, class_filter, max_competitors_in_class);
+}
+
+QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class)
+{
 	//var event_plugin = FrameWork.plugin("Event");
 	qf::core::model::SqlTableModel model;
 	{
@@ -389,14 +395,11 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 		}
 		model.setQueryBuilder(qb, true);
 	}
-
-	int stage_id = selectedStageId();
 	{
 		QVariantMap qm;
 		qm["stage_id"] = stage_id;
 		model.setQueryParameters(qm);
 	}
-
 	//console.info("currentStageTable query:", reportModel.effectiveQuery());
 	model.reload();
 	qf::core::utils::TreeTable tt = model.toTreeTable();
@@ -428,7 +431,8 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 		model.setQueryParameters(qm);
 		model.reload();
 		qf::core::utils::TreeTable tt2 = model.toTreeTable();
-		tt2.appendColumn("pos", QVariant::Int);
+		tt2.appendColumn("pos", QVariant::String);
+		tt2.appendColumn("npos", QVariant::Int);
 		int prev_time_ms = 0;
 		int prev_pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
@@ -441,10 +445,12 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 					pos = prev_pos;
 				else
 					prev_pos = pos;
-				row.setValue("pos", pos);
+				row.setValue("pos", QString::number(pos) + '.');
+				row.setValue("npos", pos);
 			}
 			else {
-				row.setValue("pos", 0);
+				row.setValue("pos", QString());
+				row.setValue("npos", 0);
 			}
 			prev_time_ms = time_ms;
 		}
@@ -454,11 +460,12 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 	return tt.toVariant();
 }
 
-QVariantMap RunsPlugin::printAwardsOptionsWithDialog()
+QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 {
 	qfInfo() << Q_FUNC_INFO;
 	QVariantMap ret;
 	PrintAwardsOptionsDialogWidget *w = new PrintAwardsOptionsDialogWidget();
+	w->setPrintOptions(opts);
 	qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, partWidget());
 	dlg.setCentralWidget(w);
 	QString plugin_home = manifest()->homeDir();
