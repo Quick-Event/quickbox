@@ -32,7 +32,7 @@ public slots:
 	int currentStageId() const;
 	int importId() const;
 	int handicapLength() const;
-	bool isHandicap() const {handicapLength() > 0;}
+	bool isHandicap() const {return handicapLength() > 0;}
 	QString director() const;
 	QString mainReferee() const;
 	QDateTime eventDateTime() const;
