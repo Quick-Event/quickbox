@@ -776,6 +776,83 @@ void TableView::selectCurrentRow()
 		selectRow(ix.row());
 }
 
+qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, const QVariantList &_exported_columns, const qf::core::model::TableModel::TreeTableExportOptions &opts) const
+{
+	qfu::TreeTable ret(table_name);
+	QVariantList exported_columns = _exported_columns;
+	QAbstractItemModel *proxy_model = model();
+	if(!proxy_model)
+		return ret;
+	core::model::TableModel *table_model = tableModel();
+	if(!table_model)
+		return ret;
+	const core::utils::Table &table = table_model->table();
+	if(exported_columns.isEmpty()) {
+		for(int ix=0; ix<table.columnCount(); ix++) {
+			QVariantMap col;
+			col[QStringLiteral("index")] = ix;
+			exported_columns << col;
+		}
+	}
+	bool raw_values = opts.isExportRawValues();
+	for(int i=0; i<exported_columns.count(); i++) {
+		QVariantMap col = exported_columns[i].toMap();
+		QString cap = col.value("caption").toString();
+		int ix = col.value("index").toInt();
+		qfu::TreeTableColumn tt_col;
+		if(col.value("origin") == QLatin1String("table")) {
+			QVariant::Type t = table.field(ix).type();
+			tt_col = ret.appendColumn(table.field(ix).name(), t, cap);
+		}
+		else {
+			QVariant::Type t;
+			if(raw_values) {
+				qfu::Table::Field fld = table_model->tableField(ix);
+				t = fld.type();
+				//qfWarning() << fld.toString();
+			}
+			else {
+				t = (QVariant::Type)proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
+			}
+			tt_col = ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
+		}
+		tt_col.setWidth(col.value("width").toString());
+	}
+
+	/// export data
+	{
+		qfu::SValue srows;
+		for(int i=0; i<proxy_model->rowCount(); i++) {
+			QVariantList srow_lst;
+			core::utils::TableRow tbl_row = tableRow(i);
+			for(int j=0; j<exported_columns.count(); j++) {
+				QVariantMap col = exported_columns[j].toMap();
+				QVariant val;
+				int ix = col.value("index").toInt();
+				if(col.value("origin") == QLatin1String("table")) {
+					val = tbl_row.value(ix);
+					//qfWarning() << col << val.typeName() << "val:" << val.toString();
+				}
+				else {
+					QModelIndex mix = proxy_model->index(i, ix);
+					if(raw_values) {
+						val = proxy_model->data(mix, core::model::TableModel::RawValueRole);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
+					}
+					else {
+						val = proxy_model->data(mix, Qt::DisplayRole);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
+					}
+				}
+				srow_lst << val;
+			}
+			srows[i] = srow_lst;
+		}
+		ret[qfu::TreeTable::KEY_ROWS] = srows.value();
+	}
+	return ret;
+}
+
 void TableView::exportReport_helper(const QVariant& _options)
 {
 	try {
@@ -786,14 +863,9 @@ void TableView::exportReport_helper(const QVariant& _options)
 		qfu::TreeTable ttable;
 
 		{
-			//QVariantList exported_columns = w->exportedColumns();
-			qfc::model::TableModel *m = tableModel();
-			//int elide_at = model()->elideDisplayedTextAt();
-			//model()->setElideDisplayedTextAt(0);
 			qfc::model::TableModel::TreeTableExportOptions opts;
 			//opts.setExportRawValues(true);
-			ttable = m->toTreeTable("data", exported_columns, opts);
-			//model()->setElideDisplayedTextAt(elide_at);
+			ttable = toTreeTable("data", exported_columns, opts);
 		}
 
 		{

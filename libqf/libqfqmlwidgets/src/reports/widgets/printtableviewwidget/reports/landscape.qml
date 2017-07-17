@@ -35,16 +35,20 @@ Report {
 		}
 		Band {
 			id: band
-			vinset: 10
+			vinset: 5
 			width: "%"
 			height: "%"
 			createFromData: true
 			Frame {
 				objectName: "frame00"
 				width: "%"
+				vinset: 5
 				Para {
 					textFn: function() {return band.data("title");}
 					textStyle: TextStyle {basedOn: "big"}
+				}
+				Para {
+					textFn: function() {return band.data("note");}
 				}
 			}
 		}

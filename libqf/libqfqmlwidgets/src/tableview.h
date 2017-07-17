@@ -167,6 +167,7 @@ private:
 	void seek(const QString &prefix_str);
 	void cancelSeek();
 
+	qf::core::utils::TreeTable toTreeTable(const QString& table_name = QString(), const QVariantList& exported_columns = QVariantList(), const qf::core::model::TableModel::TreeTableExportOptions &opts = qf::core::model::TableModel::TreeTableExportOptions()) const;
 	void exportReport_helper(const QVariant& _options);
 	void exportCSV_helper(const QVariant& export_options);
 protected:

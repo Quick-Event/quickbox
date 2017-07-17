@@ -200,6 +200,9 @@ public:
 	int columnIndex(const QString &column_name) const;
 	int columnType(int column_index) const;
 
+	int tableFieldIndex(int column_index) const;
+	qf::core::utils::Table::Field tableField(int column_index) const;
+
 	static QColor contrastTextColor(const QColor &background_color);
 protected:
 	virtual void checkColumns();
@@ -209,8 +212,6 @@ protected:
 	virtual QVariant rawValueToEdit(int column_index, const QVariant &val) const;
 	virtual QVariant editValueToRaw(int column_index, const QVariant &val) const;
 
-	int tableFieldIndex(int column_index) const;
-	qf::core::utils::Table::Field tableField(int column_index) const;
 	/// @returns: index of inserted line or -1
 	virtual int insertTableRow(int before_row);
 	virtual bool removeTableRow(int row_ix, bool throw_exc = false);
