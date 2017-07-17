@@ -144,6 +144,10 @@ Report {
 						id: paraCheckTime
 						width: 15
 						textHAlign: Frame.AlignRight
+						textFn: function() {
+							var start00msec = bandCard.data("stageStartTimeMs");
+							return TimeExt.msecToString_hhmmss(start00msec + bandCard.data("checkTimeMs"));
+						}
 					}
 					Cell {
 						htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
