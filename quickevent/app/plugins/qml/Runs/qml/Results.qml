@@ -264,7 +264,7 @@ QtObject {
 				else if (tt2.value(j, "notCompeting"))
 					competitor_status = 'NotCompeting'
 				if (competitor_status == 'OK')
-					result.push(['ResultPosition', tt2.value(j, "pos")])
+					result.push(['ResultPosition', tt2.value(j, "npos")])
 				result.push(['CompetitorStatus', {"value": competitor_status}])
 				/*
 				  according to DTD
