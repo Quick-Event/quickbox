@@ -303,6 +303,7 @@ void CardReaderWidget::reset()
 
 void CardReaderWidget::reload()
 {
+	QString driver_name = m_cardsModel->sqlConnection().driverName();
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime")
@@ -310,7 +311,9 @@ void CardReaderWidget::reload()
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-			.select("COALESCE(runs.cardLent, false) OR (COALESCE(lentcards.siid, 0) > 0 AND runs.id IS NOT NULL) AS cardLent")
+			.select(QStringLiteral("COALESCE(runs.cardLent, ") +
+					(driver_name.endsWith(QLatin1String("SQLITE"))? "0": "false")
+					+ ") OR (COALESCE(lentcards.siid, 0) > 0 AND runs.id IS NOT NULL) AS cardLent")
 			.from("cards")
 			.joinRestricted("cards.siId", "lentcards.siid", "NOT lentcards.ignored")
 			.join("cards.runId", "runs.id")
