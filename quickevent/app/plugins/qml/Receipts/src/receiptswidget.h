@@ -62,6 +62,7 @@ private:
 	bool printReceipt(int card_id);
 
 	void lazyInit();
+	void loadReceptList();
 	void updateReceiptsPrinterLabel();
 
 	void createActions();

@@ -3,10 +3,12 @@ import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
 import "qrc:/qf/core/qml/js/timeext.js" as TimeExt
 import "qrc:/quickevent/js/ogtime.js" as OGTime
+import "private" as Private
 
 Report {
 	id: root
 	property int courseLength: 0
+	property bool printLotteryTicket: false
 	//debugLevel: 1
 	styleSheet: StyleSheet {
 		basedOn: ReportStyleCommon {
@@ -47,8 +49,8 @@ Report {
 				width: "%"
 				layout: Frame.LayoutVertical
 				bottomBorder: Pen { basedOn: "black2" }
-				LotteryTicket {
-					visible: false
+				Private.LotteryTicket {
+					visible: printLotteryTicket
 				}
 				Frame {
 					htmlExportAttributes: {"lpt_textAlign": "left", "lpt_borderTop": "=", "lpt_borderBottom": "-"}

@@ -38,6 +38,7 @@
 #include <QJSValue>
 #include <QPrinterInfo>
 #include <QTimer>
+#include <QDirIterator>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -88,6 +89,10 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
 
+	connect(ui->lstReceipt, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), [this](int ix) {
+		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(ix).toString());
+	});
+
 	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }
 
@@ -98,6 +103,7 @@ ReceiptsWidget::~ReceiptsWidget()
 
 void ReceiptsWidget::lazyInit()
 {
+	loadReceptList();
 	updateReceiptsPrinterLabel();
 }
 
@@ -265,6 +271,34 @@ bool ReceiptsWidget::printReceipt(int card_id)
 		}
 	}
 	return false;
+}
+
+void ReceiptsWidget::loadReceptList()
+{
+	ui->lstReceipt->clear();
+	QString receipts_dir = receiptsPlugin()->manifest()->homeDir() + "/reports/receipts";
+	QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
+	while (it.hasNext()) {
+		it.next();
+		QFileInfo fi = it.fileInfo();
+		QString path = fi.filePath();
+		QString name = path.mid(receipts_dir.length() + 1);
+		if(name.startsWith("private/", Qt::CaseInsensitive))
+			continue;
+		name = name.mid(0, name.indexOf(".qml", Qt::CaseInsensitive));
+		ui->lstReceipt->addItem(name, path);
+	}
+	QString curr_path = receiptsPlugin()->currentReceiptPath();
+	for (int i = 0; i < ui->lstReceipt->count(); ++i) {
+		if(ui->lstReceipt->itemData(i).toString() == curr_path) {
+			ui->lstReceipt->setCurrentIndex(i);
+			break;
+		}
+	}
+	if(ui->lstReceipt->currentIndex() < 0) {
+		ui->lstReceipt->setCurrentIndex(0);
+		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(0).toString());
+	}
 }
 
 void ReceiptsWidget::updateReceiptsPrinterLabel()

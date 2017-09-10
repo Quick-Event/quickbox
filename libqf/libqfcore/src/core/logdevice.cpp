@@ -628,7 +628,7 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	}
 #endif
 
-	std::fprintf(m_file, "|%c", Log::levelName(level)[0]);
+	std::fprintf(m_file, "|%c|", Log::levelName(level)[0]);
 	QString module = moduleFromFileName(context.file);
 	if(!module.isEmpty()) {
 		std::fprintf(m_file, "[%s:%d]", qPrintable(module), context.line);

@@ -64,6 +64,23 @@ Event::EventPlugin *ReceiptsPlugin::eventPlugin()
 	return ret;
 }
 
+QString ReceiptsPlugin::currentReceiptPath()
+{
+	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
+	printer_options_key += "receipts/current";
+	qf::core::utils::Settings settings;
+	QString s = settings.value(printer_options_key).toString();
+	return s;
+}
+
+void ReceiptsPlugin::setCurrentReceiptPath(const QString &path)
+{
+	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
+	printer_options_key += "receipts/current";
+	qf::core::utils::Settings settings;
+	settings.setValue(printer_options_key, path);
+}
+
 ReceiptsPrinterOptions ReceiptsPlugin::receiptsPrinterOptions()
 {
 	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
@@ -354,14 +371,14 @@ void ReceiptsPlugin::previewCard(int card_id)
 void ReceiptsPlugin::previewReceipt(int card_id)
 {
 	//QMetaObject::invokeMethod(this, "previewReceipeClassic", Qt::DirectConnection, Q_ARG(QVariant, card_id));
-	previewReceipt_classic(card_id);
+	previewReceipt(card_id, currentReceiptPath());
 }
 
 bool ReceiptsPlugin::printReceipt(int card_id)
 {
 	QF_TIME_SCOPE("ReceiptsPlugin::printReceipt()");
 	try {
-		printReceipt_classic(card_id);
+		printReceipt(card_id, currentReceiptPath());
 		return true;
 	}
 	catch(const qf::core::Exception &e) {
@@ -385,14 +402,14 @@ bool ReceiptsPlugin::printCard(int card_id)
 	return false;
 }
 
-void ReceiptsPlugin::previewReceipt_classic(int card_id)
+void ReceiptsPlugin::previewReceipt(int card_id, const QString &receipt_path)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	//qfInfo() << "previewReceipe_classic, card id:" << card_id;
 	auto *w = new qf::qmlwidgets::reports::ReportViewWidget();
 	w->setPersistentSettingsId("cardPreview");
 	w->setWindowTitle(tr("Receipt"));
-	w->setReport(manifest()->homeDir() + "/reports/receiptClassic.qml");
+	w->setReport(receipt_path);
 	QVariantMap dt = receiptTablesData(card_id);
 	for(auto key : dt.keys())
 		w->setTableData(key, dt.value(key));
@@ -402,11 +419,11 @@ void ReceiptsPlugin::previewReceipt_classic(int card_id)
 	dlg.exec();
 }
 
-void ReceiptsPlugin::printReceipt_classic(int card_id)
+void ReceiptsPlugin::printReceipt(int card_id, const QString &receipt_path)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	QVariantMap dt = receiptTablesData(card_id);
-	receiptsPrinter()->printReceipt(manifest()->homeDir() + "/reports/receiptClassic.qml", dt);
+	receiptsPrinter()->printReceipt(receipt_path, dt);
 }
 
 }
