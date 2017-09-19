@@ -60,8 +60,8 @@ private:
 	 * @return list of runs.id for each club sorted by their count, longest list of runners is first
 	 */
 	QList< QList<int> > runnersByClubSortedByCount(int stage_id, int class_id, QMap<int, QString> &runner_id_to_club);
-	QList<int> runsForClass(int stage_id, int class_id, const QString &extra_condition = QString()); // QList<run_id>
-	QMap<int, int> competitorsForClass(int stage_id, int class_id, const QString &extra_condition = QString()); //competitor_id -> run_id
+	QList<int> runsForClass(int stage_id, int class_id, const QString &extra_where_condition = QString(), const QString &order_by = QString()); // QList<run_id>
+	QMap<int, int> competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition = QString(), const QString &order_by = QString()); //competitor_id -> run_id
 
 	bool isLockedForDrawing(int class_id, int stage_id);
 	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min);
@@ -70,7 +70,7 @@ private:
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber,
 		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,
-		ShiftTimes, GroupedC, GroupedCB, GroupedRanking};
+		KeepOrder, GroupedC, GroupedCB, GroupedRanking};
 
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;

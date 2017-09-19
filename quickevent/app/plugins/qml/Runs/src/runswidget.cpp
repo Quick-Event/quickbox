@@ -54,7 +54,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 	ui->cbxDrawMethod->addItem(tr("Equidistant clubs"), static_cast<int>(DrawMethod::EquidistantClubs));
 	ui->cbxDrawMethod->addItem(tr("Stage 1 reverse order"), static_cast<int>(DrawMethod::StageReverseOrder));
 	ui->cbxDrawMethod->addItem(tr("Handicap"), static_cast<int>(DrawMethod::Handicap));
-	ui->cbxDrawMethod->addItem(tr("Shift times"), static_cast<int>(DrawMethod::ShiftTimes));
+	ui->cbxDrawMethod->addItem(tr("Keep runners order"), static_cast<int>(DrawMethod::KeepOrder));
 	ui->frmDrawing->setVisible(false);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
@@ -247,14 +247,14 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	return ret;
 }
 
-QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &extra_condition)
+QList<int> RunsWidget::runsForClass(int stage_id, int class_id, const QString &extra_where_condition, const QString &order_by)
 {
 	qfLogFuncFrame();
-	QList<int> ret = competitorsForClass(stage_id, class_id, extra_condition).values();
+	QList<int> ret = competitorsForClass(stage_id, class_id, extra_where_condition, order_by).values();
 	return ret;
 }
 
-QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_condition)
+QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const QString &extra_where_condition, const QString &order_by)
 {
 	qfLogFuncFrame() << "stage:" << stage_id << "class:" << class_id;
 	QMap<int, int> ret;
@@ -263,8 +263,10 @@ QMap<int, int> RunsWidget::competitorsForClass(int stage_id, int class_id, const
 			.from("competitors")
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id), "JOIN")
 			.where("competitors.classId=" QF_IARG(class_id));
-	if(!extra_condition.isEmpty())
-		qb.where(extra_condition);
+	if(!extra_where_condition.isEmpty())
+		qb.where(extra_where_condition);
+	if(!order_by.isEmpty())
+		qb.orderBy(order_by);
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	while(q.next()) {
@@ -417,33 +419,6 @@ void RunsWidget::on_btDraw_clicked()
 	try {
 		qf::core::sql::Transaction transaction(qfs::Connection::forName());
 		for(int class_id : class_ids) {
-			if(draw_method == DrawMethod::ShiftTimes) {
-				qfs::Query q(transaction.connection());
-				QString class_name;
-				q.exec("SELECT name FROM classes WHERE id=" QF_IARG(class_id), qf::core::Exception::Throw);
-				if(q.next())
-					class_name = q.value(0).toString();
-
-				int offset_msec = 0;
-				offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset for class %1 [min]:").arg(class_name), 0, -1000, 1000, 1);
-				if(offset_msec == 0)
-					continue;
-				offset_msec *= 60 * 1000;
-
-				q.prepare("UPDATE runs SET startTimeMs = startTimeMs + :offset WHERE id=:id", qf::core::Exception::Throw);
-				for(int id : runsForClass(stage_id, class_id)) {
-					q.bindValue(QStringLiteral(":offset"), offset_msec);
-					q.bindValue(QStringLiteral(":id"), id);
-					q.exec(qf::core::Exception::Throw);
-				}
-				int last_start_time = 0;
-				q.exec("SELECT lastStartTimeMin FROM classdefs WHERE classId=" QF_IARG(class_id) " AND stageId=" QF_IARG(stage_id), qf::core::Exception::Throw);
-				if(q.next())
-					last_start_time = q.value(0).toInt();
-				saveLockedForDrawing(class_id, stage_id, true, last_start_time + offset_msec / 60 / 1000);
-				continue;
-			}
-
 			int handicap_length_ms = eventPlugin()->eventConfig()->handicapLength() * 60 * 1000;
 			QVector<int> handicap_times;
 			qf::core::sql::QueryBuilder qb;
@@ -459,6 +434,9 @@ void RunsWidget::on_btDraw_clicked()
 			if(draw_method == DrawMethod::RandomNumber) {
 				runners_draw_ids = runsForClass(stage_id, class_id);
 				shuffle(runners_draw_ids);
+			}
+			else if(draw_method == DrawMethod::KeepOrder) {
+				runners_draw_ids = runsForClass(stage_id, class_id, QString(), "runs.startTimeMs");
 			}
 			else if(draw_method == DrawMethod::GroupedC) {
 				QList<int> group1 = runsForClass(stage_id, class_id, "licence='C' or licence is null");
