@@ -206,6 +206,15 @@ QDateTime EventPlugin::stageStartDateTime(int stage_id)
 	return dt;
 }
 
+void EventPlugin::setStageData(int stage_id, const QString &key, const QVariant &value)
+{
+	Event::StageDocument doc;
+	doc.load(stage_id);
+	doc.setValue(key, value);
+	doc.save();
+	clearStageDataCache();
+}
+
 StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;

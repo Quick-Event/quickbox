@@ -158,6 +158,9 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m_courseCodesModel = m;
 	}
 	connect(ui->tblClasses, SIGNAL(currentRowChanged(int)), this, SLOT(reloadCourseCodes()));
+	connect(ui->chkUseAllMaps, &QCheckBox::toggled, [this](bool checked) {
+		eventPlugin()->setStageData(selectedStageId(), QStringLiteral("useAllMaps"), checked);
+	});
 }
 
 ClassesWidget::~ClassesWidget()
@@ -322,6 +325,7 @@ void ClassesWidget::reload()
 		}
 		m_courseItemDelegate->setCourses(courses);
 	}
+	ui->chkUseAllMaps->setChecked(eventPlugin()->stageData(stage_id).isUseAllMaps());
 	reloadCourseCodes();
 }
 

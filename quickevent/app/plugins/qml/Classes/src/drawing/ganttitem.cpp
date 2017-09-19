@@ -70,8 +70,8 @@ Event::EventPlugin *GanttItem::eventPlugin()
 void GanttItem::load(int stage_id)
 {
 	qfLogFuncFrame();
-	Event::StageData stage = eventPlugin()->stageData(stage_id);
-	DrawingConfig dc(stage.drawingConfig());
+	Event::StageData stage_data = eventPlugin()->stageData(stage_id);
+	DrawingConfig dc(stage_data.drawingConfig());
 	QVariantList stsllst = dc.startSlots();
 
 	qfs::Query q(qfs::Connection::forName());

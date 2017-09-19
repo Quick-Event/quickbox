@@ -41,7 +41,8 @@ private:
 	QF_VARIANTMAP_FIELD(int, v, setV, acantEvery)
 	QF_VARIANTMAP_FIELD(int, v, setV, acantsAfter)
 	QF_VARIANTMAP_FIELD(int, f, setF, irstCode)
-	QF_VARIANTMAP_FIELD(int, r, setr, unsCount)
+	QF_VARIANTMAP_FIELD(int, r, setR, unsCount)
+	QF_VARIANTMAP_FIELD(int, m, setM, apCount)
 	//QF_VARIANTMAP_FIELD2(bool, isD, setD, rawnIn, false) ///< not SQL value, internal usage
 	//QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
 	//QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)

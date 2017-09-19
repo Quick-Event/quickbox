@@ -26,7 +26,7 @@ ClassData::ClassData(const qf::core::sql::Query &q)
 		"startTimeMin", "startIntervalMin",
 		"vacantsBefore", "vacantsBefore", "vacantEvery", "vacantsAfter",
 		"firstCode",
-		"runsCount"})
+		"runsCount", "mapCount"})
 	{
 		insert(s, q.value(s));
 	}
@@ -171,8 +171,14 @@ int ClassItem::runsAndVacantCount() const
 {
 	auto dt = data();
 	int cnt = dt.runsCount();
-	int vacants = (dt.vacantEvery() > 0)? cnt / dt.vacantEvery(): 0;
-	cnt = dt.vacantsBefore() + cnt + vacants + dt.vacantsAfter();
+	if(ganttScene()->isUseAllMaps()) {
+		int map_cnt = dt.mapCount();
+		cnt = qMax(cnt, map_cnt);
+	}
+	else {
+		int vacants = (dt.vacantEvery() > 0)? cnt / dt.vacantEvery(): 0;
+		cnt = dt.vacantsBefore() + cnt + vacants + dt.vacantsAfter();
+	}
 	return cnt;
 }
 

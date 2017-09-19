@@ -34,8 +34,11 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startDateTime'; type: DateTime {} },
-				//Field { name: 'startTime'; type: Time {} },
-				//Field { name: 'startDate'; type: Date {} },
+				Field { name: 'useAllMaps'
+					type: Boolean {}
+					defaultValue: false
+					notNull: true
+				},
 				Field { name: 'drawingConfig'; type: String {} }
 			]
 			indexes: [
@@ -64,7 +67,7 @@ Schema {
 				},
 				Field { name: 'radio'; 
 					type: Boolean { } 
-					defaultValue: false;
+					defaultValue: false
 					notNull: true
 				},
 				Field { name: 'note'; type: String { } }

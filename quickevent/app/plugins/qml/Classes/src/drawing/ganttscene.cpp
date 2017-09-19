@@ -1,9 +1,23 @@
 #include "ganttitem.h"
 #include "ganttscene.h"
 
+#include <Event/eventplugin.h>
+
+#include <qf/qmlwidgets/framework/mainwindow.h>
+
+#include <qf/core/assert.h>
+
 #include <QFontMetrics>
 
 using namespace drawing;
+
+static Event::EventPlugin *eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
+	return plugin;
+}
 
 GanttScene::GanttScene(QObject * parent)
 	: Super(parent), m_ganttItem()
@@ -15,6 +29,8 @@ GanttScene::GanttScene(QObject * parent)
 void GanttScene::load(int stage_id)
 {
 	clear();
+	Event::StageData stage_data = eventPlugin()->stageData(stage_id);
+	m_useAllMaps = stage_data.isUseAllMaps();
 	m_ganttItem = new GanttItem();
 	addItem(m_ganttItem);
 	m_ganttItem->load(stage_id);

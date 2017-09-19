@@ -390,7 +390,9 @@ void RunsWidget::on_btDraw_clicked()
 	qfLogFuncFrame();
 	int stage_id = selectedStageId();
 	DrawMethod draw_method = DrawMethod(ui->cbxDrawMethod->currentData().toInt());
-	qfDebug() << "DrawMethod:" << (int)draw_method;
+	Event::StageData stage_data = eventPlugin()->stageData(stage_id);
+	bool use_all_maps = stage_data.isUseAllMaps();
+	qfDebug() << "DrawMethod:" << (int)draw_method << "use_all_maps:" << use_all_maps;
 	QList<int> class_ids;
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id == 0) {
@@ -422,7 +424,7 @@ void RunsWidget::on_btDraw_clicked()
 			int handicap_length_ms = eventPlugin()->eventConfig()->handicapLength() * 60 * 1000;
 			QVector<int> handicap_times;
 			qf::core::sql::QueryBuilder qb;
-			qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
+			qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter, mapCount")
 					.from("classdefs")
 					.where("stageId=" QF_IARG(stage_id))
 					.where("classId=" QF_IARG(class_id));
@@ -591,11 +593,20 @@ void RunsWidget::on_btDraw_clicked()
 				int vacants_before = q_classdefs.value("vacantsBefore").toInt();
 				int vacant_every = q_classdefs.value("vacantEvery").toInt();
 				int vacants_after = q_classdefs.value("vacantsAfter").toInt();
+				int map_count = q_classdefs.value("mapCount").toInt();
 				int start = start0;
 				int n = 0;
 
+				if(map_count <= 0)
+					use_all_maps = false;
+
 				if(draw_method != DrawMethod::Handicap) {
 					start += vacants_before * interval;
+					if(use_all_maps) {
+						map_count -= vacants_before;
+						int spare_map_count = (map_count - vacants_after - runners_draw_ids.count());
+						vacant_every = runners_draw_ids.count() / spare_map_count;
+					}
 				}
 
 				qfs::Query q(transaction.connection());
@@ -617,12 +628,20 @@ void RunsWidget::on_btDraw_clicked()
 						q.bindValue(QStringLiteral(":startTimeMs"), start);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
-						if(vacant_every > 0 && ((n+1) % vacant_every) == 0)
-							start += interval;
 						n++;
+						map_count--;
+						bool can_add_vacant = true;
+						if(use_all_maps) {
+							can_add_vacant = (map_count > vacants_after);
+						}
+						if(can_add_vacant && vacant_every > 0 && (n % vacant_every) == 0)
+							start += interval;
 					}
 				}
-				start += (vacants_after - 1) * interval;
+				if(use_all_maps)
+					vacants_after = map_count;
+				if(vacants_after > 0)
+					start += (vacants_after - 1) * interval;
 				saveLockedForDrawing(class_id, stage_id, true, start / 60 / 1000);
 			}
 		}

@@ -71,6 +71,7 @@ public:
 	//Q_INVOKABLE int currentStageStartMsec();
 
 	//Q_INVOKABLE QVariantMap stageDataMap(int stage_id) {return stageData(stage_id);}
+	void setStageData(int stage_id, const QString &key, const QVariant &value);
 	StageData stageData(int stage_id);
 	Q_SLOT void clearStageDataCache();
 
