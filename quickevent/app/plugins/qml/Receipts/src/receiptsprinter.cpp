@@ -12,6 +12,7 @@
 #include <QPrinter>
 #include <QPrinterInfo>
 #include <QTcpSocket>
+#include <QTextCodec>
 
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/fileutils.h>
@@ -245,7 +246,7 @@ public:
 	//int printerLineWidth = 42;
 };
 
-void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrintContext *print_context)
+void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrintContext *print_context, const QString &text_encoding)
 {
 	//QByteArray text;
 	PrintLine pre_commands;
@@ -316,12 +317,21 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 			text_align = Qt::AlignRight;
 		else if(ta == QLatin1String("center"))
 			text_align = Qt::AlignHCenter;
-		QByteArray text = qf::core::Collator::toAscii7(QLocale::Czech, el.text(), false);
+		QByteArray text;
+		QTextCodec *tc = nullptr;
+		if(text_encoding != QLatin1String("ASCII7")) {
+			QByteArray ba = text_encoding.toUtf8();
+			tc = QTextCodec::codecForName(ba);
+		}
+		if(tc)
+			text = tc->fromUnicode(el.text());
+		else
+			text = qf::core::Collator::toAscii7(QLocale::Czech, el.text(), false);
 		print_context->line << PrintData(PrintData::Command::Text, text, text_width, text_align);
 	}
 	{
 		for(QDomElement el1 = el.firstChildElement(); !el1.isNull(); ) {
-			createPrinterData_helper(el1, print_context);
+			createPrinterData_helper(el1, print_context, text_encoding);
 			el1 = el1.nextSiblingElement();
 			if(!el1.isNull()) {
 				//if(!is_halign || (is_halign && print_context->horizontalLayoutNestCount == 1)) {
@@ -438,7 +448,7 @@ QList<QByteArray> ReceiptsPrinter::createPrinterData(const QDomElement &body, co
 {
 	DirectPrintContext dpc;
 	//dpc.printerLineWidth = printer_options.characterPrinterLineLength();
-	createPrinterData_helper(body, &dpc);
+	createPrinterData_helper(body, &dpc, printer_options.characterPrinterCodec());
 	/*
 	{
 		QByteArray ba;

@@ -64,6 +64,7 @@ void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOption
 		ui->edCharacterPrinterLineLength->setValue(opts.characterPrinterLineLength());
 		ui->chkCharacterPrinterGenerateControlCodes->setChecked(opts.isCharacterPrinterGenerateControlCodes());
 		ui->edCharacterPrinterAddress->setText(opts.characterPrinterAddress());
+		ui->cbxCharacterPrinterCodec->setCurrentText(opts.characterPrinterCodec());
 		switch(opts.characterPrinterType()) {
 			case ReceiptsPrinterOptions::CharacterPrinteType::LPT:
 				ui->btCharacterPrinterLPT->setChecked(true);
@@ -93,6 +94,7 @@ ReceiptsPrinterOptions ReceiptsPrinterOptionsDialog::printerOptions()
 		ret.setCharacterPrinterLineLength(ui->edCharacterPrinterLineLength->value());
 		ret.setCharacterPrinterGenerateControlCodes(ui->chkCharacterPrinterGenerateControlCodes->isChecked());
 		ret.setCharacterPrinterAddress(ui->edCharacterPrinterAddress->text());
+		ret.setCharacterPrinterCodec(ui->cbxCharacterPrinterCodec->currentText());
 		if(ui->btCharacterPrinterLPT->isChecked()) {
 			ret.setCharacterPrinterType(ReceiptsPrinterOptions::CharacterPrinteType::LPT);
 		}
