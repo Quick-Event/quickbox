@@ -151,11 +151,11 @@ public:
 	 * @param str
 	 * @return Set of found captions.
 	 */
-	static QSet<QString> findCaptions(const QString caption_format);
+	static QSet<QString> findCaptions(const QString &caption_format);
 	static QString replaceCaptions(const QString format_str, const QString &caption_name, const QVariant &caption_value);
 	static QString replaceCaptions(const QString format_str, const QVariantMap &replacements);
 
-	static QString removeJsonComments(const QString json_str);
+	static QString removeJsonComments(const QString &json_str);
 
 	static int versionStringToInt(const QString &version_string);
 	static QString intToVersionString(int ver);

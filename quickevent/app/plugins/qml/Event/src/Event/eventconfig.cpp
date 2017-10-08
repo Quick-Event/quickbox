@@ -176,6 +176,11 @@ int EventConfig::currentStageId() const
 	return ret;
 }
 
+int EventConfig::sportId() const
+{
+	return value(QStringLiteral("event.sportId")).toInt();
+}
+
 int EventConfig::importId() const
 {
 	return value(QStringLiteral("event.importId")).toInt();

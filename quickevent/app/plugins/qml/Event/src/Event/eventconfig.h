@@ -30,6 +30,7 @@ public slots:
 
 	int stageCount() const;
 	int currentStageId() const;
+	int sportId() const;
 	int importId() const;
 	int handicapLength() const;
 	bool isHandicap() const {return handicapLength() > 0;}

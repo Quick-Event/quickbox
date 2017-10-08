@@ -56,7 +56,11 @@ void ChooseOrisEventDialog::load()
 			QJsonObject org1 = event.value(QStringLiteral("Org1")).toObject();
 			QJsonObject sport = event.value(QStringLiteral("Sport")).toObject();
 			int sport_id = sport.value(QStringLiteral("ID")).toString().toInt();
-			QString sport_abbr = (sport_id == 1)? tr("OB"): (sport_id == 2)? tr("LOB"): (sport_id == 3)? tr("MTBO"): tr("???");
+			QString sport_abbr = (sport_id == 1)? tr("OB"):
+								 (sport_id == 2)? tr("LOB"):
+								 (sport_id == 3)? tr("MTBO"):
+								 (sport_id == 4)? tr("TRAIL"):
+								 tr("???");
 			QString event_description = event.value(QStringLiteral("Date")).toString()
 										+ " " + QString::number(event_id)
 										+ " " + sport_abbr

@@ -161,7 +161,8 @@ void OrisImporter::importEvent(int event_id)
 			int stage_count = data.value(QStringLiteral("Stages")).toString().toInt();
 			if(!stage_count)
 				stage_count = 1;
-			qfInfo() << "pocet etap:" << stage_count;
+			int sport_id = data.value(QStringLiteral("Sport")).toObject().value(QStringLiteral("ID")).toString().toInt();
+			qfInfo() << "pocet etap:" << stage_count << "sport id:" << sport_id;
 			//event_api.initEventConfig();
 			//var cfg = event_api.eventConfig;
 			QVariantMap ecfg;
@@ -172,6 +173,7 @@ void OrisImporter::importEvent(int event_id)
 			ecfg["place"] = data.value(QStringLiteral("Place")).toString();
 			ecfg["mainReferee"] = jsonObjectToFullName(data, QStringLiteral("MainReferee"));
 			ecfg["director"] = jsonObjectToFullName(data, QStringLiteral("Director"));
+			ecfg["sportId"] = sport_id;
 			ecfg["importId"] = event_id;
 			if(!eventPlugin()->createEvent(QString(), ecfg))
 				return;
@@ -480,8 +482,9 @@ void OrisImporter::importEventOrisEntries(int event_id)
 
 void OrisImporter::importRegistrations()
 {
+	int sport_id = eventPlugin()->eventConfig()->sportId();
 	int year = QDate::currentDate().year();
-	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=1&year=%1").arg(year));
+	QUrl url(QString("http://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=%1&year=%2").arg(sport_id).arg(year));
 	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Registrations", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
