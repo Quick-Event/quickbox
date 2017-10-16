@@ -42,6 +42,9 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 	if(!date.isValid())
 		date = QDate::currentDate();
 	ui->ed_date->setDate(date);
+	QTime time = params.value("time").toTime();
+	if(time.isValid())
+		ui->ed_time->setTime(time);
 	ui->ed_description->setText(params.value("description").toString());
 	ui->ed_place->setText(params.value("place").toString());
 	ui->ed_mainReferee->setText(params.value("mainReferee").toString());
@@ -58,6 +61,7 @@ QVariantMap EventDialogWidget::saveParams()
 	//ret["currentStageId"] = ui->ed_currentStage->value();
 	ret["name"] = ui->ed_name->text();
 	ret["date"] = ui->ed_date->date();
+	ret["time"] = ui->ed_time->time();
 	ret["description"] = ui->ed_description->text();
 	ret["place"] = ui->ed_place->text();
 	ret["mainReferee"] = ui->ed_mainReferee->text();

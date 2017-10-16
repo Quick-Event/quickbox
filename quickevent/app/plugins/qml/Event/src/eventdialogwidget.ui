@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>431</height>
+    <height>457</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,7 +81,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>&amp;Place</string>
@@ -91,10 +91,10 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QLineEdit" name="ed_place"/>
    </item>
-   <item row="5" column="0">
+   <item row="6" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
       <string>Des&amp;cription</string>
@@ -104,10 +104,10 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <widget class="QLineEdit" name="ed_description"/>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Main r&amp;eferee</string>
@@ -117,10 +117,10 @@
      </property>
     </widget>
    </item>
-   <item row="6" column="1">
+   <item row="7" column="1">
     <widget class="QLineEdit" name="ed_mainReferee"/>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>D&amp;irector</string>
@@ -130,10 +130,10 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="8" column="1">
     <widget class="QLineEdit" name="ed_director"/>
    </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <widget class="QLabel" name="label_9">
      <property name="text">
       <string>&amp;Handicap length</string>
@@ -143,7 +143,7 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
+   <item row="9" column="1">
     <widget class="QSpinBox" name="ed_handicapLength">
      <property name="suffix">
       <string>min</string>
@@ -162,7 +162,7 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="0">
+   <item row="11" column="0">
     <widget class="QLabel" name="label_10">
      <property name="text">
       <string>Import ID</string>
@@ -172,7 +172,7 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="11" column="1">
     <widget class="QLineEdit" name="ed_importId">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -182,7 +182,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
+   <item row="10" column="0">
     <widget class="QLabel" name="label_11">
      <property name="text">
       <string>Sport</string>
@@ -192,7 +192,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="10" column="1">
     <widget class="QComboBox" name="cbxSportId">
      <item>
       <property name="text">
@@ -216,6 +216,30 @@
      </item>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_12">
+     <property name="text">
+      <string>&amp;Time</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_date</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QTimeEdit" name="ed_time">
+     <property name="displayFormat">
+      <string>h:mm</string>
+     </property>
+     <property name="time">
+      <time>
+       <hour>10</hour>
+       <minute>0</minute>
+       <second>0</second>
+      </time>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -223,6 +247,7 @@
   <tabstop>ed_name</tabstop>
   <tabstop>ed_stageCount</tabstop>
   <tabstop>ed_date</tabstop>
+  <tabstop>ed_time</tabstop>
   <tabstop>ed_place</tabstop>
   <tabstop>ed_description</tabstop>
   <tabstop>ed_mainReferee</tabstop>

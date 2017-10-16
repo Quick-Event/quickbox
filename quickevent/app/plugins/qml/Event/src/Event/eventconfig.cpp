@@ -211,7 +211,12 @@ QDateTime EventConfig::eventDateTime() const
 	else {
 		QVariant v = value(QStringLiteral("event.date"));
 		dt.setDate(v.toDate());
-		dt = dt.addSecs(10 * 60 * 60); // start at 10:00 if not specified
+		v = value(QStringLiteral("event.time"));
+		QTime tm = v.toTime();
+		if(tm.isValid())
+			dt.setTime(tm);
+		else
+			dt = dt.addSecs(10 * 60 * 60); // start at 10:00 if not specified
 	}
 	return dt;
 }

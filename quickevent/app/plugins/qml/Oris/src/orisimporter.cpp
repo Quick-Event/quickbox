@@ -32,6 +32,7 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <QPushButton>
+#include <QTime>
 #include <QUrl>
 
 static Event::EventPlugin* eventPlugin()
@@ -175,8 +176,10 @@ void OrisImporter::importEvent(int event_id)
 			ecfg["director"] = jsonObjectToFullName(data, QStringLiteral("Director"));
 			ecfg["sportId"] = sport_id;
 			ecfg["importId"] = event_id;
+			ecfg["time"] = QTime::fromString(data.value(QStringLiteral("StartTime")).toString(), QStringLiteral("hh:mm"));
 			if(!eventPlugin()->createEvent(QString(), ecfg))
 				return;
+
 			//QString event_name = eventPlugin()->eventName();
 			qf::core::sql::Transaction transaction;
 
