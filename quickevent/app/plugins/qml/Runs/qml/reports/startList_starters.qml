@@ -57,7 +57,7 @@ Report {
 					id: detail
 					objectName: "detail"
 					width: "%"
-					height: "10"
+					//height: "10"
 					//keepAll: true
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
