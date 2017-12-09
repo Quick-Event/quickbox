@@ -37,7 +37,11 @@ qf::core::sql::Connection Application::sqlConnetion()
 		db.setDatabaseName(cliOptions()->database());
 		db.setUserName(cliOptions()->user());
 		db.setPassword(cliOptions()->password());
-		qfInfo() << "connecting to:" << db.database() << "...";// << db.password();
+		qfInfo() << "connecting to database:"
+				 << db.databaseName()
+				 << "at:" << (db.userName() + '@' + db.hostName() + ':' + QString::number(db.port()))
+				 << "driver:" << db.driverName()
+				 << "...";// << db.password();
 		bool ok = db.open();
 		if(!ok) {
 			qfError() << "ERROR open database:" << db.lastError().text();
