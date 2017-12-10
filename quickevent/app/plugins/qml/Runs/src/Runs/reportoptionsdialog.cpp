@@ -36,6 +36,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 
 	//ui->edFilter->setText("h1%");
 	ui->grpStartOptions->setVisible(false);
+	ui->grpStartersOptions->setVisible(false);
 	ui->btRegExp->setEnabled(eventPlugin()->sqlDriverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -46,6 +47,11 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	});
 
 	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::classFilterVisibleChanged, ui->grpClassFilter, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::startersOptionsVisibleChanged, ui->grpStartersOptions, &QGroupBox::setVisible);
+	//connect(this, &ReportOptionsDialog::classFilterVisibleChanged, [this]() {
+	//	qfInfo() << __FUNCTION__;
+	//});
 }
 
 ReportOptionsDialog::~ReportOptionsDialog()
@@ -126,7 +132,7 @@ QString ReportOptionsDialog::sqlWhereExpression(const ReportOptionsDialog::Optio
 	}
 	return QString();
 }
-
+/*
 void ReportOptionsDialog::showEvent(QShowEvent *event)
 {
 	Super::showEvent(event);
@@ -134,20 +140,14 @@ void ReportOptionsDialog::showEvent(QShowEvent *event)
 		return;
 	ui->grpClassFilter->setVisible(isClassFilterVisible());
 }
-/*
+*/
+
 int ReportOptionsDialog::exec()
 {
-	loadPersistentSettings();
-	int result = Super::exec();
-	return result;
+	//ui->grpClassFilter->setVisible(isClassFilterVisible());
+	return Super::exec();
 }
 
-int ReportOptionsDialog::exec(const ReportOptionsDialog::Options &options)
-{
-	int result = Super::exec();
-	return result;
-}
-*/
 void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options)
 {
 	qfLogFuncFrame() << options;
@@ -161,6 +161,7 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->btClassNames->setChecked(filter_type == FilterType::ClassName);
 	ui->chkStartOpts_PrintVacants->setChecked(options.isStartListPrintVacants());
 	ui->chkStartOpts_PrintStartNumbers->setChecked(options.isStartListPrintStartNumbers());
+	ui->edStartersOptionsLineSpacing->setValue(options.startersOptionsLineSpacing());
 }
 
 ReportOptionsDialog::Options ReportOptionsDialog::options() const
@@ -174,6 +175,7 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setClassFilterType((int)filter_type);
 	opts.setStartListPrintVacants(isStartListPrintVacants());
 	opts.setStartListPrintStartNumbers(isStartListPrintStartNumbers());
+	opts.setStartersOptionsLineSpacing(ui->edStartersOptionsLineSpacing->value());
 	return opts;
 }
 
@@ -195,7 +197,7 @@ void ReportOptionsDialog::loadPersistentSettings()
 		return;
 	QSettings settings;
 	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
-	//qfInfo() << persistentSettingsPath() << m;
+	qfInfo() << persistentSettingsPath() << m;
 	Options opts(m);
 	qfDebug() << opts;
 	setOptions(opts);
@@ -208,7 +210,7 @@ void ReportOptionsDialog::savePersistentSettings()
 		return;
 
 	Options opts = options();
-	qfDebug() << opts;
+	qfInfo() << persistentSettingsPath() << opts;
 	QSettings settings;
 	settings.setValue(persistentSettingsPath(), opts);
 }

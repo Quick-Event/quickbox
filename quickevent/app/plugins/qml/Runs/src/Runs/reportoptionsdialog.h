@@ -21,9 +21,11 @@ class ReportOptionsDialog : public QDialog, public qf::qmlwidgets::framework::IP
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId NOTIFY persistentSettingsIdChanged)
 	Q_PROPERTY(bool classFilterVisible READ isClassFilterVisible WRITE setClassFilterVisible NOTIFY classFilterVisibleChanged)
 	Q_PROPERTY(bool startListOptionsVisible READ isStartListOptionsVisible WRITE setStartListOptionsVisible NOTIFY startListOptionsVisibleChanged)
+	Q_PROPERTY(bool startersOptionsVisible READ isStartersOptionsVisible WRITE setStartersOptionsVisible NOTIFY startersOptionsVisibleChanged)
 
 	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(s, S, tartersOptionsVisible, false)
 private:
 	using Super = QDialog;
 public:
@@ -32,6 +34,7 @@ public:
 
 	class Options : public QVariantMap
 	{
+		QF_VARIANTMAP_FIELD2(int, s, setS, tartersOptionsLineSpacing, 0)
 		QF_VARIANTMAP_FIELD2(int, b, setB, reakType, 0)
 		QF_VARIANTMAP_FIELD(QString, c, setC, lassFilter)
 		QF_VARIANTMAP_FIELD2(int, c, setC, lassFilterType, 0)
@@ -46,12 +49,15 @@ public:
 	explicit ReportOptionsDialog(QWidget *parent = 0);
 	~ReportOptionsDialog();
 
+	int exec() Q_DECL_OVERRIDE;
+
 	QString persistentSettingsPath() Q_DECL_OVERRIDE;
 	bool setPersistentSettingsId(const QString &id) Q_DECL_OVERRIDE;
 	Q_SIGNAL void persistentSettingsIdChanged(const QString &id);
 
 	void setOptions(const Options &options);
 	Options options() const;
+	Q_SLOT QVariantMap optionsMap() const {return options();}
 	static Options savedOptions(const QString &persistent_settings_id = QString());
 
 	Q_SLOT void loadPersistentSettings();
@@ -68,7 +74,7 @@ public:
 	Q_INVOKABLE QString sqlWhereExpression() const;
 	static QString sqlWhereExpression(const Options &opts);
 protected:
-	void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+	//void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
 private:
 	Ui::ReportOptionsDialog *ui;
 };

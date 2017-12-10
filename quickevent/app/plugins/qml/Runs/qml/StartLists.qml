@@ -134,7 +134,7 @@ QtObject {
 		return tt;
 	}
 
-	function startListStartersTable(class_group)
+	function startListStartersTable(class_filter)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var stage_id = runsPlugin.selectedStageId;
@@ -151,17 +151,8 @@ QtObject {
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stageId}} AND runs.isRunning", "INNER JOIN")
 			.join("competitors.classId", "classes.id")
 			.orderBy('runs.startTimeMs, classes.name, competitors.lastName')//.limit(50);
-		if(class_group === 'H') {
-			reportModel.queryBuilder.where("classes.name LIKE 'H%' AND classes.name <> 'HDR'")
-		}
-		else if(class_group === 'D'){
-			reportModel.queryBuilder.where("classes.name LIKE 'D%'")
-		}
-		else if(class_group === 'HD'){
-			reportModel.queryBuilder.where("(classes.name LIKE 'H%' OR classes.name LIKE 'D%') AND (classes.name NOT LIKE 'HD%')");
-		}
-		else if(class_group === 'O'){
-			reportModel.queryBuilder.where("(classes.name NOT LIKE 'H%' AND classes.name NOT LIKE 'D%') OR (classes.name LIKE 'HD%')");
+		if(class_filter) {
+			reportModel.queryBuilder.where(class_filter)
 		}
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
@@ -308,11 +299,32 @@ QtObject {
 	function printStartListStarters()
 	{
 		Log.info("runs printStartListStarters triggered");
+		/*
 		var ix = InputDialogSingleton.getItemIndex(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("H+D"), qsTr("Other"), qsTr("All")], 0, false);
+		if(ix < 0)
+			return;
 		var groups = ["H", "D", "HD", "O", ""]
 		var class_group = groups[ix];
 		var tt = startListStartersTable(class_group);
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
+		*/
+		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "startListStartersReportOptions";
+		dlg.classFilterVisible = false;
+		dlg.startersOptionsVisible = true;
+		if(dlg.exec()) {
+			var tt = startListStartersTable(dlg.sqlWhereExpression());
+			var opts = dlg.optionsMap();
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_starters.qml"
+										   , tt.data()
+										   , qsTr("Start list for starters")
+										   , "printStartList"
+										   , { isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
+											   , lineSpacing: opts.startersOptionsLineSpacing
+										     }
+										   );
+		}
+		dlg.destroy();
 	}
 
 	function printClassesNStages()

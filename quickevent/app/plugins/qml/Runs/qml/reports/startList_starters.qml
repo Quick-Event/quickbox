@@ -7,6 +7,8 @@ Report {
 	objectName: "root"
 
 	property string reportTitle: qsTr("Start list for starters")
+	property bool isPrintStartNumbers: false
+	property int lineSpacing: 0
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -85,7 +87,7 @@ Report {
 					}
 					Frame {
 						width: "%"
-						height: "10"
+						height: (root.lineSpacing > 0)? root.lineSpacing: undefined;
 						layout: Frame.LayoutHorizontal
 						Cell {
 							width: 12
