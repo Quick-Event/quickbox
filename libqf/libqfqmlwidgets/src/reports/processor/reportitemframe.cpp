@@ -386,7 +386,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							if(out->children().count() > prev_children_cnt) {
 								//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
 								layout_ix_to_print_ix[i] = prev_children_cnt;
-								if(ch_res.isPrintAgain()) {
+								if(!ch_res.isPrintAgain()) {
 									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
 									res = ch_res;
 								}

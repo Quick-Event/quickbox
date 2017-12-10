@@ -38,13 +38,13 @@ ReportItem::PrintResult ReportItemPara::printMetaPaint(ReportItemMetaPaint *out,
 
 ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
-	qfLogFuncFrame() << this << bounding_rect.toString();
+	qfLogFuncFrame() << this << bounding_rect.toString() << paraText();;
 	PrintResult res = PrintResult::createPrintFinished();
 	if(m_indexToPrint == 0) {
 		printedText = paraText();
 	}
-	//qfInfo() << printedText;
 	QString text = printedText.mid(m_indexToPrint);
+	//qfWarning() << printedText;
 	int initial_index_to_print = m_indexToPrint;
 
 	QString sql_id = sqlId();
@@ -88,18 +88,6 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 				/// neni omitEmptyString, takze i prazdnej text vyrendruj alespon jako mezeru aby se na to dalo treba kliknout
 				text_to_layout = ' ';
 			}
-
-			//text.replace(ReportItemMetaPaint::checkOnReportSubstitution, "X");
-			//text.replace(ReportItemMetaPaint::checkOffReportSubstitution, "X");
-			//qfInfo().noSpace().color(QFLog::Green) << "index to print: " << indexToPrint << " text: '" << text << "'";
-			//qfInfo() << "bounding rect:" << bounding_rect.toString();
-			//qfWarning() << "device physical DPI:" << processor()->paintDevice()->physicalDpiX() << processor()->paintDevice()->physicalDpiY();
-			//qfWarning().noSpace() << "'" << text << "' font metrics: " << br.toString();
-
-			//QString text = element.text().simplified().replace("\\n", "\n");
-			//qfInfo() << "br:" << br.toString();
-			//Rect br_debug = br;
-			//bool splitted = false;
 			/// do layout
 			{
 				qreal leading = font_metrics.leading();
@@ -191,7 +179,7 @@ void ReportItemPara::setTextFn(const QJSValue &val)
 
 QString ReportItemPara::paraText()
 {
-	qfLogFuncFrame();
+	//qfLogFuncFrame();
 	QString ret;
 	if(m_getTextJsFn.isCallable()) {
 		QJSValue jsv = m_getTextJsFn.call();
