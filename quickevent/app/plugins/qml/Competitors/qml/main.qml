@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 import Competitors 1.0
 import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
-//import shared.QuickEvent 1.0
+import "./"
 
 CompetitorsPlugin {
 	id: root
