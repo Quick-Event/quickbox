@@ -214,20 +214,7 @@ ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 		return ChildSize(designedRect.width(), designedRect.horizontalUnit);
 	return ChildSize(designedRect.height(), designedRect.verticalUnit);
 }
-/*
-class N
-{
-	static int& nref() {
-		static int n = 0;
-		return n;
-	}
-public:
-	N() {nref()++;}
-	~N() {nref()--;}
 
-	operator int() const {return nref();}
-};
-*/
 ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
@@ -386,6 +373,9 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							if(out->children().count() > prev_children_cnt) {
 								//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
 								layout_ix_to_print_ix[i] = prev_children_cnt;
+								// chybejici vykricnik v nasl. podmince zpusoboval issue
+								// chyba zalomeni pro dlouha jmena v tisku startovek pro startéry #264
+								// pozor, stejna podminka je i v "print rubber and fixed" sekci, asi by to chtelo sjednotit
 								if(!ch_res.isPrintAgain()) {
 									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
 									res = ch_res;
