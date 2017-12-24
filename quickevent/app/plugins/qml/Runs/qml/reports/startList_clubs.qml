@@ -33,7 +33,7 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: 210
+	width: root.options.isShirinkPageWidthToColumnCount? 210/2*root.options.columnCount: 210
 	height: 297
 	hinset: 5
 	vinset: 5

@@ -254,10 +254,20 @@
          <number>1</number>
         </property>
         <property name="maximum">
-         <number>3</number>
+         <number>2</number>
         </property>
         <property name="value">
          <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QCheckBox" name="chkShirinkPageWidthToColumnCount">
+        <property name="toolTip">
+         <string>Shrink page width to column count</string>
+        </property>
+        <property name="text">
+         <string>Shrink page</string>
         </property>
        </widget>
       </item>
@@ -300,6 +310,21 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>grpClassFilter</tabstop>
+  <tabstop>btWildCard</tabstop>
+  <tabstop>btRegExp</tabstop>
+  <tabstop>btClassNames</tabstop>
+  <tabstop>chkClassFilterDoesntMatch</tabstop>
+  <tabstop>edStartersOptionsLineSpacing</tabstop>
+  <tabstop>chkStartOpts_PrintVacants</tabstop>
+  <tabstop>chkStartOpts_PrintStartNumbers</tabstop>
+  <tabstop>cbxBreakAfterClassType</tabstop>
+  <tabstop>edColumnCount</tabstop>
+  <tabstop>chkShirinkPageWidthToColumnCount</tabstop>
+  <tabstop>btSaveAsDefault</tabstop>
+  <tabstop>edFilter</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

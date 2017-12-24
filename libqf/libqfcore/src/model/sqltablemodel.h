@@ -70,7 +70,7 @@ public:
 	Q_SIGNAL void queryChanged(const QString &query_str);
 
 	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
-	const QString& recentlyExecutedQueryString() const {return m_recentlyExecutedQueryString;}
+	Q_INVOKABLE const QString& recentlyExecutedQueryString() const {return m_recentlyExecutedQueryString;}
 
 	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
 protected:
