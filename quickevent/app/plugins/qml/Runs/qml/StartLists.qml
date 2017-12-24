@@ -253,26 +253,19 @@ QtObject {
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
 			var tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants());
+			var opts = dlg.optionsMap();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_classes.qml"
 										   , tt.data()
 										   , qsTr("Start list by clases")
 										   , "printStartList"
 										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
 											   , isColumnBreak: dlg.isColumnBreak()
-											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers() }
+											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
+											   , options: opts
+										     }
 										   );
 		}
 		dlg.destroy();
-		/*
-		var w = cReportViewWidget.createObject(null);
-		w.windowTitle = qsTr("Start list by clases");
-		w.setReport(root.manifest.homeDir + "/reports/startList_classes.qml");
-		w.setTableData(tt.data());
-		var dlg = FrameWork.createQmlDialog();
-		dlg.setDialogWidget(w);
-		dlg.exec();
-		dlg.destroy();
-		*/
 	}
 
 	function printStartListClubs()
@@ -284,13 +277,16 @@ QtObject {
 		//dlg.startListOptionsVisible = true;
 		if(dlg.exec()) {
 			var tt = startListClubsTable();
+			var opts = dlg.optionsMap();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_clubs.qml"
 										   , tt.data()
 										   , qsTr("Start list by clubs")
 										   , "printStartList"
 										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
 											   , isColumnBreak: dlg.isColumnBreak()
-											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers() }
+											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
+											   , options: opts
+										     }
 										   );
 		}
 		dlg.destroy();
@@ -299,15 +295,6 @@ QtObject {
 	function printStartListStarters()
 	{
 		Log.info("runs printStartListStarters triggered");
-		/*
-		var ix = InputDialogSingleton.getItemIndex(this, qsTr("Get item"), qsTr("Corridor:"), [qsTr("H"), qsTr("D"), qsTr("H+D"), qsTr("Other"), qsTr("All")], 0, false);
-		if(ix < 0)
-			return;
-		var groups = ["H", "D", "HD", "O", ""]
-		var class_group = groups[ix];
-		var tt = startListStartersTable(class_group);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_starters.qml", tt.data(), qsTr("Start list for starters"));
-		*/
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "startListStartersReportOptions";
 		dlg.classFilterVisible = false;
@@ -321,6 +308,7 @@ QtObject {
 										   , "printStartList"
 										   , { isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
 											   , lineSpacing: opts.startersOptionsLineSpacing
+											   , options: opts
 										     }
 										   );
 		}

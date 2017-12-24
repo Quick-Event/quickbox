@@ -9,6 +9,7 @@ Report {
 	property string reportTitle: qsTr("Start list for starters")
 	property bool isPrintStartNumbers: false
 	property int lineSpacing: 0
+	property var options
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -44,7 +45,10 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			columns: "%,%"
+			columns: {
+				//console.info(JSON.stringify(root.options));
+				root.options.columns
+			}
 			vinset: 10
 			Band {
 				id: band

@@ -11,6 +11,7 @@ Report {
 	property bool isBreakAfterEachClass: false
 	property bool isColumnBreak: false
 	property bool isPrintStartNumbers: false
+	property var options
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -46,7 +47,7 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			columns: "%,%"
+			columns: root.options.columns
 			vinset: 10
 			Band {
 				id: band

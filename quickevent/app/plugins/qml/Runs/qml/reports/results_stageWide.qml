@@ -5,6 +5,7 @@ import "qrc:/quickevent/js/ogtime.js" as OGTime
 Report {
 	id: root
 	objectName: "root"
+	property var options
 
 	property string reportTitle: qsTr("Results by classes")
 

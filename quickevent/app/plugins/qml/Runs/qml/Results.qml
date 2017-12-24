@@ -163,13 +163,16 @@ QtObject {
 		dlg.persistentSettingsId = "resultsReportOptions";
 		if(dlg.exec()) {
 			var td = currentStageTableData(dlg.sqlWhereExpression());
+			var opts = dlg.optionsMap();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"
 										   , td
 										   , qsTr("Results by clases")
 										   , "printCurrentStage"
-										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass(), isColumnBreak: dlg.isColumnBreak()}
-										   );
-		}
+										   , { isBreakAfterEachClass: dlg.isBreakAfterEachClass()
+											   , isColumnBreak: dlg.isColumnBreak()
+											   , options: opts
+										     }
+										   );		}
 		dlg.destroy();
 	}
 

@@ -36,6 +36,7 @@ public:
 	{
 		QF_VARIANTMAP_FIELD2(int, s, setS, tartersOptionsLineSpacing, 0)
 		QF_VARIANTMAP_FIELD2(int, b, setB, reakType, 0)
+		QF_VARIANTMAP_FIELD2(QString, c, setC, olumns, "%,%")
 		QF_VARIANTMAP_FIELD(QString, c, setC, lassFilter)
 		QF_VARIANTMAP_FIELD2(int, c, setC, lassFilterType, 0)
 		QF_VARIANTMAP_FIELD(bool, is, set, UseClassFilter)
