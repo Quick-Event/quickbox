@@ -94,7 +94,7 @@ public:
 			ColumnBreak = (1 << 0),
 			PageBreak = (1 << 1),
 			NextDetailRowExists = (1 << 2),
-			ErrorNeverFit = (1 << 3),
+			//ErrorNeverFit = (1 << 3),
 		};
 
 		Result result;
@@ -111,7 +111,8 @@ public:
 
 		bool isValid() const {return result == Result::Invalid;}
 		bool isPrintFinished() const {return result == Result::PrintFinished;}
-		bool isPrintAgain() const {return result != Result::PrintFinished && result != Result::PrintError;}
+		bool isPrintAgain() const {return result == Result::PrintAgain;}
+		//bool isPrintAgain() const {return result != Result::PrintFinished && result != Result::PrintError;}
 		bool isNextDetailRowExists() const {return flags & NextDetailRowExists;}
 		void setNextDetailRowExists(bool b) {flags = b? flags | NextDetailRowExists: flags & ~NextDetailRowExists;}
 		bool isColumnBreak() const {return flags & ColumnBreak;}

@@ -304,10 +304,14 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					double width = out->lastChild()->renderedRect.width();
 					sum_mm += width;
 					//qfInfo() << "\t sum_mm:" << sum_mm;
+					if(res.isPrintFinished())
+						res = ch_res;
+					/*
 					if(!ch_res.isPrintAgain()) {
 						/// para can be printed as NotFit if it owerflows its parent frame
 						res = ch_res;
 					}
+					*/
 				}
 				else {
 					if(ch_res.isPrintFinished()) {
@@ -376,10 +380,12 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 								// chybejici vykricnik v nasl. podmince zpusoboval issue
 								// chyba zalomeni pro dlouha jmena v tisku startovek pro startéry #264
 								// pozor, stejna podminka je i v "print rubber and fixed" sekci, asi by to chtelo sjednotit
-								if(!ch_res.isPrintAgain()) {
-									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
+								//if(ch_res.isPrintAgain()) {
+								//	/// para se muze vytisknout a pritom bejt not fit, pokud pretece
+								//	res = ch_res;
+								//}
+								if(res.isPrintFinished())
 									res = ch_res;
-								}
 							}
 							else {
 								if(ch_res.isPrintFinished()) {
@@ -396,7 +402,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						}
 					}
 				}
-				/// arrange prited children to their original order
+				/// arrange printed children to their original order
 				//qfInfo() << "\t poradi tisku cnt:<<" << poradi_tisku.count() << out->childrenCount();
 				if(layout_ix_to_print_ix.count() == out->children().count()) {
 					int children_count = out->children().count();
