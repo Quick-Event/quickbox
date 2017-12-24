@@ -3,6 +3,7 @@
 
 #include "../core/coreglobal.h"
 
+#include <QSqlRecord>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariantMap>
@@ -40,6 +41,8 @@ public:
 	QVariant value(const QString& field_name) const;
 	QVariantMap values() const;
 	QString lastErrorText() const;
+private:
+	mutable QSqlRecord m_demangledRecord;
 };
 
 }}}
