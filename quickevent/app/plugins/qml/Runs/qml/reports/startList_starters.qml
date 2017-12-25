@@ -94,7 +94,7 @@ Report {
 					Frame {
 						objectName: "minuteFrame"
 						width: "%"
-						height: (root.lineSpacing > 0)? root.lineSpacing: undefined;
+						//height: (root.lineSpacing > 0)? root.lineSpacing: undefined;
 						layout: Frame.LayoutHorizontal
 						Cell {
 							objectName: "minuteCellClassName"
@@ -123,12 +123,11 @@ Report {
 							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}
 					}
-					/* strihani pro Zbyndu
+					// strihani pro Zbyndu
 					Frame {
-						height: 5
+						visible: root.lineSpacing > 0;
+						height: root.lineSpacing;
 					}
-					*/
-					//expandChildrenFrames: true
 				}
 			}
 		}

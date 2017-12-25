@@ -120,7 +120,7 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Line spacing</string>
+         <string>Space after line</string>
         </property>
        </widget>
       </item>
@@ -129,17 +129,11 @@
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
-        <property name="specialValueText">
-         <string>to fit text</string>
-        </property>
         <property name="suffix">
          <string>mm</string>
         </property>
         <property name="maximum">
          <number>100</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
         </property>
        </widget>
       </item>
