@@ -69,6 +69,7 @@ Report {
 					//Space { height: 5 }
 					Frame {
 						id: f1
+						objectName: "minuteHeaderFrame"
 						// hide recent value of start time in object to avoid property binding loop
 						// property int prevStartTimeMin: -1 // property binding loop
 						property var prev: ({startTimeMin: -1});
@@ -76,6 +77,7 @@ Report {
 						layout: Frame.LayoutHorizontal
 						fill: Brush {color: Color {def: "khaki"} }
 						Cell {
+							objectName: "minuteHeaderCell"
 							width: "%"
 							text: {
 								var t = detail.data(detail.currentIndex, "startTimeMin");
@@ -90,27 +92,33 @@ Report {
 						}
 					}
 					Frame {
+						objectName: "minuteFrame"
 						width: "%"
 						height: (root.lineSpacing > 0)? root.lineSpacing: undefined;
 						layout: Frame.LayoutHorizontal
 						Cell {
+							objectName: "minuteCellClassName"
 							width: 12
 							text: detail.data(detail.currentIndex, "classes.name");
 						}
 						Cell {
+							objectName: "minuteCellCompetitorName"
 							width: "%"
 							text: detail.data(detail.currentIndex, "competitorName");
 						}
 						Cell {
+							objectName: "minuteCellRegistration"
 							width: 20
 							text: detail.data(detail.currentIndex, "competitors.registration");
 						}
 						Cell {
+							objectName: "minuteCellSI"
 							width: 20
 							halign: Frame.AlignRight
 							text: detail.data(detail.currentIndex, "runs.siId");
 						}
 						Cell {
+							objectName: "minuteCellStartTimeMs"
 							width: 15
 							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}

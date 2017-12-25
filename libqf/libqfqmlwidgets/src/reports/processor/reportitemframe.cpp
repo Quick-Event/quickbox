@@ -304,7 +304,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					double width = out->lastChild()->renderedRect.width();
 					sum_mm += width;
 					//qfInfo() << "\t sum_mm:" << sum_mm;
-					if(res.isPrintFinished())
+					if(!ch_res.isPrintFinished())
 						res = ch_res;
 					/*
 					if(!ch_res.isPrintAgain()) {
@@ -384,7 +384,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 								//	/// para se muze vytisknout a pritom bejt not fit, pokud pretece
 								//	res = ch_res;
 								//}
-								if(res.isPrintFinished())
+								if(!ch_res.isPrintFinished())
 									res = ch_res;
 							}
 							else {

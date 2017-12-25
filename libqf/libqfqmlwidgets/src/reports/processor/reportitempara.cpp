@@ -71,15 +71,15 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			Qt::Alignment alignment_flags = (Qt::Alignment)al;
 			text_option.setAlignment(alignment_flags);
 		}
-		Rect rendered_bounding_rect;
+		Rect device_bounding_rect;
 		/// velikost boundingRect je v mm, tak to prepocitej na body vystupniho zarizeni
-		rendered_bounding_rect = qmlwidgets::graphics::mm2device(bounding_rect, processor()->paintDevice());
+		device_bounding_rect = qmlwidgets::graphics::mm2device(bounding_rect, processor()->paintDevice());
 
 		bool render_check_mark = false;
 		QRegExp rx = ReportItemMetaPaint::checkReportSubstitutionRegExp;
 		if(rx.exactMatch(text_to_layout)) {
 			//bool check_on = rx.capturedTexts().value(1) == "1";
-			rendered_bounding_rect = font_metrics.boundingRect('X');
+			device_bounding_rect = font_metrics.boundingRect('X');
 			render_check_mark = true;
 			m_indexToPrint += text_to_layout.length();
 		}
@@ -102,7 +102,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 					QTextLine line = textLayout.createLine();
 					finished = !line.isValid();
 					if(!finished) {
-						line.setLineWidth(rendered_bounding_rect.width()); /// setWidth() nastavi spravne line.height(), proto musi byt pred merenim popsane vysky.
+						line.setLineWidth(device_bounding_rect.width()); /// setWidth() nastavi spravne line.height(), proto musi byt pred merenim popsane vysky.
 
 						if((line.textLength() == 0) && (line.textStart() + line.textLength() == text_to_layout.length())) {
 							/// nevim kde je chyba, pri vicerakovych textech mi to pridava jeden prazdnej radek na konec, takhle se tomu snazim zabranit (Qt 4.6.3)
@@ -110,7 +110,7 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 						}
 						else {
 							qreal interline_space = (height > 0)? leading: 0;
-							if(height + interline_space + line.height() > rendered_bounding_rect.height()) {
+							if(height + interline_space + line.height() > device_bounding_rect.height()) {
 								res = PrintResult::createPrintAgain();
 								if(height == 0) {
 									/// nevejde se ani jeden radek
@@ -135,12 +135,12 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 					}
 				}
 				textLayout.endLayout();
-				rendered_bounding_rect.setWidth(width);
-				rendered_bounding_rect.setHeight(height);
+				device_bounding_rect.setWidth(width);
+				device_bounding_rect.setHeight(height);
 			}
 		}
 		/// velikost boundingRect je v bodech vystupniho zarizeni, tak to prepocitej na mm
-		rendered_bounding_rect = qmlwidgets::graphics::device2mm(rendered_bounding_rect, processor()->paintDevice());
+		device_bounding_rect = qmlwidgets::graphics::device2mm(device_bounding_rect, processor()->paintDevice());
 		/// rendered rect is left aligned, if text is reight aligned or centered, the ReportItemMetaPaintText::paint() does it
 		if(text_item_should_be_created ) {
 			ReportItemMetaPaintText *mt;
@@ -157,11 +157,11 @@ ReportItem::PrintResult ReportItemPara::printMetaPaintChildren(ReportItemMetaPai
 			mt->text = text.mid(0, m_indexToPrint - initial_index_to_print);
 			//qfWarning() << "text:" << text;
 			mt->textOption = text_option;
-			mt->renderedRect = rendered_bounding_rect;
+			mt->renderedRect = device_bounding_rect;
 			mt->renderedRect.flags = designedRect.flags;
 		}
 		//qfDebug().color(QFLog::Green, QFLog::Red) << "\tleading:" << processor()->fontMetrics(style.font).leading() << "\theight:" << processor()->fontMetrics(style.font).height();
-		qfDebug() << "\tchild rendered rect:" << rendered_bounding_rect.toString();
+		qfDebug() << "\tchild rendered rect:" << device_bounding_rect.toString();
 	}
 	qfDebug() << "\t<<< CHILDREN paraText return:" << res.toString();
 	return res;

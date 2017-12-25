@@ -156,7 +156,7 @@ QtObject {
 		}
 		reportModel.setQueryParameters({stageId: stage_id})
 		reportModel.reload();
-		console.info(reportModel.effectiveQuery());
+		//console.info(reportModel.effectiveQuery());
 		tt.setData(reportModel.toTreeTableData());
 		tt.setValue("stageId", stage_id)
 		tt.setValue("event", event_plugin.eventConfig.value("event"));

@@ -205,7 +205,7 @@ void ReportOptionsDialog::loadPersistentSettings()
 		return;
 	QSettings settings;
 	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
-	qfInfo() << persistentSettingsPath() << m;
+	//qfInfo() << persistentSettingsPath() << m;
 	Options opts(m);
 	qfDebug() << opts;
 	setOptions(opts);
