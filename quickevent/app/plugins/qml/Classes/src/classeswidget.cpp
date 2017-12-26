@@ -247,6 +247,7 @@ void ClassesWidget::edit_courses()
 	auto *w = new EditCoursesWidget();
 	dlg.setCentralWidget(w);
 	dlg.exec();
+	reload();
 }
 
 void ClassesWidget::edit_codes()
@@ -257,6 +258,7 @@ void ClassesWidget::edit_codes()
 	//auto *bt_apply = dlg.buttonBox()->button(QDialogButtonBox::Apply);
 	//connect(bt_apply, &QPushButton::clicked, this, &MainWindow::askUserToRestartAppServer);
 	dlg.exec();
+	reload();
 }
 
 void ClassesWidget::reset()
@@ -305,6 +307,7 @@ void ClassesWidget::reload()
 		m_classesModel->setQueryBuilder(qb, false);
 		m_classesModel->reload();
 	}
+	/*
 	{
 		qf::core::sql::Query q(m_classesModel->sqlConnection());
 		q.exec("SELECT COUNT(*) FROM courses");
@@ -316,6 +319,7 @@ void ClassesWidget::reload()
 		}
 		ui->tblClasses->setReadOnly(ro);
 	}
+	*/
 	{
 		QMap<int, QString> courses;
 		qf::core::sql::Query q;
