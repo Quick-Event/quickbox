@@ -384,7 +384,7 @@ Schema {
 				Field { name: 'siId'; type: Int { primaryKey: true } },
 				Field { name: 'ignored'; type: Boolean { }
 					notNull: true
-					defaultValue: true
+					defaultValue: false
 				},
 				Field { name: 'note'; type: String { } }
 			]

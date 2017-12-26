@@ -59,7 +59,8 @@ public:
 		col_runs_notCompeting,
 		col_runs_misPunch,
 		col_runs_disqualified,
-		col_runs_cardLent,
+		col_runs_cardRentRequested,
+		col_cardInLentTable,
 		col_runs_cardReturned,
 		col_COUNT
 	};
@@ -80,7 +81,8 @@ RunsModel::RunsModel(QObject *parent)
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch")));
-	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L", "runs.cardLent")).setToolTip(tr("Card lent")));
+	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("LR", "runs.cardLent")).setToolTip(tr("Card rent requested")));
+	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("LT", "cardInLentTable")).setToolTip(tr("Card in lent table")));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R", "runs.cardReturned")).setToolTip(tr("Card returned")));
 }
 
@@ -175,8 +177,10 @@ bool CompetitorWidget::loadRunsTable()
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("competitors", "classId")
+			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
+			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 			.where("runs.competitorId=" QF_IARG(doc->value("competitors.id").toInt()))
 			.orderBy("runs.stageId");
 	m_runsModel->setQueryBuilder(qb, false);

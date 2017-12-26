@@ -133,10 +133,12 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			.select2("competitors", "id, registration, licence, ranking, startNumber, siId, note")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
 			.from("runs")
 			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")
+			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 			.join("competitors.classId", "classes.id")
 			.orderBy("runs.id");//.limit(10);
 	if(class_id > 0) {

@@ -33,7 +33,6 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			columns: "%,%"
 			vinset: 10
 			Frame {
 				Para {
@@ -45,6 +44,7 @@ Report {
 				id: band
 				width: "%"
 				height: "%"
+				columns: "%,%"
 				modelData: {
 					if(!root.created)
 						return null;
@@ -66,8 +66,8 @@ Report {
 						fill: Brush {color: Color {def: "khaki"} }
 						textStyle: myStyle.textStyleBold
 						layout: Frame.LayoutHorizontal
-						Cell {
-							width: 18
+						Para {
+							width: 36
 							text: detail.data(detail.currentIndex, "classes.name");
 						}
 						Cell {
@@ -95,13 +95,15 @@ Report {
 							var stage_id = root.stageId;
 							sqlModel.sqlQueryBuilder().clear()
 								.select2('competitors', 'registration')
-								.select2('runs', 'isRunning, cardLent, cardReturned')
+								.select2('runs', 'siid, isRunning, cardLent, cardReturned')
 								.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+								.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 								.from('competitors')
 								.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
+								.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 								.where("competitors.classId={{class_id}}")
-								.where("runs.cardLent")
-								.orderBy('runs.isRunning, runs.cardReturned, competitors.lastName')//.limit(5);
+								.where("runs.cardLent OR lentcards.siid IS NOT NULL")
+								.orderBy('runs.cardreturned, runs.siid')//.limit(5);
 							sqlModel.setQueryParameters({stage_id: stage_id, class_id: detail.data(detail.currentIndex, "classes.id")})
 							sqlModel.reload();
 							return sqlModel.toTreeTableData();
@@ -111,7 +113,11 @@ Report {
 							objectName: "runnersDetail"
 							width: "%"
 							layout: Frame.LayoutHorizontal
-							Cell {
+							Para {
+								width: 18
+								textFn: function() {return runnersDetail.rowData("runs.siid");}
+							}
+							Para {
 								width: 18
 								textFn: function() {return runnersDetail.rowData("registration");}
 							}
