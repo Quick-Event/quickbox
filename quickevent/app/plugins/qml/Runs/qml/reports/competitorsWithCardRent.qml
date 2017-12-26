@@ -74,11 +74,11 @@ Report {
 							width: "%"
 						}
 						Cell {
-							width: 18
-							text: qsTr("Lent")
+							width: 12
+							text: qsTr("Off")
 						}
 						Cell {
-							width: 18
+							width: 12
 							text: qsTr("Ret")
 						}
 					}
@@ -95,13 +95,13 @@ Report {
 							var stage_id = root.stageId;
 							sqlModel.sqlQueryBuilder().clear()
 								.select2('competitors', 'registration')
-								.select2('runs', 'cardLent, cardReturned')
+								.select2('runs', 'isRunning, cardLent, cardReturned')
 								.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 								.from('competitors')
 								.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}}")
 								.where("competitors.classId={{class_id}}")
 								.where("runs.cardLent")
-								.orderBy('competitors.registration')//.limit(5);
+								.orderBy('runs.isRunning, runs.cardReturned, competitors.lastName')//.limit(5);
 							sqlModel.setQueryParameters({stage_id: stage_id, class_id: detail.data(detail.currentIndex, "classes.id")})
 							sqlModel.reload();
 							return sqlModel.toTreeTableData();
@@ -120,12 +120,12 @@ Report {
 								text: runnersDetail.data(runnersDetail.currentIndex, "competitorName");
 							}
 							Cell {
-								width: 18
-								text: runnersDetail.data(runnersDetail.currentIndex, "cardLent")? "Y": "N";
+								width: 12
+								text: runnersDetail.data(runnersDetail.currentIndex, "isRunning")? "": qsTr("Y"); // off-race
 							}
 							Cell {
-								width: 18
-								text: runnersDetail.data(runnersDetail.currentIndex, "cardReturned")? "Y": "N";
+								width: 12
+								text: runnersDetail.data(runnersDetail.currentIndex, "cardReturned")? qsTr("Y"): "";
 							}
 						}
 					}
