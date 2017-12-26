@@ -123,6 +123,18 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_competitorswithCardRent
+			text: qsTr('&Competitors with card rent')
+			onTriggered: {
+				Log.info("act_print_competitorswithCardRent triggered");
+				QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/competitorsWithCardRent.qml" //report
+											   , null // report data (will be loaded from SQL by report itself)
+											   , qsTr("Competitors with card rent") // report preview window title
+											   , "" // persistent settings ID
+											   , {stageId: root.selectedStageId});
+			}
+		},
+		Action {
 			id: act_export_results_iofxml
 			text: qsTr('&IOF XML 2.3')
 			onTriggered: {
@@ -155,8 +167,8 @@ RunsPlugin {
 		a.addActionInto(act_print_results_nStages);
 		a.addActionInto(act_print_results_NStageAwards);
 
-		//var a_import = root.partWidget.menuBar.actionForPath("import", true);
-		//a_import.text = qsTr("&Import");
+		var a_sep = a_print.addSeparatorInto();
+		a_sep.addActionAfter(act_print_competitorswithCardRent)
 
 		var a_export = root.partWidget.menuBar.actionForPath("export", true);
 		//a_export.text = qsTr("E&xport");

@@ -8,8 +8,8 @@ Report {
 	id: root
 	objectName: "root"
 
-	property string reportTitle: qsTr("Competitors with card lent in stage %1").arg(eventPlugin? eventPlugin.currentStageId: "?");
-	property var eventPlugin
+	property string reportTitle: qsTr("Competitors with card lent in stage %1").arg(stageId);
+	property var stageId
 
 	property SqlTableModel sqlModel: SqlTableModel {}
 
@@ -92,7 +92,7 @@ Report {
 							if(!root.created || detail.currentIndex < 0)
 								return null;
 							console.info("detail.currentIndex:", detail.currentIndex)
-							var stage_id = eventPlugin.currentStageId;
+							var stage_id = root.stageId;
 							sqlModel.sqlQueryBuilder().clear()
 								.select2('competitors', 'registration')
 								.select2('runs', 'cardLent, cardReturned')

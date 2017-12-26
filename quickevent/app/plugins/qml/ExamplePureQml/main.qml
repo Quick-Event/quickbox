@@ -25,7 +25,6 @@ Plugin {
 	function printCompetitorsWithCardLent()
 	{
 		Log.info("Example printCompetitorsWithCardLent triggered");
-		//var tt = startListClubsTable();
 		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/competitorsWithCardLent.qml" //report
 									   , null // report data (will be loaded from SQL by report itself)
 									   , qsTr("Competitors with card lent") // report preview window title
