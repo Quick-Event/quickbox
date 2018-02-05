@@ -95,8 +95,8 @@ public:
 	};
 public:
 	Option& addOption(const QString key, const Option &opt = Option());
-	Option option(const QString &name, bool throw_exc = true) const throw(Exception);
-	Option& optionRef(const QString &name) throw(Exception);
+	Option option(const QString &name, bool throw_exc = true) const;
+	Option& optionRef(const QString &name);
 	QMap<QString, Option> options() const {return m_options;}
 
 	void parse(int argc, char *argv[]);
@@ -120,7 +120,7 @@ public:
 	/// value is explicitly set from command line or in config file
 	/// defaultValue is not considered to be an explicitly set value
 	Q_INVOKABLE bool isValueSet(const QString &name) const;
-	bool setValue(const QString &name, const QVariant val, bool throw_exc = true) throw(Exception);
+	bool setValue(const QString &name, const QVariant val, bool throw_exc = true);
 protected:
 	QVariant value_helper(const QString &name, bool throw_exception) const;
 	QPair<QString, QString> applicationDirAndName() const;

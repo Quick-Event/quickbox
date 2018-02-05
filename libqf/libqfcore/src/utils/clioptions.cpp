@@ -111,7 +111,7 @@ CLIOptions::Option& CLIOptions::addOption(const QString key, const CLIOptions::O
 	return m_options[key];
 }
 
-CLIOptions::Option CLIOptions::option(const QString& name, bool throw_exc) const throw(Exception)
+CLIOptions::Option CLIOptions::option(const QString& name, bool throw_exc) const
 {
 	Option ret = m_options.value(name);
 	if(ret.isNull() && throw_exc) {
@@ -122,7 +122,7 @@ CLIOptions::Option CLIOptions::option(const QString& name, bool throw_exc) const
 	return ret;
 }
 
-CLIOptions::Option& CLIOptions::optionRef(const QString& name) throw(Exception)
+CLIOptions::Option& CLIOptions::optionRef(const QString& name)
 {
 	if(!m_options.contains(name)) {
 		QString msg = "Key '"%name%"' not found.";
@@ -180,7 +180,7 @@ bool CLIOptions::optionExists(const QString &name) const
 	return !option(name, !qf::core::Exception::Throw).isNull();
 }
 
-bool CLIOptions::setValue(const QString& name, const QVariant val, bool throw_exc) throw(Exception)
+bool CLIOptions::setValue(const QString& name, const QVariant val, bool throw_exc)
 {
 	Option o = option(name, false);
 	if(optionExists(name)) {
