@@ -68,7 +68,7 @@ DbEnum::DbEnum(const Query &q)
 		int fld_ix = s_fieldMapping.value(fld_name, -1);
 		if(fld_ix < 0)
 			continue;
-		QVariant v = rec.value(i);
+		QVariant v = q.value(i);
 		if(fld_ix == FieldValue) {
 			QString s = v.toString().simplified();
 			if(!s.isEmpty() && (s[0] == '{' || s[0] == '[')) {

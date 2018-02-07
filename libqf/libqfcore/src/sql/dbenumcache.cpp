@@ -93,7 +93,7 @@ DbEnumCache& DbEnumCache::instanceForConnection(const QString &connection_name)
 	if(cn.isEmpty())
 		cn = QSqlDatabase::defaultConnection;
 	if(instances.count(cn) == 0) {
-		instances.emplace(cn, cn);
+		instances.emplace(cn, DbEnumCache{cn});
 	}
 	return instances[cn];
 }
