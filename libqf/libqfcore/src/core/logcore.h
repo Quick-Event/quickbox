@@ -4,6 +4,7 @@
 #include "coreglobal.h"
 
 #include <QMetaType>
+#include <QCoreApplication>
 
 class QLoggingCategory;
 
@@ -12,6 +13,7 @@ namespace core {
 
 class QFCORE_DECL_EXPORT Log
 {
+	Q_DECLARE_TR_FUNCTIONS(Log)
 public:
 	enum class Level : int { Invalid = -1, Fatal, Error, Warning, Info, Debug };
 public:
