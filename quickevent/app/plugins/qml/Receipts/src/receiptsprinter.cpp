@@ -60,7 +60,10 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		paint_device = printer;
 	}
 	else {
-		qfInfo() << "printing on:" << printer_opts.characterPrinterModel() << "at:" << printer_opts.characterPrinterDevice();
+		qfInfo() << "printing on:" << printer_opts.characterPrinterModel() << "at:"
+				 << ((printer_opts.characterPrinterType() == ReceiptsPrinterOptions::CharacterPrinteType::Directory)?
+						 printer_opts.characterPrinterDirectory() :
+						 printer_opts.characterPrinterDevice());
 		qff::MainWindow *fwk = qff::MainWindow::frameWork();
 		paint_device = fwk;
 	}

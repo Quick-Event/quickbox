@@ -4,7 +4,8 @@
 #include "runstableitemdelegate.h"
 #include "Runs/runsplugin.h"
 
-#include <Event/eventplugin.h>
+//#include <Event/eventplugin.h>
+#include <Competitors/competitorsplugin.h>
 
 #include <quickevent/si/siid.h>
 #include <quickevent/og/timems.h>
@@ -35,15 +36,16 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
-/*
-static Event::EventPlugin *eventPlugin()
+
+static Competitors::CompetitorsPlugin *competitorsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(plugin != nullptr, "Event plugin not installed!", return nullptr);
+	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin *>(fwk->plugin("Competitors"));
+	if(plugin == nullptr)
+		QF_EXCEPTION("Competitors plugin not installed!");
 	return plugin;
 }
-*/
+
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::RunsTableWidget)
@@ -99,6 +101,8 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 		m_runsTableItemDelegate->setStartTimeHighlightVisible(is_sort_start_time_asc);
 		ui->tblRuns->setDragEnabled(is_sort_start_time_asc);
 	});
+
+	connect(ui->tblRuns, &qfw::TableView::editRowInExternalEditor, this, &RunsTableWidget::editCompetitor, Qt::QueuedConnection);
 }
 
 RunsTableWidget::~RunsTableWidget()
@@ -173,6 +177,20 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 				}
 			}
 		}
+	}
+}
+
+void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
+{
+	Competitors::CompetitorsPlugin *competitors_plugin = competitorsPlugin();
+	int result;
+	QMetaObject::invokeMethod(competitors_plugin, "editCompetitor", Qt::DirectConnection
+							  , Q_RETURN_ARG(int, result)
+							  , Q_ARG(int, id.toInt())
+							  , Q_ARG(int, mode)
+							  );
+	if(result == QDialog::Accepted) {
+		ui->tblRuns->reload();
 	}
 }
 

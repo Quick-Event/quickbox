@@ -12,12 +12,12 @@ DEFINES += RUNSPLUGIN_BUILD_DLL
 
 INCLUDEPATH += \
     $$PWD/../Event/include \
-#    $$PWD/../Competitors/include \
+    $$PWD/../Competitors/include \
 
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
-#    -lCompetitorsplugin \
+    -lCompetitorsplugin \
 
 include (src/src.pri)
 

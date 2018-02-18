@@ -2,11 +2,13 @@
 #include "../thispartwidget.h"
 #include "competitordocument.h"
 #include "../registrationswidget.h"
+#include "../competitorwidget.h"
 
 #include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 
@@ -18,6 +20,7 @@
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
+namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 
@@ -51,6 +54,18 @@ QObject *CompetitorsPlugin::createCompetitorDocument(QObject *parent)
 		qmlEngine()->setObjectOwnership(ret, QQmlEngine::JavaScriptOwnership);
 	}
 	return ret;
+}
+
+int CompetitorsPlugin::editCompetitor(int id, int mode)
+{
+	qfLogFuncFrame() << "id:" << id;
+	auto *w = new CompetitorWidget();
+	w->setWindowTitle(tr("Edit Competitor"));
+	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, m_partWidget);
+	dlg.setDefaultButton(QDialogButtonBox::Save);
+	dlg.setCentralWidget(w);
+	w->load(id, (qfm::DataDocument::RecordEditMode)mode);
+	return dlg.exec();
 }
 
 void CompetitorsPlugin::onInstalled()
