@@ -39,3 +39,6 @@ else {
 
 }
 
+OTHER_FILES += \
+	.travis.yml
+
