@@ -5,6 +5,7 @@
 #include <QString>
 #include <QDateTime>
 
+#include <stdio.h>
 #include <iostream>
 
 #ifdef Q_OS_UNIX
@@ -588,70 +589,85 @@ bool FileLogDevice::isMatchingLogFilter(Log::Level level, const char *file_name,
 	return ok;
 }
 
+namespace {
+
+enum TTYColor {Black=0, Red, Green, Yellow, Blue, Magenta, Cyan, White};
+
+void set_TTY_color(FILE *file, TTYColor color, bool bright)
+{
+	std::fprintf(file, "\033[");
+	std::putc(bright? '1': '0', file);
+	std::putc(';', file);
+	std::putc('3', file);
+	std::putc('0' + color, file);
+	std::putc('m', file);
+}
+
+}
+
 void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
 	if(!m_file)
 		return;
-#ifdef Q_OS_UNIX
-	bool is_tty = ::isatty(fileno(m_file));
-	enum TerminalColor {Black = 0, Red, Green, Yellow, Blue, Magenta, Cyan, White};
-	enum TerminalAttr {AttrReset = 0, AttrBright, AttrDim, AttrUnderline, AttrBlink, AttrReverse = 7, AttrHidden};
+
+#ifdef __GNUC__
+	bool is_TTI = (m_file == stderr && ::isatty(STDERR_FILENO));
+#else
+	bool is_TTI = false;
 #endif
 
-#ifdef Q_OS_UNIX
-	if(is_tty) {
-		TerminalColor fg, bg = Black;
-		TerminalAttr attr = AttrReset;
-		switch(level) {
-		case Log::Level::Info:
-			fg = Cyan; break;
-		case Log::Level::Warning:
-			fg = Magenta; attr = AttrBright; break;
-		case Log::Level::Error:
-		case Log::Level::Fatal:
-			fg = Red; attr = AttrBright; break;
-		case Log::Level::Debug:
-		default:
-			fg = White; break;
-		}
-		QString s;
-		std::fprintf(m_file, "%c[%d;%d;%dm", 0x1B, attr, fg + 30, bg + 40);
-	}
-#endif
-	std::fprintf(m_file, "%4i", ++m_count);
-#ifdef Q_OS_UNIX
-	if(!is_tty) {
-		/// add timestamp if log goes to file
-		QString s = QDateTime::currentDateTime().toString(Qt::ISODate);
-		QByteArray ba = s.toLatin1();
-		std::fprintf(m_file, " %s", ba.constData());
-	}
-#endif
+	QDateTime dt = QDateTime::currentDateTime();
+	QString s = dt.toString(Qt::ISODate);
+	QByteArray ba = s.toLatin1();
+	if(is_TTI) set_TTY_color(m_file, TTYColor::Green, false);
+	std::fprintf(m_file, " %s", ba.constData());
+	std::fprintf(m_file, ".%03d", dt.time().msec());
 
-	std::fprintf(m_file, "|%c|", Log::levelName(level)[0]);
-	QString module = moduleFromFileName(context.file);
-	if(!module.isEmpty()) {
-		std::fprintf(m_file, "[%s:%d]", qPrintable(module), context.line);
-	}
-	if(context.category && context.category[0] && !(context.category == CATEGORY_DEFAULT))
+	if(is_TTI) set_TTY_color(m_file, TTYColor::Yellow, false);
+	std::fprintf(m_file, "[%s:%d]", qPrintable(moduleFromFileName(context.file)), context.line);
+
+	if(context.category && context.category[0] && context.category != QLatin1String("default")) {
+		if(is_TTI) set_TTY_color(m_file, TTYColor::White, true);
 		std::fprintf(m_file, "(%s)", context.category);
-	std::fprintf(m_file, " %s", qPrintable(msg));
-#ifdef Q_OS_UNIX
-	if(is_tty) {
-		QString s;
-		s.sprintf("%c[%d;%d;%dm", 0x1B, AttrReset, White + 30, Black + 40);
-		QByteArray ba = s.toLatin1();
-		std::fprintf(m_file, "%s", ba.constData());
 	}
-#endif
+	switch(level) {
+	case Log::Level::Fatal:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Red, true);
+		std::fprintf(m_file, "|F|");
+		break;
+	case Log::Level::Error:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Red, true);
+		std::fprintf(m_file, "|E|");
+		break;
+	case Log::Level::Warning:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Magenta, true);
+		std::fprintf(m_file, "|W|");
+		break;
+	case Log::Level::Info:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Cyan, true);
+		std::fprintf(m_file, "|I|");
+		break;
+	case Log::Level::Debug:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::White, false);
+		std::fprintf(m_file, "|D|");
+		break;
+	default:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Red, true);
+		std::fprintf(m_file, "|?|");
+		break;
+	};
+	std::putc(' ', m_file);
+
+	std::fprintf(m_file, " %s", qPrintable(msg));
+
+	if(is_TTI)
+		std::fprintf(m_file, "\33[0m");
 #ifdef Q_OS_WIN
 	std::fprintf(m_file, "\r\n");
 #else
 	std::fprintf(m_file, "\n");
 #endif
 	std::fflush(m_file);
-
-	//if(level == Log::LOG_FATAL) std::terminate(); Qt will do it itself
 }
 
 //=========================================================
