@@ -9,6 +9,8 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("application.fontScale").setType(QVariant::Int).setNames("--font-scale").setDefaultValue(100).setComment("font scale in %");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");
 	addOption("event.stage").setType(QVariant::Int).setNames("-n", "--stage").setComment("If not set, the current stage number is loaded from database.");
+	addOption("event.classesLike").setType(QVariant::String).setNames("--classes-like").setComment("SQL LIKE expression to filter classes to show, for ex. --classes-like \"H%\"");
+	addOption("event.classesNotLike").setType(QVariant::String).setNames("--classes-not-like").setComment("SQL LIKE expression to filter classes not to show, for ex. --not-classes-like \"HDR\"");
 	addOption("connection.host").setType(QVariant::String).setNames("-s", "--host").setDefaultValue("localhost");
 	addOption("connection.port").setType(QVariant::Int).setNames("--port").setDefaultValue(5432);
 	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user").setDefaultValue("quickevent");
