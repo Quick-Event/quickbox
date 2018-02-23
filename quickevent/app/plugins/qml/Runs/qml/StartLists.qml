@@ -115,10 +115,12 @@ QtObject {
 		reportModel.queryBuilder.clear()
 			.select2('competitors', 'registration, startNumber')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select("lentcards.siid IS NOT NULL OR runs.cardLent AS cardLent")
 			.select2('classes', 'name')
 			.select2('runs', 'siId, startTimeMs')
 			.from('competitors')
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
+			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 			.join("competitors.classId", "classes.id")
 			.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
 			.orderBy('classes.name, runs.startTimeMs');

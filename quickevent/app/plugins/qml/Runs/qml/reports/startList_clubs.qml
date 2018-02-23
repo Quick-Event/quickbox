@@ -124,8 +124,15 @@ Report {
 								textFn: runnersDetail.dataFn("competitorName");
 							}
 							Para {
-								width: 18
+								width: 12
 								textFn: runnersDetail.dataFn("registration");
+							}
+							Para {
+								width: 6
+								halign: Frame.AlignRight
+								textFn: function() {
+									return runnersDetail.dataFn("cardLent")()? qsTr("R"): "";
+								}
 							}
 							Cell {
 								width: 18
