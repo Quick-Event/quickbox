@@ -107,7 +107,7 @@ Model::Model(QObject *parent)
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
-	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true));
+	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("L")).setToolTip(tr("Card lent")).setReadOnly(true).setCastType(QVariant::Bool));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
 	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
 	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
@@ -303,7 +303,7 @@ void CardReaderWidget::reset()
 
 void CardReaderWidget::reload()
 {
-	QString driver_name = m_cardsModel->sqlConnection().driverName();
+	//QString driver_name = m_cardsModel->sqlConnection().driverName();
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime")
@@ -311,9 +311,7 @@ void CardReaderWidget::reload()
 			.select2("competitors", "registration")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-			.select(QStringLiteral("COALESCE(runs.cardLent, ") +
-					(driver_name.endsWith(QLatin1String("SQLITE"))? "0": "false")
-					+ ") OR (COALESCE(lentcards.siid, 0) > 0 AND runs.id IS NOT NULL) AS cardLent")
+			.select("lentcards.siid IS NOT NULL OR runs.cardLent AS cardLent")
 			.from("cards")
 			.joinRestricted("cards.siId", "lentcards.siid", "NOT lentcards.ignored")
 			.join("cards.runId", "runs.id")
