@@ -610,7 +610,7 @@ void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, con
 	if(!m_file)
 		return;
 
-#ifdef __GNUC__
+#ifndef Q_OS_WIN
 	bool is_TTI = (m_file == stderr && ::isatty(STDERR_FILENO));
 #else
 	bool is_TTI = false;
