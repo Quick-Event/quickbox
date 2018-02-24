@@ -20,6 +20,7 @@
 #include <qf/qmlwidgets/combobox.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
+#include <qf/qmlwidgets/dialogbuttonbox.h>
 
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
@@ -28,6 +29,8 @@
 
 #include <QCheckBox>
 #include <QLabel>
+#include <QPushButton>
+#include <QTimer>
 
 namespace qfs = qf::core::sql;
 namespace qfw = qf::qmlwidgets;
@@ -182,6 +185,11 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
+	QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
+	bool save_and_next = false;
+	connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
+		save_and_next = (button == bt_save_and_next);
+	});
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
 	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
@@ -197,8 +205,13 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	}
 	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
-	dlg.exec();
+	bool ok = dlg.exec();
 	m_cbxEditCompetitorOnPunch->setEnabled(true);
+	if(ok && save_and_next) {
+		QTimer::singleShot(0, [this]() {
+			this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
+		});
+	}
 }
 
 void CompetitorsWidget::editCompetitors(int mode)
