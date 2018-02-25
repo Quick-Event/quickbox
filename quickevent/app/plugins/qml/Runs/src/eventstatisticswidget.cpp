@@ -504,10 +504,10 @@ void EventStatisticsWidget::on_btPrintResultsSelected_clicked()
 	QList<int> rows;
 	for(int i : ui->tableView->selectedRowsIndexes())
 		rows << ui->tableView->toTableModelRowNo(i);
-	printResultsForRows(rows, true);
+	printResultsForRows(rows);
 }
 
-void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool with_dialog)
+void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 {
 	qfLogFuncFrame() << rows;
 	QStringList class_names;
@@ -521,6 +521,7 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool wit
 	}
 	bool report_printed = false;
 	Runs::ReportOptionsDialog::Options opts;
+	static constexpr bool with_dialog = false;
 	if(with_dialog) {
 		Runs::ReportOptionsDialog dlg(this);
 		dlg.setPersistentSettingsId("resultsReportOptions");
@@ -538,6 +539,7 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows, bool wit
 	QVariantMap props;
 	props["isBreakAfterEachClass"] = (opts.breakType() != (int)Runs::ReportOptionsDialog::BreakType::None);
 	props["isColumnBreak"] = (opts.breakType() == (int)Runs::ReportOptionsDialog::BreakType::Column);
+	props["options"] = opts;
 	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
 								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
 								, td
@@ -629,7 +631,7 @@ void EventStatisticsWidget::on_btPrintResultsNew_clicked()
 		}
 	}
 	if(sel_rows.count()) {
-		printResultsForRows(sel_rows, false);
+		printResultsForRows(sel_rows);
 	}
 }
 

@@ -172,7 +172,8 @@ QtObject {
 											   , isColumnBreak: dlg.isColumnBreak()
 											   , options: opts
 										     }
-										   );		}
+										   );
+		}
 		dlg.destroy();
 	}
 

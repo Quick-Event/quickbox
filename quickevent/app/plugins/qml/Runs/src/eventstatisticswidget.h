@@ -40,7 +40,7 @@ private:
 	void clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished);
 
 	QVariantMap options();
-	void printResultsForRows(const QList<int> &rows, bool with_dialog);
+	void printResultsForRows(const QList<int> &rows);
 private:
 	Ui::EventStatisticsWidget *ui;
 	FooterView *m_tableFooterView = nullptr;
