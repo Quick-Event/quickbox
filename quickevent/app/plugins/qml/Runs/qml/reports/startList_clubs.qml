@@ -109,7 +109,7 @@ Report {
 								halign: Frame.AlignRight
 								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
 							}
-							Cell {
+							Para {
 								width: 12
 								textFn: runnersDetail.dataFn("classes.name");
 							}
@@ -119,22 +119,22 @@ Report {
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("startNumber");
 							}
-							Cell {
+							Para {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
 							Para {
-								width: 12
+								width: 18
 								textFn: runnersDetail.dataFn("registration");
 							}
 							Para {
-								width: 6
+								width: 4
 								halign: Frame.AlignRight
 								textFn: function() {
 									return runnersDetail.dataFn("cardLent")()? qsTr("R"): "";
 								}
 							}
-							Cell {
+							Para {
 								width: 18
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("runs.siId");
