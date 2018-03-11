@@ -371,13 +371,13 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool 
 	return tt.toVariant();
 }
 
-QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class)
+QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
 {
 	int stage_id = selectedStageId();
-	return stageResultsTableData(stage_id, class_filter, max_competitors_in_class);
+	return stageResultsTableData(stage_id, class_filter, max_competitors_in_class, exclude_disq);
 }
 
-QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class)
+QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
 {
 	//var event_plugin = FrameWork.plugin("Event");
 	qf::core::model::SqlTableModel model;
@@ -415,7 +415,10 @@ QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_fi
 			.select2("clubs", "name")
 			.from("competitors")
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0", "JOIN")
+			.joinRestricted("competitors.id"
+							, "runs.competitorId"
+							, QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0") + (exclude_disq? " AND NOT runs.disqualified": "")
+							, "JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		if(max_competitors_in_class > 0)

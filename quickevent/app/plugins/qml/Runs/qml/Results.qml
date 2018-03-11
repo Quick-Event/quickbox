@@ -208,12 +208,12 @@ QtObject {
 									   , {eventConfig: FrameWork.plugin("Event").eventConfig});
 	}
 
-	function exportIofXml2(file_path)
+	function exportIofXml2(file_path, exclude_disq)
 	{
 		var event_plugin = FrameWork.plugin("Event");
 		var start00_msec = event_plugin.stageStartMsec(runsPlugin.selectedStageId);
 
-		var tt1 = currentStageTable();
+		var tt1 = currentStageTable(null, null, exclude_disq);
 		var result_list = ['ResultList', {"status": "complete"}];
 		result_list.push(['IOFVersion', {"version": "2.0.3"}]);
 		var event = tt1.value("event");
