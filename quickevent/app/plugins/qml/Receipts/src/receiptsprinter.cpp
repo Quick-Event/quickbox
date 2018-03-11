@@ -70,7 +70,8 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 	qf::qmlwidgets::reports::ReportProcessor rp(paint_device);
 	{
 		QF_TIME_SCOPE("setting report and data");
-		rp.setReport(report_file_name);
+		if(!rp.setReport(report_file_name))
+			return;
 		for(auto key : report_data.keys()) {
 			rp.setTableData(key, report_data.value(key));
 		}

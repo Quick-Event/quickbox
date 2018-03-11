@@ -51,7 +51,7 @@ void ReportProcessor::reset()
 	QF_SAFE_DELETE(m_processorOutput);
 }
 
-void ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap &report_init_properties)
+bool ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap &report_init_properties)
 {
 	QF_TIME_SCOPE("ReportProcessor::setReport()");
 	m_reportInitProperties = report_init_properties;
@@ -62,13 +62,14 @@ void ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap 
 	//	fn = fn.mid(3);
 	m_reportDocumentComponent->setFileName(rep_file_name);
 	if(m_reportDocumentComponent->isError()) {
-		qfError() << "Erorr loading report component:" << m_reportDocumentComponent->errorString();
-		return;
+		qfError() << "Erorr loading report component:" << rep_file_name << m_reportDocumentComponent->errorString();
+		return false;
 	}
 	if(!m_reportDocumentComponent->isReady()) {
 		qfError() << tr("QML component") << m_reportDocumentComponent->url().toString() << "cannot be loaded asynchronously";
-		return;
+		return false;
 	}
+	return true;
 }
 
 QUrl ReportProcessor::reportUrl() const
@@ -210,8 +211,11 @@ QFontMetricsF ReportProcessor::fontMetrics(const QFont &font)
 
 void ReportProcessor::processHtml(QDomElement & el_body, const HtmlExportOptions &opts)
 {
-	documentInstanceRoot()->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
-	documentInstanceRoot()->printHtml(el_body);
+	ReportItemReport *root_item = documentInstanceRoot();
+	if(root_item == nullptr)
+		return;
+	root_item->resetIndexToPrintRecursively(ReportItem::IncludingParaTexts);
+	root_item->printHtml(el_body);
 	removeRedundantDivs(el_body);
 	if(opts.isConvertBandsToTables())
 		convertBandsToTables(el_body);
