@@ -4,7 +4,7 @@ message($$MY_SUBPROJECT)
 
 TEMPLATE = app
 
-QT += gui sql
+QT += gui sql network
 CONFIG += warn_on qt thread
 
 CONFIG += c++11

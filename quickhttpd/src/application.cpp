@@ -1,5 +1,6 @@
 #include "application.h"
 #include "appclioptions.h"
+#include "httpserver.h"
 
 #include <qf/core/log.h>
 #include <qf/core/sql/connection.h>
@@ -57,6 +58,12 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	else {
 		generateHtml();
 		quit();
+		return;
+	}
+	if(cli_opts->httpPort() > 0) {
+		HttpServer *srv = new HttpServer(this);
+		qfInfo() << "HTTP server is listenning on port:" << cli_opts->httpPort();
+		srv->listen(QHostAddress::Any, cli_opts->httpPort());
 	}
 }
 

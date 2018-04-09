@@ -16,5 +16,5 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("sql.database").setType(QVariant::String).setNames("-b", "--sql-database").setDefaultValue("quickevent");
 	addOption("sql.driver").setType(QVariant::String).setNames("--sql-sql-driver").setDefaultValue("QPSQL");
 
-	addOption("httpd.port").setType(QVariant::Int).setNames("--httpd-port").setDefaultValue(0);
+	addOption("http.port").setType(QVariant::Int).setNames("--http-port").setDefaultValue(8888);
 }

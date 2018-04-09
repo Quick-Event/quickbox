@@ -25,7 +25,7 @@ public:
 	CLIOPTION_GETTER_SETTER2(QString, "sql.database", s, setS, qlDatabase)
 	CLIOPTION_GETTER_SETTER2(QString, "sql.driver", s, setS, qlDriver)
 
-	CLIOPTION_GETTER_SETTER2(int, "httpd.port", h, setH, ttpdPort)
+	CLIOPTION_GETTER_SETTER2(int, "http.port", h, setH, ttpPort)
 };
 
 #endif // APPCLIOPTIONS_H
