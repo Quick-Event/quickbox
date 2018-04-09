@@ -56,7 +56,7 @@ void Model::reloadCategories()
 	QString qs = "SELECT id FROM classes";
 	if(!where.isEmpty())
 		qs += " WHERE " + where;
-	qs += "  ORDER BY name";
+	qs += " ORDER BY name";
 	qfInfo() << "loading clases:" << qs;
 	QSqlQuery q = app->execSql(qs);
 	while(q.next()) {

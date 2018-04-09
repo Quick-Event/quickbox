@@ -34,7 +34,7 @@ else {
 		libsiut \
 		tools \
 		quickevent \
-		#quickshow-qml \
+		quickhttpd \
 		quickshow \
 
 }

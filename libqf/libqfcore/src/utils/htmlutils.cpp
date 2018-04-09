@@ -26,7 +26,7 @@ HtmlUtils::FromHtmlListOptions::FromHtmlListOptions()
 									 "			.code {background-color: lightgray; text-align:left}\n"
 									 "\n"
 									 "			table { border: 1px solid gray; border-spacing: 0px 0px;}\n"
-									 "			tr.odd { background-color: lavender; }\n"
+									 "			tr.odd { background-color: beige; }\n"
 									 "			th { padding: 3px; border: 0px solid #53bc1f; background-color: #91e369; }\n"
 									 "			td { padding: 3px; border: 0px solid #53bc1f; }\n"
 									 "		</style>"
@@ -101,9 +101,9 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 	Q_UNUSED(options)
 	if(item.type() == QVariant::List) {
 		QVariantList lst = item.toList();
-		QF_ASSERT(!lst.isEmpty(), "Bad item list!", return ret);
+		QF_ASSERT(!lst.isEmpty(), "Empty item list!", return ret);
 		QString element_name = lst.first().toString();
-		//qfInfo() << element_name << item;
+		//qfInfo() << element_name << lst.first();
 		QF_ASSERT(!element_name.isEmpty(), "Bad element name!", return ret);
 		QString attrs_str;
 		int ix = 1;

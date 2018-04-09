@@ -72,17 +72,6 @@ qf::core::sql::Connection Application::sqlConnetion()
 qf::core::sql::Query Application::execSql(const QString &query_str)
 {
 	QString qs = query_str;
-	/*
-	{
-		static QRegExp rx_id_placeholders("\\{\\{([A-Za-z0-9\\.\\_\\/]+)\\}\\}");
-		int pos = 0;
-		while((pos = rx_id_placeholders.indexIn(query_str, pos)) != -1) {
-			QString fld_name = rx_id_placeholders.cap(1);
-			qs.replace(rx_id_placeholders.cap(0), cliOptions()->value(fld_name).toString());
-			pos += rx_id_placeholders.matchedLength();
-		}
-	}
-	*/
 	qf::core::sql::Query q(sqlConnetion());
 	if(!q.exec(qs)) {
 		QSqlError err = q.lastError();

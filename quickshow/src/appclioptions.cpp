@@ -4,7 +4,7 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	: Super(parent)
 {
 	addOption("profile").setType(QVariant::String).setNames("--profile").setComment("Profile name [startlist | results]").setDefaultValue("results");
-	addOption("application.refreshTime").setType(QVariant::String).setNames("--refresh-time").setDefaultValue(1000).setComment("refresh time in msec");
+	addOption("application.refreshTime").setType(QVariant::Int).setNames("--refresh-time").setDefaultValue(1000).setComment("refresh time in msec");
 	addOption("application.columnCount").setType(QVariant::Int).setNames("-c", "--column-count").setDefaultValue(2);
 	addOption("application.fontScale").setType(QVariant::Int).setNames("--font-scale").setDefaultValue(100).setComment("font scale in %");
 	addOption("event.name").setType(QVariant::String).setNames("-e", "--event");
