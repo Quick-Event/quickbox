@@ -175,6 +175,8 @@ void TxtImporter::importRankingCsv()
 		int n = 0;
 		while (!ts.atEnd()) {
 			QStringList line = reader.readCSVLineSplitted();
+			if(line.count() <= 1)
+				QF_EXCEPTION(tr("Fields separation error, invalid CSV format, Error reading CSV line: [%1]").arg(line.join(';').mid(0, 100)));
 			if(n++ == 0) // skip column names
 				continue;
 			QString registration = line.value(ColRegistration);
