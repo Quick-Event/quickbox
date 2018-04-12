@@ -60,6 +60,8 @@ rsync -av $QT_DIR/lib/libQt5DBus.so* $DIST_LIB_DIR
 rsync -av $QT_DIR/lib/libQt5Multimedia.so* $DIST_LIB_DIR
 rsync -av $QT_DIR/lib/libQt5XcbQpa.so* $DIST_LIB_DIR
 
+rsync -av $QT_DIR/lib/libicu*.so* $DIST_LIB_DIR
+
 rsync -av $QT_DIR/plugins/platforms/ $DIST_BIN_DIR/platforms
 rsync -av $QT_DIR/plugins/printsupport/ $DIST_BIN_DIR/printsupport
 mkdir -p $DIST_BIN_DIR/imageformats

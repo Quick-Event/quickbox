@@ -119,7 +119,7 @@ void OrisImporter::getJsonAndProcess(const QUrl &url, std::function<void (const 
 			process_call_back(jsd);
 		}
 		else {
-			qf::qmlwidgets::dialogs::MessageBox::showError(fwk, "http get error on: " + reply->url().toString());
+			qf::qmlwidgets::dialogs::MessageBox::showError(fwk, "http get error on: " + reply->url().toString() + ", " + reply->errorString());
 		}
 		reply->deleteLater();
 	});
