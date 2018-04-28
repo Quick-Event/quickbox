@@ -69,7 +69,7 @@ QString ReceiptsPlugin::currentReceiptPath()
 	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
 	printer_options_key += "receipts/current";
 	qf::core::utils::Settings settings;
-	QString s = settings.value(printer_options_key).toString();
+	QString s = settings.value(printer_options_key).toString().trimmed();
 	return s;
 }
 
@@ -78,6 +78,7 @@ void ReceiptsPlugin::setCurrentReceiptPath(const QString &path)
 	QString printer_options_key = ReceiptsPlugin::SETTINGS_PREFIX;
 	printer_options_key += "receipts/current";
 	qf::core::utils::Settings settings;
+	qfInfo() << "setting current receipt path to:" << path;
 	settings.setValue(printer_options_key, path);
 }
 

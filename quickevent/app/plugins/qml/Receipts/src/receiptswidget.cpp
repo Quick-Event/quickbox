@@ -286,9 +286,12 @@ void ReceiptsWidget::loadReceptList()
 		if(name.startsWith("private/", Qt::CaseInsensitive))
 			continue;
 		name = name.mid(0, name.indexOf(".qml", Qt::CaseInsensitive));
+		qfInfo() << "receipt:" << name << "path:" << path;
 		ui->lstReceipt->addItem(name, path);
 	}
+	ui->lstReceipt->setCurrentIndex(-1);
 	QString curr_path = receiptsPlugin()->currentReceiptPath();
+	qfInfo() << "current receipt path:" << curr_path;
 	for (int i = 0; i < ui->lstReceipt->count(); ++i) {
 		if(ui->lstReceipt->itemData(i).toString() == curr_path) {
 			ui->lstReceipt->setCurrentIndex(i);

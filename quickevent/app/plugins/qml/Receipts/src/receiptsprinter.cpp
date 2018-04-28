@@ -38,6 +38,10 @@ static Receipts::ReceiptsPlugin *receiptsPlugin()
 void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVariantMap &report_data)
 {
 	qfLogFuncFrame();
+	if(report_file_name.isEmpty()) {
+		qfError() << "Empty receipt path.";
+		return;
+	}
 	QF_TIME_SCOPE("ReceiptsPrinter::printReceipt()");
 	const ReceiptsPrinterOptions &printer_opts = m_printerOptions;
 	QPrinter *printer = nullptr;
