@@ -299,7 +299,7 @@ QtObject {
 		Log.info("runs printStartListStarters triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "startListStartersReportOptions";
-		dlg.classFilterVisible = false;
+		dlg.classFilterVisible = true;
 		dlg.startersOptionsVisible = true;
 		if(dlg.exec()) {
 			var tt = startListStartersTable(dlg.sqlWhereExpression());
