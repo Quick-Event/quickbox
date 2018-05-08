@@ -5,6 +5,7 @@
 
 #include <QColor>
 #include <QTextCodec>
+#include <QDateTime>
 
 //namespace qfm = qf::core::model;
 using namespace qf::qmlwidgets;
@@ -41,6 +42,14 @@ bool TableViewProxyModel::isIdle() const
 	return m_rowFilterString.isEmpty() && sortColumn() < 0;
 }
 
+void TableViewProxyModel::sort(int column, Qt::SortOrder order)
+{
+	m_sortColumns.clear();
+	if(order == Qt::AscendingOrder)
+		m_sortColumns << column;
+	Super::sort(column, order);
+}
+
 QVariant TableViewProxyModel::data(const QModelIndex &index, int role) const
 {
 	QVariant ret = Super::data(index, role);
@@ -73,40 +82,77 @@ bool TableViewProxyModel::filterAcceptsRow(int source_row, const QModelIndex &so
 	return false;
 }
 
+int TableViewProxyModel::cmpVariant(const QVariant &left, const QVariant &right) const
+{
+	if(left.userType() == qMetaTypeId<QString>() && right.userType() == qMetaTypeId<QString>()) {
+		const QByteArray lb = qf::core::Collator::toAscii7(QLocale::Czech, left.toString(), true);
+		const QByteArray rb = qf::core::Collator::toAscii7(QLocale::Czech, right.toString(), true);
+		int lsz = lb.size();
+		int rsz = rb.size();
+		for(int i=0; ; i++) {
+			char lc = (i<lsz)? lb.at(i): 0;
+			char rc = (i<rsz)? rb.at(i): 0;
+			if(lc == rc) {
+				if(lc == 0) {
+					/// same
+					return 0;
+				}
+			}
+			else {
+				return (lc < rc)? -1: 1;
+			}
+		}
+	}
+	else if(left.isNull() && right.isNull()) {
+		return 0;
+	}
+	else if(left.isNull() && !right.isNull()) {
+		return -1;
+	}
+	else if(!left.isNull() && right.isNull()) {
+		return 1;
+	}
+	else {
+		if (left.userType() == QVariant::Invalid)
+			return 1;
+		if (right.userType() == QVariant::Invalid)
+			return -1;
+		switch (left.userType()) {
+		case QVariant::Int:
+			return left.toInt() - right.toInt();
+		case QVariant::UInt:
+			return left.toUInt() - right.toUInt();
+		case QVariant::LongLong:
+			return left.toLongLong() - right.toLongLong();
+		case QVariant::ULongLong:
+			return left.toULongLong() - right.toULongLong();
+		case QMetaType::Float:
+			return left.toFloat() - right.toFloat();
+		case QVariant::Double:
+			return left.toDouble() - right.toDouble();
+		case QVariant::Char:
+			return left.toChar().unicode() - right.toChar().unicode();
+		case QVariant::Date:
+			return left.toDate().toJulianDay() - right.toDate().toJulianDay();
+		case QVariant::Time:
+			return left.toTime().msecsSinceStartOfDay() - right.toTime().msecsSinceStartOfDay();
+		case QVariant::DateTime:
+			return left.toDateTime().toMSecsSinceEpoch() - right.toDateTime().toMSecsSinceEpoch();
+		default:
+			return left.toString().compare(right.toString());
+		}
+	}
+}
+
 bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
+	//qfInfo() << left << right;
 	bool ret = false;
 	const QAbstractItemModel *source_model = sourceModel();
 	if(source_model) {
 		QVariant lv = source_model->data(left, Qt::EditRole); /// comparing display role is not working for NULL values
 		QVariant rv = source_model->data(right, Qt::EditRole);
-		if(lv.userType() == qMetaTypeId<QString>() && rv.userType() == qMetaTypeId<QString>()) {
-			const QByteArray lb = qf::core::Collator::toAscii7(QLocale::Czech, lv.toString(), true);
-			const QByteArray rb = qf::core::Collator::toAscii7(QLocale::Czech, rv.toString(), true);
-			int lsz = lb.size();
-			int rsz = rb.size();
-			for(int i=0; ; i++) {
-				char lc = (i<lsz)? lb.at(i): 0;
-				char rc = (i<rsz)? rb.at(i): 0;
-				if(lc == rc) {
-					if(lc == 0) {
-						/// same
-						ret = false;
-						break;
-					}
-				}
-				else {
-					ret = lc < rc;
-					break;
-				}
-			}
-		}
-		else if(lv.isNull() && !rv.isNull()) {
-			ret = true;
-		}
-		else {
-			ret = Super::lessThan(left, right);
-		}
+		ret = cmpVariant(lv, rv) < 0;
 		//qfInfo() << lv << "vs" << rv << "->" << ret;
 	}
 	return ret;
