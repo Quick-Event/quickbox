@@ -34,8 +34,8 @@ Report {
 
 	width: root.options.isShirinkPageWidthToColumnCount? 210/2*root.options.columnCount: 210
 	height: 297
-	hinset: 5
-	vinset: 5
+	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
@@ -86,7 +86,7 @@ Report {
 							textFn: function() { return qsTr("climb: ") + detail.rowData("courses.climb");}
 						}
 					}
-					//expandChildrenFrames: true
+					//expandChildFrames: true
 					Band {
 						id: runnersBand
 						objectName: "runnersBand"

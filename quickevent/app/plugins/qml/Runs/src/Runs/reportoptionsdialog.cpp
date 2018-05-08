@@ -153,6 +153,8 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	qfLogFuncFrame() << options;
 	ui->cbxBreakAfterClassType->setCurrentIndex(options.breakType());
 	ui->edColumnCount->setValue(options.columns().length() / 2 + 1);
+	ui->edHorizontalMargin->setValue(options.horizontalMargin());
+	ui->edVerticalMargin->setValue(options.verticalMargin());
 	ui->chkShirinkPageWidthToColumnCount->setChecked(options.isShirinkPageWidthToColumnCount());
 	ui->grpClassFilter->setChecked(options.isUseClassFilter());
 	ui->chkClassFilterDoesntMatch->setChecked(options.isInvertClassFilter());
@@ -175,6 +177,8 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	for (int i = 0; i < ui->edColumnCount->value(); ++i)
 		columns += i>0? ",%": "%";
 	opts.setColumns(columns);
+	opts.setHorizontalMargin(ui->edHorizontalMargin->value());
+	opts.setVerticalMargin(ui->edVerticalMargin->value());
 	opts.setShirinkPageWidthToColumnCount(ui->chkShirinkPageWidthToColumnCount->isChecked());
 	opts.setUseClassFilter(ui->grpClassFilter->isChecked());
 	opts.setInvertClassFilter(ui->chkClassFilterDoesntMatch->isChecked());

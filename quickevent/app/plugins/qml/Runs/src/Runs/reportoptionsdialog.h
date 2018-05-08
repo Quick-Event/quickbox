@@ -38,6 +38,8 @@ public:
 		QF_VARIANTMAP_FIELD2(int, b, setB, reakType, 0)
 		QF_VARIANTMAP_FIELD2(QString, c, setC, olumns, "%,%")
 		QF_VARIANTMAP_FIELD2(int, c, setC, olumnCount, 2)
+		QF_VARIANTMAP_FIELD2(int, h, setH, orizontalMargin, 10)
+		QF_VARIANTMAP_FIELD2(int, v, setV, erticalMargin, 5)
 		QF_VARIANTMAP_FIELD2(bool, is, set, ShirinkPageWidthToColumnCount, false)
 		QF_VARIANTMAP_FIELD(QString, c, setC, lassFilter)
 		QF_VARIANTMAP_FIELD2(int, c, setC, lassFilterType, 0)
