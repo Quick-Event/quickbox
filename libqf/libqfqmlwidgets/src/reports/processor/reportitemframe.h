@@ -50,6 +50,7 @@ public:
 				"dela se to tak, ze se nejprve vyrendruje stranka a pak se prochazi vyrendrovane ramecky a pokud je treba, "
 				"zvetsuji se tak, aby vyplnily cely parent frame.  Objekty typu QFReportItemMetaPaintText jsou ignorovany"
 				)
+	Q_PROPERTY(bool expandVerticalSprings READ isExpandVerticalSprings WRITE setExpandVerticalSprings NOTIFY expandVerticalSpringsChanged)
 	Q_PROPERTY(bool expandChildrenFrames READ isExpandChildrenFrames WRITE setExpandChildrenFrames NOTIFY expandChildrenFramesChanged)
 	Q_PROPERTY(qreal renderedWidth READ renderedWidth NOTIFY renderedWidthChanged)
 	Q_PROPERTY(qreal renderedHeight READ renderedHeight NOTIFY renderedHeightChanged)
@@ -92,6 +93,8 @@ public:
 	QF_PROPERTY_OBJECT_IMPL(style::Pen*, r, R, ightBorder)
 	QF_PROPERTY_OBJECT_IMPL(style::Brush*, f, F, ill)
 	QF_PROPERTY_OBJECT_IMPL(style::Text*, t, T, extStyle)
+
+	QF_PROPERTY_BOOL_IMPL2(e, E, xpandVerticalSprings, false)
 
 	style::Pen* border() const;
 	void setBorder(style::Pen *b);

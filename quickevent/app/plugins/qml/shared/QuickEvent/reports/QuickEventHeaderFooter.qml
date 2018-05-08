@@ -8,6 +8,7 @@ Frame {
 	width: "%"
 	height: "%"
 	textStyle: TextStyle {basedOn: "reportHeader"}
+	expandVerticalSprings: true
 	Frame {
 		id: header
 		layout: Frame.LayoutHorizontal

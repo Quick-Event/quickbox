@@ -653,11 +653,11 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	dirty_rect.adjust(-hinset(), -vinset(), hinset(), vinset());
 	metapaint_frame->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
-	//qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
 	{
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
-		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
-			/// pokud se vytiskl frame, jehoz vertikalni rozmer nebyl zadan jako % a ma dite s %, roztahni dite a pripadne i jeho deti
+		if(isExpandVerticalSprings()) {
+			//qfInfo() << this << "rendered rect2:" << metapaint_frame->renderedRect;
+			metapaint_frame->renderedRect = bounding_rect;
 			metapaint_frame->expandChildVerticalSpringFrames();
 		}
 		//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();
@@ -665,7 +665,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		metapaint_frame->renderedRect.flags = designedRect.flags;
 		/// mohl bych to udelat tak, ze bych vsem detem dal %, ale je to moc klikani v repeditu
 		if(designedRect.flags & ReportItem::Rect::ExpandChildrenFrames) {
-			metapaint_frame->expandChildrenFramesRecursively();
+			metapaint_frame->expandChildFrames();
 		}
 	}
 	qfDebug() << "\trenderedRect:" << metapaint_frame->renderedRect.toString();

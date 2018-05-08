@@ -95,7 +95,7 @@ void ReportItemMetaPaint::shiftChildren(const ReportItem::Point offset)
 	}
 }
 
-void ReportItemMetaPaint::expandChildrenFramesRecursively()
+void ReportItemMetaPaint::expandChildFrames()
 {
 	if(renderedRect.flags & ReportItem::Rect::LayoutHorizontalFlag) {
 		/// ve smeru layoutu natahni jen posledni dite az po inset

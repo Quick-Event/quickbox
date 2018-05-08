@@ -111,7 +111,7 @@ public:
 	void alignChildren();
 
 	/// popis funkce popsan u atributu expandChildrenFrames v Report.rnc
-	void expandChildrenFramesRecursively();
+	void expandChildFrames();
 	/// rekurzivne projde vsechny deti natahovaci ve smeru vertikalnim a nastavi jim rozmer podle sve velikosti
 	void expandChildVerticalSpringFrames();
 	bool hasSpringChildrenFramesInVerticalLayout();
