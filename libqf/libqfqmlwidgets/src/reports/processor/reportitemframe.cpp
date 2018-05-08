@@ -23,7 +23,7 @@ ReportItemFrame::ReportItemFrame(ReportItem *parent)
 {
 	qfLogFuncFrame();
 	m_layout = LayoutVertical;
-	m_expandChildrenFrames = false;
+	m_expandChildFrames = false;
 	m_horizontalAlignment = AlignLeft;
 	m_verticalAlignment = AlignTop;
 
@@ -120,8 +120,8 @@ void ReportItemFrame::initDesignedRect()
 		designedRect.setHeight(d);
 	}
 
-	if(isExpandChildrenFrames()) {
-		designedRect.flags |= Rect::ExpandChildrenFrames;
+	if(isExpandChildFrames()) {
+		designedRect.flags |= Rect::ExpandChildFrames;
 	}
 
 	if(layout() == LayoutHorizontal)
@@ -657,6 +657,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
 		if(isExpandVerticalSprings()) {
 			//qfInfo() << this << "rendered rect2:" << metapaint_frame->renderedRect;
+			/// !!! will not work for children with more columns
 			metapaint_frame->renderedRect = bounding_rect;
 			metapaint_frame->expandChildVerticalSpringFrames();
 		}
@@ -664,7 +665,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 		metapaint_frame->alignChildren();
 		metapaint_frame->renderedRect.flags = designedRect.flags;
 		/// mohl bych to udelat tak, ze bych vsem detem dal %, ale je to moc klikani v repeditu
-		if(designedRect.flags & ReportItem::Rect::ExpandChildrenFrames) {
+		if(designedRect.flags & ReportItem::Rect::ExpandChildFrames) {
 			metapaint_frame->expandChildFrames();
 		}
 	}

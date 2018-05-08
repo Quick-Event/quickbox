@@ -105,7 +105,7 @@ Report {
 							}
 						}
 					}
-					//expandChildrenFrames: true
+					//expandChildFrames: true
 					Band {
 						id: runnersBand
 						objectName: "runnersBand"

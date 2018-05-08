@@ -141,7 +141,7 @@ Report {
 							classHeader.addItem(c);
 						}
 					}
-					//expandChildrenFrames: true
+					//expandChildFrames: true
 					Band {
 						id: runnersBand
 						objectName: "runnersBand"

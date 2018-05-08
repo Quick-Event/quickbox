@@ -163,7 +163,7 @@ Report {
 				id: dc
 				width: "%"
 				layout: Frame.LayoutHorizontal
-				expandChildrenFrames: true
+				expandChildFrames: true
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
 				textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
 				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};

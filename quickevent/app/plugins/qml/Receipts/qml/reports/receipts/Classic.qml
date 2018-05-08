@@ -205,7 +205,7 @@ Report {
 				id: dc
 				width: "%"
 				layout: Frame.LayoutHorizontal
-				expandChildrenFrames: true
+				expandChildFrames: true
 				fill: {
 					var tm = data(dc.currentIndex, "stpTimeMs");
 					if(!tm)

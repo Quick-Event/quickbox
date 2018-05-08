@@ -43,7 +43,7 @@ public:
 				"LayoutStack - place all children on stack"
 				)
 	Q_PROPERTY(Layout layout READ layout WRITE setLayout NOTIFY layoutChanged)
-	Q_CLASSINFO("property.expandChildrenFrames.doc",
+	Q_CLASSINFO("property.expandChildFrames.doc",
 				"ramecky deti, jsou roztazeny tak, aby vyplnily parent frame, "
 				"jinymi slovy, pokud v radku tabulky natece kazde policko jinak vysoke, budou vsechny roztazeny na vysku parent frame.\n"
 				"Natahuji se jen ramecky, poloha vyrendrovaneho obsahu zustava nezmenena, "
@@ -51,7 +51,7 @@ public:
 				"zvetsuji se tak, aby vyplnily cely parent frame.  Objekty typu QFReportItemMetaPaintText jsou ignorovany"
 				)
 	Q_PROPERTY(bool expandVerticalSprings READ isExpandVerticalSprings WRITE setExpandVerticalSprings NOTIFY expandVerticalSpringsChanged)
-	Q_PROPERTY(bool expandChildrenFrames READ isExpandChildrenFrames WRITE setExpandChildrenFrames NOTIFY expandChildrenFramesChanged)
+	Q_PROPERTY(bool expandChildFrames READ isExpandChildFrames WRITE setExpandChildFrames NOTIFY expandChildFramesChanged)
 	Q_PROPERTY(qreal renderedWidth READ renderedWidth NOTIFY renderedWidthChanged)
 	Q_PROPERTY(qreal renderedHeight READ renderedHeight NOTIFY renderedHeightChanged)
 	Q_PROPERTY(HAlignment halign READ horizontalAlignment WRITE setHorizontalAlignment NOTIFY horizontalAlignmentChanged)
@@ -104,17 +104,17 @@ private:
 	QVariant m_width;
 	QVariant m_height;
 	Layout m_layout = LayoutVertical;
-	bool m_expandChildrenFrames = false;
+	bool m_expandChildFrames = false;
 public:
 	Q_SIGNAL void widthChanged(const QVariant &new_val);
 	Q_SIGNAL void heightChanged(const QVariant &new_val);
 	Q_SIGNAL void layoutChanged(const Layout &new_val);
-	Q_SIGNAL void expandChildrenFramesChanged(const bool &new_val);
+	Q_SIGNAL void expandChildFramesChanged(const bool &new_val);
 public:
 	QVariant width() const {return m_width;}
 	QVariant height() const {return m_height;}
 	Layout layout() const {return m_layout;}
-	bool isExpandChildrenFrames() const {return m_expandChildrenFrames;}
+	bool isExpandChildFrames() const {return m_expandChildFrames;}
 public:
 	Q_SLOT void setWidth(const QVariant &val) {
 		if(m_width != val) {
@@ -137,11 +137,11 @@ public:
 			emit layoutChanged(m_layout);
 		}
 	}
-	Q_SLOT void setExpandChildrenFrames(const bool &val) {
-		if(m_expandChildrenFrames != val) {
-			m_expandChildrenFrames = val;
+	Q_SLOT void setExpandChildFrames(const bool &val) {
+		if(m_expandChildFrames != val) {
+			m_expandChildFrames = val;
 			initDesignedRect();
-			emit expandChildrenFramesChanged(m_expandChildrenFrames);
+			emit expandChildFramesChanged(m_expandChildFrames);
 		}
 	}
 

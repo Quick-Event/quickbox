@@ -61,7 +61,7 @@ Report {
 					width: "%"
 					//keepAll: true
 					layout: Frame.LayoutVertical
-					//expandChildrenFrames: true
+					//expandChildFrames: true
 					Frame {
 						fill: Brush {color: Color {def: "khaki"} }
 						textStyle: myStyle.textStyleBold

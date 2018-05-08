@@ -172,7 +172,7 @@ public:
 			//BottomFixed = 4,
 			//RightFixed = 8,
 			FillLayout = 1, /// tento item se natahne ve smeru layoutu tak, aby vyplnil cely bounding_rect
-			ExpandChildrenFrames = 2, /// viz. atribut expandChildrenFrames v Report.rnc
+			ExpandChildFrames = 2, /// viz. atribut expandChildFrames v Report.rnc
 			LayoutHorizontalFlag = 4, /// rect ma layout ve smeru x
 			LayoutVerticalFlag = 8 /// rect ma layout ve smeru y, pokud je kombinace LayoutX a LayoutY nesmyslna predpoklada se LayoutX == 0 LayoutY == 1
 			//--BackgroundItem = 16
@@ -254,7 +254,7 @@ public:
 		static QString flagsToString(unsigned flags) {
 			QString ret;
 			if(flags & FillLayout) ret += 'F';
-			if(flags & ExpandChildrenFrames) ret += 'X';
+			if(flags & ExpandChildFrames) ret += 'X';
 			if(flags & LayoutHorizontalFlag) ret += 'H';
 			if(flags & LayoutVerticalFlag) ret += 'V';
 			return ret;
