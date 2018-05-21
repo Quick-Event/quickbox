@@ -8,6 +8,7 @@ SUBDIRS += \
 	Classes \
 	Competitors \
 	Runs \
+	Relays \
 	CardReader \
 	Receipts \
 	Speaker \

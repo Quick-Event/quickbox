@@ -107,6 +107,7 @@ Schema {
 				Field { name: 'classId'; type: Int { } },
 				Field { name: 'stageId'; type: Int { } },
 				Field { name: 'courseId'; type: Int { } },
+				Field { name: 'legCount'; type: Int { } },
 				Field { name: 'startSlotIndex'; type: Int { }
 					defaultValue: -1;
 					notNull: true
@@ -170,7 +171,11 @@ Schema {
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stageId'; type: Int {} },
-				//Field { name: 'cardId'; type: Int {} },
+				Field { name: 'leg'; type: Int {}
+					defaultValue: 0;
+					notNull: true
+				},
+				Field { name: 'relayId'; type: Int {} },
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -209,14 +214,6 @@ Schema {
 					defaultValue: false;
 					notNull: true
 				}
-				/*,
-				Field { name: 'status';
-					type: String {}
-					defaultValue: 'OFF';
-					notNull: true
-					comment: "referencing enumz.runs.status"
-				}
-				*/
 			]
 			indexes: [
 				Index {
@@ -229,8 +226,21 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId', 'competitorId']; unique: true },
-				Index {fields: ['stageId', 'siId', 'isRunning']; unique: true }
+				Index {fields: ['stageId', 'leg', 'competitorId']; unique: true },
+				Index {fields: ['stageId', 'leg', 'siId', 'isRunning']; unique: false }
+			]
+		},
+		Table { name: 'relays'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'number'; type: Int {} },
+				Field { name: 'classId'; type: Int {} },
+				Field { name: 'name'; type: String {} },
+				Field { name: 'club'; type: String {} }
+			]
+			indexes: [
+				Index {fields: ['name'] },
+				Index {fields: ['number'] }
 			]
 		},
 		Table { name: 'runlaps'
