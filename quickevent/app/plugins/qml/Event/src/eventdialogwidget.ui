@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>457</height>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -162,7 +162,7 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_10">
      <property name="text">
       <string>Import ID</string>
@@ -172,7 +172,7 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="12" column="1">
     <widget class="QLineEdit" name="ed_importId">
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -240,6 +240,45 @@
      </property>
     </widget>
    </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="label_13">
+     <property name="text">
+      <string>Discipline</string>
+     </property>
+     <property name="buddy">
+      <cstring>ed_handicapLength</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1">
+    <widget class="QComboBox" name="cbxDisciplineId">
+     <item>
+      <property name="text">
+       <string>Classic</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Short distance</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Sprint</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Middle</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Relays</string>
+      </property>
+     </item>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -254,6 +293,7 @@
   <tabstop>ed_director</tabstop>
   <tabstop>ed_handicapLength</tabstop>
   <tabstop>cbxSportId</tabstop>
+  <tabstop>cbxDisciplineId</tabstop>
   <tabstop>ed_importId</tabstop>
  </tabstops>
  <resources/>
