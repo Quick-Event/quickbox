@@ -24,7 +24,7 @@ public:
 	Q_INVOKABLE void importClubs();
 
 	static void saveJsonBackup(const QString &fn, const QJsonDocument &jsd);
-	void getJsonAndProcess(const QUrl &url, std::function<void (const QJsonDocument &data)> process_call_back);
+	void getJsonAndProcess(const QUrl &url, QObject *context, std::function<void (const QJsonDocument &data)> process_call_back);
 private:
 	qf::core::network::NetworkAccessManager *networkAccessManager();
 private:

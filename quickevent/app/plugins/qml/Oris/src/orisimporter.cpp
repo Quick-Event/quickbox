@@ -96,13 +96,14 @@ qf::core::network::NetworkAccessManager *OrisImporter::networkAccessManager()
 	return m_networkAccessManager;
 }
 
-void OrisImporter::getJsonAndProcess(const QUrl &url, std::function<void (const QJsonDocument &)> process_call_back)
+void OrisImporter::getJsonAndProcess(const QUrl &url, QObject *context, std::function<void (const QJsonDocument &)> process_call_back)
 {
 	auto *manager = networkAccessManager();
 	qf::core::network::NetworkReply *reply = manager->get(url);
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	connect(context, &QObject::destroyed, reply, &qf::core::network::NetworkReply::deleteLater);
 	connect(reply, &qf::core::network::NetworkReply::downloadProgress, fwk, &qf::qmlwidgets::framework::MainWindow::showProgress);
-	connect(reply, &qf::core::network::NetworkReply::finished, [reply, process_call_back](bool get_ok) {
+	connect(reply, &qf::core::network::NetworkReply::finished, context, [reply, process_call_back](bool get_ok) {
 		qfInfo() << "Get:" << reply->url().toString() << "OK:" << get_ok;
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		if(get_ok) {
@@ -158,7 +159,7 @@ static QString jsonObjectToFullName(const QJsonObject &data, const QString &fiel
 void OrisImporter::importEvent(int event_id)
 {
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getEvent&id=%1").arg(event_id));
-	getJsonAndProcess(url, [this, event_id](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [this, event_id](const QJsonDocument &jsd) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			saveJsonBackup("Event", jsd);
@@ -234,7 +235,7 @@ static QVariantList create_html_table(const QString &title, const QStringList &f
 void OrisImporter::importEventOrisEntries(int event_id)
 {
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
-	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		static const QString json_fn = "EventEntries";
 		saveJsonBackup(json_fn, jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -494,7 +495,7 @@ void OrisImporter::importRegistrations()
 	int sport_id = eventPlugin()->eventConfig()->sportId();
 	int year = QDate::currentDate().year();
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=%1&year=%2").arg(sport_id).arg(year));
-	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Registrations", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
@@ -555,7 +556,7 @@ void OrisImporter::importRegistrations()
 void OrisImporter::importClubs()
 {
 	QUrl url("https://oris.orientacnisporty.cz/API/?format=json&method=getCSOSClubList");
-	getJsonAndProcess(url, [](const QJsonDocument &jsd) {
+	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Clubs", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;

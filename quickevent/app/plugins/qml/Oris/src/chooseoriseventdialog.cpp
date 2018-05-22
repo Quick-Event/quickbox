@@ -45,7 +45,7 @@ void ChooseOrisEventDialog::load()
 	QDate d = QDate::currentDate();
 	d = d.addMonths(-1);
 	QUrl url("https://oris.orientacnisporty.cz/API/?format=json&method=getEventList&all=1&datefrom=" + d.toString(Qt::ISODate));
-	m_importer->getJsonAndProcess(url, [this](const QJsonDocument &jsd) {
+	m_importer->getJsonAndProcess(url, this, [this](const QJsonDocument &jsd) {
 		//qfWarning().noquote() << QString::fromUtf8(jsd.toJson());
 		OrisImporter::saveJsonBackup("EventList", jsd);
 		QJsonObject jso = jsd.object().value(QStringLiteral("Data")).toObject();
