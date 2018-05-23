@@ -1,7 +1,6 @@
 #include "relaysplugin.h"
 #include "../thispartwidget.h"
 #include "relaydocument.h"
-#include "../registrationswidget.h"
 #include "../relaywidget.h"
 
 #include <Event/eventplugin.h>
@@ -73,92 +72,17 @@ void RelaysPlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	m_partWidget = new ThisPartWidget();
 	fwk->addPartWidget(m_partWidget, manifest()->featureId());
-	{
-		m_registrationsDockWidget = new qff::DockWidget(nullptr);
-		m_registrationsDockWidget->setObjectName("registrationsDockWidget");
-		m_registrationsDockWidget->setWindowTitle(tr("Registrations"));
-		fwk->addDockWidget(Qt::RightDockWidgetArea, m_registrationsDockWidget);
-		m_registrationsDockWidget->hide();
-		connect(m_registrationsDockWidget, &qff::DockWidget::visibilityChanged, this, &RelaysPlugin::onRegistrationsDockVisibleChanged);
 
-		auto *a = m_registrationsDockWidget->toggleViewAction();
-		//a->setCheckable(true);
-		a->setShortcut(QKeySequence("ctrl+shift+R"));
-		fwk->menuBar()->actionForPath("view")->addActionInto(a);
-	}
-
-	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, this, &RelaysPlugin::reloadRegistrationsModel);
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &RelaysPlugin::onDbEventNotify);
 
 	emit nativeInstalled();
-}
-
-void RelaysPlugin::onRegistrationsDockVisibleChanged(bool on)
-{
-	if(on && !m_registrationsDockWidget->widget()) {
-		auto *rw = new RegistrationsWidget();
-		m_registrationsDockWidget->setWidget(rw);
-		rw->checkModel();
-	}
 }
 
 void RelaysPlugin::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
 	Q_UNUSED(connection_id)
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
-	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED))
-		reloadRegistrationsModel();
 	emit dbEventNotify(domain, connection_id, data);
-}
-
-void RelaysPlugin::reloadRegistrationsModel()
-{
-	qfLogFuncFrame() << "isEventOpen():" << eventPlugin()->isEventOpen();
-	if(eventPlugin()->isEventOpen())
-		registrationsModel()->reload();
-	else
-		registrationsModel()->clearRows();
-	// clear registration table to be regenerated when registrationsTable() will be called
-	m_registrationsTable = qf::core::utils::Table();
-}
-
-qf::core::model::SqlTableModel* RelaysPlugin::registrationsModel()
-{
-	if(!m_registrationsModel) {
-		m_registrationsModel = new qf::core::model::SqlTableModel(this);
-		m_registrationsModel->addColumn("competitorName", tr("Name"));
-		m_registrationsModel->addColumn("registration", tr("Reg"));
-		m_registrationsModel->addColumn("licence", tr("Lic"));
-		m_registrationsModel->addColumn("siId", tr("SI"));
-		//m_registrationsModel->addColumn("fistName");
-		//m_registrationsModel->addColumn("lastName");
-		qfs::QueryBuilder qb;
-		qb.select2("registrations", "firstName, lastName, licence, registration, siId")
-				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-				.from("registrations")
-				.orderBy("lastName, firstName");
-		m_registrationsModel->setQueryBuilder(qb, false);
-	}
-	return m_registrationsModel;
-}
-
-const qf::core::utils::Table &RelaysPlugin::registrationsTable()
-{
-	qf::core::model::SqlTableModel *m = registrationsModel();
-	if(m_registrationsTable.isNull() && !m->table().isNull()) {
-		m_registrationsTable = m->table();
-		auto c_nsk = QStringLiteral("competitorNameAscii7");
-		m_registrationsTable.appendColumn(c_nsk, QVariant::String);
-		int ix_nsk = m_registrationsTable.fields().fieldIndex(c_nsk);
-		int ix_cname = m_registrationsTable.fields().fieldIndex(QStringLiteral("competitorName"));
-		for (int i = 0; i < m_registrationsTable.rowCount(); ++i) {
-			qf::core::utils::TableRow &row_ref = m_registrationsTable.rowRef(i);
-			QString nsk = row_ref.value(ix_cname).toString();
-			nsk = QString::fromLatin1(qf::core::Collator::toAscii7(QLocale::Czech, nsk, true));
-			row_ref.setValue(ix_nsk, nsk);
-		}
-	}
-	return m_registrationsTable;
 }
 
 }

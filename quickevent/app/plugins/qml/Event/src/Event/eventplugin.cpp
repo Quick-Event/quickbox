@@ -425,7 +425,7 @@ DbSchema EventPlugin::dbSchema()
 
 int EventPlugin::minDbVersion()
 {
-	return 10103;
+	return 10200;
 }
 
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)

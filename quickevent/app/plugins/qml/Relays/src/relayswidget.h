@@ -35,17 +35,13 @@ private:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
-	void editRelay(const QVariant &id, int mode) {editRelay_helper(id, mode, 0);}
+	void editRelay(const QVariant &id, int mode);
 	void editRelays(int mode);
 
-	void editRelay_helper(const QVariant &id, int mode, int siid);
-
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
-	void editRelayOnPunch(int siid);
 private:
 	Ui::RelaysWidget *ui;
-	qf::core::model::SqlTableModel *m_competitorsModel;
+	qf::core::model::SqlTableModel *m_tblModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
-	QCheckBox *m_cbxEditRelayOnPunch = nullptr;
 };
 

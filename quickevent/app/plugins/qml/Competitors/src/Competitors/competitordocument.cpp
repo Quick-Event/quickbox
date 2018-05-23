@@ -56,12 +56,14 @@ bool CompetitorDocument::saveData()
 			int stage_count = event_plugin->stageCount();
 			qf::core::sql::Query q(model()->connectionName());
 			q.prepare("INSERT INTO runs (competitorId, stageId, siId) VALUES (:competitorId, :stageId, :siId)");
+			m_lastInsertedRunsIds.clear();
 			for(int i=0; i<stage_count; i++) {
 				q.bindValue(":competitorId", competitor_id);
 				q.bindValue(":stageId", i + 1);
 				if(isSaveSiidToRuns())
 					q.bindValue(":siId", siid());
 				q.exec(qf::core::Exception::Throw);
+				m_lastInsertedRunsIds << q.lastInsertId().toInt();
 			}
 			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
 		}

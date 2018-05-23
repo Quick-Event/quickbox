@@ -2,7 +2,6 @@
 #include "ui_relayswidget.h"
 #include "relaywidget.h"
 #include "thispartwidget.h"
-#include "lentcardswidget.h"
 
 #include "Relays/relaydocument.h"
 #include "Relays/relaysplugin.h"
@@ -39,7 +38,8 @@ namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
 
-static Event::EventPlugin* eventPlugin()
+namespace {
+Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
@@ -47,13 +47,23 @@ static Event::EventPlugin* eventPlugin()
 	return plugin;
 }
 
-static Relays::RelaysPlugin* competitorsPlugin()
+Relays::RelaysPlugin* competitorsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto *plugin = qobject_cast<Relays::RelaysPlugin*>(fwk->plugin("Relays"));
 	QF_ASSERT_EX(plugin != nullptr, "Bad Relays plugin!");
 	return plugin;
 }
+
+enum Columns {
+	col_relays_id = 0,
+	col_classes_name,
+	col_relays_name,
+	col_relays_number,
+	col_relays_note,
+	col_COUNT
+};
+}// namespace
 
 RelaysWidget::RelaysWidget(QWidget *parent) :
 	Super(parent),
@@ -68,16 +78,15 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	ui->tblRelays->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	ui->tblRelays->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
 	qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
-	m->addColumn("id").setReadOnly(true);
-	m->addColumn("classes.name", tr("Class"));
-	m->addColumn("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number"));
-	m->addColumn("competitorName", tr("Name"));
-	m->addColumn("registration", tr("Reg"));
-	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
-	m->addColumn("ranking", tr("Ranking"));
-	m->addColumn("note", tr("Note"));
+	using CD = qfm::TableModel::ColumnDefinition;
+	m->clearColumns(col_COUNT);
+	m->setColumn(col_relays_id, CD("id").setReadOnly(true));
+	m->setColumn(col_classes_name, CD("classes.name", tr("Class")).setReadOnly(true));
+	m->setColumn(col_relays_name, CD("name", tr("Name")));
+	m->setColumn(col_relays_number, CD("number", tr("Number")));
+	m->setColumn(col_relays_note, CD("note", tr("Note")));
 	ui->tblRelays->setTableModel(m);
-	m_competitorsModel = m;
+	m_tblModel = m;
 
 	//connect(ui->tblRelays, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(edit Relay(QVariant,int)), Qt::QueuedConnection);
 	connect(ui->tblRelays, &qfw::TableView::editRowInExternalEditor, this, &RelaysWidget::editRelay, Qt::QueuedConnection);
@@ -115,29 +124,16 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		}
 		lbl->setBuddy(m_cbxClasses);
 	}
+	/*
 	main_tb->addSeparator();
 	{
 		m_cbxEditRelayOnPunch = new QCheckBox(tr("Edit on punch"));
 		m_cbxEditRelayOnPunch->setToolTip(tr("Edit or insert competitor on card insert into station."));
 		main_tb->addWidget(m_cbxEditRelayOnPunch);
 	}
-
+	*/
 	qf::qmlwidgets::Action *act_print = part_widget->menuBar()->actionForPath("print");
 	act_print->setText(tr("&Print"));
-
-	qf::qmlwidgets::Action *act_cards = part_widget->menuBar()->actionForPath("cards");
-	act_cards->setText(tr("&Cards"));
-	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Lent cards"));
-		act_cards->addActionInto(a);
-		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
-			qf::qmlwidgets::dialogs::Dialog dlg(this);
-			auto *w = new LentCardsWidget();
-			dlg.setCentralWidget(w);
-			dlg.exec();
-		});
-	}
-
 }
 
 void RelaysWidget::lazyInit()
@@ -147,7 +143,7 @@ void RelaysWidget::lazyInit()
 void RelaysWidget::reset()
 {
 	if(!eventPlugin()->isEventOpen()) {
-		m_competitorsModel->clearRows();
+		m_tblModel->clearRows();
 		return;
 	}
 	{
@@ -163,24 +159,22 @@ void RelaysWidget::reset()
 void RelaysWidget::reload()
 {
 	qfs::QueryBuilder qb;
-	qb.select2("competitors", "*")
+	qb.select2("relays", "*")
 			.select2("classes", "name")
-			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-			.from("competitors")
-			.join("competitors.classId", "classes.id")
-			.orderBy("competitors.id");//.limit(10);
+			.from("relays")
+			.join("relays.classId", "classes.id")
+			.orderBy("classes.name, relays.name");//.limit(10);
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id > 0) {
-		qb.where("competitors.classId=" + QString::number(class_id));
+		qb.where("relays.classId=" + QString::number(class_id));
 	}
-	m_competitorsModel->setQueryBuilder(qb, false);
-	m_competitorsModel->reload();
+	m_tblModel->setQueryBuilder(qb, false);
+	m_tblModel->reload();
 }
 
-void RelaysWidget::editRelay_helper(const QVariant &id, int mode, int siid)
+void RelaysWidget::editRelay(const QVariant &id, int mode)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
-	m_cbxEditRelayOnPunch->setEnabled(false);
 	auto *w = new  RelayWidget();
 	w->setWindowTitle(tr("Edit  Relay"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
@@ -195,18 +189,12 @@ void RelaysWidget::editRelay_helper(const QVariant &id, int mode, int siid)
 	auto *doc = qobject_cast<Relays:: RelayDocument*>(w->dataController()->document());
 	QF_ASSERT(doc != nullptr, "Document is null!", return);
 	if(mode == qfm::DataDocument::ModeInsert) {
-		if(siid == 0) {
-			int class_id = m_cbxClasses->currentData().toInt();
-			doc->setValue("competitors.classId", class_id);
-		}
-		else {
-			w->loadFromRegistrations(siid);
-		}
+		int class_id = m_cbxClasses->currentData().toInt();
+		doc->setValue("relays.classId", class_id);
 	}
 	connect(doc, &Relays:: RelayDocument::saved, ui->tblRelays, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	connect(doc, &Relays:: RelayDocument::saved, competitorsPlugin(), &Relays::RelaysPlugin::competitorEdited, Qt::QueuedConnection);
 	bool ok = dlg.exec();
-	m_cbxEditRelayOnPunch->setEnabled(true);
 	if(ok && save_and_next) {
 		QTimer::singleShot(0, [this]() {
 			this->editRelay(QVariant(), qf::core::model::DataDocument::ModeInsert);
@@ -233,7 +221,7 @@ void RelaysWidget::editRelays(int mode)
 				}
 			}
 			if(n > 0) {
-				if(qfd::MessageBox::askYesNo(this, tr("Confirm deletion of %1 competitors.").arg(n), false)) {
+				if(qfd::MessageBox::askYesNo(this, tr("Confirm deletion of %1 relays.").arg(n), false)) {
 					transaction.commit();
 					ui->tblRelays->reload();
 				}
@@ -249,26 +237,5 @@ void RelaysWidget::onDbEventNotify(const QString &domain, int connection_id, con
 {
 	Q_UNUSED(connection_id)
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
-	if(m_cbxEditRelayOnPunch->isEnabled() && m_cbxEditRelayOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::si::PunchRecord punch(data.toMap());
-		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_ENTRIES) {
-			editRelayOnPunch(siid);
-		}
-	}
 }
 
-void RelaysWidget::editRelayOnPunch(int siid)
-{
-	qfs::Query q;
-	q.exec("SELECT id FROM competitors WHERE siId=" + QString::number(siid), qfc::Exception::Throw);
-	if(q.next()) {
-		int competitor_id = q.value(0).toInt();
-		if(competitor_id > 0) {
-			editRelay_helper(competitor_id, qfm::DataDocument::ModeEdit, 0);
-		}
-	}
-	else {
-		editRelay_helper(QVariant(), qfm::DataDocument::ModeInsert, siid);
-	}
-}

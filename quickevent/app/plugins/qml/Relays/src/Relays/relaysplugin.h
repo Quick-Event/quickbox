@@ -45,19 +45,11 @@ public:
 	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
 
 	Q_SIGNAL void nativeInstalled();
-
-	Q_SLOT void reloadRegistrationsModel();
-	qf::core::model::SqlTableModel* registrationsModel();
-	const qf::core::utils::Table& registrationsTable();
 private:
 	Q_SLOT void onInstalled();
-	void onRegistrationsDockVisibleChanged(bool on = true);
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
-	qf::qmlwidgets::framework::DockWidget *m_registrationsDockWidget = nullptr;
-	qf::core::model::SqlTableModel *m_registrationsModel = nullptr;
-	qf::core::utils::Table m_registrationsTable;
 };
 
 }

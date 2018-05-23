@@ -126,6 +126,26 @@ void OrisImporter::getJsonAndProcess(const QUrl &url, QObject *context, std::fun
 	});
 }
 
+void OrisImporter::getTextAndProcess(const QUrl &url, QObject *context, std::function<void (const QByteArray &)> process_call_back)
+{
+	auto *manager = networkAccessManager();
+	qf::core::network::NetworkReply *reply = manager->get(url);
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	connect(context, &QObject::destroyed, reply, &qf::core::network::NetworkReply::deleteLater);
+	connect(reply, &qf::core::network::NetworkReply::downloadProgress, fwk, &qf::qmlwidgets::framework::MainWindow::showProgress);
+	connect(reply, &qf::core::network::NetworkReply::finished, context, [reply, process_call_back](bool get_ok) {
+		qfInfo() << "Get:" << reply->url().toString() << "OK:" << get_ok;
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		if(get_ok) {
+			process_call_back(reply->data());
+		}
+		else {
+			qf::qmlwidgets::dialogs::MessageBox::showError(fwk, "http get error on: " + reply->url().toString() + ", " + reply->errorString());
+		}
+		reply->deleteLater();
+	});
+}
+
 void OrisImporter::syncCurrentEventEntries()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -136,6 +156,45 @@ void OrisImporter::syncCurrentEventEntries()
 		return;
 	}
 	importEventOrisEntries(oris_id);
+}
+
+void OrisImporter::syncRelaysEntries()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	if(!eventPlugin()->eventConfig()->isRelays()) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Not relays event."));
+		return;
+	}
+	int oris_id = eventPlugin()->eventConfig()->importId();
+	if(oris_id == 0) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot find Oris import ID."));
+		return;
+	}
+	QUrl url(QString("https://oris.orientacnisporty.cz/ExportPrihlasek?id=%1").arg(oris_id));
+	getTextAndProcess(url, this, [](const QByteArray &data) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		try {
+			//qfInfo() << data;
+			QTextStream ts(data);
+			ts.setCodec("cp1250");
+			while(true) {
+				QString line = ts.readLine();
+				int n = 0;
+				QString club = line.mid(n, 4).trimmed(); n += 4;
+				if(club.isEmpty())
+					continue;
+				QString pos = line.mid(n, 3).trimmed(); n += 3;
+				QString class_name = line.mid(n, 11).trimmed(); n += 11;
+				qfInfo() << club << pos << class_name;
+
+				if(ts.atEnd())
+					break;
+			}
+		}
+		catch (qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+		}
+	});
 }
 
 void OrisImporter::chooseAndImport()

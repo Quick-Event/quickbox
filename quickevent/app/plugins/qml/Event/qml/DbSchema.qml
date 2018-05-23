@@ -172,8 +172,8 @@ Schema {
 				Field { name: 'siId'; type: Int {} },
 				Field { name: 'stageId'; type: Int {} },
 				Field { name: 'leg'; type: Int {}
-					defaultValue: 0;
-					notNull: true
+					//defaultValue: 0;
+					//notNull: true
 				},
 				Field { name: 'relayId'; type: Int {} },
 				Field { name: 'startTimeMs'; type: Int {}
@@ -236,10 +236,12 @@ Schema {
 				Field { name: 'number'; type: Int {} },
 				Field { name: 'classId'; type: Int {} },
 				Field { name: 'name'; type: String {} },
-				Field { name: 'club'; type: String {} }
+				Field { name: 'club'; type: String {} },
+				Field { name: 'note'; type: String { } }
 			]
 			indexes: [
-				Index {fields: ['name'] },
+				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
+				Index {fields: ['club'] },
 				Index {fields: ['number'] }
 			]
 		},

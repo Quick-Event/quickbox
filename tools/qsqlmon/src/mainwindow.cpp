@@ -206,17 +206,13 @@ qf::core::sql::Connection MainWindow::setActiveConnection1(const qf::core::sql::
 			return c;
 	}
 	QObject *old_model = queryViewModel();
+	qfDebug() << "\t deletenig old model:" << old_model;
 	QF_SAFE_DELETE(old_model);
 	qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(this);
 	m->setConnectionName(c.connectionName());
 	qfDebug() << "\t new table model created:" << m;
 	setQueryViewModel(m);
 	qfDebug() << "\t model set";
-	qfDebug() << "set model read back:" << ui.queryView->tableView()->tableModel();
-	qfDebug() << "\t deletenig old model:" << old_model;
-	//QF_SAFE_DELETE(old_model);
-	qfDebug() << "\t old model deleted";
-	qfDebug() << "set model read back:" << ui.queryView->tableView()->tableModel();
 
 	qf::core::sql::Connection ret = m_activeConnection;
 	//qfDebug() << "m_activeConnection = c";

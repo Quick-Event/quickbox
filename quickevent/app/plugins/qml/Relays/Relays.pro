@@ -13,12 +13,14 @@ DEFINES += RELAYSPLUGIN_BUILD_DLL
 INCLUDEPATH += \
     $$PWD/../../../../lib/include \
     $$PWD/../Event/include \
+    $$PWD/../Competitors/include \
 
 LIBS += -lquickevent
 
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
+    -lCompetitorsplugin \
 
 
 include (src/src.pri)

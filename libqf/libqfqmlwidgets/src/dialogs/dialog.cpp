@@ -41,7 +41,6 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 {
 	if(central_widget != m_centralWidget) {
 		QF_SAFE_DELETE(m_centralWidget);
-		qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(central_widget);
 		m_centralWidget = central_widget;
 		if(m_centralWidget) {
 			m_centralWidget->setParent(nullptr);
@@ -50,6 +49,7 @@ void Dialog::setCentralWidget(QWidget *central_widget)
 			sp.setVerticalPolicy(QSizePolicy::MinimumExpanding);
 			m_centralWidget->setSizePolicy(sp);
 		}
+		qf::qmlwidgets::framework::DialogWidget *dialog_widget = qobject_cast<qf::qmlwidgets::framework::DialogWidget *>(central_widget);
 		if(dialog_widget) {
 			connect(dialog_widget, &qf::qmlwidgets::framework::DialogWidget::closeDialogRequest, this, &Dialog::done);
 			QMetaObject::invokeMethod(this, "settleDownDialogWidget", Qt::QueuedConnection);

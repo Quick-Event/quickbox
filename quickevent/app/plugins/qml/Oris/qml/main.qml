@@ -33,6 +33,13 @@ Oris {
 			}
 		},
 		Action {
+			id: actSyncRelaysEntriesOris
+			text: qsTr('&Sync relays entries')
+			onTriggered: {
+				orisImporter.syncRelaysEntries()
+			}
+		},
+		Action {
 			id: actImportClubsOris
 			text: qsTr('&Clubs')
 			//enabled: internal.pluginSqlDb.api.sqlServerConnected
@@ -79,6 +86,8 @@ Oris {
 		act_import_oris.enabled = false;
 		act_import_oris.addActionInto(actImportEventOris);
 		act_import_oris.addActionInto(actSyncCurrentEventEntries);
+		act_import_oris.addSeparatorInto();
+		act_import_oris.addActionInto(actSyncRelaysEntriesOris);
 		act_import_oris.addSeparatorInto();
 		act_import_oris.addActionInto(actImportClubsOris);
 		act_import_oris.addActionInto(actImportRegistrationsOris);
