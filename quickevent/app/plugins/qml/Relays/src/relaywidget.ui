@@ -38,7 +38,7 @@
       <item row="2" column="5">
        <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_6">
         <property name="dataId" stdset="0">
-         <string notr="true">relays.club</string>
+         <string notr="true">relays.name</string>
         </property>
        </widget>
       </item>
@@ -62,7 +62,7 @@
       <item row="2" column="3">
        <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_2">
         <property name="dataId" stdset="0">
-         <string notr="true">relays.name</string>
+         <string notr="true">relays.club</string>
         </property>
        </widget>
       </item>
@@ -153,7 +153,7 @@
       <item>
        <widget class="QPushButton" name="btAddLeg">
         <property name="toolTip">
-         <string>Add leg</string>
+         <string>Add leg Ctrl-Ins</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
@@ -167,7 +167,7 @@
       <item>
        <widget class="QPushButton" name="btRemoveLeg">
         <property name="toolTip">
-         <string>Remove leg</string>
+         <string>Remove leg Ctrl-Del</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
@@ -179,27 +179,13 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btMoveLegUp">
+       <widget class="QPushButton" name="btMoveLegDown">
         <property name="toolTip">
-         <string>Move leg down</string>
+         <string>Move leg down Ctrl-D</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/down.svg</normaloff>:/qf/qmlwidgets/images/flat/down.svg</iconset>
-        </property>
-        <property name="shortcut">
-         <string>Ctrl+U</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btMoveLegDown">
-        <property name="toolTip">
-         <string>Move leg up</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
-          <normaloff>:/qf/qmlwidgets/images/flat/up.svg</normaloff>:/qf/qmlwidgets/images/flat/up.svg</iconset>
         </property>
         <property name="shortcut">
          <string>Ctrl+D</string>
@@ -207,16 +193,30 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="btMoveLegUp">
+        <property name="toolTip">
+         <string>Move leg up Ctrl-U</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/up.svg</normaloff>:/qf/qmlwidgets/images/flat/up.svg</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+U</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btReloadLegsTable">
         <property name="toolTip">
-         <string>Reload</string>
+         <string>Reload Ctrl+R</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
           <normaloff>:/qf/qmlwidgets/images/flat/reload.svg</normaloff>:/qf/qmlwidgets/images/flat/reload.svg</iconset>
         </property>
         <property name="shortcut">
-         <string>Ctrl+S, Ctrl+W</string>
+         <string>Ctrl+R</string>
         </property>
        </widget>
       </item>
@@ -253,8 +253,8 @@
   <tabstop>tblLegs</tabstop>
   <tabstop>btAddLeg</tabstop>
   <tabstop>btRemoveLeg</tabstop>
-  <tabstop>btMoveLegUp</tabstop>
   <tabstop>btMoveLegDown</tabstop>
+  <tabstop>btMoveLegUp</tabstop>
   <tabstop>btReloadLegsTable</tabstop>
  </tabstops>
  <resources>

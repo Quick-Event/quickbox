@@ -170,7 +170,10 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'stageId'; type: Int {} },
+				Field { name: 'stageId'; type: Int {}
+					defaultValue: 1;
+					notNull: true
+				},
 				Field { name: 'leg'; type: Int {}
 					//defaultValue: 0;
 					//notNull: true

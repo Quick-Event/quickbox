@@ -24,9 +24,9 @@ private:
 	bool saveData() Q_DECL_OVERRIDE;
 
 	void addLeg();
-	/*
 	void removeLeg();
 	void moveLegUp();
+	/*
 	void moveLegDown();
 	*/
 private:

@@ -24,7 +24,10 @@ public:
 	Q_SIGNAL void legAdded();
 private:
 	void onFilterTextChanged();
+	void onCompetitorSelected();
 	void onRegistrationSelected();
+
+	int findFreeLeg();
 private:
 	Ui::AddLegDialogWidget *ui;
 };

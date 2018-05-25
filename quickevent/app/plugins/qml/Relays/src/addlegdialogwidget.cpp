@@ -5,6 +5,7 @@
 #include <Competitors/competitorsplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <qf/core/log.h>
 #include <qf/core/exception.h>
@@ -30,16 +31,23 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	ui->tblRegistrations->setPersistentSettingsId(ui->tblRegistrations->objectName());
 
 	qf::core::model::SqlTableModel *competitors_model = new qf::core::model::SqlTableModel(this);
+	competitors_model->addColumn("relays.club", tr("Club"));
+	competitors_model->addColumn("relays.name", tr("Name"));
+	competitors_model->addColumn("runs.leg", tr("Leg"));
+	competitors_model->addColumn("competitorName", tr("Name"));
+	competitors_model->addColumn("registration", tr("Reg"));
+	competitors_model->addColumn("licence", tr("Lic"));
+	competitors_model->addColumn("competitors.siId", tr("SI"));
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "leg")
-			.select2("competitors", "id, registration, siId")
+			.select2("competitors", "id, registration, licence, siId")
 			.select2("classes", "name")
+			.select2("relays", "id, club, name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.join("runs.relayId", "relays.id")
-			.join("competitors.classId", "classes.id")
-			.where("runs.isRunning")
+			.join("relays.classId", "classes.id")
 			.orderBy("competitorName");//.limit(10);
 	competitors_model->setQueryBuilder(qb);
 	ui->tblCompetitors->setTableModel(competitors_model);
@@ -54,6 +62,7 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	});
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &AddLegDialogWidget::onFilterTextChanged);
+	connect(ui->tblCompetitors, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onCompetitorSelected);
 	connect(ui->tblRegistrations, &qf::qmlwidgets::TableView::doubleClicked, this, &AddLegDialogWidget::onRegistrationSelected);
 }
 
@@ -72,6 +81,44 @@ void AddLegDialogWidget::onFilterTextChanged()
 	ui->edFilter->setFocus();
 }
 
+void AddLegDialogWidget::onCompetitorSelected()
+{
+	qf::core::utils::TableRow row = ui->tblCompetitors->selectedRow();
+	//int curr_leg = row.value("runs.leg").toInt();
+	int competitor_id = row.value("competitors.id").toInt();
+	int siid = row.value("competitors.siid").toInt();
+	int curr_run_id = row.value("runs.id").toInt();
+	int curr_relay_id = row.value("relayId").toInt();
+	if(curr_relay_id > 0 && curr_relay_id != relayId()) {
+		if(false == qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Competitor has different relay assigned already. Move it to current one?")))
+			return;
+		if(row.value("competitors.classId").toInt() != classId()) {
+			qf::core::sql::Query q;
+			q.exec("UPDATE competitors SET "
+				   "classId=" + QString::number(classId())
+				   + " WHERE id=" + QString::number(competitor_id), qf::core::Exception::Throw);
+		}
+	}
+	int free_leg = findFreeLeg();
+	qf::core::sql::Query q;
+	if(curr_run_id == 0 || curr_relay_id == relayId()) {
+		q.exec("INSERT INTO runs (competitorId, relayId, leg, siid) VALUES ("
+			   + QString::number(competitor_id) + ", "
+			   + QString::number(relayId()) + ", "
+			   + QString::number(free_leg) + ", "
+			   + QString::number(siid) + " "
+			   + ") ", qf::core::Exception::Throw);
+	}
+	else {
+		q.exec("UPDATE runs SET "
+			   "relayId=" + QString::number(relayId())
+			   + ", leg=" + QString::number(free_leg)
+			   + ", isRunning=(1=1)" // TRUE is not accepted by SQLite
+			   + " WHERE id=" + QString::number(curr_run_id), qf::core::Exception::Throw);
+	}
+	emit legAdded();
+}
+
 void AddLegDialogWidget::onRegistrationSelected()
 {
 	qf::core::utils::TableRow row = ui->tblRegistrations->selectedRow();
@@ -86,12 +133,24 @@ void AddLegDialogWidget::onRegistrationSelected()
 	doc.save();
 	int run_id = doc.lastInsertedRunsIds().value(0);
 	QF_ASSERT(run_id > 0, "Bad insert", return);
-	int max_leg = 0;
+	int free_leg = findFreeLeg();
 	qf::core::sql::Query q;
-	q.exec("SELECT MAX(leg) FROM runs WHERE leg IS NOT NULL AND relayId=" + QString::number(relayId()), qf::core::Exception::Throw);
-	if(q.next())
-		max_leg = q.value(0).toInt();
-	q.exec("UPDATE runs SET relayId=" + QString::number(relayId()) + ", leg=" + QString::number(max_leg+1)
+	q.exec("UPDATE runs SET relayId=" + QString::number(relayId()) + ", leg=" + QString::number(free_leg)
 		   + " WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
 	emit legAdded();
+}
+
+int AddLegDialogWidget::findFreeLeg()
+{
+	qf::core::sql::Query q;
+	q.exec("SELECT leg FROM runs WHERE leg IS NOT NULL AND relayId=" + QString::number(relayId()) + " ORDER BY leg", qf::core::Exception::Throw);
+	int free_leg = 1;
+	while(q.next()) {
+		int leg = q.value(0).toInt();
+		if(leg != free_leg) {
+			break;
+		}
+		free_leg++;
+	}
+	return free_leg;
 }
