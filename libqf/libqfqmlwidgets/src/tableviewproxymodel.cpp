@@ -82,7 +82,7 @@ bool TableViewProxyModel::filterAcceptsRow(int source_row, const QModelIndex &so
 	return false;
 }
 
-int TableViewProxyModel::cmpVariant(const QVariant &left, const QVariant &right) const
+int TableViewProxyModel::variantLessThan(const QVariant &left, const QVariant &right) const
 {
 	if(left.userType() == qMetaTypeId<QString>() && right.userType() == qMetaTypeId<QString>()) {
 		const QByteArray lb = qf::core::Collator::toAscii7(QLocale::Czech, left.toString(), true);
@@ -95,29 +95,28 @@ int TableViewProxyModel::cmpVariant(const QVariant &left, const QVariant &right)
 			if(lc == rc) {
 				if(lc == 0) {
 					/// same
-					return 0;
+					return false;
 				}
 			}
 			else {
-				return (lc < rc)? -1: 1;
+				return (lc < rc);
 			}
 		}
 	}
-	else if(left.isNull() && right.isNull()) {
-		return 0;
+	if(!left.isValid()) {
+		return right.isValid();
 	}
-	else if(left.isNull() && !right.isNull()) {
-		return -1;
+	if(!right.isValid()) {
+		return false;
 	}
-	else if(!left.isNull() && right.isNull()) {
-		return 1;
+	if(left.isNull()) {
+		return !right.isNull();
 	}
+	if(right.isNull()) {
+		return false;
+	}
+	/*
 	else {
-		if (left.userType() == QVariant::Invalid)
-			return 1;
-		if (right.userType() == QVariant::Invalid)
-			return -1;
-		/*
 		switch (left.userType()) {
 		case QVariant::Int:
 			return left.toInt() - right.toInt();
@@ -142,13 +141,9 @@ int TableViewProxyModel::cmpVariant(const QVariant &left, const QVariant &right)
 		default:
 			return left.toString().compare(right.toString());
 		}
-		*/
-		if(left < right)
-			return -1;
-		if(left == right)
-			return 0;
-		return 1;
 	}
+		*/
+	return (left < right);
 }
 
 bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
@@ -159,7 +154,7 @@ bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &r
 	if(source_model) {
 		QVariant lv = source_model->data(left, Qt::EditRole); /// comparing display role is not working for NULL values
 		QVariant rv = source_model->data(right, Qt::EditRole);
-		ret = cmpVariant(lv, rv) < 0;
+		ret = variantLessThan(lv, rv);
 		//qfInfo() << lv << "vs" << rv << "->" << ret;
 	}
 	return ret;
