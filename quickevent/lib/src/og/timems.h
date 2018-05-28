@@ -26,14 +26,24 @@ public:
 			return !isValid();
 		return msec() == o.msec();
 	}
+	bool operator<(const TimeMs &o) const
+	{
+		if(!isValid())
+			return o.isValid();
+		if(!o.isValid())
+			return false;
+		return msec() < o.msec();
+	}
 
 	QString toString(QChar sec_sep = QChar('.'), QChar msec_sep = QChar()) const;
 	static TimeMs fromString(const QString &time_str);
-	int msec() const {return m_msec;}
+	int msec() const {return isValid()? m_msec: 0;}
 
 	/// while time2 < time1 add 12 hours to time2 and return it
 	static int fixTimeWrapAM(int time1_msec, int time2_msec);
 	static int msecIntervalAM(int from_time_msec, int to_time_msec);
+
+	static void registerQVariantFunctions();
 private:
 	int m_msec;
 	bool m_isValid;

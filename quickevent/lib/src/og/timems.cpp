@@ -102,3 +102,21 @@ int TimeMs::msecIntervalAM(int from_time_msec, int to_time_msec)
 	return fixTimeWrapAM(from_time_msec, to_time_msec) - from_time_msec;
 }
 
+void TimeMs::registerQVariantFunctions()
+{
+	static bool registered = false;
+	if(!registered) {
+		registered = true;
+		{
+			bool ok = QMetaType::registerComparators<quickevent::og::TimeMs>();
+			if(!ok)
+				qfError() << "Error registering comparators for quickevent::og::TimeMs!";
+		}
+		{
+			bool ok = QMetaType::registerConverter<quickevent::og::TimeMs, int>([](const quickevent::og::TimeMs &t) -> int {return t.msec();});
+			if(!ok)
+				qfError() << "Error registering converter for quickevent::og::TimeMs!";
+		}
+	}
+}
+

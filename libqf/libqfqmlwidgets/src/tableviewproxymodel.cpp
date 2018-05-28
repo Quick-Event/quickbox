@@ -117,6 +117,7 @@ int TableViewProxyModel::cmpVariant(const QVariant &left, const QVariant &right)
 			return 1;
 		if (right.userType() == QVariant::Invalid)
 			return -1;
+		/*
 		switch (left.userType()) {
 		case QVariant::Int:
 			return left.toInt() - right.toInt();
@@ -141,6 +142,12 @@ int TableViewProxyModel::cmpVariant(const QVariant &left, const QVariant &right)
 		default:
 			return left.toString().compare(right.toString());
 		}
+		*/
+		if(left < right)
+			return -1;
+		if(left == right)
+			return 0;
+		return 1;
 	}
 }
 

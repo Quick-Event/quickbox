@@ -15,6 +15,10 @@ public:
 
 	SiId& operator=(int i) {m_value = i; return *this;}
 	operator int () const {return m_value;}
+	bool operator == (const SiId &o) const {return m_value == o.m_value;}
+	bool operator < (const SiId &o) const {return m_value < o.m_value;}
+
+	static void registerQVariantFunctions();
 private:
 	int m_value = 0;
 };

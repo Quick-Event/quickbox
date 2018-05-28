@@ -3,6 +3,9 @@
 #include "appclioptions.h"
 #include "tablemodellogdevice.h"
 
+#include <quickevent/si/siid.h>
+#include <quickevent/og/timems.h>
+
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
 #include <qf/core/utils/settings.h>
@@ -39,6 +42,9 @@ int main(int argc, char *argv[])
 	qfWarning() << "QFLog(WARNING) test OK.";
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";
+
+	quickevent::og::TimeMs::registerQVariantFunctions();
+	quickevent::si::SiId::registerQVariantFunctions();
 
 	AppCliOptions cli_opts;
 	cli_opts.parse(args);
