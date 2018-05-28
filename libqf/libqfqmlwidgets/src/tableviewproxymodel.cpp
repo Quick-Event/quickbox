@@ -142,7 +142,7 @@ int TableViewProxyModel::variantLessThan(const QVariant &left, const QVariant &r
 			return left.toString().compare(right.toString());
 		}
 	}
-		*/
+	*/
 	return (left < right);
 }
 

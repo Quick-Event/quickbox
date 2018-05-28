@@ -83,7 +83,7 @@ void ChooseOrisEventDialog::load()
 		ui->cbxOrisEvent->lineEdit()->setPlaceholderText(tr("Search in events ..."));
 		//ui->cbxOrisEvent->lineEdit()->selectAll();
 		ui->cbxOrisEvent->lineEdit()->clear();
-		ui->edEventId->setValue(0);
+		//ui->edEventId->setValue(0);
 	});
 }
 

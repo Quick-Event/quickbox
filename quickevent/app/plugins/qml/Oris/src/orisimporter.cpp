@@ -175,21 +175,130 @@ void OrisImporter::syncRelaysEntries()
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			//qfInfo() << data;
+			qf::core::sql::Transaction transaction;
+			qf::core::sql::Query q;
+
+			q.execThrow("UPDATE competitors SET importId=1 WHERE importId IS NOT NULL");
+			q.execThrow("UPDATE runs SET importId=1 WHERE importId IS NOT NULL");
+			q.execThrow("UPDATE relays SET importId=1 WHERE importId IS NOT NULL");
+
+			QMap<QString, int> class_ids;
+			q.execThrow("SELECT id, name FROM classes");
+			while(q.next())
+				class_ids[q.value(1).toString()] = q.value(0).toInt();
+
 			QTextStream ts(data);
 			ts.setCodec("cp1250");
-			while(true) {
-				QString line = ts.readLine();
+			enum E1 {
+				Club = 4,
+				RelayPos = 3,
+				ClassName = 11,
+				Reg = 8,
+				Name = 28,
+				SI = 9,
+				//Competitor = Reg + Name + SI,
+			};
+			while(!ts.atEnd()) {
+				QString ln = ts.readLine();
+				QStringView line(ln);
 				int n = 0;
-				QString club = line.mid(n, 4).trimmed(); n += 4;
+
+				QStringView club = line.mid(n, Club).trimmed(); n += Club;
 				if(club.isEmpty())
 					continue;
-				QString pos = line.mid(n, 3).trimmed(); n += 3;
-				QString class_name = line.mid(n, 11).trimmed(); n += 11;
-				qfInfo() << club << pos << class_name;
+				QStringView pos = line.mid(n, RelayPos).trimmed(); n += RelayPos;
+				QString class_name = line.mid(n, ClassName).trimmed().toString(); n += ClassName;
 
-				if(ts.atEnd())
-					break;
+				int class_id = class_ids.value(class_name);
+				if(class_id == 0) {
+					qfError() << "Invalid class name" << class_name;
+					continue;
+				}
+
+				qfInfo() << club << pos << class_name << class_id;
+
+				QString relay_name = (club.toString() + ' ' + pos.toString()).trimmed();
+				q.execThrow("SELECT id FROM relays WHERE"
+							" name='" + relay_name + "'"
+							" AND classId=" + QString::number(class_id));
+				int relay_id;
+				if(q.next()) {
+					relay_id = q.value(0).toInt();
+					q.execThrow("UPDATE relays SET importId=2 WHERE id=" + QString::number(relay_id));
+				}
+				else {
+					q.execThrow("INSERT INTO relays (classId, name, importId) VALUES ("
+								+ QString::number(class_id) + ", "
+								+ "'" + relay_name + "', "
+								+ "2"
+								+ ")");
+					relay_id = q.lastInsertId().toInt();
+				}
+
+				int leg = 0;
+				while(n < line.size()) {
+					leg++;
+					QString reg = line.mid(n, Reg).trimmed().toString(); n += Reg;
+					QString name = line.mid(n, Name).trimmed().toString(); n += Name;
+					QString last_name = name.section(' ', 0, 0);
+					QString first_name = name.section(' ', 1);
+					int si = line.mid(n, SI).trimmed().toString().toInt(); n += SI;
+
+					if(reg.isEmpty() && name.isEmpty())
+						continue;
+
+					qfInfo() << '\t' << leg << last_name << first_name << reg << si;
+
+					int competitor_id;
+					{
+						q.execThrow("SELECT id FROM competitors WHERE"
+									" firstName='" + first_name + "'"
+									" AND lastName='" + last_name + "'"
+									" AND registration='" + reg + "'");
+						if(q.next()) {
+							competitor_id = q.value(0).toInt();
+						}
+						else {
+							q.execThrow("INSERT INTO competitors (registration) VALUES ('" + reg + "')");
+							competitor_id = q.lastInsertId().toInt();
+						}
+						q.execThrow("UPDATE competitors SET"
+									" firstName='" + first_name + "',"
+									" lastName='" + last_name + "',"
+									//" registration='" + reg + "',"
+									" siid=" + QString::number(si) + ","
+									" importId=2"
+									" WHERE id=" + QString::number(competitor_id)
+									);
+					}
+					int run_id;
+					{
+						q.execThrow("SELECT id FROM runs WHERE"
+									" relayId=" + QString::number(relay_id) + ""
+									" AND leg=" + QString::number(leg));
+						if(q.next()) {
+							run_id = q.value(0).toInt();
+						}
+						else {
+							q.execThrow("INSERT INTO runs (relayId) VALUES (" + QString::number(relay_id) + ")");
+							run_id = q.lastInsertId().toInt();
+						}
+						q.execThrow("UPDATE runs SET"
+									" competitorId=" + QString::number(competitor_id) + ","
+									//" relayId=" + QString::number(relay_id) + ","
+									" leg=" + QString::number(leg) + ","
+									" siid=" + QString::number(si) + ","
+									" importId=2"
+									" WHERE id=" + QString::number(competitor_id)
+									);
+					}
+				}
 			}
+			q.execThrow("DELETE FROM runs WHERE importId=1");
+			q.execThrow("DELETE FROM competitors WHERE importId=1");
+			q.execThrow("DELETE FROM relays WHERE importId=1");
+			transaction.commit();
+			qf::qmlwidgets::dialogs::MessageBox::showInfo(fwk, tr("Import finished successfully."));
 		}
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -293,6 +402,11 @@ static QVariantList create_html_table(const QString &title, const QStringList &f
 
 void OrisImporter::importEventOrisEntries(int event_id)
 {
+	if(eventPlugin()->eventConfig()->isRelays()) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Not supported for the relays event."));
+		return;
+	}
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));
 	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		static const QString json_fn = "EventEntries";

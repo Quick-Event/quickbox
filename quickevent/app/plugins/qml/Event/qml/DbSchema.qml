@@ -216,7 +216,8 @@ Schema {
 				Field { name: 'cardReturned'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-				}
+				},
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {
@@ -240,11 +241,12 @@ Schema {
 				Field { name: 'classId'; type: Int {} },
 				Field { name: 'name'; type: String {} },
 				//Field { name: 'club'; type: String {} },
-				Field { name: 'note'; type: String { } }
+				Field { name: 'note'; type: String {} },
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
-				Index {fields: ['club'] },
+				Index {fields: ['name'] },
 				Index {fields: ['number'] }
 			]
 		},
