@@ -482,31 +482,42 @@ void ClassesWidget::import_ocad_v8()
 			lines << QString::fromUtf8(ba).trimmed();
 		}
 		try {
+			bool is_relays = eventPlugin()->eventConfig()->isRelays();
 			QMap<QString, CourseDef> defined_courses_map;
 			for(QString line : lines) {
-				// [classname];coursename;0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
+				// [classname];coursename;[relay.leg];lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
 				if(line.isEmpty())
 					continue;
 				QStringList class_names;
-				qfc::String course_name = normalize_course_name(line.section(';', 1, 1));
-				QString class_name = line.section(';', 0, 0);
-				if(class_name.isEmpty()) {
-					for(auto ch : {'-', ',', ':', '+'}) {
-						if(course_name.contains(ch)) {
-							class_names = course_name.splitAndTrim(ch);
-							break;
-						}
-					}
-					if(class_names.isEmpty() && !course_name.isEmpty())
-						class_names << course_name;
+				QString class_name;
+				QString course_name;
+				if(is_relays) {
+					class_name = line.section(';', 1, 1);
+					course_name = line.section(';', 2, 2);
+					if(!class_names.contains(class_name))
+						class_names << class_name;
 				}
 				else {
-					class_names << class_name;
-				}
-				if(class_names.isEmpty()) {
-					//class_names << course_name;
-					qfWarning() << "cannot deduce class name, skipping line:" << line;
-					continue;
+					class_name = line.section(';', 0, 0);
+					course_name = normalize_course_name(line.section(';', 1, 1));
+					if(class_name.isEmpty()) {
+						for(auto ch : {'-', ',', ':', '+'}) {
+							if(course_name.contains(ch)) {
+								class_names = qfc::String(course_name).splitAndTrim(ch);
+								break;
+							}
+						}
+						if(class_names.isEmpty() && !course_name.isEmpty())
+							class_names << course_name;
+					}
+					else {
+						class_names << class_name;
+					}
+					if(class_names.isEmpty()) {
+						//class_names << course_name;
+						qfWarning() << "cannot deduce class name, skipping line:" << line;
+						continue;
+					}
 				}
 				if(defined_courses_map.contains(course_name)) {
 					CourseDef cd = defined_courses_map.value(course_name);
