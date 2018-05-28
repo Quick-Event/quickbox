@@ -31,7 +31,7 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	ui->tblRegistrations->setPersistentSettingsId(ui->tblRegistrations->objectName());
 
 	qf::core::model::SqlTableModel *competitors_model = new qf::core::model::SqlTableModel(this);
-	competitors_model->addColumn("relays.club", tr("Club"));
+	//competitors_model->addColumn("relays.club", tr("Club"));
 	competitors_model->addColumn("relays.name", tr("Name"));
 	competitors_model->addColumn("runs.leg", tr("Leg"));
 	competitors_model->addColumn("competitorName", tr("Name"));
@@ -42,7 +42,7 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	qb.select2("runs", "leg")
 			.select2("competitors", "id, registration, licence, siId")
 			.select2("classes", "name")
-			.select2("relays", "id, club, name")
+			.select2("relays", "id, name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")

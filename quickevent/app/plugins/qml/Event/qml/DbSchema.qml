@@ -239,7 +239,7 @@ Schema {
 				Field { name: 'number'; type: Int {} },
 				Field { name: 'classId'; type: Int {} },
 				Field { name: 'name'; type: String {} },
-				Field { name: 'club'; type: String {} },
+				//Field { name: 'club'; type: String {} },
 				Field { name: 'note'; type: String { } }
 			]
 			indexes: [

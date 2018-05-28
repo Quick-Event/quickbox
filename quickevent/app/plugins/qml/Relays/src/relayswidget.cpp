@@ -58,7 +58,7 @@ Relays::RelaysPlugin* competitorsPlugin()
 enum Columns {
 	col_relays_id = 0,
 	col_classes_name,
-	col_relays_club,
+	//col_relays_club,
 	col_relays_name,
 	col_relays_number,
 	col_relays_note,
@@ -83,7 +83,7 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	m->clearColumns(col_COUNT);
 	m->setColumn(col_relays_id, CD("id").setReadOnly(true));
 	m->setColumn(col_classes_name, CD("classes.name", tr("Class")).setReadOnly(true));
-	m->setColumn(col_relays_club, CD("club", tr("Club")));
+	//m->setColumn(col_relays_club, CD("club", tr("Club")));
 	m->setColumn(col_relays_name, CD("name", tr("Name")));
 	m->setColumn(col_relays_number, CD("number", tr("Number")));
 	m->setColumn(col_relays_note, CD("note", tr("Note")));

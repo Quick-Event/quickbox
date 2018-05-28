@@ -40,10 +40,18 @@ unix: LIBS +=  \
 # exception backtrace support
 CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
 
+RESOURCES += \
+    $$PWD/images/images.qrc \
+
+RC_FILE = $$PWD/app.rc
+
+//OTHER_FILES += \
+//	$$PWD/main.qml
+
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
-include($$PWD/src.pri)
+include($$PWD/src/src.pri)
 
 OTHER_FILES += \
     ../plugins/qml/Core/*.qml \
