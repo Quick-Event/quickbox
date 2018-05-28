@@ -136,9 +136,13 @@ RelayWidget:: RelayWidget(QWidget *parent) :
 	ui->tblLegs->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblLegs));
 	//ui->tblLegs->setContextMenuPolicy(Qt::CustomContextMenu);
 	//connect(ui->tblLegs, &qfw::TableView::customContextMenuRequested, this, & RelayWidget::onRunsTableCustomContextMenuRequest);
+
+	connect(ui->btReloadLegsTable, &QPushButton::clicked, this, &RelayWidget::loadLegsTable);
+
 	connect(ui->btAddLeg, &QPushButton::clicked, this, &RelayWidget::addLeg);
 	connect(ui->btRemoveLeg, &QPushButton::clicked, this, &RelayWidget::removeLeg);
 	connect(ui->btMoveLegUp, &QPushButton::clicked, this, &RelayWidget::moveLegUp);
+	connect(ui->btMoveLegDown, &QPushButton::clicked, this, &RelayWidget::moveLegDown);
 }
 
  RelayWidget::~ RelayWidget()
@@ -154,7 +158,7 @@ bool  RelayWidget::loadLegsTable()
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
-			.where("runs.relayId=" QF_IARG(doc->value("relays.id").toInt()))
+			.where("runs.relayId=" + QString::number(doc->value("relays.id").toInt()))
 			.where("runs.isRunning")
 			.orderBy("runs.leg");
 	m_legsModel->setQueryBuilder(qb, false);
@@ -311,6 +315,50 @@ void RelayWidget::moveLegUp()
 	loadLegsTable();
 	if(curr_ix.row() > 0) {
 		curr_ix = ui->tblLegs->model()->index(curr_ix.row()-1, curr_ix.column());
+		ui->tblLegs->setCurrentIndex(curr_ix);
+	}
+}
+
+void RelayWidget::moveLegDown()
+{
+	QModelIndex curr_ix = ui->tblLegs->currentIndex();
+	if(!curr_ix.isValid())
+		return;
+	qf::core::model::TableModel *m = ui->tblLegs->tableModel();
+	int max_leg = 0;
+	for (int i = 0; i < m->rowCount(); ++i) {
+		int l = m->value(i, "runs.leg").toInt();
+		if(l > max_leg)
+			max_leg = l;
+	}
+	qf::core::utils::TableRow row = ui->tblLegs->selectedRow();
+	int leg = row.value("runs.leg").toInt();
+	if(leg >= max_leg)
+		return;
+	Relays::RelayDocument*doc = qobject_cast<Relays:: RelayDocument*>(dataController()->document());
+	int relay_id = doc->dataId().toInt();
+	int run_id = row.value("runs.id").toInt();
+	int run_next_id = 0;
+	qf::core::sql::Query q;
+	q.exec("SELECT id FROM runs WHERE"
+		   " relayId=" + QString::number(relay_id)
+		   + " AND leg=" + QString::number(leg + 1)
+		   , qf::core::Exception::Throw);
+	if(q.next())
+		run_next_id = q.value(0).toInt();
+	if(run_next_id > 0) {
+		q.exec("UPDATE runs SET leg=" + QString::number(leg)
+			   + " WHERE "
+			   + " id=" + QString::number(run_next_id)
+			   , qf::core::Exception::Throw);
+	}
+	q.exec("UPDATE runs SET leg=" + QString::number(leg + 1)
+		   + " WHERE "
+		   + " id=" + QString::number(run_id)
+		   , qf::core::Exception::Throw);
+	loadLegsTable();
+	if(curr_ix.row() < m->rowCount() - 1) {
+		curr_ix = ui->tblLegs->model()->index(curr_ix.row()+1, curr_ix.column());
 		ui->tblLegs->setCurrentIndex(curr_ix);
 	}
 }

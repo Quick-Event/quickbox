@@ -26,9 +26,7 @@ private:
 	void addLeg();
 	void removeLeg();
 	void moveLegUp();
-	/*
 	void moveLegDown();
-	*/
 private:
 	Ui:: RelayWidget *ui;
 	quickevent::og::SqlTableModel *m_legsModel;
