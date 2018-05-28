@@ -4,7 +4,7 @@
 #include "runstableitemdelegate.h"
 #include "Runs/runsplugin.h"
 
-//#include <Event/eventplugin.h>
+#include <Event/eventplugin.h>
 #include <Competitors/competitorsplugin.h>
 
 #include <quickevent/si/siid.h>
@@ -28,6 +28,14 @@ namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
+}
 
 static Runs::RunsPlugin *runsPlugin()
 {
@@ -118,6 +126,7 @@ void RunsTableWidget::clear()
 void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	qfLogFuncFrame();
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	{
 		int class_start_time_min = 0;
 		int class_start_interval_min = 0;
@@ -134,8 +143,9 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	}
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "id, registration, licence, ranking, startNumber, siId, note")
 			.select2("classes", "name")
+			.select2("relays", "name")
+			.select2("competitors", "id, registration, licence, ranking, startNumber, siId, note")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
@@ -143,10 +153,19 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
-			.join("competitors.classId", "classes.id")
+			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
+	if(is_relays) {
+		qb.join("relays.classId", "classes.id");
+	}
+	else {
+		qb.join("competitors.classId", "classes.id");
+	}
 	if(class_id > 0) {
-		qb.where("competitors.classId=" + QString::number(class_id));
+		if(is_relays)
+			qb.where("relays.classId=" + QString::number(class_id));
+		else
+			qb.where("competitors.classId=" + QString::number(class_id));
 	}
 	if(!show_offrace)
 		qb.where("runs.isRunning");
@@ -156,6 +175,8 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	m_runsModel->reload();
 
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_relays_name, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_leg, !is_relays);
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);

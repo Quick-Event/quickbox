@@ -12,6 +12,8 @@ public:
 	enum Columns {
 		col_runs_isRunning = 0,
 		col_runs_id,
+		col_relays_name,
+		col_runs_leg,
 		col_classes_name,
 		col_competitors_startNumber,
 		col_competitors_siId,

@@ -170,17 +170,19 @@ void ForeignKeyComboBox::loadItems(bool force)
 				capfldname = fldname;
 			QString query_str = queryString();
 			if(query_str.isEmpty()) {
-				qf::core::sql::QueryBuilder qb;
-				qb.select2(tblname, fldname);
-				qb.from(tblname);
-				if(capfldname != fldname) {
-					qb.select(capfldname);
-					qb.orderBy(capfldname);
+				if(!tblname.isEmpty() && !fldname.isEmpty()) {
+					qf::core::sql::QueryBuilder qb;
+					qb.select2(tblname, fldname);
+					qb.from(tblname);
+					if(capfldname != fldname) {
+						qb.select(capfldname);
+						qb.orderBy(capfldname);
+					}
+					else {
+						qb.orderBy(fldname);
+					}
+					query_str = qb.toString();
 				}
-				else {
-					qb.orderBy(fldname);
-				}
-				query_str = qb.toString();
 			}
 			else {
 				query_str = query_str.replace(referencedTablePlaceHolder, tblname);

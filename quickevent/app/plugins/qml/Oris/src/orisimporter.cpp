@@ -285,7 +285,7 @@ void OrisImporter::syncRelaysEntries()
 						}
 						q.execThrow("UPDATE runs SET"
 									" competitorId=" + QString::number(competitor_id) + ","
-									//" relayId=" + QString::number(relay_id) + ","
+									" stageId=1,"
 									" leg=" + QString::number(leg) + ","
 									" siid=" + QString::number(si) + ","
 									" importId=2"
