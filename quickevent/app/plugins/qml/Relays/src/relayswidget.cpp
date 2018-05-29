@@ -13,6 +13,7 @@
 #include <quickevent/reportoptionsdialog.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -137,6 +138,14 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		main_tb->addWidget(m_cbxEditRelayOnPunch);
 	}
 	*/
+	qfw::Action *a_relays = part_widget->menuBar()->actionForPath("relay");
+	a_relays->setText(tr("&Relays"));
+	{
+		qfw::Action *a = new qfw::Action("assignNumbers", tr("&Assign numbers"));
+		a_relays->addActionInto(a);
+		connect(a, &qfw::Action::triggered, this, &RelaysWidget::relays_assignNumbers);
+	}
+
 	qfw::Action *a_print = part_widget->menuBar()->actionForPath("print");
 	a_print->setText(tr("&Print"));
 
@@ -251,6 +260,42 @@ void RelaysWidget::onDbEventNotify(const QString &domain, int connection_id, con
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 }
 */
+void RelaysWidget::relays_assignNumbers()
+{
+	int method = qfd::GetItemInputDialog::getItem(this, tr("Dialgo"), tr("Assign relay numbers method")
+									 , QStringList{tr("Random number"), tr("In alphabetical order")}
+									 , -1);
+	if(method < 0)
+		return;
+	qf::core::sql::Transaction transaction;
+	int class_id = m_cbxClasses->currentData().toInt();
+	qf::core::sql::QueryBuilder qb;
+	qb.select2("classdefs", "classId, relayStartNumber").from("classdefs");
+	if(class_id > 0)
+		qb.where("classId=" + QString::number(class_id));
+	qf::core::sql::Query q;
+	q.execThrow(qb.toString());
+	while(q.next()) {
+		class_id = q.value("classId").toInt();
+		int start_num = q.value("relayStartNumber").toInt();
+		QVector<int> ids;
+		QVector<int> nums;
+		qf::core::sql::Query q2;
+		q2.execThrow("SELECT id FROM relays WHERE classId=" + QString::number(class_id) + " ORDER BY club, name");
+		while(q2.next()) {
+			ids << q2.value(0).toInt();
+			nums << start_num++;
+		}
+		if(method == 0)
+			std::random_shuffle(nums.begin(), nums.end());
+		for (int i = 0; i < ids.count(); ++i) {
+			q2.execThrow("UPDATE relays SET number=" + QString::number(nums[i]) + " WHERE id=" + QString::number(ids[i]));
+		}
+	}
+	transaction.commit();
+	reload();
+}
+
 QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
 {
 	qfLogFuncFrame() << class_filter;

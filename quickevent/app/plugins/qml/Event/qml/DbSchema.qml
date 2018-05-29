@@ -112,6 +112,7 @@ Schema {
 					defaultValue: -1;
 					notNull: true
 	 			},
+				Field { name: 'relayStartNumber'; type: Int { } },
 				Field { name: 'startTimeMin'; type: Int { } },
 				Field { name: 'startIntervalMin'; type: Int { } },
 				Field { name: 'vacantsBefore'; type: Int { } 

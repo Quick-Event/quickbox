@@ -6,7 +6,7 @@ Report {
 	id: root
 	objectName: "root"
 
-	property string reportTitle: qsTr("Start list by classes")
+	property string reportTitle: qsTr("Start list by clubs")
 	property bool isBreakAfterEachClass: false
 	property bool isColumnBreak: false
 	property bool isPrintStartNumbers: false

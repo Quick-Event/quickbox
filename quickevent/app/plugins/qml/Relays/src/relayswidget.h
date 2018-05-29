@@ -43,6 +43,8 @@ private:
 	QVariant startListByClassesTableData(const QString &class_filter);
 	QVariant startListByClubsTableData(const QString &class_filter);
 
+	void relays_assignNumbers();
+
 	void print_start_list_classes();
 	void print_start_list_clubs();
 private:
