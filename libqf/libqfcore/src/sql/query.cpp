@@ -35,6 +35,7 @@ bool Query::prepare(const QString &query, bool throw_exc)
 bool Query::exec(const QString &query, bool throw_exc)
 {
 	qfLogFuncFrame() << query;
+	//qfWarning() << query;
 	bool ret = Super::exec(query);
 	if(!ret) {
 		if(throw_exc)

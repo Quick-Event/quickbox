@@ -18,7 +18,7 @@ public:
 
 	Q_INVOKABLE void chooseAndImport();
 	Q_INVOKABLE void syncCurrentEventEntries();
-	Q_INVOKABLE void syncRelaysEntries();
+	Q_INVOKABLE void syncRelaysEntries(int oris_id);
 	void importEvent(int event_id);
 	void importEventOrisEntries(int event_id);
 	Q_INVOKABLE void importRegistrations();

@@ -88,8 +88,8 @@ Oris {
 		act_import_oris.enabled = false;
 		act_import_oris.addActionInto(actImportEventOris);
 		act_import_oris.addActionInto(actSyncCurrentEventEntries);
-		act_import_oris.addSeparatorInto();
-		act_import_oris.addActionInto(actSyncRelaysEntriesOris);
+		//act_import_oris.addSeparatorInto();
+		//act_import_oris.addActionInto(actSyncRelaysEntriesOris);
 		act_import_oris.addSeparatorInto();
 		act_import_oris.addActionInto(actImportClubsOris);
 		act_import_oris.addActionInto(actImportRegistrationsOris);
@@ -111,16 +111,7 @@ Oris {
 		var refreshActions2 = function(event_name)
 		{
 			console.warn("refresh actions event open:", event_name);
-			if(event_name) {
-				var is_relays = FrameWork.plugin("Event").eventConfig.isRelays;
-				console.warn("refresh actions is relays:", is_relays);
-				actSyncCurrentEventEntries.enabled = !is_relays;
-				actSyncRelaysEntriesOris.enabled = is_relays;
-			}
-			else {
-				actSyncCurrentEventEntries.enabled = false;
-				actSyncRelaysEntriesOris.enabled = false;
-			}
+			actSyncCurrentEventEntries.enabled = event_name;
 		}
 		FrameWork.plugin("Event").eventOpenChanged.connect(refreshActions2);
 	}

@@ -53,8 +53,8 @@ public:
 	enum Columns {
 		col_runs_isRunning = 0,
 		col_runs_stageId,
-		col_relays_name,
 		col_classes_name,
+		col_relays_name,
 		col_runs_leg,
 		col_runs_siId,
 		col_runs_startTimeMs,
@@ -78,7 +78,7 @@ RunsModel::RunsModel(QObject *parent)
 	clearColumns(col_COUNT);
 	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("On", "runs.isRunning")).setToolTip(tr("Is running")));
 	setColumn(col_runs_stageId, ColumnDefinition("runs.stageId", tr("Stage")).setReadOnly(true));
-	setColumn(col_relays_name, ColumnDefinition("relays.name", tr("Relay")).setReadOnly(true));
+	setColumn(col_relays_name, ColumnDefinition("relayName", tr("Relay")).setReadOnly(true));
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")).setReadOnly(true));
 	setColumn(col_runs_leg, ColumnDefinition("runs.leg", tr("Leg")));
 	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>()));
@@ -194,9 +194,9 @@ bool CompetitorWidget::loadRunsTable()
 	qf::core::model::DataDocument *doc = dataController()->document();
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("relays", "name")
 			.select2("classes", "name")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
+			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.join("runs.relayId", "relays.id")

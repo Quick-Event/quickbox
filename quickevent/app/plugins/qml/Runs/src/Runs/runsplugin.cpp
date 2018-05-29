@@ -1,6 +1,5 @@
 #include "runsplugin.h"
 #include "nstagesreportoptionsdialog.h"
-#include "reportoptionsdialog.h"
 #include "../thispartwidget.h"
 #include "../runswidget.h"
 #include "../runstabledialogwidget.h"
@@ -8,6 +7,8 @@
 #include "../printawardsoptionsdialogwidget.h"
 
 #include <Event/eventplugin.h>
+
+#include <quickevent/reportoptionsdialog.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -193,7 +194,7 @@ QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		parent = fwk;
 	}
-	Runs::ReportOptionsDialog *ret = new Runs::ReportOptionsDialog(parent);
+	quickevent::ReportOptionsDialog *ret = new quickevent::ReportOptionsDialog(parent);
 	ret->loadPersistentSettings();
 	return ret;
 }

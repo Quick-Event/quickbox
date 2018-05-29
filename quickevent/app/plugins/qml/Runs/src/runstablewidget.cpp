@@ -144,7 +144,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("classes", "name")
-			.select2("relays", "name")
+			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select2("competitors", "id, registration, licence, ranking, startNumber, siId, note")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")

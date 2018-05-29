@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Runs::ReportOptionsDialog</class>
- <widget class="QDialog" name="Runs::ReportOptionsDialog">
+ <class>quickevent::ReportOptionsDialog</class>
+ <widget class="QDialog" name="quickevent::ReportOptionsDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
-    <height>504</height>
+    <width>564</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -357,7 +357,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>Runs::ReportOptionsDialog</receiver>
+   <receiver>quickevent::ReportOptionsDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -373,7 +373,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>Runs::ReportOptionsDialog</receiver>
+   <receiver>quickevent::ReportOptionsDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

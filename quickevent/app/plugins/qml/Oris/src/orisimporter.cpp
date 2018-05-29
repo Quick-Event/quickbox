@@ -158,8 +158,9 @@ void OrisImporter::syncCurrentEventEntries()
 	importEventOrisEntries(oris_id);
 }
 
-void OrisImporter::syncRelaysEntries()
+void OrisImporter::syncRelaysEntries(int oris_id)
 {
+	/*
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	if(!eventPlugin()->eventConfig()->isRelays()) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Not relays event."));
@@ -170,6 +171,7 @@ void OrisImporter::syncRelaysEntries()
 		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Cannot find Oris import ID."));
 		return;
 	}
+	*/
 	QUrl url(QString("https://oris.orientacnisporty.cz/ExportPrihlasek?id=%1").arg(oris_id));
 	getTextAndProcess(url, this, [](const QByteArray &data) {
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -203,10 +205,10 @@ void OrisImporter::syncRelaysEntries()
 				QStringView line(ln);
 				int n = 0;
 
-				QStringView club = line.mid(n, Club).trimmed(); n += Club;
-				if(club.isEmpty())
+				QString relay_club = line.mid(n, Club).trimmed().toString(); n += Club;
+				if(relay_club.isEmpty())
 					continue;
-				QStringView pos = line.mid(n, RelayPos).trimmed(); n += RelayPos;
+				QString relay_name = line.mid(n, RelayPos).trimmed().toString(); n += RelayPos;
 				QString class_name = line.mid(n, ClassName).trimmed().toString(); n += ClassName;
 
 				int class_id = class_ids.value(class_name);
@@ -215,11 +217,11 @@ void OrisImporter::syncRelaysEntries()
 					continue;
 				}
 
-				qfInfo() << club << pos << class_name << class_id;
+				qfInfo() << relay_club << relay_name << class_name << class_id;
 
-				QString relay_name = (club.toString() + ' ' + pos.toString()).trimmed();
 				q.execThrow("SELECT id FROM relays WHERE"
 							" name='" + relay_name + "'"
+							" AND club='" + relay_club + "'"
 							" AND classId=" + QString::number(class_id));
 				int relay_id;
 				if(q.next()) {
@@ -227,8 +229,9 @@ void OrisImporter::syncRelaysEntries()
 					q.execThrow("UPDATE relays SET importId=2 WHERE id=" + QString::number(relay_id));
 				}
 				else {
-					q.execThrow("INSERT INTO relays (classId, name, importId) VALUES ("
+					q.execThrow("INSERT INTO relays (classId, club, name, importId) VALUES ("
 								+ QString::number(class_id) + ", "
+								+ "'" + relay_club + "', "
 								+ "'" + relay_name + "', "
 								+ "2"
 								+ ")");
@@ -258,30 +261,25 @@ void OrisImporter::syncRelaysEntries()
 						if(q.next()) {
 							competitor_id = q.value(0).toInt();
 						}
-						else {
-							if(!reg.isEmpty()) {
+						if(competitor_id == 0 && !reg.isEmpty()) {
 								q.execThrow("SELECT id FROM competitors WHERE"
 											" registration='" + reg + "'");
 								if(q.next())
 									competitor_id = q.value(0).toInt();
-							}
-							if(competitor_id == 0) {
-								q.execThrow("SELECT id FROM competitors WHERE"
-											" firstName='" + first_name + "'"
-											" AND lastName='" + last_name + "'");
-								if(q.next())
-									competitor_id = q.value(0).toInt();
-							}
-							if(competitor_id == 0) {
-								if(reg.isEmpty()) {
-									q.execThrow("INSERT INTO competitors (lastName) VALUES ('" + last_name + "')");
-									competitor_id = q.lastInsertId().toInt();
-								}
-								else {
-									q.execThrow("INSERT INTO competitors (registration) VALUES ('" + reg + "')");
-									competitor_id = q.lastInsertId().toInt();
-								}
-							}
+						}
+						/*
+						if(competitor_id == 0) {
+							q.execThrow("SELECT id FROM competitors WHERE"
+										" firstName='" + first_name + "'"
+										" AND lastName='" + last_name + "'"
+										" AND registration IS NULL" );
+							if(q.next())
+								competitor_id = q.value(0).toInt();
+						}
+						*/
+						if(competitor_id == 0) {
+							q.execThrow("INSERT INTO competitors (registration) VALUES ('" + reg + "')");
+							competitor_id = q.lastInsertId().toInt();
 						}
 						Q_ASSERT(competitor_id > 0);
 						q.execThrow("UPDATE competitors SET"
@@ -308,10 +306,11 @@ void OrisImporter::syncRelaysEntries()
 						q.execThrow("UPDATE runs SET"
 									" competitorId=" + QString::number(competitor_id) + ","
 									" stageId=1,"
+									" relayId=" + QString::number(relay_id) + ","
 									" leg=" + QString::number(leg) + ","
 									" siid=" + QString::number(si) + ","
 									" importId=2"
-									" WHERE id=" + QString::number(competitor_id)
+									" WHERE id=" + QString::number(run_id)
 									);
 					}
 				}
@@ -425,8 +424,7 @@ static QVariantList create_html_table(const QString &title, const QStringList &f
 void OrisImporter::importEventOrisEntries(int event_id)
 {
 	if(eventPlugin()->eventConfig()->isRelays()) {
-		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		qf::qmlwidgets::dialogs::MessageBox::showError(fwk, tr("Not supported for the relays event."));
+		syncRelaysEntries(event_id);
 		return;
 	}
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getEventEntries&eventid=%1").arg(event_id));

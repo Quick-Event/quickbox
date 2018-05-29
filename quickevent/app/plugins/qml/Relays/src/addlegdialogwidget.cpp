@@ -32,17 +32,18 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 
 	qf::core::model::SqlTableModel *competitors_model = new qf::core::model::SqlTableModel(this);
 	//competitors_model->addColumn("relays.club", tr("Club"));
-	competitors_model->addColumn("relays.name", tr("Name"));
+	competitors_model->addColumn("relayName", tr("Name"));
 	competitors_model->addColumn("runs.leg", tr("Leg"));
 	competitors_model->addColumn("competitorName", tr("Name"));
 	competitors_model->addColumn("registration", tr("Reg"));
 	competitors_model->addColumn("licence", tr("Lic"));
 	competitors_model->addColumn("competitors.siId", tr("SI"));
 	qf::core::sql::QueryBuilder qb;
-	qb.select2("runs", "leg")
+	qb.select2("runs", "id, relayId, leg")
 			.select2("competitors", "id, registration, licence, siId")
 			.select2("classes", "name")
-			.select2("relays", "id, name")
+			.select2("relays", "classId")
+			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
@@ -92,7 +93,7 @@ void AddLegDialogWidget::onCompetitorSelected()
 	if(curr_relay_id > 0 && curr_relay_id != relayId()) {
 		if(false == qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Competitor has different relay assigned already. Move it to current one?")))
 			return;
-		if(row.value("competitors.classId").toInt() != classId()) {
+		if(row.value("relays.classId").toInt() != classId()) {
 			qf::core::sql::Query q;
 			q.exec("UPDATE competitors SET "
 				   "classId=" + QString::number(classId())

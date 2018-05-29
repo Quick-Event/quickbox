@@ -1,5 +1,6 @@
-#ifndef RUNS_REPORTOPTIONSDIALOG_H
-#define RUNS_REPORTOPTIONSDIALOG_H
+#pragma once
+
+#include "quickeventglobal.h"
 
 #include <qf/qmlwidgets/framework/ipersistentsettings.h>
 
@@ -8,13 +9,13 @@
 #include <QDialog>
 #include <QVariantMap>
 
-namespace Runs {
+namespace quickevent {
 
 namespace Ui {
 class ReportOptionsDialog;
 }
 
-class ReportOptionsDialog : public QDialog, public qf::qmlwidgets::framework::IPersistentSettings
+class QUICKEVENT_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf::qmlwidgets::framework::IPersistentSettings
 {
 	Q_OBJECT
 
@@ -86,4 +87,3 @@ private:
 
 
 } // namespace Runs
-#endif // RUNS_REPORTOPTIONSDIALOG_H

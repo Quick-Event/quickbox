@@ -230,8 +230,8 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId', 'leg', 'competitorId']; unique: true },
-				Index {fields: ['stageId', 'leg', 'siId', 'isRunning']; unique: false }
+				Index {fields: ['relayId', 'leg']; unique: false },
+				Index {fields: ['stageId', 'siId']; unique: false }
 			]
 		},
 		Table { name: 'relays'
@@ -239,14 +239,14 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'number'; type: Int {} },
 				Field { name: 'classId'; type: Int {} },
+				Field { name: 'club'; type: String {} },
 				Field { name: 'name'; type: String {} },
-				//Field { name: 'club'; type: String {} },
 				Field { name: 'note'; type: String {} },
 				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
-				Index {fields: ['name'] },
+				Index {fields: ['club', 'name'] },
 				Index {fields: ['number'] }
 			]
 		},

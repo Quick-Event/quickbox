@@ -1,8 +1,6 @@
 #include "reportoptionsdialog.h"
 #include "ui_reportoptionsdialog.h"
 
-#include <Event/eventplugin.h>
-
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -11,21 +9,16 @@
 
 #include <QSettings>
 #include <QShowEvent>
+#include <QSqlDatabase>
 #include <QTimer>
 
-namespace Runs {
+namespace quickevent {
 
-static Event::EventPlugin* eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	qf::qmlwidgets::framework::Plugin *plugin = fwk->plugin("Event");
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return qobject_cast<Event::EventPlugin*>(plugin);
-}
 namespace {
 auto persistent_settings_path_prefix = QStringLiteral("ui/MainWindow/");
 auto default_persistent_settings_id =  QStringLiteral("reportOptionsDialog");
 }
+
 ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	: QDialog(parent)
 	, qf::qmlwidgets::framework::IPersistentSettings(this)
@@ -37,7 +30,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	//ui->edFilter->setText("h1%");
 	ui->grpStartOptions->setVisible(false);
 	ui->grpStartersOptions->setVisible(false);
-	ui->btRegExp->setEnabled(eventPlugin()->sqlDriverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
+	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
 		savePersistentSettings();

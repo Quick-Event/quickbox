@@ -38,7 +38,11 @@ private:
 	void editRelay(const QVariant &id, int mode);
 	void editRelays(int mode);
 
-	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
+	//void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
+
+	QVariant startListTableData(const QString &class_filter);
+
+	void print_start_list_classes();
 private:
 	Ui::RelaysWidget *ui;
 	qf::core::model::SqlTableModel *m_tblModel;

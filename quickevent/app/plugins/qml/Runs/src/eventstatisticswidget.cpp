@@ -3,13 +3,13 @@
 
 #include "eventstatisticsoptions.h"
 
-#include "Runs/reportoptionsdialog.h"
 #include "Runs/runsplugin.h"
 
 #include <Event/eventplugin.h>
 
 #include <quickevent/og/sqltablemodel.h>
 #include <quickevent/og/timems.h>
+#include <quickevent/reportoptionsdialog.h>
 
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -520,10 +520,10 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
 	}
 	bool report_printed = false;
-	Runs::ReportOptionsDialog::Options opts;
+	quickevent::ReportOptionsDialog::Options opts;
 	static constexpr bool with_dialog = false;
 	if(with_dialog) {
-		Runs::ReportOptionsDialog dlg(this);
+		quickevent::ReportOptionsDialog dlg(this);
 		dlg.setPersistentSettingsId("resultsReportOptions");
 		dlg.setClassNamesFilter(class_names);
 		if(!dlg.exec())
@@ -531,14 +531,14 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 		opts = dlg.options();
 	}
 	else {
-		opts = Runs::ReportOptionsDialog::savedOptions("resultsReportOptions");
-		opts.setClassFilterType((int)Runs::ReportOptionsDialog::FilterType::ClassName);
+		opts = quickevent::ReportOptionsDialog::savedOptions("resultsReportOptions");
+		opts.setClassFilterType((int)quickevent::ReportOptionsDialog::FilterType::ClassName);
 		opts.setClassFilter(class_names.join(','));
 	}
-	QVariant td = runsPlugin()->currentStageResultsTableData(Runs::ReportOptionsDialog::sqlWhereExpression(opts));
+	QVariant td = runsPlugin()->currentStageResultsTableData(quickevent::ReportOptionsDialog::sqlWhereExpression(opts));
 	QVariantMap props;
-	props["isBreakAfterEachClass"] = (opts.breakType() != (int)Runs::ReportOptionsDialog::BreakType::None);
-	props["isColumnBreak"] = (opts.breakType() == (int)Runs::ReportOptionsDialog::BreakType::Column);
+	props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::ReportOptionsDialog::BreakType::None);
+	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::ReportOptionsDialog::BreakType::Column);
 	props["options"] = opts;
 	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
 								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
