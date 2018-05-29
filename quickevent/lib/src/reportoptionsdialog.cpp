@@ -195,6 +195,16 @@ ReportOptionsDialog::Options ReportOptionsDialog::savedOptions(const QString &pe
 	return Options(m);
 }
 
+QVariantMap ReportOptionsDialog::reportProperties() const
+{
+	Options opts = options();
+	QVariantMap props;
+	props["isBreakAfterEachClass"] = (opts.breakType() != (int)BreakType::None);
+	props["isColumnBreak"] = (opts.breakType() == (int)BreakType::Column);
+	props["options"] = opts;
+	return props;
+}
+
 void ReportOptionsDialog::loadPersistentSettings()
 {
 	qfLogFuncFrame() << persistentSettingsPath();

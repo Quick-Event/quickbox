@@ -144,6 +144,9 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	qfw::Action *a_print_start_list_classes = new qfw::Action("classes", tr("&Classes"));
 	a_print_start_list->addActionInto(a_print_start_list_classes);
 	connect(a_print_start_list_classes, &qfw::Action::triggered, this, &RelaysWidget::print_start_list_classes);
+	qfw::Action *a_print_start_list_clubs = new qfw::Action("clubs", tr("C&lubs"));
+	a_print_start_list->addActionInto(a_print_start_list_clubs);
+	connect(a_print_start_list_clubs, &qfw::Action::triggered, this, &RelaysWidget::print_start_list_clubs);
 }
 
 void RelaysWidget::lazyInit()
@@ -248,7 +251,7 @@ void RelaysWidget::onDbEventNotify(const QString &domain, int connection_id, con
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 }
 */
-QVariant RelaysWidget::startListTableData(const QString &class_filter)
+QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
 {
 	qfLogFuncFrame() << class_filter;
 	qf::core::model::SqlTableModel model;
@@ -315,25 +318,109 @@ QVariant RelaysWidget::startListTableData(const QString &class_filter)
 	return tt.toVariant();
 }
 
+QVariant RelaysWidget::startListByClubsTableData(const QString &class_filter)
+{
+	qfLogFuncFrame() << class_filter;
+	qf::core::model::SqlTableModel model;
+	qf::core::model::SqlTableModel model2;
+	{
+		qf::core::sql::QueryBuilder qb1;
+		qb1.select("relays.club")
+				.from("relays")
+				.groupBy("club")
+				.orderBy("club")
+				.as("relay_clubs");
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("relay_clubs", "club")
+				.select2("clubs", "name")
+				.from(qb1)
+				.join("relay_clubs.club", "clubs.abbr")
+				.orderBy("club");//.limit(1);
+		model.setQueryBuilder(qb, true);
+	}
+	//console.info("currentStageTable query:", reportModel.effectiveQuery());
+	model.reload();
+	qf::core::utils::TreeTable tt = model.toTreeTable();
+	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
+	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(1));
+	{
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("relays", "id, name, number")
+				.select2("classes", "name")
+				.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
+				.from("relays")
+				.join("relays.classId", "classes.id")
+				.where("relays.club='{{club}}'")
+				.orderBy("classes.name, relayName");
+		model.setQueryBuilder(qb, true);
+	}
+	{
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("competitors", "registration")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select2("runs", "leg, siId")
+			.from("runs")
+			.join("runs.competitorId", "competitors.id")
+			.join("runs.relayId", "relays.id")
+			.where("runs.relayId={{relay_id}}")
+			.where("runs.isRunning")
+			.orderBy("runs.leg");
+		model2.setQueryBuilder(qb, true);
+	}
+	for(int i=0; i<tt.rowCount(); i++) {
+		QString club = tt.row(i).value("club").toString();
+		//console.debug("class id:", class_id);
+		QVariantMap qm;
+		qm["club"] = club;
+		model.setQueryParameters(qm);
+		model.reload();
+		qf::core::utils::TreeTable tt2 = model.toTreeTable();
+		for (int j = 0; j < tt2.rowCount(); ++j) {
+			int relay_id = tt2.row(j).value("relays.id").toInt();
+			QVariantMap qm2;
+			qm2["relay_id"] = relay_id;
+			model2.setQueryParameters(qm2);
+			model2.reload();
+			qf::core::utils::TreeTable tt3 = model2.toTreeTable();
+			tt2.row(j).appendTable(tt3);
+		}
+		tt.row(i).appendTable(tt2);
+	}
+	//console.debug(tt.toString());
+	return tt.toVariant();
+}
+
 void RelaysWidget::print_start_list_classes()
 {
-	quickevent::ReportOptionsDialog::Options opts;
 	quickevent::ReportOptionsDialog dlg(this);
 	dlg.setPersistentSettingsId("relaysStartReportOptions");
 	//dlg.setClassNamesFilter(class_names);
 	if(!dlg.exec())
 		return;
-	opts = dlg.options();
-	QVariantMap props;
-	props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::ReportOptionsDialog::BreakType::None);
-	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::ReportOptionsDialog::BreakType::Column);
-	props["options"] = opts;
-
-	QVariant td = startListTableData(dlg.sqlWhereExpression());
+	QVariantMap props = dlg.reportProperties();
+	QVariant td = startListByClassesTableData(dlg.sqlWhereExpression());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/startList_classes.qml"
 														  , td
 														  , tr("Start list by classes")
+														  , "printStartList"
+														  , props
+														  );
+}
+
+void RelaysWidget::print_start_list_clubs()
+{
+	quickevent::ReportOptionsDialog dlg(this);
+	dlg.setPersistentSettingsId("relaysStartReportOptions");
+	//dlg.setClassNamesFilter(class_names);
+	if(!dlg.exec())
+		return;
+	QVariantMap props = dlg.reportProperties();
+	QVariant td = startListByClubsTableData(dlg.sqlWhereExpression());
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
+														  thisPlugin()->manifest()->homeDir() + "/reports/startList_clubs.qml"
+														  , td
+														  , tr("Start list by clubs")
 														  , "printStartList"
 														  , props
 														  );

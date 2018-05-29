@@ -66,6 +66,8 @@ public:
 	Q_SLOT QVariantMap optionsMap() const {return options();}
 	static Options savedOptions(const QString &persistent_settings_id = QString());
 
+	Q_INVOKABLE QVariantMap reportProperties() const;
+
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 
