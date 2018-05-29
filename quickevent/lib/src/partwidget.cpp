@@ -25,9 +25,9 @@ void PartWidget::onActiveChanged()
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		QF_ASSERT(fwk != nullptr, "Invalid FrameWork", return);
 		qf::qmlwidgets::framework::Plugin *event_plugin = fwk->plugin("Event", qf::core::Exception::Throw);
-		bool db_open = event_plugin->property("dbOpen").toBool();
+		bool sql_connected = event_plugin->property("sqlServerConnected").toBool();
 		QString event_name = event_plugin->property("eventName").toString();
-		if(db_open && !event_name.isEmpty()) {
+		if(sql_connected && !event_name.isEmpty()) {
 			emit reloadPartRequest();
 		}
 	}

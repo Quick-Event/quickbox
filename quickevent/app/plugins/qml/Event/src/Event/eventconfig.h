@@ -15,6 +15,7 @@ class EVENTPLUGIN_DECL_EXPORT EventConfig : public QObject
 	Q_OBJECT
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(bool isHandicap READ isHandicap)
+	Q_PROPERTY(bool isRelays READ isRelays)
 	//Q_PROPERTY(QString eventName READ eventName)
 public:
 	enum class Sport {OB = 1, LOB, MTBO, TRAIL};

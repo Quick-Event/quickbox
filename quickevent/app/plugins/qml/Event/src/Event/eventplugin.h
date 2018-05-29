@@ -38,7 +38,7 @@ class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Pl
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
 	Q_PROPERTY(bool eventOpen READ isEventOpen NOTIFY eventOpenChanged)
-	Q_PROPERTY(bool dbOpen READ isDbOpen NOTIFY dbOpenChanged)
+	Q_PROPERTY(bool sqlServerConnected READ isSqlServerConnected NOTIFY sqlServerConnectedChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
@@ -84,8 +84,8 @@ public:
 
 	Q_SIGNAL void reloadDataRequest();
 
-	bool isDbOpen() const { return m_dbOpen; }
-	Q_SIGNAL void dbOpenChanged(bool is_open);
+	bool isSqlServerConnected() const { return m_sqlServerConnected; }
+	Q_SIGNAL void sqlServerConnectedChanged(bool is_open);
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
 
@@ -102,7 +102,7 @@ public:
 	// event wide signals
 	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private:
-	void setDbOpen(bool ok);
+	void setSqlServerConnected(bool ok);
 
 	ConnectionType connectionType() const;
 	QStringList existingSqlEventNames() const;
@@ -129,7 +129,7 @@ private:
 	qf::qmlwidgets::Action *m_actImportEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditStage = nullptr;
 	Event::EventConfig *m_eventConfig = nullptr;
-	bool m_dbOpen = false;
+	bool m_sqlServerConnected = false;
 	QComboBox *m_cbxStage = nullptr;
 	QMap<int, StageData> m_stageCache;
 	QMap<int, QString> m_classNameCache;

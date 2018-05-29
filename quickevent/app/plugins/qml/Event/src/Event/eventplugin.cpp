@@ -597,7 +597,7 @@ void EventPlugin::connectToSqlServer()
 			connect_ok = true;
 		}
 	}
-	setDbOpen(connect_ok);
+	setSqlServerConnected(connect_ok);
 	m_actCreateEvent->setEnabled(connect_ok);
 	m_actOpenEvent->setEnabled(connect_ok);
 	m_actEditEvent->setEnabled(connect_ok);
@@ -875,11 +875,11 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	return ok;
 }
 
-void EventPlugin::setDbOpen(bool ok)
+void EventPlugin::setSqlServerConnected(bool ok)
 {
-	if(ok != m_dbOpen) {
-		m_dbOpen = ok;
-		emit dbOpenChanged(ok);
+	if(ok != m_sqlServerConnected) {
+		m_sqlServerConnected = ok;
+		emit sqlServerConnectedChanged(ok);
 	}
 }
 

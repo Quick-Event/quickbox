@@ -28,6 +28,7 @@ Oris {
 		Action {
 			id: actSyncCurrentEventEntries
 			text: qsTr('&Sync current event entries')
+			enabled: false
 			onTriggered: {
 				orisImporter.syncCurrentEventEntries()
 			}
@@ -35,6 +36,7 @@ Oris {
 		Action {
 			id: actSyncRelaysEntriesOris
 			text: qsTr('&Sync relays entries')
+			enabled: false
 			onTriggered: {
 				orisImporter.syncRelaysEntries()
 			}
@@ -99,11 +101,28 @@ Oris {
 		act_import_txt.addActionInto(actImportCompetitorsCSV);
 		act_import_txt.addActionInto(actImportRankingCsv);
 
-		var refreshActions = function(is_db_open) {
+		var refreshActions1 = function(is_db_open)
+		{
 			act_import_oris.enabled = is_db_open;
 			act_import_txt.enabled = is_db_open;
 		}
-		FrameWork.plugin("Event").dbOpenChanged.connect(refreshActions);
+		FrameWork.plugin("Event").sqlServerConnectedChanged.connect(refreshActions1);
+
+		var refreshActions2 = function(event_name)
+		{
+			console.warn("refresh actions event open:", event_name);
+			if(event_name) {
+				var is_relays = FrameWork.plugin("Event").eventConfig.isRelays;
+				console.warn("refresh actions is relays:", is_relays);
+				actSyncCurrentEventEntries.enabled = !is_relays;
+				actSyncRelaysEntriesOris.enabled = is_relays;
+			}
+			else {
+				actSyncCurrentEventEntries.enabled = false;
+				actSyncRelaysEntriesOris.enabled = false;
+			}
+		}
+		FrameWork.plugin("Event").eventOpenChanged.connect(refreshActions2);
 	}
 
 }

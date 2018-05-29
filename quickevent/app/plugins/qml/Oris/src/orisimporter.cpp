@@ -249,7 +249,7 @@ void OrisImporter::syncRelaysEntries()
 
 					qfInfo() << '\t' << leg << last_name << first_name << reg << si;
 
-					int competitor_id;
+					int competitor_id = 0;
 					{
 						q.execThrow("SELECT id FROM competitors WHERE"
 									" firstName='" + first_name + "'"
@@ -259,13 +259,35 @@ void OrisImporter::syncRelaysEntries()
 							competitor_id = q.value(0).toInt();
 						}
 						else {
-							q.execThrow("INSERT INTO competitors (registration) VALUES ('" + reg + "')");
-							competitor_id = q.lastInsertId().toInt();
+							if(!reg.isEmpty()) {
+								q.execThrow("SELECT id FROM competitors WHERE"
+											" registration='" + reg + "'");
+								if(q.next())
+									competitor_id = q.value(0).toInt();
+							}
+							if(competitor_id == 0) {
+								q.execThrow("SELECT id FROM competitors WHERE"
+											" firstName='" + first_name + "'"
+											" AND lastName='" + last_name + "'");
+								if(q.next())
+									competitor_id = q.value(0).toInt();
+							}
+							if(competitor_id == 0) {
+								if(reg.isEmpty()) {
+									q.execThrow("INSERT INTO competitors (lastName) VALUES ('" + last_name + "')");
+									competitor_id = q.lastInsertId().toInt();
+								}
+								else {
+									q.execThrow("INSERT INTO competitors (registration) VALUES ('" + reg + "')");
+									competitor_id = q.lastInsertId().toInt();
+								}
+							}
 						}
+						Q_ASSERT(competitor_id > 0);
 						q.execThrow("UPDATE competitors SET"
 									" firstName='" + first_name + "',"
 									" lastName='" + last_name + "',"
-									//" registration='" + reg + "',"
+									" registration='" + reg + "',"
 									" siid=" + QString::number(si) + ","
 									" importId=2"
 									" WHERE id=" + QString::number(competitor_id)
