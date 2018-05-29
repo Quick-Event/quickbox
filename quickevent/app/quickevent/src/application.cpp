@@ -63,3 +63,9 @@ Application *Application::instance(bool must_exist)
 	}
 	return ret;
 }
+
+QString Application::versionString() const
+{
+	static QString s = QLatin1String("1.2.0");
+	return s;
+}

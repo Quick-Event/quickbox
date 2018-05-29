@@ -250,6 +250,7 @@ void RelaysWidget::onDbEventNotify(const QString &domain, int connection_id, con
 */
 QVariant RelaysWidget::startListTableData(const QString &class_filter)
 {
+	qfLogFuncFrame() << class_filter;
 	qf::core::model::SqlTableModel model;
 	qf::core::model::SqlTableModel model2;
 	{
@@ -271,17 +272,18 @@ QVariant RelaysWidget::startListTableData(const QString &class_filter)
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("relays", "id, name, number")
 				.select2("clubs", "name")
+				.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 				.from("relays")
 				.join("relays.club", "clubs.abbr")
 				.where("relays.classId={{class_id}}")
-				.orderBy("number, name");
+				.orderBy("relays.number, relayName");
 		model.setQueryBuilder(qb, true);
 	}
 	{
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("competitors", "registration")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
-			.select2("runs", "siId")
+			.select2("runs", "leg, siId")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.join("runs.relayId", "relays.id")
@@ -327,7 +329,7 @@ void RelaysWidget::print_start_list_classes()
 	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::ReportOptionsDialog::BreakType::Column);
 	props["options"] = opts;
 
-	QVariant td = startListTableData(QString());
+	QVariant td = startListTableData(dlg.sqlWhereExpression());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/startList_classes.qml"
 														  , td

@@ -15,7 +15,7 @@ Frame {
 		bottomBorder: Pen {basedOn: "blue1"}
 		Para {
 			text: {
-				"Quick Event 1.0";
+				"Quick Event " + application.versionString();
 			}
 		}
 		Para {

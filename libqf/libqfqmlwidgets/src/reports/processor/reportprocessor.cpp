@@ -367,6 +367,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
 		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);
+		m_qmlEngine->rootContext()->setContextProperty("application", QCoreApplication::instance());
 		Q_FOREACH(auto path, qmlEngineImportPaths()) {
 			qfInfo() << "Adding ReportProcessor QML engine import path:" << path;
 			m_qmlEngine->addImportPath(path);

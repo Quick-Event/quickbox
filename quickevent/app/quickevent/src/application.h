@@ -18,6 +18,8 @@ public:
 	static Application* instance(bool must_exist = true);
 
 	AppCliOptions* cliOptions() {return m_cliOptions;}
+
+	Q_INVOKABLE QString versionString() const;
 private:
 	AppCliOptions *m_cliOptions;
 };

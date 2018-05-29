@@ -70,8 +70,10 @@ Report {
 						visible: root.isBreakAfterEachClass;
 						skipFirst: true
 					}
+					Space {height: 2}
 					Frame {
 						width: "%"
+						vinset: 1
 						layout: Frame.LayoutHorizontal
 						fill: Brush {color: Color {def: "khaki"} }
 						Cell {
@@ -86,72 +88,63 @@ Report {
 					//expandChildFrames: true
 					Band {
 						id: relayBand
+						width: "%"
 						//objectName: "relayBand"
-						keepFirst: 3
-						keepWithPrev: true
+						//keepFirst: 3
+						//keepWithPrev: true
 						htmlExportAsTable: true
 						Detail {
 							id: relayDetail
 							//objectName: "runnersDetail"
 							width: "%"
-							layout: Frame.LayoutHorizontal
+							layout: Frame.LayoutVertical
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
+							Space {height: 2}
 							Frame {
 								width: "%"
 								layout: Frame.LayoutHorizontal
+								bottomBorder: Pen { basedOn: "black1" }
 								//fill: Brush {color: Color {def: "khaki"} }
 								textStyle: myStyle.textStyleBold
 								Cell {
-									//width: "%"
+									width: "%"
 									textFn: function() {
-										return relayDetail.dataFn("relays.number")
-												+ ' ' + relayDetail.dataFn("relays.club")
-												+ ' ' + relayDetail.dataFn("relays.name")
-												+ ' ' + relayDetail.dataFn("clubs.name");
+										return relayDetail.dataFn("relays.number")()
+												+ ' ' + relayDetail.dataFn("relayName")()
+												+ ' ' + relayDetail.dataFn("clubs.name")();
 									}
-								}
-								Cell {
-									textFn: relayDetail.dataFn("relays.number");
-								}
-								Para {
-									textFn: relayDetail.dataFn("clubs.name");
 								}
 							}
 							Band {
 								id: lapsBand
-								objectName: "runnersBand"
-								keepFirst: 3
+								objectName: "lapsBand"
+								width: "%"
+								keepFirst: 10
 								keepWithPrev: true
 								htmlExportAsTable: true
 								Detail {
 									id: lapsDetail
-									objectName: "runnersDetail"
+									//objectName: "runnersDetail"
 									width: "%"
 									layout: Frame.LayoutHorizontal
 									function dataFn(field_name) {return function() {return rowData(field_name);}}
 									Cell {
 										width: 15
 										halign: Frame.AlignRight
-										textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
-									}
-									Para {
-										visible: root.isPrintStartNumbers
-										width: 8
-										halign: Frame.AlignRight
-										textFn: runnersDetail.dataFn("startNumber");
+										textFn: lapsDetail.dataFn("leg");
 									}
 									Cell {
 										width: "%"
-										textFn: runnersDetail.dataFn("competitorName");
+										textFn: lapsDetail.dataFn("competitorName");
 									}
 									Para {
 										width: 18
-										textFn: runnersDetail.dataFn("registration");
+										textFn: lapsDetail.dataFn("registration");
 									}
 									Cell {
 										width: 18
 										halign: Frame.AlignRight
-										textFn: runnersDetail.dataFn("runs.siId");
+										textFn: lapsDetail.dataFn("runs.siId");
 									}
 								}
 							}

@@ -26,8 +26,7 @@ MainWindow::~MainWindow()
 
 QString MainWindow::versionString() const
 {
-	static QString s = QLatin1String("1.2.0");
-	return s;
+	return Application::instance()->versionString();
 }
 
 QString MainWindow::settingsPrefix_application_locale_language()
