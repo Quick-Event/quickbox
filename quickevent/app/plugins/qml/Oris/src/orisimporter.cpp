@@ -202,14 +202,14 @@ void OrisImporter::syncRelaysEntries(int oris_id)
 			};
 			while(!ts.atEnd()) {
 				QString ln = ts.readLine();
-				QStringView line(ln);
+				QString line(ln);
 				int n = 0;
 
-				QString relay_club = line.mid(n, Club).trimmed().toString(); n += Club;
+				QString relay_club = line.mid(n, Club).trimmed(); n += Club;
 				if(relay_club.isEmpty())
 					continue;
-				QString relay_name = line.mid(n, RelayPos).trimmed().toString(); n += RelayPos;
-				QString class_name = line.mid(n, ClassName).trimmed().toString(); n += ClassName;
+				QString relay_name = line.mid(n, RelayPos).trimmed(); n += RelayPos;
+				QString class_name = line.mid(n, ClassName).trimmed(); n += ClassName;
 
 				int class_id = class_ids.value(class_name);
 				if(class_id == 0) {
