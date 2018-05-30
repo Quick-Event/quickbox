@@ -241,11 +241,11 @@ void OrisImporter::syncRelaysEntries(int oris_id)
 				int leg = 0;
 				while(n < line.size()) {
 					leg++;
-					QString reg = line.mid(n, Reg).trimmed().toString(); n += Reg;
-					QString name = line.mid(n, Name).trimmed().toString(); n += Name;
+					QString reg = line.mid(n, Reg).trimmed(); n += Reg;
+					QString name = line.mid(n, Name).trimmed(); n += Name;
 					QString last_name = name.section(' ', 0, 0);
 					QString first_name = name.section(' ', 1);
-					int si = line.mid(n, SI).trimmed().toString().toInt(); n += SI;
+					int si = line.mid(n, SI).trimmed().toInt(); n += SI;
 
 					if(reg.isEmpty() && name.isEmpty())
 						continue;
