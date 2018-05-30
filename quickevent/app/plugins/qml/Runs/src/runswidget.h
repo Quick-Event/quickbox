@@ -38,7 +38,7 @@ public:
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 
-	static Event::EventPlugin* eventPlugin();
+	//static Event::EventPlugin* eventPlugin();
 
 	Q_SLOT void reset(int class_id = 0);
 	Q_SLOT void reload();
@@ -70,7 +70,7 @@ private:
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber,
 		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,
-		KeepOrder, GroupedC, GroupedCB, GroupedRanking};
+		KeepOrder, Relays, GroupedC, GroupedCB, GroupedRanking};
 
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;

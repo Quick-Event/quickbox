@@ -120,7 +120,6 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("classdefs.drawLock", tr("DL")).setToolTip(tr("Locked for drawing"));
-		m->addColumn("classdefs.relayStartNumber", tr("Rel.num")).setToolTip(tr("Relay start number"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
 		m->addColumn("classdefs.startIntervalMin", tr("Interval"));
 		m->addColumn("classdefs.vacantsBefore", tr("VB")).setToolTip(tr("Vacants before"));
@@ -133,6 +132,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->addColumn("courses.name", tr("Course")).setReadOnly(true);
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
+		m->addColumn("classdefs.relayStartNumber", tr("Rel.num")).setToolTip(tr("Relay start number"));
 		ui->tblClasses->setTableModel(m);
 
 		m_courseItemDelegate = new CourseItemDelegate(this);
