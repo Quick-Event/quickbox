@@ -13,7 +13,7 @@ Report {
 	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
 	property int timeCellWidth: 17
 	property int posCellWidth: 10
-	property int unrealTimeMs: 999 * 60 * 1000
+	property int unrealTimeMs: OGTime.UNREAL_TIME_MS
 
 	property QfObject internals: QfObject {
 		Component {

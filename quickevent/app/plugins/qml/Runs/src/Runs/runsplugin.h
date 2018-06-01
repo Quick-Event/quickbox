@@ -3,6 +3,8 @@
 
 #include "../runspluginglobal.h"
 
+#include <quickevent/og/timems.h>
+
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
@@ -33,7 +35,7 @@ class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plug
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
-	static constexpr int UNREAL_TIME_MS = 999 * 60 * 1000;
+	static constexpr int UNREAL_TIME_MS = quickevent::og::TimeMs::UNREAL_TIME_MS;
 public:
 	RunsPlugin(QObject *parent = nullptr);
 	~RunsPlugin() Q_DECL_OVERRIDE;

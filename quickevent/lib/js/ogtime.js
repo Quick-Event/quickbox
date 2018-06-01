@@ -41,3 +41,8 @@ function msecIntervalAM(time1_msec, time2_msec)
 	return fixTimeWrapAM(time1_msec, time2_msec) - time1_msec;
 }
 
+var UNREAL_TIME_MS = 9999 * 60 * 1000;
+var NOT_FINISH_TIME_MSEC = UNREAL_TIME_MS
+var NOT_COMPETITING_TIME_MSEC = NOT_FINISH_TIME_MSEC - 1;
+var DISQ_TIME_MSEC = NOT_COMPETITING_TIME_MSEC - 1;
+

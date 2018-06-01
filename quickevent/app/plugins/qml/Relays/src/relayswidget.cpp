@@ -31,6 +31,7 @@
 #include <qf/core/utils/treetable.h>
 
 #include <QCheckBox>
+#include <QInputDialog>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimer>
@@ -156,6 +157,18 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	qfw::Action *a_print_start_list_clubs = new qfw::Action("clubs", tr("C&lubs"));
 	a_print_start_list->addActionInto(a_print_start_list_clubs);
 	connect(a_print_start_list_clubs, &qfw::Action::triggered, this, &RelaysWidget::print_start_list_clubs);
+
+	qfw::Action *a_print_results = a_print->addMenuInto("results", tr("&Results"));
+	{
+		qfw::Action *a = new qfw::Action("nlegs", tr("&After n legs"));
+		a_print_results->addActionInto(a);
+		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_nlegs);
+	}
+	{
+		qfw::Action *a = new qfw::Action("nlegs", tr("&Overal"));
+		a_print_results->addActionInto(a);
+		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal);
+	}
 }
 
 void RelaysWidget::lazyInit()
@@ -359,7 +372,7 @@ QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
 		}
 		tt.row(i).appendTable(tt2);
 	}
-	//console.debug(tt.toString());
+	//qfInfo() << tt.toString();
 	return tt.toVariant();
 }
 
@@ -467,6 +480,37 @@ void RelaysWidget::print_start_list_clubs()
 														  , td
 														  , tr("Start list by clubs")
 														  , "printStartList"
+														  , props
+														  );
+}
+
+void RelaysWidget::print_results_nlegs()
+{
+	bool ok;
+	int n = QInputDialog::getInt(this, tr("Dialog"), tr("Results after leg count:"), 3, 1, 50, 1, &ok);
+	if(ok)
+		printResults(n, INT_MAX, true);
+}
+
+void RelaysWidget::print_results_overal()
+{
+	printResults(INT_MAX, INT_MAX, false);
+}
+
+void RelaysWidget::printResults(int leg_count, int places, bool exclude_not_finish)
+{
+	quickevent::ReportOptionsDialog dlg(this);
+	dlg.setPersistentSettingsId("relaysResultsReportOptions");
+	//dlg.setClassNamesFilter(class_names);
+	if(!dlg.exec())
+		return;
+	QVariantMap props = dlg.reportProperties();
+	QVariant td = thisPlugin()->nlegsResultsTable(leg_count, places, exclude_not_finish).toVariant();
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
+														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
+														  , td
+														  , tr("Start list by clubs")
+														  , "relaysResults"
 														  , props
 														  );
 }

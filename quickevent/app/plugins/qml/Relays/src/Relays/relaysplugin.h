@@ -5,15 +5,11 @@
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
-#include <qf/core/utils/table.h>
 
 namespace qf {
 
-namespace core {
-
-namespace model {
-class SqlTableModel;
-}}
+namespace core {  namespace model { class SqlTableModel; }}
+namespace core {  namespace utils { class TreeTable; }}
 
 namespace qmlwidgets {
 class Action;
@@ -45,6 +41,9 @@ public:
 	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
 
 	Q_SIGNAL void nativeInstalled();
+
+	qf::core::utils::TreeTable nlegsResultsTable(int leg_count, int places, bool exclude_not_finish);
+	qf::core::utils::TreeTable nlegsResultsTable(int class_id, int leg_count, int places, bool exclude_not_finish);
 private:
 	Q_SLOT void onInstalled();
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);

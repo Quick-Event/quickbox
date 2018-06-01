@@ -112,7 +112,6 @@ Schema {
 					defaultValue: -1;
 					notNull: true
 	 			},
-				Field { name: 'relayStartNumber'; type: Int { } },
 				Field { name: 'startTimeMin'; type: Int { } },
 				Field { name: 'startIntervalMin'; type: Int { } },
 				Field { name: 'vacantsBefore'; type: Int { } 
@@ -136,7 +135,9 @@ Schema {
 					defaultValue: false
 					notNull: true
 					comment: 'The draw of this class is prohibited'
-				}
+				},
+				Field { name: 'relayStartNumber'; type: Int { } },
+				Field { name: 'relayLegCount'; type: Int { } }
 			]
 			indexes: [
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
@@ -193,7 +194,7 @@ Schema {
 					defaultValue: true;
 					comment: "Competitor is running in this stage"
 				},
-				Field { name: 'notCompeting'; type: Boolean { }
+				Field { name: 'notCompeting'; type: Boolean { } // should be changed to notCompetiting in some future version
 					defaultValue: false;
 					notNull: true
 					comment: "Competitor does run in this stage but not competing"

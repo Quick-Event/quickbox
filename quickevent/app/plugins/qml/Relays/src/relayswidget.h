@@ -47,6 +47,11 @@ private:
 
 	void print_start_list_classes();
 	void print_start_list_clubs();
+
+	void print_results_nlegs();
+	void print_results_overal();
+
+	void printResults(int leg_count, int places, bool exclude_not_finish);
 private:
 	Ui::RelaysWidget *ui;
 	qf::core::model::SqlTableModel *m_tblModel;

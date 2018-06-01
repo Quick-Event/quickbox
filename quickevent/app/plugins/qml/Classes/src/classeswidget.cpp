@@ -133,6 +133,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
 		m->addColumn("classdefs.relayStartNumber", tr("Rel.num")).setToolTip(tr("Relay start number"));
+		m->addColumn("classdefs.relayLegCount", tr("Legs")).setToolTip(tr("Relay leg count"));
 		ui->tblClasses->setTableModel(m);
 
 		m_courseItemDelegate = new CourseItemDelegate(this);

@@ -162,16 +162,25 @@ void CompetitorsWidget::reset()
 
 void CompetitorsWidget::reload()
 {
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "*")
 			.select2("classes", "name")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.from("competitors")
-			.join("competitors.classId", "classes.id")
 			.orderBy("competitors.id");//.limit(10);
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id > 0) {
-		qb.where("competitors.classId=" + QString::number(class_id));
+		qb.where("classes.id=" + QString::number(class_id));
+	}
+	QString join_kind = (class_id > 0)? qfs::QueryBuilder::INNER_JOIN: qfs::QueryBuilder::LEFT_JOIN;
+	if(is_relays) {
+		qb.join("competitors.id", "runs.competitorId", join_kind);
+		qb.join("runs.relayId", "relays.id", join_kind);
+		qb.join("relays.classId", "classes.id", join_kind);
+	}
+	else {
+		qb.join("competitors.classId", "classes.id", join_kind);
 	}
 	m_competitorsModel->setQueryBuilder(qb, false);
 	m_competitorsModel->reload();
