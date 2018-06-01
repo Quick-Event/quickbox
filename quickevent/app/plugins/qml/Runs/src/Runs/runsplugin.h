@@ -67,6 +67,7 @@ private:
 	Q_SLOT void onInstalled();
 
 	int courseForRun_Classic(int run_id);
+	int courseForRun_Relays(int run_id);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runnersTableCache;

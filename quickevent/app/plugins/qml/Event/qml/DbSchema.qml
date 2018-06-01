@@ -54,6 +54,9 @@ Schema {
 				Field { name: 'climb'; type: Int { } },
 				Field { name: 'note'; type: String { } }
 			]
+			indexes: [
+				Index {fields: ['name']; unique: false } // for relays
+			]
 		},
 		Table { name: 'codes'
 			fields: [

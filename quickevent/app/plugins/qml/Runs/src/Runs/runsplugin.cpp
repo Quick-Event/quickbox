@@ -152,6 +152,10 @@ int RunsPlugin::courseForRun(int run_id)
 {
 	// TODO: implementation should be dependend on event type and exposed to QML
 	// see: CardCheck pattern
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	if(is_relays) {
+		return courseForRun_Relays(run_id);
+	}
 	return courseForRun_Classic(run_id);
 }
 
@@ -174,6 +178,37 @@ int RunsPlugin::courseForRun_Classic(int run_id)
 		}
 		ret = q.value(0).toInt();
 		cnt++;
+	}
+	return ret;
+}
+
+int RunsPlugin::courseForRun_Relays(int run_id)
+{
+	int ret = 0;
+	qfs::QueryBuilder qb;
+	qb.select2("relays", "number")
+			.select2("runs", "leg")
+			.from("runs")
+			.join("runs.relayId", "relays.id")
+			.where("runs.id=" QF_IARG(run_id));
+	qfs::Query q;
+	q.exec(qb.toString(), qf::core::Exception::Throw);
+	if(q.next()) {
+		QString relay_num = q.value("number").toString();
+		QString leg = q.value("leg").toString();
+		q.exec("SELECT id FROM courses WHERE name='" + relay_num + '.' + leg + "'");
+		int cnt = 0;
+		while (q.next()) {
+			if(cnt > 0) {
+				qfError() << "more courses found for run_id:" << run_id;
+				return 0;
+			}
+			ret = q.value(0).toInt();
+			cnt++;
+		}
+	}
+	else {
+		qfError() << "Cannot find relays record for run id:" << run_id;
 	}
 	return ret;
 }
