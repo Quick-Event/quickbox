@@ -211,7 +211,7 @@ QDateTime EventPlugin::stageStartDateTime(int stage_id)
 int EventPlugin::msecToStageStartAM(int si_am_time_sec, int msec, int stage_id)
 {
 	if(si_am_time_sec == 0xEEEE)
-		return quickevent::og::TimeMs::UNREAL_TIME_MS;
+		return quickevent::og::TimeMs::UNREAL_TIME_MSEC;
 	if(stage_id == 0)
 		stage_id = currentStageId();
 	int stage_start_msec = stageStartMsec(stage_id);

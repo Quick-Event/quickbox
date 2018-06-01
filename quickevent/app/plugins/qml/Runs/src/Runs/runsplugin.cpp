@@ -290,11 +290,11 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 			.where("competitors.classId=" QF_IARG(class_id));
 	for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
 		//qb.select("0 AS runId" QF_IARG(stage_id));
-		qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeMs" QF_IARG(stage_id));
+		qb.select(QF_IARG(UNREAL_TIME_MSEC) " AS timeMs" QF_IARG(stage_id));
 		qb.select("'' AS pos" QF_IARG(stage_id));
 	}
-	qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeMs");
-	qb.select(QF_IARG(UNREAL_TIME_MS) " AS timeLossMs");
+	qb.select(QF_IARG(UNREAL_TIME_MSEC) " AS timeMs");
+	qb.select(QF_IARG(UNREAL_TIME_MSEC) " AS timeLossMs");
 	qb.select("'' AS pos");
 	qf::core::model::SqlTableModel mod;
 	mod.setQueryBuilder(qb, false);
@@ -333,10 +333,10 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 			QString pos_str = mod.value(j, QString("pos%1").arg(stage_id)).toString();
 			int pos = pos_str.toInt();
 			int tms = mod.value(j, QString("timeMs%1").arg(stage_id)).toInt();
-			if(pos > 0 && tms < UNREAL_TIME_MS && time_ms < UNREAL_TIME_MS)
+			if(pos > 0 && tms < UNREAL_TIME_MSEC && time_ms < UNREAL_TIME_MSEC)
 				time_ms += tms;
 			else
-				time_ms = UNREAL_TIME_MS;
+				time_ms = UNREAL_TIME_MSEC;
 		}
 		mod.setValue(j, "timeMs", time_ms);
 	}
@@ -350,8 +350,8 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 		++pos;
 		QString p = QString::number(pos) + '.';
 		int time_ms = t.row(j).value("timeMs").toInt();
-		int loss_ms = UNREAL_TIME_MS;
-		if(time_ms < UNREAL_TIME_MS) {
+		int loss_ms = UNREAL_TIME_MSEC;
+		if(time_ms < UNREAL_TIME_MSEC) {
 			if(time_ms1 == 0)
 				time_ms1 = time_ms;
 			loss_ms = time_ms - time_ms1;

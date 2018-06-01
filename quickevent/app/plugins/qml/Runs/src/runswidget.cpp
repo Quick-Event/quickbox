@@ -101,6 +101,7 @@ void RunsWidget::lazyInit()
 
 void RunsWidget::reset(int class_id)
 {
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(!eventPlugin()->isEventOpen()) {
 		ui->wRunsTableWidget->clear();
 		return;
@@ -113,6 +114,10 @@ void RunsWidget::reset(int class_id)
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
 		m_cbxStage->blockSignals(false);
+	}
+	{
+		m_cbxLeg->setVisible(is_relays);
+		connect(m_cbxLeg, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
 	}
 	{
 		m_cbxClasses->blockSignals(true);
@@ -131,7 +136,8 @@ void RunsWidget::reset(int class_id)
 void RunsWidget::reload()
 {
 	qfLogFuncFrame();
-	int stage_id = selectedStageId();
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	int stage_id = is_relays? m_cbxLeg->currentData().toInt(): selectedStageId();
 	int class_id = m_cbxClasses->currentData().toInt();
 	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
 }
@@ -191,6 +197,27 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		main_tb->addWidget(m_cbxClasses);
 	}
 	lbl_classes->setBuddy(m_cbxClasses);
+	QLabel *lbl_legs;
+	{
+		lbl_legs = new QLabel(tr("&Leg "));
+		main_tb->addWidget(lbl_legs);
+	}
+	{
+		m_cbxLeg = new QComboBox();
+		m_cbxLeg->addItem(tr("--- all ---"), 0);
+		m_cbxLeg->addItem("1", 1);
+		m_cbxLeg->addItem("2", 2);
+		m_cbxLeg->addItem("3", 3);
+		m_cbxLeg->addItem("4", 4);
+		m_cbxLeg->addItem("5", 5);
+		m_cbxLeg->addItem("6", 6);
+		m_cbxLeg->addItem("7", 7);
+		m_cbxLeg->addItem("8", 8);
+		m_cbxLeg->addItem("9", 9);
+		m_cbxLeg->addItem("10", 10);
+		main_tb->addWidget(m_cbxLeg);
+	}
+	lbl_legs->setBuddy(m_cbxClasses);
 	{
 		m_chkShowOffRace = new QCheckBox();
 		m_chkShowOffRace->setText(tr("Show o&ff-race"));

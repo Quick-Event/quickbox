@@ -99,6 +99,7 @@ struct Leg
 	int stime = 0;
 	int spos = 0;
 	bool disq = false;
+	bool notfinish = true;
 };
 
 struct Relay
@@ -262,7 +263,7 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 								, qfs::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.disqualified, runs.timeMs");
 		q.execThrow(qb.toString());
-		int run_pos = 0;
+		int run_pos = 1;
 		while(q.next()) {
 			int relay_id = q.value("runs.relayId").toInt();
 			for (int i = 0; i < relays.count(); ++i) {
@@ -274,9 +275,11 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 						qfError() << "internal error, leg:" << legno << "runId check:" << leg.runId << "should equal" << run_id;
 					}
 					else {
+						leg.notfinish = false;
 						leg.disq = q.value("runs.disqualified").toBool();
 						leg.time = q.value("timeMs").toInt();
-						leg.pos = run_pos++;
+						leg.pos = leg.disq? 0: run_pos;
+						run_pos++;
 					}
 					break;
 				}
@@ -289,7 +292,7 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 		for (int i = 0; i < relays.count(); ++i) {
 			Relay &relay = relays[i];
 			Leg &leg = relay.legs[legno - 1];
-			if(leg.time > 0) {
+			if(!leg.notfinish && !leg.disq) {
 				if(legno == 1)
 					leg.stime = leg.time;
 				else if(relay.legs[legno-2].stime > 0)
@@ -344,10 +347,10 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 		if(i == 0)
 			time0 = time;
 		int prev_time = (i > 0)? relays[i-1].time(leg_count): 0;
-		rr.setValue("pos", (time <= qog::TimeMs::REAL_TIME_MSEC && time > prev_time)? i+1: 0);
+		rr.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
 		rr.setValue("name", relay.name);
 		rr.setValue("time", time);
-		rr.setValue("loss", time - time0);
+		rr.setValue("loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
 		qf::core::utils::TreeTable tt2;
 		tt.appendColumn("name", QVariant::String);
 		tt.appendColumn("reg", QVariant::String);
@@ -355,7 +358,7 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 		tt.appendColumn("pos", QVariant::Int);
 		tt.appendColumn("stime", QVariant::Int);
 		tt.appendColumn("spos", QVariant::Int);
-		tt.appendColumn("disq", QVariant::Bool);
+		//tt.appendColumn("disq", QVariant::Bool);
 		for (int j = 0; j < relay.legs.count(); ++j) {
 			Leg &leg = relay.legs[j];
 			qf::core::utils::TreeTableRow rr2 = tt2.appendRow();

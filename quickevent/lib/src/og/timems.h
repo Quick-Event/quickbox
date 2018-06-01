@@ -14,11 +14,11 @@ namespace og {
 class QUICKEVENT_DECL_EXPORT TimeMs
 {
 public:
-	static constexpr int UNREAL_TIME_MS = 9999 * 60 * 1000;
-	static constexpr int NOT_FINISH_TIME_MSEC = UNREAL_TIME_MS;
+	static constexpr int UNREAL_TIME_MSEC = 9999 * 60 * 1000;
+	static constexpr int NOT_FINISH_TIME_MSEC = UNREAL_TIME_MSEC;
 	static constexpr int NOT_COMPETITING_TIME_MSEC = NOT_FINISH_TIME_MSEC - 1;
 	static constexpr int DISQ_TIME_MSEC = NOT_COMPETITING_TIME_MSEC - 1;
-	static constexpr int REAL_TIME_MSEC = DISQ_TIME_MSEC - 1;
+	static constexpr int MAX_REAL_TIME_MSEC = DISQ_TIME_MSEC - 1;
 
 	TimeMs();
 	TimeMs(int msec);

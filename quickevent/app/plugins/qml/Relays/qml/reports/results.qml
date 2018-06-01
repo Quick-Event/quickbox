@@ -24,6 +24,22 @@ Report {
 		return OGTime.msecToString_mmss(time_ms);
 	}
 
+	function ogSumTimeToString(time_ms)
+	{
+		//return "999.99";
+		if(time_ms)
+			return OGTime.msecToString_mmss(time_ms);
+		return "";
+	}
+
+	function ogLossToString(time_ms)
+	{
+		//return "999.99";
+		if(time_ms)
+			return '+' + OGTime.msecToString_mmss(time_ms);
+		return "";
+	}
+
 	function posToStringDot(pos)
 	{
 		//return "999.";
@@ -131,6 +147,7 @@ Report {
 							Frame {
 								width: "%"
 								layout: Frame.LayoutHorizontal
+								valign: Frame.AlignBottom
 								bottomBorder: Pen { basedOn: "black1" }
 								//fill: Brush {color: Color {def: "khaki"} }
 								textStyle: myStyle.textStyleBold
@@ -151,7 +168,7 @@ Report {
 								Para {
 									width: 17
 									halign: Frame.AlignRight
-									textFn: function() {return '+' + root.ogTimeToString(relayDetail.rowData("loss"))}
+									textFn: function() {return root.ogLossToString(relayDetail.rowData("loss"))}
 								}
 							}
 							Band {
@@ -188,7 +205,7 @@ Report {
 									Para {
 										width: 13
 										halign: Frame.AlignRight
-										textFn: function() {return root.ogTimeToString(lapsDetail.rowData("stime"))}
+										textFn: function() {return root.ogSumTimeToString(lapsDetail.rowData("stime"))}
 									}
 									Para {
 										width: 9

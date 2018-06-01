@@ -150,16 +150,19 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
 			.from("runs")
-			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
 	if(is_relays) {
 		qb.join("relays.classId", "classes.id");
+		int leg = stage_id;
+		if(leg > 0)
+			qb.where("runs.leg=" QF_IARG(leg));
 	}
 	else {
 		qb.join("competitors.classId", "classes.id");
+		qb.where("runs.stageId=" QF_IARG(stage_id));
 	}
 	if(class_id > 0) {
 		if(is_relays)

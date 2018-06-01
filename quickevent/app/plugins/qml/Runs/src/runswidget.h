@@ -75,6 +75,7 @@ private:
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
+	QComboBox *m_cbxLeg = nullptr;
 	QCheckBox *m_chkShowOffRace = nullptr;
 };
 
