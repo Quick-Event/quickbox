@@ -11,10 +11,12 @@ CONFIG += c++11 hide_symbols
 DEFINES += CARDREADERPLUGIN_BUILD_DLL
 
 INCLUDEPATH += $$PWD/../../../../../libsiut/include
+
 LIBS += -lsiut
 
 INCLUDEPATH += $$PWD/../Event/include
 INCLUDEPATH += $$PWD/../Runs/include
+
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \

@@ -6,6 +6,8 @@
 #include "stagedocument.h"
 #include "stagewidget.h"
 
+#include <quickevent/og/timems.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -204,6 +206,17 @@ QDateTime EventPlugin::stageStartDateTime(int stage_id)
 	Event::StageData stage_data = stageData(stage_id);
 	QDateTime dt = stage_data.startDateTime();
 	return dt;
+}
+
+int EventPlugin::msecToStageStartAM(int si_am_time_sec, int msec, int stage_id)
+{
+	if(si_am_time_sec == 0xEEEE)
+		return quickevent::og::TimeMs::UNREAL_TIME_MS;
+	if(stage_id == 0)
+		stage_id = currentStageId();
+	int stage_start_msec = stageStartMsec(stage_id);
+	int time_msec = quickevent::og::TimeMs::msecIntervalAM(stage_start_msec, si_am_time_sec * 1000 + msec);
+	return time_msec;
 }
 
 void EventPlugin::setStageData(int stage_id, const QString &key, const QVariant &value)

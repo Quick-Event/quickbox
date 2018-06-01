@@ -69,6 +69,7 @@ public:
 	Q_INVOKABLE QTime stageStartTime(int stage_id);
 	Q_INVOKABLE QDateTime stageStartDateTime(int stage_id);
 	//Q_INVOKABLE int currentStageStartMsec();
+	int msecToStageStartAM(int si_am_time_sec, int msec = 0, int stage_id = 0);
 
 	//Q_INVOKABLE QVariantMap stageDataMap(int stage_id) {return stageData(stage_id);}
 	void setStageData(int stage_id, const QString &key, const QVariant &value);

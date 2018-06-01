@@ -188,7 +188,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
 	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
 	int run_id = checked_card.runId();
-	bool is_card_lent = cardReaderPlugin()->isCardLent(card_id, run_id);
+	bool is_card_lent = cardReaderPlugin()->isCardLent(card_id, read_card.finishTime(), run_id);
 	int current_stage_id = eventPlugin()->stageIdForRun(run_id);
 	int course_id = checked_card.courseId();
 	int current_standings = 0;

@@ -479,13 +479,13 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 		return;
 	}
 
-	int run_id = thisPlugin()->findRunId(card.cardNumber());
+	int run_id = thisPlugin()->findRunId(card.cardNumber(), card.finishTime());
 	if(run_id == 0) {
 		operatorAudioWakeUp();
 		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
 	}
 	else {
-		bool card_lent = thisPlugin()->isCardLent(card.cardNumber(), run_id);
+		bool card_lent = thisPlugin()->isCardLent(card.cardNumber(), card.finishTime(), run_id);
 		if(card_lent)
 			operatorAudioNotify();
 		if(punch_marking == quickevent::si::PunchRecord::MARKING_RACE) {
@@ -542,7 +542,7 @@ void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	punch.setmarking(punch_marking);
 	if(punch_marking == quickevent::si::PunchRecord::MARKING_RACE) {
-		int run_id = thisPlugin()->findRunId(rec.cardNumber());
+		int run_id = thisPlugin()->findRunId(rec.cardNumber(), 0xEEEE);
 		if(run_id == 0)
 			appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
 		else
