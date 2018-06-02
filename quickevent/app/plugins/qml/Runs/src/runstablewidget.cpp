@@ -226,10 +226,12 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 	QAction a_print_card(tr("Print card"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
 	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
+	QAction a_clear_start_times(tr("Clear times in selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_show_receipt << &a_load_card << &a_print_card
 		<< &a_sep1
-		<< &a_shift_start_times;
+		<< &a_shift_start_times
+		<< &a_clear_start_times;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
 		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
@@ -312,6 +314,26 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 				transaction.commit();
 				runsModel()->reload();
 			}
+		}
+		catch (const qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		}
+	}
+	else if(a == &a_clear_start_times) {
+		try {
+			qfs::Transaction transaction;
+			qfs::Query q(transaction.connection());
+			q.prepare("UPDATE runs SET startTimeMs = NULL WHERE id=:id", qf::core::Exception::Throw);
+			QList<int> rows = ui->tblRuns->selectedRowsIndexes();
+			for(int ix : rows) {
+				qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
+				int id = row.value(ui->tblRuns->idColumnName()).toInt();
+				q.bindValue(QStringLiteral(":id"), id);
+				//qfInfo() << id << "->" << offset_msec;
+				q.exec(qf::core::Exception::Throw);
+			}
+			transaction.commit();
+			runsModel()->reload();
 		}
 		catch (const qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
