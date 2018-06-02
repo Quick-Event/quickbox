@@ -78,7 +78,7 @@ LegsModel::LegsModel(QObject *parent)
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")).setReadOnly(true));
 	setColumn(col_runs_registration, ColumnDefinition("competitors.registration", tr("Reg")));
 	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>()));
-	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
@@ -297,21 +297,29 @@ void RelayWidget::moveLegUp()
 	Relays::RelayDocument*doc = qobject_cast<Relays:: RelayDocument*>(dataController()->document());
 	int relay_id = doc->dataId().toInt();
 	int run_id = row.value("runs.id").toInt();
+	QVariant run_stime = row.value("startTimeMs");
 	int run_prev_id = 0;
+	QVariant run_prev_stime;
 	qf::core::sql::Query q;
-	q.exec("SELECT id FROM runs WHERE"
+	q.exec("SELECT id, startTimeMs FROM runs WHERE"
 		   " relayId=" + QString::number(relay_id)
 		   + " AND leg=" + QString::number(leg - 1)
 		   , qf::core::Exception::Throw);
-	if(q.next())
+	if(q.next()) {
 		run_prev_id = q.value(0).toInt();
+		run_prev_stime = q.value(1);
+	}
 	if(run_prev_id > 0) {
-		q.exec("UPDATE runs SET leg=" + QString::number(leg)
+		q.exec("UPDATE runs SET"
+			    " leg=" + QString::number(leg)
+			   + ", startTimeMs=" + (run_stime.isNull()? QStringLiteral("NULL"): run_stime.toString())
 			   + " WHERE "
 			   + " id=" + QString::number(run_prev_id)
 			   , qf::core::Exception::Throw);
 	}
-	q.exec("UPDATE runs SET leg=" + QString::number(leg - 1)
+	q.exec("UPDATE runs SET"
+		    " leg=" + QString::number(leg - 1)
+		   + ", startTimeMs=" + (run_prev_stime.isNull()? QStringLiteral("NULL"): run_prev_stime.toString())
 		   + " WHERE "
 		   + " id=" + QString::number(run_id)
 		   , qf::core::Exception::Throw);
@@ -341,21 +349,29 @@ void RelayWidget::moveLegDown()
 	Relays::RelayDocument*doc = qobject_cast<Relays:: RelayDocument*>(dataController()->document());
 	int relay_id = doc->dataId().toInt();
 	int run_id = row.value("runs.id").toInt();
+	QVariant run_stime = row.value("startTimeMs");
 	int run_next_id = 0;
+	QVariant run_next_stime;
 	qf::core::sql::Query q;
 	q.exec("SELECT id FROM runs WHERE"
 		   " relayId=" + QString::number(relay_id)
 		   + " AND leg=" + QString::number(leg + 1)
 		   , qf::core::Exception::Throw);
-	if(q.next())
+	if(q.next()) {
 		run_next_id = q.value(0).toInt();
+		run_next_stime = q.value(1);
+	}
 	if(run_next_id > 0) {
-		q.exec("UPDATE runs SET leg=" + QString::number(leg)
+		q.exec("UPDATE runs SET"
+			    " leg=" + QString::number(leg)
+			   + ", startTimeMs=" + (run_stime.isValid()? run_stime.toString(): QStringLiteral("NULL"))
 			   + " WHERE "
 			   + " id=" + QString::number(run_next_id)
 			   , qf::core::Exception::Throw);
 	}
-	q.exec("UPDATE runs SET leg=" + QString::number(leg + 1)
+	q.exec("UPDATE runs SET"
+		    " leg=" + QString::number(leg + 1)
+		   + ", startTimeMs=" + (run_next_stime.isValid()? run_next_stime.toString(): QStringLiteral("NULL"))
 		   + " WHERE "
 		   + " id=" + QString::number(run_id)
 		   , qf::core::Exception::Throw);
