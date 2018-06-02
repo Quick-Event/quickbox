@@ -56,6 +56,7 @@ public:
 	enum Columns {
 		col_runs_leg = 0,
 		col_competitorName,
+		col_runs_registration,
 		col_runs_siId,
 		col_runs_startTimeMs,
 		col_runs_timeMs,
@@ -75,6 +76,7 @@ LegsModel::LegsModel(QObject *parent)
 	clearColumns(col_COUNT);
 	setColumn(col_runs_leg, ColumnDefinition("runs.leg", tr("Leg", "relays.leg")).setToolTip(tr("Leg")));
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")).setReadOnly(true));
+	setColumn(col_runs_registration, ColumnDefinition("competitors.registration", tr("Reg")));
 	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>()));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
@@ -155,6 +157,7 @@ bool  RelayWidget::loadLegsTable()
 	qf::core::model::DataDocument *doc = dataController()->document();
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "*")
+			.select2("competitors", "registration")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
