@@ -28,7 +28,7 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_relays_name, ColumnDefinition("relayName", tr("Relay")));
 	setColumn(col_runs_leg, ColumnDefinition("runs.leg", tr("Leg")));
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")));
-	setColumn(col_competitors_startNumber, ColumnDefinition("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number")));
+	setColumn(col_startNumber, ColumnDefinition("startNumber", tr("SN", "start number")).setToolTip(tr("Start number")));
 	setColumn(col_competitors_siId, ColumnDefinition("competitors.siId", tr("SI")).setToolTip(tr("Registered SI")).setReadOnly(true));
 	setColumn(col_competitorName, ColumnDefinition("competitorName", tr("Name")));
 	setColumn(col_registration, ColumnDefinition("registration", tr("Reg")));

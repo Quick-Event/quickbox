@@ -145,7 +145,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	qb.select2("runs", "*")
 			.select2("classes", "name")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
-			.select2("competitors", "id, registration, licence, ranking, startNumber, siId, note")
+			.select2("competitors", "id, registration, licence, ranking, siId, note")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
@@ -155,12 +155,14 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
 	if(is_relays) {
+		qb.select("relays.number AS startNumber");
 		qb.join("relays.classId", "classes.id");
 		int leg = stage_id;
 		if(leg > 0)
 			qb.where("runs.leg=" QF_IARG(leg));
 	}
 	else {
+		qb.select("competitors.startNumber");
 		qb.join("competitors.classId", "classes.id");
 		qb.where("runs.stageId=" QF_IARG(stage_id));
 	}

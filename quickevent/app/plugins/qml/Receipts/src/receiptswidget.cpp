@@ -126,6 +126,7 @@ void ReceiptsWidget::reset()
 
 void ReceiptsWidget::reload()
 {
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, printerConnectionId")
@@ -136,9 +137,15 @@ void ReceiptsWidget::reload()
 			.from("cards")
 			.join("cards.runId", "runs.id")
 			.join("runs.competitorId", "competitors.id")
-			.join("competitors.classId", "classes.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
 			.orderBy("cards.id DESC");
+	if(is_relays) {
+		qb.join("runs.relayId", "relays.id");
+		qb.join("relays.classId", "classes.id");
+	}
+	else {
+		qb.join("competitors.classId", "classes.id");
+	}
 	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
 }

@@ -15,7 +15,7 @@ public:
 		col_relays_name,
 		col_runs_leg,
 		col_classes_name,
-		col_competitors_startNumber,
+		col_startNumber,
 		col_competitors_siId,
 		col_competitorName,
 		col_registration,

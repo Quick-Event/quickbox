@@ -303,6 +303,7 @@ void CardReaderWidget::reset()
 
 void CardReaderWidget::reload()
 {
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	//QString driver_name = m_cardsModel->sqlConnection().driverName();
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
@@ -316,9 +317,15 @@ void CardReaderWidget::reload()
 			.joinRestricted("cards.siId", "lentcards.siid", "NOT lentcards.ignored")
 			.join("cards.runId", "runs.id")
 			.join("runs.competitorId", "competitors.id")
-			.join("competitors.classId", "classes.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
 			.orderBy("cards.id DESC");
+	if(is_relays) {
+		qb.join("runs.relayId", "relays.id");
+		qb.join("relays.classId", "classes.id");
+	}
+	else {
+		qb.join("competitors.classId", "classes.id");
+	}
 	qfDebug() << qb.toString();
 	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
