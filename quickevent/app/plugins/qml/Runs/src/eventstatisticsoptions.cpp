@@ -41,6 +41,7 @@ void EventStatisticsOptions::loadPersistentSettings()
 	QSettings settings;
 	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
 	Options opts(m);
+	ui->chkShowPrintDialog->setChecked(opts.isShowPrintDialog());
 	ui->autoRefreshSec->setValue(opts.autoRefreshSec());
 	ui->autoPrintNewRunners->setValue(opts.autoPrintNewRunners());
 	ui->autoPrintNewMin->setValue(opts.autoPrintNewMin());
@@ -52,6 +53,7 @@ void EventStatisticsOptions::savePersistentSettings()
 		return;
 
 	Options opts;
+	opts.setShowPrintDialog(ui->chkShowPrintDialog->isChecked());
 	opts.setAutoRefreshSec(ui->autoRefreshSec->value());
 	opts.setAutoPrintNewRunners(ui->autoPrintNewRunners->value());
 	opts.setAutoPrintNewMin(ui->autoPrintNewMin->value());

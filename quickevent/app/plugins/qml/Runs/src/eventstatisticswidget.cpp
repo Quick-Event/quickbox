@@ -521,7 +521,8 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 	}
 	bool report_printed = false;
 	quickevent::ReportOptionsDialog::Options opts;
-	static constexpr bool with_dialog = false;
+	EventStatisticsOptions::Options stat_opts(options());
+	bool with_dialog = stat_opts.isShowPrintDialog();
 	if(with_dialog) {
 		quickevent::ReportOptionsDialog dlg(this);
 		dlg.setPersistentSettingsId("resultsReportOptions");
@@ -532,6 +533,7 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 	}
 	else {
 		opts = quickevent::ReportOptionsDialog::savedOptions("resultsReportOptions");
+		opts.setUseClassFilter(true);
 		opts.setClassFilterType((int)quickevent::ReportOptionsDialog::FilterType::ClassName);
 		opts.setClassFilter(class_names.join(','));
 	}
