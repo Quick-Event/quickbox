@@ -254,12 +254,12 @@
     <widget class="QComboBox" name="cbxDisciplineId">
      <item>
       <property name="text">
-       <string>Classic</string>
+       <string>Long distance</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Short distance</string>
+       <string>Middle distance</string>
       </property>
      </item>
      <item>
@@ -269,12 +269,17 @@
      </item>
      <item>
       <property name="text">
-       <string>Middle</string>
+       <string>Ultralong distance</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Relays</string>
+       <string>Relay</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Teams</string>
       </property>
      </item>
     </widget>
