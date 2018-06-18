@@ -275,7 +275,7 @@ void RelaysWidget::onDbEventNotify(const QString &domain, int connection_id, con
 */
 void RelaysWidget::relays_assignNumbers()
 {
-	int method = qfd::GetItemInputDialog::getItem(this, tr("Dialgo"), tr("Assign relay numbers method")
+	int method = qfd::GetItemInputDialog::getItem(this, tr("Dialog"), tr("Assign relay numbers method")
 									 , QStringList{tr("Random number"), tr("In alphabetical order")}
 									 , -1);
 	if(method < 0)
