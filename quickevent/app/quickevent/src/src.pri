@@ -12,7 +12,8 @@ HEADERS  += \
     $$PWD/application.h \
     $$PWD/appclioptions.h \
     $$PWD/loggerwidget.h \
-    $$PWD/tablemodellogdevice.h
+    $$PWD/tablemodellogdevice.h \
+    $$PWD/appversionstring.h
 
 FORMS +=
 

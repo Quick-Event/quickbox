@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "application.h"
+#include "appversionstring.h"
 #include "appclioptions.h"
 #include "tablemodellogdevice.h"
 
@@ -21,6 +22,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setOrganizationDomain("quickbox.org");
 	QCoreApplication::setApplicationName("quickevent");
+	QCoreApplication::setApplicationVersion(APP_VERSION_STRING);
 
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 
@@ -29,19 +31,26 @@ int main(int argc, char *argv[])
 		if(argv[i] == QLatin1String("--log-file"))
 			o_log_file = argv[i + 1];
 	}
-	//o_log_file = "c:\\temp\\QE.log";
+	if(o_log_file.isEmpty())
+		o_log_file = QDir::tempPath() + "/quickevent.log";
 
 	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
+	QScopedPointer<qf::core::FileLogDevice> stderr_log_device(qf::core::FileLogDevice::install());
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
 	file_log_device->setFile(o_log_file);
 
 	QScopedPointer<TableModelLogDevice> table_model_log_device(TableModelLogDevice::install());
-	table_model_log_device->setObjectName("table_model_log_device");
+	table_model_log_device->setObjectName(TABLE_MODEL_LOG_DEVICE);
 
 	qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
 	qfWarning() << "QFLog(WARNING) test OK.";
 	qfInfo() << "QFLog(INFO) test OK.";
 	qfDebug() << "QFLog(DEBUG) test OK.";
+
+	qfInfo() << "========================================================";
+	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
+	qfInfo() << "Log file:" << o_log_file;
+	qfInfo() << "========================================================";
 
 	quickevent::og::TimeMs::registerQVariantFunctions();
 	quickevent::si::SiId::registerQVariantFunctions();

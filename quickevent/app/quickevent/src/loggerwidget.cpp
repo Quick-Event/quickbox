@@ -3,8 +3,6 @@
 
 #include <qf/core/model/logtablemodel.h>
 
-static const auto TABLE_MODEL_LOG_DEVICE = QStringLiteral("table_model_log_device");
-
 LoggerWidget::LoggerWidget(QWidget *parent)
 	: Super(parent)
 {

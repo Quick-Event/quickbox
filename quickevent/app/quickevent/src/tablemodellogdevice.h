@@ -5,6 +5,8 @@
 
 namespace qf { namespace core { namespace model { class LogTableModel; } } }
 
+#define TABLE_MODEL_LOG_DEVICE "table_model_log_device"
+
 class TableModelLogDevice : public qf::core::SignalLogDevice
 {
 	Q_OBJECT

@@ -66,6 +66,5 @@ Application *Application::instance(bool must_exist)
 
 QString Application::versionString() const
 {
-	static QString s = QLatin1String("1.2.0");
-	return s;
+	return QCoreApplication::applicationVersion();
 }
