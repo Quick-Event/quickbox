@@ -47,7 +47,6 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	, m_cliOptions(cli_opts)
 {
 	int refresh_time_msec = cli_opts->refreshTime();
-	refresh_time_msec = 60 * 1000;
 	qfInfo() << "HTML dir refresh time:" << refresh_time_msec << "msec";
 	if(refresh_time_msec >= 1000) {
 		QTimer *rft = new QTimer(this);
