@@ -3,7 +3,7 @@
 
 #include <qf/qmlwidgets/framework/datadialogwidget.h>
 
-namespace quickevent { namespace og { class SqlTableModel; } }
+namespace quickevent { namespace core { namespace og { class SqlTableModel; }}}
 
 namespace Ui { class  RelayWidget; }
 
@@ -29,7 +29,7 @@ private:
 	void moveLegDown();
 private:
 	Ui:: RelayWidget *ui;
-	quickevent::og::SqlTableModel *m_legsModel;
+	quickevent::core::og::SqlTableModel *m_legsModel;
 };
 
 #endif // RELAYWIDGET_H

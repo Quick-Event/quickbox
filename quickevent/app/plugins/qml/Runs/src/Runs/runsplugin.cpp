@@ -8,7 +8,7 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/reportoptionsdialog.h>
+#include <quickevent/gui/reportoptionsdialog.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -229,7 +229,7 @@ QWidget* RunsPlugin::createReportOptionsDialog(QWidget *parent)
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		parent = fwk;
 	}
-	quickevent::ReportOptionsDialog *ret = new quickevent::ReportOptionsDialog(parent);
+	quickevent::gui::ReportOptionsDialog *ret = new quickevent::gui::ReportOptionsDialog(parent);
 	ret->loadPersistentSettings();
 	return ret;
 }

@@ -5,10 +5,10 @@
 
 class QJsonObject;
 
-namespace quickevent {
+namespace quickevent {  namespace core {
 namespace og { class SqlTableModel; }
 namespace si { class PunchRecord; }
-}
+}}
 
 namespace Ui {
 class CodeClassResultsWidget;
@@ -25,7 +25,7 @@ public:
 
 	void reloadDeferred();
 	void reload();
-	void onPunchReceived(const quickevent::si::PunchRecord &punch);
+	void onPunchReceived(const quickevent::core::si::PunchRecord &punch);
 
 	static constexpr int ALL_CODES = 0;
 	static constexpr int RESULTS_PUNCH_CODE = 1000;
@@ -37,7 +37,7 @@ protected:
 	//void dropEvent(QDropEvent *event) Q_DECL_OVERRIDE;
 private:
 	Ui::CodeClassResultsWidget *ui;
-	quickevent::og::SqlTableModel *m_tableModel = nullptr;
+	quickevent::core::og::SqlTableModel *m_tableModel = nullptr;
 	QTimer *m_reloadDeferredTimer = nullptr;
 	int m_pinnedToCode = ALL_CODES;
 };

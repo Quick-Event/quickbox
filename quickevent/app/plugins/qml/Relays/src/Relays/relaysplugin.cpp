@@ -15,7 +15,7 @@
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/og/timems.h>
 
 #include <QQmlEngine>
 
@@ -24,7 +24,7 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
-namespace qog = quickevent::og;
+namespace qog = quickevent::core::og;
 
 namespace Relays {
 

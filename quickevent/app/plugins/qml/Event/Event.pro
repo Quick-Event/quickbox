@@ -8,7 +8,8 @@ QT += widgets sql
 
 CONFIG += c++11 hide_symbols
 
-INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libsiut/include
+INCLUDEPATH += \
+	#$$QF_PROJECT_TOP_SRCDIR/libsiut/include \
 
 DEFINES += EVENTPLUGIN_BUILD_DLL
 

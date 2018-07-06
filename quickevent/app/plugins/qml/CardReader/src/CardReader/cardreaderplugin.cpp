@@ -6,8 +6,8 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/og/timems.h>
-#include <quickevent/si/punchrecord.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -40,7 +40,7 @@ static Event::EventPlugin* eventPlugin()
 }
 
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
-const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
+const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super(parent)
@@ -101,7 +101,7 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time)
 		while(q.next()) {
 			row_cnt++;
 			last_id = q.value("id").toInt();
-			if(finish_time_msec == quickevent::og::TimeMs::UNREAL_TIME_MSEC)
+			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
 				continue; /// skip all checks when finish time is not known
 			int st = q.value("startTimeMs").toInt();
 			int leg = q.value("leg").toInt();
@@ -133,7 +133,7 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time)
 		while(q.next()) {
 			row_cnt++;
 			last_id = q.value("id").toInt();
-			if(finish_time_msec == quickevent::og::TimeMs::UNREAL_TIME_MSEC)
+			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
 				continue; /// skip all checks when finish time is not known
 			int st = q.value("startTimeMs").toInt();
 			//int ft = q.value("finishTimeMs").toInt();
@@ -264,11 +264,11 @@ int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
 	return ret;
 }
 
-int CardReaderPlugin::savePunchRecordToSql(const quickevent::si::PunchRecord &punch_record)
+int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchRecord &punch_record)
 {
 	//qfInfo() << "PUNCH:" << punch_record.toString();
 	int ret = 0;
-	quickevent::si::PunchRecord punch = punch_record;
+	quickevent::core::si::PunchRecord punch = punch_record;
 	punch.setstageid(currentStageId());
 
 	Event::EventPlugin *event_plugin = eventPlugin();

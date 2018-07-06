@@ -8,9 +8,10 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/si/siid.h>
-#include <quickevent/si/punchrecord.h>
-#include <quickevent/reportoptionsdialog.h>
+#include <quickevent/gui/reportoptionsdialog.h>
+
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
@@ -450,7 +451,7 @@ QVariant RelaysWidget::startListByClubsTableData(const QString &class_filter)
 
 void RelaysWidget::print_start_list_classes()
 {
-	quickevent::ReportOptionsDialog dlg(this);
+	quickevent::gui::ReportOptionsDialog dlg(this);
 	dlg.setPersistentSettingsId("relaysStartReportOptions");
 	//dlg.setClassNamesFilter(class_names);
 	if(!dlg.exec())
@@ -468,7 +469,7 @@ void RelaysWidget::print_start_list_classes()
 
 void RelaysWidget::print_start_list_clubs()
 {
-	quickevent::ReportOptionsDialog dlg(this);
+	quickevent::gui::ReportOptionsDialog dlg(this);
 	dlg.setPersistentSettingsId("relaysStartReportOptions");
 	//dlg.setClassNamesFilter(class_names);
 	if(!dlg.exec())
@@ -499,7 +500,7 @@ void RelaysWidget::print_results_overal()
 
 void RelaysWidget::printResults(int leg_count, int places, bool exclude_not_finish)
 {
-	quickevent::ReportOptionsDialog dlg(this);
+	quickevent::gui::ReportOptionsDialog dlg(this);
 	dlg.setPersistentSettingsId("relaysResultsReportOptions");
 	//dlg.setClassNamesFilter(class_names);
 	if(!dlg.exec())

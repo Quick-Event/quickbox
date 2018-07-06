@@ -20,7 +20,8 @@ else:  LIB_DIR_NAME = lib
 INCLUDEPATH += \
 $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
 $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
-$$PWD/../../lib/include \
+$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
+$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 
@@ -31,7 +32,8 @@ LIBS +=      \
 	-lqfcore  \
 	-lqfqmlwidgets  \
 	-lsiut \
-	-lquickevent
+	-lquickeventcore \
+	-lquickeventgui \
 
 unix: LIBS +=  \
 	-L../../../lib  \

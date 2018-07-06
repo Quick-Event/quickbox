@@ -1,7 +1,7 @@
 #include "cardcheckerclassiccpp.h"
 #include "readcard.h"
 
-#include <quickevent/si/punchrecord.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <qf/core/log.h>
 
@@ -110,7 +110,7 @@ CheckedCard CardCheckerClassicCpp::checkCard(const ReadCard &read_card)
 	checked_card.setMisPunch(error_mis_punch);
 
 	CheckedPunch finish_punch;
-	finish_punch.setCode(quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
+	finish_punch.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
 	finish_punch.setStpTimeMs(msecIntervalAM(checked_card.startTimeMs(), checked_card.finishTimeMs()));
 	checked_punches << finish_punch;
 

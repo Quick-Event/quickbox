@@ -13,8 +13,8 @@ class ForeignKeyComboBox;
 }
 }
 
-namespace quickevent { namespace og { class SqlTableModel; }}
-namespace quickevent { namespace si { class PunchRecord; }}
+namespace quickevent { namespace core { namespace og { class SqlTableModel; }}}
+namespace quickevent { namespace core { namespace si { class PunchRecord; }}}
 
 class ThisPartWidget;
 
@@ -30,7 +30,7 @@ public:
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
-	Q_SIGNAL void punchReceived(const quickevent::si::PunchRecord &punch);
+	Q_SIGNAL void punchReceived(const quickevent::core::si::PunchRecord &punch);
 private:
 	//Q_SLOT void lazyInit();
 	Q_SLOT void reset();
@@ -46,7 +46,7 @@ private:
 	void onCodeClassActivated(int class_id, int code);
 private:
 	Ui::SpeakerWidget *ui;
-	quickevent::og::SqlTableModel *m_punchesModel = nullptr;
+	quickevent::core::og::SqlTableModel *m_punchesModel = nullptr;
 	ThisPartWidget *m_partWidget = nullptr;
 	bool m_resetRequest = false;
 	bool m_settingsLoaded = false;

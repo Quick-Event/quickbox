@@ -7,8 +7,8 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/itemdelegate.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/gui/og/itemdelegate.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -718,7 +718,7 @@ void RunsWidget::on_btDrawRemove_clicked()
 		for (int i = 0; i < runs_model->rowCount(); ++i) {
 			runs_model->setValue(i, "startTimeMs", QVariant());
 			// bypass mid-air collision check
-			runs_model->quickevent::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
+			runs_model->quickevent::core::og::SqlTableModel::postRow(i, qf::core::Exception::Throw);
 		}
 		int stage_id = selectedStageId();
 		saveLockedForDrawing(class_id, stage_id, false, 0);

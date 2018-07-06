@@ -11,19 +11,8 @@
 #include <QVariantMap>
 #include <QSqlDriver>
 
-namespace qf {
-namespace core {
-namespace sql {
-class Query;
-class Connection;
-}
-}
-namespace qmlwidgets {
-class Action;
-namespace framework {
-}
-}
-}
+namespace qf { namespace core { namespace sql { class Query; class Connection; }}}
+namespace qf { namespace qmlwidgets { class Action; } }
 
 class QComboBox;
 class DbSchema;

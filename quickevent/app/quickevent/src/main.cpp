@@ -4,8 +4,8 @@
 #include "appclioptions.h"
 #include "tablemodellogdevice.h"
 
-#include <quickevent/si/siid.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/og/timems.h>
 
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
 	qfInfo() << "Log file:" << o_log_file;
 	qfInfo() << "========================================================";
 
-	quickevent::og::TimeMs::registerQVariantFunctions();
-	quickevent::si::SiId::registerQVariantFunctions();
+	quickevent::core::og::TimeMs::registerQVariantFunctions();
+	quickevent::core::si::SiId::registerQVariantFunctions();
 
 	AppCliOptions cli_opts;
 	cli_opts.parse(args);

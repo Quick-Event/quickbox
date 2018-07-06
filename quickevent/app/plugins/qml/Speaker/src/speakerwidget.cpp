@@ -8,10 +8,10 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/si/punchrecord.h>
-#include <quickevent/si/siid.h>
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -65,12 +65,12 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	*/
 	//ui->tblPunches->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	//ui->tblPunches->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-	quickevent::og::SqlTableModel *m = new quickevent::og::SqlTableModel(this);
+	quickevent::core::og::SqlTableModel *m = new quickevent::core::og::SqlTableModel(this);
 	m->addColumn("punches.id");//.setReadOnly(true);
 	m->addColumn("punches.code", tr("Code"));
-	m->addColumn("punches.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
-	m->addColumn("punches.timeMs", tr("Punch time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("punches.runTimeMs", tr("Runner time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("punches.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
+	m->addColumn("punches.timeMs", tr("Punch time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+	m->addColumn("punches.runTimeMs", tr("Runner time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.registration", tr("Registration"));
 	m->addColumn("competitorName", tr("Competitor"));
@@ -128,9 +128,9 @@ void SpeakerWidget::onDbEventNotify(const QString &domain, int connection_id, co
 		return;
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::si::PunchRecord punch(data.toMap());
+		quickevent::core::si::PunchRecord punch(data.toMap());
 		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_RACE) {
+		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_RACE) {
 			updateTableView(punch.id());
 			emit punchReceived(punch);
 		}

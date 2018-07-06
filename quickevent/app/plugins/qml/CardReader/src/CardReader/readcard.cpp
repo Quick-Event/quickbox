@@ -1,6 +1,6 @@
 #include "readcard.h"
 
-#include <quickevent/og/timems.h>
+#include <quickevent/core/og/timems.h>
 
 #include <siut/simessage.h>
 
@@ -83,7 +83,7 @@ int ReadCard::timeMs() const
 {
 	int ret = 0xeeee * 1000;
 	if(finishTime() != 0xeeee && startTime() != 0xeeee) {
-		ret = quickevent::og::TimeMs::fixTimeWrapAM(0, (finishTime() - startTime()) * 1000);
+		ret = quickevent::core::og::TimeMs::fixTimeWrapAM(0, (finishTime() - startTime()) * 1000);
 		ret += finishTimeMs();
 	}
 	return ret;

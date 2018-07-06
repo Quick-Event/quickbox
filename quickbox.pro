@@ -32,10 +32,11 @@ else:quickshow-android {
 else {
 	SUBDIRS += \
 		libsiut \
-		tools \
+		libquickevent \
 		quickevent \
 		quickhttpd \
 		quickshow \
+		tools \
 
 }
 

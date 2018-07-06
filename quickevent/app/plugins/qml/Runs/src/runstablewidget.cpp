@@ -7,8 +7,8 @@
 #include <Event/eventplugin.h>
 #include <Competitors/competitorsplugin.h>
 
-#include <quickevent/si/siid.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/og/timems.h>
 
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>

@@ -22,7 +22,7 @@ class Plugin;
 }
 namespace siut { class DeviceDriver; }
 
-namespace quickevent { namespace audio { class Player; }}
+namespace quickevent { namespace gui { namespace audio { class Player; }}}
 
 namespace CardReader {
 class CardReaderPlugin;
@@ -93,7 +93,7 @@ private:
 	void showSelectedCard();
 	void assignRunnerToSelectedCard();
 
-	quickevent::audio::Player* audioPlayer();
+	quickevent::gui::audio::Player* audioPlayer();
 	void operatorAudioWakeUp();
 	void operatorAudioNotify();
 private:
@@ -105,7 +105,7 @@ private:
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QCheckBox *m_cbxAutoRefresh = nullptr;
 	QComboBox *m_cbxPunchMarking = nullptr;
-	quickevent::audio::Player *m_audioPlayer = nullptr;
+	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

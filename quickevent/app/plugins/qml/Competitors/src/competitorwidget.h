@@ -3,10 +3,7 @@
 
 #include <qf/qmlwidgets/framework/datadialogwidget.h>
 
-namespace quickevent {
-namespace og {
-class SqlTableModel;
-} }
+namespace quickevent { namespace core {  namespace og { class SqlTableModel; }}}
 
 namespace Ui {
 class CompetitorWidget;
@@ -40,7 +37,7 @@ private:
 	void showRunsTable(int stage_id);
 private:
 	Ui::CompetitorWidget *ui;
-	quickevent::og::SqlTableModel *m_runsModel;
+	quickevent::core::og::SqlTableModel *m_runsModel;
 };
 
 #endif // COMPETITORWIDGET_H

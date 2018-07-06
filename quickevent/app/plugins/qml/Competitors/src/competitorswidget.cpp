@@ -9,8 +9,8 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/si/siid.h>
-#include <quickevent/si/punchrecord.h>
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -73,7 +73,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	m->addColumn("competitors.startNumber", tr("SN", "start number")).setToolTip(tr("Start number"));
 	m->addColumn("competitorName", tr("Name"));
 	m->addColumn("registration", tr("Reg"));
-	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
+	m->addColumn("siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
 	m->addColumn("ranking", tr("Ranking"));
 	m->addColumn("note", tr("Note"));
 	ui->tblCompetitors->setTableModel(m);
@@ -259,9 +259,9 @@ void CompetitorsWidget::onDbEventNotify(const QString &domain, int connection_id
 	Q_UNUSED(connection_id)
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(m_cbxEditCompetitorOnPunch->isEnabled() && m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::si::PunchRecord punch(data.toMap());
+		quickevent::core::si::PunchRecord punch(data.toMap());
 		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_ENTRIES) {
+		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
 			editCompetitorOnPunch(siid);
 		}
 	}

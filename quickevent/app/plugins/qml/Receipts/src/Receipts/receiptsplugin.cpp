@@ -19,7 +19,7 @@
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
 #include <qf/qmlwidgets/reports/processor/reportitem.h>
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/og/timems.h>
 
 #include <QDomDocument>
 #include <QSqlRecord>
@@ -138,7 +138,7 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 		for(auto v : read_card.punches()) {
 			CardReader::ReadPunch punch(v.toMap());
 			int punch_time_ms = punch.time() * 1000 + punch.msec();
-			int stp_time_ms = quickevent::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
+			int stp_time_ms = quickevent::core::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
 			qfu::TreeTableRow ttr = tt.appendRow();
 			++position;
 			int code = punch.code();
@@ -155,7 +155,7 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 			//ttr.setValue("position", position);
 			//ttr.setValue("code", code);
 			int punch_time_ms = read_card.finishTime() * 1000 + read_card.finishTimeMs();
-			int stp_time_ms = quickevent::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
+			int stp_time_ms = quickevent::core::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
 			ttr.setValue("punchTimeMs", punch_time_ms);
 			ttr.setValue("stpTimeMs", stp_time_ms);
 			ttr.setValue("lapTimeMs", stp_time_ms - prev_stp_time_ms);

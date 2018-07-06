@@ -5,8 +5,8 @@
 #include <Event/stage.h>
 #include <Runs/runsplugin.h>
 
-#include <quickevent/og/timems.h>
-#include <quickevent/si/punchrecord.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <siut/simessage.h>
 
@@ -39,12 +39,12 @@ CardChecker::CardChecker(QObject *parent)
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
 {
-	return quickevent::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
+	return quickevent::core::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
 }
 
 int CardChecker::msecIntervalAM(int time1_msec, int time2_msec)
 {
-	return quickevent::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
+	return quickevent::core::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
 }
 
 int CardChecker::toAMms(int time_msec)
@@ -139,7 +139,7 @@ QVariantMap CardChecker::courseCodesForRunId(int run_id)
 
 int CardChecker::finishPunchCode()
 {
-	return quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
+	return quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
 }
 
 }

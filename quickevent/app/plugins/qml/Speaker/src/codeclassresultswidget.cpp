@@ -3,9 +3,9 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/timems.h>
-#include <quickevent/si/punchrecord.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -43,10 +43,10 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	//ui->tblView->setPersistentSettingsId("tblView");
 	//ui->tblPunches->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	//ui->tblPunches->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-	quickevent::og::SqlTableModel *m = new quickevent::og::SqlTableModel(this);
+	quickevent::core::og::SqlTableModel *m = new quickevent::core::og::SqlTableModel(this);
 	m->addColumn("competitorName", tr("Competitor"));
 	m->addColumn("competitors.registration", tr("Reg"));//.setReadOnly(true);
-	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
 	ui->tblView->setTableModel(m);
 	m_tableModel = m;
 }
@@ -96,7 +96,7 @@ void CodeClassResultsWidget::reload()
 				.orderBy("runs.timeMs");//.limit(10);
 	}
 	/*
-	else if(code == quickevent::si::PunchRecord::FINISH_PUNCH_CODE) {
+	else if(code == quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE) {
 		qb.select2("runlaps", "stpTimeMs AS timeMs")
 				.from("runlaps")
 				.joinRestricted("runlaps.runId", "runs.id",
@@ -124,7 +124,7 @@ void CodeClassResultsWidget::reload()
 	m_tableModel->reload();
 }
 
-void CodeClassResultsWidget::onPunchReceived(const quickevent::si::PunchRecord &punch)
+void CodeClassResultsWidget::onPunchReceived(const quickevent::core::si::PunchRecord &punch)
 {
 	int code = this->ui->lstCode->currentData().toInt();
 	if(code > 0 && punch.code() == code) {
@@ -157,7 +157,7 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 			ui->lstCode->blockSignals(true);
 			ui->lstCode->clear();
 			ui->lstCode->addItem(tr("Results"), RESULTS_PUNCH_CODE);
-			ui->lstCode->addItem(tr("Finish"), quickevent::si::PunchRecord::FINISH_PUNCH_CODE);
+			ui->lstCode->addItem(tr("Finish"), quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
 			qf::core::sql::QueryBuilder qb;
 			qb.select2("codes", "code, radio")
 					.from("classdefs")

@@ -7,9 +7,9 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/timems.h>
-#include <quickevent/reportoptionsdialog.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/gui/reportoptionsdialog.h>
 
 #include <qf/core/sql/querybuilder.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -43,9 +43,9 @@ static Runs::RunsPlugin* runsPlugin()
 //============================================================
 //                EventStatisticsModel
 //============================================================
-class EventStatisticsModel : public quickevent::og::SqlTableModel
+class EventStatisticsModel : public quickevent::core::og::SqlTableModel
 {
-	typedef quickevent::og::SqlTableModel Super;
+	typedef quickevent::core::og::SqlTableModel Super;
 public:
 	enum Cols {
 		col_className,
@@ -78,17 +78,17 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_mapCount, ColumnDefinition("classdefs.mapCount", tr("Maps")));
 	setColumn(col_freeMapCount, ColumnDefinition("freeMapCount", tr("Free maps")));
 	setColumn(col_runnersCount, ColumnDefinition("runnersCount", tr("Runners")));
-	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
-	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
-	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
-	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
-	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()));
+	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
 	setColumn(col_resultsNotPrintedSec, ColumnDefinition("resultsNotPrintedSec", tr("Not printed time"))
 			  .setToolTip(tr("Time since recent results printout."))
-			  .setCastType(qMetaTypeId<quickevent::og::TimeMs>())
+			  .setCastType(qMetaTypeId<quickevent::core::og::TimeMs>())
 			  );
 	{
 		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND competitors.classId=classes.id");
@@ -520,11 +520,11 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 		runners_finished << row.value(QStringLiteral("runnersFinished")).toInt();
 	}
 	bool report_printed = false;
-	quickevent::ReportOptionsDialog::Options opts;
+	quickevent::gui::ReportOptionsDialog::Options opts;
 	EventStatisticsOptions::Options stat_opts(options());
 	bool with_dialog = stat_opts.isShowPrintDialog();
 	if(with_dialog) {
-		quickevent::ReportOptionsDialog dlg(this);
+		quickevent::gui::ReportOptionsDialog dlg(this);
 		dlg.setPersistentSettingsId("resultsReportOptions");
 		dlg.setClassNamesFilter(class_names);
 		if(!dlg.exec())
@@ -532,15 +532,15 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 		opts = dlg.options();
 	}
 	else {
-		opts = quickevent::ReportOptionsDialog::savedOptions("resultsReportOptions");
+		opts = quickevent::gui::ReportOptionsDialog::savedOptions("resultsReportOptions");
 		opts.setUseClassFilter(true);
-		opts.setClassFilterType((int)quickevent::ReportOptionsDialog::FilterType::ClassName);
+		opts.setClassFilterType((int)quickevent::gui::ReportOptionsDialog::FilterType::ClassName);
 		opts.setClassFilter(class_names.join(','));
 	}
-	QVariant td = runsPlugin()->currentStageResultsTableData(quickevent::ReportOptionsDialog::sqlWhereExpression(opts));
+	QVariant td = runsPlugin()->currentStageResultsTableData(quickevent::gui::ReportOptionsDialog::sqlWhereExpression(opts));
 	QVariantMap props;
-	props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::ReportOptionsDialog::BreakType::None);
-	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::ReportOptionsDialog::BreakType::Column);
+	props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
+	props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
 	props["options"] = opts;
 	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
 								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"

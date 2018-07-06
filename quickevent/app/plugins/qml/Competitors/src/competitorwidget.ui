@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>722</width>
-    <height>590</height>
+    <width>749</width>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,7 +84,7 @@
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="quickevent::si::SiIdEdit" name="spinBox">
+       <widget class="quickevent::gui::si::SiIdEdit" name="spinBox">
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -274,9 +274,9 @@
    <header location="global">qf/qmlwidgets/combobox.h</header>
   </customwidget>
   <customwidget>
-   <class>quickevent::si::SiIdEdit</class>
+   <class>quickevent::gui::si::SiIdEdit</class>
    <extends>QSpinBox</extends>
-   <header location="global">quickevent/si/siidedit.h</header>
+   <header location="global">quickevent/gui/si/siidedit.h</header>
   </customwidget>
   <customwidget>
    <class>FindRegistrationEdit</class>

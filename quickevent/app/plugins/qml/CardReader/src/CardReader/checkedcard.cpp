@@ -1,6 +1,6 @@
 #include "checkedcard.h"
 
-#include <quickevent/og/timems.h>
+#include <quickevent/core/og/timems.h>
 
 using namespace CardReader;
 
@@ -41,14 +41,14 @@ QString CheckedCard::toString() const
 		punch_lst << QString("[%1. %2: %3 %4]")
 					 .arg(++position)
 					 .arg(p.code())
-					 .arg(quickevent::og::TimeMs(p.stpTimeMs()).toString())
-					 .arg(quickevent::og::TimeMs(p.lapTimeMs()).toString());
+					 .arg(quickevent::core::og::TimeMs(p.stpTimeMs()).toString())
+					 .arg(quickevent::core::og::TimeMs(p.lapTimeMs()).toString());
 	}
 	ret += QString("SI: %1, run_id: %2, start: %3, finish: %4, punches: %5")
 			.arg(cardNumber())
 			.arg(runId())
-			.arg(quickevent::og::TimeMs(startTimeMs()).toString())
-			.arg(quickevent::og::TimeMs(finishTimeMs()).toString())
+			.arg(quickevent::core::og::TimeMs(startTimeMs()).toString())
+			.arg(quickevent::core::og::TimeMs(finishTimeMs()).toString())
 			.arg(punch_lst.join(", "));
 	return ret;
 }

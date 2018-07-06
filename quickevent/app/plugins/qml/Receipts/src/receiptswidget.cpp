@@ -9,10 +9,11 @@
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
 
-#include <quickevent/og/timems.h>
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/itemdelegate.h>
-#include <quickevent/si/siid.h>
+#include <quickevent/gui/og/itemdelegate.h>
+
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/si/siid.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -64,16 +65,16 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
-		auto m = new quickevent::og::SqlTableModel(this);
+		ui->tblCards->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblCards));
+		auto m = new quickevent::core::og::SqlTableModel(this);
 
 		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
 		m->addColumn("competitors.registration", tr("Reg"));
-		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
 		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");

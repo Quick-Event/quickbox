@@ -7,10 +7,11 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/og/itemdelegate.h>
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/timems.h>
-#include <quickevent/si/siid.h>
+#include <quickevent/gui/og/itemdelegate.h>
+
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/siid.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -44,9 +45,9 @@ private:
 	QString m_message;
 };
 
-class RunsModel : public quickevent::og::SqlTableModel
+class RunsModel : public quickevent::core::og::SqlTableModel
 {
-	using Super = quickevent::og::SqlTableModel;
+	using Super = quickevent::core::og::SqlTableModel;
 public:
 	RunsModel(QObject *parent = nullptr);
 
@@ -81,9 +82,9 @@ RunsModel::RunsModel(QObject *parent)
 	setColumn(col_relays_name, ColumnDefinition("relayName", tr("Relay")).setReadOnly(true));
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")).setReadOnly(true));
 	setColumn(col_runs_leg, ColumnDefinition("runs.leg", tr("Leg")));
-	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>()));
-	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
-	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::core::si::SiId>()));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch")));
@@ -162,7 +163,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
-	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
+	ui->tblRuns->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblRuns));
 
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_relays_name, !is_relays);
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_runs_leg, !is_relays);
