@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 import Runs 1.0
 import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
-import "qrc:/quickevent/js/ogtime.js" as OGTime
+import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 import "./"
 
 

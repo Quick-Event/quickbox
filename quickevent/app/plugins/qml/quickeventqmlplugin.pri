@@ -36,8 +36,14 @@ INCLUDEPATH += \
 	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
 	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
 
+message ($$PLUGIN_NAME INCLUDEPATH $$INCLUDEPATH)
+
 LIBS += \
     -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
+
+unix: LIBS +=  \
+	-Wl,-rpath,\'\$\$ORIGIN\'  \
+
 
 LIBS += \
 	-lqfcore \
