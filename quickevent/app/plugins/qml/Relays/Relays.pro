@@ -15,8 +15,6 @@ INCLUDEPATH += \
     $$PWD/../Event/include \
     $$PWD/../Competitors/include \
 
-LIBS += -lquickevent
-
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \

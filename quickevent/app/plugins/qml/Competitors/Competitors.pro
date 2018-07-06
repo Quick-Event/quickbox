@@ -11,11 +11,7 @@ CONFIG += c++11 hide_symbols
 DEFINES += COMPETITORSPLUGIN_BUILD_DLL
 
 INCLUDEPATH += \
-    $$PWD/../../../../../libquickevent/libquickeventcore/include \
-    $$PWD/../../../../../libquickevent/libquickeventgui/include \
     $$PWD/../Event/include \
-
-LIBS += -lquickeventcore -lquickeventgui
 
 LIBS += \
     -L$$DESTDIR \

@@ -23,7 +23,6 @@ INCLUDEPATH += \
 
 LIBS +=      \
 	-lqfcore  \
-#	-lquickevent  \
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
