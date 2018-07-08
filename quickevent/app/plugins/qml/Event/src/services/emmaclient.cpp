@@ -39,6 +39,8 @@ void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const
 
 void EmmaClient::onCardChecked(const QVariantMap &data)
 {
+	if(status() != Status::Running)
+		return;
 	quickevent::core::si::CheckedCard checked_card(data);
 	QString s = QString("%1").arg(checked_card.cardNumber(), 8, 10, QChar(' '));
 	s += QStringLiteral(": FIN/");
