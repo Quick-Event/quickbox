@@ -144,7 +144,7 @@ QtObject {
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()
-			.select2('competitors', 'registration')
+			.select2('competitors', 'registration, id')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select("COALESCE(runs.startTimeMs / 1000 / 60, 0) AS startTimeMin")
 			.select2('runs', 'siId, startTimeMs')
@@ -465,6 +465,58 @@ QtObject {
 		File.writeXml(file_path, xml_root, {documentTitle: qsTr("E%1 IOF XML stage results").arg(tt1.value("stageId"))});
 		Log.info("exported:", file_path);
 	}
+
+
+	//export start list Emma
+	function exportStartListEmma(file_name)
+	{
+		var str = "";
+		var tt1 = startListStartersTable("");
+		for(var i=0; i<tt1.rowCount(); i++) {
+			//ID
+			var part = tt1.value(i, 'competitors.id');
+			part += " ".repeat(5 - part.toString().length);
+			str += part + " ";
+			//SI number
+			part = tt1.value(i, 'runs.siId');
+			part = " ".repeat(8 - part.toString().length) + part;
+			str += part + " ";
+			//class name
+			part = tt1.value(i, 'classes.name');
+			part += " ".repeat(7 - part.length);
+			str += part + " ";
+			//registration
+			part = tt1.value(i, 'registration');
+			part += " ".repeat(7 - part.length);
+			str += part + " ";
+			//competitor name
+			part = tt1.value(i, 'competitorName').substring(0,21);
+			part += " ".repeat(22 - part.toString().length);
+			str += part + " ";
+			//start time
+			//TODO zmenit na format mmm.ss,zzzz
+			part = tt1.value(i, 'startTimeMs');
+			str += part;
+			str += "\n";
+		}
+		/*
+		if(!file_name)
+			file_name = File.tempPath() + "/quickevent/e" + tt1.value("stageId") + "/emma-start.txt";
+		if(File.mkpath(file_name)) {
+			file_name += "/" + default_file_name;
+			File.write(file_name, str);
+			Log.info("exported:", file_name);
+			return file_name;
+		}
+		*/
+		if(File.write(file_name, str)) {
+			Log.info("exported:", file_name);
+			return file_name;
+		}
+
+		return "";
+	}
+	//end export start list Emma
 
 	function exportHtmlStartListClubs()
 	{
