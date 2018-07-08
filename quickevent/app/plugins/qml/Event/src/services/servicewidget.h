@@ -20,13 +20,15 @@ public:
 	~ServiceWidget();
 
 	void setStatus(Service::Status st);
-	void setName(const QString &n);
+	void setServiceName(const QString &n);
+	QString serviceName() const;
 	void setMessage(const QString &m);
 
 	Q_SIGNAL void setRunningRequest(bool play);
 private:
 	void onBtPlayToggled(bool on);
-	private:
+	void showDetail();
+private:
 	Ui::ServiceWidget *ui;
 };
 

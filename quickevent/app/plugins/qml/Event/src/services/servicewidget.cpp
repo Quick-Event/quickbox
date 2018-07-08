@@ -10,6 +10,7 @@ ServiceWidget::ServiceWidget(QWidget *parent) :
 	ui->setupUi(this);
 
 	connect(ui->btPlay, &QPushButton::toggled, this, &ServiceWidget::onBtPlayToggled);
+	connect(ui->btShowDetail, &QPushButton::clicked, this, &ServiceWidget::showDetail);
 }
 
 ServiceWidget::~ServiceWidget()
@@ -32,9 +33,14 @@ void ServiceWidget::setStatus(Service::Status st)
 	}
 }
 
-void ServiceWidget::setName(const QString &n)
+void ServiceWidget::setServiceName(const QString &n)
 {
 	ui->lblServiceName->setText(n);
+}
+
+QString ServiceWidget::serviceName() const
+{
+	return ui->lblServiceName->text();
 }
 
 void ServiceWidget::setMessage(const QString &m)
@@ -45,6 +51,14 @@ void ServiceWidget::setMessage(const QString &m)
 void ServiceWidget::onBtPlayToggled(bool on)
 {
 	emit setRunningRequest(on);
+}
+
+void ServiceWidget::showDetail()
+{
+	Service *svc = Service::serviceByName(serviceName());
+	if(svc) {
+		svc->showDetail(this);
+	}
 }
 
 } // namespace services

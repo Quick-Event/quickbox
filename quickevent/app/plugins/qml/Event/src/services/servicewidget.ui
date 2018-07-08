@@ -56,13 +56,10 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="btConfig">
+    <widget class="QPushButton" name="btShowDetail">
      <property name="icon">
       <iconset resource="../../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
        <normaloff>:/qf/qmlwidgets/images/flat/settings.svg</normaloff>:/qf/qmlwidgets/images/flat/settings.svg</iconset>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
      </property>
     </widget>
    </item>

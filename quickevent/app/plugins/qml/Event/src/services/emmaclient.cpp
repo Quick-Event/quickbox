@@ -1,30 +1,34 @@
 #include "emmaclient.h"
+#include "emmaclientwidget.h"
+
 #include "../Event/eventplugin.h"
 
 #include <quickevent/core/si/checkedcard.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 
 #include <QFile>
+#include <QSettings>
+#include <QStandardPaths>
 
 namespace services {
 
-Event::EventPlugin *eventPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
-}
+//const char *EmmaClient::SETTINGS_GROUP = "services/EmmaClient";
+const char *EmmaClient::SETTING_KEY_FILE_NAME = "fileName";
 
 EmmaClient::EmmaClient(QObject *parent)
-	: Super(parent)
+	: Super(EmmaClient::serviceName(), parent)
 {
-	setObjectName("EmmaClient");
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EmmaClient::onDbEventNotify, Qt::QueuedConnection);
+}
+
+QString EmmaClient::serviceName()
+{
+	return QStringLiteral("EmmaClient");
 }
 
 void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
@@ -34,7 +38,6 @@ void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_CHECKED)) {
 		onCardChecked(data.toMap());
 	}
-
 }
 
 void EmmaClient::onCardChecked(const QVariantMap &data)
@@ -61,11 +64,31 @@ void EmmaClient::onCardChecked(const QVariantMap &data)
 		s += QStringLiteral("DNF ");
 	}
 	qfInfo() << "EmmaClient: " << s;
-	QFile file("FIN_LIVE.txt");
-	file.open(QIODevice::WriteOnly | QIODevice::Append);
+	QFile file(m_fileName);
+	if(!file.open(QIODevice::WriteOnly | QIODevice::Append)) {
+		qfError() << "Cannot open file" << file.fileName() << "for writing, stopping service";
+		stop();
+		return;
+	}
 	QTextStream out(&file);
 	out << s << "\n";
-	file.close();
+}
+
+qf::qmlwidgets::framework::DialogWidget *EmmaClient::createDetailWidget()
+{
+	auto *w = new EmmaClientWidget();
+	return w;
+}
+
+void EmmaClient::loadSettings()
+{
+	QSettings settings;
+	settings.beginGroup(settingsGroup());
+	m_fileName = settings.value(EmmaClient::SETTING_KEY_FILE_NAME).toString();
+	if(m_fileName.isEmpty()) {
+		m_fileName = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/FIN_LIVE.txt";
+	}
+	qfInfo() << "EmmaClient file name:" << fileName();
 }
 
 } // namespace services
