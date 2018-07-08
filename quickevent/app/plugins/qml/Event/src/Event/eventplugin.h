@@ -13,6 +13,7 @@
 
 namespace qf { namespace core { namespace sql { class Query; class Connection; }}}
 namespace qf { namespace qmlwidgets { class Action; } }
+namespace qf { namespace qmlwidgets { namespace framework { class DockWidget; }}}
 
 class QComboBox;
 class DbSchema;
@@ -40,6 +41,7 @@ public:
 	static const char *DBEVENT_NOTIFY_NAME;
 	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
 	static const char* DBEVENT_CARD_READ;
+	static const char* DBEVENT_CARD_CHECKED;
 	static const char* DBEVENT_PUNCH_RECEIVED;
 	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
 
@@ -109,6 +111,8 @@ private:
 
 	//bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
 	void repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn);
+
+	void onServiceDockVisibleChanged(bool on = true);
 private:
 	qf::qmlwidgets::Action *m_actConnectDb = nullptr;
 	qf::qmlwidgets::Action *m_actEvent = nullptr;
@@ -123,6 +127,8 @@ private:
 	QComboBox *m_cbxStage = nullptr;
 	QMap<int, StageData> m_stageCache;
 	QMap<int, QString> m_classNameCache;
+
+	qf::qmlwidgets::framework::DockWidget *m_servicesDockWidget = nullptr;
 };
 
 }

@@ -1,15 +1,16 @@
-#ifndef CARDREADER_CHECKEDPUNCH_H
-#define CARDREADER_CHECKEDPUNCH_H
+#pragma once
 
-#include "../cardreaderpluginglobal.h"
+#include "../quickeventcoreglobal.h"
 
 #include <qf/core/utils.h>
 
 #include <QVariantMap>
 
-namespace CardReader {
+namespace quickevent {
+namespace core {
+namespace si {
 
-class CARDREADERPLUGIN_DECL_EXPORT CheckedPunch : public QVariantMap
+class QUICKEVENTCORE_DECL_EXPORT CheckedPunch : public QVariantMap
 {
 	QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	//QF_VARIANTMAP_FIELD2(int, p, setP, osition, 0)
@@ -19,6 +20,5 @@ public:
 	CheckedPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 };
 
-} // namespace CardReader
+}}}
 
-#endif // CARDREADER_CHECKEDPUNCH_H

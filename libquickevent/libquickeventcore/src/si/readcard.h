@@ -1,7 +1,6 @@
-#ifndef CARDREADER_READCARD_H
-#define CARDREADER_READCARD_H
+#pragma once
 
-#include "../cardreaderpluginglobal.h"
+#include "../quickeventcoreglobal.h"
 
 #include <qf/core/utils.h>
 
@@ -11,9 +10,11 @@ class QSqlRecord;
 class SIMessageCardReadOut;
 class SIMessageTransmitPunch;
 
-namespace CardReader {
+namespace quickevent {
+namespace core {
+namespace si {
 
-class CARDREADERPLUGIN_DECL_EXPORT ReadPunch : public QVariantMap
+class QUICKEVENTCORE_DECL_EXPORT ReadPunch : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
@@ -31,7 +32,7 @@ public:
 	QString toJsonArrayString() const;
 };
 
-class CARDREADERPLUGIN_DECL_EXPORT ReadCard : public QVariantMap
+class QUICKEVENTCORE_DECL_EXPORT ReadCard : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
@@ -56,6 +57,5 @@ public:
 	QString toString() const;
 };
 
-} // namespace CardReader
+}}}
 
-#endif // CARDREADER_READCARD_H

@@ -1,8 +1,10 @@
 #include "checkedcard.h"
 
-#include <quickevent/core/og/timems.h>
+#include "../og/timems.h"
 
-using namespace CardReader;
+namespace quickevent {
+namespace core {
+namespace si {
 
 CheckedCard::CheckedCard(const QVariantMap &data)
 	: QVariantMap(data)
@@ -52,3 +54,5 @@ QString CheckedCard::toString() const
 			.arg(punch_lst.join(", "));
 	return ret;
 }
+
+}}}

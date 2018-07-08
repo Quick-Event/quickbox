@@ -1,6 +1,6 @@
 #include "readcard.h"
 
-#include <quickevent/core/og/timems.h>
+#include "../og/timems.h"
 
 #include <siut/simessage.h>
 
@@ -9,7 +9,9 @@
 #include <QSqlRecord>
 #include <QJsonDocument>
 
-namespace CardReader {
+namespace quickevent {
+namespace core {
+namespace si {
 
 ReadPunch::ReadPunch(const QVariantList &var_list)
 {
@@ -117,4 +119,4 @@ QString ReadCard::toString() const
 	return ret;
 }
 
-}
+}}}

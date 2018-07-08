@@ -4,8 +4,10 @@
 
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
-#include <CardReader/checkedcard.h>
-#include <CardReader/readcard.h>
+
+#include <quickevent/core/si/readcard.h>
+#include <quickevent/core/si/checkedcard.h>
+
 
 #include <qf/core/utils/settings.h>
 #include <qf/core/utils/treetable.h>
@@ -115,7 +117,7 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 {
 	qfLogFuncFrame() << card_id;
 	QVariantMap ret;
-	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
+	quickevent::core::si::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
 	{
 		qfu::TreeTable tt;
 		tt.appendColumn("position", QVariant::Int);
@@ -136,7 +138,7 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 		start_time_ms *= 1000;
 		int prev_stp_time_ms = 0;
 		for(auto v : read_card.punches()) {
-			CardReader::ReadPunch punch(v.toMap());
+			quickevent::core::si::ReadPunch punch(v.toMap());
 			int punch_time_ms = punch.time() * 1000 + punch.msec();
 			int stp_time_ms = quickevent::core::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
 			qfu::TreeTableRow ttr = tt.appendRow();
@@ -185,8 +187,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	qfLogFuncFrame() << card_id;
 	QF_TIME_SCOPE("receiptTablesData()");
 	QVariantMap ret;
-	CardReader::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
-	CardReader::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
+	quickevent::core::si::ReadCard read_card = cardReaderPlugin()->readCard(card_id);
+	quickevent::core::si::CheckedCard checked_card = cardReaderPlugin()->checkCard(read_card);
 	int run_id = checked_card.runId();
 	bool is_card_lent = cardReaderPlugin()->isCardLent(card_id, read_card.finishTime(), run_id);
 	int current_stage_id = eventPlugin()->stageIdForRun(run_id);
@@ -312,7 +314,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.setValue("isOk", checked_card.isOk());
 		int position = 0;
 		for(auto v : checked_card.punches()) {
-			CardReader::CheckedPunch punch(v.toMap());
+			quickevent::core::si::CheckedPunch punch(v.toMap());
 			qfu::TreeTableRow ttr = tt.appendRow();
 			++position;
 			int code = punch.code();

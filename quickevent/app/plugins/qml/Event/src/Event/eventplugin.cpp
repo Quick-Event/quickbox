@@ -6,8 +6,12 @@
 #include "stagedocument.h"
 #include "stagewidget.h"
 
+#include "../services/serviceswidget.h"
+#include "../services/emmaclient.h"
+
 #include <quickevent/core/og/timems.h>
 
+#include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -88,6 +92,7 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
+const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
 
@@ -333,6 +338,22 @@ void EventPlugin::onInstalled()
 		});
 	}
 	fwk->menuBar()->actionForPath("view/toolbar")->addActionInto(tb->toggleViewAction());
+
+	services::EmmaClient *emma_client = new services::EmmaClient(this);
+	services::Service::addService(emma_client);
+	{
+		m_servicesDockWidget = new qff::DockWidget(nullptr);
+		m_servicesDockWidget->setObjectName("servicesDockWidget");
+		m_servicesDockWidget->setWindowTitle(tr("Services"));
+		fwk->addDockWidget(Qt::RightDockWidgetArea, m_servicesDockWidget);
+		m_servicesDockWidget->hide();
+		connect(m_servicesDockWidget, &qff::DockWidget::visibilityChanged, this, &EventPlugin::onServiceDockVisibleChanged);
+
+		auto *a = m_servicesDockWidget->toggleViewAction();
+		//a->setCheckable(true);
+		//a->setShortcut(QKeySequence("ctrl+shift+R"));
+		fwk->menuBar()->actionForPath("view")->addActionInto(a);
+	}
 }
 
 void EventPlugin::onCbxStageActivated(int ix)
@@ -590,7 +611,7 @@ void EventPlugin::connectToSqlServer()
 				qfInfo().nospace() << "connecting to: " << db.userName() << "@" << db.hostName() << ":" << db.port();
 				connect_ok = db.open();
 				if(connect_ok) {
-					bool ok = connect(db.driver(), SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource,QVariant)));
+					bool ok = connect(db.driver(), SIGNAL(notification(QString, QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource, QVariant)));
 					if(ok)
 						ok = db.driver()->subscribeToNotification(DBEVENT_NOTIFY_NAME);
 					if(!ok)
@@ -1147,6 +1168,15 @@ void EventPlugin::importEvent_qbe()
 	}
 	if(qfd::MessageBox::askYesNo(fwk, tr("Open imported event '%1'?").arg(event_name))) {
 		openEvent(event_name);
+	}
+}
+
+void EventPlugin::onServiceDockVisibleChanged(bool on)
+{
+	if(on && !m_servicesDockWidget->widget()) {
+		auto *rw = new services::ServicesWidget();
+		m_servicesDockWidget->setWidget(rw);
+		rw->reload();
 	}
 }
 

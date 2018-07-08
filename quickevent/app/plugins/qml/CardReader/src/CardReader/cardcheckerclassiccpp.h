@@ -13,7 +13,7 @@ private:
 public:
 	CardCheckerClassicCpp(QObject *parent = 0);
 
-	CheckedCard checkCard(const ReadCard &read_card) Q_DECL_OVERRIDE;
+	quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card) Q_DECL_OVERRIDE;
 };
 
 } // namespace CardReader

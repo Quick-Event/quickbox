@@ -1,6 +1,4 @@
 #include "cardreaderplugin.h"
-#include "readcard.h"
-#include "checkedcard.h"
 #include "cardchecker.h"
 #include "../cardreaderpartwidget.h"
 
@@ -8,6 +6,8 @@
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/si/checkedcard.h>
+#include <quickevent/core/si/readcard.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -181,42 +181,42 @@ bool CardReaderPlugin::isCardLent(int si_id, int si_finish_time, int run_id)
 	return (card_lent && !card_returned);
 }
 
-ReadCard CardReaderPlugin::readCard(int card_id)
+quickevent::core::si::ReadCard CardReaderPlugin::readCard(int card_id)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
 	qf::core::sql::Query q;
 	if(q.exec("SELECT * FROM cards WHERE id=" QF_IARG(card_id))) {
 		if(q.next()) {
-			ReadCard rc(q.record());
+			quickevent::core::si::ReadCard rc(q.record());
 			return rc;
 		}
 	}
 	qfWarning() << "Cannot find card record for id:" << card_id;
-	return ReadCard();
+	return quickevent::core::si::ReadCard();
 }
 
-CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
+quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
 {
 	qfLogFuncFrame() << "run id:" << run_id << "card id:" << card_id;
-	ReadCard rc = readCard(card_id);
+	quickevent::core::si::ReadCard rc = readCard(card_id);
 	if(!rc.isEmpty()) {
 		if(run_id > 0)
 			rc.setRunId(run_id);
 		return checkCard(rc);
 	}
-	return CheckedCard();
+	return quickevent::core::si::CheckedCard();
 }
 
-CardReader::CheckedCard CardReaderPlugin::checkCard(const ReadCard &read_card)
+quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(const quickevent::core::si::ReadCard &read_card)
 {
 	qfLogFuncFrame();
 	QF_TIME_SCOPE("checkCard()");
 	//updateRunLapsSql(card, run_id);
 	CardReader::CardChecker *chk = currentCardChecker();
-	QF_ASSERT(chk != nullptr, "CardChecker is NULL", return CardReader::CheckedCard());
+	QF_ASSERT(chk != nullptr, "CardChecker is NULL", return quickevent::core::si::CheckedCard());
 	CardReader::CppCardChecker *cpp_chk = dynamic_cast<CardReader::CppCardChecker*>(chk);
 	if(cpp_chk) {
-		CheckedCard cc = cpp_chk->checkCard(read_card);
+		quickevent::core::si::CheckedCard cc = cpp_chk->checkCard(read_card);
 		return cc;
 	}
 	else {
@@ -227,19 +227,19 @@ CardReader::CheckedCard CardReaderPlugin::checkCard(const ReadCard &read_card)
 		QJSValue jsv = ret_val.value<QJSValue>();
 		QVariant v = jsv.toVariant();
 		QVariantMap m = v.toMap();
-		CardReader::CheckedCard cc(m);
+		quickevent::core::si::CheckedCard cc(m);
 		cc.setCardNumber(read_card.cardNumber());
 		//cc.setCardId(read_card.cardId());
 		return cc;
 	}
 }
 
-int CardReaderPlugin::saveCardToSql(const CardReader::ReadCard &read_card)
+int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_card)
 {
 	int ret = 0;
 	QStringList punches;
 	for(auto v : read_card.punches()) {
-		ReadPunch p(v.toMap());
+		quickevent::core::si::ReadPunch p(v.toMap());
 		punches << p.toJsonArrayString();
 	}
 	qf::core::sql::Query q;
@@ -310,7 +310,7 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 	return ret;
 }
 
-bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const CheckedCard &checked_card)
+bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card)
 {
 	try {
 		qf::core::sql::Transaction transaction;
@@ -324,7 +324,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const CheckedCard &checked
 	return false;
 }
 
-void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard &checked_card) throw(qf::core::Exception)
+void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) throw(qf::core::Exception)
 {
 	QF_TIME_SCOPE("updateCheckedCardValuesSql()");
 	int run_id = checked_card.runId();
@@ -342,7 +342,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const CardReader::CheckedCard 
 		int position = 0;
 		for(auto v : punch_list) {
 			position++;
-			CardReader::CheckedPunch cp(v.toMap());
+			quickevent::core::si::CheckedPunch cp(v.toMap());
 			//qfInfo() << run_id << position << cp;
 			if(cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
 				q.bindValue(QStringLiteral(":runId"), run_id);
@@ -414,7 +414,7 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		qfWarning() << "Cannot find runs id for card id:" << card_id;
 		return false;
 	}
-	CardReader::CheckedCard checked_card = checkCard(card_id, run_id);
+	quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
 	//qfInfo() << Q_FUNC_INFO << checked_card.isMisPunch() << checked_card.isOk();
 	if(updateCheckedCardValuesSqlSafe(checked_card))
 		if(saveCardAssignedRunnerIdSql(card_id, run_id))

@@ -4,8 +4,6 @@
 #include "cardreaderpartwidget.h"
 #include "CardReader/cardreaderplugin.h"
 #include "CardReader/cardchecker.h"
-#include "CardReader/readcard.h"
-#include "CardReader/checkedcard.h"
 
 #include <Event/eventplugin.h>
 #include <Runs/findrunnerwidget.h>
@@ -16,6 +14,8 @@
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/og/sqltablemodel.h>
 #include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/si/readcard.h>
+#include <quickevent/core/si/checkedcard.h>
 #include <quickevent/core/si/siid.h>
 
 #include <siut/sidevicedriver.h>
@@ -335,8 +335,9 @@ void CardReaderWidget::reload()
 void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
 {
 	Q_UNUSED(connection_id)
-	int card_id = data.toInt();
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
+		quickevent::core::si::ReadCard read_card(data.toMap());
+		int card_id = read_card.cardNumber();
 		// TODO: only if widget is visible (plugin window active)
 		if(m_cbxAutoRefresh->isChecked())
 			updateTableView(card_id);
@@ -511,12 +512,12 @@ void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
 			}
 		}
 	}
-	CardReader::ReadCard read_card(card);
+	quickevent::core::si::ReadCard read_card(card);
 	read_card.setRunId(run_id);
 	processReadCardSafe(read_card);
 }
 
-bool CardReaderWidget::processReadCardSafe(const CardReader::ReadCard &read_card)
+bool CardReaderWidget::processReadCardSafe(const quickevent::core::si::ReadCard &read_card)
 {
 	try {
 		qf::core::sql::Transaction transaction;
@@ -530,16 +531,16 @@ bool CardReaderWidget::processReadCardSafe(const CardReader::ReadCard &read_card
 	return false;
 }
 
-void CardReaderWidget::processReadCard(const CardReader::ReadCard &read_card) throw(qf::core::Exception)
+void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception)
 {
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(read_card.runId()) {
 		thisPlugin()->saveCardAssignedRunnerIdSql(card_id, read_card.runId());
-		CardReader::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
+		quickevent::core::si::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
 		thisPlugin()->updateCheckedCardValuesSql(checked_card);
 	}
 	if(card_id > 0) {
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, read_card, true);
 	}
 }
 
@@ -635,7 +636,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		dlg.accept();
 		int run_id = values.value("runid").toInt();
 		if(run_id) {
-			CardReader::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
+			quickevent::core::si::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
 			if(thisPlugin()->updateCheckedCardValuesSqlSafe(checked_card)) {
 				if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
 					this->ui->tblCards->reloadRow();
@@ -778,7 +779,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			}
 			QF_ASSERT_EX(run_id > 0, tr("Cannot find runs record for SI %1!").arg(si_id));
 			QF_ASSERT_EX(!class_name.isEmpty(), tr("Cannot find class for SI %1!").arg(si_id));
-			CardReader::ReadCard read_card;
+			quickevent::core::si::ReadCard read_card;
 			read_card.setCardNumber(si_id);
 			read_card.setRunId(run_id);
 			read_card.setStartTime(msecToSISec(start_time));
@@ -798,12 +799,12 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 				lap_str.replace(',', '.');
 				int lap_time = obStringTosec(lap_str);
 				stp_time += lap_time;
-				CardReader::ReadPunch punch;
+				quickevent::core::si::ReadPunch punch;
 				punch.setCode(codes[i]);
 				punch.setTime(msecToSISec(stp_time));
 				punches << punch;
 			}
-			read_card.setFinishTime(CardReader::ReadPunch(punches.takeLast().toMap()).time());
+			read_card.setFinishTime(quickevent::core::si::ReadPunch(punches.takeLast().toMap()).time());
 			read_card.setPunches(punches);
 			qfDebug() << read_card.toString();
 			processReadCard(read_card);

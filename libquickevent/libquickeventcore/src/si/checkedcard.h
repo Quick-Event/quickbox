@@ -1,16 +1,17 @@
-#ifndef CARDREADER_CARD_H
-#define CARDREADER_CARD_H
+#pragma once
 
-#include "../cardreaderpluginglobal.h"
+#include "../quickeventcoreglobal.h"
 #include "checkedpunch.h"
 
 #include <qf/core/utils.h>
 
 #include <QVariantMap>
 
-namespace CardReader {
+namespace quickevent {
+namespace core {
+namespace si {
 
-class CARDREADERPLUGIN_DECL_EXPORT CheckedCard : public QVariantMap
+class QUICKEVENTCORE_DECL_EXPORT CheckedCard : public QVariantMap
 {
 private:
 	typedef QVariantMap Super;
@@ -44,6 +45,5 @@ public:
 	bool isOk() const {return !isBadCheck() && !isMisPunch();}
 };
 
-}
+}}}
 
-#endif

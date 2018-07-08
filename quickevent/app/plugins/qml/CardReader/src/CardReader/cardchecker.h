@@ -1,21 +1,21 @@
 #ifndef CARDREADER_CARDCHECKER_H
 #define CARDREADER_CARDCHECKER_H
 
-#include "checkedcard.h"
+#include <quickevent/core/si/checkedcard.h>
 
 #include <qf/core/utils.h>
 
 #include <QObject>
 #include <QVariant>
 
-namespace CardReader {
+namespace quickevent { namespace core { namespace si { class ReadCard; }}}
 
-class ReadCard;
+namespace CardReader {
 
 class CppCardChecker
 {
 public:
-	virtual CheckedCard checkCard(const ReadCard &read_card) {Q_UNUSED(read_card) return CheckedCard();}
+	virtual quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card) {Q_UNUSED(read_card) return quickevent::core::si::CheckedCard();}
 };
 
 class CardChecker : public QObject

@@ -23,12 +23,11 @@ class Plugin;
 namespace siut { class DeviceDriver; }
 
 namespace quickevent { namespace gui { namespace audio { class Player; }}}
+namespace quickevent { namespace core { namespace si { class ReadCard; class CheckedCard; }}}
 
 namespace CardReader {
 class CardReaderPlugin;
 class CardChecker;
-class ReadCard;
-class CheckedCard;
 }
 
 namespace Event { class EventPlugin; }
@@ -79,8 +78,8 @@ private:
 	void processSICard(const SIMessageCardReadOut &card);
 	void processSIPunch(const SIMessageTransmitPunch &rec);
 
-	bool processReadCardSafe(const CardReader::ReadCard &read_card);
-	void processReadCard(const CardReader::ReadCard &read_card) throw(qf::core::Exception);
+	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
+	void processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception);
 
 	void updateTableView(int card_id);
 

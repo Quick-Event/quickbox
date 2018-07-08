@@ -1,7 +1,7 @@
 #include "cardcheckerclassiccpp.h"
-#include "readcard.h"
 
 #include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/si/readcard.h>
 
 #include <qf/core/log.h>
 
@@ -13,7 +13,7 @@ CardCheckerClassicCpp::CardCheckerClassicCpp(QObject *parent)
 	setCaption(tr("Classic C++ (experimental)"));
 }
 
-CheckedCard CardCheckerClassicCpp::checkCard(const ReadCard &read_card)
+quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickevent::core::si::ReadCard &read_card)
 {
 	qfDebug() << "read card:" << read_card.toString();
 
@@ -22,7 +22,7 @@ CheckedCard CardCheckerClassicCpp::checkCard(const ReadCard &read_card)
 	if(run_id > 0)
 		course = courseCodesForRunId(run_id);
 
-	CheckedCard checked_card;
+	quickevent::core::si::CheckedCard checked_card;
 	if(!course.isEmpty())
 		return checked_card;
 
@@ -33,9 +33,9 @@ CheckedCard CardCheckerClassicCpp::checkCard(const ReadCard &read_card)
 	int stage_id = stageIdForRun(run_id);
 
 	bool error_mis_punch = false;
-	QList<CheckedPunch> checked_punches;
+	QList<quickevent::core::si::CheckedPunch> checked_punches;
 	QVariantList course_codes = course.value(QStringLiteral("codes")).toList();
-	QList<ReadPunch> read_punches = read_card.punchList();
+	QList<quickevent::core::si::ReadPunch> read_punches = read_card.punchList();
 
 	//........... normalize times .....................
 	// checked card times are in msec relative to run start time
@@ -77,12 +77,12 @@ CheckedCard CardCheckerClassicCpp::checkCard(const ReadCard &read_card)
 	int read_punch_check_ix = 0;
 	for(int j=0; j<course_codes.length(); j++) {
 		QVariantMap course_code = course_codes[j].toMap();
-		CheckedPunch checked_punch;
+		quickevent::core::si::CheckedPunch checked_punch;
 		checked_punch.setCode(course_code.value(QStringLiteral("code")).toInt());
 		checked_punches << checked_punch;
 		int k;
 		for(k=read_punch_check_ix; k<read_punches.length(); k++) { //scan card
-			const ReadPunch &read_punch = read_punches[k];
+			const quickevent::core::si::ReadPunch &read_punch = read_punches[k];
 			int code = course_code.value(QStringLiteral("code")).toInt();
 			int alt_code = course_code.value(QStringLiteral("altcode")).toInt();
 			qfDebug() << j << k << "looking for:" << checked_punch.code() << "on card:" << read_punch.code() << "vs. code:" << code << "alt:" << alt_code;
@@ -109,14 +109,14 @@ CheckedCard CardCheckerClassicCpp::checkCard(const ReadCard &read_card)
 	}
 	checked_card.setMisPunch(error_mis_punch);
 
-	CheckedPunch finish_punch;
+	quickevent::core::si::CheckedPunch finish_punch;
 	finish_punch.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
 	finish_punch.setStpTimeMs(msecIntervalAM(checked_card.startTimeMs(), checked_card.finishTimeMs()));
 	checked_punches << finish_punch;
 
 	int prev_stp_time_ms = 0;
 	for(int k=0; k<checked_punches.length(); k++) {
-		CheckedPunch &checked_punch = checked_punches[k];
+		quickevent::core::si::CheckedPunch &checked_punch = checked_punches[k];
 		if(checked_punch.stpTimeMs()) {
 			if(prev_stp_time_ms > 0)
 				checked_punch.setLapTimeMs(checked_punch.stpTimeMs() - prev_stp_time_ms);
