@@ -14,6 +14,7 @@
 
 #include <QDir>
 #include <QFile>
+#include <QProcess>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTimer>
@@ -79,6 +80,29 @@ void ResultsExporter::onExportTimerTimeOut()
 	quickevent::core::exporters::StageResultsHtmlExporter exp;
 	exp.setOutDir(exportDir());
 	exp.generateHtml();
+
+	QString cmd = whenFinishedRunCmd();
+	if(!cmd.isEmpty()) {
+		qfInfo() << "Starting process:" << cmd;
+		QProcess *proc = new QProcess();
+		connect(proc, &QProcess::readyReadStandardOutput, [proc]() {
+			QByteArray ba = proc->readAllStandardOutput();
+			qfInfo().noquote() << "PROC stdout:" << ba;
+		});
+		connect(proc, &QProcess::readyReadStandardError, [proc]() {
+			QByteArray ba = proc->readAllStandardError();
+			qfWarning().noquote() << "PROC stderr:" << ba;
+		});
+		connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [proc](int exit_code, QProcess::ExitStatus exit_status) {
+			if(exit_status == QProcess::ExitStatus::CrashExit)
+				qfError() << "PROC crashed";
+			else
+				qfInfo() << "PROC finished with exit code:" << exit_code;
+			proc->deleteLater();
+		});
+
+		proc->start(cmd);
+	}
 }
 
 qf::qmlwidgets::framework::DialogWidget *ResultsExporter::createDetailWidget()
