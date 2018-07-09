@@ -1,6 +1,8 @@
 #ifndef SERVICES_SERVICE_H
 #define SERVICES_SERVICE_H
 
+#include "../eventpluginglobal.h"
+
 #include <qf/core/utils.h>
 
 #include <QtCore/QObject>
@@ -10,7 +12,7 @@ namespace Event { class EventPlugin; }
 
 namespace services {
 
-class Service : public QObject
+class EVENTPLUGIN_DECL_EXPORT Service : public QObject
 {
 	Q_OBJECT
 

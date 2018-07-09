@@ -1,6 +1,7 @@
 message(including $$PWD)
 
 include($$PWD/Runs/Runs.pri)
+include($$PWD/services/services.pri)
 
 HEADERS += \
     $$PWD/runspluginglobal.h \
