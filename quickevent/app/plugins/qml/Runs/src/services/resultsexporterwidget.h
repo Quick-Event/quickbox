@@ -19,7 +19,7 @@ public:
 	explicit ResultsExporterWidget(QWidget *parent = 0);
 	~ResultsExporterWidget();
 private:
-	void onBtChooseFileClicked();
+	void onBtChooseExportDir();
 	bool acceptDialogDone(int result) override;
 	ResultsExporter* service();
 private:

@@ -18,11 +18,13 @@ DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
 INCLUDEPATH += \
-	$$PWD/../libqf/libqfcore/include
-#	$$PWD/../quickevent/lib/include
+	$$PWD/../libqf/libqfcore/include \
+	$$PWD/../libquickevent/libquickeventcore/include \
 
 LIBS +=      \
 	-lqfcore  \
+	-lsiut  \
+	-lquickeventcore  \
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \

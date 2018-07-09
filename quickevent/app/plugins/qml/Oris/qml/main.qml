@@ -110,7 +110,7 @@ Oris {
 
 		var refreshActions2 = function(event_name)
 		{
-			console.warn("refresh actions event open:", event_name);
+			//console.warn("refresh actions event open:", event_name);
 			actSyncCurrentEventEntries.enabled = event_name;
 		}
 		FrameWork.plugin("Event").eventOpenChanged.connect(refreshActions2);

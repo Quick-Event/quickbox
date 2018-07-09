@@ -34,16 +34,8 @@ public:
 	static Application *instance();
 	AppCliOptions* cliOptions() {return m_cliOptions;}
 	qf::core::sql::Connection sqlConnetion();
-	qf::core::sql::Query execSql(const QString &query_str);
-	//QVariantMap sqlRecordToMap(const QSqlRecord &rec);
-
-	QVariantMap eventInfo();
 private:
 	void generateHtml();
-	void exportClassesResults(const QDir &html_dir, int stage_no);
-	void exportClassResults(const QDir &html_dir, int stage_no, int class_id, const QVariantList &class_links);
-	void exportClassStartList(const QDir &html_dir, int stage_no, int class_id, const QVariantList &class_links);
-
 private:
 	AppCliOptions *m_cliOptions;
 };

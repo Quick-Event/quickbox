@@ -15,13 +15,14 @@ namespace qfd = qf::qmlwidgets::dialogs;
 
 namespace services {
 
-static const char *SETTING_KEY_IS_RUNNING = "isRunning";
+static const char *KEY_IS_RUNNING = "isRunning";
 
 QList<Service*> Service::m_services;
 
 Service::Service(const QString &name, QObject *parent)
 	: QObject(parent)
 {
+	//qfDebug() << name;
 	setObjectName(name);
 	setStatus(Status::Stopped);
 	connect(eventPlugin(), &Event::EventPlugin::eventOpened, this, &Service::onEventOpen, Qt::QueuedConnection);
@@ -32,7 +33,7 @@ Service::~Service()
 	bool is_running = status() == Status::Running;
 	QSettings settings;
 	settings.beginGroup(settingsGroup());
-	settings.setValue(SETTING_KEY_IS_RUNNING, is_running);
+	settings.setValue(KEY_IS_RUNNING, is_running);
 }
 
 Event::EventPlugin *Service::eventPlugin()
@@ -45,7 +46,7 @@ Event::EventPlugin *Service::eventPlugin()
 
 QString Service::settingsGroup() const
 {
-	static QString s = QStringLiteral("services/") + name();
+	QString s = QStringLiteral("services/") + name();
 	return s;
 }
 
@@ -54,7 +55,8 @@ void Service::onEventOpen()
 	loadSettings();
 	QSettings settings;
 	settings.beginGroup(settingsGroup());
-	bool is_running = settings.value(SETTING_KEY_IS_RUNNING).toBool();
+	bool is_running = settings.value(KEY_IS_RUNNING).toBool();
+	qfDebug() << this << settingsGroup() << KEY_IS_RUNNING << is_running;
 	if(is_running) {
 		run();
 	}

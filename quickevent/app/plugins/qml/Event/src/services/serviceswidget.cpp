@@ -23,6 +23,7 @@ void ServicesWidget::reload()
 
 	QVBoxLayout *ly2 = new QVBoxLayout(m_centralWidget);
 	ly2->setMargin(0);
+	ly->setSpacing(0);
 
 	for (int i = 0; i < Service::serviceCount(); ++i) {
 		Service *svc = Service::serviceAt(i);

@@ -17,8 +17,7 @@
 
 namespace services {
 
-//const char *EmmaClient::SETTINGS_GROUP = "services/EmmaClient";
-const char *EmmaClient::SETTING_KEY_FILE_NAME = "fileName";
+static auto SETTING_KEY_FILE_NAME = QStringLiteral("fileName");
 
 EmmaClient::EmmaClient(QObject *parent)
 	: Super(EmmaClient::serviceName(), parent)
@@ -29,6 +28,14 @@ EmmaClient::EmmaClient(QObject *parent)
 QString EmmaClient::serviceName()
 {
 	return QStringLiteral("EmmaClient");
+}
+
+void EmmaClient::setFileName(const QString &fn)
+{
+	QSettings settings;
+	settings.beginGroup(settingsGroup());
+	settings.setValue(SETTING_KEY_FILE_NAME, fn);
+	m_fileName = fn;
 }
 
 void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
@@ -84,7 +91,7 @@ void EmmaClient::loadSettings()
 {
 	QSettings settings;
 	settings.beginGroup(settingsGroup());
-	m_fileName = settings.value(EmmaClient::SETTING_KEY_FILE_NAME).toString();
+	m_fileName = settings.value(SETTING_KEY_FILE_NAME).toString();
 	if(m_fileName.isEmpty()) {
 		m_fileName = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/FIN_LIVE.txt";
 	}

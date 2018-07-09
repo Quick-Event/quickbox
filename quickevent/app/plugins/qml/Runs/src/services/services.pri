@@ -1,10 +1,10 @@
 HEADERS += \
-    $$PWD/emmaclient.h \
-    $$PWD/emmaclientwidget.h
+    $$PWD/resultsexporter.h \
+    $$PWD/resultsexporterwidget.h
 
 SOURCES += \
-    $$PWD/emmaclient.cpp \
-    $$PWD/emmaclientwidget.cpp
+    $$PWD/resultsexporter.cpp \
+    $$PWD/resultsexporterwidget.cpp
 
 FORMS += \
-    $$PWD/emmaclientwidget.ui
+    $$PWD/resultsexporterwidget.ui

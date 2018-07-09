@@ -33,7 +33,7 @@ EmmaClientWidget::~EmmaClientWidget()
 
 void EmmaClientWidget::onBtChooseFileClicked()
 {
-	QString fn = QFileDialog::getOpenFileName(this, tr("Open Image"), ui->edFileName->text(), tr("Text Files (*.txt)"));
+	QString fn = QFileDialog::getOpenFileName(this, tr("Open File"), ui->edFileName->text(), tr("Text Files (*.txt)"));
 	if(!fn.isEmpty())
 		ui->edFileName->setText(fn);
 }
@@ -49,11 +49,9 @@ bool EmmaClientWidget::acceptDialogDone(int result)
 				return false;
 			}
 		}
-		Service *svc = service();
+		EmmaClient *svc = service();
 		if(svc) {
-			QSettings settings;
-			settings.beginGroup(svc->settingsGroup());
-			settings.setValue(EmmaClient::SETTING_KEY_FILE_NAME, fn);
+			svc->setFileName(fn);
 			svc->loadSettings();
 		}
 	}

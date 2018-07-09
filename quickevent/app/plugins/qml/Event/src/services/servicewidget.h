@@ -26,10 +26,11 @@ public:
 
 	Q_SIGNAL void setRunningRequest(bool play);
 private:
-	void onBtPlayToggled(bool on);
+	void onBtPlayClicked();
 	void showDetail();
 private:
 	Ui::ServiceWidget *ui;
+	bool m_isRunning = false;
 };
 
 

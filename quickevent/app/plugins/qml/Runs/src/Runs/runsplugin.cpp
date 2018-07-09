@@ -5,6 +5,7 @@
 #include "../runstabledialogwidget.h"
 #include "../eventstatisticswidget.h"
 #include "../printawardsoptionsdialogwidget.h"
+#include "../services/resultsexporter.h"
 
 #include <Event/eventplugin.h>
 
@@ -130,6 +131,9 @@ void RunsPlugin::onInstalled()
 		a->setShortcut(QKeySequence("ctrl+shift+E"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
+
+	services::ResultsExporter *results_exporter = new services::ResultsExporter(this);
+	services::Service::addService(results_exporter);
 
 	emit nativeInstalled();
 }
