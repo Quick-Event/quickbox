@@ -11,6 +11,9 @@ Oris {
 		OrisImporter {
 			id: orisImporter
 		}
+		TxtImporter {
+			id: txtImporter
+		}
 	}
 
 	property list<Action> actions: [
@@ -25,8 +28,17 @@ Oris {
 		Action {
 			id: actSyncCurrentEventEntries
 			text: qsTr('&Sync current event entries')
+			enabled: false
 			onTriggered: {
 				orisImporter.syncCurrentEventEntries()
+			}
+		},
+		Action {
+			id: actSyncRelaysEntriesOris
+			text: qsTr('&Sync relays entries')
+			enabled: false
+			onTriggered: {
+				orisImporter.syncRelaysEntries()
 			}
 		},
 		Action {
@@ -44,6 +56,27 @@ Oris {
 			onTriggered: {
 				orisImporter.importRegistrations();
 			}
+		},
+		Action {
+			id: actImportCompetitorsCSOS
+			text: qsTr('&Competitors CSOS')
+			onTriggered: {
+				txtImporter.importCompetitorsCSOS();
+			}
+		},
+		Action {
+			id: actImportCompetitorsCSV
+			text: qsTr('&Competitors CSV')
+			onTriggered: {
+				txtImporter.importCompetitorsCSV();
+			}
+		},
+		Action {
+			id: actImportRankingCsv
+			text: qsTr('&Ranking CSV (Oris format)')
+			onTriggered: {
+				txtImporter.importRankingCsv();
+			}
 		}
 	]
 
@@ -55,18 +88,32 @@ Oris {
 		act_import_oris.enabled = false;
 		act_import_oris.addActionInto(actImportEventOris);
 		act_import_oris.addActionInto(actSyncCurrentEventEntries);
+		//act_import_oris.addSeparatorInto();
+		//act_import_oris.addActionInto(actSyncRelaysEntriesOris);
 		act_import_oris.addSeparatorInto();
 		act_import_oris.addActionInto(actImportClubsOris);
 		act_import_oris.addActionInto(actImportRegistrationsOris);
-		//act_import_oris.addActionInto(actTest)
-		//quit.addMenuBefore('importEvent', qsTr('&Import event'));
-		//quit.addSeparatorBefore();
-		//FrameWork.menuBar.actionForPath('file/importEvent').addActionInto(actImportEventOris);
 
-		var refreshActions = function(is_db_open) {
+		var act_import_txt = FrameWork.menuBar.actionForPath('file/import/txt');
+		act_import_txt.text = qsTr("&Text file");
+		act_import_txt.enabled = false;
+		act_import_txt.addActionInto(actImportCompetitorsCSOS);
+		act_import_txt.addActionInto(actImportCompetitorsCSV);
+		act_import_txt.addActionInto(actImportRankingCsv);
+
+		var refreshActions1 = function(is_db_open)
+		{
 			act_import_oris.enabled = is_db_open;
+			act_import_txt.enabled = is_db_open;
 		}
-		FrameWork.plugin("Event").dbOpenChanged.connect(refreshActions);
+		FrameWork.plugin("Event").sqlServerConnectedChanged.connect(refreshActions1);
+
+		var refreshActions2 = function(event_name)
+		{
+			//console.warn("refresh actions event open:", event_name);
+			actSyncCurrentEventEntries.enabled = event_name;
+		}
+		FrameWork.plugin("Event").eventOpenChanged.connect(refreshActions2);
 	}
 
 }

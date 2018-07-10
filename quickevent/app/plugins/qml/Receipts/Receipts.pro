@@ -24,8 +24,9 @@ include (src/src.pri)
 RESOURCES += \
     $${PLUGIN_NAME}.qrc \
 
-DISTFILES += \
-    qml/reports/receiptClassic.qml \
+OTHER_FILES += \
+    qml/reports/receipts/Classic.qml \
+    qml/reports/receipts/LoteryTicket.qml \
     qml/reports/sicard.qml \
 
 TRANSLATIONS += \

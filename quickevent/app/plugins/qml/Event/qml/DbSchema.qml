@@ -34,8 +34,11 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startDateTime'; type: DateTime {} },
-				//Field { name: 'startTime'; type: Time {} },
-				//Field { name: 'startDate'; type: Date {} },
+				Field { name: 'useAllMaps'
+					type: Boolean {}
+					defaultValue: false
+					notNull: true
+				},
 				Field { name: 'drawingConfig'; type: String {} }
 			]
 			indexes: [
@@ -51,6 +54,9 @@ Schema {
 				Field { name: 'climb'; type: Int { } },
 				Field { name: 'note'; type: String { } }
 			]
+			indexes: [
+				Index {fields: ['name']; unique: false } // for relays
+			]
 		},
 		Table { name: 'codes'
 			fields: [
@@ -64,7 +70,7 @@ Schema {
 				},
 				Field { name: 'radio'; 
 					type: Boolean { } 
-					defaultValue: false;
+					defaultValue: false
 					notNull: true
 				},
 				Field { name: 'note'; type: String { } }
@@ -104,6 +110,7 @@ Schema {
 				Field { name: 'classId'; type: Int { } },
 				Field { name: 'stageId'; type: Int { } },
 				Field { name: 'courseId'; type: Int { } },
+				Field { name: 'legCount'; type: Int { } },
 				Field { name: 'startSlotIndex'; type: Int { }
 					defaultValue: -1;
 					notNull: true
@@ -123,12 +130,17 @@ Schema {
 				Field { name: 'resultsCount'; type: Int { }
 					comment: 'number of finished competitors, when the results were printed'
 				},
+				Field { name: 'resultsPrintTS'; type: DateTime { }
+					comment: 'when results for this class were printed last time'
+				},
 				Field { name: 'lastStartTimeMin'; type: Int { } },
 				Field { name: 'drawLock'; type: Boolean { }
 					defaultValue: false
 					notNull: true
 					comment: 'The draw of this class is prohibited'
-				}
+				},
+				Field { name: 'relayStartNumber'; type: Int { } },
+				Field { name: 'relayLegCount'; type: Int { } }
 			]
 			indexes: [
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
@@ -149,8 +161,8 @@ Schema {
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } },
-				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
+				Field { name: 'note'; type: String { } },
 				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
@@ -163,8 +175,15 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'stageId'; type: Int {} },
-				//Field { name: 'cardId'; type: Int {} },
+				Field { name: 'stageId'; type: Int {}
+					defaultValue: 1;
+					notNull: true
+				},
+				Field { name: 'leg'; type: Int {}
+					//defaultValue: 0;
+					//notNull: true
+				},
+				Field { name: 'relayId'; type: Int {} },
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -172,14 +191,13 @@ Schema {
 					comment: 'in miliseconds'
 				},
 				Field { name: 'timeMs'; type: Int {}
-					comment: 'in miliseconds'
+					comment: 'in miliseconds since event run'
 				},
-				Field { name: 'offRace'; type: Boolean { }
-					defaultValue: false;
-					notNull: true
-					comment: "Competitor does not run in this stage"
+				Field { name: 'isRunning'; type: Boolean { }
+					defaultValue: true;
+					comment: "Competitor is running in this stage"
 				},
-				Field { name: 'notCompeting'; type: Boolean { }
+				Field { name: 'notCompeting'; type: Boolean { } // should be changed to notCompetiting in some future version
 					defaultValue: false;
 					notNull: true
 					comment: "Competitor does run in this stage but not competing"
@@ -203,15 +221,8 @@ Schema {
 				Field { name: 'cardReturned'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-				}
-				/*,
-				Field { name: 'status';
-					type: String {}
-					defaultValue: 'OFF';
-					notNull: true
-					comment: "referencing enumz.runs.status"
-				}
-				*/
+				},
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {
@@ -224,8 +235,24 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId, competitorId']; unique: true },
-				Index {fields: ['stageId, siId']; unique: true } // cannot be unique since Oris import sometimes contains duplicate SI
+				Index {fields: ['relayId', 'leg']; unique: false },
+				Index {fields: ['stageId', 'siId']; unique: false }
+			]
+		},
+		Table { name: 'relays'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'number'; type: Int {} },
+				Field { name: 'classId'; type: Int {} },
+				Field { name: 'club'; type: String {} },
+				Field { name: 'name'; type: String {} },
+				Field { name: 'note'; type: String {} },
+				Field { name: 'importId'; type: Int {} }
+			]
+			indexes: [
+				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
+				Index {fields: ['club', 'name'] },
+				Index {fields: ['number'] }
 			]
 		},
 		Table { name: 'runlaps'
@@ -326,12 +353,17 @@ Schema {
 					}
 					comment: 'JSON of format [[code, time, msec, day_of_week, week_cnt], ...]}'
 				},
+				Field { name: 'readerConnectionId'
+					type: Int { }
+					comment: 'connection id of QuickEvent instance which has read this card'
+				},
 				Field { name: 'printerConnectionId'
 					type: Int { }
 					comment: 'connection id of QuickEvent instance which has printed this strip'
 				}
   			]
 			indexes: [
+				Index { fields: ['readerConnectionId']; unique: false },
 				Index { fields: ['printerConnectionId']; unique: false },
 				Index { fields: ['stageId', 'siId']; unique: false },
 				Index { fields: ['runId']; unique: false }
@@ -342,22 +374,41 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'code'; type: Int { } },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'punchTime'; type: Int {}
+				Field { name: 'time'; type: Int {}
 					comment: 'seconds in range 0 - 12 hours'
 				},
-				Field { name: 'punchMs'; type: Int {}
+				Field { name: 'msec'; type: Int {}
 					comment: 'msec part od punch time'
 				},
 				Field { name: 'stageId'; type: Int { }
 					comment: 'We cannot take stageId from runId linked table, because we need select punches for stage even without runId assigned'
 				},
 				Field { name: 'runId'; type: Int {} },
-				Field { name: 'punchTimeMs'; type: Int {}
-					comment: 'in miliseconds'
+				Field { name: 'timeMs'; type: Int {}
+					comment: 'in miliseconds since event start'
+				},
+				Field { name: 'runTimeMs'; type: Int {}
+					comment: 'in miliseconds since runner event start'
+				},
+				Field { name: 'marking'; type: String {}
+					notNull: true
+					defaultValue: 'race';
+					comment: 'possible values: race | entries'
 				}
 			]
 			indexes: [
+				Index {fields: ['marking', 'stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
+			]
+		},
+		Table { name: 'lentcards'
+			fields: [
+				Field { name: 'siId'; type: Int { primaryKey: true } },
+				Field { name: 'ignored'; type: Boolean { }
+					notNull: true
+					defaultValue: false
+				},
+				Field { name: 'note'; type: String { } }
 			]
 		}
 	]
@@ -365,11 +416,10 @@ Schema {
 		/*
 		Insert {
 			table: enumz
-			fields: ['groupName', 'groupId', 'pos']
+			fields: ['groupName', 'groupId', 'pos', 'caption']
 			rows: [
-				['runs.status', 'OFF', 1],
-				['runs.status', 'START', 2],
-				['runs.status', 'FINISH', 3]
+				['cardReader.punchMarking', 'race', 1, qsTr('Race')],
+				['cardReader.punchMarking', 'entries', 2, qsTr('Entries')]
 			]
 		},
 		*/

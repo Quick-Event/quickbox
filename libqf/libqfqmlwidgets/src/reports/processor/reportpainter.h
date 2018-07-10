@@ -68,7 +68,7 @@ public:
 	Qt::Alignment alignment() const {return (Qt::Alignment)f_layoutSettings.value(LayoutSetting::Alignment, (int)(Qt::AlignLeft | Qt::AlignTop)).toInt();}
 	void setAlignment(ReportItemFrame::HAlignment hal, ReportItemFrame::VAlignment val) {
 		int al = hal | val;
-		if(alignment() != al)
+		if((int)alignment() != al)
 			f_layoutSettings[LayoutSetting::Alignment] = al;
 	}
 	bool isSuppressPrintOut() {return f_layoutSettings.value(LayoutSetting::SuppressPrintOut).toBool();}
@@ -110,8 +110,8 @@ public:
 
 	void alignChildren();
 
-	/// popis funkce popsan u atributu expandChildrenFrames v Report.rnc
-	void expandChildrenFramesRecursively();
+	/// popis funkce popsan u atributu expandChildFrames v Report.rnc
+	void expandChildFrames();
 	/// rekurzivne projde vsechny deti natahovaci ve smeru vertikalnim a nastavi jim rozmer podle sve velikosti
 	void expandChildVerticalSpringFrames();
 	bool hasSpringChildrenFramesInVerticalLayout();

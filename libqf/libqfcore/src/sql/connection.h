@@ -46,6 +46,7 @@ public:
 	void close();
 
 	static Connection forName(const QString &connection_name = QString());
+	static Connection defaultConnection() {return forName(QString());}
 
 	int connectionId();
 

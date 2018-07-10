@@ -2,7 +2,6 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
-//import "qrc:/quickevent/js/ogtime.js" as OGTime
 
 Report {
 	id: root
@@ -62,11 +61,25 @@ Report {
 					//keepAll: true
 					layout: Frame.LayoutVertical
 					//expandChildrenFrames: true
-					Para {
-						width: "%"
-						text: detail.data(detail.currentIndex, "classes.name");
+					Frame {
 						fill: Brush {color: Color {def: "khaki"} }
 						textStyle: myStyle.textStyleBold
+						layout: Frame.LayoutHorizontal
+						Cell {
+							width: 18
+							text: detail.data(detail.currentIndex, "classes.name");
+						}
+						Cell {
+							width: "%"
+						}
+						Cell {
+							width: 18
+							text: qsTr("Lent")
+						}
+						Cell {
+							width: 18
+							text: qsTr("Ret")
+						}
 					}
 					Band {
 						id: runnersBand
@@ -97,7 +110,7 @@ Report {
 							objectName: "runnersDetail"
 							width: "%"
 							layout: Frame.LayoutHorizontal
-							Para {
+							Cell {
 								width: 18
 								textFn: function() {return runnersDetail.rowData("registration");}
 							}
@@ -105,11 +118,11 @@ Report {
 								width: "%"
 								text: runnersDetail.data(runnersDetail.currentIndex, "competitorName");
 							}
-							Para {
+							Cell {
 								width: 18
 								text: runnersDetail.data(runnersDetail.currentIndex, "cardLent")? "Y": "N";
 							}
-							Para {
+							Cell {
 								width: 18
 								text: runnersDetail.data(runnersDetail.currentIndex, "cardReturned")? "Y": "N";
 							}

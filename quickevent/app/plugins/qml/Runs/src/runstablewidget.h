@@ -1,5 +1,4 @@
-#ifndef RUNSTABLEWIDGET_H
-#define RUNSTABLEWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -24,12 +23,13 @@ public:
 
 	RunsTableModel* runsModel() {return m_runsModel;}
 private:
+	void editCompetitor(const QVariant &id, int mode);
 	void onCustomContextMenuRequest(const QPoint &pos);
 	void onTableViewSqlException(const QString &what, const QString &where, const QString &stack_trace);
+	void onBadTableDataInput(const QString &message);
 private:
 	Ui::RunsTableWidget *ui;
 	RunsTableModel *m_runsModel;
 	RunsTableItemDelegate *m_runsTableItemDelegate;
 };
 
-#endif // RUNSTABLEWIDGET_H

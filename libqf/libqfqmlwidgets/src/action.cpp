@@ -119,24 +119,28 @@ Action *Action::addMenuBefore(const QString &id, const QString &text)
 	return new_act;
 }
 
-void Action::addSeparatorInto()
+Action* Action::addSeparatorInto(const QString &id)
 {
 	QMenu *w = menu();
-	QF_ASSERT(w!=nullptr, "bad menu", return);
+	QF_ASSERT(w != nullptr, "bad menu", return nullptr);
 
 	Action *a = new Action(w);
+	a->setObjectName(id);
 	a->setSeparator(true);
 	w->addAction(a);
+	return a;
 }
 
-void Action::addSeparatorBefore()
+Action* Action::addSeparatorBefore(const QString &id)
 {
 	QWidget *w = parentMenu();
-	QF_ASSERT(w!=nullptr, "bad parent", return);
+	QF_ASSERT(w != nullptr, "bad parent", return nullptr);
 
 	Action *a = new Action(w);
+	a->setObjectName(id);
 	a->setSeparator(true);
 	w->insertAction(this, a);
+	return a;
 }
 
 QWidget *Action::parentMenu()

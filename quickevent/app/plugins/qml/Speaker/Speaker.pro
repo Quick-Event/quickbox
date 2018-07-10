@@ -14,8 +14,6 @@ INCLUDEPATH += \
     $$PWD/../../../../lib/include \
     $$PWD/../Event/include \
 
-LIBS += -lquickevent
-
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \

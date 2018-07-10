@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>323</height>
+    <width>471</width>
+    <height>344</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,169 +19,74 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="leftMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="topMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="rightMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <property name="bottomMargin">
-    <number>3</number>
+    <number>5</number>
    </property>
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="spacing">
-        <number>1</number>
-       </property>
-       <item>
-        <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPunchesToolBar" native="true"/>
-       </item>
-       <item>
-        <widget class="qf::qmlwidgets::TableView" name="tblPunches"/>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QFrame" name="frame_2">
+     <widget class="QFrame" name="frame">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="spacing">
-        <number>2</number>
+        <number>5</number>
        </property>
        <property name="leftMargin">
         <number>1</number>
        </property>
        <property name="topMargin">
-        <number>1</number>
+        <number>5</number>
        </property>
        <property name="rightMargin">
         <number>1</number>
        </property>
        <property name="bottomMargin">
-        <number>1</number>
+        <number>5</number>
        </property>
        <item>
-        <widget class="QFrame" name="frame">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <property name="spacing">
-           <number>3</number>
-          </property>
-          <property name="leftMargin">
-           <number>2</number>
-          </property>
-          <property name="topMargin">
-           <number>2</number>
-          </property>
-          <property name="rightMargin">
-           <number>2</number>
-          </property>
-          <property name="bottomMargin">
-           <number>2</number>
-          </property>
-          <item>
-           <widget class="QToolButton" name="btInsertColumn">
-            <property name="icon">
-             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
-              <normaloff>:/qf/qmlwidgets/images/flat/insert-column.svg</normaloff>:/qf/qmlwidgets/images/flat/insert-column.svg</iconset>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btInsertRow">
-            <property name="icon">
-             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
-              <normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</iconset>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btDeleteColumn">
-            <property name="icon">
-             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
-              <normaloff>:/qf/qmlwidgets/images/flat/delete-column.svg</normaloff>:/qf/qmlwidgets/images/flat/delete-column.svg</iconset>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="btDeleteRow">
-            <property name="icon">
-             <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
-              <normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</iconset>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>68</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
+        <widget class="qf::qmlwidgets::TableViewToolBar" name="tblPunchesToolBar" native="true"/>
        </item>
        <item>
-        <widget class="CodeClassResultsGridWidget" name="gridWidget" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <widget class="PunchesTableView" name="tblPunches">
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::DragOnly</enum>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
+     <widget class="CodeClassResultsWidget" name="classResults" native="true"/>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>qf::qmlwidgets::TableView</class>
-   <extends>QTableView</extends>
-   <header location="global">qf/qmlwidgets/tableview.h</header>
-  </customwidget>
   <customwidget>
    <class>qf::qmlwidgets::TableViewToolBar</class>
    <extends>QWidget</extends>
@@ -189,14 +94,17 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>CodeClassResultsGridWidget</class>
+   <class>PunchesTableView</class>
+   <extends>QTableView</extends>
+   <header>src/punchestableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CodeClassResultsWidget</class>
    <extends>QWidget</extends>
-   <header location="global">src/codeclassresultsgridwidget.h</header>
+   <header>src/codeclassresultswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

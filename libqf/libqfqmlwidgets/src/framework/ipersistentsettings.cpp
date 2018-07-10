@@ -18,9 +18,12 @@ QString IPersistentSettings::persistentSettingsId()
 	return m_persistentSettingsId;
 }
 
-void IPersistentSettings::setPersistentSettingsId(const QString &id)
+bool IPersistentSettings::setPersistentSettingsId(const QString &id)
 {
+	if(id == m_persistentSettingsId)
+		return false;
 	m_persistentSettingsId = id;
+	return true;
 }
 
 QString IPersistentSettings::persistentSettingsPath()
@@ -43,8 +46,13 @@ static void callMethodRecursively(QObject *obj, const char *method_name)
 		QMetaMethod mm = obj->metaObject()->method(ix);
 		mm.invoke(obj);
 	}
-	Q_FOREACH(auto o, obj->children()) {
+	Q_FOREACH(auto *o, obj->children()) {
+		//static int level = 0;
+		//level++;
+		//QString indent = QString(level, ' ');
+		//qfInfo() << indent << o << method_name;
 		callMethodRecursively(o, method_name);
+		//level--;
 	}
 }
 
@@ -52,12 +60,12 @@ void IPersistentSettings::loadPersistentSettingsRecursively()
 {
 	callMethodRecursively(m_controlledObject, "loadPersistentSettings()");
 }
-
+/*
 void IPersistentSettings::savePersistentSettingsRecursively()
 {
 	callMethodRecursively(m_controlledObject, "savePersistentSettings()");
 }
-
+*/
 const QString &IPersistentSettings::defaultPersistentSettingsPathPrefix()
 {
 	static auto s = QStringLiteral("ui");

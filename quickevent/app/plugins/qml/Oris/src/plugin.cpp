@@ -1,5 +1,6 @@
 #include "oris.h"
 #include "orisimporter.h"
+#include "txtimporter.h"
 
 #include <qf/core/log.h>
 
@@ -18,6 +19,7 @@ public:
 
 		qmlRegisterType<Oris>(uri, 1, 0, "Oris");
 		qmlRegisterType<OrisImporter>(uri, 1, 0, "OrisImporter");
+		qmlRegisterType<TxtImporter>(uri, 1, 0, "TxtImporter");
 	}
 };
 

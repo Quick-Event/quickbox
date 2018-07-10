@@ -48,17 +48,23 @@
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).debug
 #endif
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 5, 0))
+#define qfCInfo(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Info, __FILE__, category); en; en = false) \
+	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).warning
+#else
 #define qfCInfo(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Info, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).info
+#endif
+
 #define qfCWarning(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Warning, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).warning
 #define qfCError(category) for(bool en = qf::core::LogDevice::isMatchingAnyDeviceLogFilter(qf::core::Log::Level::Error, __FILE__, category); en; en = false) \
 	QMessageLogger(__FILE__, __LINE__, Q_FUNC_INFO, category).critical
 
-#define qfDebug qfCDebug("")
-#define qfInfo qfCInfo("")
-#define qfWarning qfCWarning("")
-#define qfError qfCError("")
+#define qfDebug qfCDebug("default")
+#define qfInfo qfCInfo("default")
+#define qfWarning qfCWarning("default")
+#define qfError qfCError("default")
 
 #ifdef NO_QF_DEBUG
 #define qfLogFuncFrame() while(0) qDebug()

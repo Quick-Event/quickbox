@@ -93,6 +93,11 @@ TableView::TableView(QWidget *parent) :
 	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
 	m_proxyModel->setDynamicSortFilter(false);
 	Super::setModel(m_proxyModel);
+	/*
+	connect(this, &TableView::readOnlyChanged, [this] (bool b) {
+		setEditRowsEnabled(!b);
+	});
+	*/
 }
 
 TableView::~TableView()
@@ -170,7 +175,7 @@ void TableView::refreshActions()
 	action("filter")->setEnabled(true);
 	action("copy")->setEnabled(true);
 	action("copySpecial")->setEnabled(true);
-	//action("select")->setEnabled(true);
+	action("select")->setEnabled(true);
 	action("reload")->setEnabled(true);
 	action("resizeColumnsToContents")->setEnabled(true);
 	action("resetColumnsSettings")->setEnabled(true);
@@ -189,9 +194,6 @@ void TableView::refreshActions()
 	//action("removeSelectedRows")->setVisible(isRemoveRowActionVisibleInExternalMode());
 	//action("postRow")->setVisible(true);
 	//action("revertRow")->setVisible(true);
-
-	//action("viewRowExternal")->setVisible(true);
-	//action("editRowExternal")->setVisible(true);
 
 	bool is_insert_rows_allowed = !(m_proxyModel->dynamicSortFilter() && !m_proxyModel->isIdle());
 	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
@@ -218,7 +220,7 @@ void TableView::refreshActions()
 	QModelIndex curr_ix = currentIndex();
 	qfu::TableRow curr_row;
 	if(curr_ix.isValid())
-		curr_row = m->tableRow(curr_ix.row());
+		curr_row = m->tableRow(toTableModelRowNo(curr_ix.row()));
 	//qfDebug() << QF_FUNC_NAME << "valid:" << r.isValid() << "dirty:" << r.isDirty();
 	if(curr_row.isDirty()) {
 		action("postRow")->setEnabled(true);
@@ -260,11 +262,11 @@ void TableView::resetColumnsSettings()
 
 void TableView::reload(bool preserve_sorting)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "preserve_sorting:" << preserve_sorting;
 	int sort_column = -1;
 	Qt::SortOrder sort_order(Qt::AscendingOrder);
 	if(horizontalHeader()) {
-		savePersistentSettings();
+		//savePersistentSettings();
 		sort_column = horizontalHeader()->sortIndicatorSection();
 		sort_order = horizontalHeader()->sortIndicatorOrder();
 		horizontalHeader()->setSortIndicator(-1, Qt::AscendingOrder);
@@ -316,6 +318,27 @@ void TableView::setCloneRowEnabled(bool b)
 	a->setVisible(b);
 }
 
+void TableView::setReadOnly(bool ro)
+{
+	if(ro == isReadOnly())
+		return;
+	m_isReadOnly = ro;
+
+	setInsertRowEnabled(!ro);
+	setRemoveRowEnabled(!ro);
+	setCloneRowEnabled(!ro);
+	{
+		Action *a = action(QStringLiteral("postRow"));
+		a->setVisible(!ro);
+	}
+	{
+		Action *a = action(QStringLiteral("revertRow"));
+		a->setVisible(!ro);
+	}
+
+	emit readOnlyChanged(ro);
+}
+
 void TableView::insertRow()
 {
 	qfLogFuncFrame();
@@ -346,7 +369,9 @@ void TableView::cloneRowInline()
 		insertRowInline();
 		qfu::TableRow &r2 = tableRowRef();
 		for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
-			r2.setValue(i, r1.value(i));
+			QVariant v1 = r1.value(i);
+			r2.setValue(i, v1);
+			//qfInfo() << i << v1 << r2.value(i);
 		}
 		r2.prepareForCopy();
 	}
@@ -366,6 +391,7 @@ void TableView::cloneRow()
 		QVariant id = selectedRow().value(idColumnName());
 		qfDebug() << "\t emit editRowInExternalEditor(ModeCopy)";
 		emit editRowInExternalEditor(id, ModeCopy);
+		emit editSelectedRowsInExternalEditor(ModeCopy);
 	}
 	refreshActions();
 }
@@ -384,6 +410,7 @@ void TableView::removeSelectedRows()
 				if(id.isValid())
 					emit editRowInExternalEditor(id, ModeDelete);
 			}
+			emit editSelectedRowsInExternalEditor(ModeDelete);
 		}
 	}
 	catch(qfc::Exception &e) {
@@ -432,6 +459,7 @@ void TableView::revertRow(int row_no)
 	if(m) {
 		m->revertRow(toTableModelRowNo(row_no));
 	}
+	refreshActions();
 }
 
 int TableView::reloadRow(int row_no)
@@ -734,6 +762,97 @@ void TableView::loadCurrentCellBlob()
 	}
 }
 
+void TableView::selectCurrentColumn()
+{
+	QModelIndex ix = currentIndex();
+	if(ix.isValid())
+		selectColumn(ix.column());
+}
+
+void TableView::selectCurrentRow()
+{
+	QModelIndex ix = currentIndex();
+	if(ix.isValid())
+		selectRow(ix.row());
+}
+
+qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, const QVariantList &_exported_columns, const qf::core::model::TableModel::TreeTableExportOptions &opts) const
+{
+	qfu::TreeTable ret(table_name);
+	QVariantList exported_columns = _exported_columns;
+	QAbstractItemModel *proxy_model = model();
+	if(!proxy_model)
+		return ret;
+	core::model::TableModel *table_model = tableModel();
+	if(!table_model)
+		return ret;
+	const core::utils::Table &table = table_model->table();
+	if(exported_columns.isEmpty()) {
+		for(int ix=0; ix<table.columnCount(); ix++) {
+			QVariantMap col;
+			col[QStringLiteral("index")] = ix;
+			exported_columns << col;
+		}
+	}
+	bool raw_values = opts.isExportRawValues();
+	for(int i=0; i<exported_columns.count(); i++) {
+		QVariantMap col = exported_columns[i].toMap();
+		QString cap = col.value("caption").toString();
+		int ix = col.value("index").toInt();
+		qfu::TreeTableColumn tt_col;
+		if(col.value("origin") == QLatin1String("table")) {
+			QVariant::Type t = table.field(ix).type();
+			tt_col = ret.appendColumn(table.field(ix).name(), t, cap);
+		}
+		else {
+			QVariant::Type t;
+			if(raw_values) {
+				qfu::Table::Field fld = table_model->tableField(ix);
+				t = fld.type();
+				//qfWarning() << fld.toString();
+			}
+			else {
+				t = (QVariant::Type)proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
+			}
+			tt_col = ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
+		}
+		tt_col.setWidth(col.value("width").toString());
+	}
+
+	/// export data
+	{
+		qfu::SValue srows;
+		for(int i=0; i<proxy_model->rowCount(); i++) {
+			QVariantList srow_lst;
+			core::utils::TableRow tbl_row = tableRow(i);
+			for(int j=0; j<exported_columns.count(); j++) {
+				QVariantMap col = exported_columns[j].toMap();
+				QVariant val;
+				int ix = col.value("index").toInt();
+				if(col.value("origin") == QLatin1String("table")) {
+					val = tbl_row.value(ix);
+					//qfWarning() << col << val.typeName() << "val:" << val.toString();
+				}
+				else {
+					QModelIndex mix = proxy_model->index(i, ix);
+					if(raw_values) {
+						val = proxy_model->data(mix, core::model::TableModel::RawValueRole);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
+					}
+					else {
+						val = proxy_model->data(mix, Qt::DisplayRole);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
+					}
+				}
+				srow_lst << val;
+			}
+			srows[i] = srow_lst;
+		}
+		ret[qfu::TreeTable::KEY_ROWS] = srows.value();
+	}
+	return ret;
+}
+
 void TableView::exportReport_helper(const QVariant& _options)
 {
 	try {
@@ -744,14 +863,9 @@ void TableView::exportReport_helper(const QVariant& _options)
 		qfu::TreeTable ttable;
 
 		{
-			//QVariantList exported_columns = w->exportedColumns();
-			qfc::model::TableModel *m = tableModel();
-			//int elide_at = model()->elideDisplayedTextAt();
-			//model()->setElideDisplayedTextAt(0);
 			qfc::model::TableModel::TreeTableExportOptions opts;
 			//opts.setExportRawValues(true);
-			ttable = m->toTreeTable("data", exported_columns, opts);
-			//model()->setElideDisplayedTextAt(elide_at);
+			ttable = toTreeTable("data", exported_columns, opts);
 		}
 
 		{
@@ -833,10 +947,12 @@ void TableView::exportCSV_helper(const QVariant &export_options)
 			for(int j=0; j<exported_columns.count(); j++) {
 				int col_ix = exported_columns[j];
 				QModelIndex ix = m->index(row_ix, col_ix);
-				QVariant val = m->data(ix);
+				QVariant val = m->data(ix, Qt::EditRole);
+				if(val.type() != QVariant::Bool)
+					val = m->data(ix, Qt::DisplayRole);
 				if(j > 0)
 					ts << text_export_opts.fieldSeparator();
-				ts << qf::core::utils::Table::quoteCSV(val.toString(), text_export_opts);
+				ts << qf::core::utils::Table::quoteCSV(val, text_export_opts);
 			}
 			ts << '\n';
 		}
@@ -1018,7 +1134,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 				tmd->setValue(ri, idColumnName(), id);
 				tmd->setDirty(ri, idColumnName(), false);
 			}
-			if(ri >= 0) {
+			if(ri >= 0 && ri < tmd->rowCount()) {
 				if(mode == ModeEdit || mode == ModeView) {
 					int reloaded_row_cnt = tmd->reloadRow(ri);
 					if(reloaded_row_cnt != 1) {
@@ -1093,7 +1209,7 @@ void TableView::seek(const QString &prefix_str)
 			/// QTBUG-37689 QCollator allways sorts case sensitive
 			/// workarounded by own implementation of qf::core::Collator
 			QStringRef ps(&prefix_str);
-			QStringRef ds(&data_str, 0, prefix_str.length());
+			QStringRef ds(&data_str, 0, qMin(prefix_str.length(), data_str.length()));
 			//QString ps = prefix_str.toLower();
 			//QString ds = data_str.mid(0, ps.length()).toLower();
 			int cmp = sort_collator.compare(ps, ds);
@@ -1138,6 +1254,7 @@ int TableView::toTableModelRowNo(int table_view_row_no) const
 void TableView::loadPersistentSettings()
 {
 	QString path = persistentSettingsPath();
+	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		HeaderView *horiz_header = qobject_cast<HeaderView*>(horizontalHeader());
@@ -1238,6 +1355,7 @@ void TableView::loadPersistentSettings()
 void TableView::savePersistentSettings()
 {
 	QString path = persistentSettingsPath();
+	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QSettings settings;
@@ -1327,25 +1445,31 @@ void TableView::keyPressEvent(QKeyEvent *e)
 			//qfInfo() << "incremental search currentIndex row:" << currentIndex().row() << "col:" << currentIndex().column();
 			/// Pokud je nektery sloupec serazen vzestupne zkusi se provest incremental search,
 			/// pak se event dal nepropaguje
-			QChar seekChar = qfc::String(e->text()).value(0);
+			QChar seek_char = qfc::String(e->text()).value(0);
 			//bool is_valid_seek_char = true;
-			if(e->key() == Qt::Key_Home
-					|| e->key() == Qt::Key_End
-					|| e->key() == Qt::Key_Left
-					|| e->key() == Qt::Key_Up
-					|| e->key() == Qt::Key_Right
-					|| e->key() == Qt::Key_Down
-					|| e->key() == Qt::Key_PageUp
-					|| e->key() == Qt::Key_PageDown) {
+			if(e->key() == Qt::Key_Escape
+			   || e->key() == Qt::Key_Enter
+			   || e->key() == Qt::Key_Return
+			   || e->key() == Qt::Key_Tab
+			   || e->key() == Qt::Key_Home
+			   || e->key() == Qt::Key_End
+			   || e->key() == Qt::Key_Left
+			   || e->key() == Qt::Key_Up
+			   || e->key() == Qt::Key_Right
+			   || e->key() == Qt::Key_Down
+			   || e->key() == Qt::Key_PageUp
+			   || e->key() == Qt::Key_PageDown) {
 				incremental_search = false;
-				seekChar = QChar();
+				seek_char = QChar();
 			}
-			else if(seekChar == '\n' || seekChar == '\r')
-				seekChar = QChar();
-			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16);
+			else if(seek_char == '\n' || seek_char == '\r')
+				seek_char = QChar();
+			else if(seek_char.isSpace() && m_seekString.isEmpty())
+				seek_char = QChar();
+			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seek_char.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << "is space:" << seek_char.isSpace();
 			bool shift_only = (e->key() == Qt::Key_Shift);
 			//bool ctrl_only = (e->key() == Qt::Key_Control);
-			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seekChar.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << " shift only: " << shift_only;
+			qfDebug().nospace() << "\t incremental search seekChar unicode: 0x" << QString::number(seek_char.unicode(),16) << " key: 0x" << QString::number(e->key(),16) << " shift only: " << shift_only;
 			//bool accept = false;
 			if(incremental_search) {
 				if(e->key() == Qt::Key_Backspace) {
@@ -1356,11 +1480,11 @@ void TableView::keyPressEvent(QKeyEvent *e)
 					m_seekString = QString();
 					incremental_search_key_accepted = true;
 				}
-				else if(seekChar.isNull() && !shift_only) {
+				else if(seek_char.isNull() && !shift_only) {
 					m_seekString = QString();
 				}
-				else if(!seekChar.isNull()) {
-					m_seekString += seekChar;
+				else if(!seek_char.isNull()) {
+					m_seekString += seek_char;
 					qfDebug() << "new seek text:" << m_seekString;
 					incremental_search_key_accepted = true;
 				}
@@ -1726,15 +1850,19 @@ void TableView::createActions()
 		{
 			a = new Action(tr("Select current column"), this);
 			a->setShortcutContext(Qt::WidgetShortcut);
-			//connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
+			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
 			a->setOid("selectCurrentColumn");
 			m->addAction(a);
+			//m_actions[a->oid()] = a;
+			//m_actionGroups[SelectActions] << a->oid();
 		}
 		{
 			a = new Action(tr("Select current row"), this);
 			a->setShortcutContext(Qt::WidgetShortcut);
-			//connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
+			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
 			a->setOid("selectCurrentRow");
+			//m_actions[a->oid()] = a;
+			//m_actionGroups[SelectActions] << a->oid();
 		}
 		m->addAction(a);
 	}
@@ -1973,8 +2101,9 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 	bool row_changed = (current.row() != previous.row() && previous.row() >= 0);
 	if(row_changed) {
 		// save even if inlineEditStrategy() == OnEditedValueCommit, because row can be just inserted or clonned without edits
-		int row_to_save = (row_changed)? previous.row(): current.row();
+		int row_to_save = previous.row();
 		qfDebug() << "\tsaving row:" << row_to_save;
+
 		bool ok = false;
 		if(inlineEditSaveStrategy() == OnManualSubmit)
 			ok = true;
@@ -1983,8 +2112,7 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex& pr
 		if(!ok)
 			setCurrentIndex(previous);
 		//qfDebug() << "\t" << __LINE__;
-	}
-	if(row_changed) {
+
 		updateRow(previous.row());
 		updateRow(current.row());
 	}
@@ -2137,6 +2265,7 @@ bool TableView::edit(const QModelIndex& index, EditTrigger trigger, QEvent* even
 						if(id.isValid()) {
 							emit editRowInExternalEditor(id, ModeEdit);
 						}
+						emit editSelectedRowsInExternalEditor(ModeEdit);
 					}
 					ret = false;
 					event->accept();

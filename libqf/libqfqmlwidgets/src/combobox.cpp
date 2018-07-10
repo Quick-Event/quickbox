@@ -2,6 +2,7 @@
 
 #include "datacontroller.h"
 
+#include <qf/core/sql/dbenumcache.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/log.h>
@@ -79,18 +80,23 @@ void ComboBox::setDataValue(const QVariant &val)
 {
 	qfLogFuncFrame();
 	bool emit_change = false;
-	int old_ix = currentIndex();
-	QString old_text;
-	if(isEditable()) {
-		old_text = lineEdit()->text();
-	}
-	loadItems();
-	int ix = findData(val);
-	setCurrentIndex(ix);
-	emit_change = ix != old_ix;
-	if(ix < 0 && isEditable() && !isValueRestrictedToItems()) {
-		lineEdit()->setText(val.toString());
-		emit_change = emit_change || (lineEdit()->text() != old_text);
+	{
+		//QSignalBlocker(this); do not work, don't know why, using m_loadingState hack instead
+		int old_ix = currentIndex();
+		QString old_text;
+		if(isEditable()) {
+			old_text = lineEdit()->text();
+		}
+		loadItems();
+		m_ignoreIndexChangedSignals = true;
+		int ix = findData(val);
+		setCurrentIndex(ix);
+		emit_change = ix != old_ix;
+		if(ix < 0 && isEditable() && !isValueRestrictedToItems()) {
+			lineEdit()->setText(val.toString());
+			emit_change = emit_change || (lineEdit()->text() != old_text);
+		}
+		m_ignoreIndexChangedSignals = false;
 	}
 	if(emit_change) {
 		saveDataValue();
@@ -110,7 +116,7 @@ void ComboBox::loadItems(bool force)
 
 void ComboBox::onCurrentTextChanged(const QString &txt)
 {
-	if(!m_loadingState) {
+	if(!m_ignoreIndexChangedSignals) {
 		qfLogFuncFrame() << txt;
 		saveDataValue();
 		emit dataValueChanged(dataValue());
@@ -135,11 +141,6 @@ ForeignKeyComboBox::ForeignKeyComboBox(QWidget *parent)
 {
 }
 
-ForeignKeyComboBox::~ForeignKeyComboBox()
-{
-
-}
-
 void ForeignKeyComboBox::removeItems()
 {
 	Super::removeItems();
@@ -160,7 +161,7 @@ void ForeignKeyComboBox::loadItems(bool force)
 			connection_name = QLatin1String(QSqlDatabase::defaultConnection);
 			qfDebug() << "Data controller is NULL, using default connection name:" << connection_name;
 		}
-		m_loadingState = true;
+		m_ignoreIndexChangedSignals = true;
 		{
 			QString tblname = referencedTable();
 			QString fldname = referencedField();
@@ -169,17 +170,19 @@ void ForeignKeyComboBox::loadItems(bool force)
 				capfldname = fldname;
 			QString query_str = queryString();
 			if(query_str.isEmpty()) {
-				qf::core::sql::QueryBuilder qb;
-				qb.select2(tblname, fldname);
-				qb.from(tblname);
-				if(capfldname != fldname) {
-					qb.select(capfldname);
-					qb.orderBy(capfldname);
+				if(!tblname.isEmpty() && !fldname.isEmpty()) {
+					qf::core::sql::QueryBuilder qb;
+					qb.select2(tblname, fldname);
+					qb.from(tblname);
+					if(capfldname != fldname) {
+						qb.select(capfldname);
+						qb.orderBy(capfldname);
+					}
+					else {
+						qb.orderBy(fldname);
+					}
+					query_str = qb.toString();
 				}
-				else {
-					qb.orderBy(fldname);
-				}
-				query_str = qb.toString();
 			}
 			else {
 				query_str = query_str.replace(referencedTablePlaceHolder, tblname);
@@ -243,7 +246,51 @@ void ForeignKeyComboBox::loadItems(bool force)
 		}
 		m_itemsLoaded = true;
 		qfDebug() << "\t item count:" << count();
-		m_loadingState = false;
+		m_ignoreIndexChangedSignals = false;
 	} while(false);
 }
 
+//===============================================================
+//              DbEnumComboBox
+//===============================================================
+DbEnumComboBox::DbEnumComboBox(QWidget *parent)
+	: Super(parent)
+{
+}
+
+void DbEnumComboBox::removeItems()
+{
+	Super::removeItems();
+	m_itemsLoaded = false;
+}
+
+void DbEnumComboBox::loadItems(bool force)
+{
+	qfLogFuncFrame() << "force:" << force;
+	if(force)
+		removeItems();
+	if(!m_itemsLoaded) {
+		QString connection_name;
+		qfLogFuncFrame() << this << "data controler:" << m_dataController;
+		if(!m_dataController) {
+			connection_name = QLatin1String(QSqlDatabase::defaultConnection);
+			qfDebug() << "Data controller is NULL, using default connection name:" << connection_name;
+		}
+		m_ignoreIndexChangedSignals = true;
+		{
+			qf::core::sql::DbEnumCache& db_enum_cache = qf::core::sql::DbEnumCache::instanceForConnection(connection_name);
+			Q_FOREACH(auto dbe, db_enum_cache.dbEnumsForGroup(groupName())) {
+				QString cap = dbe.fillInPlaceholders(itemCaptionFormat());
+				addItem(cap, dbe.groupId());
+				QColor c = dbe.color();
+				if(c.isValid()) {
+					setItemData(count() - 1, c, Qt::BackgroundRole);
+					setItemData(count() - 1, qf::core::model::TableModel::contrastTextColor(c), Qt::TextColorRole);
+				}
+			}
+		}
+		m_itemsLoaded = true;
+		qfDebug() << "\t item count:" << count();
+		m_ignoreIndexChangedSignals = false;
+	};
+}

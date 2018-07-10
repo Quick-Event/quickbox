@@ -14,8 +14,9 @@ class SqlQueryBuilder : public QObject
 	Q_OBJECT
 public:
 	explicit SqlQueryBuilder(QObject *parent = nullptr);
-    ~SqlQueryBuilder() Q_DECL_OVERRIDE;
+	~SqlQueryBuilder() Q_DECL_OVERRIDE;
 public:
+	Q_SIGNAL void cleared();
 	//static void initScriptEngine(QScriptEngine *engine);
 	//static QScriptValue toScriptValue(QScriptEngine *engine, SqlQueryBuilder* const &in);
 	//static void fromScriptValue(const QScriptValue &object, SqlQueryBuilder* &out);
@@ -94,6 +95,7 @@ public:
 	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* clear() {
 		m_builder.clear();
+		emit cleared();
 		return this;
 	}
 	Q_INVOKABLE qf::core::qml::SqlQueryBuilder* clearWhere() {

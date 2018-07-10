@@ -51,7 +51,7 @@ public:
 	int reloadRow(int row_no) Q_DECL_OVERRIDE;
 	int reloadInserts(const QString &id_column_name) Q_DECL_OVERRIDE;
 public:
-	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb);
+	void setQueryBuilder(const qf::core::sql::QueryBuilder &qb, bool clear_columns = false);
 	const qf::core::sql::QueryBuilder& queryBuilder() const;
 
 	QString connectionName() const { return m_connectionName; }
@@ -66,10 +66,11 @@ public:
 
 	qf::core::sql::Connection sqlConnection();
 	QString query() const { return m_query; }
-	void setQuery(QString arg) { if (m_query != arg) { m_query = arg; emit queryChanged(arg); } }
-	Q_SIGNAL void queryChanged(QString arg);
+	void setQuery(const QString &query_str);
+	Q_SIGNAL void queryChanged(const QString &query_str);
 
 	const qf::core::sql::Query& recentlyExecutedQuery() {return m_recentlyExecutedQuery;}
+	Q_INVOKABLE const QString& recentlyExecutedQueryString() const {return m_recentlyExecutedQueryString;}
 
 	void addForeignKeyDependency(const QString &master_table_key, const QString &slave_table_key);
 protected:
@@ -91,6 +92,7 @@ protected:
 	QString m_query;
 	QString m_connectionName;
 	qf::core::sql::Query m_recentlyExecutedQuery;
+	QString m_recentlyExecutedQueryString;
 	/// INSERT needs to know dependency of tables in joined queries to insert particular tables in proper order
 	QMap<QString, QString> m_foreignKeyDependencies;
 };

@@ -145,7 +145,7 @@ if [[ $O_COMMAND == "release" ]]; then
 		pro_file=$O_SRC_DIR/$fpath/$fname.pro
 		echo "compiling translations for project: $pro_file"
 		$lrelease $pro_file
-		echo "moving translations to bin directory: $bin_dir"
+		echo "moving translations" $O_SRC_DIR/$fpath/$fname.${O_LOCALE}.qm "to bin directory: $bin_dir"
 		mv $O_SRC_DIR/$fpath/$fname.${O_LOCALE}.qm $bin_dir/
 	done
 	exit 0

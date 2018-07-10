@@ -95,7 +95,7 @@ void ReportItemMetaPaint::shiftChildren(const ReportItem::Point offset)
 	}
 }
 
-void ReportItemMetaPaint::expandChildrenFramesRecursively()
+void ReportItemMetaPaint::expandChildFrames()
 {
 	if(renderedRect.flags & ReportItem::Rect::LayoutHorizontalFlag) {
 		/// ve smeru layoutu natahni jen posledni dite az po inset
@@ -354,7 +354,7 @@ QString ReportItemMetaPaint::dump(int indent)
 //                              ReportItemMetaPaintReport
 //=================================================
 ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportItem *report_item)
-	: ReportItemMetaPaint(NULL, report_item)
+	: ReportItemMetaPaint(NULL, report_item), orientation()
 {
 	//f_reportProcessor = report_item->processor;
 	/*--

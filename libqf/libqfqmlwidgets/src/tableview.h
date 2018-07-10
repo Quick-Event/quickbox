@@ -67,7 +67,7 @@ public:
 	QF_PROPERTY_IMPL2(RowEditorMode, r, R, owEditorMode, EditRowsInline)
 	QF_PROPERTY_IMPL2(QString, i, I, dColumnName, QStringLiteral("id"))
 	QF_PROPERTY_BOOL_IMPL2(s, S, howExceptionDialog, true)
-	QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
+	//QF_PROPERTY_BOOL_IMPL(r, R, eadOnly)
 
 public:
 	QSortFilterProxyModel* sortFilterProxyModel() const;
@@ -78,6 +78,11 @@ public:
 
 	Q_SLOT virtual void refreshActions();
 	QList<Action*> toolBarActions() const {return m_toolBarActions;}
+
+	bool isReadOnly() const {return m_isReadOnly;}
+	void setReadOnly(bool ro);
+	Q_SIGNAL void readOnlyChanged(bool b);
+
 	void setInsertRowEnabled(bool b);
 	void setRemoveRowEnabled(bool b);
 	void setCloneRowEnabled(bool b);
@@ -114,6 +119,9 @@ public:
 	Q_SLOT void saveCurrentCellBlob();
 	Q_SLOT void loadCurrentCellBlob();
 
+	Q_SLOT void selectCurrentColumn();
+	Q_SLOT void selectCurrentRow();
+
 	/**
 	* calls update viewport with rect clipping row \a row.
 	* @param row if lower than 0 current row is updated.
@@ -134,6 +142,7 @@ public:
 
 	Q_SIGNAL void editCellRequest(const QModelIndex &table_view_index);
 	Q_SIGNAL void editRowInExternalEditor(const QVariant &id, int mode);
+	Q_SIGNAL void editSelectedRowsInExternalEditor(int mode);
 	Q_SLOT virtual void rowExternallySaved(const QVariant &id, int mode);
 
 	Q_SIGNAL void filterDialogRequest();
@@ -146,6 +155,9 @@ public:
 	Q_SLOT void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate) {Super::setItemDelegateForColumn(column, delegate);}
 
 	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
+
+	Q_SLOT void loadPersistentSettings();
+	Q_SLOT void savePersistentSettings();
 protected:
 	virtual bool postRowImpl(int row_no = -1);
 private:
@@ -155,11 +167,9 @@ private:
 	void seek(const QString &prefix_str);
 	void cancelSeek();
 
+	qf::core::utils::TreeTable toTreeTable(const QString& table_name = QString(), const QVariantList& exported_columns = QVariantList(), const qf::core::model::TableModel::TreeTableExportOptions &opts = qf::core::model::TableModel::TreeTableExportOptions()) const;
 	void exportReport_helper(const QVariant& _options);
 	void exportCSV_helper(const QVariant& export_options);
-
-	Q_SLOT void loadPersistentSettings();
-	Q_SLOT void savePersistentSettings();
 protected:
 	Q_SLOT virtual void onSqlException(const QString &what, const QString &where, const QString &stack_trace);
 
@@ -207,6 +217,8 @@ protected:
 	QList<Action*> m_contextMenuActions;
 	TableViewProxyModel *m_proxyModel;
 	QAbstractButton *m_leftTopCornerButton = nullptr;
+private:
+	bool m_isReadOnly = false;
 };
 
 }}

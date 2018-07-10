@@ -31,7 +31,7 @@ void SqlDataDocument::setQueryBuilder(const qf::core::sql::QueryBuilder &qb)
 {
 	SqlTableModel *m = model();
 	QF_ASSERT(m != nullptr, "Document model is NULL", return);
-	m->setQueryBuilder(qb);
+	m->setQueryBuilder(qb, false);
 }
 
 SqlTableModel *SqlDataDocument::createModel(QObject *parent)

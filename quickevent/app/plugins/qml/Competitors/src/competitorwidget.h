@@ -3,10 +3,7 @@
 
 #include <qf/qmlwidgets/framework/datadialogwidget.h>
 
-namespace quickevent {
-namespace og {
-class SqlTableModel;
-} }
+namespace quickevent { namespace core {  namespace og { class SqlTableModel; }}}
 
 namespace Ui {
 class CompetitorWidget;
@@ -22,7 +19,7 @@ public:
 	~CompetitorWidget() Q_DECL_OVERRIDE;
 
 	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;
-
+	void loadFromRegistrations(int siid);
 	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 
 private slots:
@@ -40,7 +37,7 @@ private:
 	void showRunsTable(int stage_id);
 private:
 	Ui::CompetitorWidget *ui;
-	quickevent::og::SqlTableModel *m_runsModel;
+	quickevent::core::og::SqlTableModel *m_runsModel;
 };
 
 #endif // COMPETITORWIDGET_H

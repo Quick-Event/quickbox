@@ -57,11 +57,12 @@ private:
 	void onCardRead();
 	void printNewCards();
 	void loadNewCards();
-	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
+	Q_SLOT void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 
 	bool printReceipt(int card_id);
 
 	void lazyInit();
+	void loadReceptList();
 	void updateReceiptsPrinterLabel();
 
 	void createActions();

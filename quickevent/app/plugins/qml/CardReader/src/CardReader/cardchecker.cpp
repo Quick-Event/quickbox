@@ -5,7 +5,8 @@
 #include <Event/stage.h>
 #include <Runs/runsplugin.h>
 
-#include <quickevent/og/timems.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <siut/simessage.h>
 
@@ -20,7 +21,15 @@
 
 namespace qfs = qf::core::sql;
 
-using namespace CardReader;
+namespace CardReader {
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 CardChecker::CardChecker(QObject *parent)
 	: QObject(parent)
@@ -30,12 +39,12 @@ CardChecker::CardChecker(QObject *parent)
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
 {
-	return quickevent::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
+	return quickevent::core::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
 }
 
 int CardChecker::msecIntervalAM(int time1_msec, int time2_msec)
 {
-	return quickevent::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
+	return quickevent::core::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
 }
 
 int CardChecker::toAMms(int time_msec)
@@ -50,12 +59,19 @@ int CardChecker::toAM(int time_sec)
 	//return SIMessageCardReadOut::toAM(time_sec);
 }
 
-int CardChecker::stageStartSec()
+int CardChecker::stageIdForRun(int run_id)
+{
+	return eventPlugin()->stageIdForRun(run_id);
+}
+
+int CardChecker::stageStartSec(int stage_id)
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
 	QF_ASSERT(event_plugin != nullptr, "Bad plugin", return 0);
-	int ret = event_plugin->stageStart(event_plugin->currentStageId());
+	if(stage_id == 0)
+		stage_id = event_plugin->currentStageId();
+	int ret = event_plugin->stageStartMsec(stage_id);
 	return ret / 1000;
 }
 
@@ -123,6 +139,7 @@ QVariantMap CardChecker::courseCodesForRunId(int run_id)
 
 int CardChecker::finishPunchCode()
 {
-	return CardReader::CardReaderPlugin::FINISH_PUNCH_CODE;
+	return quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
 }
 
+}

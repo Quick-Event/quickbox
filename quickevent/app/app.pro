@@ -2,6 +2,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-	src \
+	quickevent \
 	plugins \
 

@@ -6,10 +6,8 @@ CONFIG += ordered
 SUBDIRS += \
 	qsqlmon \
 
-unix {
-	!qsqlmon {
-		SUBDIRS += \
-			qfsqldbfs \
-	}
+qfsqldbfs {
+	SUBDIRS += \
+		qfsqldbfs \
 }
 

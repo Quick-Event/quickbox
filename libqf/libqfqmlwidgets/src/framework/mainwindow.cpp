@@ -268,6 +268,9 @@ void MainWindow::setCentralWidget(CentralWidget *widget)
 
 void MainWindow::addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget)
 {
+	qf::qmlwidgets::framework::IPersistentSettings* ps = dynamic_cast<qf::qmlwidgets::framework::IPersistentSettings*>(dockwidget);
+	if(ps)
+		ps->loadPersistentSettingsRecursively();
 	dockwidget->setParent(0);
 	Super::addDockWidget(area, dockwidget);
 }
@@ -285,6 +288,7 @@ void MainWindow::addPartWidget(PartWidget *widget, const QString &feature_id)
 	}
 	if(widget->featureId().isEmpty())
 		qfWarning() << widget << "adding part widget without featureId set can harm some default functionality.";
+	//qfWarning() << widget->featureId() << widget;
 	widget->loadPersistentSettingsRecursively();
 	centralWidget()->addPartWidget(widget);
 }

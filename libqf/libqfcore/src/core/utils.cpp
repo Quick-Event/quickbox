@@ -128,7 +128,7 @@ int Utils::findCaption(const QString &caption_format, int from_ix, QString *capt
 	return -1;
 }
 
-QSet<QString> Utils::findCaptions(const QString caption_format)
+QSet<QString> Utils::findCaptions(const QString &caption_format)
 {
 	QSet<QString> ret;
 	QRegExp rx;
@@ -162,7 +162,7 @@ QString Utils::replaceCaptions(const QString format_str, const QVariantMap &repl
 	return ret;
 }
 
-QString Utils::removeJsonComments(const QString json_str)
+QString Utils::removeJsonComments(const QString &json_str)
 {
 	// http://blog.ostermiller.org/find-comment
 	QString ret = json_str;

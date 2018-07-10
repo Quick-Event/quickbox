@@ -163,6 +163,9 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 			ok = false;
 			//QObject::connect(m_currentlyLoadedComponent, &QQmlComponent::statusChanged, this, &PluginLoader::continueLoading);
 		}
+		else if(!c->isReady()) {
+			qfError() << "Component is not ready!" << c->errorString();
+		}
 		else {
 			ok = loadPluginComponent(c, manifest);
 		}
@@ -211,106 +214,7 @@ bool PluginLoader::loadPluginComponent(QQmlComponent *plugin_component, PluginMa
 	}
 	return ret;
 }
-#if 0
-void PluginLoader::loadNextPlugin()
-{
-	QQmlEngine *qe = Application::instance()->qmlEngine();
-	QF_ASSERT(qe != nullptr, "Qml engine is NULL", return);
 
-	m_currentlyLoadedFeatureId = QString();
-	QMapIterator<QString, PluginManifest*> it(m_manifestsToLoad);
-	while (it.hasNext()) {
-		it.next();
-		PluginManifest *manifest = it.value();
-		QString feature_id = it.key();
-		QStringList depends_on = manifest->dependsOnFeatureIds();
-		bool dependency_satisfied = true;
-		Q_FOREACH(auto required_feature_id, depends_on) {
-			if(!m_loadedPlugins.contains(required_feature_id)) {
-				dependency_satisfied = false;
-				break;
-			}
-		}
-		if(dependency_satisfied) {
-			QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->homeDir() + "/main.qml");
-			qfInfo() << "Installing feature:" << feature_id << "from:" << plugin_loader_url.toString();
-			m_currentlyLoadedFeatureId = feature_id;
-			m_currentlyLoadedComponent = new QQmlComponent(qe, plugin_loader_url, QQmlComponent::PreferSynchronous);
-			if(m_currentlyLoadedComponent->isLoading()) {
-				QObject::connect(m_currentlyLoadedComponent, &QQmlComponent::statusChanged, this, &PluginLoader::continueLoading);
-			}
-			else {
-				continueLoading();
-			}
-			break;
-		}
-	}
-	if(!m_manifestsToLoad.isEmpty() && m_currentlyLoadedFeatureId.isEmpty()) {
-		qfError() << "Features not installed due to unsatisfied dependeces:";
-		QMutableMapIterator<QString, PluginManifest*> it(m_manifestsToLoad);
-		while (it.hasNext()) {
-			it.next();
-			PluginManifest *manifest = it.value();
-			QString feature_id = it.key();
-			QStringList depends_on = manifest->dependsOnFeatureIds();
-			qfError() << "\t!!!" << feature_id << "depends on:" << depends_on.join(", ");
-			QF_SAFE_DELETE(manifest);
-		}
-	}
-	if(m_currentlyLoadedFeatureId.isEmpty()) {
-		emit loadingFinished();
-	}
-}
-
-void PluginLoader::continueLoading()
-{
-	qfLogFuncFrame() << "feature id:" << m_currentlyLoadedFeatureId << "component:" << m_currentlyLoadedComponent;
-	PluginManifest *manifest = m_manifestsToLoad.take(m_currentlyLoadedFeatureId);
-	QF_ASSERT(manifest != nullptr, "internal error", return);
-	QF_ASSERT(m_currentlyLoadedComponent != nullptr, "internal error", return);
-
-	if(m_currentlyLoadedComponent->isReady()) {
-		Application *app = Application::instance();
-		app->clearQmlErrorList();
-
-		Plugin *plugin = nullptr;
-		QObject *root = m_currentlyLoadedComponent->beginCreate(app->qmlEngine()->rootContext());
-		if(root) {
-			plugin = qobject_cast<Plugin*>(root);
-			if(plugin) {
-				//qfInfo() << "set manifest:" << manifest << "to plugin:" << plugin;
-				plugin->setManifest(manifest);
-			}
-			else {
-				qfError() << "Loaded component is not a kind of Plugin:" << root << m_currentlyLoadedComponent->url().toString();
-			}
-			m_currentlyLoadedComponent->completeCreate();
-		}
-		if(!plugin) {
-			qfError() << "Error creating plugin:" << m_currentlyLoadedComponent->url().toString();
-			qfError() << m_currentlyLoadedComponent->errorString();
-		}
-		else {
-			plugin->setParent(mainWindow());
-			m_loadedPlugins[m_currentlyLoadedFeatureId] = plugin;
-		}
-
-		if(app->qmlErrorList().count()) {
-			qfError() << "Feature:" << m_currentlyLoadedFeatureId << "install ERROR";
-		}
-		else {
-			qfInfo() << "Feature:" << m_currentlyLoadedFeatureId << "install SUCCESS";
-			emit plugin->installed();
-		}
-	}
-	else {
-		qfError() << "Status:" << m_currentlyLoadedComponent->status() << "error:" << m_currentlyLoadedComponent->errorString();
-	}
-	//manifest->deleteLater();
-	QF_SAFE_DELETE(m_currentlyLoadedComponent);
-	QMetaObject::invokeMethod(this, "loadNextPlugin", Qt::QueuedConnection);
-}
-#endif
 MainWindow *PluginLoader::mainWindow()
 {
 	MainWindow *ret = qobject_cast<MainWindow*>(this->parent());

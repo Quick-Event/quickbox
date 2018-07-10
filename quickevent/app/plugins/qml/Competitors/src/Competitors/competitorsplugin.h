@@ -40,7 +40,9 @@ public:
 	qf::qmlwidgets::framework::PartWidget *partWidget() {return m_partWidget;}
 
 	Q_INVOKABLE QObject* createCompetitorDocument(QObject *parent);
+	Q_INVOKABLE int editCompetitor(int id, int mode);
 
+	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
 	Q_SIGNAL void competitorEdited(); // used to clear caches with competitors
 
 	Q_SIGNAL void nativeInstalled();
@@ -51,7 +53,7 @@ public:
 private:
 	Q_SLOT void onInstalled();
 	void onRegistrationsDockVisibleChanged(bool on = true);
-	void onDbEventNotify(const QString &domain, const QVariant &payload);
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::qmlwidgets::framework::DockWidget *m_registrationsDockWidget = nullptr;

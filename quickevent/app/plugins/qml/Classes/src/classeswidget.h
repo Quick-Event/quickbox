@@ -35,8 +35,10 @@ private:
 	void edit_courses();
 	void edit_codes();
 
+	void import_ocad_txt();
 	void import_ocad_v8();
-	void import_ocad_iofxml();
+	void import_ocad_iofxml_2();
+	void import_ocad_iofxml_3();
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();

@@ -42,8 +42,8 @@ public:
 	Q_INVOKABLE qf::qmlwidgets::Action *addMenuInto(const QString &id, const QString &text);
 	Q_INVOKABLE qf::qmlwidgets::Action *addMenuAfter(const QString &id, const QString &text);
 	Q_INVOKABLE qf::qmlwidgets::Action *addMenuBefore(const QString &id, const QString &text);
-	Q_INVOKABLE void addSeparatorInto();
-	Q_INVOKABLE void addSeparatorBefore();
+	Q_INVOKABLE qf::qmlwidgets::Action *addSeparatorInto(const QString &id = QString());
+	Q_INVOKABLE qf::qmlwidgets::Action *addSeparatorBefore(const QString &id = QString());
 private:
 	QWidget* parentMenu();
 };

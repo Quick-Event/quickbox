@@ -1,10 +1,11 @@
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
-import "qrc:/quickevent/js/ogtime.js" as OGTime
+import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
 	objectName: "root"
+	property var options
 
 	property string reportTitle: qsTr("Results by classes")
 
@@ -30,8 +31,8 @@ Report {
 
 	width: 210
 	height: 297
-	hinset: 5
-	vinset: 5
+	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
@@ -77,7 +78,7 @@ Report {
 							textFn: function() { return qsTr("climb: ") + detail.rowData("courses.climb");}
 						}
 					}
-					//expandChildrenFrames: true
+					//expandChildFrames: true
 					Band {
 						id: runnersBand
 						objectName: "runnersBand"
@@ -94,10 +95,7 @@ Report {
 								width: 10
 								halign: Frame.AlignRight
 								textFn: function() {
-									var pos = runnersDetail.rowData("pos");
-									if(pos)
-										return pos + ".";
-									return "";
+									return runnersDetail.rowData("pos");
 								}
 							}
 							Cell {

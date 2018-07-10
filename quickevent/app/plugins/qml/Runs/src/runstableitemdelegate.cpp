@@ -3,7 +3,7 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/og/timems.h>
+#include <quickevent/core/og/timems.h>
 
 #include <qf/qmlwidgets/tableview.h>
 
@@ -18,16 +18,16 @@
 namespace qfs = qf::core::sql;
 
 RunsTableItemDelegate::RunsTableItemDelegate(qf::qmlwidgets::TableView * parent)
-	: Super(parent)
+	: Super(parent), m_classStart(), m_classInterval()
 {
 }
 
-void RunsTableItemDelegate::setHighlightedClassId(int class_id)
+void RunsTableItemDelegate::setHighlightedClassId(int class_id, int stage_id)
 {
-	if(m_highlightedClassId == class_id)
+	if(m_highlightedClassId == class_id && m_stageId == stage_id)
 		return;
+	m_stageId = stage_id;
 	m_highlightedClassId = 0;
-	int stage_id = RunsWidget::eventPlugin()->currentStageId();
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("classdefs", "startTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
 			.from("classdefs")
@@ -54,7 +54,7 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 				auto cd = tm->columnDefinition(index.column());
 				if(cd.matchesSqlId(QStringLiteral("runs.startTimeMs"))) {
 					QVariant stime_v = m->data(index, Qt::EditRole);
-					quickevent::og::TimeMs stime = stime_v.value<quickevent::og::TimeMs>();
+					quickevent::core::og::TimeMs stime = stime_v.value<quickevent::core::og::TimeMs>();
 					if(!stime.isValid())
 						break;
 
@@ -66,7 +66,7 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 					QString club = m->data(index.sibling(index.row(), reg_col), Qt::EditRole).toString().mid(0, 3).trimmed();
 					QString prev_club;
 					if(index.row() > 0) {
-						stime = m->data(index.sibling(index.row() - 1, index.column()), Qt::EditRole).value<quickevent::og::TimeMs>();
+						stime = m->data(index.sibling(index.row() - 1, index.column()), Qt::EditRole).value<quickevent::core::og::TimeMs>();
 						prev_start_ms = stime.msec();
 						prev_club = m->data(index.sibling(index.row() - 1, reg_col), Qt::EditRole).toString().mid(0, 3).trimmed();
 					}

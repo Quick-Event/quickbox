@@ -1,7 +1,7 @@
-include(top.pri)
+include(utils.pri)
 
 #version check qt
-!minQtVersion(5, 2, 1) {
+!minQtVersion(5, 3, 1) {
 	message("Cannot build QuickBox with Qt version $${QT_VERSION}.")
 	error("Use at least Qt 5.3.1.")
 }
@@ -24,12 +24,22 @@ else:qsqlmon {
 		tools \
 
 }
-else {
+else:quickshow-android {
 	SUBDIRS += \
-		libsiut \
-		tools \
-		quickevent \
 		quickshow \
 
 }
+else {
+	SUBDIRS += \
+		libsiut \
+		libquickevent \
+		quickevent \
+		quickhttpd \
+		quickshow \
+		tools \
+
+}
+
+OTHER_FILES += \
+	.travis.yml
 

@@ -35,13 +35,15 @@ bool Query::prepare(const QString &query, bool throw_exc)
 bool Query::exec(const QString &query, bool throw_exc)
 {
 	qfLogFuncFrame() << query;
+	//qfWarning() << query;
 	bool ret = Super::exec(query);
 	if(!ret) {
 		if(throw_exc)
 			QF_EXCEPTION(query + '\n' + lastError().text());
 		qfError() << query << '\n' << lastError().text();
 	}
-	//qfDebug() << "return:" << ret;
+	if(isSelect())
+		m_demangledRecord = QSqlRecord();
 	return ret;
 }
 
@@ -59,21 +61,25 @@ bool Query::exec(bool throw_exc)
 			QF_EXCEPTION(lastError().text());
 		qfWarning() << lastError().text();
 	}
+	if(isSelect())
+		m_demangledRecord = QSqlRecord();
 	return ret;
 }
 
 QSqlRecord Query::record() const
 {
-	QSqlRecord ret = Super::record();
-	for(int i=0; i<ret.count(); i++) {
-		QSqlField fld = ret.field(i);
-		QString n = QueryBuilder::unmangleLongFieldName(fld.name());
-		if(n != fld.name()) {
-			fld.setName(n);
-			ret.replace(i, fld);
+	if(m_demangledRecord.isEmpty()) {
+		m_demangledRecord = Super::record();
+		for(int i=0; i<m_demangledRecord.count(); i++) {
+			QSqlField fld = m_demangledRecord.field(i);
+			QString n = QueryBuilder::unmangleLongFieldName(fld.name());
+			if(n != fld.name()) {
+				fld.setName(n);
+				m_demangledRecord.replace(i, fld);
+			}
 		}
 	}
-	return ret;
+	return m_demangledRecord;
 }
 
 int Query::fieldIndex(const QString &field_name) const

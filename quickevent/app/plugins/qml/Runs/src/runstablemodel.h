@@ -1,29 +1,35 @@
 #ifndef RUNSTABLEMODEL_H
 #define RUNSTABLEMODEL_H
 
-#include <quickevent/og/sqltablemodel.h>
+#include <quickevent/core/og/sqltablemodel.h>
 
-class RunsTableModel : public quickevent::og::SqlTableModel
+class RunsTableModel : public quickevent::core::og::SqlTableModel
 {
 	Q_OBJECT
 private:
-	typedef quickevent::og::SqlTableModel Super;
+	typedef quickevent::core::og::SqlTableModel Super;
 public:
 	enum Columns {
-		col_runs_offRace = 0,
+		col_runs_isRunning = 0,
 		col_runs_id,
+		col_relays_name,
+		col_runs_leg,
 		col_classes_name,
+		col_startNumber,
 		col_competitors_siId,
 		col_competitorName,
 		col_registration,
+		col_runs_license,
+		col_runs_ranking,
 		col_runs_siId,
 		col_runs_startTimeMs,
 		col_runs_timeMs,
 		col_runs_finishTimeMs,
 		col_runs_notCompeting,
-		col_runs_cardLent,
+		col_runs_cardRentRequested,
+		col_cardInLentTable,
 		col_runs_cardReturned,
-		col_runs_misPunch,
+		col_disqReason,
 		col_runs_disqualified,
 		col_competitors_note,
 		col_COUNT
@@ -51,6 +57,7 @@ public:
 	void switchStartTimes(int r1, int r2);
 	Q_SIGNAL void startTimesSwitched(int id1, int id2, const QString &err_msg);
 	Q_SIGNAL void runnerSiIdEdited();
+	Q_SIGNAL void badDataInput(const QString &message);
 private:
 	void onDataChanged(const QModelIndex &top_left, const QModelIndex &bottom_right, const QVector<int> &roles);
 };

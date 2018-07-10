@@ -60,6 +60,7 @@ void HeaderView::contextMenuEvent(QContextMenuEvent *event)
 	QAction a_sep(QString(), nullptr);
 	a_sep.setSeparator(true);
 	QAction a_resize_section(tr("Resize section to contents"), nullptr);
+	//a_resize_section.setShortcut(tr("Ctrl-T", "Resize section to contents"));
 	QAction a_resize_sections(tr("Resize all sections to contents"), nullptr);
 	QAction a_hide_section(tr("Hide section"), nullptr);
 	QAction a_show_all_sections(tr("Show all sections"), nullptr);

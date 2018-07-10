@@ -29,6 +29,7 @@ NetworkReply::~NetworkReply()
 		m_reply->deleteLater();
 #endif
 	}
+	emit downloadProgress(QString(), 0, 0);
 }
 
 void NetworkReply::setReply(QNetworkReply *repl)
@@ -50,7 +51,7 @@ QString NetworkReply::errorString() const
 {
 	QString ret;
 	if(m_reply) {
-		ret = m_reply->errorString();
+		ret = QString::number(m_reply->error()) + " - " + m_reply->errorString();
 	}
 	return ret;
 }
@@ -86,6 +87,9 @@ void NetworkReply::downloadProgress_helper(qint64 bytes_received, qint64 bytes_t
 void NetworkReply::finished_helper()
 {
 	if(m_reply) {
+		if(m_reply->error() != QNetworkReply::NoError) {
+			qfWarning() << "Network reply error:" << errorString();
+		}
 		emit finished(m_reply->error() == QNetworkReply::NoError);
 		emit downloadProgress(m_reply->url().toString(), 100, 100);
 	}

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RelayWidget</class>
+ <widget class="QWidget" name="RelayWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>722</width>
+    <height>590</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>5</number>
+   </property>
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Relay</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&amp;Name</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_6</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&amp;Class</string>
+        </property>
+        <property name="buddy">
+         <cstring>cbxClass</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>C&amp;lub</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_6</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>No&amp;te</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_8</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="qf::qmlwidgets::ForeignKeyComboBox" name="cbxClass">
+        <property name="dataId" stdset="0">
+         <string notr="true">relays.classId</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_6">
+        <property name="dataId" stdset="0">
+         <string notr="true">relays.name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_7">
+        <property name="dataId" stdset="0">
+         <string notr="true">relays.club</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Nu&amp;mber</string>
+        </property>
+        <property name="buddy">
+         <cstring>lineEdit_6</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="qf::qmlwidgets::SpinBox" name="spinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="maximum">
+         <number>9999999</number>
+        </property>
+        <property name="dataId" stdset="0">
+         <string>relays.number</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="3">
+       <widget class="qf::qmlwidgets::LineEdit" name="lineEdit_8">
+        <property name="dataId" stdset="0">
+         <string notr="true">relays.note</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Legs</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btAddLeg">
+        <property name="toolTip">
+         <string>Add leg Ctrl-Ins</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</normaloff>:/qf/qmlwidgets/images/flat/insert-row.svg</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Ins</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btRemoveLeg">
+        <property name="toolTip">
+         <string>Remove leg Ctrl-Del</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</normaloff>:/qf/qmlwidgets/images/flat/delete-row.svg</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Del</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btMoveLegDown">
+        <property name="toolTip">
+         <string>Move leg down Ctrl-D</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/down.svg</normaloff>:/qf/qmlwidgets/images/flat/down.svg</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+D</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btMoveLegUp">
+        <property name="toolTip">
+         <string>Move leg up Ctrl-U</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/up.svg</normaloff>:/qf/qmlwidgets/images/flat/up.svg</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+U</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btReloadLegsTable">
+        <property name="toolTip">
+         <string>Reload Ctrl+R</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+          <normaloff>:/qf/qmlwidgets/images/flat/reload.svg</normaloff>:/qf/qmlwidgets/images/flat/reload.svg</iconset>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+R</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="qf::qmlwidgets::TableView" name="tblLegs"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qf::qmlwidgets::TableView</class>
+   <extends>QTableView</extends>
+   <header location="global">qf/qmlwidgets/tableview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::LineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">qf/qmlwidgets/lineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::ForeignKeyComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">qf/qmlwidgets/combobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>qf::qmlwidgets::SpinBox</class>
+   <extends>QSpinBox</extends>
+   <header location="global">qf/qmlwidgets/spinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>cbxClass</tabstop>
+  <tabstop>spinBox</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>lineEdit_6</tabstop>
+  <tabstop>lineEdit_8</tabstop>
+  <tabstop>btAddLeg</tabstop>
+  <tabstop>btRemoveLeg</tabstop>
+  <tabstop>btMoveLegDown</tabstop>
+  <tabstop>btMoveLegUp</tabstop>
+  <tabstop>btReloadLegsTable</tabstop>
+  <tabstop>tblLegs</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,52 @@
+25.01.07	sr
+
+Reading the backup memory of SI-stations series 7/8
+---------------------------------------------------
+
+communication must be established
+
+- read stations backup memory pointer
+		instruction 0x83, see PCprog
+		
+- check out if there is "memory overflow"
+		instruction 0x83
+			0x83 0x3D 0x01
+				memory overflow != 0x00
+
+- read out backup memory
+		read oldest data first
+		
+		memory overflow: start at address "memory pointer+1", read complete memory
+		no memory overflow: start at address 0x000100, read until memory pointer address is achieved
+		
+		
+read stored SI-card data
+
+- read in block sizes of 128 byte
+
+- check out first block to determine card type
+		use "characteristic string" to detect card type
+		
+		"0xED 0xED 0xED 0xED"		--> SI-Card6 or SI-Card6*
+					determine SI-Card6 or SI-Card6*
+							a) global decision in event, flag in stations are set
+							b) permanent SI-C6*, card number > 16.000.000
+							
+					expect
+							3 blocks of data (SI-Card6)
+							or
+							8 blocks of data (SI-Card6*)
+							
+		"0xEA 0xEA 0xEA 0xEA"		--> SI-Card8/9/p/t
+		
+					expect
+							2 blocks of data
+							
+		other case							--> SI-Card5
+		
+					expect
+							1 block of data
+							
+- check out each of the following blocks for the "characteristic string" to detect incomplete stored SI-Card6/6*/8/9
+
+	>>> problem: in case of incomplete data SI-Card5 can be treated as data from SI-Card6/6*/8/9/p/t

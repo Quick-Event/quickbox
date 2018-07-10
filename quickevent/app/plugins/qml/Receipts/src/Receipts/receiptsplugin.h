@@ -40,6 +40,9 @@ public:
 	QVariantMap readCardTablesData(int card_id);
 	Q_INVOKABLE QVariantMap receiptTablesData(int card_id);
 
+	QString currentReceiptPath();
+	void setCurrentReceiptPath(const QString &path);
+
 	void setReceiptsPrinterOptions(const ReceiptsPrinterOptions &opts);
 	ReceiptsPrinter* receiptsPrinter();
 private:
@@ -49,8 +52,8 @@ private:
 
 	ReceiptsPrinterOptions receiptsPrinterOptions();
 
-	void previewReceipt_classic(int card_id);
-	void printReceipt_classic(int card_id);
+	void previewReceipt(int card_id, const QString &receipt_path);
+	void printReceipt(int card_id, const QString &receipt_path);
 	QList<QByteArray> createPrinterData(const QDomElement &body, const ReceiptsPrinterOptions &printer_options);
 
 	class DirectPrintContext;

@@ -105,13 +105,13 @@ public:
 	static int toAMms(int time_msec);
 };
 
-class SIUT_DECL_EXPORT SIMessageTransmitRecord : public SIMessageBase
+class SIUT_DECL_EXPORT SIMessageTransmitPunch : public SIMessageBase
 {
-	Q_DECLARE_TR_FUNCTIONS(SIMessageTransmitRecord)
+	Q_DECLARE_TR_FUNCTIONS(SIMessageTransmitPunch)
 private:
 	typedef SIMessageBase Super;
 public:
-	SIMessageTransmitRecord(const SIMessageData &data);
+	SIMessageTransmitPunch(const SIMessageData &data);
 
 	int cardNumber() const {return m_cardNumber;}
 	SIMessageCardReadOut::Punch punch() const {return m_punch;}

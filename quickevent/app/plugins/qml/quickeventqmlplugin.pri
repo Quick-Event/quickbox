@@ -19,28 +19,9 @@ OTHER_FILES += \
 QML_IMPORT_PATH += \
 	$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME/$$PLUGIN_NAME
 
-unix {
-	CONFIG(debug, debug|release) {
-		# T flag is important, qml symlink in SRC/qml dir is created on second install without it
-		qmlfiles.commands = \
-			ln -sfT $$PLUGIN_TOP_SRCDIR $$DESTDIR/$$PLUGIN_NAME
-	}
-	else {
-		qmlfiles.commands = \
-			rsync -r $$PLUGIN_TOP_SRCDIR/ $$DESTDIR/$$PLUGIN_NAME
-	}
-}
-win32 {
-	#mkdir not needed for windows
-	qmlfiles.commands = \
-		xcopy $$shell_path($$PLUGIN_TOP_SRCDIR) $$shell_path($$DESTDIR/$$PLUGIN_NAME) /E /Y /I
-}
-
-#qmlfiles.depends = qmlfiles_conf
-
-QMAKE_EXTRA_TARGETS += qmlfiles
-#QMAKE_EXTRA_TARGETS += qmlfiles_conf
-PRE_TARGETDEPS += qmlfiles
+SRC_DATA_DIR = $$PLUGIN_TOP_SRCDIR
+DEST_DATA_DIR = $$DESTDIR/$$PLUGIN_NAME
+include ( $$QF_PROJECT_TOP_SRCDIR/datafiles.pri )
 
 }
 else {
@@ -49,18 +30,26 @@ include ( $$QF_PROJECT_TOP_SRCDIR/qmlplugin.pri )
 
 QT += qml
 
-INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include
-INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include
+INCLUDEPATH += \
+	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
+	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
+	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
+	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+
+message ($$PLUGIN_NAME INCLUDEPATH $$INCLUDEPATH)
 
 LIBS += \
     -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
 
-LIBS += -lqfcore -lqfqmlwidgets
+unix: LIBS +=  \
+	-Wl,-rpath,\'\$\$ORIGIN\'  \
 
-INCLUDEPATH += \
-    $$PWD/../../../lib/include \
 
-LIBS += -lquickevent
+LIBS += \
+	-lqfcore \
+	-lqfqmlwidgets \
+	-lquickeventcore \
+	-lquickeventgui \
 
 }
 

@@ -38,6 +38,8 @@ private:
 
 	void updateColumnDefinitionFromQml(int col_ix);
 
+	void onQueryBuilderChanged();
+
 	QQmlListProperty<TableModelColumn> columns();
 	static void addColumnFunction(QQmlListProperty<TableModelColumn> *list_property, TableModelColumn *column);
 	static TableModelColumn* columnAtFunction(QQmlListProperty<TableModelColumn> *list_property, int index);

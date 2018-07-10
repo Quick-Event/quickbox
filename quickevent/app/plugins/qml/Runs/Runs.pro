@@ -11,19 +11,18 @@ CONFIG += c++11 hide_symbols
 DEFINES += RUNSPLUGIN_BUILD_DLL
 
 INCLUDEPATH += \
-    $$PWD/src \
     $$PWD/../Event/include \
-#    $$PWD/../Competitors/include \
+    $$PWD/../Competitors/include \
 
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
-#    -lCompetitorsplugin \
+    -lCompetitorsplugin \
 
 include (src/src.pri)
 
 RESOURCES += \
-#    $${PLUGIN_NAME}.qrc \
+    $${PLUGIN_NAME}.qrc \
 
 OTHER_FILES += \
 	$$PWD/qml/reports/* \

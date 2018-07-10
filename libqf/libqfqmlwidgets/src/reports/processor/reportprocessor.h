@@ -61,7 +61,7 @@ public:
 	/// vymaze vsechna data vznikla predchozimi kompilacemi
 	void reset();
 	//--void setReport(const ReportDocument &doc);
-	void setReport(const QString &rep_file_name, const QVariantMap &report_init_properties = QVariantMap());
+	bool setReport(const QString &rep_file_name, const QVariantMap &report_init_properties = QVariantMap());
 	QUrl reportUrl() const;
 	//--ReportDocument report() {return fReport;}
 	//--ReportDocument& reportRef() {return fReport;}

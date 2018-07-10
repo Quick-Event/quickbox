@@ -11,19 +11,9 @@
 #include <QVariantMap>
 #include <QSqlDriver>
 
-namespace qf {
-namespace core {
-namespace sql {
-class Query;
-class Connection;
-}
-}
-namespace qmlwidgets {
-class Action;
-namespace framework {
-}
-}
-}
+namespace qf { namespace core { namespace sql { class Query; class Connection; }}}
+namespace qf { namespace qmlwidgets { class Action; } }
+namespace qf { namespace qmlwidgets { namespace framework { class DockWidget; }}}
 
 class QComboBox;
 class DbSchema;
@@ -38,7 +28,7 @@ class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Pl
 	Q_PROPERTY(int stageCount READ stageCount)
 	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
 	Q_PROPERTY(bool eventOpen READ isEventOpen NOTIFY eventOpenChanged)
-	Q_PROPERTY(bool dbOpen READ isDbOpen NOTIFY dbOpenChanged)
+	Q_PROPERTY(bool sqlServerConnected READ isSqlServerConnected NOTIFY sqlServerConnectedChanged)
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
@@ -51,7 +41,9 @@ public:
 	static const char *DBEVENT_NOTIFY_NAME;
 	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
 	static const char* DBEVENT_CARD_READ;
+	static const char* DBEVENT_CARD_CHECKED;
 	static const char* DBEVENT_PUNCH_RECEIVED;
+	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
@@ -61,13 +53,17 @@ public:
 	int currentStageId();
 	Q_SIGNAL void currentStageIdChanged(int current_stage);
 
-	Q_INVOKABLE int stageStart(int stage_id);
+	Q_INVOKABLE int stageIdForRun(int run_id);
+
+	Q_INVOKABLE int stageStartMsec(int stage_id);
 	Q_INVOKABLE QDate stageStartDate(int stage_id);
 	Q_INVOKABLE QTime stageStartTime(int stage_id);
 	Q_INVOKABLE QDateTime stageStartDateTime(int stage_id);
 	//Q_INVOKABLE int currentStageStartMsec();
+	int msecToStageStartAM(int si_am_time_sec, int msec = 0, int stage_id = 0);
 
 	//Q_INVOKABLE QVariantMap stageDataMap(int stage_id) {return stageData(stage_id);}
+	void setStageData(int stage_id, const QString &key, const QVariant &value);
 	StageData stageData(int stage_id);
 	Q_SLOT void clearStageDataCache();
 
@@ -80,13 +76,13 @@ public:
 
 	Q_SIGNAL void reloadDataRequest();
 
-	bool isDbOpen() const { return m_dbOpen; }
-	Q_SIGNAL void dbOpenChanged(bool is_open);
+	bool isSqlServerConnected() const { return m_sqlServerConnected; }
+	Q_SIGNAL void sqlServerConnectedChanged(bool is_open);
 
 	Q_SIGNAL void eventOpened(const QString &event_name);
 
-	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &payload = QVariant(), bool loopback = true);
-	Q_SIGNAL void dbEventNotify(const QString &domain, const QVariant &payload);
+	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &data = QVariant(), bool loopback = true);
+	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);
 
 	Q_INVOKABLE QString sqlDriverName();
 
@@ -98,7 +94,7 @@ public:
 	// event wide signals
 	//Q_SIGNAL void editStartListRequest(int stage_id, int class_id, int competitor_id);
 private:
-	void setDbOpen(bool ok);
+	void setSqlServerConnected(bool ok);
 
 	ConnectionType connectionType() const;
 	QStringList existingSqlEventNames() const;
@@ -115,6 +111,8 @@ private:
 
 	//bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
 	void repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn);
+
+	void onServiceDockVisibleChanged(bool on = true);
 private:
 	qf::qmlwidgets::Action *m_actConnectDb = nullptr;
 	qf::qmlwidgets::Action *m_actEvent = nullptr;
@@ -125,10 +123,12 @@ private:
 	qf::qmlwidgets::Action *m_actImportEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditStage = nullptr;
 	Event::EventConfig *m_eventConfig = nullptr;
-	bool m_dbOpen = false;
+	bool m_sqlServerConnected = false;
 	QComboBox *m_cbxStage = nullptr;
 	QMap<int, StageData> m_stageCache;
 	QMap<int, QString> m_classNameCache;
+
+	qf::qmlwidgets::framework::DockWidget *m_servicesDockWidget = nullptr;
 };
 
 }

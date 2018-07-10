@@ -4,7 +4,7 @@
 
 #include "../coursedef.h"
 
-//#include <EventPlugin/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -25,17 +25,15 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
 
 using namespace Classes;
-/*
-static int stageCount()
+
+static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = fwk->plugin(QStringLiteral("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	int stage_count = plugin->property("stageCount").toInt();
-	QF_ASSERT_EX(stage_count > 0, "Stage count == 0!");
-	return stage_count;
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
 }
-*/
+
 ClassesPlugin::ClassesPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -81,8 +79,9 @@ void ClassesPlugin::dropClass(int class_id) throw(qf::core::Exception)
 
 void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << courses;
 	try {
+		bool is_relays = eventPlugin()->eventConfig()->isRelays();
 		qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 		qf::core::sql::Query q;
 		deleteCourses(stage_id);
@@ -126,11 +125,11 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
-				q.bindValue(":note", QString("E%1").arg(stage_id));
+				q.bindValue(":note", QString("E%1 ").arg(stage_id) + cd.classes().join(','));
 				q.exec(qf::core::Exception::Throw);
 				course_id = q.lastInsertId().toInt();
 			}
-			{
+			if(!is_relays) {
 				QString qs = "UPDATE classdefs SET courseId=:courseId WHERE classId=:classId AND stageId=:stageId";
 				q.prepare(qs, qf::core::Exception::Throw);
 				for(auto class_name : cd.classes()) {
@@ -156,11 +155,12 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 		}
 		QMap<int, int> code_to_id;
 		{
-			QString qs = "INSERT INTO codes (code) VALUES (:code)";
+			QString qs = "INSERT INTO codes (code, note) VALUES (:code, :note)";
 			q.prepare(qs, qf::core::Exception::Throw);
 			for(auto code : all_codes) {
 				qfDebug() << "inserting code" << code;
 				q.bindValue(":code", code);
+				q.bindValue(":note", QString("E%1").arg(stage_id));
 				q.exec(qf::core::Exception::Throw);
 				code_to_id[code] = q.lastInsertId().toInt();
 			}

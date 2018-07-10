@@ -251,8 +251,6 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 		if(src.isEmpty()) {
 			/// muze byt jeste v datech, zkus ho nahrat pro aktualni radek
 			QString data_s = data();
-			//QString data_s = nodeText(el);
-			//qfError() << data_s;
 			QByteArray img_data;
 			{
 				DataEncoding encoding = dataEncoding();
@@ -322,7 +320,7 @@ ReportItemImage::PrintResult ReportItemImage::printMetaPaintChildren(ReportItemM
 				if(w > 0 && w < br.width())
 					br.setWidth(w);
 				if(h > 0 && h < br.height())
-					br.setHeight(w);
+					br.setHeight(h);
 				//qfInfo() << "image bounding rect w:" << w << "h:" << h << "designed rect:" << designedRect.toString();
 			}
 			else if(im.isPicture()) {

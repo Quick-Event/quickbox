@@ -1,12 +1,22 @@
 #ifndef CARDREADER_CARDCHECKER_H
 #define CARDREADER_CARDCHECKER_H
 
+#include <quickevent/core/si/checkedcard.h>
+
 #include <qf/core/utils.h>
 
 #include <QObject>
 #include <QVariant>
 
+namespace quickevent { namespace core { namespace si { class ReadCard; }}}
+
 namespace CardReader {
+
+class CppCardChecker
+{
+public:
+	virtual quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card) {Q_UNUSED(read_card) return quickevent::core::si::CheckedCard();}
+};
 
 class CardChecker : public QObject
 {
@@ -25,7 +35,8 @@ public:
 	Q_INVOKABLE int msecIntervalAM(int time1_msec, int time2_msec);
 	Q_INVOKABLE int toAMms(int time_msec);
 	Q_INVOKABLE int toAM(int time_sec);
-	Q_INVOKABLE int stageStartSec();
+	Q_INVOKABLE int stageIdForRun(int run_id);
+	Q_INVOKABLE int stageStartSec(int stage_id);
 	Q_INVOKABLE int startTimeSec(int run_id);
 	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
 

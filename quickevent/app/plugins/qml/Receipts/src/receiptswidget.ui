@@ -49,6 +49,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="chkThisReaderOnly">
+       <property name="toolTip">
+        <string>Print only cards read on this application card reader.</string>
+       </property>
+       <property name="text">
+        <string>This reader only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -60,6 +70,16 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Receipt</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="lstReceipt"/>
      </item>
      <item>
       <widget class="QLabel" name="label">

@@ -25,12 +25,12 @@ public:
 	/// pouziva muj vlastni, pomerne prustrelny kryptovaci mechanismus
 	/// @return libovolny string zakrypti do stringu obsahujiciho znaky 0-9, A-Z, a-z
 	/// pokud je to, co se crypti moc kratky, je to docpano vatou tak, aby zakrypteny string mel minimalne \a min_length znaku, muze mit o jeden vic
-	QByteArray encrypt(const QByteArray &data, int min_length = 16) const Q_REQUIRED_RESULT;
+	Q_REQUIRED_RESULT QByteArray encrypt(const QByteArray &data, int min_length = 16) const;
 
 	/// inverzni operace k funkci crypt()
-	QByteArray decrypt(const QByteArray &data) const Q_REQUIRED_RESULT;
+	Q_REQUIRED_RESULT QByteArray decrypt(const QByteArray &data) const;
 private:
-	QByteArray decodeArray(const QByteArray &ba) const Q_REQUIRED_RESULT;
+	Q_REQUIRED_RESULT QByteArray decodeArray(const QByteArray &ba) const;
 protected:
 	Generator m_generator;
 };

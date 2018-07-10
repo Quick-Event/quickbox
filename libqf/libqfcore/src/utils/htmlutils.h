@@ -16,8 +16,8 @@ public:
 	class QFCORE_DECL_EXPORT FromHtmlListOptions : public QVariantMap
 	{
 		QF_VARIANTMAP_FIELD(QString, d, setD, ocumentTitle)
+		QF_VARIANTMAP_FIELD(QString, e, setE, ncoding)
 		QF_VARIANTMAP_FIELD(QString, s, setS, tyle)
-		QF_VARIANTMAP_FIELD2(QString, e, setE, ncoding, "utf8")
 	private:
 		FromHtmlListOptions(int) {}
 	public:
