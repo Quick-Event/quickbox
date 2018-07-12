@@ -10,14 +10,23 @@
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
+#include <qf/core/sql/querybuilder.h>
+#include <qf/core/sql/query.h>
+#include <qf/core/sql/connection.h>
 
 #include <QFile>
 #include <QSettings>
 #include <QStandardPaths>
 
+namespace qfc = qf::core;
+namespace qfw = qf::qmlwidgets;
+namespace qfd = qf::qmlwidgets::dialogs;
+//namespace qfm = qf::core::model;
+namespace qfs = qf::core::sql;
+
 namespace services {
 
-static auto SETTING_KEY_FILE_NAME = QStringLiteral("fileName");
+//static auto SETTING_KEY_FILE_NAME = QStringLiteral("fileName");
 
 EmmaClient::EmmaClient(QObject *parent)
 	: Super(EmmaClient::serviceName(), parent)
@@ -30,12 +39,65 @@ QString EmmaClient::serviceName()
 	return QStringLiteral("EmmaClient");
 }
 
-void EmmaClient::setFileName(const QString &fn)
+void EmmaClient::exportRadioCodes()
 {
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	settings.setValue(SETTING_KEY_FILE_NAME, fn);
-	m_fileName = fn;
+	QString event_name = eventPlugin()->eventName();
+	EmmaClientSettings ss = settings();
+	QFile f_splitnames(ss.exportDir() + '/' + event_name + ".splitnames.txt");
+	if(!f_splitnames.open(QFile::WriteOnly)) {
+		qfError() << "Canot open file:" << f_splitnames.fileName() << "for writing.";
+		return;
+	}
+	qfInfo() << "EmmaClient: exporting code names to" << f_splitnames.fileName();
+	QFile f_splitcodes(ss.exportDir() + '/' + event_name + ".splitcodes.txt");
+	if(!f_splitcodes.open(QFile::WriteOnly)) {
+		qfError() << "Canot open file:" << f_splitcodes.fileName() << "for writing.";
+		return;
+	}
+	qfInfo() << "EmmaClient: exporting codes to" << f_splitcodes.fileName();
+
+	QTextStream ts_names(&f_splitnames);
+	QTextStream ts_codes(&f_splitcodes);
+
+	int current_stage = eventPlugin()->currentStageId();
+	qfs::QueryBuilder qb_classes;
+	qb_classes.select2("classes", "name")
+			.select2("classdefs", "courseId")
+			.from("classes")
+			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" + QString::number(current_stage))
+			.orderBy("classes.name");
+	qfs::Query q1;
+	q1.execThrow(qb_classes.toString());
+	while(q1.next()) {
+		int course_id = q1.value("courseId").toInt();
+		qfs::QueryBuilder qb_codes;
+		qb_codes.select2("codes", "*")
+				//.select2("coursecodes", "position")
+				.from("coursecodes")
+				.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qfs::QueryBuilder::INNER_JOIN)
+				.where("coursecodes.courseId=" + QString::number(course_id))
+				.orderBy("coursecodes.position");
+		//qfInfo() << qb_codes.toString();
+
+		QString class_name = q1.value("classes.name").toString();
+		QVector<int> codes;
+		qfs::Query q2;
+		q2.execThrow(qb_codes.toString());
+		while(q2.next()) {
+			int code = q2.value("codes.code").toInt();
+			codes << code;
+		}
+		if(!codes.isEmpty()) {
+			ts_names << class_name;
+			ts_codes << class_name;
+			for(int code : codes) {
+				ts_names << ' ' << QStringLiteral("cn%1").arg(code);
+				ts_codes << ' ' << code;
+			}
+			ts_names << " finish\n";
+			ts_codes << ' ' << 2 << '\n';
+		}
+	}
 }
 
 void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
@@ -71,7 +133,9 @@ void EmmaClient::onCardChecked(const QVariantMap &data)
 		s += QStringLiteral("DNF ");
 	}
 	qfInfo() << "EmmaClient: " << s;
-	QFile file(m_fileName);
+	EmmaClientSettings ss = settings();
+	QString fn = ss.exportDir() + '/' + ss.fileName();
+	QFile file(fn);
 	if(!file.open(QIODevice::WriteOnly | QIODevice::Append)) {
 		qfError() << "Cannot open file" << file.fileName() << "for writing, stopping service";
 		stop();
@@ -85,17 +149,6 @@ qf::qmlwidgets::framework::DialogWidget *EmmaClient::createDetailWidget()
 {
 	auto *w = new EmmaClientWidget();
 	return w;
-}
-
-void EmmaClient::loadSettings()
-{
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	m_fileName = settings.value(SETTING_KEY_FILE_NAME).toString();
-	if(m_fileName.isEmpty()) {
-		m_fileName = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/FIN_LIVE.txt";
-	}
-	qfInfo() << "EmmaClient file name:" << fileName();
 }
 
 } // namespace services

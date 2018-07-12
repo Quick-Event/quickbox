@@ -20,9 +20,10 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 
 	ResultsExporter *svc = service();
 	if(svc) {
-		ui->edExportDir->setText(svc->exportDir());
-		ui->edExportInterval->setValue(svc->exportIntervalSec());
-		ui->edWhenFinishedRunCmd->setText(svc->whenFinishedRunCmd());
+		ResultsExporterSettings ss = svc->settings();
+		ui->edExportDir->setText(ss.exportDir());
+		ui->edExportInterval->setValue(ss.exportIntervalSec());
+		ui->edWhenFinishedRunCmd->setText(ss.whenFinishedRunCmd());
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &ResultsExporterWidget::onBtChooseExportDir);
@@ -36,9 +37,12 @@ ResultsExporterWidget::~ResultsExporterWidget()
 void ResultsExporterWidget::onBtChooseExportDir()
 {
 	ResultsExporter *svc = service();
-	QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), svc->exportDir(), QFileDialog::ShowDirsOnly);
-	if(!dir.isEmpty())
-		ui->edExportDir->setText(dir);
+	if(svc) {
+		ResultsExporterSettings ss = svc->settings();
+		QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), ss.exportDir(), QFileDialog::ShowDirsOnly);
+		if(!dir.isEmpty())
+			ui->edExportDir->setText(dir);
+	}
 }
 
 bool ResultsExporterWidget::acceptDialogDone(int result)
@@ -53,10 +57,11 @@ bool ResultsExporterWidget::acceptDialogDone(int result)
 		}
 		ResultsExporter *svc = service();
 		if(svc) {
-			svc->setExportDir(dir);
-			svc->setExportIntervalSec(ui->edExportInterval->value());
-			svc->setWhenFinishedRunCmd(ui->edWhenFinishedRunCmd->text());
-			svc->loadSettings();
+			ResultsExporterSettings ss = svc->settings();
+			ss.setExportDir(dir);
+			ss.setExportIntervalSec(ui->edExportInterval->value());
+			ss.setWhenFinishedRunCmd(ui->edWhenFinishedRunCmd->text());
+			svc->setSettings(ss);
 		}
 	}
 	return true;

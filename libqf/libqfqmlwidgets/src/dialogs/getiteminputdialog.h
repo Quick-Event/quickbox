@@ -20,8 +20,12 @@ public:
 	~GetItemInputDialog() Q_DECL_OVERRIDE;
 public:
 	void setLabelText(const QString &text);
-	void setItems(const QStringList &items);
+	void setItems(const QStringList &items, const QVariantList &data = QVariantList());
 	int currentItemIndex();
+
+	QComboBox *comboBox() {return m_comboBox;}
+	QString currentText();
+	QVariant currentData();
 	void setCurrentItemIndex(int ix);
 
 	static int getItem(QWidget *parent, const QString &title, const QString &label_text, const QStringList &items, int current_item_index = -1);

@@ -20,9 +20,11 @@ public:
 	explicit EmmaClientWidget(QWidget *parent = 0);
 	~EmmaClientWidget();
 private:
-	void onBtChooseFileClicked();
+	void onBtChooseExportDirClicked();
+	void onBtExportSplitsClicked();
 	bool acceptDialogDone(int result) override;
 	EmmaClient* service();
+	void saveSettings();
 private:
 	Ui::EmmaClientWidget *ui;
 };

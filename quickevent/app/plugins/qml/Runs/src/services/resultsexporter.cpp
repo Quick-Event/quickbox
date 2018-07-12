@@ -21,10 +21,6 @@
 
 namespace services {
 
-static auto KEY_EXPORT_DIR = QStringLiteral("exportDir");
-static auto KEY_EXPORT_INTERVAL = QStringLiteral("exportInterval");
-static auto KEY_WHEN_FINSHED_RUN_CMD = QStringLiteral("whenFinishedRunCmd");
-
 ResultsExporter::ResultsExporter(QObject *parent)
 	: Super(ResultsExporter::serviceName(), parent)
 {
@@ -32,7 +28,7 @@ ResultsExporter::ResultsExporter(QObject *parent)
 	connect(m_exportTimer, &QTimer::timeout, this, &ResultsExporter::onExportTimerTimeOut);
 	connect(this, &ResultsExporter::statusChanged, [this](Status status) {
 		if(status == Status::Running) {
-			if(m_exportIntervalSec > 0) {
+			if(settings().exportIntervalSec() > 0) {
 				onExportTimerTimeOut();
 				m_exportTimer->start();
 			}
@@ -47,7 +43,7 @@ QString ResultsExporter::serviceName()
 {
 	return QStringLiteral("ResultsExporter");
 }
-
+/*
 void ResultsExporter::setExportDir(const QString &s)
 {
 	QSettings settings;
@@ -71,17 +67,23 @@ void ResultsExporter::setWhenFinishedRunCmd(const QString &s)
 	settings.setValue(KEY_WHEN_FINSHED_RUN_CMD, s);
 	m_whenFinishedRunCmd = s;
 }
-
+*/
 void ResultsExporter::onExportTimerTimeOut()
 {
 	if(status() != Status::Running)
 		return;
-	qfInfo() << "generate results to:" << exportDir();
+	ResultsExporterSettings ss = settings();
+	if(!QDir().mkpath(ss.exportDir())) {
+		qfError() << "Cannot create export dir:" << ss.exportDir();
+		stop();
+		return;
+	}
+	qfInfo() << "ResultsExporter export dir:" << ss.exportDir();
 	quickevent::core::exporters::StageResultsHtmlExporter exp;
-	exp.setOutDir(exportDir());
+	exp.setOutDir(ss.exportDir());
 	exp.generateHtml();
 
-	QString cmd = whenFinishedRunCmd();
+	QString cmd = ss.whenFinishedRunCmd();
 	if(!cmd.isEmpty()) {
 		qfInfo() << "Starting process:" << cmd;
 		QProcess *proc = new QProcess();
@@ -113,24 +115,20 @@ qf::qmlwidgets::framework::DialogWidget *ResultsExporter::createDetailWidget()
 
 void ResultsExporter::loadSettings()
 {
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	m_exportDir = settings.value(KEY_EXPORT_DIR).toString();
-	if(m_exportDir.isEmpty()) {
-		m_exportDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/quickevent/results";
-	}
-	QDir().mkpath(m_exportDir);
-	qfInfo() << "ResultsExporter export dir:" << exportDir();
+	Super::loadSettings();
+	ResultsExporterSettings ss = settings();
 
-	m_exportIntervalSec = settings.value(KEY_EXPORT_INTERVAL).toInt();
-	if(m_exportIntervalSec > 0) {
-		m_exportTimer->setInterval(m_exportIntervalSec * 1000);
+	if(ss.exportDir().isEmpty()) {
+		ss.setExportDir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/quickevent/results");
+		setSettings(ss);
+	}
+
+	if(ss.exportIntervalSec() > 0) {
+		m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
 	}
 	else {
 		m_exportTimer->stop();
 	}
-
-	m_whenFinishedRunCmd = settings.value(KEY_WHEN_FINSHED_RUN_CMD).toString();
 }
 
 } // namespace services

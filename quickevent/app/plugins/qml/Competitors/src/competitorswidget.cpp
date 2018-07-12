@@ -13,6 +13,7 @@
 #include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -82,6 +83,9 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	//connect(ui->tblCompetitors, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(editCompetitor(QVariant,int)), Qt::QueuedConnection);
 	connect(ui->tblCompetitors, &qfw::TableView::editRowInExternalEditor, this, &CompetitorsWidget::editCompetitor, Qt::QueuedConnection);
 	connect(ui->tblCompetitors, &qfw::TableView::editSelectedRowsInExternalEditor, this, &CompetitorsWidget::editCompetitors, Qt::QueuedConnection);
+
+	ui->tblCompetitors->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->tblCompetitors, &qfw::TableView::customContextMenuRequested, this, &CompetitorsWidget::onCustomContextMenuRequest);
 
 	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
 
@@ -279,5 +283,45 @@ void CompetitorsWidget::editCompetitorOnPunch(int siid)
 	}
 	else {
 		editCompetitor_helper(QVariant(), qfm::DataDocument::ModeInsert, siid);
+	}
+}
+
+void CompetitorsWidget::onCustomContextMenuRequest(const QPoint &pos)
+{
+	qfLogFuncFrame();
+	QAction a_change_class(tr("Set class in selected rows"), nullptr);
+	QList<QAction*> lst;
+	lst << &a_change_class;
+	QAction *a = QMenu::exec(lst, ui->tblCompetitors->viewport()->mapToGlobal(pos));
+	if(a == &a_change_class) {
+		qfw::dialogs::GetItemInputDialog dlg(this);
+		QComboBox *box = dlg.comboBox();
+		qfs::Query q;
+		q.exec("SELECT id, name FROM classes ORDER BY name");
+		while (q.next()) {
+			box->addItem(q.value(1).toString(), q.value(0));
+		}
+		dlg.setWindowTitle(tr("Dialog"));
+		dlg.setLabelText(tr("Select class"));
+		dlg.setCurrentItemIndex(-1);
+		if(dlg.exec()) {
+			int class_id = dlg.currentData().toInt();
+			if(class_id > 0) {
+				qfs::Transaction transaction;
+				try {
+					QList<int> rows = ui->tblCompetitors->selectedRowsIndexes();
+					for(int i : rows) {
+						qf::core::utils::TableRow row = ui->tblCompetitors->tableRowRef(i);
+						int competitor_id = row.value("competitors.id").toInt();
+						q.exec(QString("UPDATE competitors SET classId=%1 WHERE id=%2").arg(class_id).arg(competitor_id), qfc::Exception::Throw);
+					}
+					transaction.commit();
+				}
+				catch (std::exception &e) {
+					qfError() << e.what();
+				}
+			}
+			ui->tblCompetitors->reload(true);
+		}
 	}
 }

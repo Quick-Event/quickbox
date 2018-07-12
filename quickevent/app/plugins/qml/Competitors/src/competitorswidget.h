@@ -43,6 +43,8 @@ private:
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void editCompetitorOnPunch(int siid);
+
+	void onCustomContextMenuRequest(const QPoint &pos);
 private:
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;

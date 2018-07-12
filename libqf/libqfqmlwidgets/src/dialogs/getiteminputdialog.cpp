@@ -36,15 +36,27 @@ void GetItemInputDialog::setLabelText(const QString &text)
 	m_label->setText(text);
 }
 
-void GetItemInputDialog::setItems(const QStringList &items)
+void GetItemInputDialog::setItems(const QStringList &items, const QVariantList &data)
 {
 	m_comboBox->clear();
-	m_comboBox->addItems(items);
+	for (int i = 0; i < items.count(); ++i) {
+		m_comboBox->addItem(items[i], data.value(i));
+	}
 }
 
 int GetItemInputDialog::currentItemIndex()
 {
 	return m_comboBox->currentIndex();
+}
+
+QString GetItemInputDialog::currentText()
+{
+	return m_comboBox->currentText();
+}
+
+QVariant GetItemInputDialog::currentData()
+{
+	return m_comboBox->currentData();
 }
 
 void GetItemInputDialog::setCurrentItemIndex(int ix)

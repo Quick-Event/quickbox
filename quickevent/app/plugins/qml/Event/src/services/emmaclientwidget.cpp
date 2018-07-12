@@ -7,7 +7,6 @@
 #include <qf/core/assert.h>
 
 #include <QFileDialog>
-#include <QSettings>
 
 namespace services {
 
@@ -20,10 +19,13 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 
 	EmmaClient *svc = service();
 	if(svc) {
-		ui->edFileName->setText(svc->fileName());
+		EmmaClientSettings ss = svc->settings();
+		ui->edExportDir->setText(ss.exportDir());
+		ui->edFileName->setText(ss.fileName());
 	}
 
-	connect(ui->btChooseFile, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseFileClicked);
+	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseExportDirClicked);
+	connect(ui->btExportSplits, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportSplitsClicked);
 }
 
 EmmaClientWidget::~EmmaClientWidget()
@@ -31,17 +33,30 @@ EmmaClientWidget::~EmmaClientWidget()
 	delete ui;
 }
 
-void EmmaClientWidget::onBtChooseFileClicked()
+void EmmaClientWidget::onBtChooseExportDirClicked()
 {
-	QString fn = QFileDialog::getOpenFileName(this, tr("Open File"), ui->edFileName->text(), tr("Text Files (*.txt)"));
-	if(!fn.isEmpty())
-		ui->edFileName->setText(fn);
+	EmmaClient *svc = service();
+	if(svc) {
+		EmmaClientSettings ss = svc->settings();
+		QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), ss.exportDir(), QFileDialog::ShowDirsOnly);
+		if(!dir.isEmpty())
+			ui->edExportDir->setText(dir);
+	}
+}
+
+void EmmaClientWidget::onBtExportSplitsClicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportRadioCodes();
+	}
 }
 
 bool EmmaClientWidget::acceptDialogDone(int result)
 {
 	if(result == QDialog::Accepted) {
-		QString fn = ui->edFileName->text().trimmed();
+		/*
 		if(!fn.isEmpty()) {
 			QFile file(fn);
 			if(!file.open(QIODevice::WriteOnly | QIODevice::Append)) {
@@ -49,11 +64,8 @@ bool EmmaClientWidget::acceptDialogDone(int result)
 				return false;
 			}
 		}
-		EmmaClient *svc = service();
-		if(svc) {
-			svc->setFileName(fn);
-			svc->loadSettings();
-		}
+		*/
+		saveSettings();
 	}
 	return true;
 }
@@ -63,6 +75,17 @@ EmmaClient *EmmaClientWidget::service()
 	EmmaClient *svc = qobject_cast<EmmaClient*>(Service::serviceByName(EmmaClient::serviceName()));
 	QF_ASSERT(svc, EmmaClient::serviceName() + " doesn't exist", return nullptr);
 	return svc;
+}
+
+void EmmaClientWidget::saveSettings()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		EmmaClientSettings ss = svc->settings();
+		ss.setExportDir(ui->edExportDir->text());
+		ss.setFileName(ui->edFileName->text().trimmed());
+		svc->setSettings(ss);
+	}
 }
 
 }
