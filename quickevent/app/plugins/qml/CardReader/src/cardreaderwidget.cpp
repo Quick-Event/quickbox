@@ -336,8 +336,7 @@ void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id,
 {
 	Q_UNUSED(connection_id)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
-		quickevent::core::si::ReadCard read_card(data.toMap());
-		int card_id = read_card.cardNumber();
+		int card_id = data.toInt();
 		// TODO: only if widget is visible (plugin window active)
 		if(m_cbxAutoRefresh->isChecked())
 			updateTableView(card_id);
@@ -540,7 +539,7 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 		thisPlugin()->updateCheckedCardValuesSql(checked_card);
 	}
 	if(card_id > 0) {
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, read_card, true);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
 	}
 }
 
