@@ -47,7 +47,7 @@ public:
 	virtual void loadSettings();
 	ServiceSettings settings() const {return ServiceSettings(m_settings);}
 	void saveSettings();
-	void setSettings(const QVariantMap &s) { m_settings = s; }
+	void setSettings(const QVariantMap &s);
 
 	void showDetail(QWidget *parent);
 

@@ -21,4 +21,4 @@ FORMS += \
     $$PWD/cardreaderwidget.ui \
     $$PWD/dlgsettings.ui
 
-#include ( $$PWD/check/check.pri )
+include ( $$PWD/services/services.pri )

@@ -111,6 +111,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 		auto save_file = [data_lines](const QString &fn) {
 			QFile f(fn);
 			if(f.open(QFile::WriteOnly)) {
+				//qfInfo() << "writing receipt data to:" << fn;
 				for(QByteArray ba : data_lines) {
 					f.write(ba);
 					f.write("\n");

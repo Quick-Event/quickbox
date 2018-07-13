@@ -30,6 +30,8 @@ public:
 public:
 	DeviceDriver(QObject *parent = NULL);
 	virtual ~DeviceDriver();
+
+	void processSiPacket(const QByteArray &data);
 protected:
 	//QSocketNotifier *f_socketNotifier;
 	CommPort *f_commPort;

@@ -62,11 +62,13 @@ void Service::onEventOpen()
 
 void Service::loadSettings()
 {
+	qfDebug() << "loading settings for" << settingsGroup();
 	m_settings.clear();
 	QSettings ss;
 	ss.beginGroup(settingsGroup());
 	for(const QString &key : ss.childKeys()) {
 		m_settings[key] = ss.value(key);
+		qfDebug() << "\t" << key << "->" << m_settings.value(key);
 	}
 }
 
@@ -77,6 +79,12 @@ void Service::saveSettings()
 	for(const QString &key : m_settings.keys()) {
 		ss.setValue(key, m_settings[key]);
 	}
+}
+
+void Service::setSettings(const QVariantMap &s)
+{
+	//qfInfo() << __FUNCTION__ << settingsGroup() << s;
+	m_settings = s;
 }
 
 void Service::run()
@@ -93,7 +101,6 @@ void Service::stop()
 void Service::setRunning(bool on)
 {
 	if(on && status() == Status::Stopped) {
-		loadSettings();
 		run();
 	}
 	else if(!on && status() == Status::Running) {

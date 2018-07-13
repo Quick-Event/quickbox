@@ -341,6 +341,7 @@ void EventPlugin::onInstalled()
 
 	services::EmmaClient *emma_client = new services::EmmaClient(this);
 	services::Service::addService(emma_client);
+
 	{
 		m_servicesDockWidget = new qff::DockWidget(nullptr);
 		m_servicesDockWidget->setObjectName("servicesDockWidget");

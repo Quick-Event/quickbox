@@ -53,30 +53,34 @@ namespace {
 	}
 }
 
+void DeviceDriver::processSiPacket(const QByteArray &data)
+{
+	f_rxData.append(data);
+	processRxData();
+	if(f_packetToFinishCount > 0) {
+		/// set timer to get rest of the message
+		f_rxTimer->start(1000);
+	}
+	else {
+		if(f_status == StatusMessageOk) {
+			//qfInfo() << "new message:" << f_messageData.dump();
+			if(f_messageData.type() == SIMessageData::MsgCardReadOut) {
+				sendAck();
+			}
+			emit messageReady(f_messageData);
+			f_messageData = SIMessageData();
+		}
+		f_rxTimer->stop();
+		f_packetReceivedCount = 0;
+	}
+}
+
+
 void DeviceDriver::commDataReceived()
 {
 	QByteArray ba = f_commPort->readAll();
 	//qfInfo() << "=============>" << ba;
-	if(ba.size() > 0) {
-		f_rxData.append(ba);
-		processRxData();
-		if(f_packetToFinishCount > 0) {
-			/// set timer to get rest of the message
-			f_rxTimer->start(1000);
-		}
-		else {
-			if(f_status == StatusMessageOk) {
-				//qfInfo() << "new message:" << f_messageData.dump();
-				if(f_messageData.type() == SIMessageData::MsgCardReadOut) {
-					sendAck();
-				}
-				emit messageReady(f_messageData);
-				f_messageData = SIMessageData();
-			}
-			f_rxTimer->stop();
-			f_packetReceivedCount = 0;
-		}
-	}
+	processSiPacket(ba);
 }
 
 void DeviceDriver::packetReceived(const QByteArray &msg_data)

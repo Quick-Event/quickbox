@@ -7,7 +7,7 @@
 
 #include <quickevent/core/si/readcard.h>
 #include <quickevent/core/si/checkedcard.h>
-
+#include <quickevent/core/og/timems.h>
 
 #include <qf/core/utils/settings.h>
 #include <qf/core/utils/treetable.h>
@@ -21,7 +21,6 @@
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
 #include <qf/qmlwidgets/reports/processor/reportitem.h>
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
-#include <quickevent/core/og/timems.h>
 
 #include <QDomDocument>
 #include <QSqlRecord>

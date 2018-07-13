@@ -20,6 +20,7 @@ class Plugin;
 }
 }
 }
+
 namespace siut { class DeviceDriver; }
 
 namespace quickevent { namespace gui { namespace audio { class Player; }}}
@@ -61,11 +62,12 @@ public:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
+	Q_SLOT void processSIMessage(const SIMessageData &msg);
+
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
-	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
 	void onCommOpen(bool checked);
 
@@ -73,6 +75,7 @@ private slots:
 private:
 	void createActions();
 	Q_SLOT void openSettings();
+
 	siut::DeviceDriver *siDriver();
 
 	void processSICard(const SIMessageCardReadOut &card);
@@ -99,12 +102,12 @@ private:
 	Ui::CardReaderWidget *ui;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
-	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
 	QCheckBox *m_cbxAutoRefresh = nullptr;
 	QComboBox *m_cbxPunchMarking = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
+	siut::DeviceDriver *f_siDriver = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

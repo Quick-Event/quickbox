@@ -56,7 +56,7 @@ public:
 private:
 	QMap<int, QByteArray> f_blockIndex; ///< block_no->rawData
 };
-Q_DECLARE_METATYPE(SIMessageData);
+Q_DECLARE_METATYPE(SIMessageData)
 #if 0
 class DriverInfo : public SIMessageBase
 {

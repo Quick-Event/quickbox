@@ -1,8 +1,10 @@
 #pragma once
 
-#include "service.h"
+#include <services/service.h>
 
 class QUdpSocket;
+
+namespace siut { class DeviceDriver; }
 
 namespace services {
 
@@ -24,8 +26,8 @@ class RacomClient : public Service
 public:
 	RacomClient(QObject *parent);
 
-	//void run() override;
-	//void stop() override;
+	void run() override;
+	void stop() override;
 	RacomClientSettings settings() const {return RacomClientSettings(m_settings);}
 
 	static QString serviceName();
@@ -36,6 +38,7 @@ private:
 	QUdpSocket *udpSocket();
 private:
 	QUdpSocket *m_udpSocket = nullptr;
+	siut::DeviceDriver *m_siDriver = nullptr;
 };
 
 } // namespace services

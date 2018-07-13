@@ -91,13 +91,15 @@ Report {
 						Frame {height: 35}
 						*/
 						Frame {height: 176}
+						/*
 						Para {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: tsNormal
 							text: "H.S.H Vysočina Cup 2017"
 						}
-						Frame {height: 5}
+						*/
+						Frame {height: 15}
 						Para {
 							width: "%"
 							halign: Frame.AlignHCenter
@@ -111,7 +113,7 @@ Report {
 							textStyle: tsNormal
 							text: "za " + detail.data(detail.currentIndex, "pos") + " místo v kategorii " + class_detail.data(class_detail.currentIndex, "classes.name")
 						}
-						Frame { height: 30 }
+						Frame { height: 15 }
 						Frame {
 							width: "%"
 							layout: Frame.LayoutHorizontal

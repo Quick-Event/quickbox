@@ -170,6 +170,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		connect(drv, &siut::DeviceDriver::rawDataReceived, this, &CardReaderWidget::processDriverRawData, Qt::QueuedConnection);
 		connect(this, &CardReaderWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
 	}
+	connect(thisPlugin(), &CardReader::CardReaderPlugin::siMessagereceived, this, &CardReaderWidget::processSIMessage);
 	{
 		ui->tblCardsTB->setTableView(ui->tblCards);
 

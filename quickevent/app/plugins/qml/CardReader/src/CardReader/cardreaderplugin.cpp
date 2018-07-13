@@ -1,6 +1,7 @@
 #include "cardreaderplugin.h"
 #include "cardchecker.h"
 #include "../cardreaderpartwidget.h"
+#include "../services/racomclient.h"
 
 #include <Event/eventplugin.h>
 
@@ -59,6 +60,9 @@ void CardReaderPlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	CardReaderPartWidget *pw = new CardReaderPartWidget(manifest()->featureId());
 	fwk->addPartWidget(pw);
+
+	services::RacomClient *racom_client = new services::RacomClient(this);
+	services::Service::addService(racom_client);
 }
 
 QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProperty()

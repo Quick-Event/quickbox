@@ -10,6 +10,8 @@
 
 namespace quickevent { namespace core { namespace si { class PunchRecord; class ReadCard; class CheckedCard; }}}
 
+class SIMessageData;
+
 namespace CardReader {
 
 class CardChecker;
@@ -54,6 +56,9 @@ public:
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
 
 	static int resolveAltCode(int maybe_alt_code, int stage_id);
+
+	void emitSiMessagereceived(const SIMessageData &msg) { emit siMessagereceived(msg); }
+	Q_SIGNAL void siMessagereceived(const SIMessageData &msg);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();
