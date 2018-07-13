@@ -4,6 +4,7 @@
 #include "../qmlwidgetsglobal.h"
 
 #include <QDialog>
+#include <QVariant>
 
 class QLabel;
 class QComboBox;
