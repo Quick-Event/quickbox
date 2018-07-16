@@ -111,7 +111,9 @@ Report {
 							width: "%"
 							halign: Frame.AlignHCenter
 							textStyle: tsNormal
-							text: "za " + detail.data(detail.currentIndex, "pos") + " místo v kategorii " + class_detail.data(class_detail.currentIndex, "classes.name")
+							text: "za " + detail.data(detail.currentIndex, "pos")
+								  + " místo v kategorii " + class_detail.data(class_detail.currentIndex, "classes.name")
+								  //+ " v E2"
 						}
 						Frame { height: 15 }
 						Frame {

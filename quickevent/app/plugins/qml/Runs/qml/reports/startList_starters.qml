@@ -94,7 +94,6 @@ Report {
 					Frame {
 						objectName: "minuteFrame"
 						width: "%"
-						//height: (root.lineSpacing > 0)? root.lineSpacing: undefined;
 						layout: Frame.LayoutHorizontal
 						Cell {
 							objectName: "minuteCellClassName"
@@ -108,18 +107,19 @@ Report {
 						}
 						Cell {
 							objectName: "minuteCellRegistration"
-							width: 20
+							width: 18
 							text: detail.data(detail.currentIndex, "competitors.registration");
 						}
-						Cell {
+						Para {
 							objectName: "minuteCellSI"
-							width: 20
+							width: 15
 							halign: Frame.AlignRight
 							text: detail.data(detail.currentIndex, "runs.siId");
 						}
 						Cell {
 							objectName: "minuteCellStartTimeMs"
-							width: 15
+							width: 13
+							halign: Frame.AlignRight
 							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}
 					}

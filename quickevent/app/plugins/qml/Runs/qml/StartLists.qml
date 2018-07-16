@@ -495,20 +495,30 @@ QtObject {
 			str += part + " ";
 			//start time
 			//TODO zmenit na format mmm.ss,zzzz
-			part = tt1.value(i, 'startTimeMs');
-			str += part;
+			var msec = tt1.value(i, 'startTimeMs');
+			var min = (msec / 60000) >> 0
+			if(min < 10)
+				str += '00'
+			else if(min < 100)
+				str += '0'
+			str += min;
+			str += '.'
+			var sec = (msec % 60000 / 1000) >> 0
+			if(sec < 10)
+				str += '0'
+			str += sec;
+			str += ','
+			var zzzz = msec % 1000 * 10
+			if(zzzz < 10)
+				str += '000'
+			else if(zzzz < 100)
+				str += '00'
+			else if(zzzz < 1000)
+				str += '000'
+			str += zzzz;
 			str += "\n";
 		}
-		/*
-		if(!file_name)
-			file_name = File.tempPath() + "/quickevent/e" + tt1.value("stageId") + "/emma-start.txt";
-		if(File.mkpath(file_name)) {
-			file_name += "/" + default_file_name;
-			File.write(file_name, str);
-			Log.info("exported:", file_name);
-			return file_name;
-		}
-		*/
+		/// TODO, export in CP1250
 		if(File.write(file_name, str)) {
 			Log.info("exported:", file_name);
 			return file_name;

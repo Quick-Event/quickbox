@@ -104,6 +104,7 @@ void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const
 {
 	Q_UNUSED(connection_id)
 	Q_UNUSED(data)
+	//qfInfo() << domain << data;
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_CHECKED)) {
 		onCardChecked(data.toMap());
 	}

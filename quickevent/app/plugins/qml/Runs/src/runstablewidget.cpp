@@ -208,11 +208,13 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 
 void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
 {
+	Q_UNUSED(id)
 	Competitors::CompetitorsPlugin *competitors_plugin = competitorsPlugin();
 	int result;
+	int competitor_id = ui->tblRuns->tableRow().value("competitorId").toInt();
 	QMetaObject::invokeMethod(competitors_plugin, "editCompetitor", Qt::DirectConnection
 							  , Q_RETURN_ARG(int, result)
-							  , Q_ARG(int, id.toInt())
+							  , Q_ARG(int, competitor_id)
 							  , Q_ARG(int, mode)
 							  );
 	if(result == QDialog::Accepted) {

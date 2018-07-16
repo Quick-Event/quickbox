@@ -212,6 +212,7 @@ bool CompetitorWidget::loadRunsTable()
 bool CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
+	/*
 	bool is_running_set = false;
 	for (int i = 0; i < m_runsModel->rowCount(); ++i) {
 		bool is_running = m_runsModel->value(i, RunsModel::col_runs_isRunning).toBool();
@@ -223,6 +224,7 @@ bool CompetitorWidget::saveRunsTable()
 	}
 	if(is_running_set)
 		throw BadDataInputException(tr("Canont set not running flag for competitor with valid finish time."));
+	*/
 	bool ret = m_runsModel->postAll(true);
 	if(ret)
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);

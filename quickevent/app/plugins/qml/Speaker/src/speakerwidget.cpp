@@ -26,6 +26,7 @@
 #include <QDockWidget>
 #include <QJsonObject>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSettings>
 
 namespace qfs = qf::core::sql;
@@ -49,7 +50,19 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	ui->setupUi(this);
 
 	ui->tblPunchesToolBar->setTableView(ui->tblPunches);
+	/*
+	neni to trivialni, asi budu muset udelat proxymodel,
+	pokud budu chtit filtrovat podle kodu a jeste podle cehokoli
 
+	QLabel *lbl_code = new QLabel(tr("&Code"));
+	ui->tblPunchesToolBar->addWidget(lbl_code);
+	QLineEdit *ed_code = new QLineEdit();
+	ui->tblPunchesToolBar->addWidget(ed_code);
+	lbl_code->setBuddy(ed_code);
+	QLabel *lbl_spc = new QLabel(" ");
+	lbl_spc->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	ui->tblPunchesToolBar->addWidget(lbl_spc);
+	*/
 	ui->tblPunches->setReadOnly(true);
 	ui->tblPunches->setCloneRowEnabled(false);
 	ui->tblPunches->setPersistentSettingsId("tblPunches");

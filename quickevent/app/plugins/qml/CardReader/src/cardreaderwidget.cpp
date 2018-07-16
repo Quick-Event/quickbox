@@ -538,6 +538,7 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 		thisPlugin()->saveCardAssignedRunnerIdSql(card_id, read_card.runId());
 		quickevent::core::si::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
 		thisPlugin()->updateCheckedCardValuesSql(checked_card);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_CHECKED, checked_card, true);
 	}
 	if(card_id > 0) {
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
