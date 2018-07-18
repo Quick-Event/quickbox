@@ -412,34 +412,36 @@ void RunsWidget::import_start_times_ob2000()
 	}
 }
 
-void RunsWidget::export_results_csos_stage()
+static QString make_width(const QString &s, int width)
+{
+	static const auto SS = QStringLiteral("%1");
+	int abs_width = width < 0? -width: width;
+	QString ret = SS.arg(s, width, QChar(' ')).mid(0, abs_width);
+	return ret;
+}
+
+QString RunsWidget::getSaveFileName(const QString &file_name, int stage_id)
+{
+	QString fn = file_name;
+	QString ext;
+	int ix = fn.lastIndexOf('.');
+	if(ix > 0)
+		ext = fn.mid(ix);
+	Event::EventPlugin *evp = eventPlugin();
+	if(evp->stageCount() > 1 && stage_id > 0)
+		fn = QStringLiteral("e%1-").arg(stage_id) + fn;;
+
+	fn = qfd::FileDialog::getSaveFileName(this, tr("Save as %1").arg(ext.mid(1).toUpper()), fn, '*' + ext);
+	if(!fn.isEmpty()) {
+		if(!fn.endsWith(ext, Qt::CaseInsensitive))
+			fn += ext;
+	}
+	return fn;
+}
+
+void RunsWidget::writeCSOSHeader(QTextStream &ts)
 {
 	Event::EventPlugin *evp = eventPlugin();
-	QString fn = QStringLiteral("results-csos.txt");
-	if(evp->stageCount() > 1)
-		fn = QStringLiteral("e%1-").arg(evp->currentStageId()) + fn;;
-
-	QString fn_ext = ".txt";
-	fn = qfd::FileDialog::getSaveFileName(this, tr("Save as TXT"), fn, '*' + fn_ext);
-	if(fn.isEmpty())
-		return;
-
-	if(!fn.endsWith(fn_ext, Qt::CaseInsensitive))
-		fn += fn_ext;
-
-	QFile f(fn);
-	if(!f.open(QIODevice::WriteOnly)) {
-		qfError() << "Cannot open file" << f.fileName() << "for writing.";
-		return;
-	}
-	QTextStream ts(&f);
-	ts.setCodec("CP1250");
-
-	auto make_width = [](const QString &s, int width) {
-		static const auto SS = QStringLiteral("%1");
-		return SS.arg(s, width, QChar(' ')).mid(0, width);
-	};
-
 	int stage_id = selectedStageId();
 	QDateTime start_dt = evp->stageStartDateTime(stage_id);
 	Event::EventConfig *ec = evp->eventConfig();
@@ -457,6 +459,24 @@ void RunsWidget::export_results_csos_stage()
 	ts << make_width("JURY", HWIDTH) << ": " << "" << "\r\n";
 	ts << make_width("Protokol", HWIDTH) << ": " << "\r\n";
 	ts << "----------------------------------------------------------------------------\r\n";
+}
+
+void RunsWidget::export_results_csos_stage()
+{
+	int stage_id = selectedStageId();
+	QString fn = getSaveFileName("results-csos.txt", stage_id);
+	if(fn.isEmpty())
+		return;
+
+	QFile f(fn);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return;
+	}
+	QTextStream ts(&f);
+	ts.setCodec("CP1250");
+	writeCSOSHeader(ts);
+
 	/*
 	Runs::RunsPlugin *rp = runsPlugin();
 	qf::core::utils::Table tt = rp->currentStageResultsTable();
@@ -484,12 +504,14 @@ void RunsWidget::export_results_csos_stage()
 		ts << make_width(q.value(QStringLiteral("competitorName")).toString(), -25);
 		ts << make_width(q.value(QStringLiteral("registration")).toString(), -7);
 		ts << (q.value(QStringLiteral("runs.notCompeting")).toBool()? "M": make_width(q.value(QStringLiteral("licence")).toString(), 1));
-		int ms = q.value("runs.timeMs").toInt();
+		int ms = q.value(QStringLiteral("runs.timeMs")).toInt();
 		QString time_str;
 		if(q.value(QStringLiteral("runs.disqualified")).toBool())
 			time_str = QStringLiteral("888.88");
-		else if(false /*PRUMER neni podporovan v QE*/)
+		/*
+		else if(PRUMER neni podporovan v QE)
 			time_str = QStringLiteral("999.99");
+		*/
 		else
 			time_str = make_width(quickevent::core::og::TimeMs(ms).toString(), 6);
 		ts << time_str;
@@ -499,7 +521,50 @@ void RunsWidget::export_results_csos_stage()
 
 void RunsWidget::export_results_csos_overall()
 {
+	QString fn = getSaveFileName("overall-csos.txt", 0);
+	if(fn.isEmpty())
+		return;
 
+	QFile f(fn);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return;
+	}
+	QTextStream ts(&f);
+	ts.setCodec("CP1250");
+	writeCSOSHeader(ts);
+
+	Event::EventPlugin *evp = eventPlugin();
+	int stage_count = evp->stageCount();
+
+	Runs::RunsPlugin *rp = runsPlugin();
+
+	qfs::Query q;
+	q.exec("SELECT id, name FROM classes ORDER BY name");
+	while(q.next()) {
+		int class_id = q.value(0).toInt();
+		QString class_name = q.value(1).toString();
+		qf::core::utils::Table tt = rp->nstagesResultsTable(stage_count, class_id, -1, false);
+		for (int i = 0; i < tt.rowCount(); ++i) {
+			qf::core::utils::TableRow row = tt.row(i);
+			ts << make_width(class_name, -10);
+			ts << make_width(row.value(QStringLiteral("competitorName")).toString(), -25);
+			ts << make_width(row.value(QStringLiteral("registration")).toString(), -7);
+			ts << (row.value(QStringLiteral("pos")).toString() == QLatin1String("N")? "M": make_width(row.value(QStringLiteral("licence")).toString(), 1));
+			int ms = row.value(QStringLiteral("timeMs")).toInt();
+			QString time_str;
+			if(row.value(QStringLiteral("pos")).toString() == QLatin1String("D"))
+				time_str = QStringLiteral("888.88");
+			/*
+			else if(PRUMER neni podporovan v QE)
+				time_str = QStringLiteral("999.99");
+			*/
+			else
+				time_str = make_width(quickevent::core::og::TimeMs(ms).toString(), 6);
+			ts << time_str;
+			ts << "\r\n";
+		}
+	}
 }
 
 bool RunsWidget::isLockedForDrawing(int class_id, int stage_id)

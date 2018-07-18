@@ -288,7 +288,7 @@ int RunsPlugin::cardForRun(int run_id)
 qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
 {
 	qfs::QueryBuilder qb;
-	qb.select2("competitors", "id, registration")
+	qb.select2("competitors", "id, registration, licence")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("competitors")
 			.where("competitors.classId=" QF_IARG(class_id));
