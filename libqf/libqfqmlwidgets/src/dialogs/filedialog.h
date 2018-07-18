@@ -27,8 +27,10 @@ public:
 	static QString getExistingDirectory(QWidget * parent = 0, const QString & caption = QString(),
 				const QString & dir = QString(), Options options = ShowDirsOnly);
 private:
-	static QString s_recentOpenFileDir;
-	static QString s_recentSaveFileDir;
+	static QString recentOpenFileDir();
+	static void setRecentOpenFileDir(const QString &dir);
+	static QString recentSaveFileDir();
+	static void setRecentSaveFileDir(const QString &dir);
 };
 
 }}}
