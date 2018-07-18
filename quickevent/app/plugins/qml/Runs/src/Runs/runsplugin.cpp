@@ -417,9 +417,14 @@ QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, i
 	return stageResultsTableData(stage_id, class_filter, max_competitors_in_class, exclude_disq);
 }
 
-QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
+qf::core::utils::TreeTable RunsPlugin::currentStageResultsTable(const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
 {
-	//var event_plugin = FrameWork.plugin("Event");
+	int stage_id = selectedStageId();
+	return stageResultsTable(stage_id, class_filter, max_competitors_in_class, exclude_disq);
+}
+
+qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
+{
 	qf::core::model::SqlTableModel model;
 	{
 		qf::core::sql::QueryBuilder qb;
@@ -499,7 +504,12 @@ QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_fi
 		}
 		tt.row(i).appendTable(tt2);
 	}
-	//console.debug(tt.toString());
+	return tt;
+}
+
+QVariant RunsPlugin::stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
+{
+	qf::core::utils::TreeTable tt = stageResultsTable(stage_id, class_filter, max_competitors_in_class, exclude_disq);
 	return tt.toVariant();
 }
 

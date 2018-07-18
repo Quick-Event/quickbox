@@ -196,6 +196,16 @@ int EventConfig::handicapLength() const
 	return value(QStringLiteral("event.handicapLength")).toInt();
 }
 
+QString EventConfig::eventName() const
+{
+	return value(QStringLiteral("event.name")).toString();
+}
+
+QString EventConfig::eventPlace() const
+{
+	return value(QStringLiteral("event.place")).toString();
+}
+
 QString EventConfig::director() const
 {
 	return value(QStringLiteral("event.director")).toString();

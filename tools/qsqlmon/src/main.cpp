@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 	int ret = 0;
 
 	QCoreApplication::setOrganizationDomain("quickbox.org");
-	QCoreApplication::setOrganizationName("QuickBox");
+	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setApplicationName("qsqlmon");
 
 	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");

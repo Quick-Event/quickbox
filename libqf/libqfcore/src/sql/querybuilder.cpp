@@ -359,7 +359,6 @@ void QueryBuilder::clear()
 	m_queryMap.clear();
 }
 
-
 bool QueryBuilder::BuildOptions::isSqlDriverSupportsTableNamesInSelect() const
 {
 	bool ret = false;

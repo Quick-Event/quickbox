@@ -67,6 +67,9 @@ private:
 	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min);
 
 	void import_start_times_ob2000();
+
+	void export_results_csos_stage();
+	void export_results_csos_overall();
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber,
 		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,

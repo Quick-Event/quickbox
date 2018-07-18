@@ -13,7 +13,8 @@
 namespace qf {
 	namespace core {
 		namespace utils {
-			class Table;
+		class Table;
+		class TreeTable;
 		}
 	}
 	namespace qmlwidgets {
@@ -51,7 +52,9 @@ public:
 
 	Q_INVOKABLE int courseForRun(int run_id);
 	Q_INVOKABLE int cardForRun(int run_id);
+	qf::core::utils::TreeTable currentStageResultsTable(const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
 	Q_INVOKABLE QVariant currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
+	qf::core::utils::TreeTable stageResultsTable(int stage_id, const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
 	Q_INVOKABLE QVariant stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
 	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id, int places = -1, bool exclude_disq = true);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1, bool exclude_disq = true);

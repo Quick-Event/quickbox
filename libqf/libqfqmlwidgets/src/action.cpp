@@ -34,6 +34,13 @@ void Action::setShortcut(const QString &new_text)
 	}
 }
 
+Action *Action::addActionInto(const QString &id, const QString &text)
+{
+	auto *a = new Action(id, text);
+	addActionInto(a);
+	return a;
+}
+
 void Action::addActionInto(QAction *action)
 {
 	QMenu *w = menu();

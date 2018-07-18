@@ -166,10 +166,9 @@ RunsPlugin {
 
 	onNativeInstalled:
 	{
-		var a = root.partWidget.menuBar.actionForPath("print", true);
-		//a.text = qsTr("&Print");
-		var a_print = a;
-		a = a_print.addMenuInto("startList", "&Start list");
+		var a_print = root.partWidget.menuBar.actionForPath("print", false);
+
+		var a = a_print.addMenuInto("startList", "&Start list");
 		a.addActionInto(act_print_startList_classes);
 		a.addActionInto(act_print_startList_clubs);
 		a.addActionInto(act_print_startList_starters);
@@ -189,8 +188,8 @@ RunsPlugin {
 		var a_sep = a_print.addSeparatorInto();
 		a_sep.addActionAfter(act_print_competitorswithCardRent)
 
-		var a_export = root.partWidget.menuBar.actionForPath("export", true);
-		//a_export.text = qsTr("E&xport");
+		var a_export = root.partWidget.menuBar.actionForPath("export", false);
+
 		var m_stlist = a_export.addMenuInto("startList", "&Start list");
 		a = m_stlist.addMenuInto("html", "&HTML");
 		a.addActionInto(act_export_html_startList_classes);
@@ -200,7 +199,8 @@ RunsPlugin {
 		a = m_stlist.addMenuInto("txt", "&TXT");
 		a.addActionInto(act_export_startList_emma);
 
-		var m_results = a_export.addMenuInto("results", "&Results");
+		//var m_results = a_export.addMenuInto("results", "&Results");
+		var m_results = root.partWidget.menuBar.actionForPath("export/results", false);
 		m_results.addActionInto(act_export_results_iofxml);
 		m_results.addActionInto(act_export_results_winsplits);
 

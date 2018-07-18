@@ -36,6 +36,7 @@ public:
 	Q_SIGNAL void shortcutChanged(const QString &new_text);
 	using Super::setShortcut;
 
+	Action *addActionInto(const QString &id, const QString &text);
 	Q_INVOKABLE void addActionInto(QAction *action);
 	Q_INVOKABLE void addActionBefore(QAction *action);
 	Q_INVOKABLE void addActionAfter(QAction *new_act);
