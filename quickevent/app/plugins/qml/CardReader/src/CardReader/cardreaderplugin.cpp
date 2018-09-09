@@ -213,15 +213,14 @@ quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(int card_id, int r
 
 quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(const quickevent::core::si::ReadCard &read_card)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "run id:" << read_card.runId();
 	QF_TIME_SCOPE("checkCard()");
-	//updateRunLapsSql(card, run_id);
+	quickevent::core::si::CheckedCard cc;;
 	CardReader::CardChecker *chk = currentCardChecker();
 	QF_ASSERT(chk != nullptr, "CardChecker is NULL", return quickevent::core::si::CheckedCard());
-	CardReader::CppCardChecker *cpp_chk = dynamic_cast<CardReader::CppCardChecker*>(chk);
+	CardReader::CardCheckerCpp *cpp_chk = qobject_cast<CardReader::CardCheckerCpp*>(chk);
 	if(cpp_chk) {
-		quickevent::core::si::CheckedCard cc = cpp_chk->checkCard(read_card);
-		return cc;
+		cc = cpp_chk->checkCard(read_card);
 	}
 	else {
 		QVariant ret_val;
@@ -231,11 +230,12 @@ quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(const quickevent::
 		QJSValue jsv = ret_val.value<QJSValue>();
 		QVariant v = jsv.toVariant();
 		QVariantMap m = v.toMap();
-		quickevent::core::si::CheckedCard cc(m);
-		cc.setCardNumber(read_card.cardNumber());
-		//cc.setCardId(read_card.cardId());
-		return cc;
+		cc = quickevent::core::si::CheckedCard(m);
 	}
+	cc.setRunId(read_card.runId());
+	cc.setCardNumber(read_card.cardNumber());
+	qfDebug() << cc.toString();
+	return cc;
 }
 
 int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_card)
@@ -358,10 +358,11 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			}
 		}
 	}
-	q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, disqualified=:disqualified WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
+	q.prepare("UPDATE runs SET timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, badCheck=:badCheck, disqualified=:disqualified WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
 	q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
 	q.bindValue(QStringLiteral(":misPunch"), checked_card.isMisPunch());
+	q.bindValue(QStringLiteral(":badCheck"), checked_card.isBadCheck());
 	q.bindValue(QStringLiteral(":disqualified"), !checked_card.isOk());
 	q.exec(qf::core::Exception::Throw);
 	if(q.numRowsAffected() != 1)

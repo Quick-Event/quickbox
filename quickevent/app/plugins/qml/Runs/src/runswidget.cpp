@@ -115,10 +115,16 @@ void RunsWidget::reset(int class_id)
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
 		m_cbxStage->blockSignals(false);
 	}
-	{
-		m_cbxLeg->setVisible(is_relays);
+	if(is_relays) {
 		connect(m_cbxLeg, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
 	}
+	else {
+		//m_cbxLeg->setVisible(false);
+		//m_lblLegs->setVisible(false);
+		QF_SAFE_DELETE(m_lblLegs);
+		QF_SAFE_DELETE(m_cbxLeg);
+	}
+	//qfWarning() << "is relays:" << is_relays << "legs visible:" << m_cbxLeg->isVisible();
 	{
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);
@@ -206,27 +212,29 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		main_tb->addWidget(m_cbxClasses);
 	}
 	lbl_classes->setBuddy(m_cbxClasses);
-	QLabel *lbl_legs;
 	{
-		lbl_legs = new QLabel(tr("&Leg "));
-		main_tb->addWidget(lbl_legs);
+		{
+			m_lblLegs = new QLabel(tr("&Leg "));
+			main_tb->addWidget(m_lblLegs);
+		}
+		{
+			m_cbxLeg = new QComboBox();
+			m_cbxLeg->addItem(tr("--- all ---"), 0);
+			m_cbxLeg->addItem("1", 1);
+			m_cbxLeg->addItem("2", 2);
+			m_cbxLeg->addItem("3", 3);
+			m_cbxLeg->addItem("4", 4);
+			m_cbxLeg->addItem("5", 5);
+			m_cbxLeg->addItem("6", 6);
+			m_cbxLeg->addItem("7", 7);
+			m_cbxLeg->addItem("8", 8);
+			m_cbxLeg->addItem("9", 9);
+			m_cbxLeg->addItem("10", 10);
+			main_tb->addWidget(m_cbxLeg);
+		}
+		m_lblLegs->setBuddy(m_cbxClasses);
 	}
-	{
-		m_cbxLeg = new QComboBox();
-		m_cbxLeg->addItem(tr("--- all ---"), 0);
-		m_cbxLeg->addItem("1", 1);
-		m_cbxLeg->addItem("2", 2);
-		m_cbxLeg->addItem("3", 3);
-		m_cbxLeg->addItem("4", 4);
-		m_cbxLeg->addItem("5", 5);
-		m_cbxLeg->addItem("6", 6);
-		m_cbxLeg->addItem("7", 7);
-		m_cbxLeg->addItem("8", 8);
-		m_cbxLeg->addItem("9", 9);
-		m_cbxLeg->addItem("10", 10);
-		main_tb->addWidget(m_cbxLeg);
-	}
-	lbl_legs->setBuddy(m_cbxClasses);
+
 	{
 		m_chkShowOffRace = new QCheckBox();
 		m_chkShowOffRace->setText(tr("Show o&ff-race"));
@@ -521,7 +529,7 @@ void RunsWidget::export_results_csos_stage()
 
 void RunsWidget::export_results_csos_overall()
 {
-	QString fn = getSaveFileName("overall-csos.txt", 0);
+	QString fn = getSaveFileName("overall-results-csos.txt", 0);
 	if(fn.isEmpty())
 		return;
 

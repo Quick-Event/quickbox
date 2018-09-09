@@ -49,6 +49,7 @@ public slots:
 	QString mainReferee() const;
 	QDateTime eventDateTime() const;
 	int dbVersion() const;
+	int cardCheckCheckTimeSec() const;
 private:
 	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
 	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);

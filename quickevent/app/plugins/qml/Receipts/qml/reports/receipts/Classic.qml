@@ -297,7 +297,7 @@ Report {
 			Frame {
 				id: cardLentFrame
 				//visible: false
-				vinset: 1
+				//vinset: 1
 				htmlExportAttributes: {"lpt_borderBottom": "="}
 				fill: brushError
 				bottomBorder: Pen { basedOn: "black1" }
@@ -310,7 +310,7 @@ Report {
 				}
 			}
 			Para {
-				vinset: 1
+				//vinset: 1
 				hinset: 1
 				textFn: function() {
 					var extra_codes = bandCard.data("extraCodes");
@@ -323,6 +323,17 @@ Report {
 						}
 						var ret = qsTr("extra: ") + xcs.join(", ");
 						return ret;
+					}
+					return "";
+				}
+			}
+			Para {
+				//vinset: 1
+				hinset: 1
+				textFn: function() {
+					var bad_check = bandCard.data("isBadCheck");
+					if(bad_check) {
+						return qsTr("BAD CHECK !!!");
 					}
 					return "";
 				}

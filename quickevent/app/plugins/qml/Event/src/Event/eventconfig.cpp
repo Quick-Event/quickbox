@@ -240,6 +240,11 @@ int EventConfig::dbVersion() const
 {
 	return value(QStringLiteral("db.version")).toInt();
 }
+
+int EventConfig::cardCheckCheckTimeSec() const
+{
+	return value(QStringLiteral("event.cardChechCheckTimeSec")).toInt();
+}
 /*
 const QSet<QString> &EventConfig::knownKeys()
 {

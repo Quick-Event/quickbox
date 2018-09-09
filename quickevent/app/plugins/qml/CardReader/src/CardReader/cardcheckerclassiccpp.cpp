@@ -10,7 +10,7 @@ namespace CardReader {
 CardCheckerClassicCpp::CardCheckerClassicCpp(QObject *parent)
 	: Super(parent)
 {
-	setCaption(tr("Classic C++ (experimental)"));
+	setCaption(tr("Classic C++ (testing)"));
 }
 
 quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickevent::core::si::ReadCard &read_card)
@@ -23,7 +23,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 		course = courseCodesForRunId(run_id);
 
 	quickevent::core::si::CheckedCard checked_card;
-	if(!course.isEmpty())
+	if(course.isEmpty())
 		return checked_card;
 
 	checked_card.setCourseId(course.value(QStringLiteral("id")).toInt());
@@ -33,6 +33,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	int stage_id = stageIdForRun(run_id);
 
 	bool error_mis_punch = false;
+
 	QList<quickevent::core::si::CheckedPunch> checked_punches;
 	QVariantList course_codes = course.value(QStringLiteral("codes")).toList();
 	QList<quickevent::core::si::ReadPunch> read_punches = read_card.punchList();
@@ -64,14 +65,26 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 		checked_card.setStartTimeMs(msecIntervalAM(start00sec * 1000, read_card.startTime() * 1000));
 	}
 
-	//checked_card.finishTimeMs = null;
 	if(read_card.finishTime() == 0xEEEE) {
 		error_mis_punch = true;
 	}
 	else {
 		checked_card.setFinishTimeMs(msecIntervalAM(start00sec * 1000, read_card.finishTime() * 1000));
-		if(read_card.finishTimeMs())
+		if(read_card.finishTimeMs()) {
+			// add msec part of finish time
 			checked_card.setFinishTimeMs(checked_card.finishTimeMs() + read_card.finishTimeMs());
+		}
+	}
+
+	int max_check_diff_msec = cardCheckCheckTimeSec() * 1000;
+	if(cardCheckCheckTimeSec() > 0) {
+		if(checked_card.checkTimeMs() > 0) {
+			int diff_msec = checked_card.startTimeMs() - checked_card.checkTimeMs();
+			checked_card.setBadCheck(diff_msec > max_check_diff_msec);
+		}
+		else {
+			checked_card.setBadCheck(true);
+		}
 	}
 
 	int read_punch_check_ix = 0;
@@ -79,7 +92,6 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 		QVariantMap course_code = course_codes[j].toMap();
 		quickevent::core::si::CheckedPunch checked_punch;
 		checked_punch.setCode(course_code.value(QStringLiteral("code")).toInt());
-		checked_punches << checked_punch;
 		int k;
 		for(k=read_punch_check_ix; k<read_punches.length(); k++) { //scan card
 			const quickevent::core::si::ReadPunch &read_punch = read_punches[k];
@@ -106,6 +118,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 		else {
 			read_punch_check_ix = k + 1;
 		}
+		checked_punches << checked_punch;
 	}
 	checked_card.setMisPunch(error_mis_punch);
 
@@ -114,19 +127,24 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	finish_punch.setStpTimeMs(msecIntervalAM(checked_card.startTimeMs(), checked_card.finishTimeMs()));
 	checked_punches << finish_punch;
 
-	int prev_stp_time_ms = 0;
+	QVariant prev_stp_time_ms = 0;
 	for(int k=0; k<checked_punches.length(); k++) {
 		quickevent::core::si::CheckedPunch &checked_punch = checked_punches[k];
 		if(checked_punch.stpTimeMs()) {
-			if(prev_stp_time_ms > 0)
-				checked_punch.setLapTimeMs(checked_punch.stpTimeMs() - prev_stp_time_ms);
+			if(prev_stp_time_ms.isValid())
+				checked_punch.setLapTimeMs(checked_punch.stpTimeMs() - prev_stp_time_ms.toInt());
 			prev_stp_time_ms = checked_punch.stpTimeMs();
 		}
 		else {
-			prev_stp_time_ms = 0;
+			prev_stp_time_ms = QVariant();
 		}
 	}
-
+	{
+		QVariantList lst;
+		for(const quickevent::core::si::CheckedPunch &p : checked_punches)
+			lst << p;
+		checked_card.setPunches(lst);
+	}
 	qfDebug() << "check result:" << checked_card.toString();
 	return checked_card;
 

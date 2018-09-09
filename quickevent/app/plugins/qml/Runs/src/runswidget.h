@@ -6,6 +6,7 @@
 class QComboBox;
 class QCheckBox;
 class QTextStream;
+class QLabel;
 
 namespace qf {
 namespace core {
@@ -82,6 +83,7 @@ private:
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
 	QComboBox *m_cbxLeg = nullptr;
+	QLabel *m_lblLegs = nullptr;
 	QCheckBox *m_chkShowOffRace = nullptr;
 };
 

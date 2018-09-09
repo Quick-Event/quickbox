@@ -123,7 +123,7 @@ void EmmaClient::onCardChecked(const QVariantMap &data)
 	s += '0';
 	s += '/';
 	if (checked_card.finishTimeMs() > 0) {
-		if (checked_card.isMisPunch()) {
+		if (checked_card.isMisPunch() || checked_card.isBadCheck()) {
 			s += QStringLiteral("MP  ");
 		} else {
 			//checked_card is OK

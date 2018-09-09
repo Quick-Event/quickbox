@@ -53,6 +53,7 @@ void EventDialogWidget::loadParams(const QVariantMap &params)
 	ui->cbxSportId->setCurrentIndex(params.value("sportId").toInt() - 1);
 	ui->cbxDisciplineId->setCurrentIndex(params.value("disciplineId").toInt() - 1);
 	ui->ed_importId->setText(params.value("importId").toString());
+	ui->ed_cardChecCheckTimeSec->setValue(params.value("cardChechCheckTimeSec").toInt());
 }
 
 QVariantMap EventDialogWidget::saveParams()
@@ -71,5 +72,6 @@ QVariantMap EventDialogWidget::saveParams()
 	ret["sportId"] = ui->cbxSportId->currentIndex() + 1;
 	ret["disciplineId"] = ui->cbxDisciplineId->currentIndex() + 1;
 	ret["importId"] = ui->ed_importId->text().toInt();
+	ret["cardChechCheckTimeSec"] = ui->ed_cardChecCheckTimeSec->value();
 	return ret;
 }

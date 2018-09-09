@@ -34,7 +34,6 @@ static Event::EventPlugin* eventPlugin()
 CardChecker::CardChecker(QObject *parent)
 	: QObject(parent)
 {
-
 }
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
@@ -89,6 +88,11 @@ int CardChecker::startTimeSec(int run_id)
 	else
 		qfError() << "Cannot find runs record for id:" << run_id;
 	return ret;
+}
+
+int CardChecker::cardCheckCheckTimeSec()
+{
+	return eventPlugin()->eventConfig()->cardCheckCheckTimeSec();
 }
 
 QVariantMap CardChecker::courseCodesForRunId(int run_id)
