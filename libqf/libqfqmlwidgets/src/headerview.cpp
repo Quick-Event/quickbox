@@ -93,7 +93,7 @@ void HeaderView::contextMenuEvent(QContextMenuEvent *event)
 				showSection(i);
 			}
 		}
-		reset(); // revealed columns are not sometimes visible without reaet(), atleast in 5.5.1
+		reset(); // revealed columns are not sometimes visible without reset(), atleast in 5.5.1
 	}
 	else if(a == &a_sections_natural_order) {
 		for (int i = 0; i < count(); ++i) {

@@ -182,6 +182,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_relays_name, !is_relays);
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_leg, !is_relays);
+	ui->tblRuns->horizontalHeader()->reset(); // revealed columns are not sometimes visible without reset(), atleast in 5.5.1
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);
