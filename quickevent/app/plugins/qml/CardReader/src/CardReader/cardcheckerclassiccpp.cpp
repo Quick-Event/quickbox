@@ -77,7 +77,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	}
 
 	int max_check_diff_msec = cardCheckCheckTimeSec() * 1000;
-	if(cardCheckCheckTimeSec() > 0) {
+	if(cardCheckCheckTimeSec() > 0 && read_card.startTime() == 0xEEEE) {
 		if(checked_card.checkTimeMs() > 0) {
 			int diff_msec = checked_card.startTimeMs() - checked_card.checkTimeMs();
 			checked_card.setBadCheck(diff_msec > max_check_diff_msec);

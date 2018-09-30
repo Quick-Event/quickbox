@@ -31,8 +31,8 @@ Report {
 
 	width: 210
 	height: 297
-	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
-	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
+	hinset: root.options && root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options && root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
