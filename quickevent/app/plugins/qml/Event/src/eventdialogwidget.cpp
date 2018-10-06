@@ -8,7 +8,7 @@ EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	setPersistentSettingsId("EventDialogWidget");
 	ui->setupUi(this);
 
-	QRegularExpression rx("[a-z0-9_]+");
+	QRegularExpression rx("[A-Za-z][a-z0-9_]*"); // postgres schema cannot start with digit
 	QValidator *validator = new QRegularExpressionValidator(rx, this);
 	ui->ed_eventId->setValidator(validator);
 }
