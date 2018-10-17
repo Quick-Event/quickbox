@@ -828,7 +828,10 @@ void RunsWidget::on_btDraw_clicked()
 					if(use_all_maps) {
 						map_count -= vacants_before;
 						int spare_map_count = (map_count - vacants_after - runners_draw_ids.count());
-						vacant_every = runners_draw_ids.count() / spare_map_count;
+						if(spare_map_count > 0)
+							vacant_every = runners_draw_ids.count() / spare_map_count;
+						else
+							vacant_every = 0;
 					}
 				}
 
