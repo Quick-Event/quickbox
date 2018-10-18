@@ -1,6 +1,6 @@
 message(including $$PWD)
 
-QT += core gui qml widgets
+QT += core gui qml widgets serialport
 
 CONFIG += C++11
 
