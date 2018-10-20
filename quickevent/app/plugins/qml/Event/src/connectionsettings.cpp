@@ -1,6 +1,9 @@
 #include "connectionsettings.h"
 
 #include <qf/core/utils/crypt.h>
+#include <qf/core/log.h>
+
+#include <QStandardPaths>
 
 namespace {
 static const auto EVENT = QStringLiteral("event");
@@ -97,6 +100,11 @@ QString ConnectionSettings::serverPassword()
 
 QString ConnectionSettings::singleWorkingDir()
 {
-	return value(EVENT + '/' + DATA_STORAGE + '/' + SINGLE_FILE + '/' + WORKING_DIR).toString();
+	QString dir = value(EVENT + '/' + DATA_STORAGE + '/' + SINGLE_FILE + '/' + WORKING_DIR).toString();
+	if(dir.isEmpty()) {
+		dir = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+		qfInfo() << "data loc:" << dir;
+	}
+	return dir;
 }
 

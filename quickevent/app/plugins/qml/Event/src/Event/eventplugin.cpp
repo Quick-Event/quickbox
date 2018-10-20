@@ -96,10 +96,16 @@ const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
 
-static QString eventNameToFileName(const QString &event_name)
+static QString singleFileStorageDir()
 {
 	ConnectionSettings connection_settings;
-	QString ret = connection_settings.singleWorkingDir() + '/' + event_name + QBE_EXT;
+	QString ret = connection_settings.singleWorkingDir();
+	return ret;
+}
+
+static QString eventNameToFileName(const QString &event_name)
+{
+	QString ret = singleFileStorageDir() + '/' + event_name + QBE_EXT;
 	return ret;
 }
 
@@ -1006,7 +1012,7 @@ void EventPlugin::exportEvent()
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString ext = ".qbe";
-	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
+	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), singleFileStorageDir(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(ex_fn.isEmpty())
 		return;
 	if(!ex_fn.endsWith(ext, Qt::CaseInsensitive))
