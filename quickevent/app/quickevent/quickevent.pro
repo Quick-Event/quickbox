@@ -1,6 +1,8 @@
 message(including $$PWD)
 
-QT += core gui qml widgets serialport
+QT += core gui qml widgets
+# plugin sometimes cannot find Qt libraries, CardReader needs QtSerialPort.so
+QT += serialport
 
 CONFIG += C++11
 
