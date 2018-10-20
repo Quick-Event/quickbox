@@ -59,7 +59,7 @@ QObject *ClassesPlugin::createClassDocument(QObject *parent)
 	return ret;
 }
 
-void ClassesPlugin::createClass(const QString &class_name) throw(qf::core::Exception)
+void ClassesPlugin::createClass(const QString &class_name)
 {
 	//qf::core::sql::Transaction transaction;
 	ClassDocument doc;
@@ -69,9 +69,10 @@ void ClassesPlugin::createClass(const QString &class_name) throw(qf::core::Excep
 	//transaction.commit();
 }
 
-void ClassesPlugin::dropClass(int class_id) throw(qf::core::Exception)
+void ClassesPlugin::dropClass(int class_id)
 {
 	QF_ASSERT_EX(class_id > 0, "Bad classes.id value.");
+	//qfInfo() << "Dropping class id:" << class_id;
 	ClassDocument doc;
 	doc.load(class_id, ClassDocument::RecordEditMode::ModeDelete);
 	doc.drop();

@@ -22,6 +22,10 @@ LIBS += \
     -lEventplugin \
     -lRunsplugin \
 
+# plugin sometimes cannot find Qt libraries
+#unix: LIBS +=  \
+#	-Wl,-rpath,\'\$\$ORIGIN/.:\$\$ORIGIN/../..\'  \
+
 include (src/src.pri)
 
 RESOURCES += \
