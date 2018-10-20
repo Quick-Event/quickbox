@@ -14,7 +14,7 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("sql.user").setType(QVariant::String).setNames("-u", "--sql-user").setDefaultValue("quickevent");
 	addOption("sql.password").setType(QVariant::String).setNames("-p", "--sql-password");
 	addOption("sql.database").setType(QVariant::String).setNames("-b", "--sql-database").setDefaultValue("quickevent");
-	addOption("sql.driver").setType(QVariant::String).setNames("--sql-sql-driver").setDefaultValue("QPSQL");
+	addOption("sql.driver").setType(QVariant::String).setNames("--sql-driver").setDefaultValue("QPSQL");
 
 	addOption("http.port").setType(QVariant::Int).setNames("--http-port").setDefaultValue(8888);
 }
