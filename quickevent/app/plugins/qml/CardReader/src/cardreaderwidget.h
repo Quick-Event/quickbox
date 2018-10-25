@@ -37,6 +37,7 @@ class QTextStream;
 class QFile;
 class QComboBox;
 class QCheckBox;
+class QLabel;
 
 class SIMessageTransmitPunch;
 class SIMessageData;
@@ -69,7 +70,7 @@ private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
 	void processDriverRawData(const QByteArray &data);
-	void onCommOpen(bool checked);
+	void onOpenCommTriggered(bool checked);
 
 	void importCards_lapsOnlyCsv();
 private:
@@ -77,6 +78,7 @@ private:
 	Q_SLOT void openSettings();
 
 	siut::DeviceDriver *siDriver();
+	void onComOpenChanged(bool comm_is_open);
 
 	void processSICard(const SIMessageCardReadOut &card);
 	void processSIPunch(const SIMessageTransmitPunch &rec);
@@ -100,6 +102,7 @@ private:
 	void operatorAudioNotify();
 private:
 	Ui::CardReaderWidget *ui;
+	QLabel *m_lblCommInfo = nullptr;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;

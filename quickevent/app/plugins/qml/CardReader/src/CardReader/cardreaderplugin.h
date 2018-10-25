@@ -57,8 +57,8 @@ public:
 
 	static int resolveAltCode(int maybe_alt_code, int stage_id);
 
-	void emitSiMessagereceived(const SIMessageData &msg) { emit siMessagereceived(msg); }
-	Q_SIGNAL void siMessagereceived(const SIMessageData &msg);
+	void emitSiMessageReceived(const SIMessageData &msg) { emit siMessageReceived(msg); }
+	Q_SIGNAL void siMessageReceived(const SIMessageData &msg);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();

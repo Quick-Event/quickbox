@@ -28,11 +28,11 @@ namespace
 //=================================================
 //             SIMessageBase
 //=================================================
-SIMessageData::Command SIMessageData::command(const QByteArray &raw_data_with_header)
+SIMessageData::Command SIMessageData::command(const QByteArray &si_data)
 {
-	Command ret = CmdInvalid;
-	if(raw_data_with_header.length() > 0) {
-		ret = (Command)(unsigned char)raw_data_with_header[0];
+	Command ret = Command::Invalid;
+	if(si_data.length() > 0) {
+		ret = (Command)(unsigned char)si_data[0];
 	}
 	else {
 		qfError() << "empty message";
@@ -43,27 +43,23 @@ SIMessageData::Command SIMessageData::command(const QByteArray &raw_data_with_he
 
 const char* SIMessageData::commandName(SIMessageData::Command cmd)
 {
-	static QByteArray unknown_command_helper;
 	const char *ret;
 	switch(cmd) {
-		case CmdSICard5DetectedExt: ret = "CmdSICard5DetectedExt"; break;
-		case CmdSICard6DetectedExt: ret = "CmdSICard6DetectedExt"; break;
-		case CmdSICard8AndHigherDetectedExt: ret = "CmdSICard8AndHigherDetectedExt"; break;
-		case CmdSICardRemovedExt: ret = "CmdSICardRemovedExt"; break;
-		case CmdSICardDetectedOrRemoved: ret = "CmdSICardDetectedOrRemoved"; break;
-		case CmdGetSICard5: ret = "CmdGetSICard5"; break;
-		case CmdGetSICard5Ext: ret = "CmdGetSICard5Ext"; break;
-		case CmdGetSICard6: ret = "CmdGetSICard6"; break;
-		case CmdGetSICard6Ext: ret = "CmdGetSICard6Ext"; break;
-		case CmdGetSICard8Ext: ret = "CmdGetSICard8Ext"; break;
-		case CmdGetPunch2: ret = "CmdGetPunch2"; break;
-		case CmdTimeSend: ret = "CmdTimeSend"; break;
-		case CmdTransmitRecordExt: ret = "CmdTransmitRecordExt"; break;
-		case CmdInvalid: ret = "CmdInvalid"; break;
-		case DriverInfo: ret = "DriverInfo"; break;
+		case Command::SICard5Detected: ret = "CmdSICard5Detected"; break;
+		case Command::SICard6Detected: ret = "CmdSICard6Detected"; break;
+		case Command::SICard8AndHigherDetected: ret = "CmdSICard8+"; break;
+		case Command::SICardRemoved: ret = "CmdSICardRemoved"; break;
+		//case Command::SICardDetectedOrRemoved: ret = "CmdSICardDetectedOrRemoved"; break;
+		case Command::GetSICard5: ret = "CmdGetSICard5"; break;
+		case Command::GetSICard6: ret = "CmdGetSICard6"; break;
+		case Command::GetSICard8: ret = "CmdGetSICard8"; break;
+		//case Command::GetPunch2: ret = "CmdGetPunch2"; break;
+		//case Command::TimeSend: ret = "CmdTimeSend"; break;
+		case Command::TransmitRecord: ret = "CmdTransmitRecord"; break;
+		case Command::Invalid: ret = "CmdInvalid"; break;
+		//case Command::DriverInfo: ret = "DriverInfo"; break;
 		default:
-			unknown_command_helper = QString("Unknown command 0x%1").arg((int)cmd, 0, 16).toLatin1();
-			ret = unknown_command_helper.constData();
+			ret = "UnknownCommand";
 			break;
 	}
 	return ret;
@@ -71,87 +67,90 @@ const char* SIMessageData::commandName(SIMessageData::Command cmd)
 
 SIMessageData::MessageType SIMessageData::type() const
 {
-	MessageType ret = MsgInvalid;
+	MessageType ret = MessageType::Invalid;
 	SIMessageData::Command cmd = command();
-	if(cmd > SIMessageData::CmdInvalid)
+	if(cmd > SIMessageData::Command::Invalid)
 		switch(cmd) {
-		case SIMessageData::CmdSICard5DetectedExt:
-		case SIMessageData::CmdSICard6DetectedExt:
-		case SIMessageData::CmdSICard8AndHigherDetectedExt:
-		case SIMessageData::CmdSICardRemovedExt:
-		case SIMessageData::CmdSICardDetectedOrRemoved:
-			ret = MsgCardEvent;
+		case SIMessageData::Command::SICard5Detected:
+		case SIMessageData::Command::SICard6Detected:
+		case SIMessageData::Command::SICard8AndHigherDetected:
+		case SIMessageData::Command::SICardRemoved:
+		//case SIMessageData::Command::SICardDetectedOrRemoved:
+		//	ret = MessageType::CardEvent;
+		//	break;
+		case SIMessageData::Command::GetSICard5:
+		case SIMessageData::Command::GetSICard6:
+		case SIMessageData::Command::GetSICard8:
+			ret = MessageType::CardReadOut;
 			break;
-		case SIMessageData::CmdGetSICard5:
-		case SIMessageData::CmdGetSICard5Ext:
-		case SIMessageData::CmdGetSICard6:
-		case SIMessageData::CmdGetSICard6Ext:
-		case SIMessageData::CmdGetSICard8Ext:
-			ret = MsgCardReadOut;
+		//case SIMessageData::Command::GetPunch2:
+		case SIMessageData::Command::TransmitRecord:
+			ret = MessageType::Punch;
 			break;
-		case SIMessageData::CmdGetPunch2:
-		case SIMessageData::CmdTransmitRecordExt:
-			ret = MsgPunch;
-			break;
-		case SIMessageData::DriverInfo:
-			ret = MsgDriverInfo;
-			break;
+		//case SIMessageData::Command::DriverInfo:
+		//	ret = MessageType::DriverInfo;
+		//	break;
 		default:
-			ret = MsgOther;
+			ret = MessageType::Other;
 			break;
 		}
 	return ret;
 }
-
+/*
 int SIMessageData::headerLength(SIMessageData::Command cmd)
 {
 	int ret = 0;
 	switch(cmd) {
-	case SIMessageData::CmdSICardRemovedExt: ret = 8; break;
-	case SIMessageData::CmdSICard5DetectedExt: ret = 8; break;
-	case SIMessageData::CmdSICard6DetectedExt: ret = 8; break;
-	case SIMessageData::CmdSICard8AndHigherDetectedExt: ret = 8; break;
-	case SIMessageData::CmdGetSICard5: ret = 2; break;
-	case SIMessageData::CmdGetSICard5Ext: ret = 4; break;
-	case SIMessageData::CmdGetSICard6: ret = 3; break;
-	case SIMessageData::CmdGetSICard6Ext: ret = 5; break;
-	case SIMessageData::CmdGetSICard8Ext: ret = 5; break;
-	case SIMessageData::CmdTransmitRecordExt: ret = 15; break;
+	case SIMessageData::Command::GetSystemData: ret = 0; break; //depends on type of data queried
+	case SIMessageData::Command::SetDirectRemoteMode: ret = 5; break;
+	case SIMessageData::Command::SICardRemovedExt: ret = 8; break;
+	case SIMessageData::Command::SICard5DetectedExt: ret = 8; break;
+	case SIMessageData::Command::SICard6DetectedExt: ret = 8; break;
+	case SIMessageData::Command::SICard8AndHigherDetectedExt: ret = 8; break;
+	case SIMessageData::Command::GetSICard5: ret = 2; break;
+	case SIMessageData::Command::GetSICard5Ext: ret = 4; break;
+	case SIMessageData::Command::GetSICard6: ret = 3; break;
+	case SIMessageData::Command::GetSICard6Ext: ret = 5; break;
+	case SIMessageData::Command::GetSICard8Ext: ret = 5; break;
+	case SIMessageData::Command::TransmitRecordExt: ret = 15; break;
 	default:
-		qfError() << "Can't find header length for command:" << cmd << SIMessageData::commandName(cmd);
+		qfError() << "Can't find header length for command:" << (int)cmd << SIMessageData::commandName(cmd);
 		break;
 	}
 	return ret;
 }
 
-QByteArray SIMessageData::blockData(int block_no) const
+QByteArray SIMessageData::dataBlock(int block_ix) const
 {
-	QByteArray ret = f_blockIndex.value(block_no);
+	QByteArray ret = m_data.value(block_ix);
 	if(ret.isEmpty()) {
-		qfError() << "Invalid block no:" << block_no;
+		qfError() << "Invalid block no:" << block_ix;
 	}
 	return ret;
 }
-
-void SIMessageData::addRawDataBlock(const QByteArray& raw_data_with_header)
+*/
+#if 0
+void SIMessageData::addRawDataBlock(const QByteArray& si_data_block)
 {
+	m_data << si_data_block;
+	/*
 	int block_no_offset = 0;
 	Command cmd = command(raw_data_with_header);
 	//qfInfo() << "addDataBlock CMD:" << QString::number(cmd, 16);
 	switch(cmd) {
-		case SIMessageData::CmdSICard5DetectedExt:
-		case SIMessageData::CmdSICard6DetectedExt:
-		case SIMessageData::CmdSICard8AndHigherDetectedExt:
-		case SIMessageData::CmdSICardRemovedExt:
+		case SIMessageData::Command::SICard5DetectedExt:
+		case SIMessageData::Command::SICard6DetectedExt:
+		case SIMessageData::Command::SICard8AndHigherDetectedExt:
+		case SIMessageData::Command::SICardRemovedExt:
 			break;
-		case SIMessageData::CmdGetSICard5:
-		case SIMessageData::CmdGetSICard5Ext:
+		case SIMessageData::Command::GetSICard5:
+		case SIMessageData::Command::GetSICard5Ext:
 			break;
-		case SIMessageData::CmdGetSICard6:
+		case SIMessageData::Command::GetSICard6:
 			block_no_offset = 2;
 			break;
-		case SIMessageData::CmdGetSICard6Ext:
-		case SIMessageData::CmdGetSICard8Ext:
+		case SIMessageData::Command::GetSICard6Ext:
+		case SIMessageData::Command::GetSICard8Ext:
 			block_no_offset = 4;
 			break;
 		default:
@@ -168,14 +167,19 @@ void SIMessageData::addRawDataBlock(const QByteArray& raw_data_with_header)
 	}
 	int hdr_len = headerLength(command(raw_data_with_header));
 	if(block_no == 0) {
-		QByteArray hdr = raw_data_with_header.mid(0, hdr_len);
-		setHeader(hdr);
+		QByteArray hdr;
+		if(hdr_len > 0)
+			hdr = raw_data_with_header.mid(0, hdr_len);
+		else
+			hdr = raw_data_with_header;
+		setHeader(raw_data_with_header);
 	}
 	QByteArray data = raw_data_with_header.mid(hdr_len);
 	if(!data.isEmpty())
 		f_blockIndex[block_no] = data;
+	*/
 }
-
+#endif
 static char hex_digit(int d)
 {
 	char ret = '#';
@@ -222,19 +226,10 @@ QString SIMessageData::dumpData(const QByteArray& ba)
 
 QString SIMessageData::dump() const
 {
-	QStringList sl;
-	sl << QString("command: %1").arg(commandName(command()));
-	sl << QString("header: %1").arg(dumpData(header()));
-	QMapIterator<int, QByteArray> it(f_blockIndex);
-	int block_cnt = 0;
-	while(it.hasNext()) {
-		it.next();
-		if(!block_cnt++) continue; /// skip header
-		sl << QString("------- block #%1 -------------------------------------").arg(it.key());
-		QByteArray ba = it.value();
-		sl << QString("data: %1").arg(dumpData(ba));
-	}
-	return sl.join("\n");
+	QString ret;
+	ret = QString("command: %1").arg(commandName(command()));
+	ret += ' ' + QString("data: %1").arg(dumpData(m_data));
+	return ret;
 }
 #if 0
 //====================================================

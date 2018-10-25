@@ -23,6 +23,13 @@ private:
 public:
 	CommPort(QObject *parent = NULL);
 	virtual ~CommPort();
+public:
+	/*
+	bool open(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
+	void close();
+	QString errorString();
+	QString portName();
+	*/
 protected:
 	virtual void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
 public:

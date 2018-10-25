@@ -121,10 +121,6 @@ CorePlugin {
 		//console.error("Core log test");
 		console.debug("Core plugin installed");
 
-		//FrameWork.setPersistentSettingDomains("quickbox.org", "QuickBox");
-		//FrameWork.persistentSettingsId = "MainWindow";
-		//FrameWork.loadPersistentSettings();
-
 		console.debug(FrameWork.menuBar);
 		var act_file = FrameWork.menuBar.actionForPath('file');
 		act_file.text = qsTr('&File');

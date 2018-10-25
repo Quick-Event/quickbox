@@ -98,10 +98,10 @@ void RacomClient::onUdpSocketReadyRead()
 		m_siDriver = new siut::DeviceDriver(this);
 		CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
 		if(plugin) {
-			connect(m_siDriver, &siut::DeviceDriver::messageReady, plugin, &CardReader::CardReaderPlugin::emitSiMessagereceived);
+			connect(m_siDriver, &siut::DeviceDriver::siMessageReceived, plugin, &CardReader::CardReaderPlugin::emitSiMessageReceived);
 		}
 	}
-	m_siDriver->processSiPacket(data);
+	m_siDriver->processData(data);
 }
 
 qf::qmlwidgets::framework::DialogWidget *RacomClient::createDetailWidget()
