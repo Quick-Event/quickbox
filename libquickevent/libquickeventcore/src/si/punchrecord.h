@@ -37,7 +37,7 @@ public:
 	static const QString MARKING_ENTRIES;
 public:
 	PunchRecord(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
-	PunchRecord(const SIMessageTransmitPunch &rec);
+	//PunchRecord(const SIMessageTransmitPunch &rec);
 	PunchRecord(const qf::core::sql::Query &q);
 
 	QString toString() const;

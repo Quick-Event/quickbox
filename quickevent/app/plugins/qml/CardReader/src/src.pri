@@ -7,7 +7,6 @@ HEADERS += \
     $$PWD/CardReader/cardreaderplugin.h \
     $$PWD/CardReader/cardchecker.h \
     $$PWD/CardReader/cardcheckerclassiccpp.h \
-    $$PWD/sitasks.h
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -17,7 +16,6 @@ SOURCES += \
     $$PWD/CardReader/cardreaderplugin.cpp \
     $$PWD/CardReader/cardchecker.cpp \
     $$PWD/CardReader/cardcheckerclassiccpp.cpp \
-    $$PWD/sitasks.cpp
 
 FORMS += \
     $$PWD/cardreaderwidget.ui \

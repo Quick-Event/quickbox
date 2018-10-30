@@ -5,13 +5,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef SIMESSAGEDATA_H
-#define SIMESSAGEDATA_H
+#ifndef SIUT_SIMESSAGEDATA_H
+#define SIUT_SIMESSAGEDATA_H
 
 #include <siut/siutglobal.h>
 
 #include <QVariantMap>
-#include <QSharedData>
+
+namespace siut {
 
 class SIUT_DECL_EXPORT SIMessageData
 {
@@ -49,27 +50,16 @@ public:
 	/// offset of data in packet for each command
 	//static int headerLength(Command);
 	const QByteArray& data() const {return m_data;}
-	virtual QString dump() const;
+	virtual QString toString(int bytes_in_the_row = 4) const;
 	static const char* commandName(Command cmd);
-	static QString dumpData(const QByteArray &ba);
+	static QString dumpData(const QByteArray &ba, int bytes_in_the_row);
 private:
 	QByteArray m_data; ///< block_no->rawData
 };
-Q_DECLARE_METATYPE(SIMessageData)
-#if 0
-class DriverInfo : public SIMessageBase
-{
-public:
-	/// same as QFLog::Level
-	int level() const {return f_data.value("level").toInt();}
-	QString message() const {return f_data.value("message").toString();}
-	virtual QString dump() const;
-public:
-    DriverInfo(/*QFLog::Level*/int level, const QString &message) {
-		f_data["level"] = level;
-		f_data["message"] = message;
-	}
-};
-#endif
+
+}
+
+Q_DECLARE_METATYPE(siut::SIMessageData)
+
 #endif // SIMESSAGEDATA_H
 

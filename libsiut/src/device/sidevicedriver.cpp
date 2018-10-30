@@ -8,7 +8,7 @@
 #include "sidevicedriver.h"
 #include "crc529.h"
 
-#include <siut/simessage.h>
+//#include <siut/simessage.h>
 
 #include <qf/core/log.h>
 
@@ -17,41 +17,6 @@
 #include <QSerialPortInfo>
 
 namespace siut {
-
-//=================================================
-//             SiCommand
-//=================================================
-SiTask::SiTask(QObject *parent)
-	: Super(parent)
-{
-	m_rxTimer = new QTimer(this);
-	m_rxTimer->setSingleShot(true);
-	m_rxTimer->setInterval(5000);
-	connect(m_rxTimer, &QTimer::timeout, this, [this]() {
-		qfError() << "SiCommand timeout after" << (m_rxTimer->interval() / 1000.) << "sec.";
-		this->abort();
-	});
-	m_rxTimer->start();
-}
-
-SiTask::~SiTask()
-{
-	//qfInfo() << this << "destroyed";
-}
-
-void SiTask::finishAndDestroy(bool ok, QVariant result)
-{
-	m_rxTimer->stop();
-	emit finished(ok, result);
-	deleteLater();
-}
-
-void SiTask::sendCommand(int cmd, const QByteArray &data)
-{
-	//qfInfo() << "restarting timer, active:" << m_rxTimer->isActive() << ", remaining" << m_rxTimer->remainingTime() << "msec";
-	m_rxTimer->start();
-	emit sigSendCommand(cmd, data);
-}
 
 //=================================================
 //             DeviceDriver
@@ -96,26 +61,36 @@ void DeviceDriver::onCommReadyRead()
 	onSiDataReceived(ba);
 }
 */
-void DeviceDriver::processReceivedSiDatagram(const QByteArray &data)
+void DeviceDriver::processSIMessageData(const SIMessageData &data)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << data.toString();
 	if(m_taskInProcess) {
 		m_taskInProcess->onSiMessageReceived(data);
 		return;
 	}
-	SiCommand cmd = static_cast<SiCommand>((uint8_t)data[1]);
+	SIMessageData::Command cmd = data.command();
 	switch(cmd) {
-	case SiCommand::SICard5Detected: {
+	case SIMessageData::Command::SICardRemoved: {
+		qfInfo() << "SICardRemoved";
 		break;
 	}
-	case SiCommand::SICardRemoved: {
+	case SIMessageData::Command::SICard5Detected: {
+		qfInfo() << "SICard5Detected";
+		setSiTask(new SiTaskReadCard5(false));
 		break;
 	}
-	case SiCommand::GetSICard5: {
+	case SIMessageData::Command::GetSICard5: {
+		setSiTask(new SiTaskReadCard5(true));
+		processSIMessageData(data);
+		break;
+	}
+	case SIMessageData::Command::SICard8AndHigherDetected: {
+		qfInfo() << "SICard8AndHigherDetected";
+		setSiTask(new SiTaskReadCard8(false));
 		break;
 	}
 	default:
-		qfError() << "unsupported command" << QString::number((uint8_t)data[1], 16);
+		qfError() << "unsupported command" << QString::number((uint8_t)cmd, 16);
 	}
 	/*
 	//qWarning() << msg_data;
@@ -149,19 +124,19 @@ static const char STX = 0x02;
 static const char ETX = 0x03;
 static const char ACK = 0x06;
 static const char NAK = 0x15;
-static const char DLE = 0x10;
+//static const char DLE = 0x10;
 }
 
 void DeviceDriver::processData(const QByteArray &data)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "\n" << SIMessageData::dumpData(data, 16);
 	f_rxData.append(data);
 	while(f_rxData.size() > 3) {
 		int stx_pos = f_rxData.indexOf(STX);
 		if(stx_pos > 0)
 			qfWarning() << tr("Garbage received, stripping %1 characters from beginning of buffer").arg(stx_pos);
 		// remove multiple STX, this can happen
-		while(stx_pos < f_rxData.size() && f_rxData[stx_pos] == STX)
+		while(stx_pos < f_rxData.size()-1 && f_rxData[stx_pos+1] == STX)
 			stx_pos++;
 		if(stx_pos > 0) {
 			f_rxData = f_rxData.mid(stx_pos);
@@ -185,7 +160,7 @@ void DeviceDriver::processData(const QByteArray &data)
 				emitDriverInfo(qf::core::Log::Level::Error, tr("Legacy protocol is not supported, switch station to extended one."));
 			}
 			else {
-				processReceivedSiDatagram(data);
+				processSIMessageData(data);
 			}
 		}
 		else {
@@ -423,21 +398,24 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 		set_byte_at(ba, ba.length(), (crc_sum >> 8) & 0xFF);
 		set_byte_at(ba, ba.length(), crc_sum & 0xFF);
 		set_byte_at(ba, ba.length(), ETX);
-		qfInfo() << "sending command:" << SIMessageData::dumpData(ba);
+		qfDebug() << "sending command:" << SIMessageData::dumpData(ba, 16);
 		//f_commPort->write(ba);
 		//f_rxTimer->start();
 		emit dataToSend(ba);
 	}
 }
 
-void DeviceDriver::setSiTask(SiTask *cmd)
+void DeviceDriver::setSiTask(SiTask *task)
 {
 	if(m_taskInProcess) {
 		qfError() << "There is other command in progress already. It will be aborted and deleted.";
 		m_taskInProcess->abort();
 	}
-	m_taskInProcess = cmd;
-	connect(cmd, &SiTask::sigSendCommand, this, &DeviceDriver::sendCommand);
+	m_taskInProcess = task;
+	connect(task, &SiTask::sigSendCommand, this, &DeviceDriver::sendCommand);
+	connect(task, &SiTask::aboutToFinish, this, [this]() {
+		this->m_taskInProcess = nullptr;
+	});
 	m_taskInProcess->start();
 }
 

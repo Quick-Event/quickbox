@@ -1,6 +1,6 @@
 #include "punchrecord.h"
 
-#include <siut/simessage.h>
+//#include <siut/simessage.h>
 
 #include <qf/core/sql/query.h>
 
@@ -13,12 +13,12 @@ namespace si {
 const int PunchRecord::FINISH_PUNCH_CODE = 999;
 const QString PunchRecord::MARKING_RACE = QStringLiteral("race");
 const QString PunchRecord::MARKING_ENTRIES = QStringLiteral("entries");
-
+/*
 PunchRecord::PunchRecord(const SIMessageTransmitPunch &rec)
 	: Super(rec.toVariantMap())
 {
 }
-
+*/
 PunchRecord::PunchRecord(const qf::core::sql::Query &q)
 	: Super(q.values())
 {

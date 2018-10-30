@@ -10,6 +10,8 @@ class QSqlRecord;
 class SIMessageCardReadOut;
 class SIMessageTransmitPunch;
 
+namespace siut { class SICard; }
+
 namespace quickevent {
 namespace core {
 namespace si {
@@ -49,7 +51,7 @@ private:
 public:
 	ReadCard(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadCard(const QSqlRecord &rec);
-	ReadCard(const SIMessageCardReadOut &si_card);
+	ReadCard(const siut::SICard &si_card);
 
 	int punchCount() const;
 	ReadPunch punchAt(int i) const;

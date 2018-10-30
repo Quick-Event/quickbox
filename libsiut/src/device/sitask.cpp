@@ -1,6 +1,48 @@
-#include "sitasks.h"
+#include "sitask.h"
+#include "../message/simessagedata.h"
+
+#include <qf/core/log.h>
 
 #include <QTimer>
+
+namespace siut {
+
+//=================================================
+//             SiTask
+//=================================================
+SiTask::SiTask(QObject *parent)
+	: Super(parent)
+{
+	m_rxTimer = new QTimer(this);
+	m_rxTimer->setSingleShot(true);
+	m_rxTimer->setInterval(5000);
+	connect(m_rxTimer, &QTimer::timeout, this, [this]() {
+		qfError() << "SiCommand timeout after" << (m_rxTimer->interval() / 1000.) << "sec.";
+		this->abort();
+	});
+	m_rxTimer->start();
+}
+
+SiTask::~SiTask()
+{
+	//qfInfo() << this << "destroyed";
+}
+
+void SiTask::finishAndDestroy(bool ok, QVariant result)
+{
+	//qfInfo() << __FUNCTION__ << this;
+	m_rxTimer->stop();
+	emit aboutToFinish();
+	emit finished(ok, result);
+	deleteLater();
+}
+
+void SiTask::sendCommand(int cmd, const QByteArray &data)
+{
+	//qfInfo() << "restarting timer, active:" << m_rxTimer->isActive() << ", remaining" << m_rxTimer->remainingTime() << "msec";
+	m_rxTimer->start();
+	emit sigSendCommand(cmd, data);
+}
 
 //===============================================================
 // CmdSetDirectRemoteMode
@@ -18,13 +60,13 @@ void SiTaskSetDirectRemoteMode::start()
 	sendCommand(static_cast<int>(SIMessageData::Command::SetDirectRemoteMode), ba);
 }
 
-void SiTaskSetDirectRemoteMode::onSiMessageReceived(const QByteArray &msg)
+void SiTaskSetDirectRemoteMode::onSiMessageReceived(const SIMessageData &msg)
 {
 	bool ok = false;
 	SIMessageData::Command cmd = msg.command();
 	if(cmd == SIMessageData::Command::SetDirectRemoteMode) {
-		QByteArray hdr = msg.dataBlock(0);
-		uint8_t ms_mode = hdr[4];
+		QByteArray hdr = msg.data();
+		uint8_t ms_mode = hdr[5];
 		if(ms_mode == SIMessageData::MS_MODE_DIRECT) {
 			qfInfo() << "SI station in DIRECT mode.";
 			ok = (m_mode == Mode::Direct);
@@ -51,13 +93,13 @@ void SiTaskStationConfig::start()
 	sendCommand(static_cast<int>(SIMessageData::Command::GetSystemData), ba);
 }
 
-void SiTaskStationConfig::onSiMessageReceived(const QByteArray &msg)
+void SiTaskStationConfig::onSiMessageReceived(const SIMessageData &msg)
 {
 	bool ok = false;
 	SiStationConfig ret;
 	SIMessageData::Command cmd = msg.command();
 	if(cmd == SIMessageData::Command::GetSystemData) {
-		QByteArray hdr = msg.dataBlock(0);
+		QByteArray hdr = msg.data();
 		int n = hdr[2];
 		n = (n << 8) + hdr[3];
 		ret.setStationNumber(n);
@@ -102,7 +144,7 @@ void SiTaskReadStationBackupMemory::start()
 	cmd->start();
 }
 
-void SiTaskReadStationBackupMemory::onSiMessageReceived(const QByteArray &msg)
+void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg)
 {
 	if(m_state == State::SwitchToRemote) {
 		emit siMessageForwarded(msg);
@@ -110,7 +152,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const QByteArray &msg)
 	else if(m_state == State::ReadPointer) {
 		SIMessageData::Command cmd = msg.command();
 		if(cmd == SIMessageData::Command::GetSystemData) {
-			QByteArray hdr = msg.dataBlock(0);
+			QByteArray hdr = msg.data();
 			int ix = 5;
 			/// the 4 byte backup memory address pointer is part of the data string: EP3, EP2, xx, xx, xx, EP1, EP0
 			m_memoryDataPointer = hdr[ix++];
@@ -139,7 +181,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const QByteArray &msg)
 	else if(m_state == State::CheckOverflow) {
 		SIMessageData::Command cmd = msg.command();
 		if(cmd == SIMessageData::Command::GetSystemData) {
-			QByteArray hdr = msg.dataBlock(0);
+			QByteArray hdr = msg.data();
 			m_isOverflow = hdr[5];
 			//qfInfo().noquote() << msg.dump();
 			qfInfo() << "is memory overflow:" << m_isOverflow;
@@ -176,8 +218,8 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const QByteArray &msg)
 	else if(m_state == State::ReadData) {
 		int cmd = (int)msg.command();
 		if(cmd == 0x81) {
-			qfInfo().noquote() << msg.dump();
-			QByteArray ba = msg.dataBlock(0).mid(7);
+			qfInfo().noquote() << msg.toString();
+			QByteArray ba = msg.data().mid(7);
 			if(m_readDataPointer < m_memoryDataPointer) {
 				if(m_memoryDataPointer - m_readDataPointer < m_blockSize)
 					ba = ba.mid(0, m_memoryDataPointer - m_readDataPointer);
@@ -223,4 +265,125 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const QByteArray &msg)
 	}
 }
 
+//===============================================================
+// SiTaskReadCard5
+//===============================================================
+void SiTaskReadCard5::start()
+{
+	if(!m_withAutosend) {
+		sendCommand((int)SIMessageData::Command::GetSICard5, QByteArray(1, 0x00));
+	}
+}
 
+void SiTaskReadCard5::onSiMessageReceived(const SIMessageData &msg)
+{
+	SIMessageData::Command cmd = msg.command();
+	if(cmd == SIMessageData::Command::GetSICard5) {
+		//qfInfo() << msg.toString();
+		const QByteArray data = msg.data();
+		int base = 5;
+		int card_number = SIPunch::getUnsigned(data, base + 4);
+		int cs = (uint8_t)data[base + 6];
+		if(cs > 1)
+			card_number += 100000 * cs;
+		int check_time = SIPunch::getUnsigned(data, base + 0x19);
+		int start_time = SIPunch::getUnsigned(data, base + 0x13);
+		int finish_time = SIPunch::getUnsigned(data, base + 0x15);
+		int punch_cnt = (uint8_t)data[base + 0x17];
+		punch_cnt--;
+
+		SICard::PunchList punches;
+		int base1 = base + 0x20;
+		// 5 x 6 records with times
+		for(int i=0; i<30 && i<punch_cnt; i++) {
+			int offset = 3*i + i/5 + 1;
+			int code = (uint8_t)data[base1 + offset];
+			int time = SIPunch::getUnsigned(data, base1 + offset + 1);
+			//qfInfo() << i << "->" << QString::number(offset, 16);
+			punches << SIPunch(code, time);
+		}
+		// 1 x 6 records without times
+		for(int i=30; i<36 && i<punch_cnt; i++) {
+			int offset = 16*(i-30);
+			int code = (uint8_t)data[base1 + offset];
+			punches << SIPunch(code, SICard::INVALID_SI_TIME);
+		}
+
+		m_card.setCardNumber(card_number);
+		m_card.setCheckTime(check_time);
+		m_card.setStartTime(start_time);
+		m_card.setFinishTime(finish_time);
+		m_card.setPunches(punches);
+		qfInfo().noquote() << "\n" << m_card.toString();
+		finishAndDestroy(true, QVariant());
+	}
+	else {
+		qfError() << "Invalid command:" << (int)cmd << "received";
+		abort();
+	}
+}
+
+SiTaskReadCard8::~SiTaskReadCard8()
+{
+	//qfInfo() << this << "destroyed";
+}
+
+void SiTaskReadCard8::start()
+{
+	if(!m_withAutosend) {
+		sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x00));
+	}
+}
+
+void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
+{
+	SIMessageData::Command cmd = msg.command();
+	if(cmd == SIMessageData::Command::GetSICard8) {
+		int base = 5;
+		const QByteArray data = msg.data();
+		int block_number = (uint8_t)data[base++];
+		qfInfo().noquote() << SIMessageData::dumpData(data.mid(base), 4);
+		if(block_number == 0) {
+			int card_number = SIPunch::getUnsigned(data, base + 0x19, 3);
+			m_cardSerie = static_cast<CardSerie>(((uint8_t)data[base + 0x18]) & 7);
+			qfDebug() << "CS:" << m_cardSerie << "SI:" << card_number;
+			if(m_cardSerie == Card8) {
+				m_punchCnt = (uint8_t)data[base + 0x16];
+				int check_time = SIPunch(data, base + 0x08).time();
+				int start_time = SIPunch(data, base + 0x0c).time();
+				int finish_time = SIPunch(data, base + 0x10).time();
+				m_card.setCardNumber(card_number);
+				m_card.setCheckTime(check_time);
+				m_card.setStartTime(start_time);
+				m_card.setFinishTime(finish_time);
+				sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x01));
+			}
+			else {
+				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie;
+				abort();
+			}
+		}
+		else if(block_number == 1) {
+			if(m_cardSerie == Card8) {
+				base += 8;
+				SICard::PunchList punches;
+				for (int i = 0; i < m_punchCnt && i < 30; ++i) {
+					punches << SIPunch(data, base + i*4);
+				}
+				m_card.setPunches(punches);
+				qfInfo().noquote() << "\n" << m_card.toString();
+				finishAndDestroy(true, QVariant());
+			}
+			else {
+				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie;
+				abort();
+			}
+		}
+	}
+	else {
+		qfError() << "Invalid command:" << (int)cmd << "received";
+		abort();
+	}
+}
+
+}

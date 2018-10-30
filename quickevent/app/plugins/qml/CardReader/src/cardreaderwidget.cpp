@@ -2,7 +2,6 @@
 #include "ui_cardreaderwidget.h"
 #include "dlgsettings.h"
 #include "cardreaderpartwidget.h"
-#include "sitasks.h"
 
 #include "CardReader/cardreaderplugin.h"
 #include "CardReader/cardchecker.h"
@@ -21,7 +20,9 @@
 #include <quickevent/core/si/siid.h>
 
 #include <siut/sidevicedriver.h>
-#include <siut/simessage.h>
+#include <siut/commport.h>
+#include <siut/sicard.h>
+#include <siut/sitask.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -168,8 +169,8 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	{
 		siut::DeviceDriver *drv = siDriver();
 		connect(drv, &siut::DeviceDriver::driverInfo, this, &CardReaderWidget::processDriverInfo, Qt::QueuedConnection);
-		connect(drv, &siut::DeviceDriver::siMessageReceived, this, &CardReaderWidget::processSIMessage, Qt::QueuedConnection);
-		connect(drv, &siut::DeviceDriver::siDatagramReceived, this, &CardReaderWidget::processDriverRawData, Qt::QueuedConnection);
+		//connect(drv, &siut::DeviceDriver::siMessageReceived, this, &CardReaderWidget::processSIMessage, Qt::QueuedConnection);
+		//connect(drv, &siut::DeviceDriver::siDatagramReceived, this, &CardReaderWidget::processDriverRawData, Qt::QueuedConnection);
 		connect(this, &CardReaderWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
 	}
 	connect(thisPlugin(), &CardReader::CardReaderPlugin::siMessageReceived, this, &CardReaderWidget::processSIMessage);
@@ -248,12 +249,12 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		{
 			QAction *a = new QAction("Station info");
 			a->setEnabled(false);
-			connect(siDriver(), &siut::DeviceDriver::commOpenChanged, a, &QAction::setEnabled);
+			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
 			connect(a, &QAction::triggered, [this]() {
-				SiTaskStationConfig *cmd = new SiTaskStationConfig();
-				connect(cmd, &SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
+				siut::SiTaskStationConfig *cmd = new siut::SiTaskStationConfig();
+				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
 					if(ok) {
-						SiStationConfig cfg(result.toMap());
+						siut::SiStationConfig cfg(result.toMap());
 						QString msg = tr(""
 										 "Station number: {{StationNumber}}\n"
 										 "Extended mode: {{ExtendedMode}}\n"
@@ -263,11 +264,11 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 										 "Read out after punch: {{ReadOutAfterPunch}}\n"
 										 "");
 						msg.replace("{{StationNumber}}", QString::number(cfg.stationNumber()));
-						msg.replace("{{ExtendedMode}}", (cfg.flags() & (unsigned)SiStationConfig::Flag::ExtendedMode)? tr("True"): tr("False"));
-						msg.replace("{{AutoSend}}", (cfg.flags() & (unsigned)SiStationConfig::Flag::AutoSend)? tr("True"): tr("False"));
-						msg.replace("{{HandShake}}", (cfg.flags() & (unsigned)SiStationConfig::Flag::HandShake)? tr("True"): tr("False"));
-						msg.replace("{{PasswordAccess}}", (cfg.flags() & (unsigned)SiStationConfig::Flag::PasswordAccess)? tr("True"): tr("False"));
-						msg.replace("{{ReadOutAfterPunch}}", (cfg.flags() & (unsigned)SiStationConfig::Flag::ReadOutAfterPunch)? tr("True"): tr("False"));
+						msg.replace("{{ExtendedMode}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::ExtendedMode)? tr("True"): tr("False"));
+						msg.replace("{{AutoSend}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::AutoSend)? tr("True"): tr("False"));
+						msg.replace("{{HandShake}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::HandShake)? tr("True"): tr("False"));
+						msg.replace("{{PasswordAccess}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::PasswordAccess)? tr("True"): tr("False"));
+						msg.replace("{{ReadOutAfterPunch}}", (cfg.flags() & (unsigned)siut::SiStationConfig::Flag::ReadOutAfterPunch)? tr("True"): tr("False"));
 						qf::qmlwidgets::dialogs::MessageBox::showInfo(this, msg);
 					}
 				}, Qt::QueuedConnection);
@@ -278,10 +279,10 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		{
 			QAction *a = new QAction("Read station memory");
 			a->setEnabled(false);
-			connect(siDriver(), &siut::DeviceDriver::commOpenChanged, a, &QAction::setEnabled);
+			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
 			connect(a, &QAction::triggered, [this]() {
-				SiTaskReadStationBackupMemory *cmd = new SiTaskReadStationBackupMemory();
-				connect(cmd, &SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
+				siut::SiTaskReadStationBackupMemory *cmd = new siut::SiTaskReadStationBackupMemory();
+				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
 					if(ok) {
 						//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "memory read");
 						QByteArray data = result.toByteArray();
@@ -498,18 +499,31 @@ siut::DeviceDriver *CardReaderWidget::siDriver()
 {
 	if(!f_siDriver) {
 		f_siDriver = new siut::DeviceDriver(this);
-		connect(f_siDriver, &siut::DeviceDriver::commOpenChanged, this, &CardReaderWidget::onComOpenChanged);
+		connect(commPort(), &siut::CommPort::readyRead, this, [this]() {
+			QByteArray ba = commPort()->readAll();
+			siDriver()->processData(ba);
+		});
+		connect(siDriver(), &siut::DeviceDriver::dataToSend, commPort(), &siut::CommPort::sendData);
 	}
 	return f_siDriver;
+}
+
+siut::CommPort *CardReaderWidget::commPort()
+{
+	if(!m_commPort) {
+		m_commPort = new siut::CommPort(this);
+		connect(m_commPort, &siut::CommPort::openChanged, this, &CardReaderWidget::onComOpenChanged);
+	}
+	return m_commPort;
 }
 
 void CardReaderWidget::onComOpenChanged(bool comm_is_open)
 {
 	if(comm_is_open) {
-		SiTaskSetDirectRemoteMode *cmd = new SiTaskSetDirectRemoteMode(SiTaskSetDirectRemoteMode::Mode::Direct);
-		connect(cmd, &SiTaskSetDirectRemoteMode::finished, this, [this](bool ok) {
+		siut::SiTaskSetDirectRemoteMode *cmd = new siut::SiTaskSetDirectRemoteMode(siut::SiTaskSetDirectRemoteMode::Mode::Direct);
+		connect(cmd, &siut::SiTaskSetDirectRemoteMode::finished, this, [this](bool ok) {
 			if(ok) {
-				m_lblCommInfo->setText(tr("Connected to %1 in direct mode.").arg(this->siDriver()->commPortName()));
+				m_lblCommInfo->setText(tr("Connected to %1 in direct mode.").arg(this->commPort()->portName()));
 			}
 			else {
 				m_lblCommInfo->setText(tr("Error set SI station to direct mode."));
@@ -536,16 +550,16 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 		int data_bits = settings.value("dataBits", 8).toInt();
 		int stop_bits = settings.value("stopBits", 1).toInt();
 		QString parity = settings.value("parity", "none").toString();
-		if(siDriver()->openCommPort(device, baud_rate, data_bits, parity, stop_bits > 1)) {
+		if(commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
 			is_open = true;
 		}
 		else {
-			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(siDriver()->commPortErrorString()));
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(commPort()->errorString()));
 		}
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
 	}
 	else {
-		siDriver()->closeCommPort();
+		commPort()->close();
 	}
 }
 
@@ -562,6 +576,7 @@ void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
+	/*
 	//appendLog(qf::core::Log::Level::Info, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MessageType::CardReadOut) {
 		SIMessageCardReadOut card(msg_data);
@@ -586,6 +601,7 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 	else {
 		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 	}
+	*/
 }
 
 void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QString& msg )
@@ -603,14 +619,14 @@ void CardReaderWidget::processDriverRawData(const QByteArray& data)
 	qf::core::utils::Settings settings;
 	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
 	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
-		QString msg = SIMessageData::dumpData(data);
+		QString msg = siut::SIMessageData::dumpData(data, 16);
 		appendLog(qf::core::Log::Level::Info, trUtf8("DriverRawData: %1").arg(msg));
 	}
 }
 
-void CardReaderWidget::processSICard(const SIMessageCardReadOut &card)
+void CardReaderWidget::processSICard(const siut::SICard &card)
 {
-	appendLog(qf::core::Log::Level::Debug, card.dump());
+	appendLog(qf::core::Log::Level::Debug, card.toString());
 	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
 
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
@@ -686,6 +702,7 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 
 void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
 {
+	/*
 	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.punch().toString()));
 	quickevent::core::si::PunchRecord punch(rec);
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
@@ -702,6 +719,7 @@ void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
 		punch.setid(punch_id);
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
+	*/
 }
 
 void CardReaderWidget::updateTableView(int card_id)

@@ -98,7 +98,7 @@ void RacomClient::onUdpSocketReadyRead()
 		m_siDriver = new siut::DeviceDriver(this);
 		CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
 		if(plugin) {
-			connect(m_siDriver, &siut::DeviceDriver::siMessageReceived, plugin, &CardReader::CardReaderPlugin::emitSiMessageReceived);
+			//connect(m_siDriver, &siut::DeviceDriver::siMessageReceived, plugin, &CardReader::CardReaderPlugin::emitSiMessageReceived);
 		}
 	}
 	m_siDriver->processData(data);

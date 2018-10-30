@@ -21,7 +21,7 @@ class Plugin;
 }
 }
 
-namespace siut { class DeviceDriver; }
+namespace siut { class DeviceDriver; class CommPort; class SICard; }
 
 namespace quickevent { namespace gui { namespace audio { class Player; }}}
 namespace quickevent { namespace core { namespace si { class ReadCard; class CheckedCard; }}}
@@ -78,9 +78,10 @@ private:
 	Q_SLOT void openSettings();
 
 	siut::DeviceDriver *siDriver();
+	siut::CommPort *commPort();
 	void onComOpenChanged(bool comm_is_open);
 
-	void processSICard(const SIMessageCardReadOut &card);
+	void processSICard(const siut::SICard &card);
 	void processSIPunch(const SIMessageTransmitPunch &rec);
 
 	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
@@ -111,6 +112,7 @@ private:
 	QComboBox *m_cbxPunchMarking = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
+	siut::CommPort *m_commPort = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

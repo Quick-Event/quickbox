@@ -8,32 +8,35 @@
 #ifndef SIUT_COMMPORT_H
 #define SIUT_COMMPORT_H
 
+#include <siut/siutglobal.h>
+
 #include <qf/core/log.h>
 
 #include <QSerialPort>
 
 namespace siut {
 
-
-class  CommPort : public QSerialPort
+class SIUT_DECL_EXPORT CommPort : public QSerialPort
 {
 	Q_OBJECT
 private:
 	typedef QSerialPort Super;
 public:
-	CommPort(QObject *parent = NULL);
+	CommPort(QObject *parent = nullptr);
 	virtual ~CommPort();
 public:
+	Q_SIGNAL void openChanged(bool is_open);
+	bool openComm(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
+	void closeComm();
 	/*
-	bool open(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
-	void close();
 	QString errorString();
 	QString portName();
 	*/
+	void sendData(const QByteArray &data);
+
+	Q_SIGNAL void commInfo(qf::core::Log::Level level, const QString &msg);
 protected:
-	virtual void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
-public:
-	Q_SIGNAL void driverInfo(qf::core::Log::Level level, const QString &msg);
+	virtual void emitCommInfo(qf::core::Log::Level level, const QString &msg);
 
 	void setDataBitsAsInt(int data_bits);
 	void setParityAsString(const QString &parity_str);

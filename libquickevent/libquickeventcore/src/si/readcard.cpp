@@ -2,7 +2,7 @@
 
 #include "../og/timems.h"
 
-#include <siut/simessage.h>
+#include <siut/sicard.h>
 
 #include <qf/core/log.h>
 
@@ -56,7 +56,7 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 	this->setPunches(punchlst);
 }
 
-ReadCard::ReadCard(const SIMessageCardReadOut &si_card)
+ReadCard::ReadCard(const siut::SICard &si_card)
 	: ReadCard(si_card.toVariantMap())
 {
 }

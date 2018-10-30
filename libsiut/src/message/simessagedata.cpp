@@ -5,12 +5,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#include "simessage.h"
-
-#include <QStringList>
+#include "simessagedata.h"
 
 #include <qf/core/log.h>
 
+#include <QStringList>
+
+namespace siut {
+/*
 namespace
 {
 	class SIMessageDataMetaTypeInit
@@ -18,24 +20,24 @@ namespace
 	public:
 		SIMessageDataMetaTypeInit()
 		{
-			qRegisterMetaType<SIMessageData>("SIMessageData");
+			qRegisterMetaType<siut::SIMessageData>("SIMessageData");
 		}
 	};
 
 	SIMessageDataMetaTypeInit initializer;
 }
-
+*/
 //=================================================
-//             SIMessageBase
+//             SIMessageData
 //=================================================
 SIMessageData::Command SIMessageData::command(const QByteArray &si_data)
 {
 	Command ret = Command::Invalid;
-	if(si_data.length() > 0) {
-		ret = (Command)(unsigned char)si_data[0];
+	if(si_data.length() > 1) {
+		ret = (Command)(unsigned char)si_data[1];
 	}
 	else {
-		qfError() << "empty message";
+		qfError() << "invalid message";
 		//qfInfo() << qf::core::Log::stackTrace();
 	}
 	return ret;
@@ -188,31 +190,39 @@ static char hex_digit(int d)
 	return ret;
 }
 
-QString SIMessageData::dumpData(const QByteArray& ba)
+QString SIMessageData::dumpData(const QByteArray& ba, int bytes_in_the_row)
 {
 	/*
-	static const char STX = 0x02;
-	static const char ETX = 0x03;
-	static const char ACK = 0x06;
-	static const char NAK = 0x15;
-	static const char DLE = 0x10;
+	static constexpr char STX = 0x02;
+	static constexpr char ETX = 0x03;
+	static constexpr char ACK = 0x06;
+	static constexpr char NAK = 0x15;
+	static constexpr char DLE = 0x10;
 	*/
-	QString ret = QString("length: %1 [ ").arg(ba.length());
+	QString ret = QString("data length: %1").arg(ba.length());
 	int i = 0;
-	foreach(unsigned char c, ba) {
+	int page = 0;
+	for(unsigned char c : ba) {
 		QString s;
-		if(i>0) ret += ' ';
+		if(i % bytes_in_the_row == 0) {
+			ret += '\n';
+			ret += QString("%1 ").arg(page++, 2, 10, QChar('0'));
+			ret += QString("%1 ").arg(i, 4, 16, QChar('0'));
+		}
 		/*
-		 *		if(i%16) ret += '-';
-		 *		else ret += '\n';
-		 *		if(c == STX) s = "ST";
-		else if(c == ETX) s = "ET";
-		else if(c == ACK) s = "AC";
-		else if(c == NAK) s = "NA";
-		else if(c == DLE) s = "DL";
+		if(c == STX)
+			s = "SX";
+		else if(c == ETX)
+			s = "EX";
+		else if(c == ACK)
+			s = "AK";
+		else if(c == NAK)
+			s = "NK";
+		else if(c == DLE)
+			s = "DL";
 		else */
 		{
-			char buff[] = "xx";
+			char buff[] = "xx ";
 			buff[0] = hex_digit(c >> 4);
 			buff[1] = hex_digit(c % 16);
 			s = QString(buff);
@@ -220,15 +230,14 @@ QString SIMessageData::dumpData(const QByteArray& ba)
 		ret += s;
 		i++;
 	}
-	ret += " ]";
 	return ret;
 }
 
-QString SIMessageData::dump() const
+QString SIMessageData::toString(int bytes_in_the_row) const
 {
 	QString ret;
-	ret = QString("command: %1").arg(commandName(command()));
-	ret += ' ' + QString("data: %1").arg(dumpData(m_data));
+	ret = QString("command: %1\n").arg(commandName(command()));
+	ret += dumpData(m_data, bytes_in_the_row);
 	return ret;
 }
 #if 0
@@ -242,3 +251,5 @@ QString DriverInfo::dump() const
 	return ret;
 }
 #endif
+
+}

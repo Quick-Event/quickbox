@@ -1,9 +1,9 @@
 
 HEADERS  +=  \
 	$$PWD/simessagedata.h   \
-	$$PWD/simessage.h   \
+	#$$PWD/simessage.h   \
 
 SOURCES +=  \
 	$$PWD/simessagedata.cpp   \
-	$$PWD/simessage.cpp   \
+	#$$PWD/simessage.cpp   \
 
