@@ -43,25 +43,16 @@ public:
 	//Q_SIGNAL void siMessageReceived(const SIMessageData &msg);
 	//Q_SIGNAL void siDatagramReceived(const QByteArray &data);
 	Q_SIGNAL void dataToSend(const QByteArray &data);
+	Q_SIGNAL void siTaskFinished(int task_type, QVariant result);
 protected:
 	//virtual void onSiMessageReceived(const SIMessageData &msg);
 	void processSIMessageData(const SIMessageData &msg_data);
-	//void processRxData();
 	void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
-protected slots:
-	//void onCommReadyRead();
-	//void rxDataTimeout();
 private:
-	void sendAck();
+	//void sendAck();
 	//void abortMessage();
 protected:
-	//QSocketNotifier *f_socketNotifier;
-	//CommPort *f_commPort;
 	QByteArray f_rxData;
-	//QTimer *f_rxTimer;
-	//ProcessRxDataStatus f_status = StatusUnknown;
-	//int f_packetReceivedCount = 0;
-	//int f_packetToFinishCount = 0;
 	SIMessageData f_messageData;
 	SiTask *m_taskInProcess = nullptr;
 };

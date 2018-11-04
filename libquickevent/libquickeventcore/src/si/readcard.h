@@ -24,8 +24,8 @@ private:
 	QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	QF_VARIANTMAP_FIELD(int, t, setT, ime)
 	QF_VARIANTMAP_FIELD(int, m, setM, sec)
-	QF_VARIANTMAP_FIELD(int, d, setD, ay)
-	QF_VARIANTMAP_FIELD(int, w, setW, eek)
+	//QF_VARIANTMAP_FIELD(int, d, setD, ay)
+	//QF_VARIANTMAP_FIELD(int, w, setW, eek)
 public:
 	ReadPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadPunch(const QVariantList &var_list);
@@ -40,7 +40,7 @@ private:
 	typedef QVariantMap Super;
 
 	QF_VARIANTMAP_FIELD(int, r, setR, unId)
-	QF_VARIANTMAP_FIELD(int, s, setS, tationCodeNumber)
+	QF_VARIANTMAP_FIELD(int, s, setS, tationNumber)
 	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
 	QF_VARIANTMAP_FIELD(int, c, setC, heckTime)
 	QF_VARIANTMAP_FIELD(int, s, setS, tartTime)

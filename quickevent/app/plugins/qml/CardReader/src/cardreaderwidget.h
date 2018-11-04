@@ -1,6 +1,8 @@
 #ifndef CARDREADERWIDGET_H
 #define CARDREADERWIDGET_H
 
+#include <siut/sitask.h>
+
 #include <qf/core/exception.h>
 #include <qf/core/log.h>
 
@@ -54,7 +56,7 @@ public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
+	//Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
 	Q_SIGNAL void logRequest(qf::core::Log::Level level, const QString &msg);
 	void emitLogRequest(qf::core::Log::Level level, const QString &msg) {emit logRequest(level, msg);}
 
@@ -63,7 +65,7 @@ public:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
-	Q_SLOT void processSIMessage(const SIMessageData &msg);
+	//Q_SLOT void processSIMessage(const SIMessageData &msg);
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
@@ -71,6 +73,8 @@ private slots:
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
 	void processDriverRawData(const QByteArray &data);
 	void onOpenCommTriggered(bool checked);
+
+	void onSiTaskFinished(int task_type, QVariant result);
 
 	void importCards_lapsOnlyCsv();
 private:
@@ -85,7 +89,7 @@ private:
 	void processSIPunch(const SIMessageTransmitPunch &rec);
 
 	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
-	void processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception);
+	void processReadCard(const quickevent::core::si::ReadCard &read_card);
 
 	void updateTableView(int card_id);
 

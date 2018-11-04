@@ -250,7 +250,7 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId, readerConnectionId)"
 							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId, :readerConnectionId)")
 			  , qf::core::Exception::Throw);
-	q.bindValue(QStringLiteral(":stationNumber"), read_card.stationCodeNumber());
+	q.bindValue(QStringLiteral(":stationNumber"), read_card.stationNumber());
 	q.bindValue(QStringLiteral(":siId"), read_card.cardNumber());
 	q.bindValue(QStringLiteral(":checkTime"), read_card.checkTime());
 	q.bindValue(QStringLiteral(":startTime"), read_card.startTime());
@@ -328,7 +328,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const quickevent::core::si
 	return false;
 }
 
-void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) throw(qf::core::Exception)
+void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false)
 {
 	QF_TIME_SCOPE("updateCheckedCardValuesSql()");
 	int run_id = checked_card.runId();

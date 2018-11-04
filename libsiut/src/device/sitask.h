@@ -22,9 +22,12 @@ public:
 	SiTask(QObject *parent = nullptr);
 	~SiTask() override;
 
+	enum class Type {Invalid=0, CardRead, Punch, Other};
+
 	Q_SIGNAL void sigSendCommand(int cmd, const QByteArray &data);
 	virtual void onSiMessageReceived(const SIMessageData &msg) = 0;
 	virtual void start() = 0;
+	virtual Type type() const = 0;
 	virtual void finishAndDestroy(bool ok, QVariant result);
 	void abort() {finishAndDestroy(false, QVariant());}
 	Q_SIGNAL void aboutToFinish();
@@ -45,6 +48,7 @@ public:
 public:
 	explicit SiTaskSetDirectRemoteMode(Mode mode, QObject *parent = nullptr);
 
+	Type type() const override {return  Type::Other;}
 	void start() override;
 	void onSiMessageReceived(const siut::SIMessageData &msg) override;
 private:
@@ -74,6 +78,7 @@ class SIUT_DECL_EXPORT SiTaskStationConfig : public SiTask
 public:
 	explicit SiTaskStationConfig(QObject *parent = nullptr) : Super(parent) {}
 
+	Type type() const override {return  Type::Other;}
 	void start() override;
 	void onSiMessageReceived(const siut::SIMessageData &msg) override;
 private:
@@ -88,6 +93,7 @@ class SIUT_DECL_EXPORT SiTaskReadStationBackupMemory : public SiTask
 public:
 	explicit SiTaskReadStationBackupMemory(QObject *parent = nullptr);
 
+	Type type() const override {return  Type::Other;}
 	void start() override;
 	void onSiMessageReceived(const siut::SIMessageData &msg) override;
 private:
@@ -114,6 +120,7 @@ public:
 		: Super(parent)
 		, m_withAutosend(with_autosend) {}
 	//~SiTaskReadCard() override {}
+	Type type() const override {return  Type::CardRead;}
 protected:
 	bool m_withAutosend;
 	SICard m_card;

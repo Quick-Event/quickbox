@@ -40,7 +40,7 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 {
 	//setCardId(rec.value("cards.id").toInt());
 	setRunId(rec.value("runId").toInt());
-	setStationCodeNumber(rec.value("stationNumber").toInt());
+	setStationNumber(rec.value("stationNumber").toInt());
 	setCardNumber(rec.value("siId").toInt());
 	setCheckTime(rec.value("checkTime").toInt());
 	setStartTime(rec.value("startTime").toInt());

@@ -7,7 +7,7 @@
 
 #include <quickevent/core/si/checkedcard.h>
 
-#include <siut/sidevicedriver.h>
+//#include <siut/simessagedata.h>
 #include <siut/sidevicedriver.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -94,14 +94,14 @@ void RacomClient::onUdpSocketReadyRead()
 			break;
 	data = data.mid(i-1);
 	qfInfo() << "stripped data:" << data.toHex();
-	if(!m_siDriver) {
-		m_siDriver = new siut::DeviceDriver(this);
-		CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
-		if(plugin) {
-			//connect(m_siDriver, &siut::DeviceDriver::siMessageReceived, plugin, &CardReader::CardReaderPlugin::emitSiMessageReceived);
+	CardReader::CardReaderPlugin *plugin = cardReaderPlugin();
+	if(plugin) {
+		if(!m_siDriver) {
+			m_siDriver = new siut::DeviceDriver(this);
+			connect(m_siDriver, &siut::DeviceDriver::siTaskFinished, plugin, &CardReader::CardReaderPlugin::emitSiTaskFinished);
 		}
+		m_siDriver->processData(data);
 	}
-	m_siDriver->processData(data);
 }
 
 qf::qmlwidgets::framework::DialogWidget *RacomClient::createDetailWidget()

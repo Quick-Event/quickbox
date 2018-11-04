@@ -49,7 +49,7 @@ const char* SIMessageData::commandName(SIMessageData::Command cmd)
 	switch(cmd) {
 		case Command::SICard5Detected: ret = "CmdSICard5Detected"; break;
 		case Command::SICard6Detected: ret = "CmdSICard6Detected"; break;
-		case Command::SICard8AndHigherDetected: ret = "CmdSICard8+"; break;
+		case Command::SICard8Detected: ret = "CmdSICard8+"; break;
 		case Command::SICardRemoved: ret = "CmdSICardRemoved"; break;
 		//case Command::SICardDetectedOrRemoved: ret = "CmdSICardDetectedOrRemoved"; break;
 		case Command::GetSICard5: ret = "CmdGetSICard5"; break;
@@ -66,7 +66,7 @@ const char* SIMessageData::commandName(SIMessageData::Command cmd)
 	}
 	return ret;
 }
-
+/*
 SIMessageData::MessageType SIMessageData::type() const
 {
 	MessageType ret = MessageType::Invalid;
@@ -75,7 +75,7 @@ SIMessageData::MessageType SIMessageData::type() const
 		switch(cmd) {
 		case SIMessageData::Command::SICard5Detected:
 		case SIMessageData::Command::SICard6Detected:
-		case SIMessageData::Command::SICard8AndHigherDetected:
+		case SIMessageData::Command::SICard8Detected:
 		case SIMessageData::Command::SICardRemoved:
 		//case SIMessageData::Command::SICardDetectedOrRemoved:
 		//	ret = MessageType::CardEvent;
@@ -98,7 +98,7 @@ SIMessageData::MessageType SIMessageData::type() const
 		}
 	return ret;
 }
-/*
+
 int SIMessageData::headerLength(SIMessageData::Command cmd)
 {
 	int ret = 0;

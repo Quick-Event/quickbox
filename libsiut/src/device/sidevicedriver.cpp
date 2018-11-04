@@ -84,9 +84,14 @@ void DeviceDriver::processSIMessageData(const SIMessageData &data)
 		processSIMessageData(data);
 		break;
 	}
-	case SIMessageData::Command::SICard8AndHigherDetected: {
+	case SIMessageData::Command::SICard8Detected: {
 		qfInfo() << "SICard8AndHigherDetected";
 		setSiTask(new SiTaskReadCard8(false));
+		break;
+	}
+	case SIMessageData::Command::GetSICard8: {
+		setSiTask(new SiTaskReadCard8(true));
+		processSIMessageData(data);
 		break;
 	}
 	default:
@@ -122,7 +127,7 @@ namespace
 {
 static const char STX = 0x02;
 static const char ETX = 0x03;
-static const char ACK = 0x06;
+//static const char ACK = 0x06;
 static const char NAK = 0x15;
 //static const char DLE = 0x10;
 }
@@ -412,18 +417,24 @@ void DeviceDriver::setSiTask(SiTask *task)
 		m_taskInProcess->abort();
 	}
 	m_taskInProcess = task;
+	SiTask::Type task_type = task->type();
 	connect(task, &SiTask::sigSendCommand, this, &DeviceDriver::sendCommand);
 	connect(task, &SiTask::aboutToFinish, this, [this]() {
 		this->m_taskInProcess = nullptr;
 	});
+	connect(task, &SiTask::finished, this, [this, task_type](bool ok, QVariant result) {
+		if(ok) {
+			emit this->siTaskFinished(static_cast<int>(task_type), result);
+		}
+	});
 	m_taskInProcess->start();
 }
-
+/*
 void DeviceDriver::sendAck() 
 {
 	emit dataToSend(QByteArray(1, ACK));
 }
-/*
+
 void DeviceDriver::abortMessage()
 {
 	f_status = StatusMessageError;

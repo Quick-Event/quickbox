@@ -25,7 +25,7 @@ public:
 		GetSystemData=0x83,
 		SICard5Detected=0xE5,
 		SICard6Detected=0xE6,
-		SICard8AndHigherDetected=0xE8,
+		SICard8Detected=0xE8,
 		SICardRemoved=0xE7,
 		GetSICard5=0xB1,
 		GetSICard6=0xE1,
@@ -37,7 +37,7 @@ public:
 
 		//DriverInfo=0x1000 /// Driver info (SI commands are only 8 bit long)
 	};
-	enum class MessageType {Invalid=0, CardEvent, CardReadOut, Punch, DriverInfo, Other};
+	//enum class MessageType {Invalid=0, CardEvent, CardReadOut, Punch, DriverInfo, Other};
 public:
 	SIMessageData() {}
 	SIMessageData(const QByteArray &si_data) : m_data(si_data) {}
@@ -46,7 +46,7 @@ public:
 	bool isNull() const {return m_data.isEmpty();}
 	static Command command(const QByteArray &si_data);
 	Command command() const {return command(data());}
-	MessageType type() const;
+	//MessageType type() const;
 	/// offset of data in packet for each command
 	//static int headerLength(Command);
 	const QByteArray& data() const {return m_data;}

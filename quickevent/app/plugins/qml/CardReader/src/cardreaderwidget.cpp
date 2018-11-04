@@ -166,14 +166,7 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 
 	createActions();
 
-	{
-		siut::DeviceDriver *drv = siDriver();
-		connect(drv, &siut::DeviceDriver::driverInfo, this, &CardReaderWidget::processDriverInfo, Qt::QueuedConnection);
-		//connect(drv, &siut::DeviceDriver::siMessageReceived, this, &CardReaderWidget::processSIMessage, Qt::QueuedConnection);
-		//connect(drv, &siut::DeviceDriver::siDatagramReceived, this, &CardReaderWidget::processDriverRawData, Qt::QueuedConnection);
-		connect(this, &CardReaderWidget::sendSICommand, drv, &siut::DeviceDriver::sendCommand, Qt::QueuedConnection);
-	}
-	connect(thisPlugin(), &CardReader::CardReaderPlugin::siMessageReceived, this, &CardReaderWidget::processSIMessage);
+	connect(thisPlugin(), &CardReader::CardReaderPlugin::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);
 	{
 		ui->tblCardsTB->setTableView(ui->tblCards);
 
@@ -282,7 +275,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
 			connect(a, &QAction::triggered, [this]() {
 				siut::SiTaskReadStationBackupMemory *cmd = new siut::SiTaskReadStationBackupMemory();
-				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
+				connect(cmd, &siut::SiTaskStationConfig::finished, this, [](bool ok, QVariant result) {
 					if(ok) {
 						//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "memory read");
 						QByteArray data = result.toByteArray();
@@ -503,7 +496,9 @@ siut::DeviceDriver *CardReaderWidget::siDriver()
 			QByteArray ba = commPort()->readAll();
 			siDriver()->processData(ba);
 		});
-		connect(siDriver(), &siut::DeviceDriver::dataToSend, commPort(), &siut::CommPort::sendData);
+		connect(f_siDriver, &siut::DeviceDriver::dataToSend, commPort(), &siut::CommPort::sendData);
+		connect(f_siDriver, &siut::DeviceDriver::siTaskFinished, this, &CardReaderWidget::onSiTaskFinished);
+		connect(f_siDriver, &siut::DeviceDriver::driverInfo, this, &CardReaderWidget::processDriverInfo, Qt::QueuedConnection);
 	}
 	return f_siDriver;
 }
@@ -573,10 +568,23 @@ void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
 	}
 }
 
+void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
+{
+	qfLogFuncFrame();
+	siut::SiTask::Type tt = static_cast<siut::SiTask::Type>(task_type);
+	if(tt == siut::SiTask::Type::CardRead) {
+		siut::SICard card = result.value<siut::SICard>();
+		if(card.isNull())
+			qfError() << "NULL card received";
+		else
+			processSICard(card);
+	}
+}
+
+/*
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
-	/*
 	//appendLog(qf::core::Log::Level::Info, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MessageType::CardReadOut) {
 		SIMessageCardReadOut card(msg_data);
@@ -601,8 +609,8 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 	else {
 		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
 	}
-	*/
 }
+*/
 
 void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QString& msg )
 {
@@ -686,7 +694,7 @@ bool CardReaderWidget::processReadCardSafe(const quickevent::core::si::ReadCard 
 	return false;
 }
 
-void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception)
+void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card)
 {
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(read_card.runId()) {
