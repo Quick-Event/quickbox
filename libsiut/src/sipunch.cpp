@@ -4,27 +4,14 @@
 
 namespace siut {
 
-const SIPunch &SIPunch::sharedNull()
-{
-	static SIPunch n = SIPunch(SharedDummyHelper());
-	return n;
-}
-
-SIPunch::SIPunch(SIPunch::SharedDummyHelper)
-{
-	d = new Data();
-}
-
 SIPunch::SIPunch()
 {
-	*this = sharedNull();
 }
 
 SIPunch::SIPunch(int code, int time)
 {
-	d = new Data;
-	d->code = code;
-	d->time = time;
+	setCode(code);
+	setTime(time);
 }
 
 SIPunch::SIPunch(const QByteArray &card_data, int ix)
@@ -40,24 +27,12 @@ SIPunch::SIPunch(const QByteArray &card_data, int ix)
 	(...1023) (reserved)
 	punching time PTH, PTL - 12h binary
 	*/
-	d = new Data;
-	d->time = (uint16_t)getUnsigned(card_data, ix + 2, 2);
-	d->code = (uint8_t)card_data[ix + 1];
+	setTime((uint16_t)getUnsigned(card_data, ix + 2, 2));
+	setCode((uint8_t)card_data[ix + 1]);
 	uint8_t pdt = (uint8_t)card_data[ix];
-	d->pmFlag = pdt & 1;
-	d->dayOfWeek = (DayOfWeek)((pdt & 0x0e) >> 1);
-	d->weekCnt = ((pdt & 0x30) >> 4);
-}
-
-QVariantMap SIPunch::toVariantMap() const
-{
-	QVariantMap ret;
-	ret[QStringLiteral("code")] = code();
-	ret[QStringLiteral("time")] = time();
-	ret[QStringLiteral("msec")] = msec();
-	//ret[QStringLiteral("day")] = dayOfWeek();
-	//ret[QStringLiteral("week")] = weekCnt();
-	return ret;
+	setPmFlag(pdt & 1);
+	setDayOfWeek((pdt & 0x0e) >> 1);
+	setWeekCnt((pdt & 0x30) >> 4);
 }
 
 unsigned SIPunch::getUnsigned(const QByteArray &ba, int ix, int byte_cnt)

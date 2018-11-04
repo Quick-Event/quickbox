@@ -24,26 +24,14 @@ static QString ob_time_str(int _time)
 	return ret;
 }
 */
-const SICard &SICard::sharedNull()
-{
-	static SICard n = SICard(SharedDummyHelper());
-	return n;
-}
-
-SICard::SICard(SICard::SharedDummyHelper)
-{
-	d = new Data();
-}
 
 SICard::SICard()
 {
-	*this = sharedNull();
 }
 
 SICard::SICard(int card_number)
 {
-	d = new Data;
-	d->cardNumber = card_number;
+	setCardNumber(card_number);
 }
 
 QString SICard::toString() const
@@ -59,30 +47,30 @@ QString SICard::toString() const
 	sl << tr("check: %1").arg(time_str(checkTime()));
 	sl << tr("start: %1").arg(time_str(startTime()));
 	sl << tr("finish: %1").arg(time_str(finishTime()));
-	int n = 0;
-	for(const SIPunch &p : punches())
+	for (int n = 0; n < punchCount(); ++n) {
+		SIPunch p = punchAt(n);
 		sl << QString::number(++n) + ".\t" + QString::number(p.code()) + "\t" + time_str(p.time());
+	}
 	return sl.join("\n");
 }
 
-QVariantMap SICard::toVariantMap() const
+int SICard::punchCount() const
 {
-	QVariantMap ret;// = SIMessageBase::toVariant().toMap();
-	ret[QStringLiteral("stationNumber")] = stationNumber();
-	ret[QStringLiteral("cardNumber")] = cardNumber();
-	//ret["cardNumberFull"] = (cardNumber() < 100000)? 100000 + cardNumber(): cardNumber();
-	//ret["startNumber"] = startNumber();
-	//ret["countryCode"] = countryCode();
-	//ret["clubCode"] = clubCode();
-	ret[QStringLiteral("checkTime")] = checkTime();
-	ret[QStringLiteral("startTime")] = startTime();
-	ret[QStringLiteral("finishTime")] = finishTime();
-	ret[QStringLiteral("finishTimeMs")] = 0; // TODO: some cards supports msecs, read it
-	QVariantList punch_list;
-	foreach(const SIPunch &p, punches()) {
-		punch_list << p.toVariantMap();
+	return punches().count();
+}
+
+SIPunch SICard::punchAt(int i) const
+{
+	QVariantMap m = punches().value(i).toMap();
+	return SIPunch(m);
+}
+
+QList<SIPunch> SICard::punchList() const
+{
+	QList<SIPunch> ret;
+	for (int i = 0; i < punchCount(); ++i) {
+		ret << punchAt(i);
 	}
-	ret["punches"] = punch_list;
 	return ret;
 }
 

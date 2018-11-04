@@ -574,8 +574,8 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 	siut::SiTask::Type tt = static_cast<siut::SiTask::Type>(task_type);
 	if(tt == siut::SiTask::Type::CardRead) {
 		siut::SICard card = result.value<siut::SICard>();
-		if(card.isNull())
-			qfError() << "NULL card received";
+		if(card.isEmpty())
+			qfError() << "Empty card received";
 		else
 			processSICard(card);
 	}
@@ -708,10 +708,9 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 	}
 }
 
-void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
+void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 {
-	/*
-	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.punch().toString()));
+	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	punch.setmarking(punch_marking);
@@ -727,7 +726,6 @@ void CardReaderWidget::processSIPunch(const SIMessageTransmitPunch &rec)
 		punch.setid(punch_id);
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
 	}
-	*/
 }
 
 void CardReaderWidget::updateTableView(int card_id)

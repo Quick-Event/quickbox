@@ -11,47 +11,32 @@
 
 namespace siut {
 
-class SIUT_DECL_EXPORT SICard
+class SIUT_DECL_EXPORT SICard : public QVariantMap
 {
 	Q_DECLARE_TR_FUNCTIONS(SICard)
+	using Super = QVariantMap;
 public:
-	using PunchList = QList<SIPunch>;
+	using PunchList = QVariantList;
 	static constexpr int INVALID_SI_TIME = 0xEEEE;
-private:
-	class SharedDummyHelper {};
-	struct Data : public QSharedData
-	{
-		int stationNumber = 0;
-		//int countryCode() const;
-		//int clubCode() const;
-		int cardNumber = 0;
-		//int startNumber() const;
-		int startTime = 0;
-		int checkTime = 0;
-		int finishTime = 0;
-		SICard::PunchList punches;
-	};
-	QSharedDataPointer<Data> d;
 
-	SICard(SharedDummyHelper); /// null
-	static const SICard& sharedNull();
-public:
 	SICard();
+	SICard(const QVariantMap &o) : Super(o) {}
 	SICard(int card_number);
 
-	bool isNull() const {return d == sharedNull().d;}
-
-	QF_SHARED_CLASS_FIELD_RW(int, s, setS, tationNumber)
-	QF_SHARED_CLASS_FIELD_RW(int, c, setC, ardNumber)
-	QF_SHARED_CLASS_FIELD_RW(int, s, setS, tartTime)
-	QF_SHARED_CLASS_FIELD_RW(int, c, setC, heckTime)
-	QF_SHARED_CLASS_FIELD_RW(int, f, setF, inishTime)
-	QF_SHARED_CLASS_FIELD_RW(SICard::PunchList, p, setP, unches)
+	QF_VARIANTMAP_FIELD(int, s, setS, tationNumber)
+	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
+	QF_VARIANTMAP_FIELD(int, c, setC, heckTime)
+	QF_VARIANTMAP_FIELD(int, s, setS, tartTime)
+	QF_VARIANTMAP_FIELD(int, f, setF, inishTime)
+	QF_VARIANTMAP_FIELD(int, f, setF, inishTimeMs)
+	QF_VARIANTMAP_FIELD(QVariantList, p, setP, unches)
 
 	QString toString() const;
-	QVariantMap toVariantMap() const;
-	//static QString cardDataLayoutTypeToString(CardDataLayoutType card_layout_type);
-	//static QString cardTypeToString(CardType card_type);
+
+	int punchCount() const;
+	SIPunch punchAt(int i) const;
+	QList<SIPunch> punchList() const;
+
 	static bool isTimeValid(int time);
 	static int toAMms(int time_msec);
 	static int toAM(int time_sec);

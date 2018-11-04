@@ -56,11 +56,6 @@ ReadCard::ReadCard(const QSqlRecord &rec)
 	this->setPunches(punchlst);
 }
 
-ReadCard::ReadCard(const siut::SICard &si_card)
-	: ReadCard(si_card.toVariantMap())
-{
-}
-
 int ReadCard::punchCount() const
 {
 	return punches().count();

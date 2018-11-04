@@ -7,8 +7,6 @@
 #include <QVariantMap>
 
 class QSqlRecord;
-class SIMessageCardReadOut;
-class SIMessageTransmitPunch;
 
 namespace siut { class SICard; }
 
@@ -24,6 +22,9 @@ private:
 	QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	QF_VARIANTMAP_FIELD(int, t, setT, ime)
 	QF_VARIANTMAP_FIELD(int, m, setM, sec)
+	//QF_VARIANTMAP_FIELD(bool, p, setP, mFlag)
+	//QF_VARIANTMAP_FIELD(int, d, setD, ayOfWeek)
+	//QF_VARIANTMAP_FIELD(int, w, setW, eekCnt)
 	//QF_VARIANTMAP_FIELD(int, d, setD, ay)
 	//QF_VARIANTMAP_FIELD(int, w, setW, eek)
 public:
@@ -51,7 +52,6 @@ private:
 public:
 	ReadCard(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadCard(const QSqlRecord &rec);
-	ReadCard(const siut::SICard &si_card);
 
 	int punchCount() const;
 	ReadPunch punchAt(int i) const;

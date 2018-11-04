@@ -23,7 +23,7 @@ class Plugin;
 }
 }
 
-namespace siut { class DeviceDriver; class CommPort; class SICard; }
+namespace siut { class DeviceDriver; class CommPort; class SICard; class SIPunch; }
 
 namespace quickevent { namespace gui { namespace audio { class Player; }}}
 namespace quickevent { namespace core { namespace si { class ReadCard; class CheckedCard; }}}
@@ -86,7 +86,7 @@ private:
 	void onComOpenChanged(bool comm_is_open);
 
 	void processSICard(const siut::SICard &card);
-	void processSIPunch(const SIMessageTransmitPunch &rec);
+	void processSIPunch(const siut::SIPunch &rec);
 
 	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
 	void processReadCard(const quickevent::core::si::ReadCard &read_card);

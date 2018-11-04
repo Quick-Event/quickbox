@@ -17,7 +17,7 @@ SiTask::SiTask(QObject *parent)
 	m_rxTimer->setSingleShot(true);
 	m_rxTimer->setInterval(5000);
 	connect(m_rxTimer, &QTimer::timeout, this, [this]() {
-		qfError() << "SiCommand timeout after" << (m_rxTimer->interval() / 1000.) << "sec.";
+		qfError() << this << "SiCommand timeout after" << (m_rxTimer->interval() / 1000.) << "sec.";
 		this->abort();
 	});
 	m_rxTimer->start();
@@ -30,7 +30,7 @@ SiTask::~SiTask()
 
 void SiTask::finishAndDestroy(bool ok, QVariant result)
 {
-	//qfInfo() << __FUNCTION__ << this;
+	//qfWarning() << __FUNCTION__ << this;
 	m_rxTimer->stop();
 	emit aboutToFinish();
 	emit finished(ok, result);
