@@ -35,6 +35,7 @@ public:
 
 	int punchCount() const;
 	SIPunch punchAt(int i) const;
+	//void addPunch(const SIPunch &p);
 	QList<SIPunch> punchList() const;
 
 	static bool isTimeValid(int time);
