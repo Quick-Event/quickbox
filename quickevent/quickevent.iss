@@ -42,7 +42,8 @@ Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription
 
 [Files]
 Source: {#BUILD_DIR}\bin\{#APP_NAME_LOWER}.exe; DestDir: {app}; Flags: ignoreversion
-Source: {#BUILD_DIR}\bin\quickevent.exe; DestDir: {app}; Flags: ignoreversion
+Source: {#BUILD_DIR}\bin\quickshow.exe; DestDir: {app}; Flags: ignoreversion
+Source: {#BUILD_DIR}\bin\quickhttpd.exe; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\qsqlmon.exe; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\qfcore.dll; DestDir: {app}; Flags: ignoreversion
 Source: {#BUILD_DIR}\bin\qfqmlwidgets.dll; DestDir: {app}; Flags: ignoreversion
@@ -52,9 +53,6 @@ Source: {#BUILD_DIR}\bin\siut.dll; DestDir: {app}; Flags: ignoreversion
 
 Source: {#BUILD_DIR}\bin\qml\*; DestDir: {app}\qml; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "*.debug"
 Source: {#BUILD_DIR}\bin\quickevent-data\*; DestDir: {app}\quickevent-data; Flags: ignoreversion recursesubdirs createallsubdirs
-
-Source: {#BUILD_DIR}\bin\quickshow.exe; DestDir: {app}; Flags: ignoreversion
-;Source: {#BUILD_DIR}\bin\quickshow-data\*; DestDir: {app}\quickshow-data; Flags: ignoreversion recursesubdirs createallsubdirs
 
 Source: {#BUILD_DIR}\bin\translations\*; DestDir: {app}\translations; Flags: ignoreversion recursesubdirs createallsubdirs
 

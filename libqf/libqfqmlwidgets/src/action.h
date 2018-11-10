@@ -19,10 +19,10 @@ private:
 public:
 	typedef QMap<QString, Action*> ActionMap;
 public:
-	explicit Action(const QIcon &icon, const QString &text, QObject *parent = 0);
-	explicit Action(QObject *parent = 0) : Action(QIcon(), QString(), parent) {}
-	explicit Action(const QString &text, QObject *parent = 0) : Action(QIcon(), text, parent) {}
-	explicit Action(const QString &oid, const QString &text, QObject *parent = 0) : Action(QIcon(), text, parent) {setOid(oid);}
+	explicit Action(const QIcon &icon, const QString &text, QObject *parent = nullptr);
+	explicit Action(QObject *parent = nullptr) : Action(QIcon(), QString(), parent) {}
+	explicit Action(const QString &text, QObject *parent = nullptr) : Action(QIcon(), text, parent) {}
+	explicit Action(const QString &oid, const QString &text, QObject *parent = nullptr) : Action(QIcon(), text, parent) {setOid(oid);}
 
 	QString oid() {return objectName();}
 	void setOid(const QString &id) {setObjectName(id);}
