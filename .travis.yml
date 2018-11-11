@@ -1,11 +1,12 @@
 language: cpp
 compiler: gcc
+dist: xenial
 
 before_install:
   # We need this line to have g++4.8 available in apt
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-  - sudo apt-add-repository -y ppa:beineri/opt-qt591-trusty
+  #- sudo apt-add-repository -y ppa:beineri/opt-qt591-trusty
   - sudo apt-get update -qq
   ##- sudo apt-get install -qq g++-4.9
   #- sudo apt-get install qtbase5-dev qtdeclarative5-dev libsqlite3-dev
@@ -20,6 +21,6 @@ install:
 
 script:
   #- g++ --version
-  - source /opt/qt59/bin/qt59-env.sh
+  #- source /opt/qt59/bin/qt59-env.sh
   - qmake -r
   - make
