@@ -21,6 +21,6 @@ install:
 
 script:
   #- g++ --version
-  - source /opt/qt510/bin/qt510-env.sh
+  - source /opt/qt511/bin/qt511-env.sh
   - qmake -r
   - make
