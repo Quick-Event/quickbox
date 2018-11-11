@@ -120,7 +120,7 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 			CourseDef cd(v.toMap());
 			int course_id = 0;
 			{
-				qfInfo() << "inserting course" << cd.name();
+				qfInfo() << "inserting course" << cd.name() << "stage:" << stage_id << "classes:" << cd.classes().join(',');
 				QString qs = "INSERT INTO courses (name, length, climb, note) VALUES (:name, :length, :climb, :note)";
 				q.prepare(qs, qf::core::Exception::Throw);
 				q.bindValue(":name", cd.name());
@@ -152,6 +152,56 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 				int code = v.toInt();
 				all_codes << code;
 				course_codes[course_id] << code;
+			}
+		}
+		if(is_relays) {
+			/// guess first relay number and number of legs in each class
+			struct RelNoLegs {
+				int relayNo = std::numeric_limits<int>::max();
+				int legCnt = 0;
+				bool isValid() const {return relayNo < std::numeric_limits<int>::max() && legCnt > 0;}
+			};
+			QMap<QString, RelNoLegs> relnolegs;
+			for(auto v : courses) {
+				CourseDef cd(v.toMap());
+				if(cd.classes().count() == 1) {
+					QString name = cd.name();
+					int num = name.section('.', 0, 0).toInt();
+					int leg = name.section('.', 1, 1).toInt();
+					if(num > 0 && leg > 0) {
+						RelNoLegs &rnl = relnolegs[cd.classes().value(0)];
+						rnl.relayNo = qMin(rnl.relayNo, num);
+						rnl.legCnt = qMax(rnl.legCnt, leg);
+					}
+					else {
+						qfWarning() << "Cannot deduce relay number and leg for course:" << cd.name() << "classes:" << cd.classes().join(',');
+					}
+				}
+				else {
+					qfWarning() << "Cannot deduce class name for course:" << cd.name() << "classes:" << cd.classes().join(',');
+				}
+			}
+			QString qs = "UPDATE classdefs SET relayStartNumber=:relayStartNumber, relayLegCount=:relayLegCount WHERE classId=:classId AND stageId=:stageId";
+			q.prepare(qs, qf::core::Exception::Throw);
+			QMapIterator<QString, RelNoLegs> it(relnolegs);
+			while(it.hasNext()) {
+				it.next();
+				const QString class_name = it.key();
+				if(it.value().isValid()) {
+					int class_id = class_ids.value(class_name);
+					if(class_id > 0) {
+						qfInfo() << "\t" << "updating classdefs for" << class_name << "stage:" << stage_id
+								 << "relayStartNumber:" << it.value().relayNo << "relayLegCount:" << it.value().legCnt;
+						q.bindValue(":relayStartNumber", it.value().relayNo);
+						q.bindValue(":relayLegCount", it.value().legCnt);
+						q.bindValue(":classId", class_id);
+						q.bindValue(":stageId", stage_id);
+						q.exec(qf::core::Exception::Throw);
+					}
+					else {
+						qfError() << class_name << "not found in defined classes";
+					}
+				}
 			}
 		}
 		QMap<int, int> code_to_id;
