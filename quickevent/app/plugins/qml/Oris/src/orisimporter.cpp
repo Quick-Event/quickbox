@@ -407,20 +407,6 @@ void OrisImporter::importEvent(int event_id)
 	});
 }
 
-static QVariantList create_html_table(const QString &title, const QStringList &flds, const QVariantList &rows)
-{
-	QVariantList div = QVariantList() << QStringLiteral("div");
-	div.insert(div.length(), QVariantList() << QStringLiteral("h2") << title);
-	QVariantList table = QVariantList() << QStringLiteral("table");
-	QVariantList header = QVariantList() << QStringLiteral("tr");
-	for(auto fld : flds)
-		header.insert(header.length(), QVariantList() << QStringLiteral("th") << fld);
-	table.insert(table.length(), header);
-	table << rows;
-	div.insert(div.length(), table);
-	return div;
-}
-
 void OrisImporter::importEventOrisEntries(int event_id)
 {
 	if(eventPlugin()->eventConfig()->isRelays()) {
@@ -572,9 +558,9 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			}
 			QVariantList html_body = QVariantList() << QStringLiteral("body");
 			html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
-			html_body.insert(html_body.length(), create_html_table(tr("New entries"), fields, new_entries_rows));
-			html_body.insert(html_body.length(), create_html_table(tr("Edited entries"), fields, edited_entries_rows));
-			html_body.insert(html_body.length(), create_html_table(tr("Deleted entries"), fields, deleted_entries_rows));
+			html_body.insert(html_body.length(), qf::core::utils::HtmlUtils::createHtmlTable(tr("New entries"), fields, new_entries_rows));
+			html_body.insert(html_body.length(), qf::core::utils::HtmlUtils::createHtmlTable(tr("Edited entries"), fields, edited_entries_rows));
+			html_body.insert(html_body.length(), qf::core::utils::HtmlUtils::createHtmlTable(tr("Deleted entries"), fields, deleted_entries_rows));
 			fwk->hideProgress();
 			qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
 			opts.setDocumentTitle(tr("Oris import report"));

@@ -29,6 +29,7 @@
 #include <qf/qmlwidgets/framework/partwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/combobox.h>
+#include <qf/qmlwidgets/htmlviewwidget.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -44,6 +45,7 @@
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/utils/settings.h>
 #include <qf/core/utils/csvreader.h>
+#include <qf/core/utils/htmlutils.h>
 
 #include <QSettings>
 #include <QFile>
@@ -275,7 +277,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
 			connect(a, &QAction::triggered, [this]() {
 				siut::SiTaskReadStationBackupMemory *cmd = new siut::SiTaskReadStationBackupMemory();
-				connect(cmd, &siut::SiTaskStationConfig::finished, this, [](bool ok, QVariant result) {
+				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
 					if(ok) {
 						//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "memory read");
 						QByteArray data = result.toByteArray();
@@ -293,12 +295,19 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 						TH, TL 2 bytes 12h binary punching time
 						MS 1 byte 8bit 1/256 of seconds
 						*/
+						QVariantList rows;
+
 						int n = 0;
 						const uint8_t *cdata = (const uint8_t *)data.constData();
 						for (int i = 0; i < data.size(); ) {
+							QVariantList tr{QStringLiteral("tr")};
+							tr.insert(tr.length(), QVariantList{"td", QString::number(n+1)});
+
 							int si = cdata[i++];
 							si = (si << 8) + cdata[i++];
 							si = (si << 8) + cdata[i++];
+							tr.insert(tr.length(), QVariantList{"td", QString::number(si)});
+
 							uint8_t b = cdata[i++];
 							int year = (b & 0b11111100) >> 2;
 							year += 2000;
@@ -324,7 +333,22 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 								snprintf(buff, sizeof(buff), "%04d-%02d-%02d ErrC", year, month, day);
 							}
 							qfInfo() << ++n << "si:" << si << buff;
+							tr.insert(tr.length(), QVariantList{"td", QString::fromUtf8(buff)});
+							rows.insert(rows.length(), tr);
 						}
+						const QStringList fields{tr("No."), tr("SI"), tr("DateTime")};
+						QVariantList html_body = QVariantList() << QStringLiteral("body");
+						html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
+						html_body.insert(html_body.length(), qf::core::utils::HtmlUtils::createHtmlTable(tr("Station backup memory"), fields, rows));
+						qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+						opts.setDocumentTitle(tr("Station backup memory"));
+						QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
+
+						qf::qmlwidgets::dialogs::Dialog dlg(this);
+						auto *w = new qf::qmlwidgets::HtmlViewWidget();
+						dlg.setCentralWidget(w);
+						w->setHtmlText(html);
+						dlg.exec();
 					}
 				}, Qt::QueuedConnection);
 				this->siDriver()->setSiTask(cmd);
