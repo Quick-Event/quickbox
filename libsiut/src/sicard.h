@@ -45,6 +45,6 @@ public:
 
 }
 
-Q_DECLARE_METATYPE(siut::SICard)
+//Q_DECLARE_METATYPE(siut::SICard)
 
 #endif // SICARD_H

@@ -36,6 +36,6 @@ public:
 
 } // namespace siut
 
-Q_DECLARE_METATYPE(siut::SIPunch)
+//Q_DECLARE_METATYPE(siut::SIPunch)
 
 #endif // SIPUNCH_H

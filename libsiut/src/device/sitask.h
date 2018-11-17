@@ -154,23 +154,6 @@ private:
 	CardSerie m_cardSerie = Invalid;
 	int m_punchCnt = 0;
 };
-/*
-class SIUT_DECL_EXPORT SiTaskReadSiac : public SiTaskReadCard
-{
-	Q_OBJECT
-	using Super = SiTaskReadCard;
-public:
-	explicit SiTaskReadSiac(bool with_autosend, QObject *parent = nullptr)
-		: Super(with_autosend, parent) {}
-	~SiTaskReadSiac() override;
 
-	void start() override;
-	void onSiMessageReceived(const siut::SIMessageData &msg) override;
-private:
-	enum CardSerie {Invalid = 0, Card8 = 2, Card9 = 1, pCard = 4, tCard = 6, Siac = 15};
-	CardSerie m_cardSerie = Invalid;
-	int m_punchCnt = 0;
-};
-*/
 
 }

@@ -573,7 +573,7 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 	qfLogFuncFrame();
 	siut::SiTask::Type tt = static_cast<siut::SiTask::Type>(task_type);
 	if(tt == siut::SiTask::Type::CardRead) {
-		siut::SICard card = result.value<siut::SICard>();
+		siut::SICard card(result.toMap());
 		if(card.isEmpty())
 			qfError() << "Empty card received";
 		else
