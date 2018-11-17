@@ -301,6 +301,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 							si = (si << 8) + cdata[i++];
 							uint8_t b = cdata[i++];
 							int year = (b & 0b11111100) >> 2;
+							year += 2000;
 							int month = (b & 0b11) << 2;
 							b = cdata[i++];
 							month = month + ((b & 0b11000000) >> 6);
@@ -320,7 +321,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 								snprintf(buff, sizeof(buff), "%04d-%02d-%02d %02d:%02d:%02d.%03d", year, month, day, h, m, s, ms);
 							}
 							else {
-								strcpy(buff, "ErrC");
+								snprintf(buff, sizeof(buff), "%04d-%02d-%02d ErrC", year, month, day);
 							}
 							qfInfo() << ++n << "si:" << si << buff;
 						}

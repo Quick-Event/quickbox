@@ -25,19 +25,10 @@ DeviceDriver::DeviceDriver(QObject *parent)
 	: Super(parent)
 {
 	qf::core::Log::checkLogLevelMetaTypeRegistered();
-	//f_commPort = new CommPort(this);
-	//f_rxTimer = new QTimer(this);
-	//f_rxTimer->setSingleShot(true);
-	//f_rxTimer->setInterval(750);
-	//connect(f_rxTimer, SIGNAL(timeout()), this, SLOT(rxDataTimeout()));
-	//connect(f_commPort, SIGNAL(readyRead()), this, SLOT(onCommReadyRead()));
-	//connect(f_commPort, &CommPort::driverInfo, this, &DeviceDriver::driverInfo, Qt::QueuedConnection);
 }
 
 DeviceDriver::~DeviceDriver()
 {
-	//if(f_commPort->isOpen())
-	//	f_commPort->close();
 }
 
 namespace {
@@ -48,22 +39,16 @@ namespace {
 		return ret;
 	}
 
-	void set_byte_at(QByteArray &ba, int ix, unsigned char b)
+	void set_byte_at(QByteArray &ba, int ix, char b)
 	{
 		ba[ix] = b;
 	}
 }
-/*
-void DeviceDriver::onCommReadyRead()
-{
-	QByteArray ba = f_commPort->readAll();
-	//qfInfo() << "=============>" << ba;
-	onSiDataReceived(ba);
-}
-*/
+
 void DeviceDriver::processSIMessageData(const SIMessageData &data)
 {
-	qfLogFuncFrame() << data.toString();
+	qfLogFuncFrame();
+	qfDebug().noquote() << data.toString();
 	if(m_taskInProcess) {
 		m_taskInProcess->onSiMessageReceived(data);
 		return;
@@ -97,30 +82,6 @@ void DeviceDriver::processSIMessageData(const SIMessageData &data)
 	default:
 		qfError() << "unsupported command" << QString::number((uint8_t)cmd, 16);
 	}
-	/*
-	//qWarning() << msg_data;
-	emit siDatagramReceived(data);
-	f_messageData.addRawDataBlock(data);
-	f_packetReceivedCount++;
-	f_packetToFinishCount--;
-	emitDriverInfo(qf::core::Log::Level::Debug, QString("packetReceived, packetToFinishCount: %1").arg(f_packetToFinishCount));
-	if(f_packetToFinishCount == 0) {
-		//f_rxTimer->stop();
-		f_packetReceivedCount = 0;
-		f_status = StatusMessageOk;
-		//qfInfo() << "new message:" << f_messageData.dump();
-		onSiMessageReceived(f_messageData);
-		f_messageData = SIMessageData();
-	}
-	else if(f_packetToFinishCount < 0) {
-		abortMessage();
-		emitDriverInfo(qf::core::Log::Level::Error, "packetToFinishCount < 0 - This should never happen!");
-	}
-	else { // f_packetToFinishCount > 0
-		/// set timer to get rest of the message
-		//f_rxTimer->start();
-	}
-	*/
 }
 
 namespace
@@ -394,8 +355,8 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 		ba.resize(3);
 		int len = data.length();
 		set_byte_at(ba, 0, STX);
-		set_byte_at(ba, 1, cmd);
-		set_byte_at(ba, 2, len);
+		set_byte_at(ba, 1, (char)cmd);
+		set_byte_at(ba, 2, (char)len);
 
 		ba += data;
 
@@ -403,7 +364,7 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 		set_byte_at(ba, ba.length(), (crc_sum >> 8) & 0xFF);
 		set_byte_at(ba, ba.length(), crc_sum & 0xFF);
 		set_byte_at(ba, ba.length(), ETX);
-		qfDebug() << "sending command:" << SIMessageData::dumpData(ba, 16);
+		qfDebug().noquote() << "sending command:" << SIMessageData::dumpData(ba, 16);
 		//f_commPort->write(ba);
 		//f_rxTimer->start();
 		emit dataToSend(ba);

@@ -55,7 +55,8 @@ const char* SIMessageData::commandName(SIMessageData::Command cmd)
 		case Command::GetSICard5: ret = "CmdGetSICard5"; break;
 		case Command::GetSICard6: ret = "CmdGetSICard6"; break;
 		case Command::GetSICard8: ret = "CmdGetSICard8"; break;
-		//case Command::GetPunch2: ret = "CmdGetPunch2"; break;
+		case Command::GetBackupMemory: ret = "GetBackupMemory"; break;
+		case Command::GetSystemData: ret = "GetSystemData"; break;
 		//case Command::TimeSend: ret = "CmdTimeSend"; break;
 		case Command::TransmitRecord: ret = "CmdTransmitRecord"; break;
 		case Command::Invalid: ret = "CmdInvalid"; break;

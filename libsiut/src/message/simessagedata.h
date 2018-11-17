@@ -22,6 +22,7 @@ public:
 	enum class Command {
 		Invalid=0,
 		//SICardDetectedOrRemoved='F', /// next byte shoul be 'I' (detect) or 'O' (removed)
+		GetBackupMemory=0x81,
 		GetSystemData=0x83,
 		SICard5Detected=0xE5,
 		SICard6Detected=0xE6,

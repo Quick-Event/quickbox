@@ -153,7 +153,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 		SIMessageData::Command cmd = msg.command();
 		if(cmd == SIMessageData::Command::GetSystemData) {
 			QByteArray hdr = msg.data();
-			int ix = 5;
+			int ix = 6;
 			/// the 4 byte backup memory address pointer is part of the data string: EP3, EP2, xx, xx, xx, EP1, EP0
 			m_memoryDataPointer = (uint8_t)hdr[ix++];
 			m_memoryDataPointer = (m_memoryDataPointer << 8) +  (uint8_t)hdr[ix++];
@@ -182,11 +182,13 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 		SIMessageData::Command cmd = msg.command();
 		if(cmd == SIMessageData::Command::GetSystemData) {
 			QByteArray hdr = msg.data();
-			m_isOverflow = hdr[5];
+			m_isOverflow = hdr[6];
 			//qfInfo().noquote() << msg.dump();
 			qfInfo() << "is memory overflow:" << m_isOverflow;
 
-			m_blockCount = m_isOverflow? MEMORY_SIZE: (m_memoryDataPointer - 0x100) / m_blockSize + 1;
+			//m_blockCount = m_isOverflow? MEMORY_SIZE: (m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
+			m_blockCount = (m_isOverflow? MEMORY_SIZE - MEMORY_START: m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
+
 			if(m_blockCount == 0) {
 				finishAndDestroy(true, m_data);
 				return;
@@ -218,12 +220,16 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 	else if(m_state == State::ReadData) {
 		int cmd = (int)msg.command();
 		if(cmd == 0x81) {
-			qfInfo().noquote() << msg.toString();
-			QByteArray ba = msg.data().mid(7);
+			qfInfo() << "block of" << msg.data().length() << "bytes received, " << m_blockCount << "blocks to receive";
+			qfInfo() << "read data pointer:" << QString::number(m_readDataPointer, 16) << "memory data pointer:" << QString::number(m_memoryDataPointer, 16) << "bytes to load:" << QString::number(m_memoryDataPointer - m_readDataPointer, 16);
+			QByteArray ba = msg.data().mid(8, m_blockSize);
 			if(m_readDataPointer < m_memoryDataPointer) {
-				if(m_memoryDataPointer - m_readDataPointer < m_blockSize)
+				if(m_memoryDataPointer - m_readDataPointer < m_blockSize) {
+					qfInfo() << "stripping last packet to len:" << (m_memoryDataPointer - m_readDataPointer);
 					ba = ba.mid(0, m_memoryDataPointer - m_readDataPointer);
+				}
 			}
+			qfInfo().noquote() << SIMessageData::dumpData(ba, 16);
 			m_data.append(ba);
 			if(!--m_blockCount) {
 				qfInfo() << "SwitchToDirect";
@@ -244,7 +250,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			}
 			m_readDataPointer += m_blockSize;
 			if(m_readDataPointer - MEMORY_START > MEMORY_SIZE)
-				m_readDataPointer = 0x100;
+				m_readDataPointer = MEMORY_START;
 			{
 				QByteArray ba;
 				ba.append((char)((m_readDataPointer >> (2*8)) & 0xFF));
