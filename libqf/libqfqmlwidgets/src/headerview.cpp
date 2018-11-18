@@ -110,3 +110,14 @@ void HeaderView::contextMenuEvent(QContextMenuEvent *event)
 		}
 	}
 }
+
+void HeaderView::mousePressEvent(QMouseEvent *event)
+{
+	if(event->button() == Qt::LeftButton && event->modifiers() == Qt::ShiftModifier) {
+		int ix = logicalIndexAt(event->x());
+		qfInfo() << "logical index:" << ix;
+		emit sortColumnAdded(ix);
+		return;
+	}
+	Super::mousePressEvent(event);
+}
