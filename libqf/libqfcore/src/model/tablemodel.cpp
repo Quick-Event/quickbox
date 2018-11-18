@@ -331,6 +331,28 @@ void TableModel::sort(int column, Qt::SortOrder order)
 	emit layoutChanged();
 }
 
+void TableModel::setSortColumn(int column, bool asc)
+{
+	sort(column, asc? Qt::AscendingOrder: Qt::DescendingOrder);
+}
+
+void TableModel::addSortColumn(int column)
+{
+	int table_field_index = tableFieldIndex(column);
+	QF_ASSERT(table_field_index >= 0,
+			  tr("Cannot find table field index for column index: %1").arg(column),
+			  return);
+	utils::Table::SortDefList sd = m_table.tableProperties().sortDefinition();
+
+	for (const utils::Table::SortDef &s : sd)
+		if(s.fieldIndex == table_field_index)
+			return;
+
+	sd << qfu::Table::SortDef(table_field_index, true, !qfu::Table::SortDef::CaseSensitive);
+	m_table.sort(sd);
+	emit layoutChanged();
+}
+
 void TableModel::checkColumns()
 {
 	if(m_columns.isEmpty()) {

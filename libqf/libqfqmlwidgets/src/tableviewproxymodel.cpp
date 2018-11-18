@@ -13,7 +13,7 @@ using namespace qf::qmlwidgets;
 TableViewProxyModel::TableViewProxyModel(QObject *parent)
 	: Super(parent)
 {
-
+	//connect(this, &TableViewProxyModel::sortColumnAdded, this, &TableViewProxyModel::invalidate);
 }
 
 TableViewProxyModel::~TableViewProxyModel()
@@ -44,10 +44,16 @@ bool TableViewProxyModel::isIdle() const
 
 void TableViewProxyModel::sort(int column, Qt::SortOrder order)
 {
+	/*
 	m_sortColumns.clear();
 	if(order == Qt::AscendingOrder)
 		m_sortColumns << column;
 	Super::sort(column, order);
+	*/
+	invalidate();
+	emit layoutAboutToBeChanged();
+	emit sortColumnSet(column, order == Qt::AscendingOrder);
+	emit layoutChanged();
 }
 
 QVariant TableViewProxyModel::data(const QModelIndex &index, int role) const

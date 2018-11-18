@@ -91,6 +91,15 @@ TableView::TableView(QWidget *parent) :
 
 	m_proxyModel = new TableViewProxyModel(this);
 	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
+	connect(qobject_cast<HeaderView*>(horizontalHeader()), &HeaderView::sortColumnAdded, m_proxyModel, &TableViewProxyModel::sortColumnAdded);
+	connect(qobject_cast<HeaderView*>(horizontalHeader()), &HeaderView::sortColumnAdded, [this]() {
+		setCurrentIndex(QModelIndex());
+	});
+	connect(m_proxyModel, &TableViewProxyModel::sortColumnSet, [this]() {
+		setCurrentIndex(QModelIndex());
+		//reset();
+	});
+
 	m_proxyModel->setDynamicSortFilter(false);
 	Super::setModel(m_proxyModel);
 	/*
@@ -160,6 +169,8 @@ void TableView::setTableModel(core::model::TableModel *m)
 		QAbstractProxyModel *pxm = lastProxyModel();
 		pxm->setSourceModel(m);
 		m_proxyModel->setSortRole(qf::core::model::TableModel::SortRole);
+		connect(m_proxyModel, &TableViewProxyModel::sortColumnAdded, m, &core::model::TableModel::addSortColumn, Qt::ConnectionType(Qt::UniqueConnection | Qt::QueuedConnection));
+		connect(m_proxyModel, &TableViewProxyModel::sortColumnSet, m, &core::model::TableModel::setSortColumn, Qt::ConnectionType(Qt::UniqueConnection | Qt::QueuedConnection));
 		refreshActions();
 		emit tableModelChanged();
 	}
@@ -887,7 +898,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 
 		//qfInfo() << ttable.toString();
 
-		reports::ReportViewWidget *rw = new reports::ReportViewWidget(NULL);
+		reports::ReportViewWidget *rw = new reports::ReportViewWidget(nullptr);
 		rw->setTableData(QString(), ttable);
 		QString report_fn = opts.value("report").toMap().value("fileName").toString();
 		rw->setReport(report_fn);

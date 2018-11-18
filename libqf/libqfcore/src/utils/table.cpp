@@ -1182,9 +1182,10 @@ void Table::sort(const SortDefList & sorted_fields, int start_row_index, int row
 		createRowIndex();
 	}
 	else {
+		qfInfo() << "Table::sort:";
 		for(int i=0; i<tableProperties().sortDefinition().count(); i++) {
-			//qfDebug() << "\t field index:" << tableProperties().sortDefinition()[i].fieldIndex;
-			//qfDebug() << "\t ascending:" << tableProperties().sortDefinition()[i].ascending;
+			qfInfo() << "\tfield index:" << tableProperties().sortDefinition()[i].fieldIndex
+				<< "ascending:" << (bool)(tableProperties().sortDefinition()[i].ascending);
 		}
 		RowIndexList::iterator begin = rowIndexRef().begin() + start_row_index;
 		RowIndexList::iterator  end = begin + row_count;

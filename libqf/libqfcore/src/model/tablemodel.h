@@ -137,6 +137,8 @@ public:
 	Q_INVOKABLE void restoreOrigData(const QModelIndex &index);
 
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
+	void setSortColumn(int column, bool asc);
+	void addSortColumn(int column);
 
 	Q_SLOT virtual bool reload();
 	Q_SLOT virtual bool postRow(int row_no, bool throw_exc);

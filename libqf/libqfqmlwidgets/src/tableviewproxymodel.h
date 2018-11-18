@@ -19,6 +19,9 @@ public:
 	QString rowFilterString() const;
 	bool isIdle() const;
 
+	Q_SIGNAL void sortColumnAdded(int column);
+	Q_SIGNAL void sortColumnSet(int column, bool asc);
+
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 protected:
 	QVariant data(const QModelIndex &index, int role=Qt::DisplayRole) const Q_DECL_OVERRIDE;
@@ -30,7 +33,7 @@ private:
 	bool dataMatchFilter(const QVariant &d) const;
 private:
 	QByteArray m_rowFilterString;
-	QVector<int> m_sortColumns;
+	//QVector<int> m_sortColumns;
 };
 
 }}
