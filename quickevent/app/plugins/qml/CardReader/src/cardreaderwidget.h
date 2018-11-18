@@ -76,6 +76,8 @@ private slots:
 
 	void onSiTaskFinished(int task_type, QVariant result);
 
+	void readStationBackupMemory();
+
 	void importCards_lapsOnlyCsv();
 private:
 	void createActions();

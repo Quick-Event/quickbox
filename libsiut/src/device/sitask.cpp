@@ -3,6 +3,7 @@
 
 #include <qf/core/log.h>
 
+#include <QDateTime>
 #include <QTimer>
 
 namespace siut {
@@ -18,7 +19,7 @@ SiTask::SiTask(QObject *parent)
 	m_rxTimer->setInterval(5000);
 	connect(m_rxTimer, &QTimer::timeout, this, [this]() {
 		qfError() << this << "SiCommand timeout after" << (m_rxTimer->interval() / 1000.) << "sec.";
-		this->abort();
+		this->abortWithMessage(tr("SiCommand timeout after %1 sec.").arg(m_rxTimer->interval() / 1000.));
 	});
 	m_rxTimer->start();
 }
@@ -153,6 +154,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 		SIMessageData::Command cmd = msg.command();
 		if(cmd == SIMessageData::Command::GetSystemData) {
 			QByteArray hdr = msg.data();
+			m_stationNumber = (int)SIPunch::getUnsigned(hdr, 3, 2);
 			int ix = 6;
 			/// the 4 byte backup memory address pointer is part of the data string: EP3, EP2, xx, xx, xx, EP1, EP0
 			m_memoryDataPointer = (uint8_t)hdr[ix++];
@@ -190,7 +192,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			m_blockCount = (m_isOverflow? MEMORY_SIZE - MEMORY_START: m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
 
 			if(m_blockCount == 0) {
-				finishAndDestroy(true, m_data);
+				finishAndDestroy(true, createResult());
 				return;
 			}
 			if(m_blockCount > 255) {
@@ -200,6 +202,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			}
 
 			qfInfo() << "ReadData";
+			emit progress(m_progressPhase++, (int)m_blockCount);
 			m_state = State::ReadData;
 			QByteArray ba;
 			if(m_isOverflow)
@@ -229,8 +232,9 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 					ba = ba.mid(0, m_memoryDataPointer - m_readDataPointer);
 				}
 			}
-			qfInfo().noquote() << SIMessageData::dumpData(ba, 16);
+			//qfInfo().noquote() << SIMessageData::dumpData(ba, 16);
 			m_data.append(ba);
+			emit progress(m_progressPhase++, (int)m_blockCount);
 			if(!--m_blockCount) {
 				qfInfo() << "SwitchToDirect";
 				m_state = State::SwitchToDirect;
@@ -239,7 +243,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 				connect(this, &SiTaskReadStationBackupMemory::siMessageForwarded, cmd, &SiTaskSetDirectRemoteMode::onSiMessageReceived);
 				connect(cmd, &SiTaskSetDirectRemoteMode::finished, this, [this](bool ok, QVariant ) {
 					if(ok) {
-						finishAndDestroy(true, m_data);
+						finishAndDestroy(true, createResult());
 					}
 					else {
 						abort();
@@ -269,6 +273,70 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 	else if(m_state == State::SwitchToDirect) {
 		emit siMessageForwarded(msg);
 	}
+}
+
+QVariantMap SiTaskReadStationBackupMemory::createResult()
+{
+	QVariantMap ret;
+	ret["stationNumber"] = m_stationNumber;
+	QVariantList punches;
+	/*
+	storage order: SI2-SI1-SI0-DATE1-DATE0-TH-TL-MS
+	SI2, SI1, SI0 3 bytes SI card number
+	DATE1, DATE0 2 bytes date
+	DATE1
+		bit 7-2 - 6 bit year - 0-64 part of year
+		bit 1-0 - bit 3-2 of 4bit-month 1-12
+	DATE0
+		bit 7-6 - bit 1-0 - part of 4bit month 1-12
+		bit 5-1 - 5bit day of month 1-31
+		bit 0 - am/pm halfday
+	TH, TL 2 bytes 12h binary punching time
+	MS 1 byte 8bit 1/256 of seconds
+	*/
+	int n = 0;
+	const uint8_t *cdata = (const uint8_t *)m_data.constData();
+	for (int i = 0; i < m_data.size(); ) {
+		QVariantList row;
+		int si = cdata[i++];
+		si = (si << 8) + cdata[i++];
+		si = (si << 8) + cdata[i++];
+		row << si;
+
+		uint8_t b = cdata[i++];
+		int year = (b & 0b11111100) >> 2;
+		year += 2000;
+		int month = (b & 0b11) << 2;
+		b = cdata[i++];
+		month = month + ((b & 0b11000000) >> 6);
+		int day = (b & 0b00111110) >> 1;
+		bool is_pm = b & 1;
+		int sec = cdata[i++];
+		sec = (sec << 8) + cdata[i++];
+		int h = sec / 3600;
+		int ms = cdata[i++];
+		char buff[64];
+		bool card_error = h >= 12;
+		if(card_error)
+			h -= 12;
+		if(is_pm)
+			h += 12;
+		int m = (sec / 60) % 60;
+		int s = sec % 60;
+		ms = ms * 1000 / 256;
+		{
+			snprintf(buff, sizeof(buff)
+					 , "%04d-%02d-%02d %02d:%02d:%02d.%03d"
+					 , year, month, day, h, m, s, ms);
+			qfInfo() << ++n << "si:" << si << buff << (card_error? "CardErr": "");
+		}
+		row << QDateTime{{year, month, day}, {h, m, s, ms}};
+		row << card_error;
+
+		punches.insert(punches.length(), row);
+	}
+	ret["punches"] = punches;
+	return ret;
 }
 
 //===============================================================

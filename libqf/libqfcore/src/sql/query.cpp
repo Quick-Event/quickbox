@@ -59,7 +59,7 @@ bool Query::exec(bool throw_exc)
 	if(!ret) {
 		if(throw_exc)
 			QF_EXCEPTION(lastError().text());
-		qfWarning() << lastError().text();
+		//qfWarning() << lastError().text();
 	}
 	if(isSelect())
 		m_demangledRecord = QSqlRecord();

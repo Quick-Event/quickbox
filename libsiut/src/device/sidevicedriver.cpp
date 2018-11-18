@@ -32,13 +32,14 @@ DeviceDriver::~DeviceDriver()
 }
 
 namespace {
+/*
 	int byte_at(const QByteArray &ba, int ix)
 	{
 		int ret = -1;
 		if(ix < ba.count()) ret = (unsigned char)ba.at(ix);
 		return ret;
 	}
-
+*/
 	void set_byte_at(QByteArray &ba, int ix, char b)
 	{
 		ba[ix] = b;

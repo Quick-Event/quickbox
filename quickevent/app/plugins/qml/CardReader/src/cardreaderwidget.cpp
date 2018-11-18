@@ -29,12 +29,14 @@
 #include <qf/qmlwidgets/framework/partwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/combobox.h>
+#include <qf/qmlwidgets/dialogbuttonbox.h>
 #include <qf/qmlwidgets/htmlviewwidget.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/toolbar.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
+#include <qf/qmlwidgets/dialogs/messagebox.h>
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
@@ -53,7 +55,10 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QCheckBox>
+#include <QPushButton>
+#include <QProgressDialog>
 
+namespace qfc = qf::core;
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
 namespace qff = qf::qmlwidgets::framework;
@@ -275,84 +280,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 			QAction *a = new QAction("Read station memory");
 			a->setEnabled(false);
 			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
-			connect(a, &QAction::triggered, [this]() {
-				siut::SiTaskReadStationBackupMemory *cmd = new siut::SiTaskReadStationBackupMemory();
-				connect(cmd, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
-					if(ok) {
-						//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "memory read");
-						QByteArray data = result.toByteArray();
-						/*
-						storage order: SI2-SI1-SI0-DATE1-DATE0-TH-TL-MS
-						SI2, SI1, SI0 3 bytes SI card number
-						DATE1, DATE0 2 bytes date
-						DATE1
-							bit 7-2 - 6 bit year - 0-64 part of year
-							bit 1-0 - bit 3-2 of 4bit-month 1-12
-						DATE0
-							bit 7-6 - bit 1-0 - part of 4bit month 1-12
-							bit 5-1 - 5bit day of month 1-31
-							bit 0 - am/pm halfday
-						TH, TL 2 bytes 12h binary punching time
-						MS 1 byte 8bit 1/256 of seconds
-						*/
-						QVariantList rows;
-
-						int n = 0;
-						const uint8_t *cdata = (const uint8_t *)data.constData();
-						for (int i = 0; i < data.size(); ) {
-							QVariantList tr{QStringLiteral("tr")};
-							tr.insert(tr.length(), QVariantList{"td", QString::number(n+1)});
-
-							int si = cdata[i++];
-							si = (si << 8) + cdata[i++];
-							si = (si << 8) + cdata[i++];
-							tr.insert(tr.length(), QVariantList{"td", QString::number(si)});
-
-							uint8_t b = cdata[i++];
-							int year = (b & 0b11111100) >> 2;
-							year += 2000;
-							int month = (b & 0b11) << 2;
-							b = cdata[i++];
-							month = month + ((b & 0b11000000) >> 6);
-							int day = (b & 0b00111110) >> 1;
-							bool is_pm = b & 1;
-							int sec = cdata[i++];
-							sec = (sec << 8) + cdata[i++];
-							int h = sec / 3600;
-							int ms = cdata[i++];
-							char buff[64];
-							if(h < 12) {
-								if(is_pm)
-									h += 12;
-								int m = (sec / 60) % 60;
-								int s = sec % 60;
-								ms = ms * 1000 / 256;
-								snprintf(buff, sizeof(buff), "%04d-%02d-%02d %02d:%02d:%02d.%03d", year, month, day, h, m, s, ms);
-							}
-							else {
-								snprintf(buff, sizeof(buff), "%04d-%02d-%02d ErrC", year, month, day);
-							}
-							qfInfo() << ++n << "si:" << si << buff;
-							tr.insert(tr.length(), QVariantList{"td", QString::fromUtf8(buff)});
-							rows.insert(rows.length(), tr);
-						}
-						const QStringList fields{tr("No."), tr("SI"), tr("DateTime")};
-						QVariantList html_body = QVariantList() << QStringLiteral("body");
-						html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
-						html_body.insert(html_body.length(), qf::core::utils::HtmlUtils::createHtmlTable(tr("Station backup memory"), fields, rows));
-						qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
-						opts.setDocumentTitle(tr("Station backup memory"));
-						QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
-
-						qf::qmlwidgets::dialogs::Dialog dlg(this);
-						auto *w = new qf::qmlwidgets::HtmlViewWidget();
-						dlg.setCentralWidget(w);
-						w->setHtmlText(html);
-						dlg.exec();
-					}
-				}, Qt::QueuedConnection);
-				this->siDriver()->setSiTask(cmd);
-			});
+			connect(a, &QAction::triggered, this, &CardReaderWidget::readStationBackupMemory);
 			a_station->addActionInto(a);
 		}
 		/*
@@ -1003,6 +931,105 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
+}
+
+void CardReaderWidget::readStationBackupMemory()
+{
+	siut::SiTaskReadStationBackupMemory *si_task = new siut::SiTaskReadStationBackupMemory();
+	connect(si_task, &siut::SiTaskStationConfig::progress, this, [this, si_task](int phase, int count) {
+		QProgressDialog *progress_dlg = this->findChild<QProgressDialog*>(QString(), Qt::FindDirectChildrenOnly);
+		if(progress_dlg == nullptr) {
+			progress_dlg = new QProgressDialog(tr("Downloading station backup ..."), "Abort", 0, count, this);
+			connect(progress_dlg, &QProgressDialog::canceled, si_task, [si_task]() {
+				si_task->abortWithMessage(tr("Cancelled by user"));
+			});
+			connect(si_task, &siut::SiTask::finished, progress_dlg, [progress_dlg]() {
+				progress_dlg->setParent(nullptr);
+				progress_dlg->deleteLater();
+			});
+		}
+		progress_dlg->setValue(phase);
+	});
+	connect(si_task, &siut::SiTaskStationConfig::finished, this, [this](bool ok, QVariant result) {
+		if(ok) {
+			//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, "memory read");
+			QVariantMap m = result.toMap();
+			int station_number = m.value("stationNumber").toInt();
+			QVariantList punches = m.value("punches").toList();
+
+			QVariantList html_rows;
+			for (int i = 0; i < punches.size(); i++) {
+				QVariantList punch = punches[i].toList();
+				QVariantList tr{QStringLiteral("tr")};
+				tr.insert(tr.length(), QVariantList{"td", QString::number(i+1)});
+
+				int si = punch.value(0).toInt();
+				tr.insert(tr.length(), QVariantList{"td", QString::number(si)});
+				QDateTime punch_time = punch.value(1).toDateTime();
+				tr.insert(tr.length(), QVariantList{"td", punch_time.toString(Qt::ISODateWithMs)});
+				bool card_error = punch.value(2).toBool();
+				tr.insert(tr.length(), QVariantList{"td", card_error? "Y": ""});
+				html_rows.insert(html_rows.length(), tr);
+			}
+			const QStringList html_fields{tr("No."), tr("SI"), tr("DateTime"), tr("Card error")};
+			QVariantList html_body = QVariantList() << QStringLiteral("body");
+			html_body.insert(html_body.length(), QVariantList() << QStringLiteral("body"));
+			html_body.insert(html_body.length(), qf::core::utils::HtmlUtils::createHtmlTable(tr("Station %1 backup memory").arg(station_number), html_fields, html_rows));
+			qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+			opts.setDocumentTitle(tr("Station backup memory"));
+			QString html = qf::core::utils::HtmlUtils::fromHtmlList(html_body, opts);
+
+			qf::qmlwidgets::dialogs::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
+			/*
+			qf::qmlwidgets::DialogButtonBox *bbx = dlg.buttonBox();
+			QPushButton *bt_set_off_race = new QPushButton(tr("Set off-race"));
+			bt_set_off_race->setToolTip(tr("All runners without CHECK will be marked as off-race."));
+			bool set_off_race = false;
+			connect(bt_set_off_race, &QPushButton::clicked, [&set_off_race]() {
+				set_off_race = true;
+			});
+			bbx->addButton(bt_set_off_race, QDialogButtonBox::AcceptRole);
+			*/
+			auto *w = new qf::qmlwidgets::HtmlViewWidget();
+			dlg.setCentralWidget(w);
+			w->setHtmlText(html);
+			if(dlg.exec()) {
+				// save checks
+				try {
+					qfs::Transaction transaction;
+					int stage_id = eventPlugin()->currentStageId();
+					qfs::Query q1;
+					q1.prepare("INSERT INTO stationsbackup (stageId, stationNumber, siId, punchDateTime, cardErr) VALUES"
+							  " (:stageId, :stationNumber, :siId, :punchDateTime, :cardErr)"
+							  , qfc::Exception::Throw);
+					//qfs::Query q2;
+					//q2.prepare("UPDATE runs SET checkDateTime=:punchDateTime"
+					//		  " WHERE siId=:siId AND checkDateTime IS NULL"
+					//		  , qfc::Exception::Throw);
+					for (int i = 0; i < punches.size(); i++) {
+						QVariantList punch = punches[i].toList();
+						q1.bindValue(QStringLiteral(":stageId"), stage_id);
+						q1.bindValue(QStringLiteral(":stationNumber"), station_number);
+						int si = punch.value(0).toInt();
+						q1.bindValue(QStringLiteral(":siId"), si);
+						QDateTime punch_time = punch.value(1).toDateTime();
+						q1.bindValue(QStringLiteral(":punchDateTime"), punch_time);
+						bool card_error = punch.value(2).toBool();
+						q1.bindValue(QStringLiteral(":cardErr"), card_error);
+						q1.exec(!qfc::Exception::Throw);
+					}
+					transaction.commit();
+				}
+				catch (qfc::Exception &ex) {
+					qfd::MessageBox::showException(this, ex);
+				}
+			}
+		}
+		else {
+			qfd::MessageBox::showError(this, result.toString());
+		}
+	}, Qt::QueuedConnection);
+	siDriver()->setSiTask(si_task);
 }
 
 #include "cardreaderwidget.moc"

@@ -30,8 +30,10 @@ public:
 	virtual Type type() const = 0;
 	virtual void finishAndDestroy(bool ok, QVariant result);
 	void abort() {finishAndDestroy(false, QVariant());}
+	void abortWithMessage(const QString &msg) {finishAndDestroy(false, msg);}
 	Q_SIGNAL void aboutToFinish();
 	Q_SIGNAL void finished(bool ok, QVariant result);
+	Q_SIGNAL void progress(int phase, int count);
 protected:
 	//void restartRxTimer();
 	void sendCommand(int cmd, const QByteArray &data);
@@ -98,6 +100,7 @@ public:
 	void onSiMessageReceived(const siut::SIMessageData &msg) override;
 private:
 	Q_SIGNAL void siMessageForwarded(const siut::SIMessageData &msg);
+	QVariantMap createResult();
 private:
 	enum class State {SwitchToRemote, ReadPointer, CheckOverflow, ReadData, SwitchToDirect};
 	static constexpr unsigned MEMORY_START = 0x100;
@@ -107,7 +110,9 @@ private:
 	uint32_t m_readDataPointer;
 	unsigned m_blockSize = 128;
 	unsigned m_blockCount;
+	int m_progressPhase = 0;
 	bool m_isOverflow;
+	int m_stationNumber = 0;
 	QByteArray m_data;
 };
 
