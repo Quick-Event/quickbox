@@ -24,8 +24,10 @@ public:
 protected:
 	void contextMenuEvent(QContextMenuEvent *event) Q_DECL_OVERRIDE;
 	void mousePressEvent(QMouseEvent *event) override;
+	void paintSection(QPainter *painter, const QRect &section_rect, int logical_index) const override;
 protected:
 	QLabel *m_seekStringLabel;
+	QVector<int> m_extraSortColumns;
 };
 
 }}
