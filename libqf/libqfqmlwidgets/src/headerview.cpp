@@ -6,6 +6,7 @@
 #include <QContextMenuEvent>
 #include <QAction>
 #include <QMenu>
+#include <QPainter>
 
 using namespace qf::qmlwidgets;
 
@@ -25,6 +26,9 @@ HeaderView::HeaderView(Qt::Orientation orientation, QWidget *parent) :
 		setSectionsMovable(true);
 		//setSortIndicatorShown(false);
 		setSortIndicator(-1, Qt::AscendingOrder);
+		connect(this, &HeaderView::sortIndicatorChanged, [this]() {
+			m_extraSortColumns.clear();
+		});
 	}
 	else if(orientation == Qt::Vertical) {
 		//verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
@@ -109,4 +113,66 @@ void HeaderView::contextMenuEvent(QContextMenuEvent *event)
 			}
 		}
 	}
+}
+
+void HeaderView::mousePressEvent(QMouseEvent *event)
+{
+	if(orientation() == Qt::Horizontal) {
+		if(event->button() == Qt::LeftButton && event->modifiers() == Qt::ShiftModifier) {
+			int ix = logicalIndexAt(event->x());
+			//qfInfo() << "logical index:" << ix;
+			m_extraSortColumns << ix;
+			emit sortColumnAdded(ix);
+			return;
+		}
+	}
+	m_extraSortColumns.clear();
+	Super::mousePressEvent(event);
+}
+
+void HeaderView::paintSection(QPainter *painter, const QRect &section_rect, int logical_index) const
+{
+	Super::paintSection(painter, section_rect, logical_index);
+	if(orientation() != Qt::Horizontal)
+		return;
+	if (!m_extraSortColumns.contains(logical_index))
+		return;
+	painter->setClipping(false);
+	auto indicator_rect = [](const QRect &section_rect) {
+		QRect r;
+		int h = section_rect.height();
+		int w = section_rect.width();
+		int x = section_rect.x();
+		int y = section_rect.y();
+		int arrow_w = h / 3;
+		int horiz_margin = arrow_w / 2;
+		int vert_margin = arrow_w;
+		int arrow_h = arrow_w / 2;
+		r.setRect(x + w - horiz_margin * 2 - arrow_w, y + vert_margin,
+				  arrow_w, arrow_h);
+		return r;
+	};
+	QRect rect = indicator_rect(section_rect);
+	const QPen old_pen = painter->pen();
+	const QBrush old_brush = painter->brush();
+	painter->setPen(QPen(Qt::black, 0));
+	painter->setBrush(Qt::yellow);
+	if (sortIndicatorOrder() == Qt::AscendingOrder) {
+		const QPoint points[] = {
+			QPoint(rect.x() + rect.width() / 2, rect.y() + rect.height()),
+			QPoint(rect.x(), rect.y()),
+			QPoint(rect.x() + rect.width(), rect.y()),
+		};
+		painter->drawPolygon(points, sizeof points / sizeof *points);
+	}
+	else if (sortIndicatorOrder() == Qt::DescendingOrder) {
+		const QPoint points[] = {
+			QPoint(rect.x(), rect.y() + rect.height()),
+			QPoint(rect.x() + rect.width(), rect.y() + rect.height()),
+			QPoint(rect.x() + rect.width() / 2, rect.y()),
+		};
+		painter->drawPolygon(points, sizeof points / sizeof *points);
+	}
+	painter->setPen(old_pen);
+	painter->setBrush(old_brush);
 }

@@ -92,6 +92,7 @@ TableView::TableView(QWidget *parent) :
 	m_proxyModel = new TableViewProxyModel(this);
 	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
 	m_proxyModel->setDynamicSortFilter(false);
+	connect(qobject_cast<HeaderView*>(horizontalHeader()), &HeaderView::sortColumnAdded, m_proxyModel, &TableViewProxyModel::addSortColumn);
 	Super::setModel(m_proxyModel);
 	/*
 	connect(this, &TableView::readOnlyChanged, [this] (bool b) {
