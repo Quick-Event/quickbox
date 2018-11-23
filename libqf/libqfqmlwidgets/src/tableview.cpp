@@ -614,22 +614,25 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 	}
 	else if(selected_row_indexes.count() > 1) {
 		qfc::sql::Connection conn;
-		{
-			qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
-			if(sql_m) {
+		qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
+		if(sql_m) {
+			try {
 				conn = sql_m->sqlConnection();
+				qfc::sql::Transaction transaction(conn);
+				QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
+				foreach(int row_ix, selected_row_indexes) {
+					foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+						model()->setData(ix, new_val);
+					}
+					sql_m->postRow(toTableModelRowNo(row_ix), qf::core::Exception::Throw);
+				}
+				transaction.commit();
+			}
+			catch(qfc::Exception &e) {
+				dialogs::MessageBox::showException(this, e);
 			}
 		}
-		QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
-		qfc::sql::Transaction transaction(conn);
-		foreach(int row_ix, selected_row_indexes) {
-			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
-				model()->setData(ix, new_val);
-			}
-			if(!postRow(row_ix))
-				return;
-		}
-		transaction.commit();
+		update();
 	}
 }
 
