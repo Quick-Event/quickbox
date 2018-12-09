@@ -20,10 +20,12 @@
 #include <qf/core/sql/connection.h>
 
 #include <QFile>
-#include <QNetworkDatagram>
 #include <QSettings>
 #include <QStandardPaths>
 #include <QUdpSocket>
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
+#include <QNetworkDatagram>
+#endif
 
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
