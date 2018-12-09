@@ -11,7 +11,9 @@ Action::Action(const QIcon &icon, const QString &text, QObject *parent)
 {
 	setIcon(icon);
 	setText(text);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
 	setShortcutVisibleInContextMenu(true);
+#endif
 }
 
 void Action::setText(const QString &new_text)
