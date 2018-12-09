@@ -78,6 +78,7 @@ void RacomClient::onUdpSocketReadyRead()
 {
 	if(status() != Status::Running)
 		return;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
 	QUdpSocket *sock = udpSocket();
 	QNetworkDatagram dg = sock->receiveDatagram();
 	QByteArray data = dg.data();
@@ -102,6 +103,9 @@ void RacomClient::onUdpSocketReadyRead()
 		}
 	}
 	m_siDriver->processSiPacket(data);
+#else
+	qfWarning() << "Racom client is not supported with Qt < 5.8";
+#endif
 }
 
 qf::qmlwidgets::framework::DialogWidget *RacomClient::createDetailWidget()
