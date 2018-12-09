@@ -177,7 +177,7 @@ public:
 				break;
 		}
 		if(!t && throw_exc) {
-			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
+			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg(reinterpret_cast<uintptr_t>(_o), 0, 16));
 		}
 		return t;
 	}

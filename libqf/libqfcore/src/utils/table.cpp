@@ -612,6 +612,7 @@ void Table::cleanupData(CleanupDataOption fields_options)
 		case ClearFieldsRows:
 			qfDebug() << "\tcleaning fields";
 			fieldsRef().clear();
+			[[fallthrough]];
 		default:
 			qfDebug() << "\tcleaning rows";
 			d->rows.clear();

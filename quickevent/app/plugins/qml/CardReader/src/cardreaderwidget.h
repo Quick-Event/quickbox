@@ -82,7 +82,7 @@ private:
 	void processSIPunch(const SIMessageTransmitPunch &rec);
 
 	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
-	void processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception);
+	void processReadCard(const quickevent::core::si::ReadCard &read_card);
 
 	void updateTableView(int card_id);
 

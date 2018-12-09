@@ -26,7 +26,7 @@ private:
 	};
 	QExplicitlySharedDataPointer<Data> d;
 protected:
-	QString dataHex() const;
+	//QString dataHex() const;
 	SValue property_helper(const QString &name);
 	SValue property_helper(int ix);
 public:

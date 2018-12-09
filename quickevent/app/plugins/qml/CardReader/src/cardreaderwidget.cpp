@@ -531,7 +531,7 @@ bool CardReaderWidget::processReadCardSafe(const quickevent::core::si::ReadCard 
 	return false;
 }
 
-void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception)
+void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card)
 {
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(read_card.runId()) {
