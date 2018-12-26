@@ -425,11 +425,12 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
 			int card_number = (int)SIPunch::getUnsigned(data, base + 0x19, 3);
 			m_cardSerie = static_cast<CardSerie>(((uint8_t)data[base + 0x18]) & 15);
-			qfDebug() << "CS:" << m_cardSerie << "SI:" << card_number;
+			qfInfo() << "CS:" << m_cardSerie << "SI:" << card_number;
 			m_card.setStationNumber(station_number);
 			m_card.setCardNumber(card_number);
-			if(m_cardSerie == Card8 || m_cardSerie == Siac) {
+			if(m_cardSerie == Card8 || m_cardSerie == Card9 || m_cardSerie == Siac) {
 				m_punchCnt = (uint8_t)data[base + 0x16];
+				qfInfo() << "Punch cnt:" << m_punchCnt;
 				int check_time = SIPunch(data, base + 0x08).time();
 				int start_time = SIPunch(data, base + 0x0c).time();
 				int finish_time = SIPunch(data, base + 0x10).time();
@@ -437,8 +438,23 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 				m_card.setCheckTime(check_time);
 				m_card.setStartTime(start_time);
 				m_card.setFinishTime(finish_time);
+
+				if(m_cardSerie == Card9) {
+					base += 14 * 4;
+					QVariantList punches = m_card.punches();
+					for (int i = 0; i < m_punchCnt && i < 18; ++i) {
+						SIPunch p(data, base + i*4);
+						//qfInfo() << "B0" << p.code();
+						punches << p;
+					}
+					m_card.setPunches(punches);
+					if((punches.count() == m_punchCnt) && !m_withAutosend)
+						finishAndDestroy(true, m_card);
+				}
 				if(!m_withAutosend) {
 					if(m_cardSerie == Card8)
+						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x01));
+					if(m_cardSerie == Card9 && m_card.punches().count() < m_punchCnt)
 						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x01));
 					else if(m_cardSerie == Siac)
 						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x03));
@@ -454,8 +470,28 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 				if(block_number == 1) {
 					base += 8;
 					QVariantList punches = m_card.punches();
-					for (int i = 0; i < m_punchCnt && i < 128/4; ++i)
+					int pcnt = punches.count();
+					for (int i = 0; pcnt + i < m_punchCnt && i < 30; ++i) {
+						SIPunch p(data, base + i*4);
+						//qfInfo() << "B1" << p.code();
+						punches << p;
+					}
+					m_card.setPunches(punches);
+					//qfInfo().noquote() << "\n" << m_card.toString();
+					finishAndDestroy(true, m_card);
+				}
+				else {
+					qfError() << "Card8 unexpected block number:" << block_number;
+					abort();
+				}
+			}
+			else if(m_cardSerie == Card8 || m_cardSerie == Card9) {
+				if(block_number == 1) {
+					QVariantList punches = m_card.punches();
+					int pcnt = punches.count();
+					for (int i = 0; pcnt + i < m_punchCnt && i < 32; ++i) {
 						punches << SIPunch(data, base + i*4);
+					}
 					m_card.setPunches(punches);
 					//qfInfo().noquote() << "\n" << m_card.toString();
 					finishAndDestroy(true, m_card);
