@@ -425,10 +425,10 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
 			int card_number = (int)SIPunch::getUnsigned(data, base + 0x19, 3);
 			m_cardSerie = static_cast<CardSerie>(((uint8_t)data[base + 0x18]) & 15);
-			qfInfo() << "CS:" << m_cardSerie << "SI:" << card_number;
+			qfInfo() << "CS:" << m_cardSerie << cardSerieToString(m_cardSerie) << "SI:" << card_number;
 			m_card.setStationNumber(station_number);
 			m_card.setCardNumber(card_number);
-			if(m_cardSerie == Card8 || m_cardSerie == Card9 || m_cardSerie == Siac) {
+			if(m_cardSerie == Card8 || m_cardSerie == Card9 || m_cardSerie == pCard || m_cardSerie == Siac) {
 				m_punchCnt = (uint8_t)data[base + 0x16];
 				qfInfo() << "Punch cnt:" << m_punchCnt;
 				int check_time = SIPunch(data, base + 0x08).time();
@@ -454,14 +454,16 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 				if(!m_withAutosend) {
 					if(m_cardSerie == Card8)
 						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x01));
-					if(m_cardSerie == Card9 && m_card.punches().count() < m_punchCnt)
+					else if(m_cardSerie == Card9 && m_card.punches().count() < m_punchCnt)
+						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x01));
+					else if(m_cardSerie == pCard)
 						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x01));
 					else if(m_cardSerie == Siac)
 						sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, 0x03));
 				}
 			}
 			else {
-				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie;
+				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie << cardSerieToString(m_cardSerie);
 				abort();
 			}
 		}
@@ -485,7 +487,7 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 					abort();
 				}
 			}
-			else if(m_cardSerie == Card8 || m_cardSerie == Card9) {
+			else if(m_cardSerie == Card9) {
 				if(block_number == 1) {
 					QVariantList punches = m_card.punches();
 					int pcnt = punches.count();
@@ -494,6 +496,22 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 					}
 					m_card.setPunches(punches);
 					//qfInfo().noquote() << "\n" << m_card.toString();
+					finishAndDestroy(true, m_card);
+				}
+				else {
+					qfError() << "Card8 unexpected block number:" << block_number;
+					abort();
+				}
+			}
+			else if(m_cardSerie == pCard) {
+				if(block_number == 1) {
+					base += 12*4;
+					QVariantList punches = m_card.punches();
+					int pcnt = punches.count();
+					for (int i = 0; pcnt + i < m_punchCnt && i < 20; ++i) {
+						punches << SIPunch(data, base + i*4);
+					}
+					m_card.setPunches(punches);
 					finishAndDestroy(true, m_card);
 				}
 				else {
@@ -559,6 +577,19 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 		qfError() << "Invalid command:" << "0x" + QString::number((int)cmd, 16) << "received";
 		abort();
 	}
+}
+
+const char *SiTaskReadCard8::cardSerieToString(SiTaskReadCard8::CardSerie cs)
+{
+	switch(cs) {
+	case Card8: return "Card8";
+	case Card9: return "Card9";
+	case pCard: return "pCard";
+	case tCard: return "tCard";
+	case Siac: return "Siac";
+	case Invalid: return "Invalid";
+	}
+	return "Unknown";
 }
 
 }
