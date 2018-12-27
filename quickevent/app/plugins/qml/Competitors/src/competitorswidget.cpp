@@ -3,6 +3,7 @@
 #include "competitorwidget.h"
 #include "thispartwidget.h"
 #include "lentcardswidget.h"
+#include "stationsbackupmemorywidget.h"
 
 #include "Competitors/competitordocument.h"
 #include "Competitors/competitorsplugin.h"
@@ -142,6 +143,18 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		});
 	}
 
+	qf::qmlwidgets::Action *act_stations = part_widget->menuBar()->actionForPath("stations");
+	act_stations->setText(tr("&Stations"));
+	{
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("backupMemory", tr("Backup memory"));
+		act_stations->addActionInto(a);
+		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
+			qf::qmlwidgets::dialogs::Dialog dlg(this);
+			auto *w = new StationsBackupMemoryWidget();
+			dlg.setCentralWidget(w);
+			dlg.exec();
+		});
+	}
 }
 
 void CompetitorsWidget::lazyInit()

@@ -146,12 +146,14 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 			.select2("classes", "name")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select2("competitors", "id, registration, licence, ranking, siId, note")
+			.select2("stationsbackup", "punchDateTime")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
+			.joinRestricted("runs.siid", "stationsbackup.siid", "runs.stageId=stationsbackup.stageId")
 			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
 	if(is_relays) {

@@ -8,6 +8,8 @@
 
 #include <qf/core/log.h>
 
+#include <QSerialPortInfo>
+
 using namespace siut;
 
 //=================================================
@@ -22,7 +24,65 @@ CommPort::~CommPort()
 {
 }
 
-void CommPort::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
+bool CommPort::openComm(const QString &_device, int _baudrate, int _data_bits, const QString &_parity_str, bool two_stop_bits)
+{
+	qfLogFuncFrame();
+	close();
+	QString device = _device;
+	{
+		qfDebug() << "Port enumeration";
+		QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+		QStringList sl;
+		for(auto port : port_list) {
+			if(device.isEmpty())
+				device = port.systemLocation();
+			sl << QString("%1 %2").arg(port.portName()).arg(port.systemLocation());
+			qfDebug() << "\t" << port.portName();
+		}
+		emitCommInfo(qf::core::Log::Level::Info, trUtf8("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
+	}
+	setPortName(device);
+	setBaudRate(_baudrate);
+	setDataBitsAsInt(_data_bits);
+	setParityAsString(_parity_str);
+	setStopBits(two_stop_bits? QSerialPort::TwoStop: QSerialPort::OneStop);
+	//f_commPort->setFlowControl(p.flowControl);
+	emitCommInfo(qf::core::Log::Level::Debug, trUtf8("Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5")
+				   .arg(portName())
+				   .arg(baudRate())
+				   .arg(dataBits())
+				   .arg(parity())
+				   .arg(stopBits())
+				   );
+	bool ret = Super::open(QIODevice::ReadWrite);
+	if(ret) {
+		emit openChanged(true);
+		emitCommInfo(qf::core::Log::Level::Info, trUtf8("%1 connected OK").arg(device));
+	}
+	else {
+		emit openChanged(false);
+		emitCommInfo(qf::core::Log::Level::Error, trUtf8("%1 connect ERROR: %2").arg(device).arg(errorString()));
+	}
+	return ret;
+}
+
+void CommPort::closeComm()
+{
+	if(isOpen()) {
+		Super::close();
+		emit openChanged(false);
+		emitCommInfo(qf::core::Log::Level::Info, trUtf8("%1 closed").arg(portName()));
+	}
+}
+
+void CommPort::sendData(const QByteArray &data)
+{
+	qint64 n = write(data);
+	if(n != data.size())
+		qfError() << "send data error!";
+}
+
+void CommPort::emitCommInfo ( qf::core::Log::Level level, const QString& msg )
 {
 	//qfLog(level) << msg;
 	switch (level) {
@@ -31,7 +91,7 @@ void CommPort::emitDriverInfo ( qf::core::Log::Level level, const QString& msg )
 	case qf::core::Log::Level::Warning: qfWarning() << msg; break;
 	default: qfError() << msg; break;
 	}
-	emit driverInfo(level, msg);
+	emit commInfo(level, msg);
 }
 
 void CommPort::setDataBitsAsInt(int data_bits)

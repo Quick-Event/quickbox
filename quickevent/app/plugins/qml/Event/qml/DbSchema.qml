@@ -183,6 +183,7 @@ Schema {
 					//notNull: true
 				},
 				Field { name: 'relayId'; type: Int {} },
+				//Field { name: 'checkDateTime'; type: DateTime {} },
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -398,6 +399,19 @@ Schema {
 			indexes: [
 				Index {fields: ['marking', 'stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
+			]
+		},
+		Table { name: 'stationsbackup'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'stageId'; type: Int { } },
+				Field { name: 'stationNumber'; type: Int { } },
+				Field { name: 'siId'; type: Int {} },
+				Field { name: 'punchDateTime'; type: DateTime {} },
+				Field { name: 'cardErr'; type: Boolean {} }
+			]
+			indexes: [
+				Index {fields: ['stageId', 'stationNumber', 'siId', 'punchDateTime']; unique: true }
 			]
 		},
 		Table { name: 'lentcards'

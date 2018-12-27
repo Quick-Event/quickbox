@@ -6,7 +6,7 @@ include ( ../quickeventqmlplugin.pri )
 
 QT += widgets serialport sql
 
-CONFIG += c++11 hide_symbols
+CONFIG += c++14 hide_symbols
 
 DEFINES += CARDREADERPLUGIN_BUILD_DLL
 

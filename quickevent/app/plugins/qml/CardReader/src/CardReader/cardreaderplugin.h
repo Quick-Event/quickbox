@@ -10,7 +10,7 @@
 
 namespace quickevent { namespace core { namespace si { class PunchRecord; class ReadCard; class CheckedCard; }}}
 
-class SIMessageData;
+namespace siut { class SIMessageData; }
 
 namespace CardReader {
 
@@ -50,15 +50,15 @@ public:
 	int savePunchRecordToSql(const quickevent::core::si::PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
 	bool updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card);
-	void updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) throw(qf::core::Exception);
+	void updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false);
 	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
 
 	static int resolveAltCode(int maybe_alt_code, int stage_id);
 
-	void emitSiMessagereceived(const SIMessageData &msg) { emit siMessagereceived(msg); }
-	Q_SIGNAL void siMessagereceived(const SIMessageData &msg);
+	void emitSiTaskFinished(int task_type, QVariant result) { emit siTaskFinished(task_type, result); }
+	Q_SIGNAL void siTaskFinished(int task_type, QVariant result);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();

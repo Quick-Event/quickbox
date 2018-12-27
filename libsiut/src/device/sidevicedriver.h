@@ -5,62 +5,58 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 
-#ifndef SIDEVICEDRIVER_H
-#define SIDEVICEDRIVER_H
+#ifndef SIUT_SIDEVICEDRIVER_H
+#define SIUT_SIDEVICEDRIVER_H
 
-#include "commport.h"
+#include "sitask.h"
 
 #include <siut/simessagedata.h>
 
 #include <siut/siutglobal.h>
 
+#include <qf/core/logcore.h>
+
+#include <QPointer>
 
 class QTimer;
 
 namespace siut {
-
 
 class SIUT_DECL_EXPORT DeviceDriver : public QObject
 {
 	Q_OBJECT
 private:
 	typedef QObject Super;
+
 public:
-	enum ProcessRxDataStatus {StatusUnknown, StatusMessageOk, StatusMessageError};
-public:
-	DeviceDriver(QObject *parent = NULL);
+	DeviceDriver(QObject *parent = nullptr);
 	virtual ~DeviceDriver();
 
-	void processSiPacket(const QByteArray &data);
-protected:
-	//QSocketNotifier *f_socketNotifier;
-	CommPort *f_commPort;
-	QByteArray f_rxData;
-	QTimer *f_rxTimer;
-	ProcessRxDataStatus f_status = StatusUnknown;
-	int f_packetReceivedCount = 0;
-	int f_packetToFinishCount = 0;
-	SIMessageData f_messageData;
-protected:
-	void packetReceived(const QByteArray &msg_data);
-	void processRxData();
-	void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
-public:
-	bool openCommPort(const QString &device, int baudrate, int data_bits, const QString& parity, bool two_stop_bits);
-	void closeCommPort();
-	QString commPortErrorString();
-protected slots:
-	void commDataReceived();
-	void rxDataTimeout();
-public slots:
+	/// public to allow injection SI data from different sources
+	/// like UDP socket
+	virtual void processData(const QByteArray &data);
+
 	void sendCommand(int cmd, const QByteArray& data);
-signals:
-	void driverInfo(qf::core::Log::Level level, const QString &msg);
-	void messageReady(const SIMessageData &msg);
-	void rawDataReceived(const QByteArray &data);
+	void setSiTask(SiTask *task);
+
+	void sendACK();
+
+	Q_SIGNAL void driverInfo(qf::core::Log::Level level, const QString &msg);
+	//Q_SIGNAL void siMessageReceived(const SIMessageData &msg);
+	//Q_SIGNAL void siDatagramReceived(const QByteArray &data);
+	Q_SIGNAL void dataToSend(const QByteArray &data);
+	Q_SIGNAL void siTaskFinished(int task_type, QVariant result);
+protected:
+	//virtual void onSiMessageReceived(const SIMessageData &msg);
+	void processSIMessageData(const SIMessageData &msg_data);
+	void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
 private:
-	void sendAck();
-	void abortMessage();
+	//void sendAck();
+	//void abortMessage();
+protected:
+	QByteArray f_rxData;
+	SIMessageData f_messageData;
+	SiTask *m_taskInProcess = nullptr;
 };
 
 }

@@ -8,7 +8,7 @@
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
 
-#include <siut/simessage.h>
+//#include <siut/simessage.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 

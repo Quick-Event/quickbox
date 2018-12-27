@@ -7,8 +7,8 @@
 #include <QVariantMap>
 
 class QSqlRecord;
-class SIMessageCardReadOut;
-class SIMessageTransmitPunch;
+
+namespace siut { class SICard; }
 
 namespace quickevent {
 namespace core {
@@ -22,8 +22,11 @@ private:
 	QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	QF_VARIANTMAP_FIELD(int, t, setT, ime)
 	QF_VARIANTMAP_FIELD(int, m, setM, sec)
-	QF_VARIANTMAP_FIELD(int, d, setD, ay)
-	QF_VARIANTMAP_FIELD(int, w, setW, eek)
+	//QF_VARIANTMAP_FIELD(bool, p, setP, mFlag)
+	//QF_VARIANTMAP_FIELD(int, d, setD, ayOfWeek)
+	//QF_VARIANTMAP_FIELD(int, w, setW, eekCnt)
+	//QF_VARIANTMAP_FIELD(int, d, setD, ay)
+	//QF_VARIANTMAP_FIELD(int, w, setW, eek)
 public:
 	ReadPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadPunch(const QVariantList &var_list);
@@ -38,7 +41,7 @@ private:
 	typedef QVariantMap Super;
 
 	QF_VARIANTMAP_FIELD(int, r, setR, unId)
-	QF_VARIANTMAP_FIELD(int, s, setS, tationCodeNumber)
+	QF_VARIANTMAP_FIELD(int, s, setS, tationNumber)
 	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
 	QF_VARIANTMAP_FIELD(int, c, setC, heckTime)
 	QF_VARIANTMAP_FIELD(int, s, setS, tartTime)
@@ -49,7 +52,6 @@ private:
 public:
 	ReadCard(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ReadCard(const QSqlRecord &rec);
-	ReadCard(const SIMessageCardReadOut &si_card);
 
 	int punchCount() const;
 	ReadPunch punchAt(int i) const;
