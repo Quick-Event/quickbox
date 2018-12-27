@@ -340,6 +340,14 @@ QVariantMap SiTaskReadStationBackupMemory::createResult()
 }
 
 //===============================================================
+// SiTaskReadCard
+//===============================================================
+SiTaskReadCard::~SiTaskReadCard()
+{
+	qfInfo().noquote() << m_card.toString();
+}
+
+//===============================================================
 // SiTaskReadCard5
 //===============================================================
 void SiTaskReadCard5::start()
@@ -401,6 +409,111 @@ void SiTaskReadCard5::onSiMessageReceived(const SIMessageData &msg)
 	}
 }
 
+//===============================================================
+// SiTaskReadCard6
+//===============================================================
+SiTaskReadCard6::~SiTaskReadCard6()
+{
+
+}
+
+void SiTaskReadCard6::start()
+{
+	if(!m_withAutosend)
+		sendCommand((int)SIMessageData::Command::GetSICard6, QByteArray(1, 0x00));
+}
+
+void SiTaskReadCard6::onSiMessageReceived(const SIMessageData &msg)
+{
+	SIMessageData::Command cmd = msg.command();
+	if(cmd == SIMessageData::Command::GetSICard6) {
+		int base = 6;
+		const QByteArray data = msg.data();
+		int block_number = (uint8_t)data[base-1];
+		qfDebug() << "Card6 data, block number:" << block_number;
+		qfDebug().noquote() << SIMessageData::dumpData(data.mid(base), 4);
+		if(block_number == 0) {
+			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
+			int card_number = (int)SIPunch::getUnsigned(data, base + 11, 3);
+			m_cardSerie = Card6;// static_cast<CardSerie>(((uint8_t)data[base + 0x18]) & 15);
+			qfInfo() << "CS:" << m_cardSerie << cardSerieToString(m_cardSerie) << "SI:" << card_number;
+			m_card.setStationNumber(station_number);
+			m_card.setCardNumber(card_number);
+			if(m_cardSerie == Card6 || m_cardSerie == Card6Star) {
+				m_punchCnt = (int)SIPunch::getUnsigned(data, base + 18, 1);
+				qfInfo() << "Punch cnt:" << m_punchCnt;
+				int clear_time = SIPunch(data, base + 32).time();
+				int check_time = SIPunch(data, base + 28).time();
+				if(check_time == siut::SICard::INVALID_SI_TIME)
+					check_time = clear_time;
+				int start_time = SIPunch(data, base + 24).time();
+				int finish_time = SIPunch(data, base + 20).time();
+				m_card.setCardNumber(card_number);
+				m_card.setCheckTime(check_time);
+				m_card.setStartTime(start_time);
+				m_card.setFinishTime(finish_time);
+
+				if(!m_withAutosend) {
+					sendCommand((int)SIMessageData::Command::GetSICard6, QByteArray(1, 0x06));
+				}
+			}
+			else {
+				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie << cardSerieToString(m_cardSerie);
+				abort();
+			}
+		}
+		else {
+			if(block_number >= 1 && block_number <= 7) {
+				QVariantList punches = m_card.punches();
+				int pcnt = punches.count();
+				for (int i = 0; pcnt + i < m_punchCnt && i < 32; ++i) {
+					SIPunch p(data, base + i*4);
+					//qfInfo() << "B1" << p.code();
+					punches << p;
+				}
+				m_card.setPunches(punches);
+				if(m_withAutosend) {
+					if(m_card.punchCount() >= m_punchCnt) {
+						finishAndDestroy(true, m_card);
+					}
+				}
+				else {
+					if(m_card.punchCount() < m_punchCnt) {
+						int bn = block_number + 1;
+						if(bn >= 8)
+							bn = 2;
+						sendCommand((int)SIMessageData::Command::GetSICard6, QByteArray(1, (char)bn));
+					}
+					else {
+						finishAndDestroy(true, m_card);
+					}
+				}
+			}
+			else {
+				qfError() << "Card8 unexpected block number:" << block_number;
+				abort();
+			}
+		}
+	}
+	else {
+		qfError() << "Invalid command:" << "0x" + QString::number((int)cmd, 16) << "received";
+		abort();
+	}
+}
+
+const char *SiTaskReadCard6::cardSerieToString(SiTaskReadCard6::CardSerie cs)
+{
+	switch(cs) {
+	case Card6: return "Card6";
+	case Card6Star: return "Card6Star";
+	case Invalid: return "Invalid";
+	}
+	return "Unknown";
+}
+
+//===============================================================
+// SiTaskReadCard8
+//===============================================================
 SiTaskReadCard8::~SiTaskReadCard8()
 {
 	//qfInfo() << this << "destroyed";
@@ -568,7 +681,7 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 				}
 			}
 			else {
-				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie;
+				qfError() << "block:" << block_number << "unsupported card serie:" << m_cardSerie << cardSerieToString(m_cardSerie);
 				abort();
 			}
 		}

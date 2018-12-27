@@ -124,7 +124,8 @@ public:
 	explicit SiTaskReadCard(bool with_autosend, QObject *parent = nullptr)
 		: Super(parent)
 		, m_withAutosend(with_autosend) {}
-	//~SiTaskReadCard() override {}
+	~SiTaskReadCard() override;
+
 	Type type() const override {return  Type::CardRead;}
 protected:
 	bool m_withAutosend;
@@ -141,6 +142,25 @@ public:
 
 	void start() override;
 	void onSiMessageReceived(const siut::SIMessageData &msg) override;
+};
+
+class SIUT_DECL_EXPORT SiTaskReadCard6 : public SiTaskReadCard
+{
+	Q_OBJECT
+	using Super = SiTaskReadCard;
+public:
+	explicit SiTaskReadCard6(bool with_autosend, QObject *parent = nullptr)
+		: Super(with_autosend, parent) {}
+	~SiTaskReadCard6() override;
+
+	void start() override;
+	void onSiMessageReceived(const siut::SIMessageData &msg) override;
+private:
+	enum CardSerie {Invalid = 0, Card6 = 6, Card6Star};
+	static const char* cardSerieToString(CardSerie cs);
+
+	CardSerie m_cardSerie = Invalid;
+	int m_punchCnt = 0;
 };
 
 class SIUT_DECL_EXPORT SiTaskReadCard8 : public SiTaskReadCard

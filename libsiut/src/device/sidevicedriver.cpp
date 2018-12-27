@@ -70,6 +70,16 @@ void DeviceDriver::processSIMessageData(const SIMessageData &data)
 		processSIMessageData(data);
 		break;
 	}
+	case SIMessageData::Command::SICard6Detected: {
+		qfInfo() << "SICard6Detected";
+		setSiTask(new SiTaskReadCard6(false));
+		break;
+	}
+	case SIMessageData::Command::GetSICard6: {
+		setSiTask(new SiTaskReadCard6(true));
+		processSIMessageData(data);
+		break;
+	}
 	case SIMessageData::Command::SICard8Detected: {
 		qfInfo() << "SICard8AndHigherDetected";
 		setSiTask(new SiTaskReadCard8(false));
