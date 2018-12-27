@@ -25,6 +25,8 @@ public:
 	enum class Type {Invalid=0, CardRead, Punch, Other};
 
 	Q_SIGNAL void sigSendCommand(int cmd, const QByteArray &data);
+	Q_SIGNAL void sigSendACK();
+
 	virtual void onSiMessageReceived(const SIMessageData &msg) = 0;
 	virtual void start() = 0;
 	virtual Type type() const = 0;
@@ -36,6 +38,7 @@ public:
 	Q_SIGNAL void progress(int phase, int count);
 protected:
 	//void restartRxTimer();
+	void sendACK();
 	void sendCommand(int cmd, const QByteArray &data);
 protected:
 	QTimer *m_rxTimer;
@@ -125,6 +128,8 @@ public:
 		: Super(parent)
 		, m_withAutosend(with_autosend) {}
 	~SiTaskReadCard() override;
+
+	void finishAndDestroy(bool ok, QVariant result) override;
 
 	Type type() const override {return  Type::CardRead;}
 protected:

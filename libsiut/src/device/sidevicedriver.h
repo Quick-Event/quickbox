@@ -39,6 +39,8 @@ public:
 	void sendCommand(int cmd, const QByteArray& data);
 	void setSiTask(SiTask *task);
 
+	void sendACK();
+
 	Q_SIGNAL void driverInfo(qf::core::Log::Level level, const QString &msg);
 	//Q_SIGNAL void siMessageReceived(const SIMessageData &msg);
 	//Q_SIGNAL void siDatagramReceived(const QByteArray &data);

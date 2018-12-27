@@ -6,6 +6,8 @@
 #include <QDateTime>
 #include <QTimer>
 
+#define logCardRead qfInfo
+
 namespace siut {
 
 //=================================================
@@ -36,6 +38,11 @@ void SiTask::finishAndDestroy(bool ok, QVariant result)
 	emit aboutToFinish();
 	emit finished(ok, result);
 	deleteLater();
+}
+
+void SiTask::sendACK()
+{
+	emit sigSendACK();
 }
 
 void SiTask::sendCommand(int cmd, const QByteArray &data)
@@ -69,11 +76,11 @@ void SiTaskSetDirectRemoteMode::onSiMessageReceived(const SIMessageData &msg)
 		QByteArray hdr = msg.data();
 		uint8_t ms_mode = (uint8_t)hdr[5];
 		if(ms_mode == SIMessageData::MS_MODE_DIRECT) {
-			qfInfo() << "SI station in DIRECT mode.";
+			logCardRead() << "SI station in DIRECT mode.";
 			ok = (m_mode == Mode::Direct);
 		}
 		else if(ms_mode == SIMessageData::MS_MODE_REMOTE) {
-			qfInfo() << "SI station in REMOTE mode.";
+			logCardRead() << "SI station in REMOTE mode.";
 			ok = (m_mode == Mode::Remote);
 		}
 	}
@@ -124,14 +131,14 @@ SiTaskReadStationBackupMemory::SiTaskReadStationBackupMemory(QObject *parent)
 
 void SiTaskReadStationBackupMemory::start()
 {
-	qfInfo() << "SwitchToRemote";
+	logCardRead() << "SwitchToRemote";
 	m_state = State::SwitchToRemote;
 	SiTaskSetDirectRemoteMode *cmd = new SiTaskSetDirectRemoteMode(SiTaskSetDirectRemoteMode::Mode::Remote);
 	connect(cmd, &SiTaskSetDirectRemoteMode::sigSendCommand, this, &SiTaskReadStationBackupMemory::sigSendCommand);
 	connect(this, &SiTaskReadStationBackupMemory::siMessageForwarded, cmd, &SiTaskSetDirectRemoteMode::onSiMessageReceived);
 	connect(cmd, &SiTaskSetDirectRemoteMode::finished, this, [this](bool ok, QVariant ) {
 		if(ok) {
-			qfInfo() << "ReadPointer";
+			logCardRead() << "ReadPointer";
 			m_state = State::ReadPointer;
 			QByteArray ba;
 			ba.append(0x1C);
@@ -162,13 +169,13 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			ix += 3;
 			m_memoryDataPointer = (m_memoryDataPointer << 8) +  (uint8_t)hdr[ix++];
 			m_memoryDataPointer = (m_memoryDataPointer << 8) +  (uint8_t)hdr[ix++];
-			qfInfo() << "backup memory pointer:" << "0x" + QString::number(m_memoryDataPointer, 16);
+			logCardRead() << "backup memory pointer:" << "0x" + QString::number(m_memoryDataPointer, 16);
 
 			m_state = State::CheckOverflow;
 			/// according to
 			/// https://github.com/gaudenz/sireader/blob/master/sireader.py
 			/// we should find ad addr 0x3D
-			qfInfo() << "CheckOverflow";
+			logCardRead() << "CheckOverflow";
 			QByteArray ba;
 			ba.append(0x3D);
 			ba.append(0x01);
@@ -186,7 +193,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			QByteArray hdr = msg.data();
 			m_isOverflow = hdr[6];
 			//qfInfo().noquote() << msg.dump();
-			qfInfo() << "is memory overflow:" << m_isOverflow;
+			logCardRead() << "is memory overflow:" << m_isOverflow;
 
 			//m_blockCount = m_isOverflow? MEMORY_SIZE: (m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
 			m_blockCount = (m_isOverflow? MEMORY_SIZE - MEMORY_START: m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
@@ -201,7 +208,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 				return;
 			}
 
-			qfInfo() << "ReadData";
+			logCardRead() << "ReadData";
 			emit progress(m_progressPhase++, (int)m_blockCount);
 			m_state = State::ReadData;
 			QByteArray ba;
@@ -223,12 +230,12 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 	else if(m_state == State::ReadData) {
 		int cmd = (int)msg.command();
 		if(cmd == 0x81) {
-			qfInfo() << "block of" << msg.data().length() << "bytes received, " << m_blockCount << "blocks to receive";
-			qfInfo() << "read data pointer:" << QString::number(m_readDataPointer, 16) << "memory data pointer:" << QString::number(m_memoryDataPointer, 16) << "bytes to load:" << QString::number(m_memoryDataPointer - m_readDataPointer, 16);
+			logCardRead() << "block of" << msg.data().length() << "bytes received, " << m_blockCount << "blocks to receive";
+			logCardRead() << "read data pointer:" << QString::number(m_readDataPointer, 16) << "memory data pointer:" << QString::number(m_memoryDataPointer, 16) << "bytes to load:" << QString::number(m_memoryDataPointer - m_readDataPointer, 16);
 			QByteArray ba = msg.data().mid(8, m_blockSize);
 			if(m_readDataPointer < m_memoryDataPointer) {
 				if(m_memoryDataPointer - m_readDataPointer < m_blockSize) {
-					qfInfo() << "stripping last packet to len:" << (m_memoryDataPointer - m_readDataPointer);
+					logCardRead() << "stripping last packet to len:" << (m_memoryDataPointer - m_readDataPointer);
 					ba = ba.mid(0, m_memoryDataPointer - m_readDataPointer);
 				}
 			}
@@ -236,7 +243,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			m_data.append(ba);
 			emit progress(m_progressPhase++, (int)m_blockCount);
 			if(!--m_blockCount) {
-				qfInfo() << "SwitchToDirect";
+				logCardRead() << "SwitchToDirect";
 				m_state = State::SwitchToDirect;
 				SiTaskSetDirectRemoteMode *cmd = new SiTaskSetDirectRemoteMode(SiTaskSetDirectRemoteMode::Mode::Direct);
 				connect(cmd, &SiTaskSetDirectRemoteMode::sigSendCommand, this, &SiTaskReadStationBackupMemory::sigSendCommand);
@@ -328,7 +335,7 @@ QVariantMap SiTaskReadStationBackupMemory::createResult()
 			snprintf(buff, sizeof(buff)
 					 , "%04d-%02d-%02d %02d:%02d:%02d.%03d"
 					 , year, month, day, h, m, s, ms);
-			qfInfo() << ++n << "si:" << si << buff << (card_error? "CardErr": "");
+			logCardRead() << ++n << "si:" << si << buff << (card_error? "CardErr": "");
 		}
 		row << QDateTime{{year, month, day}, {h, m, s, ms}};
 		row << card_error;
@@ -344,7 +351,16 @@ QVariantMap SiTaskReadStationBackupMemory::createResult()
 //===============================================================
 SiTaskReadCard::~SiTaskReadCard()
 {
-	qfInfo().noquote() << m_card.toString();
+}
+
+void SiTaskReadCard::finishAndDestroy(bool ok, QVariant result)
+{
+	if(ok) {
+		logCardRead().noquote() << m_card.toString();
+		if(!m_withAutosend)
+			sendACK();
+	}
+	Super::finishAndDestroy(ok, result);
 }
 
 //===============================================================
@@ -430,18 +446,18 @@ void SiTaskReadCard6::onSiMessageReceived(const SIMessageData &msg)
 		int base = 6;
 		const QByteArray data = msg.data();
 		int block_number = (uint8_t)data[base-1];
-		qfDebug() << "Card6 data, block number:" << block_number;
+		logCardRead() << "Card6 data, block number:" << block_number;
 		qfDebug().noquote() << SIMessageData::dumpData(data.mid(base), 4);
 		if(block_number == 0) {
 			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
 			int card_number = (int)SIPunch::getUnsigned(data, base + 11, 3);
 			m_cardSerie = Card6;// static_cast<CardSerie>(((uint8_t)data[base + 0x18]) & 15);
-			qfInfo() << "CS:" << m_cardSerie << cardSerieToString(m_cardSerie) << "SI:" << card_number;
+			logCardRead() << "CS:" << m_cardSerie << cardSerieToString(m_cardSerie) << "SI:" << card_number;
 			m_card.setStationNumber(station_number);
 			m_card.setCardNumber(card_number);
 			if(m_cardSerie == Card6 || m_cardSerie == Card6Star) {
 				m_punchCnt = (int)SIPunch::getUnsigned(data, base + 18, 1);
-				qfInfo() << "Punch cnt:" << m_punchCnt;
+				logCardRead() << "Punch cnt:" << m_punchCnt;
 				int clear_time = SIPunch(data, base + 32).time();
 				int check_time = SIPunch(data, base + 28).time();
 				if(check_time == siut::SICard::INVALID_SI_TIME)
@@ -532,18 +548,18 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 		int base = 6;
 		const QByteArray data = msg.data();
 		int block_number = (uint8_t)data[base-1];
-		qfDebug() << "Card8 data, block number:" << block_number;
+		logCardRead() << "Card8 data, block number:" << block_number;
 		qfDebug().noquote() << SIMessageData::dumpData(data.mid(base), 4);
 		if(block_number == 0) {
 			int station_number = (int)SIPunch::getUnsigned(data, base - 3);
 			int card_number = (int)SIPunch::getUnsigned(data, base + 0x19, 3);
 			m_cardSerie = static_cast<CardSerie>(((uint8_t)data[base + 0x18]) & 15);
-			qfInfo() << "CS:" << m_cardSerie << cardSerieToString(m_cardSerie) << "SI:" << card_number;
+			logCardRead() << "CS:" << m_cardSerie << cardSerieToString(m_cardSerie) << "SI:" << card_number;
 			m_card.setStationNumber(station_number);
 			m_card.setCardNumber(card_number);
 			if(m_cardSerie == Card8 || m_cardSerie == Card9 || m_cardSerie == pCard || m_cardSerie == Siac) {
 				m_punchCnt = (uint8_t)data[base + 0x16];
-				qfInfo() << "Punch cnt:" << m_punchCnt;
+				logCardRead() << "Punch cnt:" << m_punchCnt;
 				int check_time = SIPunch(data, base + 0x08).time();
 				int start_time = SIPunch(data, base + 0x0c).time();
 				int finish_time = SIPunch(data, base + 0x10).time();
@@ -638,19 +654,19 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 					int yy = (uint8_t)data[base + 0xf*4 + 0];
 					int mm = (uint8_t)data[base + 0xf*4 + 1];
 					int dd = (uint8_t)data[base + 0xf*4 + 2];
-					qfInfo().nospace() << "SIAC batery date: " << (2000 + yy) << '-' << mm << '-' << dd;
+					logCardRead().nospace() << "SIAC batery date: " << (2000 + yy) << '-' << mm << '-' << dd;
 					uint8_t hw_ver_1 = (uint8_t)data[base + 0x10*4 + 0];
 					uint8_t hw_ver_0 = (uint8_t)data[base + 0x10*4 + 1];
 					uint8_t sw_ver_1 = (uint8_t)data[base + 0x10*4 + 2];
 					uint8_t sw_ver_0 = (uint8_t)data[base + 0x10*4 + 3];
-					qfInfo().nospace() << "HW ver: " << hw_ver_1 << '.' << hw_ver_0;
-					qfInfo().nospace() << "SW ver: " << sw_ver_1 << '.' << sw_ver_0;
+					logCardRead().nospace() << "HW ver: " << hw_ver_1 << '.' << hw_ver_0;
+					logCardRead().nospace() << "SW ver: " << sw_ver_1 << '.' << sw_ver_0;
 					uint8_t mvbat = (uint8_t)data[base + 0x11*4 + 3];
 					uint8_t rbat = (uint8_t)data[base + 0x15*4 + 0];
 					uint8_t lbat = (uint8_t)data[base + 0x15*4 + 1];
-					qfInfo().nospace().noquote() << "MVBAT: " << mvbat << " 0x" << QString::number(mvbat, 16);
-					qfInfo().nospace().noquote() << "RBAT : " << rbat << " 0x" << QString::number(rbat, 16);
-					qfInfo().nospace().noquote() << "LBAT : " << lbat << " 0x" << QString::number(lbat, 16) << " " << (lbat == 0xAA? "OK": "LOW");
+					logCardRead().nospace().noquote() << "MVBAT: " << mvbat << " 0x" << QString::number(mvbat, 16);
+					logCardRead().nospace().noquote() << "RBAT : " << rbat << " 0x" << QString::number(rbat, 16);
+					logCardRead().nospace().noquote() << "LBAT : " << lbat << " 0x" << QString::number(lbat, 16) << " " << (lbat == 0xAA? "OK": "LOW");
 
 					// read battery status
 					sendCommand((int)SIMessageData::Command::GetSICard8, QByteArray(1, (char)(block_number + 1)));
