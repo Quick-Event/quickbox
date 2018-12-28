@@ -205,7 +205,7 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 	//QStringList relay_ids;
 	{
 		qfs::QueryBuilder qb;
-		qb.select2("relays", "id, club, name")
+		qb.select2("relays", "id, club, name, number")
 				.select2("clubs", "name")
 				.from("relays")
 				.join("relays.club", "clubs.abbr")
@@ -214,7 +214,8 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 		while(q.next()) {
 			Relay r;
 			r.relayId = q.value("relays.id").toInt();
-			r.name = (q.value("relays.club").toString()
+			r.name = (q.value("relays.number").toString()
+					+ ' ' + q.value("relays.club").toString()
 					+ ' ' + q.value("relays.name").toString()
 					+ ' ' + q.value("clubs.name").toString()).trimmed();
 			for (int i = 0; i < leg_count; ++i)
