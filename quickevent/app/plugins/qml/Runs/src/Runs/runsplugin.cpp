@@ -26,6 +26,7 @@
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 
+#include <QFile>
 #include <QInputDialog>
 #include <QQmlEngine>
 
@@ -527,6 +528,123 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 		ret = w->printOptions();
 	}
 	return ret;
+}
+
+static QString make_width(const QString &s, int width)
+{
+	static const auto SS = QStringLiteral("%1");
+	int abs_width = width < 0? -width: width;
+	QString ret = SS.arg(s, width, QChar(' ')).mid(0, abs_width);
+	return ret;
+}
+
+void RunsPlugin::writeCSOSHeader(QTextStream &ts)
+{
+	Event::EventPlugin *evp = eventPlugin();
+	int stage_id = selectedStageId();
+	QDateTime start_dt = evp->stageStartDateTime(stage_id);
+	Event::EventConfig *ec = evp->eventConfig();
+	static constexpr int HWIDTH = -19;
+	ts << make_width("Kod zavodu", HWIDTH) << ": " << ec->importId() << "\r\n";
+	ts << make_width("Nazev zavodu", HWIDTH) << ": " << ec->eventName() << "\r\n";
+	ts << make_width("Zarazeni do soutezi", HWIDTH) << ": " << "" << "\r\n";
+	ts << make_width("Datum konani", HWIDTH) << ": " << start_dt.toString(Qt::ISODate) << "\r\n";
+	ts << make_width("Misto konani", HWIDTH) << ": " << ec->eventPlace() << "\r\n";
+	ts << make_width("Poradatel", HWIDTH) << ": " << "" << "\r\n";
+	ts << make_width("Mapa", HWIDTH) << ": " << "" << "\r\n";
+	ts << make_width("Reditel zavodu", HWIDTH) << ": " << ec->director() << "\r\n";
+	ts << make_width("Hlavni rozhodci", HWIDTH) << ": " << ec->mainReferee() << "\r\n";
+	ts << make_width("Stavitel trati", HWIDTH) << ": " << "" << "\r\n";
+	ts << make_width("JURY", HWIDTH) << ": " << "" << "\r\n";
+	ts << make_width("Protokol", HWIDTH) << ": " << "\r\n";
+	ts << "----------------------------------------------------------------------------\r\n";
+}
+
+bool RunsPlugin::exportResultsCsosStage(int stage_id, const QString &file_name)
+{
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+	QTextStream ts(&f);
+	ts.setCodec("CP1250");
+	writeCSOSHeader(ts);
+
+	qfs::QueryBuilder qb;
+	qb.select2("competitors", "registration, lastName, firstName, licence")
+		.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+		.select2("runs", "*")
+		.select2("classes", "name")
+		.from("competitors")
+		.join("competitors.classId", "classes.id")
+		.joinRestricted("competitors.id"
+						, "runs.competitorId"
+						, QStringLiteral("runs.stageId=%1 AND runs.isRunning AND runs.finishTimeMs>0").arg(stage_id)
+						, qfs::QueryBuilder::INNER_JOIN)
+		//.where("competitors.classId={{class_id}}")
+		.orderBy("classes.name, runs.notCompeting, runs.disqualified, runs.timeMs");
+	qfs::Query q;
+	q.exec(qb.toString());
+	while(q.next()) {
+		ts << make_width(q.value(QStringLiteral("classes.name")).toString(), -10);
+		ts << make_width(q.value(QStringLiteral("competitorName")).toString(), -25);
+		ts << make_width(q.value(QStringLiteral("registration")).toString(), -7);
+		ts << (q.value(QStringLiteral("runs.notCompeting")).toBool()? "M": make_width(q.value(QStringLiteral("licence")).toString(), 1));
+		int ms = q.value(QStringLiteral("runs.timeMs")).toInt();
+		QString time_str;
+		if(q.value(QStringLiteral("runs.disqualified")).toBool())
+			time_str = QStringLiteral("888.88");
+		/*
+		else if(PRUMER neni podporovan v QE)
+			time_str = QStringLiteral("999.99");
+		*/
+		else
+			time_str = make_width(quickevent::core::og::TimeMs(ms).toString(), 6);
+		ts << time_str;
+		ts << "\r\n";
+	}
+	return true;
+}
+
+bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_name)
+{
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+	QTextStream ts(&f);
+	ts.setCodec("CP1250");
+	writeCSOSHeader(ts);
+
+	qfs::Query q;
+	q.exec("SELECT id, name FROM classes ORDER BY name");
+	while(q.next()) {
+		int class_id = q.value(0).toInt();
+		QString class_name = q.value(1).toString();
+		qf::core::utils::Table tt = nstagesResultsTable(stage_count, class_id, -1, false);
+		for (int i = 0; i < tt.rowCount(); ++i) {
+			qf::core::utils::TableRow row = tt.row(i);
+			ts << make_width(class_name, -10);
+			ts << make_width(row.value(QStringLiteral("competitorName")).toString(), -25);
+			ts << make_width(row.value(QStringLiteral("registration")).toString(), -7);
+			ts << (row.value(QStringLiteral("pos")).toString() == QLatin1String("N")? "M": make_width(row.value(QStringLiteral("licence")).toString(), 1));
+			int ms = row.value(QStringLiteral("timeMs")).toInt();
+			QString time_str;
+			if(row.value(QStringLiteral("pos")).toString() == QLatin1String("D"))
+				time_str = QStringLiteral("888.88");
+			/*
+			else if(PRUMER neni podporovan v QE)
+				time_str = QStringLiteral("999.99");
+			*/
+			else
+				time_str = make_width(quickevent::core::og::TimeMs(ms).toString(), 6);
+			ts << time_str;
+			ts << "\r\n";
+		}
+	}
+	return true;
 }
 
 }

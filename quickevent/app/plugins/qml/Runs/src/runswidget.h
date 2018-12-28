@@ -71,7 +71,6 @@ private:
 	void import_start_times_ob2000();
 
 	QString getSaveFileName(const QString &file_name, int stage_id);
-	void writeCSOSHeader(QTextStream &ts);
 	void export_results_csos_stage();
 	void export_results_csos_overall();
 private:

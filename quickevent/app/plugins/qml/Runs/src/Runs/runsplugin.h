@@ -66,11 +66,17 @@ public:
 	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
 
 	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
+
+	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
+	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
+
 private:
 	Q_SLOT void onInstalled();
 
 	int courseForRun_Classic(int run_id);
 	int courseForRun_Relays(int run_id);
+
+	void writeCSOSHeader(QTextStream &ts);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runnersTableCache;

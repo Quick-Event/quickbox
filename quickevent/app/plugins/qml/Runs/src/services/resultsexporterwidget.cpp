@@ -18,15 +18,23 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 	setPersistentSettingsId("EmmaClientWidget");
 	ui->setupUi(this);
 
+	ui->lstOutputFormat->addItem(tr("HTML multi page"), static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti));
+	ui->lstOutputFormat->addItem(tr("CSOS fixed column sizes"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSOS));
+	ui->lstOutputFormat->addItem(tr("CSV"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSV));
+	ui->lstOutputFormat->setCurrentIndex(-1);
+
 	ResultsExporter *svc = service();
 	if(svc) {
 		ResultsExporterSettings ss = svc->settings();
 		ui->edExportDir->setText(ss.exportDir());
 		ui->edExportInterval->setValue(ss.exportIntervalSec());
 		ui->edWhenFinishedRunCmd->setText(ss.whenFinishedRunCmd());
+		int of = ss.outputFormat();
+		ui->lstOutputFormat->setCurrentIndex(ui->lstOutputFormat->findData(of));
 	}
 
-	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &ResultsExporterWidget::onBtChooseExportDir);
+	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &ResultsExporterWidget::onBtChooseExportDirClicked);
+	connect(ui->btExportResults, &QPushButton::clicked, this, &ResultsExporterWidget::onBtExportResultsClicked);
 }
 
 ResultsExporterWidget::~ResultsExporterWidget()
@@ -34,7 +42,7 @@ ResultsExporterWidget::~ResultsExporterWidget()
 	delete ui;
 }
 
-void ResultsExporterWidget::onBtChooseExportDir()
+void ResultsExporterWidget::onBtChooseExportDirClicked()
 {
 	ResultsExporter *svc = service();
 	if(svc) {
@@ -45,23 +53,41 @@ void ResultsExporterWidget::onBtChooseExportDir()
 	}
 }
 
+void ResultsExporterWidget::onBtExportResultsClicked()
+{
+	ResultsExporter *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportResults();
+	}
+}
+
+bool ResultsExporterWidget::saveSettings()
+{
+	ResultsExporter *svc = service();
+	if(svc) {
+		ResultsExporterSettings ss = svc->settings();
+		QString dir = ui->edExportDir->text().trimmed();
+		ss.setExportDir(dir);
+		ss.setExportIntervalSec(ui->edExportInterval->value());
+		ss.setWhenFinishedRunCmd(ui->edWhenFinishedRunCmd->text());
+		if(ui->lstOutputFormat->currentIndex() >= 0)
+			ss.setOutputFormat(ui->lstOutputFormat->itemData(ui->lstOutputFormat->currentIndex()).toInt());
+		svc->setSettings(ss);
+		if(!dir.isEmpty()) {
+			if(!QDir().mkpath(dir))
+				return false;
+		}
+	}
+	return true;
+}
+
 bool ResultsExporterWidget::acceptDialogDone(int result)
 {
 	if(result == QDialog::Accepted) {
-		QString dir = ui->edExportDir->text().trimmed();
-		if(!dir.isEmpty()) {
-			if(!QDir().mkpath(dir)) {
-				qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot create directory '%1'.").arg(dir));
-				return false;
-			}
-		}
-		ResultsExporter *svc = service();
-		if(svc) {
-			ResultsExporterSettings ss = svc->settings();
-			ss.setExportDir(dir);
-			ss.setExportIntervalSec(ui->edExportInterval->value());
-			ss.setWhenFinishedRunCmd(ui->edWhenFinishedRunCmd->text());
-			svc->setSettings(ss);
+		if(!saveSettings()) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot create directory '%1'.").arg(ui->edExportDir->text().trimmed()));
+			return false;
 		}
 	}
 	return true;

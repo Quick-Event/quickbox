@@ -10,9 +10,13 @@ class ResultsExporterSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
+public:
+	enum class OutputFormat {HtmlMulti = 0, CSOS, CSV, COUNT};
+
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
 	QF_VARIANTMAP_FIELD(QString, w, setW, henFinishedRunCmd)
+	QF_VARIANTMAP_FIELD2(int, o, setO, utputFormat, static_cast<int>(OutputFormat::HtmlMulti))
 
 public:
 	ResultsExporterSettings(const QVariantMap &o = QVariantMap()) : Super(o) {}
@@ -44,6 +48,7 @@ public:
 
 	//QString whenFinishedRunCmd() const {return settings().whenFinishedRunCmd();}
 	//void setWhenFinishedRunCmd(const QString &s);
+	bool exportResults();
 private:
 	void onExportTimerTimeOut();
 private:

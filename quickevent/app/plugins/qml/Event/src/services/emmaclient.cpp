@@ -14,6 +14,7 @@
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/connection.h>
 
+#include <QDir>
 #include <QFile>
 #include <QSettings>
 #include <QStandardPaths>
@@ -41,9 +42,15 @@ QString EmmaClient::serviceName()
 
 void EmmaClient::exportRadioCodes()
 {
-	QString event_name = eventPlugin()->eventName();
 	EmmaClientSettings ss = settings();
-	QFile f_splitnames(ss.exportDir() + '/' + event_name + ".splitnames.txt");
+	QString export_dir = ss.exportDir();
+	QDir ed;
+	if(!ed.mkpath(export_dir)) {
+		qfError() << "Canot create export dir:" << export_dir;
+		return;
+	}
+	QString event_name = eventPlugin()->eventName();
+	QFile f_splitnames(export_dir + '/' + event_name + ".splitnames.txt");
 	if(!f_splitnames.open(QFile::WriteOnly)) {
 		qfError() << "Canot open file:" << f_splitnames.fileName() << "for writing.";
 		return;
