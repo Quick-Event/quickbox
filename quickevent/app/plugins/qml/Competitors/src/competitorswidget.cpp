@@ -211,11 +211,13 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
-	QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
 	bool save_and_next = false;
-	connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
-		save_and_next = (button == bt_save_and_next);
-	});
+	if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
+		QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
+		connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
+			save_and_next = (button == bt_save_and_next);
+		});
+	}
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
 	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());

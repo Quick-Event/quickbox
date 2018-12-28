@@ -254,6 +254,9 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 	if(mode == qf::core::model::DataDocument::ModeInsert) {
 		ui->edFind->setFocus();
 	}
+	else if(mode == qf::core::model::DataDocument::ModeView || mode == qf::core::model::DataDocument::ModeDelete) {
+		ui->frmFind->hide();
+	}
 	if(Super::load(id, mode))
 		return loadRunsTable();
 	return false;

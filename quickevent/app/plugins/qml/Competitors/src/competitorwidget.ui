@@ -30,25 +30,27 @@
     <number>5</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="chkFind">
-       <property name="text">
-        <string>&amp;Find in registrations</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="FindRegistrationEdit" name="edFind">
-       <property name="placeholderText">
-        <string>Type to find competitor in registrations ...</string>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QFrame" name="frmFind">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QCheckBox" name="chkFind">
+        <property name="text">
+         <string>&amp;Find in registrations</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="FindRegistrationEdit" name="edFind">
+        <property name="placeholderText">
+         <string>Type to find competitor in registrations ...</string>
+        </property>
+        <property name="clearButtonEnabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_2">
@@ -297,22 +299,5 @@
   <tabstop>tblRuns</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>chkFind</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>edFind</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>71</x>
-     <y>24</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>318</x>
-     <y>27</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
