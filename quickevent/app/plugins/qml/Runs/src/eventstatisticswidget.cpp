@@ -314,15 +314,18 @@ void FooterModel::reload()
 }
 
 //============================================================
-//                FooterView
+// FooterView
 //============================================================
 class FooterView : public QHeaderView
 {
 	typedef QHeaderView Super;
 public:
 	FooterView(QTableView *table_view, QWidget *parent = nullptr);
+	~FooterView() override;
 
 	void syncSectionSizes();
+private:
+	void resetFooterAttributes();
 private:
 	QTableView *m_tableView;
 };
@@ -331,7 +334,7 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 	: Super(Qt::Horizontal, parent)
 	, m_tableView(table_view)
 {
-	setSectionResizeMode(QHeaderView::Fixed);
+	resetFooterAttributes();
 	//QHeaderView *vh = table_view->verticalHeader();
 	QHeaderView *hh = table_view->horizontalHeader();
 	if(hh) {
@@ -347,8 +350,19 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 	}
 }
 
+FooterView::~FooterView()
+{
+}
+
+void FooterView::resetFooterAttributes()
+{
+	setSectionResizeMode(QHeaderView::Fixed);
+	setSortIndicatorShown(false);
+}
+
 void FooterView::syncSectionSizes()
 {
+	qfInfo() << Q_FUNC_INFO << this;
 	QAbstractItemModel *m = model();
 	QF_ASSERT(m != nullptr, "Model is NULL!", return);
 
@@ -361,17 +375,11 @@ void FooterView::syncSectionSizes()
 	if(hh) {
 		setMinimumHeight(hh->height());
 		setMaximumHeight(hh->height());
-		for (int i = 0; i < hh->count() && i < m->columnCount(); ++i) {
-			resizeSection(i, hh->sectionSize(i));
-			int vi = hh->visualIndex(i);
-			//qfInfo() << i << "vis ix:" << vi;
-			/// do not know why, but this can copy section visual index from master header view
-			if(vi != i) {
-				moveSection(vi, i);
-				//qfInfo() << "\t" << vi << "--->" << i;
-				//qfInfo() << "\t new vis ix:" << visualIndex(i);
-			}
-		}
+
+		QByteArray ba = hh->saveState();
+		restoreState(ba);
+
+		resetFooterAttributes();
 	}
 }
 

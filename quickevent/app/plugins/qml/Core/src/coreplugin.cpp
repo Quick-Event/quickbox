@@ -58,14 +58,20 @@ void CorePlugin::aboutQuickEvent()
 	QString version_string;
 	QMetaObject::invokeMethod(fwk, "versionString", Qt::DirectConnection
 							  , Q_RETURN_ARG(QString, version_string));
+	QString db_version_string;
+	QMetaObject::invokeMethod(fwk, "dbVersionString", Qt::DirectConnection
+							  , Q_RETURN_ARG(QString, db_version_string));
 	QMessageBox::about(fwk
 					   , tr("About Quick Event")
 					   , tr("The <b>Quick Event</b> is an application which helps you to organize the orienteering events."
 							"<br/><br/>"
-							"version: %1"
-							"<br/>"
-							"build: %2 %3"
-							).arg(version_string).arg(__DATE__).arg(__TIME__)
+							"version: %1<br/>"
+							"min. db version: %2<br/>"
+							"build: %3 %4"
+							)
+					   .arg(version_string)
+					   .arg(db_version_string)
+					   .arg(__DATE__).arg(__TIME__)
 					   );
 }
 

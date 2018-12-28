@@ -17,7 +17,7 @@ class EventStatisticsWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit EventStatisticsWidget(QWidget *parent = 0);
+	explicit EventStatisticsWidget(QWidget *parent = nullptr);
 	~EventStatisticsWidget();
 
 	Q_SLOT void reloadLater();

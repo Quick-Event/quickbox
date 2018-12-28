@@ -466,7 +466,11 @@ DbSchema EventPlugin::dbSchema()
 
 int EventPlugin::minDbVersion()
 {
-	return 10300;
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	int db_version;
+	QMetaObject::invokeMethod(fwk, "dbVersion", Qt::DirectConnection
+							  , Q_RETURN_ARG(int, db_version));
+	return db_version;
 }
 
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)

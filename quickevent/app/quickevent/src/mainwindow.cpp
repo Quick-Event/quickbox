@@ -29,6 +29,16 @@ QString MainWindow::versionString() const
 	return Application::instance()->versionString();
 }
 
+QString MainWindow::dbVersionString() const
+{
+	return Application::instance()->dbVersionString();
+}
+
+int MainWindow::dbVersion() const
+{
+	return Application::instance()->dbVersion();
+}
+
 QString MainWindow::settingsPrefix_application_locale_language()
 {
 	static const QString s = SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE;

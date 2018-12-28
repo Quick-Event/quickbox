@@ -64,7 +64,23 @@ Application *Application::instance(bool must_exist)
 	return ret;
 }
 
+int Application::dbVersion()
+{
+	return 10300;
+}
+
 QString Application::versionString() const
 {
 	return QCoreApplication::applicationVersion();
+}
+
+QString Application::dbVersionString() const
+{
+	int dbv = dbVersion();
+	int rev = dbv % 100;
+	dbv /= 100;
+	int min = dbv % 100;
+	int maj = dbv / 100;
+
+	return QString("%1.%2.%3").arg(maj).arg(min).arg(rev);
 }

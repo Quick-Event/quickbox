@@ -1258,7 +1258,7 @@ int TableView::toTableModelRowNo(int table_view_row_no) const
 void TableView::loadPersistentSettings()
 {
 	QString path = persistentSettingsPath();
-	//qfInfo() << Q_FUNC_INFO << this << path;
+	qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		HeaderView *horiz_header = qobject_cast<HeaderView*>(horizontalHeader());
@@ -1275,84 +1275,6 @@ void TableView::loadPersistentSettings()
 		header_state = QByteArray::fromBase64(header_state);
 		if(!header_state.isEmpty())
 			horiz_header->restoreState(header_state);
-
-#if 0
-		QString s = settings.value("horizontalheader").toString();
-		QJsonDocument jd = QJsonDocument::fromJson(s.toUtf8());
-		QVariantMap m;
-		m = jd.toVariant().toMap();
-		QVariantMap sections = m.value("sections").toMap();
-		QMap<int, QString> visual_order;
-		{
-			QMapIterator<QString, QVariant> it(sections);
-			while(it.hasNext()) {
-				it.next();
-				QVariantMap section = it.value().toMap();
-				QString field_name = it.key();
-				qfDebug() << "resizing column:" << field_name;
-				int visual_ix = section.value("visualIndex").toInt();
-				visual_order[visual_ix] = field_name;
-				for(int logical_ix=0; logical_ix<horiz_header->count(); logical_ix++) {
-					QString col_name = mod->headerData(logical_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					//qfDebug() << col_name << "cmp" << field_name << "=" << qf::core::Utils::fieldNameCmp(col_name, field_name);
-					if(col_name == field_name) {
-						int size = section.value("size").toInt();
-						horiz_header->resizeSection(logical_ix, size);
-						break;
-					}
-				}
-			}
-		}
-		{
-			// block signals for each particular horiz_header->moveSection(v_ix, visual_ix) call
-			// Qt5 crashes sometimes when more sections are moved
-			/* backtrace
-			0	QScopedPointer<QObjectData, QScopedPointerDeleter<QObjectData> >::data	qscopedpointer.h	143	0x7ffff6810a8c
-			1	qGetPtrHelper<QScopedPointer<QObjectData, QScopedPointerDeleter<QObjectData> > >	qglobal.h	941	0x7ffff6ccaa85
-			2	QGraphicsEffect::d_func	qgraphicseffect.h	112	0x7ffff6ccab1c
-			3	QGraphicsEffect::source	qgraphicseffect.cpp	514	0x7ffff6cc8ae5
-			4	QWidgetPrivate::invalidateGraphicsEffectsRecursively	qwidget.cpp	1849	0x7ffff6862d97
-			5	QWidgetPrivate::setDirtyOpaqueRegion	qwidget.cpp	1865	0x7ffff685d471
-			6	QWidget::setVisible	qwidget.cpp	7370	0x7ffff687209d
-			7	QAbstractScrollAreaPrivate::layoutChildren	qabstractscrollarea.cpp	523	0x7ffff6a712be
-			8	QAbstractScrollArea::setViewportMargins	qabstractscrollarea.cpp	940	0x7ffff6a72123
-			9	QTableView::updateGeometries	qtableview.cpp	2114	0x7ffff6b6791a
-			10	QTableView::columnMoved	qtableview.cpp	2956	0x7ffff6b6aeef
-			11	QTableView::qt_static_metacall	moc_qtableview.cpp	189	0x7ffff6b6ca0e
-			12	QMetaObject::activate	qobject.cpp	3680	0x7ffff55e62e9
-			13	QMetaObject::activate	qobject.cpp	3546	0x7ffff55e576d
-			14	QHeaderView::sectionMoved	moc_qheaderview.cpp	375	0x7ffff6b38689
-			15	QHeaderView::moveSection	qheaderview.cpp	798	0x7ffff6b382f4
-			16	qf::qmlwidgets::TableView::loadPersistentSettings	tableview.cpp	186	0x7ffff78e3664
-			 */
-			horiz_header->blockSignals(true);
-			QMapIterator<int, QString> it(visual_order);
-			it.toBack();
-			while(it.hasPrevious()) {
-				it.previous();
-				int visual_ix = it.key();
-				QString field_name = it.value();
-				qfDebug() << "moving column:" << field_name << "to visual index:" << visual_ix;
-				for(int v_ix=0; v_ix<visual_ix; v_ix++) {
-					int log_ix = horiz_header->logicalIndex(v_ix);
-					//QF_ASSERT(log_ix >= 0, "internal error", continue);
-					if(log_ix < 0) {
-						qfDebug() << "Cannot find logical index for visual index:" << v_ix << "column name:" << field_name << "might not exist in loaded columns.";
-						break;
-					}
-					QString col_name = mod->headerData(log_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					qfDebug() << "\tvisual index:" << v_ix << "-> logical index:" << log_ix << "col name:" << col_name;
-					if(col_name == field_name) {
-						qfDebug() << "\t\tmoving:" << v_ix << "->" << visual_ix;
-						if(v_ix != visual_ix)
-							horiz_header->moveSection(v_ix, visual_ix);
-						break;
-					}
-				}
-			}
-			horiz_header->blockSignals(false);
-		}
-#endif
 	}
 }
 
@@ -1368,33 +1290,6 @@ void TableView::savePersistentSettings()
 
 		QByteArray header_state = horiz_header->saveState();
 		settings.setValue("horizontalheader", QString::fromLatin1(header_state.toBase64()));
-#if 0
-		qf::core::model::TableModel *mod = tableModel();
-		if(horiz_header && mod) {
-			QVariantMap sections;
-			for(int i=0; i<horiz_header->count() && i<mod->columnCount(); i++) {
-				QString col_name = mod->headerData(i, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-				if(!col_name.isEmpty()) {
-					/// remove schema name from column
-					QString fn, tn;
-					qf::core::Utils::parseFieldName(col_name, &fn, &tn);
-					col_name = fn;
-					if(!tn.isEmpty())
-						col_name = tn + '.' + col_name;
-					QVariantMap section;
-					//section["fieldName"] = col_name;
-					section["size"] = horiz_header->sectionSize(i);
-					section["visualIndex"] = horiz_header->visualIndex(i);
-					sections[col_name] = section;
-					qfDebug() << col_name << "->" << horiz_header->visualIndex(i);
-				}
-			}
-			QVariantMap m;
-			m["sections"] = sections;
-			QJsonDocument jd = QJsonDocument::fromVariant(m);
-			settings.setValue("horizontalheader", QString::fromUtf8(jd.toJson(QJsonDocument::Compact)));
-		}
-#endif
 	}
 }
 
