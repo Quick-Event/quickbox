@@ -33,6 +33,8 @@ private slots:
 	void on_btPrintResultsSelected_clicked();
 	void on_btPrintResultsNew_clicked();
 	void on_btClearNewInSelectedRows_clicked();
+
+	void reloadOnEvent();
 private:
 	int currentStageId();
 	QTimer* autoRefreshTimer();

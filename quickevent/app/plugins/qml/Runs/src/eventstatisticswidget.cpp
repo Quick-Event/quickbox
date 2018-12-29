@@ -464,7 +464,7 @@ void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVarian
 	Q_UNUSED(payload)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)
 	   || domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED)) {
-		reloadLater();
+		reloadOnEvent();
 	}
 }
 
@@ -496,7 +496,7 @@ QTimer *EventStatisticsWidget::autoRefreshTimer()
 		m_autoRefreshTimer = new QTimer(this);
 		EventStatisticsOptions::Options opts(options());
 		m_autoRefreshTimer->setInterval(opts.autoRefreshSec() * 1000);
-		connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadLater);
+		connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadOnEvent);
 	}
 	return m_autoRefreshTimer;
 }
@@ -580,6 +580,13 @@ void EventStatisticsWidget::on_btClearNewInSelectedRows_clicked()
 	}
 	clearNewResults(classdefs_ids, runners_finished);
 	reload();
+}
+
+void EventStatisticsWidget::reloadOnEvent()
+{
+	if(ui->chkAutoRefresh->isChecked()) {
+		reloadLater();
+	}
 }
 
 void EventStatisticsWidget::clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished)
