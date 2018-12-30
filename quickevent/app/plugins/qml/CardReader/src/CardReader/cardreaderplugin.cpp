@@ -88,7 +88,7 @@ int CardReaderPlugin::currentStageId()
 	return ret;
 }
 
-int CardReaderPlugin::findRunId(int si_id, int si_finish_time)
+int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 {
 	int ret = 0;
 	int row_cnt = 0;
@@ -151,6 +151,8 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time)
 			else {
 				/// second possible run, give it up
 				qfWarning() << "There are more runs with si:" << si_id << "run id1:" << ret << "id2:" << q.value("id").toInt();
+				if(err_msg)
+					*err_msg = tr("More runs with si: %1, run1 id: %2, run2 id: %3").arg(si_id).arg(ret).arg(q.value("id").toInt());
 				ret = 0;
 				break;
 			}
@@ -159,6 +161,14 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time)
 	if(row_cnt == 1) {
 		/// if we have just one record, skip all the checks
 		ret = last_id;
+	}
+	if(ret == 0) {
+		if(err_msg && err_msg->isEmpty())
+			*err_msg = tr("Cannot find runs with si: %1").arg(si_id);
+	}
+	else {
+		if(err_msg)
+			*err_msg = QString();
 	}
 	return ret;
 }
@@ -247,8 +257,8 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 		punches << p.toJsonArrayString();
 	}
 	qf::core::sql::Query q;
-	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId, readerConnectionId)"
-							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId, :readerConnectionId)")
+	q.prepare(QStringLiteral("INSERT INTO cards (stationNumber, siId, checkTime, startTime, finishTime, punches, runId, stageId, readerConnectionId, runIdAssignError)"
+							 " VALUES (:stationNumber, :siId, :checkTime, :startTime, :finishTime, :punches, :runId, :stageId, :readerConnectionId, :runIdAssignError)")
 			  , qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":stationNumber"), read_card.stationNumber());
 	q.bindValue(QStringLiteral(":siId"), read_card.cardNumber());
@@ -259,6 +269,7 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 	q.bindValue(QStringLiteral(":runId"), read_card.runId());
 	q.bindValue(QStringLiteral(":stageId"), currentStageId());
 	q.bindValue(QStringLiteral(":readerConnectionId"), qf::core::sql::Connection::defaultConnection().connectionId());
+	q.bindValue(QStringLiteral(":runIdAssignError"), read_card.runIdAssignError());
 	if(q.exec()) {
 		ret = q.lastInsertId().toInt();
 	}

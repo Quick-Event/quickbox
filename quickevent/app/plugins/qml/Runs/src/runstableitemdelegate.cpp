@@ -102,7 +102,7 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 			}
 		}
 		static const QColor vacant_color("forestgreen");
-		static constexpr int vacant_h_ratio = 16;
+		static constexpr int vacant_h_ratio = 20;
 		if(vacant_before) {
 			QRect r = option.rect;
 			int h = r.height() / vacant_h_ratio + 1;

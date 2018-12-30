@@ -96,6 +96,7 @@ public:
 		col_cards_checkTime,
 		col_cards_startTime,
 		col_cards_finishTime,
+		col_cards_runIdAssignError,
 		col_COUNT
 	};
 public:
@@ -123,6 +124,7 @@ Model::Model(QObject *parent)
 	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
 	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
 	setColumn(col_cards_finishTime, ColumnDefinition("cards.finishTime", tr("FTIME")).setToolTip(tr("Card finish time")).setReadOnly(true));
+	setColumn(col_cards_runIdAssignError, ColumnDefinition("cards.runIdAssignError", tr("Error")).setToolTip(tr("Assign card to runner error")).setReadOnly(true));
 }
 
 QVariant Model::data(const QModelIndex &index, int role) const
@@ -372,7 +374,7 @@ void CardReaderWidget::reload()
 	//QString driver_name = m_cardsModel->sqlConnection().driverName();
 	int current_stage = thisPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
-	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime")
+	qb.select2("cards", "id, siId, runId, checkTime, startTime, finishTime, runIdAssignError")
 			.select2("runs", "id, startTimeMs, timeMs, finishTimeMs, misPunch, disqualified, cardReturned")
 			.select2("competitors", "registration")
 			.select2("classes", "name")
@@ -604,10 +606,12 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 		return;
 	}
 
-	int run_id = thisPlugin()->findRunId(card.cardNumber(), card.finishTime());
+	QString err_msg;
+	int run_id = thisPlugin()->findRunId(card.cardNumber(), card.finishTime(), &err_msg);
+
 	if(run_id == 0) {
 		operatorAudioWakeUp();
-		appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for SI: %1").arg(card.cardNumber()));
+		appendLog(qf::core::Log::Level::Error, err_msg);
 	}
 	else {
 		bool card_lent = thisPlugin()->isCardLent(card.cardNumber(), card.finishTime(), run_id);
@@ -630,6 +634,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	}
 	quickevent::core::si::ReadCard read_card(card);
 	read_card.setRunId(run_id);
+	read_card.setRunIdAssignError(err_msg);
 	processReadCardSafe(read_card);
 }
 

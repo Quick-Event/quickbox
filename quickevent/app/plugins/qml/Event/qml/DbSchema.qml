@@ -311,6 +311,9 @@ Schema {
 				Field { name: 'runIdAssignTS'
 					type: DateTime { }
 				},
+				Field { name: 'runIdAssignError'
+					type: String { }
+				},
 				Field { name: 'stageId'
 					type: Int { }
 					comment: 'We cannot take stageId from runId linked table, because we need select cards for stage even without runId assigned'

@@ -41,7 +41,7 @@ public:
 	Q_INVOKABLE QString settingsPrefix();
 
 	int currentStageId();
-	int findRunId(int si_id, int si_finish_time);
+	int findRunId(int si_id, int si_finish_time, QString *err_msg = nullptr);
 	bool isCardLent(int si_id, int si_finish_time, int run_id);
 	quickevent::core::si::ReadCard readCard(int card_id);
 	quickevent::core::si::CheckedCard checkCard(int card_id, int run_id = 0);
