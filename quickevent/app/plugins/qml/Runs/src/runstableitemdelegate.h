@@ -23,7 +23,8 @@ protected:
 private:
 	int m_stageId = 0;
 	int m_highlightedClassId = 0;
-	int m_classStart;
+	int m_classStartFirst;
+	int m_classStartLast;
 	int m_classInterval;
 };
 
