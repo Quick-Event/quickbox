@@ -144,15 +144,17 @@ RunsPlugin {
 											   , {stageId: root.selectedStageId});
 			}
 		},
+		/*
 		Action {
-			id: act_export_results_iofxml
-			text: qsTr('&IOF XML 2.3')
+			id: act_export_results_iofxml_23
+			text: qsTr('IOF XML &2.3')
 			onTriggered: {
 				var default_file_name = "results-iof.xml";
 				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
 				results.exportIofXml2(file_name)
 			}
 		},
+		*/
 		Action {
 			id: act_export_results_winsplits
 			text: qsTr('&WinSplits')
@@ -201,7 +203,17 @@ RunsPlugin {
 
 		//var m_results = a_export.addMenuInto("results", "&Results");
 		var m_results = root.partWidget.menuBar.actionForPath("export/results", false);
-		m_results.addActionInto(act_export_results_iofxml);
+		var action_results_export_iofxml_23 = root.partWidget.menuBar.actionForPath("export/results/iofxml23", false);
+		if(action_results_export_iofxml_23) {
+			action_results_export_iofxml_23.triggered.connect(function () {
+				var default_file_name = "results-iof.xml";
+				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
+				if(file_name)
+					results.exportIofXml2(file_name)
+			});
+		}
+		//m_results.addActionInto(act_export_results_iofxml_23);
+		//m_results.addActionInto(act_export_results_iofxml_30);
 		m_results.addActionInto(act_export_results_winsplits);
 
 		//Log.warning("onNativeInstalled");

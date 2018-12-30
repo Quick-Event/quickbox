@@ -22,6 +22,7 @@
 #include <qf/core/assert.h>
 #include <qf/core/sql/query.h>
 #include <qf/core/sql/querybuilder.h>
+#include <qf/core/utils/htmlutils.h>
 #include <qf/core/utils/table.h>
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
@@ -528,6 +529,151 @@ QVariantMap RunsPlugin::printAwardsOptionsWithDialog(const QVariantMap &opts)
 		ret = w->printOptions();
 	}
 	return ret;
+}
+
+bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_name)
+{
+	QFile f(file_name);
+	if(!f.open(QIODevice::WriteOnly)) {
+		qfError() << "Cannot open file" << f.fileName() << "for writing.";
+		return false;
+	}
+
+	//int start00_msec = eventPlugin()->stageStartMsec(stage_id);
+	QDateTime stage_start_date_time = eventPlugin()->stageStartDateTime(stage_id);
+
+	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id);
+	QVariantList result_list{
+		"ResultList",
+		QVariantMap{
+			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
+			{"status", "Complete"},
+			{"iofVersion", "3.0"},
+			{"creator", "QuickEvent"},
+			{"createTime", QDateTime::currentDateTime().toString(Qt::ISODate)},
+		}
+	};
+	{
+		QVariantList event_lst{"Event"};
+		QVariantMap event = tt1.value("event").toMap();
+		event_lst.insert(event_lst.count(), QVariantList{"Id", QVariantMap{{"type", "ORIS"}}, event.value("importId")});
+		event_lst.insert(event_lst.count(), QVariantList{"Name", event.value("name")});
+		event_lst.insert(event_lst.count(), QVariantList{"StartTime",
+				   QVariantList{"Date", event.value("date")},
+				   QVariantList{"Time", event.value("time")}
+		});
+		event_lst.insert(event_lst.count(),
+			QVariantList{"Official",
+				QVariantMap{{"type", "director"}},
+				QVariantList{"Person",
+					QVariantList{"Name",
+						QVariantList{"Family", event.value("director").toString().section(' ', 1, 1)},
+						QVariantList{"Given", event.value("director").toString().section(' ', 0, 0)},
+					}
+				},
+			}
+		);
+		event_lst.insert(event_lst.count(),
+			QVariantList{"Official",
+				QVariantMap{{"type", "mainReferee"}},
+				QVariantList{"Person",
+					QVariantList{"Name",
+						QVariantList{"Family", event.value("mainReferee").toString().section(' ', 1, 1)},
+						QVariantList{"Given", event.value("mainReferee").toString().section(' ', 0, 0)},
+					}
+				},
+			}
+		);
+		result_list.insert(result_list.count(), event_lst);
+	}
+
+	for(int i=0; i<tt1.rowCount(); i++) {
+		QVariantList class_result{"ClassResult"};
+		const qf::core::utils::TreeTableRow row1 = tt1.row(i);
+		class_result.insert(class_result.count(),
+			QVariantList{"Class",
+				QVariantList{"Name", row1.value("classes.name") },
+			}
+		);
+		class_result.insert(class_result.count(),
+			QVariantList{"Course",
+				QVariantList{"Length", row1.value("courses.length") },
+				QVariantList{"Climb", row1.value("courses.climb") },
+			}
+		);
+		qf::core::utils::TreeTable tt2 = row1.table();
+		int pos = 0;
+		for(int j=0; j<tt2.rowCount(); j++) {
+			const qf::core::utils::TreeTableRow row2 = tt2.row(j);
+			pos++;
+			QVariantList person_result{"PersonResult"};
+			person_result.insert(person_result.count(),
+				 QVariantList{"Person",
+					 QVariantList{"Id", QVariantMap{{"type", "CZE"}}, row2.value("competitors.registration")},
+					 QVariantList{"Name",
+						QVariantList{"Family", row2.value("competitors.lastName")},
+						QVariantList{"Given", row2.value("competitors.firstName")},
+					 }
+				 }
+			);
+
+			QVariantList result{"Result"};
+			int stime = row2.value("startTimeMs").toInt() / 1000;
+			int ftime = row2.value("finishTimeMs").toInt() / 1000;
+			int time = row2.value("timeMs").toInt() / 1000;
+			if(ftime && time)
+				stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
+			result.insert(result.count(), QVariantList{"StartTime", stage_start_date_time.addMSecs(stime).toString(Qt::ISODate)});
+			result.insert(result.count(), QVariantList{"FinishTime", stage_start_date_time.addMSecs(ftime).toString(Qt::ISODate)});
+			result.insert(result.count(), QVariantList{"Time", time});
+
+			QString competitor_status = "OK";
+			if (!ftime) {
+				 competitor_status = "DidNotFinish";
+			}
+			else if (row2.value("disqualified").toBool()) {
+				if (row2.value("misPunch").toBool())
+					competitor_status = "MissingPunch";
+				else
+					competitor_status = "Disqualified";
+			}
+			else if (row2.value("notCompeting").toBool())
+				competitor_status = "Inactive";
+			if (competitor_status == QStringLiteral("Ok"))
+				result.insert(result.count(), QVariantList{"Position", row2.value("npos")});
+			result.insert(result.count(), QVariantList{"Status", competitor_status});
+
+			qfs::QueryBuilder qb;
+			qb.select2("runlaps", "*")
+				.from("runlaps")
+				.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
+				.where("runlaps.code!=999") // omit finish lap
+				.orderBy("runlaps.position");
+
+			qfs::Query q;
+			q.exec(qb.toString());
+			while(q.next()) {
+				//console.info(k, reportModel.value(k, "position"));
+				result.insert(result.count(),
+					QVariantList{"SplitTime",
+						QVariantList{"ControlCode", q.value("code") },
+						QVariantList{"Time", q.value("stpTimeMs").toInt() / 1000 },
+					}
+				);
+			}
+
+			person_result.insert(person_result.count(), result);
+			class_result.insert(class_result.count(), person_result);
+		}
+		result_list.insert(result_list.count(), class_result);
+	}
+
+	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
+	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
+	QString str = qf::core::utils::HtmlUtils::fromXmlList(result_list, opts);
+	f.write(str.toUtf8());
+	qfInfo() << "exported:" << file_name;
+	return true;
 }
 
 static QString make_width(const QString &s, int width)

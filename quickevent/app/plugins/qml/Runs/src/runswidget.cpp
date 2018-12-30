@@ -182,6 +182,11 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 
 
 	qfw::Action *a_export_results = a_export->addMenuInto("results", tr("Results"));
+	a_export_results->addActionInto("iofxml23", tr("IOF XML &2.3"));
+
+	qfw::Action *a_export_results_iofxml_30 = a_export_results->addActionInto("iofxml30", tr("IOF XML &3.0"));
+	connect(a_export_results_iofxml_30, &qfw::Action::triggered, this, &RunsWidget::export_results_iofxml30_stage);
+
 	qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));
 	qfw::Action *a_export_results_csos_stage = a_export_results_csos->addActionInto("stage", tr("Current stage"));
 	connect(a_export_results_csos_stage, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_stage);
@@ -437,6 +442,16 @@ QString RunsWidget::getSaveFileName(const QString &file_name, int stage_id)
 			fn += ext;
 	}
 	return fn;
+}
+
+void RunsWidget::export_results_iofxml30_stage()
+{
+	int stage_id = selectedStageId();
+	QString fn = getSaveFileName("results-iof-3.0.xml", stage_id);
+	if(fn.isEmpty())
+		return;
+
+	runsPlugin()->exportResultsIofXml30Stage(stage_id, fn);
 }
 
 void RunsWidget::export_results_csos_stage()
