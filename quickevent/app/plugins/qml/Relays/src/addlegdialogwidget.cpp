@@ -12,6 +12,8 @@
 #include <qf/core/assert.h>
 #include <qf/core/model/sqltablemodel.h>
 
+#include <QTimer>
+
 static Competitors::CompetitorsPlugin* competitorsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -29,6 +31,8 @@ AddLegDialogWidget::AddLegDialogWidget(QWidget *parent)
 	setPersistentSettingsId(objectName());
 	ui->tblCompetitors->setPersistentSettingsId(ui->tblCompetitors->objectName());
 	ui->tblRegistrations->setPersistentSettingsId(ui->tblRegistrations->objectName());
+
+	m_defaultStatusText = ui->lblStatus->text();
 
 	qf::core::model::SqlTableModel *competitors_model = new qf::core::model::SqlTableModel(this);
 	//competitors_model->addColumn("relays.club", tr("Club"));
@@ -117,6 +121,9 @@ void AddLegDialogWidget::onCompetitorSelected()
 			   + ", isRunning=(1=1)" // TRUE is not accepted by SQLite
 			   + " WHERE id=" + QString::number(curr_run_id), qf::core::Exception::Throw);
 	}
+	updateLegAddedStatus(tr("Runner %1 was assigned to leg %2")
+						 .arg(row.value("competitorName").toString())
+						 .arg(free_leg));
 	emit legAdded();
 }
 
@@ -138,7 +145,27 @@ void AddLegDialogWidget::onRegistrationSelected()
 	qf::core::sql::Query q;
 	q.exec("UPDATE runs SET relayId=" + QString::number(relayId()) + ", leg=" + QString::number(free_leg)
 		   + " WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
+
+	updateLegAddedStatus(tr("Runner %1 was assigned to leg %2")
+						 .arg(row.value("competitorName").toString())
+						 .arg(free_leg));
 	emit legAdded();
+}
+
+void AddLegDialogWidget::updateLegAddedStatus(const QString &msg)
+{
+	if(!m_updateStatusTimer) {
+		m_updateStatusTimer = new QTimer(this);
+		m_updateStatusTimer->setSingleShot(true);
+		m_updateStatusTimer->setInterval(3000);
+		connect(m_updateStatusTimer, &QTimer::timeout, [this]() {
+			ui->lblStatus->setText(m_defaultStatusText);
+			ui->lblStatus->setStyleSheet(QString());
+		});
+	}
+	ui->lblStatus->setText(msg);
+	ui->lblStatus->setStyleSheet(QStringLiteral("color: white; background: green"));
+	m_updateStatusTimer->start();
 }
 
 int AddLegDialogWidget::findFreeLeg()
