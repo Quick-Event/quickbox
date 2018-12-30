@@ -21,6 +21,7 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 	ui->lstOutputFormat->addItem(tr("HTML multi page"), static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti));
 	ui->lstOutputFormat->addItem(tr("CSOS fixed column sizes"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSOS));
 	ui->lstOutputFormat->addItem(tr("CSV"), static_cast<int>(ResultsExporterSettings::OutputFormat::CSV));
+	ui->lstOutputFormat->addItem(tr("IOF-XML 3.0"), static_cast<int>(ResultsExporterSettings::OutputFormat::IofXml3));
 	ui->lstOutputFormat->setCurrentIndex(-1);
 
 	ResultsExporter *svc = service();

@@ -75,6 +75,12 @@ bool ResultsExporter::exportResults()
 		runsPlugin()->exportResultsCsosStage(current_stage, fn);
 		return true;
 	}
+	if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::IofXml3)) {
+		int current_stage = eventPlugin()->currentStageId();
+		QString fn = ss.exportDir() + "/results-csos.txt";
+		runsPlugin()->exportResultsIofXml30Stage(current_stage, fn);
+		return true;
+	}
 	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti)) {
 		quickevent::core::exporters::StageResultsHtmlExporter exp;
 		exp.setOutDir(ss.exportDir());

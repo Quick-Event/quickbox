@@ -11,7 +11,7 @@ class ResultsExporterSettings : public ServiceSettings
 	using Super = ServiceSettings;
 
 public:
-	enum class OutputFormat {HtmlMulti = 0, CSOS, CSV, COUNT};
+	enum class OutputFormat {HtmlMulti = 0, CSOS, CSV, IofXml3, COUNT};
 
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
