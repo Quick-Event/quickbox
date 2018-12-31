@@ -10,7 +10,7 @@ namespace CardReader {
 CardCheckerClassicCpp::CardCheckerClassicCpp(QObject *parent)
 	: Super(parent)
 {
-	setCaption(tr("Classic C++ (testing)"));
+	setCaption(tr("Classic race"));
 }
 
 quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickevent::core::si::ReadCard &read_card)
