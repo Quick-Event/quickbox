@@ -73,6 +73,20 @@ int StartSlotItem::startOffset()
 	return dt.startOffset();
 }
 
+bool StartSlotItem::isIgnoreClassClashCheck() const
+{
+	return data().isIgnoreClassClashCheck();
+}
+
+void StartSlotItem::setIgnoreClassClashCheck(bool b)
+{
+	auto dt = data();
+	dt.setIgnoreClassClashCheck(b);
+	setData(dt);
+	updateGeometry();
+	ganttItem()->checkClassClash();
+}
+/*
 void StartSlotItem::setLocked(bool b)
 {
 	auto dt = data();
@@ -86,7 +100,7 @@ bool StartSlotItem::isLocked() const
 {
 	return data().isLocked();
 }
-
+*/
 void StartSlotItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	if(m_dragIn) {
@@ -126,9 +140,11 @@ void StartSlotItem::updateGeometry()
 	for (int i = 0; i < classItemCount(); ++i) {
 		ClassItem *it = classItemAt(i);
 		qfDebug() << i << it;
+		/*
 		if(isLocked()) {
 			pos_x = minToPx(it->data().startTimeMin());
 		}
+		*/
 		it->setPos(pos_x, 0);
 		it->updateGeometry();
 		//it->setZValue(it->isLocked()? 1: 0);
@@ -141,12 +157,13 @@ void StartSlotItem::updateGeometry()
 	//qfInfo() << r.left() << r.top() << r.width() << r.height();
 	setRect(r);
 	m_header->updateGeometry();
-
+	/*
 	setAcceptDrops(!isLocked());
 	for (int i = 0; i < classItemCount(); ++i) {
 		ClassItem *it = classItemAt(i);
 		it->setAcceptDrops(!isLocked());
 	}
+	*/
 }
 
 void StartSlotItem::setClassAreaWidth(int px)

@@ -32,8 +32,8 @@ public:
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE
 	{
 		if(event->button() == Qt::LeftButton) {
-			m_startSlotItem->setLocked(!m_startSlotItem->isLocked());
-			update();
+			m_startSlotItem->setIgnoreClassClashCheck(!m_startSlotItem->isIgnoreClassClashCheck());
+			parentItem()->update();
 			event->accept();
 		}
 	}
@@ -47,14 +47,15 @@ public:
 		QRectF r1(0, 0, r.width() / 3, r.height() / 2);
 		QRectF r2(0, 0, r.width() * 2 / 3, r.height() / 2);
 		QColor c;
-		if(m_startSlotItem->isLocked()) {
+		bool is_ignore_class_check = m_startSlotItem->isIgnoreClassClashCheck();
+		if(is_ignore_class_check) {
 			r1.moveLeft(r.width() / 3);
 			r2.moveLeft(r.width() / 6);
-			c = Qt::red;
+			c = Qt::blue;
 		}
 		else {
 			r1.moveLeft(r.width() / 2);
-			c = Qt::blue;
+			c = Qt::darkGreen;
 		}
 		r1.moveTop(r.height() / 8);
 		r2.moveTop(r.height() / 2);
@@ -159,9 +160,9 @@ void StartSlotHeader::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 	QMenu menu;
 	QAction *a_append_start_slot = menu.addAction(tr("Append start slot"));
 	QAction *a_set_start = menu.addAction(tr("Set slot start offset"));
-	QAction *a_locked = menu.addAction(tr("Locked"));
-	a_locked->setChecked(dt.isLocked());
-	a_locked->setCheckable(true);
+	//QAction *a_locked = menu.addAction(tr("Locked"));
+	//a_locked->setChecked(dt.isLocked());
+	//a_locked->setCheckable(true);
 	QAction *a_clash = menu.addAction(tr("Ignore class clash check"));
 	a_clash->setCheckable(true);
 	a_clash->setChecked(dt.isIgnoreClassClashCheck());
@@ -192,10 +193,10 @@ void StartSlotHeader::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		update();
 		startSlotItem()->ganttItem()->checkClassClash();
 	}
-	else if(a == a_locked) {
-		startSlotItem()->setLocked(!startSlotItem()->isLocked());
-		update();
-	}
+	//else if(a == a_locked) {
+	//	startSlotItem()->setLocked(!startSlotItem()->isLocked());
+	//	update();
+	//}
 }
 
 StartSlotItem *StartSlotHeader::startSlotItem()

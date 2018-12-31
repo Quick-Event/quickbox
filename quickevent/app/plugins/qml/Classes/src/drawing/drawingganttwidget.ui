@@ -38,6 +38,11 @@
     <string>&amp;Save</string>
    </property>
   </action>
+  <action name="actFind">
+   <property name="text">
+    <string>&amp;Find</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

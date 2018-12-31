@@ -2,9 +2,13 @@
 #include "ganttscene.h"
 #include "startslotitem.h"
 #include "ganttitem.h"
+#include "drawingganttwidget.h"
+
+#include "../classdefwidget.h"
 
 #include <qf/core/sql/query.h>
 #include <qf/core/assert.h>
+#include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <QDrag>
 #include <QJsonDocument>
@@ -14,8 +18,17 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QWidget>
 #include <QStyleOptionGraphicsItem>
+#include <QMenu>
+#include <QDialogButtonBox>
 
-using namespace drawing;
+namespace qfs = qf::core::sql;
+namespace qfw = qf::qmlwidgets;
+namespace qff = qf::qmlwidgets::framework;
+namespace qfd = qf::qmlwidgets::dialogs;
+namespace qfc = qf::core;
+namespace qfm = qf::core::model;
+
+namespace drawing {
 
 ClassData::ClassData(const qf::core::sql::Query &q)
 {
@@ -66,6 +79,7 @@ ClassItem::ClassItem(QGraphicsItem *parent)
 	setAcceptDrops(true);
 
 	setFlag(QGraphicsItem::ItemClipsChildrenToShape, true);
+	setFlag(QGraphicsItem::ItemIsSelectable, true);
 }
 
 const ClassData &ClassItem::data() const
@@ -136,6 +150,18 @@ void ClassItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 		//QColor c = (i == 0)? c_first: c_runner;
 		painter->fillRect(r1, c_runner);
 		painter->drawRect(r1);
+	}
+	if(isSelected()) {
+		painter->save();
+		qreal w = r.height() / 15;
+		QPen p;
+		p.setColor(QColor(Qt::blue).lighter());
+		p.setWidthF(w);
+		painter->setPen(p);
+		w /= 2;
+		QRectF r2 = r.adjusted(w, w, -w, -w);
+		painter->drawRect(r2);
+		painter->restore();
 	}
 	if(clashingClasses().count()) {
 		painter->save();
@@ -302,8 +328,10 @@ ClassItem::ClashType ClassItem::clashWith(ClassItem *other)
 
 void ClassItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-	Q_UNUSED(event)
-	setCursor(Qt::ClosedHandCursor);
+	if(event->button() == Qt::LeftButton) {
+		scene()->clearSelection();
+		setSelected(true);
+	}
 }
 
 void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -312,6 +340,7 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		return;
 	}
 	qfLogFuncFrame();
+	setCursor(Qt::ClosedHandCursor);
 	QDrag *drag = new QDrag(event->widget());
 	QMimeData *mime = new QMimeData;
 	drag->setMimeData(mime);
@@ -336,11 +365,11 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		QStyleOptionGraphicsItem opt;
 		paint(&painter, &opt, 0);
 		{
-			m_classText->paint(&painter, &opt, 0);
+			m_classText->paint(&painter, &opt, nullptr);
 			painter.translate(m_courseText->pos());
-			m_courseText->paint(&painter, &opt, 0);
+			m_courseText->paint(&painter, &opt, nullptr);
 			painter.translate(m_classdefsText->pos() - m_courseText->pos());
-			m_classdefsText->paint(&painter, &opt, 0);
+			m_classdefsText->paint(&painter, &opt, nullptr);
 		}
 		painter.end();
 		//pixmap.setMask(pixmap.createHeuristicMask());
@@ -412,5 +441,34 @@ void ClassItem::dropEvent(QGraphicsSceneDragDropEvent *event)
 	update();
 }
 
+void ClassItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+	QMenu menu;
+	menu.addAction("Edit class");
+	QAction *a = menu.exec(event->screenPos());
+	if(a) {
+		drawing::DrawingGanttWidget *parent_w = qfc::Utils::findParent<drawing::DrawingGanttWidget*>(scene());
+		auto *w = new ClassDefWidget();
+		w->setWindowTitle(tr("Edit Competitor"));
+		qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, parent_w);
+		dlg.setDefaultButton(QDialogButtonBox::Save);
+		dlg.setCentralWidget(w);
+		w->load(data().id(), qfm::DataDocument::ModeEdit);
+		bool ok = dlg.exec();
+		if(ok) {
+			//qfInfo() << "OK";
+			qf::core::model::DataDocument *doc = w->dataDocument();
+			ClassData dt = data();
+			dt.setStartTimeMin(doc->value("startTimeMin").toInt());
+			dt.setStartIntervalMin(doc->value("startIntervalMin").toInt());
+			dt.setVacantsBefore(doc->value("vacantsBefore").toInt());
+			dt.setVacantEvery(doc->value("vacantEvery").toInt());
+			dt.setVacantsAfter(doc->value("vacantsAfter").toInt());
+			dt.setMapCount(doc->value("mapCount").toInt());
+			setData(dt);
+			startSlotItem()->updateGeometry();
+		}
+	}
+}
 
-
+}
