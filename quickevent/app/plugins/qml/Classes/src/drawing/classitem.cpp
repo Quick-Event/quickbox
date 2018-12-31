@@ -249,6 +249,7 @@ void ClassItem::updateToolTip()
 	tool_tip += tr("first code <b>%1</b>, course %2 - %3<br/>").arg(dt.firstCode()).arg(dt.courseId()).arg(dt.courseName());
 	tool_tip += tr("vacants before: %1, every: %2, after: %3<br/>").arg(dt.vacantsBefore()).arg(dt.vacantEvery()).arg(dt.vacantsAfter());
 	tool_tip += tr("class start: %1, interval: %2, duration: %3, end: %4<br/>").arg(dt.startTimeMin()).arg(dt.startIntervalMin()).arg(durationMin()).arg(dt.startTimeMin() + durationMin());
+	tool_tip += tr("map count: %1").arg(dt.mapCount());
 	//if(dt.minStartTimeSec() != ClassData::INVALID_START_TIME_SEC || dt.maxStartTimeSec() != ClassData::INVALID_START_TIME_SEC) {
 	//	tool_tip += tr("competitors start first: %1, last: %2<br/>").arg(dt.minStartTimeSec() / 60).arg(dt.maxStartTimeSec() / 60);
 	//}
