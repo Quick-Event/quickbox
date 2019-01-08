@@ -21,7 +21,8 @@ public:
 	QF_VARIANTMAP_FIELD2(int, c, setC, haracterPrinterLineLength, 41)
 	QF_VARIANTMAP_FIELD2(bool, is, set, CharacterPrinterGenerateControlCodes, true)
 	QF_VARIANTMAP_FIELD(int, c, setC, haracterPrinterType)
-	QF_VARIANTMAP_FIELD(QString, c, setC, haracterPrinterAddress)
+	QF_VARIANTMAP_FIELD(QString, c, setC, haracterPrinterUrl)
+	QF_VARIANTMAP_FIELD(bool, is, set, CharacterPrinterUdpProtocol)
 	QF_VARIANTMAP_FIELD(QString, c, setC, haracterPrinterCodec)
 public:
 	explicit ReceiptsPrinterOptions(const QVariantMap &o = QVariantMap());

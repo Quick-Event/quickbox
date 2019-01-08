@@ -84,7 +84,10 @@ void Service::saveSettings()
 void Service::setSettings(const QVariantMap &s)
 {
 	//qfInfo() << __FUNCTION__ << settingsGroup() << s;
-	m_settings = s;
+	if(!(m_settings == s)) {
+		m_settings = s;
+		emit settingsChanged();
+	}
 }
 
 void Service::run()

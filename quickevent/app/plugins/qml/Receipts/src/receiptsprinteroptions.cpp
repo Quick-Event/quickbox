@@ -26,7 +26,7 @@ QString ReceiptsPrinterOptions::printerCaption() const
 				ret += characterPrinterDirectory();
 				break;
 			case CharacterPrinteType::Network:
-				ret += characterPrinterAddress();
+				ret += characterPrinterUrl();
 				break;
 		}
 	}

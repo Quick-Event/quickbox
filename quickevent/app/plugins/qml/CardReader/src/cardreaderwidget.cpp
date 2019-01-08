@@ -534,6 +534,13 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 		else
 			processSICard(card);
 	}
+	else if(tt == siut::SiTask::Type::Punch) {
+		siut::SIPunch punch(result.toMap());
+		if(punch.isEmpty())
+			qfError() << "Empty punch received";
+		else
+			processSIPunch(punch);
+	}
 }
 
 /*

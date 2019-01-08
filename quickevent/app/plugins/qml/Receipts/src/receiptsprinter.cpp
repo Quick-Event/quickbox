@@ -13,6 +13,7 @@
 #include <QPrinterInfo>
 #include <QTcpSocket>
 #include <QTextCodec>
+#include <QUdpSocket>
 
 //#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/fileutils.h>
@@ -141,31 +142,38 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 				break;
 			}
 			case ReceiptsPrinterOptions::CharacterPrinteType::Network: {
-				if (!printer_opts.characterPrinterAddress().isEmpty()) {
-					QTcpSocket socket;
-					QString host = printer_opts.characterPrinterAddress().section(':', 0, 0);
-					int port = printer_opts.characterPrinterAddress().section(':', 1, 1).toInt();
-					if(port == 0)
-					    port = 9100;
-					socket.connectToHost(
-							host,
-							port,
-							QIODevice::WriteOnly);
-					if (socket.waitForConnected(1000)) {
+				if (!printer_opts.characterPrinterUrl().isEmpty()) {
+					QString host = printer_opts.characterPrinterUrl().section(':', 0, 0);
+					QHostAddress host_addr(host);
+					int port = printer_opts.characterPrinterUrl().section(':', 1, 1).toInt();
+					if(printer_opts.isCharacterPrinterUdpProtocol()) {
+						QByteArray dgram;
 						for(const QByteArray& line : data_lines) {
-							socket.write(line);
-							socket.write("\n");
+							dgram += line;
+							dgram += '\n';
 						}
-						socket.disconnectFromHost();
-						if (!socket.waitForDisconnected(1000)) { // waiting till all data are sent
-							qfError() << "Error while closing the connection to printer: "
-									<< socket.error();
-						}
+						QUdpSocket socket;
+						socket.writeDatagram(dgram, host_addr, port);
 					}
 					else {
-						qfError() << "Cannot open tcp connection to address "
-								<< host << " on port " << port
-								<< " reason: " << socket.error();
+						QTcpSocket socket;
+						socket.connectToHost(host_addr, port, QIODevice::WriteOnly);
+						if (socket.waitForConnected(1000)) {
+							for(const QByteArray& line : data_lines) {
+								socket.write(line);
+								socket.write("\n");
+							}
+							socket.disconnectFromHost();
+							if (!socket.waitForDisconnected(1000)) { // waiting till all data are sent
+								qfError() << "Error while closing the connection to printer: "
+										<< socket.error();
+							}
+						}
+						else {
+							qfError() << "Cannot open tcp connection to address "
+									<< host << " on port " << port
+									<< " reason: " << socket.error();
+						}
 					}
 				}
 				break;

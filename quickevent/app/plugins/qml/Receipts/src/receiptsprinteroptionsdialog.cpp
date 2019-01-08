@@ -20,7 +20,8 @@ ReceiptsPrinterOptionsDialog::ReceiptsPrinterOptionsDialog(QWidget *parent) :
 	});
 	connect(ui->btCharacterPrinterLPT, &QPushButton::toggled, ui->cbxCharacterPrinterDevice, &QWidget::setEnabled);
 	connect(ui->btCharacterPrinterDirectory, &QPushButton::toggled, ui->edCharacterPrinterDirectory, &QWidget::setEnabled);
-	connect(ui->btCharacterPrinterNetwork, &QPushButton::toggled, ui->edCharacterPrinterAddress, &QWidget::setEnabled);
+	connect(ui->btCharacterPrinterNetwork, &QPushButton::toggled, ui->edCharacterPrinterUrl, &QWidget::setEnabled);
+	connect(ui->btCharacterPrinterNetwork, &QPushButton::toggled, ui->chkCharacterPrinterUdpProtocol, &QWidget::setEnabled);
 	connect(
 		ui->cbxCharacterPrinterModel,
 		static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -63,7 +64,8 @@ void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOption
 		ui->cbxCharacterPrinterModel->setCurrentText(opts.characterPrinterModel());
 		ui->edCharacterPrinterLineLength->setValue(opts.characterPrinterLineLength());
 		ui->chkCharacterPrinterGenerateControlCodes->setChecked(opts.isCharacterPrinterGenerateControlCodes());
-		ui->edCharacterPrinterAddress->setText(opts.characterPrinterAddress());
+		ui->edCharacterPrinterUrl->setText(opts.characterPrinterUrl());
+		ui->chkCharacterPrinterUdpProtocol->setChecked(opts.isCharacterPrinterUdpProtocol());
 		ui->cbxCharacterPrinterCodec->setCurrentText(opts.characterPrinterCodec());
 		switch(opts.characterPrinterType()) {
 			case ReceiptsPrinterOptions::CharacterPrinteType::LPT:
@@ -93,7 +95,8 @@ ReceiptsPrinterOptions ReceiptsPrinterOptionsDialog::printerOptions()
 		ret.setCharacterPrinterModel(ui->cbxCharacterPrinterModel->currentText());
 		ret.setCharacterPrinterLineLength(ui->edCharacterPrinterLineLength->value());
 		ret.setCharacterPrinterGenerateControlCodes(ui->chkCharacterPrinterGenerateControlCodes->isChecked());
-		ret.setCharacterPrinterAddress(ui->edCharacterPrinterAddress->text());
+		ret.setCharacterPrinterUrl(ui->edCharacterPrinterUrl->text());
+		ret.setCharacterPrinterUdpProtocol(ui->chkCharacterPrinterUdpProtocol->isChecked());
 		ret.setCharacterPrinterCodec(ui->cbxCharacterPrinterCodec->currentText());
 		if(ui->btCharacterPrinterLPT->isChecked()) {
 			ret.setCharacterPrinterType(ReceiptsPrinterOptions::CharacterPrinteType::LPT);

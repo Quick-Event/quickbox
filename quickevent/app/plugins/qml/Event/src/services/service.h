@@ -48,6 +48,7 @@ public:
 	ServiceSettings settings() const {return ServiceSettings(m_settings);}
 	void saveSettings();
 	void setSettings(const QVariantMap &s);
+	Q_SIGNAL void settingsChanged();
 
 	void showDetail(QWidget *parent);
 

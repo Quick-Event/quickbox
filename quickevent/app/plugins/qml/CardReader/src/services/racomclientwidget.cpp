@@ -20,7 +20,10 @@ RacomClientWidget::RacomClientWidget(QWidget *parent)
 	RacomClient *svc = service();
 	if(svc) {
 		RacomClientSettings ss = svc->settings();
-		ui->edPort->setValue(ss.port());
+		ui->chkListenRawData->setChecked(ss.isListenRawData());
+		ui->edRawDataListenPort->setValue(ss.rawDataListenPort());
+		ui->chkListenSirxdData->setChecked(ss.isListenSirxdData());
+		ui->edSirxdDataListenPort->setValue(ss.sirxdDataListenPort());
 	}
 }
 
@@ -58,7 +61,10 @@ void RacomClientWidget::saveSettings()
 	RacomClient *svc = service();
 	if(svc) {
 		RacomClientSettings ss = svc->settings();
-		ss.setPort(ui->edPort->value());
+		ss.setListenRawData(ui->chkListenRawData->isChecked());
+		ss.setRawDataListenPort(ui->edRawDataListenPort->value());
+		ss.setListenSirxdData(ui->chkListenSirxdData->isChecked());
+		ss.setSirxdDataListenPort(ui->edSirxdDataListenPort->value());
 		svc->setSettings(ss);
 	}
 }

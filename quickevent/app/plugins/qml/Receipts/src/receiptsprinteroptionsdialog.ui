@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>557</width>
-    <height>449</height>
+    <width>644</width>
+    <height>486</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,7 +52,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pgGraphicsPrinter">
       <layout class="QFormLayout" name="formLayout_2">
@@ -62,16 +62,44 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pgCharacterPrinter">
-      <layout class="QFormLayout" name="formLayout_4">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::ExpandingFieldsGrow</enum>
-       </property>
-       <property name="labelAlignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="formAlignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Text encoding</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QComboBox" name="cbxCharacterPrinterCodec">
+         <item>
+          <property name="text">
+           <string>ASCII7</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>cp1250</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>iso8859-2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>utf8</string>
+          </property>
+         </item>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QRadioButton" name="btCharacterPrinterLPT">
          <property name="enabled">
@@ -82,6 +110,20 @@
          </property>
          <property name="checked">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QRadioButton" name="btCharacterPrinterNetwork">
+         <property name="text">
+          <string>Network address</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="QCheckBox" name="chkCharacterPrinterGenerateControlCodes">
+         <property name="text">
+          <string>Generate printer control codes (escape sequences)</string>
          </property>
         </widget>
        </item>
@@ -120,81 +162,7 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QRadioButton" name="btCharacterPrinterDirectory">
-         <property name="text">
-          <string>Directory</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="edCharacterPrinterDirectory">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QRadioButton" name="btCharacterPrinterNetwork">
-         <property name="text">
-          <string>Network address</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="edCharacterPrinterAddress">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QLabel" name="label">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Line length</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QSpinBox" name="edCharacterPrinterLineLength">
-         <property name="suffix">
-          <string> characters</string>
-         </property>
-         <property name="maximum">
-          <number>999</number>
-         </property>
-         <property name="value">
-          <number>41</number>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <widget class="QCheckBox" name="chkCharacterPrinterGenerateControlCodes">
-         <property name="text">
-          <string>Generate printer control codes (escape sequences)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_3">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Printer</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
+       <item row="4" column="1">
         <widget class="QComboBox" name="cbxCharacterPrinterModel">
          <item>
           <property name="text">
@@ -208,8 +176,15 @@
          </item>
         </widget>
        </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="label_4">
+       <item row="1" column="0">
+        <widget class="QRadioButton" name="btCharacterPrinterDirectory">
+         <property name="text">
+          <string>Directory</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="label">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -217,32 +192,55 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Text encoding</string>
+          <string>Line length</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="1">
-        <widget class="QComboBox" name="cbxCharacterPrinterCodec">
-         <item>
-          <property name="text">
-           <string>ASCII7</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>cp1250</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>iso8859-2</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>utf8</string>
-          </property>
-         </item>
+       <item row="6" column="1">
+        <widget class="QSpinBox" name="edCharacterPrinterLineLength">
+         <property name="suffix">
+          <string> characters</string>
+         </property>
+         <property name="maximum">
+          <number>999</number>
+         </property>
+         <property name="value">
+          <number>41</number>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Printer</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="edCharacterPrinterUrl">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QCheckBox" name="chkCharacterPrinterUdpProtocol">
+         <property name="text">
+          <string>UDP</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QLineEdit" name="edCharacterPrinterDirectory">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
       </layout>
