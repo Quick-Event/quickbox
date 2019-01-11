@@ -152,6 +152,7 @@ void ReceiptsPrinter::printReceipt(const QString &report_file_name, const QVaria
 							dgram += line;
 							dgram += '\n';
 						}
+						dgram += "\n\n\n"; // v Racomu chteli pridat 2 radky, aby jim to vyjelo vic
 						QUdpSocket socket;
 						socket.writeDatagram(dgram, host_addr, port);
 					}

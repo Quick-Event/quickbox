@@ -52,7 +52,7 @@ RacomClientSirxdConnection::RacomClientSirxdConnection(QTcpSocket *socket, QObje
 {
 	m_socket->setParent(this);
 	connect(socket, &QAbstractSocket::disconnected, this, &QObject::deleteLater);
-	connect(socket, &QAbstractSocket::disconnected, this, &RacomClientSirxdConnection::onReadyRead);
+	connect(socket, &QAbstractSocket::readyRead, this, &RacomClientSirxdConnection::onReadyRead);
 }
 
 static bool parse_time(const QByteArray &ba, int &secs, int &msecs)
