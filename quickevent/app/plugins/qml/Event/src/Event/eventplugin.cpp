@@ -95,6 +95,7 @@ const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
 const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
+const char* EventPlugin::DBEVENT_STAGE_START_CHANGED = "stageStartChanged";
 
 static QString singleFileStorageDir()
 {
@@ -133,6 +134,7 @@ EventPlugin::EventPlugin(QObject *parent)
 	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
 		setEventOpen(!event_name.isEmpty());
 	});
+	connect(this, &Event::EventPlugin::dbEventNotify, this, &Event::EventPlugin::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void EventPlugin::initEventConfig()
@@ -260,6 +262,7 @@ StageData EventPlugin::stageData(int stage_id)
 
 void EventPlugin::clearStageDataCache()
 {
+	qfInfo() << "stages data cache cleared";
 	m_stageCache.clear();
 }
 
@@ -398,7 +401,7 @@ void EventPlugin::editStage()
 	dlg.setCentralWidget(w);
 	w->load(stage_id);
 	if(dlg.exec()) {
-		clearStageDataCache();
+		emitDbEvent(Event::EventPlugin::DBEVENT_STAGE_START_CHANGED, stage_id, true);
 	}
 }
 
@@ -498,6 +501,16 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 		else {
 			//qfDebug() << "self db notify";
 		}
+	}
+}
+
+void EventPlugin::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
+{
+	Q_UNUSED(connection_id)
+	Q_UNUSED(data)
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_STAGE_START_CHANGED)) {
+		//int stage_id = data.toInt();
+		clearStageDataCache();
 	}
 }
 

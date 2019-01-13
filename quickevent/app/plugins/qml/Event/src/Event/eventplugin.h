@@ -33,6 +33,7 @@ private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
 	enum class ConnectionType : int {SqlServer = 0, SingleFile};
+public:
 	EventPlugin(QObject *parent = nullptr);
 
 	QF_PROPERTY_BOOL_IMPL(e, E, ventOpen)
@@ -44,6 +45,7 @@ public:
 	static const char* DBEVENT_CARD_CHECKED;
 	static const char* DBEVENT_PUNCH_RECEIVED;
 	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
+	static const char* DBEVENT_STAGE_START_CHANGED;
 
 	Q_INVOKABLE void initEventConfig();
 	Event::EventConfig* eventConfig(bool reload = false);
@@ -108,6 +110,8 @@ private:
 	Q_SLOT void saveCurrentStageId(int current_stage);
 	Q_SLOT void editStage();
 	Q_SLOT void onDbEvent(const QString & name, QSqlDriver::NotificationSource source, const QVariant & payload);
+
+	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 
 	//bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
 	void repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn);
