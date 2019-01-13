@@ -138,8 +138,8 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 				class_start_interval_min = q.value(1).toInt();
 			}
 		}
-		ui->lblClassStart->setText(class_start_time_min > 0? QString::number(class_start_time_min): "---");
-		ui->lblClassInterval->setText(class_start_interval_min > 0? QString::number(class_start_interval_min): "---");
+		ui->lblClassStart->setText(class_start_time_min >= 0? QString::number(class_start_time_min): "---");
+		ui->lblClassInterval->setText(class_start_interval_min >= 0? QString::number(class_start_interval_min): "---");
 	}
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
