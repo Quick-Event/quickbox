@@ -12,17 +12,21 @@
 <context>
     <name>CorePlugin</name>
     <message>
-        <location filename="src/coreplugin.cpp" line="62"/>
+        <location filename="src/coreplugin.cpp" line="65"/>
         <source>About Quick Event</source>
         <translation>O aplikaci Quick Event</translation>
     </message>
     <message>
-        <location filename="src/coreplugin.cpp" line="63"/>
-        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;build: %2 %3</source>
-        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;verze: %1&lt;br/&gt;sestavení: %2 %3</translation>
+        <location filename="src/coreplugin.cpp" line="66"/>
+        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/coreplugin.cpp" line="75"/>
+        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;build: %2 %3</source>
+        <translation type="vanished">&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;verze: %1&lt;br/&gt;sestavení: %2 %3</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="81"/>
         <source>About Qt</source>
         <translation>O knihovně Qt</translation>
     </message>
@@ -55,57 +59,57 @@
         <translation>O knihovně &amp;Qt</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="130"/>
+        <location filename="qml/main.qml" line="126"/>
         <source>&amp;File</source>
         <translation>Soubo&amp;r</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="131"/>
+        <location filename="qml/main.qml" line="127"/>
         <source>&amp;Import</source>
         <translation>&amp;Import</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="137"/>
+        <location filename="qml/main.qml" line="133"/>
         <source>&amp;Tools</source>
         <translation>&amp;Nástroje</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="144"/>
+        <location filename="qml/main.qml" line="140"/>
         <source>&amp;Locale</source>
         <translation>&amp;Lokalizace</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="145"/>
+        <location filename="qml/main.qml" line="141"/>
         <source>&amp;Language</source>
         <translation>&amp;Jazyk</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="147"/>
+        <location filename="qml/main.qml" line="143"/>
         <source>System</source>
         <translation>Systémový</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="148"/>
+        <location filename="qml/main.qml" line="144"/>
         <source>Czech</source>
         <translation>Čeština</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="149"/>
+        <location filename="qml/main.qml" line="145"/>
         <source>English</source>
         <translation>Angličtina</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="162"/>
+        <location filename="qml/main.qml" line="158"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="163"/>
+        <location filename="qml/main.qml" line="159"/>
         <source>&amp;Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="166"/>
+        <location filename="qml/main.qml" line="162"/>
         <source>&amp;Help</source>
         <translation>Ná&amp;pověda</translation>
     </message>

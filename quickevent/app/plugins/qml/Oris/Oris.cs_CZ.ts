@@ -39,13 +39,13 @@
         <source>Search in events ...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>TRAIL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OrisImporter</name>
-    <message>
-        <source>JSON document parse error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Cannot find Oris import ID.</source>
         <translation type="unfinished">Nelze najít Oris import ID.</translation>
@@ -77,6 +77,14 @@
     <message>
         <source>Importing clubs</source>
         <translation>Importuji kluby</translation>
+    </message>
+    <message>
+        <source>JSON document parse error: %1 at: %2 near: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import finished successfully.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -125,6 +133,10 @@
         <source>Undefined class name: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Fields separation error, invalid CSV format, Error reading CSV line: [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>main</name>
@@ -162,6 +174,10 @@
     </message>
     <message>
         <source>&amp;Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Sync relays entries</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

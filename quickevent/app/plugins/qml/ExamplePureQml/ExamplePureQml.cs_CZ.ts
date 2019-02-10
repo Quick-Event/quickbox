@@ -5,11 +5,18 @@
     <name>main</name>
     <message>
         <location filename="main.qml" line="11"/>
-        <source>&amp;Competitors with card lent</source>
+        <source>Pure QML report example - Competitors with card lent</source>
+        <oldsource>&amp;Competitors with card lent</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main.qml" line="31"/>
+        <location filename="main.qml" line="18"/>
+        <location filename="main.qml" line="23"/>
+        <source>Test report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="43"/>
         <source>Competitors with card lent</source>
         <translation type="unfinished"></translation>
     </message>
