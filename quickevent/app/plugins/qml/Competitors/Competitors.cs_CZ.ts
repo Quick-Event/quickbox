@@ -91,12 +91,12 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="349"/>
         <source>Class should be entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Není zadána kategorie.</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="369"/>
         <source>Duplicate SI inserted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bylo vloženo duplicitní SI.</translation>
     </message>
 </context>
 <context>
@@ -148,12 +148,12 @@
         <location filename="src/competitorswidget.cpp" line="75"/>
         <source>SN</source>
         <comment>start number</comment>
-        <translation type="unfinished"></translation>
+        <translation>SČ</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="75"/>
         <source>Start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní číslo</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="76"/>
@@ -173,7 +173,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="79"/>
         <source>Ranking</source>
-        <translation type="unfinished"></translation>
+        <translation>Ranking</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="80"/>
@@ -183,62 +183,62 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="109"/>
         <source>&amp;Class </source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kategorie </translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="125"/>
         <source>Edit on punch</source>
-        <translation type="unfinished"></translation>
+        <translation>Edituj po oražení</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="126"/>
         <source>Edit or insert competitor on card insert into station.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprav nebo vlož závodníka po vložení čipu do kontroly.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="131"/>
         <source>&amp;Print</source>
-        <translation type="unfinished">&amp;Tisk</translation>
+        <translation>&amp;Tisk</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="134"/>
         <source>&amp;Cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Či&amp;py</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="136"/>
         <source>Lent cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypůjčené čipy</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="147"/>
         <source>&amp;Stations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Krabičky</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="149"/>
         <source>Backup memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Záložní paměť</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="216"/>
         <source>Save and &amp;next</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulož a &amp;další</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="251"/>
         <source>Realy delete all the selected competitors? This action cannot be reverted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu si přejete vymazat označené závodníky? Tuto akci nelze obnovit.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="264"/>
         <source>Confirm deletion of %1 competitors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Potvrďte smazání %1 zavodníků.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="307"/>
         <source>Set class in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Změň kategorii v označených řádcích</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="319"/>
@@ -248,7 +248,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="320"/>
         <source>Select class</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyber kategorii</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="173"/>
@@ -271,22 +271,22 @@
     <message>
         <location filename="src/lentcardswidget.cpp" line="16"/>
         <source>Lent cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypůjčené čipy</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="23"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="24"/>
         <source>Ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoruj</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="25"/>
         <source>Note</source>
-        <translation type="unfinished">Poznámka</translation>
+        <translation>Poznámka</translation>
     </message>
 </context>
 <context>
@@ -303,17 +303,17 @@
         <location filename="src/competitorwidget.cpp" line="80"/>
         <source>On</source>
         <comment>runs.isRunning</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ano</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="80"/>
         <source>Is running</source>
-        <translation type="unfinished"></translation>
+        <translation>Běží</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="81"/>
         <source>Stage</source>
-        <translation type="unfinished">Etapa</translation>
+        <translation>Etapa</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="82"/>
