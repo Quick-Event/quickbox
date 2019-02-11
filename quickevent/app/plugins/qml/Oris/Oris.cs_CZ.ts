@@ -17,11 +17,11 @@
     </message>
     <message>
         <source>Loading event list from Oris ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nahrávám seznam zavodů z Orisu ...</translation>
     </message>
     <message>
         <source>OB</source>
-        <translation type="unfinished">OB</translation>
+        <translation>OB</translation>
     </message>
     <message>
         <source>LOB</source>
