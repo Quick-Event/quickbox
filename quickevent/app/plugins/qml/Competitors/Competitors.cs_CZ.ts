@@ -6,12 +6,12 @@
     <message>
         <location filename="src/competitorwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Uprav závodníka</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="81"/>
         <source>&amp;SI</source>
-        <translation>&amp;SI</translation>
+        <translation>&amp; SI</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="236"/>
@@ -104,7 +104,7 @@
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="63"/>
         <source>Edit Competitor</source>
-        <translation type="unfinished">Uprav závodníka</translation>
+        <translation>Uprav závodníka</translation>
     </message>
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="79"/>
@@ -243,7 +243,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="319"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="320"/>
@@ -266,7 +266,7 @@
     <message>
         <location filename="src/lentcardswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="16"/>
@@ -294,7 +294,7 @@
     <message>
         <location filename="src/registrationswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
 </context>
 <context>
@@ -318,87 +318,87 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="82"/>
         <source>Relay</source>
-        <translation type="unfinished"></translation>
+        <translation>Štafeta</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="83"/>
         <source>Class</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="84"/>
         <source>Leg</source>
-        <translation type="unfinished"></translation>
+        <translation>Úsek</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="85"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="86"/>
         <source>Start</source>
-        <translation type="unfinished">Start</translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="87"/>
         <source>Time</source>
-        <translation type="unfinished">Čas</translation>
+        <translation>Čas</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="88"/>
         <source>NC</source>
         <comment>runs.notCompeting</comment>
-        <translation type="unfinished">MS</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="88"/>
         <source>Not competing</source>
-        <translation type="unfinished">Mimo soutež</translation>
+        <translation>Mimo soutež</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="89"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
-        <translation type="unfinished">DISK</translation>
+        <translation>D</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="89"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifikace</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="90"/>
         <source>E</source>
         <comment>runs.misPunch</comment>
-        <translation type="unfinished">Chyba</translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="90"/>
         <source>Card mispunch</source>
-        <translation type="unfinished"></translation>
+        <translation>Chybné ražení</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="91"/>
         <source>LR</source>
         <comment>runs.cardLent</comment>
-        <translation type="unfinished"></translation>
+        <translation>ČP</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="91"/>
         <source>Card rent requested</source>
-        <translation type="unfinished"></translation>
+        <translation>Závodník si pujčil čip</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="92"/>
         <source>LT</source>
         <comment>cardInLentTable</comment>
-        <translation type="unfinished"></translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="92"/>
         <source>Card in lent table</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip z tabulky čipů k zapujčení</translation>
     </message>
     <message>
         <source>L</source>
@@ -409,12 +409,12 @@
         <location filename="src/competitorwidget.cpp" line="93"/>
         <source>R</source>
         <comment>runs.cardReturned</comment>
-        <translation type="unfinished"></translation>
+        <translation>ČV</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="93"/>
         <source>Card returned</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip vrácen</translation>
     </message>
 </context>
 <context>
@@ -422,37 +422,37 @@
     <message>
         <location filename="src/stationsbackupmemorywidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="16"/>
         <source>Stations backup memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Záložní paměť kontrol</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="23"/>
         <source>Stage</source>
-        <translation type="unfinished">Etapa</translation>
+        <translation>Etapa</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="24"/>
         <source>Station number</source>
-        <translation type="unfinished"></translation>
+        <translation>Číslo kontroly</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="25"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="26"/>
         <source>Punch time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas oražení</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="27"/>
         <source>Card error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba ražení</translation>
     </message>
 </context>
 <context>
