@@ -67,12 +67,12 @@
     <message>
         <location filename="src/classdefwidget.ui" line="126"/>
         <source>Map count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet map</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="136"/>
         <source> pcs</source>
-        <translation type="unfinished"></translation>
+        <translation> ks</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="142"/>
@@ -82,12 +82,12 @@
     <message>
         <location filename="src/classdefwidget.cpp" line="13"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Edituj kategorii</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.cpp" line="26"/>
         <source>Class %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategorie %1</translation>
     </message>
 </context>
 <context>
@@ -131,12 +131,12 @@
     <message>
         <location filename="src/classeswidget.ui" line="81"/>
         <source>When checked, all the maps defined for class will be used during drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud je zaškrtnutý, je celkový počet map zohledněn při sestavování startovek</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="84"/>
         <source>Use all maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Použij všechny mapy</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="103"/>
@@ -256,12 +256,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="136"/>
         <source>Legs</source>
-        <translation type="unfinished"></translation>
+        <translation>Úseky</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="136"/>
         <source>Relay leg count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet úseků štafety</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="154"/>
@@ -328,12 +328,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="584"/>
         <source>XML files (*.xml);; All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML soubory (*.xml);; Všechny soubory (*)</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="727"/>
         <source>Class name &apos;%1&apos; seems to be combined, separate it to more classes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Název kategorie &apos;%1&apos; je pravděpodobně složený. Mám jej rozdělit na více kategorií?</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="369"/>
