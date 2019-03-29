@@ -6,28 +6,28 @@
     <message>
         <location filename="src/classdefwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="20"/>
         <source>Start</source>
-        <translation type="unfinished">Start</translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="27"/>
         <source>Interval</source>
-        <translation type="unfinished">Interval</translation>
+        <translation>Interval</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="34"/>
         <source>Vacants before</source>
-        <translation type="unfinished">Vakanti před</translation>
+        <translation>Vakanti před</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="44"/>
         <location filename="src/classdefwidget.ui" line="60"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> min</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="50"/>
@@ -47,12 +47,12 @@
     <message>
         <location filename="src/classdefwidget.ui" line="86"/>
         <source>Vacant every</source>
-        <translation type="unfinished">Vakanti během</translation>
+        <translation>Vakanti během</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="93"/>
         <source>Vacants after</source>
-        <translation type="unfinished">Vakanti po</translation>
+        <translation>Vakanti po</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="106"/>
@@ -121,7 +121,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="20"/>
         <source>Form</source>
-        <translation>Kategorie</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="36"/>
@@ -246,12 +246,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="135"/>
         <source>Rel.num</source>
-        <translation type="unfinished"></translation>
+        <translation>Čís. štaf.</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="135"/>
         <source>Relay start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní číslo štafety</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="136"/>
@@ -296,12 +296,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="158"/>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="158"/>
         <source>Radio</source>
-        <translation type="unfinished">Rádio</translation>
+        <translation>Rádio</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="236"/>
@@ -346,12 +346,12 @@
     <message>
         <location filename="src/editcodeswidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Úprava kontrol</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="16"/>
         <source>Codes</source>
-        <translation type="unfinished">Kontroly</translation>
+        <translation>Kontroly</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
@@ -394,7 +394,7 @@
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Upravit kontroly pro kategorii</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="20"/>
@@ -443,7 +443,7 @@
     <message>
         <location filename="src/editcourseswidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Úprava kategorií</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.ui" line="39"/>
@@ -499,37 +499,37 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="248"/>
         <source>class: &lt;b&gt;%1&lt;/b&gt;, %2 runners + %3 vacants&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>kategorie: &lt;b&gt;%1&lt;/b&gt;, %2 závodníků + %3 vakantů&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="249"/>
         <source>first code &lt;b&gt;%1&lt;/b&gt;, course %2 - %3&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>první kontrola &lt;b&gt;%1&lt;/b&gt;, trať %2 - %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="250"/>
         <source>vacants before: %1, every: %2, after: %3&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>vakanti před: %1, během: %2, po: %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="251"/>
         <source>class start: %1, interval: %2, duration: %3, end: %4&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>start kategorie: %1, interval: %2, délka trvání: %3, konec: %4&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="252"/>
         <source>map count: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>počet map: %1</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="262"/>
         <source>clash with: %1&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">koliduje s: %1&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit Competitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Uprav závodníka</translation>
     </message>
 </context>
 <context>
@@ -537,7 +537,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="29"/>
         <source>Lock class start time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Uzamknout startovní časy kategorie</translation>
     </message>
 </context>
 <context>
@@ -545,27 +545,27 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Uložit</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="43"/>
         <source>&amp;Find</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Najít</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="21"/>
         <source>Draw tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Nástroj pro losování</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="49"/>
         <source>&amp;Draw</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Losuj</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="56"/>
@@ -616,7 +616,7 @@
     <message>
         <location filename="qml/reports/table.qml" line="45"/>
         <source>name</source>
-        <translation>Jméno</translation>
+        <translation>jméno</translation>
     </message>
     <message>
         <location filename="qml/reports/table.qml" line="50"/>
