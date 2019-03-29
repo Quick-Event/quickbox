@@ -19,7 +19,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
@@ -135,7 +135,7 @@
     <message>
         <location filename="src/htmlviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
 </context>
 <context>
@@ -158,7 +158,7 @@
         <location filename="src/tableview.cpp" line="75"/>
         <source>Left click selects all, right click for menu.</source>
         <oldsource>Right click for menu.</oldsource>
-        <translation>Levé tlačítko vybere vše, pravé tlačítko pro menu</translation>
+        <translation>Levé tlačítko vybere vše, pravé tlačítko pro menu.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="648"/>
@@ -168,7 +168,7 @@
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>new value:</source>
-        <translation>nová hodnota</translation>
+        <translation>nová hodnota:</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="747"/>
@@ -203,7 +203,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1528"/>
         <source>Reset column widths and positions.</source>
-        <translation>Obnov šířku a pozici sloupců</translation>
+        <translation>Obnov šířku a pozici sloupců.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1537"/>
@@ -321,7 +321,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1667"/>
         <source>Filter table</source>
-        <translation>Filtruj</translation>
+        <translation>Filtrovat</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1671"/>
@@ -332,7 +332,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1678"/>
         <source>Edit cell content</source>
-        <translation>Uprav obsah buňky</translation>
+        <translation>Upravit obsah buňky</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1680"/>
@@ -400,7 +400,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1769"/>
         <source>Calculate</source>
-        <translation>Spočítej</translation>
+        <translation>Spočítat</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1776"/>
@@ -532,7 +532,7 @@
     <message>
         <location filename="src/texteditwidget.cpp" line="153"/>
         <source>&amp;View</source>
-        <translation>&amp;View</translation>
+        <translation>&amp;Zobrazit</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="202"/>
@@ -563,7 +563,7 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="27"/>
         <source>Show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit znovu tuto zprávu</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="44"/>
@@ -578,12 +578,12 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="59"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="64"/>
         <source>Information</source>
-        <translation>Info</translation>
+        <translation>Informace</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="70"/>
@@ -611,7 +611,7 @@
     <message>
         <location filename="src/dialogs/previewdialog.cpp" line="51"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation>Nejde otevřít soubor %1 pro čtení.</translation>
+        <translation>Nelze otevřít soubor %1 pro čtení.</translation>
     </message>
 </context>
 <context>
@@ -619,12 +619,12 @@
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="120"/>
         <source>Delete </source>
-        <translation>Smaž </translation>
+        <translation>Smazat </translation>
     </message>
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="124"/>
         <source>Edit </source>
-        <translation>Uprav </translation>
+        <translation>Upravit </translation>
     </message>
 </context>
 <context>
@@ -640,7 +640,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="37"/>
@@ -675,12 +675,12 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="144"/>
         <source>Maximal log length</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximální délka logu</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Get number</source>
-        <translation type="unfinished"></translation>
+        <translation>Vlož číslo</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="149"/>
@@ -693,7 +693,7 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="31"/>
         <source>Copy</source>
-        <translation>Kopíruj</translation>
+        <translation>Kopírovat</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="33"/>
@@ -771,7 +771,7 @@
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="32"/>
@@ -864,7 +864,7 @@
     <message>
         <location filename="src/reports/widgets/itemvalueeditorwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/itemvalueeditorwidget.ui" line="20"/>
@@ -877,12 +877,12 @@
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="23"/>
         <source>template</source>
-        <translation type="unfinished"></translation>
+        <translation>šablona</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="32"/>
@@ -963,7 +963,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;View</translation>
+        <translation>&amp;Zobrazit</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
@@ -1023,7 +1023,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
         <source>Export in the Adobe Acrobat PDF format</source>
-        <translation>Exportovat v  Adobe Acrobat PDF formátu</translation>
+        <translation>Exportovat v Adobe Acrobat PDF formátu</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
@@ -1038,7 +1038,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1085"/>
         <source>empty file name</source>
-        <translation type="unfinished"></translation>
+        <translation>prázdný název souboru</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1146"/>
@@ -1053,7 +1053,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1166"/>
         <source>Cannot open &apos;%1&apos; for write.</source>
-        <translation>Nejde otevřít soubor %1 pro zápis.</translation>
+        <translation>Nelze otevřít soubor %1 pro zápis.</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.h" line="61"/>
