@@ -18,7 +18,7 @@
     <message>
         <location filename="main.qml" line="43"/>
         <source>Competitors with card lent</source>
-        <translation type="unfinished"></translation>
+        <translation>Závodníci s půjčeným čipem</translation>
     </message>
 </context>
 </TS>
