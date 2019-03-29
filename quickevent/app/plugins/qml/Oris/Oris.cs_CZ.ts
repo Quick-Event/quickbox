@@ -25,11 +25,11 @@
     </message>
     <message>
         <source>LOB</source>
-        <translation type="unfinished">LOB</translation>
+        <translation>LOB</translation>
     </message>
     <message>
         <source>MTBO</source>
-        <translation type="unfinished">MTBO</translation>
+        <translation>MTBO</translation>
     </message>
     <message>
         <source>???</source>
@@ -52,15 +52,15 @@
     </message>
     <message>
         <source>New entries</source>
-        <translation type="unfinished">Nové přihlášky</translation>
+        <translation>Nové přihlášky</translation>
     </message>
     <message>
         <source>Edited entries</source>
-        <translation type="unfinished">Upravené přihlášky</translation>
+        <translation>Upravené přihlášky</translation>
     </message>
     <message>
         <source>Deleted entries</source>
-        <translation type="unfinished">Smazané přihlášky</translation>
+        <translation>Smazané přihlášky</translation>
     </message>
     <message>
         <source>Oris import report</source>
@@ -170,7 +170,7 @@
     </message>
     <message>
         <source>&amp;Ranking CSV (Oris format)</source>
-        <translation type="unfinished">&amp;Rankingová data v CSV (formát ORISu)</translation>
+        <translation>&amp;Rankingová data v CSV (formát ORISu)</translation>
     </message>
     <message>
         <source>&amp;Text file</source>
@@ -178,7 +178,7 @@
     </message>
     <message>
         <source>&amp;Sync relays entries</source>
-        <translation type="unfinished">&amp;Synchronizace stafetových přihlášek</translation>
+        <translation>&amp;Synchronizace štafetových přihlášek</translation>
     </message>
 </context>
 </TS>
