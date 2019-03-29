@@ -55,27 +55,27 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="75"/>
         <source>Text encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Kódování textu</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="83"/>
         <source>ASCII7</source>
-        <translation type="unfinished"></translation>
+        <translation>ASCII7</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="88"/>
         <source>cp1250</source>
-        <translation type="unfinished"></translation>
+        <translation>cp1250</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="93"/>
         <source>iso8859-2</source>
-        <translation type="unfinished"></translation>
+        <translation>iso8859-2</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="98"/>
         <source>utf8</source>
-        <translation type="unfinished"></translation>
+        <translation>utf8</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="133"/>
@@ -110,12 +110,12 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="235"/>
         <source>UDP</source>
-        <translation type="unfinished"></translation>
+        <translation>UDP</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="119"/>
         <source>Network address</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Adresa sítě</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="221"/>
@@ -130,7 +130,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="174"/>
         <source>Epson TM-U220B</source>
-        <translation type="unfinished"></translation>
+        <translation>Epson TM-U220B</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="195"/>
@@ -140,12 +140,12 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="109"/>
         <source>LPT device</source>
-        <translation type="unfinished"></translation>
+        <translation>LPT zařízení</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="202"/>
         <source> characters</source>
-        <translation>znaků</translation>
+        <translation> znaků</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="182"/>
@@ -183,12 +183,12 @@
     <message>
         <location filename="src/receiptswidget.ui" line="57"/>
         <source>This reader only</source>
-        <translation type="unfinished"></translation>
+        <translation>Pouze tato tiskárna</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="77"/>
         <source>Receipt</source>
-        <translation type="unfinished">Mezičas</translation>
+        <translation type="unfinished">Lísteček</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="87"/>
@@ -238,7 +238,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="251"/>
         <source>Print selected cards</source>
-        <translation>Vytisknout vybrané čipy</translation>
+        <translation>Vytisknout mezičasy pro vybrané řádky</translation>
     </message>
 </context>
 <context>
