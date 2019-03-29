@@ -60,7 +60,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="200"/>
         <source>Show card</source>
-        <translation>Zobrazit čip</translation>
+        <translation>Ukázat data čipu</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="198"/>
@@ -70,7 +70,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="201"/>
         <source>Print card</source>
-        <translation>Vytisknout čip</translation>
+        <translation>Vytisknout data čipu</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="203"/>
@@ -129,7 +129,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="351"/>
         <source>Entries</source>
-        <translation type="unfinished">Přihlášky</translation>
+        <translation>Přihlášky</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="417"/>
@@ -169,7 +169,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="600"/>
         <source>card: %1</source>
-        <translation>Čip: %1</translation>
+        <translation>čip: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="954"/>
@@ -189,7 +189,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="986"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="986"/>
@@ -218,7 +218,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="678"/>
         <source>punch: %1 %2</source>
-        <translation>Ražení: %1 %2</translation>
+        <translation>ražení: %1 %2</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="685"/>
@@ -425,37 +425,37 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="113"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="114"/>
         <source>Class</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="115"/>
         <source>Name</source>
-        <translation type="unfinished">Jméno</translation>
+        <translation>Jméno</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="116"/>
         <source>Reg</source>
-        <translation type="unfinished">Reg. č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="117"/>
         <source>Start</source>
-        <translation type="unfinished">Start</translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="118"/>
         <source>Time</source>
-        <translation type="unfinished">Čas</translation>
+        <translation>Čas</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="119"/>
         <source>Finish</source>
-        <translation type="unfinished">Cíl</translation>
+        <translation>Cíl</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="120"/>
@@ -554,7 +554,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="47"/>
         <source>Raw SI data</source>
-        <translation>Surova SI data</translation>
+        <translation>Surová SI data</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="67"/>
