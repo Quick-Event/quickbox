@@ -5,12 +5,12 @@
     <name>ConnectDbDialogWidget</name>
     <message>
         <source>Form</source>
-        <translation type="vanished">Nastavení cesty k úložišti závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
         <source>Select database</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat databázi</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
@@ -137,7 +137,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="321"/>
         <source>Event</source>
-        <translation type="unfinished">Závod</translation>
+        <translation>Závod</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="331"/>
@@ -211,12 +211,12 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="918"/>
         <source>Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Závod využívá příliš starou verzi dat (%1), minimální verze je (%2). Použij Závod/Import pro konverzi dat do aktuální verze.</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="925"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Závod byl vytvořen v novější verzi QuickEventu (%1) a možná nebude pracovat tak, jak je očekáváno. Je doporučeno si stáhnout nejnovětší verzi QuickEventu.</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1032"/>
@@ -272,7 +272,7 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Uprav etapu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="20"/>
@@ -300,7 +300,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Upravit závod</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="20"/>
@@ -361,7 +361,7 @@
         <location filename="src/eventdialogwidget.ui" line="149"/>
         <source> min</source>
         <oldsource>min</oldsource>
-        <translation type="unfinished">min</translation>
+        <translation> min</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="168"/>
@@ -371,92 +371,92 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="188"/>
         <source>Sport</source>
-        <translation type="unfinished"></translation>
+        <translation>Sport</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="199"/>
         <source>OB</source>
-        <translation type="unfinished"></translation>
+        <translation>OB</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="204"/>
         <source>LOB</source>
-        <translation type="unfinished"></translation>
+        <translation>LOB</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="209"/>
         <source>MTBO</source>
-        <translation type="unfinished"></translation>
+        <translation>MTBO</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="214"/>
         <source>TRAIL</source>
-        <translation type="unfinished"></translation>
+        <translation>TRAIL</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="222"/>
         <source>&amp;Time</source>
-        <translation type="unfinished">Ča&amp;s</translation>
+        <translation>Ča&amp;s</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="232"/>
         <source>h:mm</source>
-        <translation type="unfinished"></translation>
+        <translation>h:mm</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="246"/>
         <source>Discipline</source>
-        <translation type="unfinished"></translation>
+        <translation>Disciplína</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="257"/>
         <source>Long distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasická trať</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="262"/>
         <source>Middle distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Krátká trať</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="267"/>
         <source>Sprint</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprint</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="272"/>
         <source>Ultralong distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Dlouhá trať</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="277"/>
         <source>Relay</source>
-        <translation type="unfinished"></translation>
+        <translation>Štafety</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="282"/>
         <source>Teams</source>
-        <translation type="unfinished"></translation>
+        <translation>Družstva</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="290"/>
         <source>Card check</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas kontroly čipu (check)</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="300"/>
         <source>Maximal distance between card CHECK and START time</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximální čas mezi kontrolou vymazání čipu a startovním časem</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="303"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="306"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> sek</translation>
     </message>
 </context>
 <context>
@@ -464,32 +464,32 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
         <source>Export dir</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exportovat adr</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="43"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno souboru</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="105"/>
         <source>Export splits</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportovat mezičasy</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="41"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít adresář</translation>
     </message>
 </context>
 <context>
@@ -497,12 +497,12 @@
     <message>
         <location filename="src/services/servicewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/services/servicewidget.ui" line="45"/>
         <source>EmmaClient</source>
-        <translation type="unfinished"></translation>
+        <translation>EmmaClient</translation>
     </message>
     <message>
         <location filename="src/services/servicewidget.ui" line="58"/>
