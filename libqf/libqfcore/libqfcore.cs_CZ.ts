@@ -11,22 +11,22 @@
     <message>
         <location filename="src/core/logcore.cpp" line="57"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba</translation>
     </message>
     <message>
         <location filename="src/core/logcore.cpp" line="59"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Varování</translation>
     </message>
     <message>
         <location filename="src/core/logcore.cpp" line="61"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info</translation>
     </message>
     <message>
         <location filename="src/core/logcore.cpp" line="63"/>
         <source>Debug</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ladění</translation>
     </message>
     <message>
         <location filename="src/core/logcore.cpp" line="65"/>
@@ -66,7 +66,7 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="45"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Řádek</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="47"/>
@@ -131,7 +131,7 @@
         <location filename="src/model/tablemodel.cpp" line="459"/>
         <location filename="src/model/tablemodel.cpp" line="563"/>
         <source>Invalid table field index: %1</source>
-        <translation type="unfinished">Neplatný index políčka tabulky: %1</translation>
+        <translation>Neplatný index políčka tabulky: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="444"/>
