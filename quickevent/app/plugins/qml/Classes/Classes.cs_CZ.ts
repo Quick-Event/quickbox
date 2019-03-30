@@ -136,7 +136,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="84"/>
         <source>Use all maps</source>
-        <translation>Použij všechny mapy</translation>
+        <translation>Použít všechny mapy</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="103"/>
@@ -529,7 +529,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit Competitor</source>
-        <translation>Uprav závodníka</translation>
+        <translation>Upravit závodníka</translation>
     </message>
 </context>
 <context>
@@ -565,7 +565,7 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="49"/>
         <source>&amp;Draw</source>
-        <translation type="unfinished">&amp;Losuj</translation>
+        <translation>&amp;Losovat</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="56"/>
