@@ -188,7 +188,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="77"/>
         <source>Receipt</source>
-        <translation type="unfinished">Lísteček</translation>
+        <translation>Mezičas</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="87"/>
