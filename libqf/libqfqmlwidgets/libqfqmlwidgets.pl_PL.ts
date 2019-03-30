@@ -618,12 +618,12 @@
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="120"/>
         <source>Delete </source>
-        <translation>Usuń</translation>
+        <translation>Usuń </translation>
     </message>
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="124"/>
         <source>Edit </source>
-        <translation>Edytuj</translation>
+        <translation>Edytuj </translation>
     </message>
 </context>
 <context>
