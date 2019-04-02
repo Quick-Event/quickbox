@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Loading event list from Oris ...</source>
-        <translation>Nahrávám seznam zavodů z Orisu ...</translation>
+        <translation>Nahrávám seznam zavodů z ORISu ...</translation>
     </message>
     <message>
         <source>OB</source>
@@ -37,7 +37,7 @@
     </message>
     <message>
         <source>Search in events ...</source>
-        <translation>Vyhledejte v závodech...</translation>
+        <translation>Vyhledávat v závodech...</translation>
     </message>
     <message>
         <source>TRAIL</source>
@@ -135,7 +135,7 @@
     </message>
     <message>
         <source>Fields separation error, invalid CSV format, Error reading CSV line: [%1]</source>
-        <translation type="unfinished">Chyba při analýze CSV souboru, neplatný formát, Chyba při čtení řádky: [%1]</translation>
+        <translation>Chyba při analýze CSV souboru, neplatný formát, chyba při čtení řádky: [%1]</translation>
     </message>
 </context>
 <context>
