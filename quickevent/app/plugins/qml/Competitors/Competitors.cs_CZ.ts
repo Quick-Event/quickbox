@@ -11,7 +11,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="81"/>
         <source>&amp;SI</source>
-        <translation>&amp; SI</translation>
+        <translation>&amp;SI</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="236"/>
@@ -31,7 +31,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="45"/>
         <source>Type to find competitor in registrations ...</source>
-        <translation>Vepsat pro nalezení závodníka v registraci ...</translation>
+        <translation>Vepsat pro nalezení závodníka v registraci...</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="58"/>
@@ -104,7 +104,7 @@
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="63"/>
         <source>Edit Competitor</source>
-        <translation>Uprav závodníka</translation>
+        <translation>Upravit závodníka</translation>
     </message>
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="79"/>
@@ -137,7 +137,7 @@
     <message>
         <location filename="src/competitorswidget.ui" line="20"/>
         <source>Form</source>
-        <translation>Závodníci</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="74"/>
@@ -188,12 +188,12 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="125"/>
         <source>Edit on punch</source>
-        <translation>Edituj po oražení</translation>
+        <translation>Upravit po oražení</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="126"/>
         <source>Edit or insert competitor on card insert into station.</source>
-        <translation>Uprav nebo vlož závodníka po vložení čipu do kontroly.</translation>
+        <translation>Upravit nebo vložit závodníka po vložení čipu do kontroly.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="131"/>
@@ -238,7 +238,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="307"/>
         <source>Set class in selected rows</source>
-        <translation>Změň kategorii v označených řádcích</translation>
+        <translation>Změnit kategorii v označených řádcích</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="319"/>
@@ -248,7 +248,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="320"/>
         <source>Select class</source>
-        <translation>Vyber kategorii</translation>
+        <translation>Vybrat kategorii</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="173"/>
@@ -258,7 +258,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="211"/>
         <source>Edit Competitor</source>
-        <translation>Uprav závodníka</translation>
+        <translation>Upravit závodníka</translation>
     </message>
 </context>
 <context>
@@ -281,7 +281,7 @@
     <message>
         <location filename="src/lentcardswidget.cpp" line="24"/>
         <source>Ignored</source>
-        <translation>Ignoruj</translation>
+        <translation>Ignorovat</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="25"/>
@@ -308,7 +308,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="80"/>
         <source>Is running</source>
-        <translation>Běží</translation>
+        <translation>Startuje</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="81"/>
@@ -382,12 +382,12 @@
         <location filename="src/competitorwidget.cpp" line="91"/>
         <source>LR</source>
         <comment>runs.cardLent</comment>
-        <translation>ČP</translation>
+        <translation>PČ</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="91"/>
         <source>Card rent requested</source>
-        <translation>Závodník si pujčil čip</translation>
+        <translation>Vyžádáno půjčení čipu</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="92"/>
@@ -398,7 +398,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="92"/>
         <source>Card in lent table</source>
-        <translation>Čip z tabulky čipů k zapujčení</translation>
+        <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
         <source>L</source>
@@ -447,12 +447,12 @@
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="26"/>
         <source>Punch time</source>
-        <translation>Čas oražení</translation>
+        <translation>Čas ražení</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="27"/>
         <source>Card error</source>
-        <translation>Chyba ražení</translation>
+        <translation>Chyba čipu</translation>
     </message>
 </context>
 <context>
