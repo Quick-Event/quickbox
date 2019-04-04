@@ -7,13 +7,13 @@
         <location filename="main.qml" line="11"/>
         <source>Pure QML report example - Competitors with card lent</source>
         <oldsource>&amp;Competitors with card lent</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Příklad QML šablony – Závodníci s půjčeným čipem</translation>
     </message>
     <message>
         <location filename="main.qml" line="18"/>
         <location filename="main.qml" line="23"/>
         <source>Test report</source>
-        <translation type="unfinished"></translation>
+        <translation>Testovací šablona</translation>
     </message>
     <message>
         <location filename="main.qml" line="43"/>
