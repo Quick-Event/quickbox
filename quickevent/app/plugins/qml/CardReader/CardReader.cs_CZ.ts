@@ -6,7 +6,7 @@
     <message>
         <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="13"/>
         <source>Classic race</source>
-        <translation type="unfinished">Pevné pořadí kontrol</translation>
+        <translation>Pevné pořadí kontrol</translation>
     </message>
 </context>
 <context>
@@ -19,7 +19,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="167"/>
         <source>Cannot find runs with si: %1</source>
-        <translation type="unfinished">Nelze najít úseky s SI: %1</translation>
+        <translation>Nenalezen závodník s čipem: %1</translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="277"/>
@@ -144,12 +144,12 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="476"/>
         <source>Connected to %1 in direct mode.</source>
-        <translation>Připojen k %1 v  přímém módu.</translation>
+        <translation>Připojen k %1 v přímém módu.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="479"/>
         <source>Error set SI station to direct mode.</source>
-        <translation type="unfinished">Chyba při nastavování SI jednotky do přímého módu.</translation>
+        <translation>Chyba při nastavování SI jednotky do přímého módu.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="507"/>
@@ -174,7 +174,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="954"/>
         <source>Downloading station backup ...</source>
-        <translation>Načítám paměť jednotky ...</translation>
+        <translation>Načítám paměť jednotky...</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="956"/>
@@ -223,7 +223,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="685"/>
         <source>Cannot find run for punch record SI: %1</source>
-        <translation type="unfinished">Nelze najít úsek (etapu) pro záznam ražení SI: %1</translation>
+        <translation>Nelze najít úsek pro záznam ražení SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="757"/>
@@ -253,7 +253,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="909"/>
         <source>Cannot find runs record for SI %1!</source>
-        <translation type="unfinished">Nelze najít záznam etapy (úseku) pro SI: %1!</translation>
+        <translation>Nelze najít záznam úseku pro SI: %1!</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="910"/>
@@ -387,7 +387,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="220"/>
         <source>disable CRC check</source>
-        <translation>Zakázat CRC check</translation>
+        <translation>Zakázat CRC kontrolu</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="231"/>
@@ -466,7 +466,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="120"/>
         <source>Card mispunch</source>
-        <translation>Chyba ražení</translation>
+        <translation>Chybné ražení</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="121"/>
@@ -476,7 +476,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="121"/>
         <source>Disqualified</source>
-        <translation>Diskvalifikován</translation>
+        <translation>Diskvalifikace</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="122"/>
@@ -506,12 +506,12 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="124"/>
         <source>Card check time</source>
-        <translation>Čas kontroly (check) na čipu</translation>
+        <translation>Čas kontroly vynulování čipu</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="125"/>
         <source>STIME</source>
-        <translation type="unfinished">Čas-S</translation>
+        <translation>Čas-S</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="125"/>
@@ -521,7 +521,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="126"/>
         <source>FTIME</source>
-        <translation type="unfinished">Čas-C</translation>
+        <translation>Čas-C</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="126"/>
@@ -549,7 +549,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="40"/>
         <source>Listen on UDP port</source>
-        <translation>Poslouchej na UDP portu</translation>
+        <translation>Poslouchat na UDP portu</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="47"/>
@@ -559,7 +559,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="67"/>
         <source>Listen on TCP port</source>
-        <translation>Poslouchej na TCP portu</translation>
+        <translation>Poslouchat na TCP portu</translation>
     </message>
 </context>
 </TS>
