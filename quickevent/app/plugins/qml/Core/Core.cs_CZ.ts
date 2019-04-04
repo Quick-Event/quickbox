@@ -19,11 +19,11 @@
     <message>
         <location filename="src/coreplugin.cpp" line="66"/>
         <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze databáze: %2&lt;br/&gt;Sestavení: %3 %4</translation>
     </message>
     <message>
         <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;build: %2 %3</source>
-        <translation type="vanished">&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;verze: %1&lt;br/&gt;sestavení: %2 %3</translation>
+        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Sestavení: %2 %3</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="81"/>
@@ -106,7 +106,7 @@
     <message>
         <location filename="qml/main.qml" line="159"/>
         <source>&amp;Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nástrojová lišta</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="162"/>
