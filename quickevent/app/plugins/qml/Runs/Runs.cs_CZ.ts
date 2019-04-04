@@ -86,7 +86,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Not printed time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas od tisku</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="90"/>
@@ -99,7 +99,7 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Upřesnění</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="20"/>
@@ -119,7 +119,7 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="46"/>
         <source>Refresh time</source>
-        <translation type="unfinished">Frekvence obnovování</translation>
+        <translation>Frekvence obnovování</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="56"/>
@@ -190,7 +190,7 @@
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Upřesnění</translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="20"/>
@@ -200,12 +200,12 @@
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="40"/>
         <source>Awards report</source>
-        <translation type="unfinished"></translation>
+        <translation>Šablona diplomů</translation>
     </message>
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="50"/>
         <source>Stage number</source>
-        <translation>Etapa číslo</translation>
+        <translation>Číslo etapy</translation>
     </message>
 </context>
 <context>
@@ -255,7 +255,7 @@
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Statistiky závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="20"/>
@@ -272,12 +272,12 @@
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="14"/>
         <source>Report Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení tisku</translation>
     </message>
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="22"/>
         <source>&amp;Number of stages</source>
-        <translation type="unfinished">&amp;Počet etap</translation>
+        <translation>&amp;Počet etap</translation>
     </message>
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="39"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="65"/>
         <source>E&amp;xclude disqualified</source>
-        <translation type="unfinished">&amp;Vyloučit diskvalifikované</translation>
+        <translation>&amp;Nezahrnovat diskvalifikované</translation>
     </message>
 </context>
 <context>
@@ -311,11 +311,11 @@
     </message>
     <message>
         <source>RegExp</source>
-        <translation type="vanished">RegExp</translation>
+        <translation>Regulární výraz</translation>
     </message>
     <message>
         <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
-        <translation>Otazník (?) zastupuje libovolný znak, hvězdička (*) zastupuje skupinu 0 - n libovolných znaků.</translation>
+        <translation>Otazník (?) zastupuje libovolný znak, hvězdička (*) zastupuje skupinu 0–n libovolných znaků.</translation>
     </message>
     <message>
         <source>Doesn&apos;t match</source>
@@ -323,7 +323,7 @@
     </message>
     <message>
         <source>Coma delimited list of class names</source>
-        <translation type="vanished">Seznam kategorií oddělený čárkou</translation>
+        <translation>Seznam kategorií oddělených čárkou</translation>
     </message>
     <message>
         <source>Class names</source>
@@ -368,7 +368,7 @@
     <message>
         <location filename="src/runstabledialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Statistiky závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/runstabledialogwidget.cpp" line="41"/>
@@ -381,7 +381,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="26"/>
         <source>Runnig</source>
-        <translation type="unfinished"></translation>
+        <translation>Startuje</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
@@ -391,7 +391,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="29"/>
         <source>Leg</source>
-        <translation type="unfinished"></translation>
+        <translation>Úsek</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="30"/>
@@ -418,7 +418,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="32"/>
         <source>Registered SI</source>
-        <translation type="unfinished">Registrované SI</translation>
+        <translation>SI v přihlášce</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="33"/>
@@ -428,7 +428,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="34"/>
         <source>Reg</source>
-        <translation>Registrace</translation>
+        <translation>Reg</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="35"/>
@@ -458,12 +458,12 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="38"/>
         <source>Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="38"/>
         <source>Time loaded from CHECK station</source>
-        <translation type="unfinished">Čas načtený z CHECK kontroly</translation>
+        <translation>Čas, kdy byla provedena kontrola vynulování čipu</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="39"/>
@@ -493,23 +493,23 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
         <source>LR</source>
-        <translation type="unfinished"></translation>
+        <translation>PČ</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
         <source>Card rent requested</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyžádáno půjčení čipu</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="44"/>
         <source>LT</source>
         <comment>cardInLentTable</comment>
-        <translation type="unfinished"></translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="44"/>
         <source>Card in lent table</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
         <source>L</source>
@@ -557,12 +557,12 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="79"/>
         <source>MisPunch</source>
-        <translation type="unfinished">Chybné ražení</translation>
+        <translation>Chybné ražení</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="81"/>
         <source>BadCheck</source>
-        <translation type="unfinished"></translation>
+        <translation>Špatný čas kontroly nulování čipu</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="102"/>
@@ -585,7 +585,7 @@
     <message>
         <location filename="src/runstablewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Statistiky závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="68"/>
@@ -655,7 +655,7 @@
     <message>
         <location filename="src/runswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished">Statistiky závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="62"/>
@@ -691,17 +691,17 @@
     <message>
         <location filename="src/runswidget.cpp" line="84"/>
         <source>Grouped: C, B+A (PSOB DH12-14)</source>
-        <translation type="unfinished"></translation>
+        <translation>Po skupinách: C, B+A (PSOB DH12–14)</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="85"/>
         <source>Grouped: C, B, A+E+R (PSOB DH16-20)</source>
-        <translation type="unfinished"></translation>
+        <translation>Po skupinách: C, B, A+E+R (PSOB DH16–20)</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="86"/>
         <source>Grouped by ranking (PSOB DH21L)</source>
-        <translation type="unfinished"></translation>
+        <translation>Po skupinách podle rankingu (PSOB DH21L)</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="80"/>
@@ -711,7 +711,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="81"/>
         <source>Stage 1 reverse order</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrácené pořadí oproti 1. etapě</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="82"/>
@@ -721,17 +721,17 @@
     <message>
         <location filename="src/runswidget.cpp" line="245"/>
         <source>Show o&amp;ff-race</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit &amp;nestartující závodníky</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="246"/>
         <source>Show off race competitors</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit závodníky, kteří nestartují</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="520"/>
         <source>Draw all clases without draw lock?</source>
-        <translation type="unfinished"></translation>
+        <translation>Losovat kategorie, u kterých není losování uzamčeno?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="536"/>
@@ -771,7 +771,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="75"/>
         <source>Relays first leg</source>
-        <translation type="unfinished"></translation>
+        <translation>První úsek štafet</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="83"/>
@@ -812,7 +812,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="190"/>
         <source>CSOS</source>
-        <translation>CSOS</translation>
+        <translation>ČSOS</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="191"/>
@@ -822,12 +822,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="193"/>
         <source>Overall</source>
-        <translation type="unfinished">Celkové</translation>
+        <translation>Celkové</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="222"/>
         <source>&amp;Leg </source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Úsek </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="350"/>
@@ -842,14 +842,14 @@
     <message>
         <location filename="src/runswidget.cpp" line="713"/>
         <source>Start interval is zero, proceed anyway?</source>
-        <translation>Interval mezi závodníky je nula. Přesto pokračovat?</translation>
+        <translation>Startovní interval je nula. Přesto pokračovat?</translation>
     </message>
 </context>
 <context>
     <name>StartLists</name>
     <message>
         <source>Get item</source>
-        <translation type="vanished">Vyber možnost</translation>
+        <translation>Vyberte možnost</translation>
     </message>
     <message>
         <source>Corridor:</source>
@@ -1085,7 +1085,7 @@
         <location filename="qml/main.qml" line="163"/>
         <location filename="qml/main.qml" line="210"/>
         <source>Get file name</source>
-        <translation>Získat jméno souboru</translation>
+        <translation>Vybrat jméno souboru</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
@@ -1100,7 +1100,7 @@
     <message>
         <location filename="qml/reports/results_nstages.qml" line="13"/>
         <source>Results after %1 stages</source>
-        <translation>Výsledkypo %1 etapách</translation>
+        <translation>Výsledky po %1 etapách</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="130"/>
@@ -1191,7 +1191,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Statistiky závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="33"/>
@@ -1236,7 +1236,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="22"/>
         <source>CSOS fixed column sizes</source>
-        <translation>CSOS fixní šířka sloupců</translation>
+        <translation>ČSOS fixní šířka sloupců</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="23"/>
@@ -1287,7 +1287,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="134"/>
         <source>R</source>
-        <translation type="unfinished">V</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
