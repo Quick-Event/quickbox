@@ -47,7 +47,7 @@
         <location filename="src/codeclassresultswidget.cpp" line="179"/>
         <source>R</source>
         <comment>Radio station</comment>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -70,7 +70,7 @@
     <message>
         <location filename="src/speakerwidget.cpp" line="85"/>
         <source>Punch time</source>
-        <translation type="unfinished">Čas ražení</translation>
+        <translation>Čas ražení</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="86"/>
