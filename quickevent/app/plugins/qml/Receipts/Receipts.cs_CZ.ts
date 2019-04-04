@@ -115,7 +115,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="119"/>
         <source>Network address</source>
-        <translation type="unfinished">Adresa sítě</translation>
+        <translation>Adresa sítě</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="221"/>
@@ -163,7 +163,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Mezičasy</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="40"/>
@@ -178,7 +178,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="54"/>
         <source>Print only cards read on this application card reader.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tisknout pouze čipy, které jsou vyčteny v krabičce, jež je nastavená v této aplikaci.</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="57"/>
@@ -274,7 +274,7 @@
     <message>
         <location filename="qml/reports/sicard.qml" line="83"/>
         <source>Unassigned card !!!</source>
-        <translation>Nepřiřazený čip !!!</translation>
+        <translation>Nepřiřazený čip!!!</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="92"/>
@@ -284,7 +284,7 @@
     <message>
         <location filename="qml/reports/sicard.qml" line="185"/>
         <source>FI</source>
-        <translation>FI</translation>
+        <translation>Cíl</translation>
     </message>
 </context>
 </TS>
