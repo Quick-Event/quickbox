@@ -86,7 +86,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="84"/>
         <source>Event files directory</source>
-        <translation>Adresář pro soubory závodu</translation>
+        <translation>Adresář se soubory závodu</translation>
     </message>
 </context>
 <context>
@@ -147,7 +147,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="357"/>
         <source>Services</source>
-        <translation type="unfinished"></translation>
+        <translation>Služby</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="397"/>
@@ -264,7 +264,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1193"/>
         <source>Open imported event &apos;%1&apos;?</source>
-        <translation>Otevřít importovaný závod &apos;%1&apos; ?</translation>
+        <translation>Otevřít importovaný závod &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
@@ -469,7 +469,7 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
         <source>Export dir</source>
-        <translation type="unfinished">Exportovat adr</translation>
+        <translation>Exportovat adr</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
@@ -507,7 +507,7 @@
     <message>
         <location filename="src/services/servicewidget.ui" line="58"/>
         <source>neco neco</source>
-        <translation type="unfinished"></translation>
+        <translation>neco neco</translation>
     </message>
 </context>
 </TS>
