@@ -6,7 +6,7 @@
     <message>
         <location filename="src/core/logcore.cpp" line="55"/>
         <source>Fatal</source>
-        <translation type="unfinished"></translation>
+        <translation>Fatální</translation>
     </message>
     <message>
         <location filename="src/core/logcore.cpp" line="57"/>
@@ -26,7 +26,7 @@
     <message>
         <location filename="src/core/logcore.cpp" line="63"/>
         <source>Debug</source>
-        <translation type="unfinished">Ladění</translation>
+        <translation>Ladění</translation>
     </message>
     <message>
         <location filename="src/core/logcore.cpp" line="65"/>
@@ -71,12 +71,12 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="47"/>
         <source>Severity</source>
-        <translation type="unfinished"></translation>
+        <translation>Závažnost</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Time stamp</source>
-        <translation>Časové razítko</translation>
+        <translation>Časová značka</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="51"/>
@@ -117,7 +117,7 @@
         <location filename="src/model/tablemodel.cpp" line="456"/>
         <location filename="src/model/tablemodel.cpp" line="560"/>
         <source>Cannot find table field index for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít index políčka tabulky pro index sloupce: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="421"/>
@@ -140,18 +140,18 @@
         <location filename="src/model/tablemodel.cpp" line="548"/>
         <location filename="src/model/tablemodel.cpp" line="574"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
-        <translation type="unfinished">Nelze najít index sloupce pro jméno: &apos;%1&apos;</translation>
+        <translation>Nelze najít index sloupce pro jméno: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="475"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 Nelze najít políčko tabulky pro index sloupce: %1 (index řádku: %3)</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="500"/>
         <location filename="src/model/tablemodel.cpp" line="535"/>
         <source>Cannot find table field for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít políčko tabulky pro index sloupce: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="619"/>
@@ -162,17 +162,17 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="628"/>
         <source>Invalid field for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné políčko pro index sloupce: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="669"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloupec se jménem &apos;%1&apos; nebyl nalezen mezi jmény sloupců. Existující sloupce: [%2]</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="699"/>
         <source>Cannot find table field for column index: %1, table index: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít políčko tabulky pro index sloupce %1, index tabulky: %2</translation>
     </message>
 </context>
 <context>
@@ -189,7 +189,7 @@
         <location filename="src/sql/catalog.cpp" line="296"/>
         <location filename="src/sql/catalog.cpp" line="314"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nalezeno info pro neexistující políčko &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -207,7 +207,7 @@
     <message>
         <location filename="src/utils/clioptions.cpp" line="100"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno konfiguračního souboru, je nahráván z {app-name}[.conf] pokud soubor existuje v {config-path}</translation>
     </message>
 </context>
 </TS>
