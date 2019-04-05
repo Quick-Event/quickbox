@@ -131,7 +131,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="81"/>
         <source>When checked, all the maps defined for class will be used during drawing</source>
-        <translation>Pokud je zaškrtnutý, je celkový počet map zohledněn při sestavování startovek</translation>
+        <translation>Pokud je zaškrtnuto, je celkový počet map zohledněn při sestavování startovek</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="84"/>
@@ -266,7 +266,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="154"/>
         <source>Pos</source>
-        <translation>Pos</translation>
+        <translation>Číslo</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="155"/>
@@ -524,7 +524,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="262"/>
         <source>clash with: %1&lt;br/&gt;</source>
-        <translation type="unfinished">koliduje s: %1&lt;br/&gt;</translation>
+        <translation>koliduje s: %1&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
@@ -537,7 +537,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="29"/>
         <source>Lock class start time</source>
-        <translation type="unfinished">Uzamknout startovní časy kategorie</translation>
+        <translation>Uzamknout startovní časy kategorie</translation>
     </message>
 </context>
 <context>
@@ -550,12 +550,12 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">&amp;Uložit</translation>
+        <translation>&amp;Uložit</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="43"/>
         <source>&amp;Find</source>
-        <translation type="unfinished">&amp;Najít</translation>
+        <translation>&amp;Najít</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="21"/>
@@ -570,7 +570,7 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="56"/>
         <source>E%1 Draw tool</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1 Nástroj pro losování</translation>
     </message>
 </context>
 <context>
@@ -593,12 +593,12 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="166"/>
         <source>Ignore class clash check</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorovat kontrolu kolizí kategorií</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="185"/>
         <source>InputDialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="185"/>
