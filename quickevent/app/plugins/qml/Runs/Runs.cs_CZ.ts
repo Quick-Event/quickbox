@@ -1287,7 +1287,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="134"/>
         <source>R</source>
-        <translation></translation>
+        <translation type="unfinished">R</translation>
     </message>
 </context>
 <context>
