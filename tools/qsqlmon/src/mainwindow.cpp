@@ -109,7 +109,7 @@ void MainWindow::init()
 	//setActiveConnection(qf::core::sql::Connection());
 	setActiveConnection2(NULL);
 
-	connect(ui.queryView, SIGNAL(statusBarAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
+	connect(ui.queryView, SIGNAL(statusBarAction(const QString&)), this, SLOT(onTableStatusBarAction(const QString&)));
 
 	setPersistentSettingsId("MainWindow");
 
@@ -1382,7 +1382,7 @@ void MainWindow::tearOffTable()
 		ui.queryView = new TableViewWidget();
 		//ui.queryView->setContextMenuPolicy(Qt::ActionsContextMenu);
 		//ui.queryView->setContextMenuPolicy();
-		connect(ui.queryView, SIGNAL(statusTextAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
+		connect(ui.queryView, &TableViewWidget::statusBarAction, this, &MainWindow::onTableStatusBarAction);
 		ly->addWidget(ui.queryView);
 		qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(ui.queryView);
 		m->setConnectionName(activeConnection().connectionName());
@@ -1417,7 +1417,7 @@ void MainWindow::changeEvent(QEvent * e)
 	}
 }
 
-void MainWindow::tableStatusBarTextAction(const QString &_text)
+void MainWindow::onTableStatusBarAction(const QString &_text)
 {
 	QString text = _text.trimmed();
 	if(!text.isEmpty()) {

@@ -77,7 +77,7 @@ private slots:
 	void addServer(Connection *connection_to_copy = NULL);
 	void setDbSearchPath(const QString &path);
 
-	void tableStatusBarTextAction(const QString &text);
+	void onTableStatusBarAction(const QString &text);
 
 	void lazyInit();
 private:
