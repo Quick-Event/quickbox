@@ -602,10 +602,10 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			}
 		);
 		qf::core::utils::TreeTable tt2 = row1.table();
-		int pos = 0;
+		//int pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
 			const qf::core::utils::TreeTableRow row2 = tt2.row(j);
-			pos++;
+			//pos++;
 			QVariantList person_result{"PersonResult"};
 			person_result.insert(person_result.count(),
 				 QVariantList{"Person",
@@ -627,7 +627,8 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			result.insert(result.count(), QVariantList{"FinishTime", stage_start_date_time.addMSecs(ftime).toString(Qt::ISODate)});
 			result.insert(result.count(), QVariantList{"Time", time});
 
-			QString competitor_status = "OK";
+			static auto STAT_OK = QStringLiteral("OK");
+			QString competitor_status = STAT_OK;
 			if (!ftime) {
 				 competitor_status = "DidNotFinish";
 			}
@@ -639,8 +640,11 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			}
 			else if (row2.value("notCompeting").toBool())
 				competitor_status = "Inactive";
-			if (competitor_status == QStringLiteral("Ok"))
+			if (competitor_status == STAT_OK) {
+				// The position in the result list for the person that the result belongs to.
+				// This element should only be present when the Status element is set to OK.
 				result.insert(result.count(), QVariantList{"Position", row2.value("npos")});
+			}
 			result.insert(result.count(), QVariantList{"Status", competitor_status});
 
 			qfs::QueryBuilder qb;
