@@ -1022,15 +1022,16 @@ void CardReaderWidget::readStationBackupMemory()
 						int si = punch.value(0).toInt();
 						q1.bindValue(QStringLiteral(":siId"), si);
 						QDateTime punch_time = punch.value(1).toDateTime();
-						int check_time_msec = stage_start_dt.msecsTo(punch_time);
+						int check_time_msec = (int)stage_start_dt.msecsTo(punch_time);
 						q1.bindValue(QStringLiteral(":punchDateTime"), punch_time);
 						bool card_error = punch.value(2).toBool();
 
 						q1.bindValue(QStringLiteral(":cardErr"), card_error);
-						q1.exec(!qfc::Exception::Throw);
+						q1.exec(!qfc::Exception::Throw); // ignore unique key error
 
+						q2.bindValue(QStringLiteral(":siId"), si);
 						q2.bindValue(QStringLiteral(":checkTimeMs"), check_time_msec);
-						q2.exec(!qfc::Exception::Throw);
+						q2.exec(qfc::Exception::Throw);
 					}
 					transaction.commit();
 				}
