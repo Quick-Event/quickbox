@@ -141,25 +141,27 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 		ui->lblClassStart->setText(class_start_time_min >= 0? QString::number(class_start_time_min): "---");
 		ui->lblClassInterval->setText(class_start_interval_min >= 0? QString::number(class_start_interval_min): "---");
 	}
+	/*
 	qfs::QueryBuilder qb2;
 	qb2.select("siId, MAX(punchDateTime) AS punchDateTime")
 			.from("stationsbackup")
 			.where("stageId=" QF_IARG(stage_id))
 			.groupBy("siId")
 			.as("checktimes");
+			*/
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("classes", "name")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select2("competitors", "id, registration, licence, ranking, siId, note")
-			.select2("checktimes", "punchDateTime")
+			//.select2("checktimes", "punchDateTime")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
-			.joinQuery("runs.siid", qb2, "siId")
+			//.joinQuery("runs.siid", qb2, "siId")
 			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
 	if(is_relays) {

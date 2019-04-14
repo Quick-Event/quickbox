@@ -183,7 +183,10 @@ Schema {
 					//notNull: true
 				},
 				Field { name: 'relayId'; type: Int {} },
-				//Field { name: 'checkDateTime'; type: DateTime {} },
+
+				Field { name: 'checkTimeMs'; type: Int {}
+					comment: 'in miliseconds'
+				},
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -193,6 +196,7 @@ Schema {
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds since event run'
 				},
+
 				Field { name: 'isRunning'; type: Boolean { }
 					defaultValue: true;
 					comment: "Competitor is running in this stage"

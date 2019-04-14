@@ -489,7 +489,6 @@ void CardReaderWidget::onComOpenChanged(bool comm_is_open)
 void CardReaderWidget::onOpenCommTriggered(bool checked)
 {
 	qfLogFuncFrame() << "checked:" << checked;
-	bool is_open = false;
 	if(checked) {
 		QSettings settings;
 		settings.beginGroup(CardReader::CardReaderPlugin::SETTINGS_PREFIX);
@@ -500,10 +499,7 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 		int data_bits = settings.value("dataBits", 8).toInt();
 		int stop_bits = settings.value("stopBits", 1).toInt();
 		QString parity = settings.value("parity", "none").toString();
-		if(commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
-			is_open = true;
-		}
-		else {
+		if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
 			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(commPort()->errorString()));
 		}
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
@@ -1014,10 +1010,11 @@ void CardReaderWidget::readStationBackupMemory()
 					q1.prepare("INSERT INTO stationsbackup (stageId, stationNumber, siId, punchDateTime, cardErr) VALUES"
 							  " (:stageId, :stationNumber, :siId, :punchDateTime, :cardErr)"
 							  , qfc::Exception::Throw);
-					//qfs::Query q2;
-					//q2.prepare("UPDATE runs SET checkDateTime=:punchDateTime"
-					//		  " WHERE siId=:siId AND checkDateTime IS NULL"
-					//		  , qfc::Exception::Throw);
+					QDateTime stage_start_dt = eventPlugin()->stageStartDateTime(stage_id);
+					qfs::Query q2;
+					q2.prepare("UPDATE runs SET checkTimeMs=:checkTimeMs"
+							  " WHERE siId=:siId AND checkTimeMs IS NULL AND stageId=" QF_IARG(stage_id)
+							  , qfc::Exception::Throw);
 					for (int i = 0; i < punches.size(); i++) {
 						QVariantList punch = punches[i].toList();
 						q1.bindValue(QStringLiteral(":stageId"), stage_id);
@@ -1025,10 +1022,15 @@ void CardReaderWidget::readStationBackupMemory()
 						int si = punch.value(0).toInt();
 						q1.bindValue(QStringLiteral(":siId"), si);
 						QDateTime punch_time = punch.value(1).toDateTime();
+						int check_time_msec = stage_start_dt.msecsTo(punch_time);
 						q1.bindValue(QStringLiteral(":punchDateTime"), punch_time);
 						bool card_error = punch.value(2).toBool();
+
 						q1.bindValue(QStringLiteral(":cardErr"), card_error);
 						q1.exec(!qfc::Exception::Throw);
+
+						q2.bindValue(QStringLiteral(":checkTimeMs"), check_time_msec);
+						q2.exec(!qfc::Exception::Throw);
 					}
 					transaction.commit();
 				}
