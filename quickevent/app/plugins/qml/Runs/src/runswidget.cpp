@@ -273,7 +273,7 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	qb.select2("runs", "id")
 			.select2("competitors", "registration")
 			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId=" QF_IARG(stage_id))
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id))
 			.where("competitors.classId=" QF_IARG(class_id));
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
