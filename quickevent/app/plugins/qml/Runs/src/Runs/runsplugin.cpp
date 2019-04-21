@@ -464,7 +464,10 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.joinRestricted("competitors.id"
 							, "runs.competitorId"
-							, QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND runs.finishTimeMs>0") + (exclude_disq? " AND NOT runs.disqualified": "")
+							, QStringLiteral("runs.stageId={{stage_id}}"
+											 " AND runs.isRunning"
+											 " AND (runs.finishTimeMs>0 OR runs.checkTimeMs IS NOT NULL)")
+							+ (exclude_disq? " AND NOT runs.disqualified": "")
 							, "JOIN")
 			.where("competitors.classId={{class_id}}")
 			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
