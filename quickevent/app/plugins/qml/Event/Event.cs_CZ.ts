@@ -4,10 +4,6 @@
 <context>
     <name>ConnectDbDialogWidget</name>
     <message>
-        <source>Form</source>
-        <translation>Formulář</translation>
-    </message>
-    <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
         <source>Select database</source>
         <translation>Vybrat databázi</translation>
@@ -92,7 +88,7 @@
 <context>
     <name>DbSchema</name>
     <message>
-        <location filename="qml/DbSchema.qml" line="445"/>
+        <location filename="qml/DbSchema.qml" line="449"/>
         <source>Data version</source>
         <translation>Verze dat</translation>
     </message>

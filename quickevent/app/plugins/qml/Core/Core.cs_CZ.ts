@@ -22,10 +22,6 @@
         <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze databáze: %2&lt;br/&gt;Sestavení: %3 %4</translation>
     </message>
     <message>
-        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;build: %2 %3</source>
-        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Sestavení: %2 %3</translation>
-    </message>
-    <message>
         <location filename="src/coreplugin.cpp" line="81"/>
         <source>About Qt</source>
         <translation>O knihovně Qt</translation>

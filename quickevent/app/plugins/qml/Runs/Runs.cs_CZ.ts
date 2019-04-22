@@ -155,6 +155,11 @@
         <translation>Statistiky závodu</translation>
     </message>
     <message>
+        <location filename="src/eventstatisticswidget.ui" line="59"/>
+        <source>Print results for classes with new runners</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="src/eventstatisticswidget.ui" line="73"/>
         <source>Print results in selected rows</source>
         <translation>Vytisknout výsledky vybraných kategorií</translation>
@@ -231,10 +236,6 @@
         <translation>Etapové výsledky po kategoriích</translation>
     </message>
     <message>
-        <source>Number of places in each class:</source>
-        <translation type="vanished">Počet míst v každé kategorii:</translation>
-    </message>
-    <message>
         <location filename="qml/Results.qml" line="206"/>
         <location filename="qml/Results.qml" line="350"/>
         <source>Stage awards</source>
@@ -244,10 +245,6 @@
         <location filename="qml/Results.qml" line="301"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
-    </message>
-    <message>
-        <source>Number of stages:</source>
-        <translation type="vanished">Počet etap:</translation>
     </message>
 </context>
 <context>
@@ -265,10 +262,6 @@
 </context>
 <context>
     <name>Runs::NStagesReportOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Upřesnění</translation>
-    </message>
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="14"/>
         <source>Report Options</source>
@@ -296,61 +289,6 @@
     </message>
 </context>
 <context>
-    <name>Runs::ReportOptionsDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="vanished">Upřesnění</translation>
-    </message>
-    <message>
-        <source>Class filter</source>
-        <translation type="vanished">Filtr kategorií</translation>
-    </message>
-    <message>
-        <source>Posix regular expression</source>
-        <translation type="vanished">POSIX regulární výraz</translation>
-    </message>
-    <message>
-        <source>RegExp</source>
-        <translation>Regulární výraz</translation>
-    </message>
-    <message>
-        <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
-        <translation>Otazník (?) zastupuje libovolný znak, hvězdička (*) zastupuje skupinu 0–n libovolných znaků.</translation>
-    </message>
-    <message>
-        <source>Doesn&apos;t match</source>
-        <translation type="vanished">Nevyhovuje filtru</translation>
-    </message>
-    <message>
-        <source>Coma delimited list of class names</source>
-        <translation>Seznam kategorií oddělených čárkou</translation>
-    </message>
-    <message>
-        <source>Class names</source>
-        <translation type="vanished">Jména kategorií</translation>
-    </message>
-    <message>
-        <source>Page layout</source>
-        <translation type="vanished">Rozvržení stránky</translation>
-    </message>
-    <message>
-        <source>None</source>
-        <translation type="vanished">Žádné</translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="vanished">Sloupec</translation>
-    </message>
-    <message>
-        <source>Page</source>
-        <translation type="vanished">Stránka</translation>
-    </message>
-    <message>
-        <source>Break type</source>
-        <translation type="vanished">Typ zalomení</translation>
-    </message>
-</context>
-<context>
     <name>Runs::RunsPlugin</name>
     <message>
         <location filename="src/Runs/runsplugin.cpp" line="123"/>
@@ -358,7 +296,7 @@
         <translation>Statistiky závodu</translation>
     </message>
     <message>
-        <location filename="src/Runs/runsplugin.cpp" line="672"/>
+        <location filename="src/Runs/runsplugin.cpp" line="679"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
@@ -387,6 +325,11 @@
         <location filename="src/runstablemodel.cpp" line="27"/>
         <source>id</source>
         <translation>id</translation>
+    </message>
+    <message>
+        <location filename="src/runstablemodel.cpp" line="28"/>
+        <source>Relay</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="29"/>
@@ -461,11 +404,6 @@
         <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="38"/>
-        <source>Time loaded from CHECK station</source>
-        <translation>Čas, kdy byla provedena kontrola vynulování čipu</translation>
-    </message>
-    <message>
         <location filename="src/runstablemodel.cpp" line="39"/>
         <source>Start</source>
         <translation>Start</translation>
@@ -510,14 +448,6 @@
         <location filename="src/runstablemodel.cpp" line="44"/>
         <source>Card in lent table</source>
         <translation>Čip z tabulky čipů k zapůjčení</translation>
-    </message>
-    <message>
-        <source>L</source>
-        <translation type="vanished">P</translation>
-    </message>
-    <message>
-        <source>Card lent</source>
-        <translation type="vanished">Čip půjčen</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="45"/>
@@ -604,48 +534,48 @@
         <translation>interval</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="237"/>
+        <location filename="src/runstablewidget.cpp" line="239"/>
         <source>Show receipt</source>
         <oldsource>Show card</oldsource>
         <translation>Ukázat mezičasy</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="238"/>
+        <location filename="src/runstablewidget.cpp" line="240"/>
         <source>Load times from card in selected rows</source>
         <translation>Nahrát časy z čipu ve vybraných řádcích</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="239"/>
+        <location filename="src/runstablewidget.cpp" line="241"/>
         <source>Print card</source>
         <translation>Vytisknout mezičasy</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="241"/>
+        <location filename="src/runstablewidget.cpp" line="243"/>
         <source>Shift start times in selected rows</source>
         <translation>Posunout čas startu ve vybraných řádcích</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="242"/>
+        <location filename="src/runstablewidget.cpp" line="244"/>
         <source>Clear times in selected rows</source>
         <translation>Smazat čas ve vybraných řádcích</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="262"/>
+        <location filename="src/runstablewidget.cpp" line="264"/>
         <source>Reloading times for %1</source>
         <translation>Znovu načítám časy pro %1</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="311"/>
+        <location filename="src/runstablewidget.cpp" line="313"/>
         <source>Get number</source>
         <translation>Vložte číslo</translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="311"/>
+        <location filename="src/runstablewidget.cpp" line="313"/>
         <source>Start times offset [min]:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablewidget.cpp" line="362"/>
+        <location filename="src/runstablewidget.cpp" line="364"/>
         <source>Duplicate SI inserted.</source>
         <translation>Vloženo duplicitní SI.</translation>
     </message>
@@ -737,10 +667,6 @@
         <location filename="src/runswidget.cpp" line="536"/>
         <source>Class is locked for drawing.</source>
         <translation>Kategorie je uzamčena pro losování.</translation>
-    </message>
-    <message>
-        <source>Get number</source>
-        <translation type="obsolete">Vložte číslo</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="789"/>
@@ -847,34 +773,6 @@
 </context>
 <context>
     <name>StartLists</name>
-    <message>
-        <source>Get item</source>
-        <translation>Vyberte možnost</translation>
-    </message>
-    <message>
-        <source>Corridor:</source>
-        <translation type="vanished">Koridor:</translation>
-    </message>
-    <message>
-        <source>H</source>
-        <translation type="vanished">H</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <translation type="vanished">D</translation>
-    </message>
-    <message>
-        <source>H+D</source>
-        <translation type="vanished">H+D</translation>
-    </message>
-    <message>
-        <source>Other</source>
-        <translation type="vanished">Ostatní</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="vanished">Vše</translation>
-    </message>
     <message>
         <location filename="qml/StartLists.qml" line="310"/>
         <source>Start list for starters</source>
@@ -1076,10 +974,6 @@
         <translation>&amp;WinSplits</translation>
     </message>
     <message>
-        <source>&amp;IOF XML 2.3</source>
-        <translation type="vanished">&amp;IOF XML 2.3</translation>
-    </message>
-    <message>
         <location filename="qml/main.qml" line="84"/>
         <location filename="qml/main.qml" line="94"/>
         <location filename="qml/main.qml" line="163"/>
@@ -1126,13 +1020,6 @@
         <location filename="qml/reports/results_nstages.qml" line="178"/>
         <source>DISQ</source>
         <translation>DISK</translation>
-    </message>
-</context>
-<context>
-    <name>results_nstages_awards</name>
-    <message>
-        <source>Results by classes</source>
-        <translation type="vanished">Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>

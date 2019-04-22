@@ -80,10 +80,6 @@
         <translation>P&amp;oznámka</translation>
     </message>
     <message>
-        <source>competitor</source>
-        <translation type="vanished">závodník</translation>
-    </message>
-    <message>
         <location filename="src/competitorwidget.cpp" line="178"/>
         <source>E&amp;%1</source>
         <translation>E&amp;%1</translation>
@@ -401,11 +397,6 @@
         <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
-        <source>L</source>
-        <comment>runs.cardLent</comment>
-        <translation type="obsolete">Půjčen čip</translation>
-    </message>
-    <message>
         <location filename="src/competitorwidget.cpp" line="93"/>
         <source>R</source>
         <comment>runs.cardReturned</comment>
@@ -505,10 +496,6 @@
         <location filename="qml/main.qml" line="26"/>
         <source>Competitors statistics</source>
         <translation>Statistiky závodníků</translation>
-    </message>
-    <message>
-        <source>&amp;Print</source>
-        <translation type="vanished">&amp;Tisk</translation>
     </message>
 </context>
 </TS>

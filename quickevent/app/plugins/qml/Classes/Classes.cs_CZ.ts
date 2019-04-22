@@ -314,10 +314,6 @@
         <translation>E%1</translation>
     </message>
     <message>
-        <source>Courses are not imported, class table is read only.</source>
-        <translation type="vanished">Tratě nejsou importovány, tabulka kategorií je jen pro čtení.</translation>
-    </message>
-    <message>
         <location filename="src/classeswidget.cpp" line="399"/>
         <location filename="src/classeswidget.cpp" line="474"/>
         <location filename="src/classeswidget.cpp" line="584"/>

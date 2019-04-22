@@ -242,29 +242,6 @@
     </message>
 </context>
 <context>
-    <name>receiptClassic</name>
-    <message>
-        <source>E</source>
-        <translation type="vanished">E</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="vanished">OK</translation>
-    </message>
-    <message>
-        <source>DISQ</source>
-        <translation type="vanished">DISK</translation>
-    </message>
-    <message>
-        <source>-----</source>
-        <translation type="vanished">-----</translation>
-    </message>
-    <message>
-        <source>standings: </source>
-        <translation type="vanished">pořadí: </translation>
-    </message>
-</context>
-<context>
     <name>sicard</name>
     <message>
         <location filename="qml/reports/sicard.qml" line="63"/>
