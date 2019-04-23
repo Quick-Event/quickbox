@@ -157,7 +157,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="59"/>
         <source>Print results for classes with new runners</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytisknout výsledky kategorií s novými závodníky</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="73"/>
@@ -329,7 +329,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="28"/>
         <source>Relay</source>
-        <translation type="unfinished"></translation>
+        <translation>Štafeta</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="29"/>
