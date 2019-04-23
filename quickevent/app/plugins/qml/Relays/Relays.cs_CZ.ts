@@ -16,7 +16,7 @@
     <message>
         <location filename="src/addlegdialogwidget.ui" line="44"/>
         <source>Type name, registration or SI</source>
-        <translation type="unfinished"></translation>
+        <translation>Začněte psát jméno, registraci nebo SI</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.ui" line="56"/>
