@@ -17,7 +17,7 @@ WORK_DIR=/home/fanda/t/_distro
 #USE_SYSTEM_QT=1
 
 if [ -z $USE_SYSTEM_QT ]; then
-    QT_DIR=/home/fanda/programs/qt5/5.12.0/gcc_64
+    QT_DIR=/home/fanda/programs/qt5/5.12.3/gcc_64
     echo using $QT_DIR
     QT_LIB_DIR=$QT_DIR/lib
     QMAKE=$QT_DIR/bin/qmake
