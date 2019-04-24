@@ -572,7 +572,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="313"/>
         <source>Start times offset [min]:</source>
-        <translation type="unfinished"></translation>
+        <translation>Offset startovního času [min]:</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="364"/>
@@ -1088,7 +1088,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="40"/>
         <source>When finished, run cmd</source>
-        <translation type="unfinished"></translation>
+        <translation>Po dokončení spusť cmd</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="50"/>
@@ -1103,7 +1103,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="107"/>
         <source>Export dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář pro export</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="119"/>
@@ -1118,7 +1118,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="21"/>
         <source>HTML multi page</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML stránka pro každou kategorii</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="22"/>
