@@ -574,17 +574,17 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="87"/>
         <source>Use mouse wheel to change start slot offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Použij kolečko myši pro posunutí startu v řádku</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="161"/>
         <source>Append start slot</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat další řádek</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="162"/>
         <source>Set slot start offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastav start v řádku</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="166"/>
@@ -599,7 +599,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="185"/>
         <source>Start slot offset [min]:</source>
-        <translation type="unfinished"></translation>
+        <translation>Start prvního v řádku [min]:</translation>
     </message>
 </context>
 <context>
