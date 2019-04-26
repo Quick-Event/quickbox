@@ -12,6 +12,9 @@ ClassDefWidget::ClassDefWidget(QWidget *parent)
 	ui->setupUi(this);
 	setWindowTitle(tr("Edit class"));
 
+	// set class start time read only, class start cannot be set this way in drawing tool
+	ui->edStartTime->setReadOnly(true);
+
 	dataController()->setDocument(new ClassDefDocument(this));
 }
 
