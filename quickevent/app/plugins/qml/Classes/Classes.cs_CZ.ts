@@ -82,12 +82,12 @@
     <message>
         <location filename="src/classdefwidget.cpp" line="13"/>
         <source>Edit class</source>
-        <translation>Edituj kategorii</translation>
+        <translation>Upravit kategorii</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.cpp" line="26"/>
         <source>Class %1</source>
-        <translation>Kategorie %1</translation>
+        <translation>kategorii %1</translation>
     </message>
 </context>
 <context>
