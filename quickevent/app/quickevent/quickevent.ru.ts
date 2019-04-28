@@ -23,11 +23,11 @@
     <name>MainWindow</name>
     <message>
         <source>Quick Event ver. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quick Event вер. %1</translation>
     </message>
     <message>
         <source>Application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал активности приложения</translation>
     </message>
 </context>
 </TS>
