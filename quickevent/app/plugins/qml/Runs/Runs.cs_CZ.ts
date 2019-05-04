@@ -502,12 +502,12 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="255"/>
         <source>Mid-air collision switching start times, reload table and try it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokus o současné prohození startovního času ze dvou míst, obnovte tabulku a zkuste to znovu.</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="297"/>
         <source>Mid-air collision setting start time, reload table and try it again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokus o současnou změnu startovního času ze dvou míst, obnovte tabulku a zkuste to znovu.</translation>
     </message>
 </context>
 <context>
