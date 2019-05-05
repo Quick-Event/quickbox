@@ -74,6 +74,9 @@ paths[Relays]=quickevent/app/plugins/qml/Relays
 paths[Runs]=quickevent/app/plugins/qml/Runs
 paths[Speaker]=quickevent/app/plugins/qml/Speaker
 
+paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
+paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
+
 paths[qsqlmon]=tools/qsqlmon
 
 if [[ $O_COMMAND == "import-ts" ]]; then
