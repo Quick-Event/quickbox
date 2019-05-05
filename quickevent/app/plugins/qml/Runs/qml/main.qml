@@ -170,7 +170,7 @@ RunsPlugin {
 	{
 		var a_print = root.partWidget.menuBar.actionForPath("print", false);
 
-		var a = a_print.addMenuInto("startList", "&Start list");
+		var a = a_print.addMenuInto("startList", qsTr("&Start list"));
 		a.addActionInto(act_print_startList_classes);
 		a.addActionInto(act_print_startList_clubs);
 		a.addActionInto(act_print_startList_starters);
@@ -178,7 +178,7 @@ RunsPlugin {
 		a.addActionInto(act_print_startList_classes_nstages);
 		a.addActionInto(act_print_startList_clubs_nstages);
 
-		a = a_print.addMenuInto("results", "&Results");
+		a = a_print.addMenuInto("results", qsTr("&Results"));
 		a.addActionInto(act_print_results_currentStage);
 		a.addActionInto(act_print_results_currentStageFirstN);
 		a.addSeparatorInto("results_awards_separator");
@@ -192,7 +192,7 @@ RunsPlugin {
 
 		var a_export = root.partWidget.menuBar.actionForPath("export", false);
 
-		var m_stlist = a_export.addMenuInto("startList", "&Start list");
+		var m_stlist = a_export.addMenuInto("startList", qsTr("&Start list"));
 		a = m_stlist.addMenuInto("html", "&HTML");
 		a.addActionInto(act_export_html_startList_classes);
 		a.addActionInto(act_export_html_startList_clubs);
