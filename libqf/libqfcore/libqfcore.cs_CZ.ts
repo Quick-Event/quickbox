@@ -106,7 +106,8 @@
         <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při zpracování dotazu: %1
+ %2</translation>
     </message>
 </context>
 <context>
@@ -197,7 +198,7 @@
     <message>
         <location filename="src/utils/clioptions.cpp" line="98"/>
         <source>Abort application on exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukončit aplikaci při výjimce</translation>
     </message>
     <message>
         <location filename="src/utils/clioptions.cpp" line="99"/>
@@ -207,7 +208,7 @@
     <message>
         <location filename="src/utils/clioptions.cpp" line="100"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
-        <translation>Jméno konfiguračního souboru, je nahráván z {app-name}[.conf] pokud soubor existuje v {config-path}</translation>
+        <translation>Jméno konfiguračního souboru, je nahráváno z {app-name}[.conf] pokud soubor existuje v {config-path}</translation>
     </message>
 </context>
 </TS>
