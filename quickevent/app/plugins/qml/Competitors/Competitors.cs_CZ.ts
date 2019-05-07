@@ -249,7 +249,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="173"/>
         <source>--- all ---</source>
-        <translation>--- všechno ---</translation>
+        <translation>-- všechny --</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="211"/>
@@ -378,7 +378,7 @@
         <location filename="src/competitorwidget.cpp" line="91"/>
         <source>LR</source>
         <comment>runs.cardLent</comment>
-        <translation>PČ</translation>
+        <translation>VČ</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="91"/>
@@ -477,12 +477,12 @@
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
         <source>maps</source>
-        <translation>Mapy</translation>
+        <translation>mapy</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
         <source>res</source>
-        <translation>Rozdíl</translation>
+        <translation>rozdíl</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
