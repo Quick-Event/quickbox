@@ -148,7 +148,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="397"/>
         <source>Edit Stage</source>
-        <translation>Uprav etapu</translation>
+        <translation>Upravit etapu</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="651"/>
@@ -175,7 +175,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="796"/>
         <source>Cannot create event, database is not open: %1</source>
-        <translation>Nelze vytvořit závod, databáze není otevřena: %1</translation>
+        <translation>Nelze vytvořit závod, databáze není připojena: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="850"/>
@@ -207,7 +207,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="918"/>
         <source>Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.</source>
-        <translation>Závod využívá příliš starou verzi dat (%1), minimální verze je (%2). Použij Závod/Import pro konverzi dat do aktuální verze.</translation>
+        <translation>Závod využívá příliš starou verzi dat (%1), minimální verze je (%2). Použij Závod/Importovat závod pro konverzi dat do aktuální verze.</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="925"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1042"/>
         <source>Cannot delete existing file %1</source>
-        <translation>Nemohu smazat existujicí soubor %1</translation>
+        <translation>Nelze smazat existující soubor %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1059"/>
@@ -437,7 +437,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="290"/>
         <source>Card check</source>
-        <translation>Čas kontroly čipu (check)</translation>
+        <translation>Čas kontroly čipu</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="300"/>
