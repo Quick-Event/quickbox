@@ -95,7 +95,7 @@
     <message>
         <location filename="src/Classes/classesplugin.cpp" line="236"/>
         <source>Cannot find id for code: %1</source>
-        <translation>Nelze najít ID pro kód: %1</translation>
+        <translation>Nelze najít ID pro kontrolu: %1</translation>
     </message>
 </context>
 <context>
@@ -103,7 +103,7 @@
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>Get text</source>
-        <translation>Zadej text</translation>
+        <translation>Zadejte text</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
@@ -444,7 +444,7 @@
     <message>
         <location filename="src/editcourseswidget.ui" line="39"/>
         <source>Courses</source>
-        <translation>Kategorie</translation>
+        <translation>Tratě</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="34"/>
