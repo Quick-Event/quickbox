@@ -152,7 +152,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Statistiky závodu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="59"/>
@@ -431,7 +431,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
         <source>LR</source>
-        <translation>PČ</translation>
+        <translation>VČ</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
@@ -497,7 +497,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="102"/>
         <source>Canont set not running flag for competitor with valid finish time.</source>
-        <translation>Nelze nastavit příznak &quot;neběží&quot; závodníkovi s validním cílovým časem.</translation>
+        <translation>Nelze nastavit příznak &quot;nestartuje&quot; závodníkovi s validním cílovým časem.</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="255"/>
@@ -611,7 +611,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="78"/>
         <source>Randomized equidistant clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhodné rozmístění klubů</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="79"/>
@@ -636,7 +636,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="80"/>
         <source>Equidistant clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozmístění klubů</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="81"/>
@@ -702,13 +702,13 @@
     <message>
         <location filename="src/runswidget.cpp" line="83"/>
         <source>Keep runners order</source>
-        <translation>Zachovat pořadí závodníků</translation>
+        <translation>Zachování pořadí závodníků</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="131"/>
         <location filename="src/runswidget.cpp" line="227"/>
         <source>--- all ---</source>
-        <translation>--- všechno ---</translation>
+        <translation>--- všechny ---</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="178"/>
@@ -758,7 +758,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="350"/>
         <source>Import</source>
-        <translation>Import</translation>
+        <translation>Importovat</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="439"/>
@@ -768,7 +768,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="713"/>
         <source>Start interval is zero, proceed anyway?</source>
-        <translation>Startovní interval je nula. Přesto pokračovat?</translation>
+        <translation>Startovní interval je nula. Chcete přesto pokračovat?</translation>
     </message>
 </context>
 <context>
@@ -871,18 +871,18 @@
     <message>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="78"/>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Nestart</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="82"/>
         <source>Ret</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrácen</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="130"/>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="134"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Ano</translation>
     </message>
 </context>
 <context>
@@ -896,7 +896,7 @@
     <message>
         <location filename="qml/main.qml" line="37"/>
         <source>Classes n stages</source>
-        <translation>Kategorie n etapa</translation>
+        <translation>Kategorie n etap</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="44"/>
@@ -906,7 +906,7 @@
     <message>
         <location filename="qml/main.qml" line="51"/>
         <source>Clubs n stages</source>
-        <translation>Kluby n etapa</translation>
+        <translation>Kluby n etap</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="58"/>
@@ -1174,7 +1174,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="134"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>P</translation>
     </message>
 </context>
 <context>
