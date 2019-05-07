@@ -32,7 +32,7 @@
     <message>
         <location filename="qml/main.qml" line="58"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation>Změny v nastavení jazyka &apos;%1&apos; budou viditelné až po restartu aplikace.</translation>
+        <translation>Změny v nastavení jazyka &apos;%1&apos; se projeví až po restartu aplikace.</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="77"/>
@@ -62,7 +62,7 @@
     <message>
         <location filename="qml/main.qml" line="127"/>
         <source>&amp;Import</source>
-        <translation>&amp;Import</translation>
+        <translation>&amp;Importovat</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="133"/>
