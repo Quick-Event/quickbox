@@ -5,11 +5,11 @@
     <name>AppCliOptions</name>
     <message>
         <source>Application locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Региональные настройки приложения</translation>
     </message>
     <message>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Профили приложения, см.: https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
 </context>
 <context>
