@@ -26,13 +26,12 @@ public:
 	QF_VARIANTMAP_FIELD(QVariantList, s, setS, tartSlots)
 };
 
-
 class GanttItem : public QGraphicsRectItem, public IGanttItem
 {
 private:
 	typedef QGraphicsRectItem Super;
 public:
-	GanttItem(QGraphicsItem * parent = 0);
+	GanttItem(QGraphicsItem * parent = nullptr);
 
 	void load(int stage_id);
 	void save(int stage_id);

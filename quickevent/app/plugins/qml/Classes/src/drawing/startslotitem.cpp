@@ -49,9 +49,12 @@ ClassItem *StartSlotItem::classItemAt(int ix, bool throw_ex)
 
 ClassItem *StartSlotItem::takeClassItemAt(int ix)
 {
-	ClassItem *ret = m_classItems.takeAt(ix);
-	ret->setParentItem(nullptr);
-	return ret;
+	if(ix >= 0 && ix < m_classItems.count()) {
+		ClassItem *ret = m_classItems.takeAt(ix);
+		ret->setParentItem(nullptr);
+		return ret;
+	}
+	return nullptr;
 }
 
 void StartSlotItem::setStartOffset(int start_offset)
