@@ -167,13 +167,13 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
 	qfw::Action *a_print = part_widget->menuBar()->actionForPath("print", true);
-	a_print->setText("&Print");
+	a_print->setText(tr("&Print"));
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
-	a_import->setText("&Import");
+	a_import->setText(tr("&Import"));
 
 	qfw::Action *a_export = part_widget->menuBar()->actionForPath("export", true);
-	a_export->setText("E&xport");
+	a_export->setText(tr("E&xport"));
 
 	qfw::Action *a_import_start_times = a_import->addMenuInto("startTimes", tr("Start times"));
 	qfw::Action *a_import_start_times_ob2000 = new qfw::Action("ob2000", tr("OB 2000"));

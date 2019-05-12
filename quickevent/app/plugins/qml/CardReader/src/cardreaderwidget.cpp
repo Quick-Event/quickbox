@@ -246,10 +246,10 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
 	{
 		qfw::Action *a_station = part_widget->menuBar()->actionForPath("station", true);
-		a_station->setText("&Station");
+		a_station->setText(tr("&Station"));
 		a_station->addActionInto(m_actCommOpen);
 		{
-			QAction *a = new QAction("Station info");
+			QAction *a = new QAction(tr("Station info"));
 			a->setEnabled(false);
 			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
 			connect(a, &QAction::triggered, [this]() {
@@ -279,7 +279,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 			a_station->addActionInto(a);
 		}
 		{
-			QAction *a = new QAction("Read station memory");
+			QAction *a = new QAction(tr("Read station memory"));
 			a->setEnabled(false);
 			connect(commPort(), &siut::CommPort::openChanged, a, &QAction::setEnabled);
 			connect(a, &QAction::triggered, this, &CardReaderWidget::readStationBackupMemory);
@@ -306,18 +306,18 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	}
 	{
 		qfw::Action *a_tools = part_widget->menuBar()->actionForPath("tools", true);
-		a_tools->setText("&Tools");
+		a_tools->setText(tr("&Tools"));
 		a_tools->addActionInto(m_actSettings);
 		{
 			auto *m_import_cards = a_tools->addMenuInto("importCards", tr("Import cards"));
 			{
-				qfw::Action *a = new qfw::Action("Laps only CSV");
+				qfw::Action *a = new qfw::Action(tr("Laps only CSV"));
 				connect(a, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::importCards_lapsOnlyCsv);
 				m_import_cards->addActionInto(a);
 			}
 		}
 		{
-			qfw::Action *a = new qfw::Action("Test audio");
+			qfw::Action *a = new qfw::Action(tr("Test audio"));
 			connect(a, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::operatorAudioNotify);
 			a_tools->addActionInto(a);
 		}
@@ -325,7 +325,7 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
 	{
-		QLabel *lbl = new QLabel(" Check type ");
+		QLabel *lbl = new QLabel(tr(" Check type "));
 		main_tb->addWidget(lbl);
 		auto *card_reader_plugin = qobject_cast<CardReader::CardReaderPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
 		m_cbxCardCheckers = new QComboBox();
