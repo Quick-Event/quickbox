@@ -621,6 +621,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			);
 
 			QVariantList result{"Result"};
+			int run_id = row2.value("runs.id").toInt();
 			int stime = row2.value("startTimeMs").toInt() / 1000;
 			int ftime = row2.value("finishTimeMs").toInt() / 1000;
 			int time = row2.value("timeMs").toInt() / 1000;
@@ -650,23 +651,65 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			}
 			result.insert(result.count(), QVariantList{"Status", competitor_status});
 
-			qfs::QueryBuilder qb;
-			qb.select2("runlaps", "*")
-				.from("runlaps")
-				.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
-				.where("runlaps.code!=999") // omit finish lap
-				.orderBy("runlaps.position");
+			int course_id = courseForRun(run_id);
+			struct SplitTime
+			{
+				int code = 0;
+				int time = 0;
+				QString status;
 
-			qfs::Query q;
-			q.exec(qb.toString());
-			while(q.next()) {
-				//console.info(k, reportModel.value(k, "position"));
-				result.insert(result.count(),
-					QVariantList{"SplitTime",
-						QVariantList{"ControlCode", q.value("code") },
-						QVariantList{"Time", q.value("stpTimeMs").toInt() / 1000 },
+				SplitTime(int c = 0) : code(c) {}
+			};
+			QMap<int, QVector<SplitTime>> course_codes;
+			if(!course_codes.contains(course_id)) {
+				qf::core::sql::QueryBuilder qb;
+				qb.select2("codes", "code")
+						.from("coursecodes")
+						.join("coursecodes.codeId", "codes.id")
+						.where("coursecodes.courseId=" QF_IARG(course_id))
+						.orderBy("coursecodes.position");
+				qf::core::sql::Query q;
+				q.exec(qb.toString(), qf::core::Exception::Throw);
+				QVector<SplitTime> sts;
+				while(q.next()) {
+					QSqlRecord rec = q.record();
+					sts << SplitTime{q.value(0).toInt()};
+				}
+				course_codes[course_id] = sts;
+			}
+			QVector<SplitTime> &codes = course_codes[course_id];
+			{
+				for (int i = 0; i < codes.count(); ++i)
+					codes[i].status = QStringLiteral("Missing");
+
+				qfs::QueryBuilder qb;
+				qb.select2("runlaps", "*")
+					.from("runlaps")
+					.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
+					.where("runlaps.code!=999") // omit finish lap
+					.orderBy("runlaps.position");
+
+				qfs::Query q;
+				q.exec(qb.toString());
+				while(q.next()) {
+					int ix = q.value(QStringLiteral("position")).toInt() - 1;
+					if(ix < 0 || ix >= codes.count()) {
+						qfWarning() << "runlap position out of codes range.";
+						continue;
 					}
-				);
+					SplitTime &sts = codes[ix];
+					sts.time = q.value("stpTimeMs").toInt() / 1000;
+					sts.status = QString();
+				}
+			}
+			for(const SplitTime &sts : codes) {
+				QVariantList split_time{QStringLiteral("SplitTime"),
+					QVariantList{QStringLiteral("ControlCode"), sts.code },
+					QVariantList{QStringLiteral("Time"), sts.time },
+				};
+				if(!sts.status.isEmpty())
+					split_time.insert(1, QVariantMap{ {QStringLiteral("status"), sts.status} });
+				result.insert(result.count(), split_time);
 			}
 
 			person_result.insert(person_result.count(), result);

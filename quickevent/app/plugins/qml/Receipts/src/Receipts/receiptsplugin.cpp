@@ -195,8 +195,6 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	int current_standings = 0;
 	int competitors_finished = 0;
 	QMap<int, int> best_laps; //< position->time
-	///QMap<int, int> missing_codes; //< pos->code
-	///QSet<int> out_of_order_codes;
 	{
 		qf::core::model::SqlTableModel model;
 		qf::core::sql::QueryBuilder qb;
