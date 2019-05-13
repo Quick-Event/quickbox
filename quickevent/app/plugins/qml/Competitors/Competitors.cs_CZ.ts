@@ -31,7 +31,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="45"/>
         <source>Type to find competitor in registrations ...</source>
-        <translation>Vepsat pro nalezení závodníka v registraci...</translation>
+        <translation>Začněte psát pro nalezení závodníka v registracích...</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="58"/>
@@ -219,12 +219,12 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="216"/>
         <source>Save and &amp;next</source>
-        <translation>Ulož a &amp;další</translation>
+        <translation>Uložit a &amp;další</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="251"/>
         <source>Realy delete all the selected competitors? This action cannot be reverted.</source>
-        <translation>Opravdu si přejete vymazat označené závodníky? Tuto akci nelze obnovit.</translation>
+        <translation>Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="264"/>
