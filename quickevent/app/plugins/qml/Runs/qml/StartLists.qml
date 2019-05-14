@@ -259,7 +259,7 @@ QtObject {
 			var opts = dlg.optionsMap();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startList_classes.qml"
 										   , tt.data()
-										   , qsTr("Start list by clases")
+										   , qsTr("Start list by classes")
 										   , "printStartList"
 										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
 											   , isColumnBreak: dlg.isColumnBreak()
@@ -328,7 +328,7 @@ QtObject {
 		//console.info("n:", n)
 		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startLists_classes_nstages.qml"
 									   , tt.data()
-									   , qsTr("Start list by clases")
+									   , qsTr("Start list by classes")
 									   , ""
 									   , {stageCount: n});
 	}

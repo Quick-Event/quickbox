@@ -62,7 +62,7 @@ int RelaysPlugin::editRelay(int id, int mode)
 {
 	qfLogFuncFrame() << "id:" << id;
 	auto *w = new  RelayWidget();
-	w->setWindowTitle(tr("Edit  Relay"));
+	w->setWindowTitle(tr("Edit Relay"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, m_partWidget);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	dlg.setCentralWidget(w);
