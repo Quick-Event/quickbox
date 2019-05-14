@@ -5,7 +5,7 @@
     <name>AppCliOptions</name>
     <message>
         <source>Application locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Regionální nastavení aplikace</translation>
     </message>
     <message>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
