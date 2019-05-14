@@ -27,7 +27,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
         <source>Data storage</source>
-        <translation>Datové uložiště</translation>
+        <translation>Datové úložiště</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="98"/>
@@ -465,7 +465,7 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
         <source>Export dir</source>
-        <translation>Exportovat adr</translation>
+        <translation>Adresář pro export</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
