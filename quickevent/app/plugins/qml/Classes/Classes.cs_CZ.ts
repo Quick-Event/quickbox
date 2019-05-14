@@ -395,7 +395,7 @@
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="20"/>
         <source>Course codes</source>
-        <translation>Kontroly kategorie</translation>
+        <translation>Kontroly tratě</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="78"/>
