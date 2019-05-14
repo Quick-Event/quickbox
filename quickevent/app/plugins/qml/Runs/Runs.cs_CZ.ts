@@ -596,7 +596,7 @@
         <location filename="src/runswidget.ui" line="85"/>
         <location filename="src/runswidget.ui" line="95"/>
         <source>Draw selected  class or all classes when all the clases are selected.</source>
-        <translation>Losování vybraných kategorií nebo všech kategorií, pokud jsou vybrány.</translation>
+        <translation>Losovat vybrané kategorie nebo všechny kategorie, pokud jsou vybrány.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="88"/>
@@ -666,12 +666,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="536"/>
         <source>Class is locked for drawing.</source>
-        <translation>Kategorie je uzamčena pro losování.</translation>
+        <translation>Kategorie má uzamčené losování.</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="789"/>
         <source>Reset all start times and unlock for drawing for this class?</source>
-        <translation>Resetovat všechny startovní časy v této kategorii a odemknout losování?</translation>
+        <translation>Smazat všechny startovní časy v této kategorii a odemknout losování?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="199"/>
