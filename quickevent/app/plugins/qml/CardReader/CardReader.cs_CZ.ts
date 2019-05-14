@@ -86,7 +86,13 @@ Handshake: {{HandShake}}
 Password access: {{PasswordAccess}}
 Read out after punch: {{ReadOutAfterPunch}}
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Jednotka číslo: {{StationNumber}}
+Extended mód: {{ExtendedMode}}
+Auto send: {{AutoSend}}
+Handshake: {{HandShake}}
+Password access: {{PasswordAccess}}
+Vyčítat po oražení: {{ReadOutAfterPunch}}
+</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="269"/>
@@ -95,7 +101,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="272"/>
         <location filename="src/cardreaderwidget.cpp" line="273"/>
         <source>True</source>
-        <translation>Zapnut</translation>
+        <translation>Zapnuto</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="269"/>
@@ -104,7 +110,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="272"/>
         <location filename="src/cardreaderwidget.cpp" line="273"/>
         <source>False</source>
-        <translation>Vypnut</translation>
+        <translation>Vypnuto</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="312"/>
@@ -194,7 +200,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="982"/>
         <source>DateTime</source>
-        <translation type="unfinished">Datum/čas</translation>
+        <translation>Datum/čas</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="982"/>
@@ -272,7 +278,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="27"/>
         <source>Reader</source>
-        <translation>Nastavení portu</translation>
+        <translation>Vyčítací jednotka</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="33"/>
