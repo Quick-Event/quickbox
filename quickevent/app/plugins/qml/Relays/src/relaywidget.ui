@@ -115,7 +115,7 @@
          <number>9999999</number>
         </property>
         <property name="dataId" stdset="0">
-         <string>relays.number</string>
+         <string notr="true">relays.number</string>
         </property>
        </widget>
       </item>

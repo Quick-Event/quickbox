@@ -47,7 +47,7 @@
       <number>999999</number>
      </property>
      <property name="dataId" stdset="0">
-      <string>classdefs.startTimeMin</string>
+      <string notr="true">classdefs.startTimeMin</string>
      </property>
     </widget>
    </item>
@@ -63,7 +63,7 @@
       <number>999999</number>
      </property>
      <property name="dataId" stdset="0">
-      <string>classdefs.startIntervalMin</string>
+      <string notr="true">classdefs.startIntervalMin</string>
      </property>
     </widget>
    </item>
@@ -76,7 +76,7 @@
       <number>999999</number>
      </property>
      <property name="dataId" stdset="0">
-      <string>classdefs.vacantsBefore</string>
+      <string notr="true">classdefs.vacantsBefore</string>
      </property>
     </widget>
    </item>
@@ -103,7 +103,7 @@
       <number>999999</number>
      </property>
      <property name="dataId" stdset="0">
-      <string>classdefs.vacantEvery</string>
+      <string notr="true">classdefs.vacantEvery</string>
      </property>
     </widget>
    </item>
@@ -116,7 +116,7 @@
       <number>999999</number>
      </property>
      <property name="dataId" stdset="0">
-      <string>classdefs.vacantsAfter</string>
+      <string notr="true">classdefs.vacantsAfter</string>
      </property>
     </widget>
    </item>
@@ -139,7 +139,7 @@
       <number>999999</number>
      </property>
      <property name="dataId" stdset="0">
-      <string>classdefs.mapCount</string>
+      <string notr="true">classdefs.mapCount</string>
      </property>
     </widget>
    </item>
