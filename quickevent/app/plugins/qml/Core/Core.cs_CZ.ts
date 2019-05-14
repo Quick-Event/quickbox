@@ -72,7 +72,7 @@
     <message>
         <location filename="qml/main.qml" line="140"/>
         <source>&amp;Locale</source>
-        <translation>&amp;Lokalizace</translation>
+        <translation>&amp;Regionální nastavení</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="141"/>
