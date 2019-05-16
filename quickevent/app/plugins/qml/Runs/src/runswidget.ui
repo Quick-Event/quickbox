@@ -82,7 +82,7 @@
       <item>
        <widget class="QPushButton" name="btDrawRemove">
         <property name="toolTip">
-         <string>Draw selected  class or all classes when all the clases are selected.</string>
+         <string>Remove all start times and unlock drawing for this class.</string>
         </property>
         <property name="text">
          <string>Remove drawing</string>
@@ -92,7 +92,7 @@
       <item>
        <widget class="QPushButton" name="btDraw">
         <property name="toolTip">
-         <string>Draw selected  class or all classes when all the clases are selected.</string>
+         <string>Draw selected class or all classes when all the classes are selected.</string>
         </property>
         <property name="text">
          <string>Draw class</string>

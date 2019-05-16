@@ -786,7 +786,7 @@ void RunsWidget::on_btDrawRemove_clicked()
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id == 0)
 		return;
-	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Reset all start times and unlock for drawing for this class?"), false))
+	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Reset all start times and unlock drawing for this class?"), false))
 		return;
 	try {
 		auto *runs_model = ui->wRunsTableWidget->runsModel();

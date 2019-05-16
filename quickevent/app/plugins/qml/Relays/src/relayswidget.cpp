@@ -212,7 +212,7 @@ void RelaysWidget::editRelay(const QVariant &id, int mode)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	auto *w = new  RelayWidget();
-	w->setWindowTitle(tr("Edit  Relay"));
+	w->setWindowTitle(tr("Edit Relay"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
