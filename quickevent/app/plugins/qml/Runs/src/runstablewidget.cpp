@@ -241,7 +241,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 	QAction a_print_card(tr("Print card"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
 	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
-	QAction a_clear_start_times(tr("Clear times in selected rows"), nullptr);
+	QAction a_clear_start_times(tr("Clear start times in selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_show_receipt << &a_load_card << &a_print_card
 		<< &a_sep1

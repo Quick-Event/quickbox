@@ -17,8 +17,6 @@ public:
 
 	void setHighlightedClassId(int class_id, int stage_id);
 	void reloadHighlightedClassId();
-
-	//void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &ix) const Q_DECL_OVERRIDE;
 protected:
 	void paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 private:
