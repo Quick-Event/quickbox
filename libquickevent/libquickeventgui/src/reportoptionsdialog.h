@@ -39,6 +39,8 @@ public:
 		QF_VARIANTMAP_FIELD2(int, s, setS, tartersOptionsLineSpacing, 0)
 		QF_VARIANTMAP_FIELD2(int, b, setB, reakType, 0)
 		QF_VARIANTMAP_FIELD2(QString, c, setC, olumns, "%,%")
+		QF_VARIANTMAP_FIELD2(int, p, setP, ageWidth, 210)
+		QF_VARIANTMAP_FIELD2(int, p, setP, ageHeight, 297)
 		QF_VARIANTMAP_FIELD2(int, c, setC, olumnCount, 2)
 		QF_VARIANTMAP_FIELD2(int, h, setH, orizontalMargin, 10)
 		QF_VARIANTMAP_FIELD2(int, v, setV, erticalMargin, 5)
@@ -53,8 +55,8 @@ public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
 public:
-	explicit ReportOptionsDialog(QWidget *parent = 0);
-	~ReportOptionsDialog();
+	explicit ReportOptionsDialog(QWidget *parent = nullptr);
+	~ReportOptionsDialog() override;
 
 	int exec() Q_DECL_OVERRIDE;
 
