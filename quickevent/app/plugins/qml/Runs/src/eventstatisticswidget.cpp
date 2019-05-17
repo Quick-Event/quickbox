@@ -20,6 +20,7 @@
 #include <QElapsedTimer>
 #include <QSettings>
 #include <QTimer>
+#include <QScrollBar>
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
@@ -338,6 +339,7 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 	//QHeaderView *vh = table_view->verticalHeader();
 	QHeaderView *hh = table_view->horizontalHeader();
 	if(hh) {
+		qfWarning() << "header view:" << hh->metaObject()->className();
 		//setMaximumHeight(hh->defaultSectionSize());
 		connect(hh, &QHeaderView::sectionResized, [this](int logical_index, int old_size, int new_size) {
 			Q_UNUSED(old_size)
@@ -346,6 +348,12 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 		connect(hh, &QHeaderView::sectionMoved, [this](int logical_index, int old_visual_index, int new_visual_index) {
 			Q_UNUSED(logical_index)
 			this->moveSection(old_visual_index, new_visual_index);
+		});
+	}
+	QScrollBar *sb = table_view->horizontalScrollBar();
+	if(sb) {
+		connect(sb, &QScrollBar::valueChanged, this, [this](int val) {
+			this->setOffset(m_tableView->horizontalHeader()->offset());
 		});
 	}
 }
