@@ -19,28 +19,35 @@
 namespace qfs = qf::core::sql;
 
 RunsTableItemDelegate::RunsTableItemDelegate(qf::qmlwidgets::TableView * parent)
-	: Super(parent), m_classStartFirst(), m_classInterval()
+	: Super(parent)
 {
 }
 
 void RunsTableItemDelegate::setHighlightedClassId(int class_id, int stage_id)
 {
-	if(m_highlightedClassId == class_id && m_stageId == stage_id)
-		return;
 	m_stageId = stage_id;
-	m_highlightedClassId = 0;
+	m_highlightedClassId = class_id;
+	reloadHighlightedClassId();
+}
+
+void RunsTableItemDelegate::reloadHighlightedClassId()
+{
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin, vacantsBefore, vacantEvery, vacantsAfter")
 			.from("classdefs")
-			.where("stageId=" QF_IARG(stage_id))
-			.where("classId=" QF_IARG(class_id));
+			.where("stageId=" QF_IARG(m_stageId))
+			.where("classId=" QF_IARG(m_highlightedClassId));
 	qfs::Query q(qfs::Connection::forName());
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	if(q.next()) {
-		m_highlightedClassId = class_id;
 		m_classInterval = q.value("startIntervalMin").toInt() * 60 * 1000;
 		m_classStartFirst = q.value("startTimeMin").toInt() * 60 * 1000;
 		m_classStartLast = q.value("lastStartTimeMin").toInt() * 60 * 1000;
+	}
+	else {
+		m_classInterval = 0;
+		m_classStartFirst = 0;
+		m_classStartLast = 0;
 	}
 }
 
@@ -57,7 +64,7 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 	if(!(m && tm))
 		return;
 	if(m_highlightedClassId > 0 && m_classInterval > 0 && isStartTimeHighlightVisible()) {
-		//qfInfo() << index.column() << m_highlightedClassId << m_classInterval << isStartTimeHighlightVisible();
+		//qfInfo() << "col:" << index.column() << m_highlightedClassId << "interval:" << m_classInterval << isStartTimeHighlightVisible();
 		QVariant stime_v = m->data(index.sibling(index.row(), RunsTableModel::Columns::col_runs_startTimeMs), Qt::EditRole);
 		quickevent::core::og::TimeMs stime = stime_v.value<quickevent::core::og::TimeMs>();
 		if(!stime.isValid())
