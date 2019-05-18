@@ -65,11 +65,27 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 
+static CardReader::CardReaderPlugin* thisPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<CardReader::CardReaderPlugin*>(fwk->plugin("CardReader"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad CardReader plugin!");
+	return plugin;
+}
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
 	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
+
+static qf::qmlwidgets::framework::Plugin *receiptsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipts"));
+	QF_ASSERT(plugin != nullptr, "Bad Receipts plugin", return nullptr);
 	return plugin;
 }
 
@@ -201,8 +217,13 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	QAction a_print_card(tr("Print card"), nullptr);
 	QAction a_sep2(nullptr); a_sep2.setSeparator(true);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
+	QAction a_recalculate_times(tr("Recalculate times in selected rows"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_receipt << &a_print_receipt << &a_sep1 << &a_show_card << &a_print_card << &a_sep2 << &a_assign_runner;
+	lst << &a_show_receipt << &a_print_receipt
+		<< &a_sep1
+		<< &a_show_card << &a_print_card
+		<< &a_sep2
+		<< &a_assign_runner << &a_recalculate_times;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
 	if(a == &a_show_receipt) {
 		showSelectedReceipt();
@@ -232,6 +253,22 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	}
 	else if(a == &a_assign_runner) {
 		assignRunnerToSelectedCard();
+	}
+	else if(a == &a_recalculate_times) {
+		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+		auto *this_plugin = thisPlugin();
+		int curr_ix = 0;
+		QList<int> sel_ixs = ui->tblCards->selectedRowsIndexes();
+		for(int ix : sel_ixs) {
+			qf::core::utils::TableRow row = ui->tblCards->tableRow(ix);
+			int card_id = row.value(QStringLiteral("id")).toInt();
+			int run_id = row.value(QStringLiteral("runId")).toInt();
+			fwk->showProgress(tr("Recalculating times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
+			bool ok = this_plugin->reloadTimesFromCard(card_id, run_id);
+			if(ok)
+				ui->tblCards->reloadRow(ix);
+		}
+		fwk->hideProgress();
 	}
 }
 
@@ -701,22 +738,6 @@ void CardReaderWidget::updateTableView(int card_id)
 		return;
 	}
 	ui->tblCards->updateRow(0);
-}
-
-CardReader::CardReaderPlugin *CardReaderWidget::thisPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto cardreader_plugin = qobject_cast<CardReader::CardReaderPlugin *>(fwk->plugin("CardReader"));
-	QF_ASSERT_EX(cardreader_plugin != nullptr, "Bad plugin");
-	return cardreader_plugin;
-}
-
-qf::qmlwidgets::framework::Plugin *CardReaderWidget::receiptsPlugin()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin *>(fwk->plugin("Receipts"));
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
 }
 
 void CardReaderWidget::onCbxCardCheckersActivated(int ix)

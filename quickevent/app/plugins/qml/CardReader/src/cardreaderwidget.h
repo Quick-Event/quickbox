@@ -95,8 +95,6 @@ private:
 
 	void updateTableView(int card_id);
 
-	CardReader::CardReaderPlugin* thisPlugin();
-	qf::qmlwidgets::framework::Plugin* receiptsPlugin();
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 
 	void onCustomContextMenuRequest(const QPoint &pos);

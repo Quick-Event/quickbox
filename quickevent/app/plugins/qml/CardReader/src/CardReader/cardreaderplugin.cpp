@@ -414,7 +414,7 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 {
 	qfLogFuncFrame() << "card id:" << run_id;
 	QF_TIME_SCOPE("reloadTimesFromCard()");
-	if(!card_id)
+	if(card_id == 0)
 		return false;
 	if(run_id == 0) {
 		qf::core::sql::Query q;
