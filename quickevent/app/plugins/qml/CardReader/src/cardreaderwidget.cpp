@@ -695,13 +695,12 @@ bool CardReaderWidget::processReadCardSafe(const quickevent::core::si::ReadCard 
 void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &read_card)
 {
 	int card_id = thisPlugin()->saveCardToSql(read_card);
-	if(read_card.runId()) {
+	if(card_id && read_card.runId()) {
 		thisPlugin()->saveCardAssignedRunnerIdSql(card_id, read_card.runId());
 		quickevent::core::si::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
 		thisPlugin()->updateCheckedCardValuesSql(checked_card);
-		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_CHECKED, checked_card, true);
 	}
-	if(card_id > 0) {
+	if(card_id) {
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
 	}
 }

@@ -92,7 +92,8 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
-const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
+//const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
+const char* EventPlugin::DBEVENT_CARD_ASSIGNED = "cardAssigned";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
 const char* EventPlugin::DBEVENT_STAGE_START_CHANGED = "stageStartChanged";

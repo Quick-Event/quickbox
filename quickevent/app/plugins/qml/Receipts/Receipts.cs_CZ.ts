@@ -4,12 +4,12 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="362"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="360"/>
         <source>Card</source>
         <translation>Čip</translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="413"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="411"/>
         <source>Receipt</source>
         <translation>Mezičas</translation>
     </message>

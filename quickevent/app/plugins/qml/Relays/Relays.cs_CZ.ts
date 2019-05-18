@@ -182,11 +182,6 @@
         <translation>Čí&amp;slo</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.ui" line="118"/>
-        <source>relays.number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/relaywidget.ui" line="159"/>
         <source>Legs</source>
         <translation>Úseky</translation>
@@ -261,8 +256,9 @@
     <name>Relays::RelaysPlugin</name>
     <message>
         <location filename="src/Relays/relaysplugin.cpp" line="65"/>
-        <source>Edit  Relay</source>
-        <translation>Upravit štafetu</translation>
+        <source>Edit Relay</source>
+        <oldsource>Edit  Relay</oldsource>
+        <translation type="unfinished">Upravit štafetu</translation>
     </message>
 </context>
 <context>
@@ -354,8 +350,9 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="215"/>
-        <source>Edit  Relay</source>
-        <translation>Upravit štafetu</translation>
+        <source>Edit Relay</source>
+        <oldsource>Edit  Relay</oldsource>
+        <translation type="unfinished">Upravit štafetu</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="218"/>

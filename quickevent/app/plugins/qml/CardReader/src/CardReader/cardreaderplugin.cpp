@@ -334,7 +334,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const quickevent::core::si
 		return true;
 	}
 	catch (const qf::core::Exception &e) {
-		qfError() << trUtf8("Update runs & runlaps ERROR:") << e.message();
+		qfError() << "Update runs & runlaps ERROR:" << e.message();
 	}
 	return false;
 }
@@ -379,6 +379,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	q.exec(qf::core::Exception::Throw);
 	if(q.numRowsAffected() != 1)
 		QF_EXCEPTION("Update runs error!");
+
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(is_relays) {
 		/// set start time for next leg
@@ -396,6 +397,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			qfError() << "run should be loaded, id:" << run_id;
 		}
 	}
+	eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_ASSIGNED, checked_card, true);
 }
 
 bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)

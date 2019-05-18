@@ -42,7 +42,8 @@ public:
 	static const char *DBEVENT_NOTIFY_NAME;
 	static const char* DBEVENT_COMPETITOR_COUNTS_CHANGED; //< number of competitors in classes changed
 	static const char* DBEVENT_CARD_READ;
-	static const char* DBEVENT_CARD_CHECKED;
+	//static const char* DBEVENT_CARD_CHECKED;
+	static const char* DBEVENT_CARD_ASSIGNED;
 	static const char* DBEVENT_PUNCH_RECEIVED;
 	static const char* DBEVENT_REGISTRATIONS_IMPORTED;
 	static const char* DBEVENT_STAGE_START_CHANGED;

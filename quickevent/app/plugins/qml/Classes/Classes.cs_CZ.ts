@@ -30,21 +30,6 @@
         <translation> min</translation>
     </message>
     <message>
-        <location filename="src/classdefwidget.ui" line="50"/>
-        <source>classdefs.startTimeMin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classdefwidget.ui" line="66"/>
-        <source>classdefs.startIntervalMin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classdefwidget.ui" line="79"/>
-        <source>classdefs.vacantsBefore</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/classdefwidget.ui" line="86"/>
         <source>Vacant every</source>
         <translation>Vakanti během</translation>
@@ -53,16 +38,6 @@
         <location filename="src/classdefwidget.ui" line="93"/>
         <source>Vacants after</source>
         <translation>Vakanti po</translation>
-    </message>
-    <message>
-        <location filename="src/classdefwidget.ui" line="106"/>
-        <source>classdefs.vacantEvery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classdefwidget.ui" line="119"/>
-        <source>classdefs.vacantsAfter</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="126"/>
@@ -75,17 +50,12 @@
         <translation> ks</translation>
     </message>
     <message>
-        <location filename="src/classdefwidget.ui" line="142"/>
-        <source>classdefs.mapCount</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/classdefwidget.cpp" line="13"/>
         <source>Edit class</source>
         <translation>Upravit kategorii</translation>
     </message>
     <message>
-        <location filename="src/classdefwidget.cpp" line="26"/>
+        <location filename="src/classdefwidget.cpp" line="29"/>
         <source>Class %1</source>
         <translation>kategorii %1</translation>
     </message>
@@ -302,6 +272,51 @@
         <location filename="src/classeswidget.cpp" line="158"/>
         <source>Radio</source>
         <translation>Rádio</translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="184"/>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="186"/>
+        <source>Cou&amp;rses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="191"/>
+        <source>Co&amp;des</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="196"/>
+        <source>Classes &amp;layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="211"/>
+        <source>&amp;Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="213"/>
+        <source>OCad TXT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="218"/>
+        <source>OCad v8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="223"/>
+        <source>OCad IOF-XML 2.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="228"/>
+        <source>OCad IOF-XML 3.0</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="236"/>
