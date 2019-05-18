@@ -75,22 +75,22 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="220"/>
         <source>Recalculate times in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Přepočítat časy ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="266"/>
         <source>Recalculating times for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Přepočítávám časy pro %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="286"/>
         <source>&amp;Station</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vyčítací jednotka</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="289"/>
         <source>Station info</source>
-        <translation type="unfinished"></translation>
+        <translation>Info o vyčítací jednotce</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="297"/>
@@ -130,12 +130,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="319"/>
         <source>Read station memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Zálohovat paměť vyčítací jednotky</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="346"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nástroje</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="349"/>
@@ -145,17 +145,17 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="351"/>
         <source>Laps only CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Pouze mezičasy (CSV)</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="357"/>
         <source>Test audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Otestovat audio</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="365"/>
         <source> Check type </source>
-        <translation type="unfinished"></translation>
+        <translation> Typ kontroly ražení </translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="379"/>
@@ -305,7 +305,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="939"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
-        <translation>SI: %1 Kategorie %2 - Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
+        <translation>SI: %1 Kategorie %2 – Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
     </message>
 </context>
 <context>
@@ -313,7 +313,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="14"/>
         <source>CuteCom</source>
-        <translation>Nastavení vyčítání čipu</translation>
+        <translation>Nastavení vyčítání čipů</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="27"/>
@@ -429,7 +429,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="220"/>
         <source>disable CRC check</source>
-        <translation>Zakázat CRC kontrolu</translation>
+        <translation>zakázat CRC kontrolu</translation>
     </message>
 </context>
 <context>
@@ -556,7 +556,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="33"/>
         <source>sirxd data</source>
-        <translation type="unfinished"></translation>
+        <translation>sirxd data</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="40"/>
