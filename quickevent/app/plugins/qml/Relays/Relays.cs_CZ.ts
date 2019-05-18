@@ -21,7 +21,7 @@
     <message>
         <location filename="src/addlegdialogwidget.ui" line="56"/>
         <source>Double-click on runner to add leg</source>
-        <translation>Dvojklikem se závodník přidá do štafety</translation>
+        <translation>Dvojklikem přidáte závodníka do štafety</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.ui" line="68"/>
@@ -258,7 +258,7 @@
         <location filename="src/Relays/relaysplugin.cpp" line="65"/>
         <source>Edit Relay</source>
         <oldsource>Edit  Relay</oldsource>
-        <translation type="unfinished">Upravit štafetu</translation>
+        <translation>Upravit štafetu</translation>
     </message>
 </context>
 <context>
@@ -346,13 +346,13 @@
     <message>
         <location filename="src/relayswidget.cpp" line="188"/>
         <source>--- all ---</source>
-        <translation>--- všechny ---</translation>
+        <translation>-- všechny --</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="215"/>
         <source>Edit Relay</source>
         <oldsource>Edit  Relay</oldsource>
-        <translation type="unfinished">Upravit štafetu</translation>
+        <translation>Upravit štafetu</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="218"/>
