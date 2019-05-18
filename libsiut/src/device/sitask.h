@@ -114,7 +114,7 @@ private:
 	unsigned m_blockSize = 128;
 	unsigned m_blockCount;
 	int m_progressPhase = 0;
-	bool m_isOverflow;
+	//bool m_isOverflow;
 	int m_stationNumber = 0;
 	QByteArray m_data;
 };

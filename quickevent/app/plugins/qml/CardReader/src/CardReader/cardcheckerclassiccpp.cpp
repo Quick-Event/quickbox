@@ -54,12 +54,14 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 			checked_card.setStartTimeMs(startTimeSec(run_id) * 1000);
 			//console.warn(start_time_sec);
 		}
+		/*
 		bool is_debug = false;
 		if(is_debug && checked_card.checkTimeMs() > 0) {
 			// take start from check if zero, for testing only
 			checked_card.setStartTimeMs((checked_card.checkTimeMs() / 60000 + 1) * 60000);
 			qfWarning() << "Taking start time from check for debugging purposes only, start time:" << (checked_card.startTimeMs() / 60000);
 		}
+		*/
 	}
 	else {
 		checked_card.setStartTimeMs(msecIntervalAM(start00sec * 1000, read_card.startTime() * 1000));

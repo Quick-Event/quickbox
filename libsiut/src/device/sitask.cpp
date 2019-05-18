@@ -191,12 +191,12 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 		SIMessageData::Command cmd = msg.command();
 		if(cmd == SIMessageData::Command::GetSystemData) {
 			QByteArray hdr = msg.data();
-			m_isOverflow = hdr[6];
+			bool is_overflow = hdr[6];
 			//qfInfo().noquote() << msg.dump();
-			logCardRead() << "is memory overflow:" << m_isOverflow;
+			logCardRead() << "is memory overflow:" << is_overflow;
 
 			//m_blockCount = m_isOverflow? MEMORY_SIZE: (m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
-			m_blockCount = (m_isOverflow? MEMORY_SIZE - MEMORY_START: m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
+			m_blockCount = (is_overflow? MEMORY_SIZE - MEMORY_START: m_memoryDataPointer - MEMORY_START) / m_blockSize + 1;
 
 			if(m_blockCount == 0) {
 				finishAndDestroy(true, createResult());
@@ -212,7 +212,7 @@ void SiTaskReadStationBackupMemory::onSiMessageReceived(const SIMessageData &msg
 			emit progress(m_progressPhase++, (int)m_blockCount);
 			m_state = State::ReadData;
 			QByteArray ba;
-			if(m_isOverflow)
+			if(is_overflow)
 				m_readDataPointer = m_memoryDataPointer + 1;
 			else
 				m_readDataPointer = MEMORY_START;
