@@ -57,7 +57,7 @@
     <message>
         <location filename="src/classdefwidget.cpp" line="29"/>
         <source>Class %1</source>
-        <translation>kategorii %1</translation>
+        <translation>Kategorie %1</translation>
     </message>
 </context>
 <context>
@@ -276,47 +276,47 @@
     <message>
         <location filename="src/classeswidget.cpp" line="184"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Upravit</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="186"/>
         <source>Cou&amp;rses</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;ratě</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="191"/>
         <source>Co&amp;des</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kontroly</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="196"/>
         <source>Classes &amp;layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozvržení startu kategorií</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="211"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importovat</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="213"/>
         <source>OCad TXT</source>
-        <translation type="unfinished"></translation>
+        <translation>OCAD TXT</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="218"/>
         <source>OCad v8</source>
-        <translation type="unfinished"></translation>
+        <translation>OCAD v8</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="223"/>
         <source>OCad IOF-XML 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation>OCAD IOF-XML 2.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="228"/>
         <source>OCad IOF-XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>OCAD IOF-XML 3.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="236"/>
@@ -540,7 +540,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit Competitor</source>
-        <translation>Upravit závodníka</translation>
+        <translation>Upravit kategorii</translation>
     </message>
 </context>
 <context>
@@ -599,7 +599,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="162"/>
         <source>Set slot start offset</source>
-        <translation>Nastav start v řádku</translation>
+        <translation>Nastavit start v řádku</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="166"/>
