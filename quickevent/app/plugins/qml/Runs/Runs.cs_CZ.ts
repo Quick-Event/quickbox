@@ -219,7 +219,7 @@
         <location filename="qml/Results.qml" line="169"/>
         <source>Results by classes</source>
         <oldsource>Results by clases</oldsource>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="183"/>
@@ -235,7 +235,7 @@
         <location filename="qml/Results.qml" line="185"/>
         <source>Stage results by classes</source>
         <oldsource>Stage results by clases</oldsource>
-        <translation type="unfinished">Etapové výsledky po kategoriích</translation>
+        <translation>Etapové výsledky po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="206"/>
@@ -403,7 +403,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="38"/>
         <source>Check</source>
-        <translation>Kontrola</translation>
+        <translation>Kontrola čipu</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="39"/>
@@ -560,7 +560,7 @@
         <location filename="src/runstablewidget.cpp" line="244"/>
         <source>Clear start times in selected rows</source>
         <oldsource>Clear times in selected rows</oldsource>
-        <translation type="unfinished">Smazat čas ve vybraných řádcích</translation>
+        <translation>Smazat startovní časy ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="264"/>
@@ -599,7 +599,7 @@
         <location filename="src/runswidget.ui" line="85"/>
         <source>Remove all start times and unlock drawing for this class.</source>
         <oldsource>Draw selected  class or all classes when all the clases are selected.</oldsource>
-        <translation type="unfinished">Losovat vybrané kategorie nebo všechny kategorie, pokud jsou vybrány.</translation>
+        <translation>Smazat všechny startovní časy v této kategorii a odemknout losování.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="88"/>
@@ -664,7 +664,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="520"/>
         <source>Draw all clases without draw lock?</source>
-        <translation>Losovat kategorie, u kterých není losování uzamčeno?</translation>
+        <translation>Losovat všechny kategorie, u kterých není losování uzamčeno?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="536"/>
@@ -675,7 +675,7 @@
         <location filename="src/runswidget.cpp" line="789"/>
         <source>Reset all start times and unlock drawing for this class?</source>
         <oldsource>Reset all start times and unlock for drawing for this class?</oldsource>
-        <translation type="unfinished">Smazat všechny startovní časy v této kategorii a odemknout losování?</translation>
+        <translation>Smazat všechny startovní časy v této kategorii a odemknout losování?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="199"/>
@@ -712,22 +712,22 @@
         <location filename="src/runswidget.cpp" line="131"/>
         <location filename="src/runswidget.cpp" line="227"/>
         <source>--- all ---</source>
-        <translation>--- všechny ---</translation>
+        <translation>-- všechny --</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="170"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tisk</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="173"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importovat</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="176"/>
         <source>E&amp;xport</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xportovat</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="178"/>
@@ -881,7 +881,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="12"/>
         <source>&amp;Runs</source>
-        <translation>Úseky/&amp;Etapy</translation>
+        <translation>Úseky / &amp;Etapy</translation>
     </message>
 </context>
 <context>
@@ -1000,12 +1000,12 @@
         <location filename="qml/main.qml" line="173"/>
         <location filename="qml/main.qml" line="195"/>
         <source>&amp;Start list</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Startovní listina</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="181"/>
         <source>&amp;Results</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Výsledky</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
