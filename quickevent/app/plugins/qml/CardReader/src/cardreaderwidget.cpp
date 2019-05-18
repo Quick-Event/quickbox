@@ -264,9 +264,15 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 			int card_id = row.value(QStringLiteral("id")).toInt();
 			int run_id = row.value(QStringLiteral("runId")).toInt();
 			fwk->showProgress(tr("Recalculating times for %1").arg(row.value(QStringLiteral("competitorName")).toString()), ++curr_ix, sel_ixs.count());
-			bool ok = this_plugin->reloadTimesFromCard(card_id, run_id);
-			if(ok)
+			try {
+				qf::core::sql::Transaction transaction;
+				this_plugin->reloadTimesFromCard(card_id, run_id);
 				ui->tblCards->reloadRow(ix);
+				transaction.commit();
+			}
+			catch (const qf::core::Exception &e) {
+				qfError() << "Update runs & runlaps ERROR:" << e.message();
+			}
 		}
 		fwk->hideProgress();
 	}
@@ -675,10 +681,10 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	quickevent::core::si::ReadCard read_card(card);
 	read_card.setRunId(run_id);
 	read_card.setRunIdAssignError(err_msg);
-	processReadCardSafe(read_card);
+	processReadCardInTransaction(read_card);
 }
 
-bool CardReaderWidget::processReadCardSafe(const quickevent::core::si::ReadCard &read_card)
+bool CardReaderWidget::processReadCardInTransaction(const quickevent::core::si::ReadCard &read_card)
 {
 	try {
 		qf::core::sql::Transaction transaction;
@@ -696,11 +702,10 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 {
 	int card_id = thisPlugin()->saveCardToSql(read_card);
 	if(card_id && read_card.runId()) {
-		thisPlugin()->saveCardAssignedRunnerIdSql(card_id, read_card.runId());
-		quickevent::core::si::CheckedCard checked_card = thisPlugin()->checkCard(read_card);
-		thisPlugin()->updateCheckedCardValuesSql(checked_card);
+		thisPlugin()->assignCardToRun(card_id, read_card.runId());
 	}
 	if(card_id) {
+		/// must be after card processing, receipts printer needs this
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
 	}
 }
@@ -781,11 +786,8 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		dlg.accept();
 		int run_id = values.value("runid").toInt();
 		if(run_id) {
-			quickevent::core::si::CheckedCard checked_card = thisPlugin()->checkCard(card_id, run_id);
-			if(thisPlugin()->updateCheckedCardValuesSqlSafe(checked_card)) {
-				if(thisPlugin()->saveCardAssignedRunnerIdSql(card_id, run_id))
-					this->ui->tblCards->reloadRow();
-			}
+			thisPlugin()->assignCardToRun(card_id, run_id);
+			this->ui->tblCards->reloadRow();
 		}
 	});
 	dlg.exec();

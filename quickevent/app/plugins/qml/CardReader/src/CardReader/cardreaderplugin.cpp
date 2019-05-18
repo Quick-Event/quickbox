@@ -212,6 +212,7 @@ quickevent::core::si::ReadCard CardReaderPlugin::readCard(int card_id)
 quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(int card_id, int run_id)
 {
 	qfLogFuncFrame() << "run id:" << run_id << "card id:" << card_id;
+	QF_TIME_SCOPE("checkCard()");
 	quickevent::core::si::ReadCard rc = readCard(card_id);
 	if(!rc.isEmpty()) {
 		if(run_id > 0)
@@ -324,7 +325,7 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 	}
 	return ret;
 }
-
+/*
 bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card)
 {
 	try {
@@ -338,7 +339,7 @@ bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const quickevent::core::si
 	}
 	return false;
 }
-
+*/
 void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false)
 {
 	QF_TIME_SCOPE("updateCheckedCardValuesSql()");
@@ -354,6 +355,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 	auto punch_list = checked_card.punches();
 	if(punch_list.count()) {
+		QF_TIME_SCOPE("INSERT INTO runlaps, records cnt: " + QString::number(punch_list.count()));
 		int position = 0;
 		for(auto v : punch_list) {
 			position++;
@@ -379,7 +381,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	q.exec(qf::core::Exception::Throw);
 	if(q.numRowsAffected() != 1)
 		QF_EXCEPTION("Update runs error!");
-
+	/*
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(is_relays) {
 		/// set start time for next leg
@@ -397,7 +399,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			qfError() << "run should be loaded, id:" << run_id;
 		}
 	}
-	eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_ASSIGNED, checked_card, true);
+	*/
 }
 
 bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
@@ -433,42 +435,55 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		qfWarning() << "Cannot find runs id for card id:" << card_id;
 		return false;
 	}
-	quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
-	//qfInfo() << Q_FUNC_INFO << checked_card.isMisPunch() << checked_card.isOk();
-	if(updateCheckedCardValuesSqlSafe(checked_card))
-		if(saveCardAssignedRunnerIdSql(card_id, run_id))
-			return true;
+	try {
+		qf::core::sql::Transaction transaction;
+		processCardToRunAssignment(card_id, run_id);
+		transaction.commit();
+		return true;
+	}
+	catch (const qf::core::Exception &e) {
+		qfError() << "reloadTimesFromCard ERROR:" << e.message();
+	}
 	return false;
 }
 
-//static QMap<int, QMap<int, int>> m_altCodes; // stageId -> altCode -> code
+void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
+{
+	saveCardAssignedRunnerIdSql(card_id, run_id);
+	processCardToRunAssignment(card_id, run_id);
+}
+
+void CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
+{
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	if(is_relays) {
+		/// take start time from previous leg
+		qf::core::sql::Query q;
+		q.execThrow("SELECT relayId, leg FROM runs WHERE id=" + QString::number(run_id));
+		if(q.next()) {
+			int relay_id = q.value(0).toInt();
+			int leg = q.value(1).toInt();
+			if(leg > 1) {
+				q.execThrow("SELECT finishTimeMs FROM runs"
+						 " WHERE relayId=" + QString::number(relay_id)
+					   + " AND leg=" + QString::number(leg-1));
+				if(q.next()) {
+					int start_time = q.value(0).toInt();
+					q.execThrow("UPDATE runs SET startTimeMs=" + QString::number(start_time)
+						   + " WHERE relayId=" + QString::number(relay_id)
+						   + " AND leg=" + QString::number(leg)
+						   + " AND COALESCE(startTimeMs, 0)=0");
+				}
+			}
+		}
+	}
+	quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
+	updateCheckedCardValuesSql(checked_card);
+	eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_ASSIGNED, checked_card, true);
+}
 
 int CardReaderPlugin::resolveAltCode(int maybe_alt_code, int stage_id)
 {
-	/*
-	 * static caching is evil, better to emit dbevent when codes are edited and clear this cache then
-	if(!m_altCodes.contains(stage_id)) {
-		qfs::QueryBuilder qb;
-		qb.select2("codes", "code, altcode")
-				.from("codes")
-				.joinRestricted("codes.id", "coursecodes.codeId", "codes.altCode > 0", qfs::QueryBuilder::INNER_JOIN)
-				.joinRestricted("coursecodes.courseId", "classdefs.courseId", "classdefs.stageId=" QF_IARG(stage_id), qfs::QueryBuilder::INNER_JOIN);
-		qfs::Query q;
-		q.exec(qb, qf::core::Exception::Throw);
-		while (q.next()) {
-			int code = q.value(0).toInt();
-			int alt_code = q.value(1).toInt();
-			qfDebug() << "stage id:" << stage_id << "alt code:" << alt_code << "->" << code;
-			m_altCodes[stage_id][alt_code] = code;
-		}
-	}
-	int resolved_code = m_altCodes[stage_id].value(maybe_alt_code);
-	if(resolved_code > 0) {
-		qfDebug() << "stage:" << stage_id << "alt code:" << maybe_alt_code << "resolved to:" << resolved_code;
-		return resolved_code;
-	}
-	return maybe_alt_code;
-	*/
 	int resolved_code = 0;
 	qfs::QueryBuilder qb;
 	qb.select2("codes", "code")

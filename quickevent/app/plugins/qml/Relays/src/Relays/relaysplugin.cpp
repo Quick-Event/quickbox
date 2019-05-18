@@ -5,17 +5,20 @@
 
 #include <Event/eventplugin.h>
 
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/checkedcard.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 
+#include <qf/core/sql/connection.h>
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
-#include <quickevent/core/og/timems.h>
 
 #include <QQmlEngine>
 
@@ -85,15 +88,25 @@ void RelaysPlugin::onDbEventNotify(const QString &domain, int connection_id, con
 {
 	Q_UNUSED(connection_id)
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_ASSIGNED)) {
+		processRunnerFinished(quickevent::core::si::CheckedCard(data.toMap()));
+	}
 	emit dbEventNotify(domain, connection_id, data);
+}
+
+void RelaysPlugin::processRunnerFinished(const quickevent::core::si::CheckedCard &checked_card)
+{
+	qfLogFuncFrame() << checked_card;
+	/// recalculate team times
+
 }
 
 namespace {
 
 struct Leg
 {
-	int runId = 0;
 	QString name, reg;
+	int runId = 0;
 	int time = 0;
 	int pos = 0;
 	int stime = 0;
@@ -104,10 +117,10 @@ struct Leg
 
 struct Relay
 {
-	int relayId = 0;
 	QString name;
-	int loss = 0;
 	QVector<Leg> legs;
+	int relayId = 0;
+	int loss = 0;
 
 	int time(int leg_cnt) const
 	{

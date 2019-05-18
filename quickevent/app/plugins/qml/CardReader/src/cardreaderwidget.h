@@ -90,7 +90,7 @@ private:
 	void processSICard(const siut::SICard &card);
 	void processSIPunch(const siut::SIPunch &rec);
 
-	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
+	bool processReadCardInTransaction(const quickevent::core::si::ReadCard &read_card);
 	void processReadCard(const quickevent::core::si::ReadCard &read_card);
 
 	void updateTableView(int card_id);

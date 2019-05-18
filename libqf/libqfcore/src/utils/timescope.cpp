@@ -1,7 +1,7 @@
 #include "timescope.h"
 #include "../core/log.h"
 
-#define logTimeScope qfCDebug("TimeScope")
+#define logTimeScope qfWarning
 
 namespace qf {
 namespace core {

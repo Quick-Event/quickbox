@@ -49,11 +49,11 @@ public:
 	int saveCardToSql(const quickevent::core::si::ReadCard &read_card);
 	int savePunchRecordToSql(const quickevent::core::si::PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
-	bool updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card);
-	void updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false);
-	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
+	//bool updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
+	void assignCardToRun(int card_id, int run_id);
+	void processCardToRunAssignment(int card_id, int run_id);
 
 	static int resolveAltCode(int maybe_alt_code, int stage_id);
 
@@ -62,6 +62,9 @@ public:
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();
+
+	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
+	void updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false);
 private:
 	QList<CardChecker*> m_cardCheckers;
 };
