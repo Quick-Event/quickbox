@@ -88,7 +88,7 @@ void RelaysPlugin::onDbEventNotify(const QString &domain, int connection_id, con
 {
 	Q_UNUSED(connection_id)
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
-	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_ASSIGNED)) {
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED)) {
 		processRunnerFinished(quickevent::core::si::CheckedCard(data.toMap()));
 	}
 	emit dbEventNotify(domain, connection_id, data);

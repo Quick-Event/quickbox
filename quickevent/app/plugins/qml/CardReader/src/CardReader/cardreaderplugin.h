@@ -53,7 +53,7 @@ public:
 
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
 	void assignCardToRun(int card_id, int run_id);
-	void processCardToRunAssignment(int card_id, int run_id);
+	bool processCardToRunAssignment(int card_id, int run_id);
 
 	static int resolveAltCode(int maybe_alt_code, int stage_id);
 

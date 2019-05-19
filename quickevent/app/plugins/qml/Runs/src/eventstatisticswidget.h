@@ -20,7 +20,7 @@ public:
 	explicit EventStatisticsWidget(QWidget *parent = nullptr);
 	~EventStatisticsWidget();
 
-	Q_SLOT void reloadLater();
+	Q_SLOT void reloadDeferred();
 	void reload();
 	Q_SLOT void onDbEventNotify(const QString &domain, const QVariant &payload);
 	Q_SLOT void onVisibleChanged(bool is_visible);
@@ -33,11 +33,9 @@ private slots:
 	void on_btPrintResultsSelected_clicked();
 	void on_btPrintResultsNew_clicked();
 	void on_btClearNewInSelectedRows_clicked();
-
-	void reloadOnEvent();
 private:
 	int currentStageId();
-	QTimer* autoRefreshTimer();
+	void initAutoRefreshTimer();
 	//QTimer* printResultsTimer();
 	void clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished);
 

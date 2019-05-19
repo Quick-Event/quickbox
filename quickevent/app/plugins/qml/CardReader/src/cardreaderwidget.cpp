@@ -57,6 +57,7 @@
 #include <QCheckBox>
 #include <QPushButton>
 #include <QProgressDialog>
+#include <QTimer>
 
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
@@ -205,6 +206,15 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 	}
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &CardReaderWidget::onCustomContextMenuRequest);
+	/*
+	{
+		QTimer *t = new QTimer(this);
+		connect(t, &QTimer::timeout, [this]() {
+			qfInfo() << "CardReaderWidget visible:" << isVisible();
+		});
+		t->start(2000);
+	}
+	*/
 }
 
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
@@ -381,12 +391,6 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	}
 	main_tb->addSeparator();
 	{
-		m_cbxAutoRefresh = new QCheckBox();
-		m_cbxAutoRefresh->setText(tr("Auto refresh"));
-		main_tb->addWidget(m_cbxAutoRefresh);
-	}
-	main_tb->addSeparator();
-	{
 		QLabel *lbl = new QLabel(tr(" Reader mode "));
 		main_tb->addWidget(lbl);
 		m_cbxPunchMarking = new QComboBox();
@@ -446,8 +450,7 @@ void CardReaderWidget::onDbEventNotify(const QString &domain, int connection_id,
 	Q_UNUSED(connection_id)
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)) {
 		int card_id = data.toInt();
-		// TODO: only if widget is visible (plugin window active)
-		if(m_cbxAutoRefresh->isChecked())
+		if(isVisible())
 			updateTableView(card_id);
 	}
 }
@@ -705,7 +708,8 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 		thisPlugin()->assignCardToRun(card_id, read_card.runId());
 	}
 	if(card_id) {
-		/// must be after card processing, receipts printer needs this
+		/// receipts printer needs this
+		/// emitDbEvent is using queued invocation
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_READ, card_id, true);
 	}
 }

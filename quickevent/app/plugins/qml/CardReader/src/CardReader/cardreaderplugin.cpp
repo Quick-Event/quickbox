@@ -4,6 +4,7 @@
 #include "../services/racomclient.h"
 
 #include <Event/eventplugin.h>
+#include <Runs/runsplugin.h>
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -37,6 +38,14 @@ static Event::EventPlugin* eventPlugin()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
 	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
+
+static Runs::RunsPlugin *runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
 	return plugin;
 }
 
@@ -453,33 +462,59 @@ void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 	processCardToRunAssignment(card_id, run_id);
 }
 
-void CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
+bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 {
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(is_relays) {
-		/// take start time from previous leg
 		qf::core::sql::Query q;
-		q.execThrow("SELECT relayId, leg FROM runs WHERE id=" + QString::number(run_id));
-		if(q.next()) {
-			int relay_id = q.value(0).toInt();
-			int leg = q.value(1).toInt();
-			if(leg > 1) {
-				q.execThrow("SELECT finishTimeMs FROM runs"
-						 " WHERE relayId=" + QString::number(relay_id)
-					   + " AND leg=" + QString::number(leg-1));
-				if(q.next()) {
-					int start_time = q.value(0).toInt();
-					q.execThrow("UPDATE runs SET startTimeMs=" + QString::number(start_time)
+		q.execThrow("SELECT relayId, leg, startTimeMs FROM runs WHERE id=" + QString::number(run_id));
+		if(!q.next()) {
+			qfError() << "Run not found, id:" << run_id;
+			return false;
+		}
+		int relay_id = q.value(0).toInt();
+		int leg = q.value(1).toInt();
+		QVariant start_time = q.value(2);
+		if(start_time.isNull() && leg > 1) {
+			/// if strt time not set, take start time from previous leg
+			q.execThrow("SELECT finishTimeMs FROM runs"
+					 " WHERE relayId=" + QString::number(relay_id)
+				   + " AND leg=" + QString::number(leg-1));
+			if(q.next()) {
+				int prev_finish_time = q.value(0).toInt();
+				if(prev_finish_time > 0) {
+					q.execThrow("UPDATE runs SET startTimeMs=" + QString::number(prev_finish_time)
 						   + " WHERE relayId=" + QString::number(relay_id)
 						   + " AND leg=" + QString::number(leg)
 						   + " AND COALESCE(startTimeMs, 0)=0");
 				}
 			}
 		}
+		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
+		updateCheckedCardValuesSql(checked_card);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
+
+		/// if next leg is finished and has not start time set, proces it too
+		/// This covers cases when next leg is read-out before this one
+		q.execThrow("SELECT id, startTimeMs, finishTimeMs FROM runs"
+				 " WHERE relayId=" + QString::number(relay_id)
+			   + " AND leg=" + QString::number(leg+1));
+		if(q.next()) {
+			start_time = q.value(1);
+			int finish_time = q.value(2).toInt();
+			if(finish_time > 0 && start_time.isNull()) {
+				run_id = q.value(0).toInt();
+				card_id = runsPlugin()->cardForRun(run_id);
+				processCardToRunAssignment(card_id, run_id);
+			}
+		}
 	}
-	quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
-	updateCheckedCardValuesSql(checked_card);
-	eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_ASSIGNED, checked_card, true);
+	else {
+		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
+		updateCheckedCardValuesSql(checked_card);
+		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
+	}
+	return true;
 }
 
 int CardReaderPlugin::resolveAltCode(int maybe_alt_code, int stage_id)

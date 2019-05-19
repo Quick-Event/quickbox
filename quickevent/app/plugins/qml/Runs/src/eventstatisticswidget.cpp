@@ -377,7 +377,7 @@ void FooterView::resetFooterAttributes()
 
 void FooterView::syncSectionSizes()
 {
-	qfInfo() << Q_FUNC_INFO << this;
+	//qfInfo() << Q_FUNC_INFO << this;
 	QAbstractItemModel *m = model();
 	QF_ASSERT(m != nullptr, "Model is NULL!", return);
 
@@ -413,15 +413,10 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent)
 	m_tableFooterView->setMinimumHeight(20);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
-	connect(ui->chkAutoRefresh, &QCheckBox::toggled, [this](bool checked) {
-		if(checked)
-			autoRefreshTimer()->start();
-		else
-			autoRefreshTimer()->stop();
-	});
-
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
-	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
+	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reloadDeferred);
+
+	initAutoRefreshTimer();
 }
 
 EventStatisticsWidget::~EventStatisticsWidget()
@@ -429,8 +424,11 @@ EventStatisticsWidget::~EventStatisticsWidget()
 	delete ui;
 }
 
-void EventStatisticsWidget::reloadLater()
+void EventStatisticsWidget::reloadDeferred()
 {
+	if(!isVisible())
+		return;
+
 	if(!m_reloadLaterTimer) {
 		m_reloadLaterTimer = new QTimer(this);
 		m_reloadLaterTimer->setInterval(200);
@@ -477,9 +475,9 @@ void EventStatisticsWidget::reload()
 void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	Q_UNUSED(payload)
-	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED)
 	   || domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED)) {
-		reloadOnEvent();
+		reloadDeferred();
 	}
 }
 
@@ -505,15 +503,20 @@ int EventStatisticsWidget::currentStageId()
 	return ret;
 }
 
-QTimer *EventStatisticsWidget::autoRefreshTimer()
+void EventStatisticsWidget::initAutoRefreshTimer()
 {
-	if(!m_autoRefreshTimer) {
-		m_autoRefreshTimer = new QTimer(this);
-		EventStatisticsOptions::Options opts(options());
-		m_autoRefreshTimer->setInterval(opts.autoRefreshSec() * 1000);
-		connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadOnEvent);
+	EventStatisticsOptions::Options opts(options());
+	int sec = opts.autoRefreshSec();
+	if(sec > 0) {
+		if(!m_autoRefreshTimer) {
+			m_autoRefreshTimer = new QTimer(this);
+			connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadDeferred);
+		}
+		m_autoRefreshTimer->start(sec * 1000);
 	}
-	return m_autoRefreshTimer;
+	else {
+		QF_SAFE_DELETE(m_autoRefreshTimer);
+	}
 }
 
 void EventStatisticsWidget::on_btReload_clicked()
@@ -597,13 +600,6 @@ void EventStatisticsWidget::on_btClearNewInSelectedRows_clicked()
 	reload();
 }
 
-void EventStatisticsWidget::reloadOnEvent()
-{
-	if(ui->chkAutoRefresh->isChecked()) {
-		reloadLater();
-	}
-}
-
 void EventStatisticsWidget::clearNewResults(const QList<int> &classdefs_ids, const QList<int> &runners_finished)
 {
 	qfLogFuncFrame();
@@ -630,8 +626,7 @@ void EventStatisticsWidget::on_btOptions_clicked()
 {
 	EventStatisticsOptions dlg(this);
 	if(dlg.exec()) {
-		EventStatisticsOptions::Options opts(options());
-		autoRefreshTimer()->setInterval(opts.autoRefreshSec() * 1000);
+		initAutoRefreshTimer();
 	}
 }
 

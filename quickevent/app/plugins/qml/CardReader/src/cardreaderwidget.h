@@ -112,7 +112,6 @@ private:
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
-	QCheckBox *m_cbxAutoRefresh = nullptr;
 	QComboBox *m_cbxPunchMarking = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
 	siut::DeviceDriver *f_siDriver = nullptr;
