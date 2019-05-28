@@ -5,29 +5,29 @@
     <name>AppCliOptions</name>
     <message>
         <source>Application locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Programspråk</translation>
     </message>
     <message>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Programprofil, se https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
 </context>
 <context>
     <name>LoggerWidget</name>
     <message>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tom&gt;</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>Quick Event ver. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quick Event ver. %1</translation>
     </message>
     <message>
         <source>Application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Programlogg</translation>
     </message>
 </context>
 </TS>
