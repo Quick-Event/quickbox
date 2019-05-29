@@ -450,7 +450,7 @@ void ClassItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 	if(a) {
 		drawing::DrawingGanttWidget *parent_w = qfc::Utils::findParent<drawing::DrawingGanttWidget*>(scene());
 		auto *w = new ClassDefWidget();
-		w->setWindowTitle(tr("Edit Competitor"));
+		w->setWindowTitle(tr("Edit class"));
 		qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, parent_w);
 		dlg.setDefaultButton(QDialogButtonBox::Save);
 		dlg.setCentralWidget(w);

@@ -99,7 +99,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		if(!is_running) {
 			int finish_ms = value(row_ix, col_runs_finishTimeMs).toInt();
 			if(finish_ms > 0) {
-				emit badDataInput(tr("Canont set not running flag for competitor with valid finish time."));
+				emit badDataInput(tr("Cannot set not running flag for competitor with valid finish time."));
 				return false;
 			}
 		}
