@@ -135,7 +135,7 @@ Model::Model(QObject *parent)
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("Error")).setToolTip(tr("Card mispunch")).setReadOnly(true));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
-	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("RC")).setToolTip(tr("Rented card")).setReadOnly(true).setCastType(QVariant::Bool));
+	setColumn(col_runs_cardLent, ColumnDefinition("cardLent", tr("RT")).setToolTip(tr("Card in rent table")).setReadOnly(true).setCastType(QVariant::Bool));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
 	setColumn(col_cards_checkTime, ColumnDefinition("cards.checkTime", tr("CTIME")).setToolTip(tr("Card check time")).setReadOnly(true));
 	setColumn(col_cards_startTime, ColumnDefinition("cards.startTime", tr("STIME")).setToolTip(tr("Card start time")).setReadOnly(true));
