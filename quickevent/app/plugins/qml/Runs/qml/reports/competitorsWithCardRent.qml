@@ -8,7 +8,7 @@ Report {
 	id: root
 	objectName: "root"
 
-	property string reportTitle: qsTr("Competitors with card lent in stage %1").arg(stageId);
+	property string reportTitle: qsTr("Competitors with rented cards in stage %1").arg(stageId);
 	property var stageId
 
 	property SqlTableModel sqlModel: SqlTableModel {}

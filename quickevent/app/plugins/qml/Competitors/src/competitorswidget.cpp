@@ -133,7 +133,7 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	qf::qmlwidgets::Action *act_cards = part_widget->menuBar()->actionForPath("cards");
 	act_cards->setText(tr("&Cards"));
 	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Lent cards"));
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Cards to rent"));
 		act_cards->addActionInto(a);
 		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
 			qf::qmlwidgets::dialogs::Dialog dlg(this);

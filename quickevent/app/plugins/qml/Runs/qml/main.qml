@@ -134,12 +134,12 @@ RunsPlugin {
 		},
 		Action {
 			id: act_print_competitorswithCardRent
-			text: qsTr('&Competitors with card rent')
+			text: qsTr('&Competitors with rented cards')
 			onTriggered: {
 				Log.info("act_print_competitorswithCardRent triggered");
 				QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/competitorsWithCardRent.qml" //report
 											   , null // report data (will be loaded from SQL by report itself)
-											   , qsTr("Competitors with card rent") // report preview window title
+											   , qsTr("Competitors with rented cards") // report preview window title
 											   , "" // persistent settings ID
 											   , {stageId: root.selectedStageId});
 			}

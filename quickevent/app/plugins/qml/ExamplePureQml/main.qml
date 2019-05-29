@@ -8,7 +8,7 @@ Plugin {
 	property list<Action> actions: [
 		Action {
 			id: actReportLentCards
-			text: qsTr('Pure QML report example - Competitors with card lent')
+			text: qsTr('Pure QML report example - Competitors with rented cards')
 			onTriggered: {
 				printCompetitorsWithCardLent();
 			}
@@ -40,7 +40,7 @@ Plugin {
 		Log.info("Example printCompetitorsWithCardLent triggered");
 		QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/competitorsWithCardLent.qml" //report
 									   , null // report data (will be loaded from SQL by report itself)
-									   , qsTr("Competitors with card lent") // report preview window title
+									   , qsTr("Competitors with rented cards") // report preview window title
 									   , "" // persistent settings ID
 									   , {eventPlugin: FrameWork.plugin("Event")});
 	}
