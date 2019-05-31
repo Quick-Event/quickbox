@@ -40,8 +40,8 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
-	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("LR")).setToolTip(tr("Card rent requested")));
-	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("LT", "cardInLentTable")).setToolTip(tr("Card in lent table")));
+	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
+	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
 	setColumn(col_disqReason, ColumnDefinition("disqReason", tr("Error")).setToolTip(tr("Disqualification reason")).setReadOnly(true));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
@@ -99,7 +99,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		if(!is_running) {
 			int finish_ms = value(row_ix, col_runs_finishTimeMs).toInt();
 			if(finish_ms > 0) {
-				emit badDataInput(tr("Canont set not running flag for competitor with valid finish time."));
+				emit badDataInput(tr("Cannot set not running flag for competitor with valid finish time."));
 				return false;
 			}
 		}

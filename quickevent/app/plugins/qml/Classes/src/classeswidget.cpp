@@ -194,7 +194,7 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	{
 		qfw::Action *a = new qfw::Action(tr("Classes &layout"));
-		a->setShortcut("Ctrl+L");
+		a->setShortcut(tr("Ctrl+L"));
 		a_edit->addActionInto(a);
 		connect(a, &qfw::Action::triggered, [this]()
 		{

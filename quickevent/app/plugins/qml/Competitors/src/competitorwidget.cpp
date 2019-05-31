@@ -88,8 +88,8 @@ RunsModel::RunsModel(QObject *parent)
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch")));
-	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("LR", "runs.cardLent")).setToolTip(tr("Card rent requested")));
-	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("LT", "cardInLentTable")).setToolTip(tr("Card in lent table")));
+	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR", "runs.cardLent")).setToolTip(tr("Card rent requested")));
+	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R", "runs.cardReturned")).setToolTip(tr("Card returned")));
 }
 
