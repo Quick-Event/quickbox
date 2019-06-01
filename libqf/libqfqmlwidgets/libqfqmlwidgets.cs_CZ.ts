@@ -94,7 +94,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation type="unfinished"></translation>
+        <translation>uvozovky</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -173,12 +173,12 @@
     <message>
         <location filename="src/tableview.cpp" line="747"/>
         <source>Save File</source>
-        <translation>Uložit Soubor</translation>
+        <translation>Uložit soubor</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="759"/>
         <source>Open File</source>
-        <translation>Otevřít Soubor</translation>
+        <translation>Otevřít soubor</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="911"/>
@@ -268,7 +268,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1595"/>
         <source>Post row edits</source>
-        <translation>Uložit a další</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1597"/>
@@ -665,7 +665,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
         <source>Event log options</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení záznamu událostí</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="105"/>
@@ -902,7 +902,7 @@
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="94"/>
         <source>report</source>
-        <translation type="unfinished"></translation>
+        <translation>report</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="100"/>
@@ -937,12 +937,12 @@
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>Open report file</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít soubor reportu</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>QML reports (*.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>QML reporty (*.qml)</translation>
     </message>
 </context>
 <context>
@@ -1059,7 +1059,7 @@
         <location filename="src/reports/widgets/reportviewwidget.h" line="61"/>
         <location filename="src/reports/widgets/reportviewwidget.h" line="67"/>
         <source>Report preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Náhled reportu</translation>
     </message>
 </context>
 <context>
