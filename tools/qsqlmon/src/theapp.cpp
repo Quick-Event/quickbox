@@ -94,8 +94,7 @@ void TheApp::redirectLog()
 */
 QString TheApp::versionString() const
 {
-	static QString s = "1.3.6";
-	return s;
+	return QCoreApplication::applicationVersion();
 }
 
 SqlJournal * TheApp::sqlJournal()

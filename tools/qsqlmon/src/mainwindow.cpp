@@ -66,7 +66,7 @@ MainWindow::MainWindow()
 	createActions();
 	createMenus();
 	createToolBars();
-    //qfDebug("%s: %i",__FILE__, __LINE__);
+	//qfDebug("%s: %i",__FILE__, __LINE__);
 	createStatusBar();
 	createDockWindows();
 
