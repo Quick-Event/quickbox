@@ -2,10 +2,9 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=QSqlMon
-Exec=/usr/lib/qsqlmon/qsqlmon
+Exec=qsqlmon
 Comment=A SQL monitor application
-Icon=/usr/share/icons/hicolor/48x48/apps/qsqlmon48x48.png
-Categories=Application;Development
-Version=1.3
+Icon=qsqlmon48x48
+Categories=System;Database;
 Type=Application
-Terminal=0
+Terminal=false
