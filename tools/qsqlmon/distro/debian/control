@@ -1,0 +1,16 @@
+Source: qsqlmon
+Section: devel
+Priority: optional
+Maintainer: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Build-Depends: debhelper (>= 9), qtbase5-dev, qtdeclarative5-dev, libqt5svg5-dev
+Standards-Version: 3.9.8
+Homepage: https://github.com/fvacek/quickbox/tree/master/tools/qsqlmon
+Vcs-Git: https://github.com/fvacek/quickbox.git
+Vcs-Browser: https://github.com/fvacek/quickbox/tree/master/tools/qsqlmon
+
+Package: qsqlmon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, git
+Description: Open Source QT Database administration tool
+ Open Source QT Database administration tool.
+
