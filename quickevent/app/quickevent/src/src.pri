@@ -8,12 +8,12 @@ SOURCES += \
     $$PWD/tablemodellogdevice.cpp
 
 HEADERS  += \
+    $$PWD/appversion.h \
 	$$PWD/mainwindow.h \
     $$PWD/application.h \
     $$PWD/appclioptions.h \
     $$PWD/loggerwidget.h \
-    $$PWD/tablemodellogdevice.h \
-    $$PWD/appversionstring.h
+    $$PWD/tablemodellogdevice.h
 
 FORMS +=
 
