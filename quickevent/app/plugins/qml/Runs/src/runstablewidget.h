@@ -20,6 +20,7 @@ public:
 
 	void clear();
 	void reload(int stage_id, int class_id = 0, bool show_offrace = false, const QString &sort_column = QString(), int select_competitor_id = 0);
+	void reload();
 
 	RunsTableModel* runsModel() {return m_runsModel;}
 private:

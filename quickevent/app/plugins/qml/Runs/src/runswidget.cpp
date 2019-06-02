@@ -663,7 +663,7 @@ void RunsWidget::on_btDraw_clicked()
 					}
 				}
 				if(draw_method == DrawMethod::RandomizedEquidistantClubs) {
-					qsrand(QTime::currentTime().msecsSinceStartOfDay());
+					qsrand((uint)QTime::currentTime().msecsSinceStartOfDay());
 					int cnt = runners_draw_ids.count();
 					for (int i = 0; i < 2*cnt; ++i) {
 						// randomly switch rudders fi their clubs will not get consequent
@@ -719,7 +719,7 @@ void RunsWidget::on_btDraw_clicked()
 				int vacants_after = q_classdefs.value("vacantsAfter").toInt();
 				int map_count = q_classdefs.value("mapCount").toInt();
 				int start = start0;
-				int n = 0;
+				int maps_used = 0;
 
 				if(map_count <= 0)
 					use_all_maps = false;
@@ -727,23 +727,23 @@ void RunsWidget::on_btDraw_clicked()
 				if(draw_method != DrawMethod::Handicap) {
 					start += vacants_before * interval;
 					if(use_all_maps) {
-						map_count -= vacants_before;
-						int spare_map_count = (map_count - vacants_after - runners_draw_ids.count());
+						maps_used += vacants_before;
+						int spare_map_count = (map_count - maps_used - vacants_after - runners_draw_ids.count());
 						if(spare_map_count > 0)
 							vacant_every = runners_draw_ids.count() / spare_map_count;
 						else
 							vacant_every = 0;
 					}
 				}
-
 				qfs::Query q(transaction.connection());
 				q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
-				for(int runner_id : runners_draw_ids) {
+				for (int i = 0; i < runners_draw_ids.count(); ++i) {
+					int runner_id = runners_draw_ids.at(i);
 					q.bindValue(QStringLiteral(":id"), runner_id);
 					if(draw_method == DrawMethod::Handicap) {
 						if(handicap_times.isEmpty()) {
-							++n;
-							start = start0 + handicap_length_ms + n * interval;
+							++maps_used;
+							start = start0 + handicap_length_ms + maps_used * interval;
 						}
 						else {
 							start = start0 + handicap_times.takeFirst();
@@ -755,21 +755,23 @@ void RunsWidget::on_btDraw_clicked()
 						q.bindValue(QStringLiteral(":startTimeMs"), start);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
-						n++;
-						map_count--;
-						bool can_add_vacant = true;
-						if(use_all_maps) {
-							can_add_vacant = (map_count > vacants_after);
-						}
-						if(can_add_vacant && vacant_every > 0 && (n % vacant_every) == 0)
+						maps_used++;
+						int runners_left = runners_draw_ids.count() - i - 1;
+						bool can_add_vacant = use_all_maps?
+									map_count > (maps_used + runners_left + vacants_after):
+									true;
+						if(can_add_vacant && vacant_every > 0 && (((i + 1) % vacant_every) == 0)) {
+							//qfDebug() << i << vacant_every << (i % vacant_every);
 							start += interval;
+							maps_used++;
+						}
 					}
 				}
 				if(use_all_maps)
-					vacants_after = map_count;
+					vacants_after = map_count - maps_used;
 				if(vacants_after > 0)
-					start += (vacants_after - 1) * interval;
-				saveLockedForDrawing(class_id, stage_id, true, start / 60 / 1000);
+					start += vacants_after * interval;
+				saveLockedForDrawing(class_id, stage_id, true, (start - interval) / 60 / 1000);
 			}
 		}
 		transaction.commit();
@@ -777,8 +779,7 @@ void RunsWidget::on_btDraw_clicked()
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
-	ui->wRunsTableWidget->runsModel()->reload();
-	//reload();
+	ui->wRunsTableWidget->reload();
 }
 
 void RunsWidget::on_btDrawRemove_clicked()

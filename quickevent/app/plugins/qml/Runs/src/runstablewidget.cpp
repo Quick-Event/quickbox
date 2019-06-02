@@ -217,6 +217,12 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	}
 }
 
+void RunsTableWidget::reload()
+{
+	runsModel()->reload();
+	m_runsTableItemDelegate->reloadHighlightedClassId();
+}
+
 void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
 {
 	Q_UNUSED(id)

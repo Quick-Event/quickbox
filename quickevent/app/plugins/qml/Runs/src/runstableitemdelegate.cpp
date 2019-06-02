@@ -85,7 +85,9 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 
 		bool bad_start_time = (start_ms > m_classStartFirst && start_ms == prev_start_ms) || ((start_ms - prev_start_ms) % m_classInterval) != 0;
 		bool vacant_before = !bad_start_time && (((start_ms - prev_start_ms) > m_classInterval) || ((index.row() == 0) && (start_ms > m_classStartFirst)));
-		bool vacant_after = !bad_start_time && (((next_start_ms - start_ms) > m_classInterval) || ((index.row() == tm->rowCount() - 1) && (start_ms < m_classStartLast)));
+		bool vacant_after = !bad_start_time
+				&& (((next_start_ms - start_ms) > m_classInterval)
+					|| ((index.row() == tm->rowCount() - 1) && (start_ms < m_classStartLast)));
 		bool bad_club = !vacant_before && (club == prev_club);
 		//auto cd = tm->columnDefinition(index.column());
 		if(index.column() == RunsTableModel::Columns::col_runs_startTimeMs) {
