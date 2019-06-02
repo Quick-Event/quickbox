@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Loading event list from Oris ...</source>
-        <translation>Nahrávám seznam zavodů z ORISu ...</translation>
+        <translation>Nahrávám seznam zavodů z ORISu...</translation>
     </message>
     <message>
         <source>OB</source>
@@ -111,7 +111,7 @@
     </message>
     <message>
         <source>Import comma separated values UTF8 text files with header.</source>
-        <translation>Importujete soubor s hodnotami oddělenými čárkou (CSV), včetně záhlaví, v kódování UTF-8.</translation>
+        <translation>Importovat soubor s hodnotami oddělenými čárkou (CSV), včetně záhlaví, v kódování UTF-8.</translation>
     </message>
     <message>
         <source>Each row should have following columns: &lt;ol&gt;&lt;li&gt;Registration&lt;/li&gt;&lt;li&gt;Class&lt;/li&gt;&lt;li&gt;SI&lt;/li&gt;&lt;li&gt;LastName&lt;/li&gt;&lt;li&gt;FirstName&lt;/li&gt;&lt;li&gt;Licence&lt;/li&gt;&lt;li&gt;Note&lt;/li&gt;&lt;/ol&gt;</source>
@@ -123,7 +123,7 @@
     </message>
     <message>
         <source>Oris ranging CSV files (*.txt *.csv)</source>
-        <translation>Soubor rankingu z ORIS (*.txt *.csv)</translation>
+        <translation>Soubor rankingu z ORISu (*.txt *.csv)</translation>
     </message>
     <message>
         <source>Error reading CSV line: [%1]</source>
@@ -178,7 +178,7 @@
     </message>
     <message>
         <source>&amp;Sync relays entries</source>
-        <translation>&amp;Synchronizace štafetových přihlášek</translation>
+        <translation>&amp;Synchronizovat přihlášky štafet</translation>
     </message>
 </context>
 </TS>
