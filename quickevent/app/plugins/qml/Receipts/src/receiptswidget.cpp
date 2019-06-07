@@ -248,7 +248,7 @@ void ReceiptsWidget::on_btPrintNew_clicked()
 void ReceiptsWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_print_card(tr("Print selected cards"), nullptr);
+	QAction a_print_card(tr("Print receipts for selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_print_card;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
