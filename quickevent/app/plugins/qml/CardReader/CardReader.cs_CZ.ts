@@ -14,7 +14,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="164"/>
         <source>More runs with si: %1, run1 id: %2, run2 id: %3</source>
-        <translation>Více úseků s SI: %1, id úseku 1: %2, id úseku 2: %3</translation>
+        <translation>Více závodníků s SI: %1, ID závodníka 1: %2, ID závodníka 2: %3</translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="176"/>
@@ -488,12 +488,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="139"/>
         <source>RT</source>
-        <translation type="unfinished"></translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="139"/>
         <source>Card in rent table</source>
-        <translation type="unfinished"></translation>
+        <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="140"/>
