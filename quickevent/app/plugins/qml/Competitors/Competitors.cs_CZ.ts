@@ -72,7 +72,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="135"/>
         <source>&amp;Registration</source>
-        <translation>&amp;Registrační číslo</translation>
+        <translation>&amp;Registrace</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="196"/>
@@ -205,7 +205,7 @@
         <location filename="src/competitorswidget.cpp" line="136"/>
         <source>Cards to rent</source>
         <oldsource>Lent cards</oldsource>
-        <translation type="unfinished">Vypůjčené čipy</translation>
+        <translation>Čipy k zapůjčení</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="147"/>
@@ -269,7 +269,7 @@
         <location filename="src/lentcardswidget.cpp" line="16"/>
         <source>Cards to rent</source>
         <oldsource>Lent cards</oldsource>
-        <translation type="unfinished">Vypůjčené čipy</translation>
+        <translation>Čipy k zapůjčení</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="23"/>
@@ -381,7 +381,7 @@
         <source>RR</source>
         <oldsource>LR</oldsource>
         <comment>runs.cardLent</comment>
-        <translation type="unfinished">VČ</translation>
+        <translation>VP</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="91"/>
@@ -393,13 +393,13 @@
         <source>RT</source>
         <oldsource>LT</oldsource>
         <comment>cardInLentTable</comment>
-        <translation type="unfinished">ČT</translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="92"/>
         <source>Card in rent table</source>
         <oldsource>Card in lent table</oldsource>
-        <translation type="unfinished">Čip z tabulky čipů k zapůjčení</translation>
+        <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="93"/>
@@ -482,12 +482,12 @@
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
         <source>maps</source>
-        <translation>mapy</translation>
+        <translation>Map</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
         <source>res</source>
-        <translation>rozdíl</translation>
+        <translation>Rozdíl</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
