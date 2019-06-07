@@ -31,6 +31,7 @@ OTHER_FILES += \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
+    $${PLUGIN_NAME}.nb_NO.ts \
 
 lupdate_only {
 SOURCES += \

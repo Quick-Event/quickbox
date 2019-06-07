@@ -51,3 +51,4 @@ include($$PWD/src/src.pri)
 
 TRANSLATIONS += \
 	$${TARGET}.cs_CZ.ts \
+    $${TARGET}.nb_NO.ts \

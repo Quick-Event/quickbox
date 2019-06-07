@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="cs_CZ">
+<TS version="2.1" language="nb_NO">
 <context>
     <name>CardReader::CardCheckerClassicCpp</name>
     <message>
         <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="13"/>
         <source>Classic race</source>
-        <translation>Pevné pořadí kontrol</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14,22 +14,22 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="164"/>
         <source>More runs with si: %1, run1 id: %2, run2 id: %3</source>
-        <translation>Více úseků s SI: %1, id úseku 1: %2, id úseku 2: %3</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="176"/>
         <source>Cannot find runs with si: %1</source>
-        <translation>Nenalezen závodník s čipem: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="287"/>
         <source>Save card ERROR: %1</source>
-        <translation>Chyba při ukládání čipu: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="333"/>
         <source>Save punch record ERROR: %1</source>
-        <translation>Chyba při ukládání záznamu o ražení z čipu: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37,7 +37,7 @@
     <message>
         <location filename="src/cardreaderpartwidget.cpp" line="12"/>
         <source>Card reader</source>
-        <translation>Vyčítání SI čipů</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45,52 +45,52 @@
     <message>
         <location filename="src/cardreaderwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Formulář</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="223"/>
         <source>Show receipt</source>
-        <translation>Ukázat mezičasy</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="226"/>
-        <source>Show card</source>
-        <translation>Ukázat data čipu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="224"/>
         <source>Print receipt</source>
-        <translation>Vytisknout mezičasy</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="226"/>
+        <source>Show card</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="227"/>
         <source>Print card</source>
-        <translation>Vytisknout data čipu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="229"/>
         <source>Assign card to runner</source>
-        <translation>Přiřadit čip závodníkovi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="230"/>
         <source>Recalculate times in selected rows</source>
-        <translation>Přepočítat časy ve vybraných řádcích</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="276"/>
         <source>Recalculating times for %1</source>
-        <translation>Přepočítávám časy pro %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="302"/>
         <source>&amp;Station</source>
-        <translation>&amp;Vyčítací jednotka</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="305"/>
         <source>Station info</source>
-        <translation>Info o vyčítací jednotce</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="313"/>
@@ -101,13 +101,7 @@ Handshake: {{HandShake}}
 Password access: {{PasswordAccess}}
 Read out after punch: {{ReadOutAfterPunch}}
 </source>
-        <translation>Jednotka číslo: {{StationNumber}}
-Extended mód: {{ExtendedMode}}
-Auto send: {{AutoSend}}
-Handshake: {{HandShake}}
-Password access: {{PasswordAccess}}
-Vyčítat po oražení: {{ReadOutAfterPunch}}
-</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="322"/>
@@ -116,7 +110,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="325"/>
         <location filename="src/cardreaderwidget.cpp" line="326"/>
         <source>True</source>
-        <translation>Zapnuto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="322"/>
@@ -125,77 +119,77 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="325"/>
         <location filename="src/cardreaderwidget.cpp" line="326"/>
         <source>False</source>
-        <translation>Vypnuto</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="335"/>
         <source>Read station memory</source>
-        <translation>Zálohovat paměť vyčítací jednotky</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="362"/>
         <source>&amp;Tools</source>
-        <translation>&amp;Nástroje</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="365"/>
         <source>Import cards</source>
-        <translation>Importovat čipy</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="367"/>
         <source>Laps only CSV</source>
-        <translation>Pouze mezičasy (CSV)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="373"/>
         <source>Test audio</source>
-        <translation>Otestovat audio</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="381"/>
         <source> Check type </source>
-        <translation> Typ kontroly ražení </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="394"/>
         <source> Reader mode </source>
-        <translation> Mód vyčítací jednotky </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="397"/>
         <source>Race</source>
-        <translation>Závod</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="398"/>
         <source>Entries</source>
-        <translation>Přihlášky</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="463"/>
         <source>Open COM</source>
-        <translation>Otevřít COM</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="469"/>
         <source>Card readout settings</source>
-        <translation>Nastavení vyčítání čipů</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="522"/>
         <source>Connected to %1 in direct mode.</source>
-        <translation>Připojen k %1 v přímém módu.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="525"/>
         <source>Error set SI station to direct mode.</source>
-        <translation>Chyba při nastavování SI jednotky do přímého módu.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="549"/>
         <source>Error open device %1 - %2</source>
-        <translation>Chyba při otevírání zařízení %1 - %2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="626"/>
@@ -210,97 +204,97 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="642"/>
         <source>card: %1</source>
-        <translation>čip: %1</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="976"/>
-        <source>Downloading station backup ...</source>
-        <translation>Načítám paměť jednotky...</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="978"/>
-        <source>Cancelled by user</source>
-        <translation>Přerušeno uživatelem</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
-        <source>No.</source>
-        <translation>Čís.</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
-        <source>SI</source>
-        <translation>SI</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
-        <source>DateTime</source>
-        <translation>Datum/čas</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
-        <source>Card error</source>
-        <translation>Chyba čipu</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="1011"/>
-        <source>Station %1 backup memory</source>
-        <translation>Paměť SI jednotky %1</translation>
-    </message>
-    <message>
-        <location filename="src/cardreaderwidget.cpp" line="1013"/>
-        <source>Station backup memory</source>
-        <translation>Paměť SI jednotky</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="719"/>
         <source>punch: %1 %2</source>
-        <translation>ražení: %1 %2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="726"/>
         <source>Cannot find run for punch record SI: %1</source>
-        <translation>Nelze najít úsek pro záznam ražení SI: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="782"/>
         <source>Find runner</source>
-        <translation>Najít závodníka</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="881"/>
         <source>&lt;p&gt;CSV record must have format:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Any row can be commented by leading #&lt;/p&gt;&lt;p&gt;Decimal point is also supported, the quotes can be omited than.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;CSV záznam musí mít formát:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Jakýkoliv řádek může být zakomentován pomocí #&lt;/p&gt;&lt;p&gt;Desetinná tečka je také podporována, uvozovky mohou být v tom případě vynechány.&lt;/p&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="885"/>
         <source>Import CSV</source>
-        <translation>Importovat CSV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="890"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation>Nelze otevřít soubor &apos;%1&apos; pro čtení.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="909"/>
         <source>Bad stage!</source>
-        <translation>Špatná etapa!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="931"/>
         <source>Cannot find runs record for SI %1!</source>
-        <translation>Nelze najít záznam úseku pro SI: %1!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="932"/>
         <source>Cannot find class for SI %1!</source>
-        <translation>Nelze najít kategorii pro SI: %1!</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="945"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
-        <translation>SI: %1 Kategorie %2 – Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="976"/>
+        <source>Downloading station backup ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="978"/>
+        <source>Cancelled by user</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <source>No.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <source>SI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <source>DateTime</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <source>Card error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1011"/>
+        <source>Station %1 backup memory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1013"/>
+        <source>Station backup memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -308,123 +302,122 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="14"/>
         <source>CuteCom</source>
-        <translation>Nastavení vyčítání čipů</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="27"/>
         <source>Reader</source>
-        <translation>Vyčítací jednotka</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="33"/>
         <source>Connection</source>
-        <translation>Připojení</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="39"/>
         <source>De&amp;vice:</source>
-        <oldsource>Device:</oldsource>
-        <translation>&amp;Zařízení:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="52"/>
         <source>Baud rate:</source>
-        <translation>Bity za sekundu:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="69"/>
         <source>38400</source>
-        <translation>38400</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="74"/>
         <source>4800</source>
-        <translation>4800</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="82"/>
         <source>Data bits:</source>
-        <translation>Datové bity:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="99"/>
         <source>8</source>
-        <translation>8</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="104"/>
         <source>7</source>
-        <translation>7</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="109"/>
         <source>6</source>
-        <translation>6</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="114"/>
         <source>5</source>
-        <translation>5</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="122"/>
         <source>Stop bits:</source>
-        <translation>Stop bity:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="136"/>
         <source>1</source>
-        <translation>1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="141"/>
         <source>2</source>
-        <translation>2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="149"/>
         <source>Parity:</source>
-        <translation>Parita:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="163"/>
         <source>None</source>
-        <translation>Žádná</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="168"/>
         <source>Odd</source>
-        <translation>Lichá</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="173"/>
         <source>Even</source>
-        <translation>Sudá</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="178"/>
         <source>Mark</source>
-        <translation>Značka</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="183"/>
         <source>Space</source>
-        <translation>Mezera</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="207"/>
         <source>Debugging</source>
-        <translation>Ladění</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="213"/>
         <source>show raw data</source>
-        <translation>ukaž surová data</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="220"/>
         <source>disable CRC check</source>
-        <translation>zakázat CRC kontrolu</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -432,58 +425,58 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="130"/>
         <source>SI</source>
-        <translation>SI</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="131"/>
         <source>Class</source>
-        <translation>Kategorie</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="132"/>
         <source>Name</source>
-        <translation>Jméno</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="133"/>
         <source>Reg</source>
-        <translation>Reg. č.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="134"/>
         <source>Start</source>
-        <translation>Start</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="135"/>
         <source>Time</source>
-        <translation>Čas</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="136"/>
         <source>Finish</source>
-        <translation>Cíl</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="137"/>
         <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Error</source>
-        <translation>Chyba</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="137"/>
         <source>Card mispunch</source>
-        <translation>Chybné ražení</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="138"/>
         <source>DISQ</source>
-        <translation>DISK</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="138"/>
         <source>Disqualified</source>
-        <translation>Diskvalifikace</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="139"/>
@@ -498,47 +491,47 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="140"/>
         <source>R</source>
-        <translation>ČV</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="140"/>
         <source>Card returned</source>
-        <translation>Čip vrácen</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="141"/>
         <source>CTIME</source>
-        <translation>Čas-K</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="141"/>
         <source>Card check time</source>
-        <translation>Čas kontroly vynulování čipu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="142"/>
         <source>STIME</source>
-        <translation>Čas-S</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="142"/>
         <source>Card start time</source>
-        <translation>Startovní čas na čipu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="143"/>
         <source>FTIME</source>
-        <translation>Čas-C</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="143"/>
         <source>Card finish time</source>
-        <translation>Cílový čas na čipu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Assign card to runner error</source>
-        <translation>Chyba při přiřazení čipu závodníkovi</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -546,27 +539,27 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Formulář</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="33"/>
         <source>sirxd data</source>
-        <translation>sirxd data</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="40"/>
         <source>Listen on UDP port</source>
-        <translation>Poslouchat na UDP portu</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="47"/>
         <source>Raw SI data</source>
-        <translation>Surová SI data</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="67"/>
         <source>Listen on TCP port</source>
-        <translation>Poslouchat na TCP portu</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
