@@ -368,7 +368,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="34"/>
         <source>Reg</source>
-        <translation>Reg</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="35"/>
@@ -429,7 +429,7 @@
         <location filename="src/runstablemodel.cpp" line="43"/>
         <source>RR</source>
         <oldsource>LR</oldsource>
-        <translation type="unfinished">VČ</translation>
+        <translation>VP</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
@@ -441,18 +441,18 @@
         <source>RT</source>
         <oldsource>LT</oldsource>
         <comment>cardInLentTable</comment>
-        <translation type="unfinished">ČT</translation>
+        <translation>ČT</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="44"/>
         <source>Card in rent table</source>
         <oldsource>Card in lent table</oldsource>
-        <translation type="unfinished">Čip z tabulky čipů k zapůjčení</translation>
+        <translation>Čip z tabulky čipů k zapůjčení</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="45"/>
         <source>R</source>
-        <translation>V</translation>
+        <translation>ČV</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="45"/>
@@ -498,7 +498,7 @@
         <location filename="src/runstablemodel.cpp" line="102"/>
         <source>Cannot set not running flag for competitor with valid finish time.</source>
         <oldsource>Canont set not running flag for competitor with valid finish time.</oldsource>
-        <translation type="unfinished">Nelze nastavit příznak &quot;nestartuje&quot; závodníkovi s validním cílovým časem.</translation>
+        <translation>Nelze nastavit příznak &quot;nestartuje&quot; závodníkovi s validním cílovým časem.</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="255"/>
@@ -608,7 +608,7 @@
     <message>
         <location filename="src/runswidget.ui" line="95"/>
         <source>Draw selected class or all classes when all the classes are selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Losovat vybranou kategorii nebo všechny kategorie, pokud jsou vybrány.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="98"/>
@@ -886,17 +886,17 @@
         <location filename="qml/reports/competitorsWithCardRent.qml" line="11"/>
         <source>Competitors with rented cards in stage %1</source>
         <oldsource>Competitors with card lent in stage %1</oldsource>
-        <translation type="unfinished">Závodníci s půjčeným čipem v etapě %1</translation>
+        <translation>Závodníci s půjčeným čipem v etapě %1</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="78"/>
         <source>Off</source>
-        <translation>Nestart</translation>
+        <translation>Neběž</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="82"/>
         <source>Ret</source>
-        <translation>Vrácen</translation>
+        <translation>Vráce</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsWithCardRent.qml" line="130"/>
@@ -982,13 +982,13 @@
         <location filename="qml/main.qml" line="137"/>
         <source>&amp;Competitors with rented cards</source>
         <oldsource>&amp;Competitors with card rent</oldsource>
-        <translation type="unfinished">&amp;Závodníci s půjčeným čipem</translation>
+        <translation>&amp;Závodníci s půjčeným čipem</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="142"/>
         <source>Competitors with rented cards</source>
         <oldsource>Competitors with card rent</oldsource>
-        <translation type="unfinished">Závodníci s půjčeným čipem</translation>
+        <translation>Závodníci s půjčeným čipem</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="160"/>
@@ -1012,7 +1012,7 @@
         <location filename="qml/main.qml" line="163"/>
         <location filename="qml/main.qml" line="210"/>
         <source>Get file name</source>
-        <translation>Vybrat jméno souboru</translation>
+        <translation>Zadejte jméno souboru</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
