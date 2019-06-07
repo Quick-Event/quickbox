@@ -244,7 +244,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 	qfLogFuncFrame();
 	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
-	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_print_card(tr("Print receipt"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
 	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
 	QAction a_clear_start_times(tr("Clear start times in selected rows"), nullptr);

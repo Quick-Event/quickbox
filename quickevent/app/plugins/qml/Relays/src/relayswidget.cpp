@@ -166,7 +166,7 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_nlegs);
 	}
 	{
-		qfw::Action *a = new qfw::Action("nlegs", tr("&Overal"));
+		qfw::Action *a = new qfw::Action("nlegs", tr("&Overall"));
 		a_print_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal);
 	}

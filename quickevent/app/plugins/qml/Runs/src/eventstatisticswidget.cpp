@@ -571,7 +571,7 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
 								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
 								, td
-								, tr("Results by clases")
+								, tr("Results by classes")
 								, "printCurrentStage"
 								, props
 								);

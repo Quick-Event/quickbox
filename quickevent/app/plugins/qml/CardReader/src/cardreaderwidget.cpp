@@ -223,8 +223,8 @@ void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)
 	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QAction a_print_receipt(tr("Print receipt"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
-	QAction a_show_card(tr("Show card"), nullptr);
-	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_show_card(tr("Show card data"), nullptr);
+	QAction a_print_card(tr("Print card data"), nullptr);
 	QAction a_sep2(nullptr); a_sep2.setSeparator(true);
 	QAction a_assign_runner(tr("Assign card to runner"), nullptr);
 	QAction a_recalculate_times(tr("Recalculate times in selected rows"), nullptr);
