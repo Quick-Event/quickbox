@@ -196,7 +196,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
         <source>Maps</source>
-        <translation>Mapy</translation>
+        <translation>Map</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="131"/>
@@ -296,7 +296,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="197"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="211"/>
@@ -546,7 +546,7 @@
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit class</source>
         <oldsource>Edit Competitor</oldsource>
-        <translation type="unfinished">Upravit kategorii</translation>
+        <translation>Upravit kategorii</translation>
     </message>
 </context>
 <context>
