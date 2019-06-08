@@ -622,14 +622,15 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 
 			QVariantList result{"Result"};
 			int run_id = row2.value("runs.id").toInt();
-			int stime = row2.value("startTimeMs").toInt() / 1000;
-			int ftime = row2.value("finishTimeMs").toInt() / 1000;
-			int time = row2.value("timeMs").toInt() / 1000;
+			int stime = row2.value("startTimeMs").toInt();
+			int ftime = row2.value("finishTimeMs").toInt();
+			int time = row2.value("timeMs").toInt();
+			//qfInfo() << row1.value("classes.name").toString() << row2.value("competitors.lastName").toString() << stime << ftime << time;
 			if(ftime && time)
 				stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
 			result.insert(result.count(), QVariantList{"StartTime", stage_start_date_time.addMSecs(stime).toString(Qt::ISODate)});
 			result.insert(result.count(), QVariantList{"FinishTime", stage_start_date_time.addMSecs(ftime).toString(Qt::ISODate)});
-			result.insert(result.count(), QVariantList{"Time", time});
+			result.insert(result.count(), QVariantList{"Time", time / 1000});
 
 			static auto STAT_OK = QStringLiteral("OK");
 			QString competitor_status = STAT_OK;
