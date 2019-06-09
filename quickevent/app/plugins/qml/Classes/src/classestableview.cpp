@@ -41,7 +41,7 @@ void ClassesTableView::insertRow()
 
 void ClassesTableView::removeSelectedRows()
 {
-	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Realy delete all selected classes? This action cannot be undone!"), false))
+	if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Really delete all selected classes? This action cannot be undone!"), false))
 		return;
 	try {
 		qf::core::sql::Transaction transaction;

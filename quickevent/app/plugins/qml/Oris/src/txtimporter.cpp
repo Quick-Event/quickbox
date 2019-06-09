@@ -155,7 +155,7 @@ void TxtImporter::importRankingCsv()
 {
 	qfLogFuncFrame();
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranging CSV files (*.txt *.csv)"));
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranking CSV files (*.txt *.csv)"));
 	if(fn.isEmpty())
 		return;
 	try {
