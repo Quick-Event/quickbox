@@ -47,7 +47,7 @@
     <message>
         <location filename="src/addlegdialogwidget.cpp" line="42"/>
         <source>Reg</source>
-        <translation>Reg</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.cpp" line="43"/>
@@ -92,7 +92,7 @@
     <message>
         <location filename="src/relaywidget.cpp" line="79"/>
         <source>Reg</source>
-        <translation>Reg</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/relaywidget.cpp" line="80"/>
