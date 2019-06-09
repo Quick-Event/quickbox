@@ -77,7 +77,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>
         <source>Data storage setup</source>
-        <translation>Nastavení uložení dat</translation>
+        <translation>Nastavení úložiště dat</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="84"/>
