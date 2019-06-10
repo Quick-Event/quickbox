@@ -29,3 +29,6 @@ include ( src/src.pri )
 
 RESOURCES += libquickeventgui.qrc
 
+TRANSLATIONS += \
+    libquickeventgui.cs_CZ.ts \
+    libquickeventgui.nb_NO.ts \
