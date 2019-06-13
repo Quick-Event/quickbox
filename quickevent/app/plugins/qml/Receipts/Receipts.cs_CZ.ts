@@ -240,7 +240,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="84"/>
         <source>printer</source>
-        <translation>tiskárna</translation>
+        <translation>Tiskárna</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="251"/>
