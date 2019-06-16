@@ -6,12 +6,14 @@ if [ $1 ]; then
 	DISTRO_VER=$1
 fi
 
+SRC_DIR=/home/fanda/proj/quickbox
+
 if [ -z $DISTRO_VER ]; then
-	echo "specify distro version like:\n$0 1.0.4" >&2
-	exit 1
+    DISTRO_VER=`grep APP_VERSION $SRC_DIR/quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
+	echo "Distro version not specified, deduced from source code: $DISTRO_VER" >&2
+	#exit 1
 fi
 
-SRC_DIR=/home/fanda/proj/quickbox
 WORK_DIR=/home/fanda/t/_distro
 
 #USE_SYSTEM_QT=1
@@ -78,12 +80,17 @@ rsync -av --exclude '*.debug' $QT_LIB_DIR/libicu*.so* $DIST_LIB_DIR
 
 rsync -av --exclude '*.debug' $QT_DIR/plugins/platforms/ $DIST_BIN_DIR/platforms
 rsync -av --exclude '*.debug' $QT_DIR/plugins/printsupport/ $DIST_BIN_DIR/printsupport
+
 mkdir -p $DIST_BIN_DIR/imageformats
 rsync -av --exclude '*.debug' $QT_DIR/plugins/imageformats/libqjpeg.so $DIST_BIN_DIR/imageformats/
 rsync -av --exclude '*.debug' $QT_DIR/plugins/imageformats/libqsvg.so $DIST_BIN_DIR/imageformats/
+
 mkdir -p $DIST_BIN_DIR/sqldrivers
 rsync -av --exclude '*.debug' $QT_DIR/plugins/sqldrivers/libqsqlite.so $DIST_BIN_DIR/sqldrivers/
 rsync -av --exclude '*.debug' $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $DIST_BIN_DIR/sqldrivers/
+
+mkdir -p $DIST_BIN_DIR/audio
+rsync -av --exclude '*.debug' $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
 
 mkdir -p $DIST_BIN_DIR/QtQuick/Window.2
 rsync -av --exclude '*.debug' $QT_DIR/qml/QtQuick/Window.2/ $DIST_BIN_DIR/QtQuick/Window.2
