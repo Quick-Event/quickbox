@@ -26,7 +26,7 @@
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="48"/>
         <source>Reg</source>
-        <translation>Reg</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="49"/>
