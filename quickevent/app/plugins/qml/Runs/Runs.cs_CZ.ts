@@ -11,7 +11,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="79"/>
         <source>Maps</source>
-        <translation>Mapy</translation>
+        <translation>Map</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="80"/>
