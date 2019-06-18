@@ -268,7 +268,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1595"/>
         <source>Post row edits</source>
-        <translation></translation>
+        <translation>Uložit úpravy v řádcích</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1597"/>
