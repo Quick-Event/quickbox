@@ -517,7 +517,7 @@ void RunsWidget::on_btDraw_clicked()
 	QList<int> class_ids;
 	int class_id = m_cbxClasses->currentData().toInt();
 	if(class_id == 0) {
-		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Draw all clases without draw lock?"), false))
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Draw all classes without draw lock?"), false))
 			return;
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("classdefs", "classId")

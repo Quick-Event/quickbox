@@ -60,6 +60,9 @@ declare -A paths
 paths[libqfcore]=libqf/libqfcore
 paths[libqfqmlwidgets]=libqf/libqfqmlwidgets
 
+paths[libquickeventcore]=libquickevent/libquickeventcore
+paths[libquickeventgui]=libquickevent/libquickeventgui
+
 paths[shared]=quickevent/app/plugins/qml/shared
 paths[quickevent]=quickevent/app/quickevent
 

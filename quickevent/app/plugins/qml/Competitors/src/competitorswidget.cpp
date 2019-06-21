@@ -248,7 +248,7 @@ void CompetitorsWidget::editCompetitors(int mode)
 		QList<int> sel_rows = ui->tblCompetitors->selectedRowsIndexes();
 		if(sel_rows.count() <= 1)
 			return;
-		if(qfd::MessageBox::askYesNo(this, tr("Realy delete all the selected competitors? This action cannot be reverted."), false)) {
+		if(qfd::MessageBox::askYesNo(this, tr("Really delete all the selected competitors? This action cannot be reverted."), false)) {
 			qfs::Transaction transaction;
 			int n = 0;
 			for(int ix : sel_rows) {
