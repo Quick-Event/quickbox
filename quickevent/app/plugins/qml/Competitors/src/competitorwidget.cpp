@@ -353,7 +353,7 @@ bool CompetitorWidget::saveData()
 	bool ret = false;
 	try {
 		qf::core::sql::Transaction transaction;
-		doc->setSaveSiidToRuns(true);
+		//doc->setSaveSiidToRuns(true);
 		if(Super::saveData())
 			ret = saveRunsTable();
 		transaction.commit();
