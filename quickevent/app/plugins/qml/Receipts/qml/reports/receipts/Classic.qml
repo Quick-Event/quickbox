@@ -87,7 +87,7 @@ Report {
 						layout: Frame.LayoutHorizontal
 						Para {
 							width: "%"
-							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") + " " + detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
+							text: detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
 						}
 						Para {
 							htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
@@ -106,7 +106,7 @@ Report {
 							htmlExportAttributes: {"lpt_textWidth": "%"}
 							width: "%"
 							//textHAlign: Frame.AlignLeft
-							text: "SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
+							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") //"SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
 						}
 						Para {
 							textFn: function() {
