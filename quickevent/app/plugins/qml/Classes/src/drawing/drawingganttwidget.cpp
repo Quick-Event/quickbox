@@ -11,6 +11,7 @@
 #include <qf/qmlwidgets/dialogs/dialog.h>
 
 #include <QLineEdit>
+#include <QMessageBox>
 
 using namespace drawing;
 
@@ -59,7 +60,15 @@ void DrawingGanttWidget::load(int stage_id)
 
 void drawing::DrawingGanttWidget::on_actSave_triggered()
 {
-	m_ganttScene->save();
+	if(QMessageBox::information(this, tr("Save class start times"),
+								tr("All the user edited class start times will be overrided.\n"
+								   "Do you want to save your changes?"),
+								QMessageBox::Save | QMessageBox::Cancel,
+								QMessageBox::Save))
+	{
+
+		m_ganttScene->save();
+	}
 }
 
 void DrawingGanttWidget::on_actFind_triggered()
@@ -75,3 +84,4 @@ void DrawingGanttWidget::on_actFind_triggered()
 		}
 	}
 }
+
