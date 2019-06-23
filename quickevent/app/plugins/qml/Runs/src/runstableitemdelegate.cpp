@@ -66,7 +66,7 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 	if(m_highlightedClassId > 0 && m_classInterval > 0 && isStartTimeHighlightVisible()) {
 		//qfInfo() << "col:" << index.column() << m_highlightedClassId << "interval:" << m_classInterval << isStartTimeHighlightVisible();
 		QVariant stime_v = m->data(index.sibling(index.row(), RunsTableModel::Columns::col_runs_startTimeMs), Qt::EditRole);
-		quickevent::core::og::TimeMs stime = stime_v.value<quickevent::core::og::TimeMs>();
+		quickevent::core::og::LapTimeMs stime = stime_v.value<quickevent::core::og::LapTimeMs>();
 		if(!stime.isValid())
 			return;
 		int start_ms = stime.msec();
@@ -76,11 +76,11 @@ void RunsTableItemDelegate::paintBackground(QPainter *painter, const QStyleOptio
 		QString club = m->data(index.sibling(index.row(), RunsTableModel::Columns::col_registration), Qt::EditRole).toString().mid(0, 3).trimmed();
 		QString prev_club;
 		if(index.row() > 0) {
-			prev_start_ms = m->data(index.sibling(index.row() - 1, RunsTableModel::Columns::col_runs_startTimeMs), Qt::EditRole).value<quickevent::core::og::TimeMs>().msec();
+			prev_start_ms = m->data(index.sibling(index.row() - 1, RunsTableModel::Columns::col_runs_startTimeMs), Qt::EditRole).value<quickevent::core::og::LapTimeMs>().msec();
 			prev_club = m->data(index.sibling(index.row() - 1, RunsTableModel::Columns::col_registration), Qt::EditRole).toString().mid(0, 3).trimmed();
 		}
 		if(index.row() < tm->rowCount() - 1) {
-			next_start_ms = m->data(index.sibling(index.row() + 1, RunsTableModel::Columns::col_runs_startTimeMs), Qt::EditRole).value<quickevent::core::og::TimeMs>().msec();
+			next_start_ms = m->data(index.sibling(index.row() + 1, RunsTableModel::Columns::col_runs_startTimeMs), Qt::EditRole).value<quickevent::core::og::LapTimeMs>().msec();
 		}
 
 		bool bad_start_time = (start_ms > m_classStartFirst && start_ms == prev_start_ms) || ((start_ms - prev_start_ms) % m_classInterval) != 0;

@@ -128,9 +128,9 @@ struct Relay
 		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
 			const Leg &leg = legs[i];
 			if(leg.disq)
-				return qog::TimeMs::DISQ_TIME_MSEC;
+				return qog::LapTimeMs::DISQ_TIME_MSEC;
 			if(leg.time == 0)
-				return qog::TimeMs::NOT_FINISH_TIME_MSEC;
+				return qog::LapTimeMs::NOT_FINISH_TIME_MSEC;
 			ret += leg.time;
 		}
 		return ret;
@@ -339,7 +339,7 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 		QMutableListIterator<Relay> i(relays);
 		while (i.hasNext()) {
 			const Relay &r = i.next();
-			if(r.time(leg_count) == qog::TimeMs::NOT_FINISH_TIME_MSEC)
+			if(r.time(leg_count) == qog::LapTimeMs::NOT_FINISH_TIME_MSEC)
 				i.remove();
 		}
 	}
@@ -361,10 +361,10 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 		if(i == 0)
 			time0 = time;
 		int prev_time = (i > 0)? relays[i-1].time(leg_count): 0;
-		rr.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
+		rr.setValue("pos", (time <= qog::LapTimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
 		rr.setValue("name", relay.name);
 		rr.setValue("time", time);
-		rr.setValue("loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
+		rr.setValue("loss", (time <= qog::LapTimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
 		qf::core::utils::TreeTable tt2;
 		tt.appendColumn("name", QVariant::String);
 		tt.appendColumn("reg", QVariant::String);
@@ -379,8 +379,8 @@ qf::core::utils::TreeTable RelaysPlugin::nlegsResultsTable(int class_id, int leg
 			rr2.setValue("competitorName", leg.name);
 			rr2.setValue("registration", leg.reg);
 			rr2.setValue("time",
-						 leg.disq? qog::TimeMs::DISQ_TIME_MSEC
-								: (leg.time == 0)? qog::TimeMs::NOT_FINISH_TIME_MSEC
+						 leg.disq? qog::LapTimeMs::DISQ_TIME_MSEC
+								: (leg.time == 0)? qog::LapTimeMs::NOT_FINISH_TIME_MSEC
 												: leg.time);
 			rr2.setValue("pos", leg.pos);
 			rr2.setValue("stime", leg.stime);

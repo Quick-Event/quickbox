@@ -21,7 +21,7 @@ ItemDelegate::ItemDelegate(qf::qmlwidgets::TableView *parent)
 	}
 	{
 		auto creator = new QStandardItemEditorCreator<TimeEdit>();
-		fact->registerEditor(qMetaTypeId<core::og::TimeMs>(), creator);
+		fact->registerEditor(qMetaTypeId<core::og::LapTimeMs>(), creator);
 	}
 	{
 		auto creator = new QStandardItemEditorCreator<si::SiIdEdit>();

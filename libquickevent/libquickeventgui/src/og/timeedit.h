@@ -17,15 +17,15 @@ class QUICKEVENTGUI_DECL_EXPORT TimeEdit : public qf::qmlwidgets::LineEdit
 {
 	Q_OBJECT
 
-	Q_PROPERTY(quickevent::core::og::TimeMs timeMs READ timeMs WRITE setTimeMs NOTIFY timeMsChanged USER true)
+	Q_PROPERTY(quickevent::core::og::LapTimeMs timeMs READ timeMs WRITE setTimeMs NOTIFY timeMsChanged USER true)
 private:
 	typedef qf::qmlwidgets::LineEdit Super;
 public:
 	TimeEdit(QWidget *parent = nullptr);
 	~TimeEdit() Q_DECL_OVERRIDE;
 
-	core::og::TimeMs timeMs() const;
-	void setTimeMs(const core::og::TimeMs &t);
+	core::og::LapTimeMs timeMs() const;
+	void setTimeMs(const core::og::LapTimeMs &t);
 	Q_SIGNAL void timeMsChanged();
 };
 

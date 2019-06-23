@@ -46,7 +46,7 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	quickevent::core::og::SqlTableModel *m = new quickevent::core::og::SqlTableModel(this);
 	m->addColumn("competitorName", tr("Competitor"));
 	m->addColumn("competitors.registration", tr("Reg"));//.setReadOnly(true);
-	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>());
 	ui->tblView->setTableModel(m);
 	m_tableModel = m;
 }

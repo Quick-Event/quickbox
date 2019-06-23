@@ -38,12 +38,12 @@ CardChecker::CardChecker(QObject *parent)
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
 {
-	return quickevent::core::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
+	return quickevent::core::og::LapTimeMs::fixTimeWrapAM(time1_msec, time2_msec);
 }
 
 int CardChecker::msecIntervalAM(int time1_msec, int time2_msec)
 {
-	return quickevent::core::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
+	return quickevent::core::og::LapTimeMs::msecIntervalAM(time1_msec, time2_msec);
 }
 
 int CardChecker::toAMms(int time_msec)

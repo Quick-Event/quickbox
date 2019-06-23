@@ -25,8 +25,8 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 	if(role == Qt::DisplayRole) {
 		QVariant v = Super::data(index, Qt::EditRole);
 		int type = v.userType();
-		if(type == qMetaTypeId<core::og::TimeMs>()) {
-			core::og::TimeMs t = v.value<core::og::TimeMs>();
+		if(type == qMetaTypeId<core::og::LapTimeMs>()) {
+			core::og::LapTimeMs t = v.value<core::og::LapTimeMs>();
 			return t.toString();
 		}
 		else if(type == qMetaTypeId<core::si::SiId>()) {
@@ -39,15 +39,15 @@ QVariant SqlTableModel::data(const QModelIndex &index, int role) const
 	else if(role == SortRole) {
 		QVariant v = Super::data(index, Qt::EditRole);
 		int type = v.userType();
-		if(type == qMetaTypeId<core::og::TimeMs>()) {
-			core::og::TimeMs t = v.value<core::og::TimeMs>();
+		if(type == qMetaTypeId<core::og::LapTimeMs>()) {
+			core::og::LapTimeMs t = v.value<core::og::LapTimeMs>();
 			return t.msec();
 		}
 		return Super::data(index, role);
 	}
 	else if(role == Qt::TextAlignmentRole) {
 		QVariant v = Super::data(index, Qt::EditRole);
-		if(v.userType() == qMetaTypeId<core::og::TimeMs>()) {
+		if(v.userType() == qMetaTypeId<core::og::LapTimeMs>()) {
 			return Qt::AlignRight;
 		}
 	}
@@ -58,10 +58,10 @@ QVariant SqlTableModel::rawValueToEdit(int column_index, const QVariant &val) co
 {
 	QVariant ret = val;
 	int type = columnType(column_index);
-	if(type == qMetaTypeId<core::og::TimeMs>()) {
-		core::og::TimeMs t;
+	if(type == qMetaTypeId<core::og::LapTimeMs>()) {
+		core::og::LapTimeMs t;
 		if(!ret.isNull()) {
-			t = core::og::TimeMs(ret.toInt());
+			t = core::og::LapTimeMs(ret.toInt());
 		}
 		ret = QVariant::fromValue(t);
 	}
@@ -76,8 +76,8 @@ QVariant SqlTableModel::editValueToRaw(int column_index, const QVariant &val) co
 {
 	QVariant ret = val;
 	int type = columnType(column_index);
-	if(type == qMetaTypeId<core::og::TimeMs>()) {
-		core::og::TimeMs t = val.value<core::og::TimeMs>();
+	if(type == qMetaTypeId<core::og::LapTimeMs>()) {
+		core::og::LapTimeMs t = val.value<core::og::LapTimeMs>();
 		ret = t.isValid()? t.msec(): QVariant(QVariant::Int);
 	}
 	else if(type == qMetaTypeId<core::si::SiId>()) {

@@ -35,10 +35,10 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_license, ColumnDefinition("licence", tr("Lic")).setToolTip(tr("License")));
 	setColumn(col_runs_ranking, ColumnDefinition("ranking", tr("Rank")).setToolTip(tr("Ranking")));
 	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setToolTip(tr("Actual SI")).setCastType(qMetaTypeId<quickevent::core::si::SiId>()));
-	setColumn(col_runs_checkTimeMs, ColumnDefinition("runs.checkTimeMs", tr("Check")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_runs_checkTimeMs, ColumnDefinition("runs.checkTimeMs", tr("Check")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
 	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
@@ -230,8 +230,8 @@ void RunsTableModel::switchStartTimes(int r1, int r2)
 	}
 	else {
 		//qf::core::sql::Transaction transaction(sqlConnection());
-		quickevent::core::og::TimeMs t1 = v1.value<quickevent::core::og::TimeMs>();
-		quickevent::core::og::TimeMs t2 = v2.value<quickevent::core::og::TimeMs>();
+		quickevent::core::og::LapTimeMs t1 = v1.value<quickevent::core::og::LapTimeMs>();
+		quickevent::core::og::LapTimeMs t2 = v2.value<quickevent::core::og::LapTimeMs>();
 		int msec1 = -1, msec2 = -1;
 		qf::core::sql::Query q(sqlConnection());
 		QString qs = "SELECT id, startTimeMs FROM runs WHERE id IN (" QF_IARG(id1) ", " QF_IARG(id2) ")";

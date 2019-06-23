@@ -82,8 +82,8 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	m->addColumn("punches.id");//.setReadOnly(true);
 	m->addColumn("punches.code", tr("Code"));
 	m->addColumn("punches.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
-	m->addColumn("punches.timeMs", tr("Punch time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
-	m->addColumn("punches.runTimeMs", tr("Runner time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+	m->addColumn("punches.timeMs", tr("Punch time")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>());
+	m->addColumn("punches.runTimeMs", tr("Runner time")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>());
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.registration", tr("Registration"));
 	m->addColumn("competitorName", tr("Competitor"));

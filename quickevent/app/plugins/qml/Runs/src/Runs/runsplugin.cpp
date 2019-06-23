@@ -797,7 +797,7 @@ bool RunsPlugin::exportResultsCsosStage(int stage_id, const QString &file_name)
 			time_str = QStringLiteral("999.99");
 		*/
 		else
-			time_str = make_width(quickevent::core::og::TimeMs(ms).toString(), 6);
+			time_str = make_width(quickevent::core::og::LapTimeMs(ms).toString(), 6);
 		ts << time_str;
 		ts << "\r\n";
 	}
@@ -836,7 +836,7 @@ bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_n
 				time_str = QStringLiteral("999.99");
 			*/
 			else
-				time_str = make_width(quickevent::core::og::TimeMs(ms).toString(), 6);
+				time_str = make_width(quickevent::core::og::LapTimeMs(ms).toString(), 6);
 			ts << time_str;
 			ts << "\r\n";
 		}

@@ -84,7 +84,7 @@ void StageResultsHtmlExporter::exportClass(int class_id, const QVariantList &cla
 				status = tr("DISQ");
 			}
 			int time_ms = q2.value(QStringLiteral("timeMs")).toInt();
-			QString stime = og::TimeMs(time_ms).toString('.');
+			QString stime = og::LapTimeMs(time_ms).toString('.');
 			QString spos;
 			if(has_pos) {
 				if(time_ms != prev_time_ms)

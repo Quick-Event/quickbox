@@ -19,14 +19,14 @@ TimeEdit::~TimeEdit()
 
 }
 
-core::og::TimeMs TimeEdit::timeMs() const
+core::og::LapTimeMs TimeEdit::timeMs() const
 {
-	core::og::TimeMs t = core::og::TimeMs::fromString(text());
+	core::og::LapTimeMs t = core::og::LapTimeMs::fromString(text());
 	return t;
 
 }
 
-void TimeEdit::setTimeMs(const core::og::TimeMs &t)
+void TimeEdit::setTimeMs(const core::og::LapTimeMs &t)
 {
 	qfLogFuncFrame();
 	if(!(timeMs() == t)) {

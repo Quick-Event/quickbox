@@ -36,7 +36,7 @@ class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plug
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
-	static constexpr int UNREAL_TIME_MSEC = quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
+	static constexpr int UNREAL_TIME_MSEC = quickevent::core::og::LapTimeMs::UNREAL_TIME_MSEC;
 public:
 	RunsPlugin(QObject *parent = nullptr);
 	~RunsPlugin() Q_DECL_OVERRIDE;

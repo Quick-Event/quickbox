@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	qfInfo() << "Log file:" << o_log_file;
 	qfInfo() << "========================================================";
 
-	quickevent::core::og::TimeMs::registerQVariantFunctions();
+	quickevent::core::og::LapTimeMs::registerQVariantFunctions();
 	quickevent::core::si::SiId::registerQVariantFunctions();
 
 	AppCliOptions cli_opts;

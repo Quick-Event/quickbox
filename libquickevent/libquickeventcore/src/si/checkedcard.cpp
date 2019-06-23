@@ -43,14 +43,14 @@ QString CheckedCard::toString() const
 		punch_lst << QString("[%1. %2: %3 %4]")
 					 .arg(++position)
 					 .arg(p.code())
-					 .arg(quickevent::core::og::TimeMs(p.stpTimeMs()).toString())
-					 .arg(quickevent::core::og::TimeMs(p.lapTimeMs()).toString());
+					 .arg(quickevent::core::og::LapTimeMs(p.stpTimeMs()).toString())
+					 .arg(quickevent::core::og::LapTimeMs(p.lapTimeMs()).toString());
 	}
 	ret += QString("SI: %1, run_id: %2, start: %3, finish: %4, punches: %5")
 			.arg(cardNumber())
 			.arg(runId())
-			.arg(quickevent::core::og::TimeMs(startTimeMs()).toString())
-			.arg(quickevent::core::og::TimeMs(finishTimeMs()).toString())
+			.arg(quickevent::core::og::LapTimeMs(startTimeMs()).toString())
+			.arg(quickevent::core::og::LapTimeMs(finishTimeMs()).toString())
 			.arg(punch_lst.join(", "));
 	return ret;
 }

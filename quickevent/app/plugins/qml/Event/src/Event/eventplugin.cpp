@@ -225,11 +225,11 @@ QDateTime EventPlugin::stageStartDateTime(int stage_id)
 int EventPlugin::msecToStageStartAM(int si_am_time_sec, int msec, int stage_id)
 {
 	if(si_am_time_sec == 0xEEEE)
-		return quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
+		return quickevent::core::og::LapTimeMs::UNREAL_TIME_MSEC;
 	if(stage_id == 0)
 		stage_id = currentStageId();
 	int stage_start_msec = stageStartMsec(stage_id);
-	int time_msec = quickevent::core::og::TimeMs::msecIntervalAM(stage_start_msec, si_am_time_sec * 1000 + msec);
+	int time_msec = quickevent::core::og::LapTimeMs::msecIntervalAM(stage_start_msec, si_am_time_sec * 1000 + msec);
 	return time_msec;
 }
 
@@ -998,7 +998,7 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &dest_
 			}
 			else {
 				v = from_q.value(fld_name);
-				v.convert(rec.field(i).type());
+				v.convert(static_cast<int>(rec.field(i).type()));
 			}
 			if(!has_id_int
 					&& (fld.type() == QVariant::Int
@@ -1094,6 +1094,66 @@ void EventPlugin::exportEvent()
 	}
 }
 
+static QString fix_abs_times(qfs::Connection &from_conn, qfs::Connection &to_conn)
+{
+	try {
+		int from_db_version = 0;
+		{
+			qfs::Query q(from_conn);
+			q.execThrow("SELECT cvalue FROM config WHERE ckey='db.version'");
+			if(q.next())
+				from_db_version = q.value(0).toString().toInt();
+		}
+		/*
+		int to_db_version = 0;
+		{
+			qfs::Query q(to_conn);
+			q.execThrow("SELECT cvalue FROM config WHERE ckey='db.version'");
+			if(q.next())
+				to_db_version = q.value(0).toString().toInt();
+		}
+		*/
+		if(from_db_version >= 10600)
+			return QString(); // no changes needed
+		qfInfo() << "Changint times to be relative to midnight";
+		int stage_cnt = 0;
+		{
+			qfs::Query q(to_conn);
+			q.execThrow("SELECT cvalue FROM config WHERE ckey='event.stageCount'");
+			if(q.next())
+				stage_cnt = q.value(0).toString().toInt();
+		}
+		if(stage_cnt <= 0)
+			QF_EXCEPTION("Cannot read stage count");
+		for (int stage_id = 1; stage_id <= stage_cnt; ++stage_id) {
+			int start00_msec = -1;
+			qfs::Query q(to_conn);
+			q.execThrow("SELECT startDateTime FROM stages WHERE id=" QF_IARG(stage_id));
+			if(q.next()) {
+				QDateTime dt = q.value(0).toDateTime();
+				start00_msec = dt.time().msecsSinceStartOfDay();
+			}
+			if(start00_msec <= 0)
+				QF_EXCEPTION("Cannot read stage start time for stage: " + QString::number(stage_id));
+			q.execThrow("UPDATE runs SET"
+						" checkTimeMs=checkTimeMs+" QF_IARG(start00_msec)
+						",startTimeMs=startTimeMs+" QF_IARG(start00_msec)
+						",finishTimeMs=finishTimeMs+" QF_IARG(start00_msec)
+						);
+			q.execThrow("UPDATE runlaps SET"
+						" stpTimeMs=stpTimeMs+" QF_IARG(start00_msec)
+						);
+			q.execThrow("UPDATE punches SET"
+						" timeMs=timeMs+" QF_IARG(start00_msec)
+						);
+		}
+	} catch (const std::exception &e) {
+		QString err = QString::fromUtf8(e.what());
+		return err;
+	}
+	return QString();
+}
+
 void EventPlugin::importEvent_qbe()
 {
 	qfLogFuncFrame();
@@ -1180,6 +1240,9 @@ void EventPlugin::importEvent_qbe()
 				repairStageStarts(imp_conn, exp_conn);
 			}
 		}
+		if(!err_str.isEmpty())
+			break;
+		err_str = fix_abs_times(imp_conn, exp_conn);
 		if(!err_str.isEmpty())
 			break;
 		transaction.commit();

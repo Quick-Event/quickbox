@@ -114,7 +114,7 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 		while(q.next()) {
 			row_cnt++;
 			last_id = q.value("id").toInt();
-			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
+			if(finish_time_msec == quickevent::core::og::LapTimeMs::UNREAL_TIME_MSEC)
 				continue; /// skip all checks when finish time is not known
 			int st = q.value("startTimeMs").toInt();
 			int leg = q.value("leg").toInt();
@@ -146,7 +146,7 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 		while(q.next()) {
 			row_cnt++;
 			last_id = q.value("id").toInt();
-			if(finish_time_msec == quickevent::core::og::TimeMs::UNREAL_TIME_MSEC)
+			if(finish_time_msec == quickevent::core::og::LapTimeMs::UNREAL_TIME_MSEC)
 				continue; /// skip all checks when finish time is not known
 			int st = q.value("startTimeMs").toInt();
 			//int ft = q.value("finishTimeMs").toInt();

@@ -79,17 +79,17 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_mapCount, ColumnDefinition("classdefs.mapCount", tr("Maps")));
 	setColumn(col_freeMapCount, ColumnDefinition("freeMapCount", tr("Free maps")));
 	setColumn(col_runnersCount, ColumnDefinition("runnersCount", tr("Runners")));
-	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
+	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>()));
 	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
 	setColumn(col_resultsNotPrintedSec, ColumnDefinition("resultsNotPrintedSec", tr("Not printed time"))
 			  .setToolTip(tr("Time since recent results printout."))
-			  .setCastType(qMetaTypeId<quickevent::core::og::TimeMs>())
+			  .setCastType(qMetaTypeId<quickevent::core::og::LapTimeMs>())
 			  );
 	{
 		static const auto competiting_cond = QStringLiteral("runs.stageId={{stage_id}} AND runs.isRunning AND competitors.classId=classes.id");

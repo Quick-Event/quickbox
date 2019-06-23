@@ -71,7 +71,7 @@ void StageStartListHtmlExporter::exportClass(int class_id, const QVariantList &c
 		while(q2.next()) {
 			pos++;
 			int time_ms = q2.value(QStringLiteral("startTimeMs")).toInt();
-			QString stime = og::TimeMs(time_ms).toString('.');
+			QString stime = og::LapTimeMs(time_ms).toString('.');
 			QVariantList tr2{"tr"};
 			if(pos % 2)
 				tr2 << QVariantMap{{QStringLiteral("class"), QStringLiteral("odd")}};
