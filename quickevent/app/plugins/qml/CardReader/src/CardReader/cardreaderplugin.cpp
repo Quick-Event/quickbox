@@ -370,7 +370,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			position++;
 			quickevent::core::si::CheckedPunch cp(v.toMap());
 			//qfInfo() << run_id << position << cp;
-			if(cp.stpTimeMs() > 0 && cp.lapTimeMs() > 0) {
+			if(cp.stpTimeMs() > 0) {
 				q.bindValue(QStringLiteral(":runId"), run_id);
 				q.bindValue(QStringLiteral(":code"), cp.code());
 				q.bindValue(QStringLiteral(":position"), position);
