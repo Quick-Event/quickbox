@@ -7,7 +7,7 @@
         <location filename="src/sql/catalog.cpp" line="32"/>
         <location filename="src/sql/catalog.cpp" line="60"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání další hodnoty sekvence(&apos;%1&apos;)</translation>
     </message>
 </context>
 <context>
