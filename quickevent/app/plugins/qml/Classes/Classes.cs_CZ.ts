@@ -84,7 +84,7 @@
         <location filename="src/classestableview.cpp" line="44"/>
         <source>Really delete all selected classes? This action cannot be undone!</source>
         <oldsource>Realy delete all selected classes? This action cannot be undone!</oldsource>
-        <translation type="unfinished">Opravdu smazat všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
+        <translation>Opravdu smazat všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
     </message>
 </context>
 <context>
@@ -593,13 +593,14 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="63"/>
         <source>Save class start times</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit starty kategorií</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="64"/>
         <source>All the user edited class start times will be overrided.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Startovní časy všech kategorií budou přepsány.
+Přejete si uložit změny?</translation>
     </message>
 </context>
 <context>
