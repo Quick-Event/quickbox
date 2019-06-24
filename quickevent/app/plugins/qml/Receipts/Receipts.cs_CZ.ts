@@ -162,7 +162,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="126"/>
         <source>Generate printer control codes (escape sequences)</source>
-        <translation>Generovat kontrolní znaky pro tiskárnu (Escape sekvence)</translation>
+        <translation>Generovat kontrolní znaky pro tiskárnu (escape sekvence)</translation>
     </message>
 </context>
 <context>
