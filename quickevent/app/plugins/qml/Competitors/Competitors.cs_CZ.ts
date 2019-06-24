@@ -353,7 +353,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="88"/>
         <source>Not competing</source>
-        <translation>Mimo soutež</translation>
+        <translation>Mimo soutěž</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="89"/>
