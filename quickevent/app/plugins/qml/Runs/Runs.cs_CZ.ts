@@ -183,7 +183,7 @@
         <location filename="src/eventstatisticswidget.cpp" line="574"/>
         <source>Results by classes</source>
         <oldsource>Results by clases</oldsource>
-        <translation type="unfinished">Výsledky po kategoriích</translation>
+        <translation>Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -318,7 +318,7 @@
         <location filename="src/runstablemodel.cpp" line="26"/>
         <source>Running</source>
         <oldsource>Runnig</oldsource>
-        <translation type="unfinished">Startuje</translation>
+        <translation>Startuje</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
@@ -551,7 +551,7 @@
         <location filename="src/runstablewidget.cpp" line="247"/>
         <source>Print receipt</source>
         <oldsource>Print card</oldsource>
-        <translation type="unfinished">Vytisknout mezičasy</translation>
+        <translation>Vytisknout mezičasy</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="249"/>
@@ -672,7 +672,7 @@
         <location filename="src/runswidget.cpp" line="520"/>
         <source>Draw all classes without draw lock?</source>
         <oldsource>Draw all clases without draw lock?</oldsource>
-        <translation type="unfinished">Losovat všechny kategorie, u kterých není losování uzamčeno?</translation>
+        <translation>Losovat všechny kategorie, u kterých není losování uzamčeno?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="536"/>
