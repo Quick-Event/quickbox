@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD/../../libqfcore/include
 
 HEADERS += \
+    $$PWD/datetimeedit.h \
 	$$PWD/qmlwidgetsglobal.h \
 	$$PWD/frame.h \
 	$$PWD/label.h \
@@ -39,6 +40,7 @@ HEADERS += \
     $$PWD/htmlviewwidget.h
 
 SOURCES += \
+    $$PWD/datetimeedit.cpp \
 	$$PWD/frame.cpp \
 	$$PWD/label.cpp \
     $$PWD/action.cpp \
