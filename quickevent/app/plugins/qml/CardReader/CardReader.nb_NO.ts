@@ -59,12 +59,14 @@
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="226"/>
-        <source>Show card</source>
+        <source>Show card data</source>
+        <oldsource>Show card</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="227"/>
-        <source>Print card</source>
+        <source>Print card data</source>
+        <oldsource>Print card</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -181,8 +181,9 @@
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="574"/>
-        <source>Results by clases</source>
-        <translation>Výsledky po kategoriích</translation>
+        <source>Results by classes</source>
+        <oldsource>Results by clases</oldsource>
+        <translation type="unfinished">Výsledky po kategoriích</translation>
     </message>
 </context>
 <context>
@@ -293,7 +294,7 @@
         <translation>Statistiky závodu</translation>
     </message>
     <message>
-        <location filename="src/Runs/runsplugin.cpp" line="722"/>
+        <location filename="src/Runs/runsplugin.cpp" line="723"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
@@ -315,8 +316,9 @@
     <name>RunsTableModel</name>
     <message>
         <location filename="src/runstablemodel.cpp" line="26"/>
-        <source>Runnig</source>
-        <translation>Startuje</translation>
+        <source>Running</source>
+        <oldsource>Runnig</oldsource>
+        <translation type="unfinished">Startuje</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
@@ -547,8 +549,9 @@
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="247"/>
-        <source>Print card</source>
-        <translation>Vytisknout mezičasy</translation>
+        <source>Print receipt</source>
+        <oldsource>Print card</oldsource>
+        <translation type="unfinished">Vytisknout mezičasy</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="249"/>
@@ -667,8 +670,9 @@
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="520"/>
-        <source>Draw all clases without draw lock?</source>
-        <translation>Losovat všechny kategorie, u kterých není losování uzamčeno?</translation>
+        <source>Draw all classes without draw lock?</source>
+        <oldsource>Draw all clases without draw lock?</oldsource>
+        <translation type="unfinished">Losovat všechny kategorie, u kterých není losování uzamčeno?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="536"/>

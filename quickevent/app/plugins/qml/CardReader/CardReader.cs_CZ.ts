@@ -54,8 +54,9 @@
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="226"/>
-        <source>Show card</source>
-        <translation>Ukázat data čipu</translation>
+        <source>Show card data</source>
+        <oldsource>Show card</oldsource>
+        <translation type="unfinished">Ukázat data čipu</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="224"/>
@@ -64,8 +65,9 @@
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="227"/>
-        <source>Print card</source>
-        <translation>Vytisknout data čipu</translation>
+        <source>Print card data</source>
+        <oldsource>Print card</oldsource>
+        <translation type="unfinished">Vytisknout data čipu</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="229"/>

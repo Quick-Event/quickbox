@@ -237,7 +237,8 @@
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="251"/>
-        <source>Print selected cards</source>
+        <source>Print receipts for selected rows</source>
+        <oldsource>Print selected cards</oldsource>
         <translation type="unfinished"></translation>
     </message>
 </context>

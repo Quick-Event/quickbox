@@ -82,8 +82,9 @@
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="44"/>
-        <source>Realy delete all selected classes? This action cannot be undone!</source>
-        <translation>Opravdu smazat všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
+        <source>Really delete all selected classes? This action cannot be undone!</source>
+        <oldsource>Realy delete all selected classes? This action cannot be undone!</oldsource>
+        <translation type="unfinished">Opravdu smazat všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
     </message>
 </context>
 <context>
@@ -575,19 +576,30 @@
         <translation>&amp;Najít</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="21"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="22"/>
         <source>Draw tool</source>
         <translation>Nástroj pro losování</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="49"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="50"/>
         <source>&amp;Draw</source>
         <translation>&amp;Losovat</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="56"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="57"/>
         <source>E%1 Draw tool</source>
         <translation>E%1 Nástroj pro losování</translation>
+    </message>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="63"/>
+        <source>Save class start times</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="64"/>
+        <source>All the user edited class start times will be overrided.
+Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -122,10 +122,6 @@
         <translation>soubory CSV (*.csv *.txt)</translation>
     </message>
     <message>
-        <source>Oris ranging CSV files (*.txt *.csv)</source>
-        <translation>Soubor rankingu z ORISu (*.txt *.csv)</translation>
-    </message>
-    <message>
         <source>Error reading CSV line: [%1]</source>
         <translation>Chyba čtení souboru CSV: [%1]</translation>
     </message>
@@ -136,6 +132,10 @@
     <message>
         <source>Fields separation error, invalid CSV format, Error reading CSV line: [%1]</source>
         <translation>Chyba při analýze CSV souboru, neplatný formát, chyba při čtení řádky: [%1]</translation>
+    </message>
+    <message>
+        <source>Oris ranking CSV files (*.txt *.csv)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

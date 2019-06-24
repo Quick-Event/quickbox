@@ -181,7 +181,8 @@
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="574"/>
-        <source>Results by clases</source>
+        <source>Results by classes</source>
+        <oldsource>Results by clases</oldsource>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -291,7 +292,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Runs/runsplugin.cpp" line="722"/>
+        <location filename="src/Runs/runsplugin.cpp" line="723"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -313,7 +314,8 @@
     <name>RunsTableModel</name>
     <message>
         <location filename="src/runstablemodel.cpp" line="26"/>
-        <source>Runnig</source>
+        <source>Running</source>
+        <oldsource>Runnig</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -540,7 +542,8 @@
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="247"/>
-        <source>Print card</source>
+        <source>Print receipt</source>
+        <oldsource>Print card</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -764,7 +767,8 @@
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="520"/>
-        <source>Draw all clases without draw lock?</source>
+        <source>Draw all classes without draw lock?</source>
+        <oldsource>Draw all clases without draw lock?</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

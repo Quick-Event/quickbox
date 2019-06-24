@@ -188,8 +188,9 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="179"/>
-        <source>Add leg Ctrl-Ins</source>
-        <translation>Přidat úsek Ctrl+Ins</translation>
+        <source>Add leg Ctrl+Ins</source>
+        <oldsource>Add leg Ctrl-Ins</oldsource>
+        <translation type="unfinished">Přidat úsek Ctrl+Ins</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="186"/>
@@ -198,8 +199,9 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="193"/>
-        <source>Remove leg Ctrl-Del</source>
-        <translation>Odebrat úsek Ctrl+Del</translation>
+        <source>Remove leg Ctrl+Del</source>
+        <oldsource>Remove leg Ctrl-Del</oldsource>
+        <translation type="unfinished">Odebrat úsek Ctrl+Del</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="200"/>
@@ -208,8 +210,9 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="207"/>
-        <source>Move leg down Ctrl-D</source>
-        <translation>Přesunout úsek dolů Ctrl+D</translation>
+        <source>Move leg down Ctrl+D</source>
+        <oldsource>Move leg down Ctrl-D</oldsource>
+        <translation type="unfinished">Přesunout úsek dolů Ctrl+D</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="214"/>
@@ -218,8 +221,9 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="221"/>
-        <source>Move leg up Ctrl-U</source>
-        <translation>Přesunout úsek nahoru Ctrl+U</translation>
+        <source>Move leg up Ctrl+U</source>
+        <oldsource>Move leg up Ctrl-U</oldsource>
+        <translation type="unfinished">Přesunout úsek nahoru Ctrl+U</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="228"/>
@@ -340,8 +344,9 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="169"/>
-        <source>&amp;Overal</source>
-        <translation>&amp;Celkové</translation>
+        <source>&amp;Overall</source>
+        <oldsource>&amp;Overal</oldsource>
+        <translation type="unfinished">&amp;Celkové</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="188"/>
@@ -361,8 +366,9 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="246"/>
-        <source>Realy delete all the selected competitors? This action cannot be reverted.</source>
-        <translation>Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
+        <source>Really delete all the selected competitors? This action cannot be reverted.</source>
+        <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
+        <translation type="unfinished">Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="259"/>

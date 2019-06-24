@@ -244,8 +244,9 @@
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="251"/>
-        <source>Print selected cards</source>
-        <translation>Vytisknout mezičasy pro vybrané řádky</translation>
+        <source>Print receipts for selected rows</source>
+        <oldsource>Print selected cards</oldsource>
+        <translation type="unfinished">Vytisknout mezičasy pro vybrané řádky</translation>
     </message>
 </context>
 <context>

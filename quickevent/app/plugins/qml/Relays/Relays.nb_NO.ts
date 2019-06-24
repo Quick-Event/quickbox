@@ -188,7 +188,8 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="179"/>
-        <source>Add leg Ctrl-Ins</source>
+        <source>Add leg Ctrl+Ins</source>
+        <oldsource>Add leg Ctrl-Ins</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -198,7 +199,8 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="193"/>
-        <source>Remove leg Ctrl-Del</source>
+        <source>Remove leg Ctrl+Del</source>
+        <oldsource>Remove leg Ctrl-Del</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -208,7 +210,8 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="207"/>
-        <source>Move leg down Ctrl-D</source>
+        <source>Move leg down Ctrl+D</source>
+        <oldsource>Move leg down Ctrl-D</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -218,7 +221,8 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="221"/>
-        <source>Move leg up Ctrl-U</source>
+        <source>Move leg up Ctrl+U</source>
+        <oldsource>Move leg up Ctrl-U</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -339,7 +343,8 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="169"/>
-        <source>&amp;Overal</source>
+        <source>&amp;Overall</source>
+        <oldsource>&amp;Overal</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -359,7 +364,8 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="246"/>
-        <source>Realy delete all the selected competitors? This action cannot be reverted.</source>
+        <source>Really delete all the selected competitors? This action cannot be reverted.</source>
+        <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

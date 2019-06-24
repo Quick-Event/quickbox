@@ -233,7 +233,8 @@
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="251"/>
-        <source>Realy delete all the selected competitors? This action cannot be reverted.</source>
+        <source>Really delete all the selected competitors? This action cannot be reverted.</source>
+        <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
