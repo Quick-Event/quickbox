@@ -162,7 +162,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="126"/>
         <source>Generate printer control codes (escape sequences)</source>
-        <translation type="unfinished"></translation>
+        <translation>Generovat kontrolní znaky pro tiskárnu (Escape sekvence)</translation>
     </message>
 </context>
 <context>
@@ -246,7 +246,7 @@
         <location filename="src/receiptswidget.cpp" line="251"/>
         <source>Print receipts for selected rows</source>
         <oldsource>Print selected cards</oldsource>
-        <translation type="unfinished">Vytisknout mezičasy pro vybrané řádky</translation>
+        <translation>Vytisknout mezičasy pro vybrané řádky</translation>
     </message>
 </context>
 <context>
