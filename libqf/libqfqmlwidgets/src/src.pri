@@ -22,6 +22,7 @@ HEADERS += \
     $$PWD/tableitemdelegate.h \
     $$PWD/tableviewtoolbar.h \
     $$PWD/saveoptionswidget.h \
+    $$PWD/textedit.h \
     $$PWD/toolbar.h \
     $$PWD/datacontroller.h \
     $$PWD/idatawidget.h \
@@ -60,6 +61,7 @@ SOURCES += \
     $$PWD/tableitemdelegate.cpp \
     $$PWD/tableviewtoolbar.cpp \
     $$PWD/saveoptionswidget.cpp \
+    $$PWD/textedit.cpp \
     $$PWD/toolbar.cpp \
     $$PWD/datacontroller.cpp \
     $$PWD/idatawidget.cpp \

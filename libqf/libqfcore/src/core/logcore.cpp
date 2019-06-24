@@ -52,17 +52,17 @@ QString Log::levelToString(Log::Level level)
 {
 	switch(level) {
 	case Log::Level::Fatal:
-		return tr("Fatal");
+		return "Fatal";
 	case Log::Level::Error:
-		return tr("Error");
+		return "Error";
 	case Log::Level::Warning:
-		return tr("Warning");
+		return "Warning";
 	case Log::Level::Info:
-		return tr("Info");
+		return "Info";
 	case Log::Level::Debug:
-		return tr("Debug");
+		return "Debug";
 	case Log::Level::Invalid:
-		return tr("NoLog");
+		return "NoLog";
 	}
 	return QString();
 }

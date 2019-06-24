@@ -2,39 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="nb_NO">
 <context>
-    <name>Log</name>
-    <message>
-        <location filename="src/core/logcore.cpp" line="55"/>
-        <source>Fatal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/core/logcore.cpp" line="57"/>
-        <source>Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/core/logcore.cpp" line="59"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/core/logcore.cpp" line="61"/>
-        <source>Info</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/core/logcore.cpp" line="63"/>
-        <source>Debug</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/core/logcore.cpp" line="65"/>
-        <source>NoLog</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QObject</name>
     <message>
         <location filename="src/sql/catalog.cpp" line="32"/>
