@@ -226,7 +226,7 @@
         <location filename="src/competitorswidget.cpp" line="251"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
-        <translation type="unfinished">Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
+        <translation>Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="264"/>
