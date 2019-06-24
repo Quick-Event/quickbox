@@ -282,7 +282,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="186"/>
         <source>Cou&amp;rses</source>
-        <translation>T&amp;ratě</translation>
+        <translation>&amp;Tratě</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="191"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="196"/>
         <source>Classes &amp;layout</source>
-        <translation>Rozvržení startu kategorií</translation>
+        <translation>&amp;Rozvržení startu kategorií</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="197"/>
