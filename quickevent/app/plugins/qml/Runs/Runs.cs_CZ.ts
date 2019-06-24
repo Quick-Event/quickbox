@@ -167,7 +167,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="87"/>
         <source>Clear new results in selected rows</source>
-        <translation>Smazat nové výsledky u vybraných kategorií</translation>
+        <translation>Vymazat nové výsledky u vybraných kategorií</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="101"/>
@@ -425,7 +425,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="42"/>
         <source>Not competing</source>
-        <translation>Mimo soutež</translation>
+        <translation>Mimo soutěž</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
@@ -562,7 +562,7 @@
         <location filename="src/runstablewidget.cpp" line="250"/>
         <source>Clear start times in selected rows</source>
         <oldsource>Clear times in selected rows</oldsource>
-        <translation>Smazat startovní časy ve vybraných řádcích</translation>
+        <translation>Vymazat startovní časy ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="270"/>
