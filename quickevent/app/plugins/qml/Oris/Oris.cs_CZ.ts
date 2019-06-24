@@ -135,7 +135,7 @@
     </message>
     <message>
         <source>Oris ranking CSV files (*.txt *.csv)</source>
-        <translation type="unfinished"></translation>
+        <translation>Soubory rankingu z ORISu (*.txt *.csv)</translation>
     </message>
 </context>
 <context>
