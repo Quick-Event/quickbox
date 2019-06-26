@@ -23,42 +23,42 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="41"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Kategori</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="43"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fil</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="45"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Linje</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="47"/>
         <source>Severity</source>
-        <translation type="unfinished"></translation>
+        <translation>Alvorlighetsgrad</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Time stamp</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidsstempel</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="51"/>
         <source>Message</source>
-        <translation type="unfinished"></translation>
+        <translation>Melding</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="53"/>
         <source>Function</source>
-        <translation type="unfinished"></translation>
+        <translation>Funksjon</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Data</translation>
     </message>
 </context>
 <context>
