@@ -24,77 +24,77 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
         <source>CSV options</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-valg</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="42"/>
         <source>header</source>
-        <translation type="unfinished"></translation>
+        <translation>hode</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="60"/>
         <source>lines from</source>
-        <translation type="unfinished"></translation>
+        <translation>linjer fra</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="89"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>til</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="102"/>
         <source>value -1 means all lines</source>
-        <translation type="unfinished"></translation>
+        <translation>verdien -1 betyr alle linjer</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="147"/>
         <source>codec</source>
-        <translation type="unfinished"></translation>
+        <translation>kodek</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="178"/>
         <source>separator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">deletegn</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="186"/>
         <source>other</source>
-        <translation type="unfinished"></translation>
+        <translation>annet</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="202"/>
         <source>,</source>
-        <translation type="unfinished"></translation>
+        <translation>,</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="224"/>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Fane</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="237"/>
         <source>quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>sitat</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="243"/>
         <source>alwa&amp;ys</source>
-        <translation type="unfinished"></translation>
+        <translation>all&amp;tid</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="250"/>
         <source>when necessary</source>
-        <translation type="unfinished"></translation>
+        <translation>når nødvendig</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="260"/>
         <source>ne&amp;ver</source>
-        <translation type="unfinished"></translation>
+        <translation>al&amp;dri</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation type="unfinished"></translation>
+        <translation>sitattegn</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -162,27 +162,27 @@
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>Enter value</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriv inn verdi</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>new value:</source>
-        <translation type="unfinished"></translation>
+        <translation>ny verdi:</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="747"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre fil</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="759"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Åpne fil</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="911"/>
         <source>Save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lagre som…</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="917"/>
@@ -218,7 +218,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1547"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopier</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1549"/>
