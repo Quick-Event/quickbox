@@ -30,3 +30,4 @@ RESOURCES += libquickeventcore.qrc
 TRANSLATIONS += \
     libquickeventcore.cs_CZ.ts \
     libquickeventcore.nb_NO.ts \
+    libquickeventcore.ru_RU.ts \

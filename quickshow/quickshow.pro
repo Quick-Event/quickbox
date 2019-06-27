@@ -64,3 +64,7 @@ contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
 }
 }
 
+TRANSLATIONS += \
+    $${TARGET}.cs_CZ.ts \
+    $${TARGET}.nb_NO.ts \
+    $${TARGET}.ru_RU.ts \

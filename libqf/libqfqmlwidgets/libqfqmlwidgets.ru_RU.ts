@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="nb_NO">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>PreviewDialog</name>
     <message>
@@ -24,77 +24,77 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
         <source>CSV options</source>
-        <translation>CSV-valg</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="42"/>
         <source>header</source>
-        <translation>hode</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="60"/>
         <source>lines from</source>
-        <translation>linjer fra</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="89"/>
         <source>to</source>
-        <translation>til</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="102"/>
         <source>value -1 means all lines</source>
-        <translation>verdien -1 betyr alle linjer</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="147"/>
         <source>codec</source>
-        <translation>kodek</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="178"/>
         <source>separator</source>
-        <translation type="unfinished">deletegn</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="186"/>
         <source>other</source>
-        <translation>annet</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="202"/>
         <source>,</source>
-        <translation>,</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="224"/>
         <source>Tab</source>
-        <translation>Fane</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="237"/>
         <source>quotes</source>
-        <translation>sitat</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="243"/>
         <source>alwa&amp;ys</source>
-        <translation>all&amp;tid</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="250"/>
         <source>when necessary</source>
-        <translation>når nødvendig</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="260"/>
         <source>ne&amp;ver</source>
-        <translation>al&amp;dri</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation>sitattegn</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -162,27 +162,27 @@
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>Enter value</source>
-        <translation>Skriv inn verdi</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>new value:</source>
-        <translation>ny verdi:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="747"/>
         <source>Save File</source>
-        <translation>Lagre fil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="759"/>
         <source>Open File</source>
-        <translation>Åpne fil</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="911"/>
         <source>Save as ...</source>
-        <translation type="unfinished">Lagre som…</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="917"/>
@@ -218,7 +218,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1547"/>
         <source>Copy</source>
-        <translation>Kopier</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1549"/>
@@ -692,7 +692,7 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="31"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopier</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="33"/>

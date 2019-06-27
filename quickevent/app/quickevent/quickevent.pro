@@ -74,3 +74,4 @@ win32:CONFIG(debug, debug|release):CONFIG += console
 TRANSLATIONS += \
     $${TARGET}.cs_CZ.ts \
     $${TARGET}.nb_NO.ts \
+    $${TARGET}.ru_RU.ts \

@@ -32,3 +32,4 @@ RESOURCES += libquickeventgui.qrc
 TRANSLATIONS += \
     libquickeventgui.cs_CZ.ts \
     libquickeventgui.nb_NO.ts \
+    libquickeventgui.ru_RU.ts \
