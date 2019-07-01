@@ -40,8 +40,6 @@ public:
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 
-	//static Event::EventPlugin* eventPlugin();
-
 	Q_SLOT void reset(int class_id = 0);
 	Q_SLOT void reload();
 
@@ -83,7 +81,8 @@ private:
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
 	QComboBox *m_cbxLeg = nullptr;
-	QLabel *m_lblLegs = nullptr;
+	QAction *m_toolbarActionLabelLeg = nullptr;
+	QAction *m_toolbarActionComboLeg = nullptr;
 	QCheckBox *m_chkShowOffRace = nullptr;
 };
 

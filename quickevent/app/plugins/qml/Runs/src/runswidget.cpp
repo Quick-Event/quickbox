@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include <QLabel>
 #include <QInputDialog>
+#include <QTimer>
 
 #include <algorithm>
 
@@ -87,7 +88,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 		}
 	});
 
-	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
+	QMetaObject::invokeMethod(this, &RunsWidget::lazyInit, Qt::QueuedConnection);
 }
 
 RunsWidget::~RunsWidget()
@@ -115,15 +116,10 @@ void RunsWidget::reset(int class_id)
 		connect(m_cbxStage, SIGNAL(currentIndexChanged(int)), this, SLOT(emitSelectedStageIdChanged(int)), Qt::UniqueConnection);
 		m_cbxStage->blockSignals(false);
 	}
-	if(is_relays) {
-		connect(m_cbxLeg, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()), Qt::UniqueConnection);
-	}
-	else {
-		//m_cbxLeg->setVisible(false);
-		//m_lblLegs->setVisible(false);
-		QF_SAFE_DELETE(m_lblLegs);
-		QF_SAFE_DELETE(m_cbxLeg);
-	}
+	/// Note: You should use QAction::setVisible() to change the visibility of the widget.
+	/// Using QWidget::setVisible(), QWidget::show() and QWidget::hide() does not work.
+	m_toolbarActionLabelLeg->setVisible(is_relays);
+	m_toolbarActionComboLeg->setVisible(is_relays);
 	//qfWarning() << "is relays:" << is_relays << "legs visible:" << m_cbxLeg->isVisible();
 	{
 		m_cbxClasses->blockSignals(true);
@@ -147,20 +143,7 @@ void RunsWidget::reload()
 	int class_id = m_cbxClasses->currentData().toInt();
 	ui->wRunsTableWidget->reload(stage_id, class_id, m_chkShowOffRace->isChecked());
 }
-/*
-void RunsWidget::editStartList(int class_id, int competitor_id)
-{
-	reset(class_id);
-	int stime_ix = m_runsModel->columnIndex("runs.startTimeMs");
-	ui->tblRuns->horizontalHeader()->setSortIndicator(stime_ix, Qt::AscendingOrder);
-	for (int i = 0; i < ui->tblRuns->model()->rowCount(); ++i) {
-		auto r = ui->tblRuns->tableRow(i);
-		if(r.value("competitorId").toInt() == competitor_id) {
-			ui->tblRuns->setCurrentIndex(ui->tblRuns->model()->index(i, stime_ix));
-		}
-	}
-}
-*/
+
 void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
@@ -218,12 +201,10 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 	lbl_classes->setBuddy(m_cbxClasses);
 	{
+		QLabel *lbl_leg = new QLabel(tr("&Leg "));
+		m_toolbarActionLabelLeg = main_tb->addWidget(lbl_leg);
+		m_cbxLeg = new QComboBox();
 		{
-			m_lblLegs = new QLabel(tr("&Leg "));
-			main_tb->addWidget(m_lblLegs);
-		}
-		{
-			m_cbxLeg = new QComboBox();
 			m_cbxLeg->addItem(tr("--- all ---"), 0);
 			m_cbxLeg->addItem("1", 1);
 			m_cbxLeg->addItem("2", 2);
@@ -235,9 +216,10 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 			m_cbxLeg->addItem("8", 8);
 			m_cbxLeg->addItem("9", 9);
 			m_cbxLeg->addItem("10", 10);
-			main_tb->addWidget(m_cbxLeg);
+			connect(m_cbxLeg, SIGNAL(currentIndexChanged(int)), this, SLOT(reload()));
+			m_toolbarActionComboLeg = main_tb->addWidget(m_cbxLeg);
 		}
-		m_lblLegs->setBuddy(m_cbxClasses);
+		lbl_leg->setBuddy(m_cbxLeg);
 	}
 
 	{
