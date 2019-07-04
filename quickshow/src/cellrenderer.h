@@ -48,18 +48,44 @@ protected:
 protected:
 };
 
-class ResultsCellRenderer : public CellRenderer
+class RunnersListCellRenderer : public CellRenderer
 {
-	Q_DECLARE_TR_FUNCTIONS(ResultsCellRenderer)
+	Q_DECLARE_TR_FUNCTIONS(RunnersCellRenderer)
 private:
 	using Super = CellRenderer;
 public:
-	ResultsCellRenderer(const QSize &size, QWidget *widget);
+	RunnersListCellRenderer(const QSize &size, QWidget *widget);
 
 	void draw(const QPoint &position, const QVariantMap &data, QWidget *widget) Q_DECL_OVERRIDE;
 protected:
+	virtual int columnCount() = 0;
+	virtual QString columnText(int col, const QVariantMap &data) = 0;
+};
+
+class StartListCellRenderer : public RunnersListCellRenderer
+{
+	Q_DECLARE_TR_FUNCTIONS(StartListCellRenderer)
+private:
+	using Super = RunnersListCellRenderer;
+public:
+	StartListCellRenderer(const QSize &size, QWidget *widget);
+protected:
+	enum Column {StartTime = 0, Name, Registration, SiId, ColumnCount};
+	int columnCount() Q_DECL_OVERRIDE {return ColumnCount;}
+	QString columnText(int col, const QVariantMap &data) Q_DECL_OVERRIDE;
+};
+
+class ResultsCellRenderer : public RunnersListCellRenderer
+{
+	Q_DECLARE_TR_FUNCTIONS(ResultsCellRenderer)
+private:
+	using Super = RunnersListCellRenderer;
+public:
+	ResultsCellRenderer(const QSize &size, QWidget *widget);
+protected:
 	enum Column {Position = 0, Name, Registration, Time, Status, ColumnCount};
-	QString columnText(Column col, const QVariantMap &data);
+	int columnCount() Q_DECL_OVERRIDE {return ColumnCount;}
+	QString columnText(int col, const QVariantMap &data) Q_DECL_OVERRIDE;
 };
 
 #endif // CELLRENDERER_H

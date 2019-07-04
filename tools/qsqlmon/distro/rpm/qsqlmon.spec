@@ -1,82 +1,99 @@
-Summary: Open Source QT Database administration tool
-Name:    qsqlmon
-Source0: %{name}-%{version}.tar.bz2
-Version: 1.3.5-git.1330959505
-Release: 0%{?dist}
-License: GPLv3
-Group:   Productivity/Databases/Tools
-URL:     http://qsqlmon.sourceforge.net
-BuildRoot: /var/tmp/%{name}-root
+#
+# spec file for package qsqlmon
+#
+# Copyright (c) 2019 Frantisek Vacek <fanda.vacek@gmail.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# Please submit bugfixes or comments via
+#   https://github.com/fvacek/quickbox/
+# issues tracker.
+#
+
+
+Name:           qsqlmon
+Version:        1.3.6
+Release:        0
+Summary:        Open Source QT Database administration tool
+License:        GPL-2.0-or-later
+Group:          Productivity/Databases/Tools
+URL:            https://github.com/fvacek/quickbox/tree/master/tools/qsqlmon
+Source:         qsqlmon_%{version}.tar.xz
+BuildRequires:  gcc-c++
+BuildRequires:  pkgconfig
+BuildRequires:  pkgconfig(Qt5Core)
+BuildRequires:  pkgconfig(Qt5Widgets)
+BuildRequires:  pkgconfig(Qt5Test)
+BuildRequires:  pkgconfig(Qt5Xml)
+BuildRequires:  pkgconfig(Qt5Svg)
+BuildRequires:  pkgconfig(Qt5Sql)
+BuildRequires:  pkgconfig(Qt5Qml)
+BuildRequires:  pkgconfig(Qt5Gui)
+BuildRequires:  pkgconfig(Qt5PrintSupport)
+
+%if ! 0%{?suse_version}
+BuildRequires:  desktop-file-utils
+%endif
 
 %if 0%{?suse_version}
-BuildRequires:  libqt4-devel libQtWebKit-devel mysql-devel sqlite3-devel postgresql-devel gcc-c++ make  update-desktop-files
+BuildRequires:  update-desktop-files
 %endif
-%if 0%{?fedora} || 0%{?centos_version} || 0%{?rhel_version}
-BuildRequires:  qt4-devel qt-webkit-devel mysql-devel sqlite-devel postgresql-devel gcc-c++
+
+%if !0%{?suse_version}
+%define  qmake5  /usr/bin/qmake-qt5
 %endif
 
 %description
-Qt4 Gui tool for SQL server administration. Currently supported servers are PostgreSQL, MySQL, Sqlite and FireBird
+Open Source QT Database administration tool.
 
 %prep
 %setup -q
 
 %build
-%if 0%{?centos_version} || 0%{?rhel_version}
-export PATH=/usr/lib64/qt4/bin:/usr/lib/qt4/bin:$PATH
-%endif
-
-%if 0%{?fedora}
-CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" \
-qmake-qt4 PREFIX=%{_prefix} NOSTRIP=1 NORPATH=1
-%else
-CFLAGS="%{optflags}" CXXFLAGS="%{optflags}" \
-qmake PREFIX=%{_prefix} NOSTRIP=1 NORPATH=1
-%endif
+%qmake5 "CONFIG+=release" "CONFIG+=force_debug_info"
+#make %{?_smp_mflags} - do not use SMP for now, there can be problem with generated makefiles
 make
 
+
 %install
-mkdir -p $RPM_BUILD_ROOT/usr/bin
-mkdir -p $RPM_BUILD_ROOT/%{_libdir}/qt4/plugins/
-mkdir -p $RPM_BUILD_ROOT/usr/share/applications
-mkdir -p $RPM_BUILD_ROOT/usr/share/icons/hicolor/32x32/apps
-mkdir -p $RPM_BUILD_ROOT/usr/share/icons/hicolor/48x48/apps
-mkdir -p $RPM_BUILD_ROOT/usr/share/icons/hicolor/96x96/apps
+mkdir -p %{buildroot}/%{_bindir}
+install -m755 bin/qsqlmon %{buildroot}/%{_bindir}
+mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/48x48/apps
+install -m644 tools/qsqlmon/distro/icons/qsqlmon48x48.png %{buildroot}/%{_datadir}/icons/hicolor/48x48/apps
+mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/scalable/apps
+install -m644 tools/qsqlmon/distro/icons/qsqlmon.svg %{buildroot}/%{_datadir}/icons/hicolor/scalable/apps
 
-cp _build/bin/{qsqlmon,repedit}  -r $RPM_BUILD_ROOT/usr/bin/
-cp _build/lib/*                  -r $RPM_BUILD_ROOT/%{_libdir}/
-rm	$RPM_BUILD_ROOT/%{_libdir}/*.so
-cp _build/bin/codecs             -r $RPM_BUILD_ROOT/%{_libdir}/qt4/plugins/
-
-cd qsqlmon
-sed -i 's|Icon.*qsqlmon*.*|Icon:\ qsqlmon.png|' distro/others/qsqlmon.desktop
-cp distro/others/qsqlmon.desktop			$RPM_BUILD_ROOT/usr/share/applications/qsqlmon.desktop
-cp distro/icons/qsqlmon32x32.png		$RPM_BUILD_ROOT/usr/share/icons/hicolor/32x32/apps/qsqlmon.png
-cp distro/icons/qsqlmon48x48.png		$RPM_BUILD_ROOT/usr/share/icons/hicolor/48x48/apps/qsqlmon.png
-cp distro/icons/qsqlmon96x96.png		$RPM_BUILD_ROOT/usr/share/icons/hicolor/96x96/apps/qsqlmon.png
+#desktop icon
 %if 0%{?suse_version}
-%suse_update_desktop_file -i -r -G "Database GUI Tool" %{name} "Qt;Development;Database;GUIDesigner;"
+install -m755 -d %{buildroot}%{_datadir}/applications
+install -m644 tools/qsqlmon/distro/deb/qsqlmon/usr/share/applications/qsqlmon.desktop %{buildroot}%{_datadir}/applications
+%suse_update_desktop_file -r -i qsqlmon System Database
 %endif
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%if 0%{?fedora} || 0%{?rhel} || 0%{?centos}
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications tools/qsqlmon/distro/deb/qsqlmon/usr/share/applications/qsqlmon.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/qsqlmon.desktop
+%endif
 
 %files
-%defattr(-,root,root)
-/usr/bin/*
-%{_libdir}/*.so.*
-%dir %{_libdir}/qt4
-%dir %{_libdir}/qt4/plugins
-%dir %{_libdir}/qt4/plugins/codecs
-%{_libdir}/qt4/plugins/codecs/*.so
-/usr/share/applications/qsqlmon.desktop
-/usr/share/icons/hicolor
-%changelog
-* Sun Mar 4 2012 Michal Hrusecky <mhrusecky@suse.cz>
-- Various cleanup
-* Sat May 8 2010 Radu Fiser <radu.fiser@gmail.com>
-- File modified after discussions with Frantisek Vacek
-* Wed Apr 14 2010 Radu Fiser <radu.fiser@gmail.com>
-- Created the file
+%{_bindir}/qsqlmon
+%{_datadir}/applications/qsqlmon.desktop
+%dir %{_datadir}/icons/hicolor
+%dir %{_datadir}/icons/hicolor/48x48
+%dir %{_datadir}/icons/hicolor/48x48/apps
+%{_datadir}/icons/hicolor/48x48/apps/qsqlmon48x48.png
+%dir %{_datadir}/icons/hicolor/scalable
+%dir %{_datadir}/icons/hicolor/scalable/apps
+%{_datadir}/icons/hicolor/scalable/apps/qsqlmon.svg
+%license LICENSE
+%doc README.md
 
+%changelog

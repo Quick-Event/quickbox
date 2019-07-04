@@ -23,7 +23,7 @@ ReportItemFrame::ReportItemFrame(ReportItem *parent)
 {
 	qfLogFuncFrame();
 	m_layout = LayoutVertical;
-	m_expandChildrenFrames = false;
+	m_expandChildFrames = false;
 	m_horizontalAlignment = AlignLeft;
 	m_verticalAlignment = AlignTop;
 
@@ -120,8 +120,8 @@ void ReportItemFrame::initDesignedRect()
 		designedRect.setHeight(d);
 	}
 
-	if(isExpandChildrenFrames()) {
-		designedRect.flags |= Rect::ExpandChildrenFrames;
+	if(isExpandChildFrames()) {
+		designedRect.flags |= Rect::ExpandChildFrames;
 	}
 
 	if(layout() == LayoutHorizontal)
@@ -214,20 +214,7 @@ ReportItem::ChildSize ReportItemFrame::childSize(Layout parent_layout)
 		return ChildSize(designedRect.width(), designedRect.horizontalUnit);
 	return ChildSize(designedRect.height(), designedRect.verticalUnit);
 }
-/*
-class N
-{
-	static int& nref() {
-		static int n = 0;
-		return n;
-	}
-public:
-	N() {nref()++;}
-	~N() {nref()--;}
 
-	operator int() const {return nref();}
-};
-*/
 ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPaint *out, const ReportItem::Rect &bounding_rect)
 {
 	qfLogFuncFrame();// << element.tagName() << "id:" << element.attribute("id") << "itemCount:" << itemsToPrintCount() << "indexToPrint:" << indexToPrint;
@@ -317,10 +304,14 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 					double width = out->lastChild()->renderedRect.width();
 					sum_mm += width;
 					//qfInfo() << "\t sum_mm:" << sum_mm;
+					if(!ch_res.isPrintFinished())
+						res = ch_res;
+					/*
 					if(!ch_res.isPrintAgain()) {
 						/// para can be printed as NotFit if it owerflows its parent frame
 						res = ch_res;
 					}
+					*/
 				}
 				else {
 					if(ch_res.isPrintFinished()) {
@@ -386,10 +377,15 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 							if(out->children().count() > prev_children_cnt) {
 								//qfInfo() << "percent:" << i << "->" << prev_children_cnt;
 								layout_ix_to_print_ix[i] = prev_children_cnt;
-								if(ch_res.isPrintAgain()) {
-									/// para se muze vytisknout a pritom bejt not fit, pokud pretece
+								// chybejici vykricnik v nasl. podmince zpusoboval issue
+								// chyba zalomeni pro dlouha jmena v tisku startovek pro startéry #264
+								// pozor, stejna podminka je i v "print rubber and fixed" sekci, asi by to chtelo sjednotit
+								//if(ch_res.isPrintAgain()) {
+								//	/// para se muze vytisknout a pritom bejt not fit, pokud pretece
+								//	res = ch_res;
+								//}
+								if(!ch_res.isPrintFinished())
 									res = ch_res;
-								}
 							}
 							else {
 								if(ch_res.isPrintFinished()) {
@@ -406,7 +402,7 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaintChildren(ReportItemMetaPa
 						}
 					}
 				}
-				/// arrange prited children to their original order
+				/// arrange printed children to their original order
 				//qfInfo() << "\t poradi tisku cnt:<<" << poradi_tisku.count() << out->childrenCount();
 				if(layout_ix_to_print_ix.count() == out->children().count()) {
 					int children_count = out->children().count();
@@ -657,19 +653,20 @@ ReportItem::PrintResult ReportItemFrame::printMetaPaint(ReportItemMetaPaint *out
 	dirty_rect.adjust(-hinset(), -vinset(), hinset(), vinset());
 	metapaint_frame->renderedRect = dirty_rect;
 	/// aby sly expandovat deti, musi mit parent spravne renderedRect
-	//qfInfo() << this << "rendered rect2:" << mp->renderedRect.toString();
 	{
 		//qfInfo() << childSize(LayoutVertical).fillLayoutRatio();
-		if(childSize(LayoutVertical).fillLayoutRatio() < 0) {
-			/// pokud se vytiskl frame, jehoz vertikalni rozmer nebyl zadan jako % a ma dite s %, roztahni dite a pripadne i jeho deti
+		if(isExpandVerticalSprings()) {
+			//qfInfo() << this << "rendered rect2:" << metapaint_frame->renderedRect;
+			/// !!! will not work for children with more columns
+			metapaint_frame->renderedRect = bounding_rect;
 			metapaint_frame->expandChildVerticalSpringFrames();
 		}
 		//qfInfo() << "\t rendered rect2:" << mp->renderedRect.toString();
 		metapaint_frame->alignChildren();
 		metapaint_frame->renderedRect.flags = designedRect.flags;
 		/// mohl bych to udelat tak, ze bych vsem detem dal %, ale je to moc klikani v repeditu
-		if(designedRect.flags & ReportItem::Rect::ExpandChildrenFrames) {
-			metapaint_frame->expandChildrenFramesRecursively();
+		if(designedRect.flags & ReportItem::Rect::ExpandChildFrames) {
+			metapaint_frame->expandChildFrames();
 		}
 	}
 	qfDebug() << "\trenderedRect:" << metapaint_frame->renderedRect.toString();

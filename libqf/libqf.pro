@@ -4,6 +4,9 @@ CONFIG += ordered
 SUBDIRS += \
 	libqfcore \
 	libqfqmlwidgets \
-	plugins \
 
+!static-build {
+SUBDIRS += \
+	plugins \
+}
 

@@ -14,7 +14,15 @@ class EVENTPLUGIN_DECL_EXPORT EventConfig : public QObject
 {
 	Q_OBJECT
 	Q_PROPERTY(int stageCount READ stageCount)
+	Q_PROPERTY(bool isHandicap READ isHandicap)
+	Q_PROPERTY(bool isRelays READ isRelays)
 	//Q_PROPERTY(QString eventName READ eventName)
+public:
+	enum class Sport {OB = 1, LOB, MTBO, TRAIL};
+	enum class Discipline {Classic = 1, ShortRace, Sprint,
+						   Relays = 5,
+						   NightRace = 9,
+						  };
 public:
 	explicit EventConfig(QObject *parent = 0);
 public slots:
@@ -29,12 +37,19 @@ public slots:
 
 	int stageCount() const;
 	int currentStageId() const;
+	int sportId() const;
+	int disciplineId() const;
 	int importId() const;
 	int handicapLength() const;
+	bool isHandicap() const {return handicapLength() > 0;}
+	bool isRelays() const {return disciplineId() == (int)Discipline::Relays;}
+	QString eventName() const;
+	QString eventPlace() const;
 	QString director() const;
 	QString mainReferee() const;
 	QDateTime eventDateTime() const;
 	int dbVersion() const;
+	int cardCheckCheckTimeSec() const;
 private:
 	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
 	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);

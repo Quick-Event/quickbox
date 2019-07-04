@@ -27,13 +27,26 @@ Table::Table(QWidget *parent)
 	});
 }
 
+void Table::resetCellSize()
+{
+	m_cellSize = QSize();
+	updateRowCount();
+}
+
 void Table::paintEvent(QPaintEvent *event)
 {
 	Super::paintEvent(event);
 	if(m_rowCount == 0)
 		return;
+	Application *app = Application::instance();
 	ClassCellRenderer cr(m_cellSize, this);
-	ResultsCellRenderer rr(m_cellSize, this);
+	StartListCellRenderer rr_startlist(m_cellSize, this);
+	ResultsCellRenderer rr_results(m_cellSize, this);
+	RunnersListCellRenderer *rr;
+	if(app->cliOptions()->profile() == QLatin1String("results"))
+		rr = &rr_results;
+	else
+		rr = &rr_startlist;
 	int ix = 0;
 	for (int j = 0; j < m_columnCount; ++j) {
 		for (int i = 0; i < m_rowCount; ++i) {
@@ -43,7 +56,7 @@ void Table::paintEvent(QPaintEvent *event)
 			if(data_type == QLatin1String("classInfo"))
 				cr.draw(pos, data, this);
 			else
-				rr.draw(pos, data, this);
+				rr->draw(pos, data, this);
 			ix++;
 		}
 	}

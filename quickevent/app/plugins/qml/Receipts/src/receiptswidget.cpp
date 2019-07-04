@@ -9,10 +9,11 @@
 #include <Event/eventplugin.h>
 #include <CardReader/cardreaderplugin.h>
 
-#include <quickevent/og/timems.h>
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/itemdelegate.h>
-#include <quickevent/si/siid.h>
+#include <quickevent/gui/og/itemdelegate.h>
+
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/si/siid.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/framework/application.h>
@@ -38,6 +39,7 @@
 #include <QJSValue>
 #include <QPrinterInfo>
 #include <QTimer>
+#include <QDirIterator>
 
 namespace qfm = qf::core::model;
 namespace qfs = qf::core::sql;
@@ -63,16 +65,16 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		ui->tblCards->setPersistentSettingsId(ui->tblCards->objectName());
 		//ui->tblPrintJobs->setRowEditorMode(qfw::TableView::EditRowsMixed);
 		ui->tblCards->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-		ui->tblCards->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblCards));
-		auto m = new quickevent::og::SqlTableModel(this);
+		ui->tblCards->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblCards));
+		auto m = new quickevent::core::og::SqlTableModel(this);
 
 		m->addColumn("cards.id", "ID").setReadOnly(true);
-		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
+		m->addColumn("cards.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
 		m->addColumn("classes.name", tr("Class"));
 		m->addColumn("competitorName", tr("Name"));
 		m->addColumn("competitors.registration", tr("Reg"));
-		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+		m->addColumn("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+		m->addColumn("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
 		/*
 		qfm::SqlTableModel::ColumnDefinition::DbEnumCastProperties status_props;
 		status_props.setGroupName("runs.status");
@@ -88,6 +90,10 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
 
+	connect(ui->lstReceipt, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), [this](int ix) {
+		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(ix).toString());
+	});
+
 	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }
 
@@ -98,6 +104,7 @@ ReceiptsWidget::~ReceiptsWidget()
 
 void ReceiptsWidget::lazyInit()
 {
+	loadReceptList();
 	updateReceiptsPrinterLabel();
 }
 
@@ -120,6 +127,7 @@ void ReceiptsWidget::reset()
 
 void ReceiptsWidget::reload()
 {
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	int current_stage = currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId, printerConnectionId")
@@ -130,10 +138,16 @@ void ReceiptsWidget::reload()
 			.from("cards")
 			.join("cards.runId", "runs.id")
 			.join("runs.competitorId", "competitors.id")
-			.join("competitors.classId", "classes.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
 			.orderBy("cards.id DESC");
-	m_cardsModel->setQueryBuilder(qb);
+	if(is_relays) {
+		qb.join("runs.relayId", "relays.id");
+		qb.join("relays.classId", "classes.id");
+	}
+	else {
+		qb.join("competitors.classId", "classes.id");
+	}
+	m_cardsModel->setQueryBuilder(qb, false);
 	m_cardsModel->reload();
 }
 
@@ -234,7 +248,7 @@ void ReceiptsWidget::on_btPrintNew_clicked()
 void ReceiptsWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_print_card(tr("Print selected cards"), nullptr);
+	QAction a_print_card(tr("Print receipts for selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_print_card;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
@@ -265,6 +279,37 @@ bool ReceiptsWidget::printReceipt(int card_id)
 		}
 	}
 	return false;
+}
+
+void ReceiptsWidget::loadReceptList()
+{
+	ui->lstReceipt->clear();
+	QString receipts_dir = receiptsPlugin()->manifest()->homeDir() + "/reports/receipts";
+	QDirIterator it(receipts_dir, QStringList{"*.qml"}, QDir::Files | QDir::Readable, QDirIterator::Subdirectories);
+	while (it.hasNext()) {
+		it.next();
+		QFileInfo fi = it.fileInfo();
+		QString path = fi.filePath();
+		QString name = path.mid(receipts_dir.length() + 1);
+		if(name.startsWith("private/", Qt::CaseInsensitive))
+			continue;
+		name = name.mid(0, name.indexOf(".qml", Qt::CaseInsensitive));
+		qfInfo() << "receipt:" << name << "path:" << path;
+		ui->lstReceipt->addItem(name, path);
+	}
+	ui->lstReceipt->setCurrentIndex(-1);
+	QString curr_path = receiptsPlugin()->currentReceiptPath();
+	qfInfo() << "current receipt path:" << curr_path;
+	for (int i = 0; i < ui->lstReceipt->count(); ++i) {
+		if(ui->lstReceipt->itemData(i).toString() == curr_path) {
+			ui->lstReceipt->setCurrentIndex(i);
+			break;
+		}
+	}
+	if(ui->lstReceipt->currentIndex() < 0) {
+		ui->lstReceipt->setCurrentIndex(0);
+		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(0).toString());
+	}
 }
 
 void ReceiptsWidget::updateReceiptsPrinterLabel()

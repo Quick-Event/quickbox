@@ -34,8 +34,11 @@ Schema {
 			fields: [
 				Field { name: 'id'; type: Int {} },
 				Field { name: 'startDateTime'; type: DateTime {} },
-				//Field { name: 'startTime'; type: Time {} },
-				//Field { name: 'startDate'; type: Date {} },
+				Field { name: 'useAllMaps'
+					type: Boolean {}
+					defaultValue: false
+					notNull: true
+				},
 				Field { name: 'drawingConfig'; type: String {} }
 			]
 			indexes: [
@@ -51,6 +54,9 @@ Schema {
 				Field { name: 'climb'; type: Int { } },
 				Field { name: 'note'; type: String { } }
 			]
+			indexes: [
+				Index {fields: ['name']; unique: false } // for relays
+			]
 		},
 		Table { name: 'codes'
 			fields: [
@@ -64,7 +70,7 @@ Schema {
 				},
 				Field { name: 'radio'; 
 					type: Boolean { } 
-					defaultValue: false;
+					defaultValue: false
 					notNull: true
 				},
 				Field { name: 'note'; type: String { } }
@@ -123,12 +129,17 @@ Schema {
 				Field { name: 'resultsCount'; type: Int { }
 					comment: 'number of finished competitors, when the results were printed'
 				},
+				Field { name: 'resultsPrintTS'; type: DateTime { }
+					comment: 'when results for this class were printed last time'
+				},
 				Field { name: 'lastStartTimeMin'; type: Int { } },
 				Field { name: 'drawLock'; type: Boolean { }
 					defaultValue: false
 					notNull: true
 					comment: 'The draw of this class is prohibited'
-				}
+				},
+				Field { name: 'relayStartNumber'; type: Int { } },
+				Field { name: 'relayLegCount'; type: Int { } }
 			]
 			indexes: [
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
@@ -149,8 +160,8 @@ Schema {
 				Field { name: 'club'; type: String { } },
 				Field { name: 'country'; type: String { } },
 				Field { name: 'siId'; type: Int { } },
-				Field { name: 'note'; type: String { } },
 				Field { name: 'ranking'; type: Int { } },
+				Field { name: 'note'; type: String { } },
 				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
@@ -163,8 +174,19 @@ Schema {
 				Field { name: 'id'; type: Serial { primaryKey: true } },
 				Field { name: 'competitorId'; type: Int {} },
 				Field { name: 'siId'; type: Int {} },
-				Field { name: 'stageId'; type: Int {} },
-				//Field { name: 'cardId'; type: Int {} },
+				Field { name: 'stageId'; type: Int {}
+					defaultValue: 1;
+					notNull: true
+				},
+				Field { name: 'leg'; type: Int {}
+					//defaultValue: 0;
+					//notNull: true
+				},
+				Field { name: 'relayId'; type: Int {} },
+
+				Field { name: 'checkTimeMs'; type: Int {}
+					comment: 'in miliseconds'
+				},
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -174,11 +196,12 @@ Schema {
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds since event run'
 				},
+
 				Field { name: 'isRunning'; type: Boolean { }
 					defaultValue: true;
 					comment: "Competitor is running in this stage"
 				},
-				Field { name: 'notCompeting'; type: Boolean { }
+				Field { name: 'notCompeting'; type: Boolean { } // should be changed to notCompetiting in some future version
 					defaultValue: false;
 					notNull: true
 					comment: "Competitor does run in this stage but not competing"
@@ -202,15 +225,8 @@ Schema {
 				Field { name: 'cardReturned'; type: Boolean { }
 					defaultValue: false;
 					notNull: true
-				}
-				/*,
-				Field { name: 'status';
-					type: String {}
-					defaultValue: 'OFF';
-					notNull: true
-					comment: "referencing enumz.runs.status"
-				}
-				*/
+				},
+				Field { name: 'importId'; type: Int {} }
 			]
 			indexes: [
 				Index {
@@ -223,8 +239,24 @@ Schema {
 					}
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
-				Index {fields: ['stageId', 'competitorId']; unique: true },
-				Index {fields: ['stageId', 'siId', 'isRunning']; unique: true }
+				Index {fields: ['relayId', 'leg']; unique: false },
+				Index {fields: ['stageId', 'siId']; unique: false }
+			]
+		},
+		Table { name: 'relays'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'number'; type: Int {} },
+				Field { name: 'classId'; type: Int {} },
+				Field { name: 'club'; type: String {} },
+				Field { name: 'name'; type: String {} },
+				Field { name: 'note'; type: String {} },
+				Field { name: 'importId'; type: Int {} }
+			]
+			indexes: [
+				Index {fields: ['classId']; references: ForeignKeyReference {table: 'classes'; fields: ['id']; } },
+				Index {fields: ['club', 'name'] },
+				Index {fields: ['number'] }
 			]
 		},
 		Table { name: 'runlaps'
@@ -282,6 +314,9 @@ Schema {
 				},
 				Field { name: 'runIdAssignTS'
 					type: DateTime { }
+				},
+				Field { name: 'runIdAssignError'
+					type: String { }
 				},
 				Field { name: 'stageId'
 					type: Int { }
@@ -371,6 +406,29 @@ Schema {
 			indexes: [
 				Index {fields: ['marking', 'stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
+			]
+		},
+		Table { name: 'stationsbackup'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'stageId'; type: Int { } },
+				Field { name: 'stationNumber'; type: Int { } },
+				Field { name: 'siId'; type: Int {} },
+				Field { name: 'punchDateTime'; type: DateTime {} },
+				Field { name: 'cardErr'; type: Boolean {} }
+			]
+			indexes: [
+				Index {fields: ['stageId', 'stationNumber', 'siId', 'punchDateTime']; unique: true }
+			]
+		},
+		Table { name: 'lentcards'
+			fields: [
+				Field { name: 'siId'; type: Int { primaryKey: true } },
+				Field { name: 'ignored'; type: Boolean { }
+					notNull: true
+					defaultValue: false
+				},
+				Field { name: 'note'; type: String { } }
 			]
 		}
 	]

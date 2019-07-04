@@ -59,17 +59,27 @@ fi
 declare -A paths
 paths[libqfcore]=libqf/libqfcore
 paths[libqfqmlwidgets]=libqf/libqfqmlwidgets
+
+paths[libquickeventcore]=libquickevent/libquickeventcore
+paths[libquickeventgui]=libquickevent/libquickeventgui
+
+paths[shared]=quickevent/app/plugins/qml/shared
+paths[quickevent]=quickevent/app/quickevent
+
 paths[CardReader]=quickevent/app/plugins/qml/CardReader
 paths[Classes]=quickevent/app/plugins/qml/Classes
 paths[Competitors]=quickevent/app/plugins/qml/Competitors
 paths[Core]=quickevent/app/plugins/qml/Core
 paths[Event]=quickevent/app/plugins/qml/Event
-paths[Logging]=quickevent/app/plugins/qml/Logging
 paths[Oris]=quickevent/app/plugins/qml/Oris
 paths[Receipts]=quickevent/app/plugins/qml/Receipts
+paths[Relays]=quickevent/app/plugins/qml/Relays
 paths[Runs]=quickevent/app/plugins/qml/Runs
-paths[shared]=quickevent/app/plugins/qml/shared
-paths[quickevent]=quickevent/app/src
+paths[Speaker]=quickevent/app/plugins/qml/Speaker
+
+paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
+paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
+
 paths[qsqlmon]=tools/qsqlmon
 
 if [[ $O_COMMAND == "import-ts" ]]; then
@@ -145,7 +155,7 @@ if [[ $O_COMMAND == "release" ]]; then
 		pro_file=$O_SRC_DIR/$fpath/$fname.pro
 		echo "compiling translations for project: $pro_file"
 		$lrelease $pro_file
-		echo "moving translations to bin directory: $bin_dir"
+		echo "moving translations" $O_SRC_DIR/$fpath/$fname.${O_LOCALE}.qm "to bin directory: $bin_dir"
 		mv $O_SRC_DIR/$fpath/$fname.${O_LOCALE}.qm $bin_dir/
 	done
 	exit 0

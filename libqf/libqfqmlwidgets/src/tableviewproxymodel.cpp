@@ -5,6 +5,7 @@
 
 #include <QColor>
 #include <QTextCodec>
+#include <QDateTime>
 
 //namespace qfm = qf::core::model;
 using namespace qf::qmlwidgets;
@@ -41,6 +42,23 @@ bool TableViewProxyModel::isIdle() const
 	return m_rowFilterString.isEmpty() && sortColumn() < 0;
 }
 
+void TableViewProxyModel::sort(int column, Qt::SortOrder order)
+{
+	m_sortColumns.clear();
+	m_sortColumns << column;
+	m_sortOrder = order;
+	Super::sort(column, m_sortOrder);
+}
+
+void TableViewProxyModel::addSortColumn(int column)
+{
+	if(!m_sortColumns.contains(column)) {
+		m_sortColumns << column;
+		//qfInfo() << "sort columns:" << m_sortColumns;
+		Super::sort(column, m_sortOrder);
+	}
+}
+
 QVariant TableViewProxyModel::data(const QModelIndex &index, int role) const
 {
 	QVariant ret = Super::data(index, role);
@@ -73,42 +91,93 @@ bool TableViewProxyModel::filterAcceptsRow(int source_row, const QModelIndex &so
 	return false;
 }
 
+int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right) const
+{
+	if(left.userType() == qMetaTypeId<QString>() && right.userType() == qMetaTypeId<QString>()) {
+		const QByteArray lb = qf::core::Collator::toAscii7(QLocale::Czech, left.toString(), true);
+		const QByteArray rb = qf::core::Collator::toAscii7(QLocale::Czech, right.toString(), true);
+		int lsz = lb.size();
+		int rsz = rb.size();
+		int i;
+		for(i=0; i<lsz && i<rsz; i++) {
+			char lc = lb.at(i);
+			char rc = rb.at(i);
+			if(lc == rc)
+				continue;
+			if (lc < rc)
+				return -1;
+			return 1;
+		}
+		if(lsz == rsz)
+			return 0;
+		if(lsz < rsz)
+			return -1;
+		return 1;
+	}
+	if(!left.isValid() && !right.isValid())
+		return 0;
+	if(!left.isValid() && right.isValid())
+		return -1;
+	if(left.isValid() && !right.isValid())
+		return 1;
+	if(left.isNull() && right.isNull())
+		return 0;
+	if(left.isNull() && !right.isNull())
+		return -1;
+	if(!left.isNull() && right.isNull())
+		return 1;
+	/*
+	else {
+		switch (left.userType()) {
+		case QVariant::Int:
+			return left.toInt() - right.toInt();
+		case QVariant::UInt:
+			return left.toUInt() - right.toUInt();
+		case QVariant::LongLong:
+			return left.toLongLong() - right.toLongLong();
+		case QVariant::ULongLong:
+			return left.toULongLong() - right.toULongLong();
+		case QMetaType::Float:
+			return left.toFloat() - right.toFloat();
+		case QVariant::Double:
+			return left.toDouble() - right.toDouble();
+		case QVariant::Char:
+			return left.toChar().unicode() - right.toChar().unicode();
+		case QVariant::Date:
+			return left.toDate().toJulianDay() - right.toDate().toJulianDay();
+		case QVariant::Time:
+			return left.toTime().msecsSinceStartOfDay() - right.toTime().msecsSinceStartOfDay();
+		case QVariant::DateTime:
+			return left.toDateTime().toMSecsSinceEpoch() - right.toDateTime().toMSecsSinceEpoch();
+		default:
+			return left.toString().compare(right.toString());
+		}
+	}
+	*/
+	if (left < right)
+		return -1;
+	return (left > right)? 1: 0;
+}
+
 bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
+	//qfInfo() << "rows:" << left.row() << right.row();
 	bool ret = false;
 	const QAbstractItemModel *source_model = sourceModel();
 	if(source_model) {
-		QVariant lv = source_model->data(left, Qt::EditRole); /// comparing display role is not working for NULL values
-		QVariant rv = source_model->data(right, Qt::EditRole);
-		if(lv.userType() == qMetaTypeId<QString>() && rv.userType() == qMetaTypeId<QString>()) {
-			const QByteArray lb = qf::core::Collator::toAscii7(QLocale::Czech, lv.toString(), true);
-			const QByteArray rb = qf::core::Collator::toAscii7(QLocale::Czech, rv.toString(), true);
-			int lsz = lb.size();
-			int rsz = rb.size();
-			for(int i=0; ; i++) {
-				char lc = (i<lsz)? lb.at(i): 0;
-				char rc = (i<rsz)? rb.at(i): 0;
-				if(lc == rc) {
-					if(lc == 0) {
-						/// same
-						ret = false;
-						break;
-					}
-				}
-				else {
-					ret = lc < rc;
-					break;
-				}
-			}
+		for (int i = 0; i < m_sortColumns.count(); i++) {
+			int column = m_sortColumns[i];
+			QVariant lv = source_model->data(left.sibling(left.row(), column), Qt::EditRole); /// comparing display role is not working for NULL values
+			QVariant rv = source_model->data(right.sibling(right.row(), column), Qt::EditRole);
+			int cmp = variantCmp(lv, rv);
+			//qfInfo() << "\tcol:" << column << lv.toString() << "vs" << rv.toString() << "->" << cmp;
+			if(cmp == 0)
+				continue;
+			ret = (cmp < 0);
+			break;
 		}
-		else if(lv.isNull() && !rv.isNull()) {
-			ret = true;
-		}
-		else {
-			ret = Super::lessThan(left, right);
-		}
-		//qfInfo() << lv << "vs" << rv << "->" << ret;
 	}
+	//qfInfo() << "ret:" << ret;
 	return ret;
 }
 

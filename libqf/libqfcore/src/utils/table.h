@@ -116,11 +116,11 @@ public:
 		class Data : public QSharedData
 		{
 		public:
-			QVariant::Type type;
+			int userType;
 			QString name;
 			unsigned canUpdate:1, isPriKey:1, isSerial:1, isNullable:1;
-			Data() : type(QVariant::Invalid) {}
-			Data(const QString &name, QVariant::Type t) : type(t), name(name), canUpdate(false), isPriKey(false), isNullable(false) {}
+			Data() : userType(QMetaType::UnknownType) {}
+			Data(const QString &name, int t) : userType(t), name(name), canUpdate(false), isPriKey(false), isNullable(false) {}
 		};
 		QSharedDataPointer<Data> d;
 
@@ -128,7 +128,7 @@ public:
 		static const Field& sharedNull();
 	public:
 		Field();
-		Field(const QString &name, QVariant::Type t);
+		Field(const QString &name, int user_type);
 
 		bool isNull() const {return d == sharedNull().d;}
 
@@ -137,7 +137,9 @@ public:
 		QString tableId() const;
 		QString toString() const;
 
-		QF_SHARED_CLASS_FIELD_RW(QVariant::Type, t, setT, ype)
+		QVariant::Type type() const {return (QVariant::Type)d->userType;}
+		void setType(QVariant::Type t) {d->userType = t;}
+		void setUserType(int t) {d->userType = t;}
 		QF_SHARED_CLASS_FIELD_RW(QString, n, setN, ame)
 		QF_SHARED_CLASS_BIT_FIELD_RW(bool, c, setC, anUpdate)
 		QF_SHARED_CLASS_BIT_FIELD_RW(bool, is, set, PriKey)
@@ -299,7 +301,7 @@ public:
 	// export / import
 	QString toString() const;
 	static const QString CVSTableEndTag;
-	static QString quoteCSV(const QString &s, const TextExportOptions &opts);
+	static QString quoteCSV(const QVariant &val, const TextExportOptions &opts);
 	void exportCSV(QTextStream &ts, const QString col_names = "*", TextExportOptions opts = TextExportOptions()) const;
 	void importCSV(QTextStream &ts, TextImportOptions opts = TextImportOptions());
 #ifdef TXT_EXPORT_IMPORT
@@ -370,6 +372,7 @@ public:
 	//! Dirty flag nastavi, jen kdyz je value jina, nez ta, co uz tam byla.
 	void setValue(int col, const QVariant &v);
 	void setValue(const QString &field_name, const QVariant &v);
+	void restoreOrigValue(int col);
 	//! Set value without retyping and checks, useful only when table data are loaded from QSL query or something like that.
 	/// Very fast and very dangerous function
 	void setBareBoneValue(int col, const QVariant &val);

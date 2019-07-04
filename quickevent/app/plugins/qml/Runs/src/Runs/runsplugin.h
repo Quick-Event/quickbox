@@ -3,6 +3,8 @@
 
 #include "../runspluginglobal.h"
 
+#include <quickevent/core/og/timems.h>
+
 #include <qf/qmlwidgets/framework/plugin.h>
 
 #include <qf/core/utils.h>
@@ -11,7 +13,8 @@
 namespace qf {
 	namespace core {
 		namespace utils {
-			class Table;
+		class Table;
+		class TreeTable;
 		}
 	}
 	namespace qmlwidgets {
@@ -33,7 +36,7 @@ class RUNSPLUGIN_DECL_EXPORT RunsPlugin : public qf::qmlwidgets::framework::Plug
 private:
 	typedef qf::qmlwidgets::framework::Plugin Super;
 public:
-	static constexpr int UNREAL_TIME_MS = 999 * 60 * 1000;
+	static constexpr int UNREAL_TIME_MSEC = quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
 public:
 	RunsPlugin(QObject *parent = nullptr);
 	~RunsPlugin() Q_DECL_OVERRIDE;
@@ -49,7 +52,10 @@ public:
 
 	Q_INVOKABLE int courseForRun(int run_id);
 	Q_INVOKABLE int cardForRun(int run_id);
-	Q_INVOKABLE QVariant currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class = 0);
+	qf::core::utils::TreeTable currentStageResultsTable(const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
+	Q_INVOKABLE QVariant currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
+	qf::core::utils::TreeTable stageResultsTable(int stage_id, const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
+	Q_INVOKABLE QVariant stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
 	qf::core::utils::Table nstagesResultsTable(int stages_count, int class_id, int places = -1, bool exclude_disq = true);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1, bool exclude_disq = true);
 	Q_INVOKABLE void showRunsTable(int stage_id, int class_id, bool show_offrace, const QString &sort_column = QString(), int select_competitor_id = 0);
@@ -58,10 +64,20 @@ public:
 	Q_INVOKABLE QWidget* createNStagesReportOptionsDialog(QWidget *parent = nullptr);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int run_id);
+
+	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
+
+	bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
+	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
+	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
+
 private:
 	Q_SLOT void onInstalled();
 
 	int courseForRun_Classic(int run_id);
+	int courseForRun_Relays(int run_id);
+
+	void writeCSOSHeader(QTextStream &ts);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runnersTableCache;

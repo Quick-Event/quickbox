@@ -14,6 +14,7 @@
 #include <QPrintDialog>
 #include <QPrinter>
 #include <QTextCodec>
+#include <QStyle>
 
 namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets;

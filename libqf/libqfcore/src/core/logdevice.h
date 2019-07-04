@@ -22,6 +22,7 @@ public:
 	static LogDevice* findDevice(const QString &object_name, bool throw_exc = true);
 
 	static QStringList setGlobalTresholds(int argc, char *argv[]);
+	static QStringList setGlobalTresholds(const QStringList &args);
 	static void setModulesTresholds(const QString &s);
 	static void setCategoriesTresholds(const QString &s);
 	static QString modulesLogInfo();
@@ -57,11 +58,10 @@ public:
 protected:
 	struct QFCORE_DECL_EXPORT LogFilter
 	{
-		Log::Level defaultLogTreshold = qf::core::Log::Level::Info;
+		Log::Level defaultModulesLogTreshold = qf::core::Log::Level::Info;
 		QMap<QString, Log::Level> modulesTresholds;
+		Log::Level defaultCategoriesLogTreshold = qf::core::Log::Level::Invalid;
 		QMap<QString, Log::Level> categoriesTresholds;
-		bool logAllCategories = false;
-		//bool inverseCategoriesFilter = false;
 	};
 	static bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category, const LogFilter &log_filter);
 	static bool isMatchingGlobalLogFilter(Log::Level level, const char *file_name, const char *category);
@@ -73,6 +73,7 @@ protected:
 protected:
 	static QStringList s_definedCategories;
 	static bool s_loggingEnabled;
+	static bool s_logLongFileNames;
 	static LogFilter s_globalLogFilter;
 
 	int m_count;
@@ -87,10 +88,12 @@ private:
 protected:
 	FileLogDevice(QObject *parent = 0);
 public:
+	static constexpr bool LogAppend = true;
+public:
 	~FileLogDevice() Q_DECL_OVERRIDE;
 	static FileLogDevice* install();
 
-	void setFile(const QString &path_to_file);
+	void setFile(const QString &path_to_file, bool append = !LogAppend);
 
 	bool isMatchingLogFilter(Log::Level level, const char *file_name, const char *category) Q_DECL_OVERRIDE;
 	void log(Log::Level level, const QMessageLogContext &context, const QString &msg) Q_DECL_OVERRIDE;

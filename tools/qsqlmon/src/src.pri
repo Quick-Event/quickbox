@@ -1,6 +1,7 @@
 include(driver/driver.pri)
 
 HEADERS += \
+    $$PWD/appversion.h \
 	$$PWD/qfclassfield.h      \
 	$$PWD/mainwindow.h      \
 	$$PWD/sqldock.h      \
@@ -18,7 +19,7 @@ HEADERS += \
 	$$PWD/columnselectorwidget.h  \
 	$$PWD/qfsqlsyntaxhighlighter.h \
 	$$PWD/qfobjectitemmodel.h \
-	$$PWD/qfstatusbar.h \
+    $$PWD/qfstatusbar.h \
 
 SOURCES += \
 	$$PWD/main.cpp      \

@@ -31,25 +31,33 @@ qf::core::sql::Connection Application::sqlConnetion()
 {
 	qf::core::sql::Connection db = qf::core::sql::Connection::forName();
 	if(!db.isValid()) {
-		if(cliOptions()->eventName().isEmpty())
-			qfError("Event name is empty!");
 		db = QSqlDatabase::addDatabase(cliOptions()->sqlDriver());
 		db.setHostName(cliOptions()->host());
 		db.setPort(cliOptions()->port());
 		db.setDatabaseName(cliOptions()->database());
 		db.setUserName(cliOptions()->user());
 		db.setPassword(cliOptions()->password());
-		qfInfo() << "connecting to:" << db.driverName() << db.hostName() << db.port() << db.userName() << "...";// << db.password();
+		qfInfo() << "connecting to database:"
+				 << db.databaseName()
+				 << "at:" << (db.userName() + '@' + db.hostName() + ':' + QString::number(db.port()))
+				 << "driver:" << db.driverName()
+				 << "...";// << db.password();
 		bool ok = db.open();
 		if(!ok) {
 			qfError() << "ERROR open database:" << db.lastError().text();
 		}
 		else {
 			if(!cliOptions()->sqlDriver().endsWith(QLatin1String("SQLITE"))) {
-				qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
-				db.setCurrentSchema(cliOptions()->eventName());
-				if(db.currentSchema() != cliOptions()->eventName()) {
-					qfError() << "ERROR open event:" << cliOptions()->eventName();
+				QString event_name = cliOptions()->eventName();
+				if(event_name.isEmpty()) {
+					qfError("Event name is empty!");
+				}
+				else {
+					qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();
+					db.setCurrentSchema(cliOptions()->eventName());
+					if(db.currentSchema() != cliOptions()->eventName()) {
+						qfError() << "ERROR open event:" << cliOptions()->eventName();
+					}
 				}
 			}
 			if(ok) {
@@ -64,17 +72,6 @@ qf::core::sql::Connection Application::sqlConnetion()
 qf::core::sql::Query Application::execSql(const QString &query_str)
 {
 	QString qs = query_str;
-	/*
-	{
-		static QRegExp rx_id_placeholders("\\{\\{([A-Za-z0-9\\.\\_\\/]+)\\}\\}");
-		int pos = 0;
-		while((pos = rx_id_placeholders.indexIn(query_str, pos)) != -1) {
-			QString fld_name = rx_id_placeholders.cap(1);
-			qs.replace(rx_id_placeholders.cap(0), cliOptions()->value(fld_name).toString());
-			pos += rx_id_placeholders.matchedLength();
-		}
-	}
-	*/
 	qf::core::sql::Query q(sqlConnetion());
 	if(!q.exec(qs)) {
 		QSqlError err = q.lastError();

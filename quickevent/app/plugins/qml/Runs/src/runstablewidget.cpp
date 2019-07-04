@@ -5,9 +5,10 @@
 #include "Runs/runsplugin.h"
 
 #include <Event/eventplugin.h>
+#include <Competitors/competitorsplugin.h>
 
-#include <quickevent/si/siid.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/og/timems.h>
 
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -28,6 +29,14 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfm = qf::core::model;
 
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
+}
+
 static Runs::RunsPlugin *runsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -35,15 +44,16 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
-/*
-static Event::EventPlugin *eventPlugin()
+
+static Competitors::CompetitorsPlugin *competitorsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(plugin != nullptr, "Event plugin not installed!", return nullptr);
+	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin *>(fwk->plugin("Competitors"));
+	if(plugin == nullptr)
+		QF_EXCEPTION("Competitors plugin not installed!");
 	return plugin;
 }
-*/
+
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::RunsTableWidget)
@@ -71,10 +81,10 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 	ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &RunsTableWidget::onCustomContextMenuRequest);
 
-	auto m = new RunsTableModel(this);
-	ui->tblRuns->setTableModel(m);
-	m_runsModel = m;
+	m_runsModel = new RunsTableModel(this);
+	connect(m_runsModel, &RunsTableModel::badDataInput, this, &RunsTableWidget::onBadTableDataInput, Qt::QueuedConnection);
 	connect(m_runsModel, &RunsTableModel::runnerSiIdEdited, runsPlugin(), &Runs::RunsPlugin::clearRunnersTableCache);
+	ui->tblRuns->setTableModel(m_runsModel);
 
 	// this ensures that table is sorted every time when start time is edited
 	ui->tblRuns->sortFilterProxyModel()->setDynamicSortFilter(true);
@@ -99,6 +109,8 @@ RunsTableWidget::RunsTableWidget(QWidget *parent) :
 		m_runsTableItemDelegate->setStartTimeHighlightVisible(is_sort_start_time_asc);
 		ui->tblRuns->setDragEnabled(is_sort_start_time_asc);
 	});
+
+	connect(ui->tblRuns, &qfw::TableView::editRowInExternalEditor, this, &RunsTableWidget::editCompetitor, Qt::QueuedConnection);
 }
 
 RunsTableWidget::~RunsTableWidget()
@@ -114,6 +126,7 @@ void RunsTableWidget::clear()
 void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
 	qfLogFuncFrame();
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	{
 		int class_start_time_min = 0;
 		int class_start_interval_min = 0;
@@ -125,31 +138,61 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 				class_start_interval_min = q.value(1).toInt();
 			}
 		}
-		ui->lblClassStart->setText(class_start_time_min > 0? QString::number(class_start_time_min): "---");
-		ui->lblClassInterval->setText(class_start_interval_min > 0? QString::number(class_start_interval_min): "---");
+		ui->lblClassStart->setText(class_start_time_min >= 0? QString::number(class_start_time_min): "---");
+		ui->lblClassInterval->setText(class_start_interval_min >= 0? QString::number(class_start_interval_min): "---");
 	}
+	/*
+	qfs::QueryBuilder qb2;
+	qb2.select("siId, MAX(punchDateTime) AS punchDateTime")
+			.from("stationsbackup")
+			.where("stageId=" QF_IARG(stage_id))
+			.groupBy("siId")
+			.as("checktimes");
+			*/
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "registration, siId, note")
 			.select2("classes", "name")
+			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
+			.select2("competitors", "id, registration, licence, ranking, siId, note")
+			//.select2("checktimes", "punchDateTime")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
+			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
 			.from("runs")
-			.where("runs.stageId=" QF_IARG(stage_id))
 			.join("runs.competitorId", "competitors.id")
-			.join("competitors.classId", "classes.id")
+			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
+			//.joinQuery("runs.siid", qb2, "siId")
+			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
+	if(is_relays) {
+		qb.select("relays.number AS startNumber");
+		qb.join("relays.classId", "classes.id");
+		int leg = stage_id;
+		if(leg > 0)
+			qb.where("runs.leg=" QF_IARG(leg));
+	}
+	else {
+		qb.select("competitors.startNumber");
+		qb.join("competitors.classId", "classes.id");
+		qb.where("runs.stageId=" QF_IARG(stage_id));
+	}
 	if(class_id > 0) {
-		qb.where("competitors.classId=" + QString::number(class_id));
+		if(is_relays)
+			qb.where("relays.classId=" + QString::number(class_id));
+		else
+			qb.where("competitors.classId=" + QString::number(class_id));
 	}
 	if(!show_offrace)
 		qb.where("runs.isRunning");
 	qfDebug() << qb.toString();
 	m_runsTableItemDelegate->setHighlightedClassId(class_id, stage_id);
-	m_runsModel->setQueryBuilder(qb);
+	m_runsModel->setQueryBuilder(qb, false);
 	m_runsModel->reload();
 
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_relays_name, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_leg, !is_relays);
+	ui->tblRuns->horizontalHeader()->reset(); // revealed columns are not sometimes visible without reset(), atleast in 5.5.1
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);
@@ -174,18 +217,42 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	}
 }
 
+void RunsTableWidget::reload()
+{
+	runsModel()->reload();
+	m_runsTableItemDelegate->reloadHighlightedClassId();
+}
+
+void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
+{
+	Q_UNUSED(id)
+	Competitors::CompetitorsPlugin *competitors_plugin = competitorsPlugin();
+	int result;
+	int competitor_id = ui->tblRuns->tableRow().value("competitorId").toInt();
+	QMetaObject::invokeMethod(competitors_plugin, "editCompetitor", Qt::DirectConnection
+							  , Q_RETURN_ARG(int, result)
+							  , Q_ARG(int, competitor_id)
+							  , Q_ARG(int, mode)
+							  );
+	if(result == QDialog::Accepted) {
+		ui->tblRuns->reload();
+	}
+}
+
 void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_show_card(tr("Show receipt"), nullptr);
+	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
-	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_print_card(tr("Print receipt"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
 	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
+	QAction a_clear_start_times(tr("Clear start times in selected rows"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_show_card << &a_load_card << &a_print_card
+	lst << &a_show_receipt << &a_load_card << &a_print_card
 		<< &a_sep1
-		<< &a_shift_start_times;
+		<< &a_shift_start_times
+		<< &a_clear_start_times;
 	QAction *a = QMenu::exec(lst, ui->tblRuns->viewport()->mapToGlobal(pos));
 	if(a == &a_load_card) {
 		//qf::qmlwidgets::dialogs::MessageBox::showError(this, "Not implemented yet.");
@@ -210,7 +277,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		}
 		fwk->hideProgress();
 	}
-	else if(a == &a_show_card) {
+	else if(a == &a_show_receipt) {
 		int run_id = ui->tblRuns->tableRow().value(QStringLiteral("runs.id")).toInt();
 		Runs::RunsPlugin *runs_plugin = runsPlugin();
 		if(!runs_plugin)
@@ -248,13 +315,14 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			int interval = ui->lblClassInterval->text().toInt();
 			if(interval == 0)
 				interval = 1;
-			offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset [min]:"), 0, -1000, 1000, interval);
-			if(offset_msec != 0) {
+			bool ok;
+			offset_msec = QInputDialog::getInt(this, tr("Get number"), tr("Start times offset [min]:"), 0, -1000, 1000, interval, &ok);
+			if(ok) {
 				offset_msec *= 60 * 1000;
 
 				qfs::Transaction transaction;
 				qfs::Query q(transaction.connection());
-				q.prepare("UPDATE runs SET startTimeMs = startTimeMs + :offset WHERE id=:id", qf::core::Exception::Throw);
+				q.prepare("UPDATE runs SET startTimeMs = COALESCE(startTimeMs, 0) + :offset WHERE id=:id", qf::core::Exception::Throw);
 				QList<int> rows = ui->tblRuns->selectedRowsIndexes();
 				for(int ix : rows) {
 					qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
@@ -272,6 +340,26 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 		}
 	}
+	else if(a == &a_clear_start_times) {
+		try {
+			qfs::Transaction transaction;
+			qfs::Query q(transaction.connection());
+			q.prepare("UPDATE runs SET startTimeMs = NULL WHERE id=:id", qf::core::Exception::Throw);
+			QList<int> rows = ui->tblRuns->selectedRowsIndexes();
+			for(int ix : rows) {
+				qf::core::utils::TableRow row = ui->tblRuns->tableRow(ix);
+				int id = row.value(ui->tblRuns->idColumnName()).toInt();
+				q.bindValue(QStringLiteral(":id"), id);
+				//qfInfo() << id << "->" << offset_msec;
+				q.exec(qf::core::Exception::Throw);
+			}
+			transaction.commit();
+			runsModel()->reload();
+		}
+		catch (const qf::core::Exception &e) {
+			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+		}
+	}
 }
 
 void RunsTableWidget::onTableViewSqlException(const QString &what, const QString &where, const QString &stack_trace)
@@ -283,6 +371,11 @@ void RunsTableWidget::onTableViewSqlException(const QString &what, const QString
 		return;
 	}
 	qf::qmlwidgets::dialogs::MessageBox::showException(this, what, where, stack_trace);
+}
+
+void RunsTableWidget::onBadTableDataInput(const QString &message)
+{
+	qf::qmlwidgets::dialogs::MessageBox::showError(this, message);
 }
 
 

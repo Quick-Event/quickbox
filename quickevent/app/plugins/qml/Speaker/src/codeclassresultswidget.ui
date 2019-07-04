@@ -42,14 +42,18 @@
       <widget class="QComboBox" name="lstClass"/>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="lblCode">
        <property name="text">
         <string>Code</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="lstCode"/>
+      <widget class="QComboBox" name="lstCode">
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToContents</enum>
+       </property>
+      </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer">
@@ -63,13 +67,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btReload">
-       <property name="text">
-        <string>Reload</string>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>

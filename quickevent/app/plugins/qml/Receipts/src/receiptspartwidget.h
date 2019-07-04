@@ -1,13 +1,13 @@
 #ifndef RECEIPTSPARTWIDGET_H
 #define RECEIPTSPARTWIDGET_H
 
-#include <quickevent/partwidget.h>
+#include <quickevent/gui/partwidget.h>
 
-class ReceiptsPartWidget : public quickevent::PartWidget
+class ReceiptsPartWidget : public quickevent::gui::PartWidget
 {
 	Q_OBJECT
 private:
-	typedef quickevent::PartWidget Super;
+	typedef quickevent::gui::PartWidget Super;
 public:
 	ReceiptsPartWidget(const QString &feature_id, QWidget *parent = 0);
 	~ReceiptsPartWidget() Q_DECL_OVERRIDE;

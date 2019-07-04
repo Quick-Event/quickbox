@@ -6,6 +6,12 @@
 #include "stagedocument.h"
 #include "stagewidget.h"
 
+#include "../services/serviceswidget.h"
+#include "../services/emmaclient.h"
+
+#include <quickevent/core/og/timems.h>
+
+#include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -86,13 +92,22 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
+//const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
+const char* EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED = "cardProcessedAndAssigned";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
+const char* EventPlugin::DBEVENT_STAGE_START_CHANGED = "stageStartChanged";
+
+static QString singleFileStorageDir()
+{
+	ConnectionSettings connection_settings;
+	QString ret = connection_settings.singleWorkingDir();
+	return ret;
+}
 
 static QString eventNameToFileName(const QString &event_name)
 {
-	ConnectionSettings connection_settings;
-	QString ret = connection_settings.singleWorkingDir() + '/' + event_name + QBE_EXT;
+	QString ret = singleFileStorageDir() + '/' + event_name + QBE_EXT;
 	return ret;
 }
 
@@ -120,6 +135,7 @@ EventPlugin::EventPlugin(QObject *parent)
 	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
 		setEventOpen(!event_name.isEmpty());
 	});
+	connect(this, &Event::EventPlugin::dbEventNotify, this, &Event::EventPlugin::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void EventPlugin::initEventConfig()
@@ -166,6 +182,22 @@ int EventPlugin::currentStageId()
 	return m_cbxStage->currentIndex() + 1;
 }
 
+int EventPlugin::stageIdForRun(int run_id)
+{
+	int ret = 0;
+	qfs::QueryBuilder qb;
+	qb.select2("runs", "stageId")
+			.from("runs")
+			.where("runs.id=" QF_IARG(run_id));
+	qfs::Query q;
+	q.exec(qb.toString(), qf::core::Exception::Throw);
+	if(q.next())
+		ret = q.value(0).toInt();
+	else
+		qfError() << "Cannot find runs record for id:" << run_id;
+	return ret;
+}
+
 int EventPlugin::stageStartMsec(int stage_id)
 {
 	QTime start_time = stageStartTime(stage_id);
@@ -190,6 +222,26 @@ QDateTime EventPlugin::stageStartDateTime(int stage_id)
 	return dt;
 }
 
+int EventPlugin::msecToStageStartAM(int si_am_time_sec, int msec, int stage_id)
+{
+	if(si_am_time_sec == 0xEEEE)
+		return quickevent::core::og::TimeMs::UNREAL_TIME_MSEC;
+	if(stage_id == 0)
+		stage_id = currentStageId();
+	int stage_start_msec = stageStartMsec(stage_id);
+	int time_msec = quickevent::core::og::TimeMs::msecIntervalAM(stage_start_msec, si_am_time_sec * 1000 + msec);
+	return time_msec;
+}
+
+void EventPlugin::setStageData(int stage_id, const QString &key, const QVariant &value)
+{
+	Event::StageDocument doc;
+	doc.load(stage_id);
+	doc.setValue(key, value);
+	doc.save();
+	clearStageDataCache();
+}
+
 StageData EventPlugin::stageData(int stage_id)
 {
 	QVariantMap ret;
@@ -211,6 +263,7 @@ StageData EventPlugin::stageData(int stage_id)
 
 void EventPlugin::clearStageDataCache()
 {
+	qfInfo() << "stages data cache cleared";
 	m_stageCache.clear();
 }
 
@@ -266,6 +319,7 @@ void EventPlugin::onInstalled()
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
+	tb->setWindowTitle(tr("Event"));
 	{
 		QToolButton *bt_stage = new QToolButton();
 		//bt_stage->setFlat(true);
@@ -292,6 +346,24 @@ void EventPlugin::onInstalled()
 			act_stage->setVisible(checked);
 			m_actEditStage->setVisible(checked);
 		});
+	}
+	fwk->menuBar()->actionForPath("view/toolbar")->addActionInto(tb->toggleViewAction());
+
+	services::EmmaClient *emma_client = new services::EmmaClient(this);
+	services::Service::addService(emma_client);
+
+	{
+		m_servicesDockWidget = new qff::DockWidget(nullptr);
+		m_servicesDockWidget->setObjectName("servicesDockWidget");
+		m_servicesDockWidget->setWindowTitle(tr("Services"));
+		fwk->addDockWidget(Qt::RightDockWidgetArea, m_servicesDockWidget);
+		m_servicesDockWidget->hide();
+		connect(m_servicesDockWidget, &qff::DockWidget::visibilityChanged, this, &EventPlugin::onServiceDockVisibleChanged);
+
+		auto *a = m_servicesDockWidget->toggleViewAction();
+		//a->setCheckable(true);
+		//a->setShortcut(QKeySequence("ctrl+shift+R"));
+		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
 }
 
@@ -330,7 +402,7 @@ void EventPlugin::editStage()
 	dlg.setCentralWidget(w);
 	w->load(stage_id);
 	if(dlg.exec()) {
-		clearStageDataCache();
+		emitDbEvent(Event::EventPlugin::DBEVENT_STAGE_START_CHANGED, stage_id, true);
 	}
 }
 
@@ -398,7 +470,11 @@ DbSchema EventPlugin::dbSchema()
 
 int EventPlugin::minDbVersion()
 {
-	return 10100;
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	int db_version;
+	QMetaObject::invokeMethod(fwk, "dbVersion", Qt::DirectConnection
+							  , Q_RETURN_ARG(int, db_version));
+	return db_version;
 }
 
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
@@ -426,6 +502,16 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 		else {
 			//qfDebug() << "self db notify";
 		}
+	}
+}
+
+void EventPlugin::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
+{
+	Q_UNUSED(connection_id)
+	Q_UNUSED(data)
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_STAGE_START_CHANGED)) {
+		//int stage_id = data.toInt();
+		clearStageDataCache();
 	}
 }
 
@@ -550,7 +636,7 @@ void EventPlugin::connectToSqlServer()
 				qfInfo().nospace() << "connecting to: " << db.userName() << "@" << db.hostName() << ":" << db.port();
 				connect_ok = db.open();
 				if(connect_ok) {
-					bool ok = connect(db.driver(), SIGNAL(notification(QString,QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource,QVariant)));
+					bool ok = connect(db.driver(), SIGNAL(notification(QString, QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource, QVariant)));
 					if(ok)
 						ok = db.driver()->subscribeToNotification(DBEVENT_NOTIFY_NAME);
 					if(!ok)
@@ -570,7 +656,7 @@ void EventPlugin::connectToSqlServer()
 			connect_ok = true;
 		}
 	}
-	setDbOpen(connect_ok);
+	setSqlServerConnected(connect_ok);
 	m_actCreateEvent->setEnabled(connect_ok);
 	m_actOpenEvent->setEnabled(connect_ok);
 	m_actEditEvent->setEnabled(connect_ok);
@@ -658,7 +744,10 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		QString event_fn = eventNameToFileName(event_id);
 		conn.close();
 		conn.setDatabaseName(event_fn);
-		conn.open();
+		if(!conn.open()) {
+			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
+			return false;
+		}
 	}
 	if(conn.isOpen()) {
 		QVariantMap create_options;
@@ -845,11 +934,11 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	return ok;
 }
 
-void EventPlugin::setDbOpen(bool ok)
+void EventPlugin::setSqlServerConnected(bool ok)
 {
-	if(ok != m_dbOpen) {
-		m_dbOpen = ok;
-		emit dbOpenChanged(ok);
+	if(ok != m_sqlServerConnected) {
+		m_sqlServerConnected = ok;
+		emit sqlServerConnectedChanged(ok);
 	}
 }
 
@@ -941,7 +1030,7 @@ void EventPlugin::exportEvent()
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString ext = ".qbe";
-	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
+	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), singleFileStorageDir(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(ex_fn.isEmpty())
 		return;
 	if(!ex_fn.endsWith(ext, Qt::CaseInsensitive))
@@ -1104,6 +1193,15 @@ void EventPlugin::importEvent_qbe()
 	}
 	if(qfd::MessageBox::askYesNo(fwk, tr("Open imported event '%1'?").arg(event_name))) {
 		openEvent(event_name);
+	}
+}
+
+void EventPlugin::onServiceDockVisibleChanged(bool on)
+{
+	if(on && !m_servicesDockWidget->widget()) {
+		auto *rw = new services::ServicesWidget();
+		m_servicesDockWidget->setWidget(rw);
+		rw->reload();
 	}
 }
 

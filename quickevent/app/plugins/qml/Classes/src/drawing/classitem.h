@@ -41,8 +41,9 @@ private:
 	QF_VARIANTMAP_FIELD(int, v, setV, acantEvery)
 	QF_VARIANTMAP_FIELD(int, v, setV, acantsAfter)
 	QF_VARIANTMAP_FIELD(int, f, setF, irstCode)
-	QF_VARIANTMAP_FIELD(int, r, setr, unsCount)
-	//QF_VARIANTMAP_FIELD2(bool, isD, setD, rawnIn, false) ///< not SQL value, internal usage
+	QF_VARIANTMAP_FIELD(int, r, setR, unsCount)
+	QF_VARIANTMAP_FIELD(int, m, setM, apCount)
+	//QF_VARIANTMAP_FIELD2(bool, isS, setS, elected, false) ///< not SQL value, internal usage
 	//QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
 	//QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)
 public:
@@ -63,7 +64,7 @@ private:
 public:
 	enum class ClashType {None, CourseOverlap, RunnersOverlap};
 public:
-	ClassItem(QGraphicsItem * parent = 0);
+	ClassItem(QGraphicsItem * parent = nullptr);
 
 	void updateGeometry();
 	void updateToolTip();
@@ -86,6 +87,7 @@ public:
 	void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 
+	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
 protected:
 	int runsAndVacantCount() const;
 	int durationMin() const;

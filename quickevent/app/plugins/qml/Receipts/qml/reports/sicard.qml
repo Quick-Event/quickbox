@@ -2,7 +2,7 @@ import QtQml 2.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
 import "qrc:/qf/core/qml/js/timeext.js" as TimeExt
-import "qrc:/quickevent/js/ogtime.js" as OGTime
+import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
@@ -163,7 +163,7 @@ Report {
 				id: dc
 				width: "%"
 				layout: Frame.LayoutHorizontal
-				expandChildrenFrames: true
+				expandChildFrames: true
 				topBorder: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.penBlack1
 				textStyle: (dc.currentIndex < (dc.rowCount - 1))? null: myStyle.textStyleBold;
 				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};

@@ -9,6 +9,28 @@ HtmlUtils::FromHtmlListOptions::FromHtmlListOptions()
 	if(default_options.isEmpty()) {
 		default_options.setEncoding(QStringLiteral("utf-8"));
 		default_options.setDocumentTitle(QStringLiteral("html document"));
+		default_options.setStyle(QStringLiteral(
+									 "		<style type=\"text/css\">\n"
+									 "			body {font-family: Verdana, sans-serif}\n"
+									 "			h1, h2, h3, h4, h5 {\n"
+									 "				color: black;\n"
+									 "				font-family: \"Lucida Grande\", Verdana, Lucida, Helvetica, Arial, sans-serif;\n"
+									 "				font-size: 100%;\n"
+									 "				font-weight: normal;\n"
+									 "				clear: left;\n"
+									 "			}\n"
+									 "			h1 {font-size: 220%; font-weight: bold;}\n"
+									 "			h2 {font-size: 150%; font-weight: bold; border-bottom: 1px  dotted #666 ;}\n"
+									 "			h3 {font-size: 120%;  }\n"
+									 "			.text {text-align:left}\n"
+									 "			.code {background-color: lightgray; text-align:left}\n"
+									 "\n"
+									 "			table { border: 1px solid gray; border-spacing: 0px 0px;}\n"
+									 "			tr.odd { background-color: beige; }\n"
+									 "			th { padding: 3px; border: 0px solid #53bc1f; background-color: #91e369; }\n"
+									 "			td { padding: 3px; border: 0px solid #53bc1f; }\n"
+									 "		</style>"
+									 ));
 	}
 	*this = default_options;
 }
@@ -52,26 +74,7 @@ QString HtmlUtils::fromHtmlList(const QVariantList &body_list, const HtmlUtils::
 		"	<head>\n"
 		"		<meta http-equiv=\"content-type\" content=\"text/html; charset={{encoding}}\" />\n"
 		"		<title>{{documentTitle}}</title>\n"
-		"		<style type=\"text/css\">\n"
-		"			body {font-family: Verdana, sans-serif}\n"
-		"			h1, h2, h3, h4, h5 {\n"
-		"				color: black;\n"
-		"				font-family: \"Lucida Grande\", Verdana, Lucida, Helvetica, Arial, sans-serif;\n"
-		"				font-size: 100%;\n"
-		"				font-weight: normal;\n"
-		"				clear: left;\n"
-		"			}\n"
-		"			h1 {font-size: 220%; font-weight: bold;}\n"
-		"			h2 {font-size: 150%; font-weight: bold; border-bottom: 1px  dotted #666 ;}\n"
-		"			h3 {font-size: 120%;  }\n"
-		"			.text {text-align:left}\n"
-		"			.code {background-color: lightgray; text-align:left}\n"
-		"\n"
-		"			table { border: 1px solid gray; border-spacing: 0px 0px;}\n"
-		"			tr.odd { background-color: lavender; }\n"
-		"			th { padding: 3px; border: 0px solid #53bc1f; background-color: #91e369; }\n"
-		"			td { padding: 3px; border: 0px solid #53bc1f; }\n"
-		"		</style>\n"
+		"		{{style}}\n"
 		"	</head>\n";
 	QString body = fromHtmlList_helper(body_list, QString(), options);
 	QString html_footer = "</html>";
@@ -98,9 +101,9 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 	Q_UNUSED(options)
 	if(item.type() == QVariant::List) {
 		QVariantList lst = item.toList();
-		QF_ASSERT(!lst.isEmpty(), "Bad item list!", return ret);
+		QF_ASSERT(!lst.isEmpty(), "Empty item list!", return ret);
 		QString element_name = lst.first().toString();
-		//qfInfo() << element_name << item;
+		//qfInfo() << element_name << lst.first();
 		QF_ASSERT(!element_name.isEmpty(), "Bad element name!", return ret);
 		QString attrs_str;
 		int ix = 1;
@@ -140,6 +143,18 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 	return ret;
 }
 
-
+QVariantList HtmlUtils::createHtmlTable(const QString &title, const QStringList &flds, const QVariantList &rows)
+{
+	QVariantList div = QVariantList() << QStringLiteral("div");
+	div.insert(div.length(), QVariantList() << QStringLiteral("h2") << title);
+	QVariantList table = QVariantList() << QStringLiteral("table");
+	QVariantList header = QVariantList() << QStringLiteral("tr");
+	for(auto fld : flds)
+		header.insert(header.length(), QVariantList() << QStringLiteral("th") << fld);
+	table.insert(table.length(), header);
+	table << rows;
+	div.insert(div.length(), table);
+	return div;
+}
 
 

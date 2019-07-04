@@ -44,7 +44,20 @@ void Model::reloadCategories()
 {
 	m_categoriesToProceed.clear();
 	Application *app = Application::instance();
-	QString qs = "SELECT id FROM classes ORDER BY name";
+	AppCliOptions *cli = app->cliOptions();
+	QString where;
+	if(cli->classesLike_isset())
+		where += "name LIKE '" + cli->classesLike() + "'";
+	if(cli->classesNotLike_isset()) {
+		if(!where.isEmpty())
+			where += " AND ";
+		where += "name NOT LIKE '" + cli->classesNotLike() + "'";
+	}
+	QString qs = "SELECT id FROM classes";
+	if(!where.isEmpty())
+		qs += " WHERE " + where;
+	qs += " ORDER BY name";
+	qfInfo() << "loading clases:" << qs;
 	QSqlQuery q = app->execSql(qs);
 	while(q.next()) {
 		m_categoriesToProceed << q.value(0).toString();
@@ -76,10 +89,10 @@ bool Model::addCategoryToStorage()
 				.join("classdefs.courseId", "courses.id")
 				.where("classes.id={{class_id}}");
 		QString qs = qb.toString();
-		if(first_run)
-			qfInfo() << "classes:" << qs;
 		qs.replace("{{stage_id}}", QString::number(app->cliOptions()->stage()));
 		qs.replace("{{class_id}}", QString::number(cat_id_to_load));
+		if(first_run)
+			qfInfo() << "classes:" << qs;
 		qf::core::sql::Query q = app->execSql(qs);
 		if(q.next()) {
 			QVariantMap m;
@@ -95,7 +108,7 @@ bool Model::addCategoryToStorage()
 	{
 		QString qs;
 		qf::core::sql::QueryBuilder qb;
-		if(app->cliOptions()->profile() == "results") {
+		if(app->cliOptions()->profile() == QLatin1String("results")) {
 			qb.select2("competitors", "registration, lastName, firstName")
 					//.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 					.select2("runs", "*")

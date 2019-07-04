@@ -5,8 +5,8 @@ PROJ_NAME=quickbox
 FANDA_HOME=/home/fanda
 
 PROJ_HOME=$FANDA_HOME/proj/${PROJ_NAME}
-QT_HOME=$FANDA_HOME/programs/qt5/5.6/gcc_64/bin
+QT_HOME=$FANDA_HOME/programs/qt5/5.12.3/gcc_64/bin
 TS_HOME=$FANDA_HOME/t/${PROJ_NAME}-ts
-PROJ_BUILD=$PROJ_HOME/../_build/${PROJ_NAME}-release
+PROJ_BUILD=$FANDA_HOME/t/_distro/_build
 QM_DEST_DIR=$PROJ_BUILD/bin/translations
 LCTOOL_HOME=$PROJ_HOME/devutils/lctools

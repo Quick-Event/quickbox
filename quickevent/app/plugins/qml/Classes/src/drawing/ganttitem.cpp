@@ -70,8 +70,8 @@ Event::EventPlugin *GanttItem::eventPlugin()
 void GanttItem::load(int stage_id)
 {
 	qfLogFuncFrame();
-	Event::StageData stage = eventPlugin()->stageData(stage_id);
-	DrawingConfig dc(stage.drawingConfig());
+	Event::StageData stage_data = eventPlugin()->stageData(stage_id);
+	DrawingConfig dc(stage_data.drawingConfig());
 	QVariantList stsllst = dc.startSlots();
 
 	qfs::Query q(qfs::Connection::forName());
@@ -242,6 +242,8 @@ void GanttItem::moveClassItem(int from_slot_ix, int from_class_ix, int to_slot_i
 		to_class_ix--;
 	auto *slot1 = startSlotItemAt(from_slot_ix);
 	auto *class_it = slot1->takeClassItemAt(from_class_ix);
+	if(!class_it)
+		return;
 	auto *slot2 = startSlotItemAt(to_slot_ix);
 	slot2->insertClassItem(to_class_ix, class_it);
 	updateGeometry();

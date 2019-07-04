@@ -8,7 +8,9 @@
 
 #include <QQmlListProperty>
 
-namespace quickevent { namespace si { class PunchRecord; } }
+namespace quickevent { namespace core { namespace si { class PunchRecord; class ReadCard; class CheckedCard; }}}
+
+namespace siut { class SIMessageData; }
 
 namespace CardReader {
 
@@ -39,21 +41,30 @@ public:
 	Q_INVOKABLE QString settingsPrefix();
 
 	int currentStageId();
-	int findRunId(int si_id);
-	ReadCard readCard(int card_id);
-	CheckedCard checkCard(int card_id, int run_id = 0);
-	CheckedCard checkCard(const ReadCard &read_card);
-	int saveCardToSql(const ReadCard &read_card);
-	int savePunchRecordToSql(const quickevent::si::PunchRecord &punch_record);
+	int findRunId(int si_id, int si_finish_time, QString *err_msg = nullptr);
+	bool isCardLent(int si_id, int si_finish_time, int run_id);
+	quickevent::core::si::ReadCard readCard(int card_id);
+	quickevent::core::si::CheckedCard checkCard(int card_id, int run_id = 0);
+	quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card);
+	int saveCardToSql(const quickevent::core::si::ReadCard &read_card);
+	int savePunchRecordToSql(const quickevent::core::si::PunchRecord &punch_record);
 	//ReadCard loadCardFromSql(int card_id);
-	bool updateCheckedCardValuesSqlSafe(const CheckedCard &checked_card);
-	void updateCheckedCardValuesSql(const CheckedCard &checked_card) throw(qf::core::Exception);
-	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
+	//bool updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card);
 
 	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
+	void assignCardToRun(int card_id, int run_id);
+	bool processCardToRunAssignment(int card_id, int run_id);
+
+	static int resolveAltCode(int maybe_alt_code, int stage_id);
+
+	void emitSiTaskFinished(int task_type, QVariant result) { emit siTaskFinished(task_type, result); }
+	Q_SIGNAL void siTaskFinished(int task_type, QVariant result);
 private:
 	void onInstalled();
 	QQmlListProperty<CardChecker> cardCheckersListProperty();
+
+	bool saveCardAssignedRunnerIdSql(int card_id, int run_id);
+	void updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false);
 private:
 	QList<CardChecker*> m_cardCheckers;
 };

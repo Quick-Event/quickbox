@@ -21,6 +21,7 @@ ExportTableViewWidget::ExportTableViewWidget(QTableView *table_view, QWidget *pa
 		ui->lstCodec->addItem(ba);
 	ui->lstCodec->setCurrentText(QStringLiteral("UTF-8"));
 
+	ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui->tableView->verticalHeader()->setDefaultSectionSize((int)(fontMetrics().lineSpacing() * 1.3));
 	ui->tableView->setModel(table_view->model());
 

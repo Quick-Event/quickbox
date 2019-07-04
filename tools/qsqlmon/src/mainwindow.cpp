@@ -66,7 +66,7 @@ MainWindow::MainWindow()
 	createActions();
 	createMenus();
 	createToolBars();
-    //qfDebug("%s: %i",__FILE__, __LINE__);
+	//qfDebug("%s: %i",__FILE__, __LINE__);
 	createStatusBar();
 	createDockWindows();
 
@@ -109,7 +109,7 @@ void MainWindow::init()
 	//setActiveConnection(qf::core::sql::Connection());
 	setActiveConnection2(NULL);
 
-	connect(ui.queryView, SIGNAL(statusBarAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
+	connect(ui.queryView, SIGNAL(statusBarAction(const QString&)), this, SLOT(onTableStatusBarAction(const QString&)));
 
 	setPersistentSettingsId("MainWindow");
 
@@ -126,19 +126,23 @@ void MainWindow::lazyInit()
 
 qf::core::model::SqlTableModel* MainWindow::queryViewModel()
 {
-	qf::core::model::SqlTableModel *m = qobject_cast<qf::core::model::SqlTableModel*>(ui.queryView->tableView()->tableModel());
+	qf::core::model::TableModel *m1 = ui.queryView->tableView()->tableModel();
+	qf::core::model::SqlTableModel *m = qobject_cast<qf::core::model::SqlTableModel*>(m1);
+	qfDebug() << "model:" << m1 << m;
 	//QF_CHECK(m!=nullptr, "Model is NULL or not a kind of qf::core::model::SqlTableModel.");
 	return m;
 }
 
 void MainWindow::setQueryViewModel(qf::core::model::SqlTableModel *m)
 {
+	qfDebug() << "set model:" << m;
 	ui.queryView->tableView()->setTableModel(m);
 	if(m) {
 		m->setParent(ui.queryView);
 		connect(m, SIGNAL(reloaded()), ui.queryView, SLOT(updateStatus()));
 		//ui.queryView->updateStatus();
 	}
+	qfDebug() << "set model read back:" << ui.queryView->tableView()->tableModel();
 }
 
 qf::core::sql::Connection MainWindow::setActiveConnection2(Database *dd)
@@ -202,14 +206,13 @@ qf::core::sql::Connection MainWindow::setActiveConnection1(const qf::core::sql::
 			return c;
 	}
 	QObject *old_model = queryViewModel();
-	qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(this);
-	m->setConnectionName(c.connectionName());
-	qfDebug() << "\t setting new model created:" << m;
-	setQueryViewModel(m);
-	qfDebug() << "\t model set";
 	qfDebug() << "\t deletenig old model:" << old_model;
 	QF_SAFE_DELETE(old_model);
-	qfDebug() << "\t deleted";
+	qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(this);
+	m->setConnectionName(c.connectionName());
+	qfDebug() << "\t new table model created:" << m;
+	setQueryViewModel(m);
+	qfDebug() << "\t model set";
 
 	qf::core::sql::Connection ret = m_activeConnection;
 	//qfDebug() << "m_activeConnection = c";
@@ -1379,7 +1382,7 @@ void MainWindow::tearOffTable()
 		ui.queryView = new TableViewWidget();
 		//ui.queryView->setContextMenuPolicy(Qt::ActionsContextMenu);
 		//ui.queryView->setContextMenuPolicy();
-		connect(ui.queryView, SIGNAL(statusTextAction(const QString&)), this, SLOT(tableStatusBarTextAction(const QString&)));
+		connect(ui.queryView, &TableViewWidget::statusBarAction, this, &MainWindow::onTableStatusBarAction);
 		ly->addWidget(ui.queryView);
 		qf::core::model::SqlTableModel *m = new qf::core::model::SqlTableModel(ui.queryView);
 		m->setConnectionName(activeConnection().connectionName());
@@ -1414,7 +1417,7 @@ void MainWindow::changeEvent(QEvent * e)
 	}
 }
 
-void MainWindow::tableStatusBarTextAction(const QString &_text)
+void MainWindow::onTableStatusBarAction(const QString &_text)
 {
 	QString text = _text.trimmed();
 	if(!text.isEmpty()) {

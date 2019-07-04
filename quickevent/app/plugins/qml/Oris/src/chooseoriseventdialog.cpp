@@ -44,8 +44,8 @@ void ChooseOrisEventDialog::load()
 	//QCoreApplication::processEvents();
 	QDate d = QDate::currentDate();
 	d = d.addMonths(-1);
-	QUrl url("http://oris.orientacnisporty.cz/API/?format=json&method=getEventList&all=1&datefrom=" + d.toString(Qt::ISODate));
-	m_importer->getJsonAndProcess(url, [this](const QJsonDocument &jsd) {
+	QUrl url("https://oris.orientacnisporty.cz/API/?format=json&method=getEventList&all=1&datefrom=" + d.toString(Qt::ISODate));
+	m_importer->getJsonAndProcess(url, this, [this](const QJsonDocument &jsd) {
 		//qfWarning().noquote() << QString::fromUtf8(jsd.toJson());
 		OrisImporter::saveJsonBackup("EventList", jsd);
 		QJsonObject jso = jsd.object().value(QStringLiteral("Data")).toObject();
@@ -56,7 +56,11 @@ void ChooseOrisEventDialog::load()
 			QJsonObject org1 = event.value(QStringLiteral("Org1")).toObject();
 			QJsonObject sport = event.value(QStringLiteral("Sport")).toObject();
 			int sport_id = sport.value(QStringLiteral("ID")).toString().toInt();
-			QString sport_abbr = (sport_id == 1)? tr("OB"): (sport_id == 2)? tr("LOB"): (sport_id == 3)? tr("MTBO"): tr("???");
+			QString sport_abbr = (sport_id == 1)? tr("OB"):
+								 (sport_id == 2)? tr("LOB"):
+								 (sport_id == 3)? tr("MTBO"):
+								 (sport_id == 4)? tr("TRAIL"):
+								 tr("???");
 			QString event_description = event.value(QStringLiteral("Date")).toString()
 										+ " " + QString::number(event_id)
 										+ " " + sport_abbr
@@ -79,7 +83,7 @@ void ChooseOrisEventDialog::load()
 		ui->cbxOrisEvent->lineEdit()->setPlaceholderText(tr("Search in events ..."));
 		//ui->cbxOrisEvent->lineEdit()->selectAll();
 		ui->cbxOrisEvent->lineEdit()->clear();
-		ui->edEventId->setValue(0);
+		//ui->edEventId->setValue(0);
 	});
 }
 

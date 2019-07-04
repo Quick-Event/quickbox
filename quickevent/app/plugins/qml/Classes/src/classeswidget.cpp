@@ -132,6 +132,8 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->addColumn("courses.name", tr("Course")).setReadOnly(true);
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
+		m->addColumn("classdefs.relayStartNumber", tr("Rel.num")).setToolTip(tr("Relay start number"));
+		m->addColumn("classdefs.relayLegCount", tr("Legs")).setToolTip(tr("Relay leg count"));
 		ui->tblClasses->setTableModel(m);
 
 		m_courseItemDelegate = new CourseItemDelegate(this);
@@ -158,6 +160,9 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m_courseCodesModel = m;
 	}
 	connect(ui->tblClasses, SIGNAL(currentRowChanged(int)), this, SLOT(reloadCourseCodes()));
+	connect(ui->chkUseAllMaps, &QCheckBox::toggled, [this](bool checked) {
+		eventPlugin()->setStageData(selectedStageId(), QStringLiteral("useAllMaps"), checked);
+	});
 }
 
 ClassesWidget::~ClassesWidget()
@@ -176,20 +181,20 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
 	qfw::Action *a_edit = part_widget->menuBar()->actionForPath("edit", true);
-	a_edit->setText("&Edit");
+	a_edit->setText(tr("&Edit"));
 	{
-		qfw::Action *a = new qfw::Action("Cou&rses", this);
+		qfw::Action *a = new qfw::Action(tr("Cou&rses"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::edit_courses);
 		a_edit->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("Co&des", this);
+		qfw::Action *a = new qfw::Action(tr("Co&des"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
 		a_edit->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("Classes &layout");
-		a->setShortcut("Ctrl+L");
+		qfw::Action *a = new qfw::Action(tr("Classes &layout"));
+		a->setShortcut(tr("Ctrl+L"));
 		a_edit->addActionInto(a);
 		connect(a, &qfw::Action::triggered, [this]()
 		{
@@ -203,19 +208,24 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
-	a_import->setText("&Import");
+	a_import->setText(tr("&Import"));
 	{
-		qfw::Action *a = new qfw::Action("OCad v8", this);
+		qfw::Action *a = new qfw::Action(tr("OCad TXT"), this);
+		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_txt);
+		a_import->addActionInto(a);
+	}
+	{
+		qfw::Action *a = new qfw::Action(tr("OCad v8"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_v8);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("OCad IOF-XML 2.0", this);
+		qfw::Action *a = new qfw::Action(tr("OCad IOF-XML 2.0"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_2);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("OCad IOF-XML 3.0", this);
+		qfw::Action *a = new qfw::Action(tr("OCad IOF-XML 3.0"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_3);
 		a_import->addActionInto(a);
 	}
@@ -239,6 +249,7 @@ void ClassesWidget::edit_courses()
 	auto *w = new EditCoursesWidget();
 	dlg.setCentralWidget(w);
 	dlg.exec();
+	reload();
 }
 
 void ClassesWidget::edit_codes()
@@ -249,6 +260,7 @@ void ClassesWidget::edit_codes()
 	//auto *bt_apply = dlg.buttonBox()->button(QDialogButtonBox::Apply);
 	//connect(bt_apply, &QPushButton::clicked, this, &MainWindow::askUserToRestartAppServer);
 	dlg.exec();
+	reload();
 }
 
 void ClassesWidget::reset()
@@ -294,9 +306,10 @@ void ClassesWidget::reload()
 			qb.where("competitors.classId=" + QString::number(class_id));
 		}
 		*/
-		m_classesModel->setQueryBuilder(qb);
+		m_classesModel->setQueryBuilder(qb, false);
 		m_classesModel->reload();
 	}
+	/*
 	{
 		qf::core::sql::Query q(m_classesModel->sqlConnection());
 		q.exec("SELECT COUNT(*) FROM courses");
@@ -308,6 +321,7 @@ void ClassesWidget::reload()
 		}
 		ui->tblClasses->setReadOnly(ro);
 	}
+	*/
 	{
 		QMap<int, QString> courses;
 		qf::core::sql::Query q;
@@ -317,6 +331,7 @@ void ClassesWidget::reload()
 		}
 		m_courseItemDelegate->setCourses(courses);
 	}
+	ui->chkUseAllMaps->setChecked(eventPlugin()->stageData(stage_id).isUseAllMaps());
 	reloadCourseCodes();
 }
 
@@ -340,7 +355,7 @@ void ClassesWidget::reloadCourseCodes()
 				.join("coursecodes.codeId", "codes.id")
 				.where("coursecodes.courseId=" QF_IARG(current_course_id))
 				.orderBy("coursecodes.position");
-		m_courseCodesModel->setQueryBuilder(qb);
+		m_courseCodesModel->setQueryBuilder(qb, false);
 		m_courseCodesModel->reload();
 	}
 }
@@ -356,10 +371,12 @@ void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
 			QVariantList courses;
 			for(const auto &cd : course_defs)
 				courses << cd;
+			/*
 			{
 				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				//qfInfo() << doc.toJson();
+				qfInfo() << doc.toJson();
 			}
+			*/
 			classes_plugin->createCourses(selectedStageId(), courses);
 			reload();
 		}
@@ -377,7 +394,7 @@ static QString normalize_course_name(const QString &course_name)
 	return ret;
 }
 
-void ClassesWidget::import_ocad_v8()
+void ClassesWidget::import_ocad_txt()
 {
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"));
 	if(fn.isEmpty())
@@ -393,30 +410,116 @@ void ClassesWidget::import_ocad_v8()
 		}
 		try {
 			QMap<QString, CourseDef> defined_courses_map;
+			enum {ColCourseName = 0, ColLenght, ColClimb, ColCodesCount, ColCodes};
 			for(QString line : lines) {
-				// [classname];coursename;0;lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
+				// coursename lenght_km climb codes_count S1-code_1[-code_n]-F1
 				if(line.isEmpty())
 					continue;
+
+				QStringList sections = line.split('\t', QString::SkipEmptyParts);
 				QStringList class_names;
-				qfc::String course_name = normalize_course_name(line.section(';', 1, 1));
-				QString class_name = line.section(';', 0, 0);
-				if(class_name.isEmpty()) {
-					for(auto ch : {'-', ',', ':', '+'}) {
-						if(course_name.contains(ch)) {
-							class_names = course_name.splitAndTrim(ch);
-							break;
-						}
-					}
-					if(class_names.isEmpty() && !course_name.isEmpty())
-						class_names << course_name;
-				}
-				else {
-					class_names << class_name;
-				}
+
+				qfc::String course_name = normalize_course_name(sections.value(ColCourseName));
+				class_names = course_name.splitAndTrim('+');
+				//qfInfo() << course_name << class_names;
 				if(class_names.isEmpty()) {
 					//class_names << course_name;
 					qfWarning() << "cannot deduce class name, skipping line:" << line;
 					continue;
+				}
+				if(defined_courses_map.contains(course_name)) {
+					CourseDef cd = defined_courses_map.value(course_name);
+					QStringList classes = cd.classes() << class_names;
+					defined_courses_map[course_name].setClasses(classes);
+					continue;
+				}
+				CourseDef &cd = defined_courses_map[course_name];
+				cd.setName(course_name);
+				cd.setClasses(class_names);
+				{
+					QString s = sections.value(ColLenght);
+					s.replace(',', '.');
+					cd.setLenght((int)(s.toDouble() * 1000));
+				}
+				{
+					QString s = sections.value(ColClimb);
+					cd.setClimb(s.toInt());
+				}
+				{
+					QString s = sections.value(ColCodes);
+					QVariantList codes;
+					QStringList sl = s.split('-');
+					for (int i = 1; i < sl.count()-1; i++) {
+						bool ok;
+						int code = sl[i].toInt(&ok);
+						if(ok)
+							codes << code;
+						else
+							QF_EXCEPTION(QString("Invalid code definition '%1' at sequence no: %2 in '%3'\nline: %4").arg(sl[i+1]).arg(i).arg(s).arg(line));
+					}
+					cd.setCodes(codes);
+				}
+			}
+			importCourses(defined_courses_map.values());
+		}
+		catch (const qf::core::Exception &e) {
+			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
+		}
+	}
+}
+
+void ClassesWidget::import_ocad_v8()
+{
+	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"));
+	if(fn.isEmpty())
+		return;
+	QFile f(fn);
+	if(f.open(QFile::ReadOnly)) {
+		QStringList lines;
+		while (true) {
+			QByteArray ba = f.readLine();
+			if(ba.isEmpty())
+				break;
+			lines << QString::fromUtf8(ba).trimmed();
+		}
+		try {
+			bool is_relays = eventPlugin()->eventConfig()->isRelays();
+			QMap<QString, CourseDef> defined_courses_map;
+			for(QString line : lines) {
+				// [classname];coursename;[relay.leg];lenght_km;climb;S1;dist_1;code_1[;dist_n;code_n];dist_finish;F1
+				if(line.isEmpty())
+					continue;
+				QStringList class_names;
+				QString class_name;
+				QString course_name;
+				if(is_relays) {
+					class_name = line.section(';', 1, 1);
+					course_name = line.section(';', 2, 2);
+					if(!class_names.contains(class_name))
+						class_names << class_name;
+				}
+				else {
+					class_name = line.section(';', 0, 0);
+					course_name = normalize_course_name(line.section(';', 1, 1));
+					if(class_name.isEmpty()) {
+						for(auto ch : {'-', ',', ':', '+'}) {
+							if(course_name.contains(ch)) {
+								class_names = qfc::String(course_name).splitAndTrim(ch);
+								break;
+							}
+						}
+						if(class_names.isEmpty() && !course_name.isEmpty())
+							class_names << course_name;
+					}
+					else {
+						class_names << class_name;
+					}
+					if(class_names.isEmpty()) {
+						//class_names << course_name;
+						qfWarning() << "cannot deduce class name, skipping line:" << line;
+						continue;
+					}
 				}
 				if(defined_courses_map.contains(course_name)) {
 					CourseDef cd = defined_courses_map.value(course_name);

@@ -8,7 +8,8 @@ QT += widgets sql
 
 CONFIG += c++11 hide_symbols
 
-INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libsiut/include
+INCLUDEPATH += \
+	#$$QF_PROJECT_TOP_SRCDIR/libsiut/include \
 
 DEFINES += EVENTPLUGIN_BUILD_DLL
 
@@ -19,6 +20,8 @@ RESOURCES += \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
+    $${PLUGIN_NAME}.nb_NO.ts \
+    $${PLUGIN_NAME}.ru_RU.ts \
 
 lupdate_only {
 SOURCES += \

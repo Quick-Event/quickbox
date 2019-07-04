@@ -4,11 +4,9 @@
 #include <qf/core/utils/fileutils.h>
 
 #include <QApplication>
+#include <QSettings>
 
 using namespace qf::qmlwidgets::dialogs;
-
-QString FileDialog::s_recentOpenFileDir;
-QString FileDialog::s_recentSaveFileDir;
 
 FileDialog::FileDialog(QWidget *parent, Qt::WindowFlags flags) :
 	QFileDialog(parent, flags)
@@ -21,13 +19,13 @@ QString FileDialog::getOpenFileName(QWidget *parent, const QString &caption,
 {
 	QString dir = _dir;
 	if(dir.isEmpty()) {
-		dir = s_recentOpenFileDir;
+		dir = recentOpenFileDir();
 	}
 	if(parent == nullptr)
 		parent = QApplication::activeWindow();
 	QString ret = QFileDialog::getOpenFileName(parent, caption, dir, filter, selectedFilter, options);
 	if(!ret.isEmpty()) {
-		s_recentOpenFileDir = qf::core::utils::FileUtils::path(ret);
+		setRecentOpenFileDir(qf::core::utils::FileUtils::path(ret));
 	}
 	return ret;
 }
@@ -39,14 +37,14 @@ QStringList FileDialog::getOpenFileNames(QWidget *parent, const QString &caption
 	QString fn = _dir;
 	QString dir = qf::core::utils::FileUtils::path(fn);
 	if(dir.isEmpty()) {
-		dir = s_recentOpenFileDir;
+		dir = recentOpenFileDir();
 		fn = qf::core::utils::FileUtils::joinPath(dir, fn);
 	}
 	if(parent == nullptr)
 		parent = QApplication::activeWindow();
 	QStringList ret = QFileDialog::getOpenFileNames(parent, caption, fn, filter, selectedFilter, options);
 	if(!ret.isEmpty()) {
-		s_recentOpenFileDir = qf::core::utils::FileUtils::path(ret[0]);
+		setRecentOpenFileDir(qf::core::utils::FileUtils::path(ret[0]));
 	}
 	return ret;
 }
@@ -61,7 +59,7 @@ QString FileDialog::getSaveFileName(QWidget * parent, const QString & caption,
 	QString dir = qf::core::utils::FileUtils::path(fn);
 	qDebug() << "\t dir:" << dir << "isAbsolutePath:" << QDir::isAbsolutePath(dir);
 	if(dir.isEmpty() || !QDir::isAbsolutePath(dir)) {
-		dir = s_recentSaveFileDir;
+		dir = recentSaveFileDir();
 		fn = qf::core::utils::FileUtils::joinPath(dir, fn);
 	}
 	//options |= QFileDialog::DontUseNativeDialog;
@@ -71,7 +69,7 @@ QString FileDialog::getSaveFileName(QWidget * parent, const QString & caption,
 	QString ret = QFileDialog::getSaveFileName(parent, caption, fn, filter, selectedFilter, options);
 	qfDebug() << "\t ret:" << ret;
 	if(!ret.isEmpty()) {
-		s_recentSaveFileDir = qf::core::utils::FileUtils::path(ret);
+		setRecentSaveFileDir(qf::core::utils::FileUtils::path(ret));
 	}
 	return ret;
 }
@@ -80,13 +78,40 @@ QString FileDialog::getExistingDirectory(QWidget *parent, const QString &caption
 {
 	QString dir = _dir;
 	if(dir.isEmpty()) {
-		dir = s_recentOpenFileDir;
+		dir = recentOpenFileDir();
 	}
 	if(parent == nullptr)
 		parent = QApplication::activeWindow();
 	QString ret = QFileDialog::getExistingDirectory(parent, caption, dir, options);
 	if(!ret.isEmpty()) {
-		s_recentOpenFileDir = ret;
+		setRecentOpenFileDir(ret);
 	}
 	return ret;
+}
+
+static const auto RECENT_OPEN_FILE_DIR_KEY = QStringLiteral("app/FileDialog/recentOpenFileDir");
+static const auto RECENT_SAVE_FILE_DIR_KEY = QStringLiteral("app/FileDialog/recentSaveFileDir");
+
+QString FileDialog::recentOpenFileDir()
+{
+	QSettings settings;
+	return settings.value(RECENT_OPEN_FILE_DIR_KEY).toString();
+}
+
+void FileDialog::setRecentOpenFileDir(const QString &dir)
+{
+	QSettings settings;
+	settings.setValue(RECENT_OPEN_FILE_DIR_KEY, dir);
+}
+
+QString FileDialog::recentSaveFileDir()
+{
+	QSettings settings;
+	return settings.value(RECENT_SAVE_FILE_DIR_KEY).toString();
+}
+
+void FileDialog::setRecentSaveFileDir(const QString &dir)
+{
+	QSettings settings;
+	settings.setValue(RECENT_SAVE_FILE_DIR_KEY, dir);
 }

@@ -94,7 +94,7 @@ public:
 			ColumnBreak = (1 << 0),
 			PageBreak = (1 << 1),
 			NextDetailRowExists = (1 << 2),
-			ErrorNeverFit = (1 << 3),
+			//ErrorNeverFit = (1 << 3),
 		};
 
 		Result result;
@@ -111,7 +111,8 @@ public:
 
 		bool isValid() const {return result == Result::Invalid;}
 		bool isPrintFinished() const {return result == Result::PrintFinished;}
-		bool isPrintAgain() const {return result != Result::PrintFinished && result != Result::PrintError;}
+		bool isPrintAgain() const {return result == Result::PrintAgain;}
+		//bool isPrintAgain() const {return result != Result::PrintFinished && result != Result::PrintError;}
 		bool isNextDetailRowExists() const {return flags & NextDetailRowExists;}
 		void setNextDetailRowExists(bool b) {flags = b? flags | NextDetailRowExists: flags & ~NextDetailRowExists;}
 		bool isColumnBreak() const {return flags & ColumnBreak;}
@@ -171,7 +172,7 @@ public:
 			//BottomFixed = 4,
 			//RightFixed = 8,
 			FillLayout = 1, /// tento item se natahne ve smeru layoutu tak, aby vyplnil cely bounding_rect
-			ExpandChildrenFrames = 2, /// viz. atribut expandChildrenFrames v Report.rnc
+			ExpandChildFrames = 2, /// viz. atribut expandChildFrames v Report.rnc
 			LayoutHorizontalFlag = 4, /// rect ma layout ve smeru x
 			LayoutVerticalFlag = 8 /// rect ma layout ve smeru y, pokud je kombinace LayoutX a LayoutY nesmyslna predpoklada se LayoutX == 0 LayoutY == 1
 			//--BackgroundItem = 16
@@ -253,7 +254,7 @@ public:
 		static QString flagsToString(unsigned flags) {
 			QString ret;
 			if(flags & FillLayout) ret += 'F';
-			if(flags & ExpandChildrenFrames) ret += 'X';
+			if(flags & ExpandChildFrames) ret += 'X';
 			if(flags & LayoutHorizontalFlag) ret += 'H';
 			if(flags & LayoutVerticalFlag) ret += 'V';
 			return ret;

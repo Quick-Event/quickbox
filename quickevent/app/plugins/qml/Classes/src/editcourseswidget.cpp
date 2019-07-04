@@ -62,7 +62,7 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 				.select(qb_code_count.toString())
 				.from("courses")
 				.orderBy("courses.name");
-		m_coursesModel->setQueryBuilder(qb);
+		m_coursesModel->setQueryBuilder(qb, false);
 		m_coursesModel->reload();
 	}
 }

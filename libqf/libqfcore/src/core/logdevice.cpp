@@ -5,29 +5,21 @@
 #include <QString>
 #include <QDateTime>
 
+#include <stdio.h>
+#include <iostream>
+
 #ifdef Q_OS_UNIX
 #include <unistd.h>
 #include <cstdio>
 #endif
 
-
-using namespace qf::core;
+namespace qf {
+namespace core {
 
 namespace {
-/*
-Log::Level environment_treshold()
-{
-	const QByteArray ba = qgetenv("QF_LOG_TRESHOLD");
-	if(ba.isEmpty())
-		return Log::Level::Invalid;
-	QString s = QString::fromLatin1(ba.data());
-	bool ok;
-	int ret =  s.toInt(&ok);
-	if(!ok)
-		return Log::Level::Invalid;
-	return Log::Level(ret);
-}
-*/
+
+QLatin1String CATEGORY_DEFAULT("default");
+QLatin1String CATEGORY_QML("qml");
 
 QList< LogDevice* >& logDevices();
 
@@ -100,6 +92,7 @@ LogDevice::LogFilter LogDevice::s_globalLogFilter;
 QStringList LogDevice::s_definedCategories;
 
 bool LogDevice::s_loggingEnabled = true;
+bool LogDevice::s_logLongFileNames = false;
 
 LogDevice::LogDevice(QObject *parent)
 	: QObject(parent)
@@ -116,6 +109,8 @@ LogDevice::~LogDevice()
 QString LogDevice::moduleFromFileName(const QString &file_name)
 {
 	QString ret = file_name;
+	if(s_logLongFileNames)
+		return ret;
 	int ix = file_name.lastIndexOf('/');
 #if defined Q_OS_WIN
 	if(ix < 0)
@@ -144,14 +139,55 @@ LogDevice *LogDevice::findDevice(const QString &object_name, bool throw_exc)
 
 QStringList LogDevice::setGlobalTresholds(int argc, char *argv[])
 {
-	QStringList ret;
-	for(int i=1; i<argc; i++) {
+	QStringList args;
+	for(int i=0; i<argc; i++) {
 		QString s = QString::fromUtf8(argv[i]);
-		ret << s;
+		args << s;
+	}
+	return setGlobalTresholds(args);
+}
+
+QStringList LogDevice::setGlobalTresholds(const QStringList &args)
+{
+	QStringList ret;
+	for(int i=1; i<args.size(); i++) {
+		QString s = args[i];
+		if(s == "-lh" || s == "--log-help") {
+			i++;
+			std::cout << "log options:" << std::endl;
+			std::cout << "-lh, --log-help" << std::endl;
+			std::cout << "\t" << "Show logging help" << std::endl;
+			std::cout << "-lfn, --log-long-file-names" << std::endl;
+			std::cout << "\t" << "Log long file names" << std::endl;
+			std::cout << "-d, --log-file [<pattern>]:[D|I|W|E]" << std::endl;
+			std::cout << "\t" << "Set file log treshold" << std::endl;
+			std::cout << "\t" << "set treshold for all files containing pattern to treshold" << std::endl;
+			std::cout << "\t" << "when pattern is not set, set treshold for all files" << std::endl;
+			std::cout << "\t" << "when treshold is not set, set treshold D (Debug) for all files containing pattern" << std::endl;
+			std::cout << "\t" << "when nothing is not set, set treshold D (Debug) for all files" << std::endl;
+			std::cout << "\t" << "Examples:" << std::endl;
+			std::cout << "\t\t" << "-d" << "\t\t" << "set treshold D (Debug) for all files" << std::endl;
+			std::cout << "\t\t" << "-d :W" << "\t\t" << "set treshold W (Warning) for all files" << std::endl;
+			std::cout << "\t\t" << "-d foo" << "\t\t" << "set treshold D for all files containing 'foo'" << std::endl;
+			std::cout << "\t\t" << "-d bar:W" << "\t" << "set treshold W (Warning) for all files containing 'bar'" << std::endl;
+			std::cout << "-v, --log-category [<pattern>]:[D|I|W|E]" << std::endl;
+			std::cout << "\t" << "Set category log treshold" << std::endl;
+			std::cout << "\t" << "set treshold for all categories containing pattern to treshold" << std::endl;
+			std::cout << "\t" << "the same rules as for module logging are applied to categiries" << std::endl;
+			exit(0);
+		}
+		else if(s == "-lfn" || s == "--log-long-file-names") {
+			i++;
+			s_logLongFileNames = true;
+		}
+		else {
+			ret << s;
+		}
 	}
 	ret = setModulesTresholdsFromArgs(ret);
 	ret = setCategoriesTresholdsFromArgs(ret);
-	ret.insert(0, argv[0]);
+	if(!args.isEmpty())
+		ret.insert(0, args[0]);
 	return ret;
 }
 
@@ -171,19 +207,13 @@ QString LogDevice::modulesLogInfo()
 QString LogDevice::categoriesLogInfo()
 {
 	QString ret;
-	if(s_globalLogFilter.logAllCategories) {
-		ret += "All defined categories (" + s_definedCategories.join(',') + ") with treshold: " + qf::core::Log::levelName(s_globalLogFilter.defaultLogTreshold);
+	QStringList sl;
+	QMapIterator<QString, Log::Level> it(s_globalLogFilter.categoriesTresholds);
+	while (it.hasNext()) {
+		it.next();
+		sl << it.key() + ':' + qf::core::Log::levelName(it.value());
 	}
-	else {
-		//ret += s_globalLogFilter.inverseCategoriesFilter? "All except of ": "";
-		QStringList sl;
-		QMapIterator<QString, Log::Level> it(s_globalLogFilter.categoriesTresholds);
-		while (it.hasNext()) {
-			it.next();
-			sl << it.key() + ':' + qf::core::Log::levelName(it.value());
-		}
-		ret += sl.join(',');
-	}
+	ret += sl.join(',');
 	return ret;
 }
 
@@ -251,12 +281,12 @@ void LogDevice::setModulesTresholds(const QString &s)
 void LogDevice::setModulesTresholds(const QStringList &tresholds)
 {
 	if(tresholds.isEmpty()) {
-		s_globalLogFilter.defaultLogTreshold = Log::Level::Debug;
+		s_globalLogFilter.defaultModulesLogTreshold = Log::Level::Debug;
 	}
 	else for(QString module : tresholds) {
 		QPair<QString, Log::Level> lev = parseCategoryLevel(module);
 		if(lev.first.isEmpty())
-			s_globalLogFilter.defaultLogTreshold = lev.second;
+			s_globalLogFilter.defaultModulesLogTreshold = lev.second;
 		else
 			s_globalLogFilter.modulesTresholds[lev.first] = lev.second;
 	}
@@ -306,13 +336,6 @@ QStringList LogDevice::setCategoriesTresholdsFromArgs(const QStringList &args)
 void LogDevice::setCategoriesTresholds(const QString &trsh)
 {
 	QString s = trsh;
-	/*
-	if(s.startsWith('^')) {
-		s_globalLogFilter.inverseCategoriesFilter = true;
-		s = s.mid(1);
-	}
-	*/
-	s_globalLogFilter.logAllCategories = trsh.isEmpty() || (trsh.compare(QLatin1String("all"), Qt::CaseInsensitive) == 0);
 	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
 	setCategoriesTresholds(tresholds);
 }
@@ -324,7 +347,7 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 		category = lev.first;
 		Log::Level level = lev.second;
 		if(category.isEmpty()) {
-			s_globalLogFilter.defaultLogTreshold = level;
+			s_globalLogFilter.defaultCategoriesLogTreshold = level;
 		}
 		else {
 			int match_cnt = 0;
@@ -365,7 +388,7 @@ void LogDevice::setCategoriesTresholds(const QStringList &tresholds)
 
 Log::Level LogDevice::globalLogTreshold()
 {
-	return s_globalLogFilter.defaultLogTreshold;
+	return s_globalLogFilter.defaultModulesLogTreshold;
 }
 /*
 Log::Level LogDevice::logTreshold()
@@ -403,25 +426,14 @@ bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, con
 	}
 	//fprintf(stderr, "!!!!!!!!!!!!! %s: '%s'\n", file_name, qPrintable(category));
 	if(category && category[0]
-	   && !(QLatin1String("default") == QLatin1String(category))
-	   && !(QLatin1String("qml") == QLatin1String(category))) { // default, qml category is implicit in QMessageLogger, so filter it out
+	   && !(CATEGORY_DEFAULT == QLatin1String(category))
+	   && !(CATEGORY_QML == QLatin1String(category))) { // default, qml category is implicit in QMessageLogger, so filter it out
 		// category specified
 		qf::core::Log::Level category_level = qf::core::Log::Level::Invalid;
-		if(log_filter.logAllCategories) {
-			return category_level <= log_filter.defaultLogTreshold;
-		}
-		/*
-		else if(log_filter.inverseCategoriesFilter) {
-			if(!log_filter.categoriesTresholds.contains(QLatin1String(category)))
-				return category_level <= log_filter.defaultLogTreshold;
-		}
-		*/
-		else {
-			QString cat = QLatin1String(category);
-			category_level = log_filter.categoriesTresholds.value(cat, qf::core::Log::Level::Invalid);
-			//fprintf(stderr, "%s: '%s' -> %s\n", file_name, qPrintable(category), qPrintable(qf::core::Log::levelName(category_level)));
-			return level <= category_level;
-		}
+		QString cat = QLatin1String(category);
+		category_level = log_filter.categoriesTresholds.value(cat, log_filter.defaultCategoriesLogTreshold);
+		//fprintf(stderr, "%s: '%s' -> %s\n", file_name, qPrintable(category), qPrintable(qf::core::Log::levelName(category_level)));
+		return level <= category_level;
 	}
 	{
 		QString module = moduleFromFileName(file_name);
@@ -435,7 +447,7 @@ bool LogDevice::isMatchingLogFilter(Log::Level level, const char *file_name, con
 		}
 	}
 	//printf("%s %d \n", qPrintable(_domain), ret);
-	return level <= log_filter.defaultLogTreshold;
+	return level <= log_filter.defaultModulesLogTreshold;
 }
 
 void LogDevice::setLoggingEnabled(bool on)
@@ -480,10 +492,21 @@ bool LogDevice::isPrettyDomain() const
 */
 QString LogDevice::logModulesCLIHelp()
 {
-	return "-d,--debug [domain[:LEVEL][,domain[:LEVEL]]]\n"
-	"\t set debug domain and level\n"
-	"\t\t domain: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ...\n"
-	"\t\t LEVEL: any of DEB, INFO, WARN, ERR, [D,I,W,E] can be used as well, default level is INFO";
+	return
+	"-lfn, --log-long-file-names"
+	"\n\t log long file names"
+	"\n-d,--debug [PATTERN[:TRESHOLD][,PATTERN[:TRESHOLD]]]"
+	"\n\t set file log pattern and treshold"
+	"\n\t\t PATTERN: any substring of source module, for example 'mymod' prints debug info from every source file with name containing 'mymod', mymodule.cpp, tomymod.cpp, ..."
+	"\n\t\t TRESHOLD: any of DEB, INFO, WARN, ERR, [D,I,W,E] can be used as well, default level is INFO"
+	"\n\t when pattern is not set, set treshold for all files"
+	"\n\t when treshold is not set, set treshold D (Debug) for all files containing pattern"
+	"\n\t when nothing is not set, set treshold D (Debug) for all files"
+	"\n\t Examples:"
+	"\n\t\t-d\t\tset treshold D (Debug) for all files"
+	"\n\t\t-d :W\t\tset treshold W (Warning) for all files"
+	"\n\t\t-d foo\t\tset treshold D for all files containing 'foo'"
+	"\n\t\t-d bar:W\tset treshold W (Warning) for all files containing 'bar'";
 }
 
 QString LogDevice::logCategoriesCLIHelp()
@@ -496,9 +519,11 @@ QString LogDevice::logCategoriesCLIHelp()
 		"\n\t controls defined categories log verbosity"
 		"\n\t\t more comma delimited categories enabled."
 		"\n\t\t Case sensitive."
-		"\n\t\t StartsWith or CamelCase match enabled."
-		"\n\t\t Example: -v is equal to --verbose enables all categories logging"
-		"\n\t\t Example: -v FO,TrM is equal to --verbose F*O*,Tr*M*";
+		"\n\t\t CamelCase match supported -v FB,TrM is equal to -v FooBar,TreeMark"
+		"\n\tExamples:"
+		"\n\t\t-v enables all categories logging with DEBUG treshold"
+		"\n\t\t-v :W set log treshold WARNING to all categories"
+		"\n\t\t-v Cat1:W,Cat2:I set log treshold WARNING to categorie Cat1 and INFO to Cat2";
 	return ret;
 }
 
@@ -535,7 +560,7 @@ FileLogDevice *FileLogDevice::install()
 	return ret;
 }
 
-void FileLogDevice::setFile(const QString &path_to_file)
+void FileLogDevice::setFile(const QString &path_to_file, bool append)
 {
 	if(m_file && m_file != stderr) {
 		::fclose(m_file);
@@ -544,7 +569,8 @@ void FileLogDevice::setFile(const QString &path_to_file)
 		m_file = stderr;
 	}
 	else {
-		FILE *f = ::fopen(qPrintable(path_to_file), "w");
+		const char *mode = append? "a": "w";
+		FILE *f = ::fopen(qPrintable(path_to_file), mode);
 		if(f) {
 			std::fprintf(stderr, "Redirecting log to file: %s\n", qPrintable(path_to_file));
 			m_file = f;
@@ -563,70 +589,85 @@ bool FileLogDevice::isMatchingLogFilter(Log::Level level, const char *file_name,
 	return ok;
 }
 
+namespace {
+
+enum TTYColor {Black=0, Red, Green, Yellow, Blue, Magenta, Cyan, White};
+
+void set_TTY_color(FILE *file, TTYColor color, bool bright)
+{
+	std::fprintf(file, "\033[");
+	std::putc(bright? '1': '0', file);
+	std::putc(';', file);
+	std::putc('3', file);
+	std::putc('0' + color, file);
+	std::putc('m', file);
+}
+
+}
+
 void FileLogDevice::log(Log::Level level, const QMessageLogContext &context, const QString &msg)
 {
 	if(!m_file)
 		return;
-#ifdef Q_OS_UNIX
-	bool is_tty = ::isatty(fileno(m_file));
-	enum TerminalColor {Black = 0, Red, Green, Yellow, Blue, Magenta, Cyan, White};
-	enum TerminalAttr {AttrReset = 0, AttrBright, AttrDim, AttrUnderline, AttrBlink, AttrReverse = 7, AttrHidden};
+
+#ifndef Q_OS_WIN
+	bool is_TTI = (m_file == stderr && ::isatty(STDERR_FILENO));
+#else
+	bool is_TTI = false;
 #endif
 
-#ifdef Q_OS_UNIX
-	if(is_tty) {
-		TerminalColor fg, bg = Black;
-		TerminalAttr attr = AttrReset;
-		switch(level) {
-		case Log::Level::Info:
-			fg = Cyan; break;
-		case Log::Level::Warning:
-			fg = Magenta; attr = AttrBright; break;
-		case Log::Level::Error:
-		case Log::Level::Fatal:
-			fg = Red; attr = AttrBright; break;
-		case Log::Level::Debug:
-		default:
-			fg = White; break;
-		}
-		QString s;
-		std::fprintf(m_file, "%c[%d;%d;%dm", 0x1B, attr, fg + 30, bg + 40);
-	}
-#endif
-	std::fprintf(m_file, "%4i", ++m_count);
-#ifdef Q_OS_UNIX
-	if(!is_tty) {
-		/// add timestamp if log goes to file
-		QString s = QDateTime::currentDateTime().toString(Qt::ISODate);
-		QByteArray ba = s.toLatin1();
-		std::fprintf(m_file, " %s", ba.constData());
-	}
-#endif
+	QDateTime dt = QDateTime::currentDateTime();
+	QString s = dt.toString(Qt::ISODate);
+	QByteArray ba = s.toLatin1();
+	if(is_TTI) set_TTY_color(m_file, TTYColor::Green, false);
+	std::fprintf(m_file, " %s", ba.constData());
+	std::fprintf(m_file, ".%03d", dt.time().msec());
 
-	std::fprintf(m_file, "<%s>", Log::levelName(level));
-	QString module = moduleFromFileName(context.file);
-	if(!module.isEmpty()) {
-		std::fprintf(m_file, "[%s:%d]", qPrintable(module), context.line);
-	}
-	if(context.category && context.category[0])
+	if(is_TTI) set_TTY_color(m_file, TTYColor::Yellow, false);
+	std::fprintf(m_file, "[%s:%d]", qPrintable(moduleFromFileName(context.file)), context.line);
+
+	if(context.category && context.category[0] && context.category != QLatin1String("default")) {
+		if(is_TTI) set_TTY_color(m_file, TTYColor::White, true);
 		std::fprintf(m_file, "(%s)", context.category);
-	std::fprintf(m_file, " %s", qPrintable(msg));
-#ifdef Q_OS_UNIX
-	if(is_tty) {
-		QString s;
-		s.sprintf("%c[%d;%d;%dm", 0x1B, AttrReset, White + 30, Black + 40);
-		QByteArray ba = s.toLatin1();
-		std::fprintf(m_file, "%s", ba.constData());
 	}
-#endif
+	switch(level) {
+	case Log::Level::Fatal:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Red, true);
+		std::fprintf(m_file, "|F|");
+		break;
+	case Log::Level::Error:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Red, true);
+		std::fprintf(m_file, "|E|");
+		break;
+	case Log::Level::Warning:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Magenta, true);
+		std::fprintf(m_file, "|W|");
+		break;
+	case Log::Level::Info:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Cyan, true);
+		std::fprintf(m_file, "|I|");
+		break;
+	case Log::Level::Debug:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::White, false);
+		std::fprintf(m_file, "|D|");
+		break;
+	default:
+		if(is_TTI) set_TTY_color(m_file, TTYColor::Red, true);
+		std::fprintf(m_file, "|?|");
+		break;
+	};
+	std::putc(' ', m_file);
+
+	std::fprintf(m_file, " %s", qPrintable(msg));
+
+	if(is_TTI)
+		std::fprintf(m_file, "\33[0m");
 #ifdef Q_OS_WIN
 	std::fprintf(m_file, "\r\n");
 #else
 	std::fprintf(m_file, "\n");
 #endif
 	std::fflush(m_file);
-
-	//if(level == Log::LOG_FATAL) std::terminate(); Qt will do it itself
 }
 
 //=========================================================
@@ -768,3 +809,5 @@ void SignalLogDevice::log(Log::Level level, const QMessageLogContext &context, c
 	LogEntryMap m(level, context.category, msg, context.file, context.line, context.function);
 	emit __logEntry(m);
 }
+
+}}

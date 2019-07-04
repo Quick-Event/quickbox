@@ -10,7 +10,7 @@ ConnectDbDialogWidget::ConnectDbDialogWidget(QWidget *parent) :
 	ui(new Ui::ConnectDbDialogWidget)
 {
 	setPersistentSettingsId("ConnectDbDialogWidget");
-    setTitle(tr("Data storage setup"));
+	setTitle(tr("Data storage setup"));
 
 	ui->setupUi(this);
 }

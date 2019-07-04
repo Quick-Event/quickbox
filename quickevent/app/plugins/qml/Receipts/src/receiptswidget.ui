@@ -72,6 +72,16 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Receipt</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="lstReceipt"/>
+     </item>
+     <item>
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Printer</string>

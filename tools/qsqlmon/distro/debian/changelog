@@ -1,0 +1,5 @@
+qsqlmon (1.3.6) unstable; urgency=medium
+
+  * The renewed attempt to package QSqlMonitor by Open Build Service
+
+ -- Pavel Pisa <pisa@cmp.felk.cvut.cz>  Fri, 31 May 2019 15:26:46 +0200

@@ -243,14 +243,12 @@ int SIMessageCardReadOut::rawCardType() const
 {
 	int ret = -1;
 	switch(command()) {
-		case SIMessageData::CmdGetSICard5:
-		case SIMessageData::CmdGetSICard5Ext:
-		case SIMessageData::CmdGetSICard6:
-		case SIMessageData::CmdGetSICard6Ext:
+		case SIMessageData::Command::GetSICard5:
+		case SIMessageData::Command::GetSICard6:
 			break;
-		case SIMessageData::CmdGetSICard8Ext:
+		case SIMessageData::Command::GetSICard8:
 		{
-			QByteArray raw_data = data().blockData(0);
+			const QByteArray &raw_data = data().data();
 			ret = (int)(((unsigned char)raw_data[6 * 4]) & 0x0F);
 			//qfInfo() << "raw card type:" << ret;
 			break;
@@ -266,17 +264,15 @@ SIMessageCardReadOut::CardType SIMessageCardReadOut::cardType() const
 {
 	CardType ret = CardTypeUnknown;
 	switch(command()) {
-		case SIMessageData::CmdGetSICard5:
-		case SIMessageData::CmdGetSICard5Ext:
+		case SIMessageData::Command::GetSICard5:
 			ret = CardType5;
 			break;
-		case SIMessageData::CmdGetSICard6:
-		case SIMessageData::CmdGetSICard6Ext:
+		case SIMessageData::Command::GetSICard6:
 			ret = CardType6;
 			break;
-		case SIMessageData::CmdGetSICard8Ext:
+		case SIMessageData::Command::GetSICard8:
 		{
-			QByteArray raw_data = data().blockData(0);
+			//QByteArray raw_data = data().blockData(0);
 			int n = rawCardType();
 			//qfInfo() << "raw card type:" << n;
 			switch(n) {
@@ -290,7 +286,7 @@ SIMessageCardReadOut::CardType SIMessageCardReadOut::cardType() const
 			break;
 		}
 		default:
-			qfError() << "Can't assign cardType for command:" << command() << SIMessageData::commandName(command());
+			qfError() << "Can't assign cardType for command:" << (int)command() << SIMessageData::commandName(command());
 			ret = CardTypeUnknown;
 			break;
 	}
@@ -343,7 +339,7 @@ QVariantMap SIMessageCardReadOut::toVariantMap() const
 
 int SIMessageCardReadOut::stationCodeNumber() const
 {
-	QByteArray raw_data = data().blockData(0);
+	QByteArray raw_data = data().data();
 	int ret = (((int)(unsigned char)raw_data[2]) << 8) + (unsigned char)raw_data[3];
 	return ret;
 }
@@ -367,7 +363,7 @@ int SIMessageCardReadOut::clubCode() const
 int SIMessageCardReadOut::cardNumber() const
 {
 	int ret = 0;
-	QByteArray raw_data = data().blockData(0);
+	QByteArray raw_data = data().data();
 	CardDataLayoutType card_data_layout_type = cardDataLayoutType();
 	if(card_data_layout_type == DataLayout5) {
 		int base = 4;
@@ -410,7 +406,7 @@ int SIMessageCardReadOut::startNumber() const
 int SIMessageCardReadOut::checkTime() const
 {
 	int ret = 0;
-	QByteArray raw_data = data().blockData(0);
+	QByteArray raw_data = data().data();
 	CardDataLayoutType card_data_layout_type = cardDataLayoutType();
 	if(card_data_layout_type == DataLayout5) {
 		int base = 0x19;
@@ -430,7 +426,7 @@ int SIMessageCardReadOut::checkTime() const
 int SIMessageCardReadOut::startTime() const
 {
 	int ret = 0;
-	QByteArray raw_data = data().blockData(0);
+	QByteArray raw_data = data().data();
 	CardDataLayoutType card_data_layout_type = cardDataLayoutType();
 	if(card_data_layout_type == DataLayout5) {
 		int base = 0x13;
@@ -450,7 +446,7 @@ int SIMessageCardReadOut::startTime() const
 int SIMessageCardReadOut::finishTime() const
 {
 	int ret = 0;
-	QByteArray raw_data = data().blockData(0);
+	QByteArray raw_data = data().data();
 	CardDataLayoutType card_data_layout_type = cardDataLayoutType();
 	if(card_data_layout_type == DataLayout5) {
 		int base = 0x15;
@@ -473,7 +469,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 	PunchList ret;
 	CardDataLayoutType card_data_layout_type = cardDataLayoutType();
 	if(card_data_layout_type == DataLayout5) {
-		QByteArray raw_data = data().blockData(0);
+		QByteArray raw_data = data().data();
 		int punch_cnt = raw_data[0x17];
 		punch_cnt--;
 		int base = 0x20;
@@ -490,7 +486,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		}
 	}
 	else if(card_data_layout_type == DataLayout6) {
-		QByteArray raw_data = data().blockData(0);
+		QByteArray raw_data = data().data();
 		int punch_cnt = (unsigned char)raw_data[4*4 + 2];
 		/// blocks 6,7,2,3,4,5
 		/// each block has 32 punches
@@ -501,7 +497,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 			if(block_no < 2)
 				block_no += 6;
 			if(curr_block_no != block_no) {
-				raw_data = data().blockData(block_no);
+				raw_data = data().dataBlock(block_no);
 				curr_block_no = block_no;
 			}
 			int offset = (i % 32) * 4;
@@ -511,12 +507,12 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		}
 	}
 	else if(card_data_layout_type == DataLayout8) {
-		QByteArray raw_data = data().blockData(0);
+		QByteArray raw_data = data().data();
 		int punch_cnt = (unsigned char)raw_data[5*4 + 2];
 		/// blocks 1
 		/// block has up to 30 punches
 		/// each punch has 4 bytes
-		raw_data = data().blockData(1);
+		raw_data = data().dataBlock(1);
 		int base = 2*4;
 		for(int i=0; i<punch_cnt; i++) {
 			int offset = 4*i;
@@ -527,7 +523,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		}
 	}
 	else if(card_data_layout_type == DataLayout9) {
-		QByteArray raw_data = data().blockData(0);
+		QByteArray raw_data = data().data();
 		int punch_cnt = (unsigned char)raw_data[5*4 + 2];
 		/// blocks 0, 1
 		/// block 0 has 18 punches starting on page 14
@@ -537,13 +533,13 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		for(int i=0; i<punch_cnt; i++) {
 			int offset = 0;
 			if(i < 18) {
-				raw_data = data().blockData(0);
+				raw_data = data().data();
 				base = 14 * 4;
 				offset = i * 4;
 				//qfInfo() << i << "->" << "base page:" << (base / 4) << "offset page:" << (offset / 4);
 			}
 			else {
-				raw_data = data().blockData(1);
+				raw_data = data().dataBlock(1);
 				base = 0;
 				offset = (i - 18) * 4;
 				//qfInfo() << i << "->" << "base page:" << (base / 4) << "offset page:" << (offset / 4);
@@ -554,7 +550,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		}
 	}
 	else if(card_data_layout_type == DataLayoutP) {
-		QByteArray raw_data = data().blockData(0);
+		QByteArray raw_data = data().data();
 		int punch_cnt = (unsigned char)raw_data[5*4 + 2];
 		/// blocks 1
 		/// block 1 has 20 punches starting on page 1 offset 12
@@ -562,21 +558,21 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 		int base = 12*4;
 		for(int i=0; i<punch_cnt && i<20; i++) {
 			int offset = 4 * i;
-			raw_data = data().blockData(1);
+			raw_data = data().dataBlock(1);
 			//qfInfo() << i << "->" << QString::number(offset, 16);
 			Punch p(raw_data, base + offset, PunchRecordExtended);
 			ret << p;
 		}
 	}
 	else if(card_data_layout_type == DataLayout10) {
-		QByteArray raw_data = data().blockData(0);
+		QByteArray raw_data = data().data();
 		int punch_cnt = (unsigned char)raw_data[5*4 + 2];
 		/// blocks 4,5,6,7
 		/// each block has 32 punches
 		/// each punch has 4 bytes
 		for(int i=0; i<punch_cnt; i++) {
 			int block_no = i / 32 + 4;
-			raw_data = data().blockData(block_no);
+			raw_data = data().dataBlock(block_no);
 			int offset = (i % 32) * 4;
 			//qfInfo() << raw_data.mid(offset, 16).toHex();
 			Punch p(raw_data, offset, PunchRecordExtended);
@@ -589,7 +585,7 @@ SIMessageCardReadOut::PunchList SIMessageCardReadOut::punches() const
 SIMessageTransmitPunch::SIMessageTransmitPunch(const SIMessageData &_data)
 	: SIMessageBase(_data)
 {
-	QByteArray data = m_data.header();
+	QByteArray data = m_data.dataBlock(0);
 	QF_ASSERT(data.length() == 15, "Bad data length!", return);
 	int offset = 2;
 	int code = 0;

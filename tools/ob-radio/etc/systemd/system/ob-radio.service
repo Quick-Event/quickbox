@@ -1,0 +1,9 @@
+[Unit]
+Description=OB radio service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/debian/quickbox/tools/ob-radio/sipunchrelay.py
+
+[Install]
+WantedBy=multi-user.target

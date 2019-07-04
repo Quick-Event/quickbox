@@ -305,7 +305,7 @@ void ReportItemTable::createFakeBand()
 		el = element.firstChildElement("headerframe");
 		el1.copyAttributesFrom(el);
 		/// v tabulce ma smysl mit deti zarovnany
-		if(grid && el1.attribute("expandChildrenFrames").isEmpty()) el1.setAttribute("expandChildrenFrames", "1");
+		if(grid && el1.attribute("expandChildFrames").isEmpty()) el1.setAttribute("expandChildFrames", "1");
 		if(line && el1.attribute("bbrd").isEmpty()) el1.setAttribute("bbrd", line_pen);
 		else if(horizontal_lines) el1.setAttribute("bbrd", line_pen);
 		if(shadow && el1.attribute("fill").isEmpty()) el1.setAttribute("fill", "tblshadow");
@@ -315,7 +315,7 @@ void ReportItemTable::createFakeBand()
 		el1 = fakeBand.ownerDocument().createElement("detail");
 		el = element.firstChildElement("detailframe");
 		el1.copyAttributesFrom(el);
-		if(grid && el1.attribute("expandChildrenFrames").isEmpty()) el1.setAttribute("expandChildrenFrames", "1");
+		if(grid && el1.attribute("expandChildFrames").isEmpty()) el1.setAttribute("expandChildFrames", "1");
 		if(el1.attribute("keepall").isEmpty()) el1.setAttribute("keepall", "1");
 		if(horizontal_lines) el1.setAttribute("bbrd", line_pen);
 		el_detail = el1;
@@ -324,7 +324,7 @@ void ReportItemTable::createFakeBand()
 		el1 = fakeBand.ownerDocument().createElement("row");
 		el = element.firstChildElement("footerframe");
 		el1.copyAttributesFrom(el);
-		if(grid && el1.attribute("expandChildrenFrames").isEmpty()) el1.setAttribute("expandChildrenFrames", "1");
+		if(grid && el1.attribute("expandChildFrames").isEmpty()) el1.setAttribute("expandChildFrames", "1");
 		if(line) el1.setAttribute("tbrd", line_pen);
 		else if(horizontal_lines) el1.setAttribute("bbrd", line_pen);
 		if(shadow && el1.attribute("fill").isEmpty()) el1.setAttribute("fill", "tblshadow");

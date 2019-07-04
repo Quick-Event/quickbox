@@ -2,7 +2,7 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
-import "qrc:/quickevent/js/ogtime.js" as OGTime
+import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
@@ -13,7 +13,7 @@ Report {
 	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
 	property int timeCellWidth: 17
 	property int posCellWidth: 10
-	property int unrealTimeMs: 999 * 60 * 1000
+	property int unrealTimeMs: OGTime.UNREAL_TIME_MSEC
 
 	property QfObject internals: QfObject {
 		Component {
@@ -141,7 +141,7 @@ Report {
 							classHeader.addItem(c);
 						}
 					}
-					//expandChildrenFrames: true
+					//expandChildFrames: true
 					Band {
 						id: runnersBand
 						objectName: "runnersBand"

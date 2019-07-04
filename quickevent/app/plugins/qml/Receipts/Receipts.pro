@@ -24,12 +24,15 @@ include (src/src.pri)
 RESOURCES += \
     $${PLUGIN_NAME}.qrc \
 
-DISTFILES += \
-    qml/reports/receiptClassic.qml \
+OTHER_FILES += \
+    qml/reports/receipts/Classic.qml \
+    qml/reports/receipts/LoteryTicket.qml \
     qml/reports/sicard.qml \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
+    $${PLUGIN_NAME}.nb_NO.ts \
+    $${PLUGIN_NAME}.ru_RU.ts \
 
 lupdate_only {
 SOURCES += \

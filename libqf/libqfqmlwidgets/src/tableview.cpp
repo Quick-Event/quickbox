@@ -92,7 +92,13 @@ TableView::TableView(QWidget *parent) :
 	m_proxyModel = new TableViewProxyModel(this);
 	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
 	m_proxyModel->setDynamicSortFilter(false);
+	connect(qobject_cast<HeaderView*>(horizontalHeader()), &HeaderView::sortColumnAdded, m_proxyModel, &TableViewProxyModel::addSortColumn);
 	Super::setModel(m_proxyModel);
+	/*
+	connect(this, &TableView::readOnlyChanged, [this] (bool b) {
+		setEditRowsEnabled(!b);
+	});
+	*/
 }
 
 TableView::~TableView()
@@ -313,6 +319,27 @@ void TableView::setCloneRowEnabled(bool b)
 	a->setVisible(b);
 }
 
+void TableView::setReadOnly(bool ro)
+{
+	if(ro == isReadOnly())
+		return;
+	m_isReadOnly = ro;
+
+	setInsertRowEnabled(!ro);
+	setRemoveRowEnabled(!ro);
+	setCloneRowEnabled(!ro);
+	{
+		Action *a = action(QStringLiteral("postRow"));
+		a->setVisible(!ro);
+	}
+	{
+		Action *a = action(QStringLiteral("revertRow"));
+		a->setVisible(!ro);
+	}
+
+	emit readOnlyChanged(ro);
+}
+
 void TableView::insertRow()
 {
 	qfLogFuncFrame();
@@ -343,7 +370,9 @@ void TableView::cloneRowInline()
 		insertRowInline();
 		qfu::TableRow &r2 = tableRowRef();
 		for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
-			r2.setValue(i, r1.value(i));
+			QVariant v1 = r1.value(i);
+			r2.setValue(i, v1);
+			//qfInfo() << i << v1 << r2.value(i);
 		}
 		r2.prepareForCopy();
 	}
@@ -585,22 +614,25 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 	}
 	else if(selected_row_indexes.count() > 1) {
 		qfc::sql::Connection conn;
-		{
-			qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
-			if(sql_m) {
+		qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
+		if(sql_m) {
+			try {
 				conn = sql_m->sqlConnection();
+				qfc::sql::Transaction transaction(conn);
+				QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
+				foreach(int row_ix, selected_row_indexes) {
+					foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+						model()->setData(ix, new_val);
+					}
+					sql_m->postRow(toTableModelRowNo(row_ix), qf::core::Exception::Throw);
+				}
+				transaction.commit();
+			}
+			catch(qfc::Exception &e) {
+				dialogs::MessageBox::showException(this, e);
 			}
 		}
-		QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
-		qfc::sql::Transaction transaction(conn);
-		foreach(int row_ix, selected_row_indexes) {
-			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
-				model()->setData(ix, new_val);
-			}
-			if(!postRow(row_ix))
-				return;
-		}
-		transaction.commit();
+		update();
 	}
 }
 
@@ -748,6 +780,83 @@ void TableView::selectCurrentRow()
 		selectRow(ix.row());
 }
 
+qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, const QVariantList &_exported_columns, const qf::core::model::TableModel::TreeTableExportOptions &opts) const
+{
+	qfu::TreeTable ret(table_name);
+	QVariantList exported_columns = _exported_columns;
+	QAbstractItemModel *proxy_model = model();
+	if(!proxy_model)
+		return ret;
+	core::model::TableModel *table_model = tableModel();
+	if(!table_model)
+		return ret;
+	const core::utils::Table &table = table_model->table();
+	if(exported_columns.isEmpty()) {
+		for(int ix=0; ix<table.columnCount(); ix++) {
+			QVariantMap col;
+			col[QStringLiteral("index")] = ix;
+			exported_columns << col;
+		}
+	}
+	bool raw_values = opts.isExportRawValues();
+	for(int i=0; i<exported_columns.count(); i++) {
+		QVariantMap col = exported_columns[i].toMap();
+		QString cap = col.value("caption").toString();
+		int ix = col.value("index").toInt();
+		qfu::TreeTableColumn tt_col;
+		if(col.value("origin") == QLatin1String("table")) {
+			QVariant::Type t = table.field(ix).type();
+			tt_col = ret.appendColumn(table.field(ix).name(), t, cap);
+		}
+		else {
+			QVariant::Type t;
+			if(raw_values) {
+				qfu::Table::Field fld = table_model->tableField(ix);
+				t = fld.type();
+				//qfWarning() << fld.toString();
+			}
+			else {
+				t = (QVariant::Type)proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
+			}
+			tt_col = ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
+		}
+		tt_col.setWidth(col.value("width").toString());
+	}
+
+	/// export data
+	{
+		qfu::SValue srows;
+		for(int i=0; i<proxy_model->rowCount(); i++) {
+			QVariantList srow_lst;
+			core::utils::TableRow tbl_row = tableRow(i);
+			for(int j=0; j<exported_columns.count(); j++) {
+				QVariantMap col = exported_columns[j].toMap();
+				QVariant val;
+				int ix = col.value("index").toInt();
+				if(col.value("origin") == QLatin1String("table")) {
+					val = tbl_row.value(ix);
+					//qfWarning() << col << val.typeName() << "val:" << val.toString();
+				}
+				else {
+					QModelIndex mix = proxy_model->index(i, ix);
+					if(raw_values) {
+						val = proxy_model->data(mix, core::model::TableModel::RawValueRole);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
+					}
+					else {
+						val = proxy_model->data(mix, Qt::DisplayRole);
+						//qfWarning() << col << val.typeName() << "val:" << val.toString();
+					}
+				}
+				srow_lst << val;
+			}
+			srows[i] = srow_lst;
+		}
+		ret[qfu::TreeTable::KEY_ROWS] = srows.value();
+	}
+	return ret;
+}
+
 void TableView::exportReport_helper(const QVariant& _options)
 {
 	try {
@@ -758,14 +867,9 @@ void TableView::exportReport_helper(const QVariant& _options)
 		qfu::TreeTable ttable;
 
 		{
-			//QVariantList exported_columns = w->exportedColumns();
-			qfc::model::TableModel *m = tableModel();
-			//int elide_at = model()->elideDisplayedTextAt();
-			//model()->setElideDisplayedTextAt(0);
 			qfc::model::TableModel::TreeTableExportOptions opts;
 			//opts.setExportRawValues(true);
-			ttable = m->toTreeTable("data", exported_columns, opts);
-			//model()->setElideDisplayedTextAt(elide_at);
+			ttable = toTreeTable("data", exported_columns, opts);
 		}
 
 		{
@@ -847,10 +951,12 @@ void TableView::exportCSV_helper(const QVariant &export_options)
 			for(int j=0; j<exported_columns.count(); j++) {
 				int col_ix = exported_columns[j];
 				QModelIndex ix = m->index(row_ix, col_ix);
-				QVariant val = m->data(ix);
+				QVariant val = m->data(ix, Qt::EditRole);
+				if(val.type() != QVariant::Bool)
+					val = m->data(ix, Qt::DisplayRole);
 				if(j > 0)
 					ts << text_export_opts.fieldSeparator();
-				ts << qf::core::utils::Table::quoteCSV(val.toString(), text_export_opts);
+				ts << qf::core::utils::Table::quoteCSV(val, text_export_opts);
 			}
 			ts << '\n';
 		}
@@ -1032,7 +1138,7 @@ void TableView::rowExternallySaved(const QVariant &id, int mode)
 				tmd->setValue(ri, idColumnName(), id);
 				tmd->setDirty(ri, idColumnName(), false);
 			}
-			if(ri >= 0) {
+			if(ri >= 0 && ri < tmd->rowCount()) {
 				if(mode == ModeEdit || mode == ModeView) {
 					int reloaded_row_cnt = tmd->reloadRow(ri);
 					if(reloaded_row_cnt != 1) {
@@ -1107,7 +1213,7 @@ void TableView::seek(const QString &prefix_str)
 			/// QTBUG-37689 QCollator allways sorts case sensitive
 			/// workarounded by own implementation of qf::core::Collator
 			QStringRef ps(&prefix_str);
-			QStringRef ds(&data_str, 0, prefix_str.length());
+			QStringRef ds(&data_str, 0, qMin(prefix_str.length(), data_str.length()));
 			//QString ps = prefix_str.toLower();
 			//QString ds = data_str.mid(0, ps.length()).toLower();
 			int cmp = sort_collator.compare(ps, ds);
@@ -1152,6 +1258,7 @@ int TableView::toTableModelRowNo(int table_view_row_no) const
 void TableView::loadPersistentSettings()
 {
 	QString path = persistentSettingsPath();
+	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		HeaderView *horiz_header = qobject_cast<HeaderView*>(horizontalHeader());
@@ -1168,90 +1275,13 @@ void TableView::loadPersistentSettings()
 		header_state = QByteArray::fromBase64(header_state);
 		if(!header_state.isEmpty())
 			horiz_header->restoreState(header_state);
-
-#if 0
-		QString s = settings.value("horizontalheader").toString();
-		QJsonDocument jd = QJsonDocument::fromJson(s.toUtf8());
-		QVariantMap m;
-		m = jd.toVariant().toMap();
-		QVariantMap sections = m.value("sections").toMap();
-		QMap<int, QString> visual_order;
-		{
-			QMapIterator<QString, QVariant> it(sections);
-			while(it.hasNext()) {
-				it.next();
-				QVariantMap section = it.value().toMap();
-				QString field_name = it.key();
-				qfDebug() << "resizing column:" << field_name;
-				int visual_ix = section.value("visualIndex").toInt();
-				visual_order[visual_ix] = field_name;
-				for(int logical_ix=0; logical_ix<horiz_header->count(); logical_ix++) {
-					QString col_name = mod->headerData(logical_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					//qfDebug() << col_name << "cmp" << field_name << "=" << qf::core::Utils::fieldNameCmp(col_name, field_name);
-					if(col_name == field_name) {
-						int size = section.value("size").toInt();
-						horiz_header->resizeSection(logical_ix, size);
-						break;
-					}
-				}
-			}
-		}
-		{
-			// block signals for each particular horiz_header->moveSection(v_ix, visual_ix) call
-			// Qt5 crashes sometimes when more sections are moved
-			/* backtrace
-			0	QScopedPointer<QObjectData, QScopedPointerDeleter<QObjectData> >::data	qscopedpointer.h	143	0x7ffff6810a8c
-			1	qGetPtrHelper<QScopedPointer<QObjectData, QScopedPointerDeleter<QObjectData> > >	qglobal.h	941	0x7ffff6ccaa85
-			2	QGraphicsEffect::d_func	qgraphicseffect.h	112	0x7ffff6ccab1c
-			3	QGraphicsEffect::source	qgraphicseffect.cpp	514	0x7ffff6cc8ae5
-			4	QWidgetPrivate::invalidateGraphicsEffectsRecursively	qwidget.cpp	1849	0x7ffff6862d97
-			5	QWidgetPrivate::setDirtyOpaqueRegion	qwidget.cpp	1865	0x7ffff685d471
-			6	QWidget::setVisible	qwidget.cpp	7370	0x7ffff687209d
-			7	QAbstractScrollAreaPrivate::layoutChildren	qabstractscrollarea.cpp	523	0x7ffff6a712be
-			8	QAbstractScrollArea::setViewportMargins	qabstractscrollarea.cpp	940	0x7ffff6a72123
-			9	QTableView::updateGeometries	qtableview.cpp	2114	0x7ffff6b6791a
-			10	QTableView::columnMoved	qtableview.cpp	2956	0x7ffff6b6aeef
-			11	QTableView::qt_static_metacall	moc_qtableview.cpp	189	0x7ffff6b6ca0e
-			12	QMetaObject::activate	qobject.cpp	3680	0x7ffff55e62e9
-			13	QMetaObject::activate	qobject.cpp	3546	0x7ffff55e576d
-			14	QHeaderView::sectionMoved	moc_qheaderview.cpp	375	0x7ffff6b38689
-			15	QHeaderView::moveSection	qheaderview.cpp	798	0x7ffff6b382f4
-			16	qf::qmlwidgets::TableView::loadPersistentSettings	tableview.cpp	186	0x7ffff78e3664
-			 */
-			horiz_header->blockSignals(true);
-			QMapIterator<int, QString> it(visual_order);
-			it.toBack();
-			while(it.hasPrevious()) {
-				it.previous();
-				int visual_ix = it.key();
-				QString field_name = it.value();
-				qfDebug() << "moving column:" << field_name << "to visual index:" << visual_ix;
-				for(int v_ix=0; v_ix<visual_ix; v_ix++) {
-					int log_ix = horiz_header->logicalIndex(v_ix);
-					//QF_ASSERT(log_ix >= 0, "internal error", continue);
-					if(log_ix < 0) {
-						qfDebug() << "Cannot find logical index for visual index:" << v_ix << "column name:" << field_name << "might not exist in loaded columns.";
-						break;
-					}
-					QString col_name = mod->headerData(log_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					qfDebug() << "\tvisual index:" << v_ix << "-> logical index:" << log_ix << "col name:" << col_name;
-					if(col_name == field_name) {
-						qfDebug() << "\t\tmoving:" << v_ix << "->" << visual_ix;
-						if(v_ix != visual_ix)
-							horiz_header->moveSection(v_ix, visual_ix);
-						break;
-					}
-				}
-			}
-			horiz_header->blockSignals(false);
-		}
-#endif
 	}
 }
 
 void TableView::savePersistentSettings()
 {
 	QString path = persistentSettingsPath();
+	//qfInfo() << Q_FUNC_INFO << this << path;
 	qfLogFuncFrame() << path;
 	if(!path.isEmpty()) {
 		QSettings settings;
@@ -1260,33 +1290,6 @@ void TableView::savePersistentSettings()
 
 		QByteArray header_state = horiz_header->saveState();
 		settings.setValue("horizontalheader", QString::fromLatin1(header_state.toBase64()));
-#if 0
-		qf::core::model::TableModel *mod = tableModel();
-		if(horiz_header && mod) {
-			QVariantMap sections;
-			for(int i=0; i<horiz_header->count() && i<mod->columnCount(); i++) {
-				QString col_name = mod->headerData(i, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-				if(!col_name.isEmpty()) {
-					/// remove schema name from column
-					QString fn, tn;
-					qf::core::Utils::parseFieldName(col_name, &fn, &tn);
-					col_name = fn;
-					if(!tn.isEmpty())
-						col_name = tn + '.' + col_name;
-					QVariantMap section;
-					//section["fieldName"] = col_name;
-					section["size"] = horiz_header->sectionSize(i);
-					section["visualIndex"] = horiz_header->visualIndex(i);
-					sections[col_name] = section;
-					qfDebug() << col_name << "->" << horiz_header->visualIndex(i);
-				}
-			}
-			QVariantMap m;
-			m["sections"] = sections;
-			QJsonDocument jd = QJsonDocument::fromVariant(m);
-			settings.setValue("horizontalheader", QString::fromUtf8(jd.toJson(QJsonDocument::Compact)));
-		}
-#endif
 	}
 }
 

@@ -65,11 +65,9 @@ bool ClassDocument::dropData()
 		qf::core::sql::Query q(model()->connectionName());
 		q.prepare("DELETE FROM classdefs WHERE classId = :classId");
 		q.bindValue(":classId", id);
-		ret = q.exec();
-		if(!ret)
-			qfError() << q.lastError().text();
-	}
-	if(ret) {
+		q.exec(qf::core::Exception::Throw);
+		//if(!ret)
+		//	qfError() << q.lastError().text();
 		ret = Super::dropData();
 	}
 	return ret;

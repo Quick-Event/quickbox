@@ -10,9 +10,6 @@ CONFIG += c++11 hide_symbols
 
 DEFINES += CLASSESPLUGIN_BUILD_DLL
 
-INCLUDEPATH += $$PWD/../../../../lib/include
-LIBS += -lquickevent
-
 INCLUDEPATH += $$PWD/../Event/include
 LIBS += \
     -L$$DESTDIR \
@@ -25,6 +22,8 @@ RESOURCES += \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
+    $${PLUGIN_NAME}.nb_NO.ts \
+    $${PLUGIN_NAME}.ru_RU.ts \
 
 lupdate_only {
 SOURCES += \

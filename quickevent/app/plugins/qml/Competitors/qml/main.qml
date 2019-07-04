@@ -3,7 +3,7 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 import Competitors 1.0
 import "qrc:/qf/core/qml/js/treetable.js" as TreeTable
-//import shared.QuickEvent 1.0
+import "./"
 
 CompetitorsPlugin {
 	id: root
@@ -32,8 +32,7 @@ CompetitorsPlugin {
 
 	onNativeInstalled:
 	{
-		var a = root.partWidget.menuBar.actionForPath("print", true);
-		a.text = qsTr("&Print");
+		var a = root.partWidget.menuBar.actionForPath("print", false);
 		a.addActionInto(actPrintCompetitorsStatistics);
 	}
 

@@ -28,8 +28,17 @@ Oris {
 		Action {
 			id: actSyncCurrentEventEntries
 			text: qsTr('&Sync current event entries')
+			enabled: false
 			onTriggered: {
 				orisImporter.syncCurrentEventEntries()
+			}
+		},
+		Action {
+			id: actSyncRelaysEntriesOris
+			text: qsTr('&Sync relays entries')
+			enabled: false
+			onTriggered: {
+				orisImporter.syncRelaysEntries()
 			}
 		},
 		Action {
@@ -79,6 +88,8 @@ Oris {
 		act_import_oris.enabled = false;
 		act_import_oris.addActionInto(actImportEventOris);
 		act_import_oris.addActionInto(actSyncCurrentEventEntries);
+		//act_import_oris.addSeparatorInto();
+		//act_import_oris.addActionInto(actSyncRelaysEntriesOris);
 		act_import_oris.addSeparatorInto();
 		act_import_oris.addActionInto(actImportClubsOris);
 		act_import_oris.addActionInto(actImportRegistrationsOris);
@@ -90,11 +101,19 @@ Oris {
 		act_import_txt.addActionInto(actImportCompetitorsCSV);
 		act_import_txt.addActionInto(actImportRankingCsv);
 
-		var refreshActions = function(is_db_open) {
+		var refreshActions1 = function(is_db_open)
+		{
 			act_import_oris.enabled = is_db_open;
 			act_import_txt.enabled = is_db_open;
 		}
-		FrameWork.plugin("Event").dbOpenChanged.connect(refreshActions);
+		FrameWork.plugin("Event").sqlServerConnectedChanged.connect(refreshActions1);
+
+		var refreshActions2 = function(event_name)
+		{
+			//console.warn("refresh actions event open:", event_name);
+			actSyncCurrentEventEntries.enabled = event_name;
+		}
+		FrameWork.plugin("Event").eventOpenChanged.connect(refreshActions2);
 	}
 
 }

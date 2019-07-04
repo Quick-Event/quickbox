@@ -5,13 +5,21 @@
     <name>main</name>
     <message>
         <location filename="main.qml" line="11"/>
-        <source>&amp;Competitors with card lent</source>
-        <translation type="unfinished"></translation>
+        <source>Pure QML report example - Competitors with rented cards</source>
+        <oldsource>Pure QML report example - Competitors with card lent</oldsource>
+        <translation>Příklad QML reportu – Závodníci s půjčeným čipem</translation>
     </message>
     <message>
-        <location filename="main.qml" line="31"/>
-        <source>Competitors with card lent</source>
-        <translation type="unfinished"></translation>
+        <location filename="main.qml" line="18"/>
+        <location filename="main.qml" line="23"/>
+        <source>Test report</source>
+        <translation>Testovací report</translation>
+    </message>
+    <message>
+        <location filename="main.qml" line="43"/>
+        <source>Competitors with rented cards</source>
+        <oldsource>Competitors with card lent</oldsource>
+        <translation>Závodníci s půjčeným čipem</translation>
     </message>
 </context>
 </TS>

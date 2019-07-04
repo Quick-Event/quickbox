@@ -4,7 +4,7 @@
 
 #include "../coursedef.h"
 
-//#include <EventPlugin/eventplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -25,17 +25,15 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfs = qf::core::sql;
 
 using namespace Classes;
-/*
-static int stageCount()
+
+static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = fwk->plugin(QStringLiteral("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	int stage_count = plugin->property("stageCount").toInt();
-	QF_ASSERT_EX(stage_count > 0, "Stage count == 0!");
-	return stage_count;
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
+	return plugin;
 }
-*/
+
 ClassesPlugin::ClassesPlugin(QObject *parent)
 	: Super(parent)
 {
@@ -61,7 +59,7 @@ QObject *ClassesPlugin::createClassDocument(QObject *parent)
 	return ret;
 }
 
-void ClassesPlugin::createClass(const QString &class_name) throw(qf::core::Exception)
+void ClassesPlugin::createClass(const QString &class_name)
 {
 	//qf::core::sql::Transaction transaction;
 	ClassDocument doc;
@@ -71,9 +69,10 @@ void ClassesPlugin::createClass(const QString &class_name) throw(qf::core::Excep
 	//transaction.commit();
 }
 
-void ClassesPlugin::dropClass(int class_id) throw(qf::core::Exception)
+void ClassesPlugin::dropClass(int class_id)
 {
 	QF_ASSERT_EX(class_id > 0, "Bad classes.id value.");
+	//qfInfo() << "Dropping class id:" << class_id;
 	ClassDocument doc;
 	doc.load(class_id, ClassDocument::RecordEditMode::ModeDelete);
 	doc.drop();
@@ -81,8 +80,9 @@ void ClassesPlugin::dropClass(int class_id) throw(qf::core::Exception)
 
 void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << courses;
 	try {
+		bool is_relays = eventPlugin()->eventConfig()->isRelays();
 		qf::core::sql::Transaction transaction(qf::core::sql::Connection::forName());
 		qf::core::sql::Query q;
 		deleteCourses(stage_id);
@@ -120,17 +120,17 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 			CourseDef cd(v.toMap());
 			int course_id = 0;
 			{
-				qfInfo() << "inserting course" << cd.name();
+				qfInfo() << "inserting course" << cd.name() << "stage:" << stage_id << "classes:" << cd.classes().join(',');
 				QString qs = "INSERT INTO courses (name, length, climb, note) VALUES (:name, :length, :climb, :note)";
 				q.prepare(qs, qf::core::Exception::Throw);
 				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
-				q.bindValue(":note", QString("E%1").arg(stage_id));
+				q.bindValue(":note", QString("E%1 ").arg(stage_id) + cd.classes().join(','));
 				q.exec(qf::core::Exception::Throw);
 				course_id = q.lastInsertId().toInt();
 			}
-			{
+			if(!is_relays) {
 				QString qs = "UPDATE classdefs SET courseId=:courseId WHERE classId=:classId AND stageId=:stageId";
 				q.prepare(qs, qf::core::Exception::Throw);
 				for(auto class_name : cd.classes()) {
@@ -154,13 +154,64 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 				course_codes[course_id] << code;
 			}
 		}
+		if(is_relays) {
+			/// guess first relay number and number of legs in each class
+			struct RelNoLegs {
+				int relayNo = std::numeric_limits<int>::max();
+				int legCnt = 0;
+				bool isValid() const {return relayNo < std::numeric_limits<int>::max() && legCnt > 0;}
+			};
+			QMap<QString, RelNoLegs> relnolegs;
+			for(auto v : courses) {
+				CourseDef cd(v.toMap());
+				if(cd.classes().count() == 1) {
+					QString name = cd.name();
+					int num = name.section('.', 0, 0).toInt();
+					int leg = name.section('.', 1, 1).toInt();
+					if(num > 0 && leg > 0) {
+						RelNoLegs &rnl = relnolegs[cd.classes().value(0)];
+						rnl.relayNo = qMin(rnl.relayNo, num);
+						rnl.legCnt = qMax(rnl.legCnt, leg);
+					}
+					else {
+						qfWarning() << "Cannot deduce relay number and leg for course:" << cd.name() << "classes:" << cd.classes().join(',');
+					}
+				}
+				else {
+					qfWarning() << "Cannot deduce class name for course:" << cd.name() << "classes:" << cd.classes().join(',');
+				}
+			}
+			QString qs = "UPDATE classdefs SET relayStartNumber=:relayStartNumber, relayLegCount=:relayLegCount WHERE classId=:classId AND stageId=:stageId";
+			q.prepare(qs, qf::core::Exception::Throw);
+			QMapIterator<QString, RelNoLegs> it(relnolegs);
+			while(it.hasNext()) {
+				it.next();
+				const QString class_name = it.key();
+				if(it.value().isValid()) {
+					int class_id = class_ids.value(class_name);
+					if(class_id > 0) {
+						qfInfo() << "\t" << "updating classdefs for" << class_name << "stage:" << stage_id
+								 << "relayStartNumber:" << it.value().relayNo << "relayLegCount:" << it.value().legCnt;
+						q.bindValue(":relayStartNumber", it.value().relayNo);
+						q.bindValue(":relayLegCount", it.value().legCnt);
+						q.bindValue(":classId", class_id);
+						q.bindValue(":stageId", stage_id);
+						q.exec(qf::core::Exception::Throw);
+					}
+					else {
+						qfError() << class_name << "not found in defined classes";
+					}
+				}
+			}
+		}
 		QMap<int, int> code_to_id;
 		{
-			QString qs = "INSERT INTO codes (code) VALUES (:code)";
+			QString qs = "INSERT INTO codes (code, note) VALUES (:code, :note)";
 			q.prepare(qs, qf::core::Exception::Throw);
 			for(auto code : all_codes) {
 				qfDebug() << "inserting code" << code;
 				q.bindValue(":code", code);
+				q.bindValue(":note", QString("E%1").arg(stage_id));
 				q.exec(qf::core::Exception::Throw);
 				code_to_id[code] = q.lastInsertId().toInt();
 			}

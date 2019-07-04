@@ -99,7 +99,7 @@ void TxtImporter::importCompetitorsCSV()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::dialogs::MessageBox mbx(fwk);
 	mbx.setIcon(QMessageBox::Information);
-	mbx.setText(tr("Import comma separated values UTF8 text files without header."));
+	mbx.setText(tr("Import comma separated values UTF8 text files with header."));
 	mbx.setInformativeText(tr("Each row should have following columns: "
 							  "<ol>"
 							  "<li>Registration</li>"
@@ -127,6 +127,9 @@ void TxtImporter::importCompetitorsCSV()
 		qf::core::utils::CSVReader reader(&ts);
 		reader.setSeparator(',');
 		reader.setLineComment('#');
+		/// skip header
+		if (!ts.atEnd())
+			reader.readCSVLine();
 		while (!ts.atEnd()) {
 			QStringList sl = reader.readCSVLineSplitted();
 			QString reg = sl.value(ColRegistration).trimmed();
@@ -152,7 +155,7 @@ void TxtImporter::importRankingCsv()
 {
 	qfLogFuncFrame();
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranging CSV files (*.txt *.csv)"));
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranking CSV files (*.txt *.csv)"));
 	if(fn.isEmpty())
 		return;
 	try {
@@ -172,7 +175,9 @@ void TxtImporter::importRankingCsv()
 		int n = 0;
 		while (!ts.atEnd()) {
 			QStringList line = reader.readCSVLineSplitted();
-			if(n++ == 0)
+			if(line.count() <= 1)
+				QF_EXCEPTION(tr("Fields separation error, invalid CSV format, Error reading CSV line: [%1]").arg(line.join(';').mid(0, 100)));
+			if(n++ == 0) // skip column names
 				continue;
 			QString registration = line.value(ColRegistration);
 			int pos = line.value(ColPos).toInt();
@@ -185,6 +190,7 @@ void TxtImporter::importRankingCsv()
 			q.exec(qf::core::Exception::Throw);
 		}
 		transaction.commit();
+		qfInfo() << fn << n << "lines imported";
 	}
 	catch (const qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
@@ -202,7 +208,6 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 	//QSet<int> used_idsi;
 	for(const QVariantList &row : csv) {
 		Competitors::CompetitorDocument doc;
-		//doc.setSaveSiidToRuns(true);
 		doc.loadForInsert();
 		int siid = row.value(ColSiId).toInt();
 		//qfInfo() << "SI:" << siid, competitor_obj.ClassDesc, ' ', competitor_obj.LastName, ' ', competitor_obj.FirstName, "classId:", parseInt(competitor_obj.ClassID));
@@ -224,8 +229,12 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		//fwk->showProgress("Importing: " + reg_no + ' ' + last_name + ' ' + first_name, items_processed, items_count);
 		//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
 		doc.setValue("classId", class_id);
-		if(siid > 0)
-			doc.setValue("siId", siid);
+		if(siid > 0) {
+			//bool is_unique = !used_idsi.contains(siid);
+			//if(is_unique)
+			//	used_idsi << siid;
+			doc.setSiid(siid);
+		}
 		doc.setValue("firstName", first_name);
 		doc.setValue("lastName", last_name);
 		doc.setValue("registration", reg);

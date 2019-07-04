@@ -17,3 +17,5 @@ SOURCES += \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
+    $${PLUGIN_NAME}.nb_NO.ts \
+    $${PLUGIN_NAME}.ru_RU.ts \

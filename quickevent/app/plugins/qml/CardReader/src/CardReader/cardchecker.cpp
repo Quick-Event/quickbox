@@ -5,10 +5,10 @@
 #include <Event/stage.h>
 #include <Runs/runsplugin.h>
 
-#include <quickevent/og/timems.h>
-#include <quickevent/si/punchrecord.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
 
-#include <siut/simessage.h>
+//#include <siut/simessage.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -21,22 +21,29 @@
 
 namespace qfs = qf::core::sql;
 
-using namespace CardReader;
+namespace CardReader {
+
+static Event::EventPlugin* eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
+	return plugin;
+}
 
 CardChecker::CardChecker(QObject *parent)
 	: QObject(parent)
 {
-
 }
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
 {
-	return quickevent::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
+	return quickevent::core::og::TimeMs::fixTimeWrapAM(time1_msec, time2_msec);
 }
 
 int CardChecker::msecIntervalAM(int time1_msec, int time2_msec)
 {
-	return quickevent::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
+	return quickevent::core::og::TimeMs::msecIntervalAM(time1_msec, time2_msec);
 }
 
 int CardChecker::toAMms(int time_msec)
@@ -53,18 +60,7 @@ int CardChecker::toAM(int time_sec)
 
 int CardChecker::stageIdForRun(int run_id)
 {
-	int ret = 0;
-	qfs::QueryBuilder qb;
-	qb.select2("runs", "stageId")
-			.from("runs")
-			.where("runs.id=" QF_IARG(run_id));
-	qfs::Query q;
-	q.exec(qb.toString(), qf::core::Exception::Throw);
-	if(q.next())
-		ret = q.value(0).toInt();
-	else
-		qfError() << "Cannot find runs record for id:" << run_id;
-	return ret;
+	return eventPlugin()->stageIdForRun(run_id);
 }
 
 int CardChecker::stageStartSec(int stage_id)
@@ -92,6 +88,11 @@ int CardChecker::startTimeSec(int run_id)
 	else
 		qfError() << "Cannot find runs record for id:" << run_id;
 	return ret;
+}
+
+int CardChecker::cardCheckCheckTimeSec()
+{
+	return eventPlugin()->eventConfig()->cardCheckCheckTimeSec();
 }
 
 QVariantMap CardChecker::courseCodesForRunId(int run_id)
@@ -142,6 +143,7 @@ QVariantMap CardChecker::courseCodesForRunId(int run_id)
 
 int CardChecker::finishPunchCode()
 {
-	return quickevent::si::PunchRecord::FINISH_PUNCH_CODE;
+	return quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
 }
 
+}

@@ -23,6 +23,7 @@ class QFQMLWIDGETS_DECL_EXPORT ReportItemBand : public ReportItemFrame
 	//Q_PROPERTY(qf::qmlwidgets::reports::ReportItemFrame* header READ header WRITE setHeader NOTIFY headerChanged)
 	Q_PROPERTY(bool headerOnBreak READ isHeaderOnBreak WRITE setHeaderOnBreak NOTIFY headerOnBreakChanged)
 	Q_PROPERTY(QVariant modelData READ modelData WRITE setModelData NOTIFY modelDataChanged)
+	Q_PROPERTY(qf::qmlwidgets::reports::BandDataModel* dataModel READ model)
 	Q_PROPERTY(bool createFromData READ isCreateFromData WRITE setCreateFromData NOTIFY createFromDataChanged)
 	//Q_PROPERTY(bool modelLoaded READ modelLoaded NOTIFY modelLoadedChanged)
 	Q_CLASSINFO("property.keepFirst.doc", "Number of band details printed, which cannot be splitted by page/column break.")

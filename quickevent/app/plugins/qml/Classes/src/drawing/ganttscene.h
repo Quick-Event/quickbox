@@ -29,10 +29,12 @@ public:
 	int minToPx(int min) const;
 	int duToMin(int n) const;
 
+	bool isUseAllMaps() const {return m_useAllMaps;}
 private:
 	int m_stageId = -1;
 	int m_displayUnit;
 	GanttItem *m_ganttItem;
+	bool m_useAllMaps = false;
 };
 
 }

@@ -95,7 +95,7 @@ FindRegistrationEdit::FindRegistrationEdit(QWidget *parent)
 void FindRegistrationEdit::focusInEvent(QFocusEvent *event)
 {
 	Super::focusInEvent(event);
-	if(event->FocusIn) {
+	if(event->gotFocus()) {
 		//qfInfo() << event->FocusIn;
 		/// don't know why, but QCompleter::activated is not connected any more when FindRegistrationEdit loose its focus
 		/// nasty hack is to reconnect signal every time when FindRegistrationEdit get focus again

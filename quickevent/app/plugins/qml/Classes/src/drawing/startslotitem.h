@@ -20,7 +20,7 @@ public:
 	explicit StartSlotData(const QVariantMap &m = QVariantMap()) : QVariantMap(m) {}
 
 	QF_VARIANTMAP_FIELD(int, s, setS, tartOffset)
-	QF_VARIANTMAP_FIELD(bool, is, set, Locked)
+	//QF_VARIANTMAP_FIELD(bool, is, set, Locked)
 	QF_VARIANTMAP_FIELD(bool, is, set, IgnoreClassClashCheck)
 };
 
@@ -44,10 +44,13 @@ public:
 	void setStartOffset(int start_offset);
 	int startOffset();
 
-	void setLocked(bool b);
-	bool isLocked() const;
+	//void setLocked(bool b);
+	//bool isLocked() const;
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
+	bool isIgnoreClassClashCheck() const;
+	void setIgnoreClassClashCheck(bool b);
+
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) Q_DECL_OVERRIDE;
 
 	void updateGeometry();
 	void setClassAreaWidth(int px);

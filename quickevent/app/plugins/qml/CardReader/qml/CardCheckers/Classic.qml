@@ -3,6 +3,8 @@ import qf.core 1.0
 import qf.qmlwidgets 1.0
 import CardReader 1.0
 
+// obsolete, not used
+
 CardChecker 
 {
 	id: root
@@ -38,14 +40,12 @@ CardChecker
 		if(read_card.checkTime !== 0xEEEE) {
 			checked_card.checkTimeMs = root.msecIntervalAM(start00sec * 1000, read_card.checkTime * 1000);
 		}
-		//var start_time_sec = null;
 		if(read_card.startTime === 0xEEEE) {        //take start record from start list
 			if(run_id > 0) {
 				checked_card.startTimeMs = root.startTimeSec(run_id) * 1000;
-				//console.warn(start_time_sec);
 			}
 			var is_debug = false;
-			if(is_debug && !start_time_sec && checked_card.checkTimeMs > 0) {
+			if(is_debug && checked_card.checkTimeMs > 0) {
 				// take start from check if zero, for testing only
 				checked_card.startTimeMs = (((checked_card.checkTimeMs / 60000) >> 0) + 1) * 60000;
 				console.warn("Taking start time from check for debugging purposes only, start time;", checked_card.startTimeMs / 60000);

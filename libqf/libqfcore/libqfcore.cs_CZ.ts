@@ -7,13 +7,13 @@
         <location filename="src/sql/catalog.cpp" line="32"/>
         <location filename="src/sql/catalog.cpp" line="60"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při načítání další hodnoty sekvence(&apos;%1&apos;)</translation>
     </message>
 </context>
 <context>
     <name>qf::core::LogDevice</name>
     <message>
-        <location filename="src/core/logdevice.cpp" line="139"/>
+        <location filename="src/core/logdevice.cpp" line="136"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -33,17 +33,17 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="45"/>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Řádek</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="47"/>
         <source>Severity</source>
-        <translation type="unfinished"></translation>
+        <translation>Závažnost</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Time stamp</source>
-        <translation>Časové razítko</translation>
+        <translation>Časová značka</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="51"/>
@@ -64,84 +64,83 @@
 <context>
     <name>qf::core::model::SqlTableModel</name>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="228"/>
+        <location filename="src/model/sqltablemodel.cpp" line="230"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/model/sqltablemodel.cpp" line="254"/>
+        <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Chyba při zpracování dotazu: %1
+ %2</translation>
     </message>
 </context>
 <context>
     <name>qf::core::model::TableModel</name>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="312"/>
-        <location filename="src/model/tablemodel.cpp" line="410"/>
-        <location filename="src/model/tablemodel.cpp" line="526"/>
+        <location filename="src/model/tablemodel.cpp" line="327"/>
+        <location filename="src/model/tablemodel.cpp" line="425"/>
+        <location filename="src/model/tablemodel.cpp" line="456"/>
+        <location filename="src/model/tablemodel.cpp" line="560"/>
         <source>Cannot find table field index for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít index políčka tabulky pro index sloupce: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="406"/>
-        <location filename="src/model/tablemodel.cpp" line="522"/>
+        <location filename="src/model/tablemodel.cpp" line="421"/>
+        <location filename="src/model/tablemodel.cpp" line="452"/>
+        <location filename="src/model/tablemodel.cpp" line="556"/>
         <source>Invalid table row: %1</source>
         <translation>Chybný řádek tabulky: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="413"/>
-        <location filename="src/model/tablemodel.cpp" line="529"/>
+        <location filename="src/model/tablemodel.cpp" line="428"/>
+        <location filename="src/model/tablemodel.cpp" line="459"/>
+        <location filename="src/model/tablemodel.cpp" line="563"/>
         <source>Invalid table field index: %1</source>
-        <translation type="unfinished">Neplatný index políčka tabulky: %1</translation>
+        <translation>Neplatný index políčka tabulky: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="429"/>
-        <location filename="src/model/tablemodel.cpp" line="455"/>
-        <location filename="src/model/tablemodel.cpp" line="479"/>
-        <location filename="src/model/tablemodel.cpp" line="514"/>
-        <location filename="src/model/tablemodel.cpp" line="540"/>
+        <location filename="src/model/tablemodel.cpp" line="444"/>
+        <location filename="src/model/tablemodel.cpp" line="489"/>
+        <location filename="src/model/tablemodel.cpp" line="513"/>
+        <location filename="src/model/tablemodel.cpp" line="548"/>
+        <location filename="src/model/tablemodel.cpp" line="574"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
-        <translation type="unfinished">Nelze najít index sloupce pro jméno: &apos;%1&apos;</translation>
+        <translation>Nelze najít index sloupce pro jméno: &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="441"/>
+        <location filename="src/model/tablemodel.cpp" line="475"/>
         <source>%2 Cannot find table field for column index: %1 (row index: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 Nelze najít políčko tabulky pro index sloupce: %1 (index řádku: %3)</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="466"/>
-        <location filename="src/model/tablemodel.cpp" line="501"/>
+        <location filename="src/model/tablemodel.cpp" line="500"/>
+        <location filename="src/model/tablemodel.cpp" line="535"/>
         <source>Cannot find table field for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít políčko tabulky pro index sloupce: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="586"/>
-        <location filename="src/model/tablemodel.cpp" line="647"/>
+        <location filename="src/model/tablemodel.cpp" line="619"/>
+        <location filename="src/model/tablemodel.cpp" line="680"/>
         <source>Invalid column index: %1</source>
         <translation>Chybný index sloupce: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="595"/>
+        <location filename="src/model/tablemodel.cpp" line="628"/>
         <source>Invalid field for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neplatné políčko pro index sloupce: %1</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="636"/>
+        <location filename="src/model/tablemodel.cpp" line="669"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloupec se jménem &apos;%1&apos; nebyl nalezen mezi jmény sloupců. Existující sloupce: [%2]</translation>
     </message>
     <message>
-        <location filename="src/model/tablemodel.cpp" line="661"/>
-        <source>Cannot find field index for column index: %1 of %2 columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/model/tablemodel.cpp" line="665"/>
+        <location filename="src/model/tablemodel.cpp" line="699"/>
         <source>Cannot find table field for column index: %1, table index: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nelze najít políčko tabulky pro index sloupce %1, index tabulky: %2</translation>
     </message>
 </context>
 <context>
@@ -158,7 +157,7 @@
         <location filename="src/sql/catalog.cpp" line="296"/>
         <location filename="src/sql/catalog.cpp" line="314"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nalezeno info pro neexistující políčko &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -166,7 +165,7 @@
     <message>
         <location filename="src/utils/clioptions.cpp" line="98"/>
         <source>Abort application on exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukončit aplikaci při výjimce</translation>
     </message>
     <message>
         <location filename="src/utils/clioptions.cpp" line="99"/>
@@ -176,7 +175,7 @@
     <message>
         <location filename="src/utils/clioptions.cpp" line="100"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
-        <translation type="unfinished"></translation>
+        <translation>Jméno konfiguračního souboru, je nahráváno z {app-name}[.conf] pokud soubor existuje v {config-path}</translation>
     </message>
 </context>
 </TS>

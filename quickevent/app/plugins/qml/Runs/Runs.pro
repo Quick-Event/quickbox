@@ -12,23 +12,25 @@ DEFINES += RUNSPLUGIN_BUILD_DLL
 
 INCLUDEPATH += \
     $$PWD/../Event/include \
-#    $$PWD/../Competitors/include \
+    $$PWD/../Competitors/include \
 
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
-#    -lCompetitorsplugin \
+    -lCompetitorsplugin \
 
 include (src/src.pri)
 
 RESOURCES += \
-#    $${PLUGIN_NAME}.qrc \
+    $${PLUGIN_NAME}.qrc \
 
 OTHER_FILES += \
 	$$PWD/qml/reports/* \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
+    $${PLUGIN_NAME}.nb_NO.ts \
+    $${PLUGIN_NAME}.ru_RU.ts \
 
 lupdate_only {
 SOURCES += \

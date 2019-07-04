@@ -1,16 +1,17 @@
 #include "speakerwidget.h"
 #include "ui_speakerwidget.h"
 
+#include "codeclassresultswidget.h"
 #include "thispartwidget.h"
 
 #include "Speaker/speakerplugin.h"
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/si/punchrecord.h>
-#include <quickevent/si/siid.h>
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/timems.h>
+#include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/si/siid.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -22,8 +23,10 @@
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
 
+#include <QDockWidget>
 #include <QJsonObject>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSettings>
 
 namespace qfs = qf::core::sql;
@@ -47,18 +50,40 @@ SpeakerWidget::SpeakerWidget(QWidget *parent) :
 	ui->setupUi(this);
 
 	ui->tblPunchesToolBar->setTableView(ui->tblPunches);
+	/*
+	neni to trivialni, asi budu muset udelat proxymodel,
+	pokud budu chtit filtrovat podle kodu a jeste podle cehokoli
 
+	QLabel *lbl_code = new QLabel(tr("&Code"));
+	ui->tblPunchesToolBar->addWidget(lbl_code);
+	QLineEdit *ed_code = new QLineEdit();
+	ui->tblPunchesToolBar->addWidget(ed_code);
+	lbl_code->setBuddy(ed_code);
+	QLabel *lbl_spc = new QLabel(" ");
+	lbl_spc->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	ui->tblPunchesToolBar->addWidget(lbl_spc);
+	*/
 	ui->tblPunches->setReadOnly(true);
 	ui->tblPunches->setCloneRowEnabled(false);
 	ui->tblPunches->setPersistentSettingsId("tblPunches");
+
+	connect(ui->tblPunches, &PunchesTableView::codeClassActivated, this, &SpeakerWidget::onCodeClassActivated);
+	/*
+	ui->tblPunches->setDragEnabled(true);
+	//ui->tblView->setDragDropMode(QAbstractItemView::DragOnly);
+	ui->tblPunches->setDragDropMode(QAbstractItemView::InternalMove);
+	ui->tblPunches->setSelectionMode(QAbstractItemView::SingleSelection);
+	ui->tblPunches->viewport()->setAcceptDrops(true);
+	ui->tblPunches->setDropIndicatorShown(true);
+	*/
 	//ui->tblPunches->setRowEditorMode(qfw::TableView::EditRowsMixed);
 	//ui->tblPunches->setInlineEditSaveStrategy(qfw::TableView::OnEditedValueCommit);
-	quickevent::og::SqlTableModel *m = new quickevent::og::SqlTableModel(this);
+	quickevent::core::og::SqlTableModel *m = new quickevent::core::og::SqlTableModel(this);
 	m->addColumn("punches.id");//.setReadOnly(true);
 	m->addColumn("punches.code", tr("Code"));
-	m->addColumn("punches.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::si::SiId>());
-	m->addColumn("punches.timeMs", tr("Punch time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
-	m->addColumn("punches.runTimeMs", tr("Runner time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>());
+	m->addColumn("punches.siId", tr("SI")).setReadOnly(true).setCastType(qMetaTypeId<quickevent::core::si::SiId>());
+	m->addColumn("punches.timeMs", tr("Punch time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+	m->addColumn("punches.runTimeMs", tr("Runner time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
 	m->addColumn("classes.name", tr("Class"));
 	m->addColumn("competitors.registration", tr("Registration"));
 	m->addColumn("competitorName", tr("Competitor"));
@@ -116,11 +141,11 @@ void SpeakerWidget::onDbEventNotify(const QString &domain, int connection_id, co
 		return;
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
 	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
-		quickevent::si::PunchRecord punch(data.toMap());
+		quickevent::core::si::PunchRecord punch(data.toMap());
 		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::si::PunchRecord::MARKING_RACE) {
+		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_RACE) {
 			updateTableView(punch.id());
-			ui->gridWidget->onPunchReceived(punch);
+			emit punchReceived(punch);
 		}
 	}
 }
@@ -132,19 +157,11 @@ void SpeakerWidget::reset()
 		m_punchesModel->clearRows();
 		return;
 	}
+	ui->classResults->reset(0, 0, CodeClassResultsWidget::RESULTS_PUNCH_CODE);
 	if(isPartActive())
 		reload();
 	else
 		m_resetRequest = true;
-	/*
-	{
-		m_cbxClasses->blockSignals(true);
-		m_cbxClasses->loadItems(true);
-		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
-		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
-		m_cbxClasses->blockSignals(false);
-	}
-	*/
 }
 
 void SpeakerWidget::reload()
@@ -160,7 +177,7 @@ void SpeakerWidget::reload()
 	int stage_id = eventPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("punches", "*")
-			.select2("classes", "name")
+			.select2("classes", "id, name")
 			.select2("competitors", "registration")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("punches")
@@ -170,7 +187,7 @@ void SpeakerWidget::reload()
 			.where("punches.stageId=" QF_IARG(stage_id))
 			.orderBy("punches.id DESC");//.limit(10);
 	//qfWarning() << qb.toString();
-	m_punchesModel->setQueryBuilder(qb);
+	m_punchesModel->setQueryBuilder(qb, false);
 	m_punchesModel->reload();
 }
 
@@ -190,19 +207,10 @@ void SpeakerWidget::updateTableView(int punch_id)
 
 void SpeakerWidget::loadSettings()
 {
-	if(m_settingsLoaded)
-		return;
-	m_settingsLoaded = true;
-	QSettings settings;
-	QString json = settings.value("plugins/speaker/grid").toString();
-	ui->gridWidget->loadLayout(json.toUtf8());
 }
 
 void SpeakerWidget::saveSettings()
 {
-	QSettings settings;
-	QByteArray ba = ui->gridWidget->saveLayout();
-	settings.setValue("plugins/speaker/grid", QString::fromUtf8(ba));
 }
 
 bool SpeakerWidget::isPartActive()
@@ -210,22 +218,22 @@ bool SpeakerWidget::isPartActive()
 	return m_partWidget && m_partWidget->isActive();
 }
 
-void SpeakerWidget::on_btInsertColumn_clicked()
+void SpeakerWidget::onCodeClassActivated(int class_id, int code)
 {
-	ui->gridWidget->addColumn();
+	CodeClassResultsWidget *w = new CodeClassResultsWidget(this);
+	w->reset(class_id, code);
+	//if(eventPlugin()->isEventOpen())
+	//	w->loadSetup(QJsonObject());
+	connect(this, &SpeakerWidget::punchReceived, w, &CodeClassResultsWidget::onPunchReceived);
+
+	QDockWidget *dw = new QDockWidget();
+	static int dock_widget_no = 0;
+	dw->setObjectName("CodeClassResultsWidgetDockWidget_" + QString::number(++dock_widget_no));
+	dw->setAllowedAreas(Qt::AllDockWidgetAreas);
+	dw->setWidget(w);
+	//dw->show();
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	fwk->addDockWidget(Qt::LeftDockWidgetArea, dw);
+	dw->setFloating(true);
 }
 
-void SpeakerWidget::on_btInsertRow_clicked()
-{
-	ui->gridWidget->addRow();
-}
-
-void SpeakerWidget::on_btDeleteColumn_clicked()
-{
-	ui->gridWidget->removeColumn();
-}
-
-void SpeakerWidget::on_btDeleteRow_clicked()
-{
-	ui->gridWidget->removeRow();
-}

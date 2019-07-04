@@ -10,8 +10,10 @@ CONFIG += warn_on qt thread
 
 CONFIG += c++11
 
-# exception backrace support
-unix:QMAKE_LFLAGS_APP += -rdynamic
+CONFIG(debug, debug|release) {
+	# exception backtrace support
+	unix:QMAKE_LFLAGS_APP += -rdynamic
+}
 
 TARGET = $$OUT_PWD/../bin/$$MY_SUBPROJECT
 

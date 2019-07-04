@@ -2,26 +2,95 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="cs_CZ">
 <context>
+    <name>CodeClassResultsWidget</name>
+    <message>
+        <location filename="src/codeclassresultswidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formulář</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.ui" line="37"/>
+        <source>Class</source>
+        <translation>Kategorie</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.ui" line="47"/>
+        <source>Code</source>
+        <translation>Kontrola</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="47"/>
+        <source>Competitor</source>
+        <translation>Závodník</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="48"/>
+        <source>Reg</source>
+        <translation>Reg. č.</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="49"/>
+        <source>Time</source>
+        <translation>Čas</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="159"/>
+        <source>Results</source>
+        <translation>Výsledky</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="160"/>
+        <source>Finish</source>
+        <translation>Cíl</translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="179"/>
+        <source>R</source>
+        <comment>Radio station</comment>
+        <translation>R</translation>
+    </message>
+</context>
+<context>
     <name>SpeakerWidget</name>
     <message>
         <location filename="src/speakerwidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulář</translation>
     </message>
     <message>
-        <location filename="src/speakerwidget.cpp" line="52"/>
+        <location filename="src/speakerwidget.cpp" line="83"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="src/speakerwidget.cpp" line="53"/>
+        <location filename="src/speakerwidget.cpp" line="84"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>SI</translation>
     </message>
     <message>
-        <location filename="src/speakerwidget.cpp" line="54"/>
+        <location filename="src/speakerwidget.cpp" line="85"/>
         <source>Punch time</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas ražení</translation>
+    </message>
+    <message>
+        <location filename="src/speakerwidget.cpp" line="86"/>
+        <source>Runner time</source>
+        <translation>Čas závodníka</translation>
+    </message>
+    <message>
+        <location filename="src/speakerwidget.cpp" line="87"/>
+        <source>Class</source>
+        <translation>Kategorie</translation>
+    </message>
+    <message>
+        <location filename="src/speakerwidget.cpp" line="88"/>
+        <source>Registration</source>
+        <translation>Registrace</translation>
+    </message>
+    <message>
+        <location filename="src/speakerwidget.cpp" line="89"/>
+        <source>Competitor</source>
+        <translation>Závodník</translation>
     </message>
 </context>
 <context>
@@ -29,7 +98,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="12"/>
         <source>&amp;Speaker</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Komentátor</translation>
     </message>
 </context>
 </TS>

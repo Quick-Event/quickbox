@@ -30,18 +30,26 @@ include ( $$QF_PROJECT_TOP_SRCDIR/qmlplugin.pri )
 
 QT += qml
 
-INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include
-INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include
+INCLUDEPATH += \
+	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
+	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
+	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
+	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+
+message ($$PLUGIN_NAME INCLUDEPATH $$INCLUDEPATH)
 
 LIBS += \
     -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
 
-LIBS += -lqfcore -lqfqmlwidgets
+unix: LIBS +=  \
+	-Wl,-rpath,\'\$\$ORIGIN\'  \
 
-INCLUDEPATH += \
-    $$PWD/../../../lib/include \
 
-LIBS += -lquickevent
+LIBS += \
+	-lqfcore \
+	-lqfqmlwidgets \
+	-lquickeventcore \
+	-lquickeventgui \
 
 }
 

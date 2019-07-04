@@ -18,7 +18,7 @@ using namespace qf::core::sql;
 //                          FieldInfo
 //=========================================
 #if 0
-QVariant FieldInfo::seqNextVal() throw(Exception)
+QVariant FieldInfo::seqNextVal()
 {
 	QVariant ret;
 	if(!isValid()) return ret;

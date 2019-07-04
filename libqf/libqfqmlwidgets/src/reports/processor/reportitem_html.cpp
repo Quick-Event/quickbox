@@ -46,6 +46,8 @@ ReportItem::PrintResult ReportItemFrame::printHtml(HTMLElement & out)
 {
 	qfLogFuncFrame();
 	PrintResult res = Super::printHtml(out);
+	if(!isVisible())
+		return res;
 	if(!res.isPrintFinished())
 		return res;
 

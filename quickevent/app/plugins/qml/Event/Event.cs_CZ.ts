@@ -5,8 +5,8 @@
     <name>ConnectDbDialogWidget</name>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
-        <source>Form</source>
-        <translation>Nastavení cesty k úložišti závodu</translation>
+        <source>Select database</source>
+        <translation>Vybrat databázi</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
@@ -27,7 +27,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
         <source>Data storage</source>
-        <translation>Datové uložiště</translation>
+        <translation>Datové úložiště</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="98"/>
@@ -77,18 +77,18 @@
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>
         <source>Data storage setup</source>
-        <translation>Nastavení uložení dat</translation>
+        <translation>Nastavení úložiště dat</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="84"/>
         <source>Event files directory</source>
-        <translation>Adresář pro soubory závodu</translation>
+        <translation>Adresář se soubory závodu</translation>
     </message>
 </context>
 <context>
     <name>DbSchema</name>
     <message>
-        <location filename="qml/DbSchema.qml" line="379"/>
+        <location filename="qml/DbSchema.qml" line="449"/>
         <source>Data version</source>
         <translation>Verze dat</translation>
     </message>
@@ -96,159 +96,171 @@
 <context>
     <name>Event::EventPlugin</name>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="187"/>
+        <location filename="src/Event/eventplugin.cpp" line="274"/>
         <source>&amp;Connect to database</source>
         <translation>&amp;Připojit k databázi</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="191"/>
+        <location filename="src/Event/eventplugin.cpp" line="278"/>
         <source>&amp;Open event</source>
         <translation>&amp;Otevřít závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="196"/>
+        <location filename="src/Event/eventplugin.cpp" line="283"/>
         <source>Create eve&amp;nt</source>
         <translation>&amp;Vytvořit závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="201"/>
+        <location filename="src/Event/eventplugin.cpp" line="288"/>
         <source>E&amp;dit event</source>
         <translation>&amp;Upravit závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="208"/>
+        <location filename="src/Event/eventplugin.cpp" line="295"/>
         <source>E&amp;xport event</source>
         <translation>E&amp;xportovat závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="212"/>
+        <location filename="src/Event/eventplugin.cpp" line="299"/>
         <source>I&amp;mport event</source>
         <translation>I&amp;mportovat závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="225"/>
+        <location filename="src/Event/eventplugin.cpp" line="312"/>
         <source>&amp;Event</source>
         <translation>&amp;Závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="244"/>
+        <location filename="src/Event/eventplugin.cpp" line="322"/>
+        <source>Event</source>
+        <translation>Závod</translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="332"/>
         <source>Current stage E%1</source>
         <translation>Aktuální etapa E%1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="292"/>
-        <source>Edit Stage</source>
-        <translation>Uprav etapu</translation>
+        <location filename="src/Event/eventplugin.cpp" line="358"/>
+        <source>Services</source>
+        <translation>Služby</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="523"/>
+        <location filename="src/Event/eventplugin.cpp" line="398"/>
+        <source>Edit Stage</source>
+        <translation>Upravit etapu</translation>
+    </message>
+    <message>
+        <location filename="src/Event/eventplugin.cpp" line="652"/>
         <source>Connect Database Error: %1</source>
         <translation>Chyba při připojování k databázi: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="589"/>
+        <location filename="src/Event/eventplugin.cpp" line="718"/>
         <source>Event ID cannot be empty.</source>
         <translation>ID závodu nemůže být prázdné.</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="593"/>
+        <location filename="src/Event/eventplugin.cpp" line="722"/>
         <source>Event ID %1 exists already.</source>
         <translation>ID závodu %1 již existuje.</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="660"/>
-        <location filename="src/Event/eventplugin.cpp" line="918"/>
-        <location filename="src/Event/eventplugin.cpp" line="1016"/>
+        <location filename="src/Event/eventplugin.cpp" line="793"/>
+        <location filename="src/Event/eventplugin.cpp" line="1067"/>
+        <location filename="src/Event/eventplugin.cpp" line="1166"/>
         <source>Create Database Error: %1</source>
         <translation>Chyba při vytváření databáze: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="664"/>
+        <location filename="src/Event/eventplugin.cpp" line="797"/>
         <source>Cannot create event, database is not open: %1</source>
-        <translation>Nelze vytvořit závod, databáze není otevřena: %1</translation>
+        <translation>Nelze vytvořit závod, databáze není připojena: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="718"/>
-        <location filename="src/Event/eventplugin.cpp" line="741"/>
-        <location filename="src/Event/eventplugin.cpp" line="962"/>
+        <location filename="src/Event/eventplugin.cpp" line="851"/>
+        <location filename="src/Event/eventplugin.cpp" line="874"/>
+        <location filename="src/Event/eventplugin.cpp" line="1112"/>
         <source>Query</source>
         <translation>Dotaz</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="718"/>
-        <location filename="src/Event/eventplugin.cpp" line="741"/>
+        <location filename="src/Event/eventplugin.cpp" line="851"/>
+        <location filename="src/Event/eventplugin.cpp" line="874"/>
         <source>Open event</source>
         <translation>Otevřít závod</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="772"/>
-        <location filename="src/Event/eventplugin.cpp" line="902"/>
-        <location filename="src/Event/eventplugin.cpp" line="981"/>
-        <location filename="src/Event/eventplugin.cpp" line="998"/>
+        <location filename="src/Event/eventplugin.cpp" line="748"/>
+        <location filename="src/Event/eventplugin.cpp" line="905"/>
+        <location filename="src/Event/eventplugin.cpp" line="1051"/>
+        <location filename="src/Event/eventplugin.cpp" line="1131"/>
+        <location filename="src/Event/eventplugin.cpp" line="1148"/>
         <source>Open Database Error: %1</source>
         <translation>Chyba při otevírání databáze: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="776"/>
+        <location filename="src/Event/eventplugin.cpp" line="909"/>
         <source>Database file %1 doesn&apos;t exist.</source>
         <translation>Databázový soubor %1 neexistuje.</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="786"/>
+        <location filename="src/Event/eventplugin.cpp" line="919"/>
         <source>Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Závod využívá příliš starou verzi dat (%1), minimální verze je (%2). Použij Závod/Importovat závod pro konverzi dat do aktuální verze.</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="793"/>
+        <location filename="src/Event/eventplugin.cpp" line="926"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Závod byl vytvořen v novější verzi QuickEventu (%1) a možná nebude pracovat tak, jak je očekáváno. Je doporučeno si stáhnout nejnovětší verzi QuickEventu.</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="884"/>
+        <location filename="src/Event/eventplugin.cpp" line="1033"/>
         <source>Export as Quick Event</source>
         <translation>Exportovat jako Quick Event</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="884"/>
+        <location filename="src/Event/eventplugin.cpp" line="1033"/>
+        <location filename="src/Event/eventplugin.cpp" line="1108"/>
         <source>Quick Event files *%1 (*%1)</source>
         <translation>Soubory Quick Eventu *%1 (*%1)</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="894"/>
+        <location filename="src/Event/eventplugin.cpp" line="1043"/>
         <source>Cannot delete existing file %1</source>
-        <translation>Nemohu smazat existujicí soubor %1</translation>
+        <translation>Nelze smazat existující soubor %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="911"/>
-        <location filename="src/Event/eventplugin.cpp" line="1008"/>
+        <location filename="src/Event/eventplugin.cpp" line="1060"/>
+        <location filename="src/Event/eventplugin.cpp" line="1158"/>
         <source>Creating database</source>
         <translation>Vytvářím databázi</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="926"/>
-        <location filename="src/Event/eventplugin.cpp" line="1024"/>
+        <location filename="src/Event/eventplugin.cpp" line="1075"/>
+        <location filename="src/Event/eventplugin.cpp" line="1174"/>
         <source>Copying table %1</source>
         <translation>Kopíruji tabulku %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="959"/>
+        <location filename="src/Event/eventplugin.cpp" line="1108"/>
         <source>Import as Quick Event</source>
         <translation>Importovat jako Quick Event</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="962"/>
+        <location filename="src/Event/eventplugin.cpp" line="1112"/>
         <source>Event will be imported as ID:</source>
         <translation>Závod bude importován s ID:</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="967"/>
+        <location filename="src/Event/eventplugin.cpp" line="1117"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation>Závod ID &apos;%1&apos; již existuje!</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1044"/>
+        <location filename="src/Event/eventplugin.cpp" line="1194"/>
         <source>Open imported event &apos;%1&apos;?</source>
-        <translation>Otevřít importovaný závod &apos;%1&apos; ?</translation>
+        <translation>Otevřít importovaný závod &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
@@ -256,7 +268,7 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Uprav etapu</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="20"/>
@@ -284,7 +296,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Upravit závod</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="20"/>
@@ -343,13 +355,155 @@
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="149"/>
-        <source>min</source>
-        <translation>min</translation>
+        <source> min</source>
+        <oldsource>min</oldsource>
+        <translation> min</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="168"/>
         <source>Import ID</source>
         <translation>Importovat ID</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="188"/>
+        <source>Sport</source>
+        <translation>Sport</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="199"/>
+        <source>OB</source>
+        <translation>OB</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="204"/>
+        <source>LOB</source>
+        <translation>LOB</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="209"/>
+        <source>MTBO</source>
+        <translation>MTBO</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="214"/>
+        <source>TRAIL</source>
+        <translation>TRAIL</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="222"/>
+        <source>&amp;Time</source>
+        <translation>Ča&amp;s</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="232"/>
+        <source>h:mm</source>
+        <translation>h:mm</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="246"/>
+        <source>Discipline</source>
+        <translation>Disciplína</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="257"/>
+        <source>Long distance</source>
+        <translation>Klasická trať</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="262"/>
+        <source>Middle distance</source>
+        <translation>Krátká trať</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="267"/>
+        <source>Sprint</source>
+        <translation>Sprint</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="272"/>
+        <source>Ultralong distance</source>
+        <translation>Dlouhá trať</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="277"/>
+        <source>Relay</source>
+        <translation>Štafety</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="282"/>
+        <source>Teams</source>
+        <translation>Družstva</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="290"/>
+        <source>Card check</source>
+        <translation>Čas kontroly čipu</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="300"/>
+        <source>Maximal distance between card CHECK and START time</source>
+        <translation>Maximální čas mezi kontrolou vymazání čipu a startovním časem</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="303"/>
+        <source>Disabled</source>
+        <translation>Vypnuto</translation>
+    </message>
+    <message>
+        <location filename="src/eventdialogwidget.ui" line="306"/>
+        <source> sec</source>
+        <translation> sek</translation>
+    </message>
+</context>
+<context>
+    <name>services::EmmaClientWidget</name>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formulář</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="22"/>
+        <source>Export dir</source>
+        <translation>Adresář pro export</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="34"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="43"/>
+        <source>File name</source>
+        <translation>Jméno souboru</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="105"/>
+        <source>Export splits</source>
+        <translation>Exportovat mezičasy</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.cpp" line="41"/>
+        <source>Open Directory</source>
+        <translation>Otevřít adresář</translation>
+    </message>
+</context>
+<context>
+    <name>services::ServiceWidget</name>
+    <message>
+        <location filename="src/services/servicewidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formulář</translation>
+    </message>
+    <message>
+        <location filename="src/services/servicewidget.ui" line="45"/>
+        <source>EmmaClient</source>
+        <translation>EmmaClient</translation>
+    </message>
+    <message>
+        <location filename="src/services/servicewidget.ui" line="58"/>
+        <source>neco neco</source>
+        <translation>neco neco</translation>
     </message>
 </context>
 </TS>

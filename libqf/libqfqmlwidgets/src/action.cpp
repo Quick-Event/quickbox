@@ -11,6 +11,9 @@ Action::Action(const QIcon &icon, const QString &text, QObject *parent)
 {
 	setIcon(icon);
 	setText(text);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+	setShortcutVisibleInContextMenu(true);
+#endif
 }
 
 void Action::setText(const QString &new_text)
@@ -32,6 +35,13 @@ void Action::setShortcut(const QString &new_text)
 		Super::setShortcut(ks);
 		emit shortcutChanged(shortcut());
 	}
+}
+
+Action *Action::addActionInto(const QString &id, const QString &text)
+{
+	auto *a = new Action(id, text);
+	addActionInto(a);
+	return a;
 }
 
 void Action::addActionInto(QAction *action)
@@ -119,24 +129,28 @@ Action *Action::addMenuBefore(const QString &id, const QString &text)
 	return new_act;
 }
 
-void Action::addSeparatorInto()
+Action* Action::addSeparatorInto(const QString &id)
 {
 	QMenu *w = menu();
-	QF_ASSERT(w!=nullptr, "bad menu", return);
+	QF_ASSERT(w != nullptr, "bad menu", return nullptr);
 
 	Action *a = new Action(w);
+	a->setObjectName(id);
 	a->setSeparator(true);
 	w->addAction(a);
+	return a;
 }
 
-void Action::addSeparatorBefore()
+Action* Action::addSeparatorBefore(const QString &id)
 {
 	QWidget *w = parentMenu();
-	QF_ASSERT(w!=nullptr, "bad parent", return);
+	QF_ASSERT(w != nullptr, "bad parent", return nullptr);
 
 	Action *a = new Action(w);
+	a->setObjectName(id);
 	a->setSeparator(true);
 	w->insertAction(this, a);
+	return a;
 }
 
 QWidget *Action::parentMenu()

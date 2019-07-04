@@ -9,8 +9,9 @@ CardReaderPlugin {
 	id: root
 
 	cardCheckers: [
-		CardCheckers.Classic {},
-		CardCheckers.BeerRace {}
+		//CardCheckers.Classic {},
+		CardCheckerClassicCpp {}
+		//CardCheckers.BeerRace {}
 	]
 /*
 	property QfObject internals: QfObject

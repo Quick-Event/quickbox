@@ -5,6 +5,7 @@
 #include <qf/qmlwidgets/reports/processor/reportitemframe.h>
 #include <qf/qmlwidgets/reports/processor/reportitemdetail.h>
 #include <qf/qmlwidgets/reports/processor/reportitemband.h>
+#include <qf/qmlwidgets/reports/processor/banddatamodel.h>
 #include <qf/qmlwidgets/reports/processor/reportitembreak.h>
 #include <qf/qmlwidgets/reports/processor/reportitemreport.h>
 #include <qf/qmlwidgets/reports/processor/style/sheet.h>
@@ -13,8 +14,6 @@
 
 #include <qf/core/log.h>
 
-// #include <QPushButton>
-// #include <QFrame>
 #include <QQmlExtensionPlugin>
 #include <qqml.h>
 
@@ -34,6 +33,7 @@ public:
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemReport>(uri, 1, 0, "Report");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemFrame>(uri, 1, 0, "Frame");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemFrame>(uri, 1, 0, "Space");
+		qmlRegisterType<qf::qmlwidgets::reports::BandDataModel>(uri, 1, 0, "DataModel");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemBand>(uri, 1, 0, "Band");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemDetail>(uri, 1, 0, "Detail");
 		qmlRegisterType<qf::qmlwidgets::reports::ReportItemPara>(uri, 1, 0, "Para");

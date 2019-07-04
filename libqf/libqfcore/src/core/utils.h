@@ -14,7 +14,9 @@
 #define QF_SARG(s) "'" + QString(s) + "'"
 #define QF_IARG(i) "" + QString::number(i) + ""
 
-#define QF_QUOTEME(x) QStringLiteral(#x)
+#define QF_QUOTE(x) #x
+#define QF_EXPAND_AND_QUOTE(x) QF_QUOTE(x)
+#define QF_QUOTE_QSTRINGLITERAL(x) QStringLiteral(#x)
 
 #define QF_FIELD_IMPL(ptype, lower_letter, upper_letter, name_rest) \
 	private: ptype m_##lower_letter##name_rest; \
@@ -105,14 +107,14 @@
 	QF_PROPERTY_BOOL_IMPL2(lower_letter, upper_letter, name_rest, false)
 
 #define QF_VARIANTMAP_FIELD(ptype, getter_prefix, setter_prefix, name_rest) \
-	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTEME(getter_prefix##name_rest));} \
-	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest)));} \
-	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}
+	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest));} \
+	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest)));} \
+	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest)] = QVariant::fromValue(val);}
 /// for default values other than QVariant()
 #define QF_VARIANTMAP_FIELD2(ptype, getter_prefix, setter_prefix, name_rest, default_value) \
-	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTEME(getter_prefix##name_rest));} \
-	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTEME(getter_prefix##name_rest), default_value));} \
-	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val;}
+	public: bool getter_prefix##name_rest##_isset() const {return contains(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest));} \
+	public: ptype getter_prefix##name_rest() const {return qvariant_cast<ptype>(value(QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest), default_value));} \
+	public: void setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTE_QSTRINGLITERAL(getter_prefix##name_rest)] = QVariant::fromValue(val);}
 	//since c++14 public: auto& setter_prefix##name_rest(const ptype &val) {(*this)[QF_QUOTEME(getter_prefix##name_rest)] = val; return *this;}
 
 /// for implicitly shared classes properties
@@ -149,11 +151,11 @@ public:
 	 * @param str
 	 * @return Set of found captions.
 	 */
-	static QSet<QString> findCaptions(const QString caption_format);
+	static QSet<QString> findCaptions(const QString &caption_format);
 	static QString replaceCaptions(const QString format_str, const QString &caption_name, const QVariant &caption_value);
 	static QString replaceCaptions(const QString format_str, const QVariantMap &replacements);
 
-	static QString removeJsonComments(const QString json_str);
+	static QString removeJsonComments(const QString &json_str);
 
 	static int versionStringToInt(const QString &version_string);
 	static QString intToVersionString(int ver);
@@ -175,9 +177,15 @@ public:
 				break;
 		}
 		if(!t && throw_exc) {
-			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
+			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg(reinterpret_cast<uintptr_t>(_o), 0, 16));
 		}
 		return t;
+	}
+
+	template <typename V, typename... T>
+	constexpr static inline auto make_array(T&&... t) -> std::array < V, sizeof...(T) >
+	{
+		return {{ std::forward<T>(t)... }};
 	}
 };
 

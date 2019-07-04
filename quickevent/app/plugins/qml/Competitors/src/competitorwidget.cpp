@@ -7,10 +7,11 @@
 
 #include "Event/eventplugin.h"
 
-#include <quickevent/og/itemdelegate.h>
-#include <quickevent/og/sqltablemodel.h>
-#include <quickevent/og/timems.h>
-#include <quickevent/si/siid.h>
+#include <quickevent/gui/og/itemdelegate.h>
+
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/siid.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
@@ -33,22 +34,37 @@ namespace qfs = qf::core::sql;
 
 namespace {
 
-class RunsModel : public quickevent::og::SqlTableModel
+class BadDataInputException : public std::runtime_error
 {
-	using Super = quickevent::og::SqlTableModel;
+public:
+	BadDataInputException(const QString &message) : std::runtime_error(""), m_message(message) {}
+	~BadDataInputException() Q_DECL_OVERRIDE {}
+
+	const QString& message() const {return m_message;}
+private:
+	QString m_message;
+};
+
+class RunsModel : public quickevent::core::og::SqlTableModel
+{
+	using Super = quickevent::core::og::SqlTableModel;
 public:
 	RunsModel(QObject *parent = nullptr);
 
 	enum Columns {
 		col_runs_isRunning = 0,
 		col_runs_stageId,
+		col_classes_name,
+		col_relays_name,
+		col_runs_leg,
 		col_runs_siId,
 		col_runs_startTimeMs,
 		col_runs_timeMs,
 		col_runs_notCompeting,
 		col_runs_misPunch,
 		col_runs_disqualified,
-		col_runs_cardLent,
+		col_runs_cardRentRequested,
+		col_cardInLentTable,
 		col_runs_cardReturned,
 		col_COUNT
 	};
@@ -63,13 +79,17 @@ RunsModel::RunsModel(QObject *parent)
 	clearColumns(col_COUNT);
 	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("On", "runs.isRunning")).setToolTip(tr("Is running")));
 	setColumn(col_runs_stageId, ColumnDefinition("runs.stageId", tr("Stage")).setReadOnly(true));
-	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::si::SiId>()));
-	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
-	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_relays_name, ColumnDefinition("relayName", tr("Relay")).setReadOnly(true));
+	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")).setReadOnly(true));
+	setColumn(col_runs_leg, ColumnDefinition("runs.leg", tr("Leg")));
+	setColumn(col_runs_siId, ColumnDefinition("runs.siid", tr("SI")).setReadOnly(false).setCastType(qMetaTypeId<quickevent::core::si::SiId>()));
+	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
+	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()).setReadOnly(true));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC", "runs.notCompeting")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("D", "runs.disqualified")).setToolTip(tr("Disqualified")));
 	setColumn(col_runs_misPunch, ColumnDefinition("runs.misPunch", tr("E", "runs.misPunch")).setToolTip(tr("Card mispunch")));
-	setColumn(col_runs_cardLent, ColumnDefinition("runs.cardLent", tr("L", "runs.cardLent")).setToolTip(tr("Card lent")));
+	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR", "runs.cardLent")).setToolTip(tr("Card rent requested")));
+	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R", "runs.cardReturned")).setToolTip(tr("Card returned")));
 }
 
@@ -115,18 +135,25 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	ui(new Ui::CompetitorWidget)
 {
 	qfLogFuncFrame();
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+
 	setPersistentSettingsId("CompetitorWidget");
 	ui->setupUi(this);
 
 	ui->chkFind->setChecked(true);
 
-	setTitle(tr("competitor"));
+	setTitle(tr("Competitor"));
 
 	{
 		qf::qmlwidgets::ForeignKeyComboBox *cbx = ui->cbxClass;
-		cbx->setReferencedTable("classes");
-		cbx->setReferencedField("id");
-		cbx->setReferencedCaptionField("name");
+		if(is_relays) {
+			cbx->setEnabled(false);
+		}
+		else {
+			cbx->setReferencedTable("classes");
+			cbx->setReferencedField("id");
+			cbx->setReferencedCaptionField("name");
+		}
 	}
 
 	connect(ui->edFind, &FindRegistrationEdit::registrationSelected, this, &CompetitorWidget::onRegistrationSelected);
@@ -136,7 +163,11 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	ui->tblRuns->setTableModel(m_runsModel);
 	ui->tblRuns->setPersistentSettingsId(ui->tblRuns->objectName());
 	ui->tblRuns->setInlineEditSaveStrategy(qf::qmlwidgets::TableView::OnManualSubmit);
-	ui->tblRuns->setItemDelegate(new quickevent::og::ItemDelegate(ui->tblRuns));
+	ui->tblRuns->setItemDelegate(new quickevent::gui::og::ItemDelegate(ui->tblRuns));
+
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_relays_name, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_runs_leg, !is_relays);
+	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsModel::col_classes_name, !is_relays);
 	//ui->tblRuns->setContextMenuPolicy(Qt::CustomContextMenu);
 	//connect(ui->tblRuns, &qfw::TableView::customContextMenuRequested, this, &CompetitorWidget::onRunsTableCustomContextMenuRequest);
 
@@ -160,21 +191,40 @@ CompetitorWidget::~CompetitorWidget()
 
 bool CompetitorWidget::loadRunsTable()
 {
+	//bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	qf::core::model::DataDocument *doc = dataController()->document();
 	qf::core::sql::QueryBuilder qb;
 	qb.select2("runs", "*")
-			.select2("competitors", "classId")
+			.select2("classes", "name")
+			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
+			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
+			.join("runs.relayId", "relays.id")
+			.join("relays.classId", "classes.id")
+			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 			.where("runs.competitorId=" QF_IARG(doc->value("competitors.id").toInt()))
 			.orderBy("runs.stageId");
-	m_runsModel->setQueryBuilder(qb);
+	m_runsModel->setQueryBuilder(qb, false);
 	return m_runsModel->reload();
 }
 
 bool CompetitorWidget::saveRunsTable()
 {
 	qfLogFuncFrame();
+	/*
+	bool is_running_set = false;
+	for (int i = 0; i < m_runsModel->rowCount(); ++i) {
+		bool is_running = m_runsModel->value(i, RunsModel::col_runs_isRunning).toBool();
+		int time_ms = m_runsModel->value(i, RunsModel::col_runs_timeMs).toInt();
+		if(!is_running && time_ms > 0) {
+			m_runsModel->setData(m_runsModel->index(i, RunsModel::col_runs_isRunning), true);
+			is_running_set = true;
+		}
+	}
+	if(is_running_set)
+		throw BadDataInputException(tr("Canont set not running flag for competitor with valid finish time."));
+	*/
 	bool ret = m_runsModel->postAll(true);
 	if(ret)
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED);
@@ -203,6 +253,9 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 	ui->chkFind->setChecked(mode == qf::core::model::DataDocument::ModeInsert);
 	if(mode == qf::core::model::DataDocument::ModeInsert) {
 		ui->edFind->setFocus();
+	}
+	else if(mode == qf::core::model::DataDocument::ModeView || mode == qf::core::model::DataDocument::ModeDelete) {
+		ui->frmFind->hide();
 	}
 	if(Super::load(id, mode))
 		return loadRunsTable();
@@ -290,8 +343,9 @@ void CompetitorWidget::loadFromRegistrations(int siid)
 
 bool CompetitorWidget::saveData()
 {
-	qf::core::model::DataDocument *doc = dataDocument();
-	if(doc->value(QStringLiteral("classId")).toInt() == 0) {
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	Competitors::CompetitorDocument*doc = qobject_cast<Competitors::CompetitorDocument*>(dataController()->document());
+	if(!is_relays && doc->value(QStringLiteral("classId")).toInt() == 0) {
 		qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
 		return false;
 	}
@@ -299,9 +353,13 @@ bool CompetitorWidget::saveData()
 	bool ret = false;
 	try {
 		qf::core::sql::Transaction transaction;
+		//doc->setSaveSiidToRuns(true);
 		if(Super::saveData())
 			ret = saveRunsTable();
 		transaction.commit();
+	}
+	catch (BadDataInputException &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, e.message());
 	}
 	catch (qf::core::Exception &e) {
 		QString what = e.message();

@@ -10,7 +10,7 @@ HEADERS += \
     $$PWD/Event/stage.h \
     $$PWD/Event/stagedocument.h \
     $$PWD/Event/stagewidget.h \
-    $$PWD/dbschema.h
+    $$PWD/dbschema.h \
 
 SOURCES += \
 	$$PWD/plugin.cpp \
@@ -22,9 +22,11 @@ SOURCES += \
     $$PWD/Event/stage.cpp \
     $$PWD/Event/stagedocument.cpp \
     $$PWD/Event/stagewidget.cpp \
-    $$PWD/dbschema.cpp
+    $$PWD/dbschema.cpp \
 
 FORMS += \
     $$PWD/connectdbdialogwidget.ui \
     $$PWD/eventdialogwidget.ui \
     $$PWD/Event/stagewidget.ui
+
+include( $$PWD/services/services.pri )
