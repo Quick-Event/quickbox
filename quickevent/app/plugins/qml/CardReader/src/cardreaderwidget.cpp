@@ -368,6 +368,11 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 				connect(a, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::importCards_lapsOnlyCsv);
 				m_import_cards->addActionInto(a);
 			}
+			{
+				qfw::Action *a = new qfw::Action(tr("SI reader backup memory CSV"));
+				connect(a, &qf::qmlwidgets::Action::triggered, this, &CardReaderWidget::importCards_SIReaderBackupMemoryCsv);
+				m_import_cards->addActionInto(a);
+			}
 		}
 		{
 			qfw::Action *a = new qfw::Action(tr("Test audio"));
@@ -953,6 +958,191 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 				quickevent::core::si::ReadPunch punch;
 				punch.setCode(codes[i]);
 				punch.setTime(msecToSISec(stp_time));
+				punches << punch;
+			}
+			read_card.setFinishTime(quickevent::core::si::ReadPunch(punches.takeLast().toMap()).time());
+			read_card.setPunches(punches);
+			qfDebug() << read_card.toString();
+			processReadCard(read_card);
+		}
+		transaction.commit();
+	}
+	catch (const qf::core::Exception &e) {
+		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
+	}
+}
+
+void CardReaderWidget::importCards_SIReaderBackupMemoryCsv()
+{
+	qfLogFuncFrame();
+	// No
+	// Read on
+	// SIID
+	// Start no
+	// Clear CN
+	// Clear DOW
+	// Clear time
+	// Check CN
+	// Check DOW
+	// Check time
+	// Start CN
+	// Start DOW
+	// Start time
+	// Finish CN
+	// Finish DOW
+	// Finish time
+	// Class
+	// First name
+	// Last name
+	// Club
+	// Country
+	// Email
+	// Date of birth
+	// Sex
+	// Phone
+	// Street
+	// ZIP
+	// City
+	// Hardware version
+	// Software version
+	// Battery date
+	// Battery voltage
+	// Clear count
+	// Character set
+	// SEL_FEEDBACK
+	// No. of records
+	// Record 1 CN
+	// Record 1 DOW
+	// Record 1 time
+	// Record 2 CN
+	// Record 2 DOW
+	// Record 2 time
+	// Record 3 CN
+	// Record 3 DOW
+	// Record 3 time
+	// Record 4 CN
+	// Record 4 DOW
+	// Record 4 time
+	// ...
+	// Record 70 CN
+	// Record 70 DOW
+	// Record 70 time
+	// Record 71 CN
+	enum {
+		col_No = 0,
+		col_Read_on,
+		col_SIID,
+		col_Start_no,
+		col_Clear_CN,
+		col_Clear_DOW,
+		col_Clear_time,
+		col_Check_CN,
+		col_Check_DOW,
+		col_Check_time,
+		col_Start_CN,
+		col_Start_DOW,
+		col_Start_time,
+		col_Finish_CN,
+		col_Finish_DOW,
+		col_Finish_time,
+		col_Class,
+		col_First_name,
+		col_Last_name,
+		col_Club,
+		col_Country,
+		col_Email,
+		col_Date_of_birth,
+		col_Sex,
+		col_Phone,
+		col_Street,
+		col_ZIP,
+		col_City,
+		col_Hardware_version,
+		col_Software_version,
+		col_Battery_date,
+		col_Battery_voltage,
+		col_Clear_count,
+		col_Character_set,
+		col_SEL_FEEDBACK,
+		col_No_of_records,
+		col_Record_1_CN,
+		col_Record_1_DOW,
+		col_Record_1_time,
+	};
+	//qf::qmlwidgets::dialogs::MessageBox::showInfo(this, tr("<p>CSV record must have format:</p>"
+	//													   "<p>7203463,\"2,28\",\"3,34\",\"2,42\",\"3,29\",\"3,12\",\"1,38\",\"1,13\",\"3,18\",\"1,17\",\"0,15\"</p>"
+	//													   "<p>Any row can be commented by leading #</p>"
+	//													   "<p>Decimal point is also supported, the quotes can be omited than.</p>"));
+	QString fn = qf::qmlwidgets::dialogs::FileDialog::getOpenFileName(this, tr("Import TXT"));
+	if(fn.isEmpty())
+		return;
+	QFile f(fn);
+	if(!f.open(QFile::ReadOnly)) {
+		qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot open file '%1' for reading.").arg(f.fileName()));
+		return;
+	}
+	int stage_id = eventPlugin()->currentStageId();
+	QF_ASSERT_EX(stage_id > 0, tr("Bad stage!"));
+	int start00 = eventPlugin()->stageStartMsec(stage_id);
+
+	QTextStream ts(&f);
+	qf::core::utils::CSVReader reader(&ts);
+	reader.setSeparator(';');
+	reader.setLineComment('#');
+	try {
+		qf::core::sql::Transaction transaction;
+		int line_no = 0;
+		while (!ts.atEnd()) {
+			QStringList sl = reader.readCSVLineSplitted();
+			if(line_no++ == 0)
+				continue; /// skip hading
+			int si_id = sl.value(col_SIID).toInt();
+			if(si_id == 0) {
+				qfError() << "Ignoring bad SI:" << sl.value(col_SIID);
+				continue;
+			}
+			int run_id = 0;
+			int start_time = 0;
+			QString class_name;
+			{
+				qfs::QueryBuilder qb;
+				qb.select2("runs", "id, startTimeMs")
+						.select2("classes", "name")
+						.from("runs")
+						.innerJoin("runs.competitorId", "competitors.id")
+						.innerJoin("competitors.classId", "classes.id")
+						.where("runs.stageId=" QF_IARG(stage_id))
+						.where("runs.siId=" QF_IARG(si_id)) ;
+				qfs::Query q;
+				q.exec(qb.toString(), qf::core::Exception::Throw);
+				if(q.next()) {
+					run_id = q.value("runs.id").toInt();
+					start_time = start00 + q.value("runs.startTimeMs").toInt();
+					//class_name = q.value("classes.name").toString();
+				}
+			}
+			if(run_id == 0) {
+				qfError() << "Cannot find runs record for SI:" << si_id;
+				continue;
+			}
+			quickevent::core::si::ReadCard read_card;
+			read_card.setCardNumber(si_id);
+			read_card.setRunId(run_id);
+			auto time_to_msec = [](const QString &s, int default_msec) {
+				QTime tm = QTime::fromString(s, Qt::ISODate);
+				return tm.isValid()? tm.msecsSinceStartOfDay(): default_msec;
+			};
+			read_card.setStartTime(msecToSISec(time_to_msec(sl.value(col_Start_time), start_time)));
+			read_card.setCheckTime(msecToSISec(time_to_msec(sl.value(col_Check_time), start_time - (1000 * 90))));
+			read_card.setFinishTime(msecToSISec(time_to_msec(sl.value(col_Finish_time), 0)));
+			QVariantList punches;
+			int rec_cnt = sl.value(col_No_of_records).toInt();
+			for (int i = 0; i < rec_cnt; ++i) {
+				int code = sl.value(col_Record_1_CN + 3*i).toInt();
+				int tm = msecToSISec(time_to_msec(sl.value(col_Record_1_time + 3*i), 0));
+				quickevent::core::si::ReadPunch punch;
+				punch.setCode(code);
+				punch.setTime(tm);
 				punches << punch;
 			}
 			read_card.setFinishTime(quickevent::core::si::ReadPunch(punches.takeLast().toMap()).time());

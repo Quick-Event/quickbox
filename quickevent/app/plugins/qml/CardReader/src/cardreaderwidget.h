@@ -79,6 +79,7 @@ private slots:
 	void readStationBackupMemory();
 
 	void importCards_lapsOnlyCsv();
+	void importCards_SIReaderBackupMemoryCsv();
 private:
 	void createActions();
 	Q_SLOT void openSettings();
