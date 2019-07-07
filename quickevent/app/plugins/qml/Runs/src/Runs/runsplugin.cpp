@@ -10,6 +10,8 @@
 #include <Event/eventplugin.h>
 
 #include <quickevent/gui/reportoptionsdialog.h>
+#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -30,6 +32,8 @@
 #include <QFile>
 #include <QInputDialog>
 #include <QQmlEngine>
+
+#include <math.h>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;
@@ -163,6 +167,104 @@ int RunsPlugin::courseForRun(int run_id)
 		return courseForRun_Relays(run_id);
 	}
 	return courseForRun_Classic(run_id);
+}
+
+static int latlng_distance(double lat1, double lng1, double lat2, double lng2)
+{
+	/// http://www.movable-type.co.uk/scripts/latlong.html
+	if(qFuzzyIsNull(lng2 - lng1) && qFuzzyIsNull(lat2 - lat1))
+		return 0;
+	auto deg2rad = [](double deg) {
+		static constexpr double PI = 3.1415926535;
+		return deg * PI / 180;
+	};
+	lat1 = deg2rad(lat1);
+	lat2 = deg2rad(lat2);
+	lng1 = deg2rad(lng1);
+	lng2 = deg2rad(lng2);
+	double x = (lng2 - lng1) * std::cos((lat1 + lat2) / 2);
+	double y = (lat2 - lat1);
+	static constexpr double R = 6371000;
+	double d = std::sqrt(x*x + y*y) * R;
+	return static_cast<int>(std::ceil(d));
+}
+
+QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
+{
+	qfLogFuncFrame() << "run id:" << run_id;
+	QVariantMap ret;
+	if(run_id <= 0) {
+		qfError() << "Run ID == 0";
+		return ret;
+	}
+	int course_id = courseForRun(run_id);
+	if(course_id <= 0) {
+		qfError() << "Course ID == 0";
+		return ret;
+	}
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("courses", "*")
+				.from("courses")
+				.where("courses.id=" QF_IARG(course_id));
+		qfs::Query q;
+		q.exec(qb.toString(), qf::core::Exception::Throw);
+		if(q.next())
+			ret = q.values();
+	}
+	quickevent::core::si::CodeDef start_code;
+	QVariantList codes;
+	quickevent::core::si::CodeDef finish_code;
+	{
+		qfs::QueryBuilder qb;
+		qb.select2("coursecodes", "position")
+				.select2("codes", "*")
+				.from("coursecodes")
+				.join("coursecodes.codeId", "codes.id")
+				.where("coursecodes.courseId=" QF_IARG(course_id))
+				.orderBy("coursecodes.position");
+		qfs::Query q;
+		//qfWarning() << qb.toString();
+		q.exec(qb.toString(), qf::core::Exception::Throw);
+		while (q.next()) {
+			quickevent::core::si::CodeDef cd(q.values());
+			const QString control_type = cd.type();
+			if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_START) {
+				start_code = cd;
+			}
+			else if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH) {
+				finish_code = cd;
+			}
+			else if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_CONTROL) {
+				codes << cd;
+			}
+		}
+	}
+	if (finish_code.isEmpty()) {
+		finish_code.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+		finish_code.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+	}
+	int course_len = 0;
+	quickevent::core::si::CodeDef prev_cd = start_code;
+	for (int i = 0; i < codes.count(); ++i) {
+		quickevent::core::si::CodeDef cd(codes[i].toMap());
+		int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), cd.latitude(), cd.longitude());
+		course_len += d;
+		cd.setDistance(d);
+		codes[i] = cd;
+		qfDebug() << "pos:" << (i+1) << prev_cd.toString() << "-->" << cd.toString() << "distance:" << d;
+		prev_cd = cd;
+	}
+	{
+		int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), finish_code.latitude(), finish_code.longitude());
+		course_len += d;
+		qfDebug() << "finish distance:" << d;
+		finish_code.setDistance(d);
+	}
+	qfDebug() << "course len:" << course_len;
+	ret["codes"] = codes;
+	ret["finishCode"] = finish_code;
+	return ret;
 }
 
 int RunsPlugin::courseForRun_Classic(int run_id)

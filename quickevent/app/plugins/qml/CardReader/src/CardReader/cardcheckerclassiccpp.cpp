@@ -1,5 +1,6 @@
 #include "cardcheckerclassiccpp.h"
 
+#include <quickevent/core/si/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 #include <quickevent/core/si/readcard.h>
 
@@ -36,6 +37,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 
 	QList<quickevent::core::si::CheckedPunch> checked_punches;
 	QVariantList course_codes = course.value(QStringLiteral("codes")).toList();
+	QVariantMap finish_code = course.value(QStringLiteral("finishCode")).toMap();
 	QList<quickevent::core::si::ReadPunch> read_punches = read_card.punchList();
 
 	//........... normalize times .....................
@@ -91,9 +93,9 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 
 	int read_punch_check_ix = 0;
 	for(int j=0; j<course_codes.length(); j++) {
-		QVariantMap course_code = course_codes[j].toMap();
-		quickevent::core::si::CheckedPunch checked_punch;
-		checked_punch.setCode(course_code.value(QStringLiteral("code")).toInt());
+		quickevent::core::si::CodeDef course_code(course_codes[j].toMap());
+		quickevent::core::si::CheckedPunch checked_punch = quickevent::core::si::CheckedPunch::fromCodeDef(course_code);
+		//checked_punch.setCode(course_code.value(QStringLiteral("code")).toInt());
 		int k;
 		for(k=read_punch_check_ix; k<read_punches.length(); k++) { //scan card
 			const quickevent::core::si::ReadPunch &read_punch = read_punches[k];
@@ -125,12 +127,13 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	checked_card.setMisPunch(error_mis_punch);
 
 	quickevent::core::si::CheckedPunch finish_punch;
-	finish_punch.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+	if(!finish_code.isEmpty())
+		finish_punch = quickevent::core::si::CheckedPunch::fromCodeDef(finish_code);
 	finish_punch.setStpTimeMs(msecIntervalAM(checked_card.startTimeMs(), checked_card.finishTimeMs()));
 	checked_punches << finish_punch;
 
 	QVariant prev_stp_time_ms = 0;
-	for(int k=0; k<checked_punches.length(); k++) {
+	for(int k = 0; k < checked_punches.length(); k++) {
 		quickevent::core::si::CheckedPunch &checked_punch = checked_punches[k];
 		if(checked_punch.stpTimeMs()) {
 			if(prev_stp_time_ms.isValid())

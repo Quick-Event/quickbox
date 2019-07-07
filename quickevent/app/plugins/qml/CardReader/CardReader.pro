@@ -16,11 +16,13 @@ LIBS += -lsiut
 
 INCLUDEPATH += $$PWD/../Event/include
 INCLUDEPATH += $$PWD/../Runs/include
+#INCLUDEPATH += $$PWD/../Classes/include
 
 LIBS += \
     -L$$DESTDIR \
     -lEventplugin \
     -lRunsplugin \
+#    -lClassesplugin \
 
 # plugin sometimes cannot find Qt libraries
 #unix: LIBS +=  \

@@ -217,7 +217,7 @@ Report {
 				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};
 				Cell {
 					id: cellPos
-					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "3", "lpt_textAlign": "right"}
 					width: 8
 					textHAlign: Frame.AlignRight
 					text: {
@@ -229,8 +229,8 @@ Report {
 				}
 				Para {
 					id: cellCode
-					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
-					width: 10
+					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
+					width: 7
 					//textHAlign: Frame.AlignRight
 					textFn: function() {
 						var ret;
@@ -276,6 +276,20 @@ Report {
 						var msec = dc.data(dc.currentIndex, "lossMs");
 						if(msec > 0)
 							return "+" + OGTime.msecToString_mmss(msec);
+						return "";
+					}
+				}
+				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+					id: cellMinKm
+					width: "%"
+					textHAlign: Frame.AlignRight
+					text: {
+						var msec = dc.data(dc.currentIndex, "lapTimeMs");
+						var km = dc.data(dc.currentIndex, "distance") / 1000;
+						if(msec > 0 && km > 0) {
+							return "~" + OGTime.msecToString_mmss(msec / km);
+						}
 						return "";
 					}
 				}

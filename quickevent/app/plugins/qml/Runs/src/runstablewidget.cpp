@@ -282,6 +282,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		Runs::RunsPlugin *runs_plugin = runsPlugin();
 		if(!runs_plugin)
 			return;
+		//runs_plugin->courseCodesForRunId(run_id);
 		int card_id = runs_plugin->cardForRun(run_id);
 		if(card_id > 0) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
