@@ -235,7 +235,7 @@ QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
 			else if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH) {
 				finish_code = cd;
 			}
-			else if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_CONTROL) {
+			else if(control_type.isEmpty()) {
 				codes << cd;
 			}
 		}

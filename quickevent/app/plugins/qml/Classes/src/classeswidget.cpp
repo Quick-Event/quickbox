@@ -720,8 +720,8 @@ void ClassesWidget::import_ocad_iofxml_3()
 						//if(el_control.attribute(QStringLiteral("type")) != QLatin1String("Control"))
 						//		continue;
 						QString code_str = element_text(el_control, QStringLiteral("Control")).trimmed();
-						/*
 						qfDebug() << code_str;
+						/*
 						int code = 0;
 						bool ok;
 						if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {

@@ -6,7 +6,6 @@ namespace si {
 	
 const QString CodeDef::CONTROL_TYPE_START = "S";
 const QString CodeDef::CONTROL_TYPE_FINISH = "F";
-const QString CodeDef::CONTROL_TYPE_CONTROL = "C";
 
 QString CodeDef::toString() const
 {

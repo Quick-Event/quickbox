@@ -159,15 +159,7 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 			course_ids[cd.name()] = course_id;
 			for(auto v : cd.codes()) {
 				QString key;
-				if(v.type() == QVariant::String) {
-					key = v.toString();
-				}
-				else if(v.type() == QVariant::Int) {
-					key = quickevent::core::si::CodeDef::CONTROL_TYPE_CONTROL + v.toString();
-				}
-				else {
-					QF_EXCEPTION("Invalid control code: " + v.toString());
-				}
+				key = v.toString();
 				if(codes.isEmpty()) {
 					/// guess code definition from courses
 					code_defs[key];
@@ -239,6 +231,7 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 				it.next();
 				quickevent::core::si::CodeDef cd = it.value();
 				qfDebug() << "inserting code" << cd.type() << cd.code();
+				//q.bindValue(":type", cd.type().isEmpty()? QString(""): cd.type()); /// save empty not null string
 				q.bindValue(":type", cd.type());
 				q.bindValue(":code", cd.code());
 				q.bindValue(":note", QString("E%1").arg(stage_id));

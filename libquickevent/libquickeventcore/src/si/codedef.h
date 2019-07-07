@@ -15,10 +15,9 @@ class QUICKEVENTCORE_DECL_EXPORT CodeDef : public QVariantMap
 public:
 	static const QString CONTROL_TYPE_START;
 	static const QString CONTROL_TYPE_FINISH;
-	static const QString CONTROL_TYPE_CONTROL;
 
 	QF_VARIANTMAP_FIELD(int, c, setC, ode)
-	QF_VARIANTMAP_FIELD2(QString, t, setT, ype, CONTROL_TYPE_CONTROL)
+	QF_VARIANTMAP_FIELD(QString, t, setT, ype)
 	QF_VARIANTMAP_FIELD(double, l, setL, atitude)
 	QF_VARIANTMAP_FIELD(double, l, setL, ongitude)
 	QF_VARIANTMAP_FIELD(int, d, setD, istance)
