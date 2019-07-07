@@ -162,7 +162,25 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 				key = v.toString();
 				if(codes.isEmpty()) {
 					/// guess code definition from courses
-					code_defs[key];
+					bool ok;
+					quickevent::core::si::CodeDef cd;
+					if(key.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
+						cd.setCode(key.mid(1).toInt(&ok));
+						cd.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_START);
+					}
+					else if(key.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
+						cd.setCode(key.mid(1).toInt(&ok));
+						cd.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+					}
+					else {
+						cd.setCode(key.toInt(&ok));
+					}
+					if(ok) {
+						code_defs[key] = cd;
+					}
+					else {
+						qfError() << "Invalid code" << key << "will be ignored";
+					}
 				}
 				else {
 					if(!code_defs.contains(key)) {
@@ -230,7 +248,7 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 			while(it.hasNext()) {
 				it.next();
 				quickevent::core::si::CodeDef cd = it.value();
-				qfDebug() << "inserting code" << cd.type() << cd.code();
+				qfDebug() << "inserting code" << cd.toString();
 				//q.bindValue(":type", cd.type().isEmpty()? QString(""): cd.type()); /// save empty not null string
 				q.bindValue(":type", cd.type());
 				q.bindValue(":code", cd.code());
