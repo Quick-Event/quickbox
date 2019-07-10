@@ -7,7 +7,7 @@
         <location filename="src/sql/catalog.cpp" line="32"/>
         <location filename="src/sql/catalog.cpp" line="60"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Klarte ikke å hente sekvens nextval(&apos;%1&apos;)</translation>
     </message>
 </context>
 <context>
@@ -15,7 +15,7 @@
     <message>
         <location filename="src/core/logdevice.cpp" line="136"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Finner ikke loogingsenhet med objektnavn &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -67,13 +67,15 @@
         <location filename="src/model/sqltablemodel.cpp" line="230"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>numRowsAffected() = %1, skal være 1
+%2</translation>
     </message>
     <message>
         <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Klarte ikke å kjøre spørring: %1
+ %2</translation>
     </message>
 </context>
 <context>
@@ -91,14 +93,14 @@
         <location filename="src/model/tablemodel.cpp" line="452"/>
         <location filename="src/model/tablemodel.cpp" line="556"/>
         <source>Invalid table row: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig tabellrad: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="428"/>
         <location filename="src/model/tablemodel.cpp" line="459"/>
         <location filename="src/model/tablemodel.cpp" line="563"/>
         <source>Invalid table field index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig tabellfeltindeks: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="444"/>
@@ -107,7 +109,7 @@
         <location filename="src/model/tablemodel.cpp" line="548"/>
         <location filename="src/model/tablemodel.cpp" line="574"/>
         <source>Cannot find column index for name: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Finner ikke kolonneindeks for navn: &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="475"/>
@@ -124,12 +126,12 @@
         <location filename="src/model/tablemodel.cpp" line="619"/>
         <location filename="src/model/tablemodel.cpp" line="680"/>
         <source>Invalid column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig kolonneindeks: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="628"/>
         <source>Invalid field for column index: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ugyldig felt for kolonneindeks: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="669"/>
