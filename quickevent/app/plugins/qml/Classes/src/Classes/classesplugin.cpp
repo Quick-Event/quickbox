@@ -269,10 +269,15 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 				int pos = 0;
 				for(const QString &code_str : it.value()) {
 					int code_id = code_to_id.value(code_str);
+					quickevent::core::si::CodeDef cd = code_defs.value(code_str);
+					QString code_type = cd.type();
 					if(code_id > 0) {
 						qfDebug() << "courseId" << it.key() << "-> code:" << code_str << "codeId:" << code_id;
+						/// keep start control code == 0 to have firs control on position == 1
+						if(code_type != quickevent::core::si::CodeDef::CONTROL_TYPE_START)
+							pos++;
 						q.bindValue(":courseId", it.key());
-						q.bindValue(":position", ++pos);
+						q.bindValue(":position", pos);
 						q.bindValue(":codeId", code_id);
 						q.exec(qf::core::Exception::Throw);
 					}
