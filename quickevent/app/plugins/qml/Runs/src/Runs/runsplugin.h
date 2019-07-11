@@ -69,7 +69,7 @@ public:
 
 	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
 
-	bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
+	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 

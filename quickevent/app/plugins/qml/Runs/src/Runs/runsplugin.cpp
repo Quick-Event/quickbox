@@ -767,10 +767,11 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			if(!course_codes.contains(course_id)) {
 				qf::core::sql::QueryBuilder qb;
 				qb.select2("codes", "code")
-						.from("coursecodes")
-						.join("coursecodes.codeId", "codes.id")
-						.where("coursecodes.courseId=" QF_IARG(course_id))
-						.orderBy("coursecodes.position");
+					.from("coursecodes")
+					.join("coursecodes.codeId", "codes.id")
+					.where("coursecodes.courseId=" QF_IARG(course_id))
+					.where("COALESCE(codes.type, '') = ''")
+					.orderBy("coursecodes.position");
 				qf::core::sql::Query q;
 				q.exec(qb.toString(), qf::core::Exception::Throw);
 				QVector<SplitTime> sts;
@@ -789,7 +790,8 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				qb.select2("runlaps", "*")
 					.from("runlaps")
 					.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
-					.where("runlaps.code!=999") // omit finish lap
+					.where("runlaps.code!=999")
+					//.where("runlaps.position >= 1")
 					.orderBy("runlaps.position");
 
 				qfs::Query q;
@@ -797,7 +799,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				while(q.next()) {
 					int ix = q.value(QStringLiteral("position")).toInt() - 1;
 					if(ix < 0 || ix >= codes.count()) {
-						qfWarning() << "runlap position out of codes range.";
+						qfWarning() << "runlap position out of codes range. index:" << ix << "codes count:" << codes.count();
 						continue;
 					}
 					SplitTime &sts = codes[ix];
