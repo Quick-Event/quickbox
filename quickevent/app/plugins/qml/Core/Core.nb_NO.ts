@@ -14,7 +14,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="65"/>
         <source>About Quick Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Om Quick Event</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="66"/>
@@ -24,7 +24,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="81"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Om Qt</translation>
     </message>
 </context>
 <context>
@@ -37,37 +37,37 @@
     <message>
         <location filename="qml/main.qml" line="77"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Avslutt</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="86"/>
         <source>&amp;SQL tool</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SQL-verktøy</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="95"/>
         <source>&amp;About Quick event</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp; Om Quick Event</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="103"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Om &amp;Qt</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="126"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fil</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="127"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importer</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="133"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verktøy</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="140"/>
@@ -77,37 +77,37 @@
     <message>
         <location filename="qml/main.qml" line="141"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Språk</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="143"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>System</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="144"/>
         <source>Czech</source>
-        <translation type="unfinished"></translation>
+        <translation>Tsjekkisk</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="145"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Engelsk</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="158"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vis</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="159"/>
         <source>&amp;Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verktøyslinje</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="162"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hjelp</translation>
     </message>
 </context>
 </TS>
