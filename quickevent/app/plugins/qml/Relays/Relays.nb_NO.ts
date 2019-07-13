@@ -6,12 +6,12 @@
     <message>
         <location filename="src/addlegdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.ui" line="37"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.ui" line="44"/>
@@ -26,7 +26,7 @@
     <message>
         <location filename="src/addlegdialogwidget.ui" line="68"/>
         <source>Registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>Registreringer</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.ui" line="85"/>
@@ -87,7 +87,7 @@
     <message>
         <location filename="src/relaywidget.cpp" line="78"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn</translation>
     </message>
     <message>
         <location filename="src/relaywidget.cpp" line="79"/>
@@ -102,12 +102,12 @@
     <message>
         <location filename="src/relaywidget.cpp" line="81"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/relaywidget.cpp" line="82"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid</translation>
     </message>
     <message>
         <location filename="src/relaywidget.cpp" line="83"/>
@@ -129,7 +129,7 @@
     <message>
         <location filename="src/relaywidget.cpp" line="84"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifisert</translation>
     </message>
     <message>
         <location filename="src/relaywidget.cpp" line="85"/>
@@ -148,7 +148,7 @@
     <message>
         <location filename="src/relaywidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="35"/>
@@ -159,12 +159,12 @@
     <message>
         <location filename="src/relaywidget.ui" line="41"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Navn</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="51"/>
         <source>&amp;Class</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klasse</translation>
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="61"/>
@@ -324,7 +324,7 @@
     <message>
         <location filename="src/relayswidget.cpp" line="155"/>
         <source>&amp;Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klasser</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="158"/>
@@ -334,7 +334,7 @@
     <message>
         <location filename="src/relayswidget.cpp" line="162"/>
         <source>&amp;Results</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resultater</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="164"/>
@@ -377,7 +377,7 @@
         <location filename="src/relayswidget.cpp" line="279"/>
         <location filename="src/relayswidget.cpp" line="491"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="279"/>
@@ -387,7 +387,7 @@
     <message>
         <location filename="src/relayswidget.cpp" line="280"/>
         <source>Random number</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilfeldig nummer</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="280"/>
@@ -424,7 +424,7 @@
     <message>
         <location filename="qml/reports/results.qml" line="9"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultater</translation>
     </message>
     <message>
         <location filename="qml/reports/results.qml" line="19"/>
@@ -439,7 +439,7 @@
     <message>
         <location filename="qml/reports/results.qml" line="23"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">---</translation>
     </message>
 </context>
 <context>
