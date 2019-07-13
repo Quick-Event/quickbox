@@ -6,17 +6,17 @@
     <message>
         <location filename="src/classdefwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="20"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="27"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervall</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="34"/>
@@ -52,12 +52,12 @@
     <message>
         <location filename="src/classdefwidget.cpp" line="13"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger klasse</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.cpp" line="29"/>
         <source>Class %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse %1</translation>
     </message>
 </context>
 <context>
@@ -65,7 +65,7 @@
     <message>
         <location filename="src/Classes/classesplugin.cpp" line="236"/>
         <source>Cannot find id for code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Finner ikke ID for kode: %1</translation>
     </message>
 </context>
 <context>
@@ -78,7 +78,7 @@
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>New class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nytt klassenavn:</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="44"/>
@@ -92,12 +92,12 @@
     <message>
         <location filename="src/classeswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="36"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasser</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="81"/>
@@ -112,17 +112,17 @@
     <message>
         <location filename="src/classeswidget.ui" line="103"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Koder</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="124"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">…</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="121"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="122"/>
@@ -132,17 +132,17 @@
     <message>
         <location filename="src/classeswidget.cpp" line="122"/>
         <source>Locked for drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Låst for tegning</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="123"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="124"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervall</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="125"/>
@@ -197,7 +197,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Kart</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="131"/>
@@ -207,7 +207,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="133"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengde</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="134"/>
@@ -242,7 +242,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="155"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="156"/>
@@ -277,7 +277,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="184"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rediger</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="186"/>
@@ -297,12 +297,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="197"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="211"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importer</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="213"/>
@@ -345,12 +345,12 @@
         <location filename="src/classeswidget.cpp" line="584"/>
         <location filename="src/classeswidget.cpp" line="649"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Åpne fil</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="584"/>
         <source>XML files (*.xml);; All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-filer (*.xml);; Alle filer (*)</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="727"/>
@@ -363,17 +363,17 @@
     <message>
         <location filename="src/editcodeswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="16"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Koder</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="29"/>
@@ -383,12 +383,12 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="29"/>
         <source>Code alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>Kodealternativ</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="30"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Merknad</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="31"/>
@@ -403,7 +403,7 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="32"/>
         <source>Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Radio</translation>
     </message>
 </context>
 <context>
@@ -411,7 +411,7 @@
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="20"/>
@@ -421,12 +421,12 @@
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="78"/>
         <source>Move selected codes up</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytt valgte koder oppover</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="89"/>
         <source>Move selected codes down</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytt valgte koder nedover</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="150"/>
@@ -441,18 +441,18 @@
     <message>
         <location filename="src/editcoursecodeswidget.ui" line="188"/>
         <source>All codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle koder</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.cpp" line="56"/>
         <location filename="src/editcoursecodeswidget.cpp" line="108"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode</translation>
     </message>
     <message>
         <location filename="src/editcoursecodeswidget.cpp" line="98"/>
         <source>Save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre endringer?</translation>
     </message>
 </context>
 <context>
@@ -460,7 +460,7 @@
     <message>
         <location filename="src/editcourseswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.ui" line="39"/>
@@ -470,12 +470,12 @@
     <message>
         <location filename="src/editcourseswidget.cpp" line="34"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="35"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengde</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="36"/>
@@ -500,7 +500,7 @@
     <message>
         <location filename="src/editcourseswidget.cpp" line="39"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Koder</translation>
     </message>
 </context>
 <context>
@@ -508,7 +508,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="10"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasser</translation>
     </message>
 </context>
 <context>
@@ -546,7 +546,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediger klasse</translation>
     </message>
 </context>
 <context>
@@ -562,27 +562,27 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lagre</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="43"/>
         <source>&amp;Find</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Finn</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="22"/>
         <source>Draw tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Tegningsverktøy</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="50"/>
         <source>&amp;Draw</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tegn</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="57"/>
