@@ -6,12 +6,12 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="78"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="79"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Kart</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="80"/>
@@ -26,17 +26,17 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="82"/>
         <source>Start first</source>
-        <translation type="unfinished"></translation>
+        <translation>Start først</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="83"/>
         <source>Start last</source>
-        <translation type="unfinished"></translation>
+        <translation>Start sist</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="84"/>
         <source>Time 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid 1</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="84"/>
@@ -46,7 +46,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="85"/>
         <source>Time 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid 3</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="85"/>
@@ -66,17 +66,17 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullført</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Not finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikke fullført</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>New results</source>
-        <translation type="unfinished"></translation>
+        <translation>Nye resultater</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
@@ -99,7 +99,7 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="20"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="59"/>
@@ -177,7 +177,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="115"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Valg</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="574"/>
@@ -191,7 +191,7 @@
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="20"/>
@@ -248,7 +248,7 @@
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="20"/>
@@ -302,7 +302,7 @@
     <message>
         <location filename="src/runstabledialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/runstabledialogwidget.cpp" line="41"/>
@@ -316,12 +316,12 @@
         <location filename="src/runstablemodel.cpp" line="26"/>
         <source>Running</source>
         <oldsource>Runnig</oldsource>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kjører</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="27"/>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="28"/>
@@ -336,7 +336,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="30"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
@@ -347,7 +347,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
         <source>Start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Startnummer</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="32"/>
@@ -363,7 +363,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="33"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="34"/>
@@ -378,7 +378,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="35"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisens</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="36"/>
@@ -403,17 +403,17 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="40"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="41"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullfør</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="42"/>
@@ -459,12 +459,12 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="46"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Feil</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="46"/>
         <source>Disqualification reason</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifiseringsgrunn</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="47"/>
@@ -474,12 +474,12 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="47"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifisert</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="48"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Merknad</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="79"/>
@@ -512,12 +512,12 @@
     <message>
         <location filename="src/runstablewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="68"/>
         <source>Class start:</source>
-        <translation type="unfinished"></translation>
+        <translation>Klassestart:</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="78"/>
@@ -533,7 +533,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="245"/>
         <source>Show receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis kvittering</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="246"/>
@@ -582,12 +582,12 @@
     <message>
         <location filename="src/runswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="62"/>
         <source>Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metode</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="85"/>
@@ -622,7 +622,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="79"/>
         <source>Random number</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilfeldig nummer</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="80"/>
@@ -637,7 +637,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="82"/>
         <source>Handicap</source>
-        <translation type="unfinished"></translation>
+        <translation>Handikap</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="83"/>
@@ -678,17 +678,17 @@
     <message>
         <location filename="src/runswidget.cpp" line="173"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importer</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="176"/>
         <source>E&amp;xport</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;ksporter</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="178"/>
         <source>Start times</source>
-        <translation type="unfinished"></translation>
+        <translation>Starttider</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="179"/>
@@ -698,7 +698,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="184"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultater</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="185"/>
@@ -758,12 +758,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="350"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="439"/>
         <source>Save as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre som %1</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="520"/>
@@ -834,19 +834,19 @@
         <location filename="qml/StartLists.qml" line="379"/>
         <location filename="qml/StartLists.qml" line="560"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="380"/>
         <location filename="qml/StartLists.qml" line="562"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="381"/>
         <location filename="qml/StartLists.qml" line="563"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrering</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="382"/>
@@ -862,7 +862,7 @@
     <message>
         <location filename="qml/StartLists.qml" line="561"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
 </context>
 <context>
@@ -941,14 +941,14 @@
         <location filename="qml/main.qml" line="163"/>
         <location filename="qml/main.qml" line="210"/>
         <source>Get file name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hent filnavn</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
         <location filename="qml/main.qml" line="163"/>
         <location filename="qml/main.qml" line="210"/>
         <source>XML files (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-filer (*.xml)</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="91"/>
@@ -958,7 +958,7 @@
     <message>
         <location filename="qml/main.qml" line="94"/>
         <source>TXT files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>TXT-filer (*.txt)</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="101"/>
@@ -1009,7 +1009,7 @@
     <message>
         <location filename="qml/main.qml" line="181"/>
         <source>&amp;Results</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resultater</translation>
     </message>
 </context>
 <context>
@@ -1032,12 +1032,12 @@
     <message>
         <location filename="qml/reports/results_nstages.qml" line="138"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="140"/>
         <source>Loss</source>
-        <translation type="unfinished"></translation>
+        <translation>Tap</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="178"/>
