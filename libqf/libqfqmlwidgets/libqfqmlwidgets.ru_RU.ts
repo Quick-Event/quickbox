@@ -6,12 +6,12 @@
     <message>
         <location filename="src/dialogs/previewdialog.ui" line="53"/>
         <source>Word wrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Перенос слова</translation>
     </message>
     <message>
         <location filename="src/dialogs/previewdialog.ui" line="56"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -19,87 +19,87 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
         <source>CSV options</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-опции</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="42"/>
         <source>header</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="60"/>
         <source>lines from</source>
-        <translation type="unfinished"></translation>
+        <translation>строки с</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="89"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>по</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="102"/>
         <source>value -1 means all lines</source>
-        <translation type="unfinished"></translation>
+        <translation>значение -1 означает все строки</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="147"/>
         <source>codec</source>
-        <translation type="unfinished"></translation>
+        <translation>кодек</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="178"/>
         <source>separator</source>
-        <translation type="unfinished"></translation>
+        <translation>разделитель</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="186"/>
         <source>other</source>
-        <translation type="unfinished"></translation>
+        <translation>другой</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="202"/>
         <source>,</source>
-        <translation type="unfinished"></translation>
+        <translation>,</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="224"/>
         <source>Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>табуляция</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="237"/>
         <source>quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>цитирование (установить кавычки)</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="243"/>
         <source>alwa&amp;ys</source>
-        <translation type="unfinished"></translation>
+        <translation>всегда</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="250"/>
         <source>when necessary</source>
-        <translation type="unfinished"></translation>
+        <translation>при необходимости</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="260"/>
         <source>ne&amp;ver</source>
-        <translation type="unfinished"></translation>
+        <translation>никогда</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation type="unfinished"></translation>
+        <translation> символ кавычки</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
         <source>&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;</translation>
     </message>
 </context>
 <context>
@@ -107,27 +107,27 @@
     <message>
         <location filename="src/headerview.cpp" line="66"/>
         <source>Resize section to contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить размер раздела по содержанию</translation>
     </message>
     <message>
         <location filename="src/headerview.cpp" line="68"/>
         <source>Resize all sections to contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить размер всех разделов по содержанию</translation>
     </message>
     <message>
         <location filename="src/headerview.cpp" line="69"/>
         <source>Hide section</source>
-        <translation type="unfinished"></translation>
+        <translation>Скрыть раздел</translation>
     </message>
     <message>
         <location filename="src/headerview.cpp" line="70"/>
         <source>Show all sections</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать все разделы</translation>
     </message>
     <message>
         <location filename="src/headerview.cpp" line="71"/>
         <source>Sections in natural order</source>
-        <translation type="unfinished"></translation>
+        <translation>Разделы в естественном порядке</translation>
     </message>
 </context>
 <context>
@@ -135,7 +135,7 @@
     <message>
         <location filename="src/htmlviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
 </context>
 <context>
@@ -143,13 +143,13 @@
     <message>
         <location filename="src/saveoptionswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/saveoptionswidget.ui" line="78"/>
         <location filename="src/saveoptionswidget.ui" line="94"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -157,315 +157,315 @@
     <message>
         <location filename="src/tableview.cpp" line="75"/>
         <source>Left click selects all, right click for menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нажатие левой кнопкой мыши выделяет все, нажатие правой кнопкой мыши - для меню.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>Enter value</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите значение</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="648"/>
         <source>new value:</source>
-        <translation type="unfinished"></translation>
+        <translation>новое значение:</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="747"/>
         <source>Save File</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить файл</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="759"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="911"/>
         <source>Save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как ...</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="917"/>
         <source>Cannot open file &apos;%1&apos; for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно открыть файл &apos;% 1&apos; для записи.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1518"/>
         <source>Resize columns to contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменение размера столбцов по содержимому</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1527"/>
         <source>Reset columns settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить настройки столбцов</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1528"/>
         <source>Reset column widths and positions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сбросить ширину и положение столбцов</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1537"/>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезагрузить</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1539"/>
         <source>Ctrl+R</source>
         <comment>reload SQL table</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + R</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1547"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1549"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + C</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1557"/>
         <source>Copy special</source>
-        <translation type="unfinished"></translation>
+        <translation>Специальное копирование</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1567"/>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1569"/>
         <source>Ctrl+V</source>
         <comment>Paste rows</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + V</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1577"/>
         <source>Insert row</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить строку</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1578"/>
         <source>Ctrl+Ins</source>
         <comment>insert row SQL table</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Ins</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1586"/>
         <source>Delete selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранные строки</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1587"/>
         <source>Ctrl+Del</source>
         <comment>delete row SQL table</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Del</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1595"/>
         <source>Post row edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Перенос данных во все остальные выбранные ячейки после ввода данных в одной из нескольких выбранных ячеек</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1597"/>
         <source>Ctrl+Return</source>
         <comment>post row SQL table</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Return</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1605"/>
         <source>Revert row edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Отменить редактирование строк</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1607"/>
         <source>Ctrl+Z</source>
         <comment>revert edited row</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Z</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1615"/>
         <source>Clone row</source>
-        <translation type="unfinished"></translation>
+        <translation>Ввод одинаковых данных в ячейки снизу</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1620"/>
         <source>Ctrl+D</source>
         <comment>insert row copy</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + D</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1627"/>
         <source>Zobrazit ve formulari</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать в форме</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1629"/>
         <source>Zobrazit radek v formulari pro cteni</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать строку в виде текста</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1636"/>
         <source>Upravit ve formulari</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать в форме</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1638"/>
         <source>Upravit radek ve formulari</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать строку в форме </translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1667"/>
         <source>Filter table</source>
-        <translation type="unfinished"></translation>
+        <translation>Таблица фильтров</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1671"/>
         <source>Ctrl+F</source>
         <comment>filter table</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + F</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1678"/>
         <source>Edit cell content</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить содержимое ячейки</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1680"/>
         <source>Ctrl+Shift+T</source>
         <comment>Edit cell content</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Shift + T</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1688"/>
         <source>Save BLOB</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить BLOB</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1697"/>
         <source>Load BLOB from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузить BLOB из файла</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1706"/>
         <source>Insert rows statement</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор вставки строк Insert</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1715"/>
         <source>Set NULL in selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить NULL в выделенном фрагменте</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1717"/>
         <source>Ctrl+Shift+L</source>
         <comment>Set NULL in selection</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Shift + L</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1725"/>
         <source>Set value in selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить значение в выделенном фрагменте</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1726"/>
         <source>Ctrl+Shift+E</source>
         <comment>Set value in selection</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + Shift + E</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1734"/>
         <source>Generate sequence in selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать последовательность в выделенном фрагменте</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1743"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1750"/>
         <source>Select current column</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать текущий столбец</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1759"/>
         <source>Select current row</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать текущую строку</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1769"/>
         <source>Calculate</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсчитать</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1776"/>
         <source>Sum column</source>
-        <translation type="unfinished"></translation>
+        <translation>Сумма по столбцам</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1782"/>
         <source>Sum selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Сумма содержимого выбранного фрагмента</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1789"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Извлечь (экспортировать)</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1796"/>
         <source>Report</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчет</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1803"/>
         <location filename="src/tableview.cpp" line="1841"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1810"/>
         <source>HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1818"/>
         <source>XLS - MS Excel</source>
-        <translation type="unfinished"></translation>
+        <translation>XLS - MS Excel</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1826"/>
         <source>XML (MS Excel 2003)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML (MS Excel 2003)</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1834"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1941"/>
         <source>Enter start value</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите начальное значение</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1941"/>
         <source>start value:</source>
-        <translation type="unfinished"></translation>
+        <translation>начальное значение:</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2080"/>
         <source>Do you realy want to remove row?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить строку?</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2083"/>
         <source>Do you realy want to remove all selected rows?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить все выбранные строки?</translation>
     </message>
 </context>
 <context>
@@ -473,7 +473,7 @@
     <message>
         <location filename="src/tableviewtoolbar.cpp" line="79"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр</translation>
     </message>
 </context>
 <context>
@@ -481,67 +481,67 @@
     <message>
         <location filename="src/texteditwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="67"/>
         <source>textove soubory (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>текстовые файлы (* .txt)</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="76"/>
         <source>Uložit jako ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="89"/>
         <source>Cannot open file %1 for writing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть файл% 1 для записи.</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="98"/>
         <source>Cannot load text codec %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается загрузить текстовый кодек% 1.</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="115"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Распечатать</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="121"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="127"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="133"/>
         <source>Wrap lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Перенос строк</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="146"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="153"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Просмотр</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="202"/>
         <source>Soubor %1 nelze otevrit pro cteni.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть файл% 1 для записи.</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="207"/>
         <source>Nelze nahrát kodek pro kódování %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается загрузить кодек для кодирования% 1.</translation>
     </message>
 </context>
 <context>
@@ -549,12 +549,12 @@
     <message>
         <location filename="src/dialogs/dialog.cpp" line="138"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="src/dialogs/dialog.cpp" line="141"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить</translation>
     </message>
 </context>
 <context>
@@ -562,42 +562,42 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="27"/>
         <source>Show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать это сообщение еще раз</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="44"/>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Исключение</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="54"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="59"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Предупреждение</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="64"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="70"/>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation>Вопрос</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="71"/>
         <source>&amp;Yes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="71"/>
         <source>&amp;No</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp; Нет</translation>
     </message>
 </context>
 <context>
@@ -605,12 +605,12 @@
     <message>
         <location filename="src/dialogs/previewdialog.cpp" line="42"/>
         <source>Cannot load text codec &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается загрузить текстовый кодек &apos;% 1&apos;.</translation>
     </message>
     <message>
         <location filename="src/dialogs/previewdialog.cpp" line="51"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть файл &apos;% 1&apos; для чтения.</translation>
     </message>
 </context>
 <context>
@@ -618,12 +618,12 @@
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="120"/>
         <source>Delete </source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="124"/>
         <source>Edit </source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать</translation>
     </message>
 </context>
 <context>
@@ -631,7 +631,7 @@
     <message>
         <location filename="src/framework/dialogwidget.cpp" line="51"/>
         <source>Cannot find action name &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается найти имя действия &apos;% 1&apos;</translation>
     </message>
 </context>
 <context>
@@ -639,52 +639,52 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="37"/>
         <source>Show:</source>
-        <translation type="unfinished"></translation>
+        <translation>Показать:</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="47"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="74"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
         <source>Resize columns to fit content</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить размер столбцов в соответствии с содержимым</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
         <source>Event log options</source>
-        <translation type="unfinished"></translation>
+        <translation>Опции журнала событий</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="105"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="144"/>
         <source>Maximal log length</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальная длина журнала</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Get number</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить номер</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="149"/>
         <source>Maximal log row count:</source>
-        <translation type="unfinished"></translation>
+        <translation>Максимальное количество строк журнала:</translation>
     </message>
 </context>
 <context>
@@ -692,13 +692,13 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="31"/>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="33"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl + C</translation>
     </message>
 </context>
 <context>
@@ -706,7 +706,7 @@
     <message>
         <location filename="src/framework/mainwindow.cpp" line="306"/>
         <source>Plugin for feature id: &apos;%1&apos; is not installed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Плагин для идентификатора функции: «% 1» не установлен!</translation>
     </message>
 </context>
 <context>
@@ -714,7 +714,7 @@
     <message>
         <location filename="src/framework/partswitch.cpp" line="39"/>
         <source>Part switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Переключатель разделов</translation>
     </message>
 </context>
 <context>
@@ -722,47 +722,47 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Диалог</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
         <source>fields separtor</source>
-        <translation type="unfinished"></translation>
+        <translation>разделитель полей</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="29"/>
         <source>\t</source>
-        <translation type="unfinished"></translation>
+        <translation>\ t</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
         <source>rows separtor</source>
-        <translation type="unfinished"></translation>
+        <translation>разделитель строк</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="43"/>
         <source>fields quotes</source>
-        <translation type="unfinished"></translation>
+        <translation>цитирование (установить кавычки) полей</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="50"/>
         <source>\n</source>
-        <translation type="unfinished"></translation>
+        <translation>\ n</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="57"/>
         <source>&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="64"/>
         <source>Replace nonprintable characters with escape sequencies</source>
-        <translation type="unfinished"></translation>
+        <translation>Заменить непечатаемые символы на управляющие последовательности</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="67"/>
         <source>replace escapes</source>
-        <translation type="unfinished"></translation>
+        <translation>заменить управляющие символы</translation>
     </message>
 </context>
 <context>
@@ -770,17 +770,17 @@
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="32"/>
         <source>exported columns</source>
-        <translation type="unfinished"></translation>
+        <translation>экспортируемые столбцы</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="40"/>
         <source>shift selected column up</source>
-        <translation type="unfinished"></translation>
+        <translation>сместить выбранный столбец вверх</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="43"/>
@@ -791,58 +791,58 @@
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="138"/>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="152"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="50"/>
         <source>shift selected column down</source>
-        <translation type="unfinished"></translation>
+        <translation>сместить выбранный столбец вниз</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="60"/>
         <source>Remove selected columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить выбранные столбцы</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="99"/>
         <source>source columns</source>
-        <translation type="unfinished"></translation>
+        <translation>исходные столбцы </translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="107"/>
         <source>select all</source>
-        <translation type="unfinished"></translation>
+        <translation>выбрать все</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="121"/>
         <source>select none</source>
-        <translation type="unfinished"></translation>
+        <translation>отменить все</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="135"/>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="149"/>
         <source>invert selection</source>
-        <translation type="unfinished"></translation>
+        <translation>инвертировать выделение</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="182"/>
         <source>model</source>
-        <translation type="unfinished"></translation>
+        <translation>модель</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="196"/>
         <source>table</source>
-        <translation type="unfinished"></translation>
+        <translation>таблица</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.cpp" line="28"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>название</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.cpp" line="28"/>
         <source>width</source>
-        <translation type="unfinished"></translation>
+        <translation>ширина</translation>
     </message>
 </context>
 <context>
@@ -850,12 +850,12 @@
     <message>
         <location filename="src/internal/tableviewcopytodialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewcopytodialogwidget.ui" line="30"/>
         <source>Insert rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставить строки</translation>
     </message>
 </context>
 <context>
@@ -863,12 +863,12 @@
     <message>
         <location filename="src/reports/widgets/itemvalueeditorwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/itemvalueeditorwidget.ui" line="20"/>
         <source>Nová hodnota textu</source>
-        <translation type="unfinished"></translation>
+        <translation>Новое текстовое значение</translation>
     </message>
 </context>
 <context>
@@ -876,72 +876,72 @@
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="23"/>
         <source>template</source>
-        <translation type="unfinished"></translation>
+        <translation>шаблон</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="32"/>
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>файл</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="56"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="65"/>
         <source>resources</source>
-        <translation type="unfinished"></translation>
+        <translation>ресурсы</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="94"/>
         <source>report</source>
-        <translation type="unfinished"></translation>
+        <translation>отчет</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="100"/>
         <source>title</source>
-        <translation type="unfinished"></translation>
+        <translation>Заголовок</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="114"/>
         <source>note</source>
-        <translation type="unfinished"></translation>
+        <translation>замечание (заметка)</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="125"/>
         <source>data</source>
-        <translation type="unfinished"></translation>
+        <translation>данные</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.ui" line="131"/>
         <source>only selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>только выбранные строки</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="24"/>
         <source>portrait</source>
-        <translation type="unfinished"></translation>
+        <translation>портретный</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="25"/>
         <source>landscape</source>
-        <translation type="unfinished"></translation>
+        <translation>альбомный</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>Open report file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл отчета</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/printtableviewwidget/printtableviewwidget.cpp" line="59"/>
         <source>QML reports (*.qml)</source>
-        <translation type="unfinished"></translation>
+        <translation>Отчеты QML (* .qml)</translation>
     </message>
 </context>
 <context>
@@ -949,7 +949,7 @@
     <message>
         <location filename="src/reports/processor/reportprocessor.cpp" line="69"/>
         <source>QML component</source>
-        <translation type="unfinished"></translation>
+        <translation>Компонент QML</translation>
     </message>
 </context>
 <context>
@@ -957,108 +957,108 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="562"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Просмотр</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
         <source>First page</source>
-        <translation type="unfinished"></translation>
+        <translation>Первая страница</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="614"/>
         <source>Prev page</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущая страница</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="621"/>
         <source>Next page</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующая страница</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="628"/>
         <source>Last page</source>
-        <translation type="unfinished"></translation>
+        <translation>Последняя страница</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="635"/>
         <source>Zoom in</source>
-        <translation type="unfinished"></translation>
+        <translation>Увеличить</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="642"/>
         <source>Zoom out</source>
-        <translation type="unfinished"></translation>
+        <translation>Уменьшить</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="649"/>
         <source>Zoom to fit width</source>
-        <translation type="unfinished"></translation>
+        <translation>Вписать содержимое по ширине</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="656"/>
         <source>Zoom to fit height</source>
-        <translation type="unfinished"></translation>
+        <translation>Вписать содержимое по  высоте</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="663"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Распечатать</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>Print pre&amp;view</source>
-        <translation type="unfinished"></translation>
+        <translation>Предварительный просмотр печати </translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
         <source>Export PD&amp;F</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать в формате PDF</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
         <source>Export in the Adobe Acrobat PDF format</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт в формате Adobe Acrobat PDF</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
         <source>Export &amp;HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт HTML</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
         <source>Export data in HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт данных в HTML</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1085"/>
         <source>empty file name</source>
-        <translation type="unfinished"></translation>
+        <translation>пустое имя файла</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1146"/>
         <source>Save as PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как PDF</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1161"/>
         <source>Save as HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как HTML</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="1166"/>
         <source>Cannot open &apos;%1&apos; for write.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть % 1 для записи.</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.h" line="61"/>
         <location filename="src/reports/widgets/reportviewwidget.h" line="67"/>
         <source>Report preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Предварительный просмотр отчета</translation>
     </message>
 </context>
 <context>
@@ -1066,12 +1066,12 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="289"/>
         <source>Item menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Пункт меню</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="290"/>
         <source>Editovat text</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать текст</translation>
     </message>
 </context>
 </TS>
