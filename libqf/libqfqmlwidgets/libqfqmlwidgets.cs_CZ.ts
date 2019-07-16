@@ -763,7 +763,7 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="67"/>
         <source>replace escapes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">nahradit kontrolní znaky</translation>
     </message>
 </context>
 <context>
