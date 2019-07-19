@@ -42,8 +42,8 @@ private:
 public:
 	enum DoneResult {ResultReject = Rejected, ResultAccept = Accepted, ResultDelete};
 public:
-	explicit Dialog(QWidget *parent = 0);
-	explicit Dialog(QDialogButtonBox::StandardButtons buttons, QWidget *parent = 0);
+	explicit Dialog(QWidget *parent = nullptr);
+	explicit Dialog(QDialogButtonBox::StandardButtons buttons, QWidget *parent = nullptr);
 	~Dialog() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_BOOL_IMPL2(s, S, avePersistentPosition, true)

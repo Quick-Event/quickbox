@@ -1476,7 +1476,7 @@ void Table::dataFromVariantList(const QVariantList &_lst)
 }
 void Table::sort(RowIndexList::iterator begin, RowIndexList::iterator end)
 {
-	qSort(begin, end, LessThan(*this));
+	std::sort(begin, end, LessThan(*this));
 }
 
 Table::RowIndexList::const_iterator Table::binaryFind(Table::RowIndexList::const_iterator begin, Table::RowIndexList::const_iterator end, const QVariant & val) const

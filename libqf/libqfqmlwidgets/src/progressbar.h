@@ -14,7 +14,7 @@ class QFQMLWIDGETS_DECL_EXPORT ProgressBar : public QProgressBar
 private:
 	typedef QProgressBar Super;
 public:
-	explicit ProgressBar(QWidget *parent = 0);
+	explicit ProgressBar(QWidget *parent = nullptr);
 };
 
 }}

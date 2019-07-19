@@ -21,7 +21,7 @@ public:
 	typedef QMap<QString, qf::qmlwidgets::framework::Plugin*> PluginMap;
 	typedef QMap<QString, qf::qmlwidgets::framework::PluginManifest*> ManifestMap;
 public:
-	explicit PluginLoader(MainWindow *parent = 0);
+	explicit PluginLoader(MainWindow *parent = nullptr);
 
 	void loadPlugins(const QStringList &feature_ids = QStringList());
 	const PluginMap& loadedPlugins() {return m_loadedPlugins;}

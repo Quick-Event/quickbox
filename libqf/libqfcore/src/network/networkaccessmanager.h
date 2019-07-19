@@ -19,7 +19,7 @@ class QFCORE_DECL_EXPORT NetworkAccessManager : public QNetworkAccessManager
 private:
 	typedef QNetworkAccessManager Super;
 public:
-	explicit NetworkAccessManager(QObject *parent = 0);
+	explicit NetworkAccessManager(QObject *parent = nullptr);
 	~NetworkAccessManager() Q_DECL_OVERRIDE;
 public:
 	Q_SLOT qf::core::network::NetworkReply* get(const QUrl &url);

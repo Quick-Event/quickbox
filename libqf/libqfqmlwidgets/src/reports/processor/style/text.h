@@ -26,7 +26,7 @@ class QFQMLWIDGETS_DECL_EXPORT Text : public StyleObject
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Pen* pen READ pen WRITE setPen NOTIFY penChanged)
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Font* font READ font WRITE setFont NOTIFY fontChanged)
 public:
-	explicit Text(QObject *parent = 0);
+	explicit Text(QObject *parent = nullptr);
 	~Text() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_IMPL(QVariant, b, B, asedOn)

@@ -11,7 +11,7 @@ class DlgEditConnection : public QDialog, private Ui::DlgEditConnection
 public:
 	enum OptionIndex {OptionIndexMySql = 0, OptionIndexSqlite};
 public:
-	DlgEditConnection(QWidget *parent = 0);
+	DlgEditConnection(QWidget *parent = nullptr);
 private slots:
 	void on_btOk_clicked();
 	void on_btCancel_clicked() {reject();}

@@ -326,14 +326,14 @@ void DlgColumnDef::loadCollationsForCurrentCharset()
 				}
 			}
 			QStringList collations = f_collationsCache[drv_key][char_set];
-			lstCollation->addItem(trUtf8("default"));
+			lstCollation->addItem(tr("default"));
 			foreach(QString collation, collations) {
 				lstCollation->addItem(collation);
 			}
 		}
 	}
 	else {
-		lstCollation->addItem(trUtf8("default"));
+		lstCollation->addItem(tr("default"));
 		lstCollation->setCurrentIndex(0);
 	}
 }

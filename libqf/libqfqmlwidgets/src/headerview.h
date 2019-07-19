@@ -16,7 +16,7 @@ class QFQMLWIDGETS_DECL_EXPORT HeaderView : public QHeaderView
 private:
 	typedef QHeaderView Super;
 public:
-	explicit HeaderView(Qt::Orientation orientation, QWidget *parent = 0);
+	explicit HeaderView(Qt::Orientation orientation, QWidget *parent = nullptr);
 	~HeaderView() Q_DECL_OVERRIDE;
 
 	Q_SIGNAL void sortColumnAdded(int ix);

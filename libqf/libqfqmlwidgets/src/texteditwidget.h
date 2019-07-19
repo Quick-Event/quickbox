@@ -27,7 +27,7 @@ class QFQMLWIDGETS_DECL_EXPORT TextEditWidget : public qf::qmlwidgets::framework
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	TextEditWidget(QWidget *parent = 0);
+	TextEditWidget(QWidget *parent = nullptr);
 	~TextEditWidget() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL2(QString, c, C, odecName, QStringLiteral("System"))

@@ -17,7 +17,7 @@ class QFQMLWIDGETS_DECL_EXPORT GetItemInputDialog : public QDialog
 {
 	Q_OBJECT
 public:
-	explicit GetItemInputDialog(QWidget *parent = 0);
+	explicit GetItemInputDialog(QWidget *parent = nullptr);
 	~GetItemInputDialog() Q_DECL_OVERRIDE;
 public:
 	void setLabelText(const QString &text);

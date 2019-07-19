@@ -23,7 +23,7 @@ class TableViewWidget : public QWidget
 	Q_OBJECT
 
 public:
-	explicit TableViewWidget(QWidget *parent = 0);
+	explicit TableViewWidget(QWidget *parent = nullptr);
 	~TableViewWidget();
 public:
 	qf::qmlwidgets::TableView* tableView();

@@ -25,7 +25,7 @@ TableViewChooseColumnsWidget::TableViewChooseColumnsWidget(QWidget *parent)
 
 	//Qf::connectSlotsByName(centralWidget(), this);
 	f_exportedColumnsModel = new QStandardItemModel(this);
-	f_exportedColumnsModel->setHorizontalHeaderLabels(QStringList() << trUtf8("name") << trUtf8("width"));
+	f_exportedColumnsModel->setHorizontalHeaderLabels(QStringList() << tr("name") << tr("width"));
 	ui->tblExportedColumns->setModel(f_exportedColumnsModel);
 }
 

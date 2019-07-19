@@ -21,7 +21,7 @@ class QFQMLWIDGETS_DECL_EXPORT DataController : public QObject
 	Q_PROPERTY(QWidget* widget READ widget WRITE setWidget NOTIFY widgetChanged)
 	//Q_PROPERTY(QString dbConnectionName READ dbConnectionName WRITE setDbConnectionName)
 public:
-	explicit DataController(QObject *parent = 0);
+	explicit DataController(QObject *parent = nullptr);
 	~DataController() Q_DECL_OVERRIDE;
 
 	//QF_PROPERTY_IMPL2(QString, d, D, bConnectionName, QSqlDatabase::defaultConnection)

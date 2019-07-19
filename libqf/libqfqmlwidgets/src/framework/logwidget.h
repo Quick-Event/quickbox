@@ -45,7 +45,7 @@ class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::Doc
 private:
 	typedef qf::qmlwidgets::framework::DockableWidget Super;
 public:
-	explicit LogWidget(QWidget *parent = 0);
+	explicit LogWidget(QWidget *parent = nullptr);
 	~LogWidget();
 
 	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());

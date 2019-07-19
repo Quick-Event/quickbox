@@ -30,7 +30,7 @@ public:
 private:
 	enum CacheRemoveMode {CRM_Noop, CRM_Single, CRM_Recursive};
 public:
-	explicit DbFsDriver(QObject *parent = 0);
+	explicit DbFsDriver(QObject *parent = nullptr);
 	~DbFsDriver() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QString, c, C, onnectionName)

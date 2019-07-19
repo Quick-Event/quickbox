@@ -30,7 +30,7 @@ class QFQMLWIDGETS_DECL_EXPORT InputDialog : public QInputDialog
     Q_PROPERTY(QString okButtonText READ okButtonText WRITE setOkButtonText)
     Q_PROPERTY(QString cancelButtonText READ cancelButtonText WRITE setCancelButtonText)
 public:
-	explicit InputDialog(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	explicit InputDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
 };
 
 }}}

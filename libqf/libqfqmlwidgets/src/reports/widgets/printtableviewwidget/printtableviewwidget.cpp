@@ -21,8 +21,8 @@ PrintTableViewWidget::PrintTableViewWidget(TableView *table_view, QWidget *paren
 	connect(ui->btChooseReportFileName, &QPushButton::clicked, this, &PrintTableViewWidget::chooseReporFileName);
 	{
 		QComboBox *cbx = ui->lstQrcReports;
-		cbx->addItem(trUtf8("portrait"), ":/qf/qmlwidgets/reports/portrait.qml");
-		cbx->addItem(trUtf8("landscape"), ":/qf/qmlwidgets/reports/landscape.qml");
+		cbx->addItem(tr("portrait"), ":/qf/qmlwidgets/reports/portrait.qml");
+		cbx->addItem(tr("landscape"), ":/qf/qmlwidgets/reports/landscape.qml");
 		cbx->setCurrentIndex(-1);
 		connect(cbx, SIGNAL(activated(int)), this, SLOT(onLstQrcReportsActivated(int)));
 	}
@@ -56,7 +56,7 @@ void PrintTableViewWidget::chooseReporFileName()
 		if(report_dir.isEmpty())
 			report_dir = qfu::FileUtils::homeDir();
 	}
-	QString fn = QFileDialog::getOpenFileName(this, trUtf8("Open report file"), report_dir, trUtf8("QML reports (*.qml)"));
+	QString fn = QFileDialog::getOpenFileName(this, tr("Open report file"), report_dir, tr("QML reports (*.qml)"));
 	if(!fn.isEmpty()) {
 		recently_used_report_dir = qfu::FileUtils::dir(fn);
 		ui->edReportFileName->setText(fn);

@@ -26,7 +26,7 @@ class QFQMLWIDGETS_DECL_EXPORT Brush : public StyleObject
 	Q_PROPERTY(qf::qmlwidgets::reports::style::Color* color READ color WRITE setColor NOTIFY colorChanged)
 	Q_PROPERTY(BrushStyle style READ style WRITE setStyle)
 public:
-	explicit Brush(QObject *parent = 0);
+	explicit Brush(QObject *parent = nullptr);
 	~Brush() Q_DECL_OVERRIDE;
 public:
 	enum BrushStyle {

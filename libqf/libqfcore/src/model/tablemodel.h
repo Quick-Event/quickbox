@@ -21,7 +21,7 @@ class QFCORE_DECL_EXPORT TableModel : public QAbstractTableModel
 	Q_OBJECT
 	Q_PROPERTY(bool nullReportedAsString READ isNullReportedAsString WRITE setNullReportedAsString NOTIFY nullReportedAsStringChanged)
 public:
-	explicit TableModel(QObject *parent = 0);
+	explicit TableModel(QObject *parent = nullptr);
 private:
 	typedef QAbstractTableModel Super;
 public:

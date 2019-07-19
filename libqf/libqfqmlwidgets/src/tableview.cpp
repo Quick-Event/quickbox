@@ -72,7 +72,7 @@ TableView::TableView(QWidget *parent) :
 		auto *bt = new QToolButton(this);
 		bt->setAutoRaise(true);
 		bt->setIcon(style->icon("menu"));
-		bt->setToolTip(trUtf8("Left click selects all, right click for menu."));
+		bt->setToolTip(tr("Left click selects all, right click for menu."));
 		QObject::connect(bt, &QPushButton::clicked, this, &QTableView::selectAll);
 		//qfInfo() << "addidng actions";
 		bt->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -1047,7 +1047,7 @@ QList<int> TableView::selectedRowsIndexes() const
 			set << ix.row();
 	}
 	QList<int> ret = set.toList();
-	qSort(ret);
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 
@@ -1060,7 +1060,7 @@ QList<int> TableView::selectedColumnsIndexes() const
 			set << ix.column();
 	}
 	QList<int> ret = set.toList();
-	qSort(ret);
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 
@@ -1944,7 +1944,7 @@ void TableView::generateSequenceInSelection()
 	int n = new_val_str.toInt();
 	foreach(int row_ix, sorted_indexes.keys()) {
 		QList<int> lst = sorted_indexes.value(row_ix);
-		qSort(lst);
+		std::sort(lst.begin(), lst.end());
 		foreach(int col_ix, lst) {
 			QModelIndex ix = model()->index(row_ix, col_ix);
 			model()->setData(ix, n++);
