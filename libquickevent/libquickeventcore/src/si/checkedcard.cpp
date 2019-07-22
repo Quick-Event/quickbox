@@ -40,11 +40,12 @@ QString CheckedCard::toString() const
 	int position = 0;
 	for(auto v : punches()) {
 		CheckedPunch p(v.toMap());
-		punch_lst << QString("[%1. %2: %3 %4]")
+		punch_lst << QString("[%1. %2: %3 %4 %5]")
 					 .arg(++position)
 					 .arg(p.code())
 					 .arg(quickevent::core::og::TimeMs(p.stpTimeMs()).toString())
-					 .arg(quickevent::core::og::TimeMs(p.lapTimeMs()).toString());
+					 .arg(quickevent::core::og::TimeMs(p.lapTimeMs()).toString())
+					 .arg(p.contains(QStringLiteral("distance"))? p.distance(): -1);
 	}
 	ret += QString("SI: %1, run_id: %2, start: %3, finish: %4, punches: %5")
 			.arg(cardNumber())

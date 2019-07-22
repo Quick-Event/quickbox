@@ -59,8 +59,7 @@ void EmmaClient::exportRadioCodes()
 	EmmaClientSettings ss = settings();
 	QString export_dir = ss.exportDir();
 	QDir ed;
-	if(!ed.mkpath(export_dir)) {
-		qfError() << "Canot create export dir:" << export_dir;
+	if(!createExportDir()) {
 		return;
 	}
 	QString event_name = eventPlugin()->eventName();
@@ -120,6 +119,34 @@ void EmmaClient::exportRadioCodes()
 		ts_names << " finish\n";
 		ts_codes << ' ' << 2 << '\n';
 	}
+}
+
+void EmmaClient::exportResultsIofXml3()
+{
+	if(!createExportDir())
+		return;
+	QString event_name = eventPlugin()->eventName();
+	EmmaClientSettings ss = settings();
+	QString export_dir = ss.exportDir();
+	QString file_name = export_dir + '/' + event_name + ".results.xml";
+	int current_stage = eventPlugin()->currentStageId();
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	QObject *plugin = fwk->plugin("Runs");
+	QMetaObject::invokeMethod(plugin, "exportResultsIofXml30Stage",
+							  Q_ARG(int, current_stage),
+							  Q_ARG(QString, file_name) );
+}
+
+bool EmmaClient::createExportDir()
+{
+	EmmaClientSettings ss = settings();
+	QString export_dir = ss.exportDir();
+	QDir ed;
+	if(!ed.mkpath(export_dir)) {
+		qfError() << "Canot create export dir:" << export_dir;
+		return false;
+	}
+	return true;
 }
 
 void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)

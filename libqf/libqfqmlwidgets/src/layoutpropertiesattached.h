@@ -21,7 +21,7 @@ class QFQMLWIDGETS_DECL_EXPORT LayoutPropertiesAttached : public QObject
 	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties::SizePolicy horizontalSizePolicy READ horizontalSizePolicy WRITE setHorizontalSizePolicy NOTIFY horizontalSizePolicyChanged)
 	Q_PROPERTY(qf::qmlwidgets::LayoutTypeProperties::SizePolicy verticalSizePolicy READ verticalSizePolicy WRITE setVerticalSizePolicy NOTIFY verticalSizePolicyChanged)
 public:
-	explicit LayoutPropertiesAttached(QObject *parent = 0);
+	explicit LayoutPropertiesAttached(QObject *parent = nullptr);
 public:
 	QF_PROPERTY_IMPL2(int, r, R, owSpan, 1)
 	QF_PROPERTY_IMPL2(int, c, C, olumnSpan, 1)

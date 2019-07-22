@@ -6,7 +6,7 @@
     <message>
         <location filename="src/chooseoriseventdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/chooseoriseventdialog.ui" line="22"/>
@@ -151,7 +151,7 @@
     <message>
         <location filename="src/txtimporter.cpp" line="117"/>
         <source>CSV files (*.csv *.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV-filer (*.csv *.txt)</translation>
     </message>
     <message>
         <location filename="src/txtimporter.cpp" line="158"/>
@@ -171,7 +171,7 @@
     <message>
         <location filename="src/txtimporter.cpp" line="228"/>
         <source>Undefined class name: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Udefinert klassenavn: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -199,7 +199,7 @@
     <message>
         <location filename="qml/main.qml" line="54"/>
         <source>&amp;Registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Registreringer</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="62"/>
@@ -224,7 +224,7 @@
     <message>
         <location filename="qml/main.qml" line="98"/>
         <source>&amp;Text file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tekstfil</translation>
     </message>
 </context>
 </TS>

@@ -255,8 +255,9 @@ QList< QList<int> > RunsWidget::runnersByClubSortedByCount(int stage_id, int cla
 	qb.select2("runs", "id")
 			.select2("competitors", "registration")
 			.from("competitors")
-			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id))
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId=" QF_IARG(stage_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 			.where("competitors.classId=" QF_IARG(class_id));
+	qfDebug() << qb.toString();
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	while(q.next()) {
@@ -719,6 +720,7 @@ void RunsWidget::on_btDraw_clicked()
 				}
 				qfs::Query q(transaction.connection());
 				q.prepare("UPDATE runs SET startTimeMs=:startTimeMs WHERE id=:id");
+				qfDebug() << "draw runners count:" << runners_draw_ids.count();
 				for (int i = 0; i < runners_draw_ids.count(); ++i) {
 					int runner_id = runners_draw_ids.at(i);
 					q.bindValue(QStringLiteral(":id"), runner_id);
@@ -734,6 +736,7 @@ void RunsWidget::on_btDraw_clicked()
 						q.exec(qf::core::Exception::Throw);
 					}
 					else {
+						qfDebug() << i << "runner id:" << runner_id << "start:" << (start / 60 / 1000);
 						q.bindValue(QStringLiteral(":startTimeMs"), start);
 						q.exec(qf::core::Exception::Throw);
 						start += interval;
@@ -743,7 +746,8 @@ void RunsWidget::on_btDraw_clicked()
 									map_count > (maps_used + runners_left + vacants_after):
 									true;
 						if(can_add_vacant && vacant_every > 0 && (((i + 1) % vacant_every) == 0)) {
-							//qfDebug() << i << vacant_every << (i % vacant_every);
+							//qfInfo() << i << vacant_every << ((i+1) % vacant_every);
+							qfDebug() << "vakant" << i << (start / 60 / 1000);
 							start += interval;
 							maps_used++;
 						}

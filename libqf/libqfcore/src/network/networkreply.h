@@ -20,7 +20,7 @@ class QFCORE_DECL_EXPORT NetworkReply : public QObject
 	Q_PROPERTY(QString errorString READ errorString)
 	Q_PROPERTY(QString textData READ textData)
 public:
-	explicit NetworkReply(QObject *parent = 0);
+	explicit NetworkReply(QObject *parent = nullptr);
 	~NetworkReply() Q_DECL_OVERRIDE;
 public:
 	Q_SIGNAL void downloadProgress(const QString &url, int processed, int total);

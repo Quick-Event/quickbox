@@ -54,7 +54,7 @@ public:
 	QStringList fields(const QString& tbl_name) const;
 
 	/// @return list of available tables
-	QStringList tables(const QString& dbname = QString::null, QSql::TableType type = QSql::Tables) const;
+	QStringList tables(const QString& dbname = QString(), QSql::TableType type = QSql::Tables) const;
 	bool tableExists(const QString &table_name);
 
 	/// @return list of indexes for table \a tbl_name .

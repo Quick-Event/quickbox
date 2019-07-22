@@ -16,7 +16,7 @@ class QFQMLWIDGETS_DECL_EXPORT TableItemDelegate : public QStyledItemDelegate
 private:
 	typedef QStyledItemDelegate Super;
 public:
-	explicit TableItemDelegate(TableView *parent = 0);
+	explicit TableItemDelegate(TableView *parent = nullptr);
 public:
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 	QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;

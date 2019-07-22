@@ -302,7 +302,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.appendColumn("stpTimeMs", QVariant::Int);
 		tt.appendColumn("lapTimeMs", QVariant::Int);
 		tt.appendColumn("lossMs", QVariant::Int);
- 		QMapIterator<QString, QVariant> it(checked_card);
+		tt.appendColumn("distance", QVariant::Int);
+		QMapIterator<QString, QVariant> it(checked_card);
 		while(it.hasNext()) {
 			it.next();
 			if(it.key() != QLatin1String("punches"))
@@ -325,6 +326,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				int loss = lap - best_lap;
 				ttr.setValue("lossMs", loss);
 			}
+			ttr.setValue("distance", punch.distance());
 		}
 		{
 			QSet<int> correct_codes;

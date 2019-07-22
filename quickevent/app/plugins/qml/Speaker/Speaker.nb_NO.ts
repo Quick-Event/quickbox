@@ -6,17 +6,17 @@
     <message>
         <location filename="src/codeclassresultswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.ui" line="37"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.ui" line="47"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="47"/>
@@ -31,17 +31,17 @@
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="49"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="159"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultater</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="160"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullfør</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="179"/>
@@ -55,12 +55,12 @@
     <message>
         <location filename="src/speakerwidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="83"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="84"/>
@@ -80,12 +80,12 @@
     <message>
         <location filename="src/speakerwidget.cpp" line="87"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="88"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrering</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="89"/>

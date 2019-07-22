@@ -19,7 +19,7 @@ class QFQMLWIDGETS_DECL_EXPORT Plugin : public QObject
 	Q_OBJECT
 	Q_PROPERTY(qf::qmlwidgets::framework::PluginManifest* manifest READ manifest NOTIFY manifestChanged)
 public:
-	explicit Plugin(QObject *parent = 0);
+	explicit Plugin(QObject *parent = nullptr);
 	~Plugin() Q_DECL_OVERRIDE;
 
 	//Q_INVOKABLE QString homeDir() const;

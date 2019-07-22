@@ -55,6 +55,7 @@ void EmmaClientWidget::onBtExportSplitsClicked()
 	if(svc) {
 		saveSettings();
 		svc->exportRadioCodes();
+		svc->exportResultsIofXml3();
 	}
 }
 

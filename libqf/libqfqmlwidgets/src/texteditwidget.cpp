@@ -73,7 +73,7 @@ void TextEditWidget::saveAs()
 	else if(ext.isEmpty()) {
 		fn += ".txt";
 	}
-	fn = dialogs::FileDialog::getSaveFileName(this, trUtf8("Uložit jako ..."), fn, filter);
+	fn = dialogs::FileDialog::getSaveFileName(this, tr("Uložit jako ..."), fn, filter);
 	if(fn.isEmpty())
 		return;
 	save_helper(fn);
@@ -95,7 +95,7 @@ void TextEditWidget::save_helper(const QString &file_name)
 	qfDebug() << "\tcodecName:" << codecName();
 	QTextCodec *tc = QTextCodec::codecForName(codecName().toLatin1());
 	if(!tc) {
-		dialogs::MessageBox::showError(this, trUtf8("Cannot load text codec %1.").arg(codecName()));
+		dialogs::MessageBox::showError(this, tr("Cannot load text codec %1.").arg(codecName()));
 		return;
 	}
 	QTextStream ts(&f);
@@ -204,7 +204,7 @@ void TextEditWidget::setUrl(QFile &url, const QString &codec_name)
 	}
 	QTextCodec *tc = QTextCodec::codecForName(codecName().toLatin1());
 	if(!tc) {
-		QFMessage::error(this, trUtf8("Nelze nahrát kodek pro kódování %1.").arg(codecName()));
+		QFMessage::error(this, tr("Nelze nahrát kodek pro kódování %1.").arg(codecName()));
 		return;
 	}
 	QTextStream ts(&f);

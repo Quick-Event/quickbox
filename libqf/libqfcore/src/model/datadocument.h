@@ -20,7 +20,7 @@ class QFCORE_DECL_EXPORT DataDocument : public QObject
 	Q_PROPERTY(QVariant dataId READ dataId WRITE setDataId NOTIFY dataIdChanged)
 	Q_PROPERTY(QString idFieldName READ idFieldName WRITE setIdFieldName NOTIFY idFieldNameChanged)
 public:
-	explicit DataDocument(QObject *parent = 0);
+	explicit DataDocument(QObject *parent = nullptr);
 	~DataDocument() Q_DECL_OVERRIDE;
 public:
 	enum RecordEditMode {ModeView, ModeEdit, ModeInsert, ModeCopy, ModeDelete};

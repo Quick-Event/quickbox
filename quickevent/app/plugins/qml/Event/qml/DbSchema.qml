@@ -73,6 +73,11 @@ Schema {
 					defaultValue: false
 					notNull: true
 				},
+				Field { name: 'longitude'; type: Real { } },
+				Field { name: 'latitude'; type: Real { } },
+				Field { name: 'type'; type: String { }
+					comment: 'S - start, F - finish'
+				},
 				Field { name: 'note'; type: String { } }
 			]
 			indexes: [

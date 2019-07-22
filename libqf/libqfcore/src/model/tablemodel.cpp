@@ -142,6 +142,9 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 			/// display check
 			ret = QString();
 		}
+		//else if(type == QVariant::Double) {
+		//	qfInfo() << "dbl:" << ret << QString("%1").arg(ret.toDouble(), 0, 'f', 16);
+		//}
 		QString format = cd.format();
 		if(format.isEmpty()) {
 			if(type == QVariant::Date) {

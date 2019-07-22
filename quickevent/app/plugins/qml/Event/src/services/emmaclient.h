@@ -35,11 +35,13 @@ public:
 	static QString serviceName();
 
 	void exportRadioCodes();
+	void exportResultsIofXml3();
 	void exportFinish();
 	void exportStartList();
 	bool preExport();
 	void loadSettings() override;
 private:
+	bool createExportDir();
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void onCardChecked(const QVariantMap &data);
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;

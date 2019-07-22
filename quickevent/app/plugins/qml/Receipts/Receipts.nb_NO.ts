@@ -6,12 +6,12 @@
     <message>
         <location filename="src/Receipts/receiptsplugin.cpp" line="360"/>
         <source>Card</source>
-        <translation type="unfinished"></translation>
+        <translation>Kort</translation>
     </message>
     <message>
         <location filename="src/Receipts/receiptsplugin.cpp" line="411"/>
         <source>Receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Kvittering</translation>
     </message>
 </context>
 <context>
@@ -19,7 +19,7 @@
     <message>
         <location filename="src/receiptspartwidget.cpp" line="11"/>
         <source>Receipts</source>
-        <translation type="unfinished"></translation>
+        <translation>Kvitteringer</translation>
     </message>
 </context>
 <context>
@@ -27,7 +27,7 @@
     <message>
         <location filename="src/receiptsprinteroptions.cpp" line="17"/>
         <source>Graphics</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafikk</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptions.cpp" line="20"/>
@@ -40,7 +40,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="25"/>
@@ -80,12 +80,12 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="109"/>
         <source>LPT device</source>
-        <translation type="unfinished"></translation>
+        <translation>LPT-enhet</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="119"/>
         <source>Network address</source>
-        <translation type="unfinished"></translation>
+        <translation>Nettverksadresse</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="126"/>
@@ -100,22 +100,22 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="140"/>
         <source>/dev/usb/lp1</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp1</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="145"/>
         <source>/dev/usb/lp2</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp2</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="150"/>
         <source>/dev/usb/lp3</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp3</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="155"/>
         <source>/dev/usb/lp4</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp4</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="160"/>
@@ -135,12 +135,12 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="182"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Mappe</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="195"/>
         <source>Line length</source>
-        <translation type="unfinished"></translation>
+        <translation>Linjelengde</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="202"/>
@@ -155,7 +155,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="235"/>
         <source>UDP</source>
-        <translation type="unfinished"></translation>
+        <translation>UDP</translation>
     </message>
 </context>
 <context>
@@ -163,7 +163,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="40"/>
@@ -188,7 +188,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="77"/>
         <source>Receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Kvittering</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="87"/>
@@ -208,12 +208,12 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="73"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="74"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="75"/>
@@ -223,12 +223,12 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="76"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="77"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="84"/>

@@ -92,7 +92,6 @@ void Service::setSettings(const QVariantMap &s)
 
 void Service::run()
 {
-	//setStatus(Status::Starting);
 	setStatus(Status::Running);
 }
 

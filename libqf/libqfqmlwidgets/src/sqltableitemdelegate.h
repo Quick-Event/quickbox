@@ -12,7 +12,7 @@ class QFQMLWIDGETS_DECL_EXPORT SqlTableItemDelegate : public TableItemDelegate
 private:
 	typedef TableItemDelegate Super;
 public:
-	SqlTableItemDelegate(TableView *parent = 0);
+	SqlTableItemDelegate(TableView *parent = nullptr);
 public:
 	//QString displayText(const QVariant &value, const QLocale &locale) const Q_DECL_OVERRIDE;
 	//void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;

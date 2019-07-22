@@ -15,7 +15,7 @@ class QFQMLWIDGETS_DECL_EXPORT Style : public QObject
 {
 	Q_OBJECT
 public:
-	explicit Style(QObject *parent = 0);
+	explicit Style(QObject *parent = nullptr);
 
 	QF_PROPERTY_IMPL2(QString, i, I, conPath, QStringLiteral(":/qf/qmlwidgets/images/"))
 	//QF_PROPERTY_IMPL(QSize, d, D, efaultIconSize)

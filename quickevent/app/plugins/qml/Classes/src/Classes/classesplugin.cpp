@@ -6,6 +6,9 @@
 
 #include <Event/eventplugin.h>
 
+#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/si/punchrecord.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/action.h>
@@ -78,7 +81,7 @@ void ClassesPlugin::dropClass(int class_id)
 	doc.drop();
 }
 
-void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
+void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, const QVariantList &codes)
 {
 	qfLogFuncFrame() << courses;
 	try {
@@ -87,9 +90,15 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 		qf::core::sql::Query q;
 		deleteCourses(stage_id);
 
-		QSet<int> all_codes;
+		QMap<QString, quickevent::core::si::CodeDef> code_defs;
+		for(const QVariant &c : codes) {
+			quickevent::core::si::CodeDef cd(c.toMap());
+			QString key = cd.type() + QString::number(cd.code());
+			code_defs[key] = cd;
+		}
+
 		QMap<QString, int> course_ids;
-		QMap<int, QList<int> > course_codes;
+		QMap<int, QList<QString> > course_codes;
 		{
 			// if classes are not imported from Oris, import also classes
 			q.exec("SELECT COUNT(*) FROM classes", qf::core::Exception::Throw);
@@ -149,9 +158,36 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 			}
 			course_ids[cd.name()] = course_id;
 			for(auto v : cd.codes()) {
-				int code = v.toInt();
-				all_codes << code;
-				course_codes[course_id] << code;
+				QString key;
+				key = v.toString();
+				if(codes.isEmpty()) {
+					/// guess code definition from courses
+					bool ok;
+					quickevent::core::si::CodeDef cd;
+					if(key.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
+						cd.setCode(key.mid(1).toInt(&ok));
+						cd.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_START);
+					}
+					else if(key.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
+						cd.setCode(key.mid(1).toInt(&ok));
+						cd.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+					}
+					else {
+						cd.setCode(key.toInt(&ok));
+					}
+					if(ok) {
+						code_defs[key] = cd;
+					}
+					else {
+						qfError() << "Invalid code" << key << "will be ignored";
+					}
+				}
+				else {
+					if(!code_defs.contains(key)) {
+						QF_EXCEPTION("Defined controls should contain code: " + key);
+					}
+				}
+				course_codes[course_id] << key;
 			}
 		}
 		if(is_relays) {
@@ -204,36 +240,49 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses)
 				}
 			}
 		}
-		QMap<int, int> code_to_id;
+		QMap<QString, int> code_to_id;
 		{
-			QString qs = "INSERT INTO codes (code, note) VALUES (:code, :note)";
+			QString qs = "INSERT INTO codes (type, code, note, latitude, longitude) VALUES (:type, :code, :note, :latitude, :longitude)";
 			q.prepare(qs, qf::core::Exception::Throw);
-			for(auto code : all_codes) {
-				qfDebug() << "inserting code" << code;
-				q.bindValue(":code", code);
+			QMapIterator<QString, quickevent::core::si::CodeDef > it(code_defs);
+			while(it.hasNext()) {
+				it.next();
+				quickevent::core::si::CodeDef cd = it.value();
+				qfDebug() << "inserting code" << cd.toString();
+				//q.bindValue(":type", cd.type().isEmpty()? QString(""): cd.type()); /// save empty not null string
+				q.bindValue(":type", cd.type());
+				q.bindValue(":code", cd.code());
 				q.bindValue(":note", QString("E%1").arg(stage_id));
+				q.bindValue(":latitude", cd.latitude());
+				q.bindValue(":longitude", cd.longitude());
 				q.exec(qf::core::Exception::Throw);
-				code_to_id[code] = q.lastInsertId().toInt();
+				//QString key = cd.type() + QString::number(cd.code());
+				code_to_id[it.key()] = q.lastInsertId().toInt();
 			}
 		}
 		{
 			QString qs = "INSERT INTO coursecodes (courseId, position, codeId) VALUES (:courseId, :position, :codeId)";
 			q.prepare(qs, qf::core::Exception::Throw);
-			QMapIterator<int, QList<int> > it(course_codes);
+			QMapIterator<int, QList<QString> > it(course_codes);
 			while(it.hasNext()) {
 				it.next();
 				int pos = 0;
-				for(auto code : it.value()) {
-					int code_id = code_to_id.value(code);
+				for(const QString &code_str : it.value()) {
+					int code_id = code_to_id.value(code_str);
+					quickevent::core::si::CodeDef cd = code_defs.value(code_str);
+					QString code_type = cd.type();
 					if(code_id > 0) {
-						qfDebug() << "courseId" << it.key() << "-> code:" << code << "codeId:" << code_id;
+						qfDebug() << "courseId" << it.key() << "-> code:" << code_str << "codeId:" << code_id;
+						/// keep start control code == 0 to have firs control on position == 1
+						if(code_type != quickevent::core::si::CodeDef::CONTROL_TYPE_START)
+							pos++;
 						q.bindValue(":courseId", it.key());
-						q.bindValue(":position", ++pos);
+						q.bindValue(":position", pos);
 						q.bindValue(":codeId", code_id);
 						q.exec(qf::core::Exception::Throw);
 					}
 					else {
-						QF_EXCEPTION(tr("Cannot find id for code: %1").arg(code));
+						QF_EXCEPTION(tr("Cannot find id for code: %1").arg(code_str));
 					}
 				}
 			}
@@ -267,6 +316,6 @@ void ClassesPlugin::gcCourses()
 		")", qf::core::Exception::Throw);
 	q.exec("DELETE FROM codes WHERE id IN ("
 		"SELECT codes.id FROM codes LEFT JOIN coursecodes ON coursecodes.codeId=codes.id WHERE coursecodes.Id IS NULL"
-		")", qf::core::Exception::Throw);
+		   ")", qf::core::Exception::Throw);
 }
 

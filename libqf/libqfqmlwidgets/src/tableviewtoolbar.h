@@ -20,7 +20,7 @@ class QFQMLWIDGETS_DECL_EXPORT TableViewToolBar : public QToolBar
 private:
 	typedef QToolBar Super;
 public:
-	explicit TableViewToolBar(QWidget *parent = 0);
+	explicit TableViewToolBar(QWidget *parent = nullptr);
 	~TableViewToolBar() Q_DECL_OVERRIDE;
 public:
 	void setTableView(TableView *table_view);

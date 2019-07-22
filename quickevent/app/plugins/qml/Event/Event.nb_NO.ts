@@ -6,7 +6,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
         <source>Select database</source>
-        <translation type="unfinished"></translation>
+        <translation>Velg database</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
@@ -31,37 +31,37 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="98"/>
         <source>Sql server</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL-tjener</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="104"/>
         <source>&amp;Host</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vert</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="121"/>
         <source>&amp;Port</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;port</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="131"/>
         <source>&amp;User</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bruker</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="141"/>
         <source>Pa&amp;ssword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;ssord</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="185"/>
         <source>Single file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkelt fil</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="191"/>
         <source>Wor&amp;king directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Arb&amp;eidsmappe</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="203"/>
@@ -71,7 +71,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="213"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">…</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="qml/DbSchema.qml" line="449"/>
         <source>Data version</source>
-        <translation type="unfinished"></translation>
+        <translation>Dataversjon</translation>
     </message>
 </context>
 <context>
@@ -97,7 +97,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="274"/>
         <source>&amp;Connect to database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Koble til database</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="278"/>
@@ -142,7 +142,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="358"/>
         <source>Services</source>
-        <translation type="unfinished"></translation>
+        <translation>Tjenester</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="398"/>
@@ -171,7 +171,7 @@
         <location filename="src/Event/eventplugin.cpp" line="1131"/>
         <location filename="src/Event/eventplugin.cpp" line="1148"/>
         <source>Open Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Databaseåpningsfeil: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="793"/>
@@ -190,7 +190,7 @@
         <location filename="src/Event/eventplugin.cpp" line="874"/>
         <location filename="src/Event/eventplugin.cpp" line="1112"/>
         <source>Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Spørring</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="851"/>
@@ -233,7 +233,7 @@
         <location filename="src/Event/eventplugin.cpp" line="1060"/>
         <location filename="src/Event/eventplugin.cpp" line="1158"/>
         <source>Creating database</source>
-        <translation type="unfinished"></translation>
+        <translation>Oppretter database</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1075"/>
@@ -267,12 +267,12 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="20"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dato</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="30"/>
@@ -282,7 +282,7 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="40"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tid</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.cpp" line="14"/>
@@ -295,7 +295,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="20"/>
@@ -310,7 +310,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="37"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Navn</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="50"/>
@@ -320,7 +320,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="67"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dato</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="77"/>
@@ -335,7 +335,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="100"/>
         <source>Des&amp;cription</source>
-        <translation type="unfinished"></translation>
+        <translation>Bes&amp;krivelse</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="113"/>
@@ -360,7 +360,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="168"/>
         <source>Import ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer ID</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="188"/>
@@ -390,7 +390,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="222"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tid</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="232"/>
@@ -430,7 +430,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="282"/>
         <source>Teams</source>
-        <translation type="unfinished"></translation>
+        <translation>Lag</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="290"/>
@@ -445,7 +445,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="303"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Avskrudd</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="306"/>
@@ -458,7 +458,7 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Skjema</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
@@ -468,12 +468,12 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="43"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Filnavn</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="105"/>

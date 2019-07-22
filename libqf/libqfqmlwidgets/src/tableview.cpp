@@ -42,7 +42,7 @@
 #include <QPainter>
 #include <QToolButton>
 
-#define QF_TIMESCOPE_ENABLED
+//#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
 
 namespace qfc = qf::core;
@@ -72,7 +72,7 @@ TableView::TableView(QWidget *parent) :
 		auto *bt = new QToolButton(this);
 		bt->setAutoRaise(true);
 		bt->setIcon(style->icon("menu"));
-		bt->setToolTip(trUtf8("Left click selects all, right click for menu."));
+		bt->setToolTip(tr("Left click selects all, right click for menu."));
 		QObject::connect(bt, &QPushButton::clicked, this, &QTableView::selectAll);
 		//qfInfo() << "addidng actions";
 		bt->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -1047,7 +1047,7 @@ QList<int> TableView::selectedRowsIndexes() const
 			set << ix.row();
 	}
 	QList<int> ret = set.toList();
-	qSort(ret);
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 
@@ -1060,7 +1060,7 @@ QList<int> TableView::selectedColumnsIndexes() const
 			set << ix.column();
 	}
 	QList<int> ret = set.toList();
-	qSort(ret);
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 
@@ -1517,7 +1517,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Resize columns to contents"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resizeColumnsToContents");
 		m_actionGroups[SizeActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1527,7 +1527,7 @@ void TableView::createActions()
 		a = new Action(tr("Reset columns settings"), this);
 		a->setToolTip(tr("Reset column widths and positions."));
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resetColumnsSettings");
 		m_actionGroups[SizeActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1537,7 +1537,7 @@ void TableView::createActions()
 		a = new Action(tr("Reload"), this);
 		a->setIcon(style->icon("reload"));
 		a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("reload");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1547,7 +1547,7 @@ void TableView::createActions()
 		a = new Action(tr("Copy"), this);
 		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copy");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1557,7 +1557,7 @@ void TableView::createActions()
 		a = new Action(tr("Copy special"), this);
 		a->setIcon(style->icon("copy"));
 		//a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copySpecial");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1567,7 +1567,7 @@ void TableView::createActions()
 		a = new Action(tr("Paste"), this);
 		a->setIcon(style->icon("paste"));
 		a->setShortcut(QKeySequence(tr("Ctrl+V", "Paste rows")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("paste");
 		m_actionGroups[PasteActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1576,7 +1576,7 @@ void TableView::createActions()
 	{
 		a = new Action(style->icon("insert-row"), tr("Insert row"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Ins", "insert row SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("insertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1585,7 +1585,7 @@ void TableView::createActions()
 	{
 		a = new Action(style->icon("delete-row"), tr("Delete selected rows"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Del", "delete row SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("removeSelectedRows");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1595,7 +1595,7 @@ void TableView::createActions()
 		a = new Action(tr("Post row edits"), this);
 		a->setIcon(style->icon("save"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Return", "post row SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("postRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1605,7 +1605,7 @@ void TableView::createActions()
 		a = new Action(tr("Revert row edits"), this);
 		a->setIcon(style->icon("revert"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Z", "revert edited row")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("revertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1618,7 +1618,7 @@ void TableView::createActions()
 		//a->setVisible(false);
 		m_actionGroups[RowActions] << a->oid();
 		a->setShortcut(QKeySequence(tr("Ctrl+D", "insert row copy")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
 		connect(a, SIGNAL(triggered()), this, SLOT(cloneRow()));
@@ -1627,7 +1627,7 @@ void TableView::createActions()
 		a = new Action(tr("Zobrazit ve formulari"), this);
 		a->setIcon(style->icon("view"));
 		a->setToolTip(tr("Zobrazit radek v formulari pro cteni"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(emitViewRowInExternalEditor()));
 		a->setOid("viewRowExternal");
 		m_actions[a->oid()] = a;
@@ -1636,7 +1636,7 @@ void TableView::createActions()
 		a = new Action(tr("Upravit ve formulari"), this);
 		a->setIcon(style->icon("edit"));
 		a->setToolTip(tr("Upravit radek ve formulari"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(emitEditRowInExternalEditor()));
 		a->setOid("editRowExternal");
 		m_actions[a->oid()] = a;
@@ -1647,7 +1647,7 @@ void TableView::createActions()
 		a->setOid("sortAsc");
 		a->setCheckable(true);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
 		//connect(a, SIGNAL(triggered(bool)), this, SLOT(sortAsc(bool)));
 		m_actions[a->oid()] = a;
@@ -1657,7 +1657,7 @@ void TableView::createActions()
 		a->setOid("sortDesc");
 		a->setCheckable(true);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
 		//connect(a, SIGNAL(triggered(bool)), this, SLOT(sortDesc(bool)));
 		m_actions[a->oid()] = a;
@@ -1669,7 +1669,7 @@ void TableView::createActions()
 		a->setCheckable(false);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+F", "filter table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
 		connect(a, SIGNAL(triggered(bool)), this, SIGNAL(filterDialogRequest()));
 		m_actions[a->oid()] = a;
@@ -1678,7 +1678,7 @@ void TableView::createActions()
 		a = new Action(tr("Edit cell content"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+T", "Edit cell content")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(editCellContentInEditor()));
 		a->setOid("showCurrentCellText");
 		m_actionGroups[CellActions] << a->oid();
@@ -1687,7 +1687,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Save BLOB"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
 		a->setOid("saveCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
@@ -1696,7 +1696,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Load BLOB from file"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
 		a->setOid("loadCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
@@ -1705,7 +1705,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Insert rows statement"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(insertRowsStatement()));
 		a->setOid("insertRowsStatement");
 		m_actionGroups[RowActions] << a->oid();
@@ -1715,7 +1715,7 @@ void TableView::createActions()
 		a = new Action(tr("Set NULL in selection"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+L", "Set NULL in selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(setNullInSelection()));
 		a->setOid("setNullInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
@@ -1724,7 +1724,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Set value in selection"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(setValueInSelection()));
 		a->setOid("setValueInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
@@ -1733,7 +1733,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Generate sequence in selection"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(generateSequenceInSelection()));
 		a->setOid("generateSequenceInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
@@ -1748,6 +1748,7 @@ void TableView::createActions()
 		a->setMenu(m);
 		{
 			a = new Action(tr("Select current column"), this);
+			a->setShortcut(QKeySequence(tr("Ctrl+Shift+C", "Select current column")));
 			a->setShortcutContext(Qt::WidgetShortcut);
 			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
 			a->setOid("selectCurrentColumn");
@@ -1757,7 +1758,7 @@ void TableView::createActions()
 		}
 		{
 			a = new Action(tr("Select current row"), this);
-			a->setShortcutContext(Qt::WidgetShortcut);
+			////a->setShortcutContext(Qt::WidgetShortcut);
 			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
 			a->setOid("selectCurrentRow");
 			//m_actions[a->oid()] = a;
@@ -1943,7 +1944,7 @@ void TableView::generateSequenceInSelection()
 	int n = new_val_str.toInt();
 	foreach(int row_ix, sorted_indexes.keys()) {
 		QList<int> lst = sorted_indexes.value(row_ix);
-		qSort(lst);
+		std::sort(lst.begin(), lst.end());
 		foreach(int col_ix, lst) {
 			QModelIndex ix = model()->index(row_ix, col_ix);
 			model()->setData(ix, n++);

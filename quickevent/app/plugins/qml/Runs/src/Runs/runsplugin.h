@@ -51,6 +51,8 @@ public:
 	Q_SLOT void clearRunnersTableCache();
 
 	Q_INVOKABLE int courseForRun(int run_id);
+	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
+
 	Q_INVOKABLE int cardForRun(int run_id);
 	qf::core::utils::TreeTable currentStageResultsTable(const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
 	Q_INVOKABLE QVariant currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
@@ -67,7 +69,7 @@ public:
 
 	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
 
-	bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
+	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 

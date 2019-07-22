@@ -22,7 +22,7 @@ class QFQMLWIDGETS_DECL_EXPORT MessageBox : public QMessageBox
 private:
 	using Super = QMessageBox;
 public:
-	explicit MessageBox(QWidget *parent = 0);
+	explicit MessageBox(QWidget *parent = nullptr);
 
 	QF_PROPERTY_IMPL(QString, d, D, oNotShowAgainPersistentKey)
 

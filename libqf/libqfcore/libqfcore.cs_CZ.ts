@@ -67,7 +67,8 @@
         <location filename="src/model/sqltablemodel.cpp" line="230"/>
         <source>numRowsAffected() = %1, should be 1
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>numRowsAffected() = %1, mělo by být 1
+%2</translation>
     </message>
     <message>
         <location filename="src/model/sqltablemodel.cpp" line="256"/>

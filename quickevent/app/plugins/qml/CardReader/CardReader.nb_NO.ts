@@ -37,7 +37,7 @@
     <message>
         <location filename="src/cardreaderpartwidget.cpp" line="12"/>
         <source>Card reader</source>
-        <translation type="unfinished"></translation>
+        <translation>Kortleser</translation>
     </message>
 </context>
 <context>
@@ -61,13 +61,13 @@
         <location filename="src/cardreaderwidget.cpp" line="226"/>
         <source>Show card data</source>
         <oldsource>Show card</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Vis kortdata</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="227"/>
         <source>Print card data</source>
         <oldsource>Print card</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Skriv ut kartdata</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="229"/>
@@ -87,12 +87,12 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="302"/>
         <source>&amp;Station</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stasjon</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="305"/>
         <source>Station info</source>
-        <translation type="unfinished"></translation>
+        <translation>Stasjonsinfo</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="313"/>
@@ -112,7 +112,7 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="325"/>
         <location filename="src/cardreaderwidget.cpp" line="326"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Sant</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="322"/>
@@ -121,22 +121,22 @@ Read out after punch: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="325"/>
         <location filename="src/cardreaderwidget.cpp" line="326"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Usant</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="335"/>
         <source>Read station memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Les stasjonsminne</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="362"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verktøy</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="365"/>
         <source>Import cards</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer kort</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="367"/>
@@ -146,7 +146,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="373"/>
         <source>Test audio</source>
-        <translation type="unfinished"></translation>
+        <translation>Test lyd</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="381"/>
@@ -231,7 +231,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="885"/>
         <source>Import CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Importer CSV</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="890"/>
@@ -271,7 +271,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1008"/>
         <source>No.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nei.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1008"/>
@@ -286,7 +286,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1008"/>
         <source>Card error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kortfeil</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1011"/>
@@ -309,17 +309,17 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="27"/>
         <source>Reader</source>
-        <translation type="unfinished"></translation>
+        <translation>Leser</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="33"/>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilkobling</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="39"/>
         <source>De&amp;vice:</source>
-        <translation type="unfinished"></translation>
+        <translation>En&amp;het:</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="52"/>
@@ -329,12 +329,12 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="69"/>
         <source>38400</source>
-        <translation type="unfinished"></translation>
+        <translation>38400</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="74"/>
         <source>4800</source>
-        <translation type="unfinished"></translation>
+        <translation>4800</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="82"/>
@@ -344,57 +344,57 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="99"/>
         <source>8</source>
-        <translation type="unfinished"></translation>
+        <translation>8</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="104"/>
         <source>7</source>
-        <translation type="unfinished"></translation>
+        <translation>7</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="109"/>
         <source>6</source>
-        <translation type="unfinished"></translation>
+        <translation>6</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="114"/>
         <source>5</source>
-        <translation type="unfinished"></translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="122"/>
         <source>Stop bits:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stopp-bit:</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="136"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="141"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="149"/>
         <source>Parity:</source>
-        <translation type="unfinished"></translation>
+        <translation>Paritet:</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="163"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="168"/>
         <source>Odd</source>
-        <translation type="unfinished"></translation>
+        <translation>Oddetall</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="173"/>
         <source>Even</source>
-        <translation type="unfinished"></translation>
+        <translation>Partall</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="178"/>
@@ -414,7 +414,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="213"/>
         <source>show raw data</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis rådata</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="220"/>
@@ -432,12 +432,12 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="131"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="132"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Navn</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="133"/>
@@ -447,23 +447,23 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="134"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Start</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="135"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Tid</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="136"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Fullfør</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="137"/>
         <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Feil</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="137"/>
@@ -478,7 +478,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="138"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Diskvalifisert</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="139"/>
@@ -551,7 +551,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="40"/>
         <source>Listen on UDP port</source>
-        <translation type="unfinished"></translation>
+        <translation>Lytt til UDP-port</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="47"/>
@@ -561,7 +561,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="67"/>
         <source>Listen on TCP port</source>
-        <translation type="unfinished"></translation>
+        <translation>Lytt til TCP-port</translation>
     </message>
 </context>
 </TS>

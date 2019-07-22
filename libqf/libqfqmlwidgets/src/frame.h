@@ -31,7 +31,7 @@ private:
 public:
 	enum LayoutType {LayoutInvalid, LayoutHorizontal, LayoutVertical, LayoutGrid, LayoutForm};
 public:
-	explicit Frame(QWidget *parent = 0);
+	explicit Frame(QWidget *parent = nullptr);
 	~Frame() Q_DECL_OVERRIDE;
 public:
 	LayoutType layoutType() const;

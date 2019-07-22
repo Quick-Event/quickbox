@@ -29,7 +29,7 @@ public:
 		QVector<QVariant> m_data;
 	};
 public:
-	LogTableModel(QObject *parent = 0);
+	LogTableModel(QObject *parent = nullptr);
 
 	enum class Direction {AppendToTop, AppendToBottom};
 

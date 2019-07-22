@@ -16,7 +16,7 @@ class QFQMLWIDGETS_DECL_EXPORT StatusBar : public QStatusBar
 private:
 	typedef QStatusBar Super;
 public:
-	explicit StatusBar(QWidget *parent = 0);
+	explicit StatusBar(QWidget *parent = nullptr);
 	~StatusBar() Q_DECL_OVERRIDE;
 public:
 	Q_SLOT virtual void showProgress(const QString &msg, int completed, int total);

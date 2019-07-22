@@ -42,7 +42,7 @@ public:
 					  CalculateActions = 64, ExportActions = 128, ImportActions = 256, SortActions = 512, SelectActions = 1024,
 					  FilterActions = 2048, PasteActions = 4096, AllActions = 65535};
 public:
-	explicit TableView(QWidget *parent = 0);
+	explicit TableView(QWidget *parent = nullptr);
 	~TableView() Q_DECL_OVERRIDE;
 public:
 	enum InlineEditSaveStrategy {

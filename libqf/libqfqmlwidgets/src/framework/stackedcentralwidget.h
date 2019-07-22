@@ -19,7 +19,7 @@ class QFQMLWIDGETS_DECL_EXPORT StackedCentralWidget : public CentralWidget
 private:
 	typedef CentralWidget Super;
 public:
-	explicit StackedCentralWidget(MainWindow *parent = 0);
+	explicit StackedCentralWidget(MainWindow *parent = nullptr);
 	~StackedCentralWidget() Q_DECL_OVERRIDE;
 public:
 	void addPartWidget(PartWidget *widget) Q_DECL_OVERRIDE;

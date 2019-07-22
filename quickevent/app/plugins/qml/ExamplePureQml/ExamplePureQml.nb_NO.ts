@@ -12,7 +12,7 @@
         <location filename="main.qml" line="18"/>
         <location filename="main.qml" line="23"/>
         <source>Test report</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Testrapport</translation>
     </message>
     <message>
         <location filename="main.qml" line="43"/>

@@ -36,7 +36,7 @@ class QFQMLWIDGETS_DECL_EXPORT Pen : public StyleObject
 				"A line width of zero indicates a cosmetic pen.")
 	Q_PROPERTY(qreal width READ width WRITE setWidth NOTIFY widthChanged)
 public:
-	explicit Pen(QObject *parent = 0);
+	explicit Pen(QObject *parent = nullptr);
 	~Pen() Q_DECL_OVERRIDE;
 public:
 	enum PenStyle {
