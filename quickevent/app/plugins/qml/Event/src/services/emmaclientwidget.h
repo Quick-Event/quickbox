@@ -22,9 +22,11 @@ public:
 private:
 	void onBtChooseExportDirClicked();
 	void onBtExportSplitsClicked();
+	void onBtExportFinishClicked();
+	void onBtExportStartClicked();
 	bool acceptDialogDone(int result) override;
 	EmmaClient* service();
-	void saveSettings();
+	bool saveSettings();
 private:
 	Ui::EmmaClientWidget *ui;
 };

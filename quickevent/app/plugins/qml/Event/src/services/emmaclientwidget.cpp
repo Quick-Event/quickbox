@@ -22,10 +22,15 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 		EmmaClientSettings ss = svc->settings();
 		ui->edExportDir->setText(ss.exportDir());
 		ui->edFileName->setText(ss.fileName());
+		ui->edExportInterval->setValue(ss.exportIntervalSec());
+		ui->chExportStart->setCheckState((ss.exportStart()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportFinish->setCheckState((ss.exportFinish()) ? Qt::Checked : Qt::Unchecked);
 	}
 
 	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseExportDirClicked);
 	connect(ui->btExportSplits, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportSplitsClicked);
+	connect(ui->btExportFinish, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportFinishClicked);
+	connect(ui->btExportStart, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartClicked);
 }
 
 EmmaClientWidget::~EmmaClientWidget()
@@ -56,16 +61,10 @@ void EmmaClientWidget::onBtExportSplitsClicked()
 bool EmmaClientWidget::acceptDialogDone(int result)
 {
 	if(result == QDialog::Accepted) {
-		/*
-		if(!fn.isEmpty()) {
-			QFile file(fn);
-			if(!file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-				qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("File '%1' cannot be open for writing.").arg(fn));
-				return false;
-			}
+		if(!saveSettings()) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot create directory '%1'.").arg(ui->edExportDir->text().trimmed()));
+			return false;
 		}
-		*/
-		saveSettings();
 	}
 	return true;
 }
@@ -77,15 +76,43 @@ EmmaClient *EmmaClientWidget::service()
 	return svc;
 }
 
-void EmmaClientWidget::saveSettings()
+bool EmmaClientWidget::saveSettings()
 {
 	EmmaClient *svc = service();
 	if(svc) {
 		EmmaClientSettings ss = svc->settings();
-		ss.setExportDir(ui->edExportDir->text());
+		QString dir = ui->edExportDir->text().trimmed();
+		ss.setExportDir(dir);
+		ss.setExportIntervalSec(ui->edExportInterval->value());
 		ss.setFileName(ui->edFileName->text().trimmed());
+		ss.setExportStart(ui->chExportStart->isChecked());
+		ss.setExportFinish(ui->chExportFinish->isChecked());
 		svc->setSettings(ss);
+		if(!dir.isEmpty()) {
+			if(!QDir().mkpath(dir))
+				return false;
+		}
+	}
+	return true;
+}
+
+void EmmaClientWidget::onBtExportFinishClicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportFinish();
+	}
+}
+
+void EmmaClientWidget::onBtExportStartClicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportStartList();
 	}
 }
 
 }
+
