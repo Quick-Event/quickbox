@@ -49,6 +49,9 @@
      <property name="suffix">
       <string> sec</string>
      </property>
+     <property name="maximum">
+      <number>600</number>
+     </property>
      <property name="singleStep">
       <number>15</number>
      </property>

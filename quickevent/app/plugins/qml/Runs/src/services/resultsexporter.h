@@ -51,6 +51,7 @@ public:
 	bool exportResults();
 private:
 	void onExportTimerTimeOut();
+	void init();
 private:
 	QTimer *m_exportTimer = nullptr;
 };
