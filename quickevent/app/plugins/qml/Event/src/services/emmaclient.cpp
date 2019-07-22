@@ -232,6 +232,12 @@ void EmmaClient::onExportTimerTimeOut()
 		return;
 
 	EmmaClientSettings ss = settings();
+
+	if (ss.exportTypeXML3())
+	{
+		qfInfo() << "EmmaClient Iof Xml3 creation called";
+		exportResultsIofXml3();
+	}
 	if (ss.exportStart())
 	{
 		qfInfo() << "EmmaClient startlist creation called";
@@ -256,8 +262,7 @@ void EmmaClient::exportFinish()
 
 	QTextStream ts(&f);
 
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
-	int current_stage = currentStageId();
+	int current_stage = eventPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
 	qb.select2("cards", "id, siId")
             .select2("runs", "finishTimeMs, misPunch, badCheck, disqualified, notCompeting")
@@ -265,13 +270,6 @@ void EmmaClient::exportFinish()
 			.join("cards.runId", "runs.id")
 			.where("cards.stageId=" QF_IARG(current_stage))
             .orderBy("cards.id ASC");
-//	if(is_relays) {
-//		qb.join("runs.relayId", "relays.id");
-//		qb.join("relays.classId", "classes.id");
-//	}
-//	else {
-//		qb.join("competitors.classId", "classes.id");
-//	}
 	int start00 = eventPlugin()->stageStartMsec(current_stage);
 
 	qfs::Query q2;
@@ -324,8 +322,9 @@ void EmmaClient::exportStartList()
 	QTextStream ts(&f);
 	ts.setGenerateByteOrderMark(true); // BOM
 
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
-	int current_stage = currentStageId();
+//	ToDo : Support for relay start list !!
+//	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	int current_stage = eventPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
     qb.select2("runs", "startTimeMs, siId, competitorId, isrunning")
             .select2("competitors","firstName, lastName, registration")
@@ -343,7 +342,7 @@ void EmmaClient::exportStartList()
 		qb.join("relays.classId", "classes.id");
 	}
 */
-    int start00 = eventPlugin()->stageStartMsec(current_stage);
+	int start00 = eventPlugin()->stageStartMsec(current_stage);
 
 	qfs::Query q2;
 	q2.execThrow(qb.toString());
@@ -420,17 +419,6 @@ void EmmaClient::loadSettings()
 {
 	Super::loadSettings();
 	init();
-}
-
-
-int EmmaClient::currentStageId()
-{
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return 0);
-	int ret = plugin->currentStageId();
-	return ret;
 }
 
 } // namespace services

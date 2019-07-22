@@ -11,6 +11,7 @@ class EmmaClientSettings : public ServiceSettings
 {
 	using Super = ServiceSettings;
 
+	QF_VARIANTMAP_FIELD2(bool, e, setE, xportTypeXML3, 0)
 	QF_VARIANTMAP_FIELD(QString, e, setE, xportDir)
 	QF_VARIANTMAP_FIELD(QString, f, setF, ileName)
 	QF_VARIANTMAP_FIELD2(int, e, setE, xportIntervalSec, 0)
@@ -45,7 +46,6 @@ private:
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 	void onCardChecked(const QVariantMap &data);
 	qf::qmlwidgets::framework::DialogWidget *createDetailWidget() override;
-	int currentStageId();
 private:
 	void onExportTimerTimeOut();
 	void init();
