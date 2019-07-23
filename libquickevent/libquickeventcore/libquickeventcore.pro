@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = quickeventcore
 
-QT += core sql
+QT += core sql qml
 
 CONFIG += qt dll
 CONFIG += c++11 hide_symbols
