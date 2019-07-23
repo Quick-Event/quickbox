@@ -87,16 +87,6 @@ RunsPlugin {
 			}
 		},
 		Action {
-			id: act_export_startList_emma
-			text: qsTr('&EmmaClient')
-			onTriggered: {
-				var default_file_name = "emma-start.txt";
-				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("TXT files (*.txt)"));
-				if(file_name)
-					startLists.exportStartListEmma(file_name)
-			}
-		},
-		Action {
 			id: act_print_results_currentStage
 			text: qsTr('&Current stage')
 			shortcut: "Ctrl+P"
@@ -199,7 +189,6 @@ RunsPlugin {
 		a = m_stlist.addMenuInto("xml", "&XML");
 		a.addActionInto(act_export_startList_iofxml3);
 		a = m_stlist.addMenuInto("txt", "&TXT");
-		a.addActionInto(act_export_startList_emma);
 
 		//var m_results = a_export.addMenuInto("results", "&Results");
 		var m_results = root.partWidget.menuBar.actionForPath("export/results", false);
