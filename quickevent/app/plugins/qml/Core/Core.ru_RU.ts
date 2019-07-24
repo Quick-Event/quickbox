@@ -24,7 +24,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="81"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>О Qt</translation>
     </message>
 </context>
 <context>
@@ -32,7 +32,7 @@
     <message>
         <location filename="qml/main.qml" line="58"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменение языка на &apos;%1&apos; будет применено после перезапуска приложения.</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="77"/>
@@ -82,17 +82,17 @@
     <message>
         <location filename="qml/main.qml" line="143"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Система</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="144"/>
         <source>Czech</source>
-        <translation type="unfinished"></translation>
+        <translation>Чешский</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="145"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Английский</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="158"/>
