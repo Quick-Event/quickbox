@@ -322,31 +322,34 @@ void EmmaClient::exportStartList()
 	QTextStream ts(&f);
 	ts.setGenerateByteOrderMark(true); // BOM
 
-//	ToDo : Support for relay start list !!
-//	bool is_relays = eventPlugin()->eventConfig()->isRelays();
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	int current_stage = eventPlugin()->currentStageId();
 	qfs::QueryBuilder qb;
-    qb.select2("runs", "startTimeMs, siId, competitorId, isrunning")
+	qb.select2("runs", "startTimeMs, siId, competitorId, isrunning, leg")
             .select2("competitors","firstName, lastName, registration")
             .select2("classes","name")
             .select2("cards", "id, siId, startTime")
 			.from("runs")
-            .join("runs.competitorId","competitors.id")
-            .join("competitors.classId","classes.id")
+			.join("runs.competitorId","competitors.id")
             .join("runs.id", "cards.runId")
-			.where("runs.stageId=" QF_IARG(current_stage))
-            .orderBy("runs.id ASC");
-/*	don't known yet where get start time for relay ??
+			.where("runs.stageId=" QF_IARG(current_stage));
 	if(is_relays) {
+		qb.select2("relays","number");
 		qb.join("runs.relayId", "relays.id");
 		qb.join("relays.classId", "classes.id");
+		qb.orderBy("runs.leg, relays.number ASC");
 	}
-*/
-	int start00 = eventPlugin()->stageStartMsec(current_stage);
+	else {
+		qb.join("competitors.classId","classes.id");
+		qb.orderBy("runs.id ASC");
+	}
 
+	int start00 = eventPlugin()->stageStartMsec(current_stage);
+	qfDebug() << qb.toString();
 	qfs::Query q2;
 	q2.execThrow(qb.toString());
     int lastId = -1;
+	QMap <int,int> startTimesRelays;
 	while(q2.next()) {
         int id = q2.value("runs.competitorId").toInt();
         if (id == lastId)
@@ -365,11 +368,31 @@ void EmmaClient::exportStartList()
         QString clas = q2.value("classes.name").toString();
         QString reg = q2.value("competitors.registration").toString();
         name = name.leftJustified(22,QChar(' '),true);
-        clas = clas.leftJustified(7,QChar(' '),true);
-        reg = reg.leftJustified(7,QChar(' '),true);
+		if (is_relays)
+		{
+			int leg = q2.value("runs.leg").toInt();
+			clas = QString("%1 %2").arg(clas).arg(leg);
+			clas = clas.leftJustified(7,QChar(' '),true);
+			reg = reg.left(3);
+			reg = reg.leftJustified(7,QChar(' '),true);
+			// EmmaClient uses for all relays start time of 1st leg
+			int rel_num =  q2.value("relays.number").toInt();
+			if (leg == 1 && rel_num != 0) {
+				startTimesRelays.insert(rel_num,startTime);
+			} else if (rel_num != 0) {
+				auto it = startTimesRelays.find(rel_num);
+				if (it != startTimesRelays.end())
+					startTime = it.value();
+			}
+		}
+		else
+		{
+			clas = clas.leftJustified(7,QChar(' '),true);
+			reg = reg.leftJustified(7,QChar(' '),true);
+		}
 
         int msec = startTime;
-        if (startTimeCard != 0)
+		if (startTimeCard != 0)
         {
             // has start in si card (P, T, HDR)
             startTimeCard *= 1000; // msec
@@ -409,7 +432,7 @@ void EmmaClient::exportStartList()
 
         if (id != 0) // filter bad data
         {
-            QString s = QString("%1 %2 %3 %4 %5 %6").arg(id , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(clas).arg(reg).arg(name).arg(tm2);
+			QString s = QString("%1 %2 %3 %4 %5 %6").arg(id , 5, 10, QChar(' ')).arg(si, 8, 10, QChar(' ')).arg(clas).arg(reg).arg(name).arg(tm2);
             ts << s << "\n";
         }
 	}
