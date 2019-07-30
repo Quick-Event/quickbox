@@ -31,6 +31,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	//ui->edFilter->setText("h1%");
 	ui->grpStartOptions->setVisible(false);
 	ui->grpStartersOptions->setVisible(false);
+	ui->grpStages->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -43,6 +44,12 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::classFilterVisibleChanged, ui->grpClassFilter, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::startersOptionsVisibleChanged, ui->grpStartersOptions, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::vacantsVisibleChanged, ui->chkStartOpts_PrintVacants, &QCheckBox::setVisible);
+	connect(this, &ReportOptionsDialog::stagesOptionVisibleChanged, ui->grpStages, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::stagesCountChanged, ui->edStagesCount, &QSpinBox::setValue);
+	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
+
 	//connect(this, &ReportOptionsDialog::classFilterVisibleChanged, [this]() {
 	//	qfInfo() << __FUNCTION__;
 	//});

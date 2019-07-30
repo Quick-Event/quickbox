@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>729</width>
-    <height>835</height>
+    <width>730</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,25 @@
    <property name="bottomMargin">
     <number>5</number>
    </property>
+   <item>
+    <widget class="QGroupBox" name="grpStages">
+     <property name="title">
+      <string>Stages count</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Number of stages</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="edStagesCount"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <widget class="QGroupBox" name="grpClassFilter">
      <property name="title">
@@ -176,7 +195,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="grpPageLayout">
      <property name="title">
       <string>Page layout</string>
      </property>
@@ -380,17 +399,23 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>edStagesCount</tabstop>
   <tabstop>grpClassFilter</tabstop>
   <tabstop>btWildCard</tabstop>
   <tabstop>btRegExp</tabstop>
   <tabstop>btClassNames</tabstop>
+  <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>
   <tabstop>chkStartOpts_PrintVacants</tabstop>
   <tabstop>chkStartOpts_PrintStartNumbers</tabstop>
+  <tabstop>edPageWidth</tabstop>
+  <tabstop>edHorizontalMargin</tabstop>
   <tabstop>edColumnCount</tabstop>
+  <tabstop>edPageHeight</tabstop>
+  <tabstop>edVerticalMargin</tabstop>
+  <tabstop>cbxBreakAfterClassType</tabstop>
   <tabstop>btSaveAsDefault</tabstop>
-  <tabstop>edFilter</tabstop>
  </tabstops>
  <resources/>
  <connections>

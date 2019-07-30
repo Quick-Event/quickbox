@@ -9,6 +9,10 @@ Report {
 
 	property int stageCount: 1
 	property string reportTitle: qsTr("Start list by clubs")
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
+	property bool isPrintStartNumbers: false
+	property var options
 
 	property QfObject internals: QfObject {
 		Component {
@@ -48,10 +52,10 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: 210
-	height: 297
-	hinset: 5
-	vinset: 5
+	width: root.options.pageWidth? root.options.pageWidth: 210
+	height: root.options.pageHeight? root.options.pageHeight: 297
+	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
@@ -82,6 +86,11 @@ Report {
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
 					Space { height: 5 }
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
+						skipFirst: true
+					}
 					Frame {
 						id: classHeader
 						width: "%"
@@ -125,6 +134,12 @@ Report {
 							Cell {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
+							}
+							Para {
+								visible: root.isPrintStartNumbers
+								width: 16
+								halign: Frame.AlignRight
+								textFn: runnersDetail.dataFn("startNumber");
 							}
 							Cell {
 								width: 25
