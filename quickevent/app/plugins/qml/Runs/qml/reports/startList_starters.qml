@@ -106,6 +106,12 @@ Report {
 							text: detail.data(detail.currentIndex, "competitorName");
 						}
 						Cell {
+							visible: root.isPrintStartNumbers
+							width: 12
+							halign: Frame.AlignRight
+							text: detail.data(detail.currentIndex,"competitors.startNumber");
+						}
+						Cell {
 							objectName: "minuteCellRegistration"
 							width: 18
 							text: detail.data(detail.currentIndex, "competitors.registration");

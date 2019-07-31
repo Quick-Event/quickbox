@@ -146,7 +146,7 @@ QtObject {
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()
-			.select2('competitors', 'registration, id')
+            .select2('competitors', 'registration, id, startNumber')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select("COALESCE(runs.startTimeMs / 1000 / 60, 0) AS startTimeMin")
 			.select2('runs', 'siId, startTimeMs')

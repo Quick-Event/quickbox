@@ -115,7 +115,7 @@ Report {
 							}
 							Para {
 								visible: root.isPrintStartNumbers
-								width: 8
+                                width: 11
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("startNumber");
 							}
