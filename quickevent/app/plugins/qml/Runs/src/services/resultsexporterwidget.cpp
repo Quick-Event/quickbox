@@ -15,7 +15,7 @@ ResultsExporterWidget::ResultsExporterWidget(QWidget *parent)
 	: Super(parent)
 	, ui(new Ui::ResultsExporterWidget)
 {
-	setPersistentSettingsId("EmmaClientWidget");
+	setPersistentSettingsId("ResultsExporterWidget");
 	ui->setupUi(this);
 
 	ui->lstOutputFormat->addItem(tr("HTML multi page"), static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti));
