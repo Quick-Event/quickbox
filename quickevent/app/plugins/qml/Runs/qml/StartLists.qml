@@ -194,7 +194,7 @@ QtObject {
 			for(var stage_id = 1; stage_id <= stages_count; stage_id++) {
 				var runs_table = "runs" + stage_id;
 				reportModel.queryBuilder
-					.select2(runs_table, "siid, startTimeMs")
+					.select2(runs_table, "siid, startTimeMs, isRunning")
 					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND " + runs_table + ".isRunning")
 			}
 			reportModel.setQueryParameters({class_id: class_id});
@@ -235,7 +235,7 @@ QtObject {
 			for(var stage_id = 1; stage_id <= stages_count; stage_id++) {
 				var runs_table = "runs" + stage_id;
 				reportModel.queryBuilder
-					.select2(runs_table, "siid, startTimeMs")
+					.select2(runs_table, "siid, startTimeMs, isRunning")
 					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND " + runs_table + ".isRunning")
 			}
 			reportModel.setQueryParameters({club_abbr: club_abbr});

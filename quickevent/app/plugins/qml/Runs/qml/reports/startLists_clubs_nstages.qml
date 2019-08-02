@@ -25,8 +25,13 @@ Report {
 			id: cStartTimeCell
 			Cell {
 				property string fieldName
+				property string isRunning
 				textFn: function() {
-					return OGTime.msecToString_mmss(runnersDetail.data(runnersDetail.currentIndex, fieldName));
+					var run = runnersDetail.data(runnersDetail.currentIndex, isRunning);
+					if (run)
+						return OGTime.msecToString_mmss(runnersDetail.data(runnersDetail.currentIndex, fieldName));
+					else
+						return "-";
 				}
 			}
 		}
@@ -154,7 +159,7 @@ Report {
 								//console.warn("=============", root.stageCount)
 								for(var i=0; i<root.stageCount; i++) {
 									var runs_table = "runs" + (i+1);
-									var c = cStartTimeCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeMs"});
+									var c = cStartTimeCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeMs", "isRunning": runs_table + ".isRunning" });
 									runnersDetail.addItem(c);
 								}
 							}
