@@ -24,10 +24,20 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	Q_PROPERTY(bool classFilterVisible READ isClassFilterVisible WRITE setClassFilterVisible NOTIFY classFilterVisibleChanged)
 	Q_PROPERTY(bool startListOptionsVisible READ isStartListOptionsVisible WRITE setStartListOptionsVisible NOTIFY startListOptionsVisibleChanged)
 	Q_PROPERTY(bool startersOptionsVisible READ isStartersOptionsVisible WRITE setStartersOptionsVisible NOTIFY startersOptionsVisibleChanged)
+	Q_PROPERTY(bool vacantsVisible READ isVacantsVisible WRITE setVacantsVisible NOTIFY vacantsVisibleChanged)
+	Q_PROPERTY(bool stagesOptionVisible READ isStagesOptionVisible WRITE setStagesOptionVisible NOTIFY stagesOptionVisibleChanged)
+	Q_PROPERTY(int stagesCount READ stagesCount WRITE setStagesCount NOTIFY stagesCountChanged)
+	Q_PROPERTY(bool pageLayoutVisible READ isPageLayoutVisible WRITE setPageLayoutVisible NOTIFY pageLayoutVisibleChanged)
+	Q_PROPERTY(bool columnCountEnable READ isColumnCountEnable WRITE setColumnCountEnable NOTIFY columnCountEnableChanged)
 
 	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartersOptionsVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(v, V, acantsVisible, true)
+	QF_PROPERTY_BOOL_IMPL2(s, S, tagesOptionVisible, false)
+	QF_PROPERTY_IMPL2(int,s, S, tagesCount, 1)
+	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(c, C, olumnCountEnable, true)
 private:
 	using Super = QDialog;
 public:
@@ -51,6 +61,7 @@ public:
 		QF_VARIANTMAP_FIELD(bool, is, set, InvertClassFilter)
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintVacants)
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintStartNumbers)
+		QF_VARIANTMAP_FIELD2(int, s, setS, tagesCount, 1)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};

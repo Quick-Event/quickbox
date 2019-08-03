@@ -72,6 +72,7 @@ QtObject {
 						tt2.setValue(j, "competitorName", "---");
 						tt2.setValue(j, "registration", "");
 						tt2.setValue(j, "siId", 0);
+						tt2.setValue(j, "startNumber", 0);
 						start_time_0 += start_interval;
 						j++;
 					}
@@ -84,6 +85,7 @@ QtObject {
 					tt2.setValue(j, "competitorName", "---");
 					tt2.setValue(j, "registration", "");
 					tt2.setValue(j, "siId", 0);
+					tt2.setValue(j, "startNumber", 0);
 					start_time_0 += start_interval;
 					j++;
 				}
@@ -144,7 +146,7 @@ QtObject {
 		var tt = new TreeTable.Table();
 
 		reportModel.queryBuilder.clear()
-			.select2('competitors', 'registration, id')
+            .select2('competitors', 'registration, id, startNumber')
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.select("COALESCE(runs.startTimeMs / 1000 / 60, 0) AS startTimeMin")
 			.select2('runs', 'siId, startTimeMs')
@@ -184,7 +186,7 @@ QtObject {
 			var class_id = tt.value(i, "classes.id");
 			console.debug("class id:", class_id);
 			reportModel.queryBuilder.clear()
-				.select2('competitors', 'registration, lastName, firstName, siId')
+				.select2('competitors', 'registration, lastName, firstName, siId, startNumber')
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.from('competitors')
 				.where("competitors.classId={{class_id}}")
@@ -192,7 +194,7 @@ QtObject {
 			for(var stage_id = 1; stage_id <= stages_count; stage_id++) {
 				var runs_table = "runs" + stage_id;
 				reportModel.queryBuilder
-					.select2(runs_table, "siid, startTimeMs")
+					.select2(runs_table, "siid, startTimeMs, isRunning")
 					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND " + runs_table + ".isRunning")
 			}
 			reportModel.setQueryParameters({class_id: class_id});
@@ -223,7 +225,7 @@ QtObject {
 			var club_abbr = tt.value(i, "clubAbbr");
 			//console.debug("class id:", class_id);
 			reportModel.queryBuilder.clear()
-				.select2('competitors', 'registration, siId')
+				.select2('competitors', 'registration, siId, startNumber')
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.select2('classes', 'name')
 				.from('competitors')
@@ -233,7 +235,7 @@ QtObject {
 			for(var stage_id = 1; stage_id <= stages_count; stage_id++) {
 				var runs_table = "runs" + stage_id;
 				reportModel.queryBuilder
-					.select2(runs_table, "siid, startTimeMs")
+					.select2(runs_table, "siid, startTimeMs, isRunning")
 					.joinRestricted("competitors.id", "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + stage_id + " AND " + runs_table + ".isRunning")
 			}
 			reportModel.setQueryParameters({club_abbr: club_abbr});
@@ -252,6 +254,7 @@ QtObject {
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "startListClassesReportOptions";
 		dlg.startListOptionsVisible = true;
+		dlg.pageLayoutVisible = false;
 		//dlg.dialogType = RunsPlugin.StartListReport;
 		//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 		if(dlg.exec()) {
@@ -265,7 +268,7 @@ QtObject {
 											   , isColumnBreak: dlg.isColumnBreak()
 											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
 											   , options: opts
-										     }
+											 }
 										   );
 		}
 		dlg.destroy();
@@ -277,7 +280,8 @@ QtObject {
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "startListClubsReportOptions";
 		dlg.classFilterVisible = false;
-		//dlg.startListOptionsVisible = true;
+		dlg.startListOptionsVisible = true;
+		dlg.vacantsVisible = false;
 		if(dlg.exec()) {
 			var tt = startListClubsTable();
 			var opts = dlg.optionsMap();
@@ -289,7 +293,7 @@ QtObject {
 											   , isColumnBreak: dlg.isColumnBreak()
 											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
 											   , options: opts
-										     }
+											 }
 										   );
 		}
 		dlg.destroy();
@@ -302,6 +306,8 @@ QtObject {
 		dlg.persistentSettingsId = "startListStartersReportOptions";
 		dlg.classFilterVisible = true;
 		dlg.startersOptionsVisible = true;
+		dlg.startListOptionsVisible = true;
+		dlg.vacantsVisible = false;
 		if(dlg.exec()) {
 			var tt = startListStartersTable(dlg.sqlWhereExpression());
 			var opts = dlg.optionsMap();
@@ -312,7 +318,7 @@ QtObject {
 										   , { isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
 											   , lineSpacing: opts.startersOptionsLineSpacing
 											   , options: opts
-										     }
+											 }
 										   );
 		}
 		dlg.destroy();
@@ -322,30 +328,61 @@ QtObject {
 	{
 		Log.info("runs startLists printClassesNStages triggered");
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
-		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
-		var tt = nStagesClassesTable(n);
-		//console.info("n:", n)
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startLists_classes_nstages.qml"
-									   , tt.data()
-									   , qsTr("Start list by classes")
-									   , ""
-									   , {stageCount: n});
+
+		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "startListClassesMStagesReportOptions";
+		dlg.startListOptionsVisible = true;
+		dlg.vacantsVisible = false;
+		dlg.stagesOptionVisible = true;
+		dlg.classFilterVisible = false;
+		dlg.stagesCount = event_plugin.stageCount;
+		dlg.columnCountEnable = false;
+		if(dlg.exec()) {
+			var n = dlg.stagesCount;
+			var tt = nStagesClassesTable(n);
+			var opts = dlg.optionsMap();
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startLists_classes_nstages.qml"
+										   , tt.data()
+										   , qsTr("Start list by classes")
+										   , ""
+										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
+											   , isColumnBreak: dlg.isColumnBreak()
+											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
+											   , options: opts
+											   , stageCount: n}
+										   );
+
+		}
 	}
 
 	function printClubsNStages()
 	{
 		Log.info("runs startLists printClubsNStages triggered");
 		var event_plugin = FrameWork.plugin("Event");
-		var stage_id = event_plugin.currentStageId;
-		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Number of stages:"), stage_id, 1, event_plugin.stageCount);
-		var tt = nStagesClubsTable(n);
-		//console.info("n:", n)
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startLists_clubs_nstages.qml"
-									   , tt.data()
-									   , qsTr("Start list by clubs")
-									   , ""
-									   , {stageCount: n});
+
+		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "startListClubsMStagesReportOptions";
+		dlg.startListOptionsVisible = true;
+		dlg.vacantsVisible = false;
+		dlg.stagesOptionVisible = true;
+		dlg.classFilterVisible = false;
+		dlg.stagesCount = event_plugin.stageCount;
+		dlg.columnCountEnable = false;
+		if(dlg.exec()) {
+			var n = dlg.stagesCount;
+			var tt = nStagesClubsTable(n);
+			var opts = dlg.optionsMap();
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/startLists_clubs_nstages.qml"
+										   , tt.data()
+										   , qsTr("Start list by clubs")
+										   , ""
+										   , {isBreakAfterEachClass: dlg.isBreakAfterEachClass()
+											   , isColumnBreak: dlg.isColumnBreak()
+											   , isPrintStartNumbers: dlg.isStartListPrintStartNumbers()
+											   , options: opts
+											   , stageCount: n}
+										   );
+		}
 	}
 
 	function exportHtmlStartListClasses()

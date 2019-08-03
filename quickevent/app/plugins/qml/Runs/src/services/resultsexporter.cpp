@@ -54,6 +54,8 @@ ResultsExporter::ResultsExporter(QObject *parent)
 			m_exportTimer->stop();
 		}
 	});
+	connect(this, &ResultsExporter::settingsChanged, this, &ResultsExporter::init, Qt::QueuedConnection);
+
 }
 
 QString ResultsExporter::serviceName()
@@ -138,6 +140,12 @@ void ResultsExporter::loadSettings()
 		setSettings(ss);
 	}
 
+	init();
+}
+
+void ResultsExporter::init()
+{
+	ResultsExporterSettings ss = settings();
 	if(ss.exportIntervalSec() > 0) {
 		m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
 	}
