@@ -10,134 +10,144 @@
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="35"/>
+        <source>Stages count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="41"/>
+        <source>Number of stages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="54"/>
         <source>Class filter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="59"/>
+        <location filename="src/reportoptionsdialog.ui" line="78"/>
         <source>Posix regular expression</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="62"/>
+        <location filename="src/reportoptionsdialog.ui" line="81"/>
         <source>RegExp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="69"/>
+        <location filename="src/reportoptionsdialog.ui" line="88"/>
         <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="72"/>
+        <location filename="src/reportoptionsdialog.ui" line="91"/>
         <source>Wild card</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="82"/>
+        <location filename="src/reportoptionsdialog.ui" line="101"/>
         <source>Doesn&apos;t match</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="89"/>
+        <location filename="src/reportoptionsdialog.ui" line="108"/>
         <source>Coma delimited list of class names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="92"/>
+        <location filename="src/reportoptionsdialog.ui" line="111"/>
         <source>Class names</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="105"/>
+        <location filename="src/reportoptionsdialog.ui" line="124"/>
         <source>Starters options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="123"/>
+        <location filename="src/reportoptionsdialog.ui" line="142"/>
         <source>Space after line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="133"/>
+        <location filename="src/reportoptionsdialog.ui" line="152"/>
         <source>mm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="146"/>
+        <location filename="src/reportoptionsdialog.ui" line="165"/>
         <source>Start options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="164"/>
+        <location filename="src/reportoptionsdialog.ui" line="183"/>
         <source>Print vacants</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="171"/>
+        <location filename="src/reportoptionsdialog.ui" line="190"/>
         <source>Print start numbers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="181"/>
+        <location filename="src/reportoptionsdialog.ui" line="200"/>
         <source>Page layout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="199"/>
+        <location filename="src/reportoptionsdialog.ui" line="218"/>
         <source>Horizontal margin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="206"/>
-        <location filename="src/reportoptionsdialog.ui" line="252"/>
-        <location filename="src/reportoptionsdialog.ui" line="275"/>
-        <location filename="src/reportoptionsdialog.ui" line="301"/>
+        <location filename="src/reportoptionsdialog.ui" line="225"/>
+        <location filename="src/reportoptionsdialog.ui" line="271"/>
+        <location filename="src/reportoptionsdialog.ui" line="294"/>
+        <location filename="src/reportoptionsdialog.ui" line="320"/>
         <source> mm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="238"/>
+        <location filename="src/reportoptionsdialog.ui" line="257"/>
         <source>Column count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="245"/>
+        <location filename="src/reportoptionsdialog.ui" line="264"/>
         <source>Vertical margin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="268"/>
+        <location filename="src/reportoptionsdialog.ui" line="287"/>
         <source>Page width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="294"/>
+        <location filename="src/reportoptionsdialog.ui" line="313"/>
         <source>Page height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="320"/>
+        <location filename="src/reportoptionsdialog.ui" line="339"/>
         <source>Break type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="328"/>
+        <location filename="src/reportoptionsdialog.ui" line="347"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="333"/>
+        <location filename="src/reportoptionsdialog.ui" line="352"/>
         <source>Column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="338"/>
+        <location filename="src/reportoptionsdialog.ui" line="357"/>
         <source>Page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="364"/>
+        <location filename="src/reportoptionsdialog.ui" line="383"/>
         <source>Save as default</source>
         <translation type="unfinished"></translation>
     </message>

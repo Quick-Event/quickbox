@@ -63,7 +63,7 @@
 <context>
     <name>Classes::ClassesPlugin</name>
     <message>
-        <location filename="src/Classes/classesplugin.cpp" line="236"/>
+        <location filename="src/Classes/classesplugin.cpp" line="285"/>
         <source>Cannot find id for code: %1</source>
         <translation>Nelze najít ID pro kontrolu: %1</translation>
     </message>
@@ -120,240 +120,271 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="121"/>
+        <location filename="src/classeswidget.cpp" line="125"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="122"/>
+        <location filename="src/classeswidget.cpp" line="126"/>
         <source>DL</source>
         <translation>LU</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="122"/>
+        <location filename="src/classeswidget.cpp" line="126"/>
         <source>Locked for drawing</source>
         <translation>Losování uzamčeno</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="123"/>
+        <location filename="src/classeswidget.cpp" line="127"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="124"/>
+        <location filename="src/classeswidget.cpp" line="128"/>
         <source>Interval</source>
         <translation>Interval</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="125"/>
+        <location filename="src/classeswidget.cpp" line="129"/>
         <source>VB</source>
         <translation>Vak. P</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="125"/>
+        <location filename="src/classeswidget.cpp" line="129"/>
         <source>Vacants before</source>
         <translation>Vakanti před</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="126"/>
+        <location filename="src/classeswidget.cpp" line="130"/>
         <source>VE</source>
         <translation>Vak. B</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="126"/>
+        <location filename="src/classeswidget.cpp" line="130"/>
         <source>Vacant every</source>
         <translation>Vakanti během</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="127"/>
+        <location filename="src/classeswidget.cpp" line="131"/>
         <source>VA</source>
         <translation>Vak. Po</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="127"/>
+        <location filename="src/classeswidget.cpp" line="131"/>
         <source>Vacants after</source>
         <translation>Vakanti po</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="128"/>
+        <location filename="src/classeswidget.cpp" line="132"/>
         <source>Last</source>
         <translation>Poslední</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="128"/>
+        <location filename="src/classeswidget.cpp" line="132"/>
         <source>Start time of last competitor in class.</source>
         <translation>Startovní čas posledního závodníka v kategorii.</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="129"/>
+        <location filename="src/classeswidget.cpp" line="133"/>
         <source>Count</source>
         <translation>Počet</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="129"/>
+        <location filename="src/classeswidget.cpp" line="133"/>
         <source>Runners count</source>
         <translation>Počet závodníků</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="130"/>
+        <location filename="src/classeswidget.cpp" line="134"/>
         <source>Maps</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="131"/>
+        <location filename="src/classeswidget.cpp" line="135"/>
         <source>Course</source>
         <translation>Trať</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="133"/>
+        <location filename="src/classeswidget.cpp" line="137"/>
         <source>Length</source>
         <translation>Délka</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="134"/>
+        <location filename="src/classeswidget.cpp" line="138"/>
         <source>Climb</source>
         <translation>Převýšení</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="135"/>
+        <location filename="src/classeswidget.cpp" line="139"/>
         <source>Rel.num</source>
         <translation>Čís. štaf.</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="135"/>
+        <location filename="src/classeswidget.cpp" line="139"/>
         <source>Relay start number</source>
         <translation>Startovní číslo štafety</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="136"/>
+        <location filename="src/classeswidget.cpp" line="140"/>
         <source>Legs</source>
         <translation>Úseky</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="136"/>
+        <location filename="src/classeswidget.cpp" line="140"/>
         <source>Relay leg count</source>
         <translation>Počet úseků štafety</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="154"/>
+        <location filename="src/classeswidget.cpp" line="158"/>
         <source>Pos</source>
         <translation>Číslo</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="155"/>
+        <location filename="src/classeswidget.cpp" line="159"/>
+        <source>Type</source>
+        <comment>control type</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="159"/>
+        <source>Control type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="160"/>
         <source>Code</source>
         <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="156"/>
+        <location filename="src/classeswidget.cpp" line="161"/>
         <source>Alt</source>
         <translation>Náhradní</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="156"/>
+        <location filename="src/classeswidget.cpp" line="161"/>
         <source>Code alternative</source>
         <translation>Náhradní kontrola</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="157"/>
+        <location filename="src/classeswidget.cpp" line="162"/>
         <source>O</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="157"/>
+        <location filename="src/classeswidget.cpp" line="162"/>
         <source>Out of order</source>
         <translation>Mimo provoz</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="158"/>
+        <location filename="src/classeswidget.cpp" line="163"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="158"/>
+        <location filename="src/classeswidget.cpp" line="163"/>
         <source>Radio</source>
         <translation>Rádio</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="184"/>
+        <location filename="src/classeswidget.cpp" line="164"/>
+        <source>Long</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="164"/>
+        <source>Longitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="165"/>
+        <source>Lat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="165"/>
+        <source>Latitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="191"/>
         <source>&amp;Edit</source>
         <translation>&amp;Upravit</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="186"/>
+        <location filename="src/classeswidget.cpp" line="193"/>
         <source>Cou&amp;rses</source>
         <translation>&amp;Tratě</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="191"/>
+        <location filename="src/classeswidget.cpp" line="198"/>
         <source>Co&amp;des</source>
         <translation>&amp;Kontroly</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="196"/>
+        <location filename="src/classeswidget.cpp" line="203"/>
         <source>Classes &amp;layout</source>
         <translation>&amp;Rozvržení startu kategorií</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="197"/>
+        <location filename="src/classeswidget.cpp" line="204"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="211"/>
+        <location filename="src/classeswidget.cpp" line="218"/>
         <source>&amp;Import</source>
         <translation>&amp;Importovat</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="213"/>
+        <location filename="src/classeswidget.cpp" line="220"/>
         <source>OCad TXT</source>
         <translation>OCAD TXT</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="218"/>
+        <location filename="src/classeswidget.cpp" line="225"/>
         <source>OCad v8</source>
         <translation>OCAD v8</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="223"/>
+        <location filename="src/classeswidget.cpp" line="230"/>
         <source>OCad IOF-XML 2.0</source>
         <translation>OCAD IOF-XML 2.0</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="228"/>
+        <location filename="src/classeswidget.cpp" line="235"/>
         <source>OCad IOF-XML 3.0</source>
         <translation>OCAD IOF-XML 3.0</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="236"/>
+        <location filename="src/classeswidget.cpp" line="243"/>
         <source>Stage </source>
         <translation>Etapa </translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="272"/>
+        <location filename="src/classeswidget.cpp" line="279"/>
         <source>E%1</source>
         <translation>E%1</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="399"/>
-        <location filename="src/classeswidget.cpp" line="474"/>
-        <location filename="src/classeswidget.cpp" line="584"/>
-        <location filename="src/classeswidget.cpp" line="649"/>
+        <location filename="src/classeswidget.cpp" line="403"/>
+        <location filename="src/classeswidget.cpp" line="478"/>
+        <location filename="src/classeswidget.cpp" line="590"/>
+        <location filename="src/classeswidget.cpp" line="657"/>
         <source>Open file</source>
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="584"/>
+        <location filename="src/classeswidget.cpp" line="590"/>
         <source>XML files (*.xml);; All files (*)</source>
         <translation>XML soubory (*.xml);; Všechny soubory (*)</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="727"/>
+        <location filename="src/classeswidget.cpp" line="783"/>
         <source>Class name &apos;%1&apos; seems to be combined, separate it to more classes?</source>
         <translation>Název kategorie &apos;%1&apos; je pravděpodobně složený. Mám jej rozdělit na více kategorií?</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="369"/>
+        <location filename="src/classeswidget.cpp" line="376"/>
         <source>Delete all courses definitions for stage %1?</source>
         <translation>Vymazat všechny definice tratí pro etapu %1?</translation>
     </message>
@@ -372,36 +403,66 @@
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
+        <source>Type</source>
+        <comment>control type</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/editcodeswidget.cpp" line="28"/>
+        <source>Control type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/editcodeswidget.cpp" line="29"/>
         <source>Code</source>
         <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="src/editcodeswidget.cpp" line="29"/>
+        <location filename="src/editcodeswidget.cpp" line="30"/>
         <source>Alt</source>
         <translation>Náhradní</translation>
     </message>
     <message>
-        <location filename="src/editcodeswidget.cpp" line="29"/>
+        <location filename="src/editcodeswidget.cpp" line="30"/>
         <source>Code alternative</source>
         <translation>Náhradní kontrola</translation>
     </message>
     <message>
-        <location filename="src/editcodeswidget.cpp" line="30"/>
+        <location filename="src/editcodeswidget.cpp" line="31"/>
         <source>Note</source>
         <translation>Poznámka</translation>
     </message>
     <message>
-        <location filename="src/editcodeswidget.cpp" line="31"/>
-        <source>O</source>
-        <translation>M</translation>
+        <location filename="src/editcodeswidget.cpp" line="34"/>
+        <source>Long</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/editcodeswidget.cpp" line="31"/>
+        <location filename="src/editcodeswidget.cpp" line="34"/>
+        <source>Longitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/editcodeswidget.cpp" line="35"/>
+        <source>Lat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/editcodeswidget.cpp" line="35"/>
+        <source>Latitude</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>O</source>
+        <translation type="vanished">M</translation>
+    </message>
+    <message>
+        <location filename="src/editcodeswidget.cpp" line="32"/>
         <source>Out of order</source>
         <translation>Mimo provoz</translation>
     </message>
     <message>
-        <location filename="src/editcodeswidget.cpp" line="32"/>
+        <location filename="src/editcodeswidget.cpp" line="33"/>
         <source>Radio</source>
         <translation>Rádio</translation>
     </message>

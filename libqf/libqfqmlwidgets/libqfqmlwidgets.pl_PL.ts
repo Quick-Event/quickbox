@@ -392,80 +392,94 @@
         <translation>Wybierz bieżącą kolumnę</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1759"/>
+        <location filename="src/tableview.cpp" line="1751"/>
+        <source>Ctrl+Shift+C</source>
+        <comment>Select current column</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/tableview.cpp" line="1760"/>
         <source>Select current row</source>
         <translation>Wybierz bieżący wiersz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1769"/>
+        <location filename="src/tableview.cpp" line="1770"/>
         <source>Calculate</source>
         <translation>Przelicz</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1776"/>
+        <location filename="src/tableview.cpp" line="1777"/>
         <source>Sum column</source>
         <translation>Sumuj kolumny</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1782"/>
+        <location filename="src/tableview.cpp" line="1783"/>
         <source>Sum selection</source>
         <translation>Sumuj wybrane</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1789"/>
+        <location filename="src/tableview.cpp" line="1790"/>
         <source>Export</source>
         <translation>Eksportuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1796"/>
+        <location filename="src/tableview.cpp" line="1797"/>
         <source>Report</source>
         <translation>Raportuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1803"/>
-        <location filename="src/tableview.cpp" line="1841"/>
+        <location filename="src/tableview.cpp" line="1804"/>
+        <location filename="src/tableview.cpp" line="1842"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1810"/>
+        <location filename="src/tableview.cpp" line="1811"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1818"/>
+        <location filename="src/tableview.cpp" line="1819"/>
         <source>XLS - MS Excel</source>
         <translation>XLS - MS Excel</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1826"/>
+        <location filename="src/tableview.cpp" line="1827"/>
         <source>XML (MS Excel 2003)</source>
         <translation>XML (MS Excel 2003)</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1834"/>
+        <location filename="src/tableview.cpp" line="1835"/>
         <source>Import</source>
         <translation>Importuj</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1941"/>
+        <location filename="src/tableview.cpp" line="1942"/>
         <source>Enter start value</source>
         <translation>Wprowadź wartość początkową</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1941"/>
+        <location filename="src/tableview.cpp" line="1942"/>
         <source>start value:</source>
         <translation>Wartość początkowa:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2080"/>
-        <source>Do you realy want to remove row?</source>
-        <translation>Czy na pewno chcesz usunąć wiersz?</translation>
+        <location filename="src/tableview.cpp" line="2081"/>
+        <source>Do you really want to remove row?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2083"/>
+        <location filename="src/tableview.cpp" line="2084"/>
+        <source>Do you really want to remove all selected rows?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you realy want to remove row?</source>
+        <translation type="vanished">Czy na pewno chcesz usunąć wiersz?</translation>
+    </message>
+    <message>
         <source>Do you realy want to remove all selected rows?</source>
-        <translation>Czy na pewno chcesz usunąć wszystkie zaznaczone wiersze?</translation>
+        <translation type="vanished">Czy na pewno chcesz usunąć wszystkie zaznaczone wiersze?</translation>
     </message>
 </context>
 <context>
@@ -726,8 +740,9 @@
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
-        <source>fields separtor</source>
-        <translation>Separator pola</translation>
+        <source>fields separator</source>
+        <oldsource>fields separtor</oldsource>
+        <translation type="unfinished">Separator pola</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="29"/>
@@ -736,8 +751,9 @@
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
-        <source>rows separtor</source>
-        <translation>Separator wierszy</translation>
+        <source>rows separator</source>
+        <oldsource>rows separtor</oldsource>
+        <translation type="unfinished">Separator wierszy</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="43"/>

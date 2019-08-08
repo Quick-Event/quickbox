@@ -34,17 +34,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="159"/>
+        <location filename="src/codeclassresultswidget.cpp" line="143"/>
         <source>Results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="160"/>
+        <location filename="src/codeclassresultswidget.cpp" line="144"/>
         <source>Finish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="179"/>
+        <location filename="src/codeclassresultswidget.cpp" line="163"/>
         <source>R</source>
         <comment>Radio station</comment>
         <translation type="unfinished"></translation>
