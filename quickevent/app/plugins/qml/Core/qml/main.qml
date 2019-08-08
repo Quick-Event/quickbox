@@ -142,7 +142,10 @@ CorePlugin {
 		var languages = [
 			[qsTr("System"), "system"],
 			[qsTr("Czech"), "cs_CZ"],
-			[qsTr("English"), "en_US"]
+            [qsTr("English"), "en_US"],
+            [qsTr("Norwegian"), "nb_NO"],
+            [qsTr("Polish"), "pl_PL"],
+            [qsTr("Russian"), "ru_RU"]
 		]
 		for(var i=0; i<languages.length; i++) {
 			var lang = languages[i];

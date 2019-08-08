@@ -38,4 +38,5 @@ lupdate_only {
 SOURCES += \
 	$$PWD/qml/*.qml \
 	$$PWD/qml/reports/*.qml \
+    $$PWD/qml/reports/receipts/*.qml \
 }

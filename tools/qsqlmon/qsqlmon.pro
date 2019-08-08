@@ -42,8 +42,6 @@ INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 INCLUDEPATH += $$PWD/src
 
-#TRANSLATIONS    = qsqlmon_cz.ts
-
 win32:CONFIG(debug, debug|release):CONFIG += console
 console: message(CONSOLE)
 
