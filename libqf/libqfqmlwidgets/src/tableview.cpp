@@ -555,39 +555,47 @@ void TableView::paste()
 		}
 		if(dlg.exec()) {
 			TableView *tv = w->tableView();
-			qfm::TableModel *m = tv->tableModel();
-			qfm::TableModel *my_m = tableModel();
-			int my_row = origin_ix.row();
+			qfm::TableModel *src_tm = tv->tableModel();
+			qfm::TableModel *dest_tm = tableModel();
+			int origin_view_row = origin_ix.row();
 			bool insert_rows = w->isInsert();
-			if(insert_rows) my_row++;
-			for(int row=0; row<m->rowCount(); row++) {
+			int dest_row = toTableModelRowNo(origin_view_row);
+			for(int src_row=0; src_row<src_tm->rowCount(); src_row++) {
 				if(insert_rows) {
-					my_m->insertRow(my_row);
+					qfDebug() << "insert row:" << dest_row << "model row count:" << dest_tm->rowCount();
+					dest_tm->insertRow(++dest_row);
 				}
 				else {
-					if(my_row >= my_m->rowCount()) break;
+					if((origin_view_row + src_row) >= dest_tm->rowCount())
+						break;
+					dest_row = toTableModelRowNo(origin_view_row + src_row);
 				}
-				int my_col = origin_ix.column();
-				for(int col=0; col<m->columnCount(); col++) {
-					if(tv->isColumnHidden(col)) continue; /// preskakej skryty sloupce v tabulce dialogu
-					while(isColumnHidden(my_col)) my_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
-					QModelIndex ix = m->index(row, col); /// odsud se to bere
-					QModelIndex my_ix = origin_ix.sibling(my_row, my_col); ///sem se to vklada
+				int dest_col = origin_ix.column();
+				for(int src_col=0; src_col<src_tm->columnCount(); src_col++) {
+					if(tv->isColumnHidden(src_col))
+						continue; /// preskakej skryty sloupce v tabulce dialogu
+					while(isColumnHidden(dest_col))
+						dest_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
+					QModelIndex src_ix = src_tm->index(src_row, src_col); /// odsud se to bere
+					QModelIndex dest_ix = dest_tm->index(dest_row, dest_col); ///sem se to vklada
 					//qfInfo() << "ix:" << ix.row() << '\t' << ix.column();
 					//qfInfo() << "my ix:" << my_ix.row() << '\t' << my_ix.column();
-					if(!my_ix.isValid()) { break; }
-					if(my_ix.flags().testFlag(Qt::ItemIsEditable)) {
-						QVariant v = m->data(ix, Qt::DisplayRole);
+					if(!dest_ix.isValid())
+						break;
+					if(dest_ix.flags().testFlag(Qt::ItemIsEditable)) {
+						QVariant v = src_tm->data(src_ix, Qt::DisplayRole);
+						qfDebug() << "copy cell:" << src_ix << "->" << dest_ix << "val:" << v;
 						//qfInfo() << my_ix.row() << '-' << my_ix.column() << "<=" << v.toString();
-						my_m->setData(my_ix, v);
+						dest_tm->setData(dest_ix, v);
 					}
-					my_col++;
+					dest_col++;
 				}
-				my_m->postRow(my_row, true);
-				my_row++;
+				//dest_tm->postRow(origin_view_row, true);
+				//origin_view_row++;
 			}
+			dest_tm->postAll(qf::core::Exception::Throw);
 			//tv->updateAll();
-			QModelIndex bottom_right = model()->index(my_row - 1, origin_ix.column() + col_cnt - 1);
+			QModelIndex bottom_right = model()->index(origin_view_row - 1, origin_ix.column() + col_cnt - 1);
 			QItemSelection sel(origin_ix, bottom_right);
 			QItemSelectionModel *sm = selectionModel();
 			sm->select(sel, QItemSelectionModel::Select);
@@ -1247,11 +1255,11 @@ QModelIndex TableView::toTableModelIndex(const QModelIndex &table_view_index) co
 
 int TableView::toTableModelRowNo(int table_view_row_no) const
 {
-	qfLogFuncFrame() << table_view_row_no;
+	//qfLogFuncFrame() << table_view_row_no;
 	QModelIndex ix = m_proxyModel->index(table_view_row_no, 0);
-	qfDebug() << ix << "model:" << ix.model() << "proxy:" << m_proxyModel;
+	//qfDebug() << ix << "model:" << ix.model() << "proxy:" << m_proxyModel;
 	ix = toTableModelIndex(ix);
-	qfDebug() << "RETURN:" << ix.row();
+	//qfDebug() << "RETURN:" << ix.row();
 	return ix.row();
 }
 
