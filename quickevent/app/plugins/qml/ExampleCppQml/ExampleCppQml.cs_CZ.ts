@@ -6,7 +6,7 @@
     <message>
         <location filename="src/examplecppqml.cpp" line="25"/>
         <source>Vacuum Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Optimalizace (vacuum) databáze</translation>
     </message>
     <message>
         <location filename="src/examplecppqml.cpp" line="33"/>
