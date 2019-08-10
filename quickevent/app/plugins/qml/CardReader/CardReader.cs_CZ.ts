@@ -19,7 +19,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="176"/>
         <source>Cannot find runs with si: %1</source>
-        <translation>Nenalezen závodník s čipem: %1</translation>
+        <translation>Nenalezen závodník s SI: %1</translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="287"/>
@@ -152,7 +152,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="372"/>
         <source>SI reader backup memory CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Záložní paměť vyčítací krabičky CSV</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="378"/>
@@ -222,7 +222,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1076"/>
         <source>Import TXT</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovat TXT</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1166"/>
@@ -564,7 +564,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
         <source>Racom Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Racom Client</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="33"/>
