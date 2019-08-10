@@ -396,7 +396,7 @@
         <location filename="src/tableview.cpp" line="1751"/>
         <source>Ctrl+Shift+C</source>
         <comment>Select current column</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1760"/>
@@ -467,12 +467,12 @@
     <message>
         <location filename="src/tableview.cpp" line="2081"/>
         <source>Do you really want to remove row?</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu chcete smazat řádek?</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2084"/>
         <source>Do you really want to remove all selected rows?</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu chcete smazat všechny vybrané řádky?</translation>
     </message>
     <message>
         <source>Do you realy want to remove row?</source>
@@ -743,7 +743,7 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
         <source>fields separator</source>
         <oldsource>fields separtor</oldsource>
-        <translation type="unfinished">oddělovač políček</translation>
+        <translation>oddělovač políček</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="29"/>
@@ -754,7 +754,7 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
         <source>rows separator</source>
         <oldsource>rows separtor</oldsource>
-        <translation type="unfinished">oddělovač řádků</translation>
+        <translation>oddělovač řádků</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="43"/>
@@ -779,7 +779,7 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="67"/>
         <source>replace escapes</source>
-        <translation type="unfinished">nahradit kontrolní znaky</translation>
+        <translation>nahradit kontrolní znaky</translation>
     </message>
 </context>
 <context>
