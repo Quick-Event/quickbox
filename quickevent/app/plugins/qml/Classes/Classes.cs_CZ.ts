@@ -32,7 +32,7 @@
     <message>
         <location filename="src/classdefwidget.ui" line="86"/>
         <source>Vacant every</source>
-        <translation>Vakanti během</translation>
+        <translation>Vakant každých</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="93"/>
@@ -157,12 +157,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
         <source>VE</source>
-        <translation>Vak. B</translation>
+        <translation>Vak. K</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
         <source>Vacant every</source>
-        <translation>Vakanti během</translation>
+        <translation>Vakant každých</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="131"/>
@@ -243,12 +243,12 @@
         <location filename="src/classeswidget.cpp" line="159"/>
         <source>Type</source>
         <comment>control type</comment>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="159"/>
         <source>Control type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ kontroly</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="160"/>
@@ -288,22 +288,22 @@
     <message>
         <location filename="src/classeswidget.cpp" line="164"/>
         <source>Long</source>
-        <translation type="unfinished"></translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="164"/>
         <source>Longitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeměpisná délka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="165"/>
         <source>Lat</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="165"/>
         <source>Latitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeměpisná šířka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="191"/>
@@ -405,12 +405,12 @@
         <location filename="src/editcodeswidget.cpp" line="28"/>
         <source>Type</source>
         <comment>control type</comment>
-        <translation type="unfinished"></translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
         <source>Control type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ kontroly</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="29"/>
@@ -435,22 +435,22 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="34"/>
         <source>Long</source>
-        <translation type="unfinished"></translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="34"/>
         <source>Longitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeměpisná délka</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="35"/>
         <source>Lat</source>
-        <translation type="unfinished"></translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="35"/>
         <source>Latitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeměpisná šířka</translation>
     </message>
     <message>
         <source>O</source>
@@ -587,7 +587,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="250"/>
         <source>vacants before: %1, every: %2, after: %3&lt;br/&gt;</source>
-        <translation>vakanti před: %1, během: %2, po: %3&lt;br/&gt;</translation>
+        <translation>vakanti před: %1, každých: %2, po: %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="251"/>
