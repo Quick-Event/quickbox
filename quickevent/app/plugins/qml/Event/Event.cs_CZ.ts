@@ -88,7 +88,7 @@
 <context>
     <name>DbSchema</name>
     <message>
-        <location filename="qml/DbSchema.qml" line="449"/>
+        <location filename="qml/DbSchema.qml" line="454"/>
         <source>Data version</source>
         <translation>Verze dat</translation>
     </message>
@@ -458,9 +458,13 @@
 <context>
     <name>services::EmmaClientWidget</name>
     <message>
-        <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Formulář</translation>
+        <translation type="vanished">Formulář</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="14"/>
+        <source>Emma Client</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
@@ -473,19 +477,74 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/services/emmaclientwidget.ui" line="43"/>
+        <location filename="src/services/emmaclientwidget.ui" line="46"/>
+        <source> sec</source>
+        <translation type="unfinished"> sek</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="59"/>
+        <source>Export interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="68"/>
+        <source>XML3.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="74"/>
+        <source>Enable export XM3.0 file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="96"/>
+        <source>Export XML3.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="108"/>
+        <source>RaCom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="114"/>
+        <source>File name prefix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="124"/>
+        <location filename="src/services/emmaclientwidget.ui" line="153"/>
+        <source>Export start list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="131"/>
+        <location filename="src/services/emmaclientwidget.ui" line="160"/>
+        <source>Export finish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="167"/>
+        <source>Export radio codes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>File name</source>
-        <translation>Jméno souboru</translation>
+        <translation type="vanished">Jméno souboru</translation>
     </message>
     <message>
-        <location filename="src/services/emmaclientwidget.ui" line="105"/>
         <source>Export splits</source>
-        <translation>Exportovat mezičasy</translation>
+        <translation type="vanished">Exportovat mezičasy</translation>
     </message>
     <message>
-        <location filename="src/services/emmaclientwidget.cpp" line="41"/>
+        <location filename="src/services/emmaclientwidget.cpp" line="48"/>
         <source>Open Directory</source>
         <translation>Otevřít adresář</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.cpp" line="67"/>
+        <source>Cannot create directory &apos;%1&apos;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

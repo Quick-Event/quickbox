@@ -13,6 +13,7 @@ OTHER_FILES += \
 lupdate_only {
 SOURCES += \
 	*.qml \
+	$$PWD/reports/*.qml \
 }
 
 TRANSLATIONS += \

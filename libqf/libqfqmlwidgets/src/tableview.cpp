@@ -2086,10 +2086,10 @@ void TableView::removeSelectedRowsInline()
 		continuous_sections << continuous_section;
 	}
 	if(rows_to_delete.count() == 1) {
-		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to remove row?"), true)) return;
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you really want to remove row?"), true)) return;
 	}
 	else {
-		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to remove all selected rows?"), true)) return;
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you really want to remove all selected rows?"), true)) return;
 	}
 	QModelIndex ix = currentIndex();
 	//ignoreCurrentChanged = true; /// na false ho nastavi currentChanged()

@@ -4,7 +4,7 @@
 <context>
     <name>CardReader::CardCheckerClassicCpp</name>
     <message>
-        <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="13"/>
+        <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="14"/>
         <source>Classic race</source>
         <translation type="unfinished"></translation>
     </message>
@@ -144,157 +144,169 @@ Read out after punch: {{ReadOutAfterPunch}}
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="373"/>
+        <location filename="src/cardreaderwidget.cpp" line="372"/>
+        <source>SI reader backup memory CSV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="378"/>
         <source>Test audio</source>
         <translation>Test lyd</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="381"/>
+        <location filename="src/cardreaderwidget.cpp" line="386"/>
         <source> Check type </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="394"/>
+        <location filename="src/cardreaderwidget.cpp" line="399"/>
         <source> Reader mode </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="397"/>
+        <location filename="src/cardreaderwidget.cpp" line="402"/>
         <source>Race</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="398"/>
+        <location filename="src/cardreaderwidget.cpp" line="403"/>
         <source>Entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="463"/>
+        <location filename="src/cardreaderwidget.cpp" line="468"/>
         <source>Open COM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="469"/>
+        <location filename="src/cardreaderwidget.cpp" line="474"/>
         <source>Card readout settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="522"/>
+        <location filename="src/cardreaderwidget.cpp" line="527"/>
         <source>Connected to %1 in direct mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="525"/>
+        <location filename="src/cardreaderwidget.cpp" line="530"/>
         <source>Error set SI station to direct mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="549"/>
+        <location filename="src/cardreaderwidget.cpp" line="554"/>
         <source>Error open device %1 - %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="626"/>
+        <location filename="src/cardreaderwidget.cpp" line="631"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="635"/>
+        <location filename="src/cardreaderwidget.cpp" line="640"/>
         <source>DriverRawData: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="642"/>
+        <location filename="src/cardreaderwidget.cpp" line="647"/>
         <source>card: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="719"/>
+        <location filename="src/cardreaderwidget.cpp" line="724"/>
         <source>punch: %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="726"/>
+        <location filename="src/cardreaderwidget.cpp" line="731"/>
         <source>Cannot find run for punch record SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="782"/>
+        <location filename="src/cardreaderwidget.cpp" line="787"/>
         <source>Find runner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="881"/>
+        <location filename="src/cardreaderwidget.cpp" line="886"/>
         <source>&lt;p&gt;CSV record must have format:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Any row can be commented by leading #&lt;/p&gt;&lt;p&gt;Decimal point is also supported, the quotes can be omited than.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="885"/>
+        <location filename="src/cardreaderwidget.cpp" line="890"/>
         <source>Import CSV</source>
         <translation>Importer CSV</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="890"/>
+        <location filename="src/cardreaderwidget.cpp" line="895"/>
+        <location filename="src/cardreaderwidget.cpp" line="1081"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="909"/>
+        <location filename="src/cardreaderwidget.cpp" line="914"/>
+        <location filename="src/cardreaderwidget.cpp" line="1085"/>
         <source>Bad stage!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="931"/>
+        <location filename="src/cardreaderwidget.cpp" line="936"/>
         <source>Cannot find runs record for SI %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="932"/>
+        <location filename="src/cardreaderwidget.cpp" line="937"/>
         <source>Cannot find class for SI %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="945"/>
+        <location filename="src/cardreaderwidget.cpp" line="950"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="976"/>
+        <location filename="src/cardreaderwidget.cpp" line="1076"/>
+        <source>Import TXT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/cardreaderwidget.cpp" line="1166"/>
         <source>Downloading station backup ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="978"/>
+        <location filename="src/cardreaderwidget.cpp" line="1168"/>
         <source>Cancelled by user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <location filename="src/cardreaderwidget.cpp" line="1198"/>
         <source>No.</source>
         <translation>Nei.</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <location filename="src/cardreaderwidget.cpp" line="1198"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <location filename="src/cardreaderwidget.cpp" line="1198"/>
         <source>DateTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1008"/>
+        <location filename="src/cardreaderwidget.cpp" line="1198"/>
         <source>Card error</source>
         <translation>Kortfeil</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1011"/>
+        <location filename="src/cardreaderwidget.cpp" line="1201"/>
         <source>Station %1 backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1013"/>
+        <location filename="src/cardreaderwidget.cpp" line="1203"/>
         <source>Station backup memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -540,7 +552,7 @@ Read out after punch: {{ReadOutAfterPunch}}
     <name>services::RacomClientWidget</name>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
-        <source>Form</source>
+        <source>Racom Client</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

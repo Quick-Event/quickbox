@@ -174,7 +174,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="80"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Merknad</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="109"/>
