@@ -1112,7 +1112,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="14"/>
         <source>Results Exporter</source>
-        <translation type="unfinished"></translation>
+        <translation>Služba pro export výsledků</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="33"/>
@@ -1233,12 +1233,12 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="113"/>
         <source>Bib</source>
-        <translation type="unfinished"></translation>
+        <translation>SČ</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="119"/>
         <source>Registration</source>
-        <translation type="unfinished">Registrace</translation>
+        <translation>Registrace</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="126"/>
