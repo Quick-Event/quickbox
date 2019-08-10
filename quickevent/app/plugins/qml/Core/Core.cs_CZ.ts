@@ -19,7 +19,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="66"/>
         <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
-        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze databáze: %2&lt;br/&gt;Sestavení: %3 %4</translation>
+        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze dat: %2&lt;br/&gt;Sestavení: %3 %4</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="81"/>
@@ -97,17 +97,17 @@
     <message>
         <location filename="qml/main.qml" line="146"/>
         <source>Norwegian</source>
-        <translation type="unfinished"></translation>
+        <translation>Norština</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="147"/>
         <source>Polish</source>
-        <translation type="unfinished"></translation>
+        <translation>Polština</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="148"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruština</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="161"/>
