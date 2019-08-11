@@ -123,7 +123,7 @@
     </message>
     <message>
         <source>Error reading CSV line: [%1]</source>
-        <translation>Chyba čtení souboru CSV: [%1]</translation>
+        <translation>Chyba při čtení souboru CSV, řádek: [%1]</translation>
     </message>
     <message>
         <source>Undefined class name: &apos;%1&apos;</source>
