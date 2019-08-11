@@ -62,7 +62,7 @@
     <message>
         <location filename="src/addlegdialogwidget.cpp" line="98"/>
         <source>Competitor has different relay assigned already. Move it to current one?</source>
-        <translation>Závodník je již přiřazen do jiné štafety. Přesunout do současné?</translation>
+        <translation>Závodník je již přiřazen do jiné štafety. Přesunout do aktuální?</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.cpp" line="124"/>
