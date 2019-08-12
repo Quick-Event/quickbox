@@ -152,7 +152,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="372"/>
         <source>SI reader backup memory CSV</source>
-        <translation>Záložní paměť vyčítací krabičky CSV</translation>
+        <translation>Záložní paměť vyčítací jednotky CSV</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="378"/>
