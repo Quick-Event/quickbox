@@ -100,6 +100,7 @@ void EmmaClient::exportRadioCodes()
 		//qfInfo() << qb_codes.toString();
 
 		QString class_name = q1.value("classes.name").toString();
+        class_name.remove(" ");
 		QVector<int> codes;
 		qfs::Query q2;
 		q2.execThrow(qb_codes.toString());
@@ -366,6 +367,7 @@ void EmmaClient::exportStartList()
             startTimeCard = 0;
         QString name = q2.value("competitors.lastName").toString() + " " + q2.value("competitors.firstName").toString();
         QString clas = q2.value("classes.name").toString();
+        clas.remove(" ");
         QString reg = q2.value("competitors.registration").toString();
         name = name.leftJustified(22,QChar(' '),true);
 		if (is_relays)
