@@ -11,6 +11,7 @@ AppCliOptions::AppCliOptions(QObject *parent)
 	addOption("event.stage").setType(QVariant::Int).setNames("-n", "--stage").setComment("If not set, the current stage number is loaded from database.");
 	addOption("event.classesLike").setType(QVariant::String).setNames("--classes-like").setComment("SQL LIKE expression to filter classes to show, for ex. --classes-like \"H%\"");
 	addOption("event.classesNotLike").setType(QVariant::String).setNames("--classes-not-like").setComment("SQL LIKE expression to filter classes not to show, for ex. --not-classes-like \"HDR\"");
+	addOption("event.classesIn").setType(QVariant::String).setNames("--classes-in").setComment("list to filter classes to show, for ex. --classes-in \"(\'HDR\', \'H21A\')\"");
 	addOption("connection.host").setType(QVariant::String).setNames("-s", "--host").setDefaultValue("localhost");
 	addOption("connection.port").setType(QVariant::Int).setNames("--port").setDefaultValue(5432);
 	addOption("connection.user").setType(QVariant::String).setNames("-u", "--user").setDefaultValue("quickevent");
