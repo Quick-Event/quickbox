@@ -189,7 +189,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="126"/>
         <source>Edit or insert competitor on card insert into station.</source>
-        <translation>Upravit nebo vložit závodníka po vložení čipu do kontroly.</translation>
+        <translation>Upravit nebo vložit závodníka po vložení čipu do vyčítací jednotky.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="131"/>

@@ -393,80 +393,94 @@
         <translation>Vybrat aktuální sloupec</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1759"/>
+        <location filename="src/tableview.cpp" line="1751"/>
+        <source>Ctrl+Shift+C</source>
+        <comment>Select current column</comment>
+        <translation>Ctrl+Shift+C</translation>
+    </message>
+    <message>
+        <location filename="src/tableview.cpp" line="1760"/>
         <source>Select current row</source>
         <translation>Vybrat aktuální řádek</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1769"/>
+        <location filename="src/tableview.cpp" line="1770"/>
         <source>Calculate</source>
         <translation>Spočítat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1776"/>
+        <location filename="src/tableview.cpp" line="1777"/>
         <source>Sum column</source>
         <translation>Sečíst hodnoty ve sloupci</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1782"/>
+        <location filename="src/tableview.cpp" line="1783"/>
         <source>Sum selection</source>
         <translation>Sečíst hodnoty ve výběru</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1789"/>
+        <location filename="src/tableview.cpp" line="1790"/>
         <source>Export</source>
         <translation>Exportovat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1796"/>
+        <location filename="src/tableview.cpp" line="1797"/>
         <source>Report</source>
         <translation>Report</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1803"/>
-        <location filename="src/tableview.cpp" line="1841"/>
+        <location filename="src/tableview.cpp" line="1804"/>
+        <location filename="src/tableview.cpp" line="1842"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1810"/>
+        <location filename="src/tableview.cpp" line="1811"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1818"/>
+        <location filename="src/tableview.cpp" line="1819"/>
         <source>XLS - MS Excel</source>
         <translation>XLS – MS Excel</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1826"/>
+        <location filename="src/tableview.cpp" line="1827"/>
         <source>XML (MS Excel 2003)</source>
         <translation>XML (MS Excel 2003)</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1834"/>
+        <location filename="src/tableview.cpp" line="1835"/>
         <source>Import</source>
         <translation>Importovat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1941"/>
+        <location filename="src/tableview.cpp" line="1942"/>
         <source>Enter start value</source>
         <translation>Zadejte počáteční hodnotu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1941"/>
+        <location filename="src/tableview.cpp" line="1942"/>
         <source>start value:</source>
         <translation>počáteční hodnota:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2080"/>
-        <source>Do you realy want to remove row?</source>
-        <translation>Opravdu smazat řádek?</translation>
+        <location filename="src/tableview.cpp" line="2081"/>
+        <source>Do you really want to remove row?</source>
+        <translation>Opravdu chcete smazat řádek?</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2083"/>
+        <location filename="src/tableview.cpp" line="2084"/>
+        <source>Do you really want to remove all selected rows?</source>
+        <translation>Opravdu chcete smazat všechny vybrané řádky?</translation>
+    </message>
+    <message>
+        <source>Do you realy want to remove row?</source>
+        <translation type="vanished">Opravdu smazat řádek?</translation>
+    </message>
+    <message>
         <source>Do you realy want to remove all selected rows?</source>
-        <translation>Opravdu smazat všechny vybrané řádky?</translation>
+        <translation type="vanished">Opravdu smazat všechny vybrané řádky?</translation>
     </message>
 </context>
 <context>
@@ -727,7 +741,8 @@
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
-        <source>fields separtor</source>
+        <source>fields separator</source>
+        <oldsource>fields separtor</oldsource>
         <translation>oddělovač políček</translation>
     </message>
     <message>
@@ -737,7 +752,8 @@
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
-        <source>rows separtor</source>
+        <source>rows separator</source>
+        <oldsource>rows separtor</oldsource>
         <translation>oddělovač řádků</translation>
     </message>
     <message>
@@ -763,7 +779,7 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="67"/>
         <source>replace escapes</source>
-        <translation type="unfinished">nahradit kontrolní znaky</translation>
+        <translation>nahradit kontrolní znaky</translation>
     </message>
 </context>
 <context>

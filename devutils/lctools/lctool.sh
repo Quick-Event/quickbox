@@ -63,6 +63,8 @@ paths[libqfqmlwidgets]=libqf/libqfqmlwidgets
 paths[libquickeventcore]=libquickevent/libquickeventcore
 paths[libquickeventgui]=libquickevent/libquickeventgui
 
+paths[libsiut]=libsiut
+
 paths[shared]=quickevent/app/plugins/qml/shared
 paths[quickevent]=quickevent/app/quickevent
 
@@ -80,6 +82,7 @@ paths[Speaker]=quickevent/app/plugins/qml/Speaker
 paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
 paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
 
+paths[quickshow]=quickshow
 paths[qsqlmon]=tools/qsqlmon
 
 if [[ $O_COMMAND == "import-ts" ]]; then

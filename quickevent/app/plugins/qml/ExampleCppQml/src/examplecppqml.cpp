@@ -22,7 +22,7 @@ void ExampleCppQml::onInstalled()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	auto *a = new qfw::Action("Vacuum Database");
+	auto *a = new qfw::Action(tr("Vacuum Database"));
 	fwk->menuBar()->actionForPath("tools")->addActionInto(a);
 	connect(a, &qfw::Action::triggered, this, &ExampleCppQml::doDbVacuum);
 }

@@ -95,17 +95,32 @@
         <translation>Английский</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="158"/>
+        <location filename="qml/main.qml" line="146"/>
+        <source>Norwegian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="147"/>
+        <source>Polish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="148"/>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="161"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="159"/>
+        <location filename="qml/main.qml" line="162"/>
         <source>&amp;Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="162"/>
+        <location filename="qml/main.qml" line="165"/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>

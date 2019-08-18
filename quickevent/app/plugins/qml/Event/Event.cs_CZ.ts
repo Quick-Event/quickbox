@@ -88,7 +88,7 @@
 <context>
     <name>DbSchema</name>
     <message>
-        <location filename="qml/DbSchema.qml" line="449"/>
+        <location filename="qml/DbSchema.qml" line="454"/>
         <source>Data version</source>
         <translation>Verze dat</translation>
     </message>
@@ -197,7 +197,7 @@
         <location filename="src/Event/eventplugin.cpp" line="1131"/>
         <location filename="src/Event/eventplugin.cpp" line="1148"/>
         <source>Open Database Error: %1</source>
-        <translation>Chyba při otevírání databáze: %1</translation>
+        <translation>Chyba při připojování databáze: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="909"/>
@@ -442,7 +442,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="300"/>
         <source>Maximal distance between card CHECK and START time</source>
-        <translation>Maximální čas mezi kontrolou vymazání čipu a startovním časem</translation>
+        <translation>Maximální čas mezi kontrolou vynulování čipu a startovním časem</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="303"/>
@@ -458,9 +458,13 @@
 <context>
     <name>services::EmmaClientWidget</name>
     <message>
-        <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Form</source>
-        <translation>Formulář</translation>
+        <translation type="vanished">Formulář</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="14"/>
+        <source>Emma Client</source>
+        <translation>Emma Client</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
@@ -473,19 +477,74 @@
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/services/emmaclientwidget.ui" line="43"/>
+        <location filename="src/services/emmaclientwidget.ui" line="46"/>
+        <source> sec</source>
+        <translation> sek</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="59"/>
+        <source>Export interval</source>
+        <translation>Interval pro export</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="68"/>
+        <source>XML3.0</source>
+        <translation>XML 3.0</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="74"/>
+        <source>Enable export XM3.0 file</source>
+        <translation>Zapnout export XML 3.0 souboru</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="96"/>
+        <source>Export XML3.0</source>
+        <translation>Exportovat XML 3.0</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="108"/>
+        <source>RaCom</source>
+        <translation>RACOM</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="114"/>
+        <source>File name prefix</source>
+        <translation>Prefix u jména souboru</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="124"/>
+        <location filename="src/services/emmaclientwidget.ui" line="153"/>
+        <source>Export start list</source>
+        <translation>Exportovat startovní listinu</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="131"/>
+        <location filename="src/services/emmaclientwidget.ui" line="160"/>
+        <source>Export finish</source>
+        <translation>Exportovat výsledky</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="167"/>
+        <source>Export radio codes</source>
+        <translation>Exportovat čísla radio-kontrol</translation>
+    </message>
+    <message>
         <source>File name</source>
-        <translation>Jméno souboru</translation>
+        <translation type="vanished">Jméno souboru</translation>
     </message>
     <message>
-        <location filename="src/services/emmaclientwidget.ui" line="105"/>
         <source>Export splits</source>
-        <translation>Exportovat mezičasy</translation>
+        <translation type="vanished">Exportovat mezičasy</translation>
     </message>
     <message>
-        <location filename="src/services/emmaclientwidget.cpp" line="41"/>
+        <location filename="src/services/emmaclientwidget.cpp" line="48"/>
         <source>Open Directory</source>
         <translation>Otevřít adresář</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.cpp" line="67"/>
+        <source>Cannot create directory &apos;%1&apos;.</source>
+        <translation>Nelze vytvořit adresář &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>

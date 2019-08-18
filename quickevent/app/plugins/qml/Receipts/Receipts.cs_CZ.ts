@@ -2,14 +2,63 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="cs_CZ">
 <context>
+    <name>Classic</name>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="68"/>
+        <source>E</source>
+        <translation>E</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="241"/>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="241"/>
+        <source>DISQ</source>
+        <translation>DISK</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="255"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="267"/>
+        <source>-----</source>
+        <translation>-----</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="323"/>
+        <source>!!! CARD LENT !!!</source>
+        <translation>!!! ZAPŮJČENÝ ČIP !!!</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="338"/>
+        <source>extra: </source>
+        <translation>navíc: </translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="350"/>
+        <source>BAD CHECK !!!</source>
+        <translation>ŠPATNÝ ČAS KONTROLY NULOVÁNÍ ČIPU !!!</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="370"/>
+        <source>current overall loss: +</source>
+        <translation>ztráta na nejlepší mezičasy: +</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="385"/>
+        <source>standings: </source>
+        <translation>pořadí: </translation>
+    </message>
+</context>
+<context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="360"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="362"/>
         <source>Card</source>
         <translation>Čip</translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="411"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="413"/>
         <source>Receipt</source>
         <translation>Mezičas</translation>
     </message>

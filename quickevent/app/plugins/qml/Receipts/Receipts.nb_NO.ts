@@ -2,14 +2,63 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="nb_NO">
 <context>
+    <name>Classic</name>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="68"/>
+        <source>E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="241"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="241"/>
+        <source>DISQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="255"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="267"/>
+        <source>-----</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="323"/>
+        <source>!!! CARD LENT !!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="338"/>
+        <source>extra: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="350"/>
+        <source>BAD CHECK !!!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="370"/>
+        <source>current overall loss: +</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/receipts/Classic.qml" line="385"/>
+        <source>standings: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="360"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="362"/>
         <source>Card</source>
         <translation>Kort</translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="411"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="413"/>
         <source>Receipt</source>
         <translation>Kvittering</translation>
     </message>

@@ -2,6 +2,24 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="cs_CZ">
 <context>
+    <name>competitorsWithCardLent</name>
+    <message>
+        <location filename="reports/competitorsWithCardLent.qml" line="10"/>
+        <source>Competitors with card lent in stage %1</source>
+        <translation>Závodníci s půjčeným čipem v etapě %1</translation>
+    </message>
+    <message>
+        <location filename="reports/competitorsWithCardLent.qml" line="77"/>
+        <source>Lent</source>
+        <translation>Půjč</translation>
+    </message>
+    <message>
+        <location filename="reports/competitorsWithCardLent.qml" line="81"/>
+        <source>Ret</source>
+        <translation>Vráce</translation>
+    </message>
+</context>
+<context>
     <name>main</name>
     <message>
         <location filename="main.qml" line="11"/>

@@ -460,17 +460,17 @@ bool Database::open()
 		/// tables
 		QStringList sl;
 		sl = m_sqlConnection.QSqlDatabase::tables(QSql::Tables);
-		qSort(sl);
+		std::sort(sl.begin(), sl.end());
 		foreach(QString s, sl)
 			olst << new Table(this, s, QSql::Tables);
 		sl = m_sqlConnection.QSqlDatabase::tables(QSql::Views);
-		qSort(sl);
+		std::sort(sl.begin(), sl.end());
 		foreach(QString s, sl)
 			olst << new Table(this, s, QSql::Views);
 	}
 	else {
 		foreach(QString s, schemas()) {
-			Schema *sch = new Schema(NULL, s);
+			Schema *sch = new Schema(nullptr, s);
 			olst << sch;
 			connect(sch, SIGNAL(progressValue(double, const QString&)), mainWindow(), SLOT(setProgressValue(double, const QString&)));
 		}
@@ -610,11 +610,11 @@ void Schema::open()
 	/// tables
 	qf::core::sql::Connection dbi(d->sqlConnection());
 	QStringList sl = dbi.tables(schema_name, QSql::Tables);
-	qSort(sl);
+	std::sort(sl.begin(), sl.end());
 	foreach(QString s, sl)
 		olst << new Table(nullptr, s, QSql::Tables);
 	sl = dbi.tables(schema_name, QSql::Views);
-	qSort(sl);
+	std::sort(sl.begin(), sl.end());
 	foreach(QString s, sl)
 		olst << new Table(nullptr, s, QSql::Views);
 	QFObjectItemModel *m = model();

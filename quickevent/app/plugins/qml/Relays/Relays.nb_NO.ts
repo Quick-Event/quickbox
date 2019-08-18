@@ -37,7 +37,7 @@
         <location filename="src/addlegdialogwidget.cpp" line="39"/>
         <location filename="src/addlegdialogwidget.cpp" line="41"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Navn</translation>
     </message>
     <message>
         <location filename="src/addlegdialogwidget.cpp" line="40"/>
@@ -269,7 +269,7 @@
     <message>
         <location filename="src/relayswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skjema</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="91"/>
@@ -284,7 +284,7 @@
     <message>
         <location filename="src/relayswidget.cpp" line="93"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Navn</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="94"/>

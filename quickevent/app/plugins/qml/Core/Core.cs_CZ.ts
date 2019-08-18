@@ -19,7 +19,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="66"/>
         <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
-        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze databáze: %2&lt;br/&gt;Sestavení: %3 %4</translation>
+        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze dat: %2&lt;br/&gt;Sestavení: %3 %4</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="81"/>
@@ -95,17 +95,32 @@
         <translation>Angličtina</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="158"/>
+        <location filename="qml/main.qml" line="146"/>
+        <source>Norwegian</source>
+        <translation>Norština</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="147"/>
+        <source>Polish</source>
+        <translation>Polština</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="148"/>
+        <source>Russian</source>
+        <translation>Ruština</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="161"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="159"/>
+        <location filename="qml/main.qml" line="162"/>
         <source>&amp;Toolbar</source>
         <translation>&amp;Nástrojová lišta</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="162"/>
+        <location filename="qml/main.qml" line="165"/>
         <source>&amp;Help</source>
         <translation>Ná&amp;pověda</translation>
     </message>

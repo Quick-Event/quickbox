@@ -4,6 +4,11 @@
 <context>
     <name>ExampleCppQml</name>
     <message>
+        <location filename="src/examplecppqml.cpp" line="25"/>
+        <source>Vacuum Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="src/examplecppqml.cpp" line="33"/>
         <source>Process VACUUM on current event database?</source>
         <translation type="unfinished"></translation>
