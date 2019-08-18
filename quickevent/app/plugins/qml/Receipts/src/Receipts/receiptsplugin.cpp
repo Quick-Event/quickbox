@@ -404,6 +404,21 @@ bool ReceiptsPlugin::printCard(int card_id)
 	return false;
 }
 
+bool ReceiptsPlugin::printError(int card_id)
+{
+	qfLogFuncFrame() << "card id:" << card_id;
+	QF_TIME_SCOPE("ReceiptsPlugin::printError()");
+	try {
+		QVariantMap dt = readCardTablesData(card_id);
+		receiptsPrinter()->printReceipt(manifest()->homeDir() + "/reports/error.qml", dt);
+		return true;
+	}
+		catch(const qf::core::Exception &e) {
+		qfError() << e.toString();
+	}
+	return false;
+}
+
 void ReceiptsPlugin::previewReceipt(int card_id, const QString &receipt_path)
 {
 	qfLogFuncFrame() << "card id:" << card_id;
