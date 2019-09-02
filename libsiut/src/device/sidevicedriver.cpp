@@ -157,7 +157,7 @@ void DeviceDriver::sendCommand(int cmd, const QByteArray& data)
 {
 	qfLogFuncFrame();
 	if(cmd < 0x80) {
-		emitDriverInfo(qf::core::Log::Level::Error, trUtf8("SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending."));
+		emitDriverInfo(qf::core::Log::Level::Error, tr("SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending."));
 	}
 	else {
 		QByteArray ba;

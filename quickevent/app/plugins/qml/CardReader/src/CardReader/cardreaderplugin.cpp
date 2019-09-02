@@ -284,7 +284,7 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 		ret = q.lastInsertId().toInt();
 	}
 	else {
-		qfError() << trUtf8("Save card ERROR: %1").arg(q.lastErrorText());
+		qfError() << tr("Save card ERROR: %1").arg(q.lastErrorText());
 	}
 	return ret;
 }
@@ -330,7 +330,7 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 		ret = q.lastInsertId().toInt();
 	}
 	else {
-		qfError() << trUtf8("Save punch record ERROR: %1").arg(q.lastErrorText());
+		qfError() << tr("Save punch record ERROR: %1").arg(q.lastErrorText());
 	}
 	return ret;
 }

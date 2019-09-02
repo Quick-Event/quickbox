@@ -39,7 +39,7 @@ bool CommPort::openComm(const QString &_device, int _baudrate, int _data_bits, c
 			sl << QString("%1 %2").arg(port.portName()).arg(port.systemLocation());
 			qfDebug() << "\t" << port.portName();
 		}
-		emitCommInfo(qf::core::Log::Level::Info, trUtf8("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
+		emitCommInfo(qf::core::Log::Level::Info, tr("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
 	}
 	setPortName(device);
 	setBaudRate(_baudrate);
@@ -47,7 +47,7 @@ bool CommPort::openComm(const QString &_device, int _baudrate, int _data_bits, c
 	setParityAsString(_parity_str);
 	setStopBits(two_stop_bits? QSerialPort::TwoStop: QSerialPort::OneStop);
 	//f_commPort->setFlowControl(p.flowControl);
-	emitCommInfo(qf::core::Log::Level::Debug, trUtf8("Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5")
+	emitCommInfo(qf::core::Log::Level::Debug, tr("Connecting to %1 - baudrate: %2, data bits: %3, parity: %4, stop bits: %5")
 				   .arg(portName())
 				   .arg(baudRate())
 				   .arg(dataBits())
@@ -57,11 +57,11 @@ bool CommPort::openComm(const QString &_device, int _baudrate, int _data_bits, c
 	bool ret = Super::open(QIODevice::ReadWrite);
 	if(ret) {
 		emit openChanged(true);
-		emitCommInfo(qf::core::Log::Level::Info, trUtf8("%1 connected OK").arg(device));
+		emitCommInfo(qf::core::Log::Level::Info, tr("%1 connected OK").arg(device));
 	}
 	else {
 		emit openChanged(false);
-		emitCommInfo(qf::core::Log::Level::Error, trUtf8("%1 connect ERROR: %2").arg(device).arg(errorString()));
+		emitCommInfo(qf::core::Log::Level::Error, tr("%1 connect ERROR: %2").arg(device).arg(errorString()));
 	}
 	return ret;
 }
@@ -71,7 +71,7 @@ void CommPort::closeComm()
 	if(isOpen()) {
 		Super::close();
 		emit openChanged(false);
-		emitCommInfo(qf::core::Log::Level::Info, trUtf8("%1 closed").arg(portName()));
+		emitCommInfo(qf::core::Log::Level::Info, tr("%1 closed").arg(portName()));
 	}
 }
 
