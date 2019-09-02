@@ -57,7 +57,7 @@ class QFCORE_DECL_EXPORT TreeItemBase
 				if(pt) return pt;
 				p = p->parent();
 			}
-			return NULL;
+			return nullptr;
 		}
 		/// if ix < 0, than index is counted from end
 		virtual TreeItemBase* child(int ix) const;

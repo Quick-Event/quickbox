@@ -145,7 +145,7 @@ ReportItemBand* ReportItem::parentBand()
 		if(it->toBand()) return it->toBand();
 		it = it->parent();
 	}
-	return NULL;
+	return nullptr;
 }
 --*/
 ReportItemBand* ReportItem::parentBand()

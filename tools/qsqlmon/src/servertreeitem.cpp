@@ -54,7 +54,7 @@ QFObjectItemModel* ServerTreeItem::model()
 		o = o->parent();
 	}
 	Q_ASSERT(o != nullptr);
-	return NULL;
+	return nullptr;
 }
 
 Database* ServerTreeItem::database()
@@ -630,12 +630,12 @@ void Schema::open()
 	QList<QObject*> olst;
 	foreach(QString s, sl_tables) {
 		qfDebug() << "\t adding table" << s;
-		olst << new Table(NULL, s, QSql::Tables);
+		olst << new Table(nullptr, s, QSql::Tables);
 	}
 	qSort(sl_views);
 	foreach(QString s, sl_views) {
 		qfDebug() << "\t adding view" << s;
-		olst << new Table(NULL, s, QSql::Views);
+		olst << new Table(nullptr, s, QSql::Views);
 	}
 	m->append(olst, ix);
 	/*

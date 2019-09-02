@@ -191,15 +191,15 @@ int qfsqldbfs_readdir(const char *path, void *buf, fuse_fill_dir_t filler, off_t
 	//(void) fi;
 	MUTEX_LOCKER;
 
-	filler(buf, ".", NULL, 0);
-	filler(buf, "..", NULL, 0);
+	filler(buf, ".", nullptr, 0);
+	filler(buf, "..", nullptr, 0);
 	QString spath = QString::fromUtf8(path);
 	QList<qfs::DbFsAttrs> attrs = dbfsdrv()->childAttributes(spath);
 	Q_FOREACH(qfs::DbFsAttrs attr, attrs) {
 		QByteArray ba = attr.name().toUtf8();
 		const char *pname = ba.constData();
 		//qfWarning() << "\t" << pname;
-		filler(buf, pname, NULL, 0);
+		filler(buf, pname, nullptr, 0);
 	}
 	qfDebug() << "\t ret OK";
 	return 0;

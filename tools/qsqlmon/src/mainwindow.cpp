@@ -808,7 +808,7 @@ void MainWindow::treeNodeCollapsed(const QModelIndex &index)
 {
 	// POZOR sem nedavat nic, co maze objekty, protoze QTreeView::rowsAboutToBeRemoved()
 	// vola tuhle funkci, takze jsem si to mazal pod prdeli
-	ServerTreeModel *model = (ServerTreeModel*)qobject_cast<const ServerTreeModel*>(index.model());
+	const ServerTreeModel *model = qobject_cast<const ServerTreeModel*>(index.model());
 	QObject *o = model->index2object(index);
 	if(!o) return;
 	if(Connection *c = qobject_cast<Connection*>(o)) {
@@ -823,7 +823,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 {
 	/// double click pripojuje/odpojuje
 	Ui::ServerTreeWidget &ui_srv = serverDock->ui;
-	ServerTreeModel *model = (ServerTreeModel*)qobject_cast<const ServerTreeModel*>(index.model());
+	const ServerTreeModel *model = qobject_cast<const ServerTreeModel*>(index.model());
 	QObject *o = model->index2object(index);
 	if(o) {
 		//if(activeConnection.isOpen()) queryModel->clear();
