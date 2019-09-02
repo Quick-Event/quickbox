@@ -139,7 +139,7 @@ void ReportViewWidget::ScrollArea::keyPressEvent(QKeyEvent* ev)
 {
 	if(ev->modifiers() == Qt::ControlModifier) {
 		static QCursor c;
-		if(c.bitmap() == NULL) {
+		if(c.bitmap() == nullptr) {
 			QBitmap b1(":/qf/qmlwidgets/images/zoomin_cursor_bitmap.png");
 			QBitmap b2(":/qf/qmlwidgets/images/zoomin_cursor_mask.png");
 			c = QCursor(b1, b2, 18, 12);
@@ -337,7 +337,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	: Super(parent), m_scrollArea(NULL), edCurrentPage(NULL), m_statusBar(NULL)
 {
 	qfLogFuncFrame() << this << "parent:" << parent;
-	m_reportProcessor = NULL;
+	m_reportProcessor = nullptr;
 	m_whenRenderingSetCurrentPageTo = -1;
 	/*--
 	f_uiBuilder = new QFUiBuilder(this, ":/libqfgui/qfreportviewwidget.ui.xml");
@@ -347,7 +347,7 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	//action("report.edit")->setVisible(false);
 
 	m_currentPageNo = -1;
-	m_selectedItem = NULL;
+	m_selectedItem = nullptr;
 
 	setPersistentSettingsId("reportViewWidget");
 
@@ -375,7 +375,7 @@ ReportViewWidget::~ReportViewWidget()
 
 ReportProcessor * ReportViewWidget::reportProcessor()
 {
-	if(m_reportProcessor == NULL) {
+	if(m_reportProcessor == nullptr) {
 		setReportProcessor(new ReportProcessor(m_painterWidget, this));
 	}
 	return m_reportProcessor;
@@ -834,7 +834,7 @@ void ReportViewWidget::selectElement(const QFDomElement &el)
 		return;
 	}
 	#endif
-	f_selectedItem = NULL;
+	f_selectedItem = nullptr;
 	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 	selectElement_helper(frm, el);

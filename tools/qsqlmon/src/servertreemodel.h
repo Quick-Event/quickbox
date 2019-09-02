@@ -23,7 +23,7 @@ class ServerTreeModel : public QFObjectItemModel
 private:
 	typedef QFObjectItemModel Super;
 public:
-	ServerTreeModel(QObject *parent = NULL);
+	ServerTreeModel(QObject *parent = nullptr);
 	~ServerTreeModel() Q_DECL_OVERRIDE;
 public:
 	int columnCount ( const QModelIndex & parent = QModelIndex() ) const Q_DECL_OVERRIDE;

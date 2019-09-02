@@ -121,7 +121,7 @@ class QFHttpMySqlDriver : public QSqlDriver
 		virtual QSqlRecord record ( const QString & table_name ) const;
 		QUrl url() const;
 	public:
-		QFHttpMySqlDriver(QObject *parent = NULL);
+		QFHttpMySqlDriver(QObject *parent = nullptr);
 		virtual ~QFHttpMySqlDriver();
 };
 

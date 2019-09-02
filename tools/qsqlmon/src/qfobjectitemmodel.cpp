@@ -35,7 +35,7 @@ QFObjectItemModel* QFObjectItemModelRoot::model()
 QFObjectItemModel::QFObjectItemModel(QObject *parent) 
 	: QAbstractItemModel(parent)
 {
-	m_rootObj = NULL;
+	m_rootObj = nullptr;
 	//deletedList = new QObject(this);
 	init();
 }
@@ -164,7 +164,7 @@ QModelIndex QFObjectItemModel::parent(const QModelIndex &child) const
 	//qfDebug() << QF_FUNC_NAME << " ... in child object:" << child.internalPointer();
     QModelIndex ret;
     do {
-	    QObject *o = NULL;
+	    QObject *o = nullptr;
         o = index2object(child);
 		//qfDebug() << "\tparent of " << o;
 		if(!o) break;

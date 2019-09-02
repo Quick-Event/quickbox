@@ -25,7 +25,7 @@ class TableViewChooseColumnsWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	TableViewChooseColumnsWidget(QWidget *parent = NULL);
+	TableViewChooseColumnsWidget(QWidget *parent = nullptr);
 	~TableViewChooseColumnsWidget() Q_DECL_OVERRIDE;
 protected:
 	QStandardItemModel *f_exportedColumnsModel;

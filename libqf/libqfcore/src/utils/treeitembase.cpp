@@ -74,7 +74,7 @@ TreeItemPath TreeItemPath::fromString(const QString &path_str)
 //=================================================
 TreeItemBase::TreeItemBase(TreeItemBase *_parent)
 {
-	f_parent = NULL;
+	f_parent = nullptr;
 	setParent(_parent);
 }
 
@@ -128,7 +128,7 @@ void TreeItemBase::insertChild(int before_ix, TreeItemBase *it_child)
 
 TreeItemBase* TreeItemBase::exchangeChild(int child_ix, TreeItemBase *it_child)
 {
-	TreeItemBase *ret = NULL;
+	TreeItemBase *ret = nullptr;
 	if(!it_child) {
 		qfError() << QF_FUNC_NAME << "child item is NULL";
 		return ret;
@@ -138,7 +138,7 @@ TreeItemBase* TreeItemBase::exchangeChild(int child_ix, TreeItemBase *it_child)
 		return ret;
 	}
 	ret = child(child_ix);
-	ret->f_parent = NULL;
+	ret->f_parent = nullptr;
 	if(it_child->parent() && it_child->parent() != this)
 		it_child->setParent(NULL);
 	childrenRef()[child_ix] = it_child;
@@ -162,7 +162,7 @@ void TreeItemBase::clearChildren()
 	foreach(TreeItemBase *it, children()) {
 		/// optimalizace, aby dite v destruktoru nemazelo zbytecne samo sebe z children, kdyz se to pak udela najednou.
 		if(it) {
-			it->f_parent = NULL;
+			it->f_parent = nullptr;
 			delete it;
 		}
 	}
@@ -182,7 +182,7 @@ void TreeItemBase::unlinkChild(TreeItemBase *child)
 
 TreeItemBase* TreeItemBase::sibbling(int offset)
 {
-	TreeItemBase *ret = NULL;
+	TreeItemBase *ret = nullptr;
 	TreeItemBase *par_it = parent();
 	if(par_it) {
 		int ix = par_it->indexOfChild(this);
@@ -252,7 +252,7 @@ TreeItemBase* TreeItemBase::cd(const TreeItemPath &path) const
 {
 	qfLogFuncFrame();
 	//qfInfo() << "path:" << path.toString() << "is valid:" << path.isValid();
-	TreeItemBase *ret = NULL;
+	TreeItemBase *ret = nullptr;
 	qfDebug() << "\t path:" << path.toString() << "is valid:" << path.isValid();
 	if(path.isValid()) {
 		ret = const_cast<TreeItemBase*>(this);

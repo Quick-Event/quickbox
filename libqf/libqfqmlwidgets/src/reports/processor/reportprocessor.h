@@ -53,7 +53,7 @@ public:
 	enum ProcessorMode {SinglePage = 1, FirstPage, AllPages};
 	typedef QMap<QString, ReportItem::Image> ImageMap;
 public:
-	ReportProcessor(QPaintDevice *paint_device, QObject *parent = NULL);
+	ReportProcessor(QPaintDevice *paint_device, QObject *parent = nullptr);
 	~ReportProcessor() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(int, p, P, rocessedPageNo)

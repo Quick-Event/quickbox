@@ -28,7 +28,7 @@ public:
 	QVariant value() const;
 	void setValue(const QVariant &val);
 public:
-	ItemValueEditorWidget(QWidget *parent = NULL);
+	ItemValueEditorWidget(QWidget *parent = nullptr);
 	~ItemValueEditorWidget() Q_DECL_OVERRIDE;
 };
 

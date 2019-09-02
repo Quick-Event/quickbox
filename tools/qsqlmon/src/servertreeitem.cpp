@@ -53,14 +53,14 @@ QFObjectItemModel* ServerTreeItem::model()
 		}
 		o = o->parent();
 	}
-	Q_ASSERT(o != NULL);
+	Q_ASSERT(o != nullptr);
 	return NULL;
 }
 
 Database* ServerTreeItem::database()
 {
 	QObject *o = this;
-	Database *d = NULL;
+	Database *d = nullptr;
 	while(o) {
 		d = qobject_cast<Database*>(o);
 		if(d) break;
@@ -117,7 +117,7 @@ void Connection::close()
 
 Database* Connection::open()
 {
-	Database *d = NULL;
+	Database *d = nullptr;
 	QList<QObject*> olst;
 
 	close();
@@ -702,7 +702,7 @@ QVariant Table::text(int col)
 QString Table::schema() const
 {
 	const QObject *o = this;
-	const Schema *d = NULL;
+	const Schema *d = nullptr;
 	while(o) {
 		d = qobject_cast<const Schema*>(o);
 		if(d) return d->objectName();

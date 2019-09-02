@@ -31,7 +31,7 @@ const QRegExp ReportItemMetaPaint::checkReportSubstitutionRegExp = QRegExp("@\\{
 ReportItemMetaPaint::ReportItemMetaPaint()
 	: Super(NULL)
 {
-	//f_layoutSettings = NULL;
+	//f_layoutSettings = nullptr;
 }
 
 ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportItem *report_item)
@@ -765,7 +765,7 @@ ReportPainter::ReportPainter(QPaintDevice *device)
 {
 	//currentPage = 0;
 	pageCount = 0;
-	f_selectedItem = NULL;
+	f_selectedItem = nullptr;
 	setMarkEditableSqlText(false);
 }
 

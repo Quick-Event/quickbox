@@ -228,8 +228,8 @@ int main(int argc, char *argv[])
 
 	/// FUSE variables
 	struct fuse_args fuse_arguments = FUSE_ARGS_INIT(fuse_argc, argv);
-	struct fuse_chan *fuse_channel = NULL;
-	struct fuse *fuse_handle = NULL;
+	struct fuse_chan *fuse_channel = nullptr;
+	struct fuse *fuse_handle = nullptr;
 	char *mount_point = nullptr;
 
 	if (fuse_parse_cmdline(&fuse_arguments, &mount_point, NULL, NULL) == -1) {
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
 
 	/// Tell FUSE where the local mountpoint is
 	fuse_channel = fuse_mount(mount_point, &fuse_arguments);
-	if (fuse_channel == NULL){
+	if (fuse_channel == nullptr){
 		qfError()<<"fuse_mount() failed";
 		exit(1);
 	}
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
 	fuse_ops.rename = qfsqldbfs_rename;
 
 	fuse_handle = fuse_new(fuse_channel, &fuse_arguments, &fuse_ops, sizeof(fuse_ops), NULL);
-	if (fuse_handle == NULL){
+	if (fuse_handle == nullptr){
 		qfError()<<"fuse_new() failed";
 		exit(1);
 	}
