@@ -786,6 +786,21 @@ bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
 	return ok;
 }
 
+void TableModel::cloneRow(int row_ix)
+{
+	beginInsertRows(QModelIndex(), row_ix, row_ix + 1);
+	insertTableRow(row_ix + 1);
+	const qfu::TableRow &r1 = tableRow(row_ix);
+	qfu::TableRow &r2 = tableRowRef(row_ix + 1);
+	for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
+		QVariant v1 = r1.value(i);
+		r2.setValue(i, v1);
+		//qfInfo() << i << v1 << r2.value(i);
+	}
+	r2.prepareForCopy();
+	endInsertRows();
+}
+
 bool TableModel::removeTableRow(int row_ix, bool throw_exc)
 {
 	Q_UNUSED(throw_exc);

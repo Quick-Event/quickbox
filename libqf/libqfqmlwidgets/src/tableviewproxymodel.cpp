@@ -42,6 +42,13 @@ bool TableViewProxyModel::isIdle() const
 	return m_rowFilterString.isEmpty() && sortColumn() < 0;
 }
 
+void TableViewProxyModel::sort()
+{
+	if(m_sortColumns.isEmpty())
+		return;
+	Super::sort(m_sortColumns.first(), m_sortOrder);
+}
+
 void TableViewProxyModel::sort(int column, Qt::SortOrder order)
 {
 	m_sortColumns.clear();

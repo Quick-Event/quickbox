@@ -196,14 +196,14 @@ void TableView::refreshActions()
 	//action("postRow")->setVisible(true);
 	//action("revertRow")->setVisible(true);
 
-	bool is_insert_rows_allowed = !(m_proxyModel->dynamicSortFilter() && !m_proxyModel->isIdle());
+	bool is_insert_rows_allowed = m_proxyModel->isIdle();
 	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
 	is_edit_rows_allowed = is_edit_rows_allowed && !isReadOnly();
 	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
 	is_delete_rows_allowed = is_delete_rows_allowed && !isReadOnly();
-	bool is_copy_rows_allowed = m_proxyModel->rowCount()>0 && is_insert_rows_allowed;
-	is_copy_rows_allowed = is_copy_rows_allowed && !isReadOnly();
+	bool is_clone_rows_allowed = currentIndex().isValid() && m_proxyModel->rowFilterString().isEmpty();
+	is_clone_rows_allowed = is_clone_rows_allowed && !isReadOnly();
 	//qfInfo() << "\tinsert allowed:" << is_insert_rows_allowed;
 	//qfDebug() << "\tdelete allowed:" << is_delete_rows_allowed;
 	//qfDebug() << "\tedit allowed:" << is_edit_rows_allowed;
@@ -211,7 +211,7 @@ void TableView::refreshActions()
 	Action *a_insert_row = action("insertRow");
 	Action *a_remove_sel_rows = action("removeSelectedRows");
 	Action *a_clone_row = action("cloneRow");
-	a_clone_row->setEnabled(a_clone_row->isVisible() && is_copy_rows_allowed);
+	a_clone_row->setEnabled(a_clone_row->isVisible() && is_clone_rows_allowed);
 	//action("cloneRow")->setVisible(iscloneRowActionVisible());
 	a_remove_sel_rows->setEnabled(a_remove_sel_rows->isVisible() && is_delete_rows_allowed);
 	//action("postRow")->setVisible((is_edit_rows_allowed || is_insert_rows_allowed) && action("postRow")->isVisible());
@@ -229,7 +229,7 @@ void TableView::refreshActions()
 	}
 	else {
 		a_insert_row->setEnabled(a_insert_row->isVisible() && is_insert_rows_allowed);
-		a_clone_row->setEnabled(a_clone_row->isVisible() && is_copy_rows_allowed && curr_ix.isValid());
+		a_clone_row->setEnabled(a_clone_row->isVisible() && is_clone_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
 		//action("sortAsc")->setEnabled(true);
 		//action("sortDesc")->setEnabled(true);
@@ -364,17 +364,14 @@ void TableView::cloneRowInline()
 {
 	qfLogFuncFrame();
 	try {
-		qfu::TableRow r1 = tableRow();
-		if(r1.isNull())
+		QModelIndex ix = currentIndex();
+		if(ix.row() < 0)
 			return;
-		insertRowInline();
-		qfu::TableRow &r2 = tableRowRef();
-		for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
-			QVariant v1 = r1.value(i);
-			r2.setValue(i, v1);
-			//qfInfo() << i << v1 << r2.value(i);
-		}
-		r2.prepareForCopy();
+		int tri1 = toTableModelRowNo(ix.row());
+		core::model::TableModel *tm = tableModel();
+		tm->cloneRow(tri1);
+		m_proxyModel->sort();
+		setCurrentIndex(m_proxyModel->index(ix.row() + 1, ix.column()));
 	}
 	catch(qfc::Exception &e) {
 		emit sqlException(e.message(), e.where(), e.stackTrace());

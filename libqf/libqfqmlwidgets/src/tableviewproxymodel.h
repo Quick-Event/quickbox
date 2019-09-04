@@ -19,6 +19,7 @@ public:
 	QString rowFilterString() const;
 	bool isIdle() const;
 
+	void sort();
 	void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) Q_DECL_OVERRIDE;
 	void addSortColumn(int column);
 protected:
