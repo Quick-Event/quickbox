@@ -419,8 +419,8 @@ void ReportProcessor::print(QPrinter &printer, const QVariantMap &options)
 
 ReportItemMetaPaintFrame* ReportProcessor::getPage(int n)
 {
-	if(!processorOutput()) return NULL;
-	if(n < 0 || n >= processorOutput()->childrenCount()) return NULL;
+	if(!processorOutput()) return nullptr;
+	if(n < 0 || n >= processorOutput()->childrenCount()) return nullptr;
 	ReportItemMetaPaint *it = processorOutput()->child(n);
 	ReportItemMetaPaintFrame *frm	= dynamic_cast<ReportItemMetaPaintFrame*>(it);
 	qfDebug() << "\treturn:" << frm;

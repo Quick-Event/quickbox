@@ -166,7 +166,7 @@ QString DbEnum::fillInPlaceholders(const QString& text_with_placeholders) const
 /*
 QFDataTranslator* DbEnum::dataTranslator() const
 {
-	QFDataTranslator *ret = NULL;
+	QFDataTranslator *ret = nullptr;
 	{
 		QFAppDataTranslatorInterface *appi = dynamic_cast<QFAppDataTranslatorInterface *>(QCoreApplication::instance());
 		if(appi) {

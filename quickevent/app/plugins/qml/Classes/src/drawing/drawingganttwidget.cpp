@@ -40,7 +40,11 @@ void DrawingGanttWidget::settleDownInDialog(qf::qmlwidgets::dialogs::Dialog *dlg
 	qf::qmlwidgets::ToolBar *tb = dlg->toolBar("main", true);
 	tb->addAction(ui->actSave);
 	m_edFind = new QLineEdit();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+	m_edFind->setMaximumWidth(QFontMetrics(font()).horizontalAdvance('X') * 8);
+#else
 	m_edFind->setMaximumWidth(QFontMetrics(font()).width('X') * 8);
+#endif
 	connect(m_edFind, &QLineEdit::textEdited, this, &DrawingGanttWidget::on_actFind_triggered);
 	tb->addWidget(m_edFind);
 	tb->addAction(ui->actFind);

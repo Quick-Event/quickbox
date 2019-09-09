@@ -31,8 +31,8 @@ QFHttpMySqlDriverHttp::QFHttpMySqlDriverHttp(QObject * parent)
 	: QObject(parent)
 {
 	//f_responseBuffer = new QBuffer(this);
-	//f_eventLoop = NULL;
-	//f_currentReply = NULL;
+	//f_eventLoop = nullptr;
+	//f_currentReply = nullptr;
 
 	f_http = new QNetworkAccessManager(this);
 	//connect(f_http, SIGNAL(requestFinished(int, bool)), this, SLOT(requestFinished(int, bool)));

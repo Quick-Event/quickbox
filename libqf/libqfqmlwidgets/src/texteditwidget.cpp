@@ -215,7 +215,7 @@ void TextEditWidget::setUrl(QFile &url, const QString &codec_name)
 
 void TextEditWidget::createToolBar()
 {
-	QToolBar *tb = new QToolBar(NULL);
+	QToolBar *tb = new QToolBar(nullptr);
 	tb->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	QBoxLayout *l = qobject_cast<QBoxLayout*>(layout());
 	l->setMargin(0);
@@ -226,7 +226,7 @@ void TextEditWidget::createToolBar()
 QFPart::ToolBarList TextEditWidget::createToolBars()
 {
 	QFPart::ToolBarList ret;
-	QFToolBar *t = new QFToolBar(NULL);
+	QFToolBar *t = new QFToolBar(nullptr);
 	t->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 	foreach(QFAction *a, toolBarActions) t->addAction(a);
 	ret << t;

@@ -136,7 +136,7 @@ class QFCORE_DECL_EXPORT Utils
 {
 public:
 	static const QString &nullValueString();
-	static void parseFieldName(const QString& full_field_name, QString *pfield_name = NULL, QString *ptable_name = NULL, QString *pdb_name = NULL);
+	static void parseFieldName(const QString& full_field_name, QString *pfield_name = nullptr, QString *ptable_name = nullptr, QString *pdb_name = nullptr);
 	static QString composeFieldName(const QString &field_name, const QString &table_name = QString(), const QString &db_name = QString());
 	/// @returns: True if @a field_name1 ends with @a field_name2. Comparision is case insensitive
 	static bool fieldNameEndsWith(const QString &field_name1, const QString &field_name2);
@@ -166,7 +166,7 @@ public:
 	template <class T>
 	static T findParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
 	{
-		T t = NULL;
+		T t = nullptr;
 		QObject *o = const_cast<QObject*>(_o);
 		while(o) {
 			o = o->parent();

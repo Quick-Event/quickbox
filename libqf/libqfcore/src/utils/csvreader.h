@@ -14,7 +14,7 @@ namespace utils {
 class QFCORE_DECL_EXPORT CSVReader
 {
 public:
-	CSVReader(QTextStream *ts = NULL, char _separator = ',', char _quote = '"');
+	CSVReader(QTextStream *ts = nullptr, char _separator = ',', char _quote = '"');
 	virtual ~CSVReader();
 public:
 	enum OptionFlag {AppendEndl = 1};

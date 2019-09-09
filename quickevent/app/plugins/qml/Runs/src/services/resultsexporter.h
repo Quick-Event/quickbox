@@ -30,9 +30,6 @@ class ResultsExporter : public services::Service
 public:
 	ResultsExporter(QObject *parent);
 
-	//void run() override;
-	//void stop() override;
-
 	void loadSettings() override;
 	ResultsExporterSettings settings() const {return ResultsExporterSettings(m_settings);}
 
@@ -40,14 +37,6 @@ public:
 
 	static QString serviceName();
 
-	//QString exportDir() const {return settings().exportDir();}
-	//void setExportDir(const QString &s);
-
-	//int exportIntervalSec() const {return settings().exportIntervalSec();}
-	//void setExportIntervalSec(int sec);
-
-	//QString whenFinishedRunCmd() const {return settings().whenFinishedRunCmd();}
-	//void setWhenFinishedRunCmd(const QString &s);
 	bool exportResults();
 private:
 	void onExportTimerTimeOut();

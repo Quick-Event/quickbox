@@ -14,7 +14,7 @@ class QAbstractItemModel;
 class SqlTextEditCompleter : public QCompleter
 {
 	public:
-		SqlTextEditCompleter(QObject *parent = NULL) : QCompleter(parent) {}
+		SqlTextEditCompleter(QObject *parent = nullptr) : QCompleter(parent) {}
 		virtual ~SqlTextEditCompleter() {}
 
 		virtual QString pathFromIndex(const QModelIndex &index) const;

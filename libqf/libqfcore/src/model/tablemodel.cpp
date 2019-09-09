@@ -126,7 +126,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 		ret = data(index, Qt::EditRole);
 		int type = columnType(index.column());
 		if(type == QVariant::Invalid)
-			type = ret.type(); /// pokud jsou sloupce virtualni (sloupce se pocitaji, nemusi byt pro ne definovan typ)
+			type = (int)ret.type(); /// pokud jsou sloupce virtualni (sloupce se pocitaji, nemusi byt pro ne definovan typ)
 		if(type == QVariant::ByteArray) {
 			const static QString blob_string = "{blob %1%2}";
 			QByteArray ba = ret.toByteArray();
@@ -180,7 +180,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
 	}
 	else if (role == ValueIsNullRole) {
 		ret = data(index, RawValueRole);
-		return ret.isNull() && ret.isValid();
+		return ret.isNull() || !ret.isValid();
 	}
 	else if (role == Qt::TextAlignmentRole) {
 		const ColumnDefinition cd = m_columns.value(index.column());
@@ -629,7 +629,7 @@ int TableModel::columnType(int column_index) const
 		else {
 			qfu::Table::Field fld = tableField(column_index);
 			QF_ASSERT(!fld.isNull(), tr("Invalid field for column index: %1").arg(column_index), return ret);
-			ret = fld.type();
+			ret = static_cast<int>(fld.type());
 		}
 	}
 	//qfInfo() << cd.fieldName() << ret;
@@ -742,9 +742,13 @@ void TableModel::setColumn(int ix, const TableModel::ColumnDefinition &cd)
 
 TableModel::ColumnDefinition TableModel::removeColumn(int ix)
 {
-	qfError() << Q_FUNC_INFO << ix << "NIY";
-	TableModel::ColumnDefinition ret;
-	return ret;
+	if(ix >= 0 && ix < m_columns.count()) {
+		beginRemoveColumns(QModelIndex(), 0, ix);
+		ColumnDefinition cd = m_columns.takeAt(ix);
+		endRemoveColumns();
+		return cd;
+	}
+	return ColumnDefinition();
 }
 
 void TableModel::setTable(const qf::core::utils::Table &t)
@@ -780,6 +784,21 @@ bool TableModel::insertRows(int row_ix, int count, const QModelIndex &parent)
 	}
 	endInsertRows();
 	return ok;
+}
+
+void TableModel::cloneRow(int row_ix)
+{
+	beginInsertRows(QModelIndex(), row_ix, row_ix + 1);
+	insertTableRow(row_ix + 1);
+	const qfu::TableRow &r1 = tableRow(row_ix);
+	qfu::TableRow &r2 = tableRowRef(row_ix + 1);
+	for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
+		QVariant v1 = r1.value(i);
+		r2.setValue(i, v1);
+		//qfInfo() << i << v1 << r2.value(i);
+	}
+	r2.prepareForCopy();
+	endInsertRows();
 }
 
 bool TableModel::removeTableRow(int row_ix, bool throw_exc)

@@ -42,7 +42,7 @@ class QFQMLWIDGETS_DECL_EXPORT  ReportViewWidget : public qf::qmlwidgets::framew
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	ReportViewWidget(QWidget *parent = NULL);
+	ReportViewWidget(QWidget *parent = nullptr);
 	~ReportViewWidget() Q_DECL_OVERRIDE;
 
 	/**

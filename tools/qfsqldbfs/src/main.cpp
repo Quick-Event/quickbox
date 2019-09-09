@@ -45,10 +45,10 @@ static void set_signal_handlers()
 	sigemptyset(&(sa.sa_mask));
 	sa.sa_flags = 0;
 
-	if (sigaction(SIGHUP, &sa, NULL) == -1
-			|| sigaction(SIGINT, &sa, NULL) == -1
-			|| sigaction(SIGQUIT, &sa, NULL) == -1
-			|| sigaction(SIGTERM, &sa, NULL) == -1)
+	if (sigaction(SIGHUP, &sa, nullptr) == -1
+			|| sigaction(SIGINT, &sa, nullptr) == -1
+			|| sigaction(SIGQUIT, &sa, nullptr) == -1
+			|| sigaction(SIGTERM, &sa, nullptr) == -1)
 	{
 		qfError()<<"Cannot set exit signal handlers.";
 		exit(1);
@@ -56,7 +56,7 @@ static void set_signal_handlers()
 
 	sa.sa_handler = SIG_IGN;
 
-	if (sigaction(SIGPIPE, &sa, NULL) == -1)
+	if (sigaction(SIGPIPE, &sa, nullptr) == -1)
 	{
 		qfError()<<"Cannot set ignored signals.";
 		exit(1);
@@ -228,18 +228,18 @@ int main(int argc, char *argv[])
 
 	/// FUSE variables
 	struct fuse_args fuse_arguments = FUSE_ARGS_INIT(fuse_argc, argv);
-	struct fuse_chan *fuse_channel = NULL;
-	struct fuse *fuse_handle = NULL;
+	struct fuse_chan *fuse_channel = nullptr;
+	struct fuse *fuse_handle = nullptr;
 	char *mount_point = nullptr;
 
-	if (fuse_parse_cmdline(&fuse_arguments, &mount_point, NULL, NULL) == -1) {
+	if (fuse_parse_cmdline(&fuse_arguments, &mount_point, nullptr, nullptr) == -1) {
 		qfError() << "fuse_parse_cmdline() - Error parsing fuse command line arguments!";
 		exit(1);
 	}
 
 	/// Tell FUSE where the local mountpoint is
 	fuse_channel = fuse_mount(mount_point, &fuse_arguments);
-	if (fuse_channel == NULL){
+	if (fuse_channel == nullptr){
 		qfError()<<"fuse_mount() failed";
 		exit(1);
 	}
@@ -267,8 +267,8 @@ int main(int argc, char *argv[])
 	fuse_ops.create = qfsqldbfs_create;
 	fuse_ops.rename = qfsqldbfs_rename;
 
-	fuse_handle = fuse_new(fuse_channel, &fuse_arguments, &fuse_ops, sizeof(fuse_ops), NULL);
-	if (fuse_handle == NULL){
+	fuse_handle = fuse_new(fuse_channel, &fuse_arguments, &fuse_ops, sizeof(fuse_ops), nullptr);
+	if (fuse_handle == nullptr){
 		qfError()<<"fuse_new() failed";
 		exit(1);
 	}

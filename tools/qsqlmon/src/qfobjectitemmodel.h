@@ -108,7 +108,7 @@ class QFObjectItemModel : public QAbstractItemModel
 	}
 	*/
 	public:
-		QFObjectItemModel(QObject *parent = NULL);
+		QFObjectItemModel(QObject *parent = nullptr);
 		~QFObjectItemModel();
 };
 //=============================================

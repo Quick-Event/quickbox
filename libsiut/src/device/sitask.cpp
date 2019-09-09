@@ -704,6 +704,8 @@ void SiTaskReadCard8::onSiMessageReceived(const SIMessageData &msg)
 	}
 	else {
 		qfError() << "Invalid command:" << "0x" + QString::number((int)cmd, 16) << "received";
+		if(cmd == SIMessageData::Command::SICardRemoved)
+			qfError() << "seems like SI card was removed in middle of read-out process";
 		abort();
 	}
 }

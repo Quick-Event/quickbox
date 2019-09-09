@@ -287,7 +287,8 @@ void Dialog::updateCaptionFrame()
 		m_captionFrame->setText(dialog_widget->title());
 		m_captionFrame->setIconSource(dialog_widget->iconSource());
 		m_captionFrame->setIcon(m_captionFrame->createIcon());
-		//m_captionFrame->update();
+		if(windowTitle() == QLatin1String("Form") && !dialog_widget->title().isEmpty())
+			setWindowTitle(dialog_widget->title());
 	}
 	else {
 		QF_SAFE_DELETE(m_captionFrame);

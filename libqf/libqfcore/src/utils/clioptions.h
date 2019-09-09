@@ -45,7 +45,7 @@ class QFCORE_DECL_EXPORT CLIOptions : public QObject
 {
 	Q_OBJECT
 public:
-	CLIOptions(QObject *parent = NULL);
+	CLIOptions(QObject *parent = nullptr);
 	virtual ~CLIOptions();
 
 	CLIOPTION_GETTER_SETTER2(bool, "abortOnException", is, set, AbortOnException)
@@ -143,7 +143,7 @@ class QFCORE_DECL_EXPORT ConfigCLIOptions : public CLIOptions
 private:
 	typedef CLIOptions Super;
 public:
-	ConfigCLIOptions(QObject *parent = NULL);
+	ConfigCLIOptions(QObject *parent = nullptr);
 	~ConfigCLIOptions() Q_DECL_OVERRIDE {}
 
 	CLIOPTION_GETTER_SETTER(QString, c, setC, onfig)

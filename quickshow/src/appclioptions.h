@@ -9,7 +9,7 @@ class AppCliOptions : public qf::core::utils::ConfigCLIOptions
 private:
 	typedef qf::core::utils::ConfigCLIOptions Super;
 public:
-	AppCliOptions(QObject *parent = NULL);
+	AppCliOptions(QObject *parent = nullptr);
 	~AppCliOptions() Q_DECL_OVERRIDE {}
 
 	CLIOPTION_GETTER_SETTER(QString, p, setP, rofile)

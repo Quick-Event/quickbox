@@ -18,7 +18,7 @@ class  TableViewCopyToDialogWidget : public framework::DialogWidget
 private:
 	typedef framework::DialogWidget Super;
 public:
-	TableViewCopyToDialogWidget(QWidget *parent = NULL);
+	TableViewCopyToDialogWidget(QWidget *parent = nullptr);
 	~TableViewCopyToDialogWidget() Q_DECL_OVERRIDE;
 public:
 	//QFTableViewWidget* tableViewWidget();

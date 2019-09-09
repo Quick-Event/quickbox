@@ -107,7 +107,7 @@ void MainWindow::init()
 
 	//ui.tblSql->verticalHeader()->setFixedHeight(12);
 	//setActiveConnection(qf::core::sql::Connection());
-	setActiveConnection2(NULL);
+	setActiveConnection2(nullptr);
 
 	connect(ui.queryView, SIGNAL(statusBarAction(const QString&)), this, SLOT(onTableStatusBarAction(const QString&)));
 
@@ -224,9 +224,9 @@ qf::core::sql::Connection MainWindow::setActiveConnection1(const qf::core::sql::
 	{
 		QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-		QStandardItemModel *completion_model = NULL;
+		QStandardItemModel *completion_model = nullptr;
 		completion_model = new QStandardItemModel();
-		QStandardItem *root_item = NULL;
+		QStandardItem *root_item = nullptr;
 		root_item = completion_model->invisibleRootItem();
 
 		//bool completion = theApp()->config()->value("/sqleditor/fieldcompletion").toBool();
@@ -780,7 +780,7 @@ void MainWindow::setDbSearchPath(const QString &path)
 
 void MainWindow::treeNodeExpanded(const QModelIndex &index)
 {
-	ServerTreeModel *model = (ServerTreeModel*)qobject_cast<const ServerTreeModel*>(index.model());
+	const ServerTreeModel *model = qobject_cast<const ServerTreeModel*>(index.model());
 	QObject *o = model->index2object(index);
 	setDbSearchPath(QString());
 	if(o) do {
@@ -808,7 +808,7 @@ void MainWindow::treeNodeCollapsed(const QModelIndex &index)
 {
 	// POZOR sem nedavat nic, co maze objekty, protoze QTreeView::rowsAboutToBeRemoved()
 	// vola tuhle funkci, takze jsem si to mazal pod prdeli
-	ServerTreeModel *model = (ServerTreeModel*)qobject_cast<const ServerTreeModel*>(index.model());
+	const ServerTreeModel *model = qobject_cast<const ServerTreeModel*>(index.model());
 	QObject *o = model->index2object(index);
 	if(!o) return;
 	if(Connection *c = qobject_cast<Connection*>(o)) {
@@ -823,7 +823,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 {
 	/// double click pripojuje/odpojuje
 	Ui::ServerTreeWidget &ui_srv = serverDock->ui;
-	ServerTreeModel *model = (ServerTreeModel*)qobject_cast<const ServerTreeModel*>(index.model());
+	const ServerTreeModel *model = qobject_cast<const ServerTreeModel*>(index.model());
 	QObject *o = model->index2object(index);
 	if(o) {
 		//if(activeConnection.isOpen()) queryModel->clear();
@@ -841,7 +841,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 				Database* d = c->open();
 				if(d) setActiveConnection2(d);
 				// open first database in list to show its tables in tree
-				QModelIndex ix = index.child(0, 0);
+				QModelIndex ix = index.model()->index(0, 0, index);
 				ui_srv.treeServers->setExpanded(ix, true);
 			}
 		}
@@ -862,7 +862,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 		}
 		else if(Schema *s = qobject_cast<Schema*>(o)) {
 			Database *d = s->database();
-			Q_ASSERT(d != NULL);
+			Q_ASSERT(d != nullptr);
 			setActiveConnection2(d);
 			Q_ASSERT(activeConnection().isOpen());
 			if(s->isOpen()) {
@@ -881,7 +881,7 @@ void MainWindow::treeNodeDoubleClicked(const QModelIndex &index)
 		}
 		else if(Table *t = qobject_cast<Table*>(o)) {
 			Database *d = t->database();
-			Q_ASSERT(d != NULL);
+			Q_ASSERT(d != nullptr);
 			setActiveConnection2(d);
 			//qfDebug() << "Table double clicked" << activeConnection().info();
 			Q_ASSERT(activeConnection().isOpen());
@@ -927,9 +927,9 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 		}
 		else {
 			ServerTreeModel *model = qobject_cast<ServerTreeModel*>(ui_srv.treeServers->model());
-			Q_ASSERT(model != NULL);
+			Q_ASSERT(model != nullptr);
 			QObject *o = model->index2object(mi);
-			Q_ASSERT(o != NULL);
+			Q_ASSERT(o != nullptr);
 			if(Connection *connection = qobject_cast<Connection*>(o)) {
 				QMenu menu(this);
 				menu.setTitle(tr("Connection menu"));
@@ -1016,7 +1016,7 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 							}
 							bool ok = execCommand(qs);
 							if(ok) {
-								Table *t = new Table(NULL, s, QSql::Tables);
+								Table *t = new Table(nullptr, s, QSql::Tables);
 								model->append(t, mi);
 								ui_srv.treeServers->setExpanded(mi, false);
 								ui_srv.treeServers->setExpanded(mi, true);
@@ -1107,9 +1107,9 @@ void MainWindow::treeServersContextMenuRequest(const QPoint& point)
 				QAction *actDropTable = menu.addAction(tr("Drop table"));
 				QAction *actTruncateTable = menu.addAction(tr("Truncate table"));
 				QAction *actRenameTable = menu.addAction(tr("Rename table"));
-				QAction *actMysqlCheckTable = NULL;
-				QAction *actMysqlRepairTable = NULL;
-				QAction *actMysqlOptimizeTable = NULL;
+				QAction *actMysqlCheckTable = nullptr;
+				QAction *actMysqlRepairTable = nullptr;
+				QAction *actMysqlOptimizeTable = nullptr;
 				if(activeConnection().driverName().endsWith("MYSQL")) {
 					menu.addSeparator();
 					QMenu *mysql_m = menu.addMenu("MySQL");

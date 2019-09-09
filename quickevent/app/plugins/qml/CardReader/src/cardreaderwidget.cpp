@@ -594,7 +594,7 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
-	//appendLog(qf::core::Log::Level::Info, trUtf8("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
+	//appendLog(qf::core::Log::Level::Info, tr("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MessageType::CardReadOut) {
 		SIMessageCardReadOut card(msg_data);
 		processSICard(card);
@@ -628,7 +628,7 @@ void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QStr
 		if(level == qf::core::Log::Level::Debug)
 			level = qf::core::Log::Level::Info;
 	}
-	appendLog(level, trUtf8("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
+	appendLog(level, tr("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
 }
 
 void CardReaderWidget::processDriverRawData(const QByteArray& data)
@@ -637,14 +637,14 @@ void CardReaderWidget::processDriverRawData(const QByteArray& data)
 	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
 	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
 		QString msg = siut::SIMessageData::dumpData(data, 16);
-		appendLog(qf::core::Log::Level::Info, trUtf8("DriverRawData: %1").arg(msg));
+		appendLog(qf::core::Log::Level::Info, tr("DriverRawData: %1").arg(msg));
 	}
 }
 
 void CardReaderWidget::processSICard(const siut::SICard &card)
 {
 	appendLog(qf::core::Log::Level::Debug, card.toString());
-	appendLog(qf::core::Log::Level::Info, trUtf8("card: %1").arg(card.cardNumber()));
+	appendLog(qf::core::Log::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
@@ -721,14 +721,14 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 
 void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 {
-	appendLog(qf::core::Log::Level::Info, trUtf8("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
+	appendLog(qf::core::Log::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	punch.setmarking(punch_marking);
 	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_RACE) {
 		int run_id = thisPlugin()->findRunId(rec.cardNumber(), 0xEEEE);
 		if(run_id == 0)
-			appendLog(qf::core::Log::Level::Error, trUtf8("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
+			appendLog(qf::core::Log::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
 		else
 			punch.setrunid(run_id);
 	}

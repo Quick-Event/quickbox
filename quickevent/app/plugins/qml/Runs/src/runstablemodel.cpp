@@ -10,7 +10,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <QMimeData>
-
+/*
 static Runs::RunsPlugin *runsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -18,7 +18,7 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
-
+*/
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
 {
@@ -286,11 +286,13 @@ bool RunsTableModel::postRow(int row_no, bool throw_exc)
 		if(orig_msec == db_msec) {
 			bool ret = Super::postRow(row_no, throw_exc);
 			//transaction.commit();
+			/*
 			QVariant v = value(row_no, col_runs_finishTimeMs);
 			if(!v.isNull()) {
 				runsPlugin()->reloadTimesFromCard(run_id);
 				reloadRow(row_no);
 			}
+			*/
 			return ret;
 		}
 		else {
