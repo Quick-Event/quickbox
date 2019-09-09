@@ -132,7 +132,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="335"/>
         <source>Read station memory</source>
-        <translation>Zálohovat paměť vyčítací jednotky</translation>
+        <translation>Načíst paměť kontroly</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="362"/>
