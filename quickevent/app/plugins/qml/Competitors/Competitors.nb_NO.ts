@@ -182,78 +182,78 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="125"/>
+        <location filename="src/competitorswidget.cpp" line="129"/>
         <source>Edit on punch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="126"/>
+        <location filename="src/competitorswidget.cpp" line="130"/>
         <source>Edit or insert competitor on card insert into station.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="131"/>
+        <location filename="src/competitorswidget.cpp" line="135"/>
         <source>&amp;Print</source>
         <translation>&amp;Skriv ut</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="134"/>
+        <location filename="src/competitorswidget.cpp" line="138"/>
         <source>&amp;Cards</source>
         <translation>&amp;Kort</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="136"/>
+        <location filename="src/competitorswidget.cpp" line="140"/>
         <source>Cards to rent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="147"/>
+        <location filename="src/competitorswidget.cpp" line="151"/>
         <source>&amp;Stations</source>
         <translation>&amp;Stasjoner</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="149"/>
+        <location filename="src/competitorswidget.cpp" line="153"/>
         <source>Backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="173"/>
+        <location filename="src/competitorswidget.cpp" line="177"/>
         <source>--- all ---</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="211"/>
+        <location filename="src/competitorswidget.cpp" line="215"/>
         <source>Edit Competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="216"/>
+        <location filename="src/competitorswidget.cpp" line="220"/>
         <source>Save and &amp;next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="251"/>
+        <location filename="src/competitorswidget.cpp" line="255"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="264"/>
+        <location filename="src/competitorswidget.cpp" line="268"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="307"/>
+        <location filename="src/competitorswidget.cpp" line="311"/>
         <source>Set class in selected rows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="319"/>
+        <location filename="src/competitorswidget.cpp" line="323"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="320"/>
+        <location filename="src/competitorswidget.cpp" line="324"/>
         <source>Select class</source>
         <translation>Velg klasse</translation>
     </message>

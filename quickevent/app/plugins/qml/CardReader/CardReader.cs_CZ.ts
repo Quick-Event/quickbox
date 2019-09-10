@@ -556,6 +556,14 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     </message>
 </context>
 <context>
+    <name>services::MqttPunchesWidget</name>
+    <message>
+        <location filename="src/services/mqttpuncheswidget.ui" line="16"/>
+        <source>Form</source>
+        <translation type="unfinished">Formulář</translation>
+    </message>
+</context>
+<context>
     <name>services::RacomClientWidget</name>
     <message>
         <source>Form</source>

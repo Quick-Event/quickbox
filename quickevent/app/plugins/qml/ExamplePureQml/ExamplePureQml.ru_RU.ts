@@ -5,12 +5,14 @@
     <name>competitorsWithCardLent</name>
     <message>
         <location filename="reports/competitorsWithCardLent.qml" line="10"/>
-        <source>Competitors with card lent in stage %1</source>
+        <source>Competitors with rented cards in stage %1</source>
+        <oldsource>Competitors with card lent in stage %1</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="reports/competitorsWithCardLent.qml" line="77"/>
-        <source>Lent</source>
+        <source>Rent</source>
+        <oldsource>Lent</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

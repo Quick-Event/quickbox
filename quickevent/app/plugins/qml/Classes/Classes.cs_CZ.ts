@@ -642,22 +642,22 @@
         <translation>Nástroj pro losování</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="50"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="54"/>
         <source>&amp;Draw</source>
         <translation>&amp;Losovat</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="57"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="61"/>
         <source>E%1 Draw tool</source>
         <translation>E%1 Nástroj pro losování</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="63"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="67"/>
         <source>Save class start times</source>
         <translation>Uložit starty kategorií</translation>
     </message>
     <message>
-        <location filename="src/drawing/drawingganttwidget.cpp" line="64"/>
+        <location filename="src/drawing/drawingganttwidget.cpp" line="68"/>
         <source>All the user edited class start times will be overrided.
 Do you want to save your changes?</source>
         <translation>Startovní časy všech kategorií budou přepsány.

@@ -502,7 +502,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="297"/>
+        <location filename="src/runstablemodel.cpp" line="299"/>
         <source>Mid-air collision setting start time, reload table and try it again.</source>
         <translation type="unfinished"></translation>
     </message>
