@@ -30,6 +30,8 @@ include ( src/src.pri )
 RESOURCES += libquickeventgui.qrc
 
 TRANSLATIONS += \
-    libquickeventgui.cs_CZ.ts \
-    libquickeventgui.nb_NO.ts \
-    libquickeventgui.ru_RU.ts \
+	libquickeventgui.cs_CZ.ts \
+	libquickeventgui.pl_PL.ts \
+	libquickeventgui.nb_NO.ts \
+	libquickeventgui.ru_RU.ts \
+	libquickeventgui.nl_BE.ts \
