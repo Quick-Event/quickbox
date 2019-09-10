@@ -74,71 +74,71 @@
 <context>
     <name>LegsModel</name>
     <message>
-        <location filename="src/relaywidget.cpp" line="77"/>
+        <location filename="src/relaywidget.cpp" line="79"/>
         <source>Leg</source>
         <comment>relays.leg</comment>
         <translation>Úsek</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="77"/>
+        <location filename="src/relaywidget.cpp" line="79"/>
         <source>Leg</source>
         <translation>Úsek</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="78"/>
+        <location filename="src/relaywidget.cpp" line="80"/>
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="79"/>
+        <location filename="src/relaywidget.cpp" line="81"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="80"/>
+        <location filename="src/relaywidget.cpp" line="82"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="81"/>
+        <location filename="src/relaywidget.cpp" line="83"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="82"/>
+        <location filename="src/relaywidget.cpp" line="84"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="83"/>
+        <location filename="src/relaywidget.cpp" line="85"/>
         <source>NC</source>
         <comment>runs.notCompeting</comment>
         <translation>MS</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="83"/>
+        <location filename="src/relaywidget.cpp" line="85"/>
         <source>Not competing</source>
         <translation>Mimo soutěž</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="84"/>
+        <location filename="src/relaywidget.cpp" line="86"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="84"/>
+        <location filename="src/relaywidget.cpp" line="86"/>
         <source>Disqualified</source>
         <translation>Diskvalifikace</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="85"/>
+        <location filename="src/relaywidget.cpp" line="87"/>
         <source>E</source>
         <comment>runs.misPunch</comment>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="85"/>
+        <location filename="src/relaywidget.cpp" line="87"/>
         <source>Card mispunch</source>
         <translation>Chybné ražení</translation>
     </message>
@@ -152,7 +152,7 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="35"/>
-        <location filename="src/relaywidget.cpp" line="124"/>
+        <location filename="src/relaywidget.cpp" line="126"/>
         <source>Relay</source>
         <translation>Štafeta</translation>
     </message>
@@ -241,17 +241,17 @@
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="182"/>
+        <location filename="src/relaywidget.cpp" line="184"/>
         <source>Class should be entered.</source>
         <translation>Není zadána kategorie.</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="186"/>
+        <location filename="src/relaywidget.cpp" line="188"/>
         <source>Relay ID invalid.</source>
         <translation>Nesprávné ID štafety.</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="231"/>
+        <location filename="src/relaywidget.cpp" line="233"/>
         <source>Add leg</source>
         <translation>Přidat úsek</translation>
     </message>
