@@ -320,7 +320,7 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
 					width: "%"
 					textHAlign: Frame.AlignHCenter
-					text: qsTr("!!! CARD LENT !!!");
+					text: qsTr("!!! RENTED CARD !!!");
 				}
 			}
 			Para {
