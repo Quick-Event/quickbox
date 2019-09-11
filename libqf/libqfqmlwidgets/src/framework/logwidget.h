@@ -71,6 +71,8 @@ protected:
 	virtual void onDockWidgetVisibleChanged(bool visible);
 	void onVerticalScrollBarValueChanged();
 	Q_SLOT virtual void onSeverityTresholdIndexChanged(int index);
+
+	QAbstractButton* buttonClear();
 private:
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	Q_SLOT void on_btClearLog_clicked();

@@ -237,6 +237,11 @@ void LogWidget::onSeverityTresholdIndexChanged(int index)
 	emit severityTresholdChanged(static_cast<qf::core::Log::Level>(ui->severityTreshold->currentData().toInt()));
 }
 
+QAbstractButton *LogWidget::buttonClear()
+{
+	return ui->btClearLog;
+}
+
 void LogWidget::filterStringChanged(const QString &filter_string)
 {
 	m_filterModel->setFilterString(filter_string);
