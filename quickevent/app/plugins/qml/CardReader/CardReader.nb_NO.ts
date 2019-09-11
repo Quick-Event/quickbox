@@ -549,6 +549,14 @@ Read out after punch: {{ReadOutAfterPunch}}
     </message>
 </context>
 <context>
+    <name>services::MqttPunchesWidget</name>
+    <message>
+        <location filename="src/services/mqttpuncheswidget.ui" line="16"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>services::RacomClientWidget</name>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>

@@ -4,7 +4,7 @@
 <context>
     <name>ClassCellRenderer</name>
     <message>
-        <location filename="src/cellrenderer.cpp" line="73"/>
+        <location filename="src/cellrenderer.cpp" line="77"/>
         <source>length: {{length}} climb: {{climb}}</source>
         <translation>délka: {{length}} převýšení: {{climb}}</translation>
     </message>
@@ -40,7 +40,7 @@
 <context>
     <name>ResultsCellRenderer</name>
     <message>
-        <location filename="src/cellrenderer.cpp" line="215"/>
+        <location filename="src/cellrenderer.cpp" line="219"/>
         <source>DISQ</source>
         <translation>DISK</translation>
     </message>

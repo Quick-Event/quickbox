@@ -488,23 +488,27 @@
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
-        <source>XML3.0</source>
-        <translation>XML 3.0</translation>
+        <source>IOF XML 3.0</source>
+        <oldsource>XML3.0</oldsource>
+        <translation type="unfinished">XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
-        <source>Enable export XM3.0 file</source>
-        <translation>Zapnout export XML 3.0 souboru</translation>
+        <source>Enable export IOF XML 3.0 file</source>
+        <oldsource>Enable export XM3.0 file</oldsource>
+        <translation type="unfinished">Zapnout export XML 3.0 souboru</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="96"/>
-        <source>Export XML3.0</source>
-        <translation>Exportovat XML 3.0</translation>
+        <source>Export IOF XML 3.0</source>
+        <oldsource>Export XML3.0</oldsource>
+        <translation type="unfinished">Exportovat XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
-        <source>RaCom</source>
-        <translation>RACOM</translation>
+        <source>RACOM</source>
+        <oldsource>RaCom</oldsource>
+        <translation type="unfinished">RACOM</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="114"/>
@@ -520,8 +524,9 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="131"/>
         <location filename="src/services/emmaclientwidget.ui" line="160"/>
-        <source>Export finish</source>
-        <translation>Exportovat výsledky</translation>
+        <source>Export results</source>
+        <oldsource>Export finish</oldsource>
+        <translation type="unfinished">Exportovat výsledky</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="167"/>

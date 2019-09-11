@@ -26,8 +26,9 @@
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="323"/>
-        <source>!!! CARD LENT !!!</source>
-        <translation>!!! ZAPŮJČENÝ ČIP !!!</translation>
+        <source>!!! RENTED CARD !!!</source>
+        <oldsource>!!! CARD LENT !!!</oldsource>
+        <translation type="unfinished">!!! ZAPŮJČENÝ ČIP !!!</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="338"/>

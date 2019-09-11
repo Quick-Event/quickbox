@@ -4,92 +4,92 @@
 <context>
     <name>EventStatisticsModel</name>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="78"/>
+        <location filename="src/eventstatisticswidget.cpp" line="80"/>
         <source>Class</source>
         <translation>Klasse</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="79"/>
+        <location filename="src/eventstatisticswidget.cpp" line="81"/>
         <source>Maps</source>
         <translation>Kart</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="80"/>
+        <location filename="src/eventstatisticswidget.cpp" line="82"/>
         <source>Free maps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="81"/>
+        <location filename="src/eventstatisticswidget.cpp" line="83"/>
         <source>Runners</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="82"/>
+        <location filename="src/eventstatisticswidget.cpp" line="84"/>
         <source>Start first</source>
         <translation>Start først</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="83"/>
+        <location filename="src/eventstatisticswidget.cpp" line="85"/>
         <source>Start last</source>
         <translation>Start sist</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="84"/>
+        <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Time 1</source>
         <translation>Tid 1</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="84"/>
+        <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Finish time of first runner in current class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="85"/>
+        <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Time 3</source>
         <translation>Tid 3</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="85"/>
+        <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Finish time of third runner in current class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="86"/>
+        <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="86"/>
+        <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to class close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="87"/>
+        <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Finished</source>
         <translation>Fullført</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="88"/>
+        <location filename="src/eventstatisticswidget.cpp" line="90"/>
         <source>Not finished</source>
         <translation>Ikke fullført</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>New results</source>
         <translation>Nye resultater</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>Number of finished competitors not printed in results.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="90"/>
+        <location filename="src/eventstatisticswidget.cpp" line="92"/>
         <source>Not printed time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="91"/>
+        <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>Time since recent results printout.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>Valg</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="574"/>
+        <location filename="src/eventstatisticswidget.cpp" line="576"/>
         <source>Results by classes</source>
         <oldsource>Results by clases</oldsource>
         <translation type="unfinished"></translation>
@@ -502,7 +502,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="297"/>
+        <location filename="src/runstablemodel.cpp" line="299"/>
         <source>Mid-air collision setting start time, reload table and try it again.</source>
         <translation type="unfinished"></translation>
     </message>
