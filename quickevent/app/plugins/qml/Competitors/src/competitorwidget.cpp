@@ -47,6 +47,8 @@ private:
 
 class RunsModel : public quickevent::core::og::SqlTableModel
 {
+	Q_DECLARE_TR_FUNCTIONS(RunsModel)
+private:
 	using Super = quickevent::core::og::SqlTableModel;
 public:
 	RunsModel(QObject *parent = nullptr);

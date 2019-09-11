@@ -49,6 +49,8 @@ private:
 
 class LegsModel : public quickevent::core::og::SqlTableModel
 {
+	Q_DECLARE_TR_FUNCTIONS(LegsModel)
+private:
 	using Super = quickevent::core::og::SqlTableModel;
 public:
 	LegsModel(QObject *parent = nullptr);

@@ -46,6 +46,8 @@ static Runs::RunsPlugin* runsPlugin()
 //============================================================
 class EventStatisticsModel : public quickevent::core::og::SqlTableModel
 {
+	Q_DECLARE_TR_FUNCTIONS(EventStatisticsModel)
+private:
 	typedef quickevent::core::og::SqlTableModel Super;
 public:
 	enum Cols {
