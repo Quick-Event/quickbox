@@ -1521,6 +1521,7 @@ void TableView::createActions()
 	Action *a;
 	{
 		a = new Action(tr("Resize columns to contents"), this);
+		a->setIcon(style->icon("zoom_fitwidth"));
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
 		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resizeColumnsToContents");
@@ -1862,6 +1863,7 @@ void TableView::createActions()
 	a = new Action(this); a->setSeparator(true);
 	m_toolBarActions << a;
 	m_toolBarActions << action("reload");
+	m_toolBarActions << action("resizeColumnsToContents");
 	a = new Action(this); a->setSeparator(true);
 	m_toolBarActions << a;
 	//m_toolBarActions << action("sortAsc");
