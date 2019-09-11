@@ -1,6 +1,7 @@
 #include "logtablemodel.h"
 
 #include "../core/logdevice.h"
+#include "../core/log.h"
 
 #include <QColor>
 #include <QDateTime>
@@ -26,6 +27,13 @@ QVariant LogTableModel::Row::value(int col) const
 {
 	QVariant val = m_data.value(col);
 	return val;
+}
+
+void LogTableModel::Row::setValue(int col, const QVariant &v)
+{
+	while (m_data.count() <= col)
+		m_data.append(QVariant());
+	m_data[col] = v;
 }
 
 LogTableModel::LogTableModel(QObject *parent)
@@ -132,7 +140,14 @@ void LogTableModel::addLogEntry(const LogEntryMap &le)
 
 void LogTableModel::addLog(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
-	//printf("%p %s %s:%d -> %d\n", this, qPrintable(msg), qPrintable(file), line, (int)severity);
+	QString module = prettyFileName(file);
+	Row row(severity, category, module, line, msg, time_stamp, function, user_data);
+	addRow(row);
+}
+
+void LogTableModel::addRow(const LogTableModel::Row &row)
+{
+	//qfInfo() << "add row:" << row.value(Cols::Message);
 	static constexpr int ROWS_OVERLAP = 100;
 	if(rowCount() >= maximumRowCount() + ROWS_OVERLAP) {
 		if(direction() == Direction::AppendToBottom) {
@@ -146,16 +161,15 @@ void LogTableModel::addLog(qf::core::Log::Level severity, const QString &categor
 			endRemoveRows();
 		}
 	}
-	QString module = prettyFileName(file);
 	if(direction() == Direction::AppendToBottom) {
 		beginInsertRows(QModelIndex(), rowCount(), rowCount());
-		m_rows.append(Row(severity, category, module, line, msg, time_stamp, function, user_data));
+		m_rows.append(row);
 		endInsertRows();
 		emit logEntryInserted(rowCount() - 1);
 	}
 	else {
 		beginInsertRows(QModelIndex(), 0, 0);
-		m_rows.insert(0, Row(severity, category, module, line, msg, time_stamp, function, user_data));
+		m_rows.insert(0, row);
 		endInsertRows();
 		emit logEntryInserted(0);
 	}

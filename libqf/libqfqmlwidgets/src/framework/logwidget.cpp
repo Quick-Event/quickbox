@@ -168,7 +168,7 @@ LogWidget::LogWidget(QWidget *parent)
 	for (int i = static_cast<int>(qf::core::Log::Level::Error); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
 		ui->severityTreshold->addItem(qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i)), QVariant::fromValue(i));
 	}
-	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(onSeverityTresholdChanged(int)));
+	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(onSeverityTresholdIndexChanged(int)));
 	ui->severityTreshold->setCurrentIndex(static_cast<int>(qf::core::Log::Level::Info));
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
@@ -225,7 +225,12 @@ void LogWidget::setSeverityTreshold(core::Log::Level lvl)
 	ui->severityTreshold->setCurrentIndex(ci);
 }
 
-void LogWidget::onSeverityTresholdChanged(int index)
+core::Log::Level LogWidget::severityTreshold() const
+{
+	return static_cast<core::Log::Level>(ui->severityTreshold->currentData().toInt());
+}
+
+void LogWidget::onSeverityTresholdIndexChanged(int index)
 {
 	Q_UNUSED(index);
 	m_filterModel->setThreshold(ui->severityTreshold->currentData().toInt());
