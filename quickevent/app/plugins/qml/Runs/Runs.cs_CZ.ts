@@ -4,92 +4,92 @@
 <context>
     <name>EventStatisticsModel</name>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="78"/>
+        <location filename="src/eventstatisticswidget.cpp" line="80"/>
         <source>Class</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="79"/>
+        <location filename="src/eventstatisticswidget.cpp" line="81"/>
         <source>Maps</source>
         <translation>Map</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="80"/>
+        <location filename="src/eventstatisticswidget.cpp" line="82"/>
         <source>Free maps</source>
         <translation>Volné mapy</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="81"/>
+        <location filename="src/eventstatisticswidget.cpp" line="83"/>
         <source>Runners</source>
         <translation>Závodníků</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="82"/>
+        <location filename="src/eventstatisticswidget.cpp" line="84"/>
         <source>Start first</source>
         <translation>Start prvního</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="83"/>
+        <location filename="src/eventstatisticswidget.cpp" line="85"/>
         <source>Start last</source>
         <translation>Start posledního</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="84"/>
+        <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Time 1</source>
         <translation>Čas 1</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="84"/>
+        <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Finish time of first runner in current class</source>
         <translation>Cílový čas prvního závodníka v aktuální kategorii</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="85"/>
+        <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Time 3</source>
         <translation>Čas 3</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="85"/>
+        <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Finish time of third runner in current class</source>
         <translation>Cílový čas třetího závodníka v aktuální kategorii</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="86"/>
+        <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to close</source>
         <translation>Čas do uzavření</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="86"/>
+        <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to class close</source>
         <translation>Čas do uzavření kategorie</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="87"/>
+        <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Finished</source>
         <translation>Doběhlo</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="88"/>
+        <location filename="src/eventstatisticswidget.cpp" line="90"/>
         <source>Not finished</source>
         <translation>Nedoběhlo</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>New results</source>
         <translation>Nové výsledky</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>Number of finished competitors not printed in results.</source>
         <translation>Počet doběhlých závodníků, kteří ještě nejsou ve vytisknutých výsledcích.</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="90"/>
+        <location filename="src/eventstatisticswidget.cpp" line="92"/>
         <source>Not printed time</source>
         <translation>Čas od tisku</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="91"/>
+        <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>Time since recent results printout.</source>
         <translation>Čas od posledního tisku.</translation>
     </message>
@@ -180,7 +180,7 @@
         <translation>Možnosti</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="574"/>
+        <location filename="src/eventstatisticswidget.cpp" line="576"/>
         <source>Results by classes</source>
         <oldsource>Results by clases</oldsource>
         <translation>Výsledky po kategoriích</translation>
@@ -508,7 +508,7 @@
         <translation>Pokus o současné prohození startovního času ze dvou míst, obnovte tabulku a zkuste to znovu.</translation>
     </message>
     <message>
-        <location filename="src/runstablemodel.cpp" line="297"/>
+        <location filename="src/runstablemodel.cpp" line="299"/>
         <source>Mid-air collision setting start time, reload table and try it again.</source>
         <translation>Pokus o současnou změnu startovního času ze dvou míst, obnovte tabulku a zkuste to znovu.</translation>
     </message>

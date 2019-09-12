@@ -7,7 +7,7 @@ Report {
 	id: root
 	objectName: "root"
 
-	property string reportTitle: qsTr("Competitors with card lent in stage %1").arg(eventPlugin? eventPlugin.currentStageId: "?");
+	property string reportTitle: qsTr("Competitors with rented cards in stage %1").arg(eventPlugin? eventPlugin.currentStageId: "?");
 	property var eventPlugin
 
 	property SqlTableModel sqlModel: SqlTableModel {}
@@ -74,7 +74,7 @@ Report {
 						}
 						Cell {
 							width: 18
-							text: qsTr("Lent")
+							text: qsTr("Rent")
 						}
 						Cell {
 							width: 18

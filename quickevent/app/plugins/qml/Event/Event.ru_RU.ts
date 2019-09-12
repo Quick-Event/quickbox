@@ -482,22 +482,26 @@
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
-        <source>XML3.0</source>
+        <source>IOF XML 3.0</source>
+        <oldsource>XML3.0</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
-        <source>Enable export XM3.0 file</source>
+        <source>Enable export IOF XML 3.0 file</source>
+        <oldsource>Enable export XM3.0 file</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="96"/>
-        <source>Export XML3.0</source>
+        <source>Export IOF XML 3.0</source>
+        <oldsource>Export XML3.0</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
-        <source>RaCom</source>
+        <source>RACOM</source>
+        <oldsource>RaCom</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -514,7 +518,8 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="131"/>
         <location filename="src/services/emmaclientwidget.ui" line="160"/>
-        <source>Export finish</source>
+        <source>Export results</source>
+        <oldsource>Export finish</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

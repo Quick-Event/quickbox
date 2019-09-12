@@ -20,7 +20,7 @@
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="58"/>
-        <location filename="src/competitorwidget.cpp" line="145"/>
+        <location filename="src/competitorwidget.cpp" line="147"/>
         <source>Competitor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -80,17 +80,17 @@
         <translation>Kjøringer</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="178"/>
+        <location filename="src/competitorwidget.cpp" line="180"/>
         <source>E&amp;%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="349"/>
+        <location filename="src/competitorwidget.cpp" line="351"/>
         <source>Class should be entered.</source>
         <translation>Klasse skal skrives inn.</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="369"/>
+        <location filename="src/competitorwidget.cpp" line="371"/>
         <source>Duplicate SI inserted.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -182,78 +182,78 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="125"/>
+        <location filename="src/competitorswidget.cpp" line="129"/>
         <source>Edit on punch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="126"/>
+        <location filename="src/competitorswidget.cpp" line="130"/>
         <source>Edit or insert competitor on card insert into station.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="131"/>
+        <location filename="src/competitorswidget.cpp" line="135"/>
         <source>&amp;Print</source>
         <translation>&amp;Skriv ut</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="134"/>
+        <location filename="src/competitorswidget.cpp" line="138"/>
         <source>&amp;Cards</source>
         <translation>&amp;Kort</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="136"/>
+        <location filename="src/competitorswidget.cpp" line="140"/>
         <source>Cards to rent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="147"/>
+        <location filename="src/competitorswidget.cpp" line="151"/>
         <source>&amp;Stations</source>
         <translation>&amp;Stasjoner</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="149"/>
+        <location filename="src/competitorswidget.cpp" line="153"/>
         <source>Backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="173"/>
+        <location filename="src/competitorswidget.cpp" line="177"/>
         <source>--- all ---</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="211"/>
+        <location filename="src/competitorswidget.cpp" line="215"/>
         <source>Edit Competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="216"/>
+        <location filename="src/competitorswidget.cpp" line="220"/>
         <source>Save and &amp;next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="251"/>
+        <location filename="src/competitorswidget.cpp" line="255"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="264"/>
+        <location filename="src/competitorswidget.cpp" line="268"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="307"/>
+        <location filename="src/competitorswidget.cpp" line="311"/>
         <source>Set class in selected rows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="319"/>
+        <location filename="src/competitorswidget.cpp" line="323"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="320"/>
+        <location filename="src/competitorswidget.cpp" line="324"/>
         <source>Select class</source>
         <translation>Velg klasse</translation>
     </message>
@@ -297,114 +297,114 @@
 <context>
     <name>RunsModel</name>
     <message>
-        <location filename="src/competitorwidget.cpp" line="80"/>
+        <location filename="src/competitorwidget.cpp" line="82"/>
         <source>On</source>
         <comment>runs.isRunning</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="80"/>
+        <location filename="src/competitorwidget.cpp" line="82"/>
         <source>Is running</source>
         <translation>Kjører</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="81"/>
+        <location filename="src/competitorwidget.cpp" line="83"/>
         <source>Stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="82"/>
+        <location filename="src/competitorwidget.cpp" line="84"/>
         <source>Relay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="83"/>
+        <location filename="src/competitorwidget.cpp" line="85"/>
         <source>Class</source>
         <translation>Klasse</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="84"/>
+        <location filename="src/competitorwidget.cpp" line="86"/>
         <source>Leg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="85"/>
+        <location filename="src/competitorwidget.cpp" line="87"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="86"/>
+        <location filename="src/competitorwidget.cpp" line="88"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="87"/>
+        <location filename="src/competitorwidget.cpp" line="89"/>
         <source>Time</source>
         <translation>Tid</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="88"/>
+        <location filename="src/competitorwidget.cpp" line="90"/>
         <source>NC</source>
         <comment>runs.notCompeting</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="88"/>
+        <location filename="src/competitorwidget.cpp" line="90"/>
         <source>Not competing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="89"/>
+        <location filename="src/competitorwidget.cpp" line="91"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="89"/>
+        <location filename="src/competitorwidget.cpp" line="91"/>
         <source>Disqualified</source>
         <translation>Diskvalifisert</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="90"/>
+        <location filename="src/competitorwidget.cpp" line="92"/>
         <source>E</source>
         <comment>runs.misPunch</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="90"/>
+        <location filename="src/competitorwidget.cpp" line="92"/>
         <source>Card mispunch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="91"/>
+        <location filename="src/competitorwidget.cpp" line="93"/>
         <source>RR</source>
         <comment>runs.cardLent</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="91"/>
+        <location filename="src/competitorwidget.cpp" line="93"/>
         <source>Card rent requested</source>
         <translation>Kort ikke forespurt</translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="92"/>
+        <location filename="src/competitorwidget.cpp" line="94"/>
         <source>RT</source>
         <comment>cardInLentTable</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="92"/>
+        <location filename="src/competitorwidget.cpp" line="94"/>
         <source>Card in rent table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="93"/>
+        <location filename="src/competitorwidget.cpp" line="95"/>
         <source>R</source>
         <comment>runs.cardReturned</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorwidget.cpp" line="93"/>
+        <location filename="src/competitorwidget.cpp" line="95"/>
         <source>Card returned</source>
         <translation type="unfinished"></translation>
     </message>
