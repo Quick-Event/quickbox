@@ -490,25 +490,25 @@
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
         <source>IOF XML 3.0</source>
         <oldsource>XML3.0</oldsource>
-        <translation type="unfinished">XML 3.0</translation>
+        <translation>IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
         <source>Enable export IOF XML 3.0 file</source>
         <oldsource>Enable export XM3.0 file</oldsource>
-        <translation type="unfinished">Zapnout export XML 3.0 souboru</translation>
+        <translation>Zapnout export IOF XML 3.0 souboru</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="96"/>
         <source>Export IOF XML 3.0</source>
         <oldsource>Export XML3.0</oldsource>
-        <translation type="unfinished">Exportovat XML 3.0</translation>
+        <translation>Exportovat IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
         <source>RACOM</source>
         <oldsource>RaCom</oldsource>
-        <translation type="unfinished">RACOM</translation>
+        <translation>RACOM</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="114"/>
@@ -526,7 +526,7 @@
         <location filename="src/services/emmaclientwidget.ui" line="160"/>
         <source>Export results</source>
         <oldsource>Export finish</oldsource>
-        <translation type="unfinished">Exportovat výsledky</translation>
+        <translation>Exportovat výsledky</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="167"/>
