@@ -7,13 +7,13 @@
         <location filename="reports/competitorsWithCardLent.qml" line="10"/>
         <source>Competitors with rented cards in stage %1</source>
         <oldsource>Competitors with card lent in stage %1</oldsource>
-        <translation type="unfinished">Závodníci s půjčeným čipem v etapě %1</translation>
+        <translation>Závodníci s půjčeným čipem v etapě %1</translation>
     </message>
     <message>
         <location filename="reports/competitorsWithCardLent.qml" line="77"/>
         <source>Rent</source>
         <oldsource>Lent</oldsource>
-        <translation type="unfinished">Půjč</translation>
+        <translation>Půjč</translation>
     </message>
     <message>
         <location filename="reports/competitorsWithCardLent.qml" line="81"/>
