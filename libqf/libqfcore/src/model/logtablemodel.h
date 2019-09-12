@@ -42,7 +42,7 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 	QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
 
-	void clear();
+	virtual void clear();
 	Row rowAt(int row) const;
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
 	void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function = QString(), const QVariant &user_data = QVariant());
