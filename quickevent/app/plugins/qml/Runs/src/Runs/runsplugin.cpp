@@ -746,7 +746,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 					competitor_status = "Disqualified";
 			}
 			else if (row2.value("notCompeting").toBool())
-				competitor_status = "Inactive";
+				competitor_status = "NotCompeting";
 			if (competitor_status == STAT_OK) {
 				// The position in the result list for the person that the result belongs to.
 				// This element should only be present when the Status element is set to OK.
