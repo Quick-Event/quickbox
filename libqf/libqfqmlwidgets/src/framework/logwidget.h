@@ -60,6 +60,7 @@ public:
 	void setSeverityTreshold(qf::core::Log::Level lvl);
 	qf::core::Log::Level severityTreshold() const;
 protected:
+	QAbstractButton* clearButton();
 	QAbstractButton* tableMenuButton();
 	QTableView* tableView() const;
 
@@ -71,8 +72,6 @@ protected:
 	virtual void onDockWidgetVisibleChanged(bool visible);
 	void onVerticalScrollBarValueChanged();
 	Q_SLOT virtual void onSeverityTresholdIndexChanged(int index);
-
-	QAbstractButton* buttonClear();
 private:
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	Q_SLOT void on_btClearLog_clicked();
