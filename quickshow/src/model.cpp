@@ -53,6 +53,11 @@ void Model::reloadCategories()
 			where += " AND ";
 		where += "name NOT LIKE '" + cli->classesNotLike() + "'";
 	}
+	if(cli->classesIn_isset()) {
+		if(!where.isEmpty())
+			where += " AND ";
+		where += "name IN " + cli->classesIn();
+	}
 	QString qs = "SELECT id FROM classes";
 	if(!where.isEmpty())
 		qs += " WHERE " + where;
