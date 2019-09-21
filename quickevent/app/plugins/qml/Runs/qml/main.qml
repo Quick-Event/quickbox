@@ -188,7 +188,6 @@ RunsPlugin {
 		a.addActionInto(act_export_html_startList_clubs);
 		a = m_stlist.addMenuInto("xml", "&XML");
 		a.addActionInto(act_export_startList_iofxml3);
-		a = m_stlist.addMenuInto("txt", "&TXT");
 
 		//var m_results = a_export.addMenuInto("results", "&Results");
 		var m_results = root.partWidget.menuBar.actionForPath("export/results", false);
