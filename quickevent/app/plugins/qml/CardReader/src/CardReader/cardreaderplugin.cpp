@@ -334,21 +334,7 @@ int CardReaderPlugin::savePunchRecordToSql(const quickevent::core::si::PunchReco
 	}
 	return ret;
 }
-/*
-bool CardReaderPlugin::updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card)
-{
-	try {
-		qf::core::sql::Transaction transaction;
-		updateCheckedCardValuesSql(checked_card);
-		transaction.commit();
-		return true;
-	}
-	catch (const qf::core::Exception &e) {
-		qfError() << "Update runs & runlaps ERROR:" << e.message();
-	}
-	return false;
-}
-*/
+
 void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::CheckedCard &checked_card) noexcept(false)
 {
 	QF_TIME_SCOPE("updateCheckedCardValuesSql()");

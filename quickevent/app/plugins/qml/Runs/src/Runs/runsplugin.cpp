@@ -234,6 +234,8 @@ QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
 			}
 			else if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH) {
 				finish_code = cd;
+				// whatever code is imported, QE is using 999 everywhere
+				finish_code.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
 			}
 			else if(control_type.isEmpty()) {
 				codes << cd;
@@ -790,7 +792,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				qb.select2("runlaps", "*")
 					.from("runlaps")
 					.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
-					.where("runlaps.code!=999")
+					.where("runlaps.code<" QF_IARG(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE) )
 					//.where("runlaps.position >= 1")
 					.orderBy("runlaps.position");
 

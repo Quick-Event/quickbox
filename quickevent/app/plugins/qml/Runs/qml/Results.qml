@@ -284,7 +284,7 @@ QtObject {
 					.select2('runlaps', '*')
 					.from('runlaps')
 					.where("runlaps.runId={{run_id}}")
-					.where("runlaps.code!=999") // omit finish lap
+					.where("runlaps.code<999") // omit finish lap
 					.orderBy('runlaps.position');
 				reportModel.setQueryParameters({run_id: tt2.value(j, "runs.id")})
 				reportModel.reload();
