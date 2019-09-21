@@ -367,7 +367,7 @@ Report {
 							//console.info(i, loss);
 							overall_loss += loss;
 						}
-						return qsTr("current overall loss: +") + OGTime.msecToString_mmss(overall_loss);
+						return qsTr("time behind the leader: +") + OGTime.msecToString_mmss(overall_loss);
 					}
 				}
 			}
