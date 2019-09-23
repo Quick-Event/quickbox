@@ -16,7 +16,7 @@ class QFCORE_DECL_EXPORT  LogTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 private:
-	typedef QAbstractTableModel Super;
+	using Super = QAbstractTableModel;
 public:
 	enum Cols {Severity, Category, Message, TimeStamp, File, Line, Function, UserData, Count};
 	class QFCORE_DECL_EXPORT Row {

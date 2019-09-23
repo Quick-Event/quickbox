@@ -95,6 +95,8 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 	}
 	case Qt::EditRole:
 		return m_rows[index.row()].value(index.column());
+	case Qt::ToolTipRole:
+		return data(index, Qt::DisplayRole);
 	case Qt::ForegroundRole: {
 		auto severity = m_rows[index.row()].value(Cols::Severity).value<qf::core::Log::Level>();
 		switch (severity) {
