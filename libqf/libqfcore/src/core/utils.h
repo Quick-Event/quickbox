@@ -63,7 +63,7 @@
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: Q_SLOT bool set##upper_letter##name_rest(const ptype &val) { \
-		if(m_##lower_letter##name_rest != val) { \
+		if(!(m_##lower_letter##name_rest == val)) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 			return true; \
