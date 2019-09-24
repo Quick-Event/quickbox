@@ -50,7 +50,7 @@ public:
 
 	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
-	Q_SLOT void scrollToLastEntry();
+	Q_SLOT void checkScrollToLastEntry();
 
 	void clear();
 	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
@@ -76,6 +76,8 @@ private:
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	Q_SLOT void on_btClearLog_clicked();
 	Q_SLOT void on_btResizeColumns_clicked();
+
+	bool isAutoScroll();
 protected:
 	qf::core::model::LogTableModel* m_logTableModel = nullptr;
 	LogFilterProxyModel* m_filterModel = nullptr;
@@ -86,7 +88,6 @@ private:
 	QList<QAction*> m_logLevelActions;
 	QList<QMenu*> m_loggingCategoriesMenus;
 	bool m_columnsResized = false;
-	bool m_isAutoScroll = true;
 };
 
 

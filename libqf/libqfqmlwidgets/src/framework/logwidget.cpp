@@ -191,7 +191,7 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 		m_logTableModel = m;
 		m_filterModel->setSourceModel(m_logTableModel);
 		if(m_logTableModel) {
-			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::checkScrollToLastEntry, Qt::UniqueConnection);
 			QScrollBar *sb = ui->tableView->verticalScrollBar();
 			if(sb)
 				connect(sb, &QScrollBar::valueChanged, this, &LogWidget::onVerticalScrollBarValueChanged, Qt::UniqueConnection);
@@ -255,6 +255,22 @@ void LogWidget::on_btClearLog_clicked()
 void LogWidget::on_btResizeColumns_clicked()
 {
 	ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+}
+
+bool LogWidget::isAutoScroll()
+{
+	QScrollBar *sb = ui->tableView->verticalScrollBar();
+	if(sb) {
+		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
+			//fprintf(stderr, "BOTTOM scrollbar min: %d max: %d value: %d\n", sb->minimum(), sb->maximum(), sb->value());
+			return (sb->value() == sb->maximum());
+		}
+		else {
+			//fprintf(stderr, "TOP scrollbar min: %d max: %d value: %d\n", sb->minimum(), sb->maximum(), sb->value());
+			return (sb->value() == sb->minimum());
+		}
+	}
+	return false;
 }
 
 QAbstractButton *LogWidget::tableMenuButton()
@@ -338,33 +354,22 @@ void LogWidget::onDockWidgetVisibleChanged(bool visible)
 		if(!m_logCategoriesRegistered) {
 			registerLogCategories();
 		}
-		scrollToLastEntry();
+		checkScrollToLastEntry();
 	}
 }
 
 void LogWidget::onVerticalScrollBarValueChanged()
 {
-	QScrollBar *sb = ui->tableView->verticalScrollBar();
-	if(sb) {
-		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
-			m_isAutoScroll = (sb->value() == sb->maximum());
-			//fprintf(stderr, "BOTTOM scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
-		}
-		else {
-			m_isAutoScroll = (sb->value() == sb->minimum());
-			//fprintf(stderr, "TOP scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
-		}
-	}
 }
 
-void LogWidget::scrollToLastEntry()
+void LogWidget::checkScrollToLastEntry()
 {
 	if(isVisible()) {
 		if(!m_columnsResized) {
 			m_columnsResized = true;
 			ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 		}
-		if(m_isAutoScroll) {
+		if(isAutoScroll()) {
 			if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
 				ui->tableView->scrollToBottom();
 			}
