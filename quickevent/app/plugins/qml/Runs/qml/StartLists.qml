@@ -49,7 +49,7 @@ QtObject {
 			.from('competitors')
 			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
 			.where("competitors.classId={{class_id}}")
-			.orderBy('runs.startTimeMs');
+			.orderBy('runs.startTimeMs, competitors.lastName');
 		for(var i=0; i<tt.rowCount(); i++) {
 			var class_id = tt.value(i, "classes.id");
 			console.debug("class id:", class_id);
@@ -125,7 +125,7 @@ QtObject {
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
 			.join("competitors.classId", "classes.id")
 			.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
-			.orderBy('classes.name, runs.startTimeMs');
+			.orderBy('classes.name, runs.startTimeMs, competitors.lastName');
 		for(var i=0; i<tt.rowCount(); i++) {
 			var club_abbr = tt.value(i, "clubAbbr");
 			console.debug("club_abbr:", club_abbr);
