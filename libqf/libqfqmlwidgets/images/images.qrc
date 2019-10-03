@@ -46,5 +46,6 @@
 
 		<file>zoomin_cursor_bitmap.png</file>
 		<file>zoomin_cursor_mask.png</file>
+		<file>copy.svg</file>
 	</qresource>
 </RCC>

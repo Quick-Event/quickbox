@@ -83,6 +83,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="btCopyToClipboard">
+       <property name="toolTip">
+        <string>Copy to clipboard.</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/qf/qmlwidgets/images/copy.svg</normaloff>:/qf/qmlwidgets/images/copy.svg</iconset>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+C</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="btResizeColumns">
        <property name="toolTip">
         <string>Resize columns to fit content</string>
@@ -145,6 +159,7 @@
  </customwidgets>
  <resources>
   <include location="../../images/flat/flat.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

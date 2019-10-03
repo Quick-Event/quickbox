@@ -26,7 +26,7 @@ namespace Ui {
 class LogWidget;
 }
 
-class LogWidgetTableView : public QTableView
+class QFQMLWIDGETS_DECL_EXPORT LogWidgetTableView : public QTableView
 {
 	Q_OBJECT
 private:
@@ -76,6 +76,7 @@ private:
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	Q_SLOT void on_btClearLog_clicked();
 	Q_SLOT void on_btResizeColumns_clicked();
+	Q_SLOT void on_btCopyToClipboard_clicked();
 
 	bool isAutoScroll();
 protected:
