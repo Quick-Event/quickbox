@@ -32,7 +32,7 @@ class QFQMLWIDGETS_DECL_EXPORT LogWidgetTableView : public QTableView
 private:
 	typedef QTableView Super;
 public:
-        LogWidgetTableView(QWidget *parent);
+	LogWidgetTableView(QWidget *parent);
 
 	void copy();
 protected:
