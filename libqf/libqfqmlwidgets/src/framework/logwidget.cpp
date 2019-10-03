@@ -257,6 +257,11 @@ void LogWidget::on_btResizeColumns_clicked()
 	ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 }
 
+void LogWidget::on_btCopyToClipboard_clicked()
+{
+	ui->tableView->copy();
+}
+
 bool LogWidget::isAutoScroll()
 {
 	QScrollBar *sb = ui->tableView->verticalScrollBar();
