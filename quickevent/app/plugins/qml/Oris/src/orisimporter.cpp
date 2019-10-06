@@ -352,7 +352,7 @@ void OrisImporter::importEvent(int event_id)
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 		try {
 			saveJsonBackup("Event", jsd);
-			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+			QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();
 			int stage_count = data.value(QStringLiteral("Stages")).toString().toInt();
 			if(!stage_count)
 				stage_count = 1;
@@ -465,7 +465,7 @@ const char KEY_ORIG_RUNS[] = "origRuns";
 
 void OrisImporter::importEventOrisEntries(int event_id)
 {
-	if(eventPlugin()->eventConfig()->isRelays()) {
+	if(eventPlugin()->eventConfig()->isRelays() || eventPlugin()->eventConfig()->isTeams()) {
 		syncRelaysEntries(event_id);
 		return;
 	}
@@ -490,7 +490,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 			QJsonDocument jsd2 = load_offline_json(json_fn);
 			if(jsd2.isNull())
 				jsd2 = jsd;
-			QJsonObject data = jsd2.object().value(QStringLiteral("Data")).toObject();;
+			QJsonObject data = jsd2.object().value(QStringLiteral("Data")).toObject();
 			int items_processed = 0;
 			int items_count = 0;
 			for(auto it = data.constBegin(); it != data.constEnd(); ++it) {
@@ -752,7 +752,7 @@ void OrisImporter::importRegistrations()
 	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Registrations", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();
 		// import clubs
 		int items_processed = 0;
 		int items_count = 0;
@@ -813,7 +813,7 @@ void OrisImporter::importClubs()
 	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Clubs", jsd);
 		qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();;
+		QJsonObject data = jsd.object().value(QStringLiteral("Data")).toObject();
 		// import clubs
 		int items_processed = 0;
 		int items_count = 0;

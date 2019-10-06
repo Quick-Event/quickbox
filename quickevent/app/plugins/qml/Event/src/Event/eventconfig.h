@@ -21,6 +21,7 @@ public:
 	enum class Sport {OB = 1, LOB, MTBO, TRAIL};
 	enum class Discipline {Classic = 1, ShortRace, Sprint,
 						   Relays = 5,
+						   Teams = 6,
 						   NightRace = 9,
 						  };
 public:
@@ -43,6 +44,7 @@ public slots:
 	int handicapLength() const;
 	bool isHandicap() const {return handicapLength() > 0;}
 	bool isRelays() const {return disciplineId() == (int)Discipline::Relays;}
+	bool isTeams() const {return disciplineId() == (int)Discipline::Teams;}
 	QString eventName() const;
 	QString eventPlace() const;
 	QString director() const;
