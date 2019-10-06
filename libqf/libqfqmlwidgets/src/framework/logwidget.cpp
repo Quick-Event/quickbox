@@ -1,5 +1,6 @@
 #include "logwidget.h"
 #include "ui_logwidget.h"
+#include "../tableview.h"
 
 #include "../style.h"
 
@@ -27,14 +28,13 @@ LogWidgetTableView::LogWidgetTableView(QWidget *parent)
 {
 	auto *style = qf::qmlwidgets::Style::instance();
 	{
-		QAction *a;
-		a = new QAction(tr("Copy"));
-		a->setObjectName("LogWidgetTableView copy action");
-		a->setIcon(style->icon("copy"));
-		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
-		connect(a, &QAction::triggered, this, &LogWidgetTableView::copy);
-		addAction(a);
+		m_copySelectionToClipboardAction = new QAction(tr("Copy"));
+		m_copySelectionToClipboardAction->setObjectName("LogWidgetTableView copy action");
+		m_copySelectionToClipboardAction->setIcon(style->icon("copy"));
+		m_copySelectionToClipboardAction->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
+		m_copySelectionToClipboardAction->setShortcutContext(Qt::WidgetShortcut);
+		connect(m_copySelectionToClipboardAction, &QAction::triggered, this, &LogWidgetTableView::copy);
+		addAction(m_copySelectionToClipboardAction);
 	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -42,75 +42,9 @@ LogWidgetTableView::LogWidgetTableView(QWidget *parent)
 void LogWidgetTableView::copy()
 {
 	qfLogFuncFrame();
-	auto *m = model();
-	if(!m)
-		return;
-	int n = 0;
-	QString rows;
-	QItemSelection sel = selectionModel()->selection();
-	foreach(const QItemSelectionRange &sel1, sel) {
-		if(sel1.isValid()) {
-			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
-				QString cells;
-				for(int col=sel1.left(); col<=sel1.right(); col++) {
-					QModelIndex ix = m->index(row, col);
-					QString s;
-					s = ix.data(Qt::DisplayRole).toString();
-					static constexpr bool replace_escapes = true;
-					if(replace_escapes) {
-						s.replace('\r', QStringLiteral("\\r"));
-						s.replace('\n', QStringLiteral("\\n"));
-						s.replace('\t', QStringLiteral("\\t"));
-					}
-					if(col > sel1.left())
-						cells += '\t';
-					cells += s;
-				}
-				if(n++ > 0)
-					rows += '\n';
-				rows += cells;
-			}
-		}
-	}
-	if(!rows.isEmpty()) {
-		qfDebug() << "\tSetting clipboard:" << rows;
-		QClipboard *clipboard = QApplication::clipboard();
-		clipboard->setText(rows);
-	}
+	qf::qmlwidgets::TableView::copySelectionToClipboard(this);
 }
-/*
-void LogWidgetTableView::contextMenuEvent(QContextMenuEvent *event)
-{
-	auto *style = qf::qmlwidgets::Style::instance();
-	QAction a_copy(tr("Copy"));
-	a_copy.setObjectName("LogWidgetTableView copy action");
-	a_copy.setIcon(style->icon("copy"));
-	//a_copy.setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-	//a_copy.setShortcutContext(Qt::WidgetShortcut);
-	//connect(&a_copy, &QAction::triggered, this, &LogWidgetTableView::copy);
 
-	QList<QAction*> lst{&a_copy};
-	lst << &a_copy;
-	QAction *a = QMenu::exec(lst, viewport()->mapToGlobal(event->pos()));
-	if(a == &a_copy) {
-		copy();
-	}
-}
-*/
-/*
-void LogWidgetTableView::keyPressEvent(QKeyEvent *e)
-{
-	qfLogFuncFrame() << "key:" << e->key() << "modifiers:" << e->modifiers();
-	if(e->modifiers() == Qt::ControlModifier) {
-		if(e->key() == Qt::Key_C) {
-			copy();
-			e->accept();
-			return;
-		}
-	}
-	Super::keyPressEvent(e);
-}
-*/
 class LogFilterProxyModel : public QSortFilterProxyModel
 {
 	typedef QSortFilterProxyModel Super;
@@ -160,6 +94,8 @@ LogWidget::LogWidget(QWidget *parent)
 {
 	ui->setupUi(this);
 	//setPersistentSettingsId();
+	ui->btCopyToClipboard->setDefaultAction(ui->tableView->copySelectionToClipboardAction());
+
 	{
 		QAction *a = new QAction(tr("Maximal log length"), this);
 		connect(a, &QAction::triggered, [this]() {
@@ -252,7 +188,7 @@ core::Log::Level LogWidget::severityTreshold() const
 
 void LogWidget::onSeverityTresholdIndexChanged(int index)
 {
-	Q_UNUSED(index);
+	Q_UNUSED(index)
 	m_filterModel->setThreshold(ui->severityTreshold->currentData().toInt());
 	emit severityTresholdChanged(static_cast<qf::core::Log::Level>(ui->severityTreshold->currentData().toInt()));
 }
@@ -275,11 +211,6 @@ void LogWidget::on_btClearLog_clicked()
 void LogWidget::on_btResizeColumns_clicked()
 {
 	ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
-}
-
-void LogWidget::on_btCopyToClipboard_clicked()
-{
-	ui->tableView->copy();
 }
 
 bool LogWidget::isAutoScroll()

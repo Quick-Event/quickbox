@@ -156,6 +156,8 @@ public:
 
 	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
 
+	static void copySelectionToClipboard(QTableView *table_view);
+
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 protected:

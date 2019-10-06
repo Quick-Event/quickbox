@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>445</width>
-    <height>308</height>
+    <width>482</width>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -91,8 +91,8 @@
         <iconset resource="../../images/images.qrc">
          <normaloff>:/qf/qmlwidgets/images/copy.svg</normaloff>:/qf/qmlwidgets/images/copy.svg</iconset>
        </property>
-       <property name="shortcut">
-        <string>Ctrl+C</string>
+       <property name="autoRaise">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -137,8 +137,8 @@
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
      <property name="gridStyle">
       <enum>Qt::NoPen</enum>
@@ -158,8 +158,8 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../images/flat/flat.qrc"/>
   <include location="../../images/images.qrc"/>
+  <include location="../../images/flat/flat.qrc"/>
  </resources>
  <connections/>
 </ui>

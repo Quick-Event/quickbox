@@ -35,9 +35,9 @@ public:
 	LogWidgetTableView(QWidget *parent);
 
 	void copy();
-protected:
-	//void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
-	//void contextMenuEvent(QContextMenuEvent *event) override;
+	QAction *copySelectionToClipboardAction() const { return m_copySelectionToClipboardAction; }
+private:
+	QAction *m_copySelectionToClipboardAction;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::DockableWidget
@@ -77,7 +77,6 @@ private:
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	Q_SLOT void on_btClearLog_clicked();
 	Q_SLOT void on_btResizeColumns_clicked();
-	Q_SLOT void on_btCopyToClipboard_clicked();
 
 	bool isAutoScroll();
 protected:
