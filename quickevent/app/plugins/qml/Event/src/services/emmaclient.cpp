@@ -162,6 +162,7 @@ void EmmaClient::onDbEventNotify(const QString &domain, int connection_id, const
 
 void EmmaClient::onCardChecked(const QVariantMap &data)
 {
+	Q_UNUSED(data)
 /*  regenerate file every X second
 	if(status() != Status::Running)
 		return;
