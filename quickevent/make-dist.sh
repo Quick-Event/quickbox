@@ -24,13 +24,13 @@ if [ -z $USE_SYSTEM_QT ]; then
     echo using $QT_DIR
     QT_LIB_DIR=$QT_DIR/lib
     QMAKE=$QT_DIR/bin/qmake
-    DISTRO_NAME=quickevent-linux64-$DISTRO_VER
+    DISTRO_NAME=quickevent-$DISTRO_VER-linux64
 else
     echo using system QT
     QT_DIR=/usr/lib/i386-linux-gnu/qt5
     QT_LIB_DIR=/usr/lib/i386-linux-gnu
     QMAKE=/usr/bin/qmake
-    DISTRO_NAME=quickevent-linux32-$DISTRO_VER
+    DISTRO_NAME=quickevent-$DISTRO_VER-linux32
 fi
 
 $QMAKE -v
