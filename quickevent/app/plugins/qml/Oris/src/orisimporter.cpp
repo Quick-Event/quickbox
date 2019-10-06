@@ -465,7 +465,7 @@ const char KEY_ORIG_RUNS[] = "origRuns";
 
 void OrisImporter::importEventOrisEntries(int event_id)
 {
-	if(eventPlugin()->eventConfig()->isRelays() || eventPlugin()->eventConfig()->isTeams()) {
+	if(eventPlugin()->eventConfig()->isRelays()) {
 		syncRelaysEntries(event_id);
 		return;
 	}

@@ -43,8 +43,7 @@ public slots:
 	int importId() const;
 	int handicapLength() const;
 	bool isHandicap() const {return handicapLength() > 0;}
-	bool isRelays() const {return disciplineId() == (int)Discipline::Relays;}
-	bool isTeams() const {return disciplineId() == (int)Discipline::Teams;}
+	bool isRelays() const {return disciplineId() == (int)Discipline::Relays || disciplineId() == (int)Discipline::Teams;}
 	QString eventName() const;
 	QString eventPlace() const;
 	QString director() const;

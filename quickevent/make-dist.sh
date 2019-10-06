@@ -1,6 +1,7 @@
 #!/bin/sh
 
 #DISTRO_VER=1.0.2
+APP_IMAGE_TOOL=/home/fanda/programs/appimagetool-x86_64.AppImage
 
 if [ $1 ]; then
 	DISTRO_VER=$1
@@ -19,7 +20,7 @@ WORK_DIR=/home/fanda/t/_distro
 #USE_SYSTEM_QT=1
 
 if [ -z $USE_SYSTEM_QT ]; then
-    QT_DIR=/home/fanda/programs/qt5/5.12.3/gcc_64
+    QT_DIR=/home/fanda/programs/qt5/5.13.0/gcc_64
     echo using $QT_DIR
     QT_LIB_DIR=$QT_DIR/lib
     QMAKE=$QT_DIR/bin/qmake
@@ -97,3 +98,6 @@ rsync -av --exclude '*.debug' $QT_DIR/qml/QtQuick/Window.2/ $DIST_BIN_DIR/QtQuic
 rsync -av --exclude '*.debug' $QT_DIR/qml/QtQuick.2/ $DIST_BIN_DIR/QtQuick.2
 
 tar -cvzf $WORK_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
+
+rsync -av $SRC_DIR/quickevent/distro/QuickEvent.AppDir/* $DIST_DIR/
+ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $WORK_DIR/quickevent-${DISTRO_VER}-x86_64.AppImage
