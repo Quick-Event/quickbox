@@ -1551,6 +1551,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Copy"), this);
+		a->setObjectName("TableView_Copy");
 		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
 		//a->setShortcutContext(Qt::WidgetShortcut);

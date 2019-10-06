@@ -36,7 +36,8 @@ public:
 
 	void copy();
 protected:
-	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+	//void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+	//void contextMenuEvent(QContextMenuEvent *event) override;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::DockableWidget

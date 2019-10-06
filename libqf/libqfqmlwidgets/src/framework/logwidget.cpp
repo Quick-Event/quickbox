@@ -26,9 +26,10 @@ LogWidgetTableView::LogWidgetTableView(QWidget *parent)
 	: Super(parent)
 {
 	auto *style = qf::qmlwidgets::Style::instance();
-	QAction *a;
 	{
-		a = new QAction(tr("Copy"), this);
+		QAction *a;
+		a = new QAction(tr("Copy"));
+		a->setObjectName("LogWidgetTableView copy action");
 		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
 		a->setShortcutContext(Qt::WidgetShortcut);
@@ -77,7 +78,26 @@ void LogWidgetTableView::copy()
 		clipboard->setText(rows);
 	}
 }
+/*
+void LogWidgetTableView::contextMenuEvent(QContextMenuEvent *event)
+{
+	auto *style = qf::qmlwidgets::Style::instance();
+	QAction a_copy(tr("Copy"));
+	a_copy.setObjectName("LogWidgetTableView copy action");
+	a_copy.setIcon(style->icon("copy"));
+	//a_copy.setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
+	//a_copy.setShortcutContext(Qt::WidgetShortcut);
+	//connect(&a_copy, &QAction::triggered, this, &LogWidgetTableView::copy);
 
+	QList<QAction*> lst{&a_copy};
+	lst << &a_copy;
+	QAction *a = QMenu::exec(lst, viewport()->mapToGlobal(event->pos()));
+	if(a == &a_copy) {
+		copy();
+	}
+}
+*/
+/*
 void LogWidgetTableView::keyPressEvent(QKeyEvent *e)
 {
 	qfLogFuncFrame() << "key:" << e->key() << "modifiers:" << e->modifiers();
@@ -90,7 +110,7 @@ void LogWidgetTableView::keyPressEvent(QKeyEvent *e)
 	}
 	Super::keyPressEvent(e);
 }
-
+*/
 class LogFilterProxyModel : public QSortFilterProxyModel
 {
 	typedef QSortFilterProxyModel Super;
