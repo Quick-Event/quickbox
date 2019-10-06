@@ -236,7 +236,7 @@ void TableView::refreshActions()
 	//action("postRow")->setVisible(true);
 	//action("revertRow")->setVisible(true);
 
-	bool is_insert_rows_allowed = m_proxyModel->isIdle();
+	bool is_insert_rows_allowed = m_proxyModel->rowFilterString().isEmpty();
 	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
 	is_edit_rows_allowed = is_edit_rows_allowed && !isReadOnly();
