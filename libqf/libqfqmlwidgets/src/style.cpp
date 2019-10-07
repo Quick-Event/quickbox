@@ -15,12 +15,13 @@ static const char *PROPERTY_STYLE_INSTANCE = "qf::qmlwidget::Style::instance";
 Style::Style(QObject *parent)
 	: QObject(parent)
 {
-	m_defaultIconSize = QSize(16, 16);
+	m_defaultIconSize = QSize(32, 32);
 	//setDefaultIconSize(QSize(16, 16));
 }
 
 QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)
 {
+	qfLogFuncFrame() << name << pixmap_size;
 	QPixmap ret;
 	QSize px_sz = pixmap_size;
 	if(px_sz.isEmpty())
@@ -35,7 +36,9 @@ QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)
 			svg_file_name = svg_file_name + ".svg";
 		}
 		QFile f(svg_file_name);
+		qfDebug() << "opening:" << svg_file_name << "...";
 		if(f.open(QFile::ReadOnly)) {
+			qfDebug() << "OK";
 			QByteArray ba = f.readAll();
 			QSvgRenderer rnd(ba);
 			ret = QPixmap(px_sz);
@@ -52,7 +55,7 @@ QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)
 				int new_w = px_sz.height() * svg_sz.width() / svg_sz.height();
 				int pos = (px_sz.width() - new_w) / 2;
 				r = QRect(pos, 0, new_w - pos, px_sz.height());
-			};
+			}
 			rnd.render(&painter, r);
 		}
 	}
@@ -61,6 +64,7 @@ QPixmap Style::pixmapFromSvg(const QString &name, const QSize &pixmap_size)
 
 QPixmap Style::pixmap(const QString &name, const QSize &pixmap_size)
 {
+	qfLogFuncFrame() << name << pixmap_size;
 	QSize sz = pixmap_size;
 	if(sz.isEmpty())
 		sz = defaultIconSize();

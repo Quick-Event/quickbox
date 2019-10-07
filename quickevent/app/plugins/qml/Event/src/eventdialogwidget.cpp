@@ -20,12 +20,12 @@ EventDialogWidget::~EventDialogWidget()
 
 void EventDialogWidget::setEventId(const QString &event_id)
 {
-	ui->ed_eventId->setText(event_id);
+	ui->ed_eventId->setText(event_id.toLower());
 }
 
 QString EventDialogWidget::eventId() const
 {
-	return ui->ed_eventId->text();
+	return ui->ed_eventId->text().toLower();
 }
 
 void EventDialogWidget::setEventIdEditable(bool b)

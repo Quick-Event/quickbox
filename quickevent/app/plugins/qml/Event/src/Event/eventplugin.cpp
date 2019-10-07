@@ -301,6 +301,8 @@ void EventPlugin::onInstalled()
 	connect(m_actImportEvent, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
 
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
+	connect(this, &EventPlugin::eventNameChanged, this, &EventPlugin::updateWindowTitle);
+	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
@@ -365,6 +367,13 @@ void EventPlugin::onInstalled()
 		//a->setShortcut(QKeySequence("ctrl+shift+R"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
+}
+
+void EventPlugin::updateWindowTitle()
+{
+	QString title = QStringLiteral("%1 E%2").arg(eventName()).arg(currentStageId());
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	fwk->setWindowTitle(title);
 }
 
 void EventPlugin::onCbxStageActivated(int ix)

@@ -143,6 +143,46 @@ QAbstractProxyModel* TableView::lastProxyModel() const
 	return ret;
 }
 
+void TableView::copySelectionToClipboard(QTableView *table_view)
+{
+	qfLogFuncFrame();
+	auto *m = table_view->model();
+	if(!m)
+		return;
+	int n = 0;
+	QString rows;
+	QItemSelection sel = table_view->selectionModel()->selection();
+	foreach(const QItemSelectionRange &sel1, sel) {
+		if(sel1.isValid()) {
+			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
+				QString cells;
+				for(int col=sel1.left(); col<=sel1.right(); col++) {
+					QModelIndex ix = m->index(row, col);
+					QString s;
+					s = ix.data(Qt::DisplayRole).toString();
+					static constexpr bool replace_escapes = true;
+					if(replace_escapes) {
+						s.replace('\r', QStringLiteral("\\r"));
+						s.replace('\n', QStringLiteral("\\n"));
+						s.replace('\t', QStringLiteral("\\t"));
+					}
+					if(col > sel1.left())
+						cells += '\t';
+					cells += s;
+				}
+				if(n++ > 0)
+					rows += '\n';
+				rows += cells;
+			}
+		}
+	}
+	if(!rows.isEmpty()) {
+		//qfInfo() << "\tSetting clipboard:" << rows;
+		QClipboard *clipboard = QApplication::clipboard();
+		clipboard->setText(rows);
+	}
+}
+
 void TableView::setModel(QAbstractItemModel *model)
 {
 	Super::setModel(model);
@@ -196,7 +236,7 @@ void TableView::refreshActions()
 	//action("postRow")->setVisible(true);
 	//action("revertRow")->setVisible(true);
 
-	bool is_insert_rows_allowed = m_proxyModel->isIdle();
+	bool is_insert_rows_allowed = m_proxyModel->rowFilterString().isEmpty();
 	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
 	is_edit_rows_allowed = is_edit_rows_allowed && !isReadOnly();
@@ -1551,6 +1591,7 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Copy"), this);
+		a->setObjectName("TableView_Copy");
 		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
 		//a->setShortcutContext(Qt::WidgetShortcut);

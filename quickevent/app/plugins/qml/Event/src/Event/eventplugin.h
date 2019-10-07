@@ -114,6 +114,8 @@ private:
 
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 
+	void updateWindowTitle();
+
 	//bool runSqlScript(qf::core::sql::Query &q, const QStringList &sql_lines);
 	void repairStageStarts(const qf::core::sql::Connection &from_conn, const qf::core::sql::Connection &to_conn);
 

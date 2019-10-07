@@ -26,7 +26,7 @@ namespace Ui {
 class LogWidget;
 }
 
-class LogWidgetTableView : public QTableView
+class QFQMLWIDGETS_DECL_EXPORT LogWidgetTableView : public QTableView
 {
 	Q_OBJECT
 private:
@@ -35,8 +35,9 @@ public:
 	LogWidgetTableView(QWidget *parent);
 
 	void copy();
-protected:
-	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+	QAction *copySelectionToClipboardAction() const { return m_copySelectionToClipboardAction; }
+private:
+	QAction *m_copySelectionToClipboardAction;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::DockableWidget
