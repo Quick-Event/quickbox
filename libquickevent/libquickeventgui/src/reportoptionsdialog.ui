@@ -119,6 +119,38 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="grpResultOptions">
+     <property name="title">
+      <string>Result options</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Number of places in each class</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="edNumPlaces">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+        <property name="value">
+         <number>9999</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="grpStartersOptions">
      <property name="title">
       <string>Starters options</string>
@@ -406,6 +438,7 @@
   <tabstop>btClassNames</tabstop>
   <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
+  <tabstop>edNumPlaces</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>
   <tabstop>chkStartOpts_PrintVacants</tabstop>
   <tabstop>chkStartOpts_PrintStartNumbers</tabstop>

@@ -32,6 +32,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->grpStartOptions->setVisible(false);
 	ui->grpStartersOptions->setVisible(false);
 	ui->grpStages->setVisible(false);
+	ui->grpResultOptions->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -49,6 +50,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::stagesCountChanged, ui->edStagesCount, &QSpinBox::setValue);
 	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
+	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
 
 	//connect(this, &ReportOptionsDialog::classFilterVisibleChanged, [this]() {
 	//	qfInfo() << __FUNCTION__;
@@ -240,6 +242,11 @@ void ReportOptionsDialog::savePersistentSettings()
 	qfInfo() << persistentSettingsPath() << opts;
 	QSettings settings;
 	settings.setValue(persistentSettingsPath(), opts);
+}
+
+int ReportOptionsDialog::resultNumPlaces() const
+{
+	return ui->edNumPlaces->value();
 }
 
 /*

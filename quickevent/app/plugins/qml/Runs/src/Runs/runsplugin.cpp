@@ -395,8 +395,10 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "id, registration, licence")
+			.select2("clubs","name")
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 			.from("competitors")
+			.join("LEFT JOIN clubs ON substr(competitors.registration, 1, 3) = clubs.abbr")
 			.where("competitors.classId=" QF_IARG(class_id));
 	for (int stage_id = 1; stage_id <= stages_count; ++stage_id) {
 		//qb.select("0 AS runId" QF_IARG(stage_id));

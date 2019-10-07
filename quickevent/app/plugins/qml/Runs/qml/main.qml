@@ -95,6 +95,13 @@ RunsPlugin {
 			}
 		},
 		Action {
+			id: act_print_results_currentStageWide
+			text: qsTr('Current stage for speaker')
+			onTriggered: {
+				results.printCurrentStageWide()
+			}
+		},
+		Action {
 			id: act_print_results_nStages
 			text: qsTr('&After n stages')
 			onTriggered: {
@@ -102,10 +109,10 @@ RunsPlugin {
 			}
 		},
 		Action {
-			id: act_print_results_currentStageFirstN
-			text: qsTr('First &n competitors')
+			id: act_print_results_nStagesWide
+			text: qsTr('After n stages for speaker')
 			onTriggered: {
-				results.printCurrentStageFirstN()
+				results.printNStagesWide()
 			}
 		},
 		Action {
@@ -170,11 +177,12 @@ RunsPlugin {
 
 		a = a_print.addMenuInto("results", qsTr("&Results"));
 		a.addActionInto(act_print_results_currentStage);
-		a.addActionInto(act_print_results_currentStageFirstN);
+		a.addActionInto(act_print_results_currentStageWide);
 		a.addSeparatorInto("results_awards_separator");
 		a.addActionInto(act_print_results_currentStageAwards);
 		a.addSeparatorInto("results_nstages_separator");
 		a.addActionInto(act_print_results_nStages);
+		a.addActionInto(act_print_results_nStagesWide);
 		a.addActionInto(act_print_results_NStageAwards);
 
 		var a_sep = a_print.addSeparatorInto();
