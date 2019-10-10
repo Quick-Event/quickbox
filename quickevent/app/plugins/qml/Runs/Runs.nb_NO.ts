@@ -747,7 +747,7 @@
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="228"/>
-        <source>Show off race competitors</source>
+        <source>Include competitors who are not running in this stage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
