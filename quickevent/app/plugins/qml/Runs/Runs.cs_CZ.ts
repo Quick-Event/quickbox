@@ -41,7 +41,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Finish time of first runner in current class</source>
-        <translation>Cílový čas prvního závodníka v aktuální kategorii</translation>
+        <translation>Cílový čas prvního závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
@@ -51,7 +51,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Finish time of third runner in current class</source>
-        <translation>Cílový čas třetího závodníka v aktuální kategorii</translation>
+        <translation>Cílový čas třetího závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
@@ -61,7 +61,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to class close</source>
-        <translation>Čas do uzavření kategorie</translation>
+        <translation>Čas do okamžiku, kdy by nově doběhlí závodníci neměli ovlivnit pořadí na prvních třech místech.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
@@ -91,7 +91,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>Time since recent results printout.</source>
-        <translation>Čas od posledního tisku.</translation>
+        <translation>Čas od posledního tisku výsledků dané kategorie.</translation>
     </message>
 </context>
 <context>
