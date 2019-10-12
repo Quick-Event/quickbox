@@ -35,7 +35,7 @@
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
-        <source>1st time</source>
+        <source>Time 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -45,7 +45,7 @@
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
-        <source>3rd time</source>
+        <source>Time 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
