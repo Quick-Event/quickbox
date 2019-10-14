@@ -383,6 +383,11 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	main_tb->addAction(m_actCommOpen);
 	{
+		QMenu *m = new QMenu();
+		m->addAction(m_actSettings);
+		m_actCommOpen->setMenu(m);
+	}
+	{
 		QLabel *lbl = new QLabel(tr(" Check type "));
 		main_tb->addWidget(lbl);
 		auto *card_reader_plugin = qobject_cast<CardReader::CardReaderPlugin*>(part_widget->plugin(qf::core::Exception::Throw));
