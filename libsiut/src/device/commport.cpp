@@ -36,7 +36,7 @@ bool CommPort::openComm(const QString &_device, int _baudrate, int _data_bits, c
 		for(auto port : port_list) {
 			if(device.isEmpty())
 				device = port.systemLocation();
-			sl << QString("%1 %2").arg(port.portName()).arg(port.systemLocation());
+			sl << port.systemLocation();
 			qfDebug() << "\t" << port.portName();
 		}
 		emitCommInfo(qf::core::Log::Level::Info, tr("Available ports: %1").arg(sl.join(QStringLiteral(", "))));
