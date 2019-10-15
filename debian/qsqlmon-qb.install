@@ -1,0 +1,4 @@
+bin/qsqlmon /usr/bin
+tools/qsqlmon/distro/deb/qsqlmon/usr/share/applications/qsqlmon.desktop usr/share/applications
+tools/qsqlmon/distro/icons/qsqlmon.svg /usr/share/icons/hicolor/scalable/apps
+tools/qsqlmon/distro/icons/qsqlmon48x48.png /usr/share/icons/hicolor/48x48/apps
