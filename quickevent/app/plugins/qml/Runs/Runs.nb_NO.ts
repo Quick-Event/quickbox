@@ -36,12 +36,12 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>1st time</source>
-        <translation>Tid 1</translation>
+        <translation type="unfinished">Tid 1</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>3rd time</source>
-        <translation>Tid 3</translation>
+        <translation type="unfinished">Tid 3</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
