@@ -566,10 +566,6 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
 <context>
     <name>services::RacomClientWidget</name>
     <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
-    <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
         <source>Racom Client</source>
         <translation>Racom Client</translation>

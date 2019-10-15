@@ -39,17 +39,9 @@
         <translation>Čas 1</translation>
     </message>
     <message>
-        <source>Finish time of first runner in current class</source>
-        <translation type="vanished">Cílový čas prvního závodníka v dané kategorii.</translation>
-    </message>
-    <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>3rd time</source>
         <translation>Čas 3</translation>
-    </message>
-    <message>
-        <source>Finish time of third runner in current class</source>
-        <translation type="vanished">Cílový čas třetího závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
@@ -65,12 +57,6 @@
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to close</source>
         <translation>Čas do uzavření</translation>
-    </message>
-    <message>
-        <location filename="src/eventstatisticswidget.cpp" line="88"/>
-        <source>Time to close</source>
-        <oldsource>Time to class close</oldsource>
-        <translation type="unfinished">Čas do okamžiku, kdy by nově doběhlí závodníci neměli ovlivnit pořadí na prvních třech místech.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
@@ -705,11 +691,6 @@
         <translation>Etapa </translation>
     </message>
     <message>
-        <source>&amp;Class </source>
-        <oldsource>Class </oldsource>
-        <translation type="vanished">&amp;Kategorie </translation>
-    </message>
-    <message>
         <location filename="src/runswidget.cpp" line="235"/>
         <source>&amp;Draw options</source>
         <translation>&amp;Nastavení losování</translation>
@@ -822,14 +803,6 @@
         <location filename="qml/StartLists.qml" line="316"/>
         <source>Start list for starters</source>
         <translation>Startovní listina pro startéry</translation>
-    </message>
-    <message>
-        <source>Get number</source>
-        <translation type="vanished">Vložte číslo</translation>
-    </message>
-    <message>
-        <source>Number of stages:</source>
-        <translation type="vanished">Počet etap:</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="410"/>
@@ -960,14 +933,6 @@
         <location filename="qml/main.qml" line="81"/>
         <source>&amp;IOF-XML 3.0</source>
         <translation>&amp;IOF-XML 3.0</translation>
-    </message>
-    <message>
-        <source>&amp;EmmaClient</source>
-        <translation type="vanished">&amp;EmmaClient</translation>
-    </message>
-    <message>
-        <source>TXT files (*.txt)</source>
-        <translation type="vanished">TXT soubory (*.txt)</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="91"/>
@@ -1124,10 +1089,6 @@
 <context>
     <name>services::ResultsExporterWidget</name>
     <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
-    <message>
         <location filename="src/services/resultsexporterwidget.ui" line="14"/>
         <source>Results Exporter</source>
         <translation>Služba pro export výsledků</translation>
@@ -1243,10 +1204,6 @@
         <location filename="qml/reports/startLists_classes_nstages.qml" line="11"/>
         <source>Start list by classes</source>
         <translation>Startovní listina po kategoriích</translation>
-    </message>
-    <message>
-        <source>registration</source>
-        <translation type="vanished">registrace</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="113"/>

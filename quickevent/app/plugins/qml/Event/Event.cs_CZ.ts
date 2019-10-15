@@ -458,10 +458,6 @@
 <context>
     <name>services::EmmaClientWidget</name>
     <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
-    <message>
         <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Emma Client</source>
         <translation>Emma Client</translation>
@@ -532,14 +528,6 @@
         <location filename="src/services/emmaclientwidget.ui" line="167"/>
         <source>Export radio codes</source>
         <translation>Exportovat čísla radio-kontrol</translation>
-    </message>
-    <message>
-        <source>File name</source>
-        <translation type="vanished">Jméno souboru</translation>
-    </message>
-    <message>
-        <source>Export splits</source>
-        <translation type="vanished">Exportovat mezičasy</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="48"/>

@@ -474,14 +474,6 @@
         <source>Do you really want to remove all selected rows?</source>
         <translation>Opravdu chcete smazat všechny vybrané řádky?</translation>
     </message>
-    <message>
-        <source>Do you realy want to remove row?</source>
-        <translation type="vanished">Opravdu smazat řádek?</translation>
-    </message>
-    <message>
-        <source>Do you realy want to remove all selected rows?</source>
-        <translation type="vanished">Opravdu smazat všechny vybrané řádky?</translation>
-    </message>
 </context>
 <context>
     <name>qf::qmlwidgets::TableViewToolBar</name>

@@ -473,14 +473,6 @@
         <source>Do you really want to remove all selected rows?</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Do you realy want to remove row?</source>
-        <translation type="vanished">Czy na pewno chcesz usunąć wiersz?</translation>
-    </message>
-    <message>
-        <source>Do you realy want to remove all selected rows?</source>
-        <translation type="vanished">Czy na pewno chcesz usunąć wszystkie zaznaczone wiersze?</translation>
-    </message>
 </context>
 <context>
     <name>qf::qmlwidgets::TableViewToolBar</name>

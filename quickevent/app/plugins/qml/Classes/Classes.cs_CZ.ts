@@ -453,10 +453,6 @@
         <translation>Zeměpisná šířka</translation>
     </message>
     <message>
-        <source>O</source>
-        <translation type="vanished">M</translation>
-    </message>
-    <message>
         <location filename="src/editcodeswidget.cpp" line="32"/>
         <source>Out of order</source>
         <translation>Mimo provoz</translation>

@@ -59,12 +59,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="88"/>
-        <source>Time to close</source>
-        <oldsource>Time to class close</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Time until new finished competitors should not affect standings on first three places.</source>
         <translation type="unfinished"></translation>

@@ -456,10 +456,6 @@
 <context>
     <name>services::EmmaClientWidget</name>
     <message>
-        <source>Form</source>
-        <translation type="vanished">Skjema</translation>
-    </message>
-    <message>
         <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Emma Client</source>
         <translation type="unfinished"></translation>
@@ -530,10 +526,6 @@
         <location filename="src/services/emmaclientwidget.ui" line="167"/>
         <source>Export radio codes</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File name</source>
-        <translation type="obsolete">Filnavn</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="48"/>
