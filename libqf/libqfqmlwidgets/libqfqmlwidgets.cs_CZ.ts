@@ -666,7 +666,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
         <source>Copy to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopírovat do schránky.</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
