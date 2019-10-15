@@ -230,7 +230,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="47"/>
         <source>Automatically print receipt when the card is read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Automaticky vytisknout lísteček po vyčtení čipu.</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="50"/>
@@ -250,7 +250,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="80"/>
         <source>Print when runner not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud není závodník nalezen vytisknout</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="90"/>
@@ -305,12 +305,12 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="90"/>
         <source>Receipt without name</source>
-        <translation type="unfinished"></translation>
+        <translation>Lísteček beze jména</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="91"/>
         <source>Error info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informaci o chybě</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="255"/>
@@ -324,7 +324,7 @@
     <message>
         <location filename="qml/reports/error.qml" line="48"/>
         <source>!!! Error !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>!!! Chyba !!!</translation>
     </message>
 </context>
 <context>
