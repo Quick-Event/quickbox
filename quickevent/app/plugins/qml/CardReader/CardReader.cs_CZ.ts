@@ -160,159 +160,159 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <translation>Otestovat audio</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="386"/>
+        <location filename="src/cardreaderwidget.cpp" line="391"/>
         <source> Check type </source>
         <translation> Typ kontroly ražení </translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="399"/>
+        <location filename="src/cardreaderwidget.cpp" line="404"/>
         <source> Reader mode </source>
         <translation> Mód vyčítací jednotky </translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="402"/>
+        <location filename="src/cardreaderwidget.cpp" line="407"/>
         <source>Race</source>
         <translation>Závod</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="403"/>
+        <location filename="src/cardreaderwidget.cpp" line="408"/>
         <source>Entries</source>
         <translation>Přihlášky</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="468"/>
+        <location filename="src/cardreaderwidget.cpp" line="473"/>
         <source>Open COM</source>
         <translation>Otevřít COM</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="474"/>
+        <location filename="src/cardreaderwidget.cpp" line="479"/>
         <source>Card readout settings</source>
         <translation>Nastavení vyčítání čipů</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="527"/>
+        <location filename="src/cardreaderwidget.cpp" line="532"/>
         <source>Connected to %1 in direct mode.</source>
         <translation>Připojen k %1 v přímém módu.</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="530"/>
+        <location filename="src/cardreaderwidget.cpp" line="535"/>
         <source>Error set SI station to direct mode.</source>
         <translation>Chyba při nastavování SI jednotky do přímého módu.</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="554"/>
+        <location filename="src/cardreaderwidget.cpp" line="559"/>
         <source>Error open device %1 - %2</source>
         <translation>Chyba při otevírání zařízení %1 - %2</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="631"/>
+        <location filename="src/cardreaderwidget.cpp" line="636"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="640"/>
+        <location filename="src/cardreaderwidget.cpp" line="645"/>
         <source>DriverRawData: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="647"/>
+        <location filename="src/cardreaderwidget.cpp" line="652"/>
         <source>card: %1</source>
         <translation>čip: %1</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1076"/>
+        <location filename="src/cardreaderwidget.cpp" line="1081"/>
         <source>Import TXT</source>
         <translation>Importovat TXT</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1166"/>
+        <location filename="src/cardreaderwidget.cpp" line="1171"/>
         <source>Downloading station backup ...</source>
         <translation>Načítám paměť jednotky...</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1168"/>
+        <location filename="src/cardreaderwidget.cpp" line="1173"/>
         <source>Cancelled by user</source>
         <translation>Přerušeno uživatelem</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1198"/>
+        <location filename="src/cardreaderwidget.cpp" line="1203"/>
         <source>No.</source>
         <translation>Čís.</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1198"/>
+        <location filename="src/cardreaderwidget.cpp" line="1203"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1198"/>
+        <location filename="src/cardreaderwidget.cpp" line="1203"/>
         <source>DateTime</source>
         <translation>Datum/čas</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1198"/>
+        <location filename="src/cardreaderwidget.cpp" line="1203"/>
         <source>Card error</source>
         <translation>Chyba čipu</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1201"/>
+        <location filename="src/cardreaderwidget.cpp" line="1206"/>
         <source>Station %1 backup memory</source>
         <translation>Paměť SI jednotky %1</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1203"/>
+        <location filename="src/cardreaderwidget.cpp" line="1208"/>
         <source>Station backup memory</source>
         <translation>Paměť SI jednotky</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="724"/>
+        <location filename="src/cardreaderwidget.cpp" line="729"/>
         <source>punch: %1 %2</source>
         <translation>ražení: %1 %2</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="731"/>
+        <location filename="src/cardreaderwidget.cpp" line="736"/>
         <source>Cannot find run for punch record SI: %1</source>
         <translation>Nelze najít úsek pro záznam ražení SI: %1</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="787"/>
+        <location filename="src/cardreaderwidget.cpp" line="792"/>
         <source>Find runner</source>
         <translation>Najít závodníka</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="886"/>
+        <location filename="src/cardreaderwidget.cpp" line="891"/>
         <source>&lt;p&gt;CSV record must have format:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Any row can be commented by leading #&lt;/p&gt;&lt;p&gt;Decimal point is also supported, the quotes can be omited than.&lt;/p&gt;</source>
         <translation>&lt;p&gt;CSV záznam musí mít formát:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Jakýkoliv řádek může být zakomentován pomocí #&lt;/p&gt;&lt;p&gt;Desetinná tečka je také podporována, uvozovky mohou být v tom případě vynechány.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="890"/>
+        <location filename="src/cardreaderwidget.cpp" line="895"/>
         <source>Import CSV</source>
         <translation>Importovat CSV</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="895"/>
-        <location filename="src/cardreaderwidget.cpp" line="1081"/>
+        <location filename="src/cardreaderwidget.cpp" line="900"/>
+        <location filename="src/cardreaderwidget.cpp" line="1086"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
         <translation>Nelze otevřít soubor &apos;%1&apos; pro čtení.</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="914"/>
-        <location filename="src/cardreaderwidget.cpp" line="1085"/>
+        <location filename="src/cardreaderwidget.cpp" line="919"/>
+        <location filename="src/cardreaderwidget.cpp" line="1090"/>
         <source>Bad stage!</source>
         <translation>Špatná etapa!</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="936"/>
+        <location filename="src/cardreaderwidget.cpp" line="941"/>
         <source>Cannot find runs record for SI %1!</source>
         <translation>Nelze najít záznam úseku pro SI: %1!</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="937"/>
+        <location filename="src/cardreaderwidget.cpp" line="942"/>
         <source>Cannot find class for SI %1!</source>
         <translation>Nelze najít kategorii pro SI: %1!</translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="950"/>
+        <location filename="src/cardreaderwidget.cpp" line="955"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
         <translation>SI: %1 Kategorie %2 – Počet ražení (%3) a počet kontrol i s cílem (%4) musí být stejný! Odeberte nebo zakomentujte neplatné řádky pomocí #.</translation>
     </message>
@@ -565,10 +565,6 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
 </context>
 <context>
     <name>services::RacomClientWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
         <source>Racom Client</source>

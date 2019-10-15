@@ -21,42 +21,42 @@
 <context>
     <name>qf::core::model::LogTableModel</name>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="41"/>
+        <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Category</source>
         <translation>Kategorie</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="43"/>
+        <location filename="src/model/logtablemodel.cpp" line="51"/>
         <source>File</source>
         <translation>Soubor</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="45"/>
+        <location filename="src/model/logtablemodel.cpp" line="53"/>
         <source>Line</source>
         <translation>Řádek</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="47"/>
+        <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Severity</source>
         <translation>Závažnost</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="49"/>
+        <location filename="src/model/logtablemodel.cpp" line="57"/>
         <source>Time stamp</source>
         <translation>Časová značka</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="51"/>
+        <location filename="src/model/logtablemodel.cpp" line="59"/>
         <source>Message</source>
         <translation>Zpráva</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="53"/>
+        <location filename="src/model/logtablemodel.cpp" line="61"/>
         <source>Function</source>
         <translation>Funkce</translation>
     </message>
     <message>
-        <location filename="src/model/logtablemodel.cpp" line="55"/>
+        <location filename="src/model/logtablemodel.cpp" line="63"/>
         <source>Data</source>
         <translation>Data</translation>
     </message>

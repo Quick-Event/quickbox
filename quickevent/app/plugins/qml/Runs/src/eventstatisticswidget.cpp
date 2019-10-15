@@ -83,9 +83,11 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_runnersCount, ColumnDefinition("runnersCount", tr("Runners")));
 	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("1st time")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("3rd time")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("1st time")).setToolTip(tr("Finish time of first runner in current class.")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("3rd time")).setToolTip(tr("Finish time of third runner in current class.")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close"))
+			  .setToolTip(tr("Time until new finished competitors should not affect standings on first three places."))
+			  .setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));

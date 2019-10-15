@@ -43,6 +43,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="chkAutoPrint">
+       <property name="toolTip">
+        <string>Automatically print receipt when the card is read.</string>
+       </property>
        <property name="text">
         <string>Auto print</string>
        </property>
