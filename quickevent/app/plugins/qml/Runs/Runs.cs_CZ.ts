@@ -36,22 +36,22 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>1st time</source>
-        <translation>Čas 1</translation>
+        <translation>Čas prvního</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>3rd time</source>
-        <translation>Čas 3</translation>
+        <translation>Čas třetího</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Finish time of first runner in current class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cílový čas prvního závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>Finish time of third runner in current class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cílový čas třetího závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
@@ -61,7 +61,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
         <source>Time until new finished competitors should not affect standings on first three places.</source>
-        <translation type="unfinished"></translation>
+        <translation>Čas do okamžiku, kdy by nově doběhlí závodníci neměli ovlivnit pořadí na prvních třech místech.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="91"/>
@@ -666,7 +666,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="230"/>
         <source>Include competitors who are not running in this stage</source>
-        <translation>Zobrazit závodníky, kteří nestartují</translation>
+        <translation>Zobrazit závodníky, kteří nestartují v této etapě</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="505"/>
@@ -774,7 +774,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="192"/>
         <source> &amp;Class </source>
-        <translation type="unfinished"></translation>
+        <translation> &amp;Kategorie </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="205"/>
