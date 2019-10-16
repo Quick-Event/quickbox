@@ -1,0 +1,5 @@
+quickbox (2.2.8) unstable; urgency=medium
+
+  * Initial attempt to package Quick Box including Quck Event by Open Build Service
+
+ -- Pavel Pisa <pisa@cmp.felk.cvut.cz>  Fri, 31 May 2019 15:26:46 +0200

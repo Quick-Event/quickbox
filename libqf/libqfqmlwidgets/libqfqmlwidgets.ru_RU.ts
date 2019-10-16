@@ -160,326 +160,318 @@
         <translation>Нажатие левой кнопкой мыши выделяет все, нажатие правой кнопкой мыши - для меню.</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="653"/>
+        <location filename="src/tableview.cpp" line="693"/>
         <source>Enter value</source>
         <translation>Введите значение</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="653"/>
+        <location filename="src/tableview.cpp" line="693"/>
         <source>new value:</source>
         <translation>новое значение:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="752"/>
+        <location filename="src/tableview.cpp" line="792"/>
         <source>Save File</source>
         <translation>Сохранить файл</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="764"/>
+        <location filename="src/tableview.cpp" line="804"/>
         <source>Open File</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="916"/>
+        <location filename="src/tableview.cpp" line="956"/>
         <source>Save as ...</source>
         <translation>Сохранить как ...</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="922"/>
+        <location filename="src/tableview.cpp" line="962"/>
         <source>Cannot open file &apos;%1&apos; for writing.</source>
         <translation>Невозможно открыть файл &apos;% 1&apos; для записи.</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1523"/>
+        <location filename="src/tableview.cpp" line="1563"/>
         <source>Resize columns to contents</source>
         <translation>Изменение размера столбцов по содержимому</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1532"/>
+        <location filename="src/tableview.cpp" line="1573"/>
         <source>Reset columns settings</source>
         <translation>Сбросить настройки столбцов</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1533"/>
+        <location filename="src/tableview.cpp" line="1574"/>
         <source>Reset column widths and positions.</source>
         <translation>Сбросить ширину и положение столбцов</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1542"/>
+        <location filename="src/tableview.cpp" line="1583"/>
         <source>Reload</source>
         <translation>Перезагрузить</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1544"/>
+        <location filename="src/tableview.cpp" line="1585"/>
         <source>Ctrl+R</source>
         <comment>reload SQL table</comment>
         <translation>Ctrl + R</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1552"/>
+        <location filename="src/tableview.cpp" line="1593"/>
         <source>Copy</source>
         <translation>Скопировать</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1554"/>
+        <location filename="src/tableview.cpp" line="1596"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
         <translation>Ctrl + C</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1562"/>
+        <location filename="src/tableview.cpp" line="1604"/>
         <source>Copy special</source>
         <translation>Специальное копирование</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1572"/>
+        <location filename="src/tableview.cpp" line="1614"/>
         <source>Paste</source>
         <translation>Вставить</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1574"/>
+        <location filename="src/tableview.cpp" line="1616"/>
         <source>Ctrl+V</source>
         <comment>Paste rows</comment>
         <translation>Ctrl + V</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1582"/>
+        <location filename="src/tableview.cpp" line="1624"/>
         <source>Insert row</source>
         <translation>Вставить строку</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1583"/>
+        <location filename="src/tableview.cpp" line="1625"/>
         <source>Ctrl+Ins</source>
         <comment>insert row SQL table</comment>
         <translation>Ctrl + Ins</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1591"/>
+        <location filename="src/tableview.cpp" line="1633"/>
         <source>Delete selected rows</source>
         <translation>Удалить выбранные строки</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1592"/>
+        <location filename="src/tableview.cpp" line="1634"/>
         <source>Ctrl+Del</source>
         <comment>delete row SQL table</comment>
         <translation>Ctrl + Del</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1600"/>
+        <location filename="src/tableview.cpp" line="1642"/>
         <source>Post row edits</source>
         <translation>Перенос данных во все остальные выбранные ячейки после ввода данных в одной из нескольких выбранных ячеек</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1602"/>
+        <location filename="src/tableview.cpp" line="1644"/>
         <source>Ctrl+Return</source>
         <comment>post row SQL table</comment>
         <translation>Ctrl + Return</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1610"/>
+        <location filename="src/tableview.cpp" line="1652"/>
         <source>Revert row edits</source>
         <translation>Отменить редактирование строк</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1612"/>
+        <location filename="src/tableview.cpp" line="1654"/>
         <source>Ctrl+Z</source>
         <comment>revert edited row</comment>
         <translation>Ctrl + Z</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1620"/>
+        <location filename="src/tableview.cpp" line="1662"/>
         <source>Clone row</source>
         <translation>Ввод одинаковых данных в ячейки снизу</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1625"/>
+        <location filename="src/tableview.cpp" line="1667"/>
         <source>Ctrl+D</source>
         <comment>insert row copy</comment>
         <translation>Ctrl + D</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1632"/>
+        <location filename="src/tableview.cpp" line="1674"/>
         <source>Zobrazit ve formulari</source>
         <translation>Показать в форме</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1634"/>
+        <location filename="src/tableview.cpp" line="1676"/>
         <source>Zobrazit radek v formulari pro cteni</source>
         <translation>Показать строку в виде текста</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1641"/>
+        <location filename="src/tableview.cpp" line="1683"/>
         <source>Upravit ve formulari</source>
         <translation>Редактировать в форме</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1643"/>
+        <location filename="src/tableview.cpp" line="1685"/>
         <source>Upravit radek ve formulari</source>
         <translation>Редактировать строку в форме </translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1672"/>
+        <location filename="src/tableview.cpp" line="1714"/>
         <source>Filter table</source>
         <translation>Таблица фильтров</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1676"/>
+        <location filename="src/tableview.cpp" line="1718"/>
         <source>Ctrl+F</source>
         <comment>filter table</comment>
         <translation>Ctrl + F</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1683"/>
+        <location filename="src/tableview.cpp" line="1725"/>
         <source>Edit cell content</source>
         <translation>Изменить содержимое ячейки</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1685"/>
+        <location filename="src/tableview.cpp" line="1727"/>
         <source>Ctrl+Shift+T</source>
         <comment>Edit cell content</comment>
         <translation>Ctrl + Shift + T</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1693"/>
+        <location filename="src/tableview.cpp" line="1735"/>
         <source>Save BLOB</source>
         <translation>Сохранить BLOB</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1702"/>
+        <location filename="src/tableview.cpp" line="1744"/>
         <source>Load BLOB from file</source>
         <translation>Загрузить BLOB из файла</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1711"/>
+        <location filename="src/tableview.cpp" line="1753"/>
         <source>Insert rows statement</source>
         <translation>Оператор вставки строк Insert</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1720"/>
+        <location filename="src/tableview.cpp" line="1762"/>
         <source>Set NULL in selection</source>
         <translation>Установить NULL в выделенном фрагменте</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1722"/>
+        <location filename="src/tableview.cpp" line="1764"/>
         <source>Ctrl+Shift+L</source>
         <comment>Set NULL in selection</comment>
         <translation>Ctrl + Shift + L</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1730"/>
+        <location filename="src/tableview.cpp" line="1772"/>
         <source>Set value in selection</source>
         <translation>Установить значение в выделенном фрагменте</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1731"/>
+        <location filename="src/tableview.cpp" line="1773"/>
         <source>Ctrl+Shift+E</source>
         <comment>Set value in selection</comment>
         <translation>Ctrl + Shift + E</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1739"/>
+        <location filename="src/tableview.cpp" line="1781"/>
         <source>Generate sequence in selection</source>
         <translation>Создать последовательность в выделенном фрагменте</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1748"/>
+        <location filename="src/tableview.cpp" line="1790"/>
         <source>Select</source>
         <translation>Выбрать</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1755"/>
+        <location filename="src/tableview.cpp" line="1797"/>
         <source>Select current column</source>
         <translation>Выбрать текущий столбец</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1756"/>
+        <location filename="src/tableview.cpp" line="1798"/>
         <source>Ctrl+Shift+C</source>
         <comment>Select current column</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1765"/>
+        <location filename="src/tableview.cpp" line="1807"/>
         <source>Select current row</source>
         <translation>Выбрать текущую строку</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1775"/>
+        <location filename="src/tableview.cpp" line="1817"/>
         <source>Calculate</source>
         <translation>Подсчитать</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1782"/>
+        <location filename="src/tableview.cpp" line="1824"/>
         <source>Sum column</source>
         <translation>Сумма по столбцам</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1788"/>
+        <location filename="src/tableview.cpp" line="1830"/>
         <source>Sum selection</source>
         <translation>Сумма содержимого выбранного фрагмента</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1795"/>
+        <location filename="src/tableview.cpp" line="1837"/>
         <source>Export</source>
         <translation>Извлечь (экспортировать)</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1802"/>
+        <location filename="src/tableview.cpp" line="1844"/>
         <source>Report</source>
         <translation>Отчет</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1809"/>
-        <location filename="src/tableview.cpp" line="1847"/>
+        <location filename="src/tableview.cpp" line="1851"/>
+        <location filename="src/tableview.cpp" line="1889"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1816"/>
+        <location filename="src/tableview.cpp" line="1858"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1824"/>
+        <location filename="src/tableview.cpp" line="1866"/>
         <source>XLS - MS Excel</source>
         <translation>XLS - MS Excel</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1832"/>
+        <location filename="src/tableview.cpp" line="1874"/>
         <source>XML (MS Excel 2003)</source>
         <translation>XML (MS Excel 2003)</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1840"/>
+        <location filename="src/tableview.cpp" line="1882"/>
         <source>Import</source>
         <translation>Импортировать</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1947"/>
+        <location filename="src/tableview.cpp" line="1990"/>
         <source>Enter start value</source>
         <translation>Введите начальное значение</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1947"/>
+        <location filename="src/tableview.cpp" line="1990"/>
         <source>start value:</source>
         <translation>начальное значение:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2086"/>
+        <location filename="src/tableview.cpp" line="2129"/>
         <source>Do you really want to remove row?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2089"/>
+        <location filename="src/tableview.cpp" line="2132"/>
         <source>Do you really want to remove all selected rows?</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do you realy want to remove row?</source>
-        <translation type="vanished">Вы действительно хотите удалить строку?</translation>
-    </message>
-    <message>
-        <source>Do you realy want to remove all selected rows?</source>
-        <translation type="vanished">Вы действительно хотите удалить все выбранные строки?</translation>
     </message>
 </context>
 <context>
@@ -672,31 +664,36 @@
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
+        <source>Copy to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/framework/logwidget.ui" line="102"/>
         <source>Resize columns to fit content</source>
         <translation>Изменить размер столбцов в соответствии с содержимым</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.ui" line="102"/>
+        <location filename="src/framework/logwidget.ui" line="116"/>
         <source>Event log options</source>
         <translation>Опции журнала событий</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.ui" line="105"/>
+        <location filename="src/framework/logwidget.ui" line="119"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="144"/>
+        <location filename="src/framework/logwidget.cpp" line="100"/>
         <source>Maximal log length</source>
         <translation>Максимальная длина журнала</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="149"/>
+        <location filename="src/framework/logwidget.cpp" line="105"/>
         <source>Get number</source>
         <translation>Получить номер</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="149"/>
+        <location filename="src/framework/logwidget.cpp" line="105"/>
         <source>Maximal log row count:</source>
         <translation>Максимальное количество строк журнала:</translation>
     </message>
@@ -709,7 +706,7 @@
         <translation>Копировать</translation>
     </message>
     <message>
-        <location filename="src/framework/logwidget.cpp" line="33"/>
+        <location filename="src/framework/logwidget.cpp" line="34"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
         <translation>Ctrl + C</translation>

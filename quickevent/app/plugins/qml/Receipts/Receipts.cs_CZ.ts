@@ -59,7 +59,7 @@
         <translation>Čip</translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="413"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="428"/>
         <source>Receipt</source>
         <translation>Mezičas</translation>
     </message>
@@ -229,31 +229,41 @@
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="47"/>
+        <source>Automatically print receipt when the card is read.</source>
+        <translation>Automaticky vytisknout lísteček po vyčtení čipu.</translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.ui" line="50"/>
         <source>Auto print</source>
         <translation>Automatický tisk</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="54"/>
+        <location filename="src/receiptswidget.ui" line="57"/>
         <source>Print only cards read on this application card reader.</source>
         <translation>Tisknout pouze čipy, které jsou vyčteny v krabičce, jež je nastavená v této aplikaci.</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="57"/>
+        <location filename="src/receiptswidget.ui" line="60"/>
         <source>This reader only</source>
         <translation>Pouze tato tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="77"/>
+        <location filename="src/receiptswidget.ui" line="80"/>
+        <source>Print when runner not found</source>
+        <translation>Pokud není závodník nalezen vytisknout</translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.ui" line="90"/>
         <source>Receipt</source>
         <translation>Mezičas</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="87"/>
+        <location filename="src/receiptswidget.ui" line="100"/>
         <source>Printer</source>
         <translation>Tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="94"/>
+        <location filename="src/receiptswidget.ui" line="107"/>
         <source>Printer options</source>
         <translation>Nastavení tiskárny</translation>
     </message>
@@ -293,10 +303,28 @@
         <translation>Tiskárna</translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="251"/>
+        <location filename="src/receiptswidget.cpp" line="90"/>
+        <source>Receipt without name</source>
+        <translation>Lísteček beze jména</translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.cpp" line="91"/>
+        <source>Error info</source>
+        <translation>Informaci o chybě</translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.cpp" line="255"/>
         <source>Print receipts for selected rows</source>
         <oldsource>Print selected cards</oldsource>
         <translation>Vytisknout mezičasy pro vybrané řádky</translation>
+    </message>
+</context>
+<context>
+    <name>error</name>
+    <message>
+        <location filename="qml/reports/error.qml" line="48"/>
+        <source>!!! Error !!!</source>
+        <translation>!!! Chyba !!!</translation>
     </message>
 </context>
 <context>

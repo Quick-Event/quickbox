@@ -186,9 +186,10 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		m_cbxStage = new QComboBox();
 		main_tb->addWidget(m_cbxStage);
 	}
+	main_tb->addSeparator();
 	QLabel *lbl_classes;
 	{
-		lbl_classes = new QLabel(tr("&Class "));
+		lbl_classes = new QLabel(tr(" &Class "));
 		main_tb->addWidget(lbl_classes);
 	}
 	{
@@ -221,11 +222,12 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		}
 		lbl_leg->setBuddy(m_cbxLeg);
 	}
+	main_tb->addSeparator();
 
 	{
 		m_chkShowOffRace = new QCheckBox();
 		m_chkShowOffRace->setText(tr("Show o&ff-race"));
-		m_chkShowOffRace->setToolTip(tr("Show off race competitors"));
+		m_chkShowOffRace->setToolTip(tr("Include competitors who are not running in this stage"));
 		connect(m_chkShowOffRace, &QCheckBox::toggled, this, &RunsWidget::reload);
 		main_tb->addWidget(m_chkShowOffRace);
 	}

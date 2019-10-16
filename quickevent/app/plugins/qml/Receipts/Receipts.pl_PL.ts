@@ -58,7 +58,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="413"/>
+        <location filename="src/Receipts/receiptsplugin.cpp" line="428"/>
         <source>Receipt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -221,31 +221,41 @@
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="47"/>
+        <source>Automatically print receipt when the card is read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.ui" line="50"/>
         <source>Auto print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="54"/>
+        <location filename="src/receiptswidget.ui" line="57"/>
         <source>Print only cards read on this application card reader.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="57"/>
+        <location filename="src/receiptswidget.ui" line="60"/>
         <source>This reader only</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="77"/>
+        <location filename="src/receiptswidget.ui" line="80"/>
+        <source>Print when runner not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.ui" line="90"/>
         <source>Receipt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="87"/>
+        <location filename="src/receiptswidget.ui" line="100"/>
         <source>Printer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.ui" line="94"/>
+        <location filename="src/receiptswidget.ui" line="107"/>
         <source>Printer options</source>
         <translation type="unfinished"></translation>
     </message>
@@ -285,8 +295,26 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="251"/>
+        <location filename="src/receiptswidget.cpp" line="90"/>
+        <source>Receipt without name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.cpp" line="91"/>
+        <source>Error info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.cpp" line="255"/>
         <source>Print receipts for selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>error</name>
+    <message>
+        <location filename="qml/reports/error.qml" line="48"/>
+        <source>!!! Error !!!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

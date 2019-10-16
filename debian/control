@@ -1,0 +1,87 @@
+Source: quickbox
+Section: devel
+Priority: optional
+Maintainer: Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Build-Depends: debhelper (>= 9), qtbase5-dev, qtdeclarative5-dev, libqt5svg5-dev, libqt5serialport5-dev, qtmultimedia5-dev, dh-exec, rsync
+Standards-Version: 3.9.8
+Homepage: https://github.com/fvacek/quickbox
+Vcs-Git: https://github.com/fvacek/quickbox.git
+Vcs-Browser: https://github.com/fvacek/quickbox
+
+Package: quickevent
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quick Event - Orienteering Software 
+ Quick Event - Orienteering Software .
+
+Package: qsqlmon-qb
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Open Source QT Database administration tool
+ Open Source QT Database administration tool.
+
+Package: libqf
+Architecture: any
+Multi-Arch: same
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: QF Qt support library.
+ QF Qt support library.
+
+Package: libqf-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqf (= ${binary:Version})
+Description: QF Qt support library.
+ QF Qt support library.
+
+Package: libquickevent
+Architecture: any
+Multi-Arch: same
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quick Event - Orienteering Software libraies.
+ Quick Event - Orienteering Software libraies.
+
+Package: libquickevent-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libquickevent (= ${binary:Version})
+Description: Quick Event - Orienteering Software libraies.
+ Quick Event - Orienteering Software libraies.
+
+Package: libsiut
+Architecture: any
+Multi-Arch: same
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: SI chip read library.
+ SPORTident SI chip read library.
+
+Package: libsiut-dev
+Architecture: any
+Multi-Arch: same
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsiut (= ${binary:Version})
+Description: SI chip read library.
+ SPORTident SI chip read library.
+
+Package: qsicli
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: SI chip command line utilities.
+ SPORTident SI chip command line utilities.
+
+Package: quickhttpd
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quick Event - Orienteering Software .
+ This package provides quickhttpd server.
+
+Package: quickshow
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quick Event - Orienteering Software .
+ This package provides quickshow application.

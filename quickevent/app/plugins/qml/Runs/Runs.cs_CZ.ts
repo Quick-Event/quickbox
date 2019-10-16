@@ -35,23 +35,23 @@
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
-        <source>Time 1</source>
-        <translation>Čas 1</translation>
+        <source>1st time</source>
+        <translation>Čas prvního</translation>
+    </message>
+    <message>
+        <location filename="src/eventstatisticswidget.cpp" line="87"/>
+        <source>3rd time</source>
+        <translation>Čas třetího</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
-        <source>Finish time of first runner in current class</source>
-        <translation>Cílový čas prvního závodníka v aktuální kategorii</translation>
+        <source>Finish time of first runner in current class.</source>
+        <translation>Cílový čas prvního závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
-        <source>Time 3</source>
-        <translation>Čas 3</translation>
-    </message>
-    <message>
-        <location filename="src/eventstatisticswidget.cpp" line="87"/>
-        <source>Finish time of third runner in current class</source>
-        <translation>Cílový čas třetího závodníka v aktuální kategorii</translation>
+        <source>Finish time of third runner in current class.</source>
+        <translation>Cílový čas třetího závodníka v dané kategorii.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
@@ -59,39 +59,39 @@
         <translation>Čas do uzavření</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="88"/>
-        <source>Time to class close</source>
-        <translation>Čas do uzavření kategorie</translation>
+        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <source>Time until new finished competitors should not affect standings on first three places.</source>
+        <translation>Čas do okamžiku, kdy by nově doběhlí závodníci neměli ovlivnit pořadí na prvních třech místech.</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="89"/>
+        <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>Finished</source>
         <translation>Doběhlo</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="90"/>
+        <location filename="src/eventstatisticswidget.cpp" line="92"/>
         <source>Not finished</source>
         <translation>Nedoběhlo</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="91"/>
+        <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>New results</source>
         <translation>Nové výsledky</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="91"/>
+        <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>Number of finished competitors not printed in results.</source>
         <translation>Počet doběhlých závodníků, kteří ještě nejsou ve vytisknutých výsledcích.</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="92"/>
+        <location filename="src/eventstatisticswidget.cpp" line="94"/>
         <source>Not printed time</source>
         <translation>Čas od tisku</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="93"/>
+        <location filename="src/eventstatisticswidget.cpp" line="95"/>
         <source>Time since recent results printout.</source>
-        <translation>Čas od posledního tisku.</translation>
+        <translation>Čas od posledního tisku výsledků dané kategorie.</translation>
     </message>
 </context>
 <context>
@@ -180,7 +180,7 @@
         <translation>Možnosti</translation>
     </message>
     <message>
-        <location filename="src/eventstatisticswidget.cpp" line="576"/>
+        <location filename="src/eventstatisticswidget.cpp" line="578"/>
         <source>Results by classes</source>
         <oldsource>Results by clases</oldsource>
         <translation>Výsledky po kategoriích</translation>
@@ -294,7 +294,7 @@
         <translation>Statistiky závodu</translation>
     </message>
     <message>
-        <location filename="src/Runs/runsplugin.cpp" line="827"/>
+        <location filename="src/Runs/runsplugin.cpp" line="829"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
@@ -659,28 +659,28 @@
         <translation>Hendikep</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="227"/>
+        <location filename="src/runswidget.cpp" line="229"/>
         <source>Show o&amp;ff-race</source>
         <translation>Zobrazit &amp;nestartující závodníky</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="228"/>
-        <source>Show off race competitors</source>
-        <translation>Zobrazit závodníky, kteří nestartují</translation>
+        <location filename="src/runswidget.cpp" line="230"/>
+        <source>Include competitors who are not running in this stage</source>
+        <translation>Zobrazit závodníky, kteří nestartují v této etapě</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="503"/>
+        <location filename="src/runswidget.cpp" line="505"/>
         <source>Draw all classes without draw lock?</source>
         <oldsource>Draw all clases without draw lock?</oldsource>
         <translation>Losovat všechny kategorie, u kterých není losování uzamčeno?</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="519"/>
+        <location filename="src/runswidget.cpp" line="521"/>
         <source>Class is locked for drawing.</source>
         <translation>Kategorie má uzamčené losování.</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="776"/>
+        <location filename="src/runswidget.cpp" line="778"/>
         <source>Reset all start times and unlock drawing for this class?</source>
         <oldsource>Reset all start times and unlock for drawing for this class?</oldsource>
         <translation>Smazat všechny startovní časy v této kategorii a odemknout losování?</translation>
@@ -691,13 +691,7 @@
         <translation>Etapa </translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="191"/>
-        <source>&amp;Class </source>
-        <oldsource>Class </oldsource>
-        <translation>&amp;Kategorie </translation>
-    </message>
-    <message>
-        <location filename="src/runswidget.cpp" line="233"/>
+        <location filename="src/runswidget.cpp" line="235"/>
         <source>&amp;Draw options</source>
         <translation>&amp;Nastavení losování</translation>
     </message>
@@ -718,7 +712,7 @@
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="127"/>
-        <location filename="src/runswidget.cpp" line="208"/>
+        <location filename="src/runswidget.cpp" line="209"/>
         <source>--- all ---</source>
         <translation>-- všechny --</translation>
     </message>
@@ -778,22 +772,27 @@
         <translation>Celkové</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="204"/>
+        <location filename="src/runswidget.cpp" line="192"/>
+        <source> &amp;Class </source>
+        <translation> &amp;Kategorie </translation>
+    </message>
+    <message>
+        <location filename="src/runswidget.cpp" line="205"/>
         <source>&amp;Leg </source>
         <translation>&amp;Úsek </translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="333"/>
+        <location filename="src/runswidget.cpp" line="335"/>
         <source>Import</source>
         <translation>Importovat</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="422"/>
+        <location filename="src/runswidget.cpp" line="424"/>
         <source>Save as %1</source>
         <translation>Uložit jako %1</translation>
     </message>
     <message>
-        <location filename="src/runswidget.cpp" line="696"/>
+        <location filename="src/runswidget.cpp" line="698"/>
         <source>Start interval is zero, proceed anyway?</source>
         <translation>Startovní interval je nula. Chcete přesto pokračovat?</translation>
     </message>
@@ -804,14 +803,6 @@
         <location filename="qml/StartLists.qml" line="316"/>
         <source>Start list for starters</source>
         <translation>Startovní listina pro startéry</translation>
-    </message>
-    <message>
-        <source>Get number</source>
-        <translation type="vanished">Vložte číslo</translation>
-    </message>
-    <message>
-        <source>Number of stages:</source>
-        <translation type="vanished">Počet etap:</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="410"/>
@@ -944,14 +935,6 @@
         <translation>&amp;IOF-XML 3.0</translation>
     </message>
     <message>
-        <source>&amp;EmmaClient</source>
-        <translation type="vanished">&amp;EmmaClient</translation>
-    </message>
-    <message>
-        <source>TXT files (*.txt)</source>
-        <translation type="vanished">TXT soubory (*.txt)</translation>
-    </message>
-    <message>
         <location filename="qml/main.qml" line="91"/>
         <source>&amp;Current stage</source>
         <translation>&amp;Aktuální etapa</translation>
@@ -1007,14 +990,14 @@
     <message>
         <location filename="qml/main.qml" line="84"/>
         <location filename="qml/main.qml" line="153"/>
-        <location filename="qml/main.qml" line="199"/>
+        <location filename="qml/main.qml" line="198"/>
         <source>Get file name</source>
         <translation>Zadejte jméno souboru</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
         <location filename="qml/main.qml" line="153"/>
-        <location filename="qml/main.qml" line="199"/>
+        <location filename="qml/main.qml" line="198"/>
         <source>XML files (*.xml)</source>
         <translation>XML soubory (*.xml)</translation>
     </message>
@@ -1105,10 +1088,6 @@
 </context>
 <context>
     <name>services::ResultsExporterWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="vanished">Formulář</translation>
-    </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="14"/>
         <source>Results Exporter</source>
@@ -1225,10 +1204,6 @@
         <location filename="qml/reports/startLists_classes_nstages.qml" line="11"/>
         <source>Start list by classes</source>
         <translation>Startovní listina po kategoriích</translation>
-    </message>
-    <message>
-        <source>registration</source>
-        <translation type="vanished">registrace</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="113"/>
