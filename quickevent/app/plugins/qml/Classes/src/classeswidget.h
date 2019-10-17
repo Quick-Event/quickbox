@@ -2,7 +2,6 @@
 #define CLASSESWIDGET_H
 
 #include "thispartwidget.h"
-#include "coursedef.h"
 
 #include <QFrame>
 
@@ -17,7 +16,11 @@ namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets { class ForeignKeyComboBox; }
 }
 
+namespace quickevent { namespace core { namespace si { class CodeDef; }}}
+
 class CourseItemDelegate;
+class CodeDef;
+class CourseDef;
 
 class ClassesWidget : public QFrame
 {
@@ -25,7 +28,7 @@ class ClassesWidget : public QFrame
 private:
 	typedef QFrame Super;
 public:
-	explicit ClassesWidget(QWidget *parent = 0);
+	explicit ClassesWidget(QWidget *parent = nullptr);
 	~ClassesWidget() Q_DECL_OVERRIDE;
 
 	Q_INVOKABLE int selectedStageId();
@@ -44,7 +47,7 @@ private:
 	Q_SLOT void reload();
 	Q_SLOT void reloadCourseCodes();
 private:
-	void importCourses(const QList<CourseDef> &course_defs);
+	void importCourses(const QList<CourseDef> &course_defs, const QList<quickevent::core::si::CodeDef> &code_defs);
 private:
 	Ui::ClassesWidget *ui;
 	qf::core::model::SqlTableModel *m_classesModel;

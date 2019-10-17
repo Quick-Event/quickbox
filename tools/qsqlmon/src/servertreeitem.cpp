@@ -53,14 +53,14 @@ QFObjectItemModel* ServerTreeItem::model()
 		}
 		o = o->parent();
 	}
-	Q_ASSERT(o != NULL);
-	return NULL;
+	Q_ASSERT(o != nullptr);
+	return nullptr;
 }
 
 Database* ServerTreeItem::database()
 {
 	QObject *o = this;
-	Database *d = NULL;
+	Database *d = nullptr;
 	while(o) {
 		d = qobject_cast<Database*>(o);
 		if(d) break;
@@ -117,7 +117,7 @@ void Connection::close()
 
 Database* Connection::open()
 {
-	Database *d = NULL;
+	Database *d = nullptr;
 	QList<QObject*> olst;
 
 	close();
@@ -460,17 +460,17 @@ bool Database::open()
 		/// tables
 		QStringList sl;
 		sl = m_sqlConnection.QSqlDatabase::tables(QSql::Tables);
-		qSort(sl);
+		std::sort(sl.begin(), sl.end());
 		foreach(QString s, sl)
 			olst << new Table(this, s, QSql::Tables);
 		sl = m_sqlConnection.QSqlDatabase::tables(QSql::Views);
-		qSort(sl);
+		std::sort(sl.begin(), sl.end());
 		foreach(QString s, sl)
 			olst << new Table(this, s, QSql::Views);
 	}
 	else {
 		foreach(QString s, schemas()) {
-			Schema *sch = new Schema(NULL, s);
+			Schema *sch = new Schema(nullptr, s);
 			olst << sch;
 			connect(sch, SIGNAL(progressValue(double, const QString&)), mainWindow(), SLOT(setProgressValue(double, const QString&)));
 		}
@@ -610,11 +610,11 @@ void Schema::open()
 	/// tables
 	qf::core::sql::Connection dbi(d->sqlConnection());
 	QStringList sl = dbi.tables(schema_name, QSql::Tables);
-	qSort(sl);
+	std::sort(sl.begin(), sl.end());
 	foreach(QString s, sl)
 		olst << new Table(nullptr, s, QSql::Tables);
 	sl = dbi.tables(schema_name, QSql::Views);
-	qSort(sl);
+	std::sort(sl.begin(), sl.end());
 	foreach(QString s, sl)
 		olst << new Table(nullptr, s, QSql::Views);
 	QFObjectItemModel *m = model();
@@ -630,12 +630,12 @@ void Schema::open()
 	QList<QObject*> olst;
 	foreach(QString s, sl_tables) {
 		qfDebug() << "\t adding table" << s;
-		olst << new Table(NULL, s, QSql::Tables);
+		olst << new Table(nullptr, s, QSql::Tables);
 	}
 	qSort(sl_views);
 	foreach(QString s, sl_views) {
 		qfDebug() << "\t adding view" << s;
-		olst << new Table(NULL, s, QSql::Views);
+		olst << new Table(nullptr, s, QSql::Views);
 	}
 	m->append(olst, ix);
 	/*
@@ -702,7 +702,7 @@ QVariant Table::text(int col)
 QString Table::schema() const
 {
 	const QObject *o = this;
-	const Schema *d = NULL;
+	const Schema *d = nullptr;
 	while(o) {
 		d = qobject_cast<const Schema*>(o);
 		if(d) return d->objectName();

@@ -18,7 +18,7 @@ class  ServerTreeView : public QTreeView
 {
 	Q_OBJECT
 public:
-	ServerTreeView(QWidget *parent = NULL);
+	ServerTreeView(QWidget *parent = nullptr);
 	virtual ~ServerTreeView();
 
 	virtual void keyPressEvent(QKeyEvent *event);

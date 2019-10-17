@@ -31,7 +31,7 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: root.options.isShirinkPageWidthToColumnCount? 210/2*root.options.columnCount: 210
+	width: root.options.isShirinkPageWidthToColumnCount? 210 / 2 * root.options.columnCount: 210
 	height: 297
 	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
 	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
@@ -94,7 +94,6 @@ Report {
 					Frame {
 						objectName: "minuteFrame"
 						width: "%"
-						//height: (root.lineSpacing > 0)? root.lineSpacing: undefined;
 						layout: Frame.LayoutHorizontal
 						Cell {
 							objectName: "minuteCellClassName"
@@ -107,19 +106,26 @@ Report {
 							text: detail.data(detail.currentIndex, "competitorName");
 						}
 						Cell {
-							objectName: "minuteCellRegistration"
-							width: 20
-							text: detail.data(detail.currentIndex, "competitors.registration");
+							visible: root.isPrintStartNumbers
+							width: 12
+							halign: Frame.AlignRight
+							text: detail.data(detail.currentIndex,"competitors.startNumber");
 						}
 						Cell {
+							objectName: "minuteCellRegistration"
+							width: 18
+							text: detail.data(detail.currentIndex, "competitors.registration");
+						}
+						Para {
 							objectName: "minuteCellSI"
-							width: 20
+							width: 15
 							halign: Frame.AlignRight
 							text: detail.data(detail.currentIndex, "runs.siId");
 						}
 						Cell {
 							objectName: "minuteCellStartTimeMs"
-							width: 15
+							width: 13
+							halign: Frame.AlignRight
 							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}
 					}

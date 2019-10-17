@@ -17,9 +17,12 @@ public:
 
 	static Application* instance(bool must_exist = true);
 
+	static int dbVersion();
+
 	AppCliOptions* cliOptions() {return m_cliOptions;}
 
 	Q_INVOKABLE QString versionString() const;
+	Q_INVOKABLE QString dbVersionString() const;
 private:
 	AppCliOptions *m_cliOptions;
 };

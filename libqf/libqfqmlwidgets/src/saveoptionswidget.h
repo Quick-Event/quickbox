@@ -22,7 +22,7 @@ class QFQMLWIDGETS_DECL_EXPORT SaveOptionsWidget : public QWidget
 private:
 	typedef QWidget Super;
 public:
-	SaveOptionsWidget(QWidget *parent = NULL);
+	SaveOptionsWidget(QWidget *parent = nullptr);
 	~SaveOptionsWidget() Q_DECL_OVERRIDE;
 protected:
 	void load_helper(const QVariantMap &m);

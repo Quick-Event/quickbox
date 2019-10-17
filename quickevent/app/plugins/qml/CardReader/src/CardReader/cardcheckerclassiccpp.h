@@ -5,13 +5,13 @@
 
 namespace CardReader {
 
-class CardCheckerClassicCpp : public CardChecker, public CppCardChecker
+class CardCheckerClassicCpp : public CardCheckerCpp
 {
 	Q_OBJECT
 private:
-	using Super = CardChecker;
+	using Super = CardCheckerCpp;
 public:
-	CardCheckerClassicCpp(QObject *parent = 0);
+	CardCheckerClassicCpp(QObject *parent = nullptr);
 
 	quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card) Q_DECL_OVERRIDE;
 };

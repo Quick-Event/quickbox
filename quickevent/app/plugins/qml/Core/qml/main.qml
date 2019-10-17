@@ -121,10 +121,6 @@ CorePlugin {
 		//console.error("Core log test");
 		console.debug("Core plugin installed");
 
-		//FrameWork.setPersistentSettingDomains("quickbox.org", "QuickBox");
-		//FrameWork.persistentSettingsId = "MainWindow";
-		//FrameWork.loadPersistentSettings();
-
 		console.debug(FrameWork.menuBar);
 		var act_file = FrameWork.menuBar.actionForPath('file');
 		act_file.text = qsTr('&File');
@@ -146,7 +142,10 @@ CorePlugin {
 		var languages = [
 			[qsTr("System"), "system"],
 			[qsTr("Czech"), "cs_CZ"],
-			[qsTr("English"), "en_US"]
+			[qsTr("English"), "en_US"],
+			[qsTr("Norwegian"), "nb_NO"],
+			[qsTr("Polish"), "pl_PL"],
+			[qsTr("Russian"), "ru_RU"]
 		]
 		for(var i=0; i<languages.length; i++) {
 			var lang = languages[i];

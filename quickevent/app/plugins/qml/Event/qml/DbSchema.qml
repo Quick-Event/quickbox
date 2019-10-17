@@ -73,6 +73,11 @@ Schema {
 					defaultValue: false
 					notNull: true
 				},
+				Field { name: 'longitude'; type: Real { } },
+				Field { name: 'latitude'; type: Real { } },
+				Field { name: 'type'; type: String { }
+					comment: 'S - start, F - finish'
+				},
 				Field { name: 'note'; type: String { } }
 			]
 			indexes: [
@@ -110,7 +115,6 @@ Schema {
 				Field { name: 'classId'; type: Int { } },
 				Field { name: 'stageId'; type: Int { } },
 				Field { name: 'courseId'; type: Int { } },
-				Field { name: 'legCount'; type: Int { } },
 				Field { name: 'startSlotIndex'; type: Int { }
 					defaultValue: -1;
 					notNull: true
@@ -184,6 +188,10 @@ Schema {
 					//notNull: true
 				},
 				Field { name: 'relayId'; type: Int {} },
+
+				Field { name: 'checkTimeMs'; type: Int {}
+					comment: 'in miliseconds'
+				},
 				Field { name: 'startTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
@@ -193,6 +201,7 @@ Schema {
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds since event run'
 				},
+
 				Field { name: 'isRunning'; type: Boolean { }
 					defaultValue: true;
 					comment: "Competitor is running in this stage"
@@ -311,6 +320,9 @@ Schema {
 				Field { name: 'runIdAssignTS'
 					type: DateTime { }
 				},
+				Field { name: 'runIdAssignError'
+					type: String { }
+				},
 				Field { name: 'stageId'
 					type: Int { }
 					comment: 'We cannot take stageId from runId linked table, because we need select cards for stage even without runId assigned'
@@ -399,6 +411,19 @@ Schema {
 			indexes: [
 				Index {fields: ['marking', 'stageId', 'code']; unique: false },
 				Index {fields: ['runId']; unique: false }
+			]
+		},
+		Table { name: 'stationsbackup'
+			fields: [
+				Field { name: 'id'; type: Serial { primaryKey: true } },
+				Field { name: 'stageId'; type: Int { } },
+				Field { name: 'stationNumber'; type: Int { } },
+				Field { name: 'siId'; type: Int {} },
+				Field { name: 'punchDateTime'; type: DateTime {} },
+				Field { name: 'cardErr'; type: Boolean {} }
+			]
+			indexes: [
+				Index {fields: ['stageId', 'stationNumber', 'siId', 'punchDateTime']; unique: true }
 			]
 		},
 		Table { name: 'lentcards'

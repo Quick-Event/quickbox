@@ -95,19 +95,6 @@ void CodeClassResultsWidget::reload()
 								qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.timeMs");//.limit(10);
 	}
-	/*
-	else if(code == quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE) {
-		qb.select2("runlaps", "stpTimeMs AS timeMs")
-				.from("runlaps")
-				.joinRestricted("runlaps.runId", "runs.id",
-								"runs.stageId=" QF_IARG(stage_id)
-								" AND runlaps.code=" QF_IARG(code)
-								" AND NOT runs.disqualified",
-								qf::core::sql::QueryBuilder::INNER_JOIN)
-				.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
-				.orderBy("runlaps.stpTimeMs");//.limit(10);
-	}
-	*/
 	else {
 		qb.select2("punches", "runTimeMs AS timeMs")
 				.from("punches")
@@ -138,8 +125,6 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 	ui->lstClass->disconnect();
 	ui->lstCode->disconnect();
 	ui->lstClass->clear();
-	//ui->lstCode->setCurrentIndex(-1);
-	//ui->lstClass->blockSignals(true);
 	{
 		qf::core::sql::Query q;
 		q.exec("SELECT id, name FROM classes ORDER BY name", qf::core::Exception::Throw);
@@ -147,7 +132,6 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 			ui->lstClass->addItem(q.value(1).toString(), q.value(0));
 		}
 	}
-	//ui->lstClass->blockSignals(false);
 	if(pin_to_code == ALL_CODES) {
 		ui->lblCode->show();
 		ui->lstCode->show();
@@ -198,18 +182,6 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 void CodeClassResultsWidget::loadSetup(const QJsonObject &jso)
 {
 	reset(jso.value("classId").toInt(), jso.value("codeId").toInt());
-	/*
-	ui->lstClass->blockSignals(true);
-	ui->lstClass->clear();
-	qf::core::sql::Query q;
-	q.exec("SELECT id, name FROM classes ORDER BY name", qf::core::Exception::Throw);
-	while(q.next()) {
-		ui->lstClass->addItem(q.value(1).toString(), q.value(0));
-	}
-	ui->lstClass->blockSignals(false);
-	ui->lstClass->setCurrentIndex(ui->lstClass->findData(jso.value("classId").toInt()));
-	ui->lstCode->setCurrentIndex(ui->lstCode->findData(jso.value("codeId").toInt()));
-	*/
 }
 
 QJsonObject CodeClassResultsWidget::saveSetup()

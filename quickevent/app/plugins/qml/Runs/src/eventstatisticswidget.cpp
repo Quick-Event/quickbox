@@ -20,6 +20,7 @@
 #include <QElapsedTimer>
 #include <QSettings>
 #include <QTimer>
+#include <QScrollBar>
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;
@@ -45,6 +46,8 @@ static Runs::RunsPlugin* runsPlugin()
 //============================================================
 class EventStatisticsModel : public quickevent::core::og::SqlTableModel
 {
+	Q_DECLARE_TR_FUNCTIONS(EventStatisticsModel)
+private:
 	typedef quickevent::core::og::SqlTableModel Super;
 public:
 	enum Cols {
@@ -80,9 +83,11 @@ EventStatisticsModel::EventStatisticsModel(QObject *parent)
 	setColumn(col_runnersCount, ColumnDefinition("runnersCount", tr("Runners")));
 	setColumn(col_startFirstMs, ColumnDefinition("startFirstMs", tr("Start first")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_startLastMs, ColumnDefinition("startLastMs", tr("Start last")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("Time 1")).setToolTip(tr("Finish time of first runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("Time 3")).setToolTip(tr("Finish time of third runner in current class")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
-	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close")).setToolTip(tr("Time to class close")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_time1Ms, ColumnDefinition("time1Ms", tr("1st time")).setToolTip(tr("Finish time of first runner in current class.")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_time3Ms, ColumnDefinition("time3Ms", tr("3rd time")).setToolTip(tr("Finish time of third runner in current class.")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_timeToCloseMs, ColumnDefinition("timeToCloseMs", tr("Time to close"))
+			  .setToolTip(tr("Time until new finished competitors should not affect standings on first three places."))
+			  .setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runnersFinished, ColumnDefinition("runnersFinished", tr("Finished")));
 	setColumn(col_runnersNotFinished, ColumnDefinition("runnersNotFinished", tr("Not finished")));
 	setColumn(col_resultsNotPrinted, ColumnDefinition("resultsNotPrinted", tr("New results")).setToolTip(tr("Number of finished competitors not printed in results.")));
@@ -164,12 +169,19 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 	if(column_ix == col_timeToCloseMs) {
 		int stage_start_msec = eventPlugin()->stageStartMsec(eventPlugin()->currentStageId());
 		int curr_time_msec = QTime::currentTime().msecsSinceStartOfDay();
-		int start_last_msec = value(row_ix, col_startLastMs).toInt();
-		int time3_msec = value(row_ix, col_time3Ms).toInt();
-		int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
-		if(time_to_close_msec < 0)
-			time_to_close_msec = 0;
-		return time_to_close_msec;
+		//int runners_count = value(row_ix, col_runnersCount).toInt();
+		int runners_finished = value(row_ix, col_runnersFinished).toInt();
+		if(runners_finished == 0) {
+			return QVariant();
+		}
+		else {
+			int start_last_msec = value(row_ix, col_startLastMs).toInt();
+			int time3_msec = value(row_ix, col_time3Ms).toInt();
+			int time_to_close_msec = stage_start_msec + start_last_msec + time3_msec - curr_time_msec;
+			if(time_to_close_msec < 0)
+				time_to_close_msec = 0;
+			return time_to_close_msec;
+		}
 	}
 	else if(column_ix == col_runnersNotFinished) {
 		int cnt = value(row_ix, col_runnersCount).toInt() - value(row_ix, col_runnersFinished).toInt();
@@ -185,7 +197,7 @@ QVariant EventStatisticsModel::value(int row_ix, int column_ix) const
 		QDateTime dt2 = QDateTime::currentDateTime();
 		if(!dt1.isValid())
 			return QVariant{QVariant::Int};
-		int cnt = dt1.msecsTo(dt2);
+		int cnt = dt1.secsTo(dt2);
 		return cnt;
 	}
 	return Super::value(row_ix, column_ix);
@@ -314,15 +326,18 @@ void FooterModel::reload()
 }
 
 //============================================================
-//                FooterView
+// FooterView
 //============================================================
 class FooterView : public QHeaderView
 {
 	typedef QHeaderView Super;
 public:
 	FooterView(QTableView *table_view, QWidget *parent = nullptr);
+	~FooterView() override;
 
 	void syncSectionSizes();
+private:
+	void resetFooterAttributes();
 private:
 	QTableView *m_tableView;
 };
@@ -331,10 +346,11 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 	: Super(Qt::Horizontal, parent)
 	, m_tableView(table_view)
 {
-	setSectionResizeMode(QHeaderView::Fixed);
+	resetFooterAttributes();
 	//QHeaderView *vh = table_view->verticalHeader();
 	QHeaderView *hh = table_view->horizontalHeader();
 	if(hh) {
+		//qfWarning() << "header view:" << hh->metaObject()->className();
 		//setMaximumHeight(hh->defaultSectionSize());
 		connect(hh, &QHeaderView::sectionResized, [this](int logical_index, int old_size, int new_size) {
 			Q_UNUSED(old_size)
@@ -345,10 +361,27 @@ FooterView::FooterView(QTableView *table_view, QWidget *parent)
 			this->moveSection(old_visual_index, new_visual_index);
 		});
 	}
+	QScrollBar *sb = table_view->horizontalScrollBar();
+	if(sb) {
+		connect(sb, &QScrollBar::valueChanged, this, [this]() {
+			this->setOffset(m_tableView->horizontalHeader()->offset());
+		});
+	}
+}
+
+FooterView::~FooterView()
+{
+}
+
+void FooterView::resetFooterAttributes()
+{
+	setSectionResizeMode(QHeaderView::Fixed);
+	setSortIndicatorShown(false);
 }
 
 void FooterView::syncSectionSizes()
 {
+	//qfInfo() << Q_FUNC_INFO << this;
 	QAbstractItemModel *m = model();
 	QF_ASSERT(m != nullptr, "Model is NULL!", return);
 
@@ -361,17 +394,11 @@ void FooterView::syncSectionSizes()
 	if(hh) {
 		setMinimumHeight(hh->height());
 		setMaximumHeight(hh->height());
-		for (int i = 0; i < hh->count() && i < m->columnCount(); ++i) {
-			resizeSection(i, hh->sectionSize(i));
-			int vi = hh->visualIndex(i);
-			//qfInfo() << i << "vis ix:" << vi;
-			/// do not know why, but this can copy section visual index from master header view
-			if(vi != i) {
-				moveSection(vi, i);
-				//qfInfo() << "\t" << vi << "--->" << i;
-				//qfInfo() << "\t new vis ix:" << visualIndex(i);
-			}
-		}
+
+		QByteArray ba = hh->saveState();
+		restoreState(ba);
+
+		resetFooterAttributes();
 	}
 }
 
@@ -390,15 +417,10 @@ EventStatisticsWidget::EventStatisticsWidget(QWidget *parent)
 	m_tableFooterView->setMinimumHeight(20);
 	ui->tableLayout->addWidget(m_tableFooterView);
 
-	connect(ui->chkAutoRefresh, &QCheckBox::toggled, [this](bool checked) {
-		if(checked)
-			autoRefreshTimer()->start();
-		else
-			autoRefreshTimer()->stop();
-	});
-
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &EventStatisticsWidget::onDbEventNotify, Qt::QueuedConnection);
-	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reload);
+	connect(eventPlugin(), &Event::EventPlugin::currentStageIdChanged, this, &EventStatisticsWidget::reloadDeferred);
+
+	initAutoRefreshTimer();
 }
 
 EventStatisticsWidget::~EventStatisticsWidget()
@@ -406,8 +428,11 @@ EventStatisticsWidget::~EventStatisticsWidget()
 	delete ui;
 }
 
-void EventStatisticsWidget::reloadLater()
+void EventStatisticsWidget::reloadDeferred()
 {
+	if(!isVisible())
+		return;
+
 	if(!m_reloadLaterTimer) {
 		m_reloadLaterTimer = new QTimer(this);
 		m_reloadLaterTimer->setInterval(200);
@@ -454,9 +479,9 @@ void EventStatisticsWidget::reload()
 void EventStatisticsWidget::onDbEventNotify(const QString &domain, const QVariant &payload)
 {
 	Q_UNUSED(payload)
-	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_READ)
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED)
 	   || domain == QLatin1String(Event::EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED)) {
-		reloadLater();
+		reloadDeferred();
 	}
 }
 
@@ -482,15 +507,20 @@ int EventStatisticsWidget::currentStageId()
 	return ret;
 }
 
-QTimer *EventStatisticsWidget::autoRefreshTimer()
+void EventStatisticsWidget::initAutoRefreshTimer()
 {
-	if(!m_autoRefreshTimer) {
-		m_autoRefreshTimer = new QTimer(this);
-		EventStatisticsOptions::Options opts(options());
-		m_autoRefreshTimer->setInterval(opts.autoRefreshSec() * 1000);
-		connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadLater);
+	EventStatisticsOptions::Options opts(options());
+	int sec = opts.autoRefreshSec();
+	if(sec > 0) {
+		if(!m_autoRefreshTimer) {
+			m_autoRefreshTimer = new QTimer(this);
+			connect(m_autoRefreshTimer, &QTimer::timeout, this, &EventStatisticsWidget::reloadDeferred);
+		}
+		m_autoRefreshTimer->start(sec * 1000);
 	}
-	return m_autoRefreshTimer;
+	else {
+		QF_SAFE_DELETE(m_autoRefreshTimer);
+	}
 }
 
 void EventStatisticsWidget::on_btReload_clicked()
@@ -545,7 +575,7 @@ void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 	report_printed = qf::qmlwidgets::reports::ReportViewWidget::showReport(this
 								, runsPlugin()->manifest()->homeDir() + "/reports/results_stage.qml"
 								, td
-								, tr("Results by clases")
+								, tr("Results by classes")
 								, "printCurrentStage"
 								, props
 								);
@@ -600,8 +630,7 @@ void EventStatisticsWidget::on_btOptions_clicked()
 {
 	EventStatisticsOptions dlg(this);
 	if(dlg.exec()) {
-		EventStatisticsOptions::Options opts(options());
-		autoRefreshTimer()->setInterval(opts.autoRefreshSec() * 1000);
+		initAutoRefreshTimer();
 	}
 }
 

@@ -115,7 +115,7 @@
          <number>9999999</number>
         </property>
         <property name="dataId" stdset="0">
-         <string>relays.number</string>
+         <string notr="true">relays.number</string>
         </property>
        </widget>
       </item>
@@ -176,7 +176,7 @@
       <item>
        <widget class="QPushButton" name="btAddLeg">
         <property name="toolTip">
-         <string>Add leg Ctrl-Ins</string>
+         <string>Add leg Ctrl+Ins</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
@@ -190,7 +190,7 @@
       <item>
        <widget class="QPushButton" name="btRemoveLeg">
         <property name="toolTip">
-         <string>Remove leg Ctrl-Del</string>
+         <string>Remove leg Ctrl+Del</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
@@ -204,7 +204,7 @@
       <item>
        <widget class="QPushButton" name="btMoveLegDown">
         <property name="toolTip">
-         <string>Move leg down Ctrl-D</string>
+         <string>Move leg down Ctrl+D</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
@@ -218,7 +218,7 @@
       <item>
        <widget class="QPushButton" name="btMoveLegUp">
         <property name="toolTip">
-         <string>Move leg up Ctrl-U</string>
+         <string>Move leg up Ctrl+U</string>
         </property>
         <property name="icon">
          <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">

@@ -22,8 +22,6 @@ private:
 	QF_VARIANTMAP_FIELD(int, c, setC, heckTimeMs) //< check time till stage start
 	QF_VARIANTMAP_FIELD(int, s, setS, tartTimeMs) //< start time till stage start
 	QF_VARIANTMAP_FIELD(int, f, setF, inishTimeMs) //< finish time till stage start
-	//QF_VARIANTMAP_FIELD2(int, f, setF, inishLapTimeMs, 0) //< finish lap time till competitor start time
-	//QF_VARIANTMAP_FIELD2(int, f, setF, inishStpTimeMs, 0) //< finish stp time till competitor start time
 	QF_VARIANTMAP_FIELD(int, c, setC, ardNumber)
 	// punch times for course including finish, all measured till competitor start time
 	// this list contains all the course puches for correct punching

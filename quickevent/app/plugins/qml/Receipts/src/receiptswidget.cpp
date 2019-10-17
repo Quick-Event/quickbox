@@ -87,6 +87,10 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		m_cardsModel = m;
 	}
 
+	ui->lstNotFound->addItem(tr("Receipt without name"), 0);
+	ui->lstNotFound->addItem(tr("Error info"), 1);
+	ui->lstNotFound->setCurrentIndex(0);
+
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tblCards, &qfw::TableView::customContextMenuRequested, this, &ReceiptsWidget::onCustomContextMenuRequest);
 
@@ -248,7 +252,7 @@ void ReceiptsWidget::on_btPrintNew_clicked()
 void ReceiptsWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_print_card(tr("Print selected cards"), nullptr);
+	QAction a_print_card(tr("Print receipts for selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_print_card;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
@@ -275,7 +279,12 @@ bool ReceiptsWidget::printReceipt(int card_id)
 			if(run_id > 0)
 				return receiptsPlugin()->printReceipt(card_id);
 			else
-				return receiptsPlugin()->printCard(card_id);
+			{
+				if (ui->lstNotFound->currentIndex() == 0)
+					return receiptsPlugin()->printCard(card_id);
+				else
+					return receiptsPlugin()->printError(card_id);
+			}
 		}
 	}
 	return false;

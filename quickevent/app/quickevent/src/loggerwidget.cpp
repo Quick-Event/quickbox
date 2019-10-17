@@ -27,7 +27,7 @@ void LoggerWidget::onDockWidgetVisibleChanged(bool visible)
 	if(visible) {
 		auto *ld = qobject_cast<TableModelLogDevice*>(qf::core::LogDevice::findDevice(TABLE_MODEL_LOG_DEVICE));
 		setLogTableModel(ld->logTableModel());
-		scrollToLastEntry();
+		checkScrollToLastEntry();
 	}
 	else {
 		setLogTableModel(nullptr);

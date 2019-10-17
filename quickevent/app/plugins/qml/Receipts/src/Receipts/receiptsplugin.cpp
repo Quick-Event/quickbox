@@ -7,7 +7,7 @@
 
 #include <quickevent/core/si/readcard.h>
 #include <quickevent/core/si/checkedcard.h>
-
+#include <quickevent/core/og/timems.h>
 
 #include <qf/core/utils/settings.h>
 #include <qf/core/utils/treetable.h>
@@ -21,7 +21,6 @@
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
 #include <qf/qmlwidgets/reports/processor/reportitem.h>
 #include <qf/qmlwidgets/reports/processor/reportpainter.h>
-#include <quickevent/core/og/timems.h>
 
 #include <QDomDocument>
 #include <QSqlRecord>
@@ -196,8 +195,6 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 	int current_standings = 0;
 	int competitors_finished = 0;
 	QMap<int, int> best_laps; //< position->time
-	///QMap<int, int> missing_codes; //< pos->code
-	///QSet<int> out_of_order_codes;
 	{
 		qf::core::model::SqlTableModel model;
 		qf::core::sql::QueryBuilder qb;
@@ -305,7 +302,8 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		tt.appendColumn("stpTimeMs", QVariant::Int);
 		tt.appendColumn("lapTimeMs", QVariant::Int);
 		tt.appendColumn("lossMs", QVariant::Int);
- 		QMapIterator<QString, QVariant> it(checked_card);
+		tt.appendColumn("distance", QVariant::Int);
+		QMapIterator<QString, QVariant> it(checked_card);
 		while(it.hasNext()) {
 			it.next();
 			if(it.key() != QLatin1String("punches"))
@@ -328,6 +326,7 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 				int loss = lap - best_lap;
 				ttr.setValue("lossMs", loss);
 			}
+			ttr.setValue("distance", punch.distance());
 		}
 		{
 			QSet<int> correct_codes;
@@ -400,6 +399,21 @@ bool ReceiptsPlugin::printCard(int card_id)
 		return true;
 	}
 	catch(const qf::core::Exception &e) {
+		qfError() << e.toString();
+	}
+	return false;
+}
+
+bool ReceiptsPlugin::printError(int card_id)
+{
+	qfLogFuncFrame() << "card id:" << card_id;
+	QF_TIME_SCOPE("ReceiptsPlugin::printError()");
+	try {
+		QVariantMap dt = readCardTablesData(card_id);
+		receiptsPrinter()->printReceipt(manifest()->homeDir() + "/reports/error.qml", dt);
+		return true;
+	}
+		catch(const qf::core::Exception &e) {
 		qfError() << e.toString();
 	}
 	return false;

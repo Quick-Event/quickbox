@@ -19,6 +19,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QLineEdit>
+#include <QSerialPortInfo>
 
 //=================================================
 //             DlgSettings
@@ -28,6 +29,7 @@ DlgSettings::DlgSettings(QWidget *parent)
 {
 	ui = new Ui::DlgSettings;
 	ui->setupUi(this);
+#if 0
 #if defined Q_OS_WIN
 	for(int i=1; i<10; i++)
 		ui->lstDevice->addItem(QString("\\COM%1").arg(i));
@@ -35,7 +37,15 @@ DlgSettings::DlgSettings(QWidget *parent)
 	for(int i=0; i<4; i++)
 		ui->lstDevice->addItem(QString("/dev/ttyUSB%1").arg(i));
 #endif
+#endif
+	{
+		QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+		for(auto port : port_list) {
+			//ui->lstDevice->addItem(QString("n:%1 l:%2").arg(port.portName()).arg(port.systemLocation()));
+			ui->lstDevice->addItem(port.systemLocation());
+		}
 
+	}
 	connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 

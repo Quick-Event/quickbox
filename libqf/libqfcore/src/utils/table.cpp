@@ -612,6 +612,7 @@ void Table::cleanupData(CleanupDataOption fields_options)
 		case ClearFieldsRows:
 			qfDebug() << "\tcleaning fields";
 			fieldsRef().clear();
+			[[clang::fallthrough]];
 		default:
 			qfDebug() << "\tcleaning rows";
 			d->rows.clear();
@@ -768,9 +769,6 @@ TableRow& Table::rowRef(int ri)
 TableRow Table::row(int ri) const
 {
 	TableRow ret;
-	if(!isValidRowIndex(ri)) {
-		qfDebug() << "invalid row";
-	}
 	if(!isValidRowIndex(ri)) {
 			auto msg = QString("row: %1 is out of range of row count (%2)").arg(ri).arg(d->rows.size());
 			qfError() << msg;
@@ -1475,7 +1473,7 @@ void Table::dataFromVariantList(const QVariantList &_lst)
 }
 void Table::sort(RowIndexList::iterator begin, RowIndexList::iterator end)
 {
-	qSort(begin, end, LessThan(*this));
+	std::sort(begin, end, LessThan(*this));
 }
 
 Table::RowIndexList::const_iterator Table::binaryFind(Table::RowIndexList::const_iterator begin, Table::RowIndexList::const_iterator end, const QVariant & val) const

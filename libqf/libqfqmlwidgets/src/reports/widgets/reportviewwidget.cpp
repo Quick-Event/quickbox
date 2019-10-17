@@ -139,7 +139,7 @@ void ReportViewWidget::ScrollArea::keyPressEvent(QKeyEvent* ev)
 {
 	if(ev->modifiers() == Qt::ControlModifier) {
 		static QCursor c;
-		if(c.bitmap() == NULL) {
+		if(c.bitmap() == nullptr) {
 			QBitmap b1(":/qf/qmlwidgets/images/zoomin_cursor_bitmap.png");
 			QBitmap b2(":/qf/qmlwidgets/images/zoomin_cursor_mask.png");
 			c = QCursor(b1, b2, 18, 12);
@@ -334,10 +334,10 @@ void ReportViewWidget::PainterWidget::mousePressEvent(QMouseEvent *e)
 //                                 ReportViewWidget
 //====================================================
 ReportViewWidget::ReportViewWidget(QWidget *parent)
-	: Super(parent), m_scrollArea(NULL), edCurrentPage(NULL), m_statusBar(NULL)
+	: Super(parent), m_scrollArea(nullptr), edCurrentPage(nullptr), m_statusBar(nullptr)
 {
 	qfLogFuncFrame() << this << "parent:" << parent;
-	m_reportProcessor = NULL;
+	m_reportProcessor = nullptr;
 	m_whenRenderingSetCurrentPageTo = -1;
 	/*--
 	f_uiBuilder = new QFUiBuilder(this, ":/libqfgui/qfreportviewwidget.ui.xml");
@@ -347,11 +347,11 @@ ReportViewWidget::ReportViewWidget(QWidget *parent)
 	//action("report.edit")->setVisible(false);
 
 	m_currentPageNo = -1;
-	m_selectedItem = NULL;
+	m_selectedItem = nullptr;
 
 	setPersistentSettingsId("reportViewWidget");
 
-	m_scrollArea = new ScrollArea(NULL);
+	m_scrollArea = new ScrollArea(nullptr);
 	/// zajimavy, odkomentuju tenhle radek a nemuzu nastavit pozadi zadnyho widgetu na scrollArea.
 	//f_scrollArea->setBackgroundRole(QPalette::Dark);
 	m_painterWidget = new PainterWidget(m_scrollArea);
@@ -375,7 +375,7 @@ ReportViewWidget::~ReportViewWidget()
 
 ReportProcessor * ReportViewWidget::reportProcessor()
 {
-	if(m_reportProcessor == NULL) {
+	if(m_reportProcessor == nullptr) {
 		setReportProcessor(new ReportProcessor(m_painterWidget, this));
 	}
 	return m_reportProcessor;
@@ -390,7 +390,7 @@ void ReportViewWidget::setReportProcessor(ReportProcessor * proc)
 qf::qmlwidgets::StatusBar *ReportViewWidget::statusBar()
 {
 	if(!m_statusBar) {
-		m_statusBar = new qmlwidgets::StatusBar(NULL);
+		m_statusBar = new qmlwidgets::StatusBar(nullptr);
 		zoomStatusSpinBox = new QSpinBox();
 		zoomStatusSpinBox->setSingleStep(10);
 		zoomStatusSpinBox->setMinimum(10);
@@ -429,12 +429,12 @@ QFPart::ToolBarList ReportViewWidget::createToolBars()
 						if(a) {
 							//qfDebug() << "\taction id:" << a->id();
 							if(a->id() == "view.nextPage") {
-								edCurrentPage = new QLineEdit(NULL);
+								edCurrentPage = new QLineEdit(nullptr);
 								edCurrentPage->setAlignment(Qt::AlignRight);
 								edCurrentPage->setMaximumWidth(60);
 								connect(edCurrentPage, SIGNAL(editingFinished()), this, SLOT(edCurrentPageEdited()));
 								tb->insertWidget(a, edCurrentPage);
-								QLabel *space = new QLabel(QString(), NULL);
+								QLabel *space = new QLabel(QString(), nullptr);
 								space->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 								tb->addWidget(space);
 								//QSpacerItem *spacer = new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -787,9 +787,9 @@ ReportItemMetaPaintFrame* ReportViewWidget::getPage(int n)
 {
 	//qfDebug() << QF_FUNC_NAME << currentPageNo();
 	if(!document(!qf::core::Exception::Throw))
-		return NULL;
+		return nullptr;
 	if(n < 0 || n >= document()->childrenCount())
-		return NULL;
+		return nullptr;
 	ReportItemMetaPaint *it = document()->child(n);
 	ReportItemMetaPaintFrame *frm = dynamic_cast<ReportItemMetaPaintFrame*>(it);
 	//qfDebug() << "\treturn:" << frm;
@@ -801,7 +801,7 @@ ReportItemMetaPaintFrame* ReportViewWidget::currentPage()
 	ReportItemMetaPaintFrame *frm = getPage(currentPageNo());
 	//qfDebug() << QF_FUNC_NAME << currentPageNo();
 	if(!frm)
-		return NULL;
+		return nullptr;
 	return frm;
 }
 /*--
@@ -834,7 +834,7 @@ void ReportViewWidget::selectElement(const QFDomElement &el)
 		return;
 	}
 	#endif
-	f_selectedItem = NULL;
+	f_selectedItem = nullptr;
 	ReportItemMetaPaintFrame *frm = currentPage();
 	if(!frm) return;
 	selectElement_helper(frm, el);

@@ -21,6 +21,7 @@ public:
 	enum class Sport {OB = 1, LOB, MTBO, TRAIL};
 	enum class Discipline {Classic = 1, ShortRace, Sprint,
 						   Relays = 5,
+						   Teams = 6,
 						   NightRace = 9,
 						  };
 public:
@@ -42,11 +43,14 @@ public slots:
 	int importId() const;
 	int handicapLength() const;
 	bool isHandicap() const {return handicapLength() > 0;}
-	bool isRelays() const {return disciplineId() == (int)Discipline::Relays;}
+	bool isRelays() const {return disciplineId() == (int)Discipline::Relays || disciplineId() == (int)Discipline::Teams;}
+	QString eventName() const;
+	QString eventPlace() const;
 	QString director() const;
 	QString mainReferee() const;
 	QDateTime eventDateTime() const;
 	int dbVersion() const;
+	int cardCheckCheckTimeSec() const;
 private:
 	void save_helper(QVariantMap &ret, const QString &current_path, const QVariant &val);
 	QVariantMap setValue_helper(const QVariantMap &m, const QStringList &path, const QVariant &val);

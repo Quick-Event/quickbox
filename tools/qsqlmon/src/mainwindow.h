@@ -74,10 +74,10 @@ private slots:
 	void checkDrivers();
 	void tearOffTable();
 
-	void addServer(Connection *connection_to_copy = NULL);
+	void addServer(Connection *connection_to_copy = nullptr);
 	void setDbSearchPath(const QString &path);
 
-	void tableStatusBarTextAction(const QString &text);
+	void onTableStatusBarAction(const QString &text);
 
 	void lazyInit();
 private:

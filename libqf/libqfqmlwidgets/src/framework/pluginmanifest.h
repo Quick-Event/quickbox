@@ -22,7 +22,7 @@ class QFQMLWIDGETS_DECL_EXPORT PluginManifest : public QObject
 	Q_PROPERTY(bool addFromBottom READ isAddFromBottom WRITE setAddFromBottom FINAL)
 	Q_PROPERTY(QString homeDir READ homeDir FINAL)
 public:
-	explicit PluginManifest(QObject *parent = 0);
+	explicit PluginManifest(QObject *parent = nullptr);
 	~PluginManifest() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_BOOL_IMPL(d, D, isabled)

@@ -20,6 +20,8 @@ class DockWidget;
 
 }
 
+namespace quickevent {  namespace core {  namespace si { class CheckedCard; }}}
+
 namespace Relays {
 
 class RELAYSPLUGIN_DECL_EXPORT RelaysPlugin : public qf::qmlwidgets::framework::Plugin
@@ -47,6 +49,7 @@ public:
 private:
 	Q_SLOT void onInstalled();
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
+	void processRunnerFinished(const quickevent::core::si::CheckedCard &checked_card);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 };

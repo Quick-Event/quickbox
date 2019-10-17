@@ -293,7 +293,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 				QString nm = fs.section(' ', 0, 0);
 				FieldInfo &f = fieldByName(ret, nm);
 				if(!f.isValid()) {
-					qfError() << QF_FUNC_NAME << trUtf8("Found info for nonexisting field '%1'").arg(fs);
+					qfError() << QF_FUNC_NAME << tr("Found info for nonexisting field '%1'").arg(fs);
 				}
 				else {
 					fs = fs.slice(ix);
@@ -311,7 +311,7 @@ void FieldInfoList::load(const QSqlDatabase &connection, const QString table_id)
 				QString nm = fs.section(' ', 0, 0);
 				FieldInfo *f = fieldRef(nm, Qf::ThrowExc);
 				if(!f) {
-					qfError() << QF_FUNC_NAME << trUtf8("Found info for nonexisting field '%1'").arg(fs);
+					qfError() << QF_FUNC_NAME << tr("Found info for nonexisting field '%1'").arg(fs);
 				}
 				else {
 					f->setSeqName(tableName());

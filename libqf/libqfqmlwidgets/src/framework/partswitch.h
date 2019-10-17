@@ -21,7 +21,7 @@ class PartSwitchToolButton : public QToolButton
 private:
 	typedef QToolButton Super;
 public:
-	PartSwitchToolButton(QWidget *parent = 0);
+	PartSwitchToolButton(QWidget *parent = nullptr);
 public:
 	int partIndex() {return m_partIndex;}
 	void setPartIndex(int ix) {m_partIndex = ix;}
@@ -37,7 +37,7 @@ class PartSwitch : public QToolBar
 private:
 	typedef QToolBar Super;
 public:
-	explicit PartSwitch(StackedCentralWidget *central_widget,QWidget *parent = 0);
+	explicit PartSwitch(StackedCentralWidget *central_widget,QWidget *parent = nullptr);
 	~PartSwitch() Q_DECL_OVERRIDE;
 public:
 	void addPartWidget(PartWidget *widget);

@@ -18,7 +18,11 @@ CellRenderer::CellRenderer(const QSize &size, QWidget *widget)
 	m_fontAscent = fm.ascent();
 	m_fontDescent = fm.descent();
 	m_fontScale = m_size.height() / (double)(m_fontAscent + m_fontDescent);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+	m_scaledLetterWidth = static_cast<int>(fm.horizontalAdvance('W') * m_fontScale);
+#else
 	m_scaledLetterWidth = fm.width('W') * m_fontScale;
+#endif
 	m_cellSpacing = m_scaledLetterWidth / 2;
 }
 

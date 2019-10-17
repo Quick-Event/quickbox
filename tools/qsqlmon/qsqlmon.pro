@@ -42,8 +42,6 @@ INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 INCLUDEPATH += $$PWD/src
 
-#TRANSLATIONS    = qsqlmon_cz.ts
-
 win32:CONFIG(debug, debug|release):CONFIG += console
 console: message(CONSOLE)
 
@@ -51,3 +49,7 @@ include($$PWD/src/src.pri)
 
 TRANSLATIONS += \
 	$${TARGET}.cs_CZ.ts \
+	$${TARGET}.pl_PL.ts \
+	$${TARGET}.nb_NO.ts \
+	$${TARGET}.ru_RU.ts \
+	$${TARGET}.nl_BE.ts \

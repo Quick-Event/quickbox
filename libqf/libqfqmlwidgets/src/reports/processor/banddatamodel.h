@@ -26,7 +26,7 @@ private:
 public:
 	typedef Qt::ItemDataRole DataRole;
 public:
-	explicit BandDataModel(QObject *parent = 0);
+	explicit BandDataModel(QObject *parent = nullptr);
 	~BandDataModel() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_BOOL_IMPL2(d, D, ataValid, false)
@@ -53,7 +53,7 @@ class TreeTableBandDataModel : public BandDataModel
 private:
 	typedef BandDataModel Super;
 public:
-	explicit TreeTableBandDataModel(QObject *parent = 0);
+	explicit TreeTableBandDataModel(QObject *parent = nullptr);
 public:
 	int rowCount() Q_DECL_OVERRIDE;
 	int columnCount() Q_DECL_OVERRIDE;

@@ -15,7 +15,7 @@ class CompetitorWidget : public qf::qmlwidgets::framework::DataDialogWidget
 private:
 	typedef qf::qmlwidgets::framework::DataDialogWidget Super;
 public:
-	explicit CompetitorWidget(QWidget *parent = 0);
+	explicit CompetitorWidget(QWidget *parent = nullptr);
 	~CompetitorWidget() Q_DECL_OVERRIDE;
 
 	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;

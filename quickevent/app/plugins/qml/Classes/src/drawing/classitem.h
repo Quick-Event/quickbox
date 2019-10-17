@@ -43,17 +43,9 @@ private:
 	QF_VARIANTMAP_FIELD(int, f, setF, irstCode)
 	QF_VARIANTMAP_FIELD(int, r, setR, unsCount)
 	QF_VARIANTMAP_FIELD(int, m, setM, apCount)
-	//QF_VARIANTMAP_FIELD2(bool, isD, setD, rawnIn, false) ///< not SQL value, internal usage
-	//QF_VARIANTMAP_FIELD2(int, m, setM, inStartTimeSec, INVALID_START_TIME_SEC)
-	//QF_VARIANTMAP_FIELD2(int, m, setM, axStartTimeSec, INVALID_START_TIME_SEC)
 public:
 	ClassData(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	ClassData(const qf::core::sql::Query &q);
-
-	//bool isDrawnIn() const
-	//{
-	//	return !(minStartTimeSec() == INVALID_START_TIME_SEC && maxStartTimeSec() == INVALID_START_TIME_SEC);
-	//}
 };
 
 class ClassItem : public QGraphicsRectItem, public IGanttItem
@@ -64,7 +56,7 @@ private:
 public:
 	enum class ClashType {None, CourseOverlap, RunnersOverlap};
 public:
-	ClassItem(QGraphicsItem * parent = 0);
+	ClassItem(QGraphicsItem * parent = nullptr);
 
 	void updateGeometry();
 	void updateToolTip();
@@ -76,7 +68,7 @@ public:
 	const ClassData& data() const;
 	void setData(const ClassData &data);
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) Q_DECL_OVERRIDE;
 
 	void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
 	void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
@@ -87,6 +79,7 @@ public:
 	void dragLeaveEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 	void dropEvent(QGraphicsSceneDragDropEvent *event) Q_DECL_OVERRIDE;
 
+	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
 protected:
 	int runsAndVacantCount() const;
 	int durationMin() const;

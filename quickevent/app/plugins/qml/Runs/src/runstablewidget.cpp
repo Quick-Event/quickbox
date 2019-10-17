@@ -138,20 +138,30 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 				class_start_interval_min = q.value(1).toInt();
 			}
 		}
-		ui->lblClassStart->setText(class_start_time_min > 0? QString::number(class_start_time_min): "---");
-		ui->lblClassInterval->setText(class_start_interval_min > 0? QString::number(class_start_interval_min): "---");
+		ui->lblClassStart->setText(class_start_time_min >= 0? QString::number(class_start_time_min): "---");
+		ui->lblClassInterval->setText(class_start_interval_min >= 0? QString::number(class_start_interval_min): "---");
 	}
+	/*
+	qfs::QueryBuilder qb2;
+	qb2.select("siId, MAX(punchDateTime) AS punchDateTime")
+			.from("stationsbackup")
+			.where("stageId=" QF_IARG(stage_id))
+			.groupBy("siId")
+			.as("checktimes");
+			*/
 	qfs::QueryBuilder qb;
 	qb.select2("runs", "*")
 			.select2("classes", "name")
 			.select("COALESCE(relays.club, '') || ' ' || COALESCE(relays.name, '') AS relayName")
 			.select2("competitors", "id, registration, licence, ranking, siId, note")
+			//.select2("checktimes", "punchDateTime")
 			.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
 			.select("lentcards.siid IS NOT NULL AS cardInLentTable")
 			.select("'' AS disqReason")
 			.from("runs")
 			.join("runs.competitorId", "competitors.id")
 			.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
+			//.joinQuery("runs.siid", qb2, "siId")
 			.join("runs.relayId", "relays.id")
 			.orderBy("runs.id");//.limit(10);
 	if(is_relays) {
@@ -182,6 +192,7 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_relays_name, !is_relays);
 	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_leg, !is_relays);
+	ui->tblRuns->horizontalHeader()->reset(); // revealed columns are not sometimes visible without reset(), atleast in 5.5.1
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);
@@ -206,13 +217,21 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	}
 }
 
+void RunsTableWidget::reload()
+{
+	runsModel()->reload();
+	m_runsTableItemDelegate->reloadHighlightedClassId();
+}
+
 void RunsTableWidget::editCompetitor(const QVariant &id, int mode)
 {
+	Q_UNUSED(id)
 	Competitors::CompetitorsPlugin *competitors_plugin = competitorsPlugin();
 	int result;
+	int competitor_id = ui->tblRuns->tableRow().value("competitorId").toInt();
 	QMetaObject::invokeMethod(competitors_plugin, "editCompetitor", Qt::DirectConnection
 							  , Q_RETURN_ARG(int, result)
-							  , Q_ARG(int, id.toInt())
+							  , Q_ARG(int, competitor_id)
 							  , Q_ARG(int, mode)
 							  );
 	if(result == QDialog::Accepted) {
@@ -225,10 +244,10 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 	qfLogFuncFrame();
 	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QAction a_load_card(tr("Load times from card in selected rows"), nullptr);
-	QAction a_print_card(tr("Print card"), nullptr);
+	QAction a_print_card(tr("Print receipt"), nullptr);
 	QAction a_sep1(nullptr); a_sep1.setSeparator(true);
 	QAction a_shift_start_times(tr("Shift start times in selected rows"), nullptr);
-	QAction a_clear_start_times(tr("Clear times in selected rows"), nullptr);
+	QAction a_clear_start_times(tr("Clear start times in selected rows"), nullptr);
 	QList<QAction*> lst;
 	lst << &a_show_receipt << &a_load_card << &a_print_card
 		<< &a_sep1
@@ -263,6 +282,7 @@ void RunsTableWidget::onCustomContextMenuRequest(const QPoint &pos)
 		Runs::RunsPlugin *runs_plugin = runsPlugin();
 		if(!runs_plugin)
 			return;
+		//runs_plugin->courseCodesForRunId(run_id);
 		int card_id = runs_plugin->cardForRun(run_id);
 		if(card_id > 0) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();

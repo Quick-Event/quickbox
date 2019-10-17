@@ -43,6 +43,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="chkAutoPrint">
+       <property name="toolTip">
+        <string>Automatically print receipt when the card is read.</string>
+       </property>
        <property name="text">
         <string>Auto print</string>
        </property>
@@ -70,6 +73,16 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Print when runner not found</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="lstNotFound"/>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
@@ -118,6 +131,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tblCards</tabstop>
+  <tabstop>btPrintNew</tabstop>
+  <tabstop>chkAutoPrint</tabstop>
+  <tabstop>chkThisReaderOnly</tabstop>
+  <tabstop>lstReceipt</tabstop>
+  <tabstop>btPrinterOptions</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -46,7 +46,7 @@ QStringList SqlTextEditCompleter::splitPath(const QString &path) const
 //                                            SqlTextEdit
 //=============================================================
 SqlTextEdit::SqlTextEdit(QWidget * parent)
-	: QTextEdit(parent), f_completer(NULL), f_completionModel(NULL)
+	: QTextEdit(parent), f_completer(nullptr), f_completionModel(nullptr)
 {
 	new QFSqlSyntaxHighlighter(this);
 	connect(this, SIGNAL(textChanged()), this, SLOT(slotTextChanged()), Qt::QueuedConnection); ///musi byt queued v 4.7, jinak mi to hazelo SEG fault po backspace

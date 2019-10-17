@@ -42,7 +42,7 @@ public:
 					  CalculateActions = 64, ExportActions = 128, ImportActions = 256, SortActions = 512, SelectActions = 1024,
 					  FilterActions = 2048, PasteActions = 4096, AllActions = 65535};
 public:
-	explicit TableView(QWidget *parent = 0);
+	explicit TableView(QWidget *parent = nullptr);
 	~TableView() Q_DECL_OVERRIDE;
 public:
 	enum InlineEditSaveStrategy {
@@ -155,6 +155,8 @@ public:
 	Q_SLOT void setItemDelegateForColumn(int column, QAbstractItemDelegate *delegate) {Super::setItemDelegateForColumn(column, delegate);}
 
 	Q_SIGNAL void sqlException(const QString &what, const QString &where, const QString &stack_trace);
+
+	static void copySelectionToClipboard(QTableView *table_view);
 
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();

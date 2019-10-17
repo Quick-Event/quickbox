@@ -1,6 +1,7 @@
 INCLUDEPATH += $$PWD/../../libqfcore/include
 
 HEADERS += \
+    $$PWD/datetimeedit.h \
 	$$PWD/qmlwidgetsglobal.h \
 	$$PWD/frame.h \
 	$$PWD/label.h \
@@ -21,6 +22,7 @@ HEADERS += \
     $$PWD/tableitemdelegate.h \
     $$PWD/tableviewtoolbar.h \
     $$PWD/saveoptionswidget.h \
+    $$PWD/textedit.h \
     $$PWD/toolbar.h \
     $$PWD/datacontroller.h \
     $$PWD/idatawidget.h \
@@ -39,6 +41,7 @@ HEADERS += \
     $$PWD/htmlviewwidget.h
 
 SOURCES += \
+    $$PWD/datetimeedit.cpp \
 	$$PWD/frame.cpp \
 	$$PWD/label.cpp \
     $$PWD/action.cpp \
@@ -58,6 +61,7 @@ SOURCES += \
     $$PWD/tableitemdelegate.cpp \
     $$PWD/tableviewtoolbar.cpp \
     $$PWD/saveoptionswidget.cpp \
+    $$PWD/textedit.cpp \
     $$PWD/toolbar.cpp \
     $$PWD/datacontroller.cpp \
     $$PWD/idatawidget.cpp \

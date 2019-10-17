@@ -31,6 +31,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	//ui->edFilter->setText("h1%");
 	ui->grpStartOptions->setVisible(false);
 	ui->grpStartersOptions->setVisible(false);
+	ui->grpStages->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -43,6 +44,12 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::startListOptionsVisibleChanged, ui->grpStartOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::classFilterVisibleChanged, ui->grpClassFilter, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::startersOptionsVisibleChanged, ui->grpStartersOptions, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::vacantsVisibleChanged, ui->chkStartOpts_PrintVacants, &QCheckBox::setVisible);
+	connect(this, &ReportOptionsDialog::stagesOptionVisibleChanged, ui->grpStages, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::stagesCountChanged, ui->edStagesCount, &QSpinBox::setValue);
+	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
+
 	//connect(this, &ReportOptionsDialog::classFilterVisibleChanged, [this]() {
 	//	qfInfo() << __FUNCTION__;
 	//});
@@ -147,9 +154,11 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	qfLogFuncFrame() << options;
 	ui->cbxBreakAfterClassType->setCurrentIndex(options.breakType());
 	ui->edColumnCount->setValue(options.columns().length() / 2 + 1);
+	ui->edPageWidth->setValue(options.pageWidth());
+	ui->edPageHeight->setValue(options.pageHeight());
 	ui->edHorizontalMargin->setValue(options.horizontalMargin());
 	ui->edVerticalMargin->setValue(options.verticalMargin());
-	ui->chkShirinkPageWidthToColumnCount->setChecked(options.isShirinkPageWidthToColumnCount());
+	//ui->chkShirinkPageWidthToColumnCount->setChecked(options.isShirinkPageWidthToColumnCount());
 	ui->grpClassFilter->setChecked(options.isUseClassFilter());
 	ui->chkClassFilterDoesntMatch->setChecked(options.isInvertClassFilter());
 	ui->edFilter->setText(options.classFilter());
@@ -171,9 +180,11 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	for (int i = 0; i < ui->edColumnCount->value(); ++i)
 		columns += i>0? ",%": "%";
 	opts.setColumns(columns);
+	opts.setPageWidth(ui->edPageWidth->value());
+	opts.setPageHeight(ui->edPageHeight->value());
 	opts.setHorizontalMargin(ui->edHorizontalMargin->value());
 	opts.setVerticalMargin(ui->edVerticalMargin->value());
-	opts.setShirinkPageWidthToColumnCount(ui->chkShirinkPageWidthToColumnCount->isChecked());
+	//opts.setShirinkPageWidthToColumnCount(ui->chkShirinkPageWidthToColumnCount->isChecked());
 	opts.setUseClassFilter(ui->grpClassFilter->isChecked());
 	opts.setInvertClassFilter(ui->chkClassFilterDoesntMatch->isChecked());
 	opts.setClassFilter(ui->edFilter->text());

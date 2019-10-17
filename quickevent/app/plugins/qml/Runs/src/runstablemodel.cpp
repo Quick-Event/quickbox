@@ -10,7 +10,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
 #include <QMimeData>
-
+/*
 static Runs::RunsPlugin *runsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -18,12 +18,12 @@ static Runs::RunsPlugin *runsPlugin()
 	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
 	return plugin;
 }
-
+*/
 RunsTableModel::RunsTableModel(QObject *parent)
 	: Super(parent)
 {
 	clearColumns(col_COUNT);
-	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("Runnig")));
+	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("Running")));
 	setColumn(col_runs_id, ColumnDefinition("runs.id", tr("id")).setReadOnly(true));
 	setColumn(col_relays_name, ColumnDefinition("relayName", tr("Relay")));
 	setColumn(col_runs_leg, ColumnDefinition("runs.leg", tr("Leg")));
@@ -35,12 +35,13 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_license, ColumnDefinition("licence", tr("Lic")).setToolTip(tr("License")));
 	setColumn(col_runs_ranking, ColumnDefinition("ranking", tr("Rank")).setToolTip(tr("Ranking")));
 	setColumn(col_runs_siId, ColumnDefinition("runs.siId", tr("SI")).setToolTip(tr("Actual SI")).setCastType(qMetaTypeId<quickevent::core::si::SiId>()));
+	setColumn(col_runs_checkTimeMs, ColumnDefinition("runs.checkTimeMs", tr("Check")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
-	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("LR")).setToolTip(tr("Card rent requested")));
-	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("LT", "cardInLentTable")).setToolTip(tr("Card in lent table")));
+	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
+	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
 	setColumn(col_runs_cardReturned, ColumnDefinition("runs.cardReturned", tr("R")).setToolTip(tr("Card returned")));
 	setColumn(col_disqReason, ColumnDefinition("disqReason", tr("Error")).setToolTip(tr("Disqualification reason")).setReadOnly(true));
 	setColumn(col_runs_disqualified, ColumnDefinition("runs.disqualified", tr("DISQ")).setToolTip(tr("Disqualified")));
@@ -98,7 +99,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		if(!is_running) {
 			int finish_ms = value(row_ix, col_runs_finishTimeMs).toInt();
 			if(finish_ms > 0) {
-				emit badDataInput(tr("Canont set not running flag for competitor with valid finish time."));
+				emit badDataInput(tr("Cannot set not running flag for competitor with valid finish time."));
 				return false;
 			}
 		}
@@ -285,11 +286,13 @@ bool RunsTableModel::postRow(int row_no, bool throw_exc)
 		if(orig_msec == db_msec) {
 			bool ret = Super::postRow(row_no, throw_exc);
 			//transaction.commit();
+			/*
 			QVariant v = value(row_no, col_runs_finishTimeMs);
 			if(!v.isNull()) {
 				runsPlugin()->reloadTimesFromCard(run_id);
 				reloadRow(row_no);
 			}
+			*/
 			return ret;
 		}
 		else {

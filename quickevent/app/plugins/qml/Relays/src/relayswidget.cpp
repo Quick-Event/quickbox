@@ -123,7 +123,11 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		}
 		{
 			m_cbxClasses = new qfw::ForeignKeyComboBox();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+			m_cbxClasses->setMinimumWidth(fontMetrics().horizontalAdvance('X') * 10);
+#else
 			m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
+#endif
 			m_cbxClasses->setMaxVisibleItems(100);
 			m_cbxClasses->setReferencedTable("classes");
 			m_cbxClasses->setReferencedField("id");
@@ -166,7 +170,7 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_nlegs);
 	}
 	{
-		qfw::Action *a = new qfw::Action("nlegs", tr("&Overal"));
+		qfw::Action *a = new qfw::Action("nlegs", tr("&Overall"));
 		a_print_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal);
 	}
@@ -212,7 +216,7 @@ void RelaysWidget::editRelay(const QVariant &id, int mode)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	auto *w = new  RelayWidget();
-	w->setWindowTitle(tr("Edit  Relay"));
+	w->setWindowTitle(tr("Edit Relay"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
 	QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
@@ -243,7 +247,7 @@ void RelaysWidget::editRelays(int mode)
 		QList<int> sel_rows = ui->tblRelays->selectedRowsIndexes();
 		if(sel_rows.count() <= 1)
 			return;
-		if(qfd::MessageBox::askYesNo(this, tr("Realy delete all the selected competitors? This action cannot be reverted."), false)) {
+		if(qfd::MessageBox::askYesNo(this, tr("Really delete all the selected competitors? This action cannot be reverted."), false)) {
 			qfs::Transaction transaction;
 			int n = 0;
 			for(int ix : sel_rows) {

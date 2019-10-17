@@ -44,8 +44,8 @@ class QFQMLWIDGETS_DECL_EXPORT PartWidget : public QWidget, public IPersistentSe
 private:
 	typedef QWidget Super;
 public:
-	explicit PartWidget(QWidget *parent = 0) : PartWidget(QString(), parent) {}
-	explicit PartWidget(const QString &feature_id, QWidget *parent = 0);
+	explicit PartWidget(QWidget *parent = nullptr) : PartWidget(QString(), parent) {}
+	explicit PartWidget(const QString &feature_id, QWidget *parent = nullptr);
 	~PartWidget() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_BOOL_IMPL(a, A, ctive)

@@ -18,7 +18,7 @@ class QFQMLWIDGETS_DECL_EXPORT CentralWidget : public QWidget
 private:
 	typedef QWidget Super;
 public:
-	explicit CentralWidget(MainWindow *parent = 0);
+	explicit CentralWidget(MainWindow *parent = nullptr);
 public:
 	Q_SLOT virtual bool setActivePart(int part_index, bool set_active) = 0;
 	Q_SLOT bool setActivePart(const QString &feature_id, bool set_active)

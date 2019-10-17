@@ -22,6 +22,7 @@ private:
 	//Q_SLOT bool saveLegsTable();
 	//void onRunsTableCustomContextMenuRequest(const QPoint &pos);
 	bool saveData() Q_DECL_OVERRIDE;
+	void checkLegsStartTimes();
 
 	void addLeg();
 	void removeLeg();

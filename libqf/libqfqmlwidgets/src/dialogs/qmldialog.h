@@ -29,7 +29,7 @@ class QFQMLWIDGETS_DECL_EXPORT QmlDialog : public Dialog, public QQmlParserStatu
 private:
 	typedef Dialog Super;
 public:
-	explicit QmlDialog(QWidget *parent = 0);
+	explicit QmlDialog(QWidget *parent = nullptr);
 	~QmlDialog() Q_DECL_OVERRIDE;
 
 	void setStandardButtons(int bts) {setButtons((QDialogButtonBox::StandardButtons)bts);}

@@ -1,5 +1,6 @@
 #include "resultsexporter.h"
 #include "resultsexporterwidget.h"
+#include "../Runs/runsplugin.h"
 
 #include <Event/eventplugin.h>
 
@@ -21,9 +22,21 @@
 
 namespace services {
 
-static auto KEY_EXPORT_DIR = QStringLiteral("exportDir");
-static auto KEY_EXPORT_INTERVAL = QStringLiteral("exportInterval");
-static auto KEY_WHEN_FINSHED_RUN_CMD = QStringLiteral("whenFinishedRunCmd");
+static Runs::RunsPlugin *runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
+	return plugin;
+}
+
+Event::EventPlugin *eventPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
+	return plugin;
+}
 
 ResultsExporter::ResultsExporter(QObject *parent)
 	: Super(ResultsExporter::serviceName(), parent)
@@ -32,7 +45,7 @@ ResultsExporter::ResultsExporter(QObject *parent)
 	connect(m_exportTimer, &QTimer::timeout, this, &ResultsExporter::onExportTimerTimeOut);
 	connect(this, &ResultsExporter::statusChanged, [this](Status status) {
 		if(status == Status::Running) {
-			if(m_exportIntervalSec > 0) {
+			if(settings().exportIntervalSec() > 0) {
 				onExportTimerTimeOut();
 				m_exportTimer->start();
 			}
@@ -41,6 +54,8 @@ ResultsExporter::ResultsExporter(QObject *parent)
 			m_exportTimer->stop();
 		}
 	});
+	connect(this, &ResultsExporter::settingsChanged, this, &ResultsExporter::init, Qt::QueuedConnection);
+
 }
 
 QString ResultsExporter::serviceName()
@@ -48,61 +63,65 @@ QString ResultsExporter::serviceName()
 	return QStringLiteral("ResultsExporter");
 }
 
-void ResultsExporter::setExportDir(const QString &s)
+bool ResultsExporter::exportResults()
 {
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	settings.setValue(KEY_EXPORT_DIR, s);
-	m_exportDir = s;
-}
+	ResultsExporterSettings ss = settings();
+	if(!QDir().mkpath(ss.exportDir())) {
+		qfError() << "Cannot create export dir:" << ss.exportDir();
+		return false;
+	}
+	qfInfo() << "ResultsExporter export dir:" << ss.exportDir();
+	if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::CSOS)) {
+		int current_stage = eventPlugin()->currentStageId();
+		QString fn = ss.exportDir() + "/results-csos.txt";
+		runsPlugin()->exportResultsCsosStage(current_stage, fn);
+		return true;
+	}
+	if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::IofXml3)) {
+		int current_stage = eventPlugin()->currentStageId();
+		QString fn = ss.exportDir() + "/results-csos.txt";
+		runsPlugin()->exportResultsIofXml30Stage(current_stage, fn);
+		return true;
+	}
+	else if(ss.outputFormat() == static_cast<int>(ResultsExporterSettings::OutputFormat::HtmlMulti)) {
+		quickevent::core::exporters::StageResultsHtmlExporter exp;
+		exp.setOutDir(ss.exportDir());
+		exp.generateHtml();
 
-void ResultsExporter::setExportIntervalSec(int sec)
-{
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	settings.setValue(KEY_EXPORT_INTERVAL, sec);
-	m_exportIntervalSec = sec;
-}
+		QString cmd = ss.whenFinishedRunCmd();
+		if(!cmd.isEmpty()) {
+			qfInfo() << "Starting process:" << cmd;
+			QProcess *proc = new QProcess();
+			connect(proc, &QProcess::readyReadStandardOutput, [proc]() {
+				QByteArray ba = proc->readAllStandardOutput();
+				qfInfo().noquote() << "PROC stdout:" << ba;
+			});
+			connect(proc, &QProcess::readyReadStandardError, [proc]() {
+				QByteArray ba = proc->readAllStandardError();
+				qfWarning().noquote() << "PROC stderr:" << ba;
+			});
+			connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [proc](int exit_code, QProcess::ExitStatus exit_status) {
+				if(exit_status == QProcess::ExitStatus::CrashExit)
+					qfError() << "PROC crashed";
+				else
+					qfInfo() << "PROC finished with exit code:" << exit_code;
+				proc->deleteLater();
+			});
 
-void ResultsExporter::setWhenFinishedRunCmd(const QString &s)
-{
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	settings.setValue(KEY_WHEN_FINSHED_RUN_CMD, s);
-	m_whenFinishedRunCmd = s;
+			proc->start(cmd);
+		}
+		return true;
+	}
+	qfError() << "Unsupported output format:" << ss.outputFormat();
+	return false;
 }
 
 void ResultsExporter::onExportTimerTimeOut()
 {
 	if(status() != Status::Running)
 		return;
-	qfInfo() << "generate results to:" << exportDir();
-	quickevent::core::exporters::StageResultsHtmlExporter exp;
-	exp.setOutDir(exportDir());
-	exp.generateHtml();
-
-	QString cmd = whenFinishedRunCmd();
-	if(!cmd.isEmpty()) {
-		qfInfo() << "Starting process:" << cmd;
-		QProcess *proc = new QProcess();
-		connect(proc, &QProcess::readyReadStandardOutput, [proc]() {
-			QByteArray ba = proc->readAllStandardOutput();
-			qfInfo().noquote() << "PROC stdout:" << ba;
-		});
-		connect(proc, &QProcess::readyReadStandardError, [proc]() {
-			QByteArray ba = proc->readAllStandardError();
-			qfWarning().noquote() << "PROC stderr:" << ba;
-		});
-		connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), [proc](int exit_code, QProcess::ExitStatus exit_status) {
-			if(exit_status == QProcess::ExitStatus::CrashExit)
-				qfError() << "PROC crashed";
-			else
-				qfInfo() << "PROC finished with exit code:" << exit_code;
-			proc->deleteLater();
-		});
-
-		proc->start(cmd);
-	}
+	if(!exportResults())
+		stop();
 }
 
 qf::qmlwidgets::framework::DialogWidget *ResultsExporter::createDetailWidget()
@@ -113,24 +132,26 @@ qf::qmlwidgets::framework::DialogWidget *ResultsExporter::createDetailWidget()
 
 void ResultsExporter::loadSettings()
 {
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	m_exportDir = settings.value(KEY_EXPORT_DIR).toString();
-	if(m_exportDir.isEmpty()) {
-		m_exportDir = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/quickevent/results";
-	}
-	QDir().mkpath(m_exportDir);
-	qfInfo() << "ResultsExporter export dir:" << exportDir();
+	Super::loadSettings();
+	ResultsExporterSettings ss = settings();
 
-	m_exportIntervalSec = settings.value(KEY_EXPORT_INTERVAL).toInt();
-	if(m_exportIntervalSec > 0) {
-		m_exportTimer->setInterval(m_exportIntervalSec * 1000);
+	if(ss.exportDir().isEmpty()) {
+		ss.setExportDir(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + "/quickevent/results");
+		setSettings(ss);
+	}
+
+	init();
+}
+
+void ResultsExporter::init()
+{
+	ResultsExporterSettings ss = settings();
+	if(ss.exportIntervalSec() > 0) {
+		m_exportTimer->setInterval(ss.exportIntervalSec() * 1000);
 	}
 	else {
 		m_exportTimer->stop();
 	}
-
-	m_whenFinishedRunCmd = settings.value(KEY_WHEN_FINSHED_RUN_CMD).toString();
 }
 
 } // namespace services

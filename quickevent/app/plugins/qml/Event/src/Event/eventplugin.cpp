@@ -92,14 +92,22 @@ static auto QBE_EXT = QStringLiteral(".qbe");
 
 const char* EventPlugin::DBEVENT_COMPETITOR_COUNTS_CHANGED = "competitorCountsChanged";
 const char* EventPlugin::DBEVENT_CARD_READ = "cardRead";
-const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
+//const char* EventPlugin::DBEVENT_CARD_CHECKED = "cardChecked";
+const char* EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED = "cardProcessedAndAssigned";
 const char* EventPlugin::DBEVENT_PUNCH_RECEIVED = "punchReceived";
 const char* EventPlugin::DBEVENT_REGISTRATIONS_IMPORTED = "registrationsImported";
+const char* EventPlugin::DBEVENT_STAGE_START_CHANGED = "stageStartChanged";
+
+static QString singleFileStorageDir()
+{
+	ConnectionSettings connection_settings;
+	QString ret = connection_settings.singleWorkingDir();
+	return ret;
+}
 
 static QString eventNameToFileName(const QString &event_name)
 {
-	ConnectionSettings connection_settings;
-	QString ret = connection_settings.singleWorkingDir() + '/' + event_name + QBE_EXT;
+	QString ret = singleFileStorageDir() + '/' + event_name + QBE_EXT;
 	return ret;
 }
 
@@ -127,6 +135,7 @@ EventPlugin::EventPlugin(QObject *parent)
 	connect(this, &EventPlugin::eventNameChanged, [this](const QString &event_name) {
 		setEventOpen(!event_name.isEmpty());
 	});
+	connect(this, &Event::EventPlugin::dbEventNotify, this, &Event::EventPlugin::onDbEventNotify, Qt::QueuedConnection);
 }
 
 void EventPlugin::initEventConfig()
@@ -254,6 +263,7 @@ StageData EventPlugin::stageData(int stage_id)
 
 void EventPlugin::clearStageDataCache()
 {
+	qfInfo() << "stages data cache cleared";
 	m_stageCache.clear();
 }
 
@@ -291,6 +301,8 @@ void EventPlugin::onInstalled()
 	connect(m_actImportEvent, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
 
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
+	connect(this, &EventPlugin::eventNameChanged, this, &EventPlugin::updateWindowTitle);
+	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
@@ -341,6 +353,7 @@ void EventPlugin::onInstalled()
 
 	services::EmmaClient *emma_client = new services::EmmaClient(this);
 	services::Service::addService(emma_client);
+
 	{
 		m_servicesDockWidget = new qff::DockWidget(nullptr);
 		m_servicesDockWidget->setObjectName("servicesDockWidget");
@@ -354,6 +367,13 @@ void EventPlugin::onInstalled()
 		//a->setShortcut(QKeySequence("ctrl+shift+R"));
 		fwk->menuBar()->actionForPath("view")->addActionInto(a);
 	}
+}
+
+void EventPlugin::updateWindowTitle()
+{
+	QString title = QStringLiteral("%1 E%2").arg(eventName()).arg(currentStageId());
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	fwk->setWindowTitle(title);
 }
 
 void EventPlugin::onCbxStageActivated(int ix)
@@ -391,7 +411,7 @@ void EventPlugin::editStage()
 	dlg.setCentralWidget(w);
 	w->load(stage_id);
 	if(dlg.exec()) {
-		clearStageDataCache();
+		emitDbEvent(Event::EventPlugin::DBEVENT_STAGE_START_CHANGED, stage_id, true);
 	}
 }
 
@@ -459,7 +479,11 @@ DbSchema EventPlugin::dbSchema()
 
 int EventPlugin::minDbVersion()
 {
-	return 10200;
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	int db_version;
+	QMetaObject::invokeMethod(fwk, "dbVersion", Qt::DirectConnection
+							  , Q_RETURN_ARG(int, db_version));
+	return db_version;
 }
 
 void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource source, const QVariant &payload)
@@ -487,6 +511,16 @@ void EventPlugin::onDbEvent(const QString &name, QSqlDriver::NotificationSource 
 		else {
 			//qfDebug() << "self db notify";
 		}
+	}
+}
+
+void EventPlugin::onDbEventNotify(const QString &domain, int connection_id, const QVariant &data)
+{
+	Q_UNUSED(connection_id)
+	Q_UNUSED(data)
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_STAGE_START_CHANGED)) {
+		//int stage_id = data.toInt();
+		clearStageDataCache();
 	}
 }
 
@@ -1005,7 +1039,7 @@ void EventPlugin::exportEvent()
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString ext = ".qbe";
-	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), QString(), tr("Quick Event files *%1 (*%1)").arg(ext));
+	QString ex_fn = qf::qmlwidgets::dialogs::FileDialog::getSaveFileName (fwk, tr("Export as Quick Event"), singleFileStorageDir(), tr("Quick Event files *%1 (*%1)").arg(ext));
 	if(ex_fn.isEmpty())
 		return;
 	if(!ex_fn.endsWith(ext, Qt::CaseInsensitive))

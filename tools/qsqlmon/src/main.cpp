@@ -1,5 +1,6 @@
 #include "theapp.h"
 #include "mainwindow.h"
+#include "appversion.h"
 
 #include <qf/core/log.h>
 #include <qf/core/logdevice.h>
@@ -14,17 +15,20 @@ int main(int argc, char *argv[])
 	int ret = 0;
 
 	QCoreApplication::setOrganizationDomain("quickbox.org");
-	QCoreApplication::setOrganizationName("QuickBox");
+	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setApplicationName("qsqlmon");
+	QCoreApplication::setApplicationVersion(APP_VERSION);
 
 	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");
 	qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::LogDevice> file_log_device(qf::core::FileLogDevice::install());
 
-	qfError() << "qfError() test OK.";
-	qfWarning() << "qfWarning() test OK.";
-	qfInfo() << "qfInfo() test OK.";
-	qfDebug() << "qfDebug() test OK.";
+	qfInfo() << QCoreApplication::applicationName() << "ver." << QCoreApplication::applicationVersion();
+
+	//qfError() << "qfError() test OK.";
+	//qfWarning() << "qfWarning() test OK.";
+	//qfInfo() << "qfInfo() test OK.";
+	//qfDebug() << "qfDebug() test OK.";
 
 	//QLocale::setDefault(QLocale(QLocale::Czech, QLocale::CzechRepublic));
 	//QLocale::setDefault(QLocale::system());
@@ -37,6 +41,6 @@ int main(int argc, char *argv[])
 	main_window.show();
 	ret = app.exec();
 
-	qfDebug() << "bye ...";
+	qfInfo() << "bye ...";
 	return ret;
 }

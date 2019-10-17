@@ -21,7 +21,7 @@ class QFCORE_DECL_EXPORT TableModel : public QAbstractTableModel
 	Q_OBJECT
 	Q_PROPERTY(bool nullReportedAsString READ isNullReportedAsString WRITE setNullReportedAsString NOTIFY nullReportedAsStringChanged)
 public:
-	explicit TableModel(QObject *parent = 0);
+	explicit TableModel(QObject *parent = nullptr);
 private:
 	typedef QAbstractTableModel Super;
 public:
@@ -155,6 +155,7 @@ public:
 		Q_UNUSED(parent)
 		return removeRows(row_ix, count, qf::core::Exception::Throw);
 	}
+	virtual void cloneRow(int row_ix);
 	virtual bool removeRows(int row_ix, int count, bool throw_exc);
 	// used by TableView to delete row, when it was deleted externaly
 	bool removeRowNoOverload(int row_ix, bool throw_exc);

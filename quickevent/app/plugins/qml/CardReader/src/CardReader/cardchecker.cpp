@@ -1,14 +1,16 @@
 #include "cardchecker.h"
 #include "../CardReader/cardreaderplugin.h"
 
+//#include <Classes/classesplugin.h>
 #include <Event/eventplugin.h>
 #include <Event/stage.h>
 #include <Runs/runsplugin.h>
 
 #include <quickevent/core/og/timems.h>
+#include <quickevent/core/si/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 
-#include <siut/simessage.h>
+//#include <siut/simessage.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
 
@@ -31,10 +33,17 @@ static Event::EventPlugin* eventPlugin()
 	return plugin;
 }
 
+static Runs::RunsPlugin* runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	auto *plugin = qobject_cast<Runs::RunsPlugin*>(fwk->plugin("Runs"));
+	QF_ASSERT_EX(plugin != nullptr, "Bad Runs plugin!");
+	return plugin;
+}
+
 CardChecker::CardChecker(QObject *parent)
 	: QObject(parent)
 {
-
 }
 
 int CardChecker::fixTimeWrapAM(int time1_msec, int time2_msec)
@@ -91,50 +100,14 @@ int CardChecker::startTimeSec(int run_id)
 	return ret;
 }
 
+int CardChecker::cardCheckCheckTimeSec()
+{
+	return eventPlugin()->eventConfig()->cardCheckCheckTimeSec();
+}
+
 QVariantMap CardChecker::courseCodesForRunId(int run_id)
 {
-	QVariantMap ret;
-	if(run_id <= 0) {
-		qfError() << "Run ID == 0";
-		return ret;
-	}
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto runs_plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT(runs_plugin != nullptr, "Bad plugin", return QVariantMap());
-
-	int course_id = runs_plugin->courseForRun(run_id);
-	if(course_id <= 0) {
-		qfError() << "Course ID == 0";
-		return ret;
-	}
-	{
-		qfs::QueryBuilder qb;
-		qb.select2("courses", "*")
-				.from("courses")
-				.where("courses.id=" QF_IARG(course_id));
-		qfs::Query q;
-		q.exec(qb.toString(), qf::core::Exception::Throw);
-		if(q.next())
-			ret = q.values();
-	}
-	{
-		qfs::QueryBuilder qb;
-		qb.select2("coursecodes", "position")
-				.select2("codes", "code, altCode, outOfOrder")
-				.from("coursecodes")
-				.join("coursecodes.codeId", "codes.id")
-				.where("coursecodes.courseId=" QF_IARG(course_id))
-				.orderBy("coursecodes.position");
-		qfs::Query q;
-		//qfWarning() << qb.toString();
-		q.exec(qb.toString(), qf::core::Exception::Throw);
-		QVariantList codes;
-		while (q.next()) {
-			codes << q.values();
-		}
-		ret["codes"] = codes;
-	}
-	return ret;
+	return runsPlugin()->courseCodesForRunId(run_id);
 }
 
 int CardChecker::finishPunchCode()

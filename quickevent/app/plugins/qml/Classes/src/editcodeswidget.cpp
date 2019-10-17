@@ -25,11 +25,14 @@ EditCodesWidget::EditCodesWidget(QWidget *parent)
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
+		m->addColumn("codes.type", tr("Type", "control type")).setToolTip(tr("Control type"));
 		m->addColumn("codes.code", tr("Code"));
 		m->addColumn("codes.altCode", tr("Alt")).setToolTip(tr("Code alternative"));
 		m->addColumn("codes.note", tr("Note"));
-		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order"));
+		m->addColumn("codes.outOfOrder", tr("Out of order")).setToolTip(tr("Out of order"));
 		m->addColumn("codes.radio", tr("Radio"));
+		m->addColumn("codes.longitude", tr("Long")).setToolTip(tr("Longitude"));
+		m->addColumn("codes.latitude", tr("Lat")).setToolTip(tr("Latitude"));
 		ui->tableView->setTableModel(m);
 		m_tableModel = m;
 	}

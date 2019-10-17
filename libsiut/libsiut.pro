@@ -17,5 +17,9 @@ LIBS += -L$$DESTDIR -lqfcore
 
 include(libsiut.pri)
 
-
-
+TRANSLATIONS += \
+	libsiut.cs_CZ.ts \
+	libsiut.pl_PL.ts \
+	libsiut.nb_NO.ts \
+	libsiut.ru_RU.ts \
+	libsiut.nl_BE.ts \

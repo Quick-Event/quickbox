@@ -18,7 +18,7 @@ class QFQMLWIDGETS_DECL_EXPORT HtmlViewWidget : public qf::qmlwidgets::framework
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	explicit HtmlViewWidget(QWidget *parent = 0);
+	explicit HtmlViewWidget(QWidget *parent = nullptr);
 	~HtmlViewWidget() Q_DECL_OVERRIDE;
 
 	//QString htmlText();

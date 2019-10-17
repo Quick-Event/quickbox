@@ -36,6 +36,7 @@ public:
 	Q_INVOKABLE void previewReceipt(int card_id);
 	Q_INVOKABLE bool printReceipt(int card_id);
 	Q_INVOKABLE bool printCard(int card_id);
+	Q_INVOKABLE bool printError(int card_id);
 
 	QVariantMap readCardTablesData(int card_id);
 	Q_INVOKABLE QVariantMap receiptTablesData(int card_id);

@@ -143,6 +143,18 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 	return ret;
 }
 
-
+QVariantList HtmlUtils::createHtmlTable(const QString &title, const QStringList &flds, const QVariantList &rows)
+{
+	QVariantList div = QVariantList() << QStringLiteral("div");
+	div.insert(div.length(), QVariantList() << QStringLiteral("h2") << title);
+	QVariantList table = QVariantList() << QStringLiteral("table");
+	QVariantList header = QVariantList() << QStringLiteral("tr");
+	for(auto fld : flds)
+		header.insert(header.length(), QVariantList() << QStringLiteral("th") << fld);
+	table.insert(table.length(), header);
+	table << rows;
+	div.insert(div.length(), table);
+	return div;
+}
 
 

@@ -1,6 +1,8 @@
 #ifndef CARDREADERWIDGET_H
 #define CARDREADERWIDGET_H
 
+#include <siut/sitask.h>
+
 #include <qf/core/exception.h>
 #include <qf/core/log.h>
 
@@ -20,7 +22,8 @@ class Plugin;
 }
 }
 }
-namespace siut { class DeviceDriver; }
+
+namespace siut { class DeviceDriver; class CommPort; class SICard; class SIPunch; }
 
 namespace quickevent { namespace gui { namespace audio { class Player; }}}
 namespace quickevent { namespace core { namespace si { class ReadCard; class CheckedCard; }}}
@@ -36,6 +39,7 @@ class QTextStream;
 class QFile;
 class QComboBox;
 class QCheckBox;
+class QLabel;
 
 class SIMessageTransmitPunch;
 class SIMessageData;
@@ -52,7 +56,7 @@ public:
 	explicit CardReaderWidget(QWidget *parent = 0);
 	~CardReaderWidget() Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
+	//Q_SIGNAL void sendSICommand(int cmd, const QByteArray& data_params);
 	Q_SIGNAL void logRequest(qf::core::Log::Level level, const QString &msg);
 	void emitLogRequest(qf::core::Log::Level level, const QString &msg) {emit logRequest(level, msg);}
 
@@ -61,30 +65,37 @@ public:
 	Q_SLOT void reset();
 	Q_SLOT void reload();
 
+	//Q_SLOT void processSIMessage(const SIMessageData &msg);
+
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 private slots:
 	void appendLog(qf::core::Log::Level level, const QString &msg);
 	void processDriverInfo(qf::core::Log::Level level, const QString &msg);
-	void processSIMessage(const SIMessageData &msg);
 	void processDriverRawData(const QByteArray &data);
-	void onCommOpen(bool checked);
+	void onOpenCommTriggered(bool checked);
+
+	void onSiTaskFinished(int task_type, QVariant result);
+
+	void readStationBackupMemory();
 
 	void importCards_lapsOnlyCsv();
+	void importCards_SIReaderBackupMemoryCsv();
 private:
 	void createActions();
 	Q_SLOT void openSettings();
+
 	siut::DeviceDriver *siDriver();
+	siut::CommPort *commPort();
+	void onComOpenChanged(bool comm_is_open);
 
-	void processSICard(const SIMessageCardReadOut &card);
-	void processSIPunch(const SIMessageTransmitPunch &rec);
+	void processSICard(const siut::SICard &card);
+	void processSIPunch(const siut::SIPunch &rec);
 
-	bool processReadCardSafe(const quickevent::core::si::ReadCard &read_card);
-	void processReadCard(const quickevent::core::si::ReadCard &read_card) throw(qf::core::Exception);
+	bool processReadCardInTransaction(const quickevent::core::si::ReadCard &read_card);
+	void processReadCard(const quickevent::core::si::ReadCard &read_card);
 
 	void updateTableView(int card_id);
 
-	CardReader::CardReaderPlugin* thisPlugin();
-	qf::qmlwidgets::framework::Plugin* receiptsPlugin();
 	Q_SLOT void onCbxCardCheckersActivated(int ix);
 
 	void onCustomContextMenuRequest(const QPoint &pos);
@@ -97,14 +108,15 @@ private:
 	void operatorAudioNotify();
 private:
 	Ui::CardReaderWidget *ui;
+	QLabel *m_lblCommInfo = nullptr;
 	qf::qmlwidgets::Action *m_actCommOpen = nullptr;
 	qf::qmlwidgets::Action *m_actSettings = nullptr;
-	siut::DeviceDriver *f_siDriver = nullptr;
 	qf::core::model::SqlTableModel *m_cardsModel = nullptr;
 	QComboBox *m_cbxCardCheckers = nullptr;
-	QCheckBox *m_cbxAutoRefresh = nullptr;
 	QComboBox *m_cbxPunchMarking = nullptr;
 	quickevent::gui::audio::Player *m_audioPlayer = nullptr;
+	siut::DeviceDriver *f_siDriver = nullptr;
+	siut::CommPort *m_commPort = nullptr;
 };
 
 #endif // CARDREADERWIDGET_H

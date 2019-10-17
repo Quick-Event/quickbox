@@ -323,7 +323,7 @@ public:
 		Image(const QImage &im) : image(im) {}
 	};
 public:
-	virtual ReportItemFrame* toFrame() {return NULL;}
+	virtual ReportItemFrame* toFrame() {return nullptr;}
 protected:
 	ReportItemBand *parentBand();
 
@@ -353,7 +353,7 @@ public:
 	{
 		if(parent())
 			return parent()->toFrame();
-		return NULL;
+		return nullptr;
 	}
 	static const bool IncludingParaTexts = true;
 	/// sometimes is necessarry to continue printing of overflowed text and print brorders for it again,

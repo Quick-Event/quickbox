@@ -63,25 +63,25 @@ Frame {
 		Frame { height: 2 }
 		Para {
 			textStyle: myStyle.textStyleBold
-			text: "Čip + buzola = ComCard.";
+			text: "TRIMTEX sleva 50%";
 		}
 		Para {
 			halign: Frame.AlignHCenter
-			text: "Rychlé ražení.";
+			text: "Špičkové norské sportovní oblečení";
 		}
 		Para {
 			halign: Frame.AlignHCenter
-			text: "Žádné zastrkávání, stačí přiložit.";
-		}
-		Para {
-			halign: Frame.AlignHCenter
-			text: "Zvládnete to jedním prstem.";
+			text: "trika, bundy, vesty, termoprádlo,";
 		}
 		Para {
 			htmlExportAttributes: {"lpt_textStyle": "bold"}
 			halign: Frame.AlignHCenter
-			text: "Se slevou ve stánku HSH";
+			text: "Se slevou 50% ve stánku HSH";
 			textStyle: myStyle.textStyleBold
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "Dresy OB od 790 Kč";
 		}
 	}
 }

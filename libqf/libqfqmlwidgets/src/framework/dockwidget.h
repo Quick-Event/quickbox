@@ -21,7 +21,7 @@ private:
 	typedef QDockWidget Super;
 public:
 	explicit DockWidget(const QString &window_title, QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
-	explicit DockWidget(QWidget *parent = 0, Qt::WindowFlags flags = 0) : DockWidget(QString(), parent, flags) {}
+	explicit DockWidget(QWidget *parent = nullptr, Qt::WindowFlags flags = 0) : DockWidget(QString(), parent, flags) {}
 	~DockWidget() Q_DECL_OVERRIDE;
 
 	// visibilityChanged() exists already in QDockWidget

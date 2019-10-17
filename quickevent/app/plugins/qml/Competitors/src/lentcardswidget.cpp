@@ -13,7 +13,7 @@ LentCardsWidget::LentCardsWidget(QWidget *parent)
 	: Super(parent)
 	, ui(new Ui::LentCardsWidget)
 {
-	setTitle(tr("Lent cards"));
+	setTitle(tr("Cards to rent"));
 	setPersistentSettingsId("LentCardsWidget");
 	ui->setupUi(this);
 	ui->tblCardsTB->setTableView(ui->tblCards);

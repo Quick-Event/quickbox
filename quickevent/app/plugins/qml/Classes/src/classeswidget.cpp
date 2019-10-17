@@ -1,12 +1,16 @@
 #include "classeswidget.h"
 #include "ui_classeswidget.h"
 
-#include "Classes/classesplugin.h"
+#include "coursedef.h"
 #include "editcodeswidget.h"
 #include "editcourseswidget.h"
 #include "drawing/drawingganttwidget.h"
 
+#include "Classes/classesplugin.h"
 #include <Event/eventplugin.h>
+
+#include <quickevent/core/si/punchrecord.h>
+#include <quickevent/core/si/codedef.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -152,10 +156,13 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.coursesModel");
 		m->addColumn("coursecodes.position", tr("Pos")).setReadOnly(true);
+		m->addColumn("codes.type", tr("Type", "control type")).setToolTip(tr("Control type"));
 		m->addColumn("codes.code", tr("Code")).setReadOnly(true);
 		m->addColumn("codes.altCode", tr("Alt")).setToolTip(tr("Code alternative")).setReadOnly(false);
 		m->addColumn("codes.outOfOrder", tr("O")).setToolTip(tr("Out of order"));
 		m->addColumn("codes.radio", tr("R")).setToolTip(tr("Radio"));
+		m->addColumn("codes.longitude", tr("Long")).setToolTip(tr("Longitude"));
+		m->addColumn("codes.latitude", tr("Lat")).setToolTip(tr("Latitude"));
 		ui->tblCourseCodes->setTableModel(m);
 		m_courseCodesModel = m;
 	}
@@ -181,20 +188,20 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
 	qfw::Action *a_edit = part_widget->menuBar()->actionForPath("edit", true);
-	a_edit->setText("&Edit");
+	a_edit->setText(tr("&Edit"));
 	{
-		qfw::Action *a = new qfw::Action("Cou&rses", this);
+		qfw::Action *a = new qfw::Action(tr("Cou&rses"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::edit_courses);
 		a_edit->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("Co&des", this);
+		qfw::Action *a = new qfw::Action(tr("Co&des"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::edit_codes);
 		a_edit->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("Classes &layout");
-		a->setShortcut("Ctrl+L");
+		qfw::Action *a = new qfw::Action(tr("Classes &layout"));
+		a->setShortcut(tr("Ctrl+L"));
 		a_edit->addActionInto(a);
 		connect(a, &qfw::Action::triggered, [this]()
 		{
@@ -208,24 +215,24 @@ void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	}
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
-	a_import->setText("&Import");
+	a_import->setText(tr("&Import"));
 	{
-		qfw::Action *a = new qfw::Action("OCad TXT", this);
+		qfw::Action *a = new qfw::Action(tr("OCad TXT"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_txt);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("OCad v8", this);
+		qfw::Action *a = new qfw::Action(tr("OCad v8"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_v8);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("OCad IOF-XML 2.0", this);
+		qfw::Action *a = new qfw::Action(tr("OCad IOF-XML 2.0"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_2);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action("OCad IOF-XML 3.0", this);
+		qfw::Action *a = new qfw::Action(tr("OCad IOF-XML 3.0"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_3);
 		a_import->addActionInto(a);
 	}
@@ -360,7 +367,7 @@ void ClassesWidget::reloadCourseCodes()
 	}
 }
 
-void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
+void ClassesWidget::importCourses(const QList<CourseDef> &course_defs, const QList<quickevent::core::si::CodeDef> &code_defs)
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
@@ -371,13 +378,10 @@ void ClassesWidget::importCourses(const QList<CourseDef> &course_defs)
 			QVariantList courses;
 			for(const auto &cd : course_defs)
 				courses << cd;
-			/*
-			{
-				QJsonDocument doc = QJsonDocument::fromVariant(courses);
-				qfInfo() << doc.toJson();
-			}
-			*/
-			classes_plugin->createCourses(selectedStageId(), courses);
+			QVariantList codes;
+			for(const auto &cd : code_defs)
+				codes << cd;
+			classes_plugin->createCourses(selectedStageId(), courses, codes);
 			reload();
 		}
 	}
@@ -460,7 +464,7 @@ void ClassesWidget::import_ocad_txt()
 					cd.setCodes(codes);
 				}
 			}
-			importCourses(defined_courses_map.values());
+			importCourses(defined_courses_map.values(), QList<quickevent::core::si::CodeDef>());
 		}
 		catch (const qf::core::Exception &e) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -555,7 +559,7 @@ void ClassesWidget::import_ocad_v8()
 					cd.setCodes(codes);
 				}
 			}
-			importCourses(defined_courses_map.values());
+			importCourses(defined_courses_map.values(), QList<quickevent::core::si::CodeDef>());
 		}
 		catch (const qf::core::Exception &e) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -567,6 +571,8 @@ void ClassesWidget::import_ocad_v8()
 static QString element_text(const QDomElement &parent, const QString &tag_name)
 {
 	QDomElement el = parent.firstChildElement(tag_name);
+	if(el.isNull())
+		qfWarning() << parent.tagName() << "does not have child:" << tag_name;
 	return el.text();
 }
 
@@ -634,7 +640,7 @@ void ClassesWidget::import_ocad_iofxml_2()
 				coursedef.setCodes(codes.values());
 				defined_courses_list << coursedef;
 			}
-			importCourses(defined_courses_list);
+			importCourses(defined_courses_list, QList<quickevent::core::si::CodeDef>());
 		}
 	}
 	catch (const qf::core::Exception &e) {
@@ -646,6 +652,8 @@ void ClassesWidget::import_ocad_iofxml_2()
 void ClassesWidget::import_ocad_iofxml_3()
 {
 	qfLogFuncFrame();
+	//static constexpr int START_CODE0 = 0;
+	//static const int FINISH_CODE0 = quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE - 1;
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), "XML files (*.xml);; All files (*)");
 	if(fn.isEmpty())
 		return;
@@ -657,6 +665,39 @@ void ClassesWidget::import_ocad_iofxml_3()
 			if(!xdoc.setContent(&f, &err_str, &err_line))
 				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(err_str).arg(err_line));
 
+			QList<quickevent::core::si::CodeDef> defined_codes;
+			{
+				QDomElement el_course_data = xdoc.elementsByTagName(QStringLiteral("RaceCourseData")).at(0).toElement();
+				const auto CONTROL = QStringLiteral("Control");
+				for (QDomElement el_code = el_course_data.firstChildElement(CONTROL); !el_code.isNull(); el_code = el_code.nextSiblingElement(CONTROL)) {
+					quickevent::core::si::CodeDef codedef;
+					QString code_str = element_text(el_code, QStringLiteral("Id")).trimmed();
+					bool ok;
+					int code = 0;
+					if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
+						code = code_str.mid(1).toInt(&ok);
+						codedef.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_START);
+					}
+					else if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
+						code = code_str.mid(1).toInt(&ok);
+						codedef.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+					}
+					else {
+						code = code_str.toInt(&ok);
+					}
+					if(ok) {
+						codedef.setCode(code);
+						QDomElement el_pos = el_code.firstChildElement(QStringLiteral("Position"));
+						codedef.setLongitude(el_pos.attribute(QStringLiteral("lng")).trimmed().toDouble());
+						codedef.setLatitude(el_pos.attribute(QStringLiteral("lat")).trimmed().toDouble());
+						qfDebug() << "adding code:" << codedef.toString();
+						defined_codes << codedef;
+					}
+					else {
+						qfError() << "Invalid code" << code_str << "will be ignored";
+					}
+				}
+			}
 			QMap<QString, CourseDef> defined_courses;
 			{
 				QDomNodeList ndlst = xdoc.elementsByTagName(QStringLiteral("Course"));
@@ -672,19 +713,34 @@ void ClassesWidget::import_ocad_iofxml_3()
 					coursedef.setLenght(element_text(el_course, QStringLiteral("Length")).trimmed().toInt());
 					coursedef.setClimb(element_text(el_course, QStringLiteral("Climb")).trimmed().toInt());
 
-					QMap<int, QVariant> codes;
+					QVariantList codes;
 					QDomNodeList xml_controls = el_course.elementsByTagName(QStringLiteral("CourseControl"));
-					int no = 0;
 					for (int j = 0; j < xml_controls.count(); ++j) {
 						QDomElement el_control = xml_controls.at(j).toElement();
-						if(el_control.attribute(QStringLiteral("type")) != QLatin1String("Control"))
-								continue;
-						int code = element_text(el_control, QStringLiteral("Control")).trimmed().toInt();
-						if(code <= 0)
-							QF_EXCEPTION(QString("Xml file format error: bad control code %1 in %2").arg(code).arg(dump_element(el_control)));
-						codes[++no] = code;
+						//if(el_control.attribute(QStringLiteral("type")) != QLatin1String("Control"))
+						//		continue;
+						QString code_str = element_text(el_control, QStringLiteral("Control")).trimmed();
+						qfDebug() << code_str;
+						/*
+						int code = 0;
+						bool ok;
+						if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
+							code = code_str.mid(1).toInt(&ok);
+						}
+						else if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
+							code = code_str.mid(1).toInt(&ok);
+						}
+						else {
+							code = code_str.toInt(&ok);
+						}
+						if(ok)
+							codes << code;
+						else
+							qfError() << QString("Xml file format error: bad control code %1 in %2").arg(code).arg(dump_element(el_control));
+						*/
+						codes << code_str;
 					}
-					coursedef.setCodes(codes.values());
+					coursedef.setCodes(codes);
 				}
 			}
 			{
@@ -738,7 +794,7 @@ void ClassesWidget::import_ocad_iofxml_3()
 						cd.setClasses(split_class_names);
 				}
 			}
-			importCourses(defined_courses.values());
+			importCourses(defined_courses.values(), defined_codes);
 		}
 	}
 	catch (const qf::core::Exception &e) {

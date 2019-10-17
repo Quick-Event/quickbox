@@ -26,7 +26,7 @@ private:
 	};
 	QExplicitlySharedDataPointer<Data> d;
 protected:
-	QString dataHex() const;
+	//QString dataHex() const;
 	SValue property_helper(const QString &name);
 	SValue property_helper(int ix);
 public:
@@ -35,7 +35,7 @@ public:
 	bool isList() const {return valueType() == QVariant::List;}
 	bool isMap() const {return valueType() == QVariant::Map;}
 	/// pokud je to objekt, a obsahuje property \a name vraci true a do val da jeji hodnotu
-	bool hasProperty(const QString &name, QVariant *val = NULL) const;
+	bool hasProperty(const QString &name, QVariant *val = nullptr) const;
 	/// pokud je to objekt, vraci jmena jeho properties
 	QStringList keys() const;
 	/// pokud je to pole, vraci pocet prvku

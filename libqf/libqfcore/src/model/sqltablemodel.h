@@ -26,7 +26,7 @@ class QFCORE_DECL_EXPORT SqlTableModel : public TableModel
 private:
 	typedef TableModel Super;
 public:
-	SqlTableModel(QObject *parent = 0);
+	SqlTableModel(QObject *parent = nullptr);
 	~SqlTableModel() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QVariant, q, Q, ueryParameters)

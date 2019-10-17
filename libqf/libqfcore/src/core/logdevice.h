@@ -14,7 +14,7 @@ class QFCORE_DECL_EXPORT LogDevice : public QObject
 {
 	Q_OBJECT
 protected:
-	LogDevice(QObject *parent = 0);
+	LogDevice(QObject *parent = nullptr);
 public:
 	virtual ~LogDevice();
 
@@ -86,7 +86,7 @@ class QFCORE_DECL_EXPORT FileLogDevice : public LogDevice
 private:
 	typedef LogDevice Super;
 protected:
-	FileLogDevice(QObject *parent = 0);
+	FileLogDevice(QObject *parent = nullptr);
 public:
 	static constexpr bool LogAppend = true;
 public:
@@ -133,7 +133,7 @@ class QFCORE_DECL_EXPORT SignalLogDevice : public LogDevice
 private:
 	typedef LogDevice Super;
 protected:
-	SignalLogDevice(QObject *parent = 0);
+	SignalLogDevice(QObject *parent = nullptr);
 public:
 	//~SignalLogDevice() Q_DECL_OVERRIDE;
 

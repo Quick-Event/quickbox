@@ -282,12 +282,12 @@ void SValue::setProperty(int ix, const QVariant &val)
 	d->value = l;
 }
 
-
+/*
 QString SValue::dataHex() const
 {
 	return QString::number((long)d.data(), 16);
 }
-
+*/
 QVariant SValue::variantCast() const
 {
 	QVariant ret;

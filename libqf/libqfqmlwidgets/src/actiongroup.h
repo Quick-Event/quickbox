@@ -14,7 +14,7 @@ class QFQMLWIDGETS_DECL_EXPORT ActionGroup : public QActionGroup
 private:
 	typedef QActionGroup Super;
 public:
-	ActionGroup(QObject *parent = 0);
+	ActionGroup(QObject *parent = nullptr);
 
 	Q_INVOKABLE QAction* addAction(QAction *action) {return Super::addAction(action);}
 };

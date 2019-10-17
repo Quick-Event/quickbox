@@ -12,12 +12,7 @@ namespace quickevent { namespace core { namespace si { class ReadCard; }}}
 
 namespace CardReader {
 
-class CppCardChecker
-{
-public:
-	virtual quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card) {Q_UNUSED(read_card) return quickevent::core::si::CheckedCard();}
-};
-
+/// CardChecker base class
 class CardChecker : public QObject
 {
 	Q_OBJECT
@@ -26,7 +21,7 @@ class CardChecker : public QObject
 public:
 	//enum class CheckType : int {Classic = 0, BeerRace, Custom};
 public:
-	explicit CardChecker(QObject *parent = 0);
+	explicit CardChecker(QObject *parent = nullptr);
 
 	QF_PROPERTY_IMPL(QString, c, C, aption)
 
@@ -38,11 +33,24 @@ public:
 	Q_INVOKABLE int stageIdForRun(int run_id);
 	Q_INVOKABLE int stageStartSec(int stage_id);
 	Q_INVOKABLE int startTimeSec(int run_id);
+	Q_INVOKABLE int cardCheckCheckTimeSec();
 	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
 
 	static int finishPunchCode();
 
 	//Q_INVOKABLE QVariant checkCard(const QVariant &card, const QVariant &run_id);
+};
+
+/// C++ CardChecker base class
+class CardCheckerCpp : public CardChecker
+{
+	Q_OBJECT
+
+	using Super = CardChecker;
+public:
+	explicit CardCheckerCpp(QObject *parent = nullptr) : Super(parent) {}
+
+	virtual quickevent::core::si::CheckedCard checkCard(const quickevent::core::si::ReadCard &read_card) = 0;
 };
 
 }

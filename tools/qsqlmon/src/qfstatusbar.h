@@ -33,7 +33,7 @@ public:
 public:
 	//! Create status bar with \a label_cnt labels from left and the progress bar.
 	//! Minimal \a label_cnt is 1.
-	QFStatusBar(QWidget *parent = NULL);
+	QFStatusBar(QWidget *parent = nullptr);
 	virtual ~QFStatusBar();
 };
 

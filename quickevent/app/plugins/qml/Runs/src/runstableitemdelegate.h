@@ -16,15 +16,15 @@ public:
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartTimeHighlightVisible, false)
 
 	void setHighlightedClassId(int class_id, int stage_id);
-
-	//void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &ix) const Q_DECL_OVERRIDE;
+	void reloadHighlightedClassId();
 protected:
 	void paintBackground(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 private:
 	int m_stageId = 0;
 	int m_highlightedClassId = 0;
-	int m_classStart;
-	int m_classInterval;
+	int m_classStartFirst = 0;
+	int m_classStartLast = 0;
+	int m_classInterval = 0;
 };
 
 #endif // RUNSTABLEITEMDELEGATE_H

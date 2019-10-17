@@ -87,7 +87,7 @@ Report {
 						layout: Frame.LayoutHorizontal
 						Para {
 							width: "%"
-							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") + " " + detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
+							text: detailCompetitor.data(detailCompetitor.currentIndex, "competitorName")
 						}
 						Para {
 							htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
@@ -106,7 +106,7 @@ Report {
 							htmlExportAttributes: {"lpt_textWidth": "%"}
 							width: "%"
 							//textHAlign: Frame.AlignLeft
-							text: "SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
+							text: detailCompetitor.data(detailCompetitor.currentIndex, "classes.name") //"SI: " + detailCompetitor.data(detailCompetitor.currentIndex, "runs.siId")
 						}
 						Para {
 							textFn: function() {
@@ -217,7 +217,7 @@ Report {
 				htmlExportAttributes: (dc.currentIndex < (dc.rowCount - 2))? ({}): {"lpt_textStyle": "underline2"};
 				Cell {
 					id: cellPos
-					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
+					htmlExportAttributes: {"lpt_textWidth": "3", "lpt_textAlign": "right"}
 					width: 8
 					textHAlign: Frame.AlignRight
 					text: {
@@ -229,8 +229,8 @@ Report {
 				}
 				Para {
 					id: cellCode
-					htmlExportAttributes: {"lpt_textWidth": "5", "lpt_textAlign": "right"}
-					width: 10
+					htmlExportAttributes: {"lpt_textWidth": "4", "lpt_textAlign": "right"}
+					width: 7
 					//textHAlign: Frame.AlignRight
 					textFn: function() {
 						var ret;
@@ -279,6 +279,20 @@ Report {
 						return "";
 					}
 				}
+				Para {
+					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "right"}
+					id: cellMinKm
+					width: "%"
+					textHAlign: Frame.AlignRight
+					text: {
+						var msec = dc.data(dc.currentIndex, "lapTimeMs");
+						var km = dc.data(dc.currentIndex, "distance") / 1000;
+						if(msec > 0 && km > 0) {
+							return "~" + OGTime.msecToString_mmss(msec / km);
+						}
+						return "";
+					}
+				}
 			}
 			Frame {
 				width: "%"
@@ -297,7 +311,7 @@ Report {
 			Frame {
 				id: cardLentFrame
 				//visible: false
-				vinset: 1
+				//vinset: 1
 				htmlExportAttributes: {"lpt_borderBottom": "="}
 				fill: brushError
 				bottomBorder: Pen { basedOn: "black1" }
@@ -306,11 +320,11 @@ Report {
 					htmlExportAttributes: {"lpt_textWidth": "%", "lpt_textAlign": "center"}
 					width: "%"
 					textHAlign: Frame.AlignHCenter
-					text: qsTr("!!! CARD LENT !!!");
+					text: qsTr("!!! RENTED CARD !!!");
 				}
 			}
 			Para {
-				vinset: 1
+				//vinset: 1
 				hinset: 1
 				textFn: function() {
 					var extra_codes = bandCard.data("extraCodes");
@@ -323,6 +337,17 @@ Report {
 						}
 						var ret = qsTr("extra: ") + xcs.join(", ");
 						return ret;
+					}
+					return "";
+				}
+			}
+			Para {
+				//vinset: 1
+				hinset: 1
+				textFn: function() {
+					var bad_check = bandCard.data("isBadCheck");
+					if(bad_check) {
+						return qsTr("BAD CHECK !!!");
 					}
 					return "";
 				}

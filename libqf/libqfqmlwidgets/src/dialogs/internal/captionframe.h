@@ -22,7 +22,7 @@ class CaptionFrame : public QFrame
 public:
 	//enum FrameStyle {StyleDefault=0, StyleLight, StyleDark};
 public:
-	CaptionFrame(QWidget *parent = NULL);
+	CaptionFrame(QWidget *parent = nullptr);
 
 	QF_PROPERTY_BOOL_IMPL2(a, A, lert, false)
 signals:

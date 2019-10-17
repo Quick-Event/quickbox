@@ -5,6 +5,8 @@
 
 class QComboBox;
 class QCheckBox;
+class QTextStream;
+class QLabel;
 
 namespace qf {
 namespace core {
@@ -38,8 +40,6 @@ public:
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
 
-	//static Event::EventPlugin* eventPlugin();
-
 	Q_SLOT void reset(int class_id = 0);
 	Q_SLOT void reload();
 
@@ -67,6 +67,11 @@ private:
 	void saveLockedForDrawing(int class_id, int stage_id, bool is_locked, int start_last_min);
 
 	void import_start_times_ob2000();
+
+	QString getSaveFileName(const QString &file_name, int stage_id);
+	void export_results_iofxml30_stage();
+	void export_results_csos_stage();
+	void export_results_csos_overall();
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber,
 		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,
@@ -76,6 +81,8 @@ private:
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
 	QComboBox *m_cbxStage = nullptr;
 	QComboBox *m_cbxLeg = nullptr;
+	QAction *m_toolbarActionLabelLeg = nullptr;
+	QAction *m_toolbarActionComboLeg = nullptr;
 	QCheckBox *m_chkShowOffRace = nullptr;
 };
 

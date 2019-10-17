@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Encoding=UTF-8
+Name=QSqlMon
+Exec=qsqlmon
+Comment=A SQL monitor application
+Icon=qsqlmon48x48
+Categories=System;Database;
+Type=Application
+Terminal=false

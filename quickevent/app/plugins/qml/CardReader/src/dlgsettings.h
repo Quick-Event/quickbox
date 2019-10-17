@@ -27,7 +27,7 @@ protected:
 public:
 	virtual void accept();
 public:
-	DlgSettings(QWidget *parent = NULL);
+	DlgSettings(QWidget *parent = nullptr);
 	virtual ~DlgSettings();
 private:
 };

@@ -24,7 +24,7 @@ class QFQMLWIDGETS_DECL_EXPORT PreviewDialog : public Dialog
 private:
 	typedef Dialog Super;
 public:
-	PreviewDialog(QWidget *parent = 0);
+	PreviewDialog(QWidget *parent = nullptr);
 	~PreviewDialog() Q_DECL_OVERRIDE;
 public:
 	QString text();

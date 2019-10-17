@@ -9,6 +9,10 @@ Report {
 
 	property int stageCount: 1
 	property string reportTitle: qsTr("Start list by clubs")
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
+	property bool isPrintStartNumbers: false
+	property var options
 
 	property QfObject internals: QfObject {
 		Component {
@@ -21,8 +25,13 @@ Report {
 			id: cStartTimeCell
 			Cell {
 				property string fieldName
+				property string isRunning
 				textFn: function() {
-					return OGTime.msecToString_mmss(runnersDetail.data(runnersDetail.currentIndex, fieldName));
+					var run = runnersDetail.data(runnersDetail.currentIndex, isRunning);
+					if (run)
+						return OGTime.msecToString_mmss(runnersDetail.data(runnersDetail.currentIndex, fieldName));
+					else
+						return "-";
 				}
 			}
 		}
@@ -48,10 +57,10 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: 210
-	height: 297
-	hinset: 5
-	vinset: 5
+	width: root.options.pageWidth? root.options.pageWidth: 210
+	height: root.options.pageHeight? root.options.pageHeight: 297
+	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
@@ -82,6 +91,11 @@ Report {
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
 					Space { height: 5 }
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
+						skipFirst: true
+					}
 					Frame {
 						id: classHeader
 						width: "%"
@@ -126,6 +140,12 @@ Report {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
+							Para {
+								visible: root.isPrintStartNumbers
+								width: 16
+								halign: Frame.AlignRight
+								textFn: runnersDetail.dataFn("startNumber");
+							}
 							Cell {
 								width: 25
 								textFn: runnersDetail.dataFn("registration");
@@ -139,7 +159,7 @@ Report {
 								//console.warn("=============", root.stageCount)
 								for(var i=0; i<root.stageCount; i++) {
 									var runs_table = "runs" + (i+1);
-									var c = cStartTimeCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeMs"});
+									var c = cStartTimeCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeMs", "isRunning": runs_table + ".isRunning" });
 									runnersDetail.addItem(c);
 								}
 							}

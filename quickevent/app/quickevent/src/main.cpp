@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "application.h"
-#include "appversionstring.h"
+#include "appversion.h"
 #include "appclioptions.h"
 #include "tablemodellogdevice.h"
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setOrganizationDomain("quickbox.org");
 	QCoreApplication::setApplicationName("quickevent");
-	QCoreApplication::setApplicationVersion(APP_VERSION_STRING);
+	QCoreApplication::setApplicationVersion(APP_VERSION);
 
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 

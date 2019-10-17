@@ -25,21 +25,29 @@ QString TimeMs::toString(QChar sec_sep, QChar msec_sep) const
 	if(!isValid())
 		return QString();
 
-	int msec = m_msec % 1000;
-	int sec = (m_msec / 1000) % 60;
-	int min = m_msec / (1000 * 60);
+	int msec = m_msec;
+	bool is_neg = false;
+	if(msec < 0) {
+		msec = -msec;
+		is_neg = true;
+	}
+	int ms = msec % 1000;
+	int sec = (msec / 1000) % 60;
+	int min = msec / (1000 * 60);
 	QString ret = QString::number(min) + sec_sep;
 	if(sec < 10)
 		ret += '0';
 	ret += QString::number(sec);
 	if(!msec_sep.isNull()) {
 		ret += msec_sep;
-		if(msec < 100)
+		if(ms < 100)
 			ret += '0';
-		if(msec < 10)
+		if(ms < 10)
 			ret += '0';
-		ret += QString::number(msec);
+		ret += QString::number(ms);
 	}
+	if(is_neg)
+		ret = '-' + ret;
 	return ret;
 }
 

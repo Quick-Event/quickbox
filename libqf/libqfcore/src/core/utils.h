@@ -63,7 +63,7 @@
 	public: Q_SIGNAL void lower_letter##name_rest##Changed(const ptype &new_val); \
 	public: ptype lower_letter##name_rest() const {return m_##lower_letter##name_rest;} \
 	public: Q_SLOT bool set##upper_letter##name_rest(const ptype &val) { \
-		if(m_##lower_letter##name_rest != val) { \
+		if(!(m_##lower_letter##name_rest == val)) { \
 			m_##lower_letter##name_rest = val; \
 			emit lower_letter##name_rest##Changed(m_##lower_letter##name_rest); \
 			return true; \
@@ -136,7 +136,7 @@ class QFCORE_DECL_EXPORT Utils
 {
 public:
 	static const QString &nullValueString();
-	static void parseFieldName(const QString& full_field_name, QString *pfield_name = NULL, QString *ptable_name = NULL, QString *pdb_name = NULL);
+	static void parseFieldName(const QString& full_field_name, QString *pfield_name = nullptr, QString *ptable_name = nullptr, QString *pdb_name = nullptr);
 	static QString composeFieldName(const QString &field_name, const QString &table_name = QString(), const QString &db_name = QString());
 	/// @returns: True if @a field_name1 ends with @a field_name2. Comparision is case insensitive
 	static bool fieldNameEndsWith(const QString &field_name1, const QString &field_name2);
@@ -166,7 +166,7 @@ public:
 	template <class T>
 	static T findParent(const QObject *_o, bool throw_exc = qf::core::Exception::Throw)
 	{
-		T t = NULL;
+		T t = nullptr;
 		QObject *o = const_cast<QObject*>(_o);
 		while(o) {
 			o = o->parent();
@@ -177,7 +177,7 @@ public:
 				break;
 		}
 		if(!t && throw_exc) {
-			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg((ulong)_o, 0, 16));
+			QF_EXCEPTION(QString("object 0x%1 has not any parent of requested type.").arg(reinterpret_cast<uintptr_t>(_o), 0, 16));
 		}
 		return t;
 	}

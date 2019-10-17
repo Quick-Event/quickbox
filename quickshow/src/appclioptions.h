@@ -9,7 +9,7 @@ class AppCliOptions : public qf::core::utils::ConfigCLIOptions
 private:
 	typedef qf::core::utils::ConfigCLIOptions Super;
 public:
-	AppCliOptions(QObject *parent = NULL);
+	AppCliOptions(QObject *parent = nullptr);
 	~AppCliOptions() Q_DECL_OVERRIDE {}
 
 	CLIOPTION_GETTER_SETTER(QString, p, setP, rofile)
@@ -20,6 +20,7 @@ public:
 	CLIOPTION_GETTER_SETTER2(int, "event.stage", s, setS, tage)
 	CLIOPTION_GETTER_SETTER2(QString, "event.classesLike", c, setC, lassesLike)
 	CLIOPTION_GETTER_SETTER2(QString, "event.classesNotLike", c, setC, lassesNotLike)
+	CLIOPTION_GETTER_SETTER2(QString, "event.classesIn", c, setC, lassesIn)
 	CLIOPTION_GETTER_SETTER2(QString, "connection.host", h, setH, ost)
 	CLIOPTION_GETTER_SETTER2(int, "connection.port", p, setP, ort)
 	CLIOPTION_GETTER_SETTER2(QString, "connection.user", u, setU, ser)

@@ -19,7 +19,7 @@ class QFQMLWIDGETS_DECL_EXPORT Label : public QLabel
 private:
 	typedef QLabel Super;
 public:
-	explicit Label(QWidget *parent = 0);
+	explicit Label(QWidget *parent = nullptr);
 public:
 
 	Qt::Alignment horizontalAlignment() const;

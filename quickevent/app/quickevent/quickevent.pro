@@ -1,6 +1,8 @@
 message(including $$PWD)
 
 QT += core gui qml widgets
+# plugin sometimes cannot find Qt libraries, CardReader needs QtSerialPort.so
+QT += serialport
 
 CONFIG += C++11
 
@@ -71,3 +73,7 @@ win32:CONFIG(debug, debug|release):CONFIG += console
 
 TRANSLATIONS += \
 	$${TARGET}.cs_CZ.ts \
+	$${TARGET}.pl_PL.ts \
+	$${TARGET}.nb_NO.ts \
+	$${TARGET}.ru_RU.ts \
+	$${TARGET}.nl_BE.ts \

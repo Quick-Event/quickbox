@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>570</width>
-    <height>598</height>
+    <width>730</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,6 +29,25 @@
    <property name="bottomMargin">
     <number>5</number>
    </property>
+   <item>
+    <widget class="QGroupBox" name="grpStages">
+     <property name="title">
+      <string>Stages count</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Number of stages</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="edStagesCount"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <widget class="QGroupBox" name="grpClassFilter">
      <property name="title">
@@ -176,7 +195,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="grpPageLayout">
      <property name="title">
       <string>Page layout</string>
      </property>
@@ -194,23 +213,134 @@
        <number>5</number>
       </property>
       <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Horizontal margin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="edHorizontalMargin">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="edColumnCount">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>3</number>
+        </property>
+        <property name="value">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Column count</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Vertical margin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QSpinBox" name="edVerticalMargin">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Page width</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="edPageWidth">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>9999999</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>210</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Page height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="edPageHeight">
+        <property name="suffix">
+         <string> mm</string>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>999999</number>
+        </property>
+        <property name="singleStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>297</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Break type</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" colspan="2">
-       <widget class="QCheckBox" name="chkShirinkPageWidthToColumnCount">
-        <property name="toolTip">
-         <string>Shrink page width to column count</string>
-        </property>
-        <property name="text">
-         <string>Shrink page</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
+      <item row="3" column="3">
        <widget class="QComboBox" name="cbxBreakAfterClassType">
         <item>
          <property name="text">
@@ -227,75 +357,6 @@
           <string>Page</string>
          </property>
         </item>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QSpinBox" name="edColumnCount">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>2</number>
-        </property>
-        <property name="value">
-         <number>2</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Column count</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Horizontal margin</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSpinBox" name="edHorizontalMargin">
-        <property name="suffix">
-         <string> mm</string>
-        </property>
-        <property name="minimum">
-         <number>5</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="value">
-         <number>10</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Vertical margin</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QSpinBox" name="edVerticalMargin">
-        <property name="suffix">
-         <string> mm</string>
-        </property>
-        <property name="minimum">
-         <number>5</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="value">
-         <number>5</number>
-        </property>
        </widget>
       </item>
      </layout>
@@ -338,19 +399,23 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>edStagesCount</tabstop>
   <tabstop>grpClassFilter</tabstop>
   <tabstop>btWildCard</tabstop>
   <tabstop>btRegExp</tabstop>
   <tabstop>btClassNames</tabstop>
+  <tabstop>edFilter</tabstop>
   <tabstop>chkClassFilterDoesntMatch</tabstop>
   <tabstop>edStartersOptionsLineSpacing</tabstop>
   <tabstop>chkStartOpts_PrintVacants</tabstop>
   <tabstop>chkStartOpts_PrintStartNumbers</tabstop>
-  <tabstop>cbxBreakAfterClassType</tabstop>
+  <tabstop>edPageWidth</tabstop>
+  <tabstop>edHorizontalMargin</tabstop>
   <tabstop>edColumnCount</tabstop>
-  <tabstop>chkShirinkPageWidthToColumnCount</tabstop>
+  <tabstop>edPageHeight</tabstop>
+  <tabstop>edVerticalMargin</tabstop>
+  <tabstop>cbxBreakAfterClassType</tabstop>
   <tabstop>btSaveAsDefault</tabstop>
-  <tabstop>edFilter</tabstop>
  </tabstops>
  <resources/>
  <connections>

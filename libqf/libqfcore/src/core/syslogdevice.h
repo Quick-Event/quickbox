@@ -18,7 +18,7 @@ class QFCORE_DECL_EXPORT SysLogDevice : public LogDevice
 private:
 	typedef LogDevice Super;
 protected:
-	explicit SysLogDevice(QObject *parent = 0);
+	explicit SysLogDevice(QObject *parent = nullptr);
 	~SysLogDevice() Q_DECL_OVERRIDE;
 public:
 	static SysLogDevice* install();

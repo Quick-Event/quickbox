@@ -166,7 +166,7 @@ QtObject {
 			var opts = dlg.optionsMap();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"
 										   , td
-										   , qsTr("Results by clases")
+										   , qsTr("Results by classes")
 										   , "printCurrentStage"
 										   , { isBreakAfterEachClass: dlg.isBreakAfterEachClass()
 											   , isColumnBreak: dlg.isColumnBreak()
@@ -182,7 +182,7 @@ QtObject {
 		Log.info("runs printCurrentStageFirstN triggered");
 		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Limit number of printed runners in each class to:"), 3, 1);
 		var td = currentStageTableData("", n);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", td, qsTr("Stage results by clases"));
+		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", td, qsTr("Stage results by classes"));
 	}
 
 	function printCurrentStageAwards()
@@ -284,7 +284,7 @@ QtObject {
 					.select2('runlaps', '*')
 					.from('runlaps')
 					.where("runlaps.runId={{run_id}}")
-					.where("runlaps.code!=999") // omit finish lap
+					.where("runlaps.code<999") // omit finish lap
 					.orderBy('runlaps.position');
 				reportModel.setQueryParameters({run_id: tt2.value(j, "runs.id")})
 				reportModel.reload();

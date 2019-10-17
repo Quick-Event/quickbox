@@ -7,7 +7,6 @@
 #include <qf/core/assert.h>
 
 #include <QFileDialog>
-#include <QSettings>
 
 namespace services {
 
@@ -20,10 +19,20 @@ EmmaClientWidget::EmmaClientWidget(QWidget *parent)
 
 	EmmaClient *svc = service();
 	if(svc) {
-		ui->edFileName->setText(svc->fileName());
+		EmmaClientSettings ss = svc->settings();
+		ui->edExportDir->setText(ss.exportDir());
+		ui->edFileName->setText(ss.fileName());
+		ui->edExportInterval->setValue(ss.exportIntervalSec());
+		ui->chExportStart->setCheckState((ss.exportStart()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportFinish->setCheckState((ss.exportFinish()) ? Qt::Checked : Qt::Unchecked);
+		ui->chExportXML30->setCheckState((ss.exportTypeXML3()) ? Qt::Checked : Qt::Unchecked);
 	}
 
-	connect(ui->btChooseFile, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseFileClicked);
+	connect(ui->btChooseExportDir, &QPushButton::clicked, this, &EmmaClientWidget::onBtChooseExportDirClicked);
+	connect(ui->btExportSplits, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportSplitsClicked);
+	connect(ui->btExportFinish, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportFinishClicked);
+	connect(ui->btExportStart, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportStartClicked);
+	connect(ui->btExportXML30, &QPushButton::clicked, this, &EmmaClientWidget::onBtExportXML30Clicked);
 }
 
 EmmaClientWidget::~EmmaClientWidget()
@@ -31,28 +40,32 @@ EmmaClientWidget::~EmmaClientWidget()
 	delete ui;
 }
 
-void EmmaClientWidget::onBtChooseFileClicked()
+void EmmaClientWidget::onBtChooseExportDirClicked()
 {
-	QString fn = QFileDialog::getOpenFileName(this, tr("Open File"), ui->edFileName->text(), tr("Text Files (*.txt)"));
-	if(!fn.isEmpty())
-		ui->edFileName->setText(fn);
+	EmmaClient *svc = service();
+	if(svc) {
+		EmmaClientSettings ss = svc->settings();
+		QString dir = QFileDialog::getExistingDirectory(this, tr("Open Directory"), ss.exportDir(), QFileDialog::ShowDirsOnly);
+		if(!dir.isEmpty())
+			ui->edExportDir->setText(dir);
+	}
+}
+
+void EmmaClientWidget::onBtExportSplitsClicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportRadioCodes();
+	}
 }
 
 bool EmmaClientWidget::acceptDialogDone(int result)
 {
 	if(result == QDialog::Accepted) {
-		QString fn = ui->edFileName->text().trimmed();
-		if(!fn.isEmpty()) {
-			QFile file(fn);
-			if(!file.open(QIODevice::WriteOnly | QIODevice::Append)) {
-				qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("File '%1' cannot be open for writing.").arg(fn));
-				return false;
-			}
-		}
-		EmmaClient *svc = service();
-		if(svc) {
-			svc->setFileName(fn);
-			svc->loadSettings();
+		if(!saveSettings()) {
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Cannot create directory '%1'.").arg(ui->edExportDir->text().trimmed()));
+			return false;
 		}
 	}
 	return true;
@@ -65,4 +78,53 @@ EmmaClient *EmmaClientWidget::service()
 	return svc;
 }
 
+bool EmmaClientWidget::saveSettings()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		EmmaClientSettings ss = svc->settings();
+		QString dir = ui->edExportDir->text().trimmed();
+		ss.setExportDir(dir);
+		ss.setExportIntervalSec(ui->edExportInterval->value());
+		ss.setFileName(ui->edFileName->text().trimmed());
+		ss.setExportStart(ui->chExportStart->isChecked());
+		ss.setExportFinish(ui->chExportFinish->isChecked());
+		ss.setExportTypeXML3(ui->chExportXML30->isChecked());;
+		svc->setSettings(ss);
+		if(!dir.isEmpty()) {
+			if(!QDir().mkpath(dir))
+				return false;
+		}
+	}
+	return true;
 }
+
+void EmmaClientWidget::onBtExportFinishClicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportFinish();
+	}
+}
+
+void EmmaClientWidget::onBtExportStartClicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportStartList();
+	}
+}
+
+void EmmaClientWidget::onBtExportXML30Clicked()
+{
+	EmmaClient *svc = service();
+	if(svc) {
+		saveSettings();
+		svc->exportResultsIofXml3();
+	}
+}
+
+}
+

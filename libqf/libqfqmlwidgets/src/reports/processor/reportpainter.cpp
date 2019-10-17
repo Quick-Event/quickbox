@@ -29,9 +29,9 @@ const QString ReportItemMetaPaint::checkReportSubstitution = "@{check:${STATE}}"
 const QRegExp ReportItemMetaPaint::checkReportSubstitutionRegExp = QRegExp("@\\{check:(\\d)\\}");
 
 ReportItemMetaPaint::ReportItemMetaPaint()
-	: Super(NULL)
+	: Super(nullptr)
 {
-	//f_layoutSettings = NULL;
+	//f_layoutSettings = nullptr;
 }
 
 ReportItemMetaPaint::ReportItemMetaPaint(ReportItemMetaPaint *_parent, ReportItem *report_item)
@@ -354,7 +354,7 @@ QString ReportItemMetaPaint::dump(int indent)
 //                              ReportItemMetaPaintReport
 //=================================================
 ReportItemMetaPaintReport::ReportItemMetaPaintReport(ReportItem *report_item)
-	: ReportItemMetaPaint(NULL, report_item), orientation()
+	: ReportItemMetaPaint(nullptr, report_item), orientation()
 {
 	//f_reportProcessor = report_item->processor;
 	/*--
@@ -696,7 +696,7 @@ void ReportItemMetaPaintCheck::paint(ReportPainter * painter, unsigned mode)
 void ReportItemMetaPaintImage::paint(ReportPainter *painter, unsigned mode)
 {
 	//qfDebug().color(QFLog::Green) << QF_FUNC_NAME << reportElement.tagName() << "mode:" << mode;
-	QF_ASSERT(painter, "painter is NULL", return);
+	QF_ASSERT(painter, "painter is nullptr", return);
 	QPrinter *printer = dynamic_cast<QPrinter*>(painter->device());
 	//if(printer) { qfInfo() << "printer output format:" << printer->outputFormat() << "is native printer:" << (printer->outputFormat() == QPrinter::NativeFormat); }
 	if(printer && printer->outputFormat() == QPrinter::NativeFormat) {
@@ -765,7 +765,7 @@ ReportPainter::ReportPainter(QPaintDevice *device)
 {
 	//currentPage = 0;
 	pageCount = 0;
-	f_selectedItem = NULL;
+	f_selectedItem = nullptr;
 	setMarkEditableSqlText(false);
 }
 

@@ -37,7 +37,7 @@ public:
 
 	Database* database();
 public:
-	ServerTreeItem(QObject *parent = NULL, const QString& name = "");
+	ServerTreeItem(QObject *parent = nullptr, const QString& name = "");
 	virtual ~ServerTreeItem();
 };
 
@@ -57,7 +57,7 @@ public:
 		void setParam(const QString& name, const QVariant& value);
 	};
 public:
-	Connection(const Params& _params, QObject *parent = NULL);
+	Connection(const Params& _params, QObject *parent = nullptr);
 	virtual ~Connection();
 public:
 	QString connectionNameId() const;
@@ -99,7 +99,7 @@ public:
 	bool open();
 	void close();
 public:
-	Database(QObject *parent = NULL, const QString& name = "");
+	Database(QObject *parent = nullptr, const QString& name = "");
 	virtual ~Database();
 };
 
@@ -121,7 +121,7 @@ public:
 	bool isOpen() {return isopen;}
 	QString createScript(int flags = (CreateTableSql | CreateTableSql | IncludeViews));
 public:
-	Schema(QObject *parent = NULL, const QString& name = "")
+	Schema(QObject *parent = nullptr, const QString& name = "")
 		: ServerTreeItem(parent, name), isopen(false) {}
 	virtual ~Schema() {}
 };

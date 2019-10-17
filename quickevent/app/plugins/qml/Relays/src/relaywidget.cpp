@@ -49,6 +49,8 @@ private:
 
 class LegsModel : public quickevent::core::og::SqlTableModel
 {
+	Q_DECLARE_TR_FUNCTIONS(LegsModel)
+private:
 	using Super = quickevent::core::og::SqlTableModel;
 public:
 	LegsModel(QObject *parent = nullptr);
@@ -167,60 +169,13 @@ bool  RelayWidget::loadLegsTable()
 	m_legsModel->setQueryBuilder(qb, false);
 	return m_legsModel->reload();
 }
-/*
-bool  RelayWidget::saveLegsTable()
-{
-	qfLogFuncFrame();
-	bool ret = m_legsModel->postAll(true);
-	return ret;
-}
-*/
-/*
-void  RelayWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
-{
-	qfLogFuncFrame();
-	QAction a_show_in_runs(tr("Show in runs table"), nullptr);
-	QList<QAction*> lst;
-	lst << &a_show_in_runs;
-	QAction *a = QMenu::exec(lst, ui->tblLegs->viewport()->mapToGlobal(pos));
-	if(a == &a_show_in_runs) {
-		auto row = ui->tblLegs->tableRow();
-		int stage_no = row.value("stageId").toInt();
-		int class_id = row.value("classId").toInt();
-		int competitor_id = row.value("competitorId").toInt();
-		//QMetaObject::invokeMethod(this, "accept", Qt::QueuedConnection);
-		emit editStartListRequest(stage_no, class_id, competitor_id);
-	}
-}
-*/
+
 bool  RelayWidget::load(const QVariant &id, int mode)
 {
 	if(Super::load(id, mode))
 		return loadLegsTable();
 	return false;
 }
-/*
-void  RelayWidget::showRunsTable(int stage_id)
-{
-	if(!saveData())
-		return;
-	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QObject *runs_plugin = fwk->plugin("Runs");
-	if(runs_plugin) {
-		qf::core::model::DataDocument*doc = dataController()->document();
-		int competitor_id = doc->value("competitors.id").toInt();
-		int class_id = ui->cbxClass->currentData().toInt();
-		QString sort_col = QStringLiteral("runs.startTimeMs");
-		QMetaObject::invokeMethod(runs_plugin, "showRunsTable"
-								  , Q_ARG(int, stage_id)
-								  , Q_ARG(int, class_id)
-								  , Q_ARG(bool, false)
-								  , Q_ARG(QString, sort_col)
-								  , Q_ARG(int, competitor_id));
-		loadLegsTable();
-	}
-}
-*/
 
 bool  RelayWidget::saveData()
 {
@@ -235,18 +190,36 @@ bool  RelayWidget::saveData()
 	}
 	bool ret = false;
 	try {
-		ret = Super::saveData();
-		/*
 		qf::core::sql::Transaction transaction;
-		if(Super::saveData())
-			ret = saveLegsTable();
+		ret = Super::saveData();
+		if(ret)
+			checkLegsStartTimes();
 		transaction.commit();
-		*/
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
 	}
 	return ret;
+}
+
+void RelayWidget::checkLegsStartTimes()
+{
+	for (int i = 0; i < m_legsModel->rowCount(); ++i) {
+		int leg = m_legsModel->value(i, LegsModel::col_runs_leg).toInt();
+		if(leg == 1 && m_legsModel->value(i, LegsModel::col_runs_startTimeMs).isNull()) {
+			/// assign class start time
+			int run_id = m_legsModel->tableRow(i).value(QStringLiteral("runs.id")).toInt();
+			qf::core::model::DataDocument *doc = dataDocument();
+			int class_id = doc->value(QStringLiteral("relays.classId")).toInt();
+			qf::core::sql::Query q;
+			q.execThrow("SELECT startTimeMin FROM classdefs WHERE classId=" QF_IARG(class_id));
+			if(q.next()) {
+				int start_time = q.value(0).toInt() * 60 * 1000;
+				q.execThrow("UPDATE runs SET startTimeMs=" QF_IARG(start_time) " WHERE id=" QF_IARG(run_id));
+			}
+			break;
+		}
+	}
 }
 
 void RelayWidget::addLeg()

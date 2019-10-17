@@ -5,6 +5,8 @@
 #include <QPrinterInfo>
 #include <QPushButton>
 
+enum { TabGraphicsPrinter = 0, TabTextPrinter };
+
 ReceiptsPrinterOptionsDialog::ReceiptsPrinterOptionsDialog(QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::ReceiptsPrinterOptionsDialog)
@@ -12,15 +14,16 @@ ReceiptsPrinterOptionsDialog::ReceiptsPrinterOptionsDialog(QWidget *parent) :
 	ui->setupUi(this);
 	connect(ui->btGraphicsPrinter, &QPushButton::toggled, [this](bool checked) {
 		if(checked)
-			this->ui->stackedWidget->setCurrentIndex(0);
+			this->ui->stackedWidget->setCurrentIndex(TabGraphicsPrinter);
 	});
 	connect(ui->btCharacterPrinter, &QPushButton::toggled, [this](bool checked) {
 		if(checked)
-			this->ui->stackedWidget->setCurrentIndex(1);
+			this->ui->stackedWidget->setCurrentIndex(TabTextPrinter);
 	});
 	connect(ui->btCharacterPrinterLPT, &QPushButton::toggled, ui->cbxCharacterPrinterDevice, &QWidget::setEnabled);
 	connect(ui->btCharacterPrinterDirectory, &QPushButton::toggled, ui->edCharacterPrinterDirectory, &QWidget::setEnabled);
-	connect(ui->btCharacterPrinterNetwork, &QPushButton::toggled, ui->edCharacterPrinterAddress, &QWidget::setEnabled);
+	connect(ui->btCharacterPrinterNetwork, &QPushButton::toggled, ui->edCharacterPrinterUrl, &QWidget::setEnabled);
+	connect(ui->btCharacterPrinterNetwork, &QPushButton::toggled, ui->chkCharacterPrinterUdpProtocol, &QWidget::setEnabled);
 	connect(
 		ui->cbxCharacterPrinterModel,
 		static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -53,17 +56,20 @@ void ReceiptsPrinterOptionsDialog::loadPrinters()
 void ReceiptsPrinterOptionsDialog::setPrinterOptions(const ReceiptsPrinterOptions &opts)
 {
 	if(opts.printerType() == ReceiptsPrinterOptions::PrinterType::GraphicPrinter) {
+		this->ui->stackedWidget->setCurrentIndex(TabGraphicsPrinter);
 		ui->btGraphicsPrinter->setChecked(true);
 		ui->cbxGraphicPrinter->setCurrentText(opts.graphicsPrinterName());
 	}
 	else {
+		this->ui->stackedWidget->setCurrentIndex(TabTextPrinter);
 		ui->btCharacterPrinter->setChecked(true);
 		ui->cbxCharacterPrinterDevice->setCurrentText(opts.characterPrinterDevice());
 		ui->edCharacterPrinterDirectory->setText(opts.characterPrinterDirectory());
 		ui->cbxCharacterPrinterModel->setCurrentText(opts.characterPrinterModel());
 		ui->edCharacterPrinterLineLength->setValue(opts.characterPrinterLineLength());
 		ui->chkCharacterPrinterGenerateControlCodes->setChecked(opts.isCharacterPrinterGenerateControlCodes());
-		ui->edCharacterPrinterAddress->setText(opts.characterPrinterAddress());
+		ui->edCharacterPrinterUrl->setText(opts.characterPrinterUrl());
+		ui->chkCharacterPrinterUdpProtocol->setChecked(opts.isCharacterPrinterUdpProtocol());
 		ui->cbxCharacterPrinterCodec->setCurrentText(opts.characterPrinterCodec());
 		switch(opts.characterPrinterType()) {
 			case ReceiptsPrinterOptions::CharacterPrinteType::LPT:
@@ -93,7 +99,8 @@ ReceiptsPrinterOptions ReceiptsPrinterOptionsDialog::printerOptions()
 		ret.setCharacterPrinterModel(ui->cbxCharacterPrinterModel->currentText());
 		ret.setCharacterPrinterLineLength(ui->edCharacterPrinterLineLength->value());
 		ret.setCharacterPrinterGenerateControlCodes(ui->chkCharacterPrinterGenerateControlCodes->isChecked());
-		ret.setCharacterPrinterAddress(ui->edCharacterPrinterAddress->text());
+		ret.setCharacterPrinterUrl(ui->edCharacterPrinterUrl->text());
+		ret.setCharacterPrinterUdpProtocol(ui->chkCharacterPrinterUdpProtocol->isChecked());
 		ret.setCharacterPrinterCodec(ui->cbxCharacterPrinterCodec->currentText());
 		if(ui->btCharacterPrinterLPT->isChecked()) {
 			ret.setCharacterPrinterType(ReceiptsPrinterOptions::CharacterPrinteType::LPT);

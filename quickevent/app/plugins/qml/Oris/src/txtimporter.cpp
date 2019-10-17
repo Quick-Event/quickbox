@@ -155,7 +155,7 @@ void TxtImporter::importRankingCsv()
 {
 	qfLogFuncFrame();
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranging CSV files (*.txt *.csv)"));
+	QString fn = qfd::FileDialog::getOpenFileName(fwk, tr("Open file"), QString(), tr("Oris ranking CSV files (*.txt *.csv)"));
 	if(fn.isEmpty())
 		return;
 	try {
@@ -205,7 +205,7 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 	while(q.next()) {
 		classes_map[q.value(1).toString()] = q.value(0).toInt();
 	}
-	QSet<int> used_idsi;
+	//QSet<int> used_idsi;
 	for(const QVariantList &row : csv) {
 		Competitors::CompetitorDocument doc;
 		doc.loadForInsert();
@@ -230,10 +230,10 @@ void TxtImporter::importParsedCsv(const QList<QVariantList> &csv)
 		//	qfWarning() << tr("%1 %2 %3 SI: %4 is duplicit!").arg(reg_no).arg(last_name).arg(first_name).arg(siid);
 		doc.setValue("classId", class_id);
 		if(siid > 0) {
-			bool is_unique = !used_idsi.contains(siid);
-			if(is_unique)
-				used_idsi << siid;
-			doc.setSiid(siid, is_unique);
+			//bool is_unique = !used_idsi.contains(siid);
+			//if(is_unique)
+			//	used_idsi << siid;
+			doc.setSiid(siid);
 		}
 		doc.setValue("firstName", first_name);
 		doc.setValue("lastName", last_name);

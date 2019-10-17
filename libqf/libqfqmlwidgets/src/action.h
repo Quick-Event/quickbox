@@ -19,10 +19,10 @@ private:
 public:
 	typedef QMap<QString, Action*> ActionMap;
 public:
-	explicit Action(const QIcon &icon, const QString &text, QObject *parent = 0);
-	explicit Action(QObject *parent = 0) : Action(QIcon(), QString(), parent) {}
-	explicit Action(const QString &text, QObject *parent = 0) : Action(QIcon(), text, parent) {}
-	explicit Action(const QString &oid, const QString &text, QObject *parent = 0) : Action(QIcon(), text, parent) {setOid(oid);}
+	explicit Action(const QIcon &icon, const QString &text, QObject *parent = nullptr);
+	explicit Action(QObject *parent = nullptr) : Action(QIcon(), QString(), parent) {}
+	explicit Action(const QString &text, QObject *parent = nullptr) : Action(QIcon(), text, parent) {}
+	explicit Action(const QString &oid, const QString &text, QObject *parent = nullptr) : Action(QIcon(), text, parent) {setOid(oid);}
 
 	QString oid() {return objectName();}
 	void setOid(const QString &id) {setObjectName(id);}
@@ -36,6 +36,7 @@ public:
 	Q_SIGNAL void shortcutChanged(const QString &new_text);
 	using Super::setShortcut;
 
+	Action *addActionInto(const QString &id, const QString &text);
 	Q_INVOKABLE void addActionInto(QAction *action);
 	Q_INVOKABLE void addActionBefore(QAction *action);
 	Q_INVOKABLE void addActionAfter(QAction *new_act);

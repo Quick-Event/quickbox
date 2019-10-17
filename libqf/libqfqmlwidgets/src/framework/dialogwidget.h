@@ -31,7 +31,7 @@ class QFQMLWIDGETS_DECL_EXPORT DialogWidget : public Frame, public IPersistentSe
 private:
 	typedef Frame Super;
 public:
-	explicit DialogWidget(QWidget *parent = 0);
+	explicit DialogWidget(QWidget *parent = nullptr);
 	~DialogWidget() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QString, t, T, itle)

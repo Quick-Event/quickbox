@@ -27,9 +27,13 @@ private:
 	void onCompetitorSelected();
 	void onRegistrationSelected();
 
+	void updateLegAddedStatus(const QString &msg);
+
 	int findFreeLeg();
 private:
 	Ui::AddLegDialogWidget *ui;
+	QTimer *m_updateStatusTimer = nullptr;
+	QString m_defaultStatusText;
 };
 
 #endif // ADDLEGDIALOGWIDGET_H

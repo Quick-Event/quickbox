@@ -26,7 +26,7 @@ namespace Ui {
 class LogWidget;
 }
 
-class LogWidgetTableView : public QTableView
+class QFQMLWIDGETS_DECL_EXPORT LogWidgetTableView : public QTableView
 {
 	Q_OBJECT
 private:
@@ -35,8 +35,9 @@ public:
 	LogWidgetTableView(QWidget *parent);
 
 	void copy();
-protected:
-	void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+	QAction *copySelectionToClipboardAction() const { return m_copySelectionToClipboardAction; }
+private:
+	QAction *m_copySelectionToClipboardAction;
 };
 
 class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::DockableWidget
@@ -45,12 +46,12 @@ class QFQMLWIDGETS_DECL_EXPORT LogWidget : public qf::qmlwidgets::framework::Doc
 private:
 	typedef qf::qmlwidgets::framework::DockableWidget Super;
 public:
-	explicit LogWidget(QWidget *parent = 0);
+	explicit LogWidget(QWidget *parent = nullptr);
 	~LogWidget();
 
 	Q_SLOT void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function, const QVariant &user_data = QVariant());
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
-	Q_SLOT void scrollToLastEntry();
+	Q_SLOT void checkScrollToLastEntry();
 
 	void clear();
 	virtual void setLogTableModel(qf::core::model::LogTableModel *m);
@@ -58,7 +59,9 @@ public:
 
 	Q_SIGNAL void severityTresholdChanged(qf::core::Log::Level lvl);
 	void setSeverityTreshold(qf::core::Log::Level lvl);
+	qf::core::Log::Level severityTreshold() const;
 protected:
+	QAbstractButton* clearButton();
 	QAbstractButton* tableMenuButton();
 	QTableView* tableView() const;
 
@@ -69,11 +72,13 @@ protected:
 
 	virtual void onDockWidgetVisibleChanged(bool visible);
 	void onVerticalScrollBarValueChanged();
+	Q_SLOT virtual void onSeverityTresholdIndexChanged(int index);
 private:
-	Q_SLOT void onSeverityTresholdChanged(int index);
 	Q_SLOT void filterStringChanged(const QString &filter_string);
 	Q_SLOT void on_btClearLog_clicked();
 	Q_SLOT void on_btResizeColumns_clicked();
+
+	bool isAutoScroll();
 protected:
 	qf::core::model::LogTableModel* m_logTableModel = nullptr;
 	LogFilterProxyModel* m_filterModel = nullptr;
@@ -84,7 +89,6 @@ private:
 	QList<QAction*> m_logLevelActions;
 	QList<QMenu*> m_loggingCategoriesMenus;
 	bool m_columnsResized = false;
-	bool m_isAutoScroll = true;
 };
 
 

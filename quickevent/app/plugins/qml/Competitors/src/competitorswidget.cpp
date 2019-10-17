@@ -3,6 +3,7 @@
 #include "competitorwidget.h"
 #include "thispartwidget.h"
 #include "lentcardswidget.h"
+#include "stationsbackupmemorywidget.h"
 
 #include "Competitors/competitordocument.h"
 #include "Competitors/competitorsplugin.h"
@@ -13,6 +14,7 @@
 #include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/dialogs/dialog.h>
+#include <qf/qmlwidgets/dialogs/getiteminputdialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/plugin.h>
@@ -83,6 +85,9 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	connect(ui->tblCompetitors, &qfw::TableView::editRowInExternalEditor, this, &CompetitorsWidget::editCompetitor, Qt::QueuedConnection);
 	connect(ui->tblCompetitors, &qfw::TableView::editSelectedRowsInExternalEditor, this, &CompetitorsWidget::editCompetitors, Qt::QueuedConnection);
 
+	ui->tblCompetitors->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->tblCompetitors, &qfw::TableView::customContextMenuRequested, this, &CompetitorsWidget::onCustomContextMenuRequest);
+
 	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
@@ -106,7 +111,11 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		}
 		{
 			m_cbxClasses = new qfw::ForeignKeyComboBox();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+			m_cbxClasses->setMinimumWidth(fontMetrics().horizontalAdvance('X') * 10);
+#else
 			m_cbxClasses->setMinimumWidth(fontMetrics().width('X') * 10);
+#endif
 			m_cbxClasses->setMaxVisibleItems(100);
 			m_cbxClasses->setReferencedTable("classes");
 			m_cbxClasses->setReferencedField("id");
@@ -128,7 +137,7 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 	qf::qmlwidgets::Action *act_cards = part_widget->menuBar()->actionForPath("cards");
 	act_cards->setText(tr("&Cards"));
 	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Lent cards"));
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("lentCards", tr("Cards to rent"));
 		act_cards->addActionInto(a);
 		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
 			qf::qmlwidgets::dialogs::Dialog dlg(this);
@@ -138,6 +147,18 @@ void CompetitorsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		});
 	}
 
+	qf::qmlwidgets::Action *act_stations = part_widget->menuBar()->actionForPath("stations");
+	act_stations->setText(tr("&Stations"));
+	{
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action("backupMemory", tr("Backup memory"));
+		act_stations->addActionInto(a);
+		connect(a, &qf::qmlwidgets::Action::triggered, [this]() {
+			qf::qmlwidgets::dialogs::Dialog dlg(this);
+			auto *w = new StationsBackupMemoryWidget();
+			dlg.setCentralWidget(w);
+			dlg.exec();
+		});
+	}
 }
 
 void CompetitorsWidget::lazyInit()
@@ -194,11 +215,13 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
 	dlg.setDefaultButton(QDialogButtonBox::Save);
-	QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
 	bool save_and_next = false;
-	connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
-		save_and_next = (button == bt_save_and_next);
-	});
+	if(mode == qf::core::model::DataDocument::ModeInsert || mode == qf::core::model::DataDocument::ModeEdit) {
+		QPushButton *bt_save_and_next = dlg.buttonBox()->addButton(tr("Save and &next"), QDialogButtonBox::AcceptRole);
+		connect(dlg.buttonBox(), &qf::qmlwidgets::DialogButtonBox::clicked, [&save_and_next, bt_save_and_next](QAbstractButton *button) {
+			save_and_next = (button == bt_save_and_next);
+		});
+	}
 	dlg.setCentralWidget(w);
 	w->load(id, mode);
 	auto *doc = qobject_cast<Competitors::CompetitorDocument*>(w->dataController()->document());
@@ -229,7 +252,7 @@ void CompetitorsWidget::editCompetitors(int mode)
 		QList<int> sel_rows = ui->tblCompetitors->selectedRowsIndexes();
 		if(sel_rows.count() <= 1)
 			return;
-		if(qfd::MessageBox::askYesNo(this, tr("Realy delete all the selected competitors? This action cannot be reverted."), false)) {
+		if(qfd::MessageBox::askYesNo(this, tr("Really delete all the selected competitors? This action cannot be reverted."), false)) {
 			qfs::Transaction transaction;
 			int n = 0;
 			for(int ix : sel_rows) {
@@ -279,5 +302,45 @@ void CompetitorsWidget::editCompetitorOnPunch(int siid)
 	}
 	else {
 		editCompetitor_helper(QVariant(), qfm::DataDocument::ModeInsert, siid);
+	}
+}
+
+void CompetitorsWidget::onCustomContextMenuRequest(const QPoint &pos)
+{
+	qfLogFuncFrame();
+	QAction a_change_class(tr("Set class in selected rows"), nullptr);
+	QList<QAction*> lst;
+	lst << &a_change_class;
+	QAction *a = QMenu::exec(lst, ui->tblCompetitors->viewport()->mapToGlobal(pos));
+	if(a == &a_change_class) {
+		qfw::dialogs::GetItemInputDialog dlg(this);
+		QComboBox *box = dlg.comboBox();
+		qfs::Query q;
+		q.exec("SELECT id, name FROM classes ORDER BY name");
+		while (q.next()) {
+			box->addItem(q.value(1).toString(), q.value(0));
+		}
+		dlg.setWindowTitle(tr("Dialog"));
+		dlg.setLabelText(tr("Select class"));
+		dlg.setCurrentItemIndex(-1);
+		if(dlg.exec()) {
+			int class_id = dlg.currentData().toInt();
+			if(class_id > 0) {
+				qfs::Transaction transaction;
+				try {
+					QList<int> rows = ui->tblCompetitors->selectedRowsIndexes();
+					for(int i : rows) {
+						qf::core::utils::TableRow row = ui->tblCompetitors->tableRowRef(i);
+						int competitor_id = row.value("competitors.id").toInt();
+						q.exec(QString("UPDATE competitors SET classId=%1 WHERE id=%2").arg(class_id).arg(competitor_id), qfc::Exception::Throw);
+					}
+					transaction.commit();
+				}
+				catch (std::exception &e) {
+					qfError() << e.what();
+				}
+			}
+			ui->tblCompetitors->reload(true);
+		}
 	}
 }

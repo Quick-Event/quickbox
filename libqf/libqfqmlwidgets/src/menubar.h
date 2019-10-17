@@ -16,7 +16,7 @@ class QFQMLWIDGETS_DECL_EXPORT MenuBar : public QMenuBar
 private:
 	typedef QMenuBar Super;
 public:
-	explicit MenuBar(QWidget *parent = 0);
+	explicit MenuBar(QWidget *parent = nullptr);
 public:
 	Q_INVOKABLE qf::qmlwidgets::Action* actionForPath(const QString &path, bool create_if_not_exists = true);
 };

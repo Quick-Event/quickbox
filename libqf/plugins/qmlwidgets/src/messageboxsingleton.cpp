@@ -33,7 +33,7 @@ int MessageBoxSingleton::information(QWidget *parent, const QString &text)
 		parent = QApplication::activeWindow();
 	}
 	//qfDebug() << text;
-	return QMessageBox::information(parent, trUtf8("Information"), text);
+	return QMessageBox::information(parent, tr("Information"), text);
 }
 
 int MessageBoxSingleton::critical(QWidget *parent, const QString &text)
@@ -42,7 +42,7 @@ int MessageBoxSingleton::critical(QWidget *parent, const QString &text)
 		parent = QApplication::activeWindow();
 	}
 	qfWarning() << text;
-	return QMessageBox::critical(parent, trUtf8("Error"), text);
+	return QMessageBox::critical(parent, tr("Error"), text);
 }
 
 int MessageBoxSingleton::askYesNo(QWidget *parent, const QString &text, bool default_ret)

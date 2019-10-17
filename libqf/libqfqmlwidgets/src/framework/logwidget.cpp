@@ -1,5 +1,6 @@
 #include "logwidget.h"
 #include "ui_logwidget.h"
+#include "../tableview.h"
 
 #include "../style.h"
 
@@ -26,14 +27,14 @@ LogWidgetTableView::LogWidgetTableView(QWidget *parent)
 	: Super(parent)
 {
 	auto *style = qf::qmlwidgets::Style::instance();
-	QAction *a;
 	{
-		a = new QAction(tr("Copy"), this);
-		a->setIcon(style->icon("copy"));
-		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
-		connect(a, &QAction::triggered, this, &LogWidgetTableView::copy);
-		addAction(a);
+		m_copySelectionToClipboardAction = new QAction(tr("Copy"));
+		m_copySelectionToClipboardAction->setObjectName("LogWidgetTableView copy action");
+		m_copySelectionToClipboardAction->setIcon(style->icon("copy"));
+		m_copySelectionToClipboardAction->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
+		m_copySelectionToClipboardAction->setShortcutContext(Qt::WidgetShortcut);
+		connect(m_copySelectionToClipboardAction, &QAction::triggered, this, &LogWidgetTableView::copy);
+		addAction(m_copySelectionToClipboardAction);
 	}
 	setContextMenuPolicy(Qt::ActionsContextMenu);
 }
@@ -41,54 +42,7 @@ LogWidgetTableView::LogWidgetTableView(QWidget *parent)
 void LogWidgetTableView::copy()
 {
 	qfLogFuncFrame();
-	auto *m = model();
-	if(!m)
-		return;
-	int n = 0;
-	QString rows;
-	QItemSelection sel = selectionModel()->selection();
-	foreach(const QItemSelectionRange &sel1, sel) {
-		if(sel1.isValid()) {
-			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
-				QString cells;
-				for(int col=sel1.left(); col<=sel1.right(); col++) {
-					QModelIndex ix = m->index(row, col);
-					QString s;
-					s = ix.data(Qt::DisplayRole).toString();
-					static constexpr bool replace_escapes = true;
-					if(replace_escapes) {
-						s.replace('\r', QStringLiteral("\\r"));
-						s.replace('\n', QStringLiteral("\\n"));
-						s.replace('\t', QStringLiteral("\\t"));
-					}
-					if(col > sel1.left())
-						cells += '\t';
-					cells += s;
-				}
-				if(n++ > 0)
-					rows += '\n';
-				rows += cells;
-			}
-		}
-	}
-	if(!rows.isEmpty()) {
-		qfDebug() << "\tSetting clipboard:" << rows;
-		QClipboard *clipboard = QApplication::clipboard();
-		clipboard->setText(rows);
-	}
-}
-
-void LogWidgetTableView::keyPressEvent(QKeyEvent *e)
-{
-	qfLogFuncFrame() << "key:" << e->key() << "modifiers:" << e->modifiers();
-	if(e->modifiers() == Qt::ControlModifier) {
-		if(e->key() == Qt::Key_C) {
-			copy();
-			e->accept();
-			return;
-		}
-	}
-	Super::keyPressEvent(e);
+	qf::qmlwidgets::TableView::copySelectionToClipboard(this);
 }
 
 class LogFilterProxyModel : public QSortFilterProxyModel
@@ -140,6 +94,8 @@ LogWidget::LogWidget(QWidget *parent)
 {
 	ui->setupUi(this);
 	//setPersistentSettingsId();
+	ui->btCopyToClipboard->setDefaultAction(ui->tableView->copySelectionToClipboardAction());
+
 	{
 		QAction *a = new QAction(tr("Maximal log length"), this);
 		connect(a, &QAction::triggered, [this]() {
@@ -168,7 +124,7 @@ LogWidget::LogWidget(QWidget *parent)
 	for (int i = static_cast<int>(qf::core::Log::Level::Error); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
 		ui->severityTreshold->addItem(qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i)), QVariant::fromValue(i));
 	}
-	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(onSeverityTresholdChanged(int)));
+	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(onSeverityTresholdIndexChanged(int)));
 	ui->severityTreshold->setCurrentIndex(static_cast<int>(qf::core::Log::Level::Info));
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
@@ -191,7 +147,7 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 		m_logTableModel = m;
 		m_filterModel->setSourceModel(m_logTableModel);
 		if(m_logTableModel) {
-			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::scrollToLastEntry, Qt::UniqueConnection);
+			connect(m_logTableModel, &core::model::LogTableModel::logEntryInserted, this, &LogWidget::checkScrollToLastEntry, Qt::UniqueConnection);
 			QScrollBar *sb = ui->tableView->verticalScrollBar();
 			if(sb)
 				connect(sb, &QScrollBar::valueChanged, this, &LogWidget::onVerticalScrollBarValueChanged, Qt::UniqueConnection);
@@ -225,11 +181,21 @@ void LogWidget::setSeverityTreshold(core::Log::Level lvl)
 	ui->severityTreshold->setCurrentIndex(ci);
 }
 
-void LogWidget::onSeverityTresholdChanged(int index)
+core::Log::Level LogWidget::severityTreshold() const
 {
-	Q_UNUSED(index);
+	return static_cast<core::Log::Level>(ui->severityTreshold->currentData().toInt());
+}
+
+void LogWidget::onSeverityTresholdIndexChanged(int index)
+{
+	Q_UNUSED(index)
 	m_filterModel->setThreshold(ui->severityTreshold->currentData().toInt());
 	emit severityTresholdChanged(static_cast<qf::core::Log::Level>(ui->severityTreshold->currentData().toInt()));
+}
+
+QAbstractButton *LogWidget::clearButton()
+{
+	return ui->btClearLog;
 }
 
 void LogWidget::filterStringChanged(const QString &filter_string)
@@ -245,6 +211,22 @@ void LogWidget::on_btClearLog_clicked()
 void LogWidget::on_btResizeColumns_clicked()
 {
 	ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
+}
+
+bool LogWidget::isAutoScroll()
+{
+	QScrollBar *sb = ui->tableView->verticalScrollBar();
+	if(sb) {
+		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
+			//fprintf(stderr, "BOTTOM scrollbar min: %d max: %d value: %d\n", sb->minimum(), sb->maximum(), sb->value());
+			return (sb->value() == sb->maximum());
+		}
+		else {
+			//fprintf(stderr, "TOP scrollbar min: %d max: %d value: %d\n", sb->minimum(), sb->maximum(), sb->value());
+			return (sb->value() == sb->minimum());
+		}
+	}
+	return false;
 }
 
 QAbstractButton *LogWidget::tableMenuButton()
@@ -328,33 +310,22 @@ void LogWidget::onDockWidgetVisibleChanged(bool visible)
 		if(!m_logCategoriesRegistered) {
 			registerLogCategories();
 		}
-		scrollToLastEntry();
+		checkScrollToLastEntry();
 	}
 }
 
 void LogWidget::onVerticalScrollBarValueChanged()
 {
-	QScrollBar *sb = ui->tableView->verticalScrollBar();
-	if(sb) {
-		if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
-			m_isAutoScroll = (sb->value() == sb->maximum());
-			//fprintf(stderr, "BOTTOM scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
-		}
-		else {
-			m_isAutoScroll = (sb->value() == sb->minimum());
-			//fprintf(stderr, "TOP scrollbar min: %d max: %d value: %d -> %d\n", sb->minimum(), sb->maximum(), sb->value(), m_scrollToLastEntryAfterInsert);
-		}
-	}
 }
 
-void LogWidget::scrollToLastEntry()
+void LogWidget::checkScrollToLastEntry()
 {
 	if(isVisible()) {
 		if(!m_columnsResized) {
 			m_columnsResized = true;
 			ui->tableView->horizontalHeader()->resizeSections(QHeaderView::ResizeToContents);
 		}
-		if(m_isAutoScroll) {
+		if(isAutoScroll()) {
 			if(logTableModel()->direction() == qf::core::model::LogTableModel::Direction::AppendToBottom) {
 				ui->tableView->scrollToBottom();
 			}

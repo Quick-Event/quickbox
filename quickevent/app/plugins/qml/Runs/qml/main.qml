@@ -87,16 +87,6 @@ RunsPlugin {
 			}
 		},
 		Action {
-			id: act_export_startList_emma
-			text: qsTr('&EmmaClient')
-			onTriggered: {
-				var default_file_name = "emma-start.txt";
-				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("TXT files (*.txt)"));
-				if(file_name)
-					startLists.exportStartListEmma(file_name)
-			}
-		},
-		Action {
 			id: act_print_results_currentStage
 			text: qsTr('&Current stage')
 			shortcut: "Ctrl+P"
@@ -134,25 +124,27 @@ RunsPlugin {
 		},
 		Action {
 			id: act_print_competitorswithCardRent
-			text: qsTr('&Competitors with card rent')
+			text: qsTr('&Competitors with rented cards')
 			onTriggered: {
 				Log.info("act_print_competitorswithCardRent triggered");
 				QmlWidgetsSingleton.showReport(root.manifest.homeDir + "/reports/competitorsWithCardRent.qml" //report
 											   , null // report data (will be loaded from SQL by report itself)
-											   , qsTr("Competitors with card rent") // report preview window title
+											   , qsTr("Competitors with rented cards") // report preview window title
 											   , "" // persistent settings ID
 											   , {stageId: root.selectedStageId});
 			}
 		},
+		/*
 		Action {
-			id: act_export_results_iofxml
-			text: qsTr('&IOF XML 2.3')
+			id: act_export_results_iofxml_23
+			text: qsTr('IOF XML &2.3')
 			onTriggered: {
 				var default_file_name = "results-iof.xml";
 				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
 				results.exportIofXml2(file_name)
 			}
 		},
+		*/
 		Action {
 			id: act_export_results_winsplits
 			text: qsTr('&WinSplits')
@@ -166,10 +158,9 @@ RunsPlugin {
 
 	onNativeInstalled:
 	{
-		var a = root.partWidget.menuBar.actionForPath("print", true);
-		//a.text = qsTr("&Print");
-		var a_print = a;
-		a = a_print.addMenuInto("startList", "&Start list");
+		var a_print = root.partWidget.menuBar.actionForPath("print", false);
+
+		var a = a_print.addMenuInto("startList", qsTr("&Start list"));
 		a.addActionInto(act_print_startList_classes);
 		a.addActionInto(act_print_startList_clubs);
 		a.addActionInto(act_print_startList_starters);
@@ -177,7 +168,7 @@ RunsPlugin {
 		a.addActionInto(act_print_startList_classes_nstages);
 		a.addActionInto(act_print_startList_clubs_nstages);
 
-		a = a_print.addMenuInto("results", "&Results");
+		a = a_print.addMenuInto("results", qsTr("&Results"));
 		a.addActionInto(act_print_results_currentStage);
 		a.addActionInto(act_print_results_currentStageFirstN);
 		a.addSeparatorInto("results_awards_separator");
@@ -189,19 +180,28 @@ RunsPlugin {
 		var a_sep = a_print.addSeparatorInto();
 		a_sep.addActionAfter(act_print_competitorswithCardRent)
 
-		var a_export = root.partWidget.menuBar.actionForPath("export", true);
-		//a_export.text = qsTr("E&xport");
-		var m_stlist = a_export.addMenuInto("startList", "&Start list");
+		var a_export = root.partWidget.menuBar.actionForPath("export", false);
+
+		var m_stlist = a_export.addMenuInto("startList", qsTr("&Start list"));
 		a = m_stlist.addMenuInto("html", "&HTML");
 		a.addActionInto(act_export_html_startList_classes);
 		a.addActionInto(act_export_html_startList_clubs);
 		a = m_stlist.addMenuInto("xml", "&XML");
 		a.addActionInto(act_export_startList_iofxml3);
-		a = m_stlist.addMenuInto("txt", "&TXT");
-		a.addActionInto(act_export_startList_emma);
 
-		var m_results = a_export.addMenuInto("results", "&Results");
-		m_results.addActionInto(act_export_results_iofxml);
+		//var m_results = a_export.addMenuInto("results", "&Results");
+		var m_results = root.partWidget.menuBar.actionForPath("export/results", false);
+		var action_results_export_iofxml_23 = root.partWidget.menuBar.actionForPath("export/results/iofxml23", false);
+		if(action_results_export_iofxml_23) {
+			action_results_export_iofxml_23.triggered.connect(function () {
+				var default_file_name = "results-iof.xml";
+				var file_name = InputDialogSingleton.getSaveFileName(null, qsTr("Get file name"), default_file_name, qsTr("XML files (*.xml)"));
+				if(file_name)
+					results.exportIofXml2(file_name)
+			});
+		}
+		//m_results.addActionInto(act_export_results_iofxml_23);
+		//m_results.addActionInto(act_export_results_iofxml_30);
 		m_results.addActionInto(act_export_results_winsplits);
 
 		//Log.warning("onNativeInstalled");

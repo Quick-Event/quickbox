@@ -5,11 +5,11 @@
     <name>AppCliOptions</name>
     <message>
         <source>Application locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Regionální nastavení aplikace</translation>
     </message>
     <message>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil aplikace, viz: https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
 </context>
 <context>
@@ -27,7 +27,7 @@
     </message>
     <message>
         <source>Application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Záznam činnosti aplikace</translation>
     </message>
 </context>
 </TS>

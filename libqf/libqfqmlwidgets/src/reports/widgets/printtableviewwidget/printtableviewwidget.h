@@ -21,7 +21,7 @@ class PrintTableViewWidget : public qf::qmlwidgets::framework::DialogWidget, pub
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	explicit PrintTableViewWidget(TableView *table_view, QWidget *parent = 0);
+	explicit PrintTableViewWidget(TableView *table_view, QWidget *parent = nullptr);
 	~PrintTableViewWidget() Q_DECL_OVERRIDE;
 public:
 	QString reportFileName() const;

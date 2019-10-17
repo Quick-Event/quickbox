@@ -31,6 +31,7 @@
 		<file>right.svg</file>
 		<file>up.svg</file>
 		<file>down.svg</file>
+		<file>close.svg</file>
 
 		<file>fwd.png</file>
 		<file>ffwd.png</file>
@@ -45,5 +46,6 @@
 
 		<file>zoomin_cursor_bitmap.png</file>
 		<file>zoomin_cursor_mask.png</file>
+		<file>copy.svg</file>
 	</qresource>
 </RCC>

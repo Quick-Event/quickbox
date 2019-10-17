@@ -30,7 +30,7 @@ class QFQMLWIDGETS_DECL_EXPORT Font : public StyleObject
 	Q_PROPERTY(FontWeight weight READ weight WRITE setWeight NOTIFY weightChanged)
 	Q_PROPERTY(qreal pointSize READ pointSize WRITE setPointSize NOTIFY pointSizeChanged)
 public:
-	explicit Font(QObject *parent = 0);
+	explicit Font(QObject *parent = nullptr);
 	~Font() Q_DECL_OVERRIDE;
 public:
 	enum FontStyle {

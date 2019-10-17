@@ -32,7 +32,7 @@ protected slots:
 signals:
 	void columnNamesCopiedToClipboard(const QString &column_names);
 public:
-	ColumnSelectorWidget(QString table_name, const QSqlDatabase &conn, QWidget *parent = NULL);
+	ColumnSelectorWidget(QString table_name, const QSqlDatabase &conn, QWidget *parent = nullptr);
 	virtual ~ColumnSelectorWidget();
 };
 

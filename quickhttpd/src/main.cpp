@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 {
 	QSettings::setDefaultFormat(QSettings::IniFormat);
 	QCoreApplication::setOrganizationDomain("quickbox.org");
-	QCoreApplication::setOrganizationName("QuickBox");
+	QCoreApplication::setOrganizationName("quickbox");
 	QCoreApplication::setApplicationName("quickhttpd");
 
 	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);

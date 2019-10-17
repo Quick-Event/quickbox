@@ -302,7 +302,7 @@ bool DataDocument::dropData()
 	qfLogFuncFrame();
 	bool ret = true;
 	if(mode() != ModeView) {
-		ret = model()->dropRow(currentModelRow(), !qf::core::Exception::Throw);
+		ret = model()->dropRow(currentModelRow(), qf::core::Exception::Throw);
 	}
 	return ret;
 }

@@ -19,7 +19,7 @@ class QFQMLWIDGETS_DECL_EXPORT Splitter : public QSplitter, public framework::IP
 	Q_CLASSINFO("DefaultProperty", "widgets")
 	Q_PROPERTY(QString persistentSettingsId READ persistentSettingsId WRITE setPersistentSettingsId)
 public:
-	explicit Splitter(QWidget *parent = 0);
+	explicit Splitter(QWidget *parent = nullptr);
 	~Splitter() Q_DECL_OVERRIDE;
 public:
 	QQmlListProperty<QWidget> widgets();

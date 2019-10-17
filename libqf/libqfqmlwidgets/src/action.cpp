@@ -11,6 +11,9 @@ Action::Action(const QIcon &icon, const QString &text, QObject *parent)
 {
 	setIcon(icon);
 	setText(text);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+	setShortcutVisibleInContextMenu(true);
+#endif
 }
 
 void Action::setText(const QString &new_text)
@@ -32,6 +35,13 @@ void Action::setShortcut(const QString &new_text)
 		Super::setShortcut(ks);
 		emit shortcutChanged(shortcut());
 	}
+}
+
+Action *Action::addActionInto(const QString &id, const QString &text)
+{
+	auto *a = new Action(id, text);
+	addActionInto(a);
+	return a;
 }
 
 void Action::addActionInto(QAction *action)

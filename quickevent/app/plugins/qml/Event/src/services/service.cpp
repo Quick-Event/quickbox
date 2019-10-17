@@ -15,7 +15,7 @@ namespace qfd = qf::qmlwidgets::dialogs;
 
 namespace services {
 
-static const char *KEY_IS_RUNNING = "isRunning";
+//static const char *KEY_IS_RUNNING = "isRunning";
 
 QList<Service*> Service::m_services;
 
@@ -31,9 +31,10 @@ Service::Service(const QString &name, QObject *parent)
 Service::~Service()
 {
 	bool is_running = status() == Status::Running;
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	settings.setValue(KEY_IS_RUNNING, is_running);
+	ServiceSettings ss = settings();
+	ss.setAutoStart(is_running);
+	setSettings(ss);
+	saveSettings();
 }
 
 Event::EventPlugin *Service::eventPlugin()
@@ -53,22 +54,44 @@ QString Service::settingsGroup() const
 void Service::onEventOpen()
 {
 	loadSettings();
-	QSettings settings;
-	settings.beginGroup(settingsGroup());
-	bool is_running = settings.value(KEY_IS_RUNNING).toBool();
-	qfDebug() << this << settingsGroup() << KEY_IS_RUNNING << is_running;
-	if(is_running) {
+	ServiceSettings ss = settings();
+	if(ss.isAutoStart()) {
 		run();
 	}
 }
 
 void Service::loadSettings()
 {
+	qfDebug() << "loading settings for" << settingsGroup();
+	m_settings.clear();
+	QSettings ss;
+	ss.beginGroup(settingsGroup());
+	for(const QString &key : ss.childKeys()) {
+		m_settings[key] = ss.value(key);
+		qfDebug() << "\t" << key << "->" << m_settings.value(key);
+	}
+}
+
+void Service::saveSettings()
+{
+	QSettings ss;
+	ss.beginGroup(settingsGroup());
+	for(const QString &key : m_settings.keys()) {
+		ss.setValue(key, m_settings[key]);
+	}
+}
+
+void Service::setSettings(const QVariantMap &s)
+{
+	//qfInfo() << __FUNCTION__ << settingsGroup() << s;
+	if(!(m_settings == s)) {
+		m_settings = s;
+		emit settingsChanged();
+	}
 }
 
 void Service::run()
 {
-	//setStatus(Status::Starting);
 	setStatus(Status::Running);
 }
 
@@ -80,7 +103,6 @@ void Service::stop()
 void Service::setRunning(bool on)
 {
 	if(on && status() == Status::Stopped) {
-		loadSettings();
 		run();
 	}
 	else if(!on && status() == Status::Running) {

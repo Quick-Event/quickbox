@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ClassDefWidget</class>
+ <widget class="QWidget" name="ClassDefWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>749</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Interval</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Vacants before</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="qf::qmlwidgets::SpinBox" name="edStartTime">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="suffix">
+      <string> min</string>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">classdefs.startTimeMin</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="qf::qmlwidgets::SpinBox" name="spinBox_2">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="suffix">
+      <string> min</string>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">classdefs.startIntervalMin</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="qf::qmlwidgets::SpinBox" name="spinBox_3">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">classdefs.vacantsBefore</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Vacant every</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Vacants after</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="qf::qmlwidgets::SpinBox" name="spinBox_4">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">classdefs.vacantEvery</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="qf::qmlwidgets::SpinBox" name="spinBox_5">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">classdefs.vacantsAfter</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Map count</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="qf::qmlwidgets::SpinBox" name="spinBox_6">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="suffix">
+      <string> pcs</string>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+     <property name="dataId" stdset="0">
+      <string notr="true">classdefs.mapCount</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>qf::qmlwidgets::SpinBox</class>
+   <extends>QSpinBox</extends>
+   <header location="global">qf/qmlwidgets/spinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

@@ -35,7 +35,7 @@ public:
 		Ignored = QSizePolicy::Ignored
 	};
 public:
-	explicit LayoutTypeProperties(QObject *parent = 0);
+	explicit LayoutTypeProperties(QObject *parent = nullptr);
 public:
 	int rows() {return m_rows;}
 	void setRows(int n);

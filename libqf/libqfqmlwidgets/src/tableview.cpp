@@ -42,7 +42,7 @@
 #include <QPainter>
 #include <QToolButton>
 
-#define QF_TIMESCOPE_ENABLED
+//#define QF_TIMESCOPE_ENABLED
 #include <qf/core/utils/timescope.h>
 
 namespace qfc = qf::core;
@@ -72,7 +72,7 @@ TableView::TableView(QWidget *parent) :
 		auto *bt = new QToolButton(this);
 		bt->setAutoRaise(true);
 		bt->setIcon(style->icon("menu"));
-		bt->setToolTip(trUtf8("Left click selects all, right click for menu."));
+		bt->setToolTip(tr("Left click selects all, right click for menu."));
 		QObject::connect(bt, &QPushButton::clicked, this, &QTableView::selectAll);
 		//qfInfo() << "addidng actions";
 		bt->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -92,6 +92,7 @@ TableView::TableView(QWidget *parent) :
 	m_proxyModel = new TableViewProxyModel(this);
 	connect(m_proxyModel, &TableViewProxyModel::modelReset, this, &TableView::refreshActions);
 	m_proxyModel->setDynamicSortFilter(false);
+	connect(qobject_cast<HeaderView*>(horizontalHeader()), &HeaderView::sortColumnAdded, m_proxyModel, &TableViewProxyModel::addSortColumn);
 	Super::setModel(m_proxyModel);
 	/*
 	connect(this, &TableView::readOnlyChanged, [this] (bool b) {
@@ -140,6 +141,46 @@ QAbstractProxyModel* TableView::lastProxyModel() const
 	}
 	QF_ASSERT_EX(ret != nullptr, "SortFilterProxyModel must exist.");
 	return ret;
+}
+
+void TableView::copySelectionToClipboard(QTableView *table_view)
+{
+	qfLogFuncFrame();
+	auto *m = table_view->model();
+	if(!m)
+		return;
+	int n = 0;
+	QString rows;
+	QItemSelection sel = table_view->selectionModel()->selection();
+	foreach(const QItemSelectionRange &sel1, sel) {
+		if(sel1.isValid()) {
+			for(int row=sel1.top(); row<=sel1.bottom(); row++) {
+				QString cells;
+				for(int col=sel1.left(); col<=sel1.right(); col++) {
+					QModelIndex ix = m->index(row, col);
+					QString s;
+					s = ix.data(Qt::DisplayRole).toString();
+					static constexpr bool replace_escapes = true;
+					if(replace_escapes) {
+						s.replace('\r', QStringLiteral("\\r"));
+						s.replace('\n', QStringLiteral("\\n"));
+						s.replace('\t', QStringLiteral("\\t"));
+					}
+					if(col > sel1.left())
+						cells += '\t';
+					cells += s;
+				}
+				if(n++ > 0)
+					rows += '\n';
+				rows += cells;
+			}
+		}
+	}
+	if(!rows.isEmpty()) {
+		//qfInfo() << "\tSetting clipboard:" << rows;
+		QClipboard *clipboard = QApplication::clipboard();
+		clipboard->setText(rows);
+	}
 }
 
 void TableView::setModel(QAbstractItemModel *model)
@@ -195,14 +236,14 @@ void TableView::refreshActions()
 	//action("postRow")->setVisible(true);
 	//action("revertRow")->setVisible(true);
 
-	bool is_insert_rows_allowed = !(m_proxyModel->dynamicSortFilter() && !m_proxyModel->isIdle());
+	bool is_insert_rows_allowed = m_proxyModel->rowFilterString().isEmpty();
 	is_insert_rows_allowed = is_insert_rows_allowed && !isReadOnly();
 	bool is_edit_rows_allowed = true;//m->isEditRowsAllowed() && !isReadOnly();
 	is_edit_rows_allowed = is_edit_rows_allowed && !isReadOnly();
 	bool is_delete_rows_allowed = true;//m->rowCount()>0 && m->isDeleteRowsAllowed() && !isReadOnly();
 	is_delete_rows_allowed = is_delete_rows_allowed && !isReadOnly();
-	bool is_copy_rows_allowed = m_proxyModel->rowCount()>0 && is_insert_rows_allowed;
-	is_copy_rows_allowed = is_copy_rows_allowed && !isReadOnly();
+	bool is_clone_rows_allowed = currentIndex().isValid() && m_proxyModel->rowFilterString().isEmpty();
+	is_clone_rows_allowed = is_clone_rows_allowed && !isReadOnly();
 	//qfInfo() << "\tinsert allowed:" << is_insert_rows_allowed;
 	//qfDebug() << "\tdelete allowed:" << is_delete_rows_allowed;
 	//qfDebug() << "\tedit allowed:" << is_edit_rows_allowed;
@@ -210,7 +251,7 @@ void TableView::refreshActions()
 	Action *a_insert_row = action("insertRow");
 	Action *a_remove_sel_rows = action("removeSelectedRows");
 	Action *a_clone_row = action("cloneRow");
-	a_clone_row->setEnabled(a_clone_row->isVisible() && is_copy_rows_allowed);
+	a_clone_row->setEnabled(a_clone_row->isVisible() && is_clone_rows_allowed);
 	//action("cloneRow")->setVisible(iscloneRowActionVisible());
 	a_remove_sel_rows->setEnabled(a_remove_sel_rows->isVisible() && is_delete_rows_allowed);
 	//action("postRow")->setVisible((is_edit_rows_allowed || is_insert_rows_allowed) && action("postRow")->isVisible());
@@ -228,7 +269,7 @@ void TableView::refreshActions()
 	}
 	else {
 		a_insert_row->setEnabled(a_insert_row->isVisible() && is_insert_rows_allowed);
-		a_clone_row->setEnabled(a_clone_row->isVisible() && is_copy_rows_allowed && curr_ix.isValid());
+		a_clone_row->setEnabled(a_clone_row->isVisible() && is_clone_rows_allowed && curr_ix.isValid());
 		action("reload")->setEnabled(true);
 		//action("sortAsc")->setEnabled(true);
 		//action("sortDesc")->setEnabled(true);
@@ -363,17 +404,14 @@ void TableView::cloneRowInline()
 {
 	qfLogFuncFrame();
 	try {
-		qfu::TableRow r1 = tableRow();
-		if(r1.isNull())
+		QModelIndex ix = currentIndex();
+		if(ix.row() < 0)
 			return;
-		insertRowInline();
-		qfu::TableRow &r2 = tableRowRef();
-		for(int i=0; i<r1.fieldCount() && i<r2.fieldCount(); i++) {
-			QVariant v1 = r1.value(i);
-			r2.setValue(i, v1);
-			//qfInfo() << i << v1 << r2.value(i);
-		}
-		r2.prepareForCopy();
+		int tri1 = toTableModelRowNo(ix.row());
+		core::model::TableModel *tm = tableModel();
+		tm->cloneRow(tri1);
+		m_proxyModel->sort();
+		setCurrentIndex(m_proxyModel->index(ix.row() + 1, ix.column()));
 	}
 	catch(qfc::Exception &e) {
 		emit sqlException(e.message(), e.where(), e.stackTrace());
@@ -554,39 +592,47 @@ void TableView::paste()
 		}
 		if(dlg.exec()) {
 			TableView *tv = w->tableView();
-			qfm::TableModel *m = tv->tableModel();
-			qfm::TableModel *my_m = tableModel();
-			int my_row = origin_ix.row();
+			qfm::TableModel *src_tm = tv->tableModel();
+			qfm::TableModel *dest_tm = tableModel();
+			int origin_view_row = origin_ix.row();
 			bool insert_rows = w->isInsert();
-			if(insert_rows) my_row++;
-			for(int row=0; row<m->rowCount(); row++) {
+			int dest_row = toTableModelRowNo(origin_view_row);
+			for(int src_row=0; src_row<src_tm->rowCount(); src_row++) {
 				if(insert_rows) {
-					my_m->insertRow(my_row);
+					qfDebug() << "insert row:" << dest_row << "model row count:" << dest_tm->rowCount();
+					dest_tm->insertRow(++dest_row);
 				}
 				else {
-					if(my_row >= my_m->rowCount()) break;
+					if((origin_view_row + src_row) >= dest_tm->rowCount())
+						break;
+					dest_row = toTableModelRowNo(origin_view_row + src_row);
 				}
-				int my_col = origin_ix.column();
-				for(int col=0; col<m->columnCount(); col++) {
-					if(tv->isColumnHidden(col)) continue; /// preskakej skryty sloupce v tabulce dialogu
-					while(isColumnHidden(my_col)) my_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
-					QModelIndex ix = m->index(row, col); /// odsud se to bere
-					QModelIndex my_ix = origin_ix.sibling(my_row, my_col); ///sem se to vklada
+				int dest_col = origin_ix.column();
+				for(int src_col=0; src_col<src_tm->columnCount(); src_col++) {
+					if(tv->isColumnHidden(src_col))
+						continue; /// preskakej skryty sloupce v tabulce dialogu
+					while(isColumnHidden(dest_col))
+						dest_col++; /// preskakej skryty sloupce v tabulce do ktery se vklada
+					QModelIndex src_ix = src_tm->index(src_row, src_col); /// odsud se to bere
+					QModelIndex dest_ix = dest_tm->index(dest_row, dest_col); ///sem se to vklada
 					//qfInfo() << "ix:" << ix.row() << '\t' << ix.column();
 					//qfInfo() << "my ix:" << my_ix.row() << '\t' << my_ix.column();
-					if(!my_ix.isValid()) { break; }
-					if(my_ix.flags().testFlag(Qt::ItemIsEditable)) {
-						QVariant v = m->data(ix, Qt::DisplayRole);
+					if(!dest_ix.isValid())
+						break;
+					if(dest_ix.flags().testFlag(Qt::ItemIsEditable)) {
+						QVariant v = src_tm->data(src_ix, Qt::DisplayRole);
+						qfDebug() << "copy cell:" << src_ix << "->" << dest_ix << "val:" << v;
 						//qfInfo() << my_ix.row() << '-' << my_ix.column() << "<=" << v.toString();
-						my_m->setData(my_ix, v);
+						dest_tm->setData(dest_ix, v);
 					}
-					my_col++;
+					dest_col++;
 				}
-				my_m->postRow(my_row, true);
-				my_row++;
+				//dest_tm->postRow(origin_view_row, true);
+				//origin_view_row++;
 			}
+			dest_tm->postAll(qf::core::Exception::Throw);
 			//tv->updateAll();
-			QModelIndex bottom_right = model()->index(my_row - 1, origin_ix.column() + col_cnt - 1);
+			QModelIndex bottom_right = model()->index(origin_view_row - 1, origin_ix.column() + col_cnt - 1);
 			QItemSelection sel(origin_ix, bottom_right);
 			QItemSelectionModel *sm = selectionModel();
 			sm->select(sel, QItemSelectionModel::Select);
@@ -613,22 +659,25 @@ void TableView::setValueInSelection_helper(const QVariant &new_val)
 	}
 	else if(selected_row_indexes.count() > 1) {
 		qfc::sql::Connection conn;
-		{
-			qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
-			if(sql_m) {
+		qfc::model::SqlTableModel *sql_m = qobject_cast<qfc::model::SqlTableModel *>(tableModel());
+		if(sql_m) {
+			try {
 				conn = sql_m->sqlConnection();
+				qfc::sql::Transaction transaction(conn);
+				QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
+				foreach(int row_ix, selected_row_indexes) {
+					foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
+						model()->setData(ix, new_val);
+					}
+					sql_m->postRow(toTableModelRowNo(row_ix), qf::core::Exception::Throw);
+				}
+				transaction.commit();
+			}
+			catch(qfc::Exception &e) {
+				dialogs::MessageBox::showException(this, e);
 			}
 		}
-		QF_TIME_SCOPE(QString("Saving %1 rows").arg(selected_row_indexes.count()));
-		qfc::sql::Transaction transaction(conn);
-		foreach(int row_ix, selected_row_indexes) {
-			foreach(const QModelIndex &ix, row_selections.value(row_ix)) {
-				model()->setData(ix, new_val);
-			}
-			if(!postRow(row_ix))
-				return;
-		}
-		transaction.commit();
+		update();
 	}
 }
 
@@ -884,7 +933,7 @@ void TableView::exportReport_helper(const QVariant& _options)
 
 		//qfInfo() << ttable.toString();
 
-		reports::ReportViewWidget *rw = new reports::ReportViewWidget(NULL);
+		reports::ReportViewWidget *rw = new reports::ReportViewWidget(nullptr);
 		rw->setTableData(QString(), ttable);
 		QString report_fn = opts.value("report").toMap().value("fileName").toString();
 		rw->setReport(report_fn);
@@ -1043,7 +1092,7 @@ QList<int> TableView::selectedRowsIndexes() const
 			set << ix.row();
 	}
 	QList<int> ret = set.toList();
-	qSort(ret);
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 
@@ -1056,7 +1105,7 @@ QList<int> TableView::selectedColumnsIndexes() const
 			set << ix.column();
 	}
 	QList<int> ret = set.toList();
-	qSort(ret);
+	std::sort(ret.begin(), ret.end());
 	return ret;
 }
 
@@ -1243,11 +1292,11 @@ QModelIndex TableView::toTableModelIndex(const QModelIndex &table_view_index) co
 
 int TableView::toTableModelRowNo(int table_view_row_no) const
 {
-	qfLogFuncFrame() << table_view_row_no;
+	//qfLogFuncFrame() << table_view_row_no;
 	QModelIndex ix = m_proxyModel->index(table_view_row_no, 0);
-	qfDebug() << ix << "model:" << ix.model() << "proxy:" << m_proxyModel;
+	//qfDebug() << ix << "model:" << ix.model() << "proxy:" << m_proxyModel;
 	ix = toTableModelIndex(ix);
-	qfDebug() << "RETURN:" << ix.row();
+	//qfDebug() << "RETURN:" << ix.row();
 	return ix.row();
 }
 
@@ -1271,84 +1320,6 @@ void TableView::loadPersistentSettings()
 		header_state = QByteArray::fromBase64(header_state);
 		if(!header_state.isEmpty())
 			horiz_header->restoreState(header_state);
-
-#if 0
-		QString s = settings.value("horizontalheader").toString();
-		QJsonDocument jd = QJsonDocument::fromJson(s.toUtf8());
-		QVariantMap m;
-		m = jd.toVariant().toMap();
-		QVariantMap sections = m.value("sections").toMap();
-		QMap<int, QString> visual_order;
-		{
-			QMapIterator<QString, QVariant> it(sections);
-			while(it.hasNext()) {
-				it.next();
-				QVariantMap section = it.value().toMap();
-				QString field_name = it.key();
-				qfDebug() << "resizing column:" << field_name;
-				int visual_ix = section.value("visualIndex").toInt();
-				visual_order[visual_ix] = field_name;
-				for(int logical_ix=0; logical_ix<horiz_header->count(); logical_ix++) {
-					QString col_name = mod->headerData(logical_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					//qfDebug() << col_name << "cmp" << field_name << "=" << qf::core::Utils::fieldNameCmp(col_name, field_name);
-					if(col_name == field_name) {
-						int size = section.value("size").toInt();
-						horiz_header->resizeSection(logical_ix, size);
-						break;
-					}
-				}
-			}
-		}
-		{
-			// block signals for each particular horiz_header->moveSection(v_ix, visual_ix) call
-			// Qt5 crashes sometimes when more sections are moved
-			/* backtrace
-			0	QScopedPointer<QObjectData, QScopedPointerDeleter<QObjectData> >::data	qscopedpointer.h	143	0x7ffff6810a8c
-			1	qGetPtrHelper<QScopedPointer<QObjectData, QScopedPointerDeleter<QObjectData> > >	qglobal.h	941	0x7ffff6ccaa85
-			2	QGraphicsEffect::d_func	qgraphicseffect.h	112	0x7ffff6ccab1c
-			3	QGraphicsEffect::source	qgraphicseffect.cpp	514	0x7ffff6cc8ae5
-			4	QWidgetPrivate::invalidateGraphicsEffectsRecursively	qwidget.cpp	1849	0x7ffff6862d97
-			5	QWidgetPrivate::setDirtyOpaqueRegion	qwidget.cpp	1865	0x7ffff685d471
-			6	QWidget::setVisible	qwidget.cpp	7370	0x7ffff687209d
-			7	QAbstractScrollAreaPrivate::layoutChildren	qabstractscrollarea.cpp	523	0x7ffff6a712be
-			8	QAbstractScrollArea::setViewportMargins	qabstractscrollarea.cpp	940	0x7ffff6a72123
-			9	QTableView::updateGeometries	qtableview.cpp	2114	0x7ffff6b6791a
-			10	QTableView::columnMoved	qtableview.cpp	2956	0x7ffff6b6aeef
-			11	QTableView::qt_static_metacall	moc_qtableview.cpp	189	0x7ffff6b6ca0e
-			12	QMetaObject::activate	qobject.cpp	3680	0x7ffff55e62e9
-			13	QMetaObject::activate	qobject.cpp	3546	0x7ffff55e576d
-			14	QHeaderView::sectionMoved	moc_qheaderview.cpp	375	0x7ffff6b38689
-			15	QHeaderView::moveSection	qheaderview.cpp	798	0x7ffff6b382f4
-			16	qf::qmlwidgets::TableView::loadPersistentSettings	tableview.cpp	186	0x7ffff78e3664
-			 */
-			horiz_header->blockSignals(true);
-			QMapIterator<int, QString> it(visual_order);
-			it.toBack();
-			while(it.hasPrevious()) {
-				it.previous();
-				int visual_ix = it.key();
-				QString field_name = it.value();
-				qfDebug() << "moving column:" << field_name << "to visual index:" << visual_ix;
-				for(int v_ix=0; v_ix<visual_ix; v_ix++) {
-					int log_ix = horiz_header->logicalIndex(v_ix);
-					//QF_ASSERT(log_ix >= 0, "internal error", continue);
-					if(log_ix < 0) {
-						qfDebug() << "Cannot find logical index for visual index:" << v_ix << "column name:" << field_name << "might not exist in loaded columns.";
-						break;
-					}
-					QString col_name = mod->headerData(log_ix, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-					qfDebug() << "\tvisual index:" << v_ix << "-> logical index:" << log_ix << "col name:" << col_name;
-					if(col_name == field_name) {
-						qfDebug() << "\t\tmoving:" << v_ix << "->" << visual_ix;
-						if(v_ix != visual_ix)
-							horiz_header->moveSection(v_ix, visual_ix);
-						break;
-					}
-				}
-			}
-			horiz_header->blockSignals(false);
-		}
-#endif
 	}
 }
 
@@ -1364,33 +1335,6 @@ void TableView::savePersistentSettings()
 
 		QByteArray header_state = horiz_header->saveState();
 		settings.setValue("horizontalheader", QString::fromLatin1(header_state.toBase64()));
-#if 0
-		qf::core::model::TableModel *mod = tableModel();
-		if(horiz_header && mod) {
-			QVariantMap sections;
-			for(int i=0; i<horiz_header->count() && i<mod->columnCount(); i++) {
-				QString col_name = mod->headerData(i, horiz_header->orientation(), qf::core::model::TableModel::FieldNameRole).toString();
-				if(!col_name.isEmpty()) {
-					/// remove schema name from column
-					QString fn, tn;
-					qf::core::Utils::parseFieldName(col_name, &fn, &tn);
-					col_name = fn;
-					if(!tn.isEmpty())
-						col_name = tn + '.' + col_name;
-					QVariantMap section;
-					//section["fieldName"] = col_name;
-					section["size"] = horiz_header->sectionSize(i);
-					section["visualIndex"] = horiz_header->visualIndex(i);
-					sections[col_name] = section;
-					qfDebug() << col_name << "->" << horiz_header->visualIndex(i);
-				}
-			}
-			QVariantMap m;
-			m["sections"] = sections;
-			QJsonDocument jd = QJsonDocument::fromVariant(m);
-			settings.setValue("horizontalheader", QString::fromUtf8(jd.toJson(QJsonDocument::Compact)));
-		}
-#endif
 	}
 }
 
@@ -1617,8 +1561,9 @@ void TableView::createActions()
 	Action *a;
 	{
 		a = new Action(tr("Resize columns to contents"), this);
+		a->setIcon(style->icon("zoom_fitwidth"));
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resizeColumnsToContents");
 		m_actionGroups[SizeActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1628,7 +1573,7 @@ void TableView::createActions()
 		a = new Action(tr("Reset columns settings"), this);
 		a->setToolTip(tr("Reset column widths and positions."));
 		//a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("resetColumnsSettings");
 		m_actionGroups[SizeActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1638,7 +1583,7 @@ void TableView::createActions()
 		a = new Action(tr("Reload"), this);
 		a->setIcon(style->icon("reload"));
 		a->setShortcut(QKeySequence(tr("Ctrl+R", "reload SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("reload");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1646,9 +1591,10 @@ void TableView::createActions()
 	}
 	{
 		a = new Action(tr("Copy"), this);
+		a->setObjectName("TableView_Copy");
 		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copy");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1658,7 +1604,7 @@ void TableView::createActions()
 		a = new Action(tr("Copy special"), this);
 		a->setIcon(style->icon("copy"));
 		//a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copySpecial");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1668,7 +1614,7 @@ void TableView::createActions()
 		a = new Action(tr("Paste"), this);
 		a->setIcon(style->icon("paste"));
 		a->setShortcut(QKeySequence(tr("Ctrl+V", "Paste rows")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("paste");
 		m_actionGroups[PasteActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1677,7 +1623,7 @@ void TableView::createActions()
 	{
 		a = new Action(style->icon("insert-row"), tr("Insert row"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Ins", "insert row SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("insertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1686,7 +1632,7 @@ void TableView::createActions()
 	{
 		a = new Action(style->icon("delete-row"), tr("Delete selected rows"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Del", "delete row SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("removeSelectedRows");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1696,7 +1642,7 @@ void TableView::createActions()
 		a = new Action(tr("Post row edits"), this);
 		a->setIcon(style->icon("save"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Return", "post row SQL table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("postRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1706,7 +1652,7 @@ void TableView::createActions()
 		a = new Action(tr("Revert row edits"), this);
 		a->setIcon(style->icon("revert"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Z", "revert edited row")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("revertRow");
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
@@ -1719,7 +1665,7 @@ void TableView::createActions()
 		//a->setVisible(false);
 		m_actionGroups[RowActions] << a->oid();
 		a->setShortcut(QKeySequence(tr("Ctrl+D", "insert row copy")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[RowActions] << a->oid();
 		m_actions[a->oid()] = a;
 		connect(a, SIGNAL(triggered()), this, SLOT(cloneRow()));
@@ -1728,7 +1674,7 @@ void TableView::createActions()
 		a = new Action(tr("Zobrazit ve formulari"), this);
 		a->setIcon(style->icon("view"));
 		a->setToolTip(tr("Zobrazit radek v formulari pro cteni"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(emitViewRowInExternalEditor()));
 		a->setOid("viewRowExternal");
 		m_actions[a->oid()] = a;
@@ -1737,7 +1683,7 @@ void TableView::createActions()
 		a = new Action(tr("Upravit ve formulari"), this);
 		a->setIcon(style->icon("edit"));
 		a->setToolTip(tr("Upravit radek ve formulari"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(emitEditRowInExternalEditor()));
 		a->setOid("editRowExternal");
 		m_actions[a->oid()] = a;
@@ -1748,7 +1694,7 @@ void TableView::createActions()
 		a->setOid("sortAsc");
 		a->setCheckable(true);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
 		//connect(a, SIGNAL(triggered(bool)), this, SLOT(sortAsc(bool)));
 		m_actions[a->oid()] = a;
@@ -1758,7 +1704,7 @@ void TableView::createActions()
 		a->setOid("sortDesc");
 		a->setCheckable(true);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
 		//connect(a, SIGNAL(triggered(bool)), this, SLOT(sortDesc(bool)));
 		m_actions[a->oid()] = a;
@@ -1770,7 +1716,7 @@ void TableView::createActions()
 		a->setCheckable(false);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+F", "filter table")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		m_actionGroups[SortActions] << a->oid();
 		connect(a, SIGNAL(triggered(bool)), this, SIGNAL(filterDialogRequest()));
 		m_actions[a->oid()] = a;
@@ -1779,7 +1725,7 @@ void TableView::createActions()
 		a = new Action(tr("Edit cell content"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+T", "Edit cell content")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(editCellContentInEditor()));
 		a->setOid("showCurrentCellText");
 		m_actionGroups[CellActions] << a->oid();
@@ -1788,7 +1734,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Save BLOB"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(saveCurrentCellBlob()));
 		a->setOid("saveCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
@@ -1797,7 +1743,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Load BLOB from file"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(loadCurrentCellBlob()));
 		a->setOid("loadCurrentCellBlob");
 		m_actionGroups[BlobActions] << a->oid();
@@ -1806,7 +1752,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Insert rows statement"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		//connect(a, SIGNAL(triggered()), this, SLOT(insertRowsStatement()));
 		a->setOid("insertRowsStatement");
 		m_actionGroups[RowActions] << a->oid();
@@ -1816,7 +1762,7 @@ void TableView::createActions()
 		a = new Action(tr("Set NULL in selection"), this);
 		//a->setToolTip(tr("Upravit radek v externim editoru"));
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+L", "Set NULL in selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(setNullInSelection()));
 		a->setOid("setNullInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
@@ -1825,7 +1771,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Set value in selection"), this);
 		a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		//a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(setValueInSelection()));
 		a->setOid("setValueInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
@@ -1834,7 +1780,7 @@ void TableView::createActions()
 	{
 		a = new Action(tr("Generate sequence in selection"), this);
 		//a->setShortcut(QKeySequence(tr("Ctrl+Shift+E", "Set value in selection")));
-		a->setShortcutContext(Qt::WidgetShortcut);
+		////a->setShortcutContext(Qt::WidgetShortcut);
 		connect(a, SIGNAL(triggered()), this, SLOT(generateSequenceInSelection()));
 		a->setOid("generateSequenceInSelection");
 		m_actionGroups[SetValueActions] << a->oid();
@@ -1849,6 +1795,7 @@ void TableView::createActions()
 		a->setMenu(m);
 		{
 			a = new Action(tr("Select current column"), this);
+			a->setShortcut(QKeySequence(tr("Ctrl+Shift+C", "Select current column")));
 			a->setShortcutContext(Qt::WidgetShortcut);
 			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentColumn()));
 			a->setOid("selectCurrentColumn");
@@ -1858,7 +1805,7 @@ void TableView::createActions()
 		}
 		{
 			a = new Action(tr("Select current row"), this);
-			a->setShortcutContext(Qt::WidgetShortcut);
+			////a->setShortcutContext(Qt::WidgetShortcut);
 			connect(a, SIGNAL(triggered()), this, SLOT(selectCurrentRow()));
 			a->setOid("selectCurrentRow");
 			//m_actions[a->oid()] = a;
@@ -1957,6 +1904,7 @@ void TableView::createActions()
 	a = new Action(this); a->setSeparator(true);
 	m_toolBarActions << a;
 	m_toolBarActions << action("reload");
+	m_toolBarActions << action("resizeColumnsToContents");
 	a = new Action(this); a->setSeparator(true);
 	m_toolBarActions << a;
 	//m_toolBarActions << action("sortAsc");
@@ -2044,7 +1992,7 @@ void TableView::generateSequenceInSelection()
 	int n = new_val_str.toInt();
 	foreach(int row_ix, sorted_indexes.keys()) {
 		QList<int> lst = sorted_indexes.value(row_ix);
-		qSort(lst);
+		std::sort(lst.begin(), lst.end());
 		foreach(int col_ix, lst) {
 			QModelIndex ix = model()->index(row_ix, col_ix);
 			model()->setData(ix, n++);
@@ -2178,10 +2126,10 @@ void TableView::removeSelectedRowsInline()
 		continuous_sections << continuous_section;
 	}
 	if(rows_to_delete.count() == 1) {
-		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to remove row?"), true)) return;
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you really want to remove row?"), true)) return;
 	}
 	else {
-		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you realy want to remove all selected rows?"), true)) return;
+		if(!qf::qmlwidgets::dialogs::MessageBox::askYesNo(this, tr("Do you really want to remove all selected rows?"), true)) return;
 	}
 	QModelIndex ix = currentIndex();
 	//ignoreCurrentChanged = true; /// na false ho nastavi currentChanged()

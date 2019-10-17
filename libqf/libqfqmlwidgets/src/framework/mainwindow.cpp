@@ -342,7 +342,7 @@ class TestObject : public QObject
 {
 	Q_OBJECT
 public:
-	TestObject(QObject *parent = 0) : QObject(parent)
+	TestObject(QObject *parent = nullptr) : QObject(parent)
 	{
 		static int cnt = 0;
 		setObjectName(QString("OBJ%1").arg(++cnt));
