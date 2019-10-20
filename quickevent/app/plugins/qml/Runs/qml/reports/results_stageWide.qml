@@ -8,6 +8,8 @@ Report {
 	property var options
 
 	property string reportTitle: qsTr("Results by classes")
+	property bool isBreakAfterEachClass: false
+	property bool isColumnBreak: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {
@@ -29,10 +31,10 @@ Report {
 	}
 	textStyle: myStyle.textStyleDefault
 
-	width: 210
-	height: 297
-	hinset: root.options && root.options.horizontalMargin? root.options.horizontalMargin: 10
-	vinset: root.options && root.options.verticalMargin? root.options.verticalMargin: 5
+	width: root.options.pageWidth? root.options.pageWidth: 210
+	height: root.options.pageHeight? root.options.pageHeight: 297
+	hinset: root.options.horizontalMargin? root.options.horizontalMargin: 10
+	vinset: root.options.verticalMargin? root.options.verticalMargin: 5
 	Frame {
 		width: "%"
 		height: "%"
@@ -43,7 +45,6 @@ Report {
 		Frame {
 			width: "%"
 			height: "%"
-			//columns: "%,%"
 			vinset: 10
 			Band {
 				id: band
@@ -61,7 +62,11 @@ Report {
 					//keepAll: true
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
-					Space { height: 5 }
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
+						skipFirst: true
+					}
 					Frame {
 						width: "%"
 						layout: Frame.LayoutHorizontal
@@ -118,9 +123,10 @@ Report {
 							Para {
 								width: 10
 								textFn: function() {
-									var disq = runnersDetail.rowData("disqualified");
-									if(disq)
+									if(runnersDetail.rowData("disqualified"))
 										return qsTr("DISQ");
+									if(runnersDetail.rowData("notCompeting"))
+										return qsTr("NC");
 									return "";
 								}
 							}

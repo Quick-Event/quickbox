@@ -29,6 +29,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	Q_PROPERTY(int stagesCount READ stagesCount WRITE setStagesCount NOTIFY stagesCountChanged)
 	Q_PROPERTY(bool pageLayoutVisible READ isPageLayoutVisible WRITE setPageLayoutVisible NOTIFY pageLayoutVisibleChanged)
 	Q_PROPERTY(bool columnCountEnable READ isColumnCountEnable WRITE setColumnCountEnable NOTIFY columnCountEnableChanged)
+	Q_PROPERTY(bool resultOptionsVisible READ isResultOptionsVisible WRITE setResultOptionsVisible NOTIFY resultOptionsVisibleChanged)
 
 	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
@@ -38,6 +39,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_IMPL2(int,s, S, tagesCount, 1)
 	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(c, C, olumnCountEnable, true)
+	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
 private:
 	using Super = QDialog;
 public:
@@ -62,6 +64,7 @@ public:
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintVacants)
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintStartNumbers)
 		QF_VARIANTMAP_FIELD2(int, s, setS, tagesCount, 1)
+		QF_VARIANTMAP_FIELD2(int, r, setR, esultNumPlaces, 9999)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
@@ -93,6 +96,7 @@ public:
 	Q_INVOKABLE bool isStartListPrintStartNumbers() const;
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}
 	Q_INVOKABLE bool isColumnBreak() const {return breakType() == BreakType::Column;}
+	Q_INVOKABLE int resultNumPlaces() const;
 	Q_INVOKABLE QString sqlWhereExpression() const;
 	static QString sqlWhereExpression(const Options &opts);
 protected:

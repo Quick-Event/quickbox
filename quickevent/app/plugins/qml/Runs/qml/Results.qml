@@ -161,8 +161,9 @@ QtObject {
 		Log.info("runs printResultsCurrentStage triggered");
 		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
 		dlg.persistentSettingsId = "resultsReportOptions";
+		dlg.resultOptionsVisible = true;
 		if(dlg.exec()) {
-			var td = currentStageTableData(dlg.sqlWhereExpression());
+			var td = currentStageTableData(dlg.sqlWhereExpression(),dlg.resultNumPlaces());
 			var opts = dlg.optionsMap();
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stage.qml"
 										   , td
@@ -177,12 +178,27 @@ QtObject {
 		dlg.destroy();
 	}
 
-	function printCurrentStageFirstN()
+	function printCurrentStageWide()
 	{
-		Log.info("runs printCurrentStageFirstN triggered");
-		var n = InputDialogSingleton.getInt(this, qsTr("Get number"), qsTr("Limit number of printed runners in each class to:"), 3, 1);
-		var td = currentStageTableData("", n);
-		QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml", td, qsTr("Stage results by classes"));
+		Log.info("runs printResultsCurrentStageWide triggered");
+		var dlg = runsPlugin.createReportOptionsDialog(FrameWork);
+		dlg.persistentSettingsId = "resultsReportWideOptions";
+		dlg.columnCountEnable = false;
+		dlg.resultOptionsVisible = true;
+		if(dlg.exec()) {
+			var td = currentStageTableData(dlg.sqlWhereExpression(),dlg.resultNumPlaces());
+			var opts = dlg.optionsMap();
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_stageWide.qml"
+										   , td
+										   , qsTr("Results by classes")
+										   , "printCurrentStage2"
+										   , { isBreakAfterEachClass: dlg.isBreakAfterEachClass()
+											   , isColumnBreak: dlg.isColumnBreak()
+											   , options: opts
+											 }
+										   );
+		}
+		dlg.destroy();
 	}
 
 	function printCurrentStageAwards()
@@ -324,9 +340,31 @@ QtObject {
 		dlg.stagesCount = stage_id;
 		dlg.maxPlacesCount = 9999;
 		dlg.excludeDisqualified = true;
+		dlg.persistentSettingsId = "resultsReportOptionsNStages";
 		if(dlg.exec()) {
 			var tt = nStagesResultsTable(dlg.stagesCount, dlg.maxPlacesCount, dlg.excludeDisqualified);
 			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstages.qml"
+										   , tt.data()
+										   , qsTr("Results after " + dlg.stagesCount + " stages")
+										   , ""
+										   , {stagesCount: dlg.stagesCount});
+		}
+		dlg.destroy();
+	}
+
+	function printNStagesWide()
+	{
+		Log.info("runs results printNStagesWidw triggered");
+		var event_plugin = FrameWork.plugin("Event");
+		var stage_id = event_plugin.currentStageId;
+		var dlg = runsPlugin.createNStagesReportOptionsDialog(FrameWork);
+		dlg.stagesCount = stage_id;
+		dlg.maxPlacesCount = 9999;
+		dlg.excludeDisqualified = true;
+		dlg.persistentSettingsId = "resultsReportOptionsNStagesWide";
+		if(dlg.exec()) {
+			var tt = nStagesResultsTable(dlg.stagesCount, dlg.maxPlacesCount, dlg.excludeDisqualified);
+			QmlWidgetsSingleton.showReport(runsPlugin.manifest.homeDir + "/reports/results_nstagesWide.qml"
 										   , tt.data()
 										   , qsTr("Results after " + dlg.stagesCount + " stages")
 										   , ""
