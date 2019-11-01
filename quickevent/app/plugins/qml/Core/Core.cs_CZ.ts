@@ -32,12 +32,12 @@
     <message>
         <location filename="qml/main.qml" line="58"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation>Změny v nastavení jazyka &apos;%1&apos; se projeví až po restartu aplikace.</translation>
+        <translation>Změna jazyka na &apos;%1&apos; se projeví až po restartu aplikace.</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="77"/>
         <source>&amp;Quit</source>
-        <translation>&amp;Odejít</translation>
+        <translation>&amp;Ukončit</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="86"/>
@@ -117,7 +117,7 @@
     <message>
         <location filename="qml/main.qml" line="162"/>
         <source>&amp;Toolbar</source>
-        <translation>&amp;Nástrojová lišta</translation>
+        <translation>&amp;Panel nástrojů</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="165"/>
