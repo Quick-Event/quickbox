@@ -14,7 +14,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="164"/>
         <source>More runs with si: %1, run1 id: %2, run2 id: %3</source>
-        <translation>Více závodníků s SI: %1, ID závodníka 1: %2, ID závodníka 2: %3</translation>
+        <translation>Více závodníků s SI: %1, ID prvního závodníka: %2, ID druhého závodníka: %3</translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="176"/>
@@ -82,7 +82,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="276"/>
         <source>Recalculating times for %1</source>
-        <translation>Přepočítávám časy pro %1</translation>
+        <translation>Přepočítávání časů pro %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="302"/>
@@ -92,7 +92,7 @@
     <message>
         <location filename="src/cardreaderwidget.cpp" line="305"/>
         <source>Station info</source>
-        <translation>Info o vyčítací jednotce</translation>
+        <translation>Informace o vyčítací jednotce</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="313"/>
@@ -152,12 +152,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="372"/>
         <source>SI reader backup memory CSV</source>
-        <translation>Záložní paměť vyčítací jednotky CSV</translation>
+        <translation>Záložní paměť vyčítací jednotky (CSV)</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="378"/>
         <source>Test audio</source>
-        <translation>Otestovat audio</translation>
+        <translation>Otestovat zvuk</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="391"/>
@@ -192,12 +192,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="532"/>
         <source>Connected to %1 in direct mode.</source>
-        <translation>Připojen k %1 v přímém módu.</translation>
+        <translation>Připojeno k %1 v přímém módu.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="535"/>
         <source>Error set SI station to direct mode.</source>
-        <translation>Chyba při nastavování SI jednotky do přímého módu.</translation>
+        <translation>Při nastavování SI jednotky do přímého módu došlo k chybě.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="559"/>
@@ -207,12 +207,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="636"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
-        <translation type="unfinished"></translation>
+        <translation>DriverInfo: &lt;%1&gt; %2</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="645"/>
         <source>DriverRawData: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>DriverRawData: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="652"/>
@@ -227,12 +227,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1171"/>
         <source>Downloading station backup ...</source>
-        <translation>Načítám paměť jednotky...</translation>
+        <translation>Načítám paměť kontroly...</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1173"/>
         <source>Cancelled by user</source>
-        <translation>Přerušeno uživatelem</translation>
+        <translation>Zrušeno uživatelem</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1203"/>
@@ -257,12 +257,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1206"/>
         <source>Station %1 backup memory</source>
-        <translation>Paměť SI jednotky %1</translation>
+        <translation>Paměť SI kontroly %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="1208"/>
         <source>Station backup memory</source>
-        <translation>Paměť SI jednotky</translation>
+        <translation>Paměť SI kontroly</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="729"/>
@@ -293,7 +293,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="900"/>
         <location filename="src/cardreaderwidget.cpp" line="1086"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation>Nelze otevřít soubor &apos;%1&apos; pro čtení.</translation>
+        <translation>Soubor &apos;%1&apos; nelze otevřít pro čtení.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="919"/>
@@ -304,7 +304,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="941"/>
         <source>Cannot find runs record for SI %1!</source>
-        <translation>Nelze najít záznam úseku pro SI: %1!</translation>
+        <translation>Nelze najít závodníka s SI: %1!</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="942"/>
@@ -343,7 +343,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="52"/>
         <source>Baud rate:</source>
-        <translation>Bity za sekundu:</translation>
+        <translation>Přenosová rychlost (v baudech):</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="69"/>
@@ -418,12 +418,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="178"/>
         <source>Mark</source>
-        <translation>Značka</translation>
+        <translation>1 (mark)</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="183"/>
         <source>Space</source>
-        <translation>Mezera</translation>
+        <translation>0 (space)</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="207"/>
@@ -433,7 +433,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/dlgsettings.ui" line="213"/>
         <source>show raw data</source>
-        <translation>ukaž surová data</translation>
+        <translation>zobrazit nezpracovaná data</translation>
     </message>
     <message>
         <location filename="src/dlgsettings.ui" line="220"/>
@@ -568,7 +568,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
         <source>Racom Client</source>
-        <translation>Racom Client</translation>
+        <translation>RACOM klient</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="33"/>
@@ -578,17 +578,17 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/services/racomclientwidget.ui" line="40"/>
         <source>Listen on UDP port</source>
-        <translation>Poslouchat na UDP portu</translation>
+        <translation>Očekávat spojení na UDP portu</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="47"/>
         <source>Raw SI data</source>
-        <translation>Surová SI data</translation>
+        <translation>Nezpracovaná SI data</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="67"/>
         <source>Listen on TCP port</source>
-        <translation>Poslouchat na TCP portu</translation>
+        <translation>Očekávat spojení na TCP portu</translation>
     </message>
 </context>
 </TS>
