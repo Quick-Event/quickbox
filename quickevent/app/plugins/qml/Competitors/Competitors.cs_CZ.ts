@@ -120,7 +120,7 @@
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="131"/>
         <source>Lic</source>
-        <translation>Licence</translation>
+        <translation>Lic</translation>
     </message>
     <message>
         <location filename="src/Competitors/competitorsplugin.cpp" line="132"/>
@@ -226,17 +226,17 @@
         <location filename="src/competitorswidget.cpp" line="255"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
-        <translation>Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
+        <translation>Opravdu odstranit všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="268"/>
         <source>Confirm deletion of %1 competitors.</source>
-        <translation>Potvrďte smazání %1 zavodníků.</translation>
+        <translation>Potvrďte odstranění %1 závodníků.</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="311"/>
         <source>Set class in selected rows</source>
-        <translation>Změnit kategorii v označených řádcích</translation>
+        <translation>Změnit kategorii ve vybraných řádcích</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="323"/>
@@ -302,7 +302,7 @@
         <location filename="src/competitorwidget.cpp" line="82"/>
         <source>On</source>
         <comment>runs.isRunning</comment>
-        <translation>Ano</translation>
+        <translation>Startuje</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="82"/>
