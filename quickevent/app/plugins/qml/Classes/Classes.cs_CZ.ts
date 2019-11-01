@@ -84,7 +84,7 @@
         <location filename="src/classestableview.cpp" line="44"/>
         <source>Really delete all selected classes? This action cannot be undone!</source>
         <oldsource>Realy delete all selected classes? This action cannot be undone!</oldsource>
-        <translation>Opravdu smazat všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
+        <translation>Opravdu odstranit všechny vybrané kategorie? Tuto akci nelze vrátit zpět!</translation>
     </message>
 </context>
 <context>
@@ -102,7 +102,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="81"/>
         <source>When checked, all the maps defined for class will be used during drawing</source>
-        <translation>Pokud je zaškrtnuto, je celkový počet map zohledněn při sestavování startovek</translation>
+        <translation>Je-li zaškrtnuto, bude při losování zohledněn celkový počet map zadaný pro kategorii</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="84"/>
@@ -237,7 +237,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="158"/>
         <source>Pos</source>
-        <translation>Číslo</translation>
+        <translation>Pořadí</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="159"/>
@@ -348,12 +348,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="230"/>
         <source>OCad IOF-XML 2.0</source>
-        <translation>OCAD IOF-XML 2.0</translation>
+        <translation>OCAD IOF XML 2.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
         <source>OCad IOF-XML 3.0</source>
-        <translation>OCAD IOF-XML 3.0</translation>
+        <translation>OCAD IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="243"/>
@@ -386,7 +386,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="376"/>
         <source>Delete all courses definitions for stage %1?</source>
-        <translation>Vymazat všechny definice tratí pro etapu %1?</translation>
+        <translation>Chcete odstranit všechny definice tratí pro etapu %1?</translation>
     </message>
 </context>
 <context>
@@ -588,7 +588,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="251"/>
         <source>class start: %1, interval: %2, duration: %3, end: %4&lt;br/&gt;</source>
-        <translation>start kategorie: %1, interval: %2, délka trvání: %3, konec: %4&lt;br/&gt;</translation>
+        <translation>start kategorie: %1, interval: %2, doba trvání: %3, konec: %4&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="252"/>
@@ -612,7 +612,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="29"/>
         <source>Lock class start time</source>
-        <translation>Uzamknout startovní časy kategorie</translation>
+        <translation>Uzamknout startovní čas kategorie</translation>
     </message>
 </context>
 <context>
@@ -690,7 +690,7 @@ Přejete si uložit změny?</translation>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="185"/>
         <source>Start slot offset [min]:</source>
-        <translation>Start prvního v řádku [min]:</translation>
+        <translation>Start první kategorie v řádku [min]:</translation>
     </message>
 </context>
 <context>
