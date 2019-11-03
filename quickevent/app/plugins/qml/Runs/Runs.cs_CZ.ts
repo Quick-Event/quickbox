@@ -212,35 +212,20 @@
 <context>
     <name>Results</name>
     <message>
-        <location filename="qml/Results.qml" line="169"/>
+        <location filename="qml/Results.qml" line="170"/>
+        <location filename="qml/Results.qml" line="193"/>
         <source>Results by classes</source>
         <oldsource>Results by clases</oldsource>
         <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/Results.qml" line="183"/>
-        <source>Get number</source>
-        <translation>Vložte číslo</translation>
-    </message>
-    <message>
-        <location filename="qml/Results.qml" line="183"/>
-        <source>Limit number of printed runners in each class to:</source>
-        <translation>Tisknout v každé kategorii maximálně míst:</translation>
-    </message>
-    <message>
-        <location filename="qml/Results.qml" line="185"/>
-        <source>Stage results by classes</source>
-        <oldsource>Stage results by clases</oldsource>
-        <translation>Etapové výsledky po kategoriích</translation>
-    </message>
-    <message>
-        <location filename="qml/Results.qml" line="206"/>
-        <location filename="qml/Results.qml" line="350"/>
+        <location filename="qml/Results.qml" line="222"/>
+        <location filename="qml/Results.qml" line="388"/>
         <source>Stage awards</source>
         <translation>Etapové diplomy</translation>
     </message>
     <message>
-        <location filename="qml/Results.qml" line="301"/>
+        <location filename="qml/Results.qml" line="317"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
@@ -294,7 +279,7 @@
         <translation>Statistiky závodu</translation>
     </message>
     <message>
-        <location filename="src/Runs/runsplugin.cpp" line="829"/>
+        <location filename="src/Runs/runsplugin.cpp" line="831"/>
         <source>E%1 IOF XML stage results</source>
         <translation>E%1 IOF XML etapové výsledky</translation>
     </message>
@@ -941,63 +926,68 @@
     </message>
     <message>
         <location filename="qml/main.qml" line="99"/>
+        <source>Current stage for speaker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="106"/>
         <source>&amp;After n stages</source>
         <translation>&amp;Po n etapách</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="106"/>
-        <source>First &amp;n competitors</source>
-        <translation>Prvních &amp;n závodníků</translation>
+        <location filename="qml/main.qml" line="113"/>
+        <source>After n stages for speaker</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="113"/>
+        <location filename="qml/main.qml" line="120"/>
         <source>Awards after n stages</source>
         <translation>Diplomy po n etapách</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="120"/>
+        <location filename="qml/main.qml" line="127"/>
         <source>&amp;Awards</source>
         <translation>&amp;Diplomy</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="127"/>
+        <location filename="qml/main.qml" line="134"/>
         <source>&amp;Competitors with rented cards</source>
         <oldsource>&amp;Competitors with card rent</oldsource>
         <translation>&amp;Závodníci s půjčeným čipem</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="132"/>
+        <location filename="qml/main.qml" line="139"/>
         <source>Competitors with rented cards</source>
         <oldsource>Competitors with card rent</oldsource>
         <translation>Závodníci s půjčeným čipem</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="150"/>
+        <location filename="qml/main.qml" line="157"/>
         <source>&amp;WinSplits</source>
         <translation>&amp;WinSplits</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="163"/>
-        <location filename="qml/main.qml" line="185"/>
+        <location filename="qml/main.qml" line="170"/>
+        <location filename="qml/main.qml" line="193"/>
         <source>&amp;Start list</source>
         <translation>&amp;Startovní listina</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="171"/>
+        <location filename="qml/main.qml" line="178"/>
         <source>&amp;Results</source>
         <translation>&amp;Výsledky</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
-        <location filename="qml/main.qml" line="153"/>
-        <location filename="qml/main.qml" line="198"/>
+        <location filename="qml/main.qml" line="160"/>
+        <location filename="qml/main.qml" line="206"/>
         <source>Get file name</source>
         <translation>Zadejte jméno souboru</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
-        <location filename="qml/main.qml" line="153"/>
-        <location filename="qml/main.qml" line="198"/>
+        <location filename="qml/main.qml" line="160"/>
+        <location filename="qml/main.qml" line="206"/>
         <source>XML files (*.xml)</source>
         <translation>XML soubory (*.xml)</translation>
     </message>
@@ -1036,6 +1026,34 @@
     </message>
 </context>
 <context>
+    <name>results_nstagesWide</name>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="13"/>
+        <source>Results after %1 stages</source>
+        <translation type="unfinished">Výsledky po %1 etapách</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="130"/>
+        <source>Club</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="133"/>
+        <source>Time</source>
+        <translation type="unfinished">Čas</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="135"/>
+        <source>Loss</source>
+        <translation type="unfinished">Ztráta</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="166"/>
+        <source>DISQ</source>
+        <translation type="unfinished">DISK</translation>
+    </message>
+</context>
+<context>
     <name>results_stage</name>
     <message>
         <location filename="qml/reports/results_stage.qml" line="9"/>
@@ -1071,19 +1089,24 @@
         <translation>Výsledky po kategoriích</translation>
     </message>
     <message>
-        <location filename="qml/reports/results_stageWide.qml" line="75"/>
+        <location filename="qml/reports/results_stageWide.qml" line="80"/>
         <source>length: </source>
         <translation>délka: </translation>
     </message>
     <message>
-        <location filename="qml/reports/results_stageWide.qml" line="78"/>
+        <location filename="qml/reports/results_stageWide.qml" line="83"/>
         <source>climb: </source>
         <translation>převýšení: </translation>
     </message>
     <message>
-        <location filename="qml/reports/results_stageWide.qml" line="123"/>
+        <location filename="qml/reports/results_stageWide.qml" line="127"/>
         <source>DISQ</source>
         <translation>DISK</translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_stageWide.qml" line="129"/>
+        <source>NC</source>
+        <translation type="unfinished">MS</translation>
     </message>
 </context>
 <context>

@@ -211,33 +211,19 @@
 <context>
     <name>Results</name>
     <message>
-        <location filename="qml/Results.qml" line="169"/>
+        <location filename="qml/Results.qml" line="170"/>
+        <location filename="qml/Results.qml" line="193"/>
         <source>Results by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/Results.qml" line="183"/>
-        <source>Get number</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/Results.qml" line="183"/>
-        <source>Limit number of printed runners in each class to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/Results.qml" line="185"/>
-        <source>Stage results by classes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/Results.qml" line="206"/>
-        <location filename="qml/Results.qml" line="350"/>
+        <location filename="qml/Results.qml" line="222"/>
+        <location filename="qml/Results.qml" line="388"/>
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/Results.qml" line="301"/>
+        <location filename="qml/Results.qml" line="317"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -291,7 +277,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Runs/runsplugin.cpp" line="829"/>
+        <location filename="src/Runs/runsplugin.cpp" line="831"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -921,15 +907,15 @@
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
-        <location filename="qml/main.qml" line="153"/>
-        <location filename="qml/main.qml" line="198"/>
+        <location filename="qml/main.qml" line="160"/>
+        <location filename="qml/main.qml" line="206"/>
         <source>Get file name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
-        <location filename="qml/main.qml" line="153"/>
-        <location filename="qml/main.qml" line="198"/>
+        <location filename="qml/main.qml" line="160"/>
+        <location filename="qml/main.qml" line="206"/>
         <source>XML files (*.xml)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -940,47 +926,52 @@
     </message>
     <message>
         <location filename="qml/main.qml" line="99"/>
-        <source>&amp;After n stages</source>
+        <source>Current stage for speaker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="106"/>
-        <source>First &amp;n competitors</source>
+        <source>&amp;After n stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="113"/>
-        <source>Awards after n stages</source>
+        <source>After n stages for speaker</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="120"/>
-        <source>&amp;Awards</source>
+        <source>Awards after n stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="127"/>
+        <source>&amp;Awards</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="134"/>
         <source>&amp;Competitors with rented cards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="132"/>
+        <location filename="qml/main.qml" line="139"/>
         <source>Competitors with rented cards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="150"/>
+        <location filename="qml/main.qml" line="157"/>
         <source>&amp;WinSplits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="163"/>
-        <location filename="qml/main.qml" line="185"/>
+        <location filename="qml/main.qml" line="170"/>
+        <location filename="qml/main.qml" line="193"/>
         <source>&amp;Start list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="171"/>
+        <location filename="qml/main.qml" line="178"/>
         <source>&amp;Results</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1014,6 +1005,34 @@
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="178"/>
+        <source>DISQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>results_nstagesWide</name>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="13"/>
+        <source>Results after %1 stages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="130"/>
+        <source>Club</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="133"/>
+        <source>Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="135"/>
+        <source>Loss</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstagesWide.qml" line="166"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1054,18 +1073,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_stageWide.qml" line="75"/>
+        <location filename="qml/reports/results_stageWide.qml" line="80"/>
         <source>length: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_stageWide.qml" line="78"/>
+        <location filename="qml/reports/results_stageWide.qml" line="83"/>
         <source>climb: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_stageWide.qml" line="123"/>
+        <location filename="qml/reports/results_stageWide.qml" line="127"/>
         <source>DISQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_stageWide.qml" line="129"/>
+        <source>NC</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
