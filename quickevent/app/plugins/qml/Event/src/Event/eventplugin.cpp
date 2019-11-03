@@ -623,7 +623,7 @@ void EventPlugin::connectToSqlServer()
 	while(!connect_ok) {
 		conn_w->loadSettings();
 		if(!dlg.exec())
-			break;
+			return;
 
 		conn_w->saveSettings();
 		connection_type = conn_w->connectionType();
