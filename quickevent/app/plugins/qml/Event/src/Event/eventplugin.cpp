@@ -887,22 +887,22 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			}
 		}
 		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
-		{
-			QString conn_name;
-			{
-				qfs::Connection conn(QSqlDatabase::database());
-				conn_name = conn.connectionName();
-				conn.close();
-			}
-			qfInfo() << "removing database:" << conn_name;
-			QSqlDatabase::removeDatabase(conn_name);
-			QSqlDatabase::addDatabase("QSQLITE");
-		}
 		if(event_fn.isEmpty()) {
 			ok = false;
 		}
 		else {
 			if(QFile::exists(event_fn)) {
+				{
+					QString conn_name;
+					{
+						qfs::Connection conn(QSqlDatabase::database());
+						conn_name = conn.connectionName();
+						conn.close();
+					}
+					qfInfo() << "removing database:" << conn_name;
+					QSqlDatabase::removeDatabase(conn_name);
+					QSqlDatabase::addDatabase("QSQLITE");
+				}
 				qfs::Connection conn(QSqlDatabase::database());
 				conn.setDatabaseName(event_fn);
 				qfInfo() << "Opening database file" << event_fn;

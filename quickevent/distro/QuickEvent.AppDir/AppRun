@@ -3,4 +3,7 @@
 DIR=`dirname "$(readlink -f "$0")"`
 #echo $DIR
 export LD_LIBRARY_PATH=$DIR/lib 
+#export QT_DEBUG_PLUGINS=1
+unset QTDIR
+unset QT_PLUGIN_PATH
 $DIR/bin/quickevent
