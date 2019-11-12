@@ -6,7 +6,7 @@
     <message>
         <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="14"/>
         <source>Classic race</source>
-        <translation type="unfinished"></translation>
+        <translation>Классическая гонка</translation>
     </message>
 </context>
 <context>
@@ -24,7 +24,7 @@
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="287"/>
         <source>Save card ERROR: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при сохранении чипа: %1</translation>
     </message>
     <message>
         <location filename="src/CardReader/cardreaderplugin.cpp" line="333"/>
@@ -37,7 +37,7 @@
     <message>
         <location filename="src/cardreaderpartwidget.cpp" line="12"/>
         <source>Card reader</source>
-        <translation type="unfinished"></translation>
+        <translation>Считыватель чипов</translation>
     </message>
 </context>
 <context>
