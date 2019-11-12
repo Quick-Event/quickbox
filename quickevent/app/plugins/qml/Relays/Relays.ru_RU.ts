@@ -441,7 +441,7 @@
     <message>
         <location filename="qml/reports/startList_classes.qml" line="9"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый список по классам</translation>
     </message>
 </context>
 <context>
@@ -449,7 +449,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="9"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый список по клубам</translation>
     </message>
 </context>
 </TS>
