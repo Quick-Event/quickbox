@@ -6,12 +6,12 @@
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="68"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="241"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>OK</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="241"/>
@@ -22,7 +22,7 @@
         <location filename="qml/reports/receipts/Classic.qml" line="255"/>
         <location filename="qml/reports/receipts/Classic.qml" line="267"/>
         <source>-----</source>
-        <translation type="unfinished"></translation>
+        <translation>-----</translation>
     </message>
     <message>
         <location filename="qml/reports/receipts/Classic.qml" line="323"/>
@@ -110,22 +110,22 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="83"/>
         <source>ASCII7</source>
-        <translation type="unfinished"></translation>
+        <translation>ASCII7</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="88"/>
         <source>cp1250</source>
-        <translation type="unfinished"></translation>
+        <translation>cp1250</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="93"/>
         <source>iso8859-2</source>
-        <translation type="unfinished"></translation>
+        <translation>iso8859-2</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="98"/>
         <source>utf8</source>
-        <translation type="unfinished"></translation>
+        <translation>utf8</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="109"/>
@@ -135,7 +135,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="119"/>
         <source>Network address</source>
-        <translation type="unfinished"></translation>
+        <translation>Сетевой адрес</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="126"/>
@@ -150,47 +150,47 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="140"/>
         <source>/dev/usb/lp1</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp1</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="145"/>
         <source>/dev/usb/lp2</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp2</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="150"/>
         <source>/dev/usb/lp3</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp3</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="155"/>
         <source>/dev/usb/lp4</source>
-        <translation type="unfinished"></translation>
+        <translation>/dev/usb/lp4</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="160"/>
         <source>\\.\LPT1</source>
-        <translation type="unfinished"></translation>
+        <translation>\\.\LPT1</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="169"/>
         <source>Epson TM-T88V</source>
-        <translation type="unfinished"></translation>
+        <translation>Epson TM-T88V</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="174"/>
         <source>Epson TM-U220B</source>
-        <translation type="unfinished"></translation>
+        <translation>Epson TM-U220B</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="182"/>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="195"/>
         <source>Line length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина линии</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="202"/>
@@ -200,12 +200,12 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="221"/>
         <source>Printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Принтер</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="235"/>
         <source>UDP</source>
-        <translation type="unfinished"></translation>
+        <translation>UDP</translation>
     </message>
 </context>
 <context>
@@ -213,7 +213,7 @@
     <message>
         <location filename="src/receiptswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="40"/>
@@ -253,12 +253,12 @@
     <message>
         <location filename="src/receiptswidget.ui" line="100"/>
         <source>Printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Принтер</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.ui" line="107"/>
         <source>Printer options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметры принтера</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="72"/>
@@ -268,12 +268,12 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="73"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="74"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="75"/>
@@ -283,17 +283,17 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="76"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="77"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="84"/>
         <source>printer</source>
-        <translation type="unfinished"></translation>
+        <translation>принтер</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="90"/>
@@ -303,7 +303,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="91"/>
         <source>Error info</source>
-        <translation type="unfinished"></translation>
+        <translation>Информация об ошибке</translation>
     </message>
     <message>
         <location filename="src/receiptswidget.cpp" line="255"/>
@@ -316,7 +316,7 @@
     <message>
         <location filename="qml/reports/error.qml" line="48"/>
         <source>!!! Error !!!</source>
-        <translation type="unfinished"></translation>
+        <translation>!!! Ошибка !!!</translation>
     </message>
 </context>
 <context>
@@ -324,7 +324,7 @@
     <message>
         <location filename="qml/reports/sicard.qml" line="63"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
     <message>
         <location filename="qml/reports/sicard.qml" line="83"/>
