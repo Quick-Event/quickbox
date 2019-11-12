@@ -6,12 +6,12 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="80"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="81"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Карты</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="82"/>
@@ -56,7 +56,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to close</source>
-        <translation type="unfinished"></translation>
+        <translation>Время закрытия</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
@@ -76,7 +76,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>New results</source>
-        <translation type="unfinished"></translation>
+        <translation>Новые результаты</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="93"/>
@@ -114,12 +114,12 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="36"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="46"/>
         <source>Refresh time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время обновления</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="56"/>
@@ -134,7 +134,7 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="72"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> мин</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="82"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="src/eventstatisticswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.ui" line="59"/>
@@ -182,7 +182,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="578"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты по классам</translation>
     </message>
 </context>
 <context>
@@ -205,7 +205,7 @@
     <message>
         <location filename="src/printawardsoptionsdialogwidget.ui" line="50"/>
         <source>Stage number</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер этапа</translation>
     </message>
 </context>
 <context>
@@ -213,7 +213,7 @@
     <message>
         <location filename="qml/Results.qml" line="169"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты по классам</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="183"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="qml/Results.qml" line="185"/>
         <source>Stage results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты этапа по классам</translation>
     </message>
     <message>
         <location filename="qml/Results.qml" line="206"/>
@@ -247,7 +247,7 @@
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/Runs/findrunnerwidget.ui" line="20"/>
@@ -265,7 +265,7 @@
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="22"/>
         <source>&amp;Number of stages</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Количество этапов</translation>
     </message>
     <message>
         <location filename="src/Runs/nstagesreportoptionsdialog.ui" line="39"/>
@@ -301,12 +301,12 @@
     <message>
         <location filename="src/runstabledialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/runstabledialogwidget.cpp" line="41"/>
         <source>Stage %1 Class %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Этап %1 Класс %2</translation>
     </message>
 </context>
 <context>
@@ -334,7 +334,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="30"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
@@ -345,7 +345,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="31"/>
         <source>Start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый номер</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="32"/>
@@ -361,7 +361,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="33"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="34"/>
@@ -376,7 +376,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="35"/>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Лицензия</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="36"/>
@@ -401,17 +401,17 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="39"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="40"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="41"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Финиш</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="42"/>
@@ -457,7 +457,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="46"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="46"/>
@@ -510,7 +510,7 @@
     <message>
         <location filename="src/runstablewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="68"/>
@@ -521,12 +521,12 @@
         <location filename="src/runstablewidget.ui" line="78"/>
         <location filename="src/runstablewidget.ui" line="98"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation>---</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.ui" line="88"/>
         <source>interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Интервал</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="245"/>
@@ -579,12 +579,12 @@
     <message>
         <location filename="src/runswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="62"/>
         <source>Method</source>
-        <translation type="unfinished"></translation>
+        <translation>Метод</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="85"/>
@@ -619,7 +619,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="80"/>
         <source>Random number</source>
-        <translation type="unfinished"></translation>
+        <translation>Случайное число</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="81"/>
@@ -659,13 +659,13 @@
     <message>
         <location filename="src/runswidget.cpp" line="114"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="127"/>
         <location filename="src/runswidget.cpp" line="209"/>
         <source>--- all ---</source>
-        <translation type="unfinished"></translation>
+        <translation>--- все ---</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="153"/>
@@ -675,12 +675,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="156"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Импорт</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="159"/>
         <source>E&amp;xport</source>
-        <translation type="unfinished"></translation>
+        <translation>Э&amp;кпорт</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="161"/>
@@ -690,22 +690,22 @@
     <message>
         <location filename="src/runswidget.cpp" line="162"/>
         <source>OB 2000</source>
-        <translation type="unfinished"></translation>
+        <translation>OB 2000</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="167"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="168"/>
         <source>IOF XML &amp;2.3</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF XML &amp;2.3</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="170"/>
         <source>IOF XML &amp;3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF XML &amp;3.0</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="173"/>
@@ -715,7 +715,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="174"/>
         <source>Current stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий этап</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="176"/>
@@ -725,12 +725,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="182"/>
         <source>Stage </source>
-        <translation type="unfinished"></translation>
+        <translation>Этап </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="192"/>
         <source> &amp;Class </source>
-        <translation type="unfinished"></translation>
+        <translation> &amp;Класс </translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="205"/>
@@ -755,12 +755,12 @@
     <message>
         <location filename="src/runswidget.cpp" line="335"/>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="424"/>
         <source>Save as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как %1</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="505"/>
@@ -807,7 +807,7 @@
     <message>
         <location filename="qml/StartLists.qml" line="410"/>
         <source>length:</source>
-        <translation type="unfinished"></translation>
+        <translation>длина:</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="410"/>
@@ -818,19 +818,19 @@
         <location filename="qml/StartLists.qml" line="416"/>
         <location filename="qml/StartLists.qml" line="597"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="417"/>
         <location filename="qml/StartLists.qml" line="599"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="418"/>
         <location filename="qml/StartLists.qml" line="600"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация</translation>
     </message>
     <message>
         <location filename="qml/StartLists.qml" line="419"/>
@@ -846,7 +846,7 @@
     <message>
         <location filename="qml/StartLists.qml" line="598"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
 </context>
 <context>
@@ -887,7 +887,7 @@
         <location filename="qml/main.qml" line="30"/>
         <location filename="qml/main.qml" line="65"/>
         <source>&amp;Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Классы</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="37"/>
@@ -897,7 +897,7 @@
     <message>
         <location filename="qml/main.qml" line="44"/>
         <source>C&amp;lubs</source>
-        <translation type="unfinished"></translation>
+        <translation>К&amp;лубы</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="51"/>
@@ -912,31 +912,31 @@
     <message>
         <location filename="qml/main.qml" line="73"/>
         <source>&amp;Clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Клубы</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="81"/>
         <source>&amp;IOF-XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;IOF-XML 3.0</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
         <location filename="qml/main.qml" line="153"/>
         <location filename="qml/main.qml" line="198"/>
         <source>Get file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить имя файла</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="84"/>
         <location filename="qml/main.qml" line="153"/>
         <location filename="qml/main.qml" line="198"/>
         <source>XML files (*.xml)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-файлы (* .xml)</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="91"/>
         <source>&amp;Current stage</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Текущий этап</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="99"/>
@@ -982,7 +982,7 @@
     <message>
         <location filename="qml/main.qml" line="171"/>
         <source>&amp;Results</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Результаты</translation>
     </message>
 </context>
 <context>
@@ -995,17 +995,17 @@
     <message>
         <location filename="qml/reports/results_nstages.qml" line="130"/>
         <source>registration</source>
-        <translation type="unfinished"></translation>
+        <translation>регистрация</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="135"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Этап</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="138"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="140"/>
@@ -1023,12 +1023,12 @@
     <message>
         <location filename="qml/reports/results_stage.qml" line="9"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты по классам</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="82"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>длина: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stage.qml" line="85"/>
@@ -1051,12 +1051,12 @@
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="10"/>
         <source>Results by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты по классам</translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="75"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>длина: </translation>
     </message>
     <message>
         <location filename="qml/reports/results_stageWide.qml" line="78"/>
@@ -1089,12 +1089,12 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="50"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="100"/>
         <source>Export results</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт результатов</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="110"/>
@@ -1104,17 +1104,17 @@
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="122"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.ui" line="134"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат вывода</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="21"/>
         <source>HTML multi page</source>
-        <translation type="unfinished"></translation>
+        <translation>Многостраничный HTML</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="22"/>
@@ -1124,12 +1124,12 @@
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="23"/>
         <source>CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="24"/>
         <source>IOF-XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF-XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="51"/>
@@ -1139,7 +1139,7 @@
     <message>
         <location filename="src/services/resultsexporterwidget.cpp" line="90"/>
         <source>Cannot create directory &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать каталог &apos;% 1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1147,12 +1147,12 @@
     <message>
         <location filename="qml/reports/startList_classes.qml" line="9"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый список по классам</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="83"/>
         <source>length: </source>
-        <translation type="unfinished"></translation>
+        <translation>длина: </translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes.qml" line="86"/>
@@ -1165,7 +1165,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="9"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый список по клубам</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="134"/>
@@ -1186,7 +1186,7 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="11"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый список по классам</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="113"/>
@@ -1196,7 +1196,7 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="119"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="126"/>
@@ -1206,7 +1206,7 @@
     <message>
         <location filename="qml/reports/startLists_classes_nstages.qml" line="132"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Этап</translation>
     </message>
 </context>
 <context>
@@ -1214,12 +1214,12 @@
     <message>
         <location filename="qml/reports/startLists_clubs_nstages.qml" line="11"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовый список по клубам</translation>
     </message>
     <message>
         <location filename="qml/reports/startLists_clubs_nstages.qml" line="117"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Этап</translation>
     </message>
 </context>
 </TS>
