@@ -6,7 +6,7 @@
     <message>
         <location filename="src/widgets/appstatusbar.cpp" line="49"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
 </context>
 <context>
@@ -14,7 +14,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="63"/>
         <source>About Quick Event</source>
-        <translation type="unfinished"></translation>
+        <translation>О Quick Event</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="64"/>
@@ -37,7 +37,7 @@
     <message>
         <location filename="qml/main.qml" line="77"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Выйти</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="86"/>
@@ -52,22 +52,22 @@
     <message>
         <location filename="qml/main.qml" line="103"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>О &amp;Qt</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="126"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="127"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Импорт</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="133"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Инструменты</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="140"/>
@@ -77,7 +77,7 @@
     <message>
         <location filename="qml/main.qml" line="141"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Язык</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="143"/>
@@ -97,17 +97,17 @@
     <message>
         <location filename="qml/main.qml" line="146"/>
         <source>Norwegian</source>
-        <translation type="unfinished"></translation>
+        <translation>Норвежский</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="147"/>
         <source>Polish</source>
-        <translation type="unfinished"></translation>
+        <translation>Польский</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="148"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Русский</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="161"/>
@@ -122,7 +122,7 @@
     <message>
         <location filename="qml/main.qml" line="165"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Справка</translation>
     </message>
 </context>
 </TS>
