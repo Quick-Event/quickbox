@@ -6,7 +6,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
         <source>Select database</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрать базу данных</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
@@ -26,12 +26,12 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
         <source>Data storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Хранение данных</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="98"/>
         <source>Sql server</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql сервер</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="104"/>
@@ -41,22 +41,22 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="121"/>
         <source>&amp;Port</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Порт</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="131"/>
         <source>&amp;User</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Пользователь</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="141"/>
         <source>Pa&amp;ssword</source>
-        <translation type="unfinished"></translation>
+        <translation>Па&amp;роль</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="185"/>
         <source>Single file</source>
-        <translation type="unfinished"></translation>
+        <translation>Отдельный файл</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="191"/>
@@ -71,7 +71,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="213"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="qml/DbSchema.qml" line="454"/>
         <source>Data version</source>
-        <translation type="unfinished"></translation>
+        <translation>Версия данных</translation>
     </message>
 </context>
 <context>
@@ -137,7 +137,7 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="334"/>
         <source>Current stage E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий этап E%1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="360"/>
@@ -147,12 +147,12 @@
     <message>
         <location filename="src/Event/eventplugin.cpp" line="407"/>
         <source>Edit Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать этап</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="661"/>
         <source>Connect Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка подключения к базе данных: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="727"/>
@@ -171,14 +171,14 @@
         <location filename="src/Event/eventplugin.cpp" line="1140"/>
         <location filename="src/Event/eventplugin.cpp" line="1157"/>
         <source>Open Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка открытия базы данных: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="802"/>
         <location filename="src/Event/eventplugin.cpp" line="1076"/>
         <location filename="src/Event/eventplugin.cpp" line="1175"/>
         <source>Create Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка создания базы данных: %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="806"/>
@@ -190,7 +190,7 @@
         <location filename="src/Event/eventplugin.cpp" line="883"/>
         <location filename="src/Event/eventplugin.cpp" line="1121"/>
         <source>Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Запрос</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="860"/>
@@ -233,13 +233,13 @@
         <location filename="src/Event/eventplugin.cpp" line="1069"/>
         <location filename="src/Event/eventplugin.cpp" line="1167"/>
         <source>Creating database</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание базы данных</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1084"/>
         <location filename="src/Event/eventplugin.cpp" line="1183"/>
         <source>Copying table %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Копирование таблицы %1</translation>
     </message>
     <message>
         <location filename="src/Event/eventplugin.cpp" line="1117"/>
@@ -267,27 +267,27 @@
     <message>
         <location filename="src/Event/stagewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="20"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Дата</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="30"/>
         <source>dd.MM. yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM. yyyy</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.ui" line="40"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Время</translation>
     </message>
     <message>
         <location filename="src/Event/stagewidget.cpp" line="14"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Этап</translation>
     </message>
 </context>
 <context>
@@ -295,7 +295,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="20"/>
@@ -310,7 +310,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="37"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Имя</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="50"/>
@@ -320,32 +320,32 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="67"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Дата</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="77"/>
         <source>dd.MM.yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM.yyyy</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="87"/>
         <source>&amp;Place</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Место</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="100"/>
         <source>Des&amp;cription</source>
-        <translation type="unfinished"></translation>
+        <translation>Опи&amp;сание</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="113"/>
         <source>Main r&amp;eferee</source>
-        <translation type="unfinished"></translation>
+        <translation>Главный &amp;судья</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="126"/>
         <source>D&amp;irector</source>
-        <translation type="unfinished"></translation>
+        <translation>Д&amp;иректор</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="139"/>
@@ -355,7 +355,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="149"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> мин</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="168"/>
@@ -365,7 +365,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="188"/>
         <source>Sport</source>
-        <translation type="unfinished"></translation>
+        <translation>Спорт</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="199"/>
@@ -390,17 +390,17 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="222"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Время</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="232"/>
         <source>h:mm</source>
-        <translation type="unfinished"></translation>
+        <translation>h:mm</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="246"/>
         <source>Discipline</source>
-        <translation type="unfinished"></translation>
+        <translation>Дисциплина</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="257"/>
@@ -415,7 +415,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="267"/>
         <source>Sprint</source>
-        <translation type="unfinished"></translation>
+        <translation>Спринт</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="272"/>
@@ -430,7 +430,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="282"/>
         <source>Teams</source>
-        <translation type="unfinished"></translation>
+        <translation>Команды</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="290"/>
@@ -450,7 +450,7 @@
     <message>
         <location filename="src/eventdialogwidget.ui" line="306"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
 </context>
 <context>
@@ -468,12 +468,12 @@
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="46"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="59"/>
@@ -484,7 +484,7 @@
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
         <source>IOF XML 3.0</source>
         <oldsource>XML3.0</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
@@ -496,31 +496,31 @@
         <location filename="src/services/emmaclientwidget.ui" line="96"/>
         <source>Export IOF XML 3.0</source>
         <oldsource>Export XML3.0</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
         <source>RACOM</source>
         <oldsource>RaCom</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>RACOM</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="114"/>
         <source>File name prefix</source>
-        <translation type="unfinished"></translation>
+        <translation>Префикс имени файла</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="124"/>
         <location filename="src/services/emmaclientwidget.ui" line="153"/>
         <source>Export start list</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт стартового списка</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="131"/>
         <location filename="src/services/emmaclientwidget.ui" line="160"/>
         <source>Export results</source>
         <oldsource>Export finish</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт результатов</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="167"/>
@@ -535,7 +535,7 @@
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="67"/>
         <source>Cannot create directory &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается создать каталог &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -543,7 +543,7 @@
     <message>
         <location filename="src/services/servicewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/services/servicewidget.ui" line="45"/>
