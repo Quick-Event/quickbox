@@ -94,7 +94,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation> символ кавычки</translation>
+        <translation>символ кавычки</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -202,7 +202,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1574"/>
         <source>Reset column widths and positions.</source>
-        <translation>Сбросить ширину и положение столбцов</translation>
+        <translation>Сбросить ширину и положение столбцов.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1583"/>
@@ -315,7 +315,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1685"/>
         <source>Upravit radek ve formulari</source>
-        <translation>Редактировать строку в форме </translation>
+        <translation>Редактировать строку в форме</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1714"/>
@@ -395,7 +395,7 @@
         <location filename="src/tableview.cpp" line="1798"/>
         <source>Ctrl+Shift+C</source>
         <comment>Select current column</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1807"/>
@@ -466,12 +466,12 @@
     <message>
         <location filename="src/tableview.cpp" line="2129"/>
         <source>Do you really want to remove row?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить строку?</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="2132"/>
         <source>Do you really want to remove all selected rows?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите удалить все выделенные строки?</translation>
     </message>
 </context>
 <context>
@@ -497,7 +497,7 @@
     <message>
         <location filename="src/texteditwidget.cpp" line="76"/>
         <source>Uložit jako ...</source>
-        <translation>Сохранить как</translation>
+        <translation>Сохранить как…</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="89"/>
@@ -624,12 +624,12 @@
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="120"/>
         <source>Delete </source>
-        <translation>Удалить</translation>
+        <translation>Удалить </translation>
     </message>
     <message>
         <location filename="src/dialogs/internal/captionframe.cpp" line="124"/>
         <source>Edit </source>
-        <translation>Редактировать</translation>
+        <translation>Редактировать </translation>
     </message>
 </context>
 <context>
@@ -665,7 +665,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="88"/>
         <source>Copy to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопировать в буфер обмена.</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="102"/>
@@ -739,7 +739,7 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="22"/>
         <source>fields separator</source>
         <oldsource>fields separtor</oldsource>
-        <translation type="unfinished">разделитель полей</translation>
+        <translation>разделитель полей</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="29"/>
@@ -750,7 +750,7 @@
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="36"/>
         <source>rows separator</source>
         <oldsource>rows separtor</oldsource>
-        <translation type="unfinished">разделитель строк</translation>
+        <translation>разделитель строк</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="43"/>
@@ -760,7 +760,7 @@
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="50"/>
         <source>\n</source>
-        <translation>\ n</translation>
+        <translation>\n</translation>
     </message>
     <message>
         <location filename="src/internal/dlgtableviewcopyspecial.ui" line="57"/>
@@ -819,7 +819,7 @@
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="99"/>
         <source>source columns</source>
-        <translation>исходные столбцы </translation>
+        <translation>исходные столбцы</translation>
     </message>
     <message>
         <location filename="src/internal/tableviewchoosecolumnswidget.ui" line="107"/>
@@ -1025,7 +1025,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>Print pre&amp;view</source>
-        <translation>Предварительный просмотр печати </translation>
+        <translation>Предварительный просмотр печати</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
