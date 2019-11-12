@@ -46,7 +46,7 @@
     <message>
         <location filename="src/chooseoriseventdialog.cpp" line="63"/>
         <source>???</source>
-        <translation type="unfinished"></translation>
+        <translation>???</translation>
     </message>
     <message>
         <location filename="src/chooseoriseventdialog.cpp" line="83"/>
@@ -124,19 +124,19 @@
         <location filename="src/txtimporter.cpp" line="117"/>
         <location filename="src/txtimporter.cpp" line="158"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location filename="src/txtimporter.cpp" line="62"/>
         <source>CSOS files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSOS файлы (*.txt)</translation>
     </message>
     <message>
         <location filename="src/txtimporter.cpp" line="68"/>
         <location filename="src/txtimporter.cpp" line="123"/>
         <location filename="src/txtimporter.cpp" line="164"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удается открыть файл &apos;%1&apos; для чтения.</translation>
     </message>
     <message>
         <location filename="src/txtimporter.cpp" line="102"/>
@@ -151,7 +151,7 @@
     <message>
         <location filename="src/txtimporter.cpp" line="117"/>
         <source>CSV files (*.csv *.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>CSV файлы (*.csv *.txt)</translation>
     </message>
     <message>
         <location filename="src/txtimporter.cpp" line="158"/>
@@ -166,12 +166,12 @@
     <message>
         <location filename="src/txtimporter.cpp" line="185"/>
         <source>Error reading CSV line: [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка чтения строки CSV: [% 1]</translation>
     </message>
     <message>
         <location filename="src/txtimporter.cpp" line="228"/>
         <source>Undefined class name: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Неопределенное имя класса: &apos;% 1&apos;</translation>
     </message>
 </context>
 <context>
@@ -194,7 +194,7 @@
     <message>
         <location filename="qml/main.qml" line="46"/>
         <source>&amp;Clubs</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Клубы</translation>
     </message>
     <message>
         <location filename="qml/main.qml" line="54"/>
@@ -224,7 +224,7 @@
     <message>
         <location filename="qml/main.qml" line="98"/>
         <source>&amp;Text file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Текстовый файл</translation>
     </message>
 </context>
 </TS>
