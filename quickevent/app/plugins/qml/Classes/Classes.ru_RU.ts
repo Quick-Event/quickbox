@@ -11,12 +11,12 @@
     <message>
         <location filename="src/classdefwidget.ui" line="20"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="27"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Интервал</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="34"/>
@@ -27,7 +27,7 @@
         <location filename="src/classdefwidget.ui" line="44"/>
         <location filename="src/classdefwidget.ui" line="60"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> мин</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="86"/>
@@ -52,12 +52,12 @@
     <message>
         <location filename="src/classdefwidget.cpp" line="13"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать класс</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.cpp" line="29"/>
         <source>Class %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс %1</translation>
     </message>
 </context>
 <context>
@@ -78,7 +78,7 @@
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>New class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Новое название класса:</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="44"/>
@@ -96,7 +96,7 @@
     <message>
         <location filename="src/classeswidget.ui" line="36"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Классы</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="81"/>
@@ -116,12 +116,12 @@
     <message>
         <location filename="src/classeswidget.ui" line="124"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="125"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="126"/>
@@ -136,12 +136,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="128"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Интервал</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="129"/>
@@ -196,7 +196,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="134"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Карты</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="135"/>
@@ -206,7 +206,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="137"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="138"/>
@@ -242,7 +242,7 @@
         <location filename="src/classeswidget.cpp" line="159"/>
         <source>Type</source>
         <comment>control type</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="159"/>
@@ -292,7 +292,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="164"/>
         <source>Longitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Долгота</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="165"/>
@@ -302,12 +302,12 @@
     <message>
         <location filename="src/classeswidget.cpp" line="165"/>
         <source>Latitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Широта</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="191"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редактировать</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="193"/>
@@ -327,32 +327,32 @@
     <message>
         <location filename="src/classeswidget.cpp" line="204"/>
         <source>Ctrl+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="218"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Импорт</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="220"/>
         <source>OCad TXT</source>
-        <translation type="unfinished"></translation>
+        <translation>OCad TXT</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="225"/>
         <source>OCad v8</source>
-        <translation type="unfinished"></translation>
+        <translation>OCad v8</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="230"/>
         <source>OCad IOF-XML 2.0</source>
-        <translation type="unfinished"></translation>
+        <translation>OCad IOF-XML 2.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
         <source>OCad IOF-XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>OCad IOF-XML 3.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="243"/>
@@ -362,7 +362,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="279"/>
         <source>E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="376"/>
@@ -375,12 +375,12 @@
         <location filename="src/classeswidget.cpp" line="590"/>
         <location filename="src/classeswidget.cpp" line="657"/>
         <source>Open file</source>
-        <translation type="unfinished"></translation>
+        <translation>Открыть файл</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="590"/>
         <source>XML files (*.xml);; All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-файлы (*.xml);; Все файлы (*)</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="783"/>
@@ -404,7 +404,7 @@
         <location filename="src/editcodeswidget.cpp" line="28"/>
         <source>Type</source>
         <comment>control type</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="28"/>
@@ -439,7 +439,7 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="34"/>
         <source>Longitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Долгота</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="35"/>
@@ -449,7 +449,7 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="35"/>
         <source>Latitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Широта</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="32"/>
@@ -508,7 +508,7 @@
     <message>
         <location filename="src/editcoursecodeswidget.cpp" line="98"/>
         <source>Save changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить изменения?</translation>
     </message>
 </context>
 <context>
@@ -526,12 +526,12 @@
     <message>
         <location filename="src/editcourseswidget.cpp" line="34"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="35"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Длина</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="36"/>
@@ -564,7 +564,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="10"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Классы</translation>
     </message>
 </context>
 <context>
@@ -602,7 +602,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактировать класс</translation>
     </message>
 </context>
 <context>
@@ -623,7 +623,7 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Сохранить</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="43"/>
@@ -700,7 +700,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="qml/reports/table.qml" line="45"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>имя</translation>
     </message>
     <message>
         <location filename="qml/reports/table.qml" line="50"/>
