@@ -11,7 +11,7 @@
     <message>
         <location filename="src/codeclassresultswidget.ui" line="37"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.ui" line="47"/>
@@ -31,23 +31,23 @@
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="49"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="143"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="144"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Финиш</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="163"/>
         <source>R</source>
         <comment>Radio station</comment>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
 </context>
 <context>
@@ -55,7 +55,7 @@
     <message>
         <location filename="src/speakerwidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="83"/>
@@ -80,12 +80,12 @@
     <message>
         <location filename="src/speakerwidget.cpp" line="87"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Класс</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="88"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="89"/>
