@@ -38,7 +38,7 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Severity</source>
-        <translation>Серьезность </translation>
+        <translation>Важность</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="57"/>
@@ -73,7 +73,7 @@
         <location filename="src/model/sqltablemodel.cpp" line="256"/>
         <source>Error executing query: %1
  %2</source>
-        <translation>Ошибка выполнения запроса:% 1_x000D_&#xa0; % 2</translation>
+        <translation>Ошибка выполнения запроса:% 1_x000D_  % 2</translation>
     </message>
 </context>
 <context>
