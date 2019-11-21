@@ -194,7 +194,7 @@ QString Table::Field::tableId() const
 QString Table::Field::toString() const
 {
 	QString ret = "name: '%1', type: %2, canUpdate: %3, isPriKey: %4";
-	return ret.arg(name()).arg(QVariant::typeToName(type())).arg(canUpdate()).arg(isPriKey());
+	return ret.arg(name()).arg(QVariant::typeToName((int)type())).arg(canUpdate()).arg(isPriKey());
 }
 
 /*
@@ -1478,7 +1478,8 @@ void Table::sort(RowIndexList::iterator begin, RowIndexList::iterator end)
 
 Table::RowIndexList::const_iterator Table::binaryFind(Table::RowIndexList::const_iterator begin, Table::RowIndexList::const_iterator end, const QVariant & val) const
 {
-	return qBinaryFind(begin, end, val, LessThan(*this));
+	auto it = std::lower_bound(begin, end, val, LessThan(*this));
+	return it;
 }
 
 

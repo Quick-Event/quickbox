@@ -2,6 +2,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/collator.h>
+#include <qf/core/model/tablemodel.h>
 
 #include <QColor>
 #include <QTextCodec>
@@ -13,7 +14,7 @@ using namespace qf::qmlwidgets;
 TableViewProxyModel::TableViewProxyModel(QObject *parent)
 	: Super(parent)
 {
-
+	setSortRole(qf::core::model::TableModel::SortRole);
 }
 
 TableViewProxyModel::~TableViewProxyModel()
@@ -174,8 +175,8 @@ bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &r
 	if(source_model) {
 		for (int i = 0; i < m_sortColumns.count(); i++) {
 			int column = m_sortColumns[i];
-			QVariant lv = source_model->data(left.sibling(left.row(), column), Qt::EditRole); /// comparing display role is not working for NULL values
-			QVariant rv = source_model->data(right.sibling(right.row(), column), Qt::EditRole);
+			QVariant lv = source_model->data(left.sibling(left.row(), column), sortRole()); /// comparing display role is not working for NULL values
+			QVariant rv = source_model->data(right.sibling(right.row(), column), sortRole());
 			int cmp = variantCmp(lv, rv);
 			//qfInfo() << "\tcol:" << column << lv.toString() << "vs" << rv.toString() << "->" << cmp;
 			if(cmp == 0)
