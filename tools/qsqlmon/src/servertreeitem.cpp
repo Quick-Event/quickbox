@@ -153,7 +153,7 @@ QVariant Connection::icon(int col)
 		ico.addFile(":/images/server_on.png", QSize(), QIcon::Normal, QIcon::On);
 		ico.addFile(":/images/server_off.png", QSize(), QIcon::Normal, QIcon::Off);
 	}
-	if(col == 0) return qVariantFromValue(ico);
+	if(col == 0) return QVariant::fromValue(ico);
 	return QVariant();
 }
 
@@ -264,8 +264,8 @@ QVariant Database::icon(int col)
 		ico_closed.addFile(":/images/database_off.png", QSize(), QIcon::Normal);//, QIcon::Off);
 	}
 	if(col == 0) {
-		if(isOpen()) return qVariantFromValue(ico_open);
-		return qVariantFromValue(ico_closed);
+		if(isOpen()) return QVariant::fromValue(ico_open);
+		return QVariant::fromValue(ico_closed);
 	}
 	return QVariant();
 }
@@ -502,7 +502,7 @@ QVariant Schema::icon(int col)
 		first_scan = false;
 		ico.addFile(":/images/schema.png");
 	}
-	if(col == 0) return qVariantFromValue(ico);
+	if(col == 0) return QVariant::fromValue(ico);
 	return QVariant();
 }
 
@@ -685,9 +685,9 @@ QVariant Table::icon(int col)
 {
 	if(col == 0) {
 		if(kind == QSql::Tables)
-			return qVariantFromValue(QIcon(":/images/table.png"));
+			return QVariant::fromValue(QIcon(":/images/table.png"));
 		else if(kind == QSql::Views)
-			return qVariantFromValue(QIcon(":/images/view.png"));
+			return QVariant::fromValue(QIcon(":/images/view.png"));
 	}
 	return QVariant();
 }

@@ -173,7 +173,7 @@ QStringList LogDevice::setGlobalTresholds(const QStringList &args)
 			std::cout << "-v, --log-category [<pattern>]:[D|I|W|E]" << std::endl;
 			std::cout << "\t" << "Set category log treshold" << std::endl;
 			std::cout << "\t" << "set treshold for all categories containing pattern to treshold" << std::endl;
-			std::cout << "\t" << "the same rules as for module logging are applied to categiries" << std::endl;
+			std::cout << "\t" << "the same rules as for module logging are applied to categories" << std::endl;
 			exit(0);
 		}
 		else if(s == "-lfn" || s == "--log-long-file-names") {

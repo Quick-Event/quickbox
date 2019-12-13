@@ -276,7 +276,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 		else if(role == Qt::DecorationRole) {
 			qfu::TableRow r = m_table.row(section);
 			if(!r.isNull() && r.isDirty()) {
-				return qVariantFromValue(ico_dirty);
+				return QVariant::fromValue(ico_dirty);
 			}
 		}
 	}
