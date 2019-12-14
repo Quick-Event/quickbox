@@ -1,6 +1,6 @@
 message(including $$PWD)
 
-QT += core gui qml widgets
+QT += core gui qml widgets sql
 # plugin sometimes cannot find Qt libraries, CardReader needs QtSerialPort.so
 QT += serialport
 
@@ -38,6 +38,7 @@ LIBS +=      \
 	-lquickeventcore \
     -lquickeventgui \
     -lCoreQEPlugin \
+    -lEventQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

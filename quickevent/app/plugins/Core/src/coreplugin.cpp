@@ -20,19 +20,19 @@ namespace qfs = qf::core::sql;
 
 namespace Core {
 
-Plugin::Plugin(QObject *parent)
+CorePlugin::CorePlugin(QObject *parent)
 	: Super(parent)
 {
 	//connect(this, &Plugin::installed, this, &Plugin::onInstalled);//, Qt::QueuedConnection);
 }
 
-const QString Plugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()
+const QString CorePlugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()
 {
 	static const auto s = QStringLiteral("application/locale/language");
 	return s;
 }
 
-void Plugin::onInstalled()
+void CorePlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	fwk->setStatusBar(new AppStatusBar());
@@ -55,7 +55,7 @@ void Plugin::onInstalled()
 	{
 		auto *a = new qfw::Action(tr("&SQL tool"));
 		//a->setShortcut("ctrl+L");
-		connect(a, &qfw::Action::triggered, this, &Plugin::launchSqlTool);
+		connect(a, &qfw::Action::triggered, this, &CorePlugin::launchSqlTool);
 		a_tools->addActionInto(a);
 	}
 	{
@@ -106,18 +106,18 @@ void Plugin::onInstalled()
 		a_help->setText(tr("&Help"));
 		{
 			auto *a = new qfw::Action(tr("&About Quick event"));
-			connect(a, &qfw::Action::triggered, this, &Plugin::aboutQuickEvent);
+			connect(a, &qfw::Action::triggered, this, &CorePlugin::aboutQuickEvent);
 			a_help->addActionInto(a);
 		}
 		{
 			auto *a = new qfw::Action(tr("About &Qt"));
-			connect(a, &qfw::Action::triggered, this, &Plugin::aboutQt);
+			connect(a, &qfw::Action::triggered, this, &CorePlugin::aboutQt);
 			a_help->addActionInto(a);
 		}
 	}
 }
 
-void Plugin::launchSqlTool()
+void CorePlugin::launchSqlTool()
 {
 	qfLogFuncFrame();
 	QString program = QCoreApplication::applicationDirPath() + "/qsqlmon";
@@ -143,7 +143,7 @@ void Plugin::launchSqlTool()
 	process->start(program, arguments);
 }
 
-void Plugin::aboutQuickEvent()
+void CorePlugin::aboutQuickEvent()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString version_string;
@@ -166,7 +166,7 @@ void Plugin::aboutQuickEvent()
 					   );
 }
 
-void Plugin::aboutQt()
+void CorePlugin::aboutQt()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QMessageBox::aboutQt(fwk , tr("About Qt"));

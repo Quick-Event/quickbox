@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 		}
 		else {
 			qf::core::utils::Settings settings;
-			lc_name = settings.value(Core::Plugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()).toString();
+			lc_name = settings.value(Core::CorePlugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()).toString();
 		}
 		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
 			lc_name = QLocale::system().name();

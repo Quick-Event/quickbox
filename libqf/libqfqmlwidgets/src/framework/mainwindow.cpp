@@ -37,8 +37,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	Q_ASSERT(self == nullptr);
 	self = this;
 
-	m_pluginLoader = nullptr;
-
 	Application *app = Application::instance();
 	app->m_frameWork = this;
 	QQmlEngine *qe = app->qmlEngine();
@@ -51,13 +49,19 @@ MainWindow::~MainWindow()
 	savePersistentSettings();
 }
 
+PluginLoader *MainWindow::pluginLoader()
+{
+	if(!m_pluginLoader) {
+		m_pluginLoader = new PluginLoader(this);
+		connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
+		connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
+		//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
+	}
+	return m_pluginLoader;
+}
+
 void MainWindow::loadPlugins()
 {
-	QF_SAFE_DELETE(m_pluginLoader)
-	m_pluginLoader = new PluginLoader(this);
-	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
-	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
-	//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
 	Application *app = qobject_cast<Application*>(QCoreApplication::instance());
 	QJsonDocument profile = app->profile();
 	QJsonArray arr = profile.object().value(QStringLiteral("plugins")).toObject().value(QStringLiteral("features")).toArray();
@@ -65,7 +69,7 @@ void MainWindow::loadPlugins()
 	Q_FOREACH(auto o, arr)
 		feature_ids << o.toString();
 	//QString ui_language_name;
-	m_pluginLoader->loadPlugins(feature_ids);
+	pluginLoader()->loadPlugins(feature_ids);
 }
 
 void MainWindow::loadPersistentSettings()
@@ -178,6 +182,11 @@ bool MainWindow::setActivePart(const QString &feature_id)
 	if(ix < 0)
 		return false;
 	return centralWidget()->setActivePart(ix, true);
+}
+
+void MainWindow::registerPlugin(const QString &feature_id, Plugin *plugin)
+{
+	pluginLoader()->registerPlugin(feature_id, plugin);
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
@@ -298,10 +307,12 @@ Plugin *MainWindow::plugin(const QString &feature_id, bool throw_exc)
 	Plugin *ret = nullptr;
 	if(m_pluginLoader) {
 		ret = m_pluginLoader->loadedPlugins().value(feature_id);
+		if(!ret) {
+			qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
+			qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
+		}
 	}
 	if(!ret) {
-		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
-		qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
 		if(throw_exc)
 			QF_EXCEPTION(tr("Plugin for feature id: '%1' is not installed!").arg(feature_id));
 	}

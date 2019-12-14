@@ -26,13 +26,15 @@ public:
 	void loadPlugins(const QStringList &feature_ids = QStringList());
 	const PluginMap& loadedPlugins() {return m_loadedPlugins;}
 
+	void registerPlugin(const QString &feature_id, qf::qmlwidgets::framework::Plugin *plugin);
 	Q_SIGNAL void loadingFinished();
 private:
 	MainWindow *mainWindow();
 
 	ManifestMap findPlugins();
-	bool loadPlugin(const QString feature_id);
+	bool loadPlugin(const QString &feature_id);
 	bool loadPluginComponent(QQmlComponent *plugin_component, PluginManifest *manifest);
+	void loadPluginTranslations(const QString &feature_id);
 
 	//Q_SLOT void loadNextPlugin();
 	//Q_SLOT void continueLoading();

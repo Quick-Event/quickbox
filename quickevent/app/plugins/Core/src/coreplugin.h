@@ -2,19 +2,18 @@
 
 #include "corepluginglobal.h"
 
-#include <QObject>
+#include <qf/qmlwidgets/framework/plugin.h>
 
 class QSettings;
 
 namespace Core {
 
-class COREPLUGIN_DECL_EXPORT Plugin : public QObject
+class COREPLUGIN_DECL_EXPORT CorePlugin : public qf::qmlwidgets::framework::Plugin
 {
 	Q_OBJECT
-	using Super = QObject;
-	//typedef qf::qmlwidgets::framework::Plugin Super;
+	using Super = qf::qmlwidgets::framework::Plugin;
 public:
-	Plugin(QObject *parent = nullptr);
+	CorePlugin(QObject *parent = nullptr);
 
 	Q_INVOKABLE void launchSqlTool();
 	Q_INVOKABLE void aboutQuickEvent();

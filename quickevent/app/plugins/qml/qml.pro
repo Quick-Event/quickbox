@@ -4,8 +4,8 @@ CONFIG += ordered
 SUBDIRS += \
 	shared \
 	#Core \
-	Event \
-	Classes \
+# 	Event \
+# 	Classes \
 	Competitors \
 	Runs \
 	Relays \

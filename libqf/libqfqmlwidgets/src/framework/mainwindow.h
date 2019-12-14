@@ -92,13 +92,15 @@ public:
 
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
+	void registerPlugin(const QString &feature_id, qf::qmlwidgets::framework::Plugin *plugin);
+	PluginLoader *pluginLoader();
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
 	Q_SLOT virtual void onPluginsLoaded();
 private:
 	Q_SLOT void savePersistentSettings();
 	//void setupSettingsPersistence();
 private:
-	PluginLoader *m_pluginLoader;
+	PluginLoader *m_pluginLoader = nullptr;
 	QMap<QString, qf::qmlwidgets::ToolBar*> m_toolBars;
 	static MainWindow *self;
 };

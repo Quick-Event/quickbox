@@ -88,6 +88,12 @@ PluginLoader::ManifestMap PluginLoader::findPlugins()
 	return ret;
 }
 
+void PluginLoader::registerPlugin(const QString &feature_id, Plugin *plugin)
+{
+	m_loadedPlugins[feature_id] = plugin;
+	loadPluginTranslations(feature_id);
+}
+
 void PluginLoader::loadPlugins(const QStringList &feature_ids)
 {
 	qfLogFuncFrame();
@@ -101,7 +107,7 @@ void PluginLoader::loadPlugins(const QStringList &feature_ids)
 	emit loadingFinished();
 }
 
-bool PluginLoader::loadPlugin(const QString feature_id)
+bool PluginLoader::loadPlugin(const QString &feature_id)
 {
 	if(m_loadedPlugins.contains(feature_id)) {
 		// feature installed already
@@ -136,21 +142,7 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 	if(ok) {
 		QUrl plugin_loader_url = QUrl::fromLocalFile(manifest->homeDir() + "/main.qml");
 		qfInfo() << "Installing feature:" << feature_id << "from:" << plugin_loader_url.toString();
-		QString lc_name = mainWindow()->uiLanguageName();
-		if(!lc_name.isEmpty()) {
-			QString tr_name = feature_id + '.' + lc_name;
-			QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
-			QTranslator *trans = new QTranslator(mainWindow());
-			bool ok = trans->load(tr_name, app_translations_path);
-			if(ok) {
-				qfInfo() << "Found translation file for:" << tr_name;
-				QCoreApplication::instance()->installTranslator(trans);
-			}
-			else {
-				qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << app_translations_path;
-				delete trans;
-			}
-		}
+		loadPluginTranslations(feature_id);
 		QQmlComponent *c = new QQmlComponent(qe, plugin_loader_url, QQmlComponent::PreferSynchronous);
 		if(c->isLoading()) {
 			qfError() << "Asynchronous plugin loading is not supported!";
@@ -165,7 +157,7 @@ bool PluginLoader::loadPlugin(const QString feature_id)
 		}
 	}
 	if(!ok) {
-		QF_SAFE_DELETE(manifest);
+		QF_SAFE_DELETE(manifest)
 		qfError() << "ERROR load feature:" << feature_id;
 	}
 	return ok;
@@ -207,6 +199,25 @@ bool PluginLoader::loadPluginComponent(QQmlComponent *plugin_component, PluginMa
 		emit plugin->installed();
 	}
 	return ret;
+}
+
+void PluginLoader::loadPluginTranslations(const QString &feature_id)
+{
+	QString lc_name = mainWindow()->uiLanguageName();
+	if(!lc_name.isEmpty()) {
+		QString tr_name = feature_id + '.' + lc_name;
+		QString app_translations_path = QCoreApplication::applicationDirPath() + "/translations";
+		QTranslator *trans = new QTranslator(mainWindow());
+		bool ok = trans->load(tr_name, app_translations_path);
+		if(ok) {
+			qfInfo() << "Found translation file for:" << tr_name;
+			QCoreApplication::instance()->installTranslator(trans);
+		}
+		else {
+			qfInfo() << "Cannot load translation file for:" << tr_name << "in:" << app_translations_path;
+			delete trans;
+		}
+	}
 }
 
 MainWindow *PluginLoader::mainWindow()

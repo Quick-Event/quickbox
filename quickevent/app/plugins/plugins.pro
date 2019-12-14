@@ -3,6 +3,8 @@ CONFIG += ordered
 
 SUBDIRS += \
 	Core \
-	qml \
+	Event \
+# 	Classes \
+# 	qml \
 
 

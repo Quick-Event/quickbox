@@ -4,6 +4,7 @@
 #include "tablemodellogdevice.h"
 
 #include <Core/coreplugin.h>
+#include <Event/eventplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -73,7 +74,13 @@ void MainWindow::onPluginsLoaded()
 void MainWindow::loadPlugins()
 {
 	{
-		auto *plugin = new Core::Plugin(this);
+		auto *plugin = new Core::CorePlugin(this);
+		registerPlugin("Core", plugin);
+		plugin->onInstalled();
+	}
+	{
+		auto *plugin = new Event::EventPlugin(this);
+		registerPlugin("Event", plugin);
 		plugin->onInstalled();
 	}
 	Super::loadPlugins();
