@@ -23,7 +23,7 @@ class SqlTableModel : public qf::core::model::SqlTableModel
 private:
 	typedef qf::core::model::SqlTableModel Super;
 public:
-	explicit SqlTableModel(QObject *parent = 0);
+	explicit SqlTableModel(QObject *parent = nullptr);
 	~SqlTableModel() Q_DECL_OVERRIDE;
 
 	Q_INVOKABLE bool reload() Q_DECL_OVERRIDE;

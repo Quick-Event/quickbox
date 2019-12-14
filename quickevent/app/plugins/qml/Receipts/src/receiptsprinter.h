@@ -12,7 +12,7 @@ class ReceiptsPrinter : public QObject
 {
 	Q_OBJECT
 public:
-	explicit ReceiptsPrinter(const ReceiptsPrinterOptions &opts,  QObject *parent = 0);
+	explicit ReceiptsPrinter(const ReceiptsPrinterOptions &opts,  QObject *parent = nullptr);
 
 	const ReceiptsPrinterOptions& printerOptions() const {return m_printerOptions;}
 

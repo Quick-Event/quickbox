@@ -1,0 +1,6 @@
+CONFIG += c++14
+
+win32: LIB_DIR_NAME = bin
+else:  LIB_DIR_NAME = lib
+
+LIBS_DIR = $$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME

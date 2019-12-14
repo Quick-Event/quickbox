@@ -28,7 +28,7 @@ class SqlConnection : public QObject
 	Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
 	Q_PROPERTY(bool isOpen READ isOpen NOTIFY isOpenChanged)
 public:
-	explicit SqlConnection(QObject *parent = 0);
+	explicit SqlConnection(QObject *parent = nullptr);
 	~SqlConnection() Q_DECL_OVERRIDE;
 public:
 	QF_PROPERTY_IMPL2(QString, c, C, onnectionName, defaultConnectionName())

@@ -307,9 +307,10 @@ void EventPlugin::onInstalled()
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
 	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
 
-	qfw::Action *a_quit = fwk->menuBar()->actionForPath("file/import", false);
-	a_quit->addActionBefore(m_actConnectDb);
-	a_quit->addSeparatorBefore();
+	qfw::Action *a_import = fwk->menuBar()->actionForPath("file/import", false);
+	Q_ASSERT(a_import);
+	a_import->addActionBefore(m_actConnectDb);
+	a_import->addSeparatorBefore();
 
 	m_actEvent = m_actConnectDb->addMenuAfter("file.event", tr("&Event"));
 

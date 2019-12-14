@@ -13,7 +13,7 @@ class TableModelLogDevice : public qf::core::SignalLogDevice
 private:
 	typedef qf::core::SignalLogDevice Super;
 protected:
-	TableModelLogDevice(QObject *parent = 0);
+	TableModelLogDevice(QObject *parent = nullptr);
 public:
 	static TableModelLogDevice* install()
 	{

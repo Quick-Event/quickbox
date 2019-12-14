@@ -3,7 +3,7 @@ CONFIG += ordered
 
 SUBDIRS += \
 	shared \
-	Core \
+	#Core \
 	Event \
 	Classes \
 	Competitors \

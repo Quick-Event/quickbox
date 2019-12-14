@@ -19,7 +19,7 @@ public:
 	};
 
 public:
-	explicit TxtImporter(QObject *parent = 0);
+	explicit TxtImporter(QObject *parent = nullptr);
 
 	Q_INVOKABLE void importCompetitorsCSOS();
 	Q_INVOKABLE void importCompetitorsCSV();

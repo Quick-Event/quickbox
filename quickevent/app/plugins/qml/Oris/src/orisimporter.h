@@ -14,7 +14,7 @@ class OrisImporter : public QObject
 {
 	Q_OBJECT
 public:
-	explicit OrisImporter(QObject *parent = 0);
+	explicit OrisImporter(QObject *parent = nullptr);
 
 	Q_INVOKABLE void chooseAndImport();
 	Q_INVOKABLE void syncCurrentEventEntries();

@@ -13,7 +13,7 @@ class Crypt : public QObject
 {
 	Q_OBJECT
 public:
-	explicit Crypt(QObject *parent = 0);
+	explicit Crypt(QObject *parent = nullptr);
 public:
 	Q_INVOKABLE void initGenerator(unsigned a, unsigned b, unsigned max_rand);
 	Q_INVOKABLE QString encrypt(const QString &s, int min_length = 10) const;

@@ -17,8 +17,6 @@
 
 using namespace qf::qmlwidgets::framework;
 
-static const QLatin1String CoreFeatureId("Core");
-
 PluginLoader::PluginLoader(MainWindow *parent) :
 	QObject(parent)
 {
@@ -62,11 +60,7 @@ PluginLoader::ManifestMap PluginLoader::findPlugins()
 						}
 						//QString plugin_loader = "main.qml";
 						QStringList depends_on_feature_ids = manifest->dependsOnFeatureIds();
-						if(feature_id != CoreFeatureId) {
-							/// each not Core feature implicitly depends on Core
-							depends_on_feature_ids << CoreFeatureId;
-							manifest->setDependsOnFeatureIds(depends_on_feature_ids);
-						}
+						manifest->setDependsOnFeatureIds(depends_on_feature_ids);
 
 						QString plugin_path = fi.absoluteFilePath();
 						manifest->setHomeDir(plugin_path);

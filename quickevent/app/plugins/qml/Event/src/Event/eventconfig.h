@@ -25,7 +25,7 @@ public:
 						   NightRace = 9,
 						  };
 public:
-	explicit EventConfig(QObject *parent = 0);
+	explicit EventConfig(QObject *parent = nullptr);
 public slots:
 	QVariantMap values() const {return m_data;}
 	//void setValues(const QVariantMap &vals);

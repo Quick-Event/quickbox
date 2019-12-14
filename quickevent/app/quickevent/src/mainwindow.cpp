@@ -3,6 +3,8 @@
 #include "loggerwidget.h"
 #include "tablemodellogdevice.h"
 
+#include <Core/coreplugin.h>
+
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -10,8 +12,6 @@
 #include <qf/qmlwidgets/action.h>
 
 #include <QLabel>
-
-const QLatin1String MainWindow::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE("application/locale/language");
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	Super(parent, flags)
@@ -38,13 +38,13 @@ int MainWindow::dbVersion() const
 {
 	return Application::instance()->dbVersion();
 }
-
+/*
 QString MainWindow::settingsPrefix_application_locale_language()
 {
 	static const QString s = SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE;
 	return s;
 }
-
+*/
 void MainWindow::onPluginsLoaded()
 {
 	{
@@ -70,3 +70,11 @@ void MainWindow::onPluginsLoaded()
 	loadPersistentSettings();
 }
 
+void MainWindow::loadPlugins()
+{
+	{
+		auto *plugin = new Core::Plugin(this);
+		plugin->onInstalled();
+	}
+	Super::loadPlugins();
+}

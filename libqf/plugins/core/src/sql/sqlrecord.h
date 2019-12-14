@@ -13,7 +13,7 @@ class SqlRecord : public QObject
 {
 	Q_OBJECT
 public:
-	explicit SqlRecord(QObject *parent = 0);
+	explicit SqlRecord(QObject *parent = nullptr);
 	~SqlRecord() Q_DECL_OVERRIDE;
 
 	void setRecord(const QSqlRecord &rec);

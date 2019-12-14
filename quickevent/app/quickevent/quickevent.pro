@@ -24,6 +24,7 @@ $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
 $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
 $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
 $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+$$PWD/../plugins/include \
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 
@@ -35,7 +36,8 @@ LIBS +=      \
 	-lqfqmlwidgets  \
 	-lsiut \
 	-lquickeventcore \
-	-lquickeventgui \
+    -lquickeventgui \
+    -lCoreQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \
@@ -49,16 +51,13 @@ RESOURCES += \
 
 RC_FILE = $$PWD/app.rc
 
-//OTHER_FILES += \
-//	$$PWD/main.qml
-
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
 include($$PWD/src/src.pri)
 
 OTHER_FILES += \
-    ../plugins/qml/Core/*.qml \
+#    ../plugins/qml/Core/*.qml \
     ../plugins/qml/SqlDb/*.qml \
     ../plugins/qml/Event/*.qml \
     ../plugins/qml/Help/*.qml \

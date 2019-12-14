@@ -53,7 +53,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadPlugins()
 {
-	QF_SAFE_DELETE(m_pluginLoader);
+	QF_SAFE_DELETE(m_pluginLoader)
 	m_pluginLoader = new PluginLoader(this);
 	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
 	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
