@@ -6,6 +6,7 @@
 
 #include <Event/eventplugin.h>
 
+#include <qf/qmlwidgets/framework/application.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -37,6 +38,7 @@ static Event::EventPlugin* eventPlugin()
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super("Competitors", parent)
 {
+	manifest()->setHomeDir(qff::Application::instance()->pluginDataDir() + '/' + manifest()->featureId());
 	connect(this, &CompetitorsPlugin::installed, this, &CompetitorsPlugin::onInstalled);
 }
 

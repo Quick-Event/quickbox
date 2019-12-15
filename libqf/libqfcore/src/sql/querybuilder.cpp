@@ -16,12 +16,11 @@ using namespace qf::core::sql;
 const QString QueryBuilder::INNER_JOIN = QStringLiteral("INNER JOIN");
 const QString QueryBuilder::LEFT_JOIN = QStringLiteral("LEFT JOIN");
 
-QueryBuilder::QueryBuilder()
+QString QueryBuilder::toString(const QVariantMap &replacements) const
 {
-}
-
-QueryBuilder::~QueryBuilder()
-{
+	QString qs = buildQuery(BuildOptions());
+	qs = qf::core::Utils::replaceCaptions(qs, replacements);
+	return qs;
 }
 
 QString QueryBuilder::buildQuery(const BuildOptions &opts) const

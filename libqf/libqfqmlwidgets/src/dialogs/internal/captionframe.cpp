@@ -24,7 +24,7 @@ CaptionFrame::CaptionFrame(QWidget *parent)
 	ly->setContentsMargins(5, 1, 5, 1);
 	ly->setSpacing(6);
 	m_captionIconLabel = new QLabel();
-		//captionLabel->setPixmap(icon.pixmap(32));
+	//captionLabel->setPixmap(icon.pixmap(32));
 	ly->addWidget(m_captionIconLabel);
 
 	m_captionLabel = new QLabel();
@@ -41,17 +41,7 @@ CaptionFrame::CaptionFrame(QWidget *parent)
 	//setFrameStyle(StyleDefault);
 	connect(this, &CaptionFrame::alertChanged, this, &CaptionFrame::update);
 }
-/*
-void CaptionFrame::setFrameStyle(CaptionFrame::FrameStyle st)
-{
-	const char *style_sheets[] = {
-		"QFrame{background:rgb(67, 67, 67)} QLabel{font: 18pt;color:white}",
-		"QFrame{background:rgb(245, 245, 184)} QLabel{font: 14pt;color:rgb(67, 67, 67)}",
-		"QFrame{background:rgb(67, 67, 67)} QLabel{font: 18pt;color:white}"
-	};
-	setStyleSheet(style_sheets[st]);
-}
-*/
+
 void CaptionFrame::setText(const QString & s)
 {
 	qfLogFuncFrame() << "text:" << s;

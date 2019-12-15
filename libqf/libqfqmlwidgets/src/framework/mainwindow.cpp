@@ -97,6 +97,15 @@ void MainWindow::savePersistentSettings()
 	}
 }
 
+QList<Plugin *> MainWindow::installedPlugins()
+{
+	QList<Plugin *> ret;
+	if(m_pluginLoader)
+		for(auto *p : m_pluginLoader->loadedPlugins().values())
+			ret << p;
+	return ret;
+}
+
 void MainWindow::showProgress(const QString &msg, int completed, int total)
 {
 	qfLogFuncFrame() << msg << completed << total;

@@ -11,7 +11,7 @@ LIBS += \
 
 include (src/src.pri)
 
-RESOURCES += \ \
+RESOURCES += \
     Classes.qrc
 
 TRANSLATIONS += \

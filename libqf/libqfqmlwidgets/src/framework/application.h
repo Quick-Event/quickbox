@@ -32,6 +32,7 @@ public:
 	const QList<QQmlError>& qmlErrorList();
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
+	QString pluginDataDir() {return m_pluginDataDir;}
 	MainWindow* frameWork();
 
 	void loadStyleSheet(const QString &file = QString());
@@ -54,6 +55,7 @@ protected:
 	QQmlEngine *m_qmlEngine;
 	QStringList m_qmlLibraryImportPaths;
 	QStringList m_qmlPluginImportPaths;
+	QString m_pluginDataDir;
 	QList<QQmlError> m_qmlErrorList;
 	QJsonDocument m_profile;
 	bool m_profileLoaded = false;

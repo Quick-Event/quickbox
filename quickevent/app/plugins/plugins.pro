@@ -6,6 +6,6 @@ SUBDIRS += \
 	Event \
     Classes \
     Competitors \
-# 	qml \
+ 	qml \
 
 

@@ -29,13 +29,14 @@ public:
 		QString m_connectionName;
 	};
 public:
-	QueryBuilder();
-	virtual ~QueryBuilder();
+	//QueryBuilder();
+	//virtual ~QueryBuilder();
 
 	static const QString INNER_JOIN;
 	static const QString LEFT_JOIN;
 public:
 	QString toString(const BuildOptions &opts = BuildOptions()) const {return buildQuery(opts);}
+	QString toString(const QVariantMap &replacements) const;
 	bool isEmpty() const {return m_queryMap.isEmpty();}
 	void clear();
 	/**

@@ -7,13 +7,13 @@ SUBDIRS += \
 # 	Event \
 # 	Classes \
 # 	Competitors \
-	Runs \
-	Relays \
-	CardReader \
-	Receipts \
-	Speaker \
-	Oris \
-	ExamplePureQml \
-	ExampleCppQml \
+# 	Runs \
+# 	Relays \
+# 	CardReader \
+# 	Receipts \
+# 	Speaker \
+# 	Oris \
+# 	ExamplePureQml \
+# 	ExampleCppQml \
 
 

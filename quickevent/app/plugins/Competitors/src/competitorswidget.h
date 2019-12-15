@@ -45,6 +45,8 @@ private:
 	void editCompetitorOnPunch(int siid);
 
 	void onCustomContextMenuRequest(const QPoint &pos);
+
+	void report_competitorsStatistics();
 private:
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;

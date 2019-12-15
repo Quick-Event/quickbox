@@ -17,7 +17,6 @@ HEADERS += \
 SOURCES += \
     $$PWD/classesplugin.cpp \
     $$PWD/classdocument.cpp \
-	$$PWD/plugin.cpp \
     $$PWD/thispartwidget.cpp \
     $$PWD/classeswidget.cpp \
     $$PWD/coursedef.cpp \

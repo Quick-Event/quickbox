@@ -23,11 +23,12 @@
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/dialogbuttonbox.h>
-
+#include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/querybuilder.h>
 #include <qf/core/sql/transaction.h>
 #include <qf/core/assert.h>
+#include <qf/core/utils/treetable.h>
 
 #include <QCheckBox>
 #include <QLabel>
@@ -40,21 +41,18 @@ namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
+namespace qfu = qf::core::utils;
 
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Event plugin!");
-	return plugin;
+	return fwk->plugin<Event::EventPlugin*>();
 }
 
 static Competitors::CompetitorsPlugin* competitorsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin*>(fwk->plugin("Competitors"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad Competitors plugin!");
-	return plugin;
+	return fwk->plugin<Competitors::CompetitorsPlugin*>();
 }
 
 CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
@@ -133,6 +131,12 @@ void CompetitorsWidget::settleDownInPartWidget(Competitors::ThisPartWidget *part
 
 	qf::qmlwidgets::Action *act_print = part_widget->menuBar()->actionForPath("print");
 	act_print->setText(tr("&Print"));
+	{
+		auto *a = new qfw::Action(tr("Competitors statistics"));
+		//a->setShortcut("ctrl+L");
+		connect(a, &qfw::Action::triggered, this, &CompetitorsWidget::report_competitorsStatistics);
+		act_print->addActionInto(a);
+	}
 
 	qf::qmlwidgets::Action *act_cards = part_widget->menuBar()->actionForPath("cards");
 	act_cards->setText(tr("&Cards"));
@@ -343,4 +347,81 @@ void CompetitorsWidget::onCustomContextMenuRequest(const QPoint &pos)
 			ui->tblCompetitors->reload(true);
 		}
 	}
+}
+
+void CompetitorsWidget::report_competitorsStatistics()
+{
+	/*
+	auto stage_data = [](int stage_id) {
+		qfs::QueryBuilder qb;
+		qb.select2("classes", "name")
+		.select("COUNT(runs.id) AS runCount")
+		.select("MAX(classdefs.mapCount) as mapCount") // classdefs.mapCount must be in any agregation function in PSQL, MIN can be here as well
+		.from("classes")
+		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
+		.join("classes.id", "competitors.classId")
+		.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId={{stage_id}}")
+		.groupBy("classes.name")
+		.orderBy("classes.name");
+		qf::core::model::SqlTableModel m;
+		m.setQueryBuilder(qb);
+		QVariantMap qpm;
+		qpm["stage_id"] = stage_id;
+		m.setQueryParameters(qpm);
+		m.reload();
+		auto t = m.table();
+		return t;
+	};
+	*/
+	Event::EventPlugin *event_plugin = eventPlugin();
+	//int stage_id = event_plugin->currentStageId();
+	int stage_cnt = event_plugin->stageCount();
+
+	qfs::QueryBuilder qb;
+	qb.select2("classes", "id, name").from("classes").orderBy("classes.name");
+	qf::core::model::SqlTableModel m;
+	m.setQueryBuilder(qb);
+	m.reload();
+	qfu::TreeTable tt = m.toTreeTable();
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	for (int stage_id = 1; stage_id <= stage_cnt; ++stage_id) {
+		QString prefix = "e" + QString::number(stage_id) + "_";
+		QString col_runs_count = prefix + "runCount";
+		QString col_map_count = prefix + "mapCount";
+		tt.appendColumn(col_runs_count, QVariant::Int);
+		tt.appendColumn(col_map_count, QVariant::Int);
+		{
+			qfs::QueryBuilder qb;
+			qb.select2("classes", "name")
+				.select("COUNT(runs.id) AS runCount")
+				.select("MAX(classdefs.mapCount) as mapCount") // classdefs.mapCount must be in any agregation function in PSQL, MIN can be here as well
+				.from("classes")
+				.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
+				.join("classes.id", "competitors.classId")
+				.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId={{stage_id}}")
+				.groupBy("classes.name")
+				.orderBy("classes.name");
+			QVariantMap qpm;
+			qpm["stage_id"] = stage_id;
+			qfs::Query q;
+			q.execThrow(qb.toString(qpm));
+			int i = 0;
+			while(q.next()) {
+				tt.row(i).setValue(col_runs_count, q.value("runCount"));
+				tt.row(i).setValue(col_map_count, q.value("mapCount"));
+				i++;
+			}
+		}
+	}
+	QVariantMap props;
+	//props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
+	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);
+	props["stageCount"] = stage_cnt;
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(this
+								, competitorsPlugin()->manifest()->homeDir() + "/reports/competitorsStatistics.qml"
+								, tt.toVariant()
+								, tr("Competitors statistics")
+								, "competitorsStatistics"
+								, props
+								);
 }
