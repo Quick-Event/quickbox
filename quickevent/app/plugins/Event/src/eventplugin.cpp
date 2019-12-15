@@ -1,8 +1,8 @@
 #include "eventplugin.h"
-#include "priv/connectdbdialogwidget.h"
-#include "priv/connectionsettings.h"
-#include "priv/eventdialogwidget.h"
-#include "priv/dbschema.h"
+#include "connectdbdialogwidget.h"
+#include "connectionsettings.h"
+#include "eventdialogwidget.h"
+#include "dbschema.h"
 #include "stagedocument.h"
 #include "stagewidget.h"
 
@@ -128,7 +128,7 @@ static QString fileNameToEventName(const QString &file_name)
 const char *EventPlugin::DBEVENT_NOTIFY_NAME = "quickbox_db_event";
 
 EventPlugin::EventPlugin(QObject *parent)
-	: Super(parent)
+	: Super("Event", parent)
 {
 	connect(this, &EventPlugin::installed, this, &EventPlugin::onInstalled);//, Qt::QueuedConnection);
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::saveCurrentStageId);

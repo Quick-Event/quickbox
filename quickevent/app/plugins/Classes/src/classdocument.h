@@ -1,7 +1,7 @@
 #ifndef CLASSES_CLASSDOCUMENT_H
 #define CLASSES_CLASSDOCUMENT_H
 
-#include "../classespluginglobal.h"
+#include "classespluginglobal.h"
 
 #include <qf/core/model/sqldatadocument.h>
 

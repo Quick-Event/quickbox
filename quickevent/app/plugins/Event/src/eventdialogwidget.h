@@ -13,7 +13,7 @@ class EventDialogWidget : public qf::qmlwidgets::framework::DialogWidget
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	explicit EventDialogWidget(QWidget *parent = 0);
+	explicit EventDialogWidget(QWidget *parent = nullptr);
 	~EventDialogWidget() Q_DECL_OVERRIDE;
 
 	void setEventId(const QString &event_id);

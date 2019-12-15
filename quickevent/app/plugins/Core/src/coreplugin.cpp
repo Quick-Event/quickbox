@@ -21,7 +21,7 @@ namespace qfs = qf::core::sql;
 namespace Core {
 
 CorePlugin::CorePlugin(QObject *parent)
-	: Super(parent)
+	: Super("Core", parent)
 {
 	//connect(this, &Plugin::installed, this, &Plugin::onInstalled);//, Qt::QueuedConnection);
 }

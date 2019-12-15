@@ -124,7 +124,8 @@ bool PartWidget::isAddToPartSwitchFromBottom()
 		auto plugin = framework->plugin(featureId());
 		if(plugin) {
 			auto manifest = plugin->manifest();
-			add_from_bottom = manifest->isAddFromBottom();
+			if(manifest)
+				add_from_bottom = manifest->isAddFromBottom();
 		}
 	}
 	return add_from_bottom;
@@ -147,7 +148,9 @@ QIcon PartWidget::createIcon()
 			if(icon_path.isEmpty())
 				icon_path = "images/feature";
 			if(!icon_path.startsWith(":/")) {
-				icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
+				PluginManifest *manifest = plugin->manifest();
+				if(manifest)
+					icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
 			}
 			ico = QIcon(icon_path);
 			if(ico.isNull())

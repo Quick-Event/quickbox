@@ -27,6 +27,7 @@ INCLUDEPATH += \
 	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
 	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
 	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+    $$PWD/include
 
 LIBS += \
     -L$$LIBS_DIR \

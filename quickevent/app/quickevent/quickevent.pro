@@ -39,6 +39,7 @@ LIBS +=      \
     -lquickeventgui \
     -lCoreQEPlugin \
     -lEventQEPlugin \
+    -lClassesQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

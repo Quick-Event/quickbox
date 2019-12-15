@@ -1,5 +1,5 @@
 #include "dbschema.h"
-#include "../eventplugin.h"
+#include "eventplugin.h"
 
 #include <qf/core/assert.h>
 #include <qf/core/log.h>

@@ -1,8 +1,8 @@
 #include "classesplugin.h"
-#include "../thispartwidget.h"
+#include "thispartwidget.h"
 #include "classdocument.h"
 
-#include "../coursedef.h"
+#include "coursedef.h"
 
 #include <Event/eventplugin.h>
 
@@ -38,7 +38,7 @@ static Event::EventPlugin* eventPlugin()
 }
 
 ClassesPlugin::ClassesPlugin(QObject *parent)
-	: Super(parent)
+	: Super("Classes", parent)
 {
 	connect(this, &ClassesPlugin::installed, this, &ClassesPlugin::onInstalled, Qt::QueuedConnection);
 }
@@ -47,7 +47,7 @@ void ClassesPlugin::onInstalled()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	m_partWidget = new ThisPartWidget();
-	fwk->addPartWidget(m_partWidget, manifest()->featureId());
+	fwk->addPartWidget(m_partWidget, "Classes");
 
 	emit nativeInstalled();
 }

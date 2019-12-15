@@ -2,6 +2,8 @@ message(including $$PWD)
 
 HEADERS += \
 	$$PWD/classespluginglobal.h \
+    $$PWD/classesplugin.h \
+    $$PWD/classdocument.h \
     $$PWD/thispartwidget.h \
     $$PWD/classeswidget.h \
     $$PWD/coursedef.h \
@@ -13,6 +15,8 @@ HEADERS += \
     $$PWD/classdefwidget.h
 
 SOURCES += \
+    $$PWD/classesplugin.cpp \
+    $$PWD/classdocument.cpp \
 	$$PWD/plugin.cpp \
     $$PWD/thispartwidget.cpp \
     $$PWD/classeswidget.cpp \
@@ -31,5 +35,4 @@ FORMS += \
     $$PWD/editcoursecodeswidget.ui \
     $$PWD/classdefwidget.ui
 
-include ( $$PWD/Classes/Classes.pri )
 include ( $$PWD/drawing/drawing.pri )

@@ -1,7 +1,7 @@
 #ifndef CONNECTDBDIALOGWIDGET_H
 #define CONNECTDBDIALOGWIDGET_H
 
-#include "../eventplugin.h"
+#include "eventplugin.h"
 
 #include <qf/qmlwidgets/framework/dialogwidget.h>
 
@@ -15,7 +15,7 @@ class ConnectDbDialogWidget : public qf::qmlwidgets::framework::DialogWidget
 private:
 	typedef qf::qmlwidgets::framework::DialogWidget Super;
 public:
-	explicit ConnectDbDialogWidget(QWidget *parent = 0);
+	explicit ConnectDbDialogWidget(QWidget *parent = nullptr);
 	~ConnectDbDialogWidget();
 
 	QString eventName();

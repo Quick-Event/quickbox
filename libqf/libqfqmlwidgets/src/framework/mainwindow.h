@@ -92,7 +92,7 @@ public:
 
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
-	void registerPlugin(const QString &feature_id, qf::qmlwidgets::framework::Plugin *plugin);
+	void registerPlugin(qf::qmlwidgets::framework::Plugin *plugin);
 	PluginLoader *pluginLoader();
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
 	Q_SLOT virtual void onPluginsLoaded();

@@ -4,6 +4,7 @@
 #include "dockwidget.h"
 #include "partwidget.h"
 #include "stackedcentralwidget.h"
+#include "plugin.h"
 #include "../menubar.h"
 #include "../statusbar.h"
 #include "../toolbar.h"
@@ -184,9 +185,9 @@ bool MainWindow::setActivePart(const QString &feature_id)
 	return centralWidget()->setActivePart(ix, true);
 }
 
-void MainWindow::registerPlugin(const QString &feature_id, Plugin *plugin)
+void MainWindow::registerPlugin(qf::qmlwidgets::framework::Plugin *plugin)
 {
-	pluginLoader()->registerPlugin(feature_id, plugin);
+	pluginLoader()->registerPlugin(plugin->manifest()->featureId(), plugin);
 }
 
 void MainWindow::closeEvent(QCloseEvent *ev)
@@ -248,7 +249,7 @@ qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 {
 	qfLogFuncFrame() << sbar << "previous:" << Super::statusBar();
-	sbar->setParent(0);
+	sbar->setParent(nullptr);
 	connect(this, SIGNAL(progress(QString,int,int)), sbar, SLOT(showProgress(QString,int,int)));
 	Super::setStatusBar(sbar); /// deletes old status bar
 	qfDebug() << Super::statusBar();

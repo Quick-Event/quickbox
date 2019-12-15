@@ -1,7 +1,7 @@
 #ifndef CLASSES_CLASSESPLUGIN_H
 #define CLASSES_CLASSESPLUGIN_H
 
-#include "../classespluginglobal.h"
+#include "classespluginglobal.h"
 
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -36,9 +36,8 @@ public:
 	Q_INVOKABLE void deleteCourses(int stage_id);
 	Q_INVOKABLE void gcCourses();
 
-	Q_SIGNAL void nativeInstalled();
-private:
 	Q_SLOT void onInstalled();
+	Q_SIGNAL void nativeInstalled();
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 };

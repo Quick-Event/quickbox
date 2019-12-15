@@ -1,4 +1,4 @@
-#include "Classes/classesplugin.h"
+#include "classesplugin.h"
 #include "classestableview.h"
 #include "classeswidget.h"
 

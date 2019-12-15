@@ -364,7 +364,7 @@ void ClassItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 		//painter.translate(15, 15);
 		painter.setRenderHint(QPainter::Antialiasing);
 		QStyleOptionGraphicsItem opt;
-		paint(&painter, &opt, 0);
+		paint(&painter, &opt, nullptr);
 		{
 			m_classText->paint(&painter, &opt, nullptr);
 			painter.translate(m_courseText->pos());
@@ -414,7 +414,7 @@ void ClassItem::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void ClassItem::dragLeaveEvent(QGraphicsSceneDragDropEvent *event)
 {
-	Q_UNUSED(event);
+	Q_UNUSED(event)
 	m_dropInsertsBefore = QVariant();
 	update();
 }

@@ -5,6 +5,7 @@
 
 #include <Core/coreplugin.h>
 #include <Event/eventplugin.h>
+#include <Classes/classesplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -75,12 +76,17 @@ void MainWindow::loadPlugins()
 {
 	{
 		auto *plugin = new Core::CorePlugin(this);
-		registerPlugin("Core", plugin);
+		registerPlugin(plugin);
 		plugin->onInstalled();
 	}
 	{
 		auto *plugin = new Event::EventPlugin(this);
-		registerPlugin("Event", plugin);
+		registerPlugin(plugin);
+		plugin->onInstalled();
+	}
+	{
+		auto *plugin = new Classes::ClassesPlugin(this);
+		registerPlugin(plugin);
 		plugin->onInstalled();
 	}
 	Super::loadPlugins();
