@@ -24,6 +24,8 @@ SOURCES += \
     $$PWD/dbschema.cpp \
 
 FORMS += \
-    $$PWD/stagewidget.ui
+    $$PWD/stagewidget.ui \
+    $$PWD/eventdialogwidget.ui \
+    $$PWD/connectdbdialogwidget.ui \
 
 include( $$PWD/services/services.pri )

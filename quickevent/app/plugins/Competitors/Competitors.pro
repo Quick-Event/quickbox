@@ -1,16 +1,21 @@
 message(including plugin $$PWD)
 
-PLUGIN_NAME = Event
+PLUGIN_NAME = Competitors
 
 include ( ../quickeventplugin.pri )
 
 QT += widgets sql
 
-# CONFIG += c++11 hide_symbols
+LIBS += \
+    -lEventQEPlugin \
 
 include (src/src.pri)
 
 RESOURCES += \
+#    $${PLUGIN_NAME}.qrc \
+
+OTHER_FILES += \
+	$$PWD/qml/reports/* \
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \
@@ -22,5 +27,5 @@ TRANSLATIONS += \
 lupdate_only {
 SOURCES += \
 	$$PWD/qml/*.qml \
+	$$PWD/qml/reports/*.qml \
 }
-

@@ -1,18 +1,20 @@
 #include "thispartwidget.h"
-#include "classeswidget.h"
+#include "competitorswidget.h"
+
+#include <qf/core/log.h>
 
 #include <qf/qmlwidgets/frame.h>
 
-namespace Classes {
+namespace Competitors {
 
 ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
-	setObjectName("Classes::PartWidget");
-	setPersistentSettingsId("Classes");
-	setTitle(tr("Classes"));
+	setObjectName("Competitors::PartWidget");
+	setPersistentSettingsId("Competitors");
+	setTitle(tr("&Competitors"));
 
-	ClassesWidget *w = new ClassesWidget();
+	CompetitorsWidget *w = new CompetitorsWidget();
 	centralFrame()->addWidget(w);
 	w->settleDownInPartWidget(this);
 

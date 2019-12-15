@@ -10,5 +10,4 @@ SOURCES += \
 FORMS += \
 
 include($$PWD/widgets/widgets.pri)
-include($$PWD/Core/Core.pri)
 

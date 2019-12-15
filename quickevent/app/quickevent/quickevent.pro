@@ -8,8 +8,7 @@ CONFIG += C++11
 
 TEMPLATE = app
 
-QF_PROJECT_TOP_SRCDIR = $$PWD/../../..
-QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../../..
+include (../../../quickbox.pri)
 
 PROJECT_TOP_SRCDIR = $$PWD
 
@@ -20,11 +19,11 @@ win32: LIB_DIR_NAME = bin
 else:  LIB_DIR_NAME = lib
 
 INCLUDEPATH += \
-$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
-$$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
-$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
-$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
-$$PWD/../plugins/include \
+    $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
+    $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
+    $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
+    $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+    $$PWD/../plugins/include \
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 
@@ -32,14 +31,15 @@ LIBS += \
 	-L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
 
 LIBS +=      \
-	-lqfcore  \
-	-lqfqmlwidgets  \
-	-lsiut \
-	-lquickeventcore \
+    -lqfcore  \
+    -lqfqmlwidgets  \
+    -lsiut \
+    -lquickeventcore \
     -lquickeventgui \
     -lCoreQEPlugin \
     -lEventQEPlugin \
     -lClassesQEPlugin \
+    -lCompetitorsQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

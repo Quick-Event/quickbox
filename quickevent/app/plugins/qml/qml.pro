@@ -6,7 +6,7 @@ SUBDIRS += \
 	#Core \
 # 	Event \
 # 	Classes \
-	Competitors \
+# 	Competitors \
 	Runs \
 	Relays \
 	CardReader \

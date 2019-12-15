@@ -78,7 +78,7 @@ public:
 
 	QString displayText(const QVariant &value, const QLocale &locale) const Q_DECL_OVERRIDE
 	{
-		Q_UNUSED(locale);
+		Q_UNUSED(locale)
 		return m_idToCourseName.value(value.toInt(), QStringLiteral("???"));
 	}
 
@@ -182,7 +182,7 @@ int ClassesWidget::selectedStageId()
 	return m_cbxStage->currentData().toInt();
 }
 
-void ClassesWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
+void ClassesWidget::settleDownInPartWidget(Classes::ThisPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));

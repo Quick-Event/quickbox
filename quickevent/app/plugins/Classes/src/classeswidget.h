@@ -33,7 +33,7 @@ public:
 
 	Q_INVOKABLE int selectedStageId();
 
-	void settleDownInPartWidget(ThisPartWidget *part_widget);
+	void settleDownInPartWidget(Classes::ThisPartWidget *part_widget);
 private:
 	void edit_courses();
 	void edit_codes();

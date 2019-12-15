@@ -5,6 +5,7 @@ SUBDIRS += \
 	Core \
 	Event \
     Classes \
+    Competitors \
 # 	qml \
 
 

@@ -27,7 +27,7 @@ namespace qff = qf::qmlwidgets::framework;
 //namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 
-using namespace Classes;
+namespace Classes {
 
 static Event::EventPlugin* eventPlugin()
 {
@@ -319,3 +319,4 @@ void ClassesPlugin::gcCourses()
 		   ")", qf::core::Exception::Throw);
 }
 
+}

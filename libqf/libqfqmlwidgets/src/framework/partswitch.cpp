@@ -47,7 +47,7 @@ qf::qmlwidgets::framework::PartSwitch::~PartSwitch()
 
 void PartSwitch::addPartWidget(PartWidget *widget)
 {
-	qfLogFuncFrame() << widget;
+	qfLogFuncFrame() << widget << widget->featureId() << widget->title();
 	auto alst = actions();
 	QAction *first_bottom_part_action = nullptr;
 	bool add_from_bottom = widget->isAddToPartSwitchFromBottom();

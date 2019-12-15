@@ -2,7 +2,7 @@
 
 #include <quickevent/gui/partwidget.h>
 
-namespace Classes {
+namespace Competitors {
 
 class ThisPartWidget : public quickevent::gui::PartWidget
 {
@@ -11,6 +11,8 @@ private:
 	typedef quickevent::gui::PartWidget Super;
 public:
 	ThisPartWidget(QWidget *parent = nullptr);
+protected:
+	//void reload() Q_DECL_OVERRIDE;
 };
 
 }
