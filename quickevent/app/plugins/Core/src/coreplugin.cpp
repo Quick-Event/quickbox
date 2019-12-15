@@ -23,7 +23,7 @@ namespace Core {
 CorePlugin::CorePlugin(QObject *parent)
 	: Super("Core", parent)
 {
-	//connect(this, &Plugin::installed, this, &Plugin::onInstalled);//, Qt::QueuedConnection);
+	connect(this, &Plugin::installed, this, &CorePlugin::onInstalled);//, Qt::QueuedConnection);
 }
 
 const QString CorePlugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()

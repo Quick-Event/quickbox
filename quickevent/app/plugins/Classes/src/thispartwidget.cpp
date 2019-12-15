@@ -9,7 +9,9 @@ ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
 	setObjectName("Classes::PartWidget");
-	setPersistentSettingsId("Classes");
+	setFeatureId("Classes");
+	setIconSource(":/quickevent/" + featureId() + "/images/feature");
+	setPersistentSettingsId(featureId());
 	setTitle(tr("Classes"));
 
 	ClassesWidget *w = new ClassesWidget();

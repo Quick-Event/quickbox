@@ -37,7 +37,7 @@ static Event::EventPlugin* eventPlugin()
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super("Competitors", parent)
 {
-	connect(this, &CompetitorsPlugin::installed, this, &CompetitorsPlugin::onInstalled, Qt::QueuedConnection);
+	connect(this, &CompetitorsPlugin::installed, this, &CompetitorsPlugin::onInstalled);
 }
 
 CompetitorsPlugin::~CompetitorsPlugin()

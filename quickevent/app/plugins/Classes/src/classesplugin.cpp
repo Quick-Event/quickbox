@@ -40,7 +40,7 @@ static Event::EventPlugin* eventPlugin()
 ClassesPlugin::ClassesPlugin(QObject *parent)
 	: Super("Classes", parent)
 {
-	connect(this, &ClassesPlugin::installed, this, &ClassesPlugin::onInstalled, Qt::QueuedConnection);
+	connect(this, &ClassesPlugin::installed, this, &ClassesPlugin::onInstalled);
 }
 
 void ClassesPlugin::onInstalled()

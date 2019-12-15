@@ -78,22 +78,18 @@ void MainWindow::loadPlugins()
 	{
 		auto *plugin = new Core::CorePlugin(this);
 		registerPlugin(plugin);
-		plugin->onInstalled();
 	}
 	{
 		auto *plugin = new Event::EventPlugin(this);
 		registerPlugin(plugin);
-		plugin->onInstalled();
 	}
 	{
 		auto *plugin = new Classes::ClassesPlugin(this);
 		registerPlugin(plugin);
-		plugin->onInstalled();
 	}
 	{
 		auto *plugin = new Competitors::CompetitorsPlugin(this);
 		registerPlugin(plugin);
-		plugin->onInstalled();
 	}
 	Super::loadPlugins();
 }

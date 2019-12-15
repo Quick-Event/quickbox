@@ -70,16 +70,9 @@ void PartSwitch::addPartWidget(PartWidget *widget)
 	bt->setPartIndex(buttonCount());
 	qfDebug() << "first_bottom_part_action:" << first_bottom_part_action << "add_from_bottom:" << add_from_bottom;
 	insertWidget(first_bottom_part_action, bt);
-	updateButtonIcon(bt);
-	//QMetaObject::invokeMethod(this, "updateButtonIcon", Qt::QueuedConnection, Q_ARG(QObject*, bt));
-}
-
-void PartSwitch::updateButtonIcon(PartSwitchToolButton *bt)
-{
-	PartWidget *pw = m_centralWidget->partWidget(bt->partIndex());
-	if(pw) {
-		QIcon ico = pw->createIcon();
-		//bt->setIconSize(bt->size());
+	{
+		QIcon ico = widget->createIcon();
+		//bt->setIconSize(QSize{128, 128});
 		bt->setIcon(ico);
 	}
 }

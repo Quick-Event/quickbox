@@ -92,6 +92,7 @@ void PluginLoader::registerPlugin(const QString &feature_id, Plugin *plugin)
 {
 	m_loadedPlugins[feature_id] = plugin;
 	loadPluginTranslations(feature_id);
+	emit plugin->installed();
 }
 
 void PluginLoader::loadPlugins(const QStringList &feature_ids)

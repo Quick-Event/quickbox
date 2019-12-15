@@ -11,7 +11,9 @@ ThisPartWidget::ThisPartWidget(QWidget *parent)
 	: Super(parent)
 {
 	setObjectName("Competitors::PartWidget");
-	setPersistentSettingsId("Competitors");
+	setFeatureId("Competitors");
+	setIconSource(":/quickevent/" + featureId() + "/images/feature");
+	setPersistentSettingsId(featureId());
 	setTitle(tr("&Competitors"));
 
 	CompetitorsWidget *w = new CompetitorsWidget();

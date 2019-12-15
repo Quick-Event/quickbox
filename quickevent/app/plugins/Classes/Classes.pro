@@ -11,7 +11,8 @@ LIBS += \
 
 include (src/src.pri)
 
-RESOURCES += \
+RESOURCES += \ \
+    Classes.qrc
 
 TRANSLATIONS += \
 	$${PLUGIN_NAME}.cs_CZ.ts \

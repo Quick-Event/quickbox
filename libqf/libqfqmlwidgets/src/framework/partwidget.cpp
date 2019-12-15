@@ -133,6 +133,7 @@ bool PartWidget::isAddToPartSwitchFromBottom()
 
 QIcon PartWidget::createIcon()
 {
+	qfLogFuncFrame() << this << "feature:" << featureId();
 	QIcon ico;
 	QString feature_id = featureId();
 	if(feature_id.isEmpty()) {
@@ -152,6 +153,7 @@ QIcon PartWidget::createIcon()
 				if(manifest)
 					icon_path = plugin->manifest()->homeDir() + "/" + icon_path;
 			}
+			qfDebug() << plugin << "feature:" << plugin->manifest()->featureId() << "icon path:" << icon_path;
 			ico = QIcon(icon_path);
 			if(ico.isNull())
 				qfWarning() << "Cannot load icon on path:" << icon_path;
