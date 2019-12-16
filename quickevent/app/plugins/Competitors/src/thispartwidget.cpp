@@ -12,7 +12,7 @@ ThisPartWidget::ThisPartWidget(QWidget *parent)
 {
 	setObjectName("Competitors::PartWidget");
 	setFeatureId("Competitors");
-	setIconSource(":/quickevent/" + featureId() + "/images/feature");
+	//setIconSource(":/quickevent/" + featureId() + "/images/feature");
 	setPersistentSettingsId(featureId());
 	setTitle(tr("&Competitors"));
 

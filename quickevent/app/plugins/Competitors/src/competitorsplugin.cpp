@@ -38,7 +38,6 @@ static Event::EventPlugin* eventPlugin()
 CompetitorsPlugin::CompetitorsPlugin(QObject *parent)
 	: Super("Competitors", parent)
 {
-	manifest()->setHomeDir(qff::Application::instance()->pluginDataDir() + '/' + manifest()->featureId());
 	connect(this, &CompetitorsPlugin::installed, this, &CompetitorsPlugin::onInstalled);
 }
 
