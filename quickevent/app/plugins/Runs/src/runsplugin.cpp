@@ -195,22 +195,59 @@ void RunsPlugin::onInstalled()
 				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_resultsAwards);
 				m->addActionInto(a);
 			}
+			m->addSeparatorInto();
+			{
+				auto *a = new qfw::Action(tr("&After n stages"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_resultsNStages);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("&After n stages for speaker"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_resultsNStagesSpeaker);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("N stages awards"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_nStagesAwards);
+				m->addActionInto(a);
+			}
 		}
 	}
-/*
-	a = a_print.addMenuInto("results", qsTr("&Results"));
-	a.addActionInto(act_print_results_currentStage);
-	a.addActionInto(act_print_results_currentStageWide);
-	a.addSeparatorInto("results_awards_separator");
-	a.addActionInto(act_print_results_currentStageAwards);
-	a.addSeparatorInto("results_nstages_separator");
-	a.addActionInto(act_print_results_nStages);
-	a.addActionInto(act_print_results_nStagesWide);
-	a.addActionInto(act_print_results_NStageAwards);
-
-	var a_sep = a_print.addSeparatorInto();
-	a_sep.addActionAfter(act_print_competitorswithCardRent)
-
+	a_print->addSeparatorInto();
+	{
+		auto *a = new qfw::Action(tr("&Competitors with rented cards"));
+		connect(a, &qfw::Action::triggered, [this]() {
+			qff::MainWindow *fwk = qff::MainWindow::frameWork();
+			QVariantMap props;
+			props["stageId"] = selectedStageId();
+			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+										, manifest()->homeDir() + "/reports/competitorsWithCardRent.qml"
+										, QVariant()
+										, tr("Competitors with rented cards")
+										, "printReport"
+										, props
+										);
+		});
+		a_print->addActionInto(a);
+	}
+	auto *a_export = m_partWidget->menuBar()->actionForPath("export");
+	{
+		auto *m_stlist = a_export->addMenuInto("startList", tr("&Start list"));
+		auto *m_html = m_stlist->addMenuInto("html", tr("&HTML"));
+		{
+			{
+				auto *a = new qfw::Action(tr("&Classes"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::export_startListClassesHtml);
+				m_html->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("C&lubs"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::export_startListClubsHtml);
+				m_html->addActionInto(a);
+			}
+		}
+	}
+	/*
 	var a_export = root.partWidget.menuBar.actionForPath("export", false);
 
 	var m_stlist = a_export.addMenuInto("startList", qsTr("&Start list"));
@@ -484,7 +521,7 @@ int RunsPlugin::cardForRun(int run_id)
 	return card_id;
 }
 
-qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
+qf::core::utils::Table RunsPlugin::nstagesClassResultsTable(int stages_count, int class_id, int places, bool exclude_disq)
 {
 	qfs::QueryBuilder qb;
 	qb.select2("competitors", "id, registration, licence")
@@ -585,7 +622,7 @@ qf::core::utils::Table RunsPlugin::nstagesResultsTable(int stages_count, int cla
 	return t;
 }
 
-QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool exclude_disq)
+qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(int stages_count, int places, bool exclude_disq)
 {
 	qfLogFuncFrame();
 	//qf::core::utils::Table::FieldList cols;
@@ -603,13 +640,19 @@ QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool 
 	qf::core::utils::TreeTable tt = mod.toTreeTable();
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
-		qfInfo() << "Processing class:" << tt_row.value("name").toString();
+		//qfInfo() << "Processing class:" << tt_row.value("name").toString();
 		int class_id = tt_row.value("id").toInt();
-		qf::core::utils::Table t = nstagesResultsTable(stages_count, class_id, places, exclude_disq);
+		qf::core::utils::Table t = nstagesClassResultsTable(stages_count, class_id, places, exclude_disq);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
 		tt_row.appendTable(tt2);
 	}
-	return tt.toVariant();
+	tt.setValue("stagesCount", stages_count);
+	return tt;
+}
+
+QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool exclude_disq)
+{
+	return nstagesResultsTable(stages_count, places, exclude_disq).toVariant();
 }
 
 QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
@@ -1021,7 +1064,7 @@ bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_n
 	while(q.next()) {
 		int class_id = q.value(0).toInt();
 		QString class_name = q.value(1).toString();
-		qf::core::utils::Table tt = nstagesResultsTable(stage_count, class_id, -1, false);
+		qf::core::utils::Table tt = nstagesClassResultsTable(stage_count, class_id, -1, false);
 		for (int i = 0; i < tt.rowCount(); ++i) {
 			qf::core::utils::TableRow row = tt.row(i);
 			ts << make_width(class_name, -10);
@@ -1510,6 +1553,89 @@ void RunsPlugin::report_resultsAwards()
 								, "printResultsAwards"
 								, props
 								);
+}
+
+void RunsPlugin::report_resultsNStages()
+{
+	auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	NStagesReportOptionsDialog dlg(fwk);
+	//dlg.setPersistentSettingsId("resultsReportOptionsNStagesWide");
+	dlg.setStagesCount(event_plugin->currentStageId());
+	dlg.setMaxPlacesCount(9999);
+	dlg.setExcludeDisqualified(true);
+	if(!dlg.exec())
+		return;
+	auto tt = nstagesResultsTable(dlg.stagesCount(), dlg.maxPlacesCount(), dlg.isExcludeDisqualified());
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	//tt.setValue("stageStart", event_plugin->stageStartDateTime(stages_count));
+	QVariantMap props;
+	props["stagesCount"] = dlg.stagesCount();
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+								, manifest()->homeDir() + "/reports/results_nstages.qml"
+								, tt.toVariant()
+								, tr("Results after %1 stages").arg(dlg.stagesCount())
+								, "printResultsNStages"
+								, props
+							  );
+}
+
+void RunsPlugin::report_resultsNStagesSpeaker()
+{
+	auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	NStagesReportOptionsDialog dlg(fwk);
+	//dlg.setPersistentSettingsId("resultsReportOptionsNStagesWide");
+	dlg.setStagesCount(event_plugin->currentStageId());
+	dlg.setMaxPlacesCount(9999);
+	dlg.setExcludeDisqualified(true);
+	if(!dlg.exec())
+		return;
+	auto tt = nstagesResultsTable(dlg.stagesCount(), dlg.maxPlacesCount(), dlg.isExcludeDisqualified());
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	//tt.setValue("stageStart", event_plugin->stageStartDateTime(stages_count));
+	QVariantMap props;
+	props["stagesCount"] = dlg.stagesCount();
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+								, manifest()->homeDir() + "/reports/results_nstagesSpeaker.qml"
+								, tt.toVariant()
+								, tr("Results after %1 stages").arg(dlg.stagesCount())
+								, "printResultsNStagesWide"
+								, props
+														  );
+}
+
+void RunsPlugin::report_nStagesAwards()
+{
+	auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	QVariantMap opts;
+	opts["stageId"] = event_plugin->currentStageId();
+	opts = printAwardsOptionsWithDialog(opts);
+	QString rep_path = opts.value("reportPath").toString();
+	if(rep_path.isEmpty())
+		return;
+
+	QVariantMap props;
+	props["eventConfig"] = QVariant::fromValue(event_plugin->eventConfig());
+	auto tt = nstagesResultsTable(opts.value("stageId").toInt(), opts.value("numPlaces").toInt());
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+								, rep_path
+								, tt.toVariant()
+								, tr("Awards after %1 stages").arg(opts.value("numPlaces").toInt())
+								, "printResultsAwardsNStages"
+								, props
+								);
+}
+
+void RunsPlugin::export_startListClassesHtml()
+{
+
+}
+
+void RunsPlugin::export_startListClubsHtml()
+{
+
 }
 
 }

@@ -17,9 +17,9 @@ class NStagesReportOptionsDialog : public QDialog
 	Q_PROPERTY(int maxPlacesCount READ maxPlacesCount WRITE setMaxPlacesCount)
 	Q_PROPERTY(bool excludeDisqualified READ isExcludeDisqualified WRITE setExcludeDisqualified)
 public:
-	explicit NStagesReportOptionsDialog(QWidget *parent = 0);
+	explicit NStagesReportOptionsDialog(QWidget *parent = nullptr);
 	~NStagesReportOptionsDialog() Q_DECL_OVERRIDE;
-private:
+
 	int stagesCount() const;
 	void setStagesCount(int n);
 

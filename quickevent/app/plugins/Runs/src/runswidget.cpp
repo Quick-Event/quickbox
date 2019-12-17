@@ -576,7 +576,7 @@ void RunsWidget::on_btDraw_clicked()
 			}
 			else if(draw_method == DrawMethod::Handicap) {
 				int stage_count = eventPlugin()->eventConfig()->stageCount();
-				qf::core::utils::Table results = runsPlugin()->nstagesResultsTable(stage_count - 1, class_id);
+				qf::core::utils::Table results = runsPlugin()->nstagesClassResultsTable(stage_count - 1, class_id);
 				QMap<int, int> competitor_to_run = competitorsForClass(stage_count, class_id);
 				//int n = 0;
 				for (int i = 0; i < results.rowCount(); ++i) {
