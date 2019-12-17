@@ -175,6 +175,28 @@ void RunsPlugin::onInstalled()
 			}
 		}
 	}
+	{
+		auto *m = a_print->addMenuInto("results", tr("&Results"));
+		{
+			{
+				auto *a = new qfw::Action(tr("&Current stage"));
+				a->setShortcut("Ctrl+P");
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_resultsClasses);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("Current stage for speaker"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_resultsForSpeaker);
+				m->addActionInto(a);
+			}
+			m->addSeparatorInto();
+			{
+				auto *a = new qfw::Action(tr("Current stage awards"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_resultsAwards);
+				m->addActionInto(a);
+			}
+		}
+	}
 /*
 	a = a_print.addMenuInto("results", qsTr("&Results"));
 	a.addActionInto(act_print_results_currentStage);
@@ -1415,4 +1437,80 @@ void RunsPlugin::report_startListClubsNStages()
 	}
 }
 
+void RunsPlugin::report_resultsClasses()
+{
+	//auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("resultsClassesReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setResultOptionsVisible(true);
+	//dlg.setPageLayoutVisible(false);
+	if(dlg.exec()) {
+		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces());
+		auto opts = dlg.optionsMap();
+		QVariantMap props;
+		props["options"] = opts;
+		//props["stageCount"] = event_plugin->eventConfig()->stageCount();
+		//props["stageNumber"] = selectedStageId();
+		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+									, manifest()->homeDir() + "/reports/results_stage.qml"
+									, tt.toVariant()
+									, tr("Results by classes")
+									, "printResults"
+									, props
+									);
+
+	}
 }
+
+void RunsPlugin::report_resultsForSpeaker()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("resultsClassesSpeakerReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setResultOptionsVisible(true);
+	//dlg.setPageLayoutVisible(false);
+	if(dlg.exec()) {
+		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces());
+		auto opts = dlg.optionsMap();
+		QVariantMap props;
+		props["options"] = opts;
+		//props["stageCount"] = event_plugin->eventConfig()->stageCount();
+		//props["stageNumber"] = selectedStageId();
+		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+									, manifest()->homeDir() + "/reports/results_stageSpeaker.qml"
+									, tt.toVariant()
+									, tr("Results by classes")
+									, "printResultsSpeaker"
+									, props
+									);
+	}
+}
+
+void RunsPlugin::report_resultsAwards()
+{
+	auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	QVariantMap opts;
+	opts["stageId"] = event_plugin->currentStageId();
+	opts = printAwardsOptionsWithDialog(opts);
+	QString rep_path = opts.value("reportPath").toString();
+	if(rep_path.isEmpty())
+		return;
+
+	QVariantMap props;
+	props["eventConfig"] = QVariant::fromValue(event_plugin->eventConfig());
+	auto tt = stageResultsTable(opts.value("stageId").toInt(), QString(), opts.value("numPlaces").toInt());
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+								, rep_path
+								, tt.toVariant()
+								, tr("Stage awards")
+								, "printResultsAwards"
+								, props
+								);
+}
+
+}
+

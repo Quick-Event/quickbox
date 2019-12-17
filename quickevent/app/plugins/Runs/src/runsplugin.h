@@ -83,6 +83,10 @@ private:
 	void report_startListStarters();
 	void report_startListClassesNStages();
 	void report_startListClubsNStages();
+
+	void report_resultsClasses();
+	void report_resultsForSpeaker();
+	void report_resultsAwards();
 private:
 	Q_SLOT void onInstalled();
 
