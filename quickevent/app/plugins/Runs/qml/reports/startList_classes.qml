@@ -8,10 +8,9 @@ Report {
 
 	property string reportTitle: qsTr("Start list by classes")
 	property var options
-
 	property bool isBreakAfterEachClass: options.isBreakAfterEachClass? true: false
 	property bool isColumnBreak: options.isColumnBreak? true: false
-	property bool isPrintStartNumbers: options.isPrintStartNumbers? true: false
+	property bool isPrintStartNumbers: options.isStartListPrintStartNumbers? true: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {

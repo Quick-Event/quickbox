@@ -195,6 +195,8 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setStartListPrintVacants(isStartListPrintVacants());
 	opts.setStartListPrintStartNumbers(isStartListPrintStartNumbers());
 	opts.setStartersOptionsLineSpacing(ui->edStartersOptionsLineSpacing->value());
+	opts[QStringLiteral("isBreakAfterEachClass")] = isBreakAfterEachClass();
+	opts[QStringLiteral("isColumnBreak")] = isColumnBreak();
 	return opts;
 }
 

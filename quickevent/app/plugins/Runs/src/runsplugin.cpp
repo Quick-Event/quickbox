@@ -160,9 +160,16 @@ void RunsPlugin::onInstalled()
 				m->addActionInto(a);
 			}
 		}
+		{
+			{
+				auto *a = new qfw::Action(tr("&Starters"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListStarters);
+				m->addActionInto(a);
+			}
+		}
+		m->addSeparatorInto();
 	}
 			/*
-			m->addSeparatorInto();
 			m->addActionInto(act_print_startList_clubs);
 			m->addActionInto(act_print_startList_starters);
 			m->addActionInto(act_print_startList_classes_nstages);
@@ -1151,6 +1158,36 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable()
 	return tt;
 }
 
+qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &where_expr)
+{
+	auto *event_plugin = eventPlugin();
+	int stage_id = selectedStageId();
+
+	qfs::QueryBuilder qb;
+	qb.select2("competitors", "registration, id, startNumber")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.select("COALESCE(runs.startTimeMs / 1000 / 60, 0) AS startTimeMin")
+			.select2("runs", "siId, startTimeMs")
+			.select2("classes", "name")
+			.from("competitors")
+			.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
+			.join("competitors.classId", "classes.id")
+			.orderBy("runs.startTimeMs, classes.name, competitors.lastName");//.limit(1);
+	if(!where_expr.isEmpty())
+		qb.where(where_expr);
+	QVariantMap qpm;
+	qpm["stage_id"] = stage_id;
+	qf::core::model::SqlTableModel m;
+	m.setQueryBuilder(qb);
+	m.setQueryParameters(qpm);
+	m.reload();
+	auto tt = m.toTreeTable();
+	tt.setValue("stageId", stage_id);
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
+	return tt;
+}
+
 void RunsPlugin::report_startListClasses()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -1159,8 +1196,6 @@ void RunsPlugin::report_startListClasses()
 	dlg.loadPersistentSettings();
 	dlg.setStartListOptionsVisible(true);
 	dlg.setPageLayoutVisible(false);
-	//dlg.dialogType = RunsPlugin.StartListReport;
-	//var mask = InputDialogSingleton.getText(this, qsTr("Get text"), qsTr("Class mask (use wild cards [*?]):"), "*");
 	if(dlg.exec()) {
 		auto tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants());
 		auto opts = dlg.optionsMap();
@@ -1198,7 +1233,30 @@ void RunsPlugin::report_startListClubs()
 									, "printStartList"
 									, props
 									);
+	}
+}
 
+void RunsPlugin::report_startListStarters()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListStartersReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setClassFilterVisible(true);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setStartersOptionsVisible(true);
+	if(dlg.exec()) {
+		auto tt = startListStartersTable(dlg.sqlWhereExpression());
+		auto opts = dlg.optionsMap();
+		QVariantMap props;
+		props["options"] = opts;
+		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+									, manifest()->homeDir() + "/reports/startList_starters.qml"
+									, tt.toVariant()
+									, tr("Start list for starters")
+									, "printStartList"
+									, props
+									);
 	}
 }
 

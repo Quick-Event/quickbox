@@ -8,10 +8,10 @@ Report {
 
 	property string reportTitle: qsTr("Start list by clubs")
 
-	property bool isBreakAfterEachClass: false
-	property bool isColumnBreak: false
-	property bool isPrintStartNumbers: false
 	property var options
+	property bool isBreakAfterEachClass: options.isBreakAfterEachClass? true: false
+	property bool isColumnBreak: options.isColumnBreak? true: false
+	property bool isPrintStartNumbers: options.isStartListPrintStartNumbers? true: false
 
 	//debugLevel: 1
 	styleSheet: StyleSheet {

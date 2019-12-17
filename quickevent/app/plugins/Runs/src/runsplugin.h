@@ -75,8 +75,10 @@ public:
 private:
 	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, bool insert_vacants);
 	qf::core::utils::TreeTable startListClubsTable();
+	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
 	void report_startListClasses();
 	void report_startListClubs();
+	void report_startListStarters();
 private:
 	Q_SLOT void onInstalled();
 
