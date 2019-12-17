@@ -152,26 +152,25 @@ void RunsPlugin::onInstalled()
 				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListClasses);
 				m->addActionInto(a);
 			}
-		}
-		{
 			{
 				auto *a = new qfw::Action(tr("C&lubs"));
 				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListClubs);
 				m->addActionInto(a);
 			}
-		}
-		{
 			{
 				auto *a = new qfw::Action(tr("&Starters"));
 				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListStarters);
 				m->addActionInto(a);
 			}
+			m->addSeparatorInto();
+			{
+				auto *a = new qfw::Action(tr("Classes n stages"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListClassesNStages);
+				m->addActionInto(a);
+			}
 		}
-		m->addSeparatorInto();
 	}
 			/*
-			m->addActionInto(act_print_startList_clubs);
-			m->addActionInto(act_print_startList_starters);
 			m->addActionInto(act_print_startList_classes_nstages);
 			m->addActionInto(act_print_startList_clubs_nstages);
 		}
@@ -1188,6 +1187,51 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 	return tt;
 }
 
+qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(int stages_count, const QString &where_expr)
+{
+	auto *event_plugin = eventPlugin();
+	int stage_id = selectedStageId();
+
+	qfs::QueryBuilder qb;
+	qb.select2("classes", "id, name")
+			.from("classes")
+			.orderBy("classes.name");
+	if(!where_expr.isEmpty())
+		qb.where(where_expr);
+	qf::core::model::SqlTableModel m;
+	m.setQueryBuilder(qb);
+	m.reload();
+	auto tt = m.toTreeTable();
+	tt.setValue("stageId", stage_id);
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
+	for(int i=0; i<tt.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		int class_id = tt_row.value("classes.id").toInt();
+		qfs::QueryBuilder qb2;
+		qb2.select2("competitors", "registration, lastName, firstName, siId, startNumber")
+			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+			.from("competitors")
+			.where("competitors.classId={{class_id}}")
+			.orderBy("competitors.lastName, competitors.registration");
+		for(int stage_id = 1; stage_id <= stages_count; stage_id++) {
+			QString runs_table = "runs" + QString::number(stage_id);
+			qb2.select2(runs_table, "siid, startTimeMs, isRunning")
+				.joinRestricted("competitors.id"
+								, "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + QString::number(stage_id) + " AND " + runs_table + ".isRunning");
+		}
+		QVariantMap qpm;
+		qpm["class_id"] = class_id;
+		qf::core::model::SqlTableModel m2;
+		m2.setQueryBuilder(qb2);
+		m2.setQueryParameters(qpm);
+		//qfInfo() << m2.effectiveQuery();
+		m2.reload();
+		tt_row.appendTable(m2.toTreeTable());
+	}
+	return tt;
+}
+
 void RunsPlugin::report_startListClasses()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -1254,6 +1298,38 @@ void RunsPlugin::report_startListStarters()
 									, manifest()->homeDir() + "/reports/startList_starters.qml"
 									, tt.toVariant()
 									, tr("Start list for starters")
+									, "printStartList"
+									, props
+									);
+	}
+}
+
+void RunsPlugin::report_startListClassesNStages()
+{
+	auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListClassesNStagesReportOptions");
+	dlg.loadPersistentSettings();
+
+	dlg.setStagesCount(event_plugin->stageCount());
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
+	dlg.setStagesOptionVisible(true);
+	dlg.setClassFilterVisible(true);
+	dlg.setColumnCountEnable(false);
+	if(dlg.exec()) {
+		auto tt = startListClassesNStagesTable(dlg.stagesCount(), dlg.sqlWhereExpression());
+		auto opts = dlg.optionsMap();
+		//QString report_title = tr("Start list by classes after %1 stages").arg(dlg.stagesCount());
+		QVariantMap props;
+		props["options"] = opts;
+		//props["reportTitle"] = "report_title";
+		//qfInfo() << props;
+		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
+									, tt.toVariant()
+									, tr("Start list by classes after %1 stages").arg(dlg.stagesCount())
 									, "printStartList"
 									, props
 									);

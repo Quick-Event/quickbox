@@ -47,13 +47,12 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::startersOptionsVisibleChanged, ui->grpStartersOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::vacantsVisibleChanged, ui->chkStartOpts_PrintVacants, &QCheckBox::setVisible);
 	connect(this, &ReportOptionsDialog::stagesOptionVisibleChanged, ui->grpStages, &QGroupBox::setVisible);
-	connect(this, &ReportOptionsDialog::stagesCountChanged, ui->edStagesCount, &QSpinBox::setValue);
 	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
 	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
 
-	//connect(this, &ReportOptionsDialog::classFilterVisibleChanged, [this]() {
-	//	qfInfo() << __FUNCTION__;
+	//connect(ui->edStagesCount, &QSpinBox::valueChanged, [this](int n) {
+	//	qfInfo() << "stage cnt value changed:" << n;
 	//});
 }
 
@@ -154,6 +153,8 @@ int ReportOptionsDialog::exec()
 void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options)
 {
 	qfLogFuncFrame() << options;
+	ui->edStagesCount->setValue(options.stagesCount());
+	//qfInfo() << "options.stagesCount()" << options.stagesCount() << ui->edStagesCount->value();
 	ui->cbxBreakAfterClassType->setCurrentIndex(options.breakType());
 	ui->edColumnCount->setValue(options.columns().length() / 2 + 1);
 	ui->edPageWidth->setValue(options.pageWidth());
@@ -176,6 +177,7 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 ReportOptionsDialog::Options ReportOptionsDialog::options() const
 {
 	Options opts;
+	opts.setStagesCount(ui->edStagesCount->value());
 	opts.setBreakType(ui->cbxBreakAfterClassType->currentIndex());
 	opts.setColumnCount(ui->edColumnCount->value());
 	QString columns;
@@ -207,7 +209,6 @@ ReportOptionsDialog::Options ReportOptionsDialog::savedOptions(const QString &pe
 	if(id.isEmpty())
 		id = default_persistent_settings_id;
 	QVariantMap m = settings.value(persistent_settings_path_prefix + id).toMap();
-	//qfInfo() << persistentSettingsPath() << m;
 	return Options(m);
 }
 
@@ -251,19 +252,4 @@ int ReportOptionsDialog::resultNumPlaces() const
 	return ui->edNumPlaces->value();
 }
 
-/*
-QVariantMap ReportOptionsDialog::optionsToMap() const
-{
-	QVariantMap ret;
-	ret["breakAfterEachClass"] = ui->chkPrintEveryClassOnNewPage->isChecked();
-	if(ui->grpClassFilter->isChecked()) {
-		QVariantMap m;
-		m["filterDoesnMatch"] = ui->chkClassFilterDoesntMatch->isChecked();
-		m["filterType"] = ui->btRegExp->isChecked()? "regExp": "wildCard";
-		//m["sqlWhere"] = sqlWhereExpression();
-		ret["classFilter"] = m;
-	}
-	return ret;
-}
-*/
 }}

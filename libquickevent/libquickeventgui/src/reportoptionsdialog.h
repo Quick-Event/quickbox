@@ -91,7 +91,6 @@ public:
 	void setClassNamesFilter(const QStringList &class_names);
 
 	BreakType breakType() const;
-	//Q_INVOKABLE QVariantMap optionsToMap() const;
 	Q_INVOKABLE bool isStartListPrintVacants() const;
 	Q_INVOKABLE bool isStartListPrintStartNumbers() const;
 	Q_INVOKABLE bool isBreakAfterEachClass() const {return breakType() != BreakType::None;}
