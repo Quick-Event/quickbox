@@ -77,10 +77,12 @@ private:
 	qf::core::utils::TreeTable startListClubsTable();
 	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
 	qf::core::utils::TreeTable startListClassesNStagesTable(int stages_count, const QString &where_expr);
+	qf::core::utils::TreeTable startListClubsNStagesTable(int stages_count);
 	void report_startListClasses();
 	void report_startListClubs();
 	void report_startListStarters();
 	void report_startListClassesNStages();
+	void report_startListClubsNStages();
 private:
 	Q_SLOT void onInstalled();
 

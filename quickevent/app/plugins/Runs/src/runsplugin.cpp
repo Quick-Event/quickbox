@@ -168,14 +168,14 @@ void RunsPlugin::onInstalled()
 				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListClassesNStages);
 				m->addActionInto(a);
 			}
+			{
+				auto *a = new qfw::Action(tr("Clubs n stages"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListClubsNStages);
+				m->addActionInto(a);
+			}
 		}
 	}
-			/*
-			m->addActionInto(act_print_startList_classes_nstages);
-			m->addActionInto(act_print_startList_clubs_nstages);
-		}
-	}
-
+/*
 	a = a_print.addMenuInto("results", qsTr("&Results"));
 	a.addActionInto(act_print_results_currentStage);
 	a.addActionInto(act_print_results_currentStageWide);
@@ -1232,6 +1232,53 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(int stages_c
 	return tt;
 }
 
+qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(int stages_count)
+{
+	auto *event_plugin = eventPlugin();
+	int stage_id = selectedStageId();
+
+	QString qs1 = "SELECT COALESCE(substr(registration, 1, 3), '') AS clubAbbr FROM competitors GROUP BY clubAbbr ORDER BY clubAbbr";
+	QString qs = "SELECT t2.clubAbbr, clubs.name FROM ( " + qs1 + " ) AS t2"
+			+ " LEFT JOIN clubs ON t2.clubAbbr=clubs.abbr"
+			+ " ORDER BY t2.clubAbbr";
+	qf::core::model::SqlTableModel m;
+	m.setQuery(qs);
+	m.reload();
+	auto tt = m.toTreeTable();
+	tt.setValue("stageId", stage_id);
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
+	tt.columns().column(0).setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+	//console.info(tt.toString());
+	for(int i=0; i<tt.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		QString club_abbr = tt_row.value("clubAbbr").toString();
+		qfs::QueryBuilder qb2;
+		qb2.select2("competitors", "registration, siId, startNumber")
+				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
+				.select2("classes", "name")
+				.from("competitors")
+				.join("competitors.classId", "classes.id")
+				.where("substr(competitors.registration, 1, 3)='{{club_abbr}}'")
+				.orderBy("classes.name, competitors.lastName");
+		for(int stage_id = 1; stage_id <= stages_count; stage_id++) {
+			QString runs_table = "runs" + QString::number(stage_id);
+			qb2.select2(runs_table, "siid, startTimeMs, isRunning")
+				.joinRestricted("competitors.id"
+								, "runs.competitorId AS " + runs_table, runs_table + ".stageId=" + QString::number(stage_id) + " AND " + runs_table + ".isRunning");
+		}
+		QVariantMap qpm;
+		qpm["club_abbr"] = club_abbr;
+		qf::core::model::SqlTableModel m2;
+		m2.setQueryBuilder(qb2);
+		m2.setQueryParameters(qpm);
+		//qfInfo() << m2.effectiveQuery();
+		m2.reload();
+		tt_row.appendTable(m2.toTreeTable());
+	}
+	return tt;
+}
+
 void RunsPlugin::report_startListClasses()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -1330,6 +1377,38 @@ void RunsPlugin::report_startListClassesNStages()
 									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
 									, tt.toVariant()
 									, tr("Start list by classes after %1 stages").arg(dlg.stagesCount())
+									, "printStartList"
+									, props
+									);
+	}
+}
+
+void RunsPlugin::report_startListClubsNStages()
+{
+	auto *event_plugin = eventPlugin();
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListClubsNStagesReportOptions");
+	dlg.loadPersistentSettings();
+
+	dlg.setStagesCount(event_plugin->stageCount());
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
+	dlg.setStagesOptionVisible(true);
+	dlg.setClassFilterVisible(true);
+	dlg.setColumnCountEnable(false);
+	if(dlg.exec()) {
+		auto tt = startListClubsNStagesTable(dlg.stagesCount());
+		auto opts = dlg.optionsMap();
+		//QString report_title = tr("Start list by classes after %1 stages").arg(dlg.stagesCount());
+		QVariantMap props;
+		props["options"] = opts;
+		//props["reportTitle"] = "report_title";
+		//qfInfo() << props;
+		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+									, manifest()->homeDir() + "/reports/startList_clubs_nstages.qml"
+									, tt.toVariant()
+									, tr("Start list by clubs after %1 stages").arg(dlg.stagesCount())
 									, "printStartList"
 									, props
 									);
