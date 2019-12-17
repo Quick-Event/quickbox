@@ -1,8 +1,8 @@
-#ifndef EMMACLIENTWIDGET_H
-#define EMMACLIENTWIDGET_H
+#pragma once
 
 #include <qf/qmlwidgets/framework/dialogwidget.h>
 
+namespace Event {
 namespace services {
 
 namespace Ui {
@@ -17,7 +17,7 @@ class EmmaClientWidget : public qf::qmlwidgets::framework::DialogWidget
 
 	using Super = qf::qmlwidgets::framework::DialogWidget;
 public:
-	explicit EmmaClientWidget(QWidget *parent = 0);
+	explicit EmmaClientWidget(QWidget *parent = nullptr);
 	~EmmaClientWidget();
 private:
 	void onBtChooseExportDirClicked();
@@ -32,6 +32,5 @@ private:
 	Ui::EmmaClientWidget *ui;
 };
 
-}
+}}
 
-#endif // EMMACLIENTWIDGET_H

@@ -1,6 +1,7 @@
 #include "servicewidget.h"
 #include "ui_servicewidget.h"
 
+namespace Event {
 namespace services {
 
 ServiceWidget::ServiceWidget(QWidget *parent) :
@@ -65,4 +66,4 @@ void ServiceWidget::showDetail()
 	}
 }
 
-} // namespace services
+}}

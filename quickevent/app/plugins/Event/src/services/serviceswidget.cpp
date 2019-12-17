@@ -5,6 +5,7 @@
 #include <QHBoxLayout>
 #include <QScrollArea>
 
+namespace Event {
 namespace services {
 
 ServicesWidget::ServicesWidget(QWidget *parent)
@@ -42,4 +43,4 @@ void ServicesWidget::reload()
 	ly2->addStretch();
 }
 
-} // namespace services
+}}

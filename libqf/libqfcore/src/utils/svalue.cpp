@@ -271,15 +271,17 @@ void SValue::setProperty(int ix, const QVariant &val)
 	if(d->value.isValid() && d->value.type() != QVariant::List) {
 		qfWarning().nospace() << "SValue::setProperty(" << ix << ", " << val.toString() << ") - Value type changed from " << d->value.typeName() << " to List";
 	}
-	QVariantList l = d->value.toList();
-	for(int i=l.count(); i<ix+1; i++) l << QVariant();
+	QVariantList lst = d->value.toList();
+	for(int i=lst.count(); i<ix+1; i++)
+		lst << QVariant();
 	QVariant v = val;
 	if(v.userType() == qMetaTypeId<SValue>()) {
 		//qfDebug() << "\t already SValue" << QFJson::variantToString(qvariant_cast<SValue>(v).valueToVariant());
 	}
-	else v = variant_to_value(v);
-	l[ix] = v;
-	d->value = l;
+	else
+		v = variant_to_value(v);
+	lst[ix] = v;
+	d->value = lst;
 }
 
 /*

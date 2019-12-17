@@ -5,6 +5,7 @@
 
 #include <QWidget>
 
+namespace Event {
 namespace services {
 
 namespace Ui {
@@ -34,5 +35,6 @@ private:
 };
 
 
-} // namespace services
+}}
+
 #endif // SERVICES_SERVICEWIDGET_H

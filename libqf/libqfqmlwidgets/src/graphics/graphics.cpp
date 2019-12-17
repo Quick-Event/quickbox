@@ -152,11 +152,11 @@ QList< double > qf::qmlwidgets::graphics::makeLayoutSizes(const QVariantList& se
 	}
 	qfDebug() << "\t" << "abs_sum:" << abs_sum << "proc_sum:" << proc_sum << "proc_0_cnt:" << proc_0_cnt << "ly_size:" << layout_size;
 	if(layout_size < abs_sum) {
-		qfWarning() << "WUCDesignerItemFrame::updateLayout(): Children cann't fit parent. ly_size:" << layout_size << "abs_sum:" << abs_sum;
+		qfWarning() << "qf::qmlwidgets::graphics::makeLayoutSizes(): Children cann't fit parent. ly_size:" << layout_size << "abs_sum:" << abs_sum;
 		layout_size = abs_sum;
 	}
 	if(proc_sum > 1) {
-		qfWarning() << "WUCDesignerItemFrame::updateLayout(): Relative sizes sum exceedes 100%.";
+		qfWarning() << "qf::qmlwidgets::graphics::makeLayoutSizes(): Relative sizes sum exceedes 100%.";
 		proc_sum = 1;
 	}
 	for(int i=0; i<section_sizes.count(); i++) {
@@ -164,7 +164,7 @@ QList< double > qf::qmlwidgets::graphics::makeLayoutSizes(const QVariantList& se
 			double d = ret[i];
 			if(d == 0) {
 				if(proc_0_cnt == 0) {
-					qfWarning() << "WUCDesignerItemFrame::updateLayout(): 0% count is 0 but 0% dimensions exist.";
+					qfWarning() << "qf::qmlwidgets::graphics::makeLayoutSizes(): 0% count is 0 but 0% dimensions exist.";
 				}
 				else d = (1 - proc_sum) / proc_0_cnt;
 			}

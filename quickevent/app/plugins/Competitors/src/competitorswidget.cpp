@@ -374,7 +374,6 @@ void CompetitorsWidget::report_competitorsStatistics()
 	};
 	*/
 	Event::EventPlugin *event_plugin = eventPlugin();
-	//int stage_id = event_plugin->currentStageId();
 	int stage_cnt = event_plugin->stageCount();
 
 	qfs::QueryBuilder qb;

@@ -25,6 +25,7 @@ namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
 namespace qfs = qf::core::sql;
 
+namespace Event {
 namespace services {
 
 EmmaClient::EmmaClient(QObject *parent)
@@ -447,4 +448,4 @@ void EmmaClient::loadSettings()
 	init();
 }
 
-} // namespace services
+}}

@@ -8,6 +8,7 @@
 
 #include <QFileDialog>
 
+namespace Event {
 namespace services {
 
 EmmaClientWidget::EmmaClientWidget(QWidget *parent)
@@ -126,5 +127,5 @@ void EmmaClientWidget::onBtExportXML30Clicked()
 	}
 }
 
-}
+}}
 

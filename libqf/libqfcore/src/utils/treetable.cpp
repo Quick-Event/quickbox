@@ -351,16 +351,15 @@ const QString TreeTable::KEY_TYPE = "type";
 const QString TreeTable::KEY_TABLES = "tables";
 const QString TreeTable::KEY_ROW = "row";
 const QString TreeTable::KEY_KEYVALS = "keyvals";
-
 TreeTable::TreeTable()
 : SValue()
 {
 }
-
+/*
 TreeTable::~TreeTable()
 {
 }
-
+*/
 int TreeTable::rowCount() const
 {
 	QF_TIME_SCOPE("RTreeTable::rowCount");
@@ -369,9 +368,24 @@ int TreeTable::rowCount() const
 	return ret;
 }
 
+TreeTableRow TreeTable::insertRow(int ix)
+{
+	if(ix < 0)
+		ix = 0;
+	if(ix >= rowCount())
+		ix = rowCount();
+	appendRow();
+	auto sv = rows();
+	for (int i = sv.count() - 1; i > ix; --i) {
+		sv.setProperty(i, sv[i-1]);
+	}
+	sv.setProperty(ix, QVariant());
+	return TreeTableRow(columns(), sv[ix]);
+}
+
 TreeTableRow TreeTable::appendRow()
 {
-	SValue row_data = (*this)[KEY_ROWS][rowCount()];
+	SValue row_data = rows()[rowCount()];
 	return TreeTableRow(columns(), row_data);
 }
 

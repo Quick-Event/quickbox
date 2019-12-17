@@ -7,6 +7,7 @@
 #include <Event/eventplugin.h>
 #include <Classes/classesplugin.h>
 #include <Competitors/competitorsplugin.h>
+#include <Runs/runsplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -89,6 +90,10 @@ void MainWindow::loadPlugins()
 	}
 	{
 		auto *plugin = new Competitors::CompetitorsPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Runs::RunsPlugin(this);
 		registerPlugin(plugin);
 	}
 	Super::loadPlugins();

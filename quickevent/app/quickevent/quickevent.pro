@@ -40,6 +40,7 @@ LIBS +=      \
     -lEventQEPlugin \
     -lClassesQEPlugin \
     -lCompetitorsQEPlugin \
+    -lRunsQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

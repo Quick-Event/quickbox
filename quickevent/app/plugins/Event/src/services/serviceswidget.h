@@ -2,6 +2,7 @@
 
 #include <QWidget>
 
+namespace Event {
 namespace services {
 
 class ServicesWidget : public QWidget
@@ -15,4 +16,4 @@ private:
 	QWidget *m_centralWidget = nullptr;
 };
 
-} // namespace services
+}}

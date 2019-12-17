@@ -106,7 +106,7 @@ public:
 	TreeTable();
 	TreeTable(const QString &table_name) {setTableName(table_name);}
 	TreeTable(const SValue &sv) : SValue(sv) {}
-	virtual ~TreeTable();
+	//virtual ~TreeTable();
 protected:
 	SValue rows() const {return SValue(property(KEY_ROWS));}
 	//void setRows(const QVariantList &new_rows) {f_data[KEY_ROWS] = new_rows;}
@@ -119,6 +119,7 @@ public:
 	int columnCount() const {return columns().count();}
 	int rowCount() const;
 	TreeTableRow row(int ix) const {return TreeTableRow(columns(), rows().property(ix));}
+	TreeTableRow insertRow(int ix);
 	TreeTableRow appendRow();
 	void removeRow(int ix);
 

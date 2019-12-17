@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>services::ServiceWidget</class>
- <widget class="QWidget" name="services::ServiceWidget">
+ <class>Event::services::ServiceWidget</class>
+ <widget class="QWidget" name="Event::services::ServiceWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -35,7 +35,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../../../../../../../libqf/libqfcore/images/images.qrc">:/qf/core/images/light-red.png</pixmap>
+      <pixmap resource="../../../../../../libqf/libqfcore/images/images.qrc">:/qf/core/images/light-red.png</pixmap>
      </property>
     </widget>
    </item>
@@ -62,7 +62,7 @@
    <item>
     <widget class="QPushButton" name="btPlay">
      <property name="icon">
-      <iconset resource="../../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+      <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
        <normaloff>:/qf/qmlwidgets/images/flat/media-play.svg</normaloff>:/qf/qmlwidgets/images/flat/media-play.svg</iconset>
      </property>
     </widget>
@@ -70,7 +70,7 @@
    <item>
     <widget class="QPushButton" name="btShowDetail">
      <property name="icon">
-      <iconset resource="../../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
+      <iconset resource="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc">
        <normaloff>:/qf/qmlwidgets/images/flat/settings.svg</normaloff>:/qf/qmlwidgets/images/flat/settings.svg</iconset>
      </property>
     </widget>
@@ -78,8 +78,8 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../../../../../libqf/libqfcore/images/images.qrc"/>
-  <include location="../../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
+  <include location="../../../../../../libqf/libqfcore/images/images.qrc"/>
+  <include location="../../../../../../libqf/libqfqmlwidgets/images/flat/flat.qrc"/>
  </resources>
  <connections/>
 </ui>

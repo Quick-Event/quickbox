@@ -1,10 +1,10 @@
-#ifndef EMMACLIENT_H
-#define EMMACLIENT_H
+#pragma once
 
 #include "service.h"
 
 class QTimer;
 
+namespace Event {
 namespace services {
 
 class EmmaClientSettings : public ServiceSettings
@@ -53,6 +53,4 @@ private:
 	QTimer *m_exportTimer = nullptr;
 };
 
-} // namespace services
-
-#endif // EMMACLIENT_H
+}}

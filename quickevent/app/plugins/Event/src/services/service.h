@@ -1,5 +1,4 @@
-#ifndef SERVICES_SERVICE_H
-#define SERVICES_SERVICE_H
+#pragma once
 
 #include "../eventpluginglobal.h"
 
@@ -10,6 +9,7 @@
 namespace qf { namespace qmlwidgets { namespace framework { class DialogWidget; }}}
 namespace Event { class EventPlugin; }
 
+namespace Event {
 namespace services {
 
 class EVENTPLUGIN_DECL_EXPORT ServiceSettings : public QVariantMap
@@ -83,6 +83,4 @@ private:
 	static QList<Service*> m_services;
 };
 
-} // namespace services
-
-#endif // SERVICES_SERVICE_H
+}}

@@ -13,6 +13,7 @@
 namespace qff = qf::qmlwidgets::framework;
 namespace qfd = qf::qmlwidgets::dialogs;
 
+namespace Event {
 namespace services {
 
 //static const char *KEY_IS_RUNNING = "isRunning";
@@ -148,4 +149,4 @@ qf::qmlwidgets::framework::DialogWidget *Service::createDetailWidget()
 	return nullptr;
 }
 
-} // namespace services
+}}
