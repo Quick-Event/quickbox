@@ -153,6 +153,13 @@ void RunsPlugin::onInstalled()
 				m->addActionInto(a);
 			}
 		}
+		{
+			{
+				auto *a = new qfw::Action(tr("C&lubs"));
+				connect(a, &qfw::Action::triggered, this, &RunsPlugin::report_startListClubs);
+				m->addActionInto(a);
+			}
+		}
 	}
 			/*
 			m->addSeparatorInto();
@@ -1094,6 +1101,56 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 
 }
 
+qf::core::utils::TreeTable RunsPlugin::startListClubsTable()
+{
+	auto *event_plugin = eventPlugin();
+	int stage_id = selectedStageId();
+
+	QString qs1 = "SELECT COALESCE(substr(registration, 1, 3), '') AS clubAbbr FROM competitors GROUP BY clubAbbr ORDER BY clubAbbr";
+	QString qs = "SELECT t2.clubAbbr, clubs.name FROM ( " + qs1 + " ) AS t2"
+			+ " LEFT JOIN clubs ON t2.clubAbbr=clubs.abbr"
+			+ " ORDER BY t2.clubAbbr";
+	qf::core::model::SqlTableModel m;
+	m.setQuery(qs);
+	m.reload();
+	auto tt = m.toTreeTable();
+	tt.setValue("stageId", stage_id);
+	tt.setValue("event", event_plugin->eventConfig()->value("event"));
+	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
+	tt.columns().column(0).setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+	//console.info(tt.toString());
+
+	qfs::QueryBuilder qb;
+	qb.select2("competitors", "registration, startNumber")
+		.select("COALESCE(competitors.lastName, '') || ' '  || COALESCE(competitors.firstName, '') AS competitorName")
+		.select("lentcards.siid IS NOT NULL OR runs.cardLent AS cardLent")
+		.select2("classes", "name")
+		.select2("runs", "siId, startTimeMs")
+		.from("competitors")
+		.joinRestricted("competitors.id", "runs.competitorId", "runs.stageId={{stage_id}} AND runs.isRunning", "INNER JOIN")
+		.joinRestricted("runs.siid", "lentcards.siid", "NOT lentcards.ignored")
+		.join("competitors.classId", "classes.id")
+		.where("COALESCE(substr(competitors.registration, 1, 3), '')='{{club_abbr}}'")
+		.orderBy("classes.name, runs.startTimeMs, competitors.lastName");
+	QVariantMap qpm;
+	qpm["stage_id"] = stage_id;
+	qf::core::model::SqlTableModel m2;
+	m2.setQueryBuilder(qb);
+	m2.setQueryParameters(qpm);
+	for(int i=0; i<tt.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		QString club_abbr = tt_row.value("clubAbbr").toString();
+		//console.debug("club_abbr:", club_abbr);
+		qpm["club_abbr"] = club_abbr;
+		m2.setQueryParameters(qpm);
+		m2.reload();
+		//console.info(reportModel.effectiveQuery());
+		auto tt2 = m2.toTreeTable();
+		tt_row.appendTable(tt2);
+	}
+	return tt;
+}
+
 void RunsPlugin::report_startListClasses()
 {
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
@@ -1113,6 +1170,31 @@ void RunsPlugin::report_startListClasses()
 									, manifest()->homeDir() + "/reports/startList_classes.qml"
 									, tt.toVariant()
 									, tr("Start list by classes")
+									, "printStartList"
+									, props
+									);
+
+	}
+}
+
+void RunsPlugin::report_startListClubs()
+{
+	qff::MainWindow *fwk = qff::MainWindow::frameWork();
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("startListClubsReportOptions");
+	dlg.loadPersistentSettings();
+	dlg.setClassFilterVisible(false);
+	dlg.setStartListOptionsVisible(false);
+	dlg.setPageLayoutVisible(false);
+	if(dlg.exec()) {
+		auto tt = startListClubsTable();
+		auto opts = dlg.optionsMap();
+		QVariantMap props;
+		props["options"] = opts;
+		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+									, manifest()->homeDir() + "/reports/startList_clubs.qml"
+									, tt.toVariant()
+									, tr("Start list by clubs")
 									, "printStartList"
 									, props
 									);

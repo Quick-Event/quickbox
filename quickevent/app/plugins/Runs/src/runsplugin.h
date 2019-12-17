@@ -74,7 +74,9 @@ public:
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 private:
 	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, bool insert_vacants);
+	qf::core::utils::TreeTable startListClubsTable();
 	void report_startListClasses();
+	void report_startListClubs();
 private:
 	Q_SLOT void onInstalled();
 
