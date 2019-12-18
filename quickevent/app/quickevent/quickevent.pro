@@ -43,6 +43,7 @@ LIBS +=      \
     -lRunsQEPlugin \
     -lOrisQEPlugin \
     -lCardReaderQEPlugin \
+    -lReceiptsQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

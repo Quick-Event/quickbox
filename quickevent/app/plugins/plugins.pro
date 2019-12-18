@@ -9,6 +9,7 @@ SUBDIRS += \
     Runs \
     Oris \
     CardReader \
+    Receipts \
  	qml \
 
 

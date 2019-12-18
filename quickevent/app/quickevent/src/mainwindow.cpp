@@ -10,6 +10,7 @@
 #include <Runs/runsplugin.h>
 #include <Oris/orisplugin.h>
 #include <CardReader/cardreaderplugin.h>
+#include <Receipts/receiptsplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -104,6 +105,10 @@ void MainWindow::loadPlugins()
 	}
 	{
 		auto *plugin = new CardReader::CardReaderPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Receipts::ReceiptsPlugin(this);
 		registerPlugin(plugin);
 	}
 	Super::loadPlugins();
