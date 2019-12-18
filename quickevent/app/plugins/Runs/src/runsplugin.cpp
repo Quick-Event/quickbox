@@ -248,6 +248,12 @@ void RunsPlugin::onInstalled()
 				m_html->addActionInto(a);
 			}
 		}
+		auto *m_xml = m_stlist->addMenuInto("html", tr("&XML"));
+		{
+			auto *a = new qfw::Action(tr("&IOF-XML 3.0"));
+			connect(a, &qfw::Action::triggered, tpw->runsWidget(), &RunsWidget::export_startList_iofxml30_stage);
+			m_xml->addActionInto(a);
+		}
 	}
 	/*
 	var a_export = root.partWidget.menuBar.actionForPath("export", false);
@@ -1795,6 +1801,84 @@ void RunsPlugin::export_startListClubsHtml()
 			QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
 		}
 	}
+}
+
+bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_name)
+{
+	auto *event_plugin = eventPlugin();
+	QDateTime start00_datetime = event_plugin->stageStartDateTime(stage_id);
+	//console.info("start00_datetime:", start00_datetime, typeof start00_datetime)
+	auto start00_epoch_sec = start00_datetime.toSecsSinceEpoch();
+	Event::EventConfig *event_config = event_plugin->eventConfig();
+	bool last_handicap_stage = event_config->stageCount() == selectedStageId() && event_config->isHandicap();
+	bool print_vacants = !last_handicap_stage;
+	//console.debug("print_vacants", print_vacants);
+	auto tt1 = startListClassesTable("", print_vacants);
+
+	QVariantList xml_root{"StartList" ,
+		QVariantMap {
+			{"xmlns", "http://www.orienteering.org/datastandard/3.0"},
+			{"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"},
+			{"iofVersion", "3.0"},
+			{"creator", "QuickEvent"},
+			{"createTime", QDateTime::currentDateTimeUtc().toString(Qt::ISODate)}
+		}
+	};
+
+	//var event = tt1.value("event");
+	QVariantList xml_event{"Event"};
+	append_list(xml_event, QVariantList{"Name", event_config->eventName()});
+	append_list(xml_event, QVariantList{"StartTime", QVariantList{"Date", event_config->eventDateTime().toUTC().date().toString(Qt::ISODate)}, QVariantList{"Time", event_config->eventDateTime().time().toString(Qt::ISODate)}});
+	append_list(xml_event, QVariantList{"EndTime", QVariantList{"Date", event_config->eventDateTime().toUTC().date().toString(Qt::ISODate)}, QVariantList{"Time", event_config->eventDateTime().time().toString(Qt::ISODate)}});
+	QStringList director = event_config->director().split(' ', QString::SkipEmptyParts);
+	QStringList main_referee = event_config->mainReferee().split(' ', QString::SkipEmptyParts);
+	append_list(xml_event, QVariantList{"Official", QVariantMap{{"type", "Director"}}, QVariantList{"Person", QVariantList{"Name", QVariantList{"Family", director.value(0)}, QVariantList{"Given", director.value(1)}}}});
+	append_list(xml_event, QVariantList{"Official", QVariantMap{{"type", "MainReferee"}}, QVariantList{"Person", QVariantList{"Name", QVariantList{"Family", main_referee.value(0)}, QVariantList{"Given", main_referee.value(1)}}}});
+	append_list(xml_root, xml_event);
+
+	for(int i=0; i<tt1.rowCount(); i++) {
+		auto tt1_row = tt1.row(i);
+		QVariantList class_start{"ClassStart"};
+		append_list(class_start, QVariantList{"Class", QVariantList{"Id", tt1_row.value(QStringLiteral("classes.id"))}, QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name"))}});
+		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))}, QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))}});
+		append_list(class_start, QVariantList{"StartName", "Start1"});
+		qf::core::utils::TreeTable tt2 = tt1_row.table();
+		int pos = 0;
+		for(int j=0; j<tt2.rowCount(); j++) {
+			pos++;
+			auto tt2_row = tt2.row(j);
+			QVariantList xml_person{"PersonStart"};
+			QVariantList person{"Person"};
+			append_list(person, QVariantList{"Id", tt2_row.value(QStringLiteral("competitors.registration"))});
+			auto family = tt2_row.value(QStringLiteral("competitors.lastName"));
+			auto given = tt2_row.value(QStringLiteral("competitors.firstName"));
+			append_list(person, QVariantList{"Name", QVariantList{"Family", family}, QVariantList{"Given", given}});
+			QVariantList xml_start{"Start"};
+			int stime_msec = tt2_row.value("startTimeMs").toInt();
+			//console.info(start00_datetime.toJSON(), start00_datetime.getHours(), start00_epoch_sec / 60 / 60);
+			//console.info(family, given, start00_epoch_sec, stime_sec, stime_sec / 60);
+			QDateTime stime_datetime = QDateTime::fromMSecsSinceEpoch(start00_epoch_sec * 1000 + stime_msec);
+			//sdatetime.setTime(start00_epoch_sec);
+			//console.warn(stime_datetime.toJSON());
+			//stime_epoch_sec = start00_epoch_sec + stime_epoch_sec;
+			append_list(xml_start, QVariantList{"StartTime", stime_datetime.toUTC().toString(Qt::ISODateWithMs)});
+			append_list(xml_start, QVariantList{"ControlCard", tt2_row.value(QStringLiteral("runs.siId"))});
+			append_list(xml_person, person);
+			append_list(xml_person, xml_start);
+			append_list(class_start, xml_person);
+		}
+		append_list(xml_root, class_start);
+	}
+	qf::core::utils::HtmlUtils::FromXmlListOptions opts;
+	opts.setDocumentTitle(tr("E%1 IOF XML stage results").arg(tt1.value("stageId").toString()));
+	QString str = qf::core::utils::HtmlUtils::fromXmlList(xml_root, opts);
+	QFile f(file_name);
+	if(f.open(QFile::WriteOnly)) {
+		f.write(str.toUtf8());
+		qfInfo() << "exported:" << file_name;
+		return true;
+	}
+	return false;
 }
 
 }

@@ -44,17 +44,13 @@ namespace qfm = qf::core::model;
 static Event::EventPlugin *eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
-	return plugin;
+	return fwk->plugin<Event::EventPlugin *>();
 }
 
 static Runs::RunsPlugin *runsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad plugin");
-	return plugin;
+	return fwk->plugin<Runs::RunsPlugin *>();
 }
 
 RunsWidget::RunsWidget(QWidget *parent) :
@@ -803,5 +799,14 @@ void RunsWidget::emitSelectedStageIdChanged(int ix)
 int RunsWidget::selectedStageId()
 {
 	return m_cbxStage->currentData().toInt();
+}
+
+void RunsWidget::export_startList_iofxml30_stage()
+{
+	int stage_id = selectedStageId();
+	QString fn = getSaveFileName("startlist-iof-3.0.xml", stage_id);
+	if(fn.isEmpty())
+		return;
+	runsPlugin()->exportStartListStageIofXml30(stage_id, fn);
 }
 

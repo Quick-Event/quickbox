@@ -70,15 +70,18 @@ public:
 
 	Q_INVOKABLE QVariantMap printAwardsOptionsWithDialog(const QVariantMap &opts);
 
+	bool exportStartListStageIofXml30(int stage_id, const QString &file_name);
+
 	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
-private:
+
 	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, bool insert_vacants);
 	qf::core::utils::TreeTable startListClubsTable();
 	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
 	qf::core::utils::TreeTable startListClassesNStagesTable(int stages_count, const QString &where_expr);
 	qf::core::utils::TreeTable startListClubsNStagesTable(int stages_count);
+private:
 	void report_startListClasses();
 	void report_startListClubs();
 	void report_startListStarters();

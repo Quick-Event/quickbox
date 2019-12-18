@@ -3,6 +3,8 @@
 
 #include <quickevent/gui/partwidget.h>
 
+class RunsWidget;
+
 class ThisPartWidget : public quickevent::gui::PartWidget
 {
 	Q_OBJECT
@@ -11,7 +13,11 @@ private:
 public:
 	ThisPartWidget(QWidget *parent = nullptr);
 
+	RunsWidget* runsWidget() {return m_runsWidget;}
+
 	Q_SIGNAL void selectedStageIdChanged(int stage_id);
+private:
+	RunsWidget* m_runsWidget = nullptr;
 };
 
 #endif // THISPARTWIDGET_H

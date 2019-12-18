@@ -11,10 +11,10 @@ ThisPartWidget::ThisPartWidget(QWidget *parent)
 	setPersistentSettingsId("Runs");
 	setTitle(tr("&Runs"));
 
-	RunsWidget *w = new RunsWidget();
-	centralFrame()->addWidget(w);
-	w->settleDownInPartWidget(this);
+	m_runsWidget = new RunsWidget();
+	centralFrame()->addWidget(m_runsWidget);
+	m_runsWidget->settleDownInPartWidget(this);
 
-	connect(w, &RunsWidget::selectedStageIdChanged, this, &ThisPartWidget::selectedStageIdChanged);
+	connect(m_runsWidget, &RunsWidget::selectedStageIdChanged, this, &ThisPartWidget::selectedStageIdChanged);
 }
 

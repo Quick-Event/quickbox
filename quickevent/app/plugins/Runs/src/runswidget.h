@@ -47,6 +47,13 @@ public:
 	Q_SIGNAL void selectedStageIdChanged(int stage_id);
 
 	//void editStartList(int class_id, int competitor_id);
+public:
+	void export_startList_iofxml30_stage();
+
+	void export_results_iofxml30_stage();
+	void export_results_csos_stage();
+	void export_results_csos_overall();
+
 private slots:
 	void on_btDraw_clicked();
 	void on_btDrawRemove_clicked();
@@ -69,9 +76,6 @@ private:
 	void import_start_times_ob2000();
 
 	QString getSaveFileName(const QString &file_name, int stage_id);
-	void export_results_iofxml30_stage();
-	void export_results_csos_stage();
-	void export_results_csos_overall();
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber,
 		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,
