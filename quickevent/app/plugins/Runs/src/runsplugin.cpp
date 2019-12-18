@@ -30,9 +30,11 @@
 #include <qf/core/utils/treetable.h>
 #include <qf/core/model/sqltablemodel.h>
 
+#include <QDesktopServices>
 #include <QFile>
 #include <QInputDialog>
-#include <QQmlEngine>
+#include <QDir>
+#include <QUrl>
 
 #include <math.h>
 
@@ -1628,14 +1630,171 @@ void RunsPlugin::report_nStagesAwards()
 								);
 }
 
+static void append_list(QVariantList &lst, const QVariantList &new_lst)
+{
+	lst.insert(lst.count(), new_lst);
+}
+
 void RunsPlugin::export_startListClassesHtml()
 {
-
+	qf::core::utils::TreeTable tt1 = startListClassesTable("", false);
+	QVariantList body{QStringLiteral("body")};
+	QString h1_str = "{{documentTitle}}";
+	QVariantMap event = tt1.value("event").toMap();
+	if(event.value("stageCount").toInt() > 1)
+		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
+	append_list(body, QVariantList{"h1", h1_str});
+	append_list(body, QVariantList{"h2", event.value("name")});
+	append_list(body, QVariantList{"h3", event.value("place")});
+	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
+	QVariantList div1{"div"};
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		append_list(div1,
+					QVariantList{
+						"a",
+						QVariantMap{{"href", "#class_" + tt1_row.value("classes.name").toString()}},
+						tt1_row.value("classes.name"),
+						"&nbsp;"
+					});
+	}
+	append_list(body, div1);
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		div1 = QVariantList{
+				"h2",
+				QVariantList{
+					"a",
+					QVariantMap{{"name", "class_" + tt1_row.value(QStringLiteral("classes.name")).toString()}},
+					tt1_row.value("classes.name")
+				}
+			};
+		append_list(body, div1);
+		div1 = QVariantList{
+				"h3",
+				tr("length:"),
+				tt1_row.value("courses.length"), " ", tr("climb:"), tt1_row.value("courses.climb")
+			};
+		append_list(body, div1);
+		QVariantList table{"table"};
+		qf::core::utils::TreeTable tt2 = tt1_row.table();
+		QVariantList trr{"tr",
+				  QVariantList{"th", tr("Start")},
+				  QVariantList{"th", tr("Name")},
+				  QVariantList{"th", tr("Registration")},
+				  QVariantList{"th", tr("SI")}
+				};
+		append_list(table, trr);
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			QVariantList trr{"tr"};
+			if(j % 2)
+				trr << QVariantMap{{"class", "odd"}};
+			append_list(trr, QVariantList{"td", quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString()});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("runs.siId"))});
+			append_list(table, trr);
+		}
+		append_list(body, table);
+	}
+	QString file_name = QDir::tempPath() + "/quickevent/e" + tt1.value("stageId").toString();
+	if(QDir().mkpath(file_name)) {
+		QString default_file_name = "startlist-classes.html";
+		file_name += "/" + default_file_name;
+		QVariantMap options;
+		qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+		opts.setDocumentTitle(tr("Start list by classes"));
+		QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(str.toUtf8());
+			f.close();
+			qfInfo() << "exported:" << file_name;
+			QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
+		}
+	}
 }
 
 void RunsPlugin::export_startListClubsHtml()
 {
-
+	qf::core::utils::TreeTable tt1 = startListClubsTable();
+	QVariantList body{QStringLiteral("body")};
+	QString h1_str = "{{documentTitle}}";
+	QVariantMap event = tt1.value("event").toMap();
+	if(event.value("stageCount").toInt() > 1)
+		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
+	append_list(body, QVariantList{"h1", h1_str});
+	append_list(body, QVariantList{"h2", event.value("name")});
+	append_list(body, QVariantList{"h3", event.value("place")});
+	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
+	QVariantList div1{"div"};
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		append_list(div1,
+					QVariantList{
+						"a",
+						QVariantMap{{"href", "#club_" + tt1_row.value("clubAbbr").toString()}},
+						tt1_row.value("clubAbbr"),
+						"&nbsp;"
+					});
+	}
+	append_list(body, div1);
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		div1 = QVariantList{
+				"h2",
+				QVariantList{
+					"a",
+					QVariantMap{{"name", "club_" + tt1_row.value(QStringLiteral("clubAbbr")).toString()}},
+					tt1_row.value("clubAbbr")
+				}
+			};
+		append_list(body, div1);
+		div1 = QVariantList{
+				"h3", tt1_row.value("name")
+			};
+		append_list(body, div1);
+		QVariantList table{"table"};
+		qf::core::utils::TreeTable tt2 = tt1_row.table();
+		QVariantList trr{"tr",
+				QVariantList{"th", tr("Start")},
+				QVariantList{"th", tr("Class")},
+				QVariantList{"th", tr("Name")},
+				QVariantList{"th", tr("Registration")},
+				QVariantList{"th", tr("SI")}
+			};
+		append_list(table, trr);
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			QVariantList trr{"tr"};
+			if(j % 2)
+				trr << QVariantMap{{"class", "odd"}};
+			append_list(trr, QVariantList{"td", quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString()});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("classes.name"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("runs.siId"))});
+			append_list(table, trr);
+		}
+		append_list(body, table);
+	}
+	QString file_name = QDir::tempPath() + "/quickevent/e" + tt1.value("stageId").toString();
+	if(QDir().mkpath(file_name)) {
+		QString default_file_name = "startlist-clubs.html";
+		file_name += "/" + default_file_name;
+		QVariantMap options;
+		qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+		opts.setDocumentTitle(tr("Start list by clubs"));
+		QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(str.toUtf8());
+			f.close();
+			qfInfo() << "exported:" << file_name;
+			QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
+		}
+	}
 }
 
 }

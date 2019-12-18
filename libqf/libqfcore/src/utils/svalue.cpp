@@ -30,11 +30,11 @@ SValue::SValue(const QVariant &v)
 		setValue(v);
 	}
 }
-
+/*
 SValue::~SValue()
 {
 }
-
+*/
 static QVariant value_to_variant(const QVariant &v)
 {
 	//qfLogFuncFrame() << v.typeName();// << "path:" << path.join("/");

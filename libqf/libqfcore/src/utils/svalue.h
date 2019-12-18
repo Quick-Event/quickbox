@@ -19,7 +19,7 @@ public:
 public:
 	SValue();
 	SValue(const QVariant &v);
-	virtual ~SValue();
+	//virtual ~SValue();
 private:
 	struct Data : QSharedData {
 		QVariant value;
