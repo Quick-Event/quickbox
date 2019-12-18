@@ -7,6 +7,7 @@ SUBDIRS += \
     Classes \
     Competitors \
     Runs \
+    Oris \
  	qml \
 
 

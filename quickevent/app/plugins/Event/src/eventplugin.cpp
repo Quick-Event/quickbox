@@ -292,11 +292,11 @@ void EventPlugin::onInstalled()
 		this->m_actEditEvent->setEnabled(!event_name.isEmpty());
 	});
 
-	m_actExportEvent = new qfw::Action(tr("E&xport event"));
+	m_actExportEvent = new qfw::Action(tr("Event (*.qbe)"));
 	m_actExportEvent->setEnabled(false);
 	connect(m_actExportEvent, &QAction::triggered, this, &EventPlugin::exportEvent);
 
-	m_actImportEvent = new qfw::Action(tr("I&mport event"));
+	m_actImportEvent = new qfw::Action(tr("Event (*.qbe)"));
 	m_actImportEvent->setEnabled(false);
 	connect(m_actImportEvent, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
 
@@ -318,7 +318,12 @@ void EventPlugin::onInstalled()
 	m_actEvent->addActionInto(m_actOpenEvent);
 	m_actEvent->addActionInto(m_actEditEvent);
 	m_actEvent->addActionInto(m_actExportEvent);
-	m_actEvent->addActionInto(m_actImportEvent);
+
+	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
+	act_import->addActionInto(m_actImportEvent);
+
+	qfw::Action *act_export = fwk->menuBar()->actionForPath("file/export");
+	act_export->addActionInto(m_actExportEvent);
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
@@ -836,7 +841,7 @@ bool EventPlugin::closeEvent()
 	clearStageDataCache();
 	m_classNameCache.clear();
 	setEventName(QString());
-	QF_SAFE_DELETE(m_eventConfig);
+	QF_SAFE_DELETE(m_eventConfig)
 	//emit eventOpened(eventName()); //comment it till QE can load event with invalid name
 	return true;
 }

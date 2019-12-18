@@ -805,6 +805,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 					.from("runlaps")
 					.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
 					.where("runlaps.code<" QF_IARG(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE) )
+					.where("runlaps.code>=100") // skip START and FINISH codes
 					//.where("runlaps.position >= 1")
 					.orderBy("runlaps.position");
 

@@ -1,1 +1,1 @@
-#include "../../src/Competitors/competitordocument.h"
+#include "../../Competitors/src/competitordocument.h"

@@ -42,6 +42,10 @@ void CorePlugin::onInstalled()
 
 	auto *a_file_import = a_file->addMenuInto("import", tr("&Import"));
 	a_file->addActionInto(a_file_import);
+
+	auto *a_file_export = a_file->addMenuInto("export", tr("&Export"));
+	a_file->addActionInto(a_file_export);
+
 	a_file->addSeparatorInto();
 	{
 		auto *a_quit = new qfw::Action(tr("&Quit"));
@@ -49,6 +53,8 @@ void CorePlugin::onInstalled()
 		connect(a_quit, &qfw::Action::triggered, QCoreApplication::instance(), &QCoreApplication::quit);
 		a_file->addActionInto(a_quit);
 	}
+
+	/*auto *a_file_export = */a_file->addMenuInto("export", tr("&Export"));
 
 	auto *a_tools = fwk->menuBar()->actionForPath("tools", true);
 	a_tools->setText(tr("&Tools"));

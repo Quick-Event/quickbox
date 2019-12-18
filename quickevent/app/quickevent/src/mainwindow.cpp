@@ -8,6 +8,7 @@
 #include <Classes/classesplugin.h>
 #include <Competitors/competitorsplugin.h>
 #include <Runs/runsplugin.h>
+#include <Oris/orisplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -94,6 +95,10 @@ void MainWindow::loadPlugins()
 	}
 	{
 		auto *plugin = new Runs::RunsPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Oris::OrisPlugin(this);
 		registerPlugin(plugin);
 	}
 	Super::loadPlugins();
