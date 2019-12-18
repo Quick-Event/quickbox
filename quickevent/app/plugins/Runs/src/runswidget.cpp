@@ -14,6 +14,7 @@
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
+#include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
 #include <qf/qmlwidgets/menubar.h>
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/toolbar.h>
@@ -142,35 +143,151 @@ void RunsWidget::reload()
 
 void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 {
+	qfLogFuncFrame();
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
 	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
-	qfw::Action *a_print = part_widget->menuBar()->actionForPath("print", true);
+	Runs::RunsPlugin *runs_plugin = runsPlugin();
+
+	auto *a_print = part_widget->menuBar()->actionForPath("print", true);
 	a_print->setText(tr("&Print"));
+	{
+		auto *m = a_print->addMenuInto("startList", tr("&Start list"));
+		{
+			{
+				auto *a = new qfw::Action(tr("&Classes"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClasses);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("C&lubs"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClubs);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("&Starters"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListStarters);
+				m->addActionInto(a);
+			}
+			m->addSeparatorInto();
+			{
+				auto *a = new qfw::Action(tr("Classes n stages"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClassesNStages);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("Clubs n stages"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_startListClubsNStages);
+				m->addActionInto(a);
+			}
+		}
+	}
+	{
+		auto *m = a_print->addMenuInto("results", tr("&Results"));
+		{
+			{
+				auto *a = new qfw::Action(tr("&Current stage"));
+				a->setShortcut("Ctrl+P");
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsClasses);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("Current stage for speaker"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsForSpeaker);
+				m->addActionInto(a);
+			}
+			m->addSeparatorInto();
+			{
+				auto *a = new qfw::Action(tr("Current stage awards"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsAwards);
+				m->addActionInto(a);
+			}
+			m->addSeparatorInto();
+			{
+				auto *a = new qfw::Action(tr("&After n stages"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsNStages);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("&After n stages for speaker"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_resultsNStagesSpeaker);
+				m->addActionInto(a);
+			}
+			{
+				auto *a = new qfw::Action(tr("N stages awards"));
+				connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::report_nStagesAwards);
+				m->addActionInto(a);
+			}
+		}
+	}
+	a_print->addSeparatorInto();
+	{
+		auto *a = new qfw::Action(tr("&Competitors with rented cards"));
+		connect(a, &qfw::Action::triggered, [this]() {
+			qff::MainWindow *fwk = qff::MainWindow::frameWork();
+			QVariantMap props;
+			props["stageId"] = selectedStageId();
+			qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
+										, runsPlugin()->manifest()->homeDir() + "/reports/competitorsWithCardRent.qml"
+										, QVariant()
+										, tr("Competitors with rented cards")
+										, "printReport"
+										, props
+										);
+		});
+		a_print->addActionInto(a);
+	}
 
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
 	a_import->setText(tr("&Import"));
-
-	qfw::Action *a_export = part_widget->menuBar()->actionForPath("export", true);
-	a_export->setText(tr("E&xport"));
 
 	qfw::Action *a_import_start_times = a_import->addMenuInto("startTimes", tr("Start times"));
 	qfw::Action *a_import_start_times_ob2000 = new qfw::Action("ob2000", tr("OB 2000"));
 	a_import_start_times->addActionInto(a_import_start_times_ob2000);
 	connect(a_import_start_times_ob2000, &qfw::Action::triggered, this, &RunsWidget::import_start_times_ob2000);
 
+	auto *a_export = part_widget->menuBar()->actionForPath("export", true);
+	a_export->setText(tr("E&xport"));
+	auto *m_stlist = a_export->addMenuInto("startList", tr("&Start list"));
+	auto *m_export_stlist_html = m_stlist->addMenuInto("html", tr("&HTML"));
+	{
+		{
+			auto *a = new qfw::Action(tr("&Classes"));
+			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_startListClassesHtml);
+			m_export_stlist_html->addActionInto(a);
+		}
+		{
+			auto *a = new qfw::Action(tr("C&lubs"));
+			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_startListClubsHtml);
+			m_export_stlist_html->addActionInto(a);
+		}
+	}
+	auto *m_export_stlist_xml = m_stlist->addMenuInto("xml", tr("&XML"));
+	{
+		{
+			auto *a = new qfw::Action(tr("&IOF-XML 3.0"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_startList_iofxml30_stage);
+			m_export_stlist_xml->addActionInto(a);
+		}
+	}
 
 	qfw::Action *a_export_results = a_export->addMenuInto("results", tr("Results"));
-	a_export_results->addActionInto("iofxml23", tr("IOF XML &2.3"));
-
-	qfw::Action *a_export_results_iofxml_30 = a_export_results->addActionInto("iofxml30", tr("IOF XML &3.0"));
-	connect(a_export_results_iofxml_30, &qfw::Action::triggered, this, &RunsWidget::export_results_iofxml30_stage);
-
-	qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));
-	qfw::Action *a_export_results_csos_stage = a_export_results_csos->addActionInto("stage", tr("Current stage"));
-	connect(a_export_results_csos_stage, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_stage);
-	qfw::Action *a_export_results_csos_overall = a_export_results_csos->addActionInto("overall", tr("Overall"));
-	connect(a_export_results_csos_overall, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_overall);
+	{
+		//a_export_results->addActionInto("iofxml23", tr("IOF XML &2.3"));
+		{
+			qfw::Action *a = a_export_results->addActionInto("iofxml30", tr("IOF XML &3.0"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_iofxml30_stage);
+		}
+		qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));
+		{
+			qfw::Action *a = a_export_results_csos->addActionInto("stage", tr("Current stage"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_stage);
+		}
+		{
+			qfw::Action *a = a_export_results_csos->addActionInto("overall", tr("Overall"));
+			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_csos_overall);
+		}
+	}
 
 	qfw::ToolBar *main_tb = part_widget->toolBar("main", true);
 	//main_tb->addAction(m_actCommOpen);

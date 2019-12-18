@@ -81,7 +81,7 @@ public:
 	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
 	qf::core::utils::TreeTable startListClassesNStagesTable(int stages_count, const QString &where_expr);
 	qf::core::utils::TreeTable startListClubsNStagesTable(int stages_count);
-private:
+public:
 	void report_startListClasses();
 	void report_startListClubs();
 	void report_startListStarters();

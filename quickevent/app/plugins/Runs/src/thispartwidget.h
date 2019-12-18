@@ -13,11 +13,11 @@ private:
 public:
 	ThisPartWidget(QWidget *parent = nullptr);
 
-	RunsWidget* runsWidget() {return m_runsWidget;}
+	//RunsWidget* runsWidget() {return m_runsWidget;}
 
 	Q_SIGNAL void selectedStageIdChanged(int stage_id);
 private:
-	RunsWidget* m_runsWidget = nullptr;
+	//RunsWidget* m_runsWidget = nullptr;
 };
 
 #endif // THISPARTWIDGET_H
