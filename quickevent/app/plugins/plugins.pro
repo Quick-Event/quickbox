@@ -8,6 +8,7 @@ SUBDIRS += \
     Competitors \
     Runs \
     Oris \
+    CardReader \
  	qml \
 
 

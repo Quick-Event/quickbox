@@ -42,6 +42,7 @@ LIBS +=      \
     -lCompetitorsQEPlugin \
     -lRunsQEPlugin \
     -lOrisQEPlugin \
+    -lCardReaderQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

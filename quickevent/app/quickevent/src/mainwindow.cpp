@@ -9,6 +9,7 @@
 #include <Competitors/competitorsplugin.h>
 #include <Runs/runsplugin.h>
 #include <Oris/orisplugin.h>
+#include <CardReader/cardreaderplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -99,6 +100,10 @@ void MainWindow::loadPlugins()
 	}
 	{
 		auto *plugin = new Oris::OrisPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new CardReader::CardReaderPlugin(this);
 		registerPlugin(plugin);
 	}
 	Super::loadPlugins();
