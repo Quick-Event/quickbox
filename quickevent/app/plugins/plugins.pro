@@ -10,6 +10,7 @@ SUBDIRS += \
     Oris \
     CardReader \
     Receipts \
+    Relays \
  	qml \
 
 

@@ -44,6 +44,7 @@ LIBS +=      \
     -lOrisQEPlugin \
     -lCardReaderQEPlugin \
     -lReceiptsQEPlugin \
+    -lRelaysQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \
