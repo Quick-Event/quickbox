@@ -1,4 +1,5 @@
 import QtQml 2.0
+import qf.core 1.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
 import "qrc:/qf/core/qml/js/timeext.js" as TimeExt

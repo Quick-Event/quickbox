@@ -1,4 +1,5 @@
 #include "application.h"
+#include "appclioptions.h"
 
 #include <qf/qmlwidgets/reports/processor/reportprocessor.h>
 #include <qf/qmlwidgets/style.h>
@@ -16,6 +17,12 @@ Application::Application(int &argc, char **argv, AppCliOptions *cli_opts)
 	: Super(argc, argv)
 	, m_cliOptions(cli_opts)
 {
+	if(cli_opts->appFontScale() != 1.) {
+		QFont app_font = font();
+		app_font.setPointSizeF(app_font.pointSizeF() * cli_opts->appFontScale());
+		setFont(app_font);
+	}
+
 	auto *style = qf::qmlwidgets::Style::instance();
 	style->setIconPath(":/qf/qmlwidgets/images/flat");
 

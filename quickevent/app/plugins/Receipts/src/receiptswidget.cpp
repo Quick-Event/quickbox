@@ -252,12 +252,18 @@ void ReceiptsWidget::on_btPrintNew_clicked()
 void ReceiptsWidget::onCustomContextMenuRequest(const QPoint &pos)
 {
 	qfLogFuncFrame();
-	QAction a_print_card(tr("Print receipts for selected rows"), nullptr);
+	QAction a_print_receipts(tr("Print receipts for selected rows"), nullptr);
+	QAction a_show_receipt(tr("Show receipt"), nullptr);
 	QList<QAction*> lst;
-	lst << &a_print_card;
+	lst << &a_print_receipts;
+	lst << &a_show_receipt;
 	QAction *a = QMenu::exec(lst, ui->tblCards->viewport()->mapToGlobal(pos));
-	if(a == &a_print_card) {
+	if(a == &a_print_receipts) {
 		printSelectedCards();
+	}
+	else if(a == &a_show_receipt) {
+		int card_id = ui->tblCards->selectedRow().value("cards.id").toInt();
+		receiptsPlugin()->previewReceipt(card_id);
 	}
 }
 

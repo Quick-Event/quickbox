@@ -16,7 +16,7 @@ LIBS += \
 include (src/src.pri)
 
 RESOURCES += \
-#     Runs.qrc
+     CardReader.qrc
 
 OTHER_FILES += \
 	$$PWD/qml/reports/* \
