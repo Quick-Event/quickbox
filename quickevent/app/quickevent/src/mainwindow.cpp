@@ -12,6 +12,7 @@
 #include <CardReader/cardreaderplugin.h>
 #include <Receipts/receiptsplugin.h>
 #include <Relays/relaysplugin.h>
+#include <Speaker/speakerplugin.h>
 
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
@@ -114,6 +115,10 @@ void MainWindow::loadPlugins()
 	}
 	{
 		auto *plugin = new Relays::RelaysPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Speaker::SpeakerPlugin(this);
 		registerPlugin(plugin);
 	}
 	Super::loadPlugins();

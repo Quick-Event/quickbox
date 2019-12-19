@@ -45,6 +45,7 @@ LIBS +=      \
     -lCardReaderQEPlugin \
     -lReceiptsQEPlugin \
     -lRelaysQEPlugin \
+    -lSpeakerQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \

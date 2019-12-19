@@ -11,6 +11,7 @@ SUBDIRS += \
     CardReader \
     Receipts \
     Relays \
+    Speaker \
  	qml \
 
 
