@@ -32,26 +32,19 @@ namespace qfm = qf::core::model;
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin*>(fwk->plugin("Event"));
-	QF_ASSERT_EX(plugin != nullptr, "Bad event plugin!");
-	return plugin;
+	return fwk->plugin<Event::EventPlugin*>();
 }
 
 static Runs::RunsPlugin *runsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Runs::RunsPlugin *>(fwk->plugin("Runs"));
-	QF_ASSERT(plugin != nullptr, "Runs plugin not installed!", return nullptr);
-	return plugin;
+	return fwk->plugin<Runs::RunsPlugin *>();
 }
 
 static Competitors::CompetitorsPlugin *competitorsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Competitors::CompetitorsPlugin *>(fwk->plugin("Competitors"));
-	if(plugin == nullptr)
-		QF_EXCEPTION("Competitors plugin not installed!");
-	return plugin;
+	return fwk->plugin<Competitors::CompetitorsPlugin *>();
 }
 
 RunsTableWidget::RunsTableWidget(QWidget *parent) :
@@ -125,7 +118,7 @@ void RunsTableWidget::clear()
 
 void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, const QString &sort_column, int select_competitor_id)
 {
-	qfLogFuncFrame();
+	qfLogFuncFrame() << "class id:" << class_id;
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	{
 		int class_start_time_min = 0;
@@ -189,15 +182,27 @@ void RunsTableWidget::reload(int stage_id, int class_id, bool show_offrace, cons
 	m_runsModel->setQueryBuilder(qb, false);
 	m_runsModel->reload();
 
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_relays_name, !is_relays);
-	ui->tblRuns->horizontalHeader()->setSectionHidden(RunsTableModel::col_runs_leg, !is_relays);
-	ui->tblRuns->horizontalHeader()->reset(); // revealed columns are not sometimes visible without reset(), atleast in 5.5.1
+	QHeaderView *hh = ui->tblRuns->horizontalHeader();
+	hh->setSectionHidden(RunsTableModel::col_runs_isRunning, !show_offrace);
+	if(show_offrace) {
+		// section might be hidden from previous persistent settings
+		if(hh->sectionSize(RunsTableModel::col_runs_isRunning) < 5)
+			hh->resizeSection(RunsTableModel::col_runs_isRunning, 50);
+	}
+	hh->setSectionHidden(RunsTableModel::col_relays_name, !is_relays);
+	hh->setSectionHidden(RunsTableModel::col_runs_leg, !is_relays);
+	if(is_relays) {
+		if(hh->sectionSize(RunsTableModel::col_relays_name) < 5)
+			hh->resizeSection(RunsTableModel::col_relays_name, 50);
+		if(hh->sectionSize(RunsTableModel::col_runs_leg) < 5)
+			hh->resizeSection(RunsTableModel::col_runs_leg, 50);
+	}
+	hh->reset(); // revealed columns are not sometimes visible without reset(), atleast in 5.5.1
 
 	if(!sort_column.isEmpty()) {
 		int sort_col_ix = m_runsModel->columnIndex(sort_column);
 		if(sort_col_ix >= 0) {
-			QHeaderView *hdrv = ui->tblRuns->horizontalHeader();
+			QHeaderView *hdrv = hh;
 			hdrv->setSortIndicator(sort_col_ix, Qt::AscendingOrder);
 			if(select_competitor_id > 0) {
 				for (int i = 0; i < m_runsModel->rowCount(); ++i) {

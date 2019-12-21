@@ -79,7 +79,7 @@ private:
 private:
 	enum class DrawMethod : int {Invalid = 0, RandomNumber,
 		EquidistantClubs, RandomizedEquidistantClubs, StageReverseOrder, Handicap,
-		KeepOrder, Relays, GroupedC, GroupedCB, GroupedRanking};
+		KeepOrder, RelaysFirstLeg, GroupedC, GroupedCB, GroupedRanking};
 
 	Ui::RunsWidget *ui;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;

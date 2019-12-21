@@ -648,7 +648,8 @@ void EventPlugin::connectToSqlServer()
 				//qfInfo() << conn_w->serverPassword();
 				db.setPassword(conn_w->serverPassword());
 				db.setDatabaseName("quickevent");
-				qfInfo().nospace() << "connecting to: " << db.userName() << "@" << db.hostName() << ":" << db.port();
+				qfInfo().nospace() << "connecting to database: " << db.databaseName()
+								   << " as " << db.userName() << "@" << db.hostName() << ":" << db.port();
 				connect_ok = db.open();
 				if(connect_ok) {
 					bool ok = connect(db.driver(), SIGNAL(notification(QString, QSqlDriver::NotificationSource,QVariant)), this, SLOT(onDbEvent(QString,QSqlDriver::NotificationSource, QVariant)));

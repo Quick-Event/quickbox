@@ -70,7 +70,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 			return;
 		bool is_relays = eventPlugin()->eventConfig()->isRelays();
 		if(is_relays) {
-			ui->cbxDrawMethod->addItem(tr("Relays first leg"), static_cast<int>(DrawMethod::Relays));
+			ui->cbxDrawMethod->addItem(tr("Relays first leg"), static_cast<int>(DrawMethod::RelaysFirstLeg));
 		}
 		else {
 			ui->cbxDrawMethod->addItem(tr("Randomized equidistant clubs"), static_cast<int>(DrawMethod::RandomizedEquidistantClubs));
@@ -99,6 +99,7 @@ void RunsWidget::lazyInit()
 
 void RunsWidget::reset(int class_id)
 {
+	qfLogFuncFrame();
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(!eventPlugin()->isEventOpen()) {
 		ui->wRunsTableWidget->clear();
@@ -659,7 +660,7 @@ void RunsWidget::on_btDraw_clicked()
 			else if(draw_method == DrawMethod::KeepOrder) {
 				runners_draw_ids = runsForClass(stage_id, class_id, QString(), "runs.startTimeMs");
 			}
-			else if(draw_method == DrawMethod::Relays) {
+			else if(draw_method == DrawMethod::RelaysFirstLeg) {
 				runners_draw_ids = runsForClass(stage_id, class_id, "runs.leg=1");
 			}
 			else if(draw_method == DrawMethod::GroupedC) {
