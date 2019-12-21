@@ -118,15 +118,24 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		}
 	}
 	else if(column_ix == col_runs_timeMs) {
-		QVariant start_ms = value(row_ix, col_runs_startTimeMs);
-		if(!start_ms.isNull()) {
-			int finish_ms = val.toInt() + start_ms.toInt();
-			if(finish_ms > 0) {
-				Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
+		int rt = val.toInt();
+		if(rt == 0) {
+			/// run time cannot be 0
+			Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
+			return Super::setValue(row_ix, column_ix, QVariant());
+		}
+		else {
+			QVariant start_ms = value(row_ix, col_runs_startTimeMs);
+			if(!start_ms.isNull()) {
+				int finish_ms = val.toInt() + start_ms.toInt();
+				if(finish_ms > 0) {
+					Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
+				}
+				else {
+					Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
+				}
 			}
-			else {
-				Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
-			}
+			return Super::setValue(row_ix, column_ix, val);
 		}
 	}
 	else if(column_ix == col_runs_startTimeMs) {
