@@ -43,6 +43,8 @@
 #include <QPushButton>
 #include <QToolButton>
 #include <QDirIterator>
+#include <QJsonParseError>
+#include <QJsonDocument>
 
 namespace qfw = qf::qmlwidgets;
 namespace qff = qf::qmlwidgets::framework;

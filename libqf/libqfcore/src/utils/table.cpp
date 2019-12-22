@@ -1,6 +1,5 @@
 #include "table.h"
 #include "csvreader.h"
-#include "svalue.h"
 #include "treetable.h"
 
 #include "../core/log.h"
@@ -1375,12 +1374,13 @@ QVariantMap Table::toJson(const QString &col_names) const
 	return obj_m;
 }
 
-SValue Table::toTreeTable(const QString &col_names, const QString &table_name) const
+TreeTable Table::toTreeTable(const QString &col_names, const QString &table_name) const
 {
 	TreeTable ret(table_name);
 	QList<int> ixs;
 	if(col_names.isEmpty() || col_names == "*") {
-		for(int i=0; i<fields().count(); i++) ixs.append(i);
+		for(int i=0; i<fields().count(); i++)
+			ixs.append(i);
 	}
 	else {
 		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
@@ -1399,41 +1399,34 @@ SValue Table::toTreeTable(const QString &col_names, const QString &table_name) c
 
 	/// export data
 	{
-		SValue srows;
-		int ix = 0;
 		for(int j=0; j<rowCount(); j++) {
+			ret.appendRow();
 			TableRow r = row(j);
-			QVariantList row_lst;
 			for(int i=0; i<ixs.count(); i++) {
-				row_lst << r.value(ixs[i]);
+				ret.setValue(j, i, r.value(ixs[i]));
 			}
-			srows[ix++] = row_lst;
 		}
-		ret[TreeTable::KEY_ROWS] = srows.value();
 	}
 	return ret;
 }
 
-bool Table::fromTreeTable(const SValue& tree_table)
+bool Table::fromTreeTable(const TreeTable &tree_table)
 {
 	qfLogFuncFrame();
 	bool ret = true;
-	TreeTable tt(tree_table);
 	{
-		TreeTableColumns cols = tt.columns();
-		for(int i=0; i<cols.count(); i++) {
-			TreeTableColumn col = cols.column(i);
+		for(int i=0; i<columnCount(); i++) {
 			//qfDebug() << "\tfield:" << s;
-			Field fld(col.name(), col.type());
+			Field fld(tree_table.columnName(i), tree_table.columnType(i));
 			//fld.setCanUpdate(true);
 			fieldsRef().append(fld);
 		}
 	}
-	for(int i=0; i<tt.rowCount(); i++) {
-		TreeTableRow tt_row = tt.row(i);
+	for(int i=0; i<tree_table.rowCount(); i++) {
 		TableRow row(tableProperties());
+		TreeTableRow rr = tree_table.row(i);
 		for(int j=0; j<columnCount(); j++) {
-			row.setValue(j, tt_row.value(j));
+			row.setValue(j, rr.value(j));
 		}
 		row.clearOrigValues();
 		d->rows.append(row);

@@ -112,7 +112,7 @@ QWidget *TableView::cornerWidget() const
 	foreach(QAbstractButton *bt, findChildren<QAbstractButton*>(QString(), Qt::FindDirectChildrenOnly)) {
 		if(bt->metaObject()->className() == QString("QTableCornerButton")) { /// src/gui/itemviews/qtableview.cpp:103
 			return bt;
-		};
+		}
 	}
 	return nullptr;
 }
@@ -848,10 +848,9 @@ qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, con
 		QVariantMap col = exported_columns[i].toMap();
 		QString cap = col.value("caption").toString();
 		int ix = col.value("index").toInt();
-		qfu::TreeTableColumn tt_col;
 		if(col.value("origin") == QLatin1String("table")) {
 			QVariant::Type t = table.field(ix).type();
-			tt_col = ret.appendColumn(table.field(ix).name(), t, cap);
+			ret.appendColumn(table.field(ix).name(), t, cap);
 		}
 		else {
 			QVariant::Type t;
@@ -863,16 +862,15 @@ qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, con
 			else {
 				t = (QVariant::Type)proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
 			}
-			tt_col = ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
+			ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
 		}
-		tt_col.setWidth(col.value("width").toString());
+		ret.setColumnWidth(ret.columnCount() - 1, col.value("width"));
 	}
 
 	/// export data
 	{
-		qfu::SValue srows;
 		for(int i=0; i<proxy_model->rowCount(); i++) {
-			QVariantList srow_lst;
+			QVariantList row;
 			core::utils::TableRow tbl_row = tableRow(i);
 			for(int j=0; j<exported_columns.count(); j++) {
 				QVariantMap col = exported_columns[j].toMap();
@@ -893,11 +891,10 @@ qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, con
 						//qfWarning() << col << val.typeName() << "val:" << val.toString();
 					}
 				}
-				srow_lst << val;
+				row << val;
 			}
-			srows[i] = srow_lst;
+			ret.appendRow(row);
 		}
-		ret[qfu::TreeTable::KEY_ROWS] = srows.value();
 	}
 	return ret;
 }

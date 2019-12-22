@@ -32,6 +32,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->grpStartOptions->setVisible(false);
 	ui->grpStartersOptions->setVisible(false);
 	ui->grpStages->setVisible(false);
+	ui->grpLegs->setVisible(false);
 	ui->grpResultOptions->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
@@ -47,6 +48,7 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::startersOptionsVisibleChanged, ui->grpStartersOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::vacantsVisibleChanged, ui->chkStartOpts_PrintVacants, &QCheckBox::setVisible);
 	connect(this, &ReportOptionsDialog::stagesOptionVisibleChanged, ui->grpStages, &QGroupBox::setVisible);
+	connect(this, &ReportOptionsDialog::legsOptionVisibleChanged, ui->grpLegs, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
 	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
@@ -80,6 +82,26 @@ void ReportOptionsDialog::setClassNamesFilter(const QStringList &class_names)
 	ui->btClassNames->setChecked(true);
 	ui->chkClassFilterDoesntMatch->setChecked(false);
 	ui->edFilter->setText(class_names.join(','));
+}
+
+int ReportOptionsDialog::stagesCount() const
+{
+	return ui->edStagesCount->value();
+}
+
+void ReportOptionsDialog::setStagesCount(int n)
+{
+	ui->edStagesCount->setValue(n);
+}
+
+bool ReportOptionsDialog::resultExcludeDisq() const
+{
+	return ui->chkExcludeDisq->isChecked();
+}
+
+void ReportOptionsDialog::setResultExcludeDisq(bool b)
+{
+	ui->chkExcludeDisq->setChecked(b);
 }
 
 ReportOptionsDialog::BreakType ReportOptionsDialog::breakType() const
@@ -154,6 +176,7 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 {
 	qfLogFuncFrame() << options;
 	ui->edStagesCount->setValue(options.stagesCount());
+	ui->edLegsCount->setValue(options.legsCount());
 	//qfInfo() << "options.stagesCount()" << options.stagesCount() << ui->edStagesCount->value();
 	ui->cbxBreakAfterClassType->setCurrentIndex(options.breakType());
 	ui->edColumnCount->setValue(options.columns().length() / 2 + 1);
@@ -172,12 +195,15 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->chkStartOpts_PrintVacants->setChecked(options.isStartListPrintVacants());
 	ui->chkStartOpts_PrintStartNumbers->setChecked(options.isStartListPrintStartNumbers());
 	ui->edStartersOptionsLineSpacing->setValue(options.startersOptionsLineSpacing());
+	ui->edNumPlaces->setValue(options.resultNumPlaces());
+	ui->chkExcludeDisq->setChecked(options.isResultExcludeDisq());
 }
 
 ReportOptionsDialog::Options ReportOptionsDialog::options() const
 {
 	Options opts;
 	opts.setStagesCount(ui->edStagesCount->value());
+	opts.setLegsCount(ui->edLegsCount->value());
 	opts.setBreakType(ui->cbxBreakAfterClassType->currentIndex());
 	opts.setColumnCount(ui->edColumnCount->value());
 	QString columns;
@@ -199,6 +225,8 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setStartersOptionsLineSpacing(ui->edStartersOptionsLineSpacing->value());
 	opts[QStringLiteral("isBreakAfterEachClass")] = isBreakAfterEachClass();
 	opts[QStringLiteral("isColumnBreak")] = isColumnBreak();
+	opts.setResultNumPlaces(ui->edNumPlaces->value());
+	opts.setResultExcludeDisq(ui->chkExcludeDisq->isChecked());
 	return opts;
 }
 

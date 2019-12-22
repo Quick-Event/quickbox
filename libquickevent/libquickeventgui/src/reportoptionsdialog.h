@@ -26,7 +26,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	Q_PROPERTY(bool startersOptionsVisible READ isStartersOptionsVisible WRITE setStartersOptionsVisible NOTIFY startersOptionsVisibleChanged)
 	Q_PROPERTY(bool vacantsVisible READ isVacantsVisible WRITE setVacantsVisible NOTIFY vacantsVisibleChanged)
 	Q_PROPERTY(bool stagesOptionVisible READ isStagesOptionVisible WRITE setStagesOptionVisible NOTIFY stagesOptionVisibleChanged)
-	Q_PROPERTY(int stagesCount READ stagesCount WRITE setStagesCount NOTIFY stagesCountChanged)
+	//Q_PROPERTY(int stagesCount READ stagesCount WRITE setStagesCount NOTIFY stagesCountChanged)
 	Q_PROPERTY(bool pageLayoutVisible READ isPageLayoutVisible WRITE setPageLayoutVisible NOTIFY pageLayoutVisibleChanged)
 	Q_PROPERTY(bool columnCountEnable READ isColumnCountEnable WRITE setColumnCountEnable NOTIFY columnCountEnableChanged)
 	Q_PROPERTY(bool resultOptionsVisible READ isResultOptionsVisible WRITE setResultOptionsVisible NOTIFY resultOptionsVisibleChanged)
@@ -36,7 +36,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartersOptionsVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(v, V, acantsVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tagesOptionVisible, false)
-	QF_PROPERTY_IMPL2(int,s, S, tagesCount, 1)
+	QF_PROPERTY_BOOL_IMPL2(l, L, egsOptionVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(c, C, olumnCountEnable, true)
 	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
@@ -64,7 +64,9 @@ public:
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintVacants)
 		QF_VARIANTMAP_FIELD(bool, is, set, StartListPrintStartNumbers)
 		QF_VARIANTMAP_FIELD2(int, s, setS, tagesCount, 1)
+		QF_VARIANTMAP_FIELD2(int, l, setL, egsCount, 1)
 		QF_VARIANTMAP_FIELD2(int, r, setR, esultNumPlaces, 9999)
+		QF_VARIANTMAP_FIELD2(bool, isR, setR, esultExcludeDisq, false)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
@@ -89,6 +91,12 @@ public:
 	Q_SLOT void savePersistentSettings();
 
 	void setClassNamesFilter(const QStringList &class_names);
+
+	int stagesCount() const;
+	void setStagesCount(int n);
+
+	bool resultExcludeDisq() const;
+	void setResultExcludeDisq(bool b);
 
 	BreakType breakType() const;
 	Q_INVOKABLE bool isStartListPrintVacants() const;

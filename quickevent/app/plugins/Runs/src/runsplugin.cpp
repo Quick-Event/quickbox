@@ -513,12 +513,11 @@ qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(int stages_count, int
 	mod.reload();
 	qf::core::utils::TreeTable tt = mod.toTreeTable();
 	for(int i=0; i<tt.rowCount(); i++) {
-		qf::core::utils::TreeTableRow tt_row = tt.row(i);
 		//qfInfo() << "Processing class:" << tt_row.value("name").toString();
-		int class_id = tt_row.value("id").toInt();
+		int class_id = tt.row(i).value(QStringLiteral("id")).toInt();
 		qf::core::utils::Table t = nstagesClassResultsTable(stages_count, class_id, places, exclude_disq);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
-		tt_row.appendTable(tt2);
+		tt.appendTable(i, tt2);
 	}
 	tt.setValue("stagesCount", stages_count);
 	return tt;
@@ -605,25 +604,26 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 		int prev_time_ms = 0;
 		int prev_pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
-			qf::core::utils::TreeTableRow row = tt2.row(j);
-			bool has_pos = !row.value(QStringLiteral("disqualified")).toBool() && !row.value(QStringLiteral("notCompeting")).toBool();
-			int time_ms = row.value(QStringLiteral("timeMs")).toInt();
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			bool has_pos = !tt2_row.value(QStringLiteral("disqualified")).toBool() && !tt2_row.value(QStringLiteral("notCompeting")).toBool();
+			int time_ms = tt2_row.value(QStringLiteral("timeMs")).toInt();
 			if(has_pos) {
 				int pos = j+1;
 				if(time_ms == prev_time_ms)
 					pos = prev_pos;
 				else
 					prev_pos = pos;
-				row.setValue("pos", QString::number(pos) + '.');
-				row.setValue("npos", pos);
+				tt2.setValue(j, QStringLiteral( "pos"), QString::number(pos) + '.');
+				tt2.setValue(j, QStringLiteral( "npos"), pos);
 			}
 			else {
-				row.setValue("pos", QString());
-				row.setValue("npos", 0);
+				tt2.setValue(j, QStringLiteral( "pos"), QString());
+				tt2.setValue(j, QStringLiteral( "npos"), 0);
 			}
 			prev_time_ms = time_ms;
 		}
-		tt.row(i).appendTable(tt2);
+		qfDebug().noquote() << tt2.toString();
+		tt.appendTable(i, tt2);
 	}
 	return tt;
 }
@@ -708,40 +708,40 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 
 	for(int i=0; i<tt1.rowCount(); i++) {
 		QVariantList class_result{"ClassResult"};
-		const qf::core::utils::TreeTableRow row1 = tt1.row(i);
+		const qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
 		class_result.insert(class_result.count(),
 			QVariantList{"Class",
-				QVariantList{"Name", row1.value("classes.name") },
+				QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name")) },
 			}
 		);
 		class_result.insert(class_result.count(),
 			QVariantList{"Course",
-				QVariantList{"Length", row1.value("courses.length") },
-				QVariantList{"Climb", row1.value("courses.climb") },
+				QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length")) },
+				QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb")) },
 			}
 		);
-		qf::core::utils::TreeTable tt2 = row1.table();
+		qf::core::utils::TreeTable tt2 = tt1.table(i);
 		//int pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
-			const qf::core::utils::TreeTableRow row2 = tt2.row(j);
+			const qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			//pos++;
 			QVariantList person_result{"PersonResult"};
 			person_result.insert(person_result.count(),
 				 QVariantList{"Person",
-					 QVariantList{"Id", QVariantMap{{"type", "CZE"}}, row2.value("competitors.registration")},
+					 QVariantList{"Id", QVariantMap{{"type", "CZE"}}, tt2_row.value(QStringLiteral("competitors.registration"))},
 					 QVariantList{"Name",
-						QVariantList{"Family", row2.value("competitors.lastName")},
-						QVariantList{"Given", row2.value("competitors.firstName")},
+						QVariantList{"Family", tt2_row.value(QStringLiteral("competitors.lastName"))},
+						QVariantList{"Given", tt2_row.value(QStringLiteral("competitors.firstName"))},
 					 }
 				 }
 			);
 
 			QVariantList result{"Result"};
-			int run_id = row2.value("runs.id").toInt();
-			int stime = row2.value("startTimeMs").toInt();
-			int ftime = row2.value("finishTimeMs").toInt();
-			int time = row2.value("timeMs").toInt();
-			//qfInfo() << row1.value("classes.name").toString() << row2.value("competitors.lastName").toString() << stime << ftime << time;
+			int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
+			int stime = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
+			int ftime = tt2_row.value(QStringLiteral("finishTimeMs")).toInt();
+			int time = tt2_row.value(QStringLiteral("timeMs")).toInt();
+			//qfInfo() << row1.value("classes.name").toString() << tt2_row.value(QStringLiteral("competitors.lastName").toString() << stime << ftime << time;
 			if(ftime && time)
 				stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
 			result.insert(result.count(), QVariantList{"StartTime", stage_start_date_time.addMSecs(stime).toString(Qt::ISODate)});
@@ -753,18 +753,18 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			if (!ftime) {
 				 competitor_status = "DidNotFinish";
 			}
-			else if (row2.value("disqualified").toBool()) {
-				if (row2.value("misPunch").toBool())
+			else if (tt2_row.value(QStringLiteral("disqualified")).toBool()) {
+				if (tt2_row.value(QStringLiteral("misPunch")).toBool())
 					competitor_status = "MissingPunch";
 				else
 					competitor_status = "Disqualified";
 			}
-			else if (row2.value("notCompeting").toBool())
+			else if (tt2_row.value(QStringLiteral("notCompeting")).toBool())
 				competitor_status = "NotCompeting";
 			if (competitor_status == STAT_OK) {
 				// The position in the result list for the person that the result belongs to.
 				// This element should only be present when the Status element is set to OK.
-				result.insert(result.count(), QVariantList{"Position", row2.value("npos")});
+				result.insert(result.count(), QVariantList{"Position", tt2_row.value(QStringLiteral("npos"))});
 			}
 			result.insert(result.count(), QVariantList{"Status", competitor_status});
 
@@ -803,7 +803,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				qfs::QueryBuilder qb;
 				qb.select2("runlaps", "*")
 					.from("runlaps")
-					.where("runlaps.runId=" + QString::number(row2.value("runs.id").toInt()))
+					.where("runlaps.runId=" + QString::number(tt2_row.value(QStringLiteral("runs.id")).toInt()))
 					.where("runlaps.code<" QF_IARG(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE) )
 					.where("runlaps.code>=100") // skip START and FINISH codes
 					//.where("runlaps.position >= 1")
@@ -1018,12 +1018,12 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 				while(start_time_0 < start_time) {
 					// insert vakant row
 					//qfInfo() << "adding row:" << j << (start_time_0 / 60 / 1000);
-					qf::core::utils::TreeTableRow new_row = tt2.insertRow(j);
-					new_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-					new_row.setValue(QStringLiteral("competitorName"), "---");
-					new_row.setValue(QStringLiteral("registration"), "");
-					new_row.setValue(QStringLiteral("siId"), 0);
-					new_row.setValue(QStringLiteral("startNumber"), 0);
+					tt2.insertRow(j);
+					tt2.setValue(j, QStringLiteral("startTimeMs"), start_time_0);
+					tt2.setValue(j, QStringLiteral("competitorName"), "---");
+					tt2.setValue(j, QStringLiteral("registration"), "");
+					tt2.setValue(j, QStringLiteral("siId"), 0);
+					tt2.setValue(j, QStringLiteral("startNumber"), 0);
 					start_time_0 += start_interval;
 					j++;
 				}
@@ -1031,16 +1031,17 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 			}
 			while(start_time_0 <= start_time_last) {
 				// insert vakants after
-				qf::core::utils::TreeTableRow new_row = tt2.appendRow();
-				new_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
-				new_row.setValue(QStringLiteral("competitorName"), "---");
-				new_row.setValue(QStringLiteral("registration"), QString());
-				new_row.setValue(QStringLiteral("siId"), 0);
-				new_row.setValue(QStringLiteral("startNumber"), 0);
+				int ix = tt2.rowCount();
+				tt2.appendRow();
+				tt2.setValue(ix, QStringLiteral("startTimeMs"), start_time_0);
+				tt2.setValue(ix, QStringLiteral("competitorName"), "---");
+				tt2.setValue(ix, QStringLiteral("registration"), QString());
+				tt2.setValue(ix, QStringLiteral("siId"), 0);
+				tt2.setValue(ix, QStringLiteral("startNumber"), 0);
 				start_time_0 += start_interval;
 			}
 		}
-		tt_row.appendTable(tt2);
+		tt.appendTable(i, tt2);
 	}
 	//qfInfo().noquote() << tt.toString();
 	return tt;
@@ -1063,7 +1064,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable()
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
-	tt.columns().column(0).setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+	tt.setColumnType(0, QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
 	//console.info(tt.toString());
 
 	qfs::QueryBuilder qb;
@@ -1092,7 +1093,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable()
 		m2.reload();
 		//console.info(reportModel.effectiveQuery());
 		auto tt2 = m2.toTreeTable();
-		tt_row.appendTable(tt2);
+		tt.appendTable(i, tt2);
 	}
 	return tt;
 }
@@ -1167,7 +1168,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(int stages_c
 		m2.setQueryParameters(qpm);
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
-		tt_row.appendTable(m2.toTreeTable());
+		tt.appendTable(i, m2.toTreeTable());
 	}
 	return tt;
 }
@@ -1188,7 +1189,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(int stages_cou
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
-	tt.columns().column(0).setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+	tt.setColumnType(0, QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
 	//console.info(tt.toString());
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
@@ -1214,7 +1215,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(int stages_cou
 		m2.setQueryParameters(qpm);
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
-		tt_row.appendTable(m2.toTreeTable());
+		tt.appendTable(i, m2.toTreeTable());
 	}
 	return tt;
 }
@@ -1299,7 +1300,7 @@ void RunsPlugin::report_startListClassesNStages()
 	dlg.setPersistentSettingsId("startListClassesNStagesReportOptions");
 	dlg.loadPersistentSettings();
 
-	dlg.setStagesCount(event_plugin->stageCount());
+	dlg.setStagesCount(event_plugin->currentStageId());
 	dlg.setStartListOptionsVisible(true);
 	dlg.setVacantsVisible(false);
 	dlg.setStagesOptionVisible(true);
@@ -1307,12 +1308,13 @@ void RunsPlugin::report_startListClassesNStages()
 	dlg.setColumnCountEnable(false);
 	if(dlg.exec()) {
 		auto tt = startListClassesNStagesTable(dlg.stagesCount(), dlg.sqlWhereExpression());
-		auto opts = dlg.optionsMap();
+		auto opts = dlg.options();
 		//QString report_title = tr("Start list by classes after %1 stages").arg(dlg.stagesCount());
 		QVariantMap props;
 		props["options"] = opts;
 		//props["reportTitle"] = "report_title";
-		//qfInfo() << props;
+		//qfDebug() << props;
+		//qfDebug() << "dlg.stagesCount():" << dlg.stagesCount() << opts.stagesCount();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
 									, tt.toVariant()
@@ -1369,8 +1371,6 @@ void RunsPlugin::report_resultsClasses()
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
-		//props["stageCount"] = event_plugin->eventConfig()->stageCount();
-		//props["stageNumber"] = selectedStageId();
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/results_stage.qml"
 									, tt.toVariant()
@@ -1434,18 +1434,21 @@ void RunsPlugin::report_resultsNStages()
 {
 	auto *event_plugin = eventPlugin();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	NStagesReportOptionsDialog dlg(fwk);
-	//dlg.setPersistentSettingsId("resultsReportOptionsNStagesWide");
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("resultsClassesNStagesReportOptions");
+	dlg.loadPersistentSettings();
 	dlg.setStagesCount(event_plugin->currentStageId());
-	dlg.setMaxPlacesCount(9999);
-	dlg.setExcludeDisqualified(true);
+	dlg.setResultOptionsVisible(true);
+	dlg.setStagesOptionVisible(true);
 	if(!dlg.exec())
 		return;
-	auto tt = nstagesResultsTable(dlg.stagesCount(), dlg.maxPlacesCount(), dlg.isExcludeDisqualified());
+	auto opts = dlg.options();
+	auto tt = nstagesResultsTable(dlg.stagesCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	//tt.setValue("stageStart", event_plugin->stageStartDateTime(stages_count));
 	QVariantMap props;
 	props["stagesCount"] = dlg.stagesCount();
+	//props["options"] = opts;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, manifest()->homeDir() + "/reports/results_nstages.qml"
 								, tt.toVariant()
@@ -1459,14 +1462,16 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 {
 	auto *event_plugin = eventPlugin();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	NStagesReportOptionsDialog dlg(fwk);
-	//dlg.setPersistentSettingsId("resultsReportOptionsNStagesWide");
+	quickevent::gui::ReportOptionsDialog dlg(fwk);
+	dlg.setPersistentSettingsId("resultsClassesNStagesSpeakerReportOptions");
+	dlg.loadPersistentSettings();
 	dlg.setStagesCount(event_plugin->currentStageId());
-	dlg.setMaxPlacesCount(9999);
-	dlg.setExcludeDisqualified(true);
+	dlg.setResultOptionsVisible(true);
+	dlg.setStagesOptionVisible(true);
 	if(!dlg.exec())
 		return;
-	auto tt = nstagesResultsTable(dlg.stagesCount(), dlg.maxPlacesCount(), dlg.isExcludeDisqualified());
+	auto opts = dlg.options();
+	auto tt = nstagesResultsTable(dlg.stagesCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	//tt.setValue("stageStart", event_plugin->stageStartDateTime(stages_count));
 	QVariantMap props;
@@ -1550,7 +1555,7 @@ void RunsPlugin::export_startListClassesHtml()
 			};
 		append_list(body, div1);
 		QVariantList table{"table"};
-		qf::core::utils::TreeTable tt2 = tt1_row.table();
+		qf::core::utils::TreeTable tt2 = tt1.table(i);
 		QVariantList trr{"tr",
 				  QVariantList{"th", tr("Start")},
 				  QVariantList{"th", tr("Name")},
@@ -1704,7 +1709,7 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	append_list(xml_root, xml_event);
 
 	for(int i=0; i<tt1.rowCount(); i++) {
-		auto tt1_row = tt1.row(i);
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
 		QVariantList class_start{"ClassStart"};
 		append_list(class_start, QVariantList{"Class", QVariantList{"Id", tt1_row.value(QStringLiteral("classes.id"))}, QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name"))}});
 		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))}, QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))}});

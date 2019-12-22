@@ -140,26 +140,26 @@ QVariantMap ReceiptsPlugin::readCardTablesData(int card_id)
 			quickevent::core::si::ReadPunch punch(v.toMap());
 			int punch_time_ms = punch.time() * 1000 + punch.msec();
 			int stp_time_ms = quickevent::core::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
-			qfu::TreeTableRow ttr = tt.appendRow();
+			int ix = tt.appendRow();
 			++position;
 			int code = punch.code();
-			ttr.setValue("position", position);
-			ttr.setValue("code", code);
-			ttr.setValue("punchTimeMs", punch_time_ms);
-			ttr.setValue("stpTimeMs", stp_time_ms);
-			ttr.setValue("lapTimeMs", stp_time_ms - prev_stp_time_ms);
+			tt.setValue(ix, "position", position);
+			tt.setValue(ix, "code", code);
+			tt.setValue(ix, "punchTimeMs", punch_time_ms);
+			tt.setValue(ix, "stpTimeMs", stp_time_ms);
+			tt.setValue(ix, "lapTimeMs", stp_time_ms - prev_stp_time_ms);
 			prev_stp_time_ms = stp_time_ms;
 		}
 		{
-			qfu::TreeTableRow ttr = tt.appendRow();
+			int ix = tt.appendRow();
 			//int code = punch.code();
 			//ttr.setValue("position", position);
 			//ttr.setValue("code", code);
 			int punch_time_ms = read_card.finishTime() * 1000 + read_card.finishTimeMs();
 			int stp_time_ms = quickevent::core::og::TimeMs::msecIntervalAM(start_time_ms, punch_time_ms);
-			ttr.setValue("punchTimeMs", punch_time_ms);
-			ttr.setValue("stpTimeMs", stp_time_ms);
-			ttr.setValue("lapTimeMs", stp_time_ms - prev_stp_time_ms);
+			tt.setValue(ix, "punchTimeMs", punch_time_ms);
+			tt.setValue(ix, "stpTimeMs", stp_time_ms);
+			tt.setValue(ix, "lapTimeMs", stp_time_ms - prev_stp_time_ms);
 		}
 		{
 			qf::core::sql::QueryBuilder qb;
@@ -313,20 +313,20 @@ QVariantMap ReceiptsPlugin::receiptTablesData(int card_id)
 		int position = 0;
 		for(auto v : checked_card.punches()) {
 			quickevent::core::si::CheckedPunch punch(v.toMap());
-			qfu::TreeTableRow ttr = tt.appendRow();
+			int ix = tt.appendRow();
 			++position;
 			int code = punch.code();
-			ttr.setValue("position", position);
-			ttr.setValue("code", code);
-			ttr.setValue("stpTimeMs", punch.stpTimeMs());
+			tt.setValue(ix, "position", position);
+			tt.setValue(ix, "code", code);
+			tt.setValue(ix, "stpTimeMs", punch.stpTimeMs());
 			int lap = punch.lapTimeMs();
-			ttr.setValue("lapTimeMs", lap);
+			tt.setValue(ix, "lapTimeMs", lap);
 			int best_lap = best_laps.value(position);
 			if(lap > 0 && best_lap > 0) {
 				int loss = lap - best_lap;
-				ttr.setValue("lossMs", loss);
+				tt.setValue(ix, "lossMs", loss);
 			}
-			ttr.setValue("distance", punch.distance());
+			tt.setValue(ix, "distance", punch.distance());
 		}
 		{
 			QSet<int> correct_codes;

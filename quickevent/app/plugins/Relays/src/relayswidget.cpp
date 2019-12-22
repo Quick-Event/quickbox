@@ -373,17 +373,17 @@ QVariant RelaysWidget::startListByClassesTableData(const QString &class_filter)
 			model2.setQueryParameters(qm2);
 			model2.reload();
 			qf::core::utils::TreeTable tt3 = model2.toTreeTable();
-			tt2.row(j).appendTable(tt3);
+			tt2.appendTable(j, tt3);
 		}
-		tt.row(i).appendTable(tt2);
+		tt.appendTable(i, tt2);
 	}
 	//qfInfo() << tt.toString();
 	return tt.toVariant();
 }
 
-QVariant RelaysWidget::startListByClubsTableData(const QString &class_filter)
+QVariant RelaysWidget::startListByClubsTableData()
 {
-	qfLogFuncFrame() << class_filter;
+	qfLogFuncFrame();
 	qf::core::model::SqlTableModel model;
 	qf::core::model::SqlTableModel model2;
 	{
@@ -445,9 +445,9 @@ QVariant RelaysWidget::startListByClubsTableData(const QString &class_filter)
 			model2.setQueryParameters(qm2);
 			model2.reload();
 			qf::core::utils::TreeTable tt3 = model2.toTreeTable();
-			tt2.row(j).appendTable(tt3);
+			tt2.appendTable(j, tt3);
 		}
-		tt.row(i).appendTable(tt2);
+		tt.appendTable(i, tt2);
 	}
 	//console.debug(tt.toString());
 	return tt.toVariant();
@@ -475,11 +475,12 @@ void RelaysWidget::print_start_list_clubs()
 {
 	quickevent::gui::ReportOptionsDialog dlg(this);
 	dlg.setPersistentSettingsId("relaysStartReportOptions");
-	//dlg.setClassNamesFilter(class_names);
+	dlg.loadPersistentSettings();
+	dlg.setClassFilterVisible(false);
 	if(!dlg.exec())
 		return;
 	QVariantMap props = dlg.reportProperties();
-	QVariant td = startListByClubsTableData(dlg.sqlWhereExpression());
+	QVariant td = startListByClubsTableData();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/startList_clubs.qml"
 														  , td
@@ -491,26 +492,29 @@ void RelaysWidget::print_start_list_clubs()
 
 void RelaysWidget::print_results_nlegs()
 {
-	bool ok;
-	int n = QInputDialog::getInt(this, tr("Dialog"), tr("Results after leg count:"), 3, 1, 50, 1, &ok);
-	if(ok)
-		printResults(n, INT_MAX, true);
+	printResults(true);
 }
 
 void RelaysWidget::print_results_overal()
 {
-	printResults(INT_MAX, INT_MAX, false);
+	printResults(false);
 }
 
-void RelaysWidget::printResults(int leg_count, int places, bool exclude_not_finish)
+void RelaysWidget::printResults(bool exclude_not_finish)
 {
+	qfLogFuncFrame();
 	quickevent::gui::ReportOptionsDialog dlg(this);
+	dlg.setLegsOptionVisible(true);
+	dlg.setResultOptionsVisible(true);
 	dlg.setPersistentSettingsId("relaysResultsReportOptions");
-	//dlg.setClassNamesFilter(class_names);
+	dlg.loadPersistentSettings();
 	if(!dlg.exec())
 		return;
 	QVariantMap props = dlg.reportProperties();
-	QVariant td = thisPlugin()->nlegsResultsTable(leg_count, places, exclude_not_finish).toVariant();
+	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
+	qfDebug() << opts;
+	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
+	QVariant td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), exclude_not_finish).toVariant();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
 														  , td

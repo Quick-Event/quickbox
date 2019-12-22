@@ -35,7 +35,7 @@ class RunsWidget : public QFrame
 private:
 	typedef QFrame Super;
 public:
-	explicit RunsWidget(QWidget *parent = 0);
+	explicit RunsWidget(QWidget *parent = nullptr);
 	~RunsWidget() Q_DECL_OVERRIDE;
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);

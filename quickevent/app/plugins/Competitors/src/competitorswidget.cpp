@@ -351,28 +351,7 @@ void CompetitorsWidget::onCustomContextMenuRequest(const QPoint &pos)
 
 void CompetitorsWidget::report_competitorsStatistics()
 {
-	/*
-	auto stage_data = [](int stage_id) {
-		qfs::QueryBuilder qb;
-		qb.select2("classes", "name")
-		.select("COUNT(runs.id) AS runCount")
-		.select("MAX(classdefs.mapCount) as mapCount") // classdefs.mapCount must be in any agregation function in PSQL, MIN can be here as well
-		.from("classes")
-		.joinRestricted("classes.id", "classdefs.classid", "classdefs.stageId={{stage_id}}")
-		.join("classes.id", "competitors.classId")
-		.joinRestricted("competitors.id", "runs.competitorId", "runs.isRunning AND runs.stageId={{stage_id}}")
-		.groupBy("classes.name")
-		.orderBy("classes.name");
-		qf::core::model::SqlTableModel m;
-		m.setQueryBuilder(qb);
-		QVariantMap qpm;
-		qpm["stage_id"] = stage_id;
-		m.setQueryParameters(qpm);
-		m.reload();
-		auto t = m.table();
-		return t;
-	};
-	*/
+	qfLogFuncFrame();
 	Event::EventPlugin *event_plugin = eventPlugin();
 	int stage_cnt = event_plugin->stageCount();
 
@@ -406,12 +385,13 @@ void CompetitorsWidget::report_competitorsStatistics()
 			q.execThrow(qb.toString(qpm));
 			int i = 0;
 			while(q.next()) {
-				tt.row(i).setValue(col_runs_count, q.value("runCount"));
-				tt.row(i).setValue(col_map_count, q.value("mapCount"));
+				tt.setValue(i, col_runs_count, q.value("runCount"));
+				tt.setValue(i, col_map_count, q.value("mapCount"));
 				i++;
 			}
 		}
 	}
+	qfDebug().noquote() << tt.toString();
 	QVariantMap props;
 	//props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);

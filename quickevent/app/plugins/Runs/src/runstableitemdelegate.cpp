@@ -46,7 +46,7 @@ void RunsTableItemDelegate::reloadHighlightedClassId()
 			.where("classId=" QF_IARG(m_highlightedClassId));
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(!is_relays)
-		qb.where("leg=" QF_IARG(m_stageId));
+		qb.where("stageId=" QF_IARG(m_stageId));
 	qfs::Query q(qfs::Connection::forName());
 	//qfInfo() << qb.toString();
 	q.exec(qb.toString(), qf::core::Exception::Throw);

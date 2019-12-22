@@ -1,12 +1,15 @@
 #include "nstagesreportoptionsdialog.h"
 #include "ui_nstagesreportoptionsdialog.h"
 
+#include <qf/core/log.h>
+
 namespace Runs {
 
 NStagesReportOptionsDialog::NStagesReportOptionsDialog(QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::NStagesReportOptionsDialog)
 {
+	qfWarning() << metaObject()->className() << "is deprecated";
 	ui->setupUi(this);
 }
 

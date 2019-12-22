@@ -41,7 +41,7 @@ private:
 	//void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);
 
 	QVariant startListByClassesTableData(const QString &class_filter);
-	QVariant startListByClubsTableData(const QString &class_filter);
+	QVariant startListByClubsTableData();
 
 	void relays_assignNumbers();
 
@@ -51,7 +51,7 @@ private:
 	void print_results_nlegs();
 	void print_results_overal();
 
-	void printResults(int leg_count, int places, bool exclude_not_finish);
+	void printResults(bool exclude_not_finish);
 private:
 	Ui::RelaysWidget *ui;
 	qf::core::model::SqlTableModel *m_tblModel;
