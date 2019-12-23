@@ -188,9 +188,11 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 	q.execThrow(qb.toString());
 	while(q.next()) {
 		int ix = tt.appendRow();
-		tt.setValue(ix, "className", q.value("classes.name"));
+		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
+		tt_row.setValue("className", q.value("classes.name"));
 		qf::core::utils::TreeTable tt2 = nLegsResultsTable(q.value("classes.id").toInt(), leg_count, places, exclude_not_finish);
-		tt.appendTable(ix, tt2);
+		tt_row.appendTable(tt2);
+		tt.setRow(ix, tt_row);
 		//qfDebug().noquote() << tt2.toString();
 	}
 	return tt;
@@ -359,15 +361,16 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 	tt.appendColumn("loss", QVariant::Int);
 	for (int i = 0; i < relays.count(); ++i) {
 		int ix = tt.appendRow();
+		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
 		const Relay &relay = relays[i];
 		int time = relay.time(leg_count);
 		if(i == 0)
 			time0 = time;
 		int prev_time = (i > 0)? relays[i-1].time(leg_count): 0;
-		tt.setValue(ix, "pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
-		tt.setValue(ix, "name", relay.name);
-		tt.setValue(ix, "time", time);
-		tt.setValue(ix, "loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
+		tt_row.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
+		tt_row.setValue("name", relay.name);
+		tt_row.setValue("time", time);
+		tt_row.setValue("loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
 		qfDebug() << tt.rowCount() << relay.name;
 		qf::core::utils::TreeTable tt2;
 		tt2.appendColumn("name", QVariant::String);
@@ -380,19 +383,22 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 		for (int j = 0; j < qMin(relay.legs.count(), places); ++j) {
 			const Leg &leg = relay.legs[j];
 			int ix2 = tt2.appendRow();
-			tt2.setValue(ix2, "competitorName", leg.name);
-			tt2.setValue(ix2, "registration", leg.reg);
-			tt2.setValue(ix2, "time",
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(ix2);
+			tt2_row.setValue("competitorName", leg.name);
+			tt2_row.setValue("registration", leg.reg);
+			tt2_row.setValue("time",
 						 leg.disq? qog::TimeMs::DISQ_TIME_MSEC
 								: (leg.time == 0)? qog::TimeMs::NOT_FINISH_TIME_MSEC
 												: leg.time);
-			tt2.setValue(ix2, "pos", leg.pos);
-			tt2.setValue(ix2, "stime", leg.stime);
-			tt2.setValue(ix2, "spos", leg.spos);
+			tt2_row.setValue("pos", leg.pos);
+			tt2_row.setValue("stime", leg.stime);
+			tt2_row.setValue("spos", leg.spos);
+			tt2.setRow(ix2, tt2_row);
 			//rr2.setValue("disq", leg.disq);
 			qfDebug() << '\t' << leg.pos << leg.name;
 		}
-		tt.appendTable(ix, tt2);
+		tt_row.appendTable(tt2);
+		tt.setRow(ix, tt_row);
 	}
 	//qfInfo() << tt.toString();
 	return tt;

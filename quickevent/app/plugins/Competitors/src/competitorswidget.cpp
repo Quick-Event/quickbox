@@ -385,8 +385,10 @@ void CompetitorsWidget::report_competitorsStatistics()
 			q.execThrow(qb.toString(qpm));
 			int i = 0;
 			while(q.next()) {
-				tt.setValue(i, col_runs_count, q.value("runCount"));
-				tt.setValue(i, col_map_count, q.value("mapCount"));
+				qf::core::utils::TreeTableRow tt_row = tt.row(i);
+				tt_row.setValue(col_runs_count, q.value("runCount"));
+				tt_row.setValue(col_map_count, q.value("mapCount"));
+				tt.setRow(i, tt_row);
 				i++;
 			}
 		}

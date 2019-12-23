@@ -514,10 +514,12 @@ qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(int stages_count, int
 	qf::core::utils::TreeTable tt = mod.toTreeTable();
 	for(int i=0; i<tt.rowCount(); i++) {
 		//qfInfo() << "Processing class:" << tt_row.value("name").toString();
-		int class_id = tt.row(i).value(QStringLiteral("id")).toInt();
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		int class_id = tt_row.value(QStringLiteral("id")).toInt();
 		qf::core::utils::Table t = nstagesClassResultsTable(stages_count, class_id, places, exclude_disq);
 		qf::core::utils::TreeTable tt2 = t.toTreeTable();
-		tt.appendTable(i, tt2);
+		tt_row.appendTable(tt2);
+		tt.setRow(i, tt_row);
 	}
 	tt.setValue("stagesCount", stages_count);
 	return tt;
@@ -613,14 +615,15 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 					pos = prev_pos;
 				else
 					prev_pos = pos;
-				tt2.setValue(j, QStringLiteral( "pos"), QString::number(pos) + '.');
-				tt2.setValue(j, QStringLiteral( "npos"), pos);
+				tt2_row.setValue(QStringLiteral( "pos"), QString::number(pos) + '.');
+				tt2_row.setValue(QStringLiteral( "npos"), pos);
 			}
 			else {
-				tt2.setValue(j, QStringLiteral( "pos"), QString());
-				tt2.setValue(j, QStringLiteral( "npos"), 0);
+				tt2_row.setValue(QStringLiteral( "pos"), QString());
+				tt2_row.setValue(QStringLiteral( "npos"), 0);
 			}
 			prev_time_ms = time_ms;
+			tt2.setRow(j, tt2_row);
 		}
 		qfDebug().noquote() << tt2.toString();
 		tt.appendTable(i, tt2);
@@ -720,7 +723,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb")) },
 			}
 		);
-		qf::core::utils::TreeTable tt2 = tt1.table(i);
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		//int pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
 			const qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -1019,25 +1022,28 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 					// insert vakant row
 					//qfInfo() << "adding row:" << j << (start_time_0 / 60 / 1000);
 					tt2.insertRow(j);
-					tt2.setValue(j, QStringLiteral("startTimeMs"), start_time_0);
-					tt2.setValue(j, QStringLiteral("competitorName"), "---");
-					tt2.setValue(j, QStringLiteral("registration"), "");
-					tt2.setValue(j, QStringLiteral("siId"), 0);
-					tt2.setValue(j, QStringLiteral("startNumber"), 0);
+					qf::core::utils::TreeTableRow n_row = tt2.row(j);
+					n_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
+					n_row.setValue(QStringLiteral("competitorName"), "---");
+					n_row.setValue(QStringLiteral("registration"), "");
+					n_row.setValue(QStringLiteral("siId"), 0);
+					n_row.setValue(QStringLiteral("startNumber"), 0);
 					start_time_0 += start_interval;
+					tt2.setRow(j, n_row);
 					j++;
 				}
 				start_time_0 += start_interval;
 			}
 			while(start_time_0 <= start_time_last) {
 				// insert vakants after
-				int ix = tt2.rowCount();
-				tt2.appendRow();
-				tt2.setValue(ix, QStringLiteral("startTimeMs"), start_time_0);
-				tt2.setValue(ix, QStringLiteral("competitorName"), "---");
-				tt2.setValue(ix, QStringLiteral("registration"), QString());
-				tt2.setValue(ix, QStringLiteral("siId"), 0);
-				tt2.setValue(ix, QStringLiteral("startNumber"), 0);
+				int ix = tt2.appendRow();
+				qf::core::utils::TreeTableRow tt2_row = tt2.row(ix);
+				tt2_row.setValue(QStringLiteral("startTimeMs"), start_time_0);
+				tt2_row.setValue(QStringLiteral("competitorName"), "---");
+				tt2_row.setValue(QStringLiteral("registration"), QString());
+				tt2_row.setValue(QStringLiteral("siId"), 0);
+				tt2_row.setValue(QStringLiteral("startNumber"), 0);
+				tt2.setRow(ix, tt2_row);
 				start_time_0 += start_interval;
 			}
 		}
@@ -1064,7 +1070,11 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable()
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
-	tt.setColumnType(0, QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+	{
+		qf::core::utils::TreeTableColumn c = tt.column(0);
+		c.setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+		tt.setColumn(0, c);
+	}
 	//console.info(tt.toString());
 
 	qfs::QueryBuilder qb;
@@ -1189,7 +1199,11 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(int stages_cou
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
-	tt.setColumnType(0, QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+	{
+		qf::core::utils::TreeTableColumn c = tt.column(0);
+		c.setType(QVariant::String); // sqlite returns clubAbbr column as QVariant::Invalid, set correct type
+		tt.setColumn(0, c);
+	}
 	//console.info(tt.toString());
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
@@ -1555,7 +1569,7 @@ void RunsPlugin::export_startListClassesHtml()
 			};
 		append_list(body, div1);
 		QVariantList table{"table"};
-		qf::core::utils::TreeTable tt2 = tt1.table(i);
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		QVariantList trr{"tr",
 				  QVariantList{"th", tr("Start")},
 				  QVariantList{"th", tr("Name")},

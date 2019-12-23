@@ -84,10 +84,10 @@ QVariant TreeTableBandDataModel::tableData(const QString &key, BandDataModel::Da
 QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole role)
 {
 	if(role == Qt::DisplayRole) {
-		return treeTable().columnHeader(col_no);
+		return treeTable().column(col_no).header();
 	}
 	else if(role == Qt::SizeHintRole) {
-		return treeTable().columnWidth(col_no);
+		return treeTable().column(col_no).width();
 	}
 	return QVariant();
 }
@@ -111,8 +111,8 @@ QVariant TreeTableBandDataModel::dataByName(int row_no, const QString &col_name,
 QVariant TreeTableBandDataModel::table(int row_no, const QString &table_name)
 {
 	if(table_name.isEmpty())
-		return treeTable().table(row_no).toVariant();
-	return treeTable().table(row_no, table_name).toVariant();
+		return treeTable().row(row_no).table().toVariant();
+	return treeTable().row(row_no).table(table_name).toVariant();
 }
 
 QString TreeTableBandDataModel::dump() const

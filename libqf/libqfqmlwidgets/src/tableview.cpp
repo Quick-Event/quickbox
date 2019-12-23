@@ -848,9 +848,13 @@ qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, con
 		QVariantMap col = exported_columns[i].toMap();
 		QString cap = col.value("caption").toString();
 		int ix = col.value("index").toInt();
+		qfu::TreeTableColumn cd;
 		if(col.value("origin") == QLatin1String("table")) {
 			QVariant::Type t = table.field(ix).type();
-			ret.appendColumn(table.field(ix).name(), t, cap);
+			cd.setName(table.field(ix).name());
+			cd.setType((int)t);
+			cd.setHeader(cap);
+			//ret.appendColumn(table.field(ix).name(), t, cap);
 		}
 		else {
 			QVariant::Type t;
@@ -862,9 +866,13 @@ qf::core::utils::TreeTable TableView::toTreeTable(const QString &table_name, con
 			else {
 				t = (QVariant::Type)proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldTypeRole).toInt();
 			}
-			ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
+			cd.setName(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString());
+			cd.setType((int)t);
+			cd.setHeader(cap);
+			//ret.appendColumn(proxy_model->headerData(ix, Qt::Horizontal, core::model::TableModel::FieldNameRole).toString(), t, cap);
 		}
-		ret.setColumnWidth(ret.columnCount() - 1, col.value("width"));
+		cd.setWidth(col.value("width"));
+		ret.appendColumn(cd);
 	}
 
 	/// export data

@@ -1376,7 +1376,7 @@ QVariantMap Table::toJson(const QString &col_names) const
 
 TreeTable Table::toTreeTable(const QString &col_names, const QString &table_name) const
 {
-	TreeTable ret(table_name);
+	TreeTable tt(table_name);
 	QList<int> ixs;
 	if(col_names.isEmpty() || col_names == "*") {
 		for(int i=0; i<fields().count(); i++)
@@ -1394,20 +1394,22 @@ TreeTable Table::toTreeTable(const QString &col_names, const QString &table_name
 	}
 	for(int i=0; i<ixs.count(); i++) {
 		Field f = field(ixs[i]);
-		ret.appendColumn(f.name(), f.type());
+		tt.appendColumn(f.name(), f.type());
 	}
 
 	/// export data
 	{
 		for(int j=0; j<rowCount(); j++) {
-			ret.appendRow();
+			int ix = tt.appendRow();
+			TreeTableRow tt_row = tt.row(ix);
 			TableRow r = row(j);
 			for(int i=0; i<ixs.count(); i++) {
-				ret.setValue(j, i, r.value(ixs[i]));
+				tt_row.setValue(i, r.value(ixs[i]));
 			}
+			tt.setRow(ix, tt_row);
 		}
 	}
-	return ret;
+	return tt;
 }
 
 bool Table::fromTreeTable(const TreeTable &tree_table)
@@ -1417,7 +1419,8 @@ bool Table::fromTreeTable(const TreeTable &tree_table)
 	{
 		for(int i=0; i<columnCount(); i++) {
 			//qfDebug() << "\tfield:" << s;
-			Field fld(tree_table.columnName(i), tree_table.columnType(i));
+			TreeTableColumn cc = tree_table.column(i);
+			Field fld(cc.name(), cc.type());
 			//fld.setCanUpdate(true);
 			fieldsRef().append(fld);
 		}
