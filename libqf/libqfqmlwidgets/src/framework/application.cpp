@@ -19,7 +19,7 @@ Application::Application(int &argc, char **argv) :
 	#ifdef Q_OS_UNIX
 		m_pluginDataDir = QCoreApplication::applicationDirPath() + "/../lib/qml/quickevent";
 	#else
-		path = QCoreApplication::applicationDirPath() + "/qml/quickevent";
+		m_pluginDataDir = QCoreApplication::applicationDirPath() + "/qml/quickevent";
 	#endif
 	}
 	{

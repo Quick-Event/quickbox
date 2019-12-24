@@ -12,6 +12,7 @@ LIBS += -lsiut
 
 LIBS += \
     -lEventQEPlugin \
+    -lRunsQEPlugin \
 
 include (src/src.pri)
 

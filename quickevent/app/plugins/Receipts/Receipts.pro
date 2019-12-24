@@ -9,6 +9,7 @@ QT += widgets sql printsupport xml
 #INCLUDEPATH += $$PWD/../../../../libsiut/include
 LIBS += \
     -lEventQEPlugin \
+    -lCardReaderQEPlugin \
 
 include (src/src.pri)
 
