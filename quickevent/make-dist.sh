@@ -1,11 +1,11 @@
 #!/bin/bash
 
-APP_VER=0.0.1
+#APP_VER=0.0.1
 APP_NAME=quickevent
-SRC_DIR=/home/fanda/proj/$APP_NAME
+SRC_DIR=/home/fanda/proj/quickbox
 QT_DIR=/home/fanda/programs/qt5/5.13.2/gcc_64
-WORK_DIR=/tmp/_distro
-#DISTRO_VER=1.0.2
+WORK_DIR=/home/fanda/t/_distro
+
 APP_IMAGE_TOOL=/home/fanda/programs/appimagetool-x86_64.AppImage
 
 help() {
@@ -64,32 +64,30 @@ case $key in
 esac
 done
 
-if [ -z $DISTRO_VER ]; then
-    DISTRO_VER=`grep APP_VERSION $SRC_DIR/quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
-	echo "Distro version not specified, deduced from source code: $DISTRO_VER" >&2
+if [ -z $APP_VER ]; then
+    APP_VER=`grep APP_VERSION $SRC_DIR/quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
+	echo "Distro version not specified, deduced from source code: $APP_VER" >&2
 	#exit 1
 fi
 
 echo APP_VER: $APP_VER
 echo APP_NAME: $APP_NAME
 echo SRC_DIR: $SRC_DIR
-echo QT_DIR: $QT_DIR
 echo WORK_DIR: $WORK_DIR
 echo NO_CLEAN: $NO_CLEAN
 
 if [ -z $USE_SYSTEM_QT ]; then
     QT_LIB_DIR=$QT_DIR/lib
     QMAKE=$QT_DIR/bin/qmake
-    DISTRO_NAME=$APP_NAME-$DISTRO_VER-linux64
+    DISTRO_NAME=$APP_NAME-$APP_VER-linux64
 else
-    echo using system QT
     QT_DIR=/usr/lib/i386-linux-gnu/qt5
     QT_LIB_DIR=/usr/lib/i386-linux-gnu
     QMAKE=/usr/bin/qmake
-    DISTRO_NAME=$APP_NAME-$DISTRO_VER-linux32
+    DISTRO_NAME=$APP_NAME-$APP_VER-linux32
 fi
 
-$QMAKE -v
+echo QT_DIR: $QT_DIR
 
 BUILD_DIR=$WORK_DIR/_build
 DIST_DIR=$WORK_DIR/$DISTRO_NAME
@@ -103,7 +101,7 @@ if [ -z $NO_CLEAN ]; then
 fi
 
 cd $BUILD_DIR
-$QMAKE $SRC_DIR/$APP_NAME.pro CONFIG+=release CONFIG+=force_debug_info CONFIG+=separate_debug_info -r -spec linux-g++
+$QMAKE $SRC_DIR/quickbox.pro CONFIG+=release CONFIG+=force_debug_info CONFIG+=separate_debug_info -r -spec linux-g++
 make -j2
 if [ $? -ne 0 ]; then
   echo "Make Error" >&2
@@ -159,4 +157,5 @@ rsync -av --exclude '*.debug' $QT_DIR/qml/QtQuick.2/ $DIST_BIN_DIR/QtQuick.2
 tar -cvzf $WORK_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
 rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
+
 ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $WORK_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
