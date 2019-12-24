@@ -492,29 +492,34 @@ void RelaysWidget::print_start_list_clubs()
 
 void RelaysWidget::print_results_nlegs()
 {
-	printResults(true);
+	quickevent::gui::ReportOptionsDialog::Options default_opts;
+	default_opts.setLegsCount(1);
+	printResults("relaysResultsNLegsReportOptions", default_opts);
 }
 
 void RelaysWidget::print_results_overal()
 {
-	printResults(false);
+	quickevent::gui::ReportOptionsDialog::Options default_opts;
+	default_opts.setLegsCount(99);
+	default_opts.setResultExcludeDisq(true);
+	printResults("relaysResultsOverallReportOptions", default_opts);
 }
 
-void RelaysWidget::printResults(bool exclude_not_finish)
+void RelaysWidget::printResults(const QString &settings_id, const QVariantMap &default_options)
 {
 	qfLogFuncFrame();
 	quickevent::gui::ReportOptionsDialog dlg(this);
 	dlg.setLegsOptionVisible(true);
 	dlg.setResultOptionsVisible(true);
-	dlg.setPersistentSettingsId("relaysResultsReportOptions");
-	dlg.loadPersistentSettings();
+	dlg.setPersistentSettingsId(settings_id);
+	dlg.loadPersistentSettings(default_options);
 	if(!dlg.exec())
 		return;
 	QVariantMap props = dlg.reportProperties();
 	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
 	qfDebug() << opts;
 	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
-	QVariant td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), exclude_not_finish).toVariant();
+	QVariant td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq()).toVariant();
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
 														  , td
@@ -523,4 +528,5 @@ void RelaysWidget::printResults(bool exclude_not_finish)
 														  , props
 														  );
 }
+
 

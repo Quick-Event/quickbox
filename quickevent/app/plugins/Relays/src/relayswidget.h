@@ -51,7 +51,7 @@ private:
 	void print_results_nlegs();
 	void print_results_overal();
 
-	void printResults(bool exclude_not_finish);
+	void printResults(const QString &settings_id, const QVariantMap &default_options);
 private:
 	Ui::RelaysWidget *ui;
 	qf::core::model::SqlTableModel *m_tblModel;

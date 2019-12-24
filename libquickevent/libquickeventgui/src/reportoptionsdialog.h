@@ -87,6 +87,7 @@ public:
 
 	Q_INVOKABLE QVariantMap reportProperties() const;
 
+	void loadPersistentSettings(const Options &default_options);
 	Q_SLOT void loadPersistentSettings();
 	Q_SLOT void savePersistentSettings();
 

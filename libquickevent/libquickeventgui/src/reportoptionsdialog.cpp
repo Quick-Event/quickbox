@@ -250,7 +250,7 @@ QVariantMap ReportOptionsDialog::reportProperties() const
 	return props;
 }
 
-void ReportOptionsDialog::loadPersistentSettings()
+void ReportOptionsDialog::loadPersistentSettings(const ReportOptionsDialog::Options &default_options)
 {
 	qfLogFuncFrame() << persistentSettingsPath();
 	if(persistentSettingsId().isEmpty())
@@ -259,8 +259,19 @@ void ReportOptionsDialog::loadPersistentSettings()
 	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
 	//qfInfo() << persistentSettingsPath() << m;
 	Options opts(m);
+	QMapIterator<QString, QVariant> it(default_options);
+	while(it.hasNext()) {
+		it.next();
+		if(!opts.contains(it.key()))
+			opts[it.key()] = it.value();
+	}
 	qfDebug() << opts;
 	setOptions(opts);
+}
+
+void ReportOptionsDialog::loadPersistentSettings()
+{
+	loadPersistentSettings(Options());
 }
 
 void ReportOptionsDialog::savePersistentSettings()
