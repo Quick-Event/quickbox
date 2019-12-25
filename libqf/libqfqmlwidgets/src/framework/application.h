@@ -32,6 +32,7 @@ public:
 	const QList<QQmlError>& qmlErrorList();
 	void clearQmlErrorList();
 	QStringList qmlPluginImportPaths() {return m_qmlPluginImportPaths;}
+	QStringList qmlLibraryImportPaths() {return m_qmlLibraryImportPaths;}
 	QString pluginDataDir() {return m_pluginDataDir;}
 	MainWindow* frameWork();
 

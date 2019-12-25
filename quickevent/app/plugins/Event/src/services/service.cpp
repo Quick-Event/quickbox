@@ -41,9 +41,7 @@ Service::~Service()
 Event::EventPlugin *Service::eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto *plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
-	QF_ASSERT(plugin != nullptr, "Bad plugin", return nullptr);
-	return plugin;
+	return fwk->plugin<Event::EventPlugin *>();
 }
 
 QString Service::settingsGroup() const

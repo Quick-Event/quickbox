@@ -13,6 +13,7 @@
 
 #include <qf/qmlwidgets/framework/dockwidget.h>
 #include <qf/qmlwidgets/framework/mainwindow.h>
+#include <qf/qmlwidgets/framework/application.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
@@ -480,9 +481,9 @@ QString EventPlugin::classNameById(int class_id)
 	return m_classNameCache.value(class_id);
 }
 
-DbSchema EventPlugin::dbSchema()
+DbSchema *EventPlugin::dbSchema()
 {
-	return DbSchema(this);
+	return new DbSchema(this);
 }
 
 int EventPlugin::minDbVersion()
@@ -671,6 +672,9 @@ void EventPlugin::connectToSqlServer()
 			}
 		}
 		else {
+			QString driver_name = "QSQLITE";
+			QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
+			QSqlDatabase db = QSqlDatabase::addDatabase(driver_name);
 			connect_ok = true;
 		}
 	}
@@ -755,13 +759,14 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 	qfInfo() << "createEvent, stage_count:" << stage_count;
 	QF_ASSERT(stage_count > 0, "Stage count have to be greater than 0", return false);
 
-	qfInfo() << "will create:" << event_id;
+	qfInfo() << "will create DB:" << event_id;
 	qfs::Connection conn = qfs::Connection::forName();
 	//QF_ASSERT(conn.isOpen(), "Connection is not open", return false);
 	if(connection_type == ConnectionType::SingleFile) {
 		QString event_fn = eventNameToFileName(event_id);
 		conn.close();
 		conn.setDatabaseName(event_fn);
+		qfInfo() << "opening file:" << conn.databaseName() << "driver:" << conn.driverName();
 		if(!conn.open()) {
 			qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
 			return false;
@@ -772,11 +777,11 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		create_options["schemaName"] = event_id;
 		create_options["driverName"] = conn.driverName();
 
-		QVariant ret_val;
-		QMetaObject::invokeMethod(this, "createDbSqlScript", Qt::DirectConnection,
-								  Q_RETURN_ARG(QVariant, ret_val),
-								  Q_ARG(QVariant, create_options));
-		QStringList create_script = ret_val.toStringList();
+		//QVariant ret_val;
+		//QMetaObject::invokeMethod(this, "createDbSqlScript", Qt::DirectConnection,
+		//						  Q_RETURN_ARG(QVariant, ret_val),
+		//						  Q_ARG(QVariant, create_options));
+		QStringList create_script = dbSchema()->createDbSqlScript(create_options);
 
 		qfInfo().nospace().noquote() << create_script.join(";\n") << ';';
 		qfs::Query q(conn);
@@ -1071,15 +1076,15 @@ void EventPlugin::exportEvent()
 		}
 		qfs::Transaction transaction(ex_conn);
 
-		DbSchema db_schema = dbSchema();
-		auto tables = db_schema.tables();
+		DbSchema *db_schema = dbSchema();
+		auto tables = db_schema->tables();
 		int step_cnt = tables.count() + 1;
 		int step_no = 0;
 		fwk->showProgress(tr("Creating database"), ++step_no, step_cnt);
 		{
 			DbSchema::CreateDbSqlScriptOptions create_options;
 			create_options.setDriverName(ex_conn.driverName());
-			QStringList create_script = db_schema.createDbSqlScript(create_options);
+			QStringList create_script = db_schema->createDbSqlScript(create_options);
 			qfs::Query ex_q(ex_conn);
 			if(!run_sql_script(ex_q, create_script)) {
 				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
@@ -1091,7 +1096,7 @@ void EventPlugin::exportEvent()
 			QString table_name = table->property("name").toString();
 			qfDebug() << "Copying table" << table_name;
 			fwk->showProgress(tr("Copying table %1").arg(table_name), ++step_no, step_cnt);
-			QSqlRecord rec = db_schema.sqlRecord(table);
+			QSqlRecord rec = db_schema->sqlRecord(table);
 			err_str = copy_sql_table(table_name, rec, conn, ex_conn);
 			if(!err_str.isEmpty())
 				break;
@@ -1169,8 +1174,8 @@ void EventPlugin::importEvent_qbe()
 
 		qfs::Transaction transaction(exp_conn);
 
-		DbSchema db_schema = dbSchema();
-		auto tables = db_schema.tables();
+		DbSchema *db_schema = dbSchema();
+		auto tables = db_schema->tables();
 		int step_cnt = tables.count() + 1;
 		int step_no = 0;
 		fwk->showProgress(tr("Creating database"), ++step_no, step_cnt);
@@ -1178,7 +1183,7 @@ void EventPlugin::importEvent_qbe()
 			DbSchema::CreateDbSqlScriptOptions create_options;
 			create_options.setDriverName(exp_conn.driverName());
 			create_options.setSchemaName(event_name);
-			QStringList create_script = db_schema.createDbSqlScript(create_options);
+			QStringList create_script = db_schema->createDbSqlScript(create_options);
 			qfs::Query ex_q(exp_conn);
 			if(!run_sql_script(ex_q, create_script)) {
 				err_str = tr("Create Database Error: %1").arg(ex_q.lastError().text());
@@ -1190,7 +1195,7 @@ void EventPlugin::importEvent_qbe()
 			QString table_name = table->property("name").toString();
 			qfDebug() << "Copying table" << table_name;
 			fwk->showProgress(tr("Copying table %1").arg(table_name), ++step_no, step_cnt);
-			QSqlRecord rec = db_schema.sqlRecord(table, true);
+			QSqlRecord rec = db_schema->sqlRecord(table, true);
 			err_str = copy_sql_table(table_name, rec, imp_conn, exp_conn);
 			if(!err_str.isEmpty())
 				break;

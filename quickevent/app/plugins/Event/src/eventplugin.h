@@ -91,7 +91,7 @@ public:
 
 	Q_INVOKABLE QString classNameById(int class_id);
 
-	DbSchema dbSchema();
+	DbSchema* dbSchema();
 	static int minDbVersion();
 
 	Q_SLOT void onInstalled();

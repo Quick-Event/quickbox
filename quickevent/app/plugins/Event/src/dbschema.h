@@ -1,5 +1,4 @@
-#ifndef DBSCHEMA_H
-#define DBSCHEMA_H
+#pragma once
 
 #include <qf/core/utils.h>
 
@@ -12,8 +11,10 @@ class EventPlugin;
 
 class QObject;
 class QSqlRecord;
+class QQmlComponent;
+class QQmlEngine;
 
-class DbSchema
+class DbSchema : public QObject
 {
 public:
 	class CreateDbSqlScriptOptions : public QVariantMap
@@ -27,13 +28,16 @@ public:
 public:
 	DbSchema(Event::EventPlugin *event_plugin);
 
-	QObject* dbSchema();
 	QStringList createDbSqlScript(const CreateDbSqlScriptOptions &create_options);
 	QList<QObject*> tables();
 	QObject* table(const QString &table_name);
 	QSqlRecord sqlRecord(QObject *table, bool lowercase_field_names = false);
 private:
+	QQmlEngine *qmlEngine();
+	QObject* dbSchemaRoot();
+private:
 	Event::EventPlugin *m_eventPlugin;
+	QQmlComponent *m_dbschemaComponent = nullptr;
+	QObject *m_dbSchemaRoot = nullptr;
 };
 
-#endif // DBSCHEMA_H
