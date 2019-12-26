@@ -74,7 +74,7 @@ public:
 	Q_SLOT void editEvent();
 	Q_SLOT bool closeEvent();
 	Q_SLOT bool openEvent(const QString &event_name = QString());
-	Q_SLOT void exportEvent();
+	Q_SLOT void exportEvent_qbe();
 	Q_SLOT void importEvent_qbe();
 
 	Q_SIGNAL void reloadDataRequest();
@@ -127,8 +127,8 @@ private:
 	qf::qmlwidgets::Action *m_actCreateEvent = nullptr;
 	qf::qmlwidgets::Action *m_actOpenEvent = nullptr;
 	qf::qmlwidgets::Action *m_actEditEvent = nullptr;
-	qf::qmlwidgets::Action *m_actExportEvent = nullptr;
-	qf::qmlwidgets::Action *m_actImportEvent = nullptr;
+	qf::qmlwidgets::Action *m_actExportEvent_qbe = nullptr;
+	qf::qmlwidgets::Action *m_actImportEvent_qbe = nullptr;
 	qf::qmlwidgets::Action *m_actEditStage = nullptr;
 	Event::EventConfig *m_eventConfig = nullptr;
 	bool m_sqlServerConnected = false;

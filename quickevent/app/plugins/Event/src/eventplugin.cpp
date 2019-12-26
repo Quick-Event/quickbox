@@ -295,13 +295,13 @@ void EventPlugin::onInstalled()
 		this->m_actEditEvent->setEnabled(!event_name.isEmpty());
 	});
 
-	m_actExportEvent = new qfw::Action(tr("Event (*.qbe)"));
-	m_actExportEvent->setEnabled(false);
-	connect(m_actExportEvent, &QAction::triggered, this, &EventPlugin::exportEvent);
+	m_actExportEvent_qbe = new qfw::Action(tr("Event (*.qbe)"));
+	m_actExportEvent_qbe->setEnabled(false);
+	connect(m_actExportEvent_qbe, &QAction::triggered, this, &EventPlugin::exportEvent_qbe);
 
-	m_actImportEvent = new qfw::Action(tr("Event (*.qbe)"));
-	m_actImportEvent->setEnabled(false);
-	connect(m_actImportEvent, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
+	m_actImportEvent_qbe = new qfw::Action(tr("Event (*.qbe)"));
+	m_actImportEvent_qbe->setEnabled(false);
+	connect(m_actImportEvent_qbe, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
 
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
 	connect(this, &EventPlugin::eventNameChanged, this, &EventPlugin::updateWindowTitle);
@@ -320,13 +320,12 @@ void EventPlugin::onInstalled()
 	m_actEvent->addActionInto(m_actCreateEvent);
 	m_actEvent->addActionInto(m_actOpenEvent);
 	m_actEvent->addActionInto(m_actEditEvent);
-	m_actEvent->addActionInto(m_actExportEvent);
 
 	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
-	act_import->addActionInto(m_actImportEvent);
+	act_import->addActionInto(m_actImportEvent_qbe);
 
 	qfw::Action *act_export = fwk->menuBar()->actionForPath("file/export");
-	act_export->addActionInto(m_actExportEvent);
+	act_export->addActionInto(m_actExportEvent_qbe);
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
@@ -682,8 +681,8 @@ void EventPlugin::connectToSqlServer()
 	m_actCreateEvent->setEnabled(connect_ok);
 	m_actOpenEvent->setEnabled(connect_ok);
 	m_actEditEvent->setEnabled(connect_ok);
-	m_actExportEvent->setEnabled(connect_ok);
-	m_actImportEvent->setEnabled(connect_ok);
+	m_actExportEvent_qbe->setEnabled(connect_ok);
+	m_actImportEvent_qbe->setEnabled(connect_ok);
 	if(connect_ok) {
 		openEvent(conn_w->eventName());
 	}
@@ -1048,7 +1047,7 @@ static QString copy_sql_table(const QString &table_name, const QSqlRecord &dest_
 	return QString();
 }
 
-void EventPlugin::exportEvent()
+void EventPlugin::exportEvent_qbe()
 {
 	qfLogFuncFrame();
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
