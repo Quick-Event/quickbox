@@ -54,8 +54,6 @@ void CorePlugin::onInstalled()
 		a_file->addActionInto(a_quit);
 	}
 
-	/*auto *a_file_export = */a_file->addMenuInto("export", tr("&Export"));
-
 	auto *a_tools = fwk->menuBar()->actionForPath("tools", true);
 	a_tools->setText(tr("&Tools"));
 	{
