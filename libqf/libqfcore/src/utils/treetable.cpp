@@ -331,7 +331,7 @@ TreeTableColumn TreeTable::column(int col_ix) const
 void TreeTable::setColumn(int col_ix, const TreeTableColumn &ttc)
 {
 	if(col_ix < 0 || col_ix >= columnCount()) {
-		qfWarning() << "Onvalid column index:" << col_ix << "of:" << columnCount();
+		qfWarning() << "Invalid column index:" << col_ix << "of:" << columnCount();
 		return;
 	}
 	QVariantList cc = columns();

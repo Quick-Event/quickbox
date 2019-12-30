@@ -4,6 +4,7 @@
 #include "runspluginglobal.h"
 
 #include <quickevent/core/og/timems.h>
+#include <quickevent/core/coursedef.h>
 
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -25,6 +26,8 @@ namespace qf {
 		}
 	}
 }
+
+//namespace quickevent { namespace core { class CourseDef; class CodeDef; }}
 
 namespace Runs {
 
@@ -51,13 +54,16 @@ public:
 	Q_SLOT void clearRunnersTableCache();
 
 	Q_INVOKABLE int courseForRun(int run_id);
-	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
+	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id, bool including_distance);
+	Q_INVOKABLE quickevent::core::CourseDef courseForCourseId(int course_id, bool including_distance);
 
 	Q_INVOKABLE int cardForRun(int run_id);
 	qf::core::utils::TreeTable currentStageResultsTable(const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
 	Q_INVOKABLE QVariant currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
-	qf::core::utils::TreeTable stageResultsTable(int stage_id, const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
+
 	Q_INVOKABLE QVariant stageResultsTableData(int stage_id, const QString &class_filter, int max_competitors_in_class = 0, bool exclude_disq = false);
+	qf::core::utils::TreeTable stageResultsTable(int stage_id, const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false, bool add_laps = false);
+
 	qf::core::utils::Table nstagesClassResultsTable(int stages_count, int class_id, int places = -1, bool exclude_disq = true);
 	qf::core::utils::TreeTable nstagesResultsTable(int stages_count, int places = -1, bool exclude_disq = true);
 	Q_INVOKABLE QVariant nstagesResultsTableData(int stages_count, int places = -1, bool exclude_disq = true);
@@ -72,6 +78,7 @@ public:
 
 	bool exportStartListStageIofXml30(int stage_id, const QString &file_name);
 
+	//bool exportResultsHtmlStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsIofXml30Stage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
@@ -97,8 +104,14 @@ public:
 
 	void export_startListClassesHtml();
 	void export_startListClubsHtml();
+
+	QString export_resultsHtmlStage(bool with_laps = false);
+	void export_resultsHtmlStageWithLaps();
 private:
 	Q_SLOT void onInstalled();
+
+	qf::core::utils::TreeTable addLapsToStageResultsTable(int course_id, const qf::core::utils::TreeTable &class_results);
+	void exportHtmlStageWithLaps(const QString &laps_file_name, const qf::core::utils::TreeTable &tt);
 
 	int courseForRun_Classic(int run_id);
 	int courseForRun_Relays(int run_id);

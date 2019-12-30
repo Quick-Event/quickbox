@@ -279,6 +279,14 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 			qfw::Action *a = a_export_results->addActionInto("iofxml30", tr("IOF XML &3.0"));
 			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_iofxml30_stage);
 		}
+		{
+			qfw::Action *a = a_export_results->addActionInto("html", tr("&Html"));
+			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_resultsHtmlStage);
+		}
+		{
+			qfw::Action *a = a_export_results->addActionInto("htmlWithLaps", tr("Html with &laps"));
+			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_resultsHtmlStageWithLaps);
+		}
 		qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));
 		{
 			qfw::Action *a = a_export_results_csos->addActionInto("stage", tr("Current stage"));

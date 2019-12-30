@@ -31,7 +31,7 @@ public:
 
 	static const QLatin1String SETTINGS_PREFIX;
 	//static const int FINISH_PUNCH_CODE;
-	static const int FINISH_PUNCH_POS;
+	//static const int FINISH_PUNCH_POS;
 
 	QF_PROPERTY_IMPL2(int, c, C, urrentCardCheckerIndex, -1)
 

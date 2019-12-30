@@ -248,7 +248,7 @@ qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 	QStatusBar *sb = Super::statusBar();
 	StatusBar *status_bar = qobject_cast<StatusBar*>(sb);
 	if(!status_bar) {
-		QF_SAFE_DELETE(sb);
+		QF_SAFE_DELETE(sb)
 		status_bar = new StatusBar(this);
 		Super::setStatusBar(status_bar);
 	}
@@ -269,7 +269,7 @@ CentralWidget *MainWindow::centralWidget()
 	QWidget *cw = Super::centralWidget();
 	CentralWidget *central_widget = qobject_cast<CentralWidget*>(cw);
 	if(!central_widget) {
-		QF_SAFE_DELETE(cw);
+		QF_SAFE_DELETE(cw)
 		central_widget = new StackedCentralWidget(this);
 		//central_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 		//central_widget->setStyleSheet("background:rgb(67, 67, 67)");

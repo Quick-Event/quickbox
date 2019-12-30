@@ -6,7 +6,7 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -90,9 +90,9 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 		qf::core::sql::Query q;
 		deleteCourses(stage_id);
 
-		QMap<QString, quickevent::core::si::CodeDef> code_defs;
+		QMap<QString, quickevent::core::CodeDef> code_defs;
 		for(const QVariant &c : codes) {
-			quickevent::core::si::CodeDef cd(c.toMap());
+			quickevent::core::CodeDef cd(c.toMap());
 			QString key = cd.type() + QString::number(cd.code());
 			code_defs[key] = cd;
 		}
@@ -162,15 +162,15 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 				key = v.toString();
 				if(codes.isEmpty()) {
 					/// guess code definition from courses
-					bool ok;
-					quickevent::core::si::CodeDef cd;
-					if(key.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
-						cd.setCode(key.mid(1).toInt(&ok));
-						cd.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_START);
+					bool ok = true;
+					quickevent::core::CodeDef cd;
+					if(key.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_START)) {
+						cd.setCode(quickevent::core::si::PunchRecord::START_PUNCH_CODE);
+						cd.setType(quickevent::core::CodeDef::CONTROL_TYPE_START);
 					}
-					else if(key.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
-						cd.setCode(key.mid(1).toInt(&ok));
-						cd.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+					else if(key.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_FINISH)) {
+						cd.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+						cd.setType(quickevent::core::CodeDef::CONTROL_TYPE_FINISH);
 					}
 					else {
 						cd.setCode(key.toInt(&ok));
@@ -244,10 +244,10 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 		{
 			QString qs = "INSERT INTO codes (type, code, note, latitude, longitude) VALUES (:type, :code, :note, :latitude, :longitude)";
 			q.prepare(qs, qf::core::Exception::Throw);
-			QMapIterator<QString, quickevent::core::si::CodeDef > it(code_defs);
+			QMapIterator<QString, quickevent::core::CodeDef > it(code_defs);
 			while(it.hasNext()) {
 				it.next();
-				quickevent::core::si::CodeDef cd = it.value();
+				quickevent::core::CodeDef cd = it.value();
 				qfDebug() << "inserting code" << cd.toString();
 				//q.bindValue(":type", cd.type().isEmpty()? QString(""): cd.type()); /// save empty not null string
 				q.bindValue(":type", cd.type());
@@ -269,12 +269,12 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 				int pos = 0;
 				for(const QString &code_str : it.value()) {
 					int code_id = code_to_id.value(code_str);
-					quickevent::core::si::CodeDef cd = code_defs.value(code_str);
+					quickevent::core::CodeDef cd = code_defs.value(code_str);
 					QString code_type = cd.type();
 					if(code_id > 0) {
 						qfDebug() << "courseId" << it.key() << "-> code:" << code_str << "codeId:" << code_id;
 						/// keep start control code == 0 to have firs control on position == 1
-						if(code_type != quickevent::core::si::CodeDef::CONTROL_TYPE_START)
+						if(code_type != quickevent::core::CodeDef::CONTROL_TYPE_START)
 							pos++;
 						q.bindValue(":courseId", it.key());
 						q.bindValue(":position", pos);

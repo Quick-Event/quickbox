@@ -1,7 +1,11 @@
 HEADERS  += \
-	$$PWD/quickeventcoreglobal.h   \
+    $$PWD/quickeventcoreglobal.h   \
+    $$PWD/coursedef.h \
+    $$PWD/codedef.h \
 
 SOURCES += \
+    $$PWD/coursedef.cpp \
+    $$PWD/codedef.cpp \
 
 FORMS += \
 

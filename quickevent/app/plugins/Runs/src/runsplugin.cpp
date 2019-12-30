@@ -10,7 +10,7 @@
 #include <Event/eventplugin.h>
 
 #include <quickevent/gui/reportoptionsdialog.h>
-#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -148,20 +148,6 @@ void RunsPlugin::onInstalled()
 	//emit nativeInstalled();
 }
 
-/*
-void RunsPlugin::onEditStartListRequest(int stage_id, int class_id, int competitor_id)
-{
-	//qf::qmlwidgets::dialogs::MessageBox::showError(nullptr, "Not implemented yet.");
-	qff::MainWindow *fwk = qff::MainWindow::frameWork();
-	if(!fwk->setActivePart("Runs"))
-		return;
-	auto *rw = partWidget()->findChild<RunsWidget*>();
-	if(!rw)
-		return;
-	eventPlugin()->setCurrentStageId(stage_id);
-	rw->editStartList(class_id, competitor_id);
-}
-*/
 int RunsPlugin::courseForRun(int run_id)
 {
 	// TODO: implementation should be dependend on event type and exposed to QML
@@ -193,15 +179,21 @@ static int latlng_distance(double lat1, double lng1, double lat2, double lng2)
 	return static_cast<int>(std::ceil(d));
 }
 
-QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
+QVariantMap RunsPlugin::courseCodesForRunId(int run_id, bool including_distance)
 {
 	qfLogFuncFrame() << "run id:" << run_id;
-	QVariantMap ret;
 	if(run_id <= 0) {
 		qfError() << "Run ID == 0";
-		return ret;
+		return QVariantMap();
 	}
 	int course_id = courseForRun(run_id);
+	return courseForCourseId(course_id, including_distance);
+}
+
+quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id, bool including_distance)
+{
+	qfLogFuncFrame() << "course id:" << course_id;
+	quickevent::core::CourseDef ret;
 	if(course_id <= 0) {
 		qfError() << "Course ID == 0";
 		return ret;
@@ -216,9 +208,9 @@ QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
 		if(q.next())
 			ret = q.values();
 	}
-	quickevent::core::si::CodeDef start_code;
+	quickevent::core::CodeDef start_code;
 	QVariantList codes;
-	quickevent::core::si::CodeDef finish_code;
+	quickevent::core::CodeDef finish_code;
 	{
 		qfs::QueryBuilder qb;
 		qb.select2("coursecodes", "position")
@@ -231,45 +223,49 @@ QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
 		//qfWarning() << qb.toString();
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		while (q.next()) {
-			quickevent::core::si::CodeDef cd(q.values());
+			quickevent::core::CodeDef cd(q.values());
 			const QString control_type = cd.type();
-			if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_START) {
+			if(control_type == quickevent::core::CodeDef::CONTROL_TYPE_START) {
 				start_code = cd;
 			}
-			else if(control_type == quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH) {
+			else if(control_type == quickevent::core::CodeDef::CONTROL_TYPE_FINISH) {
 				finish_code = cd;
-				// whatever code is imported, QE is using 999 everywhere
-				finish_code.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
 			}
 			else if(control_type.isEmpty()) {
 				codes << cd;
 			}
 		}
 	}
+
 	if (finish_code.isEmpty()) {
-		finish_code.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
-		finish_code.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+		finish_code.setType(quickevent::core::CodeDef::CONTROL_TYPE_FINISH);
 	}
-	int course_len = 0;
-	quickevent::core::si::CodeDef prev_cd = start_code;
-	for (int i = 0; i < codes.count(); ++i) {
-		quickevent::core::si::CodeDef cd(codes[i].toMap());
-		int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), cd.latitude(), cd.longitude());
-		course_len += d;
-		cd.setDistance(d);
-		codes[i] = cd;
-		qfDebug() << "pos:" << (i+1) << prev_cd.toString() << "-->" << cd.toString() << "distance:" << d;
-		prev_cd = cd;
+	// whatever code is imported, QE is using 999 everywhere
+	finish_code.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+
+	if(including_distance) {
+		int course_len = 0;
+		quickevent::core::CodeDef prev_cd = start_code;
+		for (int i = 0; i < codes.count(); ++i) {
+			quickevent::core::CodeDef cd(codes[i].toMap());
+			int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), cd.latitude(), cd.longitude());
+			course_len += d;
+			cd.setDistance(d);
+			codes[i] = cd;
+			qfDebug() << "pos:" << (i+1) << prev_cd.toString() << "-->" << cd.toString() << "distance:" << d;
+			prev_cd = cd;
+		}
+		{
+			int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), finish_code.latitude(), finish_code.longitude());
+			course_len += d;
+			qfDebug() << "finish distance:" << d;
+			finish_code.setDistance(d);
+		}
+		qfDebug() << "course len:" << course_len;
 	}
-	{
-		int d = latlng_distance(prev_cd.latitude(), prev_cd.longitude(), finish_code.latitude(), finish_code.longitude());
-		course_len += d;
-		qfDebug() << "finish distance:" << d;
-		finish_code.setDistance(d);
-	}
-	qfDebug() << "course len:" << course_len;
-	ret["codes"] = codes;
-	ret["finishCode"] = finish_code;
+	ret.setCodes(codes);
+	ret.setStartCode(start_code);
+	ret.setFinishCode(finish_code);
 	return ret;
 }
 
@@ -542,18 +538,21 @@ qf::core::utils::TreeTable RunsPlugin::currentStageResultsTable(const QString &c
 	return stageResultsTable(stage_id, class_filter, max_competitors_in_class, exclude_disq);
 }
 
-qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
+qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QString &class_filter, int max_competitors_in_class, bool exclude_disq, bool add_laps)
 {
+	qfLogFuncFrame();
 	qf::core::model::SqlTableModel model;
 	{
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("classes", "id, name")
-			.select2("courses", "length, climb")
+			.select2("courses", "id, length, climb")
 			.from("classes")
 			//.where("classes.name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
 			.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 			.join("classdefs.courseId", "courses.id")
 			.orderBy("classes.name");//.limit(1);
+		//if(add_laps)
+		//	qb.where("classes.name='H40C'");
 		if(!class_filter.isEmpty()) {
 			qb.where(class_filter);
 		}
@@ -590,10 +589,12 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 			.orderBy("runs.notCompeting, runs.disqualified, runs.timeMs");
 		if(max_competitors_in_class > 0)
 			qb.limit(max_competitors_in_class);
+		qfDebug() << qb.toString();
 		model.setQueryBuilder(qb, true);
 	}
 	for(int i=0; i<tt.rowCount(); i++) {
-		int class_id = tt.row(i).value("classes.id").toInt();
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		int class_id = tt_row.value("classes.id").toInt();
 		//console.debug("class id:", class_id);
 		QVariantMap qm;
 		qm["stage_id"] = stage_id;
@@ -603,12 +604,16 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 		qf::core::utils::TreeTable tt2 = model.toTreeTable();
 		tt2.appendColumn("pos", QVariant::String);
 		tt2.appendColumn("npos", QVariant::Int);
+		tt2.appendColumn("loss", QVariant::Int);
+		int first_time_ms = 0;
 		int prev_time_ms = 0;
 		int prev_pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			bool has_pos = !tt2_row.value(QStringLiteral("disqualified")).toBool() && !tt2_row.value(QStringLiteral("notCompeting")).toBool();
 			int time_ms = tt2_row.value(QStringLiteral("timeMs")).toInt();
+			if(first_time_ms == 0)
+				first_time_ms = time_ms;
 			if(has_pos) {
 				int pos = j+1;
 				if(time_ms == prev_time_ms)
@@ -617,6 +622,7 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 					prev_pos = pos;
 				tt2_row.setValue(QStringLiteral( "pos"), QString::number(pos) + '.');
 				tt2_row.setValue(QStringLiteral( "npos"), pos);
+				tt2_row.setValue(QStringLiteral( "loss"), time_ms - first_time_ms);
 			}
 			else {
 				tt2_row.setValue(QStringLiteral( "pos"), QString());
@@ -625,8 +631,109 @@ qf::core::utils::TreeTable RunsPlugin::stageResultsTable(int stage_id, const QSt
 			prev_time_ms = time_ms;
 			tt2.setRow(j, tt2_row);
 		}
-		qfDebug().noquote() << tt2.toString();
+		//qfDebug().noquote() << tt2.toString();
+		if(add_laps) {
+			int course_id = tt_row.value("courses.id").toInt();
+			QString class_name = tt_row.value("classes.name").toString();
+			tt2 = addLapsToStageResultsTable(course_id, tt2);
+			tt2.setValue("className", class_name);
+			tt2.setValue("stageId", tt.value("stageId"));
+			tt2.setValue("event", tt.value("event"));
+			tt2.setValue("stageStart", tt.value("stageStart"));
+		}
 		tt.appendTable(i, tt2);
+	}
+	return tt;
+}
+
+qf::core::utils::TreeTable RunsPlugin::addLapsToStageResultsTable(int course_id, const qf::core::utils::TreeTable &class_results)
+{
+	qf::core::utils::TreeTable tt = class_results;
+	int col_stp_time0_ix = tt.columnCount();
+	quickevent::core::CourseDef course = courseForCourseId(course_id, false);
+	tt.setValue("course", course);
+	QVariantList course_codes = course.codes();
+	quickevent::core::CodeDef finish_code = course.finishCode();
+	course_codes << finish_code;
+	for (int i = 0; i < course_codes.count(); ++i) {
+		quickevent::core::CodeDef cd(course_codes[i].toMap());
+		tt.appendColumn(QStringLiteral("stpTime_%1").arg(i), QVariant::Int, QStringLiteral("%1 (%2)").arg(i+1).arg(cd.code()));
+		tt.appendColumn(QStringLiteral("stpPos_%1").arg(i), QVariant::Int);
+		tt.appendColumn(QStringLiteral("lapTime_%1").arg(i), QVariant::Int);
+		tt.appendColumn(QStringLiteral("lapPos_%1").arg(i), QVariant::Int);
+	}
+	QStringList run_ids;
+	for(int i=0; i<tt.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		int run_id = tt_row.value(QStringLiteral("runs.id")).toInt();
+		if(run_id > 0)
+			run_ids << QString::number(run_id);
+	}
+	struct RunStp
+	{
+		int runId = 0;
+		int time = 0;
+		int pos = 0;
+	};
+	using RunStpMap = QMap<int, RunStp>; // run_id -> time
+	QMap<int, RunStpMap> stp_times;
+	QMap<int, RunStpMap> lap_times;
+	{
+		qf::core::sql::QueryBuilder qb;
+		qb.select2("runlaps", "runId, position, code, stpTimeMs, lapTimeMs")
+				.from("runlaps").where("runId IN (" + run_ids.join(',') + ')');
+		qf::core::sql::Query q;
+		q.execThrow(qb.toString());
+		while(q.next()) {
+			int run_id = q.value(0).toInt();
+			if(run_id <= 0)
+				continue;
+			int pos = q.value(1).toInt();
+			if(pos <= 0)
+				continue;
+			int code = q.value(2).toInt();
+			quickevent::core::CodeDef cd(course_codes.value(pos - 1).toMap());
+			if(cd.isEmpty() || cd.code() != code) {
+				qfWarning() << "Invalid code:" << code << "for pos:" << pos;
+				continue;
+			}
+			int stp = q.value(3).toInt();
+			if(stp <= 0)
+				continue;
+			stp_times[pos][run_id] = RunStp{run_id, stp};
+			int lap = q.value(4).toInt();
+			if(lap <= 0)
+				continue;
+			lap_times[pos][run_id] = RunStp{run_id, lap};
+		}
+	}
+	auto make_pos = [](QMap<int, RunStpMap> &times) {
+		for(int pos : times.keys()) {
+			RunStpMap &map = times[pos];
+			QList<RunStp> lst = map.values();
+			std::sort(lst.begin(), lst.end(), [](const RunStp &a, const RunStp &b) { return a.time < b.time; });
+			for (int i = 0; i < lst.size(); ++i) {
+				const RunStp &rs = lst[i];
+				map[rs.runId].pos = i+1;
+			}
+		}
+	};
+	make_pos(stp_times);
+	make_pos(lap_times);
+	for(int i=0; i<tt.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		int run_id = tt_row.value(QStringLiteral("runs.id")).toInt();
+		for (int j = 0; j < course_codes.count(); ++j) {
+			const RunStpMap &stps = stp_times.value(j+1);
+			const RunStp &stprun = stps.value(run_id);
+			const RunStpMap &laps = lap_times.value(j+1);
+			const RunStp &laprun = laps.value(run_id);
+			tt_row.setValue(col_stp_time0_ix + 4*j + 0, stprun.time);
+			tt_row.setValue(col_stp_time0_ix + 4*j + 1, stprun.pos);
+			tt_row.setValue(col_stp_time0_ix + 4*j + 2, laprun.time);
+			tt_row.setValue(col_stp_time0_ix + 4*j + 3, laprun.pos);
+		}
+		tt.setRow(i, tt_row);
 	}
 	return tt;
 }
@@ -807,9 +914,8 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				qb.select2("runlaps", "*")
 					.from("runlaps")
 					.where("runlaps.runId=" + QString::number(tt2_row.value(QStringLiteral("runs.id")).toInt()))
-					.where("runlaps.code<" QF_IARG(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE) )
-					.where("runlaps.code>=100") // skip START and FINISH codes
-					//.where("runlaps.position >= 1")
+					.where("runlaps.code>=" QF_IARG(quickevent::core::si::PunchRecord::PUNCH_CODE_MIN) ) // skip START and FINISH codes
+					.where("runlaps.code<=" QF_IARG(quickevent::core::si::PunchRecord::PUNCH_CODE_MAX) )
 					.orderBy("runlaps.position");
 
 				qfs::Query q;
@@ -1535,7 +1641,7 @@ void RunsPlugin::export_startListClassesHtml()
 	QVariantMap event = tt1.value("event").toMap();
 	if(event.value("stageCount").toInt() > 1)
 		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
-	append_list(body, QVariantList{"h1", h1_str});
+	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
@@ -1562,13 +1668,21 @@ void RunsPlugin::export_startListClassesHtml()
 				}
 			};
 		append_list(body, div1);
-		div1 = QVariantList{
-				"h3",
-				tr("length:"),
-				tt1_row.value("courses.length"), " ", tr("climb:"), tt1_row.value("courses.climb")
-			};
-		append_list(body, div1);
 		QVariantList table{"table"};
+		{
+			QVariantList ltr{
+				"tr",
+				QVariantList{"td", QVariantMap{{"colspan", "2"}},
+							 tr("length:"), tt1_row.value("courses.length"),
+									 " ",
+									 tr("climb:"), tt1_row.value("courses.climb")
+							},
+				QVariantList{"td", QVariantMap{{"colspan", "2"}, {"align", "right"}},
+							 QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
+							},
+			};
+			append_list(table, ltr);
+		}
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		QVariantList trr{"tr",
 				  QVariantList{"th", tr("Start")},
@@ -1616,7 +1730,7 @@ void RunsPlugin::export_startListClubsHtml()
 	QVariantMap event = tt1.value("event").toMap();
 	if(event.value("stageCount").toInt() > 1)
 		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
-	append_list(body, QVariantList{"h1", h1_str});
+	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
 	append_list(body, QVariantList{"h2", event.value("name")});
 	append_list(body, QVariantList{"h3", event.value("place")});
 	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
@@ -1643,11 +1757,19 @@ void RunsPlugin::export_startListClubsHtml()
 				}
 			};
 		append_list(body, div1);
-		div1 = QVariantList{
-				"h3", tt1_row.value("name")
-			};
-		append_list(body, div1);
 		QVariantList table{"table"};
+		{
+			QVariantList ltr{
+				"tr",
+				QVariantList{"td", QVariantMap{{"colspan", "3"}},
+							 tt1_row.value("name")
+							},
+				QVariantList{"td", QVariantMap{{"colspan", "2"}, {"align", "right"}},
+							 QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
+							},
+			};
+			append_list(table, ltr);
+		}
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		QVariantList trr{"tr",
 				QVariantList{"th", tr("Start")},
@@ -1686,6 +1808,259 @@ void RunsPlugin::export_startListClubsHtml()
 			qfInfo() << "exported:" << file_name;
 			QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
 		}
+	}
+}
+
+QString RunsPlugin::export_resultsHtmlStage(bool with_laps)
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	fwk->showProgress(tr("Preparing data"), 1, 2);
+	int stage_id = selectedStageId();
+	QString file_dir = QDir::tempPath() + "/quickevent/e" + QString::number(stage_id);
+	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id, QString(), 0, false, true);
+	QVariantList body{QStringLiteral("body")};
+	QString h1_str = "{{documentTitle}}";
+	QVariantMap event = tt1.value("event").toMap();
+	if(event.value("stageCount").toInt() > 1)
+		h1_str = "E" + tt1.value("stageId").toString() + " " + h1_str;
+	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h2", event.value("name")});
+	append_list(body, QVariantList{"h3", event.value("place")});
+	append_list(body, QVariantList{"h3", tt1.value("stageStart")});
+	QVariantList div1{"div"};
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		append_list(div1,
+					QVariantList{
+						"a",
+						QVariantMap{{"href", "#class_" + tt1_row.value("classes.name").toString()}},
+						tt1_row.value("classes.name"),
+						"&nbsp;"
+					});
+	}
+	append_list(body, div1);
+	int progress_cnt = tt1.rowCount();
+	int progress_ix = 0;
+	for(int i=0; i<tt1.rowCount(); i++) {
+		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
+		QString class_name = tt1_row.value(QStringLiteral("classes.name")).toString();
+		fwk->showProgress(tr("Procesing class %1").arg(class_name), progress_ix++, progress_cnt);
+		QString laps_file_name = file_dir + "/results_" + class_name + ".html";
+		div1 = QVariantList{
+				"h2",
+				QVariantList{ "a", QVariantMap{{"name", "class_" + class_name}},
+					tt1_row.value("classes.name")
+				}
+			};
+		append_list(body, div1);
+		QVariantList table{"table"};
+		{
+			QVariantList ltr{
+				"tr",
+				QVariantList{"td", QVariantMap{{"colspan", "4"}},
+							 tr("length:"), tt1_row.value("courses.length"),
+									 " ",
+									 tr("climb:"), tt1_row.value("courses.climb")
+							},
+				QVariantList{"td", QVariantMap{{"colspan", "2"}, {"align", "right"}},
+							with_laps? QVariantList{"a",  QVariantMap{ {"href", laps_file_name} }, tr("Laps") }: QVariantList{},
+							QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
+							},
+			};
+			append_list(table, ltr);
+		}
+		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
+		QVariantList trr{"tr",
+					QVariantList{"th", tr("Place")},
+					QVariantList{"th", tr("Name")},
+					QVariantList{"th", tr("Registration")},
+					QVariantList{"th", tr("Club")},
+					QVariantList{"th", tr("Time")},
+					QVariantList{"th", tr("Loss")},
+				};
+		append_list(table, trr);
+		for(int j=0; j<tt2.rowCount(); j++) {
+			qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
+			QVariantList trr{"tr"};
+			if(j % 2)
+				trr << QVariantMap{{"class", "odd"}};
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, tt2_row.value(QStringLiteral("pos"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("clubs.name"))});
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs::fromVariant(tt2_row.value("timeMs")).toString()});
+
+			QString loss_str;
+			if(tt2_row.value("notCompeting").toBool()) {
+				loss_str = tr("NC", "Not Competing");
+			}
+			else if(tt2_row.value("disqualified").toBool()) {
+				loss_str = tr("DISQ");
+			}
+			else {
+				loss_str = quickevent::core::og::TimeMs::fromVariant(tt2_row.value("loss")).toString();
+				if(!loss_str.isEmpty())
+					loss_str = "+" + loss_str;
+			}
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, loss_str});
+			append_list(table, trr);
+		}
+		append_list(body, table);
+		if(with_laps) {
+			exportHtmlStageWithLaps(laps_file_name, tt2);
+		}
+	}
+	fwk->hideProgress();
+	if(QDir().mkpath(file_dir)) {
+		QString file_name = file_dir + "/results.html";
+		QVariantMap options;
+		qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+		opts.setDocumentTitle(tr("Stage results"));
+		QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
+		QFile f(file_name);
+		if(f.open(QFile::WriteOnly)) {
+			f.write(str.toUtf8());
+			f.close();
+			qfInfo() << "exported:" << file_name;
+			QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
+			return file_name;
+		}
+	}
+	return QString();
+}
+
+void RunsPlugin::export_resultsHtmlStageWithLaps()
+{
+	QString fn = export_resultsHtmlStage(true);
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	if(fn.isEmpty())
+		QMessageBox::warning(fwk, tr("Warning"), tr("Export error"));
+	else
+		QMessageBox::information(fwk, tr("Information"), tr("Results exported to %1").arg(fn));
+}
+
+void RunsPlugin::exportHtmlStageWithLaps(const QString &laps_file_name, const qf::core::utils::TreeTable &tt)
+{
+	qfInfo() << "exporting:" << laps_file_name;
+	using TimeMs = quickevent::core::og::TimeMs;
+	quickevent::core::CourseDef course{tt.value("course").toMap()};
+	QVariantList course_codes = course.codes();
+	course_codes << course.finishCode();
+	QVariantList body{QStringLiteral("body")};
+	QString h1_str = "{{documentTitle}}";
+	QVariantMap event = tt.value("event").toMap();
+	if(event.value("stageCount").toInt() > 1)
+		h1_str = "E" + tt.value("stageId").toString() + ' ' + tt.value("className").toString() + ' ' + h1_str;
+	append_list(body, QVariantList{"h1", QVariantList{ "a", QVariantMap{{"name", "home"}}}, h1_str});
+	append_list(body, QVariantList{"h2", event.value("name")});
+	append_list(body, QVariantList{"h3", event.value("place")});
+	append_list(body, QVariantList{"h3", tt.value("stageStart")});
+	//QString class_name = tt1_row.value(QStringLiteral("classes.name")).toString();
+	QVariantList table{"table", QVariantMap{{QStringLiteral("class"), "btb bbb blb brb"}}};
+	{
+		QVariantList trr{"tr",
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br"}}, tr("Place")},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br"}}, tr("Name")},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br"}}, tr("Time")},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "brb"}}, tr("Loss")},
+				};
+		int i = 1;
+		for(QVariant v : course_codes) {
+			append_list(trr, QVariantList{"th"
+										  , QVariantMap{{"class", "br"}, {"colspan", "2"}}
+										  , (i < course_codes.size())? QVariant(i++): tr("FIN")});
+		}
+		append_list(table, trr);
+	}
+	{
+		QVariantList trr{"tr",
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, "&nbsp;"},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, tr("Registration")},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "br bbb"}}, "&nbsp;"},
+					QVariantList{"th", QVariantMap{{QStringLiteral("class"), "brb bbb"}}, "&nbsp;"},
+				};
+		int i = 1;
+		for(QVariant v : course_codes) {
+			append_list(trr, QVariantList{"th",
+										  QVariantMap{{QStringLiteral("class"), "br bbb"}, {"colspan", "2"}},
+										  (i++ < course_codes.size())? QVariant(quickevent::core::CodeDef{v.toMap()}.code()): QVariant("&nbsp;")});
+		}
+		append_list(table, trr);
+	}
+	auto time_to_str = [](const QVariant &v) {
+		int msec = v.toInt();
+		if(msec == 0)
+			return QString();
+		return TimeMs(msec).toString();
+	};
+	auto loss_to_str = [](const QVariant &v) {
+		int msec = v.toInt();
+		if(msec == 0)
+			return QString();
+		return '+' + TimeMs(msec).toString();
+	};
+	auto pos_to_str = [](const QVariant &v) {
+		int pos = v.toInt();
+		if(pos == 0)
+			return QString();
+		return QStringLiteral("(%1)").arg(pos);
+	};
+	QString col_stp_time0 = QStringLiteral("stpTime_0");
+	int col_stp_time1_ix = tt.columnIndex(col_stp_time0);
+	for(int j=0; j<tt.rowCount(); j++) {
+		qf::core::utils::TreeTableRow tt_row = tt.row(j);
+		QVariantList trr1{"tr"};
+		append_list(trr1, QVariantList{"td", QVariantMap{{"class", "right br"}}, tt_row.value(QStringLiteral("pos"))});
+		append_list(trr1, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "bold nowrap br"}}, tt_row.value(QStringLiteral("competitorName"))});
+		append_list(trr1, QVariantList{"td", QVariantMap{{"class", "right br"}}, time_to_str(tt_row.value("timeMs"))});
+		append_list(trr1, QVariantList{"td", QVariantMap{{"class", "right brb"}}, loss_to_str(tt_row.value("loss"))});
+		for(int i=0; i<course_codes.size(); i++) {
+			QString css_class = QStringLiteral("right");
+			int pos = tt_row.value(col_stp_time1_ix + 4*i + 1).toInt();
+			if(pos == 1) css_class += " red";
+			else if(pos == 2) css_class += " blue";
+			else if(pos == 3) css_class += " green";
+			append_list(trr1, QVariantList{"td", QVariantMap{{"class", css_class}}, time_to_str(tt_row.value(col_stp_time1_ix + 4*i + 0))});
+			append_list(trr1, QVariantList{"td", QVariantMap{{"class", css_class + " br"}}, pos_to_str(tt_row.value(col_stp_time1_ix + 4*i + 1))});
+		}
+		append_list(table, trr1);
+
+		QVariantList trr2{"tr", QVariantMap{{QStringLiteral("class"), "odd"}}};
+		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, "&nbsp;"});
+		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, tt_row.value(QStringLiteral("registration"))});
+		QString disq_str;
+		if(tt_row.value("notCompeting").toBool()) {
+			disq_str = tr("NC", "Not Competing");
+		}
+		else if(tt_row.value("disqualified").toBool()) {
+			disq_str = tr("DISQ");
+		}
+		else {
+			disq_str = "&nbsp;";
+		}
+		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "br bb"}}, disq_str});
+		append_list(trr2, QVariantList{"td", QVariantMap{{QStringLiteral("class"), "brb bb"}}, "&nbsp;"});
+		for(int i=0; i<course_codes.size(); i++) {
+			QString css_class = QStringLiteral("right");
+			int pos = tt_row.value(col_stp_time1_ix + 4*i + 3).toInt();
+			if(pos == 1) css_class += " red";
+			else if(pos == 2) css_class += " blue";
+			else if(pos == 3) css_class += " green";
+			append_list(trr2, QVariantList{"td", QVariantMap{{"class", css_class + " bb"}}, time_to_str(tt_row.value(col_stp_time1_ix + 4*i + 2))});
+			append_list(trr2, QVariantList{"td", QVariantMap{{"class", css_class + " br bb"}}, pos_to_str(tt_row.value(col_stp_time1_ix + 4*i + 3))});
+		}
+		append_list(table, trr2);
+	}
+	append_list(body, table);
+	QVariantMap options;
+	qf::core::utils::HtmlUtils::FromHtmlListOptions opts;
+	opts.setDocumentTitle(tr("Stage results"));
+	QString str = qf::core::utils::HtmlUtils::fromHtmlList(body, opts);
+	QFile f(laps_file_name);
+	if(f.open(QFile::WriteOnly)) {
+		f.write(str.toUtf8());
+		f.close();
+		//QDesktopServices::openUrl(QUrl::fromLocalFile(file_name));
 	}
 }
 

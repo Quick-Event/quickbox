@@ -10,7 +10,7 @@
 #include <Event/eventplugin.h>
 
 #include <quickevent/core/si/punchrecord.h>
-#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/codedef.h>
 
 #include <qf/qmlwidgets/action.h>
 #include <qf/qmlwidgets/menubar.h>
@@ -367,7 +367,7 @@ void ClassesWidget::reloadCourseCodes()
 	}
 }
 
-void ClassesWidget::importCourses(const QList<CourseDef> &course_defs, const QList<quickevent::core::si::CodeDef> &code_defs)
+void ClassesWidget::importCourses(const QList<CourseDef> &course_defs, const QList<quickevent::core::CodeDef> &code_defs)
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	auto *event_plugin = qobject_cast<Event::EventPlugin *>(fwk->plugin("Event"));
@@ -464,7 +464,7 @@ void ClassesWidget::import_ocad_txt()
 					cd.setCodes(codes);
 				}
 			}
-			importCourses(defined_courses_map.values(), QList<quickevent::core::si::CodeDef>());
+			importCourses(defined_courses_map.values(), QList<quickevent::core::CodeDef>());
 		}
 		catch (const qf::core::Exception &e) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -559,7 +559,7 @@ void ClassesWidget::import_ocad_v8()
 					cd.setCodes(codes);
 				}
 			}
-			importCourses(defined_courses_map.values(), QList<quickevent::core::si::CodeDef>());
+			importCourses(defined_courses_map.values(), QList<quickevent::core::CodeDef>());
 		}
 		catch (const qf::core::Exception &e) {
 			qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -640,7 +640,7 @@ void ClassesWidget::import_ocad_iofxml_2()
 				coursedef.setCodes(codes.values());
 				defined_courses_list << coursedef;
 			}
-			importCourses(defined_courses_list, QList<quickevent::core::si::CodeDef>());
+			importCourses(defined_courses_list, QList<quickevent::core::CodeDef>());
 		}
 	}
 	catch (const qf::core::Exception &e) {
@@ -665,22 +665,22 @@ void ClassesWidget::import_ocad_iofxml_3()
 			if(!xdoc.setContent(&f, &err_str, &err_line))
 				QF_EXCEPTION(QString("Error parsing xml file '%1' at line: %2").arg(err_str).arg(err_line));
 
-			QList<quickevent::core::si::CodeDef> defined_codes;
+			QList<quickevent::core::CodeDef> defined_codes;
 			{
 				QDomElement el_course_data = xdoc.elementsByTagName(QStringLiteral("RaceCourseData")).at(0).toElement();
 				const auto CONTROL = QStringLiteral("Control");
 				for (QDomElement el_code = el_course_data.firstChildElement(CONTROL); !el_code.isNull(); el_code = el_code.nextSiblingElement(CONTROL)) {
-					quickevent::core::si::CodeDef codedef;
+					quickevent::core::CodeDef codedef;
 					QString code_str = element_text(el_code, QStringLiteral("Id")).trimmed();
 					bool ok;
 					int code = 0;
-					if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
+					if(code_str.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_START)) {
 						code = code_str.mid(1).toInt(&ok);
-						codedef.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_START);
+						codedef.setType(quickevent::core::CodeDef::CONTROL_TYPE_START);
 					}
-					else if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
+					else if(code_str.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_FINISH)) {
 						code = code_str.mid(1).toInt(&ok);
-						codedef.setType(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH);
+						codedef.setType(quickevent::core::CodeDef::CONTROL_TYPE_FINISH);
 					}
 					else {
 						code = code_str.toInt(&ok);
@@ -724,10 +724,10 @@ void ClassesWidget::import_ocad_iofxml_3()
 						/*
 						int code = 0;
 						bool ok;
-						if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_START)) {
+						if(code_str.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_START)) {
 							code = code_str.mid(1).toInt(&ok);
 						}
-						else if(code_str.startsWith(quickevent::core::si::CodeDef::CONTROL_TYPE_FINISH)) {
+						else if(code_str.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_FINISH)) {
 							code = code_str.mid(1).toInt(&ok);
 						}
 						else {

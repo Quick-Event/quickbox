@@ -16,7 +16,7 @@ namespace core { namespace model { class SqlTableModel; } }
 namespace qmlwidgets { class ForeignKeyComboBox; }
 }
 
-namespace quickevent { namespace core { namespace si { class CodeDef; }}}
+namespace quickevent { namespace core { class CodeDef; }}
 
 class CourseItemDelegate;
 class CodeDef;
@@ -47,7 +47,7 @@ private:
 	Q_SLOT void reload();
 	Q_SLOT void reloadCourseCodes();
 private:
-	void importCourses(const QList<CourseDef> &course_defs, const QList<quickevent::core::si::CodeDef> &code_defs);
+	void importCourses(const QList<CourseDef> &course_defs, const QList<quickevent::core::CodeDef> &code_defs);
 private:
 	Ui::ClassesWidget *ui;
 	qf::core::model::SqlTableModel *m_classesModel;

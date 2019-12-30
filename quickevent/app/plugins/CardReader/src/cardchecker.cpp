@@ -7,7 +7,7 @@
 #include <Runs/runsplugin.h>
 
 #include <quickevent/core/og/timems.h>
-#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 
 //#include <siut/simessage.h>
@@ -103,12 +103,7 @@ int CardChecker::cardCheckCheckTimeSec()
 
 QVariantMap CardChecker::courseCodesForRunId(int run_id)
 {
-	return runsPlugin()->courseCodesForRunId(run_id);
-}
-
-int CardChecker::finishPunchCode()
-{
-	return quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
+	return runsPlugin()->courseCodesForRunId(run_id, true);
 }
 
 }

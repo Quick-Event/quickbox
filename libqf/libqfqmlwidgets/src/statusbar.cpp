@@ -16,8 +16,8 @@ qf::qmlwidgets::StatusBar::~StatusBar()
 
 void StatusBar::showProgress(const QString &msg, int completed, int total)
 {
-	Q_UNUSED(completed);
-	Q_UNUSED(total);
+	Q_UNUSED(completed)
+	Q_UNUSED(total)
 	showMessage(msg);
 }
 
@@ -28,12 +28,12 @@ void StatusBar::showMessage(const QString &message, int timeout)
 
 void StatusBar::addPermanentWidget(QWidget *widget, int stretch)
 {
-	widget->setParent(0);
+	widget->setParent(nullptr);
 	Super::addPermanentWidget(widget, stretch);
 }
 
 void StatusBar::addWidget(QWidget *widget, int stretch)
 {
-	widget->setParent(0);
+	widget->setParent(nullptr);
 	Super::addWidget(widget, stretch);
 }

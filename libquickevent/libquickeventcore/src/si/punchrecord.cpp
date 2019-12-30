@@ -10,6 +10,7 @@ namespace quickevent {
 namespace core {
 namespace si {
 
+const int PunchRecord::START_PUNCH_CODE = 997;
 const int PunchRecord::FINISH_PUNCH_CODE = 999;
 const QString PunchRecord::MARKING_RACE = QStringLiteral("race");
 const QString PunchRecord::MARKING_ENTRIES = QStringLiteral("entries");

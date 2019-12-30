@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../quickeventcoreglobal.h"
+#include "quickeventcoreglobal.h"
 
 #include <qf/core/utils.h>
 
@@ -8,7 +8,6 @@
 
 namespace quickevent {
 namespace core {
-namespace si {
 	
 class QUICKEVENTCORE_DECL_EXPORT CodeDef : public QVariantMap
 {
@@ -29,4 +28,6 @@ public:
 	QString toString() const;
 };
 
-}}}
+}}
+
+Q_DECLARE_METATYPE(quickevent::core::CodeDef)

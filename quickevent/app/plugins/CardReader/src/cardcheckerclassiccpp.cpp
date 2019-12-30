@@ -1,6 +1,6 @@
 #include "cardcheckerclassiccpp.h"
 
-#include <quickevent/core/si/codedef.h>
+#include <quickevent/core/codedef.h>
 #include <quickevent/core/si/punchrecord.h>
 #include <quickevent/core/si/readcard.h>
 
@@ -93,7 +93,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 
 	int read_punch_check_ix = 0;
 	for(int j=0; j<course_codes.length(); j++) {
-		quickevent::core::si::CodeDef course_code(course_codes[j].toMap());
+		quickevent::core::CodeDef course_code(course_codes[j].toMap());
 		quickevent::core::si::CheckedPunch checked_punch = quickevent::core::si::CheckedPunch::fromCodeDef(course_code);
 		//checked_punch.setCode(course_code.value(QStringLiteral("code")).toInt());
 		int k;

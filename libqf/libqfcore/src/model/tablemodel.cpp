@@ -868,7 +868,8 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 				t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
 			}
 			cd.setName(headerData(ix, Qt::Horizontal, FieldNameRole).toString());
-			cd.setType((int)t);
+			if(t > 0)
+				cd.setType((int)t);
 			cd.setHeader(cap);
 			//ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
 		}
