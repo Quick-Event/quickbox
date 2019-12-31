@@ -20,144 +20,159 @@
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="54"/>
+        <source>Legs count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="60"/>
+        <source>Number of legs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="73"/>
         <source>Class filter</source>
         <translation>Filtr kategorií</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="78"/>
+        <location filename="src/reportoptionsdialog.ui" line="97"/>
         <source>Posix regular expression</source>
         <translation>POSIX regulární výraz</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="81"/>
+        <location filename="src/reportoptionsdialog.ui" line="100"/>
         <source>RegExp</source>
         <translation>Regulární výraz</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="88"/>
+        <location filename="src/reportoptionsdialog.ui" line="107"/>
         <source>An question mark (?) in pattern stands for (matches) any single character; a asterisk (*) matches any sequence of zero or more characters.</source>
         <translation>Otazník (?) zastupuje libovolný znak, hvězdička (*) zastupuje skupinu 0–n libovolných znaků.</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="91"/>
+        <location filename="src/reportoptionsdialog.ui" line="110"/>
         <source>Wild card</source>
         <translation>Zástupné znaky</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="101"/>
+        <location filename="src/reportoptionsdialog.ui" line="120"/>
         <source>Doesn&apos;t match</source>
         <translation>Nevyhovuje filtru</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="108"/>
+        <location filename="src/reportoptionsdialog.ui" line="127"/>
         <source>Coma delimited list of class names</source>
         <translation>Seznam kategorií oddělených čárkou</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="111"/>
+        <location filename="src/reportoptionsdialog.ui" line="130"/>
         <source>Class names</source>
         <translation>Jména kategorií</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="124"/>
+        <location filename="src/reportoptionsdialog.ui" line="143"/>
         <source>Result options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="130"/>
+        <location filename="src/reportoptionsdialog.ui" line="149"/>
         <source>Number of places in each class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="156"/>
+        <location filename="src/reportoptionsdialog.ui" line="172"/>
+        <source>Exclude DISQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/reportoptionsdialog.ui" line="182"/>
         <source>Starters options</source>
         <translation>Možnosti pro startéry</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="174"/>
+        <location filename="src/reportoptionsdialog.ui" line="200"/>
         <source>Space after line</source>
         <translation>Mezera po řádku</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="184"/>
+        <location filename="src/reportoptionsdialog.ui" line="210"/>
         <source>mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="197"/>
+        <location filename="src/reportoptionsdialog.ui" line="223"/>
         <source>Start options</source>
         <translation>Možnosti pro startovní listiny</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="215"/>
+        <location filename="src/reportoptionsdialog.ui" line="241"/>
         <source>Print vacants</source>
         <translation>Tisknout vakanty</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="222"/>
+        <location filename="src/reportoptionsdialog.ui" line="248"/>
         <source>Print start numbers</source>
         <translation>Tisknout startovní čísla</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="232"/>
+        <location filename="src/reportoptionsdialog.ui" line="258"/>
         <source>Page layout</source>
         <translation>Rozvržení stránky</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="250"/>
+        <location filename="src/reportoptionsdialog.ui" line="276"/>
         <source>Horizontal margin</source>
         <translation>Horizontální okraje</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="257"/>
-        <location filename="src/reportoptionsdialog.ui" line="303"/>
-        <location filename="src/reportoptionsdialog.ui" line="326"/>
+        <location filename="src/reportoptionsdialog.ui" line="283"/>
+        <location filename="src/reportoptionsdialog.ui" line="329"/>
         <location filename="src/reportoptionsdialog.ui" line="352"/>
+        <location filename="src/reportoptionsdialog.ui" line="378"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="289"/>
+        <location filename="src/reportoptionsdialog.ui" line="315"/>
         <source>Column count</source>
         <translation>Počet sloupců</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="296"/>
+        <location filename="src/reportoptionsdialog.ui" line="322"/>
         <source>Vertical margin</source>
         <translation>Vertikální okraje</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="319"/>
+        <location filename="src/reportoptionsdialog.ui" line="345"/>
         <source>Page width</source>
         <translation>Šířka stránky</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="345"/>
+        <location filename="src/reportoptionsdialog.ui" line="371"/>
         <source>Page height</source>
         <translation>Výška stránky</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="371"/>
+        <location filename="src/reportoptionsdialog.ui" line="397"/>
         <source>Break type</source>
         <translation>Typ zalomení</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="379"/>
+        <location filename="src/reportoptionsdialog.ui" line="405"/>
         <source>None</source>
         <translation>Žádné</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="384"/>
+        <location filename="src/reportoptionsdialog.ui" line="410"/>
         <source>Column</source>
         <translation>Sloupec</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="389"/>
+        <location filename="src/reportoptionsdialog.ui" line="415"/>
         <source>Page</source>
         <translation>Stránka</translation>
     </message>
     <message>
-        <location filename="src/reportoptionsdialog.ui" line="415"/>
+        <location filename="src/reportoptionsdialog.ui" line="441"/>
         <source>Save as default</source>
         <translation>Uložit jako výchozí</translation>
     </message>

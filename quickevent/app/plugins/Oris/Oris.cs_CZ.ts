@@ -45,6 +45,45 @@
     </message>
 </context>
 <context>
+    <name>Oris::OrisPlugin</name>
+    <message>
+        <source>&amp;ORIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Event</source>
+        <translation type="unfinished">&amp;Závod</translation>
+    </message>
+    <message>
+        <source>&amp;Sync current event entries</source>
+        <translation type="unfinished">&amp;Synchronizovat záznamy aktuálního závodu</translation>
+    </message>
+    <message>
+        <source>Sync &amp;relays entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clubs and registrations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Text file</source>
+        <translation type="unfinished">&amp;Textový soubor</translation>
+    </message>
+    <message>
+        <source>&amp;Competitors CSOS</source>
+        <translation type="unfinished">&amp;Seznam závodníků ve formátu ČSOS</translation>
+    </message>
+    <message>
+        <source>Competitors C&amp;SV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ranking CSV (ORIS format)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OrisImporter</name>
     <message>
         <source>Cannot find Oris import ID.</source>
@@ -136,49 +175,6 @@
     <message>
         <source>Oris ranking CSV files (*.txt *.csv)</source>
         <translation>Soubory rankingu z ORISu (*.txt *.csv)</translation>
-    </message>
-</context>
-<context>
-    <name>main</name>
-    <message>
-        <source>&amp;Event</source>
-        <translation>&amp;Závod</translation>
-    </message>
-    <message>
-        <source>&amp;Clubs</source>
-        <translation>&amp;Kluby</translation>
-    </message>
-    <message>
-        <source>&amp;Registrations</source>
-        <translation>&amp;Registrace</translation>
-    </message>
-    <message>
-        <source>&amp;Oris</source>
-        <translation>&amp;ORIS</translation>
-    </message>
-    <message>
-        <source>&amp;Sync current event entries</source>
-        <translation>&amp;Synchronizovat záznamy aktuálního závodu</translation>
-    </message>
-    <message>
-        <source>&amp;Competitors CSOS</source>
-        <translation>&amp;Seznam závodníků ve formátu ČSOS</translation>
-    </message>
-    <message>
-        <source>&amp;Competitors CSV</source>
-        <translation>&amp;Seznam závodníků ve formátu CSV</translation>
-    </message>
-    <message>
-        <source>&amp;Ranking CSV (Oris format)</source>
-        <translation>&amp;Rankingová data v CSV (formát ORISu)</translation>
-    </message>
-    <message>
-        <source>&amp;Text file</source>
-        <translation>&amp;Textový soubor</translation>
-    </message>
-    <message>
-        <source>&amp;Sync relays entries</source>
-        <translation>&amp;Synchronizovat přihlášky štafet</translation>
     </message>
 </context>
 </TS>

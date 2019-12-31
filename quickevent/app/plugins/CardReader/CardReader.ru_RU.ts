@@ -4,7 +4,7 @@
 <context>
     <name>CardReader::CardCheckerClassicCpp</name>
     <message>
-        <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="14"/>
+        <location filename="src/cardcheckerclassiccpp.cpp" line="14"/>
         <source>Classic race</source>
         <translation>Классическая гонка</translation>
     </message>
@@ -12,23 +12,59 @@
 <context>
     <name>CardReader::CardReaderPlugin</name>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="164"/>
-        <source>More runs with si: %1, run1 id: %2, run2 id: %3</source>
+        <location filename="src/cardreaderplugin.cpp" line="161"/>
+        <source>More competitors with SI: %1, run1 id: %2, run2 id: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="176"/>
-        <source>Cannot find runs with si: %1</source>
+        <location filename="src/cardreaderplugin.cpp" line="173"/>
+        <source>Cannot find competitor with SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="287"/>
+        <location filename="src/cardreaderplugin.cpp" line="284"/>
         <source>Save card ERROR: %1</source>
         <translation>Ошибка при сохранении чипа: %1</translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="333"/>
+        <location filename="src/cardreaderplugin.cpp" line="330"/>
         <source>Save punch record ERROR: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CardReader::services::MqttPunchesWidget</name>
+    <message>
+        <location filename="src/services/mqttpuncheswidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CardReader::services::RacomClientWidget</name>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="14"/>
+        <source>Racom Client</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="33"/>
+        <source>sirxd data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="40"/>
+        <source>Listen on UDP port</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="47"/>
+        <source>Raw SI data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="67"/>
+        <source>Listen on TCP port</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -543,42 +579,6 @@ Read out after punch: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Assign card to runner error</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>services::MqttPunchesWidget</name>
-    <message>
-        <location filename="src/services/mqttpuncheswidget.ui" line="16"/>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>services::RacomClientWidget</name>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="14"/>
-        <source>Racom Client</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="33"/>
-        <source>sirxd data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="40"/>
-        <source>Listen on UDP port</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="47"/>
-        <source>Raw SI data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="67"/>
-        <source>Listen on TCP port</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

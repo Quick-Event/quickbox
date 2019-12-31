@@ -6,7 +6,7 @@
     <message>
         <location filename="src/codeclassresultswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Форма</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.ui" line="37"/>

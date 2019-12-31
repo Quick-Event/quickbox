@@ -10,119 +10,131 @@
     </message>
 </context>
 <context>
-    <name>CorePlugin</name>
+    <name>Core::CorePlugin</name>
     <message>
-        <location filename="src/coreplugin.cpp" line="63"/>
-        <source>About Quick Event</source>
-        <translation>O aplikaci Quick Event</translation>
-    </message>
-    <message>
-        <location filename="src/coreplugin.cpp" line="64"/>
-        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
-        <translation>&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze dat: %2&lt;br/&gt;Sestavení: %3 %4</translation>
-    </message>
-    <message>
-        <location filename="src/coreplugin.cpp" line="79"/>
-        <source>About Qt</source>
-        <translation>O knihovně Qt</translation>
-    </message>
-</context>
-<context>
-    <name>main</name>
-    <message>
-        <location filename="qml/main.qml" line="58"/>
-        <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation>Změna jazyka na &apos;%1&apos; se projeví až po restartu aplikace.</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="77"/>
-        <source>&amp;Quit</source>
-        <translation>&amp;Ukončit</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="86"/>
-        <source>&amp;SQL tool</source>
-        <translation>&amp;SQL nástroj</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="95"/>
-        <source>&amp;About Quick event</source>
-        <translation>O &amp;aplikaci Quick Event</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="103"/>
-        <source>About &amp;Qt</source>
-        <translation>O knihovně &amp;Qt</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="126"/>
+        <location filename="src/coreplugin.cpp" line="41"/>
         <source>&amp;File</source>
-        <translation>Soubo&amp;r</translation>
+        <translation type="unfinished">Soubo&amp;r</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="127"/>
+        <location filename="src/coreplugin.cpp" line="43"/>
         <source>&amp;Import</source>
-        <translation>&amp;Importovat</translation>
+        <translation type="unfinished">&amp;Importovat</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="133"/>
+        <location filename="src/coreplugin.cpp" line="46"/>
+        <source>&amp;Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="51"/>
+        <source>&amp;Quit</source>
+        <translation type="unfinished">&amp;Ukončit</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="58"/>
         <source>&amp;Tools</source>
-        <translation>&amp;Nástroje</translation>
+        <translation type="unfinished">&amp;Nástroje</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="140"/>
+        <location filename="src/coreplugin.cpp" line="60"/>
+        <source>&amp;SQL tool</source>
+        <translation type="unfinished">&amp;SQL nástroj</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="66"/>
         <source>&amp;Locale</source>
-        <translation>&amp;Regionální nastavení</translation>
+        <translation type="unfinished">&amp;Regionální nastavení</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="141"/>
+        <location filename="src/coreplugin.cpp" line="68"/>
         <source>&amp;Language</source>
-        <translation>&amp;Jazyk</translation>
+        <translation type="unfinished">&amp;Jazyk</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="143"/>
+        <location filename="src/coreplugin.cpp" line="70"/>
         <source>System</source>
-        <translation>Systémový</translation>
+        <translation type="unfinished">Systémový</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="144"/>
+        <location filename="src/coreplugin.cpp" line="71"/>
         <source>Czech</source>
-        <translation>Čeština</translation>
+        <translation type="unfinished">Čeština</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="145"/>
+        <location filename="src/coreplugin.cpp" line="72"/>
         <source>English</source>
-        <translation>Angličtina</translation>
+        <translation type="unfinished">Angličtina</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="146"/>
+        <location filename="src/coreplugin.cpp" line="73"/>
+        <source>Flemish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="74"/>
         <source>Norwegian</source>
-        <translation>Norština</translation>
+        <translation type="unfinished">Norština</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="147"/>
+        <location filename="src/coreplugin.cpp" line="75"/>
         <source>Polish</source>
-        <translation>Polština</translation>
+        <translation type="unfinished">Polština</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="148"/>
+        <location filename="src/coreplugin.cpp" line="76"/>
         <source>Russian</source>
-        <translation>Ruština</translation>
+        <translation type="unfinished">Ruština</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="161"/>
+        <location filename="src/coreplugin.cpp" line="94"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="95"/>
+        <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
+        <translation type="unfinished">Změna jazyka na &apos;%1&apos; se projeví až po restartu aplikace.</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="103"/>
         <source>&amp;View</source>
-        <translation>&amp;Zobrazit</translation>
+        <translation type="unfinished">&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="162"/>
+        <location filename="src/coreplugin.cpp" line="107"/>
         <source>&amp;Toolbar</source>
-        <translation>&amp;Panel nástrojů</translation>
+        <translation type="unfinished">&amp;Panel nástrojů</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="165"/>
+        <location filename="src/coreplugin.cpp" line="111"/>
         <source>&amp;Help</source>
-        <translation>Ná&amp;pověda</translation>
+        <translation type="unfinished">Ná&amp;pověda</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="113"/>
+        <source>&amp;About Quick event</source>
+        <translation type="unfinished">O &amp;aplikaci Quick Event</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="118"/>
+        <source>About &amp;Qt</source>
+        <translation type="unfinished">O knihovně &amp;Qt</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="161"/>
+        <source>About Quick Event</source>
+        <translation type="unfinished">O aplikaci Quick Event</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="162"/>
+        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
+        <translation type="unfinished">&lt;b&gt;Quick Event&lt;/b&gt; je aplikace na pořádání závodů v orientačním běhu.&lt;br/&gt;&lt;br/&gt;Verze: %1&lt;br/&gt;Minimální verze dat: %2&lt;br/&gt;Sestavení: %3 %4</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="177"/>
+        <source>About Qt</source>
+        <translation type="unfinished">O knihovně Qt</translation>
     </message>
 </context>
 </TS>

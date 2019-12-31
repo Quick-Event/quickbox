@@ -4,48 +4,48 @@
 <context>
     <name>Classic</name>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="68"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="69"/>
         <source>E</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="241"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="242"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="241"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="242"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="255"/>
-        <location filename="qml/reports/receipts/Classic.qml" line="267"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="256"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="268"/>
         <source>-----</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="323"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="324"/>
         <source>!!! RENTED CARD !!!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="338"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="339"/>
         <source>extra: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="350"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="351"/>
         <source>BAD CHECK !!!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="370"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="371"/>
         <source>current overall loss: +</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/receipts/Classic.qml" line="385"/>
+        <location filename="qml/reports/receipts/Classic.qml" line="386"/>
         <source>standings: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -53,12 +53,12 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="362"/>
+        <location filename="src/receiptsplugin.cpp" line="368"/>
         <source>Card</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Receipts/receiptsplugin.cpp" line="428"/>
+        <location filename="src/receiptsplugin.cpp" line="434"/>
         <source>Receipt</source>
         <translation type="unfinished"></translation>
     </message>
@@ -307,6 +307,11 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="255"/>
         <source>Print receipts for selected rows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/receiptswidget.cpp" line="256"/>
+        <source>Show receipt</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -55,54 +55,102 @@
     </message>
 </context>
 <context>
+    <name>Oris::OrisPlugin</name>
+    <message>
+        <location filename="src/orisplugin.cpp" line="36"/>
+        <source>&amp;ORIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="39"/>
+        <source>&amp;Event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="43"/>
+        <source>&amp;Sync current event entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="51"/>
+        <source>Sync &amp;relays entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="56"/>
+        <source>&amp;Clubs and registrations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="60"/>
+        <source>&amp;Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="63"/>
+        <source>&amp;Competitors CSOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="67"/>
+        <source>Competitors C&amp;SV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/orisplugin.cpp" line="71"/>
+        <source>&amp;Ranking CSV (ORIS format)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>OrisImporter</name>
     <message>
-        <location filename="src/orisimporter.cpp" line="114"/>
+        <location filename="src/orisimporter.cpp" line="112"/>
         <source>JSON document parse error: %1 at: %2 near: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="155"/>
+        <location filename="src/orisimporter.cpp" line="153"/>
         <source>Cannot find Oris import ID.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="322"/>
+        <location filename="src/orisimporter.cpp" line="320"/>
         <source>Import finished successfully.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="683"/>
+        <location filename="src/orisimporter.cpp" line="681"/>
         <source>New entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="684"/>
+        <location filename="src/orisimporter.cpp" line="682"/>
         <source>Edited entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="685"/>
+        <location filename="src/orisimporter.cpp" line="683"/>
         <source>Deleted entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="688"/>
+        <location filename="src/orisimporter.cpp" line="686"/>
         <source>Oris import report</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="698"/>
+        <location filename="src/orisimporter.cpp" line="696"/>
         <source>Save without drops</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="762"/>
+        <location filename="src/orisimporter.cpp" line="760"/>
         <source>Importing registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="823"/>
+        <location filename="src/orisimporter.cpp" line="821"/>
         <source>Importing clubs</source>
         <translation type="unfinished"></translation>
     </message>
@@ -171,59 +219,6 @@
     <message>
         <location filename="src/txtimporter.cpp" line="228"/>
         <source>Undefined class name: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>main</name>
-    <message>
-        <location filename="qml/main.qml" line="22"/>
-        <source>&amp;Event</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="30"/>
-        <source>&amp;Sync current event entries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="38"/>
-        <source>&amp;Sync relays entries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="46"/>
-        <source>&amp;Clubs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="54"/>
-        <source>&amp;Registrations</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="62"/>
-        <source>&amp;Competitors CSOS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="69"/>
-        <source>&amp;Competitors CSV</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="76"/>
-        <source>&amp;Ranking CSV (Oris format)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="87"/>
-        <source>&amp;Oris</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="98"/>
-        <source>&amp;Text file</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
