@@ -70,6 +70,7 @@ void CorePlugin::onInstalled()
 				{tr("System"), "system"},
 				{tr("Czech"), "cs_CZ"},
 				{tr("English"), "en_US"},
+				{tr("Flemish"), "nl_BE"},
 				{tr("Norwegian"), "nb_NO"},
 				{tr("Polish"), "pl_PL"},
 				{tr("Russian"), "ru_RU"},
