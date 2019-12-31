@@ -125,7 +125,7 @@ void CompetitorsWidget::settleDownInPartWidget(Competitors::ThisPartWidget *part
 	main_tb->addSeparator();
 	{
 		m_cbxEditCompetitorOnPunch = new QCheckBox(tr("Edit on punch"));
-		m_cbxEditCompetitorOnPunch->setToolTip(tr("Edit or insert competitor on card insert into station."));
+		m_cbxEditCompetitorOnPunch->setToolTip(tr("Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode \"Entries\" required)"));
 		main_tb->addWidget(m_cbxEditCompetitorOnPunch);
 	}
 

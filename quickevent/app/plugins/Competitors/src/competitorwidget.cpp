@@ -79,7 +79,7 @@ RunsModel::RunsModel(QObject *parent)
 	: Super(parent)
 {
 	clearColumns(col_COUNT);
-	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("On", "runs.isRunning")).setToolTip(tr("Is running")));
+	setColumn(col_runs_isRunning, ColumnDefinition("runs.isRunning", tr("Running", "runs.isRunning")).setToolTip(tr("Is running")));
 	setColumn(col_runs_stageId, ColumnDefinition("runs.stageId", tr("Stage")).setReadOnly(true));
 	setColumn(col_relays_name, ColumnDefinition("relayName", tr("Relay")).setReadOnly(true));
 	setColumn(col_classes_name, ColumnDefinition("classes.name", tr("Class")).setReadOnly(true));
