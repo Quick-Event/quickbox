@@ -61,6 +61,28 @@ static qf::qmlwidgets::framework::Plugin* competitorsPlugin()
 	return plugin;
 }
 
+static QString datetime_to_string(const QDateTime &dt)
+{
+	QString ret = dt.toString(Qt::ISODate);
+	if(dt.timeSpec() == Qt::LocalTime) {
+		int offset_min = dt.offsetFromUtc();
+		if(offset_min == 0) {
+			ret += 'Z';
+		}
+		else {
+			if(offset_min < 0) {
+				ret += '-';
+				offset_min = -offset_min;
+			}
+			else {
+				ret += '+';
+			}
+			ret += QStringLiteral("%1:%2").arg(offset_min / (60 * 60), 2, 10, QChar('0')).arg((offset_min / 60) % 60, 2, 10, QChar('0'));
+		}
+	}
+	return ret;
+}
+
 RunsPlugin::RunsPlugin(QObject *parent)
 	: Super("Runs", parent)
 {
@@ -241,7 +263,7 @@ quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id, bool in
 		finish_code.setType(quickevent::core::CodeDef::CONTROL_TYPE_FINISH);
 	}
 	// whatever code is imported, QE is using 999 everywhere
-	finish_code.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+	finish_code.setCode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 
 	if(including_distance) {
 		int course_len = 0;
@@ -678,7 +700,7 @@ qf::core::utils::TreeTable RunsPlugin::addLapsToStageResultsTable(int course_id,
 	using RunStpMap = QMap<int, RunStp>; // run_id -> time
 	QMap<int, RunStpMap> stp_times;
 	QMap<int, RunStpMap> lap_times;
-	{
+	if(run_ids.count()) {
 		qf::core::sql::QueryBuilder qb;
 		qb.select2("runlaps", "runId, position, code, stpTimeMs, lapTimeMs")
 				.from("runlaps").where("runId IN (" + run_ids.join(',') + ')');
@@ -689,13 +711,18 @@ qf::core::utils::TreeTable RunsPlugin::addLapsToStageResultsTable(int course_id,
 			if(run_id <= 0)
 				continue;
 			int pos = q.value(1).toInt();
-			if(pos <= 0)
-				continue;
 			int code = q.value(2).toInt();
-			quickevent::core::CodeDef cd(course_codes.value(pos - 1).toMap());
-			if(cd.isEmpty() || cd.code() != code) {
-				qfWarning() << "Invalid code:" << code << "for pos:" << pos;
+			if(pos <= 0 || pos > course_codes.count()) {
+				qfWarning() << "Invalid code:" << code << "position:" << pos;
 				continue;
+			}
+			if(pos < course_codes.count()) {
+				// check code except of the finish one
+				quickevent::core::CodeDef cd(course_codes.value(pos - 1).toMap());
+				if(cd.isEmpty() || cd.code() != code) {
+					qfWarning() << "Invalid code:" << code << "for pos:" << pos;
+					continue;
+				}
 			}
 			int stp = q.value(3).toInt();
 			if(stp <= 0)
@@ -768,10 +795,9 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 		return false;
 	}
 
-	//int start00_msec = eventPlugin()->stageStartMsec(stage_id);
-	QDateTime stage_start_date_time = eventPlugin()->stageStartDateTime(stage_id);
-
-	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id);
+	QDateTime stage_start_date_time = eventPlugin()->stageStartDateTime(stage_id);//.toTimeSpec(Qt::OffsetFromUTC);
+	qfInfo() << stage_start_date_time << datetime_to_string(stage_start_date_time);
+	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id, QString(), 0, false, true);
 	QVariantList result_list{
 		"ResultList",
 		QVariantMap{
@@ -832,6 +858,12 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 		);
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		//int pos = 0;
+		int course_id = tt1_row.value(QStringLiteral("courses.id")).toInt();
+		quickevent::core::CourseDef course_def = courseForCourseId(course_id, false);
+		QVariantList codes = course_def.codes();
+		//codes << course_def.finishCode(); IOFXML does not require finish lap time, can be coputed from finish time
+		int stpTime_0_ix = tt2.columnIndex(QStringLiteral("stpTime_0"));
+
 		for(int j=0; j<tt2.rowCount(); j++) {
 			const qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 			//pos++;
@@ -847,15 +879,15 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 			);
 
 			QVariantList result{"Result"};
-			int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
+			//int run_id = tt2_row.value(QStringLiteral("runs.id")).toInt();
 			int stime = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
 			int ftime = tt2_row.value(QStringLiteral("finishTimeMs")).toInt();
 			int time = tt2_row.value(QStringLiteral("timeMs")).toInt();
 			//qfInfo() << row1.value("classes.name").toString() << tt2_row.value(QStringLiteral("competitors.lastName").toString() << stime << ftime << time;
 			if(ftime && time)
 				stime = ftime - time; // cover cases when competitor didn't started according to start list from any reason
-			result.insert(result.count(), QVariantList{"StartTime", stage_start_date_time.addMSecs(stime).toString(Qt::ISODate)});
-			result.insert(result.count(), QVariantList{"FinishTime", stage_start_date_time.addMSecs(ftime).toString(Qt::ISODate)});
+			result.insert(result.count(), QVariantList{"StartTime", datetime_to_string(stage_start_date_time.addMSecs(stime))});
+			result.insert(result.count(), QVariantList{"FinishTime", datetime_to_string(stage_start_date_time.addMSecs(ftime))});
 			result.insert(result.count(), QVariantList{"Time", time / 1000});
 
 			static auto STAT_OK = QStringLiteral("OK");
@@ -877,70 +909,20 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				result.insert(result.count(), QVariantList{"Position", tt2_row.value(QStringLiteral("npos"))});
 			}
 			result.insert(result.count(), QVariantList{"Status", competitor_status});
-
-			int course_id = courseForRun(run_id);
-			struct SplitTime
-			{
-				int code = 0;
-				int time = 0;
-				QString status;
-
-				SplitTime(int c = 0) : code(c) {}
-			};
-			QMap<int, QVector<SplitTime>> course_codes;
-			if(!course_codes.contains(course_id)) {
-				qf::core::sql::QueryBuilder qb;
-				qb.select2("codes", "code")
-					.from("coursecodes")
-					.join("coursecodes.codeId", "codes.id")
-					.where("coursecodes.courseId=" QF_IARG(course_id))
-					.where("COALESCE(codes.type, '') = ''")
-					.orderBy("coursecodes.position");
-				qf::core::sql::Query q;
-				q.exec(qb.toString(), qf::core::Exception::Throw);
-				QVector<SplitTime> sts;
-				while(q.next()) {
-					QSqlRecord rec = q.record();
-					sts << SplitTime{q.value(0).toInt()};
-				}
-				course_codes[course_id] = sts;
-			}
-			QVector<SplitTime> &codes = course_codes[course_id];
-			{
-				for (int i = 0; i < codes.count(); ++i)
-					codes[i].status = QStringLiteral("Missing");
-
-				qfs::QueryBuilder qb;
-				qb.select2("runlaps", "*")
-					.from("runlaps")
-					.where("runlaps.runId=" + QString::number(tt2_row.value(QStringLiteral("runs.id")).toInt()))
-					.where("runlaps.code>=" QF_IARG(quickevent::core::si::PunchRecord::PUNCH_CODE_MIN) ) // skip START and FINISH codes
-					.where("runlaps.code<=" QF_IARG(quickevent::core::si::PunchRecord::PUNCH_CODE_MAX) )
-					.orderBy("runlaps.position");
-
-				qfs::Query q;
-				q.exec(qb.toString());
-				while(q.next()) {
-					int ix = q.value(QStringLiteral("position")).toInt() - 1;
-					if(ix < 0 || ix >= codes.count()) {
-						qfWarning() << "runlap position out of codes range. index:" << ix << "codes count:" << codes.count();
-						continue;
-					}
-					SplitTime &sts = codes[ix];
-					sts.time = q.value("stpTimeMs").toInt() / 1000;
-					sts.status = QString();
-				}
-			}
-			for(const SplitTime &sts : codes) {
-				QVariantList split_time{QStringLiteral("SplitTime"),
-					QVariantList{QStringLiteral("ControlCode"), sts.code },
-					QVariantList{QStringLiteral("Time"), sts.time },
+			int ix = stpTime_0_ix;
+			for(QVariant v : codes) {
+				quickevent::core::CodeDef cd(v.toMap());
+				int stp_time = tt2_row.value(ix).toInt();
+				QVariantList split_time{
+					QStringLiteral("SplitTime"),
+					QVariantList{QStringLiteral("ControlCode"), cd.code() },
+					QVariantList{QStringLiteral("Time"), stp_time / 1000 },
 				};
-				if(!sts.status.isEmpty())
-					split_time.insert(1, QVariantMap{ {QStringLiteral("status"), sts.status} });
+				if(stp_time == 0)
+					split_time.insert(1, QVariantMap{ {QStringLiteral("status"), QStringLiteral("Missing")} });
 				result.insert(result.count(), split_time);
+				ix += 4;
 			}
-
 			person_result.insert(person_result.count(), result);
 			class_result.insert(class_result.count(), person_result);
 		}

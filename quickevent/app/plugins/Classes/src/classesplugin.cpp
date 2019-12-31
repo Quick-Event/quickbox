@@ -165,11 +165,11 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 					bool ok = true;
 					quickevent::core::CodeDef cd;
 					if(key.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_START)) {
-						cd.setCode(quickevent::core::si::PunchRecord::START_PUNCH_CODE);
+						cd.setCode(quickevent::core::CodeDef::START_PUNCH_CODE);
 						cd.setType(quickevent::core::CodeDef::CONTROL_TYPE_START);
 					}
 					else if(key.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_FINISH)) {
-						cd.setCode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+						cd.setCode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 						cd.setType(quickevent::core::CodeDef::CONTROL_TYPE_FINISH);
 					}
 					else {

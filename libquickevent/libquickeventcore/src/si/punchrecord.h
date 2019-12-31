@@ -31,10 +31,6 @@ private:
 	QF_VARIANTMAP_FIELD2(QString, m, setm, arking, MARKING_RACE)
 
 public:
-	static constexpr int PUNCH_CODE_MIN = 100;
-	static constexpr int PUNCH_CODE_MAX = 899;
-	static const int START_PUNCH_CODE;
-	static const int FINISH_PUNCH_CODE;
 	static const QString MARKING_RACE;
 	static const QString MARKING_ENTRIES;
 public:

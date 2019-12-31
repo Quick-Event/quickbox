@@ -15,15 +15,23 @@ public:
 	static const QString CONTROL_TYPE_START;
 	static const QString CONTROL_TYPE_FINISH;
 
-	QF_VARIANTMAP_FIELD(int, c, setC, ode)
+	//QF_VARIANTMAP_FIELD(int, c, setC, ode)
 	QF_VARIANTMAP_FIELD(QString, t, setT, ype)
 	QF_VARIANTMAP_FIELD(double, l, setL, atitude)
 	QF_VARIANTMAP_FIELD(double, l, setL, ongitude)
 	QF_VARIANTMAP_FIELD(int, d, setD, istance)
 
 public:
+	static constexpr int PUNCH_CODE_MIN = 100;
+	static constexpr int PUNCH_CODE_MAX = 899;
+	static const int START_PUNCH_CODE;
+	static const int FINISH_PUNCH_CODE;
+public:
 	CodeDef() : QVariantMap() {}
-	CodeDef(const QVariantMap &m) : QVariantMap(m) {}
+	CodeDef(const QVariantMap &m);
+
+	int code() const;
+	void setCode(int c);
 
 	QString toString() const;
 };

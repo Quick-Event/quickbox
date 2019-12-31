@@ -653,7 +653,7 @@ void ClassesWidget::import_ocad_iofxml_3()
 {
 	qfLogFuncFrame();
 	//static constexpr int START_CODE0 = 0;
-	//static const int FINISH_CODE0 = quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE - 1;
+	//static const int FINISH_CODE0 = quickevent::core::CodeDef::FINISH_PUNCH_CODE - 1;
 	QString fn = qfd::FileDialog::getOpenFileName(this, tr("Open file"), QString(), "XML files (*.xml);; All files (*)");
 	if(fn.isEmpty())
 		return;

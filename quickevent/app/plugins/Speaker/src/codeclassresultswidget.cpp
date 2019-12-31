@@ -3,6 +3,7 @@
 
 #include "Event/eventplugin.h"
 
+#include <quickevent/core/codedef.h>
 #include <quickevent/core/og/sqltablemodel.h>
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -141,7 +142,7 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 			ui->lstCode->blockSignals(true);
 			ui->lstCode->clear();
 			ui->lstCode->addItem(tr("Results"), RESULTS_PUNCH_CODE);
-			ui->lstCode->addItem(tr("Finish"), quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+			ui->lstCode->addItem(tr("Finish"), quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 			qf::core::sql::QueryBuilder qb;
 			qb.select2("codes", "code, radio")
 					.from("classdefs")

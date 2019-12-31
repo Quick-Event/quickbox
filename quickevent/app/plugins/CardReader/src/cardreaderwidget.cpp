@@ -12,6 +12,7 @@
 #include <quickevent/gui/og/itemdelegate.h>
 #include <quickevent/gui/audio/player.h>
 
+#include <quickevent/core/codedef.h>
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/og/sqltablemodel.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -682,7 +683,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 			punch.setsiid(card.cardNumber());
 			punch.setrunid(run_id);
 			punch.settime(card.finishTime());
-			punch.setcode(quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE);
+			punch.setcode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 			punch.setmarking(punch_marking);
 			int punch_id = thisPlugin()->savePunchRecordToSql(punch);
 			if(punch_id > 0) {
@@ -948,7 +949,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			QVariantList punches;
 			int stp_time = start_time;
 			QList<int> codes = codesForClassName(class_name, stage_id);
-			codes << quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
+			codes << quickevent::core::CodeDef::FINISH_PUNCH_CODE;
 			if(csv_ix + codes.count() != sl.count()) {
 				qfWarning() << codes;
 				qfWarning() << sl;

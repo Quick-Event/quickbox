@@ -46,7 +46,7 @@ static Runs::RunsPlugin *runsPlugin()
 }
 
 const QLatin1String CardReaderPlugin::SETTINGS_PREFIX("plugins/CardReader");
-//const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::si::PunchRecord::FINISH_PUNCH_CODE;
+//const int CardReaderPlugin::FINISH_PUNCH_POS = quickevent::core::CodeDef::FINISH_PUNCH_CODE;
 
 CardReaderPlugin::CardReaderPlugin(QObject *parent)
 	: Super("CardReader", parent)
