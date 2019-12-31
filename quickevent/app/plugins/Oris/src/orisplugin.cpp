@@ -46,11 +46,21 @@ void OrisPlugin::onInstalled()
 			a->setEnabled(is_db_open);
 		});
 	}
-	act_import_oris->addSeparatorInto();
+	/*
+	//act_import_oris->addSeparatorInto();
 	{
 		qfw::Action *a = act_import_oris->addActionInto("syncRelaysEntries", "Sync &relays entries");
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::syncRelaysEntries);
+		a->setVisible(false);
+		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_db_open) {
+			bool is_relays = false;
+			if(is_db_open) {
+				is_relays = eventPlugin()->eventConfig()->isRelays();
+			}
+			a->setVisible(is_relays);
+		});
 	}
+	*/
 	act_import_oris->addSeparatorInto();
 	{
 		qfw::Action *a = act_import_oris->addActionInto("clubs", "&Clubs and registrations");
