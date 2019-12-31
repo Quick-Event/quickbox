@@ -514,7 +514,7 @@ qf::core::utils::Table RunsPlugin::nstagesClassResultsTable(int stages_count, in
 	return t;
 }
 
-qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(int stages_count, int places, bool exclude_disq)
+qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(const QString &class_filter, int stages_count, int places, bool exclude_disq)
 {
 	qfLogFuncFrame();
 	//qf::core::utils::Table::FieldList cols;
@@ -526,6 +526,8 @@ qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(int stages_count, int
 				.from("classes")
 				//.where("name NOT IN ('D21B', 'H40B', 'H35C', 'H55B')")
 				.orderBy("name");//.limit(1);
+		if(!class_filter.isEmpty())
+			qb.where(class_filter);
 		mod.setQueryBuilder(qb, false);
 	}
 	mod.reload();
@@ -542,12 +544,12 @@ qf::core::utils::TreeTable RunsPlugin::nstagesResultsTable(int stages_count, int
 	tt.setValue("stagesCount", stages_count);
 	return tt;
 }
-
+/*
 QVariant RunsPlugin::nstagesResultsTableData(int stages_count, int places, bool exclude_disq)
 {
 	return nstagesResultsTable(stages_count, places, exclude_disq).toVariant();
 }
-
+*/
 QVariant RunsPlugin::currentStageResultsTableData(const QString &class_filter, int max_competitors_in_class, bool exclude_disq)
 {
 	int stage_id = selectedStageId();
@@ -796,7 +798,7 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 	}
 
 	QDateTime stage_start_date_time = eventPlugin()->stageStartDateTime(stage_id);//.toTimeSpec(Qt::OffsetFromUTC);
-	qfInfo() << stage_start_date_time << datetime_to_string(stage_start_date_time);
+	//qfInfo() << stage_start_date_time << datetime_to_string(stage_start_date_time);
 	qf::core::utils::TreeTable tt1 = stageResultsTable(stage_id, QString(), 0, false, true);
 	QVariantList result_list{
 		"ResultList",
@@ -1377,7 +1379,7 @@ void RunsPlugin::report_startListStarters()
 	dlg.setPersistentSettingsId("startListStartersReportOptions");
 	dlg.loadPersistentSettings();
 	dlg.setClassFilterVisible(true);
-	dlg.setStartListOptionsVisible(true);
+	dlg.setStartListOptionsVisible(false);
 	dlg.setStartersOptionsVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListStartersTable(dlg.sqlWhereExpression());
@@ -1436,10 +1438,12 @@ void RunsPlugin::report_startListClubsNStages()
 	dlg.loadPersistentSettings();
 
 	dlg.setStagesCount(event_plugin->stageCount());
-	dlg.setStartListOptionsVisible(true);
-	dlg.setVacantsVisible(false);
+	dlg.setStartListOptionsVisible(false);
+	//dlg.setVacantsVisible(false);
 	dlg.setStagesOptionVisible(true);
+	dlg.setClassFilterVisible(false);
 	dlg.setClassFilterVisible(true);
+	dlg.setClassFilterVisible(false);
 	dlg.setColumnCountEnable(false);
 	if(dlg.exec()) {
 		auto tt = startListClubsNStagesTable(dlg.stagesCount());
@@ -1545,12 +1549,12 @@ void RunsPlugin::report_resultsNStages()
 	if(!dlg.exec())
 		return;
 	auto opts = dlg.options();
-	auto tt = nstagesResultsTable(dlg.stagesCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	auto tt = nstagesResultsTable(dlg.sqlWhereExpression(), dlg.stagesCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	//tt.setValue("stageStart", event_plugin->stageStartDateTime(stages_count));
 	QVariantMap props;
 	props["stagesCount"] = dlg.stagesCount();
-	//props["options"] = opts;
+	props["options"] = opts;
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, manifest()->homeDir() + "/reports/results_nstages.qml"
 								, tt.toVariant()
@@ -1573,7 +1577,7 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	if(!dlg.exec())
 		return;
 	auto opts = dlg.options();
-	auto tt = nstagesResultsTable(dlg.stagesCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	auto tt = nstagesResultsTable(dlg.sqlWhereExpression(), dlg.stagesCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	//tt.setValue("stageStart", event_plugin->stageStartDateTime(stages_count));
 	QVariantMap props;
@@ -1600,7 +1604,7 @@ void RunsPlugin::report_nStagesAwards()
 
 	QVariantMap props;
 	props["eventConfig"] = QVariant::fromValue(event_plugin->eventConfig());
-	auto tt = nstagesResultsTable(opts.value("stageId").toInt(), opts.value("numPlaces").toInt());
+	auto tt = nstagesResultsTable(QString(), opts.value("stageId").toInt(), opts.value("numPlaces").toInt());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, rep_path
 								, tt.toVariant()

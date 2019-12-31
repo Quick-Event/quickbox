@@ -111,9 +111,10 @@ Report {
 							textStyle: myStyle.textStyleBold
 						}
 						Component.onCompleted: {
-							//console.warn("=============", root.stageCount)
-							for(var i=0; i<root.stageCount; i++) {
-								var runs_table = "runs" + (i+1);
+							//console.warn("============= root.stageCount:", root.stageCount)
+							for(var i=0; i<root.stagesCount; i++) {
+								//console.warn("=============", i, qsTr("Stage") + (i+1))
+								//var runs_table = "runs" + (i+1);
 								var c = cHeaderCell.createObject(null, {"width": 15, "text": qsTr("Stage") + (i+1)});
 								classHeader.addItem(c);
 							}
@@ -157,7 +158,7 @@ Report {
 							}
 							Component.onCompleted: {
 								//console.warn("=============", root.stageCount)
-								for(var i=0; i<root.stageCount; i++) {
+								for(var i=0; i<root.stagesCount; i++) {
 									var runs_table = "runs" + (i+1);
 									var c = cStartTimeCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeMs", "isRunning": runs_table + ".isRunning" });
 									runnersDetail.addItem(c);

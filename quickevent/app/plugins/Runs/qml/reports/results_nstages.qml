@@ -7,8 +7,10 @@ import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 Report {
 	id: root
 
-	property int stagesCount: 1
-	//property bool excludeDisqualified: true
+	property var options
+	property bool isBreakAfterEachClass: options.isBreakAfterEachClass? true: false
+	property bool isColumnBreak: options.isColumnBreak? true: false
+	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
 
 	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
 	property int timeCellWidth: 17
@@ -112,6 +114,11 @@ Report {
 					//keepAll: true
 					layout: Frame.LayoutVertical
 					function dataFn(field_name) {return function() {return rowData(field_name);}}
+					Break {
+						breakType: root.isColumnBreak? Break.Column: Break.Page;
+						visible: root.isBreakAfterEachClass;
+						skipFirst: true
+					}
 					Space { height: 5 }
 					Frame {
 						id: classHeader
