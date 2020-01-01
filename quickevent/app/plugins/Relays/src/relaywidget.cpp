@@ -190,11 +190,9 @@ bool  RelayWidget::saveData()
 	}
 	bool ret = false;
 	try {
-		qf::core::sql::Transaction transaction;
 		ret = Super::saveData();
 		if(ret)
 			checkLegsStartTimes();
-		transaction.commit();
 	}
 	catch (qf::core::Exception &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showException(this, e);

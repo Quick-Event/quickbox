@@ -110,6 +110,7 @@ struct Leg
 	int stime = 0;
 	int spos = 0;
 	bool disq = false;
+	bool nc = false;
 	bool notfinish = true;
 };
 
@@ -127,6 +128,8 @@ struct Relay
 			const Leg &leg = legs[i];
 			if(leg.disq)
 				return qog::TimeMs::DISQ_TIME_MSEC;
+			if(leg.nc)
+				return qog::TimeMs::NOT_COMPETITING_TIME_MSEC;
 			if(leg.time == 0)
 				return qog::TimeMs::NOT_FINISH_TIME_MSEC;
 			ret += leg.time;
@@ -271,7 +274,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 	}
 	for (int legno = 1; legno <= leg_count; ++legno) {
 		qfs::QueryBuilder qb;
-		qb.select2("runs", "id, relayId, timeMs, disqualified")
+		qb.select2("runs", "id, relayId, timeMs, disqualified, notCompeting")
 				.from("runs")
 				.joinRestricted("runs.relayId", "relays.id",
 								"relays.classId=" QF_IARG(class_id)
@@ -295,6 +298,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 					}
 					else {
 						leg.notfinish = false;
+						leg.nc = q.value("runs.notCompeting").toBool();
 						leg.disq = q.value("runs.disqualified").toBool();
 						leg.time = q.value("timeMs").toInt();
 						leg.pos = leg.disq? 0: run_pos;

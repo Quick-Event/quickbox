@@ -499,6 +499,7 @@ void RelaysWidget::print_results_nlegs()
 {
 	quickevent::gui::ReportOptionsDialog::Options default_opts;
 	default_opts.setLegsCount(1);
+	default_opts.setResultExcludeDisq(true);
 	printResults("relaysResultsNLegsReportOptions", default_opts);
 }
 
@@ -506,7 +507,6 @@ void RelaysWidget::print_results_overal()
 {
 	quickevent::gui::ReportOptionsDialog::Options default_opts;
 	default_opts.setLegsCount(99);
-	default_opts.setResultExcludeDisq(true);
 	printResults("relaysResultsOverallReportOptions", default_opts);
 }
 
