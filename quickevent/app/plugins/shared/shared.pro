@@ -1,7 +1,7 @@
 message(including plugin $$PWD)
 
 TEMPLATE = aux
-CONFIG += quickevent_pure_qml_plugin
+#CONFIG += quickevent_pure_qml_plugin
 
 PLUGIN_NAME = shared
 
@@ -16,5 +16,5 @@ TRANSLATIONS += \
 
 lupdate_only {
 SOURCES += \
-	$$PWD/QuickEvent/reports/*.qml \
+    $$PWD/qml/QuickEvent/reports/*.qml \
 }
