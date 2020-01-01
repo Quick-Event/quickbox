@@ -214,6 +214,7 @@ void CompetitorsWidget::reload()
 void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int siid)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
+	qf::core::sql::Transaction transaction;
 	m_cbxEditCompetitorOnPunch->setEnabled(false);
 	auto *w = new CompetitorWidget();
 	w->setWindowTitle(tr("Edit Competitor"));
@@ -242,6 +243,10 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 	connect(doc, &Competitors::CompetitorDocument::saved, ui->tblCompetitors, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	connect(doc, &Competitors::CompetitorDocument::saved, competitorsPlugin(), &Competitors::CompetitorsPlugin::competitorEdited, Qt::QueuedConnection);
 	bool ok = dlg.exec();
+	if(ok)
+		transaction.commit();
+	else
+		transaction.rollback();
 	m_cbxEditCompetitorOnPunch->setEnabled(true);
 	if(ok && save_and_next) {
 		QTimer::singleShot(0, [this]() {

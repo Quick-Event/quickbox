@@ -13,7 +13,7 @@ class  RelayWidget : public qf::qmlwidgets::framework::DataDialogWidget
 private:
 	typedef qf::qmlwidgets::framework::DataDialogWidget Super;
 public:
-	explicit  RelayWidget(QWidget *parent = 0);
+	explicit  RelayWidget(QWidget *parent = nullptr);
 	~RelayWidget() Q_DECL_OVERRIDE;
 
 	bool load(const QVariant &id = QVariant(), int mode = qf::core::model::DataDocument::ModeEdit) Q_DECL_OVERRIDE;

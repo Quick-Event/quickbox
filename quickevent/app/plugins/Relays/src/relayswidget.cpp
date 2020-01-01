@@ -215,6 +215,7 @@ void RelaysWidget::reload()
 void RelaysWidget::editRelay(const QVariant &id, int mode)
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
+	qf::core::sql::Transaction transaction;
 	auto *w = new  RelayWidget();
 	w->setWindowTitle(tr("Edit Relay"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
@@ -234,6 +235,10 @@ void RelaysWidget::editRelay(const QVariant &id, int mode)
 	}
 	connect(doc, &Relays:: RelayDocument::saved, ui->tblRelays, &qf::qmlwidgets::TableView::rowExternallySaved, Qt::QueuedConnection);
 	bool ok = dlg.exec();
+	if(ok)
+		transaction.commit();
+	else
+		transaction.rollback();
 	if(ok && save_and_next) {
 		QTimer::singleShot(0, [this]() {
 			this->editRelay(QVariant(), qf::core::model::DataDocument::ModeInsert);
