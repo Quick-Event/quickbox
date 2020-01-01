@@ -19,32 +19,32 @@
         <translation>Kode</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="47"/>
+        <location filename="src/codeclassresultswidget.cpp" line="48"/>
         <source>Competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="48"/>
+        <location filename="src/codeclassresultswidget.cpp" line="49"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="49"/>
+        <location filename="src/codeclassresultswidget.cpp" line="50"/>
         <source>Time</source>
         <translation>Tid</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="143"/>
+        <location filename="src/codeclassresultswidget.cpp" line="144"/>
         <source>Results</source>
         <translation>Resultater</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="144"/>
+        <location filename="src/codeclassresultswidget.cpp" line="145"/>
         <source>Finish</source>
         <translation>Fullfør</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="163"/>
+        <location filename="src/codeclassresultswidget.cpp" line="164"/>
         <source>R</source>
         <comment>Radio station</comment>
         <translation type="unfinished"></translation>

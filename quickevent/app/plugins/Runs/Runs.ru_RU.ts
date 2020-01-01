@@ -252,196 +252,196 @@
 <context>
     <name>Runs::RunsPlugin</name>
     <message>
-        <location filename="src/runsplugin.cpp" line="131"/>
+        <location filename="src/runsplugin.cpp" line="153"/>
         <source>Event statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="951"/>
-        <location filename="src/runsplugin.cpp" line="2134"/>
+        <location filename="src/runsplugin.cpp" line="935"/>
+        <location filename="src/runsplugin.cpp" line="2120"/>
         <source>E%1 IOF XML stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1359"/>
-        <location filename="src/runsplugin.cpp" line="1713"/>
+        <location filename="src/runsplugin.cpp" line="1343"/>
+        <location filename="src/runsplugin.cpp" line="1699"/>
         <source>Start list by classes</source>
         <translation type="unfinished">Стартовый список по классам</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1384"/>
-        <location filename="src/runsplugin.cpp" line="1802"/>
+        <location filename="src/runsplugin.cpp" line="1368"/>
+        <location filename="src/runsplugin.cpp" line="1788"/>
         <source>Start list by clubs</source>
         <translation type="unfinished">Стартовый список по клубам</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1408"/>
+        <location filename="src/runsplugin.cpp" line="1392"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1441"/>
+        <location filename="src/runsplugin.cpp" line="1425"/>
         <source>Start list by classes after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1473"/>
+        <location filename="src/runsplugin.cpp" line="1459"/>
         <source>Start list by clubs after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1497"/>
-        <location filename="src/runsplugin.cpp" line="1523"/>
+        <location filename="src/runsplugin.cpp" line="1483"/>
+        <location filename="src/runsplugin.cpp" line="1509"/>
         <source>Results by classes</source>
         <translation type="unfinished">Результаты по классам</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1547"/>
+        <location filename="src/runsplugin.cpp" line="1533"/>
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1575"/>
-        <location filename="src/runsplugin.cpp" line="1602"/>
+        <location filename="src/runsplugin.cpp" line="1561"/>
+        <location filename="src/runsplugin.cpp" line="1588"/>
         <source>Results after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1625"/>
+        <location filename="src/runsplugin.cpp" line="1611"/>
         <source>Awards after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1676"/>
-        <location filename="src/runsplugin.cpp" line="1861"/>
+        <location filename="src/runsplugin.cpp" line="1662"/>
+        <location filename="src/runsplugin.cpp" line="1847"/>
         <source>length:</source>
         <translation type="unfinished">длина:</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1678"/>
-        <location filename="src/runsplugin.cpp" line="1863"/>
+        <location filename="src/runsplugin.cpp" line="1664"/>
+        <location filename="src/runsplugin.cpp" line="1849"/>
         <source>climb:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1681"/>
-        <location filename="src/runsplugin.cpp" line="1768"/>
-        <location filename="src/runsplugin.cpp" line="1867"/>
+        <location filename="src/runsplugin.cpp" line="1667"/>
+        <location filename="src/runsplugin.cpp" line="1754"/>
+        <location filename="src/runsplugin.cpp" line="1853"/>
         <source>Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1688"/>
-        <location filename="src/runsplugin.cpp" line="1775"/>
+        <location filename="src/runsplugin.cpp" line="1674"/>
+        <location filename="src/runsplugin.cpp" line="1761"/>
         <source>Start</source>
         <translation type="unfinished">Старт</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1689"/>
-        <location filename="src/runsplugin.cpp" line="1777"/>
-        <location filename="src/runsplugin.cpp" line="1875"/>
-        <location filename="src/runsplugin.cpp" line="1963"/>
+        <location filename="src/runsplugin.cpp" line="1675"/>
+        <location filename="src/runsplugin.cpp" line="1763"/>
+        <location filename="src/runsplugin.cpp" line="1861"/>
+        <location filename="src/runsplugin.cpp" line="1949"/>
         <source>Name</source>
         <translation type="unfinished">Имя</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1690"/>
-        <location filename="src/runsplugin.cpp" line="1778"/>
-        <location filename="src/runsplugin.cpp" line="1876"/>
-        <location filename="src/runsplugin.cpp" line="1978"/>
+        <location filename="src/runsplugin.cpp" line="1676"/>
+        <location filename="src/runsplugin.cpp" line="1764"/>
+        <location filename="src/runsplugin.cpp" line="1862"/>
+        <location filename="src/runsplugin.cpp" line="1964"/>
         <source>Registration</source>
         <translation type="unfinished">Регистрация</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1691"/>
-        <location filename="src/runsplugin.cpp" line="1779"/>
+        <location filename="src/runsplugin.cpp" line="1677"/>
+        <location filename="src/runsplugin.cpp" line="1765"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1776"/>
+        <location filename="src/runsplugin.cpp" line="1762"/>
         <source>Class</source>
         <translation type="unfinished">Класс</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1817"/>
+        <location filename="src/runsplugin.cpp" line="1803"/>
         <source>Preparing data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1847"/>
+        <location filename="src/runsplugin.cpp" line="1833"/>
         <source>Procesing class %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1866"/>
+        <location filename="src/runsplugin.cpp" line="1852"/>
         <source>Laps</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1874"/>
-        <location filename="src/runsplugin.cpp" line="1962"/>
+        <location filename="src/runsplugin.cpp" line="1860"/>
+        <location filename="src/runsplugin.cpp" line="1948"/>
         <source>Place</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1877"/>
+        <location filename="src/runsplugin.cpp" line="1863"/>
         <source>Club</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1878"/>
-        <location filename="src/runsplugin.cpp" line="1964"/>
+        <location filename="src/runsplugin.cpp" line="1864"/>
+        <location filename="src/runsplugin.cpp" line="1950"/>
         <source>Time</source>
         <translation type="unfinished">Время</translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1879"/>
-        <location filename="src/runsplugin.cpp" line="1965"/>
+        <location filename="src/runsplugin.cpp" line="1865"/>
+        <location filename="src/runsplugin.cpp" line="1951"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1895"/>
-        <location filename="src/runsplugin.cpp" line="2033"/>
+        <location filename="src/runsplugin.cpp" line="1881"/>
+        <location filename="src/runsplugin.cpp" line="2019"/>
         <source>NC</source>
         <comment>Not Competing</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1898"/>
-        <location filename="src/runsplugin.cpp" line="2036"/>
+        <location filename="src/runsplugin.cpp" line="1884"/>
+        <location filename="src/runsplugin.cpp" line="2022"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1918"/>
-        <location filename="src/runsplugin.cpp" line="2057"/>
+        <location filename="src/runsplugin.cpp" line="1904"/>
+        <location filename="src/runsplugin.cpp" line="2043"/>
         <source>Stage results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1937"/>
+        <location filename="src/runsplugin.cpp" line="1923"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1937"/>
+        <location filename="src/runsplugin.cpp" line="1923"/>
         <source>Export error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1939"/>
+        <location filename="src/runsplugin.cpp" line="1925"/>
         <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1939"/>
+        <location filename="src/runsplugin.cpp" line="1925"/>
         <source>Results exported to %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/runsplugin.cpp" line="1971"/>
+        <location filename="src/runsplugin.cpp" line="1957"/>
         <source>FIN</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1135,32 +1135,32 @@
 <context>
     <name>results_nstages</name>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="13"/>
+        <location filename="qml/reports/results_nstages.qml" line="15"/>
         <source>Results after %1 stages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="130"/>
+        <location filename="qml/reports/results_nstages.qml" line="137"/>
         <source>registration</source>
         <translation>регистрация</translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="135"/>
+        <location filename="qml/reports/results_nstages.qml" line="142"/>
         <source>Stage</source>
         <translation>Этап</translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="138"/>
+        <location filename="qml/reports/results_nstages.qml" line="145"/>
         <source>Time</source>
         <translation>Время</translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="140"/>
+        <location filename="qml/reports/results_nstages.qml" line="147"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="178"/>
+        <location filename="qml/reports/results_nstages.qml" line="185"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1316,7 +1316,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/startList_clubs_nstages.qml" line="117"/>
+        <location filename="qml/reports/startList_clubs_nstages.qml" line="118"/>
         <source>Stage</source>
         <translation type="unfinished">Этап</translation>
     </message>

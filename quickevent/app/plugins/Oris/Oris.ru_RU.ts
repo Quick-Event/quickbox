@@ -72,32 +72,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="51"/>
-        <source>Sync &amp;relays entries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/orisplugin.cpp" line="56"/>
+        <location filename="src/orisplugin.cpp" line="66"/>
         <source>&amp;Clubs and registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="60"/>
+        <location filename="src/orisplugin.cpp" line="70"/>
         <source>&amp;Text file</source>
         <translation type="unfinished">&amp;Текстовый файл</translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="63"/>
+        <location filename="src/orisplugin.cpp" line="73"/>
         <source>&amp;Competitors CSOS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="67"/>
+        <location filename="src/orisplugin.cpp" line="77"/>
         <source>Competitors C&amp;SV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="71"/>
+        <location filename="src/orisplugin.cpp" line="81"/>
         <source>&amp;Ranking CSV (ORIS format)</source>
         <translation type="unfinished"></translation>
     </message>

@@ -59,10 +59,6 @@
         <translation>&amp;Synchronizovat záznamy aktuálního závodu</translation>
     </message>
     <message>
-        <source>Sync &amp;relays entries</source>
-        <translation>Synchronizovat &amp;přihlášky štafet</translation>
-    </message>
-    <message>
         <source>&amp;Clubs and registrations</source>
         <translation>&amp;Kluby a registrace</translation>
     </message>

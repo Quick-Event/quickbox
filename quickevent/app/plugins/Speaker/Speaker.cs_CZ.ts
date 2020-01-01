@@ -19,32 +19,32 @@
         <translation>Kontrola</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="47"/>
+        <location filename="src/codeclassresultswidget.cpp" line="48"/>
         <source>Competitor</source>
         <translation>Závodník</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="48"/>
+        <location filename="src/codeclassresultswidget.cpp" line="49"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="49"/>
+        <location filename="src/codeclassresultswidget.cpp" line="50"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="143"/>
+        <location filename="src/codeclassresultswidget.cpp" line="144"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="144"/>
+        <location filename="src/codeclassresultswidget.cpp" line="145"/>
         <source>Finish</source>
         <translation>Cíl</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="163"/>
+        <location filename="src/codeclassresultswidget.cpp" line="164"/>
         <source>R</source>
         <comment>Radio station</comment>
         <translation>R</translation>

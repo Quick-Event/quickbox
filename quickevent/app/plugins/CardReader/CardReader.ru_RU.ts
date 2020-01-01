@@ -84,52 +84,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="223"/>
+        <location filename="src/cardreaderwidget.cpp" line="224"/>
         <source>Show receipt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="224"/>
+        <location filename="src/cardreaderwidget.cpp" line="225"/>
         <source>Print receipt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="226"/>
+        <location filename="src/cardreaderwidget.cpp" line="227"/>
         <source>Show card data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="227"/>
+        <location filename="src/cardreaderwidget.cpp" line="228"/>
         <source>Print card data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="229"/>
+        <location filename="src/cardreaderwidget.cpp" line="230"/>
         <source>Assign card to runner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="230"/>
+        <location filename="src/cardreaderwidget.cpp" line="231"/>
         <source>Recalculate times in selected rows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="276"/>
+        <location filename="src/cardreaderwidget.cpp" line="277"/>
         <source>Recalculating times for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="302"/>
+        <location filename="src/cardreaderwidget.cpp" line="303"/>
         <source>&amp;Station</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="305"/>
+        <location filename="src/cardreaderwidget.cpp" line="306"/>
         <source>Station info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="313"/>
+        <location filename="src/cardreaderwidget.cpp" line="314"/>
         <source>Station number: {{StationNumber}}
 Extended mode: {{ExtendedMode}}
 Auto send: {{AutoSend}}
@@ -140,207 +140,207 @@ Read out after punch: {{ReadOutAfterPunch}}
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="322"/>
         <location filename="src/cardreaderwidget.cpp" line="323"/>
         <location filename="src/cardreaderwidget.cpp" line="324"/>
         <location filename="src/cardreaderwidget.cpp" line="325"/>
         <location filename="src/cardreaderwidget.cpp" line="326"/>
+        <location filename="src/cardreaderwidget.cpp" line="327"/>
         <source>True</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="322"/>
         <location filename="src/cardreaderwidget.cpp" line="323"/>
         <location filename="src/cardreaderwidget.cpp" line="324"/>
         <location filename="src/cardreaderwidget.cpp" line="325"/>
         <location filename="src/cardreaderwidget.cpp" line="326"/>
+        <location filename="src/cardreaderwidget.cpp" line="327"/>
         <source>False</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="335"/>
+        <location filename="src/cardreaderwidget.cpp" line="336"/>
         <source>Read station memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="362"/>
+        <location filename="src/cardreaderwidget.cpp" line="363"/>
         <source>&amp;Tools</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="365"/>
+        <location filename="src/cardreaderwidget.cpp" line="366"/>
         <source>Import cards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="367"/>
+        <location filename="src/cardreaderwidget.cpp" line="368"/>
         <source>Laps only CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="372"/>
+        <location filename="src/cardreaderwidget.cpp" line="373"/>
         <source>SI reader backup memory CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="378"/>
+        <location filename="src/cardreaderwidget.cpp" line="379"/>
         <source>Test audio</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="391"/>
+        <location filename="src/cardreaderwidget.cpp" line="392"/>
         <source> Check type </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="404"/>
+        <location filename="src/cardreaderwidget.cpp" line="405"/>
         <source> Reader mode </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="407"/>
+        <location filename="src/cardreaderwidget.cpp" line="408"/>
         <source>Race</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="408"/>
+        <location filename="src/cardreaderwidget.cpp" line="409"/>
         <source>Entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="473"/>
+        <location filename="src/cardreaderwidget.cpp" line="474"/>
         <source>Open COM</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="479"/>
+        <location filename="src/cardreaderwidget.cpp" line="480"/>
         <source>Card readout settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="532"/>
+        <location filename="src/cardreaderwidget.cpp" line="533"/>
         <source>Connected to %1 in direct mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="535"/>
+        <location filename="src/cardreaderwidget.cpp" line="536"/>
         <source>Error set SI station to direct mode.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="559"/>
+        <location filename="src/cardreaderwidget.cpp" line="560"/>
         <source>Error open device %1 - %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="636"/>
+        <location filename="src/cardreaderwidget.cpp" line="637"/>
         <source>DriverInfo: &lt;%1&gt; %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="645"/>
+        <location filename="src/cardreaderwidget.cpp" line="646"/>
         <source>DriverRawData: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="652"/>
+        <location filename="src/cardreaderwidget.cpp" line="653"/>
         <source>card: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="729"/>
+        <location filename="src/cardreaderwidget.cpp" line="730"/>
         <source>punch: %1 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="736"/>
+        <location filename="src/cardreaderwidget.cpp" line="737"/>
         <source>Cannot find run for punch record SI: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="792"/>
+        <location filename="src/cardreaderwidget.cpp" line="793"/>
         <source>Find runner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="891"/>
+        <location filename="src/cardreaderwidget.cpp" line="892"/>
         <source>&lt;p&gt;CSV record must have format:&lt;/p&gt;&lt;p&gt;7203463,&quot;2,28&quot;,&quot;3,34&quot;,&quot;2,42&quot;,&quot;3,29&quot;,&quot;3,12&quot;,&quot;1,38&quot;,&quot;1,13&quot;,&quot;3,18&quot;,&quot;1,17&quot;,&quot;0,15&quot;&lt;/p&gt;&lt;p&gt;Any row can be commented by leading #&lt;/p&gt;&lt;p&gt;Decimal point is also supported, the quotes can be omited than.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="895"/>
+        <location filename="src/cardreaderwidget.cpp" line="896"/>
         <source>Import CSV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="900"/>
-        <location filename="src/cardreaderwidget.cpp" line="1086"/>
+        <location filename="src/cardreaderwidget.cpp" line="901"/>
+        <location filename="src/cardreaderwidget.cpp" line="1087"/>
         <source>Cannot open file &apos;%1&apos; for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="919"/>
-        <location filename="src/cardreaderwidget.cpp" line="1090"/>
+        <location filename="src/cardreaderwidget.cpp" line="920"/>
+        <location filename="src/cardreaderwidget.cpp" line="1091"/>
         <source>Bad stage!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="941"/>
+        <location filename="src/cardreaderwidget.cpp" line="942"/>
         <source>Cannot find runs record for SI %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="942"/>
+        <location filename="src/cardreaderwidget.cpp" line="943"/>
         <source>Cannot find class for SI %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="955"/>
+        <location filename="src/cardreaderwidget.cpp" line="956"/>
         <source>SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1081"/>
+        <location filename="src/cardreaderwidget.cpp" line="1082"/>
         <source>Import TXT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1171"/>
+        <location filename="src/cardreaderwidget.cpp" line="1172"/>
         <source>Downloading station backup ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1173"/>
+        <location filename="src/cardreaderwidget.cpp" line="1174"/>
         <source>Cancelled by user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1203"/>
+        <location filename="src/cardreaderwidget.cpp" line="1204"/>
         <source>No.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1203"/>
+        <location filename="src/cardreaderwidget.cpp" line="1204"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1203"/>
+        <location filename="src/cardreaderwidget.cpp" line="1204"/>
         <source>DateTime</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1203"/>
+        <location filename="src/cardreaderwidget.cpp" line="1204"/>
         <source>Card error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1206"/>
+        <location filename="src/cardreaderwidget.cpp" line="1207"/>
         <source>Station %1 backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="1208"/>
+        <location filename="src/cardreaderwidget.cpp" line="1209"/>
         <source>Station backup memory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -471,113 +471,113 @@ Read out after punch: {{ReadOutAfterPunch}}
 <context>
     <name>Model</name>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="130"/>
+        <location filename="src/cardreaderwidget.cpp" line="131"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="131"/>
+        <location filename="src/cardreaderwidget.cpp" line="132"/>
         <source>Class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="132"/>
+        <location filename="src/cardreaderwidget.cpp" line="133"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="133"/>
+        <location filename="src/cardreaderwidget.cpp" line="134"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="134"/>
+        <location filename="src/cardreaderwidget.cpp" line="135"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="135"/>
+        <location filename="src/cardreaderwidget.cpp" line="136"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="136"/>
+        <location filename="src/cardreaderwidget.cpp" line="137"/>
         <source>Finish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="137"/>
-        <location filename="src/cardreaderwidget.cpp" line="144"/>
+        <location filename="src/cardreaderwidget.cpp" line="138"/>
+        <location filename="src/cardreaderwidget.cpp" line="145"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="137"/>
+        <location filename="src/cardreaderwidget.cpp" line="138"/>
         <source>Card mispunch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="138"/>
+        <location filename="src/cardreaderwidget.cpp" line="139"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="138"/>
+        <location filename="src/cardreaderwidget.cpp" line="139"/>
         <source>Disqualified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="139"/>
+        <location filename="src/cardreaderwidget.cpp" line="140"/>
         <source>RT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="139"/>
+        <location filename="src/cardreaderwidget.cpp" line="140"/>
         <source>Card in rent table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="140"/>
+        <location filename="src/cardreaderwidget.cpp" line="141"/>
         <source>R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="140"/>
+        <location filename="src/cardreaderwidget.cpp" line="141"/>
         <source>Card returned</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="141"/>
+        <location filename="src/cardreaderwidget.cpp" line="142"/>
         <source>CTIME</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="141"/>
+        <location filename="src/cardreaderwidget.cpp" line="142"/>
         <source>Card check time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="142"/>
+        <location filename="src/cardreaderwidget.cpp" line="143"/>
         <source>STIME</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="142"/>
+        <location filename="src/cardreaderwidget.cpp" line="143"/>
         <source>Card start time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="143"/>
+        <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>FTIME</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="143"/>
+        <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Card finish time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/cardreaderwidget.cpp" line="144"/>
+        <location filename="src/cardreaderwidget.cpp" line="145"/>
         <source>Assign card to runner error</source>
         <translation type="unfinished"></translation>
     </message>
