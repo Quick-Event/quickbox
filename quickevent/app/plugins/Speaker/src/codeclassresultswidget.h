@@ -20,7 +20,7 @@ class CodeClassResultsWidget : public QWidget
 private:
 	using Super = QWidget;
 public:
-	explicit CodeClassResultsWidget(QWidget *parent = 0);
+	explicit CodeClassResultsWidget(QWidget *parent = nullptr);
 	~CodeClassResultsWidget() Q_DECL_OVERRIDE;
 
 	void reloadDeferred();

@@ -48,6 +48,7 @@ CodeClassResultsWidget::CodeClassResultsWidget(QWidget *parent)
 	m->addColumn("competitorName", tr("Competitor"));
 	m->addColumn("competitors.registration", tr("Reg"));//.setReadOnly(true);
 	m->addColumn("timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>());
+	m->addColumn("disqualified", tr("DISQ")).setReadOnly(true);
 	ui->tblView->setTableModel(m);
 	m_tableModel = m;
 }
@@ -86,24 +87,25 @@ void CodeClassResultsWidget::reload()
 			.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName");
 	if(code == RESULTS_PUNCH_CODE) {
 		// results
-		qb.select2("runs", "timeMs")
+		qb.select2("runs", "timeMs, disqualified")
 				.from("runs")
 				.where("runs.stageId=" QF_IARG(stage_id))
 				.joinRestricted("runs.competitorId", "competitors.id",
 								"competitors.classId=" QF_IARG(class_id)
-								" AND NOT runs.disqualified"
+								//" AND NOT runs.disqualified"
 								" AND timeMs IS NOT NULL" ,
 								qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("runs.timeMs");//.limit(10);
 	}
 	else {
 		qb.select2("punches", "runTimeMs AS timeMs")
+				.select2("runs", "disqualified")
 				.from("punches")
 				.joinRestricted("punches.runId", "runs.id",
 								"punches.stageId=" QF_IARG(stage_id)
 								" AND punches.code=" QF_IARG(code)
-								" AND NOT runs.disqualified",
-								qf::core::sql::QueryBuilder::INNER_JOIN)
+								//" AND NOT runs.disqualified",
+								, qf::core::sql::QueryBuilder::INNER_JOIN)
 				.joinRestricted("runs.competitorId", "competitors.id", "competitors.classId=" QF_IARG(class_id), qf::core::sql::QueryBuilder::INNER_JOIN)
 				.orderBy("punches.runTimeMs");//.limit(10);
 	}
@@ -153,7 +155,7 @@ void CodeClassResultsWidget::reset(int class_id, int code, int pin_to_code)
 					.join("coursecodes.codeId", "codes.id", qf::core::sql::QueryBuilder::INNER_JOIN)
 					//.joinRestricted("coursecodes.codeId", "codes.id", "codes.radio", qf::core::sql::QueryBuilder::INNER_JOIN)
 					.orderBy("coursecodes.position");
-			qfInfo() << qb.toString();
+			//qfInfo() << qb.toString();
 			qf::core::sql::Query q;
 			q.exec(qb.toString(), qf::core::Exception::Throw);
 			while(q.next()) {
