@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
+	shared \
 	Core \
 	Event \
     Classes \
@@ -12,6 +13,6 @@ SUBDIRS += \
     Receipts \
     Relays \
     Speaker \
- 	qml \
+#  	qml \
 
 
