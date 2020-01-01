@@ -73,7 +73,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="15"/>
         <source>Classes</source>
-        <translation type="unfinished">Kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
 </context>
 <context>
@@ -347,25 +347,25 @@
         <location filename="src/classeswidget.cpp" line="220"/>
         <source>OCAD TXT</source>
         <oldsource>OCad TXT</oldsource>
-        <translation type="unfinished">OCAD TXT</translation>
+        <translation>OCAD TXT</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="225"/>
         <source>OCAD v8</source>
         <oldsource>OCad v8</oldsource>
-        <translation type="unfinished">OCAD v8</translation>
+        <translation>OCAD v8</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="230"/>
         <source>OCAD IOF XML 2.0</source>
         <oldsource>OCad IOF-XML 2.0</oldsource>
-        <translation type="unfinished">OCAD IOF XML 2.0</translation>
+        <translation>OCAD IOF XML 2.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
         <source>OCAD IOF XML 3.0</source>
         <oldsource>OCad IOF-XML 3.0</oldsource>
-        <translation type="unfinished">OCAD IOF XML 3.0</translation>
+        <translation>OCAD IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="243"/>
@@ -655,7 +655,7 @@
         <location filename="src/drawing/drawingganttwidget.cpp" line="67"/>
         <source>Save classes start times</source>
         <oldsource>Save class start times</oldsource>
-        <translation type="unfinished">Uložit starty kategorií</translation>
+        <translation>Uložit starty kategorií</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="68"/>
@@ -663,7 +663,7 @@
 Do you want to save your changes?</source>
         <oldsource>All the user edited class start times will be overrided.
 Do you want to save your changes?</oldsource>
-        <translation type="unfinished">Startovní časy všech kategorií budou přepsány.
+        <translation>Startovní časy všech kategorií budou přepsány.
 Přejete si uložit změny?</translation>
     </message>
 </context>

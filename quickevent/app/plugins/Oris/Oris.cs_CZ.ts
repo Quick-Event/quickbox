@@ -48,39 +48,39 @@
     <name>Oris::OrisPlugin</name>
     <message>
         <source>&amp;ORIS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ORIS</translation>
     </message>
     <message>
         <source>&amp;Event</source>
-        <translation type="unfinished">&amp;Závod</translation>
+        <translation>&amp;Závod</translation>
     </message>
     <message>
         <source>&amp;Sync current event entries</source>
-        <translation type="unfinished">&amp;Synchronizovat záznamy aktuálního závodu</translation>
+        <translation>&amp;Synchronizovat záznamy aktuálního závodu</translation>
     </message>
     <message>
         <source>Sync &amp;relays entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronizovat &amp;přihlášky štafet</translation>
     </message>
     <message>
         <source>&amp;Clubs and registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kluby a registrace</translation>
     </message>
     <message>
         <source>&amp;Text file</source>
-        <translation type="unfinished">&amp;Textový soubor</translation>
+        <translation>&amp;Textový soubor</translation>
     </message>
     <message>
         <source>&amp;Competitors CSOS</source>
-        <translation type="unfinished">&amp;Seznam závodníků ve formátu ČSOS</translation>
+        <translation>&amp;Seznam závodníků ve formátu ČSOS</translation>
     </message>
     <message>
         <source>Competitors C&amp;SV</source>
-        <translation type="unfinished"></translation>
+        <translation>Seznam závodníků ve formátu &amp;CSV</translation>
     </message>
     <message>
         <source>&amp;Ranking CSV (ORIS format)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rankingová data v CSV (formát ORISu)</translation>
     </message>
 </context>
 <context>

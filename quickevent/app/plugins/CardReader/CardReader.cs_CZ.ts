@@ -14,12 +14,12 @@
     <message>
         <location filename="src/cardreaderplugin.cpp" line="161"/>
         <source>More competitors with SI: %1, run1 id: %2, run2 id: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Více závodníků s SI: %1, run1 ID: %2, run2 ID: %3</translation>
     </message>
     <message>
         <location filename="src/cardreaderplugin.cpp" line="173"/>
         <source>Cannot find competitor with SI: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenalezen závodník s SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderplugin.cpp" line="284"/>
@@ -37,7 +37,7 @@
     <message>
         <location filename="src/services/mqttpuncheswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulář</translation>
+        <translation>Formulář</translation>
     </message>
 </context>
 <context>
@@ -45,27 +45,27 @@
     <message>
         <location filename="src/services/racomclientwidget.ui" line="14"/>
         <source>Racom Client</source>
-        <translation type="unfinished">RACOM klient</translation>
+        <translation>RACOM klient</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="33"/>
         <source>sirxd data</source>
-        <translation type="unfinished">sirxd data</translation>
+        <translation>sirxd data</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="40"/>
         <source>Listen on UDP port</source>
-        <translation type="unfinished">Očekávat spojení na UDP portu</translation>
+        <translation>Očekávat spojení na UDP portu</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="47"/>
         <source>Raw SI data</source>
-        <translation type="unfinished">Nezpracovaná SI data</translation>
+        <translation>Nezpracovaná SI data</translation>
     </message>
     <message>
         <location filename="src/services/racomclientwidget.ui" line="67"/>
         <source>Listen on TCP port</source>
-        <translation type="unfinished">Očekávat spojení na TCP portu</translation>
+        <translation>Očekávat spojení na TCP portu</translation>
     </message>
 </context>
 <context>

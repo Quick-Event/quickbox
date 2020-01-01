@@ -321,7 +321,7 @@
     <message>
         <location filename="src/receiptswidget.cpp" line="256"/>
         <source>Show receipt</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit mezičasy</translation>
     </message>
 </context>
 <context>

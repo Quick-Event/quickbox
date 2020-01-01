@@ -21,12 +21,12 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="54"/>
         <source>Legs count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet úseků</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="60"/>
         <source>Number of legs</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet úseků</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="73"/>
@@ -71,17 +71,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="143"/>
         <source>Result options</source>
-        <translation type="unfinished"></translation>
+        <translation>Možnosti pro výsledky</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="149"/>
         <source>Number of places in each class</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximální počet míst v každé kategorii</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="172"/>
         <source>Exclude DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>Nezahrnovat DISK</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="182"/>

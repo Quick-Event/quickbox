@@ -133,7 +133,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="17"/>
         <source>&amp;Competitors</source>
-        <translation type="unfinished">&amp;Závodníci</translation>
+        <translation>&amp;Závodníci</translation>
     </message>
 </context>
 <context>
@@ -203,7 +203,7 @@
         <location filename="src/competitorswidget.cpp" line="135"/>
         <location filename="src/competitorswidget.cpp" line="404"/>
         <source>Competitors statistics</source>
-        <translation type="unfinished">Statistiky závodníků</translation>
+        <translation>Statistiky závodníků</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="142"/>
@@ -265,7 +265,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="128"/>
         <source>Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode &quot;Entries&quot; required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit formulář pro upravení nebo vložení závodníka po vložení čipu do vyčítací jednotky (mód vyčítací jednotky musí být nastaven na &quot;Přihlášky&quot;)</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="219"/>
@@ -321,7 +321,7 @@
         <location filename="src/competitorwidget.cpp" line="82"/>
         <source>Running</source>
         <comment>runs.isRunning</comment>
-        <translation type="unfinished"></translation>
+        <translation>Startuje</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="83"/>

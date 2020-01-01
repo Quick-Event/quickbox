@@ -184,7 +184,8 @@
         <location filename="src/eventplugin.cpp" line="941"/>
         <source>Event data version (%1) is too low, minimal version is (%2).
 Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Závod využívá příliš starou verzi dat (%1), minimální verze je (%2).
+Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktuální verze.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="770"/>
@@ -199,7 +200,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
         <location filename="src/eventplugin.cpp" line="298"/>
         <location filename="src/eventplugin.cpp" line="302"/>
         <source>Event (*.qbe)</source>
-        <translation type="unfinished"></translation>
+        <translation>Závod (*.qbe)</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="931"/>
@@ -293,79 +294,79 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Emma Client</source>
-        <translation type="unfinished">Emma Client</translation>
+        <translation>Emma Client</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
         <source>Export dir</source>
-        <translation type="unfinished">Adresář pro export</translation>
+        <translation>Adresář pro export</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="46"/>
         <source> sec</source>
-        <translation type="unfinished"> sek</translation>
+        <translation> sek</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="59"/>
         <source>Export interval</source>
-        <translation type="unfinished">Interval pro export</translation>
+        <translation>Interval pro export</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
         <source>IOF XML 3.0</source>
-        <translation type="unfinished">IOF XML 3.0</translation>
+        <translation>IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
         <source>Enable export IOF XML 3.0 file</source>
-        <translation type="unfinished">Zapnout export IOF XML 3.0 souboru</translation>
+        <translation>Zapnout export IOF XML 3.0 souboru</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="96"/>
         <source>Export IOF XML 3.0</source>
-        <translation type="unfinished">Exportovat IOF XML 3.0</translation>
+        <translation>Exportovat IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
         <source>RACOM</source>
-        <translation type="unfinished">RACOM</translation>
+        <translation>RACOM</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="114"/>
         <source>File name prefix</source>
-        <translation type="unfinished">Prefix u jména souboru</translation>
+        <translation>Prefix u jména souboru</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="124"/>
         <location filename="src/services/emmaclientwidget.ui" line="153"/>
         <source>Export start list</source>
-        <translation type="unfinished">Exportovat startovní listinu</translation>
+        <translation>Exportovat startovní listinu</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="131"/>
         <location filename="src/services/emmaclientwidget.ui" line="160"/>
         <source>Export results</source>
-        <translation type="unfinished">Exportovat výsledky</translation>
+        <translation>Exportovat výsledky</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="167"/>
         <source>Export radio codes</source>
-        <translation type="unfinished">Exportovat čísla radio-kontrol</translation>
+        <translation>Exportovat čísla radio-kontrol</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="49"/>
         <source>Open Directory</source>
-        <translation type="unfinished">Otevřít adresář</translation>
+        <translation>Otevřít adresář</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="68"/>
         <source>Cannot create directory &apos;%1&apos;.</source>
-        <translation type="unfinished">Nelze vytvořit adresář &apos;%1&apos;.</translation>
+        <translation>Nelze vytvořit adresář &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -373,17 +374,17 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/servicewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulář</translation>
+        <translation>Formulář</translation>
     </message>
     <message>
         <location filename="src/services/servicewidget.ui" line="45"/>
         <source>EmmaClient</source>
-        <translation type="unfinished">EmmaClient</translation>
+        <translation>EmmaClient</translation>
     </message>
     <message>
         <location filename="src/services/servicewidget.ui" line="58"/>
         <source>neco neco</source>
-        <translation type="unfinished">neco neco</translation>
+        <translation>neco neco</translation>
     </message>
 </context>
 <context>
