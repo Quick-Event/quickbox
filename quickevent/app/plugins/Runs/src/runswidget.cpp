@@ -280,11 +280,11 @@ void RunsWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 			connect(a, &qfw::Action::triggered, this, &RunsWidget::export_results_iofxml30_stage);
 		}
 		{
-			qfw::Action *a = a_export_results->addActionInto("html", tr("&Html"));
+			qfw::Action *a = a_export_results->addActionInto("html", tr("&HTML"));
 			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_resultsHtmlStage);
 		}
 		{
-			qfw::Action *a = a_export_results->addActionInto("htmlWithLaps", tr("Html with &laps"));
+			qfw::Action *a = a_export_results->addActionInto("htmlWithLaps", tr("HTML with &laps"));
 			connect(a, &qfw::Action::triggered, runs_plugin, &Runs::RunsPlugin::export_resultsHtmlStageWithLaps);
 		}
 		qfw::Action *a_export_results_csos = a_export_results->addMenuInto("csos", tr("CSOS"));

@@ -217,22 +217,22 @@ void ClassesWidget::settleDownInPartWidget(Classes::ThisPartWidget *part_widget)
 	qfw::Action *a_import = part_widget->menuBar()->actionForPath("import", true);
 	a_import->setText(tr("&Import"));
 	{
-		qfw::Action *a = new qfw::Action(tr("OCad TXT"), this);
+		qfw::Action *a = new qfw::Action(tr("OCAD TXT"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_txt);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action(tr("OCad v8"), this);
+		qfw::Action *a = new qfw::Action(tr("OCAD v8"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_v8);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action(tr("OCad IOF-XML 2.0"), this);
+		qfw::Action *a = new qfw::Action(tr("OCAD IOF XML 2.0"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_2);
 		a_import->addActionInto(a);
 	}
 	{
-		qfw::Action *a = new qfw::Action(tr("OCad IOF-XML 3.0"), this);
+		qfw::Action *a = new qfw::Action(tr("OCAD IOF XML 3.0"), this);
 		connect(a, &QAction::triggered, this, &ClassesWidget::import_ocad_iofxml_3);
 		a_import->addActionInto(a);
 	}

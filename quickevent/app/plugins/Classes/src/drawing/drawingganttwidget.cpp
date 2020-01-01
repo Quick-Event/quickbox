@@ -64,8 +64,8 @@ void DrawingGanttWidget::load(int stage_id)
 
 void drawing::DrawingGanttWidget::on_actSave_triggered()
 {
-	if(QMessageBox::information(this, tr("Save class start times"),
-								tr("All the user edited class start times will be overrided.\n"
+	if(QMessageBox::information(this, tr("Save classes start times"),
+								tr("All the user edited classes start times will be overridden.\n"
 								   "Do you want to save your changes?"),
 								QMessageBox::Save | QMessageBox::Cancel,
 								QMessageBox::Save))

@@ -95,169 +95,166 @@
 <context>
     <name>Event::EventPlugin</name>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="274"/>
+        <location filename="src/eventplugin.cpp" line="277"/>
         <source>&amp;Connect to database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="278"/>
+        <location filename="src/eventplugin.cpp" line="281"/>
         <source>&amp;Open event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="283"/>
+        <location filename="src/eventplugin.cpp" line="286"/>
         <source>Create eve&amp;nt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="288"/>
+        <location filename="src/eventplugin.cpp" line="291"/>
         <source>E&amp;dit event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="295"/>
-        <source>E&amp;xport event</source>
+        <location filename="src/eventplugin.cpp" line="298"/>
+        <location filename="src/eventplugin.cpp" line="302"/>
+        <source>Event (*.qbe)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="299"/>
-        <source>I&amp;mport event</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/Event/eventplugin.cpp" line="314"/>
+        <location filename="src/eventplugin.cpp" line="318"/>
         <source>&amp;Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="324"/>
+        <location filename="src/eventplugin.cpp" line="332"/>
         <source>Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="334"/>
+        <location filename="src/eventplugin.cpp" line="342"/>
         <source>Current stage E%1</source>
         <translation>Текущий этап E%1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="360"/>
+        <location filename="src/eventplugin.cpp" line="368"/>
         <source>Services</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="407"/>
+        <location filename="src/eventplugin.cpp" line="415"/>
         <source>Edit Stage</source>
         <translation>Редактировать этап</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="661"/>
+        <location filename="src/eventplugin.cpp" line="670"/>
         <source>Connect Database Error: %1</source>
         <translation>Ошибка подключения к базе данных: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="727"/>
+        <location filename="src/eventplugin.cpp" line="739"/>
         <source>Event ID cannot be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="731"/>
+        <location filename="src/eventplugin.cpp" line="743"/>
         <source>Event ID %1 exists already.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="757"/>
-        <location filename="src/Event/eventplugin.cpp" line="914"/>
-        <location filename="src/Event/eventplugin.cpp" line="1060"/>
-        <location filename="src/Event/eventplugin.cpp" line="1140"/>
-        <location filename="src/Event/eventplugin.cpp" line="1157"/>
+        <location filename="src/eventplugin.cpp" line="770"/>
+        <location filename="src/eventplugin.cpp" line="927"/>
+        <location filename="src/eventplugin.cpp" line="1073"/>
+        <location filename="src/eventplugin.cpp" line="1153"/>
+        <location filename="src/eventplugin.cpp" line="1170"/>
         <source>Open Database Error: %1</source>
         <translation>Ошибка открытия базы данных: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="802"/>
-        <location filename="src/Event/eventplugin.cpp" line="1076"/>
-        <location filename="src/Event/eventplugin.cpp" line="1175"/>
+        <location filename="src/eventplugin.cpp" line="815"/>
+        <location filename="src/eventplugin.cpp" line="1089"/>
+        <location filename="src/eventplugin.cpp" line="1188"/>
         <source>Create Database Error: %1</source>
         <translation>Ошибка создания базы данных: %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="806"/>
+        <location filename="src/eventplugin.cpp" line="819"/>
         <source>Cannot create event, database is not open: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="860"/>
-        <location filename="src/Event/eventplugin.cpp" line="883"/>
-        <location filename="src/Event/eventplugin.cpp" line="1121"/>
+        <location filename="src/eventplugin.cpp" line="873"/>
+        <location filename="src/eventplugin.cpp" line="896"/>
+        <location filename="src/eventplugin.cpp" line="1134"/>
         <source>Query</source>
         <translation>Запрос</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="860"/>
-        <location filename="src/Event/eventplugin.cpp" line="883"/>
+        <location filename="src/eventplugin.cpp" line="873"/>
+        <location filename="src/eventplugin.cpp" line="896"/>
         <source>Open event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="918"/>
+        <location filename="src/eventplugin.cpp" line="931"/>
         <source>Database file %1 doesn&apos;t exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="928"/>
-        <source>Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.</source>
+        <location filename="src/eventplugin.cpp" line="941"/>
+        <source>Event data version (%1) is too low, minimal version is (%2).
+Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="935"/>
+        <location filename="src/eventplugin.cpp" line="948"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1042"/>
+        <location filename="src/eventplugin.cpp" line="1055"/>
         <source>Export as Quick Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1042"/>
-        <location filename="src/Event/eventplugin.cpp" line="1117"/>
+        <location filename="src/eventplugin.cpp" line="1055"/>
+        <location filename="src/eventplugin.cpp" line="1130"/>
         <source>Quick Event files *%1 (*%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1052"/>
+        <location filename="src/eventplugin.cpp" line="1065"/>
         <source>Cannot delete existing file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1069"/>
-        <location filename="src/Event/eventplugin.cpp" line="1167"/>
+        <location filename="src/eventplugin.cpp" line="1082"/>
+        <location filename="src/eventplugin.cpp" line="1180"/>
         <source>Creating database</source>
         <translation>Создание базы данных</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1084"/>
-        <location filename="src/Event/eventplugin.cpp" line="1183"/>
+        <location filename="src/eventplugin.cpp" line="1097"/>
+        <location filename="src/eventplugin.cpp" line="1196"/>
         <source>Copying table %1</source>
         <translation>Копирование таблицы %1</translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1117"/>
+        <location filename="src/eventplugin.cpp" line="1130"/>
         <source>Import as Quick Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1121"/>
+        <location filename="src/eventplugin.cpp" line="1134"/>
         <source>Event will be imported as ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1126"/>
+        <location filename="src/eventplugin.cpp" line="1139"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Event/eventplugin.cpp" line="1203"/>
+        <location filename="src/eventplugin.cpp" line="1216"/>
         <source>Open imported event &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -265,29 +262,127 @@
 <context>
     <name>Event::StageWidget</name>
     <message>
-        <location filename="src/Event/stagewidget.ui" line="14"/>
+        <location filename="src/stagewidget.ui" line="14"/>
         <source>Form</source>
         <translation>Форма</translation>
     </message>
     <message>
-        <location filename="src/Event/stagewidget.ui" line="20"/>
+        <location filename="src/stagewidget.ui" line="20"/>
         <source>&amp;Date</source>
         <translation>&amp;Дата</translation>
     </message>
     <message>
-        <location filename="src/Event/stagewidget.ui" line="30"/>
+        <location filename="src/stagewidget.ui" line="30"/>
         <source>dd.MM. yyyy</source>
         <translation>dd.MM. yyyy</translation>
     </message>
     <message>
-        <location filename="src/Event/stagewidget.ui" line="40"/>
+        <location filename="src/stagewidget.ui" line="40"/>
         <source>&amp;Time</source>
         <translation>&amp;Время</translation>
     </message>
     <message>
-        <location filename="src/Event/stagewidget.cpp" line="14"/>
+        <location filename="src/stagewidget.cpp" line="14"/>
         <source>Stage</source>
         <translation>Этап</translation>
+    </message>
+</context>
+<context>
+    <name>Event::services::EmmaClientWidget</name>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="14"/>
+        <source>Emma Client</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="22"/>
+        <source>Export dir</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="34"/>
+        <source>...</source>
+        <translation type="unfinished">…</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="46"/>
+        <source> sec</source>
+        <translation type="unfinished"> сек</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="59"/>
+        <source>Export interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="68"/>
+        <source>IOF XML 3.0</source>
+        <translation type="unfinished">IOF XML 3.0</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="74"/>
+        <source>Enable export IOF XML 3.0 file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="96"/>
+        <source>Export IOF XML 3.0</source>
+        <translation type="unfinished">Экспорт IOF XML 3.0</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="108"/>
+        <source>RACOM</source>
+        <translation type="unfinished">RACOM</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="114"/>
+        <source>File name prefix</source>
+        <translation type="unfinished">Префикс имени файла</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="124"/>
+        <location filename="src/services/emmaclientwidget.ui" line="153"/>
+        <source>Export start list</source>
+        <translation type="unfinished">Экспорт стартового списка</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="131"/>
+        <location filename="src/services/emmaclientwidget.ui" line="160"/>
+        <source>Export results</source>
+        <translation type="unfinished">Экспорт результатов</translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.ui" line="167"/>
+        <source>Export radio codes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.cpp" line="49"/>
+        <source>Open Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/emmaclientwidget.cpp" line="68"/>
+        <source>Cannot create directory &apos;%1&apos;.</source>
+        <translation type="unfinished">Не удается создать каталог &apos;%1&apos;.</translation>
+    </message>
+</context>
+<context>
+    <name>Event::services::ServiceWidget</name>
+    <message>
+        <location filename="src/services/servicewidget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Форма</translation>
+    </message>
+    <message>
+        <location filename="src/services/servicewidget.ui" line="45"/>
+        <source>EmmaClient</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/services/servicewidget.ui" line="58"/>
+        <source>neco neco</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -451,109 +546,6 @@
         <location filename="src/eventdialogwidget.ui" line="306"/>
         <source> sec</source>
         <translation> сек</translation>
-    </message>
-</context>
-<context>
-    <name>services::EmmaClientWidget</name>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="14"/>
-        <source>Emma Client</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="22"/>
-        <source>Export dir</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="34"/>
-        <source>...</source>
-        <translation>…</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="46"/>
-        <source> sec</source>
-        <translation> сек</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="59"/>
-        <source>Export interval</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="68"/>
-        <source>IOF XML 3.0</source>
-        <oldsource>XML3.0</oldsource>
-        <translation>IOF XML 3.0</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="74"/>
-        <source>Enable export IOF XML 3.0 file</source>
-        <oldsource>Enable export XM3.0 file</oldsource>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="96"/>
-        <source>Export IOF XML 3.0</source>
-        <oldsource>Export XML3.0</oldsource>
-        <translation>Экспорт IOF XML 3.0</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="108"/>
-        <source>RACOM</source>
-        <oldsource>RaCom</oldsource>
-        <translation>RACOM</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="114"/>
-        <source>File name prefix</source>
-        <translation>Префикс имени файла</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="124"/>
-        <location filename="src/services/emmaclientwidget.ui" line="153"/>
-        <source>Export start list</source>
-        <translation>Экспорт стартового списка</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="131"/>
-        <location filename="src/services/emmaclientwidget.ui" line="160"/>
-        <source>Export results</source>
-        <oldsource>Export finish</oldsource>
-        <translation>Экспорт результатов</translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.ui" line="167"/>
-        <source>Export radio codes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.cpp" line="48"/>
-        <source>Open Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/emmaclientwidget.cpp" line="67"/>
-        <source>Cannot create directory &apos;%1&apos;.</source>
-        <translation>Не удается создать каталог &apos;%1&apos;.</translation>
-    </message>
-</context>
-<context>
-    <name>services::ServiceWidget</name>
-    <message>
-        <location filename="src/services/servicewidget.ui" line="14"/>
-        <source>Form</source>
-        <translation>Форма</translation>
-    </message>
-    <message>
-        <location filename="src/services/servicewidget.ui" line="45"/>
-        <source>EmmaClient</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/services/servicewidget.ui" line="58"/>
-        <source>neco neco</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

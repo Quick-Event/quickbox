@@ -98,33 +98,41 @@
 <context>
     <name>Competitors::CompetitorsPlugin</name>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="63"/>
+        <location filename="src/competitorsplugin.cpp" line="64"/>
         <source>Edit Competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="79"/>
+        <location filename="src/competitorsplugin.cpp" line="80"/>
         <source>Registrations</source>
         <translation>Registreringer</translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="129"/>
+        <location filename="src/competitorsplugin.cpp" line="130"/>
         <source>Name</source>
         <translation>Navn</translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="130"/>
+        <location filename="src/competitorsplugin.cpp" line="131"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="131"/>
+        <location filename="src/competitorsplugin.cpp" line="132"/>
         <source>Lic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/Competitors/competitorsplugin.cpp" line="132"/>
+        <location filename="src/competitorsplugin.cpp" line="133"/>
         <source>SI</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Competitors::ThisPartWidget</name>
+    <message>
+        <location filename="src/thispartwidget.cpp" line="17"/>
+        <source>&amp;Competitors</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -136,124 +144,130 @@
         <translation>Skjema</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="74"/>
+        <location filename="src/competitorswidget.cpp" line="72"/>
         <source>Class</source>
         <translation>Klasse</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="75"/>
+        <location filename="src/competitorswidget.cpp" line="73"/>
         <source>SN</source>
         <comment>start number</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="75"/>
+        <location filename="src/competitorswidget.cpp" line="73"/>
         <source>Start number</source>
         <translation>Startnummer</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="76"/>
+        <location filename="src/competitorswidget.cpp" line="74"/>
         <source>Name</source>
         <translation>Navn</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="77"/>
+        <location filename="src/competitorswidget.cpp" line="75"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="78"/>
+        <location filename="src/competitorswidget.cpp" line="76"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="79"/>
+        <location filename="src/competitorswidget.cpp" line="77"/>
         <source>Ranking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="80"/>
+        <location filename="src/competitorswidget.cpp" line="78"/>
         <source>Note</source>
         <translation type="unfinished">Merknad</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="109"/>
+        <location filename="src/competitorswidget.cpp" line="107"/>
         <source>&amp;Class </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="129"/>
+        <location filename="src/competitorswidget.cpp" line="127"/>
         <source>Edit on punch</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="130"/>
-        <source>Edit or insert competitor on card insert into station.</source>
+        <location filename="src/competitorswidget.cpp" line="128"/>
+        <source>Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode &quot;Entries&quot; required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="135"/>
+        <location filename="src/competitorswidget.cpp" line="133"/>
         <source>&amp;Print</source>
         <translation>&amp;Skriv ut</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="138"/>
+        <location filename="src/competitorswidget.cpp" line="135"/>
+        <location filename="src/competitorswidget.cpp" line="404"/>
+        <source>Competitors statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/competitorswidget.cpp" line="142"/>
         <source>&amp;Cards</source>
         <translation>&amp;Kort</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="140"/>
+        <location filename="src/competitorswidget.cpp" line="144"/>
         <source>Cards to rent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="151"/>
+        <location filename="src/competitorswidget.cpp" line="155"/>
         <source>&amp;Stations</source>
         <translation>&amp;Stasjoner</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="153"/>
+        <location filename="src/competitorswidget.cpp" line="157"/>
         <source>Backup memory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="177"/>
+        <location filename="src/competitorswidget.cpp" line="181"/>
         <source>--- all ---</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="215"/>
+        <location filename="src/competitorswidget.cpp" line="219"/>
         <source>Edit Competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="220"/>
+        <location filename="src/competitorswidget.cpp" line="224"/>
         <source>Save and &amp;next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="255"/>
+        <location filename="src/competitorswidget.cpp" line="259"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="268"/>
+        <location filename="src/competitorswidget.cpp" line="272"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="311"/>
+        <location filename="src/competitorswidget.cpp" line="315"/>
         <source>Set class in selected rows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="323"/>
+        <location filename="src/competitorswidget.cpp" line="327"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="324"/>
+        <location filename="src/competitorswidget.cpp" line="328"/>
         <source>Select class</source>
         <translation>Velg klasse</translation>
     </message>
@@ -298,14 +312,14 @@
     <name>RunsModel</name>
     <message>
         <location filename="src/competitorwidget.cpp" line="82"/>
-        <source>On</source>
-        <comment>runs.isRunning</comment>
-        <translation type="unfinished"></translation>
+        <source>Is running</source>
+        <translation>Kjører</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="82"/>
-        <source>Is running</source>
-        <translation>Kjører</translation>
+        <source>Running</source>
+        <comment>runs.isRunning</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="83"/>
@@ -448,22 +462,6 @@
     </message>
 </context>
 <context>
-    <name>Statistics</name>
-    <message>
-        <location filename="qml/Statistics.qml" line="66"/>
-        <source>Competitors statistics</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ThisPartWidget</name>
-    <message>
-        <location filename="src/thispartwidget.cpp" line="12"/>
-        <source>&amp;Competitors</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>competitorsStatistics</name>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="10"/>
@@ -489,14 +487,6 @@
         <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
         <source>Sum</source>
         <translation type="unfinished">Sum</translation>
-    </message>
-</context>
-<context>
-    <name>main</name>
-    <message>
-        <location filename="qml/main.qml" line="26"/>
-        <source>Competitors statistics</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

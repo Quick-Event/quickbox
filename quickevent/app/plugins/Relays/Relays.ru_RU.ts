@@ -255,7 +255,7 @@
 <context>
     <name>Relays::RelaysPlugin</name>
     <message>
-        <location filename="src/Relays/relaysplugin.cpp" line="68"/>
+        <location filename="src/relaysplugin.cpp" line="66"/>
         <source>Edit Relay</source>
         <translation type="unfinished"></translation>
     </message>
@@ -369,7 +369,6 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="283"/>
-        <location filename="src/relayswidget.cpp" line="495"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -391,18 +390,13 @@
     <message>
         <location filename="src/relayswidget.cpp" line="468"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Стартовый список по классам</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="486"/>
-        <location filename="src/relayswidget.cpp" line="517"/>
+        <location filename="src/relayswidget.cpp" line="487"/>
+        <location filename="src/relayswidget.cpp" line="526"/>
         <source>Start list by clubs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/relayswidget.cpp" line="495"/>
-        <source>Results after leg count:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Стартовый список по клубам</translation>
     </message>
 </context>
 <context>

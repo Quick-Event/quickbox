@@ -156,9 +156,9 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 			}
 			else {
 				/// second possible run, give it up
-				qfWarning() << "There are more runs with si:" << si_id << "run id1:" << ret << "id2:" << q.value("id").toInt();
+				qfWarning() << "There are more competitors with SI:" << si_id << "run id1:" << ret << "id2:" << q.value("id").toInt();
 				if(err_msg)
-					*err_msg = tr("More runs with si: %1, run1 id: %2, run2 id: %3").arg(si_id).arg(ret).arg(q.value("id").toInt());
+					*err_msg = tr("More competitors with SI: %1, run1 id: %2, run2 id: %3").arg(si_id).arg(ret).arg(q.value("id").toInt());
 				ret = 0;
 				break;
 			}
@@ -170,7 +170,7 @@ int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 	}
 	if(ret == 0) {
 		if(err_msg && err_msg->isEmpty())
-			*err_msg = tr("Cannot find runs with si: %1").arg(si_id);
+			*err_msg = tr("Cannot find competitor with SI: %1").arg(si_id);
 	}
 	else {
 		if(err_msg)

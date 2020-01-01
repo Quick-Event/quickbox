@@ -10,119 +10,131 @@
     </message>
 </context>
 <context>
-    <name>CorePlugin</name>
+    <name>Core::CorePlugin</name>
     <message>
-        <location filename="src/coreplugin.cpp" line="63"/>
-        <source>About Quick Event</source>
-        <translation>О Quick Event</translation>
+        <location filename="src/coreplugin.cpp" line="41"/>
+        <source>&amp;File</source>
+        <translation type="unfinished">&amp;Файл</translation>
     </message>
     <message>
-        <location filename="src/coreplugin.cpp" line="64"/>
-        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
+        <location filename="src/coreplugin.cpp" line="43"/>
+        <source>&amp;Import</source>
+        <translation type="unfinished">&amp;Импорт</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="46"/>
+        <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/coreplugin.cpp" line="79"/>
-        <source>About Qt</source>
-        <translation>О Qt</translation>
-    </message>
-</context>
-<context>
-    <name>main</name>
-    <message>
-        <location filename="qml/main.qml" line="58"/>
-        <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation>Изменение языка на &apos;%1&apos; будет применено после перезапуска приложения.</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="77"/>
+        <location filename="src/coreplugin.cpp" line="51"/>
         <source>&amp;Quit</source>
-        <translation>&amp;Выйти</translation>
+        <translation type="unfinished">&amp;Выйти</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="86"/>
+        <location filename="src/coreplugin.cpp" line="58"/>
+        <source>&amp;Tools</source>
+        <translation type="unfinished">&amp;Инструменты</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="60"/>
         <source>&amp;SQL tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="95"/>
-        <source>&amp;About Quick event</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="103"/>
-        <source>About &amp;Qt</source>
-        <translation>О &amp;Qt</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="126"/>
-        <source>&amp;File</source>
-        <translation>&amp;Файл</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="127"/>
-        <source>&amp;Import</source>
-        <translation>&amp;Импорт</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="133"/>
-        <source>&amp;Tools</source>
-        <translation>&amp;Инструменты</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="140"/>
+        <location filename="src/coreplugin.cpp" line="66"/>
         <source>&amp;Locale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="141"/>
+        <location filename="src/coreplugin.cpp" line="68"/>
         <source>&amp;Language</source>
-        <translation>&amp;Язык</translation>
+        <translation type="unfinished">&amp;Язык</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="143"/>
+        <location filename="src/coreplugin.cpp" line="70"/>
         <source>System</source>
-        <translation>Система</translation>
+        <translation type="unfinished">Система</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="144"/>
+        <location filename="src/coreplugin.cpp" line="71"/>
         <source>Czech</source>
-        <translation>Чешский</translation>
+        <translation type="unfinished">Чешский</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="145"/>
+        <location filename="src/coreplugin.cpp" line="72"/>
         <source>English</source>
-        <translation>Английский</translation>
+        <translation type="unfinished">Английский</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="146"/>
+        <location filename="src/coreplugin.cpp" line="73"/>
+        <source>Flemish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="74"/>
         <source>Norwegian</source>
-        <translation>Норвежский</translation>
+        <translation type="unfinished">Норвежский</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="147"/>
+        <location filename="src/coreplugin.cpp" line="75"/>
         <source>Polish</source>
-        <translation>Польский</translation>
+        <translation type="unfinished">Польский</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="148"/>
+        <location filename="src/coreplugin.cpp" line="76"/>
         <source>Russian</source>
-        <translation>Русский</translation>
+        <translation type="unfinished">Русский</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="161"/>
+        <location filename="src/coreplugin.cpp" line="94"/>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="95"/>
+        <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
+        <translation type="unfinished">Изменение языка на &apos;%1&apos; будет применено после перезапуска приложения.</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="103"/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="162"/>
+        <location filename="src/coreplugin.cpp" line="107"/>
         <source>&amp;Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="165"/>
+        <location filename="src/coreplugin.cpp" line="111"/>
         <source>&amp;Help</source>
-        <translation>&amp;Справка</translation>
+        <translation type="unfinished">&amp;Справка</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="113"/>
+        <source>&amp;About Quick event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="118"/>
+        <source>About &amp;Qt</source>
+        <translation type="unfinished">О &amp;Qt</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="161"/>
+        <source>About Quick Event</source>
+        <translation type="unfinished">О Quick Event</translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="162"/>
+        <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/coreplugin.cpp" line="177"/>
+        <source>About Qt</source>
+        <translation type="unfinished">О Qt</translation>
     </message>
 </context>
 </TS>

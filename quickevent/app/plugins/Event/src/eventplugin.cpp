@@ -938,7 +938,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	if(ok) {
 		EventConfig *evc = eventConfig(true);
 		if(evc->dbVersion() < minDbVersion()) {
-			qfd::MessageBox::showError(fwk, tr("Event data version (%1) is too low, minimal version is (%2). Use Event/Import to convert event to current version.")
+			qfd::MessageBox::showError(fwk, tr("Event data version (%1) is too low, minimal version is (%2).\nUse: File --> Import --> Event (*.qbe) to convert event to current version.")
 									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion()))
 									   .arg(qf::core::Utils::intToVersionString(minDbVersion())));
 			closeEvent();

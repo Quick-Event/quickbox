@@ -68,19 +68,19 @@ paths[libsiut]=libsiut
 paths[shared]=quickevent/app/plugins/qml/shared
 paths[quickevent]=quickevent/app/quickevent
 
-paths[CardReader]=quickevent/app/plugins/qml/CardReader
-paths[Classes]=quickevent/app/plugins/qml/Classes
-paths[Competitors]=quickevent/app/plugins/qml/Competitors
-paths[Core]=quickevent/app/plugins/qml/Core
-paths[Event]=quickevent/app/plugins/qml/Event
-paths[Oris]=quickevent/app/plugins/qml/Oris
-paths[Receipts]=quickevent/app/plugins/qml/Receipts
-paths[Relays]=quickevent/app/plugins/qml/Relays
-paths[Runs]=quickevent/app/plugins/qml/Runs
-paths[Speaker]=quickevent/app/plugins/qml/Speaker
+paths[CardReader]=quickevent/app/plugins/CardReader
+paths[Classes]=quickevent/app/plugins/Classes
+paths[Competitors]=quickevent/app/plugins/Competitors
+paths[Core]=quickevent/app/plugins/Core
+paths[Event]=quickevent/app/plugins/Event
+paths[Oris]=quickevent/app/plugins/Oris
+paths[Receipts]=quickevent/app/plugins/Receipts
+paths[Relays]=quickevent/app/plugins/Relays
+paths[Runs]=quickevent/app/plugins/Runs
+paths[Speaker]=quickevent/app/plugins/Speaker
 
-paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
-paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
+#paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
+#paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
 
 paths[quickshow]=quickshow
 paths[qsqlmon]=tools/qsqlmon

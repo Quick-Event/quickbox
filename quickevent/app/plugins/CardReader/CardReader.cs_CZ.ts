@@ -4,7 +4,7 @@
 <context>
     <name>CardReader::CardCheckerClassicCpp</name>
     <message>
-        <location filename="src/CardReader/cardcheckerclassiccpp.cpp" line="14"/>
+        <location filename="src/cardcheckerclassiccpp.cpp" line="14"/>
         <source>Classic race</source>
         <translation>Pevné pořadí kontrol</translation>
     </message>
@@ -12,24 +12,60 @@
 <context>
     <name>CardReader::CardReaderPlugin</name>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="164"/>
-        <source>More runs with si: %1, run1 id: %2, run2 id: %3</source>
-        <translation>Více závodníků s SI: %1, ID prvního závodníka: %2, ID druhého závodníka: %3</translation>
+        <location filename="src/cardreaderplugin.cpp" line="161"/>
+        <source>More competitors with SI: %1, run1 id: %2, run2 id: %3</source>
+        <translation>Více závodníků s SI: %1, run1 ID: %2, run2 ID: %3</translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="176"/>
-        <source>Cannot find runs with si: %1</source>
+        <location filename="src/cardreaderplugin.cpp" line="173"/>
+        <source>Cannot find competitor with SI: %1</source>
         <translation>Nenalezen závodník s SI: %1</translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="287"/>
+        <location filename="src/cardreaderplugin.cpp" line="284"/>
         <source>Save card ERROR: %1</source>
         <translation>Chyba při ukládání čipu: %1</translation>
     </message>
     <message>
-        <location filename="src/CardReader/cardreaderplugin.cpp" line="333"/>
+        <location filename="src/cardreaderplugin.cpp" line="330"/>
         <source>Save punch record ERROR: %1</source>
         <translation>Chyba při ukládání záznamu o ražení z čipu: %1</translation>
+    </message>
+</context>
+<context>
+    <name>CardReader::services::MqttPunchesWidget</name>
+    <message>
+        <location filename="src/services/mqttpuncheswidget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formulář</translation>
+    </message>
+</context>
+<context>
+    <name>CardReader::services::RacomClientWidget</name>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="14"/>
+        <source>Racom Client</source>
+        <translation>RACOM klient</translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="33"/>
+        <source>sirxd data</source>
+        <translation>sirxd data</translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="40"/>
+        <source>Listen on UDP port</source>
+        <translation>Očekávat spojení na UDP portu</translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="47"/>
+        <source>Raw SI data</source>
+        <translation>Nezpracovaná SI data</translation>
+    </message>
+    <message>
+        <location filename="src/services/racomclientwidget.ui" line="67"/>
+        <source>Listen on TCP port</source>
+        <translation>Očekávat spojení na TCP portu</translation>
     </message>
 </context>
 <context>
@@ -553,42 +589,6 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="144"/>
         <source>Assign card to runner error</source>
         <translation>Chyba při přiřazení čipu závodníkovi</translation>
-    </message>
-</context>
-<context>
-    <name>services::MqttPunchesWidget</name>
-    <message>
-        <location filename="src/services/mqttpuncheswidget.ui" line="16"/>
-        <source>Form</source>
-        <translation>Formulář</translation>
-    </message>
-</context>
-<context>
-    <name>services::RacomClientWidget</name>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="14"/>
-        <source>Racom Client</source>
-        <translation>RACOM klient</translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="33"/>
-        <source>sirxd data</source>
-        <translation>sirxd data</translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="40"/>
-        <source>Listen on UDP port</source>
-        <translation>Očekávat spojení na UDP portu</translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="47"/>
-        <source>Raw SI data</source>
-        <translation>Nezpracovaná SI data</translation>
-    </message>
-    <message>
-        <location filename="src/services/racomclientwidget.ui" line="67"/>
-        <source>Listen on TCP port</source>
-        <translation>Očekávat spojení na TCP portu</translation>
     </message>
 </context>
 </TS>

@@ -63,9 +63,17 @@
 <context>
     <name>Classes::ClassesPlugin</name>
     <message>
-        <location filename="src/Classes/classesplugin.cpp" line="285"/>
+        <location filename="src/classesplugin.cpp" line="285"/>
         <source>Cannot find id for code: %1</source>
         <translation>Nelze najít ID pro kontrolu: %1</translation>
+    </message>
+</context>
+<context>
+    <name>Classes::ThisPartWidget</name>
+    <message>
+        <location filename="src/thispartwidget.cpp" line="15"/>
+        <source>Classes</source>
+        <translation>Kategorie</translation>
     </message>
 </context>
 <context>
@@ -337,22 +345,26 @@
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="220"/>
-        <source>OCad TXT</source>
+        <source>OCAD TXT</source>
+        <oldsource>OCad TXT</oldsource>
         <translation>OCAD TXT</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="225"/>
-        <source>OCad v8</source>
+        <source>OCAD v8</source>
+        <oldsource>OCad v8</oldsource>
         <translation>OCAD v8</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="230"/>
-        <source>OCad IOF-XML 2.0</source>
+        <source>OCAD IOF XML 2.0</source>
+        <oldsource>OCad IOF-XML 2.0</oldsource>
         <translation>OCAD IOF XML 2.0</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
-        <source>OCad IOF-XML 3.0</source>
+        <source>OCAD IOF XML 3.0</source>
+        <oldsource>OCad IOF-XML 3.0</oldsource>
         <translation>OCAD IOF XML 3.0</translation>
     </message>
     <message>
@@ -561,14 +573,6 @@
     </message>
 </context>
 <context>
-    <name>ThisPartWidget</name>
-    <message>
-        <location filename="src/thispartwidget.cpp" line="10"/>
-        <source>Classes</source>
-        <translation>Kategorie</translation>
-    </message>
-</context>
-<context>
     <name>drawing::ClassItem</name>
     <message>
         <location filename="src/drawing/classitem.cpp" line="248"/>
@@ -649,13 +653,16 @@
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="67"/>
-        <source>Save class start times</source>
+        <source>Save classes start times</source>
+        <oldsource>Save class start times</oldsource>
         <translation>Uložit starty kategorií</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="68"/>
-        <source>All the user edited class start times will be overrided.
+        <source>All the user edited classes start times will be overridden.
 Do you want to save your changes?</source>
+        <oldsource>All the user edited class start times will be overrided.
+Do you want to save your changes?</oldsource>
         <translation>Startovní časy všech kategorií budou přepsány.
 Přejete si uložit změny?</translation>
     </message>
