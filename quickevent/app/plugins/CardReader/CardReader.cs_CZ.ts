@@ -308,7 +308,7 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     <message>
         <location filename="src/cardreaderwidget.cpp" line="737"/>
         <source>Cannot find run for punch record SI: %1</source>
-        <translation>Nelze najít úsek pro záznam ražení SI: %1</translation>
+        <translation>Nelze najít běh pro záznam ražení SI: %1</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="793"/>
