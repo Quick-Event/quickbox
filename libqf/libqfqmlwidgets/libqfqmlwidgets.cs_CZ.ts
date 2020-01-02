@@ -84,7 +84,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="250"/>
         <source>when necessary</source>
-        <translation>když nezbytné</translation>
+        <translation>v případě potřeby</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="260"/>
@@ -1011,12 +1011,12 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="649"/>
         <source>Zoom to fit width</source>
-        <translation>Přizpůsobit podle šířky</translation>
+        <translation>Přizpůsobit šířce</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="656"/>
         <source>Zoom to fit height</source>
-        <translation>Přizpůsobit podle výšky</translation>
+        <translation>Přizpůsobit výšce</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="663"/>
@@ -1026,7 +1026,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>Print pre&amp;view</source>
-        <translation>Náhled tisku</translation>
+        <translation>&amp;Náhled tisku</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
