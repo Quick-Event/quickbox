@@ -28,6 +28,7 @@ public:
 	//using Super::prepare;
 	bool prepare(const QString& query, bool throw_exc = false);
 	//using Super::exec;
+	static Query fromExec(const QString &query, bool throw_exc = true);
 	bool exec(const QString &query, bool throw_exc = false);
 	bool execThrow(const QString &query) {return exec(query, true);}
 	bool exec(const QueryBuilder &query_builder, bool throw_exc = false);

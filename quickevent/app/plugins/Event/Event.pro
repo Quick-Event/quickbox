@@ -19,8 +19,6 @@ TRANSLATIONS += \
 	$${PLUGIN_NAME}.ru_RU.ts \
 	$${PLUGIN_NAME}.nl_BE.ts \
 
-lupdate_only {
-SOURCES += \
+OTHER_FILES += \
 	$$PWD/qml/*.qml \
-}
 

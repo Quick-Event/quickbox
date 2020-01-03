@@ -54,8 +54,9 @@ public:
 	Q_SLOT void clearRunnersTableCache();
 
 	Q_INVOKABLE int courseForRun(int run_id);
-	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id, bool including_distance);
-	Q_INVOKABLE quickevent::core::CourseDef courseForCourseId(int course_id, bool including_distance);
+	int courseForRelay(int relay_number, int leg);
+	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
+	Q_INVOKABLE quickevent::core::CourseDef courseForCourseId(int course_id);
 
 	Q_INVOKABLE int cardForRun(int run_id);
 	qf::core::utils::TreeTable currentStageResultsTable(const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);

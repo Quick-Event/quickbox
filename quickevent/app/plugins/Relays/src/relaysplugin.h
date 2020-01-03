@@ -45,7 +45,7 @@ public:
 	Q_SIGNAL void nativeInstalled();
 
 	qf::core::utils::TreeTable nLegsResultsTable(const QString &where_option, int leg_count, int places, bool exclude_not_finish);
-	qf::core::utils::TreeTable nLegsResultsTable(int class_id, int leg_count, int places, bool exclude_not_finish);
+	qf::core::utils::TreeTable nLegsClassResultsTable(int class_id, int leg_count, int places, bool exclude_not_finish);
 private:
 	Q_SLOT void onInstalled();
 	void onDbEventNotify(const QString &domain, int connection_id, const QVariant &data);

@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
 	if(o_log_file.isEmpty())
 		o_log_file = QDir::tempPath() + "/quickevent.log";
 
+	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");
 	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::FileLogDevice> stderr_log_device(qf::core::FileLogDevice::install());
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());

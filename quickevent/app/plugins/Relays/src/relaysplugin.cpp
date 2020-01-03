@@ -4,6 +4,7 @@
 #include "relaywidget.h"
 
 #include <Event/eventplugin.h>
+#include <Runs/runsplugin.h>
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/si/checkedcard.h>
@@ -20,6 +21,7 @@
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
 
+#include <QFile>
 #include <QQmlEngine>
 
 namespace qfw = qf::qmlwidgets;
@@ -36,7 +38,13 @@ static Event::EventPlugin* eventPlugin()
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	return fwk->plugin<Event::EventPlugin*>();
 }
-
+/*
+static Runs::RunsPlugin* runsPlugin()
+{
+	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
+	return fwk->plugin<Runs::RunsPlugin*>();
+}
+*/
 RelaysPlugin::RelaysPlugin(QObject *parent)
 	: Super("Relays", parent)
 {
@@ -103,8 +111,12 @@ namespace {
 
 struct Leg
 {
-	QString name, reg;
+	QString fullName;
+	QString firstName;
+	QString lastName;
+	QString reg;
 	int runId = 0;
+	//int courseId = 0;
 	int time = 0;
 	int pos = 0;
 	int stime = 0;
@@ -112,12 +124,23 @@ struct Leg
 	bool disq = false;
 	bool nc = false;
 	bool notfinish = true;
+	QString status() const
+	{
+		if (notfinish)
+			 return QStringLiteral("DidNotFinish");
+		if (nc)
+			 return QStringLiteral("NotCompeting");
+		if (disq)
+			 return QStringLiteral("Disqualified");
+		return QStringLiteral("OK");
+	}
 };
 
 struct Relay
 {
 	QString name;
 	QVector<Leg> legs;
+	int relayNumber = 0;
 	int relayId = 0;
 	int loss = 0;
 
@@ -130,11 +153,24 @@ struct Relay
 				return qog::TimeMs::DISQ_TIME_MSEC;
 			if(leg.nc)
 				return qog::TimeMs::NOT_COMPETITING_TIME_MSEC;
-			if(leg.time == 0)
+			if(leg.notfinish)
 				return qog::TimeMs::NOT_FINISH_TIME_MSEC;
 			ret += leg.time;
 		}
 		return ret;
+	}
+	QString status(int leg_cnt) const
+	{
+		for (int i = 0; i < qMin(legs.count(), leg_cnt); ++i) {
+			const Leg &leg = legs[i];
+			if(leg.disq)
+				return QStringLiteral("Disqualified");
+			if(leg.nc)
+				return QStringLiteral("NotCompeting");
+			if(leg.notfinish)
+				return QStringLiteral("DidNotFinish");
+		}
+		return QStringLiteral("OK");
 	}
 #if 0
 	bool isDisq(int leg_cnt) const
@@ -176,6 +212,7 @@ struct Relay
 
 qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_option, int leg_count, int places, bool exclude_not_finish)
 {
+	qfLogFuncFrame() << "leg cnt:" << leg_count;
 	qf::core::utils::TreeTable tt;
 	tt.setValue("event", eventPlugin()->eventConfig()->value("event"));
 	tt.setValue("stageStart", eventPlugin()->stageStartDateTime(1));
@@ -193,15 +230,22 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
 		tt_row.setValue("className", q.value("classes.name"));
-		qf::core::utils::TreeTable tt2 = nLegsResultsTable(q.value("classes.id").toInt(), leg_count, places, exclude_not_finish);
+		qf::core::utils::TreeTable tt2 = nLegsClassResultsTable(q.value("classes.id").toInt(), leg_count, places, exclude_not_finish);
 		tt_row.appendTable(tt2);
 		tt.setRow(ix, tt_row);
 		//qfDebug().noquote() << tt2.toString();
 	}
+	auto wt = [tt]() {
+		QFile f("/home/fanda/t/relays.json");
+		f.open(QFile::WriteOnly);
+		f.write(tt.toString().toUtf8());
+		return f.fileName();
+	};
+	qfDebug() << "nLegsResultsTable table:" << wt();
 	return tt;
 }
 
-qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg_count, int places, bool exclude_not_finish)
+qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, int leg_count, int places, bool exclude_not_finish)
 {
 	int max_leg = 0;
 	qfs::Query q;
@@ -234,6 +278,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 		while(q.next()) {
 			Relay r;
 			r.relayId = q.value("relays.id").toInt();
+			r.relayNumber = q.value("relays.number").toInt();
 			r.name = (q.value("relays.number").toString()
 					+ ' ' + q.value("relays.club").toString()
 					+ ' ' + q.value("relays.name").toString()
@@ -249,6 +294,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 		qfs::QueryBuilder qb;
 		qb.select2("competitors", "id, registration")
 				.select2("runs", "id, relayId, leg")
+				.select2("competitors", "firstName, lastName")
 				.select("COALESCE(competitors.lastName, '') || ' ' || COALESCE(competitors.firstName, '') AS competitorName")
 				.from("runs")
 				.join("runs.competitorId", "competitors.id")
@@ -264,9 +310,12 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 					Relay &relay = relays[i];
 					int legno = q.value("runs.leg").toInt();
 					Leg &leg = relay.legs[legno - 1];
-					leg.name = q.value("competitorName").toString();
+					leg.fullName = q.value("competitorName").toString();
+					leg.firstName = q.value("firstName").toString();
+					leg.lastName = q.value("lastName").toString();
 					leg.runId = q.value("runs.id").toInt();
 					leg.reg = q.value("competitors.registration").toString();
+					//leg.courseId = runsPlugin()->courseForRun(leg.runId);
 					break;
 				}
 			}
@@ -361,8 +410,11 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 	qf::core::utils::TreeTable tt;
 	tt.appendColumn("pos", QVariant::Int);
 	tt.appendColumn("name", QVariant::String);
+	tt.appendColumn("relayNumber", QVariant::Int);
+	tt.appendColumn("id", QVariant::Int);
 	tt.appendColumn("time", QVariant::Int);
 	tt.appendColumn("loss", QVariant::Int);
+	tt.appendColumn("status", QVariant::String);
 	for (int i = 0; i < relays.count(); ++i) {
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
@@ -373,33 +425,47 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(int class_id, int leg
 		int prev_time = (i > 0)? relays[i-1].time(leg_count): 0;
 		tt_row.setValue("pos", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC && time > prev_time)? i+1: 0);
 		tt_row.setValue("name", relay.name);
+		tt_row.setValue("relayNumber", relay.relayNumber);
+		tt_row.setValue("id", relay.relayId);
 		tt_row.setValue("time", time);
 		tt_row.setValue("loss", (time <= qog::TimeMs::MAX_REAL_TIME_MSEC)?time - time0: 0);
+		tt_row.setValue("status", relay.status(relay.legs.count()));
 		qfDebug() << tt.rowCount() << relay.name;
 		qf::core::utils::TreeTable tt2;
-		tt2.appendColumn("name", QVariant::String);
-		tt2.appendColumn("reg", QVariant::String);
+		tt2.appendColumn("competitorName", QVariant::String);
+		tt2.appendColumn("firstName", QVariant::String);
+		tt2.appendColumn("lastName", QVariant::String);
+		tt2.appendColumn("registration", QVariant::String);
 		tt2.appendColumn("time", QVariant::Int);
 		tt2.appendColumn("pos", QVariant::Int);
+		tt2.appendColumn("status", QVariant::String);
 		tt2.appendColumn("stime", QVariant::Int);
 		tt2.appendColumn("spos", QVariant::Int);
-		//tt.appendColumn("disq", QVariant::Bool);
+		tt2.appendColumn("runId", QVariant::Int);
+		tt2.appendColumn("courseId", QVariant::Int);
+		tt2.appendColumn("sstatus", QVariant::String);
 		for (int j = 0; j < qMin(relay.legs.count(), places); ++j) {
 			const Leg &leg = relay.legs[j];
 			int ix2 = tt2.appendRow();
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(ix2);
-			tt2_row.setValue("competitorName", leg.name);
+			tt2_row.setValue("competitorName", leg.fullName);
+			tt2_row.setValue("firstName", leg.firstName);
+			tt2_row.setValue("lastName", leg.lastName);
 			tt2_row.setValue("registration", leg.reg);
 			tt2_row.setValue("time",
 						 leg.disq? qog::TimeMs::DISQ_TIME_MSEC
 								: (leg.time == 0)? qog::TimeMs::NOT_FINISH_TIME_MSEC
 												: leg.time);
 			tt2_row.setValue("pos", leg.pos);
+			tt2_row.setValue("status", leg.status());
 			tt2_row.setValue("stime", leg.stime);
 			tt2_row.setValue("spos", leg.spos);
+			tt2_row.setValue("runId", leg.runId);
+			tt2_row.setValue("sstatus", relay.status(j+1));
+			//tt2_row.setValue("courseId", leg.courseId);
 			tt2.setRow(ix2, tt2_row);
 			//rr2.setValue("disq", leg.disq);
-			qfDebug() << '\t' << leg.pos << leg.name;
+			qfDebug() << '\t' << leg.pos << leg.fullName;
 		}
 		tt_row.appendTable(tt2);
 		tt.setRow(ix, tt_row);

@@ -11,6 +11,7 @@
 
 #include <quickevent/gui/reportoptionsdialog.h>
 #include <quickevent/core/codedef.h>
+#include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
 
 #include <qf/qmlwidgets/framework/mainwindow.h>
@@ -63,24 +64,7 @@ static qf::qmlwidgets::framework::Plugin* competitorsPlugin()
 
 static QString datetime_to_string(const QDateTime &dt)
 {
-	QString ret = dt.toString(Qt::ISODate);
-	if(dt.timeSpec() == Qt::LocalTime) {
-		int offset_min = dt.offsetFromUtc();
-		if(offset_min == 0) {
-			ret += 'Z';
-		}
-		else {
-			if(offset_min < 0) {
-				ret += '-';
-				offset_min = -offset_min;
-			}
-			else {
-				ret += '+';
-			}
-			ret += QStringLiteral("%1:%2").arg(offset_min / (60 * 60), 2, 10, QChar('0')).arg((offset_min / 60) % 60, 2, 10, QChar('0'));
-		}
-	}
-	return ret;
+	return quickevent::core::Utils::dateTimeToIsoStringWithUtcOffset(dt);
 }
 
 RunsPlugin::RunsPlugin(QObject *parent)
@@ -201,7 +185,7 @@ static int latlng_distance(double lat1, double lng1, double lat2, double lng2)
 	return static_cast<int>(std::ceil(d));
 }
 
-QVariantMap RunsPlugin::courseCodesForRunId(int run_id, bool including_distance)
+QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
 {
 	qfLogFuncFrame() << "run id:" << run_id;
 	if(run_id <= 0) {
@@ -209,10 +193,10 @@ QVariantMap RunsPlugin::courseCodesForRunId(int run_id, bool including_distance)
 		return QVariantMap();
 	}
 	int course_id = courseForRun(run_id);
-	return courseForCourseId(course_id, including_distance);
+	return courseForCourseId(course_id);
 }
 
-quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id, bool including_distance)
+quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id)
 {
 	qfLogFuncFrame() << "course id:" << course_id;
 	quickevent::core::CourseDef ret;
@@ -265,7 +249,7 @@ quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id, bool in
 	// whatever code is imported, QE is using 999 everywhere
 	finish_code.setCode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 
-	if(including_distance) {
+	/*if(including_distance)*/ {
 		int course_len = 0;
 		quickevent::core::CodeDef prev_cd = start_code;
 		for (int i = 0; i < codes.count(); ++i) {
@@ -326,22 +310,31 @@ int RunsPlugin::courseForRun_Relays(int run_id)
 	qfs::Query q;
 	q.exec(qb.toString(), qf::core::Exception::Throw);
 	if(q.next()) {
-		QString relay_num = q.value("number").toString();
-		QString leg = q.value("leg").toString();
-		q.exec("SELECT id FROM courses WHERE name='" + relay_num + '.' + leg + "'");
-		int cnt = 0;
-		while (q.next()) {
-			if(cnt > 0) {
-				qfError() << "more courses found for run_id:" << run_id;
-				return 0;
-			}
-			ret = q.value(0).toInt();
-			cnt++;
-		}
+		int relay_num = q.value("number").toInt();
+		int leg = q.value("leg").toInt();
+		ret = courseForRelay(relay_num, leg);
 	}
 	else {
 		qfError() << "Cannot find relays record for run id:" << run_id;
 	}
+	return ret;
+}
+
+int RunsPlugin::courseForRelay(int relay_number, int leg)
+{
+	int ret = 0;
+	auto q = qfs::Query::fromExec(QStringLiteral("SELECT id FROM courses WHERE name='%1.%2'").arg(relay_number).arg(leg));
+	int cnt = 0;
+	while (q.next()) {
+		if(cnt > 0) {
+			qfError() << "more courses found for relay:" << relay_number << "leg:" << leg;
+			return 0;
+		}
+		ret = q.value(0).toInt();
+		cnt++;
+	}
+	if(!ret)
+		qfWarning() << "Cannot find course for relay:" << relay_number << "leg:" << leg;
 	return ret;
 }
 
@@ -674,7 +667,7 @@ qf::core::utils::TreeTable RunsPlugin::addLapsToStageResultsTable(int course_id,
 {
 	qf::core::utils::TreeTable tt = class_results;
 	int col_stp_time0_ix = tt.columnCount();
-	quickevent::core::CourseDef course = courseForCourseId(course_id, false);
+	quickevent::core::CourseDef course = courseForCourseId(course_id);
 	tt.setValue("course", course);
 	QVariantList course_codes = course.codes();
 	quickevent::core::CodeDef finish_code = course.finishCode();
@@ -858,10 +851,10 @@ bool RunsPlugin::exportResultsIofXml30Stage(int stage_id, const QString &file_na
 				QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb")) },
 			}
 		);
-		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
+		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		//int pos = 0;
 		int course_id = tt1_row.value(QStringLiteral("courses.id")).toInt();
-		quickevent::core::CourseDef course_def = courseForCourseId(course_id, false);
+		quickevent::core::CourseDef course_def = courseForCourseId(course_id);
 		QVariantList codes = course_def.codes();
 		//codes << course_def.finishCode(); IOFXML does not require finish lap time, can be coputed from finish time
 		int stpTime_0_ix = tt2.columnIndex(QStringLiteral("stpTime_0"));

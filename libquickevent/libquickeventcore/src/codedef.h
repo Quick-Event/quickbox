@@ -22,7 +22,7 @@ public:
 	QF_VARIANTMAP_FIELD(int, d, setD, istance)
 
 public:
-	static constexpr int PUNCH_CODE_MIN = 100;
+	static constexpr int PUNCH_CODE_MIN = 10;
 	static constexpr int PUNCH_CODE_MAX = 899;
 	static const int START_PUNCH_CODE;
 	static const int FINISH_PUNCH_CODE;

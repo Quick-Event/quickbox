@@ -26,7 +26,7 @@ class RelaysWidget : public QFrame
 private:
 	typedef QFrame Super;
 public:
-	explicit RelaysWidget(QWidget *parent = 0);
+	explicit RelaysWidget(QWidget *parent = nullptr);
 	~RelaysWidget() Q_DECL_OVERRIDE;
 
 	void settleDownInPartWidget(ThisPartWidget *part_widget);
@@ -50,6 +50,8 @@ private:
 
 	void print_results_nlegs();
 	void print_results_overal();
+
+	void export_results_iofxml3();
 
 	void printResults(const QString &settings_id, const QVariantMap &default_options);
 private:

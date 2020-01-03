@@ -32,6 +32,13 @@ bool Query::prepare(const QString &query, bool throw_exc)
 	return ret;
 }
 
+Query Query::fromExec(const QString &query, bool throw_exc)
+{
+	Query q;
+	q.exec(query, throw_exc);
+	return q;
+}
+
 bool Query::exec(const QString &query, bool throw_exc)
 {
 	qfLogFuncFrame() << query;
