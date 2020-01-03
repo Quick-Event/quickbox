@@ -104,7 +104,7 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="20"/>
         <source>Show print dialog</source>
-        <translation>Ukázat formulář pro tisk</translation>
+        <translation>Zobrazit formulář pro tisk</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="27"/>
@@ -793,7 +793,7 @@
     <message>
         <location filename="src/runstablewidget.cpp" line="325"/>
         <source>Get number</source>
-        <translation>Vložte číslo</translation>
+        <translation>Zadejte číslo</translation>
     </message>
     <message>
         <location filename="src/runstablewidget.cpp" line="325"/>
@@ -822,7 +822,7 @@
         <location filename="src/runswidget.ui" line="85"/>
         <source>Remove all start times and unlock drawing for this class.</source>
         <oldsource>Draw selected  class or all classes when all the clases are selected.</oldsource>
-        <translation>Smazat všechny startovní časy v této kategorii a odemknout losování.</translation>
+        <translation>Odstranit všechny startovní časy v této kategorii a odemknout losování.</translation>
     </message>
     <message>
         <location filename="src/runswidget.ui" line="88"/>
@@ -930,7 +930,7 @@
     <message>
         <location filename="src/runswidget.cpp" line="202"/>
         <source>Current stage awards</source>
-        <translation>Diplomy z aktuální etapy</translation>
+        <translation>Diplomy pro aktuální etapu</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="208"/>
@@ -1003,7 +1003,7 @@
         <location filename="src/runswidget.cpp" line="900"/>
         <source>Reset all start times and unlock drawing for this class?</source>
         <oldsource>Reset all start times and unlock for drawing for this class?</oldsource>
-        <translation>Smazat všechny startovní časy v této kategorii a odemknout losování?</translation>
+        <translation>Odstranit všechny startovní časy v této kategorii a odemknout losování?</translation>
     </message>
     <message>
         <location filename="src/runswidget.cpp" line="304"/>
