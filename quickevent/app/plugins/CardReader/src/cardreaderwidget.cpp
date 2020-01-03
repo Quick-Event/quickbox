@@ -677,20 +677,6 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 		bool card_lent = thisPlugin()->isCardLent(card.cardNumber(), card.finishTime(), run_id);
 		if(card_lent)
 			operatorAudioNotify();
-		if(punch_marking == quickevent::core::si::PunchRecord::MARKING_RACE) {
-			// create fake punch from finish station for speaker if it doesn't exists already
-			quickevent::core::si::PunchRecord punch;
-			punch.setsiid(card.cardNumber());
-			punch.setrunid(run_id);
-			punch.settime(card.finishTime());
-			punch.setcode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
-			punch.setmarking(punch_marking);
-			int punch_id = thisPlugin()->savePunchRecordToSql(punch);
-			if(punch_id > 0) {
-				punch.setid(punch_id);
-				eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
-			}
-		}
 	}
 	quickevent::core::si::ReadCard read_card(card);
 	read_card.setRunId(run_id);

@@ -257,6 +257,20 @@ quickevent::core::si::CheckedCard CardReaderPlugin::checkCard(const quickevent::
 
 int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_card)
 {
+	{
+		// create fake punch from finish station for speaker if it doesn't exists already
+		quickevent::core::si::PunchRecord punch;
+		punch.setsiid(read_card.cardNumber());
+		punch.setrunid(read_card.runId());
+		punch.settime(read_card.finishTime());
+		punch.setcode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
+		punch.setmarking(quickevent::core::si::PunchRecord::MARKING_RACE);
+		int punch_id = savePunchRecordToSql(punch);
+		if(punch_id > 0) {
+			punch.setid(punch_id);
+			eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED, punch, true);
+		}
+	}
 	int ret = 0;
 	QStringList punches;
 	for(auto v : read_card.punches()) {
@@ -397,6 +411,21 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 	*/
 }
 
+void CardReaderPlugin::updateCardToRunAssignmentInPunches(int stage_id, int card_id, int run_id)
+{
+	qfLogFuncFrame();
+	qf::core::sql::Query q = qf::core::sql::Query::fromExec("SELECT siId FROM cards WHERE id=" QF_IARG(card_id) );
+	if(q.next()) {
+		int si_id = q.value(0).toInt();
+		QString qs = "UPDATE punches SET runId=" QF_IARG(run_id)
+					" WHERE stageId=" QF_IARG(stage_id)
+					" AND siId=" QF_IARG(si_id)
+					" AND (runId IS NULL OR runId=0)";
+		qfDebug() << qs;
+		q.execThrow(qs);
+	}
+}
+
 bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
 {
 	QF_TIME_SCOPE("saveCardAssignedRunnerIdSql()");
@@ -444,6 +473,7 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 
 void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 {
+	updateCardToRunAssignmentInPunches(currentStageId(), card_id, run_id);
 	saveCardAssignedRunnerIdSql(card_id, run_id);
 	processCardToRunAssignment(card_id, run_id);
 }
