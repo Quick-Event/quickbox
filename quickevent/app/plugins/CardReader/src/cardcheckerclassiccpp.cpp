@@ -1,6 +1,7 @@
 #include "cardcheckerclassiccpp.h"
 
 #include <quickevent/core/codedef.h>
+#include <quickevent/core/coursedef.h>
 #include <quickevent/core/si/punchrecord.h>
 #include <quickevent/core/si/readcard.h>
 
@@ -19,7 +20,7 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	qfDebug() << "read card:" << read_card.toString();
 
 	int run_id = read_card.runId();
-	QVariantMap course;
+	quickevent::core::CourseDef course;
 	if(run_id > 0)
 		course = courseCodesForRunId(run_id);
 
@@ -27,8 +28,8 @@ quickevent::core::si::CheckedCard CardCheckerClassicCpp::checkCard(const quickev
 	if(course.isEmpty())
 		return checked_card;
 
-	checked_card.setCourseId(course.value(QStringLiteral("id")).toInt());
-	checked_card.setRunId(course.value(QStringLiteral("runId")).toInt());
+	checked_card.setCourseId(course.id());
+	checked_card.setRunId(run_id);
 	//checked_card.setPunches();
 	//Log.info("course:", JSON.stringify(read_card, null, 2));
 	int stage_id = stageIdForRun(run_id);

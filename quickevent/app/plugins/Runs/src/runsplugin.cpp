@@ -185,7 +185,7 @@ static int latlng_distance(double lat1, double lng1, double lat2, double lng2)
 	return static_cast<int>(std::ceil(d));
 }
 
-QVariantMap RunsPlugin::courseCodesForRunId(int run_id)
+quickevent::core::CourseDef RunsPlugin::courseCodesForRunId(int run_id)
 {
 	qfLogFuncFrame() << "run id:" << run_id;
 	if(run_id <= 0) {

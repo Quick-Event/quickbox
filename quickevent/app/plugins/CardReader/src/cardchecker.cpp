@@ -101,7 +101,7 @@ int CardChecker::cardCheckCheckTimeSec()
 	return eventPlugin()->eventConfig()->cardCheckCheckTimeSec();
 }
 
-QVariantMap CardChecker::courseCodesForRunId(int run_id)
+quickevent::core::CourseDef CardChecker::courseCodesForRunId(int run_id)
 {
 	return runsPlugin()->courseCodesForRunId(run_id);
 }

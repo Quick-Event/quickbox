@@ -47,12 +47,13 @@ QString CheckedCard::toString() const
 					 .arg(quickevent::core::og::TimeMs(p.lapTimeMs()).toString())
 					 .arg(p.contains(QStringLiteral("distance"))? p.distance(): -1);
 	}
-	ret += QString("SI: %1, run_id: %2, start: %3, finish: %4, punches: %5")
+	ret += QString("SI: %1, run_id: %2, course_id: %6, start: %3, finish: %4, punches: %5")
 			.arg(cardNumber())
 			.arg(runId())
 			.arg(quickevent::core::og::TimeMs(startTimeMs()).toString())
 			.arg(quickevent::core::og::TimeMs(finishTimeMs()).toString())
-			.arg(punch_lst.join(", "));
+			.arg(punch_lst.join(", "))
+			.arg(courseId());
 	return ret;
 }
 

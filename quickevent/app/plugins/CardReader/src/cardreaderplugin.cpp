@@ -344,7 +344,8 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 		QF_TIME_SCOPE("DELETE FROM runlaps");
 		q.exec("DELETE FROM runlaps WHERE runId=" + QString::number(run_id), qf::core::Exception::Throw);
 	}
-	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs) VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
+	q.prepare(QStringLiteral("INSERT INTO runlaps (runId, position, code, stpTimeMs, lapTimeMs)"
+							 " VALUES (:runId, :position, :code, :stpTimeMs, :lapTimeMs)"), qf::core::Exception::Throw);
 	auto punch_list = checked_card.punches();
 	if(punch_list.count()) {
 		QF_TIME_SCOPE("INSERT INTO runlaps, records cnt: " + QString::number(punch_list.count()));
@@ -363,7 +364,9 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			}
 		}
 	}
-	q.prepare("UPDATE runs SET checkTimeMs=:checkTimeMs, timeMs=:timeMs, finishTimeMs=:finishTimeMs, misPunch=:misPunch, badCheck=:badCheck, disqualified=:disqualified WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
+	q.prepare("UPDATE runs SET checkTimeMs=:checkTimeMs, timeMs=:timeMs, finishTimeMs=:finishTimeMs,"
+			  " misPunch=:misPunch, badCheck=:badCheck, disqualified=:disqualified,"
+			  " WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":checkTimeMs"), checked_card.checkTimeMs());
 	q.bindValue(QStringLiteral(":timeMs"), checked_card.timeMs());
 	q.bindValue(QStringLiteral(":finishTimeMs"), checked_card.finishTimeMs());
@@ -447,6 +450,7 @@ void CardReaderPlugin::assignCardToRun(int card_id, int run_id)
 
 bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 {
+	qfLogFuncFrame();
 	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(is_relays) {
 		qf::core::sql::Query q;
@@ -474,6 +478,7 @@ bool CardReaderPlugin::processCardToRunAssignment(int card_id, int run_id)
 			}
 		}
 		quickevent::core::si::CheckedCard checked_card = checkCard(card_id, run_id);
+		//qfDebug() << checked_card.toString();
 		updateCheckedCardValuesSql(checked_card);
 		eventPlugin()->emitDbEvent(Event::EventPlugin::DBEVENT_CARD_PROCESSED_AND_ASSIGNED, checked_card, true);
 

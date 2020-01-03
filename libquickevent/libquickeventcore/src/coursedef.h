@@ -11,6 +11,7 @@ namespace core {
 
 class QUICKEVENTCORE_DECL_EXPORT CourseDef : public QVariantMap
 {
+	QF_VARIANTMAP_FIELD(int, i, setI, d)
 	QF_VARIANTMAP_FIELD(QString, n, setN, ame)
 	QF_VARIANTMAP_FIELD(int, l, setL, enght)
 	QF_VARIANTMAP_FIELD(int, c, setC, limb)

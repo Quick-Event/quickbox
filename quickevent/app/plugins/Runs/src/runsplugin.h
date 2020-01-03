@@ -55,8 +55,8 @@ public:
 
 	Q_INVOKABLE int courseForRun(int run_id);
 	int courseForRelay(int relay_number, int leg);
-	Q_INVOKABLE QVariantMap courseCodesForRunId(int run_id);
-	Q_INVOKABLE quickevent::core::CourseDef courseForCourseId(int course_id);
+	quickevent::core::CourseDef courseCodesForRunId(int run_id);
+	quickevent::core::CourseDef courseForCourseId(int course_id);
 
 	Q_INVOKABLE int cardForRun(int run_id);
 	qf::core::utils::TreeTable currentStageResultsTable(const QString &class_filter = QString(), int max_competitors_in_class = 0, bool exclude_disq = false);
