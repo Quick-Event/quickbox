@@ -172,7 +172,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="119"/>
         <source>Network address</source>
-        <translation>Adresa sítě</translation>
+        <translation>Síťová adresa</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="221"/>
