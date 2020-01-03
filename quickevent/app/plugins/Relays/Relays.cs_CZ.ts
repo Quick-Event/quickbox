@@ -248,7 +248,7 @@
     <message>
         <location filename="src/relaywidget.cpp" line="188"/>
         <source>Relay ID invalid.</source>
-        <translation>Nesprávné ID štafety.</translation>
+        <translation>Neplatné ID štafety.</translation>
     </message>
     <message>
         <location filename="src/relaywidget.cpp" line="233"/>
@@ -368,12 +368,12 @@
         <location filename="src/relayswidget.cpp" line="250"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
-        <translation>Opravdu smazat všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
+        <translation>Opravdu odstranit všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="263"/>
         <source>Confirm deletion of %1 relays.</source>
-        <translation>Potvrdit smazání %1 štafet.</translation>
+        <translation>Potvrďte smazání %1 štafet.</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="283"/>
