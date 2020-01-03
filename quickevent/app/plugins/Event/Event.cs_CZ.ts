@@ -22,7 +22,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
         <source>Event name can be specified later on in File/Open</source>
-        <translation>Jméno závodu může být zadáno později v Soubor/Otevřít</translation>
+        <translation>Jméno závodu může být zadáno později v Soubor/Závod/Otevřít závod</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
@@ -210,7 +210,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="src/eventplugin.cpp" line="948"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
-        <translation>Závod byl vytvořen v novější verzi QuickEventu (%1) a možná nebude pracovat tak, jak je očekáváno. Je doporučeno si stáhnout nejnovětší verzi QuickEventu.</translation>
+        <translation>Závod byl vytvořen v novější verzi QuickEventu (%1) a aplikace možná nebude pracovat tak, jak je očekáváno. Je doporučeno si stáhnout nejnovětší verzi QuickEventu.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1055"/>
@@ -253,7 +253,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="src/eventplugin.cpp" line="1139"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
-        <translation>Závod ID &apos;%1&apos; již existuje!</translation>
+        <translation>Závod s ID &apos;%1&apos; již existuje!</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1216"/>
@@ -533,7 +533,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     <message>
         <location filename="src/eventdialogwidget.ui" line="290"/>
         <source>Card check</source>
-        <translation>Čas kontroly čipu</translation>
+        <translation>Kontrola čipu před startem</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="300"/>
