@@ -1,6 +1,8 @@
 #include "eventdialogwidget.h"
 #include "ui_eventdialogwidget.h"
 
+#include <qf/core/collator.h>
+
 EventDialogWidget::EventDialogWidget(QWidget *parent) :
 	Super(parent),
 	ui(new Ui::EventDialogWidget)
@@ -20,12 +22,15 @@ EventDialogWidget::~EventDialogWidget()
 
 void EventDialogWidget::setEventId(const QString &event_id)
 {
-	ui->ed_eventId->setText(event_id.toLower());
+	QByteArray la = qf::core::Collator::toAscii7(QLocale::Czech, event_id, true);
+	ui->ed_eventId->setText(QString::fromUtf8(la));
 }
 
 QString EventDialogWidget::eventId() const
 {
-	return ui->ed_eventId->text().toLower();
+	QString event_id = ui->ed_eventId->text();
+	QByteArray la = qf::core::Collator::toAscii7(QLocale::Czech, event_id, true);
+	return QString::fromUtf8(la);
 }
 
 void EventDialogWidget::setEventIdEditable(bool b)

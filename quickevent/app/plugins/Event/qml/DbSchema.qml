@@ -198,6 +198,9 @@ Schema {
 				Field { name: 'finishTimeMs'; type: Int {}
 					comment: 'in miliseconds'
 				},
+				Field { name: 'penaltyTimeMs'; type: Int {}
+					comment: 'in miliseconds'
+				},
 				Field { name: 'timeMs'; type: Int {}
 					comment: 'in miliseconds since event run'
 				},

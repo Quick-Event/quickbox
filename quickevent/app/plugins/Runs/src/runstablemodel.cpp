@@ -39,6 +39,7 @@ RunsTableModel::RunsTableModel(QObject *parent)
 	setColumn(col_runs_startTimeMs, ColumnDefinition("runs.startTimeMs", tr("Start")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_timeMs, ColumnDefinition("runs.timeMs", tr("Time")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_finishTimeMs, ColumnDefinition("runs.finishTimeMs", tr("Finish")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
+	setColumn(col_runs_penaltyTimeMs, ColumnDefinition("runs.penaltyTimeMs", tr("Penalty")).setCastType(qMetaTypeId<quickevent::core::og::TimeMs>()));
 	setColumn(col_runs_notCompeting, ColumnDefinition("runs.notCompeting", tr("NC")).setToolTip(tr("Not competing")));
 	setColumn(col_runs_cardRentRequested, ColumnDefinition("runs.cardLent", tr("RR")).setToolTip(tr("Card rent requested")));
 	setColumn(col_cardInLentTable, ColumnDefinition("cardInLentTable", tr("RT", "cardInLentTable")).setToolTip(tr("Card in rent table")));
@@ -107,15 +108,32 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 	}
 	if(column_ix == col_runs_finishTimeMs) {
 		QVariant start_ms = value(row_ix, col_runs_startTimeMs);
-		if(!start_ms.isNull()) {
-			int time_ms = val.toInt() - start_ms.toInt();
-			if(time_ms > 0) {
-				Super::setValue(row_ix, col_runs_timeMs, time_ms);
-			}
-			else {
-				Super::setValue(row_ix, col_runs_timeMs, QVariant());
+		if(val.isNull()) {
+			Super::setValue(row_ix, col_runs_timeMs, QVariant());
+		}
+		else {
+			if(!start_ms.isNull()) {
+				int penalty_ms = value(row_ix, col_runs_penaltyTimeMs).toInt();
+				int time_ms = val.toInt() - start_ms.toInt() + penalty_ms;
+				if(time_ms > 0) {
+					Super::setValue(row_ix, col_runs_timeMs, time_ms);
+				}
+				else {
+					Super::setValue(row_ix, col_runs_timeMs, QVariant());
+				}
 			}
 		}
+		return Super::setValue(row_ix, column_ix, val);
+	}
+	else if(column_ix == col_runs_penaltyTimeMs) {
+		int penalty_ms = val.toInt();
+		int old_penalty_ms = Super::value(row_ix, col_runs_penaltyTimeMs).toInt();
+		int time_ms = value(row_ix, col_runs_timeMs).toInt();
+		if(time_ms > 0) {
+			time_ms = time_ms - old_penalty_ms + penalty_ms;
+			Super::setValue(row_ix, col_runs_timeMs, time_ms);
+		}
+		return Super::setValue(row_ix, column_ix, val);
 	}
 	else if(column_ix == col_runs_timeMs) {
 		int rt = val.toInt();
@@ -127,7 +145,8 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		else {
 			QVariant start_ms = value(row_ix, col_runs_startTimeMs);
 			if(!start_ms.isNull()) {
-				int finish_ms = val.toInt() + start_ms.toInt();
+				int penalty_ms = value(row_ix, col_runs_penaltyTimeMs).toInt();
+				int finish_ms = val.toInt() + start_ms.toInt() - penalty_ms;
 				if(finish_ms > 0) {
 					Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
 				}
@@ -142,13 +161,14 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		if(!val.isNull()) {
 			int start_ms = val.toInt();
 			int finish_ms = value(row_ix, col_runs_finishTimeMs).toInt();
+			int penalty_ms = value(row_ix, col_runs_penaltyTimeMs).toInt();
 			int time_ms = value(row_ix, col_runs_timeMs).toInt();
 			if(finish_ms > 0) {
-				int time_ms = finish_ms - start_ms;
+				int time_ms = finish_ms - start_ms + penalty_ms;
 				Super::setValue(row_ix, col_runs_timeMs, time_ms);
 			}
-			else if(time_ms > 0) {
-				finish_ms = start_ms + time_ms;
+			else if(time_ms > penalty_ms) {
+				finish_ms = start_ms + time_ms - penalty_ms;
 				Super::setValue(row_ix, col_runs_finishTimeMs, finish_ms);
 			}
 		}

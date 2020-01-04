@@ -378,7 +378,7 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 			}
 		}
 	}
-	q.prepare("UPDATE runs SET checkTimeMs=:checkTimeMs, timeMs=:timeMs, finishTimeMs=:finishTimeMs,"
+	q.prepare("UPDATE runs SET checkTimeMs=:checkTimeMs, timeMs=:timeMs, finishTimeMs=:finishTimeMs, penaltyTimeMs=NULL,"
 			  " misPunch=:misPunch, badCheck=:badCheck, disqualified=:disqualified"
 			  " WHERE id=" + QString::number(run_id), qf::core::Exception::Throw);
 	q.bindValue(QStringLiteral(":checkTimeMs"), checked_card.checkTimeMs());
