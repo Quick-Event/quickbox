@@ -50,10 +50,11 @@ private:
 
 	void print_results_nlegs();
 	void print_results_overal();
+	void print_results_overal_condensed();
 
 	void export_results_iofxml3();
 
-	void printResults(const QString &settings_id, const QVariantMap &default_options);
+	//void printResults(const QString &settings_id, const QVariantMap &default_options);
 private:
 	Ui::RelaysWidget *ui;
 	qf::core::model::SqlTableModel *m_tblModel;

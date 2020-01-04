@@ -245,7 +245,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 	return tt;
 }
 
-qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, int leg_count, int places, bool exclude_not_finish)
+qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, int leg_count, int max_places, bool exclude_not_finish)
 {
 	int max_leg = 0;
 	qfs::Query q;
@@ -415,7 +415,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 	tt.appendColumn("time", QVariant::Int);
 	tt.appendColumn("loss", QVariant::Int);
 	tt.appendColumn("status", QVariant::String);
-	for (int i = 0; i < relays.count(); ++i) {
+	for (int i = 0; i < relays.count() && i < max_places; ++i) {
 		int ix = tt.appendRow();
 		qf::core::utils::TreeTableRow tt_row = tt.row(ix);
 		const Relay &relay = relays[i];
@@ -444,7 +444,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsClassResultsTable(int class_id, in
 		tt2.appendColumn("runId", QVariant::Int);
 		tt2.appendColumn("courseId", QVariant::Int);
 		tt2.appendColumn("sstatus", QVariant::String);
-		for (int j = 0; j < qMin(relay.legs.count(), places); ++j) {
+		for (int j = 0; j < relay.legs.count(); ++j) {
 			const Leg &leg = relay.legs[j];
 			int ix2 = tt2.appendRow();
 			qf::core::utils::TreeTableRow tt2_row = tt2.row(ix2);

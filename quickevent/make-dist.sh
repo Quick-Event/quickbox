@@ -10,12 +10,12 @@ APP_IMAGE_TOOL=/home/fanda/programs/appimagetool-x86_64.AppImage
 
 help() {
 	echo "make-dist.sh"
-	echo "\t--app-name application name, ie: myapp"
-	echo "\t--app-version application version, ie: 1.0.0"
-	echo "\t--src-dir application source dir, where *.pro file lies, ie: /home/me/myapp"
-	echo "\t--qt-dir QT dir, ie: /home/me/qt5/5.13.1/gcc_64"
-	echo "\t--work-dir directory where build will be made, ie: /tmp/myapp"
-	echo "\t--no-clean do not rebuild whole project when set to 1"
+	echo "	--app-name application name, ie: myapp"
+	echo "	--app-version application version, ie: 1.0.0"
+	echo "	--src-dir application source dir, where *.pro file lies, ie: /home/me/myapp"
+	echo "	--qt-dir QT dir, ie: /home/me/qt5/5.13.1/gcc_64"
+	echo "	--work-dir directory where build will be made, ie: /tmp/myapp"
+	echo "	--no-clean do not rebuild whole project when set to 1"
 	exit 0
 }
 

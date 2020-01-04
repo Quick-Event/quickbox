@@ -189,6 +189,11 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		a_print_results->addActionInto(a);
 		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal);
 	}
+	{
+		qfw::Action *a = new qfw::Action("nlegs", tr("Overall condensed"));
+		a_print_results->addActionInto(a);
+		connect(a, &qfw::Action::triggered, this, &RelaysWidget::print_results_overal_condensed);
+	}
 
 	qfw::Action *a_export = part_widget->menuBar()->actionForPath("export");
 	a_export->setText(tr("E&xport"));
@@ -521,27 +526,16 @@ void RelaysWidget::print_start_list_clubs()
 
 void RelaysWidget::print_results_nlegs()
 {
+	qfLogFuncFrame();
 	quickevent::gui::ReportOptionsDialog::Options default_opts;
 	default_opts.setLegsCount(1);
 	default_opts.setResultExcludeDisq(true);
-	printResults("relaysResultsNLegsReportOptions", default_opts);
-}
 
-void RelaysWidget::print_results_overal()
-{
-	quickevent::gui::ReportOptionsDialog::Options default_opts;
-	default_opts.setLegsCount(99);
-	printResults("relaysResultsOverallReportOptions", default_opts);
-}
-
-void RelaysWidget::printResults(const QString &settings_id, const QVariantMap &default_options)
-{
-	qfLogFuncFrame();
 	quickevent::gui::ReportOptionsDialog dlg(this);
 	dlg.setLegsOptionVisible(true);
 	dlg.setResultOptionsVisible(true);
-	dlg.setPersistentSettingsId(settings_id);
-	dlg.loadPersistentSettings(default_options);
+	dlg.setPersistentSettingsId("relaysResultsNLegsReportOptions");
+	dlg.loadPersistentSettings(default_opts);
 	if(!dlg.exec())
 		return;
 	QVariantMap props = dlg.reportProperties();
@@ -551,6 +545,54 @@ void RelaysWidget::printResults(const QString &settings_id, const QVariantMap &d
 	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), opts.legsCount(), opts.resultNumPlaces(), opts.isResultExcludeDisq());
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
+														  , td.toVariant()
+														  , tr("Start list by clubs")
+														  , "relaysResults"
+														  , props
+														  );
+}
+
+void RelaysWidget::print_results_overal()
+{
+	qfLogFuncFrame();
+	quickevent::gui::ReportOptionsDialog dlg(this);
+	dlg.setLegsOptionVisible(false);
+	dlg.setResultOptionsVisible(true);
+	dlg.setPersistentSettingsId("relaysResultsOverallReportOptions");
+	dlg.loadPersistentSettings();
+	if(!dlg.exec())
+		return;
+	QVariantMap props = dlg.reportProperties();
+	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
+	qfDebug() << opts;
+	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
+	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
+														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
+														  , td.toVariant()
+														  , tr("Start list by clubs")
+														  , "relaysResults"
+														  , props
+														  );
+}
+
+void RelaysWidget::print_results_overal_condensed()
+{
+	qfLogFuncFrame();
+	quickevent::gui::ReportOptionsDialog dlg(this);
+	dlg.setLegsOptionVisible(false);
+	dlg.setResultOptionsVisible(true);
+	dlg.setPersistentSettingsId("relaysResultsOverallCondensedReportOptions");
+	dlg.loadPersistentSettings();
+	if(!dlg.exec())
+		return;
+	QVariantMap props = dlg.reportProperties();
+	quickevent::gui::ReportOptionsDialog::Options opts = dlg.options();
+	qfDebug() << opts;
+	qfDebug() << "opts.resultNumPlaces:" << opts.resultNumPlaces();
+	auto td = thisPlugin()->nLegsResultsTable(dlg.sqlWhereExpression(), 999, opts.resultNumPlaces(), opts.isResultExcludeDisq());
+	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
+														  thisPlugin()->manifest()->homeDir() + "/reports/results_condensed.qml"
 														  , td.toVariant()
 														  , tr("Start list by clubs")
 														  , "relaysResults"
