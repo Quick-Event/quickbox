@@ -745,7 +745,7 @@ void OrisImporter::importEventOrisEntries(int event_id)
 void OrisImporter::importRegistrations()
 {
 	int sport_id = eventPlugin()->eventConfig()->sportId();
-	int year = QDate::currentDate().year();
+	int year = QDate::currentDate().addMonths(-2).year();
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=%1&year=%2").arg(sport_id).arg(year));
 	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Registrations", jsd);
