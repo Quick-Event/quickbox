@@ -140,6 +140,7 @@ bool RunsTableModel::setValue(int row_ix, int column_ix, const QVariant &val)
 		if(rt == 0) {
 			/// run time cannot be 0
 			Super::setValue(row_ix, col_runs_finishTimeMs, QVariant());
+			Super::setValue(row_ix, col_runs_penaltyTimeMs, QVariant());
 			return Super::setValue(row_ix, column_ix, QVariant());
 		}
 		else {
