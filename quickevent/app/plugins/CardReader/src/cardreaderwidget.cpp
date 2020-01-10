@@ -560,10 +560,10 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 			QString error_msg = commPort()->errorString();
 			if(error_msg.contains("busy")) {
 				error_msg.append(""
-								 "\n\n"
-								 "possible solution:\n"
-								 "Wait at least 10 seconds and then try again."
-								 "");
+						 "\n\n"
+						 "possible solution:\n"
+						 "Wait at least 10 seconds and then try again."
+						 "");
 			}
 			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(error_msg));
 		}
