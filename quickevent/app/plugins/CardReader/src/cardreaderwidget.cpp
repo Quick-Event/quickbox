@@ -59,6 +59,7 @@
 #include <QPushButton>
 #include <QProgressDialog>
 #include <QTimer>
+#include <QSerialPortInfo>
 
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
@@ -557,7 +558,32 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 		int stop_bits = settings.value("stopBits", 1).toInt();
 		QString parity = settings.value("parity", "none").toString();
 		if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
-			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(commPort()->errorString()));
+			QSerialPort::SerialPortError error_type = commPort()->error();
+			QString error_msg = commPort()->errorString();
+			if(error_type == QSerialPort::PermissionError) {
+				error_msg.append("\n\n")
+					 .append(tr(""
+						    "possible solution:\n"
+						    "Wait at least 10 seconds and then try again."
+						    ""));
+			}
+			if(error_type == QSerialPort::DeviceNotFoundError) {
+				error_msg.append("\n\n");
+				QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+				if(port_list.isEmpty()) {
+					error_msg.append(tr("There are not any avaible ports."));
+				}
+				else {
+					error_msg.append(tr(""
+							    "Selected port %1 is not avaible.\n"
+							    "List of accessible ports:\n\n"
+							    "").arg(device));
+					for(auto port : port_list) {
+						error_msg.append(QChar(0x2022)).append(" ").append(port.systemLocation()).append("\n");
+					}
+				}
+			}
+			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(error_msg));
 		}
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
 	}
