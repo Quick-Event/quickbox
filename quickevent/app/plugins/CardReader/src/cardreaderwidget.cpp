@@ -301,7 +301,8 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	{
 		qfw::Action *a_station = part_widget->menuBar()->actionForPath("station", true);
 		a_station->setText(tr("&Station"));
-		a_station->addActionInto(m_actCommOpen);
+		a_station->addActionInto(m_actSettings);
+		//a_station->addActionInto(m_actCommOpen);
 		{
 			QAction *a = new QAction(tr("Station info"));
 			a->setEnabled(false);
@@ -361,7 +362,6 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 	{
 		qfw::Action *a_tools = part_widget->menuBar()->actionForPath("tools", true);
 		a_tools->setText(tr("&Tools"));
-		a_tools->addActionInto(m_actSettings);
 		{
 			auto *m_import_cards = a_tools->addMenuInto("importCards", tr("Import cards"));
 			{
