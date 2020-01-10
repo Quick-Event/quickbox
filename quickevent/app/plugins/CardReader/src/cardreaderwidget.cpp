@@ -571,10 +571,10 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 				error_msg.append("\n\n");
 				QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
 				if(port_list.isEmpty()) {
-					error_msg.append(tr("There are not any avaible ports."));
+					error_msg.append(tr("There are no ports available."));
 				}
 				else {
-					error_msg.append(tr("Selected port %1 is not avaible.\n"
+					error_msg.append(tr("Selected port %1 is not available.\n"
 										"List of accessible ports:\n\n").arg(device));
 					for(auto port : port_list) {
 						error_msg.append(QChar(0x2022)).append(" ").append(port.systemLocation()).append("\n");
