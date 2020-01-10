@@ -59,6 +59,7 @@
 #include <QPushButton>
 #include <QProgressDialog>
 #include <QTimer>
+#include <QSerialPortInfo>
 
 namespace qfc = qf::core;
 namespace qfm = qf::core::model;
@@ -564,6 +565,20 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 								 "possible solution:\n"
 								 "Wait at least 10 seconds and then try again."
 								 "");
+			}
+			if(error_msg == "No such file or directory") {
+				error_msg.append("\n\n");
+				QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
+				if(port_list.isEmpty()) {
+					error_msg.append(tr("There are not any avaible ports."));
+				}
+				else {
+					error_msg.append(tr("Selected port %1 is not avaible.\n"
+										"List of accessible ports:\n\n").arg(device));
+					for(auto port : port_list) {
+						error_msg.append(QChar(0x2022)).append(" ").append(port.systemLocation()).append("\n");
+					}
+				}
 			}
 			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Error open device %1 - %2").arg(device).arg(error_msg));
 		}
