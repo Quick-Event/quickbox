@@ -558,15 +558,16 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 		int stop_bits = settings.value("stopBits", 1).toInt();
 		QString parity = settings.value("parity", "none").toString();
 		if(!commPort()->openComm(device, baud_rate, data_bits, parity, stop_bits > 1)) {
+			QSerialPort::SerialPortError error_type = commPort()->error();
 			QString error_msg = commPort()->errorString();
-			if(error_msg.contains("busy")) {
-				error_msg.append(""
-								 "\n\n"
+			if(error_type == QSerialPort::PermissionError) {
+				error_msg.append("\n\n")
+						 .append(tr(""
 								 "possible solution:\n"
 								 "Wait at least 10 seconds and then try again."
-								 "");
+								 ""));
 			}
-			if(error_msg == "No such file or directory") {
+			if(error_type == QSerialPort::DeviceNotFoundError) {
 				error_msg.append("\n\n");
 				QList<QSerialPortInfo> port_list = QSerialPortInfo::availablePorts();
 				if(port_list.isEmpty()) {
