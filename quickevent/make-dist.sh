@@ -9,14 +9,24 @@ WORK_DIR=/home/fanda/t/_distro
 APP_IMAGE_TOOL=/home/fanda/programs/appimagetool-x86_64.AppImage
 
 help() {
-	echo "make-dist.sh"
-	echo "	--app-name application name, ie: myapp"
-	echo "	--app-version application version, ie: 1.0.0"
-	echo "	--src-dir application source dir, where *.pro file lies, ie: /home/me/myapp"
-	echo "	--qt-dir QT dir, ie: /home/me/qt5/5.13.1/gcc_64"
-	echo "	--work-dir directory where build will be made, ie: /tmp/myapp"
-	echo "	--no-clean do not rebuild whole project when set to 1"
+	echo "Usage: make-dist.sh [ options ... ]"
+	echo "required options: src-dir, qt-dir, work-dir, image-tool"
+	echo -e "\n"
+	echo "avaible options"
+	echo "    --app-name <name>        custom application name, ie: my-qe-test"
+	echo "    --app-version <version>  application version, ie: 1.0.0"
+	echo "    --src-dir <path>         quickbox project root dir, *.pro file is located, ie: /home/me/quickbox"
+	echo "    --qt-dir <path>          QT dir, ie: /home/me/qt5/5.13.1/gcc_64"
+	echo "    --work-dir <path>        directory where build files and AppImage will be created, ie: /home/me/quickevent/AppImage"
+	echo "    --image-tool <path>      path to AppImageTool, ie: /home/me/appimagetool-x86_64.AppImage"
+	echo "    --no-clean               do not rebuild whole project when set to 1"
+	echo -e "\n"
+	echo "example: make-dist.sh --src-dir /home/me/quickbox --qt-dir /home/me/qt5/5.13.1/gcc_64 --work-dir /home/me/quickevent/AppImage --image-tool /home/me/appimagetool-x86_64.AppImage"
 	exit 0
+}
+
+error() {
+	echo -e "\e[31m${1}\e[0m"
 }
 
 while [[ $# -gt 0 ]]
@@ -49,6 +59,11 @@ case $key in
 	shift # past argument
 	shift # past value
 	;;
+	--image-tool)
+	APP_IMAGE_TOOL="$2"
+	shift # past argument
+	shift # past value
+	;;
 	--no-clean)
 	NO_CLEAN=1
 	shift # past value
@@ -64,8 +79,30 @@ case $key in
 esac
 done
 
+if [ ! -d $SRC_DIR ]; then
+   	error "invalid source dir, use --src-dir <path> to specify it\n"
+	help
+fi
+if [ ! -d $QT_DIR ]; then
+	error "invalid QT dir, use --qt-dir <path> to specify it\n"
+	help
+fi
+if [ $WORK_DIR = "/home/fanda/t/_distro" ] && [ ! -d "/home/fanda/t/_distro" ]; then
+	error "invalid work dir, use --work-dir <path> to specify it\n"
+	help
+fi
+if [ ! -f $APP_IMAGE_TOOL ]; then
+	error "invalid path to AppImageTool, use --image=tool <path> to specify it\n"
+	help
+fi
+if [ ! -x $APP_IMAGE_TOOL ]; then
+	error "AppImageTool file must be executable, use chmod +x $APP_IMAGE_TOOL\n"
+	help
+fi
+
+
 if [ -z $APP_VER ]; then
-    APP_VER=`grep APP_VERSION $SRC_DIR/quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
+	APP_VER=`grep APP_VERSION $SRC_DIR/quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
 	echo "Distro version not specified, deduced from source code: $APP_VER" >&2
 	#exit 1
 fi
@@ -77,14 +114,14 @@ echo WORK_DIR: $WORK_DIR
 echo NO_CLEAN: $NO_CLEAN
 
 if [ -z $USE_SYSTEM_QT ]; then
-    QT_LIB_DIR=$QT_DIR/lib
-    QMAKE=$QT_DIR/bin/qmake
-    DISTRO_NAME=$APP_NAME-$APP_VER-linux64
+	QT_LIB_DIR=$QT_DIR/lib
+	QMAKE=$QT_DIR/bin/qmake
+	DISTRO_NAME=$APP_NAME-$APP_VER-linux64
 else
-    QT_DIR=/usr/lib/i386-linux-gnu/qt5
-    QT_LIB_DIR=/usr/lib/i386-linux-gnu
-    QMAKE=/usr/bin/qmake
-    DISTRO_NAME=$APP_NAME-$APP_VER-linux32
+	QT_DIR=/usr/lib/i386-linux-gnu/qt5
+	QT_LIB_DIR=/usr/lib/i386-linux-gnu
+	QMAKE=/usr/bin/qmake
+	DISTRO_NAME=$APP_NAME-$APP_VER-linux32
 fi
 
 echo QT_DIR: $QT_DIR
@@ -104,8 +141,8 @@ cd $BUILD_DIR
 $QMAKE $SRC_DIR/quickbox.pro CONFIG+=release CONFIG+=force_debug_info CONFIG+=separate_debug_info -r -spec linux-g++
 make -j2
 if [ $? -ne 0 ]; then
-  echo "Make Error" >&2
-  exit 1
+	echo "Make Error" >&2
+	exit 1
 fi
 
 rm -r $DIST_DIR
