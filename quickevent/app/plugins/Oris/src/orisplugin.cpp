@@ -32,22 +32,23 @@ void OrisPlugin::onInstalled()
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	auto *event_plugin = fwk->plugin<Event::EventPlugin*>();
 	//console.warn("Oris installed");
-	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
-	qf::qmlwidgets::Action *act_import_oris = act_import->addMenuInto("oris", tr("&ORIS"));
-	act_import_oris->setEnabled(false);
+
+	auto *act_oris = fwk->menuBar()->actionForPath("oris", true);
+	act_oris->setText(tr("&ORIS"));
+	act_oris->setEnabled(false);
 	{
-		qfw::Action *a = act_import_oris->addActionInto("event", tr("&Event"));
-		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::chooseAndImport);
-	}
-	{
-		qfw::Action *a = act_import_oris->addActionInto("syncEntries", tr("&Sync current event entries"));
+		qfw::Action *a = act_oris->addActionInto("syncEntries", tr("&Update entries"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::syncCurrentEventEntries);
 		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_db_open) {
 			a->setEnabled(is_db_open);
 		});
 	}
+	{
+		qfw::Action *a = act_oris->addActionInto("event", tr("&Create event from ORIS"));
+		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::chooseAndImport);
+	}
 	/*
-	//act_import_oris->addSeparatorInto();
+	//act_oris->addSeparatorInto();
 	{
 		qfw::Action *a = act_import_oris->addActionInto("syncRelaysEntries", tr("Sync &relays entries"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::syncRelaysEntries);
@@ -61,12 +62,16 @@ void OrisPlugin::onInstalled()
 		});
 	}
 	*/
-	act_import_oris->addSeparatorInto();
 	{
-		qfw::Action *a = act_import_oris->addActionInto("clubs", tr("&Clubs and registrations"));
+		qfw::Action *a = act_oris->addActionInto("clubs", tr("&Get clubs and registrations"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importClubs);
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importRegistrations);
+		a->addSeparatorBefore();
 	}
+
+
+
+	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
 	qf::qmlwidgets::Action *act_import_txt = act_import->addMenuInto("text", tr("&Text file"));
 	act_import_txt->setEnabled(false);
 	{
@@ -81,8 +86,8 @@ void OrisPlugin::onInstalled()
 		qfw::Action *a = act_import_txt->addActionInto("competitorsRanking", tr("&Ranking CSV (ORIS format)"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRankingCsv);
 	}
-	connect(event_plugin, &Event::EventPlugin::sqlServerConnectedChanged, [act_import_oris, act_import_txt](bool is_db_open) {
-		act_import_oris->setEnabled(is_db_open);
+	connect(event_plugin, &Event::EventPlugin::sqlServerConnectedChanged, [act_oris, act_import_txt](bool is_db_open) {
+		act_oris->setEnabled(is_db_open);
 		act_import_txt->setEnabled(is_db_open);
 	});
 }
