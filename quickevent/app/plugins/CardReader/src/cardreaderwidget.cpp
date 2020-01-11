@@ -562,10 +562,10 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 			QString error_msg = commPort()->errorString();
 			if(error_type == QSerialPort::PermissionError) {
 				error_msg.append("\n\n")
-						 .append(tr(""
-								 "possible solution:\n"
-								 "Wait at least 10 seconds and then try again."
-								 ""));
+					 .append(tr(""
+						    "possible solution:\n"
+						    "Wait at least 10 seconds and then try again."
+						    ""));
 			}
 			if(error_type == QSerialPort::DeviceNotFoundError) {
 				error_msg.append("\n\n");
@@ -574,8 +574,10 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 					error_msg.append(tr("There are no ports available."));
 				}
 				else {
-					error_msg.append(tr("Selected port %1 is not available.\n"
-										"List of accessible ports:\n\n").arg(device));
+					error_msg.append(tr(""
+							    "Selected port %1 is not available.\n"
+							    "List of accessible ports:\n\n"
+							    "").arg(device));
 					for(auto port : port_list) {
 						error_msg.append(QChar(0x2022)).append(" ").append(port.systemLocation()).append("\n");
 					}
