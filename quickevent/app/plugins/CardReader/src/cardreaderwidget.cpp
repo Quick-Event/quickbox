@@ -473,7 +473,7 @@ void CardReaderWidget::createActions()
 		m_actCommOpen = a;
 	}
 	{
-		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Card readout settings"), this);
+		qf::qmlwidgets::Action *a = new qf::qmlwidgets::Action(tr("Card reader settings"), this);
 		connect(a, SIGNAL(triggered()), this, SLOT(openSettings()));
 		m_actSettings = a;
 	}
