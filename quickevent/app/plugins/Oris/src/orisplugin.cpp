@@ -36,11 +36,13 @@ void OrisPlugin::onInstalled()
 	qf::qmlwidgets::Action *act_import_oris = act_import->addMenuInto("oris", tr("&ORIS"));
 	act_import_oris->setEnabled(false);
 	{
-		qfw::Action *a = act_import_oris->addActionInto("event", tr("&Event"));
+		qfw::Action *a = act_import_oris->addActionInto("event", tr("&New event"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::chooseAndImport);
+		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importClubs);
+		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importRegistrations);
 	}
 	{
-		qfw::Action *a = act_import_oris->addActionInto("syncEntries", tr("&Sync current event entries"));
+		qfw::Action *a = act_import_oris->addActionInto("syncEntries", tr("&Update entries"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::syncCurrentEventEntries);
 		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_db_open) {
 			a->setEnabled(is_db_open);
