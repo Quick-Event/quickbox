@@ -401,6 +401,8 @@ void OrisImporter::importEvent(int event_id)
 		catch (qf::core::Exception &e) {
 			qf::qmlwidgets::dialogs::MessageBox::showException(fwk, e);
 		}
+		importClubs();
+		importRegistrations();
 		importEventOrisEntries(event_id);
 	});
 }
