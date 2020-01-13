@@ -738,6 +738,8 @@ void ClassesWidget::import_ocad_iofxml_3()
 						else
 							qfError() << QString("Xml file format error: bad control code %1 in %2").arg(code).arg(dump_element(el_control));
 						*/
+						if(code_str.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_START) || code_str.startsWith(quickevent::core::CodeDef::CONTROL_TYPE_FINISH))
+								continue;
 						codes << code_str;
 					}
 					coursedef.setCodes(codes);
