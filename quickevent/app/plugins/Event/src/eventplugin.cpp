@@ -650,6 +650,7 @@ void EventPlugin::connectToSqlServer()
 				//qfInfo() << conn_w->serverPassword();
 				db.setPassword(conn_w->serverPassword());
 				db.setDatabaseName("quickevent");
+				db.setConnectOptions("connect_timeout=30");
 				qfInfo().nospace() << "connecting to database: " << db.databaseName()
 								   << " as " << db.userName() << "@" << db.hostName() << ":" << db.port();
 				connect_ok = db.open();
