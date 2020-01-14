@@ -20,9 +20,9 @@ int CodeDef::code() const
 {
 	auto t = type();
 	if(t == CONTROL_TYPE_START)
-		return FINISH_PUNCH_CODE;
-	if(t == CONTROL_TYPE_FINISH)
 		return START_PUNCH_CODE;
+	if(t == CONTROL_TYPE_FINISH)
+		return FINISH_PUNCH_CODE;
 	return this->value(QStringLiteral("code")).toInt();
 }
 
