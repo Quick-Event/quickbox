@@ -9,6 +9,7 @@ QT += widgets sql
 LIBS += \
     -lEventQEPlugin \
     -lCompetitorsQEPlugin \
+    -lRunsQEPlugin \
 
 include (src/src.pri)
 
