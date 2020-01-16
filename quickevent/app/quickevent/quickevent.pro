@@ -1,6 +1,6 @@
 message(including $$PWD)
 
-QT += core gui qml widgets
+QT += core gui qml widgets sql
 # plugin sometimes cannot find Qt libraries, CardReader needs QtSerialPort.so
 QT += serialport
 
@@ -8,8 +8,7 @@ CONFIG += C++11
 
 TEMPLATE = app
 
-QF_PROJECT_TOP_SRCDIR = $$PWD/../../..
-QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../../..
+include (../../../quickbox.pri)
 
 PROJECT_TOP_SRCDIR = $$PWD
 
@@ -20,10 +19,11 @@ win32: LIB_DIR_NAME = bin
 else:  LIB_DIR_NAME = lib
 
 INCLUDEPATH += \
-$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
-$$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
-$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
-$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+    $$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
+    $$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
+    $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
+    $$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventgui/include \
+    $$PWD/../plugins/include \
 
 message(INCLUDEPATH: $$INCLUDEPATH)
 
@@ -31,11 +31,21 @@ LIBS += \
 	-L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME \
 
 LIBS +=      \
-	-lqfcore  \
-	-lqfqmlwidgets  \
-	-lsiut \
-	-lquickeventcore \
-	-lquickeventgui \
+    -lqfcore  \
+    -lqfqmlwidgets  \
+    -lsiut \
+    -lquickeventcore \
+    -lquickeventgui \
+    -lCoreQEPlugin \
+    -lEventQEPlugin \
+    -lClassesQEPlugin \
+    -lCompetitorsQEPlugin \
+    -lRunsQEPlugin \
+    -lOrisQEPlugin \
+    -lCardReaderQEPlugin \
+    -lReceiptsQEPlugin \
+    -lRelaysQEPlugin \
+    -lSpeakerQEPlugin \
 
 unix: LIBS +=  \
 	-L../../../lib  \
@@ -49,16 +59,13 @@ RESOURCES += \
 
 RC_FILE = $$PWD/app.rc
 
-//OTHER_FILES += \
-//	$$PWD/main.qml
-
 include ($$QF_PROJECT_TOP_SRCDIR/crosscompile-support.pri)
 include ($$QF_PROJECT_TOP_SRCDIR/appdatafiles.pri)
 
 include($$PWD/src/src.pri)
 
 OTHER_FILES += \
-    ../plugins/qml/Core/*.qml \
+#    ../plugins/qml/Core/*.qml \
     ../plugins/qml/SqlDb/*.qml \
     ../plugins/qml/Event/*.qml \
     ../plugins/qml/Help/*.qml \

@@ -3,6 +3,17 @@
 #include "loggerwidget.h"
 #include "tablemodellogdevice.h"
 
+#include <Core/coreplugin.h>
+#include <Event/eventplugin.h>
+#include <Classes/classesplugin.h>
+#include <Competitors/competitorsplugin.h>
+#include <Runs/runsplugin.h>
+#include <Oris/orisplugin.h>
+#include <CardReader/cardreaderplugin.h>
+#include <Receipts/receiptsplugin.h>
+#include <Relays/relaysplugin.h>
+#include <Speaker/speakerplugin.h>
+
 #include <qf/qmlwidgets/framework/stackedcentralwidget.h>
 #include <qf/qmlwidgets/framework/partswitch.h>
 #include <qf/qmlwidgets/framework/dockwidget.h>
@@ -10,8 +21,6 @@
 #include <qf/qmlwidgets/action.h>
 
 #include <QLabel>
-
-const QLatin1String MainWindow::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE("application/locale/language");
 
 MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	Super(parent, flags)
@@ -38,13 +47,13 @@ int MainWindow::dbVersion() const
 {
 	return Application::instance()->dbVersion();
 }
-
+/*
 QString MainWindow::settingsPrefix_application_locale_language()
 {
 	static const QString s = SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE;
 	return s;
 }
-
+*/
 void MainWindow::onPluginsLoaded()
 {
 	{
@@ -70,3 +79,47 @@ void MainWindow::onPluginsLoaded()
 	loadPersistentSettings();
 }
 
+void MainWindow::loadPlugins()
+{
+	{
+		auto *plugin = new Core::CorePlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Event::EventPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Classes::ClassesPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Competitors::CompetitorsPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Runs::RunsPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Oris::OrisPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new CardReader::CardReaderPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Receipts::ReceiptsPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Relays::RelaysPlugin(this);
+		registerPlugin(plugin);
+	}
+	{
+		auto *plugin = new Speaker::SpeakerPlugin(this);
+		registerPlugin(plugin);
+	}
+	Super::loadPlugins();
+}

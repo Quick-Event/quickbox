@@ -13,6 +13,11 @@
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="src/appclioptions.cpp" line="8"/>
+        <source>Application font scale</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LoggerWidget</name>
@@ -25,12 +30,12 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="src/mainwindow.cpp" line="19"/>
+        <location filename="src/mainwindow.cpp" line="28"/>
         <source>Quick Event ver. %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/mainwindow.cpp" line="53"/>
+        <location filename="src/mainwindow.cpp" line="62"/>
         <source>Application log</source>
         <translation type="unfinished"></translation>
     </message>

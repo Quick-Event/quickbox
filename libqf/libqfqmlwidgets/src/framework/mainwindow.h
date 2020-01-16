@@ -3,6 +3,7 @@
 
 #include "../qmlwidgetsglobal.h"
 #include "ipersistentsettings.h"
+//#include "pluginloader.h"
 
 #include <qf/core/utils.h>
 
@@ -68,6 +69,21 @@ public:
 	Q_INVOKABLE void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget);
 	Q_INVOKABLE void addPartWidget(qf::qmlwidgets::framework::PartWidget *widget, const QString &feature_id = QString());
 
+	template<class T>
+	T plugin(bool throw_exc = true)
+	{
+		T ret = nullptr;
+		for(auto *p : installedPlugins()) {
+			ret = qobject_cast<T>(p);
+			if(ret)
+				break;
+		}
+		if(!ret) {
+			if(throw_exc)
+				QF_EXCEPTION(QString("Plugin ") + typeid(T).name() + " not installed!");
+		}
+		return ret;
+	}
 	Q_INVOKABLE qf::qmlwidgets::framework::Plugin* plugin(const QString &feature_id, bool throw_exc = false);
 	Q_INVOKABLE qf::qmlwidgets::framework::Plugin* pluginForObject(QObject *qml_object);
 
@@ -92,13 +108,15 @@ public:
 
 	//Q_INVOKABLE QObject* obj_testing();
 protected:
+	void registerPlugin(qf::qmlwidgets::framework::Plugin *plugin);
+	PluginLoader *pluginLoader();
 	void closeEvent(QCloseEvent *ev) Q_DECL_OVERRIDE;
 	Q_SLOT virtual void onPluginsLoaded();
 private:
 	Q_SLOT void savePersistentSettings();
-	//void setupSettingsPersistence();
+	QList<qf::qmlwidgets::framework::Plugin*> installedPlugins();
 private:
-	PluginLoader *m_pluginLoader;
+	PluginLoader *m_pluginLoader = nullptr;
 	QMap<QString, qf::qmlwidgets::ToolBar*> m_toolBars;
 	static MainWindow *self;
 };

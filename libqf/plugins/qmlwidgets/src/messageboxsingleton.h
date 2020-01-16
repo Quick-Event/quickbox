@@ -10,7 +10,7 @@ class MessageBoxSingleton : public QObject
 {
 	Q_OBJECT
 public:
-	explicit MessageBoxSingleton(QObject *parent = 0);
+	explicit MessageBoxSingleton(QObject *parent = nullptr);
 public:
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);
 public:

@@ -11,12 +11,12 @@ HtmlUtils::FromHtmlListOptions::FromHtmlListOptions()
 		default_options.setDocumentTitle(QStringLiteral("html document"));
 		default_options.setStyle(QStringLiteral(
 									 "		<style type=\"text/css\">\n"
-									 "			body {font-family: Verdana, sans-serif}\n"
+									 "			body {font-family: sans-serif}\n"
 									 "			h1, h2, h3, h4, h5 {\n"
-									 "				color: black;\n"
-									 "				font-family: \"Lucida Grande\", Verdana, Lucida, Helvetica, Arial, sans-serif;\n"
-									 "				font-size: 100%;\n"
-									 "				font-weight: normal;\n"
+									 "				color: #2d2d2d;\n"
+									 "				//font-family: sans-serif;\n"
+									 "				//font-size: 100%;\n"
+									 "				//font-weight: normal;\n"
 									 "				clear: left;\n"
 									 "			}\n"
 									 "			h1 {font-size: 220%; font-weight: bold;}\n"
@@ -25,10 +25,24 @@ HtmlUtils::FromHtmlListOptions::FromHtmlListOptions()
 									 "			.text {text-align:left}\n"
 									 "			.code {background-color: lightgray; text-align:left}\n"
 									 "\n"
-									 "			table { border: 1px solid gray; border-spacing: 0px 0px;}\n"
-									 "			tr.odd { background-color: beige; }\n"
-									 "			th { padding: 3px; border: 0px solid #53bc1f; background-color: #91e369; }\n"
-									 "			td { padding: 3px; border: 0px solid #53bc1f; }\n"
+									 "			.nowrap { white-space: nowrap; }\n"
+									 "			.right { text-align: right; }\n"
+									 "			.red { color: red; }\n"
+									 "			.blue { color: blue; }\n"
+									 "			.green { color: green; }\n"
+									 "			.bold { font-weight: bold; }\n"
+									 "			.bt { border-top: 1px solid gray; }\n"
+									 "			.bb { border-bottom: 1px solid gray; }\n"
+									 "			.bl { border-left: 1px solid gray; }\n"
+									 "			.br { border-right: 1px solid gray; }\n"
+									 "			.btb { border-top: 2px solid black; }\n"
+									 "			.bbb { border-bottom: 2px solid black; }\n"
+									 "			.blb { border-left: 2px solid black; }\n"
+									 "			.brb { border-right: 2px solid black; }\n"
+									 "			table { border: 0px solid gray; border-spacing: 0px 0px;}\n"
+									 "			tr.odd { background-color: #e6e6e6; }\n"
+									 "			th { padding: 3px; border: 0px; background-color: #8dd35f; }\n"
+									 "			td { padding: 3px; border: 0px; }\n"
 									 "		</style>"
 									 ));
 	}
@@ -101,7 +115,8 @@ QString HtmlUtils::fromHtmlList_helper(const QVariant &item, const QString &inde
 	Q_UNUSED(options)
 	if(item.type() == QVariant::List) {
 		QVariantList lst = item.toList();
-		QF_ASSERT(!lst.isEmpty(), "Empty item list!", return ret);
+		if(lst.isEmpty())
+			return ret;
 		QString element_name = lst.first().toString();
 		//qfInfo() << element_name << lst.first();
 		QF_ASSERT(!element_name.isEmpty(), "Bad element name!", return ret);

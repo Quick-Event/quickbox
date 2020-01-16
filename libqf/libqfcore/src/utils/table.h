@@ -4,7 +4,6 @@
 #include "../core/coreglobal.h"
 #include "../core/utils.h"
 #include "../core/collator.h"
-#include "svalue.h"
 
 #include <QString>
 #include <QVariantMap>
@@ -19,6 +18,8 @@ class QTextStream;
 namespace qf {
 namespace core {
 namespace utils {
+
+class TreeTable;
 
 class TableRow;
 typedef QList<TableRow> RowList;
@@ -313,9 +314,9 @@ public:
 	//QDomElement exportXML(const QString col_names = "*") const;
 	//QFXmlTable toXmlTable(QDomDocument &owner_doc, const QString &table_name = QString(), const QString &col_names = QString()) const;
 	QVariantMap toJson(const QString &col_names = QString()) const;
-	SValue toTreeTable(const QString &col_names = QString(), const QString &table_name = QString()) const;
+	qf::core::utils::TreeTable toTreeTable(const QString &col_names = QString(), const QString &table_name = QString()) const;
 	/// v pripade neuspechu vraci false
-	bool fromTreeTable(const SValue &tree_table);
+	bool fromTreeTable(const TreeTable &tree_table);
 	/// ulozi data v tabulce jako QVariantList QVariantListu (kazdy radek je jeden QVariantList)
 	QVariantList dataToVariantList() const;
 	void dataFromVariantList(const QVariantList &_lst);

@@ -27,8 +27,8 @@ BandDataModel::~BandDataModel()
 
 QVariant BandDataModel::table(int row_no, const QString &table_name)
 {
-	Q_UNUSED(table_name);
-	Q_UNUSED(row_no);
+	Q_UNUSED(table_name)
+	Q_UNUSED(row_no)
 	return QVariant();
 }
 
@@ -42,7 +42,7 @@ BandDataModel* BandDataModel::createFromData(const QVariant &data, QObject *pare
 		tt = data.value<qfu::TreeTable>();
 	}
 	else {
-		tt.setVariant(data);
+		tt = qfu::TreeTable(data);
 	}
 	TreeTableBandDataModel *m = new TreeTableBandDataModel(parent);
 	m->setTreeTable(tt);
@@ -72,7 +72,7 @@ int TreeTableBandDataModel::columnCount()
 
 QVariant TreeTableBandDataModel::tableData(const QString &key, BandDataModel::DataRole role)
 {
-	Q_UNUSED(role);
+	Q_UNUSED(role)
 	QVariant ret;
 	qfu::TreeTable ttr = treeTable();
 	ret = ttr.value(key);
@@ -83,58 +83,36 @@ QVariant TreeTableBandDataModel::tableData(const QString &key, BandDataModel::Da
 
 QVariant TreeTableBandDataModel::headerData(int col_no, BandDataModel::DataRole role)
 {
-	QVariant ret;
-	qfu::TreeTableColumns cols = treeTable().columns();
-	qfu::TreeTableColumn col = cols.column(col_no);
-	if(col.isValid()) {
-		if(role == Qt::DisplayRole) {
-			ret = col.header();
-		}
-		else if(role == Qt::SizeHintRole) {
-			ret = col.width();
-		}
+	if(role == Qt::DisplayRole) {
+		return treeTable().column(col_no).header();
 	}
-	return ret;
+	else if(role == Qt::SizeHintRole) {
+		return treeTable().column(col_no).width();
+	}
+	return QVariant();
 }
 
 QVariant TreeTableBandDataModel::dataByIndex(int row_no, int col_no, BandDataModel::DataRole role)
 {
-	QVariant ret;
-	qfu::TreeTableRow ttr = treeTable().row(row_no);
-	if(!ttr.isNull()) {
-		if(role == Qt::DisplayRole) {
-			ret = ttr.value(col_no);
-		}
+	if(role == Qt::DisplayRole) {
+		return treeTable().row(row_no).value(col_no);
 	}
-	return ret;
+	return QVariant();
 }
 
 QVariant TreeTableBandDataModel::dataByName(int row_no, const QString &col_name, BandDataModel::DataRole role)
 {
-	QVariant ret;
-	qfu::TreeTableRow ttr = treeTable().row(row_no);
-	if(!ttr.isNull()) {
-		if(role == Qt::DisplayRole) {
-			ret = ttr.value(col_name);
-		}
+	if(role == Qt::DisplayRole) {
+		return treeTable().row(row_no).value(col_name);
 	}
-	return ret;
+	return QVariant();
 }
 
 QVariant TreeTableBandDataModel::table(int row_no, const QString &table_name)
 {
-	QVariant ret;
-	qfu::TreeTableRow ttr = treeTable().row(row_no);
-	if(!ttr.isNull()) {
-		for(int i=0; i<ttr.tablesCount(); i++) {
-			qfu::TreeTable tt = ttr.table(i);
-			if(table_name.isEmpty() || tt.name() == table_name) {
-				ret = QVariant::fromValue(tt);
-				break;
-			}
-		}
-	}
-	return ret;
+	if(table_name.isEmpty())
+		return treeTable().row(row_no).table().toVariant();
+	return treeTable().row(row_no).table(table_name).toVariant();
 }
 
 QString TreeTableBandDataModel::dump() const

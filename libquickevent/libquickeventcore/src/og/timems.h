@@ -42,8 +42,9 @@ public:
 		return msec() < o.msec();
 	}
 
-	QString toString(QChar sec_sep = QChar('.'), QChar msec_sep = QChar()) const;
+	static TimeMs fromVariant(const QVariant &time_v);
 	static TimeMs fromString(const QString &time_str);
+	QString toString(QChar sec_sep = QChar('.'), QChar msec_sep = QChar()) const;
 	int msec() const {return isValid()? m_msec: 0;}
 
 	/// while time2 < time1 add 12 hours to time2 and return it

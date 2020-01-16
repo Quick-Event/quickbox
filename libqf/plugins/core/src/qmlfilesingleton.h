@@ -15,7 +15,7 @@ class QmlFileSingleton : public QObject
 {
 	Q_OBJECT
 public:
-	explicit QmlFileSingleton(QObject *parent = 0);
+	explicit QmlFileSingleton(QObject *parent = nullptr);
 	~QmlFileSingleton() Q_DECL_OVERRIDE;
 
 	static QObject* singletontype_provider(QQmlEngine *engine, QJSEngine *scriptEngine);

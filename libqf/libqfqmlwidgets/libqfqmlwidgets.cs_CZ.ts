@@ -24,12 +24,12 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="30"/>
         <source>CSV options</source>
-        <translation>CSV možnosti</translation>
+        <translation>Možnosti CSV</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="42"/>
         <source>header</source>
-        <translation>hlavička</translation>
+        <translation>záhlaví</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="60"/>
@@ -84,7 +84,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="250"/>
         <source>when necessary</source>
-        <translation>když nezbytné</translation>
+        <translation>v případě potřeby</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="260"/>
@@ -94,7 +94,7 @@
     <message>
         <location filename="src/exporttableviewwidget.ui" line="269"/>
         <source>quote char</source>
-        <translation>uvozovky</translation>
+        <translation>znak uvozovek</translation>
     </message>
     <message>
         <location filename="src/exporttableviewwidget.ui" line="282"/>
@@ -127,7 +127,7 @@
     <message>
         <location filename="src/headerview.cpp" line="71"/>
         <source>Sections in natural order</source>
-        <translation>Seřadit sloupce do výchozího pořadí</translation>
+        <translation>Seřadit sekce do výchozího pořadí</translation>
     </message>
 </context>
 <context>
@@ -158,12 +158,12 @@
         <location filename="src/tableview.cpp" line="75"/>
         <source>Left click selects all, right click for menu.</source>
         <oldsource>Right click for menu.</oldsource>
-        <translation>Levé tlačítko vybere vše, pravé tlačítko zobrazí menu.</translation>
+        <translation>Kliknutí levým tlačítkem vybere vše, pravé tlačítko zobrazí nabídku.</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="693"/>
         <source>Enter value</source>
-        <translation>Vložte hodnotu</translation>
+        <translation>Zadejte hodnotu</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="693"/>
@@ -181,298 +181,298 @@
         <translation>Otevřít soubor</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="956"/>
+        <location filename="src/tableview.cpp" line="961"/>
         <source>Save as ...</source>
         <translation>Uložit jako...</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="962"/>
+        <location filename="src/tableview.cpp" line="967"/>
         <source>Cannot open file &apos;%1&apos; for writing.</source>
         <translation>Nelze otevřít soubor &apos;%1&apos; pro zápis.</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1563"/>
+        <location filename="src/tableview.cpp" line="1568"/>
         <source>Resize columns to contents</source>
         <translation>Rozšířit sloupce podle obsahu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1573"/>
+        <location filename="src/tableview.cpp" line="1578"/>
         <source>Reset columns settings</source>
         <translation>Obnovit výchozí nastavení sloupců</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1574"/>
+        <location filename="src/tableview.cpp" line="1579"/>
         <source>Reset column widths and positions.</source>
         <translation>Obnovit výchozí šířku a pozici sloupců.</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1583"/>
+        <location filename="src/tableview.cpp" line="1588"/>
         <source>Reload</source>
         <translation>Obnovit</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1585"/>
+        <location filename="src/tableview.cpp" line="1590"/>
         <source>Ctrl+R</source>
         <comment>reload SQL table</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1593"/>
+        <location filename="src/tableview.cpp" line="1598"/>
         <source>Copy</source>
         <translation>Kopírovat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1596"/>
+        <location filename="src/tableview.cpp" line="1601"/>
         <source>Ctrl+C</source>
         <comment>Copy selection</comment>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1604"/>
+        <location filename="src/tableview.cpp" line="1609"/>
         <source>Copy special</source>
         <translation>Kopírovat speciálně</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1614"/>
+        <location filename="src/tableview.cpp" line="1619"/>
         <source>Paste</source>
         <translation>Vložit</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1616"/>
+        <location filename="src/tableview.cpp" line="1621"/>
         <source>Ctrl+V</source>
         <comment>Paste rows</comment>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1624"/>
+        <location filename="src/tableview.cpp" line="1629"/>
         <source>Insert row</source>
         <translation>Vložit řádek</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1625"/>
+        <location filename="src/tableview.cpp" line="1630"/>
         <source>Ctrl+Ins</source>
         <comment>insert row SQL table</comment>
         <translation>Ctrl+Ins</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1633"/>
+        <location filename="src/tableview.cpp" line="1638"/>
         <source>Delete selected rows</source>
-        <translation>Smazat vybrané řádky</translation>
+        <translation>Odstranit vybrané řádky</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1634"/>
+        <location filename="src/tableview.cpp" line="1639"/>
         <source>Ctrl+Del</source>
         <comment>delete row SQL table</comment>
         <translation>Ctrl+Del</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1642"/>
+        <location filename="src/tableview.cpp" line="1647"/>
         <source>Post row edits</source>
         <translation>Uložit úpravy v řádcích</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1644"/>
+        <location filename="src/tableview.cpp" line="1649"/>
         <source>Ctrl+Return</source>
         <comment>post row SQL table</comment>
         <translation>Ctrl+Return</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1652"/>
+        <location filename="src/tableview.cpp" line="1657"/>
         <source>Revert row edits</source>
         <translation>Vrátit úpravy řádků</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1654"/>
+        <location filename="src/tableview.cpp" line="1659"/>
         <source>Ctrl+Z</source>
         <comment>revert edited row</comment>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1662"/>
+        <location filename="src/tableview.cpp" line="1667"/>
         <source>Clone row</source>
-        <translation>Duplikovat řádek</translation>
+        <translation>Klonovat řádek</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1667"/>
+        <location filename="src/tableview.cpp" line="1672"/>
         <source>Ctrl+D</source>
         <comment>insert row copy</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1674"/>
+        <location filename="src/tableview.cpp" line="1679"/>
         <source>Zobrazit ve formulari</source>
         <translation>Zobrazit ve formuláři</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1676"/>
+        <location filename="src/tableview.cpp" line="1681"/>
         <source>Zobrazit radek v formulari pro cteni</source>
         <translation>Zobrazit řádek ve formuláři pro čtení</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1683"/>
+        <location filename="src/tableview.cpp" line="1688"/>
         <source>Upravit ve formulari</source>
         <translation>Upravit ve formuláři</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1685"/>
+        <location filename="src/tableview.cpp" line="1690"/>
         <source>Upravit radek ve formulari</source>
         <translation>Upravit řádek ve formuláři</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1714"/>
+        <location filename="src/tableview.cpp" line="1719"/>
         <source>Filter table</source>
         <translation>Filtrovat v tabulce</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1718"/>
+        <location filename="src/tableview.cpp" line="1723"/>
         <source>Ctrl+F</source>
         <comment>filter table</comment>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1725"/>
+        <location filename="src/tableview.cpp" line="1730"/>
         <source>Edit cell content</source>
         <translation>Upravit obsah buňky</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1727"/>
+        <location filename="src/tableview.cpp" line="1732"/>
         <source>Ctrl+Shift+T</source>
         <comment>Edit cell content</comment>
         <translation>Ctrl+Shift+T</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1735"/>
+        <location filename="src/tableview.cpp" line="1740"/>
         <source>Save BLOB</source>
         <translation>Uložit BLOB</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1744"/>
+        <location filename="src/tableview.cpp" line="1749"/>
         <source>Load BLOB from file</source>
         <translation>Načíst BLOB ze souboru</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1753"/>
+        <location filename="src/tableview.cpp" line="1758"/>
         <source>Insert rows statement</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1762"/>
+        <location filename="src/tableview.cpp" line="1767"/>
         <source>Set NULL in selection</source>
         <translation>Nastavit NULL hodnotu ve výběru</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1764"/>
+        <location filename="src/tableview.cpp" line="1769"/>
         <source>Ctrl+Shift+L</source>
         <comment>Set NULL in selection</comment>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1772"/>
+        <location filename="src/tableview.cpp" line="1777"/>
         <source>Set value in selection</source>
-        <translation>Vložit hodnotu do výběru</translation>
+        <translation>Nastavit hodnotu ve výběru</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1773"/>
+        <location filename="src/tableview.cpp" line="1778"/>
         <source>Ctrl+Shift+E</source>
         <comment>Set value in selection</comment>
         <translation>Ctrl+Shift+E</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1781"/>
+        <location filename="src/tableview.cpp" line="1786"/>
         <source>Generate sequence in selection</source>
-        <translation>Vygenerovat sekvenci pro výběr</translation>
+        <translation>Vygenerovat posloupnost ve výběru</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1790"/>
+        <location filename="src/tableview.cpp" line="1795"/>
         <source>Select</source>
         <translation>Vybrat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1797"/>
+        <location filename="src/tableview.cpp" line="1802"/>
         <source>Select current column</source>
         <translation>Vybrat aktuální sloupec</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1798"/>
+        <location filename="src/tableview.cpp" line="1803"/>
         <source>Ctrl+Shift+C</source>
         <comment>Select current column</comment>
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1807"/>
+        <location filename="src/tableview.cpp" line="1812"/>
         <source>Select current row</source>
         <translation>Vybrat aktuální řádek</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1817"/>
+        <location filename="src/tableview.cpp" line="1822"/>
         <source>Calculate</source>
-        <translation>Spočítat</translation>
+        <translation>Vypočítat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1824"/>
+        <location filename="src/tableview.cpp" line="1829"/>
         <source>Sum column</source>
         <translation>Sečíst hodnoty ve sloupci</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1830"/>
+        <location filename="src/tableview.cpp" line="1835"/>
         <source>Sum selection</source>
         <translation>Sečíst hodnoty ve výběru</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1837"/>
+        <location filename="src/tableview.cpp" line="1842"/>
         <source>Export</source>
         <translation>Exportovat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1844"/>
+        <location filename="src/tableview.cpp" line="1849"/>
         <source>Report</source>
         <translation>Report</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1851"/>
-        <location filename="src/tableview.cpp" line="1889"/>
+        <location filename="src/tableview.cpp" line="1856"/>
+        <location filename="src/tableview.cpp" line="1894"/>
         <source>CSV</source>
         <translation>CSV</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1858"/>
+        <location filename="src/tableview.cpp" line="1863"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1866"/>
+        <location filename="src/tableview.cpp" line="1871"/>
         <source>XLS - MS Excel</source>
         <translation>XLS – MS Excel</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1874"/>
+        <location filename="src/tableview.cpp" line="1879"/>
         <source>XML (MS Excel 2003)</source>
         <translation>XML (MS Excel 2003)</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1882"/>
+        <location filename="src/tableview.cpp" line="1887"/>
         <source>Import</source>
         <translation>Importovat</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1990"/>
+        <location filename="src/tableview.cpp" line="1995"/>
         <source>Enter start value</source>
         <translation>Zadejte počáteční hodnotu</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="1990"/>
+        <location filename="src/tableview.cpp" line="1995"/>
         <source>start value:</source>
         <translation>počáteční hodnota:</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2129"/>
+        <location filename="src/tableview.cpp" line="2134"/>
         <source>Do you really want to remove row?</source>
-        <translation>Opravdu chcete smazat řádek?</translation>
+        <translation>Opravdu chcete odstranit řádek?</translation>
     </message>
     <message>
-        <location filename="src/tableview.cpp" line="2132"/>
+        <location filename="src/tableview.cpp" line="2137"/>
         <source>Do you really want to remove all selected rows?</source>
-        <translation>Opravdu chcete smazat všechny vybrané řádky?</translation>
+        <translation>Opravdu chcete odstranit všechny vybrané řádky?</translation>
     </message>
 </context>
 <context>
@@ -528,7 +528,7 @@
     <message>
         <location filename="src/texteditwidget.cpp" line="133"/>
         <source>Wrap lines</source>
-        <translation>Zalomení řádků</translation>
+        <translation>Zalamování řádků</translation>
     </message>
     <message>
         <location filename="src/texteditwidget.cpp" line="146"/>
@@ -556,7 +556,7 @@
     <message>
         <location filename="src/dialogs/dialog.cpp" line="138"/>
         <source>Delete</source>
-        <translation>Smazat</translation>
+        <translation>Odstranit</translation>
     </message>
     <message>
         <location filename="src/dialogs/dialog.cpp" line="141"/>
@@ -569,7 +569,7 @@
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="27"/>
         <source>Show this message again</source>
-        <translation>Zobrazit znovu tuto zprávu</translation>
+        <translation>Zobrazit tuto zprávu znovu</translation>
     </message>
     <message>
         <location filename="src/dialogs/messagebox.cpp" line="44"/>
@@ -623,12 +623,12 @@
 <context>
     <name>qf::qmlwidgets::dialogs::internal::CaptionFrame</name>
     <message>
-        <location filename="src/dialogs/internal/captionframe.cpp" line="120"/>
+        <location filename="src/dialogs/internal/captionframe.cpp" line="110"/>
         <source>Delete </source>
-        <translation>Smazat </translation>
+        <translation>Odstranit </translation>
     </message>
     <message>
-        <location filename="src/dialogs/internal/captionframe.cpp" line="124"/>
+        <location filename="src/dialogs/internal/captionframe.cpp" line="114"/>
         <source>Edit </source>
         <translation>Upravit </translation>
     </message>
@@ -676,7 +676,7 @@
     <message>
         <location filename="src/framework/logwidget.ui" line="116"/>
         <source>Event log options</source>
-        <translation>Nastavení záznamu událostí</translation>
+        <translation>Možnosti záznamu událostí</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.ui" line="119"/>
@@ -691,7 +691,7 @@
     <message>
         <location filename="src/framework/logwidget.cpp" line="105"/>
         <source>Get number</source>
-        <translation>Vložte číslo</translation>
+        <translation>Zadejte číslo</translation>
     </message>
     <message>
         <location filename="src/framework/logwidget.cpp" line="105"/>
@@ -716,9 +716,9 @@
 <context>
     <name>qf::qmlwidgets::framework::MainWindow</name>
     <message>
-        <location filename="src/framework/mainwindow.cpp" line="306"/>
+        <location filename="src/framework/mainwindow.cpp" line="327"/>
         <source>Plugin for feature id: &apos;%1&apos; is not installed!</source>
-        <translation>Plugin pro vlastnost programu id: &apos;%1&apos; není nainstalován!</translation>
+        <translation>Plugin pro funkci ID: &apos;%1&apos; není nainstalován!</translation>
     </message>
 </context>
 <context>
@@ -963,7 +963,7 @@
     <message>
         <location filename="src/reports/processor/reportprocessor.cpp" line="69"/>
         <source>QML component</source>
-        <translation>QML komponenta</translation>
+        <translation>Komponenta QML</translation>
     </message>
 </context>
 <context>
@@ -1011,12 +1011,12 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="649"/>
         <source>Zoom to fit width</source>
-        <translation>Přizpůsobit podle šířky</translation>
+        <translation>Přizpůsobit šířce</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="656"/>
         <source>Zoom to fit height</source>
-        <translation>Přizpůsobit podle výšky</translation>
+        <translation>Přizpůsobit výšce</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="663"/>
@@ -1026,7 +1026,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>Print pre&amp;view</source>
-        <translation>Náhled tisku</translation>
+        <translation>&amp;Náhled tisku</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
@@ -1036,7 +1036,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
         <source>Export in the Adobe Acrobat PDF format</source>
-        <translation>Exportovat v Adobe Acrobat PDF formátu</translation>
+        <translation>Exportovat ve formátu Adobe Acrobat PDF</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
@@ -1080,7 +1080,7 @@
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="289"/>
         <source>Item menu</source>
-        <translation>Položka menu</translation>
+        <translation>Položka nabídky</translation>
     </message>
     <message>
         <location filename="src/reports/widgets/reportviewwidget.cpp" line="290"/>

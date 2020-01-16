@@ -4,6 +4,8 @@
 #include "appclioptions.h"
 #include "tablemodellogdevice.h"
 
+#include <Core/coreplugin.h>
+
 #include <quickevent/core/si/siid.h>
 #include <quickevent/core/og/timems.h>
 
@@ -34,6 +36,7 @@ int main(int argc, char *argv[])
 	if(o_log_file.isEmpty())
 		o_log_file = QDir::tempPath() + "/quickevent.log";
 
+	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");
 	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
 	QScopedPointer<qf::core::FileLogDevice> stderr_log_device(qf::core::FileLogDevice::install());
 	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
@@ -87,7 +90,7 @@ int main(int argc, char *argv[])
 		}
 		else {
 			qf::core::utils::Settings settings;
-			lc_name = settings.value(MainWindow::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE).toString();
+			lc_name = settings.value(Core::CorePlugin::SETTINGS_PREFIX_APPLICATION_LOCALE_LANGUAGE()).toString();
 		}
 		if(lc_name.isEmpty() || lc_name == QLatin1String("system"))
 			lc_name = QLocale::system().name();
@@ -105,7 +108,7 @@ int main(int argc, char *argv[])
 				qfInfo() << "Erorr loading translator file:" << (app_translations_path + '/' + tr_name);
 			}
 		}
-		for(QString prefix : {"libqfcore", "libqfqmlwidgets", "libsiut", "quickevent"}) {
+		for(QString prefix : {"libqfcore", "libqfqmlwidgets", "libquickeventcore", "libquickeventgui", "libsiut", "quickevent"}) {
 			QTranslator *qt_translator = new QTranslator(&app);
 			QString tr_name = prefix + "." + lc_name;
 			bool ok = qt_translator->load(tr_name, app_translations_path);

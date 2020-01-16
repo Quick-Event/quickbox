@@ -4,7 +4,6 @@ SOURCES += \
     $$PWD/checkedcard.cpp \
     $$PWD/checkedpunch.cpp \
     $$PWD/readcard.cpp \
-    $$PWD/codedef.cpp \
 
 HEADERS  += \
     $$PWD/siid.h \
@@ -12,7 +11,6 @@ HEADERS  += \
     $$PWD/checkedcard.h \
     $$PWD/checkedpunch.h \
     $$PWD/readcard.h \
-    $$PWD/codedef.h \
 
 FORMS += \
 

@@ -24,7 +24,7 @@ class SqlQuery : public QObject
 public:
 	enum ParamType { In = QSql::In, Out = QSql::Out, InOut = QSql::InOut, Binary = QSql::Binary };
 public:
-	explicit SqlQuery(QObject *parent = 0);
+	explicit SqlQuery(QObject *parent = nullptr);
 	~SqlQuery() Q_DECL_OVERRIDE;
 
 	void setDatabase(const QSqlDatabase &db);

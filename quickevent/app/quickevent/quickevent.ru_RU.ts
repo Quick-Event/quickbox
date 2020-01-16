@@ -11,12 +11,16 @@
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
         <translation>Профили приложения, см.: https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
+    <message>
+        <source>Application font scale</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>LoggerWidget</name>
     <message>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;empty&gt;</translation>
     </message>
 </context>
 <context>

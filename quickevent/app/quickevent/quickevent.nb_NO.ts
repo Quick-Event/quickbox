@@ -11,6 +11,10 @@
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
         <translation>Programprofil, se https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
+    <message>
+        <source>Application font scale</source>
+        <translation type="unfinished">Programskriftstørrelse</translation>
+    </message>
 </context>
 <context>
     <name>LoggerWidget</name>

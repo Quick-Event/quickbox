@@ -17,7 +17,7 @@ class TableModelColumn : public QObject
 	Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly FINAL)
 	Q_PROPERTY(int castType READ castType WRITE setCastType FINAL)
 public:
-	explicit TableModelColumn(QObject *parent = 0);
+	explicit TableModelColumn(QObject *parent = nullptr);
 	~TableModelColumn() Q_DECL_OVERRIDE;
 
 	const qf::core::model::TableModel::ColumnDefinition& columnDefinition() {return m_columnDefinition; }

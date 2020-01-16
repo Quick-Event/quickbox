@@ -55,7 +55,7 @@ bool ReportProcessor::setReport(const QString &rep_file_name, const QVariantMap 
 {
 	QF_TIME_SCOPE("ReportProcessor::setReport()");
 	m_reportInitProperties = report_init_properties;
-	QF_SAFE_DELETE(m_reportDocumentComponent);
+	QF_SAFE_DELETE(m_reportDocumentComponent)
 	m_reportDocumentComponent = new ReportDocument(qmlEngine(true), this);
 	//QString fn = rep_file_name;
 	//if(fn.startsWith(QLatin1String("qrc://")))
@@ -83,8 +83,7 @@ QUrl ReportProcessor::reportUrl() const
 
 void ReportProcessor::setTableData(const QString &key, const QVariant &table_data)
 {
-	qfu::TreeTable tt;
-	tt.setVariant(table_data);
+	qfu::TreeTable tt(table_data);
 	setTableData(key, tt);
 }
 
@@ -116,7 +115,7 @@ ReportItemReport* ReportProcessor::documentInstanceRoot()
 			qfError() << "Created object:" << o;
 			Q_FOREACH(auto err, m_reportDocumentComponent->errors())
 				qfError() << err.toString();
-			QF_SAFE_DELETE(o);
+			QF_SAFE_DELETE(o)
 		}
 		else {
 			QF_TIME_SCOPE("ReportProcessor::documentInstanceRoot() - creating report object finish");
@@ -363,7 +362,7 @@ QQmlEngine *ReportProcessor::qmlEngine(bool throw_exc)
 	}
 	return ret;
 #else
-	Q_UNUSED(throw_exc);
+	Q_UNUSED(throw_exc)
 	if(!m_qmlEngine) {
 		m_qmlEngine = new QQmlEngine(this);
 		m_qmlEngine->rootContext()->setContextProperty("reportProcessor", this);

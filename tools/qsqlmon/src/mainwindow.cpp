@@ -264,7 +264,7 @@ qf::core::sql::Connection MainWindow::setActiveConnection1(const qf::core::sql::
 		/// klicovy slova
 		//if(theApp()->config()->value("/sqleditor/sqlcompletion").toBool())
 		{
-			QStringList sl = QFSqlSyntaxHighlighter::keyWords().toList();
+			QStringList sl = QFSqlSyntaxHighlighter::keyWords().values();
 			foreach(QString s, sl) {
 				QStandardItem *item = new QStandardItem(s);
 				root_item->appendRow(item);

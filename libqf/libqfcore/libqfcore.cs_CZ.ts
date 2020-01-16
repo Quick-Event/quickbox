@@ -93,7 +93,7 @@
         <location filename="src/model/tablemodel.cpp" line="455"/>
         <location filename="src/model/tablemodel.cpp" line="559"/>
         <source>Invalid table row: %1</source>
-        <translation>Chybný řádek tabulky: %1</translation>
+        <translation>Neplatný řádek tabulky: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="431"/>
@@ -126,7 +126,7 @@
         <location filename="src/model/tablemodel.cpp" line="622"/>
         <location filename="src/model/tablemodel.cpp" line="683"/>
         <source>Invalid column index: %1</source>
-        <translation>Chybný index sloupce: %1</translation>
+        <translation>Neplatný index sloupce: %1</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="631"/>
@@ -136,7 +136,7 @@
     <message>
         <location filename="src/model/tablemodel.cpp" line="672"/>
         <source>Column named &apos;%1&apos; not found in column list. Existing columns: [%2]</source>
-        <translation>Sloupec se jménem &apos;%1&apos; nebyl nalezen mezi jmény sloupců. Existující sloupce: [%2]</translation>
+        <translation>Sloupec s názvem &apos;%1&apos; nebyl v seznamu sloupců nalezen. Existující sloupce: [%2]</translation>
     </message>
     <message>
         <location filename="src/model/tablemodel.cpp" line="702"/>
@@ -149,7 +149,7 @@
     <message>
         <location filename="src/sql/dbfsdriver.cpp" line="103"/>
         <source>Connection &apos;%1&apos; is not open!</source>
-        <translation>Spojení &apos;%1&apos; není otevřeno!</translation>
+        <translation>Připojení &apos;%1&apos; není otevřeno!</translation>
     </message>
 </context>
 <context>
@@ -158,7 +158,7 @@
         <location filename="src/sql/catalog.cpp" line="296"/>
         <location filename="src/sql/catalog.cpp" line="314"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
-        <translation>Nalezeno info pro neexistující políčko &apos;%1&apos;</translation>
+        <translation>Byly nalezeny informace pro neexistující políčko &apos;%1&apos;</translation>
     </message>
 </context>
 <context>

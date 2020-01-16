@@ -37,7 +37,7 @@ StackedCentralWidget::~StackedCentralWidget()
 void StackedCentralWidget::addPartWidget(PartWidget *widget)
 {
 	qfLogFuncFrame() << widget;
-	widget->setParent(0);
+	widget->setParent(nullptr);
 	m_centralWidget->addWidget(widget);
 	m_partSwitch->addPartWidget(widget);
 	//widget->updateCaptionFrame();

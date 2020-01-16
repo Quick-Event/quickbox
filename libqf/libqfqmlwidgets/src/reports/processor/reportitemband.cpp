@@ -36,7 +36,7 @@ void ReportItemBand::setModelData(QVariant d)
 	if (m_data == d)
 		return;
 	m_data = d;
-	QF_SAFE_DELETE(m_model);
+	QF_SAFE_DELETE(m_model)
 	emit modelDataChanged(d);
 
 }

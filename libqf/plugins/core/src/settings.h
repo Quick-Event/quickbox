@@ -13,7 +13,7 @@ class Settings : public qf::core::utils::Settings
 private:
 	typedef qf::core::utils::Settings Super;
 public:
-	explicit Settings(QObject *parent = 0);
+	explicit Settings(QObject *parent = nullptr);
 	~Settings() Q_DECL_OVERRIDE;
 public slots:
 	void beginGroup(const QString & prefix) {Super::beginGroup(prefix);}

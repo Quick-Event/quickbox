@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/quickevent/Classes">
+<!--         <file>images/feature.svg</file> -->
+    </qresource>
+</RCC>

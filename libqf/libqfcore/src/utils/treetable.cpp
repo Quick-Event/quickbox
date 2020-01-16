@@ -1,10 +1,3 @@
-
-//
-// Author: Frantisek Vacek <fanda.vacek@volny.cz>, (C) 2010
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-
 #include "treetable.h"
 
 #include "../core/log.h"
@@ -12,85 +5,98 @@
 #include "../core/string.h"
 #include "../utils/timescope.h"
 
+#include <QMetaType>
+
 using namespace qf::core::utils;
 
 //=================================================
-//             TreeTableColumn
+// TreeTableColumn
 //=================================================
 QString TreeTableColumn::name() const
 {
-	return property(TreeTable::KEY_NAME).toString();
+	return m_values.value(TreeTable::KEY_NAME).toString();
 }
 
 void TreeTableColumn::setName(const QString& n)
 {
-	setProperty(TreeTable::KEY_NAME, n);
+	setKeyValue(TreeTable::KEY_NAME, n);
 }
 
 QString TreeTableColumn::typeName() const
 {
-	return property(TreeTable::KEY_TYPE).toString();
+	int t = m_values.value(TreeTable::KEY_TYPE).toInt();
+	const char *tn = QMetaType::typeName(t);
+	return QString::fromUtf8(tn);
 }
 
 void TreeTableColumn::setTypeName(const QString& tn)
 {
-	if(QVariant::nameToType(qPrintable(tn)) == QVariant::Invalid) {
+	int t = QMetaType::type(tn.toUtf8().constData());
+	if(t == 0) {
 		qfError() << "Invalid type name" << tn;
+		return;
 	}
-	else {
-		setProperty(TreeTable::KEY_TYPE, tn);
+	setType(t);
+}
+
+int TreeTableColumn::type() const
+{
+	return m_values.value(TreeTable::KEY_TYPE).toInt();
+}
+
+void TreeTableColumn::setType(int t)
+{
+	const char *tn = QMetaType::typeName(t);
+	if(!tn) {
+		qfWarning() << "Invalid meta type id:" << t;
+		return;
 	}
+	setKeyValue(TreeTable::KEY_TYPE, t);
 }
 
-QVariant::Type TreeTableColumn::type() const
+QVariant TreeTableColumn::width() const
 {
-	return QVariant::nameToType(qPrintable(typeName()));
+	return m_values.value(TreeTable::KEY_WIDTH);
 }
 
-void TreeTableColumn::setType(QVariant::Type t)
+void TreeTableColumn::setWidth(const QVariant& w)
 {
-	QString type_name = QVariant::typeToName(t);
-	//qfInfo() << "type:" << t << "type name:" << type_name;
-	setProperty(TreeTable::KEY_TYPE, type_name);
-}
-
-QString TreeTableColumn::width() const
-{
-	QString ret = property("width").toString();
-	return ret;
-}
-
-void TreeTableColumn::setWidth(const QString& w)
-{
-	QVariant v;
-	if(!w.trimmed().isEmpty()) v = w.trimmed();
-	setProperty("width", v);
+	setKeyValue(TreeTable::KEY_WIDTH, w);
 }
 
 QString TreeTableColumn::header() const
 {
-	QString ret = property("header").toString();
+	QString ret = m_values.value(TreeTable::KEY_HEADER).toString();
 	if(ret.isEmpty())
 		Utils::parseFieldName(name(), &ret);
 	return ret;
 }
 
+void TreeTableColumn::setHeader(const QString &s)
+{
+	setKeyValue(TreeTable::KEY_HEADER, s.isEmpty()? QVariant(): QVariant(s));
+}
+
 QString TreeTableColumn::footer() const
 {
-	QString ret = property("footer").toString();
+	QString ret = m_values.value(TreeTable::KEY_FOOTER).toString();
 	return ret;
 }
 
-QString TreeTableColumn::hAlignment() const
+void TreeTableColumn::setKeyValue(const QString &key, const QVariant &val)
 {
-	QString ret = property("halign").toString();
+	if(val.isValid())
+		m_values[key] = val;
+	else
+		m_values.remove(key);
+}
+
+QString TreeTableColumn::halign() const
+{
+	QString ret = m_values.value(TreeTable::KEY_HALIGN).toString();
 	if(ret.isEmpty()) {
 		/// pokud neni hodnota predepsana, vem ji z dat
-		QVariant::Type type;
-		QVariant t = property(TreeTable::KEY_TYPE);
-		if(t.type() == QVariant::String) type = QVariant::nameToType(qPrintable(t.toString()));
-		else type = (QVariant::Type)t.toInt();
-		switch(type) {
+		switch(type()) {
 			case QVariant::Int:
 			case QVariant::UInt:
 			case QVariant::LongLong:
@@ -105,245 +111,149 @@ QString TreeTableColumn::hAlignment() const
 	return ret;
 }
 
-//=================================================
-//             TreeTableColumns
-//=================================================
-TreeTableColumns::TreeTableColumns(const QVariant &v)
-	: SValue(v)
+int TreeTableRow::columnIndex(const QString &col_name) const
 {
+	return TreeTable::columnIndex(m_columns, col_name);
 }
 
-int TreeTableColumns::indexOf(const QString &col_name) const
+QVariant TreeTableRow::value(int col_ix) const
 {
-	for(int i=0; i<count(); i++) {
-		TreeTableColumn col = column(i);
-		if(Utils::fieldNameEndsWith(col.name(), col_name)) {
-			return i;
-		}
-	}
-	return -1;
-}
-
-//=================================================
-//             TreeTableRow
-//=================================================
-TreeTableRow::TreeTableRow(const TreeTableColumns &columns, const SValue &row_data)
-{
-	f_columns = columns;
-	f_row = row_data;
-}
-
-TreeTableRow::~TreeTableRow()
-{
-}
-
-QVariant TreeTableRow::value_helper(int col, bool &found) const
-{
-	QVariant ret;
-	found = false;
-	if(0 <= col && col < columns().count()) {
-		found = true;
+	if(0 <= col_ix && col_ix < m_columns.count()) {
 		QVariant v;
-		if(f_row.isList()) v = f_row.property(col);
-		else if(f_row.isMap()) {
-			SValue sv = f_row.property(TreeTable::KEY_ROW);
-			v = sv.property(col);
-		}
-		ret = v;
-		if(ret.userType() == qMetaTypeId<SValue>()) {
-			//ret = v.value<SValue>().value();
-			//qfWarning() << "property column:" << col << "is SValue.\n" << ret.value<SValue>().toString(2);
+		if(m_row.type() == QVariant::Map) {
+			v = m_row.toMap().value(TreeTable::KEY_ROW).toList().value(col_ix);
 		}
 		else {
-			/// pretypuj na typ sloupce
-			if(v.isValid()) {
-				TreeTableColumn cd = columns()[col];
-				QString ts = cd.property(TreeTable::KEY_TYPE).toString();
-				int t = QMetaType::type(ts.toLatin1().constData());
-				//QVariant::Type t = QVariant::nameToType(qPrintable(ts));
-				ret = Utils::retypeVariant(v, t);
-			}
+			v = m_row.toList().value(col_ix);
 		}
+		/// pretypuj na typ sloupce
+		return retypeVariant(col_ix, v);
 	}
-	return ret;
-}
-
-QVariant TreeTableRow::value(int ix) const
-{
-	//qfLogFuncFrame() << col_or_key_name;
-	bool found;
-	QVariant ret = value_helper(ix, found);
-	if(!found) {
-		qfError() << QString("index %1 not found, column count: %2").arg(ix).arg(columns().count());
-	}
-	//qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
-	return ret;
-}
-
-QVariant TreeTableRow::value(int ix, const QVariant &default_val) const
-{
-	bool found;
-	QVariant ret = value_helper(ix, found);
-	if(!found) {
-		ret = default_val;
-	}
-	return ret;
-}
-
-QVariant TreeTableRow::value_helper(const QString &col_or_key_name, bool &found) const
-{
-	qfLogFuncFrame() << col_or_key_name;
-	QVariant ret;
-	found = true;
-	int ix = columns().indexOf(col_or_key_name);
-	if(ix < 0) {
-		if(f_row.isMap()) {
-			/// try keyvals
-			SValue sv = f_row.property(TreeTable::KEY_KEYVALS);
-			//qfInfo() << col_or_key_name << "->" << sv.toString(2);
-			found = sv.hasProperty(col_or_key_name, &ret);
-		}
-		else
-			found = false;
-	}
-	else ret = value_helper(ix, found);
-	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
-	return ret;
+	qfWarning() << "Column index:" << col_ix << "of:" << m_columns.count() << "does not exist.";
+	return QVariant();
 }
 
 QVariant TreeTableRow::value(const QString &col_or_key_name) const
 {
-	qfLogFuncFrame() << col_or_key_name;
-	bool found;
-	QVariant ret = value_helper(col_or_key_name, found);
-	if(!found) {
-		SValue sv = f_row.property(TreeTable::KEY_KEYVALS);
-		QStringList cols;
-		{
-			auto cc = columns();
-			for(int i=0; i<cc.count(); i++) {
-				TreeTableColumn c = cc.column(i);
-				cols << c.name();
-			}
-		}
-		QStringList keys = sv.keys();
-		qfError() << QString("key '%1' not found in columns or keyvals\n\tcolumns: %2\n\tkeys: %3").arg(col_or_key_name).arg(cols.join(", ")).arg(keys.join(", "));
-	}
-	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
-	return ret;
-}
-
-QVariant TreeTableRow::value(const QString &col_or_key_name, const QVariant &default_val) const
-{
-	qfLogFuncFrame() << col_or_key_name;
-	bool found;
-	QVariant ret = value_helper(col_or_key_name, found);
-	if(!found) {
-		ret = default_val;
-	}
-	qfDebug() << "\t return:" << ret.toString() << "type:" << ret.typeName();
-	return ret;
-}
-
-void TreeTableRow::setValue(int col, const QVariant &val)
-{
-	if(f_row.isList()) {
-		f_row.setProperty(col, val);
-	}
-	else if(f_row.isMap()) {
-		SValue sv = f_row[TreeTable::KEY_ROW];
-		sv.setProperty(col, val);
+	QVariant v;
+	int ix = columnIndex(col_or_key_name);
+	if(ix < 0) {
+		v = m_row.toMap().value(TreeTable::KEY_KEYVALS).toMap().value(col_or_key_name);
 	}
 	else {
-		/// at je tam co chce, udelej z toho radek
-		//if(f_row.isValid()) f_row.setValue(QVariant()); /// vyhni se warningu
-		f_row.setProperty(col, val);
+		v = value(ix);
+	}
+	return v;
+}
+
+void TreeTableRow::setValue(int col_ix, const QVariant &val)
+{
+	if(col_ix < 0 || col_ix >= columnCount()) {
+		qfWarning() << "Invalid column index:" << col_ix << "of:" << columnCount();
+		return;
+	}
+	if(m_row.type() == QVariant::Map) {
+		QVariantMap rm = m_row.toMap();
+		QVariantList rvals = rm.value(TreeTable::KEY_ROW).toList();
+		while (rvals.count() <= col_ix)
+			rvals << QVariant();
+		rvals[col_ix] = val;
+		rm[TreeTable::KEY_ROW] = rvals;
+		m_row = rm;
+	}
+	else {
+		QVariantList rvals = m_row.toList();
+		while (rvals.count() <= col_ix)
+			rvals << QVariant();
+		rvals[col_ix] = val;
+		m_row = rvals;
 	}
 }
 
 void TreeTableRow::setValue(const QString &col_or_key_name, const QVariant &val)
 {
-	//if(isNull()) return;
-	int ix = columns().indexOf(col_or_key_name);
+	int ix = columnIndex(col_or_key_name);
 	if(ix < 0) {
-		convertListToMap();
-		SValue sv = f_row[TreeTable::KEY_KEYVALS];
-		sv.setProperty(col_or_key_name, val);
+		QVariantMap rm;
+		if(m_row.type() != QVariant::Map)
+			rm = QVariantMap{ {TreeTable::KEY_ROW, m_row} };
+		else
+			rm = m_row.toMap();
+		QVariantMap kvals = rm.value(TreeTable::KEY_KEYVALS).toMap();
+		if(val.isValid())
+			kvals[col_or_key_name] = val;
+		else
+			kvals.remove(col_or_key_name);
+		rm[TreeTable::KEY_KEYVALS] = kvals;
+		m_row = rm;
 	}
-	else setValue(ix, val);
+	else {
+		setValue(ix, val);
+	}
 }
 
-SValue TreeTableRow::keyvals() const
+QVariant TreeTableRow::retypeVariant(int col_ix, const QVariant &v) const
 {
-	SValue ret;
-	if(f_row.isMap()) {
-		//qfInfo() << "je to mapa2";
-		ret = f_row.property(TreeTable::KEY_KEYVALS);
+	if(v.isValid()) {
+		TreeTableColumn cd(m_columns.value(col_ix).toMap());
+		int t = cd.type();
+		if(t > 0) {
+			return Utils::retypeVariant(v, t);
+		}
 	}
-	return ret;
-}
-
-SValue TreeTableRow::keyvalsRef()
-{
-	SValue ret;
-	convertListToMap();
-	if(f_row.isMap()) {
-		//qfInfo() << "je to mapa";
-		ret = f_row[TreeTable::KEY_KEYVALS];
-	}
-	return ret;
+	return v;
 }
 
 int TreeTableRow::tablesCount() const
 {
-	int ret = 0;
-	if(f_row.isMap()) {
-		SValue sv = f_row.property(TreeTable::KEY_TABLES);
-		ret = sv.count();
+	if(m_row.type() == QVariant::Map) {
+		return m_row.toMap().value(TreeTable::KEY_TABLES).toList().count();
 	}
-	return ret;
+	return 0;
 }
 
-SValue TreeTableRow::table(int ix) const
+TreeTable TreeTableRow::table(int ix) const
 {
-	SValue ret;
-	if(f_row.isMap()) {
-		SValue sv = f_row.property(TreeTable::KEY_TABLES);
-		ret = sv.property(ix);
+	if(m_row.type() == QVariant::Map) {
+		QVariant t = m_row.toMap().value(TreeTable::KEY_TABLES).toList().value(ix);
+		return TreeTable(t);
 	}
-	return ret;
+	return TreeTable();
 }
 
-SValue TreeTableRow::table(const QString &name) const
+TreeTable TreeTableRow::table(const QString &table_name) const
 {
-	for(int i=0; i<tablesCount(); i++) {
-		TreeTable t = table(i);
-		if(name.isEmpty()) return t;
-		if(t.name() == name) return t;
+	QVariantList tlst = m_row.toMap().value(TreeTable::KEY_TABLES).toList();
+	for (int i = 0; i < tlst.count(); ++i) {
+		TreeTable tt{tlst[i]};
+		if(tt.name() == table_name)
+			return tt;
 	}
-	return SValue();
+	return TreeTable();
 }
 
-void TreeTableRow::convertListToMap()
+void TreeTableRow::appendTable(const TreeTable &t)
 {
-	if(f_row.isList()) {
-		/// predelat list na mapu
-		QVariantMap m;
-		m[TreeTable::KEY_ROW] = f_row.value();
-		f_row.setValue(m);
-	}
-}
-
-void TreeTableRow::appendTable(const SValue &t)
-{
-	convertListToMap();
-	f_row[TreeTable::KEY_TABLES].setProperty(tablesCount(), t);//t.value();
+	QVariantMap rm;
+	if(m_row.type() == QVariant::List)
+		rm[TreeTable::KEY_ROW] = m_row;
+	else
+		rm = m_row.toMap();
+	QVariantList tlst = rm.value(TreeTable::KEY_TABLES).toList();
+	tlst << t.toVariant();
+	rm[TreeTable::KEY_TABLES] = tlst;
+	m_row = rm;
 }
 
 //=================================================
-//             TreeTable
+// TreeTable
 //=================================================
 const QString TreeTable::KEY_COLUMNS = "fields";
+const QString TreeTable::KEY_HEADER = "header";
+const QString TreeTable::KEY_FOOTER = "footer";
+const QString TreeTable::KEY_HALIGN = "halign";
+const QString TreeTable::KEY_VALIGN = "valign";
+const QString TreeTable::KEY_WIDTH = "width";
 const QString TreeTable::KEY_ROWS = "rows";
 const QString TreeTable::KEY_META = "meta";
 const QString TreeTable::KEY_NAME = "name";
@@ -352,127 +262,97 @@ const QString TreeTable::KEY_TABLES = "tables";
 const QString TreeTable::KEY_ROW = "row";
 const QString TreeTable::KEY_KEYVALS = "keyvals";
 
-TreeTable::TreeTable()
-: SValue()
+void TreeTable::setName(const QString &n)
 {
+	QVariantMap t = m_values.toMap();
+	QVariantMap m = t.value(KEY_META).toMap();
+	if(n.isEmpty())
+		m.remove(KEY_NAME);
+	else
+		m[KEY_NAME] = n;
+	t[KEY_META] = m;
+	m_values = t;
 }
 
-TreeTable::~TreeTable()
+int TreeTable::insertRow(int ix, const QVariantList &vals)
 {
+	if(ix < 0)
+		ix = 0;
+	if(ix >= rowCount())
+		ix = rowCount();
+	appendRow();
+	QVariantList rr = rows();
+	for (int i = rr.count() - 1; i > ix; --i) {
+		rr[i] = rr[i-1];
+	}
+	rr[ix] = vals;
+	setRows(rr);
+	return ix;
 }
 
-int TreeTable::rowCount() const
+int TreeTable::appendRow(const QVariantList &vals)
 {
-	QF_TIME_SCOPE("RTreeTable::rowCount");
-	SValue rs = rows();
-	int ret = rs.count();
-	return ret;
-}
-
-TreeTableRow TreeTable::appendRow()
-{
-	SValue row_data = (*this)[KEY_ROWS][rowCount()];
-	return TreeTableRow(columns(), row_data);
+	QVariantList rr = rows();
+	rr.insert(rr.count(), vals);
+	setRows(rr);
+	return rowCount() - 1;
 }
 
 void TreeTable::removeRow(int ix)
 {
 	if(ix >= 0 &&  ix < rowCount()) {
-		SValue sv = rows();
-		QVariantList vl = sv.value().toList();
-		vl.removeAt(ix);
-		sv.setValue(vl);
+		QVariantList rr = rows();
+		rr.removeAt(ix);
+		setRows(rr);
 	}
 }
 
-void TreeTable::setColumnHeader(const QString &col_name, const QString &caption)
+void TreeTable::appendColumn(const QString &name, QVariant::Type type, const QString &caption)
 {
-	qfLogFuncFrame();
-	int ix = columns().indexOf(col_name);
-	if(ix >= 0) {
-		SValue sv = columns()[ix];
-		sv.setProperty("header", caption);
+	TreeTableColumn cc;
+	cc.setName(name);
+	cc.setType((int)type);
+	cc.setHeader(caption);
+	appendColumn(cc);
+}
+
+void TreeTable::appendColumn(const TreeTableColumn &c)
+{
+	QVariantList cc = columns();
+	cc << c.values();
+	setColumns(cc);
+}
+
+TreeTableColumn TreeTable::column(int col_ix) const
+{
+	return TreeTableColumn(columns().value(col_ix).toMap());
+}
+
+void TreeTable::setColumn(int col_ix, const TreeTableColumn &ttc)
+{
+	if(col_ix < 0 || col_ix >= columnCount()) {
+		qfWarning() << "Invalid column index:" << col_ix << "of:" << columnCount();
+		return;
 	}
+	QVariantList cc = columns();
+	cc[col_ix] = ttc.values();
+	setColumns(cc);
 }
 
-QString TreeTable::columnHeader(const QString &col_name) const
+TreeTableRow TreeTable::row(int row_ix) const
 {
-	QString ret = col_name;
-	int ix = columns().indexOf(col_name);
-	if(ix >= 0) ret = columns().column(ix).header();
-	return ret;
+	return TreeTableRow(columns(), rows().value(row_ix));
 }
 
-void TreeTable::setColumnFooter(const QString &col_name, const QString &caption)
+void TreeTable::setRow(int row_ix, const TreeTableRow &ttr)
 {
-	qfLogFuncFrame();
-	int ix = columns().indexOf(col_name);
-	if(ix >= 0) {
-		SValue sv = columns()[ix];
-		sv.setProperty("footer", caption);
+	if(row_ix < 0 || row_ix >= rowCount()) {
+		qfWarning() << "Onvalid row index:" << row_ix << "of:" << rowCount();
+		return;
 	}
-}
-
-QString TreeTable::columnFooter(const QString &col_name) const
-{
-	QString ret;
-	int ix = columns().indexOf(col_name);
-	if(ix >= 0) ret = columns().column(ix).footer();
-	return ret;
-}
-/*
-QString TreeTable::columnHAlignment(const QString &col_name) const
-{
-	QString ret;
-	int ix = columns().indexOf(col_name);
-	if(ix < 0)
-		return ret;
-	TreeTableColumn col = columns().column(ix);
-	ret = col.hAlignment();
-	return ret;
-}
-*/
-/*
-QString TreeTable::columnWidth(int col_no) const
-{
-	TreeTableColumn col = columns().column(col_no);
-	ret = col.width();
-	return ret;
-}
-*/
-void TreeTable::setColumnAlignment(const QString &col_name, Qt::Alignment alignment)
-{
-	qfLogFuncFrame();
-	int ix = columns().indexOf(col_name);
-	setColumnAlignment(ix, alignment);
-}
-
-void TreeTable::setColumnAlignment(int ix, Qt::Alignment alignment)
-{
-	qfLogFuncFrame();
-	if(ix >= 0) {
-		SValue col = columns().property(ix);
-
-		if(alignment & Qt::AlignLeft) col.setProperty("halign", "left");
-		else if(alignment & Qt::AlignRight) col.setProperty("halign", "right");
-		else if(alignment & Qt::AlignCenter || alignment & Qt::AlignHCenter) col.setProperty("halign", "center");
-		else col.setProperty("halign", QVariant());
-
-		if(alignment & Qt::AlignTop) col.setProperty("valign", "top");
-		else if(alignment & Qt::AlignBottom) col.setProperty("valign", "bottom");
-		else if(alignment & Qt::AlignCenter || alignment & Qt::AlignVCenter) col.setProperty("valign", "center");
-		else col.setProperty("valign", QVariant());
-	}
-}
-
-TreeTableColumn TreeTable::appendColumn(const QString &name, QVariant::Type type, const QString &caption)
-{
-	TreeTableColumn col = (*this)[KEY_COLUMNS][columnCount()];
-	col.setName(name);
-	col.setType(type);
-	QString s = caption;
-	if(!s.isEmpty()) col.setProperty("header", s);
-	return col;
+	QVariantList rr = rows();
+	rr[row_ix] = ttr.row();
+	setRows(rr);
 }
 
 QVariant TreeTable::value(const QString &_key_name, const QVariant &default_val, bool key_ends_with) const
@@ -510,36 +390,45 @@ QVariant TreeTable::value(const QString &_key_name, const QVariant &default_val,
 		}
 		else if(key_name.startsWith("CAPTION(", Qt::CaseInsensitive)) {
 			key_name = key_name.slice(8, -1).trimmed();
-			int ix = columns().indexOf(key_name);
-			if(ix < 0) ret = _key_name;
-			else ret = columnHeader(key_name);
+			int ix = columnIndex(key_name);
+			if(ix < 0)
+				ret = _key_name;
+			else
+				ret = column(key_name).header();
 		}
 		else if(key_name.startsWith("HEADER(", Qt::CaseInsensitive)) {
 			key_name = key_name.slice(7, -1).trimmed();
-			int ix = columns().indexOf(key_name);
-			if(ix < 0) ret = _key_name;
-			else ret = columnHeader(key_name);
+			int ix = columnIndex(key_name);
+			if(ix < 0)
+				ret = _key_name;
+			else
+				ret = column(key_name).header();
 		}
 		else if(key_name.startsWith("FOOTER(", Qt::CaseInsensitive)) {
 			key_name = key_name.slice(7, -1).trimmed();
-			int ix = columns().indexOf(key_name);
-			if(ix < 0) ret = _key_name;
-			else ret = columnFooter(key_name);
+			int ix = columnIndex(key_name);
+			if(ix < 0)
+				ret = _key_name;
+			else
+				ret = column(key_name).footer();
 		}
 		else {
-			SValue sv = property(KEY_KEYVALS);
-			foreach(QString key, sv.keys()) {
+			QVariantMap kv = keyvals();
+			QMapIterator<QString, QVariant> it(kv);
+			while(it.hasNext()) {
+				it.next();
+				QString key = it.key();
 				//qfDebug() << "\t checking key:" << key;
 				if(key_ends_with) {
 					if(Utils::fieldNameEndsWith(key, key_name)) {
-						ret = sv.property(key);
+						ret = it.value();
 						//qfDebug() << "\t\t ends with" << sv.toString(2);
 						break;
 					}
 				}
 				else {
 					if(key.compare(key, key_name, Qt::CaseInsensitive) == 0) {
-						ret = sv.property(key);
+						ret = it.value();
 						//qfDebug() << "\t\t equal";
 						break;
 					}
@@ -547,63 +436,53 @@ QVariant TreeTable::value(const QString &_key_name, const QVariant &default_val,
 			}
 		}
 	}
-	if(ret.userType() == qMetaTypeId<SValue>()) {
-		SValue sv = ret.value<SValue>();
-		ret = sv.toVariant();
-	}
 	qfDebug() << "\treturn:" << ret.toString();
 	return ret;
 }
 
 void TreeTable::setValue(const QString& key_name, const QVariant& val)
 {
-	keyvals().setProperty(key_name, val);
+	QVariantMap kv = keyvals();
+	kv[key_name] = val;
+	setKeyvals(kv);
 }
 
-SValue TreeTable::keyvals()
+void TreeTable::appendTable(int row_ix, const TreeTable &t)
 {
-	SValue ret = (*this)[KEY_KEYVALS];
-	return ret;
-}
-
-const SValue TreeTable::keyvals() const
-{
-	SValue ret;
-	if(isMap()) {
-		ret = property(KEY_KEYVALS);
-	}
-	return ret;
+	auto r = row(row_ix);
+	r.appendTable(t);
+	setRow(row_ix, r);
 }
 
 QVariant TreeTable::sum(const QString &col_name) const
 {
 	//qfDebug() << QF_FUNC_NAME << col_name;
-	int ix = columns().indexOf(col_name);
-	if(ix >= 0) return sum(ix);
+	int ix = columnIndex(col_name);
+	if(ix >= 0)
+		return sum(ix);
 	return QVariant();
 }
 
 QVariant TreeTable::sum(int col_index) const
 {
 	//qfDebug() << QF_FUNC_NAME << "col index:" << col_index;
-	if(col_index < 0 || col_index >= columnCount()) return QVariant();
-	QString ts = columns()[col_index].property(KEY_TYPE).toString();
+	if(col_index < 0 || col_index >= columnCount())
+		return QVariant();
+	QString ts = columns().value(col_index).toMap().value(KEY_TYPE).toString();
 	QVariant::Type t = QVariant::nameToType(qPrintable(ts));
 	QVariant ret;
 	//qfInfo() << "type:" << QVariant::typeToName(t);
 	if(t == QVariant::Int) {
 		int s = 0;
 		for(int i=0; i<rowCount(); i++) {
-			TreeTableRow r = row(i);
-			s += r.value(col_index).toInt();
+			s += row(i).value(col_index).toInt();
 		}
 		ret = s;
 	}
 	else {
 		double s = 0;
 		for(int i=0; i<rowCount(); i++) {
-			TreeTableRow r = row(i);
-			s += r.value(col_index).toDouble();
+			s += row(i).value(col_index).toDouble();
 		}
 		ret = s;
 	}
@@ -613,8 +492,9 @@ QVariant TreeTable::sum(int col_index) const
 QVariant TreeTable::average(const QString & col_name) const
 {
 	//qfDebug() << QF_FUNC_NAME << col_name;
-	int ix = columns().indexOf(col_name);
-	if(ix >= 0) return average(ix);
+	int ix = columnIndex(col_name);
+	if(ix >= 0)
+		return average(ix);
 	return QVariant();
 }
 
@@ -623,44 +503,38 @@ QVariant TreeTable::average(int col_index) const
 	QVariant ret;
 	double s = sum(col_index).toDouble();
 	int n = rowCount();
-	if(n > 0) ret = s / n;
+	if(n > 0)
+		ret = s / n;
 	return ret;
-}
-
-QString TreeTable::tableName() const
-{
-	SValue sv = property(KEY_META);
-	return sv.property("name").toString();
-}
-
-void TreeTable::setTableName(const QString& name)
-{
-	(*this)[KEY_META].setProperty("name", name);
 }
 
 TreeTable TreeTable::cd(const QString& path) const
 {
 	qfLogFuncFrame() << "path:" << path;
-	qfDebug() << "\t isNull():" << isNull();
+	qfDebug() << "\t isValid():" << isValid();
 	QStringList path_lst = path.split('/', QString::SkipEmptyParts);
 	TreeTable ret = *this;
 	for(int path_ix=0; path_ix<path_lst.count(); path_ix++) {
-		int n = path_lst.value(path_ix).toInt();
-		qfDebug() << "\t loading row #" << n;
-		TreeTableRow r = ret.row(n);
+		bool ok;
+		int row_ix = path_lst.value(path_ix).toInt(&ok);
 		path_ix++;
-		if(path_ix < path_lst.count()) {
+		if(ok) {
+			qfDebug() << "\t loading row #" << row_ix;
 			QString table_name = path_lst.value(path_ix);
-			qfDebug() << "\t loading table:" << table_name;
-			ret = r.table(table_name);
+			ret = row(row_ix).table(table_name);
 		}
 		else {
-			qfError() << QString("cd() - Bad path format, path '%1' is too short.").arg(path_lst.join("/"));
+			qfError() << QString("cd() - Bad path, path '%1'.").arg(path_lst.join("/"));
 			ret = TreeTable();
 			break;
 		}
 	}
 	return ret;
+}
+
+QVariantMap TreeTable::keyvals(int row_ix) const
+{
+	return rows().value(row_ix).toMap().value(KEY_KEYVALS).toMap();
 }
 
 static inline QString line_indent(const QString &ind, int level)
@@ -671,7 +545,7 @@ static inline QString line_indent(const QString &ind, int level)
 }
 #define IND(level) offset + line_indent(ind, level)
 
-static QString keyvals_to_html(const SValue &keyvals, const QVariantMap &opts)
+static QString keyvals_to_html(const QVariantMap &keyvals, const QVariantMap &opts)
 {
 	QString offset = opts.value("lineOffset").toString();
 	QString eoln = opts.value("lineSeparator", "\n").toString();
@@ -683,7 +557,7 @@ static QString keyvals_to_html(const SValue &keyvals, const QVariantMap &opts)
 		foreach(QString s, sl) {
 			ret += IND(1) + "<tr>" + eoln;
 			ret += IND(2) + "<th>" + s + "</th>" + eoln;
-			ret += IND(2) + "<td>" + keyvals.property(s).toString() + "</td>" + eoln;
+			ret += IND(2) + "<td>" + keyvals.value(s).toString() + "</td>" + eoln;
 			ret += IND(1) + "</tr>" + eoln;
 		}
 		ret += IND(0) + "</table>" + eoln;
@@ -698,52 +572,96 @@ QString TreeTable::toHtml(const QVariantMap &opts) const
 	QString eoln = opts.value("lineSeparator", "\n").toString();
 	QString ind = opts.value("lineIndent", "  ").toString();
 	QString ret;
-	ret += tableName();
+	ret += name();
 	ret += IND(0) + "<table border=1>" + eoln;
-	TreeTableColumns cols = columns();
+	QVariantList cc = columns();
 	ret += IND(1) + "<tr>" + eoln;
-	for(int i=0; i<cols.count(); i++) {
-		TreeTableColumn cd = cols.column(i);
+	for(int i=0; i<cc.count(); i++) {
+		QVariantMap cd = cc[i].toMap();
 		ret += IND(2) + "<th>";
-		ret += cd.header();
+		ret += cd.value(KEY_HEADER).toString();
 		ret += "</th>" + eoln;
 	}
 	ret += IND(1) + "</tr>" + eoln;
 	for(int i=0; i<rowCount(); i++) {
-		TreeTableRow r = row(i);
+		TreeTableRow rr = row(i);
 		ret += IND(1) + "<tr>" + eoln;
-		for(int i=0; i<cols.count(); i++) {
+		for(int j=0; j<cc.count(); j++) {
 			ret += IND(2) + "<td>";
-			ret += r.value(i).toString();
+			ret += rr.value(j).toString();
 			ret += "</td>" + eoln;
 		}
 		ret += IND(1) + "</tr>" + eoln;
 		opts2["lineOffset"] = IND(3);
-		for(int j=0; j<r.tablesCount(); j++) {
-			TreeTable t = r.table(j);
+		for(int j=0; j<rr.tablesCount(); j++) {
+			TreeTable t = rr.table(j);
 			ret += IND(1) + "<tr>" + eoln;
-			ret += IND(2) + "<td colspan=" QF_IARG(cols.count()) ">" + eoln;
+			ret += IND(2) + "<td colspan=" QF_IARG(cc.count()) ">" + eoln;
 			ret += t.toHtml(opts2);
 			ret += IND(2) + "</td>" + eoln;
 			ret += IND(1) + "</tr>" + eoln;
 		}
-		SValue keyvals = r.keyvals();
-		if(keyvals.count()) {
+		QVariantMap kv = keyvals(i);
+		if(kv.count()) {
 			ret += IND(1) + "<tr>" + eoln;
-			ret += IND(2) + "<td colspan=" QF_IARG(cols.count()) ">" + eoln;
+			ret += IND(2) + "<td colspan=" QF_IARG(cc.count()) ">" + eoln;
 			opts2["lineOffset"] = IND(3);
-			ret += keyvals_to_html(keyvals, opts2);
+			ret += keyvals_to_html(kv, opts2);
 			ret += IND(2) + "</td>" + eoln;
 			ret += IND(1) + "</tr>" + eoln;
 		}
 	}
 	ret += IND(0) + "</table>" + eoln;
 	/// keyvals
-	SValue kvs = keyvals();
+	auto kvs = keyvals();
 	if(kvs.count()) {
 		opts2["lineOffset"] = IND(0);
 		ret += keyvals_to_html(kvs, opts2);
 	}
 	return ret;
+}
+
+QByteArray TreeTable::toJson(QJsonDocument::JsonFormat format) const
+{
+	QJsonDocument doc = QJsonDocument::fromVariant(toVariant());
+	QByteArray ba = doc.toJson(format);
+	return ba;
+}
+
+QString TreeTable::toString(QJsonDocument::JsonFormat format) const
+{
+	auto ba = toJson(format);
+	return QString::fromUtf8(ba);
+}
+
+void TreeTable::setKeyvals(const QVariantMap &keyvals)
+{
+	QVariantMap t = valueMap();
+	t[KEY_KEYVALS] = keyvals;
+	m_values = t;
+}
+
+void TreeTable::setColumns(const QVariantList &cols)
+{
+	QVariantMap t = valueMap();
+	t[KEY_COLUMNS] = cols;
+	m_values = t;
+}
+
+int TreeTable::columnIndex(const QVariantList &cols, const QString &col_name)
+{
+	for (int i = 0; i < cols.count(); ++i) {
+		QVariantMap cd = cols[i].toMap();
+		if(Utils::fieldNameEndsWith(cd.value(KEY_NAME).toString(), col_name))
+			return i;
+	}
+	return -1;
+}
+
+void TreeTable::setRows(const QVariantList &rows)
+{
+	QVariantMap t = valueMap();
+	t[KEY_ROWS] = rows;
+	m_values = t;
 }
 

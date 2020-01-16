@@ -4,6 +4,7 @@
 #include "dockwidget.h"
 #include "partwidget.h"
 #include "stackedcentralwidget.h"
+#include "plugin.h"
 #include "../menubar.h"
 #include "../statusbar.h"
 #include "../toolbar.h"
@@ -37,8 +38,6 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) :
 	Q_ASSERT(self == nullptr);
 	self = this;
 
-	m_pluginLoader = nullptr;
-
 	Application *app = Application::instance();
 	app->m_frameWork = this;
 	QQmlEngine *qe = app->qmlEngine();
@@ -51,13 +50,19 @@ MainWindow::~MainWindow()
 	savePersistentSettings();
 }
 
+PluginLoader *MainWindow::pluginLoader()
+{
+	if(!m_pluginLoader) {
+		m_pluginLoader = new PluginLoader(this);
+		connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
+		connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
+		//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
+	}
+	return m_pluginLoader;
+}
+
 void MainWindow::loadPlugins()
 {
-	QF_SAFE_DELETE(m_pluginLoader);
-	m_pluginLoader = new PluginLoader(this);
-	connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::pluginsLoaded, Qt::QueuedConnection);
-	connect(this, &MainWindow::pluginsLoaded, this, &MainWindow::onPluginsLoaded);
-	//connect(m_pluginLoader, &PluginLoader::loadingFinished, this, &MainWindow::whenPluginsLoaded, Qt::QueuedConnection);
 	Application *app = qobject_cast<Application*>(QCoreApplication::instance());
 	QJsonDocument profile = app->profile();
 	QJsonArray arr = profile.object().value(QStringLiteral("plugins")).toObject().value(QStringLiteral("features")).toArray();
@@ -65,7 +70,7 @@ void MainWindow::loadPlugins()
 	Q_FOREACH(auto o, arr)
 		feature_ids << o.toString();
 	//QString ui_language_name;
-	m_pluginLoader->loadPlugins(feature_ids);
+	pluginLoader()->loadPlugins(feature_ids);
 }
 
 void MainWindow::loadPersistentSettings()
@@ -90,6 +95,15 @@ void MainWindow::savePersistentSettings()
 		settings.setValue("state", saveState());
 		settings.setValue("geometry", saveGeometry());
 	}
+}
+
+QList<Plugin *> MainWindow::installedPlugins()
+{
+	QList<Plugin *> ret;
+	if(m_pluginLoader)
+		for(auto *p : m_pluginLoader->loadedPlugins().values())
+			ret << p;
+	return ret;
 }
 
 void MainWindow::showProgress(const QString &msg, int completed, int total)
@@ -180,6 +194,11 @@ bool MainWindow::setActivePart(const QString &feature_id)
 	return centralWidget()->setActivePart(ix, true);
 }
 
+void MainWindow::registerPlugin(qf::qmlwidgets::framework::Plugin *plugin)
+{
+	pluginLoader()->registerPlugin(plugin->manifest()->featureId(), plugin);
+}
+
 void MainWindow::closeEvent(QCloseEvent *ev)
 {
 	emit aboutToClose();
@@ -229,7 +248,7 @@ qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 	QStatusBar *sb = Super::statusBar();
 	StatusBar *status_bar = qobject_cast<StatusBar*>(sb);
 	if(!status_bar) {
-		QF_SAFE_DELETE(sb);
+		QF_SAFE_DELETE(sb)
 		status_bar = new StatusBar(this);
 		Super::setStatusBar(status_bar);
 	}
@@ -239,7 +258,7 @@ qf::qmlwidgets::StatusBar *MainWindow::statusBar()
 void MainWindow::setStatusBar(qf::qmlwidgets::StatusBar *sbar)
 {
 	qfLogFuncFrame() << sbar << "previous:" << Super::statusBar();
-	sbar->setParent(0);
+	sbar->setParent(nullptr);
 	connect(this, SIGNAL(progress(QString,int,int)), sbar, SLOT(showProgress(QString,int,int)));
 	Super::setStatusBar(sbar); /// deletes old status bar
 	qfDebug() << Super::statusBar();
@@ -250,7 +269,7 @@ CentralWidget *MainWindow::centralWidget()
 	QWidget *cw = Super::centralWidget();
 	CentralWidget *central_widget = qobject_cast<CentralWidget*>(cw);
 	if(!central_widget) {
-		QF_SAFE_DELETE(cw);
+		QF_SAFE_DELETE(cw)
 		central_widget = new StackedCentralWidget(this);
 		//central_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 		//central_widget->setStyleSheet("background:rgb(67, 67, 67)");
@@ -298,10 +317,12 @@ Plugin *MainWindow::plugin(const QString &feature_id, bool throw_exc)
 	Plugin *ret = nullptr;
 	if(m_pluginLoader) {
 		ret = m_pluginLoader->loadedPlugins().value(feature_id);
+		if(!ret) {
+			qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
+			qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
+		}
 	}
 	if(!ret) {
-		qfWarning() << "Plugin for feature id:" << feature_id << "is not installed!";
-		qfWarning() << "Available feature ids:" << QStringList(m_pluginLoader->loadedPlugins().keys()).join(",");
 		if(throw_exc)
 			QF_EXCEPTION(tr("Plugin for feature id: '%1' is not installed!").arg(feature_id));
 	}

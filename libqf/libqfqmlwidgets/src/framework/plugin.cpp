@@ -10,8 +10,20 @@
 
 using namespace qf::qmlwidgets::framework;
 
-Plugin::Plugin(QObject *parent) :
-	QObject(parent), m_manifest(nullptr)
+Plugin::Plugin(const QString &feature_id, QObject *parent)
+	: QObject(parent)
+{
+	qfLogFuncFrame();
+	auto *mani = new PluginManifest();
+	mani->setFeatureId(feature_id);
+	mani->setHomeDir(qf::qmlwidgets::framework::Application::instance()->pluginDataDir() + '/' + feature_id);
+
+	setManifest(mani);
+}
+
+Plugin::Plugin(QObject *parent)
+	: QObject(parent)
+	, m_manifest(nullptr)
 {
 	qfLogFuncFrame();
 }

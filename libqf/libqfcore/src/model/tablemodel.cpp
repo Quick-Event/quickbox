@@ -276,7 +276,7 @@ QVariant TableModel::headerData(int section, Qt::Orientation orientation, int ro
 		else if(role == Qt::DecorationRole) {
 			qfu::TableRow r = m_table.row(section);
 			if(!r.isNull() && r.isDirty()) {
-				return qVariantFromValue(ico_dirty);
+				return QVariant::fromValue(ico_dirty);
 			}
 		}
 	}
@@ -849,10 +849,13 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 		QVariantMap col = exported_columns[i].toMap();
 		QString cap = col.value("caption").toString();
 		int ix = col.value("index").toInt();
-		qfu::TreeTableColumn tt_col;
+		qfu::TreeTableColumn cd;
 		if(col.value("origin") == QLatin1String("table")) {
 			QVariant::Type t = m_table.field(ix).type();
-			tt_col = ret.appendColumn(m_table.field(ix).name(), t, cap);
+			cd.setName(m_table.field(ix).name());
+			cd.setType((int)t);
+			cd.setHeader(cap);
+			//ret.appendColumn(m_table.field(ix).name(), t, cap);
 		}
 		else {
 			QVariant::Type t;
@@ -864,16 +867,20 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 			else {
 				t = (QVariant::Type)headerData(ix, Qt::Horizontal, FieldTypeRole).toInt();
 			}
-			tt_col = ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
+			cd.setName(headerData(ix, Qt::Horizontal, FieldNameRole).toString());
+			if(t > 0)
+				cd.setType((int)t);
+			cd.setHeader(cap);
+			//ret.appendColumn(headerData(ix, Qt::Horizontal, FieldNameRole).toString(), t, cap);
 		}
-		tt_col.setWidth(col.value("width").toString());
+		cd.setWidth(col.value("width"));
+		ret.appendColumn(cd);
 	}
 
 	/// export data
 	{
-		qfu::SValue srows;
 		for(int i=0; i<rowCount(); i++) {
-			QVariantList srow_lst;
+			QVariantList row;
 			qfu::Table::Row tbl_row = m_table.row(i);
 			for(int j=0; j<exported_columns.count(); j++) {
 				QVariantMap col = exported_columns[j].toMap();
@@ -894,11 +901,10 @@ qfu::TreeTable TableModel::toTreeTable(const QString& table_name, const QVariant
 						//qfWarning() << col << val.typeName() << "val:" << val.toString();
 					}
 				}
-				srow_lst << val;
+				row << val;
 			}
-			srows[i] = srow_lst;
+			ret.appendRow(row);
 		}
-		ret[qfu::TreeTable::KEY_ROWS] = srows.value();
 	}
 	return ret;
 }

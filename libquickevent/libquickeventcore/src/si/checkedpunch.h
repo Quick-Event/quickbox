@@ -8,9 +8,11 @@
 
 namespace quickevent {
 namespace core {
-namespace si {
 
 class CodeDef;
+
+namespace si {
+
 
 class QUICKEVENTCORE_DECL_EXPORT CheckedPunch : public QVariantMap
 {
@@ -21,7 +23,7 @@ class QUICKEVENTCORE_DECL_EXPORT CheckedPunch : public QVariantMap
 public:
 	CheckedPunch(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 
-	static CheckedPunch fromCodeDef(const CodeDef &cd);
+	static CheckedPunch fromCodeDef(const quickevent::core::CodeDef &cd);
 };
 
 }}}

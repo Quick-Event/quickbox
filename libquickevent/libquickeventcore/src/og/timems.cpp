@@ -20,6 +20,13 @@ TimeMs::TimeMs(int msec)
 
 }
 
+TimeMs TimeMs::fromVariant(const QVariant &time_v)
+{
+	if(time_v.type() == QVariant::Int)
+		return TimeMs(time_v.toInt());
+	return TimeMs();
+}
+
 QString TimeMs::toString(QChar sec_sep, QChar msec_sep) const
 {
 	if(!isValid())

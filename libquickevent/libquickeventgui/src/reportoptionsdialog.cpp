@@ -32,6 +32,8 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	ui->grpStartOptions->setVisible(false);
 	ui->grpStartersOptions->setVisible(false);
 	ui->grpStages->setVisible(false);
+	ui->grpLegs->setVisible(false);
+	ui->grpResultOptions->setVisible(false);
 	ui->btRegExp->setEnabled(QSqlDatabase::database().driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive));
 
 	connect(ui->btSaveAsDefault, &QPushButton::clicked, [this]() {
@@ -46,12 +48,13 @@ ReportOptionsDialog::ReportOptionsDialog(QWidget *parent)
 	connect(this, &ReportOptionsDialog::startersOptionsVisibleChanged, ui->grpStartersOptions, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::vacantsVisibleChanged, ui->chkStartOpts_PrintVacants, &QCheckBox::setVisible);
 	connect(this, &ReportOptionsDialog::stagesOptionVisibleChanged, ui->grpStages, &QGroupBox::setVisible);
-	connect(this, &ReportOptionsDialog::stagesCountChanged, ui->edStagesCount, &QSpinBox::setValue);
+	connect(this, &ReportOptionsDialog::legsOptionVisibleChanged, ui->grpLegs, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::pageLayoutVisibleChanged, ui->grpPageLayout, &QGroupBox::setVisible);
 	connect(this, &ReportOptionsDialog::columnCountEnableChanged, ui->edColumnCount, &QGroupBox::setEnabled);
+	connect(this, &ReportOptionsDialog::resultOptionsVisibleChanged, ui->grpResultOptions, &QGroupBox::setVisible);
 
-	//connect(this, &ReportOptionsDialog::classFilterVisibleChanged, [this]() {
-	//	qfInfo() << __FUNCTION__;
+	//connect(ui->edStagesCount, &QSpinBox::valueChanged, [this](int n) {
+	//	qfInfo() << "stage cnt value changed:" << n;
 	//});
 }
 
@@ -79,6 +82,26 @@ void ReportOptionsDialog::setClassNamesFilter(const QStringList &class_names)
 	ui->btClassNames->setChecked(true);
 	ui->chkClassFilterDoesntMatch->setChecked(false);
 	ui->edFilter->setText(class_names.join(','));
+}
+
+int ReportOptionsDialog::stagesCount() const
+{
+	return ui->edStagesCount->value();
+}
+
+void ReportOptionsDialog::setStagesCount(int n)
+{
+	ui->edStagesCount->setValue(n);
+}
+
+bool ReportOptionsDialog::resultExcludeDisq() const
+{
+	return ui->chkExcludeDisq->isChecked();
+}
+
+void ReportOptionsDialog::setResultExcludeDisq(bool b)
+{
+	ui->chkExcludeDisq->setChecked(b);
 }
 
 ReportOptionsDialog::BreakType ReportOptionsDialog::breakType() const
@@ -152,6 +175,9 @@ int ReportOptionsDialog::exec()
 void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options)
 {
 	qfLogFuncFrame() << options;
+	ui->edStagesCount->setValue(options.stagesCount());
+	ui->edLegsCount->setValue(options.legsCount());
+	//qfInfo() << "options.stagesCount()" << options.stagesCount() << ui->edStagesCount->value();
 	ui->cbxBreakAfterClassType->setCurrentIndex(options.breakType());
 	ui->edColumnCount->setValue(options.columns().length() / 2 + 1);
 	ui->edPageWidth->setValue(options.pageWidth());
@@ -169,11 +195,15 @@ void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options
 	ui->chkStartOpts_PrintVacants->setChecked(options.isStartListPrintVacants());
 	ui->chkStartOpts_PrintStartNumbers->setChecked(options.isStartListPrintStartNumbers());
 	ui->edStartersOptionsLineSpacing->setValue(options.startersOptionsLineSpacing());
+	ui->edNumPlaces->setValue(options.resultNumPlaces());
+	ui->chkExcludeDisq->setChecked(options.isResultExcludeDisq());
 }
 
 ReportOptionsDialog::Options ReportOptionsDialog::options() const
 {
 	Options opts;
+	opts.setStagesCount(ui->edStagesCount->value());
+	opts.setLegsCount(ui->edLegsCount->value());
 	opts.setBreakType(ui->cbxBreakAfterClassType->currentIndex());
 	opts.setColumnCount(ui->edColumnCount->value());
 	QString columns;
@@ -193,6 +223,10 @@ ReportOptionsDialog::Options ReportOptionsDialog::options() const
 	opts.setStartListPrintVacants(isStartListPrintVacants());
 	opts.setStartListPrintStartNumbers(isStartListPrintStartNumbers());
 	opts.setStartersOptionsLineSpacing(ui->edStartersOptionsLineSpacing->value());
+	opts[QStringLiteral("isBreakAfterEachClass")] = isBreakAfterEachClass();
+	opts[QStringLiteral("isColumnBreak")] = isColumnBreak();
+	opts.setResultNumPlaces(ui->edNumPlaces->value());
+	opts.setResultExcludeDisq(ui->chkExcludeDisq->isChecked());
 	return opts;
 }
 
@@ -203,7 +237,6 @@ ReportOptionsDialog::Options ReportOptionsDialog::savedOptions(const QString &pe
 	if(id.isEmpty())
 		id = default_persistent_settings_id;
 	QVariantMap m = settings.value(persistent_settings_path_prefix + id).toMap();
-	//qfInfo() << persistentSettingsPath() << m;
 	return Options(m);
 }
 
@@ -217,7 +250,7 @@ QVariantMap ReportOptionsDialog::reportProperties() const
 	return props;
 }
 
-void ReportOptionsDialog::loadPersistentSettings()
+void ReportOptionsDialog::loadPersistentSettings(const ReportOptionsDialog::Options &default_options)
 {
 	qfLogFuncFrame() << persistentSettingsPath();
 	if(persistentSettingsId().isEmpty())
@@ -226,8 +259,19 @@ void ReportOptionsDialog::loadPersistentSettings()
 	QVariantMap m = settings.value(persistentSettingsPath()).toMap();
 	//qfInfo() << persistentSettingsPath() << m;
 	Options opts(m);
+	QMapIterator<QString, QVariant> it(default_options);
+	while(it.hasNext()) {
+		it.next();
+		if(!opts.contains(it.key()))
+			opts[it.key()] = it.value();
+	}
 	qfDebug() << opts;
 	setOptions(opts);
+}
+
+void ReportOptionsDialog::loadPersistentSettings()
+{
+	loadPersistentSettings(Options());
 }
 
 void ReportOptionsDialog::savePersistentSettings()
@@ -242,19 +286,9 @@ void ReportOptionsDialog::savePersistentSettings()
 	settings.setValue(persistentSettingsPath(), opts);
 }
 
-/*
-QVariantMap ReportOptionsDialog::optionsToMap() const
+int ReportOptionsDialog::resultNumPlaces() const
 {
-	QVariantMap ret;
-	ret["breakAfterEachClass"] = ui->chkPrintEveryClassOnNewPage->isChecked();
-	if(ui->grpClassFilter->isChecked()) {
-		QVariantMap m;
-		m["filterDoesnMatch"] = ui->chkClassFilterDoesntMatch->isChecked();
-		m["filterType"] = ui->btRegExp->isChecked()? "regExp": "wildCard";
-		//m["sqlWhere"] = sqlWhereExpression();
-		ret["classFilter"] = m;
-	}
-	return ret;
+	return ui->edNumPlaces->value();
 }
-*/
+
 }}

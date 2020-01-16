@@ -38,7 +38,7 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="55"/>
         <source>Severity</source>
-        <translation>Серьезность </translation>
+        <translation>Важность</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="57"/>

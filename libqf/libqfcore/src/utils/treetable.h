@@ -8,140 +8,135 @@
 #define QF_CORE_UTILS_TREETABLE_H
 
 #include "../core/coreglobal.h"
-#include "svalue.h"
 
 #include <QVariantMap>
 #include <QVariantList>
+#include <QJsonDocument>
 
 namespace qf {
 namespace core {
 namespace utils {
 
-/// helper table used for repor generator mainly
-/// should be replaced by Table in future
-class QFCORE_DECL_EXPORT TreeTableColumn : public SValue
+class QFCORE_DECL_EXPORT TreeTableColumn
 {
 public:
+	TreeTableColumn() {}
+	TreeTableColumn(const QVariantMap &mv) : m_values(mv) {}
+
+	QVariantMap values() const {return m_values;}
+
 	QString name() const;
 	void setName(const QString &n);
+
 	QString typeName() const;
 	void setTypeName(const QString &tn);
-	QVariant::Type type() const;
-	void setType(QVariant::Type t);
-	QString width() const;
-	void setWidth(const QString &w);
+	int type() const;
+	void setType(int t);
+
+	QVariant width() const;
+	void setWidth(const QVariant &w);
+
 	QString header() const;
+	void setHeader(const QString &s);
 	QString footer() const;
-	QString hAlignment() const;
-public:
-	TreeTableColumn() : SValue() {}
-	TreeTableColumn(const SValue &sv) : SValue(sv) {}
-	//virtual ~TreeTableRow();
+
+	QString halign() const;
+	Qt::Alignment alignment() const;
+private:
+	void setKeyValue(const QString &key, const QVariant &val);
+private:
+	QVariantMap m_values;
 };
 
-
-class QFCORE_DECL_EXPORT TreeTableColumns : public SValue
+class TreeTable;
+class QFCORE_DECL_EXPORT TreeTableRow
 {
-protected:
-public:
-	int indexOf(const QString &col_name) const;
-	TreeTableColumn column(int ix) const {return SValue(property(ix));}
-	TreeTableColumn column(const QString &col_name) const {return column(indexOf(col_name));}
-	//SValue column(const QString &col_name) const {return value(indexOf(col_name)).toMap();}
-public:
-	TreeTableColumns() : SValue() {}
-	TreeTableColumns(const QVariant &v);
-	//virtual ~TreeTableRow();
-};
-
-
-class QFCORE_DECL_EXPORT TreeTableRow// : public SValue
-{
-protected:
-	TreeTableColumns f_columns;
-	SValue f_row;
-protected:
-	void convertListToMap();
-	QVariant value_helper(int ix, bool &found) const;
-	QVariant value_helper(const QString &col_or_key_name, bool &found) const;
-public:
-	bool isNull() const {return !f_row.isValid();}
-	TreeTableColumns columns() const {return f_columns;}
-
-	SValue rowData() const {return f_row;}
-
-	QVariant value(int col) const;
-	QVariant value(int col, const QVariant &default_val) const;
-	QVariant value(const QString &col_or_key_name) const;
-	QVariant value(const QString &col_or_key_name, const QVariant &default_val) const;
-	void setValue(int col, const QVariant &val);
-	void setValue(const QString &col_or_key_name, const QVariant &val);
-
-	SValue keyvals() const;
-	SValue keyvalsRef();
-
-	int tablesCount() const;
-	SValue table(int ix) const;
-	SValue table(const QString &name = QString()) const;
-	void appendTable(const SValue &t);
 public:
 	TreeTableRow() {}
-	TreeTableRow(const TreeTableColumns &columns, const SValue &row_data);
-	virtual ~TreeTableRow();
+	TreeTableRow(const QVariant &columns, const QVariant &row_data)
+		: m_columns(columns.toList())
+		, m_row(row_data)
+	{}
+
+	bool isValid() const {return m_row.isValid();}
+	int columnCount() const {return m_columns.count();}
+	int columnIndex(const QString &col_name) const;
+
+	QVariant row() const { return  m_row; }
+
+	QVariant value(int col_ix) const;
+	QVariant value(const QString &col_or_key_name) const;
+
+	void setValue(int col_ix, const QVariant &val);
+	void setValue(const QString &col_or_key_name, const QVariant &val);
+
+	int tablesCount() const;
+	TreeTable table(int ix = 0) const;
+	TreeTable table(const QString &table_name) const;
+	void appendTable(const TreeTable &t);
+private:
+	QVariant retypeVariant(int col_ix, const QVariant &v) const;
+private:
+	QVariantList m_columns;
+	QVariant m_row;
 };
 
-
-class QFCORE_DECL_EXPORT TreeTable : public SValue
+class QFCORE_DECL_EXPORT TreeTable
 {
 public:
-	static const QString KEY_TYPE;
-	static const QString KEY_META;
 	static const QString KEY_NAME;
+	static const QString KEY_TYPE; // col type
+	static const QString KEY_HEADER;
+	static const QString KEY_FOOTER;
+	static const QString KEY_HALIGN;
+	static const QString KEY_VALIGN;
+	static const QString KEY_WIDTH;
+
+	static const QString KEY_META;
+
 	static const QString KEY_COLUMNS;
 	static const QString KEY_ROWS;
+
 	static const QString KEY_ROW;
 	static const QString KEY_KEYVALS;
 	static const QString KEY_TABLES;
 public:
-	TreeTable();
-	TreeTable(const QString &table_name) {setTableName(table_name);}
-	TreeTable(const SValue &sv) : SValue(sv) {}
-	virtual ~TreeTable();
-protected:
-	SValue rows() const {return SValue(property(KEY_ROWS));}
-	//void setRows(const QVariantList &new_rows) {f_data[KEY_ROWS] = new_rows;}
-	//void setColumns(const TreeTableColumns &cols) {f_data[KEY_COLUMNS] = cols;}
+	TreeTable() {}
+	TreeTable(const QVariant &value, const QString &table_name) : m_values(value) {setName(table_name);}
+	TreeTable(const QString &table_name) {setName(table_name);}
+	TreeTable(const QVariant &value) : m_values(value) {}
 public:
-	bool isNull() const {return !isValid();}
-	QString name() const {return property2(KEY_META).property2(KEY_NAME).value().toString();}
-	void setName(const QString &n) {(*this)[KEY_META][KEY_NAME] = n;}
-	TreeTableColumns columns() const {return TreeTableColumns(property(KEY_COLUMNS));}
-	int columnCount() const {return columns().count();}
-	int rowCount() const;
-	TreeTableRow row(int ix) const {return TreeTableRow(columns(), rows().property(ix));}
-	TreeTableRow appendRow();
+	bool isValid() const {return m_values.isValid();}
+	QString name() const {return m_values.toMap().value(KEY_META).toMap().value(KEY_NAME).toString();}
+	void setName(const QString &n);
+
+	static int columnIndex(const QVariantList &cols, const QString &col_name);
+	int columnIndex(const QString &col_name) const {return columnIndex(columns(), col_name);}
+	int columnCount() const {return m_values.toMap().value(KEY_COLUMNS).toList().count();}
+	void appendColumn(const QString &name, QVariant::Type type = QVariant::String, const QString &caption = QString());
+	void appendColumn(const TreeTableColumn &c);
+
+	TreeTableColumn column(int col_ix) const;
+	TreeTableColumn column(const QString &col_name) const {return column(columnIndex(col_name));}
+	void setColumn(int col_ix, const TreeTableColumn &ttc);
+
+	int rowCount() const {return m_values.toMap().value(KEY_ROWS).toList().count();}
+	//TreeTableRow row(int ix) const {return TreeTableRow(columns(), rows().property(ix));}
+	int insertRow(int ix, const QVariantList &vals = QVariantList());
+	int appendRow(const QVariantList &vals = QVariantList());
 	void removeRow(int ix);
 
-	void setColumnHeader(const QString &col_name, const QString &header);
-	QString columnHeader(const QString &col_name) const;
-	void setColumnFooter(const QString &col_name, const QString &footer);
-	QString columnFooter(const QString &col_name) const;
-	/// pokud je tabulka v reportu generovana z dat, je sloupec takto zarovnan
-	void setColumnAlignment(const QString &col_name, Qt::Alignment alignment);
-	void setColumnAlignment(int col_no, Qt::Alignment alignment);
-	//QString columnHAlignment(const QString &col_name) const;
-
-	//QString columnWidth(int col_no) const;
-
-	//! pokud je \a caption == QString(), vezme se to za posledni teckou z \a name nebo cely \a name , kdyz tam neni tecka.
-	TreeTableColumn appendColumn(const QString &name, QVariant::Type type = QVariant::String, const QString &caption = QString());
-
-	//bool isNull() const {return columnCount() == 0;}
+	TreeTableRow row(int row_ix) const;
+	void setRow(int row_ix, const TreeTableRow &ttr);
 
 	//! @param key_ends_with if true key name is compared using function QFSql::endsWith().
 	/// pokud se vyskytuje agregacni funkce, musi byt okolo jmena fieldu, napr. SUM(cena)
 	QVariant value(const QString &key_name, const QVariant &default_val = QVariant(), bool key_ends_with = true) const;
 	void setValue(const QString &key_name, const QVariant &val);
+
+	void appendTable(int row_ix, const TreeTable &t);
+
+	QVariant toVariant() const {return m_values;}
 
 	QVariant sum(const QString &col_name) const;
 	QVariant sum(int col_index) const;
@@ -149,21 +144,36 @@ public:
 	QVariant average(const QString &col_name) const;
 	QVariant average(int col_index) const;
 
-	QString tableName() const;
-	void setTableName(const QString &name);
-
-	SValue keyvals();
-	const SValue keyvals() const;
-
 	/// hleda tabulku v detech
 	/// cesta ma format n/table_name1/n/table_name2/... , kde n je cislo radku, ve kterem se ma tabulka hledat
 	TreeTable cd(const QString &path) const;
+
+	QVariantMap keyvals(int row_ix) const;
 
 	/// options:
 	/// lineSeparator: cim se budou oddelovat radky, default je '\n'
 	/// lineIndent: cim se budou uvozovat vnorene urovne radku, default jsou dve mezery
 	/// lineOffset: cim se budou uvozovat vschny radky, default je QString()
 	QString toHtml(const QVariantMap &opts = QVariantMap()) const;
+
+	QByteArray toJson(QJsonDocument::JsonFormat format = QJsonDocument::Indented) const;
+	QString toString(QJsonDocument::JsonFormat format = QJsonDocument::Indented) const;
+private:
+	//QVariant retypeVariant(int col_ix, const QVariant &v) const;
+
+	QVariantMap valueMap() const { return m_values.toMap(); }
+	QVariantMap meta() const { return m_values.toMap().value(KEY_META).toMap(); }
+
+	QVariantMap keyvals() const { return m_values.toMap().value(KEY_KEYVALS).toMap(); }
+	void setKeyvals(const QVariantMap &keyvals);
+
+	QVariantList columns() const { return m_values.toMap().value(KEY_COLUMNS).toList(); }
+	void setColumns(const QVariantList &columns);
+
+	QVariantList rows() const { return m_values.toMap().value(KEY_ROWS).toList(); }
+	void setRows(const QVariantList &rows);
+private:
+	QVariant m_values;
 };
 
 }}}

@@ -14,7 +14,7 @@ namespace audio {
 class QUICKEVENTGUI_DECL_EXPORT WavFile : public QFile
 {
 public:
-	WavFile(QObject *parent = 0);
+	WavFile(QObject *parent = nullptr);
 
 	using QFile::open;
 	bool open(const QString &fileName);

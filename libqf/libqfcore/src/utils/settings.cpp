@@ -34,7 +34,7 @@ QVariant Settings::value(const QString &key, const QVariant &default_value) cons
 				if(!ok) {
 					ret = v.toDouble(&ok);
 					if(!ok) {
-						qfError() << "Cannot gues type of value in setting key:" << key << "val:" << v;
+						//qfError() << "Cannot gues type of value in setting key:" << key << "val:" << v;
 						ret = v;
 					}
 				}
