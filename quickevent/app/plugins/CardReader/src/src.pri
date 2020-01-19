@@ -1,6 +1,7 @@
 message(including $$PWD)
 
 HEADERS += \
+    $$PWD/cardcheckerfreeordercpp.h \
     $$PWD/cardreaderwidget.h \
     $$PWD/cardreaderpartwidget.h \
     $$PWD/dlgsettings.h \
@@ -9,6 +10,7 @@ HEADERS += \
     $$PWD/cardcheckerclassiccpp.h \
 
 SOURCES += \
+    $$PWD/cardcheckerfreeordercpp.cpp \
     $$PWD/cardreaderwidget.cpp \
     $$PWD/cardreaderpartwidget.cpp \
     $$PWD/dlgsettings.cpp \

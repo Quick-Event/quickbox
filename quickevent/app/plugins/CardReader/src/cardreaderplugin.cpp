@@ -1,5 +1,6 @@
 #include "cardreaderplugin.h"
 #include "cardcheckerclassiccpp.h"
+#include "cardcheckerfreeordercpp.h"
 #include "cardreaderpartwidget.h"
 #include "services/racomclient.h"
 
@@ -63,6 +64,8 @@ QString CardReaderPlugin::settingsPrefix()
 void CardReaderPlugin::onInstalled()
 {
 	m_cardCheckers << new CardCheckerClassicCpp(this);
+	m_cardCheckers << new CardCheckerFreeOrderCpp(this);
+
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	CardReaderPartWidget *pw = new CardReaderPartWidget(manifest()->featureId());
 	fwk->addPartWidget(pw);
