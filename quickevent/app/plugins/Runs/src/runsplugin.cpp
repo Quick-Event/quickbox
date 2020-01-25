@@ -1348,7 +1348,8 @@ void RunsPlugin::report_startListClubs()
 	dlg.setPersistentSettingsId("startListClubsReportOptions");
 	dlg.loadPersistentSettings();
 	dlg.setClassFilterVisible(false);
-	dlg.setStartListOptionsVisible(false);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
 		auto tt = startListClubsTable();
@@ -1372,7 +1373,8 @@ void RunsPlugin::report_startListStarters()
 	dlg.setPersistentSettingsId("startListStartersReportOptions");
 	dlg.loadPersistentSettings();
 	dlg.setClassFilterVisible(true);
-	dlg.setStartListOptionsVisible(false);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setStartersOptionsVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListStartersTable(dlg.sqlWhereExpression());

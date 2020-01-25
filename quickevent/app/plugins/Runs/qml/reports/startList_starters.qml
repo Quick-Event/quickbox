@@ -95,25 +95,28 @@ Report {
 						objectName: "minuteFrame"
 						width: "%"
 						layout: Frame.LayoutHorizontal
-						Cell {
+						Para {
 							objectName: "minuteCellClassName"
 							width: 12
 							text: detail.data(detail.currentIndex, "classes.name");
+						}
+						Para {
+							visible: root.isPrintStartNumbers
+							width: 9
+							halign: Frame.AlignRight
+							text: {
+								var sn = detail.data(detail.currentIndex,"competitors.startNumber");
+								return sn > 0? sn: "";
+							}
 						}
 						Cell {
 							objectName: "minuteCellCompetitorName"
 							width: "%"
 							text: detail.data(detail.currentIndex, "competitorName");
 						}
-						Cell {
-							visible: root.isPrintStartNumbers
-							width: 12
-							halign: Frame.AlignRight
-							text: detail.data(detail.currentIndex,"competitors.startNumber");
-						}
-						Cell {
+						Para {
 							objectName: "minuteCellRegistration"
-							width: 18
+							width: 16
 							text: detail.data(detail.currentIndex, "competitors.registration");
 						}
 						Para {
@@ -122,9 +125,9 @@ Report {
 							halign: Frame.AlignRight
 							text: detail.data(detail.currentIndex, "runs.siId");
 						}
-						Cell {
+						Para {
 							objectName: "minuteCellStartTimeMs"
-							width: 13
+							width: 12
 							halign: Frame.AlignRight
 							text: OGTime.msecToString_mmss(detail.data(detail.currentIndex, "startTimeMs"));
 						}

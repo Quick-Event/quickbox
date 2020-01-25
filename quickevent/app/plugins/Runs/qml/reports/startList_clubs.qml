@@ -105,39 +105,38 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 15
+								width: 12
 								halign: Frame.AlignRight
 								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
 							}
 							Para {
-								width: 12
+								width: 10
 								textFn: runnersDetail.dataFn("classes.name");
 							}
 							Para {
 								visible: root.isPrintStartNumbers
-                                width: 11
+								width: 9
 								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("startNumber");
+								textFn: function() {
+									var sn = runnersDetail.dataFn("startNumber")();
+									return sn > 0? sn: "";
+								}
 							}
 							Cell {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
 							Para {
-								width: 18
+								width: 16
 								textFn: runnersDetail.dataFn("registration");
 							}
 							Para {
-								width: 4
+								width: 17
 								halign: Frame.AlignRight
 								textFn: function() {
-									return runnersDetail.dataFn("cardLent")()? qsTr("R"): "";
+									var ret = runnersDetail.dataFn("cardLent")()? qsTr("R "): "";
+									return ret + runnersDetail.dataFn("runs.siId")();
 								}
-							}
-							Cell {
-								width: 18
-								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("runs.siId");
 							}
 						}
 					}
