@@ -1433,8 +1433,8 @@ void RunsPlugin::report_startListClubsNStages()
 	dlg.loadPersistentSettings();
 
 	dlg.setStagesCount(event_plugin->stageCount());
-	dlg.setStartListOptionsVisible(false);
-	//dlg.setVacantsVisible(false);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
 	dlg.setStagesOptionVisible(true);
 	dlg.setClassFilterVisible(false);
 	dlg.setClassFilterVisible(true);
