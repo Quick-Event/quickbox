@@ -155,7 +155,10 @@ Report {
 								visible: root.isPrintStartNumbers
 								width: 16
 								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("startNumber");
+								textFn: function() {
+									var sn = runnersDetail.dataFn("startNumber")();
+									return sn > 0? sn: "";
+								}
 							}
 							Cell {
 								width: hdrRegistration.width

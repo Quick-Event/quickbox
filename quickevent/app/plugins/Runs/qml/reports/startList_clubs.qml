@@ -105,7 +105,7 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 12
+								width: 13
 								halign: Frame.AlignRight
 								textFn: function() { return OGTime.msecToString_mmss(runnersDetail.rowData("startTimeMs"));}
 							}

@@ -110,6 +110,27 @@ Report {
 							textFn: detail.dataFn("name");
 							textStyle: myStyle.textStyleBold
 						}
+						Cell {
+							visible: root.isPrintStartNumbers
+							id: hdrStartNumber
+							width: 16
+							textStyle: myStyle.textStyleBold
+							halign: Frame.AlignRight
+							text: qsTr("Bib");
+						}
+						Cell {
+							id: hdrRegistration
+							width: 25
+							textStyle: myStyle.textStyleBold
+							text: qsTr("Registration");
+						}
+						Cell {
+							id: hdrSI
+							width: 18
+							textStyle: myStyle.textStyleBold
+							halign: Frame.AlignRight
+							text: qsTr("SI");
+						}
 						Component.onCompleted: {
 							//console.warn("============= root.stageCount:", root.stageCount)
 							for(var i=0; i<root.stagesCount; i++) {
@@ -134,25 +155,28 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 20
+								width: 15
 								textFn: runnersDetail.dataFn("classes.name");
 							}
 							Cell {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
-							Para {
+							Cell {
 								visible: root.isPrintStartNumbers
-								width: 16
+								width: hdrStartNumber.width
 								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("startNumber");
+								textFn: function() {
+									var sn = runnersDetail.dataFn("startNumber")();
+									return sn > 0? sn: "";
+								}
 							}
 							Cell {
-								width: 25
+								width: hdrRegistration.width
 								textFn: runnersDetail.dataFn("registration");
 							}
 							Cell {
-								width: 18
+								width: hdrSI.width
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("competitors.siId");
 							}
