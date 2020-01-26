@@ -1468,7 +1468,7 @@ void RunsPlugin::report_resultsClasses()
 	dlg.setResultOptionsVisible(true);
 	//dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
-		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces());
+		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces(), dlg.options().isResultExcludeDisq());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
@@ -1492,7 +1492,7 @@ void RunsPlugin::report_resultsForSpeaker()
 	dlg.setResultOptionsVisible(true);
 	//dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
-		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces());
+		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces(), dlg.options().isResultExcludeDisq());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
