@@ -21,8 +21,9 @@
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
-        <source>Event name can be specified later on in File/Open</source>
-        <translation>Jméno závodu může být zadáno později v Soubor/Závod/Otevřít závod</translation>
+        <source>Event name can be specified later on in File/Event/Open event</source>
+        <oldsource>Event name can be specified later on in File/Open</oldsource>
+        <translation type="unfinished">Jméno závodu může být zadáno později v Soubor/Závod/Otevřít závod</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
@@ -86,14 +87,6 @@
     </message>
 </context>
 <context>
-    <name>DbSchema</name>
-    <message>
-        <location filename="qml/DbSchema.qml" line="454"/>
-        <source>Data version</source>
-        <translation>Verze dat</translation>
-    </message>
-</context>
-<context>
     <name>Event::EventPlugin</name>
     <message>
         <location filename="src/eventplugin.cpp" line="277"/>
@@ -141,58 +134,58 @@
         <translation>Upravit etapu</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="670"/>
+        <location filename="src/eventplugin.cpp" line="671"/>
         <source>Connect Database Error: %1</source>
         <translation>Chyba při připojování k databázi: %1</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="739"/>
+        <location filename="src/eventplugin.cpp" line="740"/>
         <source>Event ID cannot be empty.</source>
         <translation>ID závodu nemůže být prázdné.</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="743"/>
+        <location filename="src/eventplugin.cpp" line="744"/>
         <source>Event ID %1 exists already.</source>
         <translation>ID závodu %1 již existuje.</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="815"/>
-        <location filename="src/eventplugin.cpp" line="1089"/>
-        <location filename="src/eventplugin.cpp" line="1188"/>
+        <location filename="src/eventplugin.cpp" line="816"/>
+        <location filename="src/eventplugin.cpp" line="1090"/>
+        <location filename="src/eventplugin.cpp" line="1189"/>
         <source>Create Database Error: %1</source>
         <translation>Chyba při vytváření databáze: %1</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="819"/>
+        <location filename="src/eventplugin.cpp" line="820"/>
         <source>Cannot create event, database is not open: %1</source>
         <translation>Nelze vytvořit závod, databáze není připojena: %1</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="873"/>
-        <location filename="src/eventplugin.cpp" line="896"/>
-        <location filename="src/eventplugin.cpp" line="1134"/>
+        <location filename="src/eventplugin.cpp" line="874"/>
+        <location filename="src/eventplugin.cpp" line="897"/>
+        <location filename="src/eventplugin.cpp" line="1135"/>
         <source>Query</source>
         <translation>Dotaz</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="873"/>
-        <location filename="src/eventplugin.cpp" line="896"/>
+        <location filename="src/eventplugin.cpp" line="874"/>
+        <location filename="src/eventplugin.cpp" line="897"/>
         <source>Open event</source>
         <translation>Otevřít závod</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="941"/>
+        <location filename="src/eventplugin.cpp" line="942"/>
         <source>Event data version (%1) is too low, minimal version is (%2).
 Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version.</source>
         <translation>Závod využívá příliš starou verzi dat (%1), minimální verze je (%2).
 Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktuální verze.</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="770"/>
-        <location filename="src/eventplugin.cpp" line="927"/>
-        <location filename="src/eventplugin.cpp" line="1073"/>
-        <location filename="src/eventplugin.cpp" line="1153"/>
-        <location filename="src/eventplugin.cpp" line="1170"/>
+        <location filename="src/eventplugin.cpp" line="771"/>
+        <location filename="src/eventplugin.cpp" line="928"/>
+        <location filename="src/eventplugin.cpp" line="1074"/>
+        <location filename="src/eventplugin.cpp" line="1154"/>
+        <location filename="src/eventplugin.cpp" line="1171"/>
         <source>Open Database Error: %1</source>
         <translation>Chyba při připojování databáze: %1</translation>
     </message>
@@ -203,60 +196,60 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <translation>Závod (*.qbe)</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="931"/>
+        <location filename="src/eventplugin.cpp" line="932"/>
         <source>Database file %1 doesn&apos;t exist.</source>
         <translation>Databázový soubor %1 neexistuje.</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="948"/>
+        <location filename="src/eventplugin.cpp" line="949"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
         <translation>Závod byl vytvořen v novější verzi QuickEventu (%1) a aplikace možná nebude pracovat tak, jak je očekáváno. Je doporučeno si stáhnout nejnovětší verzi QuickEventu.</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1055"/>
+        <location filename="src/eventplugin.cpp" line="1056"/>
         <source>Export as Quick Event</source>
         <translation>Exportovat jako Quick Event</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1055"/>
-        <location filename="src/eventplugin.cpp" line="1130"/>
+        <location filename="src/eventplugin.cpp" line="1056"/>
+        <location filename="src/eventplugin.cpp" line="1131"/>
         <source>Quick Event files *%1 (*%1)</source>
         <translation>Soubory Quick Eventu *%1 (*%1)</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1065"/>
+        <location filename="src/eventplugin.cpp" line="1066"/>
         <source>Cannot delete existing file %1</source>
         <translation>Nelze smazat existující soubor %1</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1082"/>
-        <location filename="src/eventplugin.cpp" line="1180"/>
+        <location filename="src/eventplugin.cpp" line="1083"/>
+        <location filename="src/eventplugin.cpp" line="1181"/>
         <source>Creating database</source>
         <translation>Vytvářím databázi</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1097"/>
-        <location filename="src/eventplugin.cpp" line="1196"/>
+        <location filename="src/eventplugin.cpp" line="1098"/>
+        <location filename="src/eventplugin.cpp" line="1197"/>
         <source>Copying table %1</source>
         <translation>Kopíruji tabulku %1</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1130"/>
+        <location filename="src/eventplugin.cpp" line="1131"/>
         <source>Import as Quick Event</source>
         <translation>Importovat jako Quick Event</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1134"/>
+        <location filename="src/eventplugin.cpp" line="1135"/>
         <source>Event will be imported as ID:</source>
         <translation>Závod bude importován s ID:</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1139"/>
+        <location filename="src/eventplugin.cpp" line="1140"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation>Závod s ID &apos;%1&apos; již existuje!</translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1216"/>
+        <location filename="src/eventplugin.cpp" line="1217"/>
         <source>Open imported event &apos;%1&apos;?</source>
         <translation>Otevřít importovaný závod &apos;%1&apos;?</translation>
     </message>
@@ -401,8 +394,9 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="30"/>
-        <source>Enter event database name</source>
-        <translation>Vložte jméno databáze závodu</translation>
+        <source>Unique event name</source>
+        <oldsource>Enter event database name</oldsource>
+        <translation type="unfinished">Vložte jméno databáze závodu</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="37"/>

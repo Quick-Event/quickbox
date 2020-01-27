@@ -115,37 +115,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="681"/>
+        <location filename="src/orisimporter.cpp" line="683"/>
         <source>New entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="682"/>
+        <location filename="src/orisimporter.cpp" line="684"/>
         <source>Edited entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="683"/>
+        <location filename="src/orisimporter.cpp" line="685"/>
         <source>Deleted entries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="686"/>
+        <location filename="src/orisimporter.cpp" line="688"/>
         <source>Oris import report</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="696"/>
+        <location filename="src/orisimporter.cpp" line="698"/>
         <source>Save without drops</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="760"/>
+        <location filename="src/orisimporter.cpp" line="762"/>
         <source>Importing registrations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisimporter.cpp" line="821"/>
+        <location filename="src/orisimporter.cpp" line="823"/>
         <source>Importing clubs</source>
         <translation type="unfinished"></translation>
     </message>

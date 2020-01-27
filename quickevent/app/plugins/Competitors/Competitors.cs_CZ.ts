@@ -201,7 +201,7 @@
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="135"/>
-        <location filename="src/competitorswidget.cpp" line="404"/>
+        <location filename="src/competitorswidget.cpp" line="409"/>
         <source>Competitors statistics</source>
         <translation>Statistiky závodníků</translation>
     </message>
@@ -227,33 +227,33 @@
         <translation>Záložní paměť</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="224"/>
+        <location filename="src/competitorswidget.cpp" line="225"/>
         <source>Save and &amp;next</source>
         <translation>Uložit a &amp;další</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="259"/>
+        <location filename="src/competitorswidget.cpp" line="264"/>
         <source>Really delete all the selected competitors? This action cannot be reverted.</source>
         <oldsource>Realy delete all the selected competitors? This action cannot be reverted.</oldsource>
         <translation>Opravdu odstranit všechny vybrané závodníky? Tato akce nemůže být vrácena.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="272"/>
+        <location filename="src/competitorswidget.cpp" line="277"/>
         <source>Confirm deletion of %1 competitors.</source>
         <translation>Potvrďte odstranění %1 závodníků.</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="315"/>
+        <location filename="src/competitorswidget.cpp" line="320"/>
         <source>Set class in selected rows</source>
         <translation>Změnit kategorii ve vybraných řádcích</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="327"/>
+        <location filename="src/competitorswidget.cpp" line="332"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="328"/>
+        <location filename="src/competitorswidget.cpp" line="333"/>
         <source>Select class</source>
         <translation>Vybrat kategorii</translation>
     </message>
@@ -268,7 +268,7 @@
         <translation>Zobrazit formulář pro upravení nebo vložení závodníka po vložení čipu do vyčítací jednotky (mód vyčítací jednotky musí být nastaven na &quot;Přihlášky&quot;)</translation>
     </message>
     <message>
-        <location filename="src/competitorswidget.cpp" line="219"/>
+        <location filename="src/competitorswidget.cpp" line="220"/>
         <source>Edit Competitor</source>
         <translation>Upravit závodníka</translation>
     </message>
