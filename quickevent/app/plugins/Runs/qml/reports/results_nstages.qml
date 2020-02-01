@@ -13,8 +13,9 @@ Report {
 	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
 
 	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
-	property int timeCellWidth: 17
-	property int posCellWidth: 10
+	property int timeCellWidth: 13
+	property int posCellWidth: 9
+	property int lossCellWidth: 15
 	property int unrealTimeMs: OGTime.UNREAL_TIME_MSEC
 
 	property QfObject internals: QfObject {
@@ -132,19 +133,19 @@ Report {
 						}
 						Cell {
 							id: hdrRegistration
-							width: 25
+							width: 17
 							textStyle: myStyle.textStyleBold
-							text: qsTr("registration");
+							text: qsTr("Reg");
 						}
 						Component.onCompleted: {
 							//console.warn("=============", root.stageCount)
 							for(var i=0; i<root.stagesCount; i++) {
-								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": timeCellWidth + posCellWidth, "text": qsTr("Stage") + (i+1)});
+								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": timeCellWidth + posCellWidth, "text": qsTr("Stage ") + (i+1)});
 								classHeader.addItem(c);
 							}
 							c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": timeCellWidth, "text": qsTr("Time")});
 							classHeader.addItem(c);
-							c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": timeCellWidth, "text": qsTr("Loss")});
+							c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": lossCellWidth, "text": qsTr("Loss")});
 							classHeader.addItem(c);
 						}
 					}
@@ -184,7 +185,7 @@ Report {
 								}
 								c = cTimeCell.createObject(null, {"invalidTimeString": qsTr("DISQ"), "width": timeCellWidth, "halign": Frame.AlignRight, "fieldName": "timeMs"});
 								runnersDetail.addItem(c);
-								c = cTimeLossCell.createObject(null, {"width": timeCellWidth, "halign": Frame.AlignRight, "fieldName": "timeLossMs"});
+								c = cTimeLossCell.createObject(null, {"width": lossCellWidth, "halign": Frame.AlignRight, "fieldName": "timeLossMs"});
 								runnersDetail.addItem(c);
 							}
 						}
