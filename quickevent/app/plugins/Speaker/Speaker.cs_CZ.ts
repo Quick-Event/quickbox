@@ -36,7 +36,7 @@
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="51"/>
         <source>DISQ</source>
-        <translation type="unfinished"></translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="146"/>
