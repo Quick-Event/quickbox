@@ -234,12 +234,13 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
         <location filename="src/cardreaderwidget.cpp" line="560"/>
         <source>possible solution:
 Wait at least 10 seconds and then try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>možné řešení:
+Počkejte alespoň 10 sekund a potom to zkuste znovu.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="569"/>
         <source>There are no ports available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nejsou k dispozici žádné porty.</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="572"/>
@@ -247,7 +248,10 @@ Wait at least 10 seconds and then try again.</source>
 List of accessible ports:
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Vybraný port %1 není k dispozici.
+Seznam dostupných portů:
+
+</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="581"/>
@@ -322,7 +326,7 @@ List of accessible ports:
     <message>
         <location filename="src/cardreaderwidget.cpp" line="476"/>
         <source>Card reader settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení vyčítací jednotky</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="744"/>
