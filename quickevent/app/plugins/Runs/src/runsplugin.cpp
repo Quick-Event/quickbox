@@ -1417,7 +1417,7 @@ void RunsPlugin::report_startListClassesNStages()
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
 									, tt.toVariant()
-									, tr("Start list by classes after %1 stages").arg(dlg.stagesCount())
+									, tr("Start list by classes")
 									, "printStartList"
 									, props
 									);
@@ -1451,7 +1451,7 @@ void RunsPlugin::report_startListClubsNStages()
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_clubs_nstages.qml"
 									, tt.toVariant()
-									, tr("Start list by clubs after %1 stages").arg(dlg.stagesCount())
+									, tr("Start list by clubs")
 									, "printStartList"
 									, props
 									);

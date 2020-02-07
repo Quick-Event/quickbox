@@ -125,7 +125,7 @@ Report {
 						}
 						Cell {
 							id: hdrRegistration
-							width: 125
+							width: 100
 							textStyle: myStyle.textStyleBold
 							text: qsTr("Club");
 						}

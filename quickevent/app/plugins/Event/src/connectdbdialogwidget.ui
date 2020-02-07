@@ -60,7 +60,7 @@
       <item>
        <widget class="QLineEdit" name="edEventName">
         <property name="placeholderText">
-         <string>Event name can be specified later on in File/Open</string>
+         <string>Event name can be specified later on in File/Event/Open event</string>
         </property>
         <property name="clearButtonEnabled">
          <bool>true</bool>

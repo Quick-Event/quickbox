@@ -12,7 +12,7 @@ Report {
 	property bool isColumnBreak: options.isColumnBreak? true: false
 	property bool isPrintStartNumbers: options.isStartListPrintStartNumbers? true: false
 	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
-	property string reportTitle: qsTr("Start list by classes after %1 stages").arg(root.stagesCount)
+	property string reportTitle: qsTr("Start list by classes")
 
 	property QfObject internals: QfObject {
 		Component {

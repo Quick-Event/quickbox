@@ -39,6 +39,7 @@ qf--qmlwidgets--framework--PartSwitch::handle {
 qf--qmlwidgets--framework--PartSwitch QToolButton {
 /* 	background-color: #525252; */
 	color: white;
+	padding: 2px;
 }
 
 qf--qmlwidgets--framework--PartSwitch QToolButton:hover {
@@ -47,13 +48,17 @@ qf--qmlwidgets--framework--PartSwitch QToolButton:hover {
  *	color: black;
  *	background: gray;
  */
+	background: #f0f0f0;
 	color: black;
+	border: 2px outset #525252;
 }
 
 qf--qmlwidgets--framework--PartSwitch QToolButton:checked {
 	/*background: green;
 	color: red;*/
+	background: #f0f0f0;
 	color: black;
+	border: 1px solid #525252;
 }
 
 qf--qmlwidgets--dialogs--internal--CaptionFrame {

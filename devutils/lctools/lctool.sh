@@ -65,7 +65,7 @@ paths[libquickeventgui]=libquickevent/libquickeventgui
 
 paths[libsiut]=libsiut
 
-paths[shared]=quickevent/app/plugins/qml/shared
+paths[shared]=quickevent/app/plugins/shared
 paths[quickevent]=quickevent/app/quickevent
 
 paths[CardReader]=quickevent/app/plugins/CardReader
@@ -79,8 +79,8 @@ paths[Relays]=quickevent/app/plugins/Relays
 paths[Runs]=quickevent/app/plugins/Runs
 paths[Speaker]=quickevent/app/plugins/Speaker
 
-#paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
-#paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
+paths[ExampleCppQml]=quickevent/app/plugins/qml/ExampleCppQml
+paths[ExamplePureQml]=quickevent/app/plugins/qml/ExamplePureQml
 
 paths[quickshow]=quickshow
 paths[qsqlmon]=tools/qsqlmon
