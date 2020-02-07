@@ -352,17 +352,17 @@
     <message>
         <location filename="src/relayswidget.cpp" line="193"/>
         <source>Overall condensed</source>
-        <translation type="unfinished"></translation>
+        <translation>Celkové zestručněné</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="199"/>
         <source>E&amp;xport</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;xportovat</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="202"/>
         <source>IOF-XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="221"/>
@@ -383,27 +383,27 @@
     <message>
         <location filename="src/relayswidget.cpp" line="284"/>
         <source>Really delete all the selected relays? This action cannot be reverted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opravdu odstranit všechny vybrané štafety? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="613"/>
         <source>Save as %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Uložit jako %1</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="634"/>
         <source>Exporting result file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Exportuji soubor s výsledky...</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="634"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Zrušit</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="820"/>
         <source>Relays IOF-XML 3.0 results</source>
-        <translation type="unfinished"></translation>
+        <translation>Výsledky štafet ve formátu IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="297"/>
@@ -480,22 +480,22 @@
     <message>
         <location filename="qml/reports/results_condensed.qml" line="9"/>
         <source>Results</source>
-        <translation type="unfinished">Výsledky</translation>
+        <translation>Výsledky</translation>
     </message>
     <message>
         <location filename="qml/reports/results_condensed.qml" line="19"/>
         <source>DISQ</source>
-        <translation type="unfinished">DISK</translation>
+        <translation>DISK</translation>
     </message>
     <message>
         <location filename="qml/reports/results_condensed.qml" line="21"/>
         <source>NC</source>
-        <translation type="unfinished">MS</translation>
+        <translation>MS</translation>
     </message>
     <message>
         <location filename="qml/reports/results_condensed.qml" line="23"/>
         <source>---</source>
-        <translation type="unfinished">---</translation>
+        <translation>---</translation>
     </message>
 </context>
 <context>
