@@ -23,7 +23,7 @@
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
         <source>Event name can be specified later on in File/Event/Open event</source>
         <oldsource>Event name can be specified later on in File/Open</oldsource>
-        <translation type="unfinished">Jméno závodu může být zadáno později v Soubor/Závod/Otevřít závod</translation>
+        <translation>Jméno závodu může být zadáno později v Soubor/Závod/Otevřít závod</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
@@ -396,7 +396,7 @@ Použij: Soubor --&gt; Importovat --&gt; Závod (*.qbe) pro konverzi dat do aktu
         <location filename="src/eventdialogwidget.ui" line="30"/>
         <source>Unique event name</source>
         <oldsource>Enter event database name</oldsource>
-        <translation type="unfinished">Vložte jméno databáze závodu</translation>
+        <translation>Unikátní název závodu</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="37"/>
