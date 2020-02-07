@@ -633,7 +633,7 @@
     <message>
         <location filename="src/runstablemodel.cpp" line="42"/>
         <source>Penalty</source>
-        <translation type="unfinished"></translation>
+        <translation>Penalizace</translation>
     </message>
     <message>
         <location filename="src/runstablemodel.cpp" line="43"/>
@@ -1283,7 +1283,7 @@
         <location filename="qml/reports/startList_classes_nstages.qml" line="15"/>
         <source>Start list by classes</source>
         <oldsource>Start list by classes after %1 stages</oldsource>
-        <translation type="unfinished">Startovní listina po kategoriích (%1 etapy)</translation>
+        <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes_nstages.qml" line="113"/>
@@ -1316,7 +1316,7 @@
     <message>
         <location filename="qml/reports/startList_clubs.qml" line="137"/>
         <source>R </source>
-        <translation type="unfinished"></translation>
+        <translation>P </translation>
     </message>
 </context>
 <context>
@@ -1325,22 +1325,22 @@
         <location filename="qml/reports/startList_clubs_nstages.qml" line="15"/>
         <source>Start list by clubs</source>
         <oldsource>Start list by clubs after %1 stages</oldsource>
-        <translation type="unfinished">Startovní listina po klubech (%1 etapy)</translation>
+        <translation>Startovní listina po klubech</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="119"/>
         <source>Bib</source>
-        <translation type="unfinished">SČ</translation>
+        <translation>SČ</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="125"/>
         <source>Registration</source>
-        <translation type="unfinished">Registrace</translation>
+        <translation>Registrace</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="132"/>
         <source>SI</source>
-        <translation type="unfinished">SI</translation>
+        <translation>SI</translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="139"/>
