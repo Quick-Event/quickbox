@@ -100,7 +100,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="39"/>
         <source>Character printer</source>
-        <translation>Textová tiskárna</translation>
+        <translation>Znaková tiskárna</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="75"/>
