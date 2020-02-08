@@ -379,6 +379,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="src/relayswidget.cpp" line="549"/>
+        <location filename="src/relayswidget.cpp" line="573"/>
+        <location filename="src/relayswidget.cpp" line="597"/>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="src/relayswidget.cpp" line="613"/>
         <source>Save as %1</source>
         <translation type="unfinished"></translation>
@@ -430,9 +437,6 @@
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="521"/>
-        <location filename="src/relayswidget.cpp" line="549"/>
-        <location filename="src/relayswidget.cpp" line="573"/>
-        <location filename="src/relayswidget.cpp" line="597"/>
         <source>Start list by clubs</source>
         <translation type="unfinished"></translation>
     </message>

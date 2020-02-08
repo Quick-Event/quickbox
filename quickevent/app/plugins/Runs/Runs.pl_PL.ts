@@ -264,14 +264,12 @@
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1336"/>
-        <location filename="src/runsplugin.cpp" line="1420"/>
         <location filename="src/runsplugin.cpp" line="1694"/>
         <source>Start list by classes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1362"/>
-        <location filename="src/runsplugin.cpp" line="1454"/>
         <location filename="src/runsplugin.cpp" line="1783"/>
         <source>Start list by clubs</source>
         <translation type="unfinished"></translation>
@@ -280,6 +278,24 @@
         <location filename="src/runsplugin.cpp" line="1387"/>
         <source>Start list for starters</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="src/runsplugin.cpp" line="1420"/>
+        <source>Start list by classes for %n stage(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="src/runsplugin.cpp" line="1454"/>
+        <source>Start list by clubs for %n stage(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1478"/>
@@ -292,11 +308,16 @@
         <source>Stage awards</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <location filename="src/runsplugin.cpp" line="1556"/>
         <location filename="src/runsplugin.cpp" line="1583"/>
-        <source>Results after %1 stages</source>
-        <translation type="unfinished"></translation>
+        <source>Results after %n stage(s)</source>
+        <oldsource>Results after %1 stages</oldsource>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <location filename="src/runsplugin.cpp" line="1606"/>
@@ -1131,43 +1152,53 @@
 </context>
 <context>
     <name>results_nstages</name>
-    <message>
+    <message numerus="yes">
         <location filename="qml/reports/results_nstages.qml" line="15"/>
-        <source>Results after %1 stages</source>
+        <source>Results after %n stage(s)</source>
+        <oldsource>Results after %1 stages</oldsource>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="qml/reports/results_nstages.qml" line="138"/>
+        <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="137"/>
-        <source>registration</source>
+        <location filename="qml/reports/results_nstages.qml" line="143"/>
+        <source>Stage </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="142"/>
-        <source>Stage</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/reports/results_nstages.qml" line="145"/>
+        <location filename="qml/reports/results_nstages.qml" line="146"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="147"/>
+        <location filename="qml/reports/results_nstages.qml" line="148"/>
         <source>Loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/reports/results_nstages.qml" line="185"/>
+        <location filename="qml/reports/results_nstages.qml" line="186"/>
         <source>DISQ</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>results_nstagesSpeaker</name>
-    <message>
+    <message numerus="yes">
         <location filename="qml/reports/results_nstagesSpeaker.qml" line="13"/>
-        <source>Results after %1 stages</source>
-        <translation type="unfinished"></translation>
+        <source>Results after %n stage(s)</source>
+        <oldsource>Results after %1 stages</oldsource>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstagesSpeaker.qml" line="130"/>
@@ -1266,11 +1297,15 @@
 </context>
 <context>
     <name>startList_classes_nstages</name>
-    <message>
+    <message numerus="yes">
         <location filename="qml/reports/startList_classes_nstages.qml" line="15"/>
-        <source>Start list by classes</source>
-        <oldsource>Start list by classes after %1 stages</oldsource>
-        <translation type="unfinished"></translation>
+        <source>Start list by classes for %n stage(s)</source>
+        <oldsource>Start list by classes</oldsource>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <location filename="qml/reports/startList_classes_nstages.qml" line="113"/>
@@ -1308,11 +1343,15 @@
 </context>
 <context>
     <name>startList_clubs_nstages</name>
-    <message>
+    <message numerus="yes">
         <location filename="qml/reports/startList_clubs_nstages.qml" line="15"/>
-        <source>Start list by clubs</source>
-        <oldsource>Start list by clubs after %1 stages</oldsource>
-        <translation type="unfinished"></translation>
+        <source>Start list by clubs for %n stage(s)</source>
+        <oldsource>Start list by clubs</oldsource>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <location filename="qml/reports/startList_clubs_nstages.qml" line="119"/>

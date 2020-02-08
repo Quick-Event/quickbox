@@ -1417,7 +1417,7 @@ void RunsPlugin::report_startListClassesNStages()
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
 									, tt.toVariant()
-									, tr("Start list by classes")
+									, tr("Start list by classes for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
 									, props
 									);
@@ -1451,7 +1451,7 @@ void RunsPlugin::report_startListClubsNStages()
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_clubs_nstages.qml"
 									, tt.toVariant()
-									, tr("Start list by clubs")
+									, tr("Start list by clubs for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
 									, props
 									);
@@ -1553,7 +1553,7 @@ void RunsPlugin::report_resultsNStages()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, manifest()->homeDir() + "/reports/results_nstages.qml"
 								, tt.toVariant()
-								, tr("Results after %1 stages").arg(dlg.stagesCount())
+								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStages"
 								, props
 							  );
@@ -1580,7 +1580,7 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, manifest()->homeDir() + "/reports/results_nstagesSpeaker.qml"
 								, tt.toVariant()
-								, tr("Results after %1 stages").arg(dlg.stagesCount())
+								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStagesWide"
 								, props
 														  );
@@ -1603,7 +1603,7 @@ void RunsPlugin::report_nStagesAwards()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, rep_path
 								, tt.toVariant()
-								, tr("Awards after %1 stages").arg(opts.value("numPlaces").toInt())
+								, tr("Awards after %1 stages").arg(opts.value("stageId").toInt())
 								, "printResultsAwardsNStages"
 								, props
 								);
