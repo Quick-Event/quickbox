@@ -390,7 +390,7 @@
         <location filename="src/relayswidget.cpp" line="573"/>
         <location filename="src/relayswidget.cpp" line="597"/>
         <source>Results</source>
-        <translation type="unfinished">Výsledky</translation>
+        <translation>Výsledky</translation>
     </message>
     <message>
         <location filename="src/relayswidget.cpp" line="613"/>
