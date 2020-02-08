@@ -283,19 +283,19 @@
     <message numerus="yes">
         <location filename="src/runsplugin.cpp" line="1420"/>
         <source>Start list by classes for %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform>Startovní listina po kategoriích</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Startovní listina po kategoriích na %n etapu</numerusform>
+            <numerusform>Startovní listina po kategoriích na %n etapy</numerusform>
+            <numerusform>Startovní listina po kategoriích na %n etap</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="src/runsplugin.cpp" line="1454"/>
         <source>Start list by clubs for %n stage(s)</source>
-        <translation type="unfinished">
-            <numerusform>Startovní listina po klubech</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Startovní listina po klubech na %n etapu</numerusform>
+            <numerusform>Startovní listina po klubech na %n etapy</numerusform>
+            <numerusform>Startovní listina po klubech na %n etap</numerusform>
         </translation>
     </message>
     <message>
@@ -314,10 +314,10 @@
         <location filename="src/runsplugin.cpp" line="1583"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
-        <translation type="unfinished">
-            <numerusform>Výsledky po %1 etapách</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Výsledky po %n etapě</numerusform>
+            <numerusform>Výsledky po %n etapách</numerusform>
+            <numerusform>Výsledky po %n etapách</numerusform>
         </translation>
     </message>
     <message>
@@ -1169,21 +1169,21 @@
         <location filename="qml/reports/results_nstages.qml" line="15"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
-        <translation type="unfinished">
-            <numerusform>Výsledky po %1 etapách</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Výsledky po %n etapě</numerusform>
+            <numerusform>Výsledky po %n etapách</numerusform>
+            <numerusform>Výsledky po %n etapách</numerusform>
         </translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="138"/>
         <source>Reg</source>
-        <translation type="unfinished">Reg. č.</translation>
+        <translation>Reg. č.</translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="143"/>
         <source>Stage </source>
-        <translation type="unfinished">Etapa </translation>
+        <translation>Etapa </translation>
     </message>
     <message>
         <location filename="qml/reports/results_nstages.qml" line="146"/>
@@ -1207,10 +1207,10 @@
         <location filename="qml/reports/results_nstagesSpeaker.qml" line="13"/>
         <source>Results after %n stage(s)</source>
         <oldsource>Results after %1 stages</oldsource>
-        <translation type="unfinished">
-            <numerusform>Výsledky po %1 etapách</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Výsledky po %n etapě</numerusform>
+            <numerusform>Výsledky po %n etapách</numerusform>
+            <numerusform>Výsledky po %n etapách</numerusform>
         </translation>
     </message>
     <message>
@@ -1314,10 +1314,10 @@
         <location filename="qml/reports/startList_classes_nstages.qml" line="15"/>
         <source>Start list by classes for %n stage(s)</source>
         <oldsource>Start list by classes</oldsource>
-        <translation type="unfinished">
-            <numerusform>Startovní listina po kategoriích</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Startovní listina po kategoriích na %n etapu</numerusform>
+            <numerusform>Startovní listina po kategoriích na %n etapy</numerusform>
+            <numerusform>Startovní listina po kategoriích na %n etap</numerusform>
         </translation>
     </message>
     <message>
@@ -1360,10 +1360,10 @@
         <location filename="qml/reports/startList_clubs_nstages.qml" line="15"/>
         <source>Start list by clubs for %n stage(s)</source>
         <oldsource>Start list by clubs</oldsource>
-        <translation type="unfinished">
-            <numerusform>Startovní listina po klubech</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Startovní listina po klubech na %n etapu</numerusform>
+            <numerusform>Startovní listina po klubech na %n etapy</numerusform>
+            <numerusform>Startovní listina po klubech na %n etap</numerusform>
         </translation>
     </message>
     <message>
