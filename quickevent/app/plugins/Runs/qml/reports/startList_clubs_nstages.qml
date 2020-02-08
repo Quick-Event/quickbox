@@ -12,7 +12,7 @@ Report {
 	property bool isColumnBreak: options.isColumnBreak? true: false
 	property bool isPrintStartNumbers: options.isStartListPrintStartNumbers? true: false
 	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
-	property string reportTitle: qsTr("Start list by clubs")
+	property string reportTitle: qsTr("Start list by clubs for %n stage(s)", "", root.stagesCount)
 
 	property QfObject internals: QfObject {
 		Component {
@@ -136,7 +136,7 @@ Report {
 							for(var i=0; i<root.stagesCount; i++) {
 								//console.warn("=============", i, qsTr("Stage") + (i+1))
 								//var runs_table = "runs" + (i+1);
-								var c = cHeaderCell.createObject(null, {"width": 15, "text": qsTr("Stage") + (i+1)});
+								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 15, "text": qsTr("Stage") + (i+1)});
 								classHeader.addItem(c);
 							}
 						}

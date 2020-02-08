@@ -546,7 +546,7 @@ void RelaysWidget::print_results_nlegs()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
 														  , td.toVariant()
-														  , tr("Start list by clubs")
+														  , tr("Results")
 														  , "relaysResults"
 														  , props
 														  );
@@ -570,7 +570,7 @@ void RelaysWidget::print_results_overal()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
 														  , td.toVariant()
-														  , tr("Start list by clubs")
+														  , tr("Results")
 														  , "relaysResults"
 														  , props
 														  );
@@ -594,7 +594,7 @@ void RelaysWidget::print_results_overal_condensed()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results_condensed.qml"
 														  , td.toVariant()
-														  , tr("Start list by clubs")
+														  , tr("Results")
 														  , "relaysResults"
 														  , props
 														  );

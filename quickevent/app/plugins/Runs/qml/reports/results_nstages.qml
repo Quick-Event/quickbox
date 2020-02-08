@@ -12,7 +12,7 @@ Report {
 	property bool isColumnBreak: options.isColumnBreak? true: false
 	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
 
-	property string reportTitle: qsTr("Results after %1 stages").arg(root.stagesCount)
+	property string reportTitle: qsTr("Results after %n stage(s)", "", root.stagesCount)
 	property int timeCellWidth: 13
 	property int posCellWidth: 9
 	property int lossCellWidth: 15
