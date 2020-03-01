@@ -79,11 +79,9 @@ quickevent::core::si::CheckedCard CardCheckerFreeOrderCpp::checkCard(const quick
 	}
 
 	//prepare list and map of course controls
-	QList<int> list_of_control_codes;
 	QMap<int, quickevent::core::si::CheckedPunch> map_of_control_codes;
 	for(int j=0; j<course_codes.length(); j++) {
 		quickevent::core::si::CheckedPunch checked_punch = quickevent::core::si::CheckedPunch::fromCodeDef(course_codes[j].toMap());
-		list_of_control_codes.append(checked_punch.code());
 		map_of_control_codes.insert(checked_punch.code(), checked_punch);
 	}
 
