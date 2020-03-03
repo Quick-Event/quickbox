@@ -189,8 +189,8 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	connect(ui->spinBox, qOverload<int>(&QSpinBox::valueChanged),[=](int newSiNumber) // spinbox= widget SI card edit box
 	{
 		if(eventPlugin()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
-			m_runsModel->setValue(0, RunsModel::col_runs_siId, newSiNumber);
-			ui->tblRuns->reset();
+			m_runsModel->setValue(0, RunsModel::col_runs_siId, newSiNumber); // update SI in runs model
+			ui->tblRuns->reset(); // reload ui to see the change
 		}
 	});
 }
