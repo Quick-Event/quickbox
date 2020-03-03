@@ -190,6 +190,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	{
 		if(eventPlugin()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
 			m_runsModel->setValue(0, RunsModel::col_runs_siId, newSiNumber);
+			ui->tblRuns->reset();
 		}
 	});
 }
