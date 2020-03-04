@@ -1348,7 +1348,8 @@ void RunsPlugin::report_startListClubs()
 	dlg.setPersistentSettingsId("startListClubsReportOptions");
 	dlg.loadPersistentSettings();
 	dlg.setClassFilterVisible(false);
-	dlg.setStartListOptionsVisible(false);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
 		auto tt = startListClubsTable();
@@ -1372,7 +1373,8 @@ void RunsPlugin::report_startListStarters()
 	dlg.setPersistentSettingsId("startListStartersReportOptions");
 	dlg.loadPersistentSettings();
 	dlg.setClassFilterVisible(true);
-	dlg.setStartListOptionsVisible(false);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setStartersOptionsVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListStartersTable(dlg.sqlWhereExpression());
@@ -1415,7 +1417,7 @@ void RunsPlugin::report_startListClassesNStages()
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_classes_nstages.qml"
 									, tt.toVariant()
-									, tr("Start list by classes after %1 stages").arg(dlg.stagesCount())
+									, tr("Start list by classes for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
 									, props
 									);
@@ -1431,8 +1433,8 @@ void RunsPlugin::report_startListClubsNStages()
 	dlg.loadPersistentSettings();
 
 	dlg.setStagesCount(event_plugin->stageCount());
-	dlg.setStartListOptionsVisible(false);
-	//dlg.setVacantsVisible(false);
+	dlg.setStartListOptionsVisible(true);
+	dlg.setVacantsVisible(false);
 	dlg.setStagesOptionVisible(true);
 	dlg.setClassFilterVisible(false);
 	dlg.setClassFilterVisible(true);
@@ -1449,7 +1451,7 @@ void RunsPlugin::report_startListClubsNStages()
 		qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 									, manifest()->homeDir() + "/reports/startList_clubs_nstages.qml"
 									, tt.toVariant()
-									, tr("Start list by clubs after %1 stages").arg(dlg.stagesCount())
+									, tr("Start list by clubs for %n stage(s)", "", dlg.stagesCount())
 									, "printStartList"
 									, props
 									);
@@ -1466,7 +1468,7 @@ void RunsPlugin::report_resultsClasses()
 	dlg.setResultOptionsVisible(true);
 	//dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
-		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces());
+		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces(), dlg.options().isResultExcludeDisq());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
@@ -1490,7 +1492,7 @@ void RunsPlugin::report_resultsForSpeaker()
 	dlg.setResultOptionsVisible(true);
 	//dlg.setPageLayoutVisible(false);
 	if(dlg.exec()) {
-		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces());
+		auto tt = currentStageResultsTable(dlg.sqlWhereExpression(), dlg.resultNumPlaces(), dlg.options().isResultExcludeDisq());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
@@ -1551,7 +1553,7 @@ void RunsPlugin::report_resultsNStages()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, manifest()->homeDir() + "/reports/results_nstages.qml"
 								, tt.toVariant()
-								, tr("Results after %1 stages").arg(dlg.stagesCount())
+								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStages"
 								, props
 							  );
@@ -1578,7 +1580,7 @@ void RunsPlugin::report_resultsNStagesSpeaker()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, manifest()->homeDir() + "/reports/results_nstagesSpeaker.qml"
 								, tt.toVariant()
-								, tr("Results after %1 stages").arg(dlg.stagesCount())
+								, tr("Results after %n stage(s)", "", dlg.stagesCount())
 								, "printResultsNStagesWide"
 								, props
 														  );
@@ -1601,7 +1603,7 @@ void RunsPlugin::report_nStagesAwards()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(fwk
 								, rep_path
 								, tt.toVariant()
-								, tr("Awards after %1 stages").arg(opts.value("numPlaces").toInt())
+								, tr("Awards after %1 stages").arg(opts.value("stageId").toInt())
 								, "printResultsAwardsNStages"
 								, props
 								);

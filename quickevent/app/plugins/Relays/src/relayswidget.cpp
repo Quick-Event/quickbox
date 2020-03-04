@@ -281,7 +281,7 @@ void RelaysWidget::editRelays(int mode)
 		QList<int> sel_rows = ui->tblRelays->selectedRowsIndexes();
 		if(sel_rows.count() <= 1)
 			return;
-		if(qfd::MessageBox::askYesNo(this, tr("Really delete all the selected competitors? This action cannot be reverted."), false)) {
+		if(qfd::MessageBox::askYesNo(this, tr("Really delete all the selected relays? This action cannot be reverted."), false)) {
 			qfs::Transaction transaction;
 			int n = 0;
 			for(int ix : sel_rows) {
@@ -546,7 +546,7 @@ void RelaysWidget::print_results_nlegs()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
 														  , td.toVariant()
-														  , tr("Start list by clubs")
+														  , tr("Results")
 														  , "relaysResults"
 														  , props
 														  );
@@ -570,7 +570,7 @@ void RelaysWidget::print_results_overal()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results.qml"
 														  , td.toVariant()
-														  , tr("Start list by clubs")
+														  , tr("Results")
 														  , "relaysResults"
 														  , props
 														  );
@@ -594,7 +594,7 @@ void RelaysWidget::print_results_overal_condensed()
 	qf::qmlwidgets::reports::ReportViewWidget::showReport(this,
 														  thisPlugin()->manifest()->homeDir() + "/reports/results_condensed.qml"
 														  , td.toVariant()
-														  , tr("Start list by clubs")
+														  , tr("Results")
 														  , "relaysResults"
 														  , props
 														  );

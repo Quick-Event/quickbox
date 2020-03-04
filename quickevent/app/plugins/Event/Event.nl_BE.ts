@@ -20,7 +20,8 @@
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
-        <source>Event name can be specified later on in File/Open</source>
+        <source>Event name can be specified later on in File/Event/Open event</source>
+        <oldsource>Event name can be specified later on in File/Open</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -85,14 +86,6 @@
     </message>
 </context>
 <context>
-    <name>DbSchema</name>
-    <message>
-        <location filename="qml/DbSchema.qml" line="454"/>
-        <source>Data version</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Event::EventPlugin</name>
     <message>
         <location filename="src/eventplugin.cpp" line="277"/>
@@ -146,115 +139,115 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="670"/>
+        <location filename="src/eventplugin.cpp" line="671"/>
         <source>Connect Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="739"/>
+        <location filename="src/eventplugin.cpp" line="740"/>
         <source>Event ID cannot be empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="743"/>
+        <location filename="src/eventplugin.cpp" line="744"/>
         <source>Event ID %1 exists already.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="770"/>
-        <location filename="src/eventplugin.cpp" line="927"/>
-        <location filename="src/eventplugin.cpp" line="1073"/>
-        <location filename="src/eventplugin.cpp" line="1153"/>
-        <location filename="src/eventplugin.cpp" line="1170"/>
+        <location filename="src/eventplugin.cpp" line="771"/>
+        <location filename="src/eventplugin.cpp" line="928"/>
+        <location filename="src/eventplugin.cpp" line="1074"/>
+        <location filename="src/eventplugin.cpp" line="1154"/>
+        <location filename="src/eventplugin.cpp" line="1171"/>
         <source>Open Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="815"/>
-        <location filename="src/eventplugin.cpp" line="1089"/>
-        <location filename="src/eventplugin.cpp" line="1188"/>
+        <location filename="src/eventplugin.cpp" line="816"/>
+        <location filename="src/eventplugin.cpp" line="1090"/>
+        <location filename="src/eventplugin.cpp" line="1189"/>
         <source>Create Database Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="819"/>
+        <location filename="src/eventplugin.cpp" line="820"/>
         <source>Cannot create event, database is not open: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="873"/>
-        <location filename="src/eventplugin.cpp" line="896"/>
-        <location filename="src/eventplugin.cpp" line="1134"/>
+        <location filename="src/eventplugin.cpp" line="874"/>
+        <location filename="src/eventplugin.cpp" line="897"/>
+        <location filename="src/eventplugin.cpp" line="1135"/>
         <source>Query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="873"/>
-        <location filename="src/eventplugin.cpp" line="896"/>
+        <location filename="src/eventplugin.cpp" line="874"/>
+        <location filename="src/eventplugin.cpp" line="897"/>
         <source>Open event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="931"/>
+        <location filename="src/eventplugin.cpp" line="932"/>
         <source>Database file %1 doesn&apos;t exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="941"/>
+        <location filename="src/eventplugin.cpp" line="942"/>
         <source>Event data version (%1) is too low, minimal version is (%2).
 Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="948"/>
+        <location filename="src/eventplugin.cpp" line="949"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1055"/>
+        <location filename="src/eventplugin.cpp" line="1056"/>
         <source>Export as Quick Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1055"/>
-        <location filename="src/eventplugin.cpp" line="1130"/>
+        <location filename="src/eventplugin.cpp" line="1056"/>
+        <location filename="src/eventplugin.cpp" line="1131"/>
         <source>Quick Event files *%1 (*%1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1065"/>
+        <location filename="src/eventplugin.cpp" line="1066"/>
         <source>Cannot delete existing file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1082"/>
-        <location filename="src/eventplugin.cpp" line="1180"/>
+        <location filename="src/eventplugin.cpp" line="1083"/>
+        <location filename="src/eventplugin.cpp" line="1181"/>
         <source>Creating database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1097"/>
-        <location filename="src/eventplugin.cpp" line="1196"/>
+        <location filename="src/eventplugin.cpp" line="1098"/>
+        <location filename="src/eventplugin.cpp" line="1197"/>
         <source>Copying table %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1130"/>
+        <location filename="src/eventplugin.cpp" line="1131"/>
         <source>Import as Quick Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1134"/>
+        <location filename="src/eventplugin.cpp" line="1135"/>
         <source>Event will be imported as ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1139"/>
+        <location filename="src/eventplugin.cpp" line="1140"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/eventplugin.cpp" line="1216"/>
+        <location filename="src/eventplugin.cpp" line="1217"/>
         <source>Open imported event &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -399,7 +392,8 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="30"/>
-        <source>Enter event database name</source>
+        <source>Unique event name</source>
+        <oldsource>Enter event database name</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -76,6 +76,8 @@ public:
 
 	int exec() Q_DECL_OVERRIDE;
 
+	void setStartListPrintVacantsVisible(bool b);
+
 	QString persistentSettingsPath() Q_DECL_OVERRIDE;
 	bool setPersistentSettingsId(const QString &id) Q_DECL_OVERRIDE;
 	Q_SIGNAL void persistentSettingsIdChanged(const QString &id);

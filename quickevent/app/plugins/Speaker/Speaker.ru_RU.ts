@@ -34,17 +34,22 @@
         <translation>Время</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="144"/>
+        <location filename="src/codeclassresultswidget.cpp" line="51"/>
+        <source>DISQ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/codeclassresultswidget.cpp" line="146"/>
         <source>Results</source>
         <translation>Результаты</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="145"/>
+        <location filename="src/codeclassresultswidget.cpp" line="147"/>
         <source>Finish</source>
         <translation>Финиш</translation>
     </message>
     <message>
-        <location filename="src/codeclassresultswidget.cpp" line="164"/>
+        <location filename="src/codeclassresultswidget.cpp" line="166"/>
         <source>R</source>
         <comment>Radio station</comment>
         <translation>R</translation>

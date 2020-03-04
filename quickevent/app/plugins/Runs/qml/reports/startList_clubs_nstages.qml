@@ -12,7 +12,7 @@ Report {
 	property bool isColumnBreak: options.isColumnBreak? true: false
 	property bool isPrintStartNumbers: options.isStartListPrintStartNumbers? true: false
 	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
-	property string reportTitle: qsTr("Start list by clubs after %1 stages").arg(root.stagesCount)
+	property string reportTitle: qsTr("Start list by clubs for %n stage(s)", "", root.stagesCount)
 
 	property QfObject internals: QfObject {
 		Component {
@@ -110,12 +110,33 @@ Report {
 							textFn: detail.dataFn("name");
 							textStyle: myStyle.textStyleBold
 						}
+						Cell {
+							visible: root.isPrintStartNumbers
+							id: hdrStartNumber
+							width: 16
+							textStyle: myStyle.textStyleBold
+							halign: Frame.AlignRight
+							text: qsTr("Bib");
+						}
+						Cell {
+							id: hdrRegistration
+							width: 25
+							textStyle: myStyle.textStyleBold
+							text: qsTr("Registration");
+						}
+						Cell {
+							id: hdrSI
+							width: 18
+							textStyle: myStyle.textStyleBold
+							halign: Frame.AlignRight
+							text: qsTr("SI");
+						}
 						Component.onCompleted: {
 							//console.warn("============= root.stageCount:", root.stageCount)
 							for(var i=0; i<root.stagesCount; i++) {
 								//console.warn("=============", i, qsTr("Stage") + (i+1))
 								//var runs_table = "runs" + (i+1);
-								var c = cHeaderCell.createObject(null, {"width": 15, "text": qsTr("Stage") + (i+1)});
+								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 15, "text": qsTr("Stage") + (i+1)});
 								classHeader.addItem(c);
 							}
 						}
@@ -134,25 +155,28 @@ Report {
 							layout: Frame.LayoutHorizontal
 							function dataFn(field_name) {return function() {return rowData(field_name);}}
 							Cell {
-								width: 20
+								width: 15
 								textFn: runnersDetail.dataFn("classes.name");
 							}
 							Cell {
 								width: "%"
 								textFn: runnersDetail.dataFn("competitorName");
 							}
-							Para {
+							Cell {
 								visible: root.isPrintStartNumbers
-								width: 16
+								width: hdrStartNumber.width
 								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("startNumber");
+								textFn: function() {
+									var sn = runnersDetail.dataFn("startNumber")();
+									return sn > 0? sn: "";
+								}
 							}
 							Cell {
-								width: 25
+								width: hdrRegistration.width
 								textFn: runnersDetail.dataFn("registration");
 							}
 							Cell {
-								width: 18
+								width: hdrSI.width
 								halign: Frame.AlignRight
 								textFn: runnersDetail.dataFn("competitors.siId");
 							}

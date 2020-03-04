@@ -54,12 +54,12 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/receiptsplugin.cpp" line="368"/>
+        <location filename="src/receiptsplugin.cpp" line="404"/>
         <source>Card</source>
         <translation>Čip</translation>
     </message>
     <message>
-        <location filename="src/receiptsplugin.cpp" line="434"/>
+        <location filename="src/receiptsplugin.cpp" line="470"/>
         <source>Receipt</source>
         <translation>Mezičas</translation>
     </message>
@@ -100,7 +100,7 @@
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="39"/>
         <source>Character printer</source>
-        <translation>Textová tiskárna</translation>
+        <translation>Znaková tiskárna</translation>
     </message>
     <message>
         <location filename="src/receiptsprinteroptionsdialog.ui" line="75"/>

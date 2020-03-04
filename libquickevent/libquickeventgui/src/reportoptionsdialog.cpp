@@ -172,6 +172,13 @@ int ReportOptionsDialog::exec()
 	return Super::exec();
 }
 
+void ReportOptionsDialog::setStartListPrintVacantsVisible(bool b)
+{
+	if(!b)
+		ui->chkStartOpts_PrintVacants->setChecked(b);
+	ui->chkStartOpts_PrintVacants->setVisible(b);
+}
+
 void ReportOptionsDialog::setOptions(const ReportOptionsDialog::Options &options)
 {
 	qfLogFuncFrame() << options;

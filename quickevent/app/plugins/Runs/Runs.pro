@@ -13,7 +13,8 @@ LIBS += \
 include (src/src.pri)
 
 RESOURCES += \
-#     Runs.qrc
+ \#     Runs.qrc
+    Runs.qrc
 
 OTHER_FILES += \
 	$$PWD/qml/reports/* \

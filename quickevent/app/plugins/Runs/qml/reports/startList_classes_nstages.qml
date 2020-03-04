@@ -12,7 +12,7 @@ Report {
 	property bool isColumnBreak: options.isColumnBreak? true: false
 	property bool isPrintStartNumbers: options.isStartListPrintStartNumbers? true: false
 	property int stagesCount: (options.stagesCount > 0)? options.stagesCount: 1
-	property string reportTitle: qsTr("Start list by classes after %1 stages").arg(root.stagesCount)
+	property string reportTitle: qsTr("Start list by classes for %n stage(s)", "", root.stagesCount)
 
 	property QfObject internals: QfObject {
 		Component {
@@ -129,7 +129,7 @@ Report {
 							//console.warn("=============", root.stagesCount)
 							for(var i=0; i<root.stagesCount; i++) {
 								var runs_table = "runs" + (i+1);
-								var c = cHeaderCell.createObject(null, {"width": 15, "text": qsTr("Stage") + (i+1)});
+								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 15, "text": qsTr("Stage") + (i+1)});
 								classHeader.addItem(c);
 							}
 						}
@@ -155,7 +155,10 @@ Report {
 								visible: root.isPrintStartNumbers
 								width: 16
 								halign: Frame.AlignRight
-								textFn: runnersDetail.dataFn("startNumber");
+								textFn: function() {
+									var sn = runnersDetail.dataFn("startNumber")();
+									return sn > 0? sn: "";
+								}
 							}
 							Cell {
 								width: hdrRegistration.width
