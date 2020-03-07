@@ -25,7 +25,7 @@ EditCodesWidget::EditCodesWidget(QWidget *parent)
 		qfm::SqlTableModel *m = new qfm::SqlTableModel(this);
 		//m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
-		m->addColumn("codes.type", tr("Type", "control type")).setToolTip(tr("Control type"));
+		//m->addColumn("codes.type", tr("Type", "control type")).setToolTip(tr("Control type"));
 		m->addColumn("codes.code", tr("Code"));
 		m->addColumn("codes.altCode", tr("Alt")).setToolTip(tr("Code alternative"));
 		m->addColumn("codes.note", tr("Note"));

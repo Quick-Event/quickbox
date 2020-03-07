@@ -230,26 +230,24 @@ quickevent::core::CourseDef RunsPlugin::courseForCourseId(int course_id)
 		q.exec(qb.toString(), qf::core::Exception::Throw);
 		while (q.next()) {
 			quickevent::core::CodeDef cd(q.values());
-			const QString control_type = cd.type();
-			if(control_type == quickevent::core::CodeDef::CONTROL_TYPE_START) {
+			quickevent::core::CodeDef::Type control_type = cd.type();
+			if(control_type == quickevent::core::CodeDef::Type::Start) {
 				start_code = cd;
 			}
-			else if(control_type == quickevent::core::CodeDef::CONTROL_TYPE_FINISH) {
+			else if(control_type == quickevent::core::CodeDef::Type::Finish) {
 				finish_code = cd;
 			}
-			else if(control_type.isEmpty()) {
+			else if(control_type == quickevent::core::CodeDef::Type::Control) {
 				codes << cd;
 			}
 		}
 	}
 
-	if (finish_code.isEmpty()) {
-		finish_code.setType(quickevent::core::CodeDef::CONTROL_TYPE_FINISH);
-	}
-	// whatever code is imported, QE is using 999 everywhere
-	finish_code.setCode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
+	if (finish_code.code() < quickevent::core::CodeDef::FINISH_PUNCH_CODE)
+		finish_code.setCode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 
-	/*if(including_distance)*/ {
+	/*if(including_distance)*/
+	{
 		int course_len = 0;
 		quickevent::core::CodeDef prev_cd = start_code;
 		for (int i = 0; i < codes.count(); ++i) {

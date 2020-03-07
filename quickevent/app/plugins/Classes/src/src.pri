@@ -4,9 +4,9 @@ HEADERS += \
 	$$PWD/classespluginglobal.h \
     $$PWD/classesplugin.h \
     $$PWD/classdocument.h \
+    $$PWD/importcoursedef.h \
     $$PWD/thispartwidget.h \
     $$PWD/classeswidget.h \
-    $$PWD/coursedef.h \
     $$PWD/editcodeswidget.h \
     $$PWD/editcourseswidget.h \
     $$PWD/editcoursecodeswidget.h \
@@ -17,9 +17,9 @@ HEADERS += \
 SOURCES += \
     $$PWD/classesplugin.cpp \
     $$PWD/classdocument.cpp \
+    $$PWD/importcoursedef.cpp \
     $$PWD/thispartwidget.cpp \
     $$PWD/classeswidget.cpp \
-    $$PWD/coursedef.cpp \
     $$PWD/editcodeswidget.cpp \
     $$PWD/editcourseswidget.cpp \
     $$PWD/editcoursecodeswidget.cpp \

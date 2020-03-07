@@ -10,11 +10,13 @@
 namespace qf {
 namespace qmlwidgets {
 class Action;
-namespace framework {
-class PartWidget;
+namespace framework { class PartWidget; }
 }
 }
-}
+
+namespace quickevent { namespace core { class CodeDef; }}
+
+class ImportCourseDef;
 
 namespace Classes {
 
@@ -32,7 +34,7 @@ public:
 	Q_INVOKABLE QObject* createClassDocument(QObject *parent);
 	Q_INVOKABLE void createClass(const QString &class_name);
 	Q_INVOKABLE void dropClass(int class_id);
-	Q_INVOKABLE void createCourses(int stage_id, const QVariantList &courses, const QVariantList &codes);
+	Q_INVOKABLE void createCourses(int stage_id, const QList<ImportCourseDef> &courses, const QList<quickevent::core::CodeDef> &codes);
 	Q_INVOKABLE void deleteCourses(int stage_id);
 	Q_INVOKABLE void gcCourses();
 

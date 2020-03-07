@@ -1,13 +1,13 @@
-#include "coursedef.h"
+#include "importcoursedef.h"
 
-void CourseDef::addClass(const QString &class_name)
+void ImportCourseDef::addClass(const QString &class_name)
 {
 	QStringList cls = classes();
 	cls << class_name;
 	setClasses(cls);
 }
 
-QString CourseDef::toString() const
+QString ImportCourseDef::toString() const
 {
 	QString ret;
 	QStringList sl_codes;
