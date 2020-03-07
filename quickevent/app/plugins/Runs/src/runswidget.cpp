@@ -124,7 +124,7 @@ void RunsWidget::reset(int class_id)
 		m_cbxClasses->loadItems(true);
 		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
 		if(class_id <= 0)
-			m_cbxClasses->setCurrentIndex(1);
+			m_cbxClasses->setCurrentIndex(0);
 		else
 			m_cbxClasses->setCurrentData(class_id);
 		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);

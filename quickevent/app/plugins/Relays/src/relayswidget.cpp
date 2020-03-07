@@ -219,6 +219,7 @@ void RelaysWidget::reset()
 		m_cbxClasses->blockSignals(true);
 		m_cbxClasses->loadItems(true);
 		m_cbxClasses->insertItem(0, tr("--- all ---"), 0);
+		m_cbxClasses->setCurrentIndex(0);
 		connect(m_cbxClasses, SIGNAL(currentDataChanged(QVariant)), this, SLOT(reload()), Qt::UniqueConnection);
 		m_cbxClasses->blockSignals(false);
 	}
