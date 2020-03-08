@@ -48,15 +48,17 @@ void CodeDef::setCode(int c)
 int CodeDef::codeFromString(const QString &code_str)
 {
 	if(code_str.startsWith('S')) {
+		int offset = code_str.startsWith("STA") ? 3 : 1;
 		bool ok;
-		int code = code_str.mid(1).toInt(&ok);
+		int code = code_str.mid(offset).toInt(&ok);
 		if(!ok || code < 1)
 			QF_EXCEPTION(QString("Invalid start code '%1'").arg(code_str));
 		return (START_PUNCH_CODE + code - 1);
 	}
 	else if(code_str.startsWith('F')) {
+		int offset = code_str.startsWith("FIN") ? 3 : 1;
 		bool ok;
-		int code = code_str.mid(1).toInt(&ok);
+		int code = code_str.mid(offset).toInt(&ok);
 		if(!ok || code < 1)
 			QF_EXCEPTION(QString("Invalid finish code '%1'").arg(code_str));
 		return (FINISH_PUNCH_CODE + code - 1);
