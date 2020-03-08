@@ -207,12 +207,12 @@ Vyčítat po oražení: {{ReadOutAfterPunch}}
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="404"/>
-        <source>Race</source>
+        <source>Readout</source>
         <translation>Závod</translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="405"/>
-        <source>Entries</source>
+        <source>Edit competitor</source>
         <translation>Přihlášky</translation>
     </message>
     <message>

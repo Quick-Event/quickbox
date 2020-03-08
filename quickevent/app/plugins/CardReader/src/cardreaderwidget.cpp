@@ -401,8 +401,8 @@ void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 		QLabel *lbl = new QLabel(tr(" Reader mode "));
 		main_tb->addWidget(lbl);
 		m_cbxPunchMarking = new QComboBox();
-		m_cbxPunchMarking->addItem(tr("Race"), quickevent::core::si::PunchRecord::MARKING_RACE);
-		m_cbxPunchMarking->addItem(tr("Entries"), quickevent::core::si::PunchRecord::MARKING_ENTRIES);
+		m_cbxPunchMarking->addItem(tr("Readout"), quickevent::core::si::PunchRecord::MARKING_READOUT);
+		m_cbxPunchMarking->addItem(tr("Edit competitor"), quickevent::core::si::PunchRecord::MARKING_EDIT_COMPETITOR);
 		main_tb->addWidget(m_cbxPunchMarking);
 	}
 	main_tb->addSeparator();
@@ -674,7 +674,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 	appendLog(qf::core::Log::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
-	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
+	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_EDIT_COMPETITOR) {
 		// send fake punch in the 'entries' mode to enable edit_competitor_by_punch function
 		quickevent::core::si::PunchRecord punch;
 		punch.setsiid(card.cardNumber());
@@ -738,7 +738,7 @@ void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 	quickevent::core::si::PunchRecord punch(rec);
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	punch.setmarking(punch_marking);
-	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_RACE) {
+	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_READOUT) {
 		int run_id = thisPlugin()->findRunId(rec.cardNumber(), 0xEEEE);
 		if(run_id == 0)
 			appendLog(qf::core::Log::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));

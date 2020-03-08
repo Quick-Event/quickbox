@@ -122,12 +122,6 @@ void CompetitorsWidget::settleDownInPartWidget(Competitors::ThisPartWidget *part
 		}
 		lbl->setBuddy(m_cbxClasses);
 	}
-	main_tb->addSeparator();
-	{
-		m_cbxEditCompetitorOnPunch = new QCheckBox(tr("Edit on punch"));
-		m_cbxEditCompetitorOnPunch->setToolTip(tr("Show Edit/Insert competitor dialog box when card is inserted into the reader station (reader mode \"Entries\" required)"));
-		main_tb->addWidget(m_cbxEditCompetitorOnPunch);
-	}
 
 	qf::qmlwidgets::Action *act_print = part_widget->menuBar()->actionForPath("print");
 	act_print->setText(tr("&Print"));
@@ -216,7 +210,6 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 {
 	qfLogFuncFrame() << "id:" << id << "mode:" << mode;
 	qf::core::sql::Transaction transaction;
-	m_cbxEditCompetitorOnPunch->setEnabled(false);
 	auto *w = new CompetitorWidget();
 	w->setWindowTitle(tr("Edit Competitor"));
 	qfd::Dialog dlg(QDialogButtonBox::Save | QDialogButtonBox::Cancel, this);
@@ -248,7 +241,6 @@ void CompetitorsWidget::editCompetitor_helper(const QVariant &id, int mode, int 
 		transaction.commit();
 	else
 		transaction.rollback();
-	m_cbxEditCompetitorOnPunch->setEnabled(true);
 	if(ok && save_and_next) {
 		QTimer::singleShot(0, [this]() {
 			this->editCompetitor(QVariant(), qf::core::model::DataDocument::ModeInsert);
@@ -291,10 +283,10 @@ void CompetitorsWidget::onDbEventNotify(const QString &domain, int connection_id
 {
 	Q_UNUSED(connection_id)
 	qfLogFuncFrame() << "domain:" << domain << "payload:" << data;
-	if(m_cbxEditCompetitorOnPunch->isEnabled() && m_cbxEditCompetitorOnPunch->isChecked() && domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
+	if(domain == QLatin1String(Event::EventPlugin::DBEVENT_PUNCH_RECEIVED)) {
 		quickevent::core::si::PunchRecord punch(data.toMap());
 		int siid = punch.siid();
-		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
+		if(siid > 0 && punch.marking() == quickevent::core::si::PunchRecord::MARKING_EDIT_COMPETITOR) {
 			editCompetitorOnPunch(siid);
 		}
 	}

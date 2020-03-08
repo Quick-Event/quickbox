@@ -151,14 +151,7 @@ void RelaysWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 		}
 		lbl->setBuddy(m_cbxClasses);
 	}
-	/*
-	main_tb->addSeparator();
-	{
-		m_cbxEditRelayOnPunch = new QCheckBox(tr("Edit on punch"));
-		m_cbxEditRelayOnPunch->setToolTip(tr("Edit or insert competitor on card insert into station."));
-		main_tb->addWidget(m_cbxEditRelayOnPunch);
-	}
-	*/
+
 	qfw::Action *a_relays = part_widget->menuBar()->actionForPath("relay");
 	a_relays->setText(tr("&Relays"));
 	{

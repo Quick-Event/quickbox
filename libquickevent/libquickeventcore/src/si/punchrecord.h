@@ -28,11 +28,11 @@ private:
 	QF_VARIANTMAP_FIELD(int, m, setm, sec)
 	QF_VARIANTMAP_FIELD(int, t, sett, imems)
 	QF_VARIANTMAP_FIELD(int, r, setr, untimems)
-	QF_VARIANTMAP_FIELD2(QString, m, setm, arking, MARKING_RACE)
+	QF_VARIANTMAP_FIELD2(QString, m, setm, arking, MARKING_READOUT)
 
 public:
-	static const QString MARKING_RACE;
-	static const QString MARKING_ENTRIES;
+	static const QString MARKING_READOUT;
+	static const QString MARKING_EDIT_COMPETITOR;
 public:
 	PunchRecord(const QVariantMap &data = QVariantMap()) : QVariantMap(data) {}
 	PunchRecord(const qf::core::sql::Query &q);

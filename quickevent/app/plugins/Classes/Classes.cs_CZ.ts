@@ -607,7 +607,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit class</source>
-        <oldsource>Edit Competitor</oldsource>
+        <oldsource>Edit competitor</oldsource>
         <translation>Upravit kategorii</translation>
     </message>
 </context>

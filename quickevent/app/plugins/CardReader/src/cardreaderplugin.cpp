@@ -267,7 +267,7 @@ int CardReaderPlugin::saveCardToSql(const quickevent::core::si::ReadCard &read_c
 		punch.setrunid(read_card.runId());
 		punch.settime(read_card.finishTime());
 		punch.setcode(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
-		punch.setmarking(quickevent::core::si::PunchRecord::MARKING_RACE);
+		punch.setmarking(quickevent::core::si::PunchRecord::MARKING_READOUT);
 		int punch_id = savePunchRecordToSql(punch);
 		if(punch_id > 0) {
 			punch.setid(punch_id);

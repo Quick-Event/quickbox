@@ -99,7 +99,7 @@
     <name>Competitors::CompetitorsPlugin</name>
     <message>
         <location filename="src/competitorsplugin.cpp" line="64"/>
-        <source>Edit Competitor</source>
+        <source>Edit competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -237,7 +237,7 @@
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="220"/>
-        <source>Edit Competitor</source>
+        <source>Edit competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

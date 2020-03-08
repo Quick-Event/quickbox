@@ -199,12 +199,12 @@ Read out after punch: {{ReadOutAfterPunch}}
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="404"/>
-        <source>Race</source>
+        <source>Readout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/cardreaderwidget.cpp" line="405"/>
-        <source>Entries</source>
+        <source>Edit competitor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
