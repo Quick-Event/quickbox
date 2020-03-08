@@ -1,5 +1,7 @@
 #include "codedef.h"
 
+#include <QRegularExpression>
+
 namespace quickevent {
 namespace core {
 	
@@ -47,27 +49,35 @@ void CodeDef::setCode(int c)
 
 int CodeDef::codeFromString(const QString &code_str)
 {
-	if(code_str.startsWith('S')) {
-		bool ok;
-		int code = code_str.mid(1).toInt(&ok);
-		if(!ok || code < 1)
-			QF_EXCEPTION(QString("Invalid start code '%1'").arg(code_str));
-		return (START_PUNCH_CODE + code - 1);
+	const static QRegularExpression rx_start(R"RX(S[A-Za-z]*([1-9][0-9]*))RX");
+	const static QRegularExpression rx_finish(R"RX(F[A-Za-z]*([1-9][0-9]*))RX");
+	auto get_code = [](const QRegularExpression &rx, const QString &s) {
+		QRegularExpressionMatch match = rx.match(s, 0, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
+		if(match.hasMatch()) {
+			QString ns = match.captured(1);
+			bool ok;
+			int code = ns.toInt(&ok);
+			if(!ok || code < 1)
+				QF_EXCEPTION(QString("Invalid special code '%1'").arg(ns));
+			return code;
+		}
+		return 0;
+	};
+	{
+		int code = get_code(rx_start, code_str);
+		if(code > 0)
+			return (START_PUNCH_CODE + code - 1);
 	}
-	else if(code_str.startsWith('F')) {
-		bool ok;
-		int code = code_str.mid(1).toInt(&ok);
-		if(!ok || code < 1)
-			QF_EXCEPTION(QString("Invalid finish code '%1'").arg(code_str));
-		return (FINISH_PUNCH_CODE + code - 1);
+	{
+		int code = get_code(rx_finish, code_str);
+		if(code > 0)
+			return (FINISH_PUNCH_CODE + code - 1);
 	}
-	else {
-		bool ok;
-		int code = code_str.toInt(&ok);
-		if(!ok || code < 1)
-			QF_EXCEPTION(QString("Invalid control code '%1'").arg(code_str));
-		return code;
-	}
+	bool ok;
+	int code = code_str.toInt(&ok);
+	if(!ok || code < 1)
+		QF_EXCEPTION(QString("Invalid control code '%1'").arg(code_str));
+	return code;
 }
 
 QString CodeDef::codeToString(int code)
