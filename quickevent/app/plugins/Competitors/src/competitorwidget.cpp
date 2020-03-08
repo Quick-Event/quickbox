@@ -184,6 +184,15 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 			});
 		}
 	}
+
+	// if there is only one run propagate widget SI card change from competitors to runs
+	connect(ui->edSiId, qOverload<int>(&QSpinBox::valueChanged),[=](int new_si_number) // widget SIcard edit box
+	{
+		if(eventPlugin()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
+			m_runsModel->setValue(0, RunsModel::col_runs_siId, new_si_number); // update SI in runs model
+			ui->tblRuns->reset(); // reload ui to see the change
+		}
+	});
 }
 
 CompetitorWidget::~CompetitorWidget()
