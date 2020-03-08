@@ -51,7 +51,6 @@ private:
 	Ui::CompetitorsWidget *ui;
 	qf::core::model::SqlTableModel *m_competitorsModel;
 	qf::qmlwidgets::ForeignKeyComboBox *m_cbxClasses = nullptr;
-	QCheckBox *m_cbxEditCompetitorOnPunch = nullptr;
 };
 
 #endif // COMPETITORSWIDGET_H
