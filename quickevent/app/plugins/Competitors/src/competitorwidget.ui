@@ -81,12 +81,12 @@
          <string>&amp;SI</string>
         </property>
         <property name="buddy">
-         <cstring>spinBox</cstring>
+         <cstring>edSiId</cstring>
         </property>
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="quickevent::gui::si::SiIdEdit" name="spinBox">
+       <widget class="quickevent::gui::si::SiIdEdit" name="edSiId">
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
@@ -288,7 +288,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>cbxClass</tabstop>
-  <tabstop>spinBox</tabstop>
+  <tabstop>edSiId</tabstop>
   <tabstop>lineEdit_2</tabstop>
   <tabstop>lineEdit_3</tabstop>
   <tabstop>lineEdit_4</tabstop>
