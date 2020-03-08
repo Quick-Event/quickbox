@@ -252,8 +252,8 @@ void ClassesPlugin::createCourses(int stage_id, const QList<ImportCourseDef> &co
 					quickevent::core::CodeDef cd = code_defs.value(code);
 					if(code_id > 0) {
 						qfDebug() << "courseId" << it.key() << "-> code:" << code << "codeId:" << code_id;
-						/// keep start control code == 0 to have firs control on position == 1
-						if(code < quickevent::core::CodeDef::PUNCH_CODE_MIN)
+						/// keep start control position == 0 to have first control on position == 1
+						if(code >= quickevent::core::CodeDef::PUNCH_CODE_MIN)
 							pos++;
 						q.bindValue(":courseId", it.key());
 						q.bindValue(":position", pos);
