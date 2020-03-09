@@ -87,8 +87,8 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 		m_cardsModel = m;
 	}
 
-	ui->lstNotFound->addItem(tr("Receipt without name"), 0);
-	ui->lstNotFound->addItem(tr("Error info"), 1);
+	ui->lstNotFound->addItem(tr("Error info"), 0);
+	ui->lstNotFound->addItem(tr("Receipt without name"), 1);
 	ui->lstNotFound->setCurrentIndex(0);
 
 	ui->tblCards->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -287,9 +287,9 @@ bool ReceiptsWidget::printReceipt(int card_id)
 			else
 			{
 				if (ui->lstNotFound->currentIndex() == 0)
-					return receiptsPlugin()->printCard(card_id);
-				else
 					return receiptsPlugin()->printError(card_id);
+				else
+					return receiptsPlugin()->printCard(card_id);
 			}
 		}
 	}
