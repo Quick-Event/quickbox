@@ -6,10 +6,10 @@ namespace quickevent {
 namespace core {
 	
 const int CodeDef::START_PUNCH_CODE = 10;
-const int CodeDef::FINISH_PUNCH_CODE = 900;
+const int CodeDef::FINISH_PUNCH_CODE = 20;
 
-const int CodeDef::PUNCH_CODE_MIN = 30;
-const int CodeDef::PUNCH_CODE_MAX = CodeDef::FINISH_PUNCH_CODE - 1;
+const int CodeDef::PUNCH_CODE_MIN = 31;
+const int CodeDef::PUNCH_CODE_MAX = 999;
 
 //const QString CodeDef::CONTROL_TYPE_START = "S";
 //const QString CodeDef::CONTROL_TYPE_FINISH = "F";
@@ -75,26 +75,26 @@ int CodeDef::codeFromString(const QString &code_str)
 	}
 	bool ok;
 	int code = code_str.toInt(&ok);
-	if(!ok || code < 1)
+	if(!ok || code < PUNCH_CODE_MIN || code > PUNCH_CODE_MAX)
 		QF_EXCEPTION(QString("Invalid control code '%1'").arg(code_str));
 	return code;
 }
 
 QString CodeDef::codeToString(int code)
 {
-	if(code >= START_PUNCH_CODE && code < PUNCH_CODE_MIN)
+	if(code >= START_PUNCH_CODE && code < FINISH_PUNCH_CODE)
 		return 'S' + QString::number(code - START_PUNCH_CODE + 1);
-	if(code >= FINISH_PUNCH_CODE)
+	if(code >= FINISH_PUNCH_CODE && code < PUNCH_CODE_MIN)
 		return 'F' + QString::number(code - FINISH_PUNCH_CODE + 1);
 	return QString::number(code);
 }
 
 CodeDef::Type CodeDef::codeToType(int code)
 {
-	if(code >= FINISH_PUNCH_CODE)
-		return Type::Finish;
-	if(code >= START_PUNCH_CODE && code < PUNCH_CODE_MIN)
+	if(code >= START_PUNCH_CODE && code < FINISH_PUNCH_CODE)
 		return Type::Start;
+	if(code >= FINISH_PUNCH_CODE && code < PUNCH_CODE_MIN )
+		return Type::Finish;
 	if(code >= PUNCH_CODE_MIN && code <= PUNCH_CODE_MAX)
 		return Type::Control;
 	return Type::Invalid;
