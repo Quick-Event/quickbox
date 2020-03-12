@@ -1072,6 +1072,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
+	tt.appendColumn("courses.numberOfControls", QVariant::Type::Int);
 
 	qfs::QueryBuilder qb2;
 	qb2.select2("competitors", "lastName, firstName, registration, startNumber")
@@ -1083,6 +1084,18 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		.orderBy("runs.startTimeMs, competitors.lastName");
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		// add number of controls
+		QString query_str = "SELECT COUNT(*) FROM codes,coursecodes "
+						"WHERE codes.id=coursecodes.codeId "
+						"AND codes.code>30 AND coursecodes.courseId=" QF_IARG(i + 1); //courseId
+		qf::core::sql::Query q;
+		q.exec(query_str, qf::core::Exception::Throw);
+		if (q.next()) {
+			QVariant num_of_controls = q.value(0).toInt();
+			tt_row.setValue(QStringLiteral("courses.numberOfControls"), num_of_controls);
+		}
+
+
 		int class_id = tt_row.value(QStringLiteral("classes.id")).toInt();
 		//console.debug("class id:", class_id);
 		qpm["class_id"] = class_id;
@@ -2080,7 +2093,9 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
 		QVariantList class_start{"ClassStart"};
 		append_list(class_start, QVariantList{"Class", QVariantList{"Id", tt1_row.value(QStringLiteral("classes.id"))}, QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name"))}});
-		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))}, QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))}});
+		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))},
+														QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))},
+														QVariantList{"NumberOfControls", tt1_row.value(QStringLiteral("courses.numberOfControls"))}});
 		append_list(class_start, QVariantList{"StartName", "Start1"});
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		int pos = 0;
