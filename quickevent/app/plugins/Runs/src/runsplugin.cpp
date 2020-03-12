@@ -1085,10 +1085,11 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
 		// add number of controls
-		QString query_str = "SELECT COUNT(*) FROM codes,coursecodes "
-					"WHERE codes.id=coursecodes.codeId "
-					"AND codes.code>30 "
-					"AND coursecodes.courseId=" QF_IARG(i + 1); //courseId
+		QString query_str = "SELECT COUNT(*) FROM codes,coursecodes"
+					" WHERE codes.id=coursecodes.codeId"
+					" AND codes.code>=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
+					" AND codes.code<=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX)
+					" AND coursecodes.courseId=" QF_IARG(i + 1); //courseId
 		qf::core::sql::Query q;
 		q.exec(query_str, qf::core::Exception::Throw);
 		if (q.next()) {
