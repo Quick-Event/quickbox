@@ -1055,7 +1055,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
 		.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin")
-		.select2("courses", "length, climb")
+		.select2("courses", "length, climb, id")
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 		.join("classdefs.courseId", "courses.id")
@@ -1089,7 +1089,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 					" WHERE codes.id=coursecodes.codeId"
 					" AND codes.code>=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
 					" AND codes.code<=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX)
-					" AND coursecodes.courseId=" QF_IARG(i + 1); //courseId
+					" AND coursecodes.courseId=" QF_IARG(tt_row.value("courses.id").toInt());
 		qf::core::sql::Query q;
 		q.exec(query_str, qf::core::Exception::Throw);
 		if (q.next()) {
