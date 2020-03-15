@@ -672,10 +672,21 @@ void EventPlugin::connectToSqlServer()
 			}
 		}
 		else {
-			QString driver_name = "QSQLITE";
-			QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
-			QSqlDatabase db = QSqlDatabase::addDatabase(driver_name);
-			connect_ok = true;
+			QString single_working_dir = conn_w->singleWorkingDir();
+			bool swd_empty = single_working_dir.isEmpty();
+			if(swd_empty) {
+				qfd::MessageBox::showError(fwk, tr("Path to the working directory cannot be empty.\n\nEnter path to the working directory or connect to SQL server."));
+			}
+			bool swd_exist = QDir (single_working_dir).exists();
+			if(!swd_exist) {
+				qfd::MessageBox::showError(fwk, tr("Entered directory does not exist:\n%1\n\nEnter a valid path to the working directory.").arg(single_working_dir));
+			}
+			if(!swd_empty && swd_exist) {
+				QString driver_name = "QSQLITE";
+				QSqlDatabase::removeDatabase(QSqlDatabase::defaultConnection);
+				QSqlDatabase db = QSqlDatabase::addDatabase(driver_name);
+				connect_ok = true;
+			}
 		}
 	}
 	setSqlServerConnected(connect_ok);

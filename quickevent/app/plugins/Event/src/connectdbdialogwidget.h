@@ -24,6 +24,7 @@ public:
 	int serverPort();
 	QString serverUser();
 	QString serverPassword();
+	QString singleWorkingDir();
 
 	void loadSettings();
 	void saveSettings();

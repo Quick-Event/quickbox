@@ -52,6 +52,11 @@ QString ConnectDbDialogWidget::serverPassword()
 	return ui->edServerPassword->text();
 }
 
+QString ConnectDbDialogWidget::singleWorkingDir()
+{
+	return ui->edSingleWorkingDir->text();
+}
+
 void ConnectDbDialogWidget::loadSettings()
 {
 	ConnectionSettings settings;
