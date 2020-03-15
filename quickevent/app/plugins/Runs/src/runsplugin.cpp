@@ -1055,7 +1055,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
 		.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin")
-		.select2("courses", "length, climb")
+		.select2("courses", "length, climb, id")
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 		.join("classdefs.courseId", "courses.id")
@@ -1072,6 +1072,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	tt.setValue("stageId", stage_id);
 	tt.setValue("event", event_plugin->eventConfig()->value("event"));
 	tt.setValue("stageStart", event_plugin->stageStartDateTime(stage_id));
+	tt.appendColumn("courses.numberOfControls", QVariant::Type::Int);
 
 	qfs::QueryBuilder qb2;
 	qb2.select2("competitors", "lastName, firstName, registration, startNumber")
@@ -1083,6 +1084,20 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		.orderBy("runs.startTimeMs, competitors.lastName");
 	for(int i=0; i<tt.rowCount(); i++) {
 		qf::core::utils::TreeTableRow tt_row = tt.row(i);
+		// add number of controls
+		QString query_str = "SELECT COUNT(*) FROM codes,coursecodes"
+					" WHERE codes.id=coursecodes.codeId"
+					" AND codes.code>=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
+					" AND codes.code<=" QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX)
+					" AND coursecodes.courseId=" QF_IARG(tt_row.value("courses.id").toInt());
+		qf::core::sql::Query q;
+		q.exec(query_str, qf::core::Exception::Throw);
+		if (q.next()) {
+			QVariant num_of_controls = q.value(0).toInt();
+			tt_row.setValue(QStringLiteral("courses.numberOfControls"), num_of_controls);
+			tt.setRow(i, tt_row);
+		}
+
 		int class_id = tt_row.value(QStringLiteral("classes.id")).toInt();
 		//console.debug("class id:", class_id);
 		qpm["class_id"] = class_id;
@@ -2080,7 +2095,9 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 		qf::core::utils::TreeTableRow tt1_row = tt1.row(i);
 		QVariantList class_start{"ClassStart"};
 		append_list(class_start, QVariantList{"Class", QVariantList{"Id", tt1_row.value(QStringLiteral("classes.id"))}, QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name"))}});
-		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))}, QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))}});
+		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))},
+								QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))},
+								QVariantList{"NumberOfControls", tt1_row.value(QStringLiteral("courses.numberOfControls"))}});
 		append_list(class_start, QVariantList{"StartName", "Start1"});
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		int pos = 0;
