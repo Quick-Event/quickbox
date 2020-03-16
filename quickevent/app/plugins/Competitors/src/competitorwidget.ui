@@ -90,6 +90,12 @@
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="singleStep">
+         <number>0</number>
+        </property>
         <property name="dataId" stdset="0">
          <string notr="true">competitors.siId</string>
         </property>
