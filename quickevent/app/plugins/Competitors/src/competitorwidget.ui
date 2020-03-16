@@ -33,9 +33,9 @@
     <widget class="QFrame" name="frmFind">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QCheckBox" name="chkFind">
+       <widget class="QLabel" name="label_edFind">
         <property name="text">
-         <string>&amp;Find in registrations</string>
+         <string>Find in registrations:</string>
         </property>
        </widget>
       </item>

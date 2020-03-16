@@ -142,8 +142,6 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	setPersistentSettingsId("CompetitorWidget");
 	ui->setupUi(this);
 
-	ui->chkFind->setChecked(true);
-
 	setTitle(tr("Competitor"));
 
 	{
@@ -261,7 +259,6 @@ void CompetitorWidget::onRunsTableCustomContextMenuRequest(const QPoint &pos)
 */
 bool CompetitorWidget::load(const QVariant &id, int mode)
 {
-	ui->chkFind->setChecked(mode == qf::core::model::DataDocument::ModeInsert);
 	if(mode == qf::core::model::DataDocument::ModeInsert) {
 		ui->edFind->setFocus();
 	}
