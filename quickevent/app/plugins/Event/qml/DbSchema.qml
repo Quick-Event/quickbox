@@ -52,6 +52,7 @@ Schema {
 				Field { name: 'name'; type: String { } },
 				Field { name: 'length'; type: Int { } },
 				Field { name: 'climb'; type: Int { } },
+                Field { name: 'startId'; type: String { } },
 				Field { name: 'note'; type: String { } }
 			]
 			indexes: [
@@ -103,7 +104,7 @@ Schema {
 		Table { name: 'classes'
 			fields: [
 				Field { name: 'id'; type: Serial { primaryKey: true } },
-				Field { name: 'name'; type: String { } }
+                Field { name: 'name'; type: String { } }
 			]
 			indexes: [
 				Index { fields: ['name']; unique: true }
@@ -115,7 +116,7 @@ Schema {
 				Field { name: 'classId'; type: Int { } },
 				Field { name: 'stageId'; type: Int { } },
 				Field { name: 'courseId'; type: Int { } },
-				Field { name: 'startSlotIndex'; type: Int { }
+                Field { name: 'startSlotIndex'; type: Int { }
 					defaultValue: -1;
 					notNull: true
 	 			},

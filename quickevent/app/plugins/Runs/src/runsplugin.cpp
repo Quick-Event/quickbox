@@ -1057,7 +1057,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 	qfs::QueryBuilder qb;
 	qb.select2("classes", "id, name")
 		.select2("classdefs", "startTimeMin, lastStartTimeMin, startIntervalMin")
-		.select2("courses", "length, climb")
+		.select2("courses", "length, climb, startId")
 		.from("classes")
 		.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId={{stage_id}}")
 		.join("classdefs.courseId", "courses.id")
@@ -1096,6 +1096,10 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 		int start_time_0 = tt_row.value(QStringLiteral("startTimeMin")).toInt() * 60 * 1000;
 		int start_time_last = tt_row.value(QStringLiteral("lastStartTimeMin")).toInt() * 60 * 1000;
 		int start_interval = tt_row.value(QStringLiteral("startIntervalMin")).toInt() * 60 * 1000;
+//INFO pridani vypisu identifikace startu
+		QString start_id = tt_row.value(QStringLiteral("startId")).toString();
+		tt2.setValue("startId", start_id);
+
 		if(start_interval > 0 && insert_vacants) {
 			for(int j=0; j<tt2.rowCount(); j++) {
 				qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -2081,7 +2085,7 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 		QVariantList class_start{"ClassStart"};
 		append_list(class_start, QVariantList{"Class", QVariantList{"Id", tt1_row.value(QStringLiteral("classes.id"))}, QVariantList{"Name", tt1_row.value(QStringLiteral("classes.name"))}});
 		append_list(class_start, QVariantList{"Course", QVariantList{"Length", tt1_row.value(QStringLiteral("courses.length"))}, QVariantList{"Climb", tt1_row.value(QStringLiteral("courses.climb"))}});
-		append_list(class_start, QVariantList{"StartName", "Start1"});
+		append_list(class_start, QVariantList{"StartName", tt1_row.value(QStringLiteral("courses.startId"))});
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		int pos = 0;
 		for(int j=0; j<tt2.rowCount(); j++) {

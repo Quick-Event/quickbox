@@ -128,14 +128,16 @@ void ClassesPlugin::createCourses(int stage_id, const QVariantList &courses, con
 		for(auto v : courses) {
 			CourseDef cd(v.toMap());
 			int course_id = 0;
+			QString start_id = cd.startId();
 			{
 				qfInfo() << "inserting course" << cd.name() << "stage:" << stage_id << "classes:" << cd.classes().join(',');
-				QString qs = "INSERT INTO courses (name, length, climb, note) VALUES (:name, :length, :climb, :note)";
+				QString qs = "INSERT INTO courses (name, length, climb, note, startId) VALUES (:name, :length, :climb, :note, :startId)";
 				q.prepare(qs, qf::core::Exception::Throw);
 				q.bindValue(":name", cd.name());
 				q.bindValue(":length", cd.lenght());
 				q.bindValue(":climb", cd.climb());
 				q.bindValue(":note", QString("E%1 ").arg(stage_id) + cd.classes().join(','));
+				q.bindValue(":startId", cd.startId());
 				q.exec(qf::core::Exception::Throw);
 				course_id = q.lastInsertId().toInt();
 			}

@@ -123,6 +123,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		//m->setObjectName("classes.classesModel");
 		m->addColumn("id").setReadOnly(true);
 		m->addColumn("classes.name", tr("Class"));
+		m->addColumn("courses.startId", tr("Start ID")).setToolTip(tr("Start ID"));
 		m->addColumn("classdefs.drawLock", tr("DL")).setToolTip(tr("Locked for drawing"));
 		m->addColumn("classdefs.startTimeMin", tr("Start"));
 		m->addColumn("classdefs.startIntervalMin", tr("Interval"));
@@ -138,6 +139,7 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 		m->addColumn("courses.climb", tr("Climb"));
 		m->addColumn("classdefs.relayStartNumber", tr("Rel.num")).setToolTip(tr("Relay start number"));
 		m->addColumn("classdefs.relayLegCount", tr("Legs")).setToolTip(tr("Relay leg count"));
+
 		ui->tblClasses->setTableModel(m);
 
 		m_courseItemDelegate = new CourseItemDelegate(this);
@@ -301,7 +303,7 @@ void ClassesWidget::reload()
 		qfs::QueryBuilder qb;
 		qb.select2("classes", "*")
 				.select2("classdefs", "*")
-				.select2("courses", "id, name, length, climb")
+				.select2("courses", "id, name, length, climb, startId")
 				.select("(" + qb1.toString() + ") AS runsCount")
 				.from("classes")
 				.joinRestricted("classes.id", "classdefs.classId", "classdefs.stageId=" QF_IARG(stage_id))
@@ -332,7 +334,7 @@ void ClassesWidget::reload()
 	{
 		QMap<int, QString> courses;
 		qf::core::sql::Query q;
-		q.exec("SELECT id, name, note FROM courses ORDER BY name, note");
+		q.exec("SELECT id, name, note, startId FROM courses ORDER BY name, note");
 		while(q.next()) {
 			courses[q.value(0).toInt()] = q.value(1).toString() + ' ' + q.value(2).toString();
 		}
@@ -453,6 +455,7 @@ void ClassesWidget::import_ocad_txt()
 					QString s = sections.value(ColCodes);
 					QVariantList codes;
 					QStringList sl = s.split('-');
+					cd.setStartId(sl[0]);
 					for (int i = 1; i < sl.count()-1; i++) {
 						bool ok;
 						int code = sl[i].toInt(&ok);
@@ -544,6 +547,7 @@ void ClassesWidget::import_ocad_v8()
 					s.replace('.', QString()).replace(',', QString());
 					cd.setClimb(s.toInt());
 				}
+				cd.setStartId(line.section(';', 5, 5));
 				{
 					qfc::String s = line.section(';', 6);
 					QVariantList codes;
