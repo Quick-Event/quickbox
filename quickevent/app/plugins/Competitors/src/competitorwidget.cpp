@@ -185,9 +185,21 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 		}
 	}
 
-	// if there is only one run propagate widget SI card change from competitors to runs
+	// si card on change event
 	connect(ui->edSiId, qOverload<int>(&QSpinBox::valueChanged),[=](int new_si_number) // widget SIcard edit box
 	{
+		// update checbox if si card in lent table
+		Qt::CheckState ch_state;
+		bool a = isCardInLentTable(new_si_number);
+		if (a) {
+			ch_state = Qt::Checked;
+		}
+		else {
+			ch_state = Qt::Unchecked;
+		}
+		ui->chkLentCard->setCheckState(ch_state);
+
+		// if there is only one run propagate widget SI card change from competitors to runs
 		if(eventPlugin()->stageCount() == 1 && m_runsModel->rowCount() == 1 ) {
 			m_runsModel->setValue(0, RunsModel::col_runs_siId, new_si_number); // update SI in runs model
 			ui->tblRuns->reset(); // reload ui to see the change
@@ -366,8 +378,12 @@ bool CompetitorWidget::saveData()
 		qf::core::sql::Transaction transaction;
 		//doc->setSaveSiidToRuns(true);
 		if(Super::saveData())
+		{
 			ret = saveRunsTable();
+			updateLentcardsTable();
+		}
 		transaction.commit();
+		 // update cardlent table if lent status changed
 	}
 	catch (BadDataInputException &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(this, e.message());
@@ -411,6 +427,30 @@ QVector<int> CompetitorWidget::veteranAges()
 	}
 	std::sort(ret.begin(), ret.end(), std::greater<int>());
 	return ret;
+}
+
+bool CompetitorWidget::isCardInLentTable(int si_card)
+{
+	qfs::Query q;
+	q.exec("SELECT siId FROM lentcards WHERE siId=" + QString::number(si_card), qf::core::Exception::Throw);
+	return q.next();
+}
+
+// check if lentcard checkbox is checked and update lentcards table accordingly
+void CompetitorWidget::updateLentcardsTable()
+{
+	int si_card = ui->edSiId->siid();
+	bool isLent = ui->chkLentCard->isChecked();
+	bool inLentTable = isCardInLentTable(si_card);
+	qfs::Query q;
+	if (isLent && !inLentTable)
+	{
+		q.exec("INSERT INTO lentcards (siId) VALUES ('" + QString::number(si_card) + "')", qf::core::Exception::Throw);
+	}
+	if (!isLent && inLentTable)
+	{
+		q.exec("DELETE FROM lentcards WHERE siId= " + QString::number(si_card), qf::core::Exception::Throw);
+	}
 }
 
 

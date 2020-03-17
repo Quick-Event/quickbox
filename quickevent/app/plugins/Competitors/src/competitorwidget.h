@@ -33,6 +33,8 @@ private:
 	QVector<int> juniorAges();
 	QVector<int> veteranAges();
 	QString classNameFromRegistration(const QString &registration);
+	bool isCardInLentTable(int);
+	void updateLentcardsTable();
 
 	void showRunsTable(int stage_id);
 private:
