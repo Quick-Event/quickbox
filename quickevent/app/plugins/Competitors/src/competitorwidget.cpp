@@ -379,10 +379,9 @@ bool CompetitorWidget::saveData()
 		if(Super::saveData())
 		{
 			ret = saveRunsTable();
-			updateLentcardsTable();
+			updateLentcardsTable(); // update cardlent table if lent status changed
 		}
 		transaction.commit();
-		 // update cardlent table if lent status changed
 	}
 	catch (BadDataInputException &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(this, e.message());
