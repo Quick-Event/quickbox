@@ -190,8 +190,7 @@ CompetitorWidget::CompetitorWidget(QWidget *parent) :
 	{
 		// update checbox if si card in lent table
 		Qt::CheckState ch_state;
-		bool a = isCardInLentTable(new_si_number);
-		if (a) {
+		if (isCardInLentTable(new_si_number)) {
 			ch_state = Qt::Checked;
 		}
 		else {
