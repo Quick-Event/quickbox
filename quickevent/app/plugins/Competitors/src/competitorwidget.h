@@ -30,8 +30,6 @@ private:
 	//void onRunsTableCustomContextMenuRequest(const QPoint &pos);
 	bool saveData() Q_DECL_OVERRIDE;
 
-	QString juniorAges(char gender, int age);
-	QString veteranAges(char gender, int age);
 	QString guessClassFromRegistration(const QString &registration);
 
 	void showRunsTable(int stage_id);
