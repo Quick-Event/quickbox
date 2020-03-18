@@ -273,11 +273,12 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 	return false;
 }
 
-bool grearet_equal(int a, int b) {return a >= b;}
+bool greater_equal(int a, int b) {return a >= b;}
 bool less_equal(int a, int b) {return a <= b;}
 
 QString CompetitorWidget::guessClassFromRegistration(const QString &registration)
 {
+	// get list of classes without preceding letter - eg. 12,14,18,21,35,..
 	QVector<int> classes;
 	for (int i = 0; i < ui->cbxClass->count(); ++i)
 	{
@@ -287,6 +288,7 @@ QString CompetitorWidget::guessClassFromRegistration(const QString &registration
 	}
 	std::sort(classes.begin(), classes.end());
 
+	// get runner age
 	qfLogFuncFrame() << registration;
 	int curr_year = QDate::currentDate().year();
 	int runner_age = curr_year - 1900 - registration.mid(3, 2).toInt();
@@ -294,20 +296,30 @@ QString CompetitorWidget::guessClassFromRegistration(const QString &registration
 		runner_age -= 100;
 	qfDebug() << "\t age:" << runner_age;
 
+	// try to guess gender prefix - D or H
 	char gender = (registration.mid(5, 1).toInt() == 5)? 'D': 'H';
-	bool (*comp)(int, int) = &grearet_equal;
 
-	if (runner_age < 21)
-	{
-		comp = &less_equal;
-		std::reverse(classes.begin(), classes.end());
-	}
-
+	// go trough classes, if runner age >= class then asign
+	// reverse array order and comparison for juniors
+	// eg. classes 35, 40, 45, age 38 -> 35
+	// eg. classes 12, 14, 16, age 15 -> 16
 	int candidate = 0;
-	for(int cls : classes)
+	if (runner_age > 21)
 	{
-		if(comp(runner_age, cls))
-			candidate = cls;
+		for(int cls : classes)
+		{
+			if(runner_age >= cls)
+				candidate = cls;
+		}
+	}
+	else
+	{
+		std::reverse(classes.begin(), classes.end());
+		for(int cls : classes)
+		{
+			if(runner_age <= cls)
+				candidate = cls;
+		}
 	}
 	return candidate ? gender + QString::number(candidate) : QString();
 }
@@ -341,7 +353,7 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 		qfDebug() << "\t" << s << "->" << values.value(s);
 		doc->setValue(s, values.value(s));
 	}
-	if(!doc->isDirty(QStringLiteral("classId"))) {
+	if(true) {
 		QString class_name_prefix = guessClassFromRegistration(values.value("registration").toString());
 		if(!class_name_prefix.isEmpty()) {
 			for (int i = 0; i < ui->cbxClass->count(); ++i) {
