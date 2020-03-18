@@ -297,7 +297,7 @@ QString CompetitorWidget::guessClassFromRegistration(const QString &registration
 	char gender = (registration.mid(5, 1).toInt() == 5)? 'D': 'H';
 	bool (*comp)(int, int) = &grearet_equal;
 
-	if (runner_age >= 21)
+	if (runner_age < 21)
 	{
 		comp = &less_equal;
 		std::reverse(classes.begin(), classes.end());
