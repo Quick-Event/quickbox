@@ -353,7 +353,7 @@ void CompetitorWidget::onRegistrationSelected(const QVariantMap &values)
 		qfDebug() << "\t" << s << "->" << values.value(s);
 		doc->setValue(s, values.value(s));
 	}
-	if(true) {
+	if(!doc->isDirty(QStringLiteral("classId"))) {
 		QString class_name_prefix = guessClassFromRegistration(values.value("registration").toString());
 		if(!class_name_prefix.isEmpty()) {
 			for (int i = 0; i < ui->cbxClass->count(); ++i) {
