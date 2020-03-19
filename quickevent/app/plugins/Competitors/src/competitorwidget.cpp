@@ -273,9 +273,6 @@ bool CompetitorWidget::load(const QVariant &id, int mode)
 	return false;
 }
 
-bool greater_equal(int a, int b) {return a >= b;}
-bool less_equal(int a, int b) {return a <= b;}
-
 QString CompetitorWidget::guessClassFromRegistration(const QString &registration)
 {
 	// get list of classes without preceding letter - eg. 12,14,18,21,35,..
