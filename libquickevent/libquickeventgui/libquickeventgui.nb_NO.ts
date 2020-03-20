@@ -56,7 +56,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="120"/>
         <source>Doesn&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>Samsvarer ikke</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="127"/>
@@ -159,22 +159,22 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="405"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingen</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="410"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolonne</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="415"/>
         <source>Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Side</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="441"/>
         <source>Save as default</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagre som forvalg</translation>
     </message>
 </context>
 </TS>
