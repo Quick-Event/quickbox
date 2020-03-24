@@ -723,7 +723,7 @@ void RelaysWidget::export_results_iofxml3()
 				append_list(person_result, QVariantList{"Leg", k+1 } );
 				append_list(person_result, QVariantList{"BibNumber", QString::number(relay_number) + '.' + QString::number(k+1)});
 				int run_id = tt_leg_row.value(QStringLiteral("runId")).toInt();
-				int stime = 0, ftime = 0, time = 0;
+				int stime = 0, ftime = 0, time_msec = 0;
 				if(run_id > 0) {
 					qfs::QueryBuilder qb;
 					qb.select2("runs", "startTimeMs, finishTimeMs, timeMs")
@@ -733,7 +733,7 @@ void RelaysWidget::export_results_iofxml3()
 					if(q.next()) {
 						stime = q.value(0).toInt();
 						ftime = q.value(1).toInt();
-						time = q.value(2).toInt();
+						time_msec = q.value(2).toInt();
 					}
 					else {
 						qfWarning() << "Cannot load run for id:" << run_id;
@@ -741,13 +741,13 @@ void RelaysWidget::export_results_iofxml3()
 				}
 				append_list(person_result, QVariantList{"StartTime", datetime_to_string(start00.addMSecs(stime))});
 				append_list(person_result, QVariantList{"FinishTime", datetime_to_string(start00.addMSecs(ftime))});
-				append_list(person_result, QVariantList{"Time", time});
+				append_list(person_result, QVariantList{"Time", time_msec / 1000});
 				append_list(person_result, QVariantList{"Position", QVariantMap{{"type", "Leg"}}, tt_leg_row.value(QStringLiteral("pos"))});
 				// MISSING position course append_list(person_result, QVariantList{"Position", QVariantMap{{"type", "course"}}, tt_laps_row.value(QStringLiteral("pos"))});
 				append_list(person_result, QVariantList{"Status", tt_leg_row.value(QStringLiteral("status"))});
 				QVariantList overall_result{"OverallResult"};
 				{
-					append_list(overall_result, QVariantList{"Time", tt_leg_row.value(QStringLiteral("stime"))});
+					append_list(overall_result, QVariantList{"Time", tt_leg_row.value(QStringLiteral("stime").toInt() / 1000)});
 					append_list(overall_result, QVariantList{"Position", tt_leg_row.value(QStringLiteral("spos"))});
 					append_list(overall_result, QVariantList{"Status", tt_leg_row.value(QStringLiteral("sstatus"))});
 					// MISSING TimeBehind
@@ -803,7 +803,7 @@ void RelaysWidget::export_results_iofxml3()
 						}
 						QVariantList split{QStringLiteral("SplitTime")};
 						append_list(split, QVariantList{"ControlCode", cd.code()});
-						append_list(split, QVariantList{"Time", time});
+						append_list(split, QVariantList{"Time", time / 1000});
 						append_list(person_result, split);
 					}
 				}
