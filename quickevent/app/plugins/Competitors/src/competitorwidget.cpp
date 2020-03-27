@@ -294,7 +294,7 @@ QString CompetitorWidget::guessClassFromRegistration(const QString &registration
 	qfDebug() << "\t age:" << runner_age;
 
 	// try to guess gender prefix - D or H
-	char gender = (registration.mid(5, 1).toInt() == 5)? 'D': 'H';
+	char gender = (registration.mid(5, 1).toInt() >= 5)? 'D': 'H';
 
 	// go trough classes, if runner age >= class then asign
 	// reverse array order and comparison for juniors
