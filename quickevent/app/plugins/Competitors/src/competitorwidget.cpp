@@ -33,7 +33,7 @@ namespace qfc = qf::core;
 namespace qfs = qf::core::sql;
 
 namespace {
-
+/*
 class BadDataInputException : public std::runtime_error
 {
 public:
@@ -44,7 +44,7 @@ public:
 private:
 	QString m_message;
 };
-
+*/
 class RunsModel : public quickevent::core::og::SqlTableModel
 {
 	Q_DECLARE_TR_FUNCTIONS(RunsModel)
@@ -386,31 +386,9 @@ bool CompetitorWidget::saveData()
 		qf::qmlwidgets::dialogs::MessageBox::showWarning(this, tr("Class should be entered."));
 		return false;
 	}
-	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
-	bool ret = false;
-	try {
-		//qf::core::sql::Transaction transaction;
-		//doc->setSaveSiidToRuns(true);
-		if(Super::saveData())
-			ret = saveRunsTable();
-		//transaction.commit();
-	}
-	catch (BadDataInputException &e) {
-		qf::qmlwidgets::dialogs::MessageBox::showError(this, e.message());
-	}
-	catch (qf::core::Exception &e) {
-		QString what = e.message();
-		if(what.contains(QLatin1String("runs.stageId")) && what.contains(QLatin1String("runs.siId"))) {
-			// "UNIQUE constraint failed: runs.stageId, runs.siId Unable to fetch row"
-			// duplicate SI insertion attempt
-			qf::qmlwidgets::dialogs::MessageBox::showError(this, tr("Duplicate SI inserted."));
-		}
-		else {
-			qf::qmlwidgets::dialogs::MessageBox::showException(this, e);
-		}
-		doc->restoreEditState(edit_state);
-	}
-	return ret;
+	if(Super::saveData())
+		return saveRunsTable();
+	return false;
 }
 
 

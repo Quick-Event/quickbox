@@ -3,7 +3,7 @@
 #APP_VER=0.0.1
 APP_NAME=quickevent
 SRC_DIR=/home/fanda/proj/quickbox
-QT_DIR=/home/fanda/programs/qt5/5.13.2/gcc_64
+QT_DIR=/home/fanda/programs/qt5/5.14.1/gcc_64
 WORK_DIR=/home/fanda/t/_distro
 
 APP_IMAGE_TOOL=/home/fanda/programs/appimagetool-x86_64.AppImage

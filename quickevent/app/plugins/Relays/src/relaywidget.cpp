@@ -36,17 +36,6 @@ namespace qfs = qf::core::sql;
 
 namespace {
 
-class BadDataInputException : public std::runtime_error
-{
-public:
-	BadDataInputException(const QString &message) : std::runtime_error(""), m_message(message) {}
-	~BadDataInputException() Q_DECL_OVERRIDE {}
-
-	const QString& message() const {return m_message;}
-private:
-	QString m_message;
-};
-
 class LegsModel : public quickevent::core::og::SqlTableModel
 {
 	Q_DECLARE_TR_FUNCTIONS(LegsModel)
