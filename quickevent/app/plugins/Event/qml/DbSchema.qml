@@ -248,7 +248,7 @@ Schema {
 				},
 				Index {fields: ['stageId']; references: ForeignKeyReference {table: 'stages'; fields: ['id']; } },
 				Index {fields: ['relayId', 'leg']; unique: false },
-				Index {fields: ['stageId', 'siId']; unique: false }
+				Index {fields: ['stageId', 'siId']; unique: false } // might be duplicate to enable SI card sharing in not overlapping runs
 			]
 		},
 		Table { name: 'relays'

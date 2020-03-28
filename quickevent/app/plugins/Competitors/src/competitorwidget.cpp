@@ -389,11 +389,11 @@ bool CompetitorWidget::saveData()
 	qf::core::model::DataDocument::EditState edit_state = doc->saveEditState();
 	bool ret = false;
 	try {
-		qf::core::sql::Transaction transaction;
+		//qf::core::sql::Transaction transaction;
 		//doc->setSaveSiidToRuns(true);
 		if(Super::saveData())
 			ret = saveRunsTable();
-		transaction.commit();
+		//transaction.commit();
 	}
 	catch (BadDataInputException &e) {
 		qf::qmlwidgets::dialogs::MessageBox::showError(this, e.message());
