@@ -91,9 +91,24 @@ void ClassesPlugin::createCourses(int stage_id, const QList<ImportCourseDef> &co
 		deleteCourses(stage_id);
 
 		QMap<int, quickevent::core::CodeDef> code_defs;
-		for(const quickevent::core::CodeDef &cd : codes) {
-			int key = cd.code();
-			code_defs[key] = cd;
+		if(codes.empty()) {
+			for(const ImportCourseDef &icd : courses) {
+				for(const auto &vc : icd.codes()) {
+					quickevent::core::CodeDef cd(vc.toString());
+					int key = cd.code();
+					qfDebug() << "Creating code def from:" << vc.toString() << "code:" << key << "def:" << cd.toString();
+					if(key == 0)
+						qfWarning() << "Invalid code definition:" << vc;
+					else
+						code_defs[key] = cd;
+				}
+			}
+		}
+		else {
+			for(const quickevent::core::CodeDef &cd : codes) {
+				int key = cd.code();
+				code_defs[key] = cd;
+			}
 		}
 
 		QMap<QString, int> course_ids;

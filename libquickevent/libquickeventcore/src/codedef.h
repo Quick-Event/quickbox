@@ -31,6 +31,7 @@ public:
 public:
 	CodeDef() : QVariantMap() {}
 	CodeDef(const QVariantMap &m);
+	CodeDef(const QString &code_str) { setCode(codeFromString(code_str)); }
 
 	Type type() const;
 	int code() const;
