@@ -583,7 +583,7 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 		//theApp()->scriptDriver()->callExtensionFunction("onCommConnect", QVariantList() << device);
 	}
 	else {
-		commPort()->close();
+		commPort()->closeComm();
 	}
 }
 
