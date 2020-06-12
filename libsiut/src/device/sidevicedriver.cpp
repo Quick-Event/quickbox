@@ -42,7 +42,12 @@ namespace {
 */
 	void set_byte_at(QByteArray &ba, int ix, char b)
 	{
-		ba[ix] = b;
+		if(ix == ba.length())
+			ba.append(b);
+		else if(ix < ba.length())
+			ba[ix] = b;
+		else
+			qfError() << "ByteArray index out of range:" << ix << "size:" << ba.length();
 	}
 }
 

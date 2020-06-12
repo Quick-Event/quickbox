@@ -45,10 +45,10 @@ int main(int argc, char *argv[])
 	QScopedPointer<TableModelLogDevice> table_model_log_device(TableModelLogDevice::install());
 	table_model_log_device->setObjectName(TABLE_MODEL_LOG_DEVICE);
 
-	qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
-	qfWarning() << "QFLog(WARNING) test OK.";
-	qfInfo() << "QFLog(INFO) test OK.";
-	qfDebug() << "QFLog(DEBUG) test OK.";
+	//qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
+	//qfWarning() << "QFLog(WARNING) test OK.";
+	//qfInfo() << "QFLog(INFO) test OK.";
+	//qfDebug() << "QFLog(DEBUG) test OK.";
 
 	qfInfo() << "========================================================";
 	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
