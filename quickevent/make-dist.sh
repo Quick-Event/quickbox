@@ -130,6 +130,7 @@ BUILD_DIR=$WORK_DIR/_build
 DIST_DIR=$WORK_DIR/$DISTRO_NAME
 DIST_LIB_DIR=$DIST_DIR/lib
 DIST_BIN_DIR=$DIST_DIR/bin
+DIST_QML_DIR=$DIST_DIR/qml
 
 if [ -z $NO_CLEAN ]; then
 	echo removing directory $WORK_DIR
@@ -162,6 +163,7 @@ rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Sql.so* $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Xml.so* $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Qml.so* $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Quick.so* $DIST_LIB_DIR
+rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5QmlModels.so* $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Svg.so* $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Script.so* $DIST_LIB_DIR
 rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5ScriptTools.so* $DIST_LIB_DIR
@@ -187,9 +189,8 @@ rsync -av --exclude '*.debug' $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $DIST_BI
 mkdir -p $DIST_BIN_DIR/audio
 rsync -av --exclude '*.debug' $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
 
-mkdir -p $DIST_BIN_DIR/QtQuick/Window.2
-rsync -av --exclude '*.debug' $QT_DIR/qml/QtQuick/Window.2/ $DIST_BIN_DIR/QtQuick/Window.2
-rsync -av --exclude '*.debug' $QT_DIR/qml/QtQuick.2/ $DIST_BIN_DIR/QtQuick.2
+mkdir -p $DIST_QML_DIR
+rsync -av --exclude '*.debug' $QT_DIR/qml/QtQml $DIST_BIN_DIR/
 
 tar -cvzf $WORK_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
