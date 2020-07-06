@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.15.0'
+        #host: 'windows'
+        target: 'desktop'
     - uses: actions/checkout@v2
     - name: configure
       run: qmake CONFIG+=release CONFIG-=qml_debug CONFIG-=qtquickcompiler CONFIG+=force_debug_info
