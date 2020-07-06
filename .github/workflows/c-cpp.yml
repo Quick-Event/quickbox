@@ -14,6 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      run: ./qmake CONFIG+=release CONFIG-=qml_debug CONFIG-=qtquickcompiler CONFIG+=force_debug_info
+      run: qmake CONFIG+=release CONFIG-=qml_debug CONFIG-=qtquickcompiler CONFIG+=force_debug_info
     - name: make
       run: make
