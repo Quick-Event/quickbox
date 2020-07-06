@@ -78,7 +78,11 @@ QQmlListProperty<CardReader::CardChecker> CardReaderPlugin::cardCheckersListProp
 {
 	/// Generally this constructor should not be used in production code, as a writable QList violates QML's memory management rules.
 	/// However, this constructor can be very useful while prototyping.
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 	return QQmlListProperty<CardReader::CardChecker>(this, m_cardCheckers);
+#else
+	return QQmlListProperty<CardReader::CardChecker>(this, &m_cardCheckers);
+#endif
 }
 
 CardChecker *CardReaderPlugin::currentCardChecker()
@@ -441,7 +445,7 @@ bool CardReaderPlugin::saveCardAssignedRunnerIdSql(int card_id, int run_id)
 	return ret;
 }
 
-bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
+bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id, bool in_transaction)
 {
 	qfLogFuncFrame() << "card id:" << run_id;
 	QF_TIME_SCOPE("reloadTimesFromCard()");
@@ -462,14 +466,19 @@ bool CardReaderPlugin::reloadTimesFromCard(int card_id, int run_id)
 		qfWarning() << "Cannot find runs id for card id:" << card_id;
 		return false;
 	}
-	try {
-		qf::core::sql::Transaction transaction;
-		processCardToRunAssignment(card_id, run_id);
-		transaction.commit();
-		return true;
+	if(in_transaction) {
+		try {
+			qf::core::sql::Transaction transaction;
+			processCardToRunAssignment(card_id, run_id);
+			transaction.commit();
+			return true;
+		}
+		catch (const qf::core::Exception &e) {
+			qfError() << "reloadTimesFromCard ERROR:" << e.message();
+		}
 	}
-	catch (const qf::core::Exception &e) {
-		qfError() << "reloadTimesFromCard ERROR:" << e.message();
+	else {
+		return processCardToRunAssignment(card_id, run_id);
 	}
 	return false;
 }

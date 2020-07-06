@@ -51,7 +51,7 @@ public:
 	//ReadCard loadCardFromSql(int card_id);
 	//bool updateCheckedCardValuesSqlSafe(const quickevent::core::si::CheckedCard &checked_card);
 
-	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0);
+	Q_INVOKABLE bool reloadTimesFromCard(int card_id, int run_id = 0, bool in_transaction = true);
 	void assignCardToRun(int card_id, int run_id);
 	bool processCardToRunAssignment(int card_id, int run_id);
 
