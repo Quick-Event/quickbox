@@ -13,7 +13,7 @@ class ServerTreeDock : public QDockWidget
 {
 	Q_OBJECT
 public:
-	ServerTreeDock(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+	ServerTreeDock(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
 public:
 	Ui::ServerTreeWidget ui;
 };

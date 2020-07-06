@@ -36,9 +36,9 @@ private:
 
 class QFQMLWIDGETS_DECL_EXPORT LayoutProperties : public QObject
 {
-    Q_OBJECT
+	Q_OBJECT
 public:
-    static LayoutPropertiesAttached *qmlAttachedProperties(QObject *object);
+	static LayoutPropertiesAttached *qmlAttachedProperties(QObject *object);
 };
 
 }}

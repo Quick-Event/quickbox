@@ -5,7 +5,8 @@
 #include <QDate>
 #include <QRegularExpression>
 
-using namespace qf::core;
+namespace qf {
+namespace core {
 
 const QString& Utils::nullValueString()
 {
@@ -206,3 +207,43 @@ bool Utils::invokeMethod_B_V(QObject *obj, const char *method_name)
 		qfWarning() << obj << "Method" << method_name << "invocation failed!";
 	return ret.toBool();
 }
+
+QStringList Utils::parseProgramAndArgumentsList(const QString &command_line)
+{
+	QStringList args;
+	QString tmp;
+	int quoteCount = 0;
+	bool inQuote = false;
+	// handle quoting. tokens can be surrounded by double quotes
+	// "hello world". three consecutive double quotes represent
+	// the quote character itself.
+	for (int i = 0; i < command_line.size(); ++i) {
+		if (command_line.at(i) == QLatin1Char('"')) {
+			++quoteCount;
+			if (quoteCount == 3) {
+				// third consecutive quote
+				quoteCount = 0;
+				tmp += command_line.at(i);
+			}
+			continue;
+		}
+		if (quoteCount) {
+			if (quoteCount == 1)
+				inQuote = !inQuote;
+			quoteCount = 0;
+		}
+		if (!inQuote && command_line.at(i).isSpace()) {
+			if (!tmp.isEmpty()) {
+				args += tmp;
+				tmp.clear();
+			}
+		} else {
+			tmp += command_line.at(i);
+		}
+	}
+	if (!tmp.isEmpty())
+		args += tmp;
+	return args;
+}
+
+}}

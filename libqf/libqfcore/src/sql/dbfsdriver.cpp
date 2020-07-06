@@ -18,6 +18,12 @@
 
 #define sqlDebug qfDebug
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
 using namespace qf::core::sql;
 
 static QMutex s_cacheRemoveMutex;
@@ -886,7 +892,7 @@ QPair<QString, QString> DbFsDriver::splitPathFile(const QString &path)
 
 QStringList DbFsDriver::splitPath(const QString &path)
 {
-	QStringList ret = path.split('/', QString::SkipEmptyParts);
+	QStringList ret = path.split('/', SkipEmptyParts);
 	return ret;
 }
 

@@ -22,6 +22,12 @@
 namespace qfu = qf::core::utils;
 namespace qff = qf::qmlwidgets::framework;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
 ReceiptsPrinter::ReceiptsPrinter(const ReceiptsPrinterOptions &opts, QObject *parent)
 	: QObject(parent)
 	, m_printerOptions(opts)
@@ -288,7 +294,7 @@ void ReceiptsPrinter::createPrinterData_helper(const QDomElement &el, DirectPrin
 				text_width = val.toInt();
 		}
 		else if(key == QLatin1String("lpt_textStyle")) {
-			QStringList styles = attr.value().split(',', QString::SkipEmptyParts);
+			QStringList styles = attr.value().split(',', SkipEmptyParts);
 			for(QString s : styles) {
 				s = s.trimmed();
 				if(s == QLatin1String("bold")) {

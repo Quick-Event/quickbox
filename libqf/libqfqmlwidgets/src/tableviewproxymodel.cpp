@@ -134,9 +134,17 @@ int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right)
 		return -1;
 	if(!left.isNull() && right.isNull())
 		return 1;
-	/*
 	else {
 		switch (left.userType()) {
+		case QVariant::Bool: {
+			bool l = left.toBool();
+			bool r = right.toBool();
+			if(l < r)
+				return -1;
+			if(l > r)
+				return 1;
+			return 0;
+		}
 		case QVariant::Int:
 			return left.toInt() - right.toInt();
 		case QVariant::UInt:
@@ -161,10 +169,12 @@ int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right)
 			return left.toString().compare(right.toString());
 		}
 	}
-	*/
+	/*
+	 * QVariant::operator<() deprecated since 5.15.0
 	if (left < right)
 		return -1;
 	return (left > right)? 1: 0;
+	*/
 }
 
 bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const

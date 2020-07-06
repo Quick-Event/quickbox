@@ -7,6 +7,12 @@
 
 #include <QMetaType>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
 using namespace qf::core::utils;
 
 //=================================================
@@ -512,7 +518,7 @@ TreeTable TreeTable::cd(const QString& path) const
 {
 	qfLogFuncFrame() << "path:" << path;
 	qfDebug() << "\t isValid():" << isValid();
-	QStringList path_lst = path.split('/', QString::SkipEmptyParts);
+	QStringList path_lst = path.split('/', SkipEmptyParts);
 	TreeTable ret = *this;
 	for(int path_ix=0; path_ix<path_lst.count(); path_ix++) {
 		bool ok;

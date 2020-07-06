@@ -187,6 +187,8 @@ public:
 	{
 		return {{ std::forward<T>(t)... }};
 	}
+
+	static QStringList parseProgramAndArgumentsList(const QString &command_line);
 };
 
 }}

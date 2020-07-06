@@ -18,6 +18,12 @@ namespace core {
 
 namespace {
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
 QLatin1String CATEGORY_DEFAULT("default");
 QLatin1String CATEGORY_QML("qml");
 
@@ -274,7 +280,7 @@ QStringList LogDevice::setModulesTresholdsFromArgs(const QStringList &args)
 
 void LogDevice::setModulesTresholds(const QString &s)
 {
-	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
+	QStringList tresholds = s.split(',', SkipEmptyParts);
 	setModulesTresholds(tresholds);
 }
 
@@ -336,7 +342,7 @@ QStringList LogDevice::setCategoriesTresholdsFromArgs(const QStringList &args)
 void LogDevice::setCategoriesTresholds(const QString &trsh)
 {
 	QString s = trsh;
-	QStringList tresholds = s.split(',', QString::SkipEmptyParts);
+	QStringList tresholds = s.split(',', SkipEmptyParts);
 	setCategoriesTresholds(tresholds);
 }
 

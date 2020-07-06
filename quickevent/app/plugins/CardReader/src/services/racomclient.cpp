@@ -229,9 +229,15 @@ void RacomClient::init()
 		m_rawSIDataUdpSocket = new QUdpSocket(this);
 		if(m_rawSIDataUdpSocket->bind(ss.rawDataListenPort())) {
 			connect(m_rawSIDataUdpSocket, &QUdpSocket::readyRead, this, &RacomClient::onRawSIDataUdpSocketReadyRead);
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 			connect(m_rawSIDataUdpSocket, QOverload<QAbstractSocket::SocketError>::of(&QAbstractSocket::error), [](QAbstractSocket::SocketError) {
 				qfError() << "RacomClient: raw SI data UDP socket error";
 			});
+#else
+			connect(m_rawSIDataUdpSocket, &QAbstractSocket::errorOccurred, [](QAbstractSocket::SocketError) {
+				qfError() << "RacomClient: raw SI data UDP socket error";
+			});
+#endif
 		}
 		else {
 			qfError() << "Cannot bind raw SI data UDP socket to port:" << ss.rawDataListenPort();

@@ -9,7 +9,7 @@ class MainWindow : public qf::qmlwidgets::framework::MainWindow
 private:
 	using Super = qf::qmlwidgets::framework::MainWindow;
 public:
-	explicit MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr);
+	explicit MainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
 	~MainWindow() override;
 
 	Q_INVOKABLE QString versionString() const;

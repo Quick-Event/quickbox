@@ -109,9 +109,9 @@ public:
 	Q_INVOKABLE QString applicationDir() const;
 	Q_INVOKABLE QString applicationName() const;
 	Q_INVOKABLE void printHelp() const;
-	void printHelp(QTextStream &os) const;
+	void printHelp(std::ostream &os) const;
 	Q_INVOKABLE void dump() const;
-	void dump(QTextStream &os) const;
+	void dump(std::ostream &os) const;
 
 	Q_INVOKABLE bool optionExists(const QString &name) const;
 	Q_INVOKABLE QVariantMap values() const;

@@ -109,7 +109,8 @@ bool ResultsExporter::exportResults()
 				proc->deleteLater();
 			});
 
-			proc->start(cmd);
+			QStringList cmd_args = qf::core::Utils::parseProgramAndArgumentsList(cmd);
+			proc->start(cmd_args.value(0), cmd_args.mid(1));
 		}
 		return true;
 	}

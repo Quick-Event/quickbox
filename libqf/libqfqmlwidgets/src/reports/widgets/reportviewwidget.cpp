@@ -97,22 +97,28 @@ bool ReportViewWidget::showReport2(QWidget *parent
 
 void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 {
-	if(ev->orientation() == Qt::Vertical) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+	QPoint pos = event->pos();
+	auto delta = ev->delta();
+#else
+	QPoint pos = ev->position().toPoint();
+	auto delta = ev->angleDelta().y();
+#endif
+	/*if(ev->orientation() == Qt::Vertical)*/ {
 		if(ev->modifiers() == Qt::ControlModifier) {
-			int delta = ev->delta();
-			emit zoomOnWheel(delta, ev->pos());
+			emit zoomOnWheel(delta, pos);
 			ev->accept();
 			return;
 		}
 		else {
 			QScrollBar *sb = verticalScrollBar();
 			if(sb) {
-				if(sb->value() == sb->minimum() && ev->delta() > 0) {
+				if(sb->value() == sb->minimum() && delta > 0) {
 					emit showPreviousPage();
 					ev->accept();
 					return;
 				}
-				if(sb->value() == sb->maximum() && ev->delta() < 0) {
+				if(sb->value() == sb->maximum() && delta < 0) {
 					emit showNextPage();
 					ev->accept();
 					return;
@@ -121,7 +127,7 @@ void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 			if(!sb || !sb->isVisible()) {
 				/// pokud neni scroll bar, nemuzu se spolehnout na funkci verticalScrollBarValueChanged(), protoze value je pro oba smery == 0
 				//qfInfo() << e->delta();
-				if(ev->delta() < 0) {
+				if(delta < 0) {
 					emit showNextPage();
 				}
 				else {
@@ -139,7 +145,9 @@ void ReportViewWidget::ScrollArea::keyPressEvent(QKeyEvent* ev)
 {
 	if(ev->modifiers() == Qt::ControlModifier) {
 		static QCursor c;
-		if(c.bitmap() == nullptr) {
+		static bool c_init = false;
+		if(!c_init) {
+			c_init = true;
 			QBitmap b1(":/qf/qmlwidgets/images/zoomin_cursor_bitmap.png");
 			QBitmap b2(":/qf/qmlwidgets/images/zoomin_cursor_mask.png");
 			c = QCursor(b1, b2, 18, 12);
@@ -715,7 +723,11 @@ void ReportViewWidget::setupPainter(ReportPainter *p)
 	p->setSelectedItem(m_selectedItem);
 	p->scale(scale(), scale());
 	p->translate(qmlwidgets::graphics::mm2device(qmlwidgets::graphics::Point(PageBorder, PageBorder), p->device()));
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
 	m_painterInverseMatrix = p->matrix().inverted();
+#else
+	m_painterInverseMatrix = p->worldTransform().toAffine().inverted();
+#endif
 }
 
 void ReportViewWidget::setReport(const QString &file_name, const QVariantMap &report_init_properties)

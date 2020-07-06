@@ -3,8 +3,14 @@
 #include "../core/log.h"
 
 #include <QTime>
+#include <QRandomGenerator>
 
 using namespace qf::core::utils;
+
+static uint32_t myrand()
+{
+	return QRandomGenerator::global()->generate();
+}
 
 //===================================================================
 //                                         Crypt
@@ -54,7 +60,7 @@ QByteArray Crypt::encrypt(const QByteArray &data, int min_length) const
 	QByteArray dest;
 
 	/// nahodne se vybere hodnota, kterou se string zaxoruje a ta se ulozi na zacatek
-	unsigned val = (unsigned)qrand();
+	unsigned val = (unsigned)myrand();
 	val += QTime::currentTime().msec();
 	val %= 256;
 	if(val == 0)
@@ -76,7 +82,7 @@ QByteArray Crypt::encrypt(const QByteArray &data, int min_length) const
 		val = m_generator(val);
 		b = bb ^ (quint8)val;
 		dest += code_byte(b);
-		bb = (quint8)qrand();
+		bb = (quint8)myrand();
 	}
 	return dest;
 }

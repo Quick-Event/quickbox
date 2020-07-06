@@ -372,7 +372,7 @@ bool QFHttpMySqlDriver::open(const QString & db, const QString & user, const QSt
 	//try
 	{
 		http()->postWaitForAnswer(url(), json_data);
-        qDebug() << "open succeeded..." << endl;
+		//qDebug() << "open succeeded..." << endl;
 		setOpen(true);
 		setOpenError(false);
 	}

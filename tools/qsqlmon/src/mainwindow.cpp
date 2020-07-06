@@ -1326,10 +1326,10 @@ void MainWindow::availableDrivers()
 		#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 		ts << "QT build key:" << QLibraryInfo::buildKey() << endl << endl;
 		#endif
-		ts << "Available drivers:" << endl;
+		ts << "Available drivers:" << '\n';
 		QStringList sl = qf::core::sql::Connection::drivers();
 		foreach(QString s, sl) {
-			ts << "\t'" << s << "'" << endl;
+			ts << "\t'" << s << "'" << '\n';
 		}
 	}
 	qf::qmlwidgets::dialogs::PreviewDialog::exec(this, s);
@@ -1343,7 +1343,7 @@ void MainWindow::checkDrivers()
 		for(QString plugin_dir : QCoreApplication::libraryPaths()) {
 			qfInfo() << "plugin dir:" << plugin_dir;
 			QString path = qf::core::utils::FileUtils::joinPath(plugin_dir, "sqldrivers");
-			ts << tr("Plugins found (looked in %1):").arg(QDir::toNativeSeparators(path)) << endl;
+			ts << tr("Plugins found (looked in %1):").arg(QDir::toNativeSeparators(path)) << '\n';
 			QDir dir(path);
 			dir.setFilter(QDir::Files);
 			//dir.setNameFilters(QStringList() << "*.dll");
@@ -1353,11 +1353,11 @@ void MainWindow::checkDrivers()
 				QPluginLoader loader(dir.absoluteFilePath(file_name));
 				QObject *plugin = loader.instance();
 				if(plugin) {
-					ts << tr("OK ") << endl;
+					ts << tr("OK ") << '\n';
 				}
 				else {
-					ts << tr("ERROR ") << endl;
-					ts << loader.errorString() << endl;
+					ts << tr("ERROR ") << '\n';
+					ts << loader.errorString() << '\n';
 				}
 			}
 		}

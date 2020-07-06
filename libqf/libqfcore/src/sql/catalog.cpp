@@ -98,7 +98,11 @@ QString FieldInfo::toString(const QString& indent) const
 	ts << indent << "pri key: " << isPriKey() << "\n";
 	ts << indent << "auto increment: " << isAutoIncrement() << "\n";
 	ts << indent << "sequence name: " << seqName() << "\n";
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 	ts << flush;
+#else
+	ts << Qt::flush;
+#endif
 	return s;
 }
 

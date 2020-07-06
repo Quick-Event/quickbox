@@ -46,6 +46,12 @@ namespace qfs = qf::core::sql;
 
 namespace Runs {
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
 static Event::EventPlugin* eventPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
@@ -2085,8 +2091,8 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	append_list(xml_event, QVariantList{"Name", event_config->eventName()});
 	append_list(xml_event, QVariantList{"StartTime", QVariantList{"Date", event_config->eventDateTime().toUTC().date().toString(Qt::ISODate)}, QVariantList{"Time", event_config->eventDateTime().time().toString(Qt::ISODate)}});
 	append_list(xml_event, QVariantList{"EndTime", QVariantList{"Date", event_config->eventDateTime().toUTC().date().toString(Qt::ISODate)}, QVariantList{"Time", event_config->eventDateTime().time().toString(Qt::ISODate)}});
-	QStringList director = event_config->director().split(' ', QString::SkipEmptyParts);
-	QStringList main_referee = event_config->mainReferee().split(' ', QString::SkipEmptyParts);
+	QStringList director = event_config->director().split(' ', SkipEmptyParts);
+	QStringList main_referee = event_config->mainReferee().split(' ', SkipEmptyParts);
 	append_list(xml_event, QVariantList{"Official", QVariantMap{{"type", "Director"}}, QVariantList{"Person", QVariantList{"Name", QVariantList{"Family", director.value(0)}, QVariantList{"Given", director.value(1)}}}});
 	append_list(xml_event, QVariantList{"Official", QVariantMap{{"type", "MainReferee"}}, QVariantList{"Person", QVariantList{"Name", QVariantList{"Family", main_referee.value(0)}, QVariantList{"Given", main_referee.value(1)}}}});
 	append_list(xml_root, xml_event);

@@ -14,6 +14,7 @@
 #endif
 
 #include <limits>
+#include <iostream>
 
 using namespace qf::core::utils;
 
@@ -325,53 +326,52 @@ QString CLIOptions::applicationName() const
 	return applicationDirAndName().second;
 }
 
-void CLIOptions::printHelp(QTextStream& os) const
+void CLIOptions::printHelp(std::ostream& os) const
 {
-	os << applicationName() << " [OPTIONS]" << endl << endl;
-	os << "OPTIONS:" << endl << endl;
+	os << applicationName().toStdString() << " [OPTIONS]" << std::endl << std::endl;
+	os << "OPTIONS:" << std::endl << std::endl;
 	QMapIterator<QString, Option> it(m_options);
 	while(it.hasNext()) {
 		it.next();
 		Option opt = it.value();
-		os << opt.names().join(", ");
+		os << opt.names().join(", ").toStdString();
 		if(opt.type() != QVariant::Bool) {
 			if(opt.type() == QVariant::Int || opt.type() == QVariant::Double) os << " " << "number";
 			else os << " " << "'string'";
 		}
 		//os << ':';
 		QVariant def_val = opt.defaultValue();
-		if(def_val.isValid()) os << " [default(" << def_val.toString() << ")]";
+		if(def_val.isValid()) os << " [default(" << def_val.toString().toStdString() << ")]";
 		if(opt.isMandatory()) os << " [MANDATORY]";
-		os << endl;
+		os << std::endl;
 		QString oc = opt.comment();
-		if(!oc.isEmpty()) os << "\t" << opt.comment() << endl;
+		if(!oc.isEmpty())
+			os << "\t" << opt.comment().toStdString() << std::endl;
 	}
-	os << qf::core::LogDevice::logModulesCLIHelp() << endl;
-	os << qf::core::LogDevice::logCategoriesCLIHelp() << endl;
+	os << qf::core::LogDevice::logModulesCLIHelp().toStdString() << std::endl;
+	os << qf::core::LogDevice::logCategoriesCLIHelp().toStdString() << std::endl;
 }
 
 void CLIOptions::printHelp() const
 {
-	QTextStream ts(stdout);
-	printHelp(ts);
+	printHelp(std::cout);
 }
 
-void CLIOptions::dump(QTextStream &os) const
+void CLIOptions::dump(std::ostream &os) const
 {
 	QMapIterator<QString, Option> it(m_options);
 	while(it.hasNext()) {
 		it.next();
 		Option opt = it.value();
-		os << it.key() << '(' << opt.names().join(", ") << ')' << ": " << opt.value().toString() << endl;
+		os << it.key().toStdString() << '(' << opt.names().join(", ").toStdString() << ')' << ": " << opt.value().toString().toStdString() << std::endl;
 	}
 }
 
 void CLIOptions::dump() const
 {
-	QTextStream ts(stdout);
-	ts << "=============== options values dump ==============" << endl;
-	dump(ts);
-	ts << "-------------------------------------------------" << endl;
+	std::cout << "=============== options values dump ==============" << std::endl;
+	dump(std::cout);
+	std::cout << "-------------------------------------------------" << std::endl;
 }
 
 void CLIOptions::addParseError(const QString& err)

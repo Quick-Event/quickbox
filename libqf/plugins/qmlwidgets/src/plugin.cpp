@@ -96,7 +96,11 @@ public:
 
 		qmlRegisterType<qf::qmlwidgets::DialogButtonBox>(uri, 1, 0, "ButtonBox");
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 		qmlRegisterType<qf::qmlwidgets::LayoutPropertiesAttached>();
+#else
+		qmlRegisterAnonymousType<qf::qmlwidgets::LayoutPropertiesAttached>(uri, 1);
+#endif
 		qmlRegisterType<qf::qmlwidgets::LayoutProperties>(uri, 1, 0, "Layout");
 
 		qmlRegisterType<qf::qmlwidgets::LayoutTypeProperties>(uri, 1, 0, "LayoutProperties");

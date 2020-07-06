@@ -259,5 +259,9 @@ void Frame::createLayout(LayoutType layout_type)
 
 QQmlListProperty<QObject> Frame::attachedObjects()
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
 	return QQmlListProperty<QObject>(this, m_attachedObjects);
+#else
+	return QQmlListProperty<QObject>(this, &m_attachedObjects);
+#endif
 }

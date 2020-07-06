@@ -14,10 +14,16 @@ GanttView::GanttView(QWidget *parent)
 
 void GanttView::wheelEvent(QWheelEvent *ev)
 {
-	if(ev->orientation() == Qt::Vertical) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+	QPoint pos = event->pos();
+	auto delta = ev->delta();
+#else
+	QPoint pos = ev->position().toPoint();
+	auto delta = ev->angleDelta().y();
+#endif
+	{
 		if(ev->modifiers() == Qt::ControlModifier) {
-			int delta = ev->angleDelta().y();
-			zoom(delta, ev->pos());
+			zoom(delta, pos);
 			ev->accept();
 			return;
 		}

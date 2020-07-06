@@ -47,7 +47,7 @@ private:
 public:
 	typedef QMap<QString, QObject*> PluginMap;
 public:
-	explicit MainWindow(QWidget * parent = nullptr, Qt::WindowFlags flags = 0);
+	explicit MainWindow(QWidget * parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
 	~MainWindow() Q_DECL_OVERRIDE;
 
 	QF_PROPERTY_IMPL(QString, u, U, iLanguageName)

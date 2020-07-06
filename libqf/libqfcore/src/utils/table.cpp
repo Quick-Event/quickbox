@@ -7,15 +7,21 @@
 #include "../core/utils.h"
 #include "../core/string.h"
 
-namespace qfc = qf::core;
-using namespace qf::core::utils;
-
 #include <QTextCodec>
 #include <QStringBuilder>
 #include <QDate>
 #include <QDomElement>
 
 #include <limits>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
+namespace qfc = qf::core;
+using namespace qf::core::utils;
 
 //====================================================
 //                      Table::LessThan
@@ -834,7 +840,7 @@ void Table::exportCSV(QTextStream &ts, const QString col_names, Table::TextExpor
 		for(int i=0; i<fields().count(); i++) ixs.append(i);
 	}
 	else {
-		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		QStringList sl = col_names.split(',', SkipEmptyParts);
 		foreach(QString s, sl) {
 			s = s.trimmed();
 			int ix = fields().fieldIndex(s);
@@ -1285,7 +1291,7 @@ QDomElement Table::toHtmlElement(QDomDocument &owner_doc, const QString & col_na
 		for(int i=0; i<fields().count(); i++) ixs.append(i);
 	}
 	else {
-		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		QStringList sl = col_names.split(',', SkipEmptyParts);
 		foreach(QString s, sl) {
 			int ix = fields().fieldIndex(s);
 			if(ix >= 0)
@@ -1341,7 +1347,7 @@ QVariantMap Table::toJson(const QString &col_names) const
 		for(int i=0; i<fields().count(); i++) ixs.append(i);
 	}
 	else {
-		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		QStringList sl = col_names.split(',', SkipEmptyParts);
 		foreach(QString s, sl) {
 			int ix = fields().fieldIndex(s);
 			if(ix >= 0)
@@ -1383,7 +1389,7 @@ TreeTable Table::toTreeTable(const QString &col_names, const QString &table_name
 			ixs.append(i);
 	}
 	else {
-		QStringList sl = col_names.split(',', QString::SkipEmptyParts);
+		QStringList sl = col_names.split(',', SkipEmptyParts);
 		foreach(QString s, sl) {
 			int ix = fields().fieldIndex(s);
 			if(ix >= 0)

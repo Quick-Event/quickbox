@@ -13,17 +13,17 @@ class QFQMLWIDGETS_DECL_EXPORT FileDialog : public QFileDialog
 {
 	Q_OBJECT
 public:
-	explicit FileDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+	explicit FileDialog(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
 public:
 	static QString getOpenFileName(QWidget *parent = nullptr, const QString &caption = QString(),
 				const QString &dir = QString(), const QString &filter = QString(),
-				QString *selectedFilter = 0, QFileDialog::Options options = 0);
+	            QString *selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
 	static QStringList getOpenFileNames(QWidget *parent = nullptr, const QString &caption = QString(),
 				const QString &dir = QString(), const QString &filter = QString(),
-				QString *selectedFilter = 0, QFileDialog::Options options = 0);
+	            QString *selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
 	static QString getSaveFileName(QWidget * parent = 0, const QString & caption = QString(),
 				const QString & dir = QString(), const QString & filter = QString(),
-				QString * selectedFilter = 0, QFileDialog::Options options = 0);
+	            QString * selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
 	static QString getExistingDirectory(QWidget * parent = 0, const QString & caption = QString(),
 				const QString & dir = QString(), Options options = ShowDirsOnly);
 private:

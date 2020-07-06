@@ -32,6 +32,12 @@
 #include <QComboBox>
 #include <QStyledItemDelegate>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+static const auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+static const auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
 namespace qfc = qf::core;
 namespace qfw = qf::qmlwidgets;
 namespace qfd = qf::qmlwidgets::dialogs;
@@ -89,7 +95,7 @@ public:
 		QMapIterator<int, QString> it(m_idToCourseName);
 		while(it.hasNext()) {
 			it.next();
-			m_courseNameToId.insertMulti(it.value(), it.key());
+			m_courseNameToId.insert(it.value(), it.key());
 		}
 	}
 
@@ -461,7 +467,7 @@ void ClassesWidget::import_ocad_txt()
 				if(line.isEmpty())
 					continue;
 
-				QStringList sections = line.split('\t', QString::SkipEmptyParts);
+				QStringList sections = line.split('\t', SkipEmptyParts);
 				QStringList class_names;
 
 				qfc::String course_name = normalize_course_name(sections.value(ColCourseName));

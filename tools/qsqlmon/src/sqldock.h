@@ -13,7 +13,7 @@ class SqlDock : public QDockWidget
 {
 	Q_OBJECT
 public:
-	SqlDock(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+	SqlDock(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
 
 public:
 	SqlTextEdit* sqlTextEdit();
