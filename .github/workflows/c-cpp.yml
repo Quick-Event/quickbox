@@ -13,14 +13,14 @@ jobs:
     #runs-on: windows-latest
 
     steps:
-    # tihle ve windows zbuchne na tom, ze to nenajde python :(
-    #- name: Install Qt
-    #  uses: jurplel/install-qt-action@v2
-    #  with:
-    #    version: '5.15.0'
-    #    arch: 'win64_mingw73'  
-    #    #host: 'windows'
-    #    target: 'desktop'
+    
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.15.0'
+    #    arch: 'win64_mingw73'  # tohle ve windows zbuchne na tom, ze to nenajde python :(
+    #    host: 'windows'
+        target: 'desktop'
     - uses: actions/checkout@v2
     - name: configure
       run: qmake CONFIG+=release CONFIG-=qml_debug CONFIG-=qtquickcompiler CONFIG+=force_debug_info
