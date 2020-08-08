@@ -128,53 +128,56 @@ int TableViewProxyModel::variantCmp(const QVariant &left, const QVariant &right)
 		return -1;
 	if(left.isValid() && !right.isValid())
 		return 1;
-	if(left.isNull() && right.isNull())
+	bool left_null = left.isNull() || (left.userType() == QVariant::String && left == QStringLiteral("null"));
+	bool right_null = right.isNull() || (right.userType() == QVariant::String && right == QStringLiteral("null"));
+	if(left_null && right_null)
 		return 0;
-	if(left.isNull() && !right.isNull())
+	if(left_null && !right_null)
 		return -1;
-	if(!left.isNull() && right.isNull())
+	if(!left_null && right_null)
 		return 1;
-	else {
-		switch (left.userType()) {
-		case QVariant::Bool: {
-			bool l = left.toBool();
-			bool r = right.toBool();
-			if(l < r)
-				return -1;
-			if(l > r)
-				return 1;
-			return 0;
-		}
-		case QVariant::Int:
-			return left.toInt() - right.toInt();
-		case QVariant::UInt:
-			return left.toUInt() - right.toUInt();
-		case QVariant::LongLong:
-			return left.toLongLong() - right.toLongLong();
-		case QVariant::ULongLong:
-			return left.toULongLong() - right.toULongLong();
-		case QMetaType::Float:
-			return left.toFloat() - right.toFloat();
-		case QVariant::Double:
-			return left.toDouble() - right.toDouble();
-		case QVariant::Char:
-			return left.toChar().unicode() - right.toChar().unicode();
-		case QVariant::Date:
-			return left.toDate().toJulianDay() - right.toDate().toJulianDay();
-		case QVariant::Time:
-			return left.toTime().msecsSinceStartOfDay() - right.toTime().msecsSinceStartOfDay();
-		case QVariant::DateTime:
-			return left.toDateTime().toMSecsSinceEpoch() - right.toDateTime().toMSecsSinceEpoch();
-		default:
-			return left.toString().compare(right.toString());
-		}
-	}
-	/*
-	 * QVariant::operator<() deprecated since 5.15.0
+#ifdef VARIANT_CMP
+	// QVariant::operator<() deprecated since 5.15.0
 	if (left < right)
 		return -1;
 	return (left > right)? 1: 0;
-	*/
+#else
+	switch (left.userType()) {
+	case QVariant::Bool: {
+		bool l = left.toBool();
+		bool r = right.toBool();
+		if(l < r)
+			return -1;
+		if(l > r)
+			return 1;
+		return 0;
+	}
+	case QVariant::Int:
+		return left.toInt() - right.toInt();
+	case QVariant::UInt:
+		return left.toUInt() - right.toUInt();
+	case QVariant::LongLong:
+		return left.toLongLong() - right.toLongLong();
+	case QVariant::ULongLong:
+		return left.toULongLong() - right.toULongLong();
+	case QMetaType::Float:
+		return left.toFloat() - right.toFloat();
+	case QVariant::Double:
+		return left.toDouble() - right.toDouble();
+	case QVariant::Char:
+		return left.toChar().unicode() - right.toChar().unicode();
+	case QVariant::Date:
+		return left.toDate().toJulianDay() - right.toDate().toJulianDay();
+	case QVariant::Time:
+		return left.toTime().msecsSinceStartOfDay() - right.toTime().msecsSinceStartOfDay();
+	case QVariant::DateTime:
+		return left.toDateTime().toMSecsSinceEpoch() - right.toDateTime().toMSecsSinceEpoch();
+	default:
+		auto ret = left.toString().compare(right.toString());
+		qfWarning() << left << left.toString() << "vs" << right << right.toString() << "==" << ret;
+		return ret;
+	}
+#endif
 }
 
 bool TableViewProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
