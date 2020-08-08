@@ -18,16 +18,16 @@ linux:
     - APP_VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
     - ./quickevent/make-dist.sh --src-dir . --app-version ${APP_VERSION} --qt-dir /opt/qt/5.14.1/gcc_64 --work-dir ./build
 
-#win-build:
-  #tags:
-    #- windows
-  #stage:
-    #build
-  #script:
-    #- bash build-win.sh
-  #artifacts:
-    #paths:
-      #- _inno/
+win-build:
+  tags:
+    - windows
+  stage:
+    build
+  script:
+    - bash build-win.sh
+  artifacts:
+    paths:
+      - _inno/
 
 #win-deploy:
   #only:
