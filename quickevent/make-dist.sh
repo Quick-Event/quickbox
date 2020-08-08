@@ -91,13 +91,11 @@ if [ $WORK_DIR = "/home/fanda/t/_distro" ] && [ ! -d "/home/fanda/t/_distro" ]; 
 	error "invalid work dir, use --work-dir <path> to specify it\n"
 	help
 fi
-if [ ! -f $APP_IMAGE_TOOL ]; then
-	error "invalid path to AppImageTool, use --image=tool <path> to specify it\n"
-	help
-fi
-if [ ! -x $APP_IMAGE_TOOL ]; then
-	error "AppImageTool file must be executable, use chmod +x $APP_IMAGE_TOOL\n"
-	help
+if [ -f $APP_IMAGE_TOOL ]; then
+	if [ ! -x $APP_IMAGE_TOOL ]; then
+		error "AppImageTool file must be executable, use chmod +x $APP_IMAGE_TOOL\n"
+		help
+	fi
 fi
 
 
