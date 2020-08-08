@@ -12,17 +12,18 @@ linux:
     build
   artifacts:
     paths:
-    - build/_dist/
+    - build/artifacts/
   script:
     #- git submodule update --init --force --recursive
-    - ./quickevent/make-dist.sh --src-dir . --app-version 12.3 --qt-dir /opt/qt/5.14.1/gcc_64 --work-dir ./build  
+    - APP_VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
+    - ./quickevent/make-dist.sh --src-dir . --app-version ${APP_VERSION} --qt-dir /opt/qt/5.14.1/gcc_64 --work-dir ./build
 
 #win-build:
   #tags:
     #- windows
   #stage:
     #build
-  #script: 
+  #script:
     #- bash build-win.sh
   #artifacts:
     #paths:

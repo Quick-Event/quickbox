@@ -79,6 +79,9 @@ case $key in
 esac
 done
 
+SRC_DIR=`readlink -f $SRC_DIR`
+WORK_DIR=`readlink -f $WORK_DIR`
+
 if [ ! -d $SRC_DIR ]; then
    	error "invalid source dir, use --src-dir <path> to specify it\n"
 	help
@@ -133,9 +136,9 @@ DIST_QML_DIR=$DIST_DIR/qml
 if [ -z $NO_CLEAN ]; then
 	echo removing directory $WORK_DIR
 	rm -r $BUILD_DIR
-	mkdir -p $BUILD_DIR
 fi
 
+mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 $QMAKE $SRC_DIR/quickbox.pro CONFIG+=release CONFIG+=force_debug_info CONFIG+=separate_debug_info -r -spec linux-g++
 make -j2
@@ -191,10 +194,13 @@ $RSYNC $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
 mkdir -p $DIST_QML_DIR
 $RSYNC $QT_DIR/qml/QtQml $DIST_BIN_DIR/
 
-tar -cvzf $WORK_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
+ARTIFACTS_DIR=$WORK_DIR/artifacts
+mkdir -p $ARTIFACTS_DIR
+
+tar -cvzf $ARTIFACTS_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
 if [ -f $APP_IMAGE_TOOL ]; then
 	rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
-	ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $WORK_DIR/$APP_NAME-${APP_VER}-${ARCH}.AppImage
+	ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
 fi
 
