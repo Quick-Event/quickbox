@@ -40,9 +40,31 @@ Frame {
 		Para {
 			htmlExportAttributes: {"lpt_textStyle": "bold"}
 			textStyle: myStyle.textStyleBold
-			text: "Každé vyhlášení - 3x hodinky";
+			text: "NOVÉ podkolenky na OB";
 		}
 		Frame { height: 2 }
+		Para {
+			textStyle: myStyle.textStyleBold
+			text: "Orienteering HEAVY DUTY";
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "Orienteering ULTRA LIGHT";
+		}
+		Para {
+			htmlExportAttributes: {"lpt_textStyle": "bold"}
+			halign: Frame.AlignHCenter
+			text: "Ponožky Lightspeed ZDARMA";
+			textStyle: myStyle.textStyleBold
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "ke každému páru podkolenek";
+		}
+		Para {
+			halign: Frame.AlignHCenter
+			text: "www.orienteering.cz";
+		}
 		Frame {
 			layout: Frame.LayoutHorizontal
 			valign: Frame.AlignVCenter
@@ -59,29 +81,6 @@ Frame {
 				bottomBorder: Pen { basedOn: "black1dot" }
 				//htmlExportAttributes: {"lpt_text": "-----"}
 			}
-		}
-		Frame { height: 2 }
-		Para {
-			textStyle: myStyle.textStyleBold
-			text: "TRIMTEX sleva 50%";
-		}
-		Para {
-			halign: Frame.AlignHCenter
-			text: "Špičkové norské sportovní oblečení";
-		}
-		Para {
-			halign: Frame.AlignHCenter
-			text: "trika, bundy, vesty, termoprádlo,";
-		}
-		Para {
-			htmlExportAttributes: {"lpt_textStyle": "bold"}
-			halign: Frame.AlignHCenter
-			text: "Se slevou 50% ve stánku HSH";
-			textStyle: myStyle.textStyleBold
-		}
-		Para {
-			halign: Frame.AlignHCenter
-			text: "Dresy OB od 790 Kč";
 		}
 	}
 }
