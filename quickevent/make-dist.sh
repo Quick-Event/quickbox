@@ -149,51 +149,54 @@ fi
 rm -r $DIST_DIR
 mkdir -p $DIST_DIR
 
-rsync -av --exclude '*.debug' $BUILD_DIR/lib/ $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $BUILD_DIR/bin/ $DIST_BIN_DIR
+RSYNC='rsync -av --exclude *.debug'
+# $RSYNC expands as: rsync -av '--exclude=*.debug'
 
-#rsync -a --exclude '*.debug'v $QT_DIR/lib/libicu* $DIST_LIB_DIR
+$RSYNC $BUILD_DIR/lib/ $DIST_LIB_DIR
+$RSYNC $BUILD_DIR/bin/ $DIST_BIN_DIR
 
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Core.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Gui.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Widgets.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5XmlPatterns.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Network.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Sql.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Xml.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Qml.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Quick.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5QmlModels.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Svg.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Script.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5ScriptTools.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5PrintSupport.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5SerialPort.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5DBus.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5Multimedia.so* $DIST_LIB_DIR
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libQt5XcbQpa.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Core.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Gui.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Widgets.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5XmlPatterns.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Network.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Sql.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Xml.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Qml.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Quick.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5QmlModels.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Svg.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Script.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5ScriptTools.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5PrintSupport.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5SerialPort.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5DBus.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5Multimedia.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libQt5XcbQpa.so* $DIST_LIB_DIR
 
-rsync -av --exclude '*.debug' $QT_LIB_DIR/libicu*.so* $DIST_LIB_DIR
+$RSYNC $QT_LIB_DIR/libicu*.so* $DIST_LIB_DIR
 
-rsync -av --exclude '*.debug' $QT_DIR/plugins/platforms/ $DIST_BIN_DIR/platforms
-rsync -av --exclude '*.debug' $QT_DIR/plugins/printsupport/ $DIST_BIN_DIR/printsupport
+$RSYNC $QT_DIR/plugins/platforms/ $DIST_BIN_DIR/platforms
+$RSYNC $QT_DIR/plugins/printsupport/ $DIST_BIN_DIR/printsupport
 
 mkdir -p $DIST_BIN_DIR/imageformats
-rsync -av --exclude '*.debug' $QT_DIR/plugins/imageformats/libqjpeg.so $DIST_BIN_DIR/imageformats/
-rsync -av --exclude '*.debug' $QT_DIR/plugins/imageformats/libqsvg.so $DIST_BIN_DIR/imageformats/
+$RSYNC $QT_DIR/plugins/imageformats/libqjpeg.so $DIST_BIN_DIR/imageformats/
+$RSYNC $QT_DIR/plugins/imageformats/libqsvg.so $DIST_BIN_DIR/imageformats/
 
 mkdir -p $DIST_BIN_DIR/sqldrivers
-rsync -av --exclude '*.debug' $QT_DIR/plugins/sqldrivers/libqsqlite.so $DIST_BIN_DIR/sqldrivers/
-rsync -av --exclude '*.debug' $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $DIST_BIN_DIR/sqldrivers/
+$RSYNC $QT_DIR/plugins/sqldrivers/libqsqlite.so $DIST_BIN_DIR/sqldrivers/
+$RSYNC $QT_DIR/plugins/sqldrivers/libqsqlpsql.so $DIST_BIN_DIR/sqldrivers/
 
 mkdir -p $DIST_BIN_DIR/audio
-rsync -av --exclude '*.debug' $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
+$RSYNC $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
 
 mkdir -p $DIST_QML_DIR
-rsync -av --exclude '*.debug' $QT_DIR/qml/QtQml $DIST_BIN_DIR/
+$RSYNC $QT_DIR/qml/QtQml $DIST_BIN_DIR/
 
 tar -cvzf $WORK_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
-rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
+if [ -f $APP_IMAGE_TOOL ]; then
+	rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
+	ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $WORK_DIR/$APP_NAME-${APP_VER}-${ARCH}.AppImage
+fi
 
-ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $WORK_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
