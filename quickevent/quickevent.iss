@@ -6,7 +6,7 @@
 #define APP_NAME_LOWER "quickevent"
 #define COMPANY "win64"
 
-#define QT_DIR "c:/Qt/5.13.2/mingw73_64"
+#define QT_DIR "c:/Qt/5.15.0/mingw81_64"
 ;#define MINGW_DIR "C:\app\qt5.6\Tools\mingw492_32"
 #define SSL_DIR "C:\qt\Tools\OpenSSL\Win_x64"
 #define PSQL_DIR "C:\app\pgsql64"
