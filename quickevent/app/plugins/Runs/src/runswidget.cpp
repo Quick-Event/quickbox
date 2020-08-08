@@ -778,7 +778,7 @@ void RunsWidget::on_btDraw_clicked()
 				}
 				if(draw_method == DrawMethod::RandomizedEquidistantClubs) {
 					QRandomGenerator *rnd_gen = QRandomGenerator::global();
-					rnd_gen->seed((uint)QTime::currentTime().msecsSinceStartOfDay());
+					//rnd_gen->seed((uint)QTime::currentTime().msecsSinceStartOfDay());
 					//qsrand((uint)QTime::currentTime().msecsSinceStartOfDay());
 					int cnt = runners_draw_ids.count();
 					for (int i = 0; i < 2*cnt; ++i) {
