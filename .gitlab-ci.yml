@@ -15,12 +15,6 @@ linux:
     - build/_dist/
   script:
     #- git submodule update --init --force --recursive
-    - rm -rf build
-    - mkdir -p build
-    - cd build
-    - /opt/qt/5.14.1/gcc_64/bin/qmake -r CONFIG+=release CONFIG+=force_debug_info CONFIG+=separate_debug_info ../quickbox.pro DEFINES+=GIT_COMMIT=${CI_BUILD_REF}
-    - make -j2
-    #- rsync -av --exclude '*.debug' lib bin /opt/shv/
     - ./quickevent/make-dist.sh --src-dir . --app-version 12.3 --qt-dir /opt/qt/5.14.1/gcc_64 --work-dir ./build  
 
 #win-build:
