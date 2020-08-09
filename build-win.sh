@@ -1,6 +1,5 @@
 echo "making quickevent" $WORKSPACE "in" `pwd`
-find --help
-echo "tsfiles" `find . -name "*.ts"`
+/usr/bin/find --help
 QT_DIR=/c/Qt/5.15.0/mingw81_64
 MINGW_DIR=/c/Qt/Tools/mingw810_64
 PATH=$MINGW_DIR/bin:$PATH
@@ -9,7 +8,7 @@ $MINGW_DIR/bin/mingw32-make.exe -j2 || exit 2
 
 TRANS_DIR=bin/translations
 mkdir -p $TRANS_DIR
-for tsfile in `find . -name "*.ts"` ; do
+for tsfile in `/usr/bin/find . -name "*.ts"` ; do
 	qmfile=`basename "${tsfile%.*}.qm"`
 	echo "$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile"
 	$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
