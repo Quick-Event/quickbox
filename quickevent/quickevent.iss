@@ -13,6 +13,7 @@
 
 #define INCLUDE_QT
 #define BUILD_DIR ".."
+#define SRC_DIR ".."
 
 [Setup]
 AppName={#APP_NAME}
