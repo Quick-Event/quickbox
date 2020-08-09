@@ -1,5 +1,4 @@
 echo "making quickevent" $WORKSPACE "in" `pwd`
-/usr/bin/find --help
 QT_DIR=/c/Qt/5.15.0/mingw81_64
 MINGW_DIR=/c/Qt/Tools/mingw810_64
 PATH=$MINGW_DIR/bin:$PATH
