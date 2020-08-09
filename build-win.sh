@@ -9,6 +9,7 @@ TRANS_DIR=bin/translations
 mkdir -p $TRANS_DIR
 for tsfile in `find . -name "*.ts"` ; do
 	qmfile=`basename "${tsfile%.*}.qm"`
+	echo $QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
 	$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
 done
 
