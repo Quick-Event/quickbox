@@ -22,7 +22,7 @@ win32 {
 	datafiles.commands = \
     	# mkdir not needed for windows
 	    # xcopy stopped to work with error: invalid number of parameters
-	    # problem is that $$shell_path returns / instead \ with mingw
+	    # it seams that /bin/sh is called with mingw from some version of Qt
 	    #xcopy  /e /y /i \"$$shell_path($$SRC_DATA_DIR)\" \"$$shell_path($$DEST_DATA_DIR)\"
-	    xcopy  \"$$replace(SRC_DATA_DIR,/,\\)\" \"$$replace(DEST_DATA_DIR,/,\\)\" /e /y /i
+	    mkdir -p $$shell_path($$DEST_DATA_DIR) && cp -avr $$shell_path($$SRC_DATA_DIR)/* $$shell_path($$DEST_DATA_DIR)
 }
