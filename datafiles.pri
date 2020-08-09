@@ -19,8 +19,12 @@ unix {
 win32 {
 	POST_TARGETDEPS += datafiles
 	QMAKE_EXTRA_TARGETS += datafiles
-	datafiles.commands = \
-		# mkdir not needed for windows
-		# xcopy stopped to work with error: invalid number of parameters
-		#xcopy $$shell_path($$SRC_DATA_DIR) $$shell_path($$DEST_DATA_DIR) /E /Y /I
+	CONFIG(debug, debug|release) {
+    	datafiles.commands = \
+	    	# mkdir not needed for windows
+		    # xcopy stopped to work with error: invalid number of parameters
+		    #xcopy $$shell_path($$SRC_DATA_DIR) $$shell_path($$DEST_DATA_DIR) /E /Y /I
+	}
+	else {
+	}
 }
