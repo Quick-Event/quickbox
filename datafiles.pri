@@ -21,5 +21,6 @@ win32 {
 	QMAKE_EXTRA_TARGETS += datafiles
 	datafiles.commands = \
 		# mkdir not needed for windows
-		xcopy $$shell_path($$SRC_DATA_DIR) $$shell_path($$DEST_DATA_DIR) /E /Y /I
+		# xcopy stopped to work with error: invalid number of parameters
+		#xcopy $$shell_path($$SRC_DATA_DIR) $$shell_path($$DEST_DATA_DIR) /E /Y /I
 }
