@@ -23,4 +23,4 @@ FORMS += \
     $$PWD/relaywidget.ui \
     $$PWD/addlegdialogwidget.ui
 
-include ( $$PWD/Relays/Relays.pri )
+
