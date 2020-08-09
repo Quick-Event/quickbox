@@ -22,5 +22,7 @@ win32 {
 	datafiles.commands = \
     	# mkdir not needed for windows
 	    # xcopy stopped to work with error: invalid number of parameters
-	    xcopy  /e /y /i \"$$shell_path($$SRC_DATA_DIR)\" \"$$shell_path($$DEST_DATA_DIR)\"
+	    # problem is that $$shell_path returns / instead \ with mingw
+	    #xcopy  /e /y /i \"$$shell_path($$SRC_DATA_DIR)\" \"$$shell_path($$DEST_DATA_DIR)\"
+	    xcopy  \"$$replace($$SRC_DATA_DIR,/,\\)\" \"$$replace($$DEST_DATA_DIR,/,\\)\" /e /y /i
 }
