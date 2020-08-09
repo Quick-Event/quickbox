@@ -1,4 +1,5 @@
 echo "making quickevent" $WORKSPACE "in" `pwd`
+find --help
 echo "tsfiles" `find . -name "*.ts"`
 QT_DIR=/c/Qt/5.15.0/mingw81_64
 MINGW_DIR=/c/Qt/Tools/mingw810_64
