@@ -75,7 +75,7 @@ bool CompetitorDocument::saveData()
 				if(siid_dirty) {
 					int competitor_id = dataId().toInt();
 					qf::core::sql::Query q(model()->connectionName());
-					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId AND (siId IS NULL OR siId = 0)", qf::core::Exception::Throw);
+					q.prepare("UPDATE runs SET siId=:siId WHERE competitorId=:competitorId", qf::core::Exception::Throw);
 					q.bindValue(":competitorId", competitor_id);
 					q.bindValue(":siId", siid());
 					q.exec(qf::core::Exception::Throw);
