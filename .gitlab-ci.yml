@@ -16,7 +16,7 @@ linux:
   script:
     #- git submodule update --init --force --recursive
     - APP_VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\" -f2`
-    - ./quickevent/make-dist.sh --src-dir . --app-version ${APP_VERSION} --qt-dir /opt/qt/5.14.1/gcc_64 --work-dir ./build
+    - ./quickevent/make-dist.sh --src-dir . --app-version ${APP_VERSION} --qt-dir /opt/qt/5.14.1/gcc_64 --work-dir ./build --appimage-tool /opt/appimagetool-x86_64.AppImage
 
 win-build:
   tags:
