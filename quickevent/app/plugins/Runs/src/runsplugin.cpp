@@ -89,7 +89,7 @@ const qf::core::utils::Table &RunsPlugin::runnersTable(int stage_id)
 		qfs::QueryBuilder qb;
 		qb.select2("competitors", "registration")
 				.select("COALESCE(lastName, '') || ' ' || COALESCE(firstName, '') AS competitorName")
-				.select2("runs", "id, siId")
+				.select2("runs", "id, siId, competitorId")
 				.select("runs.id AS runId")
 				.select2("classes", "name")
 				.from("competitors")

@@ -804,15 +804,30 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 	dlg.setCentralWidget(w);
 	//w->setFocusToWidget(Runs::FindRunnerWidget::FocusWidget::Name);
 	w->focusLineEdit();
-	connect(w, &Runs::FindRunnerWidget::runnerSelected, [this, card_id, &dlg](const QVariantMap &values) {
-		dlg.accept();
+	if(dlg.exec()) {
+		QVariantMap values = w->selectedRunner();
+		qfDebug() << values;
 		int run_id = values.value("runid").toInt();
-		if(run_id) {
+		int si_id = thisPlugin()->cardIdToSiId(card_id);
+		if(run_id > 0 && si_id > 0) {
 			thisPlugin()->assignCardToRun(card_id, run_id);
+			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
+				qf::core::sql::QueryBuilder qb;
+				qb.select("stageId").from("runs").where("id=" QF_IARG(run_id) );
+				qf::core::sql::Query q;
+				qfDebug() << qb.toString();
+				q.execThrow(qb.toString());
+				if(q.next()) {
+					int competitor_id = values.value("competitorid").toInt();
+					int stage_id = q.value("stageId").toInt();
+					QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) "AND stageId>=" QF_IARG(stage_id);
+					qfDebug() << qs;
+					q.execThrow(qs);
+				}
+			}
 			this->ui->tblCards->reloadRow();
 		}
-	});
-	dlg.exec();
+	}
 }
 
 quickevent::gui::audio::Player *CardReaderWidget::audioPlayer()

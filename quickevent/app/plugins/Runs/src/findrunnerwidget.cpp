@@ -21,6 +21,8 @@ static RunsPlugin *runsPlugin()
 	return plugin;
 }
 
+const QString FindRunnerWidget::UseSIInNextStages = QStringLiteral("useSIInNextStages");
+
 FindRunnerWidget::FindRunnerWidget(int stage_id, QWidget *parent)
 	: QWidget(parent)
 	, ui(new Ui::FindRunnerWidget)
@@ -29,7 +31,7 @@ FindRunnerWidget::FindRunnerWidget(int stage_id, QWidget *parent)
 	ui->setupUi(this);
 	ui->edFindRunner->setFocus();
 	ui->edFindRunner->setTable(runsPlugin()->runnersTable(stage_id));
-	connect(ui->edFindRunner, &FindRunnerEdit::runnerSelected, this, &FindRunnerWidget::runnerSelected);
+	//connect(ui->edFindRunner, &FindRunnerEdit::runnerSelected, this, &FindRunnerWidget::onRunnerSelected);
 }
 
 FindRunnerWidget::~FindRunnerWidget()
@@ -37,16 +39,16 @@ FindRunnerWidget::~FindRunnerWidget()
 	delete ui;
 }
 
+QVariantMap FindRunnerWidget::selectedRunner() const
+{
+	QVariantMap ret = ui->edFindRunner->selectedRunner();
+	ret[UseSIInNextStages] = ui->cbxUseSIInNextStages->isChecked();
+	return ret;
+}
+
 void FindRunnerWidget::focusLineEdit()
 {
 	ui->edFindRunner->setFocus();
 }
-/*
-void FindRunnerWidget::reload()
-{
-	qfLogFuncFrame();
-	if(!isVisible())
-		return;
-}
-*/
+
 }

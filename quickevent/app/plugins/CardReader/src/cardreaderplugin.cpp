@@ -101,6 +101,14 @@ int CardReaderPlugin::currentStageId()
 	return ret;
 }
 
+int CardReaderPlugin::cardIdToSiId(int card_id)
+{
+	qf::core::sql::Query q = qf::core::sql::Query::fromExec("SELECT siId FROM cards WHERE id=" QF_IARG(card_id) , qf::core::Exception::Throw);
+	if(q.next())
+		return q.value(0).toInt();
+	return 0;
+}
+
 int CardReaderPlugin::findRunId(int si_id, int si_finish_time, QString *err_msg)
 {
 	int ret = 0;
@@ -421,14 +429,14 @@ void CardReaderPlugin::updateCheckedCardValuesSql(const quickevent::core::si::Ch
 void CardReaderPlugin::updateCardToRunAssignmentInPunches(int stage_id, int card_id, int run_id)
 {
 	qfLogFuncFrame();
-	qf::core::sql::Query q = qf::core::sql::Query::fromExec("SELECT siId FROM cards WHERE id=" QF_IARG(card_id) );
-	if(q.next()) {
-		int si_id = q.value(0).toInt();
+	int si_id = cardIdToSiId(card_id);
+	if(si_id > 0) {
 		QString qs = "UPDATE punches SET runId=" QF_IARG(run_id)
 					" WHERE stageId=" QF_IARG(stage_id)
 					" AND siId=" QF_IARG(si_id)
 					" AND (runId IS NULL OR runId=0)";
 		qfDebug() << qs;
+		qf::core::sql::Query q;
 		q.execThrow(qs);
 	}
 }

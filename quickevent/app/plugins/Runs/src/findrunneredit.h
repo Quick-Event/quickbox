@@ -19,12 +19,15 @@ public:
 	//const qf::core::utils::Table& table() const {return m_table;}
 	void setTable(const qf::core::utils::Table &t);
 
+	QVariantMap selectedRunner() const;
+
 	Q_SIGNAL void runnerSelected(const QVariantMap &runner_values);
 private:
 	Q_SLOT void onCompleterActivated(const QModelIndex &index);
 private:
 	FindRunnersModel *m_findRunnersModel = nullptr;
 	QCompleter *m_completer = nullptr;
+	QVariantMap m_selectedRunner;
 };
 
 #endif

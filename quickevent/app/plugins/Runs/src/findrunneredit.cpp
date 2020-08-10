@@ -104,6 +104,11 @@ void FindRunnerEdit::setTable(const qf::core::utils::Table &t)
 	setCompleter(m_completer);
 }
 
+QVariantMap FindRunnerEdit::selectedRunner() const
+{
+	return m_selectedRunner;
+}
+
 void FindRunnerEdit::onCompleterActivated(const QModelIndex &index)
 {
 	qfLogFuncFrame() << index << index.data();
@@ -114,6 +119,7 @@ void FindRunnerEdit::onCompleterActivated(const QModelIndex &index)
 	int row_no = ix.row();
 	if(row_no >= 0 && row_no < table.rowCount()) {
 		qf::core::utils::TableRow table_row = table.row(row_no);
-		emit runnerSelected(table_row.valuesMap(false));
+		m_selectedRunner = table_row.valuesMap(false);
+		emit runnerSelected(m_selectedRunner);
 	}
 }

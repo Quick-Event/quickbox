@@ -4,6 +4,7 @@
 #include "runspluginglobal.h"
 
 #include <QWidget>
+#include <QVariantMap>
 
 namespace qf {
 namespace core {
@@ -25,17 +26,16 @@ class RUNSPLUGIN_DECL_EXPORT FindRunnerWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	enum class FocusWidget {Name, Registration};
+	static const QString UseSIInNextStages;
 public:
 	explicit FindRunnerWidget(int stage_id, QWidget *parent = 0);
 	~FindRunnerWidget() Q_DECL_OVERRIDE;
 
-	Q_SIGNAL void runnerSelected(const QVariantMap &runner_values);
+	QVariantMap selectedRunner() const;
 
 	void focusLineEdit();
 private:
 	Ui::FindRunnerWidget *ui;
-	//int m_stageId = 0;
 };
 
 }
