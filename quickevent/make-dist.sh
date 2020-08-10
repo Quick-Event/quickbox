@@ -59,7 +59,7 @@ case $key in
 	shift # past argument
 	shift # past value
 	;;
-	--image-tool)
+	--appimage-tool)
 	APP_IMAGE_TOOL="$2"
 	shift # past argument
 	shift # past value
