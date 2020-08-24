@@ -2,6 +2,7 @@
 #include "editcourseswidget.h"
 #include "ui_editcourseswidget.h"
 
+#include <quickevent/core/codedef.h>
 #include <qf/core/model/sqltablemodel.h>
 #include <qf/core/sql/connection.h>
 #include <qf/qmlwidgets/dialogs/dialog.h>
@@ -35,7 +36,7 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 		m->addColumn("courses.length", tr("Length"));
 		m->addColumn("courses.climb", tr("Climb"));
 		m->addColumn("courses.note", tr("Note"));
-		m->addColumn("code_count", tr("Cnt")).setToolTip(tr("Codes count"));
+		m->addColumn("code_count", tr("Cnt")).setToolTip(tr("Control count"));
 		m->addColumn("code_list", tr("Codes"));
 		ui->tblCourses->setTableModel(m);
 		m_coursesModel = m;
@@ -43,22 +44,36 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 	{
 		qf::core::sql::Connection conn = m_coursesModel->sqlConnection();
 		qfs::QueryBuilder qb_code_count;
-		qb_code_count.select("COUNT(*)").from("coursecodes").where("coursecodes.courseId=courses.id").as("code_count");
-		qfs::QueryBuilder qb_code_list;
-		qb_code_list.from("coursecodes")
+		qb_code_count.select("COUNT(*)").from("coursecodes")
 				.join("coursecodes.codeId", "codes.id")
-				.where("coursecodes.courseId=courses.id")
-				.as("code_list");
+				.where("coursecodes.courseId=courses.id AND "
+						"codes.code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN) " AND "
+						"codes.code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX))
+				.as("code_count");
+
+		QString control_code_query = "SELECT CAST(code AS TEXT) AS code, position"
+										" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
+										" AND code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
+										" AND code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX);
+		QString start_code_query = "SELECT 'S' || (code - " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE) " + 1) AS code, position"
+										" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
+										" AND code >= " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE)
+										" AND code < " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN);
+		QString finnish_code_query = "SELECT 'F' || (code - " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE) " + 1) AS code, position "
+										" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
+										" AND code >= " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
+
+		QString code_list_query = start_code_query + " UNION " + control_code_query + " UNION " + finnish_code_query + " ORDER BY position";
 		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive)) {
-			qb_code_list.select("string_agg(CAST(codes.code as VARCHAR), ',' ORDER BY coursecodes.position)");
+			code_list_query = "(SELECT string_agg(code, ',') FROM (" + code_list_query + ") AS code_list_query )";
 		}
 		else {
-			qb_code_list.select("GROUP_CONCAT(codes.code)")
-				.orderBy("coursecodes.position");
+			code_list_query = "(SELECT GROUP_CONCAT(code) FROM (" + code_list_query + ") )";
 		}
+
 		qfs::QueryBuilder qb;
 		qb.select2("courses", "*")
-				.select(qb_code_list.toString())
+				.select(code_list_query + "AS code_list")
 				.select(qb_code_count.toString())
 				.from("courses")
 				.orderBy("courses.name");
