@@ -47,21 +47,21 @@ EditCoursesWidget::EditCoursesWidget(QWidget *parent)
 		qb_code_count.select("COUNT(*)").from("coursecodes")
 				.join("coursecodes.codeId", "codes.id")
 				.where("coursecodes.courseId=courses.id AND "
-						"codes.code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN) " AND "
-						"codes.code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX))
+					"codes.code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN) " AND "
+					"codes.code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX))
 				.as("code_count");
 
 		QString control_code_query = "SELECT CAST(code AS TEXT) AS code, position"
-										" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
-										" AND code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
-										" AND code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX);
+						" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
+						" AND code >= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN)
+						" AND code <= " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MAX);
 		QString start_code_query = "SELECT 'S' || (code - " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE) " + 1) AS code, position"
-										" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
-										" AND code >= " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE)
-										" AND code < " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN);
+						" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
+						" AND code >= " QF_IARG(quickevent::core::CodeDef::START_PUNCH_CODE)
+						" AND code < " QF_IARG(quickevent::core::CodeDef::PUNCH_CODE_MIN);
 		QString finnish_code_query = "SELECT 'F' || (code - " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE) " + 1) AS code, position "
-										" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
-										" AND code >= " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
+						" FROM coursecodes INNER JOIN codes ON codes.id = coursecodes.codeId WHERE (coursecodes.courseId = courses.id)"
+						" AND code >= " QF_IARG(quickevent::core::CodeDef::FINISH_PUNCH_CODE);
 
 		QString code_list_query = start_code_query + " UNION " + control_code_query + " UNION " + finnish_code_query + " ORDER BY position";
 		if(conn.driverName().endsWith(QLatin1String("PSQL"), Qt::CaseInsensitive)) {
