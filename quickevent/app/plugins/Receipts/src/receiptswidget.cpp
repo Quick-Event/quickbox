@@ -204,7 +204,7 @@ int ReceiptsWidget::currentStageId()
 
 void ReceiptsWidget::onCardRead()
 {
-	if(ui->chkAutoPrint->isChecked()) {
+	if(isAutoPrintEnabled()) {
 		printNewCards();
 	}
 	loadNewCards();
@@ -345,4 +345,9 @@ void ReceiptsWidget::on_btPrinterOptions_clicked()
 		receiptsPlugin()->setReceiptsPrinterOptions(dlg.printerOptions());
 		updateReceiptsPrinterLabel();
 	}
+}
+
+bool ReceiptsWidget::isAutoPrintEnabled()
+{
+	return ui->chkAutoPrint->isChecked();
 }

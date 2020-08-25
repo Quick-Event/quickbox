@@ -44,6 +44,8 @@ public:
 
 	Q_SLOT void reset();
 	Q_SLOT void reload();
+	bool isAutoPrintEnabled();
+
 private slots:
 	void on_btPrinterOptions_clicked();
 
