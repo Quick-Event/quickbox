@@ -630,9 +630,15 @@ void EventPlugin::connectToSqlServer()
 	dlg.setCentralWidget(conn_w);
 	while(!connect_ok) {
 		conn_w->loadSettings();
-		if(!dlg.exec())
+		if(!dlg.exec()) {
+			if(!m_sqlServerConnected) {
+				qfd::MessageBox::showWarning(fwk, tr("You are not connected to database.\n"
+								     "Program features will be limited.\n\n"
+								     "To connect to a database or to choose a working directory where event files can be stored, navigate to:\n "
+								     "\"File -> Connect to database\" "));
+			}
 			return;
-
+		}
 		conn_w->saveSettings();
 		connection_type = conn_w->connectionType();
 		qfDebug() << "connection_type:" << (int)connection_type;
