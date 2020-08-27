@@ -895,7 +895,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	else if (!db_event_names.contains(event_name)) {
 		event_name = QInputDialog::getItem(fwk, tr("Open event"), tr("select event to open:"), db_event_names, 0, false, &ok);
 	}
-	if(!event_name.isEmpty() && db_event_names.contains(event_name) && !ok)
+	if(!eventName().isEmpty() && db_event_names.contains(eventName()) && !ok)
 		return true;
 	closeEvent();
 
