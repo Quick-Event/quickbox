@@ -636,6 +636,11 @@ void EventPlugin::connectToSqlServer()
 								     "Program features will be limited.\n\n"
 								     "To connect to a database or to choose a working directory where event files can be stored, navigate to:\n "
 								     "\"File -> Connect to database\" "));
+				m_actCreateEvent->setEnabled(false);
+				m_actOpenEvent->setEnabled(false);
+				m_actEditEvent->setEnabled(false);
+				m_actExportEvent_qbe->setEnabled(false);
+				m_actImportEvent_qbe->setEnabled(false);
 			}
 			return;
 		}
