@@ -867,55 +867,48 @@ bool EventPlugin::closeEvent()
 
 bool EventPlugin::openEvent(const QString &_event_name)
 {
-	closeEvent();
-	//return true;
 	qff::MainWindow *fwk = qff::MainWindow::frameWork();
 	QString event_name = _event_name;
+	QStringList db_event_names = QStringList();
+	QString empty_message;
 	ConnectionSettings connection_settings;
 	ConnectionType connection_type = connection_settings.connectionType();
 	//console.debug("openEvent()", "event_name:", event_name, "connection_type:", connection_type);
-	bool ok = false;
-	if(connection_type == ConnectionType::SqlServer) {
-		//console.debug(db);
-		QStringList event_names = existingSqlEventNames();
-		if(!event_names.contains(event_name))
-			event_name = QString();
-		ok = !event_name.isEmpty();
-		if(!ok) {
-			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), event_names, 0, false, &ok);
-		}
-		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
-		ok = ok && !event_name.isEmpty();
-		if(ok) {
+	bool ok = true;
+	switch (connection_type) {
+		case ConnectionType::SqlServer:
+			db_event_names = existingSqlEventNames();
+			empty_message = tr("Connected to an empty database.\nStart by creating or importing an event.");
+			break;
+		case ConnectionType::SingleFile:
+			db_event_names = existingFileEventNames(connection_settings.singleWorkingDir());
+			empty_message = tr("Working directory does not contain any event files.\nStart by creating or importing an event.");
+			break;
+		default:
+			qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
+			ok = false;
+	}
+	if(db_event_names.isEmpty()) {
+		qfd::MessageBox::showInfo(fwk, empty_message);
+		ok = false;
+	}
+	else if (!db_event_names.contains(event_name)) {
+		event_name = QInputDialog::getItem(fwk, tr("Open event"), tr("select event to open:"), db_event_names, 0, false, &ok);
+	}
+	if(!event_name.isEmpty() && db_event_names.contains(event_name) && !ok)
+		return true;
+	closeEvent();
+
+	if(ok) {
+		if(connection_type == ConnectionType::SqlServer) {
 			qfs::Connection conn(QSqlDatabase::database());
 			if(conn.setCurrentSchema(event_name)) {
 				ConnectionSettings settings;
 				settings.setEventName(event_name);
-				ok = true;
 			}
-		}
-	}
-	else if(connection_type == ConnectionType::SingleFile) {
-		QString event_fn;
-		if(!event_name.isEmpty()) {
-			event_fn = eventNameToFileName(event_name);
-			if(!QFile::exists(event_fn)) {
-				event_fn = event_name = QString();
-			}
-		}
-		if(event_name.isEmpty()) {
-			QStringList event_names = existingFileEventNames(connection_settings.singleWorkingDir());
-			event_name = QInputDialog::getItem(fwk, tr("Query"), tr("Open event"), event_names, 0, false, &ok);
-			//event_fn = qfd::FileDialog::getOpenFileName(fwk, tr("Select event"), connection_settings.singleWorkingDir(), tr("Quick Event files (*%1)").arg(qbe_ext));
-			if(ok && !event_name.isEmpty()) {
-				event_fn = eventNameToFileName(event_name);
-			}
-		}
-		//Log.info(event_name, typeof event_name, (event_name)? "T": "F");
-		if(event_fn.isEmpty()) {
-			ok = false;
 		}
 		else {
+			QString event_fn = eventNameToFileName(event_name);
 			if(QFile::exists(event_fn)) {
 				{
 					QString conn_name;
@@ -937,15 +930,15 @@ bool EventPlugin::openEvent(const QString &_event_name)
 				}
 				else {
 					qfd::MessageBox::showError(fwk, tr("Open Database Error: %1").arg(conn.errorString()));
+					ok = false;
 				}
 			}
 			else {
 				qfd::MessageBox::showError(fwk, tr("Database file %1 doesn't exist.").arg(event_fn));
+				ok = false;
 			}
+
 		}
-	}
-	else {
-		qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
 	}
 	if(ok) {
 		EventConfig *evc = eventConfig(true);
@@ -954,17 +947,25 @@ bool EventPlugin::openEvent(const QString &_event_name)
 									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion()))
 									   .arg(qf::core::Utils::intToVersionString(minDbVersion())));
 			closeEvent();
-			return false;
+			ok = false;
 		}
-		if(evc->dbVersion() > minDbVersion()) {
+		else if(evc->dbVersion() > minDbVersion()) {
 			qfd::MessageBox::showError(fwk, tr("Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.")
 									   .arg(qf::core::Utils::intToVersionString(evc->dbVersion())));
 		}
+	}
+	if(ok) {
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);
 		emit eventOpened(eventName());
 		//emit reloadDataRequest();
 	}
+	m_actEditStage->setEnabled(ok);
+	m_actOpenEvent->setEnabled(ok);
+	m_actEditEvent->setEnabled(ok);
+	m_actExportEvent_qbe->setEnabled(ok);
+	m_actCreateEvent->setEnabled(true);
+	m_actImportEvent_qbe->setEnabled(true);
 	return ok;
 }
 
