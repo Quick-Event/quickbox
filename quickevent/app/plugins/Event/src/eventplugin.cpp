@@ -889,14 +889,20 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			ok = false;
 	}
 	if(db_event_names.isEmpty()) {
+		// openEvent function was called on empty database
 		qfd::MessageBox::showInfo(fwk, empty_message);
 		ok = false;
 	}
 	else if (!db_event_names.contains(event_name)) {
+		// database does not contain given event_name => ask which event to open
 		event_name = QInputDialog::getItem(fwk, tr("Open event"), tr("select event to open:"), db_event_names, 0, false, &ok);
 	}
-	if(!eventName().isEmpty() && db_event_names.contains(eventName()) && !ok)
+	// if given event_name is in the db, preceeding conditions were skipped => ok => open event_name
+	// if dialog was succesfull => ok => open event_name
+	// if dialog was canceled => !ok => close event and disable menu options
+	if(!eventName().isEmpty() && db_event_names.contains(eventName()) && !ok) // open event dialog was canceled and event is already opened => no change, return
 		return true;
+
 	closeEvent();
 
 	if(ok) {
