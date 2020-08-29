@@ -884,9 +884,6 @@ bool EventPlugin::openEvent(const QString &_event_name)
 			db_event_names = existingFileEventNames(connection_settings.singleWorkingDir());
 			empty_message = tr("Working directory does not contain any event files.\nStart by creating or importing an event.");
 			break;
-		default:
-			qfError() << "Invalid connection type:" << static_cast<int>(connection_type);
-			ok = false;
 	}
 	if(db_event_names.isEmpty()) {
 		// openEvent function was called on empty database
