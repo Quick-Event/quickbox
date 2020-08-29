@@ -46,6 +46,8 @@ public:
 
 	void setReceiptsPrinterOptions(const ReceiptsPrinterOptions &opts);
 	ReceiptsPrinter* receiptsPrinter();
+
+	bool isAutoPrintEnabled();
 private:
 	void onInstalled();
 	CardReader::CardReaderPlugin* cardReaderPlugin();
