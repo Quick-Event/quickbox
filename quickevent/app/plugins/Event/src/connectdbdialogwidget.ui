@@ -33,16 +33,16 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="spacing">
-       <number>5</number>
+       <number>4</number>
       </property>
       <property name="leftMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <property name="topMargin">
        <number>3</number>
       </property>
       <property name="rightMargin">
-       <number>3</number>
+       <number>9</number>
       </property>
       <property name="bottomMargin">
        <number>3</number>
@@ -50,7 +50,7 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>E&amp;vent ID</string>
+         <string>Open recent &amp;event if it is present in the database</string>
         </property>
         <property name="buddy">
          <cstring>edEventName</cstring>
@@ -60,7 +60,7 @@
       <item>
        <widget class="QLineEdit" name="edEventName">
         <property name="placeholderText">
-         <string>Event name can be specified later on in File/Event/Open event</string>
+         <string>Event ID</string>
         </property>
         <property name="clearButtonEnabled">
          <bool>true</bool>
@@ -91,13 +91,34 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
-          <string>Sql server</string>
+          <string>S&amp;ql server</string>
          </attribute>
          <layout class="QFormLayout" name="formLayout">
+          <property name="labelAlignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="horizontalSpacing">
+           <number>6</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>6</number>
+          </property>
+          <property name="leftMargin">
+           <number>18</number>
+          </property>
+          <property name="topMargin">
+           <number>18</number>
+          </property>
+          <property name="rightMargin">
+           <number>18</number>
+          </property>
+          <property name="bottomMargin">
+           <number>18</number>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
@@ -125,43 +146,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>&amp;User</string>
-            </property>
-            <property name="buddy">
-             <cstring>edServerUser</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Pa&amp;ssword</string>
-            </property>
-            <property name="buddy">
-             <cstring>edServerPassword</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="edServerUser">
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="edServerPassword">
-            <property name="echoMode">
-             <enum>QLineEdit::Password</enum>
-            </property>
-            <property name="clearButtonEnabled">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QSpinBox" name="edServerPort">
             <property name="alignment">
@@ -178,17 +162,69 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>&amp;User</string>
+            </property>
+            <property name="buddy">
+             <cstring>edServerUser</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="edServerUser">
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Pa&amp;ssword</string>
+            </property>
+            <property name="buddy">
+             <cstring>edServerPassword</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="edServerPassword">
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
         <widget class="QWidget" name="tabSingleFile">
          <attribute name="title">
-          <string>Single file</string>
+          <string>Single &amp;file</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>9</number>
+          </property>
+          <property name="leftMargin">
+           <number>18</number>
+          </property>
+          <property name="topMargin">
+           <number>18</number>
+          </property>
+          <property name="rightMargin">
+           <number>18</number>
+          </property>
+          <property name="bottomMargin">
+           <number>18</number>
+          </property>
           <item>
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Wor&amp;king directory</string>
+             <string>Choose a wor&amp;king directory</string>
             </property>
             <property name="buddy">
              <cstring>edSingleWorkingDir</cstring>
@@ -200,7 +236,7 @@
             <item>
              <widget class="QLineEdit" name="edSingleWorkingDir">
               <property name="placeholderText">
-               <string>Directory where event files are placed.</string>
+               <string>Path where to store &quot;.qbe&quot; event files. </string>
               </property>
               <property name="clearButtonEnabled">
                <bool>true</bool>
