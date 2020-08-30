@@ -98,7 +98,7 @@ bool ReportViewWidget::showReport2(QWidget *parent
 void ReportViewWidget::ScrollArea::wheelEvent(QWheelEvent * ev)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
-	QPoint pos = event->pos();
+	QPoint pos = ev->pos();
 	auto delta = ev->delta();
 #else
 	QPoint pos = ev->position().toPoint();
