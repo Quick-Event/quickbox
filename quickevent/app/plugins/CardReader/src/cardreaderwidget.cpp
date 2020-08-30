@@ -8,7 +8,6 @@
 
 #include <Event/eventplugin.h>
 #include <Runs/findrunnerwidget.h>
-#include <Receipts/receiptsplugin.h>
 
 #include <quickevent/gui/og/itemdelegate.h>
 #include <quickevent/gui/audio/player.h>
@@ -85,10 +84,10 @@ static Event::EventPlugin* eventPlugin()
 	return plugin;
 }
 
-static Receipts::ReceiptsPlugin *receiptsPlugin()
+static qf::qmlwidgets::framework::Plugin *receiptsPlugin()
 {
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
-	auto plugin = qobject_cast<Receipts::ReceiptsPlugin*>(fwk->plugin("Receipts"));
+	auto plugin = qobject_cast<qf::qmlwidgets::framework::Plugin*>(fwk->plugin("Receipts"));
 	QF_ASSERT(plugin != nullptr, "Bad Receipts plugin", return nullptr);
 	return plugin;
 }
@@ -812,9 +811,11 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		int si_id = thisPlugin()->cardIdToSiId(card_id);
 		if(run_id > 0 && si_id > 0) {
 			thisPlugin()->assignCardToRun(card_id, run_id);
-			if(receiptsPlugin()->isAutoPrintEnabled()) {
-				receiptsPlugin()->printCard(card_id);
-			}
+
+			auto receipts_plugin = receiptsPlugin();
+			if(receipts_plugin)
+				QMetaObject::invokeMethod(receipts_plugin, "printOnAutoPrintEnabled", Q_ARG(int, card_id));
+
 			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
 				qf::core::sql::QueryBuilder qb;
 				qb.select("stageId").from("runs").where("id=" QF_IARG(run_id) );
