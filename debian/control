@@ -11,8 +11,24 @@ Vcs-Browser: https://github.com/fvacek/quickbox
 Package: quickevent
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Quick Event - Orienteering Software 
- Quick Event - Orienteering Software .
+Description: Quick Event - Orienteering Software
+ Quick Event - Orienteering Software.
+
+Package: quickevent-plugins
+Architecture: any
+Multi-Arch: same
+Section: libs
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quick Event - Orienteering Software - plugins
+ Quick Event - Orienteering Software.
+
+Package: quickevent-dev
+Architecture: any
+Multi-Arch: same
+Section: libs
+Depends: libqf-dev, libquickevent-dev, libsiut-dev, ${shlibs:Depends}, ${misc:Depends}
+Description: Quick Event - Orienteering Software - development
+ Quick Event - Orienteering Software.
 
 Package: qsqlmon-qb
 Architecture: any
