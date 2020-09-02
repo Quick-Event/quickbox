@@ -964,7 +964,7 @@ bool EventPlugin::openEvent(const QString &_event_name)
 		//emit reloadDataRequest();
 	}
 	m_actEditStage->setEnabled(ok);
-	m_actOpenEvent->setEnabled(ok);
+	m_actOpenEvent->setEnabled(ok || !db_event_names.isEmpty());
 	m_actEditEvent->setEnabled(ok);
 	m_actExportEvent_qbe->setEnabled(ok);
 	m_actCreateEvent->setEnabled(true);
