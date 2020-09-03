@@ -37,19 +37,24 @@ void SpinBox::onValueChanged(int n)
 
 void SpinBox::keyPressEvent(QKeyEvent * event) {
 	QString text;
-	switch (event->nativeScanCode()) {
+	auto code = event->nativeScanCode();
+#ifdef __unix__
+	// Xorg has an offset of 8 due to historical reasons
+	code = code - 8;
+#endif
+	switch (code) {
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 8:
+		case 9:
 		case 10:
-		case 11:
-		case 12:
-		case 13:
-		case 14:
-		case 15:
-		case 16:
-		case 17:
-		case 18:
-			text = QString::number(event->nativeScanCode() - 9);
+			text = QString::number(code - 1);
 			break;
-		case 19:
+		case 11:
 			text = "0";
 			break;
 		default:
