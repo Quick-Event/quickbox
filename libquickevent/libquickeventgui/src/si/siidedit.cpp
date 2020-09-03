@@ -11,4 +11,11 @@ SiIdEdit::SiIdEdit(QWidget *parent)
 	setMinimum(0);
 }
 
+void SiIdEdit::fixup(QString &input) const
+{
+    if (input.isEmpty())
+	input = QString::fromLatin1("0");
+    Super::fixup(input);
+}
+
 }}}

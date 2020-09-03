@@ -18,6 +18,8 @@ class QUICKEVENTGUI_DECL_EXPORT SiIdEdit : public qf::qmlwidgets::SpinBox
 	Q_PROPERTY(quickevent::core::si::SiId siid READ siid WRITE setSiid USER true)
 private:
 	typedef qf::qmlwidgets::SpinBox Super;
+protected:
+	void fixup(QString &input) const override;
 public:
 	SiIdEdit(QWidget *parent = nullptr);
 
