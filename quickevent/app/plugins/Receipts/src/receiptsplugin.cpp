@@ -1,4 +1,5 @@
 #include "receiptsplugin.h"
+#include "receiptswidget.h"
 #include "receiptspartwidget.h"
 #include "receiptsprinter.h"
 
@@ -483,6 +484,11 @@ void ReceiptsPlugin::printReceipt(int card_id, const QString &receipt_path)
 	qfLogFuncFrame() << "card id:" << card_id;
 	QVariantMap dt = receiptTablesData(card_id);
 	receiptsPrinter()->printReceipt(receipt_path, dt);
+}
+
+bool ReceiptsPlugin::isAutoPrintEnabled()
+{
+	return qff::MainWindow::frameWork()->findChild<ReceiptsWidget *>("ReceiptsWidget")->isAutoPrintEnabled();
 }
 
 }
