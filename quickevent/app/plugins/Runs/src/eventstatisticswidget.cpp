@@ -465,6 +465,12 @@ void EventStatisticsWidget::reload()
 		// when loadPersistentSettingsRecursively was called by framework
 		ui->tableView->loadPersistentSettings();
 	}
+
+	if(!eventPlugin()->isEventOpen()) {
+		m_tableModel->clearRows();
+		return;
+	}
+
 	QVariantMap qm;
 	qm[QStringLiteral("stage_id")] = currentStageId();
 	m_tableModel->setQueryParameters(qm);

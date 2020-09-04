@@ -91,7 +91,7 @@ RunsWidget::RunsWidget(QWidget *parent) :
 			ui->cbxDrawMethod->addItem(tr("Grouped by ranking (PSOB DH21L)"), static_cast<int>(DrawMethod::GroupedRanking));
 		}
 	});
-
+	connect(eventPlugin(), &Event::EventPlugin::eventClosed, [this](){reset(0);});
 	QMetaObject::invokeMethod(this, &RunsWidget::lazyInit, Qt::QueuedConnection);
 }
 
@@ -107,7 +107,6 @@ void RunsWidget::lazyInit()
 void RunsWidget::reset(int class_id)
 {
 	qfLogFuncFrame();
-	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	if(!eventPlugin()->isEventOpen()) {
 		ui->wRunsTableWidget->clear();
 		return;
@@ -123,6 +122,7 @@ void RunsWidget::reset(int class_id)
 	}
 	/// Note: You should use QAction::setVisible() to change the visibility of the widget.
 	/// Using QWidget::setVisible(), QWidget::show() and QWidget::hide() does not work.
+	bool is_relays = eventPlugin()->eventConfig()->isRelays();
 	m_toolbarActionLabelLeg->setVisible(is_relays);
 	m_toolbarActionComboLeg->setVisible(is_relays);
 	//qfWarning() << "is relays:" << is_relays << "legs visible:" << m_cbxLeg->isVisible();

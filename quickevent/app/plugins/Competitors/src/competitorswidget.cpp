@@ -87,6 +87,7 @@ CompetitorsWidget::CompetitorsWidget(QWidget *parent) :
 	connect(ui->tblCompetitors, &qfw::TableView::customContextMenuRequested, this, &CompetitorsWidget::onCustomContextMenuRequest);
 
 	connect(competitorsPlugin(), &Competitors::CompetitorsPlugin::dbEventNotify, this, &CompetitorsWidget::onDbEventNotify);
+	connect(eventPlugin(), &Event::EventPlugin::eventClosed, this, &CompetitorsWidget::reset);
 
 	QMetaObject::invokeMethod(this, "lazyInit", Qt::QueuedConnection);
 }

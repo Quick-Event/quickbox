@@ -108,6 +108,8 @@ void SpeakerWidget::settleDownInPartWidget(ThisPartWidget *part_widget)
 
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &SpeakerWidget::onDbEventNotify, Qt::QueuedConnection);
 	connect(eventPlugin(), &Event::EventPlugin::eventOpened, this, &SpeakerWidget::loadSettings, Qt::QueuedConnection);
+	connect(eventPlugin(), &Event::EventPlugin::eventClosed, this, &SpeakerWidget::reset);
+
 	/*
 	qfw::Action *a = part_widget->menuBar()->actionForPath("station", true);
 	a->setText("&Station");
