@@ -703,6 +703,7 @@ void EventPlugin::connectToSqlServer()
 	m_actImportEvent_qbe->setEnabled(connect_ok);
 	m_actEditStage->setEnabled(connect_ok);
 	if(connect_ok) {
+		closeEvent();
 		openEvent(conn_w->eventName());
 	}
 }
