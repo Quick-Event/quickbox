@@ -27,7 +27,7 @@
    <item>
     <widget class="QCheckBox" name="cbxUseSIInNextStages">
      <property name="text">
-      <string>Use this SI card in next stages</string>
+      <string>Use this SI card also in next stages</string>
      </property>
     </widget>
    </item>

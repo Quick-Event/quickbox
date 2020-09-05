@@ -815,19 +815,20 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 			if(receiptsPlugin()->isAutoPrintEnabled()) {
 				receiptsPlugin()->printCard(card_id);
 			}
-			if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
-				qf::core::sql::QueryBuilder qb;
-				qb.select("stageId").from("runs").where("id=" QF_IARG(run_id) );
-				qf::core::sql::Query q;
-				qfDebug() << qb.toString();
-				q.execThrow(qb.toString());
-				if(q.next()) {
-					int competitor_id = values.value("competitorid").toInt();
-					int stage_id = q.value("stageId").toInt();
-					QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) "AND stageId>=" QF_IARG(stage_id);
-					qfDebug() << qs;
-					q.execThrow(qs);
+			qf::core::sql::QueryBuilder qb;
+			qb.select("stageId").from("runs").where("id=" QF_IARG(run_id) );
+			qfDebug() << qb.toString();
+			qf::core::sql::Query q;
+			q.execThrow(qb.toString());
+			if(q.next()) {
+				int competitor_id = values.value("competitorid").toInt();
+				int stage_id = q.value("stageId").toInt();
+				QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId=" QF_IARG(stage_id);
+				if(values.value(Runs::FindRunnerWidget::UseSIInNextStages).toBool()) {
+					QString qs = "UPDATE runs SET siId=" QF_IARG(si_id) " WHERE competitorId=" QF_IARG(competitor_id) " AND stageId>=" QF_IARG(stage_id);
 				}
+				qfDebug() << qs;
+				q.execThrow(qs);
 			}
 			this->ui->tblCards->reloadRow();
 		}
