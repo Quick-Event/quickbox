@@ -23,6 +23,7 @@ protected:
 	QVariant dataValue() Q_DECL_OVERRIDE;
 	void setDataValue(const QVariant &val) Q_DECL_OVERRIDE;
 	Q_SIGNAL void dataValueChanged(const QVariant &new_val);
+	void keyPressEvent(QKeyEvent * event) override;
 private:
 	Q_SLOT void onValueChanged(int n);
 };
