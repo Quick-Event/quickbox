@@ -71,9 +71,9 @@ RunsWidget::RunsWidget(QWidget *parent) :
 
 	ui->frmDrawing->setVisible(false);
 
-	connect(eventPlugin(), &Event::EventPlugin::eventOpened, [this](QString event_name) {
+	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, [this]() {
 		ui->cbxDrawMethod->clear();
-		if(event_name.isEmpty())
+		if(!eventPlugin()->isEventOpen())
 			return;
 		bool is_relays = eventPlugin()->eventConfig()->isRelays();
 		if(is_relays) {
@@ -91,7 +91,6 @@ RunsWidget::RunsWidget(QWidget *parent) :
 			ui->cbxDrawMethod->addItem(tr("Grouped by ranking (PSOB DH21L)"), static_cast<int>(DrawMethod::GroupedRanking));
 		}
 	});
-	connect(eventPlugin(), &Event::EventPlugin::eventClosed, [this](){reset(0);});
 	QMetaObject::invokeMethod(this, &RunsWidget::lazyInit, Qt::QueuedConnection);
 }
 

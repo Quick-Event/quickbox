@@ -218,7 +218,6 @@ CardReaderWidget::CardReaderWidget(QWidget *parent)
 		t->start(2000);
 	}
 	*/
-	connect(eventPlugin(), &Event::EventPlugin::eventClosed, this, &CardReaderWidget::reset);
 }
 
 void CardReaderWidget::onCustomContextMenuRequest(const QPoint & pos)

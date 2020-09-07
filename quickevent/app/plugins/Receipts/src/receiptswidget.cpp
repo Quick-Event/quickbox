@@ -97,7 +97,6 @@ ReceiptsWidget::ReceiptsWidget(QWidget *parent) :
 	connect(ui->lstReceipt, static_cast<void (QComboBox::*)(int)>(&QComboBox::activated), [this](int ix) {
 		receiptsPlugin()->setCurrentReceiptPath(ui->lstReceipt->itemData(ix).toString());
 	});
-	connect(eventPlugin(), &Event::EventPlugin::eventClosed, this, &ReceiptsWidget::reset);
 
 	QTimer::singleShot(0, this, &ReceiptsWidget::lazyInit);
 }

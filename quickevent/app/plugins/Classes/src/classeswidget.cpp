@@ -214,7 +214,6 @@ ClassesWidget::ClassesWidget(QWidget *parent) :
 	connect(ui->chkUseAllMaps, &QCheckBox::toggled, [this](bool checked) {
 		eventPlugin()->setStageData(selectedStageId(), QStringLiteral("useAllMaps"), checked);
 	});
-	connect(eventPlugin(), &Event::EventPlugin::eventClosed, this, &ClassesWidget::reset);
 }
 
 ClassesWidget::~ClassesWidget()

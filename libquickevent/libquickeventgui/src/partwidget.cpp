@@ -15,7 +15,7 @@ PartWidget::PartWidget(const QString &feature_id, QWidget *parent)
 	qf::qmlwidgets::framework::MainWindow *fwk = qf::qmlwidgets::framework::MainWindow::frameWork();
 	qf::qmlwidgets::framework::Plugin *event_plugin = fwk->plugin("Event", qf::core::Exception::Throw);
 	connect(event_plugin, SIGNAL(currentStageIdChanged(int)), this, SIGNAL(resetPartRequest()));
-	connect(event_plugin, SIGNAL(eventOpened(QString)), this, SIGNAL(resetPartRequest()));
+	connect(event_plugin, SIGNAL(eventOpenChanged(bool)), this, SIGNAL(resetPartRequest()));
 	connect(event_plugin, SIGNAL(reloadDataRequest()), this, SIGNAL(resetPartRequest()));
 	//connect(event_plugin, SIGNAL(eventOpened()), this, SIGNAL(resetRequest()));
 }

@@ -26,8 +26,8 @@ class EVENTPLUGIN_DECL_EXPORT EventPlugin : public qf::qmlwidgets::framework::Pl
 	Q_PROPERTY(QObject* eventConfig READ eventConfig)
 	Q_PROPERTY(int currentStageId READ currentStageId NOTIFY currentStageIdChanged)
 	Q_PROPERTY(int stageCount READ stageCount)
-	Q_PROPERTY(QString eventName READ eventName NOTIFY eventNameChanged)
-	Q_PROPERTY(bool eventOpen READ isEventOpen NOTIFY eventOpenChanged)
+	Q_PROPERTY(QString eventName READ eventName WRITE setEventName NOTIFY eventNameChanged)
+	Q_PROPERTY(bool eventOpen READ isEventOpen WRITE setEventOpen NOTIFY eventOpenChanged)
 	Q_PROPERTY(bool sqlServerConnected READ isSqlServerConnected NOTIFY sqlServerConnectedChanged)
 private:
 	using Super = qf::qmlwidgets::framework::Plugin;
@@ -81,9 +81,6 @@ public:
 
 	bool isSqlServerConnected() const { return m_sqlServerConnected; }
 	Q_SIGNAL void sqlServerConnectedChanged(bool is_open);
-
-	Q_SIGNAL void eventOpened(const QString &event_name);
-	Q_SIGNAL void eventClosed();
 
 	Q_INVOKABLE void emitDbEvent(const QString &domain, const QVariant &data = QVariant(), bool loopback = true);
 	Q_SIGNAL void dbEventNotify(const QString &domain, int connection_id, const QVariant &payload);

@@ -468,6 +468,7 @@ void EventStatisticsWidget::reload()
 
 	if(!eventPlugin()->isEventOpen()) {
 		m_tableModel->clearRows();
+		m_tableFooterModel->reload();
 		return;
 	}
 

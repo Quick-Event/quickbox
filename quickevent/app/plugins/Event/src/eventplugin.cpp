@@ -306,7 +306,7 @@ void EventPlugin::onInstalled()
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
-	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
+	connect(this, &EventPlugin::eventOpenChanged, this, &EventPlugin::onEventOpened);
 
 	qfw::Action *a_import = fwk->menuBar()->actionForPath("file/import", false);
 	Q_ASSERT(a_import);
@@ -552,6 +552,8 @@ void EventPlugin::repairStageStarts(const qf::core::sql::Connection &from_conn, 
 
 void EventPlugin::onEventOpened()
 {
+	if(!isEventOpen())
+		return;
 	qfLogFuncFrame() << "stage count:" << stageCount();
 	m_cbxStage->blockSignals(true);
 	m_cbxStage->clear();
@@ -870,8 +872,7 @@ bool EventPlugin::closeEvent()
 	m_classNameCache.clear();
 	setEventName(QString());
 	QF_SAFE_DELETE(m_eventConfig)
-	//emit eventOpened(eventName()); //comment it till QE can load event with invalid name
-	emit eventClosed();
+	setEventOpen(false);
 	return true;
 }
 
@@ -970,7 +971,6 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	if(ok) {
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);
-		emit eventOpened(eventName());
 		//emit reloadDataRequest();
 	}
 	m_actEditStage->setEnabled(ok);

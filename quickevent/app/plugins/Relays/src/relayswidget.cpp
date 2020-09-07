@@ -114,7 +114,6 @@ RelaysWidget::RelaysWidget(QWidget *parent) :
 	//connect(ui->tblRelays, SIGNAL(editRowInExternalEditor(QVariant,int)), this, SLOT(edit Relay(QVariant,int)), Qt::QueuedConnection);
 	connect(ui->tblRelays, &qfw::TableView::editRowInExternalEditor, this, &RelaysWidget::editRelay, Qt::QueuedConnection);
 	connect(ui->tblRelays, &qfw::TableView::editSelectedRowsInExternalEditor, this, &RelaysWidget::editRelays, Qt::QueuedConnection);
-	connect(eventPlugin(), &Event::EventPlugin::eventClosed, this, &RelaysWidget::reset);
 
 	//connect(eventPlugin(), &Relays::RelaysPlugin::dbEventNotify, this, &RelaysWidget::onDbEventNotify);
 
