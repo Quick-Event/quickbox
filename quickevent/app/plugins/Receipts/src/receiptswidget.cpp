@@ -115,7 +115,7 @@ void ReceiptsWidget::lazyInit()
 void ReceiptsWidget::settleDownInPartWidget(ReceiptsPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
+	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 
 	connect(eventPlugin(), &Event::EventPlugin::dbEventNotify, this, &ReceiptsWidget::onDbEventNotify, Qt::QueuedConnection);
 }
