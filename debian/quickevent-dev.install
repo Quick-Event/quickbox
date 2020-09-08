@@ -1,0 +1,12 @@
+#! /usr/bin/dh-exec
+lib/libCardReaderQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libClassesQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libCompetitorsQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libCoreQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libEventQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libOrisQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libReceiptsQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libRelaysQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libRunsQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libsharedQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/libSpeakerQEPlugin.so /usr/lib/${DEB_HOST_MULTIARCH}/
