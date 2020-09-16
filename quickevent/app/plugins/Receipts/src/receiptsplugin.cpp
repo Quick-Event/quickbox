@@ -491,4 +491,11 @@ bool ReceiptsPlugin::isAutoPrintEnabled()
 	return qff::MainWindow::frameWork()->findChild<ReceiptsWidget *>("ReceiptsWidget")->isAutoPrintEnabled();
 }
 
+void ReceiptsPlugin::printOnAutoPrintEnabled(int card_id)
+{
+	if(isAutoPrintEnabled())
+		printCard(card_id);
+}
+
+
 }
