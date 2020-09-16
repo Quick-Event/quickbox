@@ -13,12 +13,11 @@ help() {
 	echo "required options: src-dir, qt-dir, work-dir, image-tool"
 	echo -e "\n"
 	echo "avaible options"
-	echo "    --app-name <name>        custom application name, ie: my-qe-test"
-	echo "    --app-version <version>  application version, ie: 1.0.0"
+	echo "    --app-version <version>  application version, ie: 1.0.0 or my-test"
 	echo "    --src-dir <path>         quickbox project root dir, *.pro file is located, ie: /home/me/quickbox"
 	echo "    --qt-dir <path>          QT dir, ie: /home/me/qt5/5.13.1/gcc_64"
 	echo "    --work-dir <path>        directory where build files and AppImage will be created, ie: /home/me/quickevent/AppImage"
-	echo "    --image-tool <path>      path to AppImageTool, ie: /home/me/appimagetool-x86_64.AppImage"
+	echo "    --appimage-tool <path>      path to AppImageTool, ie: /home/me/appimagetool-x86_64.AppImage"
 	echo "    --no-clean               do not rebuild whole project when set to 1"
 	echo -e "\n"
 	echo "example: make-dist.sh --src-dir /home/me/quickbox --qt-dir /home/me/qt5/5.13.1/gcc_64 --work-dir /home/me/quickevent/AppImage --image-tool /home/me/appimagetool-x86_64.AppImage"
@@ -94,11 +93,13 @@ if [ $WORK_DIR = "/home/fanda/t/_distro" ] && [ ! -d "/home/fanda/t/_distro" ]; 
 	error "invalid work dir, use --work-dir <path> to specify it\n"
 	help
 fi
-if [ -f $APP_IMAGE_TOOL ]; then
-	if [ ! -x $APP_IMAGE_TOOL ]; then
-		error "AppImageTool file must be executable, use chmod +x $APP_IMAGE_TOOL\n"
-		help
-	fi
+if [ ! -f $APP_IMAGE_TOOL ]; then
+	error "invalid path to AppImageTool, use --appimage-tool <path> to specify it\n"
+	help
+fi
+if [ ! -x $APP_IMAGE_TOOL ]; then
+	error "AppImageTool file must be executable, use chmod +x $APP_IMAGE_TOOL\n"
+	help
 fi
 
 
@@ -199,8 +200,6 @@ mkdir -p $ARTIFACTS_DIR
 
 tar -cvzf $ARTIFACTS_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
-if [ -f $APP_IMAGE_TOOL ]; then
-	rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
-	ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
-fi
+rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
+ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
 
