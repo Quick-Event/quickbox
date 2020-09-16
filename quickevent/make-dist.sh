@@ -200,8 +200,6 @@ mkdir -p $ARTIFACTS_DIR
 
 tar -cvzf $ARTIFACTS_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
-if [ -f $APP_IMAGE_TOOL ]; then
-	rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
-	ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
-fi
+rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
+ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
 
