@@ -299,7 +299,7 @@ CardReaderWidget::~CardReaderWidget()
 void CardReaderWidget::settleDownInPartWidget(CardReaderPartWidget *part_widget)
 {
 	connect(part_widget, SIGNAL(resetPartRequest()), this, SLOT(reset()));
-	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reset()));
+	connect(part_widget, SIGNAL(reloadPartRequest()), this, SLOT(reload()));
 	{
 		qfw::Action *a_station = part_widget->menuBar()->actionForPath("station", true);
 		a_station->setText(tr("&Station"));

@@ -26,7 +26,7 @@ Service::Service(const QString &name, QObject *parent)
 	//qfDebug() << name;
 	setObjectName(name);
 	setStatus(Status::Stopped);
-	connect(eventPlugin(), &Event::EventPlugin::eventOpened, this, &Service::onEventOpen, Qt::QueuedConnection);
+	connect(eventPlugin(), &Event::EventPlugin::eventOpenChanged, this, &Service::onEventOpen, Qt::QueuedConnection);
 }
 
 Service::~Service()
@@ -52,6 +52,8 @@ QString Service::settingsGroup() const
 
 void Service::onEventOpen()
 {
+	if(!eventPlugin()->isEventOpen())
+		return;
 	loadSettings();
 	ServiceSettings ss = settings();
 	if(ss.isAutoStart()) {

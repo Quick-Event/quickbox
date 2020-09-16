@@ -285,7 +285,6 @@ void EventPlugin::onInstalled()
 
 	m_actCreateEvent = new qfw::Action(tr("Create eve&nt"));
 	//m_actCreateEvent->setShortcut("Ctrl+N");
-	m_actCreateEvent->setEnabled(false);
 	connect(m_actCreateEvent, SIGNAL(triggered()), this, SLOT(createEvent()));
 
 	m_actEditEvent = new qfw::Action(tr("E&dit event"));
@@ -300,7 +299,6 @@ void EventPlugin::onInstalled()
 	connect(m_actExportEvent_qbe, &QAction::triggered, this, &EventPlugin::exportEvent_qbe);
 
 	m_actImportEvent_qbe = new qfw::Action(tr("Event (*.qbe)"));
-	m_actImportEvent_qbe->setEnabled(false);
 	connect(m_actImportEvent_qbe, &QAction::triggered, this, &EventPlugin::importEvent_qbe);
 
 	connect(this, SIGNAL(eventNameChanged(QString)), fwk->statusBar(), SLOT(setEventName(QString)));
@@ -308,7 +306,7 @@ void EventPlugin::onInstalled()
 	connect(this, &EventPlugin::currentStageIdChanged, this, &EventPlugin::updateWindowTitle);
 	connect(this, SIGNAL(currentStageIdChanged(int)), fwk->statusBar(), SLOT(setStageNo(int)));
 	connect(fwk, &qff::MainWindow::pluginsLoaded, this, &EventPlugin::connectToSqlServer);
-	connect(this, &EventPlugin::eventOpened, this, &EventPlugin::onEventOpened);
+	connect(this, &EventPlugin::eventOpenChanged, this, &EventPlugin::onEventOpened);
 
 	qfw::Action *a_import = fwk->menuBar()->actionForPath("file/import", false);
 	Q_ASSERT(a_import);
@@ -316,16 +314,19 @@ void EventPlugin::onInstalled()
 	a_import->addSeparatorBefore();
 
 	m_actEvent = m_actConnectDb->addMenuAfter("file.event", tr("&Event"));
+	m_actEvent->setEnabled(false);
 
 	m_actEvent->addActionInto(m_actCreateEvent);
 	m_actEvent->addActionInto(m_actOpenEvent);
 	m_actEvent->addActionInto(m_actEditEvent);
 
-	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
-	act_import->addActionInto(m_actImportEvent_qbe);
+	m_actImport = fwk->menuBar()->actionForPath("file/import");
+	m_actImport->addActionInto(m_actImportEvent_qbe);
+	m_actImport->setEnabled(false);
 
-	qfw::Action *act_export = fwk->menuBar()->actionForPath("file/export");
-	act_export->addActionInto(m_actExportEvent_qbe);
+	m_actExport = fwk->menuBar()->actionForPath("file/export");
+	m_actExport->addActionInto(m_actExportEvent_qbe);
+	m_actExport->setEnabled(false);
 
 	qfw::ToolBar *tb = fwk->toolBar("Event", true);
 	tb->setObjectName("EventToolbar");
@@ -551,6 +552,8 @@ void EventPlugin::repairStageStarts(const qf::core::sql::Connection &from_conn, 
 
 void EventPlugin::onEventOpened()
 {
+	if(!isEventOpen())
+		return;
 	qfLogFuncFrame() << "stage count:" << stageCount();
 	m_cbxStage->blockSignals(true);
 	m_cbxStage->clear();
@@ -636,8 +639,10 @@ void EventPlugin::connectToSqlServer()
 								     "Program features will be limited.\n\n"
 								     "To connect to a database or to choose a working directory where event files can be stored, navigate to:\n "
 								     "\"File -> Connect to database\" "));
+				break;
 			}
-			break;
+			return;
+
 		}
 		conn_w->saveSettings();
 		connection_type = conn_w->connectionType();
@@ -696,13 +701,12 @@ void EventPlugin::connectToSqlServer()
 		}
 	}
 	setSqlServerConnected(connect_ok);
-	m_actCreateEvent->setEnabled(connect_ok);
-	m_actOpenEvent->setEnabled(connect_ok);
-	m_actEditEvent->setEnabled(connect_ok);
-	m_actExportEvent_qbe->setEnabled(connect_ok);
-	m_actImportEvent_qbe->setEnabled(connect_ok);
+	m_actEvent->setEnabled(connect_ok);
+	m_actExport->setEnabled(connect_ok);
+	m_actImport->setEnabled(connect_ok);
 	m_actEditStage->setEnabled(connect_ok);
 	if(connect_ok) {
+		closeEvent();
 		openEvent(conn_w->eventName());
 	}
 }
@@ -868,7 +872,7 @@ bool EventPlugin::closeEvent()
 	m_classNameCache.clear();
 	setEventName(QString());
 	QF_SAFE_DELETE(m_eventConfig)
-	//emit eventOpened(eventName()); //comment it till QE can load event with invalid name
+	setEventOpen(false);
 	return true;
 }
 
@@ -967,15 +971,13 @@ bool EventPlugin::openEvent(const QString &_event_name)
 	if(ok) {
 		connection_settings.setEventName(event_name);
 		setEventName(event_name);
-		emit eventOpened(eventName());
 		//emit reloadDataRequest();
 	}
 	m_actEditStage->setEnabled(ok);
-	m_actOpenEvent->setEnabled(ok);
+	m_actOpenEvent->setEnabled(ok || !db_event_names.isEmpty());
 	m_actEditEvent->setEnabled(ok);
 	m_actExportEvent_qbe->setEnabled(ok);
-	m_actCreateEvent->setEnabled(true);
-	m_actImportEvent_qbe->setEnabled(true);
+	setEventOpen(ok);
 	return ok;
 }
 

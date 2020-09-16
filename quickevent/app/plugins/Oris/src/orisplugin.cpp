@@ -34,7 +34,6 @@ void OrisPlugin::onInstalled()
 	//console.warn("Oris installed");
 	qfw::Action *act_import = fwk->menuBar()->actionForPath("file/import");
 	qf::qmlwidgets::Action *act_import_oris = act_import->addMenuInto("oris", tr("&ORIS"));
-	act_import_oris->setEnabled(false);
 	{
 		qfw::Action *a = act_import_oris->addActionInto("event", tr("&Event"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::chooseAndImport);
@@ -42,8 +41,9 @@ void OrisPlugin::onInstalled()
 	{
 		qfw::Action *a = act_import_oris->addActionInto("syncEntries", tr("&Sync current event entries"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::syncCurrentEventEntries);
-		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_db_open) {
-			a->setEnabled(is_db_open);
+		a->setEnabled(false);
+		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
+			a->setEnabled(is_event_open);
 		});
 	}
 	/*
@@ -66,9 +66,16 @@ void OrisPlugin::onInstalled()
 		qfw::Action *a = act_import_oris->addActionInto("clubs", tr("&Clubs and registrations"));
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importClubs);
 		connect(a, &qfw::Action::triggered, m_orisImporter, &OrisImporter::importRegistrations);
+		a->setEnabled(false);
+		connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [a](bool is_event_open) {
+			a->setEnabled(is_event_open);
+		});
 	}
 	qf::qmlwidgets::Action *act_import_txt = act_import->addMenuInto("text", tr("&Text file"));
 	act_import_txt->setEnabled(false);
+	connect(event_plugin, &Event::EventPlugin::eventOpenChanged, [act_import_txt](bool is_event_open) {
+		act_import_txt->setEnabled(is_event_open);
+	});
 	{
 		qfw::Action *a = act_import_txt->addActionInto("competitorsCSOS", tr("&Competitors CSOS"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importCompetitorsCSOS);
@@ -81,10 +88,6 @@ void OrisPlugin::onInstalled()
 		qfw::Action *a = act_import_txt->addActionInto("competitorsRanking", tr("&Ranking CSV (ORIS format)"));
 		connect(a, &qfw::Action::triggered, m_txtImporter, &TxtImporter::importRankingCsv);
 	}
-	connect(event_plugin, &Event::EventPlugin::sqlServerConnectedChanged, [act_import_oris, act_import_txt](bool is_db_open) {
-		act_import_oris->setEnabled(is_db_open);
-		act_import_txt->setEnabled(is_db_open);
-	});
 }
 
 }
