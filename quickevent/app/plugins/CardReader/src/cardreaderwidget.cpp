@@ -811,11 +811,6 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 		int si_id = thisPlugin()->cardIdToSiId(card_id);
 		if(run_id > 0 && si_id > 0) {
 			thisPlugin()->assignCardToRun(card_id, run_id);
-
-			auto receipts_plugin = receiptsPlugin();
-			if(receipts_plugin)
-				QMetaObject::invokeMethod(receipts_plugin, "printOnAutoPrintEnabled", Q_ARG(int, card_id));
-
 			qf::core::sql::QueryBuilder qb;
 			qb.select("stageId").from("runs").where("id=" QF_IARG(run_id) );
 			qfDebug() << qb.toString();
@@ -832,6 +827,11 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 				q.execThrow(qs);
 			}
 			this->ui->tblCards->reloadRow();
+
+			auto receipts_plugin = receiptsPlugin();
+			if(receipts_plugin)
+				QMetaObject::invokeMethod(receipts_plugin, "printOnAutoPrintEnabled", Q_ARG(int, card_id));
+
 		}
 	}
 }
