@@ -1,5 +1,5 @@
-name: C/C++ CI
 
+name: Build Test
 on:
   push:
     branches: [ master ]
@@ -7,22 +7,65 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  build_linux:
 
     runs-on: ubuntu-latest
-    #runs-on: windows-latest
-
     steps:
-    
+    - uses: actions/checkout@v2
+      
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-QtCache
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
         version: '5.15.0'
-    #    arch: 'win64_mingw73'  # tohle ve windows zbuchne na tom, ze to nenajde python :(
-    #    host: 'windows'
-        target: 'desktop'
-    - uses: actions/checkout@v2
+        host: 'linux'
+        
     - name: configure
-      run: qmake CONFIG+=release CONFIG-=qml_debug CONFIG-=qtquickcompiler CONFIG+=force_debug_info
+      run: |
+        qmake quickbox.pro -spec linux-g++ CONFIG+=release CONFIG+=force_debug_info CONFIG+=qtquickcompiler
+        make qmake_all
+        
     - name: make
       run: make
+      
+      
+  build_windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
+    
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-QtCache
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
+        version: '5.15.0'
+        host: 'windows'
+        arch: 'win64_mingw81' 
+ 
+    - name: configure
+      run: |
+        qmake.exe quickbox.pro -spec win32-g++ "CONFIG+=release" "CONFIG+=qtquickcompiler" "CONFIG+=force_debug_info" 
+        mingw32-make.exe qmake_all
+ 
+    - name: make
+      run: mingw32-make.exe
+
+
