@@ -94,7 +94,13 @@ Report {
 								width: "%"
 								halign: Frame.AlignHCenter
 								textStyle: TextStyle { basedOn: tsNormal; font: Font { basedOn: fontNormal; weight: Font.WeightBold } }
-								text: "HSH Vysočina Cup"
+								text: "Mistrovství oblasti Vysočina"
+							}
+							Para {
+								width: "%"
+								halign: Frame.AlignHCenter
+								textStyle: TextStyle { basedOn: tsNormal; font: Font { basedOn: fontNormal; weight: Font.WeightBold } }
+								text: "na klasické trati 2020"
 							}
 							Frame {height: 25}
 							Para {
@@ -117,18 +123,28 @@ Report {
 								Frame { width: 10 }
 								Frame {
 									width: "%"
-									Para {
+									layout: Frame.LayoutStacked
+									Image {
 										width: "%"
+										height: 30
 										halign: Frame.AlignHCenter
-										textStyle: myStyle.textStyleBold
-										//text: root.eventConfig.event.mainReferee
-										text: root.eventConfig.mainReferee()
+										dataSource: "./images/krejsa-signature.png"
 									}
-									Para {
+									Frame {
 										width: "%"
-										topBorder: Pen { basedOn: "black1dot" }
-										halign: Frame.AlignHCenter
-										text: "Hlavní rozhodčí";
+										Para {
+											width: "%"
+											halign: Frame.AlignHCenter
+											textStyle: myStyle.textStyleBold
+											//text: root.eventConfig.event.mainReferee
+											text: root.eventConfig.mainReferee()
+										}
+										Para {
+											width: "%"
+											topBorder: Pen { basedOn: "black1dot" }
+											halign: Frame.AlignHCenter
+											text: "Hlavní rozhodčí";
+										}
 									}
 								}
 								Frame { width: "40%" }
