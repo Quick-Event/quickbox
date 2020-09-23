@@ -25,9 +25,9 @@ DefaultDirName=C:\{#APP_NAME}
 DefaultGroupName={#APP_NAME}
 OutputDir={#BUILD_DIR}\_inno\{#APP_NAME_LOWER}
 #ifdef INCLUDE_QT
-OutputBaseFilename={#APP_NAME_LOWER}-{#COMPANY}-{#VERSION}-setup
+OutputBaseFilename={#APP_NAME_LOWER}-{#VERSION}-{#COMPANY}-setup
 #else
-OutputBaseFilename={#APP_NAME_LOWER}-{#COMPANY}-{#VERSION}-noqt-setup
+OutputBaseFilename={#APP_NAME_LOWER}-{#VERSION}-{#COMPANY}-noqt-setup
 #endif
 ;SetupIconFile=.\divers\quickevent\images\{#APP_NAME_LOWER}.ico
 Compression=lzma
