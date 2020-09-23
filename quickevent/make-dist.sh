@@ -18,7 +18,6 @@ help() {
 	echo "    --work-dir <path>        directory where build files and AppImage will be created, ie: /home/me/quickevent/AppImage"
 	echo "    --appimage-tool <path>      path to AppImageTool, ie: /home/me/appimagetool-x86_64.AppImage"
 	echo "    --no-clean               do not rebuild whole project when set to 1"
-	echo "    --lib-dir               path where to find libpq.so, libcrypto.so, libssl.so, ie: /usr/lib64/ or /usr/lib/x86_64-linux-gnu/"
 	echo -e "\n"
 	echo "example: make-dist.sh --src-dir /home/me/quickbox --qt-dir /home/me/qt5/5.13.1/gcc_64 --work-dir /home/me/quickevent/AppImage --image-tool /home/me/appimagetool-x86_64.AppImage"
 	exit 0
@@ -63,11 +62,6 @@ case $key in
 	shift # past argument
 	shift # past value
 	;;
-	--lib-dir)
-	LIB_DIR="$2"
-	shift # past argument
-	shift # past value
-	;;
 	--no-clean)
 	NO_CLEAN=1
 	shift # past value
@@ -104,10 +98,6 @@ if [ ! -f $APP_IMAGE_TOOL ]; then
 fi
 if [ ! -x $APP_IMAGE_TOOL ]; then
 	error "AppImageTool file must be executable, use chmod +x $APP_IMAGE_TOOL\n"
-	help
-fi
-if [ -z $LIB_DIR ] && [ ! -f "${LIB_DIR}libcrypto.so" ] || [ ! -f "${LIB_DIR}libssl.so" ] || [ ! -f "${LIB_DIR}libpq.so"]; then
-	error "folder $LIB_DIR does not contain required libraries"
 	help
 fi
 
@@ -212,13 +202,6 @@ for tsfile in `/usr/bin/find $SRC_DIR -name "*.ts"` ; do
 	echo "$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile"
 	$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
 done
-
-# include SSL and PostreSQL libraries
-if [ ! -z $LIB_DIR ]; then
-	$RSYNC $LIB_DIR/libcrypto.so* $DIST_LIB_DIR
-	$RSYNC $LIB_DIR/libssl.so* $DIST_LIB_DIR
-	$RSYNC $LIB_DIR/libpq.so* $DIST_LIB_DIR
-fi
 
 ARTIFACTS_DIR=$WORK_DIR/artifacts
 mkdir -p $ARTIFACTS_DIR
