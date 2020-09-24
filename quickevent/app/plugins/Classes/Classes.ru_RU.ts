@@ -63,7 +63,7 @@
 <context>
     <name>Classes::ClassesPlugin</name>
     <message>
-        <location filename="src/classesplugin.cpp" line="285"/>
+        <location filename="src/classesplugin.cpp" line="279"/>
         <source>Cannot find id for code: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -127,270 +127,199 @@
         <translation>…</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="125"/>
+        <location filename="src/classeswidget.cpp" line="178"/>
         <source>Class</source>
         <translation>Класс</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="126"/>
+        <location filename="src/classeswidget.cpp" line="179"/>
         <source>DL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="126"/>
+        <location filename="src/classeswidget.cpp" line="179"/>
         <source>Locked for drawing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="127"/>
+        <location filename="src/classeswidget.cpp" line="180"/>
         <source>Start</source>
         <translation>Старт</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="128"/>
+        <location filename="src/classeswidget.cpp" line="181"/>
         <source>Interval</source>
         <translation>Интервал</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="129"/>
+        <location filename="src/classeswidget.cpp" line="182"/>
         <source>VB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="129"/>
+        <location filename="src/classeswidget.cpp" line="182"/>
         <source>Vacants before</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="130"/>
+        <location filename="src/classeswidget.cpp" line="183"/>
         <source>VE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="130"/>
+        <location filename="src/classeswidget.cpp" line="183"/>
         <source>Vacant every</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="131"/>
+        <location filename="src/classeswidget.cpp" line="184"/>
         <source>VA</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="131"/>
+        <location filename="src/classeswidget.cpp" line="184"/>
         <source>Vacants after</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="132"/>
+        <location filename="src/classeswidget.cpp" line="185"/>
         <source>Last</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="132"/>
+        <location filename="src/classeswidget.cpp" line="185"/>
         <source>Start time of last competitor in class.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="133"/>
+        <location filename="src/classeswidget.cpp" line="186"/>
         <source>Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="133"/>
+        <location filename="src/classeswidget.cpp" line="186"/>
         <source>Runners count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="134"/>
+        <location filename="src/classeswidget.cpp" line="187"/>
         <source>Maps</source>
         <translation>Карты</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="135"/>
+        <location filename="src/classeswidget.cpp" line="188"/>
         <source>Course</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="137"/>
+        <location filename="src/classeswidget.cpp" line="190"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="138"/>
+        <location filename="src/classeswidget.cpp" line="191"/>
         <source>Climb</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="139"/>
+        <location filename="src/classeswidget.cpp" line="192"/>
         <source>Rel.num</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="139"/>
+        <location filename="src/classeswidget.cpp" line="192"/>
         <source>Relay start number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="140"/>
+        <location filename="src/classeswidget.cpp" line="193"/>
         <source>Legs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="140"/>
+        <location filename="src/classeswidget.cpp" line="193"/>
         <source>Relay leg count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="158"/>
-        <source>Pos</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="159"/>
-        <source>Type</source>
-        <comment>control type</comment>
-        <translation>Тип</translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="159"/>
-        <source>Control type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="160"/>
-        <source>Code</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="161"/>
-        <source>Alt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="161"/>
-        <source>Code alternative</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="162"/>
-        <source>O</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="162"/>
-        <source>Out of order</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="163"/>
-        <source>R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="163"/>
-        <source>Radio</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="164"/>
-        <source>Long</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="164"/>
-        <source>Longitude</source>
-        <translation>Долгота</translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="165"/>
-        <source>Lat</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="165"/>
-        <source>Latitude</source>
-        <translation>Широта</translation>
-    </message>
-    <message>
-        <location filename="src/classeswidget.cpp" line="191"/>
+        <location filename="src/classeswidget.cpp" line="235"/>
         <source>&amp;Edit</source>
         <translation>&amp;Редактировать</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="193"/>
+        <location filename="src/classeswidget.cpp" line="237"/>
         <source>Cou&amp;rses</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="198"/>
+        <location filename="src/classeswidget.cpp" line="242"/>
         <source>Co&amp;des</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="203"/>
+        <location filename="src/classeswidget.cpp" line="247"/>
         <source>Classes &amp;layout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="204"/>
+        <location filename="src/classeswidget.cpp" line="248"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="218"/>
+        <location filename="src/classeswidget.cpp" line="262"/>
         <source>&amp;Import</source>
         <translation>&amp;Импорт</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="220"/>
+        <location filename="src/classeswidget.cpp" line="264"/>
         <source>OCAD TXT</source>
         <oldsource>OCad TXT</oldsource>
         <translation type="unfinished">OCad TXT</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="225"/>
+        <location filename="src/classeswidget.cpp" line="269"/>
         <source>OCAD v8</source>
         <oldsource>OCad v8</oldsource>
         <translation type="unfinished">OCad v8</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="230"/>
+        <location filename="src/classeswidget.cpp" line="274"/>
         <source>OCAD IOF XML 2.0</source>
         <oldsource>OCad IOF-XML 2.0</oldsource>
         <translation type="unfinished">OCad IOF-XML 2.0</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="235"/>
+        <location filename="src/classeswidget.cpp" line="279"/>
         <source>OCAD IOF XML 3.0</source>
         <oldsource>OCad IOF-XML 3.0</oldsource>
         <translation type="unfinished">OCad IOF-XML 3.0</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="243"/>
+        <location filename="src/classeswidget.cpp" line="287"/>
         <source>Stage </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="279"/>
+        <location filename="src/classeswidget.cpp" line="323"/>
         <source>E%1</source>
         <translation>E%1</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="376"/>
+        <location filename="src/classeswidget.cpp" line="421"/>
         <source>Delete all courses definitions for stage %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="403"/>
-        <location filename="src/classeswidget.cpp" line="478"/>
-        <location filename="src/classeswidget.cpp" line="590"/>
-        <location filename="src/classeswidget.cpp" line="657"/>
+        <location filename="src/classeswidget.cpp" line="450"/>
+        <location filename="src/classeswidget.cpp" line="520"/>
+        <location filename="src/classeswidget.cpp" line="627"/>
+        <location filename="src/classeswidget.cpp" line="692"/>
         <source>Open file</source>
         <translation>Открыть файл</translation>
     </message>
     <message>
-        <location filename="src/classeswidget.cpp" line="590"/>
+        <location filename="src/classeswidget.cpp" line="627"/>
         <source>XML files (*.xml);; All files (*)</source>
         <translation>XML-файлы (*.xml);; Все файлы (*)</translation>
     </message>
@@ -398,6 +327,80 @@
         <location filename="src/classeswidget.cpp" line="783"/>
         <source>Class name &apos;%1&apos; seems to be combined, separate it to more classes?</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CourseCodesTableModel</name>
+    <message>
+        <location filename="src/classeswidget.cpp" line="126"/>
+        <source>Pos</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="127"/>
+        <source>Type</source>
+        <comment>control type</comment>
+        <translation type="unfinished">Тип</translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="127"/>
+        <source>Control type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="128"/>
+        <source>Code</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="129"/>
+        <source>Alt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="129"/>
+        <source>Code alternative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="130"/>
+        <source>O</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="130"/>
+        <source>Out of order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="131"/>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="131"/>
+        <source>Radio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="132"/>
+        <source>Long</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="132"/>
+        <source>Longitude</source>
+        <translation type="unfinished">Долгота</translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="133"/>
+        <source>Lat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="src/classeswidget.cpp" line="133"/>
+        <source>Latitude</source>
+        <translation type="unfinished">Широта</translation>
     </message>
 </context>
 <context>
@@ -410,17 +413,6 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="16"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="src/editcodeswidget.cpp" line="28"/>
-        <source>Type</source>
-        <comment>control type</comment>
-        <translation>Тип</translation>
-    </message>
-    <message>
-        <location filename="src/editcodeswidget.cpp" line="28"/>
-        <source>Control type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -536,37 +528,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="34"/>
+        <location filename="src/editcourseswidget.cpp" line="35"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="35"/>
+        <location filename="src/editcourseswidget.cpp" line="36"/>
         <source>Length</source>
         <translation>Длина</translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="36"/>
+        <location filename="src/editcourseswidget.cpp" line="37"/>
         <source>Climb</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="37"/>
+        <location filename="src/editcourseswidget.cpp" line="38"/>
         <source>Note</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="38"/>
+        <location filename="src/editcourseswidget.cpp" line="39"/>
         <source>Cnt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="38"/>
-        <source>Codes count</source>
+        <location filename="src/editcourseswidget.cpp" line="39"/>
+        <source>Control count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/editcourseswidget.cpp" line="39"/>
+        <location filename="src/editcourseswidget.cpp" line="40"/>
         <source>Codes</source>
         <translation type="unfinished"></translation>
     </message>

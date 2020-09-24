@@ -716,7 +716,7 @@
 <context>
     <name>qf::qmlwidgets::framework::MainWindow</name>
     <message>
-        <location filename="src/framework/mainwindow.cpp" line="327"/>
+        <location filename="src/framework/mainwindow.cpp" line="328"/>
         <source>Plugin for feature id: &apos;%1&apos; is not installed!</source>
         <translation>Plugin pro funkci ID: &apos;%1&apos; není nainstalován!</translation>
     </message>
@@ -969,102 +969,102 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="562"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
         <source>&amp;File</source>
         <translation>&amp;Soubor</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="570"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="578"/>
         <source>&amp;View</source>
         <translation>&amp;Zobrazit</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="607"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="615"/>
         <source>First page</source>
         <translation>První stránka</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="614"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="622"/>
         <source>Prev page</source>
         <translation>Předchozí stránka</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="621"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="629"/>
         <source>Next page</source>
         <translation>Následující stránka</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="628"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="636"/>
         <source>Last page</source>
         <translation>Poslední stránka</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="635"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="643"/>
         <source>Zoom in</source>
         <translation>Přiblížit</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="642"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="650"/>
         <source>Zoom out</source>
         <translation>Oddálit</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="649"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="657"/>
         <source>Zoom to fit width</source>
         <translation>Přizpůsobit šířce</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="656"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="664"/>
         <source>Zoom to fit height</source>
         <translation>Přizpůsobit výšce</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="663"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
         <source>&amp;Print</source>
         <translation>&amp;Tisk</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="671"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
         <source>Print pre&amp;view</source>
         <translation>&amp;Náhled tisku</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="679"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
         <source>Export PD&amp;F</source>
         <translation>Exportovat PD&amp;F</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="680"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
         <source>Export in the Adobe Acrobat PDF format</source>
         <translation>Exportovat ve formátu Adobe Acrobat PDF</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="687"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="695"/>
         <source>Export &amp;HTML</source>
         <translation>Exportovat &amp;HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="688"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="696"/>
         <source>Export data in HTML</source>
         <translation>Exportovat data v HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1085"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1097"/>
         <source>empty file name</source>
         <translation>prázdný název souboru</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1146"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1158"/>
         <source>Save as PDF</source>
         <translation>Uložit jako PDF</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1161"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1173"/>
         <source>Save as HTML</source>
         <translation>Uložit jako HTML</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1166"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="1178"/>
         <source>Cannot open &apos;%1&apos; for write.</source>
         <translation>Nelze otevřít &apos;%1&apos; pro zápis.</translation>
     </message>
@@ -1078,12 +1078,12 @@
 <context>
     <name>qf::qmlwidgets::reports::ReportViewWidget::PainterWidget</name>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="289"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="297"/>
         <source>Item menu</source>
         <translation>Položka nabídky</translation>
     </message>
     <message>
-        <location filename="src/reports/widgets/reportviewwidget.cpp" line="290"/>
+        <location filename="src/reports/widgets/reportviewwidget.cpp" line="298"/>
         <source>Editovat text</source>
         <translation>Upravit text</translation>
     </message>
