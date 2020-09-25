@@ -101,7 +101,7 @@ jobs:
     
     - name: Build
       run: |
-        qmake.exe quickbox.pro -spec win32-g++ "CONFIG+=release" "CONFIG+=qtquickcompiler" "CONFIG+=force_debug_info" 
+        qmake.exe quickbox.pro -spec win32-g++ "CONFIG+=release"
         mingw32-make.exe qmake_all
         mingw32-make.exe -j4
       shell: cmd
