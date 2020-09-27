@@ -218,7 +218,7 @@
     <message>
         <location filename="src/tableview.cpp" line="1598"/>
         <source>Copy</source>
-        <translation>Скопировать</translation>
+        <translation>Копировать</translation>
     </message>
     <message>
         <location filename="src/tableview.cpp" line="1601"/>
