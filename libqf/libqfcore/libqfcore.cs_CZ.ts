@@ -13,7 +13,7 @@
 <context>
     <name>qf::core::LogDevice</name>
     <message>
-        <location filename="src/core/logdevice.cpp" line="136"/>
+        <location filename="src/core/logdevice.cpp" line="142"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -147,7 +147,7 @@
 <context>
     <name>qf::core::sql::DbFsDriver</name>
     <message>
-        <location filename="src/sql/dbfsdriver.cpp" line="103"/>
+        <location filename="src/sql/dbfsdriver.cpp" line="109"/>
         <source>Connection &apos;%1&apos; is not open!</source>
         <translation>Připojení &apos;%1&apos; není otevřeno!</translation>
     </message>
@@ -155,8 +155,8 @@
 <context>
     <name>qf::core::sql::FieldInfoList</name>
     <message>
-        <location filename="src/sql/catalog.cpp" line="296"/>
-        <location filename="src/sql/catalog.cpp" line="314"/>
+        <location filename="src/sql/catalog.cpp" line="300"/>
+        <location filename="src/sql/catalog.cpp" line="318"/>
         <source>Found info for nonexisting field &apos;%1&apos;</source>
         <translation>Byly nalezeny informace pro neexistující políčko &apos;%1&apos;</translation>
     </message>
@@ -164,17 +164,17 @@
 <context>
     <name>qf::core::utils::CLIOptions</name>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="98"/>
+        <location filename="src/utils/clioptions.cpp" line="99"/>
         <source>Abort application on exception</source>
         <translation>Ukončit aplikaci při výjimce</translation>
     </message>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="99"/>
+        <location filename="src/utils/clioptions.cpp" line="100"/>
         <source>Print help</source>
         <translation>Vytisknout nápovědu</translation>
     </message>
     <message>
-        <location filename="src/utils/clioptions.cpp" line="100"/>
+        <location filename="src/utils/clioptions.cpp" line="101"/>
         <source>Config name, it is loaded from {app-name}[.conf] if file exists in {config-path}</source>
         <translation>Jméno konfiguračního souboru, je nahráváno z {app-name}[.conf] pokud soubor existuje v {config-path}</translation>
     </message>

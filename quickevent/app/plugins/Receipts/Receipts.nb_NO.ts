@@ -54,12 +54,12 @@
 <context>
     <name>Receipts::ReceiptsPlugin</name>
     <message>
-        <location filename="src/receiptsplugin.cpp" line="404"/>
+        <location filename="src/receiptsplugin.cpp" line="405"/>
         <source>Card</source>
         <translation>Kort</translation>
     </message>
     <message>
-        <location filename="src/receiptsplugin.cpp" line="470"/>
+        <location filename="src/receiptsplugin.cpp" line="471"/>
         <source>Receipt</source>
         <translation>Kvittering</translation>
     </message>
@@ -296,12 +296,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="90"/>
+        <location filename="src/receiptswidget.cpp" line="91"/>
         <source>Receipt without name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/receiptswidget.cpp" line="91"/>
+        <location filename="src/receiptswidget.cpp" line="90"/>
         <source>Error info</source>
         <translation type="unfinished"></translation>
     </message>

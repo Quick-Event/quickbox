@@ -62,12 +62,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="39"/>
+        <location filename="src/orisplugin.cpp" line="38"/>
         <source>&amp;Event</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="43"/>
+        <location filename="src/orisplugin.cpp" line="42"/>
         <source>&amp;Sync current event entries</source>
         <translation type="unfinished"></translation>
     </message>
@@ -77,22 +77,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="70"/>
+        <location filename="src/orisplugin.cpp" line="74"/>
         <source>&amp;Text file</source>
         <translation type="unfinished">&amp;Tekstfil</translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="73"/>
+        <location filename="src/orisplugin.cpp" line="80"/>
         <source>&amp;Competitors CSOS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="77"/>
+        <location filename="src/orisplugin.cpp" line="84"/>
         <source>Competitors C&amp;SV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/orisplugin.cpp" line="81"/>
+        <location filename="src/orisplugin.cpp" line="88"/>
         <source>&amp;Ranking CSV (ORIS format)</source>
         <translation type="unfinished"></translation>
     </message>

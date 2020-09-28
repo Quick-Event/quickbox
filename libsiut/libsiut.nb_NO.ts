@@ -60,27 +60,27 @@
 <context>
     <name>siut::DeviceDriver</name>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="114"/>
+        <location filename="src/device/sidevicedriver.cpp" line="119"/>
         <source>Garbage received, stripping %1 characters from beginning of buffer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="131"/>
+        <location filename="src/device/sidevicedriver.cpp" line="136"/>
         <source>NAK received</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="137"/>
+        <location filename="src/device/sidevicedriver.cpp" line="142"/>
         <source>Legacy protocol is not supported, switch station to extended one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="144"/>
+        <location filename="src/device/sidevicedriver.cpp" line="149"/>
         <source>Valid message shall end with ETX or NAK, throwing data away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/device/sidevicedriver.cpp" line="160"/>
+        <location filename="src/device/sidevicedriver.cpp" line="165"/>
         <source>SIDeviceDriver::sendCommand() - ERROR Sending of EXT commands only is supported for sending.</source>
         <translation type="unfinished"></translation>
     </message>

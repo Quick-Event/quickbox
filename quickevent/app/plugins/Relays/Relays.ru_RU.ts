@@ -74,71 +74,71 @@
 <context>
     <name>LegsModel</name>
     <message>
-        <location filename="src/relaywidget.cpp" line="79"/>
+        <location filename="src/relaywidget.cpp" line="68"/>
         <source>Leg</source>
         <comment>relays.leg</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="79"/>
+        <location filename="src/relaywidget.cpp" line="68"/>
         <source>Leg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="80"/>
+        <location filename="src/relaywidget.cpp" line="69"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="81"/>
+        <location filename="src/relaywidget.cpp" line="70"/>
         <source>Reg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="82"/>
+        <location filename="src/relaywidget.cpp" line="71"/>
         <source>SI</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="83"/>
+        <location filename="src/relaywidget.cpp" line="72"/>
         <source>Start</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="84"/>
+        <location filename="src/relaywidget.cpp" line="73"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="85"/>
+        <location filename="src/relaywidget.cpp" line="74"/>
         <source>NC</source>
         <comment>runs.notCompeting</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="85"/>
+        <location filename="src/relaywidget.cpp" line="74"/>
         <source>Not competing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="86"/>
+        <location filename="src/relaywidget.cpp" line="75"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="86"/>
+        <location filename="src/relaywidget.cpp" line="75"/>
         <source>Disqualified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="87"/>
+        <location filename="src/relaywidget.cpp" line="76"/>
         <source>E</source>
         <comment>runs.misPunch</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="87"/>
+        <location filename="src/relaywidget.cpp" line="76"/>
         <source>Card mispunch</source>
         <translation type="unfinished"></translation>
     </message>
@@ -152,7 +152,7 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="35"/>
-        <location filename="src/relaywidget.cpp" line="126"/>
+        <location filename="src/relaywidget.cpp" line="115"/>
         <source>Relay</source>
         <translation type="unfinished"></translation>
     </message>
@@ -237,17 +237,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="184"/>
+        <location filename="src/relaywidget.cpp" line="173"/>
         <source>Class should be entered.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="188"/>
+        <location filename="src/relaywidget.cpp" line="177"/>
         <source>Relay ID invalid.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="231"/>
+        <location filename="src/relaywidget.cpp" line="220"/>
         <source>Add leg</source>
         <translation type="unfinished"></translation>
     </message>
@@ -364,79 +364,79 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="249"/>
+        <location filename="src/relayswidget.cpp" line="250"/>
         <source>Edit Relay</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="252"/>
+        <location filename="src/relayswidget.cpp" line="253"/>
         <source>Save and &amp;next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="284"/>
+        <location filename="src/relayswidget.cpp" line="285"/>
         <source>Really delete all the selected relays? This action cannot be reverted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="549"/>
-        <location filename="src/relayswidget.cpp" line="573"/>
-        <location filename="src/relayswidget.cpp" line="597"/>
+        <location filename="src/relayswidget.cpp" line="550"/>
+        <location filename="src/relayswidget.cpp" line="574"/>
+        <location filename="src/relayswidget.cpp" line="598"/>
         <source>Results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="613"/>
+        <location filename="src/relayswidget.cpp" line="614"/>
         <source>Save as %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="634"/>
+        <location filename="src/relayswidget.cpp" line="635"/>
         <source>Exporting result file...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="634"/>
+        <location filename="src/relayswidget.cpp" line="635"/>
         <source>Abort</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="820"/>
+        <location filename="src/relayswidget.cpp" line="821"/>
         <source>Relays IOF-XML 3.0 results</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="297"/>
+        <location filename="src/relayswidget.cpp" line="298"/>
         <source>Confirm deletion of %1 relays.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="317"/>
+        <location filename="src/relayswidget.cpp" line="318"/>
         <source>Dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="317"/>
+        <location filename="src/relayswidget.cpp" line="318"/>
         <source>Assign relay numbers method</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="318"/>
+        <location filename="src/relayswidget.cpp" line="319"/>
         <source>Random number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="318"/>
+        <location filename="src/relayswidget.cpp" line="319"/>
         <source>In alphabetical order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="502"/>
+        <location filename="src/relayswidget.cpp" line="503"/>
         <source>Start list by classes</source>
         <translation type="unfinished">Стартовый список по классам</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="521"/>
+        <location filename="src/relayswidget.cpp" line="522"/>
         <source>Start list by clubs</source>
         <translation type="unfinished">Стартовый список по клубам</translation>
     </message>

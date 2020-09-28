@@ -74,71 +74,71 @@
 <context>
     <name>LegsModel</name>
     <message>
-        <location filename="src/relaywidget.cpp" line="79"/>
+        <location filename="src/relaywidget.cpp" line="68"/>
         <source>Leg</source>
         <comment>relays.leg</comment>
         <translation>Úsek</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="79"/>
+        <location filename="src/relaywidget.cpp" line="68"/>
         <source>Leg</source>
         <translation>Úsek</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="80"/>
+        <location filename="src/relaywidget.cpp" line="69"/>
         <source>Name</source>
         <translation>Jméno</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="81"/>
+        <location filename="src/relaywidget.cpp" line="70"/>
         <source>Reg</source>
         <translation>Reg. č.</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="82"/>
+        <location filename="src/relaywidget.cpp" line="71"/>
         <source>SI</source>
         <translation>SI</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="83"/>
+        <location filename="src/relaywidget.cpp" line="72"/>
         <source>Start</source>
         <translation>Start</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="84"/>
+        <location filename="src/relaywidget.cpp" line="73"/>
         <source>Time</source>
         <translation>Čas</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="85"/>
+        <location filename="src/relaywidget.cpp" line="74"/>
         <source>NC</source>
         <comment>runs.notCompeting</comment>
         <translation>MS</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="85"/>
+        <location filename="src/relaywidget.cpp" line="74"/>
         <source>Not competing</source>
         <translation>Mimo soutěž</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="86"/>
+        <location filename="src/relaywidget.cpp" line="75"/>
         <source>D</source>
         <comment>runs.disqualified</comment>
         <translation>D</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="86"/>
+        <location filename="src/relaywidget.cpp" line="75"/>
         <source>Disqualified</source>
         <translation>Diskvalifikace</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="87"/>
+        <location filename="src/relaywidget.cpp" line="76"/>
         <source>E</source>
         <comment>runs.misPunch</comment>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="87"/>
+        <location filename="src/relaywidget.cpp" line="76"/>
         <source>Card mispunch</source>
         <translation>Chybné ražení</translation>
     </message>
@@ -152,7 +152,7 @@
     </message>
     <message>
         <location filename="src/relaywidget.ui" line="35"/>
-        <location filename="src/relaywidget.cpp" line="126"/>
+        <location filename="src/relaywidget.cpp" line="115"/>
         <source>Relay</source>
         <translation>Štafeta</translation>
     </message>
@@ -241,17 +241,17 @@
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="184"/>
+        <location filename="src/relaywidget.cpp" line="173"/>
         <source>Class should be entered.</source>
         <translation>Není zadána kategorie.</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="188"/>
+        <location filename="src/relaywidget.cpp" line="177"/>
         <source>Relay ID invalid.</source>
         <translation>Neplatné ID štafety.</translation>
     </message>
     <message>
-        <location filename="src/relaywidget.cpp" line="231"/>
+        <location filename="src/relaywidget.cpp" line="220"/>
         <source>Add leg</source>
         <translation>Přidat úsek</translation>
     </message>
@@ -370,80 +370,80 @@
         <translation>-- všechny --</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="249"/>
+        <location filename="src/relayswidget.cpp" line="250"/>
         <source>Edit Relay</source>
         <oldsource>Edit  Relay</oldsource>
         <translation>Upravit štafetu</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="252"/>
+        <location filename="src/relayswidget.cpp" line="253"/>
         <source>Save and &amp;next</source>
         <translation>Uložit a &amp;další</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="284"/>
+        <location filename="src/relayswidget.cpp" line="285"/>
         <source>Really delete all the selected relays? This action cannot be reverted.</source>
         <translation>Opravdu odstranit všechny vybrané štafety? Tuto akci nelze vrátit zpět.</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="549"/>
-        <location filename="src/relayswidget.cpp" line="573"/>
-        <location filename="src/relayswidget.cpp" line="597"/>
+        <location filename="src/relayswidget.cpp" line="550"/>
+        <location filename="src/relayswidget.cpp" line="574"/>
+        <location filename="src/relayswidget.cpp" line="598"/>
         <source>Results</source>
         <translation>Výsledky</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="613"/>
+        <location filename="src/relayswidget.cpp" line="614"/>
         <source>Save as %1</source>
         <translation>Uložit jako %1</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="634"/>
+        <location filename="src/relayswidget.cpp" line="635"/>
         <source>Exporting result file...</source>
         <translation>Exportuji soubor s výsledky...</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="634"/>
+        <location filename="src/relayswidget.cpp" line="635"/>
         <source>Abort</source>
         <translation>Zrušit</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="820"/>
+        <location filename="src/relayswidget.cpp" line="821"/>
         <source>Relays IOF-XML 3.0 results</source>
         <translation>Výsledky štafet ve formátu IOF XML 3.0</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="297"/>
+        <location filename="src/relayswidget.cpp" line="298"/>
         <source>Confirm deletion of %1 relays.</source>
         <translation>Potvrďte smazání %1 štafet.</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="317"/>
+        <location filename="src/relayswidget.cpp" line="318"/>
         <source>Dialog</source>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="317"/>
+        <location filename="src/relayswidget.cpp" line="318"/>
         <source>Assign relay numbers method</source>
         <translation>Způsob přiřazení čísel štafetám</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="318"/>
+        <location filename="src/relayswidget.cpp" line="319"/>
         <source>Random number</source>
         <translation>Náhodné číslo</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="318"/>
+        <location filename="src/relayswidget.cpp" line="319"/>
         <source>In alphabetical order</source>
         <translation>V abecedním pořadí</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="502"/>
+        <location filename="src/relayswidget.cpp" line="503"/>
         <source>Start list by classes</source>
         <translation>Startovní listina po kategoriích</translation>
     </message>
     <message>
-        <location filename="src/relayswidget.cpp" line="521"/>
+        <location filename="src/relayswidget.cpp" line="522"/>
         <source>Start list by clubs</source>
         <translation>Startovní listina po klubech</translation>
     </message>
