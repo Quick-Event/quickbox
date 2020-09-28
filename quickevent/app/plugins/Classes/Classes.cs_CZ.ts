@@ -335,73 +335,73 @@
     <message>
         <location filename="src/classeswidget.cpp" line="126"/>
         <source>Pos</source>
-        <translation type="unfinished">Pořadí</translation>
+        <translation>Pořadí</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Type</source>
         <comment>control type</comment>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Control type</source>
-        <translation type="unfinished">Typ kontroly</translation>
+        <translation>Typ kontroly</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="128"/>
         <source>Code</source>
-        <translation type="unfinished">Kontrola</translation>
+        <translation>Kontrola</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="129"/>
         <source>Alt</source>
-        <translation type="unfinished">Náhradní</translation>
+        <translation>Náhradní</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="129"/>
         <source>Code alternative</source>
-        <translation type="unfinished">Náhradní kontrola</translation>
+        <translation>Náhradní kontrola</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
         <source>O</source>
-        <translation type="unfinished">M</translation>
+        <translation>M</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="130"/>
         <source>Out of order</source>
-        <translation type="unfinished">Mimo provoz</translation>
+        <translation>Mimo provoz</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="131"/>
         <source>R</source>
-        <translation type="unfinished">R</translation>
+        <translation>R</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="131"/>
         <source>Radio</source>
-        <translation type="unfinished">Rádio</translation>
+        <translation>Rádio</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="132"/>
         <source>Long</source>
-        <translation type="unfinished">Délka</translation>
+        <translation>Délka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="132"/>
         <source>Longitude</source>
-        <translation type="unfinished">Zeměpisná délka</translation>
+        <translation>Zeměpisná délka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="133"/>
         <source>Lat</source>
-        <translation type="unfinished">Šířka</translation>
+        <translation>Šířka</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="133"/>
         <source>Latitude</source>
-        <translation type="unfinished">Zeměpisná šířka</translation>
+        <translation>Zeměpisná šířka</translation>
     </message>
 </context>
 <context>
@@ -556,7 +556,7 @@
     <message>
         <location filename="src/editcourseswidget.cpp" line="39"/>
         <source>Control count</source>
-        <translation type="unfinished"></translation>
+        <translation>Počet kontrol</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="40"/>
