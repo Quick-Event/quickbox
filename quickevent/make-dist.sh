@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #APP_VER=0.0.1
 APP_NAME=quickevent
 SRC_DIR=/home/fanda/proj/quickbox
@@ -141,7 +140,7 @@ fi
 
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
-$QMAKE $SRC_DIR/quickbox.pro CONFIG+=release CONFIG+=force_debug_info CONFIG+=separate_debug_info -r -spec linux-g++
+$QMAKE $SRC_DIR/quickbox.pro CONFIG+=release -r -spec linux-g++
 make -j2
 if [ $? -ne 0 ]; then
 	echo "Make Error" >&2
@@ -195,11 +194,20 @@ $RSYNC $QT_DIR/plugins/audio/ $DIST_BIN_DIR/audio/
 mkdir -p $DIST_QML_DIR
 $RSYNC $QT_DIR/qml/QtQml $DIST_BIN_DIR/
 
+# process translation files
+TRANS_DIR=$DIST_BIN_DIR/translations
+mkdir -p $TRANS_DIR
+for tsfile in `/usr/bin/find $SRC_DIR -name "*.ts"` ; do
+	qmfile=`basename "${tsfile%.*}.qm"`
+	echo "$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile"
+	$QT_DIR/bin/lrelease $tsfile -qm $TRANS_DIR/$qmfile
+done
+
 ARTIFACTS_DIR=$WORK_DIR/artifacts
 mkdir -p $ARTIFACTS_DIR
 
 tar -cvzf $ARTIFACTS_DIR/$DISTRO_NAME.tgz  -C $WORK_DIR ./$DISTRO_NAME
 
 rsync -av $SRC_DIR/$APP_NAME/distro/QuickEvent.AppDir/* $DIST_DIR/
-ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-x86_64.AppImage
+ARCH=x86_64 $APP_IMAGE_TOOL $DIST_DIR $ARTIFACTS_DIR/$APP_NAME-${APP_VER}-linux64.AppImage
 
