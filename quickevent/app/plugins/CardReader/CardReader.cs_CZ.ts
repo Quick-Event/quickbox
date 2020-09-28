@@ -14,7 +14,7 @@
     <message>
         <location filename="src/cardcheckerfreeordercpp.cpp" line="15"/>
         <source>Free order race</source>
-        <translation type="unfinished"></translation>
+        <translation>Volné pořadí kontrol</translation>
     </message>
 </context>
 <context>
