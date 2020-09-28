@@ -17,12 +17,12 @@
         <location filename="src/connectdbdialogwidget.ui" line="53"/>
         <source>Ev&amp;ent ID</source>
         <oldsource>E&amp;vent ID</oldsource>
-        <translation type="unfinished">ID &amp;závodu</translation>
+        <translation>ID &amp;závodu</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
         <source>Open the event right away if it is found in the database, ignore this field otherwise.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud je závod nalezen v databázi, proběhne jeho otevření, v opačném případě je obsah tohoto pole ignorován.</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
@@ -33,7 +33,7 @@
         <location filename="src/connectdbdialogwidget.ui" line="98"/>
         <source>S&amp;ql server</source>
         <oldsource>Sql server</oldsource>
-        <translation type="unfinished">SQL server</translation>
+        <translation>S&amp;QL server</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="125"/>
@@ -58,17 +58,17 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="206"/>
         <source>Single &amp;file</source>
-        <translation type="unfinished"></translation>
+        <translation>Samostatný &amp;soubor</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="227"/>
         <source>Choose a wor&amp;king directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte pracovní &amp;adresář</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="239"/>
         <source>Directory where to store event files (*.qbe)</source>
-        <translation type="unfinished"></translation>
+        <translation>Adresář, kam jsou ukládány soubory závodu (*.qbe)</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="249"/>
@@ -140,7 +140,11 @@ Program features will be limited.
 
 To connect to a database or to choose a working directory where event files can be stored, navigate to:
  &quot;File -&gt; Connect to database&quot; </source>
-        <translation type="unfinished"></translation>
+        <translation>Databáze není připojena.
+Funkce programu budou omezeny.
+
+Připojení k databázi nebo vybrání pracovního adresáře, kam jsou ukládány soubory závodu, lze provést z:
+ &quot;Soubor --&gt; Připojit k databázi&quot; </translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="682"/>
@@ -152,7 +156,9 @@ To connect to a database or to choose a working directory where event files can 
         <source>Path to the working directory cannot be empty.
 
 Enter path to the working directory or connect to SQL server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cesta k pracovnímu adresáři musí být vyplněna.
+
+Zadejte cestu k pracovnímu adresáři nebo se připojte k SQL serveru.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="693"/>
@@ -160,7 +166,10 @@ Enter path to the working directory or connect to SQL server.</source>
 %1
 
 Enter a valid path to the working directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadaná cesta k adresáři není platná:
+%1
+
+Zadejte platnou cestu k pracovnímu adresáři.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="762"/>
@@ -188,18 +197,20 @@ Enter a valid path to the working directory.</source>
         <location filename="src/eventplugin.cpp" line="892"/>
         <source>Connected to an empty database.
 Start by creating or importing an event.</source>
-        <translation type="unfinished"></translation>
+        <translation>Připojeno k prázdné databázi.
+Začněte vytvořením nebo importováním nového závodu.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="896"/>
         <source>Working directory does not contain any event files.
 Start by creating or importing an event.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pracovní adresář neobsahuje žádné závody.
+Začněte vytvořením nebo importováním nového závodu.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="906"/>
         <source>select event to open:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyberte závod pro otevření:</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1159"/>
