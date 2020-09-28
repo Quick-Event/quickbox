@@ -224,7 +224,7 @@
     <message>
         <location filename="src/findrunnerwidget.ui" line="30"/>
         <source>Use this SI card also in next stages</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít toto číslo čipu i v následujících etapách</translation>
     </message>
 </context>
 <context>
