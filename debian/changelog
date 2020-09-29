@@ -1,3 +1,9 @@
+quickbox (2.3.8pi1) unstable; urgency=medium
+
+  * Use actual Quick Event development sources and move sintalation to /opt directory.
+
+ -- Pavel Pisa <pisa@cmp.felk.cvut.cz>  Tue, 01 September 2020 11:26:46 +0200
+
 quickbox (2.3.7) unstable; urgency=medium
 
   * Initial attempt to package Quick Box including Quck Event by Open Build Service

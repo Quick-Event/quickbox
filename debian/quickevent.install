@@ -1,1 +1,4 @@
-bin/quickevent /usr/bin
+bin/quickevent /opt/quickevent/bin
+quickevent/app/quickevent/datafiles/style /opt/quickevent/bin/quickevent-data
+quickevent/distro/deb/desktop-files/QuickEvent.desktop /usr/share/applications
+quickevent/app/quickevent/images/quickevent.svg /usr/share/icons/hicolor/scalable/apps

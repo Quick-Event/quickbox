@@ -11,3 +11,8 @@ export QT_SELECT := qt5
 
 %:
 	dh $@
+
+.PHONY: override_dh_shlibdeps
+
+override_dh_shlibdeps:
+	dh_shlibdeps -l$(CURDIR)/debian/libquickevent/opt/quickevent/lib:$(CURDIR)/debian/libquickevent-dev/opt/quickevent/lib:$(CURDIR)/debian/quickevent-plugins/opt/quickevent/lib:$(CURDIR)/debian/quickevent-dev/opt/quickevent/lib
