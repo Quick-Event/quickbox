@@ -21,8 +21,5 @@ win32 {
 	QMAKE_EXTRA_TARGETS += datafiles
 	datafiles.commands = \
     	# mkdir not needed for windows
-	    # xcopy stopped to work with error: invalid number of parameters
-	    # it seams that /bin/sh is called with mingw from some version of Qt
-	    #xcopy  /e /y /i \"$$shell_path($$SRC_DATA_DIR)\" \"$$shell_path($$DEST_DATA_DIR)\"
-	    mkdir -p $$shell_path($$DEST_DATA_DIR) && cp -avr $$shell_path($$SRC_DATA_DIR)/* $$shell_path($$DEST_DATA_DIR)
+	    xcopy \"$$shell_path($$SRC_DATA_DIR)\" \"$$shell_path($$DEST_DATA_DIR)\" /s /e /y /i
 }
