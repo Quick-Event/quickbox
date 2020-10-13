@@ -34,6 +34,7 @@
 #include <QPushButton>
 #include <QTime>
 #include <QUrl>
+#include <QInputDialog>
 
 static Event::EventPlugin* eventPlugin()
 {
@@ -748,6 +749,11 @@ void OrisImporter::importRegistrations()
 {
 	int sport_id = eventPlugin()->eventConfig()->sportId();
 	int year = QDate::currentDate().addMonths(-2).year();
+
+	bool ok;
+	year = QInputDialog::getInt(nullptr, tr("Import ORIS Registrations"), tr("Year of registration:"), year, year-2, year+2, 1, &ok);
+	if (!ok) return;
+
 	QUrl url(QString("https://oris.orientacnisporty.cz/API/?format=json&method=getRegistration&sport=%1&year=%2").arg(sport_id).arg(year));
 	getJsonAndProcess(url, this, [](const QJsonDocument &jsd) {
 		saveJsonBackup("Registrations", jsd);
