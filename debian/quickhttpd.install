@@ -1,1 +1,1 @@
-bin/quickhttpd /usr/bin
+bin/quickhttpd /opt/quickevent/bin

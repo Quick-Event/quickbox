@@ -1,8 +1,8 @@
 #! /usr/bin/dh-exec
-lib/qml/quickevent /usr/lib/${DEB_HOST_MULTIARCH}/qt5/lib/qml
-lib/libquickeventcore.so.1 /usr/lib/${DEB_HOST_MULTIARCH}/
-lib/libquickeventcore.so.1.0 /usr/lib/${DEB_HOST_MULTIARCH}/
-lib/libquickeventcore.so.1.0.0 /usr/lib/${DEB_HOST_MULTIARCH}/
-lib/libquickeventgui.so.1 /usr/lib/${DEB_HOST_MULTIARCH}/
-lib/libquickeventgui.so.1.0 /usr/lib/${DEB_HOST_MULTIARCH}/
-lib/libquickeventgui.so.1.0.0 /usr/lib/${DEB_HOST_MULTIARCH}/
+lib/qml/quickevent /opt/quickevent/lib/qml
+lib/libquickeventcore.so.1 /opt/quickevent/lib/
+lib/libquickeventcore.so.1.0 /opt/quickevent/lib/
+lib/libquickeventcore.so.1.0.0 /opt/quickevent/lib/
+lib/libquickeventgui.so.1 /opt/quickevent/lib/
+lib/libquickeventgui.so.1.0 /opt/quickevent/lib/
+lib/libquickeventgui.so.1.0.0 /opt/quickevent/lib/
