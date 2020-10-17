@@ -33,3 +33,4 @@ TRANSLATIONS += \
 	libquickeventcore.nb_NO.ts \
 	libquickeventcore.ru_RU.ts \
 	libquickeventcore.nl_BE.ts \
+	libquickeventcore.uk_UA.ts \

@@ -39,3 +39,4 @@ TRANSLATIONS += \
 	libqfcore.nb_NO.ts \
 	libqfcore.ru_RU.ts \
 	libqfcore.nl_BE.ts \
+	libqfcore.uk_UA.ts \

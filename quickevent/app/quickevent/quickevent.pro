@@ -84,3 +84,4 @@ TRANSLATIONS += \
 	$${TARGET}.nb_NO.ts \
 	$${TARGET}.ru_RU.ts \
 	$${TARGET}.nl_BE.ts \
+	$${TARGET}.uk_UA.ts \

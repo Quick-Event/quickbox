@@ -74,6 +74,7 @@ void CorePlugin::onInstalled()
 				{tr("Norwegian"), "nb_NO"},
 				{tr("Polish"), "pl_PL"},
 				{tr("Russian"), "ru_RU"},
+				{tr("Ukrainian"), "uk_UA"},
 			};
 			auto *ag = new QActionGroup(m2);
 			QSettings settings;
