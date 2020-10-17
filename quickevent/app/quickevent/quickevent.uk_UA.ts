@@ -5,33 +5,33 @@
     <name>AppCliOptions</name>
     <message>
         <source>Application locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Мова додатку</translation>
     </message>
     <message>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Профіль додатку, див: https://github.com/fvacek/quickbox/wiki/Application-profiles</translation>
     </message>
     <message>
         <source>Application font scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір шрифта</translation>
     </message>
 </context>
 <context>
     <name>LoggerWidget</name>
     <message>
         <source>&lt;empty&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;Порожньо&gt;</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>Quick Event ver. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Quick Event вер. %1</translation>
     </message>
     <message>
         <source>Application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал додатку</translation>
     </message>
 </context>
 </TS>
