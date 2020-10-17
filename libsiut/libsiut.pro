@@ -23,3 +23,4 @@ TRANSLATIONS += \
 	libsiut.nb_NO.ts \
 	libsiut.ru_RU.ts \
 	libsiut.nl_BE.ts \
+	libsiut.uk_UA.ts \

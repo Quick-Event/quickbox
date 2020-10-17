@@ -48,3 +48,4 @@ TRANSLATIONS += \
 	libqfqmlwidgets.nb_NO.ts \
 	libqfqmlwidgets.ru_RU.ts \
 	libqfqmlwidgets.nl_BE.ts \
+	libqfqmlwidgets.uk_UA.ts \

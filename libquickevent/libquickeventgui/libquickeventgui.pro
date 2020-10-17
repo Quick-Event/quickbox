@@ -35,3 +35,4 @@ TRANSLATIONS += \
 	libquickeventgui.nb_NO.ts \
 	libquickeventgui.ru_RU.ts \
 	libquickeventgui.nl_BE.ts \
+	libquickeventgui.uk_UA.ts \
