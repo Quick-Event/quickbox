@@ -28,7 +28,7 @@ jobs:
         
     - name: Get app version
       run: | 
-        echo "::set-env name=VERSION::`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`"
+        echo "VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`" >> $GITHUB_ENV
           
     - name: Get AppImageTool
       run: |
@@ -117,7 +117,7 @@ jobs:
         done
       
     - name: Get app version
-      run: echo "::set-env name=VERSION::`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`"
+      run: echo "VERSION=`grep APP_VERSION quickevent/app/quickevent/src/appversion.h | cut -d\\" -f2`" >> $GITHUB_ENV
   
     - name: Create installer
       run: |
