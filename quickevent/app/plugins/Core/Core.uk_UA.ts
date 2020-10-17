@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.1" language="uk_UA">
 <context>
     <name>AppStatusBar</name>
     <message>
         <location filename="src/widgets/appstatusbar.cpp" line="49"/>
         <source>E%1</source>
-        <translation>E%1</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14,12 +14,12 @@
     <message>
         <location filename="src/coreplugin.cpp" line="41"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Файл</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="43"/>
         <source>&amp;Import</source>
-        <translation type="unfinished">&amp;Импорт</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="46"/>
@@ -29,12 +29,12 @@
     <message>
         <location filename="src/coreplugin.cpp" line="51"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished">&amp;Выйти</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="58"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished">&amp;Инструменты</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="60"/>
@@ -49,22 +49,22 @@
     <message>
         <location filename="src/coreplugin.cpp" line="68"/>
         <source>&amp;Language</source>
-        <translation type="unfinished">&amp;Язык</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="70"/>
         <source>System</source>
-        <translation type="unfinished">Система</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="71"/>
         <source>Czech</source>
-        <translation type="unfinished">Чешский</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="72"/>
         <source>English</source>
-        <translation type="unfinished">Английский</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="73"/>
@@ -74,17 +74,17 @@
     <message>
         <location filename="src/coreplugin.cpp" line="74"/>
         <source>Norwegian</source>
-        <translation type="unfinished">Норвежский</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="75"/>
         <source>Polish</source>
-        <translation type="unfinished">Польский</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="76"/>
         <source>Russian</source>
-        <translation type="unfinished">Русский</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="77"/>
@@ -99,7 +99,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="96"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation type="unfinished">Изменение языка на &apos;%1&apos; будет применено после перезапуска приложения.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="104"/>
@@ -114,7 +114,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="112"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Справка</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="114"/>
@@ -124,12 +124,12 @@
     <message>
         <location filename="src/coreplugin.cpp" line="119"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished">О &amp;Qt</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="162"/>
         <source>About Quick Event</source>
-        <translation type="unfinished">О Quick Event</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="163"/>
@@ -139,7 +139,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="178"/>
         <source>About Qt</source>
-        <translation type="unfinished">О Qt</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
