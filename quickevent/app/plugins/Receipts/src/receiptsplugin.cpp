@@ -494,7 +494,7 @@ bool ReceiptsPlugin::isAutoPrintEnabled()
 void ReceiptsPlugin::printOnAutoPrintEnabled(int card_id)
 {
 	if(isAutoPrintEnabled())
-		printCard(card_id);
+		printReceipt(card_id);
 }
 
 
