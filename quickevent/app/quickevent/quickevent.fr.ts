@@ -5,7 +5,7 @@
     <name>AppCliOptions</name>
     <message>
         <source>Application locale</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Application locale</translation>
     </message>
     <message>
         <source>Application profile, see: https://github.com/fvacek/quickbox/wiki/Application-profiles</source>
@@ -31,7 +31,7 @@
     </message>
     <message>
         <source>Application log</source>
-        <translation type="unfinished"></translation>
+        <translation>Logs de l&apos;application</translation>
     </message>
 </context>
 </TS>
