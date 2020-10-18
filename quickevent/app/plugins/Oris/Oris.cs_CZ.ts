@@ -123,11 +123,11 @@
     </message>
     <message>
         <source>Import ORIS Registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>Importovat registrace z ORISu</translation>
     </message>
     <message>
         <source>Year of registration:</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrace z roku:</translation>
     </message>
 </context>
 <context>
