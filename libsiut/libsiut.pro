@@ -19,8 +19,9 @@ include(libsiut.pri)
 
 TRANSLATIONS += \
 	libsiut.cs_CZ.ts \
-	libsiut.pl_PL.ts \
+	libsiut.fr_FR.ts \
 	libsiut.nb_NO.ts \
-	libsiut.ru_RU.ts \
 	libsiut.nl_BE.ts \
+	libsiut.pl_PL.ts \
+	libsiut.ru_RU.ts \
 	libsiut.uk_UA.ts \
