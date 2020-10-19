@@ -94,7 +94,7 @@
     <message>
         <location filename="src/coreplugin.cpp" line="78"/>
         <source>Ukrainian</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukrajinština</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="96"/>
