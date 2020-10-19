@@ -14,132 +14,132 @@
     <message>
         <location filename="src/coreplugin.cpp" line="41"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="43"/>
         <source>&amp;Import</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Імпорт</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="46"/>
         <source>&amp;Export</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Експорт</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="51"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Вихід</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="58"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>І&amp;нструменти</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="60"/>
         <source>&amp;SQL tool</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SQL tool</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="66"/>
         <source>&amp;Locale</source>
-        <translation type="unfinished"></translation>
+        <translation>Нац&amp;іоналізація</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="68"/>
         <source>&amp;Language</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Мова</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="70"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Система</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="71"/>
         <source>Czech</source>
-        <translation type="unfinished"></translation>
+        <translation>Чеська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="72"/>
         <source>English</source>
-        <translation type="unfinished"></translation>
+        <translation>Англійська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="73"/>
         <source>Flemish</source>
-        <translation type="unfinished"></translation>
+        <translation>Фламандська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="74"/>
         <source>Norwegian</source>
-        <translation type="unfinished"></translation>
+        <translation>Норвеська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="75"/>
         <source>Polish</source>
-        <translation type="unfinished"></translation>
+        <translation>Польська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="76"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Російська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="77"/>
         <source>Ukrainian</source>
-        <translation type="unfinished"></translation>
+        <translation>Українська</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="95"/>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="96"/>
         <source>Language change to &apos;%1&apos; will be applied after application restart.</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміна мови на &apos;%1&apos; відбудеться при рестарті.</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="104"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>Пе&amp;регляд</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="108"/>
         <source>&amp;Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>П&amp;анелі інстр</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="112"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Допомога</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="114"/>
         <source>&amp;About Quick event</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Про Quick event</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="119"/>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Про &amp;Qt</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="162"/>
         <source>About Quick Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Про Quick Event</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="163"/>
         <source>The &lt;b&gt;Quick Event&lt;/b&gt; is an application which helps you to organize the orienteering events.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Quick Event&lt;/b&gt; це додаток, який допомагає в організації тренувань і змагань зі спортивного оруєнтування.&lt;br/&gt;&lt;br/&gt;version: %1&lt;br/&gt;min. db version: %2&lt;br/&gt;build: %3 %4</translation>
     </message>
     <message>
         <location filename="src/coreplugin.cpp" line="178"/>
         <source>About Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Про Qt</translation>
     </message>
 </context>
 </TS>
