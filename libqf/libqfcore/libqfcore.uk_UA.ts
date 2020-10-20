@@ -7,7 +7,7 @@
         <location filename="src/sql/catalog.cpp" line="32"/>
         <location filename="src/sql/catalog.cpp" line="60"/>
         <source>Error getting the sequence nextval(&apos;%1&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Error getting the sequence nextval(&apos;%1&apos;)</translation>
     </message>
 </context>
 <context>
@@ -15,7 +15,7 @@
     <message>
         <location filename="src/core/logdevice.cpp" line="142"/>
         <source>Cannot find log device by object name &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Cannot find log device by object name &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -23,7 +23,7 @@
     <message>
         <location filename="src/model/logtablemodel.cpp" line="49"/>
         <source>Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Category</translation>
     </message>
     <message>
         <location filename="src/model/logtablemodel.cpp" line="51"/>
