@@ -6,67 +6,67 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="14"/>
         <source>Select database</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть базу даних</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
         <source>Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="53"/>
         <source>Ev&amp;ent ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД &amp;події</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
         <source>Open the event right away if it is found in the database, ignore this field otherwise.</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрийте подію якщо вона є в базі даних, ігноруйте це поле в іншому випадку.</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
         <source>Data storage</source>
-        <translation type="unfinished"></translation>
+        <translation>Сховище даних</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="98"/>
         <source>S&amp;ql server</source>
-        <translation type="unfinished"></translation>
+        <translation>S&amp;ql server</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="125"/>
         <source>&amp;Host</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Host</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="142"/>
         <source>&amp;Port</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Port</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="168"/>
         <source>&amp;User</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;User</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="185"/>
         <source>Pa&amp;ssword</source>
-        <translation type="unfinished"></translation>
+        <translation>Pa&amp;ssword</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="206"/>
         <source>Single &amp;file</source>
-        <translation type="unfinished"></translation>
+        <translation>Один &amp;файл</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="227"/>
         <source>Choose a wor&amp;king directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть робочий каталог</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="239"/>
         <source>Directory where to store event files (*.qbe)</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог де зберігати файл події (*.qbe)</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="249"/>
@@ -76,12 +76,12 @@
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>
         <source>Data storage setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування сховища даних</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="89"/>
         <source>Event files directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог файлів події</translation>
     </message>
 </context>
 <context>
@@ -89,38 +89,38 @@
     <message>
         <location filename="src/eventplugin.cpp" line="277"/>
         <source>&amp;Connect to database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Connect to database</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="281"/>
         <source>&amp;Open event</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Відкрити подію</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="286"/>
         <source>Create eve&amp;nt</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити &amp;подію</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="290"/>
         <source>E&amp;dit event</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редагувати подію</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="297"/>
         <location filename="src/eventplugin.cpp" line="301"/>
         <source>Event (*.qbe)</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія (*.qbe)</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="316"/>
         <source>&amp;Event</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Подія</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="333"/>
         <source>Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Подія</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="343"/>
@@ -130,7 +130,7 @@
     <message>
         <location filename="src/eventplugin.cpp" line="369"/>
         <source>Services</source>
-        <translation type="unfinished"></translation>
+        <translation>Послуги</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="416"/>
@@ -156,7 +156,9 @@ To connect to a database or to choose a working directory where event files can 
         <source>Path to the working directory cannot be empty.
 
 Enter path to the working directory or connect to SQL server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях до робочого каталогу не може бути порожнім.
+
+Введіть шлях до робочого каталогу або під&apos;єднайтесь до SQL server.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="693"/>
@@ -164,17 +166,20 @@ Enter path to the working directory or connect to SQL server.</source>
 %1
 
 Enter a valid path to the working directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введений каталог не існує:
+%1
+
+Введіть коректний шлях до робочого каталогу.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="762"/>
         <source>Event ID cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД події не може бути порожнім.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="766"/>
         <source>Event ID %1 exists already.</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД події %1 вже існує.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="793"/>
