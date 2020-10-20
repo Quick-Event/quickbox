@@ -244,7 +244,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="235"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редагувати</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="237"/>
@@ -304,7 +304,7 @@
     <message>
         <location filename="src/classeswidget.cpp" line="421"/>
         <source>Delete all courses definitions for stage %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити всі дистанції для stage %1?</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="450"/>
@@ -336,12 +336,12 @@
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Type</source>
         <comment>control type</comment>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="127"/>
         <source>Control type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип КП</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="128"/>
@@ -424,7 +424,7 @@
     <message>
         <location filename="src/editcodeswidget.cpp" line="30"/>
         <source>Code alternative</source>
-        <translation type="unfinished"></translation>
+        <translation>Альтернативний код</translation>
     </message>
     <message>
         <location filename="src/editcodeswidget.cpp" line="31"/>
@@ -516,47 +516,47 @@
     <message>
         <location filename="src/editcourseswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.ui" line="39"/>
         <source>Courses</source>
-        <translation type="unfinished"></translation>
+        <translation>Дистанції</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="35"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="36"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Довжина</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="37"/>
         <source>Climb</source>
-        <translation type="unfinished"></translation>
+        <translation>Набір</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="38"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Нотатки</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="39"/>
         <source>Cnt</source>
-        <translation type="unfinished"></translation>
+        <translation>К-сть</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="39"/>
         <source>Control count</source>
-        <translation type="unfinished"></translation>
+        <translation>К-сть КП</translation>
     </message>
     <message>
         <location filename="src/editcourseswidget.cpp" line="40"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Коди</translation>
     </message>
 </context>
 <context>
@@ -564,27 +564,27 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="248"/>
         <source>class: &lt;b&gt;%1&lt;/b&gt;, %2 runners + %3 vacants&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Група: &lt;b&gt;%1&lt;/b&gt;, %2 учасників + %3 вільно&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="249"/>
         <source>first code &lt;b&gt;%1&lt;/b&gt;, course %2 - %3&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Периший код &lt;b&gt;%1&lt;/b&gt;, дистанція %2 - %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="250"/>
         <source>vacants before: %1, every: %2, after: %3&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>вільно перед: %1, кожен: %2, після: %3&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="251"/>
         <source>class start: %1, interval: %2, duration: %3, end: %4&lt;br/&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Група старт: %1, інтервал: %2, тривалість: %3, кінець: %4&lt;br/&gt;</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="252"/>
         <source>map count: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>К-сть карт</translation>
     </message>
     <message>
         <location filename="src/drawing/classitem.cpp" line="262"/>
@@ -594,7 +594,7 @@
     <message>
         <location filename="src/drawing/classitem.cpp" line="453"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати групу</translation>
     </message>
 </context>
 <context>
@@ -602,7 +602,7 @@
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="29"/>
         <source>Lock class start time</source>
-        <translation type="unfinished"></translation>
+        <translation>Фіксувати час старту групи</translation>
     </message>
 </context>
 <context>
@@ -610,43 +610,44 @@
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="38"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Зберегти</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.ui" line="43"/>
         <source>&amp;Find</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Шукати</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="22"/>
         <source>Draw tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Інструмент малювання</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="54"/>
         <source>&amp;Draw</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Малювати</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="61"/>
         <source>E%1 Draw tool</source>
-        <translation type="unfinished"></translation>
+        <translation>E%1 Інструмент малювання</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="67"/>
         <source>Save classes start times</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти стартовий час груп</translation>
     </message>
     <message>
         <location filename="src/drawing/drawingganttwidget.cpp" line="68"/>
         <source>All the user edited classes start times will be overridden.
 Do you want to save your changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий час для всіх редагованих груп буде змінено.
+Ви бажаєте зберегти зміни?</translation>
     </message>
 </context>
 <context>
@@ -654,12 +655,12 @@ Do you want to save your changes?</source>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="87"/>
         <source>Use mouse wheel to change start slot offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Користуйтесь коліщатком миші для зміни стартової позиції</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="161"/>
         <source>Append start slot</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати стартову позицію</translation>
     </message>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="162"/>
@@ -679,7 +680,7 @@ Do you want to save your changes?</source>
     <message>
         <location filename="src/drawing/startslotheader.cpp" line="185"/>
         <source>Start slot offset [min]:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміщення стартової позиції [min]:</translation>
     </message>
 </context>
 <context>
@@ -687,17 +688,17 @@ Do you want to save your changes?</source>
     <message>
         <location filename="qml/reports/table.qml" line="40"/>
         <source>id</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД</translation>
     </message>
     <message>
         <location filename="qml/reports/table.qml" line="45"/>
         <source>name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="qml/reports/table.qml" line="50"/>
         <source>Course ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД дистанції</translation>
     </message>
 </context>
 </TS>
