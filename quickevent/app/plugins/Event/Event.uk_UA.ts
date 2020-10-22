@@ -11,17 +11,17 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="32"/>
         <source>Event</source>
-        <translation>Подія</translation>
+        <translation>Змагання</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="53"/>
         <source>Ev&amp;ent ID</source>
-        <translation>ІД &amp;події</translation>
+        <translation>ІД &amp;змагань</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="63"/>
         <source>Open the event right away if it is found in the database, ignore this field otherwise.</source>
-        <translation>Відкрийте подію якщо вона є в базі даних, ігноруйте це поле в іншому випадку.</translation>
+        <translation>Відкрийте змагання якщо вони є в базі даних, ігноруйте це поле в іншому випадку.</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="76"/>
@@ -66,12 +66,12 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="239"/>
         <source>Directory where to store event files (*.qbe)</source>
-        <translation>Каталог де зберігати файл події (*.qbe)</translation>
+        <translation>Каталог де зберігати файл змагань (*.qbe)</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="249"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="13"/>
@@ -81,7 +81,7 @@
     <message>
         <location filename="src/connectdbdialogwidget.cpp" line="89"/>
         <source>Event files directory</source>
-        <translation>Каталог файлів події</translation>
+        <translation>Каталог файлів змагань</translation>
     </message>
 </context>
 <context>
@@ -94,33 +94,33 @@
     <message>
         <location filename="src/eventplugin.cpp" line="281"/>
         <source>&amp;Open event</source>
-        <translation>&amp;Відкрити подію</translation>
+        <translation>&amp;Відкрити змагання</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="286"/>
         <source>Create eve&amp;nt</source>
-        <translation>Створити &amp;подію</translation>
+        <translation>Створити &amp;змагання</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="290"/>
         <source>E&amp;dit event</source>
-        <translation>&amp;Редагувати подію</translation>
+        <translation>&amp;Редагувати змагання</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="297"/>
         <location filename="src/eventplugin.cpp" line="301"/>
         <source>Event (*.qbe)</source>
-        <translation>Подія (*.qbe)</translation>
+        <translation>Змагання (*.qbe)</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="316"/>
         <source>&amp;Event</source>
-        <translation>&amp;Подія</translation>
+        <translation>&amp;Змагання</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="333"/>
         <source>Event</source>
-        <translation>Подія</translation>
+        <translation>Змагання</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="343"/>
@@ -144,12 +144,16 @@ Program features will be limited.
 
 To connect to a database or to choose a working directory where event files can be stored, navigate to:
  &quot;File -&gt; Connect to database&quot; </source>
-        <translation type="unfinished"></translation>
+        <translation>Не під&apos;єнено до бази даних.
+Можливості програми будуть обмежені.
+
+Для під&apos;єднання до бази даних виберіть каталог де зберігаються файли змагань, скористайтеь меню:
+ &quot;Файл -&gt; Під&apos;єднатись до бащи даних&quot; </translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="682"/>
         <source>Connect Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під&apos;єднання до бази даних: %1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="689"/>
@@ -174,12 +178,12 @@ Enter a valid path to the working directory.</source>
     <message>
         <location filename="src/eventplugin.cpp" line="762"/>
         <source>Event ID cannot be empty.</source>
-        <translation>ІД події не може бути порожнім.</translation>
+        <translation>ІД змагань не може бути порожнім.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="766"/>
         <source>Event ID %1 exists already.</source>
-        <translation>ІД події %1 вже існує.</translation>
+        <translation>ІД змагань %1 вже існує.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="793"/>
@@ -188,110 +192,113 @@ Enter a valid path to the working directory.</source>
         <location filename="src/eventplugin.cpp" line="1178"/>
         <location filename="src/eventplugin.cpp" line="1195"/>
         <source>Open Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка відкриття бази даних: %1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="838"/>
         <location filename="src/eventplugin.cpp" line="1114"/>
         <location filename="src/eventplugin.cpp" line="1213"/>
         <source>Create Database Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка створення бази даних: %1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="842"/>
         <source>Cannot create event, database is not open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Неможливо створити змагання, база даних не відкрита: %1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="892"/>
         <source>Connected to an empty database.
 Start by creating or importing an event.</source>
-        <translation type="unfinished"></translation>
+        <translation>Під&apos;єднано до порожньої бази даних.
+Почніть зі створення або імпорту змагання.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="896"/>
         <source>Working directory does not contain any event files.
 Start by creating or importing an event.</source>
-        <translation type="unfinished"></translation>
+        <translation>Робочий каталог не містить файлів змагань.
+Почніть зі створення або імпорту змагання.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="906"/>
         <source>Open event</source>
-        <translation type="unfinished"></translation>
+        <translation>Відктрити змагання</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="906"/>
         <source>select event to open:</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть змагання які відкрити:</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="951"/>
         <source>Database file %1 doesn&apos;t exist.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл бази даних %1 не існує.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="960"/>
         <source>Event data version (%1) is too low, minimal version is (%2).
 Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Версфя даних змагань (%1) занадто стара, підтримується версія не нижче (%2).
+Користуйтесь: Файл --&gt; Імпорт --&gt; Змагання (*.qbe) для конвертації змаганя в поточну версію.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="967"/>
         <source>Event was created in more recent QuickEvent version (%1) and the application might not work as expected. Download latest QuickEvent is strongly recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Змагання були створені новішою версією  QuickEvent  (%1)  і додаток може не працювати непердбачувано. Скачайте найновіший QuickEvent.</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1080"/>
         <source>Export as Quick Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати як Quick Event</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1080"/>
         <location filename="src/eventplugin.cpp" line="1155"/>
         <source>Quick Event files *%1 (*%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Файли Quick Event *%1 (*%1)</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1090"/>
         <source>Cannot delete existing file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу видалити файл %1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1107"/>
         <location filename="src/eventplugin.cpp" line="1205"/>
         <source>Creating database</source>
-        <translation type="unfinished"></translation>
+        <translation>Створення бази даних</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1122"/>
         <location filename="src/eventplugin.cpp" line="1221"/>
         <source>Copying table %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювання таблиці %1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1155"/>
         <source>Import as Quick Event</source>
-        <translation type="unfinished"></translation>
+        <translation>Ямпортувати як Quick Event</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1159"/>
         <source>Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Запит</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1159"/>
         <source>Event will be imported as ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Змагання будуть імпортовані з ІД:</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1164"/>
         <source>Event ID &apos;%1&apos; exists already!</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД змагань &apos;%1&apos; вже існує!</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="1241"/>
         <source>Open imported event &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Візкрити імпортовані змагання &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
@@ -299,22 +306,22 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/stagewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/stagewidget.ui" line="20"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Дата</translation>
     </message>
     <message>
         <location filename="src/stagewidget.ui" line="30"/>
         <source>dd.MM. yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM. yyyy</translation>
     </message>
     <message>
         <location filename="src/stagewidget.ui" line="40"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Час</translation>
     </message>
     <message>
         <location filename="src/stagewidget.cpp" line="14"/>
@@ -332,7 +339,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
         <source>Export dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Каталог експорту</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
@@ -342,7 +349,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="46"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек.</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="59"/>
