@@ -27,22 +27,22 @@
     <message>
         <location filename="src/competitorwidget.ui" line="64"/>
         <source>&amp;Class</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Група</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="81"/>
         <source>&amp;SI</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;ЧІП</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="101"/>
         <source>First na&amp;me</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ім&apos;я</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="118"/>
         <source>&amp;Last name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Прізвище</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="135"/>
@@ -57,22 +57,22 @@
     <message>
         <location filename="src/competitorwidget.ui" line="162"/>
         <source>Clu&amp;b</source>
-        <translation type="unfinished"></translation>
+        <translation>Кл&amp;уб</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="179"/>
         <source>Co&amp;untry</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Країна</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="196"/>
         <source>&amp;Note</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Нотатки</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="223"/>
         <source>Start times</source>
-        <translation type="unfinished"></translation>
+        <translation>Час старту</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="236"/>
@@ -87,7 +87,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="386"/>
         <source>Class should be entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Група повинна бути вказана</translation>
     </message>
 </context>
 <context>
@@ -105,7 +105,7 @@
     <message>
         <location filename="src/competitorsplugin.cpp" line="130"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Назва</translation>
     </message>
     <message>
         <location filename="src/competitorsplugin.cpp" line="131"/>
@@ -115,12 +115,12 @@
     <message>
         <location filename="src/competitorsplugin.cpp" line="132"/>
         <source>Lic</source>
-        <translation type="unfinished"></translation>
+        <translation>Ліцен</translation>
     </message>
     <message>
         <location filename="src/competitorsplugin.cpp" line="133"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
 </context>
 <context>
@@ -141,7 +141,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="72"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>група</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="73"/>
@@ -152,7 +152,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="73"/>
         <source>Start number</source>
-        <translation type="unfinished"></translation>
+        <translation>Стартовий номер</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="74"/>
@@ -167,7 +167,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="76"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="77"/>
@@ -177,12 +177,12 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="78"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Нотатки</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="107"/>
         <source>&amp;Class </source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Група </translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="127"/>
@@ -197,7 +197,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="133"/>
         <source>&amp;Print</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Друк</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="135"/>
@@ -223,12 +223,12 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="157"/>
         <source>Backup memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Резервна копія пам&apos;яті</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="181"/>
         <source>--- all ---</source>
-        <translation type="unfinished"></translation>
+        <translation>--- всі ---</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="221"/>
@@ -238,7 +238,7 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="226"/>
         <source>Save and &amp;next</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти і &amp;наступний</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="265"/>
@@ -253,17 +253,17 @@
     <message>
         <location filename="src/competitorswidget.cpp" line="321"/>
         <source>Set class in selected rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити групу для вибраних рядків</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="333"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Діалог</translation>
     </message>
     <message>
         <location filename="src/competitorswidget.cpp" line="334"/>
         <source>Select class</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть групу</translation>
     </message>
 </context>
 <context>
@@ -271,7 +271,7 @@
     <message>
         <location filename="src/lentcardswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="16"/>
@@ -281,7 +281,7 @@
     <message>
         <location filename="src/lentcardswidget.cpp" line="23"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/lentcardswidget.cpp" line="24"/>
@@ -291,7 +291,7 @@
     <message>
         <location filename="src/lentcardswidget.cpp" line="25"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Нотатки</translation>
     </message>
 </context>
 <context>
@@ -299,7 +299,7 @@
     <message>
         <location filename="src/registrationswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
 </context>
 <context>
@@ -308,12 +308,12 @@
         <location filename="src/competitorwidget.cpp" line="82"/>
         <source>Running</source>
         <comment>runs.isRunning</comment>
-        <translation type="unfinished"></translation>
+        <translation>Біжить</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="82"/>
         <source>Is running</source>
-        <translation type="unfinished"></translation>
+        <translation>Біжить</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="83"/>
@@ -328,7 +328,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="85"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="86"/>
@@ -338,17 +338,17 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="87"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="88"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="89"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="90"/>
@@ -370,7 +370,7 @@
     <message>
         <location filename="src/competitorwidget.cpp" line="91"/>
         <source>Disqualified</source>
-        <translation type="unfinished"></translation>
+        <translation>Дискваліфікован</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.cpp" line="92"/>
@@ -422,12 +422,12 @@
     <message>
         <location filename="src/stationsbackupmemorywidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="16"/>
         <source>Stations backup memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Резервна копія пам&apos;яті станції</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="23"/>
@@ -437,12 +437,12 @@
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="24"/>
         <source>Station number</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер станції</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="25"/>
         <source>SI</source>
-        <translation type="unfinished"></translation>
+        <translation>ЧІП</translation>
     </message>
     <message>
         <location filename="src/stationsbackupmemorywidget.cpp" line="26"/>
@@ -470,7 +470,7 @@
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="129"/>
         <source>maps</source>
-        <translation type="unfinished"></translation>
+        <translation>карти</translation>
     </message>
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="131"/>
@@ -480,7 +480,7 @@
     <message>
         <location filename="qml/reports/competitorsStatistics.qml" line="167"/>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation>Сума</translation>
     </message>
 </context>
 </TS>
