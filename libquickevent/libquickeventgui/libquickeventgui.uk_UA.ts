@@ -6,7 +6,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Діалог</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="35"/>
@@ -31,17 +31,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="73"/>
         <source>Class filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Фільтер груп</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="97"/>
         <source>Posix regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Posix regular expression</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="100"/>
         <source>RegExp</source>
-        <translation type="unfinished"></translation>
+        <translation>RegExp</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="107"/>
@@ -66,7 +66,7 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="130"/>
         <source>Class names</source>
-        <translation type="unfinished"></translation>
+        <translation>Назви груп</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="143"/>
@@ -116,12 +116,12 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="258"/>
         <source>Page layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Орієнтація сторінки</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="276"/>
         <source>Horizontal margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Горизотальній відступ</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="283"/>
@@ -129,27 +129,27 @@
         <location filename="src/reportoptionsdialog.ui" line="352"/>
         <location filename="src/reportoptionsdialog.ui" line="378"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation> мм</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="315"/>
         <source>Column count</source>
-        <translation type="unfinished"></translation>
+        <translation>К-сть стовбчиків</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="322"/>
         <source>Vertical margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертикальний відступ</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="345"/>
         <source>Page width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина сторінки</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="371"/>
         <source>Page height</source>
-        <translation type="unfinished"></translation>
+        <translation>Висота сторінки</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="397"/>
@@ -164,17 +164,17 @@
     <message>
         <location filename="src/reportoptionsdialog.ui" line="410"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Стовбчик</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="415"/>
         <source>Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Сторінка</translation>
     </message>
     <message>
         <location filename="src/reportoptionsdialog.ui" line="441"/>
         <source>Save as default</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти як за мовчазною згодою</translation>
     </message>
 </context>
 </TS>
