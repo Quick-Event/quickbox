@@ -6,22 +6,22 @@
     <message>
         <location filename="src/codeclassresultswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.ui" line="37"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.ui" line="47"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Code</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="48"/>
         <source>Competitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Compétiteur</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="49"/>
@@ -31,7 +31,7 @@
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="50"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Heure</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="51"/>
@@ -41,12 +41,12 @@
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="146"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>Résultats</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="147"/>
         <source>Finish</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminer</translation>
     </message>
     <message>
         <location filename="src/codeclassresultswidget.cpp" line="166"/>
@@ -60,12 +60,12 @@
     <message>
         <location filename="src/speakerwidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="83"/>
         <source>Code</source>
-        <translation type="unfinished"></translation>
+        <translation>Code</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="84"/>
@@ -85,17 +85,17 @@
     <message>
         <location filename="src/speakerwidget.cpp" line="87"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="88"/>
         <source>Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Inscription</translation>
     </message>
     <message>
         <location filename="src/speakerwidget.cpp" line="89"/>
         <source>Competitor</source>
-        <translation type="unfinished"></translation>
+        <translation>Compétiteur</translation>
     </message>
 </context>
 <context>
@@ -103,7 +103,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="12"/>
         <source>&amp;Speaker</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Intervenant</translation>
     </message>
 </context>
 </TS>
