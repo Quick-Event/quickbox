@@ -6,17 +6,17 @@
     <message>
         <location filename="src/classdefwidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="20"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Départ</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="27"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervale</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="34"/>
@@ -27,7 +27,7 @@
         <location filename="src/classdefwidget.ui" line="44"/>
         <location filename="src/classdefwidget.ui" line="60"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> min</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.ui" line="86"/>
@@ -52,12 +52,12 @@
     <message>
         <location filename="src/classdefwidget.cpp" line="13"/>
         <source>Edit class</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la classe</translation>
     </message>
     <message>
         <location filename="src/classdefwidget.cpp" line="29"/>
         <source>Class %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe %1</translation>
     </message>
 </context>
 <context>
@@ -65,7 +65,7 @@
     <message>
         <location filename="src/classesplugin.cpp" line="279"/>
         <source>Cannot find id for code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de trouver l&apos;identifiant pour le code : %1</translation>
     </message>
 </context>
 <context>
@@ -73,7 +73,7 @@
     <message>
         <location filename="src/thispartwidget.cpp" line="15"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Classes</translation>
     </message>
 </context>
 <context>
@@ -81,17 +81,17 @@
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>Get text</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtenir le texte</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="29"/>
         <source>New class name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la nouvelle classe :</translation>
     </message>
     <message>
         <location filename="src/classestableview.cpp" line="44"/>
         <source>Really delete all selected classes? This action cannot be undone!</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous vraiment supprimer toutes les classes sélectionnées ? Cette action ne peut pas être annulée !</translation>
     </message>
 </context>
 <context>
@@ -99,12 +99,12 @@
     <message>
         <location filename="src/classeswidget.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="36"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Classes</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="81"/>
@@ -114,22 +114,22 @@
     <message>
         <location filename="src/classeswidget.ui" line="84"/>
         <source>Use all maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser toutes les cartes</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="103"/>
         <source>Codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Codes</translation>
     </message>
     <message>
         <location filename="src/classeswidget.ui" line="124"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>…</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="178"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Classe</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="179"/>
@@ -139,17 +139,17 @@
     <message>
         <location filename="src/classeswidget.cpp" line="179"/>
         <source>Locked for drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouillé pour dessin</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="180"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Départ</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="181"/>
         <source>Interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Intervale</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="182"/>
@@ -184,47 +184,47 @@
     <message>
         <location filename="src/classeswidget.cpp" line="185"/>
         <source>Last</source>
-        <translation type="unfinished"></translation>
+        <translation>Dernier</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="185"/>
         <source>Start time of last competitor in class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Heure de départ du dernier compétiteur de la classe.</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="186"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Total</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="186"/>
         <source>Runners count</source>
-        <translation type="unfinished"></translation>
+        <translation>Total de coureurs</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="187"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartes</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="188"/>
         <source>Course</source>
-        <translation type="unfinished"></translation>
+        <translation>Course</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="190"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="191"/>
         <source>Climb</source>
-        <translation type="unfinished"></translation>
+        <translation>Escalade</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="192"/>
         <source>Rel.num</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro de relai</translation>
     </message>
     <message>
         <location filename="src/classeswidget.cpp" line="192"/>
