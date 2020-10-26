@@ -500,7 +500,7 @@
     <message>
         <location filename="qml/reports/startList_classes.qml" line="9"/>
         <source>Start list by classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer la liste par les classes</translation>
     </message>
 </context>
 <context>
