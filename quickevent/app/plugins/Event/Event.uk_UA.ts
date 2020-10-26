@@ -46,12 +46,12 @@
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="168"/>
         <source>&amp;User</source>
-        <translation>&amp;User</translation>
+        <translation>&amp;Користувач</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="185"/>
         <source>Pa&amp;ssword</source>
-        <translation>Pa&amp;ssword</translation>
+        <translation>&amp;Пароль</translation>
     </message>
     <message>
         <location filename="src/connectdbdialogwidget.ui" line="206"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="src/eventplugin.cpp" line="277"/>
         <source>&amp;Connect to database</source>
-        <translation>&amp;Connect to database</translation>
+        <translation>&amp;З&apos;єднання з базою даних</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="281"/>
@@ -334,7 +334,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="14"/>
         <source>Emma Client</source>
-        <translation type="unfinished"></translation>
+        <translation>Клієнт Emma</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="22"/>
@@ -344,7 +344,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="34"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="46"/>
@@ -354,7 +354,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="59"/>
         <source>Export interval</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати інтервали</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
@@ -364,12 +364,12 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
         <source>Enable export IOF XML 3.0 file</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволити експорт файлу IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="96"/>
         <source>Export IOF XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
@@ -379,34 +379,34 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="114"/>
         <source>File name prefix</source>
-        <translation type="unfinished"></translation>
+        <translation>Префікс імені файлу</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="124"/>
         <location filename="src/services/emmaclientwidget.ui" line="153"/>
         <source>Export start list</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати стартовий протокол</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="131"/>
         <location filename="src/services/emmaclientwidget.ui" line="160"/>
         <source>Export results</source>
-        <translation type="unfinished"></translation>
+        <translation>Експортувати результати</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="167"/>
         <source>Export radio codes</source>
-        <translation type="unfinished"></translation>
+        <translation>Експотрувати коди радіо</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="49"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити каталог</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.cpp" line="68"/>
         <source>Cannot create directory &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не можу створити каталог &apos;%1&apos;.</translation>
     </message>
 </context>
 <context>
@@ -437,17 +437,17 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/eventdialogwidget.ui" line="20"/>
         <source>Event ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ІД змагань</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="30"/>
         <source>Unique event name</source>
-        <translation type="unfinished"></translation>
+        <translation>Унікальна назва змагань</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="37"/>
         <source>&amp;Name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Назва</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="50"/>
