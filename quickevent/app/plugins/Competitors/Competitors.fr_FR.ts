@@ -11,7 +11,7 @@
     <message>
         <location filename="src/competitorwidget.ui" line="38"/>
         <source>&amp;Find in registrations</source>
-        <translation type="unfinished"></translation>
+        <translation>Rechercher dans les inscriptions</translation>
     </message>
     <message>
         <location filename="src/competitorwidget.ui" line="45"/>
