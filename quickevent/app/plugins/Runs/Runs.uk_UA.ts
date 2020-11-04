@@ -6,47 +6,47 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="80"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Група</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="81"/>
         <source>Maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Карти</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="82"/>
         <source>Free maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Вільні карти</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="83"/>
         <source>Runners</source>
-        <translation type="unfinished"></translation>
+        <translation>Учасники</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="84"/>
         <source>Start first</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт першого</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="85"/>
         <source>Start last</source>
-        <translation type="unfinished"></translation>
+        <translation>Старт останнього</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>1st time</source>
-        <translation type="unfinished"></translation>
+        <translation>Перший час</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="86"/>
         <source>Finish time of first runner in current class.</source>
-        <translation type="unfinished"></translation>
+        <translation>Фінішний час першого учасника в поточній групі.</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
         <source>3rd time</source>
-        <translation type="unfinished"></translation>
+        <translation>Третій час</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="87"/>
@@ -56,7 +56,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="88"/>
         <source>Time to close</source>
-        <translation type="unfinished"></translation>
+        <translation>Час до закриття</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="89"/>
@@ -66,17 +66,17 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="91"/>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Фінішувало</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="92"/>
         <source>Not finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Не фінішувало</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="93"/>
         <source>New results</source>
-        <translation type="unfinished"></translation>
+        <translation>Нові результати</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="93"/>
@@ -86,7 +86,7 @@
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="94"/>
         <source>Not printed time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час не надруковано</translation>
     </message>
     <message>
         <location filename="src/eventstatisticswidget.cpp" line="95"/>
@@ -109,17 +109,17 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="27"/>
         <source>Table auto refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Автооновлення таблиці</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="36"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="46"/>
         <source>Refresh time</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтервал оновлення</translation>
     </message>
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="56"/>
@@ -144,7 +144,7 @@
     <message>
         <location filename="src/eventstatisticsoptions.ui" line="92"/>
         <source> runners</source>
-        <translation type="unfinished"></translation>
+        <translation> учасники</translation>
     </message>
 </context>
 <context>
