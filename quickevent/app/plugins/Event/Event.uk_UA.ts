@@ -125,7 +125,7 @@
     <message>
         <location filename="src/eventplugin.cpp" line="343"/>
         <source>Current stage E%1</source>
-        <translation type="unfinished"></translation>
+        <translation>Поточний забіг E%1</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="369"/>
@@ -135,7 +135,7 @@
     <message>
         <location filename="src/eventplugin.cpp" line="416"/>
         <source>Edit Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Редагувати забіг</translation>
     </message>
     <message>
         <location filename="src/eventplugin.cpp" line="638"/>
@@ -326,7 +326,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/stagewidget.cpp" line="14"/>
         <source>Stage</source>
-        <translation type="unfinished"></translation>
+        <translation>Забіг</translation>
     </message>
 </context>
 <context>
@@ -359,7 +359,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="68"/>
         <source>IOF XML 3.0</source>
-        <translation type="unfinished"></translation>
+        <translation>IOF XML 3.0</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="74"/>
@@ -374,7 +374,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="108"/>
         <source>RACOM</source>
-        <translation type="unfinished"></translation>
+        <translation>RACOM</translation>
     </message>
     <message>
         <location filename="src/services/emmaclientwidget.ui" line="114"/>
@@ -452,37 +452,37 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/eventdialogwidget.ui" line="50"/>
         <source>&amp;Stage count</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;К-сть забігів</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="67"/>
         <source>&amp;Date</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Дата</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="77"/>
         <source>dd.MM.yyyy</source>
-        <translation type="unfinished"></translation>
+        <translation>dd.MM.yyyy</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="87"/>
         <source>&amp;Place</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Місце</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="100"/>
         <source>Des&amp;cription</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Опис</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="113"/>
         <source>Main r&amp;eferee</source>
-        <translation type="unfinished"></translation>
+        <translation>Головний суддя</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="126"/>
         <source>D&amp;irector</source>
-        <translation type="unfinished"></translation>
+        <translation>Директор</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="139"/>
@@ -492,7 +492,7 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/eventdialogwidget.ui" line="149"/>
         <source> min</source>
-        <translation type="unfinished"></translation>
+        <translation> мін</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="168"/>
@@ -507,87 +507,87 @@ Use: File --&gt; Import --&gt; Event (*.qbe) to convert event to current version
     <message>
         <location filename="src/eventdialogwidget.ui" line="199"/>
         <source>OB</source>
-        <translation type="unfinished"></translation>
+        <translation>ОБ</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="204"/>
         <source>LOB</source>
-        <translation type="unfinished"></translation>
+        <translation>ОЛ</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="209"/>
         <source>MTBO</source>
-        <translation type="unfinished"></translation>
+        <translation>MTBO</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="214"/>
         <source>TRAIL</source>
-        <translation type="unfinished"></translation>
+        <translation>ТРАІЛ</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="222"/>
         <source>&amp;Time</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Час</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="232"/>
         <source>h:mm</source>
-        <translation type="unfinished"></translation>
+        <translation>h:mm</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="246"/>
         <source>Discipline</source>
-        <translation type="unfinished"></translation>
+        <translation>Дисципліна</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="257"/>
         <source>Long distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Довга дистанція</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="262"/>
         <source>Middle distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Середня дистанція</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="267"/>
         <source>Sprint</source>
-        <translation type="unfinished"></translation>
+        <translation>Спринт</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="272"/>
         <source>Ultralong distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Ультра довга</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="277"/>
         <source>Relay</source>
-        <translation type="unfinished"></translation>
+        <translation>Естафета</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="282"/>
         <source>Teams</source>
-        <translation type="unfinished"></translation>
+        <translation>Команди</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="290"/>
         <source>Card check</source>
-        <translation type="unfinished"></translation>
+        <translation>Перевірка чипів</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="300"/>
         <source>Maximal distance between card CHECK and START time</source>
-        <translation type="unfinished"></translation>
+        <translation>Мінімальний час між Перевіркою і Стартом</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="303"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Не доступно</translation>
     </message>
     <message>
         <location filename="src/eventdialogwidget.ui" line="306"/>
         <source> sec</source>
-        <translation type="unfinished"></translation>
+        <translation> сек</translation>
     </message>
 </context>
 </TS>
