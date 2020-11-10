@@ -106,7 +106,7 @@ private:
 
 class CourseCodesTableModel : public qfm::SqlTableModel
 {
-	Q_DECLARE_TR_FUNCTIONS(CourseCodesTableModel)
+	Q_OBJECT
 private:
 	using Super = qfm::SqlTableModel;
 public:
