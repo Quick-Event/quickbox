@@ -144,7 +144,7 @@ private:
 public:
 	ReportItemMetaPaintReport(ReportItem *report_item);
 public:
-	QPrinter::Orientation orientation;
+	QPageLayout::Orientation orientation;
 	QSize pageSize;
 };
 

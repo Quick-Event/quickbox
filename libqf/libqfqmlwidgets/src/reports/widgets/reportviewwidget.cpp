@@ -1068,7 +1068,7 @@ void ReportViewWidget::print()
 	//printer.setOutputFileName(fn);
 	printer.setFullPage(true);
 	printer.setPageSize(QPageSize{QPageSize::A4});
-	printer.setOrientation(document()->orientation);
+	printer.setPageOrientation(document()->orientation);
 
 	QPrintDialog dlg(&printer, this);
 	if(dlg.exec() != QDialog::Accepted)
@@ -1095,15 +1095,16 @@ void ReportViewWidget::exportPdf(const QString &file_name)
 	QString fn = file_name;
 	if(fn.isEmpty())
 		QF_EXCEPTION(tr("empty file name"));
-	if(!fn.toLower().endsWith(".pdf"))
-		fn += ".pdf";
+	auto ext = QStringLiteral(".pdf");
+	if(!fn.toLower().endsWith(ext))
+		fn += ext;
 
 	QPrinter printer;
 	printer.setOutputFormat(QPrinter::PdfFormat);
 	printer.setOutputFileName(fn);
 	printer.setFullPage(true);
 	printer.setPageSize(QPageSize{QPageSize::A4});
-	printer.setOrientation(document()->orientation);
+	printer.setPageOrientation(document()->orientation);
 	/// zatim bez dialogu
 	//QPrintDialog printDialog(&printer, parentWidget());
 	//if(printDialog.exec() != QDialog::Accepted) return;
