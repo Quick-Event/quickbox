@@ -1692,12 +1692,12 @@ void RunsPlugin::export_startListClassesHtml()
 		{
 			QVariantList ltr{
 				"tr",
-				QVariantList{"td", QVariantMap{{"colspan", "2"}},
+				QVariantList{"td", QVariantMap{{"colspan", "3"}},
 							 tr("length:"), tt1_row.value("courses.length"),
 									 " ",
 									 tr("climb:"), tt1_row.value("courses.climb")
 							},
-				QVariantList{"td", QVariantMap{{"colspan", "2"}, {"align", "right"}},
+				QVariantList{"td", QVariantMap{{"colspan", "4"}, {"align", "right"}},
 							 QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
 							},
 			};
@@ -1705,10 +1705,10 @@ void RunsPlugin::export_startListClassesHtml()
 		}
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		QVariantList trr{"tr",
-				  QVariantList{"th", tr("Start")},
-				  QVariantList{"th", tr("Name")},
+				  QVariantList{"th", QVariantMap{{"colspan", "2"}}, tr("Name")},
 				  QVariantList{"th", tr("Registration")},
-				  QVariantList{"th", tr("SI")}
+				  QVariantList{"th", tr("SI")},
+				  QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
 				};
 		append_list(table, trr);
 		for(int j=0; j<tt2.rowCount(); j++) {
@@ -1716,10 +1716,16 @@ void RunsPlugin::export_startListClassesHtml()
 			QVariantList trr{"tr"};
 			if(j % 2)
 				trr << QVariantMap{{"class", "odd"}};
-			append_list(trr, QVariantList{"td", quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString()});
+			if (tt2_row.value(QStringLiteral("startNumber")).toInt() > 0)
+				append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startNumber"))});
+			else
+				append_list(trr, QVariantList{"td", ""});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("runs.siId"))});
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString() });
+			append_list(trr, QVariantList{"td", "="});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startTimeText")) });
 			append_list(table, trr);
 		}
 		append_list(body, table);
@@ -1781,10 +1787,10 @@ void RunsPlugin::export_startListClubsHtml()
 		{
 			QVariantList ltr{
 				"tr",
-				QVariantList{"td", QVariantMap{{"colspan", "3"}},
+				QVariantList{"td", QVariantMap{{"colspan", "4"}},
 							 tt1_row.value("name")
 							},
-				QVariantList{"td", QVariantMap{{"colspan", "2"}, {"align", "right"}},
+				QVariantList{"td", QVariantMap{{"colspan", "4"}, {"align", "right"}},
 							 QVariantList{"a", QVariantMap{{"href", "#home"}}, tr("Top") },
 							},
 			};
@@ -1792,11 +1798,11 @@ void RunsPlugin::export_startListClubsHtml()
 		}
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		QVariantList trr{"tr",
-				QVariantList{"th", tr("Start")},
-				QVariantList{"th", tr("Class")},
+				QVariantList{"th", QVariantMap{{"colspan", "2"}}, tr("Class")},
 				QVariantList{"th", tr("Name")},
 				QVariantList{"th", tr("Registration")},
-				QVariantList{"th", tr("SI")}
+				QVariantList{"th", tr("SI")},
+				QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
 			};
 		append_list(table, trr);
 		for(int j=0; j<tt2.rowCount(); j++) {
@@ -1804,11 +1810,17 @@ void RunsPlugin::export_startListClubsHtml()
 			QVariantList trr{"tr"};
 			if(j % 2)
 				trr << QVariantMap{{"class", "odd"}};
-			append_list(trr, QVariantList{"td", quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString()});
+			if (tt2_row.value(QStringLiteral("startNumber")).toInt() > 0)
+				append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startNumber"))});
+			else
+				append_list(trr, QVariantList{"td", ""});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("classes.name"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("competitorName"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("registration"))});
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("runs.siId"))});
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString() });
+			append_list(trr, QVariantList{"td", "="});
+			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startTimeText")) });
 			append_list(table, trr);
 		}
 		append_list(body, table);
