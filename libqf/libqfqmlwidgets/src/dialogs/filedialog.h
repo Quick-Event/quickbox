@@ -17,13 +17,13 @@ public:
 public:
 	static QString getOpenFileName(QWidget *parent = nullptr, const QString &caption = QString(),
 				const QString &dir = QString(), const QString &filter = QString(),
-	            QString *selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
+				QString *selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
 	static QStringList getOpenFileNames(QWidget *parent = nullptr, const QString &caption = QString(),
 				const QString &dir = QString(), const QString &filter = QString(),
-	            QString *selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
+				QString *selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
 	static QString getSaveFileName(QWidget * parent = 0, const QString & caption = QString(),
 				const QString & dir = QString(), const QString & filter = QString(),
-	            QString * selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
+				QString * selectedFilter = 0, QFileDialog::Options options = QFileDialog::Options());
 	static QString getExistingDirectory(QWidget * parent = 0, const QString & caption = QString(),
 				const QString & dir = QString(), Options options = ShowDirsOnly);
 private:

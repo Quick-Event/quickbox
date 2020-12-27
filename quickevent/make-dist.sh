@@ -19,7 +19,7 @@ help() {
 	echo "    --appimage-tool <path>      path to AppImageTool, ie: /home/me/appimagetool-x86_64.AppImage"
 	echo "    --no-clean               do not rebuild whole project when set to 1"
 	echo -e "\n"
-	echo "example: make-dist.sh --src-dir /home/me/quickbox --qt-dir /home/me/qt5/5.13.1/gcc_64 --work-dir /home/me/quickevent/AppImage --image-tool /home/me/appimagetool-x86_64.AppImage"
+	echo "example: ./make-dist.sh --src-dir /home/me/quickbox --qt-dir /home/me/qt5/5.13.1/gcc_64 --work-dir /home/me/quickevent/AppImage --appimage-tool /home/me/appimagetool-x86_64.AppImage"
 	exit 0
 }
 

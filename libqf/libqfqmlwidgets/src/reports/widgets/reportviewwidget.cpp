@@ -1037,7 +1037,7 @@ void ReportViewWidget::print(QPrinter &printer, const QVariantMap &options)
 		Rect r = frm->renderedRect;
 		bool landscape = r.width() > r.height();
 		if(landscape)
-			printer.setOrientation(QPrinter::Landscape);
+			printer.setPageOrientation(QPageLayout::Landscape);
 		//Rect printer_pg_rect = QRectF(printer.pageRect());
 		//qfWarning() << "\tprinter page rect:" << printer_pg_rect.toString();
 		//qfWarning() << "\tresolution:" << printer.resolution() << Size(printer_pg_rect.size()/printer.resolution()).toString(); /// resolution je v DPI
@@ -1067,8 +1067,8 @@ void ReportViewWidget::print()
 	printer.setOutputFormat(QPrinter::NativeFormat);
 	//printer.setOutputFileName(fn);
 	printer.setFullPage(true);
-	printer.setPageSize(QPrinter::A4);
-	printer.setOrientation(document()->orientation);
+	printer.setPageSize(QPageSize{QPageSize::A4});
+	printer.setPageOrientation(document()->orientation);
 
 	QPrintDialog dlg(&printer, this);
 	if(dlg.exec() != QDialog::Accepted)
@@ -1095,15 +1095,16 @@ void ReportViewWidget::exportPdf(const QString &file_name)
 	QString fn = file_name;
 	if(fn.isEmpty())
 		QF_EXCEPTION(tr("empty file name"));
-	if(!fn.toLower().endsWith(".pdf"))
-		fn += ".pdf";
+	auto ext = QStringLiteral(".pdf");
+	if(!fn.toLower().endsWith(ext))
+		fn += ext;
 
 	QPrinter printer;
 	printer.setOutputFormat(QPrinter::PdfFormat);
 	printer.setOutputFileName(fn);
 	printer.setFullPage(true);
-	printer.setPageSize(QPrinter::A4);
-	printer.setOrientation(document()->orientation);
+	printer.setPageSize(QPageSize{QPageSize::A4});
+	printer.setPageOrientation(document()->orientation);
 	/// zatim bez dialogu
 	//QPrintDialog printDialog(&printer, parentWidget());
 	//if(printDialog.exec() != QDialog::Accepted) return;

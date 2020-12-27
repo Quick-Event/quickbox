@@ -89,7 +89,7 @@ QByteArray Collator::toAscii7(QLocale::Language lang, const QString &s, bool to_
 		c = removePunctuation(lang, c.toLower());
 		if(is_upper && !to_lower)
 			c = c.toUpper();
-		ret.append(c);
+		ret.append(c.toLatin1());
 	}
 	return ret;
 }

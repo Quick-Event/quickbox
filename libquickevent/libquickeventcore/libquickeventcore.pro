@@ -29,8 +29,9 @@ RESOURCES += libquickeventcore.qrc
 
 TRANSLATIONS += \
 	libquickeventcore.cs_CZ.ts \
-	libquickeventcore.pl_PL.ts \
+	libquickeventcore.fr_FR.ts \
 	libquickeventcore.nb_NO.ts \
-	libquickeventcore.ru_RU.ts \
 	libquickeventcore.nl_BE.ts \
+	libquickeventcore.pl_PL.ts \
+	libquickeventcore.ru_RU.ts \
 	libquickeventcore.uk_UA.ts \

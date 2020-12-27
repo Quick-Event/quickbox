@@ -106,6 +106,8 @@ private:
 
 class CourseCodesTableModel : public qfm::SqlTableModel
 {
+	Q_OBJECT
+private:
 	using Super = qfm::SqlTableModel;
 public:
 	enum Columns {

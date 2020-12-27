@@ -80,8 +80,9 @@ win32:CONFIG(debug, debug|release):CONFIG += console
 
 TRANSLATIONS += \
 	$${TARGET}.cs_CZ.ts \
-	$${TARGET}.pl_PL.ts \
+	$${TARGET}.fr_FR.ts \
 	$${TARGET}.nb_NO.ts \
-	$${TARGET}.ru_RU.ts \
 	$${TARGET}.nl_BE.ts \
+	$${TARGET}.pl_PL.ts \
+	$${TARGET}.ru_RU.ts \
 	$${TARGET}.uk_UA.ts \
