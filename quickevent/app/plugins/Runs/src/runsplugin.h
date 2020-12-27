@@ -84,11 +84,11 @@ public:
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 
-	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, bool insert_vacants);
-	qf::core::utils::TreeTable startListClubsTable();
+	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, const bool insert_vacants, const bool day_time_start);
+	qf::core::utils::TreeTable startListClubsTable(const bool day_time_start);
 	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
-	qf::core::utils::TreeTable startListClassesNStagesTable(int stages_count, const QString &where_expr);
-	qf::core::utils::TreeTable startListClubsNStagesTable(int stages_count);
+	qf::core::utils::TreeTable startListClassesNStagesTable(const int stages_count, const QString &where_expr, const bool day_time_start);
+	qf::core::utils::TreeTable startListClubsNStagesTable(const int stages_count, const bool day_time_start);
 public:
 	void report_startListClasses();
 	void report_startListClubs();
@@ -118,6 +118,9 @@ private:
 	int courseForRun_Relays(int run_id);
 
 	void writeCSOSHeader(QTextStream &ts);
+
+	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int zero_time_msec, const bool day_time_start);
+	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<int> &zero_time_msec, const bool day_time_start);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runnersTableCache;

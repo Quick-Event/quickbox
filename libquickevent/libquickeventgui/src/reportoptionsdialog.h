@@ -30,6 +30,7 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	Q_PROPERTY(bool pageLayoutVisible READ isPageLayoutVisible WRITE setPageLayoutVisible NOTIFY pageLayoutVisibleChanged)
 	Q_PROPERTY(bool columnCountEnable READ isColumnCountEnable WRITE setColumnCountEnable NOTIFY columnCountEnableChanged)
 	Q_PROPERTY(bool resultOptionsVisible READ isResultOptionsVisible WRITE setResultOptionsVisible NOTIFY resultOptionsVisibleChanged)
+	Q_PROPERTY(bool startTimesTypesVisible READ isStartTimesTypesVisible WRITE setStartTimesTypesVisible NOTIFY startTimesTypesVisibleChanged)
 
 	QF_PROPERTY_BOOL_IMPL2(c, C, lassFilterVisible, true)
 	QF_PROPERTY_BOOL_IMPL2(s, S, tartListOptionsVisible, false)
@@ -40,11 +41,13 @@ class QUICKEVENTGUI_DECL_EXPORT ReportOptionsDialog : public QDialog, public qf:
 	QF_PROPERTY_BOOL_IMPL2(p, P, ageLayoutVisible, false)
 	QF_PROPERTY_BOOL_IMPL2(c, C, olumnCountEnable, true)
 	QF_PROPERTY_BOOL_IMPL2(r, R, esultOptionsVisible, false)
+	QF_PROPERTY_BOOL_IMPL2(s, S, tartTimesTypesVisible, false)
 private:
 	using Super = QDialog;
 public:
 	enum class BreakType : int {None = 0, Column, Page};
 	enum class FilterType : int {WildCard = 0, RegExp, ClassName};
+	enum class StartTimesType : int {FromZero = 0, DayTime};
 
 	class Options : public QVariantMap
 	{
@@ -67,6 +70,7 @@ public:
 		QF_VARIANTMAP_FIELD2(int, l, setL, egsCount, 1)
 		QF_VARIANTMAP_FIELD2(int, r, setR, esultNumPlaces, 9999)
 		QF_VARIANTMAP_FIELD2(bool, isR, setR, esultExcludeDisq, false)
+		QF_VARIANTMAP_FIELD2(int, s, setS, tartTimesType, 0)
 		public:
 			Options(const QVariantMap &o = QVariantMap()) : QVariantMap(o) {}
 	};
@@ -100,6 +104,8 @@ public:
 
 	bool resultExcludeDisq() const;
 	void setResultExcludeDisq(bool b);
+
+	bool isDayTypeStartTime();
 
 	BreakType breakType() const;
 	Q_INVOKABLE bool isStartListPrintVacants() const;

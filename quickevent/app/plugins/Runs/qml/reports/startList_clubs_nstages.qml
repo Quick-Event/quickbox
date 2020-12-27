@@ -2,7 +2,6 @@ import QtQml 2.0
 import qf.core 1.0
 import qf.qmlreports 1.0
 import shared.QuickEvent.reports 1.0
-import "qrc:/quickevent/core/js/ogtime.js" as OGTime
 
 Report {
 	id: root
@@ -29,7 +28,7 @@ Report {
 				textFn: function() {
 					var run = runnersDetail.data(runnersDetail.currentIndex, isRunning);
 					if (run)
-						return OGTime.msecToString_mmss(runnersDetail.data(runnersDetail.currentIndex, fieldName));
+						return runnersDetail.data(runnersDetail.currentIndex, fieldName);
 					else
 						return "-";
 				}
@@ -136,7 +135,7 @@ Report {
 							for(var i=0; i<root.stagesCount; i++) {
 								//console.warn("=============", i, qsTr("Stage") + (i+1))
 								//var runs_table = "runs" + (i+1);
-								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 15, "text": qsTr("Stage") + (i+1)});
+								var c = cHeaderCell.createObject(null, {"halign": Frame.AlignRight, "width": 18, "text": qsTr("Stage") + (i+1)});
 								classHeader.addItem(c);
 							}
 						}
@@ -184,7 +183,7 @@ Report {
 								//console.warn("=============", root.stageCount)
 								for(var i=0; i<root.stagesCount; i++) {
 									var runs_table = "runs" + (i+1);
-									var c = cStartTimeCell.createObject(null, {"width": 15, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeMs", "isRunning": runs_table + ".isRunning" });
+									var c = cStartTimeCell.createObject(null, {"width": 18, "halign": Frame.AlignRight, "fieldName": runs_table + ".startTimeText", "isRunning": runs_table + ".isRunning" });
 									runnersDetail.addItem(c);
 								}
 							}

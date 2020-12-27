@@ -253,6 +253,32 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="grpStartTimes">
+     <property name="title">
+      <string>How to print start times</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QRadioButton" name="btStartTimes1">
+        <property name="text">
+         <string>start at 0 (mmm.ss)  </string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="btStartTimes2">
+        <property name="text">
+         <string>daytime (hh:mm:ss)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="grpPageLayout">
      <property name="title">
       <string>Page layout</string>
