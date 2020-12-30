@@ -1360,7 +1360,7 @@ void RunsPlugin::report_startListClasses()
 	dlg.loadPersistentSettings();
 	dlg.setStartListOptionsVisible(true);
 	dlg.setPageLayoutVisible(false);
-	dlg.setStartTimesTypesVisible(true);
+	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants(), dlg.isDayTypeStartTime());
 		auto opts = dlg.optionsMap();
@@ -1387,7 +1387,7 @@ void RunsPlugin::report_startListClubs()
 	dlg.setStartListOptionsVisible(true);
 	dlg.setStartListPrintVacantsVisible(false);
 	dlg.setPageLayoutVisible(false);
-	dlg.setStartTimesTypesVisible(true);
+	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClubsTable( dlg.isDayTypeStartTime());
 		auto opts = dlg.optionsMap();
@@ -1442,7 +1442,7 @@ void RunsPlugin::report_startListClassesNStages()
 	dlg.setStagesOptionVisible(true);
 	dlg.setClassFilterVisible(true);
 	dlg.setColumnCountEnable(false);
-	dlg.setStartTimesTypesVisible(true);
+	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClassesNStagesTable(dlg.stagesCount(), dlg.sqlWhereExpression(), dlg.isDayTypeStartTime());
 		auto opts = dlg.options();
@@ -1478,7 +1478,7 @@ void RunsPlugin::report_startListClubsNStages()
 	dlg.setClassFilterVisible(true);
 	dlg.setClassFilterVisible(false);
 	dlg.setColumnCountEnable(false);
-	dlg.setStartTimesTypesVisible(true);
+	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
 		auto tt = startListClubsNStagesTable(dlg.stagesCount(), dlg.isDayTypeStartTime());
 		auto opts = dlg.optionsMap();
@@ -1705,7 +1705,8 @@ void RunsPlugin::export_startListClassesHtml()
 		}
 		qf::core::utils::TreeTable tt2 = tt1.row(i).table();
 		QVariantList trr{"tr",
-				  QVariantList{"th", QVariantMap{{"colspan", "2"}}, tr("Name")},
+				  QVariantList{"th", tr("St. Num")},
+				  QVariantList{"th", tr("Name")},
 				  QVariantList{"th", tr("Registration")},
 				  QVariantList{"th", tr("SI")},
 				  QVariantList{"th", QVariantMap{{"colspan", "3"}}, tr("Start")}
@@ -1798,7 +1799,8 @@ void RunsPlugin::export_startListClubsHtml()
 		}
 		qf::core::utils::TreeTable tt2 = tt1_row.table();
 		QVariantList trr{"tr",
-				QVariantList{"th", QVariantMap{{"colspan", "2"}}, tr("Class")},
+				QVariantList{"th", tr("St. Num")},
+				QVariantList{"th", tr("Class")},
 				QVariantList{"th", tr("Name")},
 				QVariantList{"th", tr("Registration")},
 				QVariantList{"th", tr("SI")},
