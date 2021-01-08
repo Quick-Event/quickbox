@@ -457,21 +457,20 @@ void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVari
 			key = key_prefix + '.' + key;
 		}
 		QVariant v = it.value();
-		if(v.type() == QVariant::Map) {
+		if(options().contains(key)) {
+			Option &opt = optionRef(key);
+			if(!opt.isSet()) {
+				//qfInfo() << key << "-->" << v;
+				opt.setValue(v);
+			}
+		}
+		else if(v.type() == QVariant::Map) {
 			QVariantMap m = v.toMap();
 			mergeConfig_helper(key, m);
 		}
 		else {
 			try {
-				bool opt_exists = !option(key, !qf::core::Exception::Throw).isNull();
-				if(opt_exists) {
-					Option &opt = optionRef(key);
-					if(!opt.isSet()) {
-						//qfInfo() << key << "-->" << v;
-						opt.setValue(v);
-					}
-				}
-				else if(key == QLatin1String("debug")) {
+				if(key == QLatin1String("debug")) {
 					// allways understand --debug parameter even if it is not defined explicitly in CLI options
 					qf::core::LogDevice::setModulesTresholds(v.toString());
 				}
