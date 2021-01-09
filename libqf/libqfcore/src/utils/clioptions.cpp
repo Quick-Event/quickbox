@@ -1,6 +1,6 @@
 #include "clioptions.h"
 #include "../core/log.h"
-#include "../core/logdevice.h"
+//#include "../core/logdevice.h"
 #include "../core/assert.h"
 #include "../core/utils.h"
 
@@ -348,8 +348,10 @@ void CLIOptions::printHelp(std::ostream& os) const
 		if(!oc.isEmpty())
 			os << "\t" << opt.comment().toStdString() << std::endl;
 	}
-	os << qf::core::LogDevice::logModulesCLIHelp().toStdString() << std::endl;
-	os << qf::core::LogDevice::logCategoriesCLIHelp().toStdString() << std::endl;
+	os << NecroLog::cliHelp() << std::endl;
+	std::string topics = NecroLog::registeredTopicsInfo();
+	if(!topics.empty())
+		std::cout << topics << std::endl;
 }
 
 void CLIOptions::printHelp() const
@@ -472,11 +474,11 @@ void ConfigCLIOptions::mergeConfig_helper(const QString &key_prefix, const QVari
 			try {
 				if(key == QLatin1String("debug")) {
 					// allways understand --debug parameter even if it is not defined explicitly in CLI options
-					qf::core::LogDevice::setModulesTresholds(v.toString());
+					NecroLog::setFileLogTresholds(v.toString().toStdString());
 				}
 				else if(key == QLatin1String("verbose")) {
 					// allways understand --verbose parameter even if it is not defined explicitly in CLI options
-					qf::core::LogDevice::setCategoriesTresholds(v.toString());
+					NecroLog::setTopicsLogTresholds(v.toString().toStdString());
 				}
 				else {
 					qfWarning() << "Cannot merge nonexisting option key:" << key;

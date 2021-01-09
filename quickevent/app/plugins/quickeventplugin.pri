@@ -21,6 +21,7 @@ DEFINES += $${PLUGIN_NAME_UPPER}PLUGIN_BUILD_DLL
 TARGET = $${PLUGIN_NAME}QEPlugin
 
 INCLUDEPATH += \
+    $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include \
 	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfcore/include \
 	$$QF_PROJECT_TOP_SRCDIR/libqf/libqfqmlwidgets/include \
 	$$QF_PROJECT_TOP_SRCDIR/libquickevent/libquickeventcore/include \
@@ -35,6 +36,7 @@ unix: LIBS +=  \
 
 
 LIBS += \
+    -lnecrolog \
 	-lqfcore \
 	-lqfqmlwidgets \
 	-lquickeventcore \

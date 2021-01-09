@@ -399,7 +399,7 @@ void CompetitorsWidget::report_competitorsStatistics()
 			}
 		}
 	}
-	qfDebug().noquote() << tt.toString();
+	qfDebug() << tt.toString();
 	QVariantMap props;
 	//props["isBreakAfterEachClass"] = (opts.breakType() != (int)quickevent::gui::ReportOptionsDialog::BreakType::None);
 	//props["isColumnBreak"] = (opts.breakType() == (int)quickevent::gui::ReportOptionsDialog::BreakType::Column);

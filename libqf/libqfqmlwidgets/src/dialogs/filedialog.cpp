@@ -55,9 +55,9 @@ QString FileDialog::getSaveFileName(QWidget * parent, const QString & caption,
 {
 	qfLogFuncFrame();
 	QString fn = _dir;
-	qDebug() << "\t fn:" << fn;
+	//qDebug() << "\t fn:" << fn;
 	QString dir = qf::core::utils::FileUtils::path(fn);
-	qDebug() << "\t dir:" << dir << "isAbsolutePath:" << QDir::isAbsolutePath(dir);
+	//qDebug() << "\t dir:" << dir << "isAbsolutePath:" << QDir::isAbsolutePath(dir);
 	if(dir.isEmpty() || !QDir::isAbsolutePath(dir)) {
 		dir = recentSaveFileDir();
 		fn = qf::core::utils::FileUtils::joinPath(dir, fn);

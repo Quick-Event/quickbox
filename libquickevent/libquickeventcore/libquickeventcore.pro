@@ -14,10 +14,12 @@ win32:DESTDIR = $$OUT_PWD/../../bin
 message(Target: $$TARGET)
 
 LIBS += -L$$DESTDIR
+LIBS += -lnecrolog
 LIBS += -lqfcore
 LIBS += -lsiut
 
 INCLUDEPATH += \
+    $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include \
 	$$PWD/../../libqf/libqfcore/include \
 	$$PWD/../../libsiut/include
 

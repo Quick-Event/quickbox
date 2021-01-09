@@ -7,14 +7,16 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/core/og/sqltablemodel.h>
-#include <quickevent/core/og/timems.h>
 #include <quickevent/gui/reportoptionsdialog.h>
 
-#include <qf/core/sql/querybuilder.h>
+#include <quickevent/core/og/sqltablemodel.h>
+#include <quickevent/core/og/timems.h>
+
 #include <qf/qmlwidgets/framework/mainwindow.h>
 #include <qf/qmlwidgets/reports/widgets/reportviewwidget.h>
+#include <qf/qmlwidgets/log.h>
 
+#include <qf/core/sql/querybuilder.h>
 #include <qf/core/assert.h>
 
 #include <QElapsedTimer>
@@ -546,7 +548,7 @@ void EventStatisticsWidget::on_btPrintResultsSelected_clicked()
 
 void EventStatisticsWidget::printResultsForRows(const QList<int> &rows)
 {
-	qfLogFuncFrame() << rows;
+	qfLogFuncFrame();// << rows;
 	QStringList class_names;
 	QList<int> classdefs_ids;
 	QList<int> runners_finished;

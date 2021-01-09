@@ -2,8 +2,9 @@
 #define QF_CORE_MODEL_LOGTABLEMODEL_H
 
 #include "../core/coreglobal.h"
-#include "../core/logcore.h"
 #include "../core/utils.h"
+
+#include <necrolog.h>
 
 #include <QAbstractTableModel>
 
@@ -22,7 +23,7 @@ public:
 	class QFCORE_DECL_EXPORT Row {
 	public:
 		explicit Row() {}
-		explicit Row(qf::core::Log::Level severity, const QString& domain, const QString& file, int line, const QString& msg, const QDateTime& time_stamp, const QString& function = QString(), const QVariant &user_data = QVariant());
+		explicit Row(NecroLog::Level severity, const QString& domain, const QString& file, int line, const QString& msg, const QDateTime& time_stamp, const QString& function = QString(), const QVariant &user_data = QVariant());
 
 		QVariant value(int col) const;
 		void setValue(int col, const QVariant &v);
@@ -45,7 +46,7 @@ public:
 	virtual void clear();
 	Row rowAt(int row) const;
 	Q_SLOT void addLogEntry(const qf::core::LogEntryMap &le);
-	void addLog(qf::core::Log::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function = QString(), const QVariant &user_data = QVariant());
+	void addLog(NecroLog::Level severity, const QString& category, const QString &file, int line, const QString& msg, const QDateTime& time_stamp, const QString &function = QString(), const QVariant &user_data = QVariant());
 	void addRow(const Row &row);
 	Q_SIGNAL void logEntryInserted(int row_no);
 protected:

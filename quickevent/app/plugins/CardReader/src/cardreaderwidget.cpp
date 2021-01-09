@@ -38,8 +38,8 @@
 #include <qf/qmlwidgets/dialogs/messagebox.h>
 #include <qf/qmlwidgets/dialogs/filedialog.h>
 #include <qf/qmlwidgets/dialogs/messagebox.h>
+#include <qf/qmlwidgets/log.h>
 
-#include <qf/core/log.h>
 #include <qf/core/assert.h>
 #include <qf/core/exception.h>
 #include <qf/core/sql/query.h>
@@ -587,12 +587,12 @@ void CardReaderWidget::onOpenCommTriggered(bool checked)
 	}
 }
 
-void CardReaderWidget::appendLog(qf::core::Log::Level level, const QString& msg)
+void CardReaderWidget::appendLog(NecroLog::Level level, const QString& msg)
 {
 	switch (level) {
-	case qf::core::Log::Level::Debug: qfDebug() << msg; break;
-	case qf::core::Log::Level::Info: qfInfo() << msg; break;
-	case qf::core::Log::Level::Warning: qfWarning() << msg; break;
+	case NecroLog::Level::Debug: qfDebug() << msg; break;
+	case NecroLog::Level::Info: qfInfo() << msg; break;
+	case NecroLog::Level::Warning: qfWarning() << msg; break;
 	default: qfError() << msg; break;
 	}
 }
@@ -621,13 +621,13 @@ void CardReaderWidget::onSiTaskFinished(int task_type, QVariant result)
 void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 {
 	qfLogFuncFrame();
-	//appendLog(qf::core::Log::Level::Info, tr("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
+	//appendLog(NecroLog::Level::Info, tr("processSIMessage command: %1 , type: %2").arg(SIMessageData::commandName(msg_data.command())).arg(msg_data.type()));
 	if(msg_data.type() == SIMessageData::MessageType::CardReadOut) {
 		SIMessageCardReadOut card(msg_data);
 		processSICard(card);
 	}
 	else if(msg_data.type() == SIMessageData::MessageType::CardEvent) {
-		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
+		appendLog(NecroLog::Level::Debug, msg_data.dump());
 		if(msg_data.command() == SIMessageData::Command::SICard5DetectedExt) {
 			emit sendSICommand((int)SIMessageData::Command::GetSICard5Ext, QByteArray());
 		}
@@ -643,19 +643,19 @@ void CardReaderWidget::processSIMessage(const SIMessageData& msg_data)
 		processSIPunch(rec);
 	}
 	else {
-		appendLog(qf::core::Log::Level::Debug, msg_data.dump());
+		appendLog(NecroLog::Level::Debug, msg_data.dump());
 	}
 }
 */
 
-void CardReaderWidget::processDriverInfo (qf::core::Log::Level level, const QString& msg )
+void CardReaderWidget::processDriverInfo (NecroLog::Level level, const QString& msg )
 {
 	qf::core::utils::Settings settings;
 	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
-		if(level == qf::core::Log::Level::Debug)
-			level = qf::core::Log::Level::Info;
+		if(level == NecroLog::Level::Debug)
+			level = NecroLog::Level::Info;
 	}
-	appendLog(level, tr("DriverInfo: <%1> %2").arg(qf::core::Log::levelName((qf::core::Log::Level)level)).arg(msg));
+	appendLog(level, tr("DriverInfo: <%1> %2").arg(NecroLog::levelToString((NecroLog::Level)level)).arg(msg));
 }
 
 void CardReaderWidget::processDriverRawData(const QByteArray& data)
@@ -664,14 +664,14 @@ void CardReaderWidget::processDriverRawData(const QByteArray& data)
 	//qInfo() << settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData") << "data:" << data;
 	if(settings.value(CardReader::CardReaderPlugin::SETTINGS_PREFIX + "/comm/debug/showRawComData").toBool()) {
 		QString msg = siut::SIMessageData::dumpData(data, 16);
-		appendLog(qf::core::Log::Level::Info, tr("DriverRawData: %1").arg(msg));
+		appendLog(NecroLog::Level::Info, tr("DriverRawData: %1").arg(msg));
 	}
 }
 
 void CardReaderWidget::processSICard(const siut::SICard &card)
 {
-	appendLog(qf::core::Log::Level::Debug, card.toString());
-	appendLog(qf::core::Log::Level::Info, tr("card: %1").arg(card.cardNumber()));
+	appendLog(NecroLog::Level::Debug, card.toString());
+	appendLog(NecroLog::Level::Info, tr("card: %1").arg(card.cardNumber()));
 
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_ENTRIES) {
@@ -692,7 +692,7 @@ void CardReaderWidget::processSICard(const siut::SICard &card)
 
 	if(run_id == 0) {
 		operatorAudioWakeUp();
-		appendLog(qf::core::Log::Level::Error, err_msg);
+		appendLog(NecroLog::Level::Error, err_msg);
 	}
 	else {
 		bool card_lent = thisPlugin()->isCardLent(card.cardNumber(), card.finishTime(), run_id);
@@ -734,14 +734,14 @@ void CardReaderWidget::processReadCard(const quickevent::core::si::ReadCard &rea
 
 void CardReaderWidget::processSIPunch(const siut::SIPunch &rec)
 {
-	appendLog(qf::core::Log::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
+	appendLog(NecroLog::Level::Info, tr("punch: %1 %2").arg(rec.cardNumber()).arg(rec.code()));
 	quickevent::core::si::PunchRecord punch(rec);
 	QString punch_marking = m_cbxPunchMarking->currentData().toString();
 	punch.setmarking(punch_marking);
 	if(punch_marking == quickevent::core::si::PunchRecord::MARKING_RACE) {
 		int run_id = thisPlugin()->findRunId(rec.cardNumber(), 0xEEEE);
 		if(run_id == 0)
-			appendLog(qf::core::Log::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
+			appendLog(NecroLog::Level::Error, tr("Cannot find run for punch record SI: %1").arg(rec.cardNumber()));
 		else
 			punch.setrunid(run_id);
 	}
@@ -806,7 +806,7 @@ void CardReaderWidget::assignRunnerToSelectedCard()
 	w->focusLineEdit();
 	if(dlg.exec()) {
 		QVariantMap values = w->selectedRunner();
-		qfDebug() << values;
+		//qfDebug() << values;
 		int run_id = values.value("runid").toInt();
 		int si_id = thisPlugin()->cardIdToSiId(card_id);
 		if(run_id > 0 && si_id > 0) {
@@ -979,7 +979,7 @@ void CardReaderWidget::importCards_lapsOnlyCsv()
 			QList<int> codes = codesForClassName(class_name, stage_id);
 			codes << quickevent::core::CodeDef::FINISH_PUNCH_CODE;
 			if(csv_ix + codes.count() != sl.count()) {
-				qfWarning() << codes;
+				//qfWarning() << codes;
 				qfWarning() << sl;
 				QF_EXCEPTION(tr("SI: %1 class %2 - Number of punches (%3) and number of codes including finish (%4) should be the same! Remove or comment invalid line by #.")
 							 .arg(si_id).arg(class_name).arg(sl.count() - csv_ix).arg(codes.count()));

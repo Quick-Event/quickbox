@@ -15,6 +15,7 @@
 #include <QPrinter>
 #include <QTextCodec>
 #include <QStyle>
+#include <QTextStream>
 
 namespace qfu = qf::core::utils;
 using namespace qf::qmlwidgets;

@@ -12,8 +12,6 @@
 #include <QFormLayout>
 #include <QLabel>
 
-#include <QDebug>
-
 using namespace qf::qmlwidgets;
 
 static const int DefaultLayoutMargin = 1;
@@ -105,7 +103,7 @@ int Frame::countWidgetsFunction(QQmlListProperty<QWidget> *list_property)
 void Frame::add(QWidget *widget)
 {
 	if(widget) {
-		qDebug() << "adding widget" << widget << widget->parent();
+		//qDebug() << "adding widget" << widget << widget->parent();
 		/// widget cannot be simply reparented
 		/// NULL parent should be set first
 		widget->setParent(0);

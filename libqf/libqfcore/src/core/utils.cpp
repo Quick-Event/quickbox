@@ -2,6 +2,7 @@
 #include "log.h"
 
 #include <QString>
+#include <QSet>
 #include <QDate>
 #include <QRegularExpression>
 

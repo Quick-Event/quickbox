@@ -11,7 +11,6 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QStringBuilder>
-#include <QDebug>
 
 Model::Model(QObject *parent) :
 	QObject(parent)
@@ -78,7 +77,7 @@ bool Model::addCategoryToStorage()
 	if(m_categoriesToProceed.isEmpty())
 		reloadCategories();
 	if(m_categoriesToProceed.isEmpty()) {
-		qCritical() << "Categories load ERROR";
+		qfError() << "Categories load ERROR";
 		return false;
 	}
 	Application *app = Application::instance();
@@ -107,7 +106,7 @@ bool Model::addCategoryToStorage()
 			m_storage << m;
 		}
 		else {
-			qCritical() << "Entry for classname" << cat_id_to_load << "does not exist !!!";
+			qfError() << "Entry for classname" << cat_id_to_load << "does not exist !!!";
 		}
 	}
 	{

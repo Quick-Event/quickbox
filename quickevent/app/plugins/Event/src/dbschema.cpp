@@ -37,7 +37,7 @@ QObject *DbSchema::dbSchemaRoot()
 			qfDebug() << "QQmlComponent is ready:" << m_dbschemaComponent->isReady();
 			m_dbSchemaRoot = m_dbschemaComponent->beginCreate(qml_engine->rootContext());
 			if(!m_dbSchemaRoot) {
-				qfError() << "Error creating root object from component:" << m_dbschemaComponent << m_dbschemaComponent->url();
+				qfError() << "Error creating root object from component:" << m_dbschemaComponent << m_dbschemaComponent->url().toString();
 				Q_FOREACH(auto err, m_dbschemaComponent->errors())
 					qfError() << err.toString();
 			}

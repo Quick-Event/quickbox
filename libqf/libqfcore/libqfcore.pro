@@ -26,9 +26,18 @@ CONFIG += hide_symbols
 
 DEFINES += QFCORE_BUILD_DLL
 
-include($$PWD/src/src.pri)
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
 
-include ($$PWD/../../crosscompile-support.pri)
+LIBS +=      \
+    -lnecrolog  \
+
+win32: LIBS +=  \
+    -L$$QF_PROJECT_TOP_BUILDDIR/bin  \
+
+unix: LIBS +=  \
+    -L$$QF_PROJECT_TOP_BUILDDIR/lib  \
+
+include($$PWD/src/src.pri)
 
 RESOURCES += \
 	$$PWD/images/images.qrc \

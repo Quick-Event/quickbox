@@ -102,7 +102,8 @@ void RelaysPlugin::onDbEventNotify(const QString &domain, int connection_id, con
 
 void RelaysPlugin::processRunnerFinished(const quickevent::core::si::CheckedCard &checked_card)
 {
-	qfLogFuncFrame() << checked_card;
+	Q_UNUSED(checked_card)
+	qfLogFuncFrame();// << checked_card;
 	/// recalculate team times
 
 }
@@ -233,7 +234,7 @@ qf::core::utils::TreeTable RelaysPlugin::nLegsResultsTable(const QString &where_
 		qf::core::utils::TreeTable tt2 = nLegsClassResultsTable(q.value("classes.id").toInt(), leg_count, places, exclude_not_finish);
 		tt_row.appendTable(tt2);
 		tt.setRow(ix, tt_row);
-		//qfDebug().noquote() << tt2.toString();
+		//qfDebug() << tt2.toString();
 	}
 	auto wt = [tt]() {
 		QFile f("/home/fanda/t/relays.json");

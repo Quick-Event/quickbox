@@ -14,6 +14,7 @@
 #include <QSqlDriver>
 #include <QJSValue>
 #include <QColor>
+#include <QSet>
 
 namespace qfs = qf::core::sql;
 namespace qfu = qf::core::utils;

@@ -2,7 +2,6 @@
 
 #include <qendian.h>
 #include <QVector>
-#include <QDebug>
 
 namespace quickevent {
 namespace gui {

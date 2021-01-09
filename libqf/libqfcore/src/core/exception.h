@@ -42,7 +42,7 @@ protected:
 protected:
 	void init(const QString& _msg, const QString& _where);
 public:
-	virtual void log();
+	void log();
 	//virtual QString type() const {return m_type;}
 	virtual QString message() const {return m_msg;}
 	virtual QString where() const {return m_where;}

@@ -24,7 +24,10 @@ win32:DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 
 message ( DESTDIR: $$DESTDIR )
 
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
+
 LIBS +=      \
+    -lnecrolog  \
 	-lqfcore  \
 
 win32: LIBS +=  \
@@ -32,8 +35,6 @@ win32: LIBS +=  \
 
 unix: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/lib  \
-
-include ($$PWD/../../crosscompile-support.pri)
 
 include($$PWD/src/src.pri)
 

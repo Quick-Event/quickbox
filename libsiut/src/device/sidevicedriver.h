@@ -14,7 +14,7 @@
 
 #include <siut/siutglobal.h>
 
-#include <qf/core/logcore.h>
+#include <necrolog.h>
 
 #include <QPointer>
 
@@ -41,7 +41,7 @@ public:
 
 	void sendACK();
 
-	Q_SIGNAL void driverInfo(qf::core::Log::Level level, const QString &msg);
+	Q_SIGNAL void driverInfo(NecroLog::Level level, const QString &msg);
 	//Q_SIGNAL void siMessageReceived(const SIMessageData &msg);
 	//Q_SIGNAL void siDatagramReceived(const QByteArray &data);
 	Q_SIGNAL void dataToSend(const QByteArray &data);
@@ -49,7 +49,7 @@ public:
 protected:
 	//virtual void onSiMessageReceived(const SIMessageData &msg);
 	void processSIMessageData(const SIMessageData &msg_data);
-	void emitDriverInfo(qf::core::Log::Level level, const QString &msg);
+	void emitDriverInfo(NecroLog::Level level, const QString &msg);
 private:
 	//void sendAck();
 	//void abortMessage();

@@ -1,8 +1,8 @@
 #include "exception.h"
 #include "stacktrace.h"
+#include "log.h"
 
 #include <QStringList>
-#include <QDebug>
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -12,7 +12,7 @@ using namespace qf::core;
 #if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
 	#define logWarning() qWarning()
 #else
-	#define logWarning() qWarning().noquote()
+	#define logWarning() qfWarning()
 #endif
 
 //============================================================

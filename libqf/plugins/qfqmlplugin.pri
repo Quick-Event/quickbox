@@ -6,7 +6,9 @@ PLUGIN_NAMESPACE_PATH = qf
 
 include ( ../../qmlplugin.pri )
 
+INCLUDEPATH += ../../../3rdparty/necrolog/include
 INCLUDEPATH += ../../libqfcore/include
+LIBS += -lnecrolog
 LIBS += -lqfcore
 LIBS += -L$$QF_PROJECT_TOP_BUILDDIR/$$LIB_DIR_NAME
 

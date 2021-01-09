@@ -2,7 +2,6 @@
 #include "application.h"
 #include "appversion.h"
 #include "appclioptions.h"
-#include "tablemodellogdevice.h"
 
 #include <Core/coreplugin.h>
 
@@ -10,7 +9,7 @@
 #include <quickevent/core/og/timems.h>
 
 #include <qf/core/log.h>
-#include <qf/core/logdevice.h>
+#include <qf/core/logentrymap.h>
 #include <qf/core/utils/settings.h>
 #include <qf/core/model/logtablemodel.h>
 
@@ -19,6 +18,32 @@
 
 #include <iostream>
 
+namespace {
+
+NecroLog::MessageHandler old_message_handler;
+bool send_log_entry_recursion_lock = false;
+
+void send_log_entry_handler(NecroLog::Level level, const NecroLog::LogContext &context, const std::string &msg)
+{
+	if(!send_log_entry_recursion_lock) {
+		send_log_entry_recursion_lock = true;
+		Application *app = Application::instance();
+		if(app) {
+			qf::core::LogEntryMap le;
+			le.setLevel(level);
+			le.setCategory(context.topic());
+			le.setFile(context.file());
+			le.setLine(context.line());
+			le.setMessage(QString::fromStdString(msg));
+			app->emitNewLogEntry(le);
+		}
+		send_log_entry_recursion_lock = false;
+	}
+	old_message_handler(level, context, msg);
+}
+
+}
+
 int main(int argc, char *argv[])
 {
 	QCoreApplication::setOrganizationName("quickbox");
@@ -26,24 +51,12 @@ int main(int argc, char *argv[])
 	QCoreApplication::setApplicationName("quickevent");
 	QCoreApplication::setApplicationVersion(APP_VERSION);
 
+	std::vector<std::string> shv_args = NecroLog::setCLIOptions(argc, argv);
+	QStringList args;
+	for(const auto &s : shv_args)
+		args << QString::fromStdString(s);
+
 	QSettings::setDefaultFormat(QSettings::IniFormat);
-
-	QString o_log_file;
-	for (int i = 1; i < argc-1; ++i) {
-		if(argv[i] == QLatin1String("--log-file"))
-			o_log_file = argv[i + 1];
-	}
-	if(o_log_file.isEmpty())
-		o_log_file = QDir::tempPath() + "/quickevent.log";
-
-	qf::core::LogDevice::setDefinedCategories(QStringList() << "TimeScope");
-	QStringList args = qf::core::LogDevice::setGlobalTresholds(argc, argv);
-	QScopedPointer<qf::core::FileLogDevice> stderr_log_device(qf::core::FileLogDevice::install());
-	QScopedPointer<qf::core::FileLogDevice> file_log_device(qf::core::FileLogDevice::install());
-	file_log_device->setFile(o_log_file);
-
-	QScopedPointer<TableModelLogDevice> table_model_log_device(TableModelLogDevice::install());
-	table_model_log_device->setObjectName(TABLE_MODEL_LOG_DEVICE);
 
 	//qfError() << "QFLog(ERROR) test OK.";// << QVariant::typeToName(QVariant::Int) << QVariant::typeToName(QVariant::String);
 	//qfWarning() << "QFLog(WARNING) test OK.";
@@ -52,9 +65,10 @@ int main(int argc, char *argv[])
 
 	qfInfo() << "========================================================";
 	qfInfo() << QDateTime::currentDateTime().toString(Qt::ISODate) << "starting" << QCoreApplication::applicationName() << "ver:" << QCoreApplication::applicationVersion();
-	qfInfo() << "Log file:" << o_log_file;
+	qfInfo() << "Log tresholds:" << NecroLog::tresholdsLogInfo();
 	qfInfo() << "========================================================";
 
+	qRegisterMetaType<qf::core::LogEntryMap>();
 	quickevent::core::og::TimeMs::registerQVariantFunctions();
 	quickevent::core::si::SiId::registerQVariantFunctions();
 
@@ -75,13 +89,15 @@ int main(int argc, char *argv[])
 		qDebug() << "Undefined argument:" << s;
 	}
 
-    // Uncaught exception is intentional here
+	// Uncaught exception is intentional here
 	if(!cli_opts.loadConfigFile()) {
 		return EXIT_FAILURE;
 	}
 
 	qDebug() << "creating application instance";
 	Application app(argc, argv, &cli_opts);
+
+	old_message_handler = NecroLog::setMessageHandler(send_log_entry_handler);
 
 	QString lc_name;
 	{
@@ -124,11 +140,6 @@ int main(int argc, char *argv[])
 
 	MainWindow main_window;
 	main_window.setUiLanguageName(lc_name);
-	/*
-	QObject::connect(signal_log_device.data(), SIGNAL(logEntry(int, QVariantMap)),
-					 &main_window, SIGNAL(logEntry(int, QVariantMap)),
-					 Qt::QueuedConnection);
-	*/
 	main_window.loadPlugins();
 	main_window.show();
 

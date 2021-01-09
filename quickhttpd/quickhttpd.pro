@@ -18,10 +18,12 @@ DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
 INCLUDEPATH += \
+    $$PWD/../3rdparty/necrolog/include \
 	$$PWD/../libqf/libqfcore/include \
 	$$PWD/../libquickevent/libquickeventcore/include \
 
 LIBS +=      \
+    -lnecrolog  \
 	-lqfcore  \
 	-lsiut  \
 	-lquickeventcore  \

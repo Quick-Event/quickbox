@@ -223,7 +223,7 @@ void RacomClient::init()
 	QF_SAFE_DELETE(m_rawSIDataUdpSocket)
 	QF_SAFE_DELETE(m_sirxdDataServer)
 	RacomClientSettings ss = settings();
-	qfDebug() << ss;
+	//qfDebug() << ss;
 
 	if(ss.isListenRawData()) {
 		m_rawSIDataUdpSocket = new QUdpSocket(this);

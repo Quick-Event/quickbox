@@ -1,6 +1,6 @@
 #include "logtablemodel.h"
 
-#include "../core/logdevice.h"
+#include "../core/logentrymap.h"
 #include "../core/log.h"
 
 #include <QColor>
@@ -10,7 +10,7 @@ namespace qf {
 namespace core {
 namespace model {
 
-LogTableModel::Row::Row(qf::core::Log::Level severity, const QString &domain, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+LogTableModel::Row::Row(NecroLog::Level severity, const QString &domain, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
 	m_data.resize(Cols::Count);
 	m_data[Cols::Severity] = QVariant::fromValue(severity);
@@ -87,8 +87,8 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 	switch (role) {
 	case Qt::DisplayRole: {
 		QVariant ret = data(index, Qt::EditRole);
-		if(ret.userType() == qMetaTypeId<qf::core::Log::Level>())
-			ret = qf::core::Log::levelToString(ret.value<qf::core::Log::Level>());
+		if(ret.userType() == qMetaTypeId<NecroLog::Level>())
+			ret = NecroLog::levelToString(ret.value<NecroLog::Level>());
 		else if(ret.userType() == qMetaTypeId<QDateTime>())
 			ret = ret.value<QDateTime>().toString(Qt::ISODate);
 		return ret;
@@ -98,22 +98,22 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 	case Qt::ToolTipRole:
 		return data(index, Qt::DisplayRole);
 	case Qt::ForegroundRole: {
-		auto severity = m_rows[index.row()].value(Cols::Severity).value<qf::core::Log::Level>();
+		auto severity = m_rows[index.row()].value(Cols::Severity).value<NecroLog::Level>();
 		switch (severity) {
-		case qf::core::Log::Level::Info:
+		case NecroLog::Level::Info:
 			return QColor(Qt::blue);
 		default:
 			return QVariant();
 		}
 	}
 	case Qt::BackgroundRole: {
-		auto severity = m_rows[index.row()].value(Cols::Severity).value<qf::core::Log::Level>();
+		auto severity = m_rows[index.row()].value(Cols::Severity).value<NecroLog::Level>();
 		switch (severity) {
-		case qf::core::Log::Level::Invalid:
-		case qf::core::Log::Level::Fatal:
-		case qf::core::Log::Level::Error:
+		case NecroLog::Level::Invalid:
+		case NecroLog::Level::Fatal:
+		case NecroLog::Level::Error:
 			return QColor(Qt::red).lighter(170);
-		case qf::core::Log::Level::Warning:
+		case NecroLog::Level::Warning:
 			return QColor(Qt::cyan).lighter(170);
 		default:
 			return QVariant();
@@ -140,7 +140,7 @@ void LogTableModel::addLogEntry(const LogEntryMap &le)
 	addLog(le.level(), le.category(), le.file(), le.line(), le.message(), le.timeStamp(), le.function());
 }
 
-void LogTableModel::addLog(qf::core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+void LogTableModel::addLog(NecroLog::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
 	QString module = prettyFileName(file);
 	Row row(severity, category, module, line, msg, time_stamp, function, user_data);
@@ -179,7 +179,7 @@ void LogTableModel::addRow(const LogTableModel::Row &row)
 
 QString LogTableModel::prettyFileName(const QString &file_name)
 {
-	return qf::core::LogDevice::moduleFromFileName(file_name);
+	return QString::fromStdString(NecroLog::moduleFromFileName(file_name.toStdString().c_str()));
 }
 
 }}}

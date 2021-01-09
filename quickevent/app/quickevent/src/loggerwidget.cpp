@@ -1,19 +1,18 @@
 #include "loggerwidget.h"
-#include "tablemodellogdevice.h"
+#include "application.h"
+
+#include <qf/qmlwidgets/log.h>
 
 #include <qf/core/model/logtablemodel.h>
 
 LoggerWidget::LoggerWidget(QWidget *parent)
 	: Super(parent)
 {
-	//m_logDevice =  LoggerLogDevice::install();
-	//m_logDevice->setParent(this);
-	//m_logDevice->setLogTreshold(qf::core::Log::LOG_WARN);
+	addCategoryActions(tr("<empty>"), QString(), NecroLog::Level::Info);
 
-	addCategoryActions(tr("<empty>"), QString(), qf::core::Log::Level::Info);
-
-	auto *ld = qobject_cast<TableModelLogDevice*>(qf::core::LogDevice::findDevice(TABLE_MODEL_LOG_DEVICE));
-	setLogTableModel(ld->logTableModel());
+	m_logModel = new qf::core::model::LogTableModel(this);
+	connect(Application::instance(), &Application::newLogEntry, m_logModel, &qf::core::model::LogTableModel::addLogEntry, Qt::QueuedConnection);
+	setLogTableModel(m_logModel);
 }
 
 LoggerWidget::~LoggerWidget()
@@ -25,20 +24,16 @@ void LoggerWidget::onDockWidgetVisibleChanged(bool visible)
 {
 	//qfWarning() << "onDockWidgetVisibleChanged" << visible;
 	if(visible) {
-		auto *ld = qobject_cast<TableModelLogDevice*>(qf::core::LogDevice::findDevice(TABLE_MODEL_LOG_DEVICE));
-		setLogTableModel(ld->logTableModel());
 		checkScrollToLastEntry();
-	}
-	else {
-		setLogTableModel(nullptr);
 	}
 }
 
 void LoggerWidget::registerLogCategories()
 {
 	Super::registerLogCategories();
-	auto *ld = qobject_cast<TableModelLogDevice*>(qf::core::LogDevice::findDevice(TABLE_MODEL_LOG_DEVICE));
-	ld->setCategories(selectedLogCategories());
+	//qfError() << "LoggerWidget::registerLogCategories" << "IMPL missing";
+	//auto *ld = qobject_cast<TableModelLogDevice*>(qf::core::LogDevice::findDevice(TABLE_MODEL_LOG_DEVICE));
+	//ld->setCategories(selectedLogCategories());
 }
 
 

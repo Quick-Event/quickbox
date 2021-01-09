@@ -805,7 +805,7 @@ bool EventPlugin::createEvent(const QString &event_name, const QVariantMap &even
 		//						  Q_ARG(QVariant, create_options));
 		QStringList create_script = dbSchema()->createDbSqlScript(create_options);
 
-		qfInfo().nospace().noquote() << create_script.join(";\n") << ';';
+		qfInfo().nospace() << create_script.join(";\n") << ';';
 		qfs::Query q(conn);
 		do {
 			qfs::Transaction transaction(conn);

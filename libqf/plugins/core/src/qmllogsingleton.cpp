@@ -43,5 +43,5 @@ void QmlLogSingleton::error(const QString &msg)
 
 void QmlLogSingleton::fatal(const QString &msg)
 {
-	qfFatal("%s", qPrintable(msg));
+	qfFatal(msg);
 }

@@ -6,7 +6,7 @@
 
 #include <qf/core/log.h>
 #include <qf/core/assert.h>
-#include <qf/core/logdevice.h>
+#include <qf/core/logentrymap.h>
 #include <qf/core/model/logtablemodel.h>
 
 #include <QSortFilterProxyModel>
@@ -63,7 +63,7 @@ public:
 	}
 	bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
 private:
-	int m_treshold = static_cast<int>(qf::core::Log::Level::Info);
+	int m_treshold = static_cast<int>(NecroLog::Level::Info);
 	QString m_filterString;
 };
 
@@ -121,11 +121,11 @@ LogWidget::LogWidget(QWidget *parent)
 	m_filterModel->setDynamicSortFilter(false);
 	ui->tableView->setModel(m_filterModel);
 
-	for (int i = static_cast<int>(qf::core::Log::Level::Error); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
-		ui->severityTreshold->addItem(qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i)), QVariant::fromValue(i));
+	for (int i = static_cast<int>(NecroLog::Level::Error); i <= static_cast<int>(NecroLog::Level::Debug); i++) {
+		ui->severityTreshold->addItem(NecroLog::levelToString(static_cast<NecroLog::Level>(i)), QVariant::fromValue(i));
 	}
 	connect(ui->severityTreshold, SIGNAL(currentIndexChanged(int)), this, SLOT(onSeverityTresholdIndexChanged(int)));
-	ui->severityTreshold->setCurrentIndex(static_cast<int>(qf::core::Log::Level::Info));
+	ui->severityTreshold->setCurrentIndex(static_cast<int>(NecroLog::Level::Info));
 
 	connect(ui->edFilter, &QLineEdit::textChanged, this, &LogWidget::filterStringChanged);
 }
@@ -155,7 +155,7 @@ void LogWidget::setLogTableModel(core::model::LogTableModel *m)
 	}
 }
 
-void LogWidget::addLog(core::Log::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
+void LogWidget::addLog(NecroLog::Level severity, const QString &category, const QString &file, int line, const QString &msg, const QDateTime &time_stamp, const QString &function, const QVariant &user_data)
 {
 	//fprintf(stderr, "%s:%d(%s) %s\n", qPrintable(file), line, qPrintable(category), qPrintable(msg));
 	logTableModel()->addLog(severity, category, file, line, msg, time_stamp, function, user_data);
@@ -175,22 +175,22 @@ qf::core::model::LogTableModel *LogWidget::logTableModel()
 	return m_logTableModel;
 }
 
-void LogWidget::setSeverityTreshold(core::Log::Level lvl)
+void LogWidget::setSeverityTreshold(NecroLog::Level lvl)
 {
 	int ci = ui->severityTreshold->findData(static_cast<int>(lvl));
 	ui->severityTreshold->setCurrentIndex(ci);
 }
 
-core::Log::Level LogWidget::severityTreshold() const
+NecroLog::Level LogWidget::severityTreshold() const
 {
-	return static_cast<core::Log::Level>(ui->severityTreshold->currentData().toInt());
+	return static_cast<NecroLog::Level>(ui->severityTreshold->currentData().toInt());
 }
 
 void LogWidget::onSeverityTresholdIndexChanged(int index)
 {
 	Q_UNUSED(index)
 	m_filterModel->setThreshold(ui->severityTreshold->currentData().toInt());
-	emit severityTresholdChanged(static_cast<qf::core::Log::Level>(ui->severityTreshold->currentData().toInt()));
+	emit severityTresholdChanged(static_cast<NecroLog::Level>(ui->severityTreshold->currentData().toInt()));
 }
 
 QAbstractButton *LogWidget::clearButton()
@@ -246,7 +246,7 @@ void LogWidget::clearCategoryActions()
 	m_loggingCategoriesMenus.clear();
 }
 
-void LogWidget::addCategoryActions(const QString &caption, const QString &id, core::Log::Level level)
+void LogWidget::addCategoryActions(const QString &caption, const QString &id, NecroLog::Level level)
 {
 	QString menu_caption = "[%1] " + caption;
 	QMenu *m = new QMenu(this);
@@ -256,17 +256,17 @@ void LogWidget::addCategoryActions(const QString &caption, const QString &id, co
 	a->setMenu(m);
 	tableMenuButton()->addAction(a);
 	QActionGroup *ag_loglevel = new QActionGroup(a);
-	for (int i = static_cast<int>(qf::core::Log::Level::Invalid); i <= static_cast<int>(qf::core::Log::Level::Debug); i++) {
-		if(i == static_cast<int>(qf::core::Log::Level::Fatal))
+	for (int i = static_cast<int>(NecroLog::Level::Invalid); i <= static_cast<int>(NecroLog::Level::Debug); i++) {
+		if(i == static_cast<int>(NecroLog::Level::Fatal))
 			continue;
-		QString cap = qf::core::Log::levelToString(static_cast<qf::core::Log::Level>(i));
+		QString cap = NecroLog::levelToString(static_cast<NecroLog::Level>(i));
 		QAction *a2 = new QAction(cap, a);
 		ag_loglevel->addAction(a2);
 		m->addAction(a2);
 		a2->setCheckable(true);
-		a2->setChecked(static_cast<qf::core::Log::Level>(i) == level);
+		a2->setChecked(static_cast<NecroLog::Level>(i) == level);
 		connect(a2, &QAction::triggered, this, &LogWidget::registerLogCategories);
-		QChar level_c = (i == static_cast<int>(qf::core::Log::Level::Invalid))? ' ': qf::core::Log::levelName(static_cast<qf::core::Log::Level>(i))[0];
+		QChar level_c = (i == static_cast<int>(NecroLog::Level::Invalid))? ' ': NecroLog::levelToString(static_cast<NecroLog::Level>(i))[0];
 		a2->setData(i);
 		if(a2->isChecked())
 			menu_caption = menu_caption.arg(level_c);
@@ -275,15 +275,38 @@ void LogWidget::addCategoryActions(const QString &caption, const QString &id, co
 	m->setTitle(menu_caption);
 }
 
-QMap<QString, qf::core::Log::Level> LogWidget::selectedLogCategories() const
+static QPair<QString, NecroLog::Level> parseCategoryLevel(const QString &category)
 {
-	QMap<QString, qf::core::Log::Level> categories;
+	int ix = category.indexOf(':');
+	NecroLog::Level level = NecroLog::Level::Debug;
+	QString cat = category;
+	if(ix >= 0) {
+		QString s = category.mid(ix + 1, 1);
+		QChar l = s.isEmpty()? QChar(): s[0].toUpper();
+		cat = category.mid(0, ix).trimmed();
+		if(l == 'D')
+			level = NecroLog::Level::Debug;
+		else if(l == 'I')
+			level = NecroLog::Level::Info;
+		else if(l == 'W')
+			level = NecroLog::Level::Warning;
+		else if(l == 'E')
+			level = NecroLog::Level::Error;
+		else
+			level = NecroLog::Level::Invalid;
+	}
+	return QPair<QString, NecroLog::Level>(cat, level);
+}
+
+QMap<QString, NecroLog::Level> LogWidget::selectedLogCategories() const
+{
+	QMap<QString, NecroLog::Level> categories;
 	for(QAction *a : m_logLevelActions) {
 		if(a->isChecked()) {
 			QAction *pa = qobject_cast<QAction*>(a->parent());
 			QF_ASSERT(pa != nullptr, "Bad parent", continue);
-			qf::core::Log::Level level = static_cast<qf::core::Log::Level>(a->data().toInt());
-			QChar level_c = (level == qf::core::Log::Level::Invalid)? ' ': qf::core::Log::levelName(level)[0];
+			NecroLog::Level level = static_cast<NecroLog::Level>(a->data().toInt());
+			QChar level_c = (level == NecroLog::Level::Invalid)? ' ': NecroLog::levelToString(level)[0];
 			{
 				QMenu *m = pa->menu();
 				QString cap = m->title();
@@ -291,8 +314,9 @@ QMap<QString, qf::core::Log::Level> LogWidget::selectedLogCategories() const
 				m->setTitle(cap);
 			}
 			QString category = pa->data().toString();
-			QPair<QString, qf::core::Log::Level> lev = qf::core::LogDevice::parseCategoryLevel(category);
-			if(level != qf::core::Log::Level::Invalid)
+			QPair<QString, NecroLog::Level> lev = parseCategoryLevel(category);
+			//auto level = static_cast<NecroLog::Level>(pa->data().toInt());
+			if(level != NecroLog::Level::Invalid)
 				categories[category] = level;
 		}
 	}

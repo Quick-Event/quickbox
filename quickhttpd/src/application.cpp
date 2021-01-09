@@ -67,7 +67,7 @@ qf::core::sql::Connection Application::sqlConnetion()
 
 				QString event_name = cliOptions()->eventName();
 				if(event_name.isEmpty()) {
-					qfError("Event name is empty!");
+					qfError() << "Event name is empty!";
 				}
 				else {
 					qfInfo() << "\tSetting current schema to" << cliOptions()->eventName();

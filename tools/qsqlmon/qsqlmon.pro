@@ -23,6 +23,7 @@ DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
 LIBS +=      \
+    -lnecrolog  \
 	-lqfcore  \
 	-lqfqmlwidgets  \
 
@@ -36,8 +37,8 @@ unix: LIBS +=  \
 # exception backtrace support
 CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
 
-include ($$PWD/../../crosscompile-support.pri)
 
+INCLUDEPATH += $$PWD/../../3rdparty/necrolog/include
 INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 INCLUDEPATH += $$PWD/src

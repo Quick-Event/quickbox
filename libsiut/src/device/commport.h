@@ -34,9 +34,9 @@ public:
 	*/
 	void sendData(const QByteArray &data);
 
-	Q_SIGNAL void commInfo(qf::core::Log::Level level, const QString &msg);
+	Q_SIGNAL void commInfo(NecroLog::Level level, const QString &msg);
 protected:
-	virtual void emitCommInfo(qf::core::Log::Level level, const QString &msg);
+	virtual void emitCommInfo(NecroLog::Level level, const QString &msg);
 
 	void setDataBitsAsInt(int data_bits);
 	void setParityAsString(const QString &parity_str);
