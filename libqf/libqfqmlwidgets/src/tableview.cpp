@@ -1,4 +1,5 @@
 #include "tableview.h"
+
 #include "tableviewproxymodel.h"
 #include "headerview.h"
 #include "action.h"
@@ -8,6 +9,7 @@
 #include "exportcsvtableviewwidget.h"
 #include "style.h"
 #include "texteditwidget.h"
+#include "log.h"
 
 #include "dialogs/dialog.h"
 #include "dialogs/filedialog.h"
@@ -20,7 +22,6 @@
 
 #include <qf/core/string.h>
 #include <qf/core/collator.h>
-#include <qf/core/log.h>
 #include <qf/core/assert.h>
 #include <qf/core/exception.h>
 #include <qf/core/model/sqltablemodel.h>
@@ -1599,7 +1600,7 @@ void TableView::createActions()
 		a->setObjectName("TableView_Copy");
 		a->setIcon(style->icon("copy"));
 		a->setShortcut(QKeySequence(tr("Ctrl+C", "Copy selection")));
-		//a->setShortcutContext(Qt::WidgetShortcut);
+		a->setShortcutContext(Qt::WidgetShortcut);
 		a->setOid("copy");
 		m_actionGroups[ViewActions] << a->oid();
 		m_actions[a->oid()] = a;
