@@ -5,7 +5,7 @@ CONFIG += hide_symbols
 
 INCLUDEPATH += \
     $$PWD/include \
-	INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include \
+	$$PWD/../3rdparty/necrolog/include \
 	$$PWD/../libqf/libqfcore/include \
 
 LIBS += -lnecrolog
