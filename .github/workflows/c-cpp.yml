@@ -11,14 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      
+      with:
+        submodules: 'recursive'         
+        
     - name: Cache Qt
       id: cache-qt
       uses: actions/cache@v2
       with:
         path: ${{ runner.workspace }}/Qt
         key: ${{ runner.os }}-Qt
-        submodules: 'recursive' 
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
