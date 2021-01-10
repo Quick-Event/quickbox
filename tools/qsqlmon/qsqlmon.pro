@@ -11,13 +11,14 @@ TARGET = qsqlmon
 #message (QF_PROJECT_TOP_BUILDDIR: $$QF_PROJECT_TOP_BUILDDIR)
 
 isEmpty(QF_PROJECT_TOP_BUILDDIR) {
-	QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
-}
-else {
-	message ( QF_PROJECT_TOP_BUILDDIR is not empty and set to $$QF_PROJECT_TOP_BUILDDIR )
-	message ( This is obviously done in file $$QF_PROJECT_TOP_SRCDIR/.qmake.conf )
+    QF_PROJECT_TOP_BUILDDIR = $$OUT_PWD/../..
 }
 message ( QF_PROJECT_TOP_BUILDDIR == '$$QF_PROJECT_TOP_BUILDDIR' )
+
+isEmpty(QF_PROJECT_TOP_SRCDIR) {
+    QF_PROJECT_TOP_SRCDIR = $$PWD/../..
+}
+message ( QF_PROJECT_TOP_SRCDIR == '$$QF_PROJECT_TOP_SRCDIR' )
 
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
@@ -37,8 +38,7 @@ unix: LIBS +=  \
 # exception backtrace support
 CONFIG(debug, debug|release): unix: QMAKE_LFLAGS += -rdynamic
 
-
-INCLUDEPATH += $$PWD/../../3rdparty/necrolog/include
+INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
 INCLUDEPATH += $$PWD/../../libqf/libqfcore/include
 INCLUDEPATH += $$PWD/../../libqf/libqfqmlwidgets/include
 INCLUDEPATH += $$PWD/src
