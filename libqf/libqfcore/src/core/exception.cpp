@@ -57,17 +57,20 @@ const char* Exception::what() const throw()
 {
 	return m_what.constData();
 }
-/*
-void Exception::setGlobalFlags(int argc, char *argv[])
+
+void Exception::setAbortOnException(bool on)
 {
-	//setLogStackTrace(false);
-	//setExceptionAbortsApplication(false);
-	//setAssertThrowsException(false);
-	for(int i=1; i<argc; i++) {
-		QString s = argv[i];
-		if(s == "--exception-aborts") setExceptionAbortsApplication(true);
-		else if(s == "--assert-throws") setAssertThrowsException(true);
-		else if(s == "--log-stacktrace") setLogStackTrace(true);
-	}
+	s_abortOnException = on;
 }
-*/
+
+bool Exception::isAbortOnException()
+{
+	return s_abortOnException;
+}
+
+void Exception::fatalMessage(const QString &msg)
+{
+	qfError() << "EXCEPTION!:" << msg;
+	abort();
+}
+

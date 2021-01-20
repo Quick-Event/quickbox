@@ -239,6 +239,9 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			m_isAppBreak = true;
 			return;
 		}
+		if(arg == "--abort-on-exception") {
+			qf::core::Exception::setAbortOnException(true);
+		}
 		else {
 			bool found = false;
 			QMutableMapIterator<QString, Option> it(m_options);
@@ -277,7 +280,8 @@ void CLIOptions::parse(const QStringList& cmd_line_args)
 			}
 		}
 	}
-	qf::core::Exception::setAbortOnException(isAbortOnException());
+	if(isAbortOnException())
+		qf::core::Exception::setAbortOnException(true);
 }
 
 QPair<QString, QString> CLIOptions::applicationDirAndName() const
