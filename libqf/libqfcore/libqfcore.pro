@@ -37,8 +37,14 @@ DEFINES += QFCORE_BUILD_DLL
 
 INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
 
+android {
 LIBS +=      \
-    -lnecrolog  \
+	-lnecrolog_$${QT_ARCH}
+}
+else {
+LIBS +=      \
+	-lnecrolog
+}
 
 win32: LIBS +=  \
     -L$$QF_PROJECT_TOP_BUILDDIR/bin  \
