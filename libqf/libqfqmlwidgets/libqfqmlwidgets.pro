@@ -35,9 +35,16 @@ message ( DESTDIR: $$DESTDIR )
 
 INCLUDEPATH += $$QF_PROJECT_TOP_SRCDIR/3rdparty/necrolog/include
 
+android {
 LIBS +=      \
-    -lnecrolog  \
+	-lnecrolog_$${QT_ARCH}  \
+	-lqfcore_$${QT_ARCH}  \
+}
+else {
+LIBS +=      \
+	-lnecrolog  \
 	-lqfcore  \
+}
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
