@@ -23,18 +23,13 @@ message ( QF_PROJECT_TOP_SRCDIR == '$$QF_PROJECT_TOP_SRCDIR' )
 DESTDIR = $$QF_PROJECT_TOP_BUILDDIR/bin
 message ( DESTDIR: $$DESTDIR )
 
-android {
-	LIBS +=      \
-		-lnecrolog_$${QT_ARCH}  \
-		-lqfcore_$${QT_ARCH}  \
-		-lqfqmlwidgets_$${QT_ARCH}
-}
-else {
-	LIBS +=      \
-		-lnecrolog  \
-		-lqfcore  \
-		-lqfqmlwidgets
-}
+android: LIBEXT = "_$${QT_ARCH}"
+else: LIBEXT = ""
+
+LIBS +=      \
+	-lnecrolog$${LIBEXT}  \
+	-lqfcore$${LIBEXT}  \
+	-lqfqmlwidgets$${LIBEXT}
 
 win32: LIBS +=  \
 	-L$$QF_PROJECT_TOP_BUILDDIR/bin  \
