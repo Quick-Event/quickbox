@@ -105,8 +105,7 @@ public:
 	bool resultExcludeDisq() const;
 	void setResultExcludeDisq(bool b);
 
-	bool isDayTypeStartTime();
-
+	StartTimeFormat startTimeFormat() const;
 	BreakType breakType() const;
 	Q_INVOKABLE bool isStartListPrintVacants() const;
 	Q_INVOKABLE bool isStartListPrintStartNumbers() const;

@@ -9,7 +9,6 @@
 
 #include <Event/eventplugin.h>
 
-#include <quickevent/gui/reportoptionsdialog.h>
 #include <quickevent/core/codedef.h>
 #include <quickevent/core/utils.h>
 #include <quickevent/core/si/punchrecord.h>
@@ -1053,7 +1052,7 @@ bool RunsPlugin::exportResultsCsosOverall(int stage_count, const QString &file_n
 	return true;
 }
 
-qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &where_expr, const bool insert_vacants, const bool day_time_start)
+qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &where_expr, const bool insert_vacants, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	auto *event_plugin = eventPlugin();
 	int stage_id = selectedStageId();
@@ -1150,7 +1149,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 				start_time_0 += start_interval;
 			}
 		}
-		addTimeTextToClass(tt2,zero_time_msec, day_time_start);
+		addTimeTextToClass(tt2,zero_time_msec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	//qfInfo().noquote() << tt.toString();
@@ -1158,7 +1157,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesTable(const QString &wher
 
 }
 
-qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const bool day_time_start)
+qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	auto *event_plugin = eventPlugin();
 	int stage_id = selectedStageId();
@@ -1208,7 +1207,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsTable(const bool day_time_s
 		m2.reload();
 		//console.info(reportModel.effectiveQuery());
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,zero_time_msec, day_time_start);
+		addTimeTextToClass(tt2,zero_time_msec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -1244,7 +1243,7 @@ qf::core::utils::TreeTable RunsPlugin::startListStartersTable(const QString &whe
 	return tt;
 }
 
-qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(const int stages_count, const QString &where_expr, const bool day_time_start)
+qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(const int stages_count, const QString &where_expr, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	auto *event_plugin = eventPlugin();
 	int sel_stage_id = selectedStageId();
@@ -1289,13 +1288,13 @@ qf::core::utils::TreeTable RunsPlugin::startListClassesNStagesTable(const int st
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,stages_count,zero_time_msec, day_time_start);
+		addTimeTextToClass(tt2,stages_count,zero_time_msec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
 }
 
-qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stages_count, const bool day_time_start)
+qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stages_count, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	auto *event_plugin = eventPlugin();
 	int sel_stage_id = selectedStageId();
@@ -1346,7 +1345,7 @@ qf::core::utils::TreeTable RunsPlugin::startListClubsNStagesTable(const int stag
 		//qfInfo() << m2.effectiveQuery();
 		m2.reload();
 		auto tt2 = m2.toTreeTable();
-		addTimeTextToClass(tt2,stages_count,zero_time_msec, day_time_start);
+		addTimeTextToClass(tt2,stages_count,zero_time_msec, start_time_format);
 		tt.appendTable(i, tt2);
 	}
 	return tt;
@@ -1362,7 +1361,7 @@ void RunsPlugin::report_startListClasses()
 	dlg.setPageLayoutVisible(false);
 	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
-		auto tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants(), dlg.isDayTypeStartTime());
+		auto tt = startListClassesTable(dlg.sqlWhereExpression(), dlg.isStartListPrintVacants(), dlg.startTimeFormat());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
@@ -1389,7 +1388,7 @@ void RunsPlugin::report_startListClubs()
 	dlg.setPageLayoutVisible(false);
 	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
-		auto tt = startListClubsTable( dlg.isDayTypeStartTime());
+		auto tt = startListClubsTable( dlg.startTimeFormat());
 		auto opts = dlg.optionsMap();
 		QVariantMap props;
 		props["options"] = opts;
@@ -1444,7 +1443,7 @@ void RunsPlugin::report_startListClassesNStages()
 	dlg.setColumnCountEnable(false);
 	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
-		auto tt = startListClassesNStagesTable(dlg.stagesCount(), dlg.sqlWhereExpression(), dlg.isDayTypeStartTime());
+		auto tt = startListClassesNStagesTable(dlg.stagesCount(), dlg.sqlWhereExpression(), dlg.startTimeFormat());
 		auto opts = dlg.options();
 		//QString report_title = tr("Start list by classes after %1 stages").arg(dlg.stagesCount());
 		QVariantMap props;
@@ -1480,7 +1479,7 @@ void RunsPlugin::report_startListClubsNStages()
 	dlg.setColumnCountEnable(false);
 	dlg.setStartTimeFormatVisible(true);
 	if(dlg.exec()) {
-		auto tt = startListClubsNStagesTable(dlg.stagesCount(), dlg.isDayTypeStartTime());
+		auto tt = startListClubsNStagesTable(dlg.stagesCount(), dlg.startTimeFormat());
 		auto opts = dlg.optionsMap();
 		//QString report_title = tr("Start list by classes after %1 stages").arg(dlg.stagesCount());
 		QVariantMap props;
@@ -1655,7 +1654,7 @@ static void append_list(QVariantList &lst, const QVariantList &new_lst)
 
 void RunsPlugin::export_startListClassesHtml()
 {
-	qf::core::utils::TreeTable tt1 = startListClassesTable("", false, true);
+	qf::core::utils::TreeTable tt1 = startListClassesTable("", false, quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
 	QVariantList body{QStringLiteral("body")};
 	QString h1_str = "{{documentTitle}}";
 	QVariantMap event = tt1.value("event").toMap();
@@ -1726,7 +1725,7 @@ void RunsPlugin::export_startListClassesHtml()
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("runs.siId"))});
 			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString() });
 			append_list(trr, QVariantList{"td", "="});
-			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startTimeText")) });
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, tt2_row.value(QStringLiteral("startTimeText")) });
 			append_list(table, trr);
 		}
 		append_list(body, table);
@@ -1751,7 +1750,7 @@ void RunsPlugin::export_startListClassesHtml()
 
 void RunsPlugin::export_startListClubsHtml()
 {
-	qf::core::utils::TreeTable tt1 = startListClubsTable(true);
+	qf::core::utils::TreeTable tt1 = startListClubsTable(quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime);
 	QVariantList body{QStringLiteral("body")};
 	QString h1_str = "{{documentTitle}}";
 	QVariantMap event = tt1.value("event").toMap();
@@ -1822,7 +1821,7 @@ void RunsPlugin::export_startListClubsHtml()
 			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("runs.siId"))});
 			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, quickevent::core::og::TimeMs(tt2_row.value("startTimeMs").toInt()).toString() });
 			append_list(trr, QVariantList{"td", "="});
-			append_list(trr, QVariantList{"td", tt2_row.value(QStringLiteral("startTimeText")) });
+			append_list(trr, QVariantList{"td", QVariantMap{{"align", "right"}}, tt2_row.value(QStringLiteral("startTimeText")) });
 			append_list(table, trr);
 		}
 		append_list(body, table);
@@ -2108,7 +2107,7 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	bool last_handicap_stage = event_config->stageCount() == selectedStageId() && event_config->isHandicap();
 	bool print_vacants = !last_handicap_stage;
 	//console.debug("print_vacants", print_vacants);
-	auto tt1 = startListClassesTable("", print_vacants, false);
+	auto tt1 = startListClassesTable("", print_vacants, quickevent::gui::ReportOptionsDialog::StartTimeFormat::RelativeToClassStart);
 
 	QVariantList xml_root{"StartList" ,
 		QVariantMap {
@@ -2178,12 +2177,12 @@ bool RunsPlugin::exportStartListStageIofXml30(int stage_id, const QString &file_
 	return false;
 }
 
-void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int zero_time_msec, const bool day_time_start)
+void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int zero_time_msec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	for(int j=0; j<tt2.rowCount(); j++) {
 		qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
 		int start_time = tt2_row.value(QStringLiteral("startTimeMs")).toInt();
-		if (day_time_start) {
+		if (start_time_format == quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime) {
 			start_time += zero_time_msec;
 			QTime t = QTime::fromMSecsSinceStartOfDay(start_time);
 			tt2_row.setValue(QStringLiteral("startTimeText"), t.toString("h:mm:ss"));
@@ -2194,7 +2193,7 @@ void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int z
 	}
 }
 
-void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<int> &zero_time_msec, const bool day_time_start)
+void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<int> &zero_time_msec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format)
 {
 	for(int j=0; j<tt2.rowCount(); j++) {
 		qf::core::utils::TreeTableRow tt2_row = tt2.row(j);
@@ -2202,7 +2201,7 @@ void RunsPlugin::addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int s
 			QString runs = QString("runs%1.").arg(stage_id);
 			if (tt2_row.value(runs+QStringLiteral("isRunning")).toBool()) {
 				int start_time = tt2_row.value(runs+QStringLiteral("startTimeMs")).toInt();
-				if (day_time_start) {
+				if (start_time_format == quickevent::gui::ReportOptionsDialog::StartTimeFormat::DayTime) {
 					start_time += zero_time_msec[stage_id-1];
 					QTime t = QTime::fromMSecsSinceStartOfDay(start_time);
 					tt2_row.setValue(runs+QStringLiteral("startTimeText"), t.toString("h:mm:ss"));

@@ -5,6 +5,7 @@
 
 #include <quickevent/core/og/timems.h>
 #include <quickevent/core/coursedef.h>
+#include <quickevent/gui/reportoptionsdialog.h>
 
 #include <qf/qmlwidgets/framework/plugin.h>
 
@@ -84,11 +85,11 @@ public:
 	Q_INVOKABLE bool exportResultsCsosStage(int stage_id, const QString &file_name);
 	Q_INVOKABLE bool exportResultsCsosOverall(int stage_count, const QString &file_name);
 
-	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, const bool insert_vacants, const bool day_time_start);
-	qf::core::utils::TreeTable startListClubsTable(const bool day_time_start);
+	qf::core::utils::TreeTable startListClassesTable(const QString &where_expr, const bool insert_vacants, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
+	qf::core::utils::TreeTable startListClubsTable(const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
 	qf::core::utils::TreeTable startListStartersTable(const QString &where_expr);
-	qf::core::utils::TreeTable startListClassesNStagesTable(const int stages_count, const QString &where_expr, const bool day_time_start);
-	qf::core::utils::TreeTable startListClubsNStagesTable(const int stages_count, const bool day_time_start);
+	qf::core::utils::TreeTable startListClassesNStagesTable(const int stages_count, const QString &where_expr, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
+	qf::core::utils::TreeTable startListClubsNStagesTable(const int stages_count, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
 public:
 	void report_startListClasses();
 	void report_startListClubs();
@@ -119,8 +120,8 @@ private:
 
 	void writeCSOSHeader(QTextStream &ts);
 
-	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int zero_time_msec, const bool day_time_start);
-	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<int> &zero_time_msec, const bool day_time_start);
+	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int zero_time_msec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
+	void addTimeTextToClass(qf::core::utils::TreeTable &tt2, const int stages_count, const QVector<int> &zero_time_msec, const quickevent::gui::ReportOptionsDialog::StartTimeFormat start_time_format);
 private:
 	qf::qmlwidgets::framework::PartWidget *m_partWidget = nullptr;
 	qf::core::utils::Table m_runnersTableCache;

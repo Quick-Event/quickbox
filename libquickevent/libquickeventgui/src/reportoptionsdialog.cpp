@@ -305,9 +305,9 @@ int ReportOptionsDialog::resultNumPlaces() const
 	return ui->edNumPlaces->value();
 }
 
-bool ReportOptionsDialog::isDayTypeStartTime()
+ReportOptionsDialog::StartTimeFormat ReportOptionsDialog::startTimeFormat() const
 {
-	return ui->btStartTimes2->isChecked();
+	return ui->btStartTimes1->isChecked()? StartTimeFormat::RelativeToClassStart: StartTimeFormat::DayTime;
 }
 
 
